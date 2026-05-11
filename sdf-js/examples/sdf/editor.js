@@ -13,23 +13,23 @@ import * as sdf from '../../src/index.js';
 // ---- Primitive 的参数 schema -----------------------------------------------
 // "common" 三项 (x, y, rotation) 自动每个 primitive 都加；下面只列 type-specific
 const SCHEMA = {
-  circle:               { specific: [{ name: 'r',      label: '半径',  default: 0.30 }] },
+  circle:               { specific: [{ name: 'r',      label: 'radius',  default: 0.30 }] },
   rectangle:            { specific: [
-                          { name: 'w', label: '宽', default: 0.40 },
-                          { name: 'h', label: '高', default: 0.30 },
+                          { name: 'w', label: 'w', default: 0.40 },
+                          { name: 'h', label: 'h', default: 0.30 },
                         ]},
   rounded_rectangle:    { specific: [
-                          { name: 'w',      label: '宽',     default: 0.40 },
-                          { name: 'h',      label: '高',     default: 0.30 },
-                          { name: 'radius', label: '圆角',   default: 0.05 },
+                          { name: 'w',      label: 'w',      default: 0.40 },
+                          { name: 'h',      label: 'h',      default: 0.30 },
+                          { name: 'radius', label: 'corner', default: 0.05 },
                         ]},
-  hexagon:              { specific: [{ name: 'r',      label: '外接圆 r', default: 0.30 }] },
-  equilateral_triangle: { specific: [{ name: 'scale',  label: '缩放',     default: 0.40 }] },
+  hexagon:              { specific: [{ name: 'r',      label: 'r',      default: 0.30 }] },
+  equilateral_triangle: { specific: [{ name: 'scale',  label: 'scale',  default: 0.40 }] },
 };
 const COMMON = [
   { name: 'x',        label: 'x',  default: 0 },
   { name: 'y',        label: 'y',  default: 0 },
-  { name: 'rotation', label: '旋转 (rad)', default: 0 },
+  { name: 'rotation', label: 'rotation', default: 0 },
 ];
 
 const TYPE_LABEL = {
@@ -121,7 +121,7 @@ const fmt = (n) => {
 
 function generateCode(state) {
   if (state.layers.length === 0) {
-    return `// 还没添加形状`;
+    return `// no shapes yet`;
   }
 
   const usedTypes = new Set(state.layers.map(l => TYPE_LABEL[l.type]));
@@ -155,7 +155,7 @@ function renderLayers() {
     div.dataset.id = layer.id;
 
     const opRow = i === 0
-      ? '<div class="op-row" style="opacity:0.5; font-size:11px; color:#666;">基底层（无运算）</div>'
+      ? '<div class="op-row" style="opacity:0.5; font-size:11px; color:var(--ink-faint);">base layer</div>'
       : `
         <div class="op-row">
           <select class="op">
@@ -180,7 +180,7 @@ function renderLayers() {
     div.innerHTML = `
       <header>
         <span class="type">${i + 1}. ${TYPE_LABEL[layer.type]}</span>
-        <button class="del" title="删除">×</button>
+        <button class="del" title="remove">×</button>
       </header>
       ${opRow}
       <div class="params">${paramsHtml}</div>
@@ -236,7 +236,7 @@ document.getElementById('copy').addEventListener('click', async () => {
     await navigator.clipboard.writeText(codeEl.value);
     const btn = document.getElementById('copy');
     const old = btn.textContent;
-    btn.textContent = '已复制';
+    btn.textContent = 'copied';
     setTimeout(() => { btn.textContent = old; }, 1200);
   } catch {
     codeEl.select();
@@ -286,7 +286,7 @@ window.draw = () => {
   }
   frameCount++;
   if (frameCount % 30 === 0) {
-    statsEl.textContent = `${state.layers.length} 层 SDF · ${frameCount} 帧 · ${PER_FRAME * frameCount} 颗沙粒`;
+    statsEl.textContent = `${state.layers.length} layers · ${frameCount} frames · ${PER_FRAME * frameCount} grains`;
   }
 };
 

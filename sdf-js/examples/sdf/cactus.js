@@ -3,13 +3,14 @@
 // -----------------------------------------------------------------------------
 // 与 BOB scenes/2d.js 的 sdf_cactus / sdf_moon / sdf_line / sdCrossGate 对照。
 //
-// 渲染策略：每像素求所有形状 SDF，按图层顺序 alpha 合成 (基于 smoothstep
-// 抗锯齿)。比 BOB 的 cell-stipple 简单，但视觉上能表达同样的"具象+剪影"效果。
+// 渲染走 src/render/silhouette —— 多层 SDF + 天空渐变 + smoothstep AA。
+// 这个 demo 现在只剩"场景定义 + 一行 render 调用"，渲染逻辑全部沉到 lib 里。
 // =============================================================================
 
 import {
   rounded_rectangle, rectangle, circle, line,
   union, difference,
+  render,
 } from '../../src/index.js';
 
 // ---- 场景定义 --------------------------------------------------------------
@@ -52,50 +53,14 @@ const layers = [
 
 // ---- 渲染 ------------------------------------------------------------------
 
-// 暖纸天空：上偏粉、下偏桃，给整个场景一个温暖底色
-const SKY_TOP = [219, 198, 175];
-const SKY_BOT = [240, 198, 168];
-
-const VIEW = 1.2;                                 // 世界半宽
 const canvas = document.getElementById('c');
-const W = canvas.width, H = canvas.height;
 const ctx = canvas.getContext('2d');
 
-const lerp = (a, b, t) => a + (b - a) * t;
-const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
-const smoothstep = (e0, e1, x) => {
-  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
-  return t * t * (3 - 2 * t);
-};
-
 const t0 = performance.now();
-const img = ctx.createImageData(W, H);
-const data = img.data;
-const aaWidth = 2 * VIEW / W;                     // 一个像素的世界宽度，做 1px 抗锯齿
+render.silhouette(ctx, layers, {
+  view: 1.2,
+  background: { top: [219, 198, 175], bottom: [240, 198, 168] },  // 暖纸天空：上偏粉、下偏桃
+});
 
-for (let y = 0; y < H; y++) {
-  for (let x = 0; x < W; x++) {
-    const wx = (x / W) * 2 * VIEW - VIEW;
-    const wy = -((y / H) * 2 * VIEW - VIEW);      // 翻 Y → +Y 朝上
-
-    // 起手：天空垂直渐变
-    const skyT = (wy + VIEW) / (2 * VIEW);        // 0 (底) → 1 (顶)
-    let col = lerp3(SKY_BOT, SKY_TOP, skyT);
-
-    // 自底向上叠图层；smoothstep 在 0 边界做抗锯齿
-    for (const { sdf, color } of layers) {
-      const d = sdf([wx, wy]);
-      const t = smoothstep(aaWidth, -aaWidth, d);  // d<0 → t=1, d>0 → t=0
-      col = lerp3(col, color, t);
-    }
-
-    const i = (y * W + x) * 4;
-    data[i]     = col[0];
-    data[i + 1] = col[1];
-    data[i + 2] = col[2];
-    data[i + 3] = 255;
-  }
-}
-ctx.putImageData(img, 0, 0);
 document.getElementById('stats').textContent =
-  `${W}×${H} · ${(performance.now() - t0).toFixed(0)} ms · ${layers.length} 层 SDF + 天空`;
+  `${canvas.width}×${canvas.height} · ${(performance.now() - t0).toFixed(0)} ms · ${layers.length} 层 SDF + 天空`;

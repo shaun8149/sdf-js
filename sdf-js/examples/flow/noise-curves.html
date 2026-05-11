@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — noise curves</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="demo-shell">
+      <div class="demo-meta">
+        <div>
+          <h1><em>noise curves.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Phase A: Perlin noise flow field, dense-packed streamlines with collision
+            avoidance, rendered as thin curves. The minimum viable
+            <code>field × streamline × render</code> pipeline.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+        </div>
+      </div>
+
+      <div class="demo-layout split" style="grid-template-columns: 280px 1fr;">
+        <div class="controls">
+          <h2>field</h2>
+          <label>
+            <span class="row">noise scale <span class="val" id="scale-val">0.0030</span></span>
+            <input id="scale" type="range" min="0.0005" max="0.02" step="0.0005" value="0.003" />
+          </label>
+
+          <h2>streamline</h2>
+          <label>
+            <span class="row">dsep <span class="val" id="dsep-val">6</span></span>
+            <input id="dsep" type="range" min="2" max="40" step="1" value="6" />
+          </label>
+          <label>
+            <span class="row">seed count <span class="val" id="seedCount-val">2000</span></span>
+            <input id="seedCount" type="range" min="100" max="8000" step="100" value="2000" />
+          </label>
+
+          <h2>render</h2>
+          <label>
+            <span class="row">line width <span class="val" id="lineWidth-val">1.0</span></span>
+            <input id="lineWidth" type="range" min="0.5" max="6" step="0.1" value="1.0" />
+          </label>
+
+          <div class="actions">
+            <button id="regen">regenerate</button>
+            <button id="save">save png</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage">
+            <canvas id="c" width="1200" height="1200"></canvas>
+          </div>
+          <div class="stats" id="stats" style="padding: 12px 0;">rendering…</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./noise-curves.js"></script>
+  </body>
+</html>

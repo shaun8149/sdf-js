@@ -110,7 +110,7 @@ const canvas = document.getElementById('c');
 const stats = document.getElementById('stats');
 const gl = canvas.getContext('webgl', { antialias: false });
 if (!gl) {
-  stats.textContent = 'WebGL 不可用';
+  stats.textContent = 'WebGL not available';
   throw new Error('no webgl');
 }
 

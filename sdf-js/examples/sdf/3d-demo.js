@@ -55,7 +55,7 @@ const panels = [
     sdf: box([1.6, 1.6, 0.5]).rotate(Math.PI / 4, [1, 0, 0]),
   },
   {
-    title: 'orient: 三轴长方块十字',
+    title: 'orient: three-axis box cross',
     code: 'box([0.4,0.4,1.6]).orient(X) ∪ orient(Y) ∪ orient(Z)',
     sdf: union(
       box([0.4, 0.4, 1.6]).orient([1, 0, 0]),
@@ -64,8 +64,8 @@ const panels = [
     ),
   },
   {
-    title: 'classic: sphere ∩ box − 三向长条',
-    code: 'sphere(1) & box(1.5) − 长条.orient(X|Y|Z)',
+    title: 'classic: sphere ∩ box − three rods',
+    code: 'sphere(1) & box(1.5) − rod.orient(X|Y|Z)',
     sdf: sphere(1)
       .intersection(box(1.5))
       .difference(union(

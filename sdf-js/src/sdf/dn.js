@@ -92,3 +92,20 @@ export const erode = defineOpN('erode', (a, r) => (p) => a.f(p) + r);
 export const shell = defineOpN('shell', (a, thickness) =>
   (p) => Math.abs(a.f(p)) - thickness / 2,
 );
+
+/**
+ * 域重复（domain repetition / pMod）：把每个轴 fold 到 [-P/2, +P/2] 后再 evaluate a。
+ * 效果是空间的"平铺"—— 一个 circle 通过 rep 立刻变成网格化的圆点阵。
+ *
+ * period 可以是标量（所有轴同周期）或数组（per-axis）。维度对齐由 caller 保证。
+ */
+export const rep = defineOpN('rep', (a, period) => {
+  const wrap = (v, P) => v - P * Math.floor((v + P / 2) / P);
+  return (p) => {
+    const wp = p.map((v, i) => {
+      const P = Array.isArray(period) ? (period[i] ?? period[0]) : period;
+      return wrap(v, P);
+    });
+    return a.f(wp);
+  };
+});

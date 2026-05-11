@@ -1,0 +1,389 @@
+/* =============================================================================
+   sdf-js demo pages — shared visual language
+   Inspired by tylerxhobbs.com: warm cream bg, italic serif, generous space.
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #fbf9f4;
+  --bg-deep:   #f3efe6;
+  --canvas:    #eee8e2;
+  --ink:       #1a1a1a;
+  --ink-soft:  #4a4a4a;
+  --ink-faint: #a8a39a;
+  --rule:      rgba(26, 26, 26, 0.12);
+  --rule-soft: rgba(26, 26, 26, 0.06);
+  --accent:    #1a1a1a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  font-feature-settings: 'kern', 'liga', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+em { font-style: normal; }
+
+/* ---- typography ---------------------------------------------------------- */
+
+h1 {
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+h1 em { font-weight: 400; }
+
+h2 {
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-faint);
+  margin: 36px 0 14px;
+}
+
+p { margin: 0 0 14px; color: var(--ink-soft); }
+p em { color: var(--ink); }
+
+a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+a:hover { border-bottom-color: var(--ink); }
+
+code, .mono, kbd {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  color: var(--accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 32px 0;
+}
+
+/* ---- layout containers --------------------------------------------------- */
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+.tagline {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 32px;
+  max-width: 640px;
+  line-height: 1.55;
+}
+
+/* ---- top nav ------------------------------------------------------------- */
+
+.topnav {
+  display: flex; align-items: baseline; gap: 28px;
+  margin-bottom: 64px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.topnav .brand {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  border: 0;
+  margin-right: auto;
+}
+.topnav a:not(.brand) {
+  font-size: 14px;
+  color: var(--ink-faint);
+  border: 0;
+}
+.topnav a:not(.brand):hover { color: var(--ink); }
+
+/* ---- demo index list ----------------------------------------------------- */
+
+.work-list {
+  list-style: none; padding: 0; margin: 0;
+}
+.work-list li {
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+  display: flex; align-items: baseline; gap: 24px;
+}
+.work-list .title {
+  font-size: 16px;
+  font-weight: 400;
+  flex-shrink: 0;
+  min-width: 220px;
+  color: var(--ink);
+}
+.work-list .title a { border: 0; color: var(--ink); }
+.work-list .title a:hover { color: var(--ink-soft); }
+.work-list .desc {
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+.layer-note {
+  color: var(--ink-faint);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+/* ---- buttons (text-only, minimal) ---------------------------------------- */
+
+button, .btn {
+  background: transparent;
+  border: 0;
+  color: var(--ink-faint);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+button:hover, .btn:hover { color: var(--ink); }
+button.active, .btn.active {
+  color: var(--ink);
+}
+
+/* ---- showcase / tabbed iframe page --------------------------------------- */
+
+.showcase-shell {
+  height: 100vh;
+  display: flex; flex-direction: column;
+}
+.showcase-header {
+  padding: 22px 32px 18px;
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: baseline; gap: 32px;
+  flex-wrap: wrap;
+}
+.showcase-header .brand {
+  font-size: 18px; font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-right: 6px;
+}
+.showcase-header .tabs {
+  display: flex; gap: 32px;
+  flex: 1;
+}
+.showcase-header .tab {
+  background: transparent; border: 0; padding: 4px 0;
+  font-size: 14px;
+  color: var(--ink-faint);
+  position: relative;
+  cursor: pointer;
+  font-family: inherit;
+}
+.showcase-header .tab:hover { color: var(--ink); }
+.showcase-header .tab.active {
+  color: var(--ink);
+}
+.showcase-header .home-link {
+  font-size: 14px;
+  color: var(--ink-faint);
+  border: 0;
+}
+.showcase-header .home-link:hover { color: var(--ink); }
+
+.showcase-stage {
+  flex: 1; width: 100%; border: 0;
+  background: var(--canvas);
+}
+
+/* ---- demo page chrome (controls + canvas) -------------------------------- */
+
+.demo-shell {
+  max-width: 1900px; margin: 0 auto;
+  padding: 32px 32px 60px;
+}
+.demo-meta {
+  margin-bottom: 32px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.demo-meta h1 { font-size: 22px; }
+.demo-meta .links {
+  display: flex; gap: 24px;
+}
+.demo-meta .links a {
+  font-size: 14px;
+  color: var(--ink-faint);
+  border: 0;
+}
+.demo-meta .links a:hover { color: var(--ink); }
+
+.demo-layout {
+  display: grid;
+  gap: 32px;
+}
+.demo-layout.split {
+  grid-template-columns: 280px 1fr;
+}
+
+.controls {
+  font-size: 13px;
+}
+.controls label {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-bottom: 14px;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+.controls label .row {
+  display: flex; gap: 8px; align-items: center;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+.controls label .val {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+.controls input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%; height: 2px;
+  background: var(--rule);
+  outline: none;
+  margin: 6px 0;
+}
+.controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  background: var(--ink);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.controls input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 12px;
+  background: var(--ink);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 0;
+}
+.controls select {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 4px 0;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.controls select:hover { border-bottom-color: var(--ink); }
+.controls .checkboxes {
+  display: flex; gap: 20px;
+}
+.controls .checkboxes label {
+  flex-direction: row; gap: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.controls pre {
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  padding: 4px 0 4px 10px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  margin: 4px 0 0;
+  max-height: 100px; overflow: auto;
+}
+.controls .actions {
+  display: flex; gap: 20px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.stage {
+  background: var(--canvas);
+  overflow: hidden;
+}
+/* !important 用来盖掉 p5 createCanvas 在 canvas 上写的内联 width/height —— 内联 specificity 比 class 高 */
+.stage canvas,
+.stage #canvas-host canvas {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.stats {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* ---- grid panel for 2d-demo style ---------------------------------------- */
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px;
+}
+.panel {
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 16px;
+}
+.panel h2,
+.panel h3 {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+.panel code {
+  display: block;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+  font-size: 11px;
+  word-break: break-word;
+}
+.panel canvas {
+  background: var(--canvas);
+  display: block; width: 100%; height: auto;
+}
+.panel .stats {
+  margin-top: 6px;
+}
+
+/* ---- legend (sand scene) ------------------------------------------------- */
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.legend-swatch {
+  display: inline-block;
+  width: 10px; height: 10px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+}

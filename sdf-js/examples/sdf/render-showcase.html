@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — render</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="showcase-shell">
+      <header class="showcase-header">
+        <a class="brand" href="../index.html">sdf-js</a>
+        <div class="tabs">
+          <button class="tab active" data-src="./cactus.html">silhouette</button>
+          <button class="tab" data-src="./2d.html">bands</button>
+          <button class="tab" data-src="./scenes-sand.html">sand</button>
+          <button class="tab" data-src="./painted-scenes.html">painted</button>
+        </div>
+        <a class="home-link" href="../index.html">index</a>
+      </header>
+      <iframe id="stage" class="showcase-stage" src="./cactus.html"></iframe>
+    </div>
+    <script>
+      const stage = document.getElementById('stage');
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          stage.src = btn.dataset.src;
+        });
+      });
+    </script>
+  </body>
+</html>

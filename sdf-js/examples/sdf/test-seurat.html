@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM test #7: Seurat Les Poseuses</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm test · seurat.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Seventh and final probe — "画 Seurat《Les Poseuses》里中间那个女人体侧立的姿势".
+            The model identified the specific painting and even reproduced its scene-within-scene
+            structure (Seurat's earlier <em>La Grande Jatte</em> hanging on the studio wall).
+            30+ part anatomical decomposition of a standing nude. Pointillism omitted —
+            silhouette renderer doesn't support it.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-tree.html">tree</a>
+          <a href="./test-boat.html">boat</a>
+          <a href="./test-cathedral.html">cathedral</a>
+          <a href="./test-butterfly.html">butterfly</a>
+          <a href="./test-hatman.html">hatman</a>
+          <a href="./test-dance.html">dance</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-seurat.js"></script>
+  </body>
+</html>

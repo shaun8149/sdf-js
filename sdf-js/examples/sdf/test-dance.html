@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM test #6: Matisse dance</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm test · matisse dance.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Sixth LLM × SDF probe — "Matisse 风格的舞者剪影，一群人手牵手围成圆圈跳舞".
+            The model identified the specific painting (Matisse's <em>La Danse</em>, 1909) and
+            replicated its three-colour palette (green hill / terracotta figures / cobalt sky).
+            Five parametric dancers connected by computed arm-chains via <code>atan2</code>.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-tree.html">tree</a>
+          <a href="./test-boat.html">boat</a>
+          <a href="./test-cathedral.html">cathedral</a>
+          <a href="./test-butterfly.html">butterfly</a>
+          <a href="./test-hatman.html">hatman</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-dance.js"></script>
+  </body>
+</html>

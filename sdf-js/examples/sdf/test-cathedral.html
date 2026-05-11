@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM test #3: cathedral</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm test · cathedral.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Third LLM × SDF probe — "画一座哥特式教堂的正立面". 39 primitives, 10 layers.
+            Minor bugs: rose-window ring tracery missing (used <code>union</code> where
+            <code>difference</code> needed), <code>portalArchInner</code> defined but
+            never referenced. Otherwise correct architectural decomposition.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-tree.html">tree</a>
+          <a href="./test-boat.html">boat</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-cathedral.js"></script>
+  </body>
+</html>

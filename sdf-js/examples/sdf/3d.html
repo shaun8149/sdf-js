@@ -3,71 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — primitives + booleans + transforms</title>
-    <style>
-      :root { color-scheme: dark; }
-      body {
-        background: #111;
-        color: #ddd;
-        font: 13px ui-monospace, "SF Mono", monospace;
-        margin: 0;
-        padding: 24px;
-      }
-      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
-      p.meta { color: #888; margin: 0 0 24px; }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
-        max-width: 1200px;
-      }
-      .panel {
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
-        padding: 16px;
-      }
-      .panel h2 {
-        margin: 0 0 8px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #eee;
-      }
-      .panel code {
-        display: block;
-        color: #88c0ff;
-        background: #0e0e0e;
-        padding: 8px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        line-height: 1.5;
-        margin-bottom: 10px;
-        white-space: pre;
-        overflow-x: auto;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        height: auto;
-        image-rendering: pixelated;
-        background: #000;
-        border-radius: 4px;
-      }
-      .stats {
-        margin-top: 8px;
-        color: #666;
-        font-size: 11px;
-      }
-    </style>
+    <title>sdf-js — 3d</title>
+    <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
-    <h1>sdf-js — primitives + booleans + transforms</h1>
-    <p class="meta">
-      纯 JS raymarching，每个面板都用 sdf-js 的链式 API 构造。
-      浏览器单线程，分辨率压到 192×192 一帧。
-      <a href="./2d.html" style="color:#88c0ff">→ 2D demo</a>
-    </p>
-    <div class="grid" id="grid"></div>
+    <div class="page" style="max-width: 1280px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>3d.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Pure-JS raymarching, one chainable SDF expression per panel.
+            Resolution kept at <code>192×192</code> per frame.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./2d.html">2d</a>
+        </div>
+      </div>
+      <div class="panel-grid" id="grid"></div>
+    </div>
     <script type="module" src="./3d-demo.js"></script>
   </body>
 </html>

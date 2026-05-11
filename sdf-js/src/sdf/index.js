@@ -20,7 +20,7 @@ export {
 // 维度无关 ops（auto-dispatch by first arg dimension）
 export {
   union, intersection, difference,
-  negate, dilate, erode, shell,
+  negate, dilate, erode, shell, rep,
 } from './dn.js';
 
 // 命名空间出口

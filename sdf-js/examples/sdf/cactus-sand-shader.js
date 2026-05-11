@@ -81,7 +81,7 @@ const gl = canvas.getContext('webgl', {
   preserveDrawingBuffer: true,
 });
 if (!gl) {
-  stats.textContent = 'WebGL 不可用';
+  stats.textContent = 'WebGL not available';
   throw new Error('no webgl');
 }
 
@@ -170,7 +170,7 @@ document.getElementById('reset').addEventListener('click', () => {
 const pauseBtn = document.getElementById('pause');
 pauseBtn.addEventListener('click', () => {
   paused = !paused;
-  pauseBtn.textContent = paused ? '继续' : '暂停';
+  pauseBtn.textContent = paused ? 'resume' : 'pause';
   if (!paused) rafId = requestAnimationFrame(frame);
 });
 

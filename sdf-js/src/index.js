@@ -28,3 +28,18 @@ export * from './sdf/index.js';
 
 // ca/ 通过命名空间暴露（避免名字污染顶层）
 export * as ca from './ca/index.js';
+
+// render/ —— SDF → pixels 渲染层（与 ca/ 同层平铺）
+export * as render from './render/index.js';
+
+// palette/ —— 调色板与色彩生成（Tyler / BOB pigments / generative 三套）
+export * as palette from './palette/index.js';
+
+// field/ —— 标量/向量场代数（noise / radial / 组合算子）
+export * as field from './field/index.js';
+
+// streamline/ —— field 上的流线追踪（traceThrough / densePack）
+export * as streamline from './streamline/index.js';
+
+// math/ —— 通用数学工具（easing 等）
+export * as math from './math/index.js';

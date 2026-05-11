@@ -3,126 +3,83 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — Apparatus assembly animation</title>
+    <title>sdf-js — ca animate</title>
+    <link rel="stylesheet" href="../style.css" />
     <style>
-      :root { color-scheme: dark; }
-      body {
-        background: #111; color: #ddd;
-        font: 13px ui-monospace, "SF Mono", monospace;
-        margin: 0; padding: 16px;
-      }
-      h2 { margin: 0 0 8px; font-size: 11px; font-weight: 600; color: #aaa;
-           text-transform: uppercase; letter-spacing: 0.06em; }
-      a { color: #88c0ff; text-decoration: none; }
-      .meta { color: #888; margin: 0 auto 16px; max-width: 1200px; line-height: 1.6; }
-      .layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 16px;
-        max-width: 1900px;
-        margin: 0 auto;
-      }
-      canvas {
-        width: 100%; height: auto; max-width: 1500px;
-        image-rendering: pixelated;       /* 防止 CSS 缩放产生亚像素白缝 */
+      .stage canvas {
+        image-rendering: pixelated;
         image-rendering: crisp-edges;
       }
-      .controls, .stage {
-        background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px;
-        padding: 14px;
-      }
-      .stage { background: #eee8e2; padding: 0; overflow: hidden; }
-      .row { margin-bottom: 10px; }
-      label {
-        display: flex; flex-direction: column; gap: 3px;
-        color: #888; font-size: 11px;
-      }
-      .h-row { display: flex; gap: 6px; align-items: center; }
-      select {
-        background: #0e0e0e; color: #ddd; border: 1px solid #444;
-        padding: 4px 8px; border-radius: 4px; font: inherit; font-size: 11px;
-        width: 100%;
-      }
-      input[type="range"] { flex: 1; }
-      button {
-        background: #1a1a1a; border: 1px solid #444; color: #ddd;
-        padding: 6px 12px; border-radius: 4px; cursor: pointer;
-        font: inherit;
-      }
-      button:hover { background: #222; border-color: #88c0ff; }
-      button.primary { border-color: #88c0ff; color: #88c0ff; }
-      canvas { display: block; }
-      .val { color: #ccc; font-variant-numeric: tabular-nums; }
-      .stats { margin-top: 8px; color: #666; font-size: 11px; padding: 0 14px 12px; }
-      .checkboxes { display: flex; gap: 16px; }
-      .checkboxes label { flex-direction: row; gap: 6px; }
     </style>
   </head>
   <body>
-    <p class="meta">
-      <strong>装配动画</strong> —— 跟 kjetil 原版 main.js 同款"散装→拼合"动画。
-      CA 生成形状之后调 <code>caShuffle()</code> 把每个矩形沿邻居方向反复推开
-      累积成 path[]，再倒着播：屏幕上看到的就是从打散状态聚拢成 SDF 形状。
-      <a href="./ca.html" style="float: right">← 静态版</a>
-    </p>
-    <div class="layout">
-      <div class="controls">
-        <h2>形状</h2>
-        <div class="row">
-          <select id="shape">
-            <option value="robot" selected>机器人 robot</option>
-            <option value="ring">环</option>
-            <option value="circle">圆</option>
-            <option value="ellipse">椭圆</option>
-            <option value="hexagon">六边形</option>
-            <option value="figure_eight">8 字</option>
-            <option value="cross">十字</option>
-            <option value="rounded">圆角方</option>
-          </select>
+    <div class="demo-shell">
+      <div class="demo-meta">
+        <div>
+          <h1><em>ca, animate.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            kjetil's scatter-then-assemble animation: <code>caShuffle()</code> pushes
+            each rectangle along neighbour directions and records a path; the path is
+            then played backwards to settle into the SDF.
+          </p>
         </div>
-
-        <h2>动画</h2>
-        <div class="row">
-          <label>
-            <span class="h-row">总帧数 frames <span class="val" id="fv">200</span></span>
-            <input id="frames" type="range" min="60" max="400" step="10" value="200" />
-          </label>
-        </div>
-        <div class="row">
-          <label>
-            <span class="h-row">运动延续度 <span class="val" id="mv">0.82</span></span>
-            <input id="movement" type="range" min="0.5" max="0.99" step="0.01" value="0.82" />
-          </label>
-        </div>
-        <div class="row checkboxes">
-          <label><input id="symmetric" type="checkbox" checked /> 对称运动</label>
-        </div>
-
-        <h2>CA 参数</h2>
-        <div class="row">
-          <label>
-            <span class="h-row">网格密度 <span class="val" id="gv">288</span></span>
-            <input id="gridDim" type="range" min="60" max="320" step="4" value="288" />
-          </label>
-        </div>
-        <div class="row">
-          <label>
-            <span class="h-row">硬度 roundness <span class="val" id="rv">0.00</span></span>
-            <input id="roundness" type="range" min="0" max="1" step="0.01" value="0" />
-          </label>
-        </div>
-
-        <div class="row" style="display: flex; gap: 6px; margin-top: 14px;">
-          <button id="rebuild" class="primary">重新生成</button>
-          <button id="pause">暂停</button>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./ca.html">static</a>
         </div>
       </div>
 
-      <div>
-        <div class="stage">
-          <canvas id="c" width="1500" height="1500"></canvas>
+      <div class="demo-layout split" style="grid-template-columns: 320px 1fr;">
+        <div class="controls">
+          <h2>shape</h2>
+          <label style="margin-bottom: 14px;">
+            <select id="shape">
+              <option value="robot" selected>robot</option>
+              <option value="ring">ring</option>
+              <option value="circle">circle</option>
+              <option value="ellipse">ellipse</option>
+              <option value="hexagon">hexagon</option>
+              <option value="figure_eight">figure 8</option>
+              <option value="cross">cross</option>
+              <option value="rounded">rounded square</option>
+            </select>
+          </label>
+
+          <h2>animation</h2>
+          <label>
+            <span class="row">frames <span class="val" id="fv">200</span></span>
+            <input id="frames" type="range" min="60" max="400" step="10" value="200" />
+          </label>
+          <label>
+            <span class="row">movement length <span class="val" id="mv">0.82</span></span>
+            <input id="movement" type="range" min="0.5" max="0.99" step="0.01" value="0.82" />
+          </label>
+          <div class="checkboxes">
+            <label><input id="symmetric" type="checkbox" checked /> symmetric motion</label>
+          </div>
+
+          <h2>ca parameters</h2>
+          <label>
+            <span class="row">grid dim <span class="val" id="gv">288</span></span>
+            <input id="gridDim" type="range" min="60" max="320" step="4" value="288" />
+          </label>
+          <label>
+            <span class="row">roundness <span class="val" id="rv">0.00</span></span>
+            <input id="roundness" type="range" min="0" max="1" step="0.01" value="0" />
+          </label>
+
+          <div class="actions">
+            <button id="rebuild">regenerate</button>
+            <button id="pause">pause</button>
+          </div>
         </div>
-        <div class="stats" id="stats">building…</div>
+
+        <div>
+          <div class="stage">
+            <canvas id="c" width="1500" height="1500"></canvas>
+          </div>
+          <div class="stats" id="stats" style="padding: 12px 0;">building…</div>
+        </div>
       </div>
     </div>
     <script type="module" src="./ca-animate.js"></script>

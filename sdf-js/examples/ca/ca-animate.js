@@ -105,7 +105,7 @@ function frame() {
 
   if (tick >= totalFrames - 1) {
     // 装配完成 —— 停在最终帧，等用户点"重新生成"
-    els.stats.textContent = `${rects.length} rects · 完成`;
+    els.stats.textContent = `${rects.length} rects · done`;
     return;
   }
 
@@ -135,7 +135,7 @@ els.rebuild.addEventListener('click', regenerate);
 
 els.pause.addEventListener('click', () => {
   paused = !paused;
-  els.pause.textContent = paused ? '继续' : '暂停';
+  els.pause.textContent = paused ? 'resume' : 'pause';
   if (!paused) rafId = requestAnimationFrame(frame);
 });
 

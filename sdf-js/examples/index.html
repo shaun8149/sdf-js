@@ -3,84 +3,108 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — examples</title>
-    <style>
-      :root { color-scheme: dark; }
-      body {
-        background: #111; color: #ddd;
-        font: 13px ui-monospace, "SF Mono", monospace;
-        margin: 0; padding: 32px;
-      }
-      .wrap { max-width: 880px; margin: 0 auto; }
-      h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
-      .tagline { color: #888; margin: 0 0 32px; line-height: 1.6; }
-      h2 {
-        font-size: 11px; font-weight: 600; color: #aaa;
-        text-transform: uppercase; letter-spacing: 0.08em;
-        margin: 32px 0 4px;
-      }
-      .layer-note { color: #666; margin: 0 0 14px; font-size: 12px; line-height: 1.5; }
-      ul { list-style: none; padding: 0; margin: 0; }
-      li {
-        padding: 10px 14px;
-        border: 1px solid #2a2a2a;
-        border-radius: 4px;
-        margin-bottom: 6px;
-        display: flex; align-items: baseline; gap: 12px;
-      }
-      li:hover { border-color: #88c0ff; background: #1a1a1a; }
-      a { color: #88c0ff; text-decoration: none; font-weight: 500; }
-      a:hover { text-decoration: underline; }
-      .desc { color: #888; font-size: 12px; flex: 1; }
-      .strong-pick { color: #ffd070; }
-      code { color: #c8c8c8; background: #1a1a1a; padding: 1px 5px; border-radius: 3px; }
-    </style>
+    <title>sdf-js</title>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="wrap">
-      <h1>sdf-js — examples</h1>
+    <div class="page">
+      <nav class="topnav">
+        <a class="brand" href="./index.html">sdf-js</a>
+        <a href="https://github.com/shaun8149/sdf-js" target="_blank">source</a>
+      </nav>
+
+      <h1><em>Composable</em> signed distance functions.</h1>
       <p class="tagline">
-        分两层：底层 <code>sdf/</code> = 形状本身（primitives + ops + 链式 API），
-        上层 <code>ca/</code> = 基于 SDF 的离散结构生成器（form × generator 解耦）。
+        A JavaScript port and extension of <a href="https://github.com/fogleman/sdf">fogleman/sdf</a>.
+        Form, generator, render — orthogonal layers meeting through
+        <code>(x, y) → number</code>. SDF is one such field; Perlin noise and proto field are siblings.
       </p>
 
-      <h2>sdf/ — 形状层</h2>
+      <h2>Form</h2>
       <p class="layer-note">
-        SDF primitives、布尔、变换、shader 编译，以及在它们之上的渲染展示。
+        SDF primitives, booleans, transforms; the algebra everything else consumes.
+        Sibling field families live in <code>field/</code> (Perlin noise, proto, combinators).
       </p>
-      <ul>
-        <li><a href="./sdf/2d.html">2d.html</a>
-            <span class="desc">2D 距离场可视化（蓝/红色带 + 边界等值线），所有 2D 原语在场</span></li>
-        <li><a href="./sdf/3d.html">3d.html</a>
-            <span class="desc">3D raymarching 网格，纯 JS 单线程，每个面板一个链式表达式</span></li>
-        <li><a href="./sdf/editor.html">editor.html</a>
-            <span class="desc"><span class="strong-pick">SDF 编辑器</span> — 拖参数实时看图，输出 import 代码</span></li>
-        <li><a href="./sdf/cactus.html">cactus.html</a>
-            <span class="desc">BOB 仙人掌场景 — 像素剪影版（JS）</span></li>
-        <li><a href="./sdf/cactus-painted.html">cactus-painted.html</a>
-            <span class="desc">同场景的笔触版（p5，BOB 风格点画）</span></li>
-        <li><a href="./sdf/cactus-shader.html">cactus-shader.html</a>
-            <span class="desc">同场景的 fragment shader 版（更快更高清）</span></li>
-        <li><a href="./sdf/cactus-sand-shader.html">cactus-sand-shader.html</a>
-            <span class="desc">仙人掌沙画版（shader）</span></li>
-        <li><a href="./sdf/painted-scenes.html">painted-scenes.html</a>
-            <span class="desc"><span class="strong-pick">BOB 6 个场景随机笔触版</span></span></li>
-        <li><a href="./sdf/scenes-debug.html">scenes-debug.html</a>
-            <span class="desc">所有场景的 silhouette debug 视图</span></li>
-        <li><a href="./sdf/scenes-sand.html">scenes-sand.html</a>
-            <span class="desc">所有场景的沙画版（含鸟）</span></li>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./sdf/render-showcase.html">render-showcase</a></span>
+          <span class="desc">Four renderers — silhouette, bands, sand, painted — over the same SDFs.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/2d.html">2d</a></span>
+          <span class="desc">Distance-field visualisation: blue inside, red outside, periodic bands, zero-isoline.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/3d.html">3d</a></span>
+          <span class="desc">Pure-JS raymarching grid; one chainable expression per panel.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/editor.html">editor</a></span>
+          <span class="desc">Live SDF editor: sliders, instant render, importable code output.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/cactus.html">cactus</a></span>
+          <span class="desc">BOB scene 1, silhouette rendering with smoothstep antialiasing.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/painted-scenes.html">painted-scenes</a></span>
+          <span class="desc">Six BOB scenes rendered as gridded brushstrokes (Tyler Hobbs / kjetil-style).</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/scenes-sand.html">scenes-sand</a></span>
+          <span class="desc">Same scenes as sand-painting: cumulative random sampling, three-tier colouring.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/scenes-debug.html">scenes-debug</a></span>
+          <span class="desc">Silhouette debug view across all scenes; useful when authoring new SDFs.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/cactus-shader.html">cactus-shader</a></span>
+          <span class="desc">The cactus scene as a fragment shader — same SDF, GLSL compilation path.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/cactus-sand-shader.html">cactus-sand-shader</a></span>
+          <span class="desc">Sand-painting style implemented entirely in a shader.</span>
+        </li>
       </ul>
 
-      <h2>ca/ — 元胞自动机层</h2>
+      <h2>Generator</h2>
       <p class="layer-note">
-        kjetil golid ApparatusGenerator 的端口，把 SDF 当作 <code>isInside</code>
-        谓词消费 — 任何形状都能生成同款拼合纹理。SDF × discrete generator 矩阵的第一格。
+        Discrete structure generators that consume an SDF as an <code>isInside</code> predicate.
       </p>
-      <ul>
-        <li><a href="./ca/ca.html">ca.html</a>
-            <span class="desc"><span class="strong-pick">SDF + CA（机器人填充）</span> — 静态版，参数面板齐全</span></li>
-        <li><a href="./ca/ca-animate.html">ca-animate.html</a>
-            <span class="desc">同款机器人的 scatter → assemble 装配动画</span></li>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./ca/ca.html">ca</a></span>
+          <span class="desc">Cellular automaton (kjetil golid's Apparatus) running on any SDF; static.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./ca/ca-animate.html">ca-animate</a></span>
+          <span class="desc">Scatter-then-assemble animation of the same CA grid.</span>
+        </li>
+      </ul>
+
+      <h2>Flow</h2>
+      <p class="layer-note">
+        Streamline generators on scalar/vector fields. <code>field</code> as the form layer,
+        <code>streamline</code> as the path generator, <code>render.flowLines</code> as the renderer.
+      </p>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./flow/noise-curves.html">noise-curves</a></span>
+          <span class="desc">Perlin noise flow field + dense-packed streamlines. Phase A minimum pipeline.</span>
+        </li>
+      </ul>
+
+      <h2>Tile</h2>
+      <p class="layer-note">
+        Halftone / plotter paradigm: regular grid, each cell drawn from field samples.
+        Lineage of Harvey Rayner, Vera Molnar.
+      </p>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./tile/alice.html">alice</a></span>
+          <span class="desc">Proto field × line-clipped tile fill × generative palette. Stereographic-projection oscillation.</span>
+        </li>
       </ul>
     </div>
   </body>

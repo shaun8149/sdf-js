@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — alice</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="demo-shell">
+      <div class="demo-meta">
+        <div>
+          <h1><em>alice.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Proto field × Cohen-Sutherland line tile × generative palette.
+            A second visual paradigm: regular grid, each cell line-filled with angle
+            and density driven by the field at that cell. Harvey Rayner lineage.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+        </div>
+      </div>
+
+      <div class="stage" style="max-width: 900px; margin: 0 auto;">
+        <canvas id="c" width="1200" height="1200"></canvas>
+      </div>
+      <div class="stats" id="params" style="padding: 12px 0; text-align: center;">rendering…</div>
+
+      <div class="actions" style="display: flex; gap: 24px; justify-content: center;">
+        <button id="regen">regenerate</button>
+        <button id="save">save png</button>
+      </div>
+    </div>
+    <script type="module" src="./alice.js"></script>
+  </body>
+</html>

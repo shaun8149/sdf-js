@@ -3,57 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — BOB cactus scene (JS render)</title>
-    <style>
-      :root { color-scheme: dark; }
-      body {
-        background: #111;
-        color: #ddd;
-        font: 13px ui-monospace, "SF Mono", monospace;
-        margin: 0;
-        padding: 24px;
-      }
-      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
-      p.meta {
-        color: #888;
-        margin: 0 0 24px;
-        max-width: 760px;
-        line-height: 1.6;
-      }
-      a { color: #88c0ff; text-decoration: none; }
-      .stage {
-        background: #0a0a0a;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
-        padding: 16px;
-        max-width: 720px;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        height: auto;
-        background: #000;
-        border-radius: 4px;
-        image-rendering: pixelated;
-      }
-      .stats { margin-top: 8px; color: #666; font-size: 11px; }
-    </style>
+    <title>sdf-js — silhouette</title>
+    <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
-    <h1>BOB scene 1 — JS 渲染版</h1>
-    <p class="meta">
-      用新 sdf-js 重写了 BOB 的 scene 1：仙人掌、月牙、地平线、十字门。
-      每个形状在 sdf-js 链式 API 里就是一个表达式，不再有 <code style="color:#aaa">p.slice()</code>
-      和 <code style="color:#aaa">trans2(n, sub2(p, ...))</code> 散装算式。<br>
-      JS 单线程像素遍历，512×512。
-      <a href="./2d.html">← 2D demo</a>
-      &nbsp;·&nbsp;
-      <a href="./cactus-painted.html">→ 同场景的笔触版（BOB 风格）</a>
-      &nbsp;·&nbsp;
-      <a href="./cactus-shader.html">→ 同场景的 shader 版（更快更高清）</a>
-    </p>
-    <div class="stage">
-      <canvas id="c" width="512" height="512"></canvas>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>silhouette.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            BOB scene 1 — cactus, moon, ground, gate.
+            Per-pixel SDF evaluation, layered alpha with smoothstep antialiasing.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./render-showcase.html">showcase</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
       <div class="stats" id="stats">rendering…</div>
     </div>
     <script type="module" src="./cactus.js"></script>

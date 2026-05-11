@@ -3,133 +3,174 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — SDF editor</title>
+    <title>sdf-js — editor</title>
+    <link rel="stylesheet" href="../style.css" />
     <style>
-      :root { color-scheme: dark; }
-      body {
-        background: #111;
-        color: #ddd;
-        font: 13px ui-monospace, "SF Mono", monospace;
-        margin: 0;
-        padding: 16px;
-      }
-      h1 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
-      h2, h3 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
-      a { color: #88c0ff; text-decoration: none; }
-      .layout {
+      .editor-shell { max-width: 1180px; margin: 0 auto; padding: 32px; }
+      .editor-layout {
         display: grid;
         grid-template-columns: 380px 1fr;
-        gap: 16px;
-        max-width: 1100px;
-        margin: 0 auto;
+        gap: 32px;
+        align-items: start;
       }
-      .editor, .preview {
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
-        padding: 14px;
+      .editor-pane {
+        background: var(--bg-deep);
+        border: 1px solid var(--rule-soft);
+        padding: 20px;
       }
-      .preview { background: #0a0a0a; }
-      .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-      button {
-        background: #1a1a1a;
-        border: 1px solid #444;
-        color: #ddd;
-        padding: 5px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        font: inherit;
-        font-size: 11px;
+      .preview-pane {
+        background: var(--canvas);
+        padding: 16px;
       }
-      button:hover { background: #222; border-color: #88c0ff; }
-      button.primary { border-color: #88c0ff; color: #88c0ff; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
       .layer {
-        background: #0e0e0e;
-        border: 1px solid #2a2a2a;
-        border-radius: 4px;
-        padding: 10px;
-        margin-bottom: 8px;
+        background: var(--bg);
+        border: 1px solid var(--rule-soft);
+        padding: 14px 16px;
+        margin-bottom: 12px;
       }
       .layer header {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 6px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--rule-soft);
       }
-      .layer .type { font-weight: 600; color: #88c0ff; font-size: 12px; }
-      .layer .del { font-size: 14px; padding: 2px 6px; border-color: #533; }
-      .layer .del:hover { border-color: #f55; color: #f55; }
-      .op-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+      .layer .type {
+        font-size: 14px;
+        color: var(--ink);
+      }
+      .layer .del {
+        background: transparent;
+        border: 0;
+        color: var(--ink-faint);
+        font-size: 18px;
+        padding: 0 4px;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .layer .del:hover { color: var(--accent); }
+      .op-row {
+        display: flex; gap: 12px; align-items: center;
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
       .op-row select {
-        background: #0e0e0e; color: #ddd; border: 1px solid #444;
-        padding: 3px 6px; border-radius: 4px; font: inherit; font-size: 11px;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--rule);
+        color: var(--ink);
+        padding: 2px 0;
+        font: inherit; font-size: 12px;
       }
-      .op-row .k-row { flex: 1; display: flex; gap: 6px; align-items: center; color: #888; font-size: 11px; }
-      .op-row input[type="range"] { flex: 1; }
+      .op-row .k-row {
+        flex: 1; display: flex; gap: 8px; align-items: center;
+        color: var(--ink-faint);
+        font-size: 12px;
+      }
+      .op-row .k-row .k-val {
+        color: var(--ink); font-variant-numeric: tabular-nums;
+        font-size: 12px;
+      }
+      .op-row input[type="range"] {
+        flex: 1; height: 2px;
+        -webkit-appearance: none; appearance: none;
+        background: var(--rule);
+      }
+      .op-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 10px; height: 10px;
+        background: var(--ink);
+        border-radius: 50%;
+      }
       .params {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 4px 8px;
+        gap: 6px 14px;
       }
       .params label {
-        display: flex; align-items: center; gap: 6px;
-        color: #888; font-size: 11px;
+        display: flex; align-items: center; gap: 10px;
+        color: var(--ink-faint);
+        font-size: 12px;
       }
       .params input {
         flex: 1; min-width: 0;
-        background: #0e0e0e; color: #ddd; border: 1px solid #333;
-        padding: 3px 6px; border-radius: 3px; font: inherit; font-size: 11px;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--rule);
+        color: var(--ink);
+        padding: 3px 0;
+        font: inherit; font-size: 12px;
+        font-variant-numeric: tabular-nums;
       }
-      .params input:focus { outline: none; border-color: #88c0ff; }
+      .params input:focus {
+        outline: none; border-bottom-color: var(--ink);
+      }
       textarea#code {
         width: 100%; box-sizing: border-box;
-        background: #0e0e0e; color: #88c0ff; border: 1px solid #333;
-        padding: 8px; border-radius: 4px;
+        background: var(--bg);
+        border: 1px solid var(--rule-soft);
+        color: var(--accent);
+        padding: 12px 14px;
         font: 11px ui-monospace, monospace;
+        line-height: 1.6;
         resize: vertical;
-        min-height: 100px;
+        min-height: 120px;
+        margin-top: 4px;
       }
-      canvas { display: block; border-radius: 4px; }
-      .preview-controls { margin-top: 8px; display: flex; gap: 6px; }
-      .stats { color: #666; font-size: 11px; margin-top: 6px; }
-      .meta { color: #888; margin-bottom: 12px; font-size: 11px; max-width: 1100px; margin: 0 auto 12px; }
+      .code-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 24px;
+      }
+      #canvas-host canvas { display: block; }
     </style>
   </head>
   <body>
-    <p class="meta">
-      <strong>sdf-js editor</strong> — 左侧加形状/调参/选布尔运算，右侧沙画实时预览，
-      底部生成的 JS 代码可一键复制到任意 sketch 里直接用。
-      <a href="./2d.html" style="float: right">← 2D demo 入口</a>
-    </p>
-    <div class="layout">
-      <div class="editor">
-        <h2>添加形状</h2>
-        <div class="toolbar" id="toolbar">
-          <button data-add="circle">+ 圆 circle</button>
-          <button data-add="rectangle">+ 矩形 rect</button>
-          <button data-add="rounded_rectangle">+ 圆角矩形</button>
-          <button data-add="hexagon">+ 六边形</button>
-          <button data-add="equilateral_triangle">+ 等边三角</button>
+    <div class="editor-shell">
+      <div class="demo-meta">
+        <div>
+          <h1><em>editor.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Compose SDF layers, tune parameters, see the sand-painting preview in real time,
+            copy the generated <code>sdf-js</code> code into any sketch.
+          </p>
         </div>
-
-        <h2 style="margin-top: 14px">图层（自上而下顺序运算）</h2>
-        <div id="layers"></div>
-
-        <h2 style="margin-top: 14px">JS 代码</h2>
-        <textarea id="code" readonly></textarea>
-        <div style="margin-top: 6px; display: flex; gap: 6px;">
-          <button id="copy" class="primary">复制到剪贴板</button>
-          <button id="reset">清空所有图层</button>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./2d.html">2d</a>
         </div>
       </div>
+      <div class="editor-layout">
+        <div class="editor-pane">
+          <h2>add shape</h2>
+          <div class="toolbar" id="toolbar">
+            <button data-add="circle">+ circle</button>
+            <button data-add="rectangle">+ rectangle</button>
+            <button data-add="rounded_rectangle">+ rounded</button>
+            <button data-add="hexagon">+ hexagon</button>
+            <button data-add="equilateral_triangle">+ triangle</button>
+          </div>
 
-      <div class="preview">
-        <div id="canvas-host"></div>
-        <div class="preview-controls">
-          <button id="clear">清空画布重画</button>
+          <h2>layers <span style="color:var(--ink-faint); font-weight:400; text-transform:none; letter-spacing:0;">— top to bottom</span></h2>
+          <div id="layers"></div>
+
+          <h2>generated code</h2>
+          <textarea id="code" readonly></textarea>
+          <div class="code-actions">
+            <button id="copy">copy</button>
+            <button id="reset">clear all</button>
+          </div>
         </div>
-        <div class="stats" id="stats">沙画绘制中…</div>
+
+        <div class="preview-pane">
+          <div id="canvas-host"></div>
+          <div class="actions" style="margin-top: 14px; display: flex; gap: 24px;">
+            <button id="clear">clear canvas</button>
+          </div>
+          <div class="stats" id="stats" style="margin-top: 10px;">painting…</div>
+        </div>
       </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
     <script type="module" src="./editor.js"></script>
   </body>
