@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — SDF editor</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0;
+        padding: 16px;
+      }
+      h1 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+      h2, h3 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+      a { color: #88c0ff; text-decoration: none; }
+      .layout {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 16px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .editor, .preview {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 14px;
+      }
+      .preview { background: #0a0a0a; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+      button {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #ddd;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 11px;
+      }
+      button:hover { background: #222; border-color: #88c0ff; }
+      button.primary { border-color: #88c0ff; color: #88c0ff; }
+      .layer {
+        background: #0e0e0e;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      .layer header {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 6px;
+      }
+      .layer .type { font-weight: 600; color: #88c0ff; font-size: 12px; }
+      .layer .del { font-size: 14px; padding: 2px 6px; border-color: #533; }
+      .layer .del:hover { border-color: #f55; color: #f55; }
+      .op-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+      .op-row select {
+        background: #0e0e0e; color: #ddd; border: 1px solid #444;
+        padding: 3px 6px; border-radius: 4px; font: inherit; font-size: 11px;
+      }
+      .op-row .k-row { flex: 1; display: flex; gap: 6px; align-items: center; color: #888; font-size: 11px; }
+      .op-row input[type="range"] { flex: 1; }
+      .params {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 8px;
+      }
+      .params label {
+        display: flex; align-items: center; gap: 6px;
+        color: #888; font-size: 11px;
+      }
+      .params input {
+        flex: 1; min-width: 0;
+        background: #0e0e0e; color: #ddd; border: 1px solid #333;
+        padding: 3px 6px; border-radius: 3px; font: inherit; font-size: 11px;
+      }
+      .params input:focus { outline: none; border-color: #88c0ff; }
+      textarea#code {
+        width: 100%; box-sizing: border-box;
+        background: #0e0e0e; color: #88c0ff; border: 1px solid #333;
+        padding: 8px; border-radius: 4px;
+        font: 11px ui-monospace, monospace;
+        resize: vertical;
+        min-height: 100px;
+      }
+      canvas { display: block; border-radius: 4px; }
+      .preview-controls { margin-top: 8px; display: flex; gap: 6px; }
+      .stats { color: #666; font-size: 11px; margin-top: 6px; }
+      .meta { color: #888; margin-bottom: 12px; font-size: 11px; max-width: 1100px; margin: 0 auto 12px; }
+    </style>
+  </head>
+  <body>
+    <p class="meta">
+      <strong>sdf-js editor</strong> — 左侧加形状/调参/选布尔运算，右侧沙画实时预览，
+      底部生成的 JS 代码可一键复制到任意 sketch 里直接用。
+      <a href="./2d.html" style="float: right">← 2D demo 入口</a>
+    </p>
+    <div class="layout">
+      <div class="editor">
+        <h2>添加形状</h2>
+        <div class="toolbar" id="toolbar">
+          <button data-add="circle">+ 圆 circle</button>
+          <button data-add="rectangle">+ 矩形 rect</button>
+          <button data-add="rounded_rectangle">+ 圆角矩形</button>
+          <button data-add="hexagon">+ 六边形</button>
+          <button data-add="equilateral_triangle">+ 等边三角</button>
+        </div>
+
+        <h2 style="margin-top: 14px">图层（自上而下顺序运算）</h2>
+        <div id="layers"></div>
+
+        <h2 style="margin-top: 14px">JS 代码</h2>
+        <textarea id="code" readonly></textarea>
+        <div style="margin-top: 6px; display: flex; gap: 6px;">
+          <button id="copy" class="primary">复制到剪贴板</button>
+          <button id="reset">清空所有图层</button>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div id="canvas-host"></div>
+        <div class="preview-controls">
+          <button id="clear">清空画布重画</button>
+        </div>
+        <div class="stats" id="stats">沙画绘制中…</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+    <script type="module" src="./editor.js"></script>
+  </body>
+</html>

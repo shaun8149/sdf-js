@@ -1,0 +1,13 @@
+# Python
+**/__pycache__/
+*.pyc
+**/*.egg-info/
+
+# JS
+node_modules/
+
+# OS
+.DS_Store
+
+# 产物
+*.stl

@@ -1,0 +1,11 @@
+{
+  "name": "sdf-js",
+  "version": "0.0.1",
+  "description": "JavaScript port of fogleman/sdf — chainable signed distance functions.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}

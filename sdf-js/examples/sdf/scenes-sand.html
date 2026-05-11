@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — sand-painting test</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0 auto;
+        padding: 24px;
+        max-width: 800px;
+      }
+      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      p.meta { color: #888; margin: 0 0 24px; line-height: 1.6; }
+      a { color: #88c0ff; text-decoration: none; }
+      .stage {
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 16px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      canvas { display: block; border-radius: 4px; }
+      .stats { margin-top: 8px; color: #666; font-size: 11px; }
+      button {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #ddd;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font: inherit;
+      }
+      button:hover { background: #222; border-color: #88c0ff; }
+      .legend {
+        margin-top: 8px; font-size: 11px; color: #888; line-height: 1.6;
+      }
+      .legend-swatch {
+        display: inline-block; width: 12px; height: 12px;
+        vertical-align: middle; border-radius: 2px;
+        margin-right: 4px; border: 1px solid #444;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BOB scenes 1–7 — 沙画风格测试</h1>
+    <p class="meta">
+      每帧 1000 个随机点，按 SDF 距离上色：<strong>橙</strong>=外部、
+      <strong>白</strong>=边界附近、<strong>彩色</strong>=对应图层内部。
+      点持续累加（不清屏），形状会逐渐从噪点中浮现。<br>
+      场景 1–6 是 BOB 原版 2D 场景；<strong>场景 7 是低多边形鸟</strong>（用户提供的 14 个三角 union）。<br>
+      <a href="./scenes-debug.html">silhouette debug</a> &nbsp;·&nbsp;
+      <a href="./painted-scenes.html">painted 笔触版</a>
+    </p>
+    <div class="stage">
+      <div id="canvas-host"></div>
+      <div class="stats" id="stats">sand painting…</div>
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        <button data-scene="1">1 仙人掌</button>
+        <button data-scene="2">2 花树+船</button>
+        <button data-scene="3">3 拱桥</button>
+        <button data-scene="4">4 建筑(远)</button>
+        <button data-scene="5">5 建筑(近)</button>
+        <button data-scene="6">6 砖墙</button>
+        <button data-scene="7" style="border-color:#0a8;">7 鸟</button>
+        <button id="re" style="margin-left:auto; border-color:#88c0ff;">随机刷新</button>
+        <button id="clear">清空重画</button>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+    <script type="module" src="./scenes-sand.js"></script>
+  </body>
+</html>

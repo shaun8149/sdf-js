@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — cactus sand-painting (shader)</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0 auto;
+        padding: 24px;
+        max-width: 800px;
+      }
+      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      p.meta { color: #888; margin: 0 0 24px; line-height: 1.6; }
+      a { color: #88c0ff; text-decoration: none; }
+      .stage {
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 16px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      canvas { display: block; border-radius: 4px; }
+      .stats { margin-top: 8px; color: #666; font-size: 11px; }
+      button {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #ddd;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font: inherit;
+      }
+      button:hover { background: #222; border-color: #88c0ff; }
+      .controls {
+        margin-top: 8px; display: flex; gap: 8px; align-items: center;
+      }
+      label { color: #888; font-size: 11px; }
+      input[type="range"] { vertical-align: middle; }
+    </style>
+  </head>
+  <body>
+    <h1>仙人掌沙画 (shader 版)</h1>
+    <p class="meta">
+      用 fragment shader 实现沙画累积效果：每帧每个 pixel 通过 hash 抽签，
+      只有抽中的像素被 SDF 颜色覆盖，其它 pixel <code style="color:#aaa">discard</code> →
+      借助 <code style="color:#aaa">preserveDrawingBuffer</code> 保留前帧的画面。<br>
+      JS 版的"每帧 1000 个随机点"在这里变成"每帧每个 pixel 有 X% 概率被画"。
+      <a href="./scenes-sand.html">← JS 多场景沙画</a>
+      &nbsp;·&nbsp;
+      <a href="./cactus-shader.html">cactus 标准 shader 版</a>
+    </p>
+    <div class="stage">
+      <canvas id="c" width="720" height="720"></canvas>
+      <div class="stats" id="stats">grain rate · frames painted</div>
+      <div class="controls">
+        <button id="reset">清空重画</button>
+        <button id="pause">暂停</button>
+        <label>
+          每帧覆盖率
+          <input id="rate" type="range" min="0.001" max="0.05" step="0.001" value="0.005" />
+          <span id="rate-val">0.5%</span>
+        </label>
+      </div>
+    </div>
+    <script type="module" src="./cactus-sand-shader.js"></script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — examples</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111; color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0; padding: 32px;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; }
+      h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+      .tagline { color: #888; margin: 0 0 32px; line-height: 1.6; }
+      h2 {
+        font-size: 11px; font-weight: 600; color: #aaa;
+        text-transform: uppercase; letter-spacing: 0.08em;
+        margin: 32px 0 4px;
+      }
+      .layer-note { color: #666; margin: 0 0 14px; font-size: 12px; line-height: 1.5; }
+      ul { list-style: none; padding: 0; margin: 0; }
+      li {
+        padding: 10px 14px;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+        margin-bottom: 6px;
+        display: flex; align-items: baseline; gap: 12px;
+      }
+      li:hover { border-color: #88c0ff; background: #1a1a1a; }
+      a { color: #88c0ff; text-decoration: none; font-weight: 500; }
+      a:hover { text-decoration: underline; }
+      .desc { color: #888; font-size: 12px; flex: 1; }
+      .strong-pick { color: #ffd070; }
+      code { color: #c8c8c8; background: #1a1a1a; padding: 1px 5px; border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>sdf-js — examples</h1>
+      <p class="tagline">
+        分两层：底层 <code>sdf/</code> = 形状本身（primitives + ops + 链式 API），
+        上层 <code>ca/</code> = 基于 SDF 的离散结构生成器（form × generator 解耦）。
+      </p>
+
+      <h2>sdf/ — 形状层</h2>
+      <p class="layer-note">
+        SDF primitives、布尔、变换、shader 编译，以及在它们之上的渲染展示。
+      </p>
+      <ul>
+        <li><a href="./sdf/2d.html">2d.html</a>
+            <span class="desc">2D 距离场可视化（蓝/红色带 + 边界等值线），所有 2D 原语在场</span></li>
+        <li><a href="./sdf/3d.html">3d.html</a>
+            <span class="desc">3D raymarching 网格，纯 JS 单线程，每个面板一个链式表达式</span></li>
+        <li><a href="./sdf/editor.html">editor.html</a>
+            <span class="desc"><span class="strong-pick">SDF 编辑器</span> — 拖参数实时看图，输出 import 代码</span></li>
+        <li><a href="./sdf/cactus.html">cactus.html</a>
+            <span class="desc">BOB 仙人掌场景 — 像素剪影版（JS）</span></li>
+        <li><a href="./sdf/cactus-painted.html">cactus-painted.html</a>
+            <span class="desc">同场景的笔触版（p5，BOB 风格点画）</span></li>
+        <li><a href="./sdf/cactus-shader.html">cactus-shader.html</a>
+            <span class="desc">同场景的 fragment shader 版（更快更高清）</span></li>
+        <li><a href="./sdf/cactus-sand-shader.html">cactus-sand-shader.html</a>
+            <span class="desc">仙人掌沙画版（shader）</span></li>
+        <li><a href="./sdf/painted-scenes.html">painted-scenes.html</a>
+            <span class="desc"><span class="strong-pick">BOB 6 个场景随机笔触版</span></span></li>
+        <li><a href="./sdf/scenes-debug.html">scenes-debug.html</a>
+            <span class="desc">所有场景的 silhouette debug 视图</span></li>
+        <li><a href="./sdf/scenes-sand.html">scenes-sand.html</a>
+            <span class="desc">所有场景的沙画版（含鸟）</span></li>
+      </ul>
+
+      <h2>ca/ — 元胞自动机层</h2>
+      <p class="layer-note">
+        kjetil golid ApparatusGenerator 的端口，把 SDF 当作 <code>isInside</code>
+        谓词消费 — 任何形状都能生成同款拼合纹理。SDF × discrete generator 矩阵的第一格。
+      </p>
+      <ul>
+        <li><a href="./ca/ca.html">ca.html</a>
+            <span class="desc"><span class="strong-pick">SDF + CA（机器人填充）</span> — 静态版，参数面板齐全</span></li>
+        <li><a href="./ca/ca-animate.html">ca-animate.html</a>
+            <span class="desc">同款机器人的 scatter → assemble 装配动画</span></li>
+      </ul>
+    </div>
+  </body>
+</html>

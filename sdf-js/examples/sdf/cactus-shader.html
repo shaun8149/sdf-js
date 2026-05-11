@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — BOB cactus scene (shader render)</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0;
+        padding: 24px;
+      }
+      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      p.meta {
+        color: #888;
+        margin: 0 0 24px;
+        max-width: 760px;
+        line-height: 1.6;
+      }
+      a { color: #88c0ff; text-decoration: none; }
+      .stage {
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 16px;
+        max-width: 1024px;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #000;
+        border-radius: 4px;
+      }
+      .stats { margin-top: 8px; color: #666; font-size: 11px; }
+      details { margin-top: 16px; max-width: 1024px; }
+      details > summary {
+        cursor: pointer;
+        color: #888;
+        margin-bottom: 8px;
+      }
+      pre {
+        background: #0e0e0e;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+        padding: 12px;
+        font-size: 11px;
+        overflow-x: auto;
+        max-height: 360px;
+        margin: 0;
+      }
+      code { color: #88c0ff; }
+    </style>
+  </head>
+  <body>
+    <h1>BOB scene 1 — shader 渲染版</h1>
+    <p class="meta">
+      同一个仙人掌场景，但 SDF 求值跑在 GPU 的 fragment shader 里。
+      库代码（src/sdf2.glsl.js）镜像了 d2.js 的每个函数；这里组合出 cactus / moon / ground / gate 的合成场景。<br>
+      渲染：1024×1024 全分辨率 single pass，&lt;5ms 一帧。
+      <a href="./cactus.html">← 同场景的 JS 版（对照参考）</a>
+      &nbsp;·&nbsp;
+      <a href="./2d.html">2D demo</a>
+    </p>
+    <div class="stage">
+      <canvas id="c" width="1024" height="1024"></canvas>
+      <div class="stats" id="stats">compiling shader…</div>
+    </div>
+
+    <details>
+      <summary>查看编译后的完整 fragment shader 源码</summary>
+      <pre id="shader-source"></pre>
+    </details>
+
+    <script type="module" src="./cactus-shader.js"></script>
+  </body>
+</html>

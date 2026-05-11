@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — 2D primitives + booleans</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0;
+        padding: 24px;
+      }
+      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      p.meta { color: #888; margin: 0 0 24px; max-width: 760px; line-height: 1.6; }
+      a { color: #88c0ff; text-decoration: none; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+      }
+      .panel {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 16px;
+      }
+      .panel h2 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #eee;
+      }
+      .panel code {
+        display: block;
+        color: #88c0ff;
+        background: #0e0e0e;
+        padding: 8px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        image-rendering: pixelated;
+        background: #000;
+        border-radius: 4px;
+      }
+      .stats {
+        margin-top: 8px;
+        color: #666;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>sdf-js — 2D 距离场可视化</h1>
+    <p class="meta">
+      每个 panel 用色带把 SDF 数值本身画出来：<br>
+      <span style="color:#9bbfdb">蓝</span> = 内部 (d &lt; 0)，
+      <span style="color:#dca287">红</span> = 外部 (d &gt; 0)，
+      <strong>黑色等值线</strong> = 形状边界 (d = 0)，
+      色带间隔 0.1 距离单位。<br>
+      <a href="./3d.html">→ 3D demo</a>
+      &nbsp;·&nbsp;
+      <a href="./cactus.html">BOB 仙人掌场景 (JS)</a>
+      &nbsp;·&nbsp;
+      <a href="./cactus-shader.html">BOB 仙人掌场景 (shader)</a>
+      &nbsp;·&nbsp;
+      <a href="./painted-scenes.html"><strong>BOB 6 个场景随机笔触版</strong></a>
+      &nbsp;·&nbsp;
+      <a href="./scenes-debug.html">silhouette debug</a>
+      &nbsp;·&nbsp;
+      <a href="./scenes-sand.html"><strong>沙画测试 (含鸟)</strong></a>
+      &nbsp;·&nbsp;
+      <a href="./cactus-sand-shader.html">仙人掌沙画 (shader)</a>
+      &nbsp;·&nbsp;
+      <a href="./editor.html"><strong>SDF 编辑器</strong></a>
+      &nbsp;·&nbsp;
+      <a href="../ca/ca.html"><strong>SDF + CA（机器人填充）</strong></a>
+    </p>
+    <div class="grid" id="grid"></div>
+    <script type="module" src="./2d-demo.js"></script>
+  </body>
+</html>

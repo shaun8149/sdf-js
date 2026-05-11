@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — BOB cactus scene (BOB stipple style)</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        background: #111;
+        color: #ddd;
+        font: 13px ui-monospace, "SF Mono", monospace;
+        margin: 0 auto;
+        padding: 24px;
+        max-width: 800px;
+      }
+      h1 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      p.meta {
+        color: #888;
+        margin: 0 0 24px;
+        max-width: 760px;
+        line-height: 1.6;
+      }
+      a { color: #88c0ff; text-decoration: none; }
+      .stage {
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 16px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      canvas { display: block; border-radius: 4px; }
+      .stats { margin-top: 8px; color: #666; font-size: 11px; }
+    </style>
+  </head>
+  <body>
+    <h1>BOB scene 1 — 笔触风格（移植 sketch.js 的渲染管线）</h1>
+    <p class="meta">
+      同样的 4 个 SDF（cactus / moon / ground / gate）来自新 sdf-js，但渲染换成
+      BOB 原版的 sketch.js 风格：嵌套网格 + 每个 cell 画 N 层小多边形 + 调色板循环。
+      <strong>视觉单元不再是像素，而是带噪声抖动的彩色多边形</strong>。<br>
+      渲染按 200·brushSpeed 个 cell 一帧 yield，所以你能看到画面被一笔笔铺开。
+      <a href="./cactus.html">← 像素剪影版</a>
+      &nbsp;·&nbsp;
+      <a href="./cactus-shader.html">→ shader 版</a>
+    </p>
+    <div class="stage">
+      <div id="canvas-host"></div>
+      <div class="stats" id="stats">painting…</div>
+    </div>
+    <!-- p5.js 用全局函数 (noise, randomGaussian, ellipse, ...)，必须先加载 -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+    <script type="module" src="./cactus-painted.js"></script>
+  </body>
+</html>
