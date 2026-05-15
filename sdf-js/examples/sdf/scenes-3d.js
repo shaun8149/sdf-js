@@ -48,11 +48,11 @@ const regionForSphere = (hit) => {
   return groundD < ballD ? 'ground' : 'object';
 };
 
-const makeProbeSphere = (camera, lightPos) => makeProbe(sceneSphereSdf, {
+const makeProbeSphere = (camera, lightPos, shadows = true) => makeProbe(sceneSphereSdf, {
   camera,
   lightPos,  // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
   regionFn: regionForSphere,
-  shadows: true,
+  shadows,   // 可 caller override (preview mode 关 shadow 省 2× raymarch)
 });
 
 // ----- Scene 16: 4 个垂直胶囊体 ---------------------------------------------
@@ -86,18 +86,19 @@ const regionForCapsules = (hit) => {
   return groundD < nearestCapD ? 'ground' : 'object';
 };
 
-const makeProbeCapsules = (camera, lightPos) => makeProbe(sceneCapSdf, {
+const makeProbeCapsules = (camera, lightPos, shadows = true) => makeProbe(sceneCapSdf, {
   camera,
   lightPos,  // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
   regionFn: regionForCapsules,
-  shadows: true,
+  shadows,
 });
 
 // ---- 派发 -----------------------------------------------------------------
-// makeProbe(scene, camera?, lightPos?) —— camera + lightPos 都可省略，省略 = 默认
-export const makeProbe_scene = (scene, camera = DEFAULT_CAMERA, lightPos = undefined) => {
-  if (scene === 15) return makeProbeSphere(camera, lightPos);
-  if (scene === 16) return makeProbeCapsules(camera, lightPos);
+// makeProbe(scene, camera?, lightPos?, shadows?) — camera + lightPos + shadows 都可省略
+// shadows=false 用于 preview mode（鼠标拖动时不算阴影，速度 2× 快）
+export const makeProbe_scene = (scene, camera = DEFAULT_CAMERA, lightPos = undefined, shadows = true) => {
+  if (scene === 15) return makeProbeSphere(camera, lightPos, shadows);
+  if (scene === 16) return makeProbeCapsules(camera, lightPos, shadows);
   return null;
 };
 

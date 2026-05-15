@@ -194,11 +194,19 @@ const CONTROL_IDS = [
   'light-azim', 'light-alt', 'light-dist',
 ];
 
-let debounceTimer = null;
+// 双 timer 调度：preview (快、低质量、drag 时跟手) + final (慢、高质量、松手后)
+//   preview: 50ms 防抖 → seedCount /4 + shadows off + stepSize ×2 + 1-octave warp cap
+//   final:   600ms 静止后 → 用 slider 原值 full quality
+// 鼠标拖动 / WASD 持续触发 scheduleRun → preview 50ms 一次轮询，final 不断 reset
+// 直到用户停手 600ms 才 fire final
+let previewTimer = null;
+let finalTimer = null;
 function scheduleRun() {
   updateLabels(readParams());
-  if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(runHatch, 150);
+  clearTimeout(previewTimer);
+  clearTimeout(finalTimer);
+  previewTimer = setTimeout(() => runHatch(true),  50);
+  finalTimer   = setTimeout(() => runHatch(false), 600);
 }
 
 CONTROL_IDS.forEach(id => {
@@ -228,9 +236,20 @@ function applyPreset(name) {
   $('sp-warp-amp').value     = preset.SP_WARP_AMP;
   $('sp-warp-freq').value    = preset.SP_WARP_FREQ;
   $('sp-warp-layers').value  = preset.SP_WARP_LAYERS;
-  $('cam-yaw').value         = preset.CAM_YAW   ?? 0;
-  $('cam-pitch').value       = preset.CAM_PITCH ?? 0;
-  $('cam-dist').value        = preset.CAM_DIST  ?? 3.5;
+  // Preset 用的是 orbit camera 语义 (CAM_YAW/PITCH/DIST)，转换到当前 fly camera：
+  //   fly_yaw = -orbit_yaw（convention 翻转）
+  //   fly_pitch = orbit_pitch
+  //   fly_pos = orbit cam position = [D·sin(Y)·cos(P), D·sin(P), -D·cos(Y)·cos(P)]
+  const ocy = preset.CAM_YAW   ?? 0;
+  const ocp = preset.CAM_PITCH ?? 0;
+  const ocd = preset.CAM_DIST  ?? 3.5;
+  const cp = Math.cos(ocp), sp = Math.sin(ocp);
+  const cy = Math.cos(ocy), sy = Math.sin(ocy);
+  $('cam-yaw').value   = (-ocy).toFixed(3);
+  $('cam-pitch').value = ocp.toFixed(3);
+  $('cam-px').value    = (ocd * sy * cp).toFixed(2);
+  $('cam-py').value    = (ocd * sp).toFixed(2);
+  $('cam-pz').value    = (-ocd * cy * cp).toFixed(2);
   scheduleRun();
 }
 $('preset').addEventListener('change', e => applyPreset(e.target.value));
@@ -259,7 +278,9 @@ function fbmWarpedCoord(x, y, amp, freq, layers) {
 }
 
 // =============================================================================
-function runHatch() {
+// preview=true: drag/fly 期间用，少种子 + 无阴影 + 大 stepSize + 跳 warp，保证 60fps 跟手
+// preview=false: 静止 600ms 后跑 full quality
+function runHatch(preview = false) {
   const p = readParams();
   const imin = p.IMIN;
   const imax = Math.max(p.IMAX, p.IMIN + 0.01);
@@ -275,17 +296,22 @@ function runHatch() {
   });
   // 光源球坐标 → Cartesian (scene engine convention #4)
   const lightPos = lightFromSpherical(p.LIGHT_AZIM, p.LIGHT_ALT, p.LIGHT_DIST);
-  const rawProbeForCam = makeProbe(SCENE, camera, lightPos);
+  // Preview mode：shadows=false 省 ~50% raymarch3 调用
+  const rawProbeForCam = makeProbe(SCENE, camera, lightPos, !preview);
 
   // ---- spatial-warped probe（每次重跑用当前 warp 参数构造一个 closure）------
+  // Preview 跳 spatial warp 省 fbm 计算（每点 ~3 个 Perlin lookup）
   let _lx, _ly, _lr;
-  const probe = (x, y) => {
-    if (x === _lx && y === _ly) return _lr;
-    _lx = x; _ly = y;
-    const [xW, yW] = fbmWarpedCoord(x, y, p.SP_WARP_AMP, p.SP_WARP_FREQ, p.SP_WARP_LAYERS);
-    _lr = rawProbeForCam(xW, yW);
-    return _lr;
-  };
+  const skipSpWarp = preview || p.SP_WARP_AMP === 0;
+  const probe = skipSpWarp
+    ? rawProbeForCam
+    : (x, y) => {
+        if (x === _lx && y === _ly) return _lr;
+        _lx = x; _ly = y;
+        const [xW, yW] = fbmWarpedCoord(x, y, p.SP_WARP_AMP, p.SP_WARP_FREQ, p.SP_WARP_LAYERS);
+        _lr = rawProbeForCam(xW, yW);
+        return _lr;
+      };
 
   // ---- field / inScene / dsepFn 都基于这个 spatial-warped probe -------------
   const field = projectedTangentField(probe, {
@@ -315,21 +341,31 @@ function runHatch() {
   };
 
   // ---- 跑流线 ----
+  // Preview mode: seedCount /4 + stepSize ×2.5 + maxSteps /2 + 退化 dsep（密度对比降）
+  // 目标 ~50-100ms/帧 让 fly mode 60fps 跟手；松手 600ms 后 full quality 重渲
   const VIEW = 1.0;
-  $('stats').textContent = 'tracing…';
+  const previewSeedCount = Math.max(500, Math.round(p.SEED_COUNT / 4));
+  const previewStepSize = Math.min(0.015, p.STEP_SIZE * 2.5);
+  const seedCount = preview ? previewSeedCount : p.SEED_COUNT;
+  const stepSize  = preview ? previewStepSize  : p.STEP_SIZE;
+  const maxStepsPerLine = preview ? 400 : 800;
+  // Preview 时 dsep 也用 light 端（线稀，trace 数少）
+  const effectiveDsepFn = preview ? () => p.DSEP_LIGHT : dsepFn;
+
+  $('stats').textContent = preview ? 'preview…' : 'tracing…';
 
   setTimeout(() => {
     const t0 = performance.now();
     const streamlines = densePack(field, {
       bounds:          { minX: -VIEW, maxX: VIEW, minY: -VIEW, maxY: VIEW },
-      dsep:            dsepFn,
+      dsep:            effectiveDsepFn,
       dsepMax:         p.DSEP_LIGHT,
-      stepSize:        p.STEP_SIZE,
+      stepSize,
       minLength:       6,
-      seedCount:       p.SEED_COUNT,
+      seedCount,
       seedStrategy:    'grid',
-      maxStreamlines:  Math.max(p.SEED_COUNT, 5000),
-      maxStepsPerLine: 800,
+      maxStreamlines:  Math.max(seedCount, 5000),
+      maxStepsPerLine,
       extraValid:      inScene,
     });
     const elapsed = performance.now() - t0;
@@ -360,12 +396,13 @@ function runHatch() {
     }
 
     const warpTag = [];
-    if (p.INT_WARP_AMP > 0) warpTag.push(`int-warp ${p.INT_WARP_AMP.toFixed(2)}@${p.INT_WARP_FREQ}`);
-    if (p.SP_WARP_AMP > 0)  warpTag.push(`sp-warp ${p.SP_WARP_AMP.toFixed(3)}@${p.SP_WARP_FREQ}×${p.SP_WARP_LAYERS}L`);
+    if (p.INT_WARP_AMP > 0 && !preview) warpTag.push(`int-warp ${p.INT_WARP_AMP.toFixed(2)}@${p.INT_WARP_FREQ}`);
+    if (p.SP_WARP_AMP > 0 && !preview)  warpTag.push(`sp-warp ${p.SP_WARP_AMP.toFixed(3)}@${p.SP_WARP_FREQ}×${p.SP_WARP_LAYERS}L`);
+    const tag = preview ? ' · ⚡ preview' : '';
     $('stats').textContent =
       `${streamlines.length} lines · dsep ${p.DSEP_DARK}→${p.DSEP_LIGHT} · curve=${p.EASING} · i ∈ [${imin.toFixed(2)},${imax.toFixed(2)}]`
       + (warpTag.length ? ` · ${warpTag.join(' / ')}` : '')
-      + ` · ${elapsed.toFixed(0)}ms`;
+      + tag + ` · ${elapsed.toFixed(0)}ms`;
   }, 30);
 }
 
