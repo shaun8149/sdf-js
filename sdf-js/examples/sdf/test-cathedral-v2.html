@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM round 2 #3: cathedral</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm round 2 · cathedral.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Round 2 — the biggest jump in code quality so far. The model factored
+            out a parametric <code>lancet()</code> function used 9 times for portals,
+            tower windows, and belfry openings. Rose tracery uses
+            <code>.circular_array(8)</code> for true 8-fold petal symmetry.
+            Stringcourses are <code>intersection</code>-clipped to the facade silhouette.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-cathedral.html">v1 (inline lancets, 4-spoke rose)</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-cathedral-v2.js"></script>
+  </body>
+</html>

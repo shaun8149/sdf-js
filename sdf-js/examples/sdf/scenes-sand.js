@@ -57,12 +57,13 @@ window.setup = () => {
 window.draw = () => {
   // p5 的 drawingContext 就是底层 Canvas2D ctx。
   render.sandFrame(drawingContext, layers, {
-    view: 1,
+    view: pa.view,
     samples: 1000,
     outsideColor: OUTSIDE,
     boundaryColor: BOUNDARY,
     band: 0.01,
     dotRadius: 0.5,
+    flipY: pa.yConvention === 'up',     // 每个 scene 在 makePa 里自报
   });
 };
 

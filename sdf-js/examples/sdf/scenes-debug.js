@@ -56,11 +56,14 @@ const img = ctx.createImageData(W, H);
 const data = img.data;
 const aaWidth = 2 * pa.view / W;
 
+const flipY = pa.yConvention === 'up';     // 每个 scene 在 makePa 里自报
+
 for (let y = 0; y < H; y++) {
   for (let x = 0; x < W; x++) {
-    // BOB Y-DOWN：pixel y 直接映射到 SDF y（不翻转）
     const wx = (x / W) * 2 * pa.view - pa.view;
-    const wy = (y / H) * 2 * pa.view - pa.view;
+    const wy = flipY
+      ? pa.view - (y / H) * 2 * pa.view
+      : (y / H) * 2 * pa.view - pa.view;
 
     // 起手：天空垂直渐变（在 Y-down 里：屏幕顶 = y 小 = sky top）
     const skyT = (wy + pa.view) / (2 * pa.view);              // 0(顶) → 1(底)

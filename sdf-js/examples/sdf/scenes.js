@@ -15,6 +15,16 @@ import {
   SDF2,
 } from '../../src/index.js';
 
+// ---- v2 (LLM × SDF round 2) 场景 SDF 入口 ---------------------------------
+// 每个 v2 文件 export 一个 getSdfs() 返回该场景的 base SDF 列表（不含 dilate 描边）
+import { getSdfs as treeV2Sdfs }      from './test-tree-v2.js';
+import { getSdfs as boatV2Sdfs }      from './test-boat-v2.js';
+import { getSdfs as cathedralV2Sdfs } from './test-cathedral-v2.js';
+import { getSdfs as butterflyV2Sdfs } from './test-butterfly-v2.js';
+import { getSdfs as hatmanV2Sdfs }    from './test-hatman-v2.js';
+import { getDanceSdfs as danceSdfs }  from './llm-round1.js';
+import { getSdfs as seuratV2Sdfs }    from './test-seurat-v2.js';
+
 // ---- BOB-style random helper (r() / r([arr]) / r(lo, hi)) ------------------
 export const r = (...args) => {
   if (args.length === 0) return Math.random();
@@ -22,15 +32,45 @@ export const r = (...args) => {
   return args[0] + Math.random() * (args[1] - args[0]);
 };
 
-// pa 参数集合（每次加载或调用产生一组）。sceneOverride 给 1..7 强制场景。
-// 随机池只取 1..6（不含鸟），鸟需要 URL hash 显式指定。
+// ---- 场景元数据：每个 scene 自报 view + y-convention -----------------------
+// 渲染器消费这些值（不查 scene 范围）。加新场景就在表里加一行，渲染器永不动。
+//   yConvention: 'down' = canvas 约定（y+ 朝下，BOB 原版）
+//                'up'   = math 约定（y+ 朝上，LLM v2 输出习惯）
+//   view:        半边长（世界坐标 ±view）
+const SCENE_META = {
+  1:  { yConvention: 'down', view: 1.0 },     // BOB cactus
+  2:  { yConvention: 'down', view: 1.0 },     // BOB tree + boat
+  3:  { yConvention: 'down', view: 1.0 },     // BOB bridge
+  4:  { yConvention: 'down', view: 1.0 },     // BOB buildings (far)
+  5:  { yConvention: 'down', view: 1.0 },     // BOB buildings (near)
+  6:  { yConvention: 'down', view: 1.0 },     // BOB brick wall
+  7:  { yConvention: 'down', view: 1.0 },     // BOB folded-plane bird
+  8:  { yConvention: 'up',   view: 1.2 },     // LLM v2 tree
+  9:  { yConvention: 'up',   view: 1.2 },     // LLM v2 boat
+  10: { yConvention: 'up',   view: 1.2 },     // LLM v2 cathedral
+  11: { yConvention: 'up',   view: 1.2 },     // LLM v2 butterfly
+  12: { yConvention: 'up',   view: 1.2 },     // LLM v2 hatman
+  13: { yConvention: 'up',   view: 1.2 },     // LLM (v1) Matisse dance
+  14: { yConvention: 'up',   view: 1.2 },     // LLM v2 seurat
+  // ---- 3D 场景：probe-based painted 渲染（其它 renderer 暂不支持）-----------
+  15: { yConvention: 'down', view: 1.0, kind: '3d' },     // BOB 原 7：单球+平面
+  16: { yConvention: 'down', view: 1.0, kind: '3d' },     // BOB 原 8：4 胶囊+平面
+};
+
+// pa 参数集合（每次加载或调用产生一组）。
+//   1..7   BOB 场景
+//   8..14  LLM × SDF round 2 的 v2 场景（昨天用改良 SKILL.md prompt 跑出的输出）
+// 随机池只取 1..6（不含鸟和 v2），其它场景需要 URL hash 显式指定。
 export const makePa = (sceneOverride) => {
-  const _scene = (sceneOverride >= 1 && sceneOverride <= 7)
+  const _scene = (sceneOverride >= 1 && sceneOverride <= 16)
     ? sceneOverride
     : r([1, 2, 3, 4, 5, 6]);
+  const meta = SCENE_META[_scene] || { yConvention: 'down', view: 1.0 };
   return {
     scene:              _scene,
-    view:               1.0,
+    view:               meta.view,
+    yConvention:        meta.yConvention,
+    kind:               meta.kind || '2d',     // '2d' (default) | '3d'
     // 场景几何参数（与 BOB sketch.js 的 setPa 对齐）
     cy:                 0.4,
     cy2:                -0.75,
@@ -390,6 +430,15 @@ export const makesdf = (pa, options = {}) => {
   if (pa.scene === 7) {
     sdfs.push(makeBird());
   }
+
+  // ---- 8..14: LLM v2 场景 ----
+  if (pa.scene === 8)  sdfs.push(...treeV2Sdfs());
+  if (pa.scene === 9)  sdfs.push(...boatV2Sdfs());
+  if (pa.scene === 10) sdfs.push(...cathedralV2Sdfs());
+  if (pa.scene === 11) sdfs.push(...butterflyV2Sdfs());
+  if (pa.scene === 12) sdfs.push(...hatmanV2Sdfs());
+  if (pa.scene === 13) sdfs.push(...danceSdfs());
+  if (pa.scene === 14) sdfs.push(...seuratV2Sdfs());
 
   return sdfs;
 };

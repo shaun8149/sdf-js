@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM × SDF round 1</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>LLM × SDF · round 1.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            7 个场景，全部由独立的 Claude 窗口在 sdf-js system prompt（未带 SKILL.md）下
+            生成。原样保留作为 essay <strong>"before SKILL.md"</strong> 的对照。
+            一些 bugs 故意保留（trapezoid 签名误用、dead-code rose ring、未承认 pointillism
+            限制）—— 这些是 essay §5 三个 failure mode 的源材料。Round 2 (用 SKILL.md prompt)
+            的输出见 <code>test-*-v2.html</code>。
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./render-showcase.html">showcase (rounds 1+2 整合)</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+      <div class="stats" id="stats">loading…</div>
+      <div class="actions" style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
+        <button data-scene-name="tree">1 · tree</button>
+        <button data-scene-name="boat">2 · boat <small style="opacity:.6">(trapezoid bug)</small></button>
+        <button data-scene-name="cathedral">3 · cathedral <small style="opacity:.6">(dead code)</small></button>
+        <button data-scene-name="butterfly">4 · butterfly</button>
+        <button data-scene-name="hatman">5 · hatman <small style="opacity:.6">(scale fail)</small></button>
+        <button data-scene-name="dance">6 · dance</button>
+        <button data-scene-name="seurat">7 · seurat</button>
+      </div>
+    </div>
+    <script type="module" src="./llm-round1.js"></script>
+  </body>
+</html>

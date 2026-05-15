@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — Pasma capsules: 3D surface-aware rayhatching</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .controls {
+        display: grid;
+        grid-template-columns: 150px 1fr 72px;
+        gap: 8px 12px;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 0.9em;
+      }
+      .controls label { text-align: right; opacity: 0.75; }
+      .controls input[type="range"] { width: 100%; }
+      .controls .val { font-family: monospace; opacity: 0.85; }
+      .group-title {
+        grid-column: 1 / -1;
+        font-weight: 600;
+        font-size: 0.85em;
+        opacity: 0.6;
+        margin-top: 14px;
+        border-bottom: 1px dashed rgba(0,0,0,0.15);
+        padding-bottom: 4px;
+      }
+      .tip { margin-top: 14px; font-size: 0.85em; opacity: 0.7; }
+      .tip code { background: rgba(0,0,0,0.05); padding: 0 4px; border-radius: 3px; }
+
+      /* Canvas 内悬浮 overlay：camera + light 实时调控，方便边看边调 */
+      .stage { position: relative; }
+      .canvas-overlay {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 230px;
+        max-height: calc(100% - 16px);
+        overflow-y: auto;
+        background: rgba(253, 250, 246, 0.92);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-size: 0.78em;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .canvas-overlay .group-title {
+        font-weight: 600;
+        font-size: 0.78em;
+        opacity: 0.55;
+        margin: 8px 0 4px;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+        padding-bottom: 2px;
+      }
+      .canvas-overlay .group-title:first-child { margin-top: 0; }
+      .canvas-overlay .row {
+        display: grid;
+        grid-template-columns: 60px 1fr 36px;
+        gap: 4px 6px;
+        align-items: center;
+        margin-bottom: 2px;
+      }
+      .canvas-overlay label { text-align: right; opacity: 0.75; }
+      .canvas-overlay input[type="range"] { width: 100%; margin: 0; }
+      .canvas-overlay .val { font-family: monospace; opacity: 0.85; font-size: 0.88em; }
+    </style>
+  </head>
+  <body>
+    <div class="page" style="max-width: 780px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>3D surface-aware rayhatching.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            <strong>[A]</strong> 3D 法向投影到屏幕的 tangent field；
+            <strong>[B]</strong> intensity 调密度（Photoshop levels）；
+            <strong>[C]</strong> Domain warping × 2：intensity warp（密度纹理 organic）和
+            spatial warp（几何本身 organic）。Slider 实时触发重跑。
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./streamline-scenes.html">2D scenes</a>
+          <a id="painted-link" href="./painted-scenes.html#16">painted version</a>
+        </div>
+      </div>
+      <div class="actions" style="display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; align-items: center;">
+        <strong style="font-size: 0.85em; opacity: 0.7;">3D scene:</strong>
+        <button data-scene="15">15 · sphere + ground</button>
+        <button data-scene="16">16 · capsules + ground</button>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="720" height="720"></canvas>
+        <!-- 实时调控 overlay：fly camera (5 slider) + light (3 slider) 浮在 canvas 上 -->
+        <div class="canvas-overlay">
+          <div class="group-title" title="点击 canvas 进入 fly mode；WASD 移动 / 鼠标转头 / 滚轮前后 / R 重置 / Esc 退出">
+            CAMERA (fly mode)
+          </div>
+          <div class="row"><label for="cam-yaw">YAW</label>
+            <input type="range" id="cam-yaw" min="-6.28" max="6.28" step="0.02" value="0">
+            <span class="val" id="cam-yaw-v">0°</span></div>
+          <div class="row"><label for="cam-pitch">PITCH</label>
+            <input type="range" id="cam-pitch" min="-1.40" max="1.40" step="0.02" value="0">
+            <span class="val" id="cam-pitch-v">0°</span></div>
+          <div class="row"><label for="cam-px">POS X</label>
+            <input type="range" id="cam-px" min="-8.0" max="8.0" step="0.05" value="0">
+            <span class="val" id="cam-px-v">0.00</span></div>
+          <div class="row"><label for="cam-py">POS Y</label>
+            <input type="range" id="cam-py" min="-8.0" max="8.0" step="0.05" value="0">
+            <span class="val" id="cam-py-v">0.00</span></div>
+          <div class="row"><label for="cam-pz">POS Z</label>
+            <input type="range" id="cam-pz" min="-8.0" max="8.0" step="0.05" value="-3.5">
+            <span class="val" id="cam-pz-v">-3.50</span></div>
+
+          <div class="group-title">LIGHT</div>
+          <div class="row"><label for="light-azim">AZIM</label>
+            <input type="range" id="light-azim" min="-3.14" max="3.14" step="0.05" value="-0.46">
+            <span class="val" id="light-azim-v">-26°</span></div>
+          <div class="row"><label for="light-alt">ALT</label>
+            <input type="range" id="light-alt" min="-1.40" max="1.40" step="0.05" value="0.25">
+            <span class="val" id="light-alt-v">14°</span></div>
+          <div class="row"><label for="light-dist">DIST</label>
+            <input type="range" id="light-dist" min="1.0" max="10.0" step="0.1" value="5.4">
+            <span class="val" id="light-dist-v">5.4</span></div>
+        </div>
+      </div>
+      <div class="stats" id="stats">initial trace…</div>
+
+      <div class="controls">
+        <div class="group-title">PRESETS（一键切换美学方向）</div>
+
+        <label for="preset">recipe</label>
+        <select id="preset" style="width: 100%; grid-column: 2 / 4;">
+          <option value="" disabled selected>— 选一个 preset —</option>
+          <option value="pasma-clean">pasma-clean (几何纯度 / 平视)</option>
+          <option value="pasma-3q">pasma-3q (俯视 3/4 angle, 接近原作)</option>
+          <option value="henry-moore">henry-moore (biomorphic 雕塑)</option>
+          <option value="eroded-stone">eroded-stone (风化石 / 陶器)</option>
+          <option value="ink-wash">ink-wash (水墨 / sumi-e)</option>
+          <option value="chalk-grain">chalk-grain (粉笔 / 细颗粒)</option>
+          <option value="biomorph">biomorph (Brancusi 抽象有机体 / fbm 3 层)</option>
+          <option value="marble">marble (大理石纹 / 几何稳 + 密度 vein)</option>
+          <option value="turbulence">turbulence (湍流 / 火焰 / fbm 3 层)</option>
+        </select>
+
+        <div class="group-title">DENSITY mapping（input → curve → output）</div>
+
+        <label for="dsep-dark">DSEP_DARK</label>
+        <input type="range" id="dsep-dark" min="0.002" max="0.020" step="0.001" value="0.003" />
+        <span class="val" id="dsep-dark-v">0.003</span>
+
+        <label for="dsep-light">DSEP_LIGHT</label>
+        <input type="range" id="dsep-light" min="0.010" max="0.080" step="0.001" value="0.040" />
+        <span class="val" id="dsep-light-v">0.040</span>
+
+        <label for="imin">IMIN (i remap 下界)</label>
+        <input type="range" id="imin" min="0.00" max="1.00" step="0.02" value="0.50" />
+        <span class="val" id="imin-v">0.50</span>
+
+        <label for="imax">IMAX (i remap 上界)</label>
+        <input type="range" id="imax" min="0.00" max="1.00" step="0.02" value="1.00" />
+        <span class="val" id="imax-v">1.00</span>
+
+        <label for="easing">EASING curve</label>
+        <select id="easing" style="width: 100%;">
+          <option value="linear">linear (基线)</option>
+          <option value="smoothStart2">smoothStart2 (mid → 偏密)</option>
+          <option value="smoothStart3" selected>smoothStart3 (mid → 强密) ★Pasma-ish</option>
+          <option value="smoothStart4">smoothStart4 (极密)</option>
+          <option value="smoothStop2">smoothStop2 (mid → 偏稀)</option>
+          <option value="smoothStop3">smoothStop3 (mid → 强稀, sketch)</option>
+          <option value="smoothStop4">smoothStop4 (极稀, 雕版)</option>
+          <option value="smoothStep2">smoothStep2 (soft S)</option>
+          <option value="smoothStep3">smoothStep3 (sharp S, terminator)</option>
+          <option value="smoothStepBounce">smoothStepBounce (条纹)</option>
+          <option value="smoothStepElastic">smoothStepElastic (overshoot)</option>
+        </select>
+        <button id="randomize-easing" style="padding: 2px 8px; font-size: 0.85em;">🎲</button>
+
+        <div class="group-title">DOMAIN WARPING（input-space transform）</div>
+
+        <label for="int-warp-amp">[A] intensity AMP</label>
+        <input type="range" id="int-warp-amp" min="0.00" max="0.30" step="0.01" value="0.00" />
+        <span class="val" id="int-warp-amp-v">0.00</span>
+
+        <label for="int-warp-freq">[A] intensity FREQ</label>
+        <input type="range" id="int-warp-freq" min="1.0" max="30.0" step="0.5" value="8.0" />
+        <span class="val" id="int-warp-freq-v">8.0</span>
+
+        <label for="sp-warp-amp">[B] spatial AMP</label>
+        <input type="range" id="sp-warp-amp" min="0.000" max="0.150" step="0.005" value="0.000" />
+        <span class="val" id="sp-warp-amp-v">0.000</span>
+
+        <label for="sp-warp-freq">[B] spatial FREQ</label>
+        <input type="range" id="sp-warp-freq" min="1.0" max="30.0" step="0.5" value="5.0" />
+        <span class="val" id="sp-warp-freq-v">5.0</span>
+
+        <label for="sp-warp-layers">[B] spatial LAYERS</label>
+        <input type="range" id="sp-warp-layers" min="1" max="3" step="1" value="1" />
+        <span class="val" id="sp-warp-layers-v">1</span>
+
+        <div class="group-title">TRACE parameters</div>
+
+        <p style="grid-column: 1 / -1; font-size: 0.78em; opacity: 0.65; margin: 0;">
+          📍 <strong>CAMERA + LIGHT</strong> 控件在画布右上角 overlay。
+          <strong>Fly mode</strong>：点击 canvas 进入；
+          <code>WASD</code> 前后左右 / <code>Q E</code> 上下 / <code>Shift</code> 加速 /
+          鼠标转头 / 滚轮前后 / <code>R</code> 重置 / <code>Esc</code> 退出。
+        </p>
+
+        <label for="seed-count">SEED_COUNT</label>
+        <input type="range" id="seed-count" min="2000" max="20000" step="1000" value="6000" />
+        <span class="val" id="seed-count-v">6000</span>
+
+        <label for="step-size">STEP_SIZE</label>
+        <input type="range" id="step-size" min="0.002" max="0.012" step="0.001" value="0.005" />
+        <span class="val" id="step-size-v">0.005</span>
+      </div>
+
+      <p class="tip">
+        <strong>玩 warp 推荐路径：</strong>
+        默认两个 AMP 都是 0（=普通 Pasma 风）。先开
+        <code>[A] intensity AMP</code> 到 0.15 → 密度纹理破碎、几何不变；
+        然后开 <code>[B] spatial AMP</code> 到 0.05 → 整个 3D 表面扭曲。
+      </p>
+      <p class="tip">
+        <strong>LAYERS 是 fbm 招（IQ recursive warp）：</strong>
+        <code>LAYERS=1</code> = 单层 "皱"（之前的所有效果都在这一层）。
+        <code>LAYERS=2</code> = "卷"，warp 自己 warp 一次。
+        <code>LAYERS=3</code> = "湍流 / 火焰 / 大理石"，3 层递归。同 AMP 下，
+        LAYERS 升级给的视觉冲击 <strong>比加 AMP 大得多</strong>。
+        试 <code>fluid-flow</code> preset 看 3 层 fbm 的效果。
+      </p>
+    </div>
+    <script type="module" src="./test-pasma-capsules.js"></script>
+  </body>
+</html>

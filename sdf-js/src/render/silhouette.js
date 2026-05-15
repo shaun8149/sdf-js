@@ -5,6 +5,9 @@
 // 1px 级抗锯齿。一次性扫整张画布，适合静态成图。
 // =============================================================================
 
+import { SDF3 } from '../sdf/core.js';
+import { raymarch3 } from '../sdf/raymarch.js';
+
 // background 可以是：
 //   - [r, g, b]                              纯色
 //   - { top: [r,g,b], bottom: [r,g,b] }      垂直渐变（+Y 朝上为 top）
@@ -49,18 +52,59 @@ export function silhouette(ctx, layers, options = {}) {
   const aa = options.antialias ?? (2 * view / W);
   const bgFn = makeBgFn(options.background ?? [255, 255, 255], view);
 
-  const img = ctx.createImageData(W, H);
+  // SDF3 自动用 3D 投影 silhouette：orthographic raymarch hit → flat color
+  const yaw = options.yaw ?? 0.5;
+  const pitch = options.pitch ?? 0.35;
+  const cameraDist = options.cameraDist ?? 4;
+  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const inverseRotate = (p) => {
+    const x = p[0] * cy - p[2] * sy;
+    const z0 = p[0] * sy + p[2] * cy;
+    const y = p[1];
+    return [x, y * cp - z0 * sp, y * sp + z0 * cp];
+  };
+  // 给每个 SDF3 layer pre-bake camera-space SDF
+  const preparedLayers = layers.map(({ sdf, color }) => {
+    if (sdf instanceof SDF3) {
+      const camSpaceSdf = (p) => sdf(inverseRotate(p));
+      return { color, is3D: true, sdf3Cam: camSpaceSdf };
+    }
+    return { color, is3D: false, sdf };
+  });
+
+  // background === null → 透明合成模式：起始色取已有 canvas 像素（保留底层 pattern）
+  // 否则：bgFn 决定背景色（纯色 / 渐变 / 函数）
+  const transparentBg = options.background === null;
+  const img = transparentBg
+    ? ctx.getImageData(0, 0, W, H)
+    : ctx.createImageData(W, H);
   const data = img.data;
 
   for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
       const wx = (x / W) * 2 * view - view;
       const wy = flipY ? -((y / H) * 2 * view - view) : (y / H) * 2 * view - view;
+      const i = (y * W + x) * 4;
 
-      let col = bgFn(wx, wy);
-      for (const { sdf, color } of layers) {
-        const d = sdf([wx, wy]);
-        const t = smoothstep(aa, -aa, d);    // d<0 → t=1（实色覆盖），d>0 → t=0（透明）
+      let col;
+      if (transparentBg) {
+        // 起始色 = 当前 canvas 像素（pattern 已经画在底下）
+        col = [data[i], data[i + 1], data[i + 2]];
+      } else {
+        col = bgFn(wx, wy);
+      }
+      for (const layer of preparedLayers) {
+        const { color } = layer;
+        let t;
+        if (layer.is3D) {
+          // 3D path: 正交 raymarch，命中 = 实色覆盖
+          const tHit = raymarch3([wx, wy, cameraDist], [0, 0, -1], layer.sdf3Cam, 80, cameraDist * 3, 0.001);
+          t = tHit < 0 ? 0 : 1;
+        } else {
+          const d = layer.sdf([wx, wy]);
+          t = smoothstep(aa, -aa, d);    // d<0 → t=1（实色覆盖），d>0 → t=0（透明）
+        }
         col = [
           col[0] + (color[0] - col[0]) * t,
           col[1] + (color[1] - col[1]) * t,
@@ -68,7 +112,6 @@ export function silhouette(ctx, layers, options = {}) {
         ];
       }
 
-      const i = (y * W + x) * 4;
       data[i] = col[0]; data[i + 1] = col[1]; data[i + 2] = col[2]; data[i + 3] = 255;
     }
   }

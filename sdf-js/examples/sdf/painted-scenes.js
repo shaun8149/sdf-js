@@ -8,6 +8,7 @@
 
 import { render } from '../../src/index.js';
 import { makePa, makesdf } from './scenes.js';
+import { makeProbe } from './scenes-3d.js';
 
 // 场景可由 URL hash (#2, #3, ...) 强制指定，方便逐个测试
 const sceneOverride = parseInt(location.hash.slice(1), 10);
@@ -37,14 +38,17 @@ window.setup = () => {
   shuf(PALETTE2);
 
   // BOB 风格：scene 4/5 建筑反转 SDF（让"天空"被染色，建筑保留纸底）
-  const sdfs = makesdf(pa, { invert: true });
+  // 3D 场景（15+）没有 SDF list，走 probe 通路
+  const is3d = pa.kind === '3d';
+  const sdfs = is3d ? [] : makesdf(pa, { invert: true });
+  const probe = is3d ? makeProbe(pa.scene) : null;
 
   painter = render.painted(window, sdfs, {
     palette:         PALETTE,
     palette2:        PALETTE2,
     startIndex:      Math.floor(Math.random() * PALETTE.length),
     view:            pa.view,
-    flipY:           false,           // scenes.js 是 BOB y-down 约定
+    flipY:           pa.yConvention === 'up',       // 每个 scene 在 makePa 里自报
     middleScaleSize: pa.middleScaleSize,
     smallScaleSize:  pa.smallScaleSize,
     middleRotate:    pa.middleRotate,
@@ -55,6 +59,7 @@ window.setup = () => {
     rH:              pa.rH,
     rV:              pa.rV,
     brushSpeed:      pa.brushSpeed,
+    probe,                                          // 2D 场景 = null；3D 场景 = (x,y)=>{intensity,region}
   });
 
   document.getElementById('stats').textContent =

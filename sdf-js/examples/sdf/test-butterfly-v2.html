@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM round 2 #4: butterfly</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm round 2 · butterfly.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            v1 was already 95/100, so v2 is disciplined refinement, not a leap.
+            Notable upgrades: bands/veins/segments all <code>intersection</code>-clipped
+            to parent silhouette; <code>bodyAndHead</code> unioned then outlined as
+            one continuous shape (no neck seam); outline thickness graded
+            (wings 0.028 / body 0.020 / antennae 0.006).
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-butterfly.html">v1 (already strong)</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-butterfly-v2.js"></script>
+  </body>
+</html>

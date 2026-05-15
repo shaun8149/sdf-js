@@ -55,5 +55,9 @@ export function scene(ctx) {
   );
 }
 
-const canvas = document.getElementById('c');
-scene(canvas.getContext('2d'));
+export function getSdfs() {
+  return [ground, trunk, crown];
+}
+
+const _canvas = typeof document !== 'undefined' && document.getElementById('c');
+if (_canvas) scene(_canvas.getContext('2d'));

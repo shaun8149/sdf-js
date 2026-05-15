@@ -2,4 +2,10 @@
 // streamline/ —— field 上的流线追踪
 // =============================================================================
 
-export { traceThrough, densePack } from './streamline.js';
+export {
+  traceThrough,
+  densePack,
+  hatch,
+  gradientPerpField,
+  projectedTangentField,
+} from './streamline.js';

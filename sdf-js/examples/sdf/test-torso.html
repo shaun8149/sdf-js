@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — back-view torso (outline / hatch)</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>back-view torso.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Same 19-point polygon, two visual registers selectable below.
+            <strong>outline</strong>: <code>shell + intersection</code> minimal
+            single-line drawing (Matisse <em>Nu Bleu</em> idiom).
+            <strong>hatch</strong>: <code>streamline.hatch</code> contour-following
+            evenly-spaced lines confined to SDF interior (2D analog of Pasma rayhatching).
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="actions" style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
+        <button data-mode="outline">outline (shell + intersection)</button>
+        <button data-mode="hatch">hatch (streamline)</button>
+      </div>
+    </div>
+    <script type="module" src="./test-torso.js"></script>
+  </body>
+</html>

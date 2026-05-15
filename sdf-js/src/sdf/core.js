@@ -61,3 +61,12 @@ export function defineOpN(name, fn) {
     throw new Error(`${name}(): first argument must be an SDF2 or SDF3 instance`);
   };
 }
+
+// 2D → 3D 升维：源是 SDF2，结果是 SDF3。用于 extrude / revolve 等把
+// 2D 形状变 3D 立体的算子。chainable 方法挂在 SDF2.prototype 上。
+export function defineOp23(name, fn) {
+  SDF2.prototype[name] = function (...args) {
+    return SDF3(fn(this, ...args));
+  };
+  return (...args) => SDF3(fn(...args));
+}

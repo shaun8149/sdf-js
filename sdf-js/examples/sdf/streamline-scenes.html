@@ -3,29 +3,32 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js — painted</title>
+    <title>sdf-js — streamline scenes</title>
     <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
     <div class="page" style="max-width: 820px;">
       <div class="demo-meta">
         <div>
-          <h1><em>painted.</em></h1>
+          <h1><em>streamline scenes.</em></h1>
           <p class="tagline" style="margin-bottom: 0;">
-            BOB's gridded brushstroke renderer, applied across seven scenes.
-            Nested grid, Perlin bend, layered polygons under
-            <code>render.painted</code>.
+            BOB's seven scenes rendered with <code>render.hatch</code> — every SDF
+            gets filled with evenly-spaced streamlines whose direction follows
+            its gradient-perp (i.e., "level curves"). 2D analog of Piter Pasma's
+            surface-flat rayhatching. Same SDFs as scenes-debug, different
+            visual register.
           </p>
         </div>
         <div class="links">
           <a href="../index.html">index</a>
-          <a href="./render-showcase.html">showcase</a>
+          <a href="./scenes-debug.html">silhouette version</a>
         </div>
       </div>
       <div class="stage">
-        <div id="canvas-host"></div>
+        <canvas id="c" width="720" height="720"></canvas>
       </div>
-      <div class="stats" id="stats">painting…</div>
+      <div class="stats" id="stats">rendering…</div>
+      <div class="legend" id="legend"></div>
       <div class="actions" style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
         <strong style="font-size: 0.85em; opacity: 0.7; align-self: center;">BOB:</strong>
         <button data-scene="1">1 · cactus</button>
@@ -47,14 +50,14 @@
         <button data-scene="14">14 · seurat</button>
       </div>
       <div class="actions" style="display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;">
-        <strong style="font-size: 0.85em; opacity: 0.7; align-self: center;">BOB 3D:</strong>
-        <button data-scene="15">15 · sphere</button>
-        <button data-scene="16">16 · capsules</button>
+        <strong style="font-size: 0.85em; opacity: 0.7; align-self: center;">3D:</strong>
+        <a href="./test-pasma-capsules.html#15"><button>15 · sphere + ground →</button></a>
+        <a href="./test-pasma-capsules.html#16"><button>16 · capsules + ground →</button></a>
+        <span style="font-size: 0.75em; opacity: 0.55; align-self: center;">(3D streamline 调控 unified page)</span>
         <span style="flex: 1;"></span>
         <button id="re">randomize</button>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
-    <script type="module" src="./painted-scenes.js"></script>
+    <script type="module" src="./streamline-scenes.js"></script>
   </body>
 </html>

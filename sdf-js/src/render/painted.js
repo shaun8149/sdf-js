@@ -43,6 +43,17 @@
  * @param {boolean} [options.flipY=true]  - +Y up（与 silhouette / bands 一致）
  * @param {number} [options.sdfThreshold=-0.001] - SDF 命中阈值
  * @param {number} [options.gap=0.75]     - 笔触半径 vs cellSize 比例
+ *
+ * --- 3D 模式（BOB scenes 7/8 风格）---
+ * @param {(x:number, y:number)=>{intensity:number, region:string}} [options.probe=null]
+ *        - 若提供，跳过 SDF 着色路径，改用 probe(x, y) 返回的 intensity + region
+ *          决定每个 cell 的 layer 数（密度调制）和 colorBase（区域调色）。
+ *          intensity ∈ [0,1]：亮处少 layer（稀疏），暗处多 layer（密集，加深）。
+ *          region：字符串 key，查 regionOffset 表得 palette 偏移。
+ * @param {Object<string, number>} [options.regionOffset]
+ *        - region 名 → 调色板偏移（startIndex 加这个值）。
+ *          默认 { background: 1, ground: 2, object: 3 }。
+ *
  * @returns {Generator}
  */
 export function* painted(p, sdfs, options = {}) {
@@ -65,6 +76,8 @@ export function* painted(p, sdfs, options = {}) {
     flipY           = true,
     sdfThreshold    = -0.001,
     gap             = 0.75,
+    probe           = null,
+    regionOffset    = { background: 1, ground: 2, object: 3 },
   } = options;
 
   const csize = p.width;
@@ -114,19 +127,38 @@ export function* painted(p, sdfs, options = {}) {
     return [wx, wy];
   };
 
-  for (const e of elements) {
-    const wp = pxToWorld(e.x, e.y);
-    sdfs.forEach((sdf, index) => {
-      if (sdf(wp) < sdfThreshold) {
-        // BOB 原版 colorBase 公式（修正版：每个 SDF 占 3 格独立窗口，加 +1 防止与
-        // "未命中"的 startIndex 撞色）
-        const colorOffset =
-          index === 0 ? 0 :
-          index === 1 ? (e.i % 2 !== 0 ? 0 : 1) :
-                        (e.i % 2 !== 0 ? 0 : (e.j % 2 === 0 ? 1 : 2));
-        e.colorBase = startIndex + index * 3 + colorOffset + 1;
-      }
-    });
+  if (probe) {
+    // ---- 3D 通路：probe 提供 intensity + region。
+    // intensity 调密度（layer 数），region 决定 colorBase。
+    for (const e of elements) {
+      const [wx, wy] = pxToWorld(e.x, e.y);
+      const { intensity, region } = probe(wx, wy);
+
+      // 密度调制：layer 数 ∝ (1 - 0.92·intensity²)·layers
+      // 1 - 0.92·intensity² 是 gamma 曲线 + 0.08 最小残余（最亮处仍有 ~8% 点存活）
+      const density = 1 - 0.92 * intensity * intensity;
+      const dl = density * layers;
+      const base = Math.floor(dl);
+      // 随机化舍入：把小数部分当概率，让密度可以连续变化（不是阶梯式）
+      e.layerCount = base + (p.random() < dl - base ? 1 : 0);
+      e.colorBase  = startIndex + (regionOffset[region] || 1);
+    }
+  } else {
+    // ---- 2D 通路：标准 SDF 命中 → colorBase。
+    for (const e of elements) {
+      const wp = pxToWorld(e.x, e.y);
+      sdfs.forEach((sdf, index) => {
+        if (sdf(wp) < sdfThreshold) {
+          // BOB 原版 colorBase 公式（每个 SDF 占 3 格独立窗口，+1 防止与
+          // "未命中"的 startIndex 撞色）
+          const colorOffset =
+            index === 0 ? 0 :
+            index === 1 ? (e.i % 2 !== 0 ? 0 : 1) :
+                          (e.i % 2 !== 0 ? 0 : (e.j % 2 === 0 ? 1 : 2));
+          e.colorBase = startIndex + index * 3 + colorOffset + 1;
+        }
+      });
+    }
   }
 
   // ---- drawSegment: 渐进式画。yield 让 caller 在 raf/draw 里推进 -----------
@@ -134,7 +166,9 @@ export function* painted(p, sdfs, options = {}) {
   for (let i = 0; i < elements.length; i++) {
     if ((i % yieldEvery) === 0) yield;
     const e = elements[i];
-    for (let layerIdx = 0; layerIdx < layers; layerIdx++) {
+    // 3D 通路给每个 cell 自己的 layer 数；2D 通路用全局 layers
+    const n = (e.layerCount !== undefined) ? e.layerCount : layers;
+    for (let layerIdx = 0; layerIdx < n; layerIdx++) {
       const pal = (layerIdx % 2 === 0) ? palette : palette2;
       p.fill(pal[(e.colorBase + layerIdx) % pal.length]);
       const xoffset = (p.noise(e.x * noiseScale, e.y * noiseScale, layerIdx) - 0.5) * smallOffset;

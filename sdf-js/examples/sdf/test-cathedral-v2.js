@@ -142,5 +142,9 @@ export function scene(ctx) {
   );
 }
 
-const canvas = document.getElementById('c');
-scene(canvas.getContext('2d'));
+export function getSdfs() {
+  return [moon, ground, stone, stringcourses, allWindows, roseOuter, traceLobes, traceHub, portals, crosses];
+}
+
+const _canvas = typeof document !== 'undefined' && document.getElementById('c');
+if (_canvas) scene(_canvas.getContext('2d'));

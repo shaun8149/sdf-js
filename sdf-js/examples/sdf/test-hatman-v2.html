@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM round 2 #5: hat man</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm round 2 · hat man.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            The critical scales test. v1 used 14 anatomical parts smooth-unioned with
+            a buggy trapezoid (body looked like a pyramid). v2 took a completely
+            different approach: ONE 30-vertex polygon for the entire silhouette,
+            sidestepping the trapezoid problem entirely. Anatomical x-ordering
+            (nose &gt; chin &gt; lip) encoded directly in vertex coordinates.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-hatman.html">v1 (mountain-body failure)</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-hatman-v2.js"></script>
+  </body>
+</html>

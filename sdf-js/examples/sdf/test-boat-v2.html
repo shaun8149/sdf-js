@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js — LLM round 2 #2: boat</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 720px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>llm round 2 · boat.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Round 2 with improved SKILL.md. Compare with <code>test-boat.js</code> (v1):
+            avoids the <code>trapezoid</code> bug entirely by using <code>polygon</code> for
+            the hull. Applies the outline idiom on every major element with
+            thickness graded by visual hierarchy. Uses <code>intersection</code> to
+            clip decorative bands to the hull silhouette.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./test-boat.html">v1 (had trapezoid bug)</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="512" height="512"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./test-boat-v2.js"></script>
+  </body>
+</html>

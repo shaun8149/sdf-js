@@ -11,24 +11,45 @@
       <header class="showcase-header">
         <a class="brand" href="../index.html">sdf-js</a>
         <div class="tabs">
-          <button class="tab active" data-src="./cactus.html">silhouette</button>
-          <button class="tab" data-src="./2d.html">bands</button>
+          <button class="tab" data-src="./scenes-debug.html">silhouette</button>
+          <button class="tab" data-src="./streamline-scenes.html">streamline</button>
           <button class="tab" data-src="./scenes-sand.html">sand</button>
           <button class="tab" data-src="./painted-scenes.html">painted</button>
+          <button class="tab" data-src="./2d.html">bands</button>
+          <button id="reload-view" title="reload current view (cache-bust)" style="margin-left: 8px;">↻</button>
         </div>
         <a class="home-link" href="../index.html">index</a>
       </header>
-      <iframe id="stage" class="showcase-stage" src="./cactus.html"></iframe>
+      <iframe id="stage" class="showcase-stage"></iframe>
     </div>
     <script>
       const stage = document.getElementById('stage');
-      document.querySelectorAll('.tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          stage.src = btn.dataset.src;
-        });
+      const tabs  = Array.from(document.querySelectorAll('.tab'));
+
+      const tabKey   = src  => (src.match(/\/([^/]+)\.html/) || [])[1] || '';
+      const bustSrc  = src  => src + (src.includes('?') ? '&' : '?') + 't=' + Date.now();
+
+      function activate(tab) {
+        if (!tab) return;
+        tabs.forEach(b => b.classList.remove('active'));
+        tab.classList.add('active');
+        stage.src = bustSrc(tab.dataset.src);                 // 每次切都 cache-bust
+        history.replaceState(null, '', '#' + tabKey(tab.dataset.src));  // hash 记忆
+      }
+
+      tabs.forEach(btn => btn.addEventListener('click', () => activate(btn)));
+
+      // 显式重载当前 view（停在当前 tab，纯刷 iframe）
+      document.getElementById('reload-view').addEventListener('click', () => {
+        const active = tabs.find(b => b.classList.contains('active'));
+        if (active) stage.src = bustSrc(active.dataset.src);
       });
+
+      // 首次加载：从 URL hash 取 tab，没就用 silhouette
+      const initial = location.hash.slice(1)
+        ? tabs.find(t => tabKey(t.dataset.src) === location.hash.slice(1))
+        : null;
+      activate(initial || tabs[0]);
     </script>
   </body>
 </html>
