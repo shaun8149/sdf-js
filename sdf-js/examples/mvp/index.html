@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdf-js MVP · text → SDF</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        background: #0d0d0d;
+        color: #d0d0d0;
+        margin: 0;
+        padding: 20px;
+      }
+      .container { max-width: 1380px; margin: 0 auto; }
+      h1 { font-weight: 500; margin: 0 0 4px; color: #f0f0f0; }
+      .subtitle { color: #888; margin: 0 0 16px; font-size: 0.95em; }
+
+      .setup {
+        background: #1f1f1f;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #2a2a2a;
+        color: #d0d0d0;
+      }
+      .setup summary { color: #999; }
+      .setup label { display: flex; align-items: center; gap: 10px; font-size: 0.9em; }
+      .setup input[type="password"] {
+        flex: 1;
+        padding: 6px 10px;
+        font-family: monospace;
+        font-size: 0.85em;
+        background: #0d0d0d;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        border-radius: 4px;
+      }
+      .setup .hint { color: #666; font-size: 0.8em; margin-top: 4px; }
+
+      .sys-status {
+        background: #1f1f1f;
+        color: #999;
+        padding: 6px 14px;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        font-size: 0.8em;
+        border: 1px solid #2a2a2a;
+        font-family: monospace;
+      }
+
+      /* qql.art-style 布局: sidebar (params) + 大 canvas，code 推到下方 */
+      .main-grid {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 14px;
+        align-items: stretch;
+        /* 不设 height —— 让 row 跟着 canvas-panel 自然高度走，避免和 tests-area 重叠 */
+      }
+
+      .panel {
+        background: #1f1f1f;
+        padding: 14px 16px;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a;
+        color: #d0d0d0;
+        /* sidebar 内容可能稍多，给个 max-height + 内部滚 */
+        max-height: 820px;
+        overflow-y: auto;
+      }
+      .panel h3 {
+        margin: 0 0 10px;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+      }
+      .panel h3 + h3 { margin-top: 16px; }
+
+      /* Tests area: 大 canvas 之下，code 之上的 3 列测试入口 */
+      .tests-area {
+        margin-top: 16px;
+        background: #1f1f1f;
+        color: #d0d0d0;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 18px;
+      }
+      .tests-col h4 {
+        margin: 0 0 6px;
+        font-size: 0.75em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+      }
+      .tests-col .examples-label,
+      .tests-col .examples-hint {
+        margin-top: 8px;
+      }
+      .tests-col .examples-label:first-of-type { margin-top: 0; }
+      @media (max-width: 1100px) {
+        .tests-area { grid-template-columns: 1fr; }
+      }
+
+      /* Code area 推到下方（screen 2） */
+      .code-area {
+        margin-top: 16px;
+        background: #1f1f1f;
+        color: #d0d0d0;
+        padding: 14px 16px;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a;
+      }
+      .code-area h3 {
+        margin: 0 0 10px;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+      }
+      .code-area .code-hint {
+        font-size: 0.72em;
+        color: #666;
+        font-style: italic;
+        margin-bottom: 6px;
+      }
+
+      textarea {
+        width: 100%;
+        font-family: 'SF Mono', Menlo, monospace;
+        font-size: 0.8em;
+        padding: 8px 10px;
+        background: #141414;
+        color: #d8d8d8;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        resize: vertical;
+        box-sizing: border-box;
+        line-height: 1.5;
+      }
+      #prompt { min-height: 60px; font-size: 0.95em; font-family: inherit; background: #141414; color: #e8e8e8; }
+      /* code-output: 现在在下方独立区域，给个合理高度 */
+      #code-output { min-height: 360px; background: #0d0d0d; color: #d0d0d0; }
+
+      .controls { display: flex; gap: 8px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+      button {
+        padding: 7px 16px;
+        font-size: 0.9em;
+        background: #e44d36;
+        color: white;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      button:hover { background: #d23a23; }
+      button:disabled { background: #555; cursor: wait; }
+      button.secondary {
+        background: #2a2a2a;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        font-weight: normal;
+      }
+      button.secondary:hover { background: #353535; }
+      select, input[type="number"] {
+        padding: 6px 8px;
+        font-size: 0.85em;
+        background: #141414;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+      }
+      select option { background: #1a1a1a; color: #d0d0d0; }
+      input[type="range"] { accent-color: #e44d36; }
+
+      .examples { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+      .examples button {
+        padding: 4px 10px;
+        font-size: 0.75em;
+        background: #2a2a2a;
+        color: #ccc;
+        border: 1px solid #3a3a3a;
+        border-radius: 999px;
+        font-weight: normal;
+      }
+      .examples button:hover { background: #353535; color: #fff; }
+      .examples-label {
+        margin-top: 10px;
+        font-size: 0.72em;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .examples-p0 { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 5px; }
+      .examples-p0 button {
+        padding: 4px 10px;
+        font-size: 0.75em;
+        background: #1f2a1f;
+        color: #b8d8b0;
+        border: 1px solid #2f4f2f;
+        border-radius: 999px;
+        font-weight: normal;
+      }
+      .examples-p0 button:hover { background: #2a3a2a; }
+      .examples-emoji { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 3px; }
+      .examples-emoji button {
+        padding: 4px 7px;
+        font-size: 1.15em;
+        line-height: 1;
+        background: #2a1f2a;
+        color: #d0b8d8;
+        border: 1px solid #4a2f4a;
+        border-radius: 6px;
+        min-width: 34px;
+        font-weight: normal;
+      }
+      .examples-emoji button:hover { background: #3a2a3a; }
+      .examples-hint {
+        font-size: 0.7em;
+        color: #777;
+        margin-top: 2px;
+        font-style: italic;
+      }
+
+      /* QQL.art-style 卡片 (dark + pills) */
+      .qql-card {
+        background: #2a2a2a;
+        color: #d0d0d0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+      .qql-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78em;
+        color: #999;
+        margin-bottom: 8px;
+      }
+      .qql-card-header .qql-value {
+        color: #fff;
+        font-weight: 500;
+        font-size: 0.92em;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .qql-pill-row {
+        display: flex;
+        background: #1a1a1a;
+        border-radius: 18px;
+        padding: 3px;
+        gap: 0;
+      }
+      .qql-pill {
+        flex: 1;
+        padding: 6px 10px;
+        text-align: center;
+        border-radius: 14px;
+        background: transparent;
+        color: #888;
+        border: none;
+        cursor: pointer;
+        font-size: 0.78em;
+        font-family: inherit;
+        transition: background 0.12s, color 0.12s;
+      }
+      .qql-pill:hover { color: #ccc; }
+      .qql-pill.active {
+        background: #404040;
+        color: white;
+      }
+      .qql-swatches {
+        display: flex;
+        gap: 2px;
+        margin: 8px 0 6px;
+        height: 16px;
+      }
+      .qql-swatch {
+        flex: 1;
+        border-radius: 2px;
+        min-width: 0;
+      }
+      .qql-select {
+        width: 100%;
+        background: #1a1a1a;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.78em;
+        font-family: inherit;
+      }
+      .qql-select option { background: #1a1a1a; color: #d0d0d0; }
+      .qql-select optgroup { background: #0d0d0d; color: #888; font-style: normal; }
+
+      /* Arrangement buttons (legacy, 已替换为 X/Y number input。保留 CSS for compat) */
+      .arrangement-row { display: flex; gap: 4px; }
+      .arrangement-btn {
+        padding: 4px 9px;
+        font-size: 0.75em;
+        background: #2a2a2a;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        cursor: pointer;
+        min-width: 32px;
+        font-weight: normal;
+      }
+      .arrangement-btn.active {
+        background: #e44d36;
+        color: white;
+        border-color: #e44d36;
+      }
+
+      /* Stipple parameters panel */
+      .stipple-params {
+        margin-top: 6px;
+        padding: 10px 12px;
+        background: #181818;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        color: #d0d0d0;
+      }
+      .stipple-params .params-title {
+        font-size: 0.72em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #777;
+        margin-bottom: 6px;
+      }
+      .param-presets {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .param-presets button {
+        padding: 3px 9px;
+        font-size: 0.72em;
+        background: #2a2a2a;
+        color: #d0d0d0;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        font-weight: normal;
+      }
+      .param-presets button:hover { background: #353535; }
+      .param-row {
+        display: grid;
+        grid-template-columns: 76px 1fr 40px;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 2px;
+      }
+      .param-row label {
+        font-size: 0.72em;
+        color: #999;
+      }
+      .param-row input[type="range"] {
+        width: 100%;
+        margin: 0;
+      }
+      .param-val {
+        font-size: 0.72em;
+        font-family: 'SF Mono', Menlo, monospace;
+        color: #999;
+        text-align: right;
+      }
+
+      /* History list */
+      .history-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        background: #141414;
+        margin-top: 4px;
+      }
+      .history-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 6px;
+        align-items: center;
+        padding: 5px 9px;
+        border-bottom: 1px solid #222;
+        font-size: 0.78em;
+      }
+      .history-item:last-child { border-bottom: none; }
+      .history-item:hover { background: #1f1f1f; }
+      .history-prompt {
+        cursor: pointer;
+        color: #ccc;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .history-prompt:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+      .history-time {
+        color: #666;
+        font-size: 0.9em;
+        white-space: nowrap;
+      }
+      .history-del {
+        padding: 0 6px;
+        background: transparent;
+        color: #c44;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        line-height: 1;
+        font-weight: normal;
+        border-radius: 4px;
+      }
+      .history-del:hover { background: #3a1f1f; color: #f88; }
+      .history-empty {
+        padding: 14px 12px;
+        color: #555;
+        font-size: 0.75em;
+        font-style: italic;
+        text-align: center;
+      }
+      .history-clear {
+        font-size: 0.7em;
+        color: #c44;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 6px;
+        font-weight: normal;
+        border-radius: 0;
+      }
+      .history-clear:hover { text-decoration: underline; background: transparent; }
+
+      .status {
+        margin-top: 10px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+        background: #141414;
+        color: #999;
+        border-radius: 6px;
+        min-height: 1em;
+        font-family: monospace;
+        border: 1px solid #2a2a2a;
+      }
+
+      .canvas-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1f1f1f;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 14px;
+      }
+      canvas {
+        background: #0d0d0d;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+      }
+
+      .kbd {
+        display: inline-block;
+        padding: 1px 5px;
+        background: #2a2a2a;
+        color: #ccc;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.8em;
+      }
+
+      @media (max-width: 1100px) {
+        .main-grid { grid-template-columns: 1fr; }
+        .panel { max-height: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 style="margin-bottom: 2px;">sdf-js MVP · text → SDF illustration</h1>
+      <p class="subtitle" style="margin-bottom: 8px;">
+        Anthropic API → JS code → 渲染（System prompt = SKILL.md）·
+        参数在左，画在右，代码在下方。
+      </p>
+
+      <details class="setup" style="margin-bottom: 8px;">
+        <summary style="cursor: pointer; font-size: 0.85em; color: #999;">⚙️ API key 设置 / 系统状态</summary>
+        <label style="margin-top: 6px;">
+          <span>Anthropic API key:</span>
+          <input type="password" id="api-key" placeholder="sk-ant-..." autocomplete="off" />
+        </label>
+        <div class="hint">存 localStorage 本地保存。商业部署改 backend proxy 隐藏 key。</div>
+        <div class="sys-status" id="sys-prompt-status" style="margin-top: 4px;">⏳ 加载 system prompt…</div>
+      </details>
+
+      <div class="main-grid">
+        <!-- LEFT: prompt -->
+        <div class="panel">
+          <h3>① Prompt</h3>
+          <textarea id="prompt" placeholder="e.g. a coffee cup on a saucer">a coffee cup on a saucer</textarea>
+
+          <div class="controls">
+            <select id="model">
+              <option value="claude-haiku-4-5-20251001">Haiku 4.5（快、便宜）</option>
+              <option value="claude-sonnet-4-6">Sonnet 4.6</option>
+              <option value="claude-opus-4-7" selected>Opus 4.7（推荐）</option>
+            </select>
+            <button id="generate">Generate</button>
+            <span style="font-size: 0.75em; color: #888;"><span class="kbd">⌘</span><span class="kbd">↵</span></span>
+          </div>
+
+          <div class="qql-card">
+            <div class="qql-card-header">
+              <span>Render mode</span>
+              <span class="qql-value" id="render-mode-label">Silhouette</span>
+            </div>
+            <div class="qql-pill-row" id="render-mode-pills">
+              <button class="qql-pill active" data-render-mode="silhouette">Silhouette</button>
+              <button class="qql-pill" data-render-mode="stipple">Stipple</button>
+              <button class="qql-pill" data-render-mode="hatch">Lines</button>
+              <button class="qql-pill" data-render-mode="raymarched">Lambert</button>
+            </div>
+            <!-- 隐藏 select 作 source-of-truth，pill 改变它的 value 并 dispatch change。
+                 注：value="raymarched" 是 renderer 名（diffuse shading 风格），不是 input 格式。
+                 4 个 renderer 都接受任意维度的 SDF —— "3D" 是 SDF 输入的事，不是 renderer 的事。 -->
+            <select id="render-mode" style="display: none;">
+              <option value="silhouette" selected>Silhouette（默认）</option>
+              <option value="stipple">Stipple（BOB 点彩）</option>
+              <option value="hatch">Lines (Pasma)</option>
+              <option value="raymarched">Lambert (Raymarched)</option>
+            </select>
+          </div>
+
+          <!-- Background pattern (Truchet / Hilbert / Gosper / Motifs) - 跟 renderer 正交的底纹层。
+               只在 Silhouette / Lines 两个 mode 显示——Stipple 自己撒满 cells、Lambert fillRect 整画布，
+               跟底纹组合都会视觉冲突，所以 dispatcher 切到这两个 mode 时整张 card 隐藏 -->
+          <div class="qql-card" id="pattern-card">
+            <div class="qql-card-header">
+              <span>Background pattern</span>
+              <span class="qql-value" id="pattern-mode-label">None</span>
+            </div>
+            <div class="qql-pill-row" id="pattern-mode-pills">
+              <button class="qql-pill active" data-pattern-mode="none">None</button>
+              <button class="qql-pill" data-pattern-mode="truchet">Truchet</button>
+              <button class="qql-pill" data-pattern-mode="hilbert">Hilbert</button>
+              <button class="qql-pill" data-pattern-mode="gosper">Gosper</button>
+              <button class="qql-pill" data-pattern-mode="motifs">Motifs</button>
+            </div>
+            <select id="pattern-mode" style="display: none;">
+              <option value="none" selected>None</option>
+              <option value="truchet">Truchet (Smith arcs)</option>
+              <option value="hilbert">Hilbert curve</option>
+              <option value="gosper">Gosper curve (flowsnake)</option>
+              <option value="motifs">Motifs (Nijhoff multi-band library)</option>
+            </select>
+            <div id="pattern-params" style="display: none; margin-top: 8px;">
+              <!-- Truchet only：cell 大小 -->
+              <div class="param-row pattern-truchet-only">
+                <label title="Truchet cell 大小（小=密，0.005 ≈ 480 cells/side ≈ Pasma 角落黑团）">Cell 大小</label>
+                <input type="range" id="p-pattern-density" min="0.002" max="0.02" step="0.001" value="0.01">
+                <span class="param-val" id="p-pattern-density-val">0.010</span>
+              </div>
+              <!-- Hilbert/Gosper only：递归深度 -->
+              <div class="param-row pattern-curve-only">
+                <label title="Hilbert 3-7（4 推荐）/ Gosper 3-5（4 推荐）">递归深度</label>
+                <input type="range" id="p-pattern-depth" min="3" max="7" step="1" value="4">
+                <span class="param-val" id="p-pattern-depth-val">4</span>
+              </div>
+              <!-- Motifs only：top band cell 尺寸（自下而上几何递减） -->
+              <div class="param-row pattern-motifs-only">
+                <label title="Top band cell 尺寸（下方 band 自动减半）；motif 自身缩放到此 cell">Band 0 大小</label>
+                <input type="range" id="p-pattern-band-size" min="0.08" max="0.4" step="0.01" value="0.16">
+                <span class="param-val" id="p-pattern-band-size-val">0.16</span>
+              </div>
+              <div class="param-row pattern-motifs-only">
+                <label title="水平 band 数量（3 = Reinder 默认）">Band 数</label>
+                <input type="range" id="p-pattern-bands" min="2" max="5" step="1" value="3">
+                <span class="param-val" id="p-pattern-bands-val">3</span>
+              </div>
+              <!-- 全 pattern 通用：密度变化（Pasma 风格"局部密 / 局部稀"）-->
+              <div class="param-row">
+                <label title="0=均匀密度 / 1=最大变化（左上密、右下稀，Pasma 签名）">密度变化</label>
+                <input type="range" id="p-pattern-variation" min="0" max="1" step="0.05" value="0">
+                <span class="param-val" id="p-pattern-variation-val">0</span>
+              </div>
+              <div class="param-row">
+                <label title="底纹线条颜色">线色</label>
+                <input type="color" id="p-pattern-color" value="#1a1410" style="width:100%;height:24px;padding:0;border-radius:4px;border:1px solid #3a3a3a;background:#141414;">
+                <span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls" style="margin-top: 6px; align-items: center; gap: 6px;">
+            <span style="font-size: 0.8em; color: #999;">排列:</span>
+            <label style="font-size: 0.75em; color: #999;">X
+              <input type="number" id="p-nx" min="1" max="20" value="1" style="width: 46px; padding: 3px 5px; font-size: 0.85em;">
+            </label>
+            <span style="font-size: 0.8em; color: #888;">×</span>
+            <label style="font-size: 0.75em; color: #999;">Y
+              <input type="number" id="p-ny" min="1" max="20" value="1" style="width: 46px; padding: 3px 5px; font-size: 0.85em;">
+            </label>
+            <span style="font-size: 0.7em; color: #999;">2×3 / 1×4 等</span>
+          </div>
+
+          <div class="controls" style="margin-top: 4px; display: grid; grid-template-columns: 72px 1fr 36px; align-items: center; gap: 6px;">
+            <label title="rep 的 padding 参数 — tile 边界的邻居 union 平滑，消除 outline 跨边界 artifact" style="font-size: 0.75em; color: #999;">Tile padding</label>
+            <input type="range" id="p-rep-padding" min="0" max="2" step="1" value="0">
+            <span class="param-val" id="p-rep-padding-val">0</span>
+          </div>
+
+          <div id="stipple-params" class="stipple-params" style="display: none;">
+            <!-- Preset (QQL card) -->
+            <div class="qql-card" style="margin-top: 0;">
+              <div class="qql-card-header">
+                <span>Preset</span>
+                <span class="qql-value" id="preset-label">—</span>
+              </div>
+              <div class="qql-pill-row" id="preset-pills">
+                <button class="qql-pill" data-preset="watercolor">水彩</button>
+                <button class="qql-pill" data-preset="bob">BOB</button>
+                <button class="qql-pill" data-preset="fidenzaBob">Fidenza-BOB</button>
+              </div>
+            </div>
+
+            <!-- Color source (QQL card with swatches + dropdown) -->
+            <div class="qql-card">
+              <div class="qql-card-header">
+                <span>Color</span>
+                <span class="qql-value" id="color-source-label">LLM 颜色</span>
+              </div>
+              <div class="qql-swatches" id="color-source-swatches"></div>
+              <select id="color-source" class="qql-select">
+                <option value="llm">LLM 颜色 (默认)</option>
+              </select>
+            </div>
+
+            <div class="params-title" style="margin-top: 10px;">Stipple 详细参数（实时生效）</div>
+            <div class="param-row">
+              <label title="每个 cell 叠绘几个笔触 — 大=厚 impasto，小=稀疏">笔触层数</label>
+              <input type="range" id="p-brushLayers" min="1" max="12" step="1" value="5">
+              <span class="param-val" id="p-brushLayers-val">5</span>
+            </div>
+            <div class="param-row">
+              <label title="笔触半径相对 cell 尺寸的比例 — 大=覆盖广">笔触大小</label>
+              <input type="range" id="p-gap" min="0.3" max="2" step="0.05" value="0.75">
+              <span class="param-val" id="p-gap-val">0.75</span>
+            </div>
+            <div class="param-row">
+              <label title="每层笔触的位置抖动幅度（像素）— 大=松散painterly">笔触抖动</label>
+              <input type="range" id="p-smallOffset" min="0" max="20" step="0.5" value="4">
+              <span class="param-val" id="p-smallOffset-val">4</span>
+            </div>
+            <div class="param-row">
+              <label title="2=椭圆 / 5+=不规则圆形（带边）">笔触形状</label>
+              <input type="range" id="p-smallSegs" min="2" max="8" step="1" value="5">
+              <span class="param-val" id="p-smallSegs-val">5</span>
+            </div>
+            <div class="param-row">
+              <label title="cell log2 尺寸 — 1=2px(超密)，5=32px(稀疏)">网格密度</label>
+              <input type="range" id="p-smallScaleSize" min="1" max="5" step="1" value="3">
+              <span class="param-val" id="p-smallScaleSize-val">3</span>
+            </div>
+            <div class="param-row">
+              <label title="Perlin 频率 — 低=大块 noise 起伏 / 高=细颗粒">噪声频率</label>
+              <input type="range" id="p-noiseScale" min="0.005" max="0.2" step="0.005" value="0.04">
+              <span class="param-val" id="p-noiseScale-val">0.04</span>
+            </div>
+            <div class="param-row">
+              <label title="叠绘层间横向偏移 — 大=向右扫笔">横向偏移</label>
+              <input type="range" id="p-rH" min="0" max="3" step="0.1" value="0.6">
+              <span class="param-val" id="p-rH-val">0.6</span>
+            </div>
+            <div class="param-row">
+              <label title="叠绘层间纵向偏移 — 负=向上扫笔，正=向下">纵向偏移</label>
+              <input type="range" id="p-rV" min="-3" max="3" step="0.1" value="0">
+              <span class="param-val" id="p-rV-val">0</span>
+            </div>
+            <div class="param-row">
+              <label title="Perlin + RNG seed — 改它就换一组随机变化">随机种子</label>
+              <input type="range" id="p-seed" min="1" max="100" step="1" value="42">
+              <span class="param-val" id="p-seed-val">42</span>
+            </div>
+            <div class="param-row" style="border-top: 1px dashed #ddd; padding-top: 4px; margin-top: 4px;">
+              <label title="0=单色（mono）/ 1=完全 HSL 展开（BOB-like 多色震颤）。每个 LLM 色派生 5 色：+/-15° hue / 互补 / 暗化，brush 层级循环取。">色彩展开</label>
+              <input type="range" id="p-colorSpread" min="0" max="1" step="0.05" value="0">
+              <span class="param-val" id="p-colorSpread-val">0</span>
+            </div>
+            <div class="param-row">
+              <label title="互补色权重（独占）— BOB 震颤感的核心。0=无 / 1=最强">互补强度</label>
+              <input type="range" id="p-complementWeight" min="0" max="1" step="0.05" value="0.5">
+              <span class="param-val" id="p-complementWeight-val">0.5</span>
+            </div>
+          </div>
+
+          <div class="status" id="status">就绪</div>
+
+          <!-- Lines 模式 only：导出 SVG（plotter / Illustrator / Figma 用）-->
+          <div id="svg-export-row" class="controls" style="display: none; margin-top: 8px;">
+            <button id="export-svg" class="secondary">↓ Export SVG</button>
+            <span style="font-size: 0.72em; color: #888;">vector path 导出 · plotter / Illustrator 可用</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: canvas (qql.art-style 大图主舞台) -->
+        <div class="canvas-panel">
+          <canvas id="c" width="640" height="640"></canvas>
+        </div>
+      </div>
+
+      <!-- ↓ 测试区：canvas 下方 / code 上方，3 列横向（例子 / emoji / 历史）-->
+      <div class="tests-area">
+        <div class="tests-col">
+          <h4>📦 例子 prompts</h4>
+          <div class="examples">
+            <button data-example="a coffee cup on a saucer">coffee cup</button>
+            <button data-example="a kitchen knife on a cutting board">knife</button>
+            <button data-example="a red apple with a leaf">apple</button>
+            <button data-example="a small bird sitting on a branch">bird</button>
+            <button data-example="a sailboat on the sea, sun setting">sailboat</button>
+            <button data-example="a vase with three tulips">tulips</button>
+            <button data-example="a fish, simple flat illustration">fish</button>
+            <button data-example="a small house with a tree, low horizon">house</button>
+          </div>
+
+          <div class="examples-label">P0 测试 · ellipse / segment / arc / ring</div>
+          <div class="examples-p0">
+            <button data-example="an egg resting on a small pillow">egg (ellipse)</button>
+            <button data-example="a yellow pencil with a pink eraser on a desk">pencil (segment)</button>
+            <button data-example="a rainbow over green rolling hills">rainbow (arc)</button>
+            <button data-example="a wall clock showing 10:10, with hour and minute hands">clock (ring+segment)</button>
+            <button data-example="a wine glass half full of red wine on a table">wine glass (ellipse+segment)</button>
+            <button data-example="an acoustic guitar with strings and sound hole">guitar (all P0)</button>
+            <button data-example="a smiling face: round head, two eyes, an arc smile">smile (arc+circle)</button>
+            <button data-example="a bicycle, side view">bicycle (ring+segment)</button>
+          </div>
+        </div>
+
+        <div class="tests-col">
+          <h4>🎭 30 高频 emoji (X / WeChat / WhatsApp)</h4>
+          <div class="examples-hint">hover 看全名 · Tier 2/3 完成后 ❤️ ⭐ 🌙 ✨ 都有专属 primitive</div>
+          <div class="examples-emoji">
+            <button data-example="a yellow face with tears of joy emoji, eyes squeezed shut, big blue tears streaming, mouth wide open laughing" title="face with tears of joy">😂</button>
+            <button data-example="a red heart emoji, plump symmetric heart shape, flat solid red color" title="red heart ">❤️</button>
+            <button data-example="a yellow face emoji rolling on the floor laughing, tilted to one side, tears, wide open mouth" title="ROFL">🤣</button>
+            <button data-example="a yellow thumbs up hand emoji, simple flat shape" title="thumbs up">👍</button>
+            <button data-example="a yellow loudly crying face emoji, eyes closed, two streams of blue tears, mouth open in distress" title="loudly crying face">😭</button>
+            <button data-example="two yellow hands pressed together in prayer, palms touching, simple flat emoji" title="folded hands">🙏</button>
+            <button data-example="a yellow face blowing a kiss emoji, one eye winking closed, lips puckered, a small red heart floating to the side" title="face blowing a kiss">😘</button>
+            <button data-example="a yellow smiling face with three small red hearts floating around its head, eyes smiling" title="smiling face with hearts ">🥰</button>
+            <button data-example="a yellow smiling face with two red hearts as its eyes, mouth open in delight" title="smiling face with heart-eyes ">😍</button>
+            <button data-example="a yellow smiling face with closed smiling eyes (arcs), small smile, rosy cheeks" title="smiling face with smiling eyes">😊</button>
+            <button data-example="a yellow beaming face with smiling eyes, wide open smile showing teeth" title="beaming face">😁</button>
+            <button data-example="a yellow pleading face emoji, big watery eyes, small slightly frowning mouth, eyebrows pulled up" title="pleading face">🥺</button>
+            <button data-example="a yellow grinning face emoji with a single large blue bead of sweat on its forehead, open smile" title="grinning face with sweat">😅</button>
+            <button data-example="a fire flame emoji, pointed flames in red orange yellow, pointing upward" title="fire">🔥</button>
+            <button data-example="a small yellow smiling face emoji with rosy cheeks, gentle closed smile" title="smiling face">☺️</button>
+            <button data-example="a yellow face with sunglasses emoji, square black sunglasses, slight smile" title="sunglasses face">😎</button>
+            <button data-example="a yellow thinking face emoji, one hand on chin, eyes looking up, slight frown" title="thinking face">🤔</button>
+            <button data-example="a yellow face with rolling eyes emoji, both eyeballs rolled up and to the side, flat mouth" title="rolling eyes">🙄</button>
+            <button data-example="a yellow grinning face with both eyes squinted closed into curves, wide open mouth laughing" title="grinning squinting face">😆</button>
+            <button data-example="a yellow hugging face emoji, smiling face with two hands extended forward for a hug" title="hugging face">🤗</button>
+            <button data-example="a yellow winking face emoji, one eye closed in a wink, other eye open, slight smile" title="winking face">😉</button>
+            <button data-example="a yellow sleeping face emoji, eyes closed, mouth slightly open, three Z letters floating beside head" title="sleeping face">😴</button>
+            <button data-example="a yellow crying face emoji, one large blue tear drop on cheek, slight frown" title="crying face">😢</button>
+            <button data-example="a yellow flushed face emoji, wide open eyes, small mouth, pink blush circles on cheeks" title="flushed face">😳</button>
+            <button data-example="a yellow five-pointed star emoji, plump symmetric star, flat solid yellow color" title="star ">⭐</button>
+            <button data-example="a yellow flexed muscle arm emoji, bicep bulging, fist visible at top" title="muscle">💪</button>
+            <button data-example="four small yellow stars and sparkles arranged like a burst, simple flat shapes" title="sparkles ">✨</button>
+            <button data-example="a red rose flower emoji, bloomed petals visible from above, green leaves and stem" title="rose">🌹</button>
+            <button data-example="a birthday cake emoji, three stacked tiers, candles on top, simple flat illustration" title="birthday cake">🎂</button>
+            <button data-example="a yellow sun emoji, round center with triangular rays radiating outward, simple flat" title="sun">☀️</button>
+          </div>
+        </div>
+
+        <div class="tests-col">
+          <h4>
+            📜 历史（自动保存）
+            <button class="history-clear" id="history-clear" style="float: right;">清空</button>
+          </h4>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </div>
+
+      <!-- ↓ Screen 2: 生成的 JS code（默认在下方，不挡视线，需要时滚下来）-->
+      <div class="code-area">
+        <h3>Generated JS code（可编辑 · ⌘+Enter 重渲）</h3>
+        <div class="code-hint">默认你不需要看到——LLM 输出会自动渲染。编辑此处后点 Re-render 重新执行。</div>
+        <textarea id="code-output" placeholder="// LLM 输出的 JS code 会显示在这里，可编辑后 ⌘+Enter 重渲染"></textarea>
+        <div class="controls">
+          <button id="rerender" class="secondary">Re-render</button>
+          <span style="font-size: 0.75em; color: #888;"><span class="kbd">⌘</span><span class="kbd">↵</span></span>
+          <span style="font-size: 0.75em; color: #888; margin-left: auto;" id="code-stats"></span>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./text-to-sdf.js"></script>
+  </body>
+</html>

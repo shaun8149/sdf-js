@@ -18,6 +18,14 @@ export { silhouette } from './silhouette.js';
 export { bands } from './bands.js';
 export { sandFrame } from './sand.js';
 export { painted } from './painted.js';
+export { bobStipple } from './bobStipple.js';
+export { raymarched } from './raymarched.js';
 export { flowLines } from './flowLines.js';
+export { hatch, hatchSvg, computeHatchLayers } from './hatch.js';
+// Background patterns (Truchet / space-filling curves) —— polyline-output 底纹家族
+export { truchet, computeTruchetPolylines } from './truchet.js';
+export { hilbert, gosper, computeHilbertPolylines, computeGosperPolylines } from './spaceCurve.js';
+// Motif library renderer (Nijhoff-style hand-drawn motif × multi-band grid sweep)
+export { motifGrid, computeMotifGridPolylines } from './motifGrid.js';
 export { drawLineSquare, clipLine } from './lineTile.js';
 export { tileGrid } from './tileGrid.js';
