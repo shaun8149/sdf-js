@@ -126,28 +126,32 @@ export function lightFromSpherical(azimuth, altitude, distance) {
 // Ray construction（MOVE from scenes-3d.js + EXTEND ortho 分支）
 // ----------------------------------------------------------------------------
 /**
- * 根据 camera 把屏幕 (x, y) 转成射线 {ro, rd}。
+ * 根据 camera 把 image-plane (x, y) 转成射线 {ro, rd}。
  *
- * - **Orthographic**: (x, y) 是 world image-plane coords（在 right/up 平面上的偏移）。
- *   ro 跟 (x, y) 走，rd 是常量 = camera.fwd。
- *   这跟之前 hatch/bobStipple inline probe 的"ro=[wx,wy,cameraDist], rd=[0,0,-1]"
- *   等价（当 camera 是默认 yaw/pitch 时），但允许任意相机姿态。
+ * **坐标约定（2026-05-15 统一）**：`(x, y)` 是 **math-y-up**（+y 朝上），跟
+ * raymarched.js / fly3d / GLSL `gl_FragCoord.y` 主流一致。caller 自己 flip 屏幕
+ * 像素的 y 到 math y-up 再传过来（参考 bobStipple/painted 的 pxToWorld：flipY=true）。
  *
+ * - **Orthographic**: (x, y) 是 world image-plane coords（right/up 平面上的偏移）。
+ *   ro = cam + right·x + up·y, rd = camera.fwd
  * - **Perspective**: (x, y) 是 normalized image-plane coords (∈ [-1, 1])，
- *   focal 把 image plane 推到 camera 前方 focal 单位处。射线方向 = normalize(focal·fwd
- *   + x·right - y·up)，ro = cam。这跟 scenes-3d.js 原 rayFor 等价。
+ *   focal 把 image plane 推到 camera 前方 focal 单位处。
+ *   rd = normalize(right·x + up·y + fwd·focal), ro = cam
+ *
+ * 旧版本（2026-05 前）这里写 `up·(-y)` 是 image-y-down 约定，但 MVP 跟现代 shader
+ * 都已经迁到 math-y-up；2026-05-15 修齐。
  */
 export function rayFor(camera, x, y) {
   if (camera.type === 'orthographic') {
     const ro = v.add(
       camera.cam,
-      v.add(v.mul(camera.right, x), v.mul(camera.up, -y)),
+      v.add(v.mul(camera.right, x), v.mul(camera.up, y)),
     );
     return { ro, rd: camera.fwd };
   }
   // perspective
   const dir = v.add(
-    v.add(v.mul(camera.right, x), v.mul(camera.up, -y)),
+    v.add(v.mul(camera.right, x), v.mul(camera.up, y)),
     v.mul(camera.fwd, camera.focal),
   );
   return { ro: camera.cam, rd: v.normalize(dir) };

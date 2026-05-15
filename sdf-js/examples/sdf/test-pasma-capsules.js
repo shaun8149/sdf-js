@@ -382,7 +382,9 @@ function runHatch(preview = false) {
     ctx.lineJoin = 'round';
 
     const wxToPx = wx => (wx + VIEW) / (2 * VIEW) * W;
-    const wyToPx = wy => (wy + VIEW) / (2 * VIEW) * H;
+    // 2026-05-15: probe.rayFor 统一到 math-y-up；streamline 端用 flipY=true 映射
+    // (world +y → screen top) 才匹配。旧 `(wy+V)/(2V)*H` 是 y-down 时代的产物。
+    const wyToPx = wy => (VIEW - wy) / (2 * VIEW) * H;
 
     for (const sl of streamlines) {
       const pts = sl.centerline;

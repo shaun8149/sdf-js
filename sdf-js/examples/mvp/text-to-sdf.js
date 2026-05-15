@@ -11,8 +11,95 @@ import * as render from '../../src/render/index.js';
 import { SDF3 } from '../../src/index.js';
 import * as bobPalette from '../../src/palette/bob.js';
 import * as tyler from '../../src/palette/tyler.js';
+import { createFly3DRenderer } from './fly3d-renderer.js';
+import { createBobShaderRenderer } from './bob-shader-renderer.js';
 
 const $ = id => document.getElementById(id);
+
+// ============================================================================
+// Fly 3D renderer (lazy singleton — only init'd when user first picks Fly 3D pill)
+// ============================================================================
+let _fly3dRenderer = null;
+function getFly3D() {
+  if (_fly3dRenderer) return _fly3dRenderer;
+  const wgl = $('c-webgl');
+  if (!wgl) return null;
+  _fly3dRenderer = createFly3DRenderer({
+    canvas: wgl,
+    getControls: () => ({
+      lightAzim: +$('fly-light-azim').value,
+      lightAlt:  +$('fly-light-alt').value,
+      lightDist: +$('fly-light-dist').value,
+      fov:       +$('fly-focal').value,
+      shadowsOn: $('fly-shadows').checked,
+      groundOn:  $('fly-ground').checked,
+      checkerOn: $('fly-checker').checked,
+    }),
+    onFps: (fps) => {
+      const el = $('fly3d-fps');
+      if (el) el.textContent = `FPS: ${fps.toFixed(0)}`;
+    },
+    onCamUpdate: (s) => {
+      const r = $('fly3d-readout');
+      if (r) r.textContent =
+        `pos: ${s.position.map(x => x.toFixed(2)).join(' ')} · yaw ${(s.yaw*180/Math.PI).toFixed(0)}° pitch ${(s.pitch*180/Math.PI).toFixed(0)}°`;
+    },
+  });
+  return _fly3dRenderer;
+}
+
+// ============================================================================
+// BOB GPU renderer (lazy singleton, shares #c-webgl canvas with Fly 3D)
+// ============================================================================
+let _bobShaderRenderer = null;
+function getBobShader() {
+  if (_bobShaderRenderer) return _bobShaderRenderer;
+  const wgl = $('c-webgl');
+  if (!wgl) return null;
+  _bobShaderRenderer = createBobShaderRenderer({
+    canvas: wgl,
+    getControls: () => ({
+      lightAzim: +$('bob-light-azim').value,
+      lightAlt:  +$('bob-light-alt').value,
+      lightDist: 6,  // BOB 模式光源距离固定（autoscope 没暴露 dist slider）
+      fov:        +$('bob-focal').value,
+      coldiv:     +$('bob-coldiv').value,
+      coloration: +$('bob-coloration').value,
+      shadowMode: +$('bob-shadow-mode').value,
+      shadowStrength: +$('bob-shadow-strength').value,
+      shadowsOn:  $('bob-shadows').checked,
+      groundOn:   $('bob-ground').checked,
+      noiseSpeed: +$('bob-noise').value,
+      exposure:   +$('bob-exposure').value,
+      saturation: +$('bob-saturation').value,
+    }),
+    onFps: (fps) => {
+      const el = $('bob-fps');
+      if (el) el.textContent = `FPS: ${fps.toFixed(0)}`;
+    },
+    onCamUpdate: (s) => {
+      const r = $('bob-readout');
+      if (r) r.textContent =
+        `pos: ${s.position.map(x => x.toFixed(2)).join(' ')} · yaw ${(s.yaw*180/Math.PI).toFixed(0)}° pitch ${(s.pitch*180/Math.PI).toFixed(0)}°`;
+    },
+    onPaletteChange: (sample) => {
+      // sample = { palette1, palette2, paper, sky1, sky2 }
+      const renderRow = (id, colors) => {
+        const el = $(id);
+        if (!el) return;
+        el.innerHTML = '';
+        for (const c of colors) {
+          const sw = document.createElement('div');
+          sw.style.cssText = `flex:1; background:${c}; min-width:0;`;
+          el.appendChild(sw);
+        }
+      };
+      renderRow('bob-palette-row1', sample.palette1);
+      renderRow('bob-palette-row2', sample.palette2);
+    },
+  });
+  return _bobShaderRenderer;
+}
 
 // ============================================================================
 // Color sources (BOB pigments + Fidenza schemes pre-baked to RGB palettes)
@@ -281,6 +368,63 @@ window.__renderDispatch = (ctx, layers, options) => {
     // Lambert 不支持透明合成——pattern 会被覆盖；warn 用户
     if (patternPainted) console.warn('[dispatch] Lambert + background pattern: pattern is overwritten (Lambert fills opaque)');
     render.raymarched(ctx, arrLayers, options);
+  } else if (mode === 'fly3d') {
+    // Fly 3D = GPU shader Lambert + pointer-lock fly cam。layers[0].sdf 直接送
+    // compiler；arrangement / pattern 都不支持（GPU 全填 + 没 rep AST compile）
+    if (patternPainted) console.warn('[dispatch] Fly 3D + pattern: GPU shader fills opaque, pattern overwritten');
+    const fly = getFly3D();
+    if (!fly) { $('status').textContent = '⚠ Fly 3D: WebGL not available'; return; }
+    if (!layers.length || !layers[0]?.sdf) { $('status').textContent = '⚠ Fly 3D: no SDF in scene'; return; }
+    const baseSdf = layers[0].sdf;
+    const check = fly.canRender(baseSdf);
+    if (!check.ok) {
+      $('status').textContent = `⚠ Fly 3D 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持，留 v1）`;
+      return;
+    }
+    try {
+      const { bytes } = fly.render(baseSdf);
+      $('status').textContent = `✓ Fly 3D · GPU shader ${(bytes / 1024).toFixed(1)}KB · 点击 canvas 进 WASD fly mode`;
+    } catch (e) {
+      $('status').textContent = `✗ Fly 3D shader error: ${e.message}`;
+      console.error('[fly3d]', e);
+    }
+  } else if (mode === 'bob-shader') {
+    // BOB GPU = Autoscope-style 量化色块 + 时间漂移噪声 + imin object-index。
+    // 跟 Fly 3D 共享 #c-webgl canvas，互斥 mount/unmount。
+    if (patternPainted) console.warn('[dispatch] BOB GPU + pattern: GPU shader fills opaque, pattern overwritten');
+    const bob = getBobShader();
+    if (!bob) { $('status').textContent = '⚠ BOB GPU: WebGL not available'; return; }
+    if (!layers.length || !layers[0]?.sdf) { $('status').textContent = '⚠ BOB GPU: no SDF in scene'; return; }
+    const baseSdf = layers[0].sdf;
+    const check = bob.canRender(baseSdf);
+    if (!check.ok) {
+      $('status').textContent = `⚠ BOB GPU 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持）`;
+      return;
+    }
+    // 调试：递归 flatten union 算总 leaf 数（=spaceCol 的 objNum 多样性上限）
+    const countLeaves = (s) => {
+      const a = s.ast;
+      if (a?.kind === 'op' && a.name === 'union') {
+        return a.children.reduce((n, c) => n + countLeaves(c), 0);
+      }
+      return 1;
+    };
+    const ast = baseSdf.ast;
+    const leafCount = countLeaves(baseSdf);
+    if (ast?.kind === 'op' && ast.name === 'union') {
+      console.log(`[bob-shader] flattened to ${leafCount} leaves (top union: ${ast.children.length} direct + nested recursed)`);
+    } else if (leafCount > 1) {
+      console.log(`[bob-shader] top is '${ast?.name}' but ${leafCount} leaves found by recursion`);
+    } else {
+      console.warn(`[bob-shader] only 1 leaf (top='${ast?.name ?? ast?.kind}') → reduced color variety. LLM should wrap scene as union(...) of named parts.`);
+    }
+    try {
+      const { bytes } = bob.render(baseSdf);
+      $('status').textContent = `✓ BOB GPU · GPU shader ${(bytes / 1024).toFixed(1)}KB · Autoscope-style · 🎨 Shuffle 换调色板`;
+    } catch (e) {
+      $('status').textContent = `✗ BOB GPU shader error: ${e.message}`;
+      console.error('[bob-shader]', e);
+    }
   } else {
     render.silhouette(ctx, arrLayers, subjectOptions);
   }
@@ -324,6 +468,8 @@ function injectRenderModeHint(userPrompt) {
     stipple:    `[Renderer: Stipple (BOB 点彩) — multi-layer brush stipple, painterly register (Lotta / Bonnard / 后印象派). Accepts SDF2 (standard 2D inside-test) OR SDF3 (per-cell raymarch probe → Lambert intensity modulates brush density: dark = dense stipple, bright = sparse). Choose SDF dim by subject — both modes work, SDF3 produces volumetric shading via stipple density.]`,
     hatch:      `[Renderer: Lines (Pasma 流线 hatching) — contour-following evenly-spaced streamlines (Piter Pasma / generative plotter aesthetic). Accepts SDF2 (lines follow 2D contour, gradient-perp field) OR SDF3 (auto-detects → Pasma 3D rayhatching: lines wrap around the surface following projected tangents, true "缠绕表面" effect). Choose SDF dim by subject. Color = line stroke. NO dilate outline.]`,
     raymarched: `[Renderer: Lambert (Raymarched) — orthographic raymarched 3D with diffuse shading. REQUIRES SDF3 — use extrude / revolve / native 3D primitives (sphere/box/cylinder/torus/cone/etc.) / twist / bend / elongate. Single SDF3 + single color recommended. NO dilate outline.]`,
+    fly3d:      `[Renderer: Fly 3D (Shader Lambert, GPU) — WebGL fragment shader raymarcher with pointer-lock fly camera (WASD + mouse). REQUIRES SDF3 — supports native primitives (sphere/box/cylinder/torus/capsule/capped_cone/cone/ellipsoid/rounded_box/tetrahedron/octahedron/dodecahedron/icosahedron/pyramid/wireframe_box) + transforms (translate/scale/rotate) + boolean (union/intersection/difference incl. smooth_k) + twist/bend/shell/dilate/erode/blend/negate. DOES NOT YET support extrude / revolve / rep (CPU fallback only) — prefer native 3D primitives + Boolean composition over 2D-upgrade ops. Single composed SDF3.]`,
+    'bob-shader': `[Renderer: BOB GPU (Autoscope-style) — WebGL shader with Autoscope-style quantized palette coloring + time-animated drifting noise + per-object color separation via imin. REQUIRES SDF3 (same compile path as Fly 3D). **CRUCIAL**: structure the scene as a top-level union(...) of multiple distinct primitives — each child gets a unique object index → distinct color block, producing BOB-like 多色震颤. AVOID single monolithic SDF (collapses to one color). PREFER 3-10 named parts via union. Smooth-union k=0.05~0.15 keeps geometry organic. Supports: native 3D primitives + transforms + boolean + twist/bend/shell/dilate/erode/blend/negate. NO extrude / revolve / rep.]`,
   };
   const hint = hints[mode];
   return hint ? `${hint}\n\n${userPrompt}` : userPrompt;
@@ -482,11 +628,13 @@ $('code-output').addEventListener('keydown', e => {
 });
 
 // Render mode change → toggle stipple params panel + svg export 显隐 + pattern card 显隐
-// (Stipple/Lambert 跟 pattern 视觉冲突，自动隐藏 pattern card 并清空选择) + 缓存重渲
+// (Stipple/Lambert/Fly 3D 跟 pattern 视觉冲突，自动隐藏 pattern card 并清空选择) + 缓存重渲
+// Fly 3D 切换时还要 swap canvas + mount/unmount WebGL controller
 $('render-mode')?.addEventListener('change', () => {
   updateStippleParamsVisibility();
   updateSvgExportVisibility();
   updatePatternCardVisibility();
+  updateFly3DVisibility();
   if (!window.__lastRenderArgs) return;
   reRenderFromCache(`切换到 ${$('render-mode').value}`);
 });
@@ -852,7 +1000,7 @@ function initRenderModePills() {
   if (!select) return;
   // 恢复 stored value 到 select
   const stored = localStorage.getItem('sdf-mvp-render-mode');
-  const validModes = ['silhouette', 'stipple', 'hatch', 'raymarched'];
+  const validModes = ['silhouette', 'stipple', 'hatch', 'raymarched', 'fly3d', 'bob-shader'];
   if (stored && validModes.includes(stored)) {
     select.value = stored;
   }
@@ -866,6 +1014,8 @@ function initRenderModePills() {
         select.value === 'stipple'    ? 'Stipple (BOB)' :
         select.value === 'hatch'      ? 'Lines (Pasma)' :
         select.value === 'raymarched' ? 'Lambert (Raymarched)' :
+        select.value === 'fly3d'      ? 'Fly 3D (Shader Lambert)' :
+        select.value === 'bob-shader' ? 'BOB GPU (Autoscope)' :
                                         'Silhouette';
     }
   };
@@ -887,8 +1037,8 @@ function updateStippleParamsVisibility() {
   panel.style.display = $('render-mode')?.value === 'stipple' ? '' : 'none';
 }
 
-// Pattern card 只在 Silhouette / Lines mode 显示——Stipple 自带满网格、Lambert
-// fillRect 全画布，跟 pattern 组合都会视觉冲突。切到这两种时 force pattern → none
+// Pattern card 只在 Silhouette / Lines mode 显示——Stipple/Lambert/Fly 3D 都
+// 全填画布，跟 pattern 组合都会视觉冲突。切到不兼容模式时 force pattern → none
 // 防止 dispatcher 仍读到 stored value 偷偷画底纹。
 function updatePatternCardVisibility() {
   const card = $('pattern-card');
@@ -905,6 +1055,28 @@ function updatePatternCardVisibility() {
     }
   }
 }
+
+// Fly 3D / BOB GPU 都用 #c-webgl canvas，跟 Canvas2D 互斥。切到这两个 mode 任一
+// 时 → 显示 webgl canvas；切到其它 mode → 隐藏 webgl canvas + unmount 两个 controller。
+function updateWebGLCanvasVisibility() {
+  const mode = $('render-mode')?.value;
+  const isFly3D    = mode === 'fly3d';
+  const isBobGPU   = mode === 'bob-shader';
+  const isWebGL    = isFly3D || isBobGPU;
+  const c2d = $('c');
+  const cwgl = $('c-webgl');
+  const flyCard = $('fly3d-card');
+  const bobCard = $('bob-shader-card');
+  if (c2d)  c2d.style.display  = isWebGL ? 'none' : '';
+  if (cwgl) cwgl.style.display = isWebGL ? '' : 'none';
+  if (flyCard) flyCard.style.display = isFly3D  ? '' : 'none';
+  if (bobCard) bobCard.style.display = isBobGPU ? '' : 'none';
+  // 互斥：进 BOB GPU 时 unmount fly3d，反之亦然
+  if (!isFly3D  && _fly3dRenderer)      _fly3dRenderer.unmount();
+  if (!isBobGPU && _bobShaderRenderer)  _bobShaderRenderer.unmount();
+}
+// 保留旧名兼容
+const updateFly3DVisibility = updateWebGLCanvasVisibility;
 
 // SVG export 只对 Lines (hatch) mode 有意义——它的输出本来就是 polyline vector。
 // 其它 renderer 输出是 raster pixels（silhouette/stipple = filled regions，需要
@@ -1029,6 +1201,51 @@ $('p-pattern-color')?.addEventListener('input', () => {
   if ($('pattern-mode')?.value !== 'none') debouncedRerender();
 });
 
+// Fly 3D 控件：slider .val 实时显示 + auto picked up by rAF loop。值变了不需要
+// 重新 compile shader，draw frame 每次 read getControls() 取最新值。
+function initFly3DControls() {
+  const wire = (id) => {
+    const s = $(id);
+    const v = $(id + '-val');
+    if (!s) return;
+    const update = () => { if (v) v.textContent = (+s.value).toFixed(2); };
+    s.addEventListener('input', update);
+    update();
+  };
+  ['fly-light-azim', 'fly-light-alt', 'fly-light-dist', 'fly-focal'].forEach(wire);
+}
+
+// BOB GPU 控件：跟 Fly 3D 同样逻辑。Shuffle 按钮换 palette texture。
+function initBobShaderControls() {
+  const wireSlider = (id, digits = 2) => {
+    const s = $(id);
+    const v = $(id + '-val');
+    if (!s) return;
+    const update = () => {
+      if (v) {
+        const n = +s.value;
+        v.textContent = digits === 5 ? n.toFixed(5) : n.toFixed(digits);
+      }
+    };
+    s.addEventListener('input', update);
+    update();
+  };
+  wireSlider('bob-coldiv', 2);
+  wireSlider('bob-noise', 5);   // 0.00008 这种小数得 5 位
+  wireSlider('bob-light-azim', 2);
+  wireSlider('bob-light-alt', 2);
+  wireSlider('bob-focal', 2);
+  wireSlider('bob-exposure', 2);
+  wireSlider('bob-saturation', 2);
+  wireSlider('bob-shadow-strength', 2);
+
+  $('bob-shuffle')?.addEventListener('click', () => {
+    if (_bobShaderRenderer) {
+      _bobShaderRenderer.shufflePalette();
+    }
+  });
+}
+
 loadSystemPrompt();
 renderHistoryList();
 initRenderModePills();
@@ -1037,4 +1254,7 @@ updateStippleParamsVisibility();
 updateSvgExportVisibility();
 initPatternPills();
 updatePatternCardVisibility();
+initFly3DControls();
+initBobShaderControls();
+updateFly3DVisibility();
 initArrangement();

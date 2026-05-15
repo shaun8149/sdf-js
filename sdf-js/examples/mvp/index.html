@@ -542,16 +542,145 @@
               <button class="qql-pill" data-render-mode="stipple">Stipple</button>
               <button class="qql-pill" data-render-mode="hatch">Lines</button>
               <button class="qql-pill" data-render-mode="raymarched">Lambert</button>
+              <button class="qql-pill" data-render-mode="fly3d">Fly 3D</button>
+              <button class="qql-pill" data-render-mode="bob-shader">BOB GPU</button>
             </div>
             <!-- 隐藏 select 作 source-of-truth，pill 改变它的 value 并 dispatch change。
-                 注：value="raymarched" 是 renderer 名（diffuse shading 风格），不是 input 格式。
-                 4 个 renderer 都接受任意维度的 SDF —— "3D" 是 SDF 输入的事，不是 renderer 的事。 -->
+                 注：value="raymarched" 是 CPU canvas2D Lambert（静态截图）；
+                     value="fly3d" 是 GPU WebGL shader Lambert + pointer-lock fly cam（60fps）。
+                 5 个 renderer 都接受任意维度的 SDF —— "3D" 是 SDF 输入的事，不是 renderer 的事。 -->
             <select id="render-mode" style="display: none;">
               <option value="silhouette" selected>Silhouette（默认）</option>
               <option value="stipple">Stipple（BOB 点彩）</option>
               <option value="hatch">Lines (Pasma)</option>
-              <option value="raymarched">Lambert (Raymarched)</option>
+              <option value="raymarched">Lambert (Raymarched, CPU)</option>
+              <option value="fly3d">Fly 3D (Shader Lambert, GPU)</option>
+              <option value="bob-shader">BOB GPU (Autoscope-style)</option>
             </select>
+          </div>
+
+          <!-- BOB GPU 控件（Autoscope-style palette + time animation）—— 只在 BOB GPU mode 显示 -->
+          <div class="qql-card" id="bob-shader-card" style="display: none;">
+            <div class="qql-card-header">
+              <span>BOB GPU controls</span>
+              <span class="qql-value" id="bob-fps">FPS: --</span>
+            </div>
+            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+              <button id="bob-shuffle" class="secondary" style="flex: 1; font-size: 0.75em;">🎨 Shuffle palette</button>
+            </div>
+            <div id="bob-palette-preview" style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; font-size: 0.65em; color: #888;">
+              <div style="display: flex; gap: 1px; height: 14px;" id="bob-palette-row1"></div>
+              <div style="display: flex; gap: 1px; height: 14px;" id="bob-palette-row2"></div>
+            </div>
+            <div class="param-row">
+              <label title="色块频率 — 小=大块色域 / 大=细密色块">色块密度</label>
+              <input type="range" id="bob-coldiv" min="0.25" max="4" step="0.05" value="1.5">
+              <span class="param-val" id="bob-coldiv-val">1.50</span>
+            </div>
+            <div class="param-row">
+              <label title="噪声漂移速度 — 0 静止 / 0.0001 缓慢流动 / 0.001 明显流动">噪声漂移</label>
+              <input type="range" id="bob-noise" min="0" max="0.001" step="0.00002" value="0.00008">
+              <span class="param-val" id="bob-noise-val">0.00008</span>
+            </div>
+            <div class="param-row">
+              <label title="光源仰角（0=水平，π/2=正上）">光 alt</label>
+              <input type="range" id="bob-light-alt" min="0" max="1.57" step="0.05" value="0.8">
+              <span class="param-val" id="bob-light-alt-val">0.80</span>
+            </div>
+            <div class="param-row">
+              <label title="光源方位角">光 azim</label>
+              <input type="range" id="bob-light-azim" min="-3.14" max="3.14" step="0.05" value="0.6">
+              <span class="param-val" id="bob-light-azim-val">0.60</span>
+            </div>
+            <div class="param-row">
+              <label title="镜头焦距">focal</label>
+              <input type="range" id="bob-focal" min="0.6" max="2.5" step="0.05" value="1.5">
+              <span class="param-val" id="bob-focal-val">1.50</span>
+            </div>
+            <div class="param-row">
+              <label title="曝光 — 整体亮度">曝光</label>
+              <input type="range" id="bob-exposure" min="0.8" max="3" step="0.05" value="1.4">
+              <span class="param-val" id="bob-exposure-val">1.40</span>
+            </div>
+            <div class="param-row">
+              <label title="饱和度下限 — 防止发灰">饱和</label>
+              <input type="range" id="bob-saturation" min="0.3" max="1" step="0.05" value="0.8">
+              <span class="param-val" id="bob-saturation-val">0.80</span>
+            </div>
+            <div class="param-row">
+              <label title="阴影暗化强度 0=最暗 1=不变">阴影暗度</label>
+              <input type="range" id="bob-shadow-strength" min="0.1" max="1" step="0.05" value="0.3">
+              <span class="param-val" id="bob-shadow-strength-val">0.30</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 76px 1fr; gap: 6px; align-items: center; margin-top: 6px;">
+              <label style="font-size: 0.72em; color: #999;" title="0=线性混合（块状）/ 1=Y轴竖纹 / 2=极坐标环形">上色模式</label>
+              <select id="bob-coloration" style="padding: 3px 6px; font-size: 0.8em;">
+                <option value="0">0 · 线性 XYZ</option>
+                <option value="1">1 · 竖纹</option>
+                <option value="2">2 · 极坐标环</option>
+              </select>
+              <label style="font-size: 0.72em; color: #999;" title="0=通道循环 BRG / 1=色相反转 / 2=色相 90° / 3=直接变暗">阴影风格</label>
+              <select id="bob-shadow-mode" style="padding: 3px 6px; font-size: 0.8em;">
+                <option value="0">0 · 通道循环</option>
+                <option value="1">1 · 色相反转</option>
+                <option value="2">2 · 色相 90°</option>
+                <option value="3">3 · 直接暗化</option>
+              </select>
+            </div>
+            <label class="checkrow" style="display: flex; align-items: center; gap: 6px; font-size: 0.78em; color: #ccc; margin-top: 6px; cursor: pointer;">
+              <input id="bob-shadows" type="checkbox" checked> soft shadows
+            </label>
+            <label class="checkrow" style="display: flex; align-items: center; gap: 6px; font-size: 0.78em; color: #ccc; margin-top: 4px; cursor: pointer;">
+              <input id="bob-ground" type="checkbox" checked> ground plane (y = -1)
+            </label>
+            <div style="font-size: 0.7em; color: #888; line-height: 1.5; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #333;">
+              <b style="color:#aaa">Click canvas</b> → WASD fly mode<br>
+              <b style="color:#aaa">Shuffle</b> 换 Autoscope 21 调色板池中的随机一对
+            </div>
+            <div style="font-size: 0.7em; color: #777; margin-top: 6px; font-family: monospace;" id="bob-readout">pos: 0 0 -3</div>
+          </div>
+
+          <!-- Fly 3D-specific 控件（light / fov / shadows）—— 只在 Fly 3D mode 显示 -->
+          <div class="qql-card" id="fly3d-card" style="display: none;">
+            <div class="qql-card-header">
+              <span>Fly 3D controls</span>
+              <span class="qql-value" id="fly3d-fps">FPS: --</span>
+            </div>
+            <div class="param-row">
+              <label title="光源方位角（水平绕 Y）">光 azim</label>
+              <input type="range" id="fly-light-azim" min="-3.14" max="3.14" step="0.05" value="0.6">
+              <span class="param-val" id="fly-light-azim-val">0.60</span>
+            </div>
+            <div class="param-row">
+              <label title="光源仰角（0 = 地平，π/2 = 顶上）">光 alt</label>
+              <input type="range" id="fly-light-alt" min="0" max="1.57" step="0.05" value="0.8">
+              <span class="param-val" id="fly-light-alt-val">0.80</span>
+            </div>
+            <div class="param-row">
+              <label title="光源距离">光 dist</label>
+              <input type="range" id="fly-light-dist" min="2" max="20" step="0.2" value="6">
+              <span class="param-val" id="fly-light-dist-val">6.0</span>
+            </div>
+            <div class="param-row">
+              <label title="镜头焦距 — 大=窄 FOV (telephoto)，小=广角">focal</label>
+              <input type="range" id="fly-focal" min="0.6" max="2.5" step="0.05" value="1.5">
+              <span class="param-val" id="fly-focal-val">1.50</span>
+            </div>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.78em; color:#ccc; margin-top:6px; cursor:pointer;">
+              <input id="fly-shadows" type="checkbox" checked> soft shadows (IQ 24-step)
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.78em; color:#ccc; margin-top:4px; cursor:pointer;">
+              <input id="fly-ground" type="checkbox" checked> ground plane (y = -1)
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.78em; color:#ccc; margin-top:4px; cursor:pointer;">
+              <input id="fly-checker" type="checkbox" checked> checker floor
+            </label>
+            <div style="font-size: 0.7em; color: #888; line-height: 1.5; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #333;">
+              <b style="color:#aaa">Click canvas</b> → pointer-lock + fly mode<br>
+              <b style="color:#aaa">W/A/S/D</b> 移动 · <b style="color:#aaa">Q/E</b> 上下 · <b style="color:#aaa">Shift</b> 加速<br>
+              <b style="color:#aaa">R</b> 重置位置 · <b style="color:#aaa">Esc</b> 退出鼠标锁定
+            </div>
+            <div style="font-size: 0.7em; color: #777; margin-top: 6px; font-family: monospace;" id="fly3d-readout">pos: 0 0 -3 · yaw 0° pitch 0°</div>
           </div>
 
           <!-- Background pattern (Truchet / Gosper / Motifs) - 跟 renderer 正交的底纹层。
@@ -723,9 +852,13 @@
           </div>
         </div>
 
-        <!-- RIGHT: canvas (qql.art-style 大图主舞台) -->
+        <!-- RIGHT: canvas (qql.art-style 大图主舞台)。两个 canvas 同位置 sibling：
+             Canvas2D (#c) 给 silhouette/stipple/hatch/raymarched 4 个 renderer 共用，
+             WebGL (#c-webgl) 给 Fly 3D 独占。dispatcher 切 mode 时 display swap，flex
+             自动 center 当前可见的那张。 -->
         <div class="canvas-panel">
           <canvas id="c" width="640" height="640"></canvas>
+          <canvas id="c-webgl" width="640" height="640" style="display: none;"></canvas>
         </div>
       </div>
 

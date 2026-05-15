@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SDF3 → GLSL compile smoke test</title>
+  <style>
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      background: #fdf9f6; color: #222;
+      margin: 24px; max-width: 1100px;
+    }
+    h1 { margin: 0 0 4px 0; font-size: 18px; }
+    p  { color: #666; font-size: 13px; margin: 6px 0 14px; }
+    .row { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    canvas { border: 1px solid #ccc; display: block; background: #fff; }
+    #status {
+      padding: 10px 14px; margin: 14px 0;
+      border-radius: 4px; font-family: ui-monospace, monospace; font-size: 12px;
+      white-space: pre-wrap;
+    }
+    .ok  { background: #d8f0d8; color: #275; }
+    .err { background: #f0d8d8; color: #722; }
+    h3 { margin: 14px 0 6px; font-size: 13px; }
+    .scene-source, .glsl-out {
+      font-family: ui-monospace, monospace; font-size: 11px;
+      background: #f0e9dc; padding: 10px;
+      border-radius: 3px; white-space: pre; overflow: auto;
+      max-height: 280px; min-width: 420px; flex: 1;
+    }
+    .buttons { margin: 14px 0; }
+    button {
+      margin-right: 6px; padding: 6px 12px;
+      font-size: 12px; cursor: pointer;
+      border: 1px solid #ccc; background: #fff; border-radius: 3px;
+    }
+    button.active { background: #444; color: #fff; border-color: #444; }
+  </style>
+</head>
+<body>
+  <h1>SDF3 → GLSL compile smoke test</h1>
+  <p>
+    Compiles a JS SDF expression via <code>compileSDF3ToGLSL</code> and renders it via WebGL with a minimal raymarcher.
+    Pass criteria: shader compiles, image shows a recognizable 3D shape, no error in status.
+  </p>
+
+  <div class="buttons" id="presets"></div>
+
+  <div class="row">
+    <canvas id="cv" width="520" height="520"></canvas>
+    <div style="flex: 1; min-width: 440px;">
+      <h3>JS source (test scene)</h3>
+      <div class="scene-source" id="src"></div>
+      <h3>Generated GLSL (scene fn only — library omitted for brevity)</h3>
+      <div class="glsl-out" id="glsl"></div>
+    </div>
+  </div>
+
+  <div id="status"></div>
+
+  <script type="module" src="./sdf3-compile-test.js"></script>
+</body>
+</html>

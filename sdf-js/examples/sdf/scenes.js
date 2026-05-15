@@ -53,8 +53,10 @@ const SCENE_META = {
   13: { yConvention: 'up',   view: 1.2 },     // LLM (v1) Matisse dance
   14: { yConvention: 'up',   view: 1.2 },     // LLM v2 seurat
   // ---- 3D 场景：probe-based painted 渲染（其它 renderer 暂不支持）-----------
-  15: { yConvention: 'down', view: 1.0, kind: '3d' },     // BOB 原 7：单球+平面
-  16: { yConvention: 'down', view: 1.0, kind: '3d' },     // BOB 原 8：4 胶囊+平面
+  // 2026-05-15: probe.rayFor 统一到 math-y-up 后，3D 场景 yConvention 必须 'up'
+  // 才让 painted.pxToWorld(flipY=true) → 传 math-y-up → 跟 probe 一致
+  15: { yConvention: 'up', view: 1.0, kind: '3d' },     // BOB 原 7：单球+平面
+  16: { yConvention: 'up', view: 1.0, kind: '3d' },     // BOB 原 8：4 胶囊+平面
 };
 
 // pa 参数集合（每次加载或调用产生一组）。

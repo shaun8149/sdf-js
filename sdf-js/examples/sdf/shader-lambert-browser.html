@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SDF3 shader Lambert scene browser</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+                 font-family: -apple-system, system-ui, sans-serif; background: #1a1a1a; color: #ddd; }
+    #app { display: flex; height: 100vh; }
+
+    /* Canvas area */
+    #canvas-wrap {
+      flex: 1; position: relative; background: #000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    canvas { display: block; background: #fff; }
+    #overlay {
+      position: absolute; left: 12px; top: 12px;
+      background: rgba(0,0,0,0.55); padding: 8px 12px; border-radius: 4px;
+      font-family: ui-monospace, monospace; font-size: 11px; color: #ddd;
+      pointer-events: none; line-height: 1.5;
+    }
+    #overlay b { color: #ffd070; }
+    #hint {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.7); padding: 6px 14px; border-radius: 14px;
+      font-size: 11px; color: #ddd; pointer-events: none;
+    }
+
+    /* Sidebar */
+    #side {
+      width: 360px; flex-shrink: 0; padding: 16px;
+      overflow-y: auto; background: #222;
+      border-left: 1px solid #333;
+    }
+    h2 { margin: 0 0 4px; font-size: 14px; color: #fff; }
+    h3 { margin: 18px 0 6px; font-size: 11px; color: #ffd070;
+         text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .section { margin-bottom: 4px; }
+
+    select, button, textarea, input[type=range], input[type=checkbox] { font: inherit; }
+    select, button { padding: 5px 10px; background: #333; color: #ddd;
+                     border: 1px solid #444; border-radius: 3px; cursor: pointer; }
+    button.primary { background: #ffd070; color: #222; border-color: #ffd070; font-weight: 600; }
+    button:hover { background: #444; }
+    button.primary:hover { background: #ffd070; opacity: 0.8; }
+    textarea { width: 100%; height: 130px; padding: 8px;
+               font-family: ui-monospace, monospace; font-size: 11px;
+               background: #1a1a1a; color: #eee; border: 1px solid #444;
+               border-radius: 3px; resize: vertical; }
+    textarea:focus { outline: none; border-color: #ffd070; }
+
+    .row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 12px; }
+    .row label { flex-shrink: 0; width: 60px; color: #999; }
+    .row input[type=range] { flex: 1; min-width: 0; }
+    .row .val { flex-shrink: 0; width: 50px; text-align: right; font-family: ui-monospace, monospace; font-size: 11px; color: #ffd070; }
+
+    .checkrow { display: flex; align-items: center; gap: 6px; margin: 6px 0; font-size: 12px; color: #ccc; cursor: pointer; }
+
+    #compile-status {
+      margin-top: 8px; padding: 6px 8px; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 11px;
+      white-space: pre-wrap; max-height: 80px; overflow-y: auto;
+    }
+    .ok  { background: #1f3a1f; color: #afd9af; }
+    .err { background: #3a1f1f; color: #d9afaf; }
+
+    #fps { color: #afd9af; font-family: ui-monospace, monospace; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="canvas-wrap">
+      <canvas id="cv" width="900" height="700"></canvas>
+      <div id="overlay">
+        <span id="fps">FPS: --</span><br>
+        pos: <span id="pos-readout">0 0 -3</span><br>
+        yaw / pitch: <span id="yp-readout">0° 0°</span>
+      </div>
+      <div id="hint">Click canvas → WASD / Mouse / Shift boost / R reset / Esc release</div>
+    </div>
+
+    <div id="side">
+      <h2>SDF3 shader Lambert browser</h2>
+      <p style="margin: 4px 0 14px; color: #888; font-size: 11px;">GPU raymarcher · 60fps · fly camera</p>
+
+      <h3>Scene</h3>
+      <div class="section">
+        <select id="preset"></select>
+        <button id="compile" class="primary" style="margin-left: 4px;">Compile (Cmd+Enter)</button>
+        <textarea id="scene-src" spellcheck="false"></textarea>
+        <div id="compile-status" class="ok">Ready</div>
+      </div>
+
+      <h3>Light</h3>
+      <div class="section">
+        <div class="row"><label>azim</label><input id="light-azim" type="range" min="-3.14" max="3.14" step="0.01" value="0.6"><span class="val" id="light-azim-val"></span></div>
+        <div class="row"><label>alt</label><input id="light-alt"  type="range" min="0" max="1.57" step="0.01" value="0.8"><span class="val" id="light-alt-val"></span></div>
+        <div class="row"><label>dist</label><input id="light-dist" type="range" min="2" max="20" step="0.1" value="6"><span class="val" id="light-dist-val"></span></div>
+        <label class="checkrow"><input id="shadow-on" type="checkbox" checked> soft shadows</label>
+      </div>
+
+      <h3>Render</h3>
+      <div class="section">
+        <label class="checkrow"><input id="ground-on" type="checkbox" checked> ground plane (y = -1)</label>
+        <label class="checkrow"><input id="checker-on" type="checkbox" checked> checker floor</label>
+        <div class="row"><label>fov</label><input id="fov" type="range" min="0.6" max="2.0" step="0.01" value="1.5"><span class="val" id="fov-val"></span></div>
+      </div>
+
+      <h3>Camera</h3>
+      <div class="section">
+        <div style="font-size: 11px; color: #888; line-height: 1.6;">
+          Click canvas to capture mouse.<br>
+          <b style="color:#ffd070">W/A/S/D</b> move, <b style="color:#ffd070">Q/E</b> up/down,<br>
+          <b style="color:#ffd070">Shift</b> boost ×3, <b style="color:#ffd070">R</b> reset, <b style="color:#ffd070">Esc</b> release.
+        </div>
+        <button id="cam-reset" style="margin-top: 8px;">Reset position</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./shader-lambert-browser.js"></script>
+</body>
+</html>

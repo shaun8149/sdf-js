@@ -376,8 +376,9 @@ export function projectedTangentField(probe, opts = {}) {
     const cpDotR  = camP[0]*camera.right[0] + camP[1]*camera.right[1] + camP[2]*camera.right[2];
     const cpDotU  = camP[0]*camera.up[0]    + camP[1]*camera.up[1]    + camP[2]*camera.up[2];
 
-    const dx =   tDotR * depth - cpDotR * tDotFwd;
-    const dy = -(tDotU * depth - cpDotU * tDotFwd);   // y-flip
+    const dx = tDotR * depth - cpDotR * tDotFwd;
+    const dy = tDotU * depth - cpDotU * tDotFwd;
+    // 2026-05-15: 跟 probe.rayFor 一起统一到 math-y-up；旧 `-(...)` 是 y-down 时代
 
     if (Math.abs(dx) < 1e-9 && Math.abs(dy) < 1e-9) return 0;
     return Math.atan2(dy, dx);
