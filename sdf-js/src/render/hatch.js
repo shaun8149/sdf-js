@@ -15,6 +15,21 @@
 import { hatch as packHatch, gradientPerpField, projectedTangentField } from '../streamline/index.js';
 import { SDF3 } from '../sdf/core.js';
 import { makeProbe, createCamera } from '../sdf/probe.js';
+import { smoothStart3 } from '../math/easing.js';
+
+// SDF3 streamline 默认走"BOB scenes 7/8 intensity 调密度" idiom：
+//   probe.intensity → dsepFn → 暗处 dsep 缩 (DSEP_DARK) / 亮处 dsep 大 (DSEP_LIGHT)
+//   probe.region → extraValid 只在 object / ground 区域采样（pass over 'background'）
+// 跟 examples/sdf/test-pasma-capsules.js 同一套 mechanism (移植于此，让 MVP 也获益)。
+// 跟 painted.js 3D 通路 density = 1 - 0.92·I² 的视觉签名对齐。
+// caller 可以 override：layer.intensityDsep = false 退化为均匀 dsep。
+const DEFAULTS_3D = {
+  dsepDark:     0.003,  // 暗处线最密
+  dsepLight:    0.020,  // 亮处线最稀 (= 默认 layer.dsep)
+  intensityMin: 0.40,   // intensity remap 下界（< 这值 → ir=0 → 最密）
+  intensityMax: 1.00,   // remap 上界
+};
+const clamp01 = v => Math.max(0, Math.min(1, v));
 
 // ---- 3D rayhatching helpers ------------------------------------------------
 // 这是 Piter Pasma "Universal Rayhatcher" 的核心：raymarch 找 hit，取表面切向，
@@ -49,15 +64,50 @@ export function computeHatchLayers(layers, opts = {}) {
 
     let sdfForPack = sdf;
     let fieldForPack = layer.field;
+    let packExtra = {};  // 额外塞给 packHatch 的 opts (dsep 函数 + dsepMax + extraValid)
     if (sdf instanceof SDF3) {
-      // Pasma rayhatching：ortho camera (yaw=0.5, pitch=0.35, distance=4) 跟旧
-      // hatch defaults 等价。makeProbe 返回 4-value probe，hatch 只用 hit + normal。
-      // 同一个 camera 传给 projectedTangentField 保证 probe + tangent projection
-      // 的视空间一致。
+      // Pasma rayhatching：ortho camera (yaw=0.5, pitch=0.35, distance=4)。makeProbe
+      // 返回 4-value probe {intensity, region, hit, normal}。projectedTangentField
+      // 共享同一个 camera 保持视空间一致。
       const camera = createCamera({ yaw: 0.5, pitch: 0.35, distance: 4 });
       const probe = makeProbe((p) => sdf(p), { camera });
-      sdfForPack = (p) => probe(p[0], p[1]).hit ? -0.01 : 0.01;
       fieldForPack = projectedTangentField(probe, { camera });
+
+      // SDF3 默认走 intensity-modulated dsep + region mask (BOB scenes 7/8 signature)
+      // 移植于 test-pasma-capsules.js 的 dsepFn / inScene 逻辑，统一进 render.hatch
+      // → MVP / streamline-scenes / 任何 hatch caller 都自动获得密度调制 + 区域 mask
+      const intensityDsep = layer.intensityDsep !== false;  // 默认开
+
+      if (intensityDsep) {
+        const dsepDark = layer.dsepDark ?? DEFAULTS_3D.dsepDark;
+        const dsepLight = layer.dsepLight ?? layer.dsep ?? DEFAULTS_3D.dsepLight;
+        const iMin = layer.intensityMin ?? DEFAULTS_3D.intensityMin;
+        const iMax = layer.intensityMax ?? DEFAULTS_3D.intensityMax;
+
+        // sdf wrapper: 'object' 和 'ground' 都算 inside (background → outside)
+        // 跟 test-pasma-capsules 的 inScene 同语义
+        sdfForPack = (p) => {
+          const r = probe(p[0], p[1]);
+          if (!r.hit || r.region === 'background') return 0.01;
+          return -0.01;
+        };
+
+        // dsep 函数：intensity → easing → [dsepDark, dsepLight]
+        // 暗处 intensity ≈ 0 → ir=0 → 最密 (dsepDark)；亮处 intensity ≈ 1 → 最稀
+        const dsepFn = (x, y) => {
+          const r = probe(x, y);
+          if (!r.hit || r.region === 'background') return dsepLight;
+          const i = clamp01(r.intensity);
+          const ir = clamp01((i - iMin) / (iMax - iMin));
+          const t = smoothStart3(ir);
+          return dsepDark + (dsepLight - dsepDark) * t;
+        };
+
+        packExtra = { dsep: dsepFn, dsepMax: dsepLight };
+      } else {
+        // intensityDsep=false 退化为简单 hit-test + uniform dsep
+        sdfForPack = (p) => probe(p[0], p[1]).hit ? -0.01 : 0.01;
+      }
     } else if (!fieldForPack) {
       fieldForPack = gradientPerpField(sdf);
     }
@@ -65,6 +115,7 @@ export function computeHatchLayers(layers, opts = {}) {
     const streamlines = packHatch(sdfForPack, fieldForPack, {
       view, dsep, stepSize, seedCount, maxStreamlines, minLength,
       seedStrategy: 'grid',
+      ...packExtra,  // SDF3 时覆盖 dsep / dsepMax
     });
 
     out.push({ streamlines, color, lineWidth });
