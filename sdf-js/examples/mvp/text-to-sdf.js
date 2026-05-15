@@ -193,7 +193,7 @@ function buildDensityField(variation, view, flipY) {
   };
 }
 
-// 画 background pattern（Truchet / Hilbert / Gosper / Motifs），返回 true if 画了。
+// 画 background pattern（Truchet / Gosper / Motifs），返回 true if 画了。
 // 画完后 subject renderer 应该 background=null 透明叠加（保留 pattern）。
 // layers 提供时，pattern 自动 mask 出 subject silhouette（pattern 只在 subject 外画）。
 function drawBackgroundPattern(ctx, view, flipY, layers = null) {
@@ -223,8 +223,6 @@ function drawBackgroundPattern(ctx, view, flipY, layers = null) {
   };
   if (patternMode === 'truchet') {
     render.truchet(ctx, { ...common, cellSize: density, densityField });
-  } else if (patternMode === 'hilbert') {
-    render.hilbert(ctx, { ...common, depth: Math.min(depth, 7) });
   } else if (patternMode === 'gosper') {
     render.gosper(ctx, { ...common, depth: Math.min(depth, 5) }); // Gosper depth>=6 太爆
   } else if (patternMode === 'motifs') {
@@ -975,21 +973,21 @@ function initPatternPills() {
   if (!select) return;
 
   const stored = localStorage.getItem('sdf-mvp-pattern-mode');
-  const validModes = ['none', 'truchet', 'hilbert', 'gosper'];
+  const validModes = ['none', 'truchet', 'gosper', 'motifs'];
   if (stored && validModes.includes(stored)) select.value = stored;
 
   const sync = () => {
     document.querySelectorAll('#pattern-mode-pills .qql-pill').forEach(b => {
       b.classList.toggle('active', b.dataset.patternMode === select.value);
     });
-    const labels = { none: 'None', truchet: 'Truchet', hilbert: 'Hilbert', gosper: 'Gosper', motifs: 'Motifs' };
+    const labels = { none: 'None', truchet: 'Truchet', gosper: 'Gosper', motifs: 'Motifs' };
     if (labelEl) labelEl.textContent = labels[select.value] || 'None';
     // pattern params 面板只在选了 pattern 时显示
     const paramsEl = $('pattern-params');
     if (paramsEl) paramsEl.style.display = select.value === 'none' ? 'none' : '';
     // 动态 slider 可见性：每个 pattern 用自己专属的参数 slider
     const showTruchetOnly = select.value === 'truchet';
-    const showCurveOnly = select.value === 'hilbert' || select.value === 'gosper';
+    const showCurveOnly = select.value === 'gosper';
     const showMotifsOnly = select.value === 'motifs';
     document.querySelectorAll('.pattern-truchet-only').forEach(el => {
       el.style.display = showTruchetOnly ? '' : 'none';

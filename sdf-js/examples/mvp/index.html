@@ -554,7 +554,7 @@
             </select>
           </div>
 
-          <!-- Background pattern (Truchet / Hilbert / Gosper / Motifs) - 跟 renderer 正交的底纹层。
+          <!-- Background pattern (Truchet / Gosper / Motifs) - 跟 renderer 正交的底纹层。
                只在 Silhouette / Lines 两个 mode 显示——Stipple 自己撒满 cells、Lambert fillRect 整画布，
                跟底纹组合都会视觉冲突，所以 dispatcher 切到这两个 mode 时整张 card 隐藏 -->
           <div class="qql-card" id="pattern-card">
@@ -565,14 +565,12 @@
             <div class="qql-pill-row" id="pattern-mode-pills">
               <button class="qql-pill active" data-pattern-mode="none">None</button>
               <button class="qql-pill" data-pattern-mode="truchet">Truchet</button>
-              <button class="qql-pill" data-pattern-mode="hilbert">Hilbert</button>
               <button class="qql-pill" data-pattern-mode="gosper">Gosper</button>
               <button class="qql-pill" data-pattern-mode="motifs">Motifs</button>
             </div>
             <select id="pattern-mode" style="display: none;">
               <option value="none" selected>None</option>
               <option value="truchet">Truchet (Smith arcs)</option>
-              <option value="hilbert">Hilbert curve</option>
               <option value="gosper">Gosper curve (flowsnake)</option>
               <option value="motifs">Motifs (Nijhoff multi-band library)</option>
             </select>
@@ -583,9 +581,9 @@
                 <input type="range" id="p-pattern-density" min="0.002" max="0.02" step="0.001" value="0.01">
                 <span class="param-val" id="p-pattern-density-val">0.010</span>
               </div>
-              <!-- Hilbert/Gosper only：递归深度 -->
+              <!-- Gosper only：递归深度 -->
               <div class="param-row pattern-curve-only">
-                <label title="Hilbert 3-7（4 推荐）/ Gosper 3-5（4 推荐）">递归深度</label>
+                <label title="Gosper 3-5（4 推荐）">递归深度</label>
                 <input type="range" id="p-pattern-depth" min="3" max="7" step="1" value="4">
                 <span class="param-val" id="p-pattern-depth-val">4</span>
               </div>
