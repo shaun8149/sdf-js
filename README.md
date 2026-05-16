@@ -98,22 +98,43 @@ Pattern is a third independent axis on top of `subject SDF × renderer`. Pattern
 ## Architecture
 
 ```
-src/
-├── sdf/         primitives + booleans + transforms + probe + raymarching
-├── field/       noise / scalar fields (procedural)
-├── streamline/  curve tracing (Pasma rayhatching core)
-├── motifs/      hand-crafted SVG path library (Reinder Nijhoff default set)
-├── ca/          cellular automata over SDFs (kjetil-golid-derived)
-├── render/      output consumers: silhouette / stipple / hatch / Lambert / pattern family / motifGrid
-├── palette/     BOB / Fidenza / generative color schemes
-└── math/        easing curves
+sdf-js/src/
+├── sdf/          shape algebra
+│                 ├── d2.js / d3.js / dn.js       2D + 3D primitives, dim-agnostic ops
+│                 ├── core.js                     SDF2 / SDF3 classes, defineOp* registrar
+│                 ├── probe.js                    4-value contract {intensity, region, hit, normal}
+│                 ├── raymarch.js                 CPU raymarching for canvas2D renderers
+│                 ├── sdf2.glsl.js                2D SDF → GLSL compilation
+│                 ├── sdf3.glsl.js                3D SDF → GLSL compilation
+│                 ├── sdf3.compile.js             scene tree → fragment shader (with emitObjectIndex)
+│                 ├── time.js                     time-aware primitive wrappers
+│                 └── vec.js / vec2.js            math primitives
+├── scene/        SceneData v1 — 4-input lingua franca (M0, locked 2026-05-17)
+│                 ├── SPEC.md                     single source of truth for the format
+│                 ├── spec.js                     (M0 d2-3) validator + JSDoc types
+│                 ├── compile.js                  (M0 d2-3) SceneData → SDF tree + camera + light + regionFn
+│                 └── serialize.js                (M0 d2-3) parse / stringify / version migration
+├── render/       output consumers (6 renderers + pattern family)
+│                 ├── silhouette / bobStipple / hatch / raymarched   canvas2D family
+│                 ├── flyLambert / bobShader                          GPU shader family
+│                 ├── truchet / spaceCurve (Hilbert/Gosper) / motifGrid   pattern family
+│                 └── bands / sand / painted / flowLines / lineTile / tileGrid   legacy / supporting
+├── field/        scalar fields (procedural) — noise / proto
+├── streamline/   Pasma rayhatching core (2D contour-following, 3D surface-wrap)
+├── motifs/       hand-crafted SVG path library (Reinder Nijhoff default set + path parser)
+├── palette/      BOB / Fidenza / Tyler Hobbs / Autoscope color schemes
+├── ca/           cellular automata over SDFs (kjetil-golid-derived)
+├── input/        pointer-lock WASD fly camera (shared between Fly 3D and BOB GPU)
+└── math/         easing curves
 ```
 
-Core philosophy:
+### Core philosophy
 
-- **Form / Render / Pattern decoupling**: any SDF + any renderer + any pattern = valid output
-- **Probe abstraction**: all 3D renderers consume same 4-value probe `{intensity, region, hit, normal}` — single source of truth for camera + lighting + raymarching
-- **Generative ≠ procedural**: hand-curated data (motif libraries, presets) often beats algorithmic generation for organic feel (validated against Pasma reference)
+- **Form / Render / Pattern / Source — 4 orthogonal axes**: any (SceneData / SDF tree) × any renderer × any pattern × any source = valid output. **`scene/` is the new lingua franca**: all four Compositor input sources (LLM, generator, 2D editor, 3D editor) emit the same SceneData shape; the renderer pool consumes it.
+- **Canvas + GPU dual path, single SDF tree**: the same SDF expression compiles to canvas2D raymarching (offline / SVG-ready) **and** to WebGL fragment shaders (real-time / WASD / 60fps). Form / renderer decoupling proven at the implementation layer — see `sdf3.compile.js`.
+- **Probe abstraction**: all canvas2D 3D renderers consume the same 4-value probe `{intensity, region, hit, normal}` — single source of truth for camera + lighting + raymarching. Same probe contract is honored by the GPU compile path.
+- **Generative ≠ procedural**: hand-curated data (motif libraries, presets, scene templates) often beats algorithmic generation for organic feel. Validated against Pasma (Reinder Nijhoff Turtletoy) and Autoscope (Erik Swahn) references.
+- **Subject ID stability**: SceneData subject ids are source-assigned and round-trip-stable, enabling iterative LLM edits ("make sphere-1 bigger"), undo/redo in editors, and deterministic generator output.
 
 ---
 
