@@ -62,18 +62,21 @@ type SceneData = {
 
 ## Subject — the recursive node
 
-Subject is the recursive type for scene content. It has two variants that share the same five fields (`id`, `transform`, `region`, `color`, `animation`):
+Subject is the recursive type for scene content. Three variants share the same fields (`id`, `transform`, `region`, `color`, `animation`):
 
 ```ts
-type Subject = PrimitiveLeaf | BooleanGroup
+type Subject = PrimitiveLeaf | BooleanGroup | DomainGroup
 ```
 
-The two variants are distinguished by `type`:
+The three variants are distinguished by `type`:
 
-- `type` matches a **primitive name** (`'sphere'`, `'box'`, `'heart'`, ...) → it's a `PrimitiveLeaf`
+- `type` matches a **primitive name** (`'sphere'`, `'box'`, `'heart'`, `'waves'`, ...) → it's a `PrimitiveLeaf`
 - `type` matches a **boolean operator** (`'union'`, `'difference'`, `'intersection'`, `'smoothUnion'`, `'smoothDifference'`) → it's a `BooleanGroup`
+- `type` matches a **domain operator** (`'rep'`, `'mirror'`, `'twist'`, `'bend'`) → it's a `DomainGroup`
 
-This is how "Named primitive instance" and "recursive nesting" coexist: every node is a named instance, and boolean operators are themselves named instances with children.
+This is how "Named primitive instance" and "recursive nesting" coexist: every node is a named instance, and operators (boolean or domain) are themselves named instances with children.
+
+`BooleanGroup` composes geometry from multiple operands (`children`). `DomainGroup` applies a spatial domain transformation to **one** operand (`source`) — the rep / mirror / twist / bend ops in `src/sdf/dn.js` and `src/sdf/d3.js`.
 
 ### PrimitiveLeaf
 
@@ -126,6 +129,53 @@ For multi-child boolean (length > 2):
 
 - `union` / `intersection` / `smoothUnion`: applied left-to-right, fully commutative
 - `difference` / `smoothDifference`: `children[0] − children[1] − children[2] − ...` (subtract all subsequent from first)
+
+### DomainGroup
+
+```ts
+type DomainGroup = {
+  id: string
+  type: 'rep' | 'mirror' | 'twist' | 'bend'
+
+  args: DomainArgs                        // type-specific (see below)
+
+  source: Subject                         // single operand (recursive — can wrap any Subject including BooleanGroup or another DomainGroup)
+
+  transform?: Transform                   // applied AFTER domain op
+  region?:    string                      // inherits from source if unset
+  animation?: AnimationChannel[]
+}
+```
+
+Operator-specific args:
+
+| Operator | args | Semantics |
+|---|---|---|
+| `rep` | `{ period: [px, py, pz], count?: [cx, cy, cz], padding?: [px, py, pz] }` | Periodic repetition along world axes. `period[i] === 0` means no repetition on that axis. `count` (optional) bounds repetitions to `[-count[i], count[i]]` (else infinite). |
+| `mirror` | `{ axis: 'x' \| 'y' \| 'z' }` | `p[axis] = abs(p[axis])` — mirror across the chosen plane. |
+| `twist` | `{ axis: 'x' \| 'y' \| 'z', k: number }` | Twist around `axis` with `k` radians per world unit along the axis. |
+| `bend` | `{ axis: 'x' \| 'y' \| 'z', k: number }` | Bend along `axis` with curvature `k`. |
+
+**Example — autoscope bird flock** (`bird.translate.x = speed * t`, periodic every 60 units along x):
+
+```json
+{
+  "id": "bird-flock-1",
+  "type": "rep",
+  "args": { "period": [60, 0, 0] },
+  "source": {
+    "id": "bird-shape",
+    "type": "sphere",
+    "args": { "radius": 0.2 },
+    "transform": { "translate": [0, 8, 0] },
+    "animation": [
+      { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 5.0 } }
+    ]
+  }
+}
+```
+
+The inner `translate.x = 5·t` drives the bird forward; the outer `rep` folds it into `[-30, 30]` so visually it loops infinitely. Together they reproduce autoscope's bird-flock idiom.
 
 ---
 
@@ -229,6 +279,8 @@ type CameraSpec = {
   targetX: number                       // target offset from world origin
   targetY: number
   targetZ: number
+
+  animation?: AnimationChannel[]        // optional scene-level camera animation (channel paths: yaw / pitch / distance / focal / targetX / targetY / targetZ)
 }
 ```
 
@@ -255,6 +307,8 @@ type LightSpec = {
   altitude: number                      // [-π/2 + 0.1, π/2 - 0.1], elevation
   distance: number                      // [1, 50]
   intensity?: number                    // default 1.0, multiplier on diffuse term
+
+  animation?: AnimationChannel[]        // optional scene-level light animation (channel paths: azimuth / altitude / distance / intensity)
 }
 ```
 
@@ -269,49 +323,81 @@ position = [
 
 ---
 
-## Animation channel (v0 hook only)
+## Animation channels
 
-`AnimationChannel` is a **reserved field** on every Subject. v0 compile.js **ignores** it; rendering is static. The hook exists so v1 SceneData files don't need migration when v1 animation evaluator ships.
+`AnimationChannel[]` is a field on every Subject (`PrimitiveLeaf`, `BooleanGroup`, `DomainGroup`) and on `defaults.camera` / `defaults.light`. The animation pipeline is **already implemented at the library level** (see `src/sdf/time.js`, `src/sdf/sdf3.compile.js emitTimeExpr()`, `src/sdf/sdf3.glsl.js u_time` uniform, `src/render/bobShader.js u_time` upload). M0 SceneData spec ships the JSON-facing shape; compile.js translates it into the existing time-expr pipeline.
+
+### Dual-form value
+
+A channel's time function can be expressed in **either** form. The compiler normalizes both to the same canonical structured object before emitting GLSL.
 
 ```ts
 type AnimationChannel = {
-  channel: string                       // dot-path to the field being animated
-  expr: string                          // GLSL-like time expression
+  channel: string                       // dot-path (see below)
+
+  // EXACTLY ONE OF:
+  expr?: string                         // human / LLM form: 'sin(t * 0.5) * 0.3'
+  value?: TimeExpr                      // structured form (editor / generator output)
 }
 ```
 
+The structured form mirrors `src/sdf/time.js` exactly:
+
+```ts
+type TimeExpr =
+  | { kind: 'time', form: 'linear', coef: number }                  // coef * t
+  | { kind: 'time', form: 'sin',    amp: number, freq: number, phase: number }   // amp * sin(freq * t + phase)
+  | { kind: 'time', form: 'cos',    amp: number, freq: number, phase: number }   // amp * cos(freq * t + phase)
+  | { kind: 'time', form: 'sum',    terms: (number | TimeExpr)[] }  // term1 + term2 + ...
+```
+
+`expr` and `value` are mutually exclusive on a single channel. `serialize.js` parses `expr` into a `TimeExpr` and emits both forms on round-trip (idempotent). `compile.js` accepts both and routes both to `emitTimeExpr()`.
+
 ### Channel dot-path
 
-The path navigates into the Subject's fields:
+The path navigates into the host node's fields. Allowed on subjects, camera, light:
 
-| Channel | Animates |
+| Channel (Subject) | Animates |
 |---|---|
-| `'transform.translate.x'` | translate x component |
-| `'transform.translate.y'` | translate y |
-| `'transform.rotate.z'` | rotation around z |
-| `'transform.scale'` | uniform scale (only if scalar) |
-| `'args.radius'` | primitive arg (only on PrimitiveLeaf) |
-| `'args.k'` | boolean smooth blend (only on smoothUnion/smoothDifference) |
-| `'color.r'`, `'color.g'`, `'color.b'` | per-channel color |
+| `'transform.translate.x'` / `.y` / `.z` | translate components |
+| `'transform.rotate.x'` / `.y` / `.z` | Euler rotation (around X/Y/Z, since compile currently requires axis-aligned for time-animated angle) |
+| `'transform.scale'` | uniform scale (scalar form only) |
+| `'args.<argName>'` | any primitive arg (radius / dims / k / amp / freq / speed / ...). `args.k` is also valid on `smoothUnion` / `smoothDifference`. |
+| `'color.r'` / `.g` / `.b` | per-channel color (0..1) |
+| `'args.period.x'` / `.y` / `.z` | `DomainGroup` rep period (rare; usually static) |
 
-### Expression language
+| Channel (defaults.camera) | Animates |
+|---|---|
+| `'yaw'` / `'pitch'` | rotation |
+| `'distance'` | distance from target |
+| `'focal'` | focal length (0 = ortho, > 0 = perspective) |
+| `'targetX'` / `'targetY'` / `'targetZ'` | target offset |
 
-Subset of GLSL-like syntax, time variable `t` (seconds):
+| Channel (defaults.light) | Animates |
+|---|---|
+| `'azimuth'` / `'altitude'` / `'distance'` | spherical position |
+| `'intensity'` | scalar multiplier |
+
+### Expression language (string form)
+
+Subset of math-like syntax, time variable `t` (seconds):
+
 ```
 sin(t * 0.5) * 0.3 + 0.3
 cos(t) * 0.1
-fract(t * 0.2)
+0.4 + 0.075 * sin(t / 3)
 ```
 
-Functions in v1: `sin`, `cos`, `tan`, `abs`, `mod`, `fract`, `floor`, `clamp`, `mix`, `smoothstep`.
-Operators: `+ - * / %`, parentheses.
+Functions in v1: `sin`, `cos` (more in v2). Operators: `+ - *`, parentheses. Numeric literals.
 
-### v0 contract
-- compile.js parses Subject including animation field
-- evaluator stub: returns the static value as if `t = 0`
-- no actual animation in v0; field is preserved for round-trip
+**Not** supported in v1 expression strings (compile.js will reject): `tan`, `mod`, `fract`, `floor`, `clamp`, `mix`, `smoothstep`, division (`/` literal — but `t / 3` written as `t * 0.333` works), nested function calls deeper than one level. These can be expressed via `value` (TimeExpr) using `'sum'` form composition; they may be added to the string parser in v2.
 
-When v1 evaluator ships, **no SceneData files need migration** — old v1 scenes without animation simply have empty arrays.
+### v1 contract
+
+- `serialize.parse()` accepts either `expr` or `value`; on output emits canonical `value` (and optionally pretty-prints `expr`)
+- `compile.js` resolves animation channels into GLSL via the existing `emitTimeExpr()` pipeline
+- Animation is **live** in M1+ Compositor; renders update every frame using `u_time` uniform
+- The earlier v0 contract ("evaluator stub, freeze at t=0") is **superseded** — animation works now
 
 ---
 
@@ -380,6 +466,24 @@ revolve:   { source: PrimitiveLeaf, offset }     // revolve around y axis at giv
 
 Special case: `source` is a PrimitiveLeaf, not in `children` because it's exactly one. Validation ensures `source.type` is a 2D primitive.
 
+### Time-aware primitives
+
+These primitive types read `u_time` directly inside their SDF evaluation (not via AnimationChannel on `args`). The temporal component is intrinsic to the surface shape, not added as a post-hoc translation.
+
+```
+waves:     { freq, amp, angle, speed }
+```
+
+Args:
+- `freq` — spatial wavelength along the rotated z-axis (autoscope uses 2–8)
+- `amp` — wave amplitude in y (autoscope uses 0.33–1.0)
+- `angle` — rotation of the wave field around y-axis in radians
+- `speed` — temporal frequency multiplier on `t`
+
+Surface equation: `y_surface = -amp + amp * sin(speed * t + p_rotated.z / freq)`, where `p_rotated = rotateY(p, angle)`. Used as the autoscope sea/lake ground.
+
+`args` on a time-aware primitive **can** still carry `AnimationChannel`s (e.g. animate `amp` to grow waves over time), and `compile.js` composes them: the AnimationChannel modulates the arg value, then the primitive consumes that arg in its time-aware evaluation.
+
 ---
 
 ## Validation rules (compile.js / serialize.js)
@@ -393,9 +497,15 @@ When parsing or compiling, fail loudly on:
 5. `BooleanGroup.children` has length 1 and is unwrapped to its single child during compile (warning)
 6. `PrimitiveLeaf.type` not in primitive registry
 7. `BooleanGroup.type` not in boolean operator set
-8. Missing `defaults.camera` or `defaults.light`
-9. Camera out-of-range fields (clamp + warn)
-10. Light altitude / azimuth out-of-range (clamp + warn)
+8. `DomainGroup.type` not in domain operator set (rep / mirror / twist / bend)
+9. `DomainGroup.source` missing (every DomainGroup must wrap exactly one operand)
+10. Missing `defaults.camera` or `defaults.light`
+11. Camera out-of-range fields (clamp + warn)
+12. Light altitude / azimuth out-of-range (clamp + warn)
+13. `AnimationChannel` has both `expr` and `value` set (mutually exclusive)
+14. `AnimationChannel.channel` dot-path not resolvable on the host node
+15. `AnimationChannel.expr` contains unsupported function/operator (parse error with offending token)
+16. Time-modulated `transform.rotate` on a non-axis-aligned rotation (compile error, axis must be one of X/Y/Z)
 
 ---
 
@@ -484,6 +594,58 @@ When parsing or compiling, fail loudly on:
 }
 ```
 
+### Example 5: Autoscope-style animated scene (birds + breathing house + waves + camera dolly)
+
+```json
+{
+  "v": 1,
+  "name": "Coastal village at sunrise",
+  "subjects": [
+    {
+      "id": "bird-flock-1",
+      "type": "rep",
+      "args": { "period": [60, 0, 0] },
+      "source": {
+        "id": "bird-shape",
+        "type": "sphere",
+        "args": { "radius": 0.2 },
+        "transform": { "translate": [0, 8, 0] },
+        "animation": [
+          { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 5.0 } }
+        ]
+      }
+    },
+    {
+      "id": "house-breathing",
+      "type": "box",
+      "args": { "dims": [3, 4, 3] },
+      "transform": { "translate": [0, 2, 0] },
+      "animation": [
+        { "channel": "args.dims", "expr": "0.15 * sin(t * 0.2)" }
+      ]
+    }
+  ],
+  "ground": { "y": -1, "region": "ground" },
+  "defaults": {
+    "camera": {
+      "yaw": 0, "pitch": 0.1, "distance": 25, "focal": 1.5,
+      "targetX": 0, "targetY": 0, "targetZ": 0,
+      "animation": [
+        { "channel": "targetZ", "expr": "0.25 * t" }
+      ]
+    },
+    "light": {
+      "azimuth": 0.5, "altitude": 0.6, "distance": 30,
+      "animation": [
+        { "channel": "azimuth", "value": { "kind": "time", "form": "cos", "amp": 1.0, "freq": 0.05, "phase": 0 } }
+      ]
+    }
+  }
+}
+```
+
+This example exercises every animation hook: subject `transform.translate.x` linear drift, `args.dims` breathing pulse (string `expr`), DomainGroup `rep` periodic folding, camera `targetZ` dolly-forward, light `azimuth` slow oscillation (structured `value`). Round-trip preserves both `expr` and `value` forms.
+
 ---
 
 ## Round-trip guarantee
@@ -544,5 +706,11 @@ M0 day 4-5: refactor `examples/sdf/autoscope-scenes.js` to emit SceneData. All 6
 
 ## Status
 
-- 2026-05-17: spec authored, v1 locked. 3 design parameters confirmed in earlier abstraction-layer discussion (see `memory/project_compositor_roadmap.md`).
-- Next: write `spec.js` validator + `compile.js` SDF builder. M0 day 2-3.
+- **2026-05-17 (initial)**: spec authored, v1 locked. 3 design parameters confirmed in earlier abstraction-layer discussion (see `memory/project_compositor_roadmap.md`).
+- **2026-05-17 (animation extensions)**: 4 spec extensions added after pre-M0-day-2 review of autoscope animation pipeline:
+  1. **DomainGroup** as third Subject variant (rep / mirror / twist / bend, alongside PrimitiveLeaf and BooleanGroup)
+  2. **Dual-form AnimationChannel** (`expr` string for LLM, `value` structured TimeExpr for editor — mutually exclusive, compile normalizes)
+  3. **Camera + light animation hooks** (`defaults.camera.animation` / `defaults.light.animation` use same AnimationChannel evaluator)
+  4. **Time-aware primitive types** (`waves` added; consumes `u_time` internally for surface evaluation)
+  All four were locked after confirming the library pipeline (time-expr → GLSL emission → u_time uniform → bobShader upload) is **already live** in autoscope-clone. Spec v1 documents that pipeline rather than queuing it.
+- **Next**: write `spec.js` validator + `compile.js` SDF builder. M0 day 2-3.
