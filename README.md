@@ -1,11 +1,13 @@
-# sdf-js
+# Atlas
 
 <p align="center">
-  <img src="./docs/hero.png" alt="sdf-js hero — stipple-rendered sphere on a paper-textured horizon, produced by BOB GPU 2-pass sand painting" width="640">
+  <img src="./docs/hero.png" alt="Atlas hero — stipple-rendered sphere on a paper-textured horizon, produced by BOB GPU 2-pass sand painting" width="640">
 </p>
 
-> **LLM-native generative art engine for vector / plotter / editorial illustration.**
-> Built on Signed Distance Functions (SDF) — a paradigm where diffusion models structurally cannot compete.
+> **Atlas — the LLM-native illustration platform.**
+> An *atlas* in differential geometry is a collection of charts covering a manifold. Here it's a collection of *forms × renderers × patterns × scenes* — composed via four orthogonal input sources (LLM prompt, generator, 2D editor, 3D editor) into a single renderer pool.
+
+> Built on **sdf-js** — the underlying open-source SDF library. Signed distance functions are a paradigm where diffusion models structurally cannot compete.
 
 ---
 
