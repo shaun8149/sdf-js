@@ -38,28 +38,40 @@ This isn't a "diffusion is worse" claim — it's a **structural separation of do
 
 ## What's in the box (current capability)
 
-### 4 renderers × any SDF dim (2D or 3D)
+### 6 renderers × any SDF dim (2D or 3D)
+
+Split into two implementation families. All renderers are polymorphic over SDF2 / SDF3 (12-cell matrix); the GPU family adds real-time interactivity.
+
+**Canvas2D family — offline / vector-ready / SVG-exportable:**
 
 | Renderer | What it does | Art-history lineage |
 |---|---|---|
-| **Silhouette** | Flat-color filled regions | Lotta Nieminen / editorial illustration |
-| **Stipple (BOB)** | Multi-layer painterly brush stipple | Bonnard / post-impressionism / Aboriginal dot |
-| **Lines (Pasma)** | Contour-following streamlines / 3D surface-wrap rayhatching | Piter Pasma / Universal Rayhatcher |
-| **Lambert** | 3D raymarched with diffuse shading | Standard 3D shading |
+| **Silhouette** | Flat-color filled regions, sharp edges | Lotta Nieminen / editorial illustration |
+| **Stipple (BOB)** | Multi-layer painterly brush stipple, SDF3 mode probes Lambert intensity → density modulation | Bonnard / post-impressionism / Aboriginal dot |
+| **Lines (Pasma)** | Contour-following streamlines (2D) / 3D surface-wrap rayhatching (3D) | Piter Pasma / Universal Rayhatcher |
+| **Lambert (canvas)** | Canvas-rendered raymarched diffuse shading | Standard 3D shading |
 
-All renderers polymorphic over SDF2 / SDF3 (3 + 1 path matrix).
+**GPU shader family — real-time, pointer-lock WASD, 60fps:**
 
-### 5 background patterns (orthogonal axis)
+| Renderer | What it does | Art-history lineage |
+|---|---|---|
+| **Fly 3D** | GPU Lambert + free-fly camera; preview & scene-composition mode | Standard 3D shading |
+| **BOB GPU** | GPU quantized-palette spaceCol + 2-pass FBO sand painting + scene-wide palette parity lock | Erik Swahn Autoscope / Aboriginal dot meets Bonnard / generative grid |
+
+Compile path: any SDF3 expression → GLSL via `sdf3.compile.js` (with optional `emitObjectIndex` for multi-object color separation). Same SDF tree feeds both canvas and GPU renderers.
+
+### 4 background patterns (orthogonal axis)
+
+Pattern is a third independent axis on top of `subject SDF × renderer`. Patterns auto-mask with subject silhouette (Pasma surreal-staging idiom) so they live behind/around the subject without overpainting it.
 
 | Pattern | Algorithm | Output type |
 |---|---|---|
-| **None** | — | Plain bg |
+| **None** | — | Plain bg / canvas-color |
 | **Truchet** | Smith arcs on uniform grid | Plotter-vector |
-| **Hilbert** | Recursive 4-way space-filling curve | Plotter-vector |
 | **Gosper** | L-system flowsnake (hexagonal triskele) | Plotter-vector |
 | **Motifs** | Reinder Nijhoff-style hand-drawn motif library × 3-band uniform grid sweep | Plotter-vector |
 
-Patterns auto-mask with subject silhouette (Pasma surreal-staging idiom).
+(`Hilbert` recursive space-filling curve is still exported from `src/render/spaceCurve.js` for library users but retired from the MVP pill rail in favor of Gosper's stronger visual contrast.)
 
 ### SDF library (40+ primitives)
 
