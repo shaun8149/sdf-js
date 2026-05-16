@@ -11,8 +11,8 @@ import * as render from '../../src/render/index.js';
 import { SDF3 } from '../../src/index.js';
 import * as bobPalette from '../../src/palette/bob.js';
 import * as tyler from '../../src/palette/tyler.js';
-import { createFly3DRenderer } from './fly3d-renderer.js';
-import { createBobShaderRenderer } from './bob-shader-renderer.js';
+import { createFly3DRenderer } from '../../src/render/flyLambert.js';
+import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 
 const $ = id => document.getElementById(id);
 
@@ -58,6 +58,8 @@ function getBobShader() {
   if (!wgl) return null;
   _bobShaderRenderer = createBobShaderRenderer({
     canvas: wgl,
+    twoPass: true,              // ← autoscope 2-pass FBO 沙画（跟 autoscope-clone 同款）
+    bufferResolution: 320,
     getControls: () => ({
       lightAzim: +$('bob-light-azim').value,
       lightAlt:  +$('bob-light-alt').value,
@@ -72,6 +74,11 @@ function getBobShader() {
       noiseSpeed: +$('bob-noise').value,
       exposure:   +$('bob-exposure').value,
       saturation: +$('bob-saturation').value,
+      worldScale: 8.0,  // MVP: LLM ~0.5-unit SDF → 8.0 给 spaceCol 量化补偿。autoscope-clone 用 0.5（10-unit SDF）
+      // Post-process（沙画 noise）—— 跟 autoscope-clone 同款
+      postNoise:    +$('bob-post-noise').value,
+      postNFactor:  1.0,
+      postNoiseCap: 0.5,
     }),
     onFps: (fps) => {
       const el = $('bob-fps');
@@ -1232,6 +1239,7 @@ function initBobShaderControls() {
   };
   wireSlider('bob-coldiv', 2);
   wireSlider('bob-noise', 5);   // 0.00008 这种小数得 5 位
+  wireSlider('bob-post-noise', 2);
   wireSlider('bob-light-azim', 2);
   wireSlider('bob-light-alt', 2);
   wireSlider('bob-focal', 2);

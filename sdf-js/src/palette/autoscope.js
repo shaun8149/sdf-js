@@ -150,3 +150,66 @@ export function hexToVec3(hex) {
     parseInt(h.slice(4, 6), 16) / 255,
   ];
 }
+
+// =============================================================================
+// Autoscope randomization knobs (mirror / twist / gridRot)
+// -----------------------------------------------------------------------------
+// 这 3 个 knob 是 BOB GPU shader 接受的 uniforms，autoscope sketch.js 用 PRNG
+// 给每个 hash 派生一组值 → 让单 hash 的视觉变体空间 ×5。
+// 概率跟 Autoscope 原版严格对齐。
+//
+// caller 把返回值喂进 bobShader getControls() 即可。
+// =============================================================================
+
+export const DEFAULT_KNOBS = Object.freeze({
+  mirrorX: false,
+  mirrorZ: false,
+  twist: 0,
+  twistType: 0,           // 0=Y / 1=Z / 2=X
+  gridRot: [0, 0, 0],
+});
+
+/**
+ * Autoscope-style 随机化（mirror / twist / gridRot），跟 sketch.js setup() 一致。
+ * @param {{random_bool: Function, random_num: Function, random_choice: Function}} rng
+ * @returns {typeof DEFAULT_KNOBS}
+ */
+export function randomizeKnobs(rng) {
+  return {
+    mirrorX:   rng.random_bool(0.15),
+    mirrorZ:   rng.random_bool(0.15),
+    twist:     rng.random_bool(0.5) ? rng.random_num(-0.2, 0.2) : 0,
+    twistType: rng.random_choice([0, 1, 1, 2]),  // Y/Z/Z/X weighted (autoscope idiom)
+    gridRot: [
+      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
+      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
+      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
+    ],
+  };
+}
+
+/**
+ * 把 knobs 跟"开关 boolean"合并：开关 off → 所有 knobs 归零，开关 on → 原 knobs。
+ * 给 UI 的"启用/禁用 autoscope randomization" toggle 用。
+ * @param {typeof DEFAULT_KNOBS} knobs
+ * @param {boolean} enabled
+ */
+export function applyKnobsGate(knobs, enabled) {
+  if (enabled) return knobs;
+  return { ...DEFAULT_KNOBS, twistType: knobs.twistType };
+}
+
+/**
+ * 短读出字符串（debug overlay 用）：`mirror XZ  twist 0.18/Z  gridRot [π/4,0,π/2]`
+ */
+export function describeKnobs(knobs) {
+  const k = knobs;
+  const twistAxis = ['Y', 'Z', 'X'][k.twistType] || 'Y';
+  const gr = k.gridRot.map(v =>
+    v === 0 ? '0' : (Math.abs(v - Math.PI / 4) < 1e-4 ? 'π/4' :
+                     Math.abs(v - Math.PI / 2) < 1e-4 ? 'π/2' : v.toFixed(2))
+  ).join(',');
+  return `mirror ${k.mirrorX ? 'X' : '·'}${k.mirrorZ ? 'Z' : '·'}  ` +
+         `twist ${(+k.twist).toFixed(2)}/${twistAxis}  ` +
+         `gridRot [${gr}]`;
+}

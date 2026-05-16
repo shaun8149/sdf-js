@@ -28,10 +28,18 @@ export {
   cone, capped_cone,
   tetrahedron, octahedron, dodecahedron, icosahedron,
   pyramid, slab3, wireframe_box,
+  tri_prism,
+  waves,
 } from './d3.js';
 
 // 3D artistic ops (Wave 2C)
 export { twist, bend } from './d3.js';
+
+// Euler-angle rotation convenience (Three.js / Blender 风格)
+export { rotateXYZ } from './d3.js';
+
+// Time-modulated scalar helpers (animation foundation)
+export * as time from './time.js';
 
 // 3D 射线求交 / 球追踪工具
 export {

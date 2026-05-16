@@ -25,7 +25,7 @@ import {
   blend, dilate, erode, shell, negate,
 } from '../../src/sdf/dn.js';
 import { compileSDF3ToGLSL } from '../../src/sdf/sdf3.compile.js';
-import { attachFlyControls } from './helpers/fly-controls.js';
+import { attachFlyControls } from '../../src/input/fly-controls.js';
 
 // =============================================================================
 // PRESETS — startup library of scenes

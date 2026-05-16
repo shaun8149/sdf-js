@@ -1,5 +1,9 @@
 # sdf-js
 
+<p align="center">
+  <img src="./docs/hero.png" alt="sdf-js hero — stipple-rendered sphere on a paper-textured horizon, produced by BOB GPU 2-pass sand painting" width="640">
+</p>
+
 > **LLM-native generative art engine for vector / plotter / editorial illustration.**
 > Built on Signed Distance Functions (SDF) — a paradigm where diffusion models structurally cannot compete.
 
@@ -148,15 +152,55 @@ render.raymarched(ctx, [{ sdf: bottle, color: [0.2, 0.6, 0.9] }], { view: 1.2 })
 
 ## Roadmap
 
-- ✅ Probe abstraction (single 4-value contract across all 3D renderers)
-- ✅ Free-fly camera with pointer-lock WASD (game-style 3D navigation)
-- ✅ Motif library as first-class layer (Reinder Nijhoff Pasma-feel)
-- ⏳ Scene-as-data format (declare scenes as JSON-able specs)
-- ⏳ STL export (marching cubes for 3D printing)
-- ⏳ Voronoi / Delaunay pattern variants
-- ⏳ Multi-object surreal scene grammar in SKILL.md (teach LLM to compose multi-layer 3D scenes)
-- ⏳ Phase 3: animation (timeline + GIF/MP4)
-- ⏳ Marketplace: tradable renderer / pattern / motif library / scene presets
+### The 4-page Compositor architecture (current target)
+
+Input is the new axis. The current MVP ships one input path (LLM text prompt → SDF). The next phase splits the input layer into **four orthogonal sources**, all emitting the same **SceneData** format, all consumed by the same renderer pool:
+
+```
+   ┌─ text-mode      (LLM prompt → SceneData)      ─┐
+   ├─ generator-mode (autoscope-style PRNG → Data)  ─┤
+   │                                                ├→ SceneData → renderer pool (silhouette / stipple / lines / Lambert / BOB-GPU × 5 patterns)
+   ├─ 2d-edit-mode   (node-graph editor → Data)    ─┤
+   └─ 3d-edit-mode   (viewport editor → Data)      ─┘
+```
+
+**Three architectural decisions** (locked 2026-05-17):
+
+1. **SceneData is the lingua franca.** All four inputs emit the same JSON-able shape (`subjects + ground + defaults.camera + defaults.light + regions`). Without this, the four inputs become silos and the Compositor can't unify them.
+2. **The 2D editor is a non-destructive SDF node graph, not a PPT clone.** PPT "merge shapes" is destructive — operands are deleted on boolean. We keep operands as editable child nodes. This non-destructive boolean is SDF's structural advantage over PowerPoint, Illustrator, and diffusion. UI may borrow PPT's drag-and-drop feel, but the substrate is a node tree.
+3. **MVP folds into Compositor as a `text-mode` tab.** Four pages, not five. One shared renderer pool, one palette control surface, one camera widget. The existing `examples/mvp/` URL stays alive via redirect.
+
+### 6 milestones (9–11 weeks)
+
+| M | Goal | Time | Depends on | Output |
+|---|---|---|---|---|
+| **M0** | Scene data spec | 3–5 days | — | `src/scene/spec.js + compile.js + serialize.js`; autoscope-scenes refactor validates spec |
+| **M1** | Compositor v0 | 5–7 days | M0 | 4-tab UI + renderer pool; `text` + `generator` tabs functional |
+| **M2** | Generator framework | 5–7 days | M0 | `src/generator/`; autoscope re-expressed as a Generator instance; +1–2 new templates |
+| **M3** | 2D node-graph editor | 2–3 weeks | M0 | viewport + primitive palette + boolean nodes + outliner + undo |
+| **M4** | 3D viewport editor | 3–4 weeks | M0 | three.js viewport + transform gizmo + 3D primitive panel + SceneData output |
+| **M5** | LLM emits SceneData | 1–2 weeks | M0, M1 | SKILL.md rewrite → LLM outputs SceneData JSON → editable in 2D/3D editors |
+| **M6** | LLM emits Generator function | 1–2 weeks | M2, M5 | LLM writes `(hash) → SceneData` → autoscope-style generative output from prompt |
+
+Critical path: M0 → M1 → M2 → M3/M4 → M5 → M6. M3 and M4 can run in parallel after M0 lands.
+
+### Why this matters
+
+This is Point 4 (multi-axis decoupling) extended from the **output side** (renderer × pattern × motif library) to the **input side** (LLM × generator × 2D-edit × 3D-edit). Every input source becomes a tradable asset class in the marketplace economy:
+
+- **LLM prompt presets** → editorial authors
+- **Generator templates** → autoscope-lineage generative artists
+- **2D scene presets** → Lotta-style illustrators
+- **3D scene presets** → product / icon set designers
+
+M5 and M6 are the *terminal* commercial-thesis demonstrations: LLM produces *editable* output (M5) and *generators* (M6) — neither of which diffusion can structurally reach.
+
+### What's still on the bench
+
+- **STL export** (marching cubes for 3D printing) — unlocks physical fabrication market; queued after M3
+- **`text(font, str)` → SDF** — capability blocker for PPT titles + emoji text + logo work; queued after M2
+- **SVG export polish** — Lines renderer already emits paths; tighten for Illustrator / axidraw round-trip
+- **Voronoi / Delaunay pattern variants** — additional cells in the pattern axis
 
 ---
 

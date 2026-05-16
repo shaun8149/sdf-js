@@ -812,7 +812,14 @@ reference work you drew on.
      `erode`, `shell`, `rep`, `blend`, `elongate`
    - **3D artistic ops**: `.twist(k)`, `.bend(k)`
    - **2D → 3D 升维**: `.extrude(h)`, `.extrude_to(other, h, easing?)`, `.revolve(offset)`
-   - **3D 变换**: `.translate`, `.scale`, `.rotate`, `.orient`
+   - **3D 变换**: `.translate(offset)`, `.scale(factor)`, `.rotate(angle, axis)`, `.rotateXYZ([rx,ry,rz])`, `.orient(axis)`
+     - **`.rotate(angle, axis)`** is **axis-angle**: scalar angle + axis vec3 (default Z).
+       Example: `.rotate(Math.PI/6, [0, 1, 0])` rotates 30° around Y.
+       **NOT** Three.js style Euler array! `.rotate([rx, ry, rz])` is auto-redirected
+       to `.rotateXYZ(...)` for compat but **prefer explicit form**.
+     - **`.rotateXYZ([rx, ry, rz])`** = Euler XYZ (Three.js / Blender convention):
+       rotate rx around X, then ry around Y, then rz around Z. Use this when you
+       want multiple-axis rotation in one call. Example: `.rotateXYZ([0, Math.PI/4, 0.1])`.
 
    Anything else (e.g. `image`, `text`) is NOT yet available—compose from
    the listed primitives. **几乎所有常见 3D 形态都有 native primitive**——
@@ -822,6 +829,16 @@ reference work you drew on.
    and will iterate with you.
 5. **Don't use `trapezoid` with 4 scalars.** That signature does not exist.
    Use 2 points + 2 scalars: `trapezoid([0, 0.5], [0, 0.2], 0.18, 0.10)`.
+5a. **Don't add sky / horizon / overcast as a huge enclosing SDF primitive.**
+    The Lambert / BOB GPU / Fly 3D renderers handle sky as the **ray-miss case**
+    (built-in gradient when raymarch finds nothing). If you `union(...)` a huge
+    enclosing sphere/box like `sphere(8.0).translate([0, 0.5, -6.0])`, the camera
+    sits **inside** the SDF → `min`-union returns negative distance → every pixel
+    hits "instantly" → blank flat fill. Same applies to backdrops, fog domes,
+    weather layers. **Just don't add sky to scene SDF.** If you want stylized
+    horizon, leave it to the renderer; if you need a foreground silhouette wall,
+    use a large but THIN slab BEHIND the subject (e.g., `box([20, 20, 0.1])
+    .translate([0, 0, +5])`)—small in Z so camera can't be inside.
 6. **Don't delete a part without checking what it bridges.** In multi-part
    smooth-unions (full body, torso, etc.), every primitive's Y-interval must
    overlap its neighbors — or the gap must be < `k`. "Redundant"-looking parts

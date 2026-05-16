@@ -19,6 +19,10 @@
 // =============================================================================
 
 export const SDF3_GLSL = /* glsl */ `
+// 时间 uniform：让 sdWaves / time-modulated primitives / animation 可用。
+// caller shader 不要重复声明（会冲突）。如果不动画，无需 setUniform，默认 0。
+uniform float u_time;
+
 // ---- helpers ---------------------------------------------------------------
 
 float dot2(vec2 v)  { return dot(v, v); }
@@ -396,6 +400,45 @@ vec3 opBend(vec3 p, float k) {
   float c = cos(k * p.x), s = sin(k * p.x);
   return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
 }
+
+// ---- Domain repetition (Inigo Quilez pMod, autoscope idiom) ---------------
+// period.x/y/z == 0  → 该轴不重复（等效 period ≈ ∞）
+// IMPORTANT: 我们把 0 替换成 1e6 → 该轴的 mod 永不切，保留 caller "0 = 无 rep" 的写法
+vec3 rep3(vec3 p, vec3 period) {
+  vec3 q = period;
+  if (q.x == 0.0) q.x = 1e6;
+  if (q.y == 0.0) q.y = 1e6;
+  if (q.z == 0.0) q.z = 1e6;
+  return p - q * floor(p / q + 0.5);
+}
+
+// Limited rep: count[i] >= 0 → 沿轴 i tile 数限制在 ±count[i]；count[i] < 0 → 无限
+// 用例：autoscope arch 廊柱 repL3(p, vec3(2.0, 0, 0), vec3(3, 0, 0)) = 7 拱并排
+vec3 repL3(vec3 p, vec3 period, vec3 count) {
+  vec3 q = period;
+  if (q.x == 0.0) q.x = 1e6;
+  if (q.y == 0.0) q.y = 1e6;
+  if (q.z == 0.0) q.z = 1e6;
+  vec3 id = floor(p / q + 0.5);
+  if (count.x >= 0.0) id.x = clamp(id.x, -count.x, count.x);
+  if (count.y >= 0.0) id.y = clamp(id.y, -count.y, count.y);
+  if (count.z >= 0.0) id.z = clamp(id.z, -count.z, count.z);
+  return p - q * id;
+}
+
+// ---- Time-aware primitives -------------------------------------------------
+// 这些 primitive 内部引用 u_time（caller shader 必须 declare uniform float u_time）。
+// BOB GPU / flyLambert 都已声明。autoscope-clone scene-1 sea ground 用。
+
+// 海浪地面（sinusoidal terrain along z after rotation around Y by angle）
+//   y_surface = sin(speed * u_time + p_rotated.z / freq) * amp - amp
+// SDF: distance to surface in y axis（near-surface approx，足够 raymarch）
+float sdWaves(vec3 p, float freq, float amp, float angle, float speed) {
+  float c = cos(angle), s = sin(angle);
+  // rotateY(p, angle).z = -s*p.x + c*p.z
+  float pz = -s * p.x + c * p.z;
+  return p.y + sin(speed * u_time + pz / freq) * amp - amp;
+}
 `;
 
 // =============================================================================
@@ -415,6 +458,8 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdPyramid', 'sdRhombus', 'sdHorseshoe', 'sdU',
   // d3.js extensions
   'sdRoundedBox', 'sdTetrahedron', 'sdDodecahedron', 'sdIcosahedron',
+  // time-aware
+  'sdWaves',
 ];
 
 export const SDF3_GLSL_OPS = [
@@ -426,4 +471,5 @@ export const SDF3_GLSL_OPS = [
 export const SDF3_GLSL_TRANSFORMS = [
   'opTranslate', 'opScale', 'opTwist', 'opBend',
   'rotX', 'rotY', 'rotZ', 'rotX_inv', 'rotY_inv', 'rotZ_inv',
+  'rep3', 'repL3',
 ];

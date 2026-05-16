@@ -12,7 +12,7 @@
 
 import { makeProbe } from './scenes-3d.js';
 import { createFlyCamera, lightFromSpherical } from '../../src/sdf/probe.js';
-import { attachFlyControls } from './helpers/fly-controls.js';
+import { attachFlyControls } from '../../src/input/fly-controls.js';
 import { densePack, projectedTangentField } from '../../src/streamline/index.js';
 import * as easing from '../../src/math/easing.js';
 import { createPerlin } from '../../src/field/noise.js';

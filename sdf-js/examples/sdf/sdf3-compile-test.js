@@ -182,7 +182,7 @@ precision highp float;
 ${full.glsl}
 
 uniform vec2 u_resolution;
-uniform float u_time;
+// u_time 由 SDF3_GLSL 自己声明，这里不重复
 
 vec3 calcNormal(vec3 p) {
   const float e = 0.0005;

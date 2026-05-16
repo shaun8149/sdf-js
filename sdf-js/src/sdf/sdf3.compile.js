@@ -20,14 +20,14 @@
 
 import { SDF3_GLSL } from './sdf3.glsl.js';
 import { SDF3 } from './core.js';
+import { isTimeExpr, mulT } from './time.js';
 
 // ---- format helpers --------------------------------------------------------
 
 // JS number → GLSL float literal。保证带小数点；scientific notation 转 fixed。
-const flt = (n) => {
-  if (typeof n !== 'number') throw new Error(`flt: expected number, got ${typeof n} (${JSON.stringify(n)})`);
-  if (!Number.isFinite(n)) throw new Error(`flt: non-finite value ${n}`);
-  // 7 位精度足够 (我们 SDF 的几何 scale ~1.0)；剥掉尾随 0 但至少保留一位小数
+const fltLit = (n) => {
+  if (typeof n !== 'number') throw new Error(`fltLit: expected number, got ${typeof n}`);
+  if (!Number.isFinite(n)) throw new Error(`fltLit: non-finite value ${n}`);
   let s = n.toFixed(7);
   if (s.includes('.')) {
     s = s.replace(/0+$/, '');
@@ -35,6 +35,26 @@ const flt = (n) => {
   }
   return s;
 };
+
+// time-expr → GLSL 表达式（引用 caller 的 uniform float u_time）
+// 嵌套 sum 直接 inline。AST 紧凑表达：amp · sin(freq · t + phase) 等
+function emitTimeExpr(e) {
+  if (e.form === 'linear') return `(${fltLit(e.coef)} * u_time)`;
+  if (e.form === 'sin')    return `(${fltLit(e.amp)} * sin(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
+  if (e.form === 'cos')    return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
+  if (e.form === 'sum')    return `(${e.terms.map(fltOrTime).join(' + ')})`;
+  throw new Error(`emitTimeExpr: unknown form '${e.form}'`);
+}
+
+// 统一 dispatch：number → literal；time-expr → GLSL expr
+function fltOrTime(x) {
+  if (typeof x === 'number') return fltLit(x);
+  if (isTimeExpr(x)) return emitTimeExpr(x);
+  throw new Error(`flt: expected number or time-expr, got ${typeof x} (${JSON.stringify(x)})`);
+}
+
+// 保持旧名 `flt` 让现有 emitter 不用改；语义升级为多态
+const flt = fltOrTime;
 
 const vec2 = (arr) => `vec2(${flt(arr[0])}, ${flt(arr[1])})`;
 const vec3 = (arr) => `vec3(${flt(arr[0])}, ${flt(arr[1])}, ${flt(arr[2])})`;
@@ -212,17 +232,20 @@ function walk(sdf, p) {
 
 // ---- primitive emitters ----------------------------------------------------
 
+// 所有 /2 用 mulT(_, 0.5) 实现 → 既处理 number 又处理 time-expr（mulT 把代数 distribute 进去）
+const half = (x) => mulT(x, 0.5);
+const halfNeg = (x) => mulT(x, -0.5);
+
 const PRIMS = {
   sphere: ([radius, center], p) =>
     `sdSphere(${p} - ${vec3(center)}, ${flt(radius)})`,
 
   box: ([size, center], p) => {
     const s = asArr3(size);
-    const half = [s[0] / 2, s[1] / 2, s[2] / 2];
-    return `sdBox(${p} - ${vec3(center)}, ${vec3(half)})`;
+    return `sdBox(${p} - ${vec3(center)}, ${vec3([half(s[0]), half(s[1]), half(s[2])])})`;
   },
 
-  // d3.plane: dot(point - p, normalize(normal))
+  // d3.plane: dot(point - p, normalize(normal))。normal 假设静态（非 time-expr）
   plane: ([normal, point], p) => {
     const n = normalize3(normal);
     return `dot(${vec3(point)} - ${p}, ${vec3(n)})`;
@@ -236,7 +259,7 @@ const PRIMS = {
 
   // d3.cylinder(radius, height) → IQ sdCylinder(p, vec2(radius, height/2))
   cylinder: ([radius, height], p) =>
-    `sdCylinder(${p}, ${vec2([radius, height / 2])})`,
+    `sdCylinder(${p}, ${vec2([radius, half(height)])})`,
 
   // d3.capped_cylinder(a, b, radius) → IQ sdCylinder(p, a, b, r)（不同重载）
   capped_cylinder: ([a, b, radius], p) =>
@@ -247,8 +270,7 @@ const PRIMS = {
 
   rounded_box: ([size, radius], p) => {
     const s = asArr3(size);
-    const half = [s[0] / 2, s[1] / 2, s[2] / 2];
-    return `sdRoundedBox(${p}, ${vec3(half)}, ${flt(radius)})`;
+    return `sdRoundedBox(${p}, ${vec3([half(s[0]), half(s[1]), half(s[2])])}, ${flt(radius)})`;
   },
 
   // d3.capped_cone(a, b, ra, rb) → IQ sdCappedCone(p, a, b, ra, rb)
@@ -257,7 +279,7 @@ const PRIMS = {
 
   // d3.cone(height, baseRadius) → 用 capped_cone 形式 emit，tip 用 0.001 半径
   cone: ([height, baseRadius], p) => {
-    const a = [0, -height / 2, 0], b = [0, height / 2, 0];
+    const a = [0, halfNeg(height), 0], b = [0, half(height), 0];
     return `sdCappedCone(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(baseRadius)}, ${flt(0.001)})`;
   },
 
@@ -267,11 +289,18 @@ const PRIMS = {
   icosahedron:  ([r], p) => `sdIcosahedron(${p}, ${flt(r)})`,
   pyramid:      ([h], p) => `sdPyramid(${p}, ${flt(h)})`,
 
+  // tri_prism(halfWidth, halfLength) → IQ sdTriPrism(p, vec2(hw, hl))
+  tri_prism: ([halfWidth, halfLength], p) =>
+    `sdTriPrism(${p}, ${vec2([halfWidth, halfLength])})`,
+
   wireframe_box: ([size, thickness], p) => {
     const s = asArr3(size);
-    const half = [s[0] / 2, s[1] / 2, s[2] / 2];
-    return `sdBoxFrame(${p}, ${vec3(half)}, ${flt(thickness)})`;
+    return `sdBoxFrame(${p}, ${vec3([half(s[0]), half(s[1]), half(s[2])])}, ${flt(thickness)})`;
   },
+
+  // Autoscope 海浪地面（time-aware；caller shader 必须 declare uniform float u_time）
+  waves: ([freq, amp, angle, speed], p) =>
+    `sdWaves(${p}, ${flt(freq)}, ${flt(amp)}, ${flt(angle)}, ${flt(speed)})`,
 };
 
 // ---- op emitters -----------------------------------------------------------
@@ -307,21 +336,31 @@ const OPS = {
   scale: (sdf, p) => {
     const factor = sdf.ast.scalars[0];
     const s = asArr3(factor);
-    const m = Math.min(s[0], s[1], s[2]);
     const inner = walk(sdf.ast.children[0], `(${p} / ${vec3(s)})`);
-    return `(${inner}) * ${flt(m)}`;
+    // Distance compensation: multiply by min(scale_factors)。如果都是 number 走
+    // JS Math.min；如果含 time-expr 则 emit GLSL min() 让 GPU 算
+    const allNum = s.every(x => typeof x === 'number');
+    if (allNum) return `(${inner}) * ${fltLit(Math.min(s[0], s[1], s[2]))}`;
+    return `(${inner}) * min(${flt(s[0])}, min(${flt(s[1])}, ${flt(s[2])}))`;
   },
 
   // d3.rotate(angle, axis = Z)：把点逆向旋转。axis 默认 Z
+  // axis 必须静态（numbers only）；angle 可 time-expr（任意轴时 angle 也必须静态）
   rotate: (sdf, p) => {
     const [angle, axis = [0, 0, 1]] = sdf.ast.scalars;
+    if (!Array.isArray(axis) || !axis.every(x => typeof x === 'number')) {
+      throw new Error(`rotate: axis must be static numbers, time-modulated axis not supported`);
+    }
     const ax = normalize3(axis);
     if (eq3(ax, [1, 0, 0]))  return walk(sdf.ast.children[0], `(rotX_inv(${flt(angle)}) * ${p})`);
     if (eq3(ax, [0, 1, 0]))  return walk(sdf.ast.children[0], `(rotY_inv(${flt(angle)}) * ${p})`);
     if (eq3(ax, [0, 0, 1]))  return walk(sdf.ast.children[0], `(rotZ_inv(${flt(angle)}) * ${p})`);
-    // 任意轴：JS 预算 Rodrigues mat3，常量 emit（不依赖 GLSL helper）
+    // 任意 axis：Rodrigues mat3 在 JS 预算，需要 static angle
+    if (isTimeExpr(angle)) {
+      throw new Error(`rotate: time-modulated angle requires axis-aligned rotation (X/Y/Z), not arbitrary axis`);
+    }
     const m = rotAxisAngleMat(-angle, ax);
-    const mat = `mat3(${m.map(flt).join(', ')})`;
+    const mat = `mat3(${m.map(fltLit).join(', ')})`;
     return walk(sdf.ast.children[0], `(${mat} * ${p})`);
   },
 
@@ -338,7 +377,7 @@ const OPS = {
   negate: (sdf, p) => `(-${walk(sdf.ast.children[0], p)})`,
   dilate: (sdf, p) => `(${walk(sdf.ast.children[0], p)} - ${flt(sdf.ast.scalars[0])})`,
   erode:  (sdf, p) => `(${walk(sdf.ast.children[0], p)} + ${flt(sdf.ast.scalars[0])})`,
-  shell:  (sdf, p) => `(abs(${walk(sdf.ast.children[0], p)}) - ${flt(sdf.ast.scalars[0] / 2)})`,
+  shell:  (sdf, p) => `(abs(${walk(sdf.ast.children[0], p)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
 
   // ---- distance lerp ------------------------------------------------------
   // blend 跟 smooth-union 不同：是距离值的 lerp（mix(d1, d2, K)）
@@ -352,6 +391,23 @@ const OPS = {
       acc = `mix(${acc}, ${ds[i]}, ${flt(k)})`;
     }
     return acc;
+  },
+
+  // ---- Domain repetition (Autoscope idiom: 重复柱廊 / 拱门 / 鸟群 / cutouts) -
+  // period: scalar 或 [px, py, pz] —— 0 = 该轴不重复
+  // opts.count: null/undefined = 无限；scalar 或 [cx, cy, cz] = 每轴 tile 数限制
+  // opts.padding: CPU 用（邻居平滑），GPU 不支持（性能差） → warn 但不报错
+  rep: (sdf, p) => {
+    const { scalars, opts, children } = sdf.ast;
+    if (opts.padding != null && opts.padding !== 0) {
+      console.warn('[compile] rep: opts.padding ignored on GPU path (CPU-only feature)');
+    }
+    const period = asArr3(scalars[0]);
+    if (opts.count == null) {
+      return walk(children[0], `rep3(${p}, ${vec3(period)})`);
+    }
+    const count = asArr3(opts.count);
+    return walk(children[0], `repL3(${p}, ${vec3(period)}, ${vec3(count)})`);
   },
 };
 

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Autoscope clone · sdf-js</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+                 font-family: -apple-system, system-ui, sans-serif; background: #0d0d0d; color: #ccc; }
+    #app { display: flex; height: 100vh; }
+
+    /* Canvas area */
+    #canvas-wrap {
+      flex: 1; position: relative; background: #000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    canvas { display: block; background: #fff; }
+    #overlay {
+      position: absolute; left: 12px; top: 12px;
+      background: rgba(0,0,0,0.55); padding: 8px 12px; border-radius: 4px;
+      font-family: ui-monospace, monospace; font-size: 11px; color: #ddd;
+      pointer-events: none; line-height: 1.5;
+    }
+    #overlay b { color: #ffd070; }
+    #hint {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.7); padding: 6px 14px; border-radius: 14px;
+      font-size: 11px; color: #ddd; pointer-events: none;
+    }
+
+    /* Sidebar */
+    #side {
+      width: 340px; flex-shrink: 0; padding: 16px;
+      overflow-y: auto; background: #1a1a1a;
+      border-left: 1px solid #2a2a2a;
+    }
+    h2 { margin: 0 0 4px; font-size: 14px; color: #fff; }
+    h3 { margin: 18px 0 6px; font-size: 11px; color: #ffd070;
+         text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+    select, button, input { font: inherit; }
+    select, button { padding: 6px 10px; background: #2a2a2a; color: #ddd;
+                     border: 1px solid #3a3a3a; border-radius: 3px; cursor: pointer;
+                     font-size: 12px; }
+    button.primary { background: #ffd070; color: #1a1a1a; border-color: #ffd070; font-weight: 600; }
+    button:hover { background: #3a3a3a; }
+    button.primary:hover { background: #ffd070; opacity: 0.85; }
+    select { width: 100%; }
+    input[type=text] {
+      width: 100%; padding: 6px 8px; background: #0d0d0d; color: #aaa;
+      border: 1px solid #3a3a3a; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 10px;
+    }
+    input[type=range] { width: 100%; accent-color: #ffd070; }
+
+    .row { display: flex; gap: 8px; margin: 6px 0; align-items: center; }
+    .row label { flex-shrink: 0; width: 70px; color: #888; font-size: 11px; }
+    .row .val { flex-shrink: 0; width: 50px; text-align: right;
+                font-family: ui-monospace, monospace; font-size: 11px; color: #ffd070; }
+    .row.full > * { flex: 1; }
+
+    .checkrow { display: flex; align-items: center; gap: 6px; margin: 6px 0;
+                font-size: 12px; color: #ccc; cursor: pointer; }
+
+    #status {
+      margin-top: 8px; padding: 5px 8px; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 11px;
+      background: #1f2a1f; color: #afd9af;
+    }
+    #status.err { background: #3a1f1f; color: #d9afaf; }
+
+    .palette-preview { display: flex; flex-direction: column; gap: 2px; margin: 8px 0; }
+    .palette-preview .swatch-row { display: flex; gap: 1px; height: 14px; }
+    .palette-preview .swatch { flex: 1; min-width: 0; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="canvas-wrap">
+      <canvas id="cv" width="900" height="900"></canvas>
+      <div id="overlay">
+        <span id="fps">FPS: --</span> · <span id="leaves">-- leaves</span><br>
+        pos: <span id="pos-readout">0 0 0</span><br>
+        yaw / pitch: <span id="yp-readout">0° 0°</span><br>
+        scene: <b id="scene-name">--</b>
+      </div>
+      <div id="hint">Click canvas → WASD fly · Esc → release · R reset cam</div>
+    </div>
+
+    <div id="side">
+      <h2>Autoscope clone</h2>
+      <p style="margin: 4px 0 14px; color: #888; font-size: 11px;">
+        6 generative scenes · BOB GPU shader · URL-shareable hash
+      </p>
+
+      <h3>Scene</h3>
+      <div class="row full">
+        <select id="scene-type">
+          <option value="random">Random (weighted)</option>
+          <option value="0">0 · City</option>
+          <option value="1">1 · Sea</option>
+          <option value="2">2 · Forest</option>
+          <option value="3">3 · Village</option>
+          <option value="4">4 · City axis</option>
+          <option value="5">5 · Abstract</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top: 6px;">
+        <button id="btn-new" class="primary" style="flex: 1;">🎲 New scene</button>
+        <button id="btn-share">📋 Share</button>
+      </div>
+      <div class="row" style="margin-top: 6px;">
+        <input id="hash-input" type="text" placeholder="0x..." spellcheck="false">
+      </div>
+
+      <h3>Palette</h3>
+      <div class="row">
+        <button id="btn-shuffle" style="flex: 1;">🎨 Shuffle palette</button>
+      </div>
+      <div class="palette-preview">
+        <div class="swatch-row" id="palette-row1"></div>
+        <div class="swatch-row" id="palette-row2"></div>
+      </div>
+
+      <h3>BOB GPU</h3>
+      <div class="row">
+        <label>色块密度</label>
+        <input id="coldiv" type="range" min="0.25" max="4" step="0.05" value="1.10">
+        <span class="val" id="coldiv-val">1.10</span>
+      </div>
+      <div class="row">
+        <label>world scale</label>
+        <input id="world-scale" type="range" min="0.2" max="2.0" step="0.05" value="0.5">
+        <span class="val" id="world-scale-val">0.50</span>
+      </div>
+      <div class="row">
+        <label>噪声漂移</label>
+        <input id="noise" type="range" min="0" max="0.001" step="0.00002" value="0.00016">
+        <span class="val" id="noise-val">0.00016</span>
+      </div>
+      <div class="row">
+        <label>曝光</label>
+        <input id="exposure" type="range" min="0.6" max="2.5" step="0.05" value="1.05">
+        <span class="val" id="exposure-val">1.05</span>
+      </div>
+      <div class="row">
+        <label>饱和</label>
+        <input id="saturation" type="range" min="0.3" max="1" step="0.05" value="1.0">
+        <span class="val" id="saturation-val">1.00</span>
+      </div>
+      <div class="row">
+        <label>阴影暗</label>
+        <input id="shadow-strength" type="range" min="0.1" max="1" step="0.05" value="0.2">
+        <span class="val" id="shadow-strength-val">0.20</span>
+      </div>
+      <div class="row">
+        <label title="autoscope 沙画后处理强度。0 = 关（纯低分 buffer）；1 = 默认；2 = 强">沙画 noise</label>
+        <input id="post-noise" type="range" min="0" max="2" step="0.05" value="1.0">
+        <span class="val" id="post-noise-val">1.00</span>
+      </div>
+      <div class="row full" style="gap: 6px;">
+        <select id="coloration" style="flex: 1;">
+          <option value="0">线性 XYZ</option>
+          <option value="1">竖纹</option>
+          <option value="2">极坐标环</option>
+        </select>
+        <select id="shadow-mode" style="flex: 1;">
+          <option value="0">通道循环</option>
+          <option value="1">色相反转</option>
+          <option value="2">色相 90°</option>
+          <option value="3">直接暗化</option>
+        </select>
+      </div>
+      <label class="checkrow"><input id="shadows-on" type="checkbox"> soft shadows (slow)</label>
+
+      <h3>Autoscope knobs</h3>
+      <label class="checkrow"><input id="knobs-on" type="checkbox" checked> mirror / twist / gridRot 随机化（5× 变体空间）</label>
+      <div id="knobs-readout" style="font-size: 0.7em; color: #888; font-family: ui-monospace, monospace; margin: 6px 0; padding: 6px 8px; background: #0d0d0d; border-radius: 3px;">--</div>
+
+      <h3>Camera</h3>
+      <div class="row">
+        <label>focal</label>
+        <input id="focal" type="range" min="0.6" max="2.5" step="0.05" value="1.5">
+        <span class="val" id="focal-val">1.50</span>
+      </div>
+      <div class="row" style="margin-top: 6px;">
+        <button id="btn-cam-reset" style="flex: 1;">Reset camera</button>
+      </div>
+
+      <div id="status">就绪</div>
+    </div>
+  </div>
+  <script type="module" src="./autoscope-clone.js"></script>
+</body>
+</html>

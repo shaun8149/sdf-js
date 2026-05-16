@@ -113,7 +113,11 @@ export const shell = defineOpN('shell', (a, thickness) =>
  */
 export const rep = defineOpN('rep', (a, period, options = {}) => {
   const { count = null, padding = 0 } = options;
-  const getP   = (i) => Array.isArray(period)  ? (period[i]  ?? period[0])  : period;
+  // 0 = 该轴不重复（substitute 1e6 让 mod 退化为 identity；跟 GLSL rep3 一致）
+  const getP   = (i) => {
+    const val = Array.isArray(period) ? (period[i] ?? period[0]) : period;
+    return val === 0 ? 1e6 : val;
+  };
   const getCnt = (i) => {
     if (count === null) return null;
     return Array.isArray(count) ? (count[i] ?? count[0]) : count;

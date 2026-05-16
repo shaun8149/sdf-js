@@ -574,13 +574,18 @@
             </div>
             <div class="param-row">
               <label title="色块频率 — 小=大块色域 / 大=细密色块">色块密度</label>
-              <input type="range" id="bob-coldiv" min="0.25" max="4" step="0.05" value="1.5">
-              <span class="param-val" id="bob-coldiv-val">1.50</span>
+              <input type="range" id="bob-coldiv" min="0.25" max="4" step="0.05" value="1.10">
+              <span class="param-val" id="bob-coldiv-val">1.10</span>
             </div>
             <div class="param-row">
               <label title="噪声漂移速度 — 0 静止 / 0.0001 缓慢流动 / 0.001 明显流动">噪声漂移</label>
-              <input type="range" id="bob-noise" min="0" max="0.001" step="0.00002" value="0.00008">
-              <span class="param-val" id="bob-noise-val">0.00008</span>
+              <input type="range" id="bob-noise" min="0" max="0.001" step="0.00002" value="0.00016">
+              <span class="param-val" id="bob-noise-val">0.00016</span>
+            </div>
+            <div class="param-row">
+              <label title="autoscope 沙画后处理强度 — 0 关 / 1 默认 / 2 强">沙画 noise</label>
+              <input type="range" id="bob-post-noise" min="0" max="2" step="0.05" value="1.0">
+              <span class="param-val" id="bob-post-noise-val">1.00</span>
             </div>
             <div class="param-row">
               <label title="光源仰角（0=水平，π/2=正上）">光 alt</label>
@@ -599,18 +604,18 @@
             </div>
             <div class="param-row">
               <label title="曝光 — 整体亮度">曝光</label>
-              <input type="range" id="bob-exposure" min="0.8" max="3" step="0.05" value="1.4">
-              <span class="param-val" id="bob-exposure-val">1.40</span>
+              <input type="range" id="bob-exposure" min="0.6" max="2.5" step="0.05" value="1.05">
+              <span class="param-val" id="bob-exposure-val">1.05</span>
             </div>
             <div class="param-row">
               <label title="饱和度下限 — 防止发灰">饱和</label>
-              <input type="range" id="bob-saturation" min="0.3" max="1" step="0.05" value="0.8">
-              <span class="param-val" id="bob-saturation-val">0.80</span>
+              <input type="range" id="bob-saturation" min="0.3" max="1" step="0.05" value="1.0">
+              <span class="param-val" id="bob-saturation-val">1.00</span>
             </div>
             <div class="param-row">
               <label title="阴影暗化强度 0=最暗 1=不变">阴影暗度</label>
-              <input type="range" id="bob-shadow-strength" min="0.1" max="1" step="0.05" value="0.3">
-              <span class="param-val" id="bob-shadow-strength-val">0.30</span>
+              <input type="range" id="bob-shadow-strength" min="0.1" max="1" step="0.05" value="0.20">
+              <span class="param-val" id="bob-shadow-strength-val">0.20</span>
             </div>
             <div style="display: grid; grid-template-columns: 76px 1fr; gap: 6px; align-items: center; margin-top: 6px;">
               <label style="font-size: 0.72em; color: #999;" title="0=线性混合（块状）/ 1=Y轴竖纹 / 2=极坐标环形">上色模式</label>

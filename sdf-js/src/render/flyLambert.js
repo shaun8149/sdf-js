@@ -1,15 +1,13 @@
 // =============================================================================
-// fly3d-renderer —— MVP 的 Fly 3D pill 后端
+// flyLambert —— GPU shader Lambert + pointer-lock fly camera 渲染器
 // -----------------------------------------------------------------------------
-// 封装 WebGL pipeline + shader-Lambert + pointer-lock fly camera。
-// MVP 主 dispatcher 切到 'fly3d' mode 时调用 render(sdf)；切走时 unmount()。
-//
-// 跟 examples/sdf/shader-lambert-browser.js 共享同一 shader template + 同一
-// fly-controls。区别：那个是独立 demo 页有自己 UI，这个 wrapper 留给 MVP 接入。
+// 2026-05-17 MOVE from examples/mvp/fly3d-renderer.js → src/render/flyLambert.js
+// MVP 切到 'fly3d' mode 时调用 render(sdf)；切走时 unmount()。examples/sdf 里
+// 的独立 demo 页 shader-lambert-browser.js 用同样的 shader template + fly-controls。
 // =============================================================================
 
-import { compileSDF3ToGLSL, canCompileSDF3 } from '../../src/sdf/sdf3.compile.js';
-import { attachFlyControls } from '../sdf/helpers/fly-controls.js';
+import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
+import { attachFlyControls } from '../input/fly-controls.js';
 
 const VS_SRC = `attribute vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
