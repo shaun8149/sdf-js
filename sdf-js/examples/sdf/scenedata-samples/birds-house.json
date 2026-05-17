@@ -1,9 +1,9 @@
 {
   "v": 1,
-  "name": "Birds + breathing house",
+  "name": "Birds + breathing house — 3 flocks in 3D",
   "subjects": [
     {
-      "id": "bird-flock-1",
+      "id": "flock-high-east",
       "type": "rep",
       "args": { "period": [15, 0, 0] },
       "region": "birds",
@@ -12,23 +12,59 @@
         { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 5.0 } }
       ],
       "source": {
-        "id": "bird-cross",
+        "id": "bird-he",
         "type": "union",
-        "transform": { "translate": [0, 8, 0] },
+        "transform": { "translate": [0, 9, 2] },
         "animation": [
-          { "channel": "transform.translate.y", "expr": "8 + 0.3 * cos(t * 4)" }
+          { "channel": "transform.translate.y", "expr": "9 + 0.3 * cos(t * 4)" }
         ],
         "children": [
-          {
-            "id": "bird-body",
-            "type": "capsule",
-            "args": { "a": [-0.25, 0, 0], "b": [0.25, 0, 0], "radius": 0.06 }
-          },
-          {
-            "id": "bird-wings",
-            "type": "capsule",
-            "args": { "a": [0, 0, -0.35], "b": [0, 0, 0.35], "radius": 0.06 }
-          }
+          { "id": "bird-he-body",  "type": "capsule", "args": { "a": [-0.25, 0, 0], "b": [0.25, 0, 0], "radius": 0.06 } },
+          { "id": "bird-he-wings", "type": "capsule", "args": { "a": [0, 0, -0.35], "b": [0, 0, 0.35], "radius": 0.06 } }
+        ]
+      }
+    },
+    {
+      "id": "flock-mid-west",
+      "type": "rep",
+      "args": { "period": [18, 0, 0] },
+      "region": "birds",
+      "transform": { "translate": [0, 0, 0] },
+      "animation": [
+        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": -3.5 } }
+      ],
+      "source": {
+        "id": "bird-mw",
+        "type": "union",
+        "transform": { "translate": [0, 6, -4] },
+        "animation": [
+          { "channel": "transform.translate.y", "expr": "6 + 0.2 * cos(t * 3.5)" }
+        ],
+        "children": [
+          { "id": "bird-mw-body",  "type": "capsule", "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 } },
+          { "id": "bird-mw-wings", "type": "capsule", "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 } }
+        ]
+      }
+    },
+    {
+      "id": "flock-low-north",
+      "type": "rep",
+      "args": { "period": [0, 0, 16] },
+      "region": "birds",
+      "transform": { "translate": [0, 0, 0] },
+      "animation": [
+        { "channel": "transform.translate.z", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
+      ],
+      "source": {
+        "id": "bird-ln",
+        "type": "union",
+        "transform": { "translate": [4, 5, 0] },
+        "animation": [
+          { "channel": "transform.translate.y", "expr": "5 + 0.2 * cos(t * 3)" }
+        ],
+        "children": [
+          { "id": "bird-ln-body",  "type": "capsule", "args": { "a": [0, 0, -0.22], "b": [0, 0, 0.22], "radius": 0.05 } },
+          { "id": "bird-ln-wings", "type": "capsule", "args": { "a": [-0.3, 0, 0], "b": [0.3, 0, 0], "radius": 0.05 } }
         ]
       }
     },
