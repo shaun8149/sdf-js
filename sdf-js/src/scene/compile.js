@@ -167,7 +167,11 @@ export function compile(sceneData) {
       y: sceneData.ground.y ?? -1,
       region: sceneData.ground.region ?? 'ground',
     };
-    groundSdf = plane([0, 1, 0], [0, groundInfo.y, 0]);
+    // sdf-js plane SDF: d(p) = (pt - p) · normal.
+    // For "above ground = outside" (standard SDF), need normal pointing DOWN.
+    // Otherwise normal=[0,1,0] would make above-ground inside (d<0) → raymarch
+    // sees camera as already inside an infinite half-space and renders sky.
+    groundSdf = plane([0, -1, 0], [0, groundInfo.y, 0]);
   }
 
   // Camera / light / shadow
