@@ -22,6 +22,7 @@ import {
   backdrop, autoscopePyramid, autoscopeCone, wavesData,
   resetIdCounter,
 } from './autoscope-primitives-data.js';
+import { linearT, sinT, sumT } from '../../src/sdf/time.js';
 
 const PI = Math.PI;
 
@@ -153,18 +154,50 @@ function birdsParts(rng, count) {
 const SHADOW_MODES = ['channelSwap', 'hueRotate180', 'hueRotate90', 'darken'];
 
 function makeDefaults(rng, opts = {}) {
+  const distance = opts.cameraDistance ?? 15;
+  const pitch = opts.cameraPitch ?? 0.2;
+
+  // PRNG-pick camera animation mode — autoscope u_animation 1-9 spirit.
+  // Distribution: 25% static, 25% yaw oscillation, 20% targetZ dolly, 15% slow zoom,
+  // 15% light azimuth swing (extra). Subject anim continues underneath either way.
+  const animMode = rng.random_choice(['static', 'yaw', 'yaw', 'dolly', 'dolly', 'zoom', 'lightSwing']);
+  const cameraAnimation = [];
+  const lightAnimation = [];
+
+  if (animMode === 'yaw') {
+    // slow back-and-forth orbit (±0.4 rad over ~50s period)
+    const amp = rng.random_num(0.25, 0.45);
+    cameraAnimation.push({ channel: 'yaw', value: sinT(amp, 0.12, 0) });
+  } else if (animMode === 'dolly') {
+    // targetZ creep forward (slowly reveal what's behind subjects)
+    const speed = rng.random_num(0.15, 0.35) * (rng.random_bool(0.85) ? 1 : -1);
+    cameraAnimation.push({ channel: 'targetZ', value: linearT(speed) });
+  } else if (animMode === 'zoom') {
+    // gentle distance oscillation (zoom in / out cycle ~30s)
+    const amp = rng.random_num(1.5, 3.0);
+    cameraAnimation.push({ channel: 'distance', value: sumT(distance, sinT(amp, 0.2, 0)) });
+  }
+
+  // 15% of scenes also get a slow light azimuth swing (independent of camera mode)
+  if (animMode === 'lightSwing' || rng.random_bool(0.15)) {
+    const amp = rng.random_num(0.3, 0.6);
+    lightAnimation.push({ channel: 'azimuth', value: sumT(rng.random_num(0.3, 0.7), sinT(amp, 0.08, 0)) });
+  }
+
   return {
     camera: {
       yaw: 0,
-      pitch: opts.cameraPitch ?? 0.2,
-      distance: opts.cameraDistance ?? 15,
+      pitch,
+      distance,
       focal: 1.5,
       targetX: 0, targetY: opts.cameraTargetY ?? 1, targetZ: 0,
+      ...(cameraAnimation.length ? { animation: cameraAnimation } : {}),
     },
     light: {
       azimuth: rng.random_num(0.2, 0.8),
       altitude: rng.random_num(0.5, 1.0),
       distance: 50,
+      ...(lightAnimation.length ? { animation: lightAnimation } : {}),
     },
     shadow: {
       enabled: true,

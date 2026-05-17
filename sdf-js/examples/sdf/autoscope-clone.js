@@ -30,8 +30,11 @@ writeHashToURL(currentHash);
 
 let currentSceneTypeChoice = 'random';  // dropdown value
 let currentSdf = null;
+let currentCompiled = null;  // SceneData mode: { sdf, evalCamera, evalLight, ... }; null in Direct SDF mode
 let renderer = null;
 let currentKnobs = { ...DEFAULT_KNOBS };  // PRNG-randomized autoscope knobs（mirror/twist/gridRot）
+let sceneStartTime = performance.now();
+let userTookCameraControl = false;        // set on canvas click → yields scene camera anim to fly-controls
 
 // Initial camera：autoscope 缺省 ortho 视角不能完全 match 透视，用 close+low+lookdown 模拟
 // pos=[0, 3, -15] pitch=0.30 → horizon at uv.y ≈ 1.5*tan(0.3) ≈ 0.46
@@ -154,8 +157,11 @@ function regenerateScene({ keepCamera = false } = {}) {
     try {
       const compiled = compileSceneData(sceneData);
       sdf = compiled.sdf;
+      currentCompiled = compiled;  // enables cameraLoop scene-driven camera/light anim
       leafCount = compiled.subjects.length;
-      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'})`;
+      const camAnim = compiled.cameraStatic && (sceneData.defaults.camera.animation?.length || 0);
+      const lightAnim = sceneData.defaults.light.animation?.length || 0;
+      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'}, camAnim=${camAnim}, lightAnim=${lightAnim})`;
     } catch (e) {
       setStatus(`✗ SceneData compile error: ${e.message}`, false);
       console.error('SceneData failed, sceneData =', sceneData);
@@ -163,12 +169,15 @@ function regenerateScene({ keepCamera = false } = {}) {
       return;
     }
   } else {
-    // Direct SDF pipeline (original)
+    // Direct SDF pipeline (original) — no compiled.evalCamera, cameraLoop yields to fly-controls
     sdf = generateScene(sceneType, rng);
+    currentCompiled = null;
     leafCount = countLeaves(sdf);
     extraStatus = ` · Direct SDF (${leafCount} leaves)`;
   }
   currentSdf = sdf;
+  sceneStartTime = performance.now();
+  userTookCameraControl = false;
 
   // Autoscope-style 随机化 knobs（用 scene 之后剩下的 PRNG state，保证 hash 决定一切）
   currentKnobs = randomizeKnobs(rng);
@@ -267,6 +276,39 @@ window.addEventListener('keydown', (e) => {
     $('btn-new').click();
   }
 });
+
+// =============================================================================
+// Camera animation loop: in SceneData mode, push compiled.evalCamera(t) →
+// bobShader.setCamState per frame so scene-driven camera animations apply.
+// Yields to fly-controls once user clicks canvas (pointer lock).
+// =============================================================================
+
+function sphericalToCamState(cam) {
+  const pos = [
+    cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
+    cam.targetY + cam.distance * Math.sin(cam.pitch),
+    cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
+  ];
+  return { position: pos, yaw: cam.yaw, pitch: cam.pitch };
+}
+
+function cameraLoop() {
+  if (renderer && currentCompiled && !userTookCameraControl) {
+    const t = (performance.now() - sceneStartTime) / 1000;
+    const cam = currentCompiled.evalCamera(t);
+    renderer.setCamState(sphericalToCamState(cam));
+  }
+  requestAnimationFrame(cameraLoop);
+}
+cameraLoop();
+
+// User clicks canvas → take camera control (yields scene anim until new scene)
+const canvasEl = document.getElementById('cv');
+if (canvasEl) {
+  canvasEl.addEventListener('pointerdown', () => {
+    userTookCameraControl = true;
+  });
+}
 
 // =============================================================================
 // Init
