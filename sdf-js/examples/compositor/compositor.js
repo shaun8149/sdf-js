@@ -134,7 +134,7 @@ async function executeGeneratedCode(rawCode) {
 
 window.__atlasRenderDispatch = function (ctx, layers, opts = {}) {
   // Generated code typically passes its own ctx; we override to use compositor canvas
-  const cv = $('cv');
+  const cv = $('c');
   const realCtx = cv.getContext('2d');
 
   // Normalize layers to {sdf, color} objects
@@ -161,15 +161,32 @@ function doRender(ctx, layers, opts) {
   } catch (e) {
     setStatus(`✗ render error: ${e.message}`, true);
     console.error(e);
+    drawErrorOverlay(ctx, `render error: ${e.message}`);
   }
 
   updateSceneInfo();
 }
 
+function drawErrorOverlay(ctx, msg) {
+  const w = ctx.canvas.width, h = ctx.canvas.height;
+  ctx.fillStyle = 'rgba(58, 31, 31, 0.92)';
+  ctx.fillRect(40, h / 2 - 50, w - 80, 100);
+  ctx.fillStyle = '#d9afaf';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '600 18px ui-monospace, monospace';
+  ctx.fillText('Render Error', w / 2, h / 2 - 14);
+  ctx.font = '12px ui-monospace, monospace';
+  // Wrap long messages
+  const maxChars = 80;
+  const truncated = msg.length > maxChars ? msg.slice(0, maxChars - 3) + '...' : msg;
+  ctx.fillText(truncated, w / 2, h / 2 + 14);
+}
+
 // Re-render with stored layers (called when renderer/pattern pill switches)
 function reRenderStored() {
   if (state.layers) {
-    const ctx = $('cv').getContext('2d');
+    const ctx = $('c').getContext('2d');
     doRender(ctx, state.layers, state.lastRenderOpts || {});
   } else {
     drawPlaceholder();
@@ -292,8 +309,17 @@ function wireTextTab() {
       usageInfo.textContent = `↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s · model=${DEFAULT_MODEL}`;
 
       setStatus('⋯ executing generated code…');
-      await executeGeneratedCode(result.text);
-      setStatus(`✓ rendered in ${elapsed}s`);
+      try {
+        await executeGeneratedCode(result.text);
+        setStatus(`✓ rendered in ${elapsed}s`);
+      } catch (execErr) {
+        setStatus(`✗ exec error: ${execErr.message}`, true);
+        console.error(execErr);
+        const ctx = $('c').getContext('2d');
+        ctx.fillStyle = '#f4efdc';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        drawErrorOverlay(ctx, `exec error: ${execErr.message}`);
+      }
     } catch (e) {
       setStatus(`✗ ${e.message}`, true);
       console.error(e);
@@ -347,7 +373,7 @@ $$('#pattern-pills .pill').forEach(btn => {
 // =============================================================================
 
 function drawPlaceholder() {
-  const canvas = $('cv');
+  const canvas = $('c');
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
 

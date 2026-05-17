@@ -129,7 +129,9 @@
 
       <div id="render-area">
         <div id="canvas-wrap">
-          <canvas id="cv" width="900" height="900"></canvas>
+          <!-- Canvas id="c" matches MVP's system-prompt convention so LLM-emitted
+               `document.getElementById('c')` resolves correctly. -->
+          <canvas id="c" width="900" height="900"></canvas>
         </div>
         <div id="render-controls">
           <span class="ctrl-label">Renderer</span>
