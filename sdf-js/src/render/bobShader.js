@@ -307,17 +307,21 @@ vec3 calcNormal(vec3 p) {
   ));
 }
 
-float softShadow(vec3 ro, vec3 rd, float mint, float maxt) {
-  float res = 1.0;
+// Binary occlusion test — matches autoscope's getLight() idiom. Returns 1.0
+// if light is unobstructed, 0.0 if blocked. Uses standard sphere tracing
+// (step = actual SDF distance) instead of clamped soft-shadow stepping, so
+// it can reach across the whole scene (autoscope uses 500 steps × MAX_DIST=200).
+// Tall thin columns / lighthouses now cast long ground shadows because the
+// raymarch from a far ground point toward the light actually reaches them.
+float lightOcclusion(vec3 ro, vec3 rd, float mint, float maxt) {
   float t = mint;
-  for (int i = 0; i < 24; i++) {
+  for (int i = 0; i < 80; i++) {
     if (t >= maxt) break;
     float h = mappedScene(ro + rd * t);
-    if (h < 0.0005) return 0.0;
-    res = min(res, 8.0 * h / t);
-    t += clamp(h, 0.01, 0.2);
+    if (h < 0.001) return 0.0;   // blocked: ray hit an SDF before reaching light
+    t += max(h, 0.02);            // sphere tracing — step by actual distance
   }
-  return clamp(res, 0.0, 1.0);
+  return 1.0;                     // ray reached light unobstructed
 }
 
 // ============================================================================
@@ -524,8 +528,8 @@ void main() {
     //   3. 其它 → 全亮 (palette block 原色不变)
     bool inShadow = (diff < 0.05);
     if (!inShadow && u_shadowsOn > 0.5) {
-      float shadowK = softShadow(hitP + n * 0.002, toLight, 0.02, length(u_lightPos - hitP));
-      if (shadowK < 0.5) inShadow = true;
+      float lit = lightOcclusion(hitP + n * 0.002, toLight, 0.02, length(u_lightPos - hitP));
+      if (lit < 0.5) inShadow = true;
     }
     if (inShadow) col = shadeShadow(col);
 
