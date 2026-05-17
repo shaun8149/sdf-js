@@ -36,6 +36,46 @@ Anything that requires **exact recognizable structure** is diffusion's failure m
 
 This isn't a "diffusion is worse" claim — it's a **structural separation of domains**. Diffusion owns photo-realistic / impressionistic / "vibe" generation. We own everything that needs geometric exactness.
 
+### Why this architecture beats diffusion — 10 axes
+
+Across four themes, ten architectural advantages distinguish a code-based SDF generator from a statistical pixel sampler. The conclusion is at the bottom.
+
+**A. Structural correctness**
+
+1. **Exact structural detail.** Every primitive is a function. Clocks show the right time. Bicycles have two wheels of the right size at the right angle. Letters spell words. Diffusion hallucinates plausible-looking but structurally broken output in any precision-content domain (charts, maps, fonts, mechanical drawings).
+
+2. **Infinite semantic composition.** Boolean algebra (union / difference / intersection) plus numerical coordinates plus domain operators (rep / mirror / twist / bend) lets any scene be expressed as a finite, *auditable*, *editable* tree of named operations. Diffusion has no compositional algebra; composition is emergent from the training distribution, not first-class.
+
+5. **Native infinite resolution.** SDF is a continuous function — sharp at any zoom. Vector / plotter / print pipelines plug in directly. Diffusion is locked to a pixel grid; super-resolution requires lossy upscalers.
+
+**B. Auditability**
+
+3. **Auditable bias, bias-free visual layer.** The LLM still carries cultural bias in its language understanding, but the *visual* output layer is bias-free — the renderer is user-curated, inspectable code. Same SDF can render in 50 visual styles because the renderer is decoupled. Diffusion's bias is encoded in latent weights, opaque, and inherited by every output.
+
+8. **Determinism / reproducibility.** Same SceneData → same output, pixel-identical. Essential for emoji sets, icon families, brand assets, character consistency. Diffusion samples stochastically; getting the same emoji style across an entire pack is the fundamental problem diffusion-based sticker tools can't solve.
+
+**C. UX**
+
+4. **Prompt is specification, not incantation.** Domain-language prompts ("a wine bottle on a table") still matter — but the diffusion-era visual incantation prompts ("trending on artstation, 8k uhd, masterpiece, hyperrealistic, ...") become obsolete. The LLM understands shape; we don't need keyword-magic to produce quality.
+
+7. **Editability / iterative loop.** The output is code / data, not raster. Change one subject's radius, re-render — everything else stays bit-identical. Diffusion outputs raster; partial edits require inpainting, which breaks lighting consistency and style coherence. The client-revision workflow that takes 5 rounds in diffusion takes 5 field-edits in Atlas.
+
+**D. Economics**
+
+6. **LLM cost-down beneficiary.** Diffusion: quality ↑ → diffusion steps ↑ / model size ↑ → cost per image ↑. Atlas: LLM capability ↑ → better SDF → same flat cost per image (one LLM call + cheap SDF eval). LLM token prices are on a long-term cost-down curve; we ride that trajectory directly.
+
+9. **Multi-axis combinatorial supply.** Form × Renderer × Pattern × Motif × Scene = O(N⁵) outputs from O(N) primitive inputs. One SDF rendered through 5 renderers = 5 emotional registers. One renderer × 4 patterns = 4 backgrounds. The supply economy compounds across orthogonal axes. Diffusion: 1 prompt = 1 output; each new variant requires another full inference pass.
+
+10. **Zero-marginal-cost variants.** *Once an SDF is generated*, render-time randomization (palette shuffle, autoscope knobs of mirror/twist/grid-rotation, scene-hash PRNG) yields *infinite further visual variants* with **no additional LLM tokens consumed**. Autoscope-clone is the proof: one SceneData × thousands of PRNG hashes × 21 palettes = thousands of distinct images, total marginal cost ≈ GPU shader eval. This is orthogonal to #9: #9 is cross-product across *axes*, #10 is seed-randomization *within an axis*.
+
+### Conclusion
+
+> **Diffusion is, at its core, a statistical sampler. Atlas is a world-model generator architected on top of an LLM.**
+
+Diffusion learns a distribution of pixel surfaces — its "understanding" of a red train is the probability cloud of pixels that historically depicted red trains. Atlas constructs a latent geometric world specification — its "understanding" of a train is an executable composition of cylinders, boxes, wheels, with explicit spatial relations. This aligns with cognitive-science models of perception (objects-with-properties-and-relations) and with Marr's 2.5D / 3D representation hierarchy: diffusion stops at the 2D pixel layer, Atlas operates at the 3D representation layer with rendering as the projection step.
+
+The LLM is the reasoning engine; SDF is the world-spec geometry language. Together: an LLM-driven world-model generator, where the user chooses *the mappings of the world*, not samples from a fixed viewing distribution.
+
 ---
 
 ## What's in the box (current capability)
