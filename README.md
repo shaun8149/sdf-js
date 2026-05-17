@@ -187,6 +187,8 @@ render.raymarched(ctx, [{ sdf: bottle, color: [0.2, 0.6, 0.9] }], { view: 1.2 })
 
 ## Roadmap
 
+> **Where we are right now**: see [docs/STATUS.md](./docs/STATUS.md) for the current milestone tracker, locked decisions, and ship status.
+
 ### The 4-page Compositor architecture (current target)
 
 Input is the new axis. The current MVP ships one input path (LLM text prompt → SDF). The next phase splits the input layer into **four orthogonal sources**, all emitting the same **SceneData** format, all consumed by the same renderer pool:
