@@ -151,9 +151,11 @@ void main() {
   float depth = col1Data.a;  // 0=近物 / 1=sky；depth 让 sky 像素 11× X 扰动
 
   // col2: 大扰动（autoscope: xNoise=0.002+depth*0.02, yNoise=0.15*amount）
+  // Y amplitude depth-scaled so sky pixels (depth=1) reach down to ground/building
+  // region for col2 sampling — without this, flat-palette skies stay monochromatic.
   vec2 perturb2 = vec2(
     octaves(uv + 2.0, 2.0, 0.95, 0.95, u_postNFactor) * (0.002 + depth * 0.02),
-    octaves(uv,      2.0, 0.95, 0.95, u_postNFactor) * 0.15 * amount
+    octaves(uv,      2.0, 0.95, 0.95, u_postNFactor) * (0.15 + depth * 0.35) * amount
   ) * patches * u_postNoise;
   vec2 sUV2 = (uv + perturb2) * 0.5 + 0.5;
   vec3 col2 = texture2D(u_buffer, sUV2).rgb;
@@ -404,7 +406,12 @@ vec3 paletteCol(float idx, float row) {
 
 vec3 sky(vec3 rd) {
   float t = 0.5 * (rd.y + 1.0);
-  return mix(u_sky2, u_sky1, t);
+  vec3 base = mix(u_sky2, u_sky1, t);
+  // Procedural chroma variation — breaks flatness when SKIES sub-palette is
+  // monochromatic (e.g. all blue tones). 8% magnitude, hue-warm shift.
+  float n = gnoise(rd.xy * 4.0);
+  base += 0.08 * vec3(n, -n * 0.5, n * 0.3);
+  return clamp(base, 0.0, 1.0);
 }
 
 // 阴影 4 种风格（Autoscope u_shadow 0/1/2/3）
