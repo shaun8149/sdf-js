@@ -37,7 +37,7 @@ Full document: [memory/project_compositor_roadmap.md](../.claude/projects/-Users
 
 | M | Goal | Time | Status |
 |---|---|---|---|
-| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | 🟡 Day 1 (SPEC.md ✅) — Day 2-5 pending |
+| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | 🟡 Day 1 (SPEC.md ✅) — Day 2-3 (`spec.js + expr.js + compile.js + serialize.js + smoke 38/0` ✅ `6d3c072`) — Day 4-5 pending |
 | **M1** | Compositor v0 (4-tab UI + renderer pool, `text` + `generator` tabs) | 5–7 days | ⏳ pending M0 |
 | **M2** | Generator framework (`src/generator/`, autoscope as instance, +1–2 templates) | 5–7 days | ⏳ pending M0 |
 | **M3** | 2D editor script-only (Mini-DSL parser + Monaco + live preview + SceneData round-trip) | 2 weeks | ⏳ pending M0 |
@@ -84,18 +84,16 @@ Full document: [memory/project_name_atlas.md](../.claude/projects/-Users-hexiaoy
 | `dfe619f` | sdf-js/README full rewrite (10-layer structure, current capabilities, demo index) |
 | `b1d4d87` | SCENE-SPEC v1: 4 animation extensions (DomainGroup / dual-form / camera+light / waves) |
 | `6ce874b` | SCENE-SPEC v1: defaults.shadow + SceneData.source fields |
+| `adee7d8` | docs/STATUS.md project tracker + README link |
+| `6d3c072` | scene: M0 Day 2-3 — spec/expr/compile/serialize/index + smoke test (38/0) |
 
 ---
 
 ## What unblocks next
 
-**Right now**: M0 Day 2 is ready to start. All abstraction-layer decisions for the Scene engine + 2D editor paradigm + Brand are locked. Next code work:
+**M0 Day 4-5**: refactor `examples/sdf/autoscope-scenes.js` to emit SceneData instead of direct SDF construction. Validation gate: `autoscope-clone.html` calls `compile()` → visual parity with current direct-SDF code. All 6 generators (city / sea / forest / village / city-axis / abstract) must round-trip cleanly. If any scene can't be expressed in spec, extend spec before closing M0.
 
-- `sdf-js/src/scene/spec.js` — validator + JSDoc types covering all 6 extensions
-- `sdf-js/src/scene/compile.js` — SceneData → SDF tree + camera + light + shadow + regionFn + groundY (with DomainGroup dispatch, AnimationChannel dual-form normalize, camera/light scene-level animation evaluator, waves primitive support)
-- `sdf-js/src/scene/serialize.js` — parse / stringify / version migration + `source` field round-trip + AnimationChannel idempotent dual-form output
-
-**Estimated**: 2–3 days. Validation gate: M0 Day 4-5 refactors `examples/sdf/autoscope-scenes.js` to emit SceneData; `autoscope-clone.html` calls `compile()` → visual parity with current direct-SDF code.
+**After M0**: M1 Compositor v0 starts — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) sharing renderer pool. `text` and `generator` tabs functional first; `2d-edit` and `3d-edit` are stubs until M3 / M4.
 
 ---
 
