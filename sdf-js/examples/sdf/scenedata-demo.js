@@ -23,6 +23,8 @@ const $ = id => document.getElementById(id);
 let renderer = null;
 let compiled = null;  // result of compile(parsedScene)
 let currentSampleId = 'birds-house';   // sensible default — exercises animation + rep
+let sceneStartTime = performance.now();
+let userTookCameraControl = false;   // set when user clicks canvas → pause scene camera anim
 
 // =============================================================================
 // Load + render
@@ -72,15 +74,12 @@ function compileAndRender() {
   }
 
   // Apply scene's initial camera state to renderer
-  // bobShader has its own fly-camera state; SceneData.defaults.camera drives initial pos.
-  const cam = compiled.cameraStatic;
-  // Derive camera position from spherical (yaw, pitch, distance, target)
-  const pos = [
-    cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
-    cam.targetY + cam.distance * Math.sin(cam.pitch),
-    cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
-  ];
-  bob.setCamState({ position: pos, yaw: cam.yaw, pitch: cam.pitch });
+  bob.setCamState(sphericalToCamState(compiled.cameraStatic));
+
+  // Mark scene start time so the per-frame camera loop animates from t=0.
+  sceneStartTime = performance.now();
+  // Reset user camera-control flag — fresh scene = fresh scene-driven camera.
+  userTookCameraControl = false;
 
   try {
     const { bytes } = bob.render(compiled.sdf);
@@ -153,6 +152,37 @@ function ensureRenderer() {
 }
 
 const startTime = performance.now();
+
+// =============================================================================
+// Camera loop: push evalCamera(t) → bobShader.setCamState per frame.
+// Scene animations on yaw / pitch / distance / target* are scene-driven; the
+// renderer's fly-controls take over when user clicks canvas (Pointer Lock).
+// =============================================================================
+
+function sphericalToCamState(cam) {
+  const pos = [
+    cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
+    cam.targetY + cam.distance * Math.sin(cam.pitch),
+    cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
+  ];
+  return { position: pos, yaw: cam.yaw, pitch: cam.pitch };
+}
+
+function cameraLoop() {
+  if (renderer && compiled && !userTookCameraControl) {
+    const t = (performance.now() - sceneStartTime) / 1000;
+    const cam = compiled.evalCamera(t);
+    renderer.setCamState(sphericalToCamState(cam));
+  }
+  requestAnimationFrame(cameraLoop);
+}
+cameraLoop();
+
+// User clicks canvas → take camera control (yields scene anim)
+$('cv').addEventListener('pointerdown', () => {
+  userTookCameraControl = true;
+  setStatus('• Camera control: user (Pointer Lock). Reload sample to restore scene animation.', true);
+});
 
 function defaultControls() {
   return {

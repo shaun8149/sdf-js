@@ -1,6 +1,6 @@
 {
   "v": 1,
-  "name": "Tiny — single sphere on ground",
+  "name": "Tiny — single sphere on ground (with slow yaw orbit)",
   "subjects": [
     {
       "id": "ball",
@@ -14,7 +14,10 @@
   "defaults": {
     "camera": {
       "yaw": 0, "pitch": 0.2, "distance": 5, "focal": 1.5,
-      "targetX": 0, "targetY": 0, "targetZ": 0
+      "targetX": 0, "targetY": 0, "targetZ": 0,
+      "animation": [
+        { "channel": "yaw", "value": { "kind": "time", "form": "sin", "amp": 0.4, "freq": 0.15, "phase": 0 } }
+      ]
     },
     "light": {
       "azimuth": 0.6, "altitude": 0.8, "distance": 8

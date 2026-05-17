@@ -7,14 +7,15 @@
       "type": "rep",
       "args": { "period": [60, 0, 0] },
       "region": "birds",
+      "transform": { "translate": [0, 0, 0] },
+      "animation": [
+        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
+      ],
       "source": {
         "id": "bird",
         "type": "sphere",
         "args": { "radius": 0.2 },
-        "transform": { "translate": [0, 6, -5] },
-        "animation": [
-          { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
-        ]
+        "transform": { "translate": [0, 6, -5] }
       }
     },
     {
