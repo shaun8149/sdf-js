@@ -33,6 +33,8 @@ type SceneData = {
   name?: string                         // human-readable, displayed in title bar
   hash?: string                         // generator-mode only: the PRNG hash that produced this scene
 
+  source?: SourceMetadata               // origin of this scene; preserves the input that produced it for iterative edit
+
   subjects: Subject[]                   // top-level scene content. Default semantics: union of all.
 
   ground?: {
@@ -43,10 +45,22 @@ type SceneData = {
   defaults: {
     camera: CameraSpec
     light:  LightSpec
+    shadow?: ShadowSpec                 // optional scene-level shadow aesthetic config (autoscope-style)
     palette?: string | string[]         // preset name or hex array; optional
   }
 }
-```
+
+type SourceMetadata = {
+  format: 'script' | 'graph' | 'llm' | 'generator'
+  text?: string                         // raw script text (format='script')
+  prompt?: string                       // LLM prompt that produced this scene (format='llm')
+  seed?: string                         // generator hash hex (format='generator')
+  generator?: string                    // generator template id (format='generator')
+  // Editor/LLM/generator pipelines fill the relevant fields; consumers may
+  // ignore unknown fields. Subjects array is the authoritative geometry —
+  // source is metadata to enable iterative edit ("re-prompt the LLM that
+  // produced this", "re-render this generator hash", "show the original script").
+}
 
 ### Field rules
 
@@ -312,6 +326,32 @@ type LightSpec = {
 }
 ```
 
+---
+
+## ShadowSpec
+
+Shadow is the **core aesthetic surface** of autoscope-style rendering — the surreal feel comes from color-shifted shadows (Magritte / De Chirico / Hopper lineage), not from physical light simulation. Autoscope's 4 shadow modes:
+
+| Mode | Effect | Aesthetic register |
+|---|---|---|
+| `'channelSwap'` | BRG channel rotation (`col.rgb = col.brg`) + partial darken | Painterly post-impressionist |
+| `'hueRotate180'` | HSL hue + 0.5 (complementary color) + darken | Magritte surreal (red object, green shadow) |
+| `'hueRotate90'` | HSL hue + 0.25 (quadrant rotation) + darken | Cool dramatic |
+| `'darken'` | Plain multiplicative darken, no hue shift | Hopper / classical |
+
+```ts
+type ShadowSpec = {
+  enabled: boolean                      // whether to compute cast shadow (self-shadow always on when shading)
+  mode: 'channelSwap' | 'hueRotate180' | 'hueRotate90' | 'darken'
+  strength: number                      // 0.1..1.0 — autoscope u_shadowStrength
+  animation?: AnimationChannel[]        // animation on strength is supported; mode is static per scene
+}
+```
+
+If `defaults.shadow` is omitted, renderer defaults to `{ enabled: true, mode: 'channelSwap', strength: 0.35 }` (autoscope-clone factory default).
+
+**Why scene-level not renderer-level**: shadow mode is a scene aesthetic decision (the same SDF tree feels totally different under mode 'darken' vs 'hueRotate180'). Generator templates should be able to PRNG-pick mode as part of variant space; LLM scene output should carry intentional shadow choice; saved editor scenes must restore shadow style on reopen. Pinning it as renderer state would lose this scene fingerprint.
+
 Light position derived as:
 ```
 position = [
@@ -487,6 +527,13 @@ Surface equation: `y_surface = -amp + amp * sin(speed * t + p_rotated.z / freq)`
 ---
 
 ## Validation rules (compile.js / serialize.js)
+
+Additional rules added with the shadow / source extensions:
+
+17. `defaults.shadow.mode` not in `{'channelSwap', 'hueRotate180', 'hueRotate90', 'darken'}`
+18. `defaults.shadow.strength` outside `[0, 1]` (clamp + warn)
+19. `source.format` not in `{'script', 'graph', 'llm', 'generator'}` if present
+20. `source.text` present but `source.format !== 'script'` (warning, not error — extra info is allowed)
 
 When parsing or compiling, fail loudly on:
 
@@ -713,4 +760,7 @@ M0 day 4-5: refactor `examples/sdf/autoscope-scenes.js` to emit SceneData. All 6
   3. **Camera + light animation hooks** (`defaults.camera.animation` / `defaults.light.animation` use same AnimationChannel evaluator)
   4. **Time-aware primitive types** (`waves` added; consumes `u_time` internally for surface evaluation)
   All four were locked after confirming the library pipeline (time-expr → GLSL emission → u_time uniform → bobShader upload) is **already live** in autoscope-clone. Spec v1 documents that pipeline rather than queuing it.
+- **2026-05-17 (shadow + source extensions)**: 2 more spec additions after pre-M0-day-2 aesthetic / iteration review:
+  5. **`defaults.shadow` field** — autoscope 4-mode shadow as scene-level config (channelSwap / hueRotate180 / hueRotate90 / darken). Locks the Magritte/De Chirico/Hopper surreal-color-shadow as a tradable scene fingerprint, not a renderer-pill flag.
+  6. **`SceneData.source` field** — preserves the input that produced this scene (script text / LLM prompt / generator hash). Enables iterative edit ("re-prompt the LLM that made this", "re-render generator hash", "open script in editor"). Optional metadata; subjects array remains authoritative.
 - **Next**: write `spec.js` validator + `compile.js` SDF builder. M0 day 2-3.
