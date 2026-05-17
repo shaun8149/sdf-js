@@ -37,7 +37,7 @@ Full document: [memory/project_compositor_roadmap.md](../.claude/projects/-Users
 
 | M | Goal | Time | Status |
 |---|---|---|---|
-| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | 🟡 Day 1 (SPEC.md ✅) — Day 2-3 (`spec.js + expr.js + compile.js + serialize.js + smoke 38/0` ✅ `6d3c072`) — Day 4-5 pending |
+| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | ✅ Day 1 SPEC.md (`0109ab0`) · Day 2-3 spec/expr/compile/serialize + smoke 38/0 (`6d3c072`) · Day 4 scenedata-demo + 3 samples (`c8183f8` + iterations through `d394557`) · Day 5 autoscope-primitives/scenes rewritten as SceneData emitters + A/B toggle in autoscope-clone (`fdd861c`) |
 | **M1** | Compositor v0 (4-tab UI + renderer pool, `text` + `generator` tabs) | 5–7 days | ⏳ pending M0 |
 | **M2** | Generator framework (`src/generator/`, autoscope as instance, +1–2 templates) | 5–7 days | ⏳ pending M0 |
 | **M3** | 2D editor script-only (Mini-DSL parser + Monaco + live preview + SceneData round-trip) | 2 weeks | ⏳ pending M0 |
@@ -86,14 +86,17 @@ Full document: [memory/project_name_atlas.md](../.claude/projects/-Users-hexiaoy
 | `6ce874b` | SCENE-SPEC v1: defaults.shadow + SceneData.source fields |
 | `adee7d8` | docs/STATUS.md project tracker + README link |
 | `6d3c072` | scene: M0 Day 2-3 — spec/expr/compile/serialize/index + smoke test (38/0) |
+| `c8183f8` → `d394557` | M0 Day 4: scenedata-demo + 3 sample JSONs (tiny / birds-house / coastal-village) iterated through bird fixes, camera animation, 3D flock traffic |
+| `9b5dab1` | README: 10 architectural advantages vs diffusion |
+| `fdd861c` | M0 Day 5: autoscope-primitives + autoscope-scenes rewritten as SceneData emitters with A/B toggle in autoscope-clone |
 
 ---
 
 ## What unblocks next
 
-**M0 Day 4-5**: refactor `examples/sdf/autoscope-scenes.js` to emit SceneData instead of direct SDF construction. Validation gate: `autoscope-clone.html` calls `compile()` → visual parity with current direct-SDF code. All 6 generators (city / sea / forest / village / city-axis / abstract) must round-trip cleanly. If any scene can't be expressed in spec, extend spec before closing M0.
+**M0 ✅ closed** as of `fdd861c`. Validation gate met: SceneData spec produces renderable scenes via three independent paths (smoke test 38/0, scenedata-demo 3 hand-crafted samples, autoscope-scenes A/B toggle through `fdd861c`). All 6 v1 spec extensions exercised. All 6 autoscope generators round-trip through compile() with no spec gaps detected.
 
-**After M0**: M1 Compositor v0 starts — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) sharing renderer pool. `text` and `generator` tabs functional first; `2d-edit` and `3d-edit` are stubs until M3 / M4.
+**M1 next**: Compositor v0 — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) sharing renderer pool. `text` and `generator` tabs functional first; `2d-edit` and `3d-edit` are stubs until M3 / M4.
 
 ---
 
