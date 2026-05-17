@@ -12,6 +12,8 @@
 
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from './autoscope-rng.js';
 import { generateScene, SCENE_NAMES, randomSceneType } from './autoscope-scenes.js';
+import { generateSceneData } from './autoscope-scenes-data.js';
+import { compile as compileSceneData } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 import { DEFAULT_KNOBS, randomizeKnobs, applyKnobsGate, describeKnobs } from '../../src/palette/autoscope.js';
 import '../../src/sdf/dn.js';  // side-effect import to register .rep / .union etc on SDF3.prototype
@@ -139,8 +141,33 @@ function regenerateScene({ keepCamera = false } = {}) {
   const sceneTypeChoice = $('scene-type').value;
   const sceneType = sceneTypeChoice === 'random' ? randomSceneType(rng) : (+sceneTypeChoice);
 
-  // Generate scene
-  const sdf = generateScene(sceneType, rng);
+  // Pipeline mode: 'sdf' (direct SDF construction) | 'data' (SceneData → compile)
+  const pipelineMode = $('pipeline-mode')?.value || 'sdf';
+
+  let sdf;
+  let leafCount;
+  let extraStatus = '';
+
+  if (pipelineMode === 'data') {
+    // SceneData pipeline: generateSceneData → compile → SDF
+    const sceneData = generateSceneData(sceneType, rng);
+    try {
+      const compiled = compileSceneData(sceneData);
+      sdf = compiled.sdf;
+      leafCount = compiled.subjects.length;
+      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'})`;
+    } catch (e) {
+      setStatus(`✗ SceneData compile error: ${e.message}`, false);
+      console.error('SceneData failed, sceneData =', sceneData);
+      console.error(e);
+      return;
+    }
+  } else {
+    // Direct SDF pipeline (original)
+    sdf = generateScene(sceneType, rng);
+    leafCount = countLeaves(sdf);
+    extraStatus = ` · Direct SDF (${leafCount} leaves)`;
+  }
   currentSdf = sdf;
 
   // Autoscope-style 随机化 knobs（用 scene 之后剩下的 PRNG state，保证 hash 决定一切）
@@ -157,11 +184,8 @@ function regenerateScene({ keepCamera = false } = {}) {
   try {
     const { bytes } = bob.render(sdf);
     const totalMs = (performance.now() - startTime).toFixed(0);
-    setStatus(`✓ ${SCENE_NAMES[sceneType]} · ${(bytes / 1024).toFixed(1)} KB shader · ${totalMs} ms total`, true);
-
-    // Leaf count for display
-    const leafCount = countLeaves(sdf);
-    $('leaves').textContent = `${leafCount} leaves`;
+    setStatus(`✓ ${SCENE_NAMES[sceneType]} · ${(bytes / 1024).toFixed(1)} KB shader · ${totalMs} ms${extraStatus}`, true);
+    $('leaves').textContent = `${leafCount} ${pipelineMode === 'data' ? 'subjects' : 'leaves'}`;
   } catch (e) {
     setStatus(`✗ render error: ${e.message}`, false);
     console.error(e);
@@ -217,6 +241,11 @@ $('btn-cam-reset').addEventListener('click', () => {
 
 $('scene-type').addEventListener('change', () => {
   regenerateScene();
+});
+
+// Pipeline mode toggle: Direct SDF / SceneData compile
+$('pipeline-mode')?.addEventListener('change', () => {
+  regenerateScene({ keepCamera: true });
 });
 
 $('hash-input').addEventListener('change', (e) => {
