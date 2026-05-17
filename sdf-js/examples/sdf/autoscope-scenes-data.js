@@ -151,7 +151,17 @@ function birdsParts(rng, count) {
 // We pass `rng` so shadow mode is hash-deterministic.
 // =============================================================================
 
-const SHADOW_MODES = ['channelSwap', 'hueRotate180', 'hueRotate90', 'darken'];
+// Weighted shadow mode pool. autoscope's channelSwap (col.rgb=col.brg + .rg*=k,
+// keeping B-channel full strength) produces blue-dominated shadows that work
+// for short autoscope-original shadows but overpower the ground when we render
+// long cast shadows. Bias toward darken (neutral) and hueRotate180 (complementary
+// but less blue-saturated). channelSwap kept as occasional accent only.
+const SHADOW_MODES = [
+  'darken', 'darken', 'darken', 'darken',           // 50% — neutral, atmospheric
+  'hueRotate180', 'hueRotate180',                   // 25% — complementary, dramatic
+  'hueRotate90',                                    // 12.5% — quarter-rotation surreal
+  'channelSwap',                                    // 12.5% — autoscope signature accent
+];
 
 function makeDefaults(rng, opts = {}) {
   const distance = opts.cameraDistance ?? 15;
