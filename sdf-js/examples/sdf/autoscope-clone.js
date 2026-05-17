@@ -16,7 +16,7 @@ import { generateSceneData } from './autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 import { DEFAULT_KNOBS, randomizeKnobs, applyKnobsGate, describeKnobs } from '../../src/palette/autoscope.js';
-import '../../src/sdf/dn.js';  // side-effect import to register .rep / .union etc on SDF3.prototype
+import { union as sdfUnion } from '../../src/sdf/dn.js';  // also has side-effect of registering .rep / .union etc on SDF3.prototype
 
 const $ = id => document.getElementById(id);
 
@@ -156,12 +156,20 @@ function regenerateScene({ keepCamera = false } = {}) {
     const sceneData = generateSceneData(sceneType, rng);
     try {
       const compiled = compileSceneData(sceneData);
-      sdf = compiled.sdf;
+      // compile() returns subjects SDF + groundSdf separately. autoscope-clone
+      // renders via bobShader which expects a single SDF tree. Union them here
+      // so the scene's ground.y is respected (vs bobShader's internal GROUND_Y=-1).
+      if (compiled.groundSdf && compiled.sdf) {
+        sdf = sdfUnion(compiled.sdf, compiled.groundSdf);
+      } else {
+        sdf = compiled.sdf || compiled.groundSdf;
+      }
       currentCompiled = compiled;  // enables cameraLoop scene-driven camera/light anim
       leafCount = compiled.subjects.length;
       const camAnim = compiled.cameraStatic && (sceneData.defaults.camera.animation?.length || 0);
       const lightAnim = sceneData.defaults.light.animation?.length || 0;
-      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'}, camAnim=${camAnim}, lightAnim=${lightAnim})`;
+      const groundTag = compiled.ground ? ` · ground@y=${compiled.ground.y}` : '';
+      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'}, camAnim=${camAnim}, lightAnim=${lightAnim}${groundTag})`;
     } catch (e) {
       setStatus(`✗ SceneData compile error: ${e.message}`, false);
       console.error('SceneData failed, sceneData =', sceneData);
