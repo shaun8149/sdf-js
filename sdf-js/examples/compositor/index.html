@@ -10,7 +10,8 @@
                  font-family: -apple-system, system-ui, sans-serif;
                  background: #0d0d0d; color: #ccc; }
 
-    #app { display: grid; grid-template-rows: 44px 1fr 28px; height: 100vh; }
+    body { overflow-y: auto; }
+    #app { display: grid; grid-template-rows: 44px auto auto 28px; min-height: 100vh; }
 
     /* ============ Top bar ============ */
     #topbar {
@@ -40,8 +41,12 @@
       border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
     }
 
-    /* ============ Main area (split) ============ */
-    #main { display: grid; grid-template-columns: 360px 1fr; height: 100%; min-height: 0; }
+    /* ============ Main area (split) — first screen ============ */
+    #main {
+      display: grid; grid-template-columns: 360px 1fr;
+      height: calc(100vh - 44px - 28px);
+      min-height: 0;
+    }
 
     /* Tab content panel (left) */
     #tab-content {
@@ -88,6 +93,74 @@
     .pill:hover { background: #3a3a3a; color: #ddd; }
     .pill.active { background: #ffd070; color: #1a1a1a; border-color: #ffd070; }
     .ctrl-label { color: #666; font-size: 11px; margin: 0 4px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ============ Second screen: code panel ============ */
+    #code-screen {
+      padding: 20px 24px; background: #0d0d0d;
+      border-top: 1px solid #2a2a2a;
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: calc(100vh - 44px - 28px);
+    }
+    #code-header {
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+      padding-bottom: 8px; border-bottom: 1px solid #2a2a2a;
+    }
+    #code-header h2 { margin: 0; font-size: 14px; color: #fff; }
+    #code-header .selected-prompt {
+      color: #ffd070; font-style: italic; font-size: 13px;
+      max-width: 600px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #code-header .code-meta { color: #666; font-family: ui-monospace, monospace; font-size: 11px; }
+    #code-header .right { margin-left: auto; display: flex; gap: 8px; }
+    .icon-btn {
+      padding: 4px 10px; background: #2a2a2a; color: #aaa;
+      border: 1px solid #3a3a3a; border-radius: 3px; cursor: pointer;
+      font-size: 11px; font-family: inherit;
+    }
+    .icon-btn:hover { background: #3a3a3a; color: #ddd; }
+    #code-display {
+      flex: 1; min-height: 60vh;
+      padding: 14px 16px; background: #07070a; color: #d0d0d0;
+      border: 1px solid #2a2a2a; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 12px;
+      line-height: 1.55; resize: vertical;
+      tab-size: 2;
+    }
+    #code-display:empty::before {
+      content: '(no code yet — generate or pick a history item)';
+      color: #555;
+    }
+
+    /* ============ History list ============ */
+    #history-list {
+      display: flex; flex-direction: column; gap: 2px;
+      max-height: 380px; overflow-y: auto;
+      background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 3px;
+    }
+    .history-item {
+      padding: 8px 10px; border-bottom: 1px solid #1f1f1f;
+      cursor: pointer; transition: background 0.1s;
+      display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: #1a1a1a; }
+    .history-item.active { background: #1f1f1f; border-left: 2px solid #ffd070; padding-left: 8px; }
+    .history-prompt {
+      color: #ccc; font-size: 12px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .history-time { color: #555; font-size: 10px; font-family: ui-monospace, monospace; }
+    .history-del {
+      padding: 1px 6px; background: none; border: none; color: #555;
+      cursor: pointer; font-size: 13px; line-height: 1;
+    }
+    .history-del:hover { color: #d9afaf; }
+    .history-empty { padding: 16px; color: #555; font-size: 12px; text-align: center; font-style: italic; }
+    .history-clear {
+      align-self: flex-end; background: none; border: none; color: #666;
+      cursor: pointer; font-size: 10px; padding: 4px 0; text-decoration: underline;
+    }
+    .history-clear:hover { color: #aaa; }
 
     /* ============ Status bar ============ */
     #statusbar {
@@ -155,6 +228,20 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Second screen: full-width code panel -->
+    <div id="code-screen">
+      <div id="code-header">
+        <h2>Generated code</h2>
+        <span class="selected-prompt" id="selected-prompt"></span>
+        <span class="code-meta" id="code-meta"></span>
+        <div class="right">
+          <button class="icon-btn" id="btn-copy-code" title="Copy code to clipboard">⎘ Copy</button>
+          <button class="icon-btn" id="btn-rerender" title="Re-execute this code">↻ Re-run</button>
+        </div>
+      </div>
+      <pre id="code-display"></pre>
     </div>
 
     <!-- Bottom status bar -->

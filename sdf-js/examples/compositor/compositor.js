@@ -30,7 +30,66 @@ const state = {
   scene: null,                         // SceneData v1 — set by tabs that emit it
   layers: null,                        // [{ sdf, color }, ...] — set by text-tab (legacy MVP-style)
   lastRenderOpts: null,                // remember view/etc. for re-render on pill switch
+  history: [],                         // [{ id, prompt, code, usage, timestamp }, ...] most-recent-first
+  selectedHistoryId: null,
 };
+
+// =============================================================================
+// History storage (localStorage cap 30)
+// =============================================================================
+
+const HISTORY_KEY = 'atlas-history';
+const HISTORY_CAP = 30;
+
+function loadHistory() {
+  try {
+    state.history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch {
+    state.history = [];
+  }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(state.history.slice(0, HISTORY_CAP)));
+  } catch (e) {
+    console.warn('history save failed (localStorage full?)', e);
+  }
+}
+
+function addHistoryEntry(entry) {
+  state.history.unshift({ id: `gen-${Date.now()}`, timestamp: Date.now(), ...entry });
+  if (state.history.length > HISTORY_CAP) state.history = state.history.slice(0, HISTORY_CAP);
+  saveHistory();
+}
+
+function deleteHistoryEntry(id) {
+  state.history = state.history.filter(h => h.id !== id);
+  saveHistory();
+  if (state.selectedHistoryId === id) {
+    state.selectedHistoryId = null;
+    setCodeDisplay('', '', null);
+  }
+  renderHistoryList();
+}
+
+function clearHistory() {
+  if (!confirm('Clear all history?')) return;
+  state.history = [];
+  state.selectedHistoryId = null;
+  saveHistory();
+  setCodeDisplay('', '', null);
+  renderHistoryList();
+}
+
+function formatTime(ts) {
+  const now = Date.now();
+  const diff = (now - ts) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(ts).toLocaleDateString();
+}
 
 // =============================================================================
 // Anthropic API call infrastructure
@@ -200,7 +259,7 @@ function reRenderStored() {
 const TAB_CONTENT = {
   'text': () => `
     <h2>Text → SDF</h2>
-    <p>Type a scene description → Anthropic Claude writes sdf-js code → render via shared renderer pool.</p>
+    <p>Type a scene description → Anthropic Claude writes sdf-js code → render via shared renderer pool. Full code shows in the panel below the canvas.</p>
 
     <h3>Anthropic API key</h3>
     <input id="api-key" type="password" placeholder="sk-ant-..." spellcheck="false"
@@ -222,14 +281,12 @@ const TAB_CONTENT = {
       ✨ Generate
     </button>
 
-    <h3>Generated code</h3>
-    <textarea id="code-output" readonly rows="14" placeholder="(generated code appears here)"
-              style="width:100%; padding:8px; background:#0d0d0d; color:#aaa;
-                     border:1px solid #3a3a3a; border-radius:3px;
-                     font-family:ui-monospace, monospace; font-size:10px;
-                     line-height:1.5; resize:vertical;"></textarea>
+    <p id="usage-info" style="font-size:10px; color:#666; margin-top:4px;"></p>
 
-    <p id="usage-info" style="font-size:10px; color:#666; margin-top:6px;"></p>
+    <h3>History
+      <button class="history-clear" id="btn-clear-history">clear all</button>
+    </h3>
+    <div id="history-list"></div>
   `,
 
   'generator': () => `
@@ -276,7 +333,6 @@ function renderActiveTab() {
 function wireTextTab() {
   const apiKeyInput = $('api-key');
   const promptInput = $('prompt-input');
-  const codeOutput = $('code-output');
   const usageInfo = $('usage-info');
 
   // Restore API key from localStorage
@@ -304,9 +360,16 @@ function wireTextTab() {
       const t0 = performance.now();
       const result = await callLLM(userPrompt, apiKey);
       const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+      const usageStr = `↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s`;
 
-      codeOutput.value = result.text;
-      usageInfo.textContent = `↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s · model=${DEFAULT_MODEL}`;
+      usageInfo.textContent = `${usageStr} · model=${DEFAULT_MODEL}`;
+
+      // Save to history + select it + show in code panel
+      addHistoryEntry({ prompt: userPrompt, code: result.text, usage: result.usage, elapsed });
+      const newest = state.history[0];
+      state.selectedHistoryId = newest.id;
+      setCodeDisplay(result.text, userPrompt, usageStr);
+      renderHistoryList();
 
       setStatus('⋯ executing generated code…');
       try {
@@ -333,7 +396,82 @@ function wireTextTab() {
       $('btn-generate').click();
     }
   });
+
+  $('btn-clear-history').addEventListener('click', clearHistory);
+
+  renderHistoryList();
 }
+
+// =============================================================================
+// History list rendering + click-to-load
+// =============================================================================
+
+function renderHistoryList() {
+  const list = $('history-list');
+  if (!list) return;
+  if (state.history.length === 0) {
+    list.innerHTML = `<div class="history-empty">No generations yet. Try a prompt!</div>`;
+    return;
+  }
+  list.innerHTML = state.history.map(h => `
+    <div class="history-item ${h.id === state.selectedHistoryId ? 'active' : ''}" data-id="${h.id}">
+      <span class="history-prompt">${escapeHtml(h.prompt)}</span>
+      <span class="history-time">${formatTime(h.timestamp)}</span>
+      <button class="history-del" data-id="${h.id}" title="Delete">×</button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.history-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.classList.contains('history-del')) return;  // delegated below
+      loadHistoryEntry(item.dataset.id);
+    });
+  });
+  list.querySelectorAll('.history-del').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      deleteHistoryEntry(btn.dataset.id);
+    });
+  });
+}
+
+async function loadHistoryEntry(id) {
+  const entry = state.history.find(h => h.id === id);
+  if (!entry) return;
+  state.selectedHistoryId = id;
+  const usageStr = entry.usage
+    ? `↑ ${entry.usage.input_tokens} in · ↓ ${entry.usage.output_tokens} out · ${entry.elapsed}s`
+    : null;
+  setCodeDisplay(entry.code, entry.prompt, usageStr);
+  renderHistoryList();
+  setStatus('⋯ re-executing history entry…');
+  try {
+    await executeGeneratedCode(entry.code);
+    setStatus(`✓ replayed: ${entry.prompt.slice(0, 40)}`);
+  } catch (e) {
+    setStatus(`✗ replay error: ${e.message}`, true);
+    const ctx = $('c').getContext('2d');
+    ctx.fillStyle = '#f4efdc';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    drawErrorOverlay(ctx, `replay error: ${e.message}`);
+  }
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// =============================================================================
+// Code display (second screen) + copy / re-run buttons
+// =============================================================================
+
+function setCodeDisplay(code, prompt, meta) {
+  $('code-display').textContent = code || '';
+  $('selected-prompt').textContent = prompt ? `"${prompt}"` : '';
+  $('code-meta').textContent = meta || '';
+}
+
+// (copy/rerender buttons wired in init below)
 
 // =============================================================================
 // Tab switching + pill controls
@@ -440,7 +578,30 @@ function updateSceneInfo() {
 // Init
 // =============================================================================
 
+loadHistory();
 renderActiveTab();
 drawPlaceholder();
 updateSceneInfo();
+
+// Wire code-screen buttons (they exist on initial page load, before any tab content renders)
+$('btn-copy-code')?.addEventListener('click', () => {
+  const code = $('code-display').textContent;
+  if (!code) { setStatus('no code to copy', true); return; }
+  navigator.clipboard.writeText(code).then(
+    () => setStatus('✓ code copied'),
+    () => setStatus('✗ clipboard failed', true),
+  );
+});
+$('btn-rerender')?.addEventListener('click', async () => {
+  const code = $('code-display').textContent;
+  if (!code) { setStatus('no code to re-run', true); return; }
+  setStatus('⋯ re-executing…');
+  try {
+    await executeGeneratedCode(code);
+    setStatus('✓ re-rendered');
+  } catch (e) {
+    setStatus(`✗ ${e.message}`, true);
+  }
+});
+
 loadSystemPrompt().then(n => setStatus(`✓ system prompt loaded (${n} chars)`));
