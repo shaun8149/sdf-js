@@ -1,23 +1,20 @@
 // =============================================================================
-// Atlas Compositor v0 — M1 Day 1 shell
+// Atlas Compositor v0 — M1 Day 2
 // -----------------------------------------------------------------------------
-// 4-tab UI converging 4 input sources to SceneData → render via 5-renderer pool.
+// 4-tab UI converging 4 input sources to a shared render canvas.
 //
-//                   text-tab     ─┐
-//                   generator-tab ─┤
-//                                  ├──→ SceneData ──→ compile() ──→ renderer pool
-//                   2d-edit-tab   ─┤
-//                   3d-edit-tab   ─┘
+//   text-tab     ─┐  Day 2 ✓ (this commit)
+//   generator-tab ─┤  Day 3 pending
+//                  ├─→ shared render canvas (silhouette renderer for now)
+//   2d-edit-tab  ─┤  M3 pending
+//   3d-edit-tab  ─┘  M4 pending
 //
-// Day 1 (this file): UI shell + central state + tab routing + renderer/pattern
-//                    pill controls. Tab content panels are placeholders.
-//                    Render canvas is wired to silhouette as initial mode.
-//
-// Day 2: text-tab absorbs MVP LLM-prompt → SDF code → SceneData flow
-// Day 3: generator-tab absorbs autoscope-clone hash → SceneData flow
-// Day 4: shared palette / camera / shadow control surface
-// Day 5: 2d-edit / 3d-edit stub content, index entry, URL routing
+// Day 2 ships text-tab functionality: prompt → Anthropic Claude → SDF JS code
+// → Blob-URL dynamic import → render.silhouette intercepted → draw to canvas.
+// System prompt loaded from ../mvp/system-prompt.md (shared with MVP page).
 // =============================================================================
+
+import * as renderModule from '../../src/render/index.js';
 
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
@@ -27,36 +24,204 @@ const $$ = sel => document.querySelectorAll(sel);
 // =============================================================================
 
 const state = {
-  activeTab: 'text',                   // 'text' | 'generator' | '2d-edit' | '3d-edit'
-  activeRenderer: 'silhouette',        // 'silhouette' | 'stipple' | 'hatch' | 'lambert' | 'bob-gpu'
-  activePattern: 'none',               // 'none' | 'truchet' | 'gosper' | 'motifs'
-  scene: null,                         // SceneData v1 — populated by active tab
-  compiled: null,                      // compile(scene) result — { sdf, evalCamera, ... }
+  activeTab: 'text',
+  activeRenderer: 'silhouette',
+  activePattern: 'none',
+  scene: null,                         // SceneData v1 — set by tabs that emit it
+  layers: null,                        // [{ sdf, color }, ...] — set by text-tab (legacy MVP-style)
+  lastRenderOpts: null,                // remember view/etc. for re-render on pill switch
 };
 
 // =============================================================================
-// Tab content registry (Day 1: placeholders; Day 2-5: real content)
+// Anthropic API call infrastructure
+// =============================================================================
+
+const STORAGE_KEY = 'atlas-anthropic-key';
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
+let SYSTEM_PROMPT = '';
+
+async function loadSystemPrompt() {
+  try {
+    const res = await fetch('../mvp/system-prompt.md');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    SYSTEM_PROMPT = await res.text();
+    return SYSTEM_PROMPT.length;
+  } catch (e) {
+    setStatus(`✗ system prompt load failed: ${e.message}`, true);
+    throw e;
+  }
+}
+
+async function callLLM(userPrompt, apiKey, model = DEFAULT_MODEL) {
+  if (!SYSTEM_PROMPT) {
+    await loadSystemPrompt();
+  }
+  if (!apiKey) throw new Error('Anthropic API key required');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 8192,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userPrompt }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API ${response.status}: ${errText.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  return {
+    text: data.content[0].text,
+    usage: data.usage,
+  };
+}
+
+// =============================================================================
+// Code execution — Blob URL dynamic import (matches MVP idiom)
+// =============================================================================
+
+function stripMarkdownFence(text) {
+  // Strip ```javascript or ```js ... ``` markdown code fences
+  const fenceMatch = text.match(/```(?:javascript|js)?\n([\s\S]*?)\n```/);
+  return fenceMatch ? fenceMatch[1] : text;
+}
+
+function rewriteImports(code, baseUrl) {
+  // Convert relative imports to absolute URLs so Blob URL can resolve them
+  return code.replace(
+    /(\bfrom\s+|^import\s*\(?\s*)['"](\.[^'"]*)['"]/gm,
+    (match, prefix, relPath) => {
+      const absUrl = new URL(relPath, baseUrl).href;
+      return `${prefix}'${absUrl}'`;
+    },
+  );
+}
+
+function rewriteRenderCalls(code) {
+  // Intercept render.silhouette(ctx, layers, opts) calls and route to our
+  // dispatcher. Compositor renderer-pill state then picks the actual renderer.
+  return code.replace(/\brender\.silhouette\s*\(/g, 'window.__atlasRenderDispatch(');
+}
+
+async function executeGeneratedCode(rawCode) {
+  const code = stripMarkdownFence(rawCode);
+  const baseUrl = window.location.href;
+  const rewritten = rewriteRenderCalls(rewriteImports(code, baseUrl));
+
+  // Provide ctx as a module-level global the generated code can use
+  const blob = new Blob([rewritten], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  try {
+    await import(/* @vite-ignore */ url);
+  } finally {
+    setTimeout(() => URL.revokeObjectURL(url), 5000);  // allow async finishing
+  }
+}
+
+// =============================================================================
+// Render dispatcher — called by generated code via window.__atlasRenderDispatch
+// =============================================================================
+
+window.__atlasRenderDispatch = function (ctx, layers, opts = {}) {
+  // Generated code typically passes its own ctx; we override to use compositor canvas
+  const cv = $('cv');
+  const realCtx = cv.getContext('2d');
+
+  // Normalize layers to {sdf, color} objects
+  state.layers = layers;
+  state.lastRenderOpts = opts;
+
+  doRender(realCtx, layers, opts);
+};
+
+function doRender(ctx, layers, opts) {
+  // Clear canvas first
+  ctx.fillStyle = '#f4efdc';
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  // Dispatch by activeRenderer
+  try {
+    const fn = renderModule[state.activeRenderer === 'bob-gpu' ? 'silhouette' : state.activeRenderer];
+    if (fn) {
+      fn(ctx, layers, opts);
+    } else {
+      // Fallback: silhouette
+      renderModule.silhouette(ctx, layers, opts);
+    }
+  } catch (e) {
+    setStatus(`✗ render error: ${e.message}`, true);
+    console.error(e);
+  }
+
+  updateSceneInfo();
+}
+
+// Re-render with stored layers (called when renderer/pattern pill switches)
+function reRenderStored() {
+  if (state.layers) {
+    const ctx = $('cv').getContext('2d');
+    doRender(ctx, state.layers, state.lastRenderOpts || {});
+  } else {
+    drawPlaceholder();
+  }
+}
+
+// =============================================================================
+// Tab content registry
 // =============================================================================
 
 const TAB_CONTENT = {
   'text': () => `
     <h2>Text → SDF</h2>
-    <p>Type a natural-language prompt → LLM writes SDF code → render via the renderer pool on the right.</p>
-    <div class="placeholder">
-      <b>M1 Day 2 coming:</b> absorb current MVP (<code>examples/mvp/</code>) into this tab. Anthropic Claude API call, prompt input, history sidebar, code editor view. Output is SceneData v1 routed through compile() → renderer pool.
-    </div>
-    <h3>Status</h3>
-    <p>Until Day 2 integration ships, use the standalone <a href="../mvp/" style="color: #ffd070;">MVP page</a>.</p>
+    <p>Type a scene description → Anthropic Claude writes sdf-js code → render via shared renderer pool.</p>
+
+    <h3>Anthropic API key</h3>
+    <input id="api-key" type="password" placeholder="sk-ant-..." spellcheck="false"
+           style="width:100%; padding:6px 8px; background:#0d0d0d; color:#aaa;
+                  border:1px solid #3a3a3a; border-radius:3px;
+                  font-family:ui-monospace, monospace; font-size:11px;">
+    <p style="font-size:10px; color:#666;">Saved to localStorage; sent direct to api.anthropic.com (browser CORS via <code>anthropic-dangerous-direct-browser-access</code>). Your key never touches Atlas servers.</p>
+
+    <h3>Prompt</h3>
+    <textarea id="prompt-input" rows="4" placeholder="e.g. a tall wine bottle on a wooden table"
+              style="width:100%; padding:8px; background:#0d0d0d; color:#ddd;
+                     border:1px solid #3a3a3a; border-radius:3px;
+                     font-family:inherit; font-size:12px; resize:vertical;"></textarea>
+
+    <button id="btn-generate" class="primary-btn" style="
+      padding: 8px 14px; background: #ffd070; color: #1a1a1a;
+      border: none; border-radius: 3px; cursor: pointer;
+      font-size: 13px; font-weight: 600; margin-top: 6px;">
+      ✨ Generate
+    </button>
+
+    <h3>Generated code</h3>
+    <textarea id="code-output" readonly rows="14" placeholder="(generated code appears here)"
+              style="width:100%; padding:8px; background:#0d0d0d; color:#aaa;
+                     border:1px solid #3a3a3a; border-radius:3px;
+                     font-family:ui-monospace, monospace; font-size:10px;
+                     line-height:1.5; resize:vertical;"></textarea>
+
+    <p id="usage-info" style="font-size:10px; color:#666; margin-top:6px;"></p>
   `,
 
   'generator': () => `
     <h2>Generator → SDF</h2>
     <p>Pick a generator template + hash → SceneData → render. Same hash always produces the same scene (URL-shareable, no token cost for variants).</p>
     <div class="placeholder">
-      <b>M1 Day 3 coming:</b> absorb current autoscope-clone (<code>examples/sdf/autoscope-clone.html</code>) into this tab. 6 scene templates, URL hash, BOB GPU shader. M2 will generalize to a Generator framework.
+      <b>M1 Day 3 coming:</b> absorb autoscope-clone hash flow into this tab. M2 will generalize to a Generator framework.
     </div>
-    <h3>Status</h3>
-    <p>Until Day 3 integration ships, use the standalone <a href="../sdf/autoscope-clone.html" style="color: #ffd070;">autoscope-clone page</a>.</p>
+    <p>Until Day 3 ships, use the standalone <a href="../sdf/autoscope-clone.html" style="color: #ffd070;">autoscope-clone page</a>.</p>
   `,
 
   '2d-edit': () => `
@@ -81,10 +246,71 @@ const TAB_CONTENT = {
 function renderActiveTab() {
   $('tab-content').innerHTML = TAB_CONTENT[state.activeTab]();
   $('tab-content').dataset.activeTab = state.activeTab;
+
+  if (state.activeTab === 'text') {
+    wireTextTab();
+  }
 }
 
 // =============================================================================
-// Tab switching
+// text-tab wire-up
+// =============================================================================
+
+function wireTextTab() {
+  const apiKeyInput = $('api-key');
+  const promptInput = $('prompt-input');
+  const codeOutput = $('code-output');
+  const usageInfo = $('usage-info');
+
+  // Restore API key from localStorage
+  apiKeyInput.value = localStorage.getItem(STORAGE_KEY) || '';
+  apiKeyInput.addEventListener('change', () => {
+    localStorage.setItem(STORAGE_KEY, apiKeyInput.value.trim());
+  });
+
+  $('btn-generate').addEventListener('click', async () => {
+    const userPrompt = promptInput.value.trim();
+    if (!userPrompt) {
+      setStatus('✗ enter a prompt first', true);
+      return;
+    }
+    const apiKey = apiKeyInput.value.trim();
+    if (!apiKey) {
+      setStatus('✗ Anthropic API key required', true);
+      apiKeyInput.focus();
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, apiKey);
+
+    setStatus('⋯ calling Anthropic Claude…');
+    try {
+      const t0 = performance.now();
+      const result = await callLLM(userPrompt, apiKey);
+      const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+
+      codeOutput.value = result.text;
+      usageInfo.textContent = `↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s · model=${DEFAULT_MODEL}`;
+
+      setStatus('⋯ executing generated code…');
+      await executeGeneratedCode(result.text);
+      setStatus(`✓ rendered in ${elapsed}s`);
+    } catch (e) {
+      setStatus(`✗ ${e.message}`, true);
+      console.error(e);
+    }
+  });
+
+  // Ctrl/Cmd+Enter shortcut for generate
+  promptInput.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      $('btn-generate').click();
+    }
+  });
+}
+
+// =============================================================================
+// Tab switching + pill controls
 // =============================================================================
 
 $$('.tab').forEach(btn => {
@@ -98,15 +324,11 @@ $$('.tab').forEach(btn => {
   });
 });
 
-// =============================================================================
-// Renderer + pattern pill toggles
-// =============================================================================
-
 $$('#renderer-pills .pill').forEach(btn => {
   btn.addEventListener('click', () => {
     state.activeRenderer = btn.dataset.renderer;
     $$('#renderer-pills .pill').forEach(b => b.classList.toggle('active', b === btn));
-    rerender();
+    reRenderStored();
     setStatus(`renderer → ${state.activeRenderer}`);
   });
 });
@@ -115,55 +337,52 @@ $$('#pattern-pills .pill').forEach(btn => {
   btn.addEventListener('click', () => {
     state.activePattern = btn.dataset.pattern;
     $$('#pattern-pills .pill').forEach(b => b.classList.toggle('active', b === btn));
-    rerender();
-    setStatus(`pattern → ${state.activePattern}`);
+    // pattern rendering Day 4 work; just visual toggle for now
+    setStatus(`pattern → ${state.activePattern} (rendering pending Day 4)`);
   });
 });
 
 // =============================================================================
-// Render dispatcher (Day 1: placeholder — clears canvas + draws "M1 Day 1 shell"
-// text. Subsequent days wire actual renderer pool.)
+// Placeholder canvas (when no scene loaded)
 // =============================================================================
 
-function rerender() {
+function drawPlaceholder() {
   const canvas = $('cv');
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
 
-  ctx.fillStyle = '#f4efdc';  // paper bg
+  ctx.fillStyle = '#f4efdc';
   ctx.fillRect(0, 0, w, h);
 
-  // Placeholder centerpiece
   ctx.fillStyle = '#1a1a1a';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = '600 32px -apple-system, system-ui, sans-serif';
-  ctx.fillText('Atlas Compositor v0', w / 2, h / 2 - 80);
+  ctx.font = '600 28px -apple-system, system-ui, sans-serif';
+  ctx.fillText('Atlas Compositor', w / 2, h / 2 - 50);
 
   ctx.fillStyle = '#888';
-  ctx.font = '14px ui-monospace, monospace';
-  ctx.fillText('M1 Day 1 shell — 4-tab UI ready', w / 2, h / 2 - 40);
-  ctx.fillText(`active: tab=${state.activeTab} renderer=${state.activeRenderer} pattern=${state.activePattern}`, w / 2, h / 2 - 16);
+  ctx.font = '13px ui-monospace, monospace';
+  ctx.fillText('M1 Day 2 · text-tab functional', w / 2, h / 2 - 20);
+  ctx.fillText('type a prompt → ✨ Generate', w / 2, h / 2 + 8);
 
   ctx.fillStyle = '#bbb';
-  ctx.font = '13px -apple-system, system-ui, sans-serif';
+  ctx.font = '12px -apple-system, system-ui, sans-serif';
   const lines = [
-    'Day 2 → text-tab absorbs MVP',
     'Day 3 → generator-tab absorbs autoscope-clone',
-    'Day 4 → shared palette / camera / shadow controls',
-    'Day 5 → 2D/3D edit stubs + index entry',
+    'Day 4 → renderer pills functional (5 paths)',
+    'Day 5 → 2D/3D edit stubs + URL routing',
   ];
-  lines.forEach((line, i) => ctx.fillText(line, w / 2, h / 2 + 30 + i * 24));
+  lines.forEach((line, i) => ctx.fillText(line, w / 2, h / 2 + 44 + i * 22));
 
-  // Frame: orange brand accent corners
+  // Brand corner accents
   ctx.strokeStyle = '#ffd070';
   ctx.lineWidth = 2;
-  const corner = 30;
+  const c = 28;
   ctx.beginPath();
-  ctx.moveTo(20, 20 + corner); ctx.lineTo(20, 20); ctx.lineTo(20 + corner, 20);
-  ctx.moveTo(w - 20 - corner, 20); ctx.lineTo(w - 20, 20); ctx.lineTo(w - 20, 20 + corner);
-  ctx.moveTo(w - 20, h - 20 - corner); ctx.lineTo(w - 20, h - 20); ctx.lineTo(w - 20 - corner, h - 20);
-  ctx.moveTo(20 + corner, h - 20); ctx.lineTo(20, h - 20); ctx.lineTo(20, h - 20 - corner);
+  ctx.moveTo(20, 20 + c); ctx.lineTo(20, 20); ctx.lineTo(20 + c, 20);
+  ctx.moveTo(w - 20 - c, 20); ctx.lineTo(w - 20, 20); ctx.lineTo(w - 20, 20 + c);
+  ctx.moveTo(w - 20, h - 20 - c); ctx.lineTo(w - 20, h - 20); ctx.lineTo(w - 20 - c, h - 20);
+  ctx.moveTo(20 + c, h - 20); ctx.lineTo(20, h - 20); ctx.lineTo(20, h - 20 - c);
   ctx.stroke();
 }
 
@@ -177,13 +396,15 @@ function setStatus(msg, isError = false) {
   el.textContent = msg;
   el.className = isError ? 'err' : '';
   clearTimeout(statusTimer);
-  statusTimer = setTimeout(() => { el.textContent = 'ready'; el.className = ''; }, 3000);
+  statusTimer = setTimeout(() => { el.textContent = 'ready'; el.className = ''; }, 4000);
 }
 
 function updateSceneInfo() {
   if (state.scene) {
     const n = state.scene.subjects?.length ?? 0;
     $('scene-info').textContent = `${state.scene.name ?? 'scene'} · ${n} subjects`;
+  } else if (state.layers) {
+    $('scene-info').textContent = `${state.layers.length} layer${state.layers.length === 1 ? '' : 's'}`;
   } else {
     $('scene-info').textContent = 'No scene';
   }
@@ -194,5 +415,6 @@ function updateSceneInfo() {
 // =============================================================================
 
 renderActiveTab();
-rerender();
+drawPlaceholder();
 updateSceneInfo();
+loadSystemPrompt().then(n => setStatus(`✓ system prompt loaded (${n} chars)`));
