@@ -5,17 +5,31 @@
     {
       "id": "bird-flock",
       "type": "rep",
-      "args": { "period": [60, 0, 0] },
+      "args": { "period": [12, 0, 0] },
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
         { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
       ],
       "source": {
-        "id": "bird",
-        "type": "sphere",
-        "args": { "radius": 0.2 },
-        "transform": { "translate": [0, 6, -5] }
+        "id": "bird-cross",
+        "type": "union",
+        "transform": { "translate": [0, 6, -5] },
+        "animation": [
+          { "channel": "transform.translate.y", "expr": "6 + 0.25 * cos(t * 3.5)" }
+        ],
+        "children": [
+          {
+            "id": "bird-body",
+            "type": "capsule",
+            "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 }
+          },
+          {
+            "id": "bird-wings",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 }
+          }
+        ]
       }
     },
     {
