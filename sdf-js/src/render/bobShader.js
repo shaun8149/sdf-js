@@ -407,10 +407,11 @@ vec3 paletteCol(float idx, float row) {
 vec3 sky(vec3 rd) {
   float t = 0.5 * (rd.y + 1.0);
   vec3 base = mix(u_sky2, u_sky1, t);
-  // Procedural chroma variation — breaks flatness when SKIES sub-palette is
-  // monochromatic (e.g. all blue tones). 8% magnitude, hue-warm shift.
+  // Subtle procedural chroma variation — adds stipple texture on top of the
+  // dual-color gradient. With sky1/sky2 now cross-palette picked, the
+  // gradient itself has hue contrast; this just adds fine-grain breakup.
   float n = gnoise(rd.xy * 4.0);
-  base += 0.08 * vec3(n, -n * 0.5, n * 0.3);
+  base += 0.04 * vec3(n, -n * 0.5, n * 0.3);
   return clamp(base, 0.0, 1.0);
 }
 
@@ -664,9 +665,14 @@ export function createBobShaderRenderer({
     const palette1 = pickShuffled(PALETTES);
     const palette2 = pickShuffled(PALETTES);
     const paper    = pick(PAPERS);
-    const sky      = pickShuffled(SKIES);
-    const sky1     = sky[0];
-    const sky2     = sky[1 % sky.length];
+    // Pick sky1 and sky2 from TWO different SKIES sub-palettes.
+    // SKIES contains some monochromatic sub-palettes (e.g. all-blue tones);
+    // when both sky1+sky2 came from the same sub-palette the gradient was flat.
+    // Cross-palette pairing guarantees hue contrast in the sky gradient.
+    const skyA     = pickShuffled(SKIES);
+    const skyB     = pickShuffled(SKIES);
+    const sky1     = skyA[0];
+    const sky2     = skyB[0];
     const { tex, length } = bakePaletteTexture(gl, palette1, palette2, paper);
     paletteState = {
       tex, length,
