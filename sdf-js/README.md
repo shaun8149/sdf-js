@@ -284,4 +284,10 @@ const { sdf, camera, light, regionFn, groundY } = compile(scene);
 
 ## License
 
-MIT —— 见根目录 [LICENSE.md](../LICENSE.md)。原始 Python SDF primitives © Michael Fogleman；JS 移植 + 扩展 + renderer 池 + motif library + scene 引擎 + Atlas brand © 2024–。
+**[PolyForm Noncommercial 1.0.0](../LICENSE.md)** ——个人 / 学术 / 研究免费；
+**商业用必须申请单独 license** ——见 [../COMMERCIAL.md](../COMMERCIAL.md)。
+
+第三方组件保留原始 license：
+- **Michael Fogleman 的 `fogleman/sdf` Python primitives 移植**：MIT
+- **Inigo Quilez SDF 公式**：原始公开条款
+- 完整 attribution 见根目录 [../NOTICE.md](../NOTICE.md)。

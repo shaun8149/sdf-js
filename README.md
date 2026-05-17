@@ -299,4 +299,13 @@ Started as a JavaScript port of [fogleman/sdf](https://github.com/fogleman/sdf) 
 
 ## License
 
-MIT — see [LICENSE.md](./LICENSE.md). Original SDF primitives © Michael Fogleman; JS port, extensions, renderer family, motif library, scene engine © 2024–.
+**[PolyForm Noncommercial 1.0.0](./LICENSE.md)** for the Atlas Project original work
+(renderer family, motif library, scene engine, Compositor, BOB GPU pipeline,
+autoscope scene generators, brand surface, and all documentation/examples).
+Personal / academic / research use is free; **commercial use requires a
+separate license** — see [COMMERCIAL.md](./COMMERCIAL.md).
+
+Third-party components retain their original licenses:
+- **Michael Fogleman's `fogleman/sdf` Python derivative primitives**: MIT
+- **Inigo Quilez SDF formulas**: original public terms
+- See [NOTICE.md](./NOTICE.md) for full attribution.

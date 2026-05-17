@@ -1,11 +1,11 @@
 {
   "name": "sdf-js",
   "version": "0.0.1",
-  "description": "JavaScript port of fogleman/sdf — chainable signed distance functions.",
+  "description": "Chainable signed distance functions — engine of the Atlas Project. Originally a JS port of fogleman/sdf, extended with renderer pool, scene engine, motif library, BOB GPU shader pipeline.",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "serve": "python3 -m http.server 8000"
+    "serve": "python3 dev-server.py 8001"
   },
-  "license": "MIT"
+  "license": "SEE LICENSE IN LICENSE.md"
 }
