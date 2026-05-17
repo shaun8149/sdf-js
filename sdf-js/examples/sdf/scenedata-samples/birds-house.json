@@ -1,0 +1,51 @@
+{
+  "v": 1,
+  "name": "Birds + breathing house",
+  "subjects": [
+    {
+      "id": "bird-flock-1",
+      "type": "rep",
+      "args": { "period": [60, 0, 0] },
+      "region": "birds",
+      "source": {
+        "id": "bird-shape",
+        "type": "sphere",
+        "args": { "radius": 0.25 },
+        "transform": { "translate": [0, 8, 0] },
+        "animation": [
+          { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 5.0 } }
+        ]
+      }
+    },
+    {
+      "id": "house-body",
+      "type": "box",
+      "args": { "dims": [3, 4, 3] },
+      "transform": { "translate": [0, 1, 0] },
+      "region": "house",
+      "animation": [
+        { "channel": "args.dims", "expr": "3 + 0.3 * sin(t * 0.4)" }
+      ]
+    },
+    {
+      "id": "house-roof",
+      "type": "cone",
+      "args": { "height": 1.5, "baseRadius": 2.2 },
+      "transform": { "translate": [0, 3, 0] },
+      "region": "roof"
+    }
+  ],
+  "ground": { "y": -1, "region": "ground" },
+  "defaults": {
+    "camera": {
+      "yaw": 0, "pitch": 0.15, "distance": 15, "focal": 1.5,
+      "targetX": 0, "targetY": 1, "targetZ": 0
+    },
+    "light": {
+      "azimuth": 0.5, "altitude": 0.7, "distance": 20
+    },
+    "shadow": {
+      "enabled": true, "mode": "hueRotate180", "strength": 0.4
+    }
+  }
+}

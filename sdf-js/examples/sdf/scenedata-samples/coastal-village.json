@@ -1,0 +1,75 @@
+{
+  "v": 1,
+  "name": "Coastal village at sunrise (Example 5 from SPEC.md)",
+  "subjects": [
+    {
+      "id": "bird-flock",
+      "type": "rep",
+      "args": { "period": [60, 0, 0] },
+      "region": "birds",
+      "source": {
+        "id": "bird",
+        "type": "sphere",
+        "args": { "radius": 0.2 },
+        "transform": { "translate": [0, 6, -5] },
+        "animation": [
+          { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
+        ]
+      }
+    },
+    {
+      "id": "lighthouse",
+      "type": "union",
+      "region": "tower",
+      "children": [
+        {
+          "id": "lighthouse-base",
+          "type": "cylinder",
+          "args": { "radius": 1.2, "height": 4 },
+          "transform": { "translate": [-8, 1, -2] }
+        },
+        {
+          "id": "lighthouse-top",
+          "type": "cone",
+          "args": { "height": 1.5, "baseRadius": 1.4 },
+          "transform": { "translate": [-8, 4, -2] }
+        }
+      ]
+    },
+    {
+      "id": "house",
+      "type": "box",
+      "args": { "dims": [2.5, 3, 2.5] },
+      "transform": { "translate": [3, 0.5, -1] },
+      "region": "house",
+      "animation": [
+        { "channel": "args.dims", "expr": "2.5 + 0.2 * sin(t * 0.3)" }
+      ]
+    },
+    {
+      "id": "sea",
+      "type": "waves",
+      "args": { "freq": 4, "amp": 0.4, "angle": 0, "speed": 1.2 },
+      "region": "water"
+    }
+  ],
+  "ground": { "y": -1.5, "region": "ground" },
+  "defaults": {
+    "camera": {
+      "yaw": 0, "pitch": 0.1, "distance": 25, "focal": 1.5,
+      "targetX": 0, "targetY": 1, "targetZ": 0,
+      "animation": [
+        { "channel": "targetZ", "expr": "0.25 * t" }
+      ]
+    },
+    "light": {
+      "azimuth": 0.5, "altitude": 0.6, "distance": 30,
+      "animation": [
+        { "channel": "azimuth", "value": { "kind": "time", "form": "cos", "amp": 1.0, "freq": 0.05, "phase": 0 } }
+      ]
+    },
+    "shadow": {
+      "enabled": true, "mode": "hueRotate180", "strength": 0.35
+    }
+  }
+}

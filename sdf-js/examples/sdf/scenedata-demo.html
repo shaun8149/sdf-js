@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SceneData v1 demo · sdf-js</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+                 font-family: -apple-system, system-ui, sans-serif; background: #0d0d0d; color: #ccc; }
+    #app { display: flex; height: 100vh; }
+
+    #canvas-wrap { flex: 1; position: relative; background: #000;
+                   display: flex; align-items: center; justify-content: center; }
+    canvas { display: block; background: #fff; }
+    #overlay { position: absolute; left: 12px; top: 12px;
+               background: rgba(0,0,0,0.55); padding: 8px 12px; border-radius: 4px;
+               font-family: ui-monospace, monospace; font-size: 11px; color: #ddd;
+               pointer-events: none; line-height: 1.5; }
+    #overlay b { color: #ffd070; }
+
+    #side { width: 400px; flex-shrink: 0; padding: 16px;
+            overflow-y: auto; background: #1a1a1a; border-left: 1px solid #2a2a2a; }
+    h2 { margin: 0 0 4px; font-size: 14px; color: #fff; }
+    h3 { margin: 18px 0 6px; font-size: 11px; color: #ffd070;
+         text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+    select, button, input, textarea { font: inherit; }
+    select, button { padding: 6px 10px; background: #2a2a2a; color: #ddd;
+                     border: 1px solid #3a3a3a; border-radius: 3px; cursor: pointer; font-size: 12px; }
+    button.primary { background: #ffd070; color: #1a1a1a; border-color: #ffd070; font-weight: 600; }
+    button:hover { background: #3a3a3a; }
+    button.primary:hover { background: #ffd070; opacity: 0.85; }
+    select { width: 100%; }
+
+    textarea {
+      width: 100%; min-height: 420px;
+      padding: 8px; background: #0d0d0d; color: #ddd;
+      border: 1px solid #3a3a3a; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 11px;
+      line-height: 1.5; resize: vertical;
+    }
+
+    .row { display: flex; gap: 8px; margin: 6px 0; align-items: center; }
+    .row.full > * { flex: 1; }
+
+    #status { margin-top: 8px; padding: 6px 8px; border-radius: 3px;
+              font-family: ui-monospace, monospace; font-size: 11px;
+              background: #1f2a1f; color: #afd9af; white-space: pre-wrap; }
+    #status.err { background: #3a1f1f; color: #d9afaf; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="canvas-wrap">
+      <canvas id="cv" width="900" height="900"></canvas>
+      <div id="overlay">
+        <span id="fps">FPS: --</span> · <span id="leaves">-- subjects</span><br>
+        scene: <b id="scene-name">--</b><br>
+        <span style="color: #888">click canvas → WASD fly · Esc → release · R reset cam</span>
+      </div>
+    </div>
+
+    <div id="side">
+      <h2>SceneData v1 demo</h2>
+      <p style="margin: 4px 0 14px; color: #888; font-size: 11px;">
+        Paste / select a SceneData JSON → compile → render via BOB GPU. Validates the M0 spec end-to-end.
+      </p>
+
+      <h3>Sample</h3>
+      <div class="row full">
+        <select id="sample-select">
+          <option value="tiny">tiny — single sphere on ground</option>
+          <option value="birds-house">birds + breathing house</option>
+          <option value="coastal-village">coastal village (Example 5)</option>
+        </select>
+      </div>
+
+      <h3>SceneData JSON</h3>
+      <textarea id="json-input" spellcheck="false"></textarea>
+      <div class="row" style="margin-top: 6px;">
+        <button id="btn-render" class="primary" style="flex: 1;">Compile + render</button>
+        <button id="btn-shuffle">🎨 Shuffle palette</button>
+      </div>
+
+      <div id="status">就绪</div>
+    </div>
+  </div>
+  <script type="module" src="./scenedata-demo.js"></script>
+</body>
+</html>
