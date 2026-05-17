@@ -37,8 +37,8 @@ Full document: [memory/project_compositor_roadmap.md](../.claude/projects/-Users
 
 | M | Goal | Time | Status |
 |---|---|---|---|
-| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | ✅ Day 1 SPEC.md (`0109ab0`) · Day 2-3 spec/expr/compile/serialize + smoke 38/0 (`6d3c072`) · Day 4 scenedata-demo + 3 samples (`c8183f8` + iterations through `d394557`) · Day 5 autoscope-primitives/scenes rewritten as SceneData emitters + A/B toggle in autoscope-clone (`fdd861c`) |
-| **M1** | Compositor v0 (4-tab UI + renderer pool, `text` + `generator` tabs) | 5–7 days | ⏳ pending M0 |
+| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | ✅ Day 1 SPEC.md (`0109ab0`) · Day 2-3 spec/expr/compile/serialize + smoke 38/0 (`6d3c072`) · Day 4 scenedata-demo + 3 samples (`c8183f8` → `d394557`) · Day 5 autoscope-primitives/scenes rewritten as SceneData emitters + A/B toggle in autoscope-clone (`fdd861c` → `16fb10a`) · post-Day-5 visual debug round (camera anim, ground union, plane normal direction, shadow reach, shadow mode bias, sky cross-palette) (`60c8eca` → `4478025`) |
+| **M1** | Compositor v0 (4-tab UI + renderer pool, `text` + `generator` tabs) | 5–7 days | 🟡 starting Day 1 |
 | **M2** | Generator framework (`src/generator/`, autoscope as instance, +1–2 templates) | 5–7 days | ⏳ pending M0 |
 | **M3** | 2D editor script-only (Mini-DSL parser + Monaco + live preview + SceneData round-trip) | 2 weeks | ⏳ pending M0 |
 | **M3.5** | 2D editor graph view + AST↔graph dual-sync | 2–3 weeks | ⏳ pending M3 |
@@ -88,15 +88,26 @@ Full document: [memory/project_name_atlas.md](../.claude/projects/-Users-hexiaoy
 | `6d3c072` | scene: M0 Day 2-3 — spec/expr/compile/serialize/index + smoke test (38/0) |
 | `c8183f8` → `d394557` | M0 Day 4: scenedata-demo + 3 sample JSONs (tiny / birds-house / coastal-village) iterated through bird fixes, camera animation, 3D flock traffic |
 | `9b5dab1` | README: 10 architectural advantages vs diffusion |
-| `fdd861c` | M0 Day 5: autoscope-primitives + autoscope-scenes rewritten as SceneData emitters with A/B toggle in autoscope-clone |
+| `fdd861c` → `16fb10a` | M0 Day 5: autoscope-primitives + autoscope-scenes rewritten as SceneData emitters with A/B toggle in autoscope-clone |
+| `60c8eca` → `4478025` | Post-Day-5 visual debug round: camera animation hookup, ground union, plane normal direction fix, shadow raymarch reach (`dcbb02f`), shadow mode bias (`928f37b`), sky cross-palette pairing (`4478025`) |
 
 ---
 
 ## What unblocks next
 
-**M0 ✅ closed** as of `fdd861c`. Validation gate met: SceneData spec produces renderable scenes via three independent paths (smoke test 38/0, scenedata-demo 3 hand-crafted samples, autoscope-scenes A/B toggle through `fdd861c`). All 6 v1 spec extensions exercised. All 6 autoscope generators round-trip through compile() with no spec gaps detected.
+**M0 ✅ closed** as of `4478025`. Validation gate met: SceneData spec produces renderable scenes via three independent paths (smoke test 38/0, scenedata-demo 3 hand-crafted samples, autoscope-scenes A/B toggle). All 6 v1 spec extensions exercised. All 6 autoscope generators round-trip through compile() with no spec gaps detected. Post-Day-5 visual debug round closed sharp edges: camera animation in SceneData mode, ground SDF union, plane normal direction (sdf-js convention gotcha), shadow raymarch reach (24→80 iter), shadow mode distribution bias toward neutral, cross-palette sky pair selection.
 
-**M1 next**: Compositor v0 — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) sharing renderer pool. `text` and `generator` tabs functional first; `2d-edit` and `3d-edit` are stubs until M3 / M4.
+### M0 lessons (15 lessons / 5 themes)
+
+Full doc: [memory/project_m0_lessons.md](../.claude/projects/-Users-hexiaoyang-Documents-sdf-main/memory/project_m0_lessons.md). Summary:
+
+- **A. Library conventions are not intuitive** — sdf-js plane normal points OUTSIDE, softShadow reach = iterations × max step, multiple ground implementations create hidden incompatibility
+- **B. Animation semantics** — rep + linear translate needs OUTER transform shift (not source translate), AnimationChannel uses REPLACE semantics, "u_time refs in GLSL" ≠ "user sees animation"
+- **C. UX defaults** — checkbox default state determines first-impression demo; sub-palette monochromaticity defeats picking diversity
+- **D. Visual debugging workflow** — user screenshots are fastest diagnostic, parameters can't be specified upfront, require iterative tuning
+- **E. Architecture** — A/B mode toggles surface parity bugs immediately, spec and impl must co-evolve within 1-2 day window
+
+**M1 starting now**: Compositor v0 — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) sharing renderer pool. text-tab absorbs current MVP LLM-prompt flow; generator-tab absorbs autoscope-clone hash flow. 2d-edit and 3d-edit start as stubs until M3 / M4. SceneData is the single lingua franca between tabs.
 
 ---
 
