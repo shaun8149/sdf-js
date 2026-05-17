@@ -466,7 +466,7 @@ function escapeHtml(s) {
 // =============================================================================
 
 function setCodeDisplay(code, prompt, meta) {
-  $('code-display').textContent = code || '';
+  $('code-display').value = code || '';
   $('selected-prompt').textContent = prompt ? `"${prompt}"` : '';
   $('code-meta').textContent = meta || '';
 }
@@ -583,24 +583,39 @@ renderActiveTab();
 drawPlaceholder();
 updateSceneInfo();
 
-// Wire code-screen buttons (they exist on initial page load, before any tab content renders)
+// Wire code-screen elements (they exist on initial page load, before any tab content renders)
 $('btn-copy-code')?.addEventListener('click', () => {
-  const code = $('code-display').textContent;
+  const code = $('code-display').value;
   if (!code) { setStatus('no code to copy', true); return; }
   navigator.clipboard.writeText(code).then(
     () => setStatus('✓ code copied'),
     () => setStatus('✗ clipboard failed', true),
   );
 });
-$('btn-rerender')?.addEventListener('click', async () => {
-  const code = $('code-display').textContent;
+
+async function runCurrentCode() {
+  const code = $('code-display').value;
   if (!code) { setStatus('no code to re-run', true); return; }
-  setStatus('⋯ re-executing…');
+  setStatus('⋯ executing edited code…');
   try {
     await executeGeneratedCode(code);
-    setStatus('✓ re-rendered');
+    setStatus('✓ rendered');
   } catch (e) {
     setStatus(`✗ ${e.message}`, true);
+    const ctx = $('c').getContext('2d');
+    ctx.fillStyle = '#f4efdc';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    drawErrorOverlay(ctx, `exec error: ${e.message}`);
+  }
+}
+
+$('btn-rerender')?.addEventListener('click', runCurrentCode);
+
+// Ctrl/Cmd+Enter inside code-display textarea = re-execute current code (matches MVP behavior)
+$('code-display')?.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runCurrentCode();
   }
 });
 

@@ -119,17 +119,19 @@
     }
     .icon-btn:hover { background: #3a3a3a; color: #ddd; }
     #code-display {
-      flex: 1; min-height: 60vh;
+      flex: 1; min-height: 60vh; width: 100%;
       padding: 14px 16px; background: #07070a; color: #d0d0d0;
       border: 1px solid #2a2a2a; border-radius: 3px;
       font-family: ui-monospace, monospace; font-size: 12px;
       line-height: 1.55; resize: vertical;
       tab-size: 2;
+      box-sizing: border-box; outline: none;
     }
-    #code-display:empty::before {
-      content: '(no code yet — generate or pick a history item)';
-      color: #555;
+    #code-display:focus {
+      border-color: #ffd070;
+      box-shadow: inset 0 0 0 1px #ffd07033;
     }
+    #code-display::placeholder { color: #555; font-style: italic; }
 
     /* ============ History list ============ */
     #history-list {
@@ -238,10 +240,11 @@
         <span class="code-meta" id="code-meta"></span>
         <div class="right">
           <button class="icon-btn" id="btn-copy-code" title="Copy code to clipboard">⎘ Copy</button>
-          <button class="icon-btn" id="btn-rerender" title="Re-execute this code">↻ Re-run</button>
+          <button class="icon-btn" id="btn-rerender" title="Execute the current code (Ctrl/Cmd+Enter)">↻ Re-run <span style="opacity:0.6;">⌘↵</span></button>
         </div>
       </div>
-      <pre id="code-display"></pre>
+      <textarea id="code-display" spellcheck="false"
+                placeholder="(no code yet — generate or pick a history item. Edit + ⌘↵ to re-execute.)"></textarea>
     </div>
 
     <!-- Bottom status bar -->
