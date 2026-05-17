@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Atlas · Compositor</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%23ffd070'/></svg>">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+                 font-family: -apple-system, system-ui, sans-serif;
+                 background: #0d0d0d; color: #ccc; }
+
+    #app { display: grid; grid-template-rows: 44px 1fr 28px; height: 100vh; }
+
+    /* ============ Top bar ============ */
+    #topbar {
+      display: flex; align-items: stretch;
+      background: #1a1a1a; border-bottom: 1px solid #2a2a2a;
+    }
+    #brand {
+      padding: 0 16px; display: flex; align-items: center;
+      font-weight: 700; font-size: 15px; color: #ffd070;
+      border-right: 1px solid #2a2a2a;
+    }
+    #brand .sub { color: #888; font-weight: 400; margin-left: 6px; font-size: 12px; }
+    #tabs { display: flex; flex: 1; }
+    .tab {
+      padding: 0 18px; display: flex; align-items: center; gap: 6px;
+      background: none; border: none; color: #888; cursor: pointer;
+      font-size: 13px; font-family: inherit;
+      border-right: 1px solid #2a2a2a;
+    }
+    .tab .icon { opacity: 0.7; }
+    .tab:hover { background: #222; color: #ddd; }
+    .tab.active { background: #0d0d0d; color: #ffd070; }
+    .tab.stub { opacity: 0.4; cursor: not-allowed; }
+    .tab.stub:hover { background: none; color: #888; }
+    .stub-badge {
+      background: #3a3a3a; color: #888; font-size: 9px; padding: 1px 5px;
+      border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    /* ============ Main area (split) ============ */
+    #main { display: grid; grid-template-columns: 360px 1fr; height: 100%; min-height: 0; }
+
+    /* Tab content panel (left) */
+    #tab-content {
+      background: #1a1a1a; border-right: 1px solid #2a2a2a;
+      padding: 14px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    #tab-content h2 { margin: 0 0 4px; font-size: 14px; color: #fff; }
+    #tab-content h3 { margin: 12px 0 4px; font-size: 11px; color: #ffd070;
+                      text-transform: uppercase; letter-spacing: 0.05em; }
+    #tab-content p { margin: 4px 0; color: #888; font-size: 12px; line-height: 1.5; }
+    #tab-content .placeholder {
+      padding: 24px 16px; background: #0d0d0d; border: 1px dashed #3a3a3a;
+      border-radius: 4px; color: #666; font-size: 12px; line-height: 1.6;
+    }
+
+    /* Render area (right) */
+    #render-area { display: grid; grid-template-rows: 1fr 56px; min-height: 0; min-width: 0; }
+    #canvas-wrap {
+      position: relative; background: #000;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 0; min-width: 0;
+    }
+    canvas#cv { display: block; background: #fff; max-width: 100%; max-height: 100%; }
+
+    #render-controls {
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+      background: #1a1a1a; border-top: 1px solid #2a2a2a;
+      overflow-x: auto;
+    }
+    .pill-group { display: flex; gap: 0; align-items: stretch; }
+    .pill {
+      padding: 5px 12px; background: #2a2a2a; color: #aaa;
+      border: 1px solid #3a3a3a; cursor: pointer; font-size: 11px; font-family: inherit;
+      transition: background 0.1s;
+    }
+    .pill:first-child { border-radius: 3px 0 0 3px; }
+    .pill:last-child { border-radius: 0 3px 3px 0; }
+    .pill:not(:first-child) { border-left: none; }
+    .pill:hover { background: #3a3a3a; color: #ddd; }
+    .pill.active { background: #ffd070; color: #1a1a1a; border-color: #ffd070; }
+    .ctrl-label { color: #666; font-size: 11px; margin: 0 4px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ============ Status bar ============ */
+    #statusbar {
+      display: flex; align-items: center; padding: 0 14px;
+      background: #1a1a1a; border-top: 1px solid #2a2a2a;
+      font-family: ui-monospace, monospace; font-size: 11px;
+      color: #888; gap: 16px; min-width: 0;
+    }
+    #statusbar .scene-info { color: #ffd070; }
+    #statusbar .fps { color: #afd9af; }
+    #statusbar .right { margin-left: auto; color: #666; }
+    #statusbar .err { color: #d9afaf; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Top bar: brand + tabs -->
+    <div id="topbar">
+      <div id="brand">Atlas <span class="sub">· Compositor v0</span></div>
+      <div id="tabs">
+        <button class="tab active" data-tab="text">
+          <span class="icon">✎</span> Text
+        </button>
+        <button class="tab" data-tab="generator">
+          <span class="icon">⚂</span> Generator
+        </button>
+        <button class="tab stub" data-tab="2d-edit" disabled>
+          <span class="icon">▣</span> 2D Edit
+          <span class="stub-badge">M3</span>
+        </button>
+        <button class="tab stub" data-tab="3d-edit" disabled>
+          <span class="icon">⌬</span> 3D Edit
+          <span class="stub-badge">M4</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main area: tab content (left) + render canvas (right) -->
+    <div id="main">
+      <div id="tab-content" data-active-tab="text">
+        <!-- Tab content gets injected by JS based on active tab -->
+      </div>
+
+      <div id="render-area">
+        <div id="canvas-wrap">
+          <canvas id="cv" width="900" height="900"></canvas>
+        </div>
+        <div id="render-controls">
+          <span class="ctrl-label">Renderer</span>
+          <div class="pill-group" id="renderer-pills">
+            <button class="pill active" data-renderer="silhouette">Silhouette</button>
+            <button class="pill" data-renderer="stipple">Stipple</button>
+            <button class="pill" data-renderer="hatch">Lines</button>
+            <button class="pill" data-renderer="lambert">Lambert</button>
+            <button class="pill" data-renderer="bob-gpu">BOB GPU</button>
+          </div>
+          <span class="ctrl-label">Pattern</span>
+          <div class="pill-group" id="pattern-pills">
+            <button class="pill active" data-pattern="none">None</button>
+            <button class="pill" data-pattern="truchet">Truchet</button>
+            <button class="pill" data-pattern="gosper">Gosper</button>
+            <button class="pill" data-pattern="motifs">Motifs</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom status bar -->
+    <div id="statusbar">
+      <span class="fps" id="fps">FPS: --</span>
+      <span class="scene-info" id="scene-info">No scene</span>
+      <span id="status">ready</span>
+      <span class="right" id="meta-info">SceneData v1 · Atlas Compositor v0 (M1)</span>
+    </div>
+  </div>
+
+  <script type="module" src="./compositor.js"></script>
+</body>
+</html>
