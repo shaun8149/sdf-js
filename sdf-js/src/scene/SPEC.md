@@ -549,7 +549,7 @@ When parsing or compiling, fail loudly on:
 10. Missing `defaults.camera` or `defaults.light`
 11. Camera out-of-range fields (clamp + warn)
 12. Light altitude / azimuth out-of-range (clamp + warn)
-13. `AnimationChannel` has both `expr` and `value` set (mutually exclusive)
+13. `AnimationChannel` has neither `expr` nor `value` (at least one required; both is fine — `parse()` normalizes single-form input to dual-form for round-trip stability)
 14. `AnimationChannel.channel` dot-path not resolvable on the host node
 15. `AnimationChannel.expr` contains unsupported function/operator (parse error with offending token)
 16. Time-modulated `transform.rotate` on a non-axis-aligned rotation (compile error, axis must be one of X/Y/Z)
