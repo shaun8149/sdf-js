@@ -40,6 +40,11 @@ import { roundConeSDF } from './components/community/iq-round-cone.js';
 import { rhombusSDF } from './components/community/iq-rhombus.js';
 import { horseshoeSDF } from './components/community/iq-horseshoe.js';
 import { uShapeSDF } from './components/community/iq-u-shape.js';
+import {
+  moonSDF, starSDF, sunSDF, cloudPuffSDF,
+  pineTreeSDF, broadleafTreeSDF,
+  cottageSDF, flagOnPoleSDF, birdSilhouetteSDF,
+} from './components/atoms/scene-atoms.js';
 import { union, difference, intersection, rep } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
 import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS } from './spec.js';
@@ -154,6 +159,46 @@ const PRIMITIVE_FACTORIES = {
     legLength: a.legLength ?? a.le ?? 0.2,
     halfWidth: a.halfWidth ?? 0.06,
     halfDepth: a.halfDepth ?? 0.04,
+  }),
+
+  // -- Atlas scene atoms (high-semantic composites of primitives, hand-authored) --
+  moon:  (a) => moonSDF({ radius: a.radius ?? 0.4 }),
+  star:  (a) => starSDF({ radius: a.radius ?? 0.08, shape: a.shape ?? 'octahedron' }),
+  sun:   (a) => sunSDF({ radius: a.radius ?? 0.4, haloThickness: a.haloThickness ?? 0.06 }),
+  'cloud-puff': (a) => cloudPuffSDF({
+    width:  a.width  ?? a.dims?.[0] ?? 1.0,
+    height: a.height ?? a.dims?.[1] ?? 0.45,
+    depth:  a.depth  ?? a.dims?.[2] ?? 0.6,
+  }),
+  'tree-pine': (a) => pineTreeSDF({
+    trunkHeight:   a.trunkHeight   ?? 0.5,
+    trunkRadius:   a.trunkRadius   ?? 0.1,
+    foliageHeight: a.foliageHeight ?? 1.4,
+    foliageBaseR:  a.foliageBaseR  ?? a.foliageR ?? 0.55,
+    layers:        a.layers        ?? 3,
+  }),
+  'tree-broadleaf': (a) => broadleafTreeSDF({
+    trunkHeight: a.trunkHeight ?? 0.7,
+    trunkRadius: a.trunkRadius ?? 0.09,
+    foliageR:    a.foliageR    ?? a.foliageRadius ?? 0.55,
+  }),
+  cottage: (a) => cottageSDF({
+    width:      a.width      ?? a.size ?? 0.8,
+    height:     a.height     ?? 0.6,
+    roofHeight: a.roofHeight ?? a.roofPitch ?? 0.45,
+  }),
+  'flag-on-pole': (a) => flagOnPoleSDF({
+    poleHeight: a.poleHeight ?? a.height    ?? 2.0,
+    poleRadius: a.poleRadius ?? 0.04,
+    flagWidth:  a.flagWidth  ?? a.width     ?? 0.5,
+    flagHeight: a.flagHeight ?? 0.3,
+    flagSide:   a.flagSide   ?? 1,
+  }),
+  'bird-silhouette': (a) => birdSilhouetteSDF({
+    bodyLength: a.bodyLength ?? 0.18,
+    bodyRadius: a.bodyRadius ?? 0.025,
+    wingSpan:   a.wingSpan   ?? 0.45,
+    wingRise:   a.wingRise   ?? 0.1,
   }),
 
   // -- Time-aware --

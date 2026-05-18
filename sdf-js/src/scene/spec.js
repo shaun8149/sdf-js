@@ -41,6 +41,10 @@ export const PRIMITIVE_TYPES = new Set([
   'solid-angle', 'link',
   'capped-torus', 'hex-prism', 'octagon-prism', 'round-cone',
   'rhombus', 'horseshoe', 'u-shape',
+  // Atlas scene atoms (composites; see src/scene/components/atoms/)
+  'moon', 'star', 'sun', 'cloud-puff',
+  'tree-pine', 'tree-broadleaf',
+  'cottage', 'flag-on-pole', 'bird-silhouette',
   // Time-aware
   'waves',
   // 2D → 3D pseudo-primitives
