@@ -141,6 +141,72 @@ waves:          { "freq": number, "amp": number, "angle": number, "speed": numbe
                   // time-aware sea surface; speed > 0 to animate
 ```
 
+## Extended primitives (IQ canonical, ported via Atlas /port-shader)
+
+Use these BEFORE composing equivalent shapes from `union(...)` of basic primitives. Each is a single first-class type — the LLM emits one subject, Atlas expands to optimal SDF math.
+
+```
+solid-angle:   { "halfAperture": number, "radius": number }
+                  // conical wedge of a sphere, axis +Y; spotlight cones,
+                  // ice-cream cones, leaf bases, pine canopies
+link:          { "halfLength": number, "majorR": number, "minorR": number }
+                  // chain link / oblong torus; chains, keyrings, carabiners
+capped-torus:  { "capAngle": number, "majorR": number, "minorR": number }
+                  // partial torus / arc; semicircle rings, jewelry
+hex-prism:     { "apothem": number, "halfHeight": number }
+                  // hexagonal prism, axis +Z; nuts, honeycomb, hex tiles
+octagon-prism: { "apothem": number, "halfHeight": number }
+                  // octagonal prism, axis +Z; stop signs, pavilions
+round-cone:    { "baseRadius": number, "topRadius": number, "height": number }
+                  // cone with spherical caps at both ends, axis +Y;
+                  // chess pawns, bottles, fingertips, drops
+rhombus:       { "la": number, "lb": number, "h": number, "cornerR": number }
+                  // diamond shape extruded along Y; kites, diamonds, signs
+horseshoe:     { "openAngle": number, "radius": number, "length": number,
+                 "halfWidth": number, "halfDepth": number }
+                  // arc with rectangular cross-section; horseshoes, magnets
+u-shape:       { "radius": number, "legLength": number,
+                 "halfWidth": number, "halfDepth": number }
+                  // U-shape; clamps, magnets, bicycle U-lock
+```
+
+## Scene atoms (Atlas composites — use these aggressively)
+
+These are HIGH-SEMANTIC parameterized compositions. Each replaces what would otherwise be 3-10 primitive subjects. The LLM should reach for these whenever the prompt's structure matches — they're the cleanest emit:
+
+```
+moon:           { "radius"?: number }
+                  // for ANY night scene; sphere with renderer-applied glow
+star:           { "radius"?: number, "shape"?: "octahedron" | "sphere" }
+                  // small bright dots; emit N stars at random sky positions
+                  // for starry-night skies (e.g. 12-30 stars sprinkled)
+sun:            { "radius"?: number, "haloThickness"?: number }
+                  // daytime celestial body
+cloud-puff:     { "width"?: number, "height"?: number, "depth"?: number }
+                  // soft cumulus; emit multiple at varied sky positions
+tree-pine:      { "trunkHeight"?: number, "trunkRadius"?: number,
+                  "foliageHeight"?: number, "foliageBaseR"?: number, "layers"?: number }
+                  // pine / fir / spruce; trunk + N-layer cone foliage
+tree-broadleaf: { "trunkHeight"?: number, "trunkRadius"?: number, "foliageR"?: number }
+                  // oak / maple / generic deciduous; trunk + sphere foliage
+cottage:        { "width"?: number, "height"?: number, "roofHeight"?: number }
+                  // house: box wall + pyramid roof. For villages emit N
+                  // cottages at varied positions/scales
+flag-on-pole:   { "poleHeight"?: number, "poleRadius"?: number,
+                  "flagWidth"?: number, "flagHeight"?: number, "flagSide"?: 1 | -1 }
+                  // for buildings, ships, carriers, garden plots
+bird-silhouette:{ "bodyLength"?: number, "bodyRadius"?: number,
+                  "wingSpan"?: number, "wingRise"?: number }
+                  // sky decoration; emit 1-5 in coastal/mountain/sky scenes
+```
+
+**Usage priority order**:
+1. **Scene atoms first** — if the prompt mentions a tree / cottage / moon / star / cloud / bird / flag, emit the atom (one subject).
+2. **Extended primitives second** — for specific shapes (link, horseshoe, capped-torus, hex-prism) that match the prompt's vocabulary.
+3. **Basic primitives last** — when no higher-level type fits.
+
+Anti-example: a "starry sky" prompt should emit 20 `star` subjects scattered across +Y region. NOT 20 small `octahedron` subjects (works but verbose) and CERTAINLY NOT 20 different boxes (loses semantics).
+
 # Lifting strategy — 2D → 3D translation rules
 
 The 2D scene is almost always shown from a fixed viewpoint (usually side
@@ -188,6 +254,31 @@ for table).
 2D outlines (dilate-based)  → Skip (handled by Atlas renderer auto)
 2D backdrop / sky rectangle → Skip (use SceneData.ground + sky from palette)
 2D ground rectangle (bottom) → SceneData.ground = { y: subject_floor_y }
+```
+
+## Semantic mapping (2D concept → Atlas atom or extended primitive)
+
+These are LANGUAGE-LEVEL mappings — when the 2D scene description (prompt or code comments) implies one of these concepts, reach for the named type instead of building from basic primitives:
+
+```
+night sky / starry             → N × star  (e.g. 15-30 stars)
+moon / 月 / full moon          → moon
+sun / 太阳                     → sun
+clouds                         → 2-5 × cloud-puff at varied positions
+pine / fir / 松 / 杉           → tree-pine
+oak / maple / 阔叶 / generic tree → tree-broadleaf
+house / cottage / 小屋 / 农舍   → cottage (village = N × cottage)
+flag / banner / 旗             → flag-on-pole
+birds / seagulls / 鸟          → 1-5 × bird-silhouette
+chain / 链 / keyring           → link (one or repeated)
+arch / partial-torus / 拱       → capped-torus
+horseshoe / 马蹄铁 / magnet     → horseshoe
+nut / bolt-head / 六角螺帽       → hex-prism
+pavilion / stop-sign / 八角     → octagon-prism
+pawn / bottle / drop / pebble   → round-cone
+diamond / kite / 菱形           → rhombus
+clamp / U-bolt / 夹             → u-shape
+flashlight cone / spotlight     → solid-angle
 ```
 
 ## Composition rules
@@ -340,6 +431,118 @@ Output sketch:
   }
 }
 ```
+
+### Example 3: Night lighthouse with stars, moon, birds (USES SCENE ATOMS)
+
+Input prompt: `海边的灯塔` ("coastal lighthouse"). The 2D code mentions night sky, moon, stars, light beams, birds.
+
+**Wrong way** (verbose, low semantic value):
+- 1 cylinder tower + 1 cone roof + 1 box cliff
+- 20 small spheres for stars
+- 1 large sphere for moon
+- 3 small capsules + tiny ellipsoids for birds
+
+**Right way (atom-first)**:
+
+```json
+{
+  "v": 1,
+  "name": "Coastal Lighthouse (night)",
+  "subjects": [
+    {
+      "id": "moon",
+      "type": "moon",
+      "args": { "radius": 0.45 },
+      "transform": { "translate": [-3.5, 4.5, -2] },
+      "region": "moon"
+    },
+    {
+      "id": "star-1",  "type": "star", "args": { "radius": 0.04 },
+      "transform": { "translate": [-2.8, 4.2, -3] }, "region": "star"
+    },
+    {
+      "id": "star-2",  "type": "star", "args": { "radius": 0.05 },
+      "transform": { "translate": [-1.5, 5.0, -3] }, "region": "star"
+    },
+    {
+      "id": "star-3",  "type": "star", "args": { "radius": 0.035 },
+      "transform": { "translate": [0.5, 4.8, -3] }, "region": "star"
+    },
+    {
+      "id": "star-4",  "type": "star", "args": { "radius": 0.045 },
+      "transform": { "translate": [2.0, 5.2, -3] }, "region": "star"
+    },
+    {
+      "id": "star-5",  "type": "star", "args": { "radius": 0.04 },
+      "transform": { "translate": [3.5, 4.4, -3] }, "region": "star"
+    },
+    /* …emit 10-25 stars total, varied positions… */
+    {
+      "id": "bird-1",
+      "type": "bird-silhouette",
+      "args": { "bodyLength": 0.18, "wingSpan": 0.5 },
+      "transform": { "translate": [-1.2, 3.4, -1.5], "rotate": [0, 0.4, 0] },
+      "region": "bird"
+    },
+    {
+      "id": "bird-2",
+      "type": "bird-silhouette",
+      "args": { "bodyLength": 0.16, "wingSpan": 0.45 },
+      "transform": { "translate": [1.8, 3.0, -1.2], "rotate": [0, -0.3, 0] },
+      "region": "bird"
+    },
+    {
+      "id": "cliff",
+      "type": "box",
+      "args": { "dims": [3, 1.5, 2.5] },
+      "transform": { "translate": [-1, -0.4, 0] },
+      "region": "stone"
+    },
+    {
+      "id": "tower",
+      "type": "cylinder",
+      "args": { "radius": 0.4, "height": 2.4 },
+      "transform": { "translate": [-1, 1.55, 0] },
+      "region": "tower"
+    },
+    {
+      "id": "tower-cap",
+      "type": "cone",
+      "args": { "height": 0.55, "baseRadius": 0.45 },
+      "transform": { "translate": [-1, 3.05, 0] },
+      "region": "roof"
+    },
+    {
+      "id": "lamp-glow",
+      "type": "sphere",
+      "args": { "radius": 0.22 },
+      "transform": { "translate": [-1, 2.85, 0] },
+      "region": "glow"
+    },
+    {
+      "id": "sea",
+      "type": "waves",
+      "args": { "freq": 4, "amp": 0.25, "speed": 0.9 },
+      "transform": { "translate": [0, -1.8, 0] },
+      "region": "water"
+    }
+  ],
+  "ground": { "y": -1.8, "region": "seabed" },
+  "defaults": {
+    "camera": { "yaw": 0.4, "pitch": 0.18, "distance": 12, "focal": 1.5, "targetX": -0.5, "targetY": 1.5, "targetZ": 0 },
+    "light":  { "azimuth": -0.55, "altitude": 0.5, "distance": 28 },
+    "shadow": { "enabled": true, "mode": "hueRotate180", "strength": 0.4 }
+  }
+}
+```
+
+**Why this is better**:
+- `moon` (one subject) instead of "sphere with a region called moon" (lossy semantic).
+- `star` × 5+ — each one a first-class type the renderer can shade differently.
+- `bird-silhouette` — emits a capsule body + 2 ellipsoid wings via composition; you spell out the BIRD intent, Atlas handles the shape. Diffusion couldn't even name "bird"; Atlas makes it tradable.
+- The tower + cliff + glow stay basic primitives because no atom covers them specifically (yet — could add a `lighthouse` composite atom later if patterns repeat).
+
+This is **the atom-first pattern** — the LLM emits semantic types, Atlas's compile.js expands to primitives, and the SceneData JSON stays human-editable + diff-friendly.
 
 # Workflow summary
 
