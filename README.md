@@ -1,7 +1,13 @@
 # Atlas
 
 <p align="center">
-  <img src="./docs/hero.png" alt="Atlas hero — stipple-rendered sphere on a paper-textured horizon, produced by BOB GPU 2-pass sand painting" width="640">
+  <img src="./docs/lighthouse-v2.png" alt="Coastal lighthouse 3D lift — striped lantern tower on a rocky promontory, the moon hangs in a quantized teal sky over a multi-coloured autoscope-style horizon, rendered through BOB GPU's two-pass sand-painting shader." width="640">
+</p>
+
+<p align="center"><em><sub>Prompt: <code>海边的灯塔</code> (5 characters). Same prompt + same 2D code, lifted twice — once with the v1 lift prompt (no semantic types taught) and once with the v2 prompt (18 named atom + component types). v1 emit: 0 atoms (the original 3D had no moon and no stars). v2 emit: <strong>moon × 1, star × 15, plus the tower</strong> shown here. The library expansion → prompt rewrite → atom emission is a fully quantified loop — <a href="./sdf-js/scripts/regression/README.md">scripts/regression</a> reproduces the result for $0.07 per demo.</sub></em></p>
+
+<p align="center">
+  <a href="https://shaun8149.github.io/sdf-js/"><strong>→ Try the live gallery</strong></a> · no API key needed, click any of 8 pre-lifted scenes and fly through with WASD.
 </p>
 
 <p align="center">
