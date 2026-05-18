@@ -51,9 +51,10 @@ type SceneData = {
 }
 
 type SourceMetadata = {
-  format: 'script' | 'graph' | 'llm' | 'generator'
+  format: 'script' | 'graph' | 'llm' | 'llm-lift' | 'generator'
   text?: string                         // raw script text (format='script')
-  prompt?: string                       // LLM prompt that produced this scene (format='llm')
+  prompt?: string                       // LLM prompt that produced this scene (format='llm' or 'llm-lift')
+  from2dCode?: string                   // 2D SDF code passed to lift LLM (format='llm-lift')
   seed?: string                         // generator hash hex (format='generator')
   generator?: string                    // generator template id (format='generator')
   // Editor/LLM/generator pipelines fill the relevant fields; consumers may
@@ -532,7 +533,7 @@ Additional rules added with the shadow / source extensions:
 
 17. `defaults.shadow.mode` not in `{'channelSwap', 'hueRotate180', 'hueRotate90', 'darken'}`
 18. `defaults.shadow.strength` outside `[0, 1]` (clamp + warn)
-19. `source.format` not in `{'script', 'graph', 'llm', 'generator'}` if present
+19. `source.format` not in `{'script', 'graph', 'llm', 'llm-lift', 'generator'}` is a **warning, not an error** (source is metadata; renderer continues — forward-compatible for future formats)
 20. `source.text` present but `source.format !== 'script'` (warning, not error — extra info is allowed)
 
 When parsing or compiling, fail loudly on:

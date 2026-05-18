@@ -56,7 +56,7 @@ export const SHADOW_MODES = new Set([
 ]);
 
 export const SOURCE_FORMATS = new Set([
-  'script', 'graph', 'llm', 'generator',
+  'script', 'graph', 'llm', 'llm-lift', 'generator',
 ]);
 
 // AnimationChannel.channel dot-paths allowed per host node type.
@@ -349,9 +349,12 @@ function validateSource(src, errors, warnings) {
     errors.push('source: must be an object');
     return;
   }
-  // Rule 19
+  // Rule 19: unknown source.format is a WARNING not an error.
+  // source is metadata; the SDF tree compiles regardless of format value.
+  // Forward-compatibility: lets new format values (e.g. 'llm-lift', future
+  // 'midjourney-import', etc.) flow through without blocking the renderer.
   if (!SOURCE_FORMATS.has(src.format)) {
-    errors.push(`source.format: must be one of ${[...SOURCE_FORMATS].join(' | ')}`);
+    warnings.push(`source.format "${src.format}" not in registry (known: ${[...SOURCE_FORMATS].join(' | ')}). Renderer continues; metadata may render as 'unknown' in editors.`);
   }
   // Rule 20: warn if text without script format
   if (src.text != null && src.format !== 'script') {
