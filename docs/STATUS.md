@@ -37,14 +37,13 @@ Full document: [memory/project_compositor_roadmap.md](../.claude/projects/-Users
 
 | M | Goal | Time | Status |
 |---|---|---|---|
-| **M0** | Scene data spec + `compile.js / serialize.js / spec.js` + autoscope-scenes refactor | 3–5 days | ✅ Day 1 SPEC.md (`0109ab0`) · Day 2-3 spec/expr/compile/serialize + smoke 38/0 (`6d3c072`) · Day 4 scenedata-demo + 3 samples (`c8183f8` → `d394557`) · Day 5 autoscope-primitives/scenes rewritten as SceneData emitters + A/B toggle in autoscope-clone (`fdd861c` → `16fb10a`) · post-Day-5 visual debug round (camera anim, ground union, plane normal direction, shadow reach, shadow mode bias, sky cross-palette) (`60c8eca` → `4478025`) |
-| **M1** | Compositor v0 (4-tab UI + renderer pool, `text` + `generator` tabs) | 5–7 days | 🟡 starting Day 1 |
-| **M2** | Generator framework (`src/generator/`, autoscope as instance, +1–2 templates) | 5–7 days | ⏳ pending M0 |
-| **M3** | 2D editor script-only (Mini-DSL parser + Monaco + live preview + SceneData round-trip) | 2 weeks | ⏳ pending M0 |
-| **M3.5** | 2D editor graph view + AST↔graph dual-sync | 2–3 weeks | ⏳ pending M3 |
-| **M4** | 3D viewport editor (three.js + gizmo + 3D primitive panel + SceneData output) | 3–4 weeks | ⏳ pending M0 |
-| **M5** | LLM emits SceneData JSON (SKILL.md rewrite, source.prompt preserved for iterative edit) | 1–2 weeks | ⏳ pending M0, M1 |
-| **M6** | LLM emits Generator function (`(hash) => SceneData`, autoscope-style generative from prompt) | 1–2 weeks | ⏳ pending M2, M5 |
+| **M0** | SceneData spec + `compile.js / serialize.js / spec.js` + autoscope refactor | 3–5 days | ✅ shipped `0109ab0` → `4478025` (see commits below) |
+| **M1** | Compositor v0 (4-tab UI: text + generator + 2d-edit stub + 3d-edit stub) | 5–7 days | ✅ Day 1-3 shipped (`020cd88` → `01ecc79`); text-tab + generator-tab functional, edit-tabs deferred per Saturday's revised plan |
+| **M2** | LLM 2D→3D lift (`✨ Lift to 3D` button + SceneData output + BOB GPU + Fly camera) | 1–2 weeks | ✅ **shipped 2026-05-18** — China carrier prompt validates pipeline end-to-end. 9/10 thesis points evidence-backed. See `project_v1_thesis_validation_2d_to_3d_lift.md` |
+| **M3** | Generator framework + LLM-lifted scenes promoted to Generator instances (PRNG variants on lifted 3D scenes) | 1–2 weeks | ⏳ pending — validates thesis point #10 (zero-marginal-cost variants) |
+| **M4** | V1 polish — demo gallery, hero replacement, atlas.studio domain, brand surface | 1 week | ⏳ pending |
+| _deferred_ | Full 2D editor (Mini-DSL parser + Monaco + node graph dual-view) | 4–5 weeks | deferred per Saturday's revised plan — text-tab serves as 2D editor for v1; visual editor revisited if non-coder feedback demands |
+| _deferred_ | Full 3D viewport editor (three.js + transform gizmo + 3D primitive panel) | 3–4 weeks | deferred — Fly explorer + BOB GPU covers v1 "exploration" need; manual 3D composition revisited if user demands |
 
 ---
 
@@ -90,12 +89,19 @@ Full document: [memory/project_name_atlas.md](../.claude/projects/-Users-hexiaoy
 | `9b5dab1` | README: 10 architectural advantages vs diffusion |
 | `fdd861c` → `16fb10a` | M0 Day 5: autoscope-primitives + autoscope-scenes rewritten as SceneData emitters with A/B toggle in autoscope-clone |
 | `60c8eca` → `4478025` | Post-Day-5 visual debug round: camera animation hookup, ground union, plane normal direction fix, shadow raymarch reach (`dcbb02f`), shadow mode bias (`928f37b`), sky cross-palette pairing (`4478025`) |
+| `1aa0bf2` | License switch from MIT to PolyForm Noncommercial 1.0.0 + NOTICE.md + COMMERCIAL.md |
+| `020cd88` → `01ecc79` | M1 Day 1-3: Compositor shell + text-tab functional (prompt → LLM → 2D code → silhouette) + generator-tab absorbs autoscope (canvas swap, hash, BOB GPU) + M2 lift system prompt drafted (`system-prompt-lift-3d.md`) |
+| `e13e83b` → `bbf95a9` | M2: ✨ Lift to 3D button + LLM call + SceneData parse + BOB GPU + Fly camera. Lenient spec patches for LLM partial outputs (SOURCE_FORMATS `llm-lift` + unknown format → warning; AnimationChannel missing expr/value → warning + skip). **End-to-end validated on China carrier prompt 2026-05-18.** |
 
 ---
 
 ## What unblocks next
 
-**M0 ✅ closed** as of `4478025`. Validation gate met: SceneData spec produces renderable scenes via three independent paths (smoke test 38/0, scenedata-demo 3 hand-crafted samples, autoscope-scenes A/B toggle). All 6 v1 spec extensions exercised. All 6 autoscope generators round-trip through compile() with no spec gaps detected. Post-Day-5 visual debug round closed sharp edges: camera animation in SceneData mode, ground SDF union, plane normal direction (sdf-js convention gotcha), shadow raymarch reach (24→80 iter), shadow mode distribution bias toward neutral, cross-palette sky pair selection.
+**M0 + M1 + M2 ✅ closed** as of `bbf95a9`. V1 thesis path validated end-to-end on 2026-05-18 with the China aircraft carrier prompt.
+
+**M2 critical milestone (2026-05-18)**: LLM read 2D SDF code + original prompt, output SceneData v1 JSON describing a 3D scene (subjects + camera + light + shadow), compile()-rendered via BOB GPU 2-pass shader with Fly camera exploration. **The thesis path locked Saturday is now technically real, not hypothetical** — 9/10 thesis points are evidence-backed (only #10 zero-marginal-cost-variant pending M3 Generator framework validation). See `project_v1_thesis_validation_2d_to_3d_lift.md` for full record.
+
+**M0 + M1 details**: SceneData spec validation gate met (smoke test 38/0 + scenedata-demo + autoscope A/B toggle). Compositor v0 ships 4-tab UI; text-tab (LLM prompt → 2D SDF) and generator-tab (autoscope hash → 3D scene) functional. Post-implementation visual debug round closed sharp edges: ground SDF union, plane normal convention, shadow raymarch reach, shadow mode bias, cross-palette sky, animation channel lenient validation.
 
 ### M0 lessons (15 lessons / 5 themes)
 
