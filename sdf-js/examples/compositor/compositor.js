@@ -15,6 +15,11 @@
 // =============================================================================
 
 import * as renderModule from '../../src/render/index.js';
+import { generateSceneData, randomSceneTypeData, SCENE_NAMES_DATA } from '../sdf/autoscope-scenes-data.js';
+import { compile as compileSceneData } from '../../src/scene/index.js';
+import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
+import { createBobShaderRenderer } from '../../src/render/bobShader.js';
+import { union as sdfUnion } from '../../src/sdf/dn.js';
 
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
@@ -27,11 +32,15 @@ const state = {
   activeTab: 'text',
   activeRenderer: 'silhouette',
   activePattern: 'none',
-  scene: null,                         // SceneData v1 — set by tabs that emit it
+  scene: null,                         // SceneData v1 — set by tabs that emit it (generator-tab)
   layers: null,                        // [{ sdf, color }, ...] — set by text-tab (legacy MVP-style)
   lastRenderOpts: null,                // remember view/etc. for re-render on pill switch
   history: [],                         // [{ id, prompt, code, usage, timestamp }, ...] most-recent-first
   selectedHistoryId: null,
+  // generator-tab state
+  genHash: null,                       // current hash hex string
+  genSceneTypeChoice: 'random',        // 'random' | '0'..'5'
+  bobRenderer: null,                   // lazy createBobShaderRenderer instance
 };
 
 // =============================================================================
@@ -290,12 +299,53 @@ const TAB_CONTENT = {
   `,
 
   'generator': () => `
-    <h2>Generator → SDF</h2>
-    <p>Pick a generator template + hash → SceneData → render. Same hash always produces the same scene (URL-shareable, no token cost for variants).</p>
-    <div class="placeholder">
-      <b>M1 Day 3 coming:</b> absorb autoscope-clone hash flow into this tab. M2 will generalize to a Generator framework.
+    <h2>Generator → SceneData</h2>
+    <p>Pick a generator template + hash → SceneData v1 → BOB GPU render. Same hash always produces the same scene (URL-shareable, zero token cost for variants — thesis Point #10).</p>
+
+    <h3>Generator template</h3>
+    <select id="gen-template" disabled
+            style="width:100%; padding:6px 8px; background:#0d0d0d; color:#aaa;
+                   border:1px solid #3a3a3a; border-radius:3px; font-size:12px;">
+      <option value="autoscope">Autoscope (6 scene types, Erik Swahn idiom)</option>
+    </select>
+    <p style="font-size:10px; color:#666;">M3 will add more generator templates (creature lattice / plant garden / abstract pattern / ...) and allow promoting LLM-lifted 3D scenes into generators.</p>
+
+    <h3>Scene type (within Autoscope)</h3>
+    <select id="gen-scene-type"
+            style="width:100%; padding:6px 8px; background:#0d0d0d; color:#aaa;
+                   border:1px solid #3a3a3a; border-radius:3px; font-size:12px;">
+      <option value="random">Random (weighted)</option>
+      <option value="0">0 · City</option>
+      <option value="1">1 · Sea</option>
+      <option value="2">2 · Forest</option>
+      <option value="3">3 · Village</option>
+      <option value="4">4 · City axis</option>
+      <option value="5">5 · Abstract</option>
+    </select>
+
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <button id="btn-gen-new" class="primary-btn" style="
+        flex:1; padding:8px 12px; background:#ffd070; color:#1a1a1a;
+        border:none; border-radius:3px; cursor:pointer;
+        font-size:13px; font-weight:600;">🎲 New scene</button>
+      <button id="btn-gen-share" class="icon-btn">📋 Share</button>
+      <button id="btn-gen-shuffle" class="icon-btn">🎨 Shuffle palette</button>
     </div>
-    <p>Until Day 3 ships, use the standalone <a href="../sdf/autoscope-clone.html" style="color: #ffd070;">autoscope-clone page</a>.</p>
+
+    <h3>Hash</h3>
+    <input id="gen-hash-input" type="text" placeholder="0x..." spellcheck="false"
+           style="width:100%; padding:6px 8px; background:#0d0d0d; color:#aaa;
+                  border:1px solid #3a3a3a; border-radius:3px;
+                  font-family:ui-monospace, monospace; font-size:10px;">
+    <p style="font-size:10px; color:#666;">Edit hash + ↵ to load specific scene. Hash uniquely determines the scene composition.</p>
+
+    <h3>Scene info</h3>
+    <div id="gen-info" style="font-family:ui-monospace, monospace; font-size:11px;
+                              color:#888; padding:8px 10px; background:#0d0d0d;
+                              border:1px solid #2a2a2a; border-radius:3px;
+                              line-height:1.6;">
+      (no scene yet — click 🎲 New scene)
+    </div>
   `,
 
   '2d-edit': () => `
@@ -321,8 +371,19 @@ function renderActiveTab() {
   $('tab-content').innerHTML = TAB_CONTENT[state.activeTab]();
   $('tab-content').dataset.activeTab = state.activeTab;
 
+  // Canvas swap: text-tab uses #c (canvas2D), generator-tab uses #c-gpu (WebGL)
+  if (state.activeTab === 'generator') {
+    $('c').style.display = 'none';
+    $('c-gpu').style.display = 'block';
+  } else {
+    $('c').style.display = 'block';
+    $('c-gpu').style.display = 'none';
+  }
+
   if (state.activeTab === 'text') {
     wireTextTab();
+  } else if (state.activeTab === 'generator') {
+    wireGeneratorTab();
   }
 }
 
@@ -400,6 +461,201 @@ function wireTextTab() {
   $('btn-clear-history').addEventListener('click', clearHistory);
 
   renderHistoryList();
+}
+
+// =============================================================================
+// generator-tab wire-up
+// =============================================================================
+
+function ensureBobRenderer() {
+  if (state.bobRenderer) return state.bobRenderer;
+  const canvas = $('c-gpu');
+  state.bobRenderer = createBobShaderRenderer({
+    canvas,
+    twoPass: true,
+    bufferResolution: 320,
+    getControls: () => {
+      const t = (performance.now() - genStartTime) / 1000;
+      if (!state.scene) return defaultBobControls();
+      const c = state.scene;
+      const cam = c.evalCamera ? c.evalCamera(t) : c.cameraStatic;
+      const light = c.evalLight ? c.evalLight(t) : c.lightStatic;
+      const shadow = c.evalShadow ? c.evalShadow(t) : c.shadowStatic;
+      return {
+        lightAzim: light.azimuth,
+        lightAlt:  light.altitude,
+        lightDist: light.distance,
+        fov:       cam.focal || 1.5,
+        coldiv: 1.1, coloration: 0,
+        shadowMode:    shadowModeNameToInt(shadow?.mode ?? 'channelSwap'),
+        shadowStrength: shadow?.strength ?? 0.35,
+        shadowsOn:     shadow?.enabled !== false,
+        groundOn:      false,                  // ground union'd into SDF tree instead
+        noiseSpeed:    0.00016,
+        exposure:      1.05, saturation: 1.0, worldScale: 0.5,
+        postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
+        mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+      };
+    },
+    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+  });
+  return state.bobRenderer;
+}
+
+function defaultBobControls() {
+  return {
+    lightAzim: 0.5, lightAlt: 0.7, lightDist: 30, fov: 1.5,
+    coldiv: 1.1, coloration: 0, shadowMode: 0, shadowStrength: 0.35,
+    shadowsOn: true, groundOn: false, noiseSpeed: 0.00016,
+    exposure: 1.05, saturation: 1.0, worldScale: 0.5,
+    postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
+    mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+  };
+}
+
+function shadowModeNameToInt(mode) {
+  return { channelSwap: 0, hueRotate180: 1, hueRotate90: 2, darken: 3 }[mode] ?? 0;
+}
+
+function sphericalToCamState(cam) {
+  return {
+    position: [
+      cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
+      cam.targetY + cam.distance * Math.sin(cam.pitch),
+      cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
+    ],
+    yaw: cam.yaw,
+    pitch: cam.pitch,
+  };
+}
+
+let genStartTime = performance.now();
+let genUserTookCam = false;
+
+function generatorCameraLoop() {
+  if (state.activeTab === 'generator' && state.bobRenderer && state.scene && !genUserTookCam) {
+    const t = (performance.now() - genStartTime) / 1000;
+    const cam = state.scene.evalCamera(t);
+    state.bobRenderer.setCamState(sphericalToCamState(cam));
+  }
+  requestAnimationFrame(generatorCameraLoop);
+}
+generatorCameraLoop();
+
+function generateGeneratorScene({ keepCamera = false } = {}) {
+  if (!state.genHash || !isValidHash(state.genHash)) {
+    state.genHash = generateHash();
+  }
+  writeHashToURL(state.genHash);
+  $('gen-hash-input').value = state.genHash;
+
+  const rng = new Random(state.genHash);
+  const choice = state.genSceneTypeChoice;
+  const sceneType = choice === 'random' ? randomSceneTypeData(rng) : (+choice);
+
+  const sceneData = generateSceneData(sceneType, rng);
+  let compiled;
+  try {
+    compiled = compileSceneData(sceneData);
+  } catch (e) {
+    setStatus(`✗ compile error: ${e.message}`, true);
+    console.error(e);
+    return;
+  }
+
+  // Union ground into the SDF tree (compile returns it separately)
+  let renderSdf;
+  if (compiled.groundSdf && compiled.sdf) {
+    renderSdf = sdfUnion(compiled.sdf, compiled.groundSdf);
+  } else {
+    renderSdf = compiled.sdf || compiled.groundSdf;
+  }
+
+  if (!renderSdf) {
+    setStatus('✗ empty scene', true);
+    return;
+  }
+
+  state.scene = compiled;
+  genStartTime = performance.now();
+  genUserTookCam = false;
+
+  const bob = ensureBobRenderer();
+  if (!keepCamera) bob.setCamState(sphericalToCamState(compiled.cameraStatic));
+
+  try {
+    const { bytes } = bob.render(renderSdf);
+    const camAnim = sceneData.defaults.camera.animation?.length || 0;
+    const lightAnim = sceneData.defaults.light.animation?.length || 0;
+    $('gen-info').innerHTML = `
+      scene: <b style="color:#ffd070;">${SCENE_NAMES_DATA[sceneType]}</b><br>
+      subjects: ${compiled.subjects.length}<br>
+      shadow: ${compiled.shadowStatic?.mode ?? 'off'} · strength ${compiled.shadowStatic?.strength?.toFixed(2) ?? '-'}<br>
+      ground: ${compiled.ground ? `y=${compiled.ground.y}` : 'none'}<br>
+      anims: cam=${camAnim} light=${lightAnim}<br>
+      shader: ${(bytes / 1024).toFixed(1)} KB GLSL
+    `;
+    $('scene-info').textContent = `${SCENE_NAMES_DATA[sceneType]} · hash ${state.genHash.slice(0, 8)}…`;
+    setStatus(`✓ rendered: ${SCENE_NAMES_DATA[sceneType]}`);
+  } catch (e) {
+    setStatus(`✗ render error: ${e.message}`, true);
+    console.error(e);
+  }
+}
+
+function wireGeneratorTab() {
+  // Init hash from URL or generate fresh
+  if (!state.genHash) {
+    const urlHash = readHashFromURL();
+    state.genHash = (urlHash && isValidHash(urlHash)) ? urlHash : generateHash();
+  }
+  $('gen-hash-input').value = state.genHash;
+  $('gen-scene-type').value = state.genSceneTypeChoice;
+
+  $('btn-gen-new').addEventListener('click', () => {
+    state.genHash = generateHash();
+    generateGeneratorScene();
+  });
+
+  $('btn-gen-share').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setStatus(`✓ URL copied (hash ${state.genHash.slice(0, 10)}…)`);
+    } catch {
+      prompt('Copy URL:', window.location.href);
+    }
+  });
+
+  $('btn-gen-shuffle').addEventListener('click', () => {
+    if (state.bobRenderer) {
+      state.bobRenderer.shufflePalette();
+      setStatus('🎨 palette shuffled');
+    }
+  });
+
+  $('gen-scene-type').addEventListener('change', (e) => {
+    state.genSceneTypeChoice = e.target.value;
+    generateGeneratorScene({ keepCamera: true });
+  });
+
+  $('gen-hash-input').addEventListener('change', (e) => {
+    const v = e.target.value.trim();
+    if (isValidHash(v)) {
+      state.genHash = v;
+      generateGeneratorScene();
+    } else {
+      setStatus('✗ invalid hash (need 0x + 64 hex)', true);
+      e.target.value = state.genHash;
+    }
+  });
+
+  // User click canvas → take camera control (yields scene anim until next scene)
+  $('c-gpu').addEventListener('pointerdown', () => { genUserTookCam = true; });
+
+  // Initial render if no scene yet
+  if (!state.scene) {
+    generateGeneratorScene();
+  }
 }
 
 // =============================================================================

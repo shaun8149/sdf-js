@@ -208,9 +208,11 @@
 
       <div id="render-area">
         <div id="canvas-wrap">
-          <!-- Canvas id="c" matches MVP's system-prompt convention so LLM-emitted
-               `document.getElementById('c')` resolves correctly. -->
+          <!-- Two canvases: #c (canvas2D) for text-tab silhouette/stipple/hatch/lambert,
+               #c-gpu (WebGL) for generator-tab BOB GPU shader. Only one visible at a time
+               based on active tab. -->
           <canvas id="c" width="900" height="900"></canvas>
+          <canvas id="c-gpu" width="900" height="900" style="display:none;"></canvas>
         </div>
         <div id="render-controls">
           <span class="ctrl-label">Renderer</span>
