@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "description": "Atlas demo gallery — 8 pre-lifted 3D scenes. Each demo proves a specific point in the vs-diffusion / vs-neural-world-model thesis. Demos with status='ready' have a paired .json file with code2d + sceneData. Demos with status='pending' show only the prompt — clicking autofills it for the user to run themselves.\n\nPROMPT-WRITING LESSON (learned 2026-05-18 the hard way): keep prompts SHORT. The LLM has cultural / visual priors (e.g. '中国航母' → 辽宁/福建号 with starboard island, 3/4 angle). Heavy 'prompt engineering' with explicit angle / parts list overrides those priors and produces worse compositions. Trust the model.",
+  "demos": [
+    {
+      "id": "china-carrier",
+      "title": "中国航空母舰",
+      "thesisPoint": "#1 precision · regression test",
+      "category": "diorama",
+      "status": "pending",
+      "file": "china-carrier.json",
+      "prompt": "一艘中国的航空母舰"
+    },
+    {
+      "id": "gothic-cathedral",
+      "title": "哥特式大教堂",
+      "thesisPoint": "#1 structural precision",
+      "category": "diorama",
+      "status": "pending",
+      "file": "gothic-cathedral.json",
+      "prompt": "一座哥特式大教堂"
+    },
+    {
+      "id": "spiral-vase",
+      "title": "花瓶",
+      "thesisPoint": "P1 milestone · revolution lift",
+      "category": "revolution",
+      "status": "pending",
+      "file": "spiral-vase.json",
+      "prompt": "一只花瓶"
+    },
+    {
+      "id": "mountain-village",
+      "title": "山间村落",
+      "thesisPoint": "#9 multi-axis variants",
+      "category": "diorama-topdown",
+      "status": "pending",
+      "file": "mountain-village.json",
+      "prompt": "山间村落"
+    },
+    {
+      "id": "clock-915",
+      "title": "9:15 的钟",
+      "thesisPoint": "#1 precision · diffusion big-gun",
+      "category": "model",
+      "status": "pending",
+      "file": "clock-915.json",
+      "prompt": "一个挂钟，指针指向 9:15"
+    },
+    {
+      "id": "vintage-bicycle",
+      "title": "复古自行车",
+      "thesisPoint": "#1 precision-content",
+      "category": "model",
+      "status": "pending",
+      "file": "vintage-bicycle.json",
+      "prompt": "一辆复古自行车"
+    },
+    {
+      "id": "dining-setting",
+      "title": "餐桌摆设",
+      "thesisPoint": "#2 semantic combinatorics",
+      "category": "diorama",
+      "status": "pending",
+      "file": "dining-setting.json",
+      "prompt": "餐桌上摆着一个盘子、刀叉和酒杯"
+    },
+    {
+      "id": "coastal-lighthouse",
+      "title": "海岸灯塔",
+      "thesisPoint": "#4 prompt simplicity · waves",
+      "category": "diorama",
+      "status": "pending",
+      "file": "coastal-lighthouse.json",
+      "prompt": "海边的灯塔"
+    }
+  ]
+}

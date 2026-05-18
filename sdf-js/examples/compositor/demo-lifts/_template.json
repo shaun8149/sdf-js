@@ -1,0 +1,22 @@
+{
+  "_comment": "Reference schema for a demo file. Real demos drop the leading underscore. Each demo bundles the original prompt, the 2D SDF code, and the lifted 3D SceneData — together they let a visitor see (a) what they typed, (b) what 2D code came out, (c) the 3D world that lifted from it. Gallery loads sceneData directly without API key.",
+  "id": "example-slug",
+  "title": "Example Title",
+  "prompt": "The original user prompt that was typed into the text-tab.",
+  "code2d": "// The full JavaScript SDF code emitted by the 2D-generation LLM pass. Keep newlines intact; Compositor textarea handles wrapping.\nexport const render = (ctx) => {\n  // ...\n};",
+  "sceneData": {
+    "version": "1.0",
+    "name": "Example",
+    "source": { "format": "llm-lift", "prompt": "...", "from2dCode": true },
+    "subjects": [],
+    "ground": null,
+    "defaults": {}
+  },
+  "meta": {
+    "generatedAt": "2026-05-18",
+    "model": "claude-sonnet-4-6",
+    "tokenUsage2D": { "input_tokens": 0, "output_tokens": 0 },
+    "tokenUsageLift": { "input_tokens": 0, "output_tokens": 0 },
+    "costUSD": 0.20
+  }
+}

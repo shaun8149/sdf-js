@@ -40,6 +40,137 @@
       background: #3a3a3a; color: #888; font-size: 9px; padding: 1px 5px;
       border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
     }
+    /* ============ Scenes tab: full-width gallery layout ============ */
+    body.scenes-mode #main { grid-template-columns: 1fr; }
+    body.scenes-mode #render-area { display: none; }
+    body.scenes-mode #code-screen { display: none; }
+    body.scenes-mode #tab-content {
+      padding: 32px 48px; background: #0d0d0d; border-right: none;
+      overflow-y: auto; max-height: calc(100vh - 44px - 28px);
+    }
+    body.scenes-mode #tab-content > * { max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+    .scenes-hero {
+      text-align: center; padding: 8px 0 28px;
+      border-bottom: 1px solid #2a2a2a; margin-bottom: 28px;
+    }
+    .scenes-hero h1 {
+      margin: 0 0 6px; color: #ffd070; font-size: 28px;
+      font-weight: 700; letter-spacing: -0.01em;
+    }
+    .scenes-hero p {
+      margin: 0; color: #aaa; font-size: 14px; line-height: 1.5;
+    }
+    .scenes-hero p .cta {
+      color: #ffd070; cursor: pointer; text-decoration: underline;
+    }
+
+    .scenes-section { margin-bottom: 36px; }
+    .scenes-section-title {
+      color: #ddd; font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin: 0 0 14px; padding-bottom: 6px;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .scenes-section-title .count {
+      background: #2a2a2a; color: #aaa; font-weight: 400;
+      padding: 2px 8px; border-radius: 10px; font-size: 11px;
+    }
+
+    .scenes-grid-big {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    }
+    @media (max-width: 1100px) {
+      .scenes-grid-big { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .scenes-grid-big { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .scene-card-big {
+      position: relative; aspect-ratio: 1 / 1;
+      background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+      border: 1px solid #2a2a2a; border-radius: 6px;
+      cursor: pointer; transition: all 0.15s;
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .scene-card-big:hover {
+      border-color: #ffd070; transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 208, 112, 0.15);
+    }
+    .scene-card-big.active { border-color: #ffd070; }
+    .scene-card-big.saved { border-color: #2a3a2a; }
+    .scene-card-big.saved:hover { border-color: #7fa97f; }
+    .scene-card-big .scene-emoji {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 48px; opacity: 0.6;
+    }
+    .scene-card-big .scene-footer {
+      padding: 12px 14px; background: rgba(0,0,0,0.4);
+      border-top: 1px solid #2a2a2a;
+    }
+    .scene-card-big .scene-title {
+      color: #fff; font-size: 14px; font-weight: 600;
+      margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .scene-card-big .scene-sub {
+      color: #888; font-size: 11px; font-family: ui-monospace, monospace;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .scene-card-big.pending .scene-emoji::after {
+      content: ' ✎'; font-size: 24px; color: #ffd070;
+      position: absolute; top: 10px; right: 12px;
+    }
+    .scene-card-big.ready .scene-emoji::after,
+    .scene-card-big.saved .scene-emoji::after {
+      content: ' ▶'; font-size: 18px; color: #afd9af;
+      position: absolute; top: 10px; right: 12px;
+    }
+    .scene-card-big .scene-actions {
+      position: absolute; bottom: 12px; right: 12px;
+      display: flex; gap: 4px; opacity: 0; transition: opacity 0.1s;
+    }
+    .scene-card-big:hover .scene-actions { opacity: 1; }
+    .scene-card-big .scene-act-btn {
+      background: rgba(0,0,0,0.6); border: 1px solid #3a3a3a; color: #ddd;
+      width: 28px; height: 28px; border-radius: 3px; cursor: pointer;
+      font-size: 13px; display: flex; align-items: center; justify-content: center;
+    }
+    .scene-card-big .scene-act-btn:hover { background: #ffd070; color: #1a1a1a; border-color: #ffd070; }
+
+    .scenes-empty {
+      padding: 30px; text-align: center; color: #666; font-style: italic;
+      font-size: 13px; line-height: 1.6;
+      background: #0d0d0d; border: 1px dashed #2a2a2a; border-radius: 4px;
+    }
+
+    #shared-banner {
+      position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+      background: #1f1f1a; border: 1px solid #ffd070; border-radius: 4px;
+      padding: 10px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      z-index: 999; font-size: 12px; color: #ddd;
+      display: none; align-items: center; gap: 14px;
+    }
+    #shared-banner.open { display: flex; }
+    #shared-banner b { color: #ffd070; font-weight: 600; }
+    #shared-banner button {
+      padding: 5px 12px; background: #ffd070; color: #1a1a1a;
+      border: none; border-radius: 3px; cursor: pointer;
+      font-size: 11px; font-weight: 600; font-family: inherit;
+    }
+    #shared-banner button.dismiss {
+      background: #2a2a2a; color: #888;
+    }
+
+    /* ============ Renderer pills in topbar (right side) ============ */
+    #render-controls {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 14px; border-left: 1px solid #2a2a2a;
+    }
+    body.scenes-mode #render-controls { display: none; }
 
     /* ============ Main area (split) — first screen ============ */
     #main {
@@ -63,10 +194,11 @@
       border-radius: 4px; color: #666; font-size: 12px; line-height: 1.6;
     }
 
-    /* Render area (right) */
-    #render-area { display: grid; grid-template-rows: 1fr 56px; min-height: 0; min-width: 0; }
+    /* Render area (right) — single row, canvas fills 100% */
+    #render-area { display: block; min-height: 0; min-width: 0; }
     #canvas-wrap {
       position: relative; background: #000;
+      width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
       min-height: 0; min-width: 0;
     }
@@ -76,14 +208,9 @@
       width: auto; height: auto;
     }
 
-    #render-controls {
-      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
-      background: #1a1a1a; border-top: 1px solid #2a2a2a;
-      overflow-x: auto;
-    }
     .pill-group { display: flex; gap: 0; align-items: stretch; }
     .pill {
-      padding: 5px 12px; background: #2a2a2a; color: #aaa;
+      padding: 4px 11px; background: #2a2a2a; color: #aaa;
       border: 1px solid #3a3a3a; cursor: pointer; font-size: 11px; font-family: inherit;
       transition: background 0.1s;
     }
@@ -92,7 +219,6 @@
     .pill:not(:first-child) { border-left: none; }
     .pill:hover { background: #3a3a3a; color: #ddd; }
     .pill.active { background: #ffd070; color: #1a1a1a; border-color: #ffd070; }
-    .ctrl-label { color: #666; font-size: 11px; margin: 0 4px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* ============ Second screen: code panel ============ */
     #code-screen {
@@ -118,7 +244,25 @@
       font-size: 11px; font-family: inherit;
     }
     .icon-btn:hover { background: #3a3a3a; color: #ddd; }
-    #code-display {
+    #code-panes {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      flex: 1; min-height: 60vh;
+    }
+    .code-pane {
+      display: flex; flex-direction: column; gap: 6px; min-width: 0;
+    }
+    .code-pane-header {
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    .code-pane-label {
+      color: #ffd070; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .code-pane-meta {
+      color: #666; font-family: ui-monospace, monospace; font-size: 10px;
+    }
+    .code-pane-header .right { margin-left: auto; display: flex; gap: 6px; }
+    .code-pane textarea {
       flex: 1; min-height: 60vh; width: 100%;
       padding: 14px 16px; background: #07070a; color: #d0d0d0;
       border: 1px solid #2a2a2a; border-radius: 3px;
@@ -127,11 +271,89 @@
       tab-size: 2;
       box-sizing: border-box; outline: none;
     }
-    #code-display:focus {
+    .code-pane textarea:focus {
       border-color: #ffd070;
       box-shadow: inset 0 0 0 1px #ffd07033;
     }
-    #code-display::placeholder { color: #555; font-style: italic; }
+    .code-pane textarea::placeholder { color: #555; font-style: italic; }
+
+    /* ============ Canvas overlay buttons (top-right) ============ */
+    .canvas-overlay-btn {
+      position: absolute; z-index: 10;
+      padding: 6px 10px; background: rgba(26, 26, 26, 0.78);
+      color: #ddd; border: 1px solid #3a3a3a; border-radius: 3px;
+      cursor: pointer; font-size: 12px; font-family: inherit;
+      display: none;  /* shown only when a GPU renderer is active */
+    }
+    .canvas-overlay-btn:hover { background: rgba(58, 58, 58, 0.9); color: #ffd070; }
+    #btn-fullscreen      { top: 12px; right: 12px; }
+    #btn-shuffle-palette { top: 12px; right: 138px; }
+    #canvas-wrap:fullscreen,
+    #canvas-wrap:-webkit-full-screen {
+      background: #000; padding: 0;
+    }
+    #canvas-wrap:fullscreen canvas,
+    #canvas-wrap:-webkit-full-screen canvas {
+      max-width: 100vw; max-height: 100vh;
+    }
+
+    /* ============ Scenes browser (bundled + saved) ============ */
+    #demo-gallery {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .scenes-subsection {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .scenes-subheader {
+      color: #888; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      padding-bottom: 4px; border-bottom: 1px solid #2a2a2a;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .scenes-count {
+      background: #2a2a2a; color: #888; font-weight: 400;
+      padding: 1px 6px; border-radius: 8px; font-size: 9px;
+    }
+    .scenes-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    }
+    .demo-card {
+      position: relative;
+      padding: 8px 10px; background: #0d0d0d; border: 1px solid #2a2a2a;
+      border-radius: 3px; cursor: pointer; transition: all 0.1s;
+      display: flex; flex-direction: column; gap: 3px;
+      min-height: 56px; justify-content: space-between;
+    }
+    .demo-card:hover { border-color: #ffd070; background: #131312; }
+    .demo-card.active { border-color: #ffd070; background: #1f1a10; }
+    .demo-card .demo-title {
+      color: #ddd; font-size: 12px; font-weight: 500; line-height: 1.2;
+      padding-right: 28px; /* leave room for actions */
+    }
+    .demo-card .demo-thesis {
+      color: #888; font-size: 9px; font-family: ui-monospace, monospace;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .demo-card.pending .demo-title { color: #aaa; }
+    .demo-card.pending .demo-thesis::before { content: '✎ '; color: #ffd070; }
+    .demo-card.ready .demo-thesis::before { content: '▶ '; color: #afd9af; }
+    .demo-card.saved { border-color: #2a3a2a; }
+    .demo-card.saved:hover { border-color: #7fa97f; }
+    .demo-card.saved.active { border-color: #7fa97f; background: #14191a; }
+    .demo-card.saved .demo-thesis::before { content: '💾 '; }
+    .saved-actions {
+      position: absolute; top: 6px; right: 6px;
+      display: flex; gap: 2px;
+    }
+    .saved-act-btn {
+      background: none; border: none; color: #666;
+      cursor: pointer; font-size: 13px; line-height: 1;
+      padding: 2px 5px; border-radius: 2px;
+    }
+    .saved-act-btn:hover { color: #ffd070; background: rgba(255, 208, 112, 0.1); }
+    .demo-gallery-note {
+      font-size: 10px; color: #666; margin-top: 6px; line-height: 1.4;
+    }
 
     /* ============ History list ============ */
     #history-list {
@@ -183,7 +405,10 @@
     <div id="topbar">
       <div id="brand">Atlas <span class="sub">· Compositor v0</span></div>
       <div id="tabs">
-        <button class="tab active" data-tab="text">
+        <button class="tab active" data-tab="scenes">
+          <span class="icon">▤</span> Scenes
+        </button>
+        <button class="tab" data-tab="text">
           <span class="icon">✎</span> Text
         </button>
         <button class="tab" data-tab="generator">
@@ -198,6 +423,23 @@
           <span class="stub-badge">M4</span>
         </button>
       </div>
+      <!-- Renderer pills, right-aligned in topbar so the canvas below fills full height -->
+      <div id="render-controls">
+        <div class="pill-group" id="renderer-pills">
+          <button class="pill active" data-renderer="silhouette">Silhouette</button>
+          <button class="pill" data-renderer="stipple">Stipple</button>
+          <button class="pill" data-renderer="hatch">Lines</button>
+          <button class="pill" data-renderer="fly3d">FLY 3D</button>
+          <button class="pill" data-renderer="bob-gpu">BOB GPU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner: viewing a scene loaded from a #scene= URL -->
+    <div id="shared-banner">
+      <span>🔗 Viewing a <b>shared scene</b> from URL. Save to your library?</span>
+      <button id="btn-save-shared">✨ Save</button>
+      <button id="btn-dismiss-shared" class="dismiss">Dismiss</button>
     </div>
 
     <!-- Main area: tab content (left) + render canvas (right) -->
@@ -208,45 +450,52 @@
 
       <div id="render-area">
         <div id="canvas-wrap">
-          <!-- Two canvases: #c (canvas2D) for text-tab silhouette/stipple/hatch/lambert,
-               #c-gpu (WebGL) for generator-tab BOB GPU shader. Only one visible at a time
-               based on active tab. -->
+          <!-- Two canvases: #c (canvas2D) for text-tab silhouette/stipple/hatch,
+               #c-gpu (WebGL) for BOB GPU + FLY 3D shaders. Only one visible at a time. -->
           <canvas id="c" width="900" height="900"></canvas>
           <canvas id="c-gpu" width="900" height="900" style="display:none;"></canvas>
-        </div>
-        <div id="render-controls">
-          <span class="ctrl-label">Renderer</span>
-          <div class="pill-group" id="renderer-pills">
-            <button class="pill active" data-renderer="silhouette">Silhouette</button>
-            <button class="pill" data-renderer="stipple">Stipple</button>
-            <button class="pill" data-renderer="hatch">Lines</button>
-            <button class="pill" data-renderer="lambert">Lambert</button>
-            <button class="pill" data-renderer="bob-gpu">BOB GPU</button>
-          </div>
-          <span class="ctrl-label">Pattern</span>
-          <div class="pill-group" id="pattern-pills">
-            <button class="pill active" data-pattern="none">None</button>
-            <button class="pill" data-pattern="truchet">Truchet</button>
-            <button class="pill" data-pattern="gosper">Gosper</button>
-            <button class="pill" data-pattern="motifs">Motifs</button>
-          </div>
+          <button id="btn-shuffle-palette" class="canvas-overlay-btn" title="Shuffle BOB GPU palette (S)">🎨 Shuffle <span style="opacity:0.6;">S</span></button>
+          <button id="btn-fullscreen" class="canvas-overlay-btn" title="Toggle fullscreen (press F)">⛶ Fullscreen <span style="opacity:0.6;">F</span></button>
         </div>
       </div>
     </div>
 
-    <!-- Second screen: full-width code panel -->
+    <!-- Second screen: full-width code panel, split 2D / 3D -->
     <div id="code-screen">
       <div id="code-header">
         <h2>Generated code</h2>
         <span class="selected-prompt" id="selected-prompt"></span>
         <span class="code-meta" id="code-meta"></span>
-        <div class="right">
-          <button class="icon-btn" id="btn-copy-code" title="Copy code to clipboard">⎘ Copy</button>
-          <button class="icon-btn" id="btn-rerender" title="Execute the current code (Ctrl/Cmd+Enter)">↻ Re-run <span style="opacity:0.6;">⌘↵</span></button>
+      </div>
+      <div id="code-panes">
+        <!-- Left: 2D SDF JS code -->
+        <div class="code-pane">
+          <div class="code-pane-header">
+            <span class="code-pane-label">2D SDF · JavaScript</span>
+            <span class="code-pane-meta" id="code-2d-meta"></span>
+            <div class="right">
+              <button class="icon-btn" id="btn-copy-code" title="Copy 2D code">⎘ Copy</button>
+              <button class="icon-btn" id="btn-rerender" title="Re-execute the 2D code (⌘↵)">↻ Re-run <span style="opacity:0.6;">⌘↵</span></button>
+            </div>
+          </div>
+          <textarea id="code-display" spellcheck="false"
+                    placeholder="(no 2D code yet — Generate or pick a history item. Edit + ⌘↵ to re-execute.)"></textarea>
+        </div>
+
+        <!-- Right: 3D SceneData JSON -->
+        <div class="code-pane">
+          <div class="code-pane-header">
+            <span class="code-pane-label">3D Scene · SceneData v1 JSON</span>
+            <span class="code-pane-meta" id="code-3d-meta"></span>
+            <div class="right">
+              <button class="icon-btn" id="btn-copy-scene" title="Copy SceneData JSON">⎘ Copy</button>
+              <button class="icon-btn" id="btn-rerun-scene" title="Re-compile + render SceneData (⌘↵)">↻ Re-render <span style="opacity:0.6;">⌘↵</span></button>
+            </div>
+          </div>
+          <textarea id="scene-display" spellcheck="false"
+                    placeholder="(no 3D scene yet — Lift to 3D from a 2D code, or click a Demo Gallery card.)"></textarea>
         </div>
       </div>
-      <textarea id="code-display" spellcheck="false"
-                placeholder="(no code yet — generate or pick a history item. Edit + ⌘↵ to re-execute.)"></textarea>
     </div>
 
     <!-- Bottom status bar -->
