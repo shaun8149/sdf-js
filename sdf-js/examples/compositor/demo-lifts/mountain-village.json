@@ -5,1422 +5,1294 @@
   "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, line,\n  union, intersection, difference, dilate, erode, shell,\n  render,\n} from '../../src/index.js';\n\n// ── Palette ──────────────────────────────────────────────────────────────────\nconst SKY_TOP     = [138, 168, 195];\nconst SKY_BOTTOM  = [210, 200, 178];\nconst MIST        = [220, 215, 205];\nconst MTN_FAR     = [ 98, 115, 130];\nconst MTN_MID     = [120, 138, 115];\nconst MTN_NEAR    = [ 78,  98,  72];\nconst FIELD       = [168, 172,  98];\nconst GROUND      = [120, 118,  72];\nconst WALL_C      = [210, 195, 162];\nconst ROOF_C      = [ 88,  82,  68];\nconst ROOF_TILE   = [ 62,  58,  48];\nconst CHIMNEY_C   = [160, 148, 125];\nconst TREE_DARK   = [ 55,  72,  48];\nconst TREE_MID    = [ 72,  98,  58];\nconst SHADOW_C    = [ 50,  52,  45];\nconst OUTLINE     = [ 32,  28,  22];\nconst MIST2       = [218, 214, 208];\nconst WATER_C     = [148, 170, 185];\nconst PATH_C      = [175, 162, 128];\n\n// ── Mountains (far, two layers) ───────────────────────────────────────────────\nconst mtnFarL = polygon([\n  [-1.3, 0.10], [-1.05, 0.52], [-0.78, 0.28], [-0.55, 0.62], [-0.28, 0.30],\n  [-0.05, 0.44], [ 0.20, 0.15], [-1.3, 0.15],\n]);\nconst mtnFarR = polygon([\n  [ 0.10, 0.12], [ 0.38, 0.58], [ 0.62, 0.32], [ 0.85, 0.65],\n  [ 1.10, 0.38], [ 1.30, 0.48], [ 1.30, 0.12],\n]);\nconst mtnsFar = union(mtnFarL, mtnFarR);\n\n// mist veil over far mountains\nconst mistVeil = intersection(\n  rectangle([2.6, 0.08], [0, 0.24]),\n  union(mtnFarL, mtnFarR),\n);\n\n// ── Mountains (nearer, greenish slopes) ───────────────────────────────────────\nconst mtnMidL = polygon([\n  [-1.30, -0.10], [-1.10, 0.28], [-0.82, 0.05], [-0.60, 0.40],\n  [-0.35, 0.12], [-0.12, 0.32], [ 0.08, 0.05], [-1.30, 0.05],\n]);\nconst mtnMidR = polygon([\n  [ 0.05, 0.05], [ 0.25, 0.40], [ 0.50, 0.18], [ 0.78, 0.50],\n  [ 1.05, 0.22], [ 1.30, 0.35], [ 1.30, 0.05],\n]);\nconst mtnsMid = union(mtnMidL, mtnMidR);\n\n// ── Near ridge / hillside ─────────────────────────────────────────────────────\nconst ridgeNear = polygon([\n  [-1.30, -0.28], [-0.95, 0.04], [-0.68, -0.10], [-0.40, 0.10],\n  [-0.10, -0.08], [ 0.18, 0.06], [ 0.48, -0.12], [ 0.75, 0.02],\n  [ 1.05, -0.15], [ 1.30, -0.05], [ 1.30, -0.35], [-1.30, -0.35],\n]);\n\n// ── Ground plane / terraced fields ───────────────────────────────────────────\nconst groundPlane = rectangle([2.6, 0.60], [0, -0.80]);\nconst fieldTerrace1 = intersection(\n  rectangle([2.6, 0.045], [0, -0.345]),\n  union(\n    rectangle([0.65, 0.045], [-0.55, -0.345]),\n    rectangle([0.50, 0.045], [ 0.45, -0.345]),\n  ),\n);\nconst fieldTerrace2 = intersection(\n  rectangle([2.6, 0.035], [0, -0.455]),\n  union(\n    rectangle([0.80, 0.035], [-0.30, -0.455]),\n    rectangle([0.35, 0.035], [ 0.80, -0.455]),\n  ),\n);\n\n// ── Small stream / pond ───────────────────────────────────────────────────────\nconst stream = ellipse(0.12, 0.03, [0.05, -0.48]);\nconst streamNarrow = segment([-0.28, -0.50], [0.00, -0.48], 0.012);\nconst water = union(stream, streamNarrow);\n\n// ── Path winding from near base up to village ─────────────────────────────────\nconst path = union(\n  segment([ 0.10, -0.85], [ 0.05, -0.55], 0.018),\n  segment([ 0.05, -0.55], [-0.08, -0.42], 0.014),\n  segment([-0.08, -0.42], [-0.18, -0.30], 0.012),\n);\n\n// ── Helper: simple alpine house ───────────────────────────────────────────────\nfunction house(cx, cy, w, h, roofH, roofOverhang = 0.01) {\n  const wall   = rectangle([w, h], [cx, cy + h / 2]);\n  const roofW  = w + roofOverhang * 2;\n  const roof   = triangle(\n    [cx - roofW / 2, cy + h],\n    [cx + roofW / 2, cy + h],\n    [cx, cy + h + roofH],\n  );\n  const chimneyW = w * 0.12;\n  const chimneyH = roofH * 0.55;\n  const chimney  = rectangle(\n    [chimneyW, chimneyH],\n    [cx + w * 0.22, cy + h + roofH * 0.72],\n  );\n  const doorW = w * 0.22;\n  const doorH = h * 0.38;\n  const door  = rounded_rectangle(\n    [doorW, doorH],\n    [cx - w * 0.15, cy + doorH / 2],\n    doorW * 0.45,\n  );\n  const winW  = w * 0.18;\n  const winH  = h * 0.22;\n  const winL  = rectangle([winW, winH], [cx - w * 0.28, cy + h * 0.60]);\n  const winR  = rectangle([winW, winH], [cx + w * 0.28, cy + h * 0.60]);\n  const body  = union(wall, roof, chimney);\n  const cutout = union(door, winL, winR);\n  return { body, cutout, roof, chimney, wall };\n}\n\n// ── Build village: cluster of 6 houses on the slope ──────────────────────────\nconst h1 = house(-0.62, -0.28, 0.18, 0.18, 0.10, 0.012);\nconst h2 = house(-0.38, -0.22, 0.16, 0.16, 0.09, 0.010);\nconst h3 = house(-0.14, -0.26, 0.20, 0.20, 0.11, 0.014);\nconst h4 = house( 0.16, -0.20, 0.15, 0.15, 0.08, 0.010);\nconst h5 = house( 0.40, -0.25, 0.17, 0.17, 0.10, 0.012);\nconst h6 = house(-0.50, -0.10, 0.13, 0.13, 0.08, 0.008); // upper cluster\n\nconst allWalls    = union(h1.wall, h2.wall, h3.wall, h4.wall, h5.wall, h6.wall);\nconst allRoofs    = union(h1.roof, h2.roof, h3.roof, h4.roof, h5.roof, h6.roof);\nconst allChimneys = union(h1.chimney, h2.chimney, h3.chimney, h4.chimney, h5.chimney, h6.chimney);\nconst allCutouts  = union(h1.cutout, h2.cutout, h3.cutout, h4.cutout, h5.cutout, h6.cutout);\n\nconst wallsFinal     = difference(allWalls, allCutouts);\nconst wallsOutline   = dilate(allWalls, 0.018);\nconst roofsOutline   = dilate(allRoofs, 0.014);\nconst roofRidge      = intersection(allRoofs, dilate(\n  union(\n    segment([-0.62, -0.10], [-0.62, -0.10 + 0.001], 0.002),\n    segment([-0.38, -0.06], [-0.38, -0.06 + 0.001], 0.002),\n  ), 0.002\n));\n\n// ── Trees: conifers on the slopes ────────────────────────────────────────────\nfunction conifer(cx, cy, r, layers = 3) {\n  let tree = circle(0.001, [cx, cy]);\n  for (let i = 0; i < layers; i++) {\n    const ly  = cy + (r * 0.35) * i;\n    const lr  = r * (1 - i * 0.22);\n    const tier = triangle(\n      [cx - lr, ly],\n      [cx + lr, ly],\n      [cx, ly + r * 0.75],\n    );\n    tree = union(tree, tier);\n  }\n  // trunk\n  tree = union(tree, segment([cx, cy - r * 0.35], [cx, cy], r * 0.07));\n  return tree;\n}\n\nconst treePositions = [\n  [-1.05, -0.22, 0.12], [-0.92, -0.18, 0.10], [-0.80, -0.20, 0.11],\n  [ 0.62, -0.22, 0.11], [ 0.75, -0.18, 0.13], [ 0.90, -0.24, 0.10],\n  [ 1.05, -0.16, 0.12], [-0.72, -0.25, 0.09], [ 1.18, -0.20, 0.10],\n  [-0.28, -0.08, 0.09], [ 0.28, -0.08, 0.10], // upper slope trees\n];\n\nconst conifers = union(...treePositions.map(([x, y, r]) => conifer(x, y, r, 3)));\nconst conifersOutline = dilate(conifers, 0.014);\n\n// ── Smoke wisps from chimneys ─────────────────────────────────────────────────\nconst smoke = union(\n  circle(0.018, [-0.62 + 0.22 * 0.22, -0.28 + 0.18 + 0.10 * 0.72 + 0.035]),\n  circle(0.014, [-0.14 + 0.20 * 0.22, -0.26 + 0.20 + 0.11 * 0.72 + 0.028]),\n  circle(0.012, [ 0.40 + 0.17 * 0.22, -0.25 + 0.17 + 0.10 * 0.72 + 0.022]),\n);\n\n// ── Mist layer drifting through the valley ────────────────────────────────────\nconst mistBand = intersection(\n  ellipse(0.90, 0.055, [-0.15, -0.18]),\n  rectangle([2.0, 0.11], [-0.15, -0.18]),\n);\nconst mistBand2 = intersection(\n  ellipse(0.70, 0.04, [0.30, -0.32]),\n  rectangle([1.4, 0.08], [0.30, -0.32]),\n);\n\n// ── Church / bell tower (central focal point) ─────────────────────────────────\nconst towerBase    = rectangle([0.095, 0.30], [-0.14, -0.12]);\nconst towerTop     = triangle(\n  [-0.14 - 0.065, -0.12 + 0.30],\n  [-0.14 + 0.065, -0.12 + 0.30],\n  [-0.14, -0.12 + 0.30 + 0.14],\n);\nconst towerWindow  = arc(0.025, Math.PI / 2, 0.006, [-0.14, -0.12 + 0.20]);\nconst towerBody    = union(towerBase, towerTop);\nconst towerOutline = dilate(towerBody, 0.020);\nconst crossV = segment([-0.14, -0.12 + 0.34], [-0.14, -0.12 + 0.30 + 0.14 - 0.005], 0.005);\nconst crossH = segment([-0.14 - 0.018, -0.12 + 0.36], [-0.14 + 0.018, -0.12 + 0.36], 0.005);\nconst towerCross = union(crossV, crossH);\n\n// ── Assemble layers ───────────────────────────────────────────────────────────\nconst canvas = document.getElementById('c');\nconst ctx    = canvas.getContext('2d');\n\nrender.silhouette(ctx, [\n  // 1. far mountains\n  { sdf: mtnsFar,       color: MTN_FAR   },\n  // 2. mist over far mountains\n  { sdf: mistVeil,      color: MIST      },\n  // 3. mid mountains\n  { sdf: mtnsMid,       color: MTN_MID   },\n  // 4. near ridge\n  { sdf: ridgeNear,     color: MTN_NEAR  },\n  // 5. ground plane\n  { sdf: groundPlane,   color: GROUND    },\n  // 6. field terraces\n  { sdf: fieldTerrace1, color: FIELD     },\n  { sdf: fieldTerrace2, color: FIELD     },\n  // 7. stream / pond\n  { sdf: water,         color: WATER_C   },\n  // 8. path\n  { sdf: path,          color: PATH_C    },\n  // 9. tree outlines (drawn first as shadow)\n  { sdf: conifersOutline, color: SHADOW_C },\n  { sdf: conifers,        color: TREE_DARK },\n  // brighter conifer highlights\n  { sdf: erode(conifers, 0.018), color: TREE_MID },\n  // 10. valley mist\n  { sdf: mistBand,      color: MIST2     },\n  { sdf: mistBand2,     color: MIST2     },\n  // 11. house walls (outlines first)\n  { sdf: wallsOutline,  color: OUTLINE   },\n  { sdf: wallsFinal,    color: WALL_C    },\n  // 12. roofs\n  { sdf: roofsOutline,  color: OUTLINE   },\n  { sdf: allRoofs,      color: ROOF_C    },\n  { sdf: erode(allRoofs, 0.010), color: ROOF_TILE },\n  // 13. chimneys\n  { sdf: allChimneys,   color: CHIMNEY_C },\n  // 14. church tower\n  { sdf: towerOutline,  color: OUTLINE   },\n  { sdf: towerBody,     color: WALL_C    },\n  { sdf: towerCross,    color: OUTLINE   },\n  { sdf: towerWindow,   color: OUTLINE   },\n  // 15. smoke\n  { sdf: smoke,         color: MIST2     },\n], {\n  view: 1.3,\n  background: { top: SKY_TOP, bottom: SKY_BOTTOM },\n});\n```\n\n**Composition notes:**\n\n山间村落按经典的\"景深叠层\"方式组织——远山 → 中山 → 近坡 → 谷地 → 村落，每层以颜色推远（蓝灰→灰绿→深绿），营造出瑞士/徽州山村的大气透视感。远山与中山之间插入一道水平薄雾（`intersection(ellipse, rectangle)`），模拟山谷晨雾漂浮的视觉。\n\n六栋民居使用参数化 `house()` builder 批量生成，每栋由墙体、三角屋顶、烟囱、门窗构成，门窗以 `difference` 切空。中央教堂钟塔作为焦点，比民居稍高，顶部加十字架与圆弧窗。`dilate`-outline idiom 分级使用：主体建筑 0.018，屋顶 0.014，细节装饰 0.008，形成视觉层级。\n\n针叶林（`conifer()` builder，三层三角叠加 + 树干 capsule）分布在两侧山坡，以深→浅两层渲染出侧光感。溪流与梯田条带用 `intersection(rect, plane)` 裁切，保持地形的层次轮廓。整体调色参考了中国山水版画的青灰绿 + 暖白的撞色逻辑，背景天空从冷蓝渐变为暖米，暗示清晨时分。",
   "sceneData": {
     "v": 1,
-    "name": "山间的村落 — Mountain Village",
+    "name": "Mountain Village (山间的村落)",
     "source": {
       "format": "llm-lift",
       "prompt": "山间的村落",
-      "from2dCode": "Layered 2D scene: far/mid/near mountains, terraced fields, stream, 6 alpine houses + church tower, conifers on slopes, valley mist bands, winding path. Classic atmospheric-depth layering, Huizhou/Swiss mountain village mood."
+      "from2dCode": "Alpine village scene with layered mountains, 6 houses, church tower, conifer trees, mist, stream, terraced fields. Classic atmospheric depth progression: far mountains (blue-gray) → mid mountains (gray-green) → near ridge (dark green) → valley ground with village cluster."
     },
     "subjects": [
       {
+        "id": "moon",
+        "type": "moon",
+        "args": {
+          "radius": 0.35
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            5.2,
+            -8
+          ]
+        },
+        "region": "moon"
+      },
+      {
+        "id": "star-1",
+        "type": "star",
+        "args": {
+          "radius": 0.04,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            5.8,
+            -7
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-2",
+        "type": "star",
+        "args": {
+          "radius": 0.045,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            6.2,
+            -7.5
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-3",
+        "type": "star",
+        "args": {
+          "radius": 0.038,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            0.8,
+            5.5,
+            -7
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-4",
+        "type": "star",
+        "args": {
+          "radius": 0.042,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            6,
+            -7.2
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-5",
+        "type": "star",
+        "args": {
+          "radius": 0.05,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            4,
+            5.4,
+            -7.8
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-6",
+        "type": "star",
+        "args": {
+          "radius": 0.036,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -5,
+            4.8,
+            -7.5
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-7",
+        "type": "star",
+        "args": {
+          "radius": 0.044,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            5.2,
+            4.6,
+            -7
+          ]
+        },
+        "region": "star"
+      },
+      {
         "id": "mountain-far-left",
-        "type": "union",
-        "children": [
-          {
-            "id": "mfl-peak1",
-            "type": "cone",
-            "args": {
-              "height": 3.8,
-              "baseRadius": 2.2
-            },
-            "transform": {
-              "translate": [
-                -5.5,
-                -1,
-                -14
-              ]
-            }
-          },
-          {
-            "id": "mfl-peak2",
-            "type": "cone",
-            "args": {
-              "height": 3.2,
-              "baseRadius": 1.8
-            },
-            "transform": {
-              "translate": [
-                -3.2,
-                -1.2,
-                -14
-              ]
-            }
-          }
-        ],
-        "region": "mountain-far",
-        "color": [
-          98,
-          115,
-          130
-        ]
+        "type": "pyramid",
+        "args": {
+          "height": 3.2
+        },
+        "transform": {
+          "translate": [
+            -6.5,
+            0.8,
+            -5
+          ],
+          "scale": [
+            2.8,
+            1,
+            1.5
+          ]
+        },
+        "region": "mountain_far"
+      },
+      {
+        "id": "mountain-far-center",
+        "type": "pyramid",
+        "args": {
+          "height": 4
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            1.2,
+            -5.5
+          ],
+          "scale": [
+            3.5,
+            1,
+            1.8
+          ]
+        },
+        "region": "mountain_far"
       },
       {
         "id": "mountain-far-right",
-        "type": "union",
-        "children": [
-          {
-            "id": "mfr-peak1",
-            "type": "cone",
-            "args": {
-              "height": 4.2,
-              "baseRadius": 2.4
-            },
-            "transform": {
-              "translate": [
-                4,
-                -1,
-                -14
-              ]
-            }
-          },
-          {
-            "id": "mfr-peak2",
-            "type": "cone",
-            "args": {
-              "height": 3.5,
-              "baseRadius": 2
-            },
-            "transform": {
-              "translate": [
-                6.5,
-                -1.2,
-                -14
-              ]
-            }
-          }
-        ],
-        "region": "mountain-far",
-        "color": [
-          98,
-          115,
-          130
-        ]
+        "type": "pyramid",
+        "args": {
+          "height": 3.8
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            1,
+            -5.2
+          ],
+          "scale": [
+            4,
+            1,
+            2
+          ]
+        },
+        "region": "mountain_far"
+      },
+      {
+        "id": "mountain-far-right2",
+        "type": "pyramid",
+        "args": {
+          "height": 4.2
+        },
+        "transform": {
+          "translate": [
+            7,
+            1.5,
+            -5.8
+          ],
+          "scale": [
+            3.2,
+            1,
+            1.6
+          ]
+        },
+        "region": "mountain_far"
+      },
+      {
+        "id": "mist-veil-far",
+        "type": "box",
+        "args": {
+          "dims": [
+            18,
+            0.5,
+            3
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.8,
+            -4.8
+          ]
+        },
+        "region": "mist"
       },
       {
         "id": "mountain-mid-left",
-        "type": "union",
-        "children": [
-          {
-            "id": "mml-peak1",
-            "type": "cone",
-            "args": {
-              "height": 3,
-              "baseRadius": 2
-            },
-            "transform": {
-              "translate": [
-                -5,
-                -1,
-                -8
-              ]
-            }
-          },
-          {
-            "id": "mml-peak2",
-            "type": "cone",
-            "args": {
-              "height": 2.4,
-              "baseRadius": 1.6
-            },
-            "transform": {
-              "translate": [
-                -2.8,
-                -1.2,
-                -8
-              ]
-            }
-          }
-        ],
-        "region": "mountain-mid",
-        "color": [
-          120,
-          138,
-          115
-        ]
+        "type": "pyramid",
+        "args": {
+          "height": 3.5
+        },
+        "transform": {
+          "translate": [
+            -5.5,
+            0.5,
+            -3
+          ],
+          "scale": [
+            2.5,
+            1,
+            1.4
+          ]
+        },
+        "region": "mountain_mid"
+      },
+      {
+        "id": "mountain-mid-center",
+        "type": "pyramid",
+        "args": {
+          "height": 4.5
+        },
+        "transform": {
+          "translate": [
+            -1.8,
+            0.8,
+            -3.5
+          ],
+          "scale": [
+            3,
+            1,
+            1.6
+          ]
+        },
+        "region": "mountain_mid"
       },
       {
         "id": "mountain-mid-right",
-        "type": "union",
+        "type": "pyramid",
+        "args": {
+          "height": 4
+        },
+        "transform": {
+          "translate": [
+            3.5,
+            0.6,
+            -3.2
+          ],
+          "scale": [
+            3.5,
+            1,
+            1.8
+          ]
+        },
+        "region": "mountain_mid"
+      },
+      {
+        "id": "mountain-mid-right2",
+        "type": "pyramid",
+        "args": {
+          "height": 3.2
+        },
+        "transform": {
+          "translate": [
+            7.5,
+            0.4,
+            -3.6
+          ],
+          "scale": [
+            2.8,
+            1,
+            1.3
+          ]
+        },
+        "region": "mountain_mid"
+      },
+      {
+        "id": "ridge-near-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            2.5,
+            4
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.5,
+            -1.5
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "ridge-near-undulation1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.5,
+            1.2,
+            1.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            0.3,
+            -1.5
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "ridge-near-undulation2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2,
+            0.8,
+            1.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            0.1,
+            -1.2
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "ridge-near-undulation3",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.8,
+            1,
+            2
+          ]
+        },
+        "transform": {
+          "translate": [
+            2,
+            0.2,
+            -1.6
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "ridge-near-undulation4",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.2,
+            0.9,
+            1.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            0.15,
+            -1.3
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "ridge-combined",
+        "type": "smoothUnion",
+        "args": {
+          "k": 0.15
+        },
         "children": [
           {
-            "id": "mmr-peak1",
-            "type": "cone",
+            "id": "ridge-base-ref",
+            "type": "box",
             "args": {
-              "height": 3.4,
-              "baseRadius": 2.1
+              "dims": [
+                16,
+                2.5,
+                4
+              ]
             },
             "transform": {
               "translate": [
-                4.2,
-                -1,
-                -8
+                0,
+                -0.5,
+                -1.5
               ]
             }
           },
           {
-            "id": "mmr-peak2",
-            "type": "cone",
-            "args": {
-              "height": 2.8,
-              "baseRadius": 1.8
-            },
-            "transform": {
-              "translate": [
-                6.2,
-                -1.2,
-                -8
-              ]
-            }
-          }
-        ],
-        "region": "mountain-mid",
-        "color": [
-          120,
-          138,
-          115
-        ]
-      },
-      {
-        "id": "near-ridge-left",
-        "type": "smoothUnion",
-        "args": {
-          "k": 0.6
-        },
-        "children": [
-          {
-            "id": "nrl-hump1",
+            "id": "ridge-u1",
             "type": "ellipsoid",
             "args": {
               "dims": [
-                2.2,
-                1.1,
+                2.5,
+                1.2,
                 1.8
               ]
             },
             "transform": {
               "translate": [
                 -4.5,
-                -0.4,
-                -3.5
+                0.3,
+                -1.5
               ]
             }
           },
           {
-            "id": "nrl-hump2",
-            "type": "ellipsoid",
-            "args": {
-              "dims": [
-                1.8,
-                0.85,
-                1.6
-              ]
-            },
-            "transform": {
-              "translate": [
-                -2.8,
-                -0.5,
-                -3.5
-              ]
-            }
-          }
-        ],
-        "region": "mountain-near",
-        "color": [
-          78,
-          98,
-          72
-        ]
-      },
-      {
-        "id": "near-ridge-right",
-        "type": "smoothUnion",
-        "args": {
-          "k": 0.6
-        },
-        "children": [
-          {
-            "id": "nrr-hump1",
+            "id": "ridge-u2",
             "type": "ellipsoid",
             "args": {
               "dims": [
                 2,
-                1,
-                1.8
+                0.8,
+                1.5
               ]
             },
             "transform": {
               "translate": [
-                3.8,
-                -0.5,
-                -3.5
+                -1.5,
+                0.1,
+                -1.2
               ]
             }
           },
           {
-            "id": "nrr-hump2",
+            "id": "ridge-u3",
             "type": "ellipsoid",
             "args": {
               "dims": [
-                2.4,
-                1.2,
+                2.8,
+                1,
                 2
               ]
             },
             "transform": {
               "translate": [
-                6,
-                -0.4,
-                -3.5
+                2,
+                0.2,
+                -1.6
+              ]
+            }
+          },
+          {
+            "id": "ridge-u4",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                2.2,
+                0.9,
+                1.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                5.5,
+                0.15,
+                -1.3
               ]
             }
           }
         ],
-        "region": "mountain-near",
-        "color": [
-          78,
-          98,
-          72
-        ]
+        "region": "mountain_near"
       },
       {
-        "id": "valley-floor",
-        "type": "box",
+        "id": "cloud-1",
+        "type": "cloud-puff",
         "args": {
-          "dims": [
-            18,
-            0.3,
-            10
-          ]
+          "width": 1.8,
+          "height": 0.6,
+          "depth": 1.2
         },
         "transform": {
           "translate": [
-            0,
-            -1.15,
-            -1
+            -5.5,
+            4.5,
+            -4
           ]
         },
-        "region": "ground",
-        "color": [
-          120,
-          118,
-          72
-        ]
+        "region": "cloud"
       },
       {
-        "id": "field-terrace-1",
-        "type": "box",
+        "id": "cloud-2",
+        "type": "cloud-puff",
         "args": {
-          "dims": [
-            4,
-            0.12,
-            1.4
-          ]
+          "width": 2.2,
+          "height": 0.7,
+          "depth": 1.5
         },
         "transform": {
           "translate": [
-            -1.8,
-            -0.88,
-            0.5
-          ]
-        },
-        "region": "field",
-        "color": [
-          168,
-          172,
-          98
-        ]
-      },
-      {
-        "id": "field-terrace-2",
-        "type": "box",
-        "args": {
-          "dims": [
-            3.2,
-            0.1,
-            1.2
-          ]
-        },
-        "transform": {
-          "translate": [
-            1.5,
-            -0.92,
-            1
-          ]
-        },
-        "region": "field",
-        "color": [
-          168,
-          172,
-          98
-        ]
-      },
-      {
-        "id": "field-terrace-3",
-        "type": "box",
-        "args": {
-          "dims": [
+            3,
             5,
-            0.1,
-            1
+            -4.5
           ]
         },
-        "transform": {
-          "translate": [
-            -0.5,
-            -0.96,
-            2.2
-          ]
-        },
-        "region": "field",
-        "color": [
-          155,
-          160,
-          85
-        ]
-      },
-      {
-        "id": "stream-pond",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.55,
-            0.06,
-            0.22
-          ]
-        },
-        "transform": {
-          "translate": [
-            0.2,
-            -0.98,
-            1.8
-          ]
-        },
-        "region": "water",
-        "color": [
-          148,
-          170,
-          185
-        ]
-      },
-      {
-        "id": "stream-channel",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -1,
-            -0.99,
-            2.5
-          ],
-          "b": [
-            0.2,
-            -0.99,
-            1.8
-          ],
-          "radius": 0.055
-        },
-        "region": "water",
-        "color": [
-          148,
-          170,
-          185
-        ]
-      },
-      {
-        "id": "path-lower",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.4,
-            -1,
-            3.5
-          ],
-          "b": [
-            0.2,
-            -0.95,
-            2
-          ],
-          "radius": 0.07
-        },
-        "region": "path",
-        "color": [
-          175,
-          162,
-          128
-        ]
-      },
-      {
-        "id": "path-upper",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.2,
-            -0.95,
-            2
-          ],
-          "b": [
-            -0.5,
-            -0.85,
-            0.2
-          ],
-          "radius": 0.055
-        },
-        "region": "path",
-        "color": [
-          175,
-          162,
-          128
-        ]
-      },
-      {
-        "id": "house-1",
-        "type": "union",
-        "children": [
-          {
-            "id": "h1-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.62,
-                0.62,
-                0.55
-              ]
-            },
-            "transform": {
-              "translate": [
-                -2.2,
-                -0.69,
-                -0.2
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h1-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.52
-            },
-            "transform": {
-              "translate": [
-                -2.2,
-                -0.38,
-                -0.2
-              ],
-              "scale": [
-                0.72,
-                1,
-                0.62
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h1-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.1,
-                0.28,
-                0.1
-              ]
-            },
-            "transform": {
-              "translate": [
-                -2,
-                -0.08,
-                -0.2
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "house-2",
-        "type": "union",
-        "children": [
-          {
-            "id": "h2-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.55,
-                0.55,
-                0.5
-              ]
-            },
-            "transform": {
-              "translate": [
-                -1.28,
-                -0.72,
-                -0.1
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h2-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.46
-            },
-            "transform": {
-              "translate": [
-                -1.28,
-                -0.44,
-                -0.1
-              ],
-              "scale": [
-                0.64,
-                1,
-                0.56
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h2-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.09,
-                0.24,
-                0.09
-              ]
-            },
-            "transform": {
-              "translate": [
-                -1.12,
-                -0.14,
-                -0.1
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "house-3",
-        "type": "union",
-        "children": [
-          {
-            "id": "h3-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.7,
-                0.7,
-                0.58
-              ]
-            },
-            "transform": {
-              "translate": [
-                -0.3,
-                -0.65,
-                0
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h3-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.58
-            },
-            "transform": {
-              "translate": [
-                -0.3,
-                -0.3,
-                0
-              ],
-              "scale": [
-                0.8,
-                1,
-                0.65
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h3-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.11,
-                0.3,
-                0.11
-              ]
-            },
-            "transform": {
-              "translate": [
-                -0.1,
-                0.02,
-                0
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "house-4",
-        "type": "union",
-        "children": [
-          {
-            "id": "h4-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.52,
-                0.52,
-                0.48
-              ]
-            },
-            "transform": {
-              "translate": [
-                0.62,
-                -0.74,
-                0.1
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h4-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.42
-            },
-            "transform": {
-              "translate": [
-                0.62,
-                -0.48,
-                0.1
-              ],
-              "scale": [
-                0.6,
-                1,
-                0.54
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h4-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.09,
-                0.22,
-                0.09
-              ]
-            },
-            "transform": {
-              "translate": [
-                0.76,
-                -0.2,
-                0.1
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "house-5",
-        "type": "union",
-        "children": [
-          {
-            "id": "h5-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.58,
-                0.58,
-                0.52
-              ]
-            },
-            "transform": {
-              "translate": [
-                1.55,
-                -0.7,
-                -0.1
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h5-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.5
-            },
-            "transform": {
-              "translate": [
-                1.55,
-                -0.41,
-                -0.1
-              ],
-              "scale": [
-                0.68,
-                1,
-                0.58
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h5-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.1,
-                0.26,
-                0.1
-              ]
-            },
-            "transform": {
-              "translate": [
-                1.7,
-                -0.1,
-                -0.1
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "house-6-upper",
-        "type": "union",
-        "children": [
-          {
-            "id": "h6-wall",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.45,
-                0.45,
-                0.42
-              ]
-            },
-            "transform": {
-              "translate": [
-                -1.75,
-                -0.55,
-                -0.5
-              ]
-            },
-            "region": "wall"
-          },
-          {
-            "id": "h6-roof",
-            "type": "pyramid",
-            "args": {
-              "height": 0.38
-            },
-            "transform": {
-              "translate": [
-                -1.75,
-                -0.32,
-                -0.5
-              ],
-              "scale": [
-                0.52,
-                1,
-                0.48
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "h6-chimney",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.08,
-                0.2,
-                0.08
-              ]
-            },
-            "transform": {
-              "translate": [
-                -1.62,
-                -0.08,
-                -0.5
-              ]
-            },
-            "region": "chimney"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "church-tower",
-        "type": "union",
-        "children": [
-          {
-            "id": "ct-base",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.38,
-                1.1,
-                0.38
-              ]
-            },
-            "transform": {
-              "translate": [
-                -0.3,
-                -0.45,
-                -0.6
-              ]
-            },
-            "region": "tower"
-          },
-          {
-            "id": "ct-spire",
-            "type": "cone",
-            "args": {
-              "height": 0.72,
-              "baseRadius": 0.26
-            },
-            "transform": {
-              "translate": [
-                -0.3,
-                0.21,
-                -0.6
-              ]
-            },
-            "region": "roof"
-          },
-          {
-            "id": "ct-cross-v",
-            "type": "capsule",
-            "args": {
-              "a": [
-                -0.3,
-                0.3,
-                -0.59
-              ],
-              "b": [
-                -0.3,
-                0.6,
-                -0.59
-              ],
-              "radius": 0.022
-            },
-            "region": "cross"
-          },
-          {
-            "id": "ct-cross-h",
-            "type": "capsule",
-            "args": {
-              "a": [
-                -0.44,
-                0.46,
-                -0.59
-              ],
-              "b": [
-                -0.16,
-                0.46,
-                -0.59
-              ],
-              "radius": 0.022
-            },
-            "region": "cross"
-          }
-        ],
-        "color": [
-          210,
-          195,
-          162
-        ]
-      },
-      {
-        "id": "conifers-left",
-        "type": "union",
-        "children": [
-          {
-            "id": "cl-t1",
-            "type": "cone",
-            "args": {
-              "height": 1.1,
-              "baseRadius": 0.38
-            },
-            "transform": {
-              "translate": [
-                -3.8,
-                -0.45,
-                -0.8
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cl-t2",
-            "type": "cone",
-            "args": {
-              "height": 0.95,
-              "baseRadius": 0.32
-            },
-            "transform": {
-              "translate": [
-                -3.1,
-                -0.5,
-                -0.6
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cl-t3",
-            "type": "cone",
-            "args": {
-              "height": 1,
-              "baseRadius": 0.35
-            },
-            "transform": {
-              "translate": [
-                -2.6,
-                -0.48,
-                -0.4
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cl-trunk1",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.055,
-              "height": 0.28
-            },
-            "transform": {
-              "translate": [
-                -3.8,
-                -0.88,
-                -0.8
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cl-trunk2",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.048,
-              "height": 0.24
-            },
-            "transform": {
-              "translate": [
-                -3.1,
-                -0.9,
-                -0.6
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cl-trunk3",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.052,
-              "height": 0.26
-            },
-            "transform": {
-              "translate": [
-                -2.6,
-                -0.89,
-                -0.4
-              ]
-            },
-            "region": "trunk"
-          }
-        ],
-        "color": [
-          55,
-          72,
-          48
-        ]
-      },
-      {
-        "id": "conifers-right",
-        "type": "union",
-        "children": [
-          {
-            "id": "cr-t1",
-            "type": "cone",
-            "args": {
-              "height": 1,
-              "baseRadius": 0.35
-            },
-            "transform": {
-              "translate": [
-                2.4,
-                -0.5,
-                -0.5
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cr-t2",
-            "type": "cone",
-            "args": {
-              "height": 1.15,
-              "baseRadius": 0.4
-            },
-            "transform": {
-              "translate": [
-                3,
-                -0.44,
-                -0.7
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cr-t3",
-            "type": "cone",
-            "args": {
-              "height": 0.9,
-              "baseRadius": 0.3
-            },
-            "transform": {
-              "translate": [
-                3.6,
-                -0.52,
-                -0.5
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cr-t4",
-            "type": "cone",
-            "args": {
-              "height": 1.05,
-              "baseRadius": 0.36
-            },
-            "transform": {
-              "translate": [
-                4.2,
-                -0.47,
-                -0.8
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cr-trunk1",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.05,
-              "height": 0.24
-            },
-            "transform": {
-              "translate": [
-                2.4,
-                -0.89,
-                -0.5
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cr-trunk2",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.058,
-              "height": 0.28
-            },
-            "transform": {
-              "translate": [
-                3,
-                -0.87,
-                -0.7
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cr-trunk3",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.044,
-              "height": 0.22
-            },
-            "transform": {
-              "translate": [
-                3.6,
-                -0.91,
-                -0.5
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cr-trunk4",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.052,
-              "height": 0.26
-            },
-            "transform": {
-              "translate": [
-                4.2,
-                -0.88,
-                -0.8
-              ]
-            },
-            "region": "trunk"
-          }
-        ],
-        "color": [
-          55,
-          72,
-          48
-        ]
-      },
-      {
-        "id": "conifers-upper-slope",
-        "type": "union",
-        "children": [
-          {
-            "id": "cus-t1",
-            "type": "cone",
-            "args": {
-              "height": 0.8,
-              "baseRadius": 0.28
-            },
-            "transform": {
-              "translate": [
-                -1,
-                -0.35,
-                -1.2
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cus-t2",
-            "type": "cone",
-            "args": {
-              "height": 0.85,
-              "baseRadius": 0.3
-            },
-            "transform": {
-              "translate": [
-                1,
-                -0.32,
-                -1.2
-              ]
-            },
-            "region": "tree"
-          },
-          {
-            "id": "cus-trunk1",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.04,
-              "height": 0.2
-            },
-            "transform": {
-              "translate": [
-                -1,
-                -0.72,
-                -1.2
-              ]
-            },
-            "region": "trunk"
-          },
-          {
-            "id": "cus-trunk2",
-            "type": "cylinder",
-            "args": {
-              "radius": 0.042,
-              "height": 0.2
-            },
-            "transform": {
-              "translate": [
-                1,
-                -0.69,
-                -1.2
-              ]
-            },
-            "region": "trunk"
-          }
-        ],
-        "color": [
-          55,
-          72,
-          48
-        ]
-      },
-      {
-        "id": "smoke-wisps",
-        "type": "union",
-        "children": [
-          {
-            "id": "sw-1",
-            "type": "sphere",
-            "args": {
-              "radius": 0.08
-            },
-            "transform": {
-              "translate": [
-                -2,
-                0.1,
-                -0.2
-              ]
-            },
-            "region": "smoke"
-          },
-          {
-            "id": "sw-2",
-            "type": "sphere",
-            "args": {
-              "radius": 0.065
-            },
-            "transform": {
-              "translate": [
-                -0.1,
-                0.12,
-                0
-              ]
-            },
-            "region": "smoke"
-          },
-          {
-            "id": "sw-3",
-            "type": "sphere",
-            "args": {
-              "radius": 0.055
-            },
-            "transform": {
-              "translate": [
-                1.7,
-                0.08,
-                -0.1
-              ]
-            },
-            "region": "smoke"
-          }
-        ],
-        "color": [
-          218,
-          214,
-          208
-        ]
+        "region": "cloud"
       },
       {
         "id": "mist-band-valley",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            4.5,
-            0.22,
-            1.4
+            6,
+            0.35,
+            2.5
           ]
+        },
+        "transform": {
+          "translate": [
+            -1.2,
+            0.8,
+            0.5
+          ]
+        },
+        "region": "mist"
+      },
+      {
+        "id": "mist-band-valley2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.5,
+            0.28,
+            2
+          ]
+        },
+        "transform": {
+          "translate": [
+            2,
+            0.3,
+            0.2
+          ]
+        },
+        "region": "mist"
+      },
+      {
+        "id": "tree-pine-1",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.8,
+          "trunkRadius": 0.08,
+          "foliageHeight": 1.2,
+          "foliageBaseR": 0.45,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -6.5,
+            0.2,
+            0.8
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-2",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.7,
+          "trunkRadius": 0.07,
+          "foliageHeight": 1,
+          "foliageBaseR": 0.38,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -5.8,
+            0.15,
+            1
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-3",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.75,
+          "trunkRadius": 0.075,
+          "foliageHeight": 1.1,
+          "foliageBaseR": 0.42,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -5,
+            0.18,
+            0.9
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-4",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.7,
+          "trunkRadius": 0.07,
+          "foliageHeight": 1.05,
+          "foliageBaseR": 0.4,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            4,
+            0.16,
+            0.85
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-5",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.85,
+          "trunkRadius": 0.08,
+          "foliageHeight": 1.25,
+          "foliageBaseR": 0.48,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            4.8,
+            0.2,
+            1.1
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-6",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.65,
+          "trunkRadius": 0.065,
+          "foliageHeight": 0.95,
+          "foliageBaseR": 0.36,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            5.6,
+            0.14,
+            0.7
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-7",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.78,
+          "trunkRadius": 0.076,
+          "foliageHeight": 1.15,
+          "foliageBaseR": 0.44,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            0.18,
+            0.95
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-8",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.6,
+          "trunkRadius": 0.06,
+          "foliageHeight": 0.88,
+          "foliageBaseR": 0.34,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            0.12,
+            0.6
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-9",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.68,
+          "trunkRadius": 0.068,
+          "foliageHeight": 0.98,
+          "foliageBaseR": 0.37,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            7.3,
+            0.16,
+            0.8
+          ]
+        },
+        "region": "tree_dark"
+      },
+      {
+        "id": "tree-pine-10",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.62,
+          "trunkRadius": 0.062,
+          "foliageHeight": 0.92,
+          "foliageBaseR": 0.35,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -1.8,
+            0.65,
+            0.5
+          ]
+        },
+        "region": "tree_mid"
+      },
+      {
+        "id": "tree-pine-11",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 0.66,
+          "trunkRadius": 0.066,
+          "foliageHeight": 0.96,
+          "foliageBaseR": 0.38,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            1.8,
+            0.68,
+            0.55
+          ]
+        },
+        "region": "tree_mid"
+      },
+      {
+        "id": "cottage-1",
+        "type": "cottage",
+        "args": {
+          "width": 1.4,
+          "height": 1.3,
+          "roofHeight": 0.8
+        },
+        "transform": {
+          "translate": [
+            -4,
+            0,
+            1.8
+          ],
+          "rotate": [
+            0,
+            0.15,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "cottage-2",
+        "type": "cottage",
+        "args": {
+          "width": 1.25,
+          "height": 1.15,
+          "roofHeight": 0.7
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            0.05,
+            2
+          ],
+          "rotate": [
+            0,
+            -0.1,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "cottage-3",
+        "type": "cottage",
+        "args": {
+          "width": 1.55,
+          "height": 1.45,
+          "roofHeight": 0.85
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            0.02,
+            1.9
+          ],
+          "rotate": [
+            0,
+            0.08,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "cottage-4",
+        "type": "cottage",
+        "args": {
+          "width": 1.2,
+          "height": 1.1,
+          "roofHeight": 0.65
+        },
+        "transform": {
+          "translate": [
+            1,
+            0.08,
+            2.1
+          ],
+          "rotate": [
+            0,
+            -0.12,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "cottage-5",
+        "type": "cottage",
+        "args": {
+          "width": 1.35,
+          "height": 1.25,
+          "roofHeight": 0.75
+        },
+        "transform": {
+          "translate": [
+            2.6,
+            0.04,
+            1.95
+          ],
+          "rotate": [
+            0,
+            0.18,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "cottage-6",
+        "type": "cottage",
+        "args": {
+          "width": 1,
+          "height": 0.95,
+          "roofHeight": 0.6
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            0.55,
+            1.5
+          ],
+          "rotate": [
+            0,
+            -0.2,
+            0
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "church-tower-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.75,
+            2.3,
+            0.75
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            1.15,
+            2.2
+          ]
+        },
+        "region": "tower"
+      },
+      {
+        "id": "church-tower-spire",
+        "type": "pyramid",
+        "args": {
+          "height": 1.1
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            2.3,
+            2.2
+          ],
+          "scale": [
+            0.85,
+            1,
+            0.85
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "church-cross-vertical",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.04,
+            0.35,
+            0.04
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            3.55,
+            2.2
+          ]
+        },
+        "region": "cross"
+      },
+      {
+        "id": "church-cross-horizontal",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.15,
+            0.04,
+            0.04
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            3.48,
+            2.2
+          ]
+        },
+        "region": "cross"
+      },
+      {
+        "id": "stream-pond",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.95,
+            0.15,
+            0.25
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.3,
+            -0.65,
+            2.5
+          ]
+        },
+        "region": "water"
+      },
+      {
+        "id": "stream-narrow",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -1.8,
+            -0.62,
+            2.3
+          ],
+          "b": [
+            0,
+            -0.65,
+            2.5
+          ],
+          "radius": 0.095
+        },
+        "region": "water"
+      },
+      {
+        "id": "path-segment-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.65,
+            -1.2,
+            3.5
+          ],
+          "b": [
+            0.3,
+            -0.72,
+            2.8
+          ],
+          "radius": 0.14
+        },
+        "region": "path"
+      },
+      {
+        "id": "path-segment-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.3,
+            -0.72,
+            2.8
+          ],
+          "b": [
+            -0.5,
+            -0.35,
+            2.3
+          ],
+          "radius": 0.11
+        },
+        "region": "path"
+      },
+      {
+        "id": "path-segment-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.5,
+            -0.35,
+            2.3
+          ],
+          "b": [
+            -1.2,
+            0,
+            1.9
+          ],
+          "radius": 0.095
+        },
+        "region": "path"
+      },
+      {
+        "id": "terrace-field-1a",
+        "type": "box",
+        "args": {
+          "dims": [
+            5,
+            0.35,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            -3.5,
+            0.25,
+            1.2
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "terrace-field-1b",
+        "type": "box",
+        "args": {
+          "dims": [
+            3.8,
+            0.35,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.9,
+            0.25,
+            1.15
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "terrace-field-2a",
+        "type": "box",
+        "args": {
+          "dims": [
+            6.2,
+            0.28,
+            0.35
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.9,
+            -0.4,
+            0.8
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "terrace-field-2b",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.7,
+            0.28,
+            0.35
+          ]
+        },
+        "transform": {
+          "translate": [
+            5.2,
+            -0.4,
+            0.75
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "smoke-wisp-1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.14
+        },
+        "transform": {
+          "translate": [
+            -3.7,
+            2.15,
+            1.8
+          ]
+        },
+        "region": "smoke"
+      },
+      {
+        "id": "smoke-wisp-2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.11
         },
         "transform": {
           "translate": [
             -0.5,
-            -0.55,
-            -0.5
+            2.42,
+            1.9
           ]
         },
-        "region": "mist",
-        "color": [
-          220,
-          215,
-          205
-        ]
+        "region": "smoke"
       },
       {
-        "id": "mist-band-2",
-        "type": "ellipsoid",
+        "id": "smoke-wisp-3",
+        "type": "sphere",
         "args": {
-          "dims": [
-            3.2,
-            0.16,
-            1.1
-          ]
+          "radius": 0.095
         },
         "transform": {
           "translate": [
-            1.2,
-            -0.68,
-            0.4
+            2.8,
+            2.08,
+            1.95
           ]
         },
-        "region": "mist",
-        "color": [
-          218,
-          214,
-          208
-        ]
+        "region": "smoke"
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.16,
+          "wingSpan": 0.42
+        },
+        "transform": {
+          "translate": [
+            -3.5,
+            3.5,
+            -0.5
+          ],
+          "rotate": [
+            0,
+            0.3,
+            0.1
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.14,
+          "wingSpan": 0.38
+        },
+        "transform": {
+          "translate": [
+            2.2,
+            3.8,
+            -0.8
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            -0.08
+          ]
+        },
+        "region": "bird"
       }
     ],
     "ground": {
-      "y": -1,
+      "y": -1.5,
       "region": "ground"
     },
     "defaults": {
       "camera": {
         "yaw": 0.55,
         "pitch": 0.28,
-        "distance": 9.5,
+        "distance": 14,
         "focal": 1.6,
-        "targetX": -0.2,
-        "targetY": -0.2,
-        "targetZ": 0
+        "targetX": -0.5,
+        "targetY": 1.2,
+        "targetZ": 1.8
       },
       "light": {
         "azimuth": 0.65,
         "altitude": 0.72,
-        "distance": 32
+        "distance": 32,
+        "intensity": 1
       },
       "shadow": {
         "enabled": true,
-        "mode": "hueRotate180",
+        "mode": "darken",
         "strength": 0.38
       }
     }
   },
   "meta": {
     "savedAt": 1779105892277,
-    "source": "user-saved-2026-05-18"
+    "source": "user-saved-2026-05-18",
+    "v2Promoted": "2026-05-18",
+    "v2Model": "claude-sonnet-4-5",
+    "v2AtomsUsed": "moon×1, star×7, cloud-puff×2, tree-pine×11, cottage×6, bird-silhouette×2",
+    "v2IQTypesUsed": "(none)",
+    "v2SubjectCount": 67,
+    "previousSource": "user-saved-2026-05-18"
   }
 }

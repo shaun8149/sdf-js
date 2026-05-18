@@ -5,23 +5,22 @@
   "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, ring, union, intersection, difference,\n  dilate, erode, shell, render,\n} from '../../src/index.js';\n\n// ── Palette ─────────────────────────────────────────────────────────────────\nconst OUTLINE     = [32, 24, 20];\nconst TABLE_TOP   = [210, 185, 148];   // warm oak\nconst TABLE_SHADE = [180, 152, 112];   // table shadow band\nconst PLATE_WHITE = [245, 240, 232];   // off-white china\nconst PLATE_RIM   = [230, 220, 205];   // rim glaze\nconst WINE_GLASS  = [200, 225, 215];   // pale aqua glass\nconst WINE_LIQUID = [148, 40, 55];     // burgundy wine\nconst NAPKIN_C    = [195, 80, 65];     // terracotta linen\nconst FORK_KNIFE  = [190, 185, 178];   // silver cutlery\nconst BREAD_C     = [220, 178, 110];   // warm bread\nconst BREAD_CRUST = [168, 118, 62];    // darker crust\nconst HERB_C      = [82, 130, 72];     // parsley green\nconst CANDLE_WAX  = [248, 235, 195];   // ivory wax\nconst FLAME_OUT   = [240, 165, 40];    // outer flame\nconst FLAME_IN    = [255, 230, 120];   // inner flame\nconst CANDLESTICK = [190, 160, 70];    // brass\nconst BG_TOP      = [245, 238, 225];\nconst BG_BOT      = [225, 215, 195];\n\n// ── Table surface ────────────────────────────────────────────────────────────\n// Elliptical table top viewed in slight perspective\nconst tableSurface = ellipse(1.15, 0.55, [0, -0.08]);\nconst tableEdge    = difference(\n  tableSurface,\n  ellipse(1.09, 0.48, [0, -0.10]),\n);\nconst shadowBand   = intersection(\n  tableSurface,\n  rectangle([2.4, 0.06], [0, -0.56]),\n);\n\n// ── Dinner plate (center) ────────────────────────────────────────────────────\nconst plateOuter  = ellipse(0.30, 0.135, [0, -0.10]);\nconst plateInner  = ellipse(0.22, 0.100, [0, -0.10]);\nconst plateWell   = ellipse(0.17, 0.075, [0, -0.10]);\n\n// ── Wine glass ───────────────────────────────────────────────────────────────\n// bowl = ellipse, stem = segment, base = thin ellipse\nconst glassBowl   = ellipse(0.075, 0.09, [0.52, 0.05]);\nconst glassTop    = intersection(glassBowl, rectangle([0.18, 0.09], [0.52, 0.10]));\nconst glassStem   = segment([0.52, -0.04], [0.52, -0.20], 0.007);\nconst glassBase   = ellipse(0.065, 0.018, [0.52, -0.20]);\nconst glassBody   = union(glassBowl, glassStem, glassBase);\n// wine level – intersection clips to bowl shape\nconst wineFill    = intersection(\n  glassBowl,\n  rectangle([0.20, 0.07], [0.52, -0.015]),\n);\n\n// ── Napkin (folded triangle, left of plate) ──────────────────────────────────\nconst napkin = polygon([\n  [-0.44, -0.18],\n  [-0.18, -0.18],\n  [-0.28,  0.08],\n]);\nconst napkinFold = intersection(\n  napkin,\n  polygon([\n    [-0.42, -0.08],\n    [-0.22, -0.08],\n    [-0.30,  0.06],\n  ]),\n);\n\n// ── Fork (left) ──────────────────────────────────────────────────────────────\nfunction fork(cx, cy) {\n  const handle = segment([cx, cy - 0.23], [cx, cy + 0.08], 0.010);\n  const tine1  = segment([cx - 0.015, cy + 0.07], [cx - 0.015, cy + 0.23], 0.005);\n  const tine2  = segment([cx,          cy + 0.07], [cx,          cy + 0.23], 0.005);\n  const tine3  = segment([cx + 0.015, cy + 0.07], [cx + 0.015, cy + 0.23], 0.005);\n  const tineBase = rectangle([0.050, 0.015], [cx, cy + 0.075]);\n  return union(handle, tineBase, tine1, tine2, tine3);\n}\nconst forkShape = fork(-0.38, -0.10);\n\n// ── Knife (right) ────────────────────────────────────────────────────────────\nfunction knife(cx, cy) {\n  const handle  = segment([cx, cy - 0.23], [cx, cy + 0.05], 0.012);\n  const bolster = ellipse(0.016, 0.020, [cx, cy + 0.06]);\n  const blade   = polygon([\n    [cx - 0.008, cy + 0.06],\n    [cx + 0.008, cy + 0.06],\n    [cx + 0.004, cy + 0.27],\n    [cx - 0.008, cy + 0.27],\n  ]);\n  return union(handle, bolster, blade);\n}\nconst knifeShape = knife(0.38, -0.10);\n\n// ── Bread roll (upper left of plate) ─────────────────────────────────────────\nconst breadRoll  = ellipse(0.088, 0.062, [-0.20, 0.13]);\nconst breadScore = shell(\n  intersection(breadRoll, rectangle([0.20, 0.020], [-0.20, 0.13])),\n  0.005,\n);\nconst breadHighlight = intersection(\n  breadRoll,\n  ellipse(0.045, 0.028, [-0.22, 0.17]),\n);\n\n// ── Herb sprig on plate ───────────────────────────────────────────────────────\nconst herbStem = segment([-0.03, -0.14], [0.04, -0.06], 0.005);\nconst leaf1    = ellipse(0.018, 0.010, [0.00, -0.09]).rotate( 0.5);\nconst leaf2    = ellipse(0.018, 0.010, [0.02, -0.07]).rotate(-0.3);\nconst herb     = union(herbStem, leaf1, leaf2);\n\n// ── Candle + candlestick (right background) ───────────────────────────────────\nconst stickBase   = ellipse(0.052, 0.018, [0.70, -0.27]);\nconst stickColumn = segment([0.70, -0.27], [0.70, -0.12], 0.016);\nconst stickCup    = ellipse(0.030, 0.015, [0.70, -0.12]);\nconst candleBody  = rounded_rectangle([0.032, 0.13], 0.006, [0.70, 0.01]);\nconst flameOuter  = ellipse(0.018, 0.036, [0.70, 0.105]);\nconst flameInner  = ellipse(0.009, 0.022, [0.70, 0.100]);\nconst wickLine    = segment([0.70, 0.068], [0.70, 0.082], 0.003);\nconst candleStick = union(stickBase, stickColumn, stickCup);\n\n// ── Clip everything to table surface ────────────────────────────────────────\nfunction onTable(sdf) {\n  return intersection(sdf, tableSurface);\n}\n\n// ── Layers ───────────────────────────────────────────────────────────────────\nconst layers = [\n  // table fill\n  { sdf: tableSurface,               color: TABLE_TOP },\n  { sdf: dilate(tableSurface,0.025), color: OUTLINE },\n  { sdf: tableSurface,               color: TABLE_TOP },\n  { sdf: shadowBand,                 color: TABLE_SHADE },\n  { sdf: tableEdge,                  color: TABLE_SHADE },\n\n  // napkin\n  { sdf: onTable(dilate(napkin,0.016)), color: OUTLINE },\n  { sdf: onTable(napkin),              color: NAPKIN_C },\n  { sdf: onTable(napkinFold),          color: [210, 92, 78] },\n\n  // fork\n  { sdf: onTable(dilate(forkShape,0.012)), color: OUTLINE },\n  { sdf: onTable(forkShape),               color: FORK_KNIFE },\n\n  // knife\n  { sdf: onTable(dilate(knifeShape,0.012)), color: OUTLINE },\n  { sdf: onTable(knifeShape),               color: FORK_KNIFE },\n\n  // plate layers\n  { sdf: onTable(dilate(plateOuter,0.020)), color: OUTLINE },\n  { sdf: onTable(plateOuter),               color: PLATE_RIM },\n  { sdf: onTable(plateInner),               color: PLATE_WHITE },\n  { sdf: onTable(plateWell),                color: [255, 252, 248] },\n\n  // herb on plate\n  { sdf: onTable(herb), color: HERB_C },\n\n  // bread roll\n  { sdf: onTable(dilate(breadRoll,0.014)), color: BREAD_CRUST },\n  { sdf: onTable(breadRoll),              color: BREAD_C },\n  { sdf: onTable(breadScore),             color: BREAD_CRUST },\n  { sdf: onTable(breadHighlight),         color: [235, 200, 135] },\n\n  // wine glass\n  { sdf: onTable(dilate(glassBody,0.015)), color: OUTLINE },\n  { sdf: onTable(glassBody),               color: WINE_GLASS },\n  { sdf: onTable(wineFill),                color: WINE_LIQUID },\n  { sdf: onTable(shell(glassBowl, 0.008)), color: [220, 240, 230] },\n\n  // candlestick\n  { sdf: onTable(dilate(candleStick,0.012)), color: OUTLINE },\n  { sdf: onTable(candleStick),               color: CANDLESTICK },\n  { sdf: onTable(dilate(candleBody,0.012)),  color: OUTLINE },\n  { sdf: onTable(candleBody),                color: CANDLE_WAX },\n  { sdf: onTable(wickLine),                  color: OUTLINE },\n  { sdf: dilate(flameOuter,0.004),           color: [200, 110, 20] },\n  { sdf: flameOuter,                         color: FLAME_OUT },\n  { sdf: flameInner,                         color: FLAME_IN },\n];\n\n// ── Render ───────────────────────────────────────────────────────────────────\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.2,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n```\n\n**Composition notes:** The scene is built around a single elliptical table viewed at a slight bird's-eye perspective — the major/minor axis ratio (~2:1) implies a round table in realistic foreshortening. Everything is clipped via `intersection(..., tableSurface)` so no element spills beyond the table edge, echoing the \"decoration clipped to silhouette\" idiom from `boat.js`.\n\nThe **visual hierarchy** is plate (center) → wine glass (right) → napkin + cutlery (flanking) → bread roll (upper left) → candle (background right), roughly following a classic Western place-setting layout. Outline thickness is graded: 0.020–0.025 for the table rim and plate, 0.012–0.016 for the smaller elements, giving depth. The candle flame is intentionally left **without** a dark outline (soft glow objects never get outlines), following the same no-outline-on-luminous-sources rule from `boat.js`'s sun. Palette is anchored to a warm terracotta / oak / burgundy register, suitable for a Taschen cookbook spread or a *Bon Appétit* editorial illustration.",
   "sceneData": {
     "v": 1,
-    "name": "餐桌摆设 — Table Setting",
+    "name": "Dining Table Setting",
     "source": {
       "format": "llm-lift",
       "prompt": "餐桌摆设",
-      "from2dCode": "Elliptical table with dinner plate (center), wine glass (right), napkin+fork+knife (flanking), bread roll (upper-left), candle+candlestick (background right). Warm terracotta/oak/burgundy palette."
+      "from2dCode": "Elliptical table with place setting: plate, wine glass, napkin, fork, knife, bread roll, herb sprig, candlestick with flame. Western formal dining composition."
     },
     "subjects": [
       {
         "id": "table-top",
-        "type": "rounded_box",
+        "type": "ellipsoid",
         "args": {
           "dims": [
-            4.2,
-            0.12,
-            2.6
-          ],
-          "cornerR": 0.06
+            2.3,
+            0.08,
+            1.1
+          ]
         },
         "transform": {
           "translate": [
@@ -33,131 +32,124 @@
         "region": "wood"
       },
       {
-        "id": "table-leg-fl",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.07,
-          "height": 1.8
-        },
-        "transform": {
-          "translate": [
-            -1.7,
-            -0.96,
-            1
-          ]
-        },
-        "region": "wood"
+        "id": "table-rim",
+        "type": "difference",
+        "children": [
+          {
+            "id": "rim-outer",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                2.35,
+                0.09,
+                1.13
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "rim-inner",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                2.22,
+                0.08,
+                1.02
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.01,
+                0
+              ]
+            }
+          }
+        ],
+        "region": "wood_dark"
       },
       {
-        "id": "table-leg-fr",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.07,
-          "height": 1.8
-        },
-        "transform": {
-          "translate": [
-            1.7,
-            -0.96,
-            1
-          ]
-        },
-        "region": "wood"
+        "id": "plate-outer-rim",
+        "type": "difference",
+        "children": [
+          {
+            "id": "plate-outer-disk",
+            "type": "capped_cylinder",
+            "args": {
+              "a": [
+                0,
+                0.09,
+                -0.2
+              ],
+              "b": [
+                0,
+                0.12,
+                -0.2
+              ],
+              "radius": 0.6
+            }
+          },
+          {
+            "id": "plate-inner-cut",
+            "type": "capped_cylinder",
+            "args": {
+              "a": [
+                0,
+                0.08,
+                -0.2
+              ],
+              "b": [
+                0,
+                0.13,
+                -0.2
+              ],
+              "radius": 0.44
+            }
+          }
+        ],
+        "region": "ceramic_rim"
       },
       {
-        "id": "table-leg-bl",
-        "type": "cylinder",
+        "id": "plate-main",
+        "type": "capped_cylinder",
         "args": {
-          "radius": 0.07,
-          "height": 1.8
-        },
-        "transform": {
-          "translate": [
-            -1.7,
-            -0.96,
-            -1
-          ]
-        },
-        "region": "wood"
-      },
-      {
-        "id": "table-leg-br",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.07,
-          "height": 1.8
-        },
-        "transform": {
-          "translate": [
-            1.7,
-            -0.96,
-            -1
-          ]
-        },
-        "region": "wood"
-      },
-      {
-        "id": "plate-rim",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.58,
-          "height": 0.025
-        },
-        "transform": {
-          "translate": [
+          "a": [
             0,
-            0.075,
-            0.1
-          ]
+            0.09,
+            -0.2
+          ],
+          "b": [
+            0,
+            0.11,
+            -0.2
+          ],
+          "radius": 0.44
         },
-        "region": "china",
-        "color": [
-          230,
-          220,
-          205
-        ]
+        "region": "ceramic"
       },
       {
         "id": "plate-well",
-        "type": "cylinder",
+        "type": "capped_cylinder",
         "args": {
-          "radius": 0.44,
-          "height": 0.032
-        },
-        "transform": {
-          "translate": [
+          "a": [
             0,
-            0.082,
-            0.1
-          ]
-        },
-        "region": "china",
-        "color": [
-          245,
-          240,
-          232
-        ]
-      },
-      {
-        "id": "plate-inner-well",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.33,
-          "height": 0.038
-        },
-        "transform": {
-          "translate": [
+            0.095,
+            -0.2
+          ],
+          "b": [
             0,
-            0.088,
-            0.1
-          ]
+            0.105,
+            -0.2
+          ],
+          "radius": 0.34
         },
-        "region": "china",
-        "color": [
-          255,
-          252,
-          248
-        ]
+        "region": "ceramic_bright"
       },
       {
         "id": "herb-stem",
@@ -165,38 +157,33 @@
         "args": {
           "a": [
             -0.06,
-            0.1,
-            0.06
+            0.11,
+            -0.28
           ],
           "b": [
             0.08,
-            0.1,
-            -0.04
+            0.11,
+            -0.12
           ],
-          "radius": 0.012
+          "radius": 0.01
         },
-        "region": "herb",
-        "color": [
-          82,
-          130,
-          72
-        ]
+        "region": "herb"
       },
       {
         "id": "herb-leaf-1",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.055,
-            0.018,
-            0.032
+            0.036,
+            0.008,
+            0.02
           ]
         },
         "transform": {
           "translate": [
-            -0.01,
-            0.1,
-            0.02
+            0,
+            0.115,
+            -0.18
           ],
           "rotate": [
             0,
@@ -204,28 +191,23 @@
             0
           ]
         },
-        "region": "herb",
-        "color": [
-          82,
-          130,
-          72
-        ]
+        "region": "herb"
       },
       {
         "id": "herb-leaf-2",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.055,
-            0.018,
-            0.032
+            0.036,
+            0.008,
+            0.02
           ]
         },
         "transform": {
           "translate": [
-            0.05,
-            0.1,
-            -0.02
+            0.04,
+            0.115,
+            -0.14
           ],
           "rotate": [
             0,
@@ -233,486 +215,499 @@
             0
           ]
         },
-        "region": "herb",
-        "color": [
-          82,
-          130,
-          72
-        ]
+        "region": "herb"
       },
       {
-        "id": "napkin",
-        "type": "tri_prism",
+        "id": "napkin-folded",
+        "type": "pyramid",
         "args": {
-          "halfWidth": 0.28,
-          "halfLength": 0.16
+          "height": 0.05
         },
         "transform": {
           "translate": [
-            -1.05,
-            0.085,
-            0.1
+            -0.56,
+            0.105,
+            -0.05
           ],
           "rotate": [
             0,
-            0.15,
+            -0.4,
             0
+          ],
+          "scale": [
+            0.26,
+            1,
+            0.26
           ]
         },
-        "region": "linen",
-        "color": [
-          195,
-          80,
-          65
-        ]
+        "region": "linen"
       },
       {
-        "id": "fork",
+        "id": "fork-handle",
         "type": "capsule",
         "args": {
           "a": [
-            -0.78,
-            0.08,
-            0.1
+            -0.76,
+            0.09,
+            -0.2
           ],
           "b": [
-            -0.78,
-            0.08,
-            0.88
+            -0.76,
+            0.09,
+            0.16
           ],
-          "radius": 0.018
+          "radius": 0.02
         },
-        "region": "cutlery",
-        "color": [
-          190,
-          185,
-          178
-        ]
+        "region": "metal"
+      },
+      {
+        "id": "fork-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.01,
+            0.03
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.76,
+            0.095,
+            0.15
+          ]
+        },
+        "region": "metal"
       },
       {
         "id": "fork-tine-1",
         "type": "capsule",
         "args": {
           "a": [
-            -0.81,
-            0.082,
-            0.56
+            -0.79,
+            0.09,
+            0.14
           ],
           "b": [
-            -0.81,
-            0.082,
-            0.88
+            -0.79,
+            0.09,
+            0.46
           ],
-          "radius": 0.008
+          "radius": 0.01
         },
-        "region": "cutlery",
-        "color": [
-          190,
-          185,
-          178
-        ]
+        "region": "metal"
       },
       {
         "id": "fork-tine-2",
         "type": "capsule",
         "args": {
           "a": [
-            -0.78,
-            0.082,
-            0.56
+            -0.76,
+            0.09,
+            0.14
           ],
           "b": [
-            -0.78,
-            0.082,
-            0.88
+            -0.76,
+            0.09,
+            0.46
           ],
-          "radius": 0.008
+          "radius": 0.01
         },
-        "region": "cutlery",
-        "color": [
-          190,
-          185,
-          178
-        ]
+        "region": "metal"
       },
       {
         "id": "fork-tine-3",
         "type": "capsule",
         "args": {
           "a": [
-            -0.75,
-            0.082,
-            0.56
+            -0.73,
+            0.09,
+            0.14
           ],
           "b": [
-            -0.75,
-            0.082,
-            0.88
+            -0.73,
+            0.09,
+            0.46
           ],
-          "radius": 0.008
+          "radius": 0.01
         },
-        "region": "cutlery",
-        "color": [
-          190,
-          185,
-          178
-        ]
+        "region": "metal"
       },
       {
         "id": "knife-handle",
         "type": "capsule",
         "args": {
           "a": [
-            0.78,
-            0.08,
-            -0.6
-          ],
-          "b": [
-            0.78,
-            0.08,
-            0.18
-          ],
-          "radius": 0.022
-        },
-        "region": "cutlery",
-        "color": [
-          190,
-          185,
-          178
-        ]
-      },
-      {
-        "id": "knife-blade",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.78,
-            0.082,
-            0.18
+            0.76,
+            0.09,
+            -0.2
           ],
           "b": [
             0.76,
-            0.082,
-            0.84
+            0.09,
+            0.1
           ],
-          "radius": 0.012
+          "radius": 0.024
         },
-        "region": "cutlery",
-        "color": [
-          210,
-          208,
-          200
-        ]
+        "region": "metal"
       },
       {
-        "id": "bread-roll",
+        "id": "knife-bolster",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.21,
-            0.13,
-            0.16
+            0.032,
+            0.015,
+            0.04
           ]
         },
         "transform": {
           "translate": [
-            -0.45,
-            0.19,
-            -0.62
+            0.76,
+            0.095,
+            0.12
           ]
         },
-        "region": "bread",
-        "color": [
-          220,
-          178,
-          110
-        ]
+        "region": "metal"
       },
       {
-        "id": "bread-score",
+        "id": "knife-blade",
         "type": "box",
         "args": {
           "dims": [
-            0.44,
-            0.025,
-            0.022
+            0.016,
+            0.008,
+            0.42
           ]
         },
         "transform": {
           "translate": [
-            -0.45,
-            0.3,
-            -0.62
+            0.76,
+            0.095,
+            0.33
           ]
         },
-        "region": "crust",
-        "color": [
-          168,
-          118,
-          62
-        ]
+        "region": "metal_blade"
       },
       {
-        "id": "glass-base",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.14,
-          "height": 0.016
-        },
-        "transform": {
-          "translate": [
-            1.1,
-            0.072,
-            -0.45
-          ]
-        },
-        "region": "glass",
-        "color": [
-          200,
-          225,
-          215
-        ]
-      },
-      {
-        "id": "glass-stem",
-        "type": "capsule",
-        "args": {
-          "a": [
-            1.1,
-            0.088,
-            -0.45
-          ],
-          "b": [
-            1.1,
-            0.42,
-            -0.45
-          ],
-          "radius": 0.014
-        },
-        "region": "glass",
-        "color": [
-          200,
-          225,
-          215
-        ]
-      },
-      {
-        "id": "glass-bowl",
+        "id": "wine-glass-bowl",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.155,
-            0.185,
-            0.155
+            0.15,
+            0.18,
+            0.15
           ]
         },
         "transform": {
           "translate": [
-            1.1,
-            0.62,
-            -0.45
+            1.04,
+            0.24,
+            0.1
           ]
         },
-        "region": "glass",
-        "color": [
-          200,
-          225,
-          215
-        ]
+        "region": "glass"
       },
       {
         "id": "wine-fill",
+        "type": "intersection",
+        "children": [
+          {
+            "id": "wine-fill-ellipsoid",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.15,
+                0.18,
+                0.15
+              ]
+            },
+            "transform": {
+              "translate": [
+                1.04,
+                0.24,
+                0.1
+              ]
+            }
+          },
+          {
+            "id": "wine-fill-cut",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.4,
+                0.14,
+                0.4
+              ]
+            },
+            "transform": {
+              "translate": [
+                1.04,
+                0.17,
+                0.1
+              ]
+            }
+          }
+        ],
+        "region": "wine"
+      },
+      {
+        "id": "wine-glass-stem",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.04,
+            0.09,
+            0.1
+          ],
+          "b": [
+            1.04,
+            0.16,
+            0.1
+          ],
+          "radius": 0.014
+        },
+        "region": "glass"
+      },
+      {
+        "id": "wine-glass-base",
+        "type": "capped_cylinder",
+        "args": {
+          "a": [
+            1.04,
+            0.085,
+            0.1
+          ],
+          "b": [
+            1.04,
+            0.095,
+            0.1
+          ],
+          "radius": 0.13
+        },
+        "region": "glass"
+      },
+      {
+        "id": "bread-roll-main",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.13,
-            0.09,
-            0.13
+            0.176,
+            0.124,
+            0.176
           ]
         },
         "transform": {
           "translate": [
-            1.1,
-            0.5,
-            -0.45
+            -0.4,
+            0.16,
+            0.26
           ]
         },
-        "region": "wine",
-        "color": [
-          148,
-          40,
-          55
-        ]
+        "region": "bread"
+      },
+      {
+        "id": "bread-score-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.48,
+            0.18,
+            0.26
+          ],
+          "b": [
+            -0.32,
+            0.18,
+            0.26
+          ],
+          "radius": 0.01
+        },
+        "region": "bread_crust"
+      },
+      {
+        "id": "bread-score-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.4,
+            0.18,
+            0.18
+          ],
+          "b": [
+            -0.4,
+            0.18,
+            0.34
+          ],
+          "radius": 0.01
+        },
+        "region": "bread_crust"
       },
       {
         "id": "candlestick-base",
-        "type": "cylinder",
+        "type": "capped_cylinder",
         "args": {
-          "radius": 0.115,
-          "height": 0.032
+          "a": [
+            1.4,
+            0.08,
+            0
+          ],
+          "b": [
+            1.4,
+            0.1,
+            0
+          ],
+          "radius": 0.104
         },
-        "transform": {
-          "translate": [
-            1.55,
-            0.072,
-            -0.9
-          ]
-        },
-        "region": "brass",
-        "color": [
-          190,
-          160,
-          70
-        ]
+        "region": "brass"
       },
       {
         "id": "candlestick-column",
-        "type": "capped_cone",
+        "type": "capsule",
         "args": {
           "a": [
-            1.55,
+            1.4,
             0.1,
-            -0.9
+            0
           ],
           "b": [
-            1.55,
-            0.36,
-            -0.9
+            1.4,
+            0.4,
+            0
           ],
-          "r1": 0.055,
-          "r2": 0.032
+          "radius": 0.032
         },
-        "region": "brass",
-        "color": [
-          190,
-          160,
-          70
-        ]
+        "region": "brass"
       },
       {
         "id": "candlestick-cup",
-        "type": "cylinder",
+        "type": "capped_cylinder",
         "args": {
-          "radius": 0.065,
-          "height": 0.028
+          "a": [
+            1.4,
+            0.39,
+            0
+          ],
+          "b": [
+            1.4,
+            0.42,
+            0
+          ],
+          "radius": 0.06
         },
-        "transform": {
-          "translate": [
-            1.55,
-            0.374,
-            -0.9
-          ]
-        },
-        "region": "brass",
-        "color": [
-          190,
-          160,
-          70
-        ]
+        "region": "brass"
       },
       {
         "id": "candle-body",
         "type": "rounded_box",
         "args": {
           "dims": [
-            0.068,
-            0.28,
-            0.068
+            0.064,
+            0.26,
+            0.064
           ],
-          "cornerR": 0.01
+          "cornerR": 0.012
         },
         "transform": {
           "translate": [
-            1.55,
-            0.53,
-            -0.9
+            1.4,
+            0.55,
+            0
           ]
         },
-        "region": "wax",
-        "color": [
-          248,
-          235,
-          195
-        ]
+        "region": "wax"
+      },
+      {
+        "id": "candle-wick",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.4,
+            0.68,
+            0
+          ],
+          "b": [
+            1.4,
+            0.71,
+            0
+          ],
+          "radius": 0.006
+        },
+        "region": "wick"
       },
       {
         "id": "flame-outer",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.038,
+            0.036,
             0.072,
-            0.038
+            0.036
           ]
         },
         "transform": {
           "translate": [
-            1.55,
-            0.75,
-            -0.9
+            1.4,
+            0.745,
+            0
           ]
         },
-        "region": "flame",
-        "color": [
-          240,
-          165,
-          40
-        ]
+        "region": "flame"
       },
       {
         "id": "flame-inner",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.02,
-            0.045,
-            0.02
+            0.018,
+            0.044,
+            0.018
           ]
         },
         "transform": {
           "translate": [
-            1.55,
+            1.4,
             0.74,
-            -0.9
+            0
           ]
         },
-        "region": "flame-core",
-        "color": [
-          255,
-          230,
-          120
-        ]
+        "region": "flame_core"
       }
     ],
     "ground": {
-      "y": -0.96,
+      "y": -0.5,
       "region": "floor"
     },
     "defaults": {
       "camera": {
-        "yaw": 0.55,
-        "pitch": 0.32,
-        "distance": 8.5,
+        "yaw": 0.5,
+        "pitch": 0.6,
+        "distance": 4.5,
         "focal": 1.6,
-        "targetX": 0.2,
-        "targetY": 0.35,
-        "targetZ": -0.1
+        "targetX": 0,
+        "targetY": 0.3,
+        "targetZ": 0
       },
       "light": {
-        "azimuth": 0.55,
+        "azimuth": 0.7,
         "altitude": 0.75,
-        "distance": 32,
-        "intensity": 1.1
+        "distance": 30,
+        "intensity": 1
       },
       "shadow": {
         "enabled": true,
-        "mode": "channelSwap",
-        "strength": 0.38
+        "mode": "darken",
+        "strength": 0.45
       }
     }
   },
   "meta": {
     "savedAt": 1779107065973,
-    "source": "user-saved-2026-05-18"
+    "source": "user-saved-2026-05-18",
+    "v2Promoted": "2026-05-18",
+    "v2Model": "claude-sonnet-4-5",
+    "v2AtomsUsed": "(none)",
+    "v2IQTypesUsed": "(none)",
+    "v2SubjectCount": 37,
+    "previousSource": "user-saved-2026-05-18"
   }
 }
