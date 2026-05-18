@@ -131,23 +131,34 @@ export function validate(data) {
   if (data.source != null) validateSource(data.source, errors, warnings);
 
   // Rule 3: duplicate id check
+  // Nested `source` subjects (extrude/revolve/extrude_to/DomainGroup wraps)
+  // are admin-only — their id never surfaces in the rendered output, so we
+  // auto-generate one if the LLM forgot. Top-level subjects + children still
+  // require explicit id (those DO surface in flatlist / animations).
   const idSet = new Set();
-  const collectIds = (subj, path) => {
+  const collectIds = (subj, path, isNestedSource = false) => {
     if (!subj || typeof subj !== 'object') return;
     if (typeof subj.id !== 'string' || subj.id === '') {
-      errors.push(`${path}: missing or empty id`);
-    } else {
+      if (isNestedSource) {
+        // Auto-fill so the compile pipeline has something stable to log
+        const parentId = path.replace(/\/source$/, '').split('/').pop() || 'anon';
+        subj.id = `${parentId.replace(/[\[\]]/g, '_')}-source`;
+      } else {
+        errors.push(`${path}: missing or empty id`);
+      }
+    }
+    if (subj.id) {
       if (idSet.has(subj.id)) {
         errors.push(`Duplicate subject id "${subj.id}" at ${path}`);
       }
       idSet.add(subj.id);
     }
     if (Array.isArray(subj.children)) {
-      subj.children.forEach((c, i) => collectIds(c, `${path}/children[${i}]`));
+      subj.children.forEach((c, i) => collectIds(c, `${path}/children[${i}]`, false));
     }
     if (subj.source && typeof subj.source === 'object') {
       // DomainGroup / extrude / revolve have nested .source (single Subject)
-      collectIds(subj.source, `${path}/source`);
+      collectIds(subj.source, `${path}/source`, true);
     }
   };
 
