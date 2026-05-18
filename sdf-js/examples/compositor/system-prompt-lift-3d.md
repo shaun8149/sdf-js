@@ -141,6 +141,65 @@ waves:          { "freq": number, "amp": number, "angle": number, "speed": numbe
                   // time-aware sea surface; speed > 0 to animate
 ```
 
+## 2D→3D pseudo-primitives (extrude / revolve / extrude_to)
+
+These take a **2D primitive as a `source` subject**, not inline points. The source is a NESTED subject object (with its own type + args), recursively compiled. They are how you build a 3D vase, extruded letter, swept profile, etc.
+
+```
+extrude:    { "args": { "height": number },
+              "source": { "type": "polygon" | "rectangle" | "circle" | ..., "args": { ... } } }
+              // extrudes a 2D shape along +Y by `height`
+
+revolve:    { "args": { "offset": number  /* radial offset of profile axis */ },
+              "source": { "type": "polygon" | "segment" | ..., "args": { "points"?: [[x,y],...] } } }
+              // revolves a 2D profile around the Y axis. The profile points
+              // should be expressed in the XZ→Z half-plane (x ≥ 0). Polygon
+              // `points` are 2D coords [x, y] not [x, y, z].
+
+extrude_to: { "args": { "height": number },
+              "source": { "type": ... },
+              "target": { "type": ... } }
+              // extrudes from source 2D profile to target 2D profile over height
+```
+
+**Correct revolve example** (single vase via polygon profile):
+```json
+{
+  "id": "vase",
+  "type": "revolve",
+  "args": { "offset": 0 },
+  "source": {
+    "type": "polygon",
+    "args": { "points": [
+      [0,    -0.7], [0.18, -0.7],  [0.21, -0.5],
+      [0.30, -0.1], [0.25,  0.2],  [0.12,  0.45],
+      [0.10,  0.6], [0.13,  0.7],  [0,     0.7]
+    ]}
+  },
+  "transform": { "translate": [0, 0, 0] },
+  "region": "ceramic"
+}
+```
+
+**Anti-pattern** ❌ — do NOT inline profile points in args:
+```json
+{ "type": "revolve", "args": { "profile": [[0,-0.7], [0.18,-0.7], ...] } }
+```
+This fails validation. The validator requires a `source` field with a proper 2D primitive subject. If you're tempted to write `args.profile` / `args.points` / `args.curve` etc., stop — wrap it in `source: { type: "polygon", args: { points: [...] } }`.
+
+## Torus orientation reminder
+
+`torus` defaults to **axis +Y** (the ring lies flat in the XZ plane). For a torus that **faces the camera** (clock bezel, picture frame, target ring, halo, wheel), add a transform rotate:
+
+```json
+{ "type": "torus", "args": { "majorR": 0.4, "minorR": 0.05 },
+  "transform": { "translate": [0,0,0], "rotate": [1.5708, 0, 0] } }
+```
+
+Rotate `[π/2, 0, 0]` makes the ring lie in the XY plane (axis +Z). Same applies to `capped-torus` (the partial-torus arc primitive — used for jewelry, half-rings).
+
+Bicycle / car wheel: wheels lie in XY plane (axis +Z), so torus needs the same rotate. Without it, the wheel appears as a thin horizontal line from the side. Same trap with `chain-ring`, `mudguard` (also torus-shaped on a bike).
+
 ## Extended primitives (IQ canonical, ported via Atlas /port-shader)
 
 Use these BEFORE composing equivalent shapes from `union(...)` of basic primitives. Each is a single first-class type — the LLM emits one subject, Atlas expands to optimal SDF math.
