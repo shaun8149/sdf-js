@@ -4,6 +4,13 @@
   <img src="./docs/hero.png" alt="Atlas hero — stipple-rendered sphere on a paper-textured horizon, produced by BOB GPU 2-pass sand painting" width="640">
 </p>
 
+<p align="center">
+  <img src="./docs/cathedral1.png" alt="Gothic cathedral 3D lift — twin towers, spires, and crossing tower against a warm sky, rendered by BOB GPU. The 2D code from this same prompt failed to render (NaN bug in polygon SDF) but the lift LLM read the code as semantic structure and produced this 3D scene anyway." width="320">
+  <img src="./docs/cathedral2.png" alt="Gothic cathedral 3D lift — 3/4 view emphasising the rose window, lancet portals, and pitched roof between the twin bell towers, with autoscope-style sand painting post-FX. Same prompt, different camera angle reached by WASD fly explore." width="320">
+</p>
+
+<p align="center"><em><sub>Prompt: <code>一座哥特式大教堂</code> (6 characters). 2D code: emitted but failed to render (closing-vertex bug in one <code>polygon</code> call). 3D scene: read by the lift LLM as semantic structure (twin towers + rose window + lancet portals + flying buttresses + crossing tower), compiled into editable SceneData, rendered via BOB GPU. <br><strong>Two parallel pipelines from prompt to viewer — only one needs to succeed.</strong> Diffusion has one.</sub></em></p>
+
 > **Atlas — the LLM-native illustration platform.**
 > An *atlas* in differential geometry is a collection of charts covering a manifold. Here it's a collection of *forms × renderers × patterns × scenes* — composed via four orthogonal input sources (LLM prompt, generator, 2D editor, 3D editor) into a single renderer pool.
 
