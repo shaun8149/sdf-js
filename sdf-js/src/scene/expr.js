@@ -349,5 +349,7 @@ function formatNumber(n) {
 export function normalizeChannel(channel) {
   if (channel.expr != null) return parseExpr(channel.expr);
   if (channel.value != null) return channel.value;
-  throw new Error('normalizeChannel: channel has neither .expr nor .value');
+  // Defensive: incomplete channels are tolerated by validator (warning, not
+  // error). Return null so compile-time consumers can skip rather than throw.
+  return null;
 }

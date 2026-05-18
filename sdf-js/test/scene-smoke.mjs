@@ -125,7 +125,10 @@ test('accepts AnimationChannel with both expr and value (dual-form OK after norm
   assert(r.ok, JSON.stringify(r.errors));
 });
 
-test('rejects AnimationChannel with neither expr nor value', () => {
+test('warns (does not error) on AnimationChannel with neither expr nor value', () => {
+  // Incomplete channels are tolerated for forward-compat (LLM may emit partial
+  // animation; compile skips channels with neither expr nor value). Validator
+  // reports a warning but ok=true.
   const r = validate({
     v: 1,
     subjects: [{
@@ -134,7 +137,9 @@ test('rejects AnimationChannel with neither expr nor value', () => {
     }],
     defaults: { camera: makeCam(), light: makeLight() }
   });
-  assert(!r.ok && r.errors.some(e => e.includes('either "expr"')));
+  assert(r.ok, `should be ok: errors=${JSON.stringify(r.errors)}`);
+  assert(r.warnings.some(w => w.includes('missing both "expr" and "value"')),
+    `should warn about missing expr/value: warnings=${JSON.stringify(r.warnings)}`);
 });
 
 test('rejects shadow with invalid mode', () => {

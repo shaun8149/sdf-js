@@ -395,13 +395,16 @@ function validateAnimationChannel(ch, path, host, errors, warnings) {
     }
   }
 
-  // Rule 13: must have at least one of expr/value. Both is OK — after
-  // parse() normalization, channels carry both forms for round-trip stability.
-  // Authors should write exactly one in raw JSON; serialize adds the other.
+  // Rule 13: a channel SHOULD have at least one of expr/value. Both is OK —
+  // parse() normalizes single-form input to dual-form for round-trip stability.
+  // Authors / LLMs should write exactly one in raw JSON; serialize adds the
+  // other. If neither is present, compile silently SKIPS the channel (warns
+  // but doesn't error). Forward-compat for partial LLM outputs.
   const hasExpr = ch.expr != null;
   const hasValue = ch.value != null;
   if (!hasExpr && !hasValue) {
-    errors.push(`${path}: must have either "expr" (string) or "value" (TimeExpr object)`);
+    warnings.push(`${path}: missing both "expr" and "value" — channel will be ignored at compile time`);
+    return;
   }
   if (hasExpr && typeof ch.expr !== 'string') {
     errors.push(`${path}.expr: must be a string`);

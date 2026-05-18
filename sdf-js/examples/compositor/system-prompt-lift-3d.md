@@ -237,6 +237,13 @@ for table).
 - ❌ DON'T forget the `v: 1` field at the top. SceneData REQUIRES it.
 - ❌ DON'T emit `transform.translate.x` as a single channel string. Use
   `transform: { translate: [x, y, z] }` array form.
+- ❌ DON'T emit `animation` array entries without BOTH a `channel` AND
+  either `expr` or `value`. Either:
+  - OMIT the `animation` field entirely from camera/light/shadow/subjects
+    when you don't need animation (preferred for v1 — keep scenes static).
+  - OR emit complete channels: `{ "channel": "yaw", "expr": "0.1 * sin(t * 0.3)" }`
+  - Empty array `"animation": []` is OK (no channels) but each entry
+    inside MUST have channel + expr or value.
 
 ## Examples
 

@@ -376,8 +376,10 @@ function resolveAnimatedArgs(subj) {
 
   for (const ch of subj.animation) {
     if (typeof ch.channel !== 'string' || !ch.channel.startsWith('args.')) continue;
+    const expr = normalizeChannel(ch);
+    if (expr == null) continue;  // skip incomplete channels (validator warned)
     const key = ch.channel.slice('args.'.length);
-    args[key] = normalizeChannel(ch);
+    args[key] = expr;
   }
   return args;
 }
@@ -439,7 +441,8 @@ function collectTransformAnims(animation) {
   if (!Array.isArray(animation)) return map;
   for (const ch of animation) {
     if (typeof ch.channel === 'string' && ch.channel.startsWith('transform.')) {
-      map[ch.channel] = normalizeChannel(ch);
+      const expr = normalizeChannel(ch);
+      if (expr != null) map[ch.channel] = expr;
     }
   }
   return map;
@@ -502,10 +505,11 @@ function pickShadow(shadow) {
  * returns a function that just returns the static state.
  */
 function makeEvaluator(spec, staticState) {
-  const channels = Array.isArray(spec.animation) ? spec.animation.map(ch => ({
-    field: ch.channel,
-    timeExpr: normalizeChannel(ch),
-  })) : [];
+  const channels = Array.isArray(spec.animation)
+    ? spec.animation
+        .map(ch => ({ field: ch.channel, timeExpr: normalizeChannel(ch) }))
+        .filter(c => c.timeExpr != null)  // skip incomplete channels (validator warned)
+    : [];
 
   if (channels.length === 0) {
     return (_t) => ({ ...staticState });
