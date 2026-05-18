@@ -37,6 +37,10 @@ export const PRIMITIVE_TYPES = new Set([
   // 3D decorative + Platonic
   'pyramid', 'slab3', 'wireframe_box', 'tri_prism', 'prism',
   'tetrahedron', 'octahedron', 'dodecahedron', 'icosahedron',
+  // Community-ported (see src/scene/components/community/)
+  'solid-angle', 'link',
+  'capped-torus', 'hex-prism', 'octagon-prism', 'round-cone',
+  'rhombus', 'horseshoe', 'u-shape',
   // Time-aware
   'waves',
   // 2D → 3D pseudo-primitives

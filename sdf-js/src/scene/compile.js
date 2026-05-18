@@ -31,6 +31,15 @@ import {
   pyramid, slab3, wireframe_box, tri_prism, waves,
   rotateXYZ, twist, bend,
 } from '../sdf/d3.js';
+import { solidAngleSDF } from './components/community/iq-solid-angle.js';
+import { linkSDF } from './components/community/iq-link.js';
+import { cappedTorusSDF } from './components/community/iq-capped-torus.js';
+import { hexPrismSDF } from './components/community/iq-hex-prism.js';
+import { octagonPrismSDF } from './components/community/iq-octagon-prism.js';
+import { roundConeSDF } from './components/community/iq-round-cone.js';
+import { rhombusSDF } from './components/community/iq-rhombus.js';
+import { horseshoeSDF } from './components/community/iq-horseshoe.js';
+import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { union, difference, intersection, rep } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
 import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS } from './spec.js';
@@ -98,6 +107,54 @@ const PRIMITIVE_FACTORIES = {
   octahedron:    (a) => octahedron(a.radius ?? a.r ?? 0.4),
   dodecahedron:  (a) => dodecahedron(a.radius ?? a.r ?? 0.4),
   icosahedron:   (a) => icosahedron(a.radius ?? a.r ?? 0.4),
+
+  // -- Community-ported (see src/scene/components/community/) --
+  'solid-angle': (a) => solidAngleSDF({
+    halfAperture: a.halfAperture ?? Math.PI / 6,
+    radius:       a.radius       ?? 0.5,
+  }),
+  link: (a) => linkSDF({
+    halfLength: a.halfLength ?? a.le         ?? 0.13,
+    majorR:     a.majorR     ?? a.radius     ?? 0.1,
+    minorR:     a.minorR     ?? a.thickness  ?? 0.02,
+  }),
+  'capped-torus': (a) => cappedTorusSDF({
+    capAngle: a.capAngle ?? a.halfAperture ?? Math.PI / 2,
+    majorR:   a.majorR   ?? a.radius       ?? 0.4,
+    minorR:   a.minorR   ?? a.thickness    ?? 0.1,
+  }),
+  'hex-prism': (a) => hexPrismSDF({
+    apothem:    a.apothem    ?? a.radius     ?? 0.3,
+    halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
+  }),
+  'octagon-prism': (a) => octagonPrismSDF({
+    apothem:    a.apothem    ?? a.radius     ?? 0.3,
+    halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
+  }),
+  'round-cone': (a) => roundConeSDF({
+    baseRadius: a.baseRadius ?? a.r1 ?? 0.3,
+    topRadius:  a.topRadius  ?? a.r2 ?? 0.1,
+    height:     a.height     ?? a.h  ?? 0.6,
+  }),
+  rhombus: (a) => rhombusSDF({
+    la:      a.la      ?? 0.4,
+    lb:      a.lb      ?? 0.2,
+    h:       a.h       ?? a.halfHeight ?? 0.05,
+    cornerR: a.cornerR ?? a.ra         ?? 0.02,
+  }),
+  horseshoe: (a) => horseshoeSDF({
+    openAngle: a.openAngle ?? Math.PI / 3,
+    radius:    a.radius    ?? a.r  ?? 0.4,
+    length:    a.length    ?? a.le ?? 0.1,
+    halfWidth: a.halfWidth ?? 0.08,
+    halfDepth: a.halfDepth ?? 0.04,
+  }),
+  'u-shape': (a) => uShapeSDF({
+    radius:    a.radius    ?? a.r  ?? 0.3,
+    legLength: a.legLength ?? a.le ?? 0.2,
+    halfWidth: a.halfWidth ?? 0.06,
+    halfDepth: a.halfDepth ?? 0.04,
+  }),
 
   // -- Time-aware --
   waves:         (a) => waves(a.freq ?? 2, a.amp ?? 0.5, a.angle ?? 0, a.speed ?? 0),

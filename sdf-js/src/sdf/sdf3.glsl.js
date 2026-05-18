@@ -218,6 +218,13 @@ float sdSolidAngle(vec3 pos, vec2 c, float ra) {
   return max(l, m * sign(c.y * p.x - c.x * p.y));
 }
 
+// Link (chain link / oblong torus, axis +Y).
+// le = half-length of straight section, r1 = major radius (loop), r2 = minor radius (tube).
+float sdLink(vec3 p, float le, float r1, float r2) {
+  vec3 q = vec3(p.x, max(abs(p.y) - le, 0.0), p.z);
+  return length(vec2(length(q.xy) - r1, q.z)) - r2;
+}
+
 // Octahedron (exact). s = vertex distance from origin
 float sdOctahedron(vec3 p, float s) {
   p = abs(p);
@@ -454,7 +461,7 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdPlane', 'sdSphere', 'sdBox', 'sdBoxFrame', 'sdEllipsoid',
   'sdTorus', 'sdCappedTorus', 'sdHexPrism', 'sdOctogonPrism',
   'sdCapsule', 'sdRoundCone', 'sdTriPrism', 'sdCylinder',
-  'sdCone', 'sdCappedCone', 'sdSolidAngle', 'sdOctahedron',
+  'sdCone', 'sdCappedCone', 'sdSolidAngle', 'sdLink', 'sdOctahedron',
   'sdPyramid', 'sdRhombus', 'sdHorseshoe', 'sdU',
   // d3.js extensions
   'sdRoundedBox', 'sdTetrahedron', 'sdDodecahedron', 'sdIcosahedron',

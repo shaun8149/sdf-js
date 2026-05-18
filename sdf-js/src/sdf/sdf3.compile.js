@@ -283,6 +283,46 @@ const PRIMS = {
     return `sdCappedCone(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(baseRadius)}, ${flt(0.001)})`;
   },
 
+  // solid-angle(halfAperture, radius) → sdSolidAngle(p, vec2(sin(α), cos(α)), ra)
+  // GLSL helper already in SDF3_GLSL — see sdf3.glsl.js:213. The vec2 c expects
+  // (sin, cos) of the half-aperture; we precompute them on the JS side and emit
+  // them as float literals.
+  'solid-angle': ([halfAperture, radius], p) => {
+    const sinA = Math.sin(halfAperture);
+    const cosA = Math.cos(halfAperture);
+    return `sdSolidAngle(${p}, ${vec2([sinA, cosA])}, ${flt(radius)})`;
+  },
+
+  // link(halfLength, majorR, minorR) → sdLink(p, le, r1, r2)
+  // GLSL helper added to SDF3_GLSL alongside sdSolidAngle. A chain-link /
+  // oblong torus: torus elongated along +Y by 2*halfLength.
+  link: ([halfLength, majorR, minorR], p) =>
+    `sdLink(${p}, ${flt(halfLength)}, ${flt(majorR)}, ${flt(minorR)})`,
+
+  // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
+  // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
+  //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)
+  //   hex-prism, octagon-prism, round-cone, rhombus, horseshoe, u-shape
+
+  'capped-torus': ([capAngle, majorR, minorR], p) => {
+    const s = Math.sin(capAngle), c = Math.cos(capAngle);
+    return `sdCappedTorus(${p}, ${vec2([s, c])}, ${flt(majorR)}, ${flt(minorR)})`;
+  },
+  'hex-prism': ([apothem, halfHeight], p) =>
+    `sdHexPrism(${p}, ${vec2([apothem, halfHeight])})`,
+  'octagon-prism': ([apothem, halfHeight], p) =>
+    `sdOctogonPrism(${p}, ${flt(apothem)}, ${flt(halfHeight)})`,
+  'round-cone': ([baseRadius, topRadius, height], p) =>
+    `sdRoundCone(${p}, ${flt(baseRadius)}, ${flt(topRadius)}, ${flt(height)})`,
+  rhombus: ([la, lb, h, cornerR], p) =>
+    `sdRhombus(${p}, ${flt(la)}, ${flt(lb)}, ${flt(h)}, ${flt(cornerR)})`,
+  horseshoe: ([openAngle, radius, length, halfWidth, halfDepth], p) => {
+    const c = Math.cos(openAngle), s = Math.sin(openAngle);
+    return `sdHorseshoe(${p}, ${vec2([c, s])}, ${flt(radius)}, ${flt(length)}, ${vec2([halfWidth, halfDepth])})`;
+  },
+  'u-shape': ([radius, legLength, halfWidth, halfDepth], p) =>
+    `sdU(${p}, ${flt(radius)}, ${flt(legLength)}, ${vec2([halfWidth, halfDepth])})`,
+
   tetrahedron:  ([r], p) => `sdTetrahedron(${p}, ${flt(r)})`,
   octahedron:   ([r], p) => `sdOctahedron(${p}, ${flt(r)})`,
   dodecahedron: ([r], p) => `sdDodecahedron(${p}, ${flt(r)})`,
