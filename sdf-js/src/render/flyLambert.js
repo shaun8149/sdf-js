@@ -139,6 +139,14 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   const gl = canvas.getContext('webgl', { antialias: true, preserveDrawingBuffer: false });
   if (!gl) throw new Error('WebGL not supported');
 
+  canvas.addEventListener('webglcontextlost', (e) => {
+    console.error('[fly3d] WebGL context lost', e);
+    e.preventDefault();
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    console.warn('[fly3d] WebGL context restored — re-upload required');
+  });
+
   const camState = { position: [0, 0.3, -3.0], yaw: 0, pitch: 0 };
   const defaultCam = { position: [...camState.position], yaw: 0, pitch: 0 };
 
@@ -232,6 +240,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     return result.glsl.length;
   }
 
+  let _debugFirstDraw = true;
   function draw() {
     if (!program) return;
     const c = getControls();
@@ -241,8 +250,25 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     const up = cross(fwd, right);
     const lpos = lightFromSpherical(c.lightAzim, c.lightAlt, c.lightDist);
 
+    // Defensive state reset — WebGL context is shared with other renderers
+    // (e.g. bobShader) on the same canvas; their leftover state (FBO binding,
+    // depth/blend, vertex attrib pointers) would silently break our draw.
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.CULL_FACE);
+    gl.disable(gl.BLEND);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.colorMask(true, true, true, true);
     gl.useProgram(program);
+    const a_pos = gl.getAttribLocation(program, 'a_pos');
+    gl.enableVertexAttribArray(a_pos);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+    gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+
     gl.viewport(0, 0, canvas.width, canvas.height);
+    // Visible clear color so blank frames are obvious (magenta = "shader didn't paint")
+    gl.clearColor(1.0, 0.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uniformsCache.u_resolution, canvas.width, canvas.height);
     gl.uniform3f(uniformsCache.u_camPos, camState.position[0], camState.position[1], camState.position[2]);
     gl.uniform3f(uniformsCache.u_camFwd, fwd[0], fwd[1], fwd[2]);
@@ -254,6 +280,27 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.uniform1f(uniformsCache.u_groundOn,  c.groundOn  ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_checkerOn, c.checkerOn ? 1.0 : 0.0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    if (_debugFirstDraw) {
+      _debugFirstDraw = false;
+      const err = gl.getError();
+      const errName = err === gl.NO_ERROR ? 'NO_ERROR'
+        : err === gl.INVALID_ENUM ? 'INVALID_ENUM'
+        : err === gl.INVALID_VALUE ? 'INVALID_VALUE'
+        : err === gl.INVALID_OPERATION ? 'INVALID_OPERATION'
+        : err === gl.INVALID_FRAMEBUFFER_OPERATION ? 'INVALID_FRAMEBUFFER_OPERATION'
+        : err === gl.OUT_OF_MEMORY ? 'OUT_OF_MEMORY'
+        : err === gl.CONTEXT_LOST_WEBGL ? 'CONTEXT_LOST_WEBGL'
+        : `0x${err.toString(16)}`;
+      console.log('%c[fly3d] first frame drawn', 'color:#7fa97f; font-weight:600', {
+        glError: errName,
+        canvasW: canvas.width, canvasH: canvas.height,
+        canvasVisible: canvas.style.display,
+        camPos: camState.position,
+        camYaw: camState.yaw, camPitch: camState.pitch,
+        a_pos_loc: a_pos,
+      });
+    }
   }
 
   let frameCount = 0;
@@ -280,7 +327,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
      * Throws on compile / shader / link failure.
      */
     render(sdf) {
+      console.log('%c[fly3d] render() called', 'color:#7fa97f');
       const bytes = uploadSDF(sdf);
+      console.log('%c[fly3d] uploadSDF done', 'color:#7fa97f', { bytes, programLinked: !!program });
       if (!flyHandle) {
         flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
           speed: 1.5,
@@ -292,6 +341,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
           },
         });
       }
+      _debugFirstDraw = true;
       if (!rafId) {
         fpsLast = performance.now();
         frameCount = 0;
@@ -313,6 +363,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
       camState.position = [...defaultCam.position];
       camState.yaw = defaultCam.yaw;
       camState.pitch = defaultCam.pitch;
+    },
+
+    setCamState(patch) {
+      if (patch.position) camState.position = [...patch.position];
+      if (patch.yaw != null)   camState.yaw   = patch.yaw;
+      if (patch.pitch != null) camState.pitch = patch.pitch;
     },
 
     /**

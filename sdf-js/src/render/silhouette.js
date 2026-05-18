@@ -103,6 +103,10 @@ export function silhouette(ctx, layers, options = {}) {
           t = tHit < 0 ? 0 : 1;
         } else {
           const d = layer.sdf([wx, wy]);
+          // Defensive: NaN/Infinity from malformed SDFs (e.g. degenerate polygon
+          // edges) would propagate via the blend below and turn pixels black.
+          // Skip such layers cleanly instead of poisoning the running color.
+          if (!Number.isFinite(d)) continue;
           t = smoothstep(aa, -aa, d);    // d<0 → t=1（实色覆盖），d>0 → t=0（透明）
         }
         col = [

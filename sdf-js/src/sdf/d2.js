@@ -204,7 +204,22 @@ export const hexagon = (r = 1) => {
 
 // 任意多边形：points 为 [[x,y], ...] 顶点列表（首尾不闭合）。算法逐边求最近距离 + 叉积绕数判内外。
 export const polygon = (points) => {
-  const pts = points.map((p) => [p[0], p[1]]);
+  // Dedupe consecutive identical points + closing-vertex repeat. Common LLM
+  // habit: writing polygon([a, b, c, a]) to "close" the loop — but our SDF
+  // closes implicitly via the modular j index. The duplicate creates a
+  // zero-length edge → NaN distance → poisons union() downstream → black canvas.
+  const pts = [];
+  for (let i = 0; i < points.length; i++) {
+    const cur = points[i];
+    const prev = pts[pts.length - 1];
+    if (!prev || prev[0] !== cur[0] || prev[1] !== cur[1]) {
+      pts.push([cur[0], cur[1]]);
+    }
+  }
+  if (pts.length > 1) {
+    const first = pts[0], last = pts[pts.length - 1];
+    if (first[0] === last[0] && first[1] === last[1]) pts.pop();
+  }
   const n = pts.length;
   return SDF2((p) => {
     let dx = p[0] - pts[0][0];
@@ -215,8 +230,10 @@ export const polygon = (points) => {
       const j = (i + n - 1) % n;
       const vi = pts[i], vj = pts[j];
       const ex = vj[0] - vi[0], ey = vj[1] - vi[1];
+      const len2 = ex * ex + ey * ey;
+      if (len2 === 0) continue; // belt-and-suspenders: skip any residual zero edges
       const wx = p[0] - vi[0], wy = p[1] - vi[1];
-      const t = Math.max(0, Math.min(1, (wx * ex + wy * ey) / (ex * ex + ey * ey)));
+      const t = Math.max(0, Math.min(1, (wx * ex + wy * ey) / len2));
       const bx = wx - ex * t, by = wy - ey * t;
       d = Math.min(d, bx * bx + by * by);
       // Crossing-number test: p[1] 是否跨过这条边
