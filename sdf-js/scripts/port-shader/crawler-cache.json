@@ -1,0 +1,104 @@
+{
+  "$comment": "State of /atlas-component-crawler. Tracks seen sources to avoid re-porting, and runs to expose what's been tried over time. Updated by the crawler on each iteration; committed to repo so subsequent runs (including on different machines / CI) share the same state.",
+  "lastRun": null,
+  "totalRuns": 0,
+  "seen": [
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdSolidAngle",
+      "outcome": "ported",
+      "componentId": "solid-angle",
+      "componentFile": "sdf-js/src/scene/components/community/iq-solid-angle.js",
+      "portedAt": "2026-05-18",
+      "portedBy": "manual Day 1"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdLink",
+      "outcome": "ported",
+      "componentId": "link",
+      "componentFile": "sdf-js/src/scene/components/community/iq-link.js",
+      "portedAt": "2026-05-18",
+      "portedBy": "/port-shader skill (dogfood)"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdCappedTorus",
+      "outcome": "ported",
+      "componentId": "capped-torus",
+      "componentFile": "sdf-js/src/scene/components/community/iq-capped-torus.js",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdHexPrism",
+      "outcome": "ported",
+      "componentId": "hex-prism",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdOctogonPrism",
+      "outcome": "ported",
+      "componentId": "octagon-prism",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdRoundCone",
+      "outcome": "ported",
+      "componentId": "round-cone",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdRhombus",
+      "outcome": "ported",
+      "componentId": "rhombus",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdHorseshoe",
+      "outcome": "ported",
+      "componentId": "horseshoe",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "https://iquilezles.org/articles/distfunctions/",
+      "function": "sdU",
+      "outcome": "ported",
+      "componentId": "u-shape",
+      "portedAt": "2026-05-18",
+      "portedBy": "batch port"
+    },
+    {
+      "url": "github.com/kyle-pena-nlp/shaders/blob/main/tree.glsl",
+      "function": "sdTree",
+      "outcome": "skipped",
+      "reason": "Uses QueryResult struct (custom material/uvw tracking system); coupling too tight to easily port. Could revisit if we add struct-aware porter.",
+      "encounteredAt": "2026-05-18"
+    },
+    {
+      "url": "github.com/vanandrewnguyen/GLSLExperiments/Ray Marching!/mountainV5Raymarch.glsl",
+      "function": "noise-heightmap-terrain",
+      "outcome": "skipped",
+      "reason": "Heightmap-based using fbm noise — not a closed-form SDF; uses raymarching density. Different paradigm than our SDF library.",
+      "encounteredAt": "2026-05-18"
+    },
+    {
+      "url": "github.com/flightphone/shaderty/blob/main/glsl/pine.glsl",
+      "function": "sdTree (full)",
+      "outcome": "skipped",
+      "reason": "Christmas-tree composite with iTime modulation, global state mutation (sdfColor/sdfReflect), and ornament-blinking. Helper sdSolidAngle ported separately.",
+      "encounteredAt": "2026-05-18"
+    }
+  ],
+  "runs": []
+}

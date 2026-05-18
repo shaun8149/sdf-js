@@ -1,0 +1,45 @@
+{
+  "$comment": "GitHub Code Search queries used by /atlas-component-crawler. Each query targets a specific class of SDF function. Order matters — earlier queries are higher-priority. Run via `gh api search/code -f q='<query>' -F per_page=5`. The crawler tries queries one at a time, gathering hits, deduping against seen-cache.",
+  "queries": [
+    {
+      "id": "sd-primitives-glsl",
+      "q": "float sd vec3 language:GLSL extension:glsl",
+      "rationale": "Broadest net for SDF primitive functions. Yields IQ-style sd<Name>(vec3 p, ...) signatures."
+    },
+    {
+      "id": "tree-sdf",
+      "q": "sdTree OR sdLeaf OR sdBranch vec3 language:GLSL",
+      "rationale": "Tree / foliage composite SDFs."
+    },
+    {
+      "id": "cloud-sdf",
+      "q": "sdCloud OR cloudDensity vec3 language:GLSL",
+      "rationale": "Cloud SDF candidates (may need to skip if uses raymarching density)."
+    },
+    {
+      "id": "mountain-terrain",
+      "q": "sdMountain OR terrain vec3 language:GLSL extension:glsl",
+      "rationale": "Terrain / mountain SDFs (often heightmap-based — judge carefully)."
+    },
+    {
+      "id": "boolean-ops",
+      "q": "fOpUnion OR fOpIntersection language:GLSL",
+      "rationale": "Mercury hg_sdf-style boolean operations (chamfered/columned/grooved unions)."
+    },
+    {
+      "id": "shapes-special",
+      "q": "sdHeart OR sdStar OR sdMoon vec3 language:GLSL",
+      "rationale": "Iconic / decorative shapes."
+    },
+    {
+      "id": "iq-snail-tentacle",
+      "q": "tentacle SDF vec3 language:GLSL",
+      "rationale": "IQ Snail-style organic appendages."
+    },
+    {
+      "id": "iq-distfunctions-html",
+      "q": "iquilezles.org/articles/distfunctions extension:html",
+      "rationale": "Canonical IQ article mirrors / Atlas-relevant copies."
+    }
+  ]
+}
