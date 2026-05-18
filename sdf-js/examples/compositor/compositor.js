@@ -40,7 +40,14 @@ const state = {
   // generator-tab state
   genHash: null,                       // current hash hex string
   genSceneTypeChoice: 'random',        // 'random' | '0'..'5'
-  bobRenderer: null,                   // lazy createBobShaderRenderer instance
+  bobRenderer: null,                   // lazy createBobShaderRenderer instance — shared between text-lift & generator
+  genScene: null,                      // generator-tab compiled scene
+  genSdf: null,                        // generator-tab final SDF (subjects ∪ ground)
+  // text-tab lift state
+  textLiftScene: null,                 // compiled SceneData from 3D lift
+  textLiftSdf: null,                   // text-tab lift final SDF
+  textLiftSourcePrompt: null,          // original prompt that was lifted
+  liftMode: false,                     // true when text-tab showing 3D lift (canvas swap)
 };
 
 // =============================================================================
@@ -107,6 +114,7 @@ function formatTime(ts) {
 const STORAGE_KEY = 'atlas-anthropic-key';
 const DEFAULT_MODEL = 'claude-sonnet-4-6';
 let SYSTEM_PROMPT = '';
+let SYSTEM_PROMPT_LIFT = '';
 
 async function loadSystemPrompt() {
   try {
@@ -117,6 +125,89 @@ async function loadSystemPrompt() {
   } catch (e) {
     setStatus(`✗ system prompt load failed: ${e.message}`, true);
     throw e;
+  }
+}
+
+async function loadLiftSystemPrompt() {
+  try {
+    const res = await fetch('./system-prompt-lift-3d.md');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    SYSTEM_PROMPT_LIFT = await res.text();
+    return SYSTEM_PROMPT_LIFT.length;
+  } catch (e) {
+    console.warn(`Lift system prompt load failed: ${e.message}`);
+    return 0;
+  }
+}
+
+/**
+ * Resolve which compiled scene + sdf the BOB GPU renderer should display
+ * given the current tab + lift state. Used by camera loop and renderer
+ * controls so both text-tab lift mode and generator-tab share the same
+ * BOB GPU canvas without state leakage.
+ */
+function getActiveGpuScene() {
+  if (state.activeTab === 'text' && state.liftMode) {
+    return { scene: state.textLiftScene, sdf: state.textLiftSdf };
+  }
+  if (state.activeTab === 'generator') {
+    return { scene: state.genScene, sdf: state.genSdf };
+  }
+  return { scene: null, sdf: null };
+}
+
+async function callLiftLLM(originalPrompt, code2d, apiKey, model = DEFAULT_MODEL) {
+  if (!SYSTEM_PROMPT_LIFT) {
+    await loadLiftSystemPrompt();
+  }
+  if (!SYSTEM_PROMPT_LIFT) throw new Error('Lift system prompt not loaded');
+  if (!apiKey) throw new Error('Anthropic API key required');
+
+  const userMessage = `## Original user prompt\n\n${originalPrompt}\n\n## 2D SDF code\n\n\`\`\`js\n${code2d}\n\`\`\``;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 8192,
+      system: SYSTEM_PROMPT_LIFT,
+      messages: [{ role: 'user', content: userMessage }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API ${response.status}: ${errText.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  return { text: data.content[0].text, usage: data.usage };
+}
+
+function parseLiftResponse(text) {
+  // LLM may wrap JSON in ```json ... ``` fence, or emit prose around it.
+  const fenceMatch = text.match(/```(?:json)?\s*\n([\s\S]*?)\n```/);
+  let jsonStr = fenceMatch ? fenceMatch[1] : text.trim();
+
+  // If no fence, try to find the first { and matching } at end
+  if (!fenceMatch && !jsonStr.startsWith('{')) {
+    const firstBrace = jsonStr.indexOf('{');
+    const lastBrace = jsonStr.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) {
+      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
+    }
+  }
+
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    throw new Error(`Failed to parse lift JSON: ${e.message}\n\nRaw LLM output (first 500 chars):\n${text.slice(0, 500)}`);
   }
 }
 
@@ -292,6 +383,25 @@ const TAB_CONTENT = {
 
     <p id="usage-info" style="font-size:10px; color:#666; margin-top:4px;"></p>
 
+    <h3>3D Lift</h3>
+    <p style="font-size:11px; color:#999; line-height:1.5; margin-bottom:6px;">
+      Take the current 2D scene and lift it into a 3D world you can fly through.
+      Same prompt + 2D code → LLM outputs SceneData v1 (3D primitives + camera + light + shadow).
+    </p>
+    <button id="btn-lift-3d" disabled style="
+      padding: 7px 12px; background: #2a2a2a; color: #aaa;
+      border: 1px solid #3a3a3a; border-radius: 3px; cursor: pointer;
+      font-size: 12px; width: 100%;">
+      ✨ Lift to 3D
+    </button>
+    <button id="btn-back-to-2d" style="
+      padding: 7px 12px; background: #2a2a2a; color: #aaa;
+      border: 1px solid #3a3a3a; border-radius: 3px; cursor: pointer;
+      font-size: 12px; width: 100%; margin-top: 4px; display: none;">
+      ← Back to 2D
+    </button>
+    <p id="lift-info" style="font-size:10px; color:#666; margin-top:4px;"></p>
+
     <h3>History
       <button class="history-clear" id="btn-clear-history">clear all</button>
     </h3>
@@ -371,19 +481,45 @@ function renderActiveTab() {
   $('tab-content').innerHTML = TAB_CONTENT[state.activeTab]();
   $('tab-content').dataset.activeTab = state.activeTab;
 
-  // Canvas swap: text-tab uses #c (canvas2D), generator-tab uses #c-gpu (WebGL)
-  if (state.activeTab === 'generator') {
-    $('c').style.display = 'none';
-    $('c-gpu').style.display = 'block';
-  } else {
-    $('c').style.display = 'block';
-    $('c-gpu').style.display = 'none';
-  }
+  updateCanvasVisibility();
 
   if (state.activeTab === 'text') {
     wireTextTab();
   } else if (state.activeTab === 'generator') {
     wireGeneratorTab();
+  }
+}
+
+/**
+ * Resolve which canvas should be visible right now:
+ *   - generator-tab → always GPU canvas
+ *   - text-tab + liftMode → GPU canvas (showing 3D lift)
+ *   - text-tab + !liftMode → 2D canvas
+ *   - 2d-edit / 3d-edit (stubs) → 2D canvas placeholder
+ * Re-render gpu scene if switching IN to gpu and have a stored scene.
+ */
+function updateCanvasVisibility() {
+  const useGpu = state.activeTab === 'generator' ||
+                 (state.activeTab === 'text' && state.liftMode);
+  $('c').style.display = useGpu ? 'none' : 'block';
+  $('c-gpu').style.display = useGpu ? 'block' : 'none';
+
+  // When swapping IN to GPU canvas, re-render the active scene's SDF.
+  // bobShader's existing program may still hold the OTHER tab's SDF tree.
+  if (useGpu && state.bobRenderer) {
+    const { sdf, scene } = getActiveGpuScene();
+    if (sdf && scene) {
+      try {
+        state.bobRenderer.render(sdf);
+        if (scene.cameraStatic) {
+          state.bobRenderer.setCamState(sphericalToCamState(scene.cameraStatic));
+        }
+        gpuSceneStartTime = performance.now();
+        userTookCam = false;
+      } catch (e) {
+        console.error('GPU re-render on tab swap failed:', e);
+      }
+    }
   }
 }
 
@@ -431,6 +567,9 @@ function wireTextTab() {
       state.selectedHistoryId = newest.id;
       setCodeDisplay(result.text, userPrompt, usageStr);
       renderHistoryList();
+      // Exit lift mode if in it, refresh Lift button to enabled state
+      if (state.liftMode) exitLiftMode();
+      refreshLiftButtonState();
 
       setStatus('⋯ executing generated code…');
       try {
@@ -460,7 +599,125 @@ function wireTextTab() {
 
   $('btn-clear-history').addEventListener('click', clearHistory);
 
+  // Lift to 3D handlers
+  $('btn-lift-3d').addEventListener('click', liftCurrent2DTo3D);
+  $('btn-back-to-2d').addEventListener('click', exitLiftMode);
+
+  // Enable lift button if there's a current 2D code + selected history entry
+  // (i.e., we know the original prompt and code to feed the lift LLM).
+  refreshLiftButtonState();
+
   renderHistoryList();
+}
+
+function refreshLiftButtonState() {
+  const liftBtn = $('btn-lift-3d');
+  const backBtn = $('btn-back-to-2d');
+  if (!liftBtn) return;
+
+  const code = $('code-display').value;
+  const selected = state.history.find(h => h.id === state.selectedHistoryId);
+  const haveBoth = code && selected;
+
+  if (state.liftMode) {
+    liftBtn.disabled = true;
+    liftBtn.style.background = '#2a2a2a';
+    liftBtn.style.color = '#666';
+    liftBtn.textContent = '✓ Lifted to 3D';
+    backBtn.style.display = 'block';
+  } else {
+    liftBtn.disabled = !haveBoth;
+    liftBtn.style.background = haveBoth ? '#ffd070' : '#2a2a2a';
+    liftBtn.style.color = haveBoth ? '#1a1a1a' : '#666';
+    liftBtn.style.cursor = haveBoth ? 'pointer' : 'not-allowed';
+    liftBtn.style.fontWeight = haveBoth ? '600' : 'normal';
+    liftBtn.textContent = '✨ Lift to 3D';
+    backBtn.style.display = 'none';
+  }
+}
+
+async function liftCurrent2DTo3D() {
+  const code = $('code-display').value;
+  const selected = state.history.find(h => h.id === state.selectedHistoryId);
+  if (!code || !selected) {
+    setStatus('✗ no 2D scene to lift', true);
+    return;
+  }
+
+  const apiKey = ($('api-key')?.value || localStorage.getItem(STORAGE_KEY) || '').trim();
+  if (!apiKey) {
+    setStatus('✗ Anthropic API key required', true);
+    return;
+  }
+
+  setStatus('⋯ lifting 2D scene to 3D…');
+  $('lift-info').textContent = '(calling LLM with 2D code + lift system prompt…)';
+
+  try {
+    const t0 = performance.now();
+    const result = await callLiftLLM(selected.prompt, code, apiKey);
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+
+    let sceneData;
+    try {
+      sceneData = parseLiftResponse(result.text);
+    } catch (parseErr) {
+      throw new Error(`JSON parse failed (${parseErr.message.slice(0, 100)})`);
+    }
+
+    let compiled;
+    try {
+      compiled = compileSceneData(sceneData);
+    } catch (compileErr) {
+      throw new Error(`SceneData compile failed: ${compileErr.message}`);
+    }
+
+    const renderSdf = (compiled.groundSdf && compiled.sdf)
+      ? sdfUnion(compiled.sdf, compiled.groundSdf)
+      : (compiled.sdf || compiled.groundSdf);
+
+    if (!renderSdf) throw new Error('empty SDF — no subjects + no ground');
+
+    state.textLiftScene = compiled;
+    state.textLiftSdf = renderSdf;
+    state.textLiftSourcePrompt = selected.prompt;
+    state.liftMode = true;
+    gpuSceneStartTime = performance.now();
+    userTookCam = false;
+
+    const bob = ensureBobRenderer();
+    bob.setCamState(sphericalToCamState(compiled.cameraStatic));
+    const { bytes } = bob.render(renderSdf);
+
+    updateCanvasVisibility();
+    refreshLiftButtonState();
+
+    const subjects = compiled.subjects.length;
+    const shadowMode = compiled.shadowStatic?.mode ?? 'off';
+    const ground = compiled.ground ? `y=${compiled.ground.y}` : 'none';
+    $('lift-info').innerHTML = `↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s<br>
+      ${subjects} subjects · shadow=${shadowMode} · ground=${ground} · ${(bytes / 1024).toFixed(1)} KB GLSL`;
+    $('scene-info').textContent = `3D lift · ${sceneData.name || selected.prompt.slice(0, 30)}`;
+    setStatus(`✓ 3D scene rendered (${elapsed}s) — click canvas to fly`);
+
+    // Save lift to history entry alongside the 2D code
+    selected.lift = { sceneData, elapsed, usage: result.usage };
+    saveHistory();
+  } catch (e) {
+    setStatus(`✗ lift error: ${e.message}`, true);
+    $('lift-info').textContent = `✗ ${e.message}`;
+    console.error(e);
+  }
+}
+
+function exitLiftMode() {
+  state.liftMode = false;
+  updateCanvasVisibility();
+  refreshLiftButtonState();
+  $('scene-info').textContent = state.selectedHistoryId
+    ? state.history.find(h => h.id === state.selectedHistoryId)?.prompt?.slice(0, 40) || 'No scene'
+    : 'No scene';
+  setStatus('back to 2D');
 }
 
 // =============================================================================
@@ -475,12 +732,12 @@ function ensureBobRenderer() {
     twoPass: true,
     bufferResolution: 320,
     getControls: () => {
-      const t = (performance.now() - genStartTime) / 1000;
-      if (!state.scene) return defaultBobControls();
-      const c = state.scene;
-      const cam = c.evalCamera ? c.evalCamera(t) : c.cameraStatic;
-      const light = c.evalLight ? c.evalLight(t) : c.lightStatic;
-      const shadow = c.evalShadow ? c.evalShadow(t) : c.shadowStatic;
+      const { scene } = getActiveGpuScene();
+      const t = (performance.now() - gpuSceneStartTime) / 1000;
+      if (!scene) return defaultBobControls();
+      const cam = scene.evalCamera ? scene.evalCamera(t) : scene.cameraStatic;
+      const light = scene.evalLight ? scene.evalLight(t) : scene.lightStatic;
+      const shadow = scene.evalShadow ? scene.evalShadow(t) : scene.shadowStatic;
       return {
         lightAzim: light.azimuth,
         lightAlt:  light.altitude,
@@ -529,18 +786,21 @@ function sphericalToCamState(cam) {
   };
 }
 
-let genStartTime = performance.now();
-let genUserTookCam = false;
+let gpuSceneStartTime = performance.now();
+let userTookCam = false;
 
-function generatorCameraLoop() {
-  if (state.activeTab === 'generator' && state.bobRenderer && state.scene && !genUserTookCam) {
-    const t = (performance.now() - genStartTime) / 1000;
-    const cam = state.scene.evalCamera(t);
-    state.bobRenderer.setCamState(sphericalToCamState(cam));
+function gpuCameraLoop() {
+  if (state.bobRenderer && !userTookCam) {
+    const { scene } = getActiveGpuScene();
+    if (scene && scene.evalCamera) {
+      const t = (performance.now() - gpuSceneStartTime) / 1000;
+      const cam = scene.evalCamera(t);
+      state.bobRenderer.setCamState(sphericalToCamState(cam));
+    }
   }
-  requestAnimationFrame(generatorCameraLoop);
+  requestAnimationFrame(gpuCameraLoop);
 }
-generatorCameraLoop();
+gpuCameraLoop();
 
 function generateGeneratorScene({ keepCamera = false } = {}) {
   if (!state.genHash || !isValidHash(state.genHash)) {
@@ -564,21 +824,19 @@ function generateGeneratorScene({ keepCamera = false } = {}) {
   }
 
   // Union ground into the SDF tree (compile returns it separately)
-  let renderSdf;
-  if (compiled.groundSdf && compiled.sdf) {
-    renderSdf = sdfUnion(compiled.sdf, compiled.groundSdf);
-  } else {
-    renderSdf = compiled.sdf || compiled.groundSdf;
-  }
+  const renderSdf = (compiled.groundSdf && compiled.sdf)
+    ? sdfUnion(compiled.sdf, compiled.groundSdf)
+    : (compiled.sdf || compiled.groundSdf);
 
   if (!renderSdf) {
     setStatus('✗ empty scene', true);
     return;
   }
 
-  state.scene = compiled;
-  genStartTime = performance.now();
-  genUserTookCam = false;
+  state.genScene = compiled;
+  state.genSdf = renderSdf;
+  gpuSceneStartTime = performance.now();
+  userTookCam = false;
 
   const bob = ensureBobRenderer();
   if (!keepCamera) bob.setCamState(sphericalToCamState(compiled.cameraStatic));
@@ -650,10 +908,10 @@ function wireGeneratorTab() {
   });
 
   // User click canvas → take camera control (yields scene anim until next scene)
-  $('c-gpu').addEventListener('pointerdown', () => { genUserTookCam = true; });
+  $('c-gpu').addEventListener('pointerdown', () => { userTookCam = true; });
 
   // Initial render if no scene yet
-  if (!state.scene) {
+  if (!state.genScene) {
     generateGeneratorScene();
   }
 }
@@ -700,6 +958,8 @@ async function loadHistoryEntry(id) {
     : null;
   setCodeDisplay(entry.code, entry.prompt, usageStr);
   renderHistoryList();
+  if (state.liftMode) exitLiftMode();
+  refreshLiftButtonState();
   setStatus('⋯ re-executing history entry…');
   try {
     await executeGeneratedCode(entry.code);
@@ -875,4 +1135,6 @@ $('code-display')?.addEventListener('keydown', (e) => {
   }
 });
 
-loadSystemPrompt().then(n => setStatus(`✓ system prompt loaded (${n} chars)`));
+Promise.all([loadSystemPrompt(), loadLiftSystemPrompt()]).then(([n2d, nLift]) => {
+  setStatus(`✓ system prompts loaded (2D ${n2d} chars, lift ${nLift} chars)`);
+});
