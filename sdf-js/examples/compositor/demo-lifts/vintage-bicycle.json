@@ -1,0 +1,1028 @@
+{
+  "id": "vintage-bicycle",
+  "title": "复古自行车",
+  "prompt": "复古自行车",
+  "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, arc, ring,\n  polygon, triangle,\n  union, intersection, difference, dilate, erode, shell,\n  render,\n} from '../../src/index.js';\n\n// --- Palette ---\nconst CREAM       = [245, 238, 220];\nconst TAN         = [210, 185, 145];\nconst RUST        = [180, 95,  45];\nconst DARK_BROWN  = [72,  42,  18];\nconst BRASS       = [195, 160, 80];\nconst LEATHER     = [140, 85,  40];\nconst SHADOW      = [38,  28,  16];\n\n// ─────────────────────────────────────────────────────────────\n// WHEELS (two large rings + hub + spokes)\n// ─────────────────────────────────────────────────────────────\nconst WHEEL_R   = 0.42;\nconst LEFT_CX   = -0.42;\nconst RIGHT_CX  =  0.42;\nconst WHEEL_Y   = -0.28;\n\nfunction wheel(cx) {\n  const tire    = ring(WHEEL_R, 0.045, [cx, WHEEL_Y]);\n  const hub     = circle(0.045, [cx, WHEEL_Y]);\n  const hubRing = ring(0.045, 0.016, [cx, WHEEL_Y]);\n\n  // 12 spokes — thin segments\n  const NSPOKES = 12;\n  const spokeList = [];\n  for (let i = 0; i < NSPOKES; i++) {\n    const a = (i / NSPOKES) * Math.PI * 2;\n    const ix = cx + Math.cos(a) * 0.048;\n    const iy = WHEEL_Y + Math.sin(a) * 0.048;\n    const ox = cx + Math.cos(a) * (WHEEL_R - 0.025);\n    const oy = WHEEL_Y + Math.sin(a) * (WHEEL_R - 0.025);\n    spokeList.push(segment([ix, iy], [ox, oy], 0.007));\n  }\n  return union(tire, hub, hubRing, ...spokeList);\n}\n\nconst wheelLeft  = wheel(LEFT_CX);\nconst wheelRight = wheel(RIGHT_CX);\nconst wheels     = union(wheelLeft, wheelRight);\n\n// ─────────────────────────────────────────────────────────────\n// FRAME (diamond frame: top-tube, down-tube, seat-tube, chain-stay, seat-stay)\n// ─────────────────────────────────────────────────────────────\nconst BB_X = 0.0,   BB_Y = WHEEL_Y;          // bottom bracket (centre)\nconst HEAD_X = RIGHT_CX - 0.05, HEAD_Y = 0.20;  // head tube top\nconst SEAT_X = LEFT_CX + 0.18, SEAT_Y = 0.26;   // seat tube top\n\n// top tube: seat top → head top\nconst topTube       = segment([SEAT_X, SEAT_Y],       [HEAD_X, HEAD_Y],      0.018);\n// down tube: head top → BB\nconst downTube      = segment([HEAD_X, HEAD_Y - 0.04],[BB_X,   BB_Y],        0.018);\n// seat tube: BB → seat top\nconst seatTube      = segment([BB_X,   BB_Y],          [SEAT_X, SEAT_Y],     0.018);\n// chain stay: BB → left axle\nconst chainStay     = segment([BB_X,   BB_Y],          [LEFT_CX, WHEEL_Y],   0.016);\n// seat stay: seat top → left axle\nconst seatStay      = segment([SEAT_X, SEAT_Y - 0.04],[LEFT_CX, WHEEL_Y],   0.013);\n// fork: head top → right axle (two legs)\nconst forkR         = segment([HEAD_X, HEAD_Y - 0.04],[RIGHT_CX + 0.03, WHEEL_Y], 0.014);\nconst forkL         = segment([HEAD_X, HEAD_Y - 0.04],[RIGHT_CX - 0.03, WHEEL_Y], 0.014);\n\nconst frame = union(topTube, downTube, seatTube, chainStay, seatStay, forkR, forkL);\n\n// ─────────────────────────────────────────────────────────────\n// HEAD TUBE (short vertical cylinder)\n// ─────────────────────────────────────────────────────────────\nconst headTube = rounded_rectangle([0.036, 0.10], 0.018, [HEAD_X, HEAD_Y - 0.05]);\n\n// ─────────────────────────────────────────────────────────────\n// HANDLEBAR STEM + BARS\n// ─────────────────────────────────────────────────────────────\nconst stem       = segment([HEAD_X, HEAD_Y + 0.04], [HEAD_X - 0.02, HEAD_Y + 0.22], 0.016);\nconst handleBar  = segment([HEAD_X - 0.10, HEAD_Y + 0.26],[HEAD_X + 0.08, HEAD_Y + 0.18], 0.014);\nconst barGripL   = rounded_rectangle([0.024, 0.055], 0.012, [HEAD_X - 0.105, HEAD_Y + 0.245]);\nconst barGripR   = rounded_rectangle([0.024, 0.055], 0.012, [HEAD_X + 0.083, HEAD_Y + 0.165]);\nconst handlebar  = union(stem, handleBar, barGripL, barGripR);\n\n// ─────────────────────────────────────────────────────────────\n// SEAT POST + SADDLE (classic leather saddle)\n// ─────────────────────────────────────────────────────────────\nconst seatPost   = segment([SEAT_X, SEAT_Y], [SEAT_X, SEAT_Y + 0.16], 0.014);\nconst saddleBody = ellipse(0.115, 0.028, [SEAT_X - 0.01, SEAT_Y + 0.195]);\nconst saddleTip  = ellipse(0.028, 0.022, [SEAT_X + 0.096, SEAT_Y + 0.192]);\nconst saddle     = union(saddleBody, saddleTip);\n\n// ─────────────────────────────────────────────────────────────\n// PEDAL CRANK + PEDALS\n// ─────────────────────────────────────────────────────────────\nconst crankR   = segment([BB_X, BB_Y], [BB_X + 0.13, BB_Y - 0.09], 0.014);\nconst crankL   = segment([BB_X, BB_Y], [BB_X - 0.13, BB_Y + 0.09], 0.013);\nconst pedalR   = rounded_rectangle([0.072, 0.018], 0.009, [BB_X + 0.145, BB_Y - 0.093]);\nconst pedalL   = rounded_rectangle([0.072, 0.018], 0.009, [BB_X - 0.145, BB_Y + 0.093]);\nconst chainRing = ring(0.075, 0.018, [BB_X, BB_Y]);\nconst pedals   = union(crankR, crankL, pedalR, pedalL, chainRing);\n\n// ─────────────────────────────────────────────────────────────\n// FRONT LIGHT (vintage acetylene lamp)\n// ─────────────────────────────────────────────────────────────\nconst lampBody  = rounded_rectangle([0.052, 0.068], 0.014,  [HEAD_X + 0.06, HEAD_Y + 0.01]);\nconst lampLens  = circle(0.020, [HEAD_X + 0.082, HEAD_Y + 0.012]);\nconst lamp      = union(lampBody, lampLens);\n\n// ─────────────────────────────────────────────────────────────\n// MUDGUARDS (arcs over each wheel)\n// ─────────────────────────────────────────────────────────────\nconst guardR = difference(\n  ring(WHEEL_R + 0.034, 0.022, [RIGHT_CX, WHEEL_Y]),\n  rectangle([2.0, 1.0], [RIGHT_CX, WHEEL_Y - 0.52])\n);\nconst guardL = difference(\n  ring(WHEEL_R + 0.034, 0.022, [LEFT_CX, WHEEL_Y]),\n  rectangle([2.0, 1.0], [LEFT_CX, WHEEL_Y - 0.52])\n);\nconst mudguards = union(guardR, guardL);\n\n// ─────────────────────────────────────────────────────────────\n// GROUND SHADOW\n// ─────────────────────────────────────────────────────────────\nconst groundShadow = ellipse(0.60, 0.04, [0.0, WHEEL_Y - WHEEL_R - 0.018]);\n\n// ─────────────────────────────────────────────────────────────\n// LAYERS\n// ─────────────────────────────────────────────────────────────\nconst layers = [\n  // ground shadow\n  { sdf: groundShadow,              color: [185, 170, 148] },\n\n  // wheels: outline then fill\n  { sdf: dilate(wheels, 0.022),     color: SHADOW },\n  { sdf: wheels,                    color: DARK_BROWN },\n\n  // mudguards\n  { sdf: dilate(mudguards, 0.014),  color: SHADOW },\n  { sdf: mudguards,                 color: RUST },\n\n  // frame\n  { sdf: dilate(frame, 0.022),      color: SHADOW },\n  { sdf: frame,                     color: RUST },\n\n  // head tube\n  { sdf: dilate(headTube, 0.014),   color: SHADOW },\n  { sdf: headTube,                  color: RUST },\n\n  // pedals + chainring\n  { sdf: dilate(pedals, 0.016),     color: SHADOW },\n  { sdf: pedals,                    color: BRASS },\n\n  // handlebar\n  { sdf: dilate(handlebar, 0.014),  color: SHADOW },\n  { sdf: handlebar,                 color: BRASS },\n\n  // seat post + saddle\n  { sdf: dilate(seatPost, 0.014),   color: SHADOW },\n  { sdf: seatPost,                  color: DARK_BROWN },\n  { sdf: dilate(saddle, 0.013),     color: SHADOW },\n  { sdf: saddle,                    color: LEATHER },\n\n  // lamp\n  { sdf: dilate(lamp, 0.012),       color: SHADOW },\n  { sdf: lamp,                      color: BRASS },\n  { sdf: lampLens,                  color: [240, 230, 180] },\n];\n\n// ─────────────────────────────────────────────────────────────\n// RENDER\n// ─────────────────────────────────────────────────────────────\nconst canvas = document.getElementById('c');\nconst ctx    = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.25,\n  background: { top: [232, 224, 208], bottom: [215, 205, 185] },\n});\n```\n\n**Composition notes:**\n\nThe bicycle is built around the classic **diamond frame** — five named structural tubes (top, down, seat, chain-stay, seat-stay) plus a two-leg fork — all rendered as `segment` capsules so their varying angles come for free. Wheel spokes are 12 computed `segment` calls per wheel, with the loop ensuring even angular spacing; the outer `ring` primitive handles the tyre cross-section cleanly without needing a `difference`. I graded outline thickness by visual hierarchy: chunky `0.022` shadow on the main frame and wheels, finer `0.013–0.016` on the fork and seat-stay, and the thinnest `0.012` on the small lamp — this creates the depth-of-field illusion that flat-colour silhouettes otherwise lose.\n\nThe palette draws on Charley Harper's love of warm terracottas and neutral creams but leans into the **vintage vélo de ville** tradition: rust frame (referencing old French touring bikes), brass fittings, and a worn-leather saddle. The mudguards repeat the rust to tie the silhouette together. The teardrop acetylene lamp is a deliberate period detail — its brass body and cream lens add a focal highlight near the right edge. The warm taupe gradient background echoes the cobblestones of a Parisian side-street without needing any additional geometry.",
+  "sceneData": {
+    "v": 1,
+    "name": "复古自行车 — Vintage Bicycle",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "复古自行车",
+      "from2dCode": "Diamond-frame vintage bicycle: two spoked wheels, rust frame, brass fittings, leather saddle, acetylene lamp, mudguards"
+    },
+    "subjects": [
+      {
+        "id": "wheel-left",
+        "type": "torus",
+        "args": {
+          "radius": 0.72,
+          "thickness": 0.09
+        },
+        "transform": {
+          "translate": [
+            -1.05,
+            0,
+            0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "wheel"
+      },
+      {
+        "id": "hub-left",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.1,
+          "height": 0.22
+        },
+        "transform": {
+          "translate": [
+            -1.05,
+            0,
+            0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "hub"
+      },
+      {
+        "id": "spokes-left",
+        "type": "union",
+        "children": [
+          {
+            "id": "sl0",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -1.05,
+                0.1,
+                0.18
+              ],
+              "b": [
+                -1.05,
+                0.68,
+                0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -1.05,
+                -0.1,
+                0.18
+              ],
+              "b": [
+                -1.05,
+                -0.68,
+                0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.95,
+                0,
+                0.18
+              ],
+              "b": [
+                -0.4,
+                0,
+                0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl3",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -1.15,
+                0,
+                0.18
+              ],
+              "b": [
+                -1.7,
+                0,
+                0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl4",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.98,
+                0.09,
+                0.18
+              ],
+              "b": [
+                -0.52,
+                0.48,
+                0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl5",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -1.12,
+                -0.09,
+                0.18
+              ],
+              "b": [
+                -1.58,
+                -0.48,
+                0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl6",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.98,
+                -0.09,
+                0.18
+              ],
+              "b": [
+                -0.52,
+                -0.48,
+                0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sl7",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -1.12,
+                0.09,
+                0.18
+              ],
+              "b": [
+                -1.58,
+                0.48,
+                0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          }
+        ]
+      },
+      {
+        "id": "wheel-right",
+        "type": "torus",
+        "args": {
+          "radius": 0.72,
+          "thickness": 0.09
+        },
+        "transform": {
+          "translate": [
+            1.05,
+            0,
+            -0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "wheel"
+      },
+      {
+        "id": "hub-right",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.1,
+          "height": 0.22
+        },
+        "transform": {
+          "translate": [
+            1.05,
+            0,
+            -0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "hub"
+      },
+      {
+        "id": "spokes-right",
+        "type": "union",
+        "children": [
+          {
+            "id": "sr0",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1.05,
+                0.1,
+                -0.18
+              ],
+              "b": [
+                1.05,
+                0.68,
+                -0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1.05,
+                -0.1,
+                -0.18
+              ],
+              "b": [
+                1.05,
+                -0.68,
+                -0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.95,
+                0,
+                -0.18
+              ],
+              "b": [
+                0.4,
+                0,
+                -0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr3",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1.15,
+                0,
+                -0.18
+              ],
+              "b": [
+                1.7,
+                0,
+                -0.18
+              ],
+              "radius": 0.018
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr4",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.98,
+                0.09,
+                -0.18
+              ],
+              "b": [
+                0.52,
+                0.48,
+                -0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr5",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1.12,
+                -0.09,
+                -0.18
+              ],
+              "b": [
+                1.58,
+                -0.48,
+                -0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr6",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.98,
+                -0.09,
+                -0.18
+              ],
+              "b": [
+                0.52,
+                -0.48,
+                -0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          },
+          {
+            "id": "sr7",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1.12,
+                0.09,
+                -0.18
+              ],
+              "b": [
+                1.58,
+                0.48,
+                -0.18
+              ],
+              "radius": 0.016
+            },
+            "region": "spoke"
+          }
+        ]
+      },
+      {
+        "id": "mudguard-left",
+        "type": "torus",
+        "args": {
+          "radius": 0.8,
+          "thickness": 0.045
+        },
+        "transform": {
+          "translate": [
+            -1.05,
+            0.18,
+            0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "mudguard",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "mudguard-right",
+        "type": "torus",
+        "args": {
+          "radius": 0.8,
+          "thickness": 0.045
+        },
+        "transform": {
+          "translate": [
+            1.05,
+            0.18,
+            -0.18
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "mudguard",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "top-tube",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.5,
+            0.82,
+            0
+          ],
+          "b": [
+            0.75,
+            0.8,
+            0
+          ],
+          "radius": 0.055
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "down-tube",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.75,
+            0.78,
+            0
+          ],
+          "b": [
+            0,
+            -0.02,
+            0
+          ],
+          "radius": 0.055
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "seat-tube",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.02,
+            0
+          ],
+          "b": [
+            -0.5,
+            0.82,
+            0
+          ],
+          "radius": 0.052
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "chain-stay",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.02,
+            0
+          ],
+          "b": [
+            -1.05,
+            -0.02,
+            0.18
+          ],
+          "radius": 0.042
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "seat-stay",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.5,
+            0.78,
+            0
+          ],
+          "b": [
+            -1.05,
+            -0.02,
+            0.18
+          ],
+          "radius": 0.036
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "fork-right",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.75,
+            0.72,
+            0
+          ],
+          "b": [
+            1.1,
+            -0.02,
+            -0.18
+          ],
+          "radius": 0.04
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "fork-left",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.75,
+            0.72,
+            0
+          ],
+          "b": [
+            1,
+            -0.02,
+            -0.18
+          ],
+          "radius": 0.038
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "head-tube",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.11,
+            0.28,
+            0.11
+          ],
+          "cornerR": 0.045
+        },
+        "transform": {
+          "translate": [
+            0.75,
+            0.62,
+            0
+          ]
+        },
+        "region": "frame",
+        "color": [
+          180,
+          95,
+          45
+        ]
+      },
+      {
+        "id": "bottom-bracket",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.12,
+          "height": 0.26
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.02,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "hub",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "chain-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.28,
+          "thickness": 0.052
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.02,
+            0.14
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "chainring",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "crank-right",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.02,
+            0.14
+          ],
+          "b": [
+            0.32,
+            -0.22,
+            0.14
+          ],
+          "radius": 0.038
+        },
+        "region": "crank",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "crank-left",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.02,
+            0.14
+          ],
+          "b": [
+            -0.32,
+            0.18,
+            0.14
+          ],
+          "radius": 0.036
+        },
+        "region": "crank",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "pedal-right",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.22,
+            0.055,
+            0.095
+          ],
+          "cornerR": 0.022
+        },
+        "transform": {
+          "translate": [
+            0.34,
+            -0.24,
+            0.14
+          ]
+        },
+        "region": "pedal",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "pedal-left",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.22,
+            0.055,
+            0.095
+          ],
+          "cornerR": 0.022
+        },
+        "transform": {
+          "translate": [
+            -0.34,
+            0.2,
+            0.14
+          ]
+        },
+        "region": "pedal",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "stem",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.75,
+            0.78,
+            0
+          ],
+          "b": [
+            0.65,
+            1.32,
+            0
+          ],
+          "radius": 0.042
+        },
+        "region": "handlebar",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "handlebar-bar",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.36,
+            1.36,
+            0
+          ],
+          "b": [
+            0.95,
+            1.22,
+            0
+          ],
+          "radius": 0.036
+        },
+        "region": "handlebar",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "grip-left",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.065,
+            0.155,
+            0.065
+          ],
+          "cornerR": 0.028
+        },
+        "transform": {
+          "translate": [
+            0.34,
+            1.38,
+            0
+          ]
+        },
+        "region": "grip",
+        "color": [
+          72,
+          42,
+          18
+        ]
+      },
+      {
+        "id": "grip-right",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.065,
+            0.155,
+            0.065
+          ],
+          "cornerR": 0.028
+        },
+        "transform": {
+          "translate": [
+            0.96,
+            1.2,
+            0
+          ]
+        },
+        "region": "grip",
+        "color": [
+          72,
+          42,
+          18
+        ]
+      },
+      {
+        "id": "seat-post",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.5,
+            0.82,
+            0
+          ],
+          "b": [
+            -0.52,
+            1.32,
+            0
+          ],
+          "radius": 0.038
+        },
+        "region": "seatpost",
+        "color": [
+          72,
+          42,
+          18
+        ]
+      },
+      {
+        "id": "saddle",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.42,
+            0.085,
+            0.14
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.55,
+            1.38,
+            0
+          ]
+        },
+        "region": "saddle",
+        "color": [
+          140,
+          85,
+          40
+        ]
+      },
+      {
+        "id": "saddle-tip",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.12,
+            0.065,
+            0.09
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.1,
+            1.37,
+            0
+          ]
+        },
+        "region": "saddle",
+        "color": [
+          140,
+          85,
+          40
+        ]
+      },
+      {
+        "id": "lamp-body",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.15,
+            0.195,
+            0.13
+          ],
+          "cornerR": 0.038
+        },
+        "transform": {
+          "translate": [
+            1.02,
+            0.72,
+            -0.1
+          ]
+        },
+        "region": "lamp",
+        "color": [
+          195,
+          160,
+          80
+        ]
+      },
+      {
+        "id": "lamp-lens",
+        "type": "sphere",
+        "args": {
+          "radius": 0.065
+        },
+        "transform": {
+          "translate": [
+            1.1,
+            0.72,
+            -0.165
+          ]
+        },
+        "region": "lens",
+        "color": [
+          240,
+          230,
+          180
+        ]
+      }
+    ],
+    "ground": {
+      "y": -0.76,
+      "region": "cobblestone"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 7.5,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.42,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.62,
+        "altitude": 0.75,
+        "distance": 30
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "hueRotate180",
+        "strength": 0.38
+      }
+    }
+  },
+  "meta": {
+    "savedAt": 1779107579026,
+    "source": "user-saved-2026-05-18"
+  }
+}

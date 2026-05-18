@@ -180,6 +180,26 @@ function deleteSavedScene(id) {
   renderScenesPopover();
 }
 
+function exportAllSavedScenes() {
+  const all = loadSavedScenes();
+  if (all.length === 0) {
+    setStatus('no saved scenes to export', true);
+    return;
+  }
+  const date = new Date().toISOString().slice(0, 10);
+  const filename = `atlas-saved-scenes-${date}.json`;
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setStatus(`📦 exported ${all.length} scenes to ${filename}`);
+}
+
 function downloadSavedScene(id) {
   const entry = loadSavedScenes().find(s => s.id === id);
   if (!entry) return;
@@ -358,6 +378,13 @@ function renderScenesTab() {
 
   $('scenes-bundled-count').textContent = bundled.length;
   $('scenes-saved-count').textContent = saved.length;
+
+  // Export All button: only meaningful when there's something to export
+  const exportAllBtn = $('btn-export-all-saved');
+  if (exportAllBtn) {
+    exportAllBtn.style.display = saved.length > 0 ? 'inline-flex' : 'none';
+    exportAllBtn.onclick = exportAllSavedScenes;
+  }
 
   // Bundled cards
   bundledEl.innerHTML = bundled.length === 0
@@ -790,7 +817,11 @@ const TAB_CONTENT = {
     </div>
 
     <div class="scenes-section">
-      <h2 class="scenes-section-title">My saved <span class="count" id="scenes-saved-count">0</span> <span style="color:#666; font-size:10px; font-weight:400; text-transform:none; letter-spacing:0; margin-left:auto;">localStorage · this browser only</span></h2>
+      <h2 class="scenes-section-title">
+        My saved <span class="count" id="scenes-saved-count">0</span>
+        <button class="header-btn" id="btn-export-all-saved" style="display:none;">📦 Export All</button>
+        <span style="color:#666; font-size:10px; font-weight:400; text-transform:none; letter-spacing:0; margin-left:auto;">localStorage · this browser only</span>
+      </h2>
       <div class="scenes-grid-big" id="scenes-saved-grid"></div>
     </div>
   `,

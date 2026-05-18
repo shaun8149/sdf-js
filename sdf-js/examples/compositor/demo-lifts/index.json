@@ -7,7 +7,7 @@
       "title": "中国航空母舰",
       "thesisPoint": "#1 precision · regression test",
       "category": "diorama",
-      "status": "pending",
+      "status": "ready",
       "file": "china-carrier.json",
       "prompt": "一艘中国的航空母舰"
     },
@@ -16,7 +16,7 @@
       "title": "哥特式大教堂",
       "thesisPoint": "#1 structural precision",
       "category": "diorama",
-      "status": "pending",
+      "status": "ready",
       "file": "gothic-cathedral.json",
       "prompt": "一座哥特式大教堂"
     },
@@ -25,7 +25,7 @@
       "title": "花瓶",
       "thesisPoint": "P1 milestone · revolution lift",
       "category": "revolution",
-      "status": "pending",
+      "status": "ready",
       "file": "spiral-vase.json",
       "prompt": "一只花瓶"
     },
@@ -34,7 +34,7 @@
       "title": "山间村落",
       "thesisPoint": "#9 multi-axis variants",
       "category": "diorama-topdown",
-      "status": "pending",
+      "status": "ready",
       "file": "mountain-village.json",
       "prompt": "山间村落"
     },
@@ -43,7 +43,7 @@
       "title": "9:15 的钟",
       "thesisPoint": "#1 precision · diffusion big-gun",
       "category": "model",
-      "status": "pending",
+      "status": "ready",
       "file": "clock-915.json",
       "prompt": "一个挂钟，指针指向 9:15"
     },
@@ -52,7 +52,7 @@
       "title": "复古自行车",
       "thesisPoint": "#1 precision-content",
       "category": "model",
-      "status": "pending",
+      "status": "ready",
       "file": "vintage-bicycle.json",
       "prompt": "一辆复古自行车"
     },
@@ -61,7 +61,7 @@
       "title": "餐桌摆设",
       "thesisPoint": "#2 semantic combinatorics",
       "category": "diorama",
-      "status": "pending",
+      "status": "ready",
       "file": "dining-setting.json",
       "prompt": "餐桌上摆着一个盘子、刀叉和酒杯"
     },
@@ -70,7 +70,7 @@
       "title": "海岸灯塔",
       "thesisPoint": "#4 prompt simplicity · waves",
       "category": "diorama",
-      "status": "pending",
+      "status": "ready",
       "file": "coastal-lighthouse.json",
       "prompt": "海边的灯塔"
     }

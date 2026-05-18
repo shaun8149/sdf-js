@@ -1,0 +1,464 @@
+{
+  "id": "clock-915",
+  "title": "9:15 的钟",
+  "prompt": "挂在墙上的9点15分的钟",
+  "code2d": "Looking at this prompt: a wall clock showing 9:15. This is a flat, circular object — editorial illustration register, SDF2.\n\nClock anatomy:\n- Clock face (white/cream circle)\n- Clock body / bezel (dark ring around face)\n- 12 hour tick marks (or at least the major ones)\n- Hour hand pointing to 9 (pointing LEFT, i.e. angle = 180° from 12 o'clock)\n- Minute hand pointing to 3 (pointing RIGHT, i.e. 90° from 12 o'clock)\n- Center boss\n- Wall background\n\nFor 9:15:\n- 12 o'clock = UP = angle 90° from +X axis = Math.PI/2\n- Hour hand at 9 o'clock = pointing LEFT = Math.PI (but slightly toward 15min = 9.25/12 * 2π ... let me be precise)\n  - 9:15 → hour hand = (9 + 15/60) / 12 * 2π = 9.25/12 * 2π clockwise from 12\n  - Clockwise from top (+Y): 9.25/12 * 2π = 2.748 rad clockwise\n  - In math coords (+Y up, counterclockwise positive), 12 o'clock = π/2\n  - Hour angle (math) = π/2 - 9.25/12 * 2π = π/2 - 4.843 = 1.5708 - 4.843 = -3.272 rad\n  - Normalize: -3.272 + 2π = 3.011 rad ≈ pointing slightly below-left\n  - Actually let me just think in unit circle: 9:00 points LEFT = π radians = (-1, 0)\n  - 15 minutes of hour = 15/60 * 30° = 7.5° further clockwise from 9\n  - In math: subtract 7.5° = -π/24 from the angle\n  - Hour angle = π - π/24 = 23π/24 ≈ 2.880 rad\n  - Direction: (cos(2.880), sin(2.880)) ≈ (-0.991, 0.131) — mostly left, slightly up\n\n- Minute hand at 15 min = pointing RIGHT = 3 o'clock position\n  - 15/60 * 2π clockwise from 12 = π/2 clockwise from 12\n  - Math angle: π/2 - π/2 = 0 → pointing RIGHT (+X direction)\n\nFor tick marks: I'll use 12 `segment` primitives in a `circular_array`-like approach, or just manually compute 12 positions. Actually let me use `ring` for major ticks with a clever idiom — or just place 12 segments using a loop... but this is static code.\n\nLet me use a function to generate tick marks. I'll do 12 hour marks as small segments from inner radius to outer radius.\n\nFor the wall: a warm off-white rectangle, maybe with a subtle shadow suggestion.\n\n```js\nimport {\n  circle, ring, rectangle, segment, union, difference, dilate,\n  render,\n} from '../../src/index.js';\n\n// --- Palette ---\nconst WALL        = [238, 228, 210];   // warm plaster\nconst BEZEL       = [ 38,  32,  28];   // near-black\nconst FACE        = [252, 248, 238];   // cream\nconst HAND        = [ 28,  22,  20];   // black\nconst CENTER      = [ 28,  22,  20];\nconst TICK_MAJOR  = [ 28,  22,  20];\nconst TICK_MINOR  = [160, 148, 128];\nconst OUTLINE     = [ 28,  22,  20];\n\n// Clock geometry parameters\nconst CR = 0.55;        // clock radius (outer bezel)\nconst FR = 0.50;        // face radius\nconst TICK_OUTER = 0.44;\nconst TICK_INNER_MAJ = 0.38;\nconst TICK_INNER_MIN = 0.41;\n\n// Helper: angle in math coords from clock-position (hours or fraction)\n// clockPos in [0, 12], 0/12 = top, 3 = right, 6 = bottom, 9 = left\nfunction clockAngle(clockPos) {\n  return Math.PI / 2 - (clockPos / 12) * 2 * Math.PI;\n}\n\n// Helper: point on radius r at clock angle\nfunction clockPoint(clockPos, r) {\n  const a = clockAngle(clockPos);\n  return [r * Math.cos(a), r * Math.sin(a)];\n}\n\n// --- Tick marks ---\nfunction hourTick(h) {\n  const a = clockAngle(h);\n  const outer = [TICK_OUTER * Math.cos(a), TICK_OUTER * Math.sin(a)];\n  const inner = [TICK_INNER_MAJ * Math.cos(a), TICK_INNER_MAJ * Math.sin(a)];\n  return segment(outer, inner, 0.014);\n}\n\nfunction minuteTick(m) {\n  const a = clockAngle(m / 5);  // m in 0..60, clockAngle takes 0..12\n  const outer = [TICK_OUTER * Math.cos(a), TICK_OUTER * Math.sin(a)];\n  const inner = [TICK_INNER_MIN * Math.cos(a), TICK_INNER_MIN * Math.sin(a)];\n  return segment(outer, inner, 0.007);\n}\n\n// 12 hour ticks\nconst hourTicks = union(\n  hourTick(0), hourTick(1), hourTick(2), hourTick(3),\n  hourTick(4), hourTick(5), hourTick(6), hourTick(7),\n  hourTick(8), hourTick(9), hourTick(10), hourTick(11),\n);\n\n// 60 minute ticks (skip the 12 hour positions)\nconst minuteTickSdfs = [];\nfor (let m = 0; m < 60; m++) {\n  if (m % 5 !== 0) minuteTickSdfs.push(minuteTick(m));\n}\nconst minTicks = union(...minuteTickSdfs);\n\n// --- Hands ---\n// 9:15 → hour hand at 9h15m position\n// 9:15 = 9.25 out of 12\nconst hourClockPos = 9.25;\nconst hourAngle = clockAngle(hourClockPos);\nconst hourLength = 0.28;\nconst hourBaseOffset = 0.05; // how far it extends behind center\nconst hourTip = [hourLength * Math.cos(hourAngle), hourLength * Math.sin(hourAngle)];\nconst hourBase = [-hourBaseOffset * Math.cos(hourAngle), -hourBaseOffset * Math.sin(hourAngle)];\nconst hourHand = segment(hourBase, hourTip, 0.018);\n\n// Minute hand at 15 min = 3 o'clock position (pointing right)\nconst minClockPos = 3.0; // 15 min = position 3\nconst minAngle = clockAngle(minClockPos);\nconst minLength = 0.36;\nconst minBaseOffset = 0.05;\nconst minTip = [minLength * Math.cos(minAngle), minLength * Math.sin(minAngle)];\nconst minBase = [-minBaseOffset * Math.cos(minAngle), -minBaseOffset * Math.sin(minAngle)];\nconst minuteHand = segment(minBase, minTip, 0.012);\n\n// Center boss\nconst boss = circle(0.030);\n\n// --- Clock face & bezel ---\nconst face  = circle(FR);\nconst bezel = circle(CR);\n\n// --- Wall shadow (soft rounded rectangle behind clock) ---\nconst shadow = circle(CR + 0.04);\n\n// --- Layers ---\nconst layers = [\n  // Wall\n  { sdf: rectangle([2.8, 2.8]), color: WALL },\n  // Shadow (dark halo behind bezel)\n  { sdf: dilate(shadow, 0.018),  color: [180, 165, 145] },\n  // Bezel\n  { sdf: bezel,                  color: BEZEL },\n  // Face\n  { sdf: face,                   color: FACE },\n  // Minor ticks\n  { sdf: minTicks,               color: TICK_MINOR },\n  // Major (hour) ticks\n  { sdf: hourTicks,              color: TICK_MAJOR },\n  // Minute hand\n  { sdf: dilate(minuteHand, 0.004), color: OUTLINE },\n  { sdf: minuteHand,            color: HAND },\n  // Hour hand\n  { sdf: dilate(hourHand, 0.004), color: OUTLINE },\n  { sdf: hourHand,              color: HAND },\n  // Center boss\n  { sdf: dilate(boss, 0.005),   color: OUTLINE },\n  { sdf: boss,                  color: CENTER },\n];\n\n// --- Render ---\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.3,\n  background: WALL,\n});\n```\n\n---\n\n**Composition notes:**\n\n时钟整体用圆形分层构建：外框（bezel）→ 表盘（face）→ 60个刻度（12个大刻度 + 48个小刻度）→ 时针和分针 → 中心轴钉。\n\n**9点15分的角度计算**：\n- 分针在15分钟位置 = 时钟3点方向 = 数学角 0 rad（正右方）\n- 时针在9小时15分 = 9.25/12 圈顺时针偏移 → 数学角 ≈ 2.88 rad（偏左偏上，体现15分钟对时针的微小拨动）\n\n**视觉层级**：大刻度线宽 `r=0.014`、深色；小刻度宽 `r=0.007`、浅灰；时针更粗（`r=0.018`）、分针稍细（`r=0.012`），与真实时钟的视觉惯例一致。背景用暖米色模拟石膏墙面，钟后有微妙的投影晕圈，增加挂墙的立体感。参考了中世纪欧洲塔钟的简洁扁平风格。",
+  "sceneData": {
+    "v": 1,
+    "name": "挂钟 9:15 — Wall Clock on Plaster",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "挂在墙上的9点15分的钟",
+      "from2dCode": "Circle-based wall clock: bezel (CR=0.55), face (FR=0.50), 12 hour ticks, 48 minute ticks, hour hand at 9h15m (angle≈2.880 rad), minute hand at 15min (angle=0 rad), center boss, warm plaster wall background."
+    },
+    "subjects": [
+      {
+        "id": "wall-panel",
+        "type": "box",
+        "args": {
+          "dims": [
+            6,
+            5,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            1.1
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "wall-mounting-bracket",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.18,
+            0.12,
+            0.22
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.12,
+            0.55
+          ]
+        },
+        "region": "bracket"
+      },
+      {
+        "id": "clock-bezel",
+        "type": "cylinder",
+        "args": {
+          "radius": 1,
+          "height": 0.22
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "bezel"
+      },
+      {
+        "id": "clock-face",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.91,
+          "height": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.08
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "face"
+      },
+      {
+        "id": "tick-12",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.055,
+            0.24,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.72,
+            0.13
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.24,
+            0.055,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.72,
+            0,
+            0.13
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-6",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.055,
+            0.24,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.72,
+            0.13
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-9",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.24,
+            0.055,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.72,
+            0,
+            0.13
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.354,
+            0.613,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.613,
+            0.354,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.0472
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-4",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.613,
+            -0.354,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            1.0472
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-5",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.354,
+            -0.613,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-7",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.354,
+            -0.613,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-8",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.613,
+            -0.354,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            1.0472
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-10",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.613,
+            0.354,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.0472
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-11",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.18,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.354,
+            0.613,
+            0.13
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "hour-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.09,
+            0.024,
+            0.16
+          ],
+          "b": [
+            -0.51,
+            0.121,
+            0.16
+          ],
+          "radius": 0.048
+        },
+        "region": "hand"
+      },
+      {
+        "id": "minute-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.09,
+            0,
+            0.18
+          ],
+          "b": [
+            0.66,
+            0,
+            0.18
+          ],
+          "radius": 0.032
+        },
+        "region": "hand"
+      },
+      {
+        "id": "center-boss",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.075,
+          "height": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.19
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "boss"
+      },
+      {
+        "id": "center-pin",
+        "type": "sphere",
+        "args": {
+          "radius": 0.042
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.25
+          ]
+        },
+        "region": "boss"
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0.32,
+        "pitch": 0.18,
+        "distance": 5.5,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.55,
+        "altitude": 0.75,
+        "distance": 28,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  },
+  "meta": {
+    "savedAt": 1779106397780,
+    "source": "user-saved-2026-05-18"
+  }
+}

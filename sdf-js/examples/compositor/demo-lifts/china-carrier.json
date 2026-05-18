@@ -1,0 +1,843 @@
+{
+  "id": "china-carrier",
+  "title": "中国航空母舰",
+  "prompt": "一艘中国的航空母舰",
+  "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, ring, trapezoid,\n  union, intersection, difference, dilate, erode, shell,\n  render,\n} from '../../src/index.js';\n\n// --- Palette ---\nconst OCEAN_DEEP   = [18, 52, 88];\nconst OCEAN_MID    = [28, 78, 130];\nconst OCEAN_FOAM   = [162, 198, 220];\nconst HULL_DARK    = [38, 48, 62];\nconst HULL_GRAY    = [82, 92, 108];\nconst DECK_GRAY    = [118, 128, 138];\nconst DECK_LIGHT   = [158, 165, 172];\nconst ISLAND_GRAY  = [96, 104, 116];\nconst RED_STRIPE   = [180, 32, 32];\nconst SKY_TOP      = [42, 78, 130];\nconst SKY_MID      = [108, 158, 195];\nconst SKY_HORIZON  = [198, 218, 228];\nconst WAKE_WHITE   = [220, 230, 238];\nconst OUTLINE      = [18, 22, 28];\nconst JET_GRAY     = [72, 80, 90];\nconst JET_DARK     = [48, 55, 65];\nconst EXHAUST      = [160, 140, 110];\n\n// --- Sea & Sky Background ---\nconst sky = rectangle([2.6, 1.6], [0, 0.5]);\nconst sea = rectangle([2.6, 0.8], [0, -0.55]);\n\n// --- Sea surface layering ---\nconst seaSurface   = rectangle([2.6, 0.05], [0, -0.18]);\nconst waveHint1    = ellipse(0.6, 0.018, [-0.5, -0.20]);\nconst waveHint2    = ellipse(0.4, 0.012, [0.5, -0.22]);\nconst waveHint3    = ellipse(0.3, 0.010, [0.1, -0.24]);\n\n// Wake: white foam trailing behind (left side, since ship faces right)\nconst wakeFoam     = ellipse(0.55, 0.06, [-0.75, -0.28]);\nconst wakeFoam2    = ellipse(0.35, 0.035, [-0.85, -0.32]);\n\n// --- Hull ---\n// The carrier hull: long, flat-bottomed, slight bow shaping\nconst hullMain = polygon([\n  [-0.88, -0.18],\n  [ 0.82, -0.18],   // forward bow upper\n  [ 0.92, -0.22],   // bow tip\n  [ 0.82, -0.34],   // forward waterline\n  [-0.88, -0.34],   // aft waterline\n  [-0.94, -0.26],   // aft stern\n]);\n\n// Red waterline stripe\nconst waterlineStripe = intersection(\n  hullMain,\n  rectangle([2.2, 0.028], [0, -0.31])\n);\n\n// Hull boot topping (dark bottom, red stripe, gray top)\nconst hullBottom = intersection(\n  hullMain,\n  rectangle([2.2, 0.065], [0, -0.32])\n);\n\n// --- Flight Deck ---\n// Wide, long deck overhanging hull on both sides (ski-jump bow on right)\nconst deckMain = polygon([\n  [-0.90, -0.18],\n  [ 0.78, -0.18],\n  [ 0.92, -0.08],   // ski-jump slope\n  [ 0.94,  0.00],   // ski-jump tip\n  [ 0.78,  0.02],   // forward deck edge\n  [-0.90,  0.02],   // aft deck edge\n]);\n\n// Ski-jump ramp (lighter highlight)\nconst skiJump = polygon([\n  [0.72, -0.01],\n  [0.84, -0.14],\n  [0.92, -0.08],\n  [0.94,  0.00],\n  [0.80,  0.02],\n]);\n\n// Deck centerline stripe (yellow / white): just a thin rect\nconst deckCenterline = intersection(\n  deckMain,\n  rectangle([1.80, 0.006], [-0.05, -0.06])\n);\n\n// Deck edge markings\nconst deckEdgePort = intersection(\n  deckMain,\n  rectangle([1.82, 0.006], [-0.05, -0.17])\n);\n\n// --- Island Superstructure ---\n// China carriers (Liaoning, Shandong) have island on starboard (right),\n// aft-of-center. Relatively compact.\nconst islandBase = rounded_rectangle([0.26, 0.22], 0.02, [0.30, -0.08]);\nconst islandMid  = rounded_rectangle([0.20, 0.14], 0.02, [0.31, 0.06]);\nconst islandTop  = rounded_rectangle([0.16, 0.08], 0.015, [0.30, 0.17]);\nconst island     = union(islandBase, islandMid, islandTop);\n\n// Windows on island\nconst win1 = rectangle([0.04, 0.025], [0.22, -0.04]);\nconst win2 = rectangle([0.04, 0.025], [0.30, -0.04]);\nconst win3 = rectangle([0.04, 0.025], [0.38, -0.04]);\nconst islandWindows = union(win1, win2, win3);\n\n// Mast / radar tower\nconst mast1 = segment([0.30, 0.20], [0.30, 0.42], 0.006);\nconst mast2 = segment([0.24, 0.28], [0.36, 0.28], 0.004);  // cross-spar\n\n// Phased-array radar panels (Type 346 style — 4-face AESA)\nconst radar1 = rectangle([0.07, 0.045], [0.30, 0.34]);\nconst radar2 = rectangle([0.045, 0.07], [0.27, 0.28]);\nconst radar3 = rectangle([0.045, 0.07], [0.33, 0.28]);\nconst radars = union(radar1, radar2, radar3);\n\n// HQ-10 CIWS domes (close-in weapon systems) — small circles\nconst ciws1 = circle(0.022, [-0.60,  0.04]);\nconst ciws2 = circle(0.022, [-0.10,  0.04]);\nconst ciws3 = circle(0.022, [ 0.55,  0.04]);\nconst ciws4 = circle(0.018, [ 0.60, -0.10]);\nconst ciwsAll = union(ciws1, ciws2, ciws3, ciws4);\n\n// --- Aircraft on deck (J-15 silhouettes) ---\n// Three fighters parked on deck near bow and island\nfunction jet(cx, cy, scale = 1.0) {\n  const body   = ellipse(0.07 * scale, 0.018 * scale, [cx, cy]);\n  const wing1  = polygon([\n    [cx - 0.01 * scale, cy + 0.006 * scale],\n    [cx + 0.05 * scale, cy + 0.008 * scale],\n    [cx - 0.04 * scale, cy + 0.048 * scale],\n    [cx - 0.06 * scale, cy + 0.038 * scale],\n  ]);\n  const wing2  = polygon([\n    [cx - 0.01 * scale, cy - 0.006 * scale],\n    [cx + 0.05 * scale, cy - 0.008 * scale],\n    [cx - 0.04 * scale, cy - 0.048 * scale],\n    [cx - 0.06 * scale, cy - 0.038 * scale],\n  ]);\n  const tail1 = polygon([\n    [cx - 0.055 * scale, cy + 0.005 * scale],\n    [cx - 0.065 * scale, cy + 0.025 * scale],\n    [cx - 0.085 * scale, cy + 0.022 * scale],\n    [cx - 0.075 * scale, cy + 0.004 * scale],\n  ]);\n  const tail2 = polygon([\n    [cx - 0.055 * scale, cy - 0.005 * scale],\n    [cx - 0.065 * scale, cy - 0.025 * scale],\n    [cx - 0.085 * scale, cy - 0.022 * scale],\n    [cx - 0.075 * scale, cy - 0.004 * scale],\n  ]);\n  return union(body, wing1, wing2, tail1, tail2);\n}\n\nconst jet1 = jet( 0.50, -0.10, 0.90);  // near island\nconst jet2 = jet(-0.20, -0.12, 0.85);  // mid-deck\nconst jet3 = jet(-0.60, -0.10, 0.85);  // aft deck\nconst jetsAll = union(jet1, jet2, jet3);\n\n// --- Five-star flag on mast ---\nconst flagPole = segment([0.18, 0.35], [0.18, 0.50], 0.004);\nconst flagBody = rectangle([0.09, 0.055], [0.226, 0.45]);\nconst bigStar  = circle(0.012, [0.208, 0.455]);\n// small stars omitted for scale — flag reads as red block\n\n// --- Smoke / exhaust from island ---\nconst exhaust1 = ellipse(0.022, 0.032, [0.25, 0.48]);\nconst exhaust2 = ellipse(0.018, 0.026, [0.22, 0.52]);\nconst exhaust3 = ellipse(0.015, 0.020, [0.20, 0.55]);\n\n// --- Compose layers ---\nconst layers = [\n  // Sky gradient approximated as two rects\n  { sdf: sky,            color: SKY_TOP },\n  { sdf: rectangle([2.6, 0.60], [0, 0.15]),  color: SKY_MID },\n  { sdf: rectangle([2.6, 0.30], [0, -0.05]), color: SKY_HORIZON },\n\n  // Sea\n  { sdf: sea,            color: OCEAN_DEEP },\n  { sdf: rectangle([2.6, 0.55], [0, -0.40]), color: OCEAN_MID },\n  { sdf: seaSurface,     color: OCEAN_FOAM },\n  { sdf: waveHint1,      color: OCEAN_FOAM },\n  { sdf: waveHint2,      color: OCEAN_FOAM },\n  { sdf: waveHint3,      color: OCEAN_FOAM },\n\n  // Wake\n  { sdf: wakeFoam,       color: WAKE_WHITE },\n  { sdf: wakeFoam2,      color: WAKE_WHITE },\n\n  // Hull outline\n  { sdf: dilate(hullMain, 0.025), color: OUTLINE },\n  // Hull fill\n  { sdf: hullMain,       color: HULL_GRAY },\n  // Hull bottom\n  { sdf: hullBottom,     color: HULL_DARK },\n  // Red waterline\n  { sdf: waterlineStripe, color: RED_STRIPE },\n\n  // Deck outline\n  { sdf: dilate(deckMain, 0.018), color: OUTLINE },\n  { sdf: deckMain,       color: DECK_GRAY },\n  { sdf: skiJump,        color: DECK_LIGHT },\n  { sdf: deckCenterline, color: DECK_LIGHT },\n  { sdf: deckEdgePort,   color: DECK_LIGHT },\n\n  // Jets\n  { sdf: dilate(jetsAll, 0.010), color: OUTLINE },\n  { sdf: jetsAll,        color: JET_DARK },\n\n  // Island outline\n  { sdf: dilate(island, 0.020), color: OUTLINE },\n  { sdf: island,         color: ISLAND_GRAY },\n  { sdf: difference(island, islandWindows), color: ISLAND_GRAY },\n  { sdf: islandWindows,  color: HULL_DARK },\n\n  // CIWS domes\n  { sdf: dilate(ciwsAll, 0.008), color: OUTLINE },\n  { sdf: ciwsAll,        color: DECK_LIGHT },\n\n  // Mast and radar\n  { sdf: mast1,          color: OUTLINE },\n  { sdf: mast2,          color: OUTLINE },\n  { sdf: dilate(radars, 0.007), color: OUTLINE },\n  { sdf: radars,         color: ISLAND_GRAY },\n\n  // Flag\n  { sdf: flagPole,       color: OUTLINE },\n  { sdf: dilate(flagBody, 0.006), color: OUTLINE },\n  { sdf: flagBody,       color: RED_STRIPE },\n  { sdf: bigStar,        color: [255, 215, 0] },\n\n  // Exhaust\n  { sdf: exhaust1,       color: EXHAUST },\n  { sdf: exhaust2,       color: [192, 174, 148] },\n  { sdf: exhaust3,       color: [210, 200, 185] },\n];\n\n// --- Render ---\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.25,\n  background: { top: [32, 64, 110], bottom: [168, 200, 220] },\n});\n```\n\n**Composition notes:**\n\n**Subject**: 辽宁舰 / 山东舰造型参考——中国海军首型航母最显著特征是**滑跃式甲板**（ski-jump bow，向上翘起的舰艏）而非美军弹射式平甲板，岛式上层建筑配备**346型有源相控阵雷达**（四面阵天线）。三架 J-15 飞鲨舰载机停驻在甲板上，用翼型 polygon 勾勒出 delta 翼+鸭翼轮廓。\n\n**层次结构**：天空（三段蓝色梯度）→ 海面（深→中→泡沫三层）→ 尾迹白浪 → 船体（灰色填充+红色水线漆）→ 飞行甲板（轻灰+滑跃坡高光）→ 舰载机 → 岛楼+雷达 → 旗杆+五星红旗+废气。每个主要元素都用 `dilate(..., t)` 打底再填色，轮廓厚度依视觉层级从 0.025（船体）递减至 0.007（雷达组件）。\n\n**调色板**灵感来自解放军海军官方照片：深蓝洋面、中灰甲板、红色水线和五星旗是唯一鲜艳色彩，保持了军事题材的克制感，同时用暖色排烟云雾暗示动力。",
+  "sceneData": {
+    "v": 1,
+    "name": "中国航空母舰 — 辽宁/山东型",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一艘中国的航空母舰",
+      "from2dCode": "Liaoning/Shandong-class carrier: ski-jump bow, island superstructure with Type-346 AESA radar, 3x J-15 fighters on deck, red waterline stripe, wake foam, exhaust plumes."
+    },
+    "subjects": [
+      {
+        "id": "ocean",
+        "type": "waves",
+        "args": {
+          "freq": 3.5,
+          "amp": 0.18,
+          "angle": 0.15,
+          "speed": 0.6
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.2,
+            0
+          ]
+        },
+        "region": "water"
+      },
+      {
+        "id": "hull",
+        "type": "box",
+        "args": {
+          "dims": [
+            9.2,
+            0.9,
+            2.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.45,
+            0
+          ]
+        },
+        "region": "hull"
+      },
+      {
+        "id": "hull-bow-wedge",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            4.6,
+            -0.45,
+            0
+          ],
+          "b": [
+            5.4,
+            -0.55,
+            0
+          ],
+          "r1": 1.1,
+          "r2": 0.15
+        },
+        "region": "hull"
+      },
+      {
+        "id": "hull-stern-taper",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -4.6,
+            -0.45,
+            0
+          ],
+          "b": [
+            -5.2,
+            -0.6,
+            0
+          ],
+          "r1": 1.1,
+          "r2": 0.55
+        },
+        "region": "hull"
+      },
+      {
+        "id": "red-waterline",
+        "type": "box",
+        "args": {
+          "dims": [
+            9,
+            0.18,
+            2.25
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.8,
+            0
+          ]
+        },
+        "region": "waterline",
+        "color": [
+          180,
+          32,
+          32
+        ]
+      },
+      {
+        "id": "flight-deck",
+        "type": "box",
+        "args": {
+          "dims": [
+            9.4,
+            0.22,
+            3.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.11,
+            0
+          ]
+        },
+        "region": "deck"
+      },
+      {
+        "id": "ski-jump-ramp",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            3.8,
+            0.22,
+            0
+          ],
+          "b": [
+            5,
+            0.85,
+            0
+          ],
+          "r1": 1.55,
+          "r2": 0.4
+        },
+        "region": "deck"
+      },
+      {
+        "id": "ski-jump-tip",
+        "type": "capsule",
+        "args": {
+          "a": [
+            4.85,
+            0.8,
+            -0.35
+          ],
+          "b": [
+            4.85,
+            0.8,
+            0.35
+          ],
+          "radius": 0.38
+        },
+        "region": "deck"
+      },
+      {
+        "id": "island-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.6,
+            1.2,
+            1.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            0.82,
+            -0.55
+          ]
+        },
+        "region": "island"
+      },
+      {
+        "id": "island-mid",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.3,
+            0.75,
+            0.9
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            1.75,
+            -0.55
+          ]
+        },
+        "region": "island"
+      },
+      {
+        "id": "island-top",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            1,
+            0.45,
+            0.7
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            2.32,
+            -0.55
+          ]
+        },
+        "region": "island"
+      },
+      {
+        "id": "radar-face-forward",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.42,
+            0.55
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.05,
+            1.82,
+            -0.55
+          ]
+        },
+        "region": "radar"
+      },
+      {
+        "id": "radar-face-aft",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.42,
+            0.55
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.75,
+            1.82,
+            -0.55
+          ]
+        },
+        "region": "radar"
+      },
+      {
+        "id": "radar-face-port",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.55,
+            0.42,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            1.82,
+            -0.1
+          ]
+        },
+        "region": "radar"
+      },
+      {
+        "id": "radar-face-starboard",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.55,
+            0.42,
+            0.06
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            1.82,
+            -1
+          ]
+        },
+        "region": "radar"
+      },
+      {
+        "id": "main-mast",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.4,
+            2.55,
+            -0.55
+          ],
+          "b": [
+            1.4,
+            3.5,
+            -0.55
+          ],
+          "radius": 0.045
+        },
+        "region": "mast"
+      },
+      {
+        "id": "mast-cross-spar",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.85,
+            3,
+            -0.55
+          ],
+          "b": [
+            1.95,
+            3,
+            -0.55
+          ],
+          "radius": 0.03
+        },
+        "region": "mast"
+      },
+      {
+        "id": "flag-pole",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.65,
+            2.55,
+            -0.55
+          ],
+          "b": [
+            0.65,
+            3.3,
+            -0.55
+          ],
+          "radius": 0.025
+        },
+        "region": "mast"
+      },
+      {
+        "id": "flag-body",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.55,
+            0.34,
+            0.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.92,
+            3.05,
+            -0.55
+          ]
+        },
+        "region": "flag",
+        "color": [
+          180,
+          32,
+          32
+        ]
+      },
+      {
+        "id": "ciws-1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.15
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            0.26,
+            1.45
+          ]
+        },
+        "region": "ciws"
+      },
+      {
+        "id": "ciws-2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.15
+        },
+        "transform": {
+          "translate": [
+            -0.4,
+            0.26,
+            1.45
+          ]
+        },
+        "region": "ciws"
+      },
+      {
+        "id": "ciws-3",
+        "type": "sphere",
+        "args": {
+          "radius": 0.15
+        },
+        "transform": {
+          "translate": [
+            3,
+            0.26,
+            1.45
+          ]
+        },
+        "region": "ciws"
+      },
+      {
+        "id": "ciws-4",
+        "type": "sphere",
+        "args": {
+          "radius": 0.12
+        },
+        "transform": {
+          "translate": [
+            3.2,
+            0.12,
+            -0.55
+          ]
+        },
+        "region": "ciws"
+      },
+      {
+        "id": "jet-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-1-body",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.52,
+                0.1,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0.6
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-1-wing-l",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.32,
+                0.04,
+                0.48
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.48,
+                0.28,
+                0.9
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-1-wing-r",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.32,
+                0.04,
+                0.48
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.48,
+                0.28,
+                0.3
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-1-tail",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.16,
+                0.18,
+                0.06
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.22,
+                0.38,
+                0.6
+              ]
+            },
+            "region": "jet"
+          }
+        ],
+        "region": "jet"
+      },
+      {
+        "id": "jet-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-2-body",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.52,
+                0.1,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.8,
+                0.3,
+                0.8
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-2-wing-l",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.32,
+                0.04,
+                0.44
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.92,
+                0.28,
+                1.08
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-2-wing-r",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.32,
+                0.04,
+                0.44
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.92,
+                0.28,
+                0.52
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-2-tail",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.16,
+                0.18,
+                0.06
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.06,
+                0.38,
+                0.8
+              ]
+            },
+            "region": "jet"
+          }
+        ],
+        "region": "jet"
+      },
+      {
+        "id": "jet-3",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-3-body",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.5,
+                0.1,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                -3.1,
+                0.3,
+                0.5
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-3-wing-l",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.3,
+                0.04,
+                0.44
+              ]
+            },
+            "transform": {
+              "translate": [
+                -3.22,
+                0.28,
+                0.78
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-3-wing-r",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.3,
+                0.04,
+                0.44
+              ]
+            },
+            "transform": {
+              "translate": [
+                -3.22,
+                0.28,
+                0.22
+              ]
+            },
+            "region": "jet"
+          },
+          {
+            "id": "j15-3-tail",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.14,
+                0.17,
+                0.06
+              ]
+            },
+            "transform": {
+              "translate": [
+                -3.34,
+                0.37,
+                0.5
+              ]
+            },
+            "region": "jet"
+          }
+        ],
+        "region": "jet"
+      },
+      {
+        "id": "exhaust-1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.14,
+            0.2,
+            0.13
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.25,
+            2.9,
+            -0.55
+          ]
+        },
+        "region": "exhaust",
+        "color": [
+          160,
+          140,
+          110
+        ]
+      },
+      {
+        "id": "exhaust-2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.11,
+            0.16,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.18,
+            3.15,
+            -0.55
+          ]
+        },
+        "region": "exhaust",
+        "color": [
+          192,
+          174,
+          148
+        ]
+      },
+      {
+        "id": "exhaust-3",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.09,
+            0.13,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.12,
+            3.35,
+            -0.55
+          ]
+        },
+        "region": "exhaust",
+        "color": [
+          210,
+          200,
+          185
+        ]
+      },
+      {
+        "id": "wake-port",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.8,
+            0.04,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -6.2,
+            -0.9,
+            0.6
+          ]
+        },
+        "region": "wake",
+        "color": [
+          220,
+          230,
+          238
+        ]
+      },
+      {
+        "id": "wake-starboard",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.8,
+            0.04,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -6.2,
+            -0.9,
+            -0.6
+          ]
+        },
+        "region": "wake",
+        "color": [
+          220,
+          230,
+          238
+        ]
+      }
+    ],
+    "ground": {
+      "y": -1.3,
+      "region": "water"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 14,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.72,
+        "distance": 35,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "channelSwap",
+        "strength": 0.38
+      }
+    }
+  },
+  "meta": {
+    "savedAt": 1779101391640,
+    "source": "user-saved-2026-05-18"
+  }
+}
