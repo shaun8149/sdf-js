@@ -22,12 +22,47 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { compile } from '../../src/scene/index.js';
 
-const MODEL = 'claude-sonnet-4-6';
+// MODEL env var can override the default. Anthropic Messages API typically
+// wants either a "latest" alias (e.g. claude-sonnet-4-5) or a dated id
+// (e.g. claude-sonnet-4-5-20250929). The Compositor's value 'claude-sonnet-4-6'
+// works in Claude Code's runtime; the public Messages API may require a
+// dated suffix. If the default 401s/404s, try setting MODEL explicitly.
+const MODEL = process.env.MODEL || 'claude-sonnet-4-5';
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!API_KEY) {
   console.error('✗ ANTHROPIC_API_KEY env var required.');
   console.error('  export ANTHROPIC_API_KEY=sk-ant-... && node sdf-js/scripts/regression/lift-regression.mjs');
   process.exit(1);
+}
+
+// Preflight: 1 minimal call to validate auth + model before burning $$ on 16 lifts
+async function preflight() {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: MODEL, max_tokens: 8,
+        messages: [{ role: 'user', content: 'reply with: ok' }],
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      console.error(`✗ Preflight failed (HTTP ${res.status}). Model="${MODEL}".`);
+      console.error(`  Response: ${t.slice(0, 300)}`);
+      console.error(`  Try: MODEL=claude-sonnet-4-5-20250929 ANTHROPIC_API_KEY=... node ...`);
+      process.exit(1);
+    }
+    const data = await res.json();
+    console.log(`✓ Preflight OK · model=${MODEL} · usage=${JSON.stringify(data.usage)}\n`);
+  } catch (e) {
+    console.error(`✗ Preflight network error: ${e.message}`);
+    process.exit(1);
+  }
 }
 
 const REPO = '/Users/hexiaoyang/Documents/sdf-main';
@@ -120,7 +155,9 @@ async function liftOne(demoId, systemPrompt, version) {
     const r = await callAnthropic(systemPrompt, userMessage);
     raw = r.text; usage = r.usage; elapsed = r.elapsed;
   } catch (e) {
-    return { demoId, version, error: `API: ${e.message}` };
+    const errRecord = { demoId, version, error: `API: ${e.message}` };
+    writeFileSync(`${RESULTS_DIR}/${demoId}-${version}-error.json`, JSON.stringify(errRecord, null, 2));
+    return errRecord;
   }
 
   let sceneData;
@@ -166,7 +203,9 @@ async function main() {
   const demos = (target === 'all') ? DEMOS : [target];
 
   console.log(`Lift regression: ${demos.length} demo(s) × 2 versions = ${demos.length * 2} API calls`);
-  console.log(`Estimated cost: $${(demos.length * 2 * 0.15).toFixed(2)} (~$0.15 each)\n`);
+  console.log(`Estimated cost: $${(demos.length * 2 * 0.15).toFixed(2)} (~$0.15 each)`);
+  console.log(`Model: ${MODEL}\n`);
+  await preflight();
 
   const summary = [];
   for (const id of demos) {
@@ -188,8 +227,12 @@ async function main() {
 
     const cmp = {
       demoId: id,
-      v1: { subjects: v1.subjectCount, atoms: v1.newAtomsUsedCount, iq: v1.newIQTypesUsedCount, compile: v1.compileOk, cost: v1.costUSD },
-      v2: { subjects: v2.subjectCount, atoms: v2.newAtomsUsedCount, iq: v2.newIQTypesUsedCount, compile: v2.compileOk, cost: v2.costUSD },
+      v1: v1.error
+        ? { error: v1.error }
+        : { subjects: v1.subjectCount, atoms: v1.newAtomsUsedCount, iq: v1.newIQTypesUsedCount, compile: v1.compileOk, cost: v1.costUSD },
+      v2: v2.error
+        ? { error: v2.error }
+        : { subjects: v2.subjectCount, atoms: v2.newAtomsUsedCount, iq: v2.newIQTypesUsedCount, compile: v2.compileOk, cost: v2.costUSD },
       delta: {
         subjects: (v2.subjectCount ?? 0) - (v1.subjectCount ?? 0),
         atoms:    (v2.newAtomsUsedCount ?? 0) - (v1.newAtomsUsedCount ?? 0),
