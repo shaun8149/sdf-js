@@ -1,7 +1,7 @@
 {
   "$comment": "State of /atlas-component-crawler. Tracks seen sources to avoid re-porting, and runs to expose what's been tried over time. Updated by the crawler on each iteration; committed to repo so subsequent runs (including on different machines / CI) share the same state.",
-  "lastRun": null,
-  "totalRuns": 0,
+  "lastRun": "2026-05-18T13:52:47+00:00",
+  "totalRuns": 1,
   "seen": [
     {
       "url": "https://iquilezles.org/articles/distfunctions/",
@@ -98,7 +98,132 @@
       "outcome": "skipped",
       "reason": "Christmas-tree composite with iTime modulation, global state mutation (sdfColor/sdfReflect), and ornament-blinking. Helper sdSolidAngle ported separately.",
       "encounteredAt": "2026-05-18"
+    },
+    {
+      "url": "github.com/leokeba/implicit/blob/main/src/shaders/lib/sdf-primitives.glsl",
+      "function": "sdCircle/sdBox/sdRoundedBox/sdSegment/sdRhombus/sdTrapezoid",
+      "outcome": "judged-skip",
+      "reason": "Already in Atlas d2.js (2D primitive duplicates)",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/leokeba/implicit/blob/main/src/shaders/lib/sdf-primitives.glsl",
+      "function": "sdChamferBox (2D)",
+      "outcome": "judged-defer",
+      "reason": "Novel 2D primitive, low priority; re-encounter if user requests",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/lee101/aurorasim/blob/main/sdf-library.glsl",
+      "function": "(mirror of leokeba)",
+      "outcome": "judged-skip",
+      "reason": "Duplicate IQ 2D primitive set",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdDebug",
+      "outcome": "judged-skip",
+      "reason": "Debug visualization helper, not an SDF primitive",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/dxlyf/DxMyth/blob/main/packages/sdf/src/2dSdf.glsl",
+      "function": "sdParallelogram + IQ duplicates",
+      "outcome": "judged-skip",
+      "reason": "Already have parallelogram in d2.js",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/tovacinni/sdf-explorer/blob/main/data-files/sdf/Vehicle/Jetfighter.glsl",
+      "function": "sdJetBox/Torus/Capsule/Ellipsoid/ConeSection/HexPrism",
+      "outcome": "judged-skip-license",
+      "reason": "CC-BY-NC-SA 3.0 (copyleft, incompatible with PolyForm Noncommercial). NOTE: would have been HIGH novelty otherwise — composite aircraft scene.",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/tdhooper/glsl-marching-cubes/blob/master/src/shaders/examples/radiolarian.glsl",
+      "function": "fOpUnionRound, fOpIntersectionRound, fCone",
+      "outcome": "judged-skip-license",
+      "reason": "GPL-3.0 (incompatible with PolyForm Noncommercial). NOTE: ops would be HIGH novelty.",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/trevorvanhoof/sqrmelon/blob/main/SqrMelon/defaultproject/Templates/default/sdf.glsl",
+      "function": "fBoxChamfer (3D)",
+      "outcome": "judged-port",
+      "reason": "MIT license, novel 3D chamfered box primitive (we have rounded_box but not chamfered). PORT-eligible in next real run.",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/trevorvanhoof/sqrmelon/blob/main/SqrMelon/defaultproject/Templates/default/sdf.glsl",
+      "function": "fDiamond, fBox, fSphere, fTube, fSlab",
+      "outcome": "judged-skip",
+      "reason": "fDiamond ≡ existing octahedron; others already in Atlas",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/lo-th/Shader.lab/blob/master/glsl_basic/HG_SDF__.glsl",
+      "function": "fBlob",
+      "outcome": "judged-defer",
+      "reason": "Novel metaball-like primitive. Mercury hg_sdf is CC-BY-NC (compatible) but lo-th repo has no LICENSE file — conservative DEFER until license confirmed.",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
+    },
+    {
+      "url": "github.com/lo-th/Shader.lab/blob/master/glsl_basic/HG_SDF__.glsl",
+      "function": "fSphere, fPlane, fBox, fBoxCheap",
+      "outcome": "judged-skip",
+      "reason": "Trivial Atlas duplicates",
+      "encounteredAt": "2026-05-18T13:52:47+00:00",
+      "judgedBy": "/atlas-component-crawler dry-run"
     }
   ],
-  "runs": []
+  "runs": [
+    {
+      "startedAt": "2026-05-18T13:52:47+00:00",
+      "mode": "dry-run",
+      "queriesRun": [
+        "shapes-special",
+        "boolean-ops"
+      ],
+      "sourcesEvaluated": 8,
+      "candidatesJudged": 12,
+      "decisions": {
+        "PORT": 1,
+        "DEFER": 2,
+        "SKIP": 9
+      },
+      "portCandidates": [
+        {
+          "function": "fBoxChamfer",
+          "source": "trevorvanhoof/sqrmelon",
+          "license": "MIT",
+          "novelty": "high"
+        }
+      ],
+      "deferCandidates": [
+        {
+          "function": "sdChamferBox (2D)",
+          "source": "leokeba/implicit",
+          "reason": "low priority"
+        },
+        {
+          "function": "fBlob",
+          "source": "lo-th/Shader.lab",
+          "reason": "license unclear"
+        }
+      ],
+      "licenseRejects": 2
+    }
+  ]
 }
