@@ -1703,6 +1703,418 @@
           "metal": 0.2,
           "glow": 0
         }
+      },
+      {
+        "id": "j15-takeoff",
+        "type": "union",
+        "transform": {
+          "translate": [
+            20,
+            4.5,
+            -1.6
+          ],
+          "rotate": [
+            0,
+            0,
+            0.45
+          ]
+        },
+        "region": "aircraft",
+        "material": {
+          "hue": 0.6,
+          "sat": 0.18,
+          "value": 0.32,
+          "metal": 0.3,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "j15-takeoff-fuse",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                1.0,
+                0.22,
+                0.28
+              ]
+            }
+          },
+          {
+            "id": "j15-takeoff-wing-p",
+            "type": "tri_prism",
+            "args": {
+              "halfWidth": 0.75,
+              "halfLength": 1.0
+            },
+            "transform": {
+              "translate": [
+                -0.1,
+                0,
+                1.0
+              ],
+              "rotate": [
+                0,
+                0.2,
+                0
+              ]
+            }
+          },
+          {
+            "id": "j15-takeoff-wing-s",
+            "type": "tri_prism",
+            "args": {
+              "halfWidth": 0.75,
+              "halfLength": 1.0
+            },
+            "transform": {
+              "translate": [
+                -0.1,
+                0,
+                -1.0
+              ],
+              "rotate": [
+                0,
+                -0.2,
+                3.141592653589793
+              ]
+            }
+          },
+          {
+            "id": "j15-takeoff-tail",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.4,
+                0.4,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.45,
+                0.25,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "j15-takeoff-afterburner",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.35,
+            0.15,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            19.39143530505869,
+            4.150501771004505,
+            -1.6
+          ],
+          "rotate": [
+            0,
+            0,
+            0.45
+          ]
+        },
+        "region": "aircraft",
+        "material": {
+          "hue": 0.05,
+          "sat": 0.95,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 3.5
+        }
+      },
+      {
+        "id": "j15-takeoff-contrail-1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.48250000000000004,
+            0.194,
+            0.2075
+          ]
+        },
+        "transform": {
+          "translate": [
+            17.894900858386872,
+            3.133294982821943,
+            -1.6
+          ]
+        },
+        "region": "sky",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.08,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-takeoff-contrail-2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.5275000000000001,
+            0.218,
+            0.2225
+          ]
+        },
+        "transform": {
+          "translate": [
+            17.447806321186437,
+            2.817373355190138,
+            -1.6
+          ]
+        },
+        "region": "sky",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.08,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-takeoff-contrail-3",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.5800000000000001,
+            0.246,
+            0.24
+          ]
+        },
+        "transform": {
+          "translate": [
+            16.92619602778593,
+            2.4487981229530322,
+            -1.6
+          ]
+        },
+        "region": "sky",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.08,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ddg-1-wake-trail-p",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            25.0,
+            -2.85,
+            18.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ddg-1-wake-trail-s",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            25.0,
+            -2.85,
+            17.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ddg-2-wake-trail-p",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            10.0,
+            -2.85,
+            30.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ddg-2-wake-trail-s",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            10.0,
+            -2.85,
+            29.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ffg-1-wake-trail-p",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            3.25,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.25,
+            -2.85,
+            30.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "escort-ffg-1-wake-trail-s",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            3.25,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.25,
+            -2.85,
+            29.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "carrier-wake-trail-p-main",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            9.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            -21.0,
+            -2.85,
+            0.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "carrier-wake-trail-s-main",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            9.0,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            -21.0,
+            -2.85,
+            -0.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.94,
+          "metal": 0.2,
+          "glow": 0
+        }
       }
     ],
     "ground": {
@@ -1750,6 +2162,6 @@
     "previousSource": "user-saved-2026-05-18",
     "upgradedFrom": "v2.3",
     "upgradedAt": "2026-05-19T06:59:59.855Z",
-    "handFixed": "2026-05-19: removed misshapen stern-taper pyramid that visually obstructed carrier stern | 2026-05-19: fixed flag-pole position + relocated exhausts + added clouds/gulls/wake + dramatic camera/lighting for majesty | 2026-05-19: added escort fleet (2 destroyers + 1 frigate) + cross-swell wave layer for ocean undulation | escorts repositioned into camera FOV (50-60 units, in front of carrier)"
+    "handFixed": "2026-05-19: removed misshapen stern-taper pyramid that visually obstructed carrier stern | 2026-05-19: fixed flag-pole position + relocated exhausts + added clouds/gulls/wake + dramatic camera/lighting for majesty | 2026-05-19: added escort fleet (2 destroyers + 1 frigate) + cross-swell wave layer for ocean undulation | escorts repositioned into camera FOV (50-60 units, in front of carrier) | airborne J-15 takeoff (afterburner + contrail) + V-wake trails behind all 4 ships"
   }
 }
