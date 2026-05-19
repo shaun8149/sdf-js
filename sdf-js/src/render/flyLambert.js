@@ -150,12 +150,21 @@ vec3 hsv2rgb(vec3 c) {
 
 // Fetch the material for a given leaf index. Returns sentinel sat<0 if the
 // index is out of range or the slot is unset.
+//
+// WebGL1 GLSL spec restricts uniform-array indexing to "constant index
+// expressions" — only literals, const globals, and *loop indices* are
+// allowed. ANGLE / strict drivers enforce this; modern desktop drivers
+// often relax it. We walk a fixed-trip loop and pick the target index via
+// 'if (j == target)' to stay portable. ~96 compare ops per fetch — trivial
+// on a modern GPU. Switch to a 1D texture LUT if MAX_MATERIAL grows past
+// ~256 or if profilers point here.
 vec4 fetchMaterial(float idx) {
-  int i = int(idx) - 1;  // imin's objectIndex is 1-based
-  if (i < 0 || i >= MAX_MATERIAL) return vec4(0.0, -1.0, 0.0, 0.0);
-  // Dynamic indexing of uniform array — modern WebGL1 drivers all support
-  // this. If portability becomes a problem, fall back to a 1D texture LUT.
-  return u_leafMaterial[i];
+  int target = int(idx) - 1;  // imin's objectIndex is 1-based
+  if (target < 0 || target >= MAX_MATERIAL) return vec4(0.0, -1.0, 0.0, 0.0);
+  for (int j = 0; j < MAX_MATERIAL; j++) {
+    if (j == target) return u_leafMaterial[j];
+  }
+  return vec4(0.0, -1.0, 0.0, 0.0);  // unreachable; satisfies path-analysis
 }
 
 // Cheap secondary raymarch for reflections. Shorter step budget than the
