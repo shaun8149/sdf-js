@@ -29,6 +29,7 @@ uniform vec3  u_lightPos;
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
+uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
@@ -157,6 +158,52 @@ vec4 fetchMaterial(float idx) {
   return u_leafMaterial[i];
 }
 
+// Cheap secondary raymarch for reflections. Shorter step budget than the
+// primary (32 vs 128) — reflections are visual sweetener, not main signal.
+// Returns vec3(t, matId, hitIdx); matId=0 means miss.
+vec3 raymarchShort(vec3 ro, vec3 rd, float maxDist) {
+  float t = 0.04;  // small bias to avoid self-intersection at ground
+  for (int i = 0; i < 32; i++) {
+    vec3 p = ro + rd * t;
+    vec2 dm = mapWithGround(p);
+    if (dm.x < EPS * (1.0 + 0.4 * t)) {
+      return vec3(t, dm.y, minIndex);
+    }
+    if (t > maxDist) break;
+    t += dm.x;
+  }
+  return vec3(maxDist, 0.0, 0.0);
+}
+
+// Quick-and-dirty shading for reflection-ray hits. No shadow / AO / rim — just
+// material albedo + sun diffuse + sky ambient. The reflection is dim relative
+// to the primary surface so the cost-quality tradeoff favors cheap.
+vec3 shadeReflection(vec3 p, vec3 rd, float matId, float hitIdx, vec3 sunDir) {
+  vec3 n = calcNormal(p);
+  vec3 toLight = normalize(u_lightPos - p);
+  float diff = max(dot(n, toLight), 0.0);
+  float skyL = clamp(0.5 + 0.5 * n.y, 0.0, 1.0);
+
+  vec3 base;
+  float glowK = 0.0;
+  if (matId > 1.5) {
+    vec4 mat = fetchMaterial(hitIdx);
+    if (mat.y < 0.0) {
+      base = cosPalette(fract(hitIdx * 0.6180339887));
+    } else {
+      vec3 hueColor = hsv2rgb(vec3(mat.x, 1.0, 1.0));
+      base = mix(vec3(0.62, 0.62, 0.62), hueColor, mat.y);
+      glowK = mat.w;
+    }
+  } else {
+    base = vec3(0.78, 0.76, 0.70);  // ground neutral
+  }
+
+  vec3 sunCol = vec3(1.05, 0.96, 0.84);
+  vec3 skyCol = vec3(0.50, 0.62, 0.84);
+  return base * sunCol * diff * 1.0 + base * skyCol * skyL * 0.35 + base * glowK * 1.4;
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
@@ -252,6 +299,25 @@ void main() {
     lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
     lin += specTint * sunCol * spec * shadowK * specBoost;
     lin += rimCol * rim * ao                 * 0.18;
+
+    // Single-bounce reflection on the ground plane. Fresnel-weighted so
+    // grazing angles reflect strongly (the wet-floor / polished-stone look),
+    // near-vertical angles mostly show ground base. Reflection ray is shorter
+    // (12 units, 32 steps) — visual sweetener, not main signal.
+    if (u_reflectOn > 0.5 && matId < 1.5) {
+      vec3 rrd = reflect(rd, n);
+      vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 12.0);
+      vec3 refl;
+      if (hit2.y > 0.5) {
+        vec3 p2 = p + n * 0.01 + rrd * hit2.x;
+        refl = shadeReflection(p2, rrd, hit2.y, hit2.z, sunDir);
+      } else {
+        refl = sky(rrd, sunDir);
+      }
+      // Schlick fresnel: F0=0.04 for dielectrics; grazing angle → 1.0
+      float fres = 0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+      lin = mix(lin, refl, fres * 0.55);  // 0.55 cap so even mirror grazing keeps some ground tint
+    }
 
     // Atmospheric perspective: tint distant surfaces toward sky. Apply only
     // to the reflected/diffuse component — emissive added after fog so glow
@@ -379,7 +445,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     uniformsCache = {};
     for (const name of [
       'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
-      'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn',
+      'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
       'u_leafMaterial[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
@@ -449,6 +515,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_groundOn,  c.groundOn  ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_checkerOn, c.checkerOn ? 1.0 : 0.0);
+    // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
+    // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
+    gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
     if (uniformsCache['u_leafMaterial[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
     }
