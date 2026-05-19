@@ -289,6 +289,10 @@ export function compile(sceneData) {
     // Otherwise normal=[0,1,0] would make above-ground inside (d<0) → raymarch
     // sees camera as already inside an infinite half-space and renders sky.
     groundSdf = plane([0, -1, 0], [0, groundInfo.y, 0]);
+    // Default material so renderer doesn't fall to a random hash-palette
+    // color. Authors can override by setting `ground.material` in SceneData.
+    groundSdf._subjectMaterial = resolveMaterial(sceneData.ground.material ?? 'stone');
+    groundSdf._subjectPattern  = resolvePattern(sceneData.ground.pattern ?? null);
   }
 
   // Camera / light / shadow

@@ -35,6 +35,10 @@ uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
 // values are 1..numLeaves).
 uniform vec4  u_leafMaterial[96];
+// Per-leaf extended material — y reserved, z reserved, w reserved; x = value
+// (HSV brightness). Separate LUT because vec4 already full with hue/sat/metal/
+// glow. Default 1.0 = full brightness; matte-black-style presets use ~0.2.
+uniform vec4  u_leafTone[96];
 // Per-leaf pattern LUT (x = pattern code, y = scale, z = strength, w = reserved).
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
 uniform vec4  u_leafPattern[96];
@@ -215,42 +219,71 @@ vec4 fetchPattern(float idx) {
   return vec4(0.0);
 }
 
-// Apply a Shane-style cellular pattern to base albedo. Called only when
-// pattern.x > 0.5 (pattern code present). Modulates albedo without changing
-// lighting computation — pattern is a surface-color overlay, not geometry.
-vec3 applyPattern(vec3 base, vec3 worldP, vec4 pat) {
+// Parallel fetch for the extended material (tone) LUT. .x = value/brightness.
+// Default 1.0 means "full bright", matches old behavior pre-value-field.
+vec4 fetchTone(float idx) {
+  int target = int(idx) - 1;
+  if (target < 0 || target >= MAX_MATERIAL) return vec4(1.0, 0.0, 0.0, 0.0);
+  for (int j = 0; j < MAX_MATERIAL; j++) {
+    if (j == target) return u_leafTone[j];
+  }
+  return vec4(1.0, 0.0, 0.0, 0.0);
+}
+
+// Apply a Shane-style cellular pattern to base albedo. Pattern is a
+// surface-color overlay (no geometry change). Uses the surface normal to
+// pick a 2D projection so brick / hex courses align with the world up-axis
+// regardless of which way the wall faces.
+vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat) {
   int code = int(pat.x + 0.5);
   float scale = pat.y;
   float strength = pat.z;
+  vec3 nAbs = abs(normal);
 
   if (code == 1) {
-    // brick — running-bond pattern on XY plane. Each brick tinted by ID,
-    // mortar lines visible as darker bands at brick edges.
-    vec2 bp = brickPattern(worldP * scale, vec3(1.0, 0.4, 1.0));
-    float brickTint = 0.85 + 0.30 * bp.x;
-    float mortar = smoothstep(0.0, 0.06, bp.y);  // 1 = brick face, 0 = mortar
+    // brick — pick 2D plane based on dominant normal axis so courses are
+    // always horizontal (Y stays vertical). Floor-facing surfaces fall back
+    // to XZ projection (brick laid in plan view).
+    vec2 uv;
+    if (nAbs.x > nAbs.y && nAbs.x > nAbs.z) {
+      uv = vec2(worldP.z, worldP.y);   // X-facing wall: tangential=Z, vertical=Y
+    } else if (nAbs.y > nAbs.z) {
+      uv = vec2(worldP.x, worldP.z);   // floor / ceiling: pseudo-bricks in plan
+    } else {
+      uv = vec2(worldP.x, worldP.y);   // Z-facing wall: tangential=X, vertical=Y
+    }
+    vec2 bp = brickPattern2(uv * scale, vec2(1.0, 0.4));
+    float brickTint = 0.80 + 0.40 * bp.x;
+    float mortar = smoothstep(0.0, 0.05, bp.y);  // 1 = brick face, 0 = mortar
     vec3 brickColor = base * brickTint;
-    vec3 mortarColor = base * 0.55;  // mortar 55% of brick brightness
+    vec3 mortarColor = base * 0.45;
     return mix(base, mix(mortarColor, brickColor, mortar), strength);
   }
   if (code == 2) {
-    // hex tiling on XZ plane (ground / horizontal walls)
-    vec2 hp = hexTile(worldP.xz * scale, 1.0);
+    // hex tiling — pick 2D plane same way. For floors (Y normal), use XZ.
+    vec2 uv;
+    if (nAbs.x > nAbs.y && nAbs.x > nAbs.z) {
+      uv = vec2(worldP.z, worldP.y);
+    } else if (nAbs.y > nAbs.z) {
+      uv = vec2(worldP.x, worldP.z);
+    } else {
+      uv = vec2(worldP.x, worldP.y);
+    }
+    vec2 hp = hexTile(uv * scale, 1.0);
     float hexTint = 0.85 + 0.30 * hp.x;
     float grid = smoothstep(0.0, 0.04, hp.y);
     return mix(base, base * hexTint * grid, strength);
   }
   if (code == 3) {
-    // cells — voronoi 3D, each cell uniquely colored, slight edge darkening
+    // cells — voronoi 3D, naturally orientation-independent
     vec3 vor = voronoi3D(worldP * scale);
     float cellTint = 0.78 + 0.44 * vor.x;
     float edge = smoothstep(0.0, 0.08, vor.z);
     return mix(base, base * cellTint * (0.7 + 0.3 * edge), strength);
   }
   if (code == 4) {
-    // cracked — voronoi edges visible as dark crack lines
+    // cracked — voronoi edges as dark crack lines (3D, orientation-independent)
     float cracks = crackedField(worldP * scale, 0.4);
-    // cracks: 0 = on a crack, 1 = mid-stone
     return mix(base, base * (0.55 + 0.45 * cracks), strength);
   }
   return base;
@@ -289,8 +322,8 @@ vec3 shadeReflection(vec3 p, vec3 rd, float matId, float hitIdx, vec3 sunDir) {
     if (mat.y < 0.0) {
       base = cosPalette(fract(hitIdx * 0.6180339887));
     } else {
-      vec3 hueColor = hsv2rgb(vec3(mat.x, 1.0, 1.0));
-      base = mix(vec3(0.62, 0.62, 0.62), hueColor, mat.y);
+      vec4 tone = fetchTone(hitIdx);
+      base = hsv2rgb(vec3(mat.x, mat.y, tone.x));
       glowK = mat.w;
     }
   } else {
@@ -365,9 +398,11 @@ void main() {
       if (mat.y < 0.0) {
         base = cosPalette(fract(hitIdx * 0.6180339887));
       } else {
-        // HSV hue → RGB, then mix toward neutral grey by saturation
-        vec3 hueColor = hsv2rgb(vec3(mat.x, 1.0, 1.0));
-        base = mix(vec3(0.62, 0.62, 0.62), hueColor, mat.y);
+        // Full HSV from material LUT + value from tone LUT. value < 1.0
+        // produces actually-dark colors (matte-black, brick, etc.) which
+        // hue+sat alone cannot.
+        vec4 tone = fetchTone(hitIdx);
+        base = hsv2rgb(vec3(mat.x, mat.y, tone.x));
         metalK = mat.z;
         glowK  = mat.w;
       }
@@ -381,10 +416,12 @@ void main() {
     // Per-leaf Shane-style surface pattern (brick / hex / cells / cracked).
     // Applied BEFORE fbm modulation so fbm gives organic variation on top
     // of the structured pattern. Pattern is opt-in via Subject.pattern field.
+    // Pattern uses surface normal for orientation-aware 2D projection (so
+    // brick courses are horizontal regardless of which way the wall faces).
     if (matId > 1.5) {
       vec4 pat = fetchPattern(hitIdx);
       if (pat.x > 0.5) {
-        base = applyPattern(base, p, pat);
+        base = applyPattern(base, p, n, pat);
       }
     }
 
@@ -477,6 +514,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   //   patternLUT[i*4+0]  = 0    → no pattern, shader skips applyPattern
   const MAX_MATERIAL = 96;
   const materialLUT = new Float32Array(MAX_MATERIAL * 4);
+  const toneLUT     = new Float32Array(MAX_MATERIAL * 4);
   const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
 
   // ---- one-time vbuf + vs ----
@@ -564,18 +602,19 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     for (const name of [
       'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
       'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
-      'u_leafMaterial[0]', 'u_leafPattern[0]',
+      'u_leafMaterial[0]', 'u_leafTone[0]', 'u_leafPattern[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
 
-    // Build per-leaf material LUT from compile result. Slots default to
-    // sentinel (sat=-1) so any leaf without a material falls back to the
-    // hash palette in-shader. Subjects beyond MAX_MATERIAL truncate (rare;
-    // warns in console).
+    // Build per-leaf material + tone LUTs from compile result. Materials use
+    // sentinel sat=-1 for "no material" fallback; tones default to value=1.0
+    // (full brightness, preserves pre-value-field behavior).
     materialLUT.fill(0);
+    toneLUT.fill(0);
     for (let i = 0; i < MAX_MATERIAL; i++) {
-      materialLUT[i * 4 + 1] = -1.0;
+      materialLUT[i * 4 + 1] = -1.0;  // sat sentinel
+      toneLUT[i * 4 + 0]     = 1.0;   // value default
     }
     const leafMaterials = result.leafMaterials || [];
     if (leafMaterials.length > MAX_MATERIAL) {
@@ -588,6 +627,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
       materialLUT[i * 4 + 1] = m.sat;
       materialLUT[i * 4 + 2] = m.metal;
       materialLUT[i * 4 + 3] = m.glow;
+      toneLUT[i * 4 + 0] = m.value ?? 1.0;
     }
 
     // Build per-leaf pattern LUT. Default zeros = code=0 = no pattern.
@@ -650,6 +690,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
     if (uniformsCache['u_leafMaterial[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
+    }
+    if (uniformsCache['u_leafTone[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafTone[0]'], toneLUT);
     }
     if (uniformsCache['u_leafPattern[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);

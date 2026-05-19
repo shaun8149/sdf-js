@@ -83,32 +83,32 @@ vec3 voronoi2D(vec2 p) {
   return vec3(hash21(nearestCell), sqrt(d1), sqrt(d2) - sqrt(d1));
 }
 
-// ---- Brick tiling ----
-// Classic running-bond brick pattern on the XY plane. Each row offsets by
-// half-brick for proper coursework. Z-axis untouched (use planar surfaces).
+// ---- Brick tiling (2D) ----
+// Classic running-bond brick pattern in a 2D parametric space (uv). Each row
+// offsets by half-brick for proper coursework. uv.y is the vertical axis.
 //
-// size = (brick length, brick height, depth). Returns:
+// size = (brick length, brick height). Returns:
 //   x = brick ID in [0, 1)   — randomized per brick
 //   y = distance to nearest mortar line in [0, 0.5]  — 0 = on mortar
 //
-// For wall surface modulation: small mortar bands at edge < 0.05 = dark gaps.
+// Caller must project 3D world point to 2D plane based on surface normal
+// (see applyPattern in flyLambert). 3D wrapper kept below for back-compat.
 
-vec2 brickPattern(vec3 p, vec3 size) {
-  // Determine row first (so we know offset)
-  float row = floor(p.y / size.y);
+vec2 brickPattern2(vec2 uv, vec2 size) {
+  float row = floor(uv.y / size.y);
   float xOffset = mod(row, 2.0) * 0.5;
-  // Brick-local coords in [0,1) within each cell
-  vec3 cell = vec3(
-    p.x / size.x - xOffset,
-    p.y / size.y,
-    p.z / size.z
-  );
-  vec3 idCell = floor(cell);
-  vec3 f = fract(cell);
-  // Distance to nearest face (in normalized brick units)
-  vec3 d = 0.5 - abs(f - 0.5);
-  float edge = min(min(d.x, d.y), d.z);
-  return vec2(hash31(idCell), edge);
+  vec2 cell = vec2(uv.x / size.x - xOffset, uv.y / size.y);
+  vec2 idCell = floor(cell);
+  vec2 f = fract(cell);
+  vec2 d = 0.5 - abs(f - 0.5);
+  float edge = min(d.x, d.y);
+  return vec2(hash21(idCell), edge);
+}
+
+// 3D wrapper — projects p onto XY plane. Used when caller doesn't know
+// surface orientation (legacy / convenience).
+vec2 brickPattern(vec3 p, vec3 size) {
+  return brickPattern2(p.xy, size.xy);
 }
 
 // ---- Hex tiling ----

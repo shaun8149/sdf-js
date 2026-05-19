@@ -103,16 +103,17 @@ export const SOURCE_FORMATS = new Set([
 // =============================================================================
 // Material presets
 // -----------------------------------------------------------------------------
-// 4-parameter stylized material model: { hue, sat, metal, glow }.
+// 5-parameter stylized material model: { hue, sat, value, metal, glow }.
 //   hue   ∈ [0,1] — HSV hue (0=red, 0.33=green, 0.66=blue, 1=red)
-//   sat   ∈ [0,1] — saturation mixed against neutral grey
+//   sat   ∈ [0,1] — HSV saturation (0=grey, 1=full color)
+//   value ∈ [0,1] — HSV value/brightness (0=black, 1=full bright)
 //   metal ∈ [0,1] — fresnel boost + diffuse suppression + base-tinted specular
 //   glow  ∈ [0,5] — self-emissive multiplier (ignored by software renderers)
 //
 // Subject.material may be:
-//   - undefined → renderer falls back to hash-by-index palette (current behavior)
+//   - undefined → renderer falls back to hash-by-index palette
 //   - string    → preset name (looked up in this dict)
-//   - object    → inline { hue, sat, metal, glow } (escape hatch for custom values)
+//   - object    → inline { hue, sat, value, metal, glow } (escape hatch)
 //
 // Preset names are part of the public lift-LLM vocabulary; renaming is a
 // breaking change. Add new entries freely; only remove with care.
@@ -120,27 +121,27 @@ export const SOURCE_FORMATS = new Set([
 
 export const MATERIAL_PRESETS = {
   // Neutrals — for paper / silhouette / stone / building bases
-  'matte-white':  { hue: 0.10, sat: 0.05, metal: 0.0, glow: 0.0 },
-  'matte-black':  { hue: 0.60, sat: 0.10, metal: 0.0, glow: 0.0 },
-  'stone':        { hue: 0.08, sat: 0.10, metal: 0.0, glow: 0.0 },
+  'matte-white':  { hue: 0.10, sat: 0.05, value: 0.94, metal: 0.0, glow: 0.0 },
+  'matte-black':  { hue: 0.60, sat: 0.15, value: 0.20, metal: 0.0, glow: 0.0 },
+  'stone':        { hue: 0.08, sat: 0.12, value: 0.75, metal: 0.0, glow: 0.0 },
 
   // Earth tones — for cottages / brick / earth / wood
-  'brick':        { hue: 0.02, sat: 0.55, metal: 0.0, glow: 0.0 },
-  'wood':         { hue: 0.07, sat: 0.45, metal: 0.0, glow: 0.0 },
-  'terracotta':   { hue: 0.04, sat: 0.65, metal: 0.0, glow: 0.0 },
+  'brick':        { hue: 0.02, sat: 0.55, value: 0.55, metal: 0.0, glow: 0.0 },
+  'wood':         { hue: 0.07, sat: 0.45, value: 0.50, metal: 0.0, glow: 0.0 },
+  'terracotta':   { hue: 0.04, sat: 0.65, value: 0.62, metal: 0.0, glow: 0.0 },
 
   // Nature — for trees / water / sky
-  'leaf-green':   { hue: 0.30, sat: 0.65, metal: 0.0, glow: 0.0 },
-  'sky-blue':     { hue: 0.58, sat: 0.55, metal: 0.0, glow: 0.0 },
+  'leaf-green':   { hue: 0.30, sat: 0.65, value: 0.55, metal: 0.0, glow: 0.0 },
+  'sky-blue':     { hue: 0.58, sat: 0.55, value: 0.85, metal: 0.0, glow: 0.0 },
 
   // Metals — for bells / decorative elements / mechanical
-  'gold':         { hue: 0.13, sat: 0.85, metal: 0.95, glow: 0.0 },
-  'silver':       { hue: 0.0,  sat: 0.0,  metal: 0.95, glow: 0.0 },
-  'copper':       { hue: 0.06, sat: 0.70, metal: 0.95, glow: 0.0 },
+  'gold':         { hue: 0.13, sat: 0.85, value: 0.92, metal: 0.95, glow: 0.0 },
+  'silver':       { hue: 0.0,  sat: 0.0,  value: 0.82, metal: 0.95, glow: 0.0 },
+  'copper':       { hue: 0.06, sat: 0.70, value: 0.65, metal: 0.95, glow: 0.0 },
 
   // Emissive — for lighthouse beacon / candle / sun / moon / LED
-  'glow-warm':    { hue: 0.10, sat: 0.95, metal: 0.0, glow: 1.5 },
-  'glow-cool':    { hue: 0.55, sat: 0.80, metal: 0.0, glow: 1.5 },
+  'glow-warm':    { hue: 0.10, sat: 0.95, value: 1.0,  metal: 0.0, glow: 1.8 },
+  'glow-cool':    { hue: 0.55, sat: 0.80, value: 1.0,  metal: 0.0, glow: 1.8 },
 };
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
@@ -164,12 +165,15 @@ export function resolveMaterial(input) {
       console.warn(`[spec] Unknown material preset "${input}". Falling back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`);
       return null;
     }
-    return { ...preset };
+    // Defensive default for value — older presets without value field treated
+    // as full brightness so existing scenes keep working through schema change.
+    return { value: 1.0, ...preset };
   }
   if (typeof input === 'object') {
     return {
       hue:   clamp01(input.hue   ?? 0),
       sat:   clamp01(input.sat   ?? 1),
+      value: clamp01(input.value ?? 1),
       metal: clamp01(input.metal ?? 0),
       glow:  clamp05(input.glow  ?? 0),
     };
@@ -473,13 +477,13 @@ function validateSubject(subj, path, errors, warnings) {
       }
     } else if (typeof subj.material === 'object' && !Array.isArray(subj.material)) {
       const m = subj.material;
-      for (const k of ['hue', 'sat', 'metal', 'glow']) {
+      for (const k of ['hue', 'sat', 'value', 'metal', 'glow']) {
         if (m[k] != null && typeof m[k] !== 'number') {
           errors.push(`${path}.material.${k}: must be a number if present`);
         }
       }
     } else {
-      errors.push(`${path}.material: must be a string preset name or an object {hue, sat, metal, glow}`);
+      errors.push(`${path}.material: must be a string preset name or an object {hue, sat, value, metal, glow}`);
     }
   }
 
