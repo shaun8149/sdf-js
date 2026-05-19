@@ -76,15 +76,18 @@ const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 // v1   = M0 baseline (pre-atom-library port)
 // v2   = M3 ship (9 atoms + 9 IQ types) — frozen snapshot
 // v2.1 = material/pattern + boolean variants + facade-to-3D — frozen snapshot
-// v2.2 = 5 new presets + variant push (anti-pattern + 3 worked examples) — frozen
-// v2.3 = decision heuristic + 9-row category-variant table + Example 5 bicycle
+// v2.2 = 5 new presets + variant push — frozen
+// v2.3 = decision heuristic + bicycle Example 5 — frozen
+// v3.0 = atom library 9 → 42 (animals + landscape + architecture + vehicles
+//        + furniture + mechanical + plants) + deep-water preset
 //        — read from LIVE file so future edits flow into next regression run
 const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
 const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
 const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
 const V22_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.2.md`, 'utf-8');
-const V23_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
-const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT, 'v2.3': V23_PROMPT };
+const V23_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.3.md`, 'utf-8');
+const V30_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT, 'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
@@ -93,7 +96,7 @@ const DEMOS = [
   'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
 ];
 
-// New types ported in M3 (community + atoms) — what we want LLM to use in v2
+// M3 atoms (v2-era): what we wanted LLM to use in v2 baseline
 const NEW_ATOMS = new Set([
   'moon', 'star', 'sun', 'cloud-puff',
   'tree-pine', 'tree-broadleaf', 'cottage', 'flag-on-pole', 'bird-silhouette',
@@ -101,6 +104,23 @@ const NEW_ATOMS = new Set([
 const NEW_IQ_TYPES = new Set([
   'solid-angle', 'link', 'capped-torus', 'hex-prism', 'octagon-prism',
   'round-cone', 'rhombus', 'horseshoe', 'u-shape',
+]);
+// v3.0 expansion atoms: 33 new types across 7 categories
+const V30_ATOMS = new Set([
+  // animals
+  'cow', 'horse', 'pig', 'dog', 'sheep', 'cat',
+  // landscape
+  'rock-boulder', 'fence-section', 'hill-mound', 'stream-segment',
+  // architecture
+  'tower-square', 'church-spire', 'gazebo', 'well', 'fountain',
+  // vehicles
+  'sailboat-small', 'car-simple', 'wagon', 'biplane',
+  // furniture
+  'chair', 'table-round', 'lamp-standing', 'bookshelf', 'wine-bottle',
+  // mechanical
+  'gear-flat', 'pipe-l-bend', 'smokestack', 'windmill',
+  // plants
+  'flower', 'mushroom', 'bush', 'vine', 'grass-tuft',
 ]);
 
 // v2.1 boolean variants (hg_sdf-style joins)
@@ -241,6 +261,7 @@ async function liftOne(demoId, systemPrompt, version) {
   const newAtomsUsed   = Object.entries(typeCounts).filter(([t]) => NEW_ATOMS.has(t));
   const newIQTypesUsed = Object.entries(typeCounts).filter(([t]) => NEW_IQ_TYPES.has(t));
   const variantsUsed   = Object.entries(typeCounts).filter(([t]) => BOOLEAN_VARIANTS.has(t));
+  const v30AtomsUsed   = Object.entries(typeCounts).filter(([t]) => V30_ATOMS.has(t));
 
   let compileOk = false, compileErr = null;
   try { compile(sceneData); compileOk = true; }
@@ -264,6 +285,9 @@ async function liftOne(demoId, systemPrompt, version) {
     variantsUsedCount:  variantsUsed.reduce((s, [_, c]) => s + c, 0),
     variantsUsed,
     zSpread: zSpread(sceneData.subjects),  // {count, min, max, range, stdev}
+    // v3.0 metrics — adoption of new 33-atom expansion
+    v30AtomsUsedCount: v30AtomsUsed.reduce((s, [_, c]) => s + c, 0),
+    v30AtomsUsed,
     typeCounts,
     compileOk, compileErr,
     sceneName: sceneData.name,
@@ -278,10 +302,11 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
+  else if (versionArg === 'v2.3-vs-v3.0') versions = ['v2.3', 'v3.0'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
@@ -303,7 +328,7 @@ async function main() {
       if (r.error) {
         console.log(` ✗ ${r.error}`);
       } else {
-        console.log(` ✓ ${r.subjectCount} subj · ${r.newAtomsUsedCount} atoms · ${r.materialUsageCount} mat · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
+        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3 · ${r.materialUsageCount} mat · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
       }
     }
     const cmp = { demoId: id, runs };

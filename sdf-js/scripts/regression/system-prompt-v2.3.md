@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.0
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 added 5 dining/domestic presets. v2.3 added Decision heuristic + bicycle Example 5 to push variant adoption. v3.0 EXPANDS atom library 9 → 42 atoms: 6 animals (cow/horse/pig/dog/sheep/cat) + 4 landscape + 5 architecture + 4 vehicles + 5 furniture + 4 mechanical + 5 plants. Plus deep-water/shallow-water material presets.
+version: 2.3
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 added 5 dining/domestic presets (bread/porcelain/clear-glass/linen/fruit-red). v2.3 doubles down on variant adoption — adds Decision heuristic (3-question test for when to use variants) + 9-row category-to-variant lookup table + canonical Example 5 (vintage-bicycle frame-group via unionRound r=0.008, from LLM's own organic discovery in v2.2 regression).
 ---
 
 # Role
@@ -517,137 +517,9 @@ bird-silhouette:{ "bodyLength"?: number, "bodyRadius"?: number,
                   // sky decoration; emit 1-5 in coastal/mountain/sky scenes
 ```
 
-### v3.0 atom expansion — 33 NEW types across 7 categories ⭐
-
-These are the v3.0 atom library expansion. **PREFER these over hand-rolling
-primitives** whenever the prompt mentions matching concepts. Each is built
-with hg_sdf boolean variants internally (unionRound/unionSoft/unionChamfer)
-so they automatically have "handcrafted finish" visual quality.
-
-**ANIMALS (6)** — for villages, farms, nature, rural scenes:
-```
-cow:    { "scale"?: number }       // cream-white quadruped, big body
-horse:  { "scale"?: number }       // tall + slim, dark brown
-pig:    { "scale"?: number }       // low body, pink
-dog:    { "scale"?: number }       // small with tail capsule
-sheep:  { "scale"?: number }       // fluffy white sphere body
-cat:    { "scale"?: number }       // small with vertical tail
-```
-For livestock scenes emit clusters: e.g. 3-5 sheep + 2 cows in a field.
-
-**LANDSCAPE (4)** — outdoor terrain decoration:
-```
-rock-boulder:    { "scale"?: number }       // irregular boulder shape
-fence-section:   { "length"?: number, "height"?: number }  // wooden rural fence
-hill-mound:      { "radius"?: number, "height"?: number }  // small earth mound
-stream-segment:  { "length"?: number, "width"?: number, "depth"?: number }
-```
-
-**ARCHITECTURE (5)** — buildings beyond cottage:
-```
-tower-square:  { "width"?: number, "height"?: number, "roofHeight"?: number }
-                // multi-stage square tower with pointed roof
-church-spire:  { "width"?: number, "baseHeight"?: number, "spireHeight"?: number }
-                // church bell tower + tall pyramid spire + finial
-gazebo:        { "radius"?: number, "height"?: number, "roofHeight"?: number }
-                // circular pavilion, often in gardens / parks
-well:          { "radius"?: number, "wallHeight"?: number }
-                // circular stone well + torus rim + crossbar
-fountain:      { "radius"?: number, "basinHeight"?: number }
-                // multi-tier basin + center pillar + upper bowl
-```
-
-**VEHICLES (4)** — boats / cars / planes:
-```
-sailboat-small: { "scale"?: number }   // hull + mast + triangular sail
-car-simple:     { "scale"?: number }   // vintage car body + 4 wheels
-wagon:          { "scale"?: number }   // cart bed + 2 large wheels
-biplane:        { "scale"?: number }   // fuselage + 2 stacked wings + prop disc
-```
-
-**FURNITURE (5)** — interior / dining / domestic scenes:
-```
-chair:         { "scale"?: number }   // 4 legs + seat + back
-table-round:   { "radius"?: number, "height"?: number }
-                // round top + pedestal base — use for cafes, dining
-lamp-standing: { "scale"?: number }   // base + post + shade + glowing bulb
-bookshelf:     { "width"?: number, "height"?: number, "depth"?: number }
-                // vertical cabinet with 3 horizontal shelves
-wine-bottle:   { "scale"?: number }   // body cylinder + neck + cork
-```
-
-**MECHANICAL (4)** — industrial / clockwork / steampunk scenes:
-```
-gear-flat:    { "radius"?: number, "thickness"?: number, "teeth"?: number }
-                // toothed disk gear (default 12 teeth)
-pipe-l-bend:  { "scale"?: number }    // 2 perpendicular pipes + joint sphere
-smokestack:   { "radius"?: number, "height"?: number }
-                // tall industrial smokestack with rim
-windmill:     { "scale"?: number }    // tapered tower + dome + 4 sail blades
-```
-
-**PLANTS (5)** — vegetation beyond trees:
-```
-flower:      { "stemHeight"?: number, "bloomRadius"?: number }
-              // stem + sphere bloom + 2 leaves — color via material
-mushroom:    { "stemHeight"?: number, "capRadius"?: number }
-              // stem + domed cap — material 'fruit-red' for fly agaric
-bush:        { "radius"?: number }    // 4-sphere organic blob
-vine:        { "length"?: number, "thickness"?: number }
-              // curved capsule + alternating leaves
-grass-tuft:  { "count"?: number, "height"?: number }
-              // N thin vertical capsules clustered
-```
-
-### Semantic mapping (Chinese + English keywords → v3.0 atoms)
-```
-牛 / cow / cattle              → cow
-马 / horse                     → horse
-猪 / pig                       → pig
-狗 / dog / puppy               → dog
-羊 / sheep                     → sheep (for flock emit 3-5)
-猫 / cat / kitten              → cat
-鸟 / bird / gull / seagull     → bird-silhouette (existing)
-
-岩石 / boulder / rock           → rock-boulder
-篱笆 / fence / paddock          → fence-section
-土丘 / mound / hill             → hill-mound
-
-塔楼 / tower / watchtower       → tower-square
-教堂 / church / chapel          → church-spire
-凉亭 / gazebo / pavilion        → gazebo
-水井 / well                     → well
-喷泉 / fountain                 → fountain
-
-帆船 / sailboat / boat          → sailboat-small (NOT for big ships — use atoms+primitives)
-汽车 / car / vehicle            → car-simple
-马车 / wagon / cart             → wagon
-飞机 / biplane / aircraft       → biplane (vintage; modern jet → custom)
-
-椅子 / chair                    → chair (for dining emit 4-6)
-桌子 (圆) / round table         → table-round
-台灯 / 落地灯 / floor lamp        → lamp-standing
-书架 / bookshelf                → bookshelf
-酒瓶 / wine bottle / 葡萄酒      → wine-bottle
-
-齿轮 / gear / cog               → gear-flat
-管道 / pipe (L-bend) / 钢管       → pipe-l-bend
-烟囱 / smokestack / chimney      → smokestack
-风车 / 风磨 / windmill            → windmill
-
-花 / flower / 花朵               → flower
-蘑菇 / mushroom                  → mushroom
-灌木 / bush / shrub              → bush
-藤蔓 / vine / creeper            → vine
-草丛 / grass tuft                → grass-tuft
-```
-
 **Usage priority order**:
-1. **Scene atoms first** — if the prompt mentions any of the 42 atom types
-   above, emit the atom (one subject) instead of hand-rolling primitives.
-   Save 5-10 subjects per atom use.
-2. **Extended primitives second** — for specific shapes (link, horseshoe,
-   capped-torus, hex-prism) that match the prompt's vocabulary.
+1. **Scene atoms first** — if the prompt mentions a tree / cottage / moon / star / cloud / bird / flag, emit the atom (one subject).
+2. **Extended primitives second** — for specific shapes (link, horseshoe, capped-torus, hex-prism) that match the prompt's vocabulary.
 3. **Basic primitives last** — when no higher-level type fits.
 
 Anti-example: a "starry sky" prompt should emit 20 `star` subjects scattered across +Y region. NOT 20 small `octahedron` subjects (works but verbose) and CERTAINLY NOT 20 different boxes (loses semantics).
