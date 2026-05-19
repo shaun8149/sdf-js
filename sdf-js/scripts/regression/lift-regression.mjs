@@ -1,22 +1,29 @@
 // =============================================================================
-// Lift regression test — compare v1 vs v2 system prompt on all 8 demos.
+// Lift regression test — compare v1 vs v2 vs v2.1 system prompts on 8 demos.
 //
-// For each demo: re-lift its 2D code twice (once with v1 prompt, once with
-// v2). Compare:
-//   - how many new atoms used (moon/star/tree-pine/cottage/...)
-//   - how many new IQ primitives used (solid-angle/link/horseshoe/...)
+// For each demo: re-lift its 2D code three times. Compare:
+//   - new atoms used (moon/star/tree-pine/cottage/...) — M3 evidence
+//   - new IQ primitives used (solid-angle/link/horseshoe/...) — M3 evidence
+//   - material field usage on Subjects — v2.1 new
+//   - pattern field usage on Subjects — v2.1 new
+//   - boolean variant usage (unionChamfer/unionStairs/...) — v2.1 new
+//   - Z-coordinate spread (variance of subject Z positions) — v2.1 new
+//     fixes "flat cathedral" — higher spread = better volumetric lift
 //   - total subject count
 //   - input/output tokens, cost
 //   - whether the SceneData compile()s
 //
 // Usage:
-//   ANTHROPIC_API_KEY=sk-ant-... node sdf-js/scripts/regression/lift-regression.mjs [demo-id|all]
+//   ANTHROPIC_API_KEY=sk-ant-... node sdf-js/scripts/regression/lift-regression.mjs [demo-id|all] [v1|v2|v2.1|all-versions]
+//
+// Default version: all-versions (3 runs per demo)
 //
 // Output:
-//   sdf-js/scripts/regression/results/<demo-id>-v{1,2}.json  (full sceneData + metrics)
-//   sdf-js/scripts/regression/results/summary.json           (cross-demo comparison table)
+//   sdf-js/scripts/regression/results/<demo-id>-v{1,2,2.1}.json  (full sceneData + metrics)
+//   sdf-js/scripts/regression/results/summary.json               (cross-demo table)
 //
-// Cost estimate: ~16 API calls × $0.10-0.30 each = $2-5 total.
+// Cost estimate: ~24 API calls × $0.10-0.30 = $3-6 total for all-versions.
+//                ~16 calls × $0.15 = $2-3 for v2-vs-v2.1 only.
 // =============================================================================
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -66,8 +73,14 @@ async function preflight() {
 }
 
 const REPO = '/Users/hexiaoyang/Documents/sdf-main';
-const V1_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
-const V2_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+// v1 = M0 baseline (pre-atom-library port)
+// v2 = M3 ship (9 atoms + 9 IQ types) — frozen snapshot in scripts/regression/
+// v2.1 = today (material/pattern presets + boolean variants + facade-to-3D)
+//        — read from LIVE file so future edits flow into next regression run
+const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
+const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
+const V21_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
@@ -84,6 +97,16 @@ const NEW_ATOMS = new Set([
 const NEW_IQ_TYPES = new Set([
   'solid-angle', 'link', 'capped-torus', 'hex-prism', 'octagon-prism',
   'round-cone', 'rhombus', 'horseshoe', 'u-shape',
+]);
+
+// v2.1 boolean variants (hg_sdf-style joins)
+const BOOLEAN_VARIANTS = new Set([
+  'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
+  'unionRound',   'intersectionRound',   'differenceRound',
+  'unionSoft',
+  'unionStairs',  'intersectionStairs',  'differenceStairs',
+  'unionColumns', 'intersectionColumns', 'differenceColumns',
+  'pipe', 'engrave', 'groove', 'tongue',
 ]);
 
 // Anthropic pricing for sonnet-4-6 (approximate, in USD per 1M tokens)
@@ -145,6 +168,47 @@ function countSubjects(subjects) {
   return n;
 }
 
+// v2.1 metrics: count how many subjects carry material / pattern fields
+function countMaterialUsage(subjects) {
+  let n = 0;
+  for (const s of subjects || []) {
+    if (s.material != null) n += 1;
+    if (Array.isArray(s.children)) n += countMaterialUsage(s.children);
+  }
+  return n;
+}
+function countPatternUsage(subjects) {
+  let n = 0;
+  for (const s of subjects || []) {
+    if (s.pattern != null) n += 1;
+    if (Array.isArray(s.children)) n += countPatternUsage(s.children);
+  }
+  return n;
+}
+
+// v2.1 facade-to-3D metric: spread of Z coordinates across all subjects.
+// Low spread = "flat cathedral" failure mode (all subjects piled at one z).
+// High spread = proper volumetric distribution.
+function collectZCoords(subjects, acc = []) {
+  for (const s of subjects || []) {
+    const t = s.transform?.translate;
+    if (Array.isArray(t) && typeof t[2] === 'number') acc.push(t[2]);
+    if (Array.isArray(s.children)) collectZCoords(s.children, acc);
+  }
+  return acc;
+}
+function zSpread(subjects) {
+  const zs = collectZCoords(subjects);
+  if (zs.length < 2) return { count: zs.length, min: 0, max: 0, range: 0, stdev: 0 };
+  const min = Math.min(...zs), max = Math.max(...zs);
+  const mean = zs.reduce((s, z) => s + z, 0) / zs.length;
+  const variance = zs.reduce((s, z) => s + (z - mean) ** 2, 0) / zs.length;
+  return {
+    count: zs.length, min, max, range: max - min,
+    stdev: Math.sqrt(variance),
+  };
+}
+
 async function liftOne(demoId, systemPrompt, version) {
   const demoFile = `${REPO}/sdf-js/examples/compositor/demo-lifts/${demoId}.json`;
   const demo = JSON.parse(readFileSync(demoFile, 'utf-8'));
@@ -170,8 +234,9 @@ async function liftOne(demoId, systemPrompt, version) {
 
   const types = collectTypes(sceneData.subjects);
   const typeCounts = types.reduce((m, t) => (m[t] = (m[t] || 0) + 1, m), {});
-  const newAtomsUsed = Object.entries(typeCounts).filter(([t]) => NEW_ATOMS.has(t));
+  const newAtomsUsed   = Object.entries(typeCounts).filter(([t]) => NEW_ATOMS.has(t));
   const newIQTypesUsed = Object.entries(typeCounts).filter(([t]) => NEW_IQ_TYPES.has(t));
+  const variantsUsed   = Object.entries(typeCounts).filter(([t]) => BOOLEAN_VARIANTS.has(t));
 
   let compileOk = false, compileErr = null;
   try { compile(sceneData); compileOk = true; }
@@ -189,6 +254,12 @@ async function liftOne(demoId, systemPrompt, version) {
     newAtomsUsed,        // [[type, count], ...]
     newIQTypesUsedCount: newIQTypesUsed.reduce((s, [_, c]) => s + c, 0),
     newIQTypesUsed,
+    // v2.1 metrics
+    materialUsageCount: countMaterialUsage(sceneData.subjects),
+    patternUsageCount:  countPatternUsage(sceneData.subjects),
+    variantsUsedCount:  variantsUsed.reduce((s, [_, c]) => s + c, 0),
+    variantsUsed,
+    zSpread: zSpread(sceneData.subjects),  // {count, min, max, range, stdev}
     typeCounts,
     compileOk, compileErr,
     sceneName: sceneData.name,
@@ -200,84 +271,91 @@ async function liftOne(demoId, systemPrompt, version) {
 
 async function main() {
   const target = process.argv[2] || 'all';
+  const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
+  let versions;
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1'];
+  else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
+  else if (PROMPTS[versionArg]) versions = [versionArg];
+  else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
-  console.log(`Lift regression: ${demos.length} demo(s) × 2 versions = ${demos.length * 2} API calls`);
-  console.log(`Estimated cost: $${(demos.length * 2 * 0.15).toFixed(2)} (~$0.15 each)`);
+  const calls = demos.length * versions.length;
+  console.log(`Lift regression: ${demos.length} demo(s) × ${versions.length} version(s) = ${calls} API calls`);
+  console.log(`Versions: ${versions.join(', ')}`);
+  console.log(`Estimated cost: $${(calls * 0.15).toFixed(2)} (~$0.15 each)`);
   console.log(`Model: ${MODEL}\n`);
   await preflight();
 
   const summary = [];
   for (const id of demos) {
     console.log(`── ${id} ──`);
-    process.stdout.write('  v1 lift…');
-    const v1 = await liftOne(id, V1_PROMPT, 'v1');
-    if (v1.error) {
-      console.log(` ✗ ${v1.error}`);
-    } else {
-      console.log(` ✓ ${v1.subjectCount} subjects, ${v1.tokens.output}t out, $${v1.costUSD}`);
+    const runs = {};
+    for (const v of versions) {
+      process.stdout.write(`  ${v} lift…`);
+      const r = await liftOne(id, PROMPTS[v], v);
+      runs[v] = r;
+      if (r.error) {
+        console.log(` ✗ ${r.error}`);
+      } else {
+        console.log(` ✓ ${r.subjectCount} subj · ${r.newAtomsUsedCount} atoms · ${r.materialUsageCount} mat · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
+      }
     }
-    process.stdout.write('  v2 lift…');
-    const v2 = await liftOne(id, V2_PROMPT, 'v2');
-    if (v2.error) {
-      console.log(` ✗ ${v2.error}`);
-    } else {
-      console.log(` ✓ ${v2.subjectCount} subjects, ${v2.tokens.output}t out, $${v2.costUSD}`);
-    }
-
-    const cmp = {
-      demoId: id,
-      v1: v1.error
-        ? { error: v1.error }
-        : { subjects: v1.subjectCount, atoms: v1.newAtomsUsedCount, iq: v1.newIQTypesUsedCount, compile: v1.compileOk, cost: v1.costUSD },
-      v2: v2.error
-        ? { error: v2.error }
-        : { subjects: v2.subjectCount, atoms: v2.newAtomsUsedCount, iq: v2.newIQTypesUsedCount, compile: v2.compileOk, cost: v2.costUSD },
-      delta: {
-        subjects: (v2.subjectCount ?? 0) - (v1.subjectCount ?? 0),
-        atoms:    (v2.newAtomsUsedCount ?? 0) - (v1.newAtomsUsedCount ?? 0),
-        iq:       (v2.newIQTypesUsedCount ?? 0) - (v1.newIQTypesUsedCount ?? 0),
-      },
-      v2NewAtoms: v2.newAtomsUsed,
-      v2NewIQ:    v2.newIQTypesUsed,
-    };
+    const cmp = { demoId: id, runs };
     summary.push(cmp);
-    console.log(`  Δ atoms ${cmp.delta.atoms >= 0 ? '+' : ''}${cmp.delta.atoms} · Δ IQ ${cmp.delta.iq >= 0 ? '+' : ''}${cmp.delta.iq} · Δ subjects ${cmp.delta.subjects >= 0 ? '+' : ''}${cmp.delta.subjects}\n`);
+    console.log('');
   }
 
-  // Pretty summary
+  // Pretty summary table — focused on v2.1's hypothesis metrics
   console.log('═══ Summary ═══');
-  console.table(summary.map(s => ({
-    demo: s.demoId,
-    'v1 subj': s.v1.subjects,
-    'v2 subj': s.v2.subjects,
-    'Δ subj': s.delta.subjects,
-    'v1 atoms': s.v1.atoms,
-    'v2 atoms': s.v2.atoms,
-    'Δ atoms': s.delta.atoms,
-    'Δ IQ': s.delta.iq,
-    'v1 compile': s.v1.compile ? '✓' : '✗',
-    'v2 compile': s.v2.compile ? '✓' : '✗',
-  })));
+  const rows = summary.map(s => {
+    const row = { demo: s.demoId };
+    for (const v of versions) {
+      const r = s.runs[v];
+      if (r.error) {
+        row[`${v}`] = `✗ ${r.error.slice(0, 20)}`;
+      } else {
+        row[`${v} subj`] = r.subjectCount;
+        row[`${v} mat`] = r.materialUsageCount;
+        row[`${v} pat`] = r.patternUsageCount;
+        row[`${v} var`] = r.variantsUsedCount;
+        row[`${v} zR`] = r.zSpread.range.toFixed(1);
+        row[`${v} ✓`] = r.compileOk ? '✓' : '✗';
+      }
+    }
+    return row;
+  });
+  console.table(rows);
 
-  const totalCostV1 = summary.reduce((s, r) => s + parseFloat(r.v1.cost || 0), 0).toFixed(4);
-  const totalCostV2 = summary.reduce((s, r) => s + parseFloat(r.v2.cost || 0), 0).toFixed(4);
-  const totalAtomsV1 = summary.reduce((s, r) => s + (r.v1.atoms || 0), 0);
-  const totalAtomsV2 = summary.reduce((s, r) => s + (r.v2.atoms || 0), 0);
-  const totalIQV1 = summary.reduce((s, r) => s + (r.v1.iq || 0), 0);
-  const totalIQV2 = summary.reduce((s, r) => s + (r.v2.iq || 0), 0);
-
-  console.log(`\nTotals:`);
-  console.log(`  cost: v1 $${totalCostV1} · v2 $${totalCostV2} · combined $${(parseFloat(totalCostV1) + parseFloat(totalCostV2)).toFixed(4)}`);
-  console.log(`  new atom uses: v1=${totalAtomsV1}  →  v2=${totalAtomsV2}  (+${totalAtomsV2 - totalAtomsV1})`);
-  console.log(`  new IQ uses:   v1=${totalIQV1}  →  v2=${totalIQV2}  (+${totalIQV2 - totalIQV1})`);
+  // Totals + cost
+  let totalCost = 0;
+  const totals = {};
+  for (const v of versions) totals[v] = { atoms: 0, iq: 0, mat: 0, pat: 0, var: 0, cost: 0 };
+  for (const s of summary) {
+    for (const v of versions) {
+      const r = s.runs[v];
+      if (r.error) continue;
+      totals[v].atoms += r.newAtomsUsedCount;
+      totals[v].iq    += r.newIQTypesUsedCount;
+      totals[v].mat   += r.materialUsageCount;
+      totals[v].pat   += r.patternUsageCount;
+      totals[v].var   += r.variantsUsedCount;
+      totals[v].cost  += parseFloat(r.costUSD);
+    }
+  }
+  console.log(`\nTotals across all demos:`);
+  for (const v of versions) {
+    const t = totals[v];
+    console.log(`  ${v.padEnd(5)} · atoms=${t.atoms.toString().padStart(3)} · iq=${t.iq.toString().padStart(3)} · materials=${t.mat.toString().padStart(3)} · patterns=${t.pat.toString().padStart(3)} · variants=${t.var.toString().padStart(3)} · cost=$${t.cost.toFixed(4)}`);
+    totalCost += t.cost;
+  }
+  console.log(`  combined cost: $${totalCost.toFixed(4)}`);
 
   writeFileSync(`${RESULTS_DIR}/summary.json`, JSON.stringify({
     ranAt: new Date().toISOString(),
     model: MODEL,
-    totalCostV1, totalCostV2,
-    totalAtomsV1, totalAtomsV2,
-    totalIQV1, totalIQV2,
+    versions,
+    totals,
+    totalCost,
     demos: summary,
   }, null, 2));
 
