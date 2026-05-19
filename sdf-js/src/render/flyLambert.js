@@ -29,11 +29,17 @@ uniform vec3  u_lightPos;
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
+// Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
+// means "no material — fall back to hash palette". Indexed by minIndex-1
+// (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
+// values are 1..numLeaves).
+uniform vec4  u_leafMaterial[96];
 
-#define MAX_STEPS 128
-#define MAX_DIST  40.0
-#define EPS       0.0008
-#define GROUND_Y  -1.0
+#define MAX_STEPS    128
+#define MAX_DIST     40.0
+#define EPS          0.0008
+#define GROUND_Y     -1.0
+#define MAX_MATERIAL 96
 
 // ---- Scene mapping (with optional infinite ground plane) ------------------
 vec2 mapWithGround(vec3 p) {
@@ -123,17 +129,32 @@ vec3 tonemap(vec3 c) {
   return pow(clamp(c, 0.0, 1.0), vec3(0.4545));
 }
 
-// IQ cosine palette — per-subject color from leaf index. Golden-ratio hash
-// gives maximum perceptual separation between adjacent indices (no two
-// neighbors share a hue). a/b/c/d tuned for warm-leaning editorial palette
-// with enough amplitude that subjects don't all collapse to mid-grey.
-vec3 objectColor(float idx) {
-  float h = fract(idx * 0.6180339887);
-  vec3 a = vec3(0.50, 0.50, 0.52);             // mid
-  vec3 b = vec3(0.55, 0.55, 0.50);             // amplitude — bumped from 0.42 to keep saturation post-shading
-  vec3 c = vec3(0.85, 1.00, 1.18);             // per-channel frequency — produces hue variation, not just lightness
-  vec3 d = vec3(0.00, 0.33, 0.67);             // phase
+// IQ cosine palette — warm-leaning artistic palette. Used as the fallback
+// when a subject doesn't carry a material (hash-by-index for visual variety).
+vec3 cosPalette(float h) {
+  vec3 a = vec3(0.50, 0.50, 0.52);
+  vec3 b = vec3(0.55, 0.55, 0.50);
+  vec3 c = vec3(0.85, 1.00, 1.18);
+  vec3 d = vec3(0.00, 0.33, 0.67);
   return a + b * cos(6.28318530718 * (c * h + d));
+}
+
+// HSV → RGB. Used for material albedo where `hue` is intuitive 0=red,
+// 0.33=green, 0.66=blue (matches LLM/artist mental model).
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+// Fetch the material for a given leaf index. Returns sentinel sat<0 if the
+// index is out of range or the slot is unset.
+vec4 fetchMaterial(float idx) {
+  int i = int(idx) - 1;  // imin's objectIndex is 1-based
+  if (i < 0 || i >= MAX_MATERIAL) return vec4(0.0, -1.0, 0.0, 0.0);
+  // Dynamic indexing of uniform array — modern WebGL1 drivers all support
+  // this. If portability becomes a problem, fall back to a 1D texture LUT.
+  return u_leafMaterial[i];
 }
 
 void main() {
@@ -186,13 +207,25 @@ void main() {
       shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 12.0);
     }
 
-    // Base albedo per material:
-    //   - object hits (matId=2): IQ cosine palette indexed by hit subject's
-    //     position in the flatlist. Adjacent subjects get distinct hues.
-    //   - ground (matId=1): cool neutral or checker
+    // Base albedo + material params:
+    //   - object hits (matId=2): material LUT keyed by hit leaf index. If the
+    //     LUT slot is unset (sat<0 sentinel), fall back to hash-by-index
+    //     cosine palette for visual variety.
+    //   - ground (matId=1): cool neutral or checker (no material support yet)
     vec3 base;
+    float metalK = 0.0;
+    float glowK = 0.0;
     if (matId > 1.5) {
-      base = objectColor(hitIdx);
+      vec4 mat = fetchMaterial(hitIdx);
+      if (mat.y < 0.0) {
+        base = cosPalette(fract(hitIdx * 0.6180339887));
+      } else {
+        // HSV hue → RGB, then mix toward neutral grey by saturation
+        vec3 hueColor = hsv2rgb(vec3(mat.x, 1.0, 1.0));
+        base = mix(vec3(0.62, 0.62, 0.62), hueColor, mat.y);
+        metalK = mat.z;
+        glowK  = mat.w;
+      }
     } else if (u_checkerOn > 0.5) {
       float c = checker(p.xz);
       base = mix(vec3(0.90, 0.86, 0.78), vec3(0.74, 0.70, 0.62), c);
@@ -206,17 +239,26 @@ void main() {
     vec3 bounceCol = vec3(0.55, 0.48, 0.40);
     vec3 rimCol    = vec3(0.55, 0.66, 0.80);
 
-    // Compose lighting (IQ-style multi-source)
+    // Compose lighting. Metal suppresses diffuse + tints specular toward
+    // base color (the canonical metal/non-metal split). Glow adds emissive
+    // last, unshadowed.
+    float diffK = 1.0 - 0.85 * metalK;
+    vec3  specTint = mix(vec3(1.0), base, metalK);
+    float specBoost = 0.45 + 1.8 * metalK;
+
     vec3 lin = vec3(0.0);
-    lin += base * sunCol    * diff * shadowK * 1.35;
-    lin += base * skyCol    * skyL * ao      * 0.42;
-    lin += base * bounceCol * bnc  * ao      * 0.18;
-    lin += spec * sunCol    * shadowK        * 0.45;
+    lin += base * sunCol    * diff * shadowK * 1.35 * diffK;
+    lin += base * skyCol    * skyL * ao      * 0.42 * diffK;
+    lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
+    lin += specTint * sunCol * spec * shadowK * specBoost;
     lin += rimCol * rim * ao                 * 0.18;
 
-    // Atmospheric perspective: tint distant surfaces toward sky
+    // Atmospheric perspective: tint distant surfaces toward sky. Apply only
+    // to the reflected/diffuse component — emissive added after fog so glow
+    // (lighthouse beacon, neon) punches through atmosphere.
     float fog = clamp((t - 2.0) * 0.025, 0.0, 0.65);
     col = mix(lin, sky(rd, sunDir), fog);
+    col += base * glowK * 1.4;
   }
 
   gl_FragColor = vec4(tonemap(col), 1.0);
@@ -246,6 +288,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
+  // Per-leaf material LUT — built at uploadSDF time from
+  // compileSDF3ToGLSL().leafMaterials. Float32Array(MAX_MATERIAL * 4) with
+  // sentinel sat=-1 for unset slots. Persists across frames; re-built on
+  // each render() call.
+  const MAX_MATERIAL = 96;
+  const materialLUT = new Float32Array(MAX_MATERIAL * 4);
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -332,8 +380,30 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     for (const name of [
       'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
       'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn',
+      'u_leafMaterial[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
+    }
+
+    // Build per-leaf material LUT from compile result. Slots default to
+    // sentinel (sat=-1) so any leaf without a material falls back to the
+    // hash palette in-shader. Subjects beyond MAX_MATERIAL truncate (rare;
+    // warns in console).
+    materialLUT.fill(0);
+    for (let i = 0; i < MAX_MATERIAL; i++) {
+      materialLUT[i * 4 + 1] = -1.0;
+    }
+    const leafMaterials = result.leafMaterials || [];
+    if (leafMaterials.length > MAX_MATERIAL) {
+      console.warn(`[fly3d] scene has ${leafMaterials.length} leaves; LUT capped at ${MAX_MATERIAL}. Excess leaves render with hash-palette fallback.`);
+    }
+    for (let i = 0; i < Math.min(leafMaterials.length, MAX_MATERIAL); i++) {
+      const m = leafMaterials[i];
+      if (m == null) continue;  // leave at sentinel
+      materialLUT[i * 4 + 0] = m.hue;
+      materialLUT[i * 4 + 1] = m.sat;
+      materialLUT[i * 4 + 2] = m.metal;
+      materialLUT[i * 4 + 3] = m.glow;
     }
 
     return result.glsl.length;
@@ -379,6 +449,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_groundOn,  c.groundOn  ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_checkerOn, c.checkerOn ? 1.0 : 0.0);
+    if (uniformsCache['u_leafMaterial[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
+    }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     if (_debugFirstDraw) {

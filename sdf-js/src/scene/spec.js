@@ -67,6 +67,83 @@ export const SOURCE_FORMATS = new Set([
   'script', 'graph', 'llm', 'llm-lift', 'generator',
 ]);
 
+// =============================================================================
+// Material presets
+// -----------------------------------------------------------------------------
+// 4-parameter stylized material model: { hue, sat, metal, glow }.
+//   hue   ∈ [0,1] — HSV hue (0=red, 0.33=green, 0.66=blue, 1=red)
+//   sat   ∈ [0,1] — saturation mixed against neutral grey
+//   metal ∈ [0,1] — fresnel boost + diffuse suppression + base-tinted specular
+//   glow  ∈ [0,5] — self-emissive multiplier (ignored by software renderers)
+//
+// Subject.material may be:
+//   - undefined → renderer falls back to hash-by-index palette (current behavior)
+//   - string    → preset name (looked up in this dict)
+//   - object    → inline { hue, sat, metal, glow } (escape hatch for custom values)
+//
+// Preset names are part of the public lift-LLM vocabulary; renaming is a
+// breaking change. Add new entries freely; only remove with care.
+// =============================================================================
+
+export const MATERIAL_PRESETS = {
+  // Neutrals — for paper / silhouette / stone / building bases
+  'matte-white':  { hue: 0.10, sat: 0.05, metal: 0.0, glow: 0.0 },
+  'matte-black':  { hue: 0.60, sat: 0.10, metal: 0.0, glow: 0.0 },
+  'stone':        { hue: 0.08, sat: 0.10, metal: 0.0, glow: 0.0 },
+
+  // Earth tones — for cottages / brick / earth / wood
+  'brick':        { hue: 0.02, sat: 0.55, metal: 0.0, glow: 0.0 },
+  'wood':         { hue: 0.07, sat: 0.45, metal: 0.0, glow: 0.0 },
+  'terracotta':   { hue: 0.04, sat: 0.65, metal: 0.0, glow: 0.0 },
+
+  // Nature — for trees / water / sky
+  'leaf-green':   { hue: 0.30, sat: 0.65, metal: 0.0, glow: 0.0 },
+  'sky-blue':     { hue: 0.58, sat: 0.55, metal: 0.0, glow: 0.0 },
+
+  // Metals — for bells / decorative elements / mechanical
+  'gold':         { hue: 0.13, sat: 0.85, metal: 0.95, glow: 0.0 },
+  'silver':       { hue: 0.0,  sat: 0.0,  metal: 0.95, glow: 0.0 },
+  'copper':       { hue: 0.06, sat: 0.70, metal: 0.95, glow: 0.0 },
+
+  // Emissive — for lighthouse beacon / candle / sun / moon / LED
+  'glow-warm':    { hue: 0.10, sat: 0.95, metal: 0.0, glow: 1.5 },
+  'glow-cool':    { hue: 0.55, sat: 0.80, metal: 0.0, glow: 1.5 },
+};
+
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const clamp05 = (x) => Math.max(0, Math.min(5, x));
+
+/**
+ * Resolve a Subject.material input into a 4-tuple { hue, sat, metal, glow }
+ * or null. Null means "no material specified; renderer should fall back to
+ * its default per-leaf palette".
+ *
+ * @param {string|object|undefined|null} input
+ * @returns {{hue:number, sat:number, metal:number, glow:number}|null}
+ */
+export function resolveMaterial(input) {
+  if (input == null) return null;
+  if (typeof input === 'string') {
+    const preset = MATERIAL_PRESETS[input];
+    if (!preset) {
+      // Don't throw — unknown name is a warning case. Caller renders with
+      // fallback palette so the scene still loads.
+      console.warn(`[spec] Unknown material preset "${input}". Falling back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`);
+      return null;
+    }
+    return { ...preset };
+  }
+  if (typeof input === 'object') {
+    return {
+      hue:   clamp01(input.hue   ?? 0),
+      sat:   clamp01(input.sat   ?? 1),
+      metal: clamp01(input.metal ?? 0),
+      glow:  clamp05(input.glow  ?? 0),
+    };
+  }
+  return null;
+}
+
 // AnimationChannel.channel dot-paths allowed per host node type.
 // Used by validator to reject unknown channels early.
 export const SUBJECT_CHANNEL_PATHS = new Set([
@@ -243,6 +320,27 @@ function validateSubject(subj, path, errors, warnings) {
   // Transform sanity
   if (subj.transform != null && typeof subj.transform !== 'object') {
     errors.push(`${path}.transform: must be an object`);
+  }
+
+  // Material — string preset name OR inline {hue, sat, metal, glow} object.
+  // Unknown preset string is a WARNING (not error) — renderer falls back to
+  // hash palette and the scene still loads. This is forward-compat: future
+  // preset packs can ship preset names that older builds don't know yet.
+  if (subj.material != null) {
+    if (typeof subj.material === 'string') {
+      if (!MATERIAL_PRESETS[subj.material]) {
+        warnings.push(`${path}.material: unknown preset "${subj.material}" — will fall back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`);
+      }
+    } else if (typeof subj.material === 'object' && !Array.isArray(subj.material)) {
+      const m = subj.material;
+      for (const k of ['hue', 'sat', 'metal', 'glow']) {
+        if (m[k] != null && typeof m[k] !== 'number') {
+          errors.push(`${path}.material.${k}: must be a number if present`);
+        }
+      }
+    } else {
+      errors.push(`${path}.material: must be a string preset name or an object {hue, sat, metal, glow}`);
+    }
   }
 }
 

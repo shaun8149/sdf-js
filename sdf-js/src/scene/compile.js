@@ -47,7 +47,7 @@ import {
 } from './components/atoms/scene-atoms.js';
 import { union, difference, intersection, rep } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
-import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS } from './spec.js';
+import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, resolveMaterial } from './spec.js';
 import { normalizeChannel } from './expr.js';
 
 // =============================================================================
@@ -249,6 +249,11 @@ export function compile(sceneData) {
   for (const subj of sceneData.subjects) {
     const compiled = compileSubject(subj, 'object', subjectInfos);
     if (compiled.sdf != null) {
+      // Tag the post-transform top-level SDF with its resolved material.
+      // sdf3.compile.js flattenUnion propagates this down to all descendant
+      // leaves (including atoms that internally union N parts). null tag =
+      // renderer falls back to hash-palette per leaf.
+      compiled.sdf._subjectMaterial = resolveMaterial(subj.material);
       topLevelSdfs.push(compiled.sdf);
     }
   }

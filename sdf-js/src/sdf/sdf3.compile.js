@@ -122,17 +122,19 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
   }
 
   try {
-    let body;
+    let body, leafMaterials = null;
     if (emitObjectIndex) {
-      body = compileWithObjectIndex(sdf, sceneFnName);
+      const result = compileWithObjectIndex(sdf, sceneFnName);
+      body = result.body;
+      leafMaterials = result.leafMaterials;
     } else {
       const expr = walk(sdf, 'p');
       body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
     }
     const prelude = includeLibrary ? `${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n` : '';
-    return { glsl: prelude + body, error: null };
+    return { glsl: prelude + body, error: null, leafMaterials };
   } catch (e) {
-    return { glsl: null, error: e.message };
+    return { glsl: null, error: e.message, leafMaterials: null };
   }
 }
 
@@ -149,8 +151,18 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
 
 const MAX_DIST_INIT = 1e6;
 
-// 递归 flatten union → [{leaf: SDF, k: number|null}, ...]
-function flattenUnion(sdf, parentK = null) {
+// 递归 flatten union → [{leaf: SDF, k: number|null, material: obj|null}, ...]
+//
+// Material propagation: a parent SDF can carry `_subjectMaterial` (attached by
+// scene/compile.js at SceneData → SDF time). When we descend into a union, we
+// pass the material down to children. A child's own `_subjectMaterial`
+// overrides the parent's. Final leaves carry the closest-ancestor material;
+// renderer indexes per-leaf material LUT by minIndex from IMIN_GLSL.
+function flattenUnion(sdf, parentK = null, parentMaterial = null) {
+  // Child material overrides parent (top-level subject's tag wins over any
+  // outer union it gets merged into).
+  const material = sdf._subjectMaterial !== undefined ? sdf._subjectMaterial : parentMaterial;
+
   const ast = sdf.ast;
   if (ast?.kind === 'op' && ast.name === 'union') {
     const unionK = ast.opts.k ?? parentK;
@@ -158,12 +170,12 @@ function flattenUnion(sdf, parentK = null) {
     for (const child of ast.children) {
       // child._k 覆盖 union.opts.k（跟 dn.js 行为一致）
       const childK = child._k != null ? child._k : unionK;
-      result.push(...flattenUnion(child, childK));
+      result.push(...flattenUnion(child, childK, material));
     }
     return result;
   }
   // Leaf (非 union op，或 primitive)
-  return [{ leaf: sdf, k: parentK }];
+  return [{ leaf: sdf, k: parentK, material }];
 }
 
 function compileWithObjectIndex(sdf, sceneFnName) {
@@ -173,17 +185,19 @@ function compileWithObjectIndex(sdf, sceneFnName) {
   body += `  objectIndex = 0.0;\n`;
   body += `  minIndex = 0.0;\n`;
   body += `  float d = ${flt(MAX_DIST_INIT)};\n`;
-  for (const { leaf, k } of leaves) {
+  const leafMaterials = [];
+  for (const { leaf, k, material } of leaves) {
     const expr = walk(leaf, 'p');
     if (k != null) {
       body += `  d = ismoothUnion(d, ${expr}, ${flt(k)});\n`;
     } else {
       body += `  d = imin(d, ${expr});\n`;
     }
+    leafMaterials.push(material ?? null);
   }
   body += `  return d;\n`;
   body += `}\n`;
-  return body;
+  return { body, leafMaterials };
 }
 
 // emit-object-index 模式的 GLSL prelude：globals + imin + ismoothUnion
