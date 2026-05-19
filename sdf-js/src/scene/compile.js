@@ -30,6 +30,7 @@ import {
   tetrahedron, octahedron, dodecahedron, icosahedron,
   pyramid, slab3, wireframe_box, tri_prism, waves,
   rotateXYZ, twist, bend,
+  modPolar, mirrorOctant,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
 import { linkSDF } from './components/community/iq-link.js';
@@ -461,6 +462,10 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
     sdf = twist(source.sdf, args.k);
   } else if (subj.type === 'bend') {
     sdf = bend(source.sdf, args.k);
+  } else if (subj.type === 'modPolar') {
+    sdf = modPolar(source.sdf, { axis: args.axis, repetitions: args.repetitions });
+  } else if (subj.type === 'mirrorOctant') {
+    sdf = mirrorOctant(source.sdf, { plane: args.plane, dist: args.dist });
   } else {
     throw new Error(`compile: unknown domain op "${subj.type}"`);
   }

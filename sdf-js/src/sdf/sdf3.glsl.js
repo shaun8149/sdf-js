@@ -464,6 +464,63 @@ vec3 repL3(vec3 p, vec3 period, vec3 count) {
   return p - q * id;
 }
 
+// ---- hg_sdf-style polar repetition + octant mirror -----------------------
+// pModPolar (hg_sdf): fold the two coords perpendicular to an axis into a
+// single pie sector of angle 2π/n. Source SDF evaluated in folded space
+// repeats radially N times around the axis. Use for: clock dials, gear teeth,
+// rose-window petals, dome ribs, fan blades, mandalas.
+//
+// Three axis-aligned variants instead of a runtime-int dispatch (WebGL1
+// would need an if-cascade anyway; emitter picks the right one).
+
+vec2 _polarFold(vec2 v, float n) {
+  float angle = 6.28318530718 / n;
+  float a = atan(v.y, v.x) + angle * 0.5;
+  float r = length(v);
+  a = mod(a, angle) - angle * 0.5;
+  return vec2(cos(a), sin(a)) * r;
+}
+
+vec3 polarModX(vec3 p, float n) {
+  vec2 v = _polarFold(p.yz, n);
+  return vec3(p.x, v.x, v.y);
+}
+vec3 polarModY(vec3 p, float n) {
+  vec2 v = _polarFold(p.xz, n);
+  return vec3(v.x, p.y, v.y);
+}
+vec3 polarModZ(vec3 p, float n) {
+  vec2 v = _polarFold(p.xy, n);
+  return vec3(v.x, v.y, p.z);
+}
+
+// pMirrorOctant (hg_sdf): mirror in two perpendicular axes plus the diagonal.
+// Produces 8-fold symmetry in the chosen plane. Use for: snowflakes, mandala
+// bases, symmetric ornamental panels, gothic rose-window arrangements.
+//
+// 'dist' offsets the mirror lines from the origin (lets you carve out a
+// central solid region rather than slicing through it).
+
+vec2 _mirrorOctantBase(vec2 q, vec2 dist) {
+  q.x = abs(q.x) - dist.x;
+  q.y = abs(q.y) - dist.y;
+  if (q.y > q.x) q = q.yx;
+  return q;
+}
+
+vec3 mirrorOctantXZ(vec3 p, vec2 dist) {
+  vec2 q = _mirrorOctantBase(p.xz, dist);
+  return vec3(q.x, p.y, q.y);
+}
+vec3 mirrorOctantXY(vec3 p, vec2 dist) {
+  vec2 q = _mirrorOctantBase(p.xy, dist);
+  return vec3(q.x, q.y, p.z);
+}
+vec3 mirrorOctantYZ(vec3 p, vec2 dist) {
+  vec2 q = _mirrorOctantBase(p.yz, dist);
+  return vec3(p.x, q.x, q.y);
+}
+
 // ---- Time-aware primitives -------------------------------------------------
 // 这些 primitive 内部引用 u_time（caller shader 必须 declare uniform float u_time）。
 // BOB GPU / flyLambert 都已声明。autoscope-clone scene-1 sea ground 用。

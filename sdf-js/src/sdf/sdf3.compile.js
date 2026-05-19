@@ -438,6 +438,25 @@ const OPS = {
   twist: (sdf, p) => walk(sdf.ast.children[0], `opTwist(${p}, ${flt(sdf.ast.scalars[0])})`),
   bend:  (sdf, p) => walk(sdf.ast.children[0], `opBend(${p}, ${flt(sdf.ast.scalars[0])})`),
 
+  // hg_sdf-style polar repetition. Emits one of polarModX/Y/Z based on axis.
+  modPolar: (sdf, p) => {
+    const { opts, children } = sdf.ast;
+    const axis = opts.axis ?? 'y';
+    const n = opts.repetitions ?? 6;
+    const fn = axis === 'x' ? 'polarModX' : axis === 'z' ? 'polarModZ' : 'polarModY';
+    return walk(children[0], `${fn}(${p}, ${flt(n)})`);
+  },
+
+  // hg_sdf-style 8-fold mirror in a chosen plane. Emits one of
+  // mirrorOctantXZ/XY/YZ based on the plane option.
+  mirrorOctant: (sdf, p) => {
+    const { opts, children } = sdf.ast;
+    const plane = opts.plane ?? 'xz';
+    const dist = Array.isArray(opts.dist) ? opts.dist : [0, 0];
+    const fn = plane === 'xy' ? 'mirrorOctantXY' : plane === 'yz' ? 'mirrorOctantYZ' : 'mirrorOctantXZ';
+    return walk(children[0], `${fn}(${p}, ${vec2(dist)})`);
+  },
+
   // ---- boolean ops --------------------------------------------------------
   union:        emitBoolean('opUnion',     'opSmoothUnion'),
   intersection: emitBoolean('opIntersect', 'opSmoothIntersect'),

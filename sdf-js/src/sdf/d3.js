@@ -405,6 +405,55 @@ export const bend = defineOp3('bend', (other, k) => {
   };
 });
 
+// modPolar (hg_sdf pModPolar)：把垂直于某轴的平面分成 N 等分扇形，源 SDF 在
+// 折叠后的扇形内 evaluate → 围绕轴重复 N 次。用例：clock dial / gear teeth /
+// rose-window 花瓣 / dome 肋 / fan 叶片 / mandala。
+// opts.axis: 'x' | 'y' | 'z' (默认 'y'：垂直轴，最常见的环状重复)
+// opts.repetitions: number >= 2 (默认 6)
+const _polarFold = (x, y, n) => {
+  const angle = (2 * Math.PI) / n;
+  let a = Math.atan2(y, x) + angle * 0.5;
+  const r = Math.hypot(x, y);
+  a = ((a % angle) + angle) % angle - angle * 0.5;
+  return [Math.cos(a) * r, Math.sin(a) * r];
+};
+
+export const modPolar = defineOp3('modPolar', (other, opts = {}) => {
+  const axis = opts.axis ?? 'y';
+  const n = opts.repetitions ?? 6;
+  if (axis === 'x') {
+    return (p) => { const [y, z] = _polarFold(p[1], p[2], n); return other.f([p[0], y, z]); };
+  } else if (axis === 'z') {
+    return (p) => { const [x, y] = _polarFold(p[0], p[1], n); return other.f([x, y, p[2]]); };
+  } else {
+    return (p) => { const [x, z] = _polarFold(p[0], p[2], n); return other.f([x, p[1], z]); };
+  }
+});
+
+// mirrorOctant (hg_sdf pMirrorOctant)：在某个平面内同时对两个坐标轴做镜像 +
+// 对角线交换，产生 8 向对称。用例：snowflake / mandala 基底 / 对称装饰板 /
+// 哥特玫瑰窗排列。
+// opts.plane: 'xz' | 'xy' | 'yz' (默认 'xz'：地面对称，最常用)
+// opts.dist:  [d1, d2] (默认 [0, 0])，把镜像线从原点偏出
+const _mirrorOctant2D = (x, y, d1, d2) => {
+  let qx = Math.abs(x) - d1;
+  let qy = Math.abs(y) - d2;
+  if (qy > qx) { const t = qx; qx = qy; qy = t; }
+  return [qx, qy];
+};
+
+export const mirrorOctant = defineOp3('mirrorOctant', (other, opts = {}) => {
+  const plane = opts.plane ?? 'xz';
+  const [d1, d2] = Array.isArray(opts.dist) ? opts.dist : [0, 0];
+  if (plane === 'xy') {
+    return (p) => { const [x, y] = _mirrorOctant2D(p[0], p[1], d1, d2); return other.f([x, y, p[2]]); };
+  } else if (plane === 'yz') {
+    return (p) => { const [y, z] = _mirrorOctant2D(p[1], p[2], d1, d2); return other.f([p[0], y, z]); };
+  } else {
+    return (p) => { const [x, z] = _mirrorOctant2D(p[0], p[2], d1, d2); return other.f([x, p[1], z]); };
+  }
+});
+
 // ---- Transforms ------------------------------------------------------------
 
 export const translate = defineOp3('translate', (other, offset) => {

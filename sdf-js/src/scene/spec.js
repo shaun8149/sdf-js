@@ -69,6 +69,8 @@ export const VARIANT_BOOLEAN_R = new Set([
 
 export const DOMAIN_OPS = new Set([
   'rep', 'mirror', 'twist', 'bend',
+  // hg_sdf-style radial repetition + 8-fold symmetry.
+  'modPolar', 'mirrorOctant',
 ]);
 
 export const SHADOW_MODES = new Set([
@@ -391,6 +393,22 @@ function validateDomainArgs(type, args, path, errors, warnings) {
     }
     if (typeof args.k !== 'number') {
       errors.push(`${path}: ${type} requires args.k (number)`);
+    }
+  } else if (type === 'modPolar') {
+    if (args.axis != null && !['x', 'y', 'z'].includes(args.axis)) {
+      errors.push(`${path}: modPolar args.axis must be 'x' | 'y' | 'z' (default 'y')`);
+    }
+    if (args.repetitions != null) {
+      if (typeof args.repetitions !== 'number' || args.repetitions < 2) {
+        errors.push(`${path}: modPolar args.repetitions must be a number >= 2 (got ${args.repetitions})`);
+      }
+    }
+  } else if (type === 'mirrorOctant') {
+    if (args.plane != null && !['xz', 'xy', 'yz'].includes(args.plane)) {
+      errors.push(`${path}: mirrorOctant args.plane must be 'xz' | 'xy' | 'yz' (default 'xz')`);
+    }
+    if (args.dist != null && (!Array.isArray(args.dist) || args.dist.length !== 2 || !args.dist.every(v => typeof v === 'number'))) {
+      errors.push(`${path}: mirrorOctant args.dist must be [d1, d2] of numbers`);
     }
   }
 }
