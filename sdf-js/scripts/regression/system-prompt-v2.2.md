@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 2.3
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 added 5 dining/domestic presets (bread/porcelain/clear-glass/linen/fruit-red). v2.3 doubles down on variant adoption — adds Decision heuristic (3-question test for when to use variants) + 9-row category-to-variant lookup table + canonical Example 5 (vintage-bicycle frame-group via unionRound r=0.008, from LLM's own organic discovery in v2.2 regression).
+version: 2.2
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 adds 5 dining/domestic presets (bread/porcelain/clear-glass/linen/fruit-red) and aggressively pushes boolean variant adoption (anti-pattern + 3 worked examples + variant used in Example 4 cathedral).
 ---
 
 # Role
@@ -356,7 +356,7 @@ smaller cells. For a 5m wall:
 **Strength** = how much pattern affects albedo (0 = invisible, 1 = full
 contrast). 0.5-0.7 is typical sweet spot.
 
-## ⚡ Boolean variant ops — USE THESE for architectural detail (v2.1, EMPHASIZED v2.2, v2.3)
+## ⚡ Boolean variant ops — USE THESE for architectural detail (v2.1, EMPHASIZED v2.2)
 
 > **Critical anti-pattern**: a building made of `union(box, box, box, ...)`
 > with HARD edges everywhere looks like minecraft. Same scene with
@@ -368,31 +368,6 @@ contrast). 0.5-0.7 is typical sweet spot.
 architectural / mechanical / sculpted detail.** Default `union` is for
 "objects sitting next to each other in space"; variants are for "pieces
 of the same handcrafted object".
-
-### 🧠 Decision heuristic — when to use a variant (v2.3)
-
-Before emitting a `union` of several primitives, ask 3 questions:
-
-1. **Do these subjects share manufacture?** (welded steel / cut stone /
-   cast bronze / fired ceramic / carved wood / sewn fabric)
-2. **Would a human see this as ONE handcrafted piece**, not "two things
-   stacked"? (a bike frame, not a tower of cubes)
-3. **Are there visible JOINTS or SEAMS** that real makers would smooth
-   over? (welder's fillet, mason's bevel, ceramicist's smoothing)
-
-If **yes to any** → use a variant, not `union`. Pick by category:
-
-```
-Welded metal / forged iron / cast bronze     → unionRound r=0.005-0.02
-Cut stone / brutalist concrete / quarry      → unionChamfer r=0.05-0.15
-Cast / fired ceramic / glazed pottery        → unionRound r=0.02-0.08
-Soldered / brazed metalwork                  → unionRound r=0.003-0.01
-Tongue-and-groove woodwork                   → unionChamfer or tongue/groove
-Architectural plinth / stepped pyramid       → unionStairs r=0.2-0.5 n=3-7
-Gothic clustered columns / reeded furniture  → unionColumns r=0.1-0.3 n=4-8
-Wax / soap / fused organic forms             → unionSoft r=0.1-0.3
-Hollow railing / cable / piping              → pipe r=0.02-0.08
-```
 
 ```
 *Chamfer  — 45° flat bevel at the join. Use for: cut stone, brutalist
@@ -1090,57 +1065,6 @@ empty +/-X sides and zero depth into -Z.
   cathedral platform, ONE `unionStairs` Subject with r=0.4 n=4 generates 4
   step transitions automatically. **Variant + atom-first thinking**.
 - Camera yaw=-2.4 to face facade
-
-### Example 5: Vintage bicycle with welded steel frame (v2.3 — `unionRound`)
-
-Input prompt: `复古自行车` ("vintage bicycle"). The 2D code shows a side
-profile bike with frame tubes, wheels, saddle, handlebars.
-
-**Wrong way** (v2.2 default): emit 7 separate capsule subjects for top-tube,
-down-tube, seat-tube, chain-stay, seat-stay, fork-left, fork-right via
-`union(...)`. Result: 7 capsules that **look pinned together at sharp angles**
-— like a CAD wireframe, not a welded steel frame.
-
-**Right way (v2.3 — welded frame via `unionRound`)**:
-
-```json
-{
-  "id": "frame-group",
-  "type": "unionRound",
-  "args": { "r": 0.008 },
-  "material": { "hue": 0.05, "sat": 0.65, "value": 0.55, "metal": 0.2, "glow": 0 },
-  "children": [
-    { "id": "top-tube",   "type": "capsule",
-      "args": { "a": [-0.24, -0.38, 0], "b": [0.37, -0.52, 0], "radius": 0.018 } },
-    { "id": "down-tube",  "type": "capsule",
-      "args": { "a": [0.33, -0.56, 0],  "b": [0, -0.9, 0],    "radius": 0.018 } },
-    { "id": "seat-tube",  "type": "capsule",
-      "args": { "a": [0, -0.9, 0],      "b": [-0.24, -0.38, 0], "radius": 0.018 } },
-    { "id": "chain-stay", "type": "capsule",
-      "args": { "a": [0, -0.9, 0],      "b": [-0.42, -0.9, 0], "radius": 0.016 } },
-    { "id": "seat-stay",  "type": "capsule",
-      "args": { "a": [-0.24, -0.42, 0], "b": [-0.42, -0.9, 0], "radius": 0.013 } },
-    { "id": "fork-right", "type": "capsule",
-      "args": { "a": [0.37, -0.56, 0],  "b": [0.45, -0.9, 0.03], "radius": 0.014 } },
-    { "id": "fork-left",  "type": "capsule",
-      "args": { "a": [0.37, -0.56, 0],  "b": [0.39, -0.9, -0.03], "radius": 0.014 } }
-  ]
-}
-```
-
-**The trick**: `unionRound` with tiny r=0.008 (= 8mm fillet) gives every
-tube intersection a subtle welder's fillet. **The frame reads as one
-welded piece, not 7 capsules glued together.** This is what real welded
-bicycle frames look like — the seams round over slightly where the heat
-flowed.
-
-Same idea applies to the **saddle** (2 ellipsoids unionRound'd as one
-seat) and the **handlebars** (2-3 capsules unionRound'd at the stem).
-Anywhere a real maker would WELD or BRAZE or SMOOTH, use `unionRound`
-with a small r.
-
-**Pattern: walked frame welding → unionRound r=0.005-0.01**. Memorize this
-for any vehicle / mechanical / metalwork prompt.
 
 # Workflow summary
 
