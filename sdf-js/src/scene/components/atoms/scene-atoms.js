@@ -21,7 +21,20 @@
 // =============================================================================
 
 import { sphere, box, cylinder, capsule, ellipsoid, cone, octahedron, pyramid } from '../../../sdf/d3.js';
-import { union, dilate } from '../../../sdf/dn.js';
+import { union, dilate, unionRound, unionChamfer, unionSoft } from '../../../sdf/dn.js';
+
+// =============================================================================
+// Atom composition uses hg_sdf boolean variants where it gives a clear visual
+// upgrade vs plain `union`. Pattern:
+//   unionSoft r=0.1-0.15  — cubic-smooth blend (clouds, organic foliage)
+//   unionRound r=0.005-0.02 — quarter-circle fillet (welded metal seams, organic
+//                              soft joints — body-to-wing, trunk-to-foliage)
+//   unionChamfer r=0.02-0.04 — 45° flat bevel (cut stone, carved wood, beveled
+//                               architectural eaves)
+//
+// These small radii are intentionally SUBTLE — the variant should add a quiet
+// "this looks handcrafted, not minecraft" finish, not dominate the geometry.
+// =============================================================================
 
 // ---- Sky atoms -------------------------------------------------------------
 
@@ -75,7 +88,9 @@ export function cloudPuffSDF({ width = 1.0, height = 0.45, depth = 0.6 } = {}) {
   const right = ellipsoid([width * 0.32, height * 0.42, depth * 0.42]).translate([width * 0.38, height * 0.06, 0]);
   const top1 = ellipsoid([width * 0.24, height * 0.30, depth * 0.30]).translate([-width * 0.12, height * 0.30, 0]);
   const top2 = ellipsoid([width * 0.22, height * 0.28, depth * 0.30]).translate([width * 0.14, height * 0.32, 0]);
-  return union(main, left, right, top1, top2);
+  // unionSoft cubic blend — fluffy cumulus blob. Without it the 5 ellipsoids
+  // have visible seams. r scales with overall cloud size.
+  return unionSoft(main, left, right, top1, top2, { r: Math.max(width, depth) * 0.12 });
 }
 
 // ---- Landscape atoms -------------------------------------------------------
@@ -107,7 +122,10 @@ export function pineTreeSDF({
     const yCenter = trunkHeight + i * layerH * 0.85 + h / 2 - 0.05;
     parts.push(cone(h, r).translate([0, yCenter, 0]));
   }
-  return union(...parts);
+  // unionRound r=0.015 — small organic fillet between trunk and foliage layers.
+  // Preserves the discrete cone-stack silhouette but softens hard seams where
+  // trunk meets bottom cone and cone meets cone above.
+  return unionRound(...parts, { r: 0.015 });
 }
 
 /**
@@ -124,7 +142,9 @@ export function broadleafTreeSDF({ trunkHeight = 0.7, trunkRadius = 0.09, foliag
   const main = sphere(foliageR).translate([0, yTop, 0]);
   const sideL = sphere(foliageR * 0.62).translate([-foliageR * 0.55, yTop - foliageR * 0.1, foliageR * 0.1]);
   const sideR = sphere(foliageR * 0.62).translate([foliageR * 0.55, yTop - foliageR * 0.1, -foliageR * 0.1]);
-  return union(trunk, main, sideL, sideR);
+  // unionSoft r ~ 5% of foliage — blobs the 3 spheres into one organic
+  // foliage mass with a soft fillet where trunk meets canopy.
+  return unionSoft(trunk, main, sideL, sideR, { r: foliageR * 0.09 });
 }
 
 // ---- Building atoms --------------------------------------------------------
@@ -142,7 +162,11 @@ export function cottageSDF({ width = 0.8, height = 0.6, roofHeight = 0.45 } = {}
   // pyramid(h) is centered on origin, base size 1×1, apex at +h.
   // Scale to match wall footprint by translating + treating as base at y=height.
   const roof = pyramid(roofHeight).scale(width).translate([0, height, 0]);
-  return union(wall, roof);
+  // unionChamfer r=0.03 — 3cm bevel at the wall-to-roof seam reads as a
+  // carved-stone cornice / wooden cottage eave. Without it the joint looks
+  // like a child's block-tower. r small enough to feel handcrafted, not
+  // dominating the geometry.
+  return unionChamfer(wall, roof, { r: 0.03 });
 }
 
 // ---- Decorative / mechanical atoms ----------------------------------------
@@ -165,7 +189,9 @@ export function flagOnPoleSDF({
   const flagYCenter = poleHeight - flagHeight * 0.6;
   const flag = box([flagWidth, flagHeight, 0.012])
     .translate([flagSide * (flagWidth / 2 + poleRadius), flagYCenter, 0]);
-  return union(pole, flag);
+  // unionRound r=0.005 — tiny fillet where flag meets pole. Reads as fabric
+  // attached to pole rather than two free-floating shapes.
+  return unionRound(pole, flag, { r: 0.005 });
 }
 
 /**
@@ -183,5 +209,7 @@ export function birdSilhouetteSDF({
   const body = capsule([-bodyLength / 2, 0, 0], [bodyLength / 2, 0, 0], bodyRadius);
   const wingL = ellipsoid([wingSpan / 2, 0.012, 0.05]).translate([-wingSpan / 4, wingRise / 2, 0]);
   const wingR = ellipsoid([wingSpan / 2, 0.012, 0.05]).translate([wingSpan / 4, wingRise / 2, 0]);
-  return union(body, wingL, wingR);
+  // unionRound r=0.008 — small organic fillet where wings meet body. Reads
+  // as a single bird silhouette, not capsule-with-stuck-on wings.
+  return unionRound(body, wingL, wingR, { r: 0.008 });
 }
