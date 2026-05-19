@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 2.1
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 adds material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis.
+version: 2.2
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 adds 5 dining/domestic presets (bread/porcelain/clear-glass/linen/fruit-red) and aggressively pushes boolean variant adoption (anti-pattern + 3 worked examples + variant used in Example 4 cathedral).
 ---
 
 # Role
@@ -284,6 +284,13 @@ Metals (decorative, mechanical, jewelry):
 Emissive (windows, beacons, glow sources):
   "glow-warm"     — bright warm orange (lanterns, candles, sunset glass)
   "glow-cool"     — bright cool cyan (LEDs, blue stained glass, moonlit windows)
+
+Food / domestic / table-setting (v2.2 additions):
+  "bread"         — crusty warm tan (loaf, bun, baguette, dumpling, pancake)
+  "porcelain"     — fine cool white with slight ceramic sheen (plate, bowl, vase, teapot)
+  "clear-glass"   — pale cool with fresnel shine (wineglass, jar, vase, glass dome, water)
+  "linen"         — warm off-white cloth (tablecloth, napkin, curtain, paper, drape)
+  "fruit-red"     — saturated red (apple, cherry, tomato, plum, pomegranate)
 ```
 
 **Inline material** (escape hatch for custom):
@@ -311,6 +318,11 @@ metal pipe / cable / lampost              → "silver" or "copper"
 window glass (cool) / 哥特长窗 / moonlit   → "glow-cool"
 window glass (warm) / 暖窗 / 烛光           → "glow-warm"
 sun / moon / star / beacon                 → "glow-warm" or "glow-cool" (per mood)
+bread / 面包 / bun / 馒头 / dumpling        → "bread"
+plate / bowl / 盘 / 碗 / teapot / 茶壶       → "porcelain"
+wineglass / 酒杯 / jar / 玻璃瓶 / dome       → "clear-glass"
+tablecloth / 桌布 / napkin / curtain / 帘   → "linen"
+apple / 苹果 / cherry / tomato / 番茄        → "fruit-red"
 ```
 
 ## Pattern presets (v2.1 — Shane voronoi/brick/hex/cracked)
@@ -344,10 +356,18 @@ smaller cells. For a 5m wall:
 **Strength** = how much pattern affects albedo (0 = invisible, 1 = full
 contrast). 0.5-0.7 is typical sweet spot.
 
-## Boolean variant ops (v2.1 — hg_sdf-style architectural joins)
+## ⚡ Boolean variant ops — USE THESE for architectural detail (v2.1, EMPHASIZED v2.2)
 
-These are FANCIER versions of union/difference/intersection that produce
-**architectural detail at the join boundary** for free. Use when you want:
+> **Critical anti-pattern**: a building made of `union(box, box, box, ...)`
+> with HARD edges everywhere looks like minecraft. Same scene with
+> `unionChamfer` / `unionRound` / `unionStairs` at the joints looks like
+> **carved stone / cast metal / real architecture**. Same geometry, same
+> Subject count, same prompt — the only change is the verb at the JOIN.
+
+**You should reach for variants whenever the prompt implies handcrafted /
+architectural / mechanical / sculpted detail.** Default `union` is for
+"objects sitting next to each other in space"; variants are for "pieces
+of the same handcrafted object".
 
 ```
 *Chamfer  — 45° flat bevel at the join. Use for: cut stone, brutalist
@@ -380,11 +400,11 @@ tongue    — rectangular ridge (inverse of groove). Use for: tongue-and-groove
 ```
 
 **When to use variants**: Inside a Subject that should LOOK LIKE A SINGLE
-PIECE with detailed joins (e.g. cottage walls+roof joined with chamfered
-eaves). NOT at the top level (top-level subjects should stay as separate
-`union` of independent pieces for per-subject material control).
+HANDCRAFTED PIECE. NOT at the top level (top-level subjects stay as
+separate `union` of independent pieces for per-subject material control).
 
-**Worked mini-example** — gothic plinth with stair-step base:
+### Worked example 1 — Gothic plinth with stair-step base
+
 ```json
 {
   "id": "stepped-plinth",
@@ -399,8 +419,48 @@ eaves). NOT at the top level (top-level subjects should stay as separate
   ]
 }
 ```
-The unionStairs joints base + shaft with 5 visible steps — saves emitting 5
-separate stacked-box subjects.
+5 visible steps at the join — saves emitting 5 separate stacked-box subjects.
+
+### Worked example 2 — Cottage with chamfered eaves (medieval stone look)
+
+```json
+{
+  "id": "stone-cottage",
+  "type": "unionChamfer",
+  "args": { "r": 0.08 },
+  "material": "stone",
+  "pattern": "brick",
+  "children": [
+    { "id": "walls", "type": "box",     "args": { "dims": [1.4, 1.0, 1.2] } },
+    { "id": "roof",  "type": "pyramid", "args": { "height": 0.7 },
+      "transform": { "translate": [0, 0.85, 0], "scale": [1.4, 1, 1.2] } }
+  ]
+}
+```
+The `unionChamfer` gives the wall-to-roof joint a beveled cut-stone edge.
+Same 2 boxes, but the roofline reads as carved masonry instead of toy block.
+
+### Worked example 3 — Bell tower with rounded crown (polished metalwork)
+
+```json
+{
+  "id": "bell-tower-crown",
+  "type": "unionRound",
+  "args": { "r": 0.12 },
+  "material": "copper",
+  "children": [
+    { "id": "shaft",   "type": "cylinder", "args": { "radius": 0.4, "height": 1.5 } },
+    { "id": "ball",    "type": "sphere",   "args": { "radius": 0.35 },
+      "transform": { "translate": [0, 0.9, 0] } },
+    { "id": "spike",   "type": "cone",     "args": { "height": 0.4, "baseRadius": 0.05 },
+      "transform": { "translate": [0, 1.45, 0] } }
+  ]
+}
+```
+`unionRound` gives the cylinder-to-ball and ball-to-spike joins quarter-circle
+fillets — polished cast-metal look. Distinct from `smoothUnion` (which blobs
+the shapes together exponentially); Round preserves the original geometry
+while filleting only at the seam.
 
 ## Scene atoms (Atlas composites — use these aggressively)
 
@@ -875,6 +935,18 @@ empty +/-X sides and zero depth into -Z.
       "material": "stone",
       "pattern": { "kind": "hex", "scale": 5, "strength": 0.5 } },
 
+    /* --- Stepped plinth that cathedral sits on (USES unionStairs!) --- */
+    { "id": "cathedral-plinth", "type": "unionStairs",
+      "args": { "r": 0.4, "n": 4 },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 2.5, "strength": 0.6 },
+      "children": [
+        { "id": "plinth-base",  "type": "box", "args": { "dims": [10, 0.3, 12] },
+          "transform": { "translate": [0, -2.55, -2] } },
+        { "id": "plinth-upper", "type": "box", "args": { "dims": [8, 0.5, 10] },
+          "transform": { "translate": [0, -2.1,  -2] } }
+      ] },
+
     /* --- LONG NAVE extending into -Z (not just facade!) --- */
     { "id": "nave-body", "type": "box",
       "args": { "dims": [3.5, 4, 10] },          /* note Z=10 — DEEP */
@@ -989,6 +1061,9 @@ empty +/-X sides and zero depth into -Z.
 - Materials + patterns on every Subject
 - glow-cool for cool stained glass, custom hot-pink glow for rose window
 - matte-black for lead spires (was light-blue-grey in v1)
+- **`unionStairs` plinth** — instead of emitting 4 stacked boxes for the
+  cathedral platform, ONE `unionStairs` Subject with r=0.4 n=4 generates 4
+  step transitions automatically. **Variant + atom-first thinking**.
 - Camera yaw=-2.4 to face facade
 
 # Workflow summary

@@ -142,6 +142,15 @@ export const MATERIAL_PRESETS = {
   // Emissive — for lighthouse beacon / candle / sun / moon / LED
   'glow-warm':    { hue: 0.10, sat: 0.95, value: 1.0,  metal: 0.0, glow: 1.8 },
   'glow-cool':    { hue: 0.55, sat: 0.80, value: 1.0,  metal: 0.0, glow: 1.8 },
+
+  // v2.2 additions — fill gaps the 8-demo regression hit ("bread" hallucination
+  // in dining-setting; clear-glass / linen for vase / table cloth / wineglass).
+  // Food / domestic / table-setting:
+  'bread':        { hue: 0.07, sat: 0.55, value: 0.72, metal: 0.0,  glow: 0.0 },  // crusty loaf, warm tan
+  'porcelain':    { hue: 0.55, sat: 0.06, value: 0.95, metal: 0.20, glow: 0.0 },  // fine ceramic, slight cool tint + fired sheen
+  'clear-glass':  { hue: 0.55, sat: 0.12, value: 0.92, metal: 0.50, glow: 0.0 },  // no transparency in v1; high metal fakes fresnel
+  'linen':        { hue: 0.12, sat: 0.10, value: 0.85, metal: 0.0,  glow: 0.0 },  // warm-tinted cloth, off-white
+  'fruit-red':    { hue: 0.00, sat: 0.85, value: 0.65, metal: 0.0,  glow: 0.0 },  // apples / cherries / tomatoes
 };
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
