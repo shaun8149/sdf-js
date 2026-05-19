@@ -140,37 +140,6 @@
         }
       },
       {
-        "id": "stern-taper",
-        "type": "pyramid",
-        "args": {
-          "height": 1.8
-        },
-        "transform": {
-          "translate": [
-            -11,
-            -0.8,
-            0
-          ],
-          "rotate": [
-            0,
-            0,
-            1.5708
-          ],
-          "scale": [
-            1.8,
-            1,
-            4.5
-          ]
-        },
-        "region": "hull",
-        "material": "stone",
-        "pattern": {
-          "kind": "cells",
-          "scale": 4,
-          "strength": 0.3
-        }
-      },
-      {
         "id": "flight-deck-main",
         "type": "box",
         "args": {
@@ -1102,6 +1071,7 @@
     "v2SubjectCount": 29,
     "previousSource": "user-saved-2026-05-18",
     "upgradedFrom": "v2.3",
-    "upgradedAt": "2026-05-19T06:57:36.778Z"
+    "upgradedAt": "2026-05-19T06:59:59.855Z",
+    "handFixed": "2026-05-19: removed misshapen stern-taper pyramid that visually obstructed carrier stern"
   }
 }
