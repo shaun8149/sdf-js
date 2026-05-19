@@ -97,19 +97,58 @@ float calcAO(vec3 p, vec3 n) {
   return clamp(1.0 - 2.6 * occ, 0.0, 1.0);
 }
 
-// 3-stop sky gradient (horizon haze → blue belt → zenith) + warm sun disk + halo
+// nimitz-inspired atmospheric sky. Reacts to sun height: cool/blue at midday,
+// warm orange at low sun (golden hour). Strong halo. Optional horizon glow
+// when sun is below ~30° — gives sunrise / sunset mood without explicit
+// time-of-day preset.
 vec3 sky(vec3 rd, vec3 sunDir) {
-  float t = clamp(rd.y, -0.2, 1.0);
-  vec3 horizon = vec3(0.94, 0.88, 0.76);
-  vec3 mid     = vec3(0.55, 0.70, 0.92);
-  vec3 zenith  = vec3(0.18, 0.34, 0.66);
-  vec3 col = mix(horizon, mid, smoothstep(0.0, 0.30, t));
+  float t = clamp(rd.y, -0.3, 1.0);
+  float sunHeight = clamp(sunDir.y, 0.0, 1.0);
+
+  // Horizon color shifts toward warm at low sun; mid blue belt + cool zenith.
+  vec3 horizonHigh = vec3(0.85, 0.86, 0.82);   // midday haze (slightly cool)
+  vec3 horizonLow  = vec3(1.10, 0.55, 0.30);   // sunset orange
+  vec3 horizon = mix(horizonLow, horizonHigh, smoothstep(0.05, 0.45, sunHeight));
+
+  vec3 mid    = vec3(0.50, 0.65, 0.88);
+  vec3 zenith = vec3(0.12, 0.26, 0.58);
+
+  // Below-horizon (looking down) gets darkened version of horizon — for
+  // free-fly camera dipping below ground level. Smooth, no hard edge.
+  vec3 belowHorizon = horizon * 0.55;
+  vec3 col = mix(belowHorizon, horizon, smoothstep(-0.3, 0.0, t));
+  col = mix(col, mid,    smoothstep(0.0,  0.35, t));
   col = mix(col, zenith, smoothstep(0.30, 0.95, t));
-  // Sun disk + halo (only when sun is above horizon)
+
+  // Sun disk + halo (stronger than before — was 0.12 halo). Disk only when
+  // sun is above horizon; halo always (sets up the bright-spot reference).
   float sd = max(dot(rd, sunDir), 0.0);
-  col += vec3(1.00, 0.92, 0.72) * pow(sd, 380.0) * 2.5;   // bright disc
-  col += vec3(1.00, 0.78, 0.50) * pow(sd, 8.0)  * 0.12;   // soft halo
+  col += vec3(1.00, 0.92, 0.72) * pow(sd, 380.0) * 2.5 * step(0.0, sunDir.y);
+  col += vec3(1.00, 0.78, 0.50) * pow(sd, 8.0)   * 0.25;
+
+  // Golden-hour horizon glow: at low sun, the sky near the horizon along
+  // the sun's azimuth glows warm. Only applies when sunHeight < ~0.5.
+  float lowSunK = 1.0 - smoothstep(0.0, 0.50, sunHeight);
+  if (lowSunK > 0.0) {
+    vec3 sunFlat = normalize(vec3(sunDir.x, 0.0, sunDir.z));
+    vec3 rdFlat  = normalize(vec3(rd.x, 0.0, rd.z));
+    float azimuthAlign = max(dot(rdFlat, sunFlat), 0.0);
+    float horizonGlow = pow(azimuthAlign, 5.0) *
+                        (1.0 - smoothstep(-0.05, 0.35, abs(t)));
+    col += vec3(1.0, 0.55, 0.28) * horizonGlow * lowSunK * 0.7;
+  }
+
   return col;
+}
+
+// nimitz-style atmospheric density. Distance + height combined:
+//   distance term  — saturates around t=20 (1 - exp(-t * 0.04))
+//   height term    — fog hugs ground (exp(-(y+1)*0.4)), mountains see less
+// Result roughly mimics Rayleigh + Mie attenuation cheaply (no raymarch).
+float atmosphereDensity(vec3 p, float t) {
+  float heightK = exp(-max(p.y + 1.0, 0.0) * 0.45);
+  float distK   = 1.0 - exp(-t * 0.030);
+  return clamp(0.30 * heightK + 0.70 * distK, 0.0, 0.88);
 }
 
 float checker(vec2 p) {
@@ -397,10 +436,10 @@ void main() {
       lin = mix(lin, refl, fres * 0.55);  // 0.55 cap so even mirror grazing keeps some ground tint
     }
 
-    // Atmospheric perspective: tint distant surfaces toward sky. Apply only
-    // to the reflected/diffuse component — emissive added after fog so glow
-    // (lighthouse beacon, neon) punches through atmosphere.
-    float fog = clamp((t - 2.0) * 0.025, 0.0, 0.65);
+    // Atmospheric perspective: height-modulated fog (nimitz model).
+    // Ground-hugging haze + saturating distance attenuation. Emissive added
+    // after fog so glow (lighthouse beacon, neon) punches through atmosphere.
+    float fog = atmosphereDensity(p, t);
     col = mix(lin, sky(rd, sunDir), fog);
     col += base * glowK * 1.4;
   }
