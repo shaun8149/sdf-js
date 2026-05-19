@@ -114,14 +114,9 @@ float checker(vec2 p) {
   return mod(i.x + i.y, 2.0);
 }
 
-// Hash-noise per pixel for free stochastic AA. Jitter initial ray t by a
-// fraction of a step; silhouette edges that would land between pixels get
-// distributed across them. Flat-surface noise is below gamma-tonemap threshold.
-float hash12(vec2 p) {
-  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-  p3 += dot(p3, p3.yzx + 33.33);
-  return fract((p3.x + p3.y) * p3.z);
-}
+// Stochastic AA dither uses hash21 from NOISE_GLSL (Hoskins canonical naming:
+// 2-in 1-out). Removed local duplicate to avoid GLSL redefinition error now
+// that the noise library is prepended via includeLibrary=true.
 
 // Gamma + clip. Reinhard was too aggressive — it pulled white down to 0.5
 // before gamma, leaving everything washed-out. Diffuse-mostly scenes don't
@@ -223,7 +218,7 @@ void main() {
   // Stochastic AA: offset starting t by sub-step noise per pixel. Free
   // antialiasing on silhouettes — neighboring pixels sample slightly different
   // depths along the same ray so the visibility boundary dithers across them.
-  float t = hash12(gl_FragCoord.xy) * 0.012;
+  float t = hash21(gl_FragCoord.xy) * 0.012;
   float matId = 0.0;
   float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
@@ -288,6 +283,15 @@ void main() {
     } else {
       base = vec3(0.78, 0.76, 0.70);
     }
+
+    // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
+    // metals + emissives keep smooth uniform surfaces; matte diffuse gets
+    // ±10% albedo variance to break up plastic-looking uniformity. The
+    // 6.0 scale gives ~6 visible bumps per world unit — good for stone /
+    // wood / brick at typical camera distance.
+    float plasticGate = (1.0 - metalK) * (1.0 - smoothstep(0.0, 0.5, glowK));
+    float texDetail = fbm3_lite(p * 6.0);
+    base *= mix(1.0, 0.82 + 0.36 * texDetail, plasticGate * 0.7);
 
     // Light colors
     vec3 sunCol    = vec3(1.05, 0.96, 0.84);

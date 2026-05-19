@@ -19,6 +19,7 @@
 // =============================================================================
 
 import { SDF3_GLSL } from './sdf3.glsl.js';
+import { NOISE_GLSL } from './noise.glsl.js';
 import { SDF3 } from './core.js';
 import { isTimeExpr, mulT } from './time.js';
 
@@ -131,7 +132,10 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
       const expr = walk(sdf, 'p');
       body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
     }
-    const prelude = includeLibrary ? `${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n` : '';
+    // Noise lib first — SDF library functions (and future domain-warped
+    // primitives) can call into it. Renderer shading code can also use it
+    // (flyLambert uses fbm3 for surface texture modulation).
+    const prelude = includeLibrary ? `${NOISE_GLSL}\n${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n` : '';
     return { glsl: prelude + body, error: null, leafMaterials };
   } catch (e) {
     return { glsl: null, error: e.message, leafMaterials: null };

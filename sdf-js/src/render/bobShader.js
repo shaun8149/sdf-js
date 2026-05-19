@@ -57,7 +57,10 @@ uniform float u_postNoiseCap;    // 0.1..0.8，autoscope u_noiseCap clamp
 #define OCTAVES 6
 #define NOISESPEED 0.00008
 
-float hash13(vec3 p3) {
+// Time-modulated hash. Renamed from hash13 (collided with noise.glsl's
+// canonical hash13 — Hoskins naming: 1-in N-out). bobHashTime takes vec3,
+// drifts with u_time, returns float; effectively a non-canonical hash31.
+float bobHashTime(vec3 p3) {
   p3 += u_time * NOISESPEED;
   p3 = fract(p3 * 0.1031);
   p3 += dot(p3, p3.yzx + 33.33);
@@ -65,7 +68,7 @@ float hash13(vec3 p3) {
 }
 
 vec2 grad2(ivec2 z) {
-  float a = hash13(vec3(z, 0.0)) * 6.2831853;
+  float a = bobHashTime(vec3(z, 0.0)) * 6.2831853;
   return vec2(cos(a), sin(a));
 }
 
@@ -223,18 +226,20 @@ uniform float u_simpleColor;  // 1.0 = 跳过 HSL mix 输出纯 palette 色（2-
 #define GROUND_Y  -1.0
 
 // ============================================================================
-// 噪声 + HSL 工具（IQ XdXGW8 hash13 + glsl-hsl2rgb）
+// 噪声 + HSL 工具（IQ XdXGW8 hash + glsl-hsl2rgb）
+// Note: bobHashTime replaces a local hash13 that collided with noise.glsl's
+// canonical hash13 (Hoskins 1->3 naming). Same math, time-drifted, vec3->float.
 // ============================================================================
 
-float hash13(vec3 p3) {
-  p3 += u_time * u_noiseSpeed;  // 时间漂移
+float bobHashTime(vec3 p3) {
+  p3 += u_time * u_noiseSpeed;
   p3 = fract(p3 * 0.1031);
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
 
 vec2 grad2(vec2 z) {
-  float a = hash13(vec3(z, 0.0)) * TWOPI;
+  float a = bobHashTime(vec3(z, 0.0)) * TWOPI;
   return vec2(cos(a), sin(a));
 }
 
