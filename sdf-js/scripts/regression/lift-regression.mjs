@@ -73,14 +73,16 @@ async function preflight() {
 }
 
 const REPO = '/Users/hexiaoyang/Documents/sdf-main';
-// v1 = M0 baseline (pre-atom-library port)
-// v2 = M3 ship (9 atoms + 9 IQ types) — frozen snapshot in scripts/regression/
-// v2.1 = today (material/pattern presets + boolean variants + facade-to-3D)
+// v1   = M0 baseline (pre-atom-library port)
+// v2   = M3 ship (9 atoms + 9 IQ types) — frozen snapshot
+// v2.1 = material/pattern + boolean variants + facade-to-3D — frozen snapshot
+// v2.2 = 5 new presets + variant push (anti-pattern + 3 worked examples)
 //        — read from LIVE file so future edits flow into next regression run
 const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
 const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
-const V21_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
-const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT };
+const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
+const V22_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
@@ -274,8 +276,9 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
+  else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
