@@ -6,7 +6,7 @@
 // 的独立 demo 页 shader-lambert-browser.js 用同样的 shader template + fly-controls。
 // =============================================================================
 
-import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
+import { compileSDF3ToGLSL, canCompileSDF3, IMIN_GLSL } from '../sdf/sdf3.compile.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 
 const VS_SRC = `attribute vec2 a_pos;
@@ -113,6 +113,18 @@ vec3 tonemap(vec3 c) {
   return pow(c, vec3(0.4545));
 }
 
+// IQ cosine palette — per-subject color from leaf index. Golden-ratio hash
+// gives maximum perceptual separation between adjacent indices (no two
+// neighbors share a hue). a/b/c/d tuned for warm-leaning editorial palette.
+vec3 objectColor(float idx) {
+  float h = fract(idx * 0.6180339887);
+  vec3 a = vec3(0.55, 0.52, 0.48);   // mid (slightly warm beige)
+  vec3 b = vec3(0.42, 0.42, 0.42);   // amplitude (saturated swings)
+  vec3 c = vec3(1.0, 1.0, 1.0);      // frequency
+  vec3 d = vec3(0.0, 0.33, 0.67);    // phase per channel
+  return a + b * cos(6.28318530718 * (c * h + d));
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
@@ -122,11 +134,16 @@ void main() {
   // ---- Raymarch ----
   float t = 0.0;
   float matId = 0.0;
+  float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
   for (int i = 0; i < MAX_STEPS; i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
-    if (dm.x < EPS * (1.0 + 0.4 * t)) { hit = true; matId = dm.y; break; }
+    if (dm.x < EPS * (1.0 + 0.4 * t)) {
+      hit = true; matId = dm.y;
+      hitIdx = minIndex;  // capture immediately — normal/shadow/AO calls below will overwrite
+      break;
+    }
     if (t > MAX_DIST) break;
     t += dm.x;
   }
@@ -155,15 +172,18 @@ void main() {
       shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 12.0);
     }
 
-    // Base albedo per material: warmer object, cooler ground
+    // Base albedo per material:
+    //   - object hits (matId=2): IQ cosine palette indexed by hit subject's
+    //     position in the flatlist. Adjacent subjects get distinct hues.
+    //   - ground (matId=1): cool neutral or checker
     vec3 base;
     if (matId > 1.5) {
-      base = vec3(0.86, 0.78, 0.65);
+      base = objectColor(hitIdx);
     } else if (u_checkerOn > 0.5) {
       float c = checker(p.xz);
       base = mix(vec3(0.90, 0.86, 0.78), vec3(0.74, 0.70, 0.62), c);
     } else {
-      base = vec3(0.80, 0.78, 0.72);
+      base = vec3(0.78, 0.76, 0.70);
     }
 
     // Light colors
@@ -259,7 +279,14 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   }
 
   function uploadSDF(sdf) {
-    const result = compileSDF3ToGLSL(sdf, { sceneFnName: 'sceneSDF', includeLibrary: true });
+    // emitObjectIndex: true → scene() updates `minIndex` global with the closest
+    // leaf's index. Fragment shader uses minIndex to pick per-subject color via
+    // an IQ cosine palette — fixes the "everything is grey" look.
+    const result = compileSDF3ToGLSL(sdf, {
+      sceneFnName: 'sceneSDF',
+      includeLibrary: true,
+      emitObjectIndex: true,
+    });
     if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
 
     let fs;
