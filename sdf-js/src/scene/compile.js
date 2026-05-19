@@ -47,6 +47,22 @@ import {
   cottageSDF, flagOnPoleSDF, birdSilhouetteSDF,
 } from './components/atoms/scene-atoms.js';
 import {
+  // animals
+  cowSDF, horseSDF, pigSDF, dogSDF, sheepSDF, catSDF,
+  // landscape
+  rockBoulderSDF, fenceSectionSDF, hillMoundSDF, streamSegmentSDF,
+  // architecture
+  towerSquareSDF, churchSpireSDF, gazeboSDF, wellSDF, fountainSDF,
+  // vehicles
+  sailboatSmallSDF, carSimpleSDF, wagonSDF, biplaneSDF,
+  // furniture
+  chairSDF, tableRoundSDF, lampStandingSDF, bookshelfSDF, wineBottleSDF,
+  // mechanical
+  gearFlatSDF, pipeLBendSDF, smokestackSDF, windmillSDF,
+  // plants
+  flowerSDF, mushroomSDF, bushSDF, vineSDF, grassTuftSDF,
+} from './components/atoms/scene-atoms-extra.js';
+import {
   union, difference, intersection, rep,
   unionChamfer, intersectionChamfer, differenceChamfer,
   unionRound,   intersectionRound,   differenceRound,
@@ -209,6 +225,47 @@ const PRIMITIVE_FACTORIES = {
     wingSpan:   a.wingSpan   ?? 0.45,
     wingRise:   a.wingRise   ?? 0.1,
   }),
+
+  // -- v3.0 atom expansion — animals --
+  cow:    (a) => cowSDF({ scale: a.scale ?? 1 }),
+  horse:  (a) => horseSDF({ scale: a.scale ?? 1 }),
+  pig:    (a) => pigSDF({ scale: a.scale ?? 1 }),
+  dog:    (a) => dogSDF({ scale: a.scale ?? 1 }),
+  sheep:  (a) => sheepSDF({ scale: a.scale ?? 1 }),
+  cat:    (a) => catSDF({ scale: a.scale ?? 1 }),
+  // -- landscape --
+  'rock-boulder':   (a) => rockBoulderSDF({ scale: a.scale ?? 1 }),
+  'fence-section':  (a) => fenceSectionSDF({ length: a.length ?? 1.5, height: a.height ?? 0.5 }),
+  'hill-mound':     (a) => hillMoundSDF({ radius: a.radius ?? 1.5, height: a.height ?? 0.5 }),
+  'stream-segment': (a) => streamSegmentSDF({ length: a.length ?? 2.0, width: a.width ?? 0.3, depth: a.depth ?? 0.05 }),
+  // -- architecture --
+  'tower-square':   (a) => towerSquareSDF({ width: a.width ?? 1.0, height: a.height ?? 4.0, roofHeight: a.roofHeight ?? 0.8 }),
+  'church-spire':   (a) => churchSpireSDF({ width: a.width ?? 0.8, baseHeight: a.baseHeight ?? 1.5, spireHeight: a.spireHeight ?? 2.5 }),
+  gazebo:           (a) => gazeboSDF({ radius: a.radius ?? 0.8, height: a.height ?? 1.2, roofHeight: a.roofHeight ?? 0.6 }),
+  well:             (a) => wellSDF({ radius: a.radius ?? 0.4, wallHeight: a.wallHeight ?? 0.5 }),
+  fountain:         (a) => fountainSDF({ radius: a.radius ?? 0.7, basinHeight: a.basinHeight ?? 0.3 }),
+  // -- vehicles --
+  'sailboat-small': (a) => sailboatSmallSDF({ scale: a.scale ?? 1 }),
+  'car-simple':     (a) => carSimpleSDF({ scale: a.scale ?? 1 }),
+  wagon:            (a) => wagonSDF({ scale: a.scale ?? 1 }),
+  biplane:          (a) => biplaneSDF({ scale: a.scale ?? 1 }),
+  // -- furniture --
+  chair:            (a) => chairSDF({ scale: a.scale ?? 1 }),
+  'table-round':    (a) => tableRoundSDF({ radius: a.radius ?? 0.5, height: a.height ?? 0.5 }),
+  'lamp-standing':  (a) => lampStandingSDF({ scale: a.scale ?? 1 }),
+  bookshelf:        (a) => bookshelfSDF({ width: a.width ?? 0.8, height: a.height ?? 1.5, depth: a.depth ?? 0.25 }),
+  'wine-bottle':    (a) => wineBottleSDF({ scale: a.scale ?? 1 }),
+  // -- mechanical --
+  'gear-flat':      (a) => gearFlatSDF({ radius: a.radius ?? 0.5, thickness: a.thickness ?? 0.08, teeth: a.teeth ?? 12 }),
+  'pipe-l-bend':    (a) => pipeLBendSDF({ scale: a.scale ?? 1 }),
+  smokestack:       (a) => smokestackSDF({ radius: a.radius ?? 0.25, height: a.height ?? 3.0 }),
+  windmill:         (a) => windmillSDF({ scale: a.scale ?? 1 }),
+  // -- plants --
+  flower:           (a) => flowerSDF({ stemHeight: a.stemHeight ?? 0.6, bloomRadius: a.bloomRadius ?? 0.12 }),
+  mushroom:         (a) => mushroomSDF({ stemHeight: a.stemHeight ?? 0.15, capRadius: a.capRadius ?? 0.12 }),
+  bush:             (a) => bushSDF({ radius: a.radius ?? 0.4 }),
+  vine:             (a) => vineSDF({ length: a.length ?? 1.0, thickness: a.thickness ?? 0.02 }),
+  'grass-tuft':     (a) => grassTuftSDF({ count: a.count ?? 5, height: a.height ?? 0.15 }),
 
   // -- Time-aware --
   waves:         (a) => waves(a.freq ?? 2, a.amp ?? 0.5, a.angle ?? 0, a.speed ?? 0),

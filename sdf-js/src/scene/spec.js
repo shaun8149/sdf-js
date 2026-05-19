@@ -45,6 +45,21 @@ export const PRIMITIVE_TYPES = new Set([
   'moon', 'star', 'sun', 'cloud-puff',
   'tree-pine', 'tree-broadleaf',
   'cottage', 'flag-on-pole', 'bird-silhouette',
+  // v3.0 atom expansion — 33 new atoms across 7 categories.
+  // Animals (6):
+  'cow', 'horse', 'pig', 'dog', 'sheep', 'cat',
+  // Landscape (4):
+  'rock-boulder', 'fence-section', 'hill-mound', 'stream-segment',
+  // Architecture (5):
+  'tower-square', 'church-spire', 'gazebo', 'well', 'fountain',
+  // Vehicles (4):
+  'sailboat-small', 'car-simple', 'wagon', 'biplane',
+  // Furniture (5):
+  'chair', 'table-round', 'lamp-standing', 'bookshelf', 'wine-bottle',
+  // Mechanical (4):
+  'gear-flat', 'pipe-l-bend', 'smokestack', 'windmill',
+  // Plants (5):
+  'flower', 'mushroom', 'bush', 'vine', 'grass-tuft',
   // Time-aware
   'waves',
   // 2D → 3D pseudo-primitives
