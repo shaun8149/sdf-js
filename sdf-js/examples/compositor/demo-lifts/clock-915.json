@@ -9,7 +9,7 @@
     "source": {
       "format": "llm-lift",
       "prompt": "挂在墙上的9点15分的钟",
-      "from2dCode": "Clock face with bezel, 12 hour ticks, 48 minute ticks, hour hand at 9:15, minute hand at 3, center boss, warm plaster wall background"
+      "from2dCode": "2D clock face with bezel, 12 hour ticks, 60 minute ticks, hour hand at 9:15, minute hand at 3, center boss. Warm plaster wall background."
     },
     "subjects": [
       {
@@ -17,53 +17,87 @@
         "type": "box",
         "args": {
           "dims": [
-            4,
-            3,
+            4.5,
+            3.5,
             0.3
           ]
         },
         "transform": {
           "translate": [
             0,
-            1.2,
-            -0.8
+            1.5,
+            -0.5
           ]
         },
-        "region": "wall"
+        "material": "linen",
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.15
+        }
       },
       {
-        "id": "clock-bezel",
-        "type": "torus",
+        "id": "clock-body",
+        "type": "unionRound",
         "args": {
-          "majorR": 0.55,
-          "minorR": 0.05
+          "r": 0.015
         },
-        "transform": {
-          "translate": [
-            0,
-            1.2,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "region": "bezel"
+        "material": "matte-black",
+        "children": [
+          {
+            "id": "bezel-ring",
+            "type": "torus",
+            "args": {
+              "radius": 0.55,
+              "thickness": 0.08
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.5,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "bezel-back",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.5,
+              "height": 0.08
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.5,
+                -0.04
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "clock-face",
         "type": "cylinder",
         "args": {
           "radius": 0.5,
-          "height": 0.04
+          "height": 0.02
         },
         "transform": {
           "translate": [
             0,
-            1.2,
-            0
+            1.5,
+            0.01
           ],
           "rotate": [
             1.5708,
@@ -71,7 +105,7 @@
             0
           ]
         },
-        "region": "face"
+        "material": "porcelain"
       },
       {
         "id": "tick-12",
@@ -86,11 +120,11 @@
         "transform": {
           "translate": [
             0,
-            1.62,
-            0.02
+            1.94,
+            0.025
           ]
         },
-        "region": "tick"
+        "material": "matte-black"
       },
       {
         "id": "tick-3",
@@ -104,12 +138,12 @@
         },
         "transform": {
           "translate": [
-            0.41,
-            1.2,
-            0.02
+            0.44,
+            1.5,
+            0.025
           ]
         },
-        "region": "tick"
+        "material": "matte-black"
       },
       {
         "id": "tick-6",
@@ -124,11 +158,11 @@
         "transform": {
           "translate": [
             0,
-            0.78,
-            0.02
+            1.06,
+            0.025
           ]
         },
-        "region": "tick"
+        "material": "matte-black"
       },
       {
         "id": "tick-9",
@@ -142,240 +176,232 @@
         },
         "transform": {
           "translate": [
-            -0.41,
-            1.2,
-            0.02
+            -0.44,
+            1.5,
+            0.025
           ]
         },
-        "region": "tick"
+        "material": "matte-black"
       },
       {
         "id": "tick-1",
         "type": "box",
         "args": {
           "dims": [
-            0.012,
+            0.014,
             0.05,
             0.01
           ]
         },
         "transform": {
           "translate": [
-            0.21,
-            1.565,
-            0.02
+            0.38,
+            1.83,
+            0.025
           ],
           "rotate": [
             0,
             0,
             -0.5236
           ]
-        },
-        "region": "tick"
+        }
       },
       {
         "id": "tick-2",
         "type": "box",
         "args": {
           "dims": [
-            0.012,
+            0.014,
             0.05,
             0.01
           ]
         },
         "transform": {
           "translate": [
-            0.355,
-            1.41,
-            0.02
+            0.38,
+            1.17,
+            0.025
           ],
           "rotate": [
             0,
             0,
-            -1.0472
+            0.5236
           ]
-        },
-        "region": "tick"
+        }
       },
       {
         "id": "tick-4",
         "type": "box",
         "args": {
           "dims": [
-            0.012,
+            0.014,
             0.05,
             0.01
           ]
         },
         "transform": {
           "translate": [
-            0.355,
-            0.99,
-            0.02
-          ],
-          "rotate": [
-            0,
-            0,
-            1.0472
-          ]
-        },
-        "region": "tick"
-      },
-      {
-        "id": "tick-5",
-        "type": "box",
-        "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.01
-          ]
-        },
-        "transform": {
-          "translate": [
-            0.21,
-            0.835,
-            0.02
-          ],
-          "rotate": [
-            0,
-            0,
-            0.5236
-          ]
-        },
-        "region": "tick"
-      },
-      {
-        "id": "tick-7",
-        "type": "box",
-        "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.01
-          ]
-        },
-        "transform": {
-          "translate": [
-            -0.21,
-            0.835,
-            0.02
+            0.38,
+            1.17,
+            0.025
           ],
           "rotate": [
             0,
             0,
             -0.5236
           ]
-        },
-        "region": "tick"
+        }
       },
       {
-        "id": "tick-8",
+        "id": "tick-5",
         "type": "box",
         "args": {
           "dims": [
-            0.012,
+            0.014,
             0.05,
             0.01
           ]
         },
         "transform": {
           "translate": [
-            -0.355,
-            0.99,
-            0.02
-          ],
-          "rotate": [
-            0,
-            0,
-            -1.0472
-          ]
-        },
-        "region": "tick"
-      },
-      {
-        "id": "tick-10",
-        "type": "box",
-        "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.01
-          ]
-        },
-        "transform": {
-          "translate": [
-            -0.355,
-            1.41,
-            0.02
-          ],
-          "rotate": [
-            0,
-            0,
-            1.0472
-          ]
-        },
-        "region": "tick"
-      },
-      {
-        "id": "tick-11",
-        "type": "box",
-        "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.01
-          ]
-        },
-        "transform": {
-          "translate": [
-            -0.21,
-            1.565,
-            0.02
+            0.38,
+            1.83,
+            0.025
           ],
           "rotate": [
             0,
             0,
             0.5236
           ]
+        }
+      },
+      {
+        "id": "tick-7",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.05,
+            0.01
+          ]
         },
-        "region": "tick"
+        "transform": {
+          "translate": [
+            -0.38,
+            1.83,
+            0.025
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        }
+      },
+      {
+        "id": "tick-8",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.05,
+            0.01
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.38,
+            1.17,
+            0.025
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        }
+      },
+      {
+        "id": "tick-10",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.05,
+            0.01
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.38,
+            1.17,
+            0.025
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        }
+      },
+      {
+        "id": "tick-11",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.05,
+            0.01
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.38,
+            1.83,
+            0.025
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        }
       },
       {
         "id": "hour-hand",
         "type": "capsule",
         "args": {
           "a": [
-            -0.04,
-            1.2,
+            0.025,
+            1.5,
             0.03
           ],
           "b": [
-            -0.32,
-            1.235,
+            -0.27,
+            1.536,
             0.03
           ],
           "radius": 0.018
         },
-        "region": "hand"
+        "material": "matte-black"
       },
       {
         "id": "minute-hand",
         "type": "capsule",
         "args": {
           "a": [
-            -0.04,
-            1.2,
-            0.04
+            -0.025,
+            1.5,
+            0.035
           ],
           "b": [
-            0.36,
-            1.2,
-            0.04
+            0.35,
+            1.5,
+            0.035
           ],
           "radius": 0.012
         },
-        "region": "hand"
+        "material": "matte-black"
       },
       {
         "id": "center-boss",
@@ -386,11 +412,11 @@
         "transform": {
           "translate": [
             0,
-            1.2,
-            0.05
+            1.5,
+            0.04
           ]
         },
-        "region": "center"
+        "material": "matte-black"
       }
     ],
     "ground": null,
@@ -401,19 +427,19 @@
         "distance": 3.5,
         "focal": 1.8,
         "targetX": 0,
-        "targetY": 1.2,
+        "targetY": 1.5,
         "targetZ": 0
       },
       "light": {
-        "azimuth": 0.6,
-        "altitude": 0.65,
+        "azimuth": -0.6,
+        "altitude": 0.5,
         "distance": 25,
         "intensity": 1
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.35
+        "strength": 0.3
       }
     }
   },
@@ -425,6 +451,8 @@
     "v2Model": "claude-sonnet-4-5",
     "v2SubjectCount": 18,
     "v2Note": "v2.1 fixed torus orientation (bezel + face faces camera)",
-    "previousSource": "user-saved-2026-05-18"
+    "previousSource": "user-saved-2026-05-18",
+    "upgradedFrom": "v2.3",
+    "upgradedAt": "2026-05-19T06:57:36.785Z"
   }
 }

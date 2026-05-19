@@ -5,11 +5,11 @@
   "code2d": "```js\nimport {\n  circle, ellipse, rectangle, polygon, segment,\n  union, intersection, difference, dilate, shell,\n  render,\n} from '../../src/index.js';\n\n// --- Palette ---\nconst CREAM      = [245, 238, 220];\nconst CELADON    = [168, 198, 178];\nconst CELADON_D  = [120, 158, 138];\nconst CELADON_L  = [210, 228, 215];\nconst RIM        = [ 90, 120, 105];\nconst OUTLINE    = [ 32,  28,  22];\nconst BG_TOP     = [240, 232, 215];\nconst BG_BOT     = [215, 205, 188];\n\n// --- Vase profile (hand-traced, right half x≥0, y = height) ---\n// Neck → shoulder → belly → foot → base\nconst vaseProfile = polygon([\n  // base rim (right)\n  [ 0.000, -0.70],\n  [ 0.180, -0.70],\n  [ 0.200, -0.64],\n  // foot curve\n  [ 0.210, -0.58],\n  [ 0.190, -0.50],\n  // lower belly — widest point\n  [ 0.280, -0.20],\n  [ 0.310,  0.05],\n  [ 0.290,  0.20],\n  // shoulder\n  [ 0.220,  0.38],\n  [ 0.160,  0.50],\n  // neck\n  [ 0.120,  0.56],\n  [ 0.100,  0.62],\n  // lip flare\n  [ 0.130,  0.68],\n  [ 0.145,  0.72],\n  // centre-line (top)\n  [ 0.000,  0.72],\n  // mirror left side\n  [-0.145,  0.72],\n  [-0.130,  0.68],\n  [-0.100,  0.62],\n  [-0.120,  0.56],\n  [-0.160,  0.50],\n  [-0.220,  0.38],\n  [-0.290,  0.20],\n  [-0.310,  0.05],\n  [-0.280, -0.20],\n  [-0.190, -0.50],\n  [-0.210, -0.58],\n  [-0.200, -0.64],\n  [-0.180, -0.70],\n]);\n\n// --- Interior cavity (mouth opening) ---\nconst mouth = ellipse(0.12, 0.025, [0, 0.70]);\n\n// --- Decorative band: horizontal stripe clipped to vase ---\nconst stripe1 = intersection(\n  vaseProfile,\n  rectangle([1.0, 0.055], [0, 0.10]),\n);\nconst stripe2 = intersection(\n  vaseProfile,\n  rectangle([1.0, 0.030], [0, -0.35]),\n);\n\n// --- Rim ring at lip ---\nconst rimRing = intersection(\n  vaseProfile,\n  rectangle([1.0, 0.045], [0, 0.68]),\n);\n\n// --- Highlight: a vertical soft ellipse on the left shoulder ---\nconst highlight = intersection(\n  vaseProfile,\n  ellipse(0.055, 0.16, [-0.16, 0.28]),\n);\n\n// --- Shadow: right-side crescent using difference ---\nconst shadowBand = intersection(\n  vaseProfile,\n  difference(\n    ellipse(0.35, 0.72, [0.10, 0]),\n    ellipse(0.22, 0.60, [-0.02, 0]),\n  ),\n);\n\n// --- Base shadow ellipse on ground ---\nconst baseShadow = ellipse(0.26, 0.04, [0, -0.73]);\n\n// --- Assemble layers ---\nconst layers = [\n  // ground shadow\n  { sdf: baseShadow,                  color: [180, 168, 148] },\n\n  // vase body outline (dilate idiom)\n  { sdf: dilate(vaseProfile, 0.028),  color: OUTLINE },\n\n  // vase body fill\n  { sdf: vaseProfile,                 color: CELADON },\n\n  // dark shadow band on right\n  { sdf: shadowBand,                  color: CELADON_D },\n\n  // decorative stripes\n  { sdf: stripe2,                     color: RIM },\n  { sdf: stripe1,                     color: RIM },\n  { sdf: rimRing,                     color: RIM },\n\n  // highlight sliver\n  { sdf: highlight,                   color: CELADON_L },\n\n  // mouth opening (dark cavity)\n  { sdf: dilate(mouth, 0.012),        color: OUTLINE },\n  { sdf: mouth,                       color: [55, 45, 38] },\n];\n\n// --- Render ---\nconst canvas = document.getElementById('c');\nconst ctx    = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.0,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n```\n\n**Composition notes:**\n\nThe vase is built as a single hand-traced `polygon` — 28 vertices symmetric on the centre axis — giving it a classical Chinese *mei ping* silhouette: wide belly, cinched foot, flared lip. The outline-via-`dilate` idiom (0.028 world units) gives it the weighty editorial border. Celadon green was chosen over a literal terracotta because it reads \"Chinese porcelain\" instantly and the three-value (light / mid / dark) colour split (`CELADON_L` / `CELADON` / `CELADON_D`) creates convincing volume without actual shading. The shadow band is an `intersection` of the vase with a crescent (two overlapping ellipses, `difference`), placing the darkest tone on the right shoulder and belly. The two horizontal `RIM`-coloured stripes and lip ring recall the painted decorative bands on Song-dynasty celadons. The mouth is a tiny dark ellipse at the top — just enough to suggest depth inside the opening.",
   "sceneData": {
     "v": 1,
-    "name": "Celadon vase",
+    "name": "Celadon Vase",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "Single polygon vase profile (28 vertices, mei-ping silhouette) with celadon palette, decorative stripes, highlight, shadow band, mouth opening"
+      "from2dCode": "polygon vaseProfile (28 vertices, mei-ping silhouette) + ellipse mouth + decorative stripes + celadon palette"
     },
     "subjects": [
       {
@@ -83,7 +83,8 @@
                 0.72
               ]
             ]
-          }
+          },
+          "id": "subjects_0_-source"
         },
         "transform": {
           "translate": [
@@ -92,14 +93,15 @@
             0
           ]
         },
-        "region": "ceramic"
+        "region": "ceramic",
+        "material": "porcelain"
       },
       {
         "id": "stripe-upper",
         "type": "torus",
         "args": {
-          "radius": 0.295,
-          "thickness": 0.022
+          "radius": 0.285,
+          "thickness": 0.028
         },
         "transform": {
           "translate": [
@@ -108,13 +110,20 @@
             0
           ]
         },
-        "region": "decoration"
+        "region": "decoration",
+        "material": {
+          "hue": 0.42,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "stripe-lower",
         "type": "torus",
         "args": {
-          "radius": 0.2,
+          "radius": 0.195,
           "thickness": 0.015
         },
         "transform": {
@@ -124,14 +133,21 @@
             0
           ]
         },
-        "region": "decoration"
+        "region": "decoration",
+        "material": {
+          "hue": 0.42,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
-        "id": "rim-band",
+        "id": "rim-ring",
         "type": "torus",
         "args": {
-          "radius": 0.138,
-          "thickness": 0.018
+          "radius": 0.132,
+          "thickness": 0.023
         },
         "transform": {
           "translate": [
@@ -140,16 +156,24 @@
             0
           ]
         },
-        "region": "rim"
+        "region": "rim",
+        "material": {
+          "hue": 0.42,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
       }
     ],
     "ground": {
-      "y": -0.76,
-      "region": "table"
+      "y": -0.95,
+      "region": "table",
+      "material": "wood"
     },
     "defaults": {
       "camera": {
-        "yaw": 0.65,
+        "yaw": 0.6,
         "pitch": 0.22,
         "distance": 2.8,
         "focal": 1.6,
@@ -158,15 +182,15 @@
         "targetZ": 0
       },
       "light": {
-        "azimuth": -0.6,
-        "altitude": 0.75,
-        "distance": 22,
+        "azimuth": -0.65,
+        "altitude": 0.7,
+        "distance": 12,
         "intensity": 1
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.38
+        "strength": 0.45
       }
     }
   },
@@ -178,6 +202,8 @@
     "v2Model": "claude-sonnet-4-5",
     "v2SubjectCount": 4,
     "v2Note": "v2.1 fixed revolve schema (uses source field correctly)",
-    "previousSource": "user-saved-2026-05-18"
+    "previousSource": "user-saved-2026-05-18",
+    "upgradedFrom": "v2.3",
+    "upgradedAt": "2026-05-19T06:57:36.784Z"
   }
 }
