@@ -107,21 +107,23 @@ float checker(vec2 p) {
   return mod(i.x + i.y, 2.0);
 }
 
-// Reinhard tone map + sRGB gamma. Reins extremes without clipping the sun.
+// Gamma + clip. Reinhard was too aggressive — it pulled white down to 0.5
+// before gamma, leaving everything washed-out. Diffuse-mostly scenes don't
+// need HDR compression (lighting tops out near 1.5); we just clamp + gamma.
 vec3 tonemap(vec3 c) {
-  c = c / (1.0 + c);
-  return pow(c, vec3(0.4545));
+  return pow(clamp(c, 0.0, 1.0), vec3(0.4545));
 }
 
 // IQ cosine palette — per-subject color from leaf index. Golden-ratio hash
 // gives maximum perceptual separation between adjacent indices (no two
-// neighbors share a hue). a/b/c/d tuned for warm-leaning editorial palette.
+// neighbors share a hue). a/b/c/d tuned for warm-leaning editorial palette
+// with enough amplitude that subjects don't all collapse to mid-grey.
 vec3 objectColor(float idx) {
   float h = fract(idx * 0.6180339887);
-  vec3 a = vec3(0.55, 0.52, 0.48);   // mid (slightly warm beige)
-  vec3 b = vec3(0.42, 0.42, 0.42);   // amplitude (saturated swings)
-  vec3 c = vec3(1.0, 1.0, 1.0);      // frequency
-  vec3 d = vec3(0.0, 0.33, 0.67);    // phase per channel
+  vec3 a = vec3(0.50, 0.50, 0.52);             // mid
+  vec3 b = vec3(0.55, 0.55, 0.50);             // amplitude — bumped from 0.42 to keep saturation post-shading
+  vec3 c = vec3(0.85, 1.00, 1.18);             // per-channel frequency — produces hue variation, not just lightness
+  vec3 d = vec3(0.00, 0.33, 0.67);             // phase
   return a + b * cos(6.28318530718 * (c * h + d));
 }
 
@@ -201,8 +203,8 @@ void main() {
     lin += rimCol * rim * ao                 * 0.18;
 
     // Atmospheric perspective: tint distant surfaces toward sky
-    float fog = 1.0 - exp(-0.018 * t * t);
-    col = mix(lin, sky(rd, sunDir) * 0.85, fog);
+    float fog = clamp((t - 2.0) * 0.025, 0.0, 0.65);
+    col = mix(lin, sky(rd, sunDir), fog);
   }
 
   gl_FragColor = vec4(tonemap(col), 1.0);
