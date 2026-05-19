@@ -50,6 +50,11 @@ const state = {
   textLiftSceneJSON: null,             // raw SceneData JSON (for the 3D code pane + export)
   textLiftSourcePrompt: null,          // original prompt that was lifted
   liftMode: false,                     // true when text-tab showing 3D lift (canvas swap)
+
+  // Light UI override — when non-null, the user has moved a slider and these
+  // values take precedence over scene.lightStatic. Reset to null when user
+  // clicks "Reset to scene default" or loads a new scene.
+  lightOverride: null,                 // { azimuth, altitude, distance } | null
 };
 
 const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu']);
@@ -995,9 +1000,11 @@ function updateCanvasVisibility(opts = {}) {
   $('c-gpu').style.display = showGpu ? 'block' : 'none';
   const fsBtn = $('btn-fullscreen');
   const shuffleBtn = $('btn-shuffle-palette');
+  const lightPanel = $('light-panel');
   if (fsBtn) fsBtn.style.display = showGpu ? 'inline-flex' : 'none';
   // Shuffle only meaningful for BOB GPU (FLY 3D doesn't have a palette concept)
   if (shuffleBtn) shuffleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
+  if (lightPanel) lightPanel.style.display = showGpu ? 'block' : 'none';
   return showGpu ? runActiveGpuRenderer(opts) : { bytes: 0 };
 }
 
@@ -1352,7 +1359,9 @@ function ensureFly3dRenderer() {
     canvas,
     getControls: () => {
       const { scene } = getActiveGpuScene();
-      const light = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      // User-controlled slider override > scene's saved light
+      const light = state.lightOverride ?? sceneLight;
       const cam = scene?.cameraStatic;
       return {
         lightAzim: light.azimuth,
@@ -1374,9 +1383,19 @@ function ensureFly3dRenderer() {
  * GPU renderer the active pill selects. Unmounts the inactive one so
  * pointer-lock doesn't leak and RAF loops don't compete for the canvas.
  */
+let _lastRenderedScene = null;
 function runActiveGpuRenderer({ keepCamera = false } = {}) {
   const { sdf, scene } = getActiveGpuScene();
   if (!sdf || !scene) return { bytes: 0 };
+
+  // Scene change → clear light override so the new scene's saved lighting
+  // takes effect. (Renderer pill switch on same scene does NOT clear.)
+  if (scene !== _lastRenderedScene) {
+    state.lightOverride = null;
+    _lastRenderedScene = scene;
+    // Defer slider sync to after the scene is actually compiled+rendered
+    setTimeout(updateLightSliders, 0);
+  }
 
   if (state.activeRenderer === 'fly3d') {
     if (state.bobRenderer) state.bobRenderer.unmount();
@@ -1419,7 +1438,9 @@ function ensureBobRenderer() {
       const t = (performance.now() - gpuSceneStartTime) / 1000;
       if (!scene) return defaultBobControls();
       const cam = scene.evalCamera ? scene.evalCamera(t) : scene.cameraStatic;
-      const light = scene.evalLight ? scene.evalLight(t) : scene.lightStatic;
+      const sceneLight = scene.evalLight ? scene.evalLight(t) : scene.lightStatic;
+      // User-controlled slider override > scene/anim-evaluated light
+      const light = state.lightOverride ?? sceneLight;
       const shadow = scene.evalShadow ? scene.evalShadow(t) : scene.shadowStatic;
       return {
         lightAzim: light.azimuth,
@@ -1838,6 +1859,69 @@ function shuffleBobPalette() {
   setStatus('🎨 palette shuffled — new sky + ground colors');
 }
 $('btn-shuffle-palette')?.addEventListener('click', shuffleBobPalette);
+
+// ----- Light control panel (GPU renderers only) -----
+const LIGHT_PRESETS = {
+  goldenHour: { azimuth: 0.60, altitude: 0.25, distance: 35 },  // low warm sun
+  midday:     { azimuth: 0.50, altitude: 0.95, distance: 30 },  // high cool sun
+  sideLight:  { azimuth: 1.10, altitude: 0.55, distance: 32 },  // 3/4 dramatic
+  dusk:       { azimuth: -1.0, altitude: 0.18, distance: 38 },  // sun behind — silhouette
+};
+
+function getCurrentLight() {
+  // Get effective light values (override or scene default)
+  const { scene } = getActiveGpuScene();
+  const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+  return state.lightOverride ?? sceneLight;
+}
+
+function updateLightSliders() {
+  const light = getCurrentLight();
+  const azimEl = $('light-azim'), altEl = $('light-alt'), distEl = $('light-dist');
+  if (!azimEl) return;
+  azimEl.value = light.azimuth;
+  altEl.value  = light.altitude;
+  distEl.value = light.distance;
+  $('light-azim-val').textContent = (+light.azimuth).toFixed(2);
+  $('light-alt-val').textContent  = (+light.altitude).toFixed(2);
+  $('light-dist-val').textContent = Math.round(+light.distance);
+}
+
+function applyLightOverride(partial) {
+  const current = getCurrentLight();
+  state.lightOverride = {
+    azimuth:  partial.azimuth  ?? current.azimuth,
+    altitude: partial.altitude ?? current.altitude,
+    distance: partial.distance ?? current.distance,
+  };
+  updateLightSliders();
+  // BOB GPU + FLY 3D both re-read getControls() every frame via RAF, so the
+  // change applies on the next frame — no explicit re-render needed.
+}
+
+// Header click — collapse/expand panel
+$('light-panel-header')?.addEventListener('click', () => {
+  $('light-panel').classList.toggle('open');
+});
+
+// Sliders
+$('light-azim')?.addEventListener('input', (e) => applyLightOverride({ azimuth: parseFloat(e.target.value) }));
+$('light-alt') ?.addEventListener('input', (e) => applyLightOverride({ altitude: parseFloat(e.target.value) }));
+$('light-dist')?.addEventListener('input', (e) => applyLightOverride({ distance: parseFloat(e.target.value) }));
+
+// Preset chips
+document.querySelectorAll('.light-preset-chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const preset = LIGHT_PRESETS[btn.dataset.preset];
+    if (preset) applyLightOverride(preset);
+  });
+});
+
+// Reset to scene default
+$('light-reset')?.addEventListener('click', () => {
+  state.lightOverride = null;
+  updateLightSliders();
+});
 
 window.addEventListener('keydown', (e) => {
   const target = e.target;
