@@ -146,13 +146,16 @@ vec3 sky(vec3 rd, vec3 sunDir) {
 }
 
 // nimitz-style atmospheric density. Distance + height combined:
-//   distance term  — saturates around t=20 (1 - exp(-t * 0.04))
-//   height term    — fog hugs ground (exp(-(y+1)*0.4)), mountains see less
-// Result roughly mimics Rayleigh + Mie attenuation cheaply (no raymarch).
+//   distance term — saturates around t=50 (1 - exp(-t * 0.018))
+//   height term   — fog hugs ground (exp(-(y+1)*0.5)), mountains see less
+// Tuned conservatively after cathedral test render — previous coefficients
+// fogged out close (5-15 unit) buildings too aggressively. Now < 25% fog
+// at t=15, ~40% at t=40. Result keeps near geometry crisp while still
+// giving deep atmospheric perspective on distant elements.
 float atmosphereDensity(vec3 p, float t) {
-  float heightK = exp(-max(p.y + 1.0, 0.0) * 0.45);
-  float distK   = 1.0 - exp(-t * 0.030);
-  return clamp(0.30 * heightK + 0.70 * distK, 0.0, 0.88);
+  float heightK = exp(-max(p.y + 1.0, 0.0) * 0.50);
+  float distK   = 1.0 - exp(-t * 0.018);
+  return clamp(0.15 * heightK + 0.55 * distK, 0.0, 0.85);
 }
 
 float checker(vec2 p) {
