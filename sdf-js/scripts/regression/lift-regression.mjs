@@ -74,20 +74,24 @@ async function preflight() {
 
 const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 // v1   = M0 baseline (pre-atom-library port)
-// v2   = M3 ship (9 atoms + 9 IQ types) — frozen snapshot
-// v2.1 = material/pattern + boolean variants + facade-to-3D — frozen snapshot
+// v2   = M3 ship (9 atoms + 9 IQ types) — frozen
+// v2.1 = material/pattern + boolean variants + facade-to-3D — frozen
 // v2.2 = 5 new presets + variant push — frozen
 // v2.3 = decision heuristic + bicycle Example 5 — frozen
-// v3.0 = atom library 9 → 42 (animals + landscape + architecture + vehicles
-//        + furniture + mechanical + plants) + deep-water preset
+// v3.0 = atom library 9 → 42 + deep-water preset — frozen
+// v3.1 = MANDATORY scene contextual augmentation (16-row category table)
 //        — read from LIVE file so future edits flow into next regression run
 const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
 const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
 const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
 const V22_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.2.md`, 'utf-8');
 const V23_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.3.md`, 'utf-8');
-const V30_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
-const PROMPTS = { 'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT, 'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT };
+const V30_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.0.md`, 'utf-8');
+const V31_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const PROMPTS = {
+  'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
+  'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT,
+};
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
@@ -302,11 +306,12 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
   else if (versionArg === 'v2.3-vs-v3.0') versions = ['v2.3', 'v3.0'];
+  else if (versionArg === 'v3.0-vs-v3.1') versions = ['v3.0', 'v3.1'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 

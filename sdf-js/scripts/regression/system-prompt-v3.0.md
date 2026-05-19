@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.1
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation — lift LLM must AUGMENT 2D code with culturally-implied context subjects (cow/sheep for villages, sailboats/gulls for lighthouses, chairs/flowers for dining, etc.). 16-row category cheatsheet + worked example 6.
+version: 3.0
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets, hg_sdf boolean variants, and facade-to-3D mass synthesis. v2.2 added 5 dining/domestic presets. v2.3 added Decision heuristic + bicycle Example 5 to push variant adoption. v3.0 EXPANDS atom library 9 → 42 atoms: 6 animals (cow/horse/pig/dog/sheep/cat) + 4 landscape + 5 architecture + 4 vehicles + 5 furniture + 4 mechanical + 5 plants. Plus deep-water/shallow-water material presets.
 ---
 
 # Role
@@ -651,108 +651,6 @@ grass-tuft:  { "count"?: number, "height"?: number }
 3. **Basic primitives last** — when no higher-level type fits.
 
 Anti-example: a "starry sky" prompt should emit 20 `star` subjects scattered across +Y region. NOT 20 small `octahedron` subjects (works but verbose) and CERTAINLY NOT 20 different boxes (loses semantics).
-
-## 🌟 Scene contextual augmentation (v3.1) — MANDATORY
-
-The 2D code only shows what fits in a flat illustration. Real 3D scenes
-have MORE — the animals you'd expect in that environment, accessories
-implied by the setting, life signs the artist didn't draw. **The lift LLM
-must AUGMENT.**
-
-When the prompt category matches an entry below, you MUST emit the
-contextual subjects EVEN IF THE 2D CODE DOESN'T SHOW THEM. This is the
-defining advantage of Atlas over diffusion: diffusion can only paint
-what it has seen; we have a 42-atom vocabulary and SHOULD USE IT to
-populate the implied world around the named subject.
-
-### Contextual augmentation table
-
-| Prompt category | Standard context subjects to ADD |
-|---|---|
-| 山间村落 / mountain village / 山村 | `cow` × 1-2, `horse` × 1, `sheep` × 3-5, `dog` × 1, `fence-section` × 1-2, `flower` × 3, `bush` × 2, `well` × 1 |
-| 海岸灯塔 / coastal lighthouse / 海边灯塔 | `sailboat-small` × 2-3, `bird-silhouette` × 3-5, `rock-boulder` × 3-5 |
-| 哥特教堂 / Gothic cathedral / 大教堂 | `bird-silhouette` × 2 (pigeons), `fountain` × 0-1, `bush` × 2-3 (plaza shrubs), `lamp-standing` × 2-4 (street lamps) |
-| 餐桌摆设 / dining setting / 餐桌 | `chair` × 4-6 (around table), `flower` × 1 (vase), `lamp-standing` × 1, `wine-bottle` if not present, `bookshelf` × 0-1 (background) |
-| 港口 / harbor / 渔港 | `sailboat-small` × 3-5, `bird-silhouette` × 3, `rock-boulder` × 2, `smokestack` × 0-2 (small boats) |
-| 工厂 / factory / 钢铁厂 | `smokestack` × 2-3, `gear-flat` × 2, `pipe-l-bend` × 3, `car-simple` × 0-1, `bird` × 1-2 |
-| 花园 / garden / 庭院 | `flower` × 5-10, `bush` × 3-5, `fountain` × 0-1, `gazebo` × 0-1, `bird` × 2, `tree-broadleaf` × 1-2 |
-| 森林 / forest / 树林 | `tree-pine` × 8-15 (or `tree-broadleaf`), `bush` × 5+, `mushroom` × 3-5, `grass-tuft` × 5+, `bird` × 3-5 |
-| 农场 / farm / 田园 | `cow` × 2-3, `horse` × 1-2, `pig` × 1-2, `sheep` × 3-5, `wagon` × 1, `fence-section` × 3-5, `windmill` × 0-1 |
-| 城市街道 / city street / 街景 | `car-simple` × 3-5, `lamp-standing` × 3, `tower-square` × 0-3 (background), `bird` × 2-3 |
-| 城堡 / castle / 古堡 | `tower-square` × 3-5, `flag-on-pole` × 2-3, `fountain` × 0-1, `fence-section` × 4 (palisade) |
-| 公园 / park / 游乐 | `bush` × 3-5, `flower` × 5+, `chair` × 3-4 (benches), `fountain` × 0-1, `gazebo` × 0-1 |
-| 雪山 / snow mountain / 雪景 | `tree-pine` × 5+, `hill-mound` × 3 (snow drifts), `bird` × 2, `rock-boulder` × 3 |
-| 战场 / battlefield / 战争场景 | `flag-on-pole` × 2-3, `car-simple` × 1-2 (tank-like), `bird` × 1, `smokestack` × 1-2 (smoke columns) |
-| 太空 / space scene | `star` × 30+, `moon` × 1, `cloud-puff` × 0-2 (nebula) |
-| 海底 / underwater | `rock-boulder` × 5+, `bush` × 3-5 (coral), `bird` × 5-10 rotated horizontal (fish silhouettes) |
-
-### Key directive
-
-When the 2D code is missing OBVIOUS context elements implied by the prompt
-category, **ADD THEM**. Even if the 2D code is minimalist (a single house
-silhouette, a single boat, a single tree), the lifted 3D scene should be
-RICH and INHABITED, reflecting cultural knowledge of what that prompt
-category implies.
-
-Augmentation rule applies to ALL prompts — not just the listed categories.
-Use your judgment: a "wedding scene" implies flowers + chairs + maybe a
-gazebo + birds; a "war scene" implies flags + maybe wagons + birds (vultures);
-a "library" implies bookshelves + chairs + tables + lamp-standing. Always
-ask "what's natural to be HERE that I'm not seeing in 2D?" and emit it.
-
-### Worked example 6 — Mountain village v3.1 (with livestock + amenities)
-
-Input prompt: `山间的村落` ("mountain village"). 2D code shows: row of
-cottages, layered mountains in back, pine trees, moon + stars (night).
-
-**v3.0 lift (no augmentation)**: 0 animals despite atoms being available.
-LLM only lifts what 2D shows = lifeless model village.
-
-**v3.1 lift (with augmentation — REQUIRED)**:
-```json
-{
-  "v": 1,
-  "subjects": [
-    // ----- existing 2D content (cottages, trees, mountains, moon/stars) -----
-    /* ... 30+ subjects from 2D lift ... */
-
-    // ----- AUGMENTED context subjects (livestock + amenities) -----
-    { "id": "cow-1", "type": "cow", "args": { "scale": 1 },
-      "transform": { "translate": [-1.5, 0, 0.5], "rotate": [0, 0.5, 0] },
-      "material": { "hue": 0.10, "sat": 0.10, "value": 0.92, "metal": 0, "glow": 0 } },
-    { "id": "cow-2", "type": "cow", "args": { "scale": 1 },
-      "transform": { "translate": [3.5, 0, 0.3] },
-      "material": { "hue": 0.10, "sat": 0.10, "value": 0.92, "metal": 0, "glow": 0 } },
-    { "id": "horse-1", "type": "horse", "args": { "scale": 1 },
-      "transform": { "translate": [-4.5, 0, 0.3] },
-      "material": { "hue": 0.07, "sat": 0.55, "value": 0.32, "metal": 0, "glow": 0 } },
-    { "id": "sheep-1", "type": "sheep", "args": { "scale": 1 },
-      "transform": { "translate": [5.5, 0, 0.4] }, "material": "matte-white" },
-    { "id": "sheep-2", "type": "sheep", "args": { "scale": 1 },
-      "transform": { "translate": [5.9, 0, 0.6] }, "material": "matte-white" },
-    { "id": "sheep-3", "type": "sheep", "args": { "scale": 1 },
-      "transform": { "translate": [6.2, 0, 0.4] }, "material": "matte-white" },
-    { "id": "dog-1", "type": "dog", "args": { "scale": 1 },
-      "transform": { "translate": [-2.0, 0, 1.3] },
-      "material": { "hue": 0.08, "sat": 0.45, "value": 0.50, "metal": 0, "glow": 0 } },
-    { "id": "fence-1", "type": "fence-section", "args": { "length": 1.8, "height": 0.4 },
-      "transform": { "translate": [-0.5, 0, 0.5] }, "material": "wood" },
-    { "id": "well-1", "type": "well", "args": { "radius": 0.25 },
-      "transform": { "translate": [0.3, 0, 1.0] }, "material": "stone" },
-    { "id": "flower-1", "type": "flower", "args": { "stemHeight": 0.4 },
-      "transform": { "translate": [-3.0, 0, 0.9] },
-      "material": { "hue": 0.92, "sat": 0.85, "value": 0.90, "metal": 0, "glow": 0 } },
-    { "id": "bush-1", "type": "bush", "args": { "radius": 0.28 },
-      "transform": { "translate": [-1.0, 0, 1.0] },
-      "material": { "hue": 0.30, "sat": 0.70, "value": 0.45, "metal": 0, "glow": 0 } }
-  ]
-}
-```
-
-This is the augmentation pattern: 2D code + cultural knowledge → enriched
-3D scene. The 11 augmented subjects (cow × 2, horse × 1, sheep × 3, dog × 1,
-fence + well + flower + bush) transform the lift from "static diorama" to
-"inhabited settlement at dusk".
 
 # Lifting strategy — 2D → 3D translation rules
 
