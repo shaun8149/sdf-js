@@ -80,6 +80,12 @@ export const VARIANT_BOOLEAN_N = new Set([
   'unionColumns', 'intersectionColumns', 'differenceColumns',
 ]);
 
+// Surface-modification ops — require EXACTLY 2 children (host + modifier).
+// pipe/engrave take args.r; groove/tongue take args.ra + args.rb.
+export const PAIR_BOOLEAN_OPS = new Set(['pipe', 'engrave', 'groove', 'tongue']);
+export const PAIR_BOOLEAN_RA_RB = new Set(['groove', 'tongue']);
+[...PAIR_BOOLEAN_OPS].forEach(t => BOOLEAN_OPS.add(t));
+
 export const DOMAIN_OPS = new Set([
   'rep', 'mirror', 'twist', 'bend',
   // hg_sdf-style radial repetition + 8-fold symmetry.
@@ -330,6 +336,31 @@ function validateSubject(subj, path, errors, warnings) {
         warnings.push(`${path}: "${subj.type}" missing args.n (step/column count); using default 3`);
       } else if (typeof n !== 'number' || n < 1 || n !== Math.floor(n)) {
         errors.push(`${path}.args.n: must be a positive integer (got ${n})`);
+      }
+    }
+    // Surface-modification ops (pipe/engrave/groove/tongue) require EXACTLY
+    // 2 children (host + modifier) — they're not commutative folds.
+    if (PAIR_BOOLEAN_OPS.has(subj.type)) {
+      if (Array.isArray(subj.children) && subj.children.length !== 2) {
+        errors.push(`${path}: "${subj.type}" requires exactly 2 children (host + modifier), got ${subj.children.length}`);
+      }
+      // groove/tongue use args.ra + args.rb; pipe/engrave use args.r.
+      if (PAIR_BOOLEAN_RA_RB.has(subj.type)) {
+        for (const k of ['ra', 'rb']) {
+          const v = subj.args?.[k];
+          if (v == null) {
+            warnings.push(`${path}: "${subj.type}" missing args.${k}; using default`);
+          } else if (typeof v !== 'number' || v <= 0) {
+            errors.push(`${path}.args.${k}: must be a positive number (got ${v})`);
+          }
+        }
+      } else {
+        const r = subj.args?.r;
+        if (r == null) {
+          warnings.push(`${path}: "${subj.type}" missing args.r; using default 0.05`);
+        } else if (typeof r !== 'number' || r <= 0) {
+          errors.push(`${path}.args.r: must be a positive number (got ${r})`);
+        }
       }
     }
   }

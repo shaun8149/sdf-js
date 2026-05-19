@@ -53,6 +53,7 @@ import {
   unionSoft,
   unionStairs,  intersectionStairs,  differenceStairs,
   unionColumns, intersectionColumns, differenceColumns,
+  pipe, engrave, groove, tongue,
 } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
 import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, resolveMaterial } from './spec.js';
@@ -450,6 +451,14 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
     sdf = intersectionColumns(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
   } else if (subj.type === 'differenceColumns') {
     sdf = differenceColumns(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'pipe') {
+    sdf = pipe(...childSdfs, { r: subj.args?.r ?? 0.05 });
+  } else if (subj.type === 'engrave') {
+    sdf = engrave(...childSdfs, { r: subj.args?.r ?? 0.05 });
+  } else if (subj.type === 'groove') {
+    sdf = groove(...childSdfs, { ra: subj.args?.ra ?? 0.05, rb: subj.args?.rb ?? 0.02 });
+  } else if (subj.type === 'tongue') {
+    sdf = tongue(...childSdfs, { ra: subj.args?.ra ?? 0.05, rb: subj.args?.rb ?? 0.02 });
   } else {
     throw new Error(`compile: unknown boolean op "${subj.type}"`);
   }

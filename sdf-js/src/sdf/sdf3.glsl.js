@@ -452,6 +452,34 @@ float opColumnsIntersect(float a, float b, float r, float n) {
   return opColumnsDifference(a, -b, r, n);
 }
 
+// ---- hg_sdf surface-modification ops (asymmetric A + B pairs) ------------
+// Unlike union/diff/intersect these are NOT commutative — A is the host
+// surface, B is the modifier (line / cutter / ridge / pipe axis).
+
+// Pipe: hollow tube at the intersection of two surfaces. Use for: cables,
+// railings, edge-piping on furniture, wireframe-like effects.
+float opPipe(float a, float b, float r) {
+  return length(vec2(a, b)) - r;
+}
+
+// Engrave: engrave B into A's surface (45-degree V-groove). Use for:
+// inscribed text, decorative scribed lines, embossed/incised patterns.
+float opEngrave(float a, float b, float r) {
+  return max(a, (a + r - abs(b)) * 0.70710678);
+}
+
+// Groove: rectangular slot cut into A along B. (ra, rb) = depth, half-width.
+// Use for: furniture rabbets, mechanical slots, architectural rustication.
+float opGroove(float a, float b, float ra, float rb) {
+  return max(a, min(a + ra, rb - abs(b)));
+}
+
+// Tongue: rectangular ridge added to A along B. Inverse of Groove.
+// Use for: tongue-and-groove joinery, edge molding, raised banding.
+float opTongue(float a, float b, float ra, float rb) {
+  return min(a, max(a - ra, abs(b) - rb));
+}
+
 // ---- Transform helpers (act on p, return new p) ---------------------------
 
 vec3 opTranslate(vec3 p, vec3 offset) {

@@ -396,6 +396,21 @@ function emitBooleanVariant(opFn, argKeys, defaults = {}) {
   };
 }
 
+// Surface-modification pairs (pipe / engrave / groove / tongue). Exactly two
+// children: host surface + modifier curve. Not commutative; not foldable.
+function emitPair(opFn, argKeys, defaults = {}) {
+  return (sdf, p) => {
+    const { children, opts } = sdf.ast;
+    if (children.length !== 2) {
+      throw new Error(`${sdf.ast.name}: requires exactly 2 children (host + modifier), got ${children.length}`);
+    }
+    const a = walk(children[0], p);
+    const b = walk(children[1], p);
+    const argStr = argKeys.map(k => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
+    return `${opFn}(${a}, ${b}, ${argStr})`;
+  };
+}
+
 const OPS = {
   // ---- transforms ----------------------------------------------------------
   translate: (sdf, p) => {
@@ -479,6 +494,12 @@ const OPS = {
   unionColumns:        emitBooleanVariant('opColumnsUnion',      ['r', 'n'], { r: 0.1, n: 3 }),
   intersectionColumns: emitBooleanVariant('opColumnsIntersect',  ['r', 'n'], { r: 0.1, n: 3 }),
   differenceColumns:   emitBooleanVariant('opColumnsDifference', ['r', 'n'], { r: 0.1, n: 3 }),
+
+  // Surface modifications: 2-children (host + modifier), not commutative.
+  pipe:    emitPair('opPipe',    ['r'],        { r: 0.05 }),
+  engrave: emitPair('opEngrave', ['r'],        { r: 0.05 }),
+  groove:  emitPair('opGroove',  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
+  tongue:  emitPair('opTongue',  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
 
   // ---- decoration ---------------------------------------------------------
   negate: (sdf, p) => `(-${walk(sdf.ast.children[0], p)})`,

@@ -211,6 +211,35 @@ export const unionColumns      = defineOpN('unionColumns',      _makeVariant2(_o
 export const intersectionColumns=defineOpN('intersectionColumns',_makeVariant2(_opColumnsIntersect, { r: 0.1, n: 3 }));
 export const differenceColumns = defineOpN('differenceColumns', _makeVariant2(_opColumnsDifference,{ r: 0.1, n: 3 }));
 
+// =============================================================================
+// hg_sdf surface modifications — asymmetric (host A, modifier B) pairs
+// -----------------------------------------------------------------------------
+// pipe / engrave / groove / tongue. Take exactly 2 children: the host surface
+// and the modifier curve/line. Not commutative — order matters.
+// =============================================================================
+
+const _opPipe    = (a, b, r) => Math.hypot(a, b) - r;
+const _opEngrave = (a, b, r) => Math.max(a, (a + r - Math.abs(b)) * Math.SQRT1_2);
+const _opGroove  = (a, b, ra, rb) => Math.max(a, Math.min(a + ra, rb - Math.abs(b)));
+const _opTongue  = (a, b, ra, rb) => Math.min(a, Math.max(a - ra, Math.abs(b) - rb));
+
+// Build a 2-child op (host, modifier) that takes either {r} or {ra, rb}.
+// argKeys lists what to pull from opts (e.g. ['r'] or ['ra', 'rb']).
+const _makePair = (opFn, argKeys, defaults) => (a, ...rest) => {
+  const [bs, opts] = splitOpts(rest);
+  if (bs.length !== 1) {
+    throw new Error(`expected exactly 2 SDFs (host + modifier), got ${1 + bs.length}`);
+  }
+  const args = argKeys.map(k => opts[k] ?? defaults[k]);
+  const b = bs[0];
+  return (p) => opFn(a.f(p), b.f(p), ...args);
+};
+
+export const pipe    = defineOpN('pipe',    _makePair(_opPipe,    ['r'],        { r: 0.05 }));
+export const engrave = defineOpN('engrave', _makePair(_opEngrave, ['r'],        { r: 0.05 }));
+export const groove  = defineOpN('groove',  _makePair(_opGroove,  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }));
+export const tongue  = defineOpN('tongue',  _makePair(_opTongue,  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }));
+
 export const negate = defineOpN('negate', (a) => (p) => -a.f(p));
 
 export const dilate = defineOpN('dilate', (a, r) => (p) => a.f(p) - r);
