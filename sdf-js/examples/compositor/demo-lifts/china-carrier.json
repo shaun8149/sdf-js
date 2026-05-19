@@ -29,7 +29,7 @@
           ]
         },
         "region": "water",
-        "material": "sky-blue"
+        "material": "deep-water"
       },
       {
         "id": "hull-main",
@@ -1221,7 +1221,7 @@
           ]
         },
         "region": "water",
-        "material": "sky-blue"
+        "material": "deep-water"
       },
       {
         "id": "escort-ddg-1-hull",
@@ -2121,9 +2121,9 @@
       "y": -3.2,
       "region": "seabed",
       "material": {
-        "hue": 0.58,
-        "sat": 0.65,
-        "value": 0.22,
+        "hue": 0.62,
+        "sat": 0.85,
+        "value": 0.1,
         "metal": 0,
         "glow": 0
       }

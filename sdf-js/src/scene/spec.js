@@ -151,6 +151,10 @@ export const MATERIAL_PRESETS = {
   'clear-glass':  { hue: 0.55, sat: 0.12, value: 0.92, metal: 0.50, glow: 0.0 },  // no transparency in v1; high metal fakes fresnel
   'linen':        { hue: 0.12, sat: 0.10, value: 0.85, metal: 0.0,  glow: 0.0 },  // warm-tinted cloth, off-white
   'fruit-red':    { hue: 0.00, sat: 0.85, value: 0.65, metal: 0.0,  glow: 0.0 },  // apples / cherries / tomatoes
+
+  // Water variants (v2.3+) — "sky-blue" preset is too light for ocean / lake.
+  'deep-water':   { hue: 0.60, sat: 0.85, value: 0.22, metal: 0.40, glow: 0.0 },  // open Pacific / deep ocean — dark + saturated + fresnel sheen
+  'shallow-water':{ hue: 0.50, sat: 0.55, value: 0.65, metal: 0.30, glow: 0.0 },  // lagoon / pool / coastal — lighter cyan
 };
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
