@@ -205,6 +205,98 @@ function exportAllSavedScenes() {
   setStatus(`📦 exported ${all.length} scenes to ${filename}`);
 }
 
+/**
+ * Re-lift a single saved scene with the current LIVE lift prompt (v2.3).
+ * Preserves id/name/prompt/code2d, replaces sceneData. Stamps upgradedAt.
+ *
+ * Uses the user's stored Anthropic API key. ~$0.15 per call.
+ */
+async function upgradeSavedScene(id) {
+  const apiKey = localStorage.getItem(STORAGE_KEY);
+  if (!apiKey) {
+    setStatus('✗ no API key — set it in the Text tab first', true);
+    return;
+  }
+  const all = loadSavedScenes();
+  const idx = all.findIndex(s => s.id === id);
+  if (idx < 0) return;
+  const entry = all[idx];
+  if (!entry.prompt || !entry.code2d) {
+    setStatus(`✗ "${entry.name}" missing prompt or code2d — can't re-lift`, true);
+    return;
+  }
+  setStatus(`🔄 upgrading "${entry.name}"…`);
+  try {
+    const { text } = await callLiftLLM(entry.prompt, entry.code2d, apiKey);
+    const newSceneData = parseLiftResponse(text);
+    // Sanity check the parsed scene before saving
+    if (!newSceneData || !Array.isArray(newSceneData.subjects)) {
+      throw new Error('parsed scene missing subjects array');
+    }
+    all[idx] = {
+      ...entry,
+      sceneData: newSceneData,
+      upgradedAt: Date.now(),
+    };
+    persistSavedScenes(all);
+    setStatus(`✓ "${entry.name}" upgraded to v2.3 (${newSceneData.subjects.length} subjects)`);
+    renderDemoGallery();
+    // If this scene is currently loaded, reload it to show new render
+    if (activeSavedId === id) loadSavedSceneById(id);
+  } catch (e) {
+    setStatus(`✗ upgrade "${entry.name}": ${e.message}`, true);
+    console.error(e);
+  }
+}
+
+/**
+ * Re-lift ALL saved scenes sequentially. Stops on first error so user can
+ * see what broke. ~$1.20 for 8 scenes at sonnet pricing.
+ */
+async function upgradeAllSavedScenes() {
+  const apiKey = localStorage.getItem(STORAGE_KEY);
+  if (!apiKey) {
+    setStatus('✗ no API key — set it in the Text tab first', true);
+    return;
+  }
+  const all = loadSavedScenes();
+  if (all.length === 0) {
+    setStatus('no saved scenes to upgrade', true);
+    return;
+  }
+  if (!confirm(`Re-lift all ${all.length} saved scenes with the current v2.3 prompt? Uses ~${(all.length * 0.15).toFixed(2)} USD of API credit.`)) return;
+
+  let okCount = 0, failCount = 0;
+  for (let i = 0; i < all.length; i++) {
+    const entry = all[i];
+    if (!entry.prompt || !entry.code2d) {
+      console.warn(`skip ${entry.name}: missing prompt/code2d`);
+      failCount++;
+      continue;
+    }
+    setStatus(`🔄 upgrading ${i + 1}/${all.length}: "${entry.name}"…`);
+    try {
+      const { text } = await callLiftLLM(entry.prompt, entry.code2d, apiKey);
+      const newSceneData = parseLiftResponse(text);
+      if (!newSceneData || !Array.isArray(newSceneData.subjects)) {
+        throw new Error('parsed scene missing subjects array');
+      }
+      // Reload fresh — other tabs may have mutated localStorage between iterations
+      const current = loadSavedScenes();
+      const idx = current.findIndex(s => s.id === entry.id);
+      if (idx < 0) { failCount++; continue; }
+      current[idx] = { ...entry, sceneData: newSceneData, upgradedAt: Date.now() };
+      persistSavedScenes(current);
+      okCount++;
+    } catch (e) {
+      console.error(`upgrade "${entry.name}":`, e);
+      failCount++;
+    }
+  }
+  setStatus(`✓ upgrade-all done · ${okCount} ok · ${failCount} failed`);
+  renderDemoGallery();
+}
+
 function downloadSavedScene(id) {
   const entry = loadSavedScenes().find(s => s.id === id);
   if (!entry) return;
@@ -390,6 +482,12 @@ function renderScenesTab() {
     exportAllBtn.style.display = saved.length > 0 ? 'inline-flex' : 'none';
     exportAllBtn.onclick = exportAllSavedScenes;
   }
+  // Upgrade All button: re-lift each saved scene with current v2.3 prompt
+  const upgradeAllBtn = $('btn-upgrade-all-saved');
+  if (upgradeAllBtn) {
+    upgradeAllBtn.style.display = saved.length > 0 ? 'inline-flex' : 'none';
+    upgradeAllBtn.onclick = upgradeAllSavedScenes;
+  }
 
   // Bundled cards
   bundledEl.innerHTML = bundled.length === 0
@@ -411,13 +509,14 @@ function renderScenesTab() {
         <div class="scene-card-big saved ${s.id === activeSavedId ? 'active' : ''}" data-saved="${s.id}">
           <div class="scene-emoji">${sceneEmoji(s)}</div>
           <div class="scene-actions">
+            <button class="scene-act-btn" data-act="upgrade" data-id="${s.id}" title="Re-lift with current v2.3 prompt">🔄</button>
             <button class="scene-act-btn" data-act="share" data-id="${s.id}" title="Copy shareable URL">🔗</button>
             <button class="scene-act-btn" data-act="download" data-id="${s.id}" title="Download JSON">↓</button>
             <button class="scene-act-btn" data-act="delete" data-id="${s.id}" title="Delete">×</button>
           </div>
           <div class="scene-footer">
             <div class="scene-title">${escapeHtml(s.name)}</div>
-            <div class="scene-sub">${formatTime(s.savedAt)} · ${escapeHtml(s.prompt?.slice(0, 28) || '')}</div>
+            <div class="scene-sub">${s.upgradedAt ? '<span style="color:#7fa97f;">⚡ v2.3</span> · ' : ''}${formatTime(s.savedAt)} · ${escapeHtml(s.prompt?.slice(0, 28) || '')}</div>
           </div>
         </div>
       `).join('');
@@ -452,6 +551,7 @@ function renderScenesTab() {
       if (btn.dataset.act === 'share') shareSavedScene(id);
       else if (btn.dataset.act === 'download') downloadSavedScene(id);
       else if (btn.dataset.act === 'delete') deleteSavedScene(id);
+      else if (btn.dataset.act === 'upgrade') upgradeSavedScene(id);
     });
   });
 
@@ -824,6 +924,7 @@ const TAB_CONTENT = {
     <div class="scenes-section">
       <h2 class="scenes-section-title">
         My saved <span class="count" id="scenes-saved-count">0</span>
+        <button class="header-btn" id="btn-upgrade-all-saved" style="display:none;" title="Re-lift each saved scene with the current v2.3 prompt (uses API credits)">🔄 Upgrade All to v2.3</button>
         <button class="header-btn" id="btn-export-all-saved" style="display:none;">📦 Export All</button>
         <span style="color:#666; font-size:10px; font-weight:400; text-transform:none; letter-spacing:0; margin-left:auto;">localStorage · this browser only</span>
       </h2>
