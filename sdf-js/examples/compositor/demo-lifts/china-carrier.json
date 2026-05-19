@@ -1235,9 +1235,9 @@
         },
         "transform": {
           "translate": [
-            40,
-            -2.0,
-            25
+            35,
+            -1.8,
+            18
           ],
           "rotate": [
             0,
@@ -1265,9 +1265,9 @@
         },
         "transform": {
           "translate": [
-            40,
-            -2.55,
-            25
+            35,
+            -2.35,
+            18
           ],
           "rotate": [
             0,
@@ -1292,9 +1292,9 @@
         },
         "transform": {
           "translate": [
-            46.5,
-            -1.75,
-            25.0
+            41.5,
+            -1.55,
+            18.0
           ],
           "rotate": [
             0,
@@ -1323,9 +1323,9 @@
         },
         "transform": {
           "translate": [
-            38.5,
-            -0.5,
-            25.0
+            33.5,
+            -0.30000000000000004,
+            18.0
           ],
           "rotate": [
             0,
@@ -1345,9 +1345,9 @@
         },
         "transform": {
           "translate": [
-            38.5,
-            1.2999999999999998,
-            25.0
+            33.5,
+            1.4999999999999998,
+            18.0
           ]
         },
         "region": "island",
@@ -1361,9 +1361,9 @@
         },
         "transform": {
           "translate": [
-            44.0,
-            -1.35,
-            25.0
+            39.0,
+            -1.15,
+            18.0
           ]
         },
         "region": "deck",
@@ -1387,9 +1387,9 @@
         },
         "transform": {
           "translate": [
-            47.0,
+            42.0,
             -2.8,
-            25.0
+            18.0
           ]
         },
         "region": "water",
@@ -1413,9 +1413,9 @@
         },
         "transform": {
           "translate": [
-            35,
-            -2.0,
-            -28
+            20,
+            -1.8,
+            30
           ],
           "rotate": [
             0,
@@ -1443,9 +1443,9 @@
         },
         "transform": {
           "translate": [
-            35,
-            -2.55,
-            -28
+            20,
+            -2.35,
+            30
           ],
           "rotate": [
             0,
@@ -1470,9 +1470,9 @@
         },
         "transform": {
           "translate": [
-            41.5,
-            -1.75,
-            -28.0
+            26.5,
+            -1.55,
+            30.0
           ],
           "rotate": [
             0,
@@ -1501,9 +1501,9 @@
         },
         "transform": {
           "translate": [
-            33.5,
-            -0.5,
-            -28.0
+            18.5,
+            -0.30000000000000004,
+            30.0
           ],
           "rotate": [
             0,
@@ -1523,9 +1523,9 @@
         },
         "transform": {
           "translate": [
-            33.5,
-            1.2999999999999998,
-            -28.0
+            18.5,
+            1.4999999999999998,
+            30.0
           ]
         },
         "region": "island",
@@ -1539,9 +1539,9 @@
         },
         "transform": {
           "translate": [
-            39.0,
-            -1.35,
-            -28.0
+            24.0,
+            -1.15,
+            30.0
           ]
         },
         "region": "deck",
@@ -1565,9 +1565,9 @@
         },
         "transform": {
           "translate": [
-            42.0,
+            27.0,
             -2.8,
-            -28.0
+            30.0
           ]
         },
         "region": "water",
@@ -1591,8 +1591,8 @@
         },
         "transform": {
           "translate": [
-            -25,
-            -2.0,
+            8,
+            -1.8,
             30
           ],
           "rotate": [
@@ -1616,8 +1616,8 @@
         },
         "transform": {
           "translate": [
-            -25,
-            -2.45,
+            8,
+            -2.35,
             30
           ],
           "rotate": [
@@ -1648,8 +1648,8 @@
         },
         "transform": {
           "translate": [
-            -26.0,
-            -0.8,
+            6.5,
+            -0.30000000000000004,
             30.0
           ],
           "rotate": [
@@ -1670,8 +1670,8 @@
         },
         "transform": {
           "translate": [
-            -26.0,
-            0.7000000000000002,
+            6.5,
+            1.4999999999999998,
             30.0
           ]
         },
@@ -1690,7 +1690,7 @@
         },
         "transform": {
           "translate": [
-            -20.0,
+            15.0,
             -2.8,
             30.0
           ]
@@ -1750,6 +1750,6 @@
     "previousSource": "user-saved-2026-05-18",
     "upgradedFrom": "v2.3",
     "upgradedAt": "2026-05-19T06:59:59.855Z",
-    "handFixed": "2026-05-19: removed misshapen stern-taper pyramid that visually obstructed carrier stern | 2026-05-19: fixed flag-pole position + relocated exhausts + added clouds/gulls/wake + dramatic camera/lighting for majesty | 2026-05-19: added escort fleet (2 destroyers + 1 frigate) + cross-swell wave layer for ocean undulation"
+    "handFixed": "2026-05-19: removed misshapen stern-taper pyramid that visually obstructed carrier stern | 2026-05-19: fixed flag-pole position + relocated exhausts + added clouds/gulls/wake + dramatic camera/lighting for majesty | 2026-05-19: added escort fleet (2 destroyers + 1 frigate) + cross-swell wave layer for ocean undulation | escorts repositioned into camera FOV (50-60 units, in front of carrier)"
   }
 }
