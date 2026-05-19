@@ -25,7 +25,14 @@
             -8
           ]
         },
-        "region": "moon"
+        "region": "moon",
+        "material": {
+          "hue": 0.13,
+          "sat": 0.15,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 1.2
+        }
       },
       {
         "id": "star-1",
@@ -41,7 +48,14 @@
             -9
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-2",
@@ -57,7 +71,14 @@
             -9.5
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-3",
@@ -73,7 +94,14 @@
             -9.2
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-4",
@@ -89,7 +117,14 @@
             -9.8
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-5",
@@ -105,7 +140,14 @@
             -9.4
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-6",
@@ -121,7 +163,14 @@
             -9
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-7",
@@ -137,7 +186,14 @@
             -9.6
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-8",
@@ -153,7 +209,14 @@
             -9.3
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-9",
@@ -169,7 +232,14 @@
             -9.7
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-10",
@@ -185,7 +255,14 @@
             -9.5
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-11",
@@ -201,7 +278,14 @@
             -9.2
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "star-12",
@@ -217,7 +301,14 @@
             -9.8
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.0
+        }
       },
       {
         "id": "cloud-1",
@@ -271,10 +362,10 @@
         "id": "sea-surface",
         "type": "waves",
         "args": {
-          "freq": 5,
-          "amp": 0.18,
+          "freq": 2.5,
+          "amp": 0.35,
           "angle": 0.15,
-          "speed": 0.7
+          "speed": 0.3
         },
         "transform": {
           "translate": [
@@ -283,7 +374,7 @@
             0
           ]
         },
-        "material": "sky-blue",
+        "material": "deep-water",
         "region": "water"
       },
       {
@@ -778,6 +869,522 @@
           "glow": 1.2
         },
         "region": "window"
+      },
+      {
+        "id": "sea-cross-swell",
+        "type": "waves",
+        "args": {
+          "freq": 4.5,
+          "amp": 0.12,
+          "angle": 1.4,
+          "speed": 0.18
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.8,
+            0
+          ]
+        },
+        "region": "water",
+        "material": "deep-water"
+      },
+      {
+        "id": "light-beam",
+        "type": "solid-angle",
+        "args": {
+          "halfAperture": 0.12,
+          "radius": 9
+        },
+        "transform": {
+          "translate": [
+            0.5,
+            2.75,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.72
+          ]
+        },
+        "region": "beam",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.9,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.5
+        }
+      },
+      {
+        "id": "light-beam-secondary",
+        "type": "solid-angle",
+        "args": {
+          "halfAperture": 0.1,
+          "radius": 7
+        },
+        "transform": {
+          "translate": [
+            0.5,
+            2.75,
+            0
+          ],
+          "rotate": [
+            0,
+            0.6,
+            -1.7
+          ]
+        },
+        "region": "beam",
+        "material": {
+          "hue": 0.08,
+          "sat": 0.85,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 1.5
+        }
+      },
+      {
+        "id": "sailboat-1-hull",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.36000000000000004,
+            0,
+            0
+          ],
+          "b": [
+            0.36000000000000004,
+            0,
+            0
+          ],
+          "radius": 0.07200000000000001
+        },
+        "transform": {
+          "translate": [
+            4.5,
+            -1.7,
+            4
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-1-mast",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.018000000000000002,
+          "height": 0.45
+        },
+        "transform": {
+          "translate": [
+            4.5,
+            -1.4749999999999999,
+            4
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-1-sail",
+        "type": "tri_prism",
+        "args": {
+          "halfWidth": 0.135,
+          "halfLength": 0.198
+        },
+        "transform": {
+          "translate": [
+            4.545,
+            -1.385,
+            4
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "boat",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.05,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.2
+        }
+      },
+      {
+        "id": "sailboat-1-wake",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.54,
+            0.04,
+            0.135
+          ]
+        },
+        "transform": {
+          "translate": [
+            3.87,
+            -1.85,
+            4
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "sailboat-2-hull",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.27999999999999997,
+            0,
+            0
+          ],
+          "b": [
+            0.27999999999999997,
+            0,
+            0
+          ],
+          "radius": 0.055999999999999994
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            -1.7,
+            -2
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-2-mast",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.013999999999999999,
+          "height": 0.35
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            -1.525,
+            -2
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-2-sail",
+        "type": "tri_prism",
+        "args": {
+          "halfWidth": 0.105,
+          "halfLength": 0.154
+        },
+        "transform": {
+          "translate": [
+            6.535,
+            -1.455,
+            -2
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "boat",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.05,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.2
+        }
+      },
+      {
+        "id": "sailboat-2-wake",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.42,
+            0.04,
+            0.105
+          ]
+        },
+        "transform": {
+          "translate": [
+            6.01,
+            -1.85,
+            -2
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "sailboat-3-hull",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.24,
+            0,
+            0
+          ],
+          "b": [
+            0.24,
+            0,
+            0
+          ],
+          "radius": 0.048
+        },
+        "transform": {
+          "translate": [
+            -4,
+            -1.7,
+            5
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-3-mast",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.012,
+          "height": 0.3
+        },
+        "transform": {
+          "translate": [
+            -4,
+            -1.55,
+            5
+          ]
+        },
+        "region": "boat",
+        "material": "matte-black"
+      },
+      {
+        "id": "sailboat-3-sail",
+        "type": "tri_prism",
+        "args": {
+          "halfWidth": 0.09,
+          "halfLength": 0.132
+        },
+        "transform": {
+          "translate": [
+            -3.97,
+            -1.49,
+            5
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "boat",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.05,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.2
+        }
+      },
+      {
+        "id": "sailboat-3-wake",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.36,
+            0.04,
+            0.09
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.42,
+            -1.85,
+            5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "gull-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.16,
+          "bodyRadius": 0.02,
+          "wingSpan": 0.42,
+          "wingRise": 0.08
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            3.8,
+            -3
+          ],
+          "rotate": [
+            0,
+            0.3,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-white"
+      },
+      {
+        "id": "gull-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.14,
+          "bodyRadius": 0.02,
+          "wingSpan": 0.38,
+          "wingRise": 0.07
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            4.3,
+            -2
+          ],
+          "rotate": [
+            0,
+            -0.5,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-white"
+      },
+      {
+        "id": "gull-3",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.12,
+          "bodyRadius": 0.018,
+          "wingSpan": 0.32,
+          "wingRise": 0.06
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            4.5,
+            -4.5
+          ],
+          "rotate": [
+            0,
+            0.7,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-white"
+      },
+      {
+        "id": "foam-rock-1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.6,
+            0.08,
+            0.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.1,
+            -1.65,
+            0.6
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.96,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "foam-rock-2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.7,
+            0.08,
+            0.45
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.8,
+            -1.65,
+            0.9
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.96,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "foam-rock-3",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.55,
+            0.07,
+            0.35
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.4,
+            -1.65,
+            0.5
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.96,
+          "metal": 0.25,
+          "glow": 0
+        }
       }
     ],
     "ground": {
@@ -817,6 +1424,7 @@
     "v2SubjectCount": 34,
     "previousSource": "user-saved-2026-05-18",
     "upgradedFrom": "v2.3",
-    "upgradedAt": "2026-05-19T06:57:36.787Z"
+    "upgradedAt": "2026-05-19T06:59:59.865Z",
+    "handFixed": "2026-05-19: lighthouse polish — light beam + deep-water sea + moonlit moon/stars + 3 sailboats + 3 gulls + foam @ rocks"
   }
 }
