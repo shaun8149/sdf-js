@@ -354,6 +354,37 @@ float opShell(float d, float thickness) { return abs(d) - thickness * 0.5; }
 float opDilate(float d, float r)        { return d - r; }
 float opErode(float d, float r)         { return d + r; }
 
+// ---- hg_sdf-style join variants (Mercury "Hg" library, demoscene-grade) ---
+// All formulas from mercury.sexy/hg_sdf — Lipschitz-preserving join ops that
+// produce architectural/mechanical detail at boolean boundaries.
+//
+// Chamfer = 45-degree flat bevel (square diagonal of size r). Use for cut
+// stone, brutalist edges, beveled metalwork.
+float opChamferUnion(float a, float b, float r) {
+  return min(min(a, b), (a + b - r) * 0.70710678);
+}
+float opChamferIntersect(float a, float b, float r) {
+  return max(max(a, b), (a + b + r) * 0.70710678);
+}
+float opChamferDifference(float a, float b, float r) {
+  return opChamferIntersect(a, -b, r);
+}
+
+// Round = quarter-circle bevel (radius r). Use for polished joins, soft
+// rounded furniture corners, ceramic vessels. Geometrically distinct from
+// smooth-union: this is an exact circular fillet, not exponential blend.
+float opRoundUnion(float a, float b, float r) {
+  vec2 u = max(vec2(r - a, r - b), vec2(0.0));
+  return max(r, min(a, b)) - length(u);
+}
+float opRoundIntersect(float a, float b, float r) {
+  vec2 u = max(vec2(r + a, r + b), vec2(0.0));
+  return min(-r, max(a, b)) + length(u);
+}
+float opRoundDifference(float a, float b, float r) {
+  return opRoundIntersect(a, -b, r);
+}
+
 // ---- Transform helpers (act on p, return new p) ---------------------------
 
 vec3 opTranslate(vec3 p, vec3 offset) {

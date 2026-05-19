@@ -45,7 +45,11 @@ import {
   pineTreeSDF, broadleafTreeSDF,
   cottageSDF, flagOnPoleSDF, birdSilhouetteSDF,
 } from './components/atoms/scene-atoms.js';
-import { union, difference, intersection, rep } from '../sdf/dn.js';
+import {
+  union, difference, intersection, rep,
+  unionChamfer, intersectionChamfer, differenceChamfer,
+  unionRound,   intersectionRound,   differenceRound,
+} from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
 import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, resolveMaterial } from './spec.js';
 import { normalizeChannel } from './expr.js';
@@ -403,17 +407,31 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
   }
 
   const k = subj.args?.k;
+  const r = subj.args?.r ?? 0.05;
+  const childSdfs = children.map(c => c.sdf);
   let sdf;
   if (subj.type === 'union') {
-    sdf = union(...children.map(c => c.sdf));
+    sdf = union(...childSdfs);
   } else if (subj.type === 'difference') {
-    sdf = difference(...children.map(c => c.sdf));
+    sdf = difference(...childSdfs);
   } else if (subj.type === 'intersection') {
-    sdf = intersection(...children.map(c => c.sdf));
+    sdf = intersection(...childSdfs);
   } else if (subj.type === 'smoothUnion') {
-    sdf = union(...children.map(c => c.sdf), { k: k ?? 0.05 });
+    sdf = union(...childSdfs, { k: k ?? 0.05 });
   } else if (subj.type === 'smoothDifference') {
-    sdf = difference(...children.map(c => c.sdf), { k: k ?? 0.05 });
+    sdf = difference(...childSdfs, { k: k ?? 0.05 });
+  } else if (subj.type === 'unionChamfer') {
+    sdf = unionChamfer(...childSdfs, { r });
+  } else if (subj.type === 'intersectionChamfer') {
+    sdf = intersectionChamfer(...childSdfs, { r });
+  } else if (subj.type === 'differenceChamfer') {
+    sdf = differenceChamfer(...childSdfs, { r });
+  } else if (subj.type === 'unionRound') {
+    sdf = unionRound(...childSdfs, { r });
+  } else if (subj.type === 'intersectionRound') {
+    sdf = intersectionRound(...childSdfs, { r });
+  } else if (subj.type === 'differenceRound') {
+    sdf = differenceRound(...childSdfs, { r });
   } else {
     throw new Error(`compile: unknown boolean op "${subj.type}"`);
   }

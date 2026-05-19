@@ -380,6 +380,22 @@ function emitBoolean(hardFn, smoothFn) {
   };
 }
 
+// hg_sdf-style variant: same left-fold but with a fixed param tuple per node
+// (e.g. chamfer/round take r; columns/stairs take r+n). All children join via
+// the same opFn — for multi-mode joins, nest the operations.
+function emitBooleanVariant(opFn, argKeys, defaults = {}) {
+  return (sdf, p) => {
+    const { children, opts } = sdf.ast;
+    const ds = children.map((c) => walk(c, p));
+    const argStr = argKeys.map(k => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
+    let acc = ds[0];
+    for (let i = 1; i < ds.length; i++) {
+      acc = `${opFn}(${acc}, ${ds[i]}, ${argStr})`;
+    }
+    return acc;
+  };
+}
+
 const OPS = {
   // ---- transforms ----------------------------------------------------------
   translate: (sdf, p) => {
@@ -426,6 +442,15 @@ const OPS = {
   union:        emitBoolean('opUnion',     'opSmoothUnion'),
   intersection: emitBoolean('opIntersect', 'opSmoothIntersect'),
   difference:   emitBoolean('opDifference','opSmoothDifference'),
+
+  // hg_sdf-style boolean variants (Mercury "Hg" library). Each variant is a
+  // left-fold using a different GLSL helper at the join.
+  unionChamfer:        emitBooleanVariant('opChamferUnion',      ['r']),
+  intersectionChamfer: emitBooleanVariant('opChamferIntersect',  ['r']),
+  differenceChamfer:   emitBooleanVariant('opChamferDifference', ['r']),
+  unionRound:          emitBooleanVariant('opRoundUnion',        ['r']),
+  intersectionRound:   emitBooleanVariant('opRoundIntersect',    ['r']),
+  differenceRound:     emitBooleanVariant('opRoundDifference',   ['r']),
 
   // ---- decoration ---------------------------------------------------------
   negate: (sdf, p) => `(-${walk(sdf.ast.children[0], p)})`,

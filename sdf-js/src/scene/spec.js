@@ -53,6 +53,18 @@ export const PRIMITIVE_TYPES = new Set([
 
 export const BOOLEAN_OPS = new Set([
   'union', 'difference', 'intersection', 'smoothUnion', 'smoothDifference',
+  // hg_sdf-style join variants (Mercury "Hg" library). Architectural /
+  // mechanical / furniture detail at boolean boundaries. args.r controls
+  // the bevel/round/chamfer size (default 0.05).
+  'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
+  'unionRound',   'intersectionRound',   'differenceRound',
+]);
+
+// Boolean variants that require an `args.r` (radius/size) field. Used by the
+// validator to flag missing or out-of-range r values early.
+export const VARIANT_BOOLEAN_R = new Set([
+  'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
+  'unionRound',   'intersectionRound',   'differenceRound',
 ]);
 
 export const DOMAIN_OPS = new Set([
@@ -285,6 +297,16 @@ function validateSubject(subj, path, errors, warnings) {
     } else {
       subj.children.forEach((c, i) =>
         validateSubject(c, `${path}/children[${i}]`, errors, warnings));
+    }
+    // hg_sdf variants need args.r; missing is recoverable (default 0.05) but
+    // worth warning so authors realize the param exists.
+    if (VARIANT_BOOLEAN_R.has(subj.type)) {
+      const r = subj.args?.r;
+      if (r == null) {
+        warnings.push(`${path}: "${subj.type}" missing args.r (bevel/round radius); using default 0.05`);
+      } else if (typeof r !== 'number' || r <= 0) {
+        errors.push(`${path}.args.r: must be a positive number (got ${r})`);
+      }
     }
   }
 

@@ -85,6 +85,57 @@ export const intersection = defineOpN('intersection', (a, ...rest) => {
   };
 });
 
+// =============================================================================
+// hg_sdf-style boolean variants — chamfered / round join geometry
+// -----------------------------------------------------------------------------
+// Each variant is a LEFT-FOLD over children: unionChamfer(a, b, c, {r:0.1})
+// = opChamferUnion(opChamferUnion(a, b, 0.1), c, 0.1). Single r per node,
+// applied to every pairwise join inside it. Mirror of the GLSL emitters in
+// sdf3.compile.js so CPU raymarchers (silhouette / stipple etc.) and GPU
+// raymarchers produce visually identical results.
+//
+// For multi-mode scenes (different join modes at different nesting levels),
+// nest the operations: unionChamfer(a, unionRound(b, c, {r: 0.02}), {r: 0.1}).
+// =============================================================================
+
+const SQRT_HALF = Math.SQRT1_2;  // 0.70710678 — chamfer diagonal scaling
+
+// chamfer = 45° flat between two surfaces
+const _opChamferUnion = (a, b, r) => Math.min(Math.min(a, b), (a + b - r) * SQRT_HALF);
+const _opChamferIntersect = (a, b, r) => Math.max(Math.max(a, b), (a + b + r) * SQRT_HALF);
+const _opChamferDifference = (a, b, r) => _opChamferIntersect(a, -b, r);
+
+// round = quarter-circle bevel
+const _opRoundUnion = (a, b, r) => {
+  const ux = Math.max(r - a, 0), uy = Math.max(r - b, 0);
+  return Math.max(r, Math.min(a, b)) - Math.hypot(ux, uy);
+};
+const _opRoundIntersect = (a, b, r) => {
+  const ux = Math.max(r + a, 0), uy = Math.max(r + b, 0);
+  return Math.min(-r, Math.max(a, b)) + Math.hypot(ux, uy);
+};
+const _opRoundDifference = (a, b, r) => _opRoundIntersect(a, -b, r);
+
+// Generic left-fold builder. opFn = (acc, d, ...args) → newAcc
+const _makeVariant = (opFn, defaults) => (a, ...rest) => {
+  const [bs, opts] = splitOpts(rest);
+  const r = opts.r ?? defaults.r ?? 0.05;
+  return (p) => {
+    let d1 = a.f(p);
+    for (const b of bs) {
+      d1 = opFn(d1, b.f(p), r);
+    }
+    return d1;
+  };
+};
+
+export const unionChamfer        = defineOpN('unionChamfer',        _makeVariant(_opChamferUnion,        { r: 0.05 }));
+export const intersectionChamfer = defineOpN('intersectionChamfer', _makeVariant(_opChamferIntersect,    { r: 0.05 }));
+export const differenceChamfer   = defineOpN('differenceChamfer',   _makeVariant(_opChamferDifference,   { r: 0.05 }));
+export const unionRound          = defineOpN('unionRound',          _makeVariant(_opRoundUnion,          { r: 0.05 }));
+export const intersectionRound   = defineOpN('intersectionRound',   _makeVariant(_opRoundIntersect,      { r: 0.05 }));
+export const differenceRound     = defineOpN('differenceRound',     _makeVariant(_opRoundDifference,     { r: 0.05 }));
+
 export const negate = defineOpN('negate', (a) => (p) => -a.f(p));
 
 export const dilate = defineOpN('dilate', (a, r) => (p) => a.f(p) - r);
