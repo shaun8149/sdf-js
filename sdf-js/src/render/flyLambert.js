@@ -511,6 +511,10 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
+  // Wall-clock origin for u_time uniform (in seconds). Drives time-aware
+  // SDF primitives like sdWaves (sea surface animation). Reset on first
+  // render() call so each new scene starts at t=0.
+  let timeStart = performance.now();
   // Per-leaf material + pattern LUTs — built at uploadSDF time from
   // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
   //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
@@ -605,6 +609,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     for (const name of [
       'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
       'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
+      'u_time',
       'u_leafMaterial[0]', 'u_leafTone[0]', 'u_leafPattern[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
@@ -691,6 +696,11 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
     // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
     gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
+    // u_time drives time-aware primitives (sdWaves animation). Without
+    // this set, waves were static — sea looked frozen.
+    if (uniformsCache.u_time != null) {
+      gl.uniform1f(uniformsCache.u_time, (performance.now() - timeStart) / 1000);
+    }
     if (uniformsCache['u_leafMaterial[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
     }
@@ -761,6 +771,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
         });
       }
       _debugFirstDraw = true;
+      timeStart = performance.now();   // new scene starts at u_time = 0
       if (!rafId) {
         fpsLast = performance.now();
         frameCount = 0;
