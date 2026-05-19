@@ -107,6 +107,15 @@ float checker(vec2 p) {
   return mod(i.x + i.y, 2.0);
 }
 
+// Hash-noise per pixel for free stochastic AA. Jitter initial ray t by a
+// fraction of a step; silhouette edges that would land between pixels get
+// distributed across them. Flat-surface noise is below gamma-tonemap threshold.
+float hash12(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
 // Gamma + clip. Reinhard was too aggressive — it pulled white down to 0.5
 // before gamma, leaving everything washed-out. Diffuse-mostly scenes don't
 // need HDR compression (lighting tops out near 1.5); we just clamp + gamma.
@@ -134,7 +143,10 @@ void main() {
   vec3 sunDir = normalize(u_lightPos);
 
   // ---- Raymarch ----
-  float t = 0.0;
+  // Stochastic AA: offset starting t by sub-step noise per pixel. Free
+  // antialiasing on silhouettes — neighboring pixels sample slightly different
+  // depths along the same ray so the visibility boundary dithers across them.
+  float t = hash12(gl_FragCoord.xy) * 0.012;
   float matId = 0.0;
   float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
