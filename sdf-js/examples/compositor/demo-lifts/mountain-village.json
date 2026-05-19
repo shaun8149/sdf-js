@@ -25,7 +25,14 @@
             -8
           ]
         },
-        "region": "moon"
+        "region": "moon",
+        "material": {
+          "hue": 0.13,
+          "sat": 0.1,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 1.3
+        }
       },
       {
         "id": "star-1",
@@ -41,7 +48,14 @@
             -7
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-2",
@@ -57,7 +71,14 @@
             -7.5
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-3",
@@ -73,7 +94,14 @@
             -7
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-4",
@@ -89,7 +117,14 @@
             -7.2
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-5",
@@ -105,7 +140,14 @@
             -7.8
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-6",
@@ -121,7 +163,14 @@
             -7.5
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-7",
@@ -137,7 +186,14 @@
             -7
           ]
         },
-        "region": "star"
+        "region": "star",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.55,
+          "value": 1.0,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "mountain-far-left",
@@ -157,7 +213,14 @@
             1.5
           ]
         },
-        "region": "mountain_far"
+        "region": "mountain_far",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-far-center",
@@ -177,7 +240,14 @@
             1.8
           ]
         },
-        "region": "mountain_far"
+        "region": "mountain_far",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-far-right",
@@ -197,7 +267,14 @@
             2
           ]
         },
-        "region": "mountain_far"
+        "region": "mountain_far",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-far-right2",
@@ -217,7 +294,14 @@
             1.6
           ]
         },
-        "region": "mountain_far"
+        "region": "mountain_far",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mist-veil-far",
@@ -236,7 +320,14 @@
             -4.8
           ]
         },
-        "region": "mist"
+        "region": "mist",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-mid-left",
@@ -256,7 +347,14 @@
             1.4
           ]
         },
-        "region": "mountain_mid"
+        "region": "mountain_mid",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-mid-center",
@@ -276,7 +374,14 @@
             1.6
           ]
         },
-        "region": "mountain_mid"
+        "region": "mountain_mid",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-mid-right",
@@ -296,7 +401,14 @@
             1.8
           ]
         },
-        "region": "mountain_mid"
+        "region": "mountain_mid",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mountain-mid-right2",
@@ -316,7 +428,14 @@
             1.3
           ]
         },
-        "region": "mountain_mid"
+        "region": "mountain_mid",
+        "material": {
+          "hue": 0.65,
+          "sat": 0.25,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "ridge-near-base",
@@ -335,7 +454,8 @@
             -1.5
           ]
         },
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "ridge-near-undulation1",
@@ -354,7 +474,8 @@
             -1.5
           ]
         },
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "ridge-near-undulation2",
@@ -373,7 +494,8 @@
             -1.2
           ]
         },
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "ridge-near-undulation3",
@@ -392,7 +514,8 @@
             -1.6
           ]
         },
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "ridge-near-undulation4",
@@ -411,7 +534,8 @@
             -1.3
           ]
         },
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "ridge-combined",
@@ -511,7 +635,8 @@
             }
           }
         ],
-        "region": "mountain_near"
+        "region": "mountain_near",
+        "material": "stone"
       },
       {
         "id": "cloud-1",
@@ -528,7 +653,8 @@
             -4
           ]
         },
-        "region": "cloud"
+        "region": "cloud",
+        "material": "matte-white"
       },
       {
         "id": "cloud-2",
@@ -545,7 +671,8 @@
             -4.5
           ]
         },
-        "region": "cloud"
+        "region": "cloud",
+        "material": "matte-white"
       },
       {
         "id": "mist-band-valley",
@@ -564,7 +691,14 @@
             0.5
           ]
         },
-        "region": "mist"
+        "region": "mist",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "mist-band-valley2",
@@ -583,7 +717,14 @@
             0.2
           ]
         },
-        "region": "mist"
+        "region": "mist",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.06,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-1",
@@ -602,7 +743,14 @@
             0.8
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-2",
@@ -621,7 +769,14 @@
             1
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-3",
@@ -640,7 +795,14 @@
             0.9
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-4",
@@ -659,7 +821,14 @@
             0.85
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-5",
@@ -678,7 +847,14 @@
             1.1
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-6",
@@ -697,7 +873,14 @@
             0.7
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-7",
@@ -716,7 +899,14 @@
             0.95
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-8",
@@ -735,7 +925,14 @@
             0.6
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-9",
@@ -754,7 +951,14 @@
             0.8
           ]
         },
-        "region": "tree_dark"
+        "region": "tree_dark",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-10",
@@ -773,7 +977,14 @@
             0.5
           ]
         },
-        "region": "tree_mid"
+        "region": "tree_mid",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "tree-pine-11",
@@ -792,7 +1003,14 @@
             0.55
           ]
         },
-        "region": "tree_mid"
+        "region": "tree_mid",
+        "material": {
+          "hue": 0.32,
+          "sat": 0.7,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "cottage-1",
@@ -814,7 +1032,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "cottage-2",
@@ -836,7 +1060,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "cottage-3",
@@ -858,7 +1088,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "cottage-4",
@@ -880,7 +1116,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "cottage-5",
@@ -902,7 +1144,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "cottage-6",
@@ -924,7 +1172,13 @@
             0
           ]
         },
-        "region": "wall"
+        "region": "wall",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "church-tower-base",
@@ -943,7 +1197,13 @@
             2.2
           ]
         },
-        "region": "tower"
+        "region": "tower",
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        }
       },
       {
         "id": "church-tower-spire",
@@ -963,7 +1223,8 @@
             0.85
           ]
         },
-        "region": "roof"
+        "region": "roof",
+        "material": "matte-black"
       },
       {
         "id": "church-cross-vertical",
@@ -982,7 +1243,8 @@
             2.2
           ]
         },
-        "region": "cross"
+        "region": "cross",
+        "material": "gold"
       },
       {
         "id": "church-cross-horizontal",
@@ -1001,7 +1263,8 @@
             2.2
           ]
         },
-        "region": "cross"
+        "region": "cross",
+        "material": "gold"
       },
       {
         "id": "stream-pond",
@@ -1020,7 +1283,8 @@
             2.5
           ]
         },
-        "region": "water"
+        "region": "water",
+        "material": "deep-water"
       },
       {
         "id": "stream-narrow",
@@ -1038,61 +1302,83 @@
           ],
           "radius": 0.095
         },
-        "region": "water"
+        "region": "water",
+        "material": "deep-water"
       },
       {
         "id": "path-segment-1",
         "type": "capsule",
         "args": {
           "a": [
-            0.65,
-            -1.2,
-            3.5
+            -4.5,
+            -0.05,
+            1.0
           ],
           "b": [
-            0.3,
-            -0.72,
-            2.8
+            -2.0,
+            -0.05,
+            1.3
           ],
           "radius": 0.14
         },
-        "region": "path"
+        "region": "path",
+        "material": {
+          "hue": 0.07,
+          "sat": 0.35,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "path-segment-2",
         "type": "capsule",
         "args": {
           "a": [
-            0.3,
-            -0.72,
-            2.8
+            -2.0,
+            -0.05,
+            1.3
           ],
           "b": [
-            -0.5,
-            -0.35,
-            2.3
+            1.0,
+            -0.05,
+            1.5
           ],
           "radius": 0.11
         },
-        "region": "path"
+        "region": "path",
+        "material": {
+          "hue": 0.07,
+          "sat": 0.35,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "path-segment-3",
         "type": "capsule",
         "args": {
           "a": [
-            -0.5,
-            -0.35,
-            2.3
+            1.0,
+            -0.05,
+            1.5
           ],
           "b": [
-            -1.2,
-            0,
-            1.9
+            3.5,
+            -0.05,
+            1.4
           ],
           "radius": 0.095
         },
-        "region": "path"
+        "region": "path",
+        "material": {
+          "hue": 0.07,
+          "sat": 0.35,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "terrace-field-1a",
@@ -1111,7 +1397,14 @@
             1.2
           ]
         },
-        "region": "field"
+        "region": "field",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.55,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "terrace-field-1b",
@@ -1130,7 +1423,14 @@
             1.15
           ]
         },
-        "region": "field"
+        "region": "field",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.55,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "terrace-field-2a",
@@ -1149,7 +1449,14 @@
             0.8
           ]
         },
-        "region": "field"
+        "region": "field",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.55,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "terrace-field-2b",
@@ -1168,7 +1475,14 @@
             0.75
           ]
         },
-        "region": "field"
+        "region": "field",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.55,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "smoke-wisp-1",
@@ -1183,7 +1497,14 @@
             1.8
           ]
         },
-        "region": "smoke"
+        "region": "smoke",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.05,
+          "value": 0.82,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "smoke-wisp-2",
@@ -1198,7 +1519,14 @@
             1.9
           ]
         },
-        "region": "smoke"
+        "region": "smoke",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.05,
+          "value": 0.82,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "smoke-wisp-3",
@@ -1213,7 +1541,14 @@
             1.95
           ]
         },
-        "region": "smoke"
+        "region": "smoke",
+        "material": {
+          "hue": 0.55,
+          "sat": 0.05,
+          "value": 0.82,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "bird-1",
@@ -1234,7 +1569,8 @@
             0.1
           ]
         },
-        "region": "bird"
+        "region": "bird",
+        "material": "matte-black"
       },
       {
         "id": "bird-2",
@@ -1255,7 +1591,1466 @@
             -0.08
           ]
         },
-        "region": "bird"
+        "region": "bird",
+        "material": "matte-black"
+      },
+      {
+        "id": "cow-1",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            0,
+            0.5
+          ],
+          "rotate": [
+            0,
+            0.5,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "cow-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.425,
+                0.56,
+                0
+              ],
+              "b": [
+                0.425,
+                0.56,
+                0
+              ],
+              "radius": 0.2
+            }
+          },
+          {
+            "id": "cow-1-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.216,
+                0.162,
+                0.153
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.4675,
+                0.66,
+                0
+              ]
+            }
+          },
+          {
+            "id": "cow-1-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.255,
+                0.51,
+                0.13999999999999999
+              ],
+              "b": [
+                0.255,
+                0,
+                0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-1-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.255,
+                0.51,
+                -0.13999999999999999
+              ],
+              "b": [
+                0.255,
+                0,
+                -0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-1-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.255,
+                0.51,
+                0.13999999999999999
+              ],
+              "b": [
+                -0.255,
+                0,
+                0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-1-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.255,
+                0.51,
+                -0.13999999999999999
+              ],
+              "b": [
+                -0.255,
+                0,
+                -0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          }
+        ]
+      },
+      {
+        "id": "cow-2",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            3.5,
+            0,
+            0.3
+          ],
+          "rotate": [
+            0,
+            -0.3,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.1,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "cow-2-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.425,
+                0.56,
+                0
+              ],
+              "b": [
+                0.425,
+                0.56,
+                0
+              ],
+              "radius": 0.2
+            }
+          },
+          {
+            "id": "cow-2-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.216,
+                0.162,
+                0.153
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.4675,
+                0.66,
+                0
+              ]
+            }
+          },
+          {
+            "id": "cow-2-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.255,
+                0.51,
+                0.13999999999999999
+              ],
+              "b": [
+                0.255,
+                0,
+                0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-2-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.255,
+                0.51,
+                -0.13999999999999999
+              ],
+              "b": [
+                0.255,
+                0,
+                -0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-2-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.255,
+                0.51,
+                0.13999999999999999
+              ],
+              "b": [
+                -0.255,
+                0,
+                0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          },
+          {
+            "id": "cow-2-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.255,
+                0.51,
+                -0.13999999999999999
+              ],
+              "b": [
+                -0.255,
+                0,
+                -0.13999999999999999
+              ],
+              "radius": 0.06
+            }
+          }
+        ]
+      },
+      {
+        "id": "horse-1",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            0,
+            0.3
+          ],
+          "rotate": [
+            0,
+            0.8,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.07,
+          "sat": 0.55,
+          "value": 0.32,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "horse-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.45,
+                0.674,
+                0
+              ],
+              "b": [
+                0.45,
+                0.674,
+                0
+              ],
+              "radius": 0.18
+            }
+          },
+          {
+            "id": "horse-1-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.156,
+                0.117,
+                0.1105
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.49500000000000005,
+                0.764,
+                0
+              ]
+            }
+          },
+          {
+            "id": "horse-1-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.27,
+                0.624,
+                0.126
+              ],
+              "b": [
+                0.27,
+                0,
+                0.126
+              ],
+              "radius": 0.054
+            }
+          },
+          {
+            "id": "horse-1-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.27,
+                0.624,
+                -0.126
+              ],
+              "b": [
+                0.27,
+                0,
+                -0.126
+              ],
+              "radius": 0.054
+            }
+          },
+          {
+            "id": "horse-1-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.27,
+                0.624,
+                0.126
+              ],
+              "b": [
+                -0.27,
+                0,
+                0.126
+              ],
+              "radius": 0.054
+            }
+          },
+          {
+            "id": "horse-1-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.27,
+                0.624,
+                -0.126
+              ],
+              "b": [
+                -0.27,
+                0,
+                -0.126
+              ],
+              "radius": 0.054
+            }
+          }
+        ]
+      },
+      {
+        "id": "pig-1",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            0,
+            0.7
+          ],
+          "rotate": [
+            0,
+            1.2,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.95,
+          "sat": 0.35,
+          "value": 0.78,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "pig-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.325,
+                0.34600000000000003,
+                0
+              ],
+              "b": [
+                0.325,
+                0.34600000000000003,
+                0
+              ],
+              "radius": 0.22
+            }
+          },
+          {
+            "id": "pig-1-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.156,
+                0.117,
+                0.1105
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.35750000000000004,
+                0.456,
+                0
+              ]
+            }
+          },
+          {
+            "id": "pig-1-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.195,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                0.195,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-1-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.195,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                0.195,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-1-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.195,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                -0.195,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-1-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.195,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                -0.195,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          }
+        ]
+      },
+      {
+        "id": "pig-2",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            2.2,
+            0,
+            0.6
+          ],
+          "rotate": [
+            0,
+            -0.5,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.95,
+          "sat": 0.35,
+          "value": 0.78,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "pig-2-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.325,
+                0.34600000000000003,
+                0
+              ],
+              "b": [
+                0.325,
+                0.34600000000000003,
+                0
+              ],
+              "radius": 0.22
+            }
+          },
+          {
+            "id": "pig-2-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.156,
+                0.117,
+                0.1105
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.35750000000000004,
+                0.456,
+                0
+              ]
+            }
+          },
+          {
+            "id": "pig-2-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.195,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                0.195,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-2-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.195,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                0.195,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-2-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.195,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                -0.195,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "pig-2-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.195,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                -0.195,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          }
+        ]
+      },
+      {
+        "id": "dog-1",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            -2.0,
+            0,
+            1.3
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.08,
+          "sat": 0.45,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "dog-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.25,
+                0.35,
+                0
+              ],
+              "b": [
+                0.25,
+                0.35,
+                0
+              ],
+              "radius": 0.1
+            }
+          },
+          {
+            "id": "dog-1-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.108,
+                0.081,
+                0.0765
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.275,
+                0.39999999999999997,
+                0
+              ]
+            }
+          },
+          {
+            "id": "dog-1-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.3,
+                0.06999999999999999
+              ],
+              "b": [
+                0.15,
+                0,
+                0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-1-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.3,
+                -0.06999999999999999
+              ],
+              "b": [
+                0.15,
+                0,
+                -0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-1-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.3,
+                0.06999999999999999
+              ],
+              "b": [
+                -0.15,
+                0,
+                0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-1-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.3,
+                -0.06999999999999999
+              ],
+              "b": [
+                -0.15,
+                0,
+                -0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          }
+        ]
+      },
+      {
+        "id": "dog-2",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            0,
+            1.4
+          ],
+          "rotate": [
+            0,
+            0.3,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": {
+          "hue": 0.08,
+          "sat": 0.45,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "dog-2-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.25,
+                0.35,
+                0
+              ],
+              "b": [
+                0.25,
+                0.35,
+                0
+              ],
+              "radius": 0.1
+            }
+          },
+          {
+            "id": "dog-2-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.108,
+                0.081,
+                0.0765
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.275,
+                0.39999999999999997,
+                0
+              ]
+            }
+          },
+          {
+            "id": "dog-2-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.3,
+                0.06999999999999999
+              ],
+              "b": [
+                0.15,
+                0,
+                0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-2-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.3,
+                -0.06999999999999999
+              ],
+              "b": [
+                0.15,
+                0,
+                -0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-2-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.3,
+                0.06999999999999999
+              ],
+              "b": [
+                -0.15,
+                0,
+                0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          },
+          {
+            "id": "dog-2-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.3,
+                -0.06999999999999999
+              ],
+              "b": [
+                -0.15,
+                0,
+                -0.06999999999999999
+              ],
+              "radius": 0.03
+            }
+          }
+        ]
+      },
+      {
+        "id": "sheep-1",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            0,
+            0.4
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": "matte-white",
+        "children": [
+          {
+            "id": "sheep-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.25,
+                0.34600000000000003,
+                0
+              ],
+              "b": [
+                0.25,
+                0.34600000000000003,
+                0
+              ],
+              "radius": 0.22
+            }
+          },
+          {
+            "id": "sheep-1-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.12,
+                0.09000000000000001,
+                0.085
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.275,
+                0.456,
+                0
+              ]
+            }
+          },
+          {
+            "id": "sheep-1-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-1-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-1-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-1-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          }
+        ]
+      },
+      {
+        "id": "sheep-2",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            5.9,
+            0,
+            0.6
+          ],
+          "rotate": [
+            0,
+            0.2,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": "matte-white",
+        "children": [
+          {
+            "id": "sheep-2-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.25,
+                0.34600000000000003,
+                0
+              ],
+              "b": [
+                0.25,
+                0.34600000000000003,
+                0
+              ],
+              "radius": 0.22
+            }
+          },
+          {
+            "id": "sheep-2-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.12,
+                0.09000000000000001,
+                0.085
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.275,
+                0.456,
+                0
+              ]
+            }
+          },
+          {
+            "id": "sheep-2-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-2-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-2-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-2-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          }
+        ]
+      },
+      {
+        "id": "sheep-3",
+        "type": "unionRound",
+        "args": {
+          "r": 0.015
+        },
+        "transform": {
+          "translate": [
+            6.2,
+            0,
+            0.4
+          ],
+          "rotate": [
+            0,
+            -0.3,
+            0
+          ]
+        },
+        "region": "animal",
+        "material": "matte-white",
+        "children": [
+          {
+            "id": "sheep-3-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.25,
+                0.34600000000000003,
+                0
+              ],
+              "b": [
+                0.25,
+                0.34600000000000003,
+                0
+              ],
+              "radius": 0.22
+            }
+          },
+          {
+            "id": "sheep-3-head",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.12,
+                0.09000000000000001,
+                0.085
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.275,
+                0.456,
+                0
+              ]
+            }
+          },
+          {
+            "id": "sheep-3-leg-fr",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-3-leg-fl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-3-leg-br",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                0.154
+              ],
+              "radius": 0.066
+            }
+          },
+          {
+            "id": "sheep-3-leg-bl",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.15,
+                0.29600000000000004,
+                -0.154
+              ],
+              "b": [
+                -0.15,
+                0,
+                -0.154
+              ],
+              "radius": 0.066
+            }
+          }
+        ]
+      },
+      {
+        "id": "bird-3",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "bodyRadius": 0.03,
+          "wingSpan": 0.6,
+          "wingRise": 0.1
+        },
+        "transform": {
+          "translate": [
+            0,
+            4,
+            -1
+          ],
+          "rotate": [
+            0,
+            0.4,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-black"
+      },
+      {
+        "id": "bird-4",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "bodyRadius": 0.025,
+          "wingSpan": 0.5,
+          "wingRise": 0.08
+        },
+        "transform": {
+          "translate": [
+            -5,
+            4.5,
+            -2
+          ],
+          "rotate": [
+            0,
+            -0.3,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-black"
+      },
+      {
+        "id": "bird-5",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.15,
+          "bodyRadius": 0.02,
+          "wingSpan": 0.42,
+          "wingRise": 0.07
+        },
+        "transform": {
+          "translate": [
+            4,
+            5,
+            -2.5
+          ],
+          "rotate": [
+            0,
+            0.5,
+            0
+          ]
+        },
+        "region": "sky",
+        "material": "matte-black"
+      },
+      {
+        "id": "haybale-1",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.25,
+          "height": 0.35
+        },
+        "transform": {
+          "translate": [
+            -3.8,
+            0.15,
+            0.8
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "farm",
+        "material": {
+          "hue": 0.13,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "haybale-2",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.22,
+          "height": 0.32
+        },
+        "transform": {
+          "translate": [
+            -3.3,
+            0.14,
+            0.7
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "farm",
+        "material": {
+          "hue": 0.13,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "haybale-3",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.2,
+          "height": 0.3
+        },
+        "transform": {
+          "translate": [
+            4.5,
+            0.12,
+            0.6
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "farm",
+        "material": {
+          "hue": 0.13,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
       }
     ],
     "ground": {
@@ -1265,23 +3060,23 @@
     "defaults": {
       "camera": {
         "yaw": 0.55,
-        "pitch": 0.28,
-        "distance": 14,
-        "focal": 1.6,
-        "targetX": -0.5,
-        "targetY": 1.2,
-        "targetZ": 1.8
+        "pitch": 0.1,
+        "distance": 11,
+        "focal": 1.7,
+        "targetX": 0,
+        "targetY": 0.4,
+        "targetZ": 0
       },
       "light": {
-        "azimuth": 0.65,
-        "altitude": 0.72,
-        "distance": 32,
+        "azimuth": 0.8,
+        "altitude": 0.2,
+        "distance": 35,
         "intensity": 1
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.38
+        "strength": 0.55
       }
     }
   },
@@ -1293,6 +3088,7 @@
     "v2AtomsUsed": "moon×1, star×7, cloud-puff×2, tree-pine×11, cottage×6, bird-silhouette×2",
     "v2IQTypesUsed": "(none)",
     "v2SubjectCount": 67,
-    "previousSource": "user-saved-2026-05-18"
+    "previousSource": "user-saved-2026-05-18",
+    "handFixed": "2026-05-19: village enrichment — animals (cow×2 + horse + pig×2 + dog×2 + sheep×3) + 3 more birds + paths positioned + hay bales + all 62 existing subjects given materials + dusk lighting"
   }
 }
