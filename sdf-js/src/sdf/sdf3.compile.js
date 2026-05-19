@@ -20,6 +20,7 @@
 
 import { SDF3_GLSL } from './sdf3.glsl.js';
 import { NOISE_GLSL } from './noise.glsl.js';
+import { VORONOI_GLSL } from './voronoi.glsl.js';
 import { SDF3 } from './core.js';
 import { isTimeExpr, mulT } from './time.js';
 
@@ -123,22 +124,25 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
   }
 
   try {
-    let body, leafMaterials = null;
+    let body, leafMaterials = null, leafPatterns = null;
     if (emitObjectIndex) {
       const result = compileWithObjectIndex(sdf, sceneFnName);
       body = result.body;
       leafMaterials = result.leafMaterials;
+      leafPatterns  = result.leafPatterns;
     } else {
       const expr = walk(sdf, 'p');
       body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
     }
-    // Noise lib first — SDF library functions (and future domain-warped
-    // primitives) can call into it. Renderer shading code can also use it
-    // (flyLambert uses fbm3 for surface texture modulation).
-    const prelude = includeLibrary ? `${NOISE_GLSL}\n${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n` : '';
-    return { glsl: prelude + body, error: null, leafMaterials };
+    // Noise + Voronoi libs prepended first — SDF library functions (and
+    // future domain-warped primitives) can call into them. Renderer shading
+    // code uses them for surface texture (fbm) and patterns (voronoi/brick/hex).
+    const prelude = includeLibrary
+      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n`
+      : '';
+    return { glsl: prelude + body, error: null, leafMaterials, leafPatterns };
   } catch (e) {
-    return { glsl: null, error: e.message, leafMaterials: null };
+    return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null };
   }
 }
 
@@ -155,17 +159,18 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
 
 const MAX_DIST_INIT = 1e6;
 
-// 递归 flatten union → [{leaf: SDF, k: number|null, material: obj|null}, ...]
+// 递归 flatten union → [{leaf: SDF, k: number|null, material: obj|null, pattern: obj|null}, ...]
 //
-// Material propagation: a parent SDF can carry `_subjectMaterial` (attached by
-// scene/compile.js at SceneData → SDF time). When we descend into a union, we
-// pass the material down to children. A child's own `_subjectMaterial`
-// overrides the parent's. Final leaves carry the closest-ancestor material;
-// renderer indexes per-leaf material LUT by minIndex from IMIN_GLSL.
-function flattenUnion(sdf, parentK = null, parentMaterial = null) {
-  // Child material overrides parent (top-level subject's tag wins over any
-  // outer union it gets merged into).
+// Material + pattern propagation: a parent SDF can carry `_subjectMaterial` /
+// `_subjectPattern` (attached by scene/compile.js at SceneData → SDF time).
+// When we descend into a union, we pass both down to children. A child's own
+// tags override the parent's. Final leaves carry the closest-ancestor tags;
+// renderer indexes per-leaf LUTs by minIndex from IMIN_GLSL.
+function flattenUnion(sdf, parentK = null, parentMaterial = null, parentPattern = null) {
+  // Child tags override parent (top-level subject wins over any outer union it
+  // gets merged into).
   const material = sdf._subjectMaterial !== undefined ? sdf._subjectMaterial : parentMaterial;
+  const pattern  = sdf._subjectPattern  !== undefined ? sdf._subjectPattern  : parentPattern;
 
   const ast = sdf.ast;
   if (ast?.kind === 'op' && ast.name === 'union') {
@@ -174,12 +179,12 @@ function flattenUnion(sdf, parentK = null, parentMaterial = null) {
     for (const child of ast.children) {
       // child._k 覆盖 union.opts.k（跟 dn.js 行为一致）
       const childK = child._k != null ? child._k : unionK;
-      result.push(...flattenUnion(child, childK, material));
+      result.push(...flattenUnion(child, childK, material, pattern));
     }
     return result;
   }
   // Leaf (非 union op，或 primitive)
-  return [{ leaf: sdf, k: parentK, material }];
+  return [{ leaf: sdf, k: parentK, material, pattern }];
 }
 
 function compileWithObjectIndex(sdf, sceneFnName) {
@@ -190,7 +195,8 @@ function compileWithObjectIndex(sdf, sceneFnName) {
   body += `  minIndex = 0.0;\n`;
   body += `  float d = ${flt(MAX_DIST_INIT)};\n`;
   const leafMaterials = [];
-  for (const { leaf, k, material } of leaves) {
+  const leafPatterns  = [];
+  for (const { leaf, k, material, pattern } of leaves) {
     const expr = walk(leaf, 'p');
     if (k != null) {
       body += `  d = ismoothUnion(d, ${expr}, ${flt(k)});\n`;
@@ -198,10 +204,11 @@ function compileWithObjectIndex(sdf, sceneFnName) {
       body += `  d = imin(d, ${expr});\n`;
     }
     leafMaterials.push(material ?? null);
+    leafPatterns.push(pattern ?? null);
   }
   body += `  return d;\n`;
   body += `}\n`;
-  return { body, leafMaterials };
+  return { body, leafMaterials, leafPatterns };
 }
 
 // emit-object-index 模式的 GLSL prelude：globals + imin + ismoothUnion

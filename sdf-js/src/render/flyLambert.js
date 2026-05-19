@@ -35,6 +35,9 @@ uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
 // values are 1..numLeaves).
 uniform vec4  u_leafMaterial[96];
+// Per-leaf pattern LUT (x = pattern code, y = scale, z = strength, w = reserved).
+// code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
+uniform vec4  u_leafPattern[96];
 
 #define MAX_STEPS    128
 #define MAX_DIST     40.0
@@ -162,6 +165,58 @@ vec4 fetchMaterial(float idx) {
   return vec4(0.0, -1.0, 0.0, 0.0);  // unreachable; satisfies path-analysis
 }
 
+// Parallel fetch for the pattern LUT. Same indexing scheme as fetchMaterial.
+// Returns vec4(code, scale, strength, reserved); code 0 = no pattern.
+vec4 fetchPattern(float idx) {
+  int target = int(idx) - 1;
+  if (target < 0 || target >= MAX_MATERIAL) return vec4(0.0);
+  for (int j = 0; j < MAX_MATERIAL; j++) {
+    if (j == target) return u_leafPattern[j];
+  }
+  return vec4(0.0);
+}
+
+// Apply a Shane-style cellular pattern to base albedo. Called only when
+// pattern.x > 0.5 (pattern code present). Modulates albedo without changing
+// lighting computation — pattern is a surface-color overlay, not geometry.
+vec3 applyPattern(vec3 base, vec3 worldP, vec4 pat) {
+  int code = int(pat.x + 0.5);
+  float scale = pat.y;
+  float strength = pat.z;
+
+  if (code == 1) {
+    // brick — running-bond pattern on XY plane. Each brick tinted by ID,
+    // mortar lines visible as darker bands at brick edges.
+    vec2 bp = brickPattern(worldP * scale, vec3(1.0, 0.4, 1.0));
+    float brickTint = 0.85 + 0.30 * bp.x;
+    float mortar = smoothstep(0.0, 0.06, bp.y);  // 1 = brick face, 0 = mortar
+    vec3 brickColor = base * brickTint;
+    vec3 mortarColor = base * 0.55;  // mortar 55% of brick brightness
+    return mix(base, mix(mortarColor, brickColor, mortar), strength);
+  }
+  if (code == 2) {
+    // hex tiling on XZ plane (ground / horizontal walls)
+    vec2 hp = hexTile(worldP.xz * scale, 1.0);
+    float hexTint = 0.85 + 0.30 * hp.x;
+    float grid = smoothstep(0.0, 0.04, hp.y);
+    return mix(base, base * hexTint * grid, strength);
+  }
+  if (code == 3) {
+    // cells — voronoi 3D, each cell uniquely colored, slight edge darkening
+    vec3 vor = voronoi3D(worldP * scale);
+    float cellTint = 0.78 + 0.44 * vor.x;
+    float edge = smoothstep(0.0, 0.08, vor.z);
+    return mix(base, base * cellTint * (0.7 + 0.3 * edge), strength);
+  }
+  if (code == 4) {
+    // cracked — voronoi edges visible as dark crack lines
+    float cracks = crackedField(worldP * scale, 0.4);
+    // cracks: 0 = on a crack, 1 = mid-stone
+    return mix(base, base * (0.55 + 0.45 * cracks), strength);
+  }
+  return base;
+}
+
 // Cheap secondary raymarch for reflections. Shorter step budget than the
 // primary (32 vs 128) — reflections are visual sweetener, not main signal.
 // Returns vec3(t, matId, hitIdx); matId=0 means miss.
@@ -284,6 +339,16 @@ void main() {
       base = vec3(0.78, 0.76, 0.70);
     }
 
+    // Per-leaf Shane-style surface pattern (brick / hex / cells / cracked).
+    // Applied BEFORE fbm modulation so fbm gives organic variation on top
+    // of the structured pattern. Pattern is opt-in via Subject.pattern field.
+    if (matId > 1.5) {
+      vec4 pat = fetchPattern(hitIdx);
+      if (pat.x > 0.5) {
+        base = applyPattern(base, p, pat);
+      }
+    }
+
     // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
     // metals + emissives keep smooth uniform surfaces; matte diffuse gets
     // ±10% albedo variance to break up plastic-looking uniformity. The
@@ -367,12 +432,13 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
-  // Per-leaf material LUT — built at uploadSDF time from
-  // compileSDF3ToGLSL().leafMaterials. Float32Array(MAX_MATERIAL * 4) with
-  // sentinel sat=-1 for unset slots. Persists across frames; re-built on
-  // each render() call.
+  // Per-leaf material + pattern LUTs — built at uploadSDF time from
+  // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
+  //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
+  //   patternLUT[i*4+0]  = 0    → no pattern, shader skips applyPattern
   const MAX_MATERIAL = 96;
   const materialLUT = new Float32Array(MAX_MATERIAL * 4);
+  const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -459,7 +525,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     for (const name of [
       'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
       'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
-      'u_leafMaterial[0]',
+      'u_leafMaterial[0]', 'u_leafPattern[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -478,11 +544,23 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     }
     for (let i = 0; i < Math.min(leafMaterials.length, MAX_MATERIAL); i++) {
       const m = leafMaterials[i];
-      if (m == null) continue;  // leave at sentinel
+      if (m == null) continue;
       materialLUT[i * 4 + 0] = m.hue;
       materialLUT[i * 4 + 1] = m.sat;
       materialLUT[i * 4 + 2] = m.metal;
       materialLUT[i * 4 + 3] = m.glow;
+    }
+
+    // Build per-leaf pattern LUT. Default zeros = code=0 = no pattern.
+    patternLUT.fill(0);
+    const leafPatterns = result.leafPatterns || [];
+    for (let i = 0; i < Math.min(leafPatterns.length, MAX_MATERIAL); i++) {
+      const p = leafPatterns[i];
+      if (p == null) continue;
+      patternLUT[i * 4 + 0] = p.code;
+      patternLUT[i * 4 + 1] = p.scale;
+      patternLUT[i * 4 + 2] = p.strength;
+      // [3] reserved for future use (e.g. rotation, sub-variant)
     }
 
     return result.glsl.length;
@@ -533,6 +611,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
     if (uniformsCache['u_leafMaterial[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
+    }
+    if (uniformsCache['u_leafPattern[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
     }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 

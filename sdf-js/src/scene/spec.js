@@ -177,6 +177,69 @@ export function resolveMaterial(input) {
   return null;
 }
 
+// =============================================================================
+// Surface patterns — Shane-style cellular / voronoi / brick / hex modulation
+// -----------------------------------------------------------------------------
+// Separate axis from material: pattern controls SURFACE STRUCTURE (where the
+// color goes), material controls COLOR. Any pattern × any material combos.
+//
+// Subject.pattern may be:
+//   - undefined  → renderer uses no pattern (uniform albedo + fbm modulation)
+//   - string     → preset name (currently: 'brick', 'hex', 'cells', 'cracked')
+//   - object     → { kind, scale, strength } inline override
+// =============================================================================
+
+export const PATTERN_KINDS = ['brick', 'hex', 'cells', 'cracked'];
+
+// Internal codes for shader-side dispatch. Stored in vec4.x of u_leafPattern.
+// Must match flyLambert.js's pattern-application switch.
+const PATTERN_CODES = {
+  none:    0,
+  brick:   1,
+  hex:     2,
+  cells:   3,
+  cracked: 4,
+};
+
+const PATTERN_PRESETS = {
+  brick:   { kind: 'brick',   scale: 6.0, strength: 0.5 },
+  hex:     { kind: 'hex',     scale: 5.0, strength: 0.4 },
+  cells:   { kind: 'cells',   scale: 4.0, strength: 0.45 },
+  cracked: { kind: 'cracked', scale: 5.0, strength: 0.55 },
+};
+
+/**
+ * Resolve a Subject.pattern input into { code, scale, strength } or null.
+ * `code` is an integer used by the shader to dispatch which pattern function.
+ *
+ * @param {string|object|undefined|null} input
+ * @returns {{ code: number, scale: number, strength: number }|null}
+ */
+export function resolvePattern(input) {
+  if (input == null) return null;
+  if (typeof input === 'string') {
+    const preset = PATTERN_PRESETS[input];
+    if (!preset) {
+      console.warn(`[spec] Unknown pattern preset "${input}". Known: ${Object.keys(PATTERN_PRESETS).join(', ')}`);
+      return null;
+    }
+    return { code: PATTERN_CODES[preset.kind], scale: preset.scale, strength: preset.strength };
+  }
+  if (typeof input === 'object') {
+    const kind = input.kind;
+    if (!PATTERN_KINDS.includes(kind)) {
+      console.warn(`[spec] Pattern kind "${kind}" not in registry. Known: ${PATTERN_KINDS.join(', ')}`);
+      return null;
+    }
+    return {
+      code:     PATTERN_CODES[kind],
+      scale:    Math.max(0.1, input.scale ?? 5.0),
+      strength: clamp01(input.strength ?? 0.5),
+    };
+  }
+  return null;
+}
+
 // AnimationChannel.channel dot-paths allowed per host node type.
 // Used by validator to reject unknown channels early.
 export const SUBJECT_CHANNEL_PATHS = new Set([
@@ -417,6 +480,28 @@ function validateSubject(subj, path, errors, warnings) {
       }
     } else {
       errors.push(`${path}.material: must be a string preset name or an object {hue, sat, metal, glow}`);
+    }
+  }
+
+  // Pattern — string preset name OR inline { kind, scale, strength } object.
+  // Independent axis from material; valid kinds in PATTERN_KINDS.
+  if (subj.pattern != null) {
+    if (typeof subj.pattern === 'string') {
+      if (!PATTERN_KINDS.includes(subj.pattern)) {
+        warnings.push(`${path}.pattern: unknown preset "${subj.pattern}". Known: ${PATTERN_KINDS.join(', ')}`);
+      }
+    } else if (typeof subj.pattern === 'object' && !Array.isArray(subj.pattern)) {
+      const p = subj.pattern;
+      if (p.kind != null && !PATTERN_KINDS.includes(p.kind)) {
+        errors.push(`${path}.pattern.kind: must be one of ${PATTERN_KINDS.join(' | ')} (got "${p.kind}")`);
+      }
+      for (const k of ['scale', 'strength']) {
+        if (p[k] != null && typeof p[k] !== 'number') {
+          errors.push(`${path}.pattern.${k}: must be a number if present`);
+        }
+      }
+    } else {
+      errors.push(`${path}.pattern: must be a string preset name or an object { kind, scale, strength }`);
     }
   }
 }
