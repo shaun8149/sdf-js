@@ -140,7 +140,7 @@ vec3 cosPalette(float h) {
   return a + b * cos(6.28318530718 * (c * h + d));
 }
 
-// HSV → RGB. Used for material albedo where `hue` is intuitive 0=red,
+// HSV → RGB. Used for material albedo where 'hue' is intuitive 0=red,
 // 0.33=green, 0.66=blue (matches LLM/artist mental model).
 vec3 hsv2rgb(vec3 c) {
   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
