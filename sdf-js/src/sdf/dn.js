@@ -136,6 +136,81 @@ export const unionRound          = defineOpN('unionRound',          _makeVariant
 export const intersectionRound   = defineOpN('intersectionRound',   _makeVariant(_opRoundIntersect,      { r: 0.05 }));
 export const differenceRound     = defineOpN('differenceRound',     _makeVariant(_opRoundDifference,     { r: 0.05 }));
 
+// Soft = cubic-polynomial smooth join (different formula than opSmoothUnion)
+const _opSoftUnion = (a, b, r) => {
+  const e = Math.max(r - Math.abs(a - b), 0);
+  return Math.min(a, b) - e * e * 0.25 / r;
+};
+
+// Stairs — N stair steps at join boundary. Takes (r, n).
+const _modPositive = (x, m) => ((x % m) + m) % m;
+const _opStairsUnion = (a, b, r, n) => {
+  const s = r / n;
+  const u = b - r;
+  return Math.min(Math.min(a, b), 0.5 * (u + a + Math.abs(_modPositive(u - a + s, 2 * s) - s)));
+};
+const _opStairsIntersect = (a, b, r, n) => -_opStairsUnion(-a, -b, r, n);
+const _opStairsDifference = (a, b, r, n) => -_opStairsUnion(-a, b, r, n);
+
+// Columns — N columnar bumps at join boundary. Takes (r, n).
+const _pR45 = (x, y) => [(x + y) * Math.SQRT1_2, (y - x) * Math.SQRT1_2];
+const _opColumnsUnion = (a, b, r, n) => {
+  if (a < r && b < r) {
+    let [px, py] = _pR45(a, b);
+    const cr = r * Math.SQRT2 / ((n - 1) * 2 + Math.SQRT2);
+    px -= Math.SQRT1_2 * r;
+    px += cr * Math.SQRT2;
+    if (n % 2 === 1) py += cr;
+    py = _modPositive(py + cr, 2 * cr) - cr;
+    let result = Math.hypot(px, py) - cr;
+    result = Math.min(result, px);
+    result = Math.min(result, a);
+    return Math.min(result, b);
+  }
+  return Math.min(a, b);
+};
+const _opColumnsDifference = (a0, b, r, n) => {
+  const aa = -a0;
+  const m = Math.min(aa, b);
+  if (aa < r && b < r) {
+    let [px, py] = _pR45(aa, b);
+    const cr = r * Math.SQRT2 / n * 0.5;
+    px -= Math.SQRT1_2 * r;
+    px += cr * Math.SQRT2;
+    if (n % 2 === 1) py += cr;
+    py = _modPositive(py + cr, 2 * cr) - cr;
+    let result = -(Math.hypot(px, py) - cr);
+    result = Math.max(result, px);
+    result = Math.min(result, aa);
+    result = Math.min(result, b);
+    return -result;
+  }
+  return -m;
+};
+const _opColumnsIntersect = (a, b, r, n) => _opColumnsDifference(a, -b, r, n);
+
+// Two-arg variant builder (r + n). Soft uses r only but n is harmless extra.
+const _makeVariant2 = (opFn, defaults) => (a, ...rest) => {
+  const [bs, opts] = splitOpts(rest);
+  const r = opts.r ?? defaults.r ?? 0.1;
+  const n = opts.n ?? defaults.n ?? 3;
+  return (p) => {
+    let d1 = a.f(p);
+    for (const b of bs) {
+      d1 = opFn(d1, b.f(p), r, n);
+    }
+    return d1;
+  };
+};
+
+export const unionSoft         = defineOpN('unionSoft',         _makeVariant(_opSoftUnion,         { r: 0.1 }));
+export const unionStairs       = defineOpN('unionStairs',       _makeVariant2(_opStairsUnion,      { r: 0.1, n: 3 }));
+export const intersectionStairs= defineOpN('intersectionStairs',_makeVariant2(_opStairsIntersect,  { r: 0.1, n: 3 }));
+export const differenceStairs  = defineOpN('differenceStairs',  _makeVariant2(_opStairsDifference, { r: 0.1, n: 3 }));
+export const unionColumns      = defineOpN('unionColumns',      _makeVariant2(_opColumnsUnion,     { r: 0.1, n: 3 }));
+export const intersectionColumns=defineOpN('intersectionColumns',_makeVariant2(_opColumnsIntersect, { r: 0.1, n: 3 }));
+export const differenceColumns = defineOpN('differenceColumns', _makeVariant2(_opColumnsDifference,{ r: 0.1, n: 3 }));
+
 export const negate = defineOpN('negate', (a) => (p) => -a.f(p));
 
 export const dilate = defineOpN('dilate', (a, r) => (p) => a.f(p) - r);

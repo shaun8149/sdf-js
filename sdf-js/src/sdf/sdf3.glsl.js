@@ -385,6 +385,73 @@ float opRoundDifference(float a, float b, float r) {
   return opRoundIntersect(a, -b, r);
 }
 
+// Soft = cubic-polynomial smooth join. Different from opSmoothUnion (which is
+// IQ's exponential blend) — this is hg_sdf's preferred soft union for clean
+// silhouettes. Use for organic morphs, melted/wax look.
+float opSoftUnion(float a, float b, float r) {
+  float e = max(r - abs(a - b), 0.0);
+  return min(a, b) - e * e * 0.25 / r;
+}
+
+// Stairs = N stair steps at the join boundary. Use for: ziggurats, step
+// pyramids, cathedral plinths, terraced gardens, mech transitions.
+float opStairsUnion(float a, float b, float r, float n) {
+  float s = r / n;
+  float u = b - r;
+  return min(min(a, b), 0.5 * (u + a + abs(mod(u - a + s, 2.0 * s) - s)));
+}
+float opStairsIntersect(float a, float b, float r, float n) {
+  return -opStairsUnion(-a, -b, r, n);
+}
+float opStairsDifference(float a, float b, float r, float n) {
+  return -opStairsUnion(-a, b, r, n);
+}
+
+// Columns = N columnar bumps at the join boundary. Use for: gothic clustered
+// columns, reeded furniture legs, fluted decorative joints.
+// Helper: 45-degree rotation in 2D
+vec2 _pR45(vec2 p) {
+  return (p + vec2(p.y, -p.x)) * 0.70710678;
+}
+float opColumnsUnion(float a, float b, float r, float n) {
+  if ((a < r) && (b < r)) {
+    vec2 p = vec2(a, b);
+    float columnradius = r * 1.41421356 / ((n - 1.0) * 2.0 + 1.41421356);
+    p = _pR45(p);
+    p.x -= 0.70710678 * r;
+    p.x += columnradius * 1.41421356;
+    if (mod(n, 2.0) == 1.0) p.y += columnradius;
+    p.y = mod(p.y + columnradius, 2.0 * columnradius) - columnradius;
+    float result = length(p) - columnradius;
+    result = min(result, p.x);
+    result = min(result, a);
+    return min(result, b);
+  }
+  return min(a, b);
+}
+float opColumnsDifference(float a, float b, float r, float n) {
+  float aa = -a;
+  float m = min(aa, b);
+  if ((aa < r) && (b < r)) {
+    vec2 p = vec2(aa, b);
+    float columnradius = r * 1.41421356 / n * 0.5;
+    p = _pR45(p);
+    p.x -= 0.70710678 * r;
+    p.x += columnradius * 1.41421356;
+    if (mod(n, 2.0) == 1.0) p.y += columnradius;
+    p.y = mod(p.y + columnradius, 2.0 * columnradius) - columnradius;
+    float result = -(length(p) - columnradius);
+    result = max(result, p.x);
+    result = min(result, aa);
+    result = min(result, b);
+    return -result;
+  }
+  return -m;
+}
+float opColumnsIntersect(float a, float b, float r, float n) {
+  return opColumnsDifference(a, -b, r, n);
+}
+
 // ---- Transform helpers (act on p, return new p) ---------------------------
 
 vec3 opTranslate(vec3 p, vec3 offset) {

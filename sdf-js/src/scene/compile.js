@@ -50,6 +50,9 @@ import {
   union, difference, intersection, rep,
   unionChamfer, intersectionChamfer, differenceChamfer,
   unionRound,   intersectionRound,   differenceRound,
+  unionSoft,
+  unionStairs,  intersectionStairs,  differenceStairs,
+  unionColumns, intersectionColumns, differenceColumns,
 } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
 import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, resolveMaterial } from './spec.js';
@@ -433,6 +436,20 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
     sdf = intersectionRound(...childSdfs, { r });
   } else if (subj.type === 'differenceRound') {
     sdf = differenceRound(...childSdfs, { r });
+  } else if (subj.type === 'unionSoft') {
+    sdf = unionSoft(...childSdfs, { r: subj.args?.r ?? 0.1 });
+  } else if (subj.type === 'unionStairs') {
+    sdf = unionStairs(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'intersectionStairs') {
+    sdf = intersectionStairs(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'differenceStairs') {
+    sdf = differenceStairs(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'unionColumns') {
+    sdf = unionColumns(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'intersectionColumns') {
+    sdf = intersectionColumns(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
+  } else if (subj.type === 'differenceColumns') {
+    sdf = differenceColumns(...childSdfs, { r: subj.args?.r ?? 0.1, n: subj.args?.n ?? 3 });
   } else {
     throw new Error(`compile: unknown boolean op "${subj.type}"`);
   }

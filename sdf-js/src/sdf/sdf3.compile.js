@@ -470,6 +470,15 @@ const OPS = {
   unionRound:          emitBooleanVariant('opRoundUnion',        ['r']),
   intersectionRound:   emitBooleanVariant('opRoundIntersect',    ['r']),
   differenceRound:     emitBooleanVariant('opRoundDifference',   ['r']),
+  // Soft = cubic smooth-min (alternative to opSmoothUnion). r controls reach.
+  unionSoft:           emitBooleanVariant('opSoftUnion',         ['r'], { r: 0.1 }),
+  // Stairs/Columns take (r, n). n = number of stair steps / columnar bumps.
+  unionStairs:         emitBooleanVariant('opStairsUnion',       ['r', 'n'], { r: 0.1, n: 3 }),
+  intersectionStairs:  emitBooleanVariant('opStairsIntersect',   ['r', 'n'], { r: 0.1, n: 3 }),
+  differenceStairs:    emitBooleanVariant('opStairsDifference',  ['r', 'n'], { r: 0.1, n: 3 }),
+  unionColumns:        emitBooleanVariant('opColumnsUnion',      ['r', 'n'], { r: 0.1, n: 3 }),
+  intersectionColumns: emitBooleanVariant('opColumnsIntersect',  ['r', 'n'], { r: 0.1, n: 3 }),
+  differenceColumns:   emitBooleanVariant('opColumnsDifference', ['r', 'n'], { r: 0.1, n: 3 }),
 
   // ---- decoration ---------------------------------------------------------
   negate: (sdf, p) => `(-${walk(sdf.ast.children[0], p)})`,

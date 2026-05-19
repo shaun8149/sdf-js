@@ -55,16 +55,29 @@ export const BOOLEAN_OPS = new Set([
   'union', 'difference', 'intersection', 'smoothUnion', 'smoothDifference',
   // hg_sdf-style join variants (Mercury "Hg" library). Architectural /
   // mechanical / furniture detail at boolean boundaries. args.r controls
-  // the bevel/round/chamfer size (default 0.05).
+  // the bevel/round/chamfer size; args.n controls the count of features
+  // (stair steps / columnar bumps) for Stairs/Columns families.
   'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
   'unionRound',   'intersectionRound',   'differenceRound',
+  'unionSoft',
+  'unionStairs',  'intersectionStairs',  'differenceStairs',
+  'unionColumns', 'intersectionColumns', 'differenceColumns',
 ]);
 
-// Boolean variants that require an `args.r` (radius/size) field. Used by the
-// validator to flag missing or out-of-range r values early.
+// Boolean variants that require an args.r (radius/size) field. Validator
+// flags missing (warn — defaults applied) and invalid (error).
 export const VARIANT_BOOLEAN_R = new Set([
   'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
   'unionRound',   'intersectionRound',   'differenceRound',
+  'unionSoft',
+  'unionStairs',  'intersectionStairs',  'differenceStairs',
+  'unionColumns', 'intersectionColumns', 'differenceColumns',
+]);
+
+// Boolean variants that ADDITIONALLY require args.n (positive int count).
+export const VARIANT_BOOLEAN_N = new Set([
+  'unionStairs',  'intersectionStairs',  'differenceStairs',
+  'unionColumns', 'intersectionColumns', 'differenceColumns',
 ]);
 
 export const DOMAIN_OPS = new Set([
@@ -300,14 +313,23 @@ function validateSubject(subj, path, errors, warnings) {
       subj.children.forEach((c, i) =>
         validateSubject(c, `${path}/children[${i}]`, errors, warnings));
     }
-    // hg_sdf variants need args.r; missing is recoverable (default 0.05) but
-    // worth warning so authors realize the param exists.
+    // hg_sdf variants need args.r; missing is recoverable (default applied)
+    // but worth warning so authors realize the param exists.
     if (VARIANT_BOOLEAN_R.has(subj.type)) {
       const r = subj.args?.r;
       if (r == null) {
-        warnings.push(`${path}: "${subj.type}" missing args.r (bevel/round radius); using default 0.05`);
+        warnings.push(`${path}: "${subj.type}" missing args.r (bevel/round radius); using default`);
       } else if (typeof r !== 'number' || r <= 0) {
         errors.push(`${path}.args.r: must be a positive number (got ${r})`);
+      }
+    }
+    // Stairs / Columns also need args.n (positive integer count of features).
+    if (VARIANT_BOOLEAN_N.has(subj.type)) {
+      const n = subj.args?.n;
+      if (n == null) {
+        warnings.push(`${path}: "${subj.type}" missing args.n (step/column count); using default 3`);
+      } else if (typeof n !== 'number' || n < 1 || n !== Math.floor(n)) {
+        errors.push(`${path}.args.n: must be a positive integer (got ${n})`);
       }
     }
   }
