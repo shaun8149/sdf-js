@@ -30,11 +30,12 @@ uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
 
-#define MAX_STEPS 120
-#define MAX_DIST  20.0
-#define EPS       0.001
+#define MAX_STEPS 128
+#define MAX_DIST  40.0
+#define EPS       0.0008
 #define GROUND_Y  -1.0
 
+// ---- Scene mapping (with optional infinite ground plane) ------------------
 vec2 mapWithGround(vec3 p) {
   float d_obj = sceneSDF(p);
   if (u_groundOn < 0.5) return vec2(d_obj, 2.0);
@@ -43,31 +44,62 @@ vec2 mapWithGround(vec3 p) {
   return vec2(d_gnd, 1.0);
 }
 
+// IQ-style tetrahedral normal — half the texture taps of axis-aligned + smoother
 vec3 calcNormal(vec3 p) {
-  const float e = 0.0008;
-  return normalize(vec3(
-    mapWithGround(p + vec3(e, 0.0, 0.0)).x - mapWithGround(p - vec3(e, 0.0, 0.0)).x,
-    mapWithGround(p + vec3(0.0, e, 0.0)).x - mapWithGround(p - vec3(0.0, e, 0.0)).x,
-    mapWithGround(p + vec3(0.0, 0.0, e)).x - mapWithGround(p - vec3(0.0, 0.0, e)).x
-  ));
+  const float e = 0.0007;
+  vec2 k = vec2(1.0, -1.0);
+  return normalize(
+    k.xyy * mapWithGround(p + k.xyy * e).x +
+    k.yyx * mapWithGround(p + k.yyx * e).x +
+    k.yxy * mapWithGround(p + k.yxy * e).x +
+    k.xxx * mapWithGround(p + k.xxx * e).x
+  );
 }
 
-float softShadow(vec3 ro, vec3 rd, float mint, float maxt) {
+// IQ "Improved" softShadow — penumbra control via k. Higher k = sharper.
+float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
   float res = 1.0;
   float t = mint;
-  for (int i = 0; i < 24; i++) {
+  float ph = 1e10;
+  for (int i = 0; i < 32; i++) {
     if (t >= maxt) break;
     float h = mapWithGround(ro + rd * t).x;
-    if (h < 0.0005) return 0.0;
-    res = min(res, 8.0 * h / t);
-    t += clamp(h, 0.01, 0.2);
+    if (h < 0.00012) return 0.0;
+    float y = h * h / (2.0 * ph);
+    float d = sqrt(h * h - y * y);
+    res = min(res, k * d / max(0.0, t - y));
+    ph = h;
+    t += clamp(h, 0.015, 0.25);
   }
   return clamp(res, 0.0, 1.0);
 }
 
-vec3 sky(vec3 rd) {
-  float t = 0.5 * (rd.y + 1.0);
-  return mix(vec3(0.98, 0.95, 0.88), vec3(0.55, 0.70, 0.90), t);
+// IQ AO — 5 samples along the normal, short distance, exponential falloff
+float calcAO(vec3 p, vec3 n) {
+  float occ = 0.0;
+  float sca = 1.0;
+  for (int i = 0; i < 5; i++) {
+    float h = 0.012 + 0.14 * float(i) / 4.0;
+    float d = mapWithGround(p + h * n).x;
+    occ += (h - d) * sca;
+    sca *= 0.92;
+  }
+  return clamp(1.0 - 2.6 * occ, 0.0, 1.0);
+}
+
+// 3-stop sky gradient (horizon haze → blue belt → zenith) + warm sun disk + halo
+vec3 sky(vec3 rd, vec3 sunDir) {
+  float t = clamp(rd.y, -0.2, 1.0);
+  vec3 horizon = vec3(0.94, 0.88, 0.76);
+  vec3 mid     = vec3(0.55, 0.70, 0.92);
+  vec3 zenith  = vec3(0.18, 0.34, 0.66);
+  vec3 col = mix(horizon, mid, smoothstep(0.0, 0.30, t));
+  col = mix(col, zenith, smoothstep(0.30, 0.95, t));
+  // Sun disk + halo (only when sun is above horizon)
+  float sd = max(dot(rd, sunDir), 0.0);
+  col += vec3(1.00, 0.92, 0.72) * pow(sd, 380.0) * 2.5;   // bright disc
+  col += vec3(1.00, 0.78, 0.50) * pow(sd, 8.0)  * 0.12;   // soft halo
+  return col;
 }
 
 float checker(vec2 p) {
@@ -75,59 +107,85 @@ float checker(vec2 p) {
   return mod(i.x + i.y, 2.0);
 }
 
+// Reinhard tone map + sRGB gamma. Reins extremes without clipping the sun.
+vec3 tonemap(vec3 c) {
+  c = c / (1.0 + c);
+  return pow(c, vec3(0.4545));
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
   vec3 ro = u_camPos;
+  vec3 sunDir = normalize(u_lightPos);
 
+  // ---- Raymarch ----
   float t = 0.0;
   float matId = 0.0;
   bool hit = false;
   for (int i = 0; i < MAX_STEPS; i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
-    if (dm.x < EPS) { hit = true; matId = dm.y; break; }
+    if (dm.x < EPS * (1.0 + 0.4 * t)) { hit = true; matId = dm.y; break; }
     if (t > MAX_DIST) break;
     t += dm.x;
   }
 
   vec3 col;
   if (!hit) {
-    col = sky(rd);
+    col = sky(rd, sunDir);
   } else {
+    // ---- Shading ----
     vec3 p = ro + rd * t;
     vec3 n = calcNormal(p);
     vec3 toLight = normalize(u_lightPos - p);
+    vec3 V = -rd;
+    vec3 H = normalize(toLight + V);
+
     float diff = max(dot(n, toLight), 0.0);
+    float spec = pow(max(dot(n, H), 0.0), 24.0);
+    float ao   = calcAO(p, n);
+    float skyL = clamp(0.5 + 0.5 * n.y, 0.0, 1.0);                 // hemispheric sky light
+    float rim  = pow(1.0 - max(dot(n, V), 0.0), 4.0);              // fresnel rim
+    float bnc  = clamp(0.5 - 0.5 * n.y, 0.0, 1.0);                 // bounce light from ground
 
     float shadowK = 1.0;
     if (u_shadowsOn > 0.5) {
       float lightDist = length(u_lightPos - p);
-      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist);
+      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 12.0);
     }
 
+    // Base albedo per material: warmer object, cooler ground
     vec3 base;
     if (matId > 1.5) {
-      base = vec3(0.85, 0.72, 0.55);
+      base = vec3(0.86, 0.78, 0.65);
+    } else if (u_checkerOn > 0.5) {
+      float c = checker(p.xz);
+      base = mix(vec3(0.90, 0.86, 0.78), vec3(0.74, 0.70, 0.62), c);
     } else {
-      if (u_checkerOn > 0.5) {
-        float c = checker(p.xz * 1.0);
-        base = mix(vec3(0.90, 0.86, 0.78), vec3(0.78, 0.72, 0.62), c);
-      } else {
-        base = vec3(0.85, 0.81, 0.74);
-      }
+      base = vec3(0.80, 0.78, 0.72);
     }
 
-    float amb = 0.28;
-    vec3 skyTint = sky(reflect(rd, n));
-    vec3 lin = base * (amb * 0.6 + diff * shadowK * 0.85);
-    lin += base * skyTint * 0.15;
-    float fog = 1.0 - exp(-0.02 * t * t);
-    col = mix(lin, sky(rd), fog);
+    // Light colors
+    vec3 sunCol    = vec3(1.05, 0.96, 0.84);
+    vec3 skyCol    = vec3(0.50, 0.62, 0.84);
+    vec3 bounceCol = vec3(0.55, 0.48, 0.40);
+    vec3 rimCol    = vec3(0.55, 0.66, 0.80);
+
+    // Compose lighting (IQ-style multi-source)
+    vec3 lin = vec3(0.0);
+    lin += base * sunCol    * diff * shadowK * 1.35;
+    lin += base * skyCol    * skyL * ao      * 0.42;
+    lin += base * bounceCol * bnc  * ao      * 0.18;
+    lin += spec * sunCol    * shadowK        * 0.45;
+    lin += rimCol * rim * ao                 * 0.18;
+
+    // Atmospheric perspective: tint distant surfaces toward sky
+    float fog = 1.0 - exp(-0.018 * t * t);
+    col = mix(lin, sky(rd, sunDir) * 0.85, fog);
   }
 
-  col = pow(col, vec3(0.4545));
-  gl_FragColor = vec4(col, 1.0);
+  gl_FragColor = vec4(tonemap(col), 1.0);
 }`;
 }
 
@@ -266,8 +324,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
 
     gl.viewport(0, 0, canvas.width, canvas.height);
-    // Visible clear color so blank frames are obvious (magenta = "shader didn't paint")
-    gl.clearColor(1.0, 0.0, 1.0, 1.0);
+    // Black clear (shader covers every pixel; clear is a safety net for blank
+    // frames when context state is bad — black is less alarming than magenta).
+    gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uniformsCache.u_resolution, canvas.width, canvas.height);
     gl.uniform3f(uniformsCache.u_camPos, camState.position[0], camState.position[1], camState.position[2]);
@@ -327,9 +386,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
      * Throws on compile / shader / link failure.
      */
     render(sdf) {
-      console.log('%c[fly3d] render() called', 'color:#7fa97f');
       const bytes = uploadSDF(sdf);
-      console.log('%c[fly3d] uploadSDF done', 'color:#7fa97f', { bytes, programLinked: !!program });
       if (!flyHandle) {
         flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
           speed: 1.5,
