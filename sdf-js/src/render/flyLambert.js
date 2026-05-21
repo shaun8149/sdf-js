@@ -192,45 +192,31 @@ vec3 hsv2rgb(vec3 c) {
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-// Fetch the material for a given leaf index. Returns sentinel sat<0 if the
-// index is out of range or the slot is unset.
+// Combined LUT fetch — looks up material + tone + pattern in ONE loop pass.
+// Previously had 3 separate fetch functions = 3 × 96-iteration loops per
+// pixel = 288 compare ops per leaf hit. Combined fetch is 96 iterations
+// total → 3× speedup on per-pixel LUT cost.
 //
 // WebGL1 GLSL spec restricts uniform-array indexing to "constant index
 // expressions" — only literals, const globals, and *loop indices* are
 // allowed. ANGLE / strict drivers enforce this; modern desktop drivers
 // often relax it. We walk a fixed-trip loop and pick the target index via
-// 'if (j == target)' to stay portable. ~96 compare ops per fetch — trivial
-// on a modern GPU. Switch to a 1D texture LUT if MAX_MATERIAL grows past
-// ~256 or if profilers point here.
-vec4 fetchMaterial(float idx) {
+// 'if (j == target)'. ~96 compares per pixel (was 288). Texture LUT would
+// be O(1) but requires a refactor of all 3 uniform arrays.
+void fetchLeafData(float idx, out vec4 mat, out vec4 tone, out vec4 pat) {
   int target = int(idx) - 1;  // imin's objectIndex is 1-based
-  if (target < 0 || target >= MAX_MATERIAL) return vec4(0.0, -1.0, 0.0, 0.0);
+  mat  = vec4(0.0, -1.0, 0.0, 0.0);   // sentinel: no material
+  tone = vec4(1.0,  0.0, 0.0, 0.0);   // default: full brightness
+  pat  = vec4(0.0);                    // default: no pattern
+  if (target < 0 || target >= MAX_MATERIAL) return;
   for (int j = 0; j < MAX_MATERIAL; j++) {
-    if (j == target) return u_leafMaterial[j];
+    if (j == target) {
+      mat  = u_leafMaterial[j];
+      tone = u_leafTone[j];
+      pat  = u_leafPattern[j];
+      return;
+    }
   }
-  return vec4(0.0, -1.0, 0.0, 0.0);  // unreachable; satisfies path-analysis
-}
-
-// Parallel fetch for the pattern LUT. Same indexing scheme as fetchMaterial.
-// Returns vec4(code, scale, strength, reserved); code 0 = no pattern.
-vec4 fetchPattern(float idx) {
-  int target = int(idx) - 1;
-  if (target < 0 || target >= MAX_MATERIAL) return vec4(0.0);
-  for (int j = 0; j < MAX_MATERIAL; j++) {
-    if (j == target) return u_leafPattern[j];
-  }
-  return vec4(0.0);
-}
-
-// Parallel fetch for the extended material (tone) LUT. .x = value/brightness.
-// Default 1.0 means "full bright", matches old behavior pre-value-field.
-vec4 fetchTone(float idx) {
-  int target = int(idx) - 1;
-  if (target < 0 || target >= MAX_MATERIAL) return vec4(1.0, 0.0, 0.0, 0.0);
-  for (int j = 0; j < MAX_MATERIAL; j++) {
-    if (j == target) return u_leafTone[j];
-  }
-  return vec4(1.0, 0.0, 0.0, 0.0);
 }
 
 // Apply a Shane-style cellular pattern to base albedo. Pattern is a
@@ -321,11 +307,11 @@ vec3 shadeReflection(vec3 p, vec3 rd, float matId, float hitIdx, vec3 sunDir) {
   vec3 base;
   float glowK = 0.0;
   if (matId > 1.5) {
-    vec4 mat = fetchMaterial(hitIdx);
+    vec4 mat, tone, pat;
+    fetchLeafData(hitIdx, mat, tone, pat);
     if (mat.y < 0.0) {
       base = cosPalette(fract(hitIdx * 0.6180339887));
     } else {
-      vec4 tone = fetchTone(hitIdx);
       base = hsv2rgb(vec3(mat.x, mat.y, tone.x));
       glowK = mat.w;
     }
@@ -396,18 +382,18 @@ void main() {
     vec3 base;
     float metalK = 0.0;
     float glowK = 0.0;
+    vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
-      vec4 mat = fetchMaterial(hitIdx);
-      if (mat.y < 0.0) {
+      fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
+      if (leafMat.y < 0.0) {
         base = cosPalette(fract(hitIdx * 0.6180339887));
       } else {
         // Full HSV from material LUT + value from tone LUT. value < 1.0
         // produces actually-dark colors (matte-black, brick, etc.) which
         // hue+sat alone cannot.
-        vec4 tone = fetchTone(hitIdx);
-        base = hsv2rgb(vec3(mat.x, mat.y, tone.x));
-        metalK = mat.z;
-        glowK  = mat.w;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+        metalK = leafMat.z;
+        glowK  = leafMat.w;
       }
     } else if (u_checkerOn > 0.5) {
       float c = checker(p.xz);
@@ -421,11 +407,9 @@ void main() {
     // of the structured pattern. Pattern is opt-in via Subject.pattern field.
     // Pattern uses surface normal for orientation-aware 2D projection (so
     // brick courses are horizontal regardless of which way the wall faces).
-    if (matId > 1.5) {
-      vec4 pat = fetchPattern(hitIdx);
-      if (pat.x > 0.5) {
-        base = applyPattern(base, p, n, pat);
-      }
+    // leafPat was already fetched above in the combined fetchLeafData call.
+    if (matId > 1.5 && leafPat.x > 0.5) {
+      base = applyPattern(base, p, n, leafPat);
     }
 
     // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
@@ -515,6 +499,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   // SDF primitives like sdWaves (sea surface animation). Reset on first
   // render() call so each new scene starts at t=0.
   let timeStart = performance.now();
+  // Shader program cache — key = GLSL source string, value = compiled+linked
+  // WebGL program. Switching renderers (BOB GPU → FLY 3D) or back to a scene
+  // we've already compiled hits cache instead of recompiling (which can take
+  // 200-500ms on complex scenes — the BIG source of perceived page lag).
+  const programCache = new Map();
+  const PROGRAM_CACHE_MAX = 6;
   // Per-leaf material + pattern LUTs — built at uploadSDF time from
   // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
   //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
@@ -580,23 +570,38 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     });
     if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
 
-    let fs;
-    try {
-      fs = compileShader(buildFragmentShader(result.glsl), gl.FRAGMENT_SHADER);
-    } catch (e) {
-      console.error('Fragment shader source was:\n', buildFragmentShader(result.glsl));
-      throw new Error(`GLSL shader compile failed: ${e.message}`);
+    const fragSource = buildFragmentShader(result.glsl);
+    // Program cache: hit avoids the 200-500ms GLSL compile+link that
+    // dominates "switch from BOB GPU to FLY 3D" perceived latency.
+    let prog = programCache.get(fragSource);
+    let cacheHit = false;
+    if (prog) {
+      cacheHit = true;
+    } else {
+      let fs;
+      try {
+        fs = compileShader(fragSource, gl.FRAGMENT_SHADER);
+      } catch (e) {
+        console.error('Fragment shader source was:\n', fragSource);
+        throw new Error(`GLSL shader compile failed: ${e.message}`);
+      }
+      prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
+      }
+      // LRU eviction — drop oldest cached program if at capacity
+      if (programCache.size >= PROGRAM_CACHE_MAX) {
+        const firstKey = programCache.keys().next().value;
+        const oldProg = programCache.get(firstKey);
+        gl.deleteProgram(oldProg);
+        programCache.delete(firstKey);
+      }
+      programCache.set(fragSource, prog);
     }
 
-    const prog = gl.createProgram();
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
-    }
-
-    if (program) gl.deleteProgram(program);
     program = prog;
 
     gl.useProgram(program);
@@ -650,6 +655,20 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
       // [3] reserved for future use (e.g. rotation, sub-variant)
     }
 
+    // Upload LUTs ONCE per program load. Uniforms persist on the program
+    // object across draw calls, so re-uploading per frame is pure waste
+    // (3 × uniform4fv × 96 vec4 = ~1KB upload/frame + driver call overhead).
+    if (uniformsCache['u_leafMaterial[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
+    }
+    if (uniformsCache['u_leafTone[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafTone[0]'], toneLUT);
+    }
+    if (uniformsCache['u_leafPattern[0]'] != null) {
+      gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
+    }
+
+    if (cacheHit) console.log('[fly3d] program cache hit — skipped GLSL compile');
     return result.glsl.length;
   }
 
@@ -701,15 +720,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     if (uniformsCache.u_time != null) {
       gl.uniform1f(uniformsCache.u_time, (performance.now() - timeStart) / 1000);
     }
-    if (uniformsCache['u_leafMaterial[0]'] != null) {
-      gl.uniform4fv(uniformsCache['u_leafMaterial[0]'], materialLUT);
-    }
-    if (uniformsCache['u_leafTone[0]'] != null) {
-      gl.uniform4fv(uniformsCache['u_leafTone[0]'], toneLUT);
-    }
-    if (uniformsCache['u_leafPattern[0]'] != null) {
-      gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
-    }
+    // LUTs are uploaded once per program load in uploadSDF — uniforms persist
+    // on the program object, so re-uploading per frame would be pure waste.
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     if (_debugFirstDraw) {
