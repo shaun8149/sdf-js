@@ -137,6 +137,47 @@ export const canalBridgeSpec = {
   },
 };
 
+/**
+ * Canal-lamp-bulb atom — just the 3-sphere bulb crown of a Venice streetlamp.
+ * Caller pairs this with a separate `cylinder` primitive (the pole) at the
+ * same translate, with a dark non-glow material — that way the pole stays
+ * dark while the bulbs emit. Apply a high-glow material here (glow >= 2.0).
+ *
+ * @param {object} opts
+ * @param {number} [opts.bulbY=4.0]   Y coordinate of the big-bulb center
+ *                                    (caller places this at the top of pole)
+ * @param {number} [opts.bulbR=0.3]   Main bulb radius (side bulbs are 0.7×)
+ */
+export function canalLampBulbSDF({
+  bulbY = 4.0,
+  bulbR = 0.3,
+} = {}) {
+  const inst = SDF3((p) => {
+    const sideY = bulbY - 0.6 * bulbR;
+    const sideZ = 1.2 * bulbR;
+    const bigBulb = Math.sqrt(p[0] ** 2 + (p[1] - bulbY) ** 2 + p[2] ** 2) - bulbR;
+    const leftBulb = Math.sqrt(p[0] ** 2 + (p[1] - sideY) ** 2 + (p[2] - sideZ) ** 2) - bulbR * 0.7;
+    const rightBulb = Math.sqrt(p[0] ** 2 + (p[1] - sideY) ** 2 + (p[2] + sideZ) ** 2) - bulbR * 0.7;
+    return Math.min(bigBulb, Math.min(leftBulb, rightBulb));
+  });
+  inst.ast = { kind: 'prim', name: 'canal-lamp-bulb', args: [bulbY, bulbR] };
+  return inst;
+}
+
+export const canalLampBulbSpec = {
+  type: 'canal-lamp-bulb',
+  category: 'primitive-architectural',
+  args: {
+    bulbY: { type: 'number', default: 4.0, doc: 'Big-bulb center Y coordinate' },
+    bulbR: { type: 'number', default: 0.3, doc: 'Main bulb radius' },
+  },
+  source: {
+    inspiration: 'Reinder Nijhoff Venice Shadertoy (CC BY-NC-SA, idiom-only port)',
+    license:     'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
+    portedAt:    '2026-05-21',
+  },
+};
+
 export const canalBuildingSpec = {
   type: 'canal-building',
   category: 'primitive-architectural',

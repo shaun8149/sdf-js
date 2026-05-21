@@ -42,7 +42,7 @@ import { rhombusSDF } from './components/community/iq-rhombus.js';
 import { horseshoeSDF } from './components/community/iq-horseshoe.js';
 import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
-import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF } from './components/atoms/canal-building.js';
+import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
   pineTreeSDF, broadleafTreeSDF,
@@ -298,6 +298,10 @@ const PRIMITIVE_FACTORIES = {
     span:      a.span      ?? 8.0,
     archR:     a.archR     ?? 1.6,
     thickness: a.thickness ?? 1.2,
+  }),
+  'canal-lamp-bulb': (a) => canalLampBulbSDF({
+    bulbY: a.bulbY ?? 4.0,
+    bulbR: a.bulbR ?? 0.3,
   }),
 
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --

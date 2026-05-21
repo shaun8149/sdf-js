@@ -441,6 +441,22 @@ void main() {
       R.y = abs(R.y);
       vec3 reflection = atlasSeaAtmosphere(R, sunDir) + vec3(1.0) * atlasSeaSun(R, sunDir);
 
+      // Scene reflection — short raymarch in R direction picks up nearby
+      // emissive geometry (canal lamps, lit windows). The shimmering reflected
+      // streetlamp is the iconic Venice-canal look; without it, sea is just
+      // atmospheric. Limited to 12-unit reach to keep cost bounded.
+      if (u_reflectOn > 0.5) {
+        vec3 hit2 = raymarchShort(p + seaN * 0.02, R, 25.0);
+        if (hit2.y > 0.5) {
+          vec3 p2 = p + seaN * 0.02 + R * hit2.x;
+          vec3 reflScene = shadeReflection(p2, R, hit2.y, hit2.z, sunDir);
+          // Scene reflection brightness scales with fresnel — mostly visible
+          // at grazing angles where seaFres → 1, which is also where lamp
+          // reflections naturally appear on real water.
+          reflection += reflScene * 0.9;
+        }
+      }
+
       // Subsurface scattering — bluish tint modulated by crest height.
       // Crest pixels show more scattering than troughs (more water above
       // sub-surface backscatter source).

@@ -387,6 +387,11 @@ const PRIMS = {
   // Canal bridge — stone arch spanning canal. Args: [span, archR, thickness].
   'canal-bridge': ([span, archR, thickness], p) =>
     `sdCanalBridge(${p}, ${flt(span)}, ${flt(archR)}, ${flt(thickness)})`,
+
+  // Canal lamp bulb head (3 spheres). Pole = pair with separate cylinder.
+  // Args: [bulbY, bulbR].
+  'canal-lamp-bulb': ([bulbY, bulbR], p) =>
+    `sdCanalLampBulb(${p}, ${flt(bulbY)}, ${flt(bulbR)})`,
 };
 
 // ---- op emitters -----------------------------------------------------------

@@ -72,6 +72,8 @@ export const PRIMITIVE_TYPES = new Set([
   'canal-windows',
   // Stone arch bridge spanning the canal.
   'canal-bridge',
+  // Venice-style streetlamp bulb head (3 spheres). Pair with cylinder for pole.
+  'canal-lamp-bulb',
   // 2D → 3D pseudo-primitives
   'extrude', 'revolve', 'extrude_to',
 ]);

@@ -109,6 +109,102 @@
         }
       },
       {
+        "id": "right-embankment",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "re-box",
+          "type": "box",
+          "args": { "dims": [1.5, 0.6, 80] },
+          "transform": { "translate": [3.05, 0.3, 30] },
+          "material": { "hue": 0.08, "sat": 0.25, "value": 0.45, "metal": 0, "glow": 0 }
+        }
+      },
+      {
+        "id": "left-embankment",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "le-box",
+          "type": "box",
+          "args": { "dims": [1.5, 0.6, 80] },
+          "transform": { "translate": [-3.05, 0.3, 30] },
+          "material": { "hue": 0.08, "sat": 0.25, "value": 0.45, "metal": 0, "glow": 0 }
+        }
+      },
+      {
+        "id": "right-poles",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "rp-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 14], "count": 2 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "rp-cyl",
+            "type": "cylinder",
+            "args": { "radius": 0.08, "height": 4.5 },
+            "transform": { "translate": [3.2, 2.85, 0] },
+            "material": { "hue": 0, "sat": 0, "value": 0.08, "metal": 0.4, "glow": 0 }
+          }
+        }
+      },
+      {
+        "id": "right-bulbs",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "rblb-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 14], "count": 2 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "rblb-bulb",
+            "type": "canal-lamp-bulb",
+            "args": { "bulbY": 5.1, "bulbR": 0.32 },
+            "transform": { "translate": [3.2, 0, 0] },
+            "material": { "hue": 0.1, "sat": 0.65, "value": 1.0, "metal": 0, "glow": 3.0 }
+          }
+        }
+      },
+      {
+        "id": "left-poles",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "lp-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 14], "count": 2 },
+          "transform": { "translate": [0, 0, 37] },
+          "source": {
+            "id": "lp-cyl",
+            "type": "cylinder",
+            "args": { "radius": 0.08, "height": 4.5 },
+            "transform": { "translate": [-3.2, 2.85, 0] },
+            "material": { "hue": 0, "sat": 0, "value": 0.08, "metal": 0.4, "glow": 0 }
+          }
+        }
+      },
+      {
+        "id": "left-bulbs",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "lblb-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 14], "count": 2 },
+          "transform": { "translate": [0, 0, 37] },
+          "source": {
+            "id": "lblb-bulb",
+            "type": "canal-lamp-bulb",
+            "args": { "bulbY": 5.1, "bulbR": 0.32 },
+            "transform": { "translate": [-3.2, 0, 0] },
+            "material": { "hue": 0.1, "sat": 0.65, "value": 1.0, "metal": 0, "glow": 3.0 }
+          }
+        }
+      },
+      {
         "id": "water",
         "type": "sea-surface",
         "args": { "depth": 0.18, "scale": 1.0 },

@@ -665,6 +665,23 @@ float sdCanalWindows(vec3 p, float width, float height, float winX, float winY, 
   return min(planeZ, planeX);
 }
 
+// ---- Canal lamp bulbs (Venice-style streetlamp head) ---------------------
+// Just the bulbs (3 spheres candelabra-style — big top + 2 side). Designed
+// as a separate leaf so it can carry a high-glow material independently of
+// the pole. Caller pairs this with a plain cylinder primitive (the pole)
+// at the same translate, with a dark non-glow material.
+//
+// bulbY: Y coordinate of the big-bulb center (caller places this at the top
+//        of their pole). Side bulbs sit 0.6*bulbR lower at ±1.2*bulbR in Z.
+float sdCanalLampBulb(vec3 p, float bulbY, float bulbR) {
+  float sideY = bulbY - 0.6 * bulbR;
+  float sideZ = 1.2 * bulbR;
+  float bigBulb  = length(p - vec3(0.0, bulbY, 0.0)) - bulbR;
+  float leftBulb = length(p - vec3(0.0, sideY,  sideZ)) - bulbR * 0.7;
+  float rightBulb = length(p - vec3(0.0, sideY, -sideZ)) - bulbR * 0.7;
+  return min(bigBulb, min(leftBulb, rightBulb));
+}
+
 // ---- Canal bridge ---------------------------------------------------------
 // Stone arch bridge spanning the canal. Box + tri-prism roof - cylindrical
 // archway. Footprint along x (span direction), thickness along z (walkway
@@ -1225,6 +1242,7 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdCanalBuilding',
   'sdCanalWindows',
   'sdCanalBridge',
+  'sdCanalLampBulb',
 ];
 
 export const SDF3_GLSL_OPS = [
