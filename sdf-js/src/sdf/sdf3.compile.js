@@ -392,6 +392,12 @@ const PRIMS = {
   // Args: [bulbY, bulbR].
   'canal-lamp-bulb': ([bulbY, bulbR], p) =>
     `sdCanalLampBulb(${p}, ${flt(bulbY)}, ${flt(bulbR)})`,
+
+  // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
+  // Args: [maxHeight, hwRatio]. material.kind='mountain' routes shading via
+  // snow-line + 3-light + slope-AO + height-fog branch in flyLambert.
+  'terrain-heightmap': ([maxHeight, hwRatio], p) =>
+    `sdTerrainHeightmap(${p}, ${flt(maxHeight)}, ${flt(hwRatio)})`,
 };
 
 // ---- op emitters -----------------------------------------------------------

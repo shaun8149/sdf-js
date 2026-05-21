@@ -665,6 +665,68 @@ float sdCanalWindows(vec3 p, float width, float height, float winX, float winY, 
   return min(planeZ, planeX);
 }
 
+// ---- IQ-style terrain heightmap (Reinder Nijhoff Himalayas-inspired) -----
+// Independent reimplementation. Core idiom (IQ MdX3Rr "Elevated"):
+//   - Value noise WITH analytical derivatives (atlasNoised returns vec3)
+//   - fbm with gradient-weighted decay: a += b * n.x / (1 + dot(d, d))
+//     where d accumulates octave derivatives — produces "smoother on
+//     steep slopes, rougher on flat areas", counter-intuitive but visually
+//     correct mountain look
+//   - Anisotropic octave matrix mat2(1.6, -1.2, 1.2, 1.6) — better than
+//     pure rotation, avoids grid artefacts at high octaves
+//   - Source-side smoothstep mask creates "valley along z=0" so demo
+//     compositions have a natural through-route for a camera path
+
+// Value noise with analytical derivatives (IQ canonical). Returns
+// (value, d/dx, d/dy). Derivatives drive the gradient-decay fbm.
+vec3 atlasNoised(vec2 x) {
+  vec2 f = fract(x);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  vec2 p = floor(x);
+  float a = hash21(p + vec2(0.0, 0.0));
+  float b = hash21(p + vec2(1.0, 0.0));
+  float c = hash21(p + vec2(0.0, 1.0));
+  float d = hash21(p + vec2(1.0, 1.0));
+  return vec3(
+    a + (b-a)*u.x + (c-a)*u.y + (a-b-c+d)*u.x*u.y,
+    6.0 * f * (1.0 - f) * (vec2(b-a, c-a) + (a-b-c+d) * u.yx)
+  );
+}
+
+// Heightmap value at xz coords. octaves bound is dynamic via early-break
+// (GLSL ES 1.0 requires const loop bounds — use big upper limit + break).
+//   maxHeight: peak Y in world units
+//   hwRatio:   horizontal-to-vertical scale ratio (smaller = wider mountains)
+float atlasTerrainHeight(vec2 x, float maxHeight, float hwRatio, int octaves) {
+  vec2 p = x * hwRatio;
+  // Valley mask along z=0 — smoothstep ramps from 0.25 at z=0 to 1.0 at |z|>0.4.
+  // Creates a low-lying corridor for through-camera paths in demos.
+  float s = mix(1.0, smoothstep(0.0, 0.4, abs(p.y)), 0.75);
+
+  float a = 0.0;
+  float b = 1.0;
+  vec2 d = vec2(0.0);
+  mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
+  for (int i = 0; i < 32; i++) {
+    if (i >= octaves) break;
+    vec3 n = atlasNoised(p);
+    d += n.yz;
+    a += b * n.x / (1.0 + dot(d, d));
+    b *= 0.5;
+    p = m * p;
+  }
+  return s * a * (maxHeight * 0.5);
+}
+
+// Heightfield-as-SDF wrapper. Step factor 0.3 — high-octave fbm has Lipschitz
+// > 1 in many directions, so sphere-trace needs aggressive step damping to
+// converge without overshooting peaks. 5 octaves for tracing balances detail
+// vs convergence speed; renderer re-evaluates at higher counts for normal/AO.
+float sdTerrainHeightmap(vec3 p, float maxHeight, float hwRatio) {
+  float h = atlasTerrainHeight(p.xz, maxHeight, hwRatio, 5);
+  return (p.y - h) * 0.3;
+}
+
 // ---- Canal lamp bulbs (Venice-style streetlamp head) ---------------------
 // Just the bulbs (3 spheres candelabra-style — big top + 2 side). Designed
 // as a separate leaf so it can carry a high-glow material independently of
@@ -1243,6 +1305,7 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdCanalWindows',
   'sdCanalBridge',
   'sdCanalLampBulb',
+  'sdTerrainHeightmap',
 ];
 
 export const SDF3_GLSL_OPS = [

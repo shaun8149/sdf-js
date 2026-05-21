@@ -43,6 +43,7 @@ import { horseshoeSDF } from './components/community/iq-horseshoe.js';
 import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
 import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
+import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
   pineTreeSDF, broadleafTreeSDF,
@@ -303,6 +304,10 @@ const PRIMITIVE_FACTORIES = {
     bulbY: a.bulbY ?? 4.0,
     bulbR: a.bulbR ?? 0.3,
   }),
+  'terrain-heightmap': (a) => terrainHeightmapSDF({
+    maxHeight: a.maxHeight ?? 30.0,
+    hwRatio:   a.hwRatio   ?? 0.08,
+  }),
 
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.
@@ -366,6 +371,10 @@ export function compile(sceneData) {
         compiled.sdf._subjectMaterial = topLevelMat;
       } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
+      } else if (subj.type === 'terrain-heightmap' && compiled.sdf._subjectMaterial == null) {
+        // Mountain material: hue/sat/value mostly irrelevant — mountain branch
+        // uses snow/rock palette internally. kind=2 routes to that branch.
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.7, metal: 0, glow: 0, kind: 'mountain' });
       }
       // (compiled.sdf already keeps any nested-propagated _subjectMaterial.)
       const topLevelPat = resolvePattern(subj.pattern);

@@ -1,0 +1,47 @@
+{
+  "id": "snow-mountain",
+  "title": "雪山",
+  "prompt": "雪山全景",
+  "code2d": "// Snow mountain demo — built on terrain-heightmap atom + mountain-shading branch + existing cloud overlay + atmosphere.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#1f3a5c';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#ccc';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Himalayas — switch to FLY 3D', 24, 48);\n};",
+  "sceneData": {
+    "v": 1,
+    "name": "Snow Mountain",
+    "source": {
+      "format": "hand-crafted",
+      "prompt": "Himalayas — IQ Elevated terrain + cloud overlay + atmosphere",
+      "notes": "terrain-heightmap atom (IQ Elevated value-noise fbm) + mountain-shading branch (snow-line + IQ 3-light + slope-AO + height fog). Cloud overlay + Rayleigh-Mie atmosphere reused from cloud sprint."
+    },
+    "subjects": [
+      {
+        "id": "terrain",
+        "type": "terrain-heightmap",
+        "args": { "maxHeight": 30.0, "hwRatio": 0.08 },
+        "transform": { "translate": [0, 0, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.18,
+        "distance": 30,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 12,
+        "targetZ": 50
+      },
+      "light": {
+        "azimuth": -0.5,
+        "altitude": 0.35,
+        "distance": 80,
+        "intensity": 1.2
+      },
+      "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-05-21",
+    "model": "hand-crafted",
+    "costUSD": 0
+  }
+}

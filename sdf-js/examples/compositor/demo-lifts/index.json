@@ -91,6 +91,15 @@
       "status": "ready",
       "file": "canal-day1.json",
       "prompt": "弯曲水道 + 拱桥 + 亮窗"
+    },
+    {
+      "id": "snow-mountain",
+      "title": "雪山",
+      "thesisPoint": "IQ Elevated terrain + mountain-shading branch",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "snow-mountain.json",
+      "prompt": "雪山全景"
     }
   ]
 }

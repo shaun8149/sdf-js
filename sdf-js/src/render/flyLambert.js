@@ -387,11 +387,15 @@ void main() {
     vec3 base = vec3(0.0);
     float metalK = 0.0;
     float glowK = 0.0;
-    bool isSea = false;  // routed via material.kind=='sea' (tone.y > 0.5)
+    bool isSea = false;       // routed via material.kind=='sea'      (tone.y ≈ 1)
+    bool isMountain = false;  // routed via material.kind=='mountain' (tone.y ≈ 2)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
-      if (leafTone.y > 0.5) {
+      // Route by material kind. tone.y carries an integer-encoded kind.
+      if (leafTone.y > 1.5) {
+        isMountain = true;
+      } else if (leafTone.y > 0.5) {
         isSea = true;  // skip Lambert; handled in sea-shading block below
       } else if (leafMat.y < 0.0) {
         base = cosPalette(fract(hitIdx * 0.6180339887));
@@ -416,7 +420,7 @@ void main() {
     // Pattern uses surface normal for orientation-aware 2D projection (so
     // brick courses are horizontal regardless of which way the wall faces).
     // leafPat was already fetched above in the combined fetchLeafData call.
-    if (matId > 1.5 && !isSea && leafPat.x > 0.5) {
+    if (matId > 1.5 && !isSea && !isMountain && leafPat.x > 0.5) {
       base = applyPattern(base, p, n, leafPat);
     }
 
@@ -464,6 +468,56 @@ void main() {
       vec3 scattering = vec3(0.0293, 0.0698, 0.1717) * 0.1 * crestK;
 
       col = seaFres * reflection * 2.0 + scattering;
+    } else if (isMountain) {
+      // ---- Mountain-shading branch (IQ Elevated + outdoor 3-light) ---------
+      // Snow-line by surface normal: bias toward sun direction (sun-facing
+      // slopes accumulate snow). Then IQ outdoor 3-light setup +
+      // slope-based AO (cheap: high-octave - low-octave terrain delta).
+      // Finally height-based fog so distant peaks fade into atmospheric
+      // perspective. n is the calcNormal of the FULL scene SDF — for
+      // terrain hits, that's the terrain normal automatically.
+
+      // Hardcoded to match terrain-heightmap default args (30.0 / 0.08).
+      // If author overrides these, AO contrast will be off but still readable.
+      const float TH = 30.0;
+      const float HW = 0.08;
+
+      // Snow line: dot with biased-up vector; sun-facing slopes snow over.
+      float snowK = smoothstep(0.5, 0.92, dot(n, normalize(vec3(0.3, 1.0, 0.05))));
+      vec3 rockCol = vec3(0.18, 0.16, 0.14);
+      vec3 snowCol = vec3(0.85, 0.88, 0.93);
+      vec3 baseCol = mix(rockCol, snowCol, snowK);
+
+      // IQ 3-light setup
+      float diffM    = max(dot(sunDir, n), 0.0);
+      float ambM     = clamp(0.5 + 0.5 * n.y, 0.0, 1.0);
+      vec3 backDir   = normalize(vec3(-sunDir.x, 0.0, -sunDir.z));
+      float backM    = max(0.5 + 0.5 * dot(backDir, n), 0.0);
+
+      // Slope-based AO: high-octave terrain - low-octave terrain. Valley
+      // bottoms get darker, ridge tops get brighter — no real shadow march.
+      float terrHi = atlasTerrainHeight(p.xz, TH, HW, 10);
+      float terrLo = atlasTerrainHeight(p.xz, TH, HW, 7);
+      float aoM = clamp(0.25 + (terrHi - terrLo) * 8.0, 0.0, 1.0);
+
+      vec3 mountSun  = vec3(1.05, 0.96, 0.84);
+      vec3 mountSky  = vec3(0.45, 0.62, 0.92);
+      vec3 mountBack = vec3(0.40, 0.50, 0.60);
+
+      vec3 mountLin = (diffM * shadowK * 1.8) * mountSun;
+      mountLin += (aoM * ambM * 0.55) * mountSky;
+      mountLin += (backM * 0.30) * mountBack;
+      col = baseCol * mountLin;
+
+      // Height-based fog (IQ). HEIGHT_BASED_FOG_C * (1 - exp(-t*rd.y*B)) / rd.y.
+      // For rd.y near 0, expand to avoid singularity; clamp final amount.
+      float mountDist = length(p - ro);
+      float fogB = 0.018;
+      float fogC = 0.45;
+      float rdy = max(abs(rd.y), 0.01) * sign(rd.y + 1e-4);
+      float fogAmt = fogC * (1.0 - exp(-mountDist * rdy * fogB)) / rdy;
+      fogAmt = clamp(fogAmt, 0.0, 0.85);
+      col = mix(col, sky(rd, sunDir), fogAmt);
     } else {
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
       // metals + emissives keep smooth uniform surfaces; matte diffuse gets

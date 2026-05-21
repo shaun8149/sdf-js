@@ -74,6 +74,8 @@ export const PRIMITIVE_TYPES = new Set([
   'canal-bridge',
   // Venice-style streetlamp bulb head (3 spheres). Pair with cylinder for pole.
   'canal-lamp-bulb',
+  // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
+  'terrain-heightmap',
   // 2D → 3D pseudo-primitives
   'extrude', 'revolve', 'extrude_to',
 ]);
@@ -229,8 +231,9 @@ export function resolveMaterial(input) {
 
 // String-to-int mapping for material.kind. Keeps GLSL side a simple int compare.
 export const MATERIAL_KIND_INDEX = {
-  normal: 0,
-  sea:    1,
+  normal:   0,
+  sea:      1,
+  mountain: 2,
 };
 
 // =============================================================================
