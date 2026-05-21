@@ -1,0 +1,570 @@
+{
+  "result": {
+    "demoId": "gothic-cathedral",
+    "version": "v1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "30.8s",
+    "tokens": {
+      "input": 8559,
+      "output": 2623
+    },
+    "costUSD": "0.0650",
+    "subjectCount": 25,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "typeCounts": {
+      "box": 14,
+      "pyramid": 5,
+      "capsule": 4,
+      "torus": 1,
+      "cylinder": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Gothic Cathedral"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Gothic Cathedral",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一座哥特式大教堂",
+      "from2dCode": "French High Gothic west façade: nave tower + transept wings + twin bell towers with spires + central flèche + rose window + lancet portals/windows + flying buttresses. 2D side-view composition lifted to navigable 3D diorama."
+    },
+    "subjects": [
+      {
+        "id": "choir-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.4,
+            0.8,
+            2.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.4,
+            -2.8
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "transept-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.7,
+            1.5,
+            1.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.825,
+            0.75,
+            -0.7
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "transept-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.7,
+            1.5,
+            1.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.825,
+            0.75,
+            -0.7
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "nave-tower",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.95,
+            2.75,
+            1.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.375,
+            0.4
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "tower-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.8,
+            1
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.25,
+            1.9,
+            1.2
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "tower-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.8,
+            1
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.25,
+            1.9,
+            1.2
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "spire-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.8
+        },
+        "transform": {
+          "translate": [
+            -1.25,
+            4.1,
+            1.2
+          ],
+          "scale": [
+            0.55,
+            1,
+            0.5
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "spire-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.8
+        },
+        "transform": {
+          "translate": [
+            1.25,
+            4.1,
+            1.2
+          ],
+          "scale": [
+            0.55,
+            1,
+            0.5
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "fleche-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.18,
+            2,
+            0.18
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.75,
+            -0.4
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "fleche-spire",
+        "type": "pyramid",
+        "args": {
+          "height": 0.6
+        },
+        "transform": {
+          "translate": [
+            0,
+            4.05,
+            -0.4
+          ],
+          "scale": [
+            0.45,
+            1,
+            0.45
+          ]
+        },
+        "region": "stone_dark"
+      },
+      {
+        "id": "pinnacle-trans-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.45
+        },
+        "transform": {
+          "translate": [
+            -0.825,
+            1.725,
+            -0.7
+          ],
+          "scale": [
+            0.25,
+            1,
+            0.25
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "pinnacle-trans-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.45
+        },
+        "transform": {
+          "translate": [
+            0.825,
+            1.725,
+            -0.7
+          ],
+          "scale": [
+            0.25,
+            1,
+            0.25
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.475,
+            0.95,
+            0.15
+          ],
+          "b": [
+            -1.1,
+            0.5,
+            -0.2
+          ],
+          "radius": 0.045
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.475,
+            1.375,
+            0.15
+          ],
+          "b": [
+            -1.1,
+            0.9,
+            -0.2
+          ],
+          "radius": 0.045
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.475,
+            0.95,
+            0.15
+          ],
+          "b": [
+            1.1,
+            0.5,
+            -0.2
+          ],
+          "radius": 0.045
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-4",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.475,
+            1.375,
+            0.15
+          ],
+          "b": [
+            1.1,
+            0.9,
+            -0.2
+          ],
+          "radius": 0.045
+        },
+        "region": "stone"
+      },
+      {
+        "id": "rose-window-frame",
+        "type": "torus",
+        "args": {
+          "radius": 0.295,
+          "thickness": 0.04
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.65,
+            1.65
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "rose-window-fill",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.295,
+          "height": 0.05
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.65,
+            1.62
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "rose_glass",
+        "color": [
+          200,
+          120,
+          100
+        ]
+      },
+      {
+        "id": "portal-center",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.55,
+            1.25,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.625,
+            1.65
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.375,
+            0.9,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.95,
+            0.45,
+            1.65
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.375,
+            0.9,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.95,
+            0.45,
+            1.65
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "nave-window-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.25,
+            0.85,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.375,
+            1.1,
+            1.65
+          ]
+        },
+        "region": "window_blue",
+        "color": [
+          140,
+          172,
+          210
+        ]
+      },
+      {
+        "id": "nave-window-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.25,
+            0.85,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.375,
+            1.1,
+            1.65
+          ]
+        },
+        "region": "window_blue",
+        "color": [
+          140,
+          172,
+          210
+        ]
+      },
+      {
+        "id": "clerestory-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.2,
+            0.55,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.3,
+            1.975,
+            1.65
+          ]
+        },
+        "region": "window_blue",
+        "color": [
+          140,
+          172,
+          210
+        ]
+      },
+      {
+        "id": "clerestory-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.2,
+            0.55,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.3,
+            1.975,
+            1.65
+          ]
+        },
+        "region": "window_blue",
+        "color": [
+          140,
+          172,
+          210
+        ]
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "grass"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.52,
+        "pitch": 0.28,
+        "distance": 12,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.75,
+        "distance": 35,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      }
+    }
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "result": {
+    "demoId": "clock-915",
+    "version": "v2",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "19.3s",
+    "tokens": {
+      "input": 11554,
+      "output": 1784
+    },
+    "costUSD": "0.0614",
+    "subjectCount": 18,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 0,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 3,
+      "min": 0,
+      "max": 0.04,
+      "range": 0.04,
+      "stdev": 0.018856180831641266
+    },
+    "typeCounts": {
+      "torus": 1,
+      "cylinder": 1,
+      "capsule": 14,
+      "sphere": 1,
+      "plane": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Wall Clock at 9:15"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Wall Clock at 9:15",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "挂在墙上的9点15分的钟",
+      "from2dCode": "2D circle clock with bezel, face, 12 hour ticks, 60 minute ticks, hour hand at 9:15, minute hand at 3:00, center boss"
+    },
+    "subjects": [
+      {
+        "id": "clock-bezel",
+        "type": "torus",
+        "args": {
+          "majorR": 0.55,
+          "minorR": 0.05
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.5,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "bezel"
+      },
+      {
+        "id": "clock-face",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.5,
+          "height": 0.03
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.5,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "face"
+      },
+      {
+        "id": "tick-12",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            1.94,
+            0
+          ],
+          "b": [
+            0,
+            1.88,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.22,
+            1.88,
+            0
+          ],
+          "b": [
+            0.19,
+            1.82,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            1.69,
+            0
+          ],
+          "b": [
+            0.33,
+            1.64,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.44,
+            1.5,
+            0
+          ],
+          "b": [
+            0.38,
+            1.5,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-4",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            1.31,
+            0
+          ],
+          "b": [
+            0.33,
+            1.36,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-5",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.22,
+            1.12,
+            0
+          ],
+          "b": [
+            0.19,
+            1.18,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-6",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            1.06,
+            0
+          ],
+          "b": [
+            0,
+            1.12,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-7",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.22,
+            1.12,
+            0
+          ],
+          "b": [
+            -0.19,
+            1.18,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-8",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            1.31,
+            0
+          ],
+          "b": [
+            -0.33,
+            1.36,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-9",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.44,
+            1.5,
+            0
+          ],
+          "b": [
+            -0.38,
+            1.5,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-10",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            1.69,
+            0
+          ],
+          "b": [
+            -0.33,
+            1.64,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-11",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.22,
+            1.88,
+            0
+          ],
+          "b": [
+            -0.19,
+            1.82,
+            0
+          ],
+          "radius": 0.014
+        },
+        "region": "tick"
+      },
+      {
+        "id": "hour-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.05,
+            1.5,
+            0.02
+          ],
+          "b": [
+            -0.28,
+            1.54,
+            0.02
+          ],
+          "radius": 0.018
+        },
+        "region": "hand"
+      },
+      {
+        "id": "minute-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.05,
+            1.5,
+            0.03
+          ],
+          "b": [
+            0.36,
+            1.5,
+            0.03
+          ],
+          "radius": 0.012
+        },
+        "region": "hand"
+      },
+      {
+        "id": "center-boss",
+        "type": "sphere",
+        "args": {
+          "radius": 0.03
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.5,
+            0.04
+          ]
+        },
+        "region": "boss"
+      },
+      {
+        "id": "wall",
+        "type": "plane",
+        "args": {
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "point": [
+            0,
+            0,
+            -0.08
+          ]
+        },
+        "region": "wall"
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0,
+        "distance": 3.5,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.75,
+        "distance": 25,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.3
+      }
+    }
+  }
+}

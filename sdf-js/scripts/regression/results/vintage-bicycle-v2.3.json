@@ -1,0 +1,809 @@
+{
+  "result": {
+    "demoId": "vintage-bicycle",
+    "version": "v2.3",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "40.8s",
+    "tokens": {
+      "input": 21234,
+      "output": 3688
+    },
+    "costUSD": "0.1190",
+    "subjectCount": 34,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 2,
+    "newIQTypesUsed": [
+      [
+        "capped-torus",
+        2
+      ]
+    ],
+    "materialUsageCount": 21,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 3,
+    "variantsUsed": [
+      [
+        "unionRound",
+        3
+      ]
+    ],
+    "zSpread": {
+      "count": 19,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "typeCounts": {
+      "ellipsoid": 3,
+      "torus": 3,
+      "sphere": 3,
+      "rep": 2,
+      "capped-torus": 2,
+      "unionRound": 3,
+      "capsule": 12,
+      "rounded_box": 6
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Vintage Bicycle"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Vintage Bicycle",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "复古自行车",
+      "from2dCode": "Diamond-frame bicycle with wheels (12-spoke), rust frame tubes (top/down/seat/chain-stay/seat-stay), brass handlebar + pedals + lamp, leather saddle, mudguards. Side profile view."
+    },
+    "subjects": [
+      {
+        "id": "ground-shadow",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            1.2,
+            0.02,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.71,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.65,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-left",
+        "type": "torus",
+        "args": {
+          "radius": 0.42,
+          "thickness": 0.045
+        },
+        "transform": {
+          "translate": [
+            -0.42,
+            -0.28,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-left-hub",
+        "type": "sphere",
+        "args": {
+          "radius": 0.045
+        },
+        "transform": {
+          "translate": [
+            -0.42,
+            -0.28,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-left-spokes",
+        "type": "rep",
+        "args": {
+          "period": [
+            0,
+            0.5236,
+            0
+          ]
+        },
+        "source": {
+          "type": "capsule",
+          "args": {
+            "a": [
+              -0.42,
+              -0.28,
+              0.048
+            ],
+            "b": [
+              -0.42,
+              -0.28,
+              0.395
+            ],
+            "radius": 0.004
+          },
+          "id": "subjects_3_-source"
+        },
+        "transform": {
+          "translate": [
+            -0.42,
+            -0.28,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-right",
+        "type": "torus",
+        "args": {
+          "radius": 0.42,
+          "thickness": 0.045
+        },
+        "transform": {
+          "translate": [
+            0.42,
+            -0.28,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-right-hub",
+        "type": "sphere",
+        "args": {
+          "radius": 0.045
+        },
+        "transform": {
+          "translate": [
+            0.42,
+            -0.28,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wheel-right-spokes",
+        "type": "rep",
+        "args": {
+          "period": [
+            0,
+            0.5236,
+            0
+          ]
+        },
+        "source": {
+          "type": "capsule",
+          "args": {
+            "a": [
+              0.42,
+              -0.28,
+              0.048
+            ],
+            "b": [
+              0.42,
+              -0.28,
+              0.395
+            ],
+            "radius": 0.004
+          },
+          "id": "subjects_6_-source"
+        },
+        "transform": {
+          "translate": [
+            0.42,
+            -0.28,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mudguard-left",
+        "type": "capped-torus",
+        "args": {
+          "capAngle": 3.14159,
+          "majorR": 0.454,
+          "minorR": 0.022
+        },
+        "transform": {
+          "translate": [
+            -0.42,
+            -0.28,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            3.14159
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mudguard-right",
+        "type": "capped-torus",
+        "args": {
+          "capAngle": 3.14159,
+          "majorR": 0.454,
+          "minorR": 0.022
+        },
+        "transform": {
+          "translate": [
+            0.42,
+            -0.28,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            3.14159
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "frame-group",
+        "type": "unionRound",
+        "args": {
+          "r": 0.008
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.2,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "top-tube",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.24,
+                0.26,
+                0
+              ],
+              "b": [
+                0.37,
+                0.2,
+                0
+              ],
+              "radius": 0.018
+            }
+          },
+          {
+            "id": "down-tube",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.37,
+                0.16,
+                0
+              ],
+              "b": [
+                0,
+                -0.28,
+                0
+              ],
+              "radius": 0.018
+            }
+          },
+          {
+            "id": "seat-tube",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                -0.28,
+                0
+              ],
+              "b": [
+                -0.24,
+                0.26,
+                0
+              ],
+              "radius": 0.018
+            }
+          },
+          {
+            "id": "chain-stay",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                -0.28,
+                0
+              ],
+              "b": [
+                -0.42,
+                -0.28,
+                0
+              ],
+              "radius": 0.016
+            }
+          },
+          {
+            "id": "seat-stay",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.24,
+                0.22,
+                0
+              ],
+              "b": [
+                -0.42,
+                -0.28,
+                0
+              ],
+              "radius": 0.013
+            }
+          },
+          {
+            "id": "fork-right",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.37,
+                0.16,
+                0
+              ],
+              "b": [
+                0.45,
+                -0.28,
+                0.03
+              ],
+              "radius": 0.014
+            }
+          },
+          {
+            "id": "fork-left",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.37,
+                0.16,
+                0
+              ],
+              "b": [
+                0.39,
+                -0.28,
+                -0.03
+              ],
+              "radius": 0.014
+            }
+          }
+        ]
+      },
+      {
+        "id": "head-tube",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.036,
+            0.1,
+            0.036
+          ],
+          "cornerR": 0.012
+        },
+        "transform": {
+          "translate": [
+            0.37,
+            0.15,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "handlebar-group",
+        "type": "unionRound",
+        "args": {
+          "r": 0.006
+        },
+        "material": "copper",
+        "children": [
+          {
+            "id": "stem",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.37,
+                0.24,
+                0
+              ],
+              "b": [
+                0.35,
+                0.42,
+                0
+              ],
+              "radius": 0.016
+            }
+          },
+          {
+            "id": "handlebar",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.27,
+                0.46,
+                0
+              ],
+              "b": [
+                0.45,
+                0.38,
+                0
+              ],
+              "radius": 0.014
+            }
+          },
+          {
+            "id": "grip-left",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.024,
+                0.055,
+                0.024
+              ],
+              "cornerR": 0.012
+            },
+            "transform": {
+              "translate": [
+                0.265,
+                0.465,
+                0
+              ]
+            }
+          },
+          {
+            "id": "grip-right",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.024,
+                0.055,
+                0.024
+              ],
+              "cornerR": 0.012
+            },
+            "transform": {
+              "translate": [
+                0.453,
+                0.385,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "seat-post",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.24,
+            0.26,
+            0
+          ],
+          "b": [
+            -0.24,
+            0.42,
+            0
+          ],
+          "radius": 0.014
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.55,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "saddle-group",
+        "type": "unionRound",
+        "args": {
+          "r": 0.012
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.65,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "saddle-body",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.115,
+                0.028,
+                0.06
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.25,
+                0.455,
+                0
+              ]
+            }
+          },
+          {
+            "id": "saddle-tip",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.028,
+                0.022,
+                0.05
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.154,
+                0.452,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "chainring",
+        "type": "torus",
+        "args": {
+          "radius": 0.075,
+          "thickness": 0.018
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.28,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "copper"
+      },
+      {
+        "id": "crank-right",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.28,
+            0
+          ],
+          "b": [
+            0.13,
+            -0.37,
+            0
+          ],
+          "radius": 0.014
+        },
+        "material": "copper"
+      },
+      {
+        "id": "crank-left",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.28,
+            0
+          ],
+          "b": [
+            -0.13,
+            -0.19,
+            0
+          ],
+          "radius": 0.013
+        },
+        "material": "copper"
+      },
+      {
+        "id": "pedal-right",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.072,
+            0.018,
+            0.036
+          ],
+          "cornerR": 0.009
+        },
+        "transform": {
+          "translate": [
+            0.145,
+            -0.373,
+            0
+          ]
+        },
+        "material": "copper"
+      },
+      {
+        "id": "pedal-left",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.072,
+            0.018,
+            0.036
+          ],
+          "cornerR": 0.009
+        },
+        "transform": {
+          "translate": [
+            -0.145,
+            -0.187,
+            0
+          ]
+        },
+        "material": "copper"
+      },
+      {
+        "id": "lamp-body",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.052,
+            0.068,
+            0.05
+          ],
+          "cornerR": 0.014
+        },
+        "transform": {
+          "translate": [
+            0.43,
+            0.21,
+            0
+          ]
+        },
+        "material": "copper"
+      },
+      {
+        "id": "lamp-lens",
+        "type": "sphere",
+        "args": {
+          "radius": 0.02
+        },
+        "transform": {
+          "translate": [
+            0.456,
+            0.212,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.15,
+          "sat": 0.25,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 1.5
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.71,
+      "region": "ground"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.05,
+        "pitch": 0.12,
+        "distance": 2.8,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.65,
+        "distance": 28,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

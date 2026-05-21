@@ -1,0 +1,1415 @@
+{
+  "result": {
+    "demoId": "mountain-village",
+    "version": "v1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "69.6s",
+    "tokens": {
+      "input": 9672,
+      "output": 6465
+    },
+    "costUSD": "0.1260",
+    "subjectCount": 77,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "typeCounts": {
+      "extrude": 5,
+      "ellipsoid": 3,
+      "box": 17,
+      "union": 15,
+      "capsule": 3,
+      "pyramid": 7,
+      "cylinder": 6,
+      "cone": 18,
+      "sphere": 3
+    },
+    "compileOk": false,
+    "compileErr": "SceneData validation failed:\n  - subjects[0]: \"extrude\" requires a \"source\" 2D primitive\n  - subjects[1]: \"extrude\" requires a \"source\" 2D primitive\n  - subjects[2]: \"extrude\" requires a \"source\" 2D p",
+    "sceneName": "Mountain Village"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Mountain Village",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "山间的村落",
+      "from2dCode": "Multi-layered alpine village with far/mid/near mountains, 6 houses + church tower, conifers, terraced fields, stream, mist bands. Classic atmospheric perspective depth composition."
+    },
+    "subjects": [
+      {
+        "id": "far-mountains-left",
+        "type": "extrude",
+        "args": {
+          "profile": [
+            [
+              -6.5,
+              0.5
+            ],
+            [
+              -5.25,
+              2.6
+            ],
+            [
+              -3.9,
+              1.4
+            ],
+            [
+              -2.75,
+              3.1
+            ],
+            [
+              -1.4,
+              1.5
+            ],
+            [
+              -0.25,
+              2.2
+            ],
+            [
+              1,
+              0.75
+            ],
+            [
+              -6.5,
+              0.75
+            ]
+          ],
+          "depth": 1.2
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -12
+          ]
+        },
+        "region": "mountain_far"
+      },
+      {
+        "id": "far-mountains-right",
+        "type": "extrude",
+        "args": {
+          "profile": [
+            [
+              0.5,
+              0.6
+            ],
+            [
+              1.9,
+              2.9
+            ],
+            [
+              3.1,
+              1.6
+            ],
+            [
+              4.25,
+              3.25
+            ],
+            [
+              5.5,
+              1.9
+            ],
+            [
+              6.5,
+              2.4
+            ],
+            [
+              6.5,
+              0.6
+            ]
+          ],
+          "depth": 1.2
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -12
+          ]
+        },
+        "region": "mountain_far"
+      },
+      {
+        "id": "mid-mountains-left",
+        "type": "extrude",
+        "args": {
+          "profile": [
+            [
+              -6.5,
+              -0.5
+            ],
+            [
+              -5.5,
+              1.4
+            ],
+            [
+              -4.1,
+              0.25
+            ],
+            [
+              -3,
+              2
+            ],
+            [
+              -1.75,
+              0.6
+            ],
+            [
+              -0.6,
+              1.6
+            ],
+            [
+              0.4,
+              0.25
+            ],
+            [
+              -6.5,
+              0.25
+            ]
+          ],
+          "depth": 1.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -8
+          ]
+        },
+        "region": "mountain_mid"
+      },
+      {
+        "id": "mid-mountains-right",
+        "type": "extrude",
+        "args": {
+          "profile": [
+            [
+              0.25,
+              0.25
+            ],
+            [
+              1.25,
+              2
+            ],
+            [
+              2.5,
+              0.9
+            ],
+            [
+              3.9,
+              2.5
+            ],
+            [
+              5.25,
+              1.1
+            ],
+            [
+              6.5,
+              1.75
+            ],
+            [
+              6.5,
+              0.25
+            ]
+          ],
+          "depth": 1.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -8
+          ]
+        },
+        "region": "mountain_mid"
+      },
+      {
+        "id": "near-ridge",
+        "type": "extrude",
+        "args": {
+          "profile": [
+            [
+              -6.5,
+              -1.4
+            ],
+            [
+              -4.75,
+              0.2
+            ],
+            [
+              -3.4,
+              -0.5
+            ],
+            [
+              -2,
+              0.5
+            ],
+            [
+              -0.5,
+              -0.4
+            ],
+            [
+              0.9,
+              0.3
+            ],
+            [
+              2.4,
+              -0.6
+            ],
+            [
+              3.75,
+              0.1
+            ],
+            [
+              5.25,
+              -0.75
+            ],
+            [
+              6.5,
+              -0.25
+            ],
+            [
+              6.5,
+              -1.75
+            ],
+            [
+              -6.5,
+              -1.75
+            ]
+          ],
+          "depth": 2.5
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -4
+          ]
+        },
+        "region": "mountain_near"
+      },
+      {
+        "id": "mist-band-1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            4.5,
+            0.275,
+            1.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.75,
+            -0.9,
+            -5
+          ]
+        },
+        "region": "mist"
+      },
+      {
+        "id": "mist-band-2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            3.5,
+            0.2,
+            1.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            -1.6,
+            -3.5
+          ]
+        },
+        "region": "mist"
+      },
+      {
+        "id": "field-terrace-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            6,
+            0.08,
+            2.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.72,
+            -2
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "field-terrace-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            6,
+            0.06,
+            2.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.28,
+            -2
+          ]
+        },
+        "region": "field"
+      },
+      {
+        "id": "stream",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.6,
+            0.05,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.25,
+            -2.4,
+            -1.5
+          ]
+        },
+        "region": "water"
+      },
+      {
+        "id": "path",
+        "type": "union",
+        "children": [
+          {
+            "id": "path-seg-1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.5,
+                -4.25,
+                0
+              ],
+              "b": [
+                0.25,
+                -2.75,
+                0
+              ],
+              "radius": 0.09
+            },
+            "region": "path"
+          },
+          {
+            "id": "path-seg-2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.25,
+                -2.75,
+                0
+              ],
+              "b": [
+                -0.4,
+                -2.1,
+                0
+              ],
+              "radius": 0.07
+            },
+            "region": "path"
+          },
+          {
+            "id": "path-seg-3",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.4,
+                -2.1,
+                0
+              ],
+              "b": [
+                -0.9,
+                -1.5,
+                0
+              ],
+              "radius": 0.06
+            },
+            "region": "path"
+          }
+        ]
+      },
+      {
+        "id": "house-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "h1-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.9,
+                0.9,
+                0.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                -3.1,
+                -0.95,
+                0.3
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h1-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.5
+            },
+            "transform": {
+              "translate": [
+                -3.1,
+                -0.45,
+                0.3
+              ],
+              "scale": [
+                1.1,
+                1,
+                0.75
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h1-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.11,
+                0.28,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.9,
+                -0.17,
+                0.32
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "house-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "h2-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.8,
+                0.8,
+                0.55
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.9,
+                -0.8,
+                0.275
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h2-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.45
+            },
+            "transform": {
+              "translate": [
+                -1.9,
+                -0.4,
+                0.275
+              ],
+              "scale": [
+                1,
+                1,
+                0.7
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h2-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.1,
+                0.25,
+                0.07
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.72,
+                -0.175,
+                0.28
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "house-3",
+        "type": "union",
+        "children": [
+          {
+            "id": "h3-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                1,
+                1,
+                0.65
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                -0.8,
+                0.325
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h3-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.55
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                -0.25,
+                0.325
+              ],
+              "scale": [
+                1.15,
+                1,
+                0.8
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h3-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.12,
+                0.3,
+                0.09
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.48,
+                -0.025,
+                0.33
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "church-tower",
+        "type": "union",
+        "children": [
+          {
+            "id": "tower-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.475,
+                1.5,
+                0.4
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                -0.15,
+                0.2
+              ]
+            },
+            "region": "tower"
+          },
+          {
+            "id": "tower-spire",
+            "type": "pyramid",
+            "args": {
+              "height": 0.7
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                0.6,
+                0.2
+              ],
+              "scale": [
+                0.7,
+                1,
+                0.55
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "tower-cross-v",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.025,
+                0.15,
+                0.025
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                1.35,
+                0.2
+              ]
+            },
+            "region": "cross"
+          },
+          {
+            "id": "tower-cross-h",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.09,
+                0.025,
+                0.025
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.7,
+                1.3,
+                0.2
+              ]
+            },
+            "region": "cross"
+          }
+        ]
+      },
+      {
+        "id": "house-4",
+        "type": "union",
+        "children": [
+          {
+            "id": "h4-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.75,
+                0.75,
+                0.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.8,
+                -0.75,
+                0.25
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h4-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.4
+            },
+            "transform": {
+              "translate": [
+                0.8,
+                -0.375,
+                0.25
+              ],
+              "scale": [
+                0.95,
+                1,
+                0.65
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h4-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.09,
+                0.22,
+                0.065
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.965,
+                -0.19,
+                0.255
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "house-5",
+        "type": "union",
+        "children": [
+          {
+            "id": "h5-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.85,
+                0.85,
+                0.55
+              ]
+            },
+            "transform": {
+              "translate": [
+                2,
+                -0.85,
+                0.275
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h5-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.5
+            },
+            "transform": {
+              "translate": [
+                2,
+                -0.35,
+                0.275
+              ],
+              "scale": [
+                1.05,
+                1,
+                0.7
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h5-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.1,
+                0.28,
+                0.075
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.19,
+                -0.09,
+                0.28
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "house-6",
+        "type": "union",
+        "children": [
+          {
+            "id": "h6-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.65,
+                0.65,
+                0.45
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.5,
+                -0.175,
+                0.225
+              ]
+            },
+            "region": "wall"
+          },
+          {
+            "id": "h6-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 0.4
+            },
+            "transform": {
+              "translate": [
+                -2.5,
+                0.15,
+                0.225
+              ],
+              "scale": [
+                0.85,
+                1,
+                0.6
+              ]
+            },
+            "region": "roof"
+          },
+          {
+            "id": "h6-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.08,
+                0.2,
+                0.06
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.36,
+                0.34,
+                0.23
+              ]
+            },
+            "region": "chimney"
+          }
+        ]
+      },
+      {
+        "id": "conifer-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "c1-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.042,
+              "height": 0.7
+            },
+            "transform": {
+              "translate": [
+                -5.25,
+                -0.75,
+                -3.2
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c1-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.45,
+              "baseRadius": 0.6
+            },
+            "transform": {
+              "translate": [
+                -5.25,
+                -0.65,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c1-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.45,
+              "baseRadius": 0.47
+            },
+            "transform": {
+              "translate": [
+                -5.25,
+                -0.44,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c1-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.45,
+              "baseRadius": 0.37
+            },
+            "transform": {
+              "translate": [
+                -5.25,
+                -0.23,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "conifer-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "c2-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.035,
+              "height": 0.6
+            },
+            "transform": {
+              "translate": [
+                -4.6,
+                -0.65,
+                -3.1
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c2-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.5
+            },
+            "transform": {
+              "translate": [
+                -4.6,
+                -0.57,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c2-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.39
+            },
+            "transform": {
+              "translate": [
+                -4.6,
+                -0.39,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c2-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.31
+            },
+            "transform": {
+              "translate": [
+                -4.6,
+                -0.21,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "conifer-3",
+        "type": "union",
+        "children": [
+          {
+            "id": "c3-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.038,
+              "height": 0.65
+            },
+            "transform": {
+              "translate": [
+                -4,
+                -0.7,
+                -3.15
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c3-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.55
+            },
+            "transform": {
+              "translate": [
+                -4,
+                -0.62,
+                -3.15
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c3-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.43
+            },
+            "transform": {
+              "translate": [
+                -4,
+                -0.42,
+                -3.15
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c3-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.34
+            },
+            "transform": {
+              "translate": [
+                -4,
+                -0.22,
+                -3.15
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "conifer-4",
+        "type": "union",
+        "children": [
+          {
+            "id": "c4-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.038,
+              "height": 0.65
+            },
+            "transform": {
+              "translate": [
+                3.1,
+                -0.8,
+                -3
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c4-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.55
+            },
+            "transform": {
+              "translate": [
+                3.1,
+                -0.72,
+                -3
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c4-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.43
+            },
+            "transform": {
+              "translate": [
+                3.1,
+                -0.52,
+                -3
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c4-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.41,
+              "baseRadius": 0.34
+            },
+            "transform": {
+              "translate": [
+                3.1,
+                -0.32,
+                -3
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "conifer-5",
+        "type": "union",
+        "children": [
+          {
+            "id": "c5-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.045,
+              "height": 0.75
+            },
+            "transform": {
+              "translate": [
+                3.75,
+                -0.65,
+                -3.2
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c5-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.49,
+              "baseRadius": 0.65
+            },
+            "transform": {
+              "translate": [
+                3.75,
+                -0.56,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c5-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.49,
+              "baseRadius": 0.51
+            },
+            "transform": {
+              "translate": [
+                3.75,
+                -0.34,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c5-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.49,
+              "baseRadius": 0.4
+            },
+            "transform": {
+              "translate": [
+                3.75,
+                -0.12,
+                -3.2
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "conifer-6",
+        "type": "union",
+        "children": [
+          {
+            "id": "c6-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.035,
+              "height": 0.6
+            },
+            "transform": {
+              "translate": [
+                4.5,
+                -0.9,
+                -3.1
+              ]
+            },
+            "region": "tree_trunk"
+          },
+          {
+            "id": "c6-tier1",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.5
+            },
+            "transform": {
+              "translate": [
+                4.5,
+                -0.82,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c6-tier2",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.39
+            },
+            "transform": {
+              "translate": [
+                4.5,
+                -0.64,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          },
+          {
+            "id": "c6-tier3",
+            "type": "cone",
+            "args": {
+              "height": 0.375,
+              "baseRadius": 0.31
+            },
+            "transform": {
+              "translate": [
+                4.5,
+                -0.46,
+                -3.1
+              ]
+            },
+            "region": "tree_dark"
+          }
+        ]
+      },
+      {
+        "id": "smoke-wisps",
+        "type": "union",
+        "children": [
+          {
+            "id": "smoke-1",
+            "type": "sphere",
+            "args": {
+              "radius": 0.09
+            },
+            "transform": {
+              "translate": [
+                -2.9,
+                0,
+                0.32
+              ]
+            },
+            "region": "smoke"
+          },
+          {
+            "id": "smoke-2",
+            "type": "sphere",
+            "args": {
+              "radius": 0.07
+            },
+            "transform": {
+              "translate": [
+                -0.48,
+                0.16,
+                0.33
+              ]
+            },
+            "region": "smoke"
+          },
+          {
+            "id": "smoke-3",
+            "type": "sphere",
+            "args": {
+              "radius": 0.06
+            },
+            "transform": {
+              "translate": [
+                2.19,
+                0.08,
+                0.28
+              ]
+            },
+            "region": "smoke"
+          }
+        ]
+      }
+    ],
+    "ground": {
+      "y": -3,
+      "region": "ground"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.22,
+        "distance": 12,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.2,
+        "targetZ": -1.5
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.75,
+        "distance": 35,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

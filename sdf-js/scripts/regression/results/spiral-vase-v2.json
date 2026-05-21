@@ -1,0 +1,224 @@
+{
+  "result": {
+    "demoId": "spiral-vase",
+    "version": "v2",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "13.7s",
+    "tokens": {
+      "input": 10392,
+      "output": 936
+    },
+    "costUSD": "0.0452",
+    "subjectCount": 5,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 0,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 5,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "typeCounts": {
+      "revolve": 1,
+      "torus": 3,
+      "box": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Chinese Celadon Vase"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Chinese Celadon Vase",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一只花瓶",
+      "from2dCode": "28-vertex polygon profile, celadon green, mei ping silhouette with decorative bands"
+    },
+    "subjects": [
+      {
+        "id": "vase",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.7
+              ],
+              [
+                0.18,
+                -0.7
+              ],
+              [
+                0.2,
+                -0.64
+              ],
+              [
+                0.21,
+                -0.58
+              ],
+              [
+                0.19,
+                -0.5
+              ],
+              [
+                0.28,
+                -0.2
+              ],
+              [
+                0.31,
+                0.05
+              ],
+              [
+                0.29,
+                0.2
+              ],
+              [
+                0.22,
+                0.38
+              ],
+              [
+                0.16,
+                0.5
+              ],
+              [
+                0.12,
+                0.56
+              ],
+              [
+                0.1,
+                0.62
+              ],
+              [
+                0.13,
+                0.68
+              ],
+              [
+                0.145,
+                0.72
+              ],
+              [
+                0,
+                0.72
+              ]
+            ]
+          },
+          "id": "subjects_0_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "ceramic"
+      },
+      {
+        "id": "decorative-band-upper",
+        "type": "torus",
+        "args": {
+          "radius": 0.3,
+          "thickness": 0.018
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.1,
+            0
+          ]
+        },
+        "region": "accent"
+      },
+      {
+        "id": "decorative-band-lower",
+        "type": "torus",
+        "args": {
+          "radius": 0.28,
+          "thickness": 0.012
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.35,
+            0
+          ]
+        },
+        "region": "accent"
+      },
+      {
+        "id": "rim-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.135,
+          "thickness": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.68,
+            0
+          ]
+        },
+        "region": "accent"
+      },
+      {
+        "id": "table-surface",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.12,
+            2.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.85,
+            0
+          ]
+        },
+        "region": "wood"
+      }
+    ],
+    "ground": {
+      "y": -0.92,
+      "region": "floor"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.65,
+        "pitch": 0.22,
+        "distance": 3.5,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.75,
+        "distance": 25,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      }
+    }
+  }
+}

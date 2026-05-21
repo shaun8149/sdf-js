@@ -1,0 +1,911 @@
+{
+  "result": {
+    "demoId": "gothic-cathedral",
+    "version": "v2",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "44.2s",
+    "tokens": {
+      "input": 12594,
+      "output": 4157
+    },
+    "costUSD": "0.1001",
+    "subjectCount": 44,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 0,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 32,
+      "min": 0,
+      "max": 0.51,
+      "range": 0.51,
+      "stdev": 0.2296864370723705
+    },
+    "typeCounts": {
+      "box": 22,
+      "pyramid": 8,
+      "capsule": 12,
+      "torus": 1,
+      "sphere": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Gothic Cathedral"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Gothic Cathedral",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一座哥特式大教堂",
+      "from2dCode": "French High Gothic 3-bay west façade: nave tower + transept wings + choir body (smooth union), twin bell towers with pinnacles, central flèche spire, flying buttresses, lancet windows (portals + clerestory + aisle), rose window tracery. Stone: STONE_C [210,198,172], STONE_D [188,174,148]; Windows: WINDOW_C [140,172,210], WINDOW_A [210,140,80], ROSE_C [200,120,100]. Sky gradient SKY_TOP→SKY_BOT, ground GROUND_C."
+    },
+    "subjects": [
+      {
+        "id": "nave-tower",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.76,
+            2.2,
+            1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.46,
+            0
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "transept-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.56,
+            1.2,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.66,
+            -0.5,
+            0
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "transept-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.56,
+            1.2,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.66,
+            -0.5,
+            0
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "choir",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.12,
+            0.64,
+            1.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.48,
+            0
+          ]
+        },
+        "region": "stone"
+      },
+      {
+        "id": "bell-tower-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.48,
+            3.04,
+            0.48
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1,
+            0.88,
+            0.26
+          ]
+        },
+        "region": "tower"
+      },
+      {
+        "id": "bell-tower-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.48,
+            3.04,
+            0.48
+          ]
+        },
+        "transform": {
+          "translate": [
+            1,
+            0.88,
+            0.26
+          ]
+        },
+        "region": "tower"
+      },
+      {
+        "id": "spire-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.64
+        },
+        "transform": {
+          "translate": [
+            -1,
+            2.58,
+            0.26
+          ],
+          "scale": [
+            0.44,
+            1,
+            0.44
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "spire-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.64
+        },
+        "transform": {
+          "translate": [
+            1,
+            2.58,
+            0.26
+          ],
+          "scale": [
+            0.44,
+            1,
+            0.44
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "fleche-needle",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.09,
+            1.6,
+            0.09
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.16,
+            0
+          ]
+        },
+        "region": "fleche"
+      },
+      {
+        "id": "fleche-spire",
+        "type": "pyramid",
+        "args": {
+          "height": 0.48
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.2,
+            0
+          ],
+          "scale": [
+            0.072,
+            1,
+            0.072
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "transept-pinnacle-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.36
+        },
+        "transform": {
+          "translate": [
+            -0.66,
+            0.28,
+            0
+          ],
+          "scale": [
+            0.2,
+            1,
+            0.2
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "transept-pinnacle-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.36
+        },
+        "transform": {
+          "translate": [
+            0.66,
+            0.28,
+            0
+          ],
+          "scale": [
+            0.2,
+            1,
+            0.2
+          ]
+        },
+        "region": "roof"
+      },
+      {
+        "id": "buttress-1-left",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            -0.12,
+            0.5
+          ],
+          "b": [
+            -0.88,
+            -0.6,
+            0.5
+          ],
+          "radius": 0.036
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-2-left",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            -0.46,
+            0.5
+          ],
+          "b": [
+            -0.88,
+            -0.8,
+            0.5
+          ],
+          "radius": 0.036
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-1-right",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            -0.12,
+            0.5
+          ],
+          "b": [
+            0.88,
+            -0.6,
+            0.5
+          ],
+          "radius": 0.036
+        },
+        "region": "stone"
+      },
+      {
+        "id": "buttress-2-right",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            -0.46,
+            0.5
+          ],
+          "b": [
+            0.88,
+            -0.8,
+            0.5
+          ],
+          "radius": 0.036
+        },
+        "region": "stone"
+      },
+      {
+        "id": "rose-window-ring",
+        "type": "torus",
+        "args": {
+          "majorR": 0.236,
+          "minorR": 0.032
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.48,
+            0.51
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "rose-spoke-v1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            0,
+            0.716,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-v2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            0,
+            0.244,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-h1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            0.236,
+            0.48,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-h2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            -0.236,
+            0.48,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-d1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            0.167,
+            0.647,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-d2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            -0.167,
+            0.647,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-d3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            0.167,
+            0.313,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-spoke-d4",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.48,
+            0.51
+          ],
+          "b": [
+            -0.167,
+            0.313,
+            0.51
+          ],
+          "radius": 0.016
+        },
+        "region": "tracery"
+      },
+      {
+        "id": "rose-hub",
+        "type": "sphere",
+        "args": {
+          "radius": 0.047
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.48,
+            0.51
+          ]
+        },
+        "region": "rose"
+      },
+      {
+        "id": "portal-center",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.44,
+            1,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.3,
+            0.51
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-center-arch",
+        "type": "pyramid",
+        "args": {
+          "height": 0.5
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.55,
+            0.51
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.44,
+            1,
+            0.15
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.3,
+            0.72,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.76,
+            -1.44,
+            0.51
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-left-arch",
+        "type": "pyramid",
+        "args": {
+          "height": 0.36
+        },
+        "transform": {
+          "translate": [
+            -0.76,
+            -0.9,
+            0.51
+          ],
+          "scale": [
+            0.3,
+            1,
+            0.15
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.3,
+            0.72,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.76,
+            -1.44,
+            0.51
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "portal-right-arch",
+        "type": "pyramid",
+        "args": {
+          "height": 0.36
+        },
+        "transform": {
+          "translate": [
+            0.76,
+            -0.9,
+            0.51
+          ],
+          "scale": [
+            0.3,
+            1,
+            0.15
+          ]
+        },
+        "region": "portal"
+      },
+      {
+        "id": "nave-window-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.2,
+            0.68,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.3,
+            -0.8,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "nave-window-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.2,
+            0.68,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.3,
+            -0.8,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "clerestory-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.44,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.24,
+            0.14,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "clerestory-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.44,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.24,
+            0.14,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-L1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.36,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1,
+            0.64,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-L2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.36,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1,
+            1.2,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-L3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.14,
+            0.28,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1,
+            1.72,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-R1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.36,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            1,
+            0.64,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-R2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.16,
+            0.36,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            1,
+            1.2,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "tower-window-R3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.14,
+            0.28,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            1,
+            1.72,
+            0.51
+          ]
+        },
+        "region": "window"
+      },
+      {
+        "id": "stringcourse-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.036,
+            1.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.14,
+            0
+          ]
+        },
+        "region": "band"
+      },
+      {
+        "id": "stringcourse-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.036,
+            1.05
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.6,
+            0
+          ]
+        },
+        "region": "band"
+      }
+    ],
+    "ground": {
+      "y": -1.8,
+      "region": "plaza"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.52,
+        "pitch": 0.28,
+        "distance": 9.5,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.75,
+        "distance": 32,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

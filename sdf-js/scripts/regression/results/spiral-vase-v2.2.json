@@ -1,0 +1,177 @@
+{
+  "result": {
+    "demoId": "spiral-vase",
+    "version": "v2.2",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "10.6s",
+    "tokens": {
+      "input": 18092,
+      "output": 677
+    },
+    "costUSD": "0.0644",
+    "subjectCount": 2,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 2,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 2,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "typeCounts": {
+      "revolve": 1,
+      "box": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Celadon Vase"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Celadon Vase",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一只花瓶",
+      "from2dCode": "Chinese celadon vase — mei ping silhouette, 28-vertex polygon profile symmetric on Y axis, decorative rim bands, celadon green (CELADON / CELADON_D / CELADON_L)"
+    },
+    "subjects": [
+      {
+        "id": "vase",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.7
+              ],
+              [
+                0.18,
+                -0.7
+              ],
+              [
+                0.2,
+                -0.64
+              ],
+              [
+                0.21,
+                -0.58
+              ],
+              [
+                0.19,
+                -0.5
+              ],
+              [
+                0.28,
+                -0.2
+              ],
+              [
+                0.31,
+                0.05
+              ],
+              [
+                0.29,
+                0.2
+              ],
+              [
+                0.22,
+                0.38
+              ],
+              [
+                0.16,
+                0.5
+              ],
+              [
+                0.12,
+                0.56
+              ],
+              [
+                0.1,
+                0.62
+              ],
+              [
+                0.13,
+                0.68
+              ],
+              [
+                0.145,
+                0.72
+              ],
+              [
+                0,
+                0.72
+              ]
+            ]
+          },
+          "id": "subjects_0_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "ceramic",
+        "material": "porcelain"
+      },
+      {
+        "id": "table-surface",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.12,
+            2.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.82,
+            0
+          ]
+        },
+        "region": "wood",
+        "material": "wood"
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "floor"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.65,
+        "pitch": 0.22,
+        "distance": 3.2,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.7,
+        "distance": 22,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      }
+    }
+  }
+}

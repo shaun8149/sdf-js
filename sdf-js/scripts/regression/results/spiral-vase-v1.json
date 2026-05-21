@@ -1,0 +1,203 @@
+{
+  "result": {
+    "demoId": "spiral-vase",
+    "version": "v1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "12.3s",
+    "tokens": {
+      "input": 6357,
+      "output": 906
+    },
+    "costUSD": "0.0327",
+    "subjectCount": 5,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "typeCounts": {
+      "revolve": 1,
+      "ellipsoid": 1,
+      "torus": 3
+    },
+    "compileOk": false,
+    "compileErr": "SceneData validation failed:\n  - subjects[0]: \"revolve\" requires a \"source\" 2D primitive",
+    "sceneName": "Celadon vase"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Celadon vase",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一只花瓶",
+      "from2dCode": "28-vertex polygon profile, mei ping silhouette, celadon palette, decorative bands"
+    },
+    "subjects": [
+      {
+        "id": "vase-body",
+        "type": "revolve",
+        "args": {
+          "profile": [
+            [
+              0.18,
+              -0.7
+            ],
+            [
+              0.2,
+              -0.64
+            ],
+            [
+              0.21,
+              -0.58
+            ],
+            [
+              0.19,
+              -0.5
+            ],
+            [
+              0.28,
+              -0.2
+            ],
+            [
+              0.31,
+              0.05
+            ],
+            [
+              0.29,
+              0.2
+            ],
+            [
+              0.22,
+              0.38
+            ],
+            [
+              0.16,
+              0.5
+            ],
+            [
+              0.12,
+              0.56
+            ],
+            [
+              0.1,
+              0.62
+            ],
+            [
+              0.13,
+              0.68
+            ],
+            [
+              0.145,
+              0.72
+            ],
+            [
+              0,
+              0.72
+            ],
+            [
+              0,
+              -0.7
+            ]
+          ],
+          "axis": "y"
+        },
+        "transform": {
+          "scale": 3.2
+        },
+        "region": "porcelain"
+      },
+      {
+        "id": "mouth-cavity",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.38,
+            0.08,
+            0.38
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.24,
+            0
+          ]
+        },
+        "region": "cavity"
+      },
+      {
+        "id": "stripe-upper",
+        "type": "torus",
+        "args": {
+          "radius": 0.88,
+          "thickness": 0.09
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.32,
+            0
+          ]
+        },
+        "region": "decoration"
+      },
+      {
+        "id": "stripe-lower",
+        "type": "torus",
+        "args": {
+          "radius": 0.9,
+          "thickness": 0.05
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.12,
+            0
+          ]
+        },
+        "region": "decoration"
+      },
+      {
+        "id": "rim-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.46,
+          "thickness": 0.07
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.18,
+            0
+          ]
+        },
+        "region": "rim"
+      }
+    ],
+    "ground": {
+      "y": -2.24,
+      "region": "table"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.65,
+        "pitch": 0.22,
+        "distance": 8.5,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.75,
+        "distance": 28,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

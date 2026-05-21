@@ -1,0 +1,928 @@
+{
+  "ranAt": "2026-05-19T09:59:29.619Z",
+  "model": "claude-sonnet-4-5",
+  "versions": [
+    "v3.0",
+    "v3.1"
+  ],
+  "totals": {
+    "v3.0": {
+      "atoms": 40,
+      "iq": 4,
+      "mat": 238,
+      "pat": 25,
+      "var": 12,
+      "cost": 1.0709
+    },
+    "v3.1": {
+      "atoms": 29,
+      "iq": 2,
+      "mat": 231,
+      "pat": 27,
+      "var": 5,
+      "cost": 1.0184000000000002
+    }
+  },
+  "totalCost": 2.0893,
+  "demos": [
+    {
+      "demoId": "china-carrier",
+      "runs": {
+        "v3.0": {
+          "demoId": "china-carrier",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "56.8s",
+          "tokens": {
+            "input": 23712,
+            "output": 4861
+          },
+          "costUSD": "0.1441",
+          "subjectCount": 40,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 38,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 1,
+          "variantsUsed": [
+            [
+              "unionRound",
+              1
+            ]
+          ],
+          "zSpread": {
+            "count": 39,
+            "min": -2.8,
+            "max": 2.9,
+            "range": 5.699999999999999,
+            "stdev": 1.3603295130070223
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "waves": 1,
+            "box": 17,
+            "pyramid": 2,
+            "unionRound": 1,
+            "cylinder": 2,
+            "sphere": 4,
+            "ellipsoid": 6,
+            "tri_prism": 6,
+            "octahedron": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Chinese Aircraft Carrier (Liaoning/Shandong)"
+        },
+        "v3.1": {
+          "demoId": "china-carrier",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "70.9s",
+          "tokens": {
+            "input": 26365,
+            "output": 6532
+          },
+          "costUSD": "0.1771",
+          "subjectCount": 55,
+          "newAtomsUsedCount": 10,
+          "newAtomsUsed": [
+            [
+              "moon",
+              1
+            ],
+            [
+              "star",
+              7
+            ],
+            [
+              "bird-silhouette",
+              2
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 46,
+          "patternUsageCount": 5,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 55,
+            "min": -6.2,
+            "max": 3.05,
+            "range": 9.25,
+            "stdev": 2.655802541699187
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "moon": 1,
+            "star": 7,
+            "bird-silhouette": 2,
+            "box": 19,
+            "rounded_box": 3,
+            "cylinder": 2,
+            "sphere": 4,
+            "ellipsoid": 6,
+            "tri_prism": 9,
+            "octahedron": 1,
+            "waves": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Chinese Aircraft Carrier (Liaoning/Shandong-class)"
+        }
+      }
+    },
+    {
+      "demoId": "gothic-cathedral",
+      "runs": {
+        "v3.0": {
+          "demoId": "gothic-cathedral",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "76.1s",
+          "tokens": {
+            "input": 23427,
+            "output": 7591
+          },
+          "costUSD": "0.1841",
+          "subjectCount": 72,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 62,
+          "patternUsageCount": 12,
+          "variantsUsedCount": 5,
+          "variantsUsed": [
+            [
+              "unionStairs",
+              1
+            ],
+            [
+              "unionRound",
+              4
+            ]
+          ],
+          "zSpread": {
+            "count": 42,
+            "min": -8.5,
+            "max": 4.08,
+            "range": 12.58,
+            "stdev": 3.5767306753882155
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "box": 34,
+            "unionStairs": 1,
+            "cylinder": 2,
+            "pyramid": 5,
+            "torus": 1,
+            "capped_cone": 21,
+            "unionRound": 4,
+            "capsule": 4
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Gothic Cathedral (High French)"
+        },
+        "v3.1": {
+          "demoId": "gothic-cathedral",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "81.0s",
+          "tokens": {
+            "input": 26080,
+            "output": 7819
+          },
+          "costUSD": "0.1955",
+          "subjectCount": 72,
+          "newAtomsUsedCount": 2,
+          "newAtomsUsed": [
+            [
+              "bird-silhouette",
+              2
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 68,
+          "patternUsageCount": 14,
+          "variantsUsedCount": 1,
+          "variantsUsed": [
+            [
+              "unionStairs",
+              1
+            ]
+          ],
+          "zSpread": {
+            "count": 52,
+            "min": -9.5,
+            "max": 6,
+            "range": 15.5,
+            "stdev": 3.8135978048891865
+          },
+          "v30AtomsUsedCount": 8,
+          "v30AtomsUsed": [
+            [
+              "fountain",
+              1
+            ],
+            [
+              "bush",
+              3
+            ],
+            [
+              "lamp-standing",
+              4
+            ]
+          ],
+          "typeCounts": {
+            "box": 34,
+            "unionStairs": 1,
+            "cylinder": 2,
+            "pyramid": 5,
+            "torus": 1,
+            "capped_cone": 19,
+            "bird-silhouette": 2,
+            "fountain": 1,
+            "bush": 3,
+            "lamp-standing": 4
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Gothic Cathedral (volumetric)"
+        }
+      }
+    },
+    {
+      "demoId": "spiral-vase",
+      "runs": {
+        "v3.0": {
+          "demoId": "spiral-vase",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "16.0s",
+          "tokens": {
+            "input": 21225,
+            "output": 1196
+          },
+          "costUSD": "0.0816",
+          "subjectCount": 6,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 6,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 6,
+            "min": 0,
+            "max": 0,
+            "range": 0,
+            "stdev": 0
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "revolve": 1,
+            "torus": 3,
+            "ellipsoid": 1,
+            "box": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Celadon Vase (mei ping)"
+        },
+        "v3.1": {
+          "demoId": "spiral-vase",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "31.9s",
+          "tokens": {
+            "input": 23878,
+            "output": 3161
+          },
+          "costUSD": "0.1190",
+          "subjectCount": 23,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 17,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 14,
+            "min": -0.65,
+            "max": 0.65,
+            "range": 1.3,
+            "stdev": 0.34771924518120617
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "cylinder": 5,
+            "revolve": 4,
+            "intersection": 3,
+            "box": 4,
+            "ellipsoid": 1,
+            "capsule": 3,
+            "sphere": 3
+          },
+          "compileOk": false,
+          "compileErr": "SceneData validation failed:\n  - Duplicate subject id \"children_0_-source\" at subjects[3]/children[0]/source\n  - Duplicate subject id \"children_0_-source\" at subjects[4]/children[0]/source",
+          "sceneName": "Celadon vase on pedestal"
+        }
+      }
+    },
+    {
+      "demoId": "mountain-village",
+      "runs": {
+        "v3.0": {
+          "demoId": "mountain-village",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "69.4s",
+          "tokens": {
+            "input": 24540,
+            "output": 6138
+          },
+          "costUSD": "0.1657",
+          "subjectCount": 47,
+          "newAtomsUsedCount": 22,
+          "newAtomsUsed": [
+            [
+              "sun",
+              1
+            ],
+            [
+              "cloud-puff",
+              6
+            ],
+            [
+              "tree-pine",
+              9
+            ],
+            [
+              "cottage",
+              6
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 44,
+          "patternUsageCount": 7,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 46,
+            "min": -28,
+            "max": 2,
+            "range": 30,
+            "stdev": 7.690280611201194
+          },
+          "v30AtomsUsedCount": 4,
+          "v30AtomsUsed": [
+            [
+              "hill-mound",
+              2
+            ],
+            [
+              "stream-segment",
+              1
+            ],
+            [
+              "church-spire",
+              1
+            ]
+          ],
+          "typeCounts": {
+            "sun": 1,
+            "pyramid": 12,
+            "cloud-puff": 6,
+            "box": 7,
+            "hill-mound": 2,
+            "ellipsoid": 1,
+            "stream-segment": 1,
+            "tree-pine": 9,
+            "cottage": 6,
+            "church-spire": 1,
+            "union": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Mountain Village (Alpine Valley)"
+        },
+        "v3.1": {
+          "demoId": "mountain-village",
+          "version": "v3.1",
+          "error": "parse: Expected ',' or ']' after array element in JSON at position 13229 (line 378 column 41)",
+          "rawSavedTo": "mountain-village-v3.1-raw.txt"
+        }
+      }
+    },
+    {
+      "demoId": "clock-915",
+      "runs": {
+        "v3.0": {
+          "demoId": "clock-915",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "22.2s",
+          "tokens": {
+            "input": 22387,
+            "output": 1901
+          },
+          "costUSD": "0.0957",
+          "subjectCount": 18,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 18,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 3,
+            "min": -0.5,
+            "max": 0.02,
+            "range": 0.52,
+            "stdev": 0.24055491403558285
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "box": 1,
+            "torus": 1,
+            "cylinder": 1,
+            "capsule": 14,
+            "sphere": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Wall Clock at 9:15"
+        },
+        "v3.1": {
+          "demoId": "clock-915",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "25.6s",
+          "tokens": {
+            "input": 25040,
+            "output": 2365
+          },
+          "costUSD": "0.1106",
+          "subjectCount": 18,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 18,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 3,
+            "min": -0.8,
+            "max": 0,
+            "range": 0.8,
+            "stdev": 0.3724990678586398
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "box": 1,
+            "torus": 1,
+            "cylinder": 1,
+            "capsule": 14,
+            "sphere": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Wall Clock 9:15"
+        }
+      }
+    },
+    {
+      "demoId": "vintage-bicycle",
+      "runs": {
+        "v3.0": {
+          "demoId": "vintage-bicycle",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "46.2s",
+          "tokens": {
+            "input": 22962,
+            "output": 4456
+          },
+          "costUSD": "0.1357",
+          "subjectCount": 49,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 2,
+          "newIQTypesUsed": [
+            [
+              "capped-torus",
+              2
+            ]
+          ],
+          "materialUsageCount": 24,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 4,
+          "variantsUsed": [
+            [
+              "unionRound",
+              3
+            ],
+            [
+              "unionSoft",
+              1
+            ]
+          ],
+          "zSpread": {
+            "count": 17,
+            "min": -0.02,
+            "max": 0.02,
+            "range": 0.04,
+            "stdev": 0.006859943405700354
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "box": 1,
+            "unionRound": 3,
+            "capsule": 28,
+            "rounded_box": 6,
+            "torus": 3,
+            "sphere": 3,
+            "capped-torus": 2,
+            "unionSoft": 1,
+            "ellipsoid": 2
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Vintage Bicycle"
+        },
+        "v3.1": {
+          "demoId": "vintage-bicycle",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "41.7s",
+          "tokens": {
+            "input": 25615,
+            "output": 3985
+          },
+          "costUSD": "0.1366",
+          "subjectCount": 33,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 2,
+          "newIQTypesUsed": [
+            [
+              "capped-torus",
+              2
+            ]
+          ],
+          "materialUsageCount": 22,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 2,
+          "variantsUsed": [
+            [
+              "unionRound",
+              2
+            ]
+          ],
+          "zSpread": {
+            "count": 17,
+            "min": -0.105,
+            "max": 0.125,
+            "range": 0.22999999999999998,
+            "stdev": 0.04189499148369272
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "box": 1,
+            "unionRound": 2,
+            "capsule": 12,
+            "rounded_box": 6,
+            "torus": 3,
+            "sphere": 3,
+            "rep": 2,
+            "capped-torus": 2,
+            "ellipsoid": 2
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Vintage Bicycle"
+        }
+      }
+    },
+    {
+      "demoId": "dining-setting",
+      "runs": {
+        "v3.0": {
+          "demoId": "dining-setting",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "40.7s",
+          "tokens": {
+            "input": 23007,
+            "output": 3327
+          },
+          "costUSD": "0.1189",
+          "subjectCount": 37,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 19,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 23,
+            "min": -1,
+            "max": 0.6,
+            "range": 1.6,
+            "stdev": 0.3286410064996745
+          },
+          "v30AtomsUsedCount": 7,
+          "v30AtomsUsed": [
+            [
+              "table-round",
+              1
+            ],
+            [
+              "wine-bottle",
+              1
+            ],
+            [
+              "chair",
+              4
+            ],
+            [
+              "lamp-standing",
+              1
+            ]
+          ],
+          "typeCounts": {
+            "table-round": 1,
+            "difference": 2,
+            "cylinder": 4,
+            "union": 4,
+            "capsule": 8,
+            "ellipsoid": 7,
+            "wine-bottle": 1,
+            "extrude": 1,
+            "box": 3,
+            "rounded_box": 1,
+            "chair": 4,
+            "lamp-standing": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Dining Table Setting"
+        },
+        "v3.1": {
+          "demoId": "dining-setting",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "43.5s",
+          "tokens": {
+            "input": 25660,
+            "output": 3793
+          },
+          "costUSD": "0.1339",
+          "subjectCount": 37,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 29,
+          "patternUsageCount": 3,
+          "variantsUsedCount": 2,
+          "variantsUsed": [
+            [
+              "unionRound",
+              2
+            ]
+          ],
+          "zSpread": {
+            "count": 27,
+            "min": -1.8,
+            "max": 0.75,
+            "range": 2.55,
+            "stdev": 0.4726271321408297
+          },
+          "v30AtomsUsedCount": 9,
+          "v30AtomsUsed": [
+            [
+              "wine-bottle",
+              1
+            ],
+            [
+              "chair",
+              4
+            ],
+            [
+              "flower",
+              2
+            ],
+            [
+              "lamp-standing",
+              1
+            ],
+            [
+              "bookshelf",
+              1
+            ]
+          ],
+          "typeCounts": {
+            "ellipsoid": 7,
+            "cylinder": 6,
+            "capsule": 8,
+            "wine-bottle": 1,
+            "sphere": 1,
+            "extrude": 1,
+            "unionRound": 2,
+            "box": 2,
+            "rounded_box": 1,
+            "chair": 4,
+            "flower": 2,
+            "lamp-standing": 1,
+            "bookshelf": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Dining Table Setting"
+        }
+      }
+    },
+    {
+      "demoId": "coastal-lighthouse",
+      "runs": {
+        "v3.0": {
+          "demoId": "coastal-lighthouse",
+          "version": "v3.0",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "59.1s",
+          "tokens": {
+            "input": 22998,
+            "output": 5077
+          },
+          "costUSD": "0.1451",
+          "subjectCount": 44,
+          "newAtomsUsedCount": 18,
+          "newAtomsUsed": [
+            [
+              "moon",
+              1
+            ],
+            [
+              "star",
+              12
+            ],
+            [
+              "cloud-puff",
+              2
+            ],
+            [
+              "bird-silhouette",
+              3
+            ]
+          ],
+          "newIQTypesUsedCount": 2,
+          "newIQTypesUsed": [
+            [
+              "solid-angle",
+              2
+            ]
+          ],
+          "materialUsageCount": 27,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 2,
+          "variantsUsed": [
+            [
+              "unionChamfer",
+              1
+            ],
+            [
+              "unionRound",
+              1
+            ]
+          ],
+          "zSpread": {
+            "count": 43,
+            "min": -9,
+            "max": 1.5,
+            "range": 10.5,
+            "stdev": 4.188357734050772
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "typeCounts": {
+            "moon": 1,
+            "star": 12,
+            "cloud-puff": 2,
+            "waves": 1,
+            "ellipsoid": 4,
+            "box": 3,
+            "cylinder": 7,
+            "unionChamfer": 1,
+            "capped_cone": 1,
+            "unionRound": 1,
+            "torus": 1,
+            "cone": 1,
+            "rounded_box": 4,
+            "solid-angle": 2,
+            "bird-silhouette": 3
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Coastal Lighthouse at Night"
+        },
+        "v3.1": {
+          "demoId": "coastal-lighthouse",
+          "version": "v3.1",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "53.2s",
+          "tokens": {
+            "input": 25651,
+            "output": 4581
+          },
+          "costUSD": "0.1457",
+          "subjectCount": 44,
+          "newAtomsUsedCount": 17,
+          "newAtomsUsed": [
+            [
+              "moon",
+              1
+            ],
+            [
+              "star",
+              12
+            ],
+            [
+              "bird-silhouette",
+              4
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 31,
+          "patternUsageCount": 2,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 43,
+            "min": -9.3,
+            "max": 3.5,
+            "range": 12.8,
+            "stdev": 4.270604442458712
+          },
+          "v30AtomsUsedCount": 8,
+          "v30AtomsUsed": [
+            [
+              "sailboat-small",
+              3
+            ],
+            [
+              "rock-boulder",
+              5
+            ]
+          ],
+          "typeCounts": {
+            "moon": 1,
+            "star": 12,
+            "sailboat-small": 3,
+            "bird-silhouette": 4,
+            "box": 3,
+            "rock-boulder": 5,
+            "capped_cylinder": 1,
+            "cylinder": 4,
+            "torus": 1,
+            "cone": 1,
+            "sphere": 1,
+            "rounded_box": 4,
+            "pyramid": 2,
+            "waves": 1,
+            "ellipsoid": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Coastal Lighthouse (night)"
+        }
+      }
+    }
+  ]
+}

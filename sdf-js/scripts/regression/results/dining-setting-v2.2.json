@@ -1,0 +1,718 @@
+{
+  "result": {
+    "demoId": "dining-setting",
+    "version": "v2.2",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "36.9s",
+    "tokens": {
+      "input": 19874,
+      "output": 3214
+    },
+    "costUSD": "0.1078",
+    "subjectCount": 28,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 28,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 21,
+      "min": -0.05,
+      "max": 0.145,
+      "range": 0.195,
+      "stdev": 0.053494653980889977
+    },
+    "typeCounts": {
+      "ellipsoid": 6,
+      "cylinder": 7,
+      "torus": 1,
+      "revolve": 1,
+      "extrude": 2,
+      "capsule": 7,
+      "box": 2,
+      "sphere": 1,
+      "rounded_box": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Dining Table Setting"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Dining Table Setting",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "餐桌摆设",
+      "from2dCode": "Elliptical table top-down view with plate, wine glass, napkin, cutlery, bread roll, candle. Warm oak/terracotta/burgundy palette. Western place-setting layout."
+    },
+    "subjects": [
+      {
+        "id": "table-top",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.3,
+            0.08,
+            1.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": "wood",
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "plate-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.15,
+          "height": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.095,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "plate-rim-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.14,
+          "thickness": 0.008
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.095,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "wine-glass-bowl",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.045
+              ],
+              [
+                0.038,
+                -0.045
+              ],
+              [
+                0.075,
+                0.03
+              ],
+              [
+                0.072,
+                0.09
+              ],
+              [
+                0,
+                0.09
+              ]
+            ]
+          },
+          "id": "subjects_3_-source"
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.105,
+            0
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "wine-glass-stem",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.007,
+          "height": 0.16
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.025,
+            0
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "wine-glass-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.065,
+          "height": 0.012
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            -0.046,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "wine-liquid",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.065,
+          "height": 0.07
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.07,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.97,
+          "sat": 0.85,
+          "value": 0.6,
+          "metal": 0,
+          "glow": 0.3
+        }
+      },
+      {
+        "id": "napkin-folded",
+        "type": "extrude",
+        "args": {
+          "height": 0.008
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                -0.44,
+                -0.18
+              ],
+              [
+                -0.18,
+                -0.18
+              ],
+              [
+                -0.28,
+                0.08
+              ]
+            ]
+          },
+          "id": "subjects_7_-source"
+        },
+        "transform": {
+          "translate": [
+            -0.3,
+            0.09,
+            -0.05
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": "linen"
+      },
+      {
+        "id": "fork-handle",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            0.09,
+            0.13
+          ],
+          "b": [
+            -0.38,
+            0.09,
+            -0.15
+          ],
+          "radius": 0.01
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.05,
+            0.005,
+            0.015
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.38,
+            0.09,
+            0.145
+          ]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.395,
+            0.09,
+            0.15
+          ],
+          "b": [
+            -0.395,
+            0.09,
+            0.23
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            0.09,
+            0.15
+          ],
+          "b": [
+            -0.38,
+            0.09,
+            0.23
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.365,
+            0.09,
+            0.15
+          ],
+          "b": [
+            -0.365,
+            0.09,
+            0.23
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "knife-handle",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            0.09,
+            -0.15
+          ],
+          "b": [
+            0.38,
+            0.09,
+            0.11
+          ],
+          "radius": 0.012
+        },
+        "material": "silver"
+      },
+      {
+        "id": "knife-bolster",
+        "type": "sphere",
+        "args": {
+          "radius": 0.02
+        },
+        "transform": {
+          "translate": [
+            0.38,
+            0.09,
+            0.12
+          ],
+          "scale": [
+            0.8,
+            1,
+            1
+          ]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "knife-blade",
+        "type": "extrude",
+        "args": {
+          "height": 0.016
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0.372,
+                0.12
+              ],
+              [
+                0.388,
+                0.12
+              ],
+              [
+                0.384,
+                0.27
+              ],
+              [
+                0.372,
+                0.27
+              ]
+            ]
+          },
+          "id": "subjects_15_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.082,
+            0
+          ]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "bread-roll",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.088,
+            0.062,
+            0.075
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.2,
+            0.14,
+            0.13
+          ]
+        },
+        "material": "bread"
+      },
+      {
+        "id": "bread-score-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            0.008,
+            0.016
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.2,
+            0.165,
+            0.13
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.6,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "herb-stem",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.03,
+            0.1,
+            -0.02
+          ],
+          "b": [
+            0.04,
+            0.1,
+            0.06
+          ],
+          "radius": 0.005
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "herb-leaf-1",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.018,
+            0.004,
+            0.01
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.105,
+            0.02
+          ],
+          "rotate": [
+            0,
+            0.5,
+            0
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "herb-leaf-2",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.018,
+            0.004,
+            0.01
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.02,
+            0.105,
+            0.04
+          ],
+          "rotate": [
+            0,
+            -0.3,
+            0
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "candlestick-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.052,
+          "height": 0.012
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            -0.046,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candlestick-column",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.016,
+          "height": 0.15
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.035,
+            0
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candlestick-cup",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.03,
+          "height": 0.01
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.115,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candle-body",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.032,
+            0.13,
+            0.032
+          ],
+          "cornerR": 0.006
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.185,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.3,
+          "value": 0.97,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "candle-wick",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.7,
+            0.248,
+            0
+          ],
+          "b": [
+            0.7,
+            0.262,
+            0
+          ],
+          "radius": 0.003
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "flame-outer",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.018,
+            0.036,
+            0.016
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.285,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.9,
+          "value": 1,
+          "metal": 0,
+          "glow": 3.5
+        }
+      },
+      {
+        "id": "flame-inner",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.009,
+            0.022,
+            0.008
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.28,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.6,
+          "value": 1,
+          "metal": 0,
+          "glow": 4.5
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.08,
+      "region": "floor"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 1.35,
+        "distance": 2.2,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 0.1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.65,
+        "distance": 25,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.35
+      }
+    }
+  }
+}

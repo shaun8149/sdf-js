@@ -1,0 +1,752 @@
+{
+  "result": {
+    "demoId": "spiral-vase",
+    "version": "v3.1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "31.9s",
+    "tokens": {
+      "input": 23878,
+      "output": 3161
+    },
+    "costUSD": "0.1190",
+    "subjectCount": 23,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 17,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 14,
+      "min": -0.65,
+      "max": 0.65,
+      "range": 1.3,
+      "stdev": 0.34771924518120617
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "typeCounts": {
+      "cylinder": 5,
+      "revolve": 4,
+      "intersection": 3,
+      "box": 4,
+      "ellipsoid": 1,
+      "capsule": 3,
+      "sphere": 3
+    },
+    "compileOk": false,
+    "compileErr": "SceneData validation failed:\n  - Duplicate subject id \"children_0_-source\" at subjects[3]/children[0]/source\n  - Duplicate subject id \"children_0_-source\" at subjects[4]/children[0]/source",
+    "sceneName": "Celadon vase on pedestal"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Celadon vase on pedestal",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一只花瓶",
+      "from2dCode": "28-vertex polygon profile, celadon green, classical mei-ping silhouette with belly bulge + cinched foot + flared lip"
+    },
+    "subjects": [
+      {
+        "id": "pedestal",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.35,
+          "height": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.76,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "hex",
+          "scale": 8,
+          "strength": 0.35
+        }
+      },
+      {
+        "id": "vase-body",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.7
+              ],
+              [
+                0.18,
+                -0.7
+              ],
+              [
+                0.2,
+                -0.64
+              ],
+              [
+                0.21,
+                -0.58
+              ],
+              [
+                0.19,
+                -0.5
+              ],
+              [
+                0.28,
+                -0.2
+              ],
+              [
+                0.31,
+                0.05
+              ],
+              [
+                0.29,
+                0.2
+              ],
+              [
+                0.22,
+                0.38
+              ],
+              [
+                0.16,
+                0.5
+              ],
+              [
+                0.12,
+                0.56
+              ],
+              [
+                0.1,
+                0.62
+              ],
+              [
+                0.13,
+                0.68
+              ],
+              [
+                0.145,
+                0.72
+              ],
+              [
+                0,
+                0.72
+              ]
+            ]
+          },
+          "id": "subjects_1_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.42,
+          "sat": 0.35,
+          "value": 0.78,
+          "metal": 0.05,
+          "glow": 0
+        },
+        "region": "ceramic"
+      },
+      {
+        "id": "stripe-upper",
+        "type": "intersection",
+        "children": [
+          {
+            "id": "stripe-upper-host",
+            "type": "revolve",
+            "args": {
+              "offset": 0
+            },
+            "source": {
+              "type": "polygon",
+              "args": {
+                "points": [
+                  [
+                    0,
+                    -0.7
+                  ],
+                  [
+                    0.18,
+                    -0.7
+                  ],
+                  [
+                    0.2,
+                    -0.64
+                  ],
+                  [
+                    0.21,
+                    -0.58
+                  ],
+                  [
+                    0.19,
+                    -0.5
+                  ],
+                  [
+                    0.28,
+                    -0.2
+                  ],
+                  [
+                    0.31,
+                    0.05
+                  ],
+                  [
+                    0.29,
+                    0.2
+                  ],
+                  [
+                    0.22,
+                    0.38
+                  ],
+                  [
+                    0.16,
+                    0.5
+                  ],
+                  [
+                    0.12,
+                    0.56
+                  ],
+                  [
+                    0.1,
+                    0.62
+                  ],
+                  [
+                    0.13,
+                    0.68
+                  ],
+                  [
+                    0.145,
+                    0.72
+                  ],
+                  [
+                    0,
+                    0.72
+                  ]
+                ]
+              },
+              "id": "children_0_-source"
+            }
+          },
+          {
+            "id": "stripe-upper-mask",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.7,
+                0.055,
+                0.7
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.1,
+                0
+              ]
+            }
+          }
+        ],
+        "material": {
+          "hue": 0.4,
+          "sat": 0.45,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stripe-lower",
+        "type": "intersection",
+        "children": [
+          {
+            "id": "stripe-lower-host",
+            "type": "revolve",
+            "args": {
+              "offset": 0
+            },
+            "source": {
+              "type": "polygon",
+              "args": {
+                "points": [
+                  [
+                    0,
+                    -0.7
+                  ],
+                  [
+                    0.18,
+                    -0.7
+                  ],
+                  [
+                    0.2,
+                    -0.64
+                  ],
+                  [
+                    0.21,
+                    -0.58
+                  ],
+                  [
+                    0.19,
+                    -0.5
+                  ],
+                  [
+                    0.28,
+                    -0.2
+                  ],
+                  [
+                    0.31,
+                    0.05
+                  ],
+                  [
+                    0.29,
+                    0.2
+                  ],
+                  [
+                    0.22,
+                    0.38
+                  ],
+                  [
+                    0.16,
+                    0.5
+                  ],
+                  [
+                    0.12,
+                    0.56
+                  ],
+                  [
+                    0.1,
+                    0.62
+                  ],
+                  [
+                    0.13,
+                    0.68
+                  ],
+                  [
+                    0.145,
+                    0.72
+                  ],
+                  [
+                    0,
+                    0.72
+                  ]
+                ]
+              },
+              "id": "children_0_-source"
+            }
+          },
+          {
+            "id": "stripe-lower-mask",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.7,
+                0.03,
+                0.7
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.35,
+                0
+              ]
+            }
+          }
+        ],
+        "material": {
+          "hue": 0.4,
+          "sat": 0.45,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rim-ring",
+        "type": "intersection",
+        "children": [
+          {
+            "id": "rim-host",
+            "type": "revolve",
+            "args": {
+              "offset": 0
+            },
+            "source": {
+              "type": "polygon",
+              "args": {
+                "points": [
+                  [
+                    0,
+                    -0.7
+                  ],
+                  [
+                    0.18,
+                    -0.7
+                  ],
+                  [
+                    0.2,
+                    -0.64
+                  ],
+                  [
+                    0.21,
+                    -0.58
+                  ],
+                  [
+                    0.19,
+                    -0.5
+                  ],
+                  [
+                    0.28,
+                    -0.2
+                  ],
+                  [
+                    0.31,
+                    0.05
+                  ],
+                  [
+                    0.29,
+                    0.2
+                  ],
+                  [
+                    0.22,
+                    0.38
+                  ],
+                  [
+                    0.16,
+                    0.5
+                  ],
+                  [
+                    0.12,
+                    0.56
+                  ],
+                  [
+                    0.1,
+                    0.62
+                  ],
+                  [
+                    0.13,
+                    0.68
+                  ],
+                  [
+                    0.145,
+                    0.72
+                  ],
+                  [
+                    0,
+                    0.72
+                  ]
+                ]
+              },
+              "id": "children_0_-source"
+            }
+          },
+          {
+            "id": "rim-mask",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.7,
+                0.045,
+                0.7
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.68,
+                0
+              ]
+            }
+          }
+        ],
+        "material": {
+          "hue": 0.4,
+          "sat": 0.45,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mouth-opening",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.12,
+            0.025,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.72,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.25,
+          "value": 0.18,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            0.05,
+            1.15,
+            0.02
+          ],
+          "radius": 0.008
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.045
+        },
+        "transform": {
+          "translate": [
+            0.05,
+            1.18,
+            0.02
+          ]
+        },
+        "material": {
+          "hue": 0.92,
+          "sat": 0.75,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            -0.08,
+            1.08,
+            -0.03
+          ],
+          "radius": 0.008
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.038
+        },
+        "transform": {
+          "translate": [
+            -0.08,
+            1.11,
+            -0.03
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.8,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            0.02,
+            1.02,
+            -0.04
+          ],
+          "radius": 0.007
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-3",
+        "type": "sphere",
+        "args": {
+          "radius": 0.032
+        },
+        "transform": {
+          "translate": [
+            0.02,
+            1.04,
+            -0.04
+          ]
+        },
+        "material": {
+          "hue": 0.15,
+          "sat": 0.7,
+          "value": 0.9,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "table-top",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.2,
+            0.08,
+            1.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.86,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-fl",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.04,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            -1.225,
+            0.65
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-fr",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.04,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            0.9,
+            -1.225,
+            0.65
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-bl",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.04,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            -0.9,
+            -1.225,
+            -0.65
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-br",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.04,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            0.9,
+            -1.225,
+            -0.65
+          ]
+        },
+        "material": "wood"
+      }
+    ],
+    "ground": {
+      "y": -1.58,
+      "region": "floor"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 3.8,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.65,
+        "altitude": 0.68,
+        "distance": 28,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      }
+    }
+  }
+}

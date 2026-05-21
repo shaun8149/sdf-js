@@ -1,0 +1,512 @@
+```json
+{
+  "v": 1,
+  "name": "Mountain Village at Dawn",
+  "source": {
+    "format": "llm-lift",
+    "prompt": "山间的村落",
+    "from2dCode": "Alpine village scene with 6 cottages, church tower, terraced fields, stream, conifer trees, layered mountains, morning mist. 2D side-view composition with atmospheric depth via color layering."
+  },
+  "subjects": [
+    {
+      "id": "moon",
+      "type": "moon",
+      "args": { "radius": 0.35 },
+      "transform": { "translate": [-8, 6.5, -18] },
+      "material": { "hue": 0.15, "sat": 0.08, "value": 0.95, "metal": 0, "glow": 2.2 }
+    },
+    {
+      "id": "star-1",
+      "type": "star",
+      "args": { "radius": 0.035, "shape": "octahedron" },
+      "transform": { "translate": [-6.5, 7.2, -20] }
+    },
+    {
+      "id": "star-2",
+      "type": "star",
+      "args": { "radius": 0.04, "shape": "octahedron" },
+      "transform": { "translate": [-4.2, 6.8, -19] }
+    },
+    {
+      "id": "star-3",
+      "type": "star",
+      "args": { "radius": 0.032, "shape": "octahedron" },
+      "transform": { "translate": [-2.5, 7.5, -21] }
+    },
+    {
+      "id": "star-4",
+      "type": "star",
+      "args": { "radius": 0.038, "shape": "octahedron" },
+      "transform": { "translate": [0.8, 7.0, -19] }
+    },
+    {
+      "id": "star-5",
+      "type": "star",
+      "args": { "radius": 0.036, "shape": "octahedron" },
+      "transform": { "translate": [3.2, 6.6, -20] }
+    },
+    {
+      "id": "star-6",
+      "type": "star",
+      "args": { "radius": 0.041, "shape": "octahedron" },
+      "transform": { "translate": [5.5, 7.3, -18] }
+    },
+    {
+      "id": "star-7",
+      "type": "star",
+      "args": { "radius": 0.033, "shape": "octahedron" },
+      "transform": { "translate": [7.8, 6.9, -19] }
+    },
+    {
+      "id": "mtn-far-left",
+      "type": "extrude",
+      "args": { "height": 2.5 },
+      "source": {
+        "type": "polygon",
+        "args": {
+          "points": [
+            [-13, 1], [-10.5, 5.2], [-7.8, 2.8], [-5.5, 6.2], 
+            [-2.8, 3.0], [-0.5, 4.4], [2.0, 1.5], [-13, 1.5]
+          ]
+        }
+      },
+      "transform": { "translate": [0, 0, -16] },
+      "material": { "hue": 0.58, "sat": 0.15, "value": 0.51, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "mtn-far-right",
+      "type": "extrude",
+      "args": { "height": 2.5 },
+      "source": {
+        "type": "polygon",
+        "args": {
+          "points": [
+            [1, 1.2], [3.8, 5.8], [6.2, 3.2], [8.5, 6.5],
+            [11, 3.8], [13, 4.8], [13, 1.2]
+          ]
+        }
+      },
+      "transform": { "translate": [0, 0, -16] },
+      "material": { "hue": 0.58, "sat": 0.15, "value": 0.51, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "mist-veil-far",
+      "type": "box",
+      "args": { "dims": [26, 0.8, 2.8] },
+      "transform": { "translate": [0, 2.4, -15.8] },
+      "material": { "hue": 0.12, "sat": 0.08, "value": 0.86, "metal": 0, "glow": 0.3 }
+    },
+    {
+      "id": "mtn-mid-left",
+      "type": "extrude",
+      "args": { "height": 3.2 },
+      "source": {
+        "type": "polygon",
+        "args": {
+          "points": [
+            [-13, -1], [-11, 2.8], [-8.2, 0.5], [-6, 4.0],
+            [-3.5, 1.2], [-1.2, 3.2], [0.8, 0.5], [-13, 0.5]
+          ]
+        }
+      },
+      "transform": { "translate": [0, 0, -11] },
+      "material": { "hue": 0.28, "sat": 0.32, "value": 0.48, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "mtn-mid-right",
+      "type": "extrude",
+      "args": { "height": 3.2 },
+      "source": {
+        "type": "polygon",
+        "args": {
+          "points": [
+            [0.5, 0.5], [2.5, 4.0], [5.0, 1.8], [7.8, 5.0],
+            [10.5, 2.2], [13, 3.5], [13, 0.5]
+          ]
+        }
+      },
+      "transform": { "translate": [0, 0, -11] },
+      "material": { "hue": 0.28, "sat": 0.32, "value": 0.48, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "ridge-near",
+      "type": "extrude",
+      "args": { "height": 4.0 },
+      "source": {
+        "type": "polygon",
+        "args": {
+          "points": [
+            [-13, -2.8], [-9.5, 0.4], [-6.8, -1.0], [-4.0, 1.0],
+            [-1.0, -0.8], [1.8, 0.6], [4.8, -1.2], [7.5, 0.2],
+            [10.5, -1.5], [13, -0.5], [13, -3.5], [-13, -3.5]
+          ]
+        }
+      },
+      "transform": { "translate": [0, 0, -6] },
+      "material": "leaf-green",
+      "pattern": { "kind": "cells", "scale": 3, "strength": 0.35 }
+    },
+    {
+      "id": "ground-plane",
+      "type": "box",
+      "args": { "dims": [26, 0.4, 12] },
+      "transform": { "translate": [0, -1.0, 0] },
+      "material": { "hue": 0.16, "sat": 0.42, "value": 0.47, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "field-terrace-1",
+      "type": "box",
+      "args": { "dims": [14, 0.08, 0.6] },
+      "transform": { "translate": [-1.5, -0.345, 1.5] },
+      "material": { "hue": 0.15, "sat": 0.55, "value": 0.66, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "field-terrace-2",
+      "type": "box",
+      "args": { "dims": [10, 0.06, 0.5] },
+      "transform": { "translate": [1.2, -0.455, 1.8] },
+      "material": { "hue": 0.15, "sat": 0.55, "value": 0.66, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "stream-pond",
+      "type": "ellipsoid",
+      "args": { "dims": [1.2, 0.15, 0.3] },
+      "transform": { "translate": [0.5, -0.68, 2.2] },
+      "material": "sky-blue"
+    },
+    {
+      "id": "stream-narrow",
+      "type": "capsule",
+      "args": { "a": [-2.8, -0.7, 2.0], "b": [0, -0.68, 2.2], "radius": 0.12 },
+      "material": "sky-blue"
+    },
+    {
+      "id": "path-1",
+      "type": "capsule",
+      "args": { "a": [1.0, -0.95, 3.5], "b": [0.5, -0.75, 2.0], "radius": 0.18 },
+      "material": { "hue": 0.13, "sat": 0.28, "value": 0.65, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "path-2",
+      "type": "capsule",
+      "args": { "a": [0.5, -0.75, 2.0], "b": [-0.8, -0.62, 0.8], "radius": 0.14 },
+      "material": { "hue": 0.13, "sat": 0.28, "value": 0.65, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "path-3",
+      "type": "capsule",
+      "args": { "a": [-0.8, -0.62, 0.8], "b": [-1.8, -0.50, -0.2], "radius": 0.12 },
+      "material": { "hue": 0.13, "sat": 0.28, "value": 0.65, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-1",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.8, "trunkRadius": 0.08, "foliageHeight": 1.0, "foliageBaseR": 0.5, "layers": 3 },
+      "transform": { "translate": [-10.5, -0.42, -3.8] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-2",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.75, "trunkRadius": 0.07, "foliageHeight": 0.9, "foliageBaseR": 0.45, "layers": 3 },
+      "transform": { "translate": [-9.2, -0.38, -3.5] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-3",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.82, "trunkRadius": 0.08, "foliageHeight": 1.05, "foliageBaseR": 0.52, "layers": 3 },
+      "transform": { "translate": [-8.0, -0.40, -3.6] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-4",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.8, "trunkRadius": 0.08, "foliageHeight": 1.0, "foliageBaseR": 0.50, "layers": 3 },
+      "transform": { "translate": [6.2, -0.42, -3.8] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-5",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.88, "trunkRadius": 0.09, "foliageHeight": 1.15, "foliageBaseR": 0.58, "layers": 3 },
+      "transform": { "translate": [7.5, -0.38, -3.5] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-6",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.75, "trunkRadius": 0.07, "foliageHeight": 0.95, "foliageBaseR": 0.48, "layers": 3 },
+      "transform": { "translate": [9.0, -0.44, -4.0] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-7",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.85, "trunkRadius": 0.08, "foliageHeight": 1.08, "foliageBaseR": 0.54, "layers": 3 },
+      "transform": { "translate": [10.5, -0.36, -3.3] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-8",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.7, "trunkRadius": 0.06, "foliageHeight": 0.85, "foliageBaseR": 0.42, "layers": 3 },
+      "transform": { "translate": [-7.2, -0.45, -4.2] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-9",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.78, "trunkRadius": 0.07, "foliageHeight": 0.98, "foliageBaseR": 0.49, "layers": 3 },
+      "transform": { "translate": [11.8, -0.40, -3.7] },
+      "material": { "hue": 0.28, "sat": 0.68, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-10",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.72, "trunkRadius": 0.07, "foliageHeight": 0.88, "foliageBaseR": 0.44, "layers": 3 },
+      "transform": { "translate": [-2.8, -0.28, -1.8] },
+      "material": { "hue": 0.30, "sat": 0.70, "value": 0.38, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "tree-pine-11",
+      "type": "tree-pine",
+      "args": { "trunkHeight": 0.76, "trunkRadius": 0.075, "foliageHeight": 0.92, "foliageBaseR": 0.46, "layers": 3 },
+      "transform": { "translate": [2.8, -0.28, -1.8] },
+      "material": { "hue": 0.30, "sat": 0.70, "value": 0.38, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "mist-band-valley",
+      "type": "ellipsoid",
+      "args": { "dims": [9.0, 0.55, 1.8] },
+      "transform": { "translate": [-1.5, -0.38, -2.0] },
+      "material": { "hue": 0.12, "sat": 0.06, "value": 0.87, "metal": 0, "glow": 0.4 }
+    },
+    {
+      "id": "mist-band-2",
+      "type": "ellipsoid",
+      "args": { "dims": [7.0, 0.40, 1.5] },
+      "transform": { "translate": [3.0, -0.52, -0.5] },
+      "material": { "hue": 0.12, "sat": 0.06, "value": 0.87, "metal": 0, "glow": 0.4 }
+    },
+    {
+      "id": "cottage-1",
+      "type": "cottage",
+      "args": { "width": 1.8, "height": 1.8, "roofHeight": 1.0 },
+      "transform": { "translate": [-6.2, -0.48, 0.2] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "cottage-2",
+      "type": "cottage",
+      "args": { "width": 1.6, "height": 1.6, "roofHeight": 0.9 },
+      "transform": { "translate": [-3.8, -0.42, 0.4] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "cottage-3",
+      "type": "cottage",
+      "args": { "width": 2.0, "height": 2.0, "roofHeight": 1.1 },
+      "transform": { "translate": [-1.4, -0.46, 0.3] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "cottage-4",
+      "type": "cottage",
+      "args": { "width": 1.5, "height": 1.5, "roofHeight": 0.8 },
+      "transform": { "translate": [1.6, -0.40, 0.5] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "cottage-5",
+      "type": "cottage",
+      "args": { "width": 1.7, "height": 1.7, "roofHeight": 1.0 },
+      "transform": { "translate": [4.0, -0.45, 0.25] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "cottage-6",
+      "type": "cottage",
+      "args": { "width": 1.3, "height": 1.3, "roofHeight": 0.8 },
+      "transform": { "translate": [-5.0, -0.30, -1.2] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 3, "strength": 0.55 }
+    },
+    {
+      "id": "church-base",
+      "type": "box",
+      "args": { "dims": [0.95, 3.0, 1.2] },
+      "transform": { "translate": [-1.4, 0.30, 0.1] },
+      "material": "stone",
+      "pattern": { "kind": "brick", "scale": 2.5, "strength": 0.6 }
+    },
+    {
+      "id": "church-spire",
+      "type": "pyramid",
+      "args": { "height": 1.4 },
+      "transform": { "translate": [-1.4, 2.1, 0.1], "scale": [0.95, 1, 1.2] },
+      "material": "matte-black"
+    },
+    {
+      "id": "church-cross-v",
+      "type": "box",
+      "args": { "dims": [0.05, 0.35, 0.05] },
+      "transform": { "translate": [-1.4, 3.12, 0.1] },
+      "material": "matte-black"
+    },
+    {
+      "id": "church-cross-h",
+      "type": "box",
+      "args": { "dims": [0.18, 0.05, 0.05] },
+      "transform": { "translate": [-1.4, 2.86, 0.1] },
+      "material": "matte-black"
+    },
+    {
+      "id": "church-window",
+      "type": "capped_cone",
+      "args": { "a": [-1.4, 1.0, 0.65], "b": [-1.4, 1.5, 0.65], "r1": 0.15, "r2": 0.08 },
+      "material": { "hue": 0.95, "sat": 0.85, "value": 1.0, "metal": 0, "glow": 1.8 }
+    },
+    {
+      "id": "smoke-1",
+      "type": "cloud-puff",
+      "args": { "width": 0.18, "height": 0.18, "depth": 0.15 },
+      "transform": { "translate": [-6.2 + 0.4, 0.95, 0.2] },
+      "material": { "hue": 0.12, "sat": 0.05, "value": 0.88, "metal": 0, "glow": 0.2 }
+    },
+    {
+      "id": "smoke-2",
+      "type": "cloud-puff",
+      "args": { "width": 0.14, "height": 0.14, "depth": 0.12 },
+      "transform": { "translate": [-1.4 + 0.44, 1.28, 0.3] },
+      "material": { "hue": 0.12, "sat": 0.05, "value": 0.88, "metal": 0, "glow": 0.2 }
+    },
+    {
+      "id": "smoke-3",
+      "type": "cloud-puff",
+      "args": { "width": 0.12, "height": 0.12, "depth": 0.10 },
+      "transform": { "translate": [4.0 + 0.37, 0.87, 0.25] },
+      "material": { "hue": 0.12, "sat": 0.05, "value": 0.88, "metal": 0, "glow": 0.2 }
+    },
+    {
+      "id": "cow-1",
+      "type": "cow",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [-7.5, -0.62, 1.2], "rotate": [0, 0.6, 0] },
+      "material": { "hue": 0.10, "sat": 0.10, "value": 0.92, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "cow-2",
+      "type": "cow",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [6.8, -0.60, 1.4], "rotate": [0, -0.4, 0] },
+      "material": { "hue": 0.10, "sat": 0.10, "value": 0.92, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "horse-1",
+      "type": "horse",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [-9.2, -0.58, 0.8], "rotate": [0, 0.3, 0] },
+      "material": { "hue": 0.07, "sat": 0.55, "value": 0.32, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "sheep-1",
+      "type": "sheep",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [8.5, -0.64, 1.6], "rotate": [0, -0.7, 0] },
+      "material": "matte-white"
+    },
+    {
+      "id": "sheep-2",
+      "type": "sheep",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [9.2, -0.62, 1.8], "rotate": [0, 0.2, 0] },
+      "material": "matte-white"
+    },
+    {
+      "id": "sheep-3",
+      "type": "sheep",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [9.8, -0.63, 1.5], "rotate": [0, -0.5, 0] },
+      "material": "matte-white"
+    },
+    {
+      "id": "sheep-4",
+      "type": "sheep",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [8.0, -0.65, 2.0], "rotate": [0, 0.8, 0] },
+      "material": "matte-white"
+    },
+    {
+      "id": "dog-1",
+      "type": "dog",
+      "args": { "scale": 1.0 },
+      "transform": { "translate": [-4.5, -0.55, 1.8], "rotate": [0, -1.2, 0] },
+      "material": { "hue": 0.08, "sat": 0.45, "value": 0.50, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "fence-1",
+      "type": "fence-section",
+      "args": { "length": 3.2, "height": 0.45 },
+      "transform": { "translate": [-8.5, -0.60, 1.0], "rotate": [0, 0.3, 0] },
+      "material": "wood"
+    },
+    {
+      "id": "fence-2",
+      "type": "fence-section",
+      "args": { "length": 2.8, "height": 0.45 },
+      "transform": { "translate": [7.2, -0.62, 1.5], "rotate": [0, -0.5, 0] },
+      "material": "wood"
+    },
+    {
+      "id": "well-1",
+      "type": "well",
+      "args": { "radius": 0.35, "wallHeight": 0.5 },
+      "transform": { "translate": [-0.5, -0.65, 1.5] },
+      "material": "stone"
+    },
+    {
+      "id": "flower-1",
+      "type": "flower",
+      "args": { "stemHeight": 0.35, "bloomRadius": 0.12 },
+      "transform": { "translate": [-5.5, -0.58, 1.3] },
+      "material": { "hue": 0.92, "sat": 0.85, "value": 0.90, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "flower-2",
+      "type": "flower",
+      "args": { "stemHeight": 0.38, "bloomRadius": 0.14 },
+      "transform": { "translate": [2.8, -0.60, 1.4] },
+      "material": { "hue": 0.15, "sat": 0.90, "value": 0.95, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "flower-3",
+      "type": "flower",
+      "args": { "stemHeight": 0.32, "bloomRadius": 0.10 },
+      "transform": { "translate": [-3.2, -0.56, 1.6] },
+      "material": { "hue": 0.05, "sat": 0.88, "value": 0.92, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "bush-1",
+      "type": "bush",
+      "args": { "radius": 0.32 },
+      "transform": { "translate": [-7.8, -0.60, 0.5] },
+      "material": { "hue": 0.30, "sat": 0.70, "value": 0.45, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "bush-2",
+      "type": "bush",
+      "args": { "radius": 0.28 },
+      "transform": { "translate": [5.5, -0.62, 0.8] },
+      "material": { "hue": 0.30, "sat": 0.70, "value": 0.45, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "bird-1",
+      "type": "bird-silhouette",
+      "args": { "bodyLength": 0.15, "bodyRadius": 0.04, "wingSpan": 0.42, "wingRise": 0.08 },
+      "transform": { "translate": [-4.5, 3.2, -2.5],

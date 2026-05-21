@@ -1,0 +1,252 @@
+{
+  "result": {
+    "demoId": "clock-915",
+    "version": "v1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "14.7s",
+    "tokens": {
+      "input": 7519,
+      "output": 1219
+    },
+    "costUSD": "0.0408",
+    "subjectCount": 10,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "typeCounts": {
+      "plane": 1,
+      "cylinder": 3,
+      "box": 6
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Wall clock showing 9:15"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Wall clock showing 9:15",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "挂在墙上的9点15分的钟",
+      "from2dCode": "2D flat clock face with bezel, 12 hour ticks, minute ticks, hour hand at 9:15, minute hand at 3, center boss"
+    },
+    "subjects": [
+      {
+        "id": "wall",
+        "type": "plane",
+        "args": {
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "point": [
+            0,
+            0,
+            -0.3
+          ]
+        },
+        "region": "wall"
+      },
+      {
+        "id": "clock-bezel",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.2,
+            0
+          ]
+        },
+        "region": "bezel"
+      },
+      {
+        "id": "clock-face",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.5,
+          "height": 0.02
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.2,
+            0.05
+          ]
+        },
+        "region": "face"
+      },
+      {
+        "id": "tick-12",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.028,
+            0.06,
+            0.015
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.61,
+            0.06
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.028,
+            0.015
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.41,
+            1.2,
+            0.06
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-6",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.028,
+            0.06,
+            0.015
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.79,
+            0.06
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "tick-9",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.028,
+            0.015
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.41,
+            1.2,
+            0.06
+          ]
+        },
+        "region": "tick"
+      },
+      {
+        "id": "hour-hand",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.036,
+            0.28,
+            0.02
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.12,
+            1.22,
+            0.07
+          ],
+          "rotate": [
+            0,
+            0,
+            2.88
+          ]
+        },
+        "region": "hand"
+      },
+      {
+        "id": "minute-hand",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.36,
+            0.024,
+            0.02
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.16,
+            1.2,
+            0.08
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "hand"
+      },
+      {
+        "id": "center-boss",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.03,
+          "height": 0.04
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.2,
+            0.09
+          ]
+        },
+        "region": "center"
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "floor"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.15,
+        "pitch": 0.08,
+        "distance": 3.5,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 1.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.75,
+        "distance": 25,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.3
+      }
+    }
+  }
+}
