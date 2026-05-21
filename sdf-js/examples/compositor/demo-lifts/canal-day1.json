@@ -1,0 +1,135 @@
+{
+  "id": "canal-day1",
+  "title": "Canal Sprint",
+  "prompt": "弯曲水道 + 拱桥 + 亮窗",
+  "code2d": "// Canal sprint Days 1-2 combined: curve DomainGroup + canal-building / canal-windows / canal-bridge atoms.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#0a1828';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#ccc';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Canal — switch to FLY 3D', 24, 48);\n};",
+  "sceneData": {
+    "v": 1,
+    "name": "Canal Sprint",
+    "source": {
+      "format": "hand-crafted",
+      "prompt": "Venice canal — curve warp + buildings + lit windows + bridge",
+      "notes": "Atoms: canal-building (shell + cornice + window recesses, step-factor 0.5 to fix Lipschitz issues), canal-windows (hash-lit glow planes), canal-bridge (arch). DomainGroup curve wraps each row to give the iconic S-shaped canal."
+    },
+    "subjects": [
+      {
+        "id": "right-bank-shell",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "rb-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 7], "count": 4 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "rb-building",
+            "type": "canal-building",
+            "args": { "width": 2.2, "height": 4.5, "winX": 5, "winY": 7 },
+            "transform": { "translate": [6, 0, 0] },
+            "material": { "hue": 0.08, "sat": 0.4, "value": 0.35, "metal": 0, "glow": 0 }
+          }
+        }
+      },
+      {
+        "id": "right-bank-lights",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "rb-lights-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 7], "count": 4 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "rb-lights",
+            "type": "canal-windows",
+            "args": { "width": 2.2, "height": 4.5, "winX": 5, "winY": 7, "density": 0.55, "seed": 7.3 },
+            "transform": { "translate": [6, 0, 0] },
+            "material": { "hue": 0.13, "sat": 0.7, "value": 1.0, "metal": 0, "glow": 1.5 }
+          }
+        }
+      },
+      {
+        "id": "left-bank-shell",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "lb-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 7], "count": 4 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "lb-building",
+            "type": "canal-building",
+            "args": { "width": 2.2, "height": 5.0, "winX": 5, "winY": 8 },
+            "transform": { "translate": [-6, 0, 0] },
+            "material": { "hue": 0.04, "sat": 0.35, "value": 0.3, "metal": 0, "glow": 0 }
+          }
+        }
+      },
+      {
+        "id": "left-bank-lights",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "lb-lights-rep",
+          "type": "rep",
+          "args": { "period": [0, 0, 7], "count": 4 },
+          "transform": { "translate": [0, 0, 30] },
+          "source": {
+            "id": "lb-lights",
+            "type": "canal-windows",
+            "args": { "width": 2.2, "height": 5.0, "winX": 5, "winY": 8, "density": 0.5, "seed": 31.7 },
+            "transform": { "translate": [-6, 0, 0] },
+            "material": { "hue": 0.10, "sat": 0.75, "value": 1.0, "metal": 0, "glow": 1.5 }
+          }
+        }
+      },
+      {
+        "id": "bridge-near",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "br-near",
+          "type": "canal-bridge",
+          "args": { "span": 9.5, "archR": 1.6, "thickness": 1.4 },
+          "transform": { "translate": [0, 0, 12] },
+          "material": { "hue": 0.08, "sat": 0.25, "value": 0.55, "metal": 0, "glow": 0 }
+        }
+      },
+      {
+        "id": "bridge-far",
+        "type": "curve",
+        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "source": {
+          "id": "br-far",
+          "type": "canal-bridge",
+          "args": { "span": 9.5, "archR": 1.6, "thickness": 1.4 },
+          "transform": { "translate": [0, 0, 38] },
+          "material": { "hue": 0.08, "sat": 0.25, "value": 0.55, "metal": 0, "glow": 0 }
+        }
+      },
+      {
+        "id": "water",
+        "type": "sea-surface",
+        "args": { "depth": 0.18, "scale": 1.0 },
+        "transform": { "translate": [0, 0, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0, "pitch": 0.08, "distance": 25, "focal": 1.5,
+        "targetX": 0, "targetY": 2.5, "targetZ": 22
+      },
+      "light": {
+        "azimuth": 0.6, "altitude": 0.12, "distance": 40, "intensity": 1.0
+      },
+      "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-05-21",
+    "model": "hand-crafted",
+    "costUSD": 0
+  }
+}

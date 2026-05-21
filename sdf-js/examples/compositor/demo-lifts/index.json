@@ -73,6 +73,24 @@
       "status": "ready",
       "file": "coastal-lighthouse.json",
       "prompt": "海边的灯塔"
+    },
+    {
+      "id": "open-ocean",
+      "title": "开阔的海面",
+      "thesisPoint": "M3 community port · afl_ext sea (MIT)",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "open-ocean.json",
+      "prompt": "开阔的海面"
+    },
+    {
+      "id": "canal-day1",
+      "title": "Venice Canal",
+      "thesisPoint": "curve warp + canal-building/windows/bridge atoms",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "canal-day1.json",
+      "prompt": "弯曲水道 + 拱桥 + 亮窗"
     }
   ]
 }

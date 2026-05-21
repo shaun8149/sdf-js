@@ -62,6 +62,16 @@ export const PRIMITIVE_TYPES = new Set([
   'flower', 'mushroom', 'bush', 'vine', 'grass-tuft',
   // Time-aware
   'waves',
+  // Heightfield-as-SDF (afl_ext-inspired open-ocean; uses material.kind='sea'
+  // shading branch). See src/scene/components/community/aflext-sea-surface.js.
+  'sea-surface',
+  // Procedural architectural atom — Venice-style box with window grid carved
+  // into all 4 facades. Composes with curve DomainGroup for canal scenes.
+  'canal-building',
+  // Lit window glow planes (separate leaf for emissive shading).
+  'canal-windows',
+  // Stone arch bridge spanning the canal.
+  'canal-bridge',
   // 2D → 3D pseudo-primitives
   'extrude', 'revolve', 'extrude_to',
 ]);
@@ -102,7 +112,7 @@ export const PAIR_BOOLEAN_RA_RB = new Set(['groove', 'tongue']);
 [...PAIR_BOOLEAN_OPS].forEach(t => BOOLEAN_OPS.add(t));
 
 export const DOMAIN_OPS = new Set([
-  'rep', 'mirror', 'twist', 'bend',
+  'rep', 'mirror', 'twist', 'bend', 'curve',
   // hg_sdf-style radial repetition + 8-fold symmetry.
   'modPolar', 'mirrorOctant',
 ]);
@@ -195,7 +205,9 @@ export function resolveMaterial(input) {
     }
     // Defensive default for value — older presets without value field treated
     // as full brightness so existing scenes keep working through schema change.
-    return { value: 1.0, ...preset };
+    // Default kind=0 (standard Lambert); presets that need a special branch
+    // (e.g. future 'sea-water' preset) can override.
+    return { value: 1.0, kind: 0, ...preset };
   }
   if (typeof input === 'object') {
     return {
@@ -204,10 +216,20 @@ export function resolveMaterial(input) {
       value: clamp01(input.value ?? 1),
       metal: clamp01(input.metal ?? 0),
       glow:  clamp05(input.glow  ?? 0),
+      // Material kind routes to a specialised shading branch in the renderer.
+      //   0 = standard Lambert (default), 1 = sea (fresnel + atmosphere reflection),
+      //   reserved: 2 = skin/SSS, 3 = glass, ... (future).
+      kind:  MATERIAL_KIND_INDEX[input.kind] ?? 0,
     };
   }
   return null;
 }
+
+// String-to-int mapping for material.kind. Keeps GLSL side a simple int compare.
+export const MATERIAL_KIND_INDEX = {
+  normal: 0,
+  sea:    1,
+};
 
 // =============================================================================
 // Surface patterns — Shane-style cellular / voronoi / brick / hex modulation
@@ -563,6 +585,16 @@ function validateDomainArgs(type, args, path, errors, warnings) {
     }
     if (typeof args.k !== 'number') {
       errors.push(`${path}: ${type} requires args.k (number)`);
+    }
+  } else if (type === 'curve') {
+    if (typeof args.amplitude !== 'number') {
+      errors.push(`${path}: curve requires args.amplitude (number)`);
+    }
+    if (typeof args.frequency !== 'number') {
+      errors.push(`${path}: curve requires args.frequency (number)`);
+    }
+    if (args.axis != null && !['x', 'y', 'z'].includes(args.axis)) {
+      errors.push(`${path}: curve args.axis must be 'x' | 'y' | 'z' (default 'z')`);
     }
   } else if (type === 'modPolar') {
     if (args.axis != null && !['x', 'y', 'z'].includes(args.axis)) {

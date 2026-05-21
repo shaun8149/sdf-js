@@ -366,6 +366,27 @@ const PRIMS = {
   // Autoscope 海浪地面（time-aware；caller shader 必须 declare uniform float u_time）
   waves: ([freq, amp, angle, speed], p) =>
     `sdWaves(${p}, ${flt(freq)}, ${flt(amp)}, ${flt(angle)}, ${flt(speed)})`,
+
+  // afl_ext-inspired open-ocean heightfield (time-aware; sea shading is
+  // routed via material.kind === 'sea' which the renderer matches on a
+  // dedicated branch — see flyLambert.js for the fresnel + atmosphere path).
+  'sea-surface': ([depth, scale], p) =>
+    `sdSeaSurface(${p}, ${flt(depth)}, ${flt(scale)})`,
+
+  // Canal building — box shell with procedural window grid carved into all
+  // 4 facades. Args: [width, height, winX, winY].
+  'canal-building': ([width, height, winX, winY], p) =>
+    `sdCanalBuilding(${p}, ${flt(width)}, ${flt(height)}, ${flt(winX)}, ${flt(winY)})`,
+
+  // Canal windows — thin glow planes inside canal-building window recesses.
+  // Composes in same position as a canal-building with matching args.
+  // Args: [width, height, winX, winY, density, seed].
+  'canal-windows': ([width, height, winX, winY, density, seed], p) =>
+    `sdCanalWindows(${p}, ${flt(width)}, ${flt(height)}, ${flt(winX)}, ${flt(winY)}, ${flt(density)}, ${flt(seed)})`,
+
+  // Canal bridge — stone arch spanning canal. Args: [span, archR, thickness].
+  'canal-bridge': ([span, archR, thickness], p) =>
+    `sdCanalBridge(${p}, ${flt(span)}, ${flt(archR)}, ${flt(thickness)})`,
 };
 
 // ---- op emitters -----------------------------------------------------------
@@ -463,6 +484,10 @@ const OPS = {
   // ---- artistic ops -------------------------------------------------------
   twist: (sdf, p) => walk(sdf.ast.children[0], `opTwist(${p}, ${flt(sdf.ast.scalars[0])})`),
   bend:  (sdf, p) => walk(sdf.ast.children[0], `opBend(${p}, ${flt(sdf.ast.scalars[0])})`),
+  // curve(amp, freq, driverAxisIdx) — sinusoidal x-offset driven by another axis.
+  // Generalisation of the Venice canal idiom (x += amp * sin(z * freq)).
+  curve: (sdf, p) => walk(sdf.ast.children[0],
+    `opCurve(${p}, ${flt(sdf.ast.scalars[0])}, ${flt(sdf.ast.scalars[1])}, ${Math.trunc(sdf.ast.scalars[2])})`),
 
   // hg_sdf-style polar repetition. Emits one of polarModX/Y/Z based on axis.
   modPolar: (sdf, p) => {

@@ -29,7 +29,7 @@ import {
   cone, capped_cone,
   tetrahedron, octahedron, dodecahedron, icosahedron,
   pyramid, slab3, wireframe_box, tri_prism, waves,
-  rotateXYZ, twist, bend,
+  rotateXYZ, twist, bend, curve,
   modPolar, mirrorOctant,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
@@ -41,6 +41,8 @@ import { roundConeSDF } from './components/community/iq-round-cone.js';
 import { rhombusSDF } from './components/community/iq-rhombus.js';
 import { horseshoeSDF } from './components/community/iq-horseshoe.js';
 import { uShapeSDF } from './components/community/iq-u-shape.js';
+import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
+import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF } from './components/atoms/canal-building.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
   pineTreeSDF, broadleafTreeSDF,
@@ -270,6 +272,34 @@ const PRIMITIVE_FACTORIES = {
   // -- Time-aware --
   waves:         (a) => waves(a.freq ?? 2, a.amp ?? 0.5, a.angle ?? 0, a.speed ?? 0),
 
+  // -- Heightfield-as-SDF (afl_ext-inspired open-ocean) --
+  // Auto-attaches material.kind='sea' downstream so the renderer routes hits
+  // through its sea-shading branch (fresnel + atmosphere reflection + sun glint).
+  // Authors can also override colour by passing an explicit material with a
+  // custom kind value, but defaults already give the iconic open-ocean look.
+  'sea-surface':    (a) => seaSurfaceSDF({ depth: a.depth ?? 1.0, scale: a.scale ?? 0.6 }),
+
+  // -- Venice-style procedural building (canal sprint Day 1) --
+  'canal-building': (a) => canalBuildingSDF({
+    width:  a.width  ?? 2.0,
+    height: a.height ?? 6.0,
+    winX:   a.winX   ?? 5,
+    winY:   a.winY   ?? 8,
+  }),
+  'canal-windows': (a) => canalWindowsSDF({
+    width:   a.width   ?? 2.0,
+    height:  a.height  ?? 6.0,
+    winX:    a.winX    ?? 5,
+    winY:    a.winY    ?? 8,
+    density: a.density ?? 0.4,
+    seed:    a.seed    ?? 1.0,
+  }),
+  'canal-bridge': (a) => canalBridgeSDF({
+    span:      a.span      ?? 8.0,
+    archR:     a.archR     ?? 1.6,
+    thickness: a.thickness ?? 1.2,
+  }),
+
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.
   extrude:      null,
@@ -318,9 +348,26 @@ export function compile(sceneData) {
       // Tag the post-transform top-level SDF with its resolved material +
       // pattern. sdf3.compile.js flattenUnion propagates both down to all
       // descendant leaves (including atoms that internally union N parts).
-      // null tag = renderer falls back (hash-palette for material; no pattern).
-      compiled.sdf._subjectMaterial = resolveMaterial(subj.material);
-      compiled.sdf._subjectPattern  = resolvePattern(subj.pattern);
+      //
+      // sea-surface auto-attaches the 'sea' kind so the renderer routes hits
+      // through its sea-shading branch without the author needing to spell
+      // out material in SceneData. Explicit material on the subject overrides.
+      //
+      // IMPORTANT: only override if the top-level subj defines material.
+      // compileSubject / compileDomain may have already propagated material
+      // from nested leaves up to compiled.sdf (e.g. canal-building inside
+      // curve→rep). Unconditional overwrite would wipe that out.
+      const topLevelMat = resolveMaterial(subj.material);
+      if (topLevelMat != null) {
+        compiled.sdf._subjectMaterial = topLevelMat;
+      } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
+      }
+      // (compiled.sdf already keeps any nested-propagated _subjectMaterial.)
+      const topLevelPat = resolvePattern(subj.pattern);
+      if (topLevelPat != null) {
+        compiled.sdf._subjectPattern = topLevelPat;
+      }
       topLevelSdfs.push(compiled.sdf);
     }
   }
@@ -427,7 +474,19 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   // 3. Apply transform
   sdf = applyTransform(sdf, subj.transform, subj.animation);
 
-  // 4. Region tracking
+  // 4. Attach material/pattern at leaf level. Required when a primitive is
+  // nested inside DomainGroup ops (rep / curve / mirror / twist / bend) —
+  // the wrapping op SDF doesn't carry material, so flattenUnion needs to
+  // find it on the leaf. Top-level subjects also set this on their outer
+  // SDF, but leaf-level always wins via the inner-override rule.
+  if (subj.material != null) {
+    sdf._subjectMaterial = resolveMaterial(subj.material);
+  }
+  if (subj.pattern != null) {
+    sdf._subjectPattern = resolvePattern(subj.pattern);
+  }
+
+  // 5. Region tracking
   const region = subj.region ?? defaultRegion;
   subjectInfos.push({ id: subj.id, region, sdf });
 
@@ -550,6 +609,10 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
     sdf = twist(source.sdf, args.k);
   } else if (subj.type === 'bend') {
     sdf = bend(source.sdf, args.k);
+  } else if (subj.type === 'curve') {
+    // axis defaults to 'z' (Venice canal idiom: z drives sinusoidal x offset).
+    const axisIdx = args.axis === 'x' ? 0 : args.axis === 'y' ? 1 : 2;
+    sdf = curve(source.sdf, args.amplitude, args.frequency, axisIdx);
   } else if (subj.type === 'modPolar') {
     sdf = modPolar(source.sdf, { axis: args.axis, repetitions: args.repetitions });
   } else if (subj.type === 'mirrorOctant') {
@@ -558,7 +621,26 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
     throw new Error(`compile: unknown domain op "${subj.type}"`);
   }
 
+  // applyTransform creates new wrapper SDFs (scale/rotate/translate) that
+  // don't carry _subjectMaterial, so we must attach AFTER the transform.
   sdf = applyTransform(sdf, subj.transform, subj.animation);
+
+  // Propagate material/pattern from source up to the wrapping domain SDF.
+  // flattenUnion in sdf3.compile only descends into 'union' ops — it treats
+  // rep/curve/mirror/twist/bend as opaque leaves, so material attached to
+  // the inner primitive wouldn't be found unless we lift it onto the wrapper.
+  // Subject-level material on the domain op itself takes precedence.
+  if (subj.material != null) {
+    sdf._subjectMaterial = resolveMaterial(subj.material);
+  } else if (source.sdf._subjectMaterial !== undefined) {
+    sdf._subjectMaterial = source.sdf._subjectMaterial;
+  }
+  if (subj.pattern != null) {
+    sdf._subjectPattern = resolvePattern(subj.pattern);
+  } else if (source.sdf._subjectPattern !== undefined) {
+    sdf._subjectPattern = source.sdf._subjectPattern;
+  }
+
   subjectInfos.push({ id: subj.id, region, sdf });
   return { sdf, region };
 }

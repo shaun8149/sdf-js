@@ -33,7 +33,7 @@ export {
 } from './d3.js';
 
 // 3D artistic ops (Wave 2C)
-export { twist, bend } from './d3.js';
+export { twist, bend, curve } from './d3.js';
 
 // Euler-angle rotation convenience (Three.js / Blender 风格)
 export { rotateXYZ } from './d3.js';

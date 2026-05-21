@@ -35,9 +35,10 @@ uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
 // values are 1..numLeaves).
 uniform vec4  u_leafMaterial[96];
-// Per-leaf extended material — y reserved, z reserved, w reserved; x = value
-// (HSV brightness). Separate LUT because vec4 already full with hue/sat/metal/
-// glow. Default 1.0 = full brightness; matte-black-style presets use ~0.2.
+// Per-leaf extended material — x = value (HSV brightness), y = kind
+// (0 = Lambert, 1 = sea-shading branch); z/w reserved. Separate LUT because
+// vec4 already full with hue/sat/metal/glow. Default value=1.0 (full
+// brightness); matte-black-style presets use ~0.2. kind defaults to 0.
 uniform vec4  u_leafTone[96];
 // Per-leaf pattern LUT (x = pattern code, y = scale, z = strength, w = reserved).
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
@@ -353,6 +354,10 @@ void main() {
   vec3 col;
   if (!hit) {
     col = sky(rd, sunDir);
+    // Volumetric cloud overlay (robobo1221-inspired, sky-only). Returns the
+    // sky color unchanged when looking down; mixes in clouds for rays going
+    // up. Lit by sunDir + warm sun palette matching the sky() horizon glow.
+    col = atlasCloudOverlay(col, rd, sunDir, gl_FragCoord.xy, u_time);
   } else {
     // ---- Shading ----
     vec3 p = ro + rd * t;
@@ -379,13 +384,16 @@ void main() {
     //     LUT slot is unset (sat<0 sentinel), fall back to hash-by-index
     //     cosine palette for visual variety.
     //   - ground (matId=1): cool neutral or checker (no material support yet)
-    vec3 base;
+    vec3 base = vec3(0.0);
     float metalK = 0.0;
     float glowK = 0.0;
+    bool isSea = false;  // routed via material.kind=='sea' (tone.y > 0.5)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
-      if (leafMat.y < 0.0) {
+      if (leafTone.y > 0.5) {
+        isSea = true;  // skip Lambert; handled in sea-shading block below
+      } else if (leafMat.y < 0.0) {
         base = cosPalette(fract(hitIdx * 0.6180339887));
       } else {
         // Full HSV from material LUT + value from tone LUT. value < 1.0
@@ -408,67 +416,101 @@ void main() {
     // Pattern uses surface normal for orientation-aware 2D projection (so
     // brick courses are horizontal regardless of which way the wall faces).
     // leafPat was already fetched above in the combined fetchLeafData call.
-    if (matId > 1.5 && leafPat.x > 0.5) {
+    if (matId > 1.5 && !isSea && leafPat.x > 0.5) {
       base = applyPattern(base, p, n, leafPat);
     }
 
-    // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
-    // metals + emissives keep smooth uniform surfaces; matte diffuse gets
-    // ±10% albedo variance to break up plastic-looking uniformity. The
-    // 6.0 scale gives ~6 visible bumps per world unit — good for stone /
-    // wood / brick at typical camera distance.
-    float plasticGate = (1.0 - metalK) * (1.0 - smoothstep(0.0, 0.5, glowK));
-    float texDetail = fbm3_lite(p * 6.0);
-    base *= mix(1.0, 0.82 + 0.36 * texDetail, plasticGate * 0.7);
+    if (isSea) {
+      // ---- Sea-shading branch (afl_ext-inspired, MIT) -----------------------
+      // Replaces the entire Lambert path for sea-surface hits. Reads the same
+      // sea height function as the SDF tracer so the normal matches the
+      // surface exactly; samples atmosphere for reflection + sun glint;
+      // mixes in subsurface scattering proportional to crest height.
+      float seaDist = length(p - ro);
+      float seaEps = max(0.01, seaDist * 0.001);
+      vec3 seaN = atlasSeaNormal(p.xz, seaEps, 1.0, 0.6, u_time);
+      // Smooth normal with distance to kill far-field high-frequency noise
+      // (otherwise the horizon shimmers with aliased crests).
+      seaN = mix(seaN, vec3(0.0, 1.0, 0.0), 0.8 * min(1.0, sqrt(seaDist * 0.005)));
 
-    // Light colors
-    vec3 sunCol    = vec3(1.05, 0.96, 0.84);
-    vec3 skyCol    = vec3(0.50, 0.62, 0.84);
-    vec3 bounceCol = vec3(0.55, 0.48, 0.40);
-    vec3 rimCol    = vec3(0.55, 0.66, 0.80);
+      // Schlick fresnel. F0=0.04 dielectric water. Grazing → 1.0.
+      float seaFres = 0.04 + 0.96 * pow(1.0 - max(0.0, dot(-rd, seaN)), 5.0);
 
-    // Compose lighting. Metal suppresses diffuse + tints specular toward
-    // base color (the canonical metal/non-metal split). Glow adds emissive
-    // last, unshadowed.
-    float diffK = 1.0 - 0.85 * metalK;
-    vec3  specTint = mix(vec3(1.0), base, metalK);
-    float specBoost = 0.45 + 1.8 * metalK;
+      // Reflect ray; force upward bounce so we always sample sky hemisphere.
+      vec3 R = reflect(rd, seaN);
+      R.y = abs(R.y);
+      vec3 reflection = atlasSeaAtmosphere(R, sunDir) + vec3(1.0) * atlasSeaSun(R, sunDir);
 
-    vec3 lin = vec3(0.0);
-    lin += base * sunCol    * diff * shadowK * 1.35 * diffK;
-    lin += base * skyCol    * skyL * ao      * 0.42 * diffK;
-    lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
-    lin += specTint * sunCol * spec * shadowK * specBoost;
-    lin += rimCol * rim * ao                 * 0.18;
+      // Subsurface scattering — bluish tint modulated by crest height.
+      // Crest pixels show more scattering than troughs (more water above
+      // sub-surface backscatter source).
+      float crestK = clamp(0.2 + (p.y + 1.0) * 0.5, 0.0, 1.0);
+      vec3 scattering = vec3(0.0293, 0.0698, 0.1717) * 0.1 * crestK;
 
-    // Single-bounce reflection on the ground plane. Fresnel-weighted so
-    // grazing angles reflect strongly (the wet-floor / polished-stone look),
-    // near-vertical angles mostly show ground base. Reflection ray is shorter
-    // (12 units, 32 steps) — visual sweetener, not main signal.
-    if (u_reflectOn > 0.5 && matId < 1.5) {
-      vec3 rrd = reflect(rd, n);
-      vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 12.0);
-      vec3 refl;
-      if (hit2.y > 0.5) {
-        vec3 p2 = p + n * 0.01 + rrd * hit2.x;
-        refl = shadeReflection(p2, rrd, hit2.y, hit2.z, sunDir);
-      } else {
-        refl = sky(rrd, sunDir);
+      col = seaFres * reflection * 2.0 + scattering;
+    } else {
+      // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
+      // metals + emissives keep smooth uniform surfaces; matte diffuse gets
+      // ±10% albedo variance to break up plastic-looking uniformity. The
+      // 6.0 scale gives ~6 visible bumps per world unit — good for stone /
+      // wood / brick at typical camera distance.
+      float plasticGate = (1.0 - metalK) * (1.0 - smoothstep(0.0, 0.5, glowK));
+      float texDetail = fbm3_lite(p * 6.0);
+      base *= mix(1.0, 0.82 + 0.36 * texDetail, plasticGate * 0.7);
+
+      // Light colors
+      vec3 sunCol    = vec3(1.05, 0.96, 0.84);
+      vec3 skyCol    = vec3(0.50, 0.62, 0.84);
+      vec3 bounceCol = vec3(0.55, 0.48, 0.40);
+      vec3 rimCol    = vec3(0.55, 0.66, 0.80);
+
+      // Compose lighting. Metal suppresses diffuse + tints specular toward
+      // base color (the canonical metal/non-metal split). Glow adds emissive
+      // last, unshadowed.
+      float diffK = 1.0 - 0.85 * metalK;
+      vec3  specTint = mix(vec3(1.0), base, metalK);
+      float specBoost = 0.45 + 1.8 * metalK;
+
+      vec3 lin = vec3(0.0);
+      lin += base * sunCol    * diff * shadowK * 1.35 * diffK;
+      lin += base * skyCol    * skyL * ao      * 0.42 * diffK;
+      lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
+      lin += specTint * sunCol * spec * shadowK * specBoost;
+      lin += rimCol * rim * ao                 * 0.18;
+
+      // Single-bounce reflection on the ground plane. Fresnel-weighted so
+      // grazing angles reflect strongly (the wet-floor / polished-stone look),
+      // near-vertical angles mostly show ground base. Reflection ray is shorter
+      // (12 units, 32 steps) — visual sweetener, not main signal.
+      if (u_reflectOn > 0.5 && matId < 1.5) {
+        vec3 rrd = reflect(rd, n);
+        vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 12.0);
+        vec3 refl;
+        if (hit2.y > 0.5) {
+          vec3 p2 = p + n * 0.01 + rrd * hit2.x;
+          refl = shadeReflection(p2, rrd, hit2.y, hit2.z, sunDir);
+        } else {
+          refl = sky(rrd, sunDir);
+        }
+        // Schlick fresnel: F0=0.04 for dielectrics; grazing angle → 1.0
+        float fres = 0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+        lin = mix(lin, refl, fres * 0.55);  // 0.55 cap so even mirror grazing keeps some ground tint
       }
-      // Schlick fresnel: F0=0.04 for dielectrics; grazing angle → 1.0
-      float fres = 0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
-      lin = mix(lin, refl, fres * 0.55);  // 0.55 cap so even mirror grazing keeps some ground tint
-    }
 
-    // Atmospheric perspective: height-modulated fog (nimitz model).
-    // Ground-hugging haze + saturating distance attenuation. Emissive added
-    // after fog so glow (lighthouse beacon, neon) punches through atmosphere.
-    float fog = atmosphereDensity(p, t);
-    col = mix(lin, sky(rd, sunDir), fog);
-    col += base * glowK * 1.4;
+      // Atmospheric perspective: height-modulated fog (nimitz model).
+      // Ground-hugging haze + saturating distance attenuation. Emissive added
+      // after fog so glow (lighthouse beacon, neon) punches through atmosphere.
+      float fog = atmosphereDensity(p, t);
+      col = mix(lin, sky(rd, sunDir), fog);
+      col += base * glowK * 1.4;
+    }
   }
 
-  gl_FragColor = vec4(tonemap(col), 1.0);
+  // Global ACES filmic tonemap (Hill / Narkowicz public-domain fit). Replaces
+  // the old pow(0.4545) gamma — handles HDR sky+sun output without flattening
+  // the bright/dark dynamic range. Slight scene-wide colour shift expected
+  // (warmer, more cinematic).
+  gl_FragColor = vec4(atlasACESTonemap(col), 1.0);
 }`;
 }
 
@@ -641,6 +683,10 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
       materialLUT[i * 4 + 2] = m.metal;
       materialLUT[i * 4 + 3] = m.glow;
       toneLUT[i * 4 + 0] = m.value ?? 1.0;
+      // tone[1] carries material.kind (0 = standard Lambert, 1 = sea, ...).
+      // The renderer's sea-shading branch reads this to decide whether to
+      // route a hit through Lambert or through the fresnel+atmosphere path.
+      toneLUT[i * 4 + 1] = m.kind ?? 0;
     }
 
     // Build per-leaf pattern LUT. Default zeros = code=0 = no pattern.

@@ -405,6 +405,24 @@ export const bend = defineOp3('bend', (other, k) => {
   };
 });
 
+// curve：sinusoidal X-offset driven by another axis. The Venice canal idiom
+// (x += 20*sin(z*0.02)) generalised — any axis can drive the sin, and the
+// X offset deforms the whole child SDF. Composes for highways, river banks,
+// mountain passes, long galleries, anything that snakes along a path.
+//
+//   amp:      sine amplitude (in world units)
+//   freq:     sine frequency (rad / unit of driver axis)
+//   axisIdx:  0=x, 1=y, 2=z (default 2 = z). Caller converts 'z' string.
+export const curve = defineOp3('curve', (other, amp, freq, axisIdx = 2) => {
+  const a = numLit(amp);
+  const f = numLit(freq);
+  const ax = axisIdx | 0;
+  return (p) => {
+    const off = a * Math.sin(p[ax] * f);
+    return other.f([p[0] - off, p[1], p[2]]);
+  };
+});
+
 // modPolar (hg_sdf pModPolar)：把垂直于某轴的平面分成 N 等分扇形，源 SDF 在
 // 折叠后的扇形内 evaluate → 围绕轴重复 N 次。用例：clock dial / gear teeth /
 // rose-window 花瓣 / dome 肋 / fan 叶片 / mandala。

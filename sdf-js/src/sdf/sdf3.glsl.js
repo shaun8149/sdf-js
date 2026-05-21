@@ -534,6 +534,161 @@ vec3 opBend(vec3 p, float k) {
   return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
 }
 
+// Curve warp: offset X by amp*sin(driverAxis*freq). The canonical Venice canal
+// idiom (x += 20*sin(z*0.02)) generalised — let any axis drive a sinusoidal
+// X offset. Composes with any child SDF — buildings, vehicles, mountains all
+// get curved along a sinuous path. driverIdx: 0=x, 1=y, 2=z (typically 2).
+vec3 opCurve(vec3 p, float amp, float freq, int driverIdx) {
+  float driver = driverIdx == 0 ? p.x : (driverIdx == 1 ? p.y : p.z);
+  p.x -= amp * sin(driver * freq);
+  return p;
+}
+
+// ---- Canal building (Venice-style, procedural windows) --------------------
+// Procedural building atom: box shell with window grid recesses carved into
+// all 4 vertical facades. Window positions / sizes are procedurally generated
+// from grid count parameters; the recess depth is fixed so windows feel like
+// real openings (not just texture).
+//
+// Footprint is square (width × width). Building rises from y=0 to y=2*height.
+// Caller positions the building via translate (typically y = 0 for ground).
+float sdCanalBuilding(vec3 p, float width, float height, float winX, float winY) {
+  p.y -= height;  // center on Y (atom expects ground at y=0)
+
+  float shell = sdBox(p, vec3(width, height, width));
+
+  // Window slot dimensions — winX + 0.5 / winY + 0.5 padding pulls outermost
+  // windows inward so they don't touch building corners.
+  float wsX = 2.0 * width  / (winX + 0.5);
+  float wsY = 2.0 * height / (winY + 0.5);
+  float halfWinW = wsX * 0.32;
+  float halfWinH = wsY * 0.40;
+  float recessDepth = 0.18;
+
+  // Cutter for z-facing facades (windows on z = ±width planes). abs(p.z)
+  // maps both facades to the same recess. The cutter z-extent is
+  // recessDepth + 0.08 (slightly LARGER than recessDepth) so the cutter
+  // extends past the outer wall surface. Without this extension, the
+  // cutter SDF is exactly 0 at the outer wall in cell footprints, which
+  // confuses sphere-trace into rendering the recess opening as wall.
+  vec3 qz = vec3(
+    mod(p.x + wsX * 0.5, wsX) - wsX * 0.5,
+    mod(p.y + wsY * 0.5, wsY) - wsY * 0.5,
+    abs(p.z) - width + recessDepth
+  );
+  float winZ = sdBox(qz, vec3(halfWinW, halfWinH, recessDepth + 0.08));
+
+  // Cutter for x-facing facades (windows on x = ±width planes).
+  vec3 qx = vec3(
+    abs(p.x) - width + recessDepth,
+    mod(p.y + wsY * 0.5, wsY) - wsY * 0.5,
+    mod(p.z + wsX * 0.5, wsX) - wsX * 0.5
+  );
+  float winX2 = sdBox(qx, vec3(recessDepth + 0.08, halfWinH, halfWinW));
+
+  // Roof cornice — thin horizontal recess near the top edge to break the
+  // dead-box silhouette. The carve is a band that wraps all 4 vertical
+  // facades within recessDepth of the outer surface, between y=cornY±halfH.
+  float cornY = height - 0.4;
+  float cornHalfH = 0.12;
+  float distToOuter = max(abs(p.x), abs(p.z)) - width;
+  float cornCarve = max(
+    -(distToOuter + recessDepth * 0.5),
+    abs(p.y - cornY) - cornHalfH
+  );
+
+  // Step factor 0.7: the SDF subtraction max(shell, -union(cutters)) is not
+  // strictly Lipschitz at corners where multiple cutters or facade boundaries
+  // overlap — sphere trace can overshoot at glancing angles. 0.7 provides
+  // safety margin without crippling march convergence.
+  return 0.7 * max(shell, -min(min(winZ, winX2), cornCarve));
+}
+
+// ---- Canal building lit windows ------------------------------------------
+// Thin glow planes inside the window recesses of canal-building. Hash on
+// window cell index decides lit/dark. Designed to be a SEPARATE leaf so it
+// can carry a glow material independent of the wall material.
+//
+// Caller composes this atom in the SAME position as a canal-building with
+// matching args — they share window grid geometry. Density controls fraction
+// lit (0 = all dark, 1 = all lit).
+float sdCanalWindows(vec3 p, float width, float height, float winX, float winY, float density, float seed) {
+  p.y -= height;
+  // Match canal-building window grid exactly.
+  float wsX = 2.0 * width  / (winX + 0.5);
+  float wsY = 2.0 * height / (winY + 0.5);
+  float halfWinW = wsX * 0.30;  // slightly smaller than recess (which uses 0.32)
+  float halfWinH = wsY * 0.38;
+  float planeDepth = 0.025;
+
+  // Building extent — outside this in x/y, no windows exist. Margin trims edges
+  // so windows don't touch building corners (matches canal-building padding).
+  float xMargin = width  - 0.2;
+  float yMargin = height - 0.4;
+  float xBound = abs(p.x) - xMargin;
+  float yBound = abs(p.y) - yMargin;
+
+  // ---- x-facing facade planes (windows on z = ±width) ----
+  // Slab in z: thin plane at |z| = width - 0.065 (just inside outer skin)
+  float facadeZ = abs(p.z) - (width - planeDepth - 0.04);
+  float zSlab = abs(facadeZ) - planeDepth;  // <=0 inside slab
+
+  // Per-window cell shape (modulo grid)
+  float winLocal_x = mod(p.x + wsX * 0.5, wsX) - wsX * 0.5;
+  float winLocal_y = mod(p.y + wsY * 0.5, wsY) - wsY * 0.5;
+  float winShape_xLane = max(abs(winLocal_x) - halfWinW, abs(winLocal_y) - halfWinH);
+
+  // Lit/dark per cell
+  float cellXi = floor((p.x + wsX * 0.5) / wsX);
+  float cellYi = floor((p.y + wsY * 0.5) / wsY);
+  float litZ = step(1.0 - density, hash21(vec2(cellXi, cellYi) + seed));
+
+  // Intersection of: slab, building bounds, window cell shape
+  float planeZ = max(max(zSlab, max(xBound, yBound)), winShape_xLane);
+  // If not lit, push very far (sphere trace will skip past this region)
+  planeZ = mix(1e3, planeZ, litZ);
+
+  // ---- z-facing facade planes (windows on x = ±width) ----
+  float facadeX = abs(p.x) - (width - planeDepth - 0.04);
+  float xSlab = abs(facadeX) - planeDepth;
+
+  float winLocal_z = mod(p.z + wsX * 0.5, wsX) - wsX * 0.5;
+  float winShape_zLane = max(abs(winLocal_z) - halfWinW, abs(winLocal_y) - halfWinH);
+
+  float cellZi = floor((p.z + wsX * 0.5) / wsX);
+  float litX = step(1.0 - density, hash21(vec2(cellZi, cellYi) + seed + 173.7));
+
+  float zBound = abs(p.z) - xMargin;
+  float planeX = max(max(xSlab, max(zBound, yBound)), winShape_zLane);
+  planeX = mix(1e3, planeX, litX);
+
+  return min(planeZ, planeX);
+}
+
+// ---- Canal bridge ---------------------------------------------------------
+// Stone arch bridge spanning the canal. Box + tri-prism roof - cylindrical
+// archway. Footprint along x (span direction), thickness along z (walkway
+// width).
+float sdCanalBridge(vec3 p, float span, float archR, float thickness) {
+  // Main body: box from y=0 to y=2*archR
+  vec3 q = p;
+  q.y -= archR;
+  float body = sdBox(q, vec3(span * 0.5, archR, thickness * 0.5));
+  // Triangular crown on top (gives stone bridge profile)
+  vec3 qcrown = vec3(q.x, q.y - archR * 0.4, q.z);
+  float crown = sdTriPrism(vec3(qcrown.x, qcrown.y, qcrown.z),
+                           vec2(archR * 0.7, thickness * 0.45));
+  float bridge = min(body, crown);
+  // Cylindrical archway cutting through (axis along z so water passes under).
+  // Cylinder oriented with its axis along z requires sdCylinder variant; easier
+  // to use sdCappedCylinder with endpoints.
+  vec3 arch_a = vec3(0.0, 0.0, -thickness);
+  vec3 arch_b = vec3(0.0, 0.0,  thickness);
+  float arch = sdCylinder(p, arch_a, arch_b, archR * 0.85);
+  // Subtract arch from bridge
+  return max(bridge, -arch);
+}
+
 // ---- Domain repetition (Inigo Quilez pMod, autoscope idiom) ---------------
 // period.x/y/z == 0  → 该轴不重复（等效 period ≈ ∞）
 // IMPORTANT: 我们把 0 替换成 1e6 → 该轴的 mod 永不切，保留 caller "0 = 无 rep" 的写法
@@ -629,6 +784,421 @@ float sdWaves(vec3 p, float freq, float amp, float angle, float speed) {
   float pz = -s * p.x + c * p.z;
   return p.y + sin(speed * u_time + pz / freq) * amp - amp;
 }
+
+// ---- Open-ocean sea-surface (height-field as SDF) --------------------------
+// Inspired by afl_ext's "Ocean" Shadertoy (MIT, 2017-2024). Independent
+// implementation; keeps the wave-drag idiom (position += dir * dx * weight)
+// and exp(sin(x)-1) wave shape. Used as a heightfield SDF primitive:
+//   distance = (p.y - height(p.xz, t)) * STEP_FACTOR
+// STEP_FACTOR < 1 prevents sphere-tracer over-shoot on shallow slopes (the
+// height-field gradient overstates the true-distance gradient at glancing
+// angles). 0.5 is a safe value learned from prior heightfield-as-SDF ports.
+
+// Single wave octave + its position-derivative (exp(sin(x)-1) shape).
+// dx is returned negative so it can be folded directly into the position
+// drag step: position += dir * dx.y * weight * DRAG_MULT.
+vec2 atlasWavedx(vec2 position, vec2 direction, float frequency, float timeshift) {
+  float x = dot(direction, position) * frequency + timeshift;
+  float wave = exp(sin(x) - 1.0);
+  float dx = wave * cos(x);
+  return vec2(wave, -dx);
+}
+
+// Iterative wave summation with derivative-driven position drag.
+// iterations: 12 for raymarch (cheap), 36 for normal (accurate).
+// Returns wave height in [0, 1] roughly; caller scales by depth.
+float atlasGetWaves(vec2 position, int iterations, float t) {
+  float wavePhaseShift = length(position) * 0.1;
+  float iter = 0.0;
+  float freq = 1.0;
+  float timeMul = 2.0;
+  float weight = 1.0;
+  float sumV = 0.0;
+  float sumW = 0.0;
+  for (int i = 0; i < 64; i++) {
+    if (i >= iterations) break;  // dynamic-bounded loop for GLSL ES 1.0
+    vec2 p = vec2(sin(iter), cos(iter));
+    vec2 res = atlasWavedx(position, p, freq, t * timeMul + wavePhaseShift);
+    position += p * res.y * weight * 0.38;  // DRAG_MULT
+    sumV += res.x * weight;
+    sumW += weight;
+    weight = mix(weight, 0.0, 0.2);
+    freq *= 1.18;
+    timeMul *= 1.07;
+    iter += 1232.399963;
+  }
+  return sumV / sumW;
+}
+
+// Height-field SDF wrapper. depth = amplitude (positive). The sea sits at
+// y ≈ -depth (low) to y ≈ 0 (high). Pass scale to control horizontal wave
+// wavelength: small scale = big waves, big scale = chop.
+float sdSeaSurface(vec3 p, float depth, float scale) {
+  // 12 iterations matches afl_ext's ITERATIONS_RAYMARCH — cheap for tracing.
+  // Normal estimation in the renderer can re-call with more iters if desired.
+  float h = atlasGetWaves(p.xz * scale, 12, u_time) * depth - depth;
+  return (p.y - h) * 0.5;  // step factor to tame the heightfield-as-SDF
+}
+
+// High-resolution sea-surface normal (used by sea-shading branch in fly3d).
+// Cross-product variant (afl_ext) — produces accurate normal even on steep
+// foam crests. 36 iterations for accuracy; called only on hit pixels.
+vec3 atlasSeaNormal(vec2 pos, float e, float depth, float scale, float t) {
+  vec2 ex = vec2(e, 0.0);
+  float H = atlasGetWaves(pos * scale, 36, t) * depth;
+  vec3 a = vec3(pos.x, H, pos.y);
+  return normalize(cross(
+    a - vec3(pos.x - e, atlasGetWaves((pos - ex.xy) * scale, 36, t) * depth, pos.y),
+    a - vec3(pos.x, atlasGetWaves((pos + ex.yx) * scale, 36, t) * depth, pos.y + e)
+  ));
+}
+
+// ---- Sky / atmosphere / sun (afl_ext-inspired, MIT) -------------------------
+
+// Sun direction is a uniform that the renderer fills (we already have light).
+// This atmosphere is "extra cheap" — not physical Rayleigh, just a hand-tuned
+// gradient that pairs well with the sea-shading branch's reflection lookup.
+vec3 atlasSeaAtmosphere(vec3 raydir, vec3 sundir) {
+  float trick = 1.0 / (raydir.y * 1.0 + 0.1);
+  float trick2 = 1.0 / (sundir.y * 11.0 + 1.0);
+  float raysundt = pow(abs(dot(sundir, raydir)), 2.0);
+  float sundt = pow(max(0.0, dot(sundir, raydir)), 8.0);
+  vec3 baseBlue = vec3(5.5, 13.0, 22.4) / 22.4;
+  vec3 suncol = mix(vec3(1.0), max(vec3(0.0), vec3(1.0) - baseBlue), trick2);
+  vec3 sky1 = baseBlue * suncol;
+  vec3 sky2 = max(vec3(0.0), sky1 - vec3(5.5, 13.0, 22.4) * 0.002 * (trick + -6.0 * sundir.y * sundir.y));
+  sky2 *= trick * (0.24 + raysundt * 0.24);
+  return sky2 * (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
+}
+
+// Tiny bright disk centered on the sun direction. Adds to atmosphere for the
+// reflection lookup so sun glints appear on the water surface.
+float atlasSeaSun(vec3 dir, vec3 sundir) {
+  return pow(max(0.0, dot(dir, sundir)), 720.0) * 210.0;
+}
+
+// ---- Phase functions (used by both atmosphere and cloud overlay) ---------
+// Declared up here so the atmosphere helper below can call atlasMiePhaseSky
+// without a forward-reference error (GLSL ES 1.0 requires declaration-before-use).
+
+// Henyey-Greenstein phase function. costh = dot(rayDir, sunDir).
+// g ∈ (-1, 1): +g forward-scatter (sun-side glow), -g back-scatter (rim halo).
+float atlasHGPhase(float costh, float g) {
+  float g2 = g * g;
+  return 0.25 * (1.0 - g2) * pow(max(1.0 + g2 - 2.0 * g * costh, 1e-4), -1.5);
+}
+
+// ---- Physical atmosphere (Rayleigh + Mie scattering) ----------------------
+// Independent reimplementation of robobo1221's atmosphere model. Pure-direction
+// math (no positions / no earthRadius), so scale-invariant across world sizes.
+// Used as the *sun color source* for cloud lighting — gives clouds physically-
+// correct hue without us hand-tuning sunset / midday colour gradients.
+//
+// Coefficient choices ~ literature for ground-level air. Sun brightness is
+// amplified at consumption side (cloud overlay) since these scatters give
+// LDR-ish outputs without ACES.
+
+const vec3 atlasRayleighCoeff = vec3(0.27, 0.5, 1.0) * 1e-5;
+const vec3 atlasMieCoeff = vec3(0.5e-6);
+const float atlasSunBrightness = 3.0;
+
+// Particle thickness along a direction with cosine cosTheta to up. Result
+// is in "metres-ish" — multiplied by coefficient (1e-5 scale) gives reasonable
+// optical depth. Clamping prevents singularity at horizon (cosTheta -> 0).
+float atlasParticleThickness(float cosTheta) {
+  float d = max(cosTheta * 2.0 + 0.01, 0.01);
+  return 100000.0 / d;
+}
+
+// Rayleigh phase: symmetric, peaks both forward and backward equally.
+// Responsible for the blue sky (preferential blue scattering).
+float atlasRayleighPhase(float cosTheta) {
+  return 0.375 * (1.0 + cosTheta * cosTheta);
+}
+
+// Mie phase with depth-modulated anisotropy. As atmosphere depth grows
+// (low sun, horizon), g shrinks toward zero → scattering becomes isotropic.
+// Near zenith with thin atmosphere → strong forward scatter (sun halo).
+float atlasMiePhaseSky(float cosTheta, float depth) {
+  float g = exp2(-3e-6 * depth);
+  return atlasHGPhase(cosTheta, g);
+}
+
+// Beer-Lambert scatter integral over a uniform medium. Accurate per-step
+// energy accumulation that single-step (1 - exp2(-od)) approximates poorly
+// when optical depth is large.
+vec3 atlasScatterIntegral(float od, vec3 coeff) {
+  vec3 a = -coeff * 1.4426950408;  // 1/ln(2)
+  vec3 b = -1.0 / coeff;
+  vec3 c =  1.0 / coeff;
+  return exp2(a * od) * b + c;
+}
+
+// Sample the atmosphere along view direction rd with the sun at sunDir.
+// Returns (sky color seen along rd, sun color reaching cloud height as out).
+// sunColor is the colour of direct sunlight after atmospheric absorption —
+// at noon ~ white, at sunset ~ deep orange/red. This is the keystone idiom
+// that fixes "midday cloud lit by sunset palette = unnatural orange".
+vec3 atlasAtmosphereScatter(vec3 rd, vec3 sunDir, out vec3 sunColor) {
+  const float ln2 = 0.6931472;
+  vec3 up = vec3(0.0, 1.0, 0.0);
+
+  float lDotW = dot(sunDir, rd);
+  float lDotU = dot(sunDir, up);
+  float uDotW = dot(up, rd);
+
+  float odView  = atlasParticleThickness(uDotW);
+  float odLight = atlasParticleThickness(lDotU);
+
+  vec3 totalCoeff = atlasRayleighCoeff + atlasMieCoeff;
+  vec3 scatterView  = totalCoeff * odView;
+  vec3 absorbView   = exp2(-scatterView);
+  vec3 scatterLight = totalCoeff * odLight;
+  vec3 absorbLight  = exp2(-scatterLight);
+
+  // absorbSun = "Beer's law avg" between scattered + absorbed.
+  vec3 absorbSun = abs(absorbLight - absorbView) /
+                   max((scatterLight - scatterView) * ln2, vec3(1e-8));
+
+  // Sun color reaching the cloud layer = sunlight × atmosphere absorption.
+  // Cloud overlay uses this to light cloud samples.
+  sunColor = absorbLight;
+
+  vec3 mieScatter      = atlasMieCoeff      * odView * atlasMiePhaseSky(lDotW, odView);
+  vec3 rayleighScatter = atlasRayleighCoeff * odView * atlasRayleighPhase(lDotW);
+  vec3 scatterSun = mieScatter + rayleighScatter;
+
+  // Tight sun disc (narrow smoothstep, atmospheric absorption applied).
+  vec3 sunSpot = smoothstep(0.9999, 0.99993, lDotW) * absorbView * atlasSunBrightness;
+
+  return (scatterSun * absorbSun + sunSpot) * atlasSunBrightness;
+}
+
+// Average sky-light contribution at cloud altitude (for ambient term in cloud
+// scattering). Equivalent to robobo's calcAtmosphericScatterTop — uses fixed
+// view "straight up" for cheap one-fetch ambient sky term.
+vec3 atlasAtmosphereSkyLight(vec3 sunDir) {
+  const float ln2 = 0.6931472;
+  vec3 up = vec3(0.0, 1.0, 0.0);
+  float lDotU = dot(sunDir, up);
+
+  float odView = atlasParticleThickness(1.0);  // fixed "up"
+  float odLight = atlasParticleThickness(lDotU);
+
+  vec3 totalCoeff = atlasRayleighCoeff + atlasMieCoeff;
+  vec3 scatterView  = totalCoeff * odView;
+  vec3 absorbView   = exp2(-scatterView);
+  vec3 scatterLight = totalCoeff * odLight;
+  vec3 absorbLight  = exp2(-scatterLight);
+
+  vec3 absorbSun = max(abs(absorbLight - absorbView), vec3(1e-3)) /
+                   max((scatterLight - scatterView) * ln2, vec3(1e-3));
+
+  vec3 mieScatter      = atlasMieCoeff      * odView * 0.25;
+  vec3 rayleighScatter = atlasRayleighCoeff * odView * 0.375;
+  vec3 scatterSun = mieScatter + rayleighScatter;
+
+  return scatterSun * absorbSun * atlasSunBrightness;
+}
+
+// ---- Volumetric clouds (robobo1221-inspired, independent reimplementation) -
+// Sky-background only — meant to be called from the raymarch-miss path so
+// clouds appear behind / between all SDF subjects. Single-scatter PBR-ish:
+// Beer's law transmittance + Henyey-Greenstein two-lobe phase + powder
+// effect on cloud edges + 4-octave non-power-of-2 fBM noise + Bayer dither
+// to break raymarch banding. No texture sampler — pure analytic noise.
+//
+// Source inspiration: https://www.shadertoy.com/view/3sffzj (robobo1221, 2020+)
+// Independent implementation; keeps the idiom set, not the code.
+
+// Bayer 2x2 → recursive composition up to 16x16 for stable dither pattern.
+float atlasBayer2(vec2 a) {
+  a = floor(a);
+  return fract(dot(a, vec2(0.5, a.y * 0.75)));
+}
+float atlasBayer4(vec2 a)  { return atlasBayer2(0.5 * a) * 0.25 + atlasBayer2(a); }
+float atlasBayer8(vec2 a)  { return atlasBayer4(0.5 * a) * 0.25 + atlasBayer2(a); }
+float atlasBayer16(vec2 a) { return atlasBayer8(0.5 * a) * 0.25 + atlasBayer2(a); }
+
+// Cloud-specific fBM: 4 octaves with non-power-of-2 frequencies (1, 2, 7, 16)
+// + per-octave directional time advection. Non-uniform freqs avoid grid
+// artifacts; alternating ±t direction prevents the whole sky from scrolling
+// in lockstep, gives the wind-shear feel.
+float atlasCloudFBM(vec3 p, float t) {
+  vec3 mFwd = vec3(t, 0.0, t);
+  vec3 mBck = -mFwd;
+  float n  = valueNoise3(p + mFwd) * 0.5;
+        n += valueNoise3(p * 2.0 + mFwd) * 0.25;
+        n += valueNoise3(p * 7.0 + mBck) * 0.125;
+        n += valueNoise3((p + mFwd) * 16.0) * 0.0625;
+  return n;
+}
+
+// Cloud density at world point p. Layer between minH and maxH; falls off at
+// both boundaries via the double-exponential threshold idiom:
+//   bot = 1 - exp(-b·h)   (builds density from below)
+//   top = exp(-t·h)       (fades density above)
+// Smoothstep on the noise gives crisp cloud silhouettes (cumulus look);
+// raise the lo/hi pair to make sparser / wispier clouds.
+float atlasCloudDensity(vec3 p, float minH, float maxH, float density, float t) {
+  if (p.y < minH || p.y > maxH) return 0.0;
+  vec3 cloudCoord = p * 0.025;  // freq controls horizontal cloud size
+  float n = atlasCloudFBM(cloudCoord, t * 0.02);
+
+  float h = p.y - minH;
+  float layerH = maxH - minH;
+  float bot = 1.0 - exp2(-2.0 * h / layerH);
+  float top = exp2(-1.5 * h / layerH);
+  float threshold = bot * top;
+
+  float c = smoothstep(0.50, 0.62, n) * threshold;
+  return c * density;
+}
+
+// Two-lobe HG — combined forward + back. Single HG always looks fake; mixing
+// a +0.64 (forward) and -0.4 (back) lobe at 60/40 is the visual "magic" that
+// real cloud renderers use. (atlasHGPhase declared above near atmosphere.)
+float atlasCloudTwoLobePhase(float costh) {
+  float fwd  = atlasHGPhase(costh,  0.64);
+  float back = atlasHGPhase(costh, -0.40);
+  return mix(back, fwd, 0.6);
+}
+
+// Powder effect — fake "sub-surface brightening at edges" of low-density
+// regions. Makes cumulus edges glow whiter than centers (matches real photos).
+float atlasPowderEffect(float opticalDepth) {
+  return 1.0 - exp2(-opticalDepth * 2.0);
+}
+
+// Inner self-shadow raymarch. Upgraded from 4 steps to 12 to match robobo1221
+// (key magic for cumulus contrast — fewer steps means cloud-bottom shadow
+// is too soft, no characteristic dark base). 12 steps × outer 16 = 192 ops
+// per cloud-positive pixel — still a third the cost of full robobo1221 path
+// because we skip the volumetric light pass.
+float atlasCloudSunShadow(vec3 p, vec3 sunDir, float minH, float maxH, float density, float t) {
+  float stepLen = (maxH - minH) / 12.0;
+  vec3 inc = sunDir * stepLen;
+  float od = 0.0;
+  for (int i = 0; i < 12; i++) {
+    p += inc;
+    od += atlasCloudDensity(p, minH, maxH, density, t);
+  }
+  return exp2(-od * stepLen);
+}
+
+// Overlay volumetric clouds on a sky color. Designed for fly3d's raymarch-
+// miss path: pass in skyCol (e.g. from sky() / atlasSeaAtmosphere) and get
+// skyCol-blended-with-clouds back. Flat-layer model (no earth curvature)
+// because fly3d's scale is small and curvature gain is negligible.
+//
+// fragCoord is needed for Bayer dither (anti-banding); t is u_time.
+vec3 atlasCloudOverlay(vec3 skyCol, vec3 rd, vec3 sunDir, vec2 fragCoord, float t) {
+  // Looking down → no clouds. Use very small cutoff (avoid div-by-near-zero
+  // in tEnter) but DON'T early-return for "nearly horizon" rays — that left
+  // a visible grey strip between sea and sky.
+  if (rd.y <= 0.001) return skyCol;
+
+  // Cloud layer in fly3d world coords. ~30-70 keeps clouds above all
+  // ground-level subjects (carrier deck ~5, lighthouse top ~12).
+  const float minH = 30.0;
+  const float maxH = 70.0;
+  const float density = 0.55;
+  const int STEPS = 16;
+
+  // Plane intersections: enter the layer at minH, exit at maxH. At very low
+  // rd.y these distances become large; horizonFade below tames the visual.
+  float tEnter = minH / rd.y;
+  float tExit  = maxH / rd.y;
+  vec3 start = rd * tEnter;
+  vec3 step  = rd * (tExit - tEnter) / float(STEPS);
+  float stepLen = length(step);
+
+  // Hash dither beats Bayer here: Bayer's ordered 16x16 pattern is visible
+  // as grid texture on the large smooth cloud planes (cloud occupies tens of
+  // thousands of pixels with similar density → ordered offsets become a moiré
+  // pattern). Hash noise is per-pixel uncorrelated, banding becomes high-
+  // frequency noise indistinguishable from cloud micro-texture.
+  float dither = hash21(fragCoord);
+  vec3 p = start + step * dither;
+
+  float lDotW = dot(sunDir, rd);
+  float phase = atlasCloudTwoLobePhase(lDotW);
+
+  vec3 scattering = vec3(0.0);
+  float transmittance = 1.0;
+
+  // ---- Physically-driven lighting (couples cloud to atmosphere) ----
+  // Replaces the hand-tuned sunset/midday palette. Sun colour comes from the
+  // direct sun attenuated by Rayleigh+Mie absorption at this sun altitude
+  // (auto-warm at sunset, white at noon — no hand-coded gradient). Ambient
+  // comes from top-of-atmosphere sky scattering, so cloud bottoms inherit
+  // the same colour temperature as the visible sky.
+  vec3 sunAbsorbColor;
+  vec3 atmosphereView = atlasAtmosphereScatter(rd, sunDir, sunAbsorbColor);
+  vec3 skyLight = atlasAtmosphereSkyLight(sunDir);
+  vec3 sunCol = sunAbsorbColor * 9.0;   // amplify; absorbColor is dim ∈ [0,1]
+  vec3 ambCol = skyLight * 12.0;        // skyLight is similarly dim
+
+  // Forward-scatter "silver lining" — when looking near the sun direction,
+  // boost cloud highlight. Broader cone (pow=8) and stronger amplitude makes
+  // the sun's halo through cumulus much more dramatic.
+  float silverLining = pow(max(0.0, lDotW), 8.0);
+
+  for (int i = 0; i < 16; i++) {
+    float dens = atlasCloudDensity(p, minH, maxH, density, t);
+    if (dens > 0.0) {
+      float od = dens * stepLen;
+      float powder = atlasPowderEffect(od);
+      // Self-shadow: how much sun makes it from outside the cloud to this
+      // sample. Gives cumulus their characteristic dark-bottom / bright-top
+      // contrast that single-scatter without shadows is missing.
+      float sunVis = atlasCloudSunShadow(p, sunDir, minH, maxH, density, t);
+      // sunVis^1.5 sharpens the cloud-bottom darkness — gives cumulus their
+      // characteristic deep shadow under thick crowns rather than uniform mid-tone.
+      float sunVisGamma = pow(sunVis, 1.5);
+      vec3 sunL = sunCol * phase * powder * sunVisGamma * 1.9;
+      // Silver-lining boost rides on top of (1-sunVisGamma) so it shows
+      // through shadowed cloud regions — backlight forcing through dense crown.
+      sunL += sunCol * silverLining * powder * (1.0 - sunVisGamma) * 3.0;
+      vec3 ambL = ambCol * 0.25;
+      // Beer-Lambert scatter integral (robobo1221 idiom). Accurate per-step
+      // energy when od is large; falls back to (1 - exp2(-od)) at small od.
+      // Coefficient 1.11 is empirical from robobo1221.
+      float scatterI = 0.9009 * (1.0 - exp2(-1.6018 * od));
+      scattering += (sunL + ambL) * scatterI * transmittance;
+      transmittance *= exp2(-od);
+    }
+    p += step;
+    if (transmittance < 0.01) break;
+  }
+
+  // Horizon fade — instead of a hard cull at rd.y < 0.02 (which left a grey
+  // strip), smoothly ramp cloud contribution from 0 at horizon to 1 above.
+  // Clouds near horizon are correctly diminished (most of the ray is below
+  // the cloud layer's enter point anyway), no visible seam.
+  float horizonFade = smoothstep(0.001, 0.08, rd.y);
+  return skyCol * mix(1.0, transmittance, horizonFade) + scattering * horizonFade;
+}
+
+// ACES filmic tonemap (Stephen Hill / Krzysztof Narkowicz public-domain fit).
+// Crucial for sea visuals: maps the HDR sky+sun output into LDR without the
+// flat washed-out look of pow(0.4545) gamma. Applied globally in fly3d main().
+vec3 atlasACESTonemap(vec3 color) {
+  mat3 m1 = mat3(
+    0.59719, 0.07600, 0.02840,
+    0.35458, 0.90834, 0.13383,
+    0.04823, 0.01566, 0.83777
+  );
+  mat3 m2 = mat3(
+     1.60475, -0.10208, -0.00327,
+    -0.53108,  1.10813, -0.07276,
+    -0.07367, -0.00605,  1.07602
+  );
+  vec3 v = m1 * color;
+  vec3 a = v * (v + 0.0245786) - 0.000090537;
+  vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
+  return pow(clamp(m2 * (a / b), 0.0, 1.0), vec3(1.0 / 2.2));
+}
 `;
 
 // =============================================================================
@@ -650,6 +1220,11 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdRoundedBox', 'sdTetrahedron', 'sdDodecahedron', 'sdIcosahedron',
   // time-aware
   'sdWaves',
+  'sdSeaSurface',
+  // procedural composites
+  'sdCanalBuilding',
+  'sdCanalWindows',
+  'sdCanalBridge',
 ];
 
 export const SDF3_GLSL_OPS = [

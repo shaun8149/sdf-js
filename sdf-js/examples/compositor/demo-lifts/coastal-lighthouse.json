@@ -360,12 +360,10 @@
       },
       {
         "id": "sea-surface",
-        "type": "waves",
+        "type": "sea-surface",
         "args": {
-          "freq": 2.5,
-          "amp": 0.35,
-          "angle": 0.15,
-          "speed": 0.3
+          "depth": 0.5,
+          "scale": 0.55
         },
         "transform": {
           "translate": [
@@ -374,7 +372,6 @@
             0
           ]
         },
-        "material": "deep-water",
         "region": "water"
       },
       {
@@ -871,25 +868,6 @@
         "region": "window"
       },
       {
-        "id": "sea-cross-swell",
-        "type": "waves",
-        "args": {
-          "freq": 4.5,
-          "amp": 0.12,
-          "angle": 1.4,
-          "speed": 0.18
-        },
-        "transform": {
-          "translate": [
-            0,
-            -1.8,
-            0
-          ]
-        },
-        "region": "water",
-        "material": "deep-water"
-      },
-      {
         "id": "light-beam",
         "type": "solid-angle",
         "args": {
@@ -1017,32 +995,6 @@
         }
       },
       {
-        "id": "sailboat-1-wake",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.54,
-            0.04,
-            0.135
-          ]
-        },
-        "transform": {
-          "translate": [
-            3.87,
-            -1.85,
-            4
-          ]
-        },
-        "region": "water",
-        "material": {
-          "hue": 0.55,
-          "sat": 0.1,
-          "value": 0.92,
-          "metal": 0.2,
-          "glow": 0
-        }
-      },
-      {
         "id": "sailboat-2-hull",
         "type": "capsule",
         "args": {
@@ -1114,32 +1066,6 @@
         }
       },
       {
-        "id": "sailboat-2-wake",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.42,
-            0.04,
-            0.105
-          ]
-        },
-        "transform": {
-          "translate": [
-            6.01,
-            -1.85,
-            -2
-          ]
-        },
-        "region": "water",
-        "material": {
-          "hue": 0.55,
-          "sat": 0.1,
-          "value": 0.92,
-          "metal": 0.2,
-          "glow": 0
-        }
-      },
-      {
         "id": "sailboat-3-hull",
         "type": "capsule",
         "args": {
@@ -1208,32 +1134,6 @@
           "value": 0.95,
           "metal": 0,
           "glow": 0.2
-        }
-      },
-      {
-        "id": "sailboat-3-wake",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.36,
-            0.04,
-            0.09
-          ]
-        },
-        "transform": {
-          "translate": [
-            -4.42,
-            -1.85,
-            5
-          ]
-        },
-        "region": "water",
-        "material": {
-          "hue": 0.55,
-          "sat": 0.1,
-          "value": 0.92,
-          "metal": 0.2,
-          "glow": 0
         }
       },
       {
@@ -1387,10 +1287,7 @@
         }
       }
     ],
-    "ground": {
-      "y": -2,
-      "region": "seabed"
-    },
+    "ground": null,
     "defaults": {
       "camera": {
         "yaw": 0.5,

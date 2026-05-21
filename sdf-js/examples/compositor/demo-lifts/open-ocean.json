@@ -1,0 +1,47 @@
+{
+  "id": "open-ocean",
+  "title": "开阔的海面",
+  "prompt": "开阔的海面",
+  "code2d": "// This demo is GPU-rendered via the sea-surface primitive (afl_ext-inspired,\n// MIT). There is no meaningful 2D lift for an infinite water heightfield;\n// the 3D SceneData is hand-crafted to showcase the new sea-shading branch\n// in FLY 3D (fresnel atmosphere reflection + subsurface scattering + ACES).\nexport const render = (ctx) => {\n  ctx.fillStyle = '#0a223d';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#aab';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Open ocean (3D-only demo — switch to FLY 3D)', 24, 48);\n};",
+  "sceneData": {
+    "v": 1,
+    "name": "Open Ocean",
+    "source": {
+      "format": "hand-crafted",
+      "prompt": "开阔的海面",
+      "notes": "Reverse-engineered learning sprint #1: afl_ext-inspired sea-surface primitive + FLY 3D sea-shading branch. Single subject, no ground (sea IS the ground). ACES tonemap applies globally."
+    },
+    "subjects": [
+      {
+        "id": "sea",
+        "type": "sea-surface",
+        "args": { "depth": 1.2, "scale": 0.55 },
+        "transform": { "translate": [0, 0, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.32,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": -0.4,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.45,
+        "distance": 40,
+        "intensity": 1.0
+      },
+      "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-05-21",
+    "model": "hand-crafted",
+    "costUSD": 0
+  }
+}
