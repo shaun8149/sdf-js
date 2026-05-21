@@ -709,6 +709,74 @@ async function callLiftLLM(originalPrompt, code2d, apiKey, model = DEFAULT_MODEL
   return { text: data.content[0].text, usage: data.usage };
 }
 
+// Strip JS-style line (//) and block (/* */) comments from JSON-ish text
+// without touching comment-like sequences that appear inside string values.
+// LLMs sometimes use comments as section dividers — strict JSON.parse rejects
+// them, but the actual scene data is fine, so we sanitise rather than fail.
+function stripJsonComments(src) {
+  let out = '';
+  let i = 0;
+  const n = src.length;
+  let inString = false;
+  while (i < n) {
+    const ch = src[i];
+    if (inString) {
+      out += ch;
+      if (ch === '\\' && i + 1 < n) { out += src[i + 1]; i += 2; continue; }
+      if (ch === '"') inString = false;
+      i++;
+      continue;
+    }
+    if (ch === '"') { inString = true; out += ch; i++; continue; }
+    if (ch === '/' && i + 1 < n) {
+      const next = src[i + 1];
+      if (next === '/') { // line comment — skip to end of line
+        i += 2;
+        while (i < n && src[i] !== '\n') i++;
+        continue;
+      }
+      if (next === '*') { // block comment — skip to closing */
+        i += 2;
+        while (i + 1 < n && !(src[i] === '*' && src[i + 1] === '/')) i++;
+        i += 2;
+        continue;
+      }
+    }
+    out += ch;
+    i++;
+  }
+  return out;
+}
+
+// Trailing commas in arrays/objects are another common LLM JSON-isms. Strip
+// only when followed by `]` or `}` (not inside strings — caller already
+// handed us comment-stripped text, but strings still need protection).
+function stripTrailingCommas(src) {
+  let out = '';
+  let i = 0;
+  const n = src.length;
+  let inString = false;
+  while (i < n) {
+    const ch = src[i];
+    if (inString) {
+      out += ch;
+      if (ch === '\\' && i + 1 < n) { out += src[i + 1]; i += 2; continue; }
+      if (ch === '"') inString = false;
+      i++;
+      continue;
+    }
+    if (ch === '"') { inString = true; out += ch; i++; continue; }
+    if (ch === ',') {
+      let j = i + 1;
+      while (j < n && /\s/.test(src[j])) j++;
+      if (j < n && (src[j] === ']' || src[j] === '}')) { i++; continue; }
+    }
+    out += ch;
+    i++;
+  }
+  return out;
+}
+
 function parseLiftResponse(text) {
   // LLM may wrap JSON in ```json ... ``` fence, or emit prose around it.
   const fenceMatch = text.match(/```(?:json)?\s*\n([\s\S]*?)\n```/);
@@ -723,8 +791,11 @@ function parseLiftResponse(text) {
     }
   }
 
+  // Sanitise LLM JSON-isms (comments, trailing commas) before strict parse.
+  const sanitised = stripTrailingCommas(stripJsonComments(jsonStr));
+
   try {
-    return JSON.parse(jsonStr);
+    return JSON.parse(sanitised);
   } catch (e) {
     throw new Error(`Failed to parse lift JSON: ${e.message}\n\nRaw LLM output (first 500 chars):\n${text.slice(0, 500)}`);
   }
@@ -1262,8 +1333,12 @@ function refreshLiftButtonState() {
 
   const code = $('code-display').value;
   const selected = state.history.find(h => h.id === state.selectedHistoryId);
-  const haveBoth = code && selected;
-  const hasCachedLift = !!selected?.lift?.sceneData;
+  // A history entry is considered "matched" only when its 2D code still
+  // matches what's in the textarea. If the user pasted/edited code, drop the
+  // implied prompt-from-history binding — lift will fall back to prompting.
+  const matchedHistory = selected && selected.code2d === code ? selected : null;
+  const haveBoth = !!code;  // code is enough; missing prompt is handled at lift time
+  const hasCachedLift = !!matchedHistory?.lift?.sceneData;
   // Save button shows whenever we have a 3D scene actively displayed —
   // covers fresh lifts, cached lifts, demos, and edited JSON re-renders.
   const canSave = state.liftMode && state.textLiftSceneJSON;
@@ -1325,6 +1400,12 @@ function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shuffl
 
   ensureGpuRendererActive();
   refreshLiftButtonState();
+  // Make Save Scene unambiguously visible whenever we have a rendered 3D
+  // scene — covers cached lifts, fresh lifts, pasted-code lifts, and JSON
+  // re-renders. Don't rely solely on refreshLiftButtonState's combined
+  // condition, which historically has been brittle (paste-flow regression).
+  const saveBtn = $('btn-save-scene');
+  if (saveBtn) saveBtn.style.display = 'block';
   const { bytes } = updateCanvasVisibility();
 
   // Auto-shuffle palette on every NEW scene load so the gallery feels varied
@@ -1360,22 +1441,42 @@ function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shuffl
 async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
   const code = $('code-display').value;
   const selected = state.history.find(h => h.id === state.selectedHistoryId);
+  // A history entry is "matched" only when its stored code matches the
+  // textarea. Pasted/edited code → unmatched → prompt-from-user path.
+  const matchedHistory = selected && selected.code2d === code ? selected : null;
   const liftBtn = $('btn-lift-3d');
   const liftInfo = $('lift-info');
-  if (!code || !selected) {
+  if (!code) {
     if (liftInfo) { liftInfo.style.color = '#d9afaf'; liftInfo.textContent = '✗ no 2D scene to lift'; }
     setStatus('✗ no 2D scene to lift', true);
     return;
   }
 
+  // For unmatched code (paste / edit), ask the user for a 1-line scene
+  // description. The lift LLM uses it as cultural context (e.g. "lighthouse"
+  // implies sailboats/gulls via the prompt's augmentation table). Short noun
+  // phrases work best — verbose prompts hurt (see feedback_prompts_stay_short).
+  let promptText = matchedHistory?.prompt;
+  if (!matchedHistory) {
+    promptText = window.prompt(
+      'Describe this scene in a short noun phrase (used as context for the lift LLM):',
+      'pasted 2D SDF scene',
+    );
+    if (promptText == null) {
+      setStatus('lift cancelled');
+      return;
+    }
+    promptText = promptText.trim() || 'pasted 2D SDF scene';
+  }
+
   // Cache hit: history entry already has a previously-lifted SceneData.
   // Render it directly — zero token cost, instant load.
-  if (!forceFresh && selected.lift?.sceneData) {
+  if (!forceFresh && matchedHistory?.lift?.sceneData) {
     try {
       renderLiftedSceneData(
-        selected.lift.sceneData,
-        selected.prompt,
-        `▶ cached lift loaded · 0 tokens · ${selected.lift.elapsed ?? '?'}s original`,
+        matchedHistory.lift.sceneData,
+        matchedHistory.prompt,
+        `▶ cached lift loaded · 0 tokens · ${matchedHistory.lift.elapsed ?? '?'}s original`,
       );
       setStatus(`✓ cached 3D loaded — click canvas to fly`);
       return;
@@ -1407,7 +1508,7 @@ async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
 
   try {
     const t0 = performance.now();
-    const result = await callLiftLLM(selected.prompt, code, apiKey);
+    const result = await callLiftLLM(promptText, code, apiKey);
     const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
 
     let sceneData;
@@ -1419,14 +1520,18 @@ async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
 
     renderLiftedSceneData(
       sceneData,
-      selected.prompt,
+      promptText,
       `✓ ↑ ${result.usage.input_tokens} in · ↓ ${result.usage.output_tokens} out · ${elapsed}s`,
     );
     setStatus(`✓ 3D scene rendered (${elapsed}s) — click canvas to fly`);
 
-    // Save lift to history entry alongside the 2D code (cache hit on next visit)
-    selected.lift = { sceneData, elapsed, usage: result.usage };
-    saveHistory();
+    // Save lift to history entry alongside the 2D code (cache hit on next visit).
+    // Only persist when we have a matched history entry — pasted code has no
+    // entry to attach to, so we skip persistence rather than fabricate one.
+    if (matchedHistory) {
+      matchedHistory.lift = { sceneData, elapsed, usage: result.usage };
+      saveHistory();
+    }
   } catch (e) {
     liftInfo.style.color = '#d9afaf';
     liftInfo.textContent = `✗ ${e.message}`;
@@ -1442,6 +1547,8 @@ function exitLiftMode() {
   activeDemoId = null;
   updateCanvasVisibility();
   refreshLiftButtonState();
+  const saveBtn = $('btn-save-scene');
+  if (saveBtn) saveBtn.style.display = 'none';
   renderDemoGallery();
   $('scene-info').textContent = state.selectedHistoryId
     ? state.history.find(h => h.id === state.selectedHistoryId)?.prompt?.slice(0, 40) || 'No scene'
@@ -2069,6 +2176,12 @@ $('code-display')?.addEventListener('keydown', (e) => {
     runCurrentCode();
   }
 });
+
+// Refresh Lift-to-3D button state whenever the textarea content changes —
+// covers paste, typing, cut, delete. Without this, pasted code never enables
+// the lift button until something else (history selection, etc.) re-runs the
+// refresh logic.
+$('code-display')?.addEventListener('input', () => refreshLiftButtonState());
 
 // 3D SceneData pane: copy + re-render handlers
 $('btn-copy-scene')?.addEventListener('click', () => {
