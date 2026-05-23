@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Atlas demo gallery — 8 pre-lifted 3D scenes. Each demo proves a specific point in the vs-diffusion / vs-neural-world-model thesis. Demos with status='ready' have a paired .json file with code2d + sceneData. Demos with status='pending' show only the prompt — clicking autofills it for the user to run themselves.\n\nPROMPT-WRITING LESSON (learned 2026-05-18 the hard way): keep prompts SHORT. The LLM has cultural / visual priors (e.g. '中国航母' → 辽宁/福建号 with starboard island, 3/4 angle). Heavy 'prompt engineering' with explicit angle / parts list overrides those priors and produces worse compositions. Trust the model.",
+  "description": "Atlas demo gallery — 12 pre-lifted 3D scenes spanning 4 thesis patterns: (1) Generator-S scatter (1 prompt → N instances; carrier/cathedral/forest/coastal/village), (2) atmospheric / 1-primitive scenes (open-ocean/snow-mountain), (3) GPU-internal SDF rep distinct from generator-level scatter (canal-day1), (4) single-object precision (vase/clock/bicycle/dining). Each demo proves a specific claim in the vs-diffusion / vs-neural-world-model thesis.\n\nPROMPT-WRITING LESSON (learned 2026-05-18 the hard way): keep prompts SHORT. The LLM has cultural / visual priors (e.g. '中国航母' → 辽宁/福建号 with starboard island, 3/4 angle). Heavy 'prompt engineering' with explicit angle / parts list overrides those priors and produces worse compositions. Trust the model.",
   "demos": [
     {
       "id": "china-carrier",
@@ -77,7 +77,7 @@
     {
       "id": "open-ocean",
       "title": "开阔的海面",
-      "thesisPoint": "M3 community port · afl_ext sea (MIT)",
+      "thesisPoint": "Atmospheric · 1 SDF primitive (sea-surface) = full infinite scene. No scatter needed; minimalism is the point.",
       "category": "primitive-showcase",
       "status": "ready",
       "file": "open-ocean.json",
@@ -86,7 +86,7 @@
     {
       "id": "canal-day1",
       "title": "Venice Canal",
-      "thesisPoint": "curve warp + canal-building/windows/bridge atoms",
+      "thesisPoint": "Two layers of 1→N: GPU-internal `rep` (canal buildings tiled along curve, 0 scene-tree expansion) vs Generator-S scatter (instances become separate subjects). This demo shows the former — rep + curve as procedural urban density.",
       "category": "primitive-showcase",
       "status": "ready",
       "file": "canal-day1.json",
@@ -95,7 +95,7 @@
     {
       "id": "snow-mountain",
       "title": "雪山",
-      "thesisPoint": "IQ Elevated terrain + mountain-shading branch",
+      "thesisPoint": "Pure procedural · 1 SDF primitive (terrain-heightmap, IQ Elevated fbm) = full mountain range with snow-line shading. Zero LLM-emit subjects; the shader IS the scene.",
       "category": "primitive-showcase",
       "status": "ready",
       "file": "snow-mountain.json",
