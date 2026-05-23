@@ -167,24 +167,38 @@ export const DEFAULT_KNOBS = Object.freeze({
   twist: 0,
   twistType: 0,           // 0=Y / 1=Z / 2=X
   gridRot: [0, 0, 0],
+  // 2026-05-23 autoscope idiom upgrade (5 new knobs):
+  xMod: 1,                // chessboard period X (autoscope r([1,2,2,2,3]); 0 = 平涂)
+  yMod: 1,                // chessboard period Y
+  renderType: 0,          // 0 = HSL hue remap (BOB v1); 1 = direct palette mix
+  rotateCanvas: 0,        // rad/sec canvas drift (autoscope r(-0.015, 0.015))
+  postColorLeak: 0.25,    // post-process colorLeak (autoscope r(.05, .6))
 });
 
 /**
- * Autoscope-style 随机化（mirror / twist / gridRot），跟 sketch.js setup() 一致。
+ * Autoscope-style 随机化（mirror / twist / gridRot + xMod/yMod/renderType/
+ * rotateCanvas/postColorLeak），跟 sketch.js setup() 一致。
  * @param {{random_bool: Function, random_num: Function, random_choice: Function}} rng
  * @returns {typeof DEFAULT_KNOBS}
  */
 export function randomizeKnobs(rng) {
+  // xMod/yMod: 80% chess (1/2/3 weighted), 20% 平涂 (0/0)
+  const chessOff = rng.random_bool(0.2);
   return {
     mirrorX:   rng.random_bool(0.15),
     mirrorZ:   rng.random_bool(0.15),
     twist:     rng.random_bool(0.5) ? rng.random_num(-0.2, 0.2) : 0,
-    twistType: rng.random_choice([0, 1, 1, 2]),  // Y/Z/Z/X weighted (autoscope idiom)
+    twistType: rng.random_choice([0, 1, 1, 2]),
     gridRot: [
       rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
       rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
       rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
     ],
+    xMod:          chessOff ? 0 : rng.random_choice([1, 2, 2, 2, 3]),
+    yMod:          chessOff ? 0 : rng.random_choice([1, 2, 2, 2, 3]),
+    renderType:    rng.random_choice([0, 1]),
+    rotateCanvas:  rng.random_num(-0.015, 0.015),
+    postColorLeak: rng.random_num(0.05, 0.60),
   };
 }
 
@@ -209,7 +223,12 @@ export function describeKnobs(knobs) {
     v === 0 ? '0' : (Math.abs(v - Math.PI / 4) < 1e-4 ? 'π/4' :
                      Math.abs(v - Math.PI / 2) < 1e-4 ? 'π/2' : v.toFixed(2))
   ).join(',');
+  const chess = (k.xMod === 0 && k.yMod === 0) ? 'flat' : `${k.xMod}/${k.yMod}`;
   return `mirror ${k.mirrorX ? 'X' : '·'}${k.mirrorZ ? 'Z' : '·'}  ` +
          `twist ${(+k.twist).toFixed(2)}/${twistAxis}  ` +
-         `gridRot [${gr}]`;
+         `gridRot [${gr}]  ` +
+         `chess ${chess}  ` +
+         `render ${k.renderType}  ` +
+         `rot ${(+k.rotateCanvas).toFixed(3)}/s  ` +
+         `leak ${(+k.postColorLeak).toFixed(2)}`;
 }

@@ -53,6 +53,7 @@ uniform float u_time;
 uniform float u_postNoise;       // 0..2，0 = 关，1 = autoscope 默认
 uniform float u_postNFactor;     // 0..1.5，octave noise nFactor
 uniform float u_postNoiseCap;    // 0.1..0.8，autoscope u_noiseCap clamp
+uniform float u_postColorLeak;   // 0.05..0.6，autoscope u_colorLeak: %p 保留 col1 raw
 
 #define OCTAVES 6
 #define NOISESPEED 0.00008
@@ -170,8 +171,8 @@ void main() {
   float hueMix = depth >= 0.999 ? 0.35 : 0.9;
   vec3 mixed = hsl2rgb(vec3(mix(hsl1.x, hsl2.x, hueMix), hsl1.y, hsl1.z));
 
-  // colorLeak: 25% 像素保留 col1 raw（autoscope u_colorLeak=0.25）
-  vec3 col = mix(mixed, col1, 0.25);
+  // colorLeak: autoscope u_colorLeak ∈ 0.05-0.6 per-hash 随机
+  vec3 col = mix(mixed, col1, u_postColorLeak);
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -215,6 +216,16 @@ uniform float u_twist;        // 0=off，0.1-0.2 = 明显弯曲；per-ray uv.y *
 uniform int   u_twistType;    // 0=Y轴 / 1=Z轴 / 2=X轴 旋转
 uniform vec3  u_gridRot;      // spaceCol 色块网格旋转（rad）
 uniform float u_simpleColor;  // 1.0 = 跳过 HSL mix 输出纯 palette 色（2-pass mode：让 post pass 做 HSL grain）
+// Autoscope 移植 idiom #1: chessGetCol 周期参数（cellAB.x*xMod + cellAB.y*yMod）
+// xMod/yMod=1 = 默认 (BOB v1 行为)；2/3 = 棋盘密度变化；0 = 无 offset 平涂
+uniform float u_xMod;         // chessboard period X axis (autoscope: r([1,2,2,2,3]))
+uniform float u_yMod;         // chessboard period Y axis
+// Autoscope 移植 idiom #3: 第二种 palette 应用方式
+//   0 = HSL hue 重映射 (BOB v1)；1 = palette1/palette2 直 mix，无 HSL
+uniform int   u_renderType;
+// Autoscope 移植 idiom #5: canvas-level 时间漂移 (rad/sec)。-0.015..0.015 典型
+// 极慢（10 分钟一圈），但能让静止场景"活起来"。
+uniform float u_rotateCanvas;
 
 #define PI       3.1415926535
 #define TWOPI    6.2831853071
@@ -336,10 +347,20 @@ float lightOcclusion(vec3 ro, vec3 rd, float mint, float maxt) {
 // ============================================================================
 
 // chessGetCol：i + cellAB chessboard offset → [0,1) palette 索引
-// autoscope buffer.frag getCol() 1:1 移植：默认 i += (floor(cellAB.x)+floor(cellAB.y))%2
+// autoscope buffer.frag getCol() 1:1 移植：i += (floor(cellAB.x*xMod) + floor(cellAB.y*yMod)) % 2
 // 让相邻像素 cell 交错 +0/+1 → 单 cell 内部呈"双色棋盘"质感（autoscope 标志）
+// xMod/yMod 周期 (autoscope r([1,2,2,2,3]))：1=默认 BOB v1；2/3=更密棋盘
+// xMod=0 && yMod=0：无 offset，平涂色块（autoscope 20% 比例的 hash 走这条）
 float chessGetCol(float i, vec2 cellAB) {
-  i += mod(floor(cellAB.x) + floor(cellAB.y), 2.0);
+  float offset;
+  if (u_xMod <= 0.0 && u_yMod <= 0.0) {
+    offset = 0.0;
+  } else {
+    float xm = max(u_xMod, 0.001);
+    float ym = max(u_yMod, 0.001);
+    offset = mod(floor(cellAB.x * xm) + floor(cellAB.y * ym), 2.0);
+  }
+  i += offset;
   return mod(i, u_paletteLen) / u_paletteLen;
 }
 
@@ -373,12 +394,19 @@ vec2 spaceCol(vec3 p, vec2 cellAB, float objNum) {
   } else if (u_coloration == 1) {
     // 物体竖纹 / 地面横纹
     i = objNum > 0.0 ? floor(p.y) : floor(p.z);
-  } else {
+  } else if (u_coloration == 2) {
     // 极坐标（环形色带）
     float l = floor(length(p.xz));
     float d = l * TWOPI;
     float a = floor((d / 1.0) * atan(p.x, p.z) / TWOPI + l * l) + 5.0 * floor(p.y);
     i = l + a;
+  } else {
+    // Autoscope 移植 idiom #4: hash-cell coloration mode 3
+    // 每个 floor(p) 格子拿一个 deterministic hash → Voronoi-like 色彩分布
+    // autoscope: r() < .025 ? 3 : ... — 2.5% rate，出现时画面有种"随机马赛克"质感
+    vec3 cell = floor(p);
+    float h = fract(sin(dot(cell, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+    i = floor(h * 100.0) + 5.0 * floor(p.y);
   }
   i += objNum;  // object index 偏移 → 不同物体走不同色相
 
@@ -446,6 +474,16 @@ vec3 shadeShadow(vec3 col) {
 
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
+
+  // Autoscope 移植 idiom #5: canvas-level 缓慢漂移。u_rotateCanvas (rad/sec)
+  // 跟 u_time 相乘 → 整个画面绕屏幕中心慢转。0.015 rad/s = 7 分钟一圈，
+  // 极微但能让静图"活着"。0 = 关闭。
+  if (u_rotateCanvas != 0.0) {
+    float ca_angle = u_time * u_rotateCanvas;
+    float ca = cos(ca_angle), sa = sin(ca_angle);
+    uv = mat2(ca, -sa, sa, ca) * uv;
+  }
+
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
   vec3 ro = u_camPos;
 
@@ -517,7 +555,9 @@ void main() {
       col = lo;
     } else {
       lo = mix(paletteCol(ci1.x, 0.0), paletteCol(ci1.y, 1.0), 0.25);
-      // 1-pass mode：world-space dual-layer HSL mix（近似 autoscope grain）
+      // 1-pass mode：world-space dual-layer mix。两种渲染风格 (autoscope renderType):
+      //   0 = HSL hue 重映射 (BOB v1 default)
+      //   1 = palette 直 mix，无 HSL → 色彩更鲜更平涂
       vec3 pn2 = hitP + 0.18 * vec3(
         gnoise(hitP.xz * 8.0 + 13.0),
         gnoise(hitP.xy * 8.0 + 200.0),
@@ -525,14 +565,20 @@ void main() {
       );
       vec2 ci2 = spaceCol(pn2, cellAB, objNum);
       vec3 hi = mix(paletteCol(ci2.x, 0.0), paletteCol(ci2.y, 1.0), 0.25);
-      vec3 hslLo = rgb2hsl(lo);
-      vec3 hslHi = rgb2hsl(hi);
-      col = hsl2rgb(vec3(
-        mix(hslLo.x, hslHi.x, 0.6),
-        hslLo.y,
-        mix(hslLo.z, hslHi.z, 0.4)
-      ));
-      col = mix(col, lo, 0.25);
+      if (u_renderType == 1) {
+        // Direct mix — flat poster aesthetic. 0.5 weight = 等比例 lo/hi
+        col = mix(lo, hi, 0.5);
+      } else {
+        // HSL hue remap (default): take lo's sat+lum, mix hue from lo+hi
+        vec3 hslLo = rgb2hsl(lo);
+        vec3 hslHi = rgb2hsl(hi);
+        col = hsl2rgb(vec3(
+          mix(hslLo.x, hslHi.x, 0.6),
+          hslLo.y,
+          mix(hslLo.z, hslHi.z, 0.4)
+        ));
+        col = mix(col, lo, 0.25);
+      }
     }
 
     // BINARY shadow（Autoscope 签名 —— 不做 Lambert 平滑过渡，保留色块锐利）
@@ -636,7 +682,7 @@ export function createBobShaderRenderer({
     }
     for (const name of [
       'u_buffer', 'u_resolution', 'u_bufferRes', 'u_time',
-      'u_postNoise', 'u_postNFactor', 'u_postNoiseCap',
+      'u_postNoise', 'u_postNFactor', 'u_postNoiseCap', 'u_postColorLeak',
     ]) {
       postUniforms[name] = gl.getUniformLocation(postProgram, name);
     }
@@ -730,6 +776,8 @@ export function createBobShaderRenderer({
       'u_coldiv', 'u_coloration', 'u_shadowMode', 'u_shadowStrength',
       'u_shadowsOn', 'u_groundOn', 'u_noiseSpeed', 'u_exposure', 'u_saturation', 'u_worldScale',
       'u_mirror', 'u_twist', 'u_twistType', 'u_gridRot', 'u_simpleColor',
+      // Autoscope idiom upgrade (2026-05-23): xMod/yMod chess + renderType + rotateCanvas
+      'u_xMod', 'u_yMod', 'u_renderType', 'u_rotateCanvas',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -805,6 +853,11 @@ export function createBobShaderRenderer({
     gl.uniform3f(uniformsCache.u_gridRot, gr[0], gr[1], gr[2]);
     // 2-pass 模式让 pass 1 出纯 palette 色，pass 2 做 dual-sample HSL grain
     gl.uniform1f(uniformsCache.u_simpleColor, twoPass ? 1.0 : 0.0);
+    // Autoscope idiom upgrade (2026-05-23):
+    gl.uniform1f(uniformsCache.u_xMod, c.xMod ?? 1.0);
+    gl.uniform1f(uniformsCache.u_yMod, c.yMod ?? 1.0);
+    gl.uniform1i(uniformsCache.u_renderType, (c.renderType ?? 0) | 0);
+    gl.uniform1f(uniformsCache.u_rotateCanvas, c.rotateCanvas ?? 0.0);
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
@@ -829,6 +882,7 @@ export function createBobShaderRenderer({
       gl.uniform1f(postUniforms.u_postNoise, c.postNoise ?? 1.0);
       gl.uniform1f(postUniforms.u_postNFactor, c.postNFactor ?? 1.0);
       gl.uniform1f(postUniforms.u_postNoiseCap, c.postNoiseCap ?? 0.5);
+      gl.uniform1f(postUniforms.u_postColorLeak, c.postColorLeak ?? 0.25);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
