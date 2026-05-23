@@ -134,7 +134,7 @@ export function randomizeBobStyle(rng) {
     yMod: chessOff ? 0 : rng.random_choice([1, 2, 2, 2, 3]),
 
     // coloration + coldiv
-    coloration: rng.random() < 0.025 ? 3 : rng.random_choice([0, 0, 0, 0, 1, 2, 2]),
+    coloration: rng.random_dec() < 0.025 ? 3 : rng.random_choice([0, 0, 0, 0, 1, 2, 2]),
     coldiv:     rng.random_choice([0.25, 0.5, 0.75, 1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3, 4]),
 
     // rendering modes
@@ -254,11 +254,11 @@ export function bakeStylePalette(gl, style) {
 // =============================================================================
 
 // PRNG-driven Fisher-Yates shuffle (returns shuffled copy of input array).
-// rng must provide random() returning [0, 1).
+// rng must provide random_dec() returning [0, 1) — matches autoscope Random API.
 function rngShuffle(rng, arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng.random() * (i + 1));
+    const j = Math.floor(rng.random_dec() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;

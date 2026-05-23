@@ -183,7 +183,9 @@ vec3 getCol(float i) {
 
 // renderCell：取一个 cell 的最终色（含 sky / shadow mode 4 种）
 // base = 上一层 cell 颜色，用 min(base, col) 让前景压暗背景（autoscope idiom）
-vec4 renderCell(vec2 uv, vec3 base) {
+// cellAB = 当前 cell 的整数坐标（post-FS 网格），用于 sky chess (per-cell 大块棋盘，
+// 不是 per-buffer-pixel 小棋盘 dither)
+vec4 renderCell(vec2 uv, vec3 base, vec2 cellAB) {
   uv.y *= u_ratio;
   vec2 sampleUV = fract(uv * 0.5 + 0.5);
   vec4 bufferData = sampleCell(sampleUV);
@@ -193,9 +195,11 @@ vec4 renderCell(vec2 uv, vec3 base) {
   float dist = bufferData.a;
 
   vec3 col = base;
-  if (c1 == 1.0 && c2 == 1.0) {
-    // Sky: sky1 / sky2 by chess (shadowFlag 在 sky 路径上 = chess pattern)
-    col = (shadowFlag == 0.0) ? u_sky1 : u_sky2;
+  if (c1 > 0.99 && c2 > 0.99) {
+    // Sky: sky1/sky2 by per-cell chess. Compute chess from cellAB at post-FS
+    // granularity (not buffer-pixel). Bold large cells matching autoscope ref.
+    float skyChess = mod(floor(cellAB.x) + floor(cellAB.y), 2.0);
+    col = (skyChess == 0.0) ? u_sky1 : u_sky2;
   } else {
     // Object: palette1 × palette2 25% mix
     col = mix(getCol(c1), getCol(c2), 0.25);
@@ -251,20 +255,21 @@ vec4 renderPixel(vec2 pixelXY, float xNoise, float yNoise, float nFactor) {
   vec2 cellAB = floor(xy / cellSizePixels);
   vec2 cellUV = fract(xy / cellSizePixels);
 
-  vec4 cell = renderCell(uv, u_bg);
+  vec4 cell = renderCell(uv, u_bg, cellAB);
   vec3 col = cell.rgb;
 
   // 4-邻居 cell blur — noise-driven distance threshold (autoscope main.frag 1:1)
-  // d 是 cell 单元内的半径阈值，noise 让 d 不规则 → "棋盘单元渗透"质感
+  // d 是 cell 单元内的半径阈值，noise 让 d 不规则 → "棋盘单元渗透"质感。
+  // 邻居 cellAB shifts by neighbor offset (用于 sky chess 在邻居单元的正确 hue)
   float d = sqrt05 + 0.1 + 0.5 * octaves(cellAB.x * cellAB.y + cellUV * 0.5, 5.0, 0.5, 0.5, nFactor);
   if (distance(cellUV, vec2(0.5, -0.5)) < d) {
-    col = renderCell(uv + vec2(0.0, -1.0) * cellSizeUV, col.rgb).rgb;
+    col = renderCell(uv + vec2(0.0, -1.0) * cellSizeUV, col.rgb, cellAB + vec2(0.0, -1.0)).rgb;
   } else if (distance(cellUV, vec2(-0.5, 0.5)) < d) {
-    col = renderCell(uv + vec2(-1.0, 0.0) * cellSizeUV, col.rgb).rgb;
+    col = renderCell(uv + vec2(-1.0, 0.0) * cellSizeUV, col.rgb, cellAB + vec2(-1.0, 0.0)).rgb;
   } else if (distance(cellUV, vec2(1.5, 0.5)) < d) {
-    col = renderCell(uv + vec2(1.0, 0.0) * cellSizeUV, col.rgb).rgb;
+    col = renderCell(uv + vec2(1.0, 0.0) * cellSizeUV, col.rgb, cellAB + vec2(1.0, 0.0)).rgb;
   } else if (distance(cellUV, vec2(0.5, 1.5)) < d) {
-    col = renderCell(uv + vec2(0.0, 1.0) * cellSizeUV, col.rgb).rgb;
+    col = renderCell(uv + vec2(0.0, 1.0) * cellSizeUV, col.rgb, cellAB + vec2(0.0, 1.0)).rgb;
   }
   return vec4(col, cell.w);
 }
@@ -741,8 +746,11 @@ void main() {
   if (u_simpleColor > 0.5) {
     vec4 outBuf;
     if (!hit) {
-      float skyChess = mod(floor(gl_FragCoord.x) + floor(gl_FragCoord.y), 2.0);
-      outBuf = vec4(1.0, 1.0, skyChess, 1.0);
+      // Sky marker: c1=c2=1 (sentinel), B unused (post FS computes its own
+      // chess from cellAB so chess granularity is per-cell, not per-buffer-pixel).
+      // Before the fix this stored buffer-pixel chess which canvas displayed as
+      // ~2.8px dither — autoscope reference has bold large sky chess instead.
+      outBuf = vec4(1.0, 1.0, 0.0, 1.0);
     } else {
       vec3 n2 = hitGround ? vec3(0.0, 1.0, 0.0) : calcNormal(hitP);
       vec3 toL = normalize(lpos - hitP);

@@ -19,6 +19,12 @@ import { generateSceneData, randomSceneTypeData, SCENE_NAMES_DATA } from '../sdf
 import { compile as compileSceneData } from '../../src/scene/index.js';
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
+// Generator-V: BOB GPU style randomizer (palette / chess / render params per styleHash).
+// Imported here so compositor's BOB GPU mode shares the same Generator-V layer
+// as the standalone autoscope-clone — keeps Atlas thesis Point #10 unified.
+import {
+  DEFAULT_STYLE, randomizeBobStyle, applyStyleGate, describeStyle,
+} from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';
 
@@ -55,6 +61,13 @@ const state = {
   // values take precedence over scene.lightStatic. Reset to null when user
   // clicks "Reset to scene default" or loads a new scene.
   lightOverride: null,                 // { azimuth, altitude, distance } | null
+
+  // Generator-V (BOB GPU style) — per-styleHash randomized palette / chess /
+  // render uniforms. Independent from scene (orthogonal axis per thesis #10).
+  // Only consumed when activeRenderer === 'bob-gpu'. Initialized from URL
+  // ?styleHash= on bootstrap; "🎲 New style" button generates new hash.
+  styleHash: null,                     // 0x... hex string
+  bobStyle: { ...DEFAULT_STYLE },      // current Generator-V output
 };
 
 const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu']);
@@ -1176,6 +1189,8 @@ function updateCanvasVisibility(opts = {}) {
   if (fsBtn) fsBtn.style.display = showGpu ? 'inline-flex' : 'none';
   // Shuffle only meaningful for BOB GPU (FLY 3D doesn't have a palette concept)
   if (shuffleBtn) shuffleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
+  const newStyleBtn = $('btn-new-style');
+  if (newStyleBtn) newStyleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
   if (lightPanel) lightPanel.style.display = showGpu ? 'block' : 'none';
   return showGpu ? runActiveGpuRenderer(opts) : { bytes: 0 };
 }
@@ -1621,6 +1636,9 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
     const bob = ensureBobRenderer();
     if (!keepCamera && scene.cameraStatic) bob.setCamState(sphericalToCamState(scene.cameraStatic));
+    // Generator-V handoff: apply current style (palette / skip / bg variety)
+    // before render. Style stays bound until "🎲 New style" button regenerates.
+    bob.applyStyle(state.bobStyle);
     try {
       const r = bob.render(sdf);
       gpuSceneStartTime = performance.now();
@@ -1650,20 +1668,28 @@ function ensureBobRenderer() {
       // User-controlled slider override > scene/anim-evaluated light
       const light = state.lightOverride ?? sceneLight;
       const shadow = scene.evalShadow ? scene.evalShadow(t) : scene.shadowStatic;
+      // Spread Generator-V output (state.bobStyle) — all autoscope-style
+      // randomization comes from here. shadow scene state still drives
+      // shadowMode from SceneData (when present); rest is style-driven.
+      const sceneShadowMode = shadow?.mode ? shadowModeNameToInt(shadow.mode) : null;
       return {
+        ...state.bobStyle,
+        // bobShader expects these renamed fields:
+        shadowMode:     sceneShadowMode ?? state.bobStyle.shadow ?? 0,
+        postNFactor:    state.bobStyle.nFactor,
+        postNoiseCap:   state.bobStyle.noiseCap,
+        postColorLeak:  state.bobStyle.colorLeak,
+        // SceneData-driven (override style):
         lightAzim: light.azimuth,
         lightAlt:  light.altitude,
         lightDist: light.distance,
         fov:       cam.focal || 1.5,
-        coldiv: 1.1, coloration: 0,
-        shadowMode:    shadowModeNameToInt(shadow?.mode ?? 'channelSwap'),
-        shadowStrength: shadow?.strength ?? 0.35,
+        shadowStrength: shadow?.strength ?? state.bobStyle.shadowStrength,
         shadowsOn:     shadow?.enabled !== false,
-        groundOn:      false,                  // ground union'd into SDF tree instead
-        noiseSpeed:    0.00016,
-        exposure:      1.05, saturation: 1.0, worldScale: 0.5,
-        postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
-        mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+        // Compositor-specific defaults:
+        groundOn:   false,
+        noiseSpeed: 0.00016,
+        worldScale: 0.5,
       };
     },
     onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
@@ -1680,6 +1706,37 @@ function defaultBobControls() {
     postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
     mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
   };
+}
+
+// ============================================================================
+// Generator-V (BOB GPU style) — bootstrap + regenerate
+// ----------------------------------------------------------------------------
+// styleHash → randomizeBobStyle(rng) → BobStyle pure JSON → bob.applyStyle()
+// Independent of scene (orthogonal axis). compositor's BOB GPU mode uses the
+// same Generator-V layer as autoscope-clone.
+// ============================================================================
+
+function bootstrapBobStyle() {
+  // Read styleHash from URL, generate if absent / invalid.
+  const urlStyleHash = new URLSearchParams(window.location.search).get('styleHash');
+  state.styleHash = isValidHash(urlStyleHash) ? urlStyleHash : generateHash();
+  writeStyleHashToURL(state.styleHash);
+  state.bobStyle = randomizeBobStyle(new Random(state.styleHash));
+}
+
+function regenerateBobStyle() {
+  state.styleHash = generateHash();
+  writeStyleHashToURL(state.styleHash);
+  state.bobStyle = randomizeBobStyle(new Random(state.styleHash));
+  if (state.bobRenderer && state.activeRenderer === 'bob-gpu') {
+    state.bobRenderer.applyStyle(state.bobStyle);
+  }
+}
+
+function writeStyleHashToURL(hash) {
+  const url = new URL(window.location);
+  url.searchParams.set('styleHash', hash);
+  window.history.replaceState(null, '', url);
 }
 
 function shadowModeNameToInt(mode) {
@@ -2068,6 +2125,23 @@ function shuffleBobPalette() {
 }
 $('btn-shuffle-palette')?.addEventListener('click', shuffleBobPalette);
 
+// Generator-V: "🎲 New style" — regenerate styleHash, re-derive bobStyle,
+// re-bake palette via bob.applyStyle. Visible only when activeRenderer=bob-gpu.
+$('btn-new-style')?.addEventListener('click', () => {
+  regenerateBobStyle();
+  setStatus(`✓ New BOB style — styleHash ${state.styleHash.slice(0, 10)}…`, false);
+});
+
+// Shift+S keyboard shortcut for New Style (BOB GPU only)
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'S' && e.shiftKey && state.activeRenderer === 'bob-gpu'
+      && document.activeElement?.tagName !== 'INPUT'
+      && document.activeElement?.tagName !== 'TEXTAREA') {
+    e.preventDefault();
+    $('btn-new-style')?.click();
+  }
+});
+
 // ----- Light control panel (GPU renderers only) -----
 const LIGHT_PRESETS = {
   goldenHour: { azimuth: 0.60, altitude: 0.25, distance: 35 },  // low warm sun
@@ -2227,11 +2301,15 @@ $('scene-display')?.addEventListener('keydown', (e) => {
   }
 });
 
+// Bootstrap Generator-V (BOB GPU style) BEFORE any BOB render — reads styleHash
+// from URL or generates one. state.bobStyle is now ready for first BOB render.
+bootstrapBobStyle();
+
 Promise.all([loadSystemPrompt(), loadLiftSystemPrompt(), loadDemoManifest()]).then(([n2d, nLift]) => {
   renderScenesTab();
   const demoCount = DEMO_MANIFEST?.demos?.length ?? 0;
   const ready = DEMO_MANIFEST?.demos?.filter(d => d.status === 'ready').length ?? 0;
-  setStatus(`✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c`);
+  setStatus(`✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c · styleHash ${state.styleHash.slice(0, 8)}…`);
 
   // Auto-load shared scene from URL hash (runs after system prompts are ready
   // so any LLM-side machinery is available, though shared loads don't need it)
