@@ -1668,28 +1668,45 @@ function ensureBobRenderer() {
       // User-controlled slider override > scene/anim-evaluated light
       const light = state.lightOverride ?? sceneLight;
       const shadow = scene.evalShadow ? scene.evalShadow(t) : scene.shadowStatic;
-      // Spread Generator-V output (state.bobStyle) — all autoscope-style
-      // randomization comes from here. shadow scene state still drives
-      // shadowMode from SceneData (when present); rest is style-driven.
+      // Spread Generator-V output (state.bobStyle), GATED — geometry warps
+      // (mirror/twist/gridRot/rotateCanvas/animation) forced OFF in compositor
+      // since user is lifting a specific scene (carrier, cathedral, ...) and
+      // those warps would alter the scene's intended appearance. Palette /
+      // chess / shadow / exposure / etc. style variation stays on.
+      const gatedStyle = applyStyleGate(state.bobStyle, /* allowGeometry */ false);
       const sceneShadowMode = shadow?.mode ? shadowModeNameToInt(shadow.mode) : null;
+      // Compositor-tuned baseline (autoscope-clone parity, 2026-05-23 update):
+      const COMPOSITOR_DEFAULTS = {
+        coldiv:         2.20,
+        exposure:       1.85,
+        saturation:     0.70,
+        shadowStrength: 0.25,
+        nFactor:        0.30,  // sand-painting noise amount
+        noiseSpeed:     0.00016,
+        worldScale:     0.55,
+      };
       return {
-        ...state.bobStyle,
-        // bobShader expects these renamed fields:
-        shadowMode:     sceneShadowMode ?? state.bobStyle.shadow ?? 0,
-        postNFactor:    state.bobStyle.nFactor,
-        postNoiseCap:   state.bobStyle.noiseCap,
-        postColorLeak:  state.bobStyle.colorLeak,
+        ...gatedStyle,
+        // Compositor enforces baseline tuning over style randomization:
+        coldiv:         COMPOSITOR_DEFAULTS.coldiv,
+        exposure:       COMPOSITOR_DEFAULTS.exposure,
+        saturation:     COMPOSITOR_DEFAULTS.saturation,
+        // bobShader renames:
+        shadowMode:     sceneShadowMode ?? gatedStyle.shadow ?? 0,
+        postNFactor:    COMPOSITOR_DEFAULTS.nFactor,
+        postNoiseCap:   gatedStyle.noiseCap,
+        postColorLeak:  gatedStyle.colorLeak,
         // SceneData-driven (override style):
         lightAzim: light.azimuth,
         lightAlt:  light.altitude,
         lightDist: light.distance,
         fov:       cam.focal || 1.5,
-        shadowStrength: shadow?.strength ?? state.bobStyle.shadowStrength,
+        shadowStrength: shadow?.strength ?? COMPOSITOR_DEFAULTS.shadowStrength,
         shadowsOn:     shadow?.enabled !== false,
-        // Compositor-specific defaults:
+        // Compositor-specific:
         groundOn:   false,
-        noiseSpeed: 0.00016,
-        worldScale: 0.5,
+        noiseSpeed: COMPOSITOR_DEFAULTS.noiseSpeed,
+        worldScale: COMPOSITOR_DEFAULTS.worldScale,
       };
     },
     onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
