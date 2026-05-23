@@ -95,10 +95,12 @@ function ensureRenderer() {
       worldScale: +$('world-scale').value,
       // Autoscope 随机化 knobs（PRNG 派生）+ UI 开关 gate
       ...applyKnobsGate(currentKnobs, $('knobs-on').checked),
-      // Post-process (sand painting) noise amount
-      postNoise:     +$('post-noise').value,
-      postNFactor:   1.0,    // octave noise nFactor（固定，slider 可加）
-      postNoiseCap:  0.5,    // octaves clamp 上限
+      // Post-process (autoscope main.frag) tuning
+      postNFactor:   1.0,    // u_nFactor — octave noise multiplier modulation
+      postNoiseCap:  0.5,    // u_noiseCap — patches clamp ceiling
+      nOffset:       0.0,    // u_nOffset — noise offset bias
+      margin:        0.06,   // u_margin — paper border ratio (autoscope 0.08-0.2)
+      seed:          1.0,    // u_seed — hash seed for noise (PRNG-driven later)
     }),
     onFps: (fps) => {
       const el = $('fps');

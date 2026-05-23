@@ -31,45 +31,68 @@ const VS_SRC = `attribute vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
 // =============================================================================
-// Post-process fragment shader (autoscope 2-pass grain 的核心)
+// Post-process fragment shader — 2026-05-23 autoscope main.frag 1:1 port
 // -----------------------------------------------------------------------------
-// Pass 1 (低分 buffer) 已存好纯 palette 色（u_simpleColor=1，不做 HSL）。pass 2 跑：
-//   col1 = sampleBuffer(uv)              ← 几乎不扰动 → shape 保持锐利
-//   col2 = sampleBuffer(uv + 大扰动)      ← 采远处随机 cell → 随机 palette 色
-//   HSL mix: 用 col1 的 sat+lum + col2 的 hue → 同形状内每像素 hue 不同 = grain
-//   colorLeak: 25% 像素直接保留 col1 raw → 部分纯色 patch
+// Buffer FBO 现在存的是 vec4(c1, c2, shadowFlag, depth) 索引而非 resolved color。
+// Post FS 做：palette lookup + per-pixel cell membership + neighbor blur +
+//             double-sample HSL mix + margin border + low-res AA。
 //
-// u_postNoise=0 → col1=col2 → 跟单 pass 一样无 grain
-// u_postNoise=1 → autoscope 默认 yNoise=0.15 (远处 cell 24 格)
+// 关键架构（跟 BOB v1 的"FBO 直接 RGB"完全不同）：
+//   1. 每像素 → cellAB / cellUV (autoscope grid 概念)
+//   2. sampleCell(cellAB) 取 (c1, c2, shadow, depth)
+//   3. renderCell：palette getCol + sky branch + 4 种 shadow mode 都在这里
+//   4. 4 邻居 cell distance-thresholded blur (noise-driven d) — 棋盘"渗透"质感
+//   5. renderPixel × 2 (col1 紧 / col2 大噪声) → HSL hue mix or 直乘
+//   6. paper margin border
+//   7. 低分辨率 3-sample AA
 // =============================================================================
 const POST_FS_SRC = `#ifdef GL_ES
 precision highp float;
 #endif
 
 uniform sampler2D u_buffer;
+uniform sampler2D u_palette;
 uniform vec2  u_resolution;
 uniform vec2  u_bufferRes;
 uniform float u_time;
-uniform float u_postNoise;       // 0..2，0 = 关，1 = autoscope 默认
-uniform float u_postNFactor;     // 0..1.5，octave noise nFactor
-uniform float u_postNoiseCap;    // 0.1..0.8，autoscope u_noiseCap clamp
-uniform float u_postColorLeak;   // 0.05..0.6，autoscope u_colorLeak: %p 保留 col1 raw
+uniform float u_paletteLen;
+uniform vec3  u_sky1;
+uniform vec3  u_sky2;
+uniform vec3  u_bg;             // paper / 边距底色
+uniform float u_grid;           // post FS 的 cell 数（autoscope u_grid，跟 bufferRes 通常一样）
+uniform float u_ratio;          // canvas aspect ratio (w/h)
+uniform int   u_renderType;     // 0 = HSL hue remap; 1 = col1 × col2 直乘
+uniform int   u_shadow;         // shadow mode 0..3
+uniform float u_shadowStrength;
+uniform float u_margin;         // paper border 比例 (0.08..0.2 typical)
+uniform float u_saturation;     // saturate floor
+uniform float u_exposure;
+uniform float u_colorLeak;      // autoscope u_colorLeak: 多少 col1 raw 漏过
+uniform float u_noiseCap;       // patches clamp 上限
+uniform float u_nFactor;        // octave noise nFactor
+uniform float u_nOffset;        // noise offset
+uniform float u_rotateCanvas;   // canvas drift rad/sec (autoscope idiom)
+uniform float u_seed;           // hash 种子
 
-#define OCTAVES 6
+#define OCTAVES 8
 #define NOISESPEED 0.00008
+#define PI 3.1415926538
+#define TWOPI 6.2831853072
+#define sqrt05 0.7071067812
 
-// Time-modulated hash. Renamed from hash13 (collided with noise.glsl's
-// canonical hash13 — Hoskins naming: 1-in N-out). bobHashTime takes vec3,
-// drifts with u_time, returns float; effectively a non-canonical hash31.
-float bobHashTime(vec3 p3) {
-  p3 += u_time * NOISESPEED;
-  p3 = fract(p3 * 0.1031);
+// autoscope 同款 xFactor：buffer 实际宽度可能跟 grid*ratio 略差，做 UV 补偿
+float xFactor = (u_bufferRes.x / u_bufferRes.y) / u_ratio;
+
+// ---- 噪声 (autoscope 同款 random / grad / noise / octaves) -------------------
+float bobHashTime(vec2 p) {
+  p += u_time * NOISESPEED;
+  vec3 p3 = fract(vec3(p.xyx + 1.0 + u_seed * 0.0001) * 0.1031);
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
 
 vec2 grad2(ivec2 z) {
-  float a = bobHashTime(vec3(z, 0.0)) * 6.2831853;
+  float a = bobHashTime(vec2(z.x, z.y)) * TWOPI;
   return vec2(cos(a), sin(a));
 }
 
@@ -97,7 +120,7 @@ float octaves(vec2 uv, float scale, float factor, float multiplier, float nFacto
   return f;
 }
 
-// HSL 工具（glsl-hsl2rgb / IQ 同源）
+// ---- HSL utils (glsl-hsl2rgb) ----------------------------------------------
 float hue2rgb(float f1, float f2, float hue) {
   if (hue < 0.0) hue += 1.0; else if (hue > 1.0) hue -= 1.0;
   if ((6.0 * hue) < 1.0) return f1 + (f2 - f1) * 6.0 * hue;
@@ -128,52 +151,181 @@ vec3 rgb2hsl(vec3 col) {
   }
   return hsl;
 }
-
-vec3 sampleBuffer(vec2 uv) {
-  return texture2D(u_buffer, uv).rgb;
+vec3 saturateColor(vec3 col, float floorSat) {
+  vec3 h = rgb2hsl(col);
+  h.y = max(h.y, floorSat);
+  return hsl2rgb(h);
+}
+vec2 rotate2D(vec2 p, float a) {
+  float c = cos(a), s = sin(a);
+  return mat2(c, -s, s, c) * p;
 }
 
+// ---- buffer / palette sampling ---------------------------------------------
+// buffer FBO 存 vec4(c1, c2, shadowFlag, depth)
+//   c1, c2 ∈ [0, 1) — palette indices
+//   shadowFlag: 0=in shadow, 1=lit (autoscope convention)
+//   depth: clamp((t-5)/MAX_DIST, 0, 1)
+// 注意 autoscope 同款 y flip
+vec4 sampleCell(vec2 sampleUV) {
+  return texture2D(u_buffer, vec2(sampleUV.x * xFactor, 1.0 - sampleUV.y));
+}
+
+// getCol：palette index ∈ [0,1) → palette texture lookup
+// idx < 0.5 → palette1 (y=0.25)；idx >= 0.5 → palette2 (y=0.75)
+vec3 getCol(float i) {
+  float y = 0.25;
+  if (i >= 0.5) { y = 0.75; i -= 0.5; }
+  i *= 2.0;
+  return texture2D(u_palette, vec2(i + (1.0 / u_paletteLen) * 0.5, y)).rgb;
+}
+
+// renderCell：取一个 cell 的最终色（含 sky / shadow mode 4 种）
+// base = 上一层 cell 颜色，用 min(base, col) 让前景压暗背景（autoscope idiom）
+vec4 renderCell(vec2 uv, vec3 base) {
+  uv.y *= u_ratio;
+  vec2 sampleUV = fract(uv * 0.5 + 0.5);
+  vec4 bufferData = sampleCell(sampleUV);
+  float c1 = bufferData.r;
+  float c2 = bufferData.g;
+  float shadowFlag = bufferData.b;
+  float dist = bufferData.a;
+
+  vec3 col = base;
+  if (c1 == 1.0 && c2 == 1.0) {
+    // Sky: sky1 / sky2 by chess (shadowFlag 在 sky 路径上 = chess pattern)
+    col = (shadowFlag == 0.0) ? u_sky1 : u_sky2;
+  } else {
+    // Object: palette1 × palette2 25% mix
+    col = mix(getCol(c1), getCol(c2), 0.25);
+    if (shadowFlag == 0.0) {
+      // In shadow — 4 modes
+      if (u_shadow == 0) {
+        col.rgb = col.brg;
+        col.rg *= u_shadowStrength;
+      } else if (u_shadow == 1) {
+        col *= u_shadowStrength;
+        vec3 h = rgb2hsl(col);
+        col = hsl2rgb(vec3(h.x + 0.5, h.y, h.z));
+      } else if (u_shadow == 2) {
+        col *= u_shadowStrength;
+        vec3 h = rgb2hsl(col);
+        col = hsl2rgb(vec3(h.x + 0.25, h.y, h.z));
+      } else {
+        col *= u_shadowStrength;
+      }
+    }
+  }
+  return vec4(min(base, col), dist);
+}
+
+// renderPixel：核心。给屏幕 (pixelXY) → 算出该像素属于哪个 cell + 4 邻居 blur
+//   xNoise / yNoise / nFactor 控制 UV perturbation（col1 用小 / col2 用大）
+vec4 renderPixel(vec2 pixelXY, float xNoise, float yNoise, float nFactor) {
+  vec2 uv = 2.0 * (pixelXY / u_resolution.xy - 0.5);
+  uv.y /= u_ratio;
+  uv = rotate2D(uv, u_rotateCanvas * u_time);  // canvas drift
+
+  // patches = 低频 noise 强度 modulator
+  if (u_renderType == 0) {
+    float patches = clamp(octaves(uv + 4.0, 2.0, 0.8, 0.5, nFactor), 0.04, u_noiseCap);
+    uv += vec2(
+      (octaves(uv + 2.0, 2.0, 0.95, 0.95, nFactor) + u_nOffset) * xNoise * patches,
+      (octaves(uv,       2.0, 0.95, 0.95, nFactor) + u_nOffset) * yNoise * patches
+    );
+  } else {
+    float patches = clamp(octaves(uv + 4.0, 2.0, 0.8, 0.5, nFactor) + 0.95, 0.04, u_noiseCap);
+    uv -= vec2(
+      (octaves(uv + 2.0, 10.0, 0.95, 0.95, nFactor) + u_nOffset) * xNoise * patches,
+      (octaves(uv,       10.0, 0.95, 0.95, nFactor) + u_nOffset) * yNoise * patches
+    );
+  }
+
+  // Cell membership: 把 uv 转回屏幕坐标 → 算出 cellAB / cellUV
+  float cellSizePixels = u_resolution.y / u_grid;
+  vec2 cellSizeUV = vec2(cellSizePixels) / u_resolution.xy;
+  vec2 uvnorm = uv;
+  uvnorm.y *= u_ratio;
+  vec2 xy = (uvnorm * 0.5 + 0.5) * u_resolution.xy;
+  vec2 cellAB = floor(xy / cellSizePixels);
+  vec2 cellUV = fract(xy / cellSizePixels);
+
+  vec4 cell = renderCell(uv, u_bg);
+  vec3 col = cell.rgb;
+
+  // 4-邻居 cell blur — noise-driven distance threshold (autoscope main.frag 1:1)
+  // d 是 cell 单元内的半径阈值，noise 让 d 不规则 → "棋盘单元渗透"质感
+  float d = sqrt05 + 0.1 + 0.5 * octaves(cellAB.x * cellAB.y + cellUV * 0.5, 5.0, 0.5, 0.5, nFactor);
+  if (distance(cellUV, vec2(0.5, -0.5)) < d) {
+    col = renderCell(uv + vec2(0.0, -1.0) * cellSizeUV, col.rgb).rgb;
+  } else if (distance(cellUV, vec2(-0.5, 0.5)) < d) {
+    col = renderCell(uv + vec2(-1.0, 0.0) * cellSizeUV, col.rgb).rgb;
+  } else if (distance(cellUV, vec2(1.5, 0.5)) < d) {
+    col = renderCell(uv + vec2(1.0, 0.0) * cellSizeUV, col.rgb).rgb;
+  } else if (distance(cellUV, vec2(0.5, 1.5)) < d) {
+    col = renderCell(uv + vec2(0.0, 1.0) * cellSizeUV, col.rgb).rgb;
+  }
+  return vec4(col, cell.w);
+}
+
+// render：double-sample (col1 cell-locked / col2 大 noise) + HSL mix or 直乘
+vec3 render(vec2 xy) {
+  vec3 col;
+  vec2 uv = 2.0 * (gl_FragCoord.xy / u_resolution.xy - 0.5);
+  uv.y /= u_ratio;
+  float amount = octaves(-uv, 5.0, 0.95, 0.95, u_nFactor);
+
+  // col1: 紧贴 cell（autoscope: xNoise=0.001, yNoise=0.001 or 0.0025）
+  vec4 col1 = (u_renderType == 0)
+    ? renderPixel(xy, 0.001, 0.001, 0.0)
+    : renderPixel(xy, 0.001, 0.0025, u_nFactor);
+  // col2: 大 Y noise 采远处 cell（autoscope: yNoise=0.15*amount）
+  vec4 col2 = renderPixel(xy, 0.002 + col1.w * 0.02, 0.15 * amount, u_nFactor);
+
+  // 远景雾：dist<1 时朝 sky 靠拢
+  if (col1.w < 1.0) {
+    col1.rgb = mix(col1.rgb, u_sky1, col1.w * 0.4);
+    col2.rgb = mix(col2.rgb, u_sky2, col1.w * 0.4);
+  }
+
+  if (u_renderType == 0) {
+    // HSL hue 重映射：col1 sat+lum + col2 hue mix (sky=0.35, object=0.9)
+    vec3 hsl1 = rgb2hsl(col1.rgb);
+    vec3 hsl2 = rgb2hsl(col2.rgb);
+    col = mix(
+      hsl2rgb(vec3(
+        mix(hsl1.x, hsl2.x, (col1.w == 1.0) ? 0.35 : 0.9),
+        hsl1.y,
+        hsl1.z
+      )),
+      col1.rgb,
+      u_colorLeak
+    );
+    col *= u_exposure * 0.5;
+  } else {
+    // Direct multiply: col1 * col2 — deeper / darker palette
+    col = mix(col1.rgb * col2.rgb * u_exposure, col1.rgb, 0.2);
+  }
+  return saturateColor(col, u_saturation);
+}
+
+// ---- 主入口：paper margin border + low-res 3-sample AA ----------------------
 void main() {
-  // [-1,1] uv space —— autoscope idiom；octave 频率匹配 main.frag wavelength
-  vec2 uv = 2.0 * (gl_FragCoord.xy / u_resolution - 0.5);
-
-  // patches: 低频 octave 空间强度 modulator（0.04..0.5）
-  float patches = clamp(octaves(uv + 4.0, 2.0, 0.8, 0.5, u_postNFactor), 0.04, u_postNoiseCap);
-
-  // amount: 第 2 个低频 octave，符号化 Y 振幅 modulator → 区域性 Y 扰动方向变化
-  // autoscope main.frag render(): float amount = octaves(-uv, 5., .95, .95, u_nFactor);
-  float amount = octaves(-uv, 5.0, 0.95, 0.95, u_postNFactor);
-
-  // col1: 极小扰动（autoscope: xNoise=0.001, yNoise=0.001）→ shape 边界锐利
-  vec2 perturb1 = vec2(
-    octaves(uv + 2.0, 2.0, 0.95, 0.95, u_postNFactor),
-    octaves(uv,      2.0, 0.95, 0.95, u_postNFactor)
-  ) * 0.001 * patches * u_postNoise;
-  vec2 sUV1 = (uv + perturb1) * 0.5 + 0.5;
-  vec4 col1Data = texture2D(u_buffer, sUV1);
-  vec3 col1 = col1Data.rgb;
-  float depth = col1Data.a;  // 0=近物 / 1=sky；depth 让 sky 像素 11× X 扰动
-
-  // col2: 大扰动（autoscope: xNoise=0.002+depth*0.02, yNoise=0.15*amount）
-  // Y amplitude depth-scaled so sky pixels (depth=1) reach down to ground/building
-  // region for col2 sampling — without this, flat-palette skies stay monochromatic.
-  vec2 perturb2 = vec2(
-    octaves(uv + 2.0, 2.0, 0.95, 0.95, u_postNFactor) * (0.002 + depth * 0.02),
-    octaves(uv,      2.0, 0.95, 0.95, u_postNFactor) * (0.15 + depth * 0.35) * amount
-  ) * patches * u_postNoise;
-  vec2 sUV2 = (uv + perturb2) * 0.5 + 0.5;
-  vec3 col2 = texture2D(u_buffer, sUV2).rgb;
-
-  // HSL mix: sky 用 col1.hue 主导 (0.35)，object 用 col2.hue 主导 (0.9)
-  // autoscope idiom: mix(col1hsl.x, col2hsl.x, (col1.w == 1.) ? .35 : .9)
-  vec3 hsl1 = rgb2hsl(col1);
-  vec3 hsl2 = rgb2hsl(col2);
-  float hueMix = depth >= 0.999 ? 0.35 : 0.9;
-  vec3 mixed = hsl2rgb(vec3(mix(hsl1.x, hsl2.x, hueMix), hsl1.y, hsl1.z));
-
-  // colorLeak: autoscope u_colorLeak ∈ 0.05-0.6 per-hash 随机
-  vec3 col = mix(mixed, col1, u_postColorLeak);
-
+  vec3 col = u_bg;
+  float b = u_resolution.y * u_margin * 0.5;
+  bool outside = gl_FragCoord.y < b || gl_FragCoord.y > u_resolution.y - b
+              || gl_FragCoord.x < b || gl_FragCoord.x > u_resolution.x - b;
+  if (!outside) {
+    if (u_resolution.y < 1000.0) {
+      // 低分辨率：3 偏移点平均（廉价 AA）
+      vec3 c1 = render(gl_FragCoord.xy);
+      vec3 c2 = render(gl_FragCoord.xy + vec2(1.0, 0.0));
+      vec3 c3 = render(gl_FragCoord.xy + vec2(0.0, 1.0));
+      col = mix(c1, mix(c2, c3, 0.5), 0.5);
+    } else {
+      col = render(gl_FragCoord.xy);
+    }
+  }
   gl_FragColor = vec4(col, 1.0);
 }`;
 
@@ -350,21 +502,23 @@ float lightOcclusion(vec3 ro, vec3 rd, float mint, float maxt) {
 // Autoscope-style space color quantization
 // ============================================================================
 
-// chessGetCol：i + cellAB chessboard offset → [0,1) palette 索引
-// autoscope buffer.frag getCol() 1:1 移植：i += (floor(cellAB.x*xMod) + floor(cellAB.y*yMod)) % 2
-// 让相邻像素 cell 交错 +0/+1 → 单 cell 内部呈"双色棋盘"质感（autoscope 标志）
-// xMod/yMod 周期 (autoscope r([1,2,2,2,3]))：1=默认 BOB v1；2/3=更密棋盘
-// xMod=0 && yMod=0：无 offset，平涂色块（autoscope 20% 比例的 hash 走这条）
+// chessGetCol：autoscope buffer.frag getCol() 1:1 移植（2026-05-23 修正版）
+//   xMod==0 && yMod==0  → 2-state chess: i += mod(floor(x)+floor(y), 2)
+//                         autoscope hash 20% 比例走这条（标准 2 色 staircase）
+//   xMod>0  / yMod>0    → multi-state offset: i += mod(floor(x), xMod) + mod(floor(y), yMod)
+//                         autoscope 80% 走这条；xMod=1 → offset=0 (无 chess)；xMod=2/3 → multi-state
+//
+// 2026-05-23 fix: 之前版本写反了 — 用 floor(x*xMod) mod 2 而不是 mod(floor(x), xMod)。
+// 二者完全不同语义。autoscope 是 multi-state staircase；我之前是 2-state at finer grid。
+// 视觉差很大；新版本严格按 autoscope main.frag getCol() 语义实现。
 float chessGetCol(float i, vec2 cellAB) {
-  float offset;
-  if (u_xMod <= 0.0 && u_yMod <= 0.0) {
-    offset = 0.0;
+  if (u_xMod == 0.0 && u_yMod == 0.0) {
+    i += mod(floor(cellAB.x) + floor(cellAB.y), 2.0);
   } else {
     float xm = max(u_xMod, 0.001);
     float ym = max(u_yMod, 0.001);
-    offset = mod(floor(cellAB.x * xm) + floor(cellAB.y * ym), 2.0);
+    i += mod(floor(cellAB.x), xm) + mod(floor(cellAB.y), ym);
   }
-  i += offset;
   return mod(i, u_paletteLen) / u_paletteLen;
 }
 
@@ -572,6 +726,48 @@ void main() {
     t += d;
   }
 
+  // ============================================================================
+  // Autoscope-faithful 2-pass mode (u_simpleColor > 0.5)
+  // ----------------------------------------------------------------------------
+  // 2026-05-23 rewrite: pass 1 stores INDICES not resolved color. Post FS does
+  // palette lookup + cell-membership + neighbor blur + shadow modes.
+  // Format matches autoscope buffer.frag: vec4(c1, c2, shadowFlag, depth)
+  //   c1, c2 ∈ [0, 1) — palette indices from spaceCol
+  //   shadowFlag: 0 = in shadow, 1 = lit (autoscope convention)
+  //   depth: clamp((t - 5) / MAX_DIST, 0, 1) — 0=near, 1=far/sky
+  // For sky pixels: (1, 1, chess_pattern, 1) — sentinel for post FS sky branch
+  // ============================================================================
+  if (u_simpleColor > 0.5) {
+    vec4 outBuf;
+    if (!hit) {
+      float skyChess = mod(floor(gl_FragCoord.x) + floor(gl_FragCoord.y), 2.0);
+      outBuf = vec4(1.0, 1.0, skyChess, 1.0);
+    } else {
+      vec3 n2 = hitGround ? vec3(0.0, 1.0, 0.0) : calcNormal(hitP);
+      vec3 toL = normalize(lpos - hitP);
+      float diff2 = max(dot(n2, toL), 0.0);
+      bool inShadow2 = (diff2 < 0.05);
+      if (!inShadow2 && u_shadowsOn > 0.5) {
+        float lit2 = lightOcclusion(hitP + n2 * 0.002, toL, 0.02, length(lpos - hitP));
+        if (lit2 < 0.5) inShadow2 = true;
+      }
+      float objNum2 = hitGround ? 0.0 : lastObjIdx;
+      vec2 cellAB2 = floor(gl_FragCoord.xy);
+      // autoscope: spaceCol uses raw hitP — no fbm pre-perturbation. The
+      // organic feel comes from post FS noise+cell blur, not pre-perturb.
+      vec2 ci_ts = spaceCol(hitP, cellAB2, objNum2);
+      float shadowFlag = inShadow2 ? 0.0 : 1.0;
+      float depthOut = clamp((t - 5.0) / MAX_DIST, 0.0, 1.0);
+      outBuf = vec4(ci_ts.x, ci_ts.y, shadowFlag, depthOut);
+    }
+    gl_FragColor = outBuf;
+    return;
+  }
+
+  // ============================================================================
+  // Legacy single-pass mode (u_simpleColor < 0.5)
+  // BOB v1 behaviour preserved for MVP / compositor consumers
+  // ============================================================================
   vec3 col;
   if (!hit) {
     col = sky(rd);
@@ -728,8 +924,13 @@ export function createBobShaderRenderer({
       throw new Error(`postProgram link failed: ${gl.getProgramInfoLog(postProgram)}`);
     }
     for (const name of [
-      'u_buffer', 'u_resolution', 'u_bufferRes', 'u_time',
-      'u_postNoise', 'u_postNFactor', 'u_postNoiseCap', 'u_postColorLeak',
+      'u_buffer', 'u_palette', 'u_resolution', 'u_bufferRes', 'u_time',
+      'u_paletteLen', 'u_sky1', 'u_sky2', 'u_bg',
+      'u_grid', 'u_ratio',
+      'u_renderType', 'u_shadow', 'u_shadowStrength',
+      'u_margin', 'u_saturation', 'u_exposure',
+      'u_colorLeak', 'u_noiseCap', 'u_nFactor', 'u_nOffset',
+      'u_rotateCanvas', 'u_seed',
     ]) {
       postUniforms[name] = gl.getUniformLocation(postProgram, name);
     }
@@ -923,17 +1124,37 @@ export function createBobShaderRenderer({
       gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
       gl.vertexAttribPointer(a_pos2, 2, gl.FLOAT, false, 0, 0);
 
-      // 跟 palette (TEXTURE0) 分开用 TEXTURE1
+      // bufferTex (TEXTURE1) — indices vec4(c1,c2,shadow,depth) from pass 1
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, bufferTex);
       gl.uniform1i(postUniforms.u_buffer, 1);
+      // palette (TEXTURE0) — same as pass 1, post FS does palette lookup
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, paletteState.tex);
+      gl.uniform1i(postUniforms.u_palette, 0);
+      gl.uniform1f(postUniforms.u_paletteLen, paletteState.length);
+      gl.uniform3f(postUniforms.u_sky1, ...paletteState.paletteVec.sky1);
+      gl.uniform3f(postUniforms.u_sky2, ...paletteState.paletteVec.sky2);
+      gl.uniform3f(postUniforms.u_bg,   ...paletteState.paletteVec.paper);
+
       gl.uniform2f(postUniforms.u_resolution, canvas.width, canvas.height);
       gl.uniform2f(postUniforms.u_bufferRes, bufferResolution, bufferResolution);
       gl.uniform1f(postUniforms.u_time, tSec);
-      gl.uniform1f(postUniforms.u_postNoise, c.postNoise ?? 1.0);
-      gl.uniform1f(postUniforms.u_postNFactor, c.postNFactor ?? 1.0);
-      gl.uniform1f(postUniforms.u_postNoiseCap, c.postNoiseCap ?? 0.5);
-      gl.uniform1f(postUniforms.u_postColorLeak, c.postColorLeak ?? 0.25);
+      gl.uniform1f(postUniforms.u_grid, bufferResolution);
+      gl.uniform1f(postUniforms.u_ratio, canvas.width / canvas.height);
+
+      gl.uniform1i(postUniforms.u_renderType, (c.renderType ?? 0) | 0);
+      gl.uniform1i(postUniforms.u_shadow, (c.shadowMode ?? 0) | 0);
+      gl.uniform1f(postUniforms.u_shadowStrength, c.shadowStrength ?? 0.5);
+      gl.uniform1f(postUniforms.u_margin, c.margin ?? 0.08);
+      gl.uniform1f(postUniforms.u_saturation, c.saturation ?? 0.8);
+      gl.uniform1f(postUniforms.u_exposure, c.exposure ?? 2.5);
+      gl.uniform1f(postUniforms.u_colorLeak, c.postColorLeak ?? c.colorLeak ?? 0.25);
+      gl.uniform1f(postUniforms.u_noiseCap, c.postNoiseCap ?? c.noiseCap ?? 0.5);
+      gl.uniform1f(postUniforms.u_nFactor, c.postNFactor ?? c.nFactor ?? 1.0);
+      gl.uniform1f(postUniforms.u_nOffset, c.nOffset ?? 0.0);
+      gl.uniform1f(postUniforms.u_rotateCanvas, c.rotateCanvas ?? 0.0);
+      gl.uniform1f(postUniforms.u_seed, c.seed ?? 1.0);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
