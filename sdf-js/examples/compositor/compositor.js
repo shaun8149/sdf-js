@@ -586,6 +586,11 @@ function switchToTab(tabName) {
 
 async function loadDemoScene(demo) {
   setStatus(`⋯ loading demo: ${demo.title}`);
+  // Stop the previous scene's RAF + clear its framebuffer immediately so the
+  // old scene doesn't linger on canvas during fetch + shader compile. The
+  // new render() call below will restart the loop with the new SDF.
+  if (state.bobRenderer) state.bobRenderer.unmount();
+  if (state.fly3dRenderer) state.fly3dRenderer.unmount();
   try {
     const res = await fetch(`./demo-lifts/${demo.file}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1560,6 +1565,10 @@ async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
 function exitLiftMode() {
   state.liftMode = false;
   activeDemoId = null;
+  // Stop the GPU RAF loops + clear canvas so nothing keeps rendering against
+  // a hidden canvas, and the next scene won't show stale pixels.
+  if (state.bobRenderer) state.bobRenderer.unmount();
+  if (state.fly3dRenderer) state.fly3dRenderer.unmount();
   updateCanvasVisibility();
   refreshLiftButtonState();
   const saveBtn = $('btn-save-scene');

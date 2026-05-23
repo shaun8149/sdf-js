@@ -1039,8 +1039,19 @@ export function createBobShaderRenderer({
       throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
     }
 
-    if (program) gl.deleteProgram(program);
+    if (program) {
+      // Detach + delete the OLD fragment shader to actually free GPU memory.
+      // Without this, deleteProgram() only marks the program — attached
+      // shader objects stay alive forever, leaking ~10–50KB per scene swap.
+      gl.detachShader(program, vs);
+      if (program._fs) {
+        gl.detachShader(program, program._fs);
+        gl.deleteShader(program._fs);
+      }
+      gl.deleteProgram(program);
+    }
     program = prog;
+    program._fs = fs;
 
     gl.useProgram(program);
     const a_pos = gl.getAttribLocation(program, 'a_pos');
@@ -1234,6 +1245,12 @@ export function createBobShaderRenderer({
     unmount() {
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       if (flyHandle) { flyHandle.detach(); flyHandle = null; }
+      // Clear framebuffer to black so the next scene doesn't briefly show
+      // stale pixels from this one while its new shader is compiling.
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     },
     shufflePalette() {
       rebakePalette();

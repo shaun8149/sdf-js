@@ -31,6 +31,9 @@ import {
   pyramid, slab3, wireframe_box, tri_prism, waves,
   rotateXYZ, twist, bend, curve,
   modPolar, mirrorOctant,
+  // 2026-05-23 IQ P2 batch (8 new primitives)
+  cutSphere, cutHollowSphere, deathStar, roundedCylinder,
+  roundConeAB, vesicaSegment, cylinderInf, coneInf,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
 import { linkSDF } from './components/community/iq-link.js';
@@ -337,6 +340,16 @@ const PRIMITIVE_FACTORIES = {
     activeFrac: a.activeFrac ?? 0.5,
     phase:      a.phase      ?? 0.0,
   }),
+
+  // -- 2026-05-23 IQ P2 batch — 8 new 3D primitives ----------------------
+  'cut-sphere':       (a) => cutSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0),
+  'cut-hollow-sphere':(a) => cutHollowSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0, a.t ?? a.thickness ?? 0.02),
+  'death-star':       (a) => deathStar(a.ra ?? 0.5, a.rb ?? 0.35, a.d ?? a.distance ?? 0.5),
+  'rounded-cylinder': (a) => roundedCylinder(a.ra ?? a.radius ?? 0.3, a.rb ?? a.cornerR ?? 0.05, a.h ?? a.height ?? 0.5),
+  'round-cone-ab':    (a) => roundConeAB(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.r1 ?? a.ra ?? 0.2, a.r2 ?? a.rb ?? 0.1),
+  'vesica-segment':   (a) => vesicaSegment(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.w ?? a.width ?? 0.2),
+  'cylinder-inf':     (a) => cylinderInf(a.axisXZ ?? a.axis ?? [0, 0], a.radius ?? a.r ?? 0.3),
+  'cone-inf':         (a) => coneInf(a.halfAperture ?? a.angle ?? Math.PI / 6),
 
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.

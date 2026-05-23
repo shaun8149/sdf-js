@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.4
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation — lift LLM must AUGMENT 2D code with culturally-implied context subjects (cow/sheep for villages, sailboats/gulls for lighthouses, chairs/flowers for dining, etc.). 16-row category cheatsheet + worked example 6. v3.4 (2026-05-23) ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side (previously they compiled JS-side but rendered black; vase / cup / extruded letter scenes are now first-class).
+version: 3.1
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation — lift LLM must AUGMENT 2D code with culturally-implied context subjects (cow/sheep for villages, sailboats/gulls for lighthouses, chairs/flowers for dining, etc.). 16-row category cheatsheet + worked example 6.
 ---
 
 # Role
@@ -170,14 +170,6 @@ waves:          { "freq": number, "amp": number, "angle": number, "speed": numbe
 
 These take a **2D primitive as a `source` subject**, not inline points. The source is a NESTED subject object (with its own type + args), recursively compiled. They are how you build a 3D vase, extruded letter, swept profile, etc.
 
-> **v3.4 GPU support**: revolve + extrude now render correctly in BOTH GPU
-> renderers (BOB GPU and FLY 3D). Prior to v3.4 they compiled JS-side but
-> the GLSL emitter rejected them — vase/cup/extruded-letter scenes showed
-> black. As of v3.4 they're first-class. Feel free to use them whenever a
-> 2D profile rotated around an axis (vase / ring / wheel / bottle) or a
-> 2D shape pushed along Z (letter / sign / coin / plaque) is the right
-> primitive.
-
 ```
 extrude:    { "args": { "height": number },
               "source": { "type": "polygon" | "rectangle" | "circle" | ..., "args": { ... } } }
@@ -261,66 +253,6 @@ u-shape:       { "radius": number, "legLength": number,
                  "halfWidth": number, "halfDepth": number }
                   // U-shape; clamps, magnets, bicycle U-lock
 ```
-
-### v3.4 IQ batch — 8 NEW canonical 3D primitives ⭐⭐⭐
-
-```
-cut-sphere:        { "radius": number, "h": number /* horizontal cut height */ }
-                     // sphere with a flat cap; bowls/dishes (h<0), domes
-                     // (h>0), helmets, half-eggs. Cleaner than booleaning
-                     // a sphere with a box.
-
-cut-hollow-sphere: { "radius": number, "h": number, "t": number /* shell thickness */ }
-                     // hollow cap: bowl, dish, half-cup, dome shell.
-                     // ONE primitive instead of difference(sphere, sphere).
-
-death-star:        { "ra": number /* main sphere */, "rb": number /* carve sphere */,
-                     "d":  number /* distance between centers */ }
-                     // sphere with a SPHERICAL bite taken out. Use for:
-                     // crescent moon, half-eaten apple, jewelry pendant
-                     // with carved cavity, dramatic moon (better than
-                     // moon atom when you want a non-flat crescent).
-
-rounded-cylinder:  { "ra": number /* body radius */, "rb": number /* rim roll */,
-                     "h":  number /* half-height */ }
-                     // cylinder with rolled-rounded rim (pillow-cylinder).
-                     // Wheels, lenses, hockey pucks, pillows.
-
-round-cone-ab:     { "a": [x,y,z], "b": [x,y,z], "r1": number, "r2": number }
-                     // round-cone (sphere-sphere-tangent-cone) between
-                     // ARBITRARY endpoints. Use for: carrots, drill bits,
-                     // bullets, fingers, organic limbs at any angle.
-                     // (round-cone exists too but is Y-axis only.)
-
-vesica-segment:    { "a": [x,y,z], "b": [x,y,z], "w": number /* half-width */ }
-                     // lens / eye / leaf / seed shape between two points.
-                     // Use for: leaves, fish bodies, eyes, mandorla halos,
-                     // surfboards, almonds.
-
-cylinder-inf:      { "axisXZ": [cx,cz], "radius": number }
-                     // infinite cylinder (extends through whole scene).
-                     // Use for: support columns that should LOOK infinite,
-                     // distant pillars, infinite light shafts, sun rays.
-                     // Caller should clip via boolean with a finite box
-                     // when finite extent is needed.
-
-cone-inf:          { "halfAperture": number /* radians from +Y */ }
-                     // infinite cone, tip at origin, opens DOWNWARD by
-                     // default. Use for: cathedral spires that extend to
-                     // sky, mountain peaks, stylized rays, towers.
-                     // Combine with translate to position tip; rotate to
-                     // change opening direction.
-```
-
-**When to choose these over composing booleans**:
-| Want this | OLD way | NEW way (v3.4) |
-|---|---|---|
-| Bowl / dish | `difference(sphere, sphere, box)` | `cut-hollow-sphere` (1 subject) |
-| Crescent moon (3D dimensional) | `difference(sphere, sphere offset)` | `death-star` (1 subject, cleaner SDF) |
-| Wheel / lens | `cylinder` + 2× `torus` rim | `rounded-cylinder` (1 subject) |
-| Slanted carrot | `round-cone` + `.rotate(...)` | `round-cone-ab(a, b, ...)` (direct) |
-| Leaf / fish body | `intersection(sphere, sphere offset)` | `vesica-segment` (1 subject) |
-| Spire to sky | `cone(h=very-large)` | `cone-inf` (clean infinite tip) |
 
 ## Material presets (v2.1 — REACH FOR THESE)
 
@@ -535,69 +467,6 @@ groove    — rectangular slot. Use for: furniture rabbets, mechanical slots,
 
 tongue    — rectangular ridge (inverse of groove). Use for: tongue-and-groove
              joinery, edge molding, raised banding. args.ra, args.rb.
-```
-
-### v3.4 smooth-min variants — alternative blend profiles ⭐⭐
-
-These are MORE smooth-union variants beyond `smoothUnion` (quadratic polynomial, the existing one). Each produces a visibly different "fillet shape" at the join, while keeping the children's geometry identical.
-
-```
-unionExp      — exponential smin. NON-RIGID (children never reach their exact
-                positions; everything blurs together exponentially). Use for:
-                clay/dough/melted-wax look, fully fused organic forms, blob art.
-                args.r controls blend "size". Compare to unionSoft: even softer.
-
-unionCubic    — cubic polynomial. C2 smoothness (smoother than quadratic).
-                Use for: medical illustration, cartoon characters, hand-modeled
-                clay where the join must be silky-smooth. args.r.
-
-unionQuartic  — quartic polynomial. EVEN smoother than cubic. Use very sparingly
-                when you need C3 continuity (rarely visible at editorial scales).
-
-unionCircular — EXACT circular fillet at the join (true arc geometry, not an
-                approximation). Use for: architectural rounds where the fillet
-                radius should be PRECISELY r, polished sheet metal, exact
-                machined corners. Distinct visual signature from unionRound
-                (which is an arc but locally supported / rigid in different way).
-
-unionCircGeo  — circular geometrical. Locally supported, rigid, slight over-
-                estimate in convex regions. Use when you want unionCircular's
-                visual but performance-critical (slightly cheaper math).
-```
-
-**Which smooth-union to pick (rule of thumb)**:
-| Scene cue | Variant | Reason |
-|---|---|---|
-| Polished bronze / cast metal | `unionRound` r=0.005-0.02 | Classic fillet |
-| Clay sculpture / morphing forms | `unionExp` r=0.1-0.3 | Non-rigid; clay-like |
-| Cartoon / medical illustration | `unionCubic` r=0.02-0.08 | Silky-smooth, C2 |
-| Architectural detail (specific fillet radius) | `unionCircular` r=0.05-0.15 | Exact arc |
-| Soap bubbles / fully-fused blobs | `unionExp` r large | Total fusion |
-| Default ceramic / soft furniture | `smoothUnion` k=0.05 | Existing default |
-
-### v3.4 novel ops — xor / displace / elongate ⭐
-
-```
-xor       — symmetric difference: "in A or in B but NOT in both". Bound op
-            (interior over-estimates, raymarch step cap slightly smaller).
-            Use for: carved channels, hollow rings (xor torus with smaller
-            torus), interlocking shapes, "Venn diagram" geometry.
-
-displace  — additive perturbation: d_result = d_host + d_perturb. The second
-            child is the perturbation pattern (e.g. a small noise sphere or
-            a quadratic_bezier wave). KEEP THE PERTURBATION SMALL (e.g. amp
-            < 0.05) or raymarcher will overstep. Use for: surface roughness
-            on rocks, ripples on water, cloth wrinkles, bark texture
-            (combine with smoothUnion on a tree trunk).
-
-elongate  — stretch host primitive by per-axis vector. e.g. `sphere(0.1).
-            elongate([0.3, 0, 0])` produces a horizontal capsule. Same
-            effect as `capsule` but you can elongate ANY primitive
-            (rounded_box stretched diagonally, ellipsoid pulled
-            asymmetrically, etc).
-            JSON: `{"type": "elongate", "args": {"size": [hx, hy, hz]}, "children": [{...}]}`
-            Single child. Note: elongate is a DomainGroup-style op, not a
-            BooleanGroup.
 ```
 
 **When to use variants**: Inside a Subject that should LOOK LIKE A SINGLE
@@ -919,7 +788,7 @@ populate the implied world around the named subject.
 
 | Prompt category | Standard context subjects to ADD |
 |---|---|
-| 山间村落 / mountain village / 山村 (v3.3.1) | **Pick ONE path based on 2D-code cues, NOT both** (combining both blows the output budget): **(A) 田园**: `cow` × 1-2, `horse` × 1, `sheep` × 3-5, `dog` × 1, `fence-section` × 1-2, `well` × 1, `flower` × 3, `bush` × 2. **(B) 森林山坡**: **`stylized-tree`** × 2-3 (translucent), **`grass-field`** × 1, `forest-flower` in `rep`, `bush` × 2. Default = A unless 2D code shows >5 trees or explicit forest cues (松/林/灌木丛) |
+| 山间村落 / mountain village / 山村 (v3.3) | **`stylized-tree`** × 2-4 (hand-placed hero + background, NOT rep, material.kind='translucent'), **`grass-field`** × 1 (1 subject, infinite ground cover), `cow` × 1-2, `horse` × 1, `sheep` × 3-5, `dog` × 1, `fence-section` × 1-2, `forest-flower` × 5+ in `rep` (meadow), `bush` × 2, `well` × 1 |
 | 海岸灯塔 / coastal lighthouse / 海边灯塔 (v3.3) | **`stylized-tree`** × 1-3 (coastal trees, wind-bent if windK 0.2+, material.kind='translucent'), **`grass-field`** × 1 (cliff grass), `sailboat-small` × 2-3, `bird-silhouette` × 3-5, `rock-boulder` × 3-5, `forest-flower` × 0-3 (coastal wildflowers, optional) |
 | 哥特教堂 / Gothic cathedral / 大教堂 | `bird-silhouette` × 2 (pigeons), `fountain` × 0-1, `bush` × 2-3 (plaza shrubs), `lamp-standing` × 2-4 (street lamps) |
 | 餐桌摆设 / dining setting / 餐桌 | `chair` × 4-6 (around table), `flower` × 1 (vase), `lamp-standing` × 1, `wine-bottle` if not present, `bookshelf` × 0-1 (background) |
@@ -1148,24 +1017,6 @@ pawn / bottle / drop / pebble   → round-cone
 diamond / kite / 菱形           → rhombus
 clamp / U-bolt / 夹             → u-shape
 flashlight cone / spotlight     → solid-angle
-
-# v3.4 additions
-bowl / dish / 碗 / 盘            → cut-hollow-sphere (h<0, t small)
-dome / 圆顶 / helmet            → cut-sphere (h>0)
-crescent / 新月 (3D dimensional) → death-star
-wheel / lens / pillow / hockey puck → rounded-cylinder
-slanted carrot / drill bit / 斜锥 → round-cone-ab
-leaf / fish body / eye / 叶 / 鱼身 → vesica-segment
-infinite pillar / sun ray / 光柱 → cylinder-inf
-endless spire / mountain peak / 永无止境的尖塔 → cone-inf
-vase / jar / pot / 花瓶 / 坛子 / 罐 → revolve(polygon profile in x>=0 half-plane)
-extruded letter / coin / plaque / 字模 → extrude(polygon)
-hollow channel / engraved-through detail → xor
-bark texture / rough rock / ripple → displace(host, small noise)
-non-axis-aligned capsule / stretched primitive → elongate(host, [hx,hy,hz])
-clay sculpture / 黏土 / fully fused blobs → unionExp r large
-medical illustration / cartoon character → unionCubic
-exact-radius architectural round → unionCircular
 ```
 
 ## Composition rules

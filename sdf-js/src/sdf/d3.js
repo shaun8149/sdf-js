@@ -358,6 +358,153 @@ export const tri_prism = (halfWidth = 0.3, halfLength = 0.1) => {
 };
 
 // ============================================================================
+// IQ canonical 3D primitives — P2 batch (2026-05-23)
+// Source: https://iquilezles.org/articles/distfunctions/
+// JS implementations translated from IQ's reference GLSL. GLSL helpers live
+// in src/sdf/sdf3.glsl.js (sdCutSphere / sdCutHollowSphere / sdDeathStar /
+// sdRoundedCylinder / sdRoundConeAB / sdVesicaSegment / sdCylinderInf /
+// sdConeInf). Compile dispatch in src/sdf/sdf3.compile.js PRIMS.
+// ============================================================================
+
+// Sphere of radius r cut by horizontal plane at height h.
+export const cutSphere = (r = 0.5, h = 0.0) => {
+  const w = Math.sqrt(Math.max(r * r - h * h, 0));
+  const inst = SDF3((p) => {
+    const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
+    const qy = p[1];
+    const s = Math.max(
+      (h - r) * qx * qx + w * w * (h + r - 2 * qy),
+      h * qx - w * qy,
+    );
+    if (s < 0) return Math.sqrt(qx * qx + qy * qy) - r;
+    if (qx < w) return h - qy;
+    const dx = qx - w, dy = qy - h;
+    return Math.sqrt(dx * dx + dy * dy);
+  });
+  inst.ast = { kind: 'prim', name: 'cut-sphere', args: [r, h] };
+  return inst;
+};
+
+// Hollow cut sphere: sphere cap with shell thickness t.
+export const cutHollowSphere = (r = 0.5, h = 0.0, t = 0.02) => {
+  const w = Math.sqrt(Math.max(r * r - h * h, 0));
+  const inst = SDF3((p) => {
+    const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
+    const qy = p[1];
+    const d = (h * qx < w * qy)
+      ? Math.sqrt((qx - w) ** 2 + (qy - h) ** 2)
+      : Math.abs(Math.sqrt(qx * qx + qy * qy) - r);
+    return d - t;
+  });
+  inst.ast = { kind: 'prim', name: 'cut-hollow-sphere', args: [r, h, t] };
+  return inst;
+};
+
+// Death Star: sphere ra with sphere rb of distance d carved out.
+export const deathStar = (ra = 0.5, rb = 0.35, d = 0.5) => {
+  const a = (ra * ra - rb * rb + d * d) / (2 * d);
+  const b = Math.sqrt(Math.max(ra * ra - a * a, 0));
+  const inst = SDF3((p) => {
+    const px = p[0];
+    const py = Math.sqrt(p[1] * p[1] + p[2] * p[2]);
+    if (px * b - py * a > d * Math.max(b - py, 0)) {
+      const dx = px - a, dy = py - b;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+    const inner = Math.sqrt(px * px + py * py) - ra;
+    const carve = -(Math.sqrt((px - d) * (px - d) + py * py) - rb);
+    return Math.max(inner, carve);
+  });
+  inst.ast = { kind: 'prim', name: 'death-star', args: [ra, rb, d] };
+  return inst;
+};
+
+// Rounded cylinder: ra = body radius, rb = corner-roll radius, h = half-height.
+export const roundedCylinder = (ra = 0.3, rb = 0.05, h = 0.5) => {
+  const inst = SDF3((p) => {
+    const dx = Math.sqrt(p[0] * p[0] + p[2] * p[2]) - 2 * ra + rb;
+    const dy = Math.abs(p[1]) - h;
+    const ox = Math.max(dx, 0), oy = Math.max(dy, 0);
+    return Math.min(Math.max(dx, dy), 0) + Math.sqrt(ox * ox + oy * oy) - rb;
+  });
+  inst.ast = { kind: 'prim', name: 'rounded-cylinder', args: [ra, rb, h] };
+  return inst;
+};
+
+// Round cone between arbitrary endpoints a,b with end radii r1,r2.
+export const roundConeAB = (a = [0, 0, 0], b = [0, 1, 0], r1 = 0.2, r2 = 0.1) => {
+  const ba = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+  const l2 = ba[0] * ba[0] + ba[1] * ba[1] + ba[2] * ba[2];
+  const rr = r1 - r2;
+  const a2 = l2 - rr * rr;
+  const il2 = 1 / Math.max(l2, 1e-12);
+  const inst = SDF3((p) => {
+    const pa = [p[0] - a[0], p[1] - a[1], p[2] - a[2]];
+    const y = pa[0] * ba[0] + pa[1] * ba[1] + pa[2] * ba[2];
+    const z = y - l2;
+    const xv = [pa[0] * l2 - ba[0] * y, pa[1] * l2 - ba[1] * y, pa[2] * l2 - ba[2] * y];
+    const x2 = xv[0] * xv[0] + xv[1] * xv[1] + xv[2] * xv[2];
+    const y2 = y * y * l2;
+    const z2 = z * z * l2;
+    const k = Math.sign(rr) * rr * rr * x2;
+    if (Math.sign(z) * a2 * z2 > k) return Math.sqrt(x2 + z2) * il2 - r2;
+    if (Math.sign(y) * a2 * y2 < k) return Math.sqrt(x2 + y2) * il2 - r1;
+    return (Math.sqrt(x2 * a2 * il2) + y * rr) * il2 - r1;
+  });
+  inst.ast = { kind: 'prim', name: 'round-cone-ab', args: [a, b, r1, r2] };
+  return inst;
+};
+
+// Vesica segment: lens/eye shape between points a,b with half-width w.
+export const vesicaSegment = (a = [0, 0, 0], b = [0, 1, 0], w = 0.2) => {
+  const c = [(a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5, (a[2] + b[2]) * 0.5];
+  const l = Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 + (b[2] - a[2]) ** 2);
+  const v0 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l, (b[2] - a[2]) / l];
+  const inst = SDF3((p) => {
+    const dx = p[0] - c[0], dy = p[1] - c[1], dz = p[2] - c[2];
+    const y = dx * v0[0] + dy * v0[1] + dz * v0[2];
+    const ax = dx - y * v0[0], ay = dy - y * v0[1], az = dz - y * v0[2];
+    const qx = Math.sqrt(ax * ax + ay * ay + az * az);
+    const qy = Math.abs(y);
+    const r = 0.5 * l;
+    const d0 = 0.5 * (r * r - w * w) / w;
+    const h = (r * qx < d0 * (qy - r))
+      ? [0, r, 0]
+      : [-d0, 0, d0 + w];
+    const ddx = qx - h[0], ddy = qy - h[1];
+    return Math.sqrt(ddx * ddx + ddy * ddy) - h[2];
+  });
+  inst.ast = { kind: 'prim', name: 'vesica-segment', args: [a, b, w] };
+  return inst;
+};
+
+// Infinite cylinder: axisXZ = [cx, cz] axis offset in XZ plane; radius.
+export const cylinderInf = (axisXZ = [0, 0], radius = 0.3) => {
+  const cx = axisXZ[0], cz = axisXZ[1];
+  const inst = SDF3((p) => {
+    const dx = p[0] - cx, dz = p[2] - cz;
+    return Math.sqrt(dx * dx + dz * dz) - radius;
+  });
+  inst.ast = { kind: 'prim', name: 'cylinder-inf', args: [axisXZ, radius] };
+  return inst;
+};
+
+// Infinite cone: tip at origin, half-aperture angle. Cone opens upward.
+export const coneInf = (halfAperture = Math.PI / 6) => {
+  const sa = Math.sin(halfAperture), ca = Math.cos(halfAperture);
+  const inst = SDF3((p) => {
+    const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
+    const qy = -p[1];
+    const dotQC = Math.max(qx * sa + qy * ca, 0);
+    const dx = qx - sa * dotQC, dy = qy - ca * dotQC;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    return d * ((qx * ca - qy * sa < 0) ? -1 : 1);
+  });
+  inst.ast = { kind: 'prim', name: 'cone-inf', args: [halfAperture] };
+  return inst;
+};
+
+// ============================================================================
 // waves —— Autoscope 海浪地面（time-aware primitive）
 // ----------------------------------------------------------------------------
 // 等高面：y = sin(speed*u_time + p_rotated.z / freq) * amp - amp

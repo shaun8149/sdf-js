@@ -1,8 +1,86 @@
 {
-  "id": "forest-meteors",
-  "title": "森林·流星",
-  "prompt": "树·山·花·流星",
-  "code2d": "// 2D placeholder — main signal is 3D scene.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#1a2530';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#aab';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Tree + Mountains + Flowers + Meteors — switch to FLY 3D', 24, 48);\n};",
+  "result": {
+    "demoId": "forest-meteors",
+    "version": "v3.3",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "46.4s",
+    "tokens": {
+      "input": 27913,
+      "output": 4834
+    },
+    "costUSD": "0.1562",
+    "subjectCount": 45,
+    "newAtomsUsedCount": 18,
+    "newAtomsUsed": [
+      [
+        "star",
+        15
+      ],
+      [
+        "bird-silhouette",
+        3
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 21,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 41,
+      "min": 0,
+      "max": 68,
+      "range": 68,
+      "stdev": 17.832487781126044
+    },
+    "v30AtomsUsedCount": 6,
+    "v30AtomsUsed": [
+      [
+        "bush",
+        4
+      ],
+      [
+        "rock-boulder",
+        2
+      ]
+    ],
+    "v32AtomsUsedCount": 14,
+    "v32AtomsUsed": [
+      [
+        "stylized-tree",
+        9
+      ],
+      [
+        "grass-field",
+        1
+      ],
+      [
+        "meteor-streak",
+        4
+      ]
+    ],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 9
+    },
+    "typeCounts": {
+      "cone": 6,
+      "stylized-tree": 9,
+      "grass-field": 1,
+      "rep": 1,
+      "bush": 4,
+      "rock-boulder": 2,
+      "meteor-streak": 4,
+      "star": 15,
+      "bird-silhouette": 3
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Forest Twilight with Meteor Shower"
+  },
   "sceneData": {
     "v": 1,
     "name": "Forest Twilight with Meteor Shower",
@@ -934,12 +1012,5 @@
         "strength": 0
       }
     }
-  },
-  "meta": {
-    "generatedAt": "2026-05-21",
-    "model": "hand-crafted",
-    "costUSD": 0,
-    "upgradedFrom": "v3.3",
-    "upgradedAt": "2026-05-23T09:48:30.318Z"
   }
 }

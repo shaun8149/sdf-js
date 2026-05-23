@@ -1,0 +1,431 @@
+{
+  "result": {
+    "demoId": "spiral-vase",
+    "version": "v3.4",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "25.2s",
+    "tokens": {
+      "input": 31888,
+      "output": 2127
+    },
+    "costUSD": "0.1276",
+    "subjectCount": 12,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 12,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 9,
+      "min": -0.08,
+      "max": 0.05,
+      "range": 0.13,
+      "stdev": 0.03325917677132392
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "typeCounts": {
+      "revolve": 1,
+      "torus": 3,
+      "cylinder": 1,
+      "box": 1,
+      "capsule": 3,
+      "sphere": 3
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Celadon Vase (Chinese porcelain)"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Celadon Vase (Chinese porcelain)",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一只花瓶",
+      "from2dCode": "Single hand-traced polygon profile (28 vertices, symmetric mei-ping silhouette) + celadon green palette + decorative bands + mouth cavity. Classic Chinese porcelain form."
+    },
+    "subjects": [
+      {
+        "id": "vase-body",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.7
+              ],
+              [
+                0.18,
+                -0.7
+              ],
+              [
+                0.2,
+                -0.64
+              ],
+              [
+                0.21,
+                -0.58
+              ],
+              [
+                0.19,
+                -0.5
+              ],
+              [
+                0.28,
+                -0.2
+              ],
+              [
+                0.31,
+                0.05
+              ],
+              [
+                0.29,
+                0.2
+              ],
+              [
+                0.22,
+                0.38
+              ],
+              [
+                0.16,
+                0.5
+              ],
+              [
+                0.12,
+                0.56
+              ],
+              [
+                0.1,
+                0.62
+              ],
+              [
+                0.13,
+                0.68
+              ],
+              [
+                0.145,
+                0.72
+              ],
+              [
+                0,
+                0.72
+              ]
+            ]
+          },
+          "id": "subjects_0_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "region": "ceramic",
+        "material": {
+          "hue": 0.42,
+          "sat": 0.28,
+          "value": 0.75,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "decorative-band-lower",
+        "type": "torus",
+        "args": {
+          "radius": 0.28,
+          "thickness": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.35,
+            0
+          ]
+        },
+        "region": "decoration",
+        "material": {
+          "hue": 0.38,
+          "sat": 0.35,
+          "value": 0.42,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "decorative-band-upper",
+        "type": "torus",
+        "args": {
+          "radius": 0.305,
+          "thickness": 0.028
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.1,
+            0
+          ]
+        },
+        "region": "decoration",
+        "material": {
+          "hue": 0.38,
+          "sat": 0.35,
+          "value": 0.42,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rim-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.138,
+          "thickness": 0.023
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.68,
+            0
+          ]
+        },
+        "region": "rim",
+        "material": {
+          "hue": 0.38,
+          "sat": 0.38,
+          "value": 0.38,
+          "metal": 0.12,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mouth-cavity",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.12,
+          "height": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.735,
+            0
+          ]
+        },
+        "region": "cavity",
+        "material": {
+          "hue": 0.08,
+          "sat": 0.18,
+          "value": 0.18,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "table-surface",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.12,
+            2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.82,
+            0
+          ]
+        },
+        "region": "table",
+        "material": "wood"
+      },
+      {
+        "id": "flower-stem-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            0.08,
+            1.15,
+            0.05
+          ],
+          "radius": 0.008
+        },
+        "region": "stem",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.5,
+          "value": 0.35,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.045
+        },
+        "transform": {
+          "translate": [
+            0.08,
+            1.15,
+            0.05
+          ]
+        },
+        "region": "flower",
+        "material": {
+          "hue": 0.92,
+          "sat": 0.82,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            -0.06,
+            1.08,
+            -0.04
+          ],
+          "radius": 0.007
+        },
+        "region": "stem",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.5,
+          "value": 0.35,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.038
+        },
+        "transform": {
+          "translate": [
+            -0.06,
+            1.08,
+            -0.04
+          ]
+        },
+        "region": "flower",
+        "material": {
+          "hue": 0.98,
+          "sat": 0.75,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.72,
+            0
+          ],
+          "b": [
+            0.02,
+            1.22,
+            -0.08
+          ],
+          "radius": 0.008
+        },
+        "region": "stem",
+        "material": {
+          "hue": 0.3,
+          "sat": 0.5,
+          "value": 0.35,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-3",
+        "type": "sphere",
+        "args": {
+          "radius": 0.042
+        },
+        "transform": {
+          "translate": [
+            0.02,
+            1.22,
+            -0.08
+          ]
+        },
+        "region": "flower",
+        "material": {
+          "hue": 0,
+          "sat": 0.88,
+          "value": 0.9,
+          "metal": 0,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.88,
+      "region": "floor",
+      "material": "linen"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 3.8,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.65,
+        "altitude": 0.72,
+        "distance": 28,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

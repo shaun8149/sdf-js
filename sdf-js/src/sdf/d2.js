@@ -13,15 +13,18 @@ import * as v from './vec2.js';
 
 // ---- Primitives ------------------------------------------------------------
 
-export const circle = (radius = 1, center = v.ORIGIN) =>
-  SDF2((p) => v.length(v.sub(p, center)) - radius);
+export const circle = (radius = 1, center = v.ORIGIN) => {
+  const inst = SDF2((p) => v.length(v.sub(p, center)) - radius);
+  inst.ast = { kind: 'prim', name: 'circle2', args: [radius, center] };
+  return inst;
+};
 
 // 椭圆：半轴 rx / ry（不是全宽全高）。算法来自 IQ:
 //   https://iquilezles.org/articles/ellipsedist/
 // 当 rx === ry 时退化为 circle，直接走 circle 快通道避免 l=0 的除零。
 export const ellipse = (rx = 1, ry = 1, center = v.ORIGIN) => {
   if (rx === ry) return circle(rx, center);
-  return SDF2((p) => {
+  const inst = SDF2((p) => {
     let px = Math.abs(p[0] - center[0]);
     let py = Math.abs(p[1] - center[1]);
     let ax = rx, ay = ry;
@@ -63,6 +66,8 @@ export const ellipse = (rx = 1, ry = 1, center = v.ORIGIN) => {
     const dy = ryFinal - py;
     return Math.sqrt(dx * dx + dy * dy) * Math.sign(py - ryFinal);
   });
+  inst.ast = { kind: 'prim', name: 'ellipse2', args: [rx, ry, center] };
+  return inst;
 };
 
 // 半平面：法线指向"外"。dot(point - p, normal) → 内为负、外为正
@@ -73,8 +78,8 @@ export const line = (normal = v.UP, point = v.ORIGIN) => {
 
 // 2D 线段（capsule）：从 a 到 b 的线段，半径 r（圆端帽）。
 //   线条、笔画、钟表指针、肢体、植物茎秆都可以用它。
-export const segment = (a, b, r = 0.05) =>
-  SDF2((p) => {
+export const segment = (a, b, r = 0.05) => {
+  const inst = SDF2((p) => {
     const pax = p[0] - a[0], pay = p[1] - a[1];
     const bax = b[0] - a[0], bay = b[1] - a[1];
     const baba = bax * bax + bay * bay;
@@ -84,6 +89,9 @@ export const segment = (a, b, r = 0.05) =>
     const dy = pay - bay * t;
     return Math.sqrt(dx * dx + dy * dy) - r;
   });
+  inst.ast = { kind: 'prim', name: 'segment2', args: [a, b, r] };
+  return inst;
+};
 
 // 圆弧：以 center 为中心、radius 为半径、有 thickness 厚度的部分圆环。
 //   halfAperture 是从 +Y 轴量起的半角（弧度）：
@@ -113,12 +121,15 @@ export const arc = (radius = 1, halfAperture = Math.PI / 2, thickness = 0.05, ce
 
 // 圆环（hollow circle）：等价于 shell(circle(r), thickness) 但更直接。
 //   钟表面、轮子、虹膜、垫圈、瞄准镜
-export const ring = (radius = 1, thickness = 0.05, center = v.ORIGIN) =>
-  SDF2((p) => {
+export const ring = (radius = 1, thickness = 0.05, center = v.ORIGIN) => {
+  const inst = SDF2((p) => {
     const dx = p[0] - center[0];
     const dy = p[1] - center[1];
     return Math.abs(Math.sqrt(dx * dx + dy * dy) - radius) - thickness / 2;
   });
+  inst.ast = { kind: 'prim', name: 'ring2', args: [radius, thickness, center] };
+  return inst;
+};
 
 // 矩形：两种参数形式 —— size+center 或者两个对角 a/b
 export const rectangle = (size = 1, center = v.ORIGIN, a = null, b = null) => {
@@ -129,7 +140,7 @@ export const rectangle = (size = 1, center = v.ORIGIN, a = null, b = null) => {
   }
   const s = v.asVec2(size);
   const halfx = s[0] / 2, halfy = s[1] / 2;
-  return SDF2((p) => {
+  const inst = SDF2((p) => {
     const qx = Math.abs(p[0] - center[0]) - halfx;
     const qy = Math.abs(p[1] - center[1]) - halfy;
     const ox = Math.max(qx, 0), oy = Math.max(qy, 0);
@@ -137,6 +148,8 @@ export const rectangle = (size = 1, center = v.ORIGIN, a = null, b = null) => {
     const inside = Math.min(Math.max(qx, qy), 0);
     return outside + inside;
   });
+  inst.ast = { kind: 'prim', name: 'rectangle2', args: [s, center] };
+  return inst;
 };
 
 // 圆角矩形：radius 标量统一 / 数组按象限索引 [r0, r1, r2, r3]
@@ -157,7 +170,7 @@ export const rounded_rectangle = (size, radius = 0, center = v.ORIGIN) => {
   }
   const s = v.asVec2(size);
   const halfx = s[0] / 2, halfy = s[1] / 2;
-  return SDF2((p) => {
+  const inst = SDF2((p) => {
     const dx = p[0] - center[0];
     const dy = p[1] - center[1];
     const r = dx > 0
@@ -168,6 +181,8 @@ export const rounded_rectangle = (size, radius = 0, center = v.ORIGIN) => {
     const ox = Math.max(qx, 0), oy = Math.max(qy, 0);
     return Math.min(Math.max(qx, qy), 0) + Math.sqrt(ox * ox + oy * oy) - r;
   });
+  inst.ast = { kind: 'prim', name: 'rounded_rectangle2', args: [s, [r0, r1, r2, r3], center] };
+  return inst;
 };
 
 // 等边三角形（单位大小，朝上）；要更大时用 .scale(r)
@@ -221,7 +236,7 @@ export const polygon = (points) => {
     if (first[0] === last[0] && first[1] === last[1]) pts.pop();
   }
   const n = pts.length;
-  return SDF2((p) => {
+  const inst = SDF2((p) => {
     let dx = p[0] - pts[0][0];
     let dy = p[1] - pts[0][1];
     let d = dx * dx + dy * dy;
@@ -244,6 +259,9 @@ export const polygon = (points) => {
     }
     return s * Math.sqrt(d);
   });
+  // .ast carries the cleaned (deduped) pts so GLSL emit + JS-side stay in sync.
+  inst.ast = { kind: 'prim', name: 'polygon2', args: [pts] };
+  return inst;
 };
 
 // 任意三角形：3 个顶点。语义上是 polygon 的特化，但单独导出更直观

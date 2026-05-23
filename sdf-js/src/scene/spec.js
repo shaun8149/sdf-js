@@ -95,6 +95,10 @@ export const PRIMITIVE_TYPES = new Set([
   'grass-field',
   // 2D → 3D pseudo-primitives
   'extrude', 'revolve', 'extrude_to',
+  // 2026-05-23 IQ P2 batch — 8 new 3D primitives
+  'cut-sphere', 'cut-hollow-sphere', 'death-star',
+  'rounded-cylinder', 'round-cone-ab', 'vesica-segment',
+  'cylinder-inf', 'cone-inf',
 ]);
 
 export const BOOLEAN_OPS = new Set([
@@ -108,6 +112,10 @@ export const BOOLEAN_OPS = new Set([
   'unionSoft',
   'unionStairs',  'intersectionStairs',  'differenceStairs',
   'unionColumns', 'intersectionColumns', 'differenceColumns',
+  // 2026-05-23 IQ P3 — XOR + IQ P4 smin variants (each takes args.r).
+  'xor',
+  'unionExp', 'unionRoot', 'unionCubic', 'unionQuartic',
+  'unionCircular', 'unionCircGeo',
 ]);
 
 // Boolean variants that require an args.r (radius/size) field. Validator
@@ -118,6 +126,9 @@ export const VARIANT_BOOLEAN_R = new Set([
   'unionSoft',
   'unionStairs',  'intersectionStairs',  'differenceStairs',
   'unionColumns', 'intersectionColumns', 'differenceColumns',
+  // 2026-05-23: smin variant family (all share args.r blend radius)
+  'unionExp', 'unionRoot', 'unionCubic', 'unionQuartic',
+  'unionCircular', 'unionCircGeo',
 ]);
 
 // Boolean variants that ADDITIONALLY require args.n (positive int count).
@@ -136,6 +147,11 @@ export const DOMAIN_OPS = new Set([
   'rep', 'mirror', 'twist', 'bend', 'curve',
   // hg_sdf-style radial repetition + 8-fold symmetry.
   'modPolar', 'mirrorOctant',
+  // 2026-05-23 IQ P3 batch — `elongate` stretches host primitive by h on each
+  // axis; `displace` additively perturbs distance by another SDF. Neither
+  // changes the child-count semantics (`elongate` is 1-arg op, `displace` is
+  // pairwise like `xor`).
+  'elongate', 'displace',
 ]);
 
 export const SHADOW_MODES = new Set([

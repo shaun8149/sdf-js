@@ -1,8 +1,76 @@
 {
-  "id": "dining-setting",
-  "title": "餐桌摆设",
-  "prompt": "餐桌摆设",
-  "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, ring, union, intersection, difference,\n  dilate, erode, shell, render,\n} from '../../src/index.js';\n\n// ── Palette ─────────────────────────────────────────────────────────────────\nconst OUTLINE     = [32, 24, 20];\nconst TABLE_TOP   = [210, 185, 148];   // warm oak\nconst TABLE_SHADE = [180, 152, 112];   // table shadow band\nconst PLATE_WHITE = [245, 240, 232];   // off-white china\nconst PLATE_RIM   = [230, 220, 205];   // rim glaze\nconst WINE_GLASS  = [200, 225, 215];   // pale aqua glass\nconst WINE_LIQUID = [148, 40, 55];     // burgundy wine\nconst NAPKIN_C    = [195, 80, 65];     // terracotta linen\nconst FORK_KNIFE  = [190, 185, 178];   // silver cutlery\nconst BREAD_C     = [220, 178, 110];   // warm bread\nconst BREAD_CRUST = [168, 118, 62];    // darker crust\nconst HERB_C      = [82, 130, 72];     // parsley green\nconst CANDLE_WAX  = [248, 235, 195];   // ivory wax\nconst FLAME_OUT   = [240, 165, 40];    // outer flame\nconst FLAME_IN    = [255, 230, 120];   // inner flame\nconst CANDLESTICK = [190, 160, 70];    // brass\nconst BG_TOP      = [245, 238, 225];\nconst BG_BOT      = [225, 215, 195];\n\n// ── Table surface ────────────────────────────────────────────────────────────\n// Elliptical table top viewed in slight perspective\nconst tableSurface = ellipse(1.15, 0.55, [0, -0.08]);\nconst tableEdge    = difference(\n  tableSurface,\n  ellipse(1.09, 0.48, [0, -0.10]),\n);\nconst shadowBand   = intersection(\n  tableSurface,\n  rectangle([2.4, 0.06], [0, -0.56]),\n);\n\n// ── Dinner plate (center) ────────────────────────────────────────────────────\nconst plateOuter  = ellipse(0.30, 0.135, [0, -0.10]);\nconst plateInner  = ellipse(0.22, 0.100, [0, -0.10]);\nconst plateWell   = ellipse(0.17, 0.075, [0, -0.10]);\n\n// ── Wine glass ───────────────────────────────────────────────────────────────\n// bowl = ellipse, stem = segment, base = thin ellipse\nconst glassBowl   = ellipse(0.075, 0.09, [0.52, 0.05]);\nconst glassTop    = intersection(glassBowl, rectangle([0.18, 0.09], [0.52, 0.10]));\nconst glassStem   = segment([0.52, -0.04], [0.52, -0.20], 0.007);\nconst glassBase   = ellipse(0.065, 0.018, [0.52, -0.20]);\nconst glassBody   = union(glassBowl, glassStem, glassBase);\n// wine level – intersection clips to bowl shape\nconst wineFill    = intersection(\n  glassBowl,\n  rectangle([0.20, 0.07], [0.52, -0.015]),\n);\n\n// ── Napkin (folded triangle, left of plate) ──────────────────────────────────\nconst napkin = polygon([\n  [-0.44, -0.18],\n  [-0.18, -0.18],\n  [-0.28,  0.08],\n]);\nconst napkinFold = intersection(\n  napkin,\n  polygon([\n    [-0.42, -0.08],\n    [-0.22, -0.08],\n    [-0.30,  0.06],\n  ]),\n);\n\n// ── Fork (left) ──────────────────────────────────────────────────────────────\nfunction fork(cx, cy) {\n  const handle = segment([cx, cy - 0.23], [cx, cy + 0.08], 0.010);\n  const tine1  = segment([cx - 0.015, cy + 0.07], [cx - 0.015, cy + 0.23], 0.005);\n  const tine2  = segment([cx,          cy + 0.07], [cx,          cy + 0.23], 0.005);\n  const tine3  = segment([cx + 0.015, cy + 0.07], [cx + 0.015, cy + 0.23], 0.005);\n  const tineBase = rectangle([0.050, 0.015], [cx, cy + 0.075]);\n  return union(handle, tineBase, tine1, tine2, tine3);\n}\nconst forkShape = fork(-0.38, -0.10);\n\n// ── Knife (right) ────────────────────────────────────────────────────────────\nfunction knife(cx, cy) {\n  const handle  = segment([cx, cy - 0.23], [cx, cy + 0.05], 0.012);\n  const bolster = ellipse(0.016, 0.020, [cx, cy + 0.06]);\n  const blade   = polygon([\n    [cx - 0.008, cy + 0.06],\n    [cx + 0.008, cy + 0.06],\n    [cx + 0.004, cy + 0.27],\n    [cx - 0.008, cy + 0.27],\n  ]);\n  return union(handle, bolster, blade);\n}\nconst knifeShape = knife(0.38, -0.10);\n\n// ── Bread roll (upper left of plate) ─────────────────────────────────────────\nconst breadRoll  = ellipse(0.088, 0.062, [-0.20, 0.13]);\nconst breadScore = shell(\n  intersection(breadRoll, rectangle([0.20, 0.020], [-0.20, 0.13])),\n  0.005,\n);\nconst breadHighlight = intersection(\n  breadRoll,\n  ellipse(0.045, 0.028, [-0.22, 0.17]),\n);\n\n// ── Herb sprig on plate ───────────────────────────────────────────────────────\nconst herbStem = segment([-0.03, -0.14], [0.04, -0.06], 0.005);\nconst leaf1    = ellipse(0.018, 0.010, [0.00, -0.09]).rotate( 0.5);\nconst leaf2    = ellipse(0.018, 0.010, [0.02, -0.07]).rotate(-0.3);\nconst herb     = union(herbStem, leaf1, leaf2);\n\n// ── Candle + candlestick (right background) ───────────────────────────────────\nconst stickBase   = ellipse(0.052, 0.018, [0.70, -0.27]);\nconst stickColumn = segment([0.70, -0.27], [0.70, -0.12], 0.016);\nconst stickCup    = ellipse(0.030, 0.015, [0.70, -0.12]);\nconst candleBody  = rounded_rectangle([0.032, 0.13], 0.006, [0.70, 0.01]);\nconst flameOuter  = ellipse(0.018, 0.036, [0.70, 0.105]);\nconst flameInner  = ellipse(0.009, 0.022, [0.70, 0.100]);\nconst wickLine    = segment([0.70, 0.068], [0.70, 0.082], 0.003);\nconst candleStick = union(stickBase, stickColumn, stickCup);\n\n// ── Clip everything to table surface ────────────────────────────────────────\nfunction onTable(sdf) {\n  return intersection(sdf, tableSurface);\n}\n\n// ── Layers ───────────────────────────────────────────────────────────────────\nconst layers = [\n  // table fill\n  { sdf: tableSurface,               color: TABLE_TOP },\n  { sdf: dilate(tableSurface,0.025), color: OUTLINE },\n  { sdf: tableSurface,               color: TABLE_TOP },\n  { sdf: shadowBand,                 color: TABLE_SHADE },\n  { sdf: tableEdge,                  color: TABLE_SHADE },\n\n  // napkin\n  { sdf: onTable(dilate(napkin,0.016)), color: OUTLINE },\n  { sdf: onTable(napkin),              color: NAPKIN_C },\n  { sdf: onTable(napkinFold),          color: [210, 92, 78] },\n\n  // fork\n  { sdf: onTable(dilate(forkShape,0.012)), color: OUTLINE },\n  { sdf: onTable(forkShape),               color: FORK_KNIFE },\n\n  // knife\n  { sdf: onTable(dilate(knifeShape,0.012)), color: OUTLINE },\n  { sdf: onTable(knifeShape),               color: FORK_KNIFE },\n\n  // plate layers\n  { sdf: onTable(dilate(plateOuter,0.020)), color: OUTLINE },\n  { sdf: onTable(plateOuter),               color: PLATE_RIM },\n  { sdf: onTable(plateInner),               color: PLATE_WHITE },\n  { sdf: onTable(plateWell),                color: [255, 252, 248] },\n\n  // herb on plate\n  { sdf: onTable(herb), color: HERB_C },\n\n  // bread roll\n  { sdf: onTable(dilate(breadRoll,0.014)), color: BREAD_CRUST },\n  { sdf: onTable(breadRoll),              color: BREAD_C },\n  { sdf: onTable(breadScore),             color: BREAD_CRUST },\n  { sdf: onTable(breadHighlight),         color: [235, 200, 135] },\n\n  // wine glass\n  { sdf: onTable(dilate(glassBody,0.015)), color: OUTLINE },\n  { sdf: onTable(glassBody),               color: WINE_GLASS },\n  { sdf: onTable(wineFill),                color: WINE_LIQUID },\n  { sdf: onTable(shell(glassBowl, 0.008)), color: [220, 240, 230] },\n\n  // candlestick\n  { sdf: onTable(dilate(candleStick,0.012)), color: OUTLINE },\n  { sdf: onTable(candleStick),               color: CANDLESTICK },\n  { sdf: onTable(dilate(candleBody,0.012)),  color: OUTLINE },\n  { sdf: onTable(candleBody),                color: CANDLE_WAX },\n  { sdf: onTable(wickLine),                  color: OUTLINE },\n  { sdf: dilate(flameOuter,0.004),           color: [200, 110, 20] },\n  { sdf: flameOuter,                         color: FLAME_OUT },\n  { sdf: flameInner,                         color: FLAME_IN },\n];\n\n// ── Render ───────────────────────────────────────────────────────────────────\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.2,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n```\n\n**Composition notes:** The scene is built around a single elliptical table viewed at a slight bird's-eye perspective — the major/minor axis ratio (~2:1) implies a round table in realistic foreshortening. Everything is clipped via `intersection(..., tableSurface)` so no element spills beyond the table edge, echoing the \"decoration clipped to silhouette\" idiom from `boat.js`.\n\nThe **visual hierarchy** is plate (center) → wine glass (right) → napkin + cutlery (flanking) → bread roll (upper left) → candle (background right), roughly following a classic Western place-setting layout. Outline thickness is graded: 0.020–0.025 for the table rim and plate, 0.012–0.016 for the smaller elements, giving depth. The candle flame is intentionally left **without** a dark outline (soft glow objects never get outlines), following the same no-outline-on-luminous-sources rule from `boat.js`'s sun. Palette is anchored to a warm terracotta / oak / burgundy register, suitable for a Taschen cookbook spread or a *Bon Appétit* editorial illustration.",
+  "result": {
+    "demoId": "dining-setting",
+    "version": "v3.3",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "52.5s",
+    "tokens": {
+      "input": 31139,
+      "output": 4552
+    },
+    "costUSD": "0.1617",
+    "subjectCount": 39,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 31,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 30,
+      "min": -1.2,
+      "max": 0.8,
+      "range": 2,
+      "stdev": 0.4426749861166015
+    },
+    "v30AtomsUsedCount": 8,
+    "v30AtomsUsed": [
+      [
+        "wine-bottle",
+        1
+      ],
+      [
+        "chair",
+        4
+      ],
+      [
+        "flower",
+        2
+      ],
+      [
+        "lamp-standing",
+        1
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 2,
+      "translucent": 0
+    },
+    "typeCounts": {
+      "ellipsoid": 11,
+      "cylinder": 2,
+      "revolve": 2,
+      "capsule": 7,
+      "wine-bottle": 1,
+      "sphere": 1,
+      "extrude": 3,
+      "union": 2,
+      "box": 2,
+      "rounded_box": 1,
+      "chair": 4,
+      "flower": 2,
+      "lamp-standing": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Dining table setting (candlelit)"
+  },
   "sceneData": {
     "v": 1,
     "name": "Dining table setting (candlelit)",
@@ -976,17 +1044,5 @@
         "strength": 0.45
       }
     }
-  },
-  "meta": {
-    "savedAt": 1779107065973,
-    "source": "user-saved-2026-05-18",
-    "v2Promoted": "2026-05-18",
-    "v2Model": "claude-sonnet-4-5",
-    "v2AtomsUsed": "(none)",
-    "v2IQTypesUsed": "(none)",
-    "v2SubjectCount": 37,
-    "previousSource": "user-saved-2026-05-18",
-    "upgradedFrom": "v3.3",
-    "upgradedAt": "2026-05-23T09:48:30.316Z"
   }
 }

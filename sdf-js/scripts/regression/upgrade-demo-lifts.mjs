@@ -1,12 +1,12 @@
 // =============================================================================
-// upgrade-demo-lifts.mjs — replace bundled demo-lifts/ sceneData with v2.3
+// upgrade-demo-lifts.mjs — replace bundled demo-lifts/ sceneData with latest
 // regression outputs. Preserves the id/title/prompt/code2d/meta envelope.
 //
 // Backup: git history. If you need to revert, `git checkout HEAD~1 --
 // sdf-js/examples/compositor/demo-lifts/*.json`.
 //
 // Usage:
-//   node sdf-js/scripts/regression/upgrade-demo-lifts.mjs [--dry-run]
+//   node sdf-js/scripts/regression/upgrade-demo-lifts.mjs [--dry-run] [--version=v3.3]
 // =============================================================================
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -15,10 +15,12 @@ const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 const DEMOS = [
   'china-carrier', 'gothic-cathedral', 'spiral-vase', 'mountain-village',
   'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
+  'forest-meteors',
 ];
 
 const dryRun = process.argv.includes('--dry-run');
-const SOURCE_VERSION = 'v2.3';
+const versionArg = process.argv.find(a => a.startsWith('--version='));
+const SOURCE_VERSION = versionArg ? versionArg.split('=')[1] : 'v3.3';
 
 console.log(`Demo-lifts upgrade ${dryRun ? '[DRY RUN]' : '[WRITE MODE]'} — ${SOURCE_VERSION}`);
 console.log('=====================================\n');
@@ -35,19 +37,19 @@ for (const id of DEMOS) {
     continue;
   }
   if (!existsSync(upgradeSrc)) {
-    console.log(`  ${id.padEnd(20)} ⏭  no v2.3 regression result (skip)`);
+    console.log(`  ${id.padEnd(20)} ⏭  no ${SOURCE_VERSION} regression result (skip)`);
     skipped++;
     continue;
   }
 
   const upgrade = JSON.parse(readFileSync(upgradeSrc, 'utf-8'));
   if (upgrade.result?.error) {
-    console.log(`  ${id.padEnd(20)} ⏭  v2.3 run had error: ${upgrade.result.error.slice(0, 50)} (skip)`);
+    console.log(`  ${id.padEnd(20)} ⏭  ${SOURCE_VERSION} run had error: ${upgrade.result.error.slice(0, 50)} (skip)`);
     skipped++;
     continue;
   }
   if (!upgrade.sceneData) {
-    console.log(`  ${id.padEnd(20)} ⏭  v2.3 result has no sceneData (skip)`);
+    console.log(`  ${id.padEnd(20)} ⏭  ${SOURCE_VERSION} result has no sceneData (skip)`);
     skipped++;
     continue;
   }

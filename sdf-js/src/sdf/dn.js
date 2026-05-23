@@ -399,3 +399,92 @@ export const blend = defineOpN('blend', (a, ...rest) => {
     return d1;
   };
 });
+
+// =============================================================================
+// 2026-05-23 IQ P3 batch — XOR + displace
+// Source: https://iquilezles.org/articles/distfunctions/
+// =============================================================================
+
+/**
+ * XOR: in either A or B but not both. Bound (interior over-estimates).
+ *   sphere(0.4).xor(box(0.5))   → the symmetric difference region
+ */
+export const xor = defineOpN('xor', (a, ...rest) => {
+  const [bs] = splitOpts(rest);
+  return (p) => {
+    let acc = a.f(p);
+    for (const b of bs) {
+      const bd = b.f(p);
+      acc = Math.max(Math.min(acc, bd), -Math.max(acc, bd));
+    }
+    return acc;
+  };
+});
+
+/**
+ * Displacement: additive perturbation. d1 = host distance, d2 = perturbation SDF.
+ * Caller is responsible for keeping perturbation small (else raymarch step cap shrinks).
+ *   surface.displace(noisePattern)
+ */
+export const displace = defineOpN('displace', (a, b) => (p) => a.f(p) + b.f(p));
+
+// =============================================================================
+// 2026-05-23 IQ P4 batch — smin variants
+// Source: https://iquilezles.org/articles/smin/
+// Each is a smooth-union with a different join profile. r is blend radius.
+// =============================================================================
+
+// Helper for left-fold smooth-union with a custom smin function.
+const _makeSminVariant = (sminFn, defaultR) => (a, ...rest) => {
+  const [bs, opts] = splitOpts(rest);
+  const r0 = opts.r ?? defaultR;
+  return (p) => {
+    let acc = a.f(p);
+    for (const b of bs) {
+      const r = b._k != null ? b._k : r0;
+      acc = sminFn(acc, b.f(p), r);
+    }
+    return acc;
+  };
+};
+
+// Exponential smin — non-rigid, generalizes to N values.
+export const unionExp = defineOpN('unionExp', _makeSminVariant((a, b, k) => {
+  k *= 1.0;
+  return -k * Math.log2(Math.pow(2, -a / k) + Math.pow(2, -b / k));
+}, 0.1));
+
+// Root smin — DD family, asymptotic, non-rigid.
+export const unionRoot = defineOpN('unionRoot', _makeSminVariant((a, b, k) => {
+  k *= 2.0;
+  const x = b - a;
+  return 0.5 * (a + b - Math.sqrt(x * x + k * k));
+}, 0.1));
+
+// Cubic polynomial smin — C2 smoothness, locally supported, rigid.
+export const unionCubic = defineOpN('unionCubic', _makeSminVariant((a, b, k) => {
+  k *= 6.0;
+  const h = Math.max(k - Math.abs(a - b), 0) / k;
+  return Math.min(a, b) - h * h * h * k * (1 / 6);
+}, 0.1));
+
+// Quartic polynomial smin — higher-order continuity.
+export const unionQuartic = defineOpN('unionQuartic', _makeSminVariant((a, b, k) => {
+  k *= 16 / 3;
+  const h = Math.max(k - Math.abs(a - b), 0) / k;
+  return Math.min(a, b) - h * h * h * (4 - h) * k * (1 / 16);
+}, 0.1));
+
+// Circular smin — exact-circular fillet profile.
+export const unionCircular = defineOpN('unionCircular', _makeSminVariant((a, b, k) => {
+  k *= 1 / (1 - Math.sqrt(0.5));
+  const h = Math.max(k - Math.abs(a - b), 0) / k;
+  return Math.min(a, b) - k * 0.5 * (1 + h - Math.sqrt(1 - h * (h - 2)));
+}, 0.1));
+
+// Circular geometrical smin — locally supported, rigid, slight over-estimate.
+export const unionCircGeo = defineOpN('unionCircGeo', _makeSminVariant((a, b, k) => {
+  k *= 1 / (1 - Math.sqrt(0.5));
+  const dx = Math.max(k - a, 0), dy = Math.max(k - b, 0);
+  return Math.max(k, Math.min(a, b)) - Math.sqrt(dx * dx + dy * dy);
+}, 0.1));

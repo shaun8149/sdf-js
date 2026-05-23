@@ -1,8 +1,93 @@
 {
-  "id": "coastal-lighthouse",
-  "title": "海岸灯塔",
-  "prompt": "海岸灯塔",
-  "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, ring, trapezoid,\n  union, intersection, difference, dilate, shell,\n  render,\n} from '../../src/index.js';\n\n// --- Palette ---\nconst SKY_TOP     = [58,  90, 130];\nconst SKY_MID     = [120, 160, 190];\nconst SKY_BOTTOM  = [210, 200, 175];\nconst SEA_DARK    = [30,  70, 110];\nconst SEA_MID     = [55, 105, 150];\nconst SEA_LIGHT   = [100, 155, 185];\nconst FOAM        = [225, 235, 240];\nconst CLIFF_DARK  = [80,  70,  55];\nconst CLIFF_MID   = [120, 108,  88];\nconst GRASS       = [85, 110,  65];\nconst TOWER_BASE  = [230, 220, 205];\nconst TOWER_BAND  = [195,  45,  35];   // classic red stripe\nconst LANTERN_C   = [255, 230, 120];\nconst CAP_C       = [40,  40,  40];\nconst OUTLINE     = [22,  18,  14];\nconst MOON_C      = [250, 240, 190];\nconst STAR_C      = [240, 235, 200];\n\n// ─── Sky & atmospheric layers ──────────────────────────────────────────────\n\nconst skyRect = rectangle([3.0, 3.0], [0, 0]);\n\n// Moon (no outline, atmospheric glow)\nconst moon = circle(0.075, [-0.70, 0.72]);\nconst moonGlow = circle(0.12, [-0.70, 0.72]);\n\n// Stars – scattered dots via small circles\nfunction star(x, y, r = 0.008) { return circle(r, [x, y]); }\nconst stars = union(\n  star(-0.82, 0.95), star(-0.55, 0.88), star(-0.30, 1.00),\n  star( 0.10, 0.93), star( 0.42, 0.85), star( 0.72, 0.92),\n  star( 0.90, 1.05), star(-0.92, 0.70), star(-0.40, 0.78),\n  star( 0.55, 0.78), star( 0.20, 1.02), star(-0.65, 1.08),\n);\n\n// Horizon fog band\nconst horizonFog = intersection(\n  rectangle([3.0, 0.18], [0, -0.12]),\n  skyRect,\n);\n\n// ─── Sea ───────────────────────────────────────────────────────────────────\n\n// Sea fill – everything below the horizon line (-0.20)\nconst seaFill = intersection(\n  rectangle([3.0, 1.6], [0, -1.10]),\n  skyRect,\n);\n\n// Wave hints – thin arcs / elongated ellipses\nfunction wave(cx, cy, w, h) {\n  return intersection(\n    ellipse(w, h, [cx, cy]),\n    rectangle([w * 2.2, h * 1.0], [cx, cy + h * 0.4]), // top half only\n  );\n}\nconst waves = union(\n  wave(-0.90, -0.28, 0.28, 0.025),\n  wave(-0.50, -0.34, 0.22, 0.020),\n  wave( 0.55, -0.32, 0.26, 0.022),\n  wave( 0.85, -0.25, 0.20, 0.018),\n  wave( 0.30, -0.40, 0.18, 0.016),\n  wave(-0.20, -0.44, 0.24, 0.018),\n);\n\n// Moonlight path on water\nconst moonPath = intersection(\n  ellipse(0.09, 0.38, [-0.68, -0.50]),\n  seaFill,\n);\n\n// ─── Cliff / rocky promontory ───────────────────────────────────────────────\n\nconst cliff = polygon([\n  [-1.20, -1.20],\n  [-1.20, -0.30],\n  [-0.92, -0.25],\n  [-0.70, -0.32],\n  [-0.52, -0.22],  // top of cliff\n  [-0.30, -0.28],\n  [-0.10, -0.20],  // base of lighthouse\n  [ 0.30, -0.25],\n  [ 0.50, -0.38],\n  [ 0.60, -1.20],\n]);\n\nconst grassTop = intersection(\n  union(\n    rectangle([0.70, 0.04], [-0.45, -0.20]),\n    ellipse(0.38, 0.06, [-0.52, -0.21]),\n  ),\n  cliff,\n);\n\n// ─── Lighthouse tower ──────────────────────────────────────────────────────\n\n// Main tower body – slightly tapered (trapezoid-ish via a union)\n// Base wider than top: use a simple rectangle + tiny triangle cap trick\nconst towerShaft = union(\n  // bottom wider section\n  rectangle([0.14, 0.58], [0.09, -0.00]),\n  // taper: difference off corners using shifted rectangles is complex;\n  // approximate with a slight trapezoid polygon\n  polygon([\n    [ 0.09 - 0.07,  -0.29],\n    [ 0.09 + 0.07,  -0.29],\n    [ 0.09 + 0.055,  0.29],\n    [ 0.09 - 0.055,  0.29],\n  ]),\n);\n\n// Red stripe bands (decoration clipped to tower)\nfunction stripe(cy, h) {\n  return intersection(towerShaft, rectangle([0.20, h], [0.09, cy]));\n}\nconst band1 = stripe(-0.10, 0.065);\nconst band2 = stripe( 0.10, 0.065);\n\n// Gallery / balcony ring\nconst gallery = union(\n  rectangle([0.185, 0.025], [0.09, 0.295]),\n  rectangle([0.155, 0.020], [0.09, 0.270]),\n);\n\n// Lantern room (bright glazed octagon approximation: circle)\nconst lanternRoom = circle(0.065, [0.09, 0.39]);\nconst lanternGlow = circle(0.10, [0.09, 0.39]);\n\n// Cap / roof\nconst cap = polygon([\n  [0.09 - 0.072, 0.420],\n  [0.09 + 0.072, 0.420],\n  [0.09,         0.530],\n]);\n\n// Light beam – two thin wedge polygons radiating from lantern\nconst beamLeft = intersection(\n  polygon([\n    [0.09, 0.39],\n    [-0.35, 0.75],\n    [-0.55, 0.65],\n  ]),\n  rectangle([3.0, 3.0], [0, 0]),\n);\nconst beamRight = intersection(\n  polygon([\n    [0.09, 0.39],\n    [0.50, 0.68],\n    [0.35, 0.78],\n  ]),\n  rectangle([3.0, 3.0], [0, 0]),\n);\n\n// Door at base\nconst door = rounded_rectangle([0.035, 0.055], 0.015, [0.09, -0.255]);\n// Windows\nfunction win(cy) {\n  return rounded_rectangle([0.028, 0.040], 0.012, [0.09, cy]);\n}\nconst windows = union(win(-0.14), win(0.05), win(0.20));\n\n// Rocks at cliff base\nconst rock1 = ellipse(0.08, 0.04, [-0.18, -0.32]);\nconst rock2 = ellipse(0.05, 0.03, [ 0.22, -0.35]);\nconst rock3 = ellipse(0.06, 0.025, [ 0.38, -0.30]);\n\n// ─── Compositing helpers ───────────────────────────────────────────────────\n\n// Full tower silhouette for outlining\nconst towerFull = union(towerShaft, gallery, lanternRoom, cap);\n\n// ─── Layers (bottom to top) ─────────────────────────────────────────────────\n\nconst layers = [\n  // Sky gradient approximated with two rectangles\n  { sdf: intersection(rectangle([3,2],[0, 0.8]), skyRect), color: SKY_TOP    },\n  { sdf: intersection(rectangle([3,1.2],[0, 0.0]), skyRect), color: SKY_MID  },\n  { sdf: intersection(rectangle([3,0.8],[0,-0.4]), skyRect), color: SKY_BOTTOM },\n\n  // Moon glow (soft, no outline)\n  { sdf: moonGlow, color: [200, 200, 160] },\n  { sdf: moon,     color: MOON_C          },\n\n  // Stars\n  { sdf: stars, color: STAR_C },\n\n  // Horizon fog\n  { sdf: horizonFog, color: [200, 200, 185] },\n\n  // Sea layers\n  { sdf: seaFill,   color: SEA_DARK  },\n  { sdf: intersection(rectangle([3,0.5],[0,-0.55]), skyRect), color: SEA_MID   },\n  { sdf: moonPath,  color: SEA_LIGHT },\n  { sdf: waves,     color: FOAM      },\n\n  // Cliff – outline then fill\n  { sdf: dilate(cliff, 0.022), color: OUTLINE    },\n  { sdf: cliff,                color: CLIFF_DARK },\n  { sdf: intersection(cliff, rectangle([3,0.18],[-0.40,-0.22])), color: CLIFF_MID },\n  { sdf: grassTop,             color: GRASS      },\n\n  // Rocks\n  { sdf: union(rock1,rock2,rock3), color: CLIFF_DARK },\n\n  // Light beams (translucent suggestion – light yellow)\n  { sdf: beamLeft,  color: [240, 235, 180] },\n  { sdf: beamRight, color: [240, 235, 180] },\n\n  // Tower – outline\n  { sdf: dilate(towerFull, 0.026), color: OUTLINE    },\n  // Tower – white base\n  { sdf: towerShaft,               color: TOWER_BASE },\n  // Red stripe bands\n  { sdf: band1, color: TOWER_BAND },\n  { sdf: band2, color: TOWER_BAND },\n  // Gallery\n  { sdf: dilate(gallery, 0.010), color: OUTLINE  },\n  { sdf: gallery,                color: CAP_C    },\n  // Lantern glow\n  { sdf: lanternGlow, color: [255, 245, 170] },\n  // Lantern room outline + fill\n  { sdf: dilate(lanternRoom, 0.014), color: OUTLINE   },\n  { sdf: lanternRoom,                color: LANTERN_C },\n  // Cap\n  { sdf: dilate(cap, 0.014), color: OUTLINE },\n  { sdf: cap,                color: CAP_C   },\n  // Door & windows cut out (dark)\n  { sdf: door,    color: OUTLINE },\n  { sdf: windows, color: OUTLINE },\n];\n\n// ─── Render ────────────────────────────────────────────────────────────────\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.2,\n  background: { top: [35, 55, 95], bottom: [55, 85, 120] },\n});\n```\n\n---\n\n**Composition notes:**\n\nThe scene is structured as four depth planes — night sky, sea, cliff, and lighthouse — rendered bottom-to-top so each layer naturally occludes what's behind it. The tower uses a **graded outline hierarchy** (main shaft t=0.026, gallery/lantern t=0.010–0.014) to push the tower forward in perceived depth. Red stripe bands are clipped to the tower polygon via `intersection`, the canonical \"decoration within silhouette\" idiom from `cathedral.js`. The two light beams are semi-transparent pale-yellow wedge polygons that taper from the lantern room, evoking the sweeping beam without full opacity — suggested light rather than literal rays. Moonlight on the water is an ellipse clipped to the sea fill, picking up the classic seascape painter trick of a narrow bright path from source to viewer. The cliff polygon is hand-traced with a rough natural edge; the mid-tone horizontal slice through it creates the illusion of layered rock strata.",
+  "result": {
+    "demoId": "coastal-lighthouse",
+    "version": "v3.3",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "59.7s",
+    "tokens": {
+      "input": 31130,
+      "output": 5114
+    },
+    "costUSD": "0.1701",
+    "subjectCount": 51,
+    "newAtomsUsedCount": 21,
+    "newAtomsUsed": [
+      [
+        "moon",
+        1
+      ],
+      [
+        "star",
+        15
+      ],
+      [
+        "bird-silhouette",
+        5
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 27,
+    "patternUsageCount": 2,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 50,
+      "min": -30,
+      "max": 5,
+      "range": 35,
+      "stdev": 13.419264444819616
+    },
+    "v30AtomsUsedCount": 8,
+    "v30AtomsUsed": [
+      [
+        "rock-boulder",
+        5
+      ],
+      [
+        "sailboat-small",
+        3
+      ]
+    ],
+    "v32AtomsUsedCount": 4,
+    "v32AtomsUsed": [
+      [
+        "stylized-tree",
+        3
+      ],
+      [
+        "grass-field",
+        1
+      ]
+    ],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 3
+    },
+    "typeCounts": {
+      "moon": 1,
+      "star": 15,
+      "waves": 1,
+      "box": 4,
+      "rock-boulder": 5,
+      "capped_cylinder": 1,
+      "cylinder": 4,
+      "torus": 1,
+      "cone": 1,
+      "sphere": 1,
+      "rounded_box": 4,
+      "stylized-tree": 3,
+      "grass-field": 1,
+      "rep": 1,
+      "sailboat-small": 3,
+      "bird-silhouette": 5
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Coastal Lighthouse at Night"
+  },
   "sceneData": {
     "v": 1,
     "name": "Coastal Lighthouse at Night",
@@ -1021,18 +1106,5 @@
         "strength": 0.38
       }
     }
-  },
-  "meta": {
-    "savedAt": 1779107214733,
-    "source": "user-saved-2026-05-18",
-    "v2Promoted": "2026-05-18",
-    "v2Model": "claude-sonnet-4-5",
-    "v2AtomsUsed": "moon×1, star×15",
-    "v2IQTypesUsed": "(none)",
-    "v2SubjectCount": 34,
-    "previousSource": "user-saved-2026-05-18",
-    "upgradedFrom": "v3.3",
-    "upgradedAt": "2026-05-23T09:48:30.317Z",
-    "handFixed": "2026-05-19: lighthouse polish — light beam + deep-water sea + moonlit moon/stars + 3 sailboats + 3 gulls + foam @ rocks"
   }
 }

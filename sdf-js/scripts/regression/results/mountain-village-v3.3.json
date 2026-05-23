@@ -1,8 +1,114 @@
 {
-  "id": "mountain-village",
-  "title": "山间村落",
-  "prompt": "山间的村落",
-  "code2d": "```js\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, polygon, triangle,\n  segment, arc, line,\n  union, intersection, difference, dilate, erode, shell,\n  render,\n} from '../../src/index.js';\n\n// ── Palette ──────────────────────────────────────────────────────────────────\nconst SKY_TOP     = [138, 168, 195];\nconst SKY_BOTTOM  = [210, 200, 178];\nconst MIST        = [220, 215, 205];\nconst MTN_FAR     = [ 98, 115, 130];\nconst MTN_MID     = [120, 138, 115];\nconst MTN_NEAR    = [ 78,  98,  72];\nconst FIELD       = [168, 172,  98];\nconst GROUND      = [120, 118,  72];\nconst WALL_C      = [210, 195, 162];\nconst ROOF_C      = [ 88,  82,  68];\nconst ROOF_TILE   = [ 62,  58,  48];\nconst CHIMNEY_C   = [160, 148, 125];\nconst TREE_DARK   = [ 55,  72,  48];\nconst TREE_MID    = [ 72,  98,  58];\nconst SHADOW_C    = [ 50,  52,  45];\nconst OUTLINE     = [ 32,  28,  22];\nconst MIST2       = [218, 214, 208];\nconst WATER_C     = [148, 170, 185];\nconst PATH_C      = [175, 162, 128];\n\n// ── Mountains (far, two layers) ───────────────────────────────────────────────\nconst mtnFarL = polygon([\n  [-1.3, 0.10], [-1.05, 0.52], [-0.78, 0.28], [-0.55, 0.62], [-0.28, 0.30],\n  [-0.05, 0.44], [ 0.20, 0.15], [-1.3, 0.15],\n]);\nconst mtnFarR = polygon([\n  [ 0.10, 0.12], [ 0.38, 0.58], [ 0.62, 0.32], [ 0.85, 0.65],\n  [ 1.10, 0.38], [ 1.30, 0.48], [ 1.30, 0.12],\n]);\nconst mtnsFar = union(mtnFarL, mtnFarR);\n\n// mist veil over far mountains\nconst mistVeil = intersection(\n  rectangle([2.6, 0.08], [0, 0.24]),\n  union(mtnFarL, mtnFarR),\n);\n\n// ── Mountains (nearer, greenish slopes) ───────────────────────────────────────\nconst mtnMidL = polygon([\n  [-1.30, -0.10], [-1.10, 0.28], [-0.82, 0.05], [-0.60, 0.40],\n  [-0.35, 0.12], [-0.12, 0.32], [ 0.08, 0.05], [-1.30, 0.05],\n]);\nconst mtnMidR = polygon([\n  [ 0.05, 0.05], [ 0.25, 0.40], [ 0.50, 0.18], [ 0.78, 0.50],\n  [ 1.05, 0.22], [ 1.30, 0.35], [ 1.30, 0.05],\n]);\nconst mtnsMid = union(mtnMidL, mtnMidR);\n\n// ── Near ridge / hillside ─────────────────────────────────────────────────────\nconst ridgeNear = polygon([\n  [-1.30, -0.28], [-0.95, 0.04], [-0.68, -0.10], [-0.40, 0.10],\n  [-0.10, -0.08], [ 0.18, 0.06], [ 0.48, -0.12], [ 0.75, 0.02],\n  [ 1.05, -0.15], [ 1.30, -0.05], [ 1.30, -0.35], [-1.30, -0.35],\n]);\n\n// ── Ground plane / terraced fields ───────────────────────────────────────────\nconst groundPlane = rectangle([2.6, 0.60], [0, -0.80]);\nconst fieldTerrace1 = intersection(\n  rectangle([2.6, 0.045], [0, -0.345]),\n  union(\n    rectangle([0.65, 0.045], [-0.55, -0.345]),\n    rectangle([0.50, 0.045], [ 0.45, -0.345]),\n  ),\n);\nconst fieldTerrace2 = intersection(\n  rectangle([2.6, 0.035], [0, -0.455]),\n  union(\n    rectangle([0.80, 0.035], [-0.30, -0.455]),\n    rectangle([0.35, 0.035], [ 0.80, -0.455]),\n  ),\n);\n\n// ── Small stream / pond ───────────────────────────────────────────────────────\nconst stream = ellipse(0.12, 0.03, [0.05, -0.48]);\nconst streamNarrow = segment([-0.28, -0.50], [0.00, -0.48], 0.012);\nconst water = union(stream, streamNarrow);\n\n// ── Path winding from near base up to village ─────────────────────────────────\nconst path = union(\n  segment([ 0.10, -0.85], [ 0.05, -0.55], 0.018),\n  segment([ 0.05, -0.55], [-0.08, -0.42], 0.014),\n  segment([-0.08, -0.42], [-0.18, -0.30], 0.012),\n);\n\n// ── Helper: simple alpine house ───────────────────────────────────────────────\nfunction house(cx, cy, w, h, roofH, roofOverhang = 0.01) {\n  const wall   = rectangle([w, h], [cx, cy + h / 2]);\n  const roofW  = w + roofOverhang * 2;\n  const roof   = triangle(\n    [cx - roofW / 2, cy + h],\n    [cx + roofW / 2, cy + h],\n    [cx, cy + h + roofH],\n  );\n  const chimneyW = w * 0.12;\n  const chimneyH = roofH * 0.55;\n  const chimney  = rectangle(\n    [chimneyW, chimneyH],\n    [cx + w * 0.22, cy + h + roofH * 0.72],\n  );\n  const doorW = w * 0.22;\n  const doorH = h * 0.38;\n  const door  = rounded_rectangle(\n    [doorW, doorH],\n    [cx - w * 0.15, cy + doorH / 2],\n    doorW * 0.45,\n  );\n  const winW  = w * 0.18;\n  const winH  = h * 0.22;\n  const winL  = rectangle([winW, winH], [cx - w * 0.28, cy + h * 0.60]);\n  const winR  = rectangle([winW, winH], [cx + w * 0.28, cy + h * 0.60]);\n  const body  = union(wall, roof, chimney);\n  const cutout = union(door, winL, winR);\n  return { body, cutout, roof, chimney, wall };\n}\n\n// ── Build village: cluster of 6 houses on the slope ──────────────────────────\nconst h1 = house(-0.62, -0.28, 0.18, 0.18, 0.10, 0.012);\nconst h2 = house(-0.38, -0.22, 0.16, 0.16, 0.09, 0.010);\nconst h3 = house(-0.14, -0.26, 0.20, 0.20, 0.11, 0.014);\nconst h4 = house( 0.16, -0.20, 0.15, 0.15, 0.08, 0.010);\nconst h5 = house( 0.40, -0.25, 0.17, 0.17, 0.10, 0.012);\nconst h6 = house(-0.50, -0.10, 0.13, 0.13, 0.08, 0.008); // upper cluster\n\nconst allWalls    = union(h1.wall, h2.wall, h3.wall, h4.wall, h5.wall, h6.wall);\nconst allRoofs    = union(h1.roof, h2.roof, h3.roof, h4.roof, h5.roof, h6.roof);\nconst allChimneys = union(h1.chimney, h2.chimney, h3.chimney, h4.chimney, h5.chimney, h6.chimney);\nconst allCutouts  = union(h1.cutout, h2.cutout, h3.cutout, h4.cutout, h5.cutout, h6.cutout);\n\nconst wallsFinal     = difference(allWalls, allCutouts);\nconst wallsOutline   = dilate(allWalls, 0.018);\nconst roofsOutline   = dilate(allRoofs, 0.014);\nconst roofRidge      = intersection(allRoofs, dilate(\n  union(\n    segment([-0.62, -0.10], [-0.62, -0.10 + 0.001], 0.002),\n    segment([-0.38, -0.06], [-0.38, -0.06 + 0.001], 0.002),\n  ), 0.002\n));\n\n// ── Trees: conifers on the slopes ────────────────────────────────────────────\nfunction conifer(cx, cy, r, layers = 3) {\n  let tree = circle(0.001, [cx, cy]);\n  for (let i = 0; i < layers; i++) {\n    const ly  = cy + (r * 0.35) * i;\n    const lr  = r * (1 - i * 0.22);\n    const tier = triangle(\n      [cx - lr, ly],\n      [cx + lr, ly],\n      [cx, ly + r * 0.75],\n    );\n    tree = union(tree, tier);\n  }\n  // trunk\n  tree = union(tree, segment([cx, cy - r * 0.35], [cx, cy], r * 0.07));\n  return tree;\n}\n\nconst treePositions = [\n  [-1.05, -0.22, 0.12], [-0.92, -0.18, 0.10], [-0.80, -0.20, 0.11],\n  [ 0.62, -0.22, 0.11], [ 0.75, -0.18, 0.13], [ 0.90, -0.24, 0.10],\n  [ 1.05, -0.16, 0.12], [-0.72, -0.25, 0.09], [ 1.18, -0.20, 0.10],\n  [-0.28, -0.08, 0.09], [ 0.28, -0.08, 0.10], // upper slope trees\n];\n\nconst conifers = union(...treePositions.map(([x, y, r]) => conifer(x, y, r, 3)));\nconst conifersOutline = dilate(conifers, 0.014);\n\n// ── Smoke wisps from chimneys ─────────────────────────────────────────────────\nconst smoke = union(\n  circle(0.018, [-0.62 + 0.22 * 0.22, -0.28 + 0.18 + 0.10 * 0.72 + 0.035]),\n  circle(0.014, [-0.14 + 0.20 * 0.22, -0.26 + 0.20 + 0.11 * 0.72 + 0.028]),\n  circle(0.012, [ 0.40 + 0.17 * 0.22, -0.25 + 0.17 + 0.10 * 0.72 + 0.022]),\n);\n\n// ── Mist layer drifting through the valley ────────────────────────────────────\nconst mistBand = intersection(\n  ellipse(0.90, 0.055, [-0.15, -0.18]),\n  rectangle([2.0, 0.11], [-0.15, -0.18]),\n);\nconst mistBand2 = intersection(\n  ellipse(0.70, 0.04, [0.30, -0.32]),\n  rectangle([1.4, 0.08], [0.30, -0.32]),\n);\n\n// ── Church / bell tower (central focal point) ─────────────────────────────────\nconst towerBase    = rectangle([0.095, 0.30], [-0.14, -0.12]);\nconst towerTop     = triangle(\n  [-0.14 - 0.065, -0.12 + 0.30],\n  [-0.14 + 0.065, -0.12 + 0.30],\n  [-0.14, -0.12 + 0.30 + 0.14],\n);\nconst towerWindow  = arc(0.025, Math.PI / 2, 0.006, [-0.14, -0.12 + 0.20]);\nconst towerBody    = union(towerBase, towerTop);\nconst towerOutline = dilate(towerBody, 0.020);\nconst crossV = segment([-0.14, -0.12 + 0.34], [-0.14, -0.12 + 0.30 + 0.14 - 0.005], 0.005);\nconst crossH = segment([-0.14 - 0.018, -0.12 + 0.36], [-0.14 + 0.018, -0.12 + 0.36], 0.005);\nconst towerCross = union(crossV, crossH);\n\n// ── Assemble layers ───────────────────────────────────────────────────────────\nconst canvas = document.getElementById('c');\nconst ctx    = canvas.getContext('2d');\n\nrender.silhouette(ctx, [\n  // 1. far mountains\n  { sdf: mtnsFar,       color: MTN_FAR   },\n  // 2. mist over far mountains\n  { sdf: mistVeil,      color: MIST      },\n  // 3. mid mountains\n  { sdf: mtnsMid,       color: MTN_MID   },\n  // 4. near ridge\n  { sdf: ridgeNear,     color: MTN_NEAR  },\n  // 5. ground plane\n  { sdf: groundPlane,   color: GROUND    },\n  // 6. field terraces\n  { sdf: fieldTerrace1, color: FIELD     },\n  { sdf: fieldTerrace2, color: FIELD     },\n  // 7. stream / pond\n  { sdf: water,         color: WATER_C   },\n  // 8. path\n  { sdf: path,          color: PATH_C    },\n  // 9. tree outlines (drawn first as shadow)\n  { sdf: conifersOutline, color: SHADOW_C },\n  { sdf: conifers,        color: TREE_DARK },\n  // brighter conifer highlights\n  { sdf: erode(conifers, 0.018), color: TREE_MID },\n  // 10. valley mist\n  { sdf: mistBand,      color: MIST2     },\n  { sdf: mistBand2,     color: MIST2     },\n  // 11. house walls (outlines first)\n  { sdf: wallsOutline,  color: OUTLINE   },\n  { sdf: wallsFinal,    color: WALL_C    },\n  // 12. roofs\n  { sdf: roofsOutline,  color: OUTLINE   },\n  { sdf: allRoofs,      color: ROOF_C    },\n  { sdf: erode(allRoofs, 0.010), color: ROOF_TILE },\n  // 13. chimneys\n  { sdf: allChimneys,   color: CHIMNEY_C },\n  // 14. church tower\n  { sdf: towerOutline,  color: OUTLINE   },\n  { sdf: towerBody,     color: WALL_C    },\n  { sdf: towerCross,    color: OUTLINE   },\n  { sdf: towerWindow,   color: OUTLINE   },\n  // 15. smoke\n  { sdf: smoke,         color: MIST2     },\n], {\n  view: 1.3,\n  background: { top: SKY_TOP, bottom: SKY_BOTTOM },\n});\n```\n\n**Composition notes:**\n\n山间村落按经典的\"景深叠层\"方式组织——远山 → 中山 → 近坡 → 谷地 → 村落，每层以颜色推远（蓝灰→灰绿→深绿），营造出瑞士/徽州山村的大气透视感。远山与中山之间插入一道水平薄雾（`intersection(ellipse, rectangle)`），模拟山谷晨雾漂浮的视觉。\n\n六栋民居使用参数化 `house()` builder 批量生成，每栋由墙体、三角屋顶、烟囱、门窗构成，门窗以 `difference` 切空。中央教堂钟塔作为焦点，比民居稍高，顶部加十字架与圆弧窗。`dilate`-outline idiom 分级使用：主体建筑 0.018，屋顶 0.014，细节装饰 0.008，形成视觉层级。\n\n针叶林（`conifer()` builder，三层三角叠加 + 树干 capsule）分布在两侧山坡，以深→浅两层渲染出侧光感。溪流与梯田条带用 `intersection(rect, plane)` 裁切，保持地形的层次轮廓。整体调色参考了中国山水版画的青灰绿 + 暖白的撞色逻辑，背景天空从冷蓝渐变为暖米，暗示清晨时分。",
+  "result": {
+    "demoId": "mountain-village",
+    "version": "v3.3",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "80.6s",
+    "tokens": {
+      "input": 32672,
+      "output": 7779
+    },
+    "costUSD": "0.2147",
+    "subjectCount": 64,
+    "newAtomsUsedCount": 20,
+    "newAtomsUsed": [
+      [
+        "cottage",
+        6
+      ],
+      [
+        "tree-pine",
+        11
+      ],
+      [
+        "cloud-puff",
+        3
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 64,
+    "patternUsageCount": 7,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 59,
+      "min": 0.7,
+      "max": 52,
+      "range": 51.3,
+      "stdev": 12.17260901478998
+    },
+    "v30AtomsUsedCount": 18,
+    "v30AtomsUsed": [
+      [
+        "hill-mound",
+        3
+      ],
+      [
+        "cow",
+        2
+      ],
+      [
+        "horse",
+        1
+      ],
+      [
+        "sheep",
+        3
+      ],
+      [
+        "dog",
+        1
+      ],
+      [
+        "fence-section",
+        2
+      ],
+      [
+        "well",
+        1
+      ],
+      [
+        "flower",
+        3
+      ],
+      [
+        "bush",
+        2
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "typeCounts": {
+      "cone": 6,
+      "hill-mound": 3,
+      "ellipsoid": 1,
+      "capsule": 4,
+      "cottage": 6,
+      "pyramid": 7,
+      "box": 7,
+      "capped_cone": 1,
+      "tree-pine": 11,
+      "cloud-puff": 3,
+      "cow": 2,
+      "horse": 1,
+      "sheep": 3,
+      "dog": 1,
+      "fence-section": 2,
+      "well": 1,
+      "flower": 3,
+      "bush": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Mountain Village at Dawn"
+  },
   "sceneData": {
     "v": 1,
     "name": "Mountain Village at Dawn",
@@ -1478,18 +1584,5 @@
         "strength": 0.45
       }
     }
-  },
-  "meta": {
-    "savedAt": 1779105892277,
-    "source": "user-saved-2026-05-18",
-    "v2Promoted": "2026-05-18",
-    "v2Model": "claude-sonnet-4-5",
-    "v2AtomsUsed": "moon×1, star×7, cloud-puff×2, tree-pine×11, cottage×6, bird-silhouette×2",
-    "v2IQTypesUsed": "(none)",
-    "v2SubjectCount": 67,
-    "previousSource": "user-saved-2026-05-18",
-    "handFixed": "2026-05-19: village enrichment — animals (cow×2 + horse + pig×2 + dog×2 + sheep×3) + 3 more birds + paths positioned + hay bales + all 62 existing subjects given materials + dusk lighting | v3.0 atoms: 10 inline animal BooleanGroups → single-type atom subjects + extras (well, 3 flowers, 2 mushrooms, 2 bushes, fence)",
-    "upgradedFrom": "v3.3",
-    "upgradedAt": "2026-05-23T09:48:30.312Z"
   }
 }

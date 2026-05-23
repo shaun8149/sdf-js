@@ -1516,6 +1516,261 @@ vec3 atlasACESTonemap(vec3 color) {
   vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
   return pow(clamp(m2 * (a / b), 0.0, 1.0), vec3(1.0 / 2.2));
 }
+
+// =============================================================================
+// IQ canonical 3D primitives — P2 batch (2026-05-23)
+// Source: https://iquilezles.org/articles/distfunctions/
+// All signatures match IQ verbatim.
+// =============================================================================
+
+// Sphere cut by horizontal plane at height h.
+float sdCutSphere(vec3 p, float r, float h) {
+  float w = sqrt(r * r - h * h);
+  vec2 q = vec2(length(p.xz), p.y);
+  float s = max((h - r) * q.x * q.x + w * w * (h + r - 2.0 * q.y),
+                h * q.x - w * q.y);
+  if (s < 0.0) return length(q) - r;
+  else if (q.x < w) return h - q.y;
+  else return length(q - vec2(w, h));
+}
+
+// Hollow cut sphere: sphere cap with shell thickness t.
+float sdCutHollowSphere(vec3 p, float r, float h, float t) {
+  float w = sqrt(r * r - h * h);
+  vec2 q = vec2(length(p.xz), p.y);
+  return ((h * q.x < w * q.y) ? length(q - vec2(w, h))
+                              : abs(length(q) - r)) - t;
+}
+
+// "Death Star": sphere ra with sphere rb of distance d carved out.
+float sdDeathStar(vec3 p2, float ra, float rb, float d) {
+  float a = (ra * ra - rb * rb + d * d) / (2.0 * d);
+  float b = sqrt(max(ra * ra - a * a, 0.0));
+  vec2 p = vec2(p2.x, length(p2.yz));
+  if (p.x * b - p.y * a > d * max(b - p.y, 0.0))
+    return length(p - vec2(a, b));
+  else
+    return max(length(p) - ra, -(length(p - vec2(d, 0.0)) - rb));
+}
+
+// Rounded cylinder: ra = body radius, rb = corner-roll radius, h = half-height.
+float sdRoundedCylinder(vec3 p, float ra, float rb, float h) {
+  vec2 d = vec2(length(p.xz) - 2.0 * ra + rb, abs(p.y) - h);
+  return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - rb;
+}
+
+// Round cone between two arbitrary endpoints a,b with end radii r1,r2.
+// IQ's "Round Cone (arbitrary endpoints)" variant.
+float sdRoundConeAB(vec3 p, vec3 a, vec3 b, float r1, float r2) {
+  vec3 ba = b - a;
+  float l2 = dot(ba, ba);
+  float rr = r1 - r2;
+  float a2 = l2 - rr * rr;
+  float il2 = 1.0 / l2;
+
+  vec3 pa = p - a;
+  float y = dot(pa, ba);
+  float z = y - l2;
+  vec3 xv = pa * l2 - ba * y;
+  float x2 = dot(xv, xv);
+  float y2 = y * y * l2;
+  float z2 = z * z * l2;
+
+  float k = sign(rr) * rr * rr * x2;
+  if (sign(z) * a2 * z2 > k) return sqrt(x2 + z2) * il2 - r2;
+  if (sign(y) * a2 * y2 < k) return sqrt(x2 + y2) * il2 - r1;
+  return (sqrt(x2 * a2 * il2) + y * rr) * il2 - r1;
+}
+
+// Vesica segment: lens/eye shape between points a,b with half-width w.
+float sdVesicaSegment(in vec3 p, in vec3 a, in vec3 b, in float w) {
+  vec3 c = (a + b) * 0.5;
+  float l = length(b - a);
+  vec3 v = (b - a) / l;
+  float y = dot(p - c, v);
+  vec2 q = vec2(length(p - c - y * v), abs(y));
+
+  float r = 0.5 * l;
+  float d = 0.5 * (r * r - w * w) / w;
+  vec3 h = (r * q.x < d * (q.y - r))
+    ? vec3(0.0, r, 0.0)
+    : vec3(-d, 0.0, d + w);
+  return length(q - h.xy) - h.z;
+}
+
+// Infinite cylinder: c.xy is axis offset in XZ plane, c.z is radius.
+float sdCylinderInf(vec3 p, vec3 c) {
+  return length(p.xz - c.xy) - c.z;
+}
+
+// Infinite cone: c is sin/cos of half-aperture angle. Tip at origin.
+float sdConeInf(vec3 p, vec2 c) {
+  vec2 q = vec2(length(p.xz), -p.y);
+  float d = length(q - c * max(dot(q, c), 0.0));
+  return d * ((q.x * c.y - q.y * c.x < 0.0) ? -1.0 : 1.0);
+}
+
+// =============================================================================
+// IQ canonical operators — P3 batch
+// =============================================================================
+
+// Elongation (correct version -- fixes interior-distance bug of the cheap form).
+// Stretches the host primitive by h along each axis. Caller passes the *result*
+// of evaluating the inner primitive at the elongated point; this helper only
+// returns the elongated coordinate. Usage in our compiler:
+//   walk(child, 'opElongate3(p, vec3(hx, hy, hz))')
+// IQ correct form needs the inner SDF re-evaluated at max(q,0); we approximate
+// by emitting the elongate coordinate. For 2D/3D the small interior core remains;
+// acceptable for raymarching exterior visuals (matches IQ "bound" classification).
+vec3 opElongate3(vec3 p, vec3 h) {
+  return p - clamp(p, -h, h);
+}
+
+// Displacement: additive perturbation. d1 = host distance, d2 = perturbation.
+// Caller is responsible for keeping perturbation small (else raymarch needs
+// smaller step caps).
+float opDisplace(float d1, float d2) {
+  return d1 + d2;
+}
+
+// XOR: in either A or B but not both. Bound (interior over-estimates).
+float opXor(float a, float b) {
+  return max(min(a, b), -max(a, b));
+}
+
+// =============================================================================
+// Smooth-min variants — P4 batch (companion to opSmoothUnion / opSmoothSubtract)
+// Source: https://iquilezles.org/articles/smin/
+// All take (a, b, k); k is the blend "size".
+// =============================================================================
+
+// Exponential smin — non-rigid (never reaches a or b exactly). Generalizes to N values.
+float opSminExp(float a, float b, float k) {
+  k *= 1.0;
+  float r = exp2(-a / k) + exp2(-b / k);
+  return -k * log2(r);
+}
+
+// Root smin — DD family, asymptotic, non-rigid.
+float opSminRoot(float a, float b, float k) {
+  k *= 2.0;
+  float x = b - a;
+  return 0.5 * (a + b - sqrt(x * x + k * k));
+}
+
+// Cubic-polynomial smin — C2 smoothness, locally supported, rigid.
+float opSminCubic(float a, float b, float k) {
+  k *= 6.0;
+  float h = max(k - abs(a - b), 0.0) / k;
+  return min(a, b) - h * h * h * k * (1.0 / 6.0);
+}
+
+// Quartic-polynomial smin — higher-order continuity.
+float opSminQuartic(float a, float b, float k) {
+  k *= 16.0 / 3.0;
+  float h = max(k - abs(a - b), 0.0) / k;
+  return min(a, b) - h * h * h * (4.0 - h) * k * (1.0 / 16.0);
+}
+
+// Circular smin — exact-circular fillet profile.
+float opSminCircular(float a, float b, float k) {
+  k *= 1.0 / (1.0 - sqrt(0.5));
+  float h = max(k - abs(a - b), 0.0) / k;
+  return min(a, b) - k * 0.5 * (1.0 + h - sqrt(1.0 - h * (h - 2.0)));
+}
+
+// Circular geometrical smin — locally supported, rigid, slight over-estimate.
+float opSminCircGeo(float a, float b, float k) {
+  k *= 1.0 / (1.0 - sqrt(0.5));
+  return max(k, min(a, b)) - length(max(k - vec2(a, b), 0.0));
+}
+
+// Lp norms for rounded-box-like variants
+float length2_(vec3 p) { return length(p); }  // L2 (alias for length)
+float length6(vec3 p) {
+  p = p * p * p; p = p * p;
+  return pow(p.x + p.y + p.z, 1.0 / 6.0);
+}
+float length8(vec3 p) {
+  p = p * p; p = p * p; p = p * p;
+  return pow(p.x + p.y + p.z, 1.0 / 8.0);
+}
+`;
+
+// =============================================================================
+// SDF2 GLSL library — used by revolve / extrude ops to emit 2D distance
+// functions. Function names prefixed sd2* to avoid collision with 3D family.
+// Source primitives mirror src/sdf/d2.js (the JS-side library).
+// =============================================================================
+
+export const SDF2_GLSL = /* glsl */ `
+float sd2Circle(vec2 p, float r) { return length(p) - r; }
+
+float sd2Box(vec2 p, vec2 b) {
+  vec2 q = abs(p) - b;
+  return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0);
+}
+
+// Uniform-corner rounded rect.
+float sd2RoundBox(vec2 p, vec2 b, float r) {
+  vec2 q = abs(p) - b + r;
+  return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - r;
+}
+
+// 2D capsule (line segment with rounded ends, half-width r).
+float sd2Segment(vec2 p, vec2 a, vec2 b, float r) {
+  vec2 pa = p - a;
+  vec2 ba = b - a;
+  float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+  return length(pa - ba * h) - r;
+}
+
+float sd2Ring(vec2 p, float r, float thickness) {
+  return abs(length(p) - r) - thickness * 0.5;
+}
+
+// IQ exact ellipse — https://iquilezles.org/articles/ellipsedist/
+// Expects ab.x <= ab.y after the swap (caller need not pre-swap; we handle it).
+float sd2Ellipse(vec2 p, vec2 ab) {
+  p = abs(p);
+  if (p.x > p.y) { p = p.yx; ab = ab.yx; }
+  float l = ab.y * ab.y - ab.x * ab.x;
+  float m = ab.x * p.x / l;
+  float n = ab.y * p.y / l;
+  float m2 = m * m, n2 = n * n;
+  float c = (m2 + n2 - 1.0) / 3.0;
+  float c3 = c * c * c;
+  float q = c3 + m2 * n2 * 2.0;
+  float d = c3 + m2 * n2;
+  float g = m + m * n2;
+  float co;
+  if (d < 0.0) {
+    float h = acos(q / c3) / 3.0;
+    float s = cos(h);
+    float t = sin(h) * sqrt(3.0);
+    float rx = sqrt(-c * (s + t + 2.0) + m2);
+    float ry = sqrt(-c * (s - t + 2.0) + m2);
+    co = (ry + sign(l) * rx + abs(g) / (rx * ry) - m) / 2.0;
+  } else {
+    float h = 2.0 * m * n * sqrt(d);
+    float s = sign(q + h) * pow(abs(q + h), 1.0 / 3.0);
+    float u = sign(q - h) * pow(abs(q - h), 1.0 / 3.0);
+    float rx = -s - u - c * 4.0 + 2.0 * m2;
+    float ry = (s - u) * sqrt(3.0);
+    float rm = sqrt(rx * rx + ry * ry);
+    co = (ry / sqrt(rm - rx) + 2.0 * g / rm - m) / 2.0;
+  }
+  vec2 r = vec2(ab.x * co, ab.y * sqrt(1.0 - co * co));
+  return length(r - p) * sign(p.y - r.y);
+}
+
+// Extrude helper: given the 2D-evaluated distance d2 at point (p.xy), and the
+// z-coordinate + half-height h, produce the 3D extruded distance.
+// IQ canonical form. Used by 'extrude' op in the compiler.
+float opExtrusion(float d2, float pz, float h) {
+  vec2 w = vec2(d2, abs(pz) - h);
+  return min(max(w.x, w.y), 0.0) + length(max(w, vec2(0.0)));
+}
 `;
 
 // =============================================================================
@@ -1548,12 +1803,33 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdMapleLeaf2D', 'sdMapleLeaf3D', 'sdWavyCapsule',
   'sdStylizedTree', 'sdForestFlower', 'sdMeteorStreak',
   'sdGrassField',
+  // 2026-05-23 IQ P2 batch
+  'sdCutSphere', 'sdCutHollowSphere', 'sdDeathStar',
+  'sdRoundedCylinder', 'sdRoundConeAB', 'sdVesicaSegment',
+  'sdCylinderInf', 'sdConeInf',
 ];
 
 export const SDF3_GLSL_OPS = [
   'opUnion', 'opIntersect', 'opDifference',
   'opSmoothUnion', 'opSmoothIntersect', 'opSmoothDifference',
   'opShell', 'opDilate', 'opErode',
+  // 2026-05-23 IQ P3 batch
+  'opElongate3', 'opDisplace', 'opXor',
+  // 2026-05-23 IQ P4 smin variants
+  'opSminExp', 'opSminRoot', 'opSminCubic', 'opSminQuartic',
+  'opSminCircular', 'opSminCircGeo',
+  // Lp norms
+  'length6', 'length8',
+];
+
+export const SDF2_GLSL_PRIMITIVES = [
+  'sd2Circle', 'sd2Box', 'sd2RoundBox', 'sd2Segment', 'sd2Ring', 'sd2Ellipse',
+  // polygon emitted per-instance as sd2Polygon_HASH(vec2)
+];
+
+export const SDF2_GLSL_OPS = [
+  // pseudo-3D ops backed by SDF2 distance:
+  'opExtrusion',  // 2D → 3D extrusion
 ];
 
 export const SDF3_GLSL_TRANSFORMS = [

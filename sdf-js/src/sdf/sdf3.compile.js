@@ -18,10 +18,10 @@
 // 在 v1（需要 nested SDF2 compile）；rep / elongate / orient 在 v0.5。
 // =============================================================================
 
-import { SDF3_GLSL } from './sdf3.glsl.js';
+import { SDF3_GLSL, SDF2_GLSL } from './sdf3.glsl.js';
 import { NOISE_GLSL } from './noise.glsl.js';
 import { VORONOI_GLSL } from './voronoi.glsl.js';
-import { SDF3 } from './core.js';
+import { SDF2, SDF3 } from './core.js';
 import { isTimeExpr, mulT } from './time.js';
 
 // ---- format helpers --------------------------------------------------------
@@ -94,6 +94,34 @@ function rotAxisAngleMat(angle, axis) {
   ];
 }
 
+// ---- per-compile context ---------------------------------------------------
+// Some emitters (notably `polygon2`) need to inject a helper function per
+// unique shape into the GLSL prelude. We track them in a per-compile Map
+// (key = canonical hash of points → value = GLSL function source). Set by
+// compileSDF3ToGLSL on entry, reset on exit. Walk emitters push into it via
+// _registerHelperFn. Caller stitches the helper code into the final prelude.
+let _compileExtras = null;
+
+function _registerHelperFn(key, body) {
+  if (_compileExtras && !_compileExtras.has(key)) {
+    _compileExtras.set(key, body);
+  }
+}
+
+// Stable short hash for polygon vertex arrays — used as both dedup key and
+// function-name suffix. 32-bit FNV-1a over the rounded float strings.
+function _hashPoints(points) {
+  let h = 0x811c9dc5;
+  for (const [x, y] of points) {
+    const s = `${x.toFixed(6)},${y.toFixed(6)};`;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193) >>> 0;
+    }
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
 // ---- entry point -----------------------------------------------------------
 
 /**
@@ -123,6 +151,7 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
     return { glsl: null, error: 'SDF has no AST (probably CA / motif / streamline source, CPU-only)' };
   }
 
+  _compileExtras = new Map();
   try {
     let body, leafMaterials = null, leafPatterns = null;
     if (emitObjectIndex) {
@@ -137,12 +166,16 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
     // Noise + Voronoi libs prepended first — SDF library functions (and
     // future domain-warped primitives) can call into them. Renderer shading
     // code uses them for surface texture (fbm) and patterns (voronoi/brick/hex).
+    // SDF2_GLSL provides 2D helpers used by revolve/extrude ops.
+    const extrasCode = Array.from(_compileExtras.values()).join('\n\n');
     const prelude = includeLibrary
-      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n\n`
-      : '';
+      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${SDF2_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
+      : `${extrasCode}\n\n`;
     return { glsl: prelude + body, error: null, leafMaterials, leafPatterns };
   } catch (e) {
     return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null };
+  } finally {
+    _compileExtras = null;
   }
 }
 
@@ -418,6 +451,37 @@ const PRIMS = {
   // Infinite in xz; caller wraps in rep + count to clip if a finite patch desired.
   'grass-field': ([bladeHeight, density], p) =>
     `sdGrassField(${p}, ${flt(bladeHeight)}, ${flt(density)})`,
+
+  // -- 2026-05-23 IQ P2 batch (8 new primitives) -----------------------------
+  // sdCutSphere(p, r, h) — sphere of radius r cut at horizontal plane height h.
+  'cut-sphere': ([r, h], p) =>
+    `sdCutSphere(${p}, ${flt(r)}, ${flt(h)})`,
+  // sdCutHollowSphere(p, r, h, t) — cut sphere with shell thickness t.
+  'cut-hollow-sphere': ([r, h, t], p) =>
+    `sdCutHollowSphere(${p}, ${flt(r)}, ${flt(h)}, ${flt(t)})`,
+  // sdDeathStar(p, ra, rb, d) — sphere ra carved by sphere rb at distance d.
+  'death-star': ([ra, rb, d], p) =>
+    `sdDeathStar(${p}, ${flt(ra)}, ${flt(rb)}, ${flt(d)})`,
+  // sdRoundedCylinder(p, ra, rb, h) — cylinder with rolled-rounded rim.
+  'rounded-cylinder': ([ra, rb, h], p) =>
+    `sdRoundedCylinder(${p}, ${flt(ra)}, ${flt(rb)}, ${flt(h)})`,
+  // sdRoundConeAB(p, a, b, r1, r2) — round cone between arbitrary endpoints.
+  'round-cone-ab': ([a, b, r1, r2], p) =>
+    `sdRoundConeAB(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r1)}, ${flt(r2)})`,
+  // sdVesicaSegment(p, a, b, w) — lens/eye shape along segment.
+  'vesica-segment': ([a, b, w], p) =>
+    `sdVesicaSegment(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(w)})`,
+  // sdCylinderInf(p, c) — infinite cylinder. c.xy = axis XZ offset, c.z = radius.
+  'cylinder-inf': ([axisXZ, radius], p) => {
+    const cx = Array.isArray(axisXZ) ? axisXZ[0] : 0;
+    const cy = Array.isArray(axisXZ) ? axisXZ[1] : 0;
+    return `sdCylinderInf(${p}, ${vec3([cx, cy, radius])})`;
+  },
+  // sdConeInf(p, c) — infinite cone, c = sin/cos of half-aperture. Tip at origin.
+  'cone-inf': ([halfAperture], p) => {
+    const s = Math.sin(halfAperture), c = Math.cos(halfAperture);
+    return `sdConeInf(${p}, ${vec2([s, c])})`;
+  },
 };
 
 // ---- op emitters -----------------------------------------------------------
@@ -604,6 +668,229 @@ const OPS = {
     const count = asArr3(opts.count);
     return walk(children[0], `repL3(${p}, ${vec3(period)}, ${vec3(count)})`);
   },
+
+  // ---- 2D → 3D pseudo-primitive ops --------------------------------------
+  // Wired 2026-05-23. Both take a single SDF2 child. revolve sweeps it around
+  // the Y-axis (profile is in 2D XY plane; 2D-x maps to radial r = length(p.xz);
+  // 2D-y maps to 3D-y). extrude sweeps it along Z with half-height h.
+
+  // revolve(sdf2, offset=0)
+  // JS-side: p[0] -> radial r = sqrt(x²+z²) - offset; p[1] -> y. Profile must
+  // live in x_2d >= 0 half-plane (otherwise it mirrors across the axis).
+  revolve: (sdf, p) => {
+    const offset = sdf.ast.scalars[0] ?? 0;
+    const sdf2 = sdf.ast.children[0];
+    if (!(sdf2 instanceof SDF2)) {
+      throw new Error(`revolve: source must be SDF2, got ${typeof sdf2}`);
+    }
+    // Build the 2D probe point as a fresh GLSL temp via a let-like sub-expr.
+    // GLSL doesn't have IIFE, so we substitute the vec2 expression directly.
+    // Most SDF2 emitters wrap their input in length()/abs() once; direct
+    // substitution is fine (no double-eval concerns for the common cases).
+    const q = `vec2(length((${p}).xz) - ${flt(offset)}, (${p}).y)`;
+    return walk2(sdf2, q);
+  },
+
+  // extrude(sdf2, h)
+  // JS-side: 2D profile in XY plane, extruded along Z with full height h.
+  // (JS impl uses h/2 as half-height — same here.)
+  extrude: (sdf, p) => {
+    const h = sdf.ast.scalars[0] ?? 1;
+    const sdf2 = sdf.ast.children[0];
+    if (!(sdf2 instanceof SDF2)) {
+      throw new Error(`extrude: source must be SDF2, got ${typeof sdf2}`);
+    }
+    const halfH = mulT(h, 0.5);
+    const dExpr = walk2(sdf2, `(${p}).xy`);
+    return `opExtrusion(${dExpr}, (${p}).z, ${flt(halfH)})`;
+  },
+
+  // ---- 2026-05-23 IQ P3 batch ----------------------------------------------
+  // elongate(h) — stretch host primitive by h along each axis. Uses correct
+  // form (max(q,0) clamp inside emit) for exterior accuracy. Maps to
+  // opElongate3 helper which returns the elongated coordinate.
+  elongate: (sdf, p) => {
+    const h = asArr3(sdf.ast.scalars[0]);
+    return walk(sdf.ast.children[0], `opElongate3(${p}, ${vec3(h)})`);
+  },
+
+  // displace(otherSdf) — additive perturbation. Caller is responsible for
+  // keeping the perturbation small (else raymarch step cap shrinks).
+  displace: (sdf, p) => {
+    const ds = sdf.ast.children.map((c) => walk(c, p));
+    if (ds.length !== 2) throw new Error(`displace: requires exactly 2 children, got ${ds.length}`);
+    return `opDisplace(${ds[0]}, ${ds[1]})`;
+  },
+
+  // xor(b) — symmetric-difference of two SDFs. Bound (interior over-estimates).
+  xor: emitBoolean('opXor', 'opXor'),  // no smooth variant; reuse op for both
+
+  // ---- 2026-05-23 IQ P4 batch (smin variants) ------------------------------
+  // Each is a smooth-union with a different blending profile. r controls
+  // the join radius. Children may pass per-instance _k overriding opts.r.
+  unionExp:      emitBooleanVariant('opSminExp',      ['r'], { r: 0.1 }),
+  unionRoot:     emitBooleanVariant('opSminRoot',     ['r'], { r: 0.1 }),
+  unionCubic:    emitBooleanVariant('opSminCubic',    ['r'], { r: 0.1 }),
+  unionQuartic:  emitBooleanVariant('opSminQuartic',  ['r'], { r: 0.1 }),
+  unionCircular: emitBooleanVariant('opSminCircular', ['r'], { r: 0.1 }),
+  unionCircGeo:  emitBooleanVariant('opSminCircGeo',  ['r'], { r: 0.1 }),
+};
+
+// =============================================================================
+// SDF2 emit — walk + PRIMS2 + OPS2
+// -----------------------------------------------------------------------------
+// Called by 3D ops `revolve` and `extrude` which take a single SDF2 child.
+// Mirrors the 3D walker but emits 2D distance functions (vec2 input, float
+// output) using sd2* helpers from SDF2_GLSL. 2D booleans / decorations reuse
+// the same op names as 3D (union / intersection / difference / dilate / erode
+// / shell / translate / rotate / scale) — they get routed to OPS2 here.
+// =============================================================================
+
+function walk2(sdf, q) {
+  const ast = sdf.ast;
+  if (!ast) throw new Error('missing .ast on SDF2 node (CPU-only source?)');
+  if (ast.kind === 'prim') {
+    const emit = PRIMS2[ast.name];
+    if (!emit) throw new Error(`unsupported 2D primitive '${ast.name}'`);
+    return emit(ast.args, q);
+  }
+  if (ast.kind === 'op') {
+    const emit = OPS2[ast.name];
+    if (!emit) throw new Error(`unsupported 2D op '${ast.name}'`);
+    return emit(sdf, q);
+  }
+  throw new Error(`unknown 2D AST kind '${ast.kind}'`);
+}
+
+const PRIMS2 = {
+  circle2: ([radius, center], q) =>
+    `(length(${q} - ${vec2(center)}) - ${flt(radius)})`,
+
+  ellipse2: ([rx, ry, center], q) =>
+    `sd2Ellipse(${q} - ${vec2(center)}, ${vec2([rx, ry])})`,
+
+  rectangle2: ([size, center], q) => {
+    const s = [half(size[0]), half(size[1])];
+    return `sd2Box(${q} - ${vec2(center)}, ${vec2(s)})`;
+  },
+
+  // rounded_rectangle2 with uniform corner: use sd2RoundBox.
+  // If per-corner radii differ, we collapse to the average (GLSL helper
+  // doesn't support 4-corner radii without a custom emit; uniform covers 99%
+  // of revolve/extrude use cases).
+  rounded_rectangle2: ([size, radii, center], q) => {
+    const s = [half(size[0]), half(size[1])];
+    const r = (radii[0] + radii[1] + radii[2] + radii[3]) / 4;
+    return `sd2RoundBox(${q} - ${vec2(center)}, ${vec2(s)}, ${flt(r)})`;
+  },
+
+  segment2: ([a, b, r], q) =>
+    `sd2Segment(${q}, ${vec2(a)}, ${vec2(b)}, ${flt(r)})`,
+
+  ring2: ([radius, thickness, center], q) =>
+    `sd2Ring(${q} - ${vec2(center)}, ${flt(radius)}, ${flt(thickness)})`,
+
+  // Polygon: emit a unique helper function per shape (variable-vertex-count
+  // can't be a generic library function in GLSL ES 1.00). Dedup via FNV-1a
+  // hash so the same polygon shared by two subjects compiles to one helper.
+  //
+  // Implementation: FULLY UNROLLED edge accumulation. We avoid GLSL ES 1.00's
+  // "dynamic indexing into local array" trap (Mac/Apple Metal-via-ANGLE
+  // backends reject `v[j]` where j is computed). Each edge becomes a small
+  // inline block — bloats the shader but compiles on every WebGL impl.
+  polygon2: ([pts], q) => {
+    const hash = _hashPoints(pts);
+    const fnName = `sd2Polygon_${hash}`;
+    if (_compileExtras && !_compileExtras.has(hash)) {
+      const N = pts.length;
+      let body = `float ${fnName}(vec2 p) {\n`;
+      // Pre-declare each vertex as a const vec2 — clearer codegen, lets the
+      // compiler constant-fold all arithmetic. No `vec2 v[N]` array at all.
+      for (let i = 0; i < N; i++) {
+        body += `  vec2 v${i} = vec2(${flt(pts[i][0])}, ${flt(pts[i][1])});\n`;
+      }
+      // Init d from first vertex distance.
+      body += `  vec2 _w0 = p - v0;\n  float d = dot(_w0, _w0);\n  float s = 1.0;\n`;
+      // Unroll: for each edge (vi -> v_prev), emit min-distance + winding flip.
+      // j = (i + N - 1) % N is the PREVIOUS vertex (per IQ's reference impl).
+      for (let i = 0; i < N; i++) {
+        const j = (i + N - 1) % N;
+        body += `\n  // edge ${i}: v${j} -> v${i}\n`;
+        body += `  {\n`;
+        body += `    vec2 e = v${j} - v${i};\n`;
+        body += `    vec2 w = p - v${i};\n`;
+        body += `    vec2 b = w - e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);\n`;
+        body += `    d = min(d, dot(b, b));\n`;
+        body += `    bvec3 c = bvec3(p.y >= v${i}.y, p.y < v${j}.y, e.x * w.y > e.y * w.x);\n`;
+        body += `    if (all(c) || all(not(c))) s = -s;\n`;
+        body += `  }\n`;
+      }
+      body += `  return sqrt(d) * s;\n}\n`;
+      _registerHelperFn(hash, body);
+    }
+    return `${fnName}(${q})`;
+  },
+};
+
+// 2D booleans reuse the same op names as 3D. They emit via 2D walker.
+// Variants (chamfer/round/etc) NOT mirrored — typical revolve/extrude only
+// needs hard booleans. Add later if a use case appears.
+function emitBoolean2(hardFn, smoothFn) {
+  return (sdf, q) => {
+    const { children, opts } = sdf.ast;
+    const ds = children.map((c) => walk2(c, q));
+    let acc = ds[0];
+    for (let i = 1; i < ds.length; i++) {
+      let k = null;
+      if (opts.k != null) k = opts.k;
+      else if (children[i]._k != null) k = children[i]._k;
+      if (k === null) acc = `${hardFn}(${acc}, ${ds[i]})`;
+      else acc = `${smoothFn}(${acc}, ${ds[i]}, ${flt(k)})`;
+    }
+    return acc;
+  };
+}
+
+const OPS2 = {
+  union:        emitBoolean2('opUnion',     'opSmoothUnion'),
+  intersection: emitBoolean2('opIntersect', 'opSmoothIntersect'),
+  difference:   emitBoolean2('opDifference','opSmoothDifference'),
+
+  // 2D transforms — mirror 3D translate/rotate/scale onto vec2 input.
+  translate: (sdf, q) => {
+    // d2.translate scalars[0] is a vec2 offset
+    const off = sdf.ast.scalars[0];
+    return walk2(sdf.ast.children[0], `(${q} - ${vec2(off)})`);
+  },
+
+  scale: (sdf, q) => {
+    const factor = sdf.ast.scalars[0];
+    if (typeof factor === 'number') {
+      const inner = walk2(sdf.ast.children[0], `(${q} / ${flt(factor)})`);
+      return `(${inner}) * ${flt(factor)}`;
+    }
+    // vec2 factor: distance compensation uses min(sx, sy)
+    const inner = walk2(sdf.ast.children[0], `(${q} / ${vec2(factor)})`);
+    return `(${inner}) * ${flt(Math.min(factor[0], factor[1]))}`;
+  },
+
+  rotate: (sdf, q) => {
+    const angle = sdf.ast.scalars[0];
+    if (isTimeExpr(angle)) {
+      // emit GLSL rotation matrix using runtime u_time
+      return walk2(sdf.ast.children[0],
+        `(mat2(cos(${flt(angle)}), sin(${flt(angle)}), -sin(${flt(angle)}), cos(${flt(angle)})) * ${q})`);
+    }
+    const c = Math.cos(-angle), s = Math.sin(-angle);
+    return walk2(sdf.ast.children[0],
+      `(mat2(${flt(c)}, ${flt(s)}, ${flt(-s)}, ${flt(c)}) * ${q})`);
+  },
+
+  // 2D decorations — d/r dilate-erode etc.
+  negate: (sdf, q) => `(-${walk2(sdf.ast.children[0], q)})`,
+  dilate: (sdf, q) => `(${walk2(sdf.ast.children[0], q)} - ${flt(sdf.ast.scalars[0])})`,
+  erode:  (sdf, q) => `(${walk2(sdf.ast.children[0], q)} + ${flt(sdf.ast.scalars[0])})`,
+  shell:  (sdf, q) => `(abs(${walk2(sdf.ast.children[0], q)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
 };
 
 // ---- introspection ---------------------------------------------------------
@@ -621,7 +908,7 @@ export const _SUPPORTED_OPS = Object.keys(OPS);
 export function canCompileSDF3(sdf) {
   if (!(sdf instanceof SDF3)) return { ok: false, error: 'not an SDF3' };
   if (!sdf.ast) return { ok: false, error: 'no AST' };
-  const visit = (node) => {
+  const visit3 = (node) => {
     const a = node.ast;
     if (!a) throw new Error('missing .ast');
     if (a.kind === 'prim') {
@@ -630,13 +917,31 @@ export function canCompileSDF3(sdf) {
     }
     if (a.kind === 'op') {
       if (!OPS[a.name]) throw new Error(`unsupported op '${a.name}'`);
-      for (const child of a.children) visit(child);
+      // revolve / extrude take SDF2 children → recurse via visit2
+      for (const child of a.children) {
+        if (child instanceof SDF2) visit2(child);
+        else visit3(child);
+      }
       return;
     }
     throw new Error(`unknown AST kind '${a.kind}'`);
   };
+  const visit2 = (node) => {
+    const a = node.ast;
+    if (!a) throw new Error('missing .ast on 2D node');
+    if (a.kind === 'prim') {
+      if (!PRIMS2[a.name]) throw new Error(`unsupported 2D primitive '${a.name}'`);
+      return;
+    }
+    if (a.kind === 'op') {
+      if (!OPS2[a.name]) throw new Error(`unsupported 2D op '${a.name}'`);
+      for (const child of a.children) visit2(child);
+      return;
+    }
+    throw new Error(`unknown 2D AST kind '${a.kind}'`);
+  };
   try {
-    visit(sdf);
+    visit3(sdf);
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e.message };
