@@ -113,6 +113,10 @@ function ensureRenderer() {
         coldiv:     +$('coldiv').value,
         worldScale: +$('world-scale').value,
         coloration: +$('coloration').value,
+        // Camera control (independent of knobs-on style randomization).
+        // Both override styleGated values when checked. Renderer unchanged.
+        animation:    $('cam-orbit')?.checked ? 2     : (styleGated.animation    ?? 0),
+        rotateCanvas: $('cam-drift')?.checked ? 0.008 : (styleGated.rotateCanvas ?? 0),
         seed:       1.0,
       };
     },
