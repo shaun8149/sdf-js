@@ -44,8 +44,8 @@ uniform vec4  u_leafTone[96];
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
 uniform vec4  u_leafPattern[96];
 
-#define MAX_STEPS    128
-#define MAX_DIST     40.0
+#define MAX_STEPS    200
+#define MAX_DIST     200.0  // matches BOB GPU; was 40, too small for fleet/scatter scenes
 #define EPS          0.0008
 #define GROUND_Y     -1.0
 #define MAX_MATERIAL 96
@@ -728,7 +728,13 @@ void main() {
 // Controller
 // =============================================================================
 
-export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps }) {
+// 2026-05-23 perf: render the scene shader at lower internal resolution
+// (renderScale × canvas) and upsample to the canvas via a trivial blit pass.
+// At 900×900 canvas, default scale 0.6 = 540×540 internal = 36% the fragment
+// cost (with MAX_STEPS=200 + Lambert+LUT+reflection+sky+AA per pixel, this is
+// the difference between smooth 60fps and choppy 20fps on a fleet scene).
+// Adjust upward (closer to 1.0) for sharper detail at perf cost.
+export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, renderScale = 0.6 }) {
   const gl = canvas.getContext('webgl', { antialias: true, preserveDrawingBuffer: false });
   if (!gl) throw new Error('WebGL not supported');
 
@@ -771,6 +777,60 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
   gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   const vs = compileShader(VS_SRC, gl.VERTEX_SHADER);
+
+  // ---- 2026-05-23 perf: low-res FBO + blit post-pass --------------------------
+  // The scene shader is expensive (Lambert + LUT lookups + Schlick reflection +
+  // stochastic AA + IQ sky + height fog). At 900² it's ~810K fragments/frame.
+  // We render to a smaller FBO (e.g. 540² at scale=0.6 = 36% the work) and
+  // upsample to canvas via a trivial sampler in BLIT_FS. Visual quality is
+  // barely affected at scenes-tab viewing distance.
+  let sceneFbo = null, sceneTex = null;
+  let sceneFboW = 0, sceneFboH = 0;
+  const BLIT_FS_SRC = `#ifdef GL_ES
+precision highp float;
+#endif
+uniform sampler2D u_buffer;
+uniform vec2 u_canvasSize;
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_canvasSize;
+  gl_FragColor = texture2D(u_buffer, uv);
+}`;
+  const blitFs = compileShader(BLIT_FS_SRC, gl.FRAGMENT_SHADER);
+  const blitProgram = gl.createProgram();
+  gl.attachShader(blitProgram, vs);
+  gl.attachShader(blitProgram, blitFs);
+  gl.linkProgram(blitProgram);
+  if (!gl.getProgramParameter(blitProgram, gl.LINK_STATUS)) {
+    throw new Error(`[fly3d] blit program link failed: ${gl.getProgramInfoLog(blitProgram)}`);
+  }
+  const blitU_buffer = gl.getUniformLocation(blitProgram, 'u_buffer');
+  const blitU_canvasSize = gl.getUniformLocation(blitProgram, 'u_canvasSize');
+
+  // (Re)allocate the offscreen FBO when canvas size or renderScale changes.
+  function ensureSceneFbo() {
+    const targetW = Math.max(1, Math.floor(canvas.width  * renderScale));
+    const targetH = Math.max(1, Math.floor(canvas.height * renderScale));
+    if (sceneFbo && targetW === sceneFboW && targetH === sceneFboH) return;
+    if (sceneFbo) gl.deleteFramebuffer(sceneFbo);
+    if (sceneTex) gl.deleteTexture(sceneTex);
+    sceneTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, sceneTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, targetW, targetH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    sceneFbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, sceneTex, 0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+      throw new Error('[fly3d] scene FBO incomplete');
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    sceneFboW = targetW;
+    sceneFboH = targetH;
+  }
+  ensureSceneFbo();
 
   // ---- camera math ----
   function computeFwd(yaw, pitch) {
@@ -941,24 +1001,25 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     // Defensive state reset — WebGL context is shared with other renderers
     // (e.g. bobShader) on the same canvas; their leftover state (FBO binding,
     // depth/blend, vertex attrib pointers) would silently break our draw.
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
     gl.disable(gl.BLEND);
     gl.disable(gl.SCISSOR_TEST);
     gl.colorMask(true, true, true, true);
+
+    // === Pass 1: render scene to low-res FBO (renderScale × canvas) ============
+    ensureSceneFbo();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
     gl.useProgram(program);
     const a_pos = gl.getAttribLocation(program, 'a_pos');
     gl.enableVertexAttribArray(a_pos);
     gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
     gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
 
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    // Black clear (shader covers every pixel; clear is a safety net for blank
-    // frames when context state is bad — black is less alarming than magenta).
+    gl.viewport(0, 0, sceneFboW, sceneFboH);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.uniform2f(uniformsCache.u_resolution, canvas.width, canvas.height);
+    gl.uniform2f(uniformsCache.u_resolution, sceneFboW, sceneFboH);
     gl.uniform3f(uniformsCache.u_camPos, camState.position[0], camState.position[1], camState.position[2]);
     gl.uniform3f(uniformsCache.u_camFwd, fwd[0], fwd[1], fwd[2]);
     gl.uniform3f(uniformsCache.u_camRight, right[0], right[1], right[2]);
@@ -978,6 +1039,21 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
     }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    // === Pass 2: blit low-res FBO → canvas (full resolution, linear upsample) ==
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(blitProgram);
+    // Re-bind vertex attrib pointer (program switch invalidates the location).
+    const a_pos_blit = gl.getAttribLocation(blitProgram, 'a_pos');
+    gl.enableVertexAttribArray(a_pos_blit);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+    gl.vertexAttribPointer(a_pos_blit, 2, gl.FLOAT, false, 0, 0);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, sceneTex);
+    gl.uniform1i(blitU_buffer, 0);
+    gl.uniform2f(blitU_canvasSize, canvas.width, canvas.height);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     if (_debugFirstDraw) {
@@ -1067,6 +1143,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps })
       if (patch.position) camState.position = [...patch.position];
       if (patch.yaw != null)   camState.yaw   = patch.yaw;
       if (patch.pitch != null) camState.pitch = patch.pitch;
+      // Also update `defaultCam` so R-key reset jumps back to the LAST-SET
+      // scene camera, not the hardcoded fly3d module default [0, 0.3, -3]
+      // (which is meaningless for compositor scenes with their own cameras).
+      if (patch.position) defaultCam.position = [...patch.position];
+      if (patch.yaw != null)   defaultCam.yaw   = patch.yaw;
+      if (patch.pitch != null) defaultCam.pitch = patch.pitch;
     },
 
     /**

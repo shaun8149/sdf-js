@@ -17,6 +17,7 @@
 import * as renderModule from '../../src/render/index.js';
 import { generateSceneData, randomSceneTypeData, SCENE_NAMES_DATA } from '../sdf/autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
+import { expandVariants } from '../../src/scene/generator-s.js';
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 // Generator-V: BOB GPU style randomizer (palette / chess / render params per styleHash).
@@ -68,6 +69,13 @@ const state = {
   // ?styleHash= on bootstrap; "🎲 New style" button generates new hash.
   styleHash: null,                     // 0x... hex string
   bobStyle: { ...DEFAULT_STYLE },      // current Generator-V output
+
+  // Generator-S (scene variant expansion) — per-sceneHash deterministic
+  // scatter/array/etc. Independent from style (orthogonal axis #10).
+  // Drives expandVariants() in scene/generator-s.js. Default hash is constant
+  // so demo lifts render identically across reloads; user can override via
+  // ?sceneHash= URL param to roll a new variant ordering.
+  sceneHash: null,                     // 0x... hex string
 };
 
 const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu']);
@@ -598,7 +606,12 @@ async function loadDemoScene(demo) {
 
     let compiled;
     try {
-      compiled = compileSceneData(data.sceneData);
+      // Generator-S: expand `subjects[i].variants[]` into N flat subjects.
+      // No-op (zero rng draws) if no subject has variants. Uses state.sceneHash
+      // → SFC32 PRNG so the same hash always yields the same expansion.
+      const sceneRng = new Random(state.sceneHash);
+      const variantScene = expandVariants(data.sceneData, sceneRng);
+      compiled = compileSceneData(variantScene);
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
     }
@@ -1733,6 +1746,23 @@ function bootstrapBobStyle() {
   state.bobStyle = randomizeBobStyle(new Random(state.styleHash));
 }
 
+function bootstrapSceneHash() {
+  // Read sceneHash from URL, generate if absent / invalid. Drives Generator-S
+  // variant expansion. Stable default so demos render deterministically across
+  // reloads; user can shift+S equivalent to roll a new scatter ordering.
+  const urlSceneHash = new URLSearchParams(window.location.search).get('sceneHash');
+  state.sceneHash = isValidHash(urlSceneHash) ? urlSceneHash : generateHash();
+}
+
+function regenerateSceneHash() {
+  state.sceneHash = generateHash();
+  // Re-load active demo to pick up the new expansion.
+  if (state.activeDemoId) {
+    const demo = state.demos?.find(d => d.id === state.activeDemoId);
+    if (demo) loadDemoScene(demo);
+  }
+}
+
 function regenerateBobStyle() {
   state.styleHash = generateHash();
   writeStyleHashToURL(state.styleHash);
@@ -2313,6 +2343,9 @@ $('scene-display')?.addEventListener('keydown', (e) => {
 // Bootstrap Generator-V (BOB GPU style) BEFORE any BOB render — reads styleHash
 // from URL or generates one. state.bobStyle is now ready for first BOB render.
 bootstrapBobStyle();
+// Bootstrap Generator-S (scene variant) — provides state.sceneHash for
+// expandVariants() at every scene load. URL ?sceneHash= override supported.
+bootstrapSceneHash();
 
 Promise.all([loadSystemPrompt(), loadLiftSystemPrompt(), loadDemoManifest()]).then(([n2d, nLift]) => {
   renderScenesTab();

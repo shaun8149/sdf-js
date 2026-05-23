@@ -559,6 +559,18 @@ function validateSubject(subj, path, errors, warnings) {
     }
   }
 
+  // Generator-S variants (Phase 1: scatter only). Each entry is a variant
+  // spec consumed by src/scene/generator-s.js expandVariants() BEFORE this
+  // subject is compiled. Validator is lenient — unknown op / region just
+  // warn (variant gets skipped, prototype kept as-is).
+  if (subj.variants != null) {
+    if (!Array.isArray(subj.variants)) {
+      errors.push(`${path}.variants: must be an array`);
+    } else {
+      subj.variants.forEach((v, i) => validateVariantSpec(v, `${path}.variants[${i}]`, errors, warnings));
+    }
+  }
+
   // Transform sanity
   if (subj.transform != null && typeof subj.transform !== 'object') {
     errors.push(`${path}.transform: must be an object`);
@@ -666,6 +678,54 @@ function validateDomainArgs(type, args, path, errors, warnings) {
 // =============================================================================
 // CameraSpec
 // =============================================================================
+
+// Variant specs are consumed by Generator-S (src/scene/generator-s.js).
+// Phase 1 op set: 'scatter'. Phase 1 region types: 'rectXZ', 'box3'.
+// Unknown values are warnings — Generator-S falls back to keeping prototype.
+const VARIANT_OPS = new Set(['scatter']);
+const VARIANT_REGIONS = new Set(['rectXZ', 'box3']);
+
+function validateVariantSpec(v, path, errors, warnings) {
+  if (v == null || typeof v !== 'object' || Array.isArray(v)) {
+    errors.push(`${path}: must be an object`);
+    return;
+  }
+  if (typeof v.op !== 'string') {
+    errors.push(`${path}.op: required string`);
+    return;
+  }
+  if (!VARIANT_OPS.has(v.op)) {
+    warnings.push(`${path}.op: unknown '${v.op}' (Phase 1 supports: ${[...VARIANT_OPS].join(', ')}); Generator-S will skip and keep prototype`);
+    return;
+  }
+  if (v.op === 'scatter') {
+    if (v.count != null && (typeof v.count !== 'number' || v.count < 1 || v.count !== Math.floor(v.count))) {
+      errors.push(`${path}.count: must be a positive integer (got ${v.count})`);
+    }
+    if (v.region != null) {
+      if (typeof v.region !== 'object' || Array.isArray(v.region)) {
+        errors.push(`${path}.region: must be an object`);
+      } else if (typeof v.region.type !== 'string') {
+        errors.push(`${path}.region.type: required string`);
+      } else if (!VARIANT_REGIONS.has(v.region.type)) {
+        warnings.push(`${path}.region.type: unknown '${v.region.type}' (Phase 1 supports: ${[...VARIANT_REGIONS].join(', ')}); Generator-S will skip`);
+      } else if (!Array.isArray(v.region.size)) {
+        errors.push(`${path}.region.size: required array of numbers`);
+      }
+    }
+    if (v.separation != null && (typeof v.separation !== 'number' || v.separation < 0)) {
+      errors.push(`${path}.separation: must be a non-negative number`);
+    }
+    if (v.heading != null) {
+      const h = v.heading;
+      const valid = h === 'aligned' || h === 'random' ||
+                    (typeof h === 'object' && h !== null && typeof h.jitter === 'number');
+      if (!valid) {
+        errors.push(`${path}.heading: must be "aligned" | "random" | { jitter: <radians> }`);
+      }
+    }
+  }
+}
 
 function validateCamera(cam, errors, warnings) {
   if (cam == null || typeof cam !== 'object') {
