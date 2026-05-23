@@ -1,17 +1,72 @@
 {
   "id": "forest-meteors",
-  "title": "森林·流星",
-  "prompt": "树·山·花·流星",
-  "code2d": "// 2D placeholder — main signal is 3D scene.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#1a2530';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#aab';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Tree + Mountains + Flowers + Meteors — switch to FLY 3D', 24, 48);\n};",
+  "title": "\u68ee\u6797\u00b7\u6d41\u661f",
+  "prompt": "\u6811\u00b7\u5c71\u00b7\u82b1\u00b7\u6d41\u661f",
+  "code2d": "// 2D placeholder \u2014 main signal is 3D scene.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#1a2530';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#aab';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Tree + Mountains + Flowers + Meteors \u2014 switch to FLY 3D', 24, 48);\n};",
   "sceneData": {
     "v": 1,
     "name": "Forest Twilight with Meteor Shower",
     "source": {
       "format": "llm-lift",
-      "prompt": "树·山·花·流星",
+      "prompt": "\u6811\u00b7\u5c71\u00b7\u82b1\u00b7\u6d41\u661f",
       "from2dCode": "2D placeholder; lift to 3D forest scene with trees, mountains, flowers, meteors"
     },
     "subjects": [
+      {
+        "id": "tree-grove",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 6,
+          "trunkRad": 0.45,
+          "leafSize": 0.22,
+          "windK": 0.18
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.82,
+          "value": 0.52,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 20,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                0,
+                0,
+                5
+              ],
+              "size": [
+                55,
+                55
+              ]
+            },
+            "separation": 4,
+            "heading": "random",
+            "scale": {
+              "jitter": 0.35
+            },
+            "translate": {
+              "jitter": [
+                1.5,
+                0,
+                1.5
+              ]
+            }
+          }
+        ]
+      },
       {
         "id": "mtn-far-left",
         "type": "cone",
@@ -142,215 +197,6 @@
           "value": 0.8,
           "metal": 0.05,
           "glow": 0
-        }
-      },
-      {
-        "id": "hero-tree",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 6,
-          "trunkRad": 0.45,
-          "leafSize": 0.22,
-          "windK": 0.18
-        },
-        "transform": {
-          "translate": [
-            6,
-            0,
-            12
-          ]
-        },
-        "material": {
-          "hue": 0.03,
-          "sat": 0.82,
-          "value": 0.52,
-          "metal": 0,
-          "glow": 0,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-1",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 4.2,
-          "trunkRad": 0.28,
-          "leafSize": 0.16,
-          "windK": 0.12
-        },
-        "transform": {
-          "translate": [
-            -16,
-            0,
-            32
-          ]
-        },
-        "material": {
-          "hue": 0.28,
-          "sat": 0.58,
-          "value": 0.44,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-2",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3,
-          "trunkRad": 0.22,
-          "leafSize": 0.14,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            -8,
-            0,
-            38
-          ]
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.52,
-          "value": 0.4,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-3",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 4.6,
-          "trunkRad": 0.3,
-          "leafSize": 0.17,
-          "windK": 0.12
-        },
-        "transform": {
-          "translate": [
-            18,
-            0,
-            34
-          ]
-        },
-        "material": {
-          "hue": 0.27,
-          "sat": 0.6,
-          "value": 0.46,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-4",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3.4,
-          "trunkRad": 0.24,
-          "leafSize": 0.15,
-          "windK": 0.11
-        },
-        "transform": {
-          "translate": [
-            30,
-            0,
-            28
-          ]
-        },
-        "material": {
-          "hue": 0.29,
-          "sat": 0.56,
-          "value": 0.43,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-5",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3.8,
-          "trunkRad": 0.26,
-          "leafSize": 0.15,
-          "windK": 0.11
-        },
-        "transform": {
-          "translate": [
-            -26,
-            0,
-            40
-          ]
-        },
-        "material": {
-          "hue": 0.26,
-          "sat": 0.62,
-          "value": 0.42,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-6",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 2.8,
-          "trunkRad": 0.2,
-          "leafSize": 0.13,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            38,
-            0,
-            36
-          ]
-        },
-        "material": {
-          "hue": 0.31,
-          "sat": 0.5,
-          "value": 0.38,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "mid-tree-1",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 5,
-          "trunkRad": 0.35,
-          "leafSize": 0.19,
-          "windK": 0.15
-        },
-        "transform": {
-          "translate": [
-            -10,
-            0,
-            20
-          ]
-        },
-        "material": {
-          "hue": 0.04,
-          "sat": 0.78,
-          "value": 0.48,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "mid-tree-2",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 4.4,
-          "trunkRad": 0.3,
-          "leafSize": 0.17,
-          "windK": 0.13
-        },
-        "transform": {
-          "translate": [
-            20,
-            0,
-            22
-          ]
-        },
-        "material": {
-          "hue": 0.05,
-          "sat": 0.75,
-          "value": 0.5,
-          "kind": "translucent"
         }
       },
       {
