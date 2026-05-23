@@ -94,9 +94,20 @@ function shuffleCopy(arr) {
  * @param {string[]} palette1 - hex CSS colors (row 0)
  * @param {string[]} palette2 - hex CSS colors (row 1)
  * @param {string}   paperBg  - hex CSS color (background between cells)
+ * @param {object}   [opts]
+ * @param {number}   [opts.skipRate=0]   probability a swatch cell is empty
+ *                                       (autoscope idiom: ~0.05 = 5% blank)
+ * @param {boolean}  [opts.bgIsBlack=false] if true, use black bg instead of paper
+ *                                          (autoscope picks ~25% hashes for this)
+ * @param {{ random: () => number }} [opts.rng]  PRNG for deterministic skip pattern
+ *                                                (defaults to Math.random for back-compat)
  * @returns {{ tex: WebGLTexture, length: number }}
  */
-export function bakePaletteTexture(gl, palette1, palette2, paperBg) {
+export function bakePaletteTexture(gl, palette1, palette2, paperBg, opts = {}) {
+  const skipRate  = opts.skipRate ?? 0;
+  const bgIsBlack = opts.bgIsBlack ?? false;
+  const rng       = opts.rng || { random: () => Math.random() };
+
   const length = Math.max(palette1.length, palette2.length);
   const cellW = 8;       // px per swatch（autoscope 用 5，加大点让纹理清晰）
   const W = length * cellW;
@@ -106,16 +117,17 @@ export function bakePaletteTexture(gl, palette1, palette2, paperBg) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const ctx = c.getContext('2d');
-  ctx.fillStyle = paperBg;
+  ctx.fillStyle = bgIsBlack ? '#000000' : paperBg;
   ctx.fillRect(0, 0, W, H);
   ctx.imageSmoothingEnabled = false;
 
+  const fillThreshold = 1 - skipRate;
   for (let i = 0; i < length; i++) {
-    if (Math.random() < 0.95) {
+    if (rng.random() < fillThreshold) {
       ctx.fillStyle = palette1[i % palette1.length];
       ctx.fillRect(i * cellW, 0, cellW, cellW);
     }
-    if (Math.random() < 0.95) {
+    if (rng.random() < fillThreshold) {
       ctx.fillStyle = palette2[i % palette2.length];
       ctx.fillRect(i * cellW, cellW, cellW, cellW);
     }
@@ -152,88 +164,19 @@ export function hexToVec3(hex) {
 }
 
 // =============================================================================
-// Autoscope randomization knobs (mirror / twist / gridRot)
+// (Removed) randomization knobs
 // -----------------------------------------------------------------------------
-// 这 3 个 knob 是 BOB GPU shader 接受的 uniforms，autoscope sketch.js 用 PRNG
-// 给每个 hash 派生一组值 → 让单 hash 的视觉变体空间 ×5。
-// 概率跟 Autoscope 原版严格对齐。
+// 2026-05-23 architectural refactor: per-hash style randomization 移到
+// `src/render/bobShader-style.js` (Generator-V layer)。`src/palette/autoscope.js`
+// 现在只负责 data + bake helper —— palette/sky/paper pools + bakePaletteTexture
+// + hexToVec3。**不再 own randomization logic**。
 //
-// caller 把返回值喂进 bobShader getControls() 即可。
+// Generator-V 的设计意图：
+//   - Renderer-specific（BOB GPU 一个、FLY 3D 没有、未来 watercolor 各自配）
+//   - 输出可序列化 JSON（pure data style config）
+//   - 跟 Scene Generator (Generator-S) 平行的独立 layer
+//
+// Caller 应该 import 自 `src/render/bobShader-style.js`：
+//   import { randomizeBobStyle, applyStyleGate, describeStyle, bakeStylePalette }
+//     from '../../src/render/bobShader-style.js';
 // =============================================================================
-
-export const DEFAULT_KNOBS = Object.freeze({
-  mirrorX: false,
-  mirrorZ: false,
-  twist: 0,
-  twistType: 0,           // 0=Y / 1=Z / 2=X
-  gridRot: [0, 0, 0],
-  // 2026-05-23 autoscope idiom upgrade (5 + 1 new knobs):
-  xMod: 1,                // chessboard period X (autoscope r([1,2,2,2,3]); 0 = 平涂)
-  yMod: 1,                // chessboard period Y
-  renderType: 0,          // 0 = HSL hue remap (BOB v1); 1 = direct palette mix
-  rotateCanvas: 0,        // rad/sec canvas drift (autoscope r(-0.015, 0.015))
-  postColorLeak: 0.25,    // post-process colorLeak (autoscope r(.05, .6))
-  animation: 0,           // 0 = off; 1-9 = autoscope buffer.frag time-driven modes
-  length: 60,             // cycle length (sec) for animation modes 8/9
-});
-
-/**
- * Autoscope-style 随机化（mirror / twist / gridRot + xMod/yMod/renderType/
- * rotateCanvas/postColorLeak），跟 sketch.js setup() 一致。
- * @param {{random_bool: Function, random_num: Function, random_choice: Function}} rng
- * @returns {typeof DEFAULT_KNOBS}
- */
-export function randomizeKnobs(rng) {
-  // xMod/yMod: 80% chess (1/2/3 weighted), 20% 平涂 (0/0)
-  const chessOff = rng.random_bool(0.2);
-  return {
-    mirrorX:   rng.random_bool(0.15),
-    mirrorZ:   rng.random_bool(0.15),
-    twist:     rng.random_bool(0.5) ? rng.random_num(-0.2, 0.2) : 0,
-    twistType: rng.random_choice([0, 1, 1, 2]),
-    gridRot: [
-      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
-      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
-      rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
-    ],
-    xMod:          chessOff ? 0 : rng.random_choice([1, 2, 2, 2, 3]),
-    yMod:          chessOff ? 0 : rng.random_choice([1, 2, 2, 2, 3]),
-    renderType:    rng.random_choice([0, 1]),
-    rotateCanvas:  rng.random_num(-0.015, 0.015),
-    postColorLeak: rng.random_num(0.05, 0.60),
-    animation:     rng.random_choice([1, 2, 3, 4, 5, 6, 7, 8, 9]),
-    length:        60,
-  };
-}
-
-/**
- * 把 knobs 跟"开关 boolean"合并：开关 off → 所有 knobs 归零，开关 on → 原 knobs。
- * 给 UI 的"启用/禁用 autoscope randomization" toggle 用。
- * @param {typeof DEFAULT_KNOBS} knobs
- * @param {boolean} enabled
- */
-export function applyKnobsGate(knobs, enabled) {
-  if (enabled) return knobs;
-  return { ...DEFAULT_KNOBS, twistType: knobs.twistType };
-}
-
-/**
- * 短读出字符串（debug overlay 用）：`mirror XZ  twist 0.18/Z  gridRot [π/4,0,π/2]`
- */
-export function describeKnobs(knobs) {
-  const k = knobs;
-  const twistAxis = ['Y', 'Z', 'X'][k.twistType] || 'Y';
-  const gr = k.gridRot.map(v =>
-    v === 0 ? '0' : (Math.abs(v - Math.PI / 4) < 1e-4 ? 'π/4' :
-                     Math.abs(v - Math.PI / 2) < 1e-4 ? 'π/2' : v.toFixed(2))
-  ).join(',');
-  const chess = (k.xMod === 0 && k.yMod === 0) ? 'flat' : `${k.xMod}/${k.yMod}`;
-  return `mirror ${k.mirrorX ? 'X' : '·'}${k.mirrorZ ? 'Z' : '·'}  ` +
-         `twist ${(+k.twist).toFixed(2)}/${twistAxis}  ` +
-         `gridRot [${gr}]  ` +
-         `chess ${chess}  ` +
-         `render ${k.renderType}  ` +
-         `rot ${(+k.rotateCanvas).toFixed(3)}/s  ` +
-         `leak ${(+k.postColorLeak).toFixed(2)}  ` +
-         `anim ${k.animation}`;
-}

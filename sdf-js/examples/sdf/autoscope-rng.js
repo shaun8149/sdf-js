@@ -101,3 +101,31 @@ export function writeHashToURL(hash) {
 export function isValidHash(hash) {
   return typeof hash === 'string' && /^0x[0-9a-fA-F]{64}$/.test(hash);
 }
+
+// =============================================================================
+// Split-hash URL helpers (Generator-S × Generator-V cross product)
+// -----------------------------------------------------------------------------
+// 2026-05-23: 把单 hash 拆成两个独立 hash：sceneHash 控制 Generator-S 输出
+// (SDF 场景结构变体)，styleHash 控制 Generator-V 输出 (BOB GPU palette / chess /
+// 渲染参数)。两者 orthogonal → 笛卡尔积变体空间。
+//
+// Backwards compat: 老的 ?hash= 自动 fallback 当 sceneHash 用，styleHash 现 random
+// 派生（避免老链接出来全黑）。
+// =============================================================================
+
+export function readSceneHashFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('sceneHash') || params.get('hash') || null;
+}
+
+export function readStyleHashFromURL() {
+  return new URLSearchParams(window.location.search).get('styleHash') || null;
+}
+
+export function writeSplitHashToURL(sceneHash, styleHash) {
+  const url = new URL(window.location);
+  url.searchParams.set('sceneHash', sceneHash);
+  url.searchParams.set('styleHash', styleHash);
+  url.searchParams.delete('hash');  // remove legacy single-hash param
+  window.history.replaceState(null, '', url);
+}

@@ -112,17 +112,22 @@
         </select>
       </div>
       <div class="row" style="margin-top: 6px;">
-        <button id="btn-new" class="primary" style="flex: 1;">🎲 New scene</button>
+        <button id="btn-new-scene" class="primary" style="flex: 1;">🎲 New scene</button>
         <button id="btn-share">📋 Share</button>
       </div>
       <div class="row" style="margin-top: 6px;">
-        <input id="hash-input" type="text" placeholder="0x..." spellcheck="false">
+        <label style="min-width: 80px;">sceneHash</label>
+        <input id="scene-hash-input" type="text" placeholder="0x..." spellcheck="false">
+      </div>
+      <div class="row" style="margin-top: 6px;">
+        <button id="btn-new-style" class="primary" style="flex: 1; background: #80c2ff; color: #1a1a1a; border-color: #80c2ff;">🎨 New style</button>
+      </div>
+      <div class="row" style="margin-top: 6px;">
+        <label style="min-width: 80px;">styleHash</label>
+        <input id="style-hash-input" type="text" placeholder="0x..." spellcheck="false">
       </div>
 
-      <h3>Palette</h3>
-      <div class="row">
-        <button id="btn-shuffle" style="flex: 1;">🎨 Shuffle palette</button>
-      </div>
+      <h3>Palette preview</h3>
       <div class="palette-preview">
         <div class="swatch-row" id="palette-row1"></div>
         <div class="swatch-row" id="palette-row2"></div>

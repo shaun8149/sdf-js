@@ -166,9 +166,10 @@ vec2 rotate2D(vec2 p, float a) {
 //   c1, c2 ∈ [0, 1) — palette indices
 //   shadowFlag: 0=in shadow, 1=lit (autoscope convention)
 //   depth: clamp((t-5)/MAX_DIST, 0, 1)
-// 注意 autoscope 同款 y flip
+// Note: autoscope main.frag flips Y to compensate for p5.js top-left origin
+// vs WebGL bottom-left. We render raw WebGL → no flip needed.
 vec4 sampleCell(vec2 sampleUV) {
-  return texture2D(u_buffer, vec2(sampleUV.x * xFactor, 1.0 - sampleUV.y));
+  return texture2D(u_buffer, vec2(sampleUV.x * xFactor, sampleUV.y));
 }
 
 // getCol：palette index ∈ [0,1) → palette texture lookup
@@ -982,6 +983,28 @@ export function createBobShaderRenderer({
     return paletteState;
   }
 
+  // ---- applyStyle: accept Generator-V output (BobStyle) for deterministic palette
+  // -----------------------------------------------------------------------------
+  // Lets caller (autoscope-clone) drive palette selection from a styleHash-derived
+  // BobStyle instead of bob's internal Math.random pick. style is the pure-data
+  // JSON from `randomizeBobStyle(rng)` in src/render/bobShader-style.js.
+  // -----------------------------------------------------------------------------
+  function applyStyle(style) {
+    if (paletteState && paletteState.tex) gl.deleteTexture(paletteState.tex);
+    const { palette1, palette2, paper, sky1, sky2 } = style;
+    const { tex, length } = bakePaletteTexture(gl, palette1, palette2, paper, {
+      skipRate:  style.paletteSkipRate  ?? 0.05,
+      bgIsBlack: style.paletteBgIsBlack ?? false,
+    });
+    paletteState = {
+      tex, length,
+      paletteVec: { paper: hexToVec3(paper), sky1: hexToVec3(sky1), sky2: hexToVec3(sky2) },
+      sample: { palette1, palette2, paper, sky1, sky2 },
+    };
+    if (onPaletteChange) onPaletteChange(paletteState.sample);
+    return paletteState;
+  }
+
   // ---- upload SDF (compile shader + cache uniforms) ----
   function uploadSDF(sdf) {
     const result = compileSDF3ToGLSL(sdf, {
@@ -1205,6 +1228,12 @@ export function createBobShaderRenderer({
     },
     shufflePalette() {
       rebakePalette();
+    },
+    // Generator-V handoff: caller supplies a BobStyle object (from
+    // randomizeBobStyle in bobShader-style.js) — bob uses its palette
+    // selection + skip/bg-variety opts deterministically.
+    applyStyle(style) {
+      applyStyle(style);
     },
     resetCamera() {
       camState.position = [...defaultCam.position];

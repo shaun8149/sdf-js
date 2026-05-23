@@ -10,12 +10,18 @@
 // 共享：BOB shader from src/render/bobShader.js（autoscope-clone 跟 MVP 同一 renderer）
 // =============================================================================
 
-import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from './autoscope-rng.js';
+import {
+  Random, generateHash, isValidHash,
+  readSceneHashFromURL, readStyleHashFromURL, writeSplitHashToURL,
+} from './autoscope-rng.js';
 import { generateScene, SCENE_NAMES, randomSceneType } from './autoscope-scenes.js';
 import { generateSceneData } from './autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
-import { DEFAULT_KNOBS, randomizeKnobs, applyKnobsGate, describeKnobs } from '../../src/palette/autoscope.js';
+// Generator-V: BOB GPU style randomizer + applyStyleGate + describe
+import {
+  DEFAULT_STYLE, randomizeBobStyle, applyStyleGate, describeStyle,
+} from '../../src/render/bobShader-style.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';  // also has side-effect of registering .rep / .union etc on SDF3.prototype
 
 const $ = id => document.getElementById(id);
@@ -24,15 +30,20 @@ const $ = id => document.getElementById(id);
 // State
 // =============================================================================
 
-let currentHash = readHashFromURL();
-if (!isValidHash(currentHash)) currentHash = generateHash();
-writeHashToURL(currentHash);
+// Split hashes: sceneHash drives Generator-S (SDF scene structure),
+// styleHash drives Generator-V (BOB GPU palette / chess / render params).
+// Orthogonal — cross-product variant space.
+let currentSceneHash = readSceneHashFromURL();
+if (!isValidHash(currentSceneHash)) currentSceneHash = generateHash();
+let currentStyleHash = readStyleHashFromURL();
+if (!isValidHash(currentStyleHash)) currentStyleHash = generateHash();
+writeSplitHashToURL(currentSceneHash, currentStyleHash);
 
 let currentSceneTypeChoice = 'random';  // dropdown value
 let currentSdf = null;
 let currentCompiled = null;  // SceneData mode: { sdf, evalCamera, evalLight, ... }; null in Direct SDF mode
 let renderer = null;
-let currentKnobs = { ...DEFAULT_KNOBS };  // PRNG-randomized autoscope knobs（mirror/twist/gridRot）
+let currentStyle = { ...DEFAULT_STYLE };  // Generator-V output (palette/chess/render uniforms)
 let sceneStartTime = performance.now();
 let userTookCameraControl = false;        // set on canvas click → yields scene camera anim to fly-controls
 
@@ -78,30 +89,37 @@ function ensureRenderer() {
     canvas,
     twoPass: true,              // ← autoscope 2-pass FBO sand painting
     bufferResolution: 320,      // 低分 buffer，全屏 canvas 上呈"颗粒/水彩"感
-    getControls: () => ({
-      lightAzim: 0.6,   // autoscope 风格固定光向（azim 60°）
-      lightAlt:  0.5,   // 中等仰角
-      lightDist: 50,    // far light (scene scale 50+)
-      fov:        +$('focal').value,
-      coldiv:     +$('coldiv').value,
-      coloration: +$('coloration').value,
-      shadowMode: +$('shadow-mode').value,
-      shadowStrength: +$('shadow-strength').value,
-      shadowsOn:  $('shadows-on').checked,
-      groundOn:   false,  // scene 自带 ground
-      noiseSpeed: +$('noise').value,
-      exposure:   +$('exposure').value,
-      saturation: +$('saturation').value,
-      worldScale: +$('world-scale').value,
-      // Autoscope 随机化 knobs（PRNG 派生）+ UI 开关 gate
-      ...applyKnobsGate(currentKnobs, $('knobs-on').checked),
-      // Post-process (autoscope main.frag) tuning
-      postNFactor:   1.0,    // u_nFactor — octave noise multiplier modulation
-      postNoiseCap:  0.5,    // u_noiseCap — patches clamp ceiling
-      nOffset:       0.0,    // u_nOffset — noise offset bias
-      margin:        0.06,   // u_margin — paper border ratio (autoscope 0.08-0.2)
-      seed:          1.0,    // u_seed — hash seed for noise (PRNG-driven later)
-    }),
+    getControls: () => {
+      // Generator-V output (deterministic from styleHash) gated by UI toggle.
+      // applyStyleGate(style, false) → identity DEFAULT_STYLE (palette preserved)
+      const styleGated = applyStyleGate(currentStyle, $('knobs-on').checked);
+      // shadowMode in BobStyle is named `shadow`; bob expects `shadowMode`. Map.
+      const shadowMode = styleGated.shadow ?? +$('shadow-mode').value;
+      return {
+        lightAzim: 0.6,
+        lightAlt:  0.5,
+        lightDist: 50,
+        fov:        +$('focal').value,
+        shadowsOn:  $('shadows-on').checked,
+        groundOn:   false,
+        noiseSpeed: +$('noise').value,
+        worldScale: +$('world-scale').value,
+        // Style-driven (Generator-V):
+        ...styleGated,
+        shadowMode,  // rename for bobShader
+        // Style param renames bobShader expects: postNFactor / postNoiseCap / postColorLeak
+        postNFactor:   styleGated.nFactor,
+        postNoiseCap:  styleGated.noiseCap,
+        postColorLeak: styleGated.colorLeak,
+        // UI slider overrides (advanced)
+        coldiv:     +$('coldiv').value || styleGated.coldiv,
+        coloration: +$('coloration').value || styleGated.coloration,
+        shadowStrength: +$('shadow-strength').value || styleGated.shadowStrength,
+        exposure:   +$('exposure').value || styleGated.exposure,
+        saturation: +$('saturation').value || styleGated.saturation,
+        seed:       1.0,
+      };
+    },
     onFps: (fps) => {
       const el = $('fps');
       if (el) el.textContent = `FPS: ${fps.toFixed(0)}`;
@@ -138,11 +156,12 @@ function ensureRenderer() {
 function regenerateScene({ keepCamera = false } = {}) {
   const startTime = performance.now();
 
-  // Update hash input
-  $('hash-input').value = currentHash;
+  // Update hash input fields
+  if ($('scene-hash-input')) $('scene-hash-input').value = currentSceneHash;
+  if ($('style-hash-input')) $('style-hash-input').value = currentStyleHash;
 
-  // Build rng (~30ms warmup)
-  const rng = new Random(currentHash);
+  // sceneRng — deterministic from sceneHash, drives Generator-S (SDF structure)
+  const rng = new Random(currentSceneHash);
   const sceneTypeChoice = $('scene-type').value;
   const sceneType = sceneTypeChoice === 'random' ? randomSceneType(rng) : (+sceneTypeChoice);
 
@@ -189,16 +208,16 @@ function regenerateScene({ keepCamera = false } = {}) {
   sceneStartTime = performance.now();
   userTookCameraControl = false;
 
-  // Autoscope-style 随机化 knobs（用 scene 之后剩下的 PRNG state，保证 hash 决定一切）
-  currentKnobs = randomizeKnobs(rng);
-  updateKnobsReadout();
-
   // Update display
   $('scene-name').textContent = `${sceneType} · ${SCENE_NAMES[sceneType]}`;
 
   // Render
   const bob = ensureRenderer();
   if (!keepCamera) bob.setCamState(INITIAL_CAM);
+
+  // Apply current Generator-V style (palette + skip rate + bg variety).
+  // bob.applyStyle re-bakes the palette texture from style.{palette1,palette2,paper}.
+  bob.applyStyle(currentStyle);
 
   try {
     const { bytes } = bob.render(sdf);
@@ -219,9 +238,23 @@ function countLeaves(sdf) {
   return 1;
 }
 
-function updateKnobsReadout() {
+function updateStyleReadout() {
   const el = $('knobs-readout');
-  if (el) el.textContent = describeKnobs(currentKnobs);
+  if (el) el.textContent = describeStyle(currentStyle);
+}
+
+// =============================================================================
+// Generator-V: regenerate style from styleHash
+// -----------------------------------------------------------------------------
+// Independent of scene. Re-bakes palette texture + replaces all per-uniform
+// style values. Doesn't touch SDF — same scene, new "skin".
+// =============================================================================
+function regenerateStyle() {
+  const styleRng = new Random(currentStyleHash);
+  currentStyle = randomizeBobStyle(styleRng);
+  updateStyleReadout();
+  if (renderer) renderer.applyStyle(currentStyle);
+  if ($('style-hash-input')) $('style-hash-input').value = currentStyleHash;
 }
 
 function setStatus(msg, ok = true) {
@@ -234,24 +267,25 @@ function setStatus(msg, ok = true) {
 // Buttons / events
 // =============================================================================
 
-$('btn-new').addEventListener('click', () => {
-  currentHash = generateHash();
-  writeHashToURL(currentHash);
+$('btn-new-scene').addEventListener('click', () => {
+  currentSceneHash = generateHash();
+  writeSplitHashToURL(currentSceneHash, currentStyleHash);
   regenerateScene();
+});
+
+$('btn-new-style').addEventListener('click', () => {
+  currentStyleHash = generateHash();
+  writeSplitHashToURL(currentSceneHash, currentStyleHash);
+  regenerateStyle();
 });
 
 $('btn-share').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(window.location.href);
-    setStatus(`✓ URL copied to clipboard (hash ${currentHash.slice(0, 10)}…)`, true);
+    setStatus(`✓ URL copied (sceneHash ${currentSceneHash.slice(0, 8)}… × styleHash ${currentStyleHash.slice(0, 8)}…)`, true);
   } catch {
-    // Fallback: show URL
     prompt('Copy this URL:', window.location.href);
   }
-});
-
-$('btn-shuffle').addEventListener('click', () => {
-  if (renderer) renderer.shufflePalette();
 });
 
 $('btn-cam-reset').addEventListener('click', () => {
@@ -267,23 +301,36 @@ $('pipeline-mode')?.addEventListener('change', () => {
   regenerateScene({ keepCamera: true });
 });
 
-$('hash-input').addEventListener('change', (e) => {
+$('scene-hash-input').addEventListener('change', (e) => {
   const v = e.target.value.trim();
   if (isValidHash(v)) {
-    currentHash = v;
-    writeHashToURL(currentHash);
+    currentSceneHash = v;
+    writeSplitHashToURL(currentSceneHash, currentStyleHash);
     regenerateScene();
   } else {
-    setStatus(`✗ Invalid hash format (expected 0x + 64 hex chars)`, false);
-    e.target.value = currentHash;
+    setStatus(`✗ Invalid sceneHash format (expected 0x + 64 hex chars)`, false);
+    e.target.value = currentSceneHash;
   }
 });
 
-// Spacebar = New scene（不在 pointer-lock 时；pointer-lock 时 Space 是 fly-controls 上升）
+$('style-hash-input').addEventListener('change', (e) => {
+  const v = e.target.value.trim();
+  if (isValidHash(v)) {
+    currentStyleHash = v;
+    writeSplitHashToURL(currentSceneHash, currentStyleHash);
+    regenerateStyle();
+  } else {
+    setStatus(`✗ Invalid styleHash format (expected 0x + 64 hex chars)`, false);
+    e.target.value = currentStyleHash;
+  }
+});
+
+// Spacebar = New scene；Shift+Space = New style（pointer-lock 时被 fly-controls 用）
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space' && document.pointerLockElement !== $('cv') && document.activeElement?.tagName !== 'INPUT') {
     e.preventDefault();
-    $('btn-new').click();
+    if (e.shiftKey) $('btn-new-style').click();
+    else $('btn-new-scene').click();
   }
 });
 
@@ -321,7 +368,15 @@ if (canvasEl) {
 }
 
 // =============================================================================
-// Init
+// Init: regenerate Generator-V style first (populates currentStyle), then
+// scene (which calls bob.applyStyle(currentStyle) before render).
 // =============================================================================
 
+{
+  // Bootstrap Generator-V output from styleHash BEFORE ensureRenderer/render,
+  // so the first render already uses the deterministic palette + opts.
+  const styleRng = new Random(currentStyleHash);
+  currentStyle = randomizeBobStyle(styleRng);
+  updateStyleReadout();
+}
 regenerateScene();
