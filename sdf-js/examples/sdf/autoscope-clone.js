@@ -14,8 +14,11 @@ import {
   Random, generateHash, isValidHash,
   readSceneHashFromURL, readStyleHashFromURL, writeSplitHashToURL,
 } from './autoscope-rng.js';
-import { generateScene, SCENE_NAMES, randomSceneType } from './autoscope-scenes.js';
-import { generateSceneData } from './autoscope-scenes-data.js';
+import {
+  generateSceneData,
+  SCENE_NAMES_DATA as SCENE_NAMES,
+  randomSceneTypeData as randomSceneType,
+} from './autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 // Generator-V: BOB GPU style randomizer + applyStyleGate + describe
@@ -165,44 +168,31 @@ function regenerateScene({ keepCamera = false } = {}) {
   const sceneTypeChoice = $('scene-type').value;
   const sceneType = sceneTypeChoice === 'random' ? randomSceneType(rng) : (+sceneTypeChoice);
 
-  // Pipeline mode: 'sdf' (direct SDF construction) | 'data' (SceneData → compile)
-  const pipelineMode = $('pipeline-mode')?.value || 'sdf';
-
-  let sdf;
-  let leafCount;
+  // SceneData → compile → SDF (single pipeline, 2026-05-23 removed legacy "Direct SDF" path)
+  const sceneData = generateSceneData(sceneType, rng);
+  let sdf, leafCount;
   let extraStatus = '';
-
-  if (pipelineMode === 'data') {
-    // SceneData pipeline: generateSceneData → compile → SDF
-    const sceneData = generateSceneData(sceneType, rng);
-    try {
-      const compiled = compileSceneData(sceneData);
-      // compile() returns subjects SDF + groundSdf separately. autoscope-clone
-      // renders via bobShader which expects a single SDF tree. Union them here
-      // so the scene's ground.y is respected (vs bobShader's internal GROUND_Y=-1).
-      if (compiled.groundSdf && compiled.sdf) {
-        sdf = sdfUnion(compiled.sdf, compiled.groundSdf);
-      } else {
-        sdf = compiled.sdf || compiled.groundSdf;
-      }
-      currentCompiled = compiled;  // enables cameraLoop scene-driven camera/light anim
-      leafCount = compiled.subjects.length;
-      const camAnim = compiled.cameraStatic && (sceneData.defaults.camera.animation?.length || 0);
-      const lightAnim = sceneData.defaults.light.animation?.length || 0;
-      const groundTag = compiled.ground ? ` · ground@y=${compiled.ground.y}` : '';
-      extraStatus = ` · SceneData (${leafCount} subjects, shadow=${compiled.shadowStatic?.mode ?? 'off'}, camAnim=${camAnim}, lightAnim=${lightAnim}${groundTag})`;
-    } catch (e) {
-      setStatus(`✗ SceneData compile error: ${e.message}`, false);
-      console.error('SceneData failed, sceneData =', sceneData);
-      console.error(e);
-      return;
+  try {
+    const compiled = compileSceneData(sceneData);
+    // compile() returns subjects SDF + groundSdf separately. bobShader expects a
+    // single SDF tree — union them so scene's ground.y is respected (vs bobShader's
+    // internal GROUND_Y=-1).
+    if (compiled.groundSdf && compiled.sdf) {
+      sdf = sdfUnion(compiled.sdf, compiled.groundSdf);
+    } else {
+      sdf = compiled.sdf || compiled.groundSdf;
     }
-  } else {
-    // Direct SDF pipeline (original) — no compiled.evalCamera, cameraLoop yields to fly-controls
-    sdf = generateScene(sceneType, rng);
-    currentCompiled = null;
-    leafCount = countLeaves(sdf);
-    extraStatus = ` · Direct SDF (${leafCount} leaves)`;
+    currentCompiled = compiled;  // enables cameraLoop scene-driven camera/light anim
+    leafCount = compiled.subjects.length;
+    const camAnim = compiled.cameraStatic && (sceneData.defaults.camera.animation?.length || 0);
+    const lightAnim = sceneData.defaults.light.animation?.length || 0;
+    const groundTag = compiled.ground ? ` · ground@y=${compiled.ground.y}` : '';
+    extraStatus = ` · ${leafCount} subjects · shadow=${compiled.shadowStatic?.mode ?? 'off'} · camAnim=${camAnim} · lightAnim=${lightAnim}${groundTag}`;
+  } catch (e) {
+    setStatus(`✗ SceneData compile error: ${e.message}`, false);
+    console.error('SceneData failed, sceneData =', sceneData);
+    console.error(e);
+    return;
   }
   currentSdf = sdf;
   sceneStartTime = performance.now();
@@ -223,19 +213,11 @@ function regenerateScene({ keepCamera = false } = {}) {
     const { bytes } = bob.render(sdf);
     const totalMs = (performance.now() - startTime).toFixed(0);
     setStatus(`✓ ${SCENE_NAMES[sceneType]} · ${(bytes / 1024).toFixed(1)} KB shader · ${totalMs} ms${extraStatus}`, true);
-    $('leaves').textContent = `${leafCount} ${pipelineMode === 'data' ? 'subjects' : 'leaves'}`;
+    $('leaves').textContent = `${leafCount} subjects`;
   } catch (e) {
     setStatus(`✗ render error: ${e.message}`, false);
     console.error(e);
   }
-}
-
-function countLeaves(sdf) {
-  const a = sdf.ast;
-  if (a?.kind === 'op' && a.name === 'union') {
-    return a.children.reduce((n, c) => n + countLeaves(c), 0);
-  }
-  return 1;
 }
 
 function updateStyleReadout() {
@@ -294,11 +276,6 @@ $('btn-cam-reset').addEventListener('click', () => {
 
 $('scene-type').addEventListener('change', () => {
   regenerateScene();
-});
-
-// Pipeline mode toggle: Direct SDF / SceneData compile
-$('pipeline-mode')?.addEventListener('change', () => {
-  regenerateScene({ keepCamera: true });
 });
 
 $('scene-hash-input').addEventListener('change', (e) => {
