@@ -167,12 +167,14 @@ export const DEFAULT_KNOBS = Object.freeze({
   twist: 0,
   twistType: 0,           // 0=Y / 1=Z / 2=X
   gridRot: [0, 0, 0],
-  // 2026-05-23 autoscope idiom upgrade (5 new knobs):
+  // 2026-05-23 autoscope idiom upgrade (5 + 1 new knobs):
   xMod: 1,                // chessboard period X (autoscope r([1,2,2,2,3]); 0 = 平涂)
   yMod: 1,                // chessboard period Y
   renderType: 0,          // 0 = HSL hue remap (BOB v1); 1 = direct palette mix
   rotateCanvas: 0,        // rad/sec canvas drift (autoscope r(-0.015, 0.015))
   postColorLeak: 0.25,    // post-process colorLeak (autoscope r(.05, .6))
+  animation: 0,           // 0 = off; 1-9 = autoscope buffer.frag time-driven modes
+  length: 60,             // cycle length (sec) for animation modes 8/9
 });
 
 /**
@@ -199,6 +201,8 @@ export function randomizeKnobs(rng) {
     renderType:    rng.random_choice([0, 1]),
     rotateCanvas:  rng.random_num(-0.015, 0.015),
     postColorLeak: rng.random_num(0.05, 0.60),
+    animation:     rng.random_choice([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    length:        60,
   };
 }
 
@@ -230,5 +234,6 @@ export function describeKnobs(knobs) {
          `chess ${chess}  ` +
          `render ${k.renderType}  ` +
          `rot ${(+k.rotateCanvas).toFixed(3)}/s  ` +
-         `leak ${(+k.postColorLeak).toFixed(2)}`;
+         `leak ${(+k.postColorLeak).toFixed(2)}  ` +
+         `anim ${k.animation}`;
 }

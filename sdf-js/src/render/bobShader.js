@@ -226,6 +226,10 @@ uniform int   u_renderType;
 // Autoscope 移植 idiom #5: canvas-level 时间漂移 (rad/sec)。-0.015..0.015 典型
 // 极慢（10 分钟一圈），但能让静止场景"活起来"。
 uniform float u_rotateCanvas;
+// Autoscope 移植 idiom #6: 9 种 ambient 动画模式（1:1 移植 autoscope buffer.frag）
+//   0 = off (default), 1-9 = camera/view/uv/light 各种 time-driven 漂移
+uniform int   u_animation;
+uniform float u_length;       // 动画 cycle 长度（sec），mode 8/9 光源振荡周期
 
 #define PI       3.1415926535
 #define TWOPI    6.2831853071
@@ -484,8 +488,51 @@ void main() {
     uv = mat2(ca, -sa, sa, ca) * uv;
   }
 
+  // Autoscope 移植 idiom #6: animation modes 6 & 7 (uv distortion)
+  //   6 = radial zoom: 边缘像素远离中心 → "放射" feel
+  //   7 = horizontal zoom: x²-weighted → 左右两边持续放大
+  if (u_animation == 6) {
+    uv *= 1.0 + u_time * 0.05 * length(uv);
+  } else if (u_animation == 7) {
+    uv.x *= 1.0 + u_time * 0.05 * abs(uv.x) * abs(uv.x);
+  }
+
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
   vec3 ro = u_camPos;
+
+  // Autoscope 移植 idiom #6: animation modes 1-5 (camera / view transform)
+  //   1 = dolly-in (ro along forward)
+  //   2 = orbit + dolly-out (ro+rd 绕 Y 转，同时后退)
+  //   3 = lateral X drift
+  //   4 = yaw-only (rd 绕 Y 转，ro 不动)
+  //   5 = zoom-in (faster dolly-in than mode 1)
+  if (u_animation == 1) {
+    ro += u_camFwd * u_time * 0.10;
+  } else if (u_animation == 2) {
+    float a = u_time * 0.05;
+    float c2 = cos(a), s2 = sin(a);
+    mat3 Rm = mat3(c2, 0.0, s2,  0.0, 1.0, 0.0,  -s2, 0.0, c2);
+    ro = Rm * ro;
+    rd = Rm * rd;
+    ro -= u_camFwd * u_time * 0.10;
+  } else if (u_animation == 3) {
+    ro.x += u_time * 0.05;
+  } else if (u_animation == 4) {
+    float a = u_time * 0.03;
+    float c4 = cos(a), s4 = sin(a);
+    mat3 Rv = mat3(c4, 0.0, s4,  0.0, 1.0, 0.0,  -s4, 0.0, c4);
+    rd = Rv * rd;
+  } else if (u_animation == 5) {
+    ro += u_camFwd * u_time * 0.25;
+  }
+
+  // animation modes 8-9 (light position oscillation) — modulate local copy
+  vec3 lpos = u_lightPos;
+  if (u_animation == 8) {
+    lpos.x *= cos(TWOPI * u_time / max(u_length, 1.0));
+  } else if (u_animation == 9) {
+    lpos.z *= cos(TWOPI * u_time / max(u_length, 1.0));
+  }
 
   // Autoscope twist：每个像素的 ray 沿 uv.y 比例绕轴旋转，做出"竖线弧形弯曲"效果
   // u_twist=0 时跳过（perf saver）
@@ -530,7 +577,7 @@ void main() {
     col = sky(rd);
   } else {
     vec3 n = hitGround ? vec3(0.0, 1.0, 0.0) : calcNormal(hitP);
-    vec3 toLight = normalize(u_lightPos - hitP);
+    vec3 toLight = normalize(lpos - hitP);
     float diff = max(dot(n, toLight), 0.0);
 
     // Object number: ground = 0, 物体 = lastObjIdx
@@ -587,7 +634,7 @@ void main() {
     //   3. 其它 → 全亮 (palette block 原色不变)
     bool inShadow = (diff < 0.05);
     if (!inShadow && u_shadowsOn > 0.5) {
-      float lit = lightOcclusion(hitP + n * 0.002, toLight, 0.02, length(u_lightPos - hitP));
+      float lit = lightOcclusion(hitP + n * 0.002, toLight, 0.02, length(lpos - hitP));
       if (lit < 0.5) inShadow = true;
     }
     if (inShadow) col = shadeShadow(col);
@@ -778,6 +825,8 @@ export function createBobShaderRenderer({
       'u_mirror', 'u_twist', 'u_twistType', 'u_gridRot', 'u_simpleColor',
       // Autoscope idiom upgrade (2026-05-23): xMod/yMod chess + renderType + rotateCanvas
       'u_xMod', 'u_yMod', 'u_renderType', 'u_rotateCanvas',
+      // Autoscope animation modes 1-9 (idiom #6, 2026-05-23)
+      'u_animation', 'u_length',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -858,6 +907,8 @@ export function createBobShaderRenderer({
     gl.uniform1f(uniformsCache.u_yMod, c.yMod ?? 1.0);
     gl.uniform1i(uniformsCache.u_renderType, (c.renderType ?? 0) | 0);
     gl.uniform1f(uniformsCache.u_rotateCanvas, c.rotateCanvas ?? 0.0);
+    gl.uniform1i(uniformsCache.u_animation, (c.animation ?? 0) | 0);
+    gl.uniform1f(uniformsCache.u_length, c.length ?? 60.0);
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
