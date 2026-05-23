@@ -183,33 +183,22 @@ export function randomizeBobStyle(rng) {
 }
 
 // =============================================================================
-// applyStyleGate — gate ONLY geometry warps (mirror/twist/gridRot/rotateCanvas/animation)
+// applyStyleGate — toggle "randomization on/off"
 // -----------------------------------------------------------------------------
-// 2026-05-23 refactor (was: gate ALL randomization). Reality: palette / chess /
-// shadow / exposure / coldiv etc. ARE wanted by default — those are "style"
-// variation. The 5 "geometry warp" knobs (mirror flips, sceneTwist, color-grid
-// rotation, canvas drift, time-based animation modes) are LOAD-BEARING aesthetic
-// — they change the SCENE'S APPEARANCE not just its skin. For first-time view
-// of a normal scene they're confusing, so default off.
-//
-// allowGeometry = false (default): all 26 style params keep their Generator-V
-//   values EXCEPT the 5 geometry warps → reset to identity.
-// allowGeometry = true: full Generator-V output unchanged (autoscope-clone
-//   "knobs-on" checkbox enables this).
+// 给 UI 一个 "knobs off" 开关用：enabled=false → 返回 DEFAULT_STYLE
+// 但保留 palette 颜色（不希望关掉 randomization 就回到一套调色板）。
 // =============================================================================
 
-export function applyStyleGate(style, allowGeometry = false) {
-  if (allowGeometry) return style;
+export function applyStyleGate(style, enabled) {
+  if (enabled) return style;
   return {
-    ...style,
-    // Geometry warps reset to identity:
-    mirrorX:      false,
-    mirrorZ:      false,
-    twist:        0,
-    twistType:    0,
-    gridRot:      [0, 0, 0],
-    rotateCanvas: 0,
-    animation:    0,
+    ...DEFAULT_STYLE,
+    // preserve palette colors selected by Generator-V (color is data, not knob)
+    palette1: style.palette1,
+    palette2: style.palette2,
+    paper:    style.paper,
+    sky1:     style.sky1,
+    sky2:     style.sky2,
   };
 }
 
