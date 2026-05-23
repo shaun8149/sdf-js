@@ -79,18 +79,21 @@ const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 // v2.2 = 5 new presets + variant push — frozen
 // v2.3 = decision heuristic + bicycle Example 5 — frozen
 // v3.0 = atom library 9 → 42 + deep-water preset — frozen
-// v3.1 = MANDATORY scene contextual augmentation (16-row category table)
-//        — read from LIVE file so future edits flow into next regression run
+// v3.1 = MANDATORY scene contextual augmentation (16-row category table) — frozen 2026-05-23
+// v3.2 = forest atoms (stylized-tree / maple-leaf / forest-flower / grass-field /
+//        meteor-streak) + material.kind=3 emissive + kind=4 translucent + worked
+//        example 7 — read from LIVE file so future edits flow into next run
 const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
 const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
 const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
 const V22_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.2.md`, 'utf-8');
 const V23_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.3.md`, 'utf-8');
 const V30_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.0.md`, 'utf-8');
-const V31_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const V31_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.1.md`, 'utf-8');
+const V32_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
-  'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT,
+  'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -98,6 +101,8 @@ if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 const DEMOS = [
   'china-carrier', 'gothic-cathedral', 'spiral-vase', 'mountain-village',
   'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
+  // v3.2 sprint addition — forest theme should trigger new vocabulary
+  'forest-meteors',
 ];
 
 // M3 atoms (v2-era): what we wanted LLM to use in v2 baseline
@@ -125,6 +130,15 @@ const V30_ATOMS = new Set([
   'gear-flat', 'pipe-l-bend', 'smokestack', 'windmill',
   // plants
   'flower', 'mushroom', 'bush', 'vine', 'grass-tuft',
+]);
+
+// v3.2 expansion atoms: 5 new forest atoms + 2 new material kinds. Track adoption.
+const V32_ATOMS = new Set([
+  'stylized-tree', 'maple-leaf', 'forest-flower', 'grass-field', 'meteor-streak',
+]);
+// Material kinds beyond default Lambert. Track usage of each.
+const MATERIAL_KINDS = new Set([
+  'sea', 'mountain', 'emissive', 'translucent',
 ]);
 
 // v2.1 boolean variants (hg_sdf-style joins)
@@ -214,6 +228,24 @@ function countPatternUsage(subjects) {
   return n;
 }
 
+// v3.2 metric: count usage of each non-default material.kind. Returns
+// {sea, mountain, emissive, translucent} histogram across all subjects.
+function countMaterialKinds(subjects) {
+  const counts = { sea: 0, mountain: 0, emissive: 0, translucent: 0 };
+  const walk = (subs) => {
+    for (const s of subs || []) {
+      const m = s.material;
+      if (m && typeof m === 'object' && typeof m.kind === 'string' && counts[m.kind] !== undefined) {
+        counts[m.kind] += 1;
+      }
+      if (Array.isArray(s.children)) walk(s.children);
+      if (s.source && typeof s.source === 'object') walk([s.source]);
+    }
+  };
+  walk(subjects);
+  return counts;
+}
+
 // v2.1 facade-to-3D metric: spread of Z coordinates across all subjects.
 // Low spread = "flat cathedral" failure mode (all subjects piled at one z).
 // High spread = proper volumetric distribution.
@@ -266,6 +298,8 @@ async function liftOne(demoId, systemPrompt, version) {
   const newIQTypesUsed = Object.entries(typeCounts).filter(([t]) => NEW_IQ_TYPES.has(t));
   const variantsUsed   = Object.entries(typeCounts).filter(([t]) => BOOLEAN_VARIANTS.has(t));
   const v30AtomsUsed   = Object.entries(typeCounts).filter(([t]) => V30_ATOMS.has(t));
+  const v32AtomsUsed   = Object.entries(typeCounts).filter(([t]) => V32_ATOMS.has(t));
+  const materialKindsUsed = countMaterialKinds(sceneData.subjects);
 
   let compileOk = false, compileErr = null;
   try { compile(sceneData); compileOk = true; }
@@ -292,6 +326,10 @@ async function liftOne(demoId, systemPrompt, version) {
     // v3.0 metrics — adoption of new 33-atom expansion
     v30AtomsUsedCount: v30AtomsUsed.reduce((s, [_, c]) => s + c, 0),
     v30AtomsUsed,
+    // v3.2 metrics — adoption of forest atoms + material.kind expansion
+    v32AtomsUsedCount: v32AtomsUsed.reduce((s, [_, c]) => s + c, 0),
+    v32AtomsUsed,
+    materialKindsUsed,  // { sea: N, mountain: N, emissive: N, translucent: N }
     typeCounts,
     compileOk, compileErr,
     sceneName: sceneData.name,
@@ -306,12 +344,13 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
   else if (versionArg === 'v2.3-vs-v3.0') versions = ['v2.3', 'v3.0'];
   else if (versionArg === 'v3.0-vs-v3.1') versions = ['v3.0', 'v3.1'];
+  else if (versionArg === 'v3.1-vs-v3.2') versions = ['v3.1', 'v3.2'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
@@ -333,7 +372,9 @@ async function main() {
       if (r.error) {
         console.log(` ✗ ${r.error}`);
       } else {
-        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3 · ${r.materialUsageCount} mat · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
+        const kk = r.materialKindsUsed || {};
+        const kindsStr = `e${kk.emissive || 0}/t${kk.translucent || 0}/s${kk.sea || 0}/m${kk.mountain || 0}`;
+        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
       }
     }
     const cmp = { demoId: id, runs };

@@ -325,51 +325,6 @@ tablecloth / 桌布 / napkin / curtain / 帘   → "linen"
 apple / 苹果 / cherry / tomato / 番茄        → "fruit-red"
 ```
 
-### Material kind expansion (v3.2) — 3 kinds beyond Lambert
-
-Beyond the standard Lambert lighting (kind=0 default), Atlas v3.2 supports
-**5 material kinds** that route to specialized shader branches:
-
-```
-"material": { "hue": ..., "sat": ..., "value": ..., "metal": ..., "glow": ...,
-              "kind": "normal" | "sea" | "mountain" | "emissive" | "translucent" }
-```
-
-| kind | When to use | Visual effect |
-|---|---|---|
-| **`"normal"`** (default) | Most subjects | Standard Lambert + spec + AO + rim |
-| **`"sea"`** | Water surfaces (with `sea-surface` primitive) | Fresnel + atmospheric reflection + sun glint |
-| **`"mountain"`** | Mountain terrain (with `terrain-heightmap` primitive) | Snow-line + 3-light setup + slope AO + height fog |
-| **`"emissive"`** (v3.2 NEW) | Light sources, meteors, neon, lava | Bypass lighting; render `base × (1 + 4·glow)`. Use with glow ≥ 1.5 for true HDR glow |
-| **`"translucent"`** (v3.2 NEW) | Thin organic surfaces — **leaves, petals, grass, paper lanterns** | Lambert + Henyey-Greenstein backlight (peaks when sun BEHIND surface). The canonical "autumn maple glowing in low sun" effect |
-
-**Auto-pairing** (lift LLM doesn't need to set these — they auto-attach):
-- `stylized-tree` → translucent (red leaves at twilight)
-- `maple-leaf` → translucent (autumn red default)
-- `grass-field` → translucent (green backlight at low sun)
-- `meteor-streak` → emissive (warm-white glow)
-- `sea-surface` → sea
-- `terrain-heightmap` → mountain
-
-**Override** the auto-pair by explicitly setting `"kind"`. Example: make a
-GREEN spring tree instead of autumn-red default:
-```json
-{ "type": "stylized-tree", "args": { "trunkLen": 5 },
-  "material": { "hue": 0.30, "sat": 0.65, "value": 0.50, "kind": "translucent" } }
-```
-
-**When to emit `emissive` manually**:
-- Window glow on a building at night (alternative to "glow-warm" preset)
-- Lava / fire / forge in industrial scenes
-- Aurora / neon signs / LED panels
-- Bioluminescent creatures
-
-**When to emit `translucent` manually**:
-- Tree leaves (any tree atom, not just stylized-tree)
-- Flower petals (forest-flower's bloom)
-- Stained glass (when not using "glow-cool" preset)
-- Thin fabric (curtains, sails, lanterns)
-
 ## Pattern presets (v2.1 — Shane voronoi/brick/hex/cracked)
 
 Pattern adds **surface structure** (visible regularity beyond fbm noise) to
@@ -644,73 +599,6 @@ grass-tuft:  { "count"?: number, "height"?: number }
               // N thin vertical capsules clustered
 ```
 
-### v3.2 atom expansion — 5 NEW forest atoms ⭐⭐⭐
-
-Ported 2026-05-21 from soft-servo/jake "Tree in the wind" idiom analysis. Use
-**aggressively** for any forest / countryside / nature / meadow scene. These
-replace 2-3 of the v3.0 atoms (tree-broadleaf, flower, grass-tuft) with much
-higher visual fidelity at the same emit cost.
-
-```
-stylized-tree:  { "trunkLen"?: number, "trunkRad"?: number,
-                  "leafSize"?: number, "windK"?: number }
-                  // 4-layer composition: wavy trunk + 3 polar branch layers
-                  // (6/5/3 fold pModPolar) + cellular maple-leaf canopy +
-                  // wind sway. AUTO-PAIRED with material.kind='translucent'
-                  // (kind=4) for sun-backlit leaf glow.
-                  // PREFER over tree-broadleaf for ANY hero/middle-ground tree.
-                  // 关键: emit material with kind='translucent' for organic
-                  // leaves; default hue=0.02-0.06 (red/orange) for autumn,
-                  // hue=0.27-0.32 (green) for spring/summer.
-                  // Defaults: trunkLen=5, trunkRad=0.4, leafSize=0.18, windK=0.12
-
-maple-leaf:     { "scale"?: number, "rand"?: number }
-                  // single 3D maple leaf with curl. Use scattered (via rep)
-                  // for FALLEN-LEAVES ground decoration. Material auto-
-                  // attaches translucent (kind=4) by default; override for
-                  // green/red/yellow seasonal palette.
-
-forest-flower:  { "stemH"?: number, "bloomR"?: number }
-                  // tall thin stem + 5-petal polar bloom. Wrap in `rep`
-                  // DomainGroup with period 1.0-1.5 to make a flower
-                  // MEADOW. Override material.hue: 0.0=red, 0.92=pink,
-                  // 0.15=yellow, 0.75=violet.
-
-grass-field:    { "bladeHeight"?: number, "density"?: number }
-                  // INFINITE xz grass field (no rep needed). pMod2 cellular
-                  // tapered cone blades + wind sway. AUTO-PAIRED with
-                  // material.kind='translucent' for organic glow at twilight.
-                  // Use as ground COVER for any outdoor scene; pairs with
-                  // forest-flower scatter for "meadow" effect.
-                  // Defaults: bladeHeight=0.4, density=0.10. Lower density
-                  // (0.08) for denser; higher (0.15) for sparser/faster.
-
-meteor-streak:  { "origin"?: [x,y,z], "velocity"?: [vx,vy,vz],
-                  "trailLen"?: number, "period"?: number,
-                  "activeFrac"?: number, "phase"?: number }
-                  // animated emissive capsule traversing sky once per cycle.
-                  // AUTO-PAIRED with material.kind='emissive' (kind=3) for
-                  // warm-white glow. Emit 2-5 with STAGGERED phase
-                  // (0, 2.5, 5.0, ...) so they don't all flash together.
-                  // Use for: 流星 / meteor / shooting star / falling debris.
-                  // origin should be UP+BACK from camera (y>20, |z|>20);
-                  // velocity should be (positive x, negative y) for natural
-                  // diagonal fall.
-                  // Defaults: origin=[-15,18,25], velocity=[3.5,-2.5,0.5],
-                  //   period=7, activeFrac=0.5.
-```
-
-**When to choose v3.2 over v3.0 atoms**:
-| Scene need | v3.0 atom | v3.2 atom (PREFERRED for nature) |
-|---|---|---|
-| Hero foreground tree | `tree-broadleaf` | **`stylized-tree`** (4× visual fidelity, autumn-color-ready) |
-| Background tree row | `tree-pine` × N | `tree-pine` × N (still fine for pines/evergreens) |
-| Single flower in vase | `flower` | `flower` (small isolated bloom) |
-| Flower meadow / field of flowers | `flower` × 10 manually | **`forest-flower`** wrapped in `rep` (190+ flowers in 1 subject) |
-| Grass clumps | `grass-tuft` × 3 | **`grass-field`** (1 subject, infinite cover) |
-| Shooting star, meteor | no v3.0 equivalent | **`meteor-streak`** × 3 with staggered phase |
-| Fallen leaves on ground | no v3.0 equivalent | **`maple-leaf`** scattered via `rep` |
-
 ### Semantic mapping (Chinese + English keywords → v3.0 atoms)
 ```
 牛 / cow / cattle              → cow
@@ -747,18 +635,11 @@ meteor-streak:  { "origin"?: [x,y,z], "velocity"?: [vx,vy,vz],
 烟囱 / smokestack / chimney      → smokestack
 风车 / 风磨 / windmill            → windmill
 
-花 / flower / 花朵               → flower (small isolated) OR forest-flower (meadow, wrap in rep)
+花 / flower / 花朵               → flower
 蘑菇 / mushroom                  → mushroom
 灌木 / bush / shrub              → bush
 藤蔓 / vine / creeper            → vine
-草丛 / grass tuft                → grass-tuft (small clump) OR grass-field (full ground cover)
-
-# v3.2 forest atoms (PREFER for nature scenes)
-枫树 / maple / 大树 / hero tree   → stylized-tree (with material.kind='translucent')
-树叶 / 落叶 / fallen leaves       → maple-leaf (scatter via rep)
-花海 / flower meadow / 花田        → forest-flower (wrap in rep period 1.0-1.5)
-草地 / lawn / meadow ground       → grass-field (1 subject, infinite)
-流星 / meteor / shooting star     → meteor-streak (emit 2-5 with staggered phase)
+草丛 / grass tuft                → grass-tuft
 ```
 
 **Usage priority order**:
@@ -795,9 +676,7 @@ populate the implied world around the named subject.
 | 港口 / harbor / 渔港 | `sailboat-small` × 3-5, `bird-silhouette` × 3, `rock-boulder` × 2, `smokestack` × 0-2 (small boats) |
 | 工厂 / factory / 钢铁厂 | `smokestack` × 2-3, `gear-flat` × 2, `pipe-l-bend` × 3, `car-simple` × 0-1, `bird` × 1-2 |
 | 花园 / garden / 庭院 | `flower` × 5-10, `bush` × 3-5, `fountain` × 0-1, `gazebo` × 0-1, `bird` × 2, `tree-broadleaf` × 1-2 |
-| 森林 / forest / 树林 (v3.2) | **`stylized-tree`** × 1 hero + 4-8 background hand-placed (NOT rep — uneven feels natural), `tree-pine` × 5-10 (mid-distance), **`grass-field`** × 1 (ground cover), `forest-flower` wrapped in `rep` (meadow), `bush` × 3-5, `mushroom` × 0-3, `bird` × 2-4 |
-| 流星雨 / meteor shower / 流星 | **`meteor-streak`** × 3-5 with STAGGERED phase (0, 2.5, 5.0, ...), `star` × 15-25 (background sky), `moon` × 0-1 |
-| 草地 / meadow / lawn (v3.2) | **`grass-field`** × 1 (ground cover), `forest-flower` in `rep` (190+ flowers), `bird` × 1-3, optional `stylized-tree` × 1-3 (isolated trees) |
+| 森林 / forest / 树林 | `tree-pine` × 8-15 (or `tree-broadleaf`), `bush` × 5+, `mushroom` × 3-5, `grass-tuft` × 5+, `bird` × 3-5 |
 | 农场 / farm / 田园 | `cow` × 2-3, `horse` × 1-2, `pig` × 1-2, `sheep` × 3-5, `wagon` × 1, `fence-section` × 3-5, `windmill` × 0-1 |
 | 城市街道 / city street / 街景 | `car-simple` × 3-5, `lamp-standing` × 3, `tower-square` × 0-3 (background), `bird` × 2-3 |
 | 城堡 / castle / 古堡 | `tower-square` × 3-5, `flag-on-pole` × 2-3, `fountain` × 0-1, `fence-section` × 4 (palisade) |
@@ -1492,133 +1371,6 @@ with a small r.
 
 **Pattern: walked frame welding → unionRound r=0.005-0.01**. Memorize this
 for any vehicle / mechanical / metalwork prompt.
-
-### Example 7: Forest at twilight with meteor shower (v3.2 — forest atoms)
-
-Input prompt: `森林流星 / forest meteor shower / 树·山·花·流星`. 2D code may
-show a generic forest silhouette or be minimalist.
-
-**v3.2 lift (with new forest atoms + meteor + translucent kind + emissive kind)**:
-
-```json
-{
-  "v": 1,
-  "subjects": [
-    // ----- distant mountain ridge (5 cones) -----
-    { "id": "mtn-left", "type": "cone", "args": { "height": 14, "baseRadius": 11 },
-      "transform": { "translate": [-22, 7, 55] },
-      "material": { "hue": 0.60, "sat": 0.06, "value": 0.88, "metal": 0.05, "glow": 0 } },
-    { "id": "mtn-center-back", "type": "cone", "args": { "height": 22, "baseRadius": 16 },
-      "transform": { "translate": [-3, 11, 62] },
-      "material": { "hue": 0.60, "sat": 0.05, "value": 0.92, "metal": 0.05, "glow": 0 } },
-    { "id": "mtn-center", "type": "cone", "args": { "height": 16, "baseRadius": 12 },
-      "transform": { "translate": [12, 8, 50] },
-      "material": { "hue": 0.60, "sat": 0.05, "value": 0.85, "metal": 0.05, "glow": 0 } },
-    { "id": "mtn-right", "type": "cone", "args": { "height": 18, "baseRadius": 13 },
-      "transform": { "translate": [30, 9, 58] },
-      "material": { "hue": 0.60, "sat": 0.06, "value": 0.88, "metal": 0.05, "glow": 0 } },
-    { "id": "mtn-far-left", "type": "cone", "args": { "height": 12, "baseRadius": 10 },
-      "transform": { "translate": [-38, 6, 60] },
-      "material": { "hue": 0.60, "sat": 0.07, "value": 0.80, "metal": 0.05, "glow": 0 } },
-
-    // ----- hero stylized-tree (autumn red, translucent backlight) -----
-    { "id": "hero-tree", "type": "stylized-tree",
-      "args": { "trunkLen": 5.5, "trunkRad": 0.42, "leafSize": 0.20, "windK": 0.15 },
-      "transform": { "translate": [5, 0, 10] },
-      "material": { "hue": 0.02, "sat": 0.80, "value": 0.50, "metal": 0, "glow": 0, "kind": "translucent" } },
-
-    // ----- 5 background trees HAND-PLACED non-uniform (NOT rep) -----
-    { "id": "back-tree-1", "type": "stylized-tree",
-      "args": { "trunkLen": 3.8, "trunkRad": 0.26, "leafSize": 0.15, "windK": 0.10 },
-      "transform": { "translate": [-14, 0, 28] },
-      "material": { "hue": 0.28, "sat": 0.55, "value": 0.42, "kind": "translucent" } },
-    { "id": "back-tree-2", "type": "stylized-tree",
-      "args": { "trunkLen": 2.6, "trunkRad": 0.20, "leafSize": 0.13, "windK": 0.10 },
-      "transform": { "translate": [-7, 0, 34] },
-      "material": { "hue": 0.30, "sat": 0.50, "value": 0.38, "kind": "translucent" } },
-    { "id": "back-tree-3", "type": "stylized-tree",
-      "args": { "trunkLen": 4.2, "trunkRad": 0.28, "leafSize": 0.15, "windK": 0.10 },
-      "transform": { "translate": [16, 0, 30] },
-      "material": { "hue": 0.27, "sat": 0.58, "value": 0.45, "kind": "translucent" } },
-    { "id": "back-tree-4", "type": "stylized-tree",
-      "args": { "trunkLen": 2.9, "trunkRad": 0.22, "leafSize": 0.13, "windK": 0.10 },
-      "transform": { "translate": [26, 0, 24] },
-      "material": { "hue": 0.30, "sat": 0.55, "value": 0.42, "kind": "translucent" } },
-    { "id": "back-tree-5", "type": "stylized-tree",
-      "args": { "trunkLen": 3.3, "trunkRad": 0.23, "leafSize": 0.13, "windK": 0.10 },
-      "transform": { "translate": [-22, 0, 36] },
-      "material": { "hue": 0.26, "sat": 0.60, "value": 0.40, "kind": "translucent" } },
-
-    // ----- grass field as ground cover (1 subject, infinite) -----
-    { "id": "grass-mat", "type": "grass-field",
-      "args": { "bladeHeight": 0.55, "density": 0.11 },
-      "transform": { "translate": [0, 0, 0] } },
-
-    // ----- flower meadow via rep (190 flowers in 1 subject) -----
-    { "id": "flower-field", "type": "rep",
-      "args": { "period": [1.1, 0, 1.1], "count": [10, 0, 9] },
-      "source": { "id": "flower-source", "type": "forest-flower",
-        "args": { "stemH": 0.55, "bloomR": 0.16 },
-        "material": { "hue": 0.99, "sat": 0.88, "value": 0.78 } },
-      "transform": { "translate": [-3, 0, 8] } },
-
-    // ----- 3 meteors STAGGERED phase (NOT synchronized) -----
-    { "id": "meteor-1", "type": "meteor-streak",
-      "args": { "origin": [-22, 24, 35], "velocity": [4.0, -2.8, 0.3],
-        "trailLen": 1.8, "period": 7.0, "activeFrac": 0.5, "phase": 0.0 } },
-    { "id": "meteor-2", "type": "meteor-streak",
-      "args": { "origin": [-14, 28, 27], "velocity": [3.2, -2.4, 0.6],
-        "trailLen": 1.4, "period": 7.0, "activeFrac": 0.45, "phase": 2.6 } },
-    { "id": "meteor-3", "type": "meteor-streak",
-      "args": { "origin": [-28, 20, 40], "velocity": [5.0, -1.8, -0.8],
-        "trailLen": 2.0, "period": 7.0, "activeFrac": 0.55, "phase": 4.8 } }
-  ],
-  "ground": { "y": 0, "region": "ground",
-    "material": { "hue": 0.30, "sat": 0.55, "value": 0.30 } },
-  "defaults": {
-    "camera": { "yaw": -0.18, "pitch": 0.08, "distance": 20, "focal": 1.5,
-                "targetX": 2, "targetY": 4.5, "targetZ": 20 },
-    "light": { "azimuth": 0.55, "altitude": 0.22, "distance": 90, "intensity": 1.25 },
-    "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
-  }
-}
-```
-
-**Patterns to memorize from this example**:
-
-1. **Background trees: hand-place 4-6, DON'T rep** — natural distributions
-   are uneven. Vary trunkLen (2.6 - 4.2), hue (0.26-0.30), value (0.38-0.45)
-   per tree for organic feel. `rep` produces a uniform grid which screams "CG".
-
-2. **Distant mountains: 3-5 cones at varied scale and z**, not 1 huge one
-   and not infinite `terrain-heightmap` (that traps camera inside the
-   heightfield — see anti-pattern below). Light blue-white tint
-   (hue=0.60, sat=0.05-0.07, value=0.80-0.92) reads as snow.
-
-3. **Grass + flower combo**: `grass-field` as 1 base subject + `forest-flower`
-   in `rep` riding on top. Grass blade height (0.55) and flower stem (0.55)
-   should match so flowers peek THROUGH the grass naturally.
-
-4. **Meteor: emit 3-5 with STAGGERED phase**. `phase: 0, 2.6, 4.8` over
-   `period: 7.0` makes meteors fire at ~2.3-second intervals (continuous
-   shower feel). Origins in upper sky (y > 18, |x| > 12), velocity downward
-   diagonal (vx 3-5, vy -1.8 to -2.8).
-
-5. **Light: low altitude (0.20-0.28) for twilight** — this activates the
-   stars overlay (sun.altitude < 0.32 threshold) AND triggers warm horizon
-   glow in sky() AND maximizes translucent kind=4 backlight (sun behind
-   leaves = HG phase peaks). All 3 effects sync to one decision.
-
-6. **Camera back from scene**: position computed from camera spec yields
-   y~6.1, z~0.4. Be aware that `terrain-heightmap` (v3.0) is INFINITE in xz
-   — if you use it, camera y MUST be above max possible peak. SAFER:
-   use 3-5 `cone` subjects for distant mountain silhouettes (bounded SDFs).
-
-**Anti-pattern to avoid**: do NOT use `terrain-heightmap` for foreground-POV
-scenes (camera at ground level). The heightmap is infinite — camera at y=5
-will be INSIDE the terrain everywhere. Use it ONLY for aerial-view scenes
-(snow-mountain.json) where camera y is above the highest possible peak.
-For ground POV, use 3-5 `cone` primitives as bounded mountain silhouettes.
 
 # Workflow summary
 
