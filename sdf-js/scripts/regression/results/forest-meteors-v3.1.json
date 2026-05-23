@@ -1,0 +1,896 @@
+{
+  "result": {
+    "demoId": "forest-meteors",
+    "version": "v3.1",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "47.3s",
+    "tokens": {
+      "input": 22434,
+      "output": 4353
+    },
+    "costUSD": "0.1326",
+    "subjectCount": 40,
+    "newAtomsUsedCount": 18,
+    "newAtomsUsed": [
+      [
+        "moon",
+        1
+      ],
+      [
+        "star",
+        12
+      ],
+      [
+        "tree-pine",
+        5
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 27,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 37,
+      "min": -14,
+      "max": 3.2,
+      "range": 17.2,
+      "stdev": 5.646792660301023
+    },
+    "v30AtomsUsedCount": 16,
+    "v30AtomsUsed": [
+      [
+        "hill-mound",
+        2
+      ],
+      [
+        "flower",
+        8
+      ],
+      [
+        "grass-tuft",
+        2
+      ],
+      [
+        "bush",
+        2
+      ],
+      [
+        "rock-boulder",
+        2
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "typeCounts": {
+      "moon": 1,
+      "star": 12,
+      "capsule": 3,
+      "pyramid": 3,
+      "hill-mound": 2,
+      "tree-pine": 5,
+      "flower": 8,
+      "grass-tuft": 2,
+      "bush": 2,
+      "rock-boulder": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Tree Mountain Flowers Meteors"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Tree Mountain Flowers Meteors",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "树·山·花·流星",
+      "from2dCode": "Minimal 2D placeholder; lift interprets as night mountain scene with pine tree, wildflowers, distant peaks, meteor shower."
+    },
+    "subjects": [
+      {
+        "id": "moon",
+        "type": "moon",
+        "args": {
+          "radius": 0.5
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            5.2,
+            -8
+          ]
+        },
+        "region": "moon"
+      },
+      {
+        "id": "star-1",
+        "type": "star",
+        "args": {
+          "radius": 0.045,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -5.2,
+            6,
+            -9
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-2",
+        "type": "star",
+        "args": {
+          "radius": 0.038
+        },
+        "transform": {
+          "translate": [
+            -3.8,
+            5.5,
+            -9.5
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-3",
+        "type": "star",
+        "args": {
+          "radius": 0.042
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            6.2,
+            -8.8
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-4",
+        "type": "star",
+        "args": {
+          "radius": 0.05
+        },
+        "transform": {
+          "translate": [
+            -1,
+            5.8,
+            -9.2
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-5",
+        "type": "star",
+        "args": {
+          "radius": 0.036
+        },
+        "transform": {
+          "translate": [
+            0.5,
+            6.5,
+            -9
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-6",
+        "type": "star",
+        "args": {
+          "radius": 0.048
+        },
+        "transform": {
+          "translate": [
+            2,
+            5.9,
+            -8.7
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-7",
+        "type": "star",
+        "args": {
+          "radius": 0.04
+        },
+        "transform": {
+          "translate": [
+            3.5,
+            6.3,
+            -9.3
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-8",
+        "type": "star",
+        "args": {
+          "radius": 0.044
+        },
+        "transform": {
+          "translate": [
+            4.8,
+            5.7,
+            -8.9
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-9",
+        "type": "star",
+        "args": {
+          "radius": 0.037
+        },
+        "transform": {
+          "translate": [
+            -4,
+            4.8,
+            -9.4
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-10",
+        "type": "star",
+        "args": {
+          "radius": 0.046
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            4.5,
+            -9.1
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-11",
+        "type": "star",
+        "args": {
+          "radius": 0.041
+        },
+        "transform": {
+          "translate": [
+            1.2,
+            4.9,
+            -8.8
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-12",
+        "type": "star",
+        "args": {
+          "radius": 0.039
+        },
+        "transform": {
+          "translate": [
+            3.8,
+            4.6,
+            -9.2
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "meteor-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            2.8,
+            5.5,
+            -7
+          ],
+          "b": [
+            2.4,
+            4.8,
+            -6.5
+          ],
+          "radius": 0.025
+        },
+        "material": {
+          "hue": 0.95,
+          "sat": 0.95,
+          "value": 1,
+          "metal": 0,
+          "glow": 4.5
+        }
+      },
+      {
+        "id": "meteor-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -2.5,
+            6.2,
+            -7.5
+          ],
+          "b": [
+            -3,
+            5.3,
+            -7
+          ],
+          "radius": 0.03
+        },
+        "material": {
+          "hue": 0.98,
+          "sat": 0.92,
+          "value": 1,
+          "metal": 0,
+          "glow": 4.2
+        }
+      },
+      {
+        "id": "meteor-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.5,
+            5.8,
+            -8
+          ],
+          "b": [
+            0,
+            5,
+            -7.5
+          ],
+          "radius": 0.022
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.88,
+          "value": 1,
+          "metal": 0,
+          "glow": 4
+        }
+      },
+      {
+        "id": "mountain-far-left",
+        "type": "pyramid",
+        "args": {
+          "height": 3.5
+        },
+        "transform": {
+          "translate": [
+            -6.5,
+            -1.2,
+            -12
+          ],
+          "scale": [
+            4,
+            1,
+            3.5
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "mountain-far-center",
+        "type": "pyramid",
+        "args": {
+          "height": 4.2
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            -1.2,
+            -14
+          ],
+          "scale": [
+            5.5,
+            1,
+            4.5
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "mountain-far-right",
+        "type": "pyramid",
+        "args": {
+          "height": 3.8
+        },
+        "transform": {
+          "translate": [
+            5,
+            -1.2,
+            -11
+          ],
+          "scale": [
+            4.5,
+            1,
+            4
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "hill-mid-left",
+        "type": "hill-mound",
+        "args": {
+          "radius": 2.5,
+          "height": 1.8
+        },
+        "transform": {
+          "translate": [
+            -4,
+            -1.2,
+            -6
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.45,
+          "value": 0.35,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hill-mid-right",
+        "type": "hill-mound",
+        "args": {
+          "radius": 2.2,
+          "height": 1.5
+        },
+        "transform": {
+          "translate": [
+            3.5,
+            -1.2,
+            -5.5
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.4,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-pine-hero",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2.8,
+          "trunkRadius": 0.18,
+          "foliageHeight": 2.2,
+          "foliageBaseR": 0.9,
+          "layers": 6
+        },
+        "transform": {
+          "translate": [
+            -1.2,
+            -1.2,
+            1.5
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "tree-pine-left",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2,
+          "trunkRadius": 0.12,
+          "foliageHeight": 1.6,
+          "foliageBaseR": 0.65,
+          "layers": 5
+        },
+        "transform": {
+          "translate": [
+            -3.5,
+            -1.2,
+            0.5
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "tree-pine-right",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 1.8,
+          "trunkRadius": 0.11,
+          "foliageHeight": 1.4,
+          "foliageBaseR": 0.58,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            2,
+            -1.2,
+            0.8
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "tree-pine-back-left",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2.2,
+          "trunkRadius": 0.13,
+          "foliageHeight": 1.7,
+          "foliageBaseR": 0.7,
+          "layers": 5
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            -1.2,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.32,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-pine-back-right",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2.5,
+          "trunkRadius": 0.15,
+          "foliageHeight": 1.9,
+          "foliageBaseR": 0.75,
+          "layers": 5
+        },
+        "transform": {
+          "translate": [
+            1,
+            -1.2,
+            -2.5
+          ]
+        },
+        "material": {
+          "hue": 0.31,
+          "sat": 0.62,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-1",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.35,
+          "bloomRadius": 0.08
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            -1.2,
+            2.8
+          ]
+        },
+        "material": {
+          "hue": 0.95,
+          "sat": 0.88,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-2",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.32,
+          "bloomRadius": 0.075
+        },
+        "transform": {
+          "translate": [
+            -0.15,
+            -1.2,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-3",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.38,
+          "bloomRadius": 0.09
+        },
+        "transform": {
+          "translate": [
+            0.3,
+            -1.2,
+            2.6
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.82,
+          "value": 0.9,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-4",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.3,
+          "bloomRadius": 0.07
+        },
+        "transform": {
+          "translate": [
+            0.65,
+            -1.2,
+            2.4
+          ]
+        },
+        "material": {
+          "hue": 0.88,
+          "sat": 0.8,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-5",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.36,
+          "bloomRadius": 0.085
+        },
+        "transform": {
+          "translate": [
+            -0.75,
+            -1.2,
+            2.2
+          ]
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.85,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-6",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.34,
+          "bloomRadius": 0.078
+        },
+        "transform": {
+          "translate": [
+            0.9,
+            -1.2,
+            2.7
+          ]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.78,
+          "value": 0.87,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-7",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.33,
+          "bloomRadius": 0.082
+        },
+        "transform": {
+          "translate": [
+            -1.8,
+            -1.2,
+            1.8
+          ]
+        },
+        "material": {
+          "hue": 0.15,
+          "sat": 0.83,
+          "value": 0.89,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-8",
+        "type": "flower",
+        "args": {
+          "stemHeight": 0.31,
+          "bloomRadius": 0.074
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            -1.2,
+            2
+          ]
+        },
+        "material": {
+          "hue": 0.52,
+          "sat": 0.76,
+          "value": 0.86,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "grass-tuft-1",
+        "type": "grass-tuft",
+        "args": {
+          "count": 8,
+          "height": 0.25
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            -1.2,
+            2.3
+          ]
+        },
+        "material": {
+          "hue": 0.32,
+          "sat": 0.68,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "grass-tuft-2",
+        "type": "grass-tuft",
+        "args": {
+          "count": 7,
+          "height": 0.22
+        },
+        "transform": {
+          "translate": [
+            1.2,
+            -1.2,
+            2.1
+          ]
+        },
+        "material": {
+          "hue": 0.33,
+          "sat": 0.65,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-1",
+        "type": "bush",
+        "args": {
+          "radius": 0.35
+        },
+        "transform": {
+          "translate": [
+            -2.8,
+            -1.2,
+            1.2
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.7,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-2",
+        "type": "bush",
+        "args": {
+          "radius": 0.32
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            -1.2,
+            1.5
+          ]
+        },
+        "material": {
+          "hue": 0.31,
+          "sat": 0.68,
+          "value": 0.43,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rock-1",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.4
+        },
+        "transform": {
+          "translate": [
+            -0.8,
+            -1.2,
+            3.2
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "rock-2",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.35
+        },
+        "transform": {
+          "translate": [
+            1.3,
+            -1.2,
+            2.9
+          ]
+        },
+        "material": "stone"
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "ground"
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.15,
+        "pitch": 0.12,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.25,
+        "distance": 32,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "hueRotate180",
+        "strength": 0.45
+      }
+    }
+  }
+}

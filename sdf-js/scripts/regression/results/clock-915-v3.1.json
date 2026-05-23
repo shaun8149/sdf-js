@@ -3,12 +3,12 @@
     "demoId": "clock-915",
     "version": "v3.1",
     "model": "claude-sonnet-4-5",
-    "elapsed": "25.6s",
+    "elapsed": "21.1s",
     "tokens": {
       "input": 25040,
-      "output": 2365
+      "output": 1865
     },
-    "costUSD": "0.1106",
+    "costUSD": "0.1031",
     "subjectCount": 18,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
@@ -19,14 +19,22 @@
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 3,
-      "min": -0.8,
-      "max": 0,
-      "range": 0.8,
-      "stdev": 0.3724990678586398
+      "count": 4,
+      "min": -0.4,
+      "max": 0.04,
+      "range": 0.44,
+      "stdev": 0.17741194999210172
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
     "typeCounts": {
       "box": 1,
       "torus": 1,
@@ -36,24 +44,24 @@
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Wall Clock 9:15"
+    "sceneName": "Wall Clock (9:15)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Wall Clock 9:15",
+    "name": "Wall Clock (9:15)",
     "source": {
       "format": "llm-lift",
       "prompt": "挂在墙上的9点15分的钟",
-      "from2dCode": "2D circular clock face with bezel, 60 tick marks, hour/minute hands at 9:15, center boss, warm plaster wall background"
+      "from2dCode": "2D clock: bezel ring, cream face, 12 hour ticks + 60 minute ticks, hour hand at 9.25, minute hand at 3.0, center boss. Wall background."
     },
     "subjects": [
       {
-        "id": "wall-plane",
+        "id": "wall",
         "type": "box",
         "args": {
           "dims": [
             4.5,
-            3.5,
+            3.2,
             0.3
           ]
         },
@@ -61,22 +69,22 @@
           "translate": [
             0,
             0,
-            -0.8
+            -0.4
           ]
         },
         "material": "linen",
         "pattern": {
           "kind": "cells",
           "scale": 8,
-          "strength": 0.25
+          "strength": 0.15
         }
       },
       {
-        "id": "clock-bezel",
+        "id": "bezel",
         "type": "torus",
         "args": {
-          "radius": 0.56,
-          "thickness": 0.06
+          "radius": 0.55,
+          "thickness": 0.08
         },
         "transform": {
           "translate": [
@@ -93,7 +101,7 @@
         "material": "matte-black"
       },
       {
-        "id": "clock-face",
+        "id": "face",
         "type": "cylinder",
         "args": {
           "radius": 0.5,
@@ -120,22 +128,16 @@
           "a": [
             0,
             0.44,
-            0.01
+            0.02
           ],
           "b": [
             0,
             0.38,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-1",
@@ -143,47 +145,35 @@
         "args": {
           "a": [
             0.22,
-            0.38,
-            0.01
+            0.381,
+            0.02
           ],
           "b": [
-            0.19,
+            0.191,
             0.33,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-2",
         "type": "capsule",
         "args": {
           "a": [
-            0.38,
+            0.381,
             0.22,
-            0.01
+            0.02
           ],
           "b": [
             0.33,
-            0.19,
-            0.01
+            0.191,
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-3",
@@ -192,46 +182,34 @@
           "a": [
             0.44,
             0,
-            0.01
+            0.02
           ],
           "b": [
             0.38,
             0,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-4",
         "type": "capsule",
         "args": {
           "a": [
-            0.38,
+            0.381,
             -0.22,
-            0.01
+            0.02
           ],
           "b": [
             0.33,
-            -0.19,
-            0.01
+            -0.191,
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-5",
@@ -239,23 +217,17 @@
         "args": {
           "a": [
             0.22,
-            -0.38,
-            0.01
+            -0.381,
+            0.02
           ],
           "b": [
-            0.19,
+            0.191,
             -0.33,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-6",
@@ -264,22 +236,16 @@
           "a": [
             0,
             -0.44,
-            0.01
+            0.02
           ],
           "b": [
             0,
             -0.38,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-7",
@@ -287,47 +253,35 @@
         "args": {
           "a": [
             -0.22,
-            -0.38,
-            0.01
+            -0.381,
+            0.02
           ],
           "b": [
-            -0.19,
+            -0.191,
             -0.33,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-8",
         "type": "capsule",
         "args": {
           "a": [
-            -0.38,
+            -0.381,
             -0.22,
-            0.01
+            0.02
           ],
           "b": [
             -0.33,
-            -0.19,
-            0.01
+            -0.191,
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-9",
@@ -336,46 +290,34 @@
           "a": [
             -0.44,
             0,
-            0.01
+            0.02
           ],
           "b": [
             -0.38,
             0,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-10",
         "type": "capsule",
         "args": {
           "a": [
-            -0.38,
+            -0.381,
             0.22,
-            0.01
+            0.02
           ],
           "b": [
             -0.33,
-            0.19,
-            0.01
+            0.191,
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "tick-11",
@@ -383,47 +325,35 @@
         "args": {
           "a": [
             -0.22,
-            0.38,
-            0.01
+            0.381,
+            0.02
           ],
           "b": [
-            -0.19,
+            -0.191,
             0.33,
-            0.01
+            0.02
           ],
           "radius": 0.014
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "hour-hand",
         "type": "capsule",
         "args": {
           "a": [
-            0.0497,
-            -0.0129,
-            0.02
+            0.045,
+            -0.012,
+            0.03
           ],
           "b": [
-            -0.2775,
-            0.0721,
-            0.02
+            -0.277,
+            0.037,
+            0.03
           ],
           "radius": 0.018
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "minute-hand",
@@ -432,41 +362,31 @@
           "a": [
             -0.05,
             0,
-            0.025
+            0.035
           ],
           "b": [
             0.36,
             0,
-            0.025
+            0.035
           ],
           "radius": 0.012
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "center-boss",
         "type": "sphere",
         "args": {
-          "radius": 0.03,
-          "center": [
+          "radius": 0.03
+        },
+        "transform": {
+          "translate": [
             0,
             0,
-            0.03
+            0.04
           ]
         },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.2,
-          "value": 0.12,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       }
     ],
     "ground": null,
@@ -474,15 +394,15 @@
       "camera": {
         "yaw": 0,
         "pitch": 0,
-        "distance": 3.5,
+        "distance": 2.2,
         "focal": 1.8,
         "targetX": 0,
         "targetY": 0,
         "targetZ": 0
       },
       "light": {
-        "azimuth": 0.8,
-        "altitude": 0.6,
+        "azimuth": -0.6,
+        "altitude": 0.65,
         "distance": 25,
         "intensity": 1
       },

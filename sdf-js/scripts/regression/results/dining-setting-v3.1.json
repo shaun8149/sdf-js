@@ -3,35 +3,43 @@
     "demoId": "dining-setting",
     "version": "v3.1",
     "model": "claude-sonnet-4-5",
-    "elapsed": "43.5s",
+    "elapsed": "44.4s",
     "tokens": {
       "input": 25660,
-      "output": 3793
+      "output": 3885
     },
-    "costUSD": "0.1339",
-    "subjectCount": 37,
+    "costUSD": "0.1353",
+    "subjectCount": 40,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 29,
-    "patternUsageCount": 3,
-    "variantsUsedCount": 2,
+    "materialUsageCount": 21,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 6,
     "variantsUsed": [
       [
         "unionRound",
-        2
+        5
+      ],
+      [
+        "unionSoft",
+        1
       ]
     ],
     "zSpread": {
       "count": 27,
-      "min": -1.8,
-      "max": 0.75,
-      "range": 2.55,
-      "stdev": 0.4726271321408297
+      "min": -1.2,
+      "max": 0.65,
+      "range": 1.85,
+      "stdev": 0.3830344084082935
     },
     "v30AtomsUsedCount": 9,
     "v30AtomsUsed": [
+      [
+        "table-round",
+        1
+      ],
       [
         "wine-bottle",
         1
@@ -42,7 +50,7 @@
       ],
       [
         "flower",
-        2
+        1
       ],
       [
         "lamp-standing",
@@ -53,19 +61,30 @@
         1
       ]
     ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
     "typeCounts": {
-      "ellipsoid": 7,
+      "table-round": 1,
+      "unionRound": 5,
       "cylinder": 6,
-      "capsule": 8,
-      "wine-bottle": 1,
-      "sphere": 1,
+      "torus": 1,
+      "ellipsoid": 6,
       "extrude": 1,
-      "unionRound": 2,
+      "capsule": 7,
       "box": 2,
+      "wine-bottle": 1,
+      "unionSoft": 1,
       "rounded_box": 1,
       "chair": 4,
-      "flower": 2,
+      "flower": 1,
       "lamp-standing": 1,
+      "sphere": 1,
       "bookshelf": 1
     },
     "compileOk": true,
@@ -78,18 +97,15 @@
     "source": {
       "format": "llm-lift",
       "prompt": "餐桌摆设",
-      "from2dCode": "Elliptical table (bird's-eye perspective) with plate, wine glass, napkin, fork, knife, bread roll, herb sprig, candle. Warm oak/terracotta/burgundy palette. Western place-setting layout."
+      "from2dCode": "Elliptical table (top-down view) with plate, wine glass, napkin, fork, knife, bread roll, herb sprig, candle + candlestick. Warm terracotta/oak/burgundy palette. Western place-setting layout."
     },
     "subjects": [
       {
         "id": "table-top",
-        "type": "ellipsoid",
+        "type": "table-round",
         "args": {
-          "dims": [
-            2.3,
-            0.08,
-            1.1
-          ]
+          "radius": 0.85,
+          "height": 0.72
         },
         "transform": {
           "translate": [
@@ -101,189 +117,140 @@
         "material": "wood",
         "pattern": {
           "kind": "cells",
-          "scale": 8,
+          "scale": 3,
           "strength": 0.25
         }
       },
       {
-        "id": "table-pedestal",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.18,
-          "height": 0.65
-        },
-        "transform": {
-          "translate": [
-            0,
-            -0.37,
-            0
-          ]
-        },
-        "material": "wood"
-      },
-      {
-        "id": "table-base",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.35,
-          "height": 0.06
-        },
-        "transform": {
-          "translate": [
-            0,
-            -0.73,
-            0
-          ]
-        },
-        "material": "wood"
-      },
-      {
         "id": "plate",
-        "type": "cylinder",
+        "type": "unionRound",
         "args": {
-          "radius": 0.15,
-          "height": 0.015
-        },
-        "transform": {
-          "translate": [
-            0,
-            0.095,
-            0
-          ]
+          "r": 0.008
         },
         "material": "porcelain",
-        "pattern": {
-          "kind": "cells",
-          "scale": 20,
-          "strength": 0.15
-        }
-      },
-      {
-        "id": "herb-stem",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -0.03,
-            0.11,
-            -0.02
-          ],
-          "b": [
-            0.04,
-            0.11,
-            0.02
-          ],
-          "radius": 0.002
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.75,
-          "value": 0.5,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "herb-leaf-1",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.009,
-            0.002,
-            0.005
-          ]
-        },
-        "transform": {
-          "translate": [
-            0,
-            0.11,
-            0
-          ],
-          "rotate": [
-            0,
-            0.5,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.75,
-          "value": 0.5,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "herb-leaf-2",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.009,
-            0.002,
-            0.005
-          ]
-        },
-        "transform": {
-          "translate": [
-            0.02,
-            0.11,
-            0.01
-          ],
-          "rotate": [
-            0,
-            -0.3,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.75,
-          "value": 0.5,
-          "metal": 0,
-          "glow": 0
-        }
+        "children": [
+          {
+            "id": "plate-base",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.13,
+              "height": 0.015
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.735,
+                0
+              ]
+            }
+          },
+          {
+            "id": "plate-rim",
+            "type": "torus",
+            "args": {
+              "radius": 0.125,
+              "thickness": 0.012
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.745,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "wine-glass",
-        "type": "wine-bottle",
+        "type": "unionRound",
         "args": {
-          "scale": 0.35
+          "r": 0.003
         },
-        "transform": {
-          "translate": [
-            0.52,
-            0.08,
-            0
-          ],
-          "rotate": [
-            3.14159,
-            0,
-            0
-          ]
-        },
-        "material": "clear-glass"
+        "material": "clear-glass",
+        "children": [
+          {
+            "id": "glass-base",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.028,
+              "height": 0.006
+            },
+            "transform": {
+              "translate": [
+                0.32,
+                0.723,
+                0
+              ]
+            }
+          },
+          {
+            "id": "glass-stem",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.004,
+              "height": 0.085
+            },
+            "transform": {
+              "translate": [
+                0.32,
+                0.768,
+                0
+              ]
+            }
+          },
+          {
+            "id": "glass-bowl",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.038,
+                0.048,
+                0.038
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.32,
+                0.845,
+                0
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "wine-liquid",
-        "type": "sphere",
+        "type": "ellipsoid",
         "args": {
-          "radius": 0.05
+          "dims": [
+            0.032,
+            0.028,
+            0.032
+          ]
         },
         "transform": {
           "translate": [
-            0.52,
-            0.12,
+            0.32,
+            0.815,
             0
-          ],
-          "scale": [
-            1,
-            0.9,
-            1
           ]
         },
-        "material": "fruit-red"
+        "material": {
+          "hue": 0.97,
+          "sat": 0.88,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0.3
+        }
       },
       {
-        "id": "napkin-body",
+        "id": "napkin",
         "type": "extrude",
         "args": {
           "height": 0.008
@@ -293,29 +260,35 @@
           "args": {
             "points": [
               [
-                -0.13,
-                -0.09
+                -0.14,
+                -0.08
               ],
               [
-                0,
-                -0.09
+                -0.06,
+                -0.08
               ],
               [
-                -0.065,
+                -0.1,
                 0.04
               ]
             ]
           },
-          "id": "subjects_9_-source"
+          "id": "subjects_4_-source"
         },
         "transform": {
           "translate": [
-            -0.31,
-            0.084,
+            -0.22,
+            0.726,
             0
           ]
         },
-        "material": "linen"
+        "material": {
+          "hue": 0.015,
+          "sat": 0.72,
+          "value": 0.68,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "fork",
@@ -330,14 +303,14 @@
             "type": "capsule",
             "args": {
               "a": [
-                -0.38,
-                0.08,
-                -0.06
+                -0.24,
+                0.73,
+                -0.14
               ],
               "b": [
-                -0.38,
-                0.08,
-                0.1
+                -0.24,
+                0.73,
+                0.04
               ],
               "radius": 0.005
             }
@@ -347,16 +320,16 @@
             "type": "box",
             "args": {
               "dims": [
-                0.025,
+                0.024,
                 0.008,
                 0.008
               ]
             },
             "transform": {
               "translate": [
-                -0.38,
-                0.08,
-                0.105
+                -0.24,
+                0.733,
+                0.042
               ]
             }
           },
@@ -365,14 +338,14 @@
             "type": "capsule",
             "args": {
               "a": [
-                -0.3875,
-                0.08,
-                0.105
+                -0.248,
+                0.732,
+                0.045
               ],
               "b": [
-                -0.3875,
-                0.08,
-                0.14
+                -0.248,
+                0.732,
+                0.085
               ],
               "radius": 0.0025
             }
@@ -382,14 +355,14 @@
             "type": "capsule",
             "args": {
               "a": [
-                -0.38,
-                0.08,
-                0.105
+                -0.24,
+                0.732,
+                0.045
               ],
               "b": [
-                -0.38,
-                0.08,
-                0.14
+                -0.24,
+                0.732,
+                0.085
               ],
               "radius": 0.0025
             }
@@ -399,14 +372,14 @@
             "type": "capsule",
             "args": {
               "a": [
-                -0.3725,
-                0.08,
-                0.105
+                -0.232,
+                0.732,
+                0.045
               ],
               "b": [
-                -0.3725,
-                0.08,
-                0.14
+                -0.232,
+                0.732,
+                0.085
               ],
               "radius": 0.0025
             }
@@ -426,14 +399,14 @@
             "type": "capsule",
             "args": {
               "a": [
-                0.38,
-                0.08,
-                -0.06
+                0.24,
+                0.73,
+                -0.14
               ],
               "b": [
-                0.38,
-                0.08,
-                0.08
+                0.24,
+                0.73,
+                0.02
               ],
               "radius": 0.006
             }
@@ -450,9 +423,9 @@
             },
             "transform": {
               "translate": [
-                0.38,
-                0.08,
-                0.09
+                0.24,
+                0.732,
+                0.028
               ]
             }
           },
@@ -462,15 +435,15 @@
             "args": {
               "dims": [
                 0.008,
-                0.02,
-                0.11
+                0.006,
+                0.1
               ]
             },
             "transform": {
               "translate": [
-                0.38,
-                0.08,
-                0.145
+                0.24,
+                0.732,
+                0.08
               ]
             }
           }
@@ -478,77 +451,168 @@
       },
       {
         "id": "bread-roll",
-        "type": "ellipsoid",
+        "type": "wine-bottle",
         "args": {
-          "dims": [
-            0.044,
-            0.031,
-            0.044
-          ]
+          "scale": 0.38
         },
         "transform": {
           "translate": [
-            -0.2,
-            0.115,
-            0.065
-          ]
-        },
-        "material": "bread",
-        "pattern": {
-          "kind": "cracked",
-          "scale": 12,
-          "strength": 0.4
-        }
-      },
-      {
-        "id": "candlestick-base",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.026,
-          "height": 0.009
-        },
-        "transform": {
-          "translate": [
-            0.7,
-            0.085,
-            0.15
-          ]
-        },
-        "material": "gold"
-      },
-      {
-        "id": "candlestick-column",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.7,
-            0.09,
-            0.15
+            -0.13,
+            0.76,
+            0.08
           ],
-          "b": [
-            0.7,
-            0.18,
-            0.15
+          "rotate": [
+            1.5708,
+            0,
+            0
           ],
-          "radius": 0.008
-        },
-        "material": "gold"
-      },
-      {
-        "id": "candlestick-cup",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.015,
-          "height": 0.008
-        },
-        "transform": {
-          "translate": [
-            0.7,
-            0.185,
-            0.15
+          "scale": [
+            1.2,
+            0.85,
+            1.2
           ]
         },
-        "material": "gold"
+        "material": "bread"
+      },
+      {
+        "id": "herb-sprig",
+        "type": "unionSoft",
+        "args": {
+          "r": 0.003
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.72,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "herb-stem",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.02,
+                0.736,
+                -0.04
+              ],
+              "b": [
+                0.025,
+                0.736,
+                0.03
+              ],
+              "radius": 0.0025
+            }
+          },
+          {
+            "id": "herb-leaf-1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.009,
+                0.003,
+                0.005
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.737,
+                -0.01
+              ],
+              "rotate": [
+                0,
+                0.5,
+                0
+              ]
+            }
+          },
+          {
+            "id": "herb-leaf-2",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [
+                0.009,
+                0.003,
+                0.005
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.012,
+                0.737,
+                0.01
+              ],
+              "rotate": [
+                0,
+                -0.3,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "candlestick",
+        "type": "unionRound",
+        "args": {
+          "r": 0.005
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.72,
+          "value": 0.68,
+          "metal": 0.6,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "stick-base",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.026,
+              "height": 0.009
+            },
+            "transform": {
+              "translate": [
+                0.44,
+                0.7245,
+                0
+              ]
+            }
+          },
+          {
+            "id": "stick-column",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.008,
+              "height": 0.075
+            },
+            "transform": {
+              "translate": [
+                0.44,
+                0.766,
+                0
+              ]
+            }
+          },
+          {
+            "id": "stick-cup",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.015,
+              "height": 0.008
+            },
+            "transform": {
+              "translate": [
+                0.44,
+                0.808,
+                0
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "candle-body",
@@ -563,39 +627,45 @@
         },
         "transform": {
           "translate": [
-            0.7,
-            0.225,
-            0.15
+            0.44,
+            0.844,
+            0
           ]
         },
         "material": {
-          "hue": 0.13,
-          "sat": 0.25,
-          "value": 0.97,
+          "hue": 0.14,
+          "sat": 0.3,
+          "value": 0.96,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "wick",
+        "id": "candle-wick",
         "type": "capsule",
         "args": {
           "a": [
-            0.7,
-            0.258,
-            0.15
+            0.44,
+            0.874,
+            0
           ],
           "b": [
-            0.7,
-            0.268,
-            0.15
+            0.44,
+            0.88,
+            0
           ],
           "radius": 0.0015
         },
-        "material": "matte-black"
+        "material": {
+          "hue": 0.08,
+          "sat": 0.2,
+          "value": 0.15,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
-        "id": "flame-outer",
+        "id": "flame",
         "type": "ellipsoid",
         "args": {
           "dims": [
@@ -606,42 +676,17 @@
         },
         "transform": {
           "translate": [
-            0.7,
-            0.28,
-            0.15
+            0.44,
+            0.893,
+            0
           ]
         },
         "material": {
           "hue": 0.08,
-          "sat": 1,
+          "sat": 0.92,
           "value": 1,
           "metal": 0,
-          "glow": 2.5
-        }
-      },
-      {
-        "id": "flame-inner",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            0.0045,
-            0.011,
-            0.0045
-          ]
-        },
-        "transform": {
-          "translate": [
-            0.7,
-            0.278,
-            0.15
-          ]
-        },
-        "material": {
-          "hue": 0.14,
-          "sat": 0.85,
-          "value": 1,
-          "metal": 0,
-          "glow": 3.5
+          "glow": 4.2
         }
       },
       {
@@ -652,13 +697,13 @@
         },
         "transform": {
           "translate": [
-            -0.85,
-            -0.7,
-            0.75
+            0,
+            0,
+            0.65
           ],
           "rotate": [
             0,
-            -0.8,
+            3.14159,
             0
           ]
         },
@@ -672,13 +717,13 @@
         },
         "transform": {
           "translate": [
-            0.85,
-            -0.7,
-            0.75
+            0,
+            0,
+            -0.65
           ],
           "rotate": [
             0,
-            0.8,
+            0,
             0
           ]
         },
@@ -692,13 +737,13 @@
         },
         "transform": {
           "translate": [
-            -0.85,
-            -0.7,
-            -0.75
+            -0.65,
+            0,
+            0
           ],
           "rotate": [
             0,
-            0.8,
+            1.5708,
             0
           ]
         },
@@ -712,135 +757,130 @@
         },
         "transform": {
           "translate": [
-            0.85,
-            -0.7,
-            -0.75
+            0.65,
+            0,
+            0
           ],
           "rotate": [
             0,
-            -0.8,
+            -1.5708,
             0
           ]
         },
         "material": "wood"
       },
       {
-        "id": "flower-vase",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.035,
-          "height": 0.08
-        },
-        "transform": {
-          "translate": [
-            -0.55,
-            0.12,
-            -0.1
-          ]
-        },
-        "material": "porcelain"
-      },
-      {
-        "id": "flower-1",
+        "id": "flower-centerpiece",
         "type": "flower",
         "args": {
-          "stemHeight": 0.12,
+          "stemHeight": 0.08,
           "bloomRadius": 0.025
         },
         "transform": {
           "translate": [
-            -0.56,
-            0.16,
-            -0.1
-          ]
-        },
-        "material": "fruit-red"
-      },
-      {
-        "id": "flower-2",
-        "type": "flower",
-        "args": {
-          "stemHeight": 0.14,
-          "bloomRadius": 0.022
-        },
-        "transform": {
-          "translate": [
-            -0.54,
-            0.16,
-            -0.09
+            -0.08,
+            0.745,
+            -0.12
           ]
         },
         "material": {
           "hue": 0.92,
-          "sat": 0.85,
-          "value": 0.9,
+          "sat": 0.78,
+          "value": 0.88,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "lamp-standing",
+        "id": "lamp-background",
         "type": "lamp-standing",
         "args": {
-          "scale": 0.8
+          "scale": 1.2
         },
         "transform": {
           "translate": [
-            -1.4,
-            -0.7,
-            0.6
+            -1.2,
+            0,
+            -1
           ]
         },
-        "material": "copper"
+        "material": {
+          "hue": 0.08,
+          "sat": 0.25,
+          "value": 0.7,
+          "metal": 0.3,
+          "glow": 0
+        }
       },
       {
-        "id": "bookshelf-bg",
-        "type": "bookshelf",
+        "id": "lamp-bulb",
+        "type": "sphere",
         "args": {
-          "width": 1.2,
-          "height": 1.5,
-          "depth": 0.3
+          "radius": 0.04
         },
         "transform": {
           "translate": [
-            0,
-            0.05,
-            -1.8
+            -1.2,
+            1.35,
+            -1
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.25,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.2
+        }
+      },
+      {
+        "id": "bookshelf-background",
+        "type": "bookshelf",
+        "args": {
+          "width": 0.9,
+          "height": 1.6,
+          "depth": 0.25
+        },
+        "transform": {
+          "translate": [
+            1.3,
+            0.8,
+            -1.2
           ]
         },
         "material": "wood"
       }
     ],
     "ground": {
-      "y": -0.76,
+      "y": 0,
       "region": "floor",
-      "material": "wood",
+      "material": "linen",
       "pattern": {
         "kind": "cells",
-        "scale": 3,
-        "strength": 0.35
+        "scale": 8,
+        "strength": 0.15
       }
     },
     "defaults": {
       "camera": {
-        "yaw": 0.5,
-        "pitch": 0.55,
-        "distance": 3.2,
-        "focal": 1.8,
+        "yaw": -2.65,
+        "pitch": 0.45,
+        "distance": 2.2,
+        "focal": 1.7,
         "targetX": 0,
-        "targetY": 0.1,
+        "targetY": 0.76,
         "targetZ": 0
       },
       "light": {
-        "azimuth": -0.6,
-        "altitude": 0.65,
-        "distance": 30,
+        "azimuth": 0.7,
+        "altitude": 0.58,
+        "distance": 28,
         "intensity": 1
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.45
+        "strength": 0.38
       }
     }
   }

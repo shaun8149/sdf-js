@@ -1,29 +1,29 @@
 {
   "result": {
     "demoId": "spiral-vase",
-    "version": "v3.1",
+    "version": "v3.2",
     "model": "claude-sonnet-4-5",
-    "elapsed": "22.5s",
+    "elapsed": "24.3s",
     "tokens": {
-      "input": 23878,
-      "output": 1994
+      "input": 29151,
+      "output": 2124
     },
-    "costUSD": "0.1015",
-    "subjectCount": 14,
+    "costUSD": "0.1193",
+    "subjectCount": 13,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 14,
-    "patternUsageCount": 1,
+    "materialUsageCount": 13,
+    "patternUsageCount": 2,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 11,
-      "min": -0.04,
-      "max": 0.03,
-      "range": 0.07,
-      "stdev": 0.017486712783337587
+      "count": 10,
+      "min": -0.05,
+      "max": 0.08,
+      "range": 0.13,
+      "stdev": 0.0354400902933387
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
@@ -38,7 +38,6 @@
     "typeCounts": {
       "revolve": 1,
       "torus": 3,
-      "cylinder": 1,
       "box": 1,
       "capsule": 3,
       "sphere": 3,
@@ -46,15 +45,15 @@
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Celadon Vase"
+    "sceneName": "Celadon Vase (mei ping)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Celadon Vase",
+    "name": "Celadon Vase (mei ping)",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "28-vertex polygon vase profile (mei ping silhouette), celadon green 3-value palette, crescent shadow band, horizontal decorative stripes, mouth ellipse"
+      "from2dCode": "28-vertex polygon profile; celadon green; decorative bands; classical mei ping silhouette"
     },
     "subjects": [
       {
@@ -140,7 +139,7 @@
         },
         "material": {
           "hue": 0.42,
-          "sat": 0.35,
+          "sat": 0.32,
           "value": 0.78,
           "metal": 0.15,
           "glow": 0
@@ -155,8 +154,8 @@
         "id": "decorative-band-upper",
         "type": "torus",
         "args": {
-          "radius": 0.305,
-          "thickness": 0.02
+          "radius": 0.285,
+          "thickness": 0.022
         },
         "transform": {
           "translate": [
@@ -166,10 +165,10 @@
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.5,
-          "value": 0.5,
-          "metal": 0.2,
+          "hue": 0.4,
+          "sat": 0.42,
+          "value": 0.48,
+          "metal": 0.12,
           "glow": 0
         }
       },
@@ -177,7 +176,7 @@
         "id": "decorative-band-lower",
         "type": "torus",
         "args": {
-          "radius": 0.195,
+          "radius": 0.205,
           "thickness": 0.012
         },
         "transform": {
@@ -188,18 +187,18 @@
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.5,
-          "value": 0.5,
-          "metal": 0.2,
+          "hue": 0.4,
+          "sat": 0.42,
+          "value": 0.48,
+          "metal": 0.12,
           "glow": 0
         }
       },
       {
-        "id": "rim-ring",
+        "id": "lip-rim",
         "type": "torus",
         "args": {
-          "radius": 0.138,
+          "radius": 0.135,
           "thickness": 0.018
         },
         "transform": {
@@ -210,32 +209,10 @@
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.5,
-          "value": 0.5,
-          "metal": 0.2,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mouth-cavity",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.12,
-          "height": 0.08
-        },
-        "transform": {
-          "translate": [
-            0,
-            0.72,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.3,
-          "value": 0.18,
-          "metal": 0,
+          "hue": 0.4,
+          "sat": 0.42,
+          "value": 0.48,
+          "metal": 0.12,
           "glow": 0
         }
       },
@@ -244,19 +221,24 @@
         "type": "box",
         "args": {
           "dims": [
-            2.5,
-            0.1,
-            2
+            3,
+            0.08,
+            2.5
           ]
         },
         "transform": {
           "translate": [
             0,
-            -0.8,
+            -0.78,
             0
           ]
         },
-        "material": "wood"
+        "material": "wood",
+        "pattern": {
+          "kind": "cells",
+          "scale": 4,
+          "strength": 0.25
+        }
       },
       {
         "id": "flower-stem-1",
@@ -264,32 +246,44 @@
         "args": {
           "a": [
             0,
-            0.75,
+            0.72,
             0
           ],
           "b": [
             0.08,
             1.15,
-            0.03
+            -0.05
           ],
           "radius": 0.008
         },
-        "material": "leaf-green"
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "flower-bloom-1",
         "type": "sphere",
         "args": {
-          "radius": 0.045
+          "radius": 0.065
         },
         "transform": {
           "translate": [
             0.08,
             1.15,
-            0.03
+            -0.05
           ]
         },
-        "material": "fruit-red"
+        "material": {
+          "hue": 0.95,
+          "sat": 0.85,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "flower-stem-2",
@@ -297,32 +291,44 @@
         "args": {
           "a": [
             0,
-            0.75,
+            0.72,
             0
           ],
           "b": [
-            -0.06,
-            1.08,
-            -0.02
+            -0.12,
+            1.25,
+            0.08
           ],
           "radius": 0.008
         },
-        "material": "leaf-green"
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "flower-bloom-2",
         "type": "sphere",
         "args": {
-          "radius": 0.04
+          "radius": 0.072
         },
         "transform": {
           "translate": [
-            -0.06,
-            1.08,
-            -0.02
+            -0.12,
+            1.25,
+            0.08
           ]
         },
-        "material": "fruit-red"
+        "material": {
+          "hue": 0.98,
+          "sat": 0.8,
+          "value": 0.9,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "flower-stem-3",
@@ -330,98 +336,129 @@
         "args": {
           "a": [
             0,
-            0.75,
+            0.72,
             0
           ],
           "b": [
-            0.03,
-            1.22,
-            -0.04
+            0.05,
+            1.38,
+            0.03
           ],
           "radius": 0.008
         },
-        "material": "leaf-green"
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "flower-bloom-3",
         "type": "sphere",
         "args": {
-          "radius": 0.038
+          "radius": 0.058
         },
         "transform": {
           "translate": [
-            0.03,
-            1.22,
-            -0.04
+            0.05,
+            1.38,
+            0.03
           ]
         },
-        "material": "fruit-red"
+        "material": {
+          "hue": 0,
+          "sat": 0.88,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "leaf-1",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.025,
-            0.055,
-            0.008
+            0.035,
+            0.08,
+            0.015
           ]
         },
         "transform": {
           "translate": [
             0.04,
             0.95,
-            0.02
+            -0.03
           ],
           "rotate": [
             0.3,
-            0.5,
-            -0.4
+            -0.4,
+            0.2
           ]
         },
-        "material": "leaf-green"
+        "material": {
+          "hue": 0.3,
+          "sat": 0.7,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
       },
       {
         "id": "leaf-2",
         "type": "ellipsoid",
         "args": {
           "dims": [
-            0.025,
-            0.055,
-            0.008
+            0.032,
+            0.075,
+            0.012
           ]
         },
         "transform": {
           "translate": [
-            -0.03,
-            0.88,
-            -0.01
+            -0.06,
+            1.05,
+            0.05
           ],
           "rotate": [
-            -0.3,
-            -0.5,
-            0.4
+            -0.2,
+            0.5,
+            -0.3
           ]
         },
-        "material": "leaf-green"
+        "material": {
+          "hue": 0.3,
+          "sat": 0.7,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
       }
     ],
     "ground": {
-      "y": -0.85,
-      "region": "floor"
+      "y": -0.82,
+      "region": "ground",
+      "material": {
+        "hue": 0.1,
+        "sat": 0.18,
+        "value": 0.75,
+        "metal": 0,
+        "glow": 0
+      }
     },
     "defaults": {
       "camera": {
-        "yaw": 0.6,
+        "yaw": 0.55,
         "pitch": 0.22,
-        "distance": 3.2,
-        "focal": 1.8,
+        "distance": 3.8,
+        "focal": 1.6,
         "targetX": 0,
-        "targetY": 0.2,
+        "targetY": 0.3,
         "targetZ": 0
       },
       "light": {
-        "azimuth": -0.7,
+        "azimuth": -0.65,
         "altitude": 0.65,
         "distance": 25,
         "intensity": 1
@@ -429,7 +466,7 @@
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.45
+        "strength": 0.42
       }
     }
   }
