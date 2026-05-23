@@ -1,0 +1,181 @@
+{
+  "id": "forest-meteors",
+  "title": "森林·流星",
+  "prompt": "树·山·花·流星",
+  "code2d": "// 2D placeholder — main signal is 3D scene.\nexport const render = (ctx) => {\n  ctx.fillStyle = '#1a2530';\n  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  ctx.fillStyle = '#aab';\n  ctx.font = '14px sans-serif';\n  ctx.fillText('Tree + Mountains + Flowers + Meteors — switch to FLY 3D', 24, 48);\n};",
+  "sceneData": {
+    "v": 1,
+    "name": "Forest with Meteors",
+    "source": {
+      "format": "hand-crafted",
+      "prompt": "树·山·花·流星 — stylized maple tree on right, distant snow cones, scattered flowers, 3 staggered meteors crossing twilight sky",
+      "notes": "stylized-tree (4-layer with maple-leaf instances + wind sway) + 5 cone subjects as distant mountain silhouettes (terrain-heightmap dropped — it is an infinite plane that traps camera inside the terrain) + forest-flower (rep DomainGroup scatter) + 3 meteor-streak (emissive kind=3, chunkedTime cycles). Camera at z=-3 in front of the scene; light azimuth + low altitude for twilight glow; stars overlay activates because sun.altitude < 0.32; lens flares triggered when sun is in the camera frustum."
+    },
+    "subjects": [
+      {
+        "id": "mountain-left",
+        "type": "cone",
+        "args": { "height": 14, "baseRadius": 11 },
+        "transform": { "translate": [-22, 7, 55] },
+        "material": { "hue": 0.60, "sat": 0.06, "value": 0.88, "metal": 0.05, "glow": 0 }
+      },
+      {
+        "id": "mountain-center-back",
+        "type": "cone",
+        "args": { "height": 22, "baseRadius": 16 },
+        "transform": { "translate": [-3, 11, 62] },
+        "material": { "hue": 0.60, "sat": 0.05, "value": 0.92, "metal": 0.05, "glow": 0 }
+      },
+      {
+        "id": "mountain-center",
+        "type": "cone",
+        "args": { "height": 16, "baseRadius": 12 },
+        "transform": { "translate": [12, 8, 50] },
+        "material": { "hue": 0.60, "sat": 0.05, "value": 0.85, "metal": 0.05, "glow": 0 }
+      },
+      {
+        "id": "mountain-right",
+        "type": "cone",
+        "args": { "height": 18, "baseRadius": 13 },
+        "transform": { "translate": [30, 9, 58] },
+        "material": { "hue": 0.60, "sat": 0.06, "value": 0.88, "metal": 0.05, "glow": 0 }
+      },
+      {
+        "id": "mountain-far-left",
+        "type": "cone",
+        "args": { "height": 12, "baseRadius": 10 },
+        "transform": { "translate": [-38, 6, 60] },
+        "material": { "hue": 0.60, "sat": 0.07, "value": 0.80, "metal": 0.05, "glow": 0 }
+      },
+      {
+        "id": "hero-tree",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 5.5,
+          "trunkRad": 0.42,
+          "leafSize": 0.20,
+          "windK": 0.15
+        },
+        "transform": { "translate": [5, 0, 10] },
+        "material": { "hue": 0.02, "sat": 0.80, "value": 0.50, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "back-tree-1",
+        "type": "stylized-tree",
+        "args": { "trunkLen": 3.8, "trunkRad": 0.26, "leafSize": 0.15, "windK": 0.10 },
+        "transform": { "translate": [-14, 0, 28] },
+        "material": { "hue": 0.28, "sat": 0.55, "value": 0.42, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "back-tree-2",
+        "type": "stylized-tree",
+        "args": { "trunkLen": 2.6, "trunkRad": 0.20, "leafSize": 0.13, "windK": 0.10 },
+        "transform": { "translate": [-7, 0, 34] },
+        "material": { "hue": 0.30, "sat": 0.50, "value": 0.38, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "back-tree-3",
+        "type": "stylized-tree",
+        "args": { "trunkLen": 4.2, "trunkRad": 0.28, "leafSize": 0.15, "windK": 0.10 },
+        "transform": { "translate": [16, 0, 30] },
+        "material": { "hue": 0.27, "sat": 0.58, "value": 0.45, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "back-tree-4",
+        "type": "stylized-tree",
+        "args": { "trunkLen": 2.9, "trunkRad": 0.22, "leafSize": 0.13, "windK": 0.10 },
+        "transform": { "translate": [26, 0, 24] },
+        "material": { "hue": 0.30, "sat": 0.55, "value": 0.42, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "back-tree-5",
+        "type": "stylized-tree",
+        "args": { "trunkLen": 3.3, "trunkRad": 0.23, "leafSize": 0.13, "windK": 0.10 },
+        "transform": { "translate": [-22, 0, 36] },
+        "material": { "hue": 0.26, "sat": 0.60, "value": 0.40, "metal": 0, "glow": 0, "kind": "translucent" }
+      },
+      {
+        "id": "grass-mat",
+        "type": "grass-field",
+        "args": { "bladeHeight": 0.55, "density": 0.11 },
+        "transform": { "translate": [0, 0, 0] }
+      },
+      {
+        "id": "flower-field",
+        "type": "rep",
+        "args": { "period": [1.1, 0, 1.1], "count": [10, 0, 9] },
+        "source": {
+          "id": "flower-source",
+          "type": "forest-flower",
+          "args": { "stemH": 0.55, "bloomR": 0.16 },
+          "material": { "hue": 0.99, "sat": 0.88, "value": 0.78, "metal": 0, "glow": 0 }
+        },
+        "transform": { "translate": [-3, 0, 8] }
+      },
+      {
+        "id": "meteor-1",
+        "type": "meteor-streak",
+        "args": {
+          "origin":     [-22, 24, 35],
+          "velocity":   [4.0, -2.8, 0.3],
+          "trailLen":   1.8,
+          "period":     7.0,
+          "activeFrac": 0.5,
+          "phase":      0.0
+        }
+      },
+      {
+        "id": "meteor-2",
+        "type": "meteor-streak",
+        "args": {
+          "origin":     [-14, 28, 27],
+          "velocity":   [3.2, -2.4, 0.6],
+          "trailLen":   1.4,
+          "period":     7.0,
+          "activeFrac": 0.45,
+          "phase":      2.6
+        }
+      },
+      {
+        "id": "meteor-3",
+        "type": "meteor-streak",
+        "args": {
+          "origin":     [-28, 20, 40],
+          "velocity":   [5.0, -1.8, -0.8],
+          "trailLen":   2.0,
+          "period":     7.0,
+          "activeFrac": 0.55,
+          "phase":      4.8
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "ground",
+      "material": { "hue": 0.30, "sat": 0.55, "value": 0.30, "metal": 0, "glow": 0 }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": -0.18,
+        "pitch": 0.08,
+        "distance": 20,
+        "focal": 1.5,
+        "targetX": 2,
+        "targetY": 4.5,
+        "targetZ": 20
+      },
+      "light": {
+        "azimuth": 0.55,
+        "altitude": 0.22,
+        "distance": 90,
+        "intensity": 1.25
+      },
+      "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-05-21",
+    "model": "hand-crafted",
+    "costUSD": 0
+  }
+}

@@ -100,6 +100,15 @@
       "status": "ready",
       "file": "snow-mountain.json",
       "prompt": "雪山全景"
+    },
+    {
+      "id": "forest-meteors",
+      "title": "森林·流星",
+      "thesisPoint": "stylized-tree 4-layer + emissive (kind=3) + translucent (kind=4) + stars + lens flares",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "forest-meteors.json",
+      "prompt": "树·山·花·流星"
     }
   ]
 }

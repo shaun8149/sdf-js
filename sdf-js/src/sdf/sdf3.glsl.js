@@ -850,6 +850,244 @@ vec3 mirrorOctantYZ(vec3 p, vec2 dist) {
   return vec3(p.x, q.x, q.y);
 }
 
+// ---- Forest sprint helpers (stylized-tree + maple-leaf + flower + meteor) -
+// Idiom-only port from soft-servo/jake's 'Tree in the wind' Shadertoy (analysed
+// 2026-05-21). Re-implemented from first principles; no source code copied.
+// hg_sdf pModPolar + IQ sdTriangleIsosceles + Hoskins-style hash are
+// public-domain idioms re-implemented with original constants.
+
+// chunkedTime: continuous u_time -> (localT in 0..period, iterRand stable in
+// cycle). Lets one SDF helper drive per-particle cyclical motion (meteor
+// visible window, falling-leaves drop cycle, flickering lights). baseRand
+// seeds the phase so multiple particles cycle out of sync.
+vec2 chunkedTime(float t, float period, float baseRand) {
+  float total = t + baseRand * period;
+  float iter = floor(total / period);
+  float localT = total - iter * period;
+  float iterRand = fract(iter * 0.6180339887);
+  return vec2(localT, iterRand);
+}
+
+// IQ sdTriangleIsosceles 2D — apex at (0, q.y), half-width q.x. Building
+// block for maple-leaf and other organic 2D shapes.
+float sdTriangleIsosceles2D(vec2 p, vec2 q) {
+  p.x = abs(p.x);
+  vec2 a = p - q * clamp(dot(p, q) / dot(q, q), 0.0, 1.0);
+  vec2 b = p - q * vec2(clamp(p.x / q.x, 0.0, 1.0), 1.0);
+  float s = -sign(q.y);
+  vec2 d = min(vec2(dot(a, a), s * (p.x * q.y - p.y * q.x)),
+               vec2(dot(b, b), s * (p.y - q.y)));
+  return -sqrt(d.x) * sign(d.y);
+}
+
+// IQ opExtrusion — 2D distance to 3D extruded slab of half-height h.
+float opExtrusion3D(vec3 p, float dist2D, float h) {
+  vec2 w = vec2(dist2D, abs(p.z) - h);
+  return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
+}
+
+// Atlas-local Hoskins-style 1-in 1-out hash. Custom constants so we are not
+// copying David Hoskins CC BY-SA implementation directly.
+float forestHash1(float n) {
+  n = fract(n * 0.10307);
+  n *= n + 31.71;
+  n *= n + n;
+  return fract(n);
+}
+
+// Maple-leaf 2D — 3 isoceles triangles (1 main vertical + 2 sides at +-35deg)
+// plus per-leaf fract edge bumps for noisy outline.
+float sdMapleLeaf2D(vec2 p, float scale, float rand) {
+  vec2 pMain = vec2(p.x, scale * 2.0 - p.y);
+  float dMain = sdTriangleIsosceles2D(pMain, vec2(scale * 1.2, scale * 2.0));
+
+  vec2 pSide = pMain;
+  pSide.y -= scale * 0.75;
+  pSide.x = abs(pSide.x) - scale * 1.3;
+  float rc = cos(1.0996), rs = sin(1.0996);
+  pSide = mat2(rc, -rs, rs, rc) * pSide;
+  float dSide = sdTriangleIsosceles2D(pSide, vec2(scale * 0.55, scale * 1.3));
+
+  float d = min(dMain, dSide);
+  float edgeBumps = abs(fract((p.y + abs(p.x) * 2.0) * 8.0 + rand * 6.28) - 0.5)
+                  * 0.08
+                  * clamp(1.0 - abs(p.y / scale - 0.4) * 1.8, 0.0, 1.0);
+  d -= edgeBumps;
+  return d;
+}
+
+// Maple-leaf 3D — opExtrusion of 2D shape + cheap-bend curl by rand.
+float sdMapleLeaf3D(vec3 p, float scale, float rand) {
+  float bk = (rand - 0.5) * 5.0 / max(scale, 0.05);
+  float bc = cos(bk * p.x), bs = sin(bk * p.x);
+  vec3 q = vec3((mat2(bc, -bs, bs, bc) * p.xy), p.z);
+  float d2 = sdMapleLeaf2D(q.xy, scale, rand);
+  return opExtrusion3D(q, d2, scale * 0.04);
+}
+
+// Wavy capsule — vertical capsule with x-perturbation and base-to-tip taper.
+// Used as trunk + each main branch in sdStylizedTree.
+float sdWavyCapsule(vec3 p, float halfLen, float baseRad, float rand) {
+  float yN = clamp(p.y / (2.0 * max(halfLen, 0.01)), 0.0, 1.0);
+  float rad = baseRad * (1.0 - yN * 0.65);
+  float wave = sin((rand + p.y) / max(halfLen, 0.01) * 11.0) * 0.12 * baseRad;
+  vec3 q = p;
+  q.x += wave;
+  return sdCapsule(q, vec3(0.0, 0.0, 0.0), vec3(0.0, 2.0 * halfLen, 0.0), rad);
+}
+
+// 4-layer stylized tree.
+//   L1: wavy trunk
+//   L2: 3 height-layered main branch sets (pModPolar 6/5/3 fold)
+//   L3: cellular leaf instances via pMod3 inside canopy bound
+//   wind: trunk fixed, tips swing with sin(t*3.5) * heightK^2
+//
+// Args:
+//   trunkLen  - total trunk height
+//   trunkRad  - trunk base radius
+//   leafSize  - half-extent of canopy leaf
+//   windK     - wind sway amplitude (0=still, 0.15=breezy)
+float sdStylizedTree(vec3 p, float trunkLen, float trunkRad, float leafSize, float windK) {
+  float windFlex = sin(u_time * 3.5 + p.y * 0.08);
+  float heightK = clamp(p.y / max(trunkLen, 0.01), 0.0, 1.0);
+  p.x -= windK * windFlex * heightK * heightK;
+
+  float trunk = sdWavyCapsule(p, trunkLen * 0.5, trunkRad, 0.0);
+
+  float branches = 1e6;
+  // Layer 2a — 6-fold polar at 0.40 of trunkLen, tilt +0.32pi outward
+  {
+    vec3 pB = p - vec3(0.0, trunkLen * 0.40, 0.0);
+    pB = polarModY(pB, 6.0);
+    float ra = forestHash1(1.0);
+    float ang = 3.14159 * 0.32 + ra * 0.10;
+    float ca = cos(ang), sa = sin(ang);
+    pB.xy = mat2(ca, sa, -sa, ca) * pB.xy;
+    branches = min(branches, sdWavyCapsule(pB, trunkLen * 0.30, trunkRad * 0.55, ra));
+  }
+  // Layer 2b — 5-fold at 0.65, tilt +0.35pi
+  {
+    vec3 pB = p - vec3(0.0, trunkLen * 0.65, 0.0);
+    pB = polarModY(pB, 5.0);
+    float ra = forestHash1(2.0);
+    float ang = 3.14159 * 0.35 - ra * 0.05;
+    float ca = cos(ang), sa = sin(ang);
+    pB.xy = mat2(ca, sa, -sa, ca) * pB.xy;
+    branches = min(branches, sdWavyCapsule(pB, trunkLen * 0.24, trunkRad * 0.45, ra));
+  }
+  // Layer 2c — 3-fold at 0.85, tilt +0.22pi
+  {
+    vec3 pB = p - vec3(0.0, trunkLen * 0.85, 0.0);
+    pB = polarModY(pB, 3.0);
+    float ra = forestHash1(3.0);
+    float ang = 3.14159 * 0.22 - ra * 0.10;
+    float ca = cos(ang), sa = sin(ang);
+    pB.xy = mat2(ca, sa, -sa, ca) * pB.xy;
+    branches = min(branches, sdWavyCapsule(pB, trunkLen * 0.18, trunkRad * 0.35, ra));
+  }
+
+  // Canopy bound: 3-lobe cluster (irregular like real tree). Each lobe is a
+  // sphere; min() unions them. Slight vertical elongation so canopy is taller
+  // than wide (mimics maple silhouette).
+  vec3 pCan = p - vec3(0.0, trunkLen * 0.95, 0.0);
+  // Vertical squish: y-scale 0.75 so ellipsoid is taller in y direction
+  float canopyR0 = trunkLen * 0.55;
+  vec3 lobeOff1 = vec3( trunkLen * 0.20, trunkLen * 0.10,  trunkLen * 0.15);
+  vec3 lobeOff2 = vec3(-trunkLen * 0.30, trunkLen * 0.00, -trunkLen * 0.18);
+  vec3 lobeOff3 = vec3( trunkLen * 0.05, trunkLen * 0.25,  trunkLen * 0.05);
+  float c0 = length(vec3(pCan.x - lobeOff1.x, (pCan.y - lobeOff1.y) * 0.85, pCan.z - lobeOff1.z)) - canopyR0 * 0.78;
+  float c1 = length(vec3(pCan.x - lobeOff2.x, (pCan.y - lobeOff2.y) * 0.85, pCan.z - lobeOff2.z)) - canopyR0 * 0.80;
+  float c2 = length(vec3(pCan.x - lobeOff3.x, (pCan.y - lobeOff3.y) * 0.85, pCan.z - lobeOff3.z)) - canopyR0 * 0.72;
+  float canopyBound = min(c0, min(c1, c2));
+
+  float leaves;
+  if (canopyBound > leafSize * 3.0) {
+    leaves = canopyBound;
+  } else {
+    float cellSize = leafSize * 2.1;
+    vec3 idCell = floor(p / cellSize + 0.5);
+    vec3 pCell = p - cellSize * idCell;
+    float ra = forestHash1(idCell.x * 31.7 + idCell.y * 67.3 + idCell.z * 113.1);
+    float rotA = ra * 6.2832;
+    float rc = cos(rotA), rs = sin(rotA);
+    pCell.xz = mat2(rc, -rs, rs, rc) * pCell.xz;
+    pCell.x += (ra - 0.5) * cellSize * 0.4;
+    pCell.z += (fract(ra * 7.13) - 0.5) * cellSize * 0.4;
+    pCell.y += (fract(ra * 3.71) - 0.5) * cellSize * 0.3;
+    float leaf = sdMapleLeaf3D(pCell, leafSize, ra);
+    leaves = max(leaf, canopyBound - leafSize * 0.6);
+  }
+
+  float wood = opSmoothUnion(trunk, branches, trunkRad * 0.4);
+  return opSmoothUnion(wood, leaves, leafSize * 0.25);
+}
+
+// Grass blade field — pMod2 cells, 1 tapered blade per cell, wind sway.
+// Infinite in xz; caller can wrap in rep DomainGroup to clip. Each blade is
+// a capped cone from y=0 to y=h with random per-cell height/tilt. Step factor
+// 0.6 applied because thin tapered features need conservative sphere-trace.
+//   Args:
+//     bladeHeight - max blade tip y (typical 0.25-0.5)
+//     density     - cell size (smaller = denser; typical 0.10)
+float sdGrassField(vec3 p, float bladeHeight, float density) {
+  // Bounding-slab early-out — above the max blade tip, return slab distance
+  float maxH = bladeHeight * 1.4;
+  if (p.y > maxH + density) return (p.y - maxH) * 0.6;
+  // Below ground: large
+  if (p.y < -density * 2.0) return abs(p.y);
+
+  float cell = density;
+  vec2 idCell = floor(p.xz / cell + 0.5);
+  vec2 pCell = p.xz - cell * idCell;
+  float rand = forestHash1(idCell.x * 13.71 + idCell.y * 27.33);
+  float h = bladeHeight * (0.55 + rand * 0.65);
+  // Wind sway: x-offset proportional to height (tip swings most)
+  float windPhase = idCell.x * 1.7 + idCell.y * 2.3 + rand * 6.28;
+  float wind = sin(u_time * 2.5 + windPhase) * 0.06;
+  vec3 pLocal = vec3(pCell.x - wind * p.y, p.y, pCell.y);
+  // Tapered capped-cone blade: thick at base (0.013), almost tip (0.001)
+  float d = sdCappedCone(pLocal, vec3(0.0, 0.0, 0.0), vec3(0.0, h, 0.0), 0.014, 0.001);
+  return d * 0.6;
+}
+
+// Forest flower — 5-petal bloom + thin stem. Pair with rep for ground field.
+float sdForestFlower(vec3 p, float stemH, float bloomR) {
+  float stem = sdCapsule(p, vec3(0.0, 0.0, 0.0), vec3(0.0, stemH, 0.0), stemH * 0.025);
+  vec3 pH = p - vec3(0.0, stemH, 0.0);
+  pH.y *= 1.8;
+  vec3 pPetal = polarModY(pH, 5.0);
+  vec3 petalC = vec3(bloomR * 0.65, 0.0, 0.0);
+  float petal = length(pPetal - petalC) - bloomR * 0.5;
+  float center = length(pH) - bloomR * 0.32;
+  float bloom = opSmoothUnion(petal, center, bloomR * 0.18);
+  return opSmoothUnion(stem, bloom, bloomR * 0.10);
+}
+
+// Meteor streak — emissive capsule that traverses sky once per cycle. Uses
+// chunkedTime() so multiple meteor subjects with staggered phase look like
+// a continuous shower instead of synchronized lockstep.
+//   origin     - position at start of active window
+//   velocity   - units/second
+//   trailLen   - head-to-tail length
+//   period     - cycle length seconds (active + dark)
+//   activeFrac - 0..1 fraction of cycle visible
+//   phase      - seconds offset for stagger
+float sdMeteorStreak(vec3 p, vec3 origin, vec3 velocity,
+                     float trailLen, float period, float activeFrac, float phase) {
+  vec2 ct = chunkedTime(u_time + phase, period, 0.0);
+  float tCyc = ct.x;
+  float tActiveMax = activeFrac * period;
+  if (tCyc >= tActiveMax) return 1e6;
+  float t01 = tCyc / max(tActiveMax, 0.001);
+  vec3 head = origin + velocity * tCyc;
+  vec3 vDir = normalize(velocity);
+  vec3 tail = head - vDir * trailLen;
+  float fade = smoothstep(0.0, 0.12, t01) * smoothstep(1.0, 0.85, t01);
+  if (fade < 0.02) return 1e6;
+  float r = mix(0.04, 0.18, fade);
+  return sdCapsule(p, head, tail, r);
+}
+
 // ---- Time-aware primitives -------------------------------------------------
 // 这些 primitive 内部引用 u_time（caller shader 必须 declare uniform float u_time）。
 // BOB GPU / flyLambert 都已声明。autoscope-clone scene-1 sea ground 用。
@@ -1306,6 +1544,10 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdCanalBridge',
   'sdCanalLampBulb',
   'sdTerrainHeightmap',
+  // Forest sprint
+  'sdMapleLeaf2D', 'sdMapleLeaf3D', 'sdWavyCapsule',
+  'sdStylizedTree', 'sdForestFlower', 'sdMeteorStreak',
+  'sdGrassField',
 ];
 
 export const SDF3_GLSL_OPS = [

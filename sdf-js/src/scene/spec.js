@@ -76,6 +76,23 @@ export const PRIMITIVE_TYPES = new Set([
   'canal-lamp-bulb',
   // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
   'terrain-heightmap',
+  // Forest sprint atoms (tree + leaf + flower scatter + emissive meteor streak).
+  // stylized-tree = 4-layer: wavy trunk + 3 polar-replicated main branch layers
+  //   (pModPolar 6/5/3) + cellular leaf instances (pMod3 + maple-leaf) +
+  //   wind sway at canopy. Recipe ported from soft-servo/jake's "Tree in the
+  //   wind" Shadertoy (re-implemented from idiom analysis, no source copy).
+  // maple-leaf = 2D primitive: 3 isoceles triangles (1 main + 2 ±35° sides)
+  //   + fract-edge pointy bumps. Extrudable via the standard extrude pseudo-prim.
+  // forest-flower = stem + 5-petal polar bloom (compose with `rep` for fields).
+  // meteor-streak = time-animated emissive capsule using chunkedTime idiom
+  //   (per-particle cycling). Requires material.kind='emissive' (auto-attached).
+  'stylized-tree',
+  'maple-leaf',
+  'forest-flower',
+  'meteor-streak',
+  // grass-field — pMod2 cellular tapered-cone blades + wind sway. Infinite
+  // xz field by default (wrap in rep with count to clip). Translucent-friendly.
+  'grass-field',
   // 2D → 3D pseudo-primitives
   'extrude', 'revolve', 'extrude_to',
 ]);
@@ -230,10 +247,20 @@ export function resolveMaterial(input) {
 }
 
 // String-to-int mapping for material.kind. Keeps GLSL side a simple int compare.
+// 3 = emissive: bypass lighting equation, render base * (1 + glow*4). Used by
+// meteor-streak + future neon/lava/aurora atoms. Reads hue/sat/value/glow from
+// the same material LUT; pattern is skipped.
+// 4 = translucent: Lambert + Henyey-Greenstein backlight (sun-behind-surface
+// glow). For thin organic surfaces — leaves, petals, paper lanterns. Idiom
+// from soft-servo/jake "Tree in the wind" (recipe-only port; CC BY-SA hashes
+// not used). Renderer adds `backlight = HG_phase(rd · sunDir, 0.5) * albedo² *
+// shadow * 4.0` on top of normal Lambert.
 export const MATERIAL_KIND_INDEX = {
-  normal:   0,
-  sea:      1,
-  mountain: 2,
+  normal:      0,
+  sea:         1,
+  mountain:    2,
+  emissive:    3,
+  translucent: 4,
 };
 
 // =============================================================================

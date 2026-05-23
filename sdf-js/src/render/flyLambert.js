@@ -325,6 +325,95 @@ vec3 shadeReflection(vec3 p, vec3 rd, float matId, float hitIdx, vec3 sunDir) {
   return base * sunCol * diff * 1.0 + base * skyCol * skyL * 0.35 + base * glowK * 1.4;
 }
 
+// Multi-layer star field — sky-only post-process. 3 octaves of cellular
+// stars with shrinking grid + brightness. Masked by sun altitude so stars
+// only appear at twilight/night. Idiom from soft-servo/jake 'Tree in the
+// wind' (recipe-only port, our own hash impl via forestHash1).
+vec3 atlasStarsOverlay(vec3 col, vec3 rd, vec3 sunDir, float t) {
+  float nightK = 1.0 - smoothstep(-0.1, 0.32, sunDir.y);
+  if (nightK < 0.02 || rd.y < 0.02) return col;
+  float horizonK = smoothstep(0.02, 0.4, rd.y);
+
+  float rdY = max(0.06, rd.y + 0.35);
+  vec2 baseUv = rd.xz / rdY;
+  baseUv.x += t * 0.008;
+
+  vec3 stars = vec3(0.0);
+  float scale = 1.0;
+  for (int i = 0; i < 3; i++) {
+    vec2 uvL = baseUv + vec2(float(i) * 1.618, 0.0);
+    float cell = 0.08 * scale;
+    vec2 id = floor(uvL / cell + 0.5);
+    vec2 q = uvL - cell * id;
+    float seed = id.x * 31.7 + id.y * 67.3 + float(i) * 113.1;
+    float h1 = forestHash1(seed);
+    float h2 = forestHash1(seed * 1.31 + 7.0);
+    float h3 = forestHash1(seed * 2.71 + 11.0);
+    q -= cell * (vec2(h1, h2) - 0.5) * 0.6;
+    float heat = h3 * h3;
+    float starR = (0.04 + heat * 0.09) * cell;
+    float fade = smoothstep(starR, 0.0, length(q));
+    vec3 starColor = vec3(0.85, 0.88, 0.96) + 0.20 * vec3(h1, h2, h3);
+    stars += fade * fade * starColor * (0.5 + heat * 1.4);
+    scale *= 0.55;
+  }
+  return col + stars * horizonK * nightK;
+}
+
+// IQ sdOctogon 2D — for lens flare ghosts. Centred at origin, radius r.
+float sdOctogon2D(vec2 p, float r) {
+  const vec3 ko = vec3(-0.9238795325, 0.3826834323, 0.4142135623);
+  p = abs(p);
+  p -= 2.0 * min(dot(vec2( ko.x, ko.y), p), 0.0) * vec2( ko.x, ko.y);
+  p -= 2.0 * min(dot(vec2(-ko.x, ko.y), p), 0.0) * vec2(-ko.x, ko.y);
+  p -= vec2(clamp(p.x, -ko.z * r, ko.z * r), r);
+  return length(p) * sign(p.y);
+}
+
+// Lens flares — screen-space post. 6 octagon ghosts along sun line + 8-blade
+// aperture starburst at sun. Masked by sun-above-horizon. Recipe inspired by
+// soft-servo/jake (no source copy; offsets/colors are our own).
+vec3 atlasLensFlares(vec3 col, vec2 uv, vec3 sunDir) {
+  if (sunDir.y < 0.0) return col;  // sun below horizon
+  float zProj = dot(sunDir, u_camFwd);
+  if (zProj < 0.05) return col;    // sun behind camera
+
+  float pScale = u_focal / zProj;
+  vec2 sunUv = vec2(
+    dot(sunDir, u_camRight) * pScale,
+    dot(sunDir, u_camUp)    * pScale
+  );
+
+  // Off-screen sun → most flares miss; clamp distance to skip if sun too far
+  vec2 vToSun = sunUv - uv;
+  float dToSun = length(vToSun);
+
+  vec3 sunCol = vec3(1.0, 0.92, 0.72);
+  vec3 flares = vec3(0.0);
+
+  // 6 octagon ghosts at sun-line offsets
+  flares += 0.45 * vec3(0.10, 0.15, 0.04) * smoothstep(0.04, 0.0, sdOctogon2D(uv - sunUv *  0.50, 0.18));
+  flares += 0.55 * vec3(0.02, 0.10, 0.10) * smoothstep(0.03, 0.0, sdOctogon2D(uv - sunUv *  0.25, 0.10));
+  flares += 0.65 * vec3(0.12, 0.10, 0.08) * smoothstep(0.02, 0.0, sdOctogon2D(uv - sunUv *  0.12, 0.06));
+  flares += 0.40 * vec3(0.15, 0.06, 0.03) * smoothstep(0.02, 0.0, sdOctogon2D(uv - sunUv * -0.18, 0.10));
+  flares += 0.30 * vec3(0.04, 0.16, 0.10) * smoothstep(0.04, 0.0, sdOctogon2D(uv - sunUv * -0.40, 0.22));
+  flares += 0.20 * vec3(0.18, 0.05, 0.02) * smoothstep(0.10, 0.0, sdOctogon2D(uv - sunUv * -1.20, 0.30));
+
+  // 8-blade aperture starburst centered on sun
+  if (dToSun < 1.6) {
+    float ang = atan(vToSun.y, vToSun.x);
+    float burst = 0.5 + 0.5 * cos(8.0 * ang + 1.5708);
+    burst = pow(burst, 80.0);
+    float falloff = smoothstep(1.4, 0.04, dToSun);
+    flares += burst * falloff * sunCol * 0.45;
+  }
+  // Soft halo at sun
+  float halo = smoothstep(0.30, 0.0, dToSun);
+  flares += halo * halo * sunCol * 0.12;
+
+  return col + flares * 0.5;
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
@@ -354,6 +443,9 @@ void main() {
   vec3 col;
   if (!hit) {
     col = sky(rd, sunDir);
+    // Stars overlay — twilight/night only (masked by sun altitude). Layered
+    // before clouds so clouds cover stars (correct depth order).
+    col = atlasStarsOverlay(col, rd, sunDir, u_time);
     // Volumetric cloud overlay (robobo1221-inspired, sky-only). Returns the
     // sky color unchanged when looking down; mixes in clouds for rays going
     // up. Lit by sunDir + warm sun palette matching the sky() horizon glow.
@@ -387,13 +479,25 @@ void main() {
     vec3 base = vec3(0.0);
     float metalK = 0.0;
     float glowK = 0.0;
-    bool isSea = false;       // routed via material.kind=='sea'      (tone.y ≈ 1)
-    bool isMountain = false;  // routed via material.kind=='mountain' (tone.y ≈ 2)
+    bool isSea = false;         // material.kind == 'sea'         (tone.y ~ 1)
+    bool isMountain = false;    // material.kind == 'mountain'    (tone.y ~ 2)
+    bool isEmissive = false;    // material.kind == 'emissive'    (tone.y ~ 3)
+    bool isTranslucent = false; // material.kind == 'translucent' (tone.y ~ 4)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      if (leafTone.y > 1.5) {
+      // Check higher kinds first (4 > 3 > 2 > 1 > 0).
+      if (leafTone.y > 3.5) {
+        isTranslucent = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+        metalK = leafMat.z;
+        glowK  = leafMat.w;
+      } else if (leafTone.y > 2.5) {
+        isEmissive = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+        glowK  = leafMat.w;
+      } else if (leafTone.y > 1.5) {
         isMountain = true;
       } else if (leafTone.y > 0.5) {
         isSea = true;  // skip Lambert; handled in sea-shading block below
@@ -468,6 +572,36 @@ void main() {
       vec3 scattering = vec3(0.0293, 0.0698, 0.1717) * 0.1 * crestK;
 
       col = seaFres * reflection * 2.0 + scattering;
+    } else if (isEmissive) {
+      // Emissive: bypass lighting equation. Color = base * (1 + 4*glow). Used
+      // by meteor-streak (warm-white tail, glow ~ 2.0 default). ACES later
+      // rolls off the high values for cinematic punch.
+      col = base * (1.0 + 4.0 * glowK);
+      // Atmospheric perspective still applies — distant meteors fade into sky
+      float emFog = atmosphereDensity(p, t);
+      col = mix(col, sky(rd, sunDir), emFog * 0.4);
+    } else if (isTranslucent) {
+      // Translucent: standard Lambert + Henyey-Greenstein backlight. When sun
+      // is behind the surface, rd aligns with sunDir → HG phase peaks → leaf
+      // glows red-warm. Recipe from soft-servo/jake 'Tree in the wind' (no
+      // source copy — independent HG phase derivation from IQ formula).
+      vec3 sunCol = vec3(1.05, 0.96, 0.84);
+      vec3 skyCol = vec3(0.50, 0.62, 0.84);
+      float diffT = max(dot(n, toLight), 0.0);
+      // Backlight via HG phase. g=0.5 = forward-skewed scattering. albedo²
+      // gives the saturated tint that real translucent foliage shows. Mask by
+      // shadowK so backlit-but-shadowed leaves don't bloom.
+      float cosA = clamp(dot(sunDir, -rd), -1.0, 1.0);
+      float g = 0.5;
+      float k = 1.55*g - 0.55*g*g*g;
+      float f = 1.0 - k * cosA;
+      float hgPhase = (1.0 - k*k) / (12.5664 * f * f);
+      vec3 backlight = hgPhase * shadowK * base * base * sunCol * 4.0;
+      vec3 lit = base * sunCol * diffT * shadowK * 1.05
+               + base * skyCol * skyL * ao * 0.40
+               + backlight;
+      float tFog = atmosphereDensity(p, t);
+      col = mix(lit, sky(rd, sunDir), tFog);
     } else if (isMountain) {
       // ---- Mountain-shading branch (IQ Elevated + outdoor 3-light) ---------
       // Snow-line by surface normal: bias toward sun direction (sun-facing
@@ -575,6 +709,12 @@ void main() {
       col += base * glowK * 1.4;
     }
   }
+
+  // Lens flares — screen-space post applied to all pixels. Cheap (just
+  // octagon SDFs + 8-blade starburst). Masked internally by sun-above-horizon
+  // and sun-in-frustum. Sun-occluded flares would need a visibility raymarch
+  // (deferred — current sprint accepts always-visible flares).
+  col = atlasLensFlares(col, uv, sunDir);
 
   // Global ACES filmic tonemap (Hill / Narkowicz public-domain fit). Replaces
   // the old pow(0.4545) gamma — handles HDR sky+sun output without flattening

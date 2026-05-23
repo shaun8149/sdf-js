@@ -398,6 +398,26 @@ const PRIMS = {
   // snow-line + 3-light + slope-AO + height-fog branch in flyLambert.
   'terrain-heightmap': ([maxHeight, hwRatio], p) =>
     `sdTerrainHeightmap(${p}, ${flt(maxHeight)}, ${flt(hwRatio)})`,
+
+  // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.
+  // stylized-tree(trunkLen, trunkRad, leafSize, windK) — 4-layer composition.
+  'stylized-tree': ([trunkLen, trunkRad, leafSize, windK], p) =>
+    `sdStylizedTree(${p}, ${flt(trunkLen)}, ${flt(trunkRad)}, ${flt(leafSize)}, ${flt(windK)})`,
+  // maple-leaf(scale, rand) — single 3D leaf (compose with rep for fallen-leaf scatter).
+  'maple-leaf': ([scale, rand], p) =>
+    `sdMapleLeaf3D(${p}, ${flt(scale)}, ${flt(rand)})`,
+  // forest-flower(stemH, bloomR) — 5-petal flower (compose with rep for fields).
+  'forest-flower': ([stemH, bloomR], p) =>
+    `sdForestFlower(${p}, ${flt(stemH)}, ${flt(bloomR)})`,
+  // meteor-streak(origin, velocity, trailLen, period, activeFrac, phase) — animated
+  // emissive capsule. origin + velocity are vec3 arrays. Auto-attaches emissive
+  // material.kind unless author overrides.
+  'meteor-streak': ([origin, velocity, trailLen, period, activeFrac, phase], p) =>
+    `sdMeteorStreak(${p}, ${vec3(origin)}, ${vec3(velocity)}, ${flt(trailLen)}, ${flt(period)}, ${flt(activeFrac)}, ${flt(phase)})`,
+  // grass-field(bladeHeight, density) — pMod2 cellular grass blades, wind sway.
+  // Infinite in xz; caller wraps in rep + count to clip if a finite patch desired.
+  'grass-field': ([bladeHeight, density], p) =>
+    `sdGrassField(${p}, ${flt(bladeHeight)}, ${flt(density)})`,
 };
 
 // ---- op emitters -----------------------------------------------------------

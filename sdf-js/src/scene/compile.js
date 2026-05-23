@@ -44,6 +44,7 @@ import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
 import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
 import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
+import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
   pineTreeSDF, broadleafTreeSDF,
@@ -309,6 +310,34 @@ const PRIMITIVE_FACTORIES = {
     hwRatio:   a.hwRatio   ?? 0.08,
   }),
 
+  // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
+  'stylized-tree': (a) => stylizedTreeSDF({
+    trunkLen: a.trunkLen ?? a.trunkHeight ?? 5.0,
+    trunkRad: a.trunkRad ?? a.trunkRadius ?? 0.4,
+    leafSize: a.leafSize ?? 0.18,
+    windK:    a.windK    ?? a.wind        ?? 0.12,
+  }),
+  'maple-leaf': (a) => mapleLeafSDF({
+    scale: a.scale ?? 0.15,
+    rand:  a.rand  ?? a.seed ?? 0.5,
+  }),
+  'forest-flower': (a) => forestFlowerSDF({
+    stemH:  a.stemH  ?? a.stemHeight ?? 1.0,
+    bloomR: a.bloomR ?? a.bloomRadius ?? 0.16,
+  }),
+  'grass-field': (a) => grassFieldSDF({
+    bladeHeight: a.bladeHeight ?? a.height ?? 0.40,
+    density:     a.density     ?? a.cellSize ?? 0.10,
+  }),
+  'meteor-streak': (a) => meteorStreakSDF({
+    origin:     a.origin     ?? [-15, 18, 25],
+    velocity:   a.velocity   ?? [3.5, -2.5, 0.5],
+    trailLen:   a.trailLen   ?? a.length ?? 1.4,
+    period:     a.period     ?? 7.0,
+    activeFrac: a.activeFrac ?? 0.5,
+    phase:      a.phase      ?? 0.0,
+  }),
+
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.
   extrude:      null,
@@ -375,6 +404,17 @@ export function compile(sceneData) {
         // Mountain material: hue/sat/value mostly irrelevant — mountain branch
         // uses snow/rock palette internally. kind=2 routes to that branch.
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.7, metal: 0, glow: 0, kind: 'mountain' });
+      } else if (subj.type === 'meteor-streak' && compiled.sdf._subjectMaterial == null) {
+        // Meteor: warm-white emissive (warm tail trail). kind=3 routes to the
+        // emissive branch in flyLambert (bypass lighting, base * (1 + 4*glow)).
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.10, sat: 0.35, value: 1.0, metal: 0, glow: 2.0, kind: 'emissive' });
+      } else if (subj.type === 'maple-leaf' && compiled.sdf._subjectMaterial == null) {
+        // Maple leaf: autumn red default + translucent kind=4 → HG backlight
+        // when sun behind leaf. Author can override with any HSV + kind.
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.02, sat: 0.85, value: 0.55, metal: 0, glow: 0, kind: 'translucent' });
+      } else if (subj.type === 'grass-field' && compiled.sdf._subjectMaterial == null) {
+        // Grass: fresh green + translucent kind=4 → HG backlight at twilight.
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.28, sat: 0.70, value: 0.50, metal: 0, glow: 0, kind: 'translucent' });
       }
       // (compiled.sdf already keeps any nested-propagated _subjectMaterial.)
       const topLevelPat = resolvePattern(subj.pattern);
