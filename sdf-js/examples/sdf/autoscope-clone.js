@@ -74,11 +74,6 @@ function wireSlider(id, digits = 2) {
 }
 wireSlider('coldiv', 2);
 wireSlider('world-scale', 2);
-wireSlider('noise', 5);
-wireSlider('exposure', 2);
-wireSlider('saturation', 2);
-wireSlider('shadow-strength', 2);
-wireSlider('post-noise', 2);
 wireSlider('focal', 2);
 
 // =============================================================================
@@ -93,34 +88,31 @@ function ensureRenderer() {
     twoPass: true,              // ← autoscope 2-pass FBO sand painting
     bufferResolution: 320,      // 低分 buffer，全屏 canvas 上呈"颗粒/水彩"感
     getControls: () => {
-      // Generator-V output (deterministic from styleHash) gated by UI toggle.
-      // applyStyleGate(style, false) → identity DEFAULT_STYLE (palette preserved)
+      // Generator-V output gated by knobs-on toggle (mirror/twist/gridRot/etc).
       const styleGated = applyStyleGate(currentStyle, $('knobs-on').checked);
-      // shadowMode in BobStyle is named `shadow`; bob expects `shadowMode`. Map.
-      const shadowMode = styleGated.shadow ?? +$('shadow-mode').value;
       return {
+        // Style-driven (Generator-V) — spread FIRST so locked-baseline below wins
+        ...styleGated,
+        postNoiseCap:  styleGated.noiseCap,
+        postColorLeak: styleGated.colorLeak,
+        // Light + camera (locked):
         lightAzim: 0.6,
         lightAlt:  0.5,
         lightDist: 50,
         fov:        +$('focal').value,
         shadowsOn:  $('shadows-on').checked,
         groundOn:   false,
-        noiseSpeed: +$('noise').value,
-        worldScale: +$('world-scale').value,
-        // Style-driven (Generator-V):
-        ...styleGated,
-        shadowMode,  // rename for bobShader
-        // Style param renames bobShader expects: postNFactor / postNoiseCap / postColorLeak
-        // post-noise slider → u_nFactor (overall sand-painting noise dial, 0..2)
-        postNFactor:   +$('post-noise').value,
-        postNoiseCap:  styleGated.noiseCap,
-        postColorLeak: styleGated.colorLeak,
-        // UI slider overrides (locked baseline — these are the visual identity user signed off on)
+        // Locked baseline (UI sliders removed on user request — visual identity signed off):
+        noiseSpeed:     0.00016,
+        exposure:       1.50,
+        saturation:     0.65,
+        shadowStrength: 0.30,
+        postNFactor:    0.40,
+        shadowMode:     0,
+        // Slider-controlled:
         coldiv:     +$('coldiv').value,
+        worldScale: +$('world-scale').value,
         coloration: +$('coloration').value,
-        shadowStrength: +$('shadow-strength').value,
-        exposure:   +$('exposure').value,
-        saturation: +$('saturation').value,
         seed:       1.0,
       };
     },
