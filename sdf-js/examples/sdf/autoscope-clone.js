@@ -100,7 +100,7 @@ function ensureRenderer() {
         lightAlt:  0.5,
         lightDist: 50,
         fov:        +$('focal').value,
-        shadowsOn:  $('shadows-on').checked,
+        shadowsOn:  true,  // shadows-on checkbox removed; always on
         groundOn:   false,
         // Locked baseline (UI sliders removed on user request — visual identity signed off):
         noiseSpeed:     0.00016,

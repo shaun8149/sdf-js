@@ -669,12 +669,13 @@ void main() {
   if (u_animation == 1) {
     ro += u_camFwd * u_time * 0.10;
   } else if (u_animation == 2) {
-    float a = u_time * 0.05;
+    // Orbit + dolly-out — speed halved 2026-05-23 per user
+    float a = u_time * 0.025;
     float c2 = cos(a), s2 = sin(a);
     mat3 Rm = mat3(c2, 0.0, s2,  0.0, 1.0, 0.0,  -s2, 0.0, c2);
     ro = Rm * ro;
     rd = Rm * rd;
-    ro -= u_camFwd * u_time * 0.10;
+    ro -= u_camFwd * u_time * 0.05;
   } else if (u_animation == 3) {
     ro.x += u_time * 0.05;
   } else if (u_animation == 4) {
