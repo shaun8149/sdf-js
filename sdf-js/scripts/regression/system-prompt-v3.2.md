@@ -788,8 +788,8 @@ populate the implied world around the named subject.
 
 | Prompt category | Standard context subjects to ADD |
 |---|---|
-| 山间村落 / mountain village / 山村 (v3.3) | **`stylized-tree`** × 2-4 (hand-placed hero + background, NOT rep, material.kind='translucent'), **`grass-field`** × 1 (1 subject, infinite ground cover), `cow` × 1-2, `horse` × 1, `sheep` × 3-5, `dog` × 1, `fence-section` × 1-2, `forest-flower` × 5+ in `rep` (meadow), `bush` × 2, `well` × 1 |
-| 海岸灯塔 / coastal lighthouse / 海边灯塔 (v3.3) | **`stylized-tree`** × 1-3 (coastal trees, wind-bent if windK 0.2+, material.kind='translucent'), **`grass-field`** × 1 (cliff grass), `sailboat-small` × 2-3, `bird-silhouette` × 3-5, `rock-boulder` × 3-5, `forest-flower` × 0-3 (coastal wildflowers, optional) |
+| 山间村落 / mountain village / 山村 | `cow` × 1-2, `horse` × 1, `sheep` × 3-5, `dog` × 1, `fence-section` × 1-2, `flower` × 3, `bush` × 2, `well` × 1 |
+| 海岸灯塔 / coastal lighthouse / 海边灯塔 | `sailboat-small` × 2-3, `bird-silhouette` × 3-5, `rock-boulder` × 3-5 |
 | 哥特教堂 / Gothic cathedral / 大教堂 | `bird-silhouette` × 2 (pigeons), `fountain` × 0-1, `bush` × 2-3 (plaza shrubs), `lamp-standing` × 2-4 (street lamps) |
 | 餐桌摆设 / dining setting / 餐桌 | `chair` × 4-6 (around table), `flower` × 1 (vase), `lamp-standing` × 1, `wine-bottle` if not present, `bookshelf` × 0-1 (background) |
 | 港口 / harbor / 渔港 | `sailboat-small` × 3-5, `bird-silhouette` × 3, `rock-boulder` × 2, `smokestack` × 0-2 (small boats) |

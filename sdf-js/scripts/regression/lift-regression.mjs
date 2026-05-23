@@ -82,7 +82,9 @@ const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 // v3.1 = MANDATORY scene contextual augmentation (16-row category table) — frozen 2026-05-23
 // v3.2 = forest atoms (stylized-tree / maple-leaf / forest-flower / grass-field /
 //        meteor-streak) + material.kind=3 emissive + kind=4 translucent + worked
-//        example 7 — read from LIVE file so future edits flow into next run
+//        example 7 — frozen 2026-05-23
+// v3.3 = 山间村落 + 海岸灯塔 augmentation rows updated to v3.2 vocabulary —
+//        read from LIVE file so future edits flow into next regression run
 const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
 const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
 const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
@@ -90,10 +92,12 @@ const V22_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 const V23_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.3.md`, 'utf-8');
 const V30_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.0.md`, 'utf-8');
 const V31_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.1.md`, 'utf-8');
-const V32_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const V32_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.2.md`, 'utf-8');
+const V33_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
   'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
+  'v3.3': V33_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -344,13 +348,14 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
   else if (versionArg === 'v2.3-vs-v3.0') versions = ['v2.3', 'v3.0'];
   else if (versionArg === 'v3.0-vs-v3.1') versions = ['v3.0', 'v3.1'];
   else if (versionArg === 'v3.1-vs-v3.2') versions = ['v3.1', 'v3.2'];
+  else if (versionArg === 'v3.2-vs-v3.3') versions = ['v3.2', 'v3.3'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
