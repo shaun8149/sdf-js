@@ -111,15 +111,16 @@ function ensureRenderer() {
         ...styleGated,
         shadowMode,  // rename for bobShader
         // Style param renames bobShader expects: postNFactor / postNoiseCap / postColorLeak
-        postNFactor:   styleGated.nFactor,
+        // post-noise slider → u_nFactor (overall sand-painting noise dial, 0..2)
+        postNFactor:   +$('post-noise').value,
         postNoiseCap:  styleGated.noiseCap,
         postColorLeak: styleGated.colorLeak,
-        // UI slider overrides (advanced)
-        coldiv:     +$('coldiv').value || styleGated.coldiv,
-        coloration: +$('coloration').value || styleGated.coloration,
-        shadowStrength: +$('shadow-strength').value || styleGated.shadowStrength,
-        exposure:   +$('exposure').value || styleGated.exposure,
-        saturation: +$('saturation').value || styleGated.saturation,
+        // UI slider overrides (locked baseline — these are the visual identity user signed off on)
+        coldiv:     +$('coldiv').value,
+        coloration: +$('coloration').value,
+        shadowStrength: +$('shadow-strength').value,
+        exposure:   +$('exposure').value,
+        saturation: +$('saturation').value,
         seed:       1.0,
       };
     },

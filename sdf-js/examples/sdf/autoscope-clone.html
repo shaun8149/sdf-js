@@ -145,23 +145,23 @@
       </div>
       <div class="row">
         <label>曝光</label>
-        <input id="exposure" type="range" min="0.6" max="2.5" step="0.05" value="1.05">
-        <span class="val" id="exposure-val">1.05</span>
+        <input id="exposure" type="range" min="0.6" max="2.5" step="0.05" value="1.50">
+        <span class="val" id="exposure-val">1.50</span>
       </div>
       <div class="row">
         <label>饱和</label>
-        <input id="saturation" type="range" min="0.3" max="1" step="0.05" value="1.0">
-        <span class="val" id="saturation-val">1.00</span>
+        <input id="saturation" type="range" min="0.3" max="1" step="0.05" value="0.65">
+        <span class="val" id="saturation-val">0.65</span>
       </div>
       <div class="row">
         <label>阴影暗</label>
-        <input id="shadow-strength" type="range" min="0.1" max="1" step="0.05" value="0.2">
-        <span class="val" id="shadow-strength-val">0.20</span>
+        <input id="shadow-strength" type="range" min="0.1" max="1" step="0.05" value="0.30">
+        <span class="val" id="shadow-strength-val">0.30</span>
       </div>
       <div class="row">
-        <label title="autoscope 沙画后处理强度。0 = 关（纯低分 buffer）；1 = 默认；2 = 强">沙画 noise</label>
-        <input id="post-noise" type="range" min="0" max="2" step="0.05" value="1.0">
-        <span class="val" id="post-noise-val">1.00</span>
+        <label title="autoscope 沙画后处理强度。0 = 关（纯低分 buffer）；1 = autoscope 默认；2 = 强">沙画 noise</label>
+        <input id="post-noise" type="range" min="0" max="2" step="0.05" value="0.40">
+        <span class="val" id="post-noise-val">0.40</span>
       </div>
       <div class="row full" style="gap: 6px;">
         <select id="coloration" style="flex: 1;">
@@ -179,7 +179,7 @@
       <label class="checkrow"><input id="shadows-on" type="checkbox" checked> cast shadows (long ground shadows from tall objects)</label>
 
       <h3>Autoscope knobs</h3>
-      <label class="checkrow"><input id="knobs-on" type="checkbox" checked> mirror / twist / gridRot 随机化（5× 变体空间）</label>
+      <label class="checkrow"><input id="knobs-on" type="checkbox"> mirror / twist / gridRot 随机化（5× 变体空间）</label>
       <div id="knobs-readout" style="font-size: 0.7em; color: #888; font-family: ui-monospace, monospace; margin: 6px 0; padding: 6px 8px; background: #0d0d0d; border-radius: 3px;">--</div>
 
       <h3>Camera</h3>
