@@ -94,12 +94,13 @@ const V30_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 const V31_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.1.md`, 'utf-8');
 const V32_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.2.md`, 'utf-8');
 const V33_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.3.md`, 'utf-8');
-// v3.4 reads from the LIVE compositor prompt (becomes frozen system-prompt-v3.4.md when v3.5 ships).
-const V34_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const V34_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.4.md`, 'utf-8');
+// v3.5 reads from the LIVE compositor prompt (becomes frozen v3.5 when v3.6 ships).
+const V35_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
   'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
-  'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT,
+  'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -350,7 +351,7 @@ async function main() {
   const versionArg = process.argv[3] || 'all-versions';
   const demos = (target === 'all') ? DEMOS : [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3', 'v3.4'];
+  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
@@ -359,6 +360,7 @@ async function main() {
   else if (versionArg === 'v3.1-vs-v3.2') versions = ['v3.1', 'v3.2'];
   else if (versionArg === 'v3.2-vs-v3.3') versions = ['v3.2', 'v3.3'];
   else if (versionArg === 'v3.3-vs-v3.4') versions = ['v3.3', 'v3.4'];
+  else if (versionArg === 'v3.4-vs-v3.5') versions = ['v3.4', 'v3.5'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
