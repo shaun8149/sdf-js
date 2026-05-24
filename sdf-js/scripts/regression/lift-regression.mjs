@@ -95,12 +95,17 @@ const V31_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 const V32_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.2.md`, 'utf-8');
 const V33_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.3.md`, 'utf-8');
 const V34_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.4.md`, 'utf-8');
-// v3.5 reads from the LIVE compositor prompt (becomes frozen v3.5 when v3.6 ships).
-const V35_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+// v3.5 frozen as archive 2026-05-24 when v3.7 shipped (jumped 3.5→3.7 to align
+// with Sprint 1-6 ship; no v3.6 prompt edit existed).
+const V35_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.5.md`, 'utf-8');
+// v3.7 reads from the LIVE compositor prompt (becomes frozen v3.7 when v3.8 ships).
+// Adds CINEMATIC AXIS: defaults.postFx, volumes[], cameraSequence, subjectMotion,
+// shot.pos.relativeTo, shake.velocityScale, volume.attachTo + sceneStateKey.
+const V37_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
   'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
-  'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT,
+  'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT, 'v3.7': V37_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -143,6 +148,69 @@ const V30_ATOMS = new Set([
 const V32_ATOMS = new Set([
   'stylized-tree', 'maple-leaf', 'forest-flower', 'grass-field', 'meteor-streak',
 ]);
+
+// v3.7 cinematic adoption — counts presence of new top-level fields + sub-fields.
+// Returns a flat object suitable for one-line console output + summary table.
+function v37CinematicMetrics(sceneData) {
+  const m = {
+    postFx: 0,             // 1 if defaults.postFx is an object with any key
+    aperture: 0,           // 1 if camera.aperture > 0 OR any shot.aperture > 0
+    volumeCount: 0,        // total volumes[] entries
+    flameVols: 0, smokeVols: 0, fogVols: 0, godRayVols: 0,
+    volAttachTo: 0,        // volumes with attachTo set
+    volSceneStateKey: 0,   // volumes with sceneStateKey set
+    seqShots: 0,           // cameraSequence.shots.length (0 if absent)
+    seqMotion: 0,          // subjectMotion entries
+    seqPhases: 0,          // total motion phases across all motion entries
+    relativeToUses: 0,     // shot.pos/target.relativeTo + volume.attachTo references
+    shakeUses: 0,          // shots with shake set (number or object form)
+    velocityScaleUses: 0,  // shots whose shake has velocityScale > 0
+    sceneStateKeys: 0,     // unique sceneState keys across shots
+  };
+  if (sceneData.defaults?.postFx && typeof sceneData.defaults.postFx === 'object'
+      && Object.keys(sceneData.defaults.postFx).length > 0) m.postFx = 1;
+  if (typeof sceneData.defaults?.camera?.aperture === 'number'
+      && sceneData.defaults.camera.aperture > 0) m.aperture = 1;
+  const vols = Array.isArray(sceneData.volumes) ? sceneData.volumes : [];
+  m.volumeCount = vols.length;
+  for (const v of vols) {
+    if (v.kind === 'flame') m.flameVols += 1;
+    else if (v.kind === 'smoke') m.smokeVols += 1;
+    else if (v.kind === 'fog') m.fogVols += 1;
+    else if (v.kind === 'god-rays') m.godRayVols += 1;
+    if (v.attachTo) { m.volAttachTo += 1; m.relativeToUses += 1; }
+    if (v.sceneStateKey) m.volSceneStateKey += 1;
+  }
+  const seq = sceneData.cameraSequence;
+  if (seq && typeof seq === 'object') {
+    const shots = Array.isArray(seq.shots) ? seq.shots : [];
+    m.seqShots = shots.length;
+    const allKeys = new Set();
+    for (const s of shots) {
+      if (s.shake != null) {
+        m.shakeUses += 1;
+        if (typeof s.shake === 'object' && typeof s.shake.velocityScale === 'number'
+            && s.shake.velocityScale > 0) m.velocityScaleUses += 1;
+      }
+      for (const ptr of [s.pos, s.target]) {
+        if (ptr && typeof ptr === 'object' && !Array.isArray(ptr) && ptr.relativeTo) {
+          m.relativeToUses += 1;
+        }
+      }
+      if (s.aperture > 0) m.aperture = 1;
+      if (s.sceneState && typeof s.sceneState === 'object') {
+        for (const k of Object.keys(s.sceneState)) allKeys.add(k);
+      }
+    }
+    m.sceneStateKeys = allKeys.size;
+    const motion = Array.isArray(seq.subjectMotion) ? seq.subjectMotion : [];
+    m.seqMotion = motion.length;
+    for (const sm of motion) {
+      if (Array.isArray(sm.phases)) m.seqPhases += sm.phases.length;
+    }
+  }
+  return m;
+}
 // Material kinds beyond default Lambert. Track usage of each.
 const MATERIAL_KINDS = new Set([
   'sea', 'mountain', 'emissive', 'translucent',
@@ -337,6 +405,8 @@ async function liftOne(demoId, systemPrompt, version) {
     v32AtomsUsedCount: v32AtomsUsed.reduce((s, [_, c]) => s + c, 0),
     v32AtomsUsed,
     materialKindsUsed,  // { sea: N, mountain: N, emissive: N, translucent: N }
+    // v3.7 cinematic adoption metrics
+    cinematic: v37CinematicMetrics(sceneData),
     typeCounts,
     compileOk, compileErr,
     sceneName: sceneData.name,
@@ -361,6 +431,7 @@ async function main() {
   else if (versionArg === 'v3.2-vs-v3.3') versions = ['v3.2', 'v3.3'];
   else if (versionArg === 'v3.3-vs-v3.4') versions = ['v3.3', 'v3.4'];
   else if (versionArg === 'v3.4-vs-v3.5') versions = ['v3.4', 'v3.5'];
+  else if (versionArg === 'v3.5-vs-v3.7') versions = ['v3.5', 'v3.7'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
@@ -384,7 +455,9 @@ async function main() {
       } else {
         const kk = r.materialKindsUsed || {};
         const kindsStr = `e${kk.emissive || 0}/t${kk.translucent || 0}/s${kk.sea || 0}/m${kk.mountain || 0}`;
-        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · $${r.costUSD}`);
+        const c = r.cinematic || {};
+        const cinStr = `pfx${c.postFx || 0}/ap${c.aperture || 0}/vol${c.volumeCount || 0}/sh${c.seqShots || 0}/mot${c.seqMotion || 0}/rel${c.relativeToUses || 0}`;
+        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}] · $${r.costUSD}`);
       }
     }
     const cmp = { demoId: id, runs };

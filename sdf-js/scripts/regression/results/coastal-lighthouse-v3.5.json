@@ -1,0 +1,1050 @@
+{
+  "result": {
+    "demoId": "coastal-lighthouse",
+    "version": "v3.5",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "58.4s",
+    "tokens": {
+      "input": 37609,
+      "output": 4778
+    },
+    "costUSD": "0.1845",
+    "subjectCount": 44,
+    "newAtomsUsedCount": 16,
+    "newAtomsUsed": [
+      [
+        "moon",
+        1
+      ],
+      [
+        "star",
+        12
+      ],
+      [
+        "bird-silhouette",
+        3
+      ]
+    ],
+    "newIQTypesUsedCount": 3,
+    "newIQTypesUsed": [
+      [
+        "octagon-prism",
+        1
+      ],
+      [
+        "solid-angle",
+        2
+      ]
+    ],
+    "materialUsageCount": 26,
+    "patternUsageCount": 3,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 43,
+      "min": -16,
+      "max": 3.5,
+      "range": 19.5,
+      "stdev": 6.487425895832728
+    },
+    "v30AtomsUsedCount": 5,
+    "v30AtomsUsed": [
+      [
+        "rock-boulder",
+        3
+      ],
+      [
+        "sailboat-small",
+        2
+      ]
+    ],
+    "v32AtomsUsedCount": 3,
+    "v32AtomsUsed": [
+      [
+        "stylized-tree",
+        2
+      ],
+      [
+        "grass-field",
+        1
+      ]
+    ],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 2
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "typeCounts": {
+      "moon": 1,
+      "star": 12,
+      "bird-silhouette": 3,
+      "waves": 1,
+      "box": 3,
+      "pyramid": 1,
+      "rock-boulder": 3,
+      "capped_cone": 1,
+      "cylinder": 3,
+      "torus": 1,
+      "octagon-prism": 1,
+      "sphere": 1,
+      "cone": 1,
+      "rounded_box": 4,
+      "solid-angle": 2,
+      "stylized-tree": 2,
+      "grass-field": 1,
+      "rep": 1,
+      "sailboat-small": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Coastal Lighthouse at Night"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Coastal Lighthouse at Night",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "海岸灯塔",
+      "from2dCode": "Night scene with lighthouse on rocky cliff, moon, stars, sweeping light beams, moonlit sea"
+    },
+    "subjects": [
+      {
+        "id": "moon",
+        "type": "moon",
+        "args": {
+          "radius": 0.55
+        },
+        "transform": {
+          "translate": [
+            -8,
+            9.5,
+            -12
+          ]
+        },
+        "region": "moon"
+      },
+      {
+        "id": "star-1",
+        "type": "star",
+        "args": {
+          "radius": 0.05,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -10.5,
+            11.2,
+            -14
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-2",
+        "type": "star",
+        "args": {
+          "radius": 0.06,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -6.8,
+            10.8,
+            -13
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-3",
+        "type": "star",
+        "args": {
+          "radius": 0.045,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -3.5,
+            12,
+            -15
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-4",
+        "type": "star",
+        "args": {
+          "radius": 0.055,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            1.2,
+            11.5,
+            -14
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-5",
+        "type": "star",
+        "args": {
+          "radius": 0.05,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            5.2,
+            10.5,
+            -13
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-6",
+        "type": "star",
+        "args": {
+          "radius": 0.048,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            9,
+            11.8,
+            -15
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-7",
+        "type": "star",
+        "args": {
+          "radius": 0.052,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            11.5,
+            13.2,
+            -16
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-8",
+        "type": "star",
+        "args": {
+          "radius": 0.04,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -11.8,
+            9.2,
+            -12
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-9",
+        "type": "star",
+        "args": {
+          "radius": 0.047,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -4.8,
+            9.8,
+            -13
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-10",
+        "type": "star",
+        "args": {
+          "radius": 0.053,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            7,
+            9.5,
+            -12
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-11",
+        "type": "star",
+        "args": {
+          "radius": 0.046,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            12.8,
+            -15
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-12",
+        "type": "star",
+        "args": {
+          "radius": 0.051,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -8.2,
+            13.5,
+            -16
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "bodyRadius": 0.045,
+          "wingSpan": 0.58,
+          "wingRise": 0.08
+        },
+        "transform": {
+          "translate": [
+            -1.8,
+            6.5,
+            -2.5
+          ],
+          "rotate": [
+            0,
+            0.35,
+            0
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "bodyRadius": 0.04,
+          "wingSpan": 0.52,
+          "wingRise": 0.07
+        },
+        "transform": {
+          "translate": [
+            3.2,
+            7.2,
+            -3
+          ],
+          "rotate": [
+            0,
+            -0.25,
+            0
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "bird-3",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.16,
+          "bodyRadius": 0.038,
+          "wingSpan": 0.48,
+          "wingRise": 0.065
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            5.8,
+            -2
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 3.5,
+          "amp": 0.22,
+          "angle": 0.3,
+          "speed": 0.9
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.5,
+            0
+          ]
+        },
+        "region": "water",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.68,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0,
+          "kind": "sea"
+        }
+      },
+      {
+        "id": "cliff-main",
+        "type": "box",
+        "args": {
+          "dims": [
+            4.5,
+            2.8,
+            3.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            -1.2,
+            0
+          ]
+        },
+        "region": "stone",
+        "material": "stone",
+        "pattern": {
+          "kind": "cracked",
+          "scale": 3.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "cliff-left-slope",
+        "type": "pyramid",
+        "args": {
+          "height": 1.8
+        },
+        "transform": {
+          "translate": [
+            -3.5,
+            -1.5,
+            0
+          ],
+          "scale": [
+            1.2,
+            1,
+            1.5
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.4
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cracked",
+          "scale": 3.5,
+          "strength": 0.6
+        }
+      },
+      {
+        "id": "cliff-right-extension",
+        "type": "box",
+        "args": {
+          "dims": [
+            2,
+            1.5,
+            2.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            -1.8,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cracked",
+          "scale": 3.5,
+          "strength": 0.6
+        }
+      },
+      {
+        "id": "grass-top",
+        "type": "box",
+        "args": {
+          "dims": [
+            3.8,
+            0.15,
+            2.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.2,
+            0.1,
+            0
+          ]
+        },
+        "material": "leaf-green"
+      },
+      {
+        "id": "rock-1",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.8
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            -2.2,
+            1.2
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "rock-2",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.55
+        },
+        "transform": {
+          "translate": [
+            2,
+            -2.4,
+            0.8
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "rock-3",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.65
+        },
+        "transform": {
+          "translate": [
+            3.5,
+            -2.1,
+            -0.3
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "lighthouse-tower-shaft",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            0,
+            -0.8,
+            0
+          ],
+          "b": [
+            0,
+            2.8,
+            0
+          ],
+          "r1": 0.52,
+          "r2": 0.44
+        },
+        "region": "tower",
+        "material": "matte-white"
+      },
+      {
+        "id": "red-band-lower",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.53,
+          "height": 0.26
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.3,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.01,
+          "sat": 0.85,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "red-band-upper",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.49,
+          "height": 0.26
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.01,
+          "sat": 0.85,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "gallery-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.56,
+          "thickness": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.9,
+            0
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "gallery-deck",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.6,
+          "height": 0.1
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.88,
+            0
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "lantern-room-frame",
+        "type": "octagon-prism",
+        "args": {
+          "apothem": 0.42,
+          "halfHeight": 0.38
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.65,
+            0
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "lantern-glow-core",
+        "type": "sphere",
+        "args": {
+          "radius": 0.35
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.65,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.25,
+          "value": 1,
+          "metal": 0,
+          "glow": 4.5
+        }
+      },
+      {
+        "id": "lantern-cap",
+        "type": "cone",
+        "args": {
+          "height": 0.65,
+          "baseRadius": 0.48
+        },
+        "transform": {
+          "translate": [
+            0,
+            4.35,
+            0
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "door",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.28,
+            0.55,
+            0.08
+          ],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.5,
+            0.53
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "window-lower",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.22,
+            0.32,
+            0.05
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.2,
+            0.52
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "window-mid",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.22,
+            0.32,
+            0.05
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.1,
+            0.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "window-upper",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.22,
+            0.32,
+            0.05
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            2,
+            0.49
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "beam-left-cone",
+        "type": "solid-angle",
+        "args": {
+          "halfAperture": 0.35,
+          "radius": 18
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.65,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            2
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.15,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "beam-right-cone",
+        "type": "solid-angle",
+        "args": {
+          "halfAperture": 0.32,
+          "radius": 16
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.65,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.2
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.15,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "coastal-tree-1",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 3.2,
+          "trunkRad": 0.28,
+          "leafSize": 0.14,
+          "windK": 0.22
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            0.2,
+            -0.8
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.6,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "coastal-tree-2",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 2.8,
+          "trunkRad": 0.24,
+          "leafSize": 0.13,
+          "windK": 0.25
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            0.1,
+            -1.2
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.55,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "grass-field-cliff",
+        "type": "grass-field",
+        "args": {
+          "bladeHeight": 0.35,
+          "density": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.25,
+            0
+          ]
+        }
+      },
+      {
+        "id": "wildflower-patch",
+        "type": "rep",
+        "args": {
+          "period": [
+            0.9,
+            0,
+            0.9
+          ],
+          "count": [
+            6,
+            0,
+            5
+          ]
+        },
+        "source": {
+          "id": "flower-source",
+          "type": "forest-flower",
+          "args": {
+            "stemH": 0.32,
+            "bloomR": 0.1
+          },
+          "material": {
+            "hue": 0.92,
+            "sat": 0.78,
+            "value": 0.82
+          }
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            0.25,
+            -0.5
+          ]
+        }
+      },
+      {
+        "id": "sailboat-1",
+        "type": "sailboat-small",
+        "args": {
+          "scale": 1.2
+        },
+        "transform": {
+          "translate": [
+            -6.5,
+            -2.2,
+            3.5
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "material": "matte-white"
+      },
+      {
+        "id": "sailboat-2",
+        "type": "sailboat-small",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            8,
+            -2.3,
+            2.8
+          ],
+          "rotate": [
+            0,
+            -0.8,
+            0
+          ]
+        },
+        "material": "matte-white"
+      }
+    ],
+    "ground": {
+      "y": -2.5,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.72,
+        "value": 0.22
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.2,
+        "distance": 16,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.65,
+        "altitude": 0.24,
+        "distance": 35,
+        "intensity": 0.95
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "hueRotate180",
+        "strength": 0.35
+      }
+    }
+  }
+}
