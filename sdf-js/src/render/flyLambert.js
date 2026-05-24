@@ -447,7 +447,7 @@ vec3 atlasLensFlares(vec3 col, vec2 uv, vec3 sunDir) {
 // up to 12 volumes × per-pixel) — inverse-square falloff via volume radius
 // gives a credible local-illumination feel.
 // =============================================================================
-vec3 emissiveVolumeLight(vec3 p, vec3 n, vec3 base) {
+vec3 emissiveVolumeLight(vec3 p, vec3 n, vec3 base, float metalK) {
   if (u_volumeCount <= 0) return vec3(0.0);
   vec3 sum = vec3(0.0);
   for (int j = 0; j < MAX_VOLUMES; j++) {
@@ -470,7 +470,11 @@ vec3 emissiveVolumeLight(vec3 p, vec3 n, vec3 base) {
     float diff = max(dot(n, toL), 0.0);
     // col.rgb already has colorIntensity baked (see setVolumes). sd.w = density.
     vec3 lightCol = col.rgb * sd.w;
-    sum += base * lightCol * diff * att * 0.18;
+    // Tint by base; for metals base is dark so add white floor so a chrome tower
+    // actually picks up the orange flame. Boosted multiplier (0.18→0.55) +
+    // 'tint' floor make the effect visible on dark-metal gantries.
+    vec3 tint = mix(base, vec3(0.55) + base * 0.45, metalK);
+    sum += tint * lightCol * diff * att * 0.55;
   }
   return sum;
 }
@@ -926,7 +930,7 @@ void main() {
       // nearby surfaces (rocket exhaust lights up the pad, god-rays warm the
       // foreground). Pre-shadow contribution — we don't shadow-march these
       // for performance, the inverse-square falloff handles occlusion roughly.
-      lin += emissiveVolumeLight(p, n, base);
+      lin += emissiveVolumeLight(p, n, base, metalK);
 
       // Single-bounce reflection on the ground plane. Fresnel-weighted so
       // grazing angles reflect strongly (the wet-floor / polished-stone look),

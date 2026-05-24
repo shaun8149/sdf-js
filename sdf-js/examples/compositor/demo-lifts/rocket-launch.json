@@ -244,38 +244,401 @@
         }
       },
       {
-        "id": "launch-pad",
+        "id": "pad-deck-outer",
         "type": "cylinder",
-        "args": {
-          "radius": 2.2,
-          "height": 0.25
-        },
-        "transform": {
-          "translate": [0, -0.9, 0]
-        },
-        "material": "stone"
+        "args": { "radius": 5.0, "height": 0.30 },
+        "transform": { "translate": [0, -0.92, 0] },
+        "material": "stone",
+        "pattern": { "type": "cracked", "scale": 1.8, "strength": 0.55 }
       },
       {
-        "id": "gantry-post-1",
-        "type": "box",
-        "args": {
-          "dims": [0.18, 4.0, 0.18]
-        },
-        "transform": {
-          "translate": [1.8, 1.0, 1.8]
-        },
-        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+        "id": "pad-deck-inner",
+        "type": "cylinder",
+        "args": { "radius": 2.6, "height": 0.45 },
+        "transform": { "translate": [0, -0.62, 0] },
+        "material": { "hue": 0.08, "sat": 0.10, "value": 0.55, "metal": 0.10, "glow": 0.0 },
+        "pattern": { "type": "brick", "scale": 1.4, "strength": 0.6 }
       },
       {
-        "id": "gantry-post-2",
+        "id": "launch-mount",
+        "type": "cylinder",
+        "args": { "radius": 0.95, "height": 0.40 },
+        "transform": { "translate": [0, -0.30, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.85, "glow": 0.0 }
+      },
+      {
+        "id": "flame-deflector",
         "type": "box",
-        "args": {
-          "dims": [0.18, 4.0, 0.18]
-        },
+        "args": { "dims": [2.4, 0.5, 0.5] },
         "transform": {
-          "translate": [-1.8, 1.0, 1.8]
+          "translate": [0, -0.7, 0],
+          "rotate": [0, 0, 0.4]
         },
-        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+        "material": { "hue": 0.05, "sat": 0.15, "value": 0.30, "metal": 0.30, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-post-NE",
+        "type": "box",
+        "args": { "dims": [0.38, 8.4, 0.38] },
+        "transform": { "translate": [2.4, 3.4, 2.4] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.78, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-post-NW",
+        "type": "box",
+        "args": { "dims": [0.38, 8.4, 0.38] },
+        "transform": { "translate": [-2.4, 3.4, 2.4] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.78, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-post-SE",
+        "type": "box",
+        "args": { "dims": [0.38, 8.4, 0.38] },
+        "transform": { "translate": [2.4, 3.4, -2.4] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.78, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-post-SW",
+        "type": "box",
+        "args": { "dims": [0.38, 8.4, 0.38] },
+        "transform": { "translate": [-2.4, 3.4, -2.4] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.78, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-low-N",
+        "type": "box",
+        "args": { "dims": [4.8, 0.24, 0.24] },
+        "transform": { "translate": [0, 1.4, 2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-low-S",
+        "type": "box",
+        "args": { "dims": [4.8, 0.24, 0.24] },
+        "transform": { "translate": [0, 1.4, -2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-low-E",
+        "type": "box",
+        "args": { "dims": [0.24, 0.24, 4.8] },
+        "transform": { "translate": [2.4, 1.4, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-low-W",
+        "type": "box",
+        "args": { "dims": [0.24, 0.24, 4.8] },
+        "transform": { "translate": [-2.4, 1.4, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-mid-N",
+        "type": "box",
+        "args": { "dims": [4.8, 0.24, 0.24] },
+        "transform": { "translate": [0, 4.4, 2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-mid-S",
+        "type": "box",
+        "args": { "dims": [4.8, 0.24, 0.24] },
+        "transform": { "translate": [0, 4.4, -2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-mid-E",
+        "type": "box",
+        "args": { "dims": [0.24, 0.24, 4.8] },
+        "transform": { "translate": [2.4, 4.4, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-mid-W",
+        "type": "box",
+        "args": { "dims": [0.24, 0.24, 4.8] },
+        "transform": { "translate": [-2.4, 4.4, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-top-N",
+        "type": "box",
+        "args": { "dims": [4.8, 0.28, 0.28] },
+        "transform": { "translate": [0, 7.3, 2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-top-S",
+        "type": "box",
+        "args": { "dims": [4.8, 0.28, 0.28] },
+        "transform": { "translate": [0, 7.3, -2.4] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-top-E",
+        "type": "box",
+        "args": { "dims": [0.28, 0.28, 4.8] },
+        "transform": { "translate": [2.4, 7.3, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-beam-top-W",
+        "type": "box",
+        "args": { "dims": [0.28, 0.28, 4.8] },
+        "transform": { "translate": [-2.4, 7.3, 0] },
+        "material": { "hue": 0.6, "sat": 0.06, "value": 0.22, "metal": 0.70, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-N-a",
+        "type": "box",
+        "args": { "dims": [5.66, 0.18, 0.18] },
+        "transform": { "translate": [0, 2.9, 2.4], "rotate": [0, 0, 0.559] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-N-b",
+        "type": "box",
+        "args": { "dims": [5.66, 0.18, 0.18] },
+        "transform": { "translate": [0, 2.9, 2.4], "rotate": [0, 0, -0.559] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-S-a",
+        "type": "box",
+        "args": { "dims": [5.66, 0.18, 0.18] },
+        "transform": { "translate": [0, 2.9, -2.4], "rotate": [0, 0, 0.559] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-S-b",
+        "type": "box",
+        "args": { "dims": [5.66, 0.18, 0.18] },
+        "transform": { "translate": [0, 2.9, -2.4], "rotate": [0, 0, -0.559] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-E-a",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.66] },
+        "transform": { "translate": [2.4, 2.9, 0], "rotate": [-0.559, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-E-b",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.66] },
+        "transform": { "translate": [2.4, 2.9, 0], "rotate": [0.559, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-W-a",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.66] },
+        "transform": { "translate": [-2.4, 2.9, 0], "rotate": [-0.559, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-low-W-b",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.66] },
+        "transform": { "translate": [-2.4, 2.9, 0], "rotate": [0.559, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-N-a",
+        "type": "box",
+        "args": { "dims": [5.61, 0.18, 0.18] },
+        "transform": { "translate": [0, 5.85, 2.4], "rotate": [0, 0, 0.543] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-N-b",
+        "type": "box",
+        "args": { "dims": [5.61, 0.18, 0.18] },
+        "transform": { "translate": [0, 5.85, 2.4], "rotate": [0, 0, -0.543] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-S-a",
+        "type": "box",
+        "args": { "dims": [5.61, 0.18, 0.18] },
+        "transform": { "translate": [0, 5.85, -2.4], "rotate": [0, 0, 0.543] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-S-b",
+        "type": "box",
+        "args": { "dims": [5.61, 0.18, 0.18] },
+        "transform": { "translate": [0, 5.85, -2.4], "rotate": [0, 0, -0.543] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-E-a",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.61] },
+        "transform": { "translate": [2.4, 5.85, 0], "rotate": [-0.543, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-E-b",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.61] },
+        "transform": { "translate": [2.4, 5.85, 0], "rotate": [0.543, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-W-a",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.61] },
+        "transform": { "translate": [-2.4, 5.85, 0], "rotate": [-0.543, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-diag-up-W-b",
+        "type": "box",
+        "args": { "dims": [0.18, 0.18, 5.61] },
+        "transform": { "translate": [-2.4, 5.85, 0], "rotate": [0.543, 0, 0] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.25, "metal": 0.65, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-base-NE",
+        "type": "box",
+        "args": { "dims": [0.7, 0.15, 0.7] },
+        "transform": { "translate": [2.4, -0.70, 2.4] },
+        "material": { "hue": 0.08, "sat": 0.10, "value": 0.45, "metal": 0.15, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-base-NW",
+        "type": "box",
+        "args": { "dims": [0.7, 0.15, 0.7] },
+        "transform": { "translate": [-2.4, -0.70, 2.4] },
+        "material": { "hue": 0.08, "sat": 0.10, "value": 0.45, "metal": 0.15, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-base-SE",
+        "type": "box",
+        "args": { "dims": [0.7, 0.15, 0.7] },
+        "transform": { "translate": [2.4, -0.70, -2.4] },
+        "material": { "hue": 0.08, "sat": 0.10, "value": 0.45, "metal": 0.15, "glow": 0.0 }
+      },
+      {
+        "id": "gantry-base-SW",
+        "type": "box",
+        "args": { "dims": [0.7, 0.15, 0.7] },
+        "transform": { "translate": [-2.4, -0.70, -2.4] },
+        "material": { "hue": 0.08, "sat": 0.10, "value": 0.45, "metal": 0.15, "glow": 0.0 }
+      },
+      {
+        "id": "service-arm",
+        "type": "box",
+        "args": { "dims": [1.5, 0.18, 0.5] },
+        "transform": { "translate": [1.55, 5.6, 0] },
+        "material": { "hue": 0.08, "sat": 0.55, "value": 0.55, "metal": 0.30, "glow": 0.0 }
+      },
+      {
+        "id": "umbilical-cable",
+        "type": "cylinder",
+        "args": { "radius": 0.07, "height": 4.0 },
+        "transform": { "translate": [1.0, 3.6, 0] },
+        "material": { "hue": 0.10, "sat": 0.15, "value": 0.35, "metal": 0.20, "glow": 0.0 }
+      },
+      {
+        "id": "lightning-rod",
+        "type": "cylinder",
+        "args": { "radius": 0.05, "height": 1.6 },
+        "transform": { "translate": [2.4, 8.4, 2.4] },
+        "material": { "hue": 0.0, "sat": 0.0, "value": 0.85, "metal": 0.95, "glow": 0.0 }
+      },
+      {
+        "id": "rod-warning-light",
+        "type": "sphere",
+        "args": { "radius": 0.22 },
+        "transform": { "translate": [2.4, 9.4, 2.4] },
+        "material": { "hue": 0.0, "sat": 0.95, "value": 1.0, "metal": 0.0, "glow": 5.0, "kind": "emissive" }
+      },
+      {
+        "id": "tower-beacon-NE",
+        "type": "sphere",
+        "args": { "radius": 0.18 },
+        "transform": { "translate": [2.4, 7.7, 2.4] },
+        "material": { "hue": 0.0, "sat": 0.92, "value": 1.0, "metal": 0.0, "glow": 4.5, "kind": "emissive" }
+      },
+      {
+        "id": "tower-beacon-NW",
+        "type": "sphere",
+        "args": { "radius": 0.18 },
+        "transform": { "translate": [-2.4, 7.7, 2.4] },
+        "material": { "hue": 0.0, "sat": 0.92, "value": 1.0, "metal": 0.0, "glow": 4.5, "kind": "emissive" }
+      },
+      {
+        "id": "tower-beacon-SE",
+        "type": "sphere",
+        "args": { "radius": 0.18 },
+        "transform": { "translate": [2.4, 7.7, -2.4] },
+        "material": { "hue": 0.0, "sat": 0.92, "value": 1.0, "metal": 0.0, "glow": 4.5, "kind": "emissive" }
+      },
+      {
+        "id": "tower-beacon-SW",
+        "type": "sphere",
+        "args": { "radius": 0.18 },
+        "transform": { "translate": [-2.4, 7.7, -2.4] },
+        "material": { "hue": 0.0, "sat": 0.92, "value": 1.0, "metal": 0.0, "glow": 4.5, "kind": "emissive" }
+      },
+      {
+        "id": "perimeter-pole-NE",
+        "type": "cylinder",
+        "args": { "radius": 0.05, "height": 1.2 },
+        "transform": { "translate": [4.5, -0.05, 4.5] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.6, "glow": 0.0 }
+      },
+      {
+        "id": "perimeter-light-NE",
+        "type": "sphere",
+        "args": { "radius": 0.22 },
+        "transform": { "translate": [4.5, 0.7, 4.5] },
+        "material": { "hue": 0.12, "sat": 0.90, "value": 1.0, "metal": 0.0, "glow": 5.0, "kind": "emissive" }
+      },
+      {
+        "id": "perimeter-pole-NW",
+        "type": "cylinder",
+        "args": { "radius": 0.05, "height": 1.2 },
+        "transform": { "translate": [-4.5, -0.05, 4.5] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.6, "glow": 0.0 }
+      },
+      {
+        "id": "perimeter-light-NW",
+        "type": "sphere",
+        "args": { "radius": 0.22 },
+        "transform": { "translate": [-4.5, 0.7, 4.5] },
+        "material": { "hue": 0.12, "sat": 0.90, "value": 1.0, "metal": 0.0, "glow": 5.0, "kind": "emissive" }
+      },
+      {
+        "id": "perimeter-pole-SE",
+        "type": "cylinder",
+        "args": { "radius": 0.05, "height": 1.2 },
+        "transform": { "translate": [4.5, -0.05, -4.5] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.6, "glow": 0.0 }
+      },
+      {
+        "id": "perimeter-light-SE",
+        "type": "sphere",
+        "args": { "radius": 0.22 },
+        "transform": { "translate": [4.5, 0.7, -4.5] },
+        "material": { "hue": 0.12, "sat": 0.90, "value": 1.0, "metal": 0.0, "glow": 5.0, "kind": "emissive" }
+      },
+      {
+        "id": "perimeter-pole-SW",
+        "type": "cylinder",
+        "args": { "radius": 0.05, "height": 1.2 },
+        "transform": { "translate": [-4.5, -0.05, -4.5] },
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.6, "glow": 0.0 }
+      },
+      {
+        "id": "perimeter-light-SW",
+        "type": "sphere",
+        "args": { "radius": 0.22 },
+        "transform": { "translate": [-4.5, 0.7, -4.5] },
+        "material": { "hue": 0.12, "sat": 0.90, "value": 1.0, "metal": 0.0, "glow": 5.0, "kind": "emissive" }
       }
     ],
     "ground": {
