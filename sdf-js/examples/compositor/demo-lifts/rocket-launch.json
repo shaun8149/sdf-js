@@ -237,48 +237,6 @@
             "args": { "halfWidth": 0.6, "halfLength": 0.08 },
             "transform": { "translate": [-0.95, -1.0, 0], "rotate": [0, -1.5708, 0] },
             "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
-          },
-          {
-            "id": "engine-glow-core",
-            "type": "sphere",
-            "args": { "radius": 0.40 },
-            "transform": { "translate": [0, -2.45, 0] },
-            "material": { "hue": 0.10, "sat": 0.95, "value": 1.0, "metal": 0.0, "glow": 5.0 }
-          },
-          {
-            "id": "engine-glow-halo",
-            "type": "sphere",
-            "args": { "radius": 0.85 },
-            "transform": { "translate": [0, -2.75, 0] },
-            "material": { "hue": 0.05, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 2.4 }
-          },
-          {
-            "id": "booster-glow-NE",
-            "type": "sphere",
-            "args": { "radius": 0.20 },
-            "transform": { "translate": [0.72, -1.88, 0.72] },
-            "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
-          },
-          {
-            "id": "booster-glow-NW",
-            "type": "sphere",
-            "args": { "radius": 0.20 },
-            "transform": { "translate": [-0.72, -1.88, 0.72] },
-            "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
-          },
-          {
-            "id": "booster-glow-SE",
-            "type": "sphere",
-            "args": { "radius": 0.20 },
-            "transform": { "translate": [0.72, -1.88, -0.72] },
-            "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
-          },
-          {
-            "id": "booster-glow-SW",
-            "type": "sphere",
-            "args": { "radius": 0.20 },
-            "transform": { "translate": [-0.72, -1.88, -0.72] },
-            "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
           }
         ],
         "transform": {
@@ -328,21 +286,80 @@
       {
         "id": "pad-smoke",
         "kind": "smoke",
-        "center": [0, -0.5, 0],
-        "size": [5, 2.5, 5],
-        "density": 1.6,
+        "center": [0, -0.7, 0],
+        "size": [6, 1.5, 6],
+        "density": 2.0,
         "color": [218, 210, 198],
-        "noiseScale": 1.8,
+        "noiseScale": 1.6,
         "sceneStateKey": "smokeAmount"
       },
       {
-        "id": "engine-flame",
+        "id": "trail-smoke",
+        "kind": "smoke",
+        "center": [0, -2.5, 0],
+        "size": [1.4, 5.0, 1.4],
+        "density": 1.5,
+        "color": [225, 218, 208],
+        "noiseScale": 2.2,
+        "attachTo": "rocket",
+        "sceneStateKey": "smokeAmount"
+      },
+      {
+        "id": "engine-flame-center",
         "kind": "flame",
-        "center": [0, -0.4, 0],
-        "size": [0.7, 1.5, 0.7],
-        "density": 2.5,
-        "color": [255, 170, 80],
-        "noiseScale": 4.0,
+        "center": [0, -1.6, 0],
+        "size": [0.55, 2.6, 0.55],
+        "density": 8.0, "colorIntensity": 2.5,
+        "color": [255, 200, 140],
+        "noiseScale": 3.5,
+        "attachTo": "rocket",
+        "sceneStateKey": "thrusterLevel"
+      },
+      {
+        "id": "engine-flame-NE",
+        "kind": "flame",
+        "center": [0.72, -1.2, 0.72],
+        "size": [0.38, 1.9, 0.38],
+        "density": 6.5,
+        "color": [255, 180, 95],
+        "colorIntensity": 2.2,
+        "noiseScale": 3.5,
+        "attachTo": "rocket",
+        "sceneStateKey": "thrusterLevel"
+      },
+      {
+        "id": "engine-flame-NW",
+        "kind": "flame",
+        "center": [-0.72, -1.2, 0.72],
+        "size": [0.38, 1.9, 0.38],
+        "density": 6.5,
+        "color": [255, 180, 95],
+        "colorIntensity": 2.2,
+        "noiseScale": 3.5,
+        "attachTo": "rocket",
+        "sceneStateKey": "thrusterLevel"
+      },
+      {
+        "id": "engine-flame-SE",
+        "kind": "flame",
+        "center": [0.72, -1.2, -0.72],
+        "size": [0.38, 1.9, 0.38],
+        "density": 6.5,
+        "color": [255, 180, 95],
+        "colorIntensity": 2.2,
+        "noiseScale": 3.5,
+        "attachTo": "rocket",
+        "sceneStateKey": "thrusterLevel"
+      },
+      {
+        "id": "engine-flame-SW",
+        "kind": "flame",
+        "center": [-0.72, -1.2, -0.72],
+        "size": [0.38, 1.9, 0.38],
+        "density": 6.5,
+        "color": [255, 180, 95],
+        "colorIntensity": 2.2,
+        "noiseScale": 3.5,
         "attachTo": "rocket",
         "sceneStateKey": "thrusterLevel"
       },
@@ -405,9 +422,9 @@
           "axis": "y",
           "phases": [
             { "duration": 4.0, "v0": 0,    "a": 0    },
-            { "duration": 5.0, "v0": 0,    "a": 0.15 },
-            { "duration": 3.5, "v0": 0.75, "a": 0.7  },
-            { "duration": 5.5, "v0": 3.2,  "a": 0.6  }
+            { "duration": 5.0, "v0": 0,    "a": 0.20 },
+            { "duration": 3.5, "v0": 1.0,  "a": 1.2  },
+            { "duration": 5.5, "v0": 5.2,  "a": 1.4  }
           ]
         }
       ],
@@ -436,18 +453,19 @@
           "transition": "blend",
           "shake": { "amount": 0.2, "velocityScale": 0.15, "scaleWith": "rocket" },
           "sceneState": {
-            "thrusterLevel": 0.4,
-            "smokeAmount": 0.6
+            "thrusterLevel": 0.6,
+            "smokeAmount": 0.8
           }
         },
         {
           "duration": 3.5,
-          "pos": [3, -0.2, 4.5],
+          "pos": { "relativeTo": "rocket", "offset": [3, -1.0, 4.5] },
           "target": { "relativeTo": "rocket", "offset": [0, -2.4, 0] },
           "fov": 38,
           "aperture": 1.5,
           "focalDistance": 5.0,
           "ease": "smooth",
+          "transition": "blend",
           "shake": { "amount": 0.4, "velocityScale": 0.3, "scaleWith": "rocket" },
           "sceneState": {
             "thrusterLevel": 1.0,
@@ -456,7 +474,7 @@
         },
         {
           "duration": 5.5,
-          "pos": [24, 18, 22],
+          "pos": { "relativeTo": "rocket", "offset": [24, 6, 22] },
           "target": { "relativeTo": "rocket", "offset": [0, 1, 0] },
           "fov": 55,
           "aperture": 0.3,

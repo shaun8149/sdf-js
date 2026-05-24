@@ -119,25 +119,49 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
 
   const resolveTarget = (rawTarget) =>
     resolveShotTarget(rawTarget || [0, 0, 0], subjectBase, subjectOffsets);
+  // Sprint 5: pos also accepts {relativeTo, offset} — same resolver as target.
+  const resolvePos = (rawPos) =>
+    resolveShotTarget(rawPos || [0, 0, 0], subjectBase, subjectOffsets);
 
+  const endPos    = resolvePos(shot.pos);
+  const endTarget = resolveTarget(shot.target);
   const endState = {
-    pos: shot.pos || [0, 0, 0],
-    target: resolveTarget(shot.target),
+    pos: endPos,
+    target: endTarget,
     fov: Number(shot.fov ?? 25),
     aperture: Number(shot.aperture ?? 0),
-    focalDistance: Number(shot.focalDistance ?? distance(shot.pos, resolveTarget(shot.target))),
+    focalDistance: Number(shot.focalDistance ?? distance(endPos, endTarget)),
   };
   let startState = endState;
+  let startSceneState = shot.sceneState || {};
   const transition = shot.transition || 'cut';
   if (transition === 'blend' && idx > 0) {
     const prev = shots[idx - 1];
+    const startPos    = resolvePos(prev.pos);
+    const startTarget = resolveTarget(prev.target);
     startState = {
-      pos: prev.pos || [0, 0, 0],
-      target: resolveTarget(prev.target),
+      pos: startPos,
+      target: startTarget,
       fov: Number(prev.fov ?? 25),
       aperture: Number(prev.aperture ?? 0),
-      focalDistance: Number(prev.focalDistance ?? distance(prev.pos, resolveTarget(prev.target))),
+      focalDistance: Number(prev.focalDistance ?? distance(startPos, startTarget)),
     };
+    // Sprint 5: sceneState lerps too when blending. Without this, thrusterLevel
+    // jumps abruptly from 0 → 1 at shot boundary (engine bursts on instead of
+    // ramping up). With blend transition + sceneState lerp, the engine glow /
+    // smoke / etc. ease in over the shot's duration.
+    startSceneState = prev.sceneState || {};
+  }
+
+  // Sprint 5: lerp sceneState dict (union of keys from start + end, missing
+  // values default to 0 so missing-in-start → ramp from 0 → end value).
+  const endSceneState = shot.sceneState || {};
+  const blendedSceneState = {};
+  const allKeys = new Set([...Object.keys(startSceneState), ...Object.keys(endSceneState)]);
+  for (const k of allKeys) {
+    const a = typeof startSceneState[k] === 'number' ? startSceneState[k] : 0;
+    const b = typeof endSceneState[k]   === 'number' ? endSceneState[k]   : 0;
+    blendedSceneState[k] = lerp(a, b, blend);
   }
 
   const out = {
@@ -151,7 +175,8 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
     // Sprint 4 additions — caller uses these to position attached volumes,
     // override scene state, etc.
     subjectOffsets,
-    sceneState: shot.sceneState || {},
+    // Sprint 5: blended sceneState (smooth ramp across shot transitions).
+    sceneState: blendedSceneState,
   };
 
   // Sprint 4: resolved shake (number OR {amount, velocityScale, scaleWith})

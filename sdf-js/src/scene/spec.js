@@ -880,8 +880,22 @@ function validateCameraSequence(seq, errors, warnings) {
     if (typeof shot.duration !== 'number' || shot.duration <= 0) {
       errors.push(`${tag}.duration: must be a positive number (seconds)`);
     }
-    if (!Array.isArray(shot.pos) || shot.pos.length !== 3 || !shot.pos.every(n => typeof n === 'number')) {
-      errors.push(`${tag}.pos: must be [x, y, z] numbers`);
+    // Sprint 5: pos accepts absolute [x,y,z] OR {relativeTo, offset} — same
+    // shape as target. Lets camera position track moving subject so shots
+    // stay framed even as subject rises out of the static frame.
+    if (Array.isArray(shot.pos)) {
+      if (shot.pos.length !== 3 || !shot.pos.every(n => typeof n === 'number')) {
+        errors.push(`${tag}.pos: must be [x, y, z] numbers`);
+      }
+    } else if (typeof shot.pos === 'object' && shot.pos != null) {
+      if (typeof shot.pos.relativeTo !== 'string') {
+        errors.push(`${tag}.pos.relativeTo: must be a subject id string`);
+      }
+      if (shot.pos.offset != null && (!Array.isArray(shot.pos.offset) || shot.pos.offset.length !== 3)) {
+        errors.push(`${tag}.pos.offset: must be [x, y, z] if provided`);
+      }
+    } else {
+      errors.push(`${tag}.pos: must be [x,y,z] OR { relativeTo, offset }`);
     }
     // Sprint 4: target can be either absolute [x,y,z] OR { relativeTo, offset }
     if (Array.isArray(shot.target)) {
@@ -990,6 +1004,9 @@ function validateVolumes(vols, errors, warnings) {
     }
     if (v.noiseScale != null && typeof v.noiseScale !== 'number') {
       errors.push(`${tag}.noiseScale: must be a number`);
+    }
+    if (v.colorIntensity != null && typeof v.colorIntensity !== 'number') {
+      errors.push(`${tag}.colorIntensity: must be a number (HDR multiplier)`);
     }
     if (v.noiseSpeed != null && typeof v.noiseSpeed !== 'number') {
       errors.push(`${tag}.noiseSpeed: must be a number`);

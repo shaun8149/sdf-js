@@ -58,8 +58,10 @@ uniform vec4  u_leafPattern[256];
 //   u_volumeKindCenter[i] = vec4(kind, cx, cy, cz)   — kind: 0=smoke, 1=flame, 2=fog, 3=god-rays
 //   u_volumeSizeDensity[i] = vec4(sx, sy, sz, density)
 //   u_volumeColor[i]       = vec4(r, g, b, noiseScale)
-// u_volumeCount = active slots (0..MAX_VOLUMES).
-#define MAX_VOLUMES 8
+// u_volumeCount = active slots (0..MAX_VOLUMES). Sprint 5 bumped 8→12 to
+// support multi-emitter rocket exhaust (4 booster flames + center + trail
+// smoke + pad smoke + fog + god-rays = 9 active for rocket-launch).
+#define MAX_VOLUMES 12
 uniform vec4  u_volumeKindCenter[MAX_VOLUMES];
 uniform vec4  u_volumeSizeDensity[MAX_VOLUMES];
 uniform vec4  u_volumeColor[MAX_VOLUMES];
@@ -465,15 +467,21 @@ float smokeDensity(vec3 lp, float noiseScale, float t) {
   return clamp(falloff * (n * 0.8 + 0.3) * rise, 0.0, 1.0);
 }
 
-// Flame: tighter spherical profile + fast fbm + upward bias. Glow handled by color.
+// Flame: tighter spherical profile + slow fbm + upward bias. Glow handled by color.
+// Sprint 5: density floor raised (n*0.3+0.85 vs old n*0.9+0.5) so flame stays
+// SOLID with subtle wisp variation, not strobing on/off. Time speed slowed
+// from 1.2 to 0.5 to remove visible flicker. Boost overall to 1.4× so
+// even modest user density values render as opaque fire.
 float flameDensity(vec3 lp, float noiseScale, float t) {
   // Cone-like falloff: wide at base, narrow at top
   float radial = length(lp.xz) / max(0.3 + 0.6 * (1.0 - clamp(lp.y, 0.0, 1.0)), 0.05);
   if (radial > 1.0) return 0.0;
-  float falloff = (1.0 - smoothstep(0.6, 1.0, radial)) * (1.0 - smoothstep(0.8, 1.0, lp.y));
-  vec3 nPos = lp * noiseScale + vec3(0.0, -t * 1.2, 0.0);
+  float falloff = (1.0 - smoothstep(0.7, 1.0, radial)) * (1.0 - smoothstep(0.85, 1.0, lp.y));
+  vec3 nPos = lp * noiseScale + vec3(0.0, -t * 0.5, 0.0);
   float n = fbm3_lite(nPos);
-  return clamp(falloff * (n * 0.9 + 0.5), 0.0, 1.0);
+  // Heavy floor (0.85 base + 0.3*n) → density never drops below ~70% of peak.
+  // Old (0.5 + 0.9*n) had density swinging 5%-140% = visible strobe.
+  return clamp(falloff * (n * 0.3 + 0.85) * 1.4, 0.0, 1.0);
 }
 
 // Ground fog: layered density below center.y + size.y/2, fbm-perturbed.
@@ -507,17 +515,31 @@ float godRayDensity(vec3 lp, float noiseScale, float t) {
 // the loop counter. Indexing u_volumeKindCenter[j] is then legal.
 vec4 applyVolumes(vec3 ro, vec3 rd, float tMax) {
   if (u_volumeCount <= 0) return vec4(0.0, 0.0, 0.0, 1.0);
-  const int VOL_STEPS = 32;
+  // Sprint 5: bumped 32→64 + dt CAP at 0.5 world units. Fixed dt was tMax/N;
+  // for far shots (tMax=200), that gave dt=6.25 world units while flame
+  // volumes are only ~2.6 tall → many samples missed flames entirely → fire
+  // appeared "broken" / "fragmented". Capping ensures fine sampling regardless
+  // of how far the ray's surface hit is. Tradeoff: rays beyond 64×0.5=32 world
+  // units won't reach volumes, but volumes are usually near subject anyway.
+  const int VOL_STEPS = 64;
+  const float VOL_DT_MAX = 0.5;
   float jitter = hash21(gl_FragCoord.xy + vec2(u_time * 60.0, 0.0)) * 0.5;
-  float dt = tMax / float(VOL_STEPS);
+  float dt = min(tMax / float(VOL_STEPS), VOL_DT_MAX);
   vec3 acc = vec3(0.0);
   float transmit = 1.0;
   float t = dt * (0.5 + jitter * 0.5);
   for (int i = 0; i < VOL_STEPS; i++) {
     if (t > tMax || transmit < 0.02) break;
     vec3 p = ro + rd * t;
-    vec3 sampleCol = vec3(0.0);
-    float sampleDens = 0.0;
+    // Sprint 5: split emissive (flame, god-rays) vs absorptive (smoke, fog).
+    // Emissive volumes ADD light without reducing transmittance — fire is
+    // luminous and visually punches through smoke. Absorptive volumes follow
+    // Beer-Lambert (block light + add their own color via dual-mix).
+    // Previously all volumes used absorptive blend → smoke in FRONT of flame
+    // killed transmit before ray reached flame → flame looked dim.
+    vec3 emissiveCol = vec3(0.0);
+    vec3 absorbCol = vec3(0.0);
+    float absorbDens = 0.0;
     for (int j = 0; j < MAX_VOLUMES; j++) {
       if (j >= u_volumeCount) break;
       vec4 kc  = u_volumeKindCenter[j];
@@ -527,19 +549,30 @@ vec4 applyVolumes(vec3 ro, vec3 rd, float tMax) {
       if (loc.w > 0.05) continue;
       int kind = int(kc.x + 0.5);
       float d = 0.0;
-      if (kind == 0)      d = smokeDensity(loc.xyz, col.w, u_time);
-      else if (kind == 1) d = flameDensity(loc.xyz, col.w, u_time);
-      else if (kind == 2) d = fogDensity(loc.xyz, col.w, u_time);
-      else                d = godRayDensity(loc.xyz, col.w, u_time);
+      bool isEmissive = false;
+      if (kind == 0)      { d = smokeDensity(loc.xyz, col.w, u_time); }
+      else if (kind == 1) { d = flameDensity(loc.xyz, col.w, u_time); isEmissive = true; }
+      else if (kind == 2) { d = fogDensity(loc.xyz, col.w, u_time); }
+      else                { d = godRayDensity(loc.xyz, col.w, u_time); isEmissive = true; }
       d *= sd.w;
-      if (d > 0.001) {
-        sampleCol  += col.rgb * d;
-        sampleDens += d;
+      if (d <= 0.001) continue;
+      if (isEmissive) {
+        emissiveCol += col.rgb * d;
+      } else {
+        absorbCol += col.rgb * d;
+        absorbDens += d;
       }
     }
-    if (sampleDens > 0.001) {
-      vec3 c = sampleCol / sampleDens;
-      float a = 1.0 - exp(-sampleDens * dt * 1.5);
+    // Emissive contribution: pure additive, no opacity reduction. Multiplied
+    // by transmit so light from emissive volume behind opaque smoke is dimmed
+    // (physically correct: you can't see through opaque dust).
+    if (length(emissiveCol) > 0.001) {
+      acc += transmit * emissiveCol * dt;
+    }
+    // Absorptive contribution: standard Beer-Lambert blend.
+    if (absorbDens > 0.001) {
+      vec3 c = absorbCol / absorbDens;
+      float a = 1.0 - exp(-absorbDens * dt * 1.5);
       acc += transmit * a * c;
       transmit *= (1.0 - a);
     }
@@ -950,8 +983,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
 
   // Sprint 3 volume LUTs — 3 vec4 slots per volume (kindCenter / sizeDensity / color)
-  // up to MAX_VOLUMES=8 (matches shader). Re-uploaded per render() via setVolumes().
-  const MAX_VOLUMES = 8;
+  // up to MAX_VOLUMES=12 (matches shader). Re-uploaded per render() via setVolumes().
+  const MAX_VOLUMES = 12;
   const volumeKindCenterLUT  = new Float32Array(MAX_VOLUMES * 4);
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeColorLUT       = new Float32Array(MAX_VOLUMES * 4);
@@ -1592,12 +1625,18 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         const sx = v.size[0],   sy = v.size[1],   sz = v.size[2];
         const density = (typeof v.density === 'number') ? v.density : 1.0;
         const noiseScale = (typeof v.noiseScale === 'number') ? v.noiseScale : 2.5;
-        // Auto-normalize color: max > 1 → assume 0-255 sRGB
+        // Auto-normalize color: max > 1 → assume 0-255 sRGB (then renorm to 0-1).
+        // Sprint 5: optional `colorIntensity` multiplier (default 1.0). Lets
+        // flame volumes push HDR brightness so they actually trigger bloom
+        // and read as "fire" not "wisp". e.g. colorIntensity: 3.0 makes the
+        // already-bright orange color emit at 3× → bloom kicks in heavily.
         let r = 0.8, g = 0.8, b = 0.8;
         if (Array.isArray(v.color)) {
           [r, g, b] = v.color;
           if (Math.max(r, g, b) > 1.01) { r /= 255; g /= 255; b /= 255; }
         }
+        const colorIntensity = (typeof v.colorIntensity === 'number') ? v.colorIntensity : 1.0;
+        r *= colorIntensity; g *= colorIntensity; b *= colorIntensity;
         volumeKindCenterLUT[i*4]   = kind;
         volumeKindCenterLUT[i*4+1] = cx;
         volumeKindCenterLUT[i*4+2] = cy;
