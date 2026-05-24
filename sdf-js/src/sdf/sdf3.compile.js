@@ -442,6 +442,23 @@ const PRIMS = {
   'terrain-elevated': ([maxHeight, scale, ridgePower, mountainness], p) =>
     `sdTerrainElevated(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)})`,
 
+  // IQ Rainforest-style terrain with lakes. Same elevated terrain equation
+  // with a low-freq lake mask carving flat lake-floor pockets.
+  // Args: [maxHeight, scale, ridgePower, mountainness, waterLevel, lakeScale, lakeAmount].
+  'terrain-with-lakes': ([maxHeight, scale, ridgePower, mountainness, waterLevel, lakeScale, lakeAmount], p) =>
+    `sdTerrainLakes(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(waterLevel)}, ${flt(lakeScale)}, ${flt(lakeAmount)})`,
+
+  // IQ Snow Bridge-style parametric stone arch bridge. Single SDF function
+  // builds vault + deck + rails + balusters + corner posts + finials.
+  // Args: [bridgeLen, bridgeWidth, archH, railH, cornerOff].
+  'arch-bridge': ([bridgeLen, bridgeWidth, archH, railH, cornerOff], p) =>
+    `sdArchBridge(${p}, ${flt(bridgeLen)}, ${flt(bridgeWidth)}, ${flt(archH)}, ${flt(railH)}, ${flt(cornerOff)})`,
+
+  // IQ Canyon-style terrain (elevated heightmap + 3D displacement overlay).
+  // Args: [maxHeight, scale, ridgePower, mountainness, displaceAmt, yStretch].
+  'terrain-canyon': ([maxHeight, scale, ridgePower, mountainness, displaceAmt, yStretch], p) =>
+    `sdTerrainCanyon(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(displaceAmt)}, ${flt(yStretch)})`,
+
   // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.
   // stylized-tree(trunkLen, trunkRad, leafSize, windK) — 4-layer composition.
   'stylized-tree': ([trunkLen, trunkRad, leafSize, windK], p) =>

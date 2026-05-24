@@ -49,6 +49,9 @@ import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
 import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
 import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
 import { terrainElevatedSDF } from './components/community/kk-elevated.js';
+import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.js';
+import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
+import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
@@ -320,6 +323,30 @@ const PRIMITIVE_FACTORIES = {
     ridgePower:   a.ridgePower   ?? 2.4,
     mountainness: a.mountainness ?? 0.4,
   }),
+  'terrain-with-lakes': (a) => terrainWithLakesSDF({
+    maxHeight:    a.maxHeight    ?? 60.0,
+    scale:        a.scale        ?? 0.012,
+    ridgePower:   a.ridgePower   ?? 2.4,
+    mountainness: a.mountainness ?? 0.4,
+    waterLevel:   a.waterLevel   ?? 0.0,
+    lakeScale:    a.lakeScale    ?? 0.0008,
+    lakeAmount:   a.lakeAmount   ?? 0.30,
+  }),
+  'arch-bridge': (a) => archBridgeSDF({
+    bridgeLen:   a.bridgeLen   ?? a.length      ?? 30.0,
+    bridgeWidth: a.bridgeWidth ?? a.width       ?? 4.0,
+    archH:       a.archH       ?? a.archHeight  ?? 6.0,
+    railH:       a.railH       ?? a.railHeight  ?? 1.5,
+    cornerOff:   a.cornerOff   ?? a.cornerOffset?? 10.0,
+  }),
+  'terrain-canyon': (a) => terrainCanyonSDF({
+    maxHeight:    a.maxHeight    ?? 35.0,
+    scale:        a.scale        ?? 0.015,
+    ridgePower:   a.ridgePower   ?? 2.0,
+    mountainness: a.mountainness ?? 0.20,
+    displaceAmt:  a.displaceAmt  ?? 4.0,
+    yStretch:     a.yStretch     ?? 4.0,
+  }),
 
   // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
   'stylized-tree': (a) => stylizedTreeSDF({
@@ -435,7 +462,12 @@ export function compile(sceneData) {
         compiled.sdf._subjectMaterial = topLevelMat;
       } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
-      } else if ((subj.type === 'terrain-heightmap' || subj.type === 'terrain-elevated') && compiled.sdf._subjectMaterial == null) {
+      } else if (subj.type === 'terrain-canyon' && compiled.sdf._subjectMaterial == null) {
+        // Auto-attach mountain material with red-orange sandstone tint.
+        // mountain branch reads leafMat.x/y to tint the rock + ground layers
+        // (see Sprint A5 mountain rock tint upgrade). Default canyon = Bryce.
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.06, sat: 0.62, value: 0.85, metal: 0, glow: 0, kind: 'mountain' });
+      } else if ((subj.type === 'terrain-heightmap' || subj.type === 'terrain-elevated' || subj.type === 'terrain-with-lakes') && compiled.sdf._subjectMaterial == null) {
         // Mountain material: hue/sat/value mostly irrelevant — mountain branch
         // uses snow/rock palette internally. kind=2 routes to that branch.
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.7, metal: 0, glow: 0, kind: 'mountain' });

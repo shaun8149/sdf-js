@@ -1,0 +1,116 @@
+{
+  "id": "canyon-sunset",
+  "title": "红岩峡谷·黄昏",
+  "prompt": "夕阳下的红砂岩峡谷，远处雪峰",
+  "code2d": "// Recipe-only port of IQ Canyon XdsXDS (CC educational, no source copied).\n// Showcases new terrain-canyon primitive — adds 3D fbm displacement overlay\n// with Y-axis stretch (4×) to existing terrain-elevated heightmap. Y-stretch\n// maps horizontal noise bands to vertical wall striations — the canonical\n// red sandstone canyon look (Bryce / Zion). Mountain branch tints rock layers\n// by material hue (Sprint A5) so the same shading code does gray Alps OR\n// red sandstone via material hue setting. Hand-authored, not lifted.",
+  "sceneData": {
+    "v": 1,
+    "name": "Canyon sunset — terrain-canyon primitive + sandstone tinted mountain shader",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "夕阳下的红砂岩峡谷，远处雪峰",
+      "from2dCode": "no 2D source — built directly to showcase terrain-canyon primitive (recipe-only IQ Canyon port)"
+    },
+    "subjects": [
+      {
+        "id": "red-canyon",
+        "type": "terrain-canyon",
+        "args": {
+          "maxHeight":    38.0,
+          "scale":        0.014,
+          "ridgePower":   2.2,
+          "mountainness": 0.22,
+          "displaceAmt":  5.0,
+          "yStretch":     4.0
+        },
+        "transform": { "translate": [0, -8, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0.4, "pitch": -0.08, "distance": 30, "focal": 1.0,
+        "targetX": 0, "targetY": 5, "targetZ": 0,
+        "aperture": 0.4, "focalDistance": 35
+      },
+      "light": { "azimuth": 2.4, "altitude": 0.16, "distance": 80, "intensity": 1.25 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.5 },
+      "postFx": {
+        "exposure": 1.0,
+        "vignetteStrength": 0.42,
+        "bloomMix": 0.24,
+        "bloomThreshold": 0.80,
+        "lensFlareStrength": 0.18,
+        "motionBlurStrength": 0.45
+      }
+    },
+    "volumes": [
+      {
+        "id": "valley-haze",
+        "kind": "fog",
+        "center": [0, -3, 0],
+        "size": [200, 4, 200],
+        "density": 0.15,
+        "color": [240, 200, 165],
+        "noiseScale": 0.6
+      },
+      {
+        "id": "sun-godray",
+        "kind": "god-rays",
+        "center": [40, 30, 0],
+        "size": [40, 30, 40],
+        "density": 0.8,
+        "color": [255, 200, 130],
+        "noiseScale": 1.5,
+        "colorIntensity": 1.8
+      }
+    ],
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 5.0,
+          "pos": [-15, 25, 50],
+          "target": [10, 8, 0],
+          "fov": 48,
+          "aperture": 0.3,
+          "focalDistance": 55,
+          "ease": "smooth",
+          "exposure": [0.0, 1.0]
+        },
+        {
+          "duration": 5.5,
+          "pos": [25, 14, 35],
+          "target": [0, 6, 0],
+          "fov": 42,
+          "aperture": 0.5,
+          "focalDistance": 35,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5.0,
+          "pos": [10, 6, 25],
+          "target": [-5, 8, -5],
+          "fov": 38,
+          "aperture": 0.8,
+          "focalDistance": 20,
+          "ease": "smooth",
+          "transition": "blend",
+          "shake": 0.06
+        },
+        {
+          "duration": 5.5,
+          "pos": [40, 28, 50],
+          "target": [0, 5, 0],
+          "fov": 54,
+          "aperture": 0.25,
+          "focalDistance": 60,
+          "ease": "smooth",
+          "transition": "blend",
+          "exposure": [1.0, 0.0]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "id": "lake-district",
+  "title": "湖区俯瞰",
+  "prompt": "湖光山色，雪山倒映在湖面，黄昏空中俯瞰",
+  "code2d": "// Showcase for terrain-with-lakes primitive (IQ Rainforest envelope idiom\n// + Atlas elevated-terrain ridges + Sprint A2 mountain 4-layer + Sprint A4\n// snow Schlick / Fresnel rim). Aerial flyover with mirror-still sea-surface\n// water plane at lake level. No subject motion — camera-only cinematic.\n// Hand-authored, not lifted.",
+  "sceneData": {
+    "v": 1,
+    "name": "Lake district aerial — terrain-with-lakes showcase",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "湖光山色，雪山倒映在湖面，黄昏空中俯瞰",
+      "from2dCode": "no 2D source — built directly to showcase Atlas terrain-with-lakes + Sprint A4 mountain shading"
+    },
+    "subjects": [
+      {
+        "id": "lake-terrain",
+        "type": "terrain-with-lakes",
+        "args": {
+          "maxHeight":    32.0,
+          "scale":        0.024,
+          "ridgePower":   2.5,
+          "mountainness": 0.28,
+          "waterLevel":   0.0,
+          "lakeScale":    0.0028,
+          "lakeAmount":   0.22
+        },
+        "transform": { "translate": [0, -4.0, 0] }
+      },
+      {
+        "id": "lake-water",
+        "type": "sea-surface",
+        "args": { "depth": 0.18, "scale": 0.18 },
+        "transform": { "translate": [0, -4.0, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": -0.3, "pitch": -0.20, "distance": 30, "focal": 1.1,
+        "targetX": 0, "targetY": 3, "targetZ": 0,
+        "aperture": 0.3, "focalDistance": 30
+      },
+      "light": { "azimuth": -1.2, "altitude": 0.62, "distance": 50, "intensity": 1.1 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.42 },
+      "postFx": {
+        "exposure": 1.0,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.04,
+        "motionBlurStrength": 0.4
+      }
+    },
+    "volumes": [],
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 5.0,
+          "pos": [0, 38, 45],
+          "target": [0, 4, 0],
+          "fov": 48,
+          "aperture": 0.25,
+          "focalDistance": 50,
+          "ease": "smooth",
+          "exposure": [0.0, 1.05]
+        },
+        {
+          "duration": 5.5,
+          "pos": [32, 20, 32],
+          "target": [0, 4, 0],
+          "fov": 44,
+          "aperture": 0.4,
+          "focalDistance": 38,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5.0,
+          "pos": [14, 8, 24],
+          "target": [-4, 2, 0],
+          "fov": 40,
+          "aperture": 0.6,
+          "focalDistance": 18,
+          "ease": "smooth",
+          "transition": "blend",
+          "shake": 0.05
+        },
+        {
+          "duration": 5.5,
+          "pos": [45, 35, 45],
+          "target": [0, 4, 0],
+          "fov": 52,
+          "aperture": 0.25,
+          "focalDistance": 55,
+          "ease": "smooth",
+          "transition": "blend",
+          "exposure": [1.05, 0.0]
+        }
+      ]
+    }
+  }
+}

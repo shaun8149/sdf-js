@@ -21,6 +21,33 @@
       "prompt": "一架巡航中的战斗机"
     },
     {
+      "id": "canyon-sunset",
+      "title": "红岩峡谷·黄昏",
+      "thesisPoint": "terrain-canyon primitive (recipe-only IQ Canyon XdsXDS port) adds 3D fbm displacement overlay with Y-axis stretch 4× onto terrain-elevated heightmap — horizontal noise bands map to VERTICAL wall striations, the signature red sandstone canyon look. Mountain branch now respects material HSV hue as a rock tint (Sprint A5), so the same shader renders gray Alps OR red sandstone via material setting. Sunset lighting + god-rays + warm fog.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "canyon-sunset.json",
+      "prompt": "夕阳红岩峡谷"
+    },
+    {
+      "id": "snow-bridge",
+      "title": "雪覆石桥",
+      "thesisPoint": "First parametric building atom · arch-bridge SDF (recipe-only IQ MdXGzr port) builds vault + deck + rails + ~50 balusters + corner finials in ONE 100-LOC SDF function (vs ~60 unioned subjects = 10× perf). Pair with new material kind='snowy' = Lambert + noise-patched snow overlay + cosine micro-normal sparkle spec. Snow demo composes arch-bridge + terrain-elevated (snowy peaks) + tree-pine scatter — proves parametric building primitives integrate with existing atom composition.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "snow-bridge.json",
+      "prompt": "雪覆石桥"
+    },
+    {
+      "id": "lake-district",
+      "title": "湖区俯瞰",
+      "thesisPoint": "Recipe-only port of IQ Rainforest envelope() — terrain-with-lakes primitive carves lake-floor pockets into elevated-terrain heightfield using low-freq mask noise. Lakes are PART of the terrain (continuous Lipschitz), so ridges + valleys form naturally around them. Paired with sea-surface for actual water plane + Sprint A4 snow Schlick + Fresnel rim for crystalline alpine look. Aerial cinematic 4-shot showcase.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "lake-district.json",
+      "prompt": "湖光山色"
+    },
+    {
       "id": "china-carrier",
       "title": "中国航空母舰",
       "thesisPoint": "#1 precision · regression test",

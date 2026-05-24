@@ -77,6 +77,9 @@ export const PRIMITIVE_TYPES = new Set([
   // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
   'terrain-heightmap',
   'terrain-elevated',
+  'terrain-with-lakes',
+  'terrain-canyon',
+  'arch-bridge',
   // Forest sprint atoms (tree + leaf + flower scatter + emissive meteor streak).
   // stylized-tree = 4-layer: wavy trunk + 3 polar-replicated main branch layers
   //   (pModPolar 6/5/3) + cellular leaf instances (pMod3 + maple-leaf) +
@@ -278,6 +281,12 @@ export const MATERIAL_KIND_INDEX = {
   mountain:    2,
   emissive:    3,
   translucent: 4,
+  // 5 = snowy: Lambert + snow overlay on upward-facing surfaces (n.y > 0.5)
+  // with noise-patched coverage + cosine micro-normal sparkle specular.
+  // Recipe-only port of IQ MdXGzr Snow Bridge snow blend. Use on any non-
+  // mountain primitive that should look like it has fresh snowfall on it
+  // (bridges, statues, buildings, tree foliage, stone walls).
+  snowy:       5,
 };
 
 // =============================================================================

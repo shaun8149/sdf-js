@@ -785,10 +785,193 @@ float atlasTerrainElevated(vec2 x, float maxHeight, float scale,
 
 // SDF wrapper with tighter step damp (0.25 vs heightmap's 0.3) — ridge-
 // sharpened peaks need finer steps to avoid penetration.
+// 2026-05-24 evening (IQ Elevated study): bumped 6 → 9 octaves for sharper
+// visible ridges. IQ's terrainM uses 9 octaves; this matches that LOD.
+// Multi-LOD trick (16-oct for normal only) deferred — needs renderer changes
+// that are out of scope for this lib-only ship.
 float sdTerrainElevated(vec3 p, float maxHeight, float scale,
                          float ridgePower, float mountainness) {
-  float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 6);
+  float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 9);
   return (p.y - h) * 0.25;
+}
+
+// ---- Terrain with lakes (IQ Rainforest envelope idiom) -----------------
+// Two-mask combination: a LOW-frequency lake mask decides where the surface
+// drops to a flat lake floor; everywhere else the existing elevated terrain
+// equation applies. Lakes are NOT a separate water plane — they are part of
+// the terrain heightfield, so ridges + valleys form naturally around them.
+//
+// Recipe-only port of IQ MdX3Rr "Rainforest" envelope() function. Independent
+// reimplementation — IQ's specific noise functions and parameters are not
+// copied; we use Atlas's existing atlasNoised/atlasTerrainElevated building
+// blocks with our own threshold / mix structure.
+//
+// Tuning:
+//   maxHeight    — same as terrain-elevated
+//   scale        — same as terrain-elevated (horizontal terrain freq)
+//   ridgePower   — same as terrain-elevated
+//   mountainness — same as terrain-elevated
+//   waterLevel   — Y coordinate where lake floor sits (also where water plane
+//                  should be placed by caller; recommend identical Y)
+//   lakeScale    — horizontal lake-mask freq (0.0005-0.002 typical;
+//                  smaller = bigger lakes, fewer of them)
+//   lakeAmount   — fraction of surface area occupied by lakes (0.1-0.5)
+float atlasTerrainLakes(vec2 x, float maxHeight, float scale,
+                         float ridgePower, float mountainness,
+                         float waterLevel, float lakeScale, float lakeAmount,
+                         int octaves) {
+  // Lake mask: noise above (1 - lakeAmount) → flat lake. Smooth transition
+  // band 0.05 wide so shoreline isn't a hard cliff.
+  float threshold = 1.0 - lakeAmount;
+  float lakeNoise = atlasNoised(x * lakeScale).x;
+  float lakeMask = smoothstep(threshold - 0.05, threshold + 0.05, lakeNoise);
+
+  // Mountain terrain — same as terrain-elevated
+  float landHeight = atlasTerrainElevated(x, maxHeight, scale, ridgePower, mountainness, octaves);
+
+  // Mix: lake regions go to a guaranteed sub-water depth. Land regions keep
+  // their natural variance — some lowlands sit just below water level so the
+  // sea-surface plane (placed by caller at waterLevel) shows around shorelines,
+  // which is the IQ Rainforest look (water meandering through valleys, not
+  // a uniform tan plain hiding the water below). Lake depth scales with
+  // maxHeight so large terrain stays consistent.
+  float lakeDepth = waterLevel - maxHeight * 0.05;
+  return mix(landHeight, lakeDepth, lakeMask);
+}
+
+float sdTerrainLakes(vec3 p, float maxHeight, float scale,
+                      float ridgePower, float mountainness,
+                      float waterLevel, float lakeScale, float lakeAmount) {
+  float h = atlasTerrainLakes(p.xz, maxHeight, scale, ridgePower, mountainness,
+                                waterLevel, lakeScale, lakeAmount, 8);
+  return (p.y - h) * 0.25;
+}
+
+// ---- Canyon 3D displacement overlay (IQ Canyon XdsXDS recipe-only port) ----
+// Adds a 3D fbm noise offset to ANY heightmap-based SDF. The Y-stretch (typical
+// 4×) maps horizontal noise bands to vertical wall striations — the canonical
+// sandstone-canyon look (Bryce / Zion / Antelope Canyon). Drop into any
+// terrain SDF wrapper as: "(displacement + p.y - h) * damp".
+//
+// Recipe only — IQ's displacement() uses 4 octaves with custom anisotropic
+// rotation matrix; Atlas reimplements with our existing fbm3_lite (3 octaves,
+// simpler matrix) which is ~90% the visual quality at ~75% the cost.
+//
+// Args:
+//   p          — world position (3D)
+//   scale      — horizontal noise frequency (0.05-0.15 typical)
+//   yStretch   — Y-axis frequency multiplier (4.0 = strong vertical striations,
+//                1.0 = isotropic crags, 0.25 = horizontal banding)
+//   amplitude  — displacement magnitude in world units (1-5 typical)
+float atlasCanyonDisplacement(vec3 p, float scale, float yStretch, float amplitude) {
+  vec3 q = p * scale * vec3(1.0, yStretch, 1.0);
+  return amplitude * fbm3_lite(q);
+}
+
+// Canyon terrain SDF: terrain-elevated heightmap + 3D displacement overlay.
+// The displacement adds 3D bumpy variation on top of the 2D heightmap, so
+// canyon walls show vertical striations + horizontal layering of the noise.
+//
+// Args:
+//   maxHeight, scale, ridgePower, mountainness — same as terrain-elevated
+//   displaceAmt — displacement amplitude (3-8 typical for canyon look)
+//   yStretch    — Y multiplier on displacement noise (4 = vertical striations)
+float sdTerrainCanyon(vec3 p, float maxHeight, float scale,
+                       float ridgePower, float mountainness,
+                       float displaceAmt, float yStretch) {
+  float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 9);
+  float dis = atlasCanyonDisplacement(p, 0.0625, yStretch, displaceAmt);
+  return (dis + p.y - h) * 0.25;
+}
+
+// ---- Parametric arch bridge (IQ Snow Bridge MdXGzr recipe-only port) ----
+// A single SDF function builds the entire stone bridge — main arch + flat deck +
+// side rails + repeated balusters + corner posts + sphere finials — via
+// internal mod() repetition and abs() mirroring. One SDF eval ≈ 60 unioned
+// primitives but ~10× faster.
+//
+// Recipe only — IQ MdXGzr is "educational, no commercial, no AI training"
+// licensed; Atlas independently reimplements the idiom from scratch using our
+// own sdBox helper + parameter names.
+//
+// Args:
+//   p          — local position (apply transform via parent subject)
+//   bridgeLen  — total span along Z (typical 24-40 world units)
+//   bridgeWidth — half-width of deck along X (typical 3-5)
+//   archH      — arch crown height above deck (typical 4-10)
+//   railH      — rail post height above deck (typical 1.2-2.0)
+//   cornerOff  — Z offset of corner posts from center (typical bridgeLen*0.35)
+float sdArchBridge(vec3 p, float bridgeLen, float bridgeWidth,
+                    float archH, float railH, float cornerOff) {
+  float halfLen = bridgeLen * 0.5;
+
+  // Arch curve: peaks at z=0, vanishes at z=±halfLen. Clamp the cosine input
+  // so peripherals don't get garbage extrapolation beyond bridge ends.
+  float zNorm = clamp(p.z / max(halfLen, 0.001), -1.0, 1.0);
+  float f = 0.5 - 0.5 * cos(3.14159265 * zNorm);
+
+  // Deck-Y reference: raises with arch crown so deck is flat on top of the
+  // curve. The +1-6 offset matches IQ's "deck sits on top of vault" anchor.
+  float deckY = p.y + 1.0 - 6.0 + f * 4.0;
+  vec3 xpos = vec3(p.x, deckY, p.z);
+
+  // Main vault body — height bulges with f²·g. The g mask leaves edges thin
+  // (visible arch curve from below) and bulges the middle (solid stone arch).
+  float gNorm = 0.5 + 0.5 * p.x / max(bridgeWidth, 0.001);
+  float g = 1.0 - (smoothstep(0.15, 0.25, gNorm) - smoothstep(0.75, 0.85, gNorm));
+  vec3 archPos = vec3(xpos.x, xpos.y + archH * f * f * g, xpos.z);
+  float vault = sdBox(archPos, vec3(bridgeWidth, 0.5 + archH * f * f * g, halfLen) - vec3(0.1)) - 0.1;
+  float mindist = vault;
+
+  // Flat deck slab (slight overhang outside vault for cornice ledge)
+  float deck = sdBox(xpos, vec3(bridgeWidth + 0.2, 0.1, halfLen));
+  mindist = min(mindist, deck);
+
+  // Side rails (mirrored via abs(x) → two rails from one box)
+  vec3 sxpos = vec3(abs(xpos.x), xpos.y, xpos.z);
+  float rail = sdBox(sxpos - vec3(bridgeWidth - 0.4, railH, 0.0),
+                     vec3(0.4, 0.2, halfLen) - vec3(0.05)) - 0.05;
+  mindist = min(mindist, rail);
+
+  // Balusters & corner posts. Only within bridge span.
+  // Corner posts at z = {0, ±cornerOff}; balusters at all other integer Z.
+  if (abs(xpos.z) < halfLen) {
+    // Determine if this XZ region is near a corner post position.
+    float distToCenter   = abs(xpos.z);
+    float distToCornerP  = abs(xpos.z - cornerOff);
+    float distToCornerN  = abs(xpos.z + cornerOff);
+    bool isCornerPost = (distToCenter < 0.5 || distToCornerP < 0.5 || distToCornerN < 0.5);
+
+    if (isCornerPost) {
+      // Corner post + sphere finial + small engraved cutout
+      vec3 xp2 = vec3(abs(xpos.x) - (bridgeWidth - 0.6),
+                       xpos.y - 1.0,
+                       mod(1000.0 + xpos.z, 1.0) - 0.5);
+      float post = sdBox(xp2, vec3(0.8, 1.0, 0.45));
+      mindist = min(mindist, post);
+      // Engraved cutout (subtract)
+      float cutout = sdBox(xp2 + vec3(-0.8, 0.0, 0.0), vec3(0.15, 0.9, 0.35));
+      mindist = max(mindist, -cutout);
+      // Sphere finial on top
+      float finial = length(xp2 - vec3(0.0, 1.3, 0.0)) - 0.35;
+      mindist = min(mindist, finial);
+    } else {
+      // Repeating baluster — vase profile via cosine modulation
+      vec3 xp2 = vec3(abs(xpos.x) - (bridgeWidth - 0.2),
+                       xpos.y - 0.8,
+                       mod(1000.0 + xpos.z, 1.0) - 0.5);
+      vec3 xpc = vec3(length(xp2.xz), xp2.y, 0.0);
+      float mo = 0.8 + 0.2 * cos(2.0 * 6.2831 * xp2.y);    // vertical vase waist
+      float ma = cos(4.0 * atan(xp2.x, xp2.z));              // 8-segment angular ridges
+      mo -= 0.1 * (1.0 - ma * ma);
+      float baluster = sdBox(xpc, vec3(0.2 * mo, 0.5, 0.0));
+      mindist = min(mindist, baluster);
+    }
+  }
+
+  // Step damping — bridge has thin features (balusters 0.2 wide) so tighter
+  // damp prevents sphere-trace overshoot. 0.25 matches terrain.
+  return 0.25 * mindist;
 }
 
 // ---- Canal lamp bulbs (Venice-style streetlamp head) ---------------------

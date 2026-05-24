@@ -711,12 +711,18 @@ void main() {
     bool isMountain = false;    // material.kind == 'mountain'    (tone.y ~ 2)
     bool isEmissive = false;    // material.kind == 'emissive'    (tone.y ~ 3)
     bool isTranslucent = false; // material.kind == 'translucent' (tone.y ~ 4)
+    bool isSnowy = false;       // material.kind == 'snowy'       (tone.y ~ 5)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      // Check higher kinds first (4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 3.5) {
+      // Check higher kinds first (5 > 4 > 3 > 2 > 1 > 0).
+      if (leafTone.y > 4.5) {
+        isSnowy = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+        metalK = leafMat.z;
+        glowK  = leafMat.w;
+      } else if (leafTone.y > 3.5) {
         isTranslucent = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
         metalK = leafMat.z;
@@ -799,7 +805,16 @@ void main() {
       float crestK = clamp(0.2 + (p.y + 1.0) * 0.5, 0.0, 1.0);
       vec3 scattering = vec3(0.0293, 0.0698, 0.1717) * 0.1 * crestK;
 
-      col = seaFres * reflection * 2.0 + scattering;
+      // 2026-05-24 fix (after lake-district screenshot showed tan/desert-looking
+      // water on top-down aerial view): add explicit lake/water albedo so the
+      // low-fresnel (steep viewing angle) case still shows recognizable water
+      // color. The afl_ext atmosphere reflection is designed for grazing-angle
+      // ocean rays (camera near sea level); for aerial views Fresnel ≈ 0.04
+      // making 'reflection * fres' near-black and post-FX bleed fills it with
+      // sky color. Mixing reflection toward a teal-cyan base by (1-fres) keeps
+      // top-down water visibly blue while preserving grazing-angle reflectivity.
+      vec3 waterAlbedo = vec3(0.04, 0.15, 0.22);   // dark teal lake / coastal water
+      col = mix(waterAlbedo, reflection, seaFres) * 1.6 + scattering;
     } else if (isEmissive) {
       // Emissive: bypass lighting equation. Color = base * (1 + 4*glow). Used
       // by meteor-streak (warm-white tail, glow ~ 2.0 default). ACES later
@@ -830,6 +845,48 @@ void main() {
                + backlight;
       float tFog = atmosphereDensity(p, t);
       col = mix(lit, sky(rd, sunDir), tFog);
+    } else if (isSnowy) {
+      // ---- Snowy material kind (IQ Snow Bridge recipe-only port) -----------
+      // Standard Lambert with the underlying base color, then blend snow on top
+      // of upward-facing patches with noise coverage + cosine micro-normal
+      // sparkle specular. Use on bridges / statues / buildings / branches for
+      // fresh-snow look. Mountain kind has its OWN snow line (altitude-based);
+      // snowy is for low-altitude objects (y < 20).
+      vec3 sunCol = vec3(1.05, 0.96, 0.84);
+      vec3 skyAmbient = sky(n, sunDir) * 0.55;
+      float diffS = max(dot(n, toLight), 0.0);
+      // Underlying material Lambert
+      vec3 litBase = base * sunCol * diffS * shadowK * 1.15
+                   + base * skyAmbient * skyL * ao * 0.55;
+
+      // Snow coverage: upward-facing + noise-patched
+      float snowFlat = smoothstep(0.45, 0.85, n.y);
+      float patchNoise = fbm3_lite(p * 0.45);
+      float snowK = mix(snowFlat, 0.9, 0.75 * smoothstep(0.1, 1.0, patchNoise));
+
+      // Snow base color — near-white with slight cool tint, plus fine fbm
+      float snowVar = fbm3_lite(p * 3.5) * 0.5 + 0.5;
+      vec3 snowCol = mix(vec3(0.80, 0.83, 0.88), vec3(0.94, 0.96, 1.00), snowVar);
+      // Snow Lambert (full sun, slight blue ambient)
+      vec3 snowLit = snowCol * sunCol * diffS * shadowK * 1.25
+                   + snowCol * vec3(0.48, 0.58, 0.78) * 0.45 * ao;
+
+      // Sparkle spec from cosine micro-normal (cheap fake of snow crystal facets)
+      vec3 cnor = normalize(n + 0.4 * vec3(
+        fbm3_lite(p * 8.0 + vec3(11.0, 0.0, 0.0)) - 0.5,
+        abs(fbm3_lite(p * 8.0 + vec3(0.0, 11.0, 0.0)) - 0.5),
+        fbm3_lite(p * 8.0 + vec3(0.0, 0.0, 11.0)) - 0.5));
+      float spark = pow(max(dot(reflect(rd, cnor), sunDir), 0.0), 18.0);
+      snowLit += snowK * spark * vec3(1.0, 0.97, 0.88) * 0.7 * shadowK;
+
+      // Mix material Lambert with snow Lambert by snowK
+      vec3 lin = mix(litBase, snowLit, snowK);
+
+      // Subtle fresnel rim
+      lin += vec3(0.55, 0.66, 0.78) * rim * ao * 0.10;
+
+      float snFog = atmosphereDensity(p, t);
+      col = mix(lin, sky(rd, sunDir), snFog * 0.7);
     } else if (isMountain) {
       // ---- Mountain-shading branch (Sprint A2: 4-layer altitude/normal blend) ----
       // Kolaczynski-style terrainColor: rock base → ground (low) → grass (mid +
@@ -847,16 +904,24 @@ void main() {
       float texVar = fbm3_lite(p * 0.4);
       float fineVar = fbm3_lite(p * 2.0) * 0.5;
 
-      // Layer 1: ROCK (base, always present, mottled gray-brown)
-      vec3 rockCol = mix(vec3(0.16, 0.14, 0.13), vec3(0.28, 0.24, 0.20), texVar);
+      // 2026-05-24 Sprint A5 (Canyon ship): rock + ground layers respect
+      // material HSV hue/sat as a tint, so terrain-canyon (red sandstone) and
+      // future colored-terrain primitives can override the default gray-brown
+      // without renderer code changes. Sat near 0 → tint is white → no change
+      // (backward-compat with existing mountain auto-attach hue=0.6 sat=0.05).
+      vec3 rockTint = hsv2rgb(vec3(leafMat.x, leafMat.y, 1.0));
+
+      // Layer 1: ROCK (base, always present, mottled gray-brown × tint)
+      vec3 rockCol = mix(vec3(0.16, 0.14, 0.13), vec3(0.28, 0.24, 0.20), texVar) * rockTint;
       vec3 baseCol = rockCol;
 
-      // Layer 2: GROUND (low altitude, brown-tan). Below y=2, gentle to moderate slopes.
-      vec3 groundCol = mix(vec3(0.30, 0.22, 0.14), vec3(0.42, 0.32, 0.20), texVar);
+      // Layer 2: GROUND (low altitude, brown-tan × tint). Below y=2, gentle slopes.
+      vec3 groundCol = mix(vec3(0.30, 0.22, 0.14), vec3(0.42, 0.32, 0.20), texVar) * rockTint;
       float groundK = (1.0 - smoothstep(-4.0, 6.0, yPos)) * smoothstep(0.25, 0.55, slopeUp);
       baseCol = mix(baseCol, groundCol, groundK);
 
-      // Layer 3: GRASS (mid altitude, gentle slopes, dark forest green with mottling)
+      // Layer 3: GRASS (mid altitude, gentle slopes, dark forest green with mottling).
+      // NOT tinted — grass is always green regardless of rock color.
       vec3 grassCol = mix(vec3(0.10, 0.22, 0.06), vec3(0.20, 0.36, 0.10), texVar);
       float grassK = smoothstep(-1.0, 6.0, yPos) * (1.0 - smoothstep(12.0, 22.0, yPos))
                    * smoothstep(0.55, 0.85, slopeUp);
@@ -883,13 +948,34 @@ void main() {
       vec3 mountSky  = sky(n, sunDir) * 0.55;  // Sprint 6: procedural-IBL ambient
       vec3 mountBack = vec3(0.40, 0.50, 0.60);
 
-      vec3 mountLin = (diffM * shadowK * 1.5) * mountSun;
+      // Asymmetric shadow color split (IQ Elevated trick): sun shadow tinted
+      // warm-orange in R, cooler-orange G, cool-blue B. Without this, mountain
+      // shadows look uniformly dark; with it they have aerial-perspective hue.
+      vec3 sunDiffuse = vec3(1.05, 0.96, 0.84) * 1.3
+                       * vec3(shadowK, shadowK*shadowK*0.5+0.5*shadowK, shadowK*shadowK*0.8+0.2*shadowK);
+      vec3 mountLin = diffM * sunDiffuse;
       mountLin += (ao * ambM * 0.55) * mountSky;
       mountLin += (backM * 0.28) * mountBack;
-      // Snow tiny spec for crystalline twinkle
-      mountLin += snowK * pow(max(dot(reflect(-sunDir, n), -rd), 0.0), 32.0) * shadowK * 0.5;
-      // Subtle fresnel rim
-      mountLin += vec3(0.55, 0.66, 0.78) * fresM * ao * 0.18;
+
+      // ---- Snow Schlick highlight (IQ Elevated idiom) ----
+      // Schlick-Fresnel spec with F0=0.04 dielectric → snow grazing angles
+      // glint white-gold. Only fires where snowK > 0 + sun-aligned half-vector.
+      vec3 halfV = normalize(sunDir - rd);
+      float schlick = 0.04 + 0.96 * pow(clamp(1.0 + dot(halfV, rd), 0.0, 1.0), 5.0);
+      mountLin += (0.7 + 0.3 * snowK) * schlick * vec3(7.0, 5.0, 3.0) * 0.30 * diffM * shadowK
+                * pow(clamp(dot(n, halfV), 0.0, 1.0), 16.0);
+
+      // ---- Snow Fresnel rim — subsurface translucency at grazing angles ----
+      // Snow at the silhouette edge picks up sky reflection through subsurface
+      // scattering. cos⁴ falloff with ref.y bias (only upward-reflecting rims
+      // glow — physically correct).
+      vec3 refR = reflect(rd, n);
+      mountLin += snowK * 0.65 * pow(fresM, 1.0) * vec3(0.3, 0.5, 0.6)
+                * smoothstep(0.0, 0.6, refR.y);
+
+      // Lower-altitude fresnel rim (rock + ground edge pop for distant peaks)
+      mountLin += vec3(0.55, 0.66, 0.78) * fresM * ao * 0.18 * (1.0 - snowK);
+
       col = baseCol * mountLin;
 
       // Height-based atmospheric fog (IQ idiom). Distant peaks fade into sky.
