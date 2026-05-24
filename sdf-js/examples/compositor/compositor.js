@@ -2379,10 +2379,31 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
     return;
   }
 
-  // Pick the best supported codec — vp9 > vp8 > generic webm
-  let mimeType = 'video/webm;codecs=vp9';
-  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8';
-  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  // MP4 (H.264) first — universal playback (WeChat / Douyin / WhatsApp / iOS
+  // Photos all accept it). Falls back to WebM (VP9/VP8) when browser can't
+  // record MP4 (Firefox + older Chrome). Both formats carry audio when the
+  // Oxygene synth is playing (audio track added below).
+  const FORMAT_CANDIDATES = [
+    'video/mp4;codecs=avc1.42E01F,mp4a.40.2',  // H.264 baseline + AAC
+    'video/mp4;codecs=avc1.42E01F',             // H.264 video only
+    'video/mp4',                                  // generic mp4
+    'video/webm;codecs=vp9,opus',                // WebM VP9 + Opus audio
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=vp8,opus',
+    'video/webm;codecs=vp8',
+    'video/webm',
+  ];
+  let mimeType = null;
+  for (const f of FORMAT_CANDIDATES) {
+    if (MediaRecorder.isTypeSupported(f)) { mimeType = f; break; }
+  }
+  if (!mimeType) {
+    setStatus('✗ record: no supported video format in this browser', true);
+    return;
+  }
+  const isMp4 = mimeType.startsWith('video/mp4');
+  const ext   = isMp4 ? 'mp4' : 'webm';
+  const blobType = isMp4 ? 'video/mp4' : 'video/webm';
 
   // Disable loop during recording so the sequence stops at its natural end.
   const sceneRef = window._lastSceneForTimeline;
@@ -2397,19 +2418,34 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   btn.textContent = '⏹';
   btn.style.color = '#ff5050';
 
-  const stream = canvas.captureStream(30);
+  // Sprint A-Phase-3: combine canvas video stream + Oxygene audio stream into
+  // one MediaStream so the recorded .webm has BOTH video and audio tracks.
+  // The synth must already be playing for its audio track to be present —
+  // recorder.start() snapshots tracks at that instant. Caller can either:
+  //   (a) start ♪ music first, then click ⏺ — synth audio captured
+  //   (b) click ⏺ without starting music — silent video
+  // We do NOT auto-start music: the user might want a silent shot, and
+  // AudioContext start needs its own gesture flow.
+  const videoStream = canvas.captureStream(30);
+  const tracks = [...videoStream.getVideoTracks()];
+  const synth = (typeof window._getOxygeneSynth === 'function') ? window._getOxygeneSynth() : null;
+  if (synth && synth.isOn()) {
+    const audioStream = synth.getMediaStream();
+    tracks.push(...audioStream.getAudioTracks());
+  }
+  const stream = new MediaStream(tracks);
   const chunks = [];
   const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 12_000_000 });
   recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
   recorder.onstop = () => {
-    const blob = new Blob(chunks, { type: 'video/webm' });
+    const blob = new Blob(chunks, { type: blobType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const baseName = (sceneRef?.name || sceneRef?.id || 'atlas-scene')
       .toString().replace(/[^a-zA-Z0-9-_]+/g, '-').slice(0, 60);
     const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
     a.href = url;
-    a.download = `${baseName}-${stamp}.webm`;
+    a.download = `${baseName}-${stamp}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2429,12 +2465,14 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   };
 
   recorder.start(100);  // emit a chunk every 100ms
-  setStatus(`⏺ recording ${dur.toFixed(1)}s of ${sceneRef?.name || 'scene'}…`);
+  setStatus(`⏺ recording ${dur.toFixed(1)}s of ${sceneRef?.name || 'scene'}… (${ext.toUpperCase()})`);
 
   // Stop at sequence end + 0.3s buffer so the final fade-to-black is captured.
   setTimeout(() => {
     if (recorder.state === 'recording') recorder.stop();
-    stream.getTracks().forEach(t => t.stop());
+    // Only stop video tracks. Audio tracks come from the synth's shared
+    // MediaStreamDestination — stopping them would break future recordings.
+    videoStream.getTracks().forEach(t => t.stop());
   }, (dur + 0.3) * 1000);
 });
 
