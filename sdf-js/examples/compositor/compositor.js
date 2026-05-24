@@ -20,6 +20,7 @@ import { compile as compileSceneData } from '../../src/scene/index.js';
 import { expandVariants } from '../../src/scene/generator-s.js';
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
+import { createSynth } from '../../src/audio/index.js';
 // Generator-V: BOB GPU style randomizer (palette / chess / render params per styleHash).
 // Imported here so compositor's BOB GPU mode shares the same Generator-V layer
 // as the standalone autoscope-clone — keeps Atlas thesis Point #10 unified.
@@ -2320,6 +2321,33 @@ document.getElementById('timeline-loop')?.addEventListener('click', (e) => {
   lastScene.cameraSequence.loop = !lastScene.cameraSequence.loop;
   e.currentTarget.classList.toggle('active', lastScene.cameraSequence.loop);
 });
+
+// ----- Generator-A: Oxygene Pt.4 synth toggle (Phase 2) -----
+// Lazily instantiate the synth on first ▶ click. Web Audio AudioContext can't
+// start without user gesture, so this must be inside the button handler.
+let _oxygeneSynth = null;
+document.getElementById('timeline-music')?.addEventListener('click', () => {
+  const btn = document.getElementById('timeline-music');
+  if (!btn) return;
+  if (!_oxygeneSynth) _oxygeneSynth = createSynth('oxygene');
+  if (!_oxygeneSynth) {
+    setStatus('✗ audio: synth init failed', true);
+    return;
+  }
+  if (_oxygeneSynth.isOn()) {
+    _oxygeneSynth.stop();
+    btn.textContent = '♪';
+    btn.style.color = '';
+    setStatus('♪ Oxygene stopped');
+  } else {
+    _oxygeneSynth.start();
+    btn.textContent = '♫';
+    btn.style.color = '#ffd070';
+    setStatus('♫ Oxygene Pt.4 playing');
+  }
+});
+// Expose for video recorder so it can capture audio track too (Phase 3).
+window._getOxygeneSynth = () => _oxygeneSynth;
 
 // ----- Sprint 8.5: Record current cameraSequence to .webm video -----
 // MediaRecorder on the FLY 3D canvas stream. Records exactly one loop of the
