@@ -800,6 +800,20 @@
           "aperture": 0.4,
           "focalDistance": 22,
           "ease": "smooth",
+          "exposure": [0.0, 1.05],
+          "sceneState": {
+            "thrusterLevel": 0.0,
+            "smokeAmount": 0.0
+          }
+        },
+        {
+          "duration": 2.0,
+          "pos": [11, 0.8, 11],
+          "target": [0, 1, 0],
+          "fov": 35,
+          "ease": "linear",
+          "transition": "cut",
+          "renderer": "blueprint",
           "sceneState": {
             "thrusterLevel": 0.0,
             "smokeAmount": 0.0
@@ -813,7 +827,8 @@
           "aperture": 0.7,
           "focalDistance": 11,
           "ease": "smooth",
-          "transition": "blend",
+          "transition": "cut",
+          "exposure": [1.4, 1.0],
           "shake": { "amount": 0.2, "velocityScale": 0.15, "scaleWith": "rocket" },
           "sceneState": {
             "thrusterLevel": 0.6,
@@ -844,6 +859,7 @@
           "focalDistance": 30,
           "ease": "smooth",
           "transition": "blend",
+          "exposure": [1.0, 0.0],
           "shake": { "amount": 0.15, "velocityScale": 0.05, "scaleWith": "rocket" },
           "sceneState": {
             "thrusterLevel": 1.2,

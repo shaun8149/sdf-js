@@ -177,6 +177,9 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
     subjectOffsets,
     // Sprint 5: blended sceneState (smooth ramp across shot transitions).
     sceneState: blendedSceneState,
+    // Sprint 8: per-shot exposure ramp + renderer override.
+    exposure: resolveExposure(shot, shotT),
+    shotRenderer: typeof shot.renderer === 'string' ? shot.renderer : null,
   };
 
   // Sprint 4: resolved shake (number OR {amount, velocityScale, scaleWith})
@@ -275,6 +278,24 @@ export function resolveShotTarget(rawTarget, subjectBaseTargets, subjectOffsets)
     return [base[0] + motion[0] + offset[0], base[1] + motion[1] + offset[1], base[2] + motion[2] + offset[2]];
   }
   return [0, 0, 0];
+}
+
+// =============================================================================
+// Sprint 8: per-shot exposure curve. shot.exposure can be:
+//   number          → static exposure for the shot
+//   [from, to]      → linear ramp across shot duration (LINEAR not smoothed —
+//                     exposure ramps feel more cinematic when they're constant
+//                     velocity; fade-from-black should not "ease" the brighten)
+//   undefined/null  → falls back to defaults.postFx.exposure (no override)
+// Returns null when no override, so caller can decide fallback.
+// =============================================================================
+export function resolveExposure(shot, shotT) {
+  if (shot == null) return null;
+  if (typeof shot.exposure === 'number') return shot.exposure;
+  if (Array.isArray(shot.exposure) && shot.exposure.length === 2) {
+    return lerp(shot.exposure[0], shot.exposure[1], Math.max(0, Math.min(1, shotT)));
+  }
+  return null;
 }
 
 // =============================================================================

@@ -32,6 +32,10 @@ uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
 uniform float u_reflectOn;     // 0/1 toggle for ground reflection
+// Sprint 8: blueprint shot mode. When set to 1, the entire scene is rendered
+// as a technical schematic — silhouette edges + light fill on a dark graph-
+// paper background. Set per-frame from cameraSequence shot.renderer field.
+uniform float u_blueprintMode;
 // Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
@@ -969,10 +973,40 @@ void main() {
   // eye ray, blend into the surface color. tMax = the surface hit distance (t)
   // or MAX_DIST for sky pixels. Volume contribution is added BEFORE post-FX so
   // bloom can boost emissive flame voxels and DoF can blur the volume.
-  if (u_volumeCount > 0) {
+  // Skip volumes in blueprint mode — they're atmospheric, not schematic.
+  if (u_volumeCount > 0 && u_blueprintMode < 0.5) {
     float volTMax = hit ? t : MAX_DIST;
     vec4 volRes = applyVolumes(ro, rd, volTMax, sunDir);
     col = col * volRes.a + volRes.rgb;
+  }
+
+  // Sprint 8: Blueprint-as-shot. Replace the entire HDR color with a technical
+  // schematic look — silhouette outline + light fill on dark graph paper.
+  // Triggered when cameraSequence current shot has renderer='blueprint'.
+  if (u_blueprintMode > 0.5) {
+    // Graph-paper background. Dark blue base + faint grid lines + subtle vignette.
+    vec2 gridUV = gl_FragCoord.xy / max(u_resolution.y, 1.0) * 20.0;
+    float gridX = smoothstep(0.0, 0.04, abs(fract(gridUV.x) - 0.5));
+    float gridY = smoothstep(0.0, 0.04, abs(fract(gridUV.y) - 0.5));
+    float grid = min(gridX, gridY);  // 0 ON grid line, 1 between
+    vec3 bgDark   = vec3(0.04, 0.07, 0.13);
+    vec3 bgLine   = vec3(0.10, 0.18, 0.30);
+    vec3 bp = mix(bgLine, bgDark, grid);
+
+    if (hit) {
+      // Silhouette edge: angle between view ray and surface normal. Near-edge
+      // → dot small → bright outline. Two-tier: thin sharp outer + softer inner.
+      vec3 Vbp = -rd;
+      float ndv = max(dot(calcNormal(ro + rd * t), Vbp), 0.0);
+      float outline = 1.0 - smoothstep(0.0, 0.35, ndv);
+      // Light surface fill — slight shading toward camera, white-blue tint.
+      vec3 fillCol = vec3(0.62, 0.78, 0.95);
+      vec3 lineCol = vec3(0.92, 0.96, 1.00);
+      bp = mix(fillCol, lineCol, outline);
+      // Add a darker silhouette ring on top for definition.
+      bp = mix(bp, lineCol, smoothstep(0.92, 1.0, outline) * 0.6);
+    }
+    col = bp;
   }
 
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
@@ -1276,6 +1310,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       'u_volumeKindCenter[0]', 'u_volumeSizeDensity[0]', 'u_volumeColor[0]', 'u_volumeCount',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
+      // Sprint 8 Blueprint-as-shot toggle
+      'u_blueprintMode',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1348,6 +1384,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     let sequenceFov = null;
     let sequenceAperture = null;
     let sequenceFocalDist = null;
+    // Sprint 8: per-shot exposure override + renderer override (Blueprint-as-shot).
+    let sequenceExposure = null;
+    let sequenceShotRenderer = null;
     // Sprint 4: per-frame subject motion offsets + scene-state. Both are
     // produced by the sequence evaluator and feed: (a) subject SDF translate
     // uniform u_subjectOffset[slot], (b) volume center mutation (attachTo),
@@ -1367,6 +1406,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         sequenceFov = cs.fov;
         sequenceAperture = cs.aperture;
         sequenceFocalDist = cs.focalDistance;
+        if (typeof state.exposure === 'number') sequenceExposure = state.exposure;
+        if (state.shotRenderer) sequenceShotRenderer = state.shotRenderer;
         frameSubjectOffsets = state.subjectOffsets || {};
         frameSceneState = state.sceneState || {};
       }
@@ -1448,6 +1489,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
     // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
     gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
+    // Sprint 8: Blueprint-as-shot mode toggle (1 when current cameraSequence shot
+    // has renderer='blueprint'). Replaces full HDR shading with silhouette-on-
+    // graph-paper schematic look. Volumes are skipped in this mode.
+    if (uniformsCache.u_blueprintMode != null) {
+      gl.uniform1f(uniformsCache.u_blueprintMode, sequenceShotRenderer === 'blueprint' ? 1.0 : 0.0);
+    }
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
     if (uniformsCache.u_time != null) {
@@ -1488,6 +1535,10 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     const framePostFx = { ...activePostFx };
     if (sequenceAperture != null) framePostFx.aperture = sequenceAperture;
     if (sequenceFocalDist != null) framePostFx.focalDistance = sequenceFocalDist;
+    // Sprint 8: per-shot exposure ramp overrides defaults.postFx.exposure.
+    // When shot.exposure is set (number or [from, to]), the evaluator returns
+    // the ramped value and we override here. Untouched shots keep the global.
+    if (sequenceExposure != null) framePostFx.exposure = sequenceExposure;
     // Current-frame camera basis (for motion blur reproject in postfx)
     framePostFx._curCamPos    = camState.position;
     framePostFx._curCamFwd    = fwd;

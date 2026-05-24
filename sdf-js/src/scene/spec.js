@@ -959,8 +959,35 @@ function validateCameraSequence(seq, errors, warnings) {
         }
       }
     }
+    // Sprint 8: per-shot exposure curve. Number = static; [from, to] = ramp
+    // over the shot's duration. Lets shots fade-from-black, ramp into golden,
+    // or peak during ignition without touching defaults.postFx.exposure.
+    if (shot.exposure != null) {
+      if (typeof shot.exposure === 'number') {
+        if (shot.exposure < 0) errors.push(`${tag}.exposure: must be non-negative`);
+      } else if (Array.isArray(shot.exposure)) {
+        if (shot.exposure.length !== 2 || !shot.exposure.every(n => typeof n === 'number' && n >= 0)) {
+          errors.push(`${tag}.exposure: [from, to] must be two non-negative numbers`);
+        }
+      } else {
+        errors.push(`${tag}.exposure: must be number OR [from, to] array`);
+      }
+    }
+    // Sprint 8: per-shot renderer override. Only 'blueprint' supported in v1
+    // (renders the scene as a technical schematic — silhouette edges on dark
+    // graph-paper background). Future: 'wireframe', 'pen', 'watercolor'.
+    if (shot.renderer != null) {
+      if (typeof shot.renderer !== 'string') {
+        errors.push(`${tag}.renderer: must be a string if provided`);
+      } else if (!SHOT_RENDERERS.has(shot.renderer)) {
+        errors.push(`${tag}.renderer: must be one of ${[...SHOT_RENDERERS].join(' | ')}`);
+      }
+    }
   });
 }
+
+// Sprint 8: per-shot renderer override (Blueprint-as-shot).
+export const SHOT_RENDERERS = new Set(['default', 'blueprint']);
 
 // =============================================================================
 // VolumesSpec (Sprint 3) — top-level volumes[] array
