@@ -49,6 +49,11 @@ uniform vec4  u_leafTone[256];
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
 uniform vec4  u_leafPattern[256];
 
+// Sprint 4: u_subjectOffset[4] is declared in NOISE_GLSL prelude (shared by
+// BOB GPU + Blueprint too). FLY 3D actively uploads per-frame from the
+// evaluator's CarInt output; other renderers leave it at default vec3(0).
+#define MAX_SUBJECT_MOTION 4
+
 // Sprint 3: volume primitives. Each slot:
 //   u_volumeKindCenter[i] = vec4(kind, cx, cy, cz)   — kind: 0=smoke, 1=flame, 2=fog, 3=god-rays
 //   u_volumeSizeDensity[i] = vec4(sx, sy, sz, density)
@@ -951,6 +956,18 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeColorLUT       = new Float32Array(MAX_VOLUMES * 4);
   let activeVolumeCount = 0;
+  // Volume metadata (JS-side only; not uploaded as uniform). Per slot:
+  //   { id, attachTo?, sceneStateKey?, baseDensity, baseGlow, baseColor[3] }
+  // Used per frame to compute the actual uploaded values from base × scene-state
+  // multiplier + the attachTo subject offset.
+  const volumeMeta = new Array(MAX_VOLUMES).fill(null);
+
+  // Sprint 4: per-subject motion offset (compile output tells us subjectId →
+  // slot; evaluator gives us subjectId → offset per frame; we map by slot here).
+  const MAX_SUBJECT_MOTION = 4;
+  const subjectOffsetLUT = new Float32Array(MAX_SUBJECT_MOTION * 3);
+  let activeMotionSlots = {};  // { subjectId: slot } — set by setMotionSlots()
+  let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1137,6 +1154,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       'u_leafMaterial[0]', 'u_leafTone[0]', 'u_leafPattern[0]',
       // Sprint 3 volume uniforms
       'u_volumeKindCenter[0]', 'u_volumeSizeDensity[0]', 'u_volumeColor[0]', 'u_volumeCount',
+      // Sprint 4 subject motion offset uniform array
+      'u_subjectOffset[0]',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1209,9 +1228,15 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     let sequenceFov = null;
     let sequenceAperture = null;
     let sequenceFocalDist = null;
+    // Sprint 4: per-frame subject motion offsets + scene-state. Both are
+    // produced by the sequence evaluator and feed: (a) subject SDF translate
+    // uniform u_subjectOffset[slot], (b) volume center mutation (attachTo),
+    // (c) volume density/glow multipliers (sceneStateKey lookup).
+    let frameSubjectOffsets = {};
+    let frameSceneState = {};
     if (activeSequence && !sequencePaused && !userTookCam) {
       const tSec = (performance.now() - sequenceStartTime) / 1000;
-      const state = evaluateCameraSequence(activeSequence, tSec);
+      const state = evaluateCameraSequence(activeSequence, tSec, { subjectBaseTargets });
       if (state) {
         const cs = sequenceStateToCamState(state);
         camState.position[0] = cs.position[0];
@@ -1222,7 +1247,44 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         sequenceFov = cs.fov;
         sequenceAperture = cs.aperture;
         sequenceFocalDist = cs.focalDistance;
+        frameSubjectOffsets = state.subjectOffsets || {};
+        frameSceneState = state.sceneState || {};
       }
+    }
+
+    // Push subject offset LUT (per-slot). Use activeMotionSlots map to place
+    // each subject's offset at the right slot. Unassigned slots stay vec3(0).
+    for (let i = 0; i < MAX_SUBJECT_MOTION * 3; i++) subjectOffsetLUT[i] = 0;
+    for (const id in activeMotionSlots) {
+      const slot = activeMotionSlots[id];
+      const off = frameSubjectOffsets[id];
+      if (slot >= 0 && slot < MAX_SUBJECT_MOTION && off) {
+        subjectOffsetLUT[slot*3]   = off.offset[0];
+        subjectOffsetLUT[slot*3+1] = off.offset[1];
+        subjectOffsetLUT[slot*3+2] = off.offset[2];
+      }
+    }
+
+    // Per-frame mutate volume LUTs: (a) attachTo subjects offset their center,
+    // (b) sceneStateKey scales their density (LUT[slot].w slot in sizeDensity).
+    for (let i = 0; i < activeVolumeCount; i++) {
+      const meta = volumeMeta[i];
+      if (!meta) continue;
+      let cx = meta.baseCenter[0], cy = meta.baseCenter[1], cz = meta.baseCenter[2];
+      if (meta.attachTo && frameSubjectOffsets[meta.attachTo]) {
+        const off = frameSubjectOffsets[meta.attachTo].offset;
+        cx += off[0]; cy += off[1]; cz += off[2];
+      }
+      volumeKindCenterLUT[i*4+1] = cx;
+      volumeKindCenterLUT[i*4+2] = cy;
+      volumeKindCenterLUT[i*4+3] = cz;
+      // sceneStateKey multiplier on density. Allows shot.sceneState.thrusterLevel
+      // to scale flame density 0..1 (off / on) without changing the JSON volume.
+      let densityMul = 1.0;
+      if (meta.sceneStateKey && typeof frameSceneState[meta.sceneStateKey] === 'number') {
+        densityMul = frameSceneState[meta.sceneStateKey];
+      }
+      volumeSizeDensityLUT[i*4+3] = meta.baseDensity * densityMul;
     }
 
     const fwd = computeFwd(camState.yaw, camState.pitch);
@@ -1288,6 +1350,11 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       if (uniformsCache['u_volumeColor[0]'] != null) {
         gl.uniform4fv(uniformsCache['u_volumeColor[0]'], volumeColorLUT);
       }
+    }
+    // Sprint 4: subject motion offset (always upload — defaults to vec3(0) per
+    // slot when no subject is at that slot, so a fixed-camera scene is unaffected).
+    if (uniformsCache['u_subjectOffset[0]'] != null) {
+      gl.uniform3fv(uniformsCache['u_subjectOffset[0]'], subjectOffsetLUT);
     }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
@@ -1543,7 +1610,34 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         volumeColorLUT[i*4+1] = g;
         volumeColorLUT[i*4+2] = b;
         volumeColorLUT[i*4+3] = noiseScale;
+        // Sprint 4: stash per-volume metadata so draw() can re-mutate the LUTs
+        // each frame based on subject motion (attachTo) + per-shot sceneState.
+        volumeMeta[i] = {
+          attachTo: v.attachTo || null,
+          sceneStateKey: v.sceneStateKey || null,
+          baseCenter: [cx, cy, cz],
+          baseDensity: density,
+        };
       }
+      // Clear unused slots' metadata
+      for (let i = activeVolumeCount; i < MAX_VOLUMES; i++) volumeMeta[i] = null;
+    },
+
+    /**
+     * Sprint 4: register the subject motion slot map from compile().motionSlots.
+     * Called by compositor when loading a scene with cameraSequence.subjectMotion.
+     */
+    setMotionSlots(slots) {
+      activeMotionSlots = slots || {};
+    },
+
+    /**
+     * Sprint 4: register subject base positions so cameraSequence target's
+     * `{relativeTo}` can resolve to a world-absolute position. Map of
+     * { subjectId: [x, y, z] } (the subject's static transform.translate).
+     */
+    setSubjectBaseTargets(map) {
+      subjectBaseTargets = map || {};
     },
 
     // ---- Sprint 2: cameraSequence control surface ----

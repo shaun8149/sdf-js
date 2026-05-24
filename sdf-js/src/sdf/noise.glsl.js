@@ -21,6 +21,14 @@
 // =============================================================================
 
 export const NOISE_GLSL = /* glsl */ `
+// Sprint 4: subject motion offset (CarInt physics integration).
+// Declared in the shared NOISE prelude so EVERY renderer (FLY 3D / BOB GPU /
+// Blueprint) compiles cleanly even when the compiled sceneSDF references
+// u_subjectOffset (compile.js injects these references for any subject listed
+// in cameraSequence.subjectMotion). Renderer doesn't need to set the uniform
+// (WebGL inits arrays to 0); FLY 3D updates it per frame from the evaluator.
+uniform vec3 u_subjectOffset[4];
+
 // ---- Hoskins hash family (Hash without Sine) ----
 // All functions deterministic, period >2^24 in practice, no trig.
 

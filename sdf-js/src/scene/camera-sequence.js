@@ -64,19 +64,16 @@ export function totalDuration(seq) {
  *
  * @param {Object} seq - cameraSequence object
  * @param {number} tSec - elapsed seconds since sequence start
- * @returns {{
- *   pos: [number, number, number],
- *   target: [number, number, number],
- *   fov: number,
- *   aperture: number,
- *   focalDistance: number,
- *   shotIndex: number,
- *   shotBlend: number,
- * } | null}
+ * @param {Object} [ctx] - resolution context:
+ *   - subjectBaseTargets: { subjectId: [x,y,z] } — base positions for relativeTo resolution
+ * @returns {Object | null}
  *
- * 返回 null 表示 seq 无效（应该 fallback 到 static camera）。
+ * Sprint 4: returned object also carries `subjectOffsets` (from
+ * evaluateSubjectMotion) + `sceneState` (merged from shot.sceneState) so
+ * downstream renderer can apply subject motion + per-shot state without
+ * re-evaluating.
  */
-export function evaluateCameraSequence(seq, tSec) {
+export function evaluateCameraSequence(seq, tSec, ctx) {
   if (!seq || !Array.isArray(seq.shots) || seq.shots.length === 0) return null;
   const shots = seq.shots;
   const total = totalDuration(seq);
@@ -115,16 +112,20 @@ export function evaluateCameraSequence(seq, tSec) {
   const easeMode = shot.ease || 'smooth';
   const blend = easeMode === 'linear' ? shotT : smoothstep(shotT);
 
-  // Resolve state at start + end of this shot.
-  //  - Default: shot is a fixed pose; start state = end state (no mid-shot move).
-  //  - With transition='blend' AND prev shot exists: start = prev shot end, end = this shot end.
-  //  - With transition='cut' (default): start = end = this shot end → hard cut + freeze.
+  // Sprint 4: Resolve subject motion BEFORE building start/end states so
+  // relativeTo target resolution sees current frame's subject positions.
+  const subjectOffsets = evaluateSubjectMotion(seq, t);
+  const subjectBase = (ctx && ctx.subjectBaseTargets) || {};
+
+  const resolveTarget = (rawTarget) =>
+    resolveShotTarget(rawTarget || [0, 0, 0], subjectBase, subjectOffsets);
+
   const endState = {
     pos: shot.pos || [0, 0, 0],
-    target: shot.target || [0, 0, 0],
+    target: resolveTarget(shot.target),
     fov: Number(shot.fov ?? 25),
     aperture: Number(shot.aperture ?? 0),
-    focalDistance: Number(shot.focalDistance ?? distance(shot.pos, shot.target)),
+    focalDistance: Number(shot.focalDistance ?? distance(shot.pos, resolveTarget(shot.target))),
   };
   let startState = endState;
   const transition = shot.transition || 'cut';
@@ -132,10 +133,10 @@ export function evaluateCameraSequence(seq, tSec) {
     const prev = shots[idx - 1];
     startState = {
       pos: prev.pos || [0, 0, 0],
-      target: prev.target || [0, 0, 0],
+      target: resolveTarget(prev.target),
       fov: Number(prev.fov ?? 25),
       aperture: Number(prev.aperture ?? 0),
-      focalDistance: Number(prev.focalDistance ?? distance(prev.pos, prev.target)),
+      focalDistance: Number(prev.focalDistance ?? distance(prev.pos, resolveTarget(prev.target))),
     };
   }
 
@@ -147,11 +148,14 @@ export function evaluateCameraSequence(seq, tSec) {
     focalDistance: lerp(startState.focalDistance, endState.focalDistance, blend),
     shotIndex: idx,
     shotBlend: blend,
+    // Sprint 4 additions — caller uses these to position attached volumes,
+    // override scene state, etc.
+    subjectOffsets,
+    sceneState: shot.sceneState || {},
   };
 
-  // Camera shake — per-frame jitter on target.y + ±x/z. Scaled by shake field
-  // and inverse of distance so shake feels constant regardless of camera dist.
-  const shakeAmt = Number(shot.shake || 0);
+  // Sprint 4: resolved shake (number OR {amount, velocityScale, scaleWith})
+  const shakeAmt = resolveShake(shot.shake, subjectOffsets);
   if (shakeAmt > 0) {
     const d = Math.max(1, distance(out.pos, out.target));
     const k = shakeAmt * 0.05 / d;
@@ -167,6 +171,104 @@ function distance(a, b) {
   if (!a || !b) return 5;
   const dx = a[0] - b[0], dy = a[1] - b[1], dz = a[2] - b[2];
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+// =============================================================================
+// Sprint 4: Subject motion (CarInt physics integration)
+// -----------------------------------------------------------------------------
+// MttGz4 idiom: each subjectMotion[i] has `phases: [{ duration, v0, a }]`. We
+// integrate s = ∫(u + at)dt across phases with continuity — at end of phase k,
+// final velocity becomes initial velocity of phase k+1 (regardless of phase
+// k+1's declared v0; we use that as an "additive injection" rather than a hard
+// reset, matching the MttGz4 CarInt_Update pattern where each phase ADDS its
+// v0 + integrates with its a).
+//
+// Returns map: { subjectId: { offset: vec3, velocity: vec3 } }.
+// Only axis-aligned motion in v1: each subjectMotion[i].axis = 'x' | 'y' | 'z'.
+// =============================================================================
+
+export function evaluateSubjectMotion(seq, tSec) {
+  const out = {};
+  if (!seq || !Array.isArray(seq.subjectMotion)) return out;
+  for (const m of seq.subjectMotion) {
+    const id = m.subjectId;
+    if (!id) continue;
+    const axis = (m.axis === 'x' || m.axis === 'y' || m.axis === 'z') ? m.axis : 'y';
+    const axisIdx = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
+
+    // Loop time over total motion duration if cameraSequence loops
+    const total = (m.phases || []).reduce((a, p) => a + (p.duration || 0), 0);
+    let t = Math.max(0, tSec);
+    if (seq.loop && total > 0) t = t - Math.floor(t / total) * total;
+    else if (t > total) t = total;
+
+    // Walk phases accumulating displacement + carrying velocity forward
+    let s = 0;      // accumulated displacement so far
+    let u = 0;      // carried velocity at phase boundary
+    let v = 0;      // instant velocity at time t (for shake)
+    let acc = 0;
+    for (const p of (m.phases || [])) {
+      const dur = p.duration || 0;
+      const a   = p.a || 0;
+      const v0  = p.v0 || 0;
+      const uPhase = u + v0;  // phase carries previous + injects v0
+      if (t < acc + dur) {
+        // Inside this phase
+        const dt = t - acc;
+        s += uPhase * dt + 0.5 * a * dt * dt;
+        v = uPhase + a * dt;
+        break;
+      } else {
+        // Phase completed — advance accumulators
+        s += uPhase * dur + 0.5 * a * dur * dur;
+        u = uPhase + a * dur;
+        v = u;
+        acc += dur;
+      }
+    }
+    const offset = [0, 0, 0];
+    const velocity = [0, 0, 0];
+    offset[axisIdx]   = s;
+    velocity[axisIdx] = v;
+    out[id] = { offset, velocity };
+  }
+  return out;
+}
+
+// =============================================================================
+// Sprint 4: Resolve target {relativeTo, offset} → absolute world position.
+// Falls back to absolute shot.target if no relativeTo. subjectOffsets is the
+// output of evaluateSubjectMotion at the current time.
+// =============================================================================
+export function resolveShotTarget(rawTarget, subjectBaseTargets, subjectOffsets) {
+  if (Array.isArray(rawTarget)) return [...rawTarget];
+  if (rawTarget && typeof rawTarget === 'object' && rawTarget.relativeTo) {
+    const id = rawTarget.relativeTo;
+    const offset = rawTarget.offset || [0, 0, 0];
+    const base = subjectBaseTargets[id] || [0, 0, 0];
+    const motion = (subjectOffsets && subjectOffsets[id]) ? subjectOffsets[id].offset : [0, 0, 0];
+    return [base[0] + motion[0] + offset[0], base[1] + motion[1] + offset[1], base[2] + motion[2] + offset[2]];
+  }
+  return [0, 0, 0];
+}
+
+// =============================================================================
+// Sprint 4: Resolve shake — number (legacy) or {amount, velocityScale, scaleWith}.
+// Returns final scalar shake amount for this frame.
+// =============================================================================
+export function resolveShake(rawShake, subjectOffsets) {
+  if (typeof rawShake === 'number') return rawShake;
+  if (rawShake && typeof rawShake === 'object') {
+    const base = rawShake.amount || 0;
+    const vs = rawShake.velocityScale || 0;
+    if (vs > 0 && rawShake.scaleWith && subjectOffsets[rawShake.scaleWith]) {
+      const v = subjectOffsets[rawShake.scaleWith].velocity;
+      const vMag = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+      return base + vs * vMag;
+    }
+    return base;
+  }
+  return 0;
 }
 
 /**

@@ -844,6 +844,33 @@ function validateCameraSequence(seq, errors, warnings) {
   if (seq.loop != null && typeof seq.loop !== 'boolean') {
     errors.push('cameraSequence.loop: must be a boolean if provided');
   }
+  // Sprint 4: subjectMotion = per-subject CarInt physics (cross-phase integral).
+  if (seq.subjectMotion != null) {
+    if (!Array.isArray(seq.subjectMotion)) {
+      errors.push('cameraSequence.subjectMotion: must be an array if provided');
+    } else {
+      seq.subjectMotion.forEach((m, i) => {
+        const tag = `cameraSequence.subjectMotion[${i}]`;
+        if (typeof m !== 'object' || m == null) { errors.push(`${tag}: must be object`); return; }
+        if (typeof m.subjectId !== 'string') errors.push(`${tag}.subjectId: required string`);
+        if (m.axis != null && !['x', 'y', 'z'].includes(m.axis)) {
+          errors.push(`${tag}.axis: must be 'x' | 'y' | 'z' (default 'y')`);
+        }
+        if (!Array.isArray(m.phases) || m.phases.length === 0) {
+          errors.push(`${tag}.phases: must be a non-empty array`);
+          return;
+        }
+        m.phases.forEach((p, j) => {
+          const ptag = `${tag}.phases[${j}]`;
+          if (typeof p.duration !== 'number' || p.duration <= 0) {
+            errors.push(`${ptag}.duration: must be a positive number`);
+          }
+          if (p.v0 != null && typeof p.v0 !== 'number') errors.push(`${ptag}.v0: must be number`);
+          if (p.a != null  && typeof p.a !== 'number')  errors.push(`${ptag}.a: must be number`);
+        });
+      });
+    }
+  }
   seq.shots.forEach((shot, i) => {
     const tag = `cameraSequence.shots[${i}]`;
     if (typeof shot !== 'object' || shot == null) {
@@ -856,8 +883,20 @@ function validateCameraSequence(seq, errors, warnings) {
     if (!Array.isArray(shot.pos) || shot.pos.length !== 3 || !shot.pos.every(n => typeof n === 'number')) {
       errors.push(`${tag}.pos: must be [x, y, z] numbers`);
     }
-    if (!Array.isArray(shot.target) || shot.target.length !== 3 || !shot.target.every(n => typeof n === 'number')) {
-      errors.push(`${tag}.target: must be [x, y, z] numbers`);
+    // Sprint 4: target can be either absolute [x,y,z] OR { relativeTo, offset }
+    if (Array.isArray(shot.target)) {
+      if (shot.target.length !== 3 || !shot.target.every(n => typeof n === 'number')) {
+        errors.push(`${tag}.target: must be [x, y, z] numbers`);
+      }
+    } else if (typeof shot.target === 'object' && shot.target != null) {
+      if (typeof shot.target.relativeTo !== 'string') {
+        errors.push(`${tag}.target.relativeTo: must be a subject id string`);
+      }
+      if (shot.target.offset != null && (!Array.isArray(shot.target.offset) || shot.target.offset.length !== 3)) {
+        errors.push(`${tag}.target.offset: must be [x, y, z] if provided`);
+      }
+    } else {
+      errors.push(`${tag}.target: must be [x,y,z] OR { relativeTo, offset }`);
     }
     if (typeof shot.fov !== 'number') {
       errors.push(`${tag}.fov: must be a number (degrees)`);
@@ -876,8 +915,35 @@ function validateCameraSequence(seq, errors, warnings) {
     if (shot.transition != null && !SHOT_TRANSITIONS.has(shot.transition)) {
       errors.push(`${tag}.transition: must be one of ${[...SHOT_TRANSITIONS].join(' | ')}`);
     }
-    if (shot.shake != null && (typeof shot.shake !== 'number' || shot.shake < 0)) {
-      errors.push(`${tag}.shake: must be a non-negative number`);
+    // Sprint 4: shake can be number (legacy) OR { amount, velocityScale, scaleWith }
+    if (shot.shake != null) {
+      if (typeof shot.shake === 'number') {
+        if (shot.shake < 0) errors.push(`${tag}.shake: must be a non-negative number`);
+      } else if (typeof shot.shake === 'object') {
+        if (typeof shot.shake.amount !== 'number' || shot.shake.amount < 0) {
+          errors.push(`${tag}.shake.amount: required non-negative number`);
+        }
+        if (shot.shake.velocityScale != null && typeof shot.shake.velocityScale !== 'number') {
+          errors.push(`${tag}.shake.velocityScale: must be number if provided`);
+        }
+        if (shot.shake.scaleWith != null && typeof shot.shake.scaleWith !== 'string') {
+          errors.push(`${tag}.shake.scaleWith: must be subject id string if provided`);
+        }
+      } else {
+        errors.push(`${tag}.shake: must be number OR { amount, velocityScale, scaleWith }`);
+      }
+    }
+    // Sprint 4: per-shot scene state overrides (engine glow, thruster level, smoke amount)
+    if (shot.sceneState != null) {
+      if (typeof shot.sceneState !== 'object') {
+        errors.push(`${tag}.sceneState: must be an object`);
+      } else {
+        for (const k of Object.keys(shot.sceneState)) {
+          if (typeof shot.sceneState[k] !== 'number') {
+            errors.push(`${tag}.sceneState.${k}: must be a number (0..1+ multiplier)`);
+          }
+        }
+      }
     }
   });
 }
@@ -927,6 +993,16 @@ function validateVolumes(vols, errors, warnings) {
     }
     if (v.noiseSpeed != null && typeof v.noiseSpeed !== 'number') {
       errors.push(`${tag}.noiseSpeed: must be a number`);
+    }
+    // Sprint 4: volume can attach to a moving subject (offset added at render time)
+    if (v.attachTo != null && typeof v.attachTo !== 'string') {
+      errors.push(`${tag}.attachTo: must be a subject id string if provided`);
+    }
+    // Sprint 4: volume density can be modulated per-shot via shot.sceneState.{key}
+    // The volume's sceneStateKey names which scene-state field scales density.
+    // e.g. {sceneStateKey: 'thrusterLevel'} → density *= shot.sceneState.thrusterLevel
+    if (v.sceneStateKey != null && typeof v.sceneStateKey !== 'string') {
+      errors.push(`${tag}.sceneStateKey: must be a string if provided`);
     }
   });
 }

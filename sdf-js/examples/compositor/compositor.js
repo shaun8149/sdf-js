@@ -1721,6 +1721,25 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (fly.setVolumes) {
       fly.setVolumes((rawScene && Array.isArray(rawScene.volumes)) ? rawScene.volumes : []);
     }
+    // Sprint 4: register motion slots + subject base positions so the camera
+    // sequence evaluator can compute subject-anchored shake / target / volume
+    // offset every frame.
+    if (fly.setMotionSlots && scene.motionSlots) {
+      fly.setMotionSlots(scene.motionSlots);
+    }
+    if (fly.setSubjectBaseTargets && rawScene && Array.isArray(rawScene.subjects)) {
+      const baseTargets = {};
+      for (const s of rawScene.subjects) {
+        if (s.id && s.transform && Array.isArray(s.transform.translate)) {
+          const t = s.transform.translate;
+          // Skip if any axis was already wrapped in a time-expr (motion subject's
+          // base goes through anyway — the uniform fills in the dynamic delta).
+          const nums = t.slice(0, 3).map(x => typeof x === 'number' ? x : 0);
+          baseTargets[s.id] = nums;
+        }
+      }
+      fly.setSubjectBaseTargets(baseTargets);
+    }
     try {
       return fly.render(sdf);
     } catch (e) {

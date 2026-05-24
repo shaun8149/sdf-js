@@ -15,6 +15,7 @@
 // =============================================================================
 
 import { SDF2, SDF3 } from '../sdf/core.js';
+import { sumT, uniformT } from '../sdf/time.js';
 import {
   circle, ellipse, rectangle, rounded_rectangle, line, segment, arc, ring,
   equilateral_triangle, hexagon, polygon, triangle, trapezoid, flower,
@@ -389,6 +390,20 @@ export function compile(sceneData) {
     throw new Error(`SceneData validation failed:\n  - ${result.errors.join('\n  - ')}`);
   }
 
+  // Sprint 4: Subject motion slot map. Each subjectMotion entry → uniform slot
+  // index. Inject uniform-driven offset into the subject's transform.translate
+  // so the compiled SDF gets `p - (staticOffset + u_subjectOffset[slot])` at
+  // every leaf. FLY 3D uploads u_subjectOffset[slot] per frame from the
+  // evaluator's CarInt output.
+  const motionSlots = {};
+  const motionList = sceneData.cameraSequence?.subjectMotion;
+  if (Array.isArray(motionList)) {
+    motionList.forEach((m, i) => {
+      if (typeof m.subjectId === 'string') motionSlots[m.subjectId] = i;
+    });
+    injectSubjectMotionTransforms(sceneData.subjects, motionSlots);
+  }
+
   // Compile each subject
   const subjectInfos = []; // { id, region, sdf } flat list (post-compile)
   const topLevelSdfs = []; // top-level SDFs for the final union
@@ -498,6 +513,9 @@ export function compile(sceneData) {
     // render-time pass that integrates density along the eye ray. Pass-through
     // so FLY 3D can pick them up at render time.
     volumes: Array.isArray(sceneData.volumes) ? sceneData.volumes : [],
+    // Sprint 4: subject motion slot map (subjectId → uniform array index).
+    // FLY 3D uploads u_subjectOffset[slot] per frame from evaluator output.
+    motionSlots,
     meta: {
       id: sceneData.id,
       name: sceneData.name,
@@ -877,6 +895,34 @@ function isComponentZero(c) {
 // =============================================================================
 // Camera / Light / Shadow extraction + evaluator
 // =============================================================================
+
+// =============================================================================
+// Sprint 4: subject motion injection
+// -----------------------------------------------------------------------------
+// For each subject whose id is in motionSlots map, mutate its transform.translate
+// to embed a uniform-driven offset: [x, y, z] → [sumT(x, uniformT(...x)), ...].
+// The downstream applyTransform (and the Sprint 2 union push-down) will emit
+// the translate as `vec3((staticX + u_subjectOffset[slot].x), ...)` in GLSL.
+//
+// FLY 3D updates u_subjectOffset[slot] every frame from evaluateSubjectMotion's
+// CarInt output. SDF compile is one-shot; per-frame cost is only a vec3
+// uniform upload.
+// =============================================================================
+function injectSubjectMotionTransforms(subjects, motionSlots) {
+  if (!Array.isArray(subjects)) return;
+  const axisLetter = ['x', 'y', 'z'];
+  for (const subj of subjects) {
+    const slot = motionSlots[subj.id];
+    if (slot === undefined) continue;
+    if (!subj.transform) subj.transform = {};
+    const t = subj.transform;
+    const base = Array.isArray(t.translate) ? t.translate.slice(0, 3) : [0, 0, 0];
+    while (base.length < 3) base.push(0);
+    t.translate = base.map((v, i) =>
+      sumT(v, uniformT(`u_subjectOffset[${slot}].${axisLetter[i]}`))
+    );
+  }
+}
 
 function pickCamera(cam) {
   return {

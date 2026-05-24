@@ -66,6 +66,17 @@ export function sumT(...terms) {
 }
 
 /**
+ * Sprint 4: uniform reference — emits raw GLSL ref. Used to plumb per-frame
+ * JS-computed values (subject motion offset from CarInt) into the SDF without
+ * touching every emitter site. CPU evalT returns 0 (uniform is GPU-only).
+ *
+ * @param {string} ref - GLSL expression to emit verbatim, e.g. 'u_subjectOffset[0].y'
+ */
+export function uniformT(ref) {
+  return { kind: TIME_KIND, form: 'uniform', ref };
+}
+
+/**
  * 标量乘：`k * expr`。number*number = number；其它 → 新 time-expr。
  * 用于 compiler emit 内部（如 box dims/2）—— 把代数 distribute 进 time-expr。
  */
@@ -75,6 +86,13 @@ export function mulT(expr, k) {
   if (expr.form === 'linear') return { ...expr, coef: expr.coef * k };
   if (expr.form === 'sin' || expr.form === 'cos') return { ...expr, amp: expr.amp * k };
   if (expr.form === 'sum')    return { ...expr, terms: expr.terms.map(t => mulT(t, k)) };
+  if (expr.form === 'uniform') {
+    // Scale by k by wrapping in a sum with a scaled-ref string. We're in a
+    // closed world (only transform.translate uses uniform form in v1), so
+    // this code path is rare. Best to keep it correct than minimal.
+    if (k === 1) return expr;
+    return { kind: TIME_KIND, form: 'uniform', ref: `(${k.toFixed(6)} * ${expr.ref})` };
+  }
   throw new Error(`mulT: unknown form '${expr.form}'`);
 }
 
@@ -89,6 +107,7 @@ export function evalT(expr, t = 0) {
   if (expr.form === 'sin')    return expr.amp * Math.sin(expr.freq * t + expr.phase);
   if (expr.form === 'cos')    return expr.amp * Math.cos(expr.freq * t + expr.phase);
   if (expr.form === 'sum')    return expr.terms.reduce((acc, term) => acc + evalT(term, t), 0);
+  if (expr.form === 'uniform') return 0;  // GPU-only; CPU sees zero offset
   throw new Error(`evalT: unknown form '${expr.form}'`);
 }
 

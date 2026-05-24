@@ -45,6 +45,10 @@ function emitTimeExpr(e) {
   if (e.form === 'sin')    return `(${fltLit(e.amp)} * sin(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
   if (e.form === 'cos')    return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
   if (e.form === 'sum')    return `(${e.terms.map(fltOrTime).join(' + ')})`;
+  // Sprint 4: uniform reference — emit raw GLSL string (caller must declare
+  // the uniform externally). Used for subject motion offsets driven from JS
+  // per frame (u_subjectOffset[slot].y for rocket lift-off etc).
+  if (e.form === 'uniform') return `(${e.ref})`;
   throw new Error(`emitTimeExpr: unknown form '${e.form}'`);
 }
 
