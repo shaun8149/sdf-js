@@ -12,6 +12,15 @@
       "prompt": "一枚正在升空的火箭"
     },
     {
+      "id": "jet-aircraft",
+      "title": "战机巡航",
+      "thesisPoint": "Sprint 1-8 capability convergence · full MttGz4 jet-fighter cinematic reconstruction using Atlas SceneData primitives only. HDR + DoF + motion blur + lens flare + IBL + cameraSequence + subjectMotion + attachTo + pos.relativeTo + shake.velocityScale + Blueprint-as-shot + exposure ramps. Hand-authored counterpart to rocket-launch — proves the cinematic envelope generalizes from vertical-launch to horizontal-cruise subjects.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "jet-aircraft.json",
+      "prompt": "一架巡航中的战斗机"
+    },
+    {
       "id": "china-carrier",
       "title": "中国航空母舰",
       "thesisPoint": "#1 precision · regression test",

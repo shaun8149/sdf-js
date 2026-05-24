@@ -727,6 +727,70 @@ float sdTerrainHeightmap(vec3 p, float maxHeight, float hwRatio) {
   return (p.y - h) * 0.3;
 }
 
+// ---- Elevated terrain (Kolaczynski / iq MdX3Rr-inspired) -----------------
+// Sharp mountain ridges rising from flat lowlands. Adds two idioms beyond
+// atlasTerrainHeight:
+//   1. ridge sharpening via pow(f, ridgePower) — peaks sharpen, valleys flatten
+//   2. mountain mask: a low-frequency noise (f0) decides where peaks rise vs
+//      where the surface stays flat — gives "mountain range punching out of
+//      plain" rather than uniform rolling hills.
+//
+// Independent reimplementation — no source copied. Algorithm reference:
+//   iq's MdX3Rr "Elevated" + Kolaczynski's MttGz4 terrain.glsl recipe.
+//
+// Tuning:
+//   maxHeight    — peak Y in world units (40-100 typical)
+//   scale        — horizontal scale (0.005-0.02 typical; smaller = wider features)
+//   ridgePower   — sharpness (1.0 = soft hills, 2-3 = sharp alpine peaks)
+//   mountainness — fraction of area that becomes mountains (0-1).
+//                  0.55 = scattered peaks, 0.35 = continuous mountain range
+float atlasTerrainElevated(vec2 x, float maxHeight, float scale,
+                            float ridgePower, float mountainness, int octaves) {
+  vec2 p = x * scale;
+  // f0 = low-frequency mountain-mask noise
+  float f0 = atlasNoised(p).x;
+
+  // Multi-octave fbm with IQ derivative damping — smooth Lipschitz keeps
+  // sphere-trace from overshooting peaks despite high octave count.
+  float a = 0.0;
+  float b = 0.5;
+  vec2 d = vec2(0.0);
+  mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
+  vec2 q = p * 2.0;
+  for (int i = 0; i < 32; i++) {
+    if (i >= octaves) break;
+    vec3 n = atlasNoised(q);
+    d += n.yz;
+    a += b * n.x / (1.0 + dot(d, d));
+    b *= 0.5;
+    q = m * q;
+  }
+
+  // Ridge sharpening: pow on clamped value — small f get pushed toward 0,
+  // f near 1 stay near 1 → peaks isolate. Min clamp 0.001 avoids pow(0, x) = NaN.
+  float f = pow(clamp(a, 0.001, 1.0), ridgePower);
+
+  // Mountain mask: smoothstep(mountainness, 1, f0). Where f0 < mountainness,
+  // height is scaled down 20× (flat lowland). Where f0 > mountainness,
+  // height is full peak. Smooth transition between.
+  float k = smoothstep(mountainness, 1.0, f0);
+  float h = mix(0.05, 1.0, k) * f * maxHeight;
+
+  // Hole carving on flat regions — gives lowlands subtle relief.
+  float flatK = 1.0 - smoothstep(0.0, 0.5, k);
+  h -= flatK * abs(a * 2.0 - 1.0) * maxHeight * 0.12;
+
+  return h;
+}
+
+// SDF wrapper with tighter step damp (0.25 vs heightmap's 0.3) — ridge-
+// sharpened peaks need finer steps to avoid penetration.
+float sdTerrainElevated(vec3 p, float maxHeight, float scale,
+                         float ridgePower, float mountainness) {
+  float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 6);
+  return (p.y - h) * 0.25;
+}
+
 // ---- Canal lamp bulbs (Venice-style streetlamp head) ---------------------
 // Just the bulbs (3 spheres candelabra-style — big top + 2 side). Designed
 // as a separate leaf so it can carry a high-glow material independently of

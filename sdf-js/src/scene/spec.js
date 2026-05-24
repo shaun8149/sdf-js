@@ -76,6 +76,7 @@ export const PRIMITIVE_TYPES = new Set([
   'canal-lamp-bulb',
   // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
   'terrain-heightmap',
+  'terrain-elevated',
   // Forest sprint atoms (tree + leaf + flower scatter + emissive meteor streak).
   // stylized-tree = 4-layer: wavy trunk + 3 polar-replicated main branch layers
   //   (pModPolar 6/5/3) + cellular leaf instances (pMod3 + maple-leaf) +

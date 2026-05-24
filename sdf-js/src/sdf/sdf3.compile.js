@@ -436,6 +436,12 @@ const PRIMS = {
   'terrain-heightmap': ([maxHeight, hwRatio], p) =>
     `sdTerrainHeightmap(${p}, ${flt(maxHeight)}, ${flt(hwRatio)})`,
 
+  // Kolaczynski-style elevated terrain (sharp alpine peaks). Adds ridge
+  // sharpening + mountain-mask blending on top of derivative-damped fbm.
+  // Args: [maxHeight, scale, ridgePower, mountainness].
+  'terrain-elevated': ([maxHeight, scale, ridgePower, mountainness], p) =>
+    `sdTerrainElevated(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)})`,
+
   // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.
   // stylized-tree(trunkLen, trunkRad, leafSize, windK) — 4-layer composition.
   'stylized-tree': ([trunkLen, trunkRad, leafSize, windK], p) =>

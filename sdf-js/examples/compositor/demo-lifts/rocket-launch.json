@@ -249,7 +249,7 @@
         "args": { "radius": 5.0, "height": 0.30 },
         "transform": { "translate": [0, -0.92, 0] },
         "material": "stone",
-        "pattern": { "type": "cracked", "scale": 1.8, "strength": 0.55 }
+        "pattern": { "kind": "cracked", "scale": 1.8, "strength": 0.55 }
       },
       {
         "id": "pad-deck-inner",
@@ -257,7 +257,7 @@
         "args": { "radius": 2.6, "height": 0.45 },
         "transform": { "translate": [0, -0.62, 0] },
         "material": { "hue": 0.08, "sat": 0.10, "value": 0.55, "metal": 0.10, "glow": 0.0 },
-        "pattern": { "type": "brick", "scale": 1.4, "strength": 0.6 }
+        "pattern": { "kind": "brick", "scale": 1.4, "strength": 0.6 }
       },
       {
         "id": "launch-mount",

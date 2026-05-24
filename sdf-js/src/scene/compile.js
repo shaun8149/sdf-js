@@ -48,6 +48,7 @@ import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
 import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
 import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
+import { terrainElevatedSDF } from './components/community/kk-elevated.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
@@ -313,6 +314,12 @@ const PRIMITIVE_FACTORIES = {
     maxHeight: a.maxHeight ?? 30.0,
     hwRatio:   a.hwRatio   ?? 0.08,
   }),
+  'terrain-elevated': (a) => terrainElevatedSDF({
+    maxHeight:    a.maxHeight    ?? 60.0,
+    scale:        a.scale        ?? 0.012,
+    ridgePower:   a.ridgePower   ?? 2.4,
+    mountainness: a.mountainness ?? 0.4,
+  }),
 
   // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
   'stylized-tree': (a) => stylizedTreeSDF({
@@ -428,7 +435,7 @@ export function compile(sceneData) {
         compiled.sdf._subjectMaterial = topLevelMat;
       } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
-      } else if (subj.type === 'terrain-heightmap' && compiled.sdf._subjectMaterial == null) {
+      } else if ((subj.type === 'terrain-heightmap' || subj.type === 'terrain-elevated') && compiled.sdf._subjectMaterial == null) {
         // Mountain material: hue/sat/value mostly irrelevant — mountain branch
         // uses snow/rock palette internally. kind=2 routes to that branch.
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.7, metal: 0, glow: 0, kind: 'mountain' });
@@ -600,6 +607,24 @@ function compilePseudoPrimitive(subj, defaultRegion, subjectInfos) {
   }
 
   sdf = applyTransform(sdf, subj.transform, subj.animation);
+
+  // 2026-05-24 fix: attach material/pattern from the wrapper subject to the SDF
+  // so downstream flattenUnion in sdf3.compile finds the LUT entry. Without
+  // this, extrude/revolve/extrude_to subjects with material on the wrapper
+  // (not on the source) silently fall back to the cosPalette hash color —
+  // surfaced when jet-aircraft.json red-star insignia rendered green. Source
+  // material is inherited only if the wrapper itself lacks one.
+  if (subj.material != null) {
+    sdf._subjectMaterial = resolveMaterial(subj.material);
+  } else if (source.sdf._subjectMaterial !== undefined) {
+    sdf._subjectMaterial = source.sdf._subjectMaterial;
+  }
+  if (subj.pattern != null) {
+    sdf._subjectPattern = resolvePattern(subj.pattern);
+  } else if (source.sdf._subjectPattern !== undefined) {
+    sdf._subjectPattern = source.sdf._subjectPattern;
+  }
+
   const region = subj.region ?? defaultRegion;
   subjectInfos.push({ id: subj.id, region, sdf });
   return { sdf, region };

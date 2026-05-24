@@ -831,54 +831,77 @@ void main() {
       float tFog = atmosphereDensity(p, t);
       col = mix(lit, sky(rd, sunDir), tFog);
     } else if (isMountain) {
-      // ---- Mountain-shading branch (IQ Elevated + outdoor 3-light) ---------
-      // Snow-line by surface normal: bias toward sun direction (sun-facing
-      // slopes accumulate snow). Then IQ outdoor 3-light setup +
-      // slope-based AO (cheap: high-octave - low-octave terrain delta).
-      // Finally height-based fog so distant peaks fade into atmospheric
-      // perspective. n is the calcNormal of the FULL scene SDF — for
-      // terrain hits, that's the terrain normal automatically.
+      // ---- Mountain-shading branch (Sprint A2: 4-layer altitude/normal blend) ----
+      // Kolaczynski-style terrainColor: rock base → ground (low) → grass (mid +
+      // gentle slopes) → snow (high + gentle slopes). Each layer modulated by
+      // normal.y so steep cliffs stay rock no matter altitude (correct alpine
+      // geology — rock is exposed where it's too steep for soil to settle).
+      // Plus IQ outdoor 3-light + slope-AO + height-fog from earlier mountain
+      // branch — those parts unchanged.
 
-      // Hardcoded to match terrain-heightmap default args (30.0 / 0.08).
-      // If author overrides these, AO contrast will be off but still readable.
-      const float TH = 30.0;
-      const float HW = 0.08;
+      // Slope and altitude factors used by all layers.
+      float slopeUp = clamp(n.y, 0.0, 1.0);                 // 1 = flat, 0 = vertical cliff
+      float yPos    = p.y;
 
-      // Snow line: dot with biased-up vector; sun-facing slopes snow over.
-      float snowK = smoothstep(0.5, 0.92, dot(n, normalize(vec3(0.3, 1.0, 0.05))));
-      vec3 rockCol = vec3(0.18, 0.16, 0.14);
-      vec3 snowCol = vec3(0.85, 0.88, 0.93);
-      vec3 baseCol = mix(rockCol, snowCol, snowK);
+      // fbm color variation — coarse mottling per layer (no IBL needed)
+      float texVar = fbm3_lite(p * 0.4);
+      float fineVar = fbm3_lite(p * 2.0) * 0.5;
 
-      // IQ 3-light setup
+      // Layer 1: ROCK (base, always present, mottled gray-brown)
+      vec3 rockCol = mix(vec3(0.16, 0.14, 0.13), vec3(0.28, 0.24, 0.20), texVar);
+      vec3 baseCol = rockCol;
+
+      // Layer 2: GROUND (low altitude, brown-tan). Below y=2, gentle to moderate slopes.
+      vec3 groundCol = mix(vec3(0.30, 0.22, 0.14), vec3(0.42, 0.32, 0.20), texVar);
+      float groundK = (1.0 - smoothstep(-4.0, 6.0, yPos)) * smoothstep(0.25, 0.55, slopeUp);
+      baseCol = mix(baseCol, groundCol, groundK);
+
+      // Layer 3: GRASS (mid altitude, gentle slopes, dark forest green with mottling)
+      vec3 grassCol = mix(vec3(0.10, 0.22, 0.06), vec3(0.20, 0.36, 0.10), texVar);
+      float grassK = smoothstep(-1.0, 6.0, yPos) * (1.0 - smoothstep(12.0, 22.0, yPos))
+                   * smoothstep(0.55, 0.85, slopeUp);
+      baseCol = mix(baseCol, grassCol, grassK);
+
+      // Layer 4: SNOW (high altitude, gentle slopes, near-white with sun tint)
+      vec3 snowCol = mix(vec3(0.86, 0.88, 0.94), vec3(0.96, 0.97, 1.00), fineVar);
+      float snowAlt  = smoothstep(20.0, 38.0, yPos);
+      float snowSlope = smoothstep(0.55, 0.85, slopeUp);
+      // Sun-facing bias — slopes facing the sun accumulate more snow
+      float snowSunBias = 0.5 + 0.5 * smoothstep(-0.2, 0.6, dot(n, sunDir));
+      float snowK = snowAlt * snowSlope * snowSunBias;
+      baseCol = mix(baseCol, snowCol, snowK);
+
+      // ---- Lighting: IQ outdoor 3-light ----
       float diffM    = max(dot(sunDir, n), 0.0);
       float ambM     = clamp(0.5 + 0.5 * n.y, 0.0, 1.0);
       vec3 backDir   = normalize(vec3(-sunDir.x, 0.0, -sunDir.z));
       float backM    = max(0.5 + 0.5 * dot(backDir, n), 0.0);
-
-      // Slope-based AO: high-octave terrain - low-octave terrain. Valley
-      // bottoms get darker, ridge tops get brighter — no real shadow march.
-      float terrHi = atlasTerrainHeight(p.xz, TH, HW, 10);
-      float terrLo = atlasTerrainHeight(p.xz, TH, HW, 7);
-      float aoM = clamp(0.25 + (terrHi - terrLo) * 8.0, 0.0, 1.0);
+      // Fresnel rim on rock + ground edges (silhouette pop for distant peaks)
+      float fresM = pow(1.0 - max(dot(n, -rd), 0.0), 4.0);
 
       vec3 mountSun  = vec3(1.05, 0.96, 0.84);
-      vec3 mountSky  = vec3(0.45, 0.62, 0.92);
+      vec3 mountSky  = sky(n, sunDir) * 0.55;  // Sprint 6: procedural-IBL ambient
       vec3 mountBack = vec3(0.40, 0.50, 0.60);
 
-      vec3 mountLin = (diffM * shadowK * 1.8) * mountSun;
-      mountLin += (aoM * ambM * 0.55) * mountSky;
-      mountLin += (backM * 0.30) * mountBack;
+      vec3 mountLin = (diffM * shadowK * 1.5) * mountSun;
+      mountLin += (ao * ambM * 0.55) * mountSky;
+      mountLin += (backM * 0.28) * mountBack;
+      // Snow tiny spec for crystalline twinkle
+      mountLin += snowK * pow(max(dot(reflect(-sunDir, n), -rd), 0.0), 32.0) * shadowK * 0.5;
+      // Subtle fresnel rim
+      mountLin += vec3(0.55, 0.66, 0.78) * fresM * ao * 0.18;
       col = baseCol * mountLin;
 
-      // Height-based fog (IQ). HEIGHT_BASED_FOG_C * (1 - exp(-t*rd.y*B)) / rd.y.
-      // For rd.y near 0, expand to avoid singularity; clamp final amount.
+      // Height-based atmospheric fog (IQ idiom). Distant peaks fade into sky.
+      // 2026-05-24: dialed fogC 0.50 → 0.28 + fogB 0.018 → 0.012 + clamp 0.85 →
+      // 0.65 after jet-aircraft test reported "雾气太大看不清地形". Distant peaks
+      // still atmospheric but mid-distance reads cleanly.
       float mountDist = length(p - ro);
-      float fogB = 0.018;
-      float fogC = 0.45;
+      float fogB = 0.012;
+      float fogC = 0.28;
       float rdy = max(abs(rd.y), 0.01) * sign(rd.y + 1e-4);
       float fogAmt = fogC * (1.0 - exp(-mountDist * rdy * fogB)) / rdy;
-      fogAmt = clamp(fogAmt, 0.0, 0.85);
+      fogAmt = clamp(fogAmt, 0.0, 0.65);
       col = mix(col, sky(rd, sunDir), fogAmt);
     } else {
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":

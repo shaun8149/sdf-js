@@ -1,0 +1,337 @@
+{
+  "id": "jet-aircraft",
+  "title": "战机巡航",
+  "prompt": "一架巡航中的战斗机，穿越云层飞向夕阳",
+  "code2d": "// MttGz4 (Shadertoy by leon, jet-fighter cinematic) full reconstruction in Atlas SceneData.\n// Sprint 1-8 all converge here: HDR + DoF + motion-blur + lens-flare + cameraSequence + subjectMotion +\n// volume.attachTo (contrails + afterburner glow) + pos.relativeTo (chase camera) + shake.velocityScale +\n// IBL (sky reflection on canopy + fuselage) + Blueprint-as-shot (schematic insert) + exposure ramps.\n// Music = Web Audio synth port of Jean-Michel Jarre 'Oxygene Pt.4' (separate ship).\n// Hand-authored, not lifted.",
+  "sceneData": {
+    "v": 1,
+    "name": "Jet aircraft — MttGz4 cinematic reconstruction",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "一架巡航中的战斗机，穿越云层飞向夕阳",
+      "from2dCode": "no 2D source — Atlas SceneData built directly from MttGz4 capability audit"
+    },
+    "subjects": [
+      {
+        "id": "jet",
+        "type": "union",
+        "children": [
+          {
+            "id": "fuselage-main",
+            "type": "capsule",
+            "args": { "a": [-2.2, 0, 0], "b": [3.0, 0, 0], "radius": 0.55 },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "nose-cone",
+            "type": "capped_cone",
+            "args": { "a": [3.0, 0, 0], "b": [4.4, 0, 0], "r1": 0.55, "r2": 0.05 },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "engine-bell",
+            "type": "capped_cone",
+            "args": { "a": [-2.2, 0, 0], "b": [-3.1, 0, 0], "r1": 0.58, "r2": 0.66 },
+            "material": { "hue": 0.6, "sat": 0.10, "value": 0.18, "metal": 0.85, "glow": 0.0 }
+          },
+          {
+            "id": "engine-inner",
+            "type": "capped_cone",
+            "args": { "a": [-2.5, 0, 0], "b": [-3.0, 0, 0], "r1": 0.50, "r2": 0.58 },
+            "material": { "hue": 0.04, "sat": 0.85, "value": 0.45, "metal": 0.30, "glow": 1.2, "kind": "emissive" }
+          },
+          {
+            "id": "cockpit-canopy",
+            "type": "ellipsoid",
+            "args": { "dims": [1.5, 0.45, 0.55] },
+            "transform": { "translate": [1.5, 0.45, 0] },
+            "material": "clear-glass"
+          },
+          {
+            "id": "wing-left",
+            "type": "box",
+            "args": { "dims": [3.8, 0.14, 1.6] },
+            "transform": { "translate": [-0.3, -0.10, -2.4] },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "wing-right",
+            "type": "box",
+            "args": { "dims": [3.8, 0.14, 1.6] },
+            "transform": { "translate": [-0.3, -0.10, 2.4] },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "wing-tip-pylon-L",
+            "type": "box",
+            "args": { "dims": [0.6, 0.10, 0.10] },
+            "transform": { "translate": [-0.3, -0.20, -3.2] },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.30, "metal": 0.70, "glow": 0.0 }
+          },
+          {
+            "id": "wing-tip-pylon-R",
+            "type": "box",
+            "args": { "dims": [0.6, 0.10, 0.10] },
+            "transform": { "translate": [-0.3, -0.20, 3.2] },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.30, "metal": 0.70, "glow": 0.0 }
+          },
+          {
+            "id": "h-stab-left",
+            "type": "box",
+            "args": { "dims": [1.4, 0.10, 0.6] },
+            "transform": { "translate": [-2.4, 0.05, -1.0] },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "h-stab-right",
+            "type": "box",
+            "args": { "dims": [1.4, 0.10, 0.6] },
+            "transform": { "translate": [-2.4, 0.05, 1.0] },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "vertical-fin",
+            "type": "box",
+            "args": { "dims": [1.2, 1.1, 0.14] },
+            "transform": { "translate": [-2.4, 0.85, 0] },
+            "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "intake-left",
+            "type": "capped_cone",
+            "args": { "a": [1.2, -0.42, -0.55], "b": [-0.5, -0.42, -0.55], "r1": 0.30, "r2": 0.35 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.70, "glow": 0.0 }
+          },
+          {
+            "id": "intake-right",
+            "type": "capped_cone",
+            "args": { "a": [1.2, -0.42, 0.55], "b": [-0.5, -0.42, 0.55], "r1": 0.30, "r2": 0.35 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.70, "glow": 0.0 }
+          },
+          {
+            "id": "pitot-tube",
+            "type": "capsule",
+            "args": { "a": [4.4, 0, 0], "b": [4.95, 0, 0], "radius": 0.035 },
+            "material": "silver"
+          },
+          {
+            "id": "insignia-L",
+            "type": "extrude",
+            "args": { "height": 0.04 },
+            "transform": { "translate": [-0.4, -0.02, -2.4], "rotate": [-1.5708, 0, 0] },
+            "source": {
+              "id": "insignia-L-star",
+              "type": "polygon",
+              "args": { "points": [[0,0.34],[-0.0823,0.1133],[-0.3234,0.1051],[-0.1331,-0.0433],[-0.1998,-0.2751],[0,-0.14],[0.1998,-0.2751],[0.1331,-0.0433],[0.3234,0.1051],[0.0823,0.1133]] }
+            },
+            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.10, "glow": 0.0 }
+          },
+          {
+            "id": "insignia-R",
+            "type": "extrude",
+            "args": { "height": 0.04 },
+            "transform": { "translate": [-0.4, -0.02, 2.4], "rotate": [-1.5708, 0, 0] },
+            "source": {
+              "id": "insignia-R-star",
+              "type": "polygon",
+              "args": { "points": [[0,0.34],[-0.0823,0.1133],[-0.3234,0.1051],[-0.1331,-0.0433],[-0.1998,-0.2751],[0,-0.14],[0.1998,-0.2751],[0.1331,-0.0433],[0.3234,0.1051],[0.0823,0.1133]] }
+            },
+            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.10, "glow": 0.0 }
+          }
+        ]
+      },
+      {
+        "id": "mountain-terrain",
+        "type": "terrain-elevated",
+        "args": {
+          "maxHeight":    80.0,
+          "scale":        0.010,
+          "ridgePower":   2.6,
+          "mountainness": 0.42
+        },
+        "transform": { "translate": [0, -32.0, 0] }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": -0.4, "pitch": -0.05, "distance": 22, "focal": 1.2,
+        "targetX": 0, "targetY": 0, "targetZ": 0,
+        "aperture": 0.5, "focalDistance": 22
+      },
+      "light": { "azimuth": 1.6, "altitude": 0.22, "distance": 50, "intensity": 1.15 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.45 },
+      "postFx": {
+        "exposure": 1.1,
+        "vignetteStrength": 0.42,
+        "bloomMix": 0.35,
+        "bloomThreshold": 0.78,
+        "lensFlareStrength": 0.22,
+        "motionBlurStrength": 0.65
+      }
+    },
+    "volumes": [
+      {
+        "id": "contrail-left",
+        "kind": "smoke",
+        "center": [-7.0, -0.10, -2.4],
+        "size": [5.5, 0.30, 0.30],
+        "density": 2.6,
+        "color": [240, 245, 252],
+        "noiseScale": 1.8,
+        "attachTo": "jet"
+      },
+      {
+        "id": "contrail-right",
+        "kind": "smoke",
+        "center": [-7.0, -0.10, 2.4],
+        "size": [5.5, 0.30, 0.30],
+        "density": 2.6,
+        "color": [240, 245, 252],
+        "noiseScale": 1.8,
+        "attachTo": "jet"
+      },
+      {
+        "id": "engine-glow",
+        "kind": "god-rays",
+        "center": [-3.6, 0, 0],
+        "size": [1.4, 0.7, 0.7],
+        "density": 2.4,
+        "color": [255, 150, 60],
+        "noiseScale": 3.0,
+        "colorIntensity": 2.8,
+        "attachTo": "jet",
+        "sceneStateKey": "afterburner"
+      },
+      {
+        "id": "engine-exhaust-smoke",
+        "kind": "smoke",
+        "center": [-5.2, 0, 0],
+        "size": [2.0, 0.35, 0.35],
+        "density": 1.3,
+        "color": [200, 195, 188],
+        "noiseScale": 2.2,
+        "attachTo": "jet"
+      },
+      {
+        "id": "cloud-layer-low",
+        "kind": "fog",
+        "center": [0, -8.0, 0],
+        "size": [80, 1.2, 80],
+        "density": 0.18,
+        "color": [220, 225, 235],
+        "noiseScale": 0.8
+      },
+      {
+        "id": "cloud-puff-1",
+        "kind": "fog",
+        "center": [40, 4.0, -25],
+        "size": [12, 3, 8],
+        "density": 0.30,
+        "color": [235, 230, 220],
+        "noiseScale": 1.0
+      },
+      {
+        "id": "cloud-puff-2",
+        "kind": "fog",
+        "center": [-30, 3.0, 30],
+        "size": [10, 2.5, 10],
+        "density": 0.28,
+        "color": [230, 228, 222],
+        "noiseScale": 1.0
+      },
+      {
+        "id": "cloud-puff-3",
+        "kind": "fog",
+        "center": [80, 5.0, 10],
+        "size": [18, 4, 14],
+        "density": 0.35,
+        "color": [245, 230, 200],
+        "noiseScale": 0.8
+      }
+    ],
+    "cameraSequence": {
+      "loop": true,
+      "subjectMotion": [
+        {
+          "subjectId": "jet",
+          "axis": "x",
+          "phases": [
+            { "duration": 24.0, "v0": 14.0, "a": 0.4 }
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "duration": 4.5,
+          "pos": [22, 3, 20],
+          "target": [10, 0, 0],
+          "fov": 42,
+          "aperture": 0.5,
+          "focalDistance": 26,
+          "ease": "smooth",
+          "exposure": [0.0, 1.05],
+          "sceneState": { "afterburner": 0.85 }
+        },
+        {
+          "duration": 2.0,
+          "pos": { "relativeTo": "jet", "offset": [9, 0.5, 9] },
+          "target": { "relativeTo": "jet", "offset": [-2, 0, 0] },
+          "fov": 32,
+          "ease": "linear",
+          "transition": "cut",
+          "renderer": "blueprint",
+          "sceneState": { "afterburner": 0.8 }
+        },
+        {
+          "duration": 4.5,
+          "pos": { "relativeTo": "jet", "offset": [10, 3.5, 14] },
+          "target": { "relativeTo": "jet", "offset": [-1, 0, 0] },
+          "fov": 40,
+          "aperture": 0.6,
+          "focalDistance": 18,
+          "ease": "smooth",
+          "transition": "cut",
+          "shake": { "amount": 0.15, "velocityScale": 0.04, "scaleWith": "jet" },
+          "sceneState": { "afterburner": 1.0 }
+        },
+        {
+          "duration": 4.0,
+          "pos": { "relativeTo": "jet", "offset": [6.5, 1.2, 0.9] },
+          "target": { "relativeTo": "jet", "offset": [-2, 0.4, 0] },
+          "fov": 36,
+          "aperture": 1.0,
+          "focalDistance": 7,
+          "ease": "smooth",
+          "transition": "blend",
+          "shake": { "amount": 0.20, "velocityScale": 0.05, "scaleWith": "jet" },
+          "sceneState": { "afterburner": 1.2 }
+        },
+        {
+          "duration": 4.0,
+          "pos": { "relativeTo": "jet", "offset": [-12, 6, 14] },
+          "target": { "relativeTo": "jet", "offset": [0, 0, 0] },
+          "fov": 44,
+          "aperture": 0.5,
+          "focalDistance": 22,
+          "ease": "smooth",
+          "transition": "blend",
+          "shake": { "amount": 0.30, "velocityScale": 0.06, "scaleWith": "jet" },
+          "sceneState": { "afterburner": 1.3 }
+        },
+        {
+          "duration": 5.0,
+          "pos": { "relativeTo": "jet", "offset": [32, 9, 24] },
+          "target": { "relativeTo": "jet", "offset": [0, 0, 0] },
+          "fov": 58,
+          "aperture": 0.35,
+          "focalDistance": 38,
+          "ease": "smooth",
+          "transition": "blend",
+          "exposure": [1.05, 0.0],
+          "sceneState": { "afterburner": 1.1 }
+        }
+      ]
+    }
+  }
+}

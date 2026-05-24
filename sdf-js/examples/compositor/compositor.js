@@ -2321,6 +2321,95 @@ document.getElementById('timeline-loop')?.addEventListener('click', (e) => {
   e.currentTarget.classList.toggle('active', lastScene.cameraSequence.loop);
 });
 
+// ----- Sprint 8.5: Record current cameraSequence to .webm video -----
+// MediaRecorder on the FLY 3D canvas stream. Records exactly one loop of the
+// active sequence (loop temporarily disabled during recording so it stops at
+// the natural end). Downloads as <scene-name>-<timestamp>.webm.
+//
+// WebM is the only universally available container for MediaRecorder; convert
+// to MP4 client-side via ffmpeg.wasm if needed (not in this commit).
+document.getElementById('timeline-record')?.addEventListener('click', async () => {
+  const btn = document.getElementById('timeline-record');
+  if (!btn || btn.disabled) return;
+  const fly = state.fly3dRenderer;
+  if (!fly || !fly.getSequenceDuration) {
+    setStatus('✗ record: switch to FLY 3D with a cameraSequence first', true);
+    return;
+  }
+  const dur = fly.getSequenceDuration();
+  if (dur <= 0) {
+    setStatus('✗ record: active scene has no cameraSequence', true);
+    return;
+  }
+  const canvas = $('c-gpu');
+  if (!canvas || typeof canvas.captureStream !== 'function') {
+    setStatus('✗ record: canvas.captureStream not supported in this browser', true);
+    return;
+  }
+  if (typeof MediaRecorder === 'undefined') {
+    setStatus('✗ record: MediaRecorder API not available', true);
+    return;
+  }
+
+  // Pick the best supported codec — vp9 > vp8 > generic webm
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+  // Disable loop during recording so the sequence stops at its natural end.
+  const sceneRef = window._lastSceneForTimeline;
+  const wasLooping = sceneRef?.cameraSequence?.loop ?? true;
+  if (sceneRef?.cameraSequence) sceneRef.cameraSequence.loop = false;
+
+  // Reset to t=0 and resume playback
+  fly.setSequenceTime(0);
+  if (fly.setSequencePaused) fly.setSequencePaused(false);
+
+  btn.disabled = true;
+  btn.textContent = '⏹';
+  btn.style.color = '#ff5050';
+
+  const stream = canvas.captureStream(30);
+  const chunks = [];
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 12_000_000 });
+  recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const baseName = (sceneRef?.name || sceneRef?.id || 'atlas-scene')
+      .toString().replace(/[^a-zA-Z0-9-_]+/g, '-').slice(0, 60);
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    a.href = url;
+    a.download = `${baseName}-${stamp}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    if (sceneRef?.cameraSequence) sceneRef.cameraSequence.loop = wasLooping;
+    btn.disabled = false;
+    btn.textContent = '⏺';
+    btn.style.color = '';
+    setStatus(`✓ saved ${a.download} (${(blob.size / 1024 / 1024).toFixed(2)} MB)`);
+  };
+  recorder.onerror = (e) => {
+    setStatus(`✗ record error: ${e.error?.message || 'unknown'}`, true);
+    if (sceneRef?.cameraSequence) sceneRef.cameraSequence.loop = wasLooping;
+    btn.disabled = false;
+    btn.textContent = '⏺';
+    btn.style.color = '';
+  };
+
+  recorder.start(100);  // emit a chunk every 100ms
+  setStatus(`⏺ recording ${dur.toFixed(1)}s of ${sceneRef?.name || 'scene'}…`);
+
+  // Stop at sequence end + 0.3s buffer so the final fade-to-black is captured.
+  setTimeout(() => {
+    if (recorder.state === 'recording') recorder.stop();
+    stream.getTracks().forEach(t => t.stop());
+  }, (dur + 0.3) * 1000);
+});
+
 // Space-bar play/pause shortcut when fly3d active + sequence present
 window.addEventListener('keydown', (e) => {
   if (e.code !== 'Space') return;
