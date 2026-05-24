@@ -438,6 +438,44 @@ vec3 atlasLensFlares(vec3 col, vec2 uv, vec3 sunDir) {
 }
 
 // =============================================================================
+// Sprint 6: Auto point lights from emissive volumes
+// -----------------------------------------------------------------------------
+// Surface-side companion to applyVolumes' emissive integration. For every
+// flame / god-ray volume, treat the volume center as a point light and add a
+// Lambert contribution to nearby surfaces. Makes the launch-pad glow orange
+// under the rocket exhaust, etc. No per-light shadow march (too expensive for
+// up to 12 volumes × per-pixel) — inverse-square falloff via volume radius
+// gives a credible local-illumination feel.
+// =============================================================================
+vec3 emissiveVolumeLight(vec3 p, vec3 n, vec3 base) {
+  if (u_volumeCount <= 0) return vec3(0.0);
+  vec3 sum = vec3(0.0);
+  for (int j = 0; j < MAX_VOLUMES; j++) {
+    if (j >= u_volumeCount) break;
+    vec4 kc = u_volumeKindCenter[j];
+    int kind = int(kc.x + 0.5);
+    if (kind != 1 && kind != 3) continue;  // emissive kinds only
+    vec4 sd = u_volumeSizeDensity[j];
+    vec4 col = u_volumeColor[j];
+    vec3 lp = kc.yzw;
+    vec3 toL = lp - p;
+    float dist2 = dot(toL, toL);
+    if (dist2 < 0.0001) continue;
+    float dist = sqrt(dist2);
+    toL /= dist;
+    // Inverse-square falloff with volume radius. r-based denominator means a
+    // small flame volume has tight reach, a big god-ray cone fills the scene.
+    float r = max(max(sd.x, sd.y), sd.z);
+    float att = (r * r) / (r * r + dist2);
+    float diff = max(dot(n, toL), 0.0);
+    // col.rgb already has colorIntensity baked (see setVolumes). sd.w = density.
+    vec3 lightCol = col.rgb * sd.w;
+    sum += base * lightCol * diff * att * 0.18;
+  }
+  return sum;
+}
+
+// =============================================================================
 // Sprint 3: Volume raymarch pass
 // -----------------------------------------------------------------------------
 // Density functions for the 4 volume kinds + an 'applyVolumes' integrator that
@@ -510,10 +548,13 @@ float godRayDensity(vec3 lp, float noiseScale, float t) {
 // Returns vec4(rgb pre-multiplied, transmittance). Final color = col.rgb + bg * col.a
 //
 // IMPORTANT (GLSL ES 1.00 constraint): array index expressions must be const
-// or loop counters. So we can't extract volumeDensityAt(p, slot) as a helper —
+// or loop counters. So we cannot extract volumeDensityAt(p, slot) as a helper —
 // the per-volume density dispatch is INLINED into the loop body where 'j' is
 // the loop counter. Indexing u_volumeKindCenter[j] is then legal.
-vec4 applyVolumes(vec3 ro, vec3 rd, float tMax) {
+//
+// Sprint 6: sunDir parameter added for sun-fog forward-Mie scatter (god-rays
+// through fog volume when ray points near sun).
+vec4 applyVolumes(vec3 ro, vec3 rd, float tMax, vec3 sunDir) {
   if (u_volumeCount <= 0) return vec4(0.0, 0.0, 0.0, 1.0);
   // Sprint 5: bumped 32→64 + dt CAP at 0.5 world units. Fixed dt was tMax/N;
   // for far shots (tMax=200), that gave dt=6.25 world units while flame
@@ -561,6 +602,18 @@ vec4 applyVolumes(vec3 ro, vec3 rd, float tMax) {
       } else {
         absorbCol += col.rgb * d;
         absorbDens += d;
+        // Sprint 6: sun fog flare. Forward-Mie scatter through fog volume —
+        // when the eye ray points near the sun, fog particles scatter sunlight
+        // back toward the camera. Peaked at sun direction, falls off sharply.
+        // Only applies to fog (kind=2); smoke is too opaque, flame already emits.
+        if (kind == 2 && sunDir.y > -0.05) {
+          float sunAlign = max(dot(rd, sunDir), 0.0);
+          // Henyey-Greenstein-ish forward lobe (g ~ 0.7). pow(x, 16) is the
+          // cheap approximation. Magnitude tuned so distant fog with sun
+          // dead-ahead lights up like a god-ray cone without blowing out.
+          float mie = pow(sunAlign, 16.0);
+          emissiveCol += vec3(1.0, 0.85, 0.55) * mie * d * 2.5;
+        }
       }
     }
     // Emissive contribution: pure additive, no opacity reduction. Multiplied
@@ -829,11 +882,14 @@ void main() {
       float texDetail = fbm3_lite(p * 6.0);
       base *= mix(1.0, 0.82 + 0.36 * texDetail, plasticGate * 0.7);
 
-      // Light colors
+      // Light colors. Sprint 6: ambient sky color is sampled from procedural
+      // sky() in the surface-normal direction (procedural IBL irradiance) —
+      // upward-facing surfaces get zenith blue, lateral get horizon tint, and
+      // at golden hour all ambient warms naturally. Replaces fixed constant.
       vec3 sunCol    = vec3(1.05, 0.96, 0.84);
-      vec3 skyCol    = vec3(0.50, 0.62, 0.84);
+      vec3 skyCol    = sky(n, sunDir) * 0.55;
       vec3 bounceCol = vec3(0.55, 0.48, 0.40);
-      vec3 rimCol    = vec3(0.55, 0.66, 0.80);
+      vec3 rimCol    = sky(normalize(n + vec3(0.0, 0.4, 0.0)), sunDir) * 0.7;
 
       // Compose lighting. Metal suppresses diffuse + tints specular toward
       // base color (the canonical metal/non-metal split). Glow adds emissive
@@ -844,10 +900,33 @@ void main() {
 
       vec3 lin = vec3(0.0);
       lin += base * sunCol    * diff * shadowK * 1.35 * diffK;
-      lin += base * skyCol    * skyL * ao      * 0.42 * diffK;
+      lin += base * skyCol    * skyL * ao      * 0.55 * diffK;
       lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
       lin += specTint * sunCol * spec * shadowK * specBoost;
-      lin += rimCol * rim * ao                 * 0.18;
+      lin += rimCol * rim * ao                 * 0.22;
+
+      // Sprint 6: procedural-IBL env reflection. For metallic objects, sample
+      // sky() in the reflection direction as the environment map. Free (no
+      // cubemap), updates automatically with sun. Sky already handles sun
+      // disk + halo so chrome / gold pick up the bright sun reflection.
+      // Dielectrics also get a weak env reflection (Schlick F0=0.04) — gives
+      // glass / polished stone / wet leaves a subtle sheen that fixed constants
+      // never had. Skipped on ground (handled by raymarchShort reflection below).
+      if (matId > 1.5) {
+        vec3 R = reflect(rd, n);
+        vec3 envRefl = sky(R, sunDir);
+        float F0 = mix(0.04, 1.0, metalK);
+        float fres = F0 + (1.0 - F0) * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+        vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
+        // Stronger for metals (chrome is mostly mirror), subtle for dielectrics.
+        lin = mix(lin, envTint, fres * (0.35 + 0.45 * metalK));
+      }
+
+      // Sprint 6: emissive-volume point lights. Flame + god-ray volumes light
+      // nearby surfaces (rocket exhaust lights up the pad, god-rays warm the
+      // foreground). Pre-shadow contribution — we don't shadow-march these
+      // for performance, the inverse-square falloff handles occlusion roughly.
+      lin += emissiveVolumeLight(p, n, base);
 
       // Single-bounce reflection on the ground plane. Fresnel-weighted so
       // grazing angles reflect strongly (the wet-floor / polished-stone look),
@@ -888,7 +967,7 @@ void main() {
   // bloom can boost emissive flame voxels and DoF can blur the volume.
   if (u_volumeCount > 0) {
     float volTMax = hit ? t : MAX_DIST;
-    vec4 volRes = applyVolumes(ro, rd, volTMax);
+    vec4 volRes = applyVolumes(ro, rd, volTMax, sunDir);
     col = col * volRes.a + volRes.rgb;
   }
 
@@ -988,6 +1067,10 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   const volumeKindCenterLUT  = new Float32Array(MAX_VOLUMES * 4);
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeColorLUT       = new Float32Array(MAX_VOLUMES * 4);
+  // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
+  // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
+  // flame subset of the volume LUTs.
+  const heatHazeLUT = new Float32Array(8 * 4);
   let activeVolumeCount = 0;
   // Volume metadata (JS-side only; not uploaded as uniform). Per slot:
   //   { id, attachTo?, sceneStateKey?, baseDensity, baseGlow, baseColor[3] }
@@ -1415,6 +1498,31 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     framePostFx._prevCamRight = prevCam.right;
     framePostFx._prevCamUp    = prevCam.up;
     framePostFx._prevCamFov   = prevCam.fov;
+    // Sprint 6: pack flame volumes into heat-haze LUT for the composite pass.
+    // Only kind=1 (flame); god-rays are too diffuse for haze. Reuses the per-
+    // frame mutated volumeKindCenterLUT (already includes subject motion).
+    let hazeCount = 0;
+    for (let i = 0; i < activeVolumeCount && hazeCount < 8; i++) {
+      const kind = volumeKindCenterLUT[i * 4];
+      if (Math.round(kind) !== 1) continue;
+      const cx = volumeKindCenterLUT[i * 4 + 1];
+      const cy = volumeKindCenterLUT[i * 4 + 2];
+      const cz = volumeKindCenterLUT[i * 4 + 3];
+      const sx = volumeSizeDensityLUT[i * 4];
+      const sy = volumeSizeDensityLUT[i * 4 + 1];
+      const sz = volumeSizeDensityLUT[i * 4 + 2];
+      const density = volumeSizeDensityLUT[i * 4 + 3];
+      // Skip flames with effectively zero density (sceneStateKey * baseDensity)
+      // so pre-ignition rocket has no haze.
+      if (density < 0.1) continue;
+      heatHazeLUT[hazeCount * 4]     = cx;
+      heatHazeLUT[hazeCount * 4 + 1] = cy;
+      heatHazeLUT[hazeCount * 4 + 2] = cz;
+      heatHazeLUT[hazeCount * 4 + 3] = Math.max(sx, sy, sz);
+      hazeCount++;
+    }
+    framePostFx._heatHazeCount = hazeCount;
+    framePostFx._heatHaze = heatHazeLUT;
     postfx.render(sceneTex, sceneFboW, sceneFboH, canvas.width, canvas.height, framePostFx, tSec);
 
     // ---- End-of-frame: snapshot current camera into prevCam for next draw ----

@@ -119,6 +119,13 @@ uniform float u_motionBlurStrength;  // 0 = off；shutter angle 0..1（0.5 = Mtt
 uniform float u_prevCamValid;        // 0 = 第一帧 skip motion blur
 uniform float u_sceneMaxDist;        // ATLAS_MAX_DIST，用于 depth → world 反推
 
+// Sprint 6: heat haze. Up to 8 flame volumes contribute screen-space UV
+// distortion above their world centers. xyz = world center, w = max radius
+// (axis-aligned bounding sphere). Slot count in u_heatHazeCount.
+#define MAX_HEAT_HAZE 8
+uniform vec4  u_heatHaze[MAX_HEAT_HAZE];
+uniform int   u_heatHazeCount;
+
 // ---- ACES filmic tonemap (Narkowicz 2015 fit, public domain) ----------------
 vec3 acesTonemap(vec3 x) {
   const float a = 2.51;
@@ -239,9 +246,45 @@ vec3 dofMotionBlurSample(vec2 uv, float coc, vec2 motionVec) {
   return acc / max(total, 0.001);
 }
 
+// Sprint 6: heat haze UV distortion. For each flame volume, reconstruct the
+// surface world position behind the current pixel and check whether the pixel
+// is "above + behind" the flame. Heat plume cone widens with height and
+// dissipates at ~5 units up. fbm-via-sin gives a cheap shimmer offset.
+vec2 heatHazeUV(vec2 uv) {
+  if (u_heatHazeCount <= 0) return uv;
+  // Need surface world position. Sample original (un-distorted) depth first.
+  vec4 firstSample = texture2D(u_scene, uv);
+  float dn = firstSample.a;
+  if (dn >= 0.999) return uv;  // sky pixel: no haze (cheap exit)
+  vec3 worldPos = reconstructWorldPos(uv, dn);
+  float haze = 0.0;
+  for (int i = 0; i < MAX_HEAT_HAZE; i++) {
+    if (i >= u_heatHazeCount) break;
+    vec4 hv = u_heatHaze[i];
+    vec3 toFlame = worldPos - hv.xyz;
+    // Only pixels above flame Y center get distortion (heat rises). Cone
+    // widens with height, intensity dissipates ~5 units up.
+    float yAbove = toFlame.y;
+    if (yAbove < -hv.w) continue;
+    float horizDist = length(toFlame.xz);
+    float coneRad = max(hv.w * 0.8, 0.1) + max(yAbove, 0.0) * 0.4;
+    float radial = horizDist / coneRad;
+    float falloff = exp(-radial * radial) * exp(-max(yAbove, 0.0) * 0.18);
+    haze += falloff * hv.w;
+  }
+  if (haze < 0.005) return uv;
+  // Cheap fbm via summed sines. Vertical bands shimmer with time — looks like
+  // hot air rising. Horizontal component is subtler (heat plumes are vertical).
+  float n1 = sin(uv.y * 72.0 - u_time * 5.0) + sin(uv.y * 41.0 + u_time * 3.7) * 0.6;
+  float n2 = sin(uv.x * 24.0 + u_time * 2.1) * 0.4;
+  vec2 offset = vec2(n2, n1) * haze * 0.0035;
+  return clamp(uv + offset, vec2(0.001), vec2(0.999));
+}
+
 void main() {
   vec2 uv = gl_FragCoord.xy / u_canvasRes;
-  vec4 sceneSample = texture2D(u_scene, uv);
+  vec2 hazedUV = heatHazeUV(uv);
+  vec4 sceneSample = texture2D(u_scene, hazedUV);
   float depthNorm = sceneSample.a;
   float coc = min(computeCoC(depthNorm, u_focalDistance, u_aperture, u_focalLength), u_dofMaxRadius);
 
@@ -260,8 +303,11 @@ void main() {
     }
   }
 
+  // Sprint 6: pass hazedUV (not uv) into DoF/motion-blur sampler so heat haze
+  // composites correctly when DoF is also active. Offset is small (~0.35%) so
+  // motion reproject above (using original uv) stays valid.
   vec3 col = (coc > 0.001 || length(motionVec) > 0.0005)
-    ? dofMotionBlurSample(uv, coc, motionVec)
+    ? dofMotionBlurSample(hazedUV, coc, motionVec)
     : sceneSample.rgb;
   // Sanitize HDR result before exposure/bloom/flare math (NaN propagates).
   if (col.r != col.r) col.r = 0.0;
@@ -395,6 +441,9 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
     u_motionBlurStrength: gl.getUniformLocation(compositeProgram, 'u_motionBlurStrength'),
     u_prevCamValid:  gl.getUniformLocation(compositeProgram, 'u_prevCamValid'),
     u_sceneMaxDist:  gl.getUniformLocation(compositeProgram, 'u_sceneMaxDist'),
+    // Sprint 6: heat haze. Array uniform fetched by [0] indexed name.
+    u_heatHaze:      gl.getUniformLocation(compositeProgram, 'u_heatHaze[0]'),
+    u_heatHazeCount: gl.getUniformLocation(compositeProgram, 'u_heatHazeCount'),
   };
 
   // ---- Bloom FBO（低分辨率 HDR；filter LINEAR 让 composite 上采样平滑）----
@@ -498,6 +547,16 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
       gl.uniform3f(compU.u_prevCamUp,    p._prevCamUp[0],    p._prevCamUp[1],    p._prevCamUp[2]);
       gl.uniform1f(compU.u_prevCamFocal, p._prevCamFov);
     }
+
+    // Sprint 6: heat haze flame volumes. _heatHaze is Float32Array(MAX×4) and
+    // _heatHazeCount the active slot count. Caller (flyLambert render()) packs
+    // it from the per-frame flame volume LUT.
+    const hazeCount = p._heatHazeCount ?? 0;
+    if (compU.u_heatHazeCount != null) gl.uniform1i(compU.u_heatHazeCount, hazeCount);
+    if (hazeCount > 0 && p._heatHaze && compU.u_heatHaze != null) {
+      gl.uniform4fv(compU.u_heatHaze, p._heatHaze);
+    }
+
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
