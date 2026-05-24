@@ -871,8 +871,16 @@ export function createBobShaderRenderer({
   twoPass = false,           // ← autoscope 2-pass FBO + post-process
   bufferResolution = 320,    // FBO 边长（默认 320×320 — autoscope idiom）
 }) {
-  const gl = canvas.getContext('webgl', { antialias: true, preserveDrawingBuffer: false });
-  if (!gl) throw new Error('WebGL not supported');
+  // Sprint 1 (2026-05-24): switch to WebGL2 context. Canvas shares a single
+  // context with FLY 3D — once FLY 3D opens it as webgl2, this call returns
+  // the same webgl2 context. BOB GPU's GLSL ES 1.00 shaders still compile on
+  // webgl2 (backward compatible). BOB GPU pipeline (autoscope painterly) is
+  // intentionally NOT migrated to the postfx HDR composite — its tuned cell-blur
+  // / palette quantization / poster aesthetic is a self-contained visual
+  // signature; cinematic tonemap+bloom+DoF would homogenize it. FLY 3D is the
+  // photoreal cinematic renderer; BOB GPU stays the painterly renderer.
+  const gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: false });
+  if (!gl) throw new Error('[bob-gpu] WebGL2 not supported');
 
   const camState = { position: [0, 0.3, -3.0], yaw: 0, pitch: 0 };
   const defaultCam = { position: [...camState.position], yaw: 0, pitch: 0 };

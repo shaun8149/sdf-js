@@ -1646,6 +1646,13 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.bobRenderer) state.bobRenderer.unmount();
     const fly = ensureFly3dRenderer();
     if (!keepCamera && scene.cameraStatic) fly.setCamState(sphericalToCamState(scene.cameraStatic));
+    // Sprint 1: per-scene post-FX overrides (exposure / vignette / bloom /
+    // aperture+DoF). scene.defaults.postFx is optional — undefined fields fall
+    // back to postfx.js DEFAULT_POSTFX so even pre-Sprint-1 scenes get the
+    // baseline cinematic look without JSON changes.
+    if (fly.setPostFx) {
+      fly.setPostFx(scene, scene.defaults && scene.defaults.camera);
+    }
     try {
       return fly.render(sdf);
     } catch (e) {

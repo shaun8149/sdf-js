@@ -3,6 +3,15 @@
   "description": "Atlas demo gallery — 12 pre-lifted 3D scenes spanning 4 thesis patterns: (1) Generator-S scatter (1 prompt → N instances; carrier/cathedral/forest/coastal/village), (2) atmospheric / 1-primitive scenes (open-ocean/snow-mountain), (3) GPU-internal SDF rep distinct from generator-level scatter (canal-day1), (4) single-object precision (vase/clock/bicycle/dining). Each demo proves a specific claim in the vs-diffusion / vs-neural-world-model thesis.\n\nPROMPT-WRITING LESSON (learned 2026-05-18 the hard way): keep prompts SHORT. The LLM has cultural / visual priors (e.g. '中国航母' → 辽宁/福建号 with starboard island, 3/4 angle). Heavy 'prompt engineering' with explicit angle / parts list overrides those priors and produces worse compositions. Trust the model.",
   "demos": [
     {
+      "id": "rocket-launch",
+      "title": "火箭发射",
+      "thesisPoint": "Sprint 1 cinematic showcase · HDR bloom on engine glow + DoF + lens flare + ACES tonemap. Inspired by MttGz4 jet sequence; built on the same Atlas primitives as every other demo. Proves the cinematic post-FX layer translates without changing the SDF authoring path.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "rocket-launch.json",
+      "prompt": "一枚正在升空的火箭"
+    },
+    {
       "id": "china-carrier",
       "title": "中国航空母舰",
       "thesisPoint": "#1 precision · regression test",

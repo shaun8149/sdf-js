@@ -8,6 +8,7 @@
 
 import { compileSDF3ToGLSL, canCompileSDF3, IMIN_GLSL } from '../sdf/sdf3.compile.js';
 import { attachFlyControls } from '../input/fly-controls.js';
+import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
 
 const VS_SRC = `attribute vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
@@ -710,17 +711,18 @@ void main() {
     }
   }
 
-  // Lens flares — screen-space post applied to all pixels. Cheap (just
-  // octagon SDFs + 8-blade starburst). Masked internally by sun-above-horizon
-  // and sun-in-frustum. Sun-occluded flares would need a visibility raymarch
-  // (deferred — current sprint accepts always-visible flares).
+  // In-shader sun-position lens flares (octagon SDF + 8-blade starburst),
+  // anchored on sun screen position. Kept HDR-side so they tonemap naturally
+  // and stack with postfx's bloom-derived RGB-shifted ghost flares.
   col = atlasLensFlares(col, uv, sunDir);
 
-  // Global ACES filmic tonemap (Hill / Narkowicz public-domain fit). Replaces
-  // the old pow(0.4545) gamma — handles HDR sky+sun output without flattening
-  // the bright/dark dynamic range. Slight scene-wide colour shift expected
-  // (warmer, more cinematic).
-  gl_FragColor = vec4(atlasACESTonemap(col), 1.0);
+  // Sprint 1 (2026-05-24): write HDR linear color + depth in alpha to FBO.
+  // ACES tonemap / vignette / bloom / RGB-ghost flare / gamma / DoF moved to
+  // postfx.js composite pass — scene shader's job is just spectrally-correct
+  // HDR + linear depth. ATLAS_MAX_DIST in postfx.js must match MAX_DIST here.
+  // Sky pixels get alpha=1.0 (max depth) so DoF doesn't blur sky against itself.
+  float depthNorm = hit ? clamp(t / MAX_DIST, 0.0, 1.0) : 1.0;
+  gl_FragColor = vec4(col, depthNorm);
 }`;
 }
 
@@ -735,8 +737,26 @@ void main() {
 // the difference between smooth 60fps and choppy 20fps on a fleet scene).
 // Adjust upward (closer to 1.0) for sharper detail at perf cost.
 export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, renderScale = 0.6 }) {
-  const gl = canvas.getContext('webgl', { antialias: true, preserveDrawingBuffer: false });
-  if (!gl) throw new Error('WebGL not supported');
+  // Sprint 1 (2026-05-24): WebGL2 + EXT_color_buffer_float required for HDR
+  // rgba16f scene FBO. Fallback to WebGL1 is intentionally NOT provided — once
+  // FLY 3D adopts HDR pipeline, the post-FX shader's tonemap/bloom/DoF math
+  // depends on linear HDR input. Without rgba16f we'd silently clamp at 1.0
+  // and the cinematic look would degrade to "old fly3d but worse". Better to
+  // surface a clear error than ship a broken-looking renderer.
+  const gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: false });
+  if (!gl) {
+    throw new Error('[fly3d] WebGL2 not supported (Sprint 1+ requires WebGL2 for HDR pipeline). ' +
+      'Update browser or fall back to BOB GPU renderer.');
+  }
+  const colorBufferFloatExt = gl.getExtension('EXT_color_buffer_float');
+  if (!colorBufferFloatExt) {
+    throw new Error('[fly3d] EXT_color_buffer_float not supported (rgba16f FBO unavailable). ' +
+      'Update GPU driver or fall back to BOB GPU renderer.');
+  }
+  // OES_texture_float_linear lets the bloom FBO be sampled with LINEAR
+  // filtering (smooth upsample). If missing, postfx falls back to NEAREST
+  // and bloom looks blocky but doesn't crash.
+  gl.getExtension('OES_texture_float_linear');
 
   canvas.addEventListener('webglcontextlost', (e) => {
     console.error('[fly3d] WebGL context lost', e);
@@ -778,33 +798,16 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   const vs = compileShader(VS_SRC, gl.VERTEX_SHADER);
 
-  // ---- 2026-05-23 perf: low-res FBO + blit post-pass --------------------------
+  // ---- 2026-05-23 perf + Sprint 1 HDR pipeline -----------------------------
   // The scene shader is expensive (Lambert + LUT lookups + Schlick reflection +
   // stochastic AA + IQ sky + height fog). At 900² it's ~810K fragments/frame.
   // We render to a smaller FBO (e.g. 540² at scale=0.6 = 36% the work) and
-  // upsample to canvas via a trivial sampler in BLIT_FS. Visual quality is
-  // barely affected at scenes-tab viewing distance.
+  // composite to canvas via postfx pipeline.
+  //
+  // Sprint 1: FBO is now rgba16f (HDR linear color + linear depth in alpha)
+  // instead of RGBA8. Tonemap moved from scene shader → postfx composite.
   let sceneFbo = null, sceneTex = null;
   let sceneFboW = 0, sceneFboH = 0;
-  const BLIT_FS_SRC = `#ifdef GL_ES
-precision highp float;
-#endif
-uniform sampler2D u_buffer;
-uniform vec2 u_canvasSize;
-void main() {
-  vec2 uv = gl_FragCoord.xy / u_canvasSize;
-  gl_FragColor = texture2D(u_buffer, uv);
-}`;
-  const blitFs = compileShader(BLIT_FS_SRC, gl.FRAGMENT_SHADER);
-  const blitProgram = gl.createProgram();
-  gl.attachShader(blitProgram, vs);
-  gl.attachShader(blitProgram, blitFs);
-  gl.linkProgram(blitProgram);
-  if (!gl.getProgramParameter(blitProgram, gl.LINK_STATUS)) {
-    throw new Error(`[fly3d] blit program link failed: ${gl.getProgramInfoLog(blitProgram)}`);
-  }
-  const blitU_buffer = gl.getUniformLocation(blitProgram, 'u_buffer');
-  const blitU_canvasSize = gl.getUniformLocation(blitProgram, 'u_canvasSize');
 
   // (Re)allocate the offscreen FBO when canvas size or renderScale changes.
   function ensureSceneFbo() {
@@ -815,7 +818,9 @@ void main() {
     if (sceneTex) gl.deleteTexture(sceneTex);
     sceneTex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, sceneTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, targetW, targetH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    // HDR: rgba16f (half float). Internal RGBA16F, format RGBA, type HALF_FLOAT.
+    // EXT_color_buffer_float (probed above) guarantees this is renderable.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, targetW, targetH, 0, gl.RGBA, gl.HALF_FLOAT, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -824,13 +829,19 @@ void main() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, sceneTex, 0);
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
-      throw new Error('[fly3d] scene FBO incomplete');
+      throw new Error('[fly3d] scene HDR FBO incomplete (rgba16f issue?)');
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     sceneFboW = targetW;
     sceneFboH = targetH;
   }
   ensureSceneFbo();
+
+  // ---- Sprint 1 post-FX pipeline (bloom pre-pass + composite) --------------
+  const postfx = createPostFxPipeline(gl, vbuf, { bloomWidth: 320, bloomHeight: 240 });
+  // Per-scene post-FX params; compositor patches via setPostFx() when loading
+  // a SceneData with defaults.postFx / camera.aperture.
+  let activePostFx = { ...DEFAULT_POSTFX };
 
   // ---- camera math ----
   function computeFwd(yaw, pitch) {
@@ -1041,20 +1052,10 @@ void main() {
     // on the program object, so re-uploading per frame would be pure waste.
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-    // === Pass 2: blit low-res FBO → canvas (full resolution, linear upsample) ==
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.useProgram(blitProgram);
-    // Re-bind vertex attrib pointer (program switch invalidates the location).
-    const a_pos_blit = gl.getAttribLocation(blitProgram, 'a_pos');
-    gl.enableVertexAttribArray(a_pos_blit);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
-    gl.vertexAttribPointer(a_pos_blit, 2, gl.FLOAT, false, 0, 0);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, sceneTex);
-    gl.uniform1i(blitU_buffer, 0);
-    gl.uniform2f(blitU_canvasSize, canvas.width, canvas.height);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    // === Pass 2+3: post-FX composite (bloom pre-pass + composite to canvas) ===
+    // Inputs: sceneTex (HDR rgba16f) + activePostFx params + time. Output: canvas.
+    const tSec = (performance.now() - timeStart) / 1000;
+    postfx.render(sceneTex, sceneFboW, sceneFboH, canvas.width, canvas.height, activePostFx, tSec);
 
     if (_debugFirstDraw) {
       _debugFirstDraw = false;
@@ -1160,5 +1161,14 @@ void main() {
     },
 
     getCamState() { return { ...camState, position: [...camState.position] }; },
+
+    /**
+     * Apply per-scene post-FX overrides (called by compositor when loading a
+     * SceneData with defaults.postFx or camera.aperture). Pass-through to the
+     * shared resolver — undefined fields fall back to DEFAULT_POSTFX.
+     */
+    setPostFx(scene, camera) {
+      activePostFx = resolvePostFxParams(scene, camera);
+    },
   };
 }

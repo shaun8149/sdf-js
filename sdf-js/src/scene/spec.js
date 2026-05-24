@@ -159,7 +159,7 @@ export const SHADOW_MODES = new Set([
 ]);
 
 export const SOURCE_FORMATS = new Set([
-  'script', 'graph', 'llm', 'llm-lift', 'generator',
+  'script', 'graph', 'llm', 'llm-lift', 'generator', 'hand-authored',
 ]);
 
 // =============================================================================
@@ -400,6 +400,7 @@ export function validate(data) {
     validateCamera(data.defaults.camera, errors, warnings);
     validateLight(data.defaults.light, errors, warnings);
     if (data.defaults.shadow != null) validateShadow(data.defaults.shadow, errors, warnings);
+    if (data.defaults.postFx != null) validatePostFx(data.defaults.postFx, errors, warnings);
   }
 
   // Rule 19, 20: source field
@@ -745,9 +746,64 @@ function validateCamera(cam, errors, warnings) {
   if (typeof cam.pitch === 'number' && Math.abs(cam.pitch) > Math.PI / 2 - 0.05) {
     warnings.push(`defaults.camera.pitch ${cam.pitch} near singularity (±π/2); will clamp`);
   }
+  // Sprint 1 (2026-05-24): cinematic DoF fields. Both optional + backward-compat;
+  // aperture=0 (default) disables DoF entirely so existing scenes are unchanged.
+  if (cam.aperture != null) {
+    if (typeof cam.aperture !== 'number') {
+      errors.push('defaults.camera.aperture: must be a number (0 = no DoF; typical 0.3..1.5)');
+    } else if (cam.aperture < 0 || cam.aperture > 5) {
+      warnings.push(`defaults.camera.aperture ${cam.aperture} outside typical [0, 5]; extreme bokeh may clip`);
+    }
+  }
+  if (cam.focalDistance != null) {
+    if (typeof cam.focalDistance !== 'number') {
+      errors.push('defaults.camera.focalDistance: must be a number (world units to in-focus plane)');
+    } else if (cam.focalDistance <= 0) {
+      warnings.push(`defaults.camera.focalDistance ${cam.focalDistance} non-positive; auto-derived from camera→target distance`);
+    }
+  }
   if (Array.isArray(cam.animation)) {
     cam.animation.forEach((ch, i) =>
       validateAnimationChannel(ch, `defaults.camera.animation[${i}]`, 'camera', errors, warnings));
+  }
+}
+
+// =============================================================================
+// PostFxSpec (Sprint 1) — defaults.postFx
+// -----------------------------------------------------------------------------
+// All fields optional + numeric. Renderer falls back to DEFAULT_POSTFX in
+// postfx.js for any missing field. Validator just guards against typos /
+// wrong types — never blocks scene from rendering.
+// =============================================================================
+const POSTFX_NUM_FIELDS = [
+  'exposure', 'vignetteStrength', 'bloomMix', 'bloomThreshold',
+  'lensFlareStrength', 'gamma', 'aperture', 'focalDistance', 'focalLength',
+  'dofMaxRadius',
+];
+
+function validatePostFx(pfx, errors, warnings) {
+  if (typeof pfx !== 'object' || pfx == null) {
+    errors.push('defaults.postFx: must be an object');
+    return;
+  }
+  for (const k of Object.keys(pfx)) {
+    if (!POSTFX_NUM_FIELDS.includes(k)) {
+      warnings.push(`defaults.postFx.${k}: unknown field (known: ${POSTFX_NUM_FIELDS.join(', ')}); ignored at render time`);
+      continue;
+    }
+    if (typeof pfx[k] !== 'number') {
+      errors.push(`defaults.postFx.${k}: must be a number`);
+    }
+  }
+  // Soft sanity warnings
+  if (typeof pfx.exposure === 'number' && (pfx.exposure < 0 || pfx.exposure > 8)) {
+    warnings.push(`defaults.postFx.exposure ${pfx.exposure} outside typical [0, 8]`);
+  }
+  if (typeof pfx.gamma === 'number' && (pfx.gamma < 1 || pfx.gamma > 3)) {
+    warnings.push(`defaults.postFx.gamma ${pfx.gamma} outside typical [1.0, 3.0]`);
+  }
+  if (typeof pfx.vignetteStrength === 'number' && (pfx.vignetteStrength < 0 || pfx.vignetteStrength > 1)) {
+    warnings.push(`defaults.postFx.vignetteStrength ${pfx.vignetteStrength} outside [0, 1]`);
   }
 }
 
