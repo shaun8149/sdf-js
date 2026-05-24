@@ -494,6 +494,10 @@ export function compile(sceneData) {
     evalLight,
     shadowStatic,
     evalShadow,
+    // Sprint 3: volumes are NOT compiled into the SDF tree — they're a parallel
+    // render-time pass that integrates density along the eye ray. Pass-through
+    // so FLY 3D can pick them up at render time.
+    volumes: Array.isArray(sceneData.volumes) ? sceneData.volumes : [],
     meta: {
       id: sceneData.id,
       name: sceneData.name,

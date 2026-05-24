@@ -49,6 +49,17 @@ uniform vec4  u_leafTone[256];
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
 uniform vec4  u_leafPattern[256];
 
+// Sprint 3: volume primitives. Each slot:
+//   u_volumeKindCenter[i] = vec4(kind, cx, cy, cz)   — kind: 0=smoke, 1=flame, 2=fog, 3=god-rays
+//   u_volumeSizeDensity[i] = vec4(sx, sy, sz, density)
+//   u_volumeColor[i]       = vec4(r, g, b, noiseScale)
+// u_volumeCount = active slots (0..MAX_VOLUMES).
+#define MAX_VOLUMES 8
+uniform vec4  u_volumeKindCenter[MAX_VOLUMES];
+uniform vec4  u_volumeSizeDensity[MAX_VOLUMES];
+uniform vec4  u_volumeColor[MAX_VOLUMES];
+uniform int   u_volumeCount;
+
 #define MAX_STEPS    200
 #define MAX_DIST     200.0  // matches BOB GPU; was 40, too small for fleet/scatter scenes
 #define EPS          0.0008
@@ -419,6 +430,119 @@ vec3 atlasLensFlares(vec3 col, vec2 uv, vec3 sunDir) {
   return col + flares * 0.5;
 }
 
+// =============================================================================
+// Sprint 3: Volume raymarch pass
+// -----------------------------------------------------------------------------
+// Density functions for the 4 volume kinds + an 'applyVolumes' integrator that
+// runs after the surface hit and accumulates color × density along the eye ray.
+// MttGz4 FX_Apply 模式 — fixed 32 steps with adaptive size escalation.
+// =============================================================================
+
+// Domain-wrap a 3D position into the volume's local box, normalized to [-1,1].
+// Returns vec4(localPos, distance-to-bbox-surface). dist < 0 → inside bbox.
+vec4 volumeLocalPos(vec3 p, vec3 center, vec3 size) {
+  vec3 lp = (p - center) / max(size, vec3(0.001));
+  vec3 d = abs(lp) - vec3(1.0);
+  float distOutside = length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
+  return vec4(lp, distOutside);
+}
+
+// Smoke: bumpy spherical/conic profile inside bbox, fbm-modulated.
+float smokeDensity(vec3 lp, float noiseScale, float t) {
+  // Falloff: smooth sphere falloff in local space (1 at center, 0 at corner)
+  float falloff = 1.0 - smoothstep(0.0, 1.0, length(lp));
+  if (falloff <= 0.0) return 0.0;
+  // 3D fbm with slow drift
+  vec3 nPos = lp * noiseScale + vec3(0.0, -t * 0.15, 0.0);
+  float n = fbm3_lite(nPos);
+  // Skew density: more in upper half (smoke rises)
+  float rise = mix(0.6, 1.1, clamp(lp.y * 0.5 + 0.5, 0.0, 1.0));
+  return clamp(falloff * (n * 0.8 + 0.3) * rise, 0.0, 1.0);
+}
+
+// Flame: tighter spherical profile + fast fbm + upward bias. Glow handled by color.
+float flameDensity(vec3 lp, float noiseScale, float t) {
+  // Cone-like falloff: wide at base, narrow at top
+  float radial = length(lp.xz) / max(0.3 + 0.6 * (1.0 - clamp(lp.y, 0.0, 1.0)), 0.05);
+  if (radial > 1.0) return 0.0;
+  float falloff = (1.0 - smoothstep(0.6, 1.0, radial)) * (1.0 - smoothstep(0.8, 1.0, lp.y));
+  vec3 nPos = lp * noiseScale + vec3(0.0, -t * 1.2, 0.0);
+  float n = fbm3_lite(nPos);
+  return clamp(falloff * (n * 0.9 + 0.5), 0.0, 1.0);
+}
+
+// Ground fog: layered density below center.y + size.y/2, fbm-perturbed.
+float fogDensity(vec3 lp, float noiseScale, float t) {
+  // Above bbox top → 0
+  if (lp.y > 1.0) return 0.0;
+  // Exponential falloff above floor
+  float heightFalloff = exp(-max(lp.y + 1.0, 0.0) * 1.5);
+  vec3 nPos = lp * vec3(noiseScale * 0.5, 0.5, noiseScale * 0.5) + vec3(t * 0.04, 0.0, t * 0.03);
+  float n = fbm3_lite(nPos);
+  return clamp(heightFalloff * (n * 0.5 + 0.5) * 0.7, 0.0, 1.0);
+}
+
+// God-rays: directional shaft. lp.y treated as "along ray", lp.xz as "across ray".
+// Mostly density along center axis, modulated by fbm for atmospheric striation.
+float godRayDensity(vec3 lp, float noiseScale, float t) {
+  float radial = length(lp.xz);
+  if (radial > 1.0) return 0.0;
+  float falloff = pow(1.0 - radial, 2.0);
+  vec3 nPos = lp * vec3(noiseScale, noiseScale * 0.3, noiseScale) + vec3(0.0, t * 0.06, 0.0);
+  float n = fbm3_lite(nPos);
+  return clamp(falloff * (n * 0.4 + 0.6) * 0.45, 0.0, 1.0);
+}
+
+// March from ro along rd up to tMax, accumulating volume contribution.
+// Returns vec4(rgb pre-multiplied, transmittance). Final color = col.rgb + bg * col.a
+//
+// IMPORTANT (GLSL ES 1.00 constraint): array index expressions must be const
+// or loop counters. So we can't extract volumeDensityAt(p, slot) as a helper —
+// the per-volume density dispatch is INLINED into the loop body where 'j' is
+// the loop counter. Indexing u_volumeKindCenter[j] is then legal.
+vec4 applyVolumes(vec3 ro, vec3 rd, float tMax) {
+  if (u_volumeCount <= 0) return vec4(0.0, 0.0, 0.0, 1.0);
+  const int VOL_STEPS = 32;
+  float jitter = hash21(gl_FragCoord.xy + vec2(u_time * 60.0, 0.0)) * 0.5;
+  float dt = tMax / float(VOL_STEPS);
+  vec3 acc = vec3(0.0);
+  float transmit = 1.0;
+  float t = dt * (0.5 + jitter * 0.5);
+  for (int i = 0; i < VOL_STEPS; i++) {
+    if (t > tMax || transmit < 0.02) break;
+    vec3 p = ro + rd * t;
+    vec3 sampleCol = vec3(0.0);
+    float sampleDens = 0.0;
+    for (int j = 0; j < MAX_VOLUMES; j++) {
+      if (j >= u_volumeCount) break;
+      vec4 kc  = u_volumeKindCenter[j];
+      vec4 sd  = u_volumeSizeDensity[j];
+      vec4 col = u_volumeColor[j];
+      vec4 loc = volumeLocalPos(p, kc.yzw, sd.xyz);
+      if (loc.w > 0.05) continue;
+      int kind = int(kc.x + 0.5);
+      float d = 0.0;
+      if (kind == 0)      d = smokeDensity(loc.xyz, col.w, u_time);
+      else if (kind == 1) d = flameDensity(loc.xyz, col.w, u_time);
+      else if (kind == 2) d = fogDensity(loc.xyz, col.w, u_time);
+      else                d = godRayDensity(loc.xyz, col.w, u_time);
+      d *= sd.w;
+      if (d > 0.001) {
+        sampleCol  += col.rgb * d;
+        sampleDens += d;
+      }
+    }
+    if (sampleDens > 0.001) {
+      vec3 c = sampleCol / sampleDens;
+      float a = 1.0 - exp(-sampleDens * dt * 1.5);
+      acc += transmit * a * c;
+      transmit *= (1.0 - a);
+    }
+    t += dt;
+  }
+  return vec4(acc, transmit);
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution) / u_resolution.y;
   vec3 rd = normalize(uv.x * u_camRight + uv.y * u_camUp + u_focal * u_camFwd);
@@ -720,6 +844,16 @@ void main() {
   // and stack with postfx's bloom-derived RGB-shifted ghost flares.
   col = atlasLensFlares(col, uv, sunDir);
 
+  // Sprint 3: volume pass — integrate smoke/flame/fog/god-ray density along the
+  // eye ray, blend into the surface color. tMax = the surface hit distance (t)
+  // or MAX_DIST for sky pixels. Volume contribution is added BEFORE post-FX so
+  // bloom can boost emissive flame voxels and DoF can blur the volume.
+  if (u_volumeCount > 0) {
+    float volTMax = hit ? t : MAX_DIST;
+    vec4 volRes = applyVolumes(ro, rd, volTMax);
+    col = col * volRes.a + volRes.rgb;
+  }
+
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
   // which propagates through bloom Gaussian + DoF taps and explodes as black
   // rectangles on canvas (~30-40 px each). Replace NaN per-channel with 0,
@@ -809,6 +943,14 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   const materialLUT = new Float32Array(MAX_MATERIAL * 4);
   const toneLUT     = new Float32Array(MAX_MATERIAL * 4);
   const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
+
+  // Sprint 3 volume LUTs — 3 vec4 slots per volume (kindCenter / sizeDensity / color)
+  // up to MAX_VOLUMES=8 (matches shader). Re-uploaded per render() via setVolumes().
+  const MAX_VOLUMES = 8;
+  const volumeKindCenterLUT  = new Float32Array(MAX_VOLUMES * 4);
+  const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
+  const volumeColorLUT       = new Float32Array(MAX_VOLUMES * 4);
+  let activeVolumeCount = 0;
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -993,6 +1135,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
       'u_time',
       'u_leafMaterial[0]', 'u_leafTone[0]', 'u_leafPattern[0]',
+      // Sprint 3 volume uniforms
+      'u_volumeKindCenter[0]', 'u_volumeSizeDensity[0]', 'u_volumeColor[0]', 'u_volumeCount',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1126,6 +1270,24 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // this set, waves were static — sea looked frozen.
     if (uniformsCache.u_time != null) {
       gl.uniform1f(uniformsCache.u_time, (performance.now() - timeStart) / 1000);
+    }
+    // Sprint 3: volume LUTs. Uploaded per draw because the count + params may
+    // change when setVolumes() is called between scene loads. Volume effects
+    // typically don't animate per-frame though u_time inside density funcs
+    // provides drift / fbm motion.
+    if (uniformsCache.u_volumeCount != null) {
+      gl.uniform1i(uniformsCache.u_volumeCount, activeVolumeCount);
+    }
+    if (activeVolumeCount > 0) {
+      if (uniformsCache['u_volumeKindCenter[0]'] != null) {
+        gl.uniform4fv(uniformsCache['u_volumeKindCenter[0]'], volumeKindCenterLUT);
+      }
+      if (uniformsCache['u_volumeSizeDensity[0]'] != null) {
+        gl.uniform4fv(uniformsCache['u_volumeSizeDensity[0]'], volumeSizeDensityLUT);
+      }
+      if (uniformsCache['u_volumeColor[0]'] != null) {
+        gl.uniform4fv(uniformsCache['u_volumeColor[0]'], volumeColorLUT);
+      }
     }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
@@ -1345,6 +1507,43 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      */
     setPostFx(scene, camera) {
       activePostFx = resolvePostFxParams(scene, camera);
+    },
+
+    /**
+     * Sprint 3: install up to MAX_VOLUMES (8) volume primitives for the next
+     * draw. Pass [] or null to clear. Volume color values 0-255 (RGB) are
+     * auto-detected and normalized to 0-1.
+     */
+    setVolumes(volumes) {
+      const KIND_INDEX = { 'smoke': 0, 'flame': 1, 'fog': 2, 'god-rays': 3 };
+      const list = Array.isArray(volumes) ? volumes : [];
+      activeVolumeCount = Math.min(list.length, MAX_VOLUMES);
+      for (let i = 0; i < activeVolumeCount; i++) {
+        const v = list[i];
+        const kind = KIND_INDEX[v.kind] ?? 0;
+        const cx = v.center[0], cy = v.center[1], cz = v.center[2];
+        const sx = v.size[0],   sy = v.size[1],   sz = v.size[2];
+        const density = (typeof v.density === 'number') ? v.density : 1.0;
+        const noiseScale = (typeof v.noiseScale === 'number') ? v.noiseScale : 2.5;
+        // Auto-normalize color: max > 1 → assume 0-255 sRGB
+        let r = 0.8, g = 0.8, b = 0.8;
+        if (Array.isArray(v.color)) {
+          [r, g, b] = v.color;
+          if (Math.max(r, g, b) > 1.01) { r /= 255; g /= 255; b /= 255; }
+        }
+        volumeKindCenterLUT[i*4]   = kind;
+        volumeKindCenterLUT[i*4+1] = cx;
+        volumeKindCenterLUT[i*4+2] = cy;
+        volumeKindCenterLUT[i*4+3] = cz;
+        volumeSizeDensityLUT[i*4]   = sx;
+        volumeSizeDensityLUT[i*4+1] = sy;
+        volumeSizeDensityLUT[i*4+2] = sz;
+        volumeSizeDensityLUT[i*4+3] = density;
+        volumeColorLUT[i*4]   = r;
+        volumeColorLUT[i*4+1] = g;
+        volumeColorLUT[i*4+2] = b;
+        volumeColorLUT[i*4+3] = noiseScale;
+      }
     },
 
     // ---- Sprint 2: cameraSequence control surface ----

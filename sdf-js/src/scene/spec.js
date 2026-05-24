@@ -409,6 +409,15 @@ export function validate(data) {
     validateCameraSequence(data.cameraSequence, errors, warnings);
   }
 
+  // Sprint 3 (2026-05-24): volumes are top-level (parallel to subjects), NOT
+  // primitive Subjects. Reason: volumes integrate density along the eye ray
+  // instead of computing SDF distance. Mixing into subjects[] would force the
+  // compiler to emit a "+inf distance" dummy SDF per volume → pollutes
+  // flattenUnion's leaf list. Cleaner to keep them on their own array.
+  if (data.volumes != null) {
+    validateVolumes(data.volumes, errors, warnings);
+  }
+
   // Rule 19, 20: source field
   if (data.source != null) validateSource(data.source, errors, warnings);
 
@@ -869,6 +878,55 @@ function validateCameraSequence(seq, errors, warnings) {
     }
     if (shot.shake != null && (typeof shot.shake !== 'number' || shot.shake < 0)) {
       errors.push(`${tag}.shake: must be a non-negative number`);
+    }
+  });
+}
+
+// =============================================================================
+// VolumesSpec (Sprint 3) — top-level volumes[] array
+// -----------------------------------------------------------------------------
+// Each volume: { id, kind, center, size, density, color, noiseScale?, noiseSpeed? }
+// kind ∈ {smoke, flame, fog, god-rays}. Renderer (FLY 3D) loops through these
+// in a post-surface volume raymarch pass and accumulates density × color along
+// the eye ray. BOB GPU intentionally NOT integrated — painterly aesthetic.
+// =============================================================================
+export const VOLUME_KINDS = new Set(['smoke', 'flame', 'fog', 'god-rays']);
+
+function validateVolumes(vols, errors, warnings) {
+  if (!Array.isArray(vols)) {
+    errors.push('volumes: must be an array');
+    return;
+  }
+  vols.forEach((v, i) => {
+    const tag = `volumes[${i}]`;
+    if (typeof v !== 'object' || v == null) {
+      errors.push(`${tag}: must be an object`); return;
+    }
+    if (typeof v.id !== 'string' || v.id === '') {
+      errors.push(`${tag}.id: required non-empty string`);
+    }
+    if (!VOLUME_KINDS.has(v.kind)) {
+      errors.push(`${tag}.kind: must be one of ${[...VOLUME_KINDS].join(' | ')}`);
+    }
+    if (!Array.isArray(v.center) || v.center.length !== 3 || !v.center.every(n => typeof n === 'number')) {
+      errors.push(`${tag}.center: must be [x, y, z] numbers`);
+    }
+    if (!Array.isArray(v.size) || v.size.length !== 3 || !v.size.every(n => typeof n === 'number')) {
+      errors.push(`${tag}.size: must be [x, y, z] numbers (bounding box of effect)`);
+    }
+    if (v.density != null && (typeof v.density !== 'number' || v.density < 0)) {
+      errors.push(`${tag}.density: must be a non-negative number`);
+    }
+    if (v.color != null) {
+      if (!Array.isArray(v.color) || v.color.length !== 3 || !v.color.every(n => typeof n === 'number')) {
+        errors.push(`${tag}.color: must be [r, g, b] numbers (0-255 or 0-1, renderer auto-detects)`);
+      }
+    }
+    if (v.noiseScale != null && typeof v.noiseScale !== 'number') {
+      errors.push(`${tag}.noiseScale: must be a number`);
+    }
+    if (v.noiseSpeed != null && typeof v.noiseSpeed !== 'number') {
+      errors.push(`${tag}.noiseSpeed: must be a number`);
     }
   });
 }

@@ -27,6 +27,7 @@ import {
   DEFAULT_STYLE, randomizeBobStyle, applyStyleGate, describeStyle,
 } from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
+import { createBlueprintRenderer } from '../../src/render/blueprint.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';
 
 const $ = id => document.getElementById(id);
@@ -48,6 +49,7 @@ const state = {
   genHash: null,                       // current hash hex string
   genSceneTypeChoice: 'random',        // 'random' | '0'..'5'
   bobRenderer: null,                   // lazy createBobShaderRenderer instance — stylized autoscope-style
+  blueprintRenderer: null,             // lazy createBlueprintRenderer — 4-view engineering drawing
   fly3dRenderer: null,                 // lazy createFly3DRenderer instance — clean Lambert + WASD fly
   genScene: null,                      // generator-tab compiled scene
   genSdf: null,                        // generator-tab final SDF (subjects ∪ ground)
@@ -78,7 +80,7 @@ const state = {
   sceneHash: null,                     // 0x... hex string
 };
 
-const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu']);
+const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint']);
 const isGpuRenderer = (name) => GPU_RENDERERS.has(name);
 
 // =============================================================================
@@ -1692,6 +1694,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
 
   if (state.activeRenderer === 'fly3d') {
     if (state.bobRenderer) state.bobRenderer.unmount();
+    if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     const fly = ensureFly3dRenderer();
     if (!keepCamera && scene.cameraStatic) fly.setCamState(sphericalToCamState(scene.cameraStatic));
     // Sprint 1: per-scene post-FX overrides (exposure / vignette / bloom /
@@ -1714,6 +1717,10 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       // exist; setTimeout(0) guarantees they're reachable.
       setTimeout(() => { if (typeof updateTimelineUI === 'function') updateTimelineUI(); }, 0);
     }
+    // Sprint 3: volumetric primitives (smoke / flame / fog / god-rays).
+    if (fly.setVolumes) {
+      fly.setVolumes((rawScene && Array.isArray(rawScene.volumes)) ? rawScene.volumes : []);
+    }
     try {
       return fly.render(sdf);
     } catch (e) {
@@ -1721,9 +1728,28 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       console.error(e);
       return { bytes: 0 };
     }
+  } else if (state.activeRenderer === 'blueprint') {
+    // Sprint 3: 4-view engineering drawing. Reuses sceneSDF compile path; needs
+    // model bbox to frame the ortho views. Derive from scene.cameraStatic
+    // (target XYZ + distance). FLY 3D + BOB GPU must be unmounted first.
+    if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.bobRenderer) state.bobRenderer.unmount();
+    const bp = ensureBlueprintRenderer();
+    if (scene.cameraStatic) {
+      const cs = scene.cameraStatic;
+      bp.setModelBounds([cs.targetX, cs.targetY, cs.targetZ], cs.distance * 0.6);
+    }
+    try {
+      return bp.render(sdf);
+    } catch (e) {
+      setStatus(`✗ blueprint render: ${e.message}`, true);
+      console.error(e);
+      return { bytes: 0 };
+    }
   } else {
     // default to bob-gpu
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     const bob = ensureBobRenderer();
     if (!keepCamera && scene.cameraStatic) bob.setCamState(sphericalToCamState(scene.cameraStatic));
     // Generator-V handoff: apply current style (palette / skip / bg variety)
@@ -1740,6 +1766,23 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       return { bytes: 0 };
     }
   }
+}
+
+function ensureBlueprintRenderer() {
+  if (state.blueprintRenderer) return state.blueprintRenderer;
+  const canvas = $('c-gpu');
+  state.blueprintRenderer = createBlueprintRenderer({
+    canvas,
+    getControls: () => {
+      // Blueprint only needs light direction; reuse scene light or default.
+      const { scene } = getActiveGpuScene();
+      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      const light = state.lightOverride ?? sceneLight;
+      return { lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance };
+    },
+    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+  });
+  return state.blueprintRenderer;
 }
 
 function ensureBobRenderer() {
