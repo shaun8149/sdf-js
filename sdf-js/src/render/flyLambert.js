@@ -9,6 +9,7 @@
 import { compileSDF3ToGLSL, canCompileSDF3, IMIN_GLSL } from '../sdf/sdf3.compile.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
+import { evaluateCameraSequence, sequenceStateToCamState, totalDuration as seqTotalDuration } from '../scene/camera-sequence.js';
 
 const VS_SRC = `attribute vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
@@ -35,21 +36,24 @@ uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
 // values are 1..numLeaves).
-uniform vec4  u_leafMaterial[96];
+// 2026-05-24: bumped 96 → 256 to support large scatter scenes (cathedral
+// scatter×3 = ~180 leaves, carrier fleet×5 = ~200 leaves). Was overflowing
+// the LUT and tail leaves rendered with hash-palette pastel rainbow.
+uniform vec4  u_leafMaterial[256];
 // Per-leaf extended material — x = value (HSV brightness), y = kind
 // (0 = Lambert, 1 = sea-shading branch); z/w reserved. Separate LUT because
 // vec4 already full with hue/sat/metal/glow. Default value=1.0 (full
 // brightness); matte-black-style presets use ~0.2. kind defaults to 0.
-uniform vec4  u_leafTone[96];
+uniform vec4  u_leafTone[256];
 // Per-leaf pattern LUT (x = pattern code, y = scale, z = strength, w = reserved).
 // code: 0=none, 1=brick, 2=hex, 3=cells, 4=cracked. Same indexing as material.
-uniform vec4  u_leafPattern[96];
+uniform vec4  u_leafPattern[256];
 
 #define MAX_STEPS    200
 #define MAX_DIST     200.0  // matches BOB GPU; was 40, too small for fleet/scatter scenes
 #define EPS          0.0008
 #define GROUND_Y     -1.0
-#define MAX_MATERIAL 96
+#define MAX_MATERIAL 256
 
 // ---- Scene mapping (with optional infinite ground plane) ------------------
 vec2 mapWithGround(vec3 p) {
@@ -716,6 +720,15 @@ void main() {
   // and stack with postfx's bloom-derived RGB-shifted ghost flares.
   col = atlasLensFlares(col, uv, sunDir);
 
+  // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
+  // which propagates through bloom Gaussian + DoF taps and explodes as black
+  // rectangles on canvas (~30-40 px each). Replace NaN per-channel with 0,
+  // cap to [0, 100] to avoid float16 overflow producing Inf downstream.
+  if (col.r != col.r) col.r = 0.0;
+  if (col.g != col.g) col.g = 0.0;
+  if (col.b != col.b) col.b = 0.0;
+  col = clamp(col, vec3(0.0), vec3(100.0));
+
   // Sprint 1 (2026-05-24): write HDR linear color + depth in alpha to FBO.
   // ACES tonemap / vignette / bloom / RGB-ghost flare / gamma / DoF moved to
   // postfx.js composite pass — scene shader's job is just spectrally-correct
@@ -773,6 +786,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
+  // Sprint 2 (2026-05-24): pending deferred render — see render() comments.
+  // Heavy GPU compile is rAF-deferred so the cleared canvas paints first.
+  let pendingRender = null;
   // Wall-clock origin for u_time uniform (in seconds). Drives time-aware
   // SDF primitives like sdWaves (sea surface animation). Reset on first
   // render() call so each new scene starts at t=0.
@@ -787,7 +803,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
   //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
   //   patternLUT[i*4+0]  = 0    → no pattern, shader skips applyPattern
-  const MAX_MATERIAL = 96;
+  // 2026-05-24: bumped to 256 to match the shader-side cap. See uniform array
+  // declarations + the rationale comment near `uniform vec4 u_leafMaterial`.
+  const MAX_MATERIAL = 256;
   const materialLUT = new Float32Array(MAX_MATERIAL * 4);
   const toneLUT     = new Float32Array(MAX_MATERIAL * 4);
   const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
@@ -843,6 +861,23 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // a SceneData with defaults.postFx / camera.aperture.
   let activePostFx = { ...DEFAULT_POSTFX };
 
+  // ---- Sprint 2 cinematic camera sequence ----------------------------------
+  // When non-null, drives camState per frame from a timeline (overrides WASD
+  // fly camera until user explicitly takes back via fly keys / mouse).
+  let activeSequence = null;
+  let sequenceStartTime = 0;  // performance.now() origin for sequence playback
+  let sequencePaused = false;
+  let sequencePausedAt = 0;
+  let userTookCam = false;    // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
+  // Previous-frame camera state — fed to postfx motion blur reproject. Stored
+  // in WORLD-SPACE basis (pos + fwd + right + up + fov) so the shader can
+  // compute "where would this pixel have been on screen one frame ago?".
+  // Updated AT END of every draw() call.
+  const prevCam = {
+    pos: [0, 0, 0], fwd: [0, 0, 1], right: [1, 0, 0], up: [0, 1, 0], fov: 25,
+  };
+  let prevCamValid = false;  // first frame: no prev → motion blur skipped
+
   // ---- camera math ----
   function computeFwd(yaw, pitch) {
     const cp = Math.cos(pitch), sp = Math.sin(pitch);
@@ -894,11 +929,23 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
 
     const fragSource = buildFragmentShader(result.glsl);
+    return uploadCompiledFrag(fragSource, result);
+  }
+
+  // 2026-05-24: split out so render() can compile GLSL sync (for instant byte
+  // count) but defer GPU shader upload to next rAF (so cleared canvas paints
+  // before the 200-500ms compile blocks the main thread).
+  // `result` carries leafMaterials + leafPatterns + glsl for LUT upload.
+  function uploadCompiledFrag(fragSource, result) {
     // Program cache: hit avoids the 200-500ms GLSL compile+link that
     // dominates "switch from BOB GPU to FLY 3D" perceived latency.
-    let prog = programCache.get(fragSource);
+    // 2026-05-24: cache entry now carries the FS too. WebGL deleteProgram does
+    // NOT release attached shaders — without explicit detach + deleteShader on
+    // eviction, every FS leaks (~1MB of GLSL bytecode each). Over many scene
+    // swaps that's real GPU memory pressure.
+    let entry = programCache.get(fragSource);
     let cacheHit = false;
-    if (prog) {
+    if (entry) {
       cacheHit = true;
     } else {
       let fs;
@@ -908,24 +955,31 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         console.error('Fragment shader source was:\n', fragSource);
         throw new Error(`GLSL shader compile failed: ${e.message}`);
       }
-      prog = gl.createProgram();
+      const prog = gl.createProgram();
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
       gl.linkProgram(prog);
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
         throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
       }
-      // LRU eviction — drop oldest cached program if at capacity
+      // LRU eviction — drop oldest cached program if at capacity. Crucial:
+      // detach + delete the FS attached to the old program; otherwise the FS
+      // outlives the program and leaks. The VS is shared across all programs
+      // so we do NOT delete it.
       if (programCache.size >= PROGRAM_CACHE_MAX) {
         const firstKey = programCache.keys().next().value;
-        const oldProg = programCache.get(firstKey);
-        gl.deleteProgram(oldProg);
+        const old = programCache.get(firstKey);
+        gl.detachShader(old.prog, vs);
+        gl.detachShader(old.prog, old.fs);
+        gl.deleteShader(old.fs);
+        gl.deleteProgram(old.prog);
         programCache.delete(firstKey);
       }
-      programCache.set(fragSource, prog);
+      entry = { prog, fs };
+      programCache.set(fragSource, entry);
     }
 
-    program = prog;
+    program = entry.prog;
 
     gl.useProgram(program);
     const a_pos = gl.getAttribLocation(program, 'a_pos');
@@ -1004,6 +1058,29 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     if (!program) return;
     const c = getControls();
 
+    // ---- Sprint 2: cameraSequence drives camera if present + not overridden ----
+    // Evaluator runs every frame (cheap), produces (pos, target, fov, aperture).
+    // We mutate camState in-place so all existing pos/yaw/pitch consumers (e.g.
+    // onCamUpdate broadcast) see the sequence-driven state.
+    let sequenceFov = null;
+    let sequenceAperture = null;
+    let sequenceFocalDist = null;
+    if (activeSequence && !sequencePaused && !userTookCam) {
+      const tSec = (performance.now() - sequenceStartTime) / 1000;
+      const state = evaluateCameraSequence(activeSequence, tSec);
+      if (state) {
+        const cs = sequenceStateToCamState(state);
+        camState.position[0] = cs.position[0];
+        camState.position[1] = cs.position[1];
+        camState.position[2] = cs.position[2];
+        camState.yaw = cs.yaw;
+        camState.pitch = cs.pitch;
+        sequenceFov = cs.fov;
+        sequenceAperture = cs.aperture;
+        sequenceFocalDist = cs.focalDistance;
+      }
+    }
+
     const fwd = computeFwd(camState.yaw, camState.pitch);
     const right = computeRight(fwd);
     const up = cross(fwd, right);
@@ -1035,7 +1112,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     gl.uniform3f(uniformsCache.u_camFwd, fwd[0], fwd[1], fwd[2]);
     gl.uniform3f(uniformsCache.u_camRight, right[0], right[1], right[2]);
     gl.uniform3f(uniformsCache.u_camUp, up[0], up[1], up[2]);
-    gl.uniform1f(uniformsCache.u_focal, c.fov);
+    // FOV: sequence override > getControls() fallback
+    const activeFov = sequenceFov ?? c.fov;
+    gl.uniform1f(uniformsCache.u_focal, activeFov);
     gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_groundOn,  c.groundOn  ? 1.0 : 0.0);
@@ -1052,10 +1131,39 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // on the program object, so re-uploading per frame would be pure waste.
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-    // === Pass 2+3: post-FX composite (bloom pre-pass + composite to canvas) ===
-    // Inputs: sceneTex (HDR rgba16f) + activePostFx params + time. Output: canvas.
+    // === Pass 2+3: post-FX composite (bloom + DoF + motion blur + composite) ===
+    // Per-frame postfx params start from activePostFx (scene defaults) and
+    // get patched with sequence camera overrides (aperture / focalDistance)
+    // when a cameraSequence is driving the camera.
     const tSec = (performance.now() - timeStart) / 1000;
-    postfx.render(sceneTex, sceneFboW, sceneFboH, canvas.width, canvas.height, activePostFx, tSec);
+    const framePostFx = { ...activePostFx };
+    if (sequenceAperture != null) framePostFx.aperture = sequenceAperture;
+    if (sequenceFocalDist != null) framePostFx.focalDistance = sequenceFocalDist;
+    // Current-frame camera basis (for motion blur reproject in postfx)
+    framePostFx._curCamPos    = camState.position;
+    framePostFx._curCamFwd    = fwd;
+    framePostFx._curCamRight  = right;
+    framePostFx._curCamUp     = up;
+    framePostFx._curCamFov    = activeFov;
+    // Previous-frame camera basis (motion blur). First frame has no prev →
+    // skip motion blur by sending zero-strength signal.
+    framePostFx._prevCamValid = prevCamValid;
+    framePostFx._prevCamPos   = prevCam.pos;
+    framePostFx._prevCamFwd   = prevCam.fwd;
+    framePostFx._prevCamRight = prevCam.right;
+    framePostFx._prevCamUp    = prevCam.up;
+    framePostFx._prevCamFov   = prevCam.fov;
+    postfx.render(sceneTex, sceneFboW, sceneFboH, canvas.width, canvas.height, framePostFx, tSec);
+
+    // ---- End-of-frame: snapshot current camera into prevCam for next draw ----
+    prevCam.pos[0] = camState.position[0];
+    prevCam.pos[1] = camState.position[1];
+    prevCam.pos[2] = camState.position[2];
+    prevCam.fwd[0] = fwd[0];   prevCam.fwd[1] = fwd[1];   prevCam.fwd[2] = fwd[2];
+    prevCam.right[0] = right[0]; prevCam.right[1] = right[1]; prevCam.right[2] = right[2];
+    prevCam.up[0] = up[0];     prevCam.up[1] = up[1];     prevCam.up[2] = up[2];
+    prevCam.fov = activeFov;
+    prevCamValid = true;
 
     if (_debugFirstDraw) {
       _debugFirstDraw = false;
@@ -1103,35 +1211,103 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      * Throws on compile / shader / link failure.
      */
     render(sdf) {
-      const bytes = uploadSDF(sdf);
-      if (!flyHandle) {
-        flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
-          speed: 1.5,
-          speedBoost: 4.0,
-          onReset: () => {
-            camState.position = [...defaultCam.position];
-            camState.yaw = defaultCam.yaw;
-            camState.pitch = defaultCam.pitch;
-          },
-        });
-      }
-      _debugFirstDraw = true;
-      timeStart = performance.now();   // new scene starts at u_time = 0
-      if (!rafId) {
-        fpsLast = performance.now();
-        frameCount = 0;
-        loop();
-      }
+      // ---- Step 1: Generate GLSL (CPU only, fast ~5ms) ----
+      // Done sync so we can return bytes for the lift-info display.
+      const result = compileSDF3ToGLSL(sdf, {
+        sceneFnName: 'sceneSDF',
+        includeLibrary: true,
+        emitObjectIndex: true,
+      });
+      if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
+      const fragSource = buildFragmentShader(result.glsl);
+      const bytes = fragSource.length;
+
+      // ---- Step 2: Clear canvas to BLACK IMMEDIATELY ----
+      // Critical: paint dispatched here is what browser composites if/when c-gpu
+      // becomes visible during the deferred phase below. Stopping the old
+      // scene from lingering during heavy shader compile.
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.flush();
+
+      // ---- Step 3: Defer heavy GPU compile to next animation frame ----
+      // Why: GPU shader compile + link can take 200-500ms for FLY 3D's heavy
+      // scene shader (cache miss on a new SDF). That work blocks the main
+      // thread, preventing the browser from compositing the cleared canvas.
+      // Result: user sees the OLD scene the entire compile window.
+      //
+      // rAF gives the browser a paint cycle BEFORE compile starts. After that
+      // cycle, the cleared black canvas is visible. Compile then blocks, but
+      // user sees black (correct loading state) instead of stale scene.
+      //
+      // Cancellation: if a newer render() arrives before pending rAF fires,
+      // we cancel the old one to avoid compiling a stale SDF.
+      if (pendingRender != null) cancelAnimationFrame(pendingRender);
+      pendingRender = requestAnimationFrame(() => {
+        pendingRender = null;
+        try {
+          uploadCompiledFrag(fragSource, result);
+        } catch (e) {
+          console.error('[fly3d] deferred upload failed:', e);
+          return;
+        }
+        if (!flyHandle) {
+          flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
+            speed: 1.5,
+            speedBoost: 4.0,
+            onReset: () => {
+              camState.position = [...defaultCam.position];
+              camState.yaw = defaultCam.yaw;
+              camState.pitch = defaultCam.pitch;
+            },
+          });
+        }
+        _debugFirstDraw = true;
+        timeStart = performance.now();
+        if (!rafId) {
+          fpsLast = performance.now();
+          frameCount = 0;
+          loop();
+        }
+      });
       return { bytes };
     },
 
     /**
      * Stop rendering, release pointer lock, detach input handlers. WebGL
      * resources kept so re-mount is cheap (just call render() again).
+     *
+     * 2026-05-24: ALSO clear canvas to black + clear HDR scene FBO. Without
+     * this, the canvas keeps showing the last frame for the entire duration
+     * of the next scene's shader compile (200-500ms for FLY 3D's heavy scene
+     * shader on cache miss), which reads as "previous scene visible during
+     * switch" / "FLY 3D switches slower than BOB GPU" to users. BOB GPU's
+     * unmount has always done this; FLY 3D missed it pre-Sprint-1.
      */
     unmount() {
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      if (pendingRender != null) { cancelAnimationFrame(pendingRender); pendingRender = null; }
       if (flyHandle) { flyHandle.detach(); flyHandle = null; }
+      // Clear scene FBO so its rgba16f doesn't keep stale HDR pixels that
+      // post-FX would composite into the next first frame.
+      if (sceneFbo) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
+        gl.viewport(0, 0, sceneFboW, sceneFboH);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }
+      // Clear canvas to black immediately. Old frame disappears NOW, not
+      // 200-500ms later when the next shader compile finishes.
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      // Motion blur needs a fresh starting frame on next mount — the old
+      // prevCam would now point at a stale camera basis from a different
+      // scene, producing wildly wrong reprojection vectors on frame 1.
+      prevCamValid = false;
     },
 
     resetCamera() {
@@ -1169,6 +1345,51 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      */
     setPostFx(scene, camera) {
       activePostFx = resolvePostFxParams(scene, camera);
+    },
+
+    // ---- Sprint 2: cameraSequence control surface ----
+    /**
+     * Bind a cameraSequence to this renderer. From this point on every frame
+     * pulls (pos, target, fov, aperture) from the sequence at the current
+     * wall-clock offset. Pass null to detach (back to WASD fly camera).
+     *
+     * Calling setSequence() ALSO resets the userTookCam latch — re-engaging the
+     * sequence after user fly interaction. This is the "scrubber play" hook.
+     */
+    setSequence(seq) {
+      activeSequence = seq || null;
+      sequenceStartTime = performance.now();
+      sequencePaused = false;
+      userTookCam = false;
+      prevCamValid = false;  // motion blur skip on cut-over frame
+    },
+    setSequenceTime(tSec) {
+      if (!activeSequence) return;
+      sequenceStartTime = performance.now() - tSec * 1000;
+      sequencePaused = false;
+      userTookCam = false;
+    },
+    setSequencePaused(paused) {
+      if (paused && !sequencePaused) {
+        sequencePausedAt = performance.now();
+        sequencePaused = true;
+      } else if (!paused && sequencePaused) {
+        // Resume: shift start time forward by paused duration
+        sequenceStartTime += (performance.now() - sequencePausedAt);
+        sequencePaused = false;
+        userTookCam = false;
+      }
+    },
+    getSequenceTime() {
+      if (!activeSequence) return 0;
+      const now = sequencePaused ? sequencePausedAt : performance.now();
+      return (now - sequenceStartTime) / 1000;
+    },
+    getSequenceDuration() {
+      return activeSequence ? seqTotalDuration(activeSequence) : 0;
+    },
+    isSequenceActive() {
+      return !!activeSequence && !userTookCam;
     },
   };
 }

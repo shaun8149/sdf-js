@@ -17,158 +17,329 @@
         "type": "union",
         "children": [
           {
-            "id": "fuselage",
-            "type": "capsule",
-            "args": {
-              "a": [0, -1.0, 0],
-              "b": [0, 2.6, 0],
-              "radius": 0.42
-            },
-            "material": "matte-white"
-          },
-          {
-            "id": "fuselage-band",
+            "id": "stage1-tank",
             "type": "cylinder",
-            "args": {
-              "radius": 0.435,
-              "height": 0.18
-            },
-            "transform": {
-              "translate": [0, 1.6, 0]
-            },
-            "material": "fruit-red"
+            "args": { "radius": 0.58, "height": 2.4 },
+            "transform": { "translate": [0, -0.4, 0] },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
           },
           {
-            "id": "nose-cone",
-            "type": "cone",
-            "args": {
-              "height": 1.1,
-              "baseRadius": 0.42
-            },
-            "transform": {
-              "translate": [0, 2.6, 0]
-            },
-            "material": "matte-white"
-          },
-          {
-            "id": "engine-bell",
+            "id": "stage1-bell-skirt",
             "type": "capped_cone",
-            "args": {
-              "a": [0, -1.0, 0],
-              "b": [0, -1.7, 0],
-              "r1": 0.35,
-              "r2": 0.55
-            },
-            "material": "matte-black"
+            "args": { "a": [0, -1.6, 0], "b": [0, -2.0, 0], "r1": 0.58, "r2": 0.78 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
           },
           {
-            "id": "fin-fwd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [0, -0.45, 0.55],
-              "rotate": [0, 0, 0]
-            },
-            "material": "fruit-red"
+            "id": "interstage-1-2",
+            "type": "capped_cone",
+            "args": { "a": [0, 0.8, 0], "b": [0, 1.05, 0], "r1": 0.58, "r2": 0.45 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
           },
           {
-            "id": "fin-back",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [0, -0.45, -0.55],
-              "rotate": [0, 3.14159, 0]
-            },
-            "material": "fruit-red"
+            "id": "stage2-tank",
+            "type": "cylinder",
+            "args": { "radius": 0.45, "height": 1.6 },
+            "transform": { "translate": [0, 1.85, 0] },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
           },
           {
-            "id": "fin-left",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [-0.55, -0.45, 0],
-              "rotate": [0, 1.5708, 0]
-            },
-            "material": "fruit-red"
+            "id": "interstage-2-3",
+            "type": "capped_cone",
+            "args": { "a": [0, 2.65, 0], "b": [0, 2.85, 0], "r1": 0.45, "r2": 0.36 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
           },
           {
-            "id": "fin-right",
+            "id": "stage3-tank",
+            "type": "cylinder",
+            "args": { "radius": 0.36, "height": 1.0 },
+            "transform": { "translate": [0, 3.35, 0] },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "payload-fairing",
+            "type": "cone",
+            "args": { "height": 1.3, "baseRadius": 0.36 },
+            "transform": { "translate": [0, 3.85, 0] },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "escape-tower-rod",
+            "type": "cylinder",
+            "args": { "radius": 0.035, "height": 0.8 },
+            "transform": { "translate": [0, 5.55, 0] },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "escape-tower-cap",
+            "type": "cone",
+            "args": { "height": 0.25, "baseRadius": 0.08 },
+            "transform": { "translate": [0, 5.95, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "stage1-band-red",
+            "type": "cylinder",
+            "args": { "radius": 0.61, "height": 0.18 },
+            "transform": { "translate": [0, -0.2, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "stage1-band-low",
+            "type": "cylinder",
+            "args": { "radius": 0.61, "height": 0.10 },
+            "transform": { "translate": [0, -1.35, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "stage2-band-red",
+            "type": "cylinder",
+            "args": { "radius": 0.475, "height": 0.12 },
+            "transform": { "translate": [0, 1.3, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "fairing-band",
+            "type": "cylinder",
+            "args": { "radius": 0.38, "height": 0.08 },
+            "transform": { "translate": [0, 3.78, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "engine-center",
+            "type": "capped_cone",
+            "args": { "a": [0, -2.0, 0], "b": [0, -2.55, 0], "r1": 0.22, "r2": 0.32 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "engine-N",
+            "type": "capped_cone",
+            "args": { "a": [0, -2.0, -0.34], "b": [0, -2.45, -0.34], "r1": 0.17, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "engine-S",
+            "type": "capped_cone",
+            "args": { "a": [0, -2.0, 0.34], "b": [0, -2.45, 0.34], "r1": 0.17, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "engine-E",
+            "type": "capped_cone",
+            "args": { "a": [0.34, -2.0, 0], "b": [0.34, -2.45, 0], "r1": 0.17, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "engine-W",
+            "type": "capped_cone",
+            "args": { "a": [-0.34, -2.0, 0], "b": [-0.34, -2.45, 0], "r1": 0.17, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NE",
+            "type": "capsule",
+            "args": { "a": [0.72, -1.4, 0.72], "b": [0.72, 0.9, 0.72], "radius": 0.22 },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NE-nose",
+            "type": "cone",
+            "args": { "height": 0.55, "baseRadius": 0.22 },
+            "transform": { "translate": [0.72, 0.9, 0.72] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NE-bell",
+            "type": "capped_cone",
+            "args": { "a": [0.72, -1.4, 0.72], "b": [0.72, -1.78, 0.72], "r1": 0.16, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NW",
+            "type": "capsule",
+            "args": { "a": [-0.72, -1.4, 0.72], "b": [-0.72, 0.9, 0.72], "radius": 0.22 },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NW-nose",
+            "type": "cone",
+            "args": { "height": 0.55, "baseRadius": 0.22 },
+            "transform": { "translate": [-0.72, 0.9, 0.72] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "booster-NW-bell",
+            "type": "capped_cone",
+            "args": { "a": [-0.72, -1.4, 0.72], "b": [-0.72, -1.78, 0.72], "r1": 0.16, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SE",
+            "type": "capsule",
+            "args": { "a": [0.72, -1.4, -0.72], "b": [0.72, 0.9, -0.72], "radius": 0.22 },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SE-nose",
+            "type": "cone",
+            "args": { "height": 0.55, "baseRadius": 0.22 },
+            "transform": { "translate": [0.72, 0.9, -0.72] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SE-bell",
+            "type": "capped_cone",
+            "args": { "a": [0.72, -1.4, -0.72], "b": [0.72, -1.78, -0.72], "r1": 0.16, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SW",
+            "type": "capsule",
+            "args": { "a": [-0.72, -1.4, -0.72], "b": [-0.72, 0.9, -0.72], "radius": 0.22 },
+            "material": { "hue": 0.58, "sat": 0.04, "value": 0.94, "metal": 0.88, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SW-nose",
+            "type": "cone",
+            "args": { "height": 0.55, "baseRadius": 0.22 },
+            "transform": { "translate": [-0.72, 0.9, -0.72] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "booster-SW-bell",
+            "type": "capped_cone",
+            "args": { "a": [-0.72, -1.4, -0.72], "b": [-0.72, -1.78, -0.72], "r1": 0.16, "r2": 0.24 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
+          },
+          {
+            "id": "fin-N",
             "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [0.55, -0.45, 0],
-              "rotate": [0, -1.5708, 0]
-            },
-            "material": "fruit-red"
+            "args": { "halfWidth": 0.6, "halfLength": 0.08 },
+            "transform": { "translate": [0, -1.0, 0.95], "rotate": [0, 0, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "fin-S",
+            "type": "tri_prism",
+            "args": { "halfWidth": 0.6, "halfLength": 0.08 },
+            "transform": { "translate": [0, -1.0, -0.95], "rotate": [0, 3.14159, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "fin-E",
+            "type": "tri_prism",
+            "args": { "halfWidth": 0.6, "halfLength": 0.08 },
+            "transform": { "translate": [0.95, -1.0, 0], "rotate": [0, 1.5708, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
+          },
+          {
+            "id": "fin-W",
+            "type": "tri_prism",
+            "args": { "halfWidth": 0.6, "halfLength": 0.08 },
+            "transform": { "translate": [-0.95, -1.0, 0], "rotate": [0, -1.5708, 0] },
+            "material": { "hue": 0.02, "sat": 0.78, "value": 0.55, "metal": 0.55, "glow": 0.0 }
           }
         ],
         "transform": {
-          "translate": [0, 1.5, 0]
+          "translate": [0, 2.2, 0]
         }
       },
       {
         "id": "engine-glow-core",
         "type": "sphere",
-        "args": {
-          "radius": 0.28
-        },
-        "transform": {
-          "translate": [0, -0.3, 0]
-        },
+        "args": { "radius": 0.40 },
+        "transform": { "translate": [0, -0.25, 0] },
         "material": {
-          "hue": 0.10,
-          "sat": 0.95,
-          "value": 1.0,
-          "metal": 0.0,
-          "glow": 4.5
+          "hue": 0.10, "sat": 0.95, "value": 1.0,
+          "metal": 0.0, "glow": 5.0
         }
       },
       {
         "id": "engine-glow-halo",
         "type": "sphere",
-        "args": {
-          "radius": 0.55
-        },
-        "transform": {
-          "translate": [0, -0.5, 0]
-        },
+        "args": { "radius": 0.85 },
+        "transform": { "translate": [0, -0.55, 0] },
         "material": {
-          "hue": 0.05,
-          "sat": 0.85,
-          "value": 1.0,
-          "metal": 0.0,
-          "glow": 2.2
+          "hue": 0.05, "sat": 0.85, "value": 1.0,
+          "metal": 0.0, "glow": 2.4
         }
       },
       {
-        "id": "exhaust-plume",
+        "id": "booster-glow-NE",
+        "type": "sphere",
+        "args": { "radius": 0.20 },
+        "transform": { "translate": [0.72, 0.32, 0.72] },
+        "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
+      },
+      {
+        "id": "booster-glow-NW",
+        "type": "sphere",
+        "args": { "radius": 0.20 },
+        "transform": { "translate": [-0.72, 0.32, 0.72] },
+        "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
+      },
+      {
+        "id": "booster-glow-SE",
+        "type": "sphere",
+        "args": { "radius": 0.20 },
+        "transform": { "translate": [0.72, 0.32, -0.72] },
+        "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
+      },
+      {
+        "id": "booster-glow-SW",
+        "type": "sphere",
+        "args": { "radius": 0.20 },
+        "transform": { "translate": [-0.72, 0.32, -0.72] },
+        "material": { "hue": 0.07, "sat": 0.85, "value": 1.0, "metal": 0.0, "glow": 3.0 }
+      },
+      {
+        "id": "exhaust-plume-main",
         "type": "capped_cone",
         "args": {
           "a": [0, -0.4, 0],
           "b": [0, -3.5, 0],
-          "r1": 0.42,
-          "r2": 0.18
+          "r1": 0.55,
+          "r2": 0.22
         },
         "material": {
-          "hue": 0.12,
-          "sat": 0.55,
-          "value": 1.0,
-          "metal": 0.0,
-          "glow": 1.4,
-          "kind": "translucent"
+          "hue": 0.12, "sat": 0.55, "value": 1.0,
+          "metal": 0.0, "glow": 1.6, "kind": "translucent"
         }
+      },
+      {
+        "id": "exhaust-plume-NE",
+        "type": "capped_cone",
+        "args": {
+          "a": [0.72, 0.1, 0.72], "b": [0.72, -2.8, 0.72],
+          "r1": 0.25, "r2": 0.12
+        },
+        "material": { "hue": 0.10, "sat": 0.60, "value": 1.0, "metal": 0.0, "glow": 1.2, "kind": "translucent" }
+      },
+      {
+        "id": "exhaust-plume-NW",
+        "type": "capped_cone",
+        "args": {
+          "a": [-0.72, 0.1, 0.72], "b": [-0.72, -2.8, 0.72],
+          "r1": 0.25, "r2": 0.12
+        },
+        "material": { "hue": 0.10, "sat": 0.60, "value": 1.0, "metal": 0.0, "glow": 1.2, "kind": "translucent" }
+      },
+      {
+        "id": "exhaust-plume-SE",
+        "type": "capped_cone",
+        "args": {
+          "a": [0.72, 0.1, -0.72], "b": [0.72, -2.8, -0.72],
+          "r1": 0.25, "r2": 0.12
+        },
+        "material": { "hue": 0.10, "sat": 0.60, "value": 1.0, "metal": 0.0, "glow": 1.2, "kind": "translucent" }
+      },
+      {
+        "id": "exhaust-plume-SW",
+        "type": "capped_cone",
+        "args": {
+          "a": [-0.72, 0.1, -0.72], "b": [-0.72, -2.8, -0.72],
+          "r1": 0.25, "r2": 0.12
+        },
+        "material": { "hue": 0.10, "sat": 0.60, "value": 1.0, "metal": 0.0, "glow": 1.2, "kind": "translucent" }
       },
       {
         "id": "smoke-plume-1",
@@ -245,7 +416,7 @@
         "transform": {
           "translate": [1.8, 1.0, 1.8]
         },
-        "material": "matte-black"
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
       },
       {
         "id": "gantry-post-2",
@@ -256,7 +427,7 @@
         "transform": {
           "translate": [-1.8, 1.0, 1.8]
         },
-        "material": "matte-black"
+        "material": { "hue": 0.6, "sat": 0.08, "value": 0.18, "metal": 0.75, "glow": 0.0 }
       }
     ],
     "ground": {
@@ -287,13 +458,57 @@
         "strength": 0.4
       },
       "postFx": {
-        "exposure": 1.1,
-        "bloomMix": 0.42,
-        "bloomThreshold": 0.7,
+        "exposure": 1.0,
+        "bloomMix": 0.30,
+        "bloomThreshold": 0.85,
         "vignetteStrength": 0.5,
-        "lensFlareStrength": 0.32,
+        "lensFlareStrength": 0.08,
         "gamma": 2.2
       }
+    },
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 4.0,
+          "pos": [16, 3, 16],
+          "target": [0, 2, 0],
+          "fov": 50,
+          "aperture": 0.4,
+          "focalDistance": 22,
+          "ease": "smooth"
+        },
+        {
+          "duration": 5.0,
+          "pos": [7, 1.2, 8],
+          "target": [0, 2, 0],
+          "fov": 42,
+          "aperture": 0.7,
+          "focalDistance": 11,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 3.5,
+          "pos": [3, -0.2, 4.5],
+          "target": [0, 0, 0],
+          "fov": 38,
+          "aperture": 1.5,
+          "focalDistance": 5.0,
+          "shake": 0.6,
+          "ease": "smooth"
+        },
+        {
+          "duration": 5.5,
+          "pos": [24, 9, 22],
+          "target": [0, 4, 0],
+          "fov": 55,
+          "aperture": 0.3,
+          "focalDistance": 30,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
     }
   }
 }

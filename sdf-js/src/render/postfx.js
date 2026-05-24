@@ -59,6 +59,13 @@ void main() {
         continue;
       }
       vec3 col = texture2D(u_scene, vTapUV).rgb;
+      // Sanitize HDR sample — NaN/Inf in rgba16f propagates through Gaussian
+      // and produces large black blocks on canvas after upsample. Defensive:
+      // replace NaN per-channel + cap to a sane HDR ceiling.
+      if (col.r != col.r) col.r = 0.0;
+      if (col.g != col.g) col.g = 0.0;
+      if (col.b != col.b) col.b = 0.0;
+      col = clamp(col, vec3(0.0), vec3(100.0));
       // Bright pass：只让亮度超过阈值的部分通过；soft knee 防硬切
       float lum = max(max(col.r, col.g), col.b);
       float knee = max(0.0, lum - u_threshold);
@@ -97,6 +104,20 @@ uniform float u_focalDistance;
 uniform float u_focalLength;     // 镜头焦距，DoF 公式用，typical 0.15
 uniform float u_dofMaxRadius;    // CoC 上限，避免极端模糊（典型 0.05 = 屏幕宽 5%）
 uniform float u_time;            // 跨帧 jitter，避免 DoF banding
+// Sprint 2: 当前 + 上一帧 camera basis，用于 motion blur reproject
+uniform vec3  u_curCamPos;
+uniform vec3  u_curCamFwd;
+uniform vec3  u_curCamRight;
+uniform vec3  u_curCamUp;
+uniform float u_curCamFocal;
+uniform vec3  u_prevCamPos;
+uniform vec3  u_prevCamFwd;
+uniform vec3  u_prevCamRight;
+uniform vec3  u_prevCamUp;
+uniform float u_prevCamFocal;
+uniform float u_motionBlurStrength;  // 0 = off；shutter angle 0..1（0.5 = MttGz4 default）
+uniform float u_prevCamValid;        // 0 = 第一帧 skip motion blur
+uniform float u_sceneMaxDist;        // ATLAS_MAX_DIST，用于 depth → world 反推
 
 // ---- ACES filmic tonemap (Narkowicz 2015 fit, public domain) ----------------
 vec3 acesTonemap(vec3 x) {
@@ -141,41 +162,78 @@ vec2 hash22(vec3 p) {
 // Atlas 约定：depth (alpha) 是 linear distance / MAX_DIST in [0, 1]。
 // MAX_DIST 在 FLY 3D 是 200 → 实际世界单位距离 d = alpha * MAX_DIST。
 // 这里把 alpha 视为归一化深度，配 focalDistance / aperture 算 CoC。
-const float ATLAS_MAX_DIST = 200.0;
 
 float computeCoC(float depthNorm, float focalDist, float aperture, float focalLength) {
   if (aperture <= 0.0) return 0.0;
-  float dist = depthNorm * ATLAS_MAX_DIST;
+  float dist = depthNorm * u_sceneMaxDist;
   if (depthNorm >= 0.999) return 0.0; // sky 不模糊
   return abs(aperture * (focalLength * (dist - focalDist)) /
              (dist * (focalDist - focalLength)));
 }
 
-// 32-tap golden-ratio disk
+// 32-tap golden-ratio disk (DoF + motion blur 联合)
 #define DOF_TAPS 32
 
-vec3 dofSample(vec2 uv, float coc) {
-  if (coc < 0.001) return texture2D(u_scene, uv).rgb;
+// Reconstruct world position from current screen UV + linear depth using
+// the current frame's camera basis. Mirrors FLY 3D scene shader's ray
+// construction: rd = normalize(uv.x * R + uv.y * U + focal * F).
+vec3 reconstructWorldPos(vec2 uv, float depthNorm) {
+  // NDC-style: x in [-aspect, aspect], y in [-1, 1] (same as scene shader main())
+  float aspect = u_sceneRes.x / u_sceneRes.y;
+  vec2 viewUV = vec2((uv.x * 2.0 - 1.0) * aspect, uv.y * 2.0 - 1.0);
+  vec3 rd = normalize(viewUV.x * u_curCamRight + viewUV.y * u_curCamUp + u_curCamFocal * u_curCamFwd);
+  return u_curCamPos + rd * (depthNorm * u_sceneMaxDist);
+}
+
+// Project a world position through the previous frame's camera into UV.
+// If the point is behind the camera (localZ <= 0), returns (-1, -1) sentinel.
+vec2 projectToPrevUV(vec3 worldPos) {
+  vec3 offset = worldPos - u_prevCamPos;
+  float localZ = dot(offset, u_prevCamFwd);
+  if (localZ <= 0.01) return vec2(-1.0, -1.0);
+  float localX = dot(offset, u_prevCamRight);
+  float localY = dot(offset, u_prevCamUp);
+  // Inverse of viewUV = uv * 2 - 1 * (aspect, 1):
+  //   viewUV.x = (localX * focal) / localZ  → uv.x = (viewUV.x / aspect + 1) * 0.5
+  //   viewUV.y = (localY * focal) / localZ  → uv.y = (viewUV.y + 1) * 0.5
+  float aspect = u_sceneRes.x / u_sceneRes.y;
+  float vx = (localX * u_prevCamFocal) / localZ;
+  float vy = (localY * u_prevCamFocal) / localZ;
+  return vec2(vx / aspect * 0.5 + 0.5, vy * 0.5 + 0.5);
+}
+
+// Combined DoF + motion blur sample. For each of 32 taps:
+//   1. step along motion vector (uv → prevUV) by fraction in [-0.5, 0.5] * shutter
+//   2. on top of that, jitter by golden-ratio disk of radius = coc
+// MttGz4 Buffer C 同款双效循环。
+vec3 dofMotionBlurSample(vec2 uv, float coc, vec2 motionVec) {
+  if (coc < 0.001 && length(motionVec) < 0.0005) {
+    return texture2D(u_scene, uv).rgb;
+  }
   vec3 acc = vec3(0.0);
   float total = 0.0;
   float aspect = u_sceneRes.y / u_sceneRes.x;
   float fIndex = 0.0;
-  for (int i = 0; i < DOF_TAPS; i++) {
+  float f = 0.0;
+  float invTaps = 1.0 / float(DOF_TAPS);
+  for (int i = 1; i <= DOF_TAPS; i++) {
+    // Motion-blur sweep position
+    vec2 mvTap = mix(uv, uv + motionVec, f - 0.5);
+
+    // DoF disk jitter on top
     vec2 r = hash22(vec3(uv.x, uv.y, fract(u_time * 0.123 + fIndex * 1.234)));
     float theta = r.x * 6.2831853;
-    // Less-dense centre exponent 0.4 → 更像 bokeh disk
     float radius = coc * pow(r.y, 0.4);
-    vec2 tapUV = uv + vec2(sin(theta) * aspect, cos(theta)) * radius;
-    if (tapUV.x < 0.0 || tapUV.x > 1.0 || tapUV.y < 0.0 || tapUV.y > 1.0) {
-      fIndex += 1.0;
-      continue;
+    vec2 tapUV = mvTap + vec2(sin(theta) * aspect, cos(theta)) * radius;
+
+    if (tapUV.x >= 0.0 && tapUV.x <= 1.0 && tapUV.y >= 0.0 && tapUV.y <= 1.0) {
+      vec4 tap = texture2D(u_scene, tapUV);
+      float tapCoC = computeCoC(tap.a, u_focalDistance, u_aperture, u_focalLength);
+      float w = max(tapCoC, 0.001);
+      acc += tap.rgb * w;
+      total += w;
     }
-    vec4 tap = texture2D(u_scene, tapUV);
-    float tapCoC = computeCoC(tap.a, u_focalDistance, u_aperture, u_focalLength);
-    // 散景权重：跟 tapCoC 成正比（远焦区域贡献更大 bokeh 块）
-    float w = max(tapCoC, 0.0001);
-    acc += tap.rgb * w;
-    total += w;
+    f += invTaps;
     fIndex += 1.0;
   }
   return acc / max(total, 0.001);
@@ -187,15 +245,44 @@ void main() {
   float depthNorm = sceneSample.a;
   float coc = min(computeCoC(depthNorm, u_focalDistance, u_aperture, u_focalLength), u_dofMaxRadius);
 
-  vec3 col = (coc > 0.001) ? dofSample(uv, coc) : sceneSample.rgb;
+  // Sprint 2: motion blur reproject. Sky pixels (depth=1.0) get zero motion
+  // blur — they're at infinity, prev camera projection is degenerate.
+  vec2 motionVec = vec2(0.0);
+  if (u_motionBlurStrength > 0.0 && u_prevCamValid > 0.5 && depthNorm < 0.999) {
+    vec3 worldPos = reconstructWorldPos(uv, depthNorm);
+    vec2 prevUV = projectToPrevUV(worldPos);
+    if (prevUV.x >= 0.0) {
+      motionVec = (uv - prevUV) * u_motionBlurStrength;
+      // Cap motion vector to avoid wild reaches when camera makes big jumps
+      // (e.g. shot cut). 8% of screen is plenty for cinematic motion.
+      float mvLen = length(motionVec);
+      if (mvLen > 0.08) motionVec *= 0.08 / mvLen;
+    }
+  }
+
+  vec3 col = (coc > 0.001 || length(motionVec) > 0.0005)
+    ? dofMotionBlurSample(uv, coc, motionVec)
+    : sceneSample.rgb;
+  // Sanitize HDR result before exposure/bloom/flare math (NaN propagates).
+  if (col.r != col.r) col.r = 0.0;
+  if (col.g != col.g) col.g = 0.0;
+  if (col.b != col.b) col.b = 0.0;
+  col = clamp(col, vec3(0.0), vec3(100.0));
   col *= u_exposure;
 
   // Bloom mix (linear screen-space add，硬上限避免烧穿)
   vec3 bloom = texture2D(u_bloom, uv).rgb;
+  if (bloom.r != bloom.r) bloom.r = 0.0;
+  if (bloom.g != bloom.g) bloom.g = 0.0;
+  if (bloom.b != bloom.b) bloom.b = 0.0;
+  bloom = clamp(bloom, vec3(0.0), vec3(100.0));
   col = mix(col, col + bloom, u_bloomMix);
 
   // Lens flare 在 tonemap 之前加，让 flare 自然进 HDR range
   col = applyLensFlare(col, uv, u_lensFlareStrength);
+
+  // Final HDR safety: cap before tonemap so ACES gets sane input
+  col = clamp(col, vec3(0.0), vec3(100.0));
 
   // ACES tonemap → SDR
   col = acesTonemap(col);
@@ -294,6 +381,20 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
     u_focalLength: gl.getUniformLocation(compositeProgram, 'u_focalLength'),
     u_dofMaxRadius: gl.getUniformLocation(compositeProgram, 'u_dofMaxRadius'),
     u_time: gl.getUniformLocation(compositeProgram, 'u_time'),
+    // Sprint 2 motion blur uniforms
+    u_curCamPos:     gl.getUniformLocation(compositeProgram, 'u_curCamPos'),
+    u_curCamFwd:     gl.getUniformLocation(compositeProgram, 'u_curCamFwd'),
+    u_curCamRight:   gl.getUniformLocation(compositeProgram, 'u_curCamRight'),
+    u_curCamUp:      gl.getUniformLocation(compositeProgram, 'u_curCamUp'),
+    u_curCamFocal:   gl.getUniformLocation(compositeProgram, 'u_curCamFocal'),
+    u_prevCamPos:    gl.getUniformLocation(compositeProgram, 'u_prevCamPos'),
+    u_prevCamFwd:    gl.getUniformLocation(compositeProgram, 'u_prevCamFwd'),
+    u_prevCamRight:  gl.getUniformLocation(compositeProgram, 'u_prevCamRight'),
+    u_prevCamUp:     gl.getUniformLocation(compositeProgram, 'u_prevCamUp'),
+    u_prevCamFocal:  gl.getUniformLocation(compositeProgram, 'u_prevCamFocal'),
+    u_motionBlurStrength: gl.getUniformLocation(compositeProgram, 'u_motionBlurStrength'),
+    u_prevCamValid:  gl.getUniformLocation(compositeProgram, 'u_prevCamValid'),
+    u_sceneMaxDist:  gl.getUniformLocation(compositeProgram, 'u_sceneMaxDist'),
   };
 
   // ---- Bloom FBO（低分辨率 HDR；filter LINEAR 让 composite 上采样平滑）----
@@ -376,6 +477,27 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
     gl.uniform1f(compU.u_focalLength, focalLength);
     gl.uniform1f(compU.u_dofMaxRadius, dofMaxRadius);
     gl.uniform1f(compU.u_time, tSec);
+
+    // Sprint 2 motion blur uniforms (only if caller provided camera basis)
+    const motionBlur = p.motionBlurStrength ?? 0.5;
+    const sceneMaxDist = p.sceneMaxDist ?? 200.0;
+    gl.uniform1f(compU.u_motionBlurStrength, motionBlur);
+    gl.uniform1f(compU.u_sceneMaxDist, sceneMaxDist);
+    gl.uniform1f(compU.u_prevCamValid, p._prevCamValid ? 1.0 : 0.0);
+    if (p._curCamPos) {
+      gl.uniform3f(compU.u_curCamPos,   p._curCamPos[0],   p._curCamPos[1],   p._curCamPos[2]);
+      gl.uniform3f(compU.u_curCamFwd,   p._curCamFwd[0],   p._curCamFwd[1],   p._curCamFwd[2]);
+      gl.uniform3f(compU.u_curCamRight, p._curCamRight[0], p._curCamRight[1], p._curCamRight[2]);
+      gl.uniform3f(compU.u_curCamUp,    p._curCamUp[0],    p._curCamUp[1],    p._curCamUp[2]);
+      gl.uniform1f(compU.u_curCamFocal, p._curCamFov);
+    }
+    if (p._prevCamPos) {
+      gl.uniform3f(compU.u_prevCamPos,   p._prevCamPos[0],   p._prevCamPos[1],   p._prevCamPos[2]);
+      gl.uniform3f(compU.u_prevCamFwd,   p._prevCamFwd[0],   p._prevCamFwd[1],   p._prevCamFwd[2]);
+      gl.uniform3f(compU.u_prevCamRight, p._prevCamRight[0], p._prevCamRight[1], p._prevCamRight[2]);
+      gl.uniform3f(compU.u_prevCamUp,    p._prevCamUp[0],    p._prevCamUp[1],    p._prevCamUp[2]);
+      gl.uniform1f(compU.u_prevCamFocal, p._prevCamFov);
+    }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
@@ -407,13 +529,21 @@ export const DEFAULT_POSTFX = Object.freeze({
   vignetteStrength: 0.4,
   bloomMix: 0.18,
   bloomThreshold: 0.85,
-  lensFlareStrength: 0.15,
+  // Sprint 2: lens flare RGB-shift ghost was too punchy in HDR mode — the
+  // engine emissive's bloom blob projects a CMYK ghost across the frame.
+  // Default lowered from 0.15 → 0.05; cinematic flare is OPT-IN via scene.
+  lensFlareStrength: 0.05,
   gamma: 2.2,
   // DoF 默认关 — 必须 scene 显式提供 camera.aperture > 0 才开
   aperture: 0.0,
   focalDistance: 5.0,
   focalLength: 0.15,
   dofMaxRadius: 0.05,
+  // Sprint 2: motion blur shutter angle (0..1)。0.5 = MttGz4 default。
+  // 跟 camera 动 OR sequence active 才有效；静态镜头无 motion = 无 blur。
+  motionBlurStrength: 0.5,
+  // ATLAS_MAX_DIST：postfx depth unpack 必须跟 FLY 3D scene shader MAX_DIST 一致
+  sceneMaxDist: 200.0,
 });
 
 /**

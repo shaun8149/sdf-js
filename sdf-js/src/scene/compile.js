@@ -600,7 +600,30 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
 
   const k = subj.args?.k;
   const r = subj.args?.r ?? 0.05;
-  const childSdfs = children.map(c => c.sdf);
+  // 2026-05-24: for union / smoothUnion, push the group's transform onto each
+  // child BEFORE building the union. Otherwise applyTransform wraps the union
+  // AST in a translate/rotate/scale op node, which flattenUnion (in sdf3.compile)
+  // doesn't recognize → the entire union collapses into a single leaf, and all
+  // 30 children's per-leaf materials are lost → hash-palette fallback paints
+  // everything green. By pushing transforms down, the union AST stays on top
+  // where flattenUnion descends correctly and each child keeps its material.
+  // Other boolean ops (difference, intersection, chamfer, etc) are already
+  // treated as single leaves by flattenUnion, so this optimization doesn't
+  // apply — outer transform stays on the result there.
+  const hasOuterTransform = subj.transform != null || hasTransformAnim(subj.animation);
+  const isUnionLike = subj.type === 'union' || subj.type === 'smoothUnion';
+  const childSdfs = (isUnionLike && hasOuterTransform)
+    ? children.map(c => {
+        const t = applyTransform(c.sdf, subj.transform, subj.animation);
+        // applyTransform creates wrappers that drop _subjectMaterial — re-attach
+        // it from the inner child so flattenUnion finds it on the wrapper.
+        if (c.sdf._subjectMaterial !== undefined) t._subjectMaterial = c.sdf._subjectMaterial;
+        if (c.sdf._subjectPattern !== undefined)  t._subjectPattern  = c.sdf._subjectPattern;
+        return t;
+      })
+    : children.map(c => c.sdf);
+  // When transforms have been pushed down, skip the outer applyTransform below.
+  const skipOuterTransform = isUnionLike && hasOuterTransform;
   let sdf;
   if (subj.type === 'union') {
     sdf = union(...childSdfs);
@@ -650,7 +673,22 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
     throw new Error(`compile: unknown boolean op "${subj.type}"`);
   }
 
-  sdf = applyTransform(sdf, subj.transform, subj.animation);
+  if (!skipOuterTransform) {
+    sdf = applyTransform(sdf, subj.transform, subj.animation);
+  }
+  // 2026-05-24: attach group-level material/pattern. flattenUnion only descends
+  // into 'union' ops — all other BooleanGroup types (unionStairs / chamfer /
+  // round / difference / intersection / pipe / engrave / groove / tongue) are
+  // treated as single leaves. Without this, a `cathedral-plinth` with
+  // `material: 'stone'` silently dropped → hash-palette fallback → pink.
+  // Skip for union/smoothUnion where children carry their own materials
+  // (pushing a group material would shadow per-child materials).
+  if (!isUnionLike && subj.material != null) {
+    sdf._subjectMaterial = resolveMaterial(subj.material);
+  }
+  if (!isUnionLike && subj.pattern != null) {
+    sdf._subjectPattern = resolvePattern(subj.pattern);
+  }
   subjectInfos.push({ id: subj.id, region: groupRegion, sdf });
   return { sdf, region: groupRegion };
 }
@@ -845,6 +883,9 @@ function pickCamera(cam) {
     targetX: cam.targetX ?? 0,
     targetY: cam.targetY ?? 0,
     targetZ: cam.targetZ ?? 0,
+    // Sprint 1: DoF fields. Default 0 = no DoF (back-compat).
+    aperture: cam.aperture ?? 0,
+    focalDistance: cam.focalDistance ?? 0,
   };
 }
 

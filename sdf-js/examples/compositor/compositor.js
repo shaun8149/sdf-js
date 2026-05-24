@@ -544,7 +544,8 @@ function renderScenesTab() {
 
   // Wire bundled clicks
   bundledEl.querySelectorAll('.scene-card-big[data-bundled]').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();  // don't trigger the click-outside deselect below
       const demo = bundled.find(x => x.id === card.dataset.bundled);
       if (!demo) return;
       if (demo.status === 'ready') {
@@ -556,6 +557,22 @@ function renderScenesTab() {
       }
     });
   });
+
+  // 2026-05-24: click on grid background (not on a card) → clear active
+  // highlight. Visual state of the gallery becomes "nothing focused" so the
+  // user can browse without a previous selection visually anchoring them.
+  // Does NOT unload the scene — fly3d / bob renderers are unaffected.
+  const clearSelectionOnBgClick = (el) => {
+    if (!el) return;
+    el.addEventListener('click', () => {
+      if (activeDemoId == null && activeSavedId == null) return;
+      activeDemoId = null;
+      activeSavedId = null;
+      renderScenesTab();
+    });
+  };
+  clearSelectionOnBgClick(bundledEl);
+  clearSelectionOnBgClick(savedEl);
 
   // Wire saved clicks
   savedEl.querySelectorAll('.scene-card-big[data-saved]').forEach(card => {
@@ -599,6 +616,18 @@ async function loadDemoScene(demo) {
   // new render() call below will restart the loop with the new SDF.
   if (state.bobRenderer) state.bobRenderer.unmount();
   if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+  // 2026-05-24: clear stale active-scene state BEFORE awaiting fetch.
+  // Why: card click does `loadDemoScene(demo); switchToTab('text');` — the
+  // sync switchToTab triggers updateCanvasVisibility → runActiveGpuRenderer,
+  // which reads state.textLiftSdf. Without this clear, that reads the PRIOR
+  // demo's SDF and re-renders it (user sees old scene "residue" for the entire
+  // fetch + compile window). Also update activeDemoId NOW so the Scenes-tab
+  // demo gallery shows the new selection immediately instead of staying
+  // highlighted on the previous demo.
+  state.textLiftScene = null;
+  state.textLiftSdf = null;
+  state.textLiftSceneJSON = null;
+  activeDemoId = demo.id;
   try {
     const res = await fetch(`./demo-lifts/${demo.file}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -623,6 +652,7 @@ async function loadDemoScene(demo) {
 
     state.textLiftScene = compiled;
     state.textLiftSdf = renderSdf;
+    state.textLiftSceneJSON = data.sceneData;  // raw — keeps cameraSequence / defaults.postFx alive past compile
     state.textLiftSourcePrompt = data.prompt;
     state.liftMode = true;
     state.selectedHistoryId = null;
@@ -698,12 +728,12 @@ async function loadLiftSystemPrompt() {
  */
 function getActiveGpuScene() {
   if (state.activeTab === 'text' && state.liftMode) {
-    return { scene: state.textLiftScene, sdf: state.textLiftSdf };
+    return { scene: state.textLiftScene, sdf: state.textLiftSdf, rawScene: state.textLiftSceneJSON };
   }
   if (state.activeTab === 'generator') {
-    return { scene: state.genScene, sdf: state.genSdf };
+    return { scene: state.genScene, sdf: state.genSdf, rawScene: state.genSceneJSON || null };
   }
-  return { scene: null, sdf: null };
+  return { scene: null, sdf: null, rawScene: null };
 }
 
 async function callLiftLLM(originalPrompt, code2d, apiKey, model = DEFAULT_MODEL) {
@@ -1210,6 +1240,24 @@ function updateCanvasVisibility(opts = {}) {
   const newStyleBtn = $('btn-new-style');
   if (newStyleBtn) newStyleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
   if (lightPanel) lightPanel.style.display = showGpu ? 'block' : 'none';
+  // 2026-05-24: when canvas becomes hidden (e.g. switch to Scenes tab),
+  // unmount any active GPU renderer so its RAF loop stops. Without this the
+  // FLY 3D / BOB GPU keeps doing 60fps shader work on an invisible canvas
+  // (visible in the FPS counter staying high in Scenes mode). Wakeful re-mount
+  // happens automatically the next time c-gpu becomes visible.
+  // ALSO reset the bottom-left status texts + gallery selection so the user
+  // returning to Scenes sees a clean "No scene · FPS: --" state instead of
+  // stale "demo · 火箭发射 · FPS: 80" text from before they navigated away.
+  if (!showGpu) {
+    if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.bobRenderer) state.bobRenderer.unmount();
+    const fpsEl = $('fps');
+    if (fpsEl) fpsEl.textContent = 'FPS: --';
+    const sceneInfoEl = $('scene-info');
+    if (sceneInfoEl) sceneInfoEl.textContent = 'No scene';
+    activeDemoId = null;
+    activeSavedId = null;
+  }
   return showGpu ? runActiveGpuRenderer(opts) : { bytes: 0 };
 }
 
@@ -1630,7 +1678,7 @@ function ensureFly3dRenderer() {
  */
 let _lastRenderedScene = null;
 function runActiveGpuRenderer({ keepCamera = false } = {}) {
-  const { sdf, scene } = getActiveGpuScene();
+  const { sdf, scene, rawScene } = getActiveGpuScene();
   if (!sdf || !scene) return { bytes: 0 };
 
   // Scene change → clear light override so the new scene's saved lighting
@@ -1650,8 +1698,21 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // aperture+DoF). scene.defaults.postFx is optional — undefined fields fall
     // back to postfx.js DEFAULT_POSTFX so even pre-Sprint-1 scenes get the
     // baseline cinematic look without JSON changes.
+    // NOTE: `scene` is the compiled SceneData (sdf/cameraStatic/lightStatic
+    // tuples) — NOT the raw JSON. defaults.postFx + cameraSequence live on the
+    // raw sceneData JSON, accessible via rawScene.
     if (fly.setPostFx) {
-      fly.setPostFx(scene, scene.defaults && scene.defaults.camera);
+      fly.setPostFx(rawScene || {}, (rawScene && rawScene.defaults && rawScene.defaults.camera) || null);
+    }
+    // Sprint 2: cameraSequence drives the camera if present. Show timeline UI.
+    if (fly.setSequence) {
+      const seq = (rawScene && rawScene.cameraSequence) ? rawScene.cameraSequence : null;
+      fly.setSequence(seq);
+      window._lastSceneForTimeline = rawScene;  // loop toggle reads/writes seq.loop
+      // Defer UI update to next tick — timeline UI helpers haven't been
+      // function-hoisted on first compositor load. After bootstrap they
+      // exist; setTimeout(0) guarantees they're reachable.
+      setTimeout(() => { if (typeof updateTimelineUI === 'function') updateTimelineUI(); }, 0);
     }
     try {
       return fly.render(sdf);
@@ -2143,6 +2204,72 @@ $('c-gpu').addEventListener('pointerdown', () => { userTookCam = true; });
 // ----- Shared-scene URL banner handlers -----
 $('btn-save-shared')?.addEventListener('click', saveSharedScene);
 $('btn-dismiss-shared')?.addEventListener('click', dismissSharedBanner);
+
+// ----- Sprint 2: Camera sequence timeline scrubber -----
+// Show / hide + drive the playback UI for FLY 3D cameraSequence demos.
+// State machine: fly.isSequenceActive() decides visibility every loadDemoScene
+// call AND every 200ms tick (so user-pause / sequence-end states update).
+function updateTimelineUI() {
+  const bar = document.getElementById('timeline-bar');
+  if (!bar) return;
+  const fly = state.fly3dRenderer;
+  const hasSeq = state.activeRenderer === 'fly3d' && fly && fly.getSequenceDuration && fly.getSequenceDuration() > 0;
+  bar.style.display = hasSeq ? 'flex' : 'none';
+  if (!hasSeq) return;
+  const dur = fly.getSequenceDuration();
+  const t = Math.min(fly.getSequenceTime(), dur);
+  const scrubber = document.getElementById('timeline-scrubber');
+  if (scrubber && document.activeElement !== scrubber) {
+    scrubber.value = String(Math.round((t / dur) * 1000));
+  }
+  const fmt = s => {
+    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
+  const timeEl = document.getElementById('timeline-time');
+  if (timeEl) timeEl.textContent = `${fmt(t)} / ${fmt(dur)}`;
+}
+// Periodic tick to keep time display + scrubber thumb in sync with playback.
+setInterval(updateTimelineUI, 200);
+
+document.getElementById('timeline-play')?.addEventListener('click', () => {
+  const fly = state.fly3dRenderer;
+  if (!fly || !fly.isSequenceActive) return;
+  // Toggle pause. setSequencePaused inverts internal flag.
+  const wasPlaying = fly.isSequenceActive();
+  fly.setSequencePaused(wasPlaying);
+  const btn = document.getElementById('timeline-play');
+  if (btn) btn.textContent = wasPlaying ? '▶' : '⏸';
+});
+
+document.getElementById('timeline-scrubber')?.addEventListener('input', (e) => {
+  const fly = state.fly3dRenderer;
+  if (!fly || !fly.setSequenceTime) return;
+  const dur = fly.getSequenceDuration();
+  const t = (Number(e.target.value) / 1000) * dur;
+  fly.setSequenceTime(t);
+});
+
+document.getElementById('timeline-loop')?.addEventListener('click', (e) => {
+  // Toggle loop in the active scene's cameraSequence object directly.
+  // (Visual-only — the evaluator reads seq.loop on each frame.)
+  const lastScene = window._lastSceneForTimeline;
+  if (!lastScene || !lastScene.cameraSequence) return;
+  lastScene.cameraSequence.loop = !lastScene.cameraSequence.loop;
+  e.currentTarget.classList.toggle('active', lastScene.cameraSequence.loop);
+});
+
+// Space-bar play/pause shortcut when fly3d active + sequence present
+window.addEventListener('keydown', (e) => {
+  if (e.code !== 'Space') return;
+  if (document.activeElement?.tagName === 'INPUT'
+      || document.activeElement?.tagName === 'TEXTAREA') return;
+  const fly = state.fly3dRenderer;
+  if (!fly || !fly.getSequenceDuration || fly.getSequenceDuration() === 0) return;
+  if (state.activeRenderer !== 'fly3d') return;
+  e.preventDefault();
+  document.getElementById('timeline-play')?.click();
+});
 
 // ----- Fullscreen toggle (BOB GPU + FLY 3D) -----
 function toggleFullscreen() {

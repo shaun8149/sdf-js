@@ -403,6 +403,12 @@ export function validate(data) {
     if (data.defaults.postFx != null) validatePostFx(data.defaults.postFx, errors, warnings);
   }
 
+  // Sprint 2 (2026-05-24): cameraSequence is top-level (parallel to subjects),
+  // not under defaults — it OVERRIDES defaults.camera at evaluation time.
+  if (data.cameraSequence != null) {
+    validateCameraSequence(data.cameraSequence, errors, warnings);
+  }
+
   // Rule 19, 20: source field
   if (data.source != null) validateSource(data.source, errors, warnings);
 
@@ -805,6 +811,66 @@ function validatePostFx(pfx, errors, warnings) {
   if (typeof pfx.vignetteStrength === 'number' && (pfx.vignetteStrength < 0 || pfx.vignetteStrength > 1)) {
     warnings.push(`defaults.postFx.vignetteStrength ${pfx.vignetteStrength} outside [0, 1]`);
   }
+}
+
+// =============================================================================
+// CameraSequenceSpec (Sprint 2) — top-level cameraSequence
+// -----------------------------------------------------------------------------
+// Multi-shot timeline that overrides defaults.camera during playback. shot.ease
+// 'cut' is the default transition between shots (hard cut); ease='blend' opts
+// into smoothly interpolating from the prev shot's end state.
+// =============================================================================
+const SHOT_EASES = new Set(['smooth', 'linear']);
+const SHOT_TRANSITIONS = new Set(['cut', 'blend']);
+
+function validateCameraSequence(seq, errors, warnings) {
+  if (typeof seq !== 'object' || seq == null) {
+    errors.push('cameraSequence: must be an object');
+    return;
+  }
+  if (!Array.isArray(seq.shots) || seq.shots.length === 0) {
+    errors.push('cameraSequence.shots: must be a non-empty array');
+    return;
+  }
+  if (seq.loop != null && typeof seq.loop !== 'boolean') {
+    errors.push('cameraSequence.loop: must be a boolean if provided');
+  }
+  seq.shots.forEach((shot, i) => {
+    const tag = `cameraSequence.shots[${i}]`;
+    if (typeof shot !== 'object' || shot == null) {
+      errors.push(`${tag}: must be an object`);
+      return;
+    }
+    if (typeof shot.duration !== 'number' || shot.duration <= 0) {
+      errors.push(`${tag}.duration: must be a positive number (seconds)`);
+    }
+    if (!Array.isArray(shot.pos) || shot.pos.length !== 3 || !shot.pos.every(n => typeof n === 'number')) {
+      errors.push(`${tag}.pos: must be [x, y, z] numbers`);
+    }
+    if (!Array.isArray(shot.target) || shot.target.length !== 3 || !shot.target.every(n => typeof n === 'number')) {
+      errors.push(`${tag}.target: must be [x, y, z] numbers`);
+    }
+    if (typeof shot.fov !== 'number') {
+      errors.push(`${tag}.fov: must be a number (degrees)`);
+    } else if (shot.fov < 5 || shot.fov > 90) {
+      warnings.push(`${tag}.fov ${shot.fov} outside typical [5, 90]`);
+    }
+    if (shot.aperture != null && typeof shot.aperture !== 'number') {
+      errors.push(`${tag}.aperture: must be a number if provided`);
+    }
+    if (shot.focalDistance != null && typeof shot.focalDistance !== 'number') {
+      errors.push(`${tag}.focalDistance: must be a number if provided`);
+    }
+    if (shot.ease != null && !SHOT_EASES.has(shot.ease)) {
+      errors.push(`${tag}.ease: must be one of ${[...SHOT_EASES].join(' | ')}`);
+    }
+    if (shot.transition != null && !SHOT_TRANSITIONS.has(shot.transition)) {
+      errors.push(`${tag}.transition: must be one of ${[...SHOT_TRANSITIONS].join(' | ')}`);
+    }
+    if (shot.shake != null && (typeof shot.shake !== 'number' || shot.shake < 0)) {
+      errors.push(`${tag}.shake: must be a non-negative number`);
+    }
+  });
 }
 
 // =============================================================================

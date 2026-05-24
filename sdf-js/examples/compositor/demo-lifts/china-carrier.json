@@ -1264,6 +1264,50 @@
         "mode": "darken",
         "strength": 0.45
       }
+    },
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 5.0,
+          "pos": [110, 18, 110],
+          "target": [0, 3, 0],
+          "fov": 45,
+          "aperture": 0.4,
+          "focalDistance": 150,
+          "ease": "smooth"
+        },
+        {
+          "duration": 5.5,
+          "pos": [55, 14, 65],
+          "target": [0, 5, -10],
+          "fov": 50,
+          "aperture": 0.55,
+          "focalDistance": 85,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 4.0,
+          "pos": [18, 2.5, 45],
+          "target": [0, 8, -15],
+          "fov": 42,
+          "aperture": 0.8,
+          "focalDistance": 50,
+          "shake": 0.25,
+          "ease": "smooth"
+        },
+        {
+          "duration": 5.5,
+          "pos": [85, 45, 85],
+          "target": [0, 5, 0],
+          "fov": 55,
+          "aperture": 0.3,
+          "focalDistance": 130,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
     }
   },
   "meta": {
