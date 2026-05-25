@@ -211,6 +211,9 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     if (gl) gl.getExtension('OES_standard_derivatives');
   }
   if (!gl) throw new Error('[blueprint] WebGL not supported');
+  // Sprint 12: enable LINEAR filtering for RGBA32F (Rune heightmap sampler).
+  // Idempotent — if FLY 3D already enabled it on the shared context, no-op.
+  if (gl.getExtension) gl.getExtension('OES_texture_float_linear');
 
   // Shared full-screen quad VBO + vertex shader (compiled once).
   const vbuf = gl.createBuffer();
@@ -277,11 +280,16 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     program = entry.prog;
     gl.useProgram(program);
     uniformsCache = {};
-    for (const name of ['u_resolution', 'u_modelCenter', 'u_modelExtent', 'u_lightPos', 'u_time']) {
+    for (const name of ['u_resolution', 'u_modelCenter', 'u_modelExtent', 'u_lightPos', 'u_time',
+                        'u_heightmap', 'u_runeActive']) {  // Sprint 12 Rune erosion
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
     return fragSource.length;
   }
+
+  // Sprint 12 Rune erosion heightmap. Same pipeline as flyLambert.setRuneHeightmap.
+  let runeHeightmapTex = null;
+  let runeHeightmapW = 0, runeHeightmapH = 0;
 
   function lightFromSpherical(azim, alt, dist) {
     return [
@@ -312,6 +320,15 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
     if (uniformsCache.u_time != null) {
       gl.uniform1f(uniformsCache.u_time, (performance.now() - startTime) / 1000);
+    }
+    // Sprint 12: bind Rune heightmap if scene has terrain-eroded-rune.
+    if (runeHeightmapTex != null && uniformsCache.u_heightmap != null) {
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+      gl.uniform1i(uniformsCache.u_heightmap, 1);
+    }
+    if (uniformsCache.u_runeActive != null) {
+      gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);
     }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -357,6 +374,35 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     },
     canRender(sdf) { return canCompileSDF3(sdf); },
+    // Sprint 12 Rune erosion: upload CPU-baked heightmap from compile.js as
+    // a WebGL2 RGBA32F texture for sdTerrainErodedRune sampling. null clears.
+    setRuneHeightmap(baked) {
+      if (!baked) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = null;
+        runeHeightmapW = 0; runeHeightmapH = 0;
+        return;
+      }
+      const { data, width, height } = baked;
+      if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
+        throw new Error(`[blueprint] setRuneHeightmap: bad data shape ${data?.length} vs ${width*height*4}`);
+      }
+      if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, width, height, 0, gl.RGBA, gl.FLOAT, data);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        runeHeightmapW = width;
+        runeHeightmapH = height;
+      } else {
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, gl.FLOAT, data);
+      }
+    },
     /**
      * Set model bbox so the 4 ortho views frame the scene correctly. Compositor
      * derives these from scene.cameraStatic (targetX/Y/Z + distance).

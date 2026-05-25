@@ -3,42 +3,46 @@
     "demoId": "forest-meteors",
     "version": "v3.7",
     "model": "claude-sonnet-4-5",
-    "elapsed": "43.2s",
+    "elapsed": "53.1s",
     "tokens": {
-      "input": 42406,
-      "output": 3815
+      "input": 21387,
+      "output": 5125
     },
-    "costUSD": "0.1844",
+    "costUSD": "0.1410",
     "subjectCount": 37,
-    "newAtomsUsedCount": 18,
+    "newAtomsUsedCount": 16,
     "newAtomsUsed": [
       [
         "star",
         15
       ],
       [
-        "bird-silhouette",
-        3
+        "moon",
+        1
       ]
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 14,
+    "materialUsageCount": 36,
     "patternUsageCount": 0,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
       "count": 34,
-      "min": -28,
-      "max": 62,
-      "range": 90,
-      "stdev": 28.57473658556201
+      "min": -35,
+      "max": 32,
+      "range": 67,
+      "stdev": 19.401519578056668
     },
-    "v30AtomsUsedCount": 3,
+    "v30AtomsUsedCount": 5,
     "v30AtomsUsed": [
       [
         "bush",
         3
+      ],
+      [
+        "rock-boulder",
+        2
       ]
     ],
     "v32AtomsUsedCount": 10,
@@ -59,12 +63,12 @@
     "materialKindsUsed": {
       "sea": 0,
       "mountain": 0,
-      "emissive": 0,
-      "translucent": 6
+      "emissive": 3,
+      "translucent": 7
     },
     "cinematic": {
-      "postFx": 0,
-      "aperture": 0,
+      "postFx": 1,
+      "aperture": 1,
       "volumeCount": 0,
       "flameVols": 0,
       "smokeVols": 0,
@@ -81,284 +85,325 @@
       "sceneStateKeys": 0
     },
     "typeCounts": {
-      "cone": 5,
       "stylized-tree": 6,
+      "cone": 5,
       "grass-field": 1,
       "rep": 1,
       "bush": 3,
+      "rock-boulder": 2,
       "meteor-streak": 3,
       "star": 15,
-      "bird-silhouette": 3
+      "moon": 1
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Forest Meteor Shower at Twilight"
+    "sceneName": "树·山·花·流星 (Tree, Mountains, Flowers, Meteors)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Forest Meteor Shower at Twilight",
+    "name": "树·山·花·流星 (Tree, Mountains, Flowers, Meteors)",
     "source": {
       "format": "llm-lift",
       "prompt": "树·山·花·流星",
-      "from2dCode": "2D placeholder — main signal is 3D scene"
+      "from2dCode": "2D placeholder — cinematic nature scene with tree, mountains, flowers, meteors"
     },
     "subjects": [
-      {
-        "id": "mtn-far-left",
-        "type": "cone",
-        "args": {
-          "height": 12,
-          "baseRadius": 10
-        },
-        "transform": {
-          "translate": [
-            -38,
-            6,
-            60
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.07,
-          "value": 0.8,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mtn-left",
-        "type": "cone",
-        "args": {
-          "height": 14,
-          "baseRadius": 11
-        },
-        "transform": {
-          "translate": [
-            -22,
-            7,
-            55
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.06,
-          "value": 0.88,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mtn-center-back",
-        "type": "cone",
-        "args": {
-          "height": 22,
-          "baseRadius": 16
-        },
-        "transform": {
-          "translate": [
-            -3,
-            11,
-            62
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.92,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mtn-center",
-        "type": "cone",
-        "args": {
-          "height": 16,
-          "baseRadius": 12
-        },
-        "transform": {
-          "translate": [
-            12,
-            8,
-            50
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.85,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mtn-right",
-        "type": "cone",
-        "args": {
-          "height": 18,
-          "baseRadius": 13
-        },
-        "transform": {
-          "translate": [
-            30,
-            9,
-            58
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.06,
-          "value": 0.88,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
       {
         "id": "hero-tree",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 5.5,
-          "trunkRad": 0.42,
+          "trunkLen": 6.5,
+          "trunkRad": 0.5,
           "leafSize": 0.2,
           "windK": 0.15
         },
         "transform": {
           "translate": [
-            5,
+            -3.5,
             0,
-            10
+            2
+          ],
+          "rotate": [
+            0,
+            0.3,
+            0
           ]
         },
         "material": {
-          "hue": 0.02,
-          "sat": 0.8,
-          "value": 0.5,
+          "hue": 0.04,
+          "sat": 0.88,
+          "value": 0.95,
           "metal": 0,
           "glow": 0,
           "kind": "translucent"
         }
       },
       {
-        "id": "back-tree-1",
+        "id": "tree-mid-1",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 5,
+          "trunkRad": 0.4,
+          "leafSize": 0.16,
+          "windK": 0.12
+        },
+        "transform": {
+          "translate": [
+            4,
+            0,
+            -1.5
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.85,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "tree-mid-2",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 4.5,
+          "trunkRad": 0.35,
+          "leafSize": 0.14,
+          "windK": 0.1
+        },
+        "transform": {
+          "translate": [
+            1,
+            0,
+            -3
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.82,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "tree-back-1",
         "type": "stylized-tree",
         "args": {
           "trunkLen": 3.8,
-          "trunkRad": 0.26,
-          "leafSize": 0.15,
-          "windK": 0.1
+          "trunkRad": 0.3,
+          "leafSize": 0.12,
+          "windK": 0.08
         },
         "transform": {
           "translate": [
-            -14,
+            -6,
             0,
-            28
+            -5.5
+          ],
+          "rotate": [
+            0,
+            0.2,
+            0
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.55,
-          "value": 0.42,
+          "hue": 0.02,
+          "sat": 0.8,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0,
           "kind": "translucent"
         }
       },
       {
-        "id": "back-tree-2",
+        "id": "tree-back-2",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 2.6,
-          "trunkRad": 0.2,
-          "leafSize": 0.13,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            -7,
-            0,
-            34
-          ]
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.5,
-          "value": 0.38,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-3",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 4.2,
+          "trunkLen": 3.5,
           "trunkRad": 0.28,
-          "leafSize": 0.15,
-          "windK": 0.1
+          "leafSize": 0.11,
+          "windK": 0.08
         },
         "transform": {
           "translate": [
-            16,
+            7.5,
             0,
-            30
+            -6
+          ],
+          "rotate": [
+            0,
+            -0.5,
+            0
           ]
         },
         "material": {
-          "hue": 0.27,
-          "sat": 0.58,
+          "hue": 0.06,
+          "sat": 0.78,
+          "value": 0.82,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "tree-back-3",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 3.2,
+          "trunkRad": 0.26,
+          "leafSize": 0.1,
+          "windK": 0.07
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            0,
+            -7
+          ],
+          "rotate": [
+            0,
+            0.8,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.76,
+          "value": 0.8,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "mountain-left",
+        "type": "cone",
+        "args": {
+          "height": 8,
+          "baseRadius": 5.5
+        },
+        "transform": {
+          "translate": [
+            -12,
+            0,
+            -18
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.25,
           "value": 0.45,
-          "kind": "translucent"
+          "metal": 0,
+          "glow": 0
         }
       },
       {
-        "id": "back-tree-4",
-        "type": "stylized-tree",
+        "id": "mountain-center",
+        "type": "cone",
         "args": {
-          "trunkLen": 2.9,
-          "trunkRad": 0.22,
-          "leafSize": 0.13,
-          "windK": 0.1
+          "height": 12,
+          "baseRadius": 7
         },
         "transform": {
           "translate": [
-            26,
             0,
-            24
+            0,
+            -22
           ]
         },
         "material": {
-          "hue": 0.3,
-          "sat": 0.55,
+          "hue": 0.58,
+          "sat": 0.28,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-right",
+        "type": "cone",
+        "args": {
+          "height": 9.5,
+          "baseRadius": 6
+        },
+        "transform": {
+          "translate": [
+            14,
+            0,
+            -20
+          ]
+        },
+        "material": {
+          "hue": 0.62,
+          "sat": 0.22,
           "value": 0.42,
-          "kind": "translucent"
+          "metal": 0,
+          "glow": 0
         }
       },
       {
-        "id": "back-tree-5",
-        "type": "stylized-tree",
+        "id": "mountain-far-left",
+        "type": "cone",
         "args": {
-          "trunkLen": 3.3,
-          "trunkRad": 0.23,
-          "leafSize": 0.13,
-          "windK": 0.1
+          "height": 6.5,
+          "baseRadius": 4.5
         },
         "transform": {
           "translate": [
-            -22,
+            -20,
             0,
-            36
+            -28
           ]
         },
         "material": {
-          "hue": 0.26,
-          "sat": 0.6,
-          "value": 0.4,
-          "kind": "translucent"
+          "hue": 0.59,
+          "sat": 0.18,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
-        "id": "grass-mat",
+        "id": "mountain-far-right",
+        "type": "cone",
+        "args": {
+          "height": 7,
+          "baseRadius": 5
+        },
+        "transform": {
+          "translate": [
+            22,
+            0,
+            -30
+          ]
+        },
+        "material": {
+          "hue": 0.61,
+          "sat": 0.2,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "grass-ground",
         "type": "grass-field",
         "args": {
-          "bladeHeight": 0.55,
-          "density": 0.11
+          "bladeHeight": 0.35,
+          "density": 0.12
         },
         "transform": {
           "translate": [
@@ -366,41 +411,46 @@
             0,
             0
           ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.68,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
         }
       },
       {
-        "id": "flower-field",
+        "id": "flower-meadow",
         "type": "rep",
         "args": {
           "period": [
-            1.1,
+            1.2,
             0,
-            1.1
-          ],
-          "count": [
-            10,
-            0,
-            9
+            1.2
           ]
         },
         "source": {
-          "id": "flower-source",
           "type": "forest-flower",
           "args": {
-            "stemH": 0.55,
-            "bloomR": 0.16
+            "stemH": 0.45,
+            "bloomR": 0.08
           },
           "material": {
-            "hue": 0.99,
+            "hue": 0.92,
             "sat": 0.88,
-            "value": 0.78
-          }
+            "value": 0.95,
+            "metal": 0,
+            "glow": 0
+          },
+          "id": "subjects_12_-source"
         },
         "transform": {
           "translate": [
-            -3,
             0,
-            8
+            0,
+            0
           ]
         }
       },
@@ -412,15 +462,17 @@
         },
         "transform": {
           "translate": [
-            -2.5,
+            -5.5,
             0,
-            12
+            1.5
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.68,
-          "value": 0.42
+          "hue": 0.32,
+          "sat": 0.72,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
@@ -431,34 +483,90 @@
         },
         "transform": {
           "translate": [
-            8,
+            5,
             0,
-            14
+            0.8
           ]
         },
         "material": {
-          "hue": 0.27,
+          "hue": 0.3,
           "sat": 0.7,
-          "value": 0.4
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
         "id": "bush-3",
         "type": "bush",
         "args": {
-          "radius": 0.3
+          "radius": 0.25
         },
         "transform": {
           "translate": [
-            -10,
+            2.5,
             0,
-            18
+            -2
           ]
         },
         "material": {
-          "hue": 0.29,
-          "sat": 0.65,
-          "value": 0.44
+          "hue": 0.31,
+          "sat": 0.68,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rock-1",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.8
+        },
+        "transform": {
+          "translate": [
+            -7,
+            0,
+            -1
+          ],
+          "rotate": [
+            0,
+            0.7,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rock-2",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 0.6
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            0,
+            -1.5
+          ],
+          "rotate": [
+            0,
+            -0.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.09,
+          "sat": 0.18,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
@@ -466,19 +574,27 @@
         "type": "meteor-streak",
         "args": {
           "origin": [
-            -22,
-            24,
-            35
+            -18,
+            22,
+            28
           ],
           "velocity": [
             4,
             -2.8,
-            0.3
+            0.6
           ],
           "trailLen": 1.8,
           "period": 7,
           "activeFrac": 0.5,
           "phase": 0
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.2,
+          "value": 1,
+          "metal": 0,
+          "glow": 3.5,
+          "kind": "emissive"
         }
       },
       {
@@ -486,19 +602,27 @@
         "type": "meteor-streak",
         "args": {
           "origin": [
-            -14,
-            28,
-            27
+            15,
+            24,
+            30
           ],
           "velocity": [
-            3.2,
-            -2.4,
-            0.6
+            3.8,
+            -3,
+            0.4
           ],
-          "trailLen": 1.4,
+          "trailLen": 1.6,
           "period": 7,
-          "activeFrac": 0.45,
-          "phase": 2.6
+          "activeFrac": 0.5,
+          "phase": 2.5
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.18,
+          "value": 1,
+          "metal": 0,
+          "glow": 3.2,
+          "kind": "emissive"
         }
       },
       {
@@ -506,339 +630,415 @@
         "type": "meteor-streak",
         "args": {
           "origin": [
-            -28,
-            20,
-            40
+            0,
+            26,
+            32
           ],
           "velocity": [
-            5,
-            -1.8,
-            -0.8
+            3.5,
+            -2.5,
+            0.5
           ],
-          "trailLen": 2,
+          "trailLen": 1.5,
           "period": 7,
-          "activeFrac": 0.55,
-          "phase": 4.8
+          "activeFrac": 0.5,
+          "phase": 5
+        },
+        "material": {
+          "hue": 0.09,
+          "sat": 0.22,
+          "value": 1,
+          "metal": 0,
+          "glow": 3,
+          "kind": "emissive"
         }
       },
       {
         "id": "star-1",
         "type": "star",
         "args": {
-          "radius": 0.04
+          "radius": 0.08,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -12,
+            -25,
             18,
-            -15
+            15
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.15,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.5
+        }
       },
       {
         "id": "star-2",
         "type": "star",
         "args": {
-          "radius": 0.05
+          "radius": 0.07,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -6,
             22,
-            -18
+            20,
+            18
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.16,
+          "sat": 0.12,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.3
+        }
       },
       {
         "id": "star-3",
         "type": "star",
         "args": {
-          "radius": 0.035
+          "radius": 0.09,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            2,
-            20,
-            -20
+            -10,
+            22,
+            25
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.14,
+          "sat": 0.08,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.8
+        }
       },
       {
         "id": "star-4",
         "type": "star",
         "args": {
-          "radius": 0.045
+          "radius": 0.06,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            10,
+            18,
             24,
-            -16
+            22
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.17,
+          "sat": 0.14,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-5",
         "type": "star",
         "args": {
-          "radius": 0.04
+          "radius": 0.08,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            18,
-            19,
-            -22
+            5,
+            26,
+            28
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.15,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.6
+        }
       },
       {
         "id": "star-6",
         "type": "star",
         "args": {
-          "radius": 0.038
+          "radius": 0.07,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -18,
-            16,
-            -25
+            -30,
+            21,
+            20
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.16,
+          "sat": 0.11,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.4
+        }
       },
       {
         "id": "star-7",
         "type": "star",
         "args": {
-          "radius": 0.042
+          "radius": 0.09,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            24,
-            17,
-            -28
+            28,
+            23,
+            24
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.14,
+          "sat": 0.09,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.7
+        }
       },
       {
         "id": "star-8",
         "type": "star",
         "args": {
-          "radius": 0.036
+          "radius": 0.06,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -3,
+            -15,
             25,
-            -14
+            30
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.17,
+          "sat": 0.13,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.1
+        }
       },
       {
         "id": "star-9",
         "type": "star",
         "args": {
-          "radius": 0.044
+          "radius": 0.08,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            14,
-            21,
-            -19
+            12,
+            27,
+            26
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.15,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.5
+        }
       },
       {
         "id": "star-10",
         "type": "star",
         "args": {
-          "radius": 0.04
+          "radius": 0.07,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -20,
-            23,
-            -17
+            -8,
+            19,
+            32
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.16,
+          "sat": 0.12,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.3
+        }
       },
       {
         "id": "star-11",
         "type": "star",
         "args": {
-          "radius": 0.037
+          "radius": 0.09,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            8,
-            18,
-            -24
+            25,
+            28,
+            29
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.14,
+          "sat": 0.08,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.8
+        }
       },
       {
         "id": "star-12",
         "type": "star",
         "args": {
-          "radius": 0.043
+          "radius": 0.06,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -8,
-            20,
-            -21
+            -20,
+            22,
+            27
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.17,
+          "sat": 0.14,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.2
+        }
       },
       {
         "id": "star-13",
         "type": "star",
         "args": {
-          "radius": 0.041
+          "radius": 0.08,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            20,
-            26,
-            -15
+            8,
+            24,
+            31
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.15,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.6
+        }
       },
       {
         "id": "star-14",
         "type": "star",
         "args": {
-          "radius": 0.039
+          "radius": 0.07,
+          "shape": "octahedron"
         },
         "transform": {
           "translate": [
-            -14,
-            19,
-            -23
+            -28,
+            26,
+            23
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.16,
+          "sat": 0.11,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.4
+        }
       },
       {
         "id": "star-15",
         "type": "star",
         "args": {
-          "radius": 0.046
+          "radius": 0.09,
+          "shape": "sphere"
         },
         "transform": {
           "translate": [
-            4,
-            23,
-            -26
+            20,
+            29,
+            25
           ]
         },
-        "region": "star"
+        "material": {
+          "hue": 0.14,
+          "sat": 0.09,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.7
+        }
       },
       {
-        "id": "bird-1",
-        "type": "bird-silhouette",
+        "id": "moon",
+        "type": "moon",
         "args": {
-          "bodyLength": 0.18,
-          "wingSpan": 0.52
+          "radius": 2
         },
         "transform": {
           "translate": [
-            -8,
-            14,
-            -8
-          ],
-          "rotate": [
-            0,
-            0.4,
-            0
+            -18,
+            15,
+            -35
           ]
         },
-        "region": "bird"
-      },
-      {
-        "id": "bird-2",
-        "type": "bird-silhouette",
-        "args": {
-          "bodyLength": 0.16,
-          "wingSpan": 0.48
-        },
-        "transform": {
-          "translate": [
-            12,
-            16,
-            -10
-          ],
-          "rotate": [
-            0,
-            -0.3,
-            0
-          ]
-        },
-        "region": "bird"
-      },
-      {
-        "id": "bird-3",
-        "type": "bird-silhouette",
-        "args": {
-          "bodyLength": 0.17,
-          "wingSpan": 0.5
-        },
-        "transform": {
-          "translate": [
-            -4,
-            13,
-            -12
-          ],
-          "rotate": [
-            0,
-            0.2,
-            0
-          ]
-        },
-        "region": "bird"
+        "material": {
+          "hue": 0.12,
+          "sat": 0.08,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 1.8
+        }
       }
     ],
     "ground": {
       "y": 0,
-      "region": "ground",
-      "material": {
-        "hue": 0.3,
-        "sat": 0.55,
-        "value": 0.3
-      }
+      "region": "grass"
     },
     "defaults": {
       "camera": {
-        "yaw": -0.18,
-        "pitch": 0.08,
-        "distance": 20,
-        "focal": 1.5,
-        "targetX": 2,
-        "targetY": 4.5,
-        "targetZ": 20
+        "yaw": 0.15,
+        "pitch": 0.18,
+        "distance": 14,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 3.5,
+        "targetZ": -2,
+        "aperture": 0.8,
+        "focalDistance": 14
       },
       "light": {
-        "azimuth": 0.55,
-        "altitude": 0.22,
-        "distance": 90,
-        "intensity": 1.25
+        "azimuth": -0.8,
+        "altitude": 0.4,
+        "distance": 35,
+        "intensity": 0.85
       },
       "shadow": {
-        "enabled": false,
-        "mode": "channelSwap",
-        "strength": 0
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.35
+      },
+      "postFx": {
+        "exposure": 1.1,
+        "vignetteStrength": 0.5,
+        "bloomMix": 0.28,
+        "bloomThreshold": 0.8,
+        "lensFlareStrength": 0.12,
+        "motionBlurStrength": 0.5
       }
     }
   }

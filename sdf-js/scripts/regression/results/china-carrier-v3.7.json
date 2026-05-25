@@ -3,13 +3,13 @@
     "demoId": "china-carrier",
     "version": "v3.7",
     "model": "claude-sonnet-4-5",
-    "elapsed": "59.9s",
+    "elapsed": "65.5s",
     "tokens": {
-      "input": 46337,
-      "output": 5430
+      "input": 25318,
+      "output": 5986
     },
-    "costUSD": "0.2205",
-    "subjectCount": 46,
+    "costUSD": "0.1657",
+    "subjectCount": 49,
     "newAtomsUsedCount": 3,
     "newAtomsUsed": [
       [
@@ -19,23 +19,32 @@
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 31,
-    "patternUsageCount": 3,
-    "variantsUsedCount": 0,
-    "variantsUsed": [],
+    "materialUsageCount": 45,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 2,
+    "variantsUsed": [
+      [
+        "unionRound",
+        1
+      ],
+      [
+        "unionChamfer",
+        1
+      ]
+    ],
     "zSpread": {
-      "count": 42,
-      "min": -6,
-      "max": 3.2,
-      "range": 9.2,
-      "stdev": 2.054528665789006
+      "count": 46,
+      "min": -4,
+      "max": 5,
+      "range": 9,
+      "stdev": 1.6241362980229728
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
     "v32AtomsUsedCount": 0,
     "v32AtomsUsed": [],
     "materialKindsUsed": {
-      "sea": 1,
+      "sea": 0,
       "mountain": 0,
       "emissive": 0,
       "translucent": 0
@@ -59,90 +68,61 @@
       "sceneStateKeys": 0
     },
     "typeCounts": {
-      "waves": 1,
-      "box": 11,
-      "pyramid": 2,
+      "box": 17,
+      "pyramid": 13,
+      "unionRound": 1,
       "rounded_box": 3,
+      "unionChamfer": 1,
       "cylinder": 2,
       "capsule": 1,
-      "sphere": 5,
-      "union": 3,
+      "sphere": 4,
       "ellipsoid": 3,
-      "tri_prism": 12,
+      "octahedron": 1,
       "bird-silhouette": 3
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Chinese Aircraft Carrier — Liaoning/Shandong Type"
+    "sceneName": "Chinese Aircraft Carrier Liaoning"
   },
   "sceneData": {
     "v": 1,
-    "name": "Chinese Aircraft Carrier — Liaoning/Shandong Type",
+    "name": "Chinese Aircraft Carrier Liaoning",
     "source": {
       "format": "llm-lift",
       "prompt": "一艘中国的航空母舰",
-      "from2dCode": "Carrier with ski-jump bow, Type 346 radar, J-15 fighters on deck, five-star flag"
+      "from2dCode": "Side-view carrier with ski-jump bow, island superstructure with Type 346 phased-array radar, 3× J-15 fighters on deck, red waterline stripe, five-star flag"
     },
     "subjects": [
-      {
-        "id": "sea-surface",
-        "type": "waves",
-        "args": {
-          "freq": 3.5,
-          "amp": 0.22,
-          "angle": 0.4,
-          "speed": 0.9
-        },
-        "transform": {
-          "translate": [
-            0,
-            -1.8,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.58,
-          "sat": 0.68,
-          "value": 0.42,
-          "metal": 0,
-          "glow": 0,
-          "kind": "sea"
-        }
-      },
       {
         "id": "hull-main",
         "type": "box",
         "args": {
           "dims": [
             18,
-            3.5,
-            4.2
+            3.2,
+            3.6
           ]
         },
         "transform": {
           "translate": [
             0,
-            -0.25,
+            -0.4,
             0
           ]
         },
-        "material": "matte-black",
-        "pattern": {
-          "kind": "cells",
-          "scale": 3,
-          "strength": 0.15
-        }
+        "region": "hull",
+        "material": "silver"
       },
       {
         "id": "hull-bow",
         "type": "pyramid",
         "args": {
-          "height": 2.8
+          "height": 1.8
         },
         "transform": {
           "translate": [
             9.5,
-            -0.25,
+            -0.4,
             0
           ],
           "rotate": [
@@ -153,31 +133,53 @@
           "scale": [
             1.4,
             1,
-            2.1
+            1.8
           ]
         },
-        "material": "matte-black"
+        "region": "hull",
+        "material": "silver"
+      },
+      {
+        "id": "hull-stern",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.2,
+            3,
+            3.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -9.6,
+            -0.4,
+            0
+          ]
+        },
+        "region": "hull",
+        "material": "silver"
       },
       {
         "id": "waterline-stripe",
         "type": "box",
         "args": {
           "dims": [
-            18.5,
-            0.28,
-            4.3
+            19.5,
+            0.25,
+            3.8
           ]
         },
         "transform": {
           "translate": [
             0,
-            -1.65,
+            -1.85,
             0
           ]
         },
+        "region": "hull",
         "material": {
           "hue": 0,
-          "sat": 0.88,
+          "sat": 0.85,
           "value": 0.7,
           "metal": 0,
           "glow": 0
@@ -188,77 +190,151 @@
         "type": "box",
         "args": {
           "dims": [
-            18.8,
-            0.35,
-            5.8
+            18.5,
+            0.4,
+            4.2
           ]
         },
         "transform": {
           "translate": [
-            0,
-            1.5,
+            -0.3,
+            1.2,
             0
           ]
         },
+        "region": "deck",
         "material": "stone",
         "pattern": {
-          "kind": "hex",
-          "scale": 4,
-          "strength": 0.25
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.3
         }
       },
       {
         "id": "ski-jump-ramp",
-        "type": "pyramid",
+        "type": "unionRound",
         "args": {
-          "height": 2.2
+          "r": 0.15
         },
-        "transform": {
-          "translate": [
-            10,
-            1.3,
-            0
-          ],
-          "rotate": [
-            0,
-            0,
-            0.6
-          ],
-          "scale": [
-            1.8,
-            1,
-            2.9
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.88,
-          "metal": 0.1,
-          "glow": 0
-        }
+        "material": "stone",
+        "children": [
+          {
+            "id": "ramp-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.8,
+                0.4,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                8.5,
+                1.2,
+                0
+              ]
+            }
+          },
+          {
+            "id": "ramp-slope",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.5,
+                1.8,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.8,
+                2.4,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0.52
+              ]
+            }
+          }
+        ]
       },
       {
-        "id": "deck-centerline-stripe",
+        "id": "deck-centerline",
         "type": "box",
         "args": {
           "dims": [
             16,
-            0.08,
-            0.06
+            0.05,
+            0.08
           ]
         },
         "transform": {
           "translate": [
             -0.5,
-            1.7,
+            1.45,
             0
           ]
         },
+        "region": "deck",
         "material": {
-          "hue": 0.14,
-          "sat": 0.95,
-          "value": 0.98,
+          "hue": 0.15,
+          "sat": 0.8,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "deck-edge-port",
+        "type": "box",
+        "args": {
+          "dims": [
+            16.2,
+            0.05,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            1.45,
+            -2.05
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.8,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "deck-edge-starboard",
+        "type": "box",
+        "args": {
+          "dims": [
+            16.2,
+            0.05,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            1.45,
+            2.05
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.15,
+          "sat": 0.8,
+          "value": 0.95,
           "metal": 0,
           "glow": 0
         }
@@ -269,56 +345,67 @@
         "args": {
           "dims": [
             2.6,
-            2.2,
-            2.2
+            4.4,
+            2
           ],
-          "cornerR": 0.12
+          "cornerR": 0.15
         },
         "transform": {
           "translate": [
             3,
-            2.6,
-            2
+            3.4,
+            1.4
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.6,
-          "metal": 0.15,
-          "glow": 0
-        },
-        "pattern": {
-          "kind": "cells",
-          "scale": 5,
-          "strength": 0.2
-        }
+        "region": "island",
+        "material": "stone"
       },
       {
         "id": "island-mid",
-        "type": "rounded_box",
+        "type": "unionChamfer",
         "args": {
-          "dims": [
-            2,
-            1.4,
-            1.8
-          ],
-          "cornerR": 0.1
+          "r": 0.12
         },
-        "transform": {
-          "translate": [
-            3.1,
-            4.3,
-            2
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.6,
-          "metal": 0.15,
-          "glow": 0
-        }
+        "material": "stone",
+        "children": [
+          {
+            "id": "mid-tower",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2,
+                2.8,
+                1.6
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                3.1,
+                6,
+                1.4
+              ]
+            }
+          },
+          {
+            "id": "mid-bridge",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.8,
+                0.6,
+                1.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                4.8,
+                1.4
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "island-top",
@@ -326,116 +413,97 @@
         "args": {
           "dims": [
             1.6,
-            0.8,
-            1.4
+            1.6,
+            1.3
           ],
-          "cornerR": 0.08
+          "cornerR": 0.1
         },
         "transform": {
           "translate": [
             3,
-            5.5,
-            2
+            8,
+            1.4
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.6,
-          "metal": 0.15,
-          "glow": 0
-        }
+        "region": "island",
+        "material": "stone"
       },
       {
-        "id": "island-win-1",
+        "id": "bridge-window-1",
         "type": "box",
         "args": {
           "dims": [
-            0.4,
-            0.25,
-            0.1
+            0.35,
+            0.5,
+            0.08
           ]
         },
         "transform": {
           "translate": [
             2.2,
-            2.4,
-            3.2
+            5,
+            2.45
           ]
         },
-        "material": {
-          "hue": 0.55,
-          "sat": 0.45,
-          "value": 0.85,
-          "metal": 0,
-          "glow": 0.6
-        }
+        "region": "island",
+        "material": "matte-black"
       },
       {
-        "id": "island-win-2",
+        "id": "bridge-window-2",
         "type": "box",
         "args": {
           "dims": [
-            0.4,
-            0.25,
-            0.1
+            0.35,
+            0.5,
+            0.08
           ]
         },
         "transform": {
           "translate": [
             3,
-            2.4,
-            3.2
+            5,
+            2.45
           ]
         },
-        "material": {
-          "hue": 0.55,
-          "sat": 0.45,
-          "value": 0.85,
-          "metal": 0,
-          "glow": 0.6
-        }
+        "region": "island",
+        "material": "matte-black"
       },
       {
-        "id": "island-win-3",
+        "id": "bridge-window-3",
         "type": "box",
         "args": {
           "dims": [
-            0.4,
-            0.25,
-            0.1
+            0.35,
+            0.5,
+            0.08
           ]
         },
         "transform": {
           "translate": [
             3.8,
-            2.4,
-            3.2
+            5,
+            2.45
           ]
         },
-        "material": {
-          "hue": 0.55,
-          "sat": 0.45,
-          "value": 0.85,
-          "metal": 0,
-          "glow": 0.6
-        }
+        "region": "island",
+        "material": "matte-black"
       },
       {
         "id": "mast-main",
         "type": "cylinder",
         "args": {
-          "radius": 0.06,
-          "height": 2.2
+          "radius": 0.08,
+          "height": 4.4
         },
         "transform": {
           "translate": [
             3,
-            7,
-            2
+            10.9,
+            1.4
           ]
         },
-        "material": "matte-black"
+        "region": "island",
+        "material": "silver"
       },
       {
         "id": "mast-cross-spar",
@@ -443,95 +511,81 @@
         "args": {
           "a": [
             2.4,
-            6.8,
-            2
+            9.8,
+            1.4
           ],
           "b": [
             3.6,
-            6.8,
-            2
+            9.8,
+            1.4
           ],
-          "radius": 0.04
+          "radius": 0.05
         },
-        "material": "matte-black"
+        "region": "island",
+        "material": "silver"
       },
       {
-        "id": "radar-346-front",
+        "id": "radar-array-main",
         "type": "box",
         "args": {
           "dims": [
             0.7,
-            0.45,
-            0.08
+            0.9,
+            0.12
           ]
         },
         "transform": {
           "translate": [
             3,
-            7.4,
-            2.9
+            11.8,
+            1.4
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.1,
-          "value": 0.55,
-          "metal": 0.25,
-          "glow": 0
-        }
+        "region": "island",
+        "material": "stone"
       },
       {
-        "id": "radar-346-starboard",
+        "id": "radar-array-port",
         "type": "box",
         "args": {
           "dims": [
-            0.08,
-            0.45,
-            0.7
+            0.12,
+            0.7,
+            0.9
           ]
         },
         "transform": {
           "translate": [
-            2.3,
-            6.8,
-            2
+            2.7,
+            9.8,
+            1
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.1,
-          "value": 0.55,
-          "metal": 0.25,
-          "glow": 0
-        }
+        "region": "island",
+        "material": "stone"
       },
       {
-        "id": "radar-346-port",
+        "id": "radar-array-starboard",
         "type": "box",
         "args": {
           "dims": [
-            0.08,
-            0.45,
-            0.7
+            0.12,
+            0.7,
+            0.9
           ]
         },
         "transform": {
           "translate": [
-            3.7,
-            6.8,
-            2
+            3.3,
+            9.8,
+            1.8
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.1,
-          "value": 0.55,
-          "metal": 0.25,
-          "glow": 0
-        }
+        "region": "island",
+        "material": "stone"
       },
       {
-        "id": "ciws-aft-port",
+        "id": "ciws-dome-aft-port",
         "type": "sphere",
         "args": {
           "radius": 0.22
@@ -539,20 +593,15 @@
         "transform": {
           "translate": [
             -6,
-            2.2,
-            -2.5
+            1.8,
+            -1.8
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.88,
-          "metal": 0.2,
-          "glow": 0
-        }
+        "region": "deck",
+        "material": "matte-white"
       },
       {
-        "id": "ciws-mid-port",
+        "id": "ciws-dome-mid-port",
         "type": "sphere",
         "args": {
           "radius": 0.22
@@ -560,20 +609,15 @@
         "transform": {
           "translate": [
             -1,
-            2.2,
-            -2.5
+            1.8,
+            -1.8
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.88,
-          "metal": 0.2,
-          "glow": 0
-        }
+        "region": "deck",
+        "material": "matte-white"
       },
       {
-        "id": "ciws-forward-stbd",
+        "id": "ciws-dome-bow-starboard",
         "type": "sphere",
         "args": {
           "radius": 0.22
@@ -581,20 +625,15 @@
         "transform": {
           "translate": [
             5.5,
-            2.2,
-            2.5
+            1.8,
+            1.8
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.88,
-          "metal": 0.2,
-          "glow": 0
-        }
+        "region": "deck",
+        "material": "matte-white"
       },
       {
-        "id": "ciws-bow-stbd",
+        "id": "ciws-dome-island-starboard",
         "type": "sphere",
         "args": {
           "radius": 0.18
@@ -602,366 +641,472 @@
         "transform": {
           "translate": [
             6,
-            1.9,
-            2.3
+            2,
+            2.2
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.05,
-          "value": 0.88,
-          "metal": 0.2,
-          "glow": 0
-        }
+        "region": "deck",
+        "material": "matte-white"
       },
       {
-        "id": "j15-fighter-1",
-        "type": "union",
-        "children": [
-          {
-            "id": "j15-1-body",
-            "type": "ellipsoid",
-            "args": {
-              "dims": [
-                0.63,
-                0.16,
-                0.14
-              ]
-            }
-          },
-          {
-            "id": "j15-1-wing-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                -0.28
-              ],
-              "rotate": [
-                0,
-                0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-1-wing-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                0.28
-              ],
-              "rotate": [
-                0,
-                -0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-1-tail-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                -0.1
-              ],
-              "rotate": [
-                0,
-                0.4,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-1-tail-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                0.1
-              ],
-              "rotate": [
-                0,
-                -0.4,
-                0
-              ]
-            }
-          }
-        ],
+        "id": "j15-fighter-1-fuselage",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.7,
+            0.18,
+            0.2
+          ]
+        },
         "transform": {
           "translate": [
             5,
-            1.85,
-            1
-          ],
-          "rotate": [
-            0,
-            -0.15,
-            0
-          ],
-          "scale": 0.9
+            1.6,
+            -0.8
+          ]
         },
+        "region": "deck",
         "material": {
-          "hue": 0.6,
-          "sat": 0.12,
-          "value": 0.4,
-          "metal": 0.35,
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
           "glow": 0
         }
       },
       {
-        "id": "j15-fighter-2",
-        "type": "union",
-        "children": [
-          {
-            "id": "j15-2-body",
-            "type": "ellipsoid",
-            "args": {
-              "dims": [
-                0.63,
-                0.16,
-                0.14
-              ]
-            }
-          },
-          {
-            "id": "j15-2-wing-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                -0.28
-              ],
-              "rotate": [
-                0,
-                0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-2-wing-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                0.28
-              ],
-              "rotate": [
-                0,
-                -0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-2-tail-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                -0.1
-              ],
-              "rotate": [
-                0,
-                0.4,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-2-tail-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                0.1
-              ],
-              "rotate": [
-                0,
-                -0.4,
-                0
-              ]
-            }
-          }
-        ],
+        "id": "j15-fighter-1-wing-port",
+        "type": "pyramid",
+        "args": {
+          "height": 0.9
+        },
+        "transform": {
+          "translate": [
+            4.8,
+            1.6,
+            -1.28
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ],
+          "scale": [
+            0.5,
+            1,
+            1.2
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-1-wing-starboard",
+        "type": "pyramid",
+        "args": {
+          "height": 0.9
+        },
+        "transform": {
+          "translate": [
+            4.8,
+            1.6,
+            -0.32
+          ],
+          "rotate": [
+            0,
+            -1.5708,
+            0
+          ],
+          "scale": [
+            0.5,
+            1,
+            1.2
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-1-tail-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.35
+        },
+        "transform": {
+          "translate": [
+            4.35,
+            1.8,
+            -0.95
+          ],
+          "rotate": [
+            0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-1-tail-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.35
+        },
+        "transform": {
+          "translate": [
+            4.35,
+            1.8,
+            -0.65
+          ],
+          "rotate": [
+            -0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-2-fuselage",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.65,
+            0.17,
+            0.19
+          ]
+        },
         "transform": {
           "translate": [
             -2,
-            1.85,
-            -0.8
-          ],
-          "rotate": [
-            0,
-            0.1,
-            0
-          ],
-          "scale": 0.85
+            1.6,
+            -1
+          ]
         },
+        "region": "deck",
         "material": {
-          "hue": 0.6,
-          "sat": 0.12,
-          "value": 0.4,
-          "metal": 0.35,
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
           "glow": 0
         }
       },
       {
-        "id": "j15-fighter-3",
-        "type": "union",
-        "children": [
-          {
-            "id": "j15-3-body",
-            "type": "ellipsoid",
-            "args": {
-              "dims": [
-                0.63,
-                0.16,
-                0.14
-              ]
-            }
-          },
-          {
-            "id": "j15-3-wing-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                -0.28
-              ],
-              "rotate": [
-                0,
-                0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-3-wing-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.42,
-              "halfLength": 0.15
-            },
-            "transform": {
-              "translate": [
-                -0.05,
-                0,
-                0.28
-              ],
-              "rotate": [
-                0,
-                -0.3,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-3-tail-port",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                -0.1
-              ],
-              "rotate": [
-                0,
-                0.4,
-                0
-              ]
-            }
-          },
-          {
-            "id": "j15-3-tail-stbd",
-            "type": "tri_prism",
-            "args": {
-              "halfWidth": 0.22,
-              "halfLength": 0.06
-            },
-            "transform": {
-              "translate": [
-                -0.5,
-                0.08,
-                0.1
-              ],
-              "rotate": [
-                0,
-                -0.4,
-                0
-              ]
-            }
-          }
-        ],
+        "id": "j15-fighter-2-wing-port",
+        "type": "pyramid",
+        "args": {
+          "height": 0.85
+        },
         "transform": {
           "translate": [
-            -6,
-            1.85,
-            0.5
+            -2.2,
+            1.6,
+            -1.45
           ],
           "rotate": [
             0,
-            -0.05,
+            1.5708,
             0
           ],
-          "scale": 0.85
+          "scale": [
+            0.5,
+            1,
+            1.15
+          ]
         },
+        "region": "deck",
         "material": {
-          "hue": 0.6,
-          "sat": 0.12,
-          "value": 0.4,
-          "metal": 0.35,
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-2-wing-starboard",
+        "type": "pyramid",
+        "args": {
+          "height": 0.85
+        },
+        "transform": {
+          "translate": [
+            -2.2,
+            1.6,
+            -0.55
+          ],
+          "rotate": [
+            0,
+            -1.5708,
+            0
+          ],
+          "scale": [
+            0.5,
+            1,
+            1.15
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-2-tail-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.33
+        },
+        "transform": {
+          "translate": [
+            -2.55,
+            1.78,
+            -1.12
+          ],
+          "rotate": [
+            0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-2-tail-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.33
+        },
+        "transform": {
+          "translate": [
+            -2.55,
+            1.78,
+            -0.88
+          ],
+          "rotate": [
+            -0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-3-fuselage",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.65,
+            0.17,
+            0.19
+          ]
+        },
+        "transform": {
+          "translate": [
+            -6,
+            1.6,
+            -0.8
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-3-wing-port",
+        "type": "pyramid",
+        "args": {
+          "height": 0.85
+        },
+        "transform": {
+          "translate": [
+            -6.2,
+            1.6,
+            -1.25
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ],
+          "scale": [
+            0.5,
+            1,
+            1.15
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-3-wing-starboard",
+        "type": "pyramid",
+        "args": {
+          "height": 0.85
+        },
+        "transform": {
+          "translate": [
+            -6.2,
+            1.6,
+            -0.35
+          ],
+          "rotate": [
+            0,
+            -1.5708,
+            0
+          ],
+          "scale": [
+            0.5,
+            1,
+            1.15
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-3-tail-left",
+        "type": "pyramid",
+        "args": {
+          "height": 0.33
+        },
+        "transform": {
+          "translate": [
+            -6.55,
+            1.78,
+            -0.92
+          ],
+          "rotate": [
+            0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-fighter-3-tail-right",
+        "type": "pyramid",
+        "args": {
+          "height": 0.33
+        },
+        "transform": {
+          "translate": [
+            -6.55,
+            1.78,
+            -0.68
+          ],
+          "rotate": [
+            -0.35,
+            0,
+            0
+          ],
+          "scale": [
+            0.4,
+            1,
+            0.5
+          ]
+        },
+        "region": "deck",
+        "material": {
+          "hue": 0.58,
+          "sat": 0.2,
+          "value": 0.35,
+          "metal": 0.3,
           "glow": 0
         }
       },
@@ -969,17 +1114,18 @@
         "id": "flag-pole",
         "type": "cylinder",
         "args": {
-          "radius": 0.04,
-          "height": 1.5
+          "radius": 0.05,
+          "height": 3
         },
         "transform": {
           "translate": [
             1.8,
-            8.6,
-            2
+            12.2,
+            1.4
           ]
         },
-        "material": "matte-black"
+        "region": "island",
+        "material": "silver"
       },
       {
         "id": "flag-body",
@@ -988,19 +1134,20 @@
           "dims": [
             0.9,
             0.55,
-            0.02
+            0.05
           ]
         },
         "transform": {
           "translate": [
-            2.26,
-            9,
-            2
+            2.35,
+            13.25,
+            1.4
           ]
         },
+        "region": "island",
         "material": {
           "hue": 0,
-          "sat": 0.92,
+          "sat": 0.85,
           "value": 0.7,
           "metal": 0,
           "glow": 0
@@ -1008,22 +1155,23 @@
       },
       {
         "id": "flag-big-star",
-        "type": "sphere",
+        "type": "octahedron",
         "args": {
-          "radius": 0.12
+          "radius": 0.15
         },
         "transform": {
           "translate": [
-            2.08,
-            9.05,
-            2.05
+            2.1,
+            13.3,
+            1.43
           ]
         },
+        "region": "island",
         "material": {
           "hue": 0.14,
-          "sat": 0.98,
+          "sat": 1,
           "value": 1,
-          "metal": 0.4,
+          "metal": 0.5,
           "glow": 0
         }
       },
@@ -1031,106 +1179,75 @@
         "id": "bird-1",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.24,
-          "bodyRadius": 0.06,
-          "wingSpan": 0.7,
-          "wingRise": 0.12
+          "bodyLength": 0.25,
+          "wingSpan": 0.55
         },
         "transform": {
           "translate": [
-            -4.5,
-            10.5,
-            -5
+            -8,
+            8,
+            3
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.35,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "bird-2",
         "type": "bird-silhouette",
         "args": {
           "bodyLength": 0.22,
-          "bodyRadius": 0.05,
-          "wingSpan": 0.65,
-          "wingRise": 0.1
+          "wingSpan": 0.5
         },
         "transform": {
           "translate": [
-            3.2,
-            11.2,
-            -4.5
+            -6,
+            9,
+            -4
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.35,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       },
       {
         "id": "bird-3",
         "type": "bird-silhouette",
         "args": {
           "bodyLength": 0.2,
-          "bodyRadius": 0.05,
-          "wingSpan": 0.6,
-          "wingRise": 0.1
+          "wingSpan": 0.48
         },
         "transform": {
           "translate": [
-            1,
-            10.8,
-            -6
+            7,
+            10,
+            5
           ]
         },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.08,
-          "value": 0.35,
-          "metal": 0,
-          "glow": 0
-        }
+        "material": "matte-black"
       }
     ],
     "ground": {
-      "y": -1.8,
-      "region": "seabed",
-      "material": {
-        "hue": 0.58,
-        "sat": 0.72,
-        "value": 0.2,
-        "metal": 0,
-        "glow": 0
-      }
+      "y": -2,
+      "region": "sea"
     },
     "defaults": {
       "camera": {
-        "yaw": 0.55,
-        "pitch": 0.22,
-        "distance": 32,
-        "focal": 1.5,
+        "yaw": -0.35,
+        "pitch": 0.25,
+        "distance": 28,
+        "focal": 1.4,
         "targetX": 0,
         "targetY": 2.5,
         "targetZ": 0
       },
       "light": {
-        "azimuth": 0.65,
-        "altitude": 0.32,
-        "distance": 45,
-        "intensity": 1.15
+        "azimuth": -0.8,
+        "altitude": 0.6,
+        "distance": 40,
+        "intensity": 1.1
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.45
+        "strength": 0.35
       }
     }
   }

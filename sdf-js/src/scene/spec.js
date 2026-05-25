@@ -81,6 +81,11 @@ export const PRIMITIVE_TYPES = new Set([
   'terrain-canyon',
   'arch-bridge',
   'procedural-city',
+  // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
+  // src/scene/components/community/rune-erosion-filter.js). CPU-baked
+  // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai
+  // landscape. Hash-derived bumps + jittered visual params → NFT-ready.
+  'terrain-eroded-rune',
   // Forest sprint atoms (tree + leaf + flower scatter + emissive meteor streak).
   // stylized-tree = 4-layer: wavy trunk + 3 polar-replicated main branch layers
   //   (pModPolar 6/5/3) + cellular leaf instances (pMod3 + maple-leaf) +
@@ -293,6 +298,13 @@ export const MATERIAL_KIND_INDEX = {
   // Skyline CC0 recipe). Each XZ position gets quantized window position;
   // dark-window cells reflect sky for glass tower look.
   building:    6,
+  // 7 = eroded-terrain: full Rune-style multi-layer terrain shading reading
+  // height/ridgeMap/treeAmount channels from u_heightmap texture. Cliff at
+  // high altitude, dirt mid-slope masked by erosion occlusion, grass on flat
+  // exposed areas, snow on peaks, sand at water edge, tree splat where
+  // treeAmount channel > threshold, drainage darkening along ridgeMap creases.
+  // Only valid on terrain-eroded-rune primitive (which uploads the texture).
+  'eroded-terrain': 7,
 };
 
 // =============================================================================

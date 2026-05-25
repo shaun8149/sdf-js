@@ -23,6 +23,15 @@ export const SDF3_GLSL = /* glsl */ `
 // caller shader 不要重复声明（会冲突）。如果不动画，无需 setUniform，默认 0。
 uniform float u_time;
 
+// Rune erosion heightmap sampler (Sprint 12). bound by flyLambert when scene
+// has a terrain-eroded-rune subject; contains 4 channels per texel:
+//   .x = eroded height [0,1]
+//   .y = ridgeMap     [0,1]  (mapped from [-1,1])
+//   .z = treeAmount   [0,1]
+//   .w = erosionOffset [0,1] (mapped from [-1,1])
+// Sampled in shader's eroded-terrain material branch + the SDF primitive.
+uniform sampler2D u_heightmap;
+
 // ---- helpers ---------------------------------------------------------------
 
 float dot2(vec2 v)  { return dot(v, v); }
@@ -1085,6 +1094,35 @@ float sdProceduralCity(vec3 p, float blockSize, float maxHeight, float downtownK
   // Block ID = which city block we're in
   vec2 blockId = floor(p.xz / blockSize);
   return sdCityBlock(p, blockId, blockSize, maxHeight, downtownK) * 0.7;
+}
+
+// ---- Rune erosion bonsai terrain (MPL-2.0 — see rune-erosion-filter.js) ----
+//
+// Reads the CPU-baked heightmap from sampler2D u_heightmap. The 4 channels
+// are documented at the top of this file (height/ridgeMap/treeAmount/erosion).
+// The SDF is box-bounded; outside the XZ box we return the box wall distance,
+// inside we return (p.y - heightmap.x * boxSize.y).
+//
+// Coordinate mapping: world XZ ∈ [-boxSize.x, boxSize.x] maps to UV [0, 1].
+// Sampling uses linear interpolation (texture builtin); flyLambert sets
+// the texture filter to LINEAR for smooth raymarch + NEAREST sampling can be
+// added later for blueprint contour view if needed.
+//
+// Lipschitz: heightmap derivatives are bounded by the texture resolution;
+// safety factor 0.5 keeps sphere trace from overshooting.
+float sdTerrainErodedRune(vec3 p, vec3 boxSize) {
+  // Map XZ to UV [0, 1]. NOTE: vec2 has only .xy — uv.y is the Z mapping.
+  // Outside the box footprint, clamp UV (texture is CLAMP_TO_EDGE) so the
+  // heightmap value at the boundary continues — gives a flat plane around
+  // the bonsai matching the default base height (~0.45, below water level).
+  // This avoids returning a solid box SDF that would block raymarch progress.
+  vec2 uv = clamp(p.xz / (2.0 * boxSize.xz) + 0.5, vec2(0.0), vec2(1.0));
+  // Use texture2D (GLSL ES 1.00) — works in both bob/blueprint AND FLY 3D
+  // (which all run ES 1.00 even on a WebGL2 context — no version directive).
+  float h = texture2D(u_heightmap, uv).x * boxSize.y;
+  // 0.5 = Lipschitz safety factor (heightmap derivatives are bounded by
+  // texture resolution; oversampling the surface keeps sphere trace stable).
+  return (p.y - h) * 0.5;
 }
 
 // ---- Parametric arch bridge (IQ Snow Bridge MdXGzr recipe-only port) ----

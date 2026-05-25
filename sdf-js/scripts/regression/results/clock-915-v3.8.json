@@ -1,0 +1,462 @@
+{
+  "result": {
+    "demoId": "clock-915",
+    "version": "v3.8",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "24.1s",
+    "tokens": {
+      "input": 47190,
+      "output": 1996
+    },
+    "costUSD": "0.1715",
+    "subjectCount": 12,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 11,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 5,
+      "min": -0.3,
+      "max": 0.07,
+      "range": 0.37,
+      "stdev": 0.13696714934611146
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "typeCounts": {
+      "box": 1,
+      "union": 1,
+      "cylinder": 3,
+      "capsule": 6,
+      "modPolar": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Wall Clock at 9:15"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Wall Clock at 9:15",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "挂在墙上的9点15分的钟",
+      "from2dCode": "2D circular clock face with bezel, hour/minute ticks, hands at 9:15, center boss, warm plaster wall background"
+    },
+    "subjects": [
+      {
+        "id": "wall-plane",
+        "type": "box",
+        "args": {
+          "dims": [
+            4.5,
+            3.2,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -0.3
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.18,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.12
+        }
+      },
+      {
+        "id": "clock-body",
+        "type": "union",
+        "material": {
+          "hue": 0.08,
+          "sat": 0.12,
+          "value": 0.12,
+          "metal": 0.25,
+          "glow": 0
+        },
+        "children": [
+          {
+            "id": "bezel-ring",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.58,
+              "height": 0.08
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "face-disc",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.52,
+              "height": 0.02
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0.03
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.12,
+              "sat": 0.08,
+              "value": 0.98,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "hour-tick-12",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0.46,
+            0.05
+          ],
+          "b": [
+            0,
+            0.4,
+            0.05
+          ],
+          "radius": 0.015
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.1,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hour-tick-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.46,
+            0,
+            0.05
+          ],
+          "b": [
+            0.4,
+            0,
+            0.05
+          ],
+          "radius": 0.015
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.1,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hour-tick-6",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            -0.46,
+            0.05
+          ],
+          "b": [
+            0,
+            -0.4,
+            0.05
+          ],
+          "radius": 0.015
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.1,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hour-tick-9",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.46,
+            0,
+            0.05
+          ],
+          "b": [
+            -0.4,
+            0,
+            0.05
+          ],
+          "radius": 0.015
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.15,
+          "value": 0.1,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "minor-ticks",
+        "type": "modPolar",
+        "args": {
+          "axis": "z",
+          "repetitions": 12
+        },
+        "source": {
+          "id": "tick-set",
+          "type": "union",
+          "children": [
+            {
+              "id": "tick-15",
+              "type": "capsule",
+              "args": {
+                "a": [
+                  0,
+                  0.46,
+                  0
+                ],
+                "b": [
+                  0,
+                  0.43,
+                  0
+                ],
+                "radius": 0.008
+              },
+              "transform": {
+                "rotate": [
+                  0,
+                  0,
+                  -0.5236
+                ]
+              }
+            },
+            {
+              "id": "tick-30",
+              "type": "capsule",
+              "args": {
+                "a": [
+                  0,
+                  0.46,
+                  0
+                ],
+                "b": [
+                  0,
+                  0.43,
+                  0
+                ],
+                "radius": 0.008
+              },
+              "transform": {
+                "rotate": [
+                  0,
+                  0,
+                  -1.0472
+                ]
+              }
+            },
+            {
+              "id": "tick-45",
+              "type": "capsule",
+              "args": {
+                "a": [
+                  0,
+                  0.46,
+                  0
+                ],
+                "b": [
+                  0,
+                  0.43,
+                  0
+                ],
+                "radius": 0.008
+              },
+              "transform": {
+                "rotate": [
+                  0,
+                  0,
+                  -1.5708
+                ]
+              }
+            }
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.05
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.08,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hour-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.04,
+            0.01,
+            0.06
+          ],
+          "b": [
+            -0.26,
+            0.035,
+            0.06
+          ],
+          "radius": 0.02
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.2,
+          "value": 0.08,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "minute-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.04,
+            0,
+            0.07
+          ],
+          "b": [
+            0.38,
+            0,
+            0.07
+          ],
+          "radius": 0.013
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.2,
+          "value": 0.08,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "center-boss",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.032,
+          "height": 0.025
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.07
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.25,
+          "value": 0.1,
+          "metal": 0.45,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0,
+        "distance": 2.8,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.55,
+        "distance": 12,
+        "intensity": 1.05
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.25
+      }
+    }
+  }
+}

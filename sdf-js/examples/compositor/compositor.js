@@ -17,6 +17,17 @@
 import * as renderModule from '../../src/render/index.js';
 import { generateSceneData, randomSceneTypeData, SCENE_NAMES_DATA } from '../sdf/autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
+
+// Sprint 12 (Rune erosion / NFT): read tokenHash from URL once at module load.
+// Used by compile() to seed any hash-driven primitives (terrain-eroded-rune).
+// Precedence: ?tokenHash= URL param > scene.defaults.seed > compile fallback.
+function getUrlTokenHash() {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    return p.get('tokenHash') || null;
+  } catch (_) { return null; }
+}
+const URL_TOKEN_HASH = getUrlTokenHash();
 import { expandVariants } from '../../src/scene/generator-s.js';
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
@@ -643,7 +654,7 @@ async function loadDemoScene(demo) {
       // → SFC32 PRNG so the same hash always yields the same expansion.
       const sceneRng = new Random(state.sceneHash);
       const variantScene = expandVariants(data.sceneData, sceneRng);
-      compiled = compileSceneData(variantScene);
+      compiled = compileSceneData(variantScene, { tokenHash: URL_TOKEN_HASH });
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
     }
@@ -1464,7 +1475,7 @@ function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shuffl
   const liftInfo = $('lift-info');
   let compiled;
   try {
-    compiled = compileSceneData(sceneData);
+    compiled = compileSceneData(sceneData, { tokenHash: URL_TOKEN_HASH });
   } catch (compileErr) {
     throw new Error(`SceneData compile failed: ${compileErr.message}`);
   }
@@ -1730,6 +1741,12 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       const hasCity = JSON.stringify(rawScene.subjects).includes('"procedural-city"');
       fly.setCityMode(hasCity);
     }
+    // Sprint 12: Rune erosion heightmap. compile() already baked into
+    // scene.bakedHeightmap if the scene has terrain-eroded-rune. Push to
+    // renderer; pass null when scene has none (clears any prior texture).
+    if (fly.setRuneHeightmap) {
+      fly.setRuneHeightmap(scene.bakedHeightmap || null);
+    }
     // Sprint 4: register motion slots + subject base positions so the camera
     // sequence evaluator can compute subject-anchored shake / target / volume
     // offset every frame.
@@ -1767,6 +1784,8 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       const cs = scene.cameraStatic;
       bp.setModelBounds([cs.targetX, cs.targetY, cs.targetZ], cs.distance * 0.6);
     }
+    // Sprint 12: Rune heightmap → blueprint texture (same data as FLY 3D).
+    if (bp.setRuneHeightmap) bp.setRuneHeightmap(scene.bakedHeightmap || null);
     try {
       return bp.render(sdf);
     } catch (e) {
@@ -1780,6 +1799,8 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     const bob = ensureBobRenderer();
     if (!keepCamera && scene.cameraStatic) bob.setCamState(sphericalToCamState(scene.cameraStatic));
+    // Sprint 12: Rune heightmap → BOB GPU texture (same data as FLY 3D).
+    if (bob.setRuneHeightmap) bob.setRuneHeightmap(scene.bakedHeightmap || null);
     // Generator-V handoff: apply current style (palette / skip / bg variety)
     // before render. Style stays bound until "🎲 New style" button regenerates.
     bob.applyStyle(state.bobStyle);
@@ -1964,7 +1985,7 @@ function generateGeneratorScene({ keepCamera = false } = {}) {
   const sceneData = generateSceneData(sceneType, rng);
   let compiled;
   try {
-    compiled = compileSceneData(sceneData);
+    compiled = compileSceneData(sceneData, { tokenHash: URL_TOKEN_HASH });
   } catch (e) {
     setStatus(`✗ compile error: ${e.message}`, true);
     console.error(e);

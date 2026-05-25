@@ -881,6 +881,9 @@ export function createBobShaderRenderer({
   // photoreal cinematic renderer; BOB GPU stays the painterly renderer.
   const gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: false });
   if (!gl) throw new Error('[bob-gpu] WebGL2 not supported');
+  // Sprint 12: enable LINEAR filtering for RGBA32F (Rune heightmap sampler).
+  // Idempotent — if FLY 3D already enabled it on the shared context, no-op.
+  gl.getExtension('OES_texture_float_linear');
 
   const camState = { position: [0, 0.3, -3.0], yaw: 0, pitch: 0 };
   const defaultCam = { position: [...camState.position], yaw: 0, pitch: 0 };
@@ -890,6 +893,11 @@ export function createBobShaderRenderer({
   let rafId = null;
   let flyHandle = null;
   let paletteState = null;  // { tex, length, palette1, palette2, paper, sky1, sky2 }
+  // Sprint 12 Rune erosion heightmap (uploaded by setRuneHeightmap, sampled
+  // in shader's sdTerrainErodedRune). Bound to texture unit 2 so it doesn't
+  // collide with the palette texture (unit 0).
+  let runeHeightmapTex = null;
+  let runeHeightmapW = 0, runeHeightmapH = 0;
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1079,6 +1087,8 @@ export function createBobShaderRenderer({
       'u_xMod', 'u_yMod', 'u_renderType', 'u_rotateCanvas',
       // Autoscope animation modes 1-9 (idiom #6, 2026-05-23)
       'u_animation', 'u_length',
+      // Sprint 12 Rune erosion heightmap sampler + active flag.
+      'u_heightmap', 'u_runeActive',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1131,6 +1141,16 @@ export function createBobShaderRenderer({
     gl.bindTexture(gl.TEXTURE_2D, paletteState.tex);
     gl.uniform1i(uniformsCache.u_palette, 0);
     gl.uniform1f(uniformsCache.u_paletteLen, paletteState.length);
+
+    // Sprint 12: Rune erosion heightmap (TEXTURE2 — palette is on 0).
+    if (runeHeightmapTex != null && uniformsCache.u_heightmap != null) {
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+      gl.uniform1i(uniformsCache.u_heightmap, 2);
+    }
+    if (uniformsCache.u_runeActive != null) {
+      gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);
+    }
 
     gl.uniform3f(uniformsCache.u_paper, ...paletteState.paletteVec.paper);
     gl.uniform3f(uniformsCache.u_sky1, ...paletteState.paletteVec.sky1);
@@ -1284,5 +1304,35 @@ export function createBobShaderRenderer({
       if (patch.pitch != null) camState.pitch = patch.pitch;
     },
     getPaletteSample() { return paletteState?.sample ?? null; },
+    // Sprint 12 Rune erosion heightmap (CPU bake from compile.js → GPU texture).
+    // Same shape as flyLambert.setRuneHeightmap and blueprint.setRuneHeightmap;
+    // BOB binds to TEXTURE2 (palette is on 0). null clears.
+    setRuneHeightmap(baked) {
+      if (!baked) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = null;
+        runeHeightmapW = 0; runeHeightmapH = 0;
+        return;
+      }
+      const { data, width, height } = baked;
+      if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
+        throw new Error(`[bob-gpu] setRuneHeightmap: bad data shape ${data?.length} vs ${width*height*4}`);
+      }
+      if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, width, height, 0, gl.RGBA, gl.FLOAT, data);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        runeHeightmapW = width;
+        runeHeightmapH = height;
+      } else {
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, gl.FLOAT, data);
+      }
+    },
   };
 }

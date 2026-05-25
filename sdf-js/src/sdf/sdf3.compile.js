@@ -467,6 +467,15 @@ const PRIMS = {
   'procedural-city': ([blockSize, maxHeight, downtownK], p) =>
     `sdProceduralCity(${p}, ${flt(blockSize)}, ${flt(maxHeight)}, ${flt(downtownK)})`,
 
+  // Rune Skovbo Johansen Advanced Terrain Erosion Filter (MPL-2.0 — see
+  // src/scene/components/community/rune-erosion-filter.js). CPU-baked
+  // heightmap is uploaded as sampler2D u_heightmap by flyLambert; this
+  // primitive's SDF = (p.y - sample(u_heightmap, p.xz).x * boxSize.y) bounded
+  // to box. Args: [boxSizeX, boxSizeY, boxSizeZ, waterHeight].
+  // REQUIRES u_heightmap uniform + u_runeActive uniform (set by renderer).
+  'terrain-eroded-rune': ([bx, by, bz, waterHeight], p) =>
+    `sdTerrainErodedRune(${p}, vec3(${flt(bx)}, ${flt(by)}, ${flt(bz)}))`,
+
   // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.
   // stylized-tree(trunkLen, trunkRad, leafSize, windK) — 4-layer composition.
   'stylized-tree': ([trunkLen, trunkRad, leafSize, windK], p) =>

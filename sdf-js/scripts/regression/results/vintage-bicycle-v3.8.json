@@ -3,13 +3,13 @@
     "demoId": "vintage-bicycle",
     "version": "v3.8",
     "model": "claude-sonnet-4-5",
-    "elapsed": "42.4s",
+    "elapsed": "45.6s",
     "tokens": {
       "input": 47765,
-      "output": 4133
+      "output": 3930
     },
-    "costUSD": "0.2053",
-    "subjectCount": 36,
+    "costUSD": "0.2022",
+    "subjectCount": 38,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 2,
@@ -19,21 +19,25 @@
         2
       ]
     ],
-    "materialUsageCount": 17,
-    "patternUsageCount": 0,
-    "variantsUsedCount": 4,
+    "materialUsageCount": 13,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 3,
     "variantsUsed": [
       [
         "unionRound",
-        4
+        2
+      ],
+      [
+        "unionSoft",
+        1
       ]
     ],
     "zSpread": {
-      "count": 21,
+      "count": 19,
       "min": -0.02,
-      "max": 0.02,
-      "range": 0.04,
-      "stdev": 0.006172133998483677
+      "max": 0.025,
+      "range": 0.045,
+      "stdev": 0.00855971366699505
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
@@ -64,268 +68,245 @@
       "sceneStateKeys": 0
     },
     "typeCounts": {
-      "torus": 5,
-      "cylinder": 3,
+      "box": 1,
+      "union": 4,
+      "torus": 3,
+      "cylinder": 2,
       "modPolar": 2,
-      "unionRound": 4,
-      "capsule": 11,
+      "unionRound": 2,
+      "capsule": 12,
       "rounded_box": 6,
+      "unionSoft": 1,
       "ellipsoid": 2,
       "sphere": 1,
       "capped-torus": 2
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Vintage Bicycle"
+    "sceneName": "Vintage Bicycle — 3D lift"
   },
   "sceneData": {
     "v": 1,
-    "name": "Vintage Bicycle",
+    "name": "Vintage Bicycle — 3D lift",
     "source": {
       "format": "llm-lift",
       "prompt": "复古自行车",
-      "from2dCode": "Diamond-frame touring bicycle with 12-spoke wheels, rust-finish tubes, brass fittings, leather saddle, vintage acetylene lamp, mudguards. Side-profile 2D silhouette."
+      "from2dCode": "Diamond-frame bicycle with 12-spoke wheels, brass fittings, leather saddle, acetylene lamp, mudguards. Rust/brass/leather/dark-brown palette. Side-view silhouette."
     },
     "subjects": [
       {
-        "id": "rear-wheel-tire",
-        "type": "torus",
+        "id": "ground-patch",
+        "type": "box",
         "args": {
-          "radius": 0.38,
-          "thickness": 0.04
+          "dims": [
+            4,
+            0.08,
+            2.5
+          ]
         },
         "transform": {
           "translate": [
-            -0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
             0,
+            -1.15,
             0
           ]
         },
         "material": {
+          "hue": 0.1,
+          "sat": 0.18,
+          "value": 0.72,
+          "metal": 0,
+          "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 3.5,
+          "strength": 0.2
+        }
+      },
+      {
+        "id": "wheel-rear",
+        "type": "union",
+        "material": {
           "hue": 0.08,
-          "sat": 0.65,
+          "sat": 0.55,
           "value": 0.32,
           "metal": 0,
           "glow": 0
-        }
-      },
-      {
-        "id": "rear-wheel-hub",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.03,
-          "height": 0.05
         },
-        "transform": {
-          "translate": [
-            -0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.85,
-          "metal": 0.7,
-          "glow": 0
-        }
-      },
-      {
-        "id": "rear-wheel-hub-ring",
-        "type": "torus",
-        "args": {
-          "radius": 0.045,
-          "thickness": 0.016
-        },
-        "transform": {
-          "translate": [
-            -0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.85,
-          "metal": 0.7,
-          "glow": 0
-        }
-      },
-      {
-        "id": "rear-wheel-spokes",
-        "type": "modPolar",
-        "args": {
-          "axis": "z",
-          "repetitions": 12
-        },
-        "source": {
-          "id": "rear-spoke-source",
-          "type": "capsule",
-          "args": {
-            "a": [
-              0,
-              0,
-              0
-            ],
-            "b": [
-              0,
-              0.335,
-              0
-            ],
-            "radius": 0.007
+        "children": [
+          {
+            "id": "wheel-rear-tire",
+            "type": "torus",
+            "args": {
+              "radius": 0.42,
+              "thickness": 0.045
+            },
+            "transform": {
+              "translate": [
+                -0.42,
+                -0.7,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
           },
-          "material": {
-            "hue": 0,
-            "sat": 0,
-            "value": 0.85,
-            "metal": 0.7,
-            "glow": 0
+          {
+            "id": "wheel-rear-hub",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.045,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                -0.42,
+                -0.7,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "wheel-rear-spokes",
+            "type": "modPolar",
+            "args": {
+              "axis": "z",
+              "repetitions": 12
+            },
+            "source": {
+              "id": "spoke-rear-source",
+              "type": "capsule",
+              "args": {
+                "a": [
+                  0,
+                  0,
+                  0
+                ],
+                "b": [
+                  0,
+                  0.372,
+                  0
+                ],
+                "radius": 0.007
+              },
+              "material": {
+                "hue": 0,
+                "sat": 0,
+                "value": 0.88,
+                "metal": 0.75,
+                "glow": 0
+              }
+            },
+            "transform": {
+              "translate": [
+                -0.42,
+                -0.7,
+                0
+              ]
+            }
           }
-        },
-        "transform": {
-          "translate": [
-            -0.42,
-            -0.9,
-            0
-          ]
-        }
+        ]
       },
       {
-        "id": "front-wheel-tire",
-        "type": "torus",
-        "args": {
-          "radius": 0.38,
-          "thickness": 0.04
-        },
-        "transform": {
-          "translate": [
-            0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
+        "id": "wheel-front",
+        "type": "union",
         "material": {
           "hue": 0.08,
-          "sat": 0.65,
+          "sat": 0.55,
           "value": 0.32,
           "metal": 0,
           "glow": 0
-        }
-      },
-      {
-        "id": "front-wheel-hub",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.03,
-          "height": 0.05
         },
-        "transform": {
-          "translate": [
-            0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.85,
-          "metal": 0.7,
-          "glow": 0
-        }
-      },
-      {
-        "id": "front-wheel-hub-ring",
-        "type": "torus",
-        "args": {
-          "radius": 0.045,
-          "thickness": 0.016
-        },
-        "transform": {
-          "translate": [
-            0.42,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.85,
-          "metal": 0.7,
-          "glow": 0
-        }
-      },
-      {
-        "id": "front-wheel-spokes",
-        "type": "modPolar",
-        "args": {
-          "axis": "z",
-          "repetitions": 12
-        },
-        "source": {
-          "id": "front-spoke-source",
-          "type": "capsule",
-          "args": {
-            "a": [
-              0,
-              0,
-              0
-            ],
-            "b": [
-              0,
-              0.335,
-              0
-            ],
-            "radius": 0.007
+        "children": [
+          {
+            "id": "wheel-front-tire",
+            "type": "torus",
+            "args": {
+              "radius": 0.42,
+              "thickness": 0.045
+            },
+            "transform": {
+              "translate": [
+                0.42,
+                -0.7,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
           },
-          "material": {
-            "hue": 0,
-            "sat": 0,
-            "value": 0.85,
-            "metal": 0.7,
-            "glow": 0
+          {
+            "id": "wheel-front-hub",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.045,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                0.42,
+                -0.7,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "wheel-front-spokes",
+            "type": "modPolar",
+            "args": {
+              "axis": "z",
+              "repetitions": 12
+            },
+            "source": {
+              "id": "spoke-front-source",
+              "type": "capsule",
+              "args": {
+                "a": [
+                  0,
+                  0,
+                  0
+                ],
+                "b": [
+                  0,
+                  0.372,
+                  0
+                ],
+                "radius": 0.007
+              },
+              "material": {
+                "hue": 0,
+                "sat": 0,
+                "value": 0.88,
+                "metal": 0.75,
+                "glow": 0
+              }
+            },
+            "transform": {
+              "translate": [
+                0.42,
+                -0.7,
+                0
+              ]
+            }
           }
-        },
-        "transform": {
-          "translate": [
-            0.42,
-            -0.9,
-            0
-          ]
-        }
+        ]
       },
       {
         "id": "frame-group",
@@ -347,12 +328,12 @@
             "args": {
               "a": [
                 -0.24,
-                -0.38,
+                -0.12,
                 0
               ],
               "b": [
                 0.37,
-                -0.52,
+                0.04,
                 0
               ],
               "radius": 0.018
@@ -364,12 +345,11 @@
             "args": {
               "a": [
                 0.33,
-                -0.56,
                 0
               ],
               "b": [
                 0,
-                -0.9,
+                -0.7,
                 0
               ],
               "radius": 0.018
@@ -381,12 +361,12 @@
             "args": {
               "a": [
                 0,
-                -0.9,
+                -0.7,
                 0
               ],
               "b": [
                 -0.24,
-                -0.38,
+                -0.12,
                 0
               ],
               "radius": 0.018
@@ -398,12 +378,12 @@
             "args": {
               "a": [
                 0,
-                -0.9,
+                -0.7,
                 0
               ],
               "b": [
                 -0.42,
-                -0.9,
+                -0.7,
                 0
               ],
               "radius": 0.016
@@ -415,12 +395,12 @@
             "args": {
               "a": [
                 -0.24,
-                -0.42,
+                -0.16,
                 0
               ],
               "b": [
                 -0.42,
-                -0.9,
+                -0.7,
                 0
               ],
               "radius": 0.013
@@ -432,12 +412,11 @@
             "args": {
               "a": [
                 0.37,
-                -0.56,
                 0
               ],
               "b": [
                 0.45,
-                -0.9,
+                -0.7,
                 0.03
               ],
               "radius": 0.014
@@ -449,12 +428,11 @@
             "args": {
               "a": [
                 0.37,
-                -0.56,
                 0
               ],
               "b": [
                 0.39,
-                -0.9,
+                -0.7,
                 -0.03
               ],
               "radius": 0.014
@@ -469,14 +447,14 @@
           "dims": [
             0.036,
             0.1,
-            0.05
+            0.036
           ],
           "cornerR": 0.018
         },
         "transform": {
           "translate": [
             0.37,
-            -0.57,
+            -0.01,
             0
           ]
         },
@@ -495,9 +473,9 @@
           "r": 0.006
         },
         "material": {
-          "hue": 0.1,
-          "sat": 0.7,
-          "value": 0.75,
+          "hue": 0.11,
+          "sat": 0.65,
+          "value": 0.7,
           "metal": 0.65,
           "glow": 0
         },
@@ -508,12 +486,12 @@
             "args": {
               "a": [
                 0.37,
-                -0.38,
+                0.08,
                 0
               ],
               "b": [
                 0.35,
-                -0.2,
+                0.26,
                 0
               ],
               "radius": 0.016
@@ -525,51 +503,51 @@
             "args": {
               "a": [
                 0.27,
-                -0.16,
+                0.3,
                 0
               ],
               "b": [
                 0.45,
-                -0.24,
+                0.22,
                 0
               ],
               "radius": 0.014
             }
           },
           {
-            "id": "bar-grip-left",
+            "id": "grip-left",
             "type": "rounded_box",
             "args": {
               "dims": [
                 0.024,
                 0.055,
-                0.028
+                0.024
               ],
               "cornerR": 0.012
             },
             "transform": {
               "translate": [
                 0.265,
-                -0.177,
+                0.289,
                 0
               ]
             }
           },
           {
-            "id": "bar-grip-right",
+            "id": "grip-right",
             "type": "rounded_box",
             "args": {
               "dims": [
                 0.024,
                 0.055,
-                0.028
+                0.024
               ],
               "cornerR": 0.012
             },
             "transform": {
               "translate": [
                 0.453,
-                -0.257,
+                0.205,
                 0
               ]
             }
@@ -578,17 +556,19 @@
       },
       {
         "id": "seat-post",
-        "type": "cylinder",
+        "type": "capsule",
         "args": {
-          "radius": 0.014,
-          "height": 0.16
-        },
-        "transform": {
-          "translate": [
+          "a": [
             -0.24,
-            -0.3,
+            -0.12,
             0
-          ]
+          ],
+          "b": [
+            -0.24,
+            0.04,
+            0
+          ],
+          "radius": 0.014
         },
         "material": {
           "hue": 0.08,
@@ -600,14 +580,14 @@
       },
       {
         "id": "saddle",
-        "type": "unionRound",
+        "type": "unionSoft",
         "args": {
-          "r": 0.006
+          "r": 0.018
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.6,
-          "value": 0.52,
+          "sat": 0.55,
+          "value": 0.45,
           "metal": 0,
           "glow": 0
         },
@@ -619,13 +599,13 @@
               "dims": [
                 0.115,
                 0.028,
-                0.04
+                0.042
               ]
             },
             "transform": {
               "translate": [
                 -0.25,
-                -0.227,
+                0.075,
                 0
               ]
             }
@@ -637,13 +617,13 @@
               "dims": [
                 0.028,
                 0.022,
-                0.032
+                0.035
               ]
             },
             "transform": {
               "translate": [
                 -0.144,
-                -0.23,
+                0.072,
                 0
               ]
             }
@@ -651,15 +631,12 @@
         ]
       },
       {
-        "id": "pedal-crank-group",
-        "type": "unionRound",
-        "args": {
-          "r": 0.005
-        },
+        "id": "pedals-group",
+        "type": "union",
         "material": {
-          "hue": 0.1,
-          "sat": 0.7,
-          "value": 0.75,
+          "hue": 0.11,
+          "sat": 0.65,
+          "value": 0.7,
           "metal": 0.65,
           "glow": 0
         },
@@ -670,12 +647,12 @@
             "args": {
               "a": [
                 0,
-                -0.9,
+                -0.7,
                 0.02
               ],
               "b": [
                 0.13,
-                -0.99,
+                -0.79,
                 0.02
               ],
               "radius": 0.014
@@ -687,12 +664,12 @@
             "args": {
               "a": [
                 0,
-                -0.9,
+                -0.7,
                 -0.02
               ],
               "b": [
                 -0.13,
-                -0.81,
+                -0.61,
                 -0.02
               ],
               "radius": 0.013
@@ -705,14 +682,14 @@
               "dims": [
                 0.072,
                 0.018,
-                0.032
+                0.036
               ],
               "cornerR": 0.009
             },
             "transform": {
               "translate": [
                 0.145,
-                -0.993,
+                -0.793,
                 0.02
               ]
             }
@@ -724,106 +701,105 @@
               "dims": [
                 0.072,
                 0.018,
-                0.032
+                0.036
               ],
               "cornerR": 0.009
             },
             "transform": {
               "translate": [
                 -0.145,
-                -0.807,
+                -0.607,
                 -0.02
+              ]
+            }
+          },
+          {
+            "id": "chainring",
+            "type": "torus",
+            "args": {
+              "radius": 0.075,
+              "thickness": 0.018
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.7,
+                0.025
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
               ]
             }
           }
         ]
       },
       {
-        "id": "chain-ring",
-        "type": "torus",
-        "args": {
-          "radius": 0.075,
-          "thickness": 0.018
-        },
-        "transform": {
-          "translate": [
-            0,
-            -0.9,
-            0
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.1,
-          "sat": 0.7,
-          "value": 0.75,
-          "metal": 0.65,
-          "glow": 0
-        }
-      },
-      {
-        "id": "lamp-body",
-        "type": "rounded_box",
-        "args": {
-          "dims": [
-            0.052,
-            0.068,
-            0.045
-          ],
-          "cornerR": 0.014
-        },
-        "transform": {
-          "translate": [
-            0.43,
-            -0.41,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.1,
-          "sat": 0.7,
-          "value": 0.75,
-          "metal": 0.65,
-          "glow": 0
-        }
-      },
-      {
-        "id": "lamp-lens",
-        "type": "sphere",
-        "args": {
-          "radius": 0.02
-        },
-        "transform": {
-          "translate": [
-            0.452,
-            -0.41,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.14,
-          "sat": 0.22,
-          "value": 0.95,
-          "metal": 0,
-          "glow": 1.8
-        }
+        "id": "lamp",
+        "type": "union",
+        "children": [
+          {
+            "id": "lamp-body",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.052,
+                0.068,
+                0.045
+              ],
+              "cornerR": 0.014
+            },
+            "transform": {
+              "translate": [
+                0.43,
+                -0.11,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.11,
+              "sat": 0.65,
+              "value": 0.7,
+              "metal": 0.65,
+              "glow": 0
+            }
+          },
+          {
+            "id": "lamp-lens",
+            "type": "sphere",
+            "args": {
+              "radius": 0.02
+            },
+            "transform": {
+              "translate": [
+                0.452,
+                -0.108,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.14,
+              "sat": 0.25,
+              "value": 0.95,
+              "metal": 0,
+              "glow": 1.2
+            }
+          }
+        ]
       },
       {
         "id": "mudguard-rear",
         "type": "capped-torus",
         "args": {
-          "capAngle": 2.8,
-          "majorR": 0.414,
+          "capAngle": 3.14159,
+          "majorR": 0.454,
           "minorR": 0.022
         },
         "transform": {
           "translate": [
             -0.42,
-            -0.9,
+            -0.7,
             0
           ],
           "rotate": [
@@ -844,14 +820,14 @@
         "id": "mudguard-front",
         "type": "capped-torus",
         "args": {
-          "capAngle": 2.8,
-          "majorR": 0.414,
+          "capAngle": 3.14159,
+          "majorR": 0.454,
           "minorR": 0.022
         },
         "transform": {
           "translate": [
             0.42,
-            -0.9,
+            -0.7,
             0
           ],
           "rotate": [
@@ -870,34 +846,34 @@
       }
     ],
     "ground": {
-      "y": -1.32,
+      "y": -1.15,
       "region": "ground",
       "material": {
-        "hue": 0.08,
-        "sat": 0.12,
-        "value": 0.7
+        "hue": 0.1,
+        "sat": 0.15,
+        "value": 0.68
       }
     },
     "defaults": {
       "camera": {
-        "yaw": 0,
-        "pitch": 0,
+        "yaw": 0.52,
+        "pitch": 0.18,
         "distance": 3.2,
         "focal": 1.5,
         "targetX": 0,
-        "targetY": -0.5,
+        "targetY": -0.3,
         "targetZ": 0
       },
       "light": {
         "azimuth": -0.65,
-        "altitude": 0.5,
-        "distance": 20,
-        "intensity": 1
+        "altitude": 0.48,
+        "distance": 18,
+        "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.4
+        "strength": 0.38
       }
     }
   }

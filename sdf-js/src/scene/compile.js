@@ -53,6 +53,8 @@ import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.
 import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
+import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
+import { Random } from '../util/random.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
@@ -357,6 +359,10 @@ const PRIMITIVE_FACTORIES = {
     maxHeight: a.maxHeight ?? 18.0,
     downtownK: a.downtownK ?? 4.0,
   }),
+  'terrain-eroded-rune': (a) => terrainErodedRuneSDF({
+    boxSize:     a.boxSize     ?? [0.5, 1.0, 0.5],
+    waterHeight: a.waterHeight ?? 0.46,
+  }),
 
   // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
   'stylized-tree': (a) => stylizedTreeSDF({
@@ -428,10 +434,46 @@ const PSEUDO_PRIMITIVES = new Set(['extrude', 'revolve', 'extrude_to']);
  *   meta: object,
  * }}
  */
-export function compile(sceneData) {
+export function compile(sceneData, options = {}) {
   const result = validate(sceneData);
   if (!result.ok) {
     throw new Error(`SceneData validation failed:\n  - ${result.errors.join('\n  - ')}`);
+  }
+
+  // -------------------------------------------------------------------------
+  // Resolve PRNG for hash-derived bakes (terrain-eroded-rune, future NFT-style
+  // primitives). Priority: explicit options.rng > options.tokenHash >
+  // sceneData.defaults.seed > fixed fallback. Hash format: 0x-prefix 64 hex.
+  // -------------------------------------------------------------------------
+  const FALLBACK_HASH = '0x' + 'a3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
+  let rng = options.rng;
+  if (!rng) {
+    const hash = options.tokenHash || sceneData.defaults?.seed || FALLBACK_HASH;
+    rng = new Random(hash);
+  }
+
+  // -------------------------------------------------------------------------
+  // Bake hook: scan subjects for types that need pre-render data baking.
+  // Phase 1 supports a single terrain-eroded-rune per scene (Phase 2+ may
+  // generalize to a PRIMITIVE_BAKES registry with per-primitive uniforms).
+  // -------------------------------------------------------------------------
+  let bakedHeightmap = null;
+  const findErodedRune = (subs) => {
+    for (const s of subs || []) {
+      if (s.type === 'terrain-eroded-rune') return s;
+      if (Array.isArray(s.children)) {
+        const f = findErodedRune(s.children); if (f) return f;
+      }
+      if (s.source) {
+        const f = findErodedRune([s.source]); if (f) return f;
+      }
+    }
+    return null;
+  };
+  const erodedSubj = findErodedRune(sceneData.subjects);
+  if (erodedSubj) {
+    const args = erodedSubj.args || {};
+    bakedHeightmap = bakeHeightmap(rng, args, args.cacheResolution ?? 512);
   }
 
   // Sprint 4: Subject motion slot map. Each subjectMotion entry → uniform slot
@@ -475,6 +517,10 @@ export function compile(sceneData) {
       } else if (subj.type === 'procedural-city' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach building material kind for window grid + sky reflection.
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.85, metal: 0.4, glow: 0, kind: 'building' });
+      } else if (subj.type === 'terrain-eroded-rune' && compiled.sdf._subjectMaterial == null) {
+        // Auto-attach Rune full-shading material kind (cliff/dirt/grass/snow/
+        // sand/tree/drainage all dispatched inside material kind=7 branch).
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.3, sat: 0.5, value: 0.6, metal: 0, glow: 0, kind: 'eroded-terrain' });
       } else if (subj.type === 'terrain-canyon' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach mountain material with red-orange sandstone tint.
         // mountain branch reads leafMat.x/y to tint the rock + ground layers
@@ -568,6 +614,11 @@ export function compile(sceneData) {
     // Sprint 4: subject motion slot map (subjectId → uniform array index).
     // FLY 3D uploads u_subjectOffset[slot] per frame from evaluator output.
     motionSlots,
+    // Sprint 12 (Rune erosion): if scene has a terrain-eroded-rune subject,
+    // bakeHeightmap was called above and the resulting Float32Array goes here.
+    // flyLambert checks for this on setScene and uploads as sampler2D u_heightmap.
+    // Shape: { data: Float32Array(W*H*4), width, height, params } | null.
+    bakedHeightmap,
     meta: {
       id: sceneData.id,
       name: sceneData.name,

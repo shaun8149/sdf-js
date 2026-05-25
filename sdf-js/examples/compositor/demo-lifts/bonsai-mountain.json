@@ -1,0 +1,60 @@
+{
+  "id": "bonsai-mountain",
+  "title": "Bonsai 山地",
+  "prompt": "盆景式蚀刻山地 — 一座装在玻璃盒里的小山",
+  "code2d": "// Hand-authored — not lifted from 2D code. This is the Rune Skovbo Johansen\n// 'Advanced Terrain Erosion Filter' (MPL-2.0) ported to Atlas as the\n// terrain-eroded-rune primitive. Sprint 12 (2026-05-25).\n//\n// Each `?tokenHash=0x...` URL parameter produces a unique mountain shape:\n//   - 1-3 hash-derived bumps drive the macro silhouette\n//   - 6 hash-jittered erosion params drive the gully character\n//   - The Phacelle noise sampling domain is shifted by per-hash offset so\n//     gullies are physically different\n//\n// Render is FLY 3D's eroded-terrain material kind (cliff / dirt / grass /\n// snow / sand / tree splat / drainage). Phase 2 will add Blueprint + BOB GPU\n// views; Phase 4 packages the algorithm for on-chain NFT use.",
+  "sceneData": {
+    "v": 1,
+    "name": "Rune erosion bonsai mountain (Sprint 12)",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "盆景式蚀刻山地",
+      "from2dCode": "no 2D source — built directly to integrate the Rune erosion filter primitive (terrain-eroded-rune, MPL-2.0)"
+    },
+    "defaults": {
+      "seed": "0xa3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d",
+      "camera": {
+        "yaw": 0.785,
+        "pitch": 0.50,
+        "distance": 2.8,
+        "focal": 5.0,
+        "targetX": 0,
+        "targetY": 0.50,
+        "targetZ": 0,
+        "aperture": 0.0,
+        "focalDistance": 2.8
+      },
+      "light": {
+        "azimuth": -1.0,
+        "altitude": 0.40,
+        "distance": 50,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.55
+      },
+      "postFx": {
+        "exposure": 1.10,
+        "vignetteStrength": 0.20,
+        "bloomMix": 0.10,
+        "bloomThreshold": 0.95,
+        "lensFlareStrength": 0.0,
+        "motionBlurStrength": 0.0
+      }
+    },
+    "subjects": [
+      {
+        "id": "bonsai",
+        "type": "terrain-eroded-rune",
+        "args": {
+          "boxSize": [0.5, 1.0, 0.5],
+          "waterHeight": 0.46,
+          "cacheResolution": 512
+        }
+      }
+    ],
+    "ground": null
+  }
+}

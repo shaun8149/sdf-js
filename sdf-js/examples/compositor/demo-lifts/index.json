@@ -30,6 +30,15 @@
       "prompt": "雨林山岭"
     },
     {
+      "id": "bonsai-mountain",
+      "title": "盆景蚀刻山地",
+      "thesisPoint": "Sprint 12 (Rune Skovbo Johansen Advanced Terrain Erosion Filter, MPL-2.0) — Atlas's first CPU-baked-heightmap-to-GPU-texture pipeline. compile() bakes a 512² heightmap (height + ridgeMap + treeAmount + erosionOffset packed into RGBA32F) via Phacelle noise + 5-octave erosion, uploaded to flyLambert as sampler2D u_heightmap. New material kind='eroded-terrain' (kind=7) renders cliff/dirt/grass/snow/sand/tree/drainage by reading the 4 channels. Hash-driven (?tokenHash=0x... or scene.defaults.seed): different hashes produce visually distinct mountains via 1-3 random initial bumps + 6 jittered visual erosion params + per-hash Phacelle domain offset. NFT-ready primitive — Phase 2 adds Blueprint + BOB GPU views for the on-chain generative art triple-view product.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "bonsai-mountain.json",
+      "prompt": "盆景式蚀刻山地"
+    },
+    {
       "id": "city-skyline",
       "title": "都市天际线",
       "thesisPoint": "Sprint A7 (Otavio Good Skyline CC0 recipe port) — Atlas's first procedural-scene primitive (procedural-city). Infinite tiled skyscrapers via per-block hash + downtown bias + window-aligned floor quantization. Requires new voxel-walk raymarch (flyLambert clamps step to unit block boundaries when scene has city, otherwise sphere trace overshoots discontinuous per-block SDF). New material kind='building' (kind=6) renders procedural window grid + Schlick glass reflection + lane-marking road texture.",

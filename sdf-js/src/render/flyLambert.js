@@ -41,6 +41,10 @@ uniform float u_blueprintMode;
 // discontinuous; sphere trace alone overshoots. Voxel-walk clamps step to
 // next unit XZ-aligned block boundary.
 uniform float u_cityActive;
+// Sprint 12 Rune erosion: gates the sdTerrainErodedRune sampling path +
+// triggers eroded-terrain shading branch. Set by flyLambert when scene
+// has terrain-eroded-rune subject (auto-detected via setRuneHeightmap).
+uniform float u_runeActive;
 // Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
@@ -730,12 +734,16 @@ void main() {
     bool isTranslucent = false; // material.kind == 'translucent' (tone.y ~ 4)
     bool isSnowy = false;       // material.kind == 'snowy'       (tone.y ~ 5)
     bool isBuilding = false;    // material.kind == 'building'    (tone.y ~ 6)
+    bool isEroded = false;      // material.kind == 'eroded-terrain' (tone.y ~ 7)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      // Check higher kinds first (6 > 5 > 4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 5.5) {
+      // Check higher kinds first (7 > 6 > 5 > 4 > 3 > 2 > 1 > 0).
+      if (leafTone.y > 6.5) {
+        isEroded = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+      } else if (leafTone.y > 5.5) {
         isBuilding = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
         metalK = leafMat.z;
@@ -1119,6 +1127,75 @@ void main() {
       vec3 fogExt = exp2(-mountDist * 0.0012 * vec3(1.0, 1.5, 4.0));
       vec3 fogColor = sky(rd, sunDir);
       col = col * fogExt + (1.0 - fogExt) * fogColor;
+    } else if (isEroded) {
+      // ---- Eroded-terrain material kind (Rune Skovbo Johansen recipe) -------
+      // Multi-layer shading over the CPU-baked heightmap. Channels:
+      //   .x = height [0,1]   .y = ridgeMap [0,1]   .z = treeAmount [0,1]
+      //   .w = erosionOffset [0,1] (= occlusion proxy when >0.5 → exposed)
+      // Layer stack (Rune order): cliff → dirt → grass → snow → sand → trees
+      // → drainage. Each layer applies a smoothstep mask over the base color.
+      vec3 boxSize = vec3(0.5, 1.0, 0.5);  // matches sdTerrainErodedRune default
+      vec2 uv = p.xz / (2.0 * boxSize.xz) + 0.5;
+      vec4 hm = texture2D(u_heightmap, clamp(uv, vec2(0.001), vec2(0.999)));
+      float height = hm.x;
+      float ridge  = hm.y * 2.0 - 1.0;          // unpack [0,1] → [-1,1]
+      float trees  = hm.z;
+      float ero    = hm.w * 2.0 - 1.0;          // unpack [0,1] → [-1,1]
+      float occlusion = clamp(ero + 0.5, 0.0, 1.0);
+      // Drainage = 1 where creases (low ridge), 0 elsewhere. Width tunable.
+      float drainage = clamp((1.0 - clamp(ridge / 0.3, 0.0, 1.0)) * 1.5, 0.0, 1.0);
+      // Detail noise breakup (fbm; replaces Rune's Buffer C detail texture)
+      float breakup = fbm3_lite(p * 8.0) * 0.5 + 0.5;
+
+      // Base color stack (Rune's diffuseColor):
+      vec3 CLIFF  = vec3(0.22, 0.20, 0.20);
+      vec3 DIRT   = vec3(0.60, 0.50, 0.40);
+      vec3 GRASS1 = vec3(0.15, 0.30, 0.10);
+      vec3 GRASS2 = vec3(0.40, 0.50, 0.20);
+      vec3 SAND   = vec3(0.80, 0.70, 0.60);
+      vec3 SNOW   = vec3(1.0, 1.0, 1.0);
+      vec3 TREE   = vec3(0.12, 0.26, 0.10);
+      float WATER_H = 0.46;  // matches DEFAULT_EROSION_PARAMS
+
+      vec3 diffuse = CLIFF * smoothstep(0.40, 0.52, height);
+      diffuse = mix(diffuse, DIRT, smoothstep(0.6, 0.0, occlusion + breakup * 1.5));
+      // Snow on peaks
+      diffuse = mix(diffuse, SNOW, smoothstep(0.53, 0.60, height + breakup * 0.1));
+      // Sand at water edge
+      diffuse = mix(diffuse, SAND, smoothstep(WATER_H + 0.005, WATER_H, height + breakup * 0.01));
+      // Grass blend (Rune mixes two greens by altitude+erosion+breakup)
+      vec3 grassMix = mix(GRASS1, GRASS2, smoothstep(0.4, 0.6, height - ero * 0.05 + breakup * 0.3));
+      float grassMask = smoothstep(WATER_H + 0.05, WATER_H + 0.02, height + 0.01 + (occlusion - 0.8) * 0.05)
+                     * smoothstep(0.8, 1.0, 1.0 - (1.0 - n.y) * (1.0 - trees) + breakup * 0.1);
+      diffuse = mix(diffuse, grassMix, grassMask);
+      // Tree splat: where treeAmount > threshold, mix in tree color
+      diffuse = mix(diffuse, TREE * pow(trees, 8.0), clamp(trees * 2.2 - 0.8, 0.0, 1.0) * 0.6);
+      diffuse *= 1.0 + breakup * 0.5;
+      // Drainage = wet/dark streaks along creases (Rune's signature look)
+      diffuse = mix(diffuse, vec3(0.20, 0.18, 0.16), drainage * 0.6);
+
+      // Standard Lambert + sky ambient
+      vec3 sunCol = vec3(1.05, 0.96, 0.84);
+      vec3 skyCol = sky(n, sunDir) * 0.55;
+      float diffE = max(dot(n, toLight), 0.0);
+      vec3 lin = diffuse * sunCol * diffE * shadowK * 1.30
+               + diffuse * skyCol * skyL * ao * occlusion * 0.50
+               + diffuse * vec3(0.30, 0.35, 0.40) * 0.10;
+      // Water plane: if below water height, render water surface separately
+      // (deferred to sea-shading path is overkill here — simple blend).
+      if (p.y < WATER_H && height < WATER_H) {
+        vec3 waterCol = vec3(0.0, 0.20, 0.30);
+        float waterDepth = (WATER_H - height) * 30.0;
+        float foam = smoothstep(0.10, 0.0, waterDepth);
+        vec3 wsurf = mix(waterCol, vec3(0.0, 0.40, 0.45), exp(-waterDepth * 2.0));
+        wsurf = mix(wsurf, vec3(0.92, 0.95, 0.98), foam * 0.6);
+        lin = mix(wsurf, lin, 0.15);
+      }
+
+      // Atmospheric fog
+      float eDist = length(p - ro);
+      vec3 fogExt = exp2(-eDist * 0.020 * vec3(1.0, 1.2, 2.0));
+      col = lin * fogExt + (1.0 - fogExt) * sky(rd, sunDir);
     } else if (isBuilding) {
       // ---- Building material kind (Otavio Good Skyline CC0 recipe) ----------
       // Sub-dispatch: street (y<0.05), car (0.05<y<0.13 in road region), or wall.
@@ -1482,6 +1559,11 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   let activeMotionSlots = {};  // { subjectId: slot } — set by setMotionSlots()
   let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
   let activeCityMode = false;  // set by setCityMode() when scene has procedural-city
+  // Sprint 12 Rune erosion: CPU-baked heightmap uploaded as WebGL2 RGBA32F.
+  // setRuneHeightmap({data, width, height}) creates/updates this; pass null to clear.
+  let runeHeightmapTex = null;
+  let runeHeightmapW = 0, runeHeightmapH = 0;
+  let _runeBindLogged = false, _runeBindWarned = false;  // one-time diagnostic flags
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1674,6 +1756,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       'u_blueprintMode',
       // Sprint A7 city voxel-walk toggle
       'u_cityActive',
+      // Sprint 12 Rune erosion heightmap sampler + active flag
+      'u_heightmap',
+      'u_runeActive',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1861,6 +1946,26 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // primitive (auto-detected on SDF compile via _hasCity flag).
     if (uniformsCache.u_cityActive != null) {
       gl.uniform1f(uniformsCache.u_cityActive, activeCityMode ? 1.0 : 0.0);
+    }
+    // Sprint 12: Rune heightmap. Bound to texture unit 1 (unit 0 reserved for
+    // future use). u_runeActive gates the sdTerrainErodedRune sampling path —
+    // without it the GLSL would sample an undefined texture and render garbage.
+    if (runeHeightmapTex != null && uniformsCache.u_heightmap != null) {
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+      gl.uniform1i(uniformsCache.u_heightmap, 1);
+      if (!_runeBindLogged) {
+        console.log(`[fly3d] u_heightmap bound to TEXTURE1, uniform loc=${uniformsCache.u_heightmap}, u_runeActive loc=${uniformsCache.u_runeActive}`);
+        _runeBindLogged = true;
+      }
+    } else if (runeHeightmapTex != null && uniformsCache.u_heightmap == null) {
+      if (!_runeBindWarned) {
+        console.warn('[fly3d] runeHeightmapTex exists but uniformsCache.u_heightmap is null — GLSL optimized away the sampler? Check that sdTerrainErodedRune is actually emitted.');
+        _runeBindWarned = true;
+      }
+    }
+    if (uniformsCache.u_runeActive != null) {
+      gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);
     }
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
@@ -2212,6 +2317,46 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      */
     setCityMode(on) {
       activeCityMode = !!on;
+    },
+
+    /**
+     * Sprint 12 (Rune erosion): upload the CPU-baked heightmap from
+     * compile.js as a WebGL2 RGBA32F texture bound to sampler2D u_heightmap.
+     * Channels: x=eroded height, y=ridgeMap, z=treeAmount, w=erosionOffset.
+     * Call with null to clear (frees GPU texture). Safe to call repeatedly —
+     * texture is reallocated if dimensions change, else just texSubImage2D.
+     */
+    setRuneHeightmap(baked) {
+      if (!baked) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = null;
+        runeHeightmapW = 0; runeHeightmapH = 0;
+        console.log('[fly3d] setRuneHeightmap(null) — cleared');
+        return;
+      }
+      const { data, width, height } = baked;
+      if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
+        throw new Error(`[fly3d] setRuneHeightmap: data must be Float32Array(${width}*${height}*4); got len=${data?.length}`);
+      }
+      if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
+        if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
+        runeHeightmapTex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, width, height, 0, gl.RGBA, gl.FLOAT, data);
+        const err = gl.getError();
+        if (err !== gl.NO_ERROR) console.error(`[fly3d] texImage2D RGBA32F error 0x${err.toString(16)}`);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        runeHeightmapW = width;
+        runeHeightmapH = height;
+        const sample = data.slice(width * (height >> 1) * 4 + (width >> 1) * 4, width * (height >> 1) * 4 + (width >> 1) * 4 + 4);
+        console.log(`[fly3d] setRuneHeightmap upload ${width}×${height} RGBA32F (${(data.byteLength / 1024).toFixed(0)} KB), center texel = [${Array.from(sample).map(x => x.toFixed(3)).join(', ')}]`);
+      } else {
+        gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, gl.FLOAT, data);
+      }
     },
 
     setSubjectBaseTargets(map) {
