@@ -1,39 +1,34 @@
 {
   "result": {
     "demoId": "spiral-vase",
-    "version": "v3.5",
+    "version": "v3.7",
     "model": "claude-sonnet-4-5",
-    "elapsed": "20.9s",
+    "elapsed": "17.9s",
     "tokens": {
-      "input": 35836,
-      "output": 1628
+      "input": 43850,
+      "output": 1316
     },
-    "costUSD": "0.1319",
-    "subjectCount": 9,
+    "costUSD": "0.1513",
+    "subjectCount": 6,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 9,
+    "materialUsageCount": 6,
     "patternUsageCount": 1,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 9,
-      "min": -0.06,
-      "max": 0.08,
-      "range": 0.14,
-      "stdev": 0.036447154370792725
+      "count": 6,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
-    "v32AtomsUsedCount": 3,
-    "v32AtomsUsed": [
-      [
-        "forest-flower",
-        3
-      ]
-    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
     "materialKindsUsed": {
       "sea": 0,
       "mountain": 0,
@@ -41,8 +36,8 @@
       "translucent": 0
     },
     "cinematic": {
-      "postFx": 0,
-      "aperture": 0,
+      "postFx": 1,
+      "aperture": 1,
       "volumeCount": 0,
       "flameVols": 0,
       "smokeVols": 0,
@@ -60,22 +55,21 @@
     },
     "typeCounts": {
       "revolve": 1,
-      "torus": 3,
       "cut-hollow-sphere": 1,
-      "forest-flower": 3,
+      "torus": 3,
       "box": 1
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Chinese Celadon Vase"
+    "sceneName": "Celadon vase"
   },
   "sceneData": {
     "v": 1,
-    "name": "Chinese Celadon Vase",
+    "name": "Celadon vase",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "28-vertex polygon profile → celadon vase, Song-dynasty mei-ping silhouette, decorative bands, crescent shadow, mouth cavity"
+      "from2dCode": "Polygon-based mei-ping vase, 28-vertex symmetric profile, celadon palette, decorative rim bands, hand-traced Chinese porcelain silhouette"
     },
     "subjects": [
       {
@@ -160,60 +154,38 @@
           ]
         },
         "material": {
-          "hue": 0.4,
-          "sat": 0.35,
-          "value": 0.7,
-          "metal": 0.12,
+          "hue": 0.42,
+          "sat": 0.28,
+          "value": 0.78,
+          "metal": 0.15,
           "glow": 0
-        },
-        "region": "ceramic"
+        }
       },
       {
-        "id": "decorative-band-upper",
-        "type": "torus",
+        "id": "mouth-opening",
+        "type": "cut-hollow-sphere",
         "args": {
-          "radius": 0.305,
-          "thickness": 0.025
+          "radius": 0.13,
+          "h": 0.08,
+          "t": 0.015
         },
         "transform": {
           "translate": [
             0,
-            0.1,
+            0.72,
             0
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.45,
+          "hue": 0.1,
+          "sat": 0.22,
+          "value": 0.18,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-lower",
-        "type": "torus",
-        "args": {
-          "radius": 0.275,
-          "thickness": 0.015
-        },
-        "transform": {
-          "translate": [
-            0,
-            -0.35,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.45,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "rim-ring",
+        "id": "rim-band-upper",
         "type": "torus",
         "args": {
           "radius": 0.135,
@@ -228,113 +200,53 @@
         },
         "material": {
           "hue": 0.38,
-          "sat": 0.5,
-          "value": 0.42,
-          "metal": 0,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0.1,
           "glow": 0
         }
       },
       {
-        "id": "mouth-cavity",
-        "type": "cut-hollow-sphere",
+        "id": "stripe-mid",
+        "type": "torus",
         "args": {
-          "radius": 0.14,
-          "h": 0.02,
-          "t": 0.02
+          "radius": 0.285,
+          "thickness": 0.025
         },
         "transform": {
           "translate": [
             0,
-            0.7,
+            0.1,
             0
           ]
         },
         "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.18,
-          "metal": 0,
+          "hue": 0.38,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0.1,
           "glow": 0
         }
       },
       {
-        "id": "flower-1",
-        "type": "forest-flower",
+        "id": "stripe-lower",
+        "type": "torus",
         "args": {
-          "stemH": 0.65,
-          "bloomR": 0.12
+          "radius": 0.265,
+          "thickness": 0.013
         },
         "transform": {
           "translate": [
-            -0.08,
-            0.75,
-            0.05
-          ],
-          "rotate": [
             0,
-            0,
-            -0.15
+            -0.35,
+            0
           ]
         },
         "material": {
-          "hue": 0.96,
-          "sat": 0.82,
-          "value": 0.88,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "flower-2",
-        "type": "forest-flower",
-        "args": {
-          "stemH": 0.72,
-          "bloomR": 0.1
-        },
-        "transform": {
-          "translate": [
-            0.04,
-            0.75,
-            -0.06
-          ],
-          "rotate": [
-            0,
-            0,
-            0.1
-          ]
-        },
-        "material": {
-          "hue": 0.98,
-          "sat": 0.75,
-          "value": 0.85,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "flower-3",
-        "type": "forest-flower",
-        "args": {
-          "stemH": 0.58,
-          "bloomR": 0.09
-        },
-        "transform": {
-          "translate": [
-            0.06,
-            0.75,
-            0.08
-          ],
-          "rotate": [
-            0,
-            0,
-            0.2
-          ]
-        },
-        "material": {
-          "hue": 0.01,
-          "sat": 0.88,
-          "value": 0.82,
-          "metal": 0,
+          "hue": 0.38,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0.1,
           "glow": 0
         }
       },
@@ -351,43 +263,52 @@
         "transform": {
           "translate": [
             0,
-            -0.85,
+            -0.82,
             0
           ]
         },
         "material": "wood",
         "pattern": {
           "kind": "cells",
-          "scale": 3.5,
-          "strength": 0.3
+          "scale": 4,
+          "strength": 0.22
         }
       }
     ],
     "ground": {
-      "y": -1,
+      "y": -0.88,
       "region": "floor",
-      "material": "linen"
+      "material": "matte-white"
     },
     "defaults": {
       "camera": {
-        "yaw": 0.5,
-        "pitch": 0.22,
-        "distance": 3.2,
-        "focal": 1.7,
+        "yaw": 0.55,
+        "pitch": 0.18,
+        "distance": 2.8,
+        "focal": 1.5,
         "targetX": 0,
-        "targetY": 0.1,
-        "targetZ": 0
+        "targetY": 0,
+        "targetZ": 0,
+        "aperture": 0.8,
+        "focalDistance": 2.8
       },
       "light": {
         "azimuth": -0.65,
-        "altitude": 0.6,
+        "altitude": 0.58,
         "distance": 12,
         "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.42
+        "strength": 0.38
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.32,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0
       }
     }
   }

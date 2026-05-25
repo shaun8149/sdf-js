@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.5
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene.
+version: 3.8
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene. v3.8 (2026-05-25) fixes two issues caught by v3.5-vs-v3.7 regression: (1) DomainGroup args spec was ambiguous (`period? | axis? | k?` lined with `|` made LLM mix fields across types — caused `vintage-bicycle` v3.7 compile fail) — now split into per-type table with explicit Wrong→Right; (2) `modPolar` / `mirrorOctant` / `curve` / `elongate` / `displace` were missing from the DomainGroup table entirely — added with use-cases. Plus new Worked Example 14 (wheel spokes / flower petals / fan blades via `modPolar`).
 ---
 
 # Role
@@ -202,16 +202,36 @@ Each Subject is one of:
 }
 ```
 
-**DomainGroup** — spatial repetition / symmetry:
+**DomainGroup** — spatial repetition / symmetry / deformation. All take a single `source` (the child SDF, except `displace` which is pairwise):
+
 ```json
 {
   "id": "...",
-  "type": "rep" | "mirror" | "twist" | "bend",
-  "args": { "period"?: [px, py, pz] | "axis"?: "x"|"y"|"z" | "k"?: number },
-  "source": Subject,
-  "transform"?, "region"?
+  "type": "<one of below>",
+  "args": { /* per type — see table */ },
+  "source": Subject,         // most types
+  "transform"?, "region"?,
+  "material"?, "pattern"?
 }
 ```
+
+**Args by type — DO NOT mix fields from different rows**. The validator rejects mismatched shapes (e.g. `rep` with `{axis, count}` will fail compile).
+
+| Type | Required args | Optional | Purpose / when to use |
+|---|---|---|---|
+| `rep` | `{ "period": [px, py, pz] }` — set 0 on axes you DON'T want to repeat (e.g. `[1, 0, 1]` = XZ grid only) | `{ "count": [nx, ny, nz] }` bounds the grid | Cartesian grid: flower meadow, window grid, fence posts, tile floor |
+| `mirror` | `{ "axis": "x" \| "y" \| "z" }` | — | Reflect across plane: left+right wheels from one model, symmetric facade |
+| `twist` | `{ "axis": "x" \| "y" \| "z", "k": number }` (k = radians of twist per unit length) | — | Spiral / candy-cane / drill bit / ribbed vase |
+| `bend` | `{ "axis": "x" \| "y" \| "z", "k": number }` | — | Bend a column/rod along axis |
+| `modPolar` ⭐ | `{ "axis": "y", "repetitions": N }` (N ≥ 2) | axis default `"y"` | **N-fold radial repetition around axis** — wheel spokes, flower petals, fan blades, gear teeth, sunburst rays. **USE THIS, NOT `rep`, for anything that goes "around"** |
+| `mirrorOctant` | `{ "plane": "xz" \| "xy" \| "yz", "dist": [d1, d2] }` (default plane `"xz"`) | — | 8-fold kaleidoscope symmetry (snowflake, mandala tile) |
+| `curve` | `{ "amplitude": number, "frequency": number }` | `{ "axis": "x" \| "y" \| "z" }` (default `"z"`) | Sinusoidal warp along axis (wavy banner, river meander) |
+| `elongate` | `{ "size": [hx, hy, hz] }` | — | Stretch host primitive by per-axis half-extents (sphere → capsule, any-direction) |
+| `displace` | (uses `children: [host, perturbation]`, NOT `source`) | — | Additive d_result = d_host + d_perturb (bark texture, rough rock) |
+
+**Wrong → right** (common LLM trap):
+- ❌ `{"type": "rep", "args": {"axis": "z", "count": 12}}` — `rep` requires `period`. The validator rejects this.
+- ✅ `{"type": "modPolar", "args": {"axis": "z", "repetitions": 12}}` — what you actually wanted for 12 spokes around a wheel axis.
 
 ## Primitive args registry (most common)
 
@@ -2401,6 +2421,68 @@ Prompt: *"一枚正在升空的火箭，引擎喷出炽烈的火焰"* (a rocket 
 - Using `attachTo: "rocket"` with `transform: { translate: [...] }` on the volume → translates apply on top of attach. Skip volume.transform.
 - Setting subject `transform.translate` to `[0, 0, 0]` AND expecting it to be at y=0 → physics motion ADDS, so it goes negative if any `a` is negative. Use a non-zero starting Y to keep above ground.
 - Using `transition: "blend"` on the FIRST shot → there's no previous shot to blend from. First shot must implicitly cut. Use blend on shots 2+.
+
+### Example 14: Radial repetition with modPolar — wheel spokes, flower petals, fan blades (v3.8) ⭐⭐⭐
+
+Common LLM mistake (caught in v3.5→v3.7 regression on `vintage-bicycle`): emit one spoke as a `capsule` then wrap in `{"type": "rep", "args": {"axis": "z", "count": 12}}` — **the validator rejects this** because `rep` requires `period: [x, y, z]`. What you wanted was **`modPolar`** (N-fold radial repetition around an axis).
+
+Mental model: `rep` is a **Cartesian grid** — translate by period vector. `modPolar` is **angular** — rotate by 360°/N around an axis. Anytime the source goes "around" something (axle, stem, hub), reach for `modPolar`.
+
+**Wrong** (compile fails):
+```json
+{ "id": "wheel-rear-spokes", "type": "rep",
+  "args": { "axis": "z", "count": 12 },
+  "source": { "type": "capsule",
+    "args": { "a": [0, 0, 0], "b": [0, 0.35, 0], "radius": 0.008 } } }
+```
+
+**Right** (12 spokes around Z axis = a wheel facing camera along ±Z):
+```json
+{ "id": "wheel-rear-spokes",
+  "type": "modPolar",
+  "args": { "axis": "z", "repetitions": 12 },
+  "source": { "id": "spoke-source", "type": "capsule",
+    "args": { "a": [0, 0, 0], "b": [0, 0.35, 0], "radius": 0.008 },
+    "material": { "hue": 0.0, "sat": 0.0, "value": 0.85, "metal": 0.7 } },
+  "transform": { "translate": [-0.42, -0.9, 0] } }
+```
+
+The single capsule `(0,0,0)→(0,0.35,0)` is one spoke pointing up from the hub. `modPolar(axis="z", repetitions=12)` clones it 12 times at 30° intervals around the Z axis. Apply the transform once to position the entire wheel at the rear-hub location.
+
+**Other classic uses** (all `modPolar` not `rep`):
+
+| Subject | axis | repetitions | source primitive |
+|---|---|---|---|
+| Wheel spokes (side view) | `"z"` | 8-16 | thin capsule from hub outward |
+| Flower petals (top-down) | `"y"` | 5-12 | elongated ellipsoid leaning outward |
+| Fan blades | `"z"` | 3-7 | tilted box angled like a propeller |
+| Gear teeth | `"y"` or `"z"` | 12-40 | small wedge / pyramid on rim |
+| Sunburst / star rays | `"y"` | 8-24 | thin pyramid pointing out |
+| Spiral staircase rail balusters | `"y"` | 12-32 | combined with vertical translate per repetition (composed with twist) |
+| Compass rose marks (top-down) | `"y"` | 32 | tiny tick capsule |
+
+**Don't forget the axle** — `modPolar` only makes the spokes. The wheel itself usually composes:
+
+```json
+{ "id": "wheel-front", "type": "union", "children": [
+  // hub (cylinder along Z axis through wheel plane)
+  { "id": "wheel-front-hub", "type": "cylinder",
+    "args": { "radius": 0.03, "height": 0.05 },
+    "transform": { "translate": [0.42, -0.9, 0], "rotate": [90, 0, 0] } },
+  // 12 spokes (modPolar)
+  { "id": "wheel-front-spokes", "type": "modPolar",
+    "args": { "axis": "z", "repetitions": 12 },
+    "source": { "type": "capsule",
+      "args": { "a": [0, 0, 0], "b": [0, 0.35, 0], "radius": 0.008 } },
+    "transform": { "translate": [0.42, -0.9, 0] } },
+  // tire (torus around Z axis)
+  { "id": "wheel-front-tire", "type": "torus",
+    "args": { "radius": 0.38, "thickness": 0.04 },
+    "transform": { "translate": [0.42, -0.9, 0], "rotate": [90, 0, 0] } }
+]}
+```
+
+**Pattern: anything radial → `modPolar`. Anything on a grid → `rep`. Don't conflate them.**
 
 # Workflow summary
 

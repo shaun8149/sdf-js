@@ -1,0 +1,525 @@
+{
+  "result": {
+    "demoId": "clock-915",
+    "version": "v3.5",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "24.5s",
+    "tokens": {
+      "input": 36998,
+      "output": 2174
+    },
+    "costUSD": "0.1436",
+    "subjectCount": 20,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 18,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 17,
+      "min": -0.5,
+      "max": 0.035,
+      "range": 0.535,
+      "stdev": 0.12171723996702484
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "typeCounts": {
+      "box": 13,
+      "union": 1,
+      "torus": 1,
+      "cylinder": 2,
+      "capsule": 2,
+      "sphere": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Wall Clock at 9:15"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Wall Clock at 9:15",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "挂在墙上的9点15分的钟",
+      "from2dCode": "Clock with bezel, face, 12 hour ticks, 60 minute ticks, hour hand at 9:15, minute hand at 3, center boss, wall background"
+    },
+    "subjects": [
+      {
+        "id": "wall-plane",
+        "type": "box",
+        "args": {
+          "dims": [
+            4.2,
+            3.8,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            -0.5
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.18,
+          "value": 0.88,
+          "metal": 0,
+          "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.15
+        }
+      },
+      {
+        "id": "clock-body",
+        "type": "union",
+        "material": "matte-black",
+        "children": [
+          {
+            "id": "bezel-ring",
+            "type": "torus",
+            "args": {
+              "radius": 0.55,
+              "thickness": 0.08
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "id": "bezel-back",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.52,
+              "height": 0.06
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                -0.03
+              ],
+              "rotate": [
+                1.5708,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "clock-face",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.5,
+          "height": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.01
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.08,
+          "value": 0.98,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tick-12",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.41,
+            0.018
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.014,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.41,
+            0,
+            0.018
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-6",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.014,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.41,
+            0.018
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-9",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.06,
+            0.014,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.41,
+            0,
+            0.018
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.356,
+            0.205,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.205,
+            0.356,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            1.0472
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-4",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.205,
+            -0.356,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.0472
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-5",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.356,
+            -0.205,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-7",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.356,
+            -0.205,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            0.5236
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-8",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.205,
+            -0.356,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            1.0472
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-10",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.205,
+            0.356,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.0472
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "tick-11",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.012,
+            0.06,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.356,
+            0.205,
+            0.018
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.5236
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "hour-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.0496,
+            -0.0131,
+            0.025
+          ],
+          "b": [
+            -0.277,
+            0.0732,
+            0.025
+          ],
+          "radius": 0.018
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "minute-hand",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.05,
+            0,
+            0.03
+          ],
+          "b": [
+            0.36,
+            0,
+            0.03
+          ],
+          "radius": 0.012
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "center-boss",
+        "type": "sphere",
+        "args": {
+          "radius": 0.03
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0.035
+          ]
+        },
+        "material": "matte-black"
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0,
+        "distance": 2.8,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.4,
+        "altitude": 0.6,
+        "distance": 12,
+        "intensity": 1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.35
+      }
+    }
+  }
+}

@@ -3,22 +3,18 @@
     "demoId": "forest-meteors",
     "version": "v3.7",
     "model": "claude-sonnet-4-5",
-    "elapsed": "50.6s",
+    "elapsed": "43.2s",
     "tokens": {
       "input": 42406,
-      "output": 4245
+      "output": 3815
     },
-    "costUSD": "0.1909",
-    "subjectCount": 41,
-    "newAtomsUsedCount": 19,
+    "costUSD": "0.1844",
+    "subjectCount": 37,
+    "newAtomsUsedCount": 18,
     "newAtomsUsed": [
       [
         "star",
         15
-      ],
-      [
-        "moon",
-        1
       ],
       [
         "bird-silhouette",
@@ -27,16 +23,16 @@
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 16,
+    "materialUsageCount": 14,
     "patternUsageCount": 0,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 37,
-      "min": -33,
+      "count": 34,
+      "min": -28,
       "max": 62,
-      "range": 95,
-      "stdev": 31.521717906561847
+      "range": 90,
+      "stdev": 28.57473658556201
     },
     "v30AtomsUsedCount": 3,
     "v30AtomsUsed": [
@@ -45,11 +41,11 @@
         3
       ]
     ],
-    "v32AtomsUsedCount": 13,
+    "v32AtomsUsedCount": 10,
     "v32AtomsUsed": [
       [
         "stylized-tree",
-        8
+        6
       ],
       [
         "grass-field",
@@ -57,14 +53,14 @@
       ],
       [
         "meteor-streak",
-        4
+        3
       ]
     ],
     "materialKindsUsed": {
       "sea": 0,
       "mountain": 0,
       "emissive": 0,
-      "translucent": 8
+      "translucent": 6
     },
     "cinematic": {
       "postFx": 0,
@@ -86,13 +82,12 @@
     },
     "typeCounts": {
       "cone": 5,
-      "stylized-tree": 8,
+      "stylized-tree": 6,
       "grass-field": 1,
       "rep": 1,
       "bush": 3,
-      "meteor-streak": 4,
+      "meteor-streak": 3,
       "star": 15,
-      "moon": 1,
       "bird-silhouette": 3
     },
     "compileOk": true,
@@ -359,52 +354,6 @@
         }
       },
       {
-        "id": "back-tree-6",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3,
-          "trunkRad": 0.21,
-          "leafSize": 0.13,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            -3,
-            0,
-            38
-          ]
-        },
-        "material": {
-          "hue": 0.29,
-          "sat": 0.52,
-          "value": 0.41,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "back-tree-7",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3.6,
-          "trunkRad": 0.25,
-          "leafSize": 0.14,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            8,
-            0,
-            32
-          ]
-        },
-        "material": {
-          "hue": 0.28,
-          "sat": 0.56,
-          "value": 0.43,
-          "kind": "translucent"
-        }
-      },
-      {
         "id": "grass-mat",
         "type": "grass-field",
         "args": {
@@ -427,6 +376,11 @@
             1.1,
             0,
             1.1
+          ],
+          "count": [
+            10,
+            0,
+            9
           ]
         },
         "source": {
@@ -454,17 +408,17 @@
         "id": "bush-1",
         "type": "bush",
         "args": {
-          "radius": 0.28
+          "radius": 0.32
         },
         "transform": {
           "translate": [
-            -9,
+            -2.5,
             0,
             12
           ]
         },
         "material": {
-          "hue": 0.29,
+          "hue": 0.28,
           "sat": 0.68,
           "value": 0.42
         }
@@ -473,38 +427,38 @@
         "id": "bush-2",
         "type": "bush",
         "args": {
-          "radius": 0.32
+          "radius": 0.28
         },
         "transform": {
           "translate": [
-            13,
+            8,
             0,
-            15
+            14
           ]
         },
         "material": {
-          "hue": 0.3,
-          "sat": 0.65,
-          "value": 0.45
+          "hue": 0.27,
+          "sat": 0.7,
+          "value": 0.4
         }
       },
       {
         "id": "bush-3",
         "type": "bush",
         "args": {
-          "radius": 0.26
+          "radius": 0.3
         },
         "transform": {
           "translate": [
-            -18,
+            -10,
             0,
             18
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.7,
-          "value": 0.4
+          "hue": 0.29,
+          "sat": 0.65,
+          "value": 0.44
         }
       },
       {
@@ -568,26 +522,6 @@
         }
       },
       {
-        "id": "meteor-4",
-        "type": "meteor-streak",
-        "args": {
-          "origin": [
-            18,
-            26,
-            32
-          ],
-          "velocity": [
-            2.8,
-            -3,
-            0.5
-          ],
-          "trailLen": 1.6,
-          "period": 7,
-          "activeFrac": 0.48,
-          "phase": 1.2
-        }
-      },
-      {
         "id": "star-1",
         "type": "star",
         "args": {
@@ -595,9 +529,9 @@
         },
         "transform": {
           "translate": [
-            -28,
-            20,
-            -25
+            -12,
+            18,
+            -15
           ]
         },
         "region": "star"
@@ -610,9 +544,9 @@
         },
         "transform": {
           "translate": [
-            -18,
+            -6,
             22,
-            -28
+            -18
           ]
         },
         "region": "star"
@@ -625,9 +559,9 @@
         },
         "transform": {
           "translate": [
-            -8,
-            24,
-            -26
+            2,
+            20,
+            -20
           ]
         },
         "region": "star"
@@ -640,9 +574,9 @@
         },
         "transform": {
           "translate": [
-            2,
-            23,
-            -30
+            10,
+            24,
+            -16
           ]
         },
         "region": "star"
@@ -655,9 +589,9 @@
         },
         "transform": {
           "translate": [
-            12,
-            25,
-            -27
+            18,
+            19,
+            -22
           ]
         },
         "region": "star"
@@ -666,13 +600,13 @@
         "id": "star-6",
         "type": "star",
         "args": {
-          "radius": 0.05
+          "radius": 0.038
         },
         "transform": {
           "translate": [
-            22,
-            21,
-            -29
+            -18,
+            16,
+            -25
           ]
         },
         "region": "star"
@@ -681,13 +615,13 @@
         "id": "star-7",
         "type": "star",
         "args": {
-          "radius": 0.038
+          "radius": 0.042
         },
         "transform": {
           "translate": [
-            32,
             24,
-            -26
+            17,
+            -28
           ]
         },
         "region": "star"
@@ -696,13 +630,13 @@
         "id": "star-8",
         "type": "star",
         "args": {
-          "radius": 0.042
+          "radius": 0.036
         },
         "transform": {
           "translate": [
-            -24,
-            26,
-            -24
+            -3,
+            25,
+            -14
           ]
         },
         "region": "star"
@@ -711,13 +645,13 @@
         "id": "star-9",
         "type": "star",
         "args": {
-          "radius": 0.048
+          "radius": 0.044
         },
         "transform": {
           "translate": [
-            -12,
-            27,
-            -32
+            14,
+            21,
+            -19
           ]
         },
         "region": "star"
@@ -726,13 +660,13 @@
         "id": "star-10",
         "type": "star",
         "args": {
-          "radius": 0.036
+          "radius": 0.04
         },
         "transform": {
           "translate": [
-            -2,
-            28,
-            -28
+            -20,
+            23,
+            -17
           ]
         },
         "region": "star"
@@ -741,13 +675,13 @@
         "id": "star-11",
         "type": "star",
         "args": {
-          "radius": 0.044
+          "radius": 0.037
         },
         "transform": {
           "translate": [
             8,
-            26,
-            -31
+            18,
+            -24
           ]
         },
         "region": "star"
@@ -756,13 +690,13 @@
         "id": "star-12",
         "type": "star",
         "args": {
-          "radius": 0.04
+          "radius": 0.043
         },
         "transform": {
           "translate": [
-            18,
-            29,
-            -25
+            -8,
+            20,
+            -21
           ]
         },
         "region": "star"
@@ -771,13 +705,13 @@
         "id": "star-13",
         "type": "star",
         "args": {
-          "radius": 0.046
+          "radius": 0.041
         },
         "transform": {
           "translate": [
-            28,
-            27,
-            -30
+            20,
+            26,
+            -15
           ]
         },
         "region": "star"
@@ -790,9 +724,9 @@
         },
         "transform": {
           "translate": [
-            -20,
-            25,
-            -33
+            -14,
+            19,
+            -23
           ]
         },
         "region": "star"
@@ -801,44 +735,29 @@
         "id": "star-15",
         "type": "star",
         "args": {
-          "radius": 0.043
+          "radius": 0.046
         },
         "transform": {
           "translate": [
-            -5,
-            30,
-            -27
+            4,
+            23,
+            -26
           ]
         },
         "region": "star"
       },
       {
-        "id": "moon",
-        "type": "moon",
-        "args": {
-          "radius": 0.5
-        },
-        "transform": {
-          "translate": [
-            -32,
-            22,
-            -20
-          ]
-        },
-        "region": "moon"
-      },
-      {
         "id": "bird-1",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.2,
-          "wingSpan": 0.55
+          "bodyLength": 0.18,
+          "wingSpan": 0.52
         },
         "transform": {
           "translate": [
             -8,
             14,
-            18
+            -8
           ],
           "rotate": [
             0,
@@ -852,14 +771,14 @@
         "id": "bird-2",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.18,
-          "wingSpan": 0.5
+          "bodyLength": 0.16,
+          "wingSpan": 0.48
         },
         "transform": {
           "translate": [
-            10,
-            15,
-            20
+            12,
+            16,
+            -10
           ],
           "rotate": [
             0,
@@ -873,14 +792,14 @@
         "id": "bird-3",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.22,
-          "wingSpan": 0.6
+          "bodyLength": 0.17,
+          "wingSpan": 0.5
         },
         "transform": {
           "translate": [
-            3,
-            16,
-            16
+            -4,
+            13,
+            -12
           ],
           "rotate": [
             0,

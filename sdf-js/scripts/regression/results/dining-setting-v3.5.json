@@ -1,0 +1,979 @@
+{
+  "result": {
+    "demoId": "dining-setting",
+    "version": "v3.5",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "49.9s",
+    "tokens": {
+      "input": 37618,
+      "output": 4498
+    },
+    "costUSD": "0.1803",
+    "subjectCount": 40,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 40,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 29,
+      "min": -1,
+      "max": 1,
+      "range": 2,
+      "stdev": 0.3778168088142614
+    },
+    "v30AtomsUsedCount": 5,
+    "v30AtomsUsed": [
+      [
+        "chair",
+        4
+      ],
+      [
+        "lamp-standing",
+        1
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 2,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "typeCounts": {
+      "ellipsoid": 4,
+      "cylinder": 9,
+      "cut-hollow-sphere": 2,
+      "torus": 1,
+      "cut-sphere": 1,
+      "pyramid": 1,
+      "capsule": 9,
+      "box": 2,
+      "vesica-segment": 2,
+      "rounded_cylinder": 1,
+      "chair": 4,
+      "revolve": 1,
+      "sphere": 2,
+      "lamp-standing": 1
+    },
+    "compileOk": false,
+    "compileErr": "SceneData validation failed:\n  - subjects[26]: unknown type \"rounded_cylinder\" (not in primitive / boolean / domain registries)",
+    "sceneName": "Dining Table Setting"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Dining Table Setting",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "餐桌摆设",
+      "from2dCode": "Elliptical table with plate, wine glass, napkin, cutlery, bread roll, candle. Bird's-eye perspective, warm terracotta/oak/burgundy palette."
+    },
+    "subjects": [
+      {
+        "id": "table-top",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.3,
+            0.08,
+            1.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": "wood",
+        "pattern": {
+          "kind": "cells",
+          "scale": 3.5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "table-leg-fl",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.045,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            -0.85,
+            -0.37,
+            0.4
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-fr",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.045,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            0.85,
+            -0.37,
+            0.4
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-bl",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.045,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            -0.85,
+            -0.37,
+            -0.4
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "table-leg-br",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.045,
+          "height": 0.65
+        },
+        "transform": {
+          "translate": [
+            0.85,
+            -0.37,
+            -0.4
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "plate-base",
+        "type": "cut-hollow-sphere",
+        "args": {
+          "radius": 0.3,
+          "h": -0.1,
+          "t": 0.02
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.1,
+            -0.08
+          ]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "plate-rim-ring",
+        "type": "torus",
+        "args": {
+          "radius": 0.22,
+          "thickness": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.05,
+            -0.08
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.15,
+          "value": 0.88,
+          "metal": 0.12,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wine-glass-bowl",
+        "type": "cut-hollow-sphere",
+        "args": {
+          "radius": 0.095,
+          "h": -0.015,
+          "t": 0.008
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.15,
+            0.05
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "wine-liquid",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.087,
+          "h": -0.04
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.13,
+            0.05
+          ]
+        },
+        "material": {
+          "hue": 0.98,
+          "sat": 0.75,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0.3
+        }
+      },
+      {
+        "id": "wine-glass-stem",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.008,
+          "height": 0.16
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.04,
+            0.05
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "wine-glass-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.065,
+          "height": 0.01
+        },
+        "transform": {
+          "translate": [
+            0.52,
+            0.045,
+            0.05
+          ]
+        },
+        "material": "clear-glass"
+      },
+      {
+        "id": "napkin-folded",
+        "type": "pyramid",
+        "args": {
+          "height": 0.26
+        },
+        "transform": {
+          "translate": [
+            -0.31,
+            0.14,
+            -0.05
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0.3
+          ],
+          "scale": [
+            0.26,
+            1,
+            0.13
+          ]
+        },
+        "material": {
+          "hue": 0.02,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "fork-handle",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            0.08,
+            -0.1
+          ],
+          "b": [
+            -0.38,
+            0.08,
+            0.13
+          ],
+          "radius": 0.01
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.395,
+            0.08,
+            0.13
+          ],
+          "b": [
+            -0.395,
+            0.08,
+            0.21
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.38,
+            0.08,
+            0.13
+          ],
+          "b": [
+            -0.38,
+            0.08,
+            0.21
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "fork-tine-3",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.365,
+            0.08,
+            0.13
+          ],
+          "b": [
+            -0.365,
+            0.08,
+            0.21
+          ],
+          "radius": 0.005
+        },
+        "material": "silver"
+      },
+      {
+        "id": "knife-handle",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.38,
+            0.08,
+            -0.13
+          ],
+          "b": [
+            0.38,
+            0.08,
+            0.06
+          ],
+          "radius": 0.012
+        },
+        "material": "silver"
+      },
+      {
+        "id": "knife-blade",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.016,
+            0.003,
+            0.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.38,
+            0.08,
+            0.16
+          ]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "bread-roll",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.088,
+            0.05,
+            0.062
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.2,
+            0.13,
+            0.13
+          ]
+        },
+        "material": "bread"
+      },
+      {
+        "id": "bread-score-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.095,
+            0.008,
+            0.012
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.2,
+            0.16,
+            0.13
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.6,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "herb-stem",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.03,
+            0.06,
+            -0.1
+          ],
+          "b": [
+            0.04,
+            0.06,
+            -0.02
+          ],
+          "radius": 0.005
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.55,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "herb-leaf-1",
+        "type": "vesica-segment",
+        "args": {
+          "a": [
+            -0.012,
+            0.06,
+            -0.075
+          ],
+          "b": [
+            0.012,
+            0.06,
+            -0.065
+          ],
+          "w": 0.01
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.6,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "herb-leaf-2",
+        "type": "vesica-segment",
+        "args": {
+          "a": [
+            0.008,
+            0.06,
+            -0.055
+          ],
+          "b": [
+            0.032,
+            0.06,
+            -0.045
+          ],
+          "w": 0.01
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.6,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "candlestick-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.052,
+          "height": 0.018
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.05,
+            -0.27
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candlestick-column",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.016,
+          "height": 0.15
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.14,
+            -0.27
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candlestick-cup",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.03,
+          "height": 0.015
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.225,
+            -0.27
+          ]
+        },
+        "material": "gold"
+      },
+      {
+        "id": "candle-body",
+        "type": "rounded_cylinder",
+        "args": {
+          "ra": 0.016,
+          "rb": 0.006,
+          "h": 0.065
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.3,
+            -0.27
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.25,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0.2
+        }
+      },
+      {
+        "id": "candle-wick",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.7,
+            0.362,
+            -0.27
+          ],
+          "b": [
+            0.7,
+            0.378,
+            -0.27
+          ],
+          "radius": 0.003
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "flame-outer",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.018,
+            0.036,
+            0.018
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.415,
+            -0.27
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.85,
+          "value": 1,
+          "metal": 0,
+          "glow": 2.5,
+          "kind": "emissive"
+        }
+      },
+      {
+        "id": "flame-inner",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.009,
+            0.022,
+            0.009
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.7,
+            0.41,
+            -0.27
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.55,
+          "value": 1,
+          "metal": 0,
+          "glow": 3.5,
+          "kind": "emissive"
+        }
+      },
+      {
+        "id": "chair-1",
+        "type": "chair",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.7,
+            1
+          ],
+          "rotate": [
+            0,
+            3.14159,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "chair-2",
+        "type": "chair",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            -1.2,
+            -0.7,
+            0
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "chair-3",
+        "type": "chair",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            1.2,
+            -0.7,
+            0
+          ],
+          "rotate": [
+            0,
+            -1.5708,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "chair-4",
+        "type": "chair",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.7,
+            -1
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "vase",
+        "type": "revolve",
+        "args": {
+          "offset": 0
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                0,
+                -0.12
+              ],
+              [
+                0.045,
+                -0.12
+              ],
+              [
+                0.05,
+                -0.08
+              ],
+              [
+                0.058,
+                -0.02
+              ],
+              [
+                0.055,
+                0.04
+              ],
+              [
+                0.048,
+                0.08
+              ],
+              [
+                0.042,
+                0.1
+              ],
+              [
+                0.038,
+                0.12
+              ],
+              [
+                0,
+                0.12
+              ]
+            ]
+          },
+          "id": "subjects_34_-source"
+        },
+        "transform": {
+          "translate": [
+            -0.75,
+            0.16,
+            0.35
+          ]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "flower-stem-1",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.75,
+            0.28,
+            0.35
+          ],
+          "b": [
+            -0.73,
+            0.42,
+            0.38
+          ],
+          "radius": 0.004
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.5,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.022
+        },
+        "transform": {
+          "translate": [
+            -0.73,
+            0.44,
+            0.38
+          ]
+        },
+        "material": {
+          "hue": 0.92,
+          "sat": 0.8,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-stem-2",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.75,
+            0.28,
+            0.35
+          ],
+          "b": [
+            -0.77,
+            0.4,
+            0.32
+          ],
+          "radius": 0.004
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.5,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flower-bloom-2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.02
+        },
+        "transform": {
+          "translate": [
+            -0.77,
+            0.42,
+            0.32
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.75,
+          "value": 0.8,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lamp-standing",
+        "type": "lamp-standing",
+        "args": {
+          "scale": 0.8
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            -0.7,
+            -0.8
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.15,
+          "value": 0.65,
+          "metal": 0.2,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.7,
+      "region": "floor",
+      "material": {
+        "hue": 0.08,
+        "sat": 0.12,
+        "value": 0.75,
+        "metal": 0,
+        "glow": 0
+      },
+      "pattern": {
+        "kind": "cells",
+        "scale": 2.5,
+        "strength": 0.18
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.35,
+        "pitch": 0.65,
+        "distance": 3.2,
+        "focal": 1.8,
+        "targetX": 0,
+        "targetY": 0.15,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.65,
+        "altitude": 0.48,
+        "distance": 12,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

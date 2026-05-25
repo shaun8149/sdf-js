@@ -3,18 +3,18 @@
     "demoId": "forest-meteors",
     "version": "v3.5",
     "model": "claude-sonnet-4-5",
-    "elapsed": "48.4s",
+    "elapsed": "51.9s",
     "tokens": {
       "input": 34392,
-      "output": 4437
+      "output": 4957
     },
-    "costUSD": "0.1697",
-    "subjectCount": 41,
-    "newAtomsUsedCount": 18,
+    "costUSD": "0.1775",
+    "subjectCount": 45,
+    "newAtomsUsedCount": 21,
     "newAtomsUsed": [
       [
         "star",
-        15
+        18
       ],
       [
         "bird-silhouette",
@@ -23,16 +23,16 @@
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 17,
+    "materialUsageCount": 18,
     "patternUsageCount": 0,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 37,
-      "min": -32,
+      "count": 41,
+      "min": -13,
       "max": 62,
-      "range": 94,
-      "stdev": 30.828610316146847
+      "range": 75,
+      "stdev": 24.069253641330132
     },
     "v30AtomsUsedCount": 4,
     "v30AtomsUsed": [
@@ -41,11 +41,11 @@
         4
       ]
     ],
-    "v32AtomsUsedCount": 13,
+    "v32AtomsUsedCount": 14,
     "v32AtomsUsed": [
       [
         "stylized-tree",
-        8
+        9
       ],
       [
         "grass-field",
@@ -60,7 +60,7 @@
       "sea": 0,
       "mountain": 0,
       "emissive": 0,
-      "translucent": 8
+      "translucent": 9
     },
     "cinematic": {
       "postFx": 0,
@@ -82,12 +82,12 @@
     },
     "typeCounts": {
       "cone": 5,
-      "stylized-tree": 8,
+      "stylized-tree": 9,
       "grass-field": 1,
       "rep": 1,
       "bush": 4,
       "meteor-streak": 4,
-      "star": 15,
+      "star": 18,
       "bird-silhouette": 3
     },
     "compileOk": true,
@@ -100,7 +100,7 @@
     "source": {
       "format": "llm-lift",
       "prompt": "树·山·花·流星",
-      "from2dCode": "2D placeholder with text prompt — lifted to full 3D forest scene"
+      "from2dCode": "2D placeholder — lifted to full 3D forest scene with mountains, flowers, meteors"
     },
     "subjects": [
       {
@@ -367,22 +367,22 @@
         "id": "back-tree-6",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3.6,
-          "trunkRad": 0.24,
+          "trunkLen": 3.5,
+          "trunkRad": 0.25,
           "leafSize": 0.14,
           "windK": 0.1
         },
         "transform": {
           "translate": [
-            2,
+            -2,
             0,
             38
           ]
         },
         "material": {
           "hue": 0.29,
-          "sat": 0.53,
-          "value": 0.4,
+          "sat": 0.52,
+          "value": 0.43,
           "metal": 0,
           "glow": 0,
           "kind": "translucent"
@@ -392,14 +392,14 @@
         "id": "back-tree-7",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 2.8,
+          "trunkLen": 3,
           "trunkRad": 0.21,
           "leafSize": 0.13,
           "windK": 0.1
         },
         "transform": {
           "translate": [
-            -32,
+            8,
             0,
             42
           ]
@@ -407,7 +407,32 @@
         "material": {
           "hue": 0.28,
           "sat": 0.57,
-          "value": 0.39,
+          "value": 0.41,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-8",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 2.8,
+          "trunkRad": 0.19,
+          "leafSize": 0.12,
+          "windK": 0.1
+        },
+        "transform": {
+          "translate": [
+            20,
+            0,
+            36
+          ]
+        },
+        "material": {
+          "hue": 0.31,
+          "sat": 0.53,
+          "value": 0.4,
           "metal": 0,
           "glow": 0,
           "kind": "translucent"
@@ -469,9 +494,9 @@
         },
         "transform": {
           "translate": [
-            -2.5,
+            -5,
             0,
-            6
+            12
           ]
         },
         "material": {
@@ -486,13 +511,13 @@
         "id": "bush-2",
         "type": "bush",
         "args": {
-          "radius": 0.32
+          "radius": 0.3
         },
         "transform": {
           "translate": [
-            8,
+            3,
             0,
-            12
+            14
           ]
         },
         "material": {
@@ -507,13 +532,13 @@
         "id": "bush-3",
         "type": "bush",
         "args": {
-          "radius": 0.28
+          "radius": 0.32
         },
         "transform": {
           "translate": [
-            -6,
+            -10,
             0,
-            14
+            18
           ]
         },
         "material": {
@@ -528,19 +553,19 @@
         "id": "bush-4",
         "type": "bush",
         "args": {
-          "radius": 0.3
+          "radius": 0.28
         },
         "transform": {
           "translate": [
-            3,
+            12,
             0,
-            18
+            16
           ]
         },
         "material": {
           "hue": 0.3,
-          "sat": 0.67,
-          "value": 0.39,
+          "sat": 0.63,
+          "value": 0.42,
           "metal": 0,
           "glow": 0
         }
@@ -615,9 +640,9 @@
             32
           ],
           "velocity": [
-            3.8,
-            -2.2,
-            0.4
+            2.8,
+            -3,
+            0.5
           ],
           "trailLen": 1.6,
           "period": 7,
@@ -636,9 +661,10 @@
           "translate": [
             -28,
             18,
-            -25
+            -10
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-2",
@@ -651,9 +677,10 @@
           "translate": [
             -18,
             22,
-            -22
+            -8
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-3",
@@ -666,9 +693,10 @@
           "translate": [
             -8,
             20,
-            -28
+            -12
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-4",
@@ -679,11 +707,12 @@
         },
         "transform": {
           "translate": [
-            5,
+            2,
             24,
-            -26
+            -9
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-5",
@@ -694,14 +723,31 @@
         },
         "transform": {
           "translate": [
-            15,
+            12,
             21,
-            -24
+            -11
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-6",
+        "type": "star",
+        "args": {
+          "radius": 0.05,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            22,
+            19,
+            -10
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-7",
         "type": "star",
         "args": {
           "radius": 0.038,
@@ -709,14 +755,15 @@
         },
         "transform": {
           "translate": [
-            25,
-            19,
-            -27
+            32,
+            23,
+            -8
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-7",
+        "id": "star-8",
         "type": "star",
         "args": {
           "radius": 0.042,
@@ -724,14 +771,15 @@
         },
         "transform": {
           "translate": [
-            -32,
-            16,
-            -30
+            -34,
+            20,
+            -9
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-8",
+        "id": "star-9",
         "type": "star",
         "args": {
           "radius": 0.047,
@@ -739,14 +787,15 @@
         },
         "transform": {
           "translate": [
-            -12,
+            -24,
             25,
-            -23
+            -11
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-9",
+        "id": "star-10",
         "type": "star",
         "args": {
           "radius": 0.036,
@@ -754,14 +803,15 @@
         },
         "transform": {
           "translate": [
-            0,
-            23,
-            -29
+            -12,
+            27,
+            -10
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-10",
+        "id": "star-11",
         "type": "star",
         "args": {
           "radius": 0.044,
@@ -769,26 +819,12 @@
         },
         "transform": {
           "translate": [
-            20,
+            6,
             26,
-            -25
+            -12
           ]
-        }
-      },
-      {
-        "id": "star-11",
-        "type": "star",
-        "args": {
-          "radius": 0.039,
-          "shape": "octahedron"
         },
-        "transform": {
-          "translate": [
-            32,
-            17,
-            -31
-          ]
-        }
+        "region": "star"
       },
       {
         "id": "star-12",
@@ -799,14 +835,47 @@
         },
         "transform": {
           "translate": [
-            -22,
-            15,
-            -32
+            16,
+            28,
+            -9
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "star-13",
+        "type": "star",
+        "args": {
+          "radius": 0.039,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            28,
+            24,
+            -11
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-14",
+        "type": "star",
+        "args": {
+          "radius": 0.048,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            -30,
+            29,
+            -8
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-15",
         "type": "star",
         "args": {
           "radius": 0.037,
@@ -814,14 +883,15 @@
         },
         "transform": {
           "translate": [
-            -5,
-            27,
-            -21
+            -20,
+            18,
+            -13
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-14",
+        "id": "star-16",
         "type": "star",
         "args": {
           "radius": 0.046,
@@ -829,14 +899,31 @@
         },
         "transform": {
           "translate": [
-            10,
-            19,
-            -30
+            -4,
+            22,
+            -10
           ]
-        }
+        },
+        "region": "star"
       },
       {
-        "id": "star-15",
+        "id": "star-17",
+        "type": "star",
+        "args": {
+          "radius": 0.043,
+          "shape": "octahedron"
+        },
+        "transform": {
+          "translate": [
+            10,
+            25,
+            -12
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-18",
         "type": "star",
         "args": {
           "radius": 0.04,
@@ -844,71 +931,75 @@
         },
         "transform": {
           "translate": [
-            28,
-            23,
-            -23
+            24,
+            27,
+            -9
           ]
-        }
+        },
+        "region": "star"
       },
       {
         "id": "bird-1",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.18,
-          "wingSpan": 0.5
+          "bodyLength": 0.2,
+          "wingSpan": 0.58
         },
         "transform": {
           "translate": [
-            -8,
-            12,
-            15
+            -12,
+            14,
+            -2
           ],
           "rotate": [
             0,
-            0.5,
+            0.3,
             0
           ]
-        }
+        },
+        "region": "bird"
       },
       {
         "id": "bird-2",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.16,
-          "wingSpan": 0.45
+          "bodyLength": 0.18,
+          "wingSpan": 0.52
         },
         "transform": {
           "translate": [
-            12,
-            14,
-            18
+            8,
+            16,
+            -3
           ],
           "rotate": [
             0,
-            -0.3,
+            -0.4,
             0
           ]
-        }
+        },
+        "region": "bird"
       },
       {
         "id": "bird-3",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.17,
-          "wingSpan": 0.48
+          "bodyLength": 0.19,
+          "wingSpan": 0.55
         },
         "transform": {
           "translate": [
-            3,
-            13,
-            22
+            -5,
+            12,
+            -1.5
           ],
           "rotate": [
             0,
             0.2,
             0
           ]
-        }
+        },
+        "region": "bird"
       }
     ],
     "ground": {

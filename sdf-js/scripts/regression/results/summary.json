@@ -1,108 +1,78 @@
 {
-  "ranAt": "2026-05-24T14:36:34.040Z",
+  "ranAt": "2026-05-25T12:42:19.874Z",
   "model": "claude-sonnet-4-5",
   "versions": [
-    "v3.5",
-    "v3.7"
+    "v3.7",
+    "v3.8"
   ],
   "totals": {
-    "v3.5": {
-      "atoms": 16,
-      "iq": 3,
-      "mat": 26,
-      "pat": 3,
-      "var": 0,
-      "cost": 0.1845
-    },
     "v3.7": {
-      "atoms": 16,
-      "iq": 0,
-      "mat": 26,
-      "pat": 2,
-      "var": 0,
-      "cost": 0.214
+      "atoms": 0,
+      "iq": 2,
+      "mat": 14,
+      "pat": 1,
+      "var": 8,
+      "cost": 0.1534
+    },
+    "v3.8": {
+      "atoms": 0,
+      "iq": 2,
+      "mat": 17,
+      "pat": 0,
+      "var": 4,
+      "cost": 0.2053
     }
   },
-  "totalCost": 0.39849999999999997,
+  "totalCost": 0.3587,
   "demos": [
     {
-      "demoId": "coastal-lighthouse",
+      "demoId": "vintage-bicycle",
       "runs": {
-        "v3.5": {
-          "demoId": "coastal-lighthouse",
-          "version": "v3.5",
+        "v3.7": {
+          "demoId": "vintage-bicycle",
+          "version": "v3.7",
           "model": "claude-sonnet-4-5",
-          "elapsed": "58.4s",
+          "elapsed": "71.5s",
           "tokens": {
-            "input": 37609,
-            "output": 4778
+            "input": 24568,
+            "output": 5313
           },
-          "costUSD": "0.1845",
-          "subjectCount": 44,
-          "newAtomsUsedCount": 16,
-          "newAtomsUsed": [
-            [
-              "moon",
-              1
-            ],
-            [
-              "star",
-              12
-            ],
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 3,
+          "costUSD": "0.1534",
+          "subjectCount": 63,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 2,
           "newIQTypesUsed": [
             [
-              "octagon-prism",
-              1
-            ],
-            [
-              "solid-angle",
+              "capped-torus",
               2
             ]
           ],
-          "materialUsageCount": 26,
-          "patternUsageCount": 3,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
+          "materialUsageCount": 14,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 8,
+          "variantsUsed": [
+            [
+              "unionRound",
+              8
+            ]
+          ],
           "zSpread": {
-            "count": 43,
-            "min": -16,
-            "max": 3.5,
-            "range": 19.5,
-            "stdev": 6.487425895832728
+            "count": 14,
+            "min": -0.105,
+            "max": 0.083,
+            "range": 0.188,
+            "stdev": 0.049043504219442244
           },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "rock-boulder",
-              3
-            ],
-            [
-              "sailboat-small",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 3,
-          "v32AtomsUsed": [
-            [
-              "stylized-tree",
-              2
-            ],
-            [
-              "grass-field",
-              1
-            ]
-          ],
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
           "materialKindsUsed": {
-            "sea": 1,
+            "sea": 0,
             "mountain": 0,
             "emissive": 0,
-            "translucent": 2
+            "translucent": 0
           },
           "cinematic": {
             "postFx": 0,
@@ -123,105 +93,73 @@
             "sceneStateKeys": 0
           },
           "typeCounts": {
-            "moon": 1,
-            "star": 12,
-            "bird-silhouette": 3,
-            "waves": 1,
-            "box": 3,
-            "pyramid": 1,
-            "rock-boulder": 3,
-            "capped_cone": 1,
-            "cylinder": 3,
-            "torus": 1,
-            "octagon-prism": 1,
-            "sphere": 1,
-            "cone": 1,
-            "rounded_box": 4,
-            "solid-angle": 2,
-            "stylized-tree": 2,
-            "grass-field": 1,
-            "rep": 1,
-            "sailboat-small": 2
+            "unionRound": 8,
+            "capsule": 36,
+            "rounded_box": 6,
+            "torus": 5,
+            "sphere": 3,
+            "capped-torus": 2,
+            "ellipsoid": 2,
+            "plane": 1
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "Coastal Lighthouse at Night"
+          "sceneName": "Vintage Bicycle in Cobblestone Courtyard"
         },
-        "v3.7": {
-          "demoId": "coastal-lighthouse",
-          "version": "v3.7",
+        "v3.8": {
+          "demoId": "vintage-bicycle",
+          "version": "v3.8",
           "model": "claude-sonnet-4-5",
-          "elapsed": "60.4s",
+          "elapsed": "42.4s",
           "tokens": {
-            "input": 45623,
-            "output": 5139
+            "input": 47765,
+            "output": 4133
           },
-          "costUSD": "0.2140",
-          "subjectCount": 41,
-          "newAtomsUsedCount": 16,
-          "newAtomsUsed": [
+          "costUSD": "0.2053",
+          "subjectCount": 36,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 2,
+          "newIQTypesUsed": [
             [
-              "moon",
-              1
-            ],
-            [
-              "star",
-              12
-            ],
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 26,
-          "patternUsageCount": 2,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 41,
-            "min": -19,
-            "max": 3.2,
-            "range": 22.2,
-            "stdev": 8.208535770062756
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "bush",
+              "capped-torus",
               2
-            ],
-            [
-              "rock-boulder",
-              3
             ]
           ],
-          "v32AtomsUsedCount": 4,
-          "v32AtomsUsed": [
+          "materialUsageCount": 17,
+          "patternUsageCount": 0,
+          "variantsUsedCount": 4,
+          "variantsUsed": [
             [
-              "stylized-tree",
-              3
-            ],
-            [
-              "grass-field",
-              1
+              "unionRound",
+              4
             ]
           ],
+          "zSpread": {
+            "count": 21,
+            "min": -0.02,
+            "max": 0.02,
+            "range": 0.04,
+            "stdev": 0.006172133998483677
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
           "materialKindsUsed": {
-            "sea": 1,
+            "sea": 0,
             "mountain": 0,
-            "emissive": 1,
-            "translucent": 3
+            "emissive": 0,
+            "translucent": 0
           },
           "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 2,
+            "postFx": 0,
+            "aperture": 0,
+            "volumeCount": 0,
             "flameVols": 0,
             "smokeVols": 0,
-            "fogVols": 1,
-            "godRayVols": 1,
+            "fogVols": 0,
+            "godRayVols": 0,
             "volAttachTo": 0,
             "volSceneStateKey": 0,
             "seqShots": 0,
@@ -233,25 +171,19 @@
             "sceneStateKeys": 0
           },
           "typeCounts": {
-            "moon": 1,
-            "star": 12,
-            "waves": 1,
-            "box": 2,
-            "bush": 2,
-            "rock-boulder": 3,
-            "cylinder": 5,
-            "torus": 1,
-            "cone": 1,
+            "torus": 5,
+            "cylinder": 3,
+            "modPolar": 2,
+            "unionRound": 4,
+            "capsule": 11,
+            "rounded_box": 6,
+            "ellipsoid": 2,
             "sphere": 1,
-            "rounded_box": 4,
-            "stylized-tree": 3,
-            "grass-field": 1,
-            "rep": 1,
-            "bird-silhouette": 3
+            "capped-torus": 2
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "Coastal Lighthouse at Night"
+          "sceneName": "Vintage Bicycle"
         }
       }
     }

@@ -1,0 +1,1843 @@
+{
+  "result": {
+    "demoId": "gothic-cathedral",
+    "version": "v3.5",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "85.8s",
+    "tokens": {
+      "input": 38038,
+      "output": 8677
+    },
+    "costUSD": "0.2443",
+    "subjectCount": 77,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 75,
+    "patternUsageCount": 15,
+    "variantsUsedCount": 1,
+    "variantsUsed": [
+      [
+        "unionStairs",
+        1
+      ]
+    ],
+    "zSpread": {
+      "count": 55,
+      "min": -14.5,
+      "max": 11,
+      "range": 25.5,
+      "stdev": 5.716973857089485
+    },
+    "v30AtomsUsedCount": 8,
+    "v30AtomsUsed": [
+      [
+        "fountain",
+        1
+      ],
+      [
+        "bush",
+        3
+      ],
+      [
+        "lamp-standing",
+        4
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "typeCounts": {
+      "box": 37,
+      "unionStairs": 1,
+      "cylinder": 2,
+      "pyramid": 5,
+      "torus": 1,
+      "capped_cone": 21,
+      "bird-silhouette": 2,
+      "fountain": 1,
+      "bush": 3,
+      "lamp-standing": 4
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Gothic Cathedral (High Gothic, volumetric)"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Gothic Cathedral (High Gothic, volumetric)",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一座哥特式大教堂",
+      "from2dCode": "French High Gothic three-part west facade: central nave tower + transept wings + choir base, twin bell towers, central flèche spire, lancet windows, rose window with 8-spoke tracery, flying buttresses. 2D shows front elevation only."
+    },
+    "subjects": [
+      {
+        "id": "ground-plaza",
+        "type": "box",
+        "args": {
+          "dims": [
+            28,
+            0.3,
+            22
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -3.8,
+            -4
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "hex",
+          "scale": 3.5,
+          "strength": 0.48
+        }
+      },
+      {
+        "id": "cathedral-plinth",
+        "type": "unionStairs",
+        "args": {
+          "r": 0.55,
+          "n": 5
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2,
+          "strength": 0.62
+        },
+        "children": [
+          {
+            "id": "plinth-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                14,
+                0.4,
+                16
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -3.45,
+                -3
+              ]
+            }
+          },
+          {
+            "id": "plinth-upper",
+            "type": "box",
+            "args": {
+              "dims": [
+                12,
+                0.6,
+                14
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -2.9,
+                -3
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "nave-body",
+        "type": "box",
+        "args": {
+          "dims": [
+            5,
+            7.5,
+            14
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.5,
+            -4
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.2,
+          "strength": 0.68
+        }
+      },
+      {
+        "id": "transept-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            4.5,
+            5.5,
+            3.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            -5.5,
+            -0.8,
+            -5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.2,
+          "strength": 0.68
+        }
+      },
+      {
+        "id": "transept-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            4.5,
+            5.5,
+            3.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            -0.8,
+            -5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.2,
+          "strength": 0.68
+        }
+      },
+      {
+        "id": "choir-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            7,
+            4.8,
+            5.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.5,
+            -11.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.2,
+          "strength": 0.68
+        }
+      },
+      {
+        "id": "apse",
+        "type": "cylinder",
+        "args": {
+          "radius": 2.8,
+          "height": 4.5
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.5,
+            -14.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.2,
+          "strength": 0.68
+        }
+      },
+      {
+        "id": "tower-left-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            3.2,
+            13,
+            3
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.1,
+            3.2,
+            4.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2,
+          "strength": 0.7
+        }
+      },
+      {
+        "id": "tower-right-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            3.2,
+            13,
+            3
+          ]
+        },
+        "transform": {
+          "translate": [
+            4.1,
+            3.2,
+            4.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2,
+          "strength": 0.7
+        }
+      },
+      {
+        "id": "spire-left",
+        "type": "pyramid",
+        "args": {
+          "height": 4
+        },
+        "transform": {
+          "translate": [
+            -4.1,
+            10.7,
+            4.5
+          ],
+          "scale": [
+            3.2,
+            1,
+            3
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "spire-right",
+        "type": "pyramid",
+        "args": {
+          "height": 4
+        },
+        "transform": {
+          "translate": [
+            4.1,
+            10.7,
+            4.5
+          ],
+          "scale": [
+            3.2,
+            1,
+            3
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "fleche-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.8,
+            12.5,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            5,
+            -4
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "fleche-spire",
+        "type": "pyramid",
+        "args": {
+          "height": 3.5
+        },
+        "transform": {
+          "translate": [
+            0,
+            12,
+            -4
+          ],
+          "scale": [
+            0.8,
+            1,
+            0.8
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "transept-pin-left",
+        "type": "pyramid",
+        "args": {
+          "height": 2.2
+        },
+        "transform": {
+          "translate": [
+            -5.5,
+            2.3,
+            -5
+          ],
+          "scale": [
+            1.3,
+            1,
+            1.3
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "transept-pin-right",
+        "type": "pyramid",
+        "args": {
+          "height": 2.2
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            2.3,
+            -5
+          ],
+          "scale": [
+            1.3,
+            1,
+            1.3
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "rose-window-frame",
+        "type": "torus",
+        "args": {
+          "radius": 1.55,
+          "thickness": 0.18
+        },
+        "transform": {
+          "translate": [
+            0,
+            4,
+            5.05
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "rose-glass-fill",
+        "type": "cylinder",
+        "args": {
+          "radius": 1.55,
+          "height": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            4,
+            5
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.95,
+          "sat": 0.92,
+          "value": 1,
+          "metal": 0,
+          "glow": 3.5
+        }
+      },
+      {
+        "id": "portal-center-arch",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            0,
+            -3.5,
+            5
+          ],
+          "b": [
+            0,
+            -0.5,
+            5
+          ],
+          "r1": 1.1,
+          "r2": 0.35
+        },
+        "material": "stone"
+      },
+      {
+        "id": "portal-center-door",
+        "type": "box",
+        "args": {
+          "dims": [
+            2,
+            3.8,
+            0.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.8,
+            5.1
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "portal-left-arch",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -3.2,
+            -3.5,
+            5
+          ],
+          "b": [
+            -3.2,
+            -0.8,
+            5
+          ],
+          "r1": 0.75,
+          "r2": 0.25
+        },
+        "material": "stone"
+      },
+      {
+        "id": "portal-left-door",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.4,
+            3.2,
+            0.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            -3.2,
+            -2.1,
+            5.1
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "portal-right-arch",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            3.2,
+            -3.5,
+            5
+          ],
+          "b": [
+            3.2,
+            -0.8,
+            5
+          ],
+          "r1": 0.75,
+          "r2": 0.25
+        },
+        "material": "stone"
+      },
+      {
+        "id": "portal-right-door",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.4,
+            3.2,
+            0.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            3.2,
+            -2.1,
+            5.1
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "nave-clerestory-left-1",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -1.5,
+            0.2,
+            5
+          ],
+          "b": [
+            -1.5,
+            2.5,
+            5
+          ],
+          "r1": 0.32,
+          "r2": 0.14
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-clerestory-left-1-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.3,
+            0.64
+          ]
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            1.35,
+            5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "nave-clerestory-right-1",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            1.5,
+            0.2,
+            5
+          ],
+          "b": [
+            1.5,
+            2.5,
+            5
+          ],
+          "r1": 0.32,
+          "r2": 0.14
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-clerestory-right-1-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.3,
+            0.64
+          ]
+        },
+        "transform": {
+          "translate": [
+            1.5,
+            1.35,
+            5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "nave-side-win-left-1",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -2.51,
+            -1.2,
+            1
+          ],
+          "b": [
+            -2.51,
+            1.5,
+            1
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-left-1-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.51,
+            0.15,
+            1
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-left-2",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -2.51,
+            -1.2,
+            -2
+          ],
+          "b": [
+            -2.51,
+            1.5,
+            -2
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-left-2-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.51,
+            0.15,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-left-3",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -2.51,
+            -1.2,
+            -5
+          ],
+          "b": [
+            -2.51,
+            1.5,
+            -5
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-left-3-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.51,
+            0.15,
+            -5
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-left-4",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -2.51,
+            -1.2,
+            -8
+          ],
+          "b": [
+            -2.51,
+            1.5,
+            -8
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-left-4-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.51,
+            0.15,
+            -8
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-right-1",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            2.51,
+            -1.2,
+            1
+          ],
+          "b": [
+            2.51,
+            1.5,
+            1
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-right-1-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.51,
+            0.15,
+            1
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-right-2",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            2.51,
+            -1.2,
+            -2
+          ],
+          "b": [
+            2.51,
+            1.5,
+            -2
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-right-2-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.51,
+            0.15,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-right-3",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            2.51,
+            -1.2,
+            -5
+          ],
+          "b": [
+            2.51,
+            1.5,
+            -5
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-right-3-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.51,
+            0.15,
+            -5
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "nave-side-win-right-4",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            2.51,
+            -1.2,
+            -8
+          ],
+          "b": [
+            2.51,
+            1.5,
+            -8
+          ],
+          "r1": 0.3,
+          "r2": 0.13
+        },
+        "material": "stone"
+      },
+      {
+        "id": "nave-side-win-right-4-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.7,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.51,
+            0.15,
+            -8
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "transept-win-left",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -7.5,
+            -1.5,
+            -5
+          ],
+          "b": [
+            -7.5,
+            1,
+            -5
+          ],
+          "r1": 0.35,
+          "r2": 0.15
+        },
+        "material": "stone"
+      },
+      {
+        "id": "transept-win-left-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.5,
+            0.7
+          ]
+        },
+        "transform": {
+          "translate": [
+            -7.5,
+            -0.25,
+            -5
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "transept-win-right",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            7.5,
+            -1.5,
+            -5
+          ],
+          "b": [
+            7.5,
+            1,
+            -5
+          ],
+          "r1": 0.35,
+          "r2": 0.15
+        },
+        "material": "stone"
+      },
+      {
+        "id": "transept-win-right-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            2.5,
+            0.7
+          ]
+        },
+        "transform": {
+          "translate": [
+            7.5,
+            -0.25,
+            -5
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.78,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0.9
+        }
+      },
+      {
+        "id": "tower-win-left-lower",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -4.1,
+            2,
+            4.5
+          ],
+          "b": [
+            -4.1,
+            3.8,
+            4.5
+          ],
+          "r1": 0.28,
+          "r2": 0.12
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-left-lower-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.8,
+            0.56
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.1,
+            2.9,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "tower-win-left-mid",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -4.1,
+            5.2,
+            4.5
+          ],
+          "b": [
+            -4.1,
+            6.8,
+            4.5
+          ],
+          "r1": 0.28,
+          "r2": 0.12
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-left-mid-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.6,
+            0.56
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.1,
+            6,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "tower-win-left-upper",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            -4.1,
+            8,
+            4.5
+          ],
+          "b": [
+            -4.1,
+            9.2,
+            4.5
+          ],
+          "r1": 0.24,
+          "r2": 0.1
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-left-upper-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.2,
+            0.48
+          ]
+        },
+        "transform": {
+          "translate": [
+            -4.1,
+            8.6,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "tower-win-right-lower",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            4.1,
+            2,
+            4.5
+          ],
+          "b": [
+            4.1,
+            3.8,
+            4.5
+          ],
+          "r1": 0.28,
+          "r2": 0.12
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-right-lower-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.8,
+            0.56
+          ]
+        },
+        "transform": {
+          "translate": [
+            4.1,
+            2.9,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "tower-win-right-mid",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            4.1,
+            5.2,
+            4.5
+          ],
+          "b": [
+            4.1,
+            6.8,
+            4.5
+          ],
+          "r1": 0.28,
+          "r2": 0.12
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-right-mid-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.6,
+            0.56
+          ]
+        },
+        "transform": {
+          "translate": [
+            4.1,
+            6,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "tower-win-right-upper",
+        "type": "capped_cone",
+        "args": {
+          "a": [
+            4.1,
+            8,
+            4.5
+          ],
+          "b": [
+            4.1,
+            9.2,
+            4.5
+          ],
+          "r1": 0.24,
+          "r2": 0.1
+        },
+        "material": "stone"
+      },
+      {
+        "id": "tower-win-right-upper-fill",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.1,
+            1.2,
+            0.48
+          ]
+        },
+        "transform": {
+          "translate": [
+            4.1,
+            8.6,
+            4.5
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 1,
+          "metal": 0,
+          "glow": 1.2
+        }
+      },
+      {
+        "id": "buttress-left-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.9,
+            0,
+            -1
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "buttress-left-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.9,
+            0,
+            -5
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "buttress-left-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            -2.9,
+            0,
+            -9
+          ],
+          "rotate": [
+            0,
+            0,
+            -0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "buttress-right-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.9,
+            0,
+            -1
+          ],
+          "rotate": [
+            0,
+            0,
+            0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "buttress-right-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.9,
+            0,
+            -5
+          ],
+          "rotate": [
+            0,
+            0,
+            0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "buttress-right-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            3.5,
+            0.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.9,
+            0,
+            -9
+          ],
+          "rotate": [
+            0,
+            0,
+            0.35
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -5.5,
+            11.5,
+            3
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.12,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            6,
+            12,
+            2
+          ],
+          "rotate": [
+            0,
+            -0.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.12,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "fountain",
+        "type": "fountain",
+        "args": {
+          "radius": 1.2,
+          "basinHeight": 0.5
+        },
+        "transform": {
+          "translate": [
+            -8,
+            -3.5,
+            8
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "bush-1",
+        "type": "bush",
+        "args": {
+          "radius": 0.45
+        },
+        "transform": {
+          "translate": [
+            9,
+            -3.5,
+            6
+          ]
+        },
+        "material": {
+          "hue": 0.32,
+          "sat": 0.68,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-2",
+        "type": "bush",
+        "args": {
+          "radius": 0.4
+        },
+        "transform": {
+          "translate": [
+            -7,
+            -3.5,
+            -8
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.65,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-3",
+        "type": "bush",
+        "args": {
+          "radius": 0.38
+        },
+        "transform": {
+          "translate": [
+            10,
+            -3.5,
+            -6
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.7,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lamp-1",
+        "type": "lamp-standing",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            -6.5,
+            -3.5,
+            11
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.18,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lamp-2",
+        "type": "lamp-standing",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            -3.5,
+            11
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.18,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lamp-3",
+        "type": "lamp-standing",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            -11,
+            -3.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.18,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lamp-4",
+        "type": "lamp-standing",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            11,
+            -3.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.18,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -3.8,
+      "region": "ground",
+      "material": "stone",
+      "pattern": {
+        "kind": "hex",
+        "scale": 4,
+        "strength": 0.45
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": -2.5,
+        "pitch": 0.22,
+        "distance": 28,
+        "focal": 1.7,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": -2
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.28,
+        "distance": 50,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.58
+      }
+    }
+  }
+}
