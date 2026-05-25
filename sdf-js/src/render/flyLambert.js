@@ -36,6 +36,11 @@ uniform float u_reflectOn;     // 0/1 toggle for ground reflection
 // as a technical schematic — silhouette edges + light fill on a dark graph-
 // paper background. Set per-frame from cameraSequence shot.renderer field.
 uniform float u_blueprintMode;
+// Sprint A7: city voxel-walk mode. Enabled when scene has procedural-city
+// primitive (set by compositor via setVoxelWalk()). City SDF is per-block
+// discontinuous; sphere trace alone overshoots. Voxel-walk clamps step to
+// next unit XZ-aligned block boundary.
+uniform float u_cityActive;
 // Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
@@ -665,7 +670,19 @@ void main() {
       break;
     }
     if (t > MAX_DIST) break;
-    t += dm.x;
+    float step = dm.x;
+    // Sprint A7: voxel-walk clamp for procedural-city. Block boundaries are
+    // unit-aligned in XZ; SDF is discontinuous there. Clamp step to nearest
+    // X or Z boundary intersection so we don't overshoot into next block.
+    if (u_cityActive > 0.5) {
+      float dx = (rd.x > 0.0) ? (floor(p.x) + 1.0 - p.x) : (p.x - floor(p.x));
+      float dz = (rd.z > 0.0) ? (floor(p.z) + 1.0 - p.z) : (p.z - floor(p.z));
+      float tx = abs(rd.x) > 0.001 ? dx / abs(rd.x) : 1e6;
+      float tz = abs(rd.z) > 0.001 ? dz / abs(rd.z) : 1e6;
+      float voxelStep = min(tx, tz) + 0.01;  // small overshoot to cross boundary
+      step = min(step, max(0.05, voxelStep));
+    }
+    t += step;
   }
 
   vec3 col;
@@ -712,12 +729,17 @@ void main() {
     bool isEmissive = false;    // material.kind == 'emissive'    (tone.y ~ 3)
     bool isTranslucent = false; // material.kind == 'translucent' (tone.y ~ 4)
     bool isSnowy = false;       // material.kind == 'snowy'       (tone.y ~ 5)
+    bool isBuilding = false;    // material.kind == 'building'    (tone.y ~ 6)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      // Check higher kinds first (5 > 4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 4.5) {
+      // Check higher kinds first (6 > 5 > 4 > 3 > 2 > 1 > 0).
+      if (leafTone.y > 5.5) {
+        isBuilding = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+        metalK = leafMat.z;
+      } else if (leafTone.y > 4.5) {
         isSnowy = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
         metalK = leafMat.z;
@@ -897,43 +919,114 @@ void main() {
       // branch — those parts unchanged.
 
       // Slope and altitude factors used by all layers.
-      float slopeUp = clamp(n.y, 0.0, 1.0);                 // 1 = flat, 0 = vertical cliff
-      float yPos    = p.y;
+      // 2026-05-25 fix: compute slopeOrig from GEOMETRIC normal BEFORE cliff
+      // bump perturbation — layer selection (grass / ground / snow) uses
+      // original slope so canopy isn't disrupted by surface detail bumps.
+      float slopeOrig = clamp(n.y, 0.0, 1.0);
+      float yPos = p.y;
 
       // fbm color variation — coarse mottling per layer (no IBL needed)
       float texVar = fbm3_lite(p * 0.4);
       float fineVar = fbm3_lite(p * 2.0) * 0.5;
+
+      // 2026-05-25 Sprint A6 (IQ Rainforest cliff bump): perturb normal ONLY
+      // on near-vertical faces (cliffMask quadratic so gentle slopes get 0
+      // perturbation). Reduced strength 0.55 → 0.25 — was disrupting layer
+      // smoothsteps. Used for SHADING only, not layer selection.
+      float cliffMask = pow(1.0 - abs(n.y), 3.0);  // quadratic → sharper cliff-only window
+      vec3 bumpPert = vec3(
+        fbm3_lite(p * 0.18 + vec3(13.0, 0.0, 0.0)),
+        fbm3_lite(p * 0.18 + vec3(0.0, 17.0, 0.0)),
+        fbm3_lite(p * 0.18 + vec3(0.0, 0.0, 19.0))
+      ) - 0.5;
+      n = normalize(n + 0.25 * cliffMask * bumpPert);
+      float slopeUp = clamp(n.y, 0.0, 1.0);  // shading-time slope
 
       // 2026-05-24 Sprint A5 (Canyon ship): rock + ground layers respect
       // material HSV hue/sat as a tint, so terrain-canyon (red sandstone) and
       // future colored-terrain primitives can override the default gray-brown
       // without renderer code changes. Sat near 0 → tint is white → no change
       // (backward-compat with existing mountain auto-attach hue=0.6 sat=0.05).
-      vec3 rockTint = hsv2rgb(vec3(leafMat.x, leafMat.y, 1.0));
+      //
+      // 2026-05-25 forest-mode fix: when material indicates forest (green hue
+      // + saturated), rock + ground keep NATURAL gray-brown colors (no green
+      // tint). Otherwise canopy mode would make entire scene plasticky-uniform
+      // green. Only grass/canopy layer carries the green.
+      bool isForestForTint = (leafMat.y > 0.30) && (leafMat.x > 0.25) && (leafMat.x < 0.42);
+      vec3 rockTint = isForestForTint ? vec3(1.0) : hsv2rgb(vec3(leafMat.x, leafMat.y, 1.0));
 
       // Layer 1: ROCK (base, always present, mottled gray-brown × tint)
       vec3 rockCol = mix(vec3(0.16, 0.14, 0.13), vec3(0.28, 0.24, 0.20), texVar) * rockTint;
       vec3 baseCol = rockCol;
 
       // Layer 2: GROUND (low altitude, brown-tan × tint). Below y=2, gentle slopes.
+      // 2026-05-25 fix: use slopeOrig (pre-bump) for layer selection.
       vec3 groundCol = mix(vec3(0.30, 0.22, 0.14), vec3(0.42, 0.32, 0.20), texVar) * rockTint;
-      float groundK = (1.0 - smoothstep(-4.0, 6.0, yPos)) * smoothstep(0.25, 0.55, slopeUp);
+      float groundK = (1.0 - smoothstep(-4.0, 6.0, yPos)) * smoothstep(0.20, 0.50, slopeOrig);
       baseCol = mix(baseCol, groundCol, groundK);
 
-      // Layer 3: GRASS (mid altitude, gentle slopes, dark forest green with mottling).
-      // NOT tinted — grass is always green regardless of rock color.
-      vec3 grassCol = mix(vec3(0.10, 0.22, 0.06), vec3(0.20, 0.36, 0.10), texVar);
-      float grassK = smoothstep(-1.0, 6.0, yPos) * (1.0 - smoothstep(12.0, 22.0, yPos))
-                   * smoothstep(0.55, 0.85, slopeUp);
+      // Layer 3: GRASS / FOREST CANOPY (mid altitude, gentle slopes, dark forest
+      // green with PER-CELL hash variation). NOT tinted by rockTint — grass is
+      // always green regardless of rock color.
+      //
+      // 2026-05-25 Sprint A6 (IQ Rainforest canopy upgrade): added cellular
+      // 2-meter tile hash → per-cell color variation. 22% of cells get brown-
+      // autumn tint, others vary between dark forest green and bright canopy
+      // green. Result: distant terrain reads as DENSE TREE CANOPY MOSAIC not
+      // uniform green carpet. Cheap (2 hash21 calls per pixel) and dramatic.
+      //
+      // 2026-05-25 fix: WIDENED activation window so canopy covers way more
+      // surface. Was [-1,22]y × [0.55,0.85]slope (mostly bypassed). Now
+      // [-3,55]y × [0.35,0.95]slope (covers most non-cliff terrain). Use
+      // slopeOrig (pre-bump) so cliff bump doesn't disrupt canopy coverage.
+      // 2026-05-25 forest color fix: was too uniform / plasticky green.
+      // Now 4-tone variation:
+      //   - darkGreen  (deep canopy shade)
+      //   - brightGreen (well-lit canopy)
+      //   - oliveYellow (sunlit / older trees / drought)
+      //   - autumnBrown (dead / falling-color)
+      // Each cell biased independently by 3 hashes. wider cellShade range
+      // (0.5-1.2) gives sun/shadow contrast.
+      vec2 cellId = floor(p.xz * 0.4);  // 2.5-unit tiles
+      float cellRand   = hash21(cellId);
+      float cellShade  = 0.75 + 0.30 * hash21(cellId + vec2(7.5, 13.1));
+      float cellYellow = hash21(cellId + vec2(23.7, 3.3));
+      vec3 darkGreen   = vec3(0.06, 0.18, 0.04);
+      vec3 brightGreen = vec3(0.18, 0.36, 0.10);
+      vec3 oliveYellow = vec3(0.32, 0.34, 0.10);
+      vec3 autumnBrown = vec3(0.22, 0.13, 0.04);
+      vec3 grassCol = mix(darkGreen, brightGreen, texVar);
+      grassCol = mix(grassCol, oliveYellow, cellYellow * 0.55);
+      grassCol *= cellShade;
+      grassCol = mix(grassCol, autumnBrown, step(0.78, cellRand) * 0.65);
+
+      // 2026-05-25 (canopy fix): detect "forest mode" via material green hue +
+      // saturation. In forest mode, drop the slope-gating on grass so STEEP
+      // tree bump sides also get green (otherwise tree bumps render as rock
+      // because their sides are vertical). Non-forest scenes keep slope test
+      // → cliffs stay rocky.
+      bool isForest = (leafMat.y > 0.30) && (leafMat.x > 0.25) && (leafMat.x < 0.42);
+      float grassSlope = isForest ? 1.0 : smoothstep(0.35, 0.95, slopeOrig);
+      float grassK = smoothstep(-3.0, 4.0, yPos) * (1.0 - smoothstep(40.0, 65.0, yPos))
+                   * grassSlope;
       baseCol = mix(baseCol, grassCol, grassK);
 
       // Layer 4: SNOW (high altitude, gentle slopes, near-white with sun tint)
+      // 2026-05-25 fix: use slopeOrig for layer mask consistency.
+      // 2026-05-25 forest fix: in forest mode, raise snow altitude threshold
+      // way up — otherwise canopy bumps (flat tree tops + sun-facing) trigger
+      // false snow patches on tree tips. Snow only above real high peaks.
       vec3 snowCol = mix(vec3(0.86, 0.88, 0.94), vec3(0.96, 0.97, 1.00), fineVar);
-      float snowAlt  = smoothstep(20.0, 38.0, yPos);
-      float snowSlope = smoothstep(0.55, 0.85, slopeUp);
+      float snowAltLow  = isForestForTint ? 45.0 : 20.0;
+      float snowAltHigh = isForestForTint ? 70.0 : 38.0;
+      float snowAlt  = smoothstep(snowAltLow, snowAltHigh, yPos);
+      float snowSlope = smoothstep(0.55, 0.85, slopeOrig);
       // Sun-facing bias — slopes facing the sun accumulate more snow
       float snowSunBias = 0.5 + 0.5 * smoothstep(-0.2, 0.6, dot(n, sunDir));
       float snowK = snowAlt * snowSlope * snowSunBias;
+      // 2026-05-25 hard forest-mode override: nuke snow entirely. If white
+      // patches still appear, it's NOT from this code path.
+      if (isForestForTint) snowK = 0.0;
       baseCol = mix(baseCol, snowCol, snowK);
 
       // ---- Lighting: IQ outdoor 3-light ----
@@ -948,21 +1041,54 @@ void main() {
       vec3 mountSky  = sky(n, sunDir) * 0.55;  // Sprint 6: procedural-IBL ambient
       vec3 mountBack = vec3(0.40, 0.50, 0.60);
 
+      // 2026-05-25 Sprint A6 (IQ Rainforest cloud shadow): multiply shadow by
+      // projected cloud noise density along sun direction. Adds dappled cloud-
+      // shadow patches on terrain — major visual depth cue.
+      float cloudShade = atlasCloudShadow(p, sunDir, 60.0);
+      float shadowKCloud = shadowK * cloudShade;
+
       // Asymmetric shadow color split (IQ Elevated trick): sun shadow tinted
       // warm-orange in R, cooler-orange G, cool-blue B. Without this, mountain
       // shadows look uniformly dark; with it they have aerial-perspective hue.
       vec3 sunDiffuse = vec3(1.05, 0.96, 0.84) * 1.3
-                       * vec3(shadowK, shadowK*shadowK*0.5+0.5*shadowK, shadowK*shadowK*0.8+0.2*shadowK);
+                       * vec3(shadowKCloud, shadowKCloud*shadowKCloud*0.5+0.5*shadowKCloud, shadowKCloud*shadowKCloud*0.8+0.2*shadowKCloud);
       vec3 mountLin = diffM * sunDiffuse;
       mountLin += (ao * ambM * 0.55) * mountSky;
       mountLin += (backM * 0.28) * mountBack;
+
+      // 2026-05-25 forest lighting fix: real canopy leaves are TRANSLUCENT
+      // (sun shines through them, soft subsurface scatter) + diffuse light
+      // bouncing through gaps. Plain Lambert gives harsh black shadows on
+      // tree shaded sides. For canopy areas (grassK > 0):
+      //   (1) Boost sky/ambient contribution — fills shadows
+      //   (2) Henyey-Greenstein backlight (sun-behind-leaves halo glow)
+      // Same idiom as material.kind='translucent' but inline for canopy only.
+      if (isForestForTint && grassK > 0.05) {
+        // (1) Extra ambient — softens self-shadow on canopy
+        mountLin += grassCol * mountSky * 0.6 * grassK;
+        mountLin += grassCol * vec3(0.40, 0.55, 0.30) * 0.5 * grassK * ao;
+
+        // (2) HG backlight — peaks when sun is behind canopy (sunDir aligns rd)
+        float cosA = clamp(dot(sunDir, -rd), -1.0, 1.0);
+        float gHG = 0.5;
+        float kHG = 1.55 * gHG - 0.55 * gHG * gHG * gHG;
+        float fHG = 1.0 - kHG * cosA;
+        float hgPhase = (1.0 - kHG * kHG) / (12.5664 * fHG * fHG);
+        vec3 backlight = hgPhase * shadowKCloud * grassCol * grassCol * mountSun * 3.0;
+        mountLin += backlight * grassK;
+      }
 
       // ---- Snow Schlick highlight (IQ Elevated idiom) ----
       // Schlick-Fresnel spec with F0=0.04 dielectric → snow grazing angles
       // glint white-gold. Only fires where snowK > 0 + sun-aligned half-vector.
       vec3 halfV = normalize(sunDir - rd);
       float schlick = 0.04 + 0.96 * pow(clamp(1.0 + dot(halfV, rd), 0.0, 1.0), 5.0);
-      mountLin += (0.7 + 0.3 * snowK) * schlick * vec3(7.0, 5.0, 3.0) * 0.30 * diffM * shadowK
+      // 2026-05-25 forest fix: IQ's (0.7 + 0.3*snowK) keeps 70% spec even on
+      // NON-snow (rocky cliffs at sun-aligned half-vector get white specks).
+      // In forest mode gate entirely by snowK (no spec without snow). Other
+      // scenes keep IQ behavior (canyon / jet need rocky glint).
+      float schlickGate = isForestForTint ? snowK : (0.7 + 0.3 * snowK);
+      mountLin += schlickGate * schlick * vec3(7.0, 5.0, 3.0) * 0.30 * diffM * shadowKCloud
                 * pow(clamp(dot(n, halfV), 0.0, 1.0), 16.0);
 
       // ---- Snow Fresnel rim — subsurface translucency at grazing angles ----
@@ -978,17 +1104,141 @@ void main() {
 
       col = baseCol * mountLin;
 
-      // Height-based atmospheric fog (IQ idiom). Distant peaks fade into sky.
-      // 2026-05-24: dialed fogC 0.50 → 0.28 + fogB 0.018 → 0.012 + clamp 0.85 →
-      // 0.65 after jet-aircraft test reported "雾气太大看不清地形". Distant peaks
-      // still atmospheric but mid-distance reads cleanly.
+      // 2026-05-25 Sprint A6 (IQ Rainforest wavelength-dependent fog):
+      // Rayleigh-inspired per-channel extinction — blue absorbed faster than red
+      // over distance. Result: distant terrain desaturates AND shifts blue
+      // (the iconic aerial-perspective haze).
+      //
+      // 2026-05-25 fix: dialed 0.0025 → 0.0012 after rainforest-hills showed
+      // remote terrain disappearing into uniform blue at ~50 units. The IQ
+      // coefficient was tuned for kilometer-scale terrain (SC=250 in IQ
+      // Canyon, so distance 50 there ≈ 12500 world units). Atlas scenes are
+      // 10-100 units typical; 2× lower coefficient gives ~kilometer-equivalent
+      // perspective at our scale.
       float mountDist = length(p - ro);
-      float fogB = 0.012;
-      float fogC = 0.28;
-      float rdy = max(abs(rd.y), 0.01) * sign(rd.y + 1e-4);
-      float fogAmt = fogC * (1.0 - exp(-mountDist * rdy * fogB)) / rdy;
-      fogAmt = clamp(fogAmt, 0.0, 0.65);
-      col = mix(col, sky(rd, sunDir), fogAmt);
+      vec3 fogExt = exp2(-mountDist * 0.0012 * vec3(1.0, 1.5, 4.0));
+      vec3 fogColor = sky(rd, sunDir);
+      col = col * fogExt + (1.0 - fogExt) * fogColor;
+    } else if (isBuilding) {
+      // ---- Building material kind (Otavio Good Skyline CC0 recipe) ----------
+      // Sub-dispatch: street (y<0.05), car (0.05<y<0.13 in road region), or wall.
+      // Procedural window grid: horizontal floor bands (Y) × vertical column
+      // grid (X/Z) → glass towers. Dark cells reflect sky for the glass look.
+      vec3 nAbs = abs(n);
+      vec2 uvWall;
+      if (nAbs.x > nAbs.z) uvWall = vec2(p.z, p.y);
+      else                 uvWall = vec2(p.x, p.y);
+
+      // Per-block parameters (winWidth = column density, buildingDim = albedo)
+      vec2 blockIdW = floor(p.xz);
+      float winWidth = 1.0 + hash21(blockIdW * 4.321) * 0.8;
+      float buildingDim = 0.55 + hash21(blockIdW * 1.123) * 0.45;
+
+      // Detect car hit: y in [0.04, 0.10] AND on a road lane (localXZ near ±0.40).
+      // Cars are baked into sdCityBlock — see SDF for placement.
+      vec2 localXZ_s = fract(p.xz) - 0.5;
+      bool nearLaneEW = abs(abs(localXZ_s.y) - 0.40) < 0.06;
+      bool nearLaneNS = abs(abs(localXZ_s.x) - 0.40) < 0.06;
+      bool isCar = (p.y > 0.04 && p.y < 0.10) && (nearLaneEW || nearLaneNS);
+
+      // Window grid mask (only relevant for wall pixels)
+      float windowH = floor(fract(uvWall.y * 20.0 - 0.35) * 2.0 + 0.1);
+      float windowV = floor(fract(uvWall.x * 40.0 + 0.05) * winWidth + 0.1);
+      float windowMask = mix(0.2, 1.0, clamp(max(windowH, windowV), 0.0, 1.0));
+      windowMask *= buildingDim;
+      if (nAbs.y > nAbs.x && nAbs.y > nAbs.z) windowMask = buildingDim;  // roof
+      if (p.y < 0.05 || isCar) windowMask = 1.0;  // not a window
+
+      // Distance-fade for far buildings (anti-moire on tiny windows)
+      float bDistAA = length(p - ro);
+      float distFade = smoothstep(30.0, 80.0, bDistAA);
+      windowMask = mix(windowMask, buildingDim * 0.7, distFade);
+
+      // Per-building tint
+      vec3 buildingTint = vec3(
+        0.70 + hash21(blockIdW) * 0.35,
+        0.72 + hash21(blockIdW + vec2(7.7)) * 0.30,
+        0.65 + hash21(blockIdW + vec2(13.1)) * 0.35
+      );
+      vec3 wallCol = vec3(0.85, 0.82, 0.75) * buildingTint;
+      vec3 surfCol = wallCol * windowMask;
+
+      // Ground level (y < 0.05): asphalt road + sidewalk
+      if (p.y < 0.05 && !isCar) {
+        float xRoad = abs(fract(p.x + 0.5) - 0.5);
+        float zRoad = abs(fract(p.z + 0.5) - 0.5);
+        float onRoad = step(min(xRoad, zRoad), 0.30);  // wider road region
+        surfCol = mix(vec3(0.55, 0.52, 0.48), vec3(0.12, 0.12, 0.13), onRoad);
+        // dashed center line
+        float yellowLine = (1.0 - step(0.012, min(xRoad, zRoad))) * onRoad;
+        // dashed white lane dividers at ±0.143 from road center
+        float laneOff = min(abs(xRoad - 0.143), abs(zRoad - 0.143));
+        float dashPhase = step(0.5, fract((xRoad < zRoad ? p.z : p.x) * 1.2));
+        float whiteDash = (1.0 - step(0.008, laneOff)) * onRoad * dashPhase;
+        surfCol = mix(surfCol, vec3(0.95, 0.80, 0.20), yellowLine * 0.85);
+        surfCol = mix(surfCol, vec3(0.85, 0.85, 0.85), whiteDash * 0.7);
+      }
+
+      // Car color: hash by which car-period we're in (so each car has its own hue).
+      // 5-bucket palette via stepped mix (WebGL1 forbids dynamic array indexing).
+      if (isCar) {
+        float carCellX = floor((p.x + u_time * 0.30) / 0.55);
+        float carCellZ = floor((p.z + u_time * 0.30) / 0.55);
+        float carHash = hash21(vec2(carCellX, carCellZ + (nearLaneEW ? 0.0 : 50.0)));
+        vec3 carCol;
+        if      (carHash < 0.20) carCol = vec3(0.92, 0.92, 0.94);  // white
+        else if (carHash < 0.40) carCol = vec3(0.10, 0.10, 0.12);  // black
+        else if (carHash < 0.60) carCol = vec3(0.78, 0.18, 0.14);  // red
+        else if (carHash < 0.80) carCol = vec3(0.65, 0.66, 0.68);  // silver
+        else                     carCol = vec3(0.15, 0.22, 0.42);  // dark blue
+        surfCol = carCol;
+      }
+
+      // Standard Lambert
+      vec3 sunCol = vec3(1.05, 0.96, 0.84);
+      vec3 skyCol = sky(n, sunDir) * 0.55;
+      float diffB = max(dot(n, toLight), 0.0);
+      vec3 lin = surfCol * sunCol * diffB * shadowK * 1.25
+               + surfCol * skyCol * skyL * ao * 0.40
+               + surfCol * vec3(0.30, 0.35, 0.40) * 0.10;
+
+      // ---- Glass reflection — beefed up 2026-05-25 -------------------------
+      // User feedback: "玻璃的感觉不够好". Issues with prior version:
+      //   - reflStrength capped at ~0.50 (looked like matte tinted paint)
+      //   - sky-only reflection lacks color → no "sky-blue glass" feel
+      //   - no specular sun highlight on the glass
+      // Fixes: stronger fresnel ramp + bluish glass tint mixed into reflection
+      //        + specular sun glint (Phong-style) on window panes.
+      if (p.y > 0.05 && !isCar) {
+        vec3 R = reflect(rd, n);
+        vec3 skyRefl = sky(R, sunDir);
+        // Cool-blue glass tint (architectural glass is faintly cyan)
+        vec3 glassTint = vec3(0.78, 0.92, 1.08);
+        vec3 reflCol = skyRefl * glassTint;
+        // Sharp fresnel — minimal at face-on, strong at grazing
+        float ndotv = max(dot(n, -rd), 0.0);
+        float fres = 0.08 + 0.92 * pow(1.0 - ndotv, 4.0);
+        // Window darkness gate — dark pixels = window pane, bright = wall
+        float darkness = clamp(1.0 - windowMask * 1.15, 0.0, 1.0);
+        // Reflection strength can now reach near 1.0 on glass at grazing.
+        float reflStrength = clamp(0.55 + fres * 0.55, 0.0, 1.0) * darkness;
+        lin = mix(lin, reflCol * 1.35, reflStrength);
+        // Specular sun glint — Blinn-Phong on glass only
+        vec3 H = normalize(toLight + (-rd));
+        float spec = pow(max(dot(n, H), 0.0), 64.0) * shadowK;
+        lin += vec3(1.20, 1.10, 0.95) * spec * 0.9 * darkness;
+      }
+      // Car specular highlight (paint clearcoat)
+      if (isCar) {
+        vec3 H = normalize(toLight + (-rd));
+        float spec = pow(max(dot(n, H), 0.0), 48.0) * shadowK;
+        lin += vec3(1.15, 1.10, 1.00) * spec * 0.55;
+      }
+
+      // Atmospheric perspective — wavelength fog
+      float bDist = length(p - ro);
+      vec3 fogExt = exp2(-bDist * 0.012 * vec3(1.0, 1.3, 2.5));
+      col = lin * fogExt + (1.0 - fogExt) * sky(rd, sunDir);
     } else {
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
       // metals + emissives keep smooth uniform surfaces; matte diffuse gets
@@ -1231,6 +1481,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   const subjectOffsetLUT = new Float32Array(MAX_SUBJECT_MOTION * 3);
   let activeMotionSlots = {};  // { subjectId: slot } — set by setMotionSlots()
   let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
+  let activeCityMode = false;  // set by setCityMode() when scene has procedural-city
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1421,6 +1672,8 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
       'u_blueprintMode',
+      // Sprint A7 city voxel-walk toggle
+      'u_cityActive',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1603,6 +1856,11 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // graph-paper schematic look. Volumes are skipped in this mode.
     if (uniformsCache.u_blueprintMode != null) {
       gl.uniform1f(uniformsCache.u_blueprintMode, sequenceShotRenderer === 'blueprint' ? 1.0 : 0.0);
+    }
+    // Sprint A7: city voxel-walk toggle. Set by scene having procedural-city
+    // primitive (auto-detected on SDF compile via _hasCity flag).
+    if (uniformsCache.u_cityActive != null) {
+      gl.uniform1f(uniformsCache.u_cityActive, activeCityMode ? 1.0 : 0.0);
     }
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
@@ -1947,6 +2205,15 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      * `{relativeTo}` can resolve to a world-absolute position. Map of
      * { subjectId: [x, y, z] } (the subject's static transform.translate).
      */
+    /**
+     * Sprint A7: enable voxel-walk raymarch when scene has procedural-city.
+     * Without this, sphere trace overshoots discontinuous block boundaries.
+     * Compositor checks scene primitives + calls this with true/false.
+     */
+    setCityMode(on) {
+      activeCityMode = !!on;
+    },
+
     setSubjectBaseTargets(map) {
       subjectBaseTargets = map || {};
     },

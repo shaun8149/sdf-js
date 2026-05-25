@@ -1,71 +1,257 @@
 {
-  "ranAt": "2026-05-23T10:46:49.185Z",
+  "ranAt": "2026-05-24T14:36:34.040Z",
   "model": "claude-sonnet-4-5",
   "versions": [
-    "v3.4"
+    "v3.5",
+    "v3.7"
   ],
   "totals": {
-    "v3.4": {
-      "atoms": 0,
-      "iq": 0,
-      "mat": 12,
-      "pat": 0,
+    "v3.5": {
+      "atoms": 16,
+      "iq": 3,
+      "mat": 26,
+      "pat": 3,
       "var": 0,
-      "cost": 0.1276
+      "cost": 0.1845
+    },
+    "v3.7": {
+      "atoms": 16,
+      "iq": 0,
+      "mat": 26,
+      "pat": 2,
+      "var": 0,
+      "cost": 0.214
     }
   },
-  "totalCost": 0.1276,
+  "totalCost": 0.39849999999999997,
   "demos": [
     {
-      "demoId": "spiral-vase",
+      "demoId": "coastal-lighthouse",
       "runs": {
-        "v3.4": {
-          "demoId": "spiral-vase",
-          "version": "v3.4",
+        "v3.5": {
+          "demoId": "coastal-lighthouse",
+          "version": "v3.5",
           "model": "claude-sonnet-4-5",
-          "elapsed": "25.2s",
+          "elapsed": "58.4s",
           "tokens": {
-            "input": 31888,
-            "output": 2127
+            "input": 37609,
+            "output": 4778
           },
-          "costUSD": "0.1276",
-          "subjectCount": 12,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 12,
-          "patternUsageCount": 0,
+          "costUSD": "0.1845",
+          "subjectCount": 44,
+          "newAtomsUsedCount": 16,
+          "newAtomsUsed": [
+            [
+              "moon",
+              1
+            ],
+            [
+              "star",
+              12
+            ],
+            [
+              "bird-silhouette",
+              3
+            ]
+          ],
+          "newIQTypesUsedCount": 3,
+          "newIQTypesUsed": [
+            [
+              "octagon-prism",
+              1
+            ],
+            [
+              "solid-angle",
+              2
+            ]
+          ],
+          "materialUsageCount": 26,
+          "patternUsageCount": 3,
           "variantsUsedCount": 0,
           "variantsUsed": [],
           "zSpread": {
-            "count": 9,
-            "min": -0.08,
-            "max": 0.05,
-            "range": 0.13,
-            "stdev": 0.03325917677132392
+            "count": 43,
+            "min": -16,
+            "max": 3.5,
+            "range": 19.5,
+            "stdev": 6.487425895832728
           },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
+          "v30AtomsUsedCount": 5,
+          "v30AtomsUsed": [
+            [
+              "rock-boulder",
+              3
+            ],
+            [
+              "sailboat-small",
+              2
+            ]
+          ],
+          "v32AtomsUsedCount": 3,
+          "v32AtomsUsed": [
+            [
+              "stylized-tree",
+              2
+            ],
+            [
+              "grass-field",
+              1
+            ]
+          ],
           "materialKindsUsed": {
-            "sea": 0,
+            "sea": 1,
             "mountain": 0,
             "emissive": 0,
-            "translucent": 0
+            "translucent": 2
+          },
+          "cinematic": {
+            "postFx": 0,
+            "aperture": 0,
+            "volumeCount": 0,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
           },
           "typeCounts": {
-            "revolve": 1,
-            "torus": 3,
-            "cylinder": 1,
-            "box": 1,
-            "capsule": 3,
-            "sphere": 3
+            "moon": 1,
+            "star": 12,
+            "bird-silhouette": 3,
+            "waves": 1,
+            "box": 3,
+            "pyramid": 1,
+            "rock-boulder": 3,
+            "capped_cone": 1,
+            "cylinder": 3,
+            "torus": 1,
+            "octagon-prism": 1,
+            "sphere": 1,
+            "cone": 1,
+            "rounded_box": 4,
+            "solid-angle": 2,
+            "stylized-tree": 2,
+            "grass-field": 1,
+            "rep": 1,
+            "sailboat-small": 2
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "Celadon Vase (Chinese porcelain)"
+          "sceneName": "Coastal Lighthouse at Night"
+        },
+        "v3.7": {
+          "demoId": "coastal-lighthouse",
+          "version": "v3.7",
+          "model": "claude-sonnet-4-5",
+          "elapsed": "60.4s",
+          "tokens": {
+            "input": 45623,
+            "output": 5139
+          },
+          "costUSD": "0.2140",
+          "subjectCount": 41,
+          "newAtomsUsedCount": 16,
+          "newAtomsUsed": [
+            [
+              "moon",
+              1
+            ],
+            [
+              "star",
+              12
+            ],
+            [
+              "bird-silhouette",
+              3
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 26,
+          "patternUsageCount": 2,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 41,
+            "min": -19,
+            "max": 3.2,
+            "range": 22.2,
+            "stdev": 8.208535770062756
+          },
+          "v30AtomsUsedCount": 5,
+          "v30AtomsUsed": [
+            [
+              "bush",
+              2
+            ],
+            [
+              "rock-boulder",
+              3
+            ]
+          ],
+          "v32AtomsUsedCount": 4,
+          "v32AtomsUsed": [
+            [
+              "stylized-tree",
+              3
+            ],
+            [
+              "grass-field",
+              1
+            ]
+          ],
+          "materialKindsUsed": {
+            "sea": 1,
+            "mountain": 0,
+            "emissive": 1,
+            "translucent": 3
+          },
+          "cinematic": {
+            "postFx": 1,
+            "aperture": 1,
+            "volumeCount": 2,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 1,
+            "godRayVols": 1,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "typeCounts": {
+            "moon": 1,
+            "star": 12,
+            "waves": 1,
+            "box": 2,
+            "bush": 2,
+            "rock-boulder": 3,
+            "cylinder": 5,
+            "torus": 1,
+            "cone": 1,
+            "sphere": 1,
+            "rounded_box": 4,
+            "stylized-tree": 3,
+            "grass-field": 1,
+            "rep": 1,
+            "bird-silhouette": 3
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Coastal Lighthouse at Night"
         }
       }
     }

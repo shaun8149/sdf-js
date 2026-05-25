@@ -783,6 +783,103 @@ float atlasTerrainElevated(vec2 x, float maxHeight, float scale,
   return h;
 }
 
+// ---- Tree canopy 3D bump overlay (IQ Rainforest treesMap recipe-only port) ----
+// Adds per-cell tree-bump displacement on top of terrain heightmap. Each 2.5-unit
+// tile gets a tree at a hash-randomized offset; trees overlap to form dense canopy.
+// Result: terrain surface BUMPS UP at each tree position → real 3D tree silhouettes
+// on the canopy edge, not just flat color.
+//
+// Recipe only — IQ uses ellipsoid SDF per tree (full 3D shape); we approximate
+// with smoothstep-falloff height bumps (cheaper, still gives tree-silhouette
+// look at distance). Real-tree-like SDF is for hero foreground; this is for
+// the canopy as a terrain-feature.
+//
+// canopyAmount 0 = off (backward compat default). 1 = max density.
+// Internally clamped tree height = 4.0 world units (Atlas standard 1-10 scale).
+float atlasCanopyBumps(vec2 x, float baseH, float canopyAmount) {
+  if (canopyAmount < 0.001) return 0.0;
+  vec2 cell = x * 0.4;  // 2.5-unit tiles
+  vec2 cellInt = floor(cell);
+  vec2 cellFrac = fract(cell);
+  float bump = 0.0;
+  for (int j = 0; j <= 1; j++) {
+    for (int i = 0; i <= 1; i++) {
+      vec2 g = vec2(float(i), float(j)) - step(cellFrac, vec2(0.5));
+      vec2 tid = cellInt + g;
+      vec2 tof = vec2(hash21(tid * 7.3), hash21(tid * 13.1)) - 0.5;
+      float td = length(cellFrac - (vec2(0.5) + tof * 0.5 + g));
+      // 2026-05-25 fix: bushier trees (lower th, larger tw → rounder shape)
+      // Was pointy spikes; now matches IQ's rounder canopy blobs.
+      float th = 0.55 + 0.30 * hash21(tid + vec2(5.5));
+      float tw = 0.50 + 0.20 * hash21(tid + vec2(11.7));
+      bump = max(bump, th * smoothstep(tw, 0.0, td));
+    }
+  }
+  // Activation: canopy only in grass altitude window + gentle baseline.
+  // baseH check: trees grow on land between -3 and ~50 units altitude.
+  float altMask = smoothstep(-3.0, 4.0, baseH) * (1.0 - smoothstep(45.0, 65.0, baseH));
+  return canopyAmount * 4.0 * bump * altMask;
+}
+
+// ---- True 3D canopy granularity (IQ Rainforest recipe-only port) -----
+// Adds 3D fbm × squared noise to the SDF directly (NOT to the 2D heightmap).
+// Critical difference from 2D heightmap noise: 3D noise varies in Y too, so
+// tree surfaces have actual 3D bumpy texture (leaf clusters), not 2D vertical
+// stripe pattern. Recipe from IQ's treesMap which adds "d += 4*s" to tree SDF.
+//
+// Called from sdTerrainElevated wrapper with full 3D position p.
+// Active near canopy surface (|p.y - h| < 5) + canopy altitude window.
+// Returns SDF displacement to ADD to the (p.y - h) raw distance.
+float atlasCanopyGranularity(vec3 p, float h, float canopyAmount) {
+  if (canopyAmount < 0.001) return 0.0;
+  // Altitude mask same as canopy bumps (only trees zone)
+  float altMask = smoothstep(-3.0, 4.0, h) * (1.0 - smoothstep(45.0, 65.0, h));
+  if (altMask < 0.01) return 0.0;
+  // Distance mask: only near the canopy surface (avoid affecting sky / depths)
+  float distMask = smoothstep(8.0, 0.0, abs(p.y - h));
+  if (distMask < 0.01) return 0.0;
+  // 2026-05-25 final dial: amp 2.0 / 1.2 both caused MAX_STEPS exhaustion +
+  // floating tree artifacts (ray hits tree top but underlying terrain missed
+  // due to step overshoot → sky color). Amp 0.6 keeps Lipschitz manageable
+  // (~3.6) with looser step damp 0.18 → no MAX_STEPS exhaustion, no holes.
+  // Granular noise still visible as subtle leaf-cluster texture on edges.
+  float n = fbm3_lite(p * 3.0);
+  n = n * n;
+  return canopyAmount * 0.6 * n * altMask * distMask;
+}
+
+// ---- Cloud shadow projection (IQ Rainforest recipe-only port) -----------
+// Project a world position along sun direction up to cloud-layer Y, sample
+// 2D fbm density there, return shadow factor [0=fully shaded, 1=lit].
+// Cheap analytical alternative to volumetric cloud occlusion raymarch.
+// Combine with regular sun softshadow via multiplication.
+float atlasCloudShadow(vec3 pos, vec3 sunDir, float cloudY) {
+  if (sunDir.y < 0.05) return 1.0;  // sun below horizon → no projection
+  float t = (cloudY - pos.y) / sunDir.y;
+  if (t < 0.0) return 1.0;  // pos already above clouds
+  vec3 cloudPos = pos + sunDir * t;
+  // Sample fbm at projected XZ (use 2D Y=0 for noise input)
+  float density = fbm3_lite(vec3(cloudPos.x * 0.003, 0.0, cloudPos.z * 0.003));
+  // density ∈ ~[0, 1]; smoothstep to soft shadow
+  return mix(0.4, 1.0, 1.0 - smoothstep(0.15, 0.55, density));
+}
+
+// ---- Cliff smoothstep injection (IQ Rainforest recipe-only port) -------
+// Adds a sudden vertical jump in heightmap at a specified elevation band.
+// Result: vertical rock-face cliffs at altitude (e.g. mountain plateau edges).
+// Different from terrain-canyon Y-stretch displacement (vertical striations
+// on noise); cliff injection creates STRUCTURAL flat-face walls.
+//
+// Pass cliffJump=0 to disable (backward-compat default). Other defaults
+// pick a sensible mid-altitude band when enabled.
+//
+// Recipe only — IQ Rainforest combines this with smoothstepd() for analytical
+// derivative chain-rule normal propagation. Atlas uses 4-tap finite-difference
+// calcNormal which handles the discontinuity at higher cost but correct visuals.
+float atlasCliffInject(float h, float cliffStart, float cliffEnd, float cliffJump) {
+  return h + cliffJump * smoothstep(cliffStart, cliffEnd, h);
+}
+
 // SDF wrapper with tighter step damp (0.25 vs heightmap's 0.3) — ridge-
 // sharpened peaks need finer steps to avoid penetration.
 // 2026-05-24 evening (IQ Elevated study): bumped 6 → 9 octaves for sharper
@@ -790,9 +887,19 @@ float atlasTerrainElevated(vec2 x, float maxHeight, float scale,
 // Multi-LOD trick (16-oct for normal only) deferred — needs renderer changes
 // that are out of scope for this lib-only ship.
 float sdTerrainElevated(vec3 p, float maxHeight, float scale,
-                         float ridgePower, float mountainness) {
+                         float ridgePower, float mountainness,
+                         float cliffStart, float cliffEnd, float cliffJump,
+                         float canopyAmount) {
   float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 9);
-  return (p.y - h) * 0.25;
+  h = atlasCliffInject(h, cliffStart, cliffEnd, cliffJump);
+  h += atlasCanopyBumps(p.xz, h, canopyAmount);
+  // 3D canopy granularity (added to SDF, not h, so noise varies in Y)
+  float granular = atlasCanopyGranularity(p, h, canopyAmount);
+  // 2026-05-25 final: granular amp 0.6, Lipschitz ≈ 3.6 + p.y 1 = 4.6.
+  // Safe step < 1/4.6 = 0.22. Use 0.18 for safety + speed. With 200 MAX_STEPS
+  // canopy zones converge reliably, no holes, no floating trees.
+  float stepDamp = mix(0.25, 0.18, smoothstep(0.0, 0.5, canopyAmount));
+  return (p.y - h - granular) * stepDamp;
 }
 
 // ---- Terrain with lakes (IQ Rainforest envelope idiom) -----------------
@@ -882,6 +989,102 @@ float sdTerrainCanyon(vec3 p, float maxHeight, float scale,
   float h = atlasTerrainElevated(p.xz, maxHeight, scale, ridgePower, mountainness, 9);
   float dis = atlasCanyonDisplacement(p, 0.0625, yStretch, displaceAmt);
   return (dis + p.y - h) * 0.25;
+}
+
+// ---- Procedural infinite city (Otavio Good Skyline CC0 recipe port) ----
+// Per-block skyscraper SDF. World XZ is tiled into unit blocks; each block
+// gets a deterministic random building from hash(blockId). Downtown bias
+// makes buildings near the city center (world origin) taller.
+//
+// CRITICAL: This SDF is DISCONTINUOUS at block boundaries. Sphere trace will
+// overshoot into neighboring blocks unless caller adds voxel-walk clamping
+// to the raymarch step. flyLambert raymarch checks u_cityActive and clamps
+// to nearest block boundary in that mode.
+//
+// Args:
+//   p             — world position
+//   blockSize     — XZ unit size of city blocks (1.0 typical)
+//   maxHeight     — peak skyscraper height (10-25 typical)
+//   downtownK     — center-bias strength (3-5; larger = more concentrated downtown)
+float sdCityBlock(vec3 p, vec2 blockId, float blockSize, float maxHeight, float downtownK) {
+  // Hash per-block random params
+  vec2 r1 = vec2(hash21(blockId * 7.13), hash21(blockId * 13.37 + vec2(5.5)));
+  vec2 r2 = vec2(hash21(blockId * 23.7 + vec2(11.1)), hash21(blockId * 17.3 + vec2(31.5)));
+
+  // XZ center the position within the block (block center is at (blockSize/2, blockSize/2))
+  vec2 localXZ = mod(p.xz, blockSize) - blockSize * 0.5;
+
+  // Downtown bias: closer to origin → taller buildings
+  float downtown = clamp(downtownK / max(length(blockId), 1.0), 0.0, 1.0);
+  // 2026-05-25 user feedback "街道要更加宽": narrower footprints 0.22-0.32
+  // (was 0.30-0.40). Street gap min 0.36 (was 0.20) — wide enough for 2 lanes
+  // each direction + sidewalk + room for cars to be visibly on the road.
+  float baseRad = blockSize * (0.22 + r1.x * 0.10);
+  // Building height — quantized to floor units for window alignment
+  float height = (r1.y * r2.x + 0.15) * maxHeight * downtown * (1.0 + (baseRad - 0.3) * 4.0) + 0.5;
+  height = floor(height * 5.0) / 5.0;
+
+  // Main tower box. Y origin = 0 ground level.
+  float d = sdBox(vec3(localXZ.x, p.y - height * 0.5, localXZ.y),
+                  vec3(baseRad, height * 0.5, baseRad));
+
+  // Smaller second section on top (50% of blocks)
+  if (r2.y > 0.5 && height > 1.0) {
+    float h2 = max(0.2, r2.y * 0.5) * downtown * maxHeight * 0.3;
+    h2 = floor(h2 * 5.0) / 5.0;
+    float r2rad = baseRad * (0.55 + r1.x * 0.25);
+    d = min(d, sdBox(vec3(localXZ.x, p.y - height - h2 * 0.5, localXZ.y),
+                      vec3(r2rad, h2 * 0.5, r2rad)));
+  }
+
+  // Dome top occasionally (4% chance)
+  if (r1.x < 0.04 && height > 1.0) {
+    float domeR = baseRad * 0.75;
+    d = min(d, length(vec3(localXZ.x, p.y - height, localXZ.y)) - domeR);
+  }
+
+  // ---- Cars on roads (Otavio Good Skyline recipe) ------------------------
+  // Two-way traffic on each road. Lanes at localXZ ±0.40 (beyond max building
+  // footprint 0.32), cars travel along the perpendicular axis.
+  // Car size: 0.16 long × 0.045 wide × 0.045 tall. Animated via u_time;
+  // cars repeat every 0.55 along travel axis. No conditionals → Lipschitz-
+  // safe sphere trace (4 cheap sdBox evals per ray step).
+  //
+  // Shader detects car hits by checking p.y in (0.04, 0.10) on a lane.
+  float carT = u_time * 0.30;
+  float ph1 = hash21(vec2(blockId.y, 17.3)) * 5.0;
+  float ph2 = hash21(vec2(blockId.y, 31.7)) * 5.0;
+  float ph3 = hash21(vec2(blockId.x, 23.9)) * 5.0;
+  float ph4 = hash21(vec2(blockId.x, 41.1)) * 5.0;
+  // E-W lanes (cars move along X)
+  float carEW_zP = +0.40;  // +z lane: cars travel +x
+  float carEW_zN = -0.40;  // -z lane: cars travel -x
+  float carXp = mod(p.x + carT + ph1, 0.55) - 0.275;
+  float carXn = mod(-p.x + carT + ph2, 0.55) - 0.275;
+  d = min(d, sdBox(vec3(carXp, p.y - 0.045, localXZ.y - carEW_zP),
+                   vec3(0.14, 0.04, 0.05)));
+  d = min(d, sdBox(vec3(carXn, p.y - 0.045, localXZ.y - carEW_zN),
+                   vec3(0.14, 0.04, 0.05)));
+  // N-S lanes (cars move along Z)
+  float carNS_xP = +0.40;
+  float carNS_xN = -0.40;
+  float carZp = mod(p.z + carT + ph3, 0.55) - 0.275;
+  float carZn = mod(-p.z + carT + ph4, 0.55) - 0.275;
+  d = min(d, sdBox(vec3(localXZ.x - carNS_xP, p.y - 0.045, carZp),
+                   vec3(0.05, 0.04, 0.14)));
+  d = min(d, sdBox(vec3(localXZ.x - carNS_xN, p.y - 0.045, carZn),
+                   vec3(0.05, 0.04, 0.14)));
+
+  // Ground (road + sidewalk plane at y=0)
+  d = min(d, p.y);
+
+  return d;
+}
+
+float sdProceduralCity(vec3 p, float blockSize, float maxHeight, float downtownK) {
+  // Block ID = which city block we're in
+  vec2 blockId = floor(p.xz / blockSize);
+  return sdCityBlock(p, blockId, blockSize, maxHeight, downtownK) * 0.7;
 }
 
 // ---- Parametric arch bridge (IQ Snow Bridge MdXGzr recipe-only port) ----

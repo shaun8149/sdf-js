@@ -1,0 +1,109 @@
+{
+  "id": "rainforest-hills",
+  "title": "雨林山岭",
+  "prompt": "雨林覆盖的山岭，远处悬崖与云层",
+  "code2d": "// Recipe-only port of IQ Rainforest XlsBR4 (CC educational, no source\n// copied). Showcases 5 new Sprint A6 mountain shader idioms:\n//   (1) cliff smoothstep injection — sudden 30-unit vertical jump at\n//       altitude 25-35 creates structural rock-face cliffs\n//   (2) canopy mosaic — per-cell hash variation on grass layer makes\n//       distant terrain read as DENSE TREE CANOPY not uniform carpet\n//   (3) wavelength-dependent fog — RGB different extinction per channel,\n//       distant terrain desaturates AND shifts blue (aerial perspective)\n//   (4) cliff bump mapping — fbm normal perturbation masked by 1-|n.y|,\n//       cliff faces get rocky texture, flats stay smooth\n//   (5) cloud shadow projection — terrain shadow patched with projected\n//       cloud-noise density, dappled forest light\n// Hand-authored, not lifted.",
+  "sceneData": {
+    "v": 1,
+    "name": "Rainforest hills — Sprint A6 mountain shader showcase (cliff + canopy + wavelength fog + cloud shadow)",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "雨林覆盖的山岭，远处悬崖与云层",
+      "from2dCode": "no 2D source — built directly to showcase Sprint A6 IQ Rainforest recipe-only idioms"
+    },
+    "subjects": [
+      {
+        "id": "rainforest-mountain",
+        "type": "terrain-elevated",
+        "args": {
+          "maxHeight":    28.0,
+          "scale":        0.028,
+          "ridgePower":   1.4,
+          "mountainness": 0.42,
+          "cliffStart":   22.0,
+          "cliffEnd":     28.0,
+          "cliffJump":    0.0,
+          "canopyAmount": 1.0
+        },
+        "transform": { "translate": [0, -2, 0] },
+        "material": { "hue": 0.33, "sat": 0.40, "value": 0.70, "metal": 0.0, "glow": 0.0, "kind": "mountain" }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0.5, "pitch": -0.05, "distance": 30, "focal": 1.1,
+        "targetX": 0, "targetY": 8, "targetZ": 0,
+        "aperture": 0.3, "focalDistance": 35
+      },
+      "light": { "azimuth": -0.8, "altitude": 0.50, "distance": 60, "intensity": 1.15 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.42 },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.38,
+        "bloomMix": 0.20,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.06,
+        "motionBlurStrength": 0.40
+      }
+    },
+    "volumes": [
+      {
+        "id": "valley-mist",
+        "kind": "fog",
+        "center": [0, -5, 0],
+        "size": [200, 3, 200],
+        "density": 0.12,
+        "color": [210, 220, 230],
+        "noiseScale": 0.6
+      }
+    ],
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 5.5,
+          "pos": [-30, 24, 50],
+          "target": [5, 10, 0],
+          "fov": 48,
+          "aperture": 0.3,
+          "focalDistance": 55,
+          "ease": "smooth",
+          "exposure": [0.0, 1.05]
+        },
+        {
+          "duration": 5.5,
+          "pos": [10, 18, 40],
+          "target": [0, 8, 0],
+          "fov": 42,
+          "aperture": 0.4,
+          "focalDistance": 38,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5.0,
+          "pos": [28, 14, 28],
+          "target": [-5, 10, 0],
+          "fov": 40,
+          "aperture": 0.5,
+          "focalDistance": 30,
+          "ease": "smooth",
+          "transition": "blend",
+          "shake": 0.05
+        },
+        {
+          "duration": 5.5,
+          "pos": [50, 30, 50],
+          "target": [0, 10, 0],
+          "fov": 54,
+          "aperture": 0.25,
+          "focalDistance": 60,
+          "ease": "smooth",
+          "transition": "blend",
+          "exposure": [1.05, 0.0]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "city-skyline",
+  "title": "都市天际线",
+  "prompt": "都市天际线 — 摩天楼 + 街道",
+  "code2d": "// Recipe port of Otavio Good Skyline (CC0 public domain). Demonstrates\n// Atlas Sprint A7 capabilities:\n//   - procedural-city primitive: infinite tiled skyscrapers via per-block\n//     hash randomization + downtown center bias\n//   - voxel-walk raymarch: flyLambert detects city presence, clamps step to\n//     unit block boundaries (otherwise sphere trace overshoots discontinuous\n//     per-block SDF)\n//   - material kind='building' (kind=6): procedural window grid texture +\n//     Schlick-fresnel glass reflection on dark window panes + lane-marking\n//     road texture at ground level\n// Hand-authored, not lifted.",
+  "sceneData": {
+    "v": 1,
+    "name": "Procedural city skyline — Otavio Good CC0 recipe port",
+    "source": {
+      "format": "hand-authored",
+      "prompt": "都市天际线",
+      "from2dCode": "no 2D source — built directly to showcase procedural-city primitive (Otavio Good Skyline CC0 recipe port)"
+    },
+    "subjects": [
+      {
+        "id": "city",
+        "type": "procedural-city",
+        "args": {
+          "blockSize": 1.0,
+          "maxHeight": 18.0,
+          "downtownK": 4.0
+        }
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0.6, "pitch": -0.05, "distance": 6, "focal": 1.0,
+        "targetX": 0, "targetY": 2.5, "targetZ": 0,
+        "aperture": 0.0, "focalDistance": 8
+      },
+      "light": { "azimuth": -0.6, "altitude": 0.45, "distance": 60, "intensity": 1.1 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.45 },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.30,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.05,
+        "motionBlurStrength": 0.30
+      }
+    }
+  }
+}

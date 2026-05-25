@@ -52,6 +52,7 @@ import { terrainElevatedSDF } from './components/community/kk-elevated.js';
 import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.js';
 import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
+import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
@@ -322,6 +323,10 @@ const PRIMITIVE_FACTORIES = {
     scale:        a.scale        ?? 0.012,
     ridgePower:   a.ridgePower   ?? 2.4,
     mountainness: a.mountainness ?? 0.4,
+    cliffStart:   a.cliffStart   ?? 600.0,
+    cliffEnd:     a.cliffEnd     ?? 600.0,
+    cliffJump:    a.cliffJump    ?? 0.0,
+    canopyAmount: a.canopyAmount ?? 0.0,
   }),
   'terrain-with-lakes': (a) => terrainWithLakesSDF({
     maxHeight:    a.maxHeight    ?? 60.0,
@@ -346,6 +351,11 @@ const PRIMITIVE_FACTORIES = {
     mountainness: a.mountainness ?? 0.20,
     displaceAmt:  a.displaceAmt  ?? 4.0,
     yStretch:     a.yStretch     ?? 4.0,
+  }),
+  'procedural-city': (a) => proceduralCitySDF({
+    blockSize: a.blockSize ?? 1.0,
+    maxHeight: a.maxHeight ?? 18.0,
+    downtownK: a.downtownK ?? 4.0,
   }),
 
   // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
@@ -462,6 +472,9 @@ export function compile(sceneData) {
         compiled.sdf._subjectMaterial = topLevelMat;
       } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
         compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
+      } else if (subj.type === 'procedural-city' && compiled.sdf._subjectMaterial == null) {
+        // Auto-attach building material kind for window grid + sky reflection.
+        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.85, metal: 0.4, glow: 0, kind: 'building' });
       } else if (subj.type === 'terrain-canyon' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach mountain material with red-orange sandstone tint.
         // mountain branch reads leafMat.x/y to tint the rock + ground layers

@@ -1722,6 +1722,14 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (fly.setVolumes) {
       fly.setVolumes((rawScene && Array.isArray(rawScene.volumes)) ? rawScene.volumes : []);
     }
+    // Sprint A7: voxel-walk for procedural-city primitive. Walks subject tree
+    // for any 'procedural-city' type — enables u_cityActive in shader so
+    // raymarch clamps step to block boundaries (otherwise sphere trace
+    // overshoots discontinuous SDF).
+    if (fly.setCityMode && rawScene && Array.isArray(rawScene.subjects)) {
+      const hasCity = JSON.stringify(rawScene.subjects).includes('"procedural-city"');
+      fly.setCityMode(hasCity);
+    }
     // Sprint 4: register motion slots + subject base positions so the camera
     // sequence evaluator can compute subject-anchored shake / target / volume
     // offset every frame.

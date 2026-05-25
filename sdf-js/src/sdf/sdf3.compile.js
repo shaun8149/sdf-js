@@ -438,9 +438,10 @@ const PRIMS = {
 
   // Kolaczynski-style elevated terrain (sharp alpine peaks). Adds ridge
   // sharpening + mountain-mask blending on top of derivative-damped fbm.
-  // Args: [maxHeight, scale, ridgePower, mountainness].
-  'terrain-elevated': ([maxHeight, scale, ridgePower, mountainness], p) =>
-    `sdTerrainElevated(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)})`,
+  // 2026-05-25: added IQ Rainforest cliff-injection + canopy-bumps args.
+  // Args: [maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount].
+  'terrain-elevated': ([maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount], p) =>
+    `sdTerrainElevated(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(cliffStart)}, ${flt(cliffEnd)}, ${flt(cliffJump)}, ${flt(canopyAmount)})`,
 
   // IQ Rainforest-style terrain with lakes. Same elevated terrain equation
   // with a low-freq lake mask carving flat lake-floor pockets.
@@ -458,6 +459,13 @@ const PRIMS = {
   // Args: [maxHeight, scale, ridgePower, mountainness, displaceAmt, yStretch].
   'terrain-canyon': ([maxHeight, scale, ridgePower, mountainness, displaceAmt, yStretch], p) =>
     `sdTerrainCanyon(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(displaceAmt)}, ${flt(yStretch)})`,
+
+  // Otavio Good Skyline CC0 — infinite procedural city. Tiled per-block
+  // skyscrapers, downtown center bias, hash-randomized building variation.
+  // REQUIRES voxel-walk in raymarch (set by flyLambert when scene has this).
+  // Args: [blockSize, maxHeight, downtownK].
+  'procedural-city': ([blockSize, maxHeight, downtownK], p) =>
+    `sdProceduralCity(${p}, ${flt(blockSize)}, ${flt(maxHeight)}, ${flt(downtownK)})`,
 
   // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.
   // stylized-tree(trunkLen, trunkRad, leafSize, windK) — 4-layer composition.

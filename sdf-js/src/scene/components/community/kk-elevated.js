@@ -29,6 +29,12 @@ export function terrainElevatedSDF({
   scale        = 0.012,
   ridgePower   = 2.4,
   mountainness = 0.4,
+  // 2026-05-25: IQ Rainforest cliff injection. Defaults disable (cliffJump=0).
+  cliffStart   = 600.0,
+  cliffEnd     = 600.0,
+  cliffJump    = 0.0,
+  // 2026-05-25: IQ Rainforest tree canopy bumps. Default disable (canopyAmount=0).
+  canopyAmount = 0.0,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: cheap sloped plane (real eval is GPU-only; 6-octave fbm × ridge
@@ -38,7 +44,7 @@ export function terrainElevatedSDF({
   inst.ast = {
     kind: 'prim',
     name: 'terrain-elevated',
-    args: [maxHeight, scale, ridgePower, mountainness],
+    args: [maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount],
   };
   return inst;
 }

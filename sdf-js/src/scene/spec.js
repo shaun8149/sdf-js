@@ -80,6 +80,7 @@ export const PRIMITIVE_TYPES = new Set([
   'terrain-with-lakes',
   'terrain-canyon',
   'arch-bridge',
+  'procedural-city',
   // Forest sprint atoms (tree + leaf + flower scatter + emissive meteor streak).
   // stylized-tree = 4-layer: wavy trunk + 3 polar-replicated main branch layers
   //   (pModPolar 6/5/3) + cellular leaf instances (pMod3 + maple-leaf) +
@@ -287,6 +288,11 @@ export const MATERIAL_KIND_INDEX = {
   // mountain primitive that should look like it has fresh snowfall on it
   // (bridges, statues, buildings, tree foliage, stone walls).
   snowy:       5,
+  // 6 = building: Lambert + procedural window grid texture + sky reflection
+  // on dark window cells. Used by procedural-city primitive (Otavio Good
+  // Skyline CC0 recipe). Each XZ position gets quantized window position;
+  // dark-window cells reflect sky for glass tower look.
+  building:    6,
 };
 
 // =============================================================================

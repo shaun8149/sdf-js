@@ -21,6 +21,24 @@
       "prompt": "一架巡航中的战斗机"
     },
     {
+      "id": "rainforest-hills",
+      "title": "雨林山岭",
+      "thesisPoint": "Sprint A6 (recipe-only IQ Rainforest XlsBR4) — adds 5 mountain shader idioms in one batch: (1) cliff smoothstep injection (terrain-elevated new args, structural rock faces) (2) canopy mosaic (per-cell hash variation, distant terrain reads as dense tree canopy) (3) wavelength-dependent fog (RGB different extinction, distant terrain desaturates + blue) (4) cliff bump (fbm normal perturbation masked by 1-|n.y|) (5) cloud shadow projection (projected noise density gives dappled forest light). All backward-compat — existing scenes unchanged.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "rainforest-hills.json",
+      "prompt": "雨林山岭"
+    },
+    {
+      "id": "city-skyline",
+      "title": "都市天际线",
+      "thesisPoint": "Sprint A7 (Otavio Good Skyline CC0 recipe port) — Atlas's first procedural-scene primitive (procedural-city). Infinite tiled skyscrapers via per-block hash + downtown bias + window-aligned floor quantization. Requires new voxel-walk raymarch (flyLambert clamps step to unit block boundaries when scene has city, otherwise sphere trace overshoots discontinuous per-block SDF). New material kind='building' (kind=6) renders procedural window grid + Schlick glass reflection + lane-marking road texture.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "city-skyline.json",
+      "prompt": "都市天际线"
+    },
+    {
       "id": "canyon-sunset",
       "title": "红岩峡谷·黄昏",
       "thesisPoint": "terrain-canyon primitive (recipe-only IQ Canyon XdsXDS port) adds 3D fbm displacement overlay with Y-axis stretch 4× onto terrain-elevated heightmap — horizontal noise bands map to VERTICAL wall striations, the signature red sandstone canyon look. Mountain branch now respects material HSV hue as a rock tint (Sprint A5), so the same shader renders gray Alps OR red sandstone via material setting. Sunset lighting + god-rays + warm fog.",
