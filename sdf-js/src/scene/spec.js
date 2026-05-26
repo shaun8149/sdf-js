@@ -30,6 +30,8 @@ export const PRIMITIVE_TYPES = new Set([
   'oriented_box', 'quadratic_bezier',
   // 2D legacy / niche
   'flower', 'line', 'slab', 'rounded_x', 'vesica',
+  // Community 2D ports (Track 4 — /port-shader pipeline dogfood)
+  'cut-disk',
   // 3D base
   'sphere', 'box', 'rounded_box', 'torus', 'capsule',
   'cylinder', 'capped_cylinder', 'cone', 'capped_cone',

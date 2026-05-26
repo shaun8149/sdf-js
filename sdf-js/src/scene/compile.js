@@ -54,6 +54,7 @@ import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
+import { cutDiskSDF } from './components/community/gbms-cut-disk.js';
 import { Random } from '../util/random.js';
 import { sanityCheck, logSanityIssues } from './sanity.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
@@ -131,6 +132,9 @@ const PRIMITIVE_FACTORIES = {
   slab:             (a) => slab(a),
   rounded_x:        (a) => rounded_x(a.w ?? 0.4, a.r ?? 0.05),
   vesica:           (a) => vesica(a),
+
+  // -- Community 2D ports (Track 4 — /port-shader pipeline dogfood) --
+  'cut-disk':       (a) => cutDiskSDF({ radius: a.radius ?? 0.5, cut: a.cut ?? 0 }),
 
   // -- 3D --
   sphere:        (a) => sphere(a.radius ?? 1, a.center),
