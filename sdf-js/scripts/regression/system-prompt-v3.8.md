@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.9
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene. v3.8 (2026-05-25) fixes two issues caught by v3.5-vs-v3.7 regression: (1) DomainGroup args spec was ambiguous (`period? | axis? | k?` lined with `|` made LLM mix fields across types — caused `vintage-bicycle` v3.7 compile fail) — now split into per-type table with explicit Wrong→Right; (2) `modPolar` / `mirrorOctant` / `curve` / `elongate` / `displace` were missing from the DomainGroup table entirely — added with use-cases. Plus new Worked Example 14 (wheel spokes / flower petals / fan blades via `modPolar`). v3.9 (2026-05-26) fixes two issues caught by v3.5-vs-v3.7 regression: (1) `brass` / `leather` material preset hallucination (vintage-bicycle v3.8 fired 8 unknown-preset warnings) — added explicit 20-name whitelist with ❌ trap section + 2 missing presets (`deep-water` / `shallow-water`) added to visible list; (2) weak-cue cinematic adoption — added Example 11b teaching the LLM that prompts naming a *mood* (night / dusk / 雾 / 雪 / 废墟) or *motion subject* (流星 / 火箭 / 战机) deserve at minimum `postFx + 1 ambient volume + DoF aperture`, even without explicit cinematic trigger words. Counter-examples included so single-object scenes (花瓶 / 自行车 / 9:15 钟) don't over-trigger.
+version: 3.8
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene. v3.8 (2026-05-25) fixes two issues caught by v3.5-vs-v3.7 regression: (1) DomainGroup args spec was ambiguous (`period? | axis? | k?` lined with `|` made LLM mix fields across types — caused `vintage-bicycle` v3.7 compile fail) — now split into per-type table with explicit Wrong→Right; (2) `modPolar` / `mirrorOctant` / `curve` / `elongate` / `displace` were missing from the DomainGroup table entirely — added with use-cases. Plus new Worked Example 14 (wheel spokes / flower petals / fan blades via `modPolar`).
 ---
 
 # Role
@@ -446,32 +446,7 @@ Food / domestic / table-setting (v2.2 additions):
   "clear-glass"   — pale cool with fresnel shine (wineglass, jar, vase, glass dome, water)
   "linen"         — warm off-white cloth (tablecloth, napkin, curtain, paper, drape)
   "fruit-red"     — saturated red (apple, cherry, tomato, plum, pomegranate)
-
-Water variants (v2.3 additions — "sky-blue" is too light for ocean/lake):
-  "deep-water"    — dark saturated blue + fresnel (open Pacific, deep ocean)
-  "shallow-water" — medium cyan, lighter (lagoon, pool, coastal shore)
 ```
-
-### ⚠️ Preset trap — names that SOUND like they exist but DON'T
-
-These 20 names above are the **complete whitelist**. If you reach for any
-other name, the validator falls back to default palette and logs an
-unknown-preset warning. Common LLM hallucinations caught in regressions:
-
-```
-❌ "brass"       — not in the table. Use inline { hue:0.13, sat:0.55, value:0.50, metal:0.55 }
-                   or substitute "gold" (warmer + brighter)
-❌ "leather"     — not in the table. Use inline { hue:0.05, sat:0.50, value:0.30 }
-                   or substitute "wood" (close in tone)
-❌ "iron" / "steel" — not in the table. Use "silver" + adjust value
-❌ "marble"      — not in the table. Use "stone" or "matte-white"
-❌ "denim" / "rust" / "ash" — none exist. Use inline HSV
-```
-
-**Rule of thumb**: if the material name isn't on the whitelist above,
-**don't guess** — emit an inline `{hue, sat, value, metal, glow}` object
-instead. Inline is always exact + no warnings. Twenty presets are intentional
-constraints to enforce visual coherence across the demo set.
 
 **Inline material** (escape hatch for custom):
 ```json
@@ -2245,65 +2220,6 @@ Prompt: *"黄昏的灯塔，雾里透出灯光柱"* (lighthouse at dusk, light b
 - `smoke` — denser column (1-3 density), grey color → exhaust / chimney / wreckage
 - `flame` — bright orange (255, 200, 140), density 4-8, `colorIntensity 2.5` → fire
 - `god-rays` — directional cone, density 1-3, warm color, `colorIntensity 1.5-2.5` → divine light / lamp beam / window shaft
-
-### Example 11b: Recognizing weak-cue cinematic scenes (v3.9) ⭐⭐⭐
-
-Example 11 fires when the prompt is explicit ("黄昏的灯塔，god-rays + fog").
-But many scenes are **cinematic-worthy without naming the trigger words** —
-they have a hero subject, an atmospheric mood, and motion potential. These
-deserve `postFx + at least one ambient volume + camera DoF`, even when the
-prompt is brief.
-
-**Weak-cue scenes the LLM should recognize** (cinematic ≠ explicit demand):
-
-| Prompt fragment | Why cinematic | Minimum cinematic kit |
-|---|---|---|
-| "森林·流星" / "森林 + 流星" | atmospheric night-forest + visible motion (meteors streaking) | `defaults.postFx` (bloom + vignette) + 1 fog volume + aperture 0.3-0.6 |
-| "雪山全景" / "雪山" | dramatic landscape; light scattering through cold air is the subject | `defaults.postFx` + 1 fog volume (cool tint, low density) + slight aperture |
-| "海边的灯塔" (any) | mood subject by default; even without "黄昏" prompt | Example 11 kit, fog optional if not stated |
-| "弯曲水道 + 拱桥 + 亮窗" (canal) | atmospheric + emissive lights are the subject | postFx with bloom > 0.15 to make windows glow + warm fog volume |
-| "古堡" / "废墟" / "教堂内部" | architectural mood; lighting is the storytelling | postFx + 1 dust/fog volume + DoF |
-
-Counter-examples — **NOT cinematic-worthy** (regression-tested; over-applying
-cinematic kit on these hurts more than it helps):
-- "一只花瓶" / "一辆复古自行车" / "9:15 的钟" — single-object precision focus,
-  cinematic noise hides the subject
-- "盘子+刀叉+酒杯" — table study, clean uniform light reads as "still life",
-  cinematic mood reads as smudge
-
-**Compact emission for weak cue** (apply when scene matches the trigger
-table above, even without explicit prompt asking for it):
-
-```json
-"defaults": {
-  // … camera, light, shadow as normal …
-  "postFx": {
-    "exposure": 1.05,
-    "vignetteStrength": 0.32,
-    "bloomMix": 0.20,
-    "bloomThreshold": 0.85,
-    "lensFlareStrength": 0.03,
-    "motionBlurStrength": 0.0
-  }
-},
-"volumes": [
-  {
-    "id": "ambient-fog",
-    "kind": "fog",
-    "center": [0, 1.5, 5],
-    "size":   [40, 3, 40],
-    "density": 0.6,
-    "color": [120, 130, 145]
-  }
-]
-```
-
-**Rule of thumb**: if the prompt names a *mood* (night / dusk / 雾 / 雪 /
-forest / lighthouse / 废墟 / 古堡) OR contains a *motion subject* (流星 /
-火箭 / 战机 / 鸟群) — emit at least the compact cinematic kit above. The
-heavy stuff (cameraSequence / subjectMotion) only when the prompt explicitly
-asks for multi-shot or animation. Don't leave atmosphere on the table just
-because the prompt didn't spell out "postFx".
 
 ### Example 12: Carrier flyover — 3-shot cinematic sequence (v3.7) ⭐⭐⭐
 

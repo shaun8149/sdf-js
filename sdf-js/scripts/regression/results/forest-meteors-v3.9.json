@@ -1,55 +1,51 @@
 {
   "result": {
     "demoId": "forest-meteors",
-    "version": "v3.8",
+    "version": "v3.9",
     "model": "claude-sonnet-4-5",
-    "elapsed": "50.9s",
+    "elapsed": "50.2s",
     "tokens": {
-      "input": 44584,
-      "output": 4690
+      "input": 46143,
+      "output": 4362
     },
-    "costUSD": "0.2041",
-    "subjectCount": 41,
+    "costUSD": "0.2039",
+    "subjectCount": 37,
     "newAtomsUsedCount": 18,
     "newAtomsUsed": [
       [
-        "bird-silhouette",
-        3
-      ],
-      [
         "star",
         15
+      ],
+      [
+        "bird-silhouette",
+        3
       ]
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 20,
+    "materialUsageCount": 18,
     "patternUsageCount": 0,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
-      "count": 37,
-      "min": -16,
+      "count": 34,
+      "min": -34,
       "max": 62,
-      "range": 78,
-      "stdev": 24.101805623886957
+      "range": 96,
+      "stdev": 32.02459046519827
     },
-    "v30AtomsUsedCount": 5,
+    "v30AtomsUsedCount": 3,
     "v30AtomsUsed": [
       [
         "bush",
         3
-      ],
-      [
-        "mushroom",
-        2
       ]
     ],
-    "v32AtomsUsedCount": 12,
+    "v32AtomsUsedCount": 10,
     "v32AtomsUsed": [
       [
         "stylized-tree",
-        7
+        6
       ],
       [
         "grass-field",
@@ -57,22 +53,22 @@
       ],
       [
         "meteor-streak",
-        4
+        3
       ]
     ],
     "materialKindsUsed": {
       "sea": 0,
       "mountain": 0,
-      "emissive": 0,
+      "emissive": 3,
       "translucent": 7
     },
     "cinematic": {
-      "postFx": 0,
-      "aperture": 0,
-      "volumeCount": 0,
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
       "flameVols": 0,
       "smokeVols": 0,
-      "fogVols": 0,
+      "fogVols": 1,
       "godRayVols": 0,
       "volAttachTo": 0,
       "volSceneStateKey": 0,
@@ -86,26 +82,25 @@
     },
     "typeCounts": {
       "cone": 5,
-      "stylized-tree": 7,
+      "stylized-tree": 6,
       "grass-field": 1,
       "rep": 1,
-      "bush": 3,
-      "mushroom": 2,
-      "bird-silhouette": 3,
+      "meteor-streak": 3,
       "star": 15,
-      "meteor-streak": 4
+      "bush": 3,
+      "bird-silhouette": 3
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Forest meadow with meteor shower at twilight"
+    "sceneName": "Forest meadow with meteor shower"
   },
   "sceneData": {
     "v": 1,
-    "name": "Forest meadow with meteor shower at twilight",
+    "name": "Forest meadow with meteor shower",
     "source": {
       "format": "llm-lift",
       "prompt": "树·山·花·流星",
-      "from2dCode": "2D placeholder — main signal is 3D scene"
+      "from2dCode": "2D placeholder — cinematic nature scene"
     },
     "subjects": [
       {
@@ -369,31 +364,6 @@
         }
       },
       {
-        "id": "back-tree-6",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 3.5,
-          "trunkRad": 0.24,
-          "leafSize": 0.14,
-          "windK": 0.1
-        },
-        "transform": {
-          "translate": [
-            8,
-            0,
-            38
-          ]
-        },
-        "material": {
-          "hue": 0.29,
-          "sat": 0.52,
-          "value": 0.43,
-          "metal": 0,
-          "glow": 0,
-          "kind": "translucent"
-        }
-      },
-      {
         "id": "grass-mat",
         "type": "grass-field",
         "args": {
@@ -406,6 +376,14 @@
             0,
             0
           ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
         }
       },
       {
@@ -447,434 +425,6 @@
         }
       },
       {
-        "id": "bush-1",
-        "type": "bush",
-        "args": {
-          "radius": 0.28
-        },
-        "transform": {
-          "translate": [
-            -4.5,
-            0,
-            14
-          ]
-        },
-        "material": {
-          "hue": 0.32,
-          "sat": 0.68,
-          "value": 0.4,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bush-2",
-        "type": "bush",
-        "args": {
-          "radius": 0.32
-        },
-        "transform": {
-          "translate": [
-            3.2,
-            0,
-            12
-          ]
-        },
-        "material": {
-          "hue": 0.28,
-          "sat": 0.7,
-          "value": 0.42,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bush-3",
-        "type": "bush",
-        "args": {
-          "radius": 0.26
-        },
-        "transform": {
-          "translate": [
-            -12,
-            0,
-            20
-          ]
-        },
-        "material": {
-          "hue": 0.3,
-          "sat": 0.65,
-          "value": 0.38,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mushroom-1",
-        "type": "mushroom",
-        "args": {
-          "stemHeight": 0.18,
-          "capRadius": 0.12
-        },
-        "transform": {
-          "translate": [
-            -1.8,
-            0,
-            5.5
-          ]
-        },
-        "material": {
-          "hue": 0.98,
-          "sat": 0.85,
-          "value": 0.75,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mushroom-2",
-        "type": "mushroom",
-        "args": {
-          "stemHeight": 0.14,
-          "capRadius": 0.09
-        },
-        "transform": {
-          "translate": [
-            -1.5,
-            0,
-            5.8
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0.82,
-          "value": 0.72,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bird-1",
-        "type": "bird-silhouette",
-        "args": {
-          "bodyLength": 0.2,
-          "wingSpan": 0.55
-        },
-        "transform": {
-          "translate": [
-            -8,
-            12,
-            18
-          ],
-          "rotate": [
-            0,
-            0.6,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.15,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bird-2",
-        "type": "bird-silhouette",
-        "args": {
-          "bodyLength": 0.18,
-          "wingSpan": 0.5
-        },
-        "transform": {
-          "translate": [
-            10,
-            14,
-            22
-          ],
-          "rotate": [
-            0,
-            -0.4,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.18,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bird-3",
-        "type": "bird-silhouette",
-        "args": {
-          "bodyLength": 0.16,
-          "wingSpan": 0.45
-        },
-        "transform": {
-          "translate": [
-            -18,
-            16,
-            26
-          ],
-          "rotate": [
-            0,
-            0.3,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0,
-          "value": 0.2,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "star-1",
-        "type": "star",
-        "args": {
-          "radius": 0.05,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -28,
-            22,
-            -8
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-2",
-        "type": "star",
-        "args": {
-          "radius": 0.04,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -18,
-            24,
-            -10
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-3",
-        "type": "star",
-        "args": {
-          "radius": 0.045,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -8,
-            26,
-            -12
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-4",
-        "type": "star",
-        "args": {
-          "radius": 0.038,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            2,
-            25,
-            -11
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-5",
-        "type": "star",
-        "args": {
-          "radius": 0.042,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            12,
-            23,
-            -9
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-6",
-        "type": "star",
-        "args": {
-          "radius": 0.05,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            22,
-            21,
-            -8
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-7",
-        "type": "star",
-        "args": {
-          "radius": 0.036,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            32,
-            19,
-            -7
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-8",
-        "type": "star",
-        "args": {
-          "radius": 0.046,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -32,
-            20,
-            -9
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-9",
-        "type": "star",
-        "args": {
-          "radius": 0.04,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -12,
-            28,
-            -13
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-10",
-        "type": "star",
-        "args": {
-          "radius": 0.044,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            6,
-            29,
-            -14
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-11",
-        "type": "star",
-        "args": {
-          "radius": 0.039,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            18,
-            27,
-            -12
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-12",
-        "type": "star",
-        "args": {
-          "radius": 0.048,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            28,
-            25,
-            -11
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-13",
-        "type": "star",
-        "args": {
-          "radius": 0.037,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -24,
-            26,
-            -13
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-14",
-        "type": "star",
-        "args": {
-          "radius": 0.043,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            -4,
-            30,
-            -15
-          ]
-        },
-        "region": "star"
-      },
-      {
-        "id": "star-15",
-        "type": "star",
-        "args": {
-          "radius": 0.041,
-          "shape": "octahedron"
-        },
-        "transform": {
-          "translate": [
-            14,
-            31,
-            -16
-          ]
-        },
-        "region": "star"
-      },
-      {
         "id": "meteor-1",
         "type": "meteor-streak",
         "args": {
@@ -892,6 +442,14 @@
           "period": 7,
           "activeFrac": 0.5,
           "phase": 0
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 4,
+          "kind": "emissive"
         }
       },
       {
@@ -912,6 +470,14 @@
           "period": 7,
           "activeFrac": 0.45,
           "phase": 2.6
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 4,
+          "kind": "emissive"
         }
       },
       {
@@ -932,27 +498,366 @@
           "period": 7,
           "activeFrac": 0.55,
           "phase": 4.8
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.1,
+          "value": 1,
+          "metal": 0,
+          "glow": 4,
+          "kind": "emissive"
         }
       },
       {
-        "id": "meteor-4",
-        "type": "meteor-streak",
+        "id": "star-1",
+        "type": "star",
         "args": {
-          "origin": [
-            18,
+          "radius": 0.04
+        },
+        "transform": {
+          "translate": [
+            -18,
+            22,
+            -25
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-2",
+        "type": "star",
+        "args": {
+          "radius": 0.05
+        },
+        "transform": {
+          "translate": [
+            -8,
+            24,
+            -28
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-3",
+        "type": "star",
+        "args": {
+          "radius": 0.035
+        },
+        "transform": {
+          "translate": [
+            4,
+            23,
+            -30
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-4",
+        "type": "star",
+        "args": {
+          "radius": 0.045
+        },
+        "transform": {
+          "translate": [
+            14,
+            25,
+            -27
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-5",
+        "type": "star",
+        "args": {
+          "radius": 0.04
+        },
+        "transform": {
+          "translate": [
+            22,
+            22,
+            -29
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-6",
+        "type": "star",
+        "args": {
+          "radius": 0.038
+        },
+        "transform": {
+          "translate": [
+            -24,
+            20,
+            -26
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-7",
+        "type": "star",
+        "args": {
+          "radius": 0.042
+        },
+        "transform": {
+          "translate": [
+            -12,
             26,
-            30
-          ],
-          "velocity": [
-            2.8,
-            -2.2,
-            0.4
-          ],
-          "trailLen": 1.5,
-          "period": 7,
-          "activeFrac": 0.48,
-          "phase": 1.8
+            -31
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-8",
+        "type": "star",
+        "args": {
+          "radius": 0.046
+        },
+        "transform": {
+          "translate": [
+            0,
+            27,
+            -29
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-9",
+        "type": "star",
+        "args": {
+          "radius": 0.04
+        },
+        "transform": {
+          "translate": [
+            18,
+            21,
+            -28
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-10",
+        "type": "star",
+        "args": {
+          "radius": 0.044
+        },
+        "transform": {
+          "translate": [
+            -30,
+            24,
+            -32
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-11",
+        "type": "star",
+        "args": {
+          "radius": 0.037
+        },
+        "transform": {
+          "translate": [
+            -4,
+            28,
+            -27
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-12",
+        "type": "star",
+        "args": {
+          "radius": 0.048
+        },
+        "transform": {
+          "translate": [
+            10,
+            26,
+            -33
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-13",
+        "type": "star",
+        "args": {
+          "radius": 0.041
+        },
+        "transform": {
+          "translate": [
+            28,
+            23,
+            -30
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-14",
+        "type": "star",
+        "args": {
+          "radius": 0.039
+        },
+        "transform": {
+          "translate": [
+            -20,
+            25,
+            -34
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "star-15",
+        "type": "star",
+        "args": {
+          "radius": 0.043
+        },
+        "transform": {
+          "translate": [
+            6,
+            29,
+            -26
+          ]
+        },
+        "region": "star"
+      },
+      {
+        "id": "bush-1",
+        "type": "bush",
+        "args": {
+          "radius": 0.28
+        },
+        "transform": {
+          "translate": [
+            -8,
+            0,
+            4
+          ]
+        },
+        "material": {
+          "hue": 0.32,
+          "sat": 0.68,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
         }
+      },
+      {
+        "id": "bush-2",
+        "type": "bush",
+        "args": {
+          "radius": 0.32
+        },
+        "transform": {
+          "translate": [
+            12,
+            0,
+            6
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.72,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-3",
+        "type": "bush",
+        "args": {
+          "radius": 0.26
+        },
+        "transform": {
+          "translate": [
+            -18,
+            0,
+            14
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.65,
+          "value": 0.36,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -6,
+            12,
+            18
+          ],
+          "rotate": [
+            0,
+            0.4,
+            0
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            8,
+            14,
+            16
+          ],
+          "rotate": [
+            0,
+            -0.3,
+            0
+          ]
+        },
+        "region": "bird"
+      },
+      {
+        "id": "bird-3",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "wingSpan": 0.6
+        },
+        "transform": {
+          "translate": [
+            -2,
+            15,
+            20
+          ],
+          "rotate": [
+            0,
+            0.1,
+            0
+          ]
+        },
+        "region": "bird"
       }
     ],
     "ground": {
@@ -974,7 +879,9 @@
         "focal": 1.5,
         "targetX": 2,
         "targetY": 4.5,
-        "targetZ": 20
+        "targetZ": 20,
+        "aperture": 0.3,
+        "focalDistance": 18
       },
       "light": {
         "azimuth": 0.55,
@@ -986,7 +893,38 @@
         "enabled": false,
         "mode": "channelSwap",
         "strength": 0
+      },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.32,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.03,
+        "motionBlurStrength": 0
       }
-    }
+    },
+    "volumes": [
+      {
+        "id": "ambient-fog",
+        "kind": "fog",
+        "center": [
+          0,
+          1.5,
+          5
+        ],
+        "size": [
+          40,
+          3,
+          40
+        ],
+        "density": 0.6,
+        "color": [
+          120,
+          130,
+          145
+        ],
+        "noiseScale": 1
+      }
+    ]
   }
 }

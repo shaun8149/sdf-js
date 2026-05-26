@@ -3,13 +3,13 @@
     "demoId": "mountain-village",
     "version": "v3.8",
     "model": "claude-sonnet-4-5",
-    "elapsed": "85.5s",
+    "elapsed": "89.0s",
     "tokens": {
       "input": 49343,
-      "output": 7860
+      "output": 8282
     },
-    "costUSD": "0.2659",
-    "subjectCount": 69,
+    "costUSD": "0.2723",
+    "subjectCount": 71,
     "newAtomsUsedCount": 3,
     "newAtomsUsed": [
       [
@@ -19,21 +19,21 @@
     ],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 58,
+    "materialUsageCount": 62,
     "patternUsageCount": 7,
-    "variantsUsedCount": 6,
+    "variantsUsedCount": 7,
     "variantsUsed": [
       [
         "unionChamfer",
-        6
+        7
       ]
     ],
     "zSpread": {
-      "count": 61,
-      "min": -2,
+      "count": 60,
+      "min": 0,
       "max": 62,
-      "range": 64,
-      "stdev": 15.351994513904643
+      "range": 62,
+      "stdev": 14.631491618157806
     },
     "v30AtomsUsedCount": 12,
     "v30AtomsUsed": [
@@ -66,30 +66,26 @@
         2
       ]
     ],
-    "v32AtomsUsedCount": 15,
+    "v32AtomsUsedCount": 10,
     "v32AtomsUsed": [
-      [
-        "stylized-tree",
-        11
-      ],
       [
         "grass-field",
         1
       ],
       [
-        "forest-flower",
-        3
+        "stylized-tree",
+        9
       ]
     ],
     "materialKindsUsed": {
-      "sea": 1,
+      "sea": 0,
       "mountain": 0,
       "emissive": 0,
-      "translucent": 11
+      "translucent": 9
     },
     "cinematic": {
       "postFx": 1,
-      "aperture": 0,
+      "aperture": 1,
       "volumeCount": 2,
       "flameVols": 0,
       "smokeVols": 0,
@@ -106,91 +102,62 @@
       "sceneStateKeys": 0
     },
     "typeCounts": {
-      "box": 14,
-      "cone": 9,
-      "unionChamfer": 6,
-      "pyramid": 7,
-      "capsule": 2,
-      "stylized-tree": 11,
+      "cone": 10,
       "grass-field": 1,
       "ellipsoid": 1,
+      "capsule": 4,
+      "unionChamfer": 7,
+      "box": 15,
+      "pyramid": 7,
+      "rounded_box": 1,
+      "stylized-tree": 9,
       "cow": 2,
       "horse": 1,
       "sheep": 3,
       "dog": 1,
       "fence-section": 2,
       "well": 1,
-      "forest-flower": 3,
+      "rep": 1,
       "bush": 2,
       "bird-silhouette": 3
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Mountain Village — volumetric lift"
+    "sceneName": "Mountain Village — volumetric 3D lift"
   },
   "sceneData": {
     "v": 1,
-    "name": "Mountain Village — volumetric lift",
+    "name": "Mountain Village — volumetric 3D lift",
     "source": {
       "format": "llm-lift",
       "prompt": "山间的村落",
-      "from2dCode": "Alpine village with 6 houses, church bell tower, conifers, terraced fields, stream, winding path. Layered mountains (far blue-grey, mid green, near dark-green ridge). Morning mist bands. Side-view composition with atmospheric depth."
+      "from2dCode": "Alpine village with 6 houses, church tower, conifers, terraced fields, stream, winding path. Layered mountains (far blue-grey → mid grey-green → near dark-green). Morning mist bands. Side-view composition."
     },
     "subjects": [
       {
-        "id": "ground-terrain",
-        "type": "box",
-        "args": {
-          "dims": [
-            80,
-            1.2,
-            60
-          ]
-        },
-        "transform": {
-          "translate": [
-            0,
-            -0.6,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.12,
-          "sat": 0.35,
-          "value": 0.48,
-          "metal": 0,
-          "glow": 0
-        },
-        "pattern": {
-          "kind": "cells",
-          "scale": 3.5,
-          "strength": 0.3
-        }
-      },
-      {
-        "id": "mtn-far-left",
+        "id": "sky-mtn-far-left",
         "type": "cone",
         "args": {
-          "height": 18,
-          "baseRadius": 14
+          "height": 14,
+          "baseRadius": 11
         },
         "transform": {
           "translate": [
-            -28,
-            9,
-            58
+            -22,
+            7,
+            55
           ]
         },
         "material": {
           "hue": 0.6,
-          "sat": 0.12,
-          "value": 0.75,
+          "sat": 0.06,
+          "value": 0.88,
           "metal": 0.05,
           "glow": 0
         }
       },
       {
-        "id": "mtn-far-center",
+        "id": "sky-mtn-far-center",
         "type": "cone",
         "args": {
           "height": 22,
@@ -198,87 +165,87 @@
         },
         "transform": {
           "translate": [
-            -5,
+            -3,
             11,
             62
           ]
         },
         "material": {
           "hue": 0.6,
-          "sat": 0.1,
-          "value": 0.78,
+          "sat": 0.05,
+          "value": 0.92,
           "metal": 0.05,
           "glow": 0
         }
       },
       {
-        "id": "mtn-far-right",
+        "id": "sky-mtn-far-right",
         "type": "cone",
         "args": {
-          "height": 20,
-          "baseRadius": 15
-        },
-        "transform": {
-          "translate": [
-            22,
-            10,
-            60
-          ]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.11,
-          "value": 0.76,
-          "metal": 0.05,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mtn-mid-left",
-        "type": "cone",
-        "args": {
-          "height": 14,
+          "height": 16,
           "baseRadius": 12
         },
         "transform": {
           "translate": [
-            -22,
-            7,
-            42
+            12,
+            8,
+            50
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.25,
-          "value": 0.68,
-          "metal": 0,
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.85,
+          "metal": 0.05,
           "glow": 0
         }
       },
       {
-        "id": "mtn-mid-center",
+        "id": "sky-mtn-far-right2",
         "type": "cone",
         "args": {
-          "height": 16,
+          "height": 18,
           "baseRadius": 13
         },
         "transform": {
           "translate": [
-            0,
-            8,
-            45
+            30,
+            9,
+            58
           ]
         },
         "material": {
-          "hue": 0.27,
-          "sat": 0.26,
-          "value": 0.66,
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.88,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mid-mtn-left",
+        "type": "cone",
+        "args": {
+          "height": 12,
+          "baseRadius": 10
+        },
+        "transform": {
+          "translate": [
+            -18,
+            6,
+            38
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.18,
+          "value": 0.55,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "mtn-mid-right",
+        "id": "mid-mtn-center",
         "type": "cone",
         "args": {
           "height": 15,
@@ -286,81 +253,239 @@
         },
         "transform": {
           "translate": [
-            20,
+            -5,
             7.5,
-            43
+            42
           ]
         },
         "material": {
           "hue": 0.28,
-          "sat": 0.24,
-          "value": 0.7,
+          "sat": 0.2,
+          "value": 0.58,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "ridge-near-left",
+        "id": "mid-mtn-right",
         "type": "cone",
         "args": {
-          "height": 8,
-          "baseRadius": 10
-        },
-        "transform": {
-          "translate": [
-            -18,
-            4,
-            28
-          ]
-        },
-        "material": {
-          "hue": 0.25,
-          "sat": 0.38,
-          "value": 0.52,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "ridge-near-center",
-        "type": "cone",
-        "args": {
-          "height": 9,
+          "height": 14,
           "baseRadius": 11
         },
         "transform": {
           "translate": [
-            3,
-            4.5,
-            30
+            16,
+            7,
+            36
           ]
         },
         "material": {
-          "hue": 0.24,
-          "sat": 0.4,
-          "value": 0.5,
+          "hue": 0.3,
+          "sat": 0.18,
+          "value": 0.56,
           "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "ridge-near-right",
+        "id": "near-ridge-left",
         "type": "cone",
         "args": {
-          "height": 7,
+          "height": 8,
           "baseRadius": 9
         },
         "transform": {
           "translate": [
-            16,
-            3.5,
-            26
+            -14,
+            4,
+            22
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.28,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "near-ridge-center",
+        "type": "cone",
+        "args": {
+          "height": 10,
+          "baseRadius": 10
+        },
+        "transform": {
+          "translate": [
+            2,
+            5,
+            24
           ]
         },
         "material": {
           "hue": 0.26,
-          "sat": 0.37,
-          "value": 0.54,
+          "sat": 0.3,
+          "value": 0.44,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "near-ridge-right",
+        "type": "cone",
+        "args": {
+          "height": 9,
+          "baseRadius": 9
+        },
+        "transform": {
+          "translate": [
+            18,
+            4.5,
+            20
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.28,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "grass-field",
+        "type": "grass-field",
+        "args": {
+          "bladeHeight": 0.55,
+          "density": 0.11
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "stream-pond",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            1.2,
+            0.05,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.5,
+            0,
+            4
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.45,
+          "value": 0.7,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stream-narrow",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -3,
+            0,
+            3
+          ],
+          "b": [
+            0.5,
+            0,
+            4
+          ],
+          "radius": 0.15
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.45,
+          "value": 0.7,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-lower",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.2,
+            0,
+            0.5
+          ],
+          "b": [
+            0.6,
+            0,
+            2.5
+          ],
+          "radius": 0.22
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.3,
+          "value": 0.68,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-mid",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.6,
+            0,
+            2.5
+          ],
+          "b": [
+            -0.8,
+            0,
+            4
+          ],
+          "radius": 0.18
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.3,
+          "value": 0.68,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-upper",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -0.8,
+            0,
+            4
+          ],
+          "b": [
+            -2,
+            0,
+            5.2
+          ],
+          "radius": 0.15
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.3,
+          "value": 0.68,
           "metal": 0,
           "glow": 0
         }
@@ -369,13 +494,13 @@
         "id": "house-1",
         "type": "unionChamfer",
         "args": {
-          "r": 0.08
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
           "scale": 3,
-          "strength": 0.55
+          "strength": 0.6
         },
         "children": [
           {
@@ -392,7 +517,7 @@
               "translate": [
                 -6.2,
                 0.9,
-                3
+                5.5
               ]
             }
           },
@@ -406,7 +531,7 @@
               "translate": [
                 -6.2,
                 2.3,
-                3
+                5.5
               ],
               "scale": [
                 1.9,
@@ -422,21 +547,21 @@
             "args": {
               "dims": [
                 0.22,
-                0.65,
+                0.6,
                 0.22
               ]
             },
             "transform": {
               "translate": [
                 -5.8,
-                2.6,
-                3
+                2.95,
+                5.5
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
@@ -447,13 +572,13 @@
         "id": "house-2",
         "type": "unionChamfer",
         "args": {
-          "r": 0.08
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
           "scale": 3,
-          "strength": 0.55
+          "strength": 0.6
         },
         "children": [
           {
@@ -470,7 +595,7 @@
               "translate": [
                 -3.8,
                 0.8,
-                2.5
+                5.8
               ]
             }
           },
@@ -483,8 +608,8 @@
             "transform": {
               "translate": [
                 -3.8,
-                2.05,
-                2.5
+                2,
+                5.8
               ],
               "scale": [
                 1.7,
@@ -500,21 +625,21 @@
             "args": {
               "dims": [
                 0.2,
-                0.55,
+                0.5,
                 0.2
               ]
             },
             "transform": {
               "translate": [
                 -3.5,
-                2.35,
-                2.5
+                2.55,
+                5.8
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
@@ -522,15 +647,15 @@
         ]
       },
       {
-        "id": "house-3-church-tower",
+        "id": "house-3",
         "type": "unionChamfer",
         "args": {
-          "r": 0.1
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
-          "scale": 2.5,
+          "scale": 3,
           "strength": 0.6
         },
         "children": [
@@ -548,7 +673,7 @@
               "translate": [
                 -1.4,
                 1,
-                3
+                5.5
               ]
             }
           },
@@ -562,7 +687,7 @@
               "translate": [
                 -1.4,
                 2.55,
-                3
+                5.5
               ],
               "scale": [
                 2.1,
@@ -578,98 +703,24 @@
             "args": {
               "dims": [
                 0.24,
-                0.7,
+                0.65,
                 0.24
               ]
             },
             "transform": {
               "translate": [
-                -0.95,
-                2.85,
-                3
+                -0.96,
+                3.25,
+                5.5
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
-          },
-          {
-            "id": "tower-base",
-            "type": "box",
-            "args": {
-              "dims": [
-                0.95,
-                3,
-                0.95
-              ]
-            },
-            "transform": {
-              "translate": [
-                -1.4,
-                2.5,
-                3
-              ]
-            }
-          },
-          {
-            "id": "tower-spire",
-            "type": "pyramid",
-            "args": {
-              "height": 1.4
-            },
-            "transform": {
-              "translate": [
-                -1.4,
-                5.45,
-                3
-              ],
-              "scale": [
-                1,
-                1,
-                1
-              ]
-            },
-            "material": "matte-black"
-          },
-          {
-            "id": "tower-cross-v",
-            "type": "capsule",
-            "args": {
-              "a": [
-                -1.4,
-                5.8,
-                3
-              ],
-              "b": [
-                -1.4,
-                6.2,
-                3
-              ],
-              "radius": 0.03
-            },
-            "material": "matte-black"
-          },
-          {
-            "id": "tower-cross-h",
-            "type": "capsule",
-            "args": {
-              "a": [
-                -1.58,
-                5.95,
-                3
-              ],
-              "b": [
-                -1.22,
-                5.95,
-                3
-              ],
-              "radius": 0.03
-            },
-            "material": "matte-black"
           }
         ]
       },
@@ -677,13 +728,13 @@
         "id": "house-4",
         "type": "unionChamfer",
         "args": {
-          "r": 0.08
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
           "scale": 3,
-          "strength": 0.55
+          "strength": 0.6
         },
         "children": [
           {
@@ -700,7 +751,7 @@
               "translate": [
                 1.6,
                 0.75,
-                2.8
+                5.9
               ]
             }
           },
@@ -713,8 +764,8 @@
             "transform": {
               "translate": [
                 1.6,
-                1.9,
-                2.8
+                1.95,
+                5.9
               ],
               "scale": [
                 1.6,
@@ -730,21 +781,21 @@
             "args": {
               "dims": [
                 0.18,
-                0.48,
+                0.45,
                 0.18
               ]
             },
             "transform": {
               "translate": [
-                1.95,
-                2.15,
-                2.8
+                1.93,
+                2.45,
+                5.9
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
@@ -755,13 +806,13 @@
         "id": "house-5",
         "type": "unionChamfer",
         "args": {
-          "r": 0.08
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
           "scale": 3,
-          "strength": 0.55
+          "strength": 0.6
         },
         "children": [
           {
@@ -778,7 +829,7 @@
               "translate": [
                 4,
                 0.85,
-                2.5
+                5.6
               ]
             }
           },
@@ -792,7 +843,7 @@
               "translate": [
                 4,
                 2.2,
-                2.5
+                5.6
               ],
               "scale": [
                 1.8,
@@ -807,22 +858,22 @@
             "type": "box",
             "args": {
               "dims": [
-                0.2,
-                0.58,
-                0.2
+                0.21,
+                0.55,
+                0.21
               ]
             },
             "transform": {
               "translate": [
-                4.35,
-                2.5,
-                2.5
+                4.37,
+                2.85,
+                5.6
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
@@ -830,16 +881,16 @@
         ]
       },
       {
-        "id": "house-6-upper",
+        "id": "house-6",
         "type": "unionChamfer",
         "args": {
-          "r": 0.08
+          "r": 0.05
         },
         "material": "stone",
         "pattern": {
           "kind": "brick",
           "scale": 3,
-          "strength": 0.55
+          "strength": 0.6
         },
         "children": [
           {
@@ -855,7 +906,7 @@
             "transform": {
               "translate": [
                 -5,
-                1.65,
+                0.65,
                 7
               ]
             }
@@ -869,7 +920,7 @@
             "transform": {
               "translate": [
                 -5,
-                2.85,
+                1.73,
                 7
               ],
               "scale": [
@@ -892,15 +943,15 @@
             },
             "transform": {
               "translate": [
-                -4.7,
-                3.05,
+                -4.71,
+                2.2,
                 7
               ]
             },
             "material": {
               "hue": 0.1,
-              "sat": 0.18,
-              "value": 0.68,
+              "sat": 0.2,
+              "value": 0.65,
               "metal": 0,
               "glow": 0
             }
@@ -908,297 +959,327 @@
         ]
       },
       {
-        "id": "conifer-1",
+        "id": "church-tower",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.65
+        },
+        "children": [
+          {
+            "id": "tower-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.95,
+                3,
+                0.95
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.4,
+                1.5,
+                6.5
+              ]
+            }
+          },
+          {
+            "id": "tower-spire",
+            "type": "pyramid",
+            "args": {
+              "height": 1.4
+            },
+            "transform": {
+              "translate": [
+                -1.4,
+                3.7,
+                6.5
+              ],
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "tower-cross-v",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.05,
+                0.35,
+                0.05
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.4,
+                4.55,
+                6.5
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "tower-cross-h",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.18,
+                0.05,
+                0.05
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.4,
+                4.45,
+                6.5
+              ]
+            },
+            "material": "matte-black"
+          }
+        ]
+      },
+      {
+        "id": "tower-window",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.25,
+            0.4,
+            0.1
+          ],
+          "cornerR": 0.12
+        },
+        "transform": {
+          "translate": [
+            -1.4,
+            2.5,
+            6.97
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.05,
+          "value": 0.15,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-back-1",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3.2,
-          "trunkRad": 0.22,
-          "leafSize": 0.14,
-          "windK": 0.08
+          "trunkLen": 3.8,
+          "trunkRad": 0.26,
+          "leafSize": 0.15,
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             -10.5,
             0,
-            8
+            5.5
           ]
         },
         "material": {
-          "hue": 0.27,
-          "sat": 0.5,
-          "value": 0.4,
+          "hue": 0.28,
+          "sat": 0.55,
+          "value": 0.42,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-2",
+        "id": "tree-back-2",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 2.8,
-          "trunkRad": 0.2,
+          "trunkLen": 3.2,
+          "trunkRad": 0.22,
           "leafSize": 0.13,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             -9.2,
             0,
-            6.5
+            5.8
           ]
         },
         "material": {
-          "hue": 0.26,
-          "sat": 0.52,
+          "hue": 0.3,
+          "sat": 0.5,
           "value": 0.38,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-3",
+        "id": "tree-back-3",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3,
-          "trunkRad": 0.21,
-          "leafSize": 0.14,
-          "windK": 0.08
+          "trunkLen": 2.8,
+          "trunkRad": 0.2,
+          "leafSize": 0.13,
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             -8,
             0,
-            7.5
+            5.5
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.48,
-          "value": 0.42,
+          "hue": 0.29,
+          "sat": 0.52,
+          "value": 0.4,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-4",
+        "id": "tree-back-4",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3.1,
-          "trunkRad": 0.22,
+          "trunkLen": 3.5,
+          "trunkRad": 0.24,
           "leafSize": 0.14,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             6.2,
             0,
-            8
+            5.8
           ]
         },
         "material": {
-          "hue": 0.27,
-          "sat": 0.5,
-          "value": 0.4,
+          "hue": 0.28,
+          "sat": 0.55,
+          "value": 0.42,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-5",
+        "id": "tree-back-5",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3.5,
-          "trunkRad": 0.24,
+          "trunkLen": 4,
+          "trunkRad": 0.28,
           "leafSize": 0.15,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             7.5,
             0,
-            6.5
+            5.5
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.48,
-          "value": 0.42,
+          "hue": 0.27,
+          "sat": 0.58,
+          "value": 0.45,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-6",
+        "id": "tree-back-6",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 2.9,
-          "trunkRad": 0.2,
+          "trunkLen": 3,
+          "trunkRad": 0.21,
           "leafSize": 0.13,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             9,
             0,
-            7.8
+            5.2
           ]
         },
         "material": {
-          "hue": 0.26,
-          "sat": 0.52,
+          "hue": 0.3,
+          "sat": 0.5,
           "value": 0.38,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-7",
+        "id": "tree-back-7",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 3.3,
-          "trunkRad": 0.22,
+          "trunkLen": 3.6,
+          "trunkRad": 0.25,
           "leafSize": 0.14,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             10.5,
             0,
-            6
+            5.9
           ]
         },
         "material": {
-          "hue": 0.27,
-          "sat": 0.5,
-          "value": 0.4,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "conifer-8",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 2.5,
-          "trunkRad": 0.18,
-          "leafSize": 0.12,
-          "windK": 0.08
-        },
-        "transform": {
-          "translate": [
-            -7.2,
-            0,
-            4
-          ]
-        },
-        "material": {
-          "hue": 0.28,
-          "sat": 0.48,
+          "hue": 0.29,
+          "sat": 0.53,
           "value": 0.42,
           "kind": "translucent"
         }
       },
       {
-        "id": "conifer-9",
+        "id": "tree-upper-1",
         "type": "stylized-tree",
         "args": {
-          "trunkLen": 2.6,
-          "trunkRad": 0.19,
+          "trunkLen": 2.8,
+          "trunkRad": 0.2,
           "leafSize": 0.12,
-          "windK": 0.08
-        },
-        "transform": {
-          "translate": [
-            11.8,
-            0,
-            7
-          ]
-        },
-        "material": {
-          "hue": 0.26,
-          "sat": 0.52,
-          "value": 0.38,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "conifer-10-upper",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 2.4,
-          "trunkRad": 0.18,
-          "leafSize": 0.12,
-          "windK": 0.08
+          "windK": 0.1
         },
         "transform": {
           "translate": [
             -2.8,
             0,
-            10
+            7.2
           ]
         },
         "material": {
-          "hue": 0.28,
-          "sat": 0.48,
-          "value": 0.42,
-          "kind": "translucent"
-        }
-      },
-      {
-        "id": "conifer-11-upper",
-        "type": "stylized-tree",
-        "args": {
-          "trunkLen": 2.5,
-          "trunkRad": 0.19,
-          "leafSize": 0.12,
-          "windK": 0.08
-        },
-        "transform": {
-          "translate": [
-            2.8,
-            0,
-            10.5
-          ]
-        },
-        "material": {
-          "hue": 0.27,
-          "sat": 0.5,
+          "hue": 0.3,
+          "sat": 0.52,
           "value": 0.4,
           "kind": "translucent"
         }
       },
       {
-        "id": "grass-ground",
-        "type": "grass-field",
+        "id": "tree-upper-2",
+        "type": "stylized-tree",
         "args": {
-          "bladeHeight": 0.5,
-          "density": 0.12
+          "trunkLen": 3,
+          "trunkRad": 0.22,
+          "leafSize": 0.13,
+          "windK": 0.1
         },
         "transform": {
           "translate": [
+            2.8,
             0,
-            0,
-            0
-          ]
-        }
-      },
-      {
-        "id": "stream-pond",
-        "type": "ellipsoid",
-        "args": {
-          "dims": [
-            1.2,
-            0.15,
-            0.6
-          ]
-        },
-        "transform": {
-          "translate": [
-            0.5,
-            -0.45,
-            -2
+            7.2
           ]
         },
         "material": {
-          "hue": 0.58,
-          "sat": 0.6,
-          "value": 0.7,
-          "metal": 0.1,
-          "glow": 0,
-          "kind": "sea"
+          "hue": 0.28,
+          "sat": 0.55,
+          "value": 0.42,
+          "kind": "translucent"
         }
       },
       {
@@ -1209,13 +1290,13 @@
         },
         "transform": {
           "translate": [
-            -2.5,
+            -1.5,
             0,
-            0.5
+            1.5
           ],
           "rotate": [
             0,
-            0.6,
+            0.5,
             0
           ]
         },
@@ -1235,13 +1316,13 @@
         },
         "transform": {
           "translate": [
-            4.5,
+            3.5,
             0,
-            -0.3
+            2
           ],
           "rotate": [
             0,
-            -0.4,
+            -0.3,
             0
           ]
         },
@@ -1261,9 +1342,9 @@
         },
         "transform": {
           "translate": [
-            -5.5,
+            -4.5,
             0,
-            0.3
+            2.5
           ],
           "rotate": [
             0,
@@ -1287,9 +1368,9 @@
         },
         "transform": {
           "translate": [
-            6.5,
+            5.5,
             0,
-            0.4
+            1.8
           ],
           "rotate": [
             0,
@@ -1307,9 +1388,9 @@
         },
         "transform": {
           "translate": [
-            7,
+            5.9,
             0,
-            0.7
+            2.2
           ],
           "rotate": [
             0,
@@ -1327,13 +1408,13 @@
         },
         "transform": {
           "translate": [
-            7.4,
+            6.2,
             0,
-            0.5
+            1.6
           ],
           "rotate": [
             0,
-            -0.6,
+            0.2,
             0
           ]
         },
@@ -1347,9 +1428,9 @@
         },
         "transform": {
           "translate": [
-            -3,
+            -2,
             0,
-            1.8
+            3.2
           ],
           "rotate": [
             0,
@@ -1369,30 +1450,14 @@
         "id": "fence-1",
         "type": "fence-section",
         "args": {
-          "length": 2.2,
-          "height": 0.5
+          "length": 1.8,
+          "height": 0.4
         },
         "transform": {
           "translate": [
-            -1,
+            -0.5,
             0,
-            0.8
-          ]
-        },
-        "material": "wood"
-      },
-      {
-        "id": "fence-2",
-        "type": "fence-section",
-        "args": {
-          "length": 2,
-          "height": 0.5
-        },
-        "transform": {
-          "translate": [
-            2.5,
-            0,
-            0.6
+            3
           ],
           "rotate": [
             0,
@@ -1403,97 +1468,91 @@
         "material": "wood"
       },
       {
-        "id": "well-1",
-        "type": "well",
+        "id": "fence-2",
+        "type": "fence-section",
         "args": {
-          "radius": 0.3
+          "length": 1.6,
+          "height": 0.4
         },
         "transform": {
           "translate": [
-            0.8,
+            2.5,
             0,
-            1.5
+            3.5
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "well-1",
+        "type": "well",
+        "args": {
+          "radius": 0.35,
+          "wallHeight": 0.6
+        },
+        "transform": {
+          "translate": [
+            0.3,
+            0,
+            4.5
           ]
         },
         "material": "stone"
       },
       {
-        "id": "flower-1",
-        "type": "forest-flower",
+        "id": "flower-meadow",
+        "type": "rep",
         "args": {
-          "stemH": 0.45,
-          "bloomR": 0.14
+          "period": [
+            1.2,
+            0,
+            1.2
+          ],
+          "count": [
+            8,
+            0,
+            6
+          ]
+        },
+        "source": {
+          "id": "flower-source",
+          "type": "forest-flower",
+          "args": {
+            "stemH": 0.45,
+            "bloomR": 0.14
+          },
+          "material": {
+            "hue": 0.98,
+            "sat": 0.85,
+            "value": 0.75,
+            "metal": 0,
+            "glow": 0
+          }
         },
         "transform": {
           "translate": [
             -3.5,
             0,
-            1.2
-          ]
-        },
-        "material": {
-          "hue": 0.92,
-          "sat": 0.85,
-          "value": 0.9,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "flower-2",
-        "type": "forest-flower",
-        "args": {
-          "stemH": 0.42,
-          "bloomR": 0.13
-        },
-        "transform": {
-          "translate": [
-            5.5,
-            0,
-            1
-          ]
-        },
-        "material": {
-          "hue": 0.15,
-          "sat": 0.88,
-          "value": 0.85,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "flower-3",
-        "type": "forest-flower",
-        "args": {
-          "stemH": 0.48,
-          "bloomR": 0.15
-        },
-        "transform": {
-          "translate": [
-            -1.5,
-            0,
             1.5
           ]
-        },
-        "material": {
-          "hue": 0,
-          "sat": 0.9,
-          "value": 0.88,
-          "metal": 0,
-          "glow": 0
         }
       },
       {
         "id": "bush-1",
         "type": "bush",
         "args": {
-          "radius": 0.32
+          "radius": 0.3
         },
         "transform": {
           "translate": [
-            -8.5,
+            -7.5,
             0,
-            4
+            4.8
           ]
         },
         "material": {
@@ -1512,9 +1571,9 @@
         },
         "transform": {
           "translate": [
-            8,
+            8.2,
             0,
-            3.5
+            4.5
           ]
         },
         "material": {
@@ -1529,60 +1588,81 @@
         "id": "bird-1",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.2,
-          "wingSpan": 0.55
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
         },
         "transform": {
           "translate": [
-            -4.5,
-            12,
-            8
+            -3.5,
+            8.5,
+            12
           ],
           "rotate": [
             0,
-            0.5,
+            0.4,
             0
           ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.25,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
         "id": "bird-2",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.18,
-          "wingSpan": 0.5
+          "bodyLength": 0.16,
+          "wingSpan": 0.45
         },
         "transform": {
           "translate": [
-            3.2,
-            13.5,
-            6
+            2.8,
+            9.2,
+            14
           ],
           "rotate": [
             0,
-            -0.4,
+            -0.3,
             0
           ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.25,
+          "metal": 0,
+          "glow": 0
         }
       },
       {
         "id": "bird-3",
         "type": "bird-silhouette",
         "args": {
-          "bodyLength": 0.19,
-          "wingSpan": 0.52
+          "bodyLength": 0.17,
+          "wingSpan": 0.48
         },
         "transform": {
           "translate": [
-            0.5,
-            14,
-            10
+            -1.2,
+            10,
+            16
           ],
           "rotate": [
             0,
-            0.2,
+            0.1,
             0
           ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.25,
+          "metal": 0,
+          "glow": 0
         }
       }
     ],
@@ -1590,31 +1670,74 @@
       "y": 0,
       "region": "ground",
       "material": {
-        "hue": 0.12,
-        "sat": 0.35,
-        "value": 0.48
-      },
-      "pattern": {
-        "kind": "cells",
-        "scale": 3.5,
-        "strength": 0.3
+        "hue": 0.13,
+        "sat": 0.4,
+        "value": 0.48,
+        "metal": 0,
+        "glow": 0
       }
     },
+    "volumes": [
+      {
+        "id": "valley-mist-lower",
+        "kind": "fog",
+        "center": [
+          -1.5,
+          1.2,
+          8
+        ],
+        "size": [
+          18,
+          1.1,
+          12
+        ],
+        "density": 0.45,
+        "color": [
+          218,
+          214,
+          208
+        ],
+        "noiseScale": 1
+      },
+      {
+        "id": "valley-mist-upper",
+        "kind": "fog",
+        "center": [
+          3,
+          0.8,
+          6
+        ],
+        "size": [
+          14,
+          0.8,
+          10
+        ],
+        "density": 0.35,
+        "color": [
+          220,
+          215,
+          205
+        ],
+        "noiseScale": 1.2
+      }
+    ],
     "defaults": {
       "camera": {
-        "yaw": -0.25,
+        "yaw": 0.35,
         "pitch": 0.12,
-        "distance": 28,
+        "distance": 24,
         "focal": 1.5,
-        "targetX": -0.5,
+        "targetX": 0,
         "targetY": 2.5,
-        "targetZ": 5
+        "targetZ": 6,
+        "aperture": 0.3,
+        "focalDistance": 24
       },
       "light": {
         "azimuth": 0.65,
-        "altitude": 0.3,
-        "distance": 50,
-        "intensity": 1.15
+        "altitude": 0.28,
+        "distance": 45,
+        "intensity": 1.1
       },
       "shadow": {
         "enabled": true,
@@ -1623,53 +1746,10 @@
       },
       "postFx": {
         "exposure": 1.05,
-        "vignetteStrength": 0.38,
-        "bloomMix": 0.18
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.18,
+        "lensFlareStrength": 0.08
       }
-    },
-    "volumes": [
-      {
-        "id": "valley-mist-low",
-        "kind": "fog",
-        "center": [
-          -1.5,
-          1.8,
-          8
-        ],
-        "size": [
-          18,
-          1.1,
-          12
-        ],
-        "density": 0.5,
-        "color": [
-          220,
-          215,
-          205
-        ],
-        "noiseScale": 1.4
-      },
-      {
-        "id": "valley-mist-upper",
-        "kind": "fog",
-        "center": [
-          3,
-          0.8,
-          5
-        ],
-        "size": [
-          14,
-          0.8,
-          10
-        ],
-        "density": 0.4,
-        "color": [
-          218,
-          214,
-          208
-        ],
-        "noiseScale": 1.2
-      }
-    ]
+    }
   }
 }

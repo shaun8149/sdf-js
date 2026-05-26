@@ -1,0 +1,132 @@
+```json
+{
+  "v": 1,
+  "name": "Wall Clock at 9:15",
+  "source": {
+    "format": "llm-lift",
+    "prompt": "挂在墙上的9点15分的钟",
+    "from2dCode": "Clock with bezel, face, 12 hour ticks + 48 minute ticks, hour hand at 9.25, minute hand at 3, center boss. Warm plaster wall background."
+  },
+  "subjects": [
+    {
+      "id": "wall-plane",
+      "type": "box",
+      "args": { "dims": [4.5, 3.2, 0.12] },
+      "transform": { "translate": [0, 0, -0.35] },
+      "material": { "hue": 0.10, "sat": 0.22, "value": 0.92, "metal": 0, "glow": 0 },
+      "pattern": { "kind": "cells", "scale": 8, "strength": 0.15 }
+    },
+    {
+      "id": "clock-body",
+      "type": "union",
+      "material": { "hue": 0.08, "sat": 0.18, "value": 0.12, "metal": 0.05, "glow": 0 },
+      "children": [
+        {
+          "id": "bezel-ring",
+          "type": "capped-torus",
+          "args": { "capAngle": 6.28, "majorR": 0.55, "minorR": 0.06 },
+          "transform": { "translate": [0, 0, 0], "rotate": [1.5708, 0, 0] }
+        },
+        {
+          "id": "bezel-back",
+          "type": "cylinder",
+          "args": { "radius": 0.52, "height": 0.08 },
+          "transform": { "translate": [0, 0, -0.04], "rotate": [1.5708, 0, 0] }
+        }
+      ]
+    },
+    {
+      "id": "clock-face",
+      "type": "cylinder",
+      "args": { "radius": 0.50, "height": 0.02 },
+      "transform": { "translate": [0, 0, 0.01], "rotate": [1.5708, 0, 0] },
+      "material": { "hue": 0.12, "sat": 0.12, "value": 0.98, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "hour-ticks",
+      "type": "modPolar",
+      "args": { "axis": "z", "repetitions": 12 },
+      "source": {
+        "id": "hour-tick-source",
+        "type": "capsule",
+        "args": { "a": [0, 0.38, 0.02], "b": [0, 0.44, 0.02], "radius": 0.014 },
+        "material": { "hue": 0.08, "sat": 0.20, "value": 0.10, "metal": 0, "glow": 0 }
+      }
+    },
+    {
+      "id": "minute-hand",
+      "type": "capsule",
+      "args": { "a": [-0.05, 0, 0.04], "b": [0.36, 0, 0.04], "radius": 0.012 },
+      "material": { "hue": 0.08, "sat": 0.22, "value": 0.08, "metal": 0.15, "glow": 0 }
+    },
+    {
+      "id": "hour-hand",
+      "type": "capsule",
+      "args": {
+        "a": [0.05 * 0.991, -0.05 * 0.131, 0.05],
+        "b": [-0.28 * 0.991, 0.28 * 0.131, 0.05],
+        "radius": 0.018
+      },
+      "material": { "hue": 0.08, "sat": 0.22, "value": 0.08, "metal": 0.15, "glow": 0 }
+    },
+    {
+      "id": "center-boss",
+      "type": "sphere",
+      "args": { "radius": 0.030 },
+      "transform": { "translate": [0, 0, 0.06] },
+      "material": { "hue": 0.08, "sat": 0.22, "value": 0.08, "metal": 0.2, "glow": 0 }
+    },
+    {
+      "id": "number-12",
+      "type": "box",
+      "args": { "dims": [0.03, 0.06, 0.01] },
+      "transform": { "translate": [0, 0.40, 0.02] },
+      "material": { "hue": 0.08, "sat": 0.20, "value": 0.10, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "number-3",
+      "type": "box",
+      "args": { "dims": [0.06, 0.03, 0.01] },
+      "transform": { "translate": [0.40, 0, 0.02] },
+      "material": { "hue": 0.08, "sat": 0.20, "value": 0.10, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "number-6",
+      "type": "box",
+      "args": { "dims": [0.03, 0.06, 0.01] },
+      "transform": { "translate": [0, -0.40, 0.02] },
+      "material": { "hue": 0.08, "sat": 0.20, "value": 0.10, "metal": 0, "glow": 0 }
+    },
+    {
+      "id": "number-9",
+      "type": "box",
+      "args": { "dims": [0.06, 0.03, 0.01] },
+      "transform": { "translate": [-0.40, 0, 0.02] },
+      "material": { "hue": 0.08, "sat": 0.20, "value": 0.10, "metal": 0, "glow": 0 }
+    }
+  ],
+  "ground": { "y": -1.8, "region": "floor", "material": { "hue": 0.10, "sat": 0.18, "value": 0.75 } },
+  "defaults": {
+    "camera": {
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "distance": 2.5,
+      "focal": 1.5,
+      "targetX": 0,
+      "targetY": 0,
+      "targetZ": 0
+    },
+    "light": {
+      "azimuth": -0.6,
+      "altitude": 0.50,
+      "distance": 12,
+      "intensity": 1.1
+    },
+    "shadow": {
+      "enabled": true,
+      "mode": "darken",
+      "strength": 0.35
+    }
+  }
+}
+```

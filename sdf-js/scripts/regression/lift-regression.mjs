@@ -102,15 +102,20 @@ const V35_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 // defaults.postFx, volumes[], cameraSequence, subjectMotion, shot.pos.relativeTo,
 // shake.velocityScale, volume.attachTo + sceneStateKey.
 const V37_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.7.md`, 'utf-8');
-// v3.8 reads from the LIVE compositor prompt. Fixes ambiguous DomainGroup args
-// spec (split per-type table + Wrong→Right) + adds modPolar/mirrorOctant/curve/
-// elongate/displace to the table + Worked Example 14 (radial repetition).
-const V38_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+// v3.8 frozen 2026-05-26 (after v3.5-vs-v3.7 + v3.7-vs-v3.8 regression). Fixed
+// DomainGroup args ambiguity + added modPolar/mirrorOctant/curve/elongate/
+// displace + Worked Example 14.
+const V38_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.8.md`, 'utf-8');
+// v3.9 reads from the LIVE compositor prompt. Fixes brass/leather preset
+// hallucination (whitelist + trap section, + missing deep-water/shallow-water
+// added to visible list) + adds Worked Example 11b for weak-cue cinematic
+// recognition (forest-meteors / 雪山 / 海边的灯塔 type prompts).
+const V39_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
   'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
   'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT, 'v3.7': V37_PROMPT,
-  'v3.8': V38_PROMPT,
+  'v3.8': V38_PROMPT, 'v3.9': V39_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -438,6 +443,7 @@ async function main() {
   else if (versionArg === 'v3.4-vs-v3.5') versions = ['v3.4', 'v3.5'];
   else if (versionArg === 'v3.5-vs-v3.7') versions = ['v3.5', 'v3.7'];
   else if (versionArg === 'v3.7-vs-v3.8') versions = ['v3.7', 'v3.8'];
+  else if (versionArg === 'v3.8-vs-v3.9') versions = ['v3.8', 'v3.9'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
