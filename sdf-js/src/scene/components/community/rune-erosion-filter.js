@@ -300,19 +300,22 @@ export function jitterParams(rng, defaults = DEFAULT_EROSION_PARAMS) {
 // without initial-paint variation produces near-identical mountains).
 // Returns an array of bumps [{cx, cy, brush, amount}].
 // ---------------------------------------------------------------------------
-function generateBumpField(rng) {
-  const numBumps = rng.random_int(1, 3);  // 1-3 mountains
+function generateBumpField(rng, overrides = {}) {
+  // Phase 2: overrides {numBumps, budget, centerRange, brushRange} bias the
+  // bump field shape per token. Consumer (bonsai-nft) can pick "1 hero peak"
+  // (numBumps=1, big brush) vs "5-peak ridge" (numBumps=5, small brush each)
+  // for visible per-token diversity. Atlas defaults preserved when absent.
+  const numBumps = overrides.numBumps ?? rng.random_int(1, 3);
+  const totalBudget = overrides.budget ?? 0.50;
+  const [cLo, cHi] = overrides.centerRange ?? [0.30, 0.70];
+  const [bLo, bHi] = overrides.brushRange  ?? [0.25, 0.45];
   const bumps = [];
-  // Total bump budget capped so multiple overlapping bumps don't blow past
-  // box ceiling (defaultHeight 0.45 + budget ≤ 0.95 leaves headroom).
-  const totalBudget = 0.50;
   for (let i = 0; i < numBumps; i++) {
     const remainingBudget = totalBudget * (numBumps - i) / numBumps;
     bumps.push({
-      cx: rng.random_num(0.30, 0.70),
-      cy: rng.random_num(0.30, 0.70),
-      brush: rng.random_num(0.25, 0.45),
-      // Bigger amount when fewer bumps; smaller when many overlap.
+      cx: rng.random_num(cLo, cHi),
+      cy: rng.random_num(cLo, cHi),
+      brush: rng.random_num(bLo, bHi),
       amount: rng.random_num(remainingBudget * 0.4, remainingBudget * 0.8),
     });
   }
@@ -356,7 +359,8 @@ export function bakeHeightmap(rng, paramsIn = {}, resolution = 512) {
   const params = jitterParams(rng, { ...DEFAULT_EROSION_PARAMS, ...paramsIn });
   // Initial paint = 1-3 mountain bumps at hash-derived positions.
   // Generated AFTER jitterParams so its rng draws are deterministic to hash.
-  const bumps = generateBumpField(rng);
+  // Phase 2: paramsIn.bumpOverrides can bias count/budget/range per consumer.
+  const bumps = generateBumpField(rng, paramsIn.bumpOverrides || {});
 
   const W = resolution, H = resolution;
   const data = new Float32Array(W * H * 4);

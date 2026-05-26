@@ -90,6 +90,7 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   let baked = null;
   let camState = { position: [0, 0.5, -3], yaw: 0, pitch: 0 };
   let palette = null;
+  let paletteOpts = {};   // Phase 2: external buildPalette override
   let isMono = false;
   let specQueue = [];
   let currentScribble = null;
@@ -262,7 +263,7 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         || (compiled && compiled.meta && compiled.meta.hash)
         || '0x' + 'a3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
       runRng = new Random(seedHash);
-      palette = buildPalette(runRng);
+      palette = buildPalette(runRng, paletteOpts);
       isMono = runRng.random_dec() < 0.5;
       topoCanvas.style.display = 'block';
       resizeIfNeeded();
@@ -289,6 +290,8 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     },
     canRender(_sdf) { return true; },
     setRuneHeightmap(b) { baked = b; if (b) boxSize = [0.5, 1.0, 0.5]; },
+    /** Phase 2: palette family bias — same shape as crayon's setPaletteOpts. */
+    setPaletteOpts(opts) { paletteOpts = opts || {}; },
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
       if (patch.yaw != null) camState.yaw = patch.yaw;

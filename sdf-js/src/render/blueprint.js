@@ -326,6 +326,10 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
       gl.uniform1i(uniformsCache.u_heightmap, 1);
+    } else if (uniformsCache.u_heightmap != null) {
+      // Defensive: point sampler at unit 7 (unused) so it doesn't default
+      // to unit 0. Same reasoning as flyLambert.
+      gl.uniform1i(uniformsCache.u_heightmap, 7);
     }
     if (uniformsCache.u_runeActive != null) {
       gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);

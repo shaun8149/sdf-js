@@ -176,15 +176,19 @@ function hsv2rgb(h, s, v) {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-export function buildPalette(rng) {
+export function buildPalette(rng, opts = {}) {
+  // Phase 2: opts allow external bias of palette family. When provided,
+  // these override the rng draws — used by bonsai-nft to pick from a
+  // curated set of "palette families" (jewel-tone / sunset / cold / etc.)
+  // rather than fully-random palettes per token.
   // Paper: warm earth-toned off-white. Slight hash perturbation per token.
-  const paperH = 0.07 + rng.random_num(-0.02, 0.03);   // 60-100° hue range
-  const paperS = 0.18 + rng.random_num(-0.05, 0.05);
-  const paperV = 0.84 + rng.random_num(-0.04, 0.04);
+  const paperH = opts.paperHue ?? (0.07 + rng.random_num(-0.02, 0.03));
+  const paperS = opts.paperSat ?? (0.18 + rng.random_num(-0.05, 0.05));
+  const paperV = opts.paperVal ?? (0.84 + rng.random_num(-0.04, 0.04));
   const paper = hsv2rgb(paperH, paperS, paperV);
   // Master hue rotation — defines whole palette identity for this token.
-  const masterHue = rng.random_dec();          // 0..1 full wheel
-  const sat = 0.45 + rng.random_num(-0.20, 0.25);  // 0.25..0.70
+  const masterHue = opts.masterHue ?? rng.random_dec();
+  const sat = opts.saturation ?? (0.45 + rng.random_num(-0.20, 0.25));
   // 6 stroke colors, lightness ramp from dark to light:
   // crayon strokes layer over paper; need 6 grades from shadow → highlight.
   const stroke = [];
@@ -416,6 +420,7 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   let sdfFn = null;            // CPU SDF function
   let camState = { position: [0, 0.5, -3], yaw: 0, pitch: 0 };
   let palette = null;
+  let paletteOpts = {};        // Phase 2: external buildPalette override
   let specQueue = [];          // pre-baked scribble specs, sorted (back→front)
   let currentScribble = null;  // single active SketchyShape (Sarkissian pattern)
   let drawnCount = 0;
@@ -597,7 +602,7 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
         || (compiled && compiled.meta && compiled.meta.hash)
         || '0x' + 'a3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
       runRng = new Random(seedHash);
-      palette = buildPalette(runRng);
+      palette = buildPalette(runRng, paletteOpts);
       // Show + size the canvas
       crayonCanvas.style.display = 'block';
       resizeIfNeeded();
@@ -621,6 +626,12 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     },
     canRender(_sdf) { return true; },
     setRuneHeightmap(b) { baked = b; if (b) boxSize = [0.5, 1.0, 0.5]; },
+    /**
+     * Phase 2: bias the buildPalette draws so the per-token palette identity
+     * lands in a curated family (jewel-tone / sunset / arctic / etc.) rather
+     * than uniform-random. Pass { masterHue, saturation, paperHue/Sat/Val }.
+     */
+    setPaletteOpts(opts) { paletteOpts = opts || {}; },
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
       if (patch.yaw != null) camState.yaw = patch.yaw;

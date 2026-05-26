@@ -1147,6 +1147,11 @@ export function createBobShaderRenderer({
       gl.activeTexture(gl.TEXTURE2);
       gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
       gl.uniform1i(uniformsCache.u_heightmap, 2);
+    } else if (uniformsCache.u_heightmap != null) {
+      // Defensive: when no heightmap, point sampler at unit 7 (unused). Same
+      // reasoning as flyLambert — avoids the sampler defaulting to unit 0
+      // where another texture (e.g. palette) is bound. See flyLambert comment.
+      gl.uniform1i(uniformsCache.u_heightmap, 7);
     }
     if (uniformsCache.u_runeActive != null) {
       gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);

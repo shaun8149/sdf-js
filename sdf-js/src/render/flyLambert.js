@@ -45,6 +45,11 @@ uniform float u_cityActive;
 // triggers eroded-terrain shading branch. Set by flyLambert when scene
 // has terrain-eroded-rune subject (auto-detected via setRuneHeightmap).
 uniform float u_runeActive;
+// Sprint 12 Phase 2: water surface tint, RGB. Set per token by bonsai-nft
+// (or any consumer that wants to vary lake color across renders). Default
+// vec3(0.0, 0.20, 0.30) — teal. Atlas itself never writes this; the
+// renderer keeps the default if no setRuneWaterTint() is called.
+uniform vec3 u_runeWaterTint;
 // Per-leaf material LUT (xyzw = hue, sat, metal, glow). sat < 0 sentinel
 // means "no material — fall back to hash palette". Indexed by minIndex-1
 // (IMIN_GLSL's imin increments objectIndex BEFORE checking, so minIndex
@@ -1200,7 +1205,7 @@ void main() {
       // Water plane: if below water height, render water surface separately
       // (deferred to sea-shading path is overkill here — simple blend).
       if (p.y < WATER_H && height < WATER_H) {
-        vec3 waterCol = vec3(0.0, 0.20, 0.30);
+        vec3 waterCol = u_runeWaterTint;
         float waterDepth = (WATER_H - height) * 30.0;
         float foam = smoothstep(0.10, 0.0, waterDepth);
         vec3 wsurf = mix(waterCol, vec3(0.0, 0.40, 0.45), exp(-waterDepth * 2.0));
@@ -1580,6 +1585,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   let runeHeightmapTex = null;
   let runeHeightmapW = 0, runeHeightmapH = 0;
   let _runeBindLogged = false, _runeBindWarned = false;  // one-time diagnostic flags
+  let runeWaterTint = [0.0, 0.20, 0.30];  // Phase 2: settable via setRuneWaterTint
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1775,6 +1781,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       // Sprint 12 Rune erosion heightmap sampler + active flag
       'u_heightmap',
       'u_runeActive',
+      'u_runeWaterTint',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1974,6 +1981,16 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         console.log(`[fly3d] u_heightmap bound to TEXTURE1, uniform loc=${uniformsCache.u_heightmap}, u_runeActive loc=${uniformsCache.u_runeActive}`);
         _runeBindLogged = true;
       }
+    } else if (uniformsCache.u_heightmap != null) {
+      // No heightmap bound but the sampler exists in the compiled program.
+      // CRITICAL: point it at a safe unit (7) — uninitialized samplers default
+      // to unit 0, which holds sceneTex (the HDR FBO color attachment).
+      // Drawing into sceneFbo while the sampler reads sceneTex triggers a
+      // GL_INVALID_OPERATION "Feedback loop formed between Framebuffer and
+      // active Texture". Unit 7 is unused; WebGL returns (0,0,0,1) when
+      // sampling an unbound unit — harmless because sdTerrainErodedRune is
+      // only actually called when the scene has a terrain-eroded-rune subject.
+      gl.uniform1i(uniformsCache.u_heightmap, 7);
     } else if (runeHeightmapTex != null && uniformsCache.u_heightmap == null) {
       if (!_runeBindWarned) {
         console.warn('[fly3d] runeHeightmapTex exists but uniformsCache.u_heightmap is null — GLSL optimized away the sampler? Check that sdTerrainErodedRune is actually emitted.');
@@ -1982,6 +1999,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     }
     if (uniformsCache.u_runeActive != null) {
       gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);
+    }
+    if (uniformsCache.u_runeWaterTint != null) {
+      gl.uniform3f(uniformsCache.u_runeWaterTint, runeWaterTint[0], runeWaterTint[1], runeWaterTint[2]);
     }
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
@@ -2342,6 +2362,16 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      * Call with null to clear (frees GPU texture). Safe to call repeatedly —
      * texture is reallocated if dimensions change, else just texSubImage2D.
      */
+    /**
+     * Phase 2: override the lake/water surface color (RGB 0-1). Default is
+     * teal vec3(0.0, 0.20, 0.30). Set per-token by bonsai-nft for diversity.
+     */
+    setRuneWaterTint(rgb) {
+      if (Array.isArray(rgb) && rgb.length === 3) {
+        runeWaterTint = [rgb[0], rgb[1], rgb[2]];
+      }
+    },
+
     setRuneHeightmap(baked) {
       if (!baked) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
