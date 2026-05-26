@@ -387,8 +387,16 @@ async function liftOne(demoId, systemPrompt, version) {
   const materialKindsUsed = countMaterialKinds(sceneData.subjects);
 
   let compileOk = false, compileErr = null;
-  try { compile(sceneData); compileOk = true; }
-  catch (e) { compileErr = String(e.message || e).slice(0, 200); }
+  let sanitySummary = 'compile-fail', sanityErrors = 0, sanityWarnings = 0;
+  try {
+    const compiled = compile(sceneData);
+    compileOk = true;
+    if (compiled.sanityResult) {
+      sanitySummary  = compiled.sanityResult.summary;
+      sanityErrors   = compiled.sanityResult.errors.length;
+      sanityWarnings = compiled.sanityResult.warnings.length;
+    }
+  } catch (e) { compileErr = String(e.message || e).slice(0, 200); }
 
   const costUSD = (usage.input_tokens * PRICE_INPUT + usage.output_tokens * PRICE_OUTPUT) / 1e6;
 
@@ -417,6 +425,8 @@ async function liftOne(demoId, systemPrompt, version) {
     materialKindsUsed,  // { sea: N, mountain: N, emissive: N, translucent: N }
     // v3.7 cinematic adoption metrics
     cinematic: v37CinematicMetrics(sceneData),
+    // Track 5.1 sanity metrics — populated only on compileOk.
+    sanitySummary, sanityErrors, sanityWarnings,
     typeCounts,
     compileOk, compileErr,
     sceneName: sceneData.name,
@@ -469,7 +479,10 @@ async function main() {
         const kindsStr = `e${kk.emissive || 0}/t${kk.translucent || 0}/s${kk.sea || 0}/m${kk.mountain || 0}`;
         const c = r.cinematic || {};
         const cinStr = `pfx${c.postFx || 0}/ap${c.aperture || 0}/vol${c.volumeCount || 0}/sh${c.seqShots || 0}/mot${c.seqMotion || 0}/rel${c.relativeToUses || 0}`;
-        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}] · $${r.costUSD}`);
+        const sanityStr = (r.sanityErrors || r.sanityWarnings)
+          ? ` · sanity[E${r.sanityErrors}/W${r.sanityWarnings}: ${r.sanitySummary}]`
+          : '';
+        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}]${sanityStr} · $${r.costUSD}`);
       }
     }
     const cmp = { demoId: id, runs };

@@ -55,6 +55,7 @@ import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
 import { Random } from '../util/random.js';
+import { sanityCheck, logSanityIssues } from './sanity.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
   moonSDF, starSDF, sunSDF, cloudPuffSDF,
@@ -595,7 +596,7 @@ export function compile(sceneData, options = {}) {
   // regionFn — canvas2D-style flat dispatch
   const regionFn = makeRegionFn(subjectInfos, groundInfo);
 
-  return {
+  const compileResult = {
     sdf,
     ground: groundInfo,
     groundSdf,
@@ -619,6 +620,8 @@ export function compile(sceneData, options = {}) {
     // flyLambert checks for this on setScene and uploads as sampler2D u_heightmap.
     // Shape: { data: Float32Array(W*H*4), width, height, params } | null.
     bakedHeightmap,
+    // Track 5.1 (M5 prereq): geometry sanity check — populated below.
+    sanityResult: null,
     meta: {
       id: sceneData.id,
       name: sceneData.name,
@@ -627,6 +630,25 @@ export function compile(sceneData, options = {}) {
       palette: sceneData.defaults?.palette,
     },
   };
+
+  // ----- Track 5.1: geometry sanity (warn-only, non-blocking) -----
+  // Compile() always runs this unless caller opts out via { sanity: false }.
+  // Errors + warnings get console.warn'd; result.sanityResult exposed for
+  // editor / regression tooling. The render path is NOT blocked even on
+  // high-severity issues — caller decides what to do.
+  if (options.sanity !== false) {
+    try {
+      compileResult.sanityResult = sanityCheck(sceneData, compileResult);
+      const sr = compileResult.sanityResult;
+      if (sr.all.length > 0) {
+        logSanityIssues(sr.all, { prefix: `[sanity ${sceneData.id || sceneData.name || '<scene>'}]` });
+      }
+    } catch (e) {
+      console.warn(`[sanity] checker itself threw: ${e.message}`);
+    }
+  }
+
+  return compileResult;
 }
 
 // =============================================================================
