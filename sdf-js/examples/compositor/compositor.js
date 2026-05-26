@@ -40,6 +40,8 @@ import {
 } from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { createBlueprintRenderer } from '../../src/render/blueprint.js';
+import { createCrayonRenderer } from '../../src/render/crayonRenderer.js';
+import { createStreamlineRenderer } from '../../src/render/streamlineRenderer.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';
 
 const $ = id => document.getElementById(id);
@@ -63,6 +65,8 @@ const state = {
   bobRenderer: null,                   // lazy createBobShaderRenderer instance — stylized autoscope-style
   blueprintRenderer: null,             // lazy createBlueprintRenderer — 4-view engineering drawing
   fly3dRenderer: null,                 // lazy createFly3DRenderer instance — clean Lambert + WASD fly
+  crayonRenderer: null,                // lazy createCrayonRenderer — Sprint 12-3d Canvas2D physics-pen
+  topoRenderer: null,                  // lazy createStreamlineRenderer — Sprint 12-3c downhill pen-strokes
   genScene: null,                      // generator-tab compiled scene
   genSdf: null,                        // generator-tab final SDF (subjects ∪ ground)
   // text-tab lift state
@@ -92,7 +96,7 @@ const state = {
   sceneHash: null,                     // 0x... hex string
 };
 
-const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint']);
+const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo']);
 const isGpuRenderer = (name) => GPU_RENDERERS.has(name);
 
 // =============================================================================
@@ -1243,8 +1247,17 @@ function updateCanvasVisibility(opts = {}) {
   const have3D = state.activeTab === 'generator' ||
                  (state.activeTab === 'text' && state.liftMode);
   const showGpu = have3D && isGpuRenderer(state.activeRenderer);
+  // Canvas2D renderers (crayon / topo) use their own sibling <canvas> elements.
+  // Hide c-gpu when one of them is active; show the matching one.
+  const isCrayon = state.activeRenderer === 'crayon';
+  const isTopo   = state.activeRenderer === 'topo';
+  const showWebgl = showGpu && !isCrayon && !isTopo;
   $('c').style.display = showGpu ? 'none' : 'block';
-  $('c-gpu').style.display = showGpu ? 'block' : 'none';
+  $('c-gpu').style.display = showWebgl ? 'block' : 'none';
+  const crayonCv = document.getElementById('c-crayon');
+  if (crayonCv) crayonCv.style.display = (showGpu && isCrayon) ? 'block' : 'none';
+  const topoCv = document.getElementById('c-topo');
+  if (topoCv) topoCv.style.display = (showGpu && isTopo) ? 'block' : 'none';
   const fsBtn = $('btn-fullscreen');
   const shuffleBtn = $('btn-shuffle-palette');
   const lightPanel = $('light-panel');
@@ -1707,6 +1720,8 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
   if (state.activeRenderer === 'fly3d') {
     if (state.bobRenderer) state.bobRenderer.unmount();
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
+    if (state.crayonRenderer) state.crayonRenderer.unmount();
+    if (state.topoRenderer) state.topoRenderer.unmount();
     const fly = ensureFly3dRenderer();
     if (!keepCamera && scene.cameraStatic) fly.setCamState(sphericalToCamState(scene.cameraStatic));
     // Sprint 1: per-scene post-FX overrides (exposure / vignette / bloom /
@@ -1779,6 +1794,8 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // (target XYZ + distance). FLY 3D + BOB GPU must be unmounted first.
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
     if (state.bobRenderer) state.bobRenderer.unmount();
+    if (state.crayonRenderer) state.crayonRenderer.unmount();
+    if (state.topoRenderer) state.topoRenderer.unmount();
     const bp = ensureBlueprintRenderer();
     if (scene.cameraStatic) {
       const cs = scene.cameraStatic;
@@ -1793,10 +1810,44 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       console.error(e);
       return { bytes: 0 };
     }
+  } else if (state.activeRenderer === 'crayon') {
+    // 4th renderer (Sprint 12-3d): Canvas2D physics-pen scribble accumulator.
+    if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.bobRenderer) state.bobRenderer.unmount();
+    if (state.blueprintRenderer) state.blueprintRenderer.unmount();
+    if (state.topoRenderer) state.topoRenderer.unmount();
+    const cr = ensureCrayonRenderer();
+    if (cr.setRuneHeightmap) cr.setRuneHeightmap(scene.bakedHeightmap || null);
+    try {
+      return cr.render(sdf, scene);
+    } catch (e) {
+      setStatus(`✗ crayon render: ${e.message}`, true);
+      console.error(e);
+      return { bytes: 0 };
+    }
+  } else if (state.activeRenderer === 'topo') {
+    // 5th renderer (Sprint 12-3c): Canvas2D streamline-hatching. Strokes
+    // flow downhill following heightmap gradient; hash selects mono vs
+    // multi-color palette mode.
+    if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.bobRenderer) state.bobRenderer.unmount();
+    if (state.blueprintRenderer) state.blueprintRenderer.unmount();
+    if (state.crayonRenderer) state.crayonRenderer.unmount();
+    const tp = ensureTopoRenderer();
+    if (tp.setRuneHeightmap) tp.setRuneHeightmap(scene.bakedHeightmap || null);
+    try {
+      return tp.render(sdf, scene);
+    } catch (e) {
+      setStatus(`✗ topo render: ${e.message}`, true);
+      console.error(e);
+      return { bytes: 0 };
+    }
   } else {
     // default to bob-gpu
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
+    if (state.crayonRenderer) state.crayonRenderer.unmount();
+    if (state.topoRenderer) state.topoRenderer.unmount();
     const bob = ensureBobRenderer();
     if (!keepCamera && scene.cameraStatic) bob.setCamState(sphericalToCamState(scene.cameraStatic));
     // Sprint 12: Rune heightmap → BOB GPU texture (same data as FLY 3D).
@@ -1815,6 +1866,49 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       return { bytes: 0 };
     }
   }
+}
+
+function ensureTopoRenderer() {
+  if (state.topoRenderer) return state.topoRenderer;
+  // Sprint 12-3c: Canvas2D streamline-hatching renderer. Same sibling-canvas
+  // pattern as crayon — uses #c-topo created on-demand.
+  state.topoRenderer = createStreamlineRenderer({
+    canvas: $('c-gpu'),
+    getControls: () => {
+      const { scene } = getActiveGpuScene();
+      const cam = scene?.cameraStatic;
+      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      const light = state.lightOverride ?? sceneLight;
+      return {
+        lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance,
+        fov: cam?.focal || 1.5,
+      };
+    },
+    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+  });
+  return state.topoRenderer;
+}
+
+function ensureCrayonRenderer() {
+  if (state.crayonRenderer) return state.crayonRenderer;
+  // Sprint 12-3d: Canvas2D physics-pen renderer. Uses its own sibling <canvas>
+  // (createCrayonRenderer creates #c-crayon on demand); the canvas arg is
+  // passed but ignored — Canvas2D and WebGL2 can't coexist on the same element.
+  state.crayonRenderer = createCrayonRenderer({
+    canvas: $('c-gpu'),
+    getControls: () => {
+      const { scene } = getActiveGpuScene();
+      const cam = scene?.cameraStatic;
+      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      const light = state.lightOverride ?? sceneLight;
+      return {
+        lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance,
+        fov: cam?.focal || 1.5,
+      };
+    },
+    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+  });
+  return state.crayonRenderer;
 }
 
 function ensureBlueprintRenderer() {

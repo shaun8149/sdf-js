@@ -1111,18 +1111,22 @@ float sdProceduralCity(vec3 p, float blockSize, float maxHeight, float downtownK
 // Lipschitz: heightmap derivatives are bounded by the texture resolution;
 // safety factor 0.5 keeps sphere trace from overshooting.
 float sdTerrainErodedRune(vec3 p, vec3 boxSize) {
-  // Map XZ to UV [0, 1]. NOTE: vec2 has only .xy — uv.y is the Z mapping.
-  // Outside the box footprint, clamp UV (texture is CLAMP_TO_EDGE) so the
-  // heightmap value at the boundary continues — gives a flat plane around
-  // the bonsai matching the default base height (~0.45, below water level).
-  // This avoids returning a solid box SDF that would block raymarch progress.
+  // Sprint 12-3a: bonsai pedestal SDF. The terrain volume = intersection of
+  // 3 constraints: inside box footprint AND above floor AND below heightmap.
+  //
+  // SDF as max() of three signed components, each positive when OUTSIDE its
+  // constraint. Max gives positive (outside solid) iff any constraint fails;
+  // negative (inside solid) iff all satisfied. This gives proper box-bounded
+  // raymarch with both top (terrain) and side (cliff) surfaces hittable —
+  // shader differentiates them via surface normal direction for strata vs
+  // terrain material dispatch.
   vec2 uv = clamp(p.xz / (2.0 * boxSize.xz) + 0.5, vec2(0.0), vec2(1.0));
-  // Use texture2D (GLSL ES 1.00) — works in both bob/blueprint AND FLY 3D
-  // (which all run ES 1.00 even on a WebGL2 context — no version directive).
   float h = texture2D(u_heightmap, uv).x * boxSize.y;
-  // 0.5 = Lipschitz safety factor (heightmap derivatives are bounded by
-  // texture resolution; oversampling the surface keeps sphere trace stable).
-  return (p.y - h) * 0.5;
+  vec2 q = abs(p.xz) - boxSize.xz;
+  float dSides  = max(q.x, q.y);     // positive when outside XZ footprint
+  float dBottom = -p.y;              // positive when below floor (y < 0)
+  float dTop    = p.y - h;           // positive when above heightmap surface
+  return max(max(dSides, dBottom), dTop) * 0.5;  // 0.5 = Lipschitz safety
 }
 
 // ---- Parametric arch bridge (IQ Snow Bridge MdXGzr recipe-only port) ----

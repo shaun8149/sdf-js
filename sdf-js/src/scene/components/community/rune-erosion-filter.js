@@ -256,12 +256,14 @@ export const DEFAULT_EROSION_PARAMS = {
   roundingZ:    0.1,   // height function multiplier (fixed for scale match)
   roundingW:    2.0,   // per-octave rounding multiplier (matches lacunarity)
   assumedSlope: [0.7, 1.0],
-  // height function (default Rune bump)
-  defaultHeight: 0.45,
+  // height function (default Rune bump) — halved 2026-05-26 to match
+  // wooden pedestal box at half-box height. waterHeight 0.23 (top of frame),
+  // defaultHeight 0.20 (corners submerged → island visible).
+  defaultHeight: 0.20,
   bumpAmount:    0.1,
-  // shading thresholds (used in shader, but stored here for consistency)
-  waterHeight:  0.46,
-  grassHeight:  0.465,
+  // shading thresholds (synced to waterHeight; tree placement uses grassHeight)
+  waterHeight:  0.23,
+  grassHeight:  0.235,
 };
 
 // ---------------------------------------------------------------------------

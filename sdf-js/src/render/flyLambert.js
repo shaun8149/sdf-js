@@ -1146,6 +1146,19 @@ void main() {
       float drainage = clamp((1.0 - clamp(ridge / 0.3, 0.0, 1.0)) * 1.5, 0.0, 1.0);
       // Detail noise breakup (fbm; replaces Rune's Buffer C detail texture)
       float breakup = fbm3_lite(p * 8.0) * 0.5 + 0.5;
+      // Cliffness: vertical face = cliff side hit, horizontal face = terrain top.
+      // 0 = top, 1 = side. Smooth ramp between gives nice transition at edge.
+      float cliffness = 1.0 - smoothstep(0.30, 0.65, abs(n.y));
+      // Strata bands (Rune cos × vec3(130, 190, 250) idiom). diff = depth below
+      // the terrain surface above this XZ — produces horizontal sedimentary
+      // bands at 3 different frequencies summed to RGB.
+      float diff = p.y - height * boxSize.y;
+      vec3 strataN = smoothstep(vec3(0.0), vec3(1.0), cos(diff * vec3(130.0, 190.0, 250.0)));
+      vec3 strataCol = vec3(0.30);
+      strataCol = mix(strataCol, vec3(0.50), strataN.x);
+      strataCol = mix(strataCol, vec3(0.55), strataN.y);
+      strataCol = mix(strataCol, vec3(0.60), strataN.z);
+      strataCol *= exp(diff * 6.0) * vec3(1.0, 0.92, 0.78);  // warm-brown depth tint
 
       // Base color stack (Rune's diffuseColor):
       vec3 CLIFF  = vec3(0.22, 0.20, 0.20);
@@ -1155,7 +1168,7 @@ void main() {
       vec3 SAND   = vec3(0.80, 0.70, 0.60);
       vec3 SNOW   = vec3(1.0, 1.0, 1.0);
       vec3 TREE   = vec3(0.12, 0.26, 0.10);
-      float WATER_H = 0.46;  // matches DEFAULT_EROSION_PARAMS
+      float WATER_H = 0.23;  // matches DEFAULT_EROSION_PARAMS waterHeight
 
       vec3 diffuse = CLIFF * smoothstep(0.40, 0.52, height);
       diffuse = mix(diffuse, DIRT, smoothstep(0.6, 0.0, occlusion + breakup * 1.5));
@@ -1173,6 +1186,9 @@ void main() {
       diffuse *= 1.0 + breakup * 0.5;
       // Drainage = wet/dark streaks along creases (Rune's signature look)
       diffuse = mix(diffuse, vec3(0.20, 0.18, 0.16), drainage * 0.6);
+      // Cliff strata override on vertical faces — fades terrain coloring into
+      // sedimentary bands. Top face: cliffness ≈ 0, terrain shading preserved.
+      diffuse = mix(diffuse, strataCol, cliffness);
 
       // Standard Lambert + sky ambient
       vec3 sunCol = vec3(1.05, 0.96, 0.84);
