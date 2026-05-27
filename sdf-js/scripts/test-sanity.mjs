@@ -62,6 +62,32 @@ const tests = [
     expect: 'light-altitude-out' },
 ];
 
+// v3.15 — large-arg whitelist negative tests: these SHOULD NOT fire rule 2.
+const whitelistNegativeTests = [
+  { name: 'whitelist: runway id-pattern with dim=80 (no warn)',
+    scene: { ...baseScene, subjects: [
+      { id: 'runway-strip', type: 'box', args: { dims: [80, 0.1, 4] } },
+    ] } },
+  { name: 'whitelist: apron-ground id-pattern with depth=120 (no warn)',
+    scene: { ...baseScene, subjects: [
+      { id: 'apron-ground', type: 'box', args: { dims: [120, 0.05, 80] } },
+    ] } },
+  { name: 'whitelist: terrain-canyon type with depth=80 (no warn)',
+    scene: { ...baseScene, subjects: [
+      { id: 'canyon-hero', type: 'terrain-canyon', args: { depth: 80 } },
+    ] } },
+  { name: 'whitelist still rejects truly huge value (radius=500 > 200)',
+    scene: { ...baseScene, subjects: [
+      { id: 'runway-1', type: 'box', args: { dims: [500, 1, 4] } },
+    ] },
+    expect: 'large-arg' },
+  { name: 'non-whitelisted subject still warned at 80 (sphere radius=80)',
+    scene: { ...baseScene, subjects: [
+      { id: 'random', type: 'sphere', args: { radius: 80 } },
+    ] },
+    expect: 'large-arg' },
+];
+
 let passed = 0, failed = 0;
 for (const t of tests) {
   const fakeCompiled = { cameraStatic: t.scene.defaults.camera };
@@ -76,5 +102,17 @@ for (const t of tests) {
     failed++;
   }
 }
-console.log(`\n${passed}/${passed + failed} rules verified positive`);
-if (failed > 0) process.exit(1);
+console.log(`\n${passed}/${passed + failed} positive rules verified`);
+
+// v3.15 negative tests (whitelist)
+console.log(`\n--- v3.15 whitelist tests ---`);
+let wlPass = 0, wlFail = 0;
+for (const t of whitelistNegativeTests) {
+  const r = sanityCheck(t.scene, { cameraStatic: t.scene.defaults.camera });
+  const largeArgFired = r.all.some(i => i.rule === 'large-arg');
+  const ok = t.expect ? largeArgFired : !largeArgFired;
+  if (ok) { console.log(`✓ ${t.name}`); wlPass++; }
+  else    { console.log(`✗ ${t.name} — got: ${r.summary}`); wlFail++; }
+}
+console.log(`\n${wlPass}/${wlPass + wlFail} whitelist tests passed`);
+if (failed + wlFail > 0) process.exit(1);

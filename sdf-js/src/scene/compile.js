@@ -55,6 +55,11 @@ import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
 import { cutDiskSDF } from './components/community/gbms-cut-disk.js';
+import { pentagonSDF } from './components/community/gbms-pentagon.js';
+import { octogonSDF } from './components/community/gbms-octogon.js';
+import { hexagramSDF } from './components/community/gbms-hexagram.js';
+import { chamferBoxSDF } from './components/community/gbms-chamfer-box.js';
+import { parabolaSDF } from './components/community/gbms-parabola.js';
 import { Random } from '../util/random.js';
 import { sanityCheck, logSanityIssues } from './sanity.js';
 import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
@@ -89,7 +94,8 @@ import {
   pipe, engrave, groove, tongue,
 } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
-import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, resolveMaterial, resolvePattern } from './spec.js';
+import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, normalizeType, resolveMaterial, resolvePattern } from './spec.js';
+import { expandCompositeAtoms } from './composite-atoms.js';
 import { normalizeChannel } from './expr.js';
 
 // =============================================================================
@@ -135,6 +141,12 @@ const PRIMITIVE_FACTORIES = {
 
   // -- Community 2D ports (Track 4 — /port-shader pipeline dogfood) --
   'cut-disk':       (a) => cutDiskSDF({ radius: a.radius ?? 0.5, cut: a.cut ?? 0 }),
+  // -- Community 2D ports (Track 4 batch — 2026-05-27, gbms pentagon family + parabola + chamfer) --
+  pentagon:         (a) => pentagonSDF({ radius: a.radius ?? 0.5 }),
+  octogon:          (a) => octogonSDF({ radius: a.radius ?? 0.5 }),
+  hexagram:         (a) => hexagramSDF({ radius: a.radius ?? 0.5 }),
+  'chamfer-box':    (a) => chamferBoxSDF({ dims: a.dims ?? a.size ?? [0.5, 0.3], chamfer: a.chamfer ?? 0.08 }),
+  parabola:         (a) => parabolaSDF({ k: a.k ?? 1.0 }),
 
   // -- 3D --
   sphere:        (a) => sphere(a.radius ?? 1, a.center),
@@ -440,6 +452,12 @@ const PSEUDO_PRIMITIVES = new Set(['extrude', 'revolve', 'extrude_to']);
  * }}
  */
 export function compile(sceneData, options = {}) {
+  // Pre-pass: composite atoms (Track 5.4a). Replaces `carrier-strike-group` /
+  // `airport-apron` / `harbor-quay` subjects with their peer-subject
+  // expansions PLUS optional cinematic patches (postFx + camera + volumes).
+  // Idempotent: no-op when no composite types present.
+  sceneData = expandCompositeAtoms(sceneData);
+
   const result = validate(sceneData);
   if (!result.ok) {
     throw new Error(`SceneData validation failed:\n  - ${result.errors.join('\n  - ')}`);
@@ -683,8 +701,9 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   // 1. Resolve animated args
   const resolvedArgs = resolveAnimatedArgs(subj);
 
-  // 2. Build base SDF
-  const factory = PRIMITIVE_FACTORIES[subj.type];
+  // 2. Build base SDF. Normalize snake/kebab alias defensively (validator
+  // already normalizes in place, but support direct callers too).
+  const factory = PRIMITIVE_FACTORIES[normalizeType(subj.type)];
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
 

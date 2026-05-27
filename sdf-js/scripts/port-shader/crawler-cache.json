@@ -1,7 +1,7 @@
 {
   "$comment": "State of /atlas-component-crawler. Tracks seen sources to avoid re-porting, and runs to expose what's been tried over time. Updated by the crawler on each iteration; committed to repo so subsequent runs (including on different machines / CI) share the same state.",
-  "lastRun": "2026-05-26",
-  "totalRuns": 1,
+  "lastRun": "2026-05-27",
+  "totalRuns": 2,
   "runs": [
     {
       "startedAt": "2026-05-26",
@@ -15,6 +15,16 @@
       ],
       "deferred": [],
       "notes": "Track 4 dogfood — first end-to-end /port-shader run with new MIT source (gbms) instead of IQ. gbms has 11 novel 2D primitives; this round shipped 1 (cut-disk), 10 remain as future port candidates."
+    },
+    {
+      "startedAt": "2026-05-27",
+      "queriesWalked": [],
+      "candidatesFound": 0,
+      "candidatesJudged": 5,
+      "ported": ["pentagon", "octogon", "hexagram", "chamfer-box", "parabola"],
+      "skipped": [],
+      "deferred": ["sdPentagram", "sdUnevenCapsule", "sdParabolaSegment", "sdBlobbyCross", "sdOrientedVesica"],
+      "notes": "Track 4 batch — 5/10 remaining gbms primitives ported in one sprint. Same MIT source as cut-disk. Skipped GLSL emit + sdf3.glsl helpers (CPU-only like cut-disk). Pentagon needed y-flip for Atlas math coords (IQ formula assumes image coords). 25/25 smoke green + all prior tests pass."
     }
   ],
   "seen": [
@@ -26,6 +36,51 @@
       "componentFile": "sdf-js/src/scene/components/community/gbms-cut-disk.js",
       "portedAt": "2026-05-26",
       "portedBy": "Track 4 dogfood (manual /port-shader pipeline)"
+    },
+    {
+      "url": "https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdPentagon",
+      "outcome": "ported",
+      "componentId": "pentagon",
+      "componentFile": "sdf-js/src/scene/components/community/gbms-pentagon.js",
+      "portedAt": "2026-05-27",
+      "portedBy": "Track 4 batch"
+    },
+    {
+      "url": "https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdOctogon",
+      "outcome": "ported",
+      "componentId": "octogon",
+      "componentFile": "sdf-js/src/scene/components/community/gbms-octogon.js",
+      "portedAt": "2026-05-27",
+      "portedBy": "Track 4 batch"
+    },
+    {
+      "url": "https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdHexagram",
+      "outcome": "ported",
+      "componentId": "hexagram",
+      "componentFile": "sdf-js/src/scene/components/community/gbms-hexagram.js",
+      "portedAt": "2026-05-27",
+      "portedBy": "Track 4 batch"
+    },
+    {
+      "url": "https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdChamferBox",
+      "outcome": "ported",
+      "componentId": "chamfer-box",
+      "componentFile": "sdf-js/src/scene/components/community/gbms-chamfer-box.js",
+      "portedAt": "2026-05-27",
+      "portedBy": "Track 4 batch"
+    },
+    {
+      "url": "https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl",
+      "function": "sdParabola",
+      "outcome": "ported",
+      "componentId": "parabola",
+      "componentFile": "sdf-js/src/scene/components/community/gbms-parabola.js",
+      "portedAt": "2026-05-27",
+      "portedBy": "Track 4 batch"
     },
     {
       "url": "https://iquilezles.org/articles/distfunctions/",

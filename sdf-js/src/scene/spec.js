@@ -32,6 +32,8 @@ export const PRIMITIVE_TYPES = new Set([
   'flower', 'line', 'slab', 'rounded_x', 'vesica',
   // Community 2D ports (Track 4 — /port-shader pipeline dogfood)
   'cut-disk',
+  // Community 2D ports (Track 4 batch — 2026-05-27: pentagon family + parabola + chamfer)
+  'pentagon', 'octogon', 'hexagram', 'chamfer-box', 'parabola',
   // 3D base
   'sphere', 'box', 'rounded_box', 'torus', 'capsule',
   'cylinder', 'capped_cylinder', 'cone', 'capped_cone',
@@ -112,6 +114,58 @@ export const PRIMITIVE_TYPES = new Set([
   'rounded-cylinder', 'round-cone-ab', 'vesica-segment',
   'cylinder-inf', 'cone-inf',
 ]);
+
+// =============================================================================
+// Type name aliasing — snake_case ↔ kebab-case (Track 5.2 follow-on)
+// -----------------------------------------------------------------------------
+// PRIMITIVE_TYPES is a mixed bag: v1/v2-era types use snake_case
+// (`capped_cylinder`, `rounded_box`), v3.4+ ports use kebab-case
+// (`capped-torus`, `rounded-cylinder`). LLM stochastically swaps `_` ↔ `-`
+// when it sees adjacent names in the prompt — e.g. emits `capped_torus`
+// thinking it's the snake sibling of `capped_cylinder`. v3.10 regression
+// (2026-05-26) caught vintage-bicycle + dining-setting failing this way.
+//
+// Fix: auto-build a bidirectional alias map at module load. Any type that
+// only exists in ONE form gets its OTHER-form key as an alias pointing back
+// to the canonical. normalizeType() does the lookup; validator + factories
+// + GLSL emitter all call it before checking membership.
+//
+// Examples:
+//   normalizeType('capped_torus')   → 'capped-torus' (alias)
+//   normalizeType('capped-cylinder')→ 'capped_cylinder' (alias)
+//   normalizeType('capped_cylinder')→ 'capped_cylinder' (canonical)
+//   normalizeType('made_up_name')   → 'made_up_name' (unchanged; validator rejects)
+// =============================================================================
+
+function buildPrimitiveAliases(types) {
+  const set = types instanceof Set ? types : new Set(types);
+  const aliases = {};
+  for (const t of set) {
+    if (t.includes('_')) {
+      const k = t.replace(/_/g, '-');
+      if (!set.has(k)) aliases[k] = t;
+    }
+    if (t.includes('-')) {
+      const s = t.replace(/-/g, '_');
+      if (!set.has(s)) aliases[s] = t;
+    }
+  }
+  return aliases;
+}
+
+export const PRIMITIVE_TYPE_ALIASES = buildPrimitiveAliases(PRIMITIVE_TYPES);
+
+/**
+ * Normalize a primitive type string to its canonical registry form.
+ * If already canonical, returns as-is. If alias known, returns canonical.
+ * If neither, returns input unchanged (caller's responsibility to handle).
+ */
+export function normalizeType(t) {
+  if (typeof t !== 'string') return t;
+  if (PRIMITIVE_TYPES.has(t)) return t;
+  if (PRIMITIVE_TYPE_ALIASES[t]) return PRIMITIVE_TYPE_ALIASES[t];
+  return t;
+}
 
 export const BOOLEAN_OPS = new Set([
   'union', 'difference', 'intersection', 'smoothUnion', 'smoothDifference',
@@ -510,14 +564,28 @@ function validateSubject(subj, path, errors, warnings) {
     return;
   }
 
-  const isPrimitive = PRIMITIVE_TYPES.has(subj.type);
-  const isBoolean = BOOLEAN_OPS.has(subj.type);
-  const isDomain = DOMAIN_OPS.has(subj.type);
+  // Normalize snake_case ↔ kebab-case aliases before registry lookup.
+  // LLM sometimes mis-emits `capped_torus` when canonical is `capped-torus`;
+  // see PRIMITIVE_TYPE_ALIASES above.
+  const canonicalType = normalizeType(subj.type);
+  const isPrimitive = PRIMITIVE_TYPES.has(canonicalType);
+  const isBoolean = BOOLEAN_OPS.has(canonicalType);
+  const isDomain = DOMAIN_OPS.has(canonicalType);
 
   if (!isPrimitive && !isBoolean && !isDomain) {
     // Rule 6, 7, 8
     errors.push(`${path}: unknown type "${subj.type}" (not in primitive / boolean / domain registries)`);
     return;
+  }
+
+  // If LLM emitted an alias form, normalize in place so downstream factories
+  // / GLSL emitter see the canonical key. (Mutation here is intentional —
+  // validator runs at compile() entry, before the SceneData hits any other
+  // stage. Caller's input may be a literal authored by hand; we want their
+  // downstream lookups to succeed.)
+  if (canonicalType !== subj.type) {
+    warnings.push(`${path}.type: "${subj.type}" normalized to canonical "${canonicalType}"`);
+    subj.type = canonicalType;
   }
 
   // Rule 4, 5: BooleanGroup must have children, non-empty
@@ -726,10 +794,12 @@ function validateDomainArgs(type, args, path, errors, warnings) {
 // =============================================================================
 
 // Variant specs are consumed by Generator-S (src/scene/generator-s.js).
-// Phase 1 op set: 'scatter'. Phase 1 region types: 'rectXZ', 'box3'.
+// Phase 2 op set: 'scatter' | 'array' | 'mirror'. Region types: 'rectXZ', 'box3'.
 // Unknown values are warnings — Generator-S falls back to keeping prototype.
-const VARIANT_OPS = new Set(['scatter']);
+const VARIANT_OPS = new Set(['scatter', 'array', 'mirror']);
 const VARIANT_REGIONS = new Set(['rectXZ', 'box3']);
+const VARIANT_AXES = new Set(['x', 'y', 'z']);
+const VARIANT_PLANES = new Set(['yz', 'xz', 'xy']);
 
 function validateVariantSpec(v, path, errors, warnings) {
   if (v == null || typeof v !== 'object' || Array.isArray(v)) {
@@ -741,7 +811,7 @@ function validateVariantSpec(v, path, errors, warnings) {
     return;
   }
   if (!VARIANT_OPS.has(v.op)) {
-    warnings.push(`${path}.op: unknown '${v.op}' (Phase 1 supports: ${[...VARIANT_OPS].join(', ')}); Generator-S will skip and keep prototype`);
+    warnings.push(`${path}.op: unknown '${v.op}' (Phase 2 supports: ${[...VARIANT_OPS].join(', ')}); Generator-S will skip and keep prototype`);
     return;
   }
   if (v.op === 'scatter') {
@@ -769,6 +839,30 @@ function validateVariantSpec(v, path, errors, warnings) {
       if (!valid) {
         errors.push(`${path}.heading: must be "aligned" | "random" | { jitter: <radians> }`);
       }
+    }
+  } else if (v.op === 'array') {
+    if (v.count != null && (typeof v.count !== 'number' || v.count < 1 || v.count !== Math.floor(v.count))) {
+      errors.push(`${path}.count: must be a positive integer (got ${v.count})`);
+    }
+    if (v.axis != null) {
+      const axisOk = (typeof v.axis === 'string' && VARIANT_AXES.has(v.axis)) ||
+                     (Array.isArray(v.axis) && v.axis.length === 3 && v.axis.every(n => typeof n === 'number'));
+      if (!axisOk) {
+        errors.push(`${path}.axis: must be 'x'|'y'|'z' or a [x,y,z] vector (got ${JSON.stringify(v.axis)})`);
+      }
+    }
+    if (v.spacing != null && typeof v.spacing !== 'number') {
+      errors.push(`${path}.spacing: must be a number`);
+    }
+    if (v.origin != null && v.origin !== 'center' && v.origin !== 'start') {
+      errors.push(`${path}.origin: must be 'center' or 'start' (got '${v.origin}')`);
+    }
+  } else if (v.op === 'mirror') {
+    if (v.plane != null && !VARIANT_PLANES.has(v.plane)) {
+      errors.push(`${path}.plane: must be one of ${[...VARIANT_PLANES].join('|')} (got '${v.plane}')`);
+    }
+    if (v.phaseFlip != null && typeof v.phaseFlip !== 'number') {
+      errors.push(`${path}.phaseFlip: must be a number (radians) if present`);
     }
   }
 }

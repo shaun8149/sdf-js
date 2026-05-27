@@ -11,7 +11,7 @@
 // Returns { errors, warnings, all }. compile() auto-runs and console.warns;
 // caller can also invoke sanityCheck(scene, compiled) directly.
 //
-// 7 v1 rules — pick that maximize value × low false-positive:
+// 8 v1 rules — pick that maximize value × low false-positive:
 //   1. large-position    (high)  any |translate[i]| > 200
 //   2. large-or-tiny-arg (high/med)  args.dims/size/radius/etc > 50 or < 0.001
 //   3. non-finite        (high)  NaN/Inf anywhere in args/transform
@@ -19,7 +19,33 @@
 //   5. camera-target-out (med)   targetXYZ outside scene bbox + 50 margin
 //   6. camera-inside     (med)   camera position falls inside a subject bbox
 //   7. light-altitude    (low)   altitude outside [-π/2, π/2]
+//   8. subject-count     (med/high)  top-level subjects.length > 50 warn / > 100 error
+//      (Generator-S Phase 2: array/scatter with high count blows up perf;
+//       50 = soft cap, 100 = hard cap. Run AFTER expandVariants.)
 // =============================================================================
+
+const SUBJECT_COUNT_WARN = 50;
+const SUBJECT_COUNT_ERROR = 100;
+
+// Large-arg whitelist (v3.15 — 6 cumulative false-positives drove this):
+// runways, aprons, canyons, roads — infrastructure naturally extends 80-200m.
+// LLM-emitted scenes with hand-built `runway` boxes or atom-emitted
+// `terrain-canyon` primitives shouldn't trip rule 2.
+const LARGE_ARG_ID_WHITELIST = /^(runway|apron|tarmac|road|highway|pier|quay|dock|stream|river|coastline|shoreline)(\b|[-_])/i;
+const LARGE_ARG_TYPE_WHITELIST = new Set([
+  'terrain-canyon', 'terrain-heightmap', 'terrain-elevated', 'terrain-with-lakes',
+  'terrain-eroded-rune', 'procedural-city', 'sea-surface', 'waves',
+  'stream-segment',
+]);
+const LARGE_ARG_RELAXED_THRESHOLD = 200;  // whitelisted subjects: warn at >200
+const LARGE_ARG_DEFAULT_THRESHOLD = 50;   // everyone else: warn at >50
+
+function isLargeArgWhitelisted(subj) {
+  if (!subj || typeof subj !== 'object') return false;
+  if (typeof subj.id === 'string' && LARGE_ARG_ID_WHITELIST.test(subj.id)) return true;
+  if (typeof subj.type === 'string' && LARGE_ARG_TYPE_WHITELIST.has(subj.type)) return true;
+  return false;
+}
 
 const HALF_PI = Math.PI / 2;
 
@@ -130,6 +156,11 @@ function walkSubjectChecks(subjects, issues) {
       }
 
       // Rule 2: large / tiny args. Walk args for common scalar fields.
+      // v3.15: whitelist for runway/apron/canyon/terrain-* style large infra
+      // subjects (6 cumulative pre-fix false-positives). Whitelisted subjects
+      // get threshold 200; others stay 50.
+      const largeThreshold = isLargeArgWhitelisted(s)
+        ? LARGE_ARG_RELAXED_THRESHOLD : LARGE_ARG_DEFAULT_THRESHOLD;
       if (s.args && typeof s.args === 'object') {
         const scalarFields = [
           'radius', 'height', 'length', 'width', 'depth', 'thickness',
@@ -140,11 +171,11 @@ function walkSubjectChecks(subjects, issues) {
         for (const f of scalarFields) {
           const v = s.args[f];
           if (typeof v === 'number') {
-            if (v > 50) {
+            if (v > largeThreshold) {
               issues.push({
                 path: `${path}.args.${f}`, severity: 'high', rule: 'large-arg',
-                message: `${s.type || s.id} .args.${f} = ${v.toFixed(2)} (> 50; scale typo? typical objects fit in 1-30)`,
-                suggestion: 'verify intent; values >50 usually indicate missed decimal point',
+                message: `${s.type || s.id} .args.${f} = ${v.toFixed(2)} (> ${largeThreshold}; scale typo? typical objects fit in 1-30)`,
+                suggestion: 'verify intent; values way above threshold usually indicate missed decimal point',
               });
             } else if (v > 0 && v < 0.001) {
               issues.push({
@@ -161,10 +192,10 @@ function walkSubjectChecks(subjects, issues) {
           const v = s.args[f];
           if (Array.isArray(v)) {
             for (let k = 0; k < v.length; k++) {
-              if (typeof v[k] === 'number' && Math.abs(v[k]) > 50) {
+              if (typeof v[k] === 'number' && Math.abs(v[k]) > largeThreshold) {
                 issues.push({
                   path: `${path}.args.${f}[${k}]`, severity: 'high', rule: 'large-arg',
-                  message: `${s.type || s.id} .args.${f}[${k}] = ${v[k].toFixed(2)} (|v| > 50)`,
+                  message: `${s.type || s.id} .args.${f}[${k}] = ${v[k].toFixed(2)} (|v| > ${largeThreshold})`,
                   suggestion: 'verify intent',
                 });
               }
@@ -314,6 +345,31 @@ function checkLight(sceneData, issues) {
 }
 
 // ---------------------------------------------------------------------------
+// Rule 8: subject count exceeded (post-expand)
+// Run after Generator-S has expanded variants. Compounds easily: array
+// count=10 nested inside a scatter count=10 → 100 subjects → editor lag.
+// ---------------------------------------------------------------------------
+function checkSubjectCount(subjects, issues) {
+  if (!Array.isArray(subjects)) return;
+  const n = subjects.length;
+  if (n > SUBJECT_COUNT_ERROR) {
+    issues.push({
+      path: 'subjects',
+      severity: 'high', rule: 'subject-count-exceeded',
+      message: `top-level subjects.length = ${n} (> hard cap ${SUBJECT_COUNT_ERROR}; GPU SDF eval scales O(N) per ray, will tank fps)`,
+      suggestion: `reduce array/scatter count; use SDF-domain rep for >${SUBJECT_COUNT_ERROR} identical copies`,
+    });
+  } else if (n > SUBJECT_COUNT_WARN) {
+    issues.push({
+      path: 'subjects',
+      severity: 'med', rule: 'subject-count-high',
+      message: `top-level subjects.length = ${n} (> soft warn ${SUBJECT_COUNT_WARN}; render perf may suffer)`,
+      suggestion: `consider lowering count or using SDF-domain rep for identical copies`,
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main entry. Returns { errors, warnings, all, summary }.
 // ---------------------------------------------------------------------------
 export function sanityCheck(sceneData, compiled) {
@@ -321,6 +377,7 @@ export function sanityCheck(sceneData, compiled) {
   if (sceneData && Array.isArray(sceneData.subjects)) {
     walkSubjectChecks(sceneData.subjects, issues);
     checkDuplicateIds(sceneData.subjects, issues);
+    checkSubjectCount(sceneData.subjects, issues);
   }
   checkCamera(sceneData, compiled, issues);
   checkLight(sceneData, issues);
