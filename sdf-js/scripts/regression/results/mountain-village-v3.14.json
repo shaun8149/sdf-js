@@ -1,0 +1,1576 @@
+{
+  "result": {
+    "demoId": "mountain-village",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "81.5s",
+    "tokens": {
+      "input": 63714,
+      "output": 7511
+    },
+    "costUSD": "0.3038",
+    "subjectCount": 65,
+    "newAtomsUsedCount": 13,
+    "newAtomsUsed": [
+      [
+        "tree-pine",
+        11
+      ],
+      [
+        "bird-silhouette",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 56,
+    "patternUsageCount": 7,
+    "variantsUsedCount": 7,
+    "variantsUsed": [
+      [
+        "unionChamfer",
+        7
+      ]
+    ],
+    "zSpread": {
+      "count": 54,
+      "min": -1.5,
+      "max": 62,
+      "range": 63.5,
+      "stdev": 15.31987018536942
+    },
+    "v30AtomsUsedCount": 10,
+    "v30AtomsUsed": [
+      [
+        "cow",
+        2
+      ],
+      [
+        "sheep",
+        3
+      ],
+      [
+        "fence-section",
+        2
+      ],
+      [
+        "well",
+        1
+      ],
+      [
+        "bush",
+        2
+      ]
+    ],
+    "v32AtomsUsedCount": 1,
+    "v32AtomsUsed": [
+      [
+        "grass-field",
+        1
+      ]
+    ],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 1
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 2,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 2,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "cone": 6,
+      "box": 16,
+      "grass-field": 1,
+      "ellipsoid": 1,
+      "capsule": 4,
+      "unionChamfer": 7,
+      "pyramid": 7,
+      "tree-pine": 11,
+      "cow": 2,
+      "sheep": 3,
+      "fence-section": 2,
+      "well": 1,
+      "bush": 2,
+      "bird-silhouette": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Mountain Village"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Mountain Village",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "山间的村落",
+      "from2dCode": "Alpine village with 6 houses, church tower, terraced fields, stream, conifer trees on slopes, layered mountains with mist"
+    },
+    "subjects": [
+      {
+        "id": "mountain-far-left",
+        "type": "cone",
+        "args": {
+          "height": 14,
+          "baseRadius": 11
+        },
+        "transform": {
+          "translate": [
+            -22,
+            7,
+            55
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.15,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-far-center",
+        "type": "cone",
+        "args": {
+          "height": 18,
+          "baseRadius": 14
+        },
+        "transform": {
+          "translate": [
+            -5,
+            9,
+            62
+          ]
+        },
+        "material": {
+          "hue": 0.57,
+          "sat": 0.12,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-far-right",
+        "type": "cone",
+        "args": {
+          "height": 16,
+          "baseRadius": 12
+        },
+        "transform": {
+          "translate": [
+            18,
+            8,
+            58
+          ]
+        },
+        "material": {
+          "hue": 0.59,
+          "sat": 0.14,
+          "value": 0.52,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-mid-left",
+        "type": "cone",
+        "args": {
+          "height": 12,
+          "baseRadius": 10
+        },
+        "transform": {
+          "translate": [
+            -16,
+            6,
+            38
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.25,
+          "value": 0.52,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-mid-center",
+        "type": "cone",
+        "args": {
+          "height": 14,
+          "baseRadius": 11
+        },
+        "transform": {
+          "translate": [
+            2,
+            7,
+            42
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.22,
+          "value": 0.48,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mountain-mid-right",
+        "type": "cone",
+        "args": {
+          "height": 13,
+          "baseRadius": 10
+        },
+        "transform": {
+          "translate": [
+            20,
+            6.5,
+            40
+          ]
+        },
+        "material": {
+          "hue": 0.29,
+          "sat": 0.24,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "ridge-near",
+        "type": "box",
+        "args": {
+          "dims": [
+            50,
+            4,
+            18
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2,
+            12
+          ]
+        },
+        "material": {
+          "hue": 0.26,
+          "sat": 0.35,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "grass-ground",
+        "type": "grass-field",
+        "args": {
+          "bladeHeight": 0.45,
+          "density": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.42,
+          "value": 0.45,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "stream-pond",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            2.4,
+            0.08,
+            0.9
+          ]
+        },
+        "transform": {
+          "translate": [
+            1,
+            -0.15,
+            2
+          ]
+        },
+        "material": {
+          "hue": 0.55,
+          "sat": 0.35,
+          "value": 0.68,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stream-narrow",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -3,
+            -0.15,
+            2.2
+          ],
+          "b": [
+            1,
+            -0.15,
+            2
+          ],
+          "radius": 0.18
+        },
+        "material": {
+          "hue": 0.55,
+          "sat": 0.35,
+          "value": 0.68,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-lower",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.5,
+            -0.05,
+            8
+          ],
+          "b": [
+            0.8,
+            -0.05,
+            4
+          ],
+          "radius": 0.22
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.25,
+          "value": 0.62,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-mid",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0.8,
+            -0.05,
+            4
+          ],
+          "b": [
+            -1.2,
+            -0.05,
+            1.5
+          ],
+          "radius": 0.18
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.25,
+          "value": 0.62,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "path-upper",
+        "type": "capsule",
+        "args": {
+          "a": [
+            -1.2,
+            -0.05,
+            1.5
+          ],
+          "b": [
+            -2.7,
+            -0.05,
+            0.2
+          ],
+          "radius": 0.15
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.25,
+          "value": 0.62,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "house-1",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h1-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                2.4,
+                2
+              ]
+            },
+            "transform": {
+              "translate": [
+                -9.3,
+                1.2,
+                1.5
+              ]
+            }
+          },
+          {
+            "id": "h1-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1.4
+            },
+            "transform": {
+              "translate": [
+                -9.3,
+                3.1,
+                1.5
+              ],
+              "scale": [
+                2.5,
+                1,
+                2.1
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h1-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.3,
+                0.8,
+                0.3
+              ]
+            },
+            "transform": {
+              "translate": [
+                -8.8,
+                3.8,
+                1.5
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "house-2",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h2-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.2,
+                2.2,
+                1.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -5.7,
+                1.1,
+                1.8
+              ]
+            }
+          },
+          {
+            "id": "h2-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1.2
+            },
+            "transform": {
+              "translate": [
+                -5.7,
+                2.85,
+                1.8
+              ],
+              "scale": [
+                2.3,
+                1,
+                1.9
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h2-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.28,
+                0.7,
+                0.28
+              ]
+            },
+            "transform": {
+              "translate": [
+                -5.3,
+                3.5,
+                1.8
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "house-3",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h3-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.6,
+                2.6,
+                2.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                1.3,
+                1.2
+              ]
+            }
+          },
+          {
+            "id": "h3-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1.5
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                3.2,
+                1.2
+              ],
+              "scale": [
+                2.7,
+                1,
+                2.3
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h3-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.32,
+                0.85,
+                0.32
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.5,
+                4,
+                1.2
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "house-4",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h4-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                2,
+                2,
+                1.7
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.4,
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "id": "h4-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1.1
+            },
+            "transform": {
+              "translate": [
+                2.4,
+                2.65,
+                2
+              ],
+              "scale": [
+                2.1,
+                1,
+                1.8
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h4-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.25,
+                0.65,
+                0.25
+              ]
+            },
+            "transform": {
+              "translate": [
+                2.8,
+                3.25,
+                2
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "house-5",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h5-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.3,
+                2.3,
+                1.9
+              ]
+            },
+            "transform": {
+              "translate": [
+                6,
+                1.15,
+                1.5
+              ]
+            }
+          },
+          {
+            "id": "h5-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1.3
+            },
+            "transform": {
+              "translate": [
+                6,
+                2.95,
+                1.5
+              ],
+              "scale": [
+                2.4,
+                1,
+                2
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h5-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.28,
+                0.75,
+                0.28
+              ]
+            },
+            "transform": {
+              "translate": [
+                6.5,
+                3.65,
+                1.5
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "house-6",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.05
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.55
+        },
+        "children": [
+          {
+            "id": "h6-wall",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.8,
+                1.8,
+                1.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                -7.5,
+                0.9,
+                -1
+              ]
+            }
+          },
+          {
+            "id": "h6-roof",
+            "type": "pyramid",
+            "args": {
+              "height": 1
+            },
+            "transform": {
+              "translate": [
+                -7.5,
+                2.4,
+                -1
+              ],
+              "scale": [
+                1.9,
+                1,
+                1.6
+              ]
+            },
+            "material": "terracotta"
+          },
+          {
+            "id": "h6-chimney",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.22,
+                0.55,
+                0.22
+              ]
+            },
+            "transform": {
+              "translate": [
+                -7.2,
+                2.95,
+                -1
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.18,
+              "value": 0.58,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "church-tower",
+        "type": "unionChamfer",
+        "args": {
+          "r": 0.06
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.6
+        },
+        "children": [
+          {
+            "id": "tower-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.3,
+                4,
+                1.3
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                2,
+                -0.5
+              ]
+            }
+          },
+          {
+            "id": "tower-spire",
+            "type": "pyramid",
+            "args": {
+              "height": 1.9
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                5,
+                -0.5
+              ],
+              "scale": [
+                1.4,
+                1,
+                1.4
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "tower-cross-v",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.08,
+                0.55,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                6.2,
+                -0.5
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "tower-cross-h",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.25,
+                0.08,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2.1,
+                5.95,
+                -0.5
+              ]
+            },
+            "material": "matte-black"
+          }
+        ]
+      },
+      {
+        "id": "tree-left-1",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.8,
+          "trunkRadius": 0.25,
+          "foliageHeight": 2.8,
+          "foliageBaseR": 1.2,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            -15.8,
+            0,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0.26,
+          "sat": 0.5,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-left-2",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.2,
+          "trunkRadius": 0.22,
+          "foliageHeight": 2.5,
+          "foliageBaseR": 1,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            -13.8,
+            0,
+            2
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.48,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-left-3",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.5,
+          "trunkRadius": 0.24,
+          "foliageHeight": 2.6,
+          "foliageBaseR": 1.1,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            -12,
+            0,
+            1.8
+          ]
+        },
+        "material": {
+          "hue": 0.26,
+          "sat": 0.52,
+          "value": 0.29,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-left-4",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2.9,
+          "trunkRadius": 0.2,
+          "foliageHeight": 2.2,
+          "foliageBaseR": 0.95,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -10.8,
+            0,
+            1.5
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.46,
+          "value": 0.32,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-right-1",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.5,
+          "trunkRadius": 0.24,
+          "foliageHeight": 2.7,
+          "foliageBaseR": 1.15,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            9.3,
+            0,
+            2.2
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.49,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-right-2",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 4,
+          "trunkRadius": 0.26,
+          "foliageHeight": 3,
+          "foliageBaseR": 1.3,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            11.3,
+            0,
+            1.8
+          ]
+        },
+        "material": {
+          "hue": 0.26,
+          "sat": 0.51,
+          "value": 0.29,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-right-3",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.3,
+          "trunkRadius": 0.22,
+          "foliageHeight": 2.5,
+          "foliageBaseR": 1.05,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            13.5,
+            0,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.47,
+          "value": 0.31,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-right-4",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.8,
+          "trunkRadius": 0.25,
+          "foliageHeight": 2.8,
+          "foliageBaseR": 1.2,
+          "layers": 4
+        },
+        "transform": {
+          "translate": [
+            15.8,
+            0,
+            2
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.5,
+          "value": 0.3,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-right-5",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3.2,
+          "trunkRadius": 0.21,
+          "foliageHeight": 2.4,
+          "foliageBaseR": 1,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            17.7,
+            0,
+            1.8
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.48,
+          "value": 0.32,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-upper-1",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 2.8,
+          "trunkRadius": 0.19,
+          "foliageHeight": 2.1,
+          "foliageBaseR": 0.9,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            -4.2,
+            0,
+            -1.5
+          ]
+        },
+        "material": {
+          "hue": 0.29,
+          "sat": 0.45,
+          "value": 0.33,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "tree-upper-2",
+        "type": "tree-pine",
+        "args": {
+          "trunkHeight": 3,
+          "trunkRadius": 0.2,
+          "foliageHeight": 2.3,
+          "foliageBaseR": 0.95,
+          "layers": 3
+        },
+        "transform": {
+          "translate": [
+            4.2,
+            0,
+            -1.2
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.47,
+          "value": 0.32,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "cow-1",
+        "type": "cow",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            -11.5,
+            0,
+            4.5
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "cow-2",
+        "type": "cow",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            8.5,
+            0,
+            4.2
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.1,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "sheep-1",
+        "type": "sheep",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            0,
+            3.8
+          ]
+        },
+        "material": "matte-white"
+      },
+      {
+        "id": "sheep-2",
+        "type": "sheep",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            6,
+            0,
+            4.2
+          ]
+        },
+        "material": "matte-white"
+      },
+      {
+        "id": "sheep-3",
+        "type": "sheep",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            6.5,
+            0,
+            3.9
+          ]
+        },
+        "material": "matte-white"
+      },
+      {
+        "id": "fence-1",
+        "type": "fence-section",
+        "args": {
+          "length": 2.8,
+          "height": 0.5
+        },
+        "transform": {
+          "translate": [
+            -10.5,
+            0,
+            3.5
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "fence-2",
+        "type": "fence-section",
+        "args": {
+          "length": 3.2,
+          "height": 0.5
+        },
+        "transform": {
+          "translate": [
+            7,
+            0,
+            3
+          ],
+          "rotate": [
+            0,
+            0.3,
+            0
+          ]
+        },
+        "material": "wood"
+      },
+      {
+        "id": "well",
+        "type": "well",
+        "args": {
+          "radius": 0.35,
+          "wallHeight": 0.6
+        },
+        "transform": {
+          "translate": [
+            0.5,
+            0,
+            2.5
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "bush-1",
+        "type": "bush",
+        "args": {
+          "radius": 0.45
+        },
+        "transform": {
+          "translate": [
+            -1.5,
+            0,
+            2.8
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.6,
+          "value": 0.42,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bush-2",
+        "type": "bush",
+        "args": {
+          "radius": 0.4
+        },
+        "transform": {
+          "translate": [
+            3,
+            0,
+            2.2
+          ]
+        },
+        "material": {
+          "hue": 0.29,
+          "sat": 0.62,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -8,
+            8.5,
+            5
+          ]
+        }
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            5,
+            9,
+            3
+          ]
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "ground",
+      "material": {
+        "hue": 0.25,
+        "sat": 0.48,
+        "value": 0.4
+      }
+    },
+    "volumes": [
+      {
+        "id": "valley-mist-lower",
+        "kind": "fog",
+        "center": [
+          -2,
+          1.2,
+          5
+        ],
+        "size": [
+          28,
+          1.8,
+          15
+        ],
+        "density": 0.5,
+        "color": [
+          218,
+          214,
+          208
+        ],
+        "noiseScale": 1.1
+      },
+      {
+        "id": "valley-mist-upper",
+        "kind": "fog",
+        "center": [
+          4.5,
+          1.8,
+          8
+        ],
+        "size": [
+          22,
+          1.4,
+          12
+        ],
+        "density": 0.4,
+        "color": [
+          220,
+          215,
+          205
+        ],
+        "noiseScale": 1
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.15,
+        "distance": 28,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": 2,
+        "aperture": 0.5,
+        "focalDistance": 26
+      },
+      "light": {
+        "azimuth": 0.85,
+        "altitude": 0.32,
+        "distance": 80,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.08
+      }
+    }
+  }
+}

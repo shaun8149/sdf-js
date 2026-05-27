@@ -1,0 +1,883 @@
+{
+  "result": {
+    "demoId": "lone-carrier",
+    "version": "v3.11",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "47.3s",
+    "tokens": {
+      "input": 53285,
+      "output": 3829
+    },
+    "costUSD": "0.2173",
+    "subjectCount": 29,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        1
+      ],
+      [
+        "cloud-puff",
+        1
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 26,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 27,
+      "min": -30,
+      "max": 2.8,
+      "range": 32.8,
+      "stdev": 5.862718461947525
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 3,
+      "array": 0,
+      "mirror": 0,
+      "total": 3
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 2,
+      "box": 13,
+      "pyramid": 2,
+      "rounded_box": 4,
+      "capsule": 2,
+      "cylinder": 3,
+      "bird-silhouette": 1,
+      "cloud-puff": 1,
+      "waves": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Carrier Strike Group — v3.11 scene completion"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Carrier Strike Group — v3.11 scene completion",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "航母",
+      "from2dCode": "Bare carrier silhouette (hull + ski-jump deck + island + mast). NO escorts, NO birds, NO clouds in 2D — scene completion REQUIRED."
+    },
+    "subjects": [
+      {
+        "id": "carrier-hero",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull-main",
+            "type": "box",
+            "args": {
+              "dims": [
+                18,
+                3.2,
+                4.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.1,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-bow",
+            "type": "pyramid",
+            "args": {
+              "height": 2.8
+            },
+            "transform": {
+              "translate": [
+                9,
+                -0.1,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ],
+              "scale": [
+                1,
+                1,
+                4.5
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-stern",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.5,
+                3,
+                4.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                -10.25,
+                -0.2,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "flight-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                18.5,
+                0.35,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 3.5,
+              "strength": 0.35
+            }
+          },
+          {
+            "id": "ski-jump",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.2,
+                0.8,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                10.15,
+                2.4,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0.35
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2.6,
+                2.5,
+                2.2
+              ],
+              "cornerR": 0.15
+            },
+            "transform": {
+              "translate": [
+                3,
+                3.15,
+                2
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.08,
+              "value": 0.75,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "island-mid",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2,
+                1.8,
+                1.6
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                3,
+                4.9,
+                2
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.08,
+              "value": 0.75,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bridge",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.4,
+                1.2,
+                1.2
+              ],
+              "cornerR": 0.1
+            },
+            "transform": {
+              "translate": [
+                3,
+                6.15,
+                2
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.1,
+              "value": 0.7,
+              "metal": 0.3,
+              "glow": 0
+            }
+          },
+          {
+            "id": "radar-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                3,
+                6.8,
+                2
+              ],
+              "b": [
+                3,
+                9.5,
+                2
+              ],
+              "radius": 0.12
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.3,
+              "metal": 0.6,
+              "glow": 0
+            }
+          },
+          {
+            "id": "radar-array",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.05,
+                1.2,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                9.2,
+                2
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.35,
+              "metal": 0.7,
+              "glow": 0
+            }
+          },
+          {
+            "id": "port-tower-small",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.2,
+                1.5,
+                0.9
+              ]
+            },
+            "transform": {
+              "translate": [
+                -5,
+                2.8,
+                -2.5
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.08,
+              "value": 0.72,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "stern-platform",
+            "type": "box",
+            "args": {
+              "dims": [
+                3,
+                0.4,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -10.5,
+                1.9,
+                0
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "catapult-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                8,
+                0.08,
+                0.25
+              ]
+            },
+            "transform": {
+              "translate": [
+                2,
+                1.92,
+                1.2
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.8,
+              "glow": 0
+            }
+          },
+          {
+            "id": "catapult-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                8,
+                0.08,
+                0.25
+              ]
+            },
+            "transform": {
+              "translate": [
+                2,
+                1.92,
+                -1.2
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.8,
+              "glow": 0
+            }
+          },
+          {
+            "id": "elevator-aft",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.5,
+                0.15,
+                2.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -7,
+                1.85,
+                2.8
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.1,
+              "value": 0.4,
+              "metal": 0.5,
+              "glow": 0
+            }
+          },
+          {
+            "id": "phalanx-ciws-1",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.18,
+              "height": 0.5
+            },
+            "transform": {
+              "translate": [
+                -8.5,
+                2.5,
+                -2.5
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.35,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "phalanx-ciws-2",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.18,
+              "height": 0.5
+            },
+            "transform": {
+              "translate": [
+                6.5,
+                2.5,
+                2.5
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.35,
+              "metal": 0.85,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "escort-destroyer",
+        "type": "union",
+        "children": [
+          {
+            "id": "esc-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                10,
+                1.4,
+                2.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.2,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "esc-bow",
+            "type": "pyramid",
+            "args": {
+              "height": 1.8
+            },
+            "transform": {
+              "translate": [
+                5,
+                -0.2,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ],
+              "scale": [
+                1,
+                1,
+                2.2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "esc-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                9.5,
+                0.3,
+                2.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.7,
+                0
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "esc-bridge",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.5,
+                1.6,
+                1.3
+              ],
+              "cornerR": 0.1
+            },
+            "transform": {
+              "translate": [
+                0.5,
+                1.7,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.08,
+              "value": 0.72,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "esc-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0.5,
+                2.4,
+                0
+              ],
+              "b": [
+                0.5,
+                4.2,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.3,
+              "metal": 0.6,
+              "glow": 0
+            }
+          },
+          {
+            "id": "esc-vls-launcher",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.8,
+                0.6,
+                1.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2,
+                1.3,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.1,
+              "value": 0.4,
+              "metal": 0.7,
+              "glow": 0
+            }
+          },
+          {
+            "id": "esc-gun-turret",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.25,
+              "height": 0.35
+            },
+            "transform": {
+              "translate": [
+                3.5,
+                1.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.35,
+              "metal": 0.85,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 4,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                0,
+                0,
+                0
+              ],
+              "size": [
+                120,
+                80
+              ]
+            },
+            "separation": 25,
+            "heading": {
+              "jitter": 0.4
+            },
+            "scale": {
+              "jitter": 0.15
+            },
+            "translate": {
+              "jitter": [
+                3,
+                0,
+                3
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "gull",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "bodyRadius": 0.08,
+          "wingSpan": 0.6,
+          "wingRise": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            8,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 6,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                9,
+                0
+              ],
+              "size": [
+                80,
+                4,
+                50
+              ]
+            },
+            "scale": {
+              "jitter": 0.2
+            },
+            "translate": {
+              "jitter": [
+                2,
+                0.5,
+                2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "cloud",
+        "type": "cloud-puff",
+        "args": {
+          "width": 1.6,
+          "height": 0.8,
+          "depth": 1.2
+        },
+        "transform": {
+          "translate": [
+            0,
+            14,
+            -30
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 3,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                14,
+                -25
+              ],
+              "size": [
+                60,
+                2,
+                8
+              ]
+            },
+            "scale": {
+              "jitter": 0.35
+            }
+          }
+        ]
+      },
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 3.5,
+          "amp": 0.18,
+          "angle": 0.3,
+          "speed": 0.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.65,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0,
+          "kind": "sea"
+        }
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.45,
+        "pitch": 0.18,
+        "distance": 60,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.5
+      }
+    }
+  }
+}

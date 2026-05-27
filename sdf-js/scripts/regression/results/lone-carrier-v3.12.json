@@ -1,0 +1,675 @@
+{
+  "result": {
+    "demoId": "lone-carrier",
+    "version": "v3.12",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "37.6s",
+    "tokens": {
+      "input": 54074,
+      "output": 2820
+    },
+    "costUSD": "0.2045",
+    "subjectCount": 22,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        1
+      ],
+      [
+        "cloud-puff",
+        1
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 18,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 22,
+      "min": -30,
+      "max": 3.13,
+      "range": 33.13,
+      "stdev": 6.46704859746573
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 3,
+      "array": 0,
+      "mirror": 0,
+      "total": 3
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 2,
+      "box": 11,
+      "rounded_box": 3,
+      "cylinder": 3,
+      "bird-silhouette": 1,
+      "waves": 1,
+      "cloud-puff": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Carrier Strike Group"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Carrier Strike Group",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "航母",
+      "from2dCode": "Bare carrier silhouette: hull + ski-jump deck + island + mast. Minimal 2D → scene completion adds escort fleet + gulls + atmosphere."
+    },
+    "subjects": [
+      {
+        "id": "carrier",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull-main",
+            "type": "box",
+            "args": {
+              "dims": [
+                18,
+                3.2,
+                4.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.1,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-bow",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.2,
+                2.8,
+                4
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.2,
+                -0.3,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "flight-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                19.5,
+                0.35,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                0.2,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 3,
+              "strength": 0.35
+            }
+          },
+          {
+            "id": "ski-jump",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.2,
+                0.35,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                10,
+                2.4,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0.35
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2.6,
+                2.5,
+                2.2
+              ],
+              "cornerR": 0.15
+            },
+            "transform": {
+              "translate": [
+                3,
+                3.15,
+                2
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-mid",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2,
+                1.8,
+                1.6
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                3,
+                4.85,
+                2
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "radar-mast",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.08,
+              "height": 2.8
+            },
+            "transform": {
+              "translate": [
+                3,
+                7.55,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "antenna-array",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.6,
+                0.25,
+                0.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                9.05,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "bridge-windows",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.8,
+                0.5,
+                0.05
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                4.2,
+                3.13
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.75,
+              "value": 1,
+              "metal": 0,
+              "glow": 1.2,
+              "kind": "normal"
+            }
+          },
+          {
+            "id": "hull-waterline-port",
+            "type": "box",
+            "args": {
+              "dims": [
+                16.5,
+                0.3,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -1.4,
+                2.29
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0.85,
+              "value": 0.6,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "hull-waterline-starboard",
+            "type": "box",
+            "args": {
+              "dims": [
+                16.5,
+                0.3,
+                0.08
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -1.4,
+                -2.29
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0.85,
+              "value": 0.6,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "stern-ramp",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.5,
+                0.35,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                -9.5,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone"
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "escort",
+        "type": "union",
+        "children": [
+          {
+            "id": "esc-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                10,
+                1.4,
+                2.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.2,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "esc-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                9.5,
+                0.3,
+                2.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.7,
+                0
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "esc-bridge",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.5,
+                1.6,
+                1.3
+              ],
+              "cornerR": 0.1
+            },
+            "transform": {
+              "translate": [
+                0.5,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "esc-mast",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.05,
+              "height": 1.5
+            },
+            "transform": {
+              "translate": [
+                0.5,
+                2.95,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "esc-gun-turret",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.25,
+              "height": 0.4
+            },
+            "transform": {
+              "translate": [
+                3.5,
+                1.15,
+                0
+              ]
+            },
+            "material": "matte-black"
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 4,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                0,
+                0,
+                0
+              ],
+              "size": [
+                120,
+                80
+              ]
+            },
+            "separation": 25,
+            "heading": {
+              "jitter": 0.4
+            },
+            "scale": {
+              "jitter": 0.15
+            },
+            "translate": {
+              "jitter": [
+                3,
+                0,
+                3
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "gull",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "wingSpan": 0.6
+        },
+        "transform": {
+          "translate": [
+            0,
+            8,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 6,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                9,
+                0
+              ],
+              "size": [
+                80,
+                4,
+                50
+              ]
+            },
+            "scale": {
+              "jitter": 0.2
+            },
+            "translate": {
+              "jitter": [
+                2,
+                0.5,
+                2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 3.5,
+          "amp": 0.18,
+          "angle": 0.3,
+          "speed": 0.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.65,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0,
+          "kind": "sea"
+        }
+      },
+      {
+        "id": "cloud",
+        "type": "cloud-puff",
+        "args": {
+          "scale": 1.6
+        },
+        "transform": {
+          "translate": [
+            0,
+            14,
+            -30
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 3,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                14,
+                -25
+              ],
+              "size": [
+                60,
+                2,
+                8
+              ]
+            },
+            "scale": {
+              "jitter": 0.35
+            }
+          }
+        ]
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.45,
+        "pitch": 0.18,
+        "distance": 60,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0,
+        "aperture": 0.6,
+        "focalDistance": 55
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.1,
+        "vignetteStrength": 0.4,
+        "bloomMix": 0.25,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.15,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "sea-mist",
+        "kind": "fog",
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "size": [
+          100,
+          8,
+          80
+        ],
+        "density": 0.5,
+        "color": [
+          200,
+          215,
+          230
+        ],
+        "noiseScale": 1.2,
+        "colorIntensity": 1
+      }
+    ]
+  }
+}

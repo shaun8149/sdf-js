@@ -1,0 +1,493 @@
+{
+  "result": {
+    "demoId": "lone-carrier",
+    "version": "v3.13",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "28.2s",
+    "tokens": {
+      "input": 56295,
+      "output": 2164
+    },
+    "costUSD": "0.2013",
+    "subjectCount": 18,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 16,
+    "patternUsageCount": 2,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 12,
+      "min": -1.8,
+      "max": 2,
+      "range": 3.8,
+      "stdev": 1.195361405136074
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {
+      "carrier-strike-group": 1
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 1,
+      "box": 6,
+      "rounded_box": 3,
+      "capsule": 5,
+      "sphere": 2,
+      "carrier-strike-group": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Carrier Strike Group"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Carrier Strike Group",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "航母",
+      "from2dCode": "Bare carrier silhouette — hull + ski-jump deck + island + mast. Single ship, intentionally minimal for scene-completion test."
+    },
+    "subjects": [
+      {
+        "id": "carrier",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull-main",
+            "type": "box",
+            "args": {
+              "dims": [
+                18,
+                3.2,
+                4.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.1,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-bow",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.8,
+                2.8,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.4,
+                -0.3,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-stern",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.5,
+                2.6,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                -9.2,
+                -0.4,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "flight-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                18.5,
+                0.35,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 3.5,
+              "strength": 0.35
+            }
+          },
+          {
+            "id": "ski-jump",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.2,
+                0.8,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.8,
+                2.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0.35
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 3.5,
+              "strength": 0.35
+            }
+          },
+          {
+            "id": "island-base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2.6,
+                2.5,
+                2.2
+              ],
+              "cornerR": 0.15
+            },
+            "transform": {
+              "translate": [
+                3,
+                3.15,
+                2
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-mid",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2,
+                1.8,
+                1.6
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                3,
+                5,
+                2
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-bridge",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.4,
+                0.9,
+                1.2
+              ],
+              "cornerR": 0.08
+            },
+            "transform": {
+              "translate": [
+                3,
+                6.5,
+                2
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "mast-main",
+            "type": "capsule",
+            "args": {
+              "a": [
+                3,
+                7.2,
+                2
+              ],
+              "b": [
+                3,
+                10.5,
+                2
+              ],
+              "radius": 0.12
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "radar-array",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.8,
+                0.25,
+                0.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                9.8,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "port-gun-1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                6.5,
+                2.2,
+                -3.2
+              ],
+              "b": [
+                7.2,
+                2.2,
+                -3.2
+              ],
+              "radius": 0.15
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "port-gun-2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -5.5,
+                2.2,
+                -3.2
+              ],
+              "b": [
+                -6.2,
+                2.2,
+                -3.2
+              ],
+              "radius": 0.15
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "starboard-gun-1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                6.5,
+                2.2,
+                3.2
+              ],
+              "b": [
+                7.2,
+                2.2,
+                3.2
+              ],
+              "radius": 0.15
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "starboard-gun-2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -5.5,
+                2.2,
+                3.2
+              ],
+              "b": [
+                -6.2,
+                2.2,
+                3.2
+              ],
+              "radius": 0.15
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bow-anchor-port",
+            "type": "sphere",
+            "args": {
+              "radius": 0.22
+            },
+            "transform": {
+              "translate": [
+                8.8,
+                0.8,
+                -1.8
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.3,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bow-anchor-starboard",
+            "type": "sphere",
+            "args": {
+              "radius": 0.22
+            },
+            "transform": {
+              "translate": [
+                8.8,
+                0.8,
+                1.8
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.3,
+              "metal": 0.85,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "strike-group",
+        "type": "carrier-strike-group"
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.45,
+        "pitch": 0.18,
+        "distance": 60,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0,
+        "aperture": 0.6,
+        "focalDistance": 55
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.1,
+        "vignetteStrength": 0.4,
+        "bloomMix": 0.25,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.15
+      }
+    }
+  }
+}

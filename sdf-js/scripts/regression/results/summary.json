@@ -1,71 +1,70 @@
 {
-  "ranAt": "2026-05-26T09:38:06.058Z",
-  "model": "claude-sonnet-4-5",
+  "ranAt": "2026-05-27T04:29:11.496Z",
+  "model": "claude-sonnet-4-5-20250929",
   "versions": [
-    "v3.8",
-    "v3.9"
+    "v3.14",
+    "v3.15"
   ],
   "totals": {
-    "v3.8": {
-      "atoms": 44,
-      "iq": 2,
-      "mat": 268,
-      "pat": 21,
-      "var": 12,
-      "cost": 1.7627
+    "v3.14": {
+      "atoms": 3,
+      "iq": 0,
+      "mat": 66,
+      "pat": 5,
+      "var": 0,
+      "cost": 0.8803
     },
-    "v3.9": {
-      "atoms": 62,
-      "iq": 2,
-      "mat": 277,
-      "pat": 28,
-      "var": 7,
-      "cost": 1.9801000000000002
+    "v3.15": {
+      "atoms": 1,
+      "iq": 0,
+      "mat": 44,
+      "pat": 4,
+      "var": 0,
+      "cost": 0.8755999999999999
     }
   },
-  "totalCost": 3.7428,
+  "totalCost": 1.7559,
   "demos": [
     {
-      "demoId": "china-carrier",
+      "demoId": "lone-carrier",
       "runs": {
-        "v3.8": {
-          "demoId": "china-carrier",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "60.7s",
+        "v3.14": {
+          "demoId": "lone-carrier",
+          "version": "v3.14",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "41.5s",
           "tokens": {
-            "input": 48515,
-            "output": 5478
+            "input": 59647,
+            "output": 2793
           },
-          "costUSD": "0.2277",
-          "subjectCount": 40,
-          "newAtomsUsedCount": 3,
+          "costUSD": "0.2208",
+          "subjectCount": 21,
+          "newAtomsUsedCount": 2,
           "newAtomsUsed": [
             [
               "bird-silhouette",
-              3
+              1
+            ],
+            [
+              "cloud-puff",
+              1
             ]
           ],
           "newIQTypesUsedCount": 0,
           "newIQTypesUsed": [],
-          "materialUsageCount": 36,
-          "patternUsageCount": 0,
+          "materialUsageCount": 19,
+          "patternUsageCount": 1,
           "variantsUsedCount": 0,
           "variantsUsed": [],
           "zSpread": {
-            "count": 37,
-            "min": -22,
-            "max": 18,
-            "range": 40,
-            "stdev": 5.096790637168006
+            "count": 19,
+            "min": -30,
+            "max": 2,
+            "range": 32,
+            "stdev": 6.837066970897896
           },
-          "v30AtomsUsedCount": 2,
-          "v30AtomsUsed": [
-            [
-              "sailboat-small",
-              2
-            ]
-          ],
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
           "v32AtomsUsedCount": 0,
           "v32AtomsUsed": [],
           "materialKindsUsed": {
@@ -92,68 +91,233 @@
             "velocityScaleUses": 0,
             "sceneStateKeys": 0
           },
+          "variantOps": {
+            "scatter": 3,
+            "array": 0,
+            "mirror": 0,
+            "total": 3
+          },
+          "compositeAtoms": {},
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
           "typeCounts": {
-            "waves": 1,
-            "union": 4,
+            "union": 2,
             "box": 11,
             "rounded_box": 3,
-            "cylinder": 2,
-            "sphere": 5,
-            "ellipsoid": 3,
-            "tri_prism": 6,
-            "bird-silhouette": 3,
-            "sailboat-small": 2
+            "capsule": 2,
+            "bird-silhouette": 1,
+            "cloud-puff": 1,
+            "waves": 1
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "中国航空母舰编队 (Chinese Aircraft Carrier Fleet)"
+          "sceneName": "Aircraft Carrier Strike Group"
         },
-        "v3.9": {
-          "demoId": "china-carrier",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "117.0s",
+        "v3.15": {
+          "demoId": "lone-carrier",
+          "version": "v3.15",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "25.4s",
           "tokens": {
-            "input": 50074,
-            "output": 6634
+            "input": 60812,
+            "output": 1602
           },
-          "costUSD": "0.2497",
-          "subjectCount": 57,
-          "newAtomsUsedCount": 3,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
+          "costUSD": "0.2065",
+          "subjectCount": 15,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
           "newIQTypesUsedCount": 0,
           "newIQTypesUsed": [],
-          "materialUsageCount": 36,
-          "patternUsageCount": 2,
-          "variantsUsedCount": 2,
-          "variantsUsed": [
-            [
-              "unionRound",
-              1
-            ],
-            [
-              "unionChamfer",
-              1
-            ]
-          ],
+          "materialUsageCount": 13,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
           "zSpread": {
-            "count": 51,
-            "min": -8,
-            "max": 10,
-            "range": 18,
-            "stdev": 2.8222936565929135
+            "count": 10,
+            "min": -2.4,
+            "max": 2,
+            "range": 4.4,
+            "stdev": 1.5289211882893115
           },
           "v30AtomsUsedCount": 0,
           "v30AtomsUsed": [],
           "v32AtomsUsedCount": 0,
           "v32AtomsUsed": [],
           "materialKindsUsed": {
-            "sea": 1,
+            "sea": 0,
+            "mountain": 0,
+            "emissive": 0,
+            "translucent": 0
+          },
+          "cinematic": {
+            "postFx": 0,
+            "aperture": 0,
+            "volumeCount": 0,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {
+            "carrier-strike-group": 1
+          },
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
+          "typeCounts": {
+            "union": 1,
+            "box": 7,
+            "rounded_box": 2,
+            "capsule": 4,
+            "carrier-strike-group": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Aircraft Carrier Strike Group"
+        }
+      }
+    },
+    {
+      "demoId": "china-carrier",
+      "runs": {
+        "v3.14": {
+          "demoId": "china-carrier",
+          "version": "v3.14",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "58.2s",
+          "tokens": {
+            "input": 62886,
+            "output": 5309
+          },
+          "costUSD": "0.2683",
+          "subjectCount": 42,
+          "newAtomsUsedCount": 1,
+          "newAtomsUsed": [
+            [
+              "star",
+              1
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 38,
+          "patternUsageCount": 3,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 37,
+            "min": -2.8,
+            "max": 3.3,
+            "range": 6.1,
+            "stdev": 1.3780039237000201
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
+          "materialKindsUsed": {
+            "sea": 0,
+            "mountain": 0,
+            "emissive": 0,
+            "translucent": 0
+          },
+          "cinematic": {
+            "postFx": 0,
+            "aperture": 0,
+            "volumeCount": 0,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {
+            "carrier-strike-group": 1
+          },
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
+          "typeCounts": {
+            "box": 24,
+            "rounded_box": 3,
+            "cylinder": 2,
+            "capsule": 4,
+            "sphere": 4,
+            "union": 3,
+            "star": 1,
+            "carrier-strike-group": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Chinese Aircraft Carrier — Strike Group at Sea"
+        },
+        "v3.15": {
+          "demoId": "china-carrier",
+          "version": "v3.15",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "59.0s",
+          "tokens": {
+            "input": 64051,
+            "output": 5402
+          },
+          "costUSD": "0.2732",
+          "subjectCount": 50,
+          "newAtomsUsedCount": 1,
+          "newAtomsUsed": [
+            [
+              "star",
+              1
+            ]
+          ],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 23,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 47,
+            "min": -2.6,
+            "max": 3.1,
+            "range": 5.7,
+            "stdev": 1.3037511781202642
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
+          "materialKindsUsed": {
+            "sea": 0,
             "mountain": 0,
             "emissive": 0,
             "translucent": 0
@@ -161,9 +325,168 @@
           "cinematic": {
             "postFx": 1,
             "aperture": 1,
-            "volumeCount": 2,
+            "volumeCount": 0,
             "flameVols": 0,
-            "smokeVols": 1,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {
+            "carrier-strike-group": 1
+          },
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
+          "typeCounts": {
+            "box": 31,
+            "union": 5,
+            "rounded_box": 3,
+            "cylinder": 2,
+            "sphere": 4,
+            "capsule": 3,
+            "star": 1,
+            "carrier-strike-group": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Chinese Aircraft Carrier Strike Group"
+        }
+      }
+    },
+    {
+      "demoId": "generic-airport",
+      "runs": {
+        "v3.14": {
+          "demoId": "generic-airport",
+          "version": "v3.14",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "14.5s",
+          "tokens": {
+            "input": 59478,
+            "output": 864
+          },
+          "costUSD": "0.1914",
+          "subjectCount": 4,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 3,
+          "patternUsageCount": 1,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 3,
+            "min": -4,
+            "max": 0.05,
+            "range": 4.05,
+            "stdev": 1.909188309203678
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
+          "materialKindsUsed": {
+            "sea": 0,
+            "mountain": 0,
+            "emissive": 0,
+            "translucent": 0
+          },
+          "cinematic": {
+            "postFx": 1,
+            "aperture": 1,
+            "volumeCount": 0,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {
+            "airport-apron": 1
+          },
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
+          "typeCounts": {
+            "box": 3,
+            "airport-apron": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Airport apron with fleet"
+        },
+        "v3.15": {
+          "demoId": "generic-airport",
+          "version": "v3.15",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "22.4s",
+          "tokens": {
+            "input": 60643,
+            "output": 1591
+          },
+          "costUSD": "0.2058",
+          "subjectCount": 10,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 8,
+          "patternUsageCount": 2,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 8,
+            "min": -25,
+            "max": 4.05,
+            "range": 29.05,
+            "stdev": 11.127820920445297
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
+          "materialKindsUsed": {
+            "sea": 0,
+            "mountain": 0,
+            "emissive": 1,
+            "translucent": 0
+          },
+          "cinematic": {
+            "postFx": 1,
+            "aperture": 1,
+            "volumeCount": 1,
+            "flameVols": 0,
+            "smokeVols": 0,
             "fogVols": 1,
             "godRayVols": 0,
             "volAttachTo": 0,
@@ -176,630 +499,57 @@
             "velocityScaleUses": 0,
             "sceneStateKeys": 0
           },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {
+            "airport-apron": 1
+          },
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
           "typeCounts": {
-            "waves": 1,
-            "union": 4,
-            "box": 17,
-            "pyramid": 8,
-            "unionRound": 1,
-            "unionChamfer": 1,
-            "rounded_box": 3,
-            "cylinder": 2,
-            "capsule": 1,
-            "sphere": 5,
-            "ellipsoid": 5,
-            "tri_prism": 6,
-            "bird-silhouette": 3
+            "box": 8,
+            "union": 1,
+            "airport-apron": 1
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "Chinese Aircraft Carrier Fleet"
+          "sceneName": "Airport terminal with apron fleet"
         }
       }
     },
     {
-      "demoId": "gothic-cathedral",
+      "demoId": "lone-concert",
       "runs": {
-        "v3.8": {
-          "demoId": "gothic-cathedral",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "78.2s",
+        "v3.14": {
+          "demoId": "lone-concert",
+          "version": "v3.14",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "21.9s",
           "tokens": {
-            "input": 48230,
-            "output": 7635
+            "input": 59513,
+            "output": 1420
           },
-          "costUSD": "0.2592",
-          "subjectCount": 71,
-          "newAtomsUsedCount": 2,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              2
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 67,
-          "patternUsageCount": 8,
-          "variantsUsedCount": 1,
-          "variantsUsed": [
-            [
-              "unionStairs",
-              1
-            ]
-          ],
-          "zSpread": {
-            "count": 43,
-            "min": -9.5,
-            "max": 8,
-            "range": 17.5,
-            "stdev": 3.7845804401050507
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "fountain",
-              1
-            ],
-            [
-              "bush",
-              2
-            ],
-            [
-              "lamp-standing",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 0,
-            "aperture": 0,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "box": 28,
-            "unionStairs": 1,
-            "cylinder": 2,
-            "pyramid": 5,
-            "capped_cone": 19,
-            "torus": 1,
-            "capsule": 8,
-            "bird-silhouette": 2,
-            "fountain": 1,
-            "bush": 2,
-            "lamp-standing": 2
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Gothic Cathedral (High French Gothic)"
-        },
-        "v3.9": {
-          "demoId": "gothic-cathedral",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "83.1s",
-          "tokens": {
-            "input": 49789,
-            "output": 7829
-          },
-          "costUSD": "0.2668",
-          "subjectCount": 69,
-          "newAtomsUsedCount": 2,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              2
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 67,
-          "patternUsageCount": 15,
-          "variantsUsedCount": 1,
-          "variantsUsed": [
-            [
-              "unionStairs",
-              1
-            ]
-          ],
-          "zSpread": {
-            "count": 47,
-            "min": -13.5,
-            "max": 5.15,
-            "range": 18.65,
-            "stdev": 4.963864634035148
-          },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 0,
-            "aperture": 0,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "box": 37,
-            "unionStairs": 1,
-            "cylinder": 2,
-            "pyramid": 5,
-            "torus": 1,
-            "capped_cone": 21,
-            "bird-silhouette": 2
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Gothic Cathedral (High French volumetric)"
-        }
-      }
-    },
-    {
-      "demoId": "spiral-vase",
-      "runs": {
-        "v3.8": {
-          "demoId": "spiral-vase",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "21.5s",
-          "tokens": {
-            "input": 46028,
-            "output": 1540
-          },
-          "costUSD": "0.1612",
-          "subjectCount": 6,
+          "costUSD": "0.1998",
+          "subjectCount": 7,
           "newAtomsUsedCount": 0,
           "newAtomsUsed": [],
           "newIQTypesUsedCount": 0,
           "newIQTypesUsed": [],
           "materialUsageCount": 6,
-          "patternUsageCount": 1,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 6,
-            "min": 0,
-            "max": 0,
-            "range": 0,
-            "stdev": 0
-          },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "revolve": 4,
-            "ellipsoid": 1,
-            "box": 1
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Chinese celadon vase"
-        },
-        "v3.9": {
-          "demoId": "spiral-vase",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "18.6s",
-          "tokens": {
-            "input": 47587,
-            "output": 1257
-          },
-          "costUSD": "0.1616",
-          "subjectCount": 5,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 5,
-          "patternUsageCount": 2,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 5,
-            "min": 0,
-            "max": 0,
-            "range": 0,
-            "stdev": 0
-          },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "revolve": 1,
-            "torus": 3,
-            "box": 1
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Celadon vase"
-        }
-      }
-    },
-    {
-      "demoId": "mountain-village",
-      "runs": {
-        "v3.8": {
-          "demoId": "mountain-village",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "89.0s",
-          "tokens": {
-            "input": 49343,
-            "output": 8282
-          },
-          "costUSD": "0.2723",
-          "subjectCount": 71,
-          "newAtomsUsedCount": 3,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 62,
-          "patternUsageCount": 7,
-          "variantsUsedCount": 7,
-          "variantsUsed": [
-            [
-              "unionChamfer",
-              7
-            ]
-          ],
-          "zSpread": {
-            "count": 60,
-            "min": 0,
-            "max": 62,
-            "range": 62,
-            "stdev": 14.631491618157806
-          },
-          "v30AtomsUsedCount": 12,
-          "v30AtomsUsed": [
-            [
-              "cow",
-              2
-            ],
-            [
-              "horse",
-              1
-            ],
-            [
-              "sheep",
-              3
-            ],
-            [
-              "dog",
-              1
-            ],
-            [
-              "fence-section",
-              2
-            ],
-            [
-              "well",
-              1
-            ],
-            [
-              "bush",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 10,
-          "v32AtomsUsed": [
-            [
-              "grass-field",
-              1
-            ],
-            [
-              "stylized-tree",
-              9
-            ]
-          ],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 9
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 2,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 2,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "cone": 10,
-            "grass-field": 1,
-            "ellipsoid": 1,
-            "capsule": 4,
-            "unionChamfer": 7,
-            "box": 15,
-            "pyramid": 7,
-            "rounded_box": 1,
-            "stylized-tree": 9,
-            "cow": 2,
-            "horse": 1,
-            "sheep": 3,
-            "dog": 1,
-            "fence-section": 2,
-            "well": 1,
-            "rep": 1,
-            "bush": 2,
-            "bird-silhouette": 3
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Mountain Village — volumetric 3D lift"
-        },
-        "v3.9": {
-          "demoId": "mountain-village",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "77.8s",
-          "tokens": {
-            "input": 50902,
-            "output": 7320
-          },
-          "costUSD": "0.2625",
-          "subjectCount": 56,
-          "newAtomsUsedCount": 23,
-          "newAtomsUsed": [
-            [
-              "cottage",
-              6
-            ],
-            [
-              "tree-pine",
-              11
-            ],
-            [
-              "cloud-puff",
-              3
-            ],
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 56,
-          "patternUsageCount": 7,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 52,
-            "min": 1.5,
-            "max": 52,
-            "range": 50.5,
-            "stdev": 13.368066692704362
-          },
-          "v30AtomsUsedCount": 16,
-          "v30AtomsUsed": [
-            [
-              "church-spire",
-              1
-            ],
-            [
-              "cow",
-              2
-            ],
-            [
-              "horse",
-              1
-            ],
-            [
-              "sheep",
-              3
-            ],
-            [
-              "dog",
-              1
-            ],
-            [
-              "fence-section",
-              2
-            ],
-            [
-              "well",
-              1
-            ],
-            [
-              "flower",
-              3
-            ],
-            [
-              "bush",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 1,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 1,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "cone": 9,
-            "cottage": 6,
-            "church-spire": 1,
-            "tree-pine": 11,
-            "ellipsoid": 1,
-            "capsule": 4,
-            "box": 3,
-            "cow": 2,
-            "horse": 1,
-            "sheep": 3,
-            "dog": 1,
-            "fence-section": 2,
-            "well": 1,
-            "flower": 3,
-            "bush": 2,
-            "cloud-puff": 3,
-            "bird-silhouette": 3
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Mountain Village at Dawn"
-        }
-      }
-    },
-    {
-      "demoId": "clock-915",
-      "runs": {
-        "v3.8": {
-          "demoId": "clock-915",
-          "version": "v3.8",
-          "error": "parse: Expected ',' or ']' after array element in JSON at position 2196 (line 65 column 20)",
-          "rawSavedTo": "clock-915-v3.8-raw.txt"
-        },
-        "v3.9": {
-          "demoId": "clock-915",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "34.1s",
-          "tokens": {
-            "input": 48749,
-            "output": 2439
-          },
-          "costUSD": "0.1828",
-          "subjectCount": 18,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 18,
           "patternUsageCount": 0,
           "variantsUsedCount": 0,
           "variantsUsed": [],
           "zSpread": {
-            "count": 4,
-            "min": -0.5,
-            "max": 0.075,
-            "range": 0.575,
-            "stdev": 0.23461071480220166
+            "count": 7,
+            "min": -4,
+            "max": 8,
+            "range": 12,
+            "stdev": 3.4106675389466634
           },
           "v30AtomsUsedCount": 0,
           "v30AtomsUsed": [],
@@ -807,760 +557,9 @@
           "v32AtomsUsed": [],
           "materialKindsUsed": {
             "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 0,
-            "aperture": 0,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "box": 1,
-            "cylinder": 3,
-            "capsule": 14
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Wall clock showing 9:15"
-        }
-      }
-    },
-    {
-      "demoId": "vintage-bicycle",
-      "runs": {
-        "v3.8": {
-          "demoId": "vintage-bicycle",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "46.8s",
-          "tokens": {
-            "input": 47765,
-            "output": 4384
-          },
-          "costUSD": "0.2091",
-          "subjectCount": 39,
-          "newAtomsUsedCount": 1,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              1
-            ]
-          ],
-          "newIQTypesUsedCount": 2,
-          "newIQTypesUsed": [
-            [
-              "capped-torus",
-              2
-            ]
-          ],
-          "materialUsageCount": 17,
-          "patternUsageCount": 1,
-          "variantsUsedCount": 4,
-          "variantsUsed": [
-            [
-              "unionRound",
-              4
-            ]
-          ],
-          "zSpread": {
-            "count": 22,
-            "min": -3.5,
-            "max": 0.085,
-            "range": 3.585,
-            "stdev": 0.7299020779450006
-          },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "box": 1,
-            "union": 3,
-            "torus": 3,
-            "cylinder": 3,
-            "modPolar": 2,
-            "unionRound": 4,
-            "capsule": 11,
-            "rounded_box": 6,
-            "ellipsoid": 2,
-            "sphere": 1,
-            "capped-torus": 2,
-            "bird-silhouette": 1
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Vintage Bicycle"
-        },
-        "v3.9": {
-          "demoId": "vintage-bicycle",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "48.4s",
-          "tokens": {
-            "input": 49324,
-            "output": 4452
-          },
-          "costUSD": "0.2148",
-          "subjectCount": 39,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 2,
-          "newIQTypesUsed": [
-            [
-              "capped-torus",
-              2
-            ]
-          ],
-          "materialUsageCount": 21,
-          "patternUsageCount": 0,
-          "variantsUsedCount": 4,
-          "variantsUsed": [
-            [
-              "unionRound",
-              4
-            ]
-          ],
-          "zSpread": {
-            "count": 20,
-            "min": -0.02,
-            "max": 0.025,
-            "range": 0.045,
-            "stdev": 0.008347903928532
-          },
-          "v30AtomsUsedCount": 0,
-          "v30AtomsUsed": [],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 0,
-            "aperture": 0,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "unionRound": 4,
-            "capsule": 12,
-            "rounded_box": 6,
-            "union": 3,
-            "cylinder": 2,
-            "torus": 5,
-            "modPolar": 2,
-            "ellipsoid": 2,
-            "sphere": 1,
-            "capped-torus": 2
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Vintage Bicycle"
-        }
-      }
-    },
-    {
-      "demoId": "dining-setting",
-      "runs": {
-        "v3.8": {
-          "demoId": "dining-setting",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "47.9s",
-          "tokens": {
-            "input": 47810,
-            "output": 4174
-          },
-          "costUSD": "0.2060",
-          "subjectCount": 36,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 32,
-          "patternUsageCount": 1,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 32,
-            "min": -0.85,
-            "max": 0.85,
-            "range": 1.7,
-            "stdev": 0.37526605145549735
-          },
-          "v30AtomsUsedCount": 4,
-          "v30AtomsUsed": [
-            [
-              "chair",
-              4
-            ]
-          ],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 2,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "ellipsoid": 6,
-            "cylinder": 9,
-            "cut-hollow-sphere": 2,
-            "torus": 1,
-            "cut-sphere": 1,
-            "extrude": 1,
-            "capsule": 7,
-            "union": 1,
-            "box": 3,
-            "rounded_cylinder": 1,
-            "chair": 4
-          },
-          "compileOk": false,
-          "compileErr": "SceneData validation failed:\n  - subjects[24]: unknown type \"rounded_cylinder\" (not in primitive / boolean / domain registries)",
-          "sceneName": "Dining table setting"
-        },
-        "v3.9": {
-          "demoId": "dining-setting",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "51.1s",
-          "tokens": {
-            "input": 49369,
-            "output": 4468
-          },
-          "costUSD": "0.2151",
-          "subjectCount": 41,
-          "newAtomsUsedCount": 0,
-          "newAtomsUsed": [],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 30,
-          "patternUsageCount": 1,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 35,
-            "min": -1.2,
-            "max": 0.9,
-            "range": 2.1,
-            "stdev": 0.331243744646366
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "chair",
-              4
-            ],
-            [
-              "lamp-standing",
-              1
-            ]
-          ],
-          "v32AtomsUsedCount": 0,
-          "v32AtomsUsed": [],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 2,
-            "translucent": 0
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "ellipsoid": 6,
-            "cylinder": 9,
-            "cut-hollow-sphere": 2,
-            "torus": 1,
-            "union": 3,
-            "cut-sphere": 1,
-            "extrude": 1,
-            "capsule": 7,
-            "box": 4,
-            "sphere": 1,
-            "rounded_box": 1,
-            "chair": 4,
-            "lamp-standing": 1
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Dining table setting"
-        }
-      }
-    },
-    {
-      "demoId": "coastal-lighthouse",
-      "runs": {
-        "v3.8": {
-          "demoId": "coastal-lighthouse",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "62.9s",
-          "tokens": {
-            "input": 47801,
-            "output": 5316
-          },
-          "costUSD": "0.2231",
-          "subjectCount": 42,
-          "newAtomsUsedCount": 17,
-          "newAtomsUsed": [
-            [
-              "moon",
-              1
-            ],
-            [
-              "star",
-              12
-            ],
-            [
-              "bird-silhouette",
-              4
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 28,
-          "patternUsageCount": 3,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 42,
-            "min": -31,
-            "max": 2.8,
-            "range": 33.8,
-            "stdev": 12.988101453448824
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "rock-boulder",
-              3
-            ],
-            [
-              "bush",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 4,
-          "v32AtomsUsed": [
-            [
-              "grass-field",
-              1
-            ],
-            [
-              "stylized-tree",
-              3
-            ]
-          ],
-          "materialKindsUsed": {
-            "sea": 1,
             "mountain": 0,
             "emissive": 1,
-            "translucent": 3
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 2,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 1,
-            "godRayVols": 1,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "moon": 1,
-            "star": 12,
-            "waves": 1,
-            "box": 2,
-            "rock-boulder": 3,
-            "grass-field": 1,
-            "cylinder": 5,
-            "torus": 1,
-            "cone": 1,
-            "sphere": 1,
-            "rounded_box": 4,
-            "stylized-tree": 3,
-            "rep": 1,
-            "bird-silhouette": 4,
-            "bush": 2
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Coastal Lighthouse at Dusk"
-        },
-        "v3.9": {
-          "demoId": "coastal-lighthouse",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "63.2s",
-          "tokens": {
-            "input": 49360,
-            "output": 4987
-          },
-          "costUSD": "0.2229",
-          "subjectCount": 41,
-          "newAtomsUsedCount": 16,
-          "newAtomsUsed": [
-            [
-              "moon",
-              1
-            ],
-            [
-              "star",
-              12
-            ],
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 26,
-          "patternUsageCount": 1,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 41,
-            "min": -15,
-            "max": 4.2,
-            "range": 19.2,
-            "stdev": 6.54991527616393
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "rock-boulder",
-              3
-            ],
-            [
-              "sailboat-small",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 5,
-          "v32AtomsUsed": [
-            [
-              "grass-field",
-              1
-            ],
-            [
-              "stylized-tree",
-              2
-            ],
-            [
-              "forest-flower",
-              2
-            ]
-          ],
-          "materialKindsUsed": {
-            "sea": 1,
-            "mountain": 0,
-            "emissive": 2,
-            "translucent": 3
-          },
-          "cinematic": {
-            "postFx": 1,
-            "aperture": 1,
-            "volumeCount": 2,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 1,
-            "godRayVols": 1,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "moon": 1,
-            "star": 12,
-            "waves": 1,
-            "box": 2,
-            "grass-field": 1,
-            "rock-boulder": 3,
-            "cylinder": 5,
-            "torus": 1,
-            "sphere": 1,
-            "cone": 1,
-            "rounded_box": 4,
-            "bird-silhouette": 3,
-            "stylized-tree": 2,
-            "forest-flower": 2,
-            "sailboat-small": 2
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Coastal Lighthouse (night)"
-        }
-      }
-    },
-    {
-      "demoId": "forest-meteors",
-      "runs": {
-        "v3.8": {
-          "demoId": "forest-meteors",
-          "version": "v3.8",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "50.9s",
-          "tokens": {
-            "input": 44584,
-            "output": 4690
-          },
-          "costUSD": "0.2041",
-          "subjectCount": 41,
-          "newAtomsUsedCount": 18,
-          "newAtomsUsed": [
-            [
-              "bird-silhouette",
-              3
-            ],
-            [
-              "star",
-              15
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 20,
-          "patternUsageCount": 0,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 37,
-            "min": -16,
-            "max": 62,
-            "range": 78,
-            "stdev": 24.101805623886957
-          },
-          "v30AtomsUsedCount": 5,
-          "v30AtomsUsed": [
-            [
-              "bush",
-              3
-            ],
-            [
-              "mushroom",
-              2
-            ]
-          ],
-          "v32AtomsUsedCount": 12,
-          "v32AtomsUsed": [
-            [
-              "stylized-tree",
-              7
-            ],
-            [
-              "grass-field",
-              1
-            ],
-            [
-              "meteor-streak",
-              4
-            ]
-          ],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 0,
-            "translucent": 7
-          },
-          "cinematic": {
-            "postFx": 0,
-            "aperture": 0,
-            "volumeCount": 0,
-            "flameVols": 0,
-            "smokeVols": 0,
-            "fogVols": 0,
-            "godRayVols": 0,
-            "volAttachTo": 0,
-            "volSceneStateKey": 0,
-            "seqShots": 0,
-            "seqMotion": 0,
-            "seqPhases": 0,
-            "relativeToUses": 0,
-            "shakeUses": 0,
-            "velocityScaleUses": 0,
-            "sceneStateKeys": 0
-          },
-          "typeCounts": {
-            "cone": 5,
-            "stylized-tree": 7,
-            "grass-field": 1,
-            "rep": 1,
-            "bush": 3,
-            "mushroom": 2,
-            "bird-silhouette": 3,
-            "star": 15,
-            "meteor-streak": 4
-          },
-          "compileOk": true,
-          "compileErr": null,
-          "sceneName": "Forest meadow with meteor shower at twilight"
-        },
-        "v3.9": {
-          "demoId": "forest-meteors",
-          "version": "v3.9",
-          "model": "claude-sonnet-4-5",
-          "elapsed": "50.2s",
-          "tokens": {
-            "input": 46143,
-            "output": 4362
-          },
-          "costUSD": "0.2039",
-          "subjectCount": 37,
-          "newAtomsUsedCount": 18,
-          "newAtomsUsed": [
-            [
-              "star",
-              15
-            ],
-            [
-              "bird-silhouette",
-              3
-            ]
-          ],
-          "newIQTypesUsedCount": 0,
-          "newIQTypesUsed": [],
-          "materialUsageCount": 18,
-          "patternUsageCount": 0,
-          "variantsUsedCount": 0,
-          "variantsUsed": [],
-          "zSpread": {
-            "count": 34,
-            "min": -34,
-            "max": 62,
-            "range": 96,
-            "stdev": 32.02459046519827
-          },
-          "v30AtomsUsedCount": 3,
-          "v30AtomsUsed": [
-            [
-              "bush",
-              3
-            ]
-          ],
-          "v32AtomsUsedCount": 10,
-          "v32AtomsUsed": [
-            [
-              "stylized-tree",
-              6
-            ],
-            [
-              "grass-field",
-              1
-            ],
-            [
-              "meteor-streak",
-              3
-            ]
-          ],
-          "materialKindsUsed": {
-            "sea": 0,
-            "mountain": 0,
-            "emissive": 3,
-            "translucent": 7
+            "translucent": 0
           },
           "cinematic": {
             "postFx": 1,
@@ -1580,19 +579,97 @@
             "velocityScaleUses": 0,
             "sceneStateKeys": 0
           },
+          "variantOps": {
+            "scatter": 1,
+            "array": 1,
+            "mirror": 1,
+            "total": 3
+          },
+          "compositeAtoms": {},
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
           "typeCounts": {
-            "cone": 5,
-            "stylized-tree": 6,
-            "grass-field": 1,
-            "rep": 1,
-            "meteor-streak": 3,
-            "star": 15,
-            "bush": 3,
-            "bird-silhouette": 3
+            "box": 3,
+            "union": 1,
+            "rounded_box": 1,
+            "sphere": 1,
+            "capsule": 1
           },
           "compileOk": true,
           "compileErr": null,
-          "sceneName": "Forest meadow with meteor shower"
+          "sceneName": "Outdoor Concert — Scene Completion"
+        },
+        "v3.15": {
+          "demoId": "lone-concert",
+          "version": "v3.15",
+          "model": "claude-sonnet-4-5-20250929",
+          "elapsed": "9.6s",
+          "tokens": {
+            "input": 60678,
+            "output": 541
+          },
+          "costUSD": "0.1901",
+          "subjectCount": 1,
+          "newAtomsUsedCount": 0,
+          "newAtomsUsed": [],
+          "newIQTypesUsedCount": 0,
+          "newIQTypesUsed": [],
+          "materialUsageCount": 0,
+          "patternUsageCount": 0,
+          "variantsUsedCount": 0,
+          "variantsUsed": [],
+          "zSpread": {
+            "count": 0,
+            "min": 0,
+            "max": 0,
+            "range": 0,
+            "stdev": 0
+          },
+          "v30AtomsUsedCount": 0,
+          "v30AtomsUsed": [],
+          "v32AtomsUsedCount": 0,
+          "v32AtomsUsed": [],
+          "materialKindsUsed": {
+            "sea": 0,
+            "mountain": 0,
+            "emissive": 0,
+            "translucent": 0
+          },
+          "cinematic": {
+            "postFx": 1,
+            "aperture": 1,
+            "volumeCount": 0,
+            "flameVols": 0,
+            "smokeVols": 0,
+            "fogVols": 0,
+            "godRayVols": 0,
+            "volAttachTo": 0,
+            "volSceneStateKey": 0,
+            "seqShots": 0,
+            "seqMotion": 0,
+            "seqPhases": 0,
+            "relativeToUses": 0,
+            "shakeUses": 0,
+            "velocityScaleUses": 0,
+            "sceneStateKeys": 0
+          },
+          "variantOps": {
+            "scatter": 0,
+            "array": 0,
+            "mirror": 0,
+            "total": 0
+          },
+          "compositeAtoms": {},
+          "sanitySummary": "clean",
+          "sanityErrors": 0,
+          "sanityWarnings": 0,
+          "typeCounts": {
+            "concert-stage": 1
+          },
+          "compileOk": true,
+          "compileErr": null,
+          "sceneName": "Concert stage — leisure completion"
         }
       }
     }

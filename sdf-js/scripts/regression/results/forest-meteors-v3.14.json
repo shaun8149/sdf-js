@@ -1,0 +1,546 @@
+{
+  "result": {
+    "demoId": "forest-meteors",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "33.0s",
+    "tokens": {
+      "input": 58955,
+      "output": 2623
+    },
+    "costUSD": "0.2162",
+    "subjectCount": 18,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 12,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 14,
+      "min": 0,
+      "max": 68,
+      "range": 68,
+      "stdev": 20.737056449845568
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 12,
+    "v32AtomsUsed": [
+      [
+        "stylized-tree",
+        7
+      ],
+      [
+        "grass-field",
+        1
+      ],
+      [
+        "meteor-streak",
+        4
+      ]
+    ],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 7
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "cone": 5,
+      "stylized-tree": 7,
+      "grass-field": 1,
+      "rep": 1,
+      "meteor-streak": 4
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Forest meadow with meteors at twilight"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Forest meadow with meteors at twilight",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "树·山·花·流星",
+      "from2dCode": "Minimal 2D placeholder; lift based on prompt semantic keywords"
+    },
+    "subjects": [
+      {
+        "id": "mtn-left",
+        "type": "cone",
+        "args": {
+          "height": 16,
+          "baseRadius": 13
+        },
+        "transform": {
+          "translate": [
+            -28,
+            8,
+            58
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.86,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mtn-center-back",
+        "type": "cone",
+        "args": {
+          "height": 24,
+          "baseRadius": 18
+        },
+        "transform": {
+          "translate": [
+            -5,
+            12,
+            68
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.92,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mtn-center",
+        "type": "cone",
+        "args": {
+          "height": 18,
+          "baseRadius": 14
+        },
+        "transform": {
+          "translate": [
+            14,
+            9,
+            54
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.88,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mtn-right",
+        "type": "cone",
+        "args": {
+          "height": 20,
+          "baseRadius": 15
+        },
+        "transform": {
+          "translate": [
+            35,
+            10,
+            62
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.9,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mtn-far-left",
+        "type": "cone",
+        "args": {
+          "height": 14,
+          "baseRadius": 11
+        },
+        "transform": {
+          "translate": [
+            -42,
+            7,
+            64
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.07,
+          "value": 0.82,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hero-tree",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 6,
+          "trunkRad": 0.45,
+          "leafSize": 0.22,
+          "windK": 0.14
+        },
+        "transform": {
+          "translate": [
+            6,
+            0,
+            12
+          ]
+        },
+        "material": {
+          "hue": 0.03,
+          "sat": 0.82,
+          "value": 0.52,
+          "metal": 0,
+          "glow": 0,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-1",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 4,
+          "trunkRad": 0.28,
+          "leafSize": 0.16,
+          "windK": 0.11
+        },
+        "transform": {
+          "translate": [
+            -16,
+            0,
+            30
+          ]
+        },
+        "material": {
+          "hue": 0.29,
+          "sat": 0.58,
+          "value": 0.44,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-2",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 2.8,
+          "trunkRad": 0.22,
+          "leafSize": 0.14,
+          "windK": 0.1
+        },
+        "transform": {
+          "translate": [
+            -8,
+            0,
+            36
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.52,
+          "value": 0.4,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-3",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 4.4,
+          "trunkRad": 0.3,
+          "leafSize": 0.16,
+          "windK": 0.11
+        },
+        "transform": {
+          "translate": [
+            18,
+            0,
+            32
+          ]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.6,
+          "value": 0.46,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-4",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 3.2,
+          "trunkRad": 0.24,
+          "leafSize": 0.14,
+          "windK": 0.1
+        },
+        "transform": {
+          "translate": [
+            28,
+            0,
+            26
+          ]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.56,
+          "value": 0.43,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-5",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 3.6,
+          "trunkRad": 0.25,
+          "leafSize": 0.14,
+          "windK": 0.1
+        },
+        "transform": {
+          "translate": [
+            -24,
+            0,
+            38
+          ]
+        },
+        "material": {
+          "hue": 0.27,
+          "sat": 0.62,
+          "value": 0.42,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "back-tree-6",
+        "type": "stylized-tree",
+        "args": {
+          "trunkLen": 2.4,
+          "trunkRad": 0.2,
+          "leafSize": 0.12,
+          "windK": 0.09
+        },
+        "transform": {
+          "translate": [
+            10,
+            0,
+            40
+          ]
+        },
+        "material": {
+          "hue": 0.29,
+          "sat": 0.54,
+          "value": 0.38,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "grass-mat",
+        "type": "grass-field",
+        "args": {
+          "bladeHeight": 0.6,
+          "density": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "flower-field",
+        "type": "rep",
+        "args": {
+          "period": [
+            1.2,
+            0,
+            1.2
+          ],
+          "count": [
+            12,
+            0,
+            10
+          ]
+        },
+        "source": {
+          "id": "flower-source",
+          "type": "forest-flower",
+          "args": {
+            "stemH": 0.58,
+            "bloomR": 0.17
+          },
+          "material": {
+            "hue": 0,
+            "sat": 0.9,
+            "value": 0.8
+          }
+        },
+        "transform": {
+          "translate": [
+            -4,
+            0,
+            9
+          ]
+        }
+      },
+      {
+        "id": "meteor-1",
+        "type": "meteor-streak",
+        "args": {
+          "origin": [
+            -24,
+            26,
+            38
+          ],
+          "velocity": [
+            4.2,
+            -2.9,
+            0.4
+          ],
+          "trailLen": 1.9,
+          "period": 7,
+          "activeFrac": 0.5,
+          "phase": 0
+        }
+      },
+      {
+        "id": "meteor-2",
+        "type": "meteor-streak",
+        "args": {
+          "origin": [
+            -16,
+            30,
+            30
+          ],
+          "velocity": [
+            3.4,
+            -2.6,
+            0.7
+          ],
+          "trailLen": 1.5,
+          "period": 7,
+          "activeFrac": 0.48,
+          "phase": 2.7
+        }
+      },
+      {
+        "id": "meteor-3",
+        "type": "meteor-streak",
+        "args": {
+          "origin": [
+            -30,
+            22,
+            44
+          ],
+          "velocity": [
+            5.2,
+            -1.9,
+            -0.9
+          ],
+          "trailLen": 2.1,
+          "period": 7,
+          "activeFrac": 0.52,
+          "phase": 5
+        }
+      },
+      {
+        "id": "meteor-4",
+        "type": "meteor-streak",
+        "args": {
+          "origin": [
+            -12,
+            28,
+            24
+          ],
+          "velocity": [
+            3.8,
+            -3.2,
+            0.2
+          ],
+          "trailLen": 1.7,
+          "period": 7,
+          "activeFrac": 0.46,
+          "phase": 1.5
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "ground",
+      "material": {
+        "hue": 0.3,
+        "sat": 0.58,
+        "value": 0.32
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": -0.2,
+        "pitch": 0.1,
+        "distance": 22,
+        "focal": 1.5,
+        "targetX": 3,
+        "targetY": 5,
+        "targetZ": 22,
+        "aperture": 0.35,
+        "focalDistance": 24
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.24,
+        "distance": 95,
+        "intensity": 1.28
+      },
+      "shadow": {
+        "enabled": false,
+        "mode": "channelSwap",
+        "strength": 0
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.38,
+        "bloomMix": 0.24,
+        "bloomThreshold": 0.82,
+        "lensFlareStrength": 0.08,
+        "motionBlurStrength": 0
+      }
+    }
+  }
+}

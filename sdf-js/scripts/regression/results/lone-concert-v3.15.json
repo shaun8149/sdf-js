@@ -1,0 +1,141 @@
+{
+  "result": {
+    "demoId": "lone-concert",
+    "version": "v3.15",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "9.6s",
+    "tokens": {
+      "input": 60678,
+      "output": 541
+    },
+    "costUSD": "0.1901",
+    "subjectCount": 1,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 0,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "concert-stage": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Concert stage — leisure completion"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Concert stage — leisure completion",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "音乐会",
+      "from2dCode": "Bare stage + backdrop + 2 speakers. Scene completion triggered."
+    },
+    "subjects": [
+      {
+        "id": "stage-composite",
+        "type": "concert-stage",
+        "args": {
+          "audienceCount": 35,
+          "audienceArea": [
+            22,
+            14
+          ],
+          "stageLampCount": 6,
+          "stageLampSpacing": 2.8,
+          "speakers": true,
+          "backdrop": true,
+          "cinematic": true
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "concert-floor",
+      "material": {
+        "hue": 0.08,
+        "sat": 0.08,
+        "value": 0.15
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.2,
+        "distance": 26,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": 6,
+        "aperture": 0.8,
+        "focalDistance": 18
+      },
+      "light": {
+        "azimuth": 0,
+        "altitude": 0.32,
+        "distance": 35,
+        "intensity": 1.5
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.5
+      },
+      "postFx": {
+        "exposure": 1.15,
+        "vignetteStrength": 0.48,
+        "bloomMix": 0.42,
+        "bloomThreshold": 0.8,
+        "lensFlareStrength": 0.22,
+        "motionBlurStrength": 0
+      }
+    }
+  }
+}

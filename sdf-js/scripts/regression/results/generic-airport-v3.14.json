@@ -1,0 +1,214 @@
+{
+  "result": {
+    "demoId": "generic-airport",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "14.5s",
+    "tokens": {
+      "input": 59478,
+      "output": 864
+    },
+    "costUSD": "0.1914",
+    "subjectCount": 4,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 3,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 3,
+      "min": -4,
+      "max": 0.05,
+      "range": 4.05,
+      "stdev": 1.909188309203678
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {
+      "airport-apron": 1
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 3,
+      "airport-apron": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Airport apron with fleet"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Airport apron with fleet",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "机场",
+      "from2dCode": "Bare airport silhouette: terminal block + 1 plane + runway strip"
+    },
+    "subjects": [
+      {
+        "id": "terminal-building",
+        "type": "box",
+        "args": {
+          "dims": [
+            14,
+            3.6,
+            8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.8,
+            -4
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 3,
+          "strength": 0.35
+        }
+      },
+      {
+        "id": "terminal-roof",
+        "type": "box",
+        "args": {
+          "dims": [
+            13,
+            0.6,
+            7.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            4,
+            -4
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.35,
+          "value": 0.45,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "terminal-windows",
+        "type": "box",
+        "args": {
+          "dims": [
+            12,
+            2.2,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.2,
+            0.05
+          ]
+        },
+        "material": {
+          "hue": 0.55,
+          "sat": 0.65,
+          "value": 0.85,
+          "metal": 0.15,
+          "glow": 0.6
+        }
+      },
+      {
+        "id": "airport-apron",
+        "type": "airport-apron",
+        "args": {
+          "parkedPlaneCount": 4,
+          "parkedPlaneSpacing": 9,
+          "groundVehicleCount": 3,
+          "lampCount": 10,
+          "lampSpacing": 5,
+          "cinematic": true
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "tarmac",
+      "material": {
+        "hue": 0.15,
+        "sat": 0.08,
+        "value": 0.32
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 35,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 8,
+        "aperture": 0.5,
+        "focalDistance": 32
+      },
+      "light": {
+        "azimuth": 0.75,
+        "altitude": 0.38,
+        "distance": 65,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.22,
+        "bloomThreshold": 0.82,
+        "lensFlareStrength": 0.08,
+        "motionBlurStrength": 0
+      }
+    }
+  }
+}

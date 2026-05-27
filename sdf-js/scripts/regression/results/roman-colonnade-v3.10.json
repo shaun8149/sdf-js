@@ -1,0 +1,296 @@
+{
+  "result": {
+    "demoId": "roman-colonnade",
+    "version": "v3.10",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "18.9s",
+    "tokens": {
+      "input": 49611,
+      "output": 1185
+    },
+    "costUSD": "0.1666",
+    "subjectCount": 7,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 4,
+    "patternUsageCount": 4,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 7,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 1,
+      "mirror": 0,
+      "total": 1
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 1,
+      "rounded_box": 2,
+      "cylinder": 1,
+      "box": 2,
+      "pyramid": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Roman Colonnade"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Roman Colonnade",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "罗马柱廊，一排古典石柱",
+      "from2dCode": "5 evenly-spaced columns with base+shaft+capital, lintel, triangular pediment"
+    },
+    "subjects": [
+      {
+        "id": "column",
+        "type": "union",
+        "children": [
+          {
+            "id": "base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.85,
+                0.28,
+                0.85
+              ],
+              "cornerR": 0.04
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.14,
+                0
+              ]
+            }
+          },
+          {
+            "id": "shaft",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.33,
+              "height": 4.2
+            },
+            "transform": {
+              "translate": [
+                0,
+                2.4,
+                0
+              ]
+            }
+          },
+          {
+            "id": "capital",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.95,
+                0.35,
+                0.95
+              ],
+              "cornerR": 0.05
+            },
+            "transform": {
+              "translate": [
+                0,
+                4.68,
+                0
+              ]
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 3.5,
+          "strength": 0.35
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 5,
+            "axis": "x",
+            "spacing": 2.5,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.015
+            },
+            "translate": {
+              "jitter": [
+                0.08,
+                0,
+                0.08
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "lintel",
+        "type": "box",
+        "args": {
+          "dims": [
+            13.5,
+            0.48,
+            1.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            5.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 4,
+          "strength": 0.25
+        }
+      },
+      {
+        "id": "pediment",
+        "type": "pyramid",
+        "args": {
+          "height": 1.4
+        },
+        "transform": {
+          "translate": [
+            0,
+            5.55,
+            0
+          ],
+          "scale": [
+            6.5,
+            1,
+            1.2
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 3,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "floor-platform",
+        "type": "box",
+        "args": {
+          "dims": [
+            14.5,
+            0.38,
+            2.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.19,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "hex",
+          "scale": 4.5,
+          "strength": 0.4
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.5,
+      "region": "plaza",
+      "material": {
+        "hue": 0.1,
+        "sat": 0.08,
+        "value": 0.58
+      },
+      "pattern": {
+        "kind": "hex",
+        "scale": 3.8,
+        "strength": 0.35
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.35,
+        "pitch": 0.12,
+        "distance": 18,
+        "focal": 1.45,
+        "targetX": 0,
+        "targetY": 2.8,
+        "targetZ": 0,
+        "aperture": 0.3,
+        "focalDistance": 18
+      },
+      "light": {
+        "azimuth": 0.75,
+        "altitude": 0.42,
+        "distance": 85,
+        "intensity": 1.08
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.28,
+        "bloomMix": 0.16,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0.04
+      }
+    }
+  }
+}

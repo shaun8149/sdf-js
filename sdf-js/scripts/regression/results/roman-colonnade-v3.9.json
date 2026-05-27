@@ -1,0 +1,551 @@
+{
+  "result": {
+    "demoId": "roman-colonnade",
+    "version": "v3.9",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "26.5s",
+    "tokens": {
+      "input": 46657,
+      "output": 2351
+    },
+    "costUSD": "0.1752",
+    "subjectCount": 21,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 19,
+    "patternUsageCount": 8,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 21,
+      "min": -2.5,
+      "max": 2,
+      "range": 4.5,
+      "stdev": 0.7700457918474395
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 3,
+      "rounded_box": 10,
+      "cylinder": 5,
+      "pyramid": 1,
+      "bird-silhouette": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Roman Colonnade — classical stone row"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Roman Colonnade — classical stone row",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "罗马柱廊，一排古典石柱",
+      "from2dCode": "5 columns (base+shaft+capital) spaced x=-0.5..0.5, lintel + triangular pediment"
+    },
+    "subjects": [
+      {
+        "id": "plinth-platform",
+        "type": "box",
+        "args": {
+          "dims": [
+            14,
+            0.5,
+            4
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.8,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.5
+        }
+      },
+      {
+        "id": "col-1-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.85,
+            0.4,
+            0.85
+          ],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [
+            -5,
+            -2.3,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-1-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 4.8
+        },
+        "transform": {
+          "translate": [
+            -5,
+            0.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "col-1-capital",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.9,
+            0.45,
+            0.9
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            -5,
+            2.7,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-2-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.85,
+            0.4,
+            0.85
+          ],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            -2.3,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-2-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 4.8
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            0.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "col-2-capital",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.9,
+            0.45,
+            0.9
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            -2.5,
+            2.7,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-3-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.85,
+            0.4,
+            0.85
+          ],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.3,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-3-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 4.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "col-3-capital",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.9,
+            0.45,
+            0.9
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.7,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-4-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.85,
+            0.4,
+            0.85
+          ],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            -2.3,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-4-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 4.8
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            0.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "col-4-capital",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.9,
+            0.45,
+            0.9
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            2.5,
+            2.7,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-5-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.85,
+            0.4,
+            0.85
+          ],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [
+            5,
+            -2.3,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "col-5-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.55,
+          "height": 4.8
+        },
+        "transform": {
+          "translate": [
+            5,
+            0.1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 5,
+          "strength": 0.3
+        }
+      },
+      {
+        "id": "col-5-capital",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            0.9,
+            0.45,
+            0.9
+          ],
+          "cornerR": 0.06
+        },
+        "transform": {
+          "translate": [
+            5,
+            2.7,
+            0
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "entablature",
+        "type": "box",
+        "args": {
+          "dims": [
+            12.5,
+            0.6,
+            3.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.3,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3.5,
+          "strength": 0.45
+        }
+      },
+      {
+        "id": "pediment",
+        "type": "pyramid",
+        "args": {
+          "height": 1.3
+        },
+        "transform": {
+          "translate": [
+            0,
+            4.25,
+            0
+          ],
+          "scale": [
+            6,
+            1,
+            3.5
+          ]
+        },
+        "material": "stone"
+      },
+      {
+        "id": "back-wall",
+        "type": "box",
+        "args": {
+          "dims": [
+            14,
+            6,
+            0.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.5,
+            -2.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.6
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -4.5,
+            6.5,
+            2
+          ]
+        }
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            3.2,
+            7,
+            1.5
+          ]
+        }
+      }
+    ],
+    "ground": {
+      "y": -3.05,
+      "region": "ground",
+      "material": "stone",
+      "pattern": {
+        "kind": "hex",
+        "scale": 4,
+        "strength": 0.4
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.12,
+        "distance": 18,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.55,
+        "distance": 35,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      }
+    }
+  }
+}

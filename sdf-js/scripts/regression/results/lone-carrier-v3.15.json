@@ -1,0 +1,405 @@
+{
+  "result": {
+    "demoId": "lone-carrier",
+    "version": "v3.15",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "25.4s",
+    "tokens": {
+      "input": 60812,
+      "output": 1602
+    },
+    "costUSD": "0.2065",
+    "subjectCount": 15,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 13,
+    "patternUsageCount": 1,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 10,
+      "min": -2.4,
+      "max": 2,
+      "range": 4.4,
+      "stdev": 1.5289211882893115
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {
+      "carrier-strike-group": 1
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 1,
+      "box": 7,
+      "rounded_box": 2,
+      "capsule": 4,
+      "carrier-strike-group": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Aircraft Carrier Strike Group"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Aircraft Carrier Strike Group",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "航母",
+      "from2dCode": "Bare carrier silhouette — hull + ski-jump deck + island + mast. Single ship, no fleet context."
+    },
+    "subjects": [
+      {
+        "id": "hero-carrier",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull-main",
+            "type": "box",
+            "args": {
+              "dims": [
+                18,
+                3.2,
+                4.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.1,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hull-bow",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.2,
+                2.8,
+                4.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.1,
+                -0.3,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "flight-deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                18.5,
+                0.35,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.7,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 8,
+              "strength": 0.25
+            }
+          },
+          {
+            "id": "ski-jump",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.2,
+                0.6,
+                5.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                9.5,
+                2.1,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0.35
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "island-base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2.6,
+                2.5,
+                2.2
+              ],
+              "cornerR": 0.15
+            },
+            "transform": {
+              "translate": [
+                3,
+                3.15,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "island-mid",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.8,
+                1.4,
+                1.6
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                3,
+                4.8,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "radar-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                3,
+                5.8,
+                2
+              ],
+              "b": [
+                3,
+                8.2,
+                2
+              ],
+              "radius": 0.08
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "radar-array",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.5,
+                0.5,
+                0.05
+              ]
+            },
+            "transform": {
+              "translate": [
+                3,
+                7.5,
+                2
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "hangar-door-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.5,
+                2.2,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                -2,
+                0.5,
+                -2.4
+              ]
+            },
+            "material": {
+              "hue": 0.15,
+              "sat": 0.08,
+              "value": 0.25,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "hangar-door-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.5,
+                2.2,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                -6,
+                0.5,
+                -2.4
+              ]
+            },
+            "material": {
+              "hue": 0.15,
+              "sat": 0.08,
+              "value": 0.25,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "deck-lamp-1",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -7,
+                1.75,
+                2.6
+              ],
+              "b": [
+                -7,
+                2.5,
+                2.6
+              ],
+              "radius": 0.06
+            },
+            "material": "silver"
+          },
+          {
+            "id": "deck-lamp-2",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -3,
+                1.75,
+                2.6
+              ],
+              "b": [
+                -3,
+                2.5,
+                2.6
+              ],
+              "radius": 0.06
+            },
+            "material": "silver"
+          },
+          {
+            "id": "deck-lamp-3",
+            "type": "capsule",
+            "args": {
+              "a": [
+                1,
+                1.75,
+                2.6
+              ],
+              "b": [
+                1,
+                2.5,
+                2.6
+              ],
+              "radius": 0.06
+            },
+            "material": "silver"
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "strike-group",
+        "type": "carrier-strike-group"
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.45,
+        "pitch": 0.18,
+        "distance": 60,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      }
+    }
+  }
+}

@@ -1,0 +1,1144 @@
+{
+  "result": {
+    "demoId": "china-carrier",
+    "version": "v3.13",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "57.9s",
+    "tokens": {
+      "input": 59534,
+      "output": 5320
+    },
+    "costUSD": "0.2584",
+    "subjectCount": 41,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 37,
+    "patternUsageCount": 3,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 35,
+      "min": -2.85,
+      "max": 2.85,
+      "range": 5.7,
+      "stdev": 1.4460313034689962
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {
+      "carrier-strike-group": 1
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 21,
+      "pyramid": 2,
+      "rounded_box": 3,
+      "cylinder": 1,
+      "capsule": 5,
+      "sphere": 5,
+      "union": 3,
+      "carrier-strike-group": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "中国航空母舰 Liaoning/Shandong"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "中国航空母舰 Liaoning/Shandong",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "一艘中国的航空母舰",
+      "from2dCode": "Side-view carrier with ski-jump bow, Type 346 radar island, 3 J-15 jets on deck, red waterline stripe, five-star flag"
+    },
+    "subjects": [
+      {
+        "id": "hull-main",
+        "type": "box",
+        "args": {
+          "dims": [
+            18,
+            3.2,
+            4.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.1,
+            0
+          ]
+        },
+        "material": "matte-black",
+        "pattern": {
+          "kind": "cells",
+          "scale": 3.5,
+          "strength": 0.18
+        }
+      },
+      {
+        "id": "hull-bottom",
+        "type": "box",
+        "args": {
+          "dims": [
+            18.5,
+            0.6,
+            4.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.12,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "waterline-stripe",
+        "type": "box",
+        "args": {
+          "dims": [
+            18.2,
+            0.25,
+            4.6
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.25,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.88,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bow-tip",
+        "type": "pyramid",
+        "args": {
+          "height": 1.8
+        },
+        "transform": {
+          "translate": [
+            9.2,
+            -0.5,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            1.5708
+          ],
+          "scale": [
+            0.8,
+            1,
+            2.2
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "stern-taper",
+        "type": "pyramid",
+        "args": {
+          "height": 1.2
+        },
+        "transform": {
+          "translate": [
+            -9.4,
+            -0.3,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            -1.5708
+          ],
+          "scale": [
+            0.6,
+            1,
+            2
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "flight-deck",
+        "type": "box",
+        "args": {
+          "dims": [
+            18.5,
+            0.35,
+            5.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.7,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "cells",
+          "scale": 4,
+          "strength": 0.15
+        }
+      },
+      {
+        "id": "ski-jump",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.4,
+            0.8,
+            5.9
+          ]
+        },
+        "transform": {
+          "translate": [
+            8.5,
+            2.4,
+            0
+          ],
+          "rotate": [
+            0,
+            0,
+            0.35
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.08,
+          "value": 0.78,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "deck-centerline",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            0.05,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            1.9,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.14,
+          "sat": 0.92,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "deck-edge-port",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            0.05,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            1.9,
+            2.85
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "deck-edge-starboard",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            0.05,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            -0.5,
+            1.9,
+            -2.85
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "island-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            2.6,
+            2.5,
+            2.2
+          ],
+          "cornerR": 0.15
+        },
+        "transform": {
+          "translate": [
+            3,
+            3.15,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.6,
+          "metal": 0.05,
+          "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 3,
+          "strength": 0.12
+        }
+      },
+      {
+        "id": "island-mid",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            2,
+            1.6,
+            1.8
+          ],
+          "cornerR": 0.12
+        },
+        "transform": {
+          "translate": [
+            3.1,
+            4.95,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.6,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "island-top",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            1.6,
+            0.9,
+            1.4
+          ],
+          "cornerR": 0.1
+        },
+        "transform": {
+          "translate": [
+            3,
+            6.1,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.6,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "island-window-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.38,
+            0.28,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            2,
+            2.9,
+            -0.65
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "island-window-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.38,
+            0.28,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            3,
+            2.9,
+            -0.65
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "island-window-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.38,
+            0.28,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            4,
+            2.9,
+            -0.65
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.45,
+          "metal": 0,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "mast-vertical",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.08,
+          "height": 2.4
+        },
+        "transform": {
+          "translate": [
+            3,
+            7.65,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.3,
+          "metal": 0.75,
+          "glow": 0
+        }
+      },
+      {
+        "id": "mast-crossbar",
+        "type": "capsule",
+        "args": {
+          "a": [
+            2.4,
+            6.85,
+            -2
+          ],
+          "b": [
+            3.6,
+            6.85,
+            -2
+          ],
+          "radius": 0.05
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.3,
+          "metal": 0.75,
+          "glow": 0
+        }
+      },
+      {
+        "id": "radar-array-front",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.65,
+            0.5,
+            0.08
+          ]
+        },
+        "transform": {
+          "translate": [
+            3,
+            7.5,
+            -1.45
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "radar-array-left",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.08,
+            0.65,
+            0.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.48,
+            6.85,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "radar-array-right",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.08,
+            0.65,
+            0.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            3.52,
+            6.85,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "ciws-aft-port",
+        "type": "sphere",
+        "args": {
+          "radius": 0.22
+        },
+        "transform": {
+          "translate": [
+            -6,
+            2.3,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "ciws-mid-port",
+        "type": "sphere",
+        "args": {
+          "radius": 0.22
+        },
+        "transform": {
+          "translate": [
+            -1,
+            2.3,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "ciws-bow",
+        "type": "sphere",
+        "args": {
+          "radius": 0.22
+        },
+        "transform": {
+          "translate": [
+            5.5,
+            2.3,
+            2.5
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "ciws-starboard",
+        "type": "sphere",
+        "args": {
+          "radius": 0.18
+        },
+        "transform": {
+          "translate": [
+            6,
+            2.1,
+            -2.8
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "j15-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-1-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                0,
+                -0.35
+              ],
+              "b": [
+                0,
+                0,
+                0.35
+              ],
+              "radius": 0.09
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.12,
+              "value": 0.35,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-1-wing-left",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.48,
+                0.04,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0.36
+              ],
+              "rotate": [
+                0,
+                0,
+                0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.12,
+              "value": 0.35,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-1-wing-right",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.48,
+                0.04,
+                0.12
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                -0.36
+              ],
+              "rotate": [
+                0,
+                0,
+                -0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.12,
+              "value": 0.35,
+              "metal": 0.55,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            5,
+            2,
+            -1
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        }
+      },
+      {
+        "id": "j15-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-2-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                0,
+                -0.32
+              ],
+              "b": [
+                0,
+                0,
+                0.32
+              ],
+              "radius": 0.085
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-2-wing-left",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.44,
+                0.04,
+                0.11
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0.33
+              ],
+              "rotate": [
+                0,
+                0,
+                0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-2-wing-right",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.44,
+                0.04,
+                0.11
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                -0.33
+              ],
+              "rotate": [
+                0,
+                0,
+                -0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            -2,
+            2,
+            -1.2
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        }
+      },
+      {
+        "id": "j15-3",
+        "type": "union",
+        "children": [
+          {
+            "id": "j15-3-body",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                0,
+                -0.32
+              ],
+              "b": [
+                0,
+                0,
+                0.32
+              ],
+              "radius": 0.085
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-3-wing-left",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.44,
+                0.04,
+                0.11
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0.33
+              ],
+              "rotate": [
+                0,
+                0,
+                0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          },
+          {
+            "id": "j15-3-wing-right",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.44,
+                0.04,
+                0.11
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                -0.33
+              ],
+              "rotate": [
+                0,
+                0,
+                -0.15
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.1,
+              "value": 0.32,
+              "metal": 0.55,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            -6,
+            2,
+            -1
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        }
+      },
+      {
+        "id": "flag-pole",
+        "type": "capsule",
+        "args": {
+          "a": [
+            1.8,
+            7,
+            -2
+          ],
+          "b": [
+            1.8,
+            9,
+            -2
+          ],
+          "radius": 0.05
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.2,
+          "metal": 0.85,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flag-body",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.08,
+            0.55,
+            0.85
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.18,
+            8.75,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.95,
+          "value": 0.7,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "flag-star",
+        "type": "sphere",
+        "args": {
+          "radius": 0.12
+        },
+        "transform": {
+          "translate": [
+            2.1,
+            8.8,
+            -2
+          ]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 1,
+          "value": 1,
+          "metal": 0,
+          "glow": 2
+        }
+      },
+      {
+        "id": "strike-group",
+        "type": "carrier-strike-group",
+        "args": {
+          "escortCount": 4,
+          "escortSpread": [
+            120,
+            80
+          ],
+          "separation": 25,
+          "birdCount": 6,
+          "cloudCount": 3,
+          "sea": true,
+          "cinematic": true
+        }
+      }
+    ],
+    "ground": {
+      "y": -1.8,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.45,
+        "pitch": 0.18,
+        "distance": 60,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0,
+        "aperture": 0.6,
+        "focalDistance": 55
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.1,
+        "vignetteStrength": 0.4,
+        "bloomMix": 0.25,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.15,
+        "motionBlurStrength": 0
+      }
+    }
+  }
+}

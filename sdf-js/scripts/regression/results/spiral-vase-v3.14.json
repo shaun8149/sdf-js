@@ -1,14 +1,14 @@
 {
   "result": {
     "demoId": "spiral-vase",
-    "version": "v3.9",
-    "model": "claude-sonnet-4-5",
-    "elapsed": "17.9s",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "18.7s",
     "tokens": {
-      "input": 47587,
-      "output": 1292
+      "input": 60399,
+      "output": 1289
     },
-    "costUSD": "0.1621",
+    "costUSD": "0.2005",
     "subjectCount": 5,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
@@ -59,29 +59,30 @@
       "mirror": 0,
       "total": 0
     },
+    "compositeAtoms": {},
     "sanitySummary": "clean",
     "sanityErrors": 0,
     "sanityWarnings": 0,
     "typeCounts": {
       "revolve": 1,
-      "torus": 3,
-      "cylinder": 1
+      "cut-hollow-sphere": 1,
+      "torus": 3
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Celadon Vase (mei ping)"
+    "sceneName": "Celadon vase (mei ping)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Celadon Vase (mei ping)",
+    "name": "Celadon vase (mei ping)",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "28-vertex polygon profile, mei ping silhouette, celadon green, decorative bands"
+      "from2dCode": "polygon vase profile (28 vertices, symmetric mei-ping silhouette) + celadon green palette + decorative bands + mouth cavity"
     },
     "subjects": [
       {
-        "id": "vase",
+        "id": "vase-body",
         "type": "revolve",
         "args": {
           "offset": 0
@@ -162,54 +163,87 @@
           ]
         },
         "material": {
-          "hue": 0.42,
-          "sat": 0.35,
-          "value": 0.72,
+          "hue": 0.4,
+          "sat": 0.3,
+          "value": 0.7,
           "metal": 0.15,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-upper",
+        "id": "vase-mouth-cavity",
+        "type": "cut-hollow-sphere",
+        "args": {
+          "radius": 0.12,
+          "h": 0.65,
+          "t": 0.015
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.72,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.18,
+          "value": 0.2,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stripe-upper",
         "type": "torus",
         "args": {
-          "radius": 0.285,
-          "thickness": 0.015
+          "radius": 0.305,
+          "thickness": 0.028
         },
         "transform": {
           "translate": [
             0,
             0.1,
             0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
           ]
         },
         "material": {
           "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "sat": 0.4,
+          "value": 0.42,
+          "metal": 0,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-lower",
+        "id": "stripe-lower",
         "type": "torus",
         "args": {
-          "radius": 0.195,
-          "thickness": 0.012
+          "radius": 0.265,
+          "thickness": 0.015
         },
         "transform": {
           "translate": [
             0,
             -0.35,
             0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
           ]
         },
         "material": {
           "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "sat": 0.4,
+          "value": 0.42,
+          "metal": 0,
           "glow": 0
         }
       },
@@ -217,62 +251,45 @@
         "id": "rim-ring",
         "type": "torus",
         "args": {
-          "radius": 0.135,
-          "thickness": 0.018
+          "radius": 0.138,
+          "thickness": 0.022
         },
         "transform": {
           "translate": [
             0,
             0.68,
+            0
+          ],
+          "rotate": [
+            1.5708,
+            0,
             0
           ]
         },
         "material": {
           "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
-          "glow": 0
-        }
-      },
-      {
-        "id": "mouth-cavity",
-        "type": "cylinder",
-        "args": {
-          "radius": 0.1,
-          "height": 0.08
-        },
-        "transform": {
-          "translate": [
-            0,
-            0.68,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.05,
-          "sat": 0.25,
-          "value": 0.18,
+          "sat": 0.4,
+          "value": 0.42,
           "metal": 0,
           "glow": 0
         }
       }
     ],
     "ground": {
-      "y": -0.85,
-      "region": "floor",
+      "y": -0.75,
+      "region": "ground",
       "material": {
         "hue": 0.1,
-        "sat": 0.12,
+        "sat": 0.1,
         "value": 0.75
       }
     },
     "defaults": {
       "camera": {
-        "yaw": 0.55,
-        "pitch": 0.2,
+        "yaw": 0.5,
+        "pitch": 0.15,
         "distance": 2.8,
-        "focal": 1.5,
+        "focal": 1.6,
         "targetX": 0,
         "targetY": 0,
         "targetZ": 0,
@@ -281,14 +298,14 @@
       },
       "light": {
         "azimuth": -0.7,
-        "altitude": 0.6,
+        "altitude": 0.55,
         "distance": 12,
         "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.35
+        "strength": 0.38
       },
       "postFx": {
         "exposure": 1.08,

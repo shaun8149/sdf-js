@@ -1,21 +1,21 @@
 {
   "result": {
     "demoId": "spiral-vase",
-    "version": "v3.9",
+    "version": "v3.11",
     "model": "claude-sonnet-4-5",
-    "elapsed": "17.9s",
+    "elapsed": "19.2s",
     "tokens": {
-      "input": 47587,
-      "output": 1292
+      "input": 54037,
+      "output": 1341
     },
-    "costUSD": "0.1621",
+    "costUSD": "0.1822",
     "subjectCount": 5,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
     "materialUsageCount": 5,
-    "patternUsageCount": 0,
+    "patternUsageCount": 1,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
@@ -65,23 +65,23 @@
     "typeCounts": {
       "revolve": 1,
       "torus": 3,
-      "cylinder": 1
+      "cut-hollow-sphere": 1
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Celadon Vase (mei ping)"
+    "sceneName": "Celadon vase (mei ping)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Celadon Vase (mei ping)",
+    "name": "Celadon vase (mei ping)",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "28-vertex polygon profile, mei ping silhouette, celadon green, decorative bands"
+      "from2dCode": "28-vertex polygon profile, symmetric mei-ping silhouette, celadon green 3-value palette, decorative bands at belly+lip, crescent shadow band right side, mouth ellipse at top"
     },
     "subjects": [
       {
-        "id": "vase",
+        "id": "vase-body",
         "type": "revolve",
         "args": {
           "offset": 0
@@ -163,39 +163,49 @@
         },
         "material": {
           "hue": 0.42,
-          "sat": 0.35,
-          "value": 0.72,
-          "metal": 0.15,
+          "sat": 0.32,
+          "value": 0.68,
+          "metal": 0.25,
           "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.15
         }
       },
       {
-        "id": "decorative-band-upper",
+        "id": "decorative-band-belly",
         "type": "torus",
         "args": {
-          "radius": 0.285,
-          "thickness": 0.015
+          "radius": 0.305,
+          "thickness": 0.022
         },
         "transform": {
           "translate": [
             0,
             0.1,
             0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
           ]
         },
         "material": {
-          "hue": 0.38,
+          "hue": 0.4,
           "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "value": 0.42,
+          "metal": 0.15,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-lower",
+        "id": "decorative-band-foot",
         "type": "torus",
         "args": {
-          "radius": 0.195,
+          "radius": 0.205,
           "thickness": 0.012
         },
         "transform": {
@@ -203,21 +213,26 @@
             0,
             -0.35,
             0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
           ]
         },
         "material": {
-          "hue": 0.38,
+          "hue": 0.4,
           "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "value": 0.42,
+          "metal": 0.15,
           "glow": 0
         }
       },
       {
-        "id": "rim-ring",
+        "id": "rim-band",
         "type": "torus",
         "args": {
-          "radius": 0.135,
+          "radius": 0.138,
           "thickness": 0.018
         },
         "transform": {
@@ -225,33 +240,39 @@
             0,
             0.68,
             0
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
           ]
         },
         "material": {
-          "hue": 0.38,
+          "hue": 0.4,
           "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "value": 0.42,
+          "metal": 0.15,
           "glow": 0
         }
       },
       {
         "id": "mouth-cavity",
-        "type": "cylinder",
+        "type": "cut-hollow-sphere",
         "args": {
-          "radius": 0.1,
-          "height": 0.08
+          "radius": 0.13,
+          "h": -0.02,
+          "t": 0.015
         },
         "transform": {
           "translate": [
             0,
-            0.68,
+            0.72,
             0
           ]
         },
         "material": {
-          "hue": 0.05,
-          "sat": 0.25,
+          "hue": 0.08,
+          "sat": 0.3,
           "value": 0.18,
           "metal": 0,
           "glow": 0
@@ -260,11 +281,11 @@
     ],
     "ground": {
       "y": -0.85,
-      "region": "floor",
+      "region": "ground",
       "material": {
         "hue": 0.1,
-        "sat": 0.12,
-        "value": 0.75
+        "sat": 0.08,
+        "value": 0.62
       }
     },
     "defaults": {
@@ -281,14 +302,14 @@
       },
       "light": {
         "azimuth": -0.7,
-        "altitude": 0.6,
+        "altitude": 0.5,
         "distance": 12,
         "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.35
+        "strength": 0.38
       },
       "postFx": {
         "exposure": 1.08,

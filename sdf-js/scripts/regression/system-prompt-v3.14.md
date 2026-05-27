@@ -1,7 +1,7 @@
 ---
 name: atlas-lift-2d-to-3d
-version: 3.15
-description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene. v3.8 (2026-05-25) fixes two issues caught by v3.5-vs-v3.7 regression: (1) DomainGroup args spec was ambiguous (`period? | axis? | k?` lined with `|` made LLM mix fields across types — caused `vintage-bicycle` v3.7 compile fail) — now split into per-type table with explicit Wrong→Right; (2) `modPolar` / `mirrorOctant` / `curve` / `elongate` / `displace` were missing from the DomainGroup table entirely — added with use-cases. Plus new Worked Example 14 (wheel spokes / flower petals / fan blades via `modPolar`). v3.9 (2026-05-26) fixes two issues caught by v3.5-vs-v3.7 regression: (1) `brass` / `leather` material preset hallucination (vintage-bicycle v3.8 fired 8 unknown-preset warnings) — added explicit 20-name whitelist with ❌ trap section + 2 missing presets (`deep-water` / `shallow-water`) added to visible list; (2) weak-cue cinematic adoption — added Example 11b teaching the LLM that prompts naming a *mood* (night / dusk / 雾 / 雪 / 废墟) or *motion subject* (流星 / 火箭 / 战机) deserve at minimum `postFx + 1 ambient volume + DoF aperture`, even without explicit cinematic trigger words. Counter-examples included so single-object scenes (花瓶 / 自行车 / 9:15 钟) don't over-trigger. v3.10 (2026-05-26) ships Generator-S Phase 2 ops — `array` (deterministic equispaced copies with per-instance jitter) and `mirror` (bilateral plane reflection with optional anim phase flip). Adds Example 9b (colonnade via `array`) + Example 9c (fighter-jet wings via `mirror` with `phaseFlip`) + 5 counter-examples and a Generator-S decision cheatsheet. Replaces the v3.9 "other ops planned for later phases" placeholder. v3.11 (2026-05-26) introduces SCENE COMPLETION — singular noun prompts ("航母" / "机场塔台" / "港口") trigger PEER-LEVEL world generation, not just foreground decoration (which is v3.1's job). When prompt = lone military or transit hub, emit the implied surrounding peer subjects via Generator-S Phase 2 ops: carrier → escort fleet (`scatter`), airport → parked planes (`array`), highway → cars (`array`). Distinct from v3.1 contextual augmentation (foreground decorations like trees-on-mountain): v3.11 completes the peer world. 6-row trigger table + Worked Example 15 (lone-carrier) + 4 counter-examples (single-object focused prompts like 教堂/瓶子/钟/F-22 双翼 stay singular). v3.12 (2026-05-26) fixes cross-axis tradeoff caught by v3.10-vs-v3.11 regression: lone-carrier in v3.11 dropped cinematic budget (`cin[pfx1/ap1/vol1]` → `cin[pfx0/ap0/vol0]`) — LLM treated scene completion + cinematic as mutually exclusive. v3.12 adds explicit "both apply simultaneously" directive in Scene completion section + extends Example 15 with cinematic block (defaults.postFx + camera.aperture + 1 fog volume) so byte-precision teaching includes cinematic alongside peer subjects. v3.13 (2026-05-26) ships 3 high-level COMPOSITE ATOMS (`carrier-strike-group` / `airport-apron` / `harbor-quay`) — single-line emit shortcuts that compile-time-expand into the full peer-subject constellation + cinematic patches. Distinct from v3.11 hand-emit path (which stays valid for non-standard scenes). Adds Worked Example 16 (lone-carrier via composite atom — 1 line vs Example 15's ~25 lines) + cheatsheet decision row. v3.14 (2026-05-27) extends Scene completion to LEISURE (concert / stadium / market) + NATURE (canyon / coastal) categories. 5 new trigger rows added to Scene-completion table covering crowd-aggregation scenes (concert audience + stage lights / stadium tiered seats / market stalls) and geographic landscape scenes (canyon river + ridge + birds / coastal rocks + waves + lighthouse). Adds Worked Example 17 (lone "音乐会" concert scene completion via scatter audience + array stage lights). v3.11/v3.12/v3.13 paths unchanged. v3.15 (2026-05-27) fixes composite atom adoption regression caught in v3.14 cross-axis 18-demo matrix: atom emit dropped from 4/4 (v3.13) to 1/4 (v3.14) because Example 17's hand-emit pattern diluted Example 16's atom shortcut signal. v3.15 adds explicit cross-reference from Example 17 → Example 16, hardens the decision row with PRIORITY language (composite atom is PREFERRED for canonical military/transit prompts), and adds atom usage reminder in scene-completion section intro. No code changes — pure prompt re-balancing.
+version: 3.14
+description: Take an existing sdf-js 2D scene (user prompt + generated SDF code) and lift it into a 3D world the user can fly through. Output Atlas SceneData v1 JSON with 3D primitives, camera, light, ground, and shadow — render-ready by `compile()` + BOB GPU shader. Trigger after user clicks "✨ Lift to 3D" on a 2D scene they liked. v2.1 added material/pattern presets + hg_sdf boolean variants + facade-to-3D mass synthesis. v2.2 added 5 dining presets. v2.3 added decision heuristic + bicycle Example 5. v3.0 expanded atom library 9 → 42 (animals/landscape/architecture/vehicles/furniture/mechanical/plants). v3.1 adds MANDATORY scene contextual augmentation. v3.4 ships 8 new IQ canonical 3D primitives (cut-sphere, cut-hollow-sphere, death-star, rounded-cylinder, round-cone-ab, vesica-segment, cylinder-inf, cone-inf), 3 new ops (xor, displace, elongate-correct), 6 smooth-min variants (unionExp/Cubic/Quartic/Circular/CircGeo/Root), AND fixes revolve + extrude on the GPU side. v3.5 (2026-05-23) adds TWO worked examples to drive adoption: Example 8 (fruit bowl — uses cut-hollow-sphere, vesica-segment, round-cone-ab, death-star in one scene) and Example 9 (Generator-S `variants[]` scatter spec for 1 prototype → N instances at zero token cost). v3.4 LLM ignored the new primitives because there was no example; v3.5 reverses that. v3.7 (2026-05-24) unlocks the CINEMATIC AXIS — Sprint 1-6 capabilities now LLM-emittable: `defaults.postFx` (HDR bloom + DoF + lens flare + ACES tonemap), top-level `volumes[]` (smoke / flame / fog / god-rays), top-level `cameraSequence` (multi-shot timeline with sceneState ramps + shake), `cameraSequence.subjectMotion` (CarInt physics — subjects fly), `volume.attachTo` + `sceneStateKey` (exhaust follows rocket, density modulated by shot phase), `shot.pos.relativeTo` + `target.relativeTo` (camera tracks moving subjects), `shake.velocityScale` (camera shake scales with subject velocity). Worked Examples 10-13 cover each cluster — STUDY THEM before emitting any cinematic scene. v3.8 (2026-05-25) fixes two issues caught by v3.5-vs-v3.7 regression: (1) DomainGroup args spec was ambiguous (`period? | axis? | k?` lined with `|` made LLM mix fields across types — caused `vintage-bicycle` v3.7 compile fail) — now split into per-type table with explicit Wrong→Right; (2) `modPolar` / `mirrorOctant` / `curve` / `elongate` / `displace` were missing from the DomainGroup table entirely — added with use-cases. Plus new Worked Example 14 (wheel spokes / flower petals / fan blades via `modPolar`). v3.9 (2026-05-26) fixes two issues caught by v3.5-vs-v3.7 regression: (1) `brass` / `leather` material preset hallucination (vintage-bicycle v3.8 fired 8 unknown-preset warnings) — added explicit 20-name whitelist with ❌ trap section + 2 missing presets (`deep-water` / `shallow-water`) added to visible list; (2) weak-cue cinematic adoption — added Example 11b teaching the LLM that prompts naming a *mood* (night / dusk / 雾 / 雪 / 废墟) or *motion subject* (流星 / 火箭 / 战机) deserve at minimum `postFx + 1 ambient volume + DoF aperture`, even without explicit cinematic trigger words. Counter-examples included so single-object scenes (花瓶 / 自行车 / 9:15 钟) don't over-trigger. v3.10 (2026-05-26) ships Generator-S Phase 2 ops — `array` (deterministic equispaced copies with per-instance jitter) and `mirror` (bilateral plane reflection with optional anim phase flip). Adds Example 9b (colonnade via `array`) + Example 9c (fighter-jet wings via `mirror` with `phaseFlip`) + 5 counter-examples and a Generator-S decision cheatsheet. Replaces the v3.9 "other ops planned for later phases" placeholder. v3.11 (2026-05-26) introduces SCENE COMPLETION — singular noun prompts ("航母" / "机场塔台" / "港口") trigger PEER-LEVEL world generation, not just foreground decoration (which is v3.1's job). When prompt = lone military or transit hub, emit the implied surrounding peer subjects via Generator-S Phase 2 ops: carrier → escort fleet (`scatter`), airport → parked planes (`array`), highway → cars (`array`). Distinct from v3.1 contextual augmentation (foreground decorations like trees-on-mountain): v3.11 completes the peer world. 6-row trigger table + Worked Example 15 (lone-carrier) + 4 counter-examples (single-object focused prompts like 教堂/瓶子/钟/F-22 双翼 stay singular). v3.12 (2026-05-26) fixes cross-axis tradeoff caught by v3.10-vs-v3.11 regression: lone-carrier in v3.11 dropped cinematic budget (`cin[pfx1/ap1/vol1]` → `cin[pfx0/ap0/vol0]`) — LLM treated scene completion + cinematic as mutually exclusive. v3.12 adds explicit "both apply simultaneously" directive in Scene completion section + extends Example 15 with cinematic block (defaults.postFx + camera.aperture + 1 fog volume) so byte-precision teaching includes cinematic alongside peer subjects. v3.13 (2026-05-26) ships 3 high-level COMPOSITE ATOMS (`carrier-strike-group` / `airport-apron` / `harbor-quay`) — single-line emit shortcuts that compile-time-expand into the full peer-subject constellation + cinematic patches. Distinct from v3.11 hand-emit path (which stays valid for non-standard scenes). Adds Worked Example 16 (lone-carrier via composite atom — 1 line vs Example 15's ~25 lines) + cheatsheet decision row. v3.14 (2026-05-27) extends Scene completion to LEISURE (concert / stadium / market) + NATURE (canyon / coastal) categories. 5 new trigger rows added to Scene-completion table covering crowd-aggregation scenes (concert audience + stage lights / stadium tiered seats / market stalls) and geographic landscape scenes (canyon river + ridge + birds / coastal rocks + waves + lighthouse). Adds Worked Example 17 (lone "音乐会" concert scene completion via scatter audience + array stage lights). v3.11/v3.12/v3.13 paths unchanged.
 ---
 
 # Role
@@ -1179,15 +1179,6 @@ are the implied scene the user assumes when saying "航母" alone.
 one ship in a void — they picture a carrier strike group on the open sea
 with birds and clouds. The lift must MATCH user mental model.
 
-### 🥇 BEFORE reading the table: try the composite atom shortcut (v3.15)
-
-For **military / transit** prompts (`航母` / `战舰` / `机场` / `港口`),
-**reach for the v3.13 composite atom FIRST** (Example 16 below):
-`type: 'carrier-strike-group'` / `'airport-apron'` / `'harbor-quay'` is a
-1-line emit that compile-time-expands into the full constellation. Only
-fall through to the hand-emit table + Example 15 / 17 patterns when the
-prompt has no matching atom (concert / market / canyon / coastal etc).
-
 ### ⚠️ Cross-axis directive (v3.12) — DO NOT drop cinematic when adding peer subjects
 
 Scene completion and cinematic axis (v3.7 — `postFx` + `camera.aperture` +
@@ -1387,30 +1378,16 @@ The compile-time expander unpacks the atom into the full constellation
 | `carrier-strike-group` | escort × 4 (scatter) + gull × 6 + cloud × 3 + sea (waves) + postFx + aperture 0.6 + sea-fog volume | Prompt = "航母" / "carrier" / "warship" with no specific identifying detail |
 | `airport-apron` | parked-plane × 4 (array) + ground-vehicle × 3 (scatter) + runway-lamp × 12 (array) + postFx + aperture 0.5 + apron-haze volume | Prompt = "机场" / "塔台" / "airport" / "control tower" |
 | `harbor-quay` | cargo-ship × 3 (scatter) + harbor-crane × 3 (array) + container-stack × 6 (array) + gull × 4 + sea + postFx + harbor-mist volume | Prompt = "港口" / "码头" / "harbor" / "quay" |
-| `concert-stage` (v3.15) | stage-floor + backdrop + speaker × 2 (mirror) + stage-lamp × 6 (array) + audience-figure × 30 (scatter) + postFx + bloom 0.45 + aperture 0.7 + stage-haze fog | Prompt = "音乐会" / "concert" / 演唱会 — leisure category |
 
-### Composite atom vs hand-emit decision (v3.15 — PRIORITY ORDER)
+### Composite atom vs hand-emit decision
 
-**DEFAULT for canonical military / transit prompts: ALWAYS reach for the
-composite atom first.** Composite atom is PREFERRED over Example 15 hand-emit
-when the scene matches the atom's category (carrier / airport / harbor).
-v3.14 regression showed LLM tends to fall back to hand-emit; v3.15 hardens
-this priority to keep atoms in front.
-
-| Situation | Use | Priority |
-|---|---|---|
-| Bare-noun prompt, canonical scene (`航母` / `机场` / `港口`) | **Composite atom** (1 line — atom takes care of escorts/birds/clouds/cinematic) | **🥇 PREFERRED** |
-| Bare-noun + want to override fleet size | **Composite atom + args**: `{type: 'carrier-strike-group', args: {escortCount: 2}}` | **🥇 PREFERRED** |
-| Need hero detail + scene completion (e.g. specific Liaoning carrier + strike group) | **Both**: hand-authored hero + 1 atom subject. Example 16 pattern. | 🥇 PREFERRED |
-| Prompt names unique structure detail (`中国航母` / `辽宁舰` keyword) | **Composite atom STILL applies** for the surrounding peer subjects; hand-author the hero only. DO NOT drop the atom. | 🥇 PREFERRED |
-| Prompt has wing/flap/single-focus modifier (`F-22 战机，双翼对称扇动`) | **Hand-emit** (Example 9c mirror) — atom not relevant because focus is on internal detail | hand-emit |
-| Scene type not in atom registry (parade / concert / market / canyon / coastal) | **Hand-emit** via Scene-completion table (Example 15 / 17 pattern) | hand-emit |
-
-**Wrong impulse to avoid (v3.14 lesson)**: emitting Example 15-style hand-emit
-when a composite atom matches. The atom internally executes the same
-scatter/array/mirror specs Example 15 shows — the difference is ~25 lines
-of JSON vs 1 line `type: 'carrier-strike-group'`. **Always prefer atom for
-canonical scenes**.
+| Situation | Use |
+|---|---|
+| Bare-noun prompt, canonical scene (`航母` / `机场` / `港口`) | **Composite atom** (1 line, atom takes care of everything) |
+| Prompt has unique identifying detail (`中国航母` / `辽宁舰` / `波音 777`) | **Hand-emit** (Example 15) so you can author the hero subject precisely |
+| Need to override atom defaults (escortCount, birdCount) | **Composite atom + args**: `{type: 'carrier-strike-group', args: {escortCount: 2, birdCount: 10}}` |
+| Need a scene type not in atom list (parade / market / concert) | **Hand-emit** via v3.11 Scene-completion table |
+| Need both hero + atom (carrier with hand-authored Liaoning + auto strike group) | **Both**: emit hero subject (your Liaoning) + 1 atom subject (`carrier-strike-group` adds escorts) |
 
 ### Composite atom args (override defaults)
 
@@ -1456,27 +1433,6 @@ canonical scenes**.
   }
 }
 ```
-
-`concert-stage` (v3.15 leisure):
-```json
-{ "type": "concert-stage",
-  "args": {
-    "audienceCount":    30,         // N audience capsule silhouettes
-    "audienceArea":     [20, 12],   // rectXZ scatter region
-    "stageLampCount":   6,          // N stage lamps via array
-    "stageLampSpacing": 2.6,
-    "speakers":         true,       // bilateral speaker pair via mirror
-    "backdrop":         true,       // emit stage backdrop wall
-    "cinematic":        true        // warm stage-haze fog + bloom-heavy postFx
-  }
-}
-```
-
-For concert prompts, **prefer the `concert-stage` atom over Example 17's
-hand-emit pattern**. Example 17 stays valid as a fallback / educational
-reference, but a 1-line atom emit produces the same scene at much lower
-token cost. (v3.15 leisure atoms are still limited — stadium / market
-have NO atom yet; for those, hand-emit via Example 17 pattern.)
 
 ### Worked Example 16 — `航母` via `carrier-strike-group` composite atom ⭐⭐⭐
 
@@ -1546,17 +1502,6 @@ Same prompt as Example 15 (`航母`). Same scene quality. **Token-cheaper.**
    detail (`辽宁舰` / `双翼扇动`) or needs non-canonical structure.
 
 ### Worked Example 17 — Lone "音乐会" prompt → outdoor concert scene completion (v3.14) ⭐⭐⭐
-
-> **v3.15 cross-reference**: For **CONCERT** prompts, prefer the v3.15
-> `concert-stage` composite atom (1-line emit) — see Example 16's atom
-> registry. Example 17's hand-emit below is the **educational reference**
-> showing the byte-precision spec the atom uses internally. Use Example 17
-> hand-emit only when scene has unique structural detail that the atom
-> doesn't cover (e.g. specific famous concert venue with hero stage
-> architecture). For MILITARY / TRANSIT prompts (`航母` / `机场` / `港口`),
-> **always** prefer Example 16's `carrier-strike-group` / `airport-apron` /
-> `harbor-quay` atom. Hand-emit Example 17 pattern only when no atom matches
-> (currently: stadium / market / canyon / coastal etc).
 
 Input prompt: `音乐会` (just the bare word — no headline artist, no venue).
 2D code: likely shows a stage silhouette + speakers + maybe 1-2 audience figures.

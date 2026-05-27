@@ -1,0 +1,381 @@
+{
+  "result": {
+    "demoId": "fighter-jet-bilateral",
+    "version": "v3.10",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "21.8s",
+    "tokens": {
+      "input": 49883,
+      "output": 1657
+    },
+    "costUSD": "0.1745",
+    "subjectCount": 8,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 8,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 8,
+      "min": -0.45,
+      "max": 0.58,
+      "range": 1.03,
+      "stdev": 0.3527658571914238
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 3,
+      "total": 3
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "ellipsoid": 2,
+      "cone": 1,
+      "cylinder": 2,
+      "box": 3
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "F-22 Raptor — wing flap animation"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "F-22 Raptor — wing flap animation",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "F-22 战机，双翼对称扇动",
+      "from2dCode": "Top-down stealth jet silhouette with bilateral wings/tail-fins. User wants counter-phase wing flapping (left up when right down)."
+    },
+    "subjects": [
+      {
+        "id": "fuselage",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.9,
+            0.5,
+            0.12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.5,
+            0
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.1,
+          "value": 0.55,
+          "metal": 0.75,
+          "glow": 0
+        }
+      },
+      {
+        "id": "nose-cone",
+        "type": "cone",
+        "args": {
+          "height": 0.26,
+          "baseRadius": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.5,
+            0.58
+          ],
+          "rotate": [
+            0,
+            0,
+            1.5708
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.5,
+          "metal": 0.8,
+          "glow": 0
+        }
+      },
+      {
+        "id": "cockpit-canopy",
+        "type": "ellipsoid",
+        "args": {
+          "dims": [
+            0.16,
+            0.12,
+            0.07
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.62,
+            0.2
+          ],
+          "rotate": [
+            0,
+            1.5708,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.35,
+          "value": 0.35,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "exhaust-nozzle-left",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.05,
+          "height": 0.1
+        },
+        "transform": {
+          "translate": [
+            0.05,
+            2.5,
+            -0.45
+          ],
+          "rotate": [
+            0,
+            0,
+            1.5708
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.08,
+          "value": 0.22,
+          "metal": 0.85,
+          "glow": 0
+        }
+      },
+      {
+        "id": "exhaust-nozzle-right",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.05,
+          "height": 0.1
+        },
+        "transform": {
+          "translate": [
+            -0.05,
+            2.5,
+            -0.45
+          ],
+          "rotate": [
+            0,
+            0,
+            1.5708
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.08,
+          "value": 0.22,
+          "metal": 0.85,
+          "glow": 0
+        }
+      },
+      {
+        "id": "wing",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.62,
+            0.08,
+            0.56
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.36,
+            2.5,
+            0.04
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.09,
+          "value": 0.52,
+          "metal": 0.78,
+          "glow": 0
+        },
+        "animation": [
+          {
+            "channel": "transform.rotate.y",
+            "value": {
+              "kind": "time",
+              "form": "sin",
+              "amp": 0.08,
+              "freq": 1.2,
+              "phase": 0
+            }
+          }
+        ],
+        "variants": [
+          {
+            "op": "mirror",
+            "plane": "yz",
+            "phaseFlip": 3.14159
+          }
+        ]
+      },
+      {
+        "id": "tail-fin",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.26,
+            0.05,
+            0.22
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.13,
+            2.55,
+            -0.37
+          ],
+          "rotate": [
+            0,
+            0.35,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.5,
+          "metal": 0.75,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "mirror",
+            "plane": "yz"
+          }
+        ]
+      },
+      {
+        "id": "horizontal-stabilizer",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.3,
+            0.04,
+            0.16
+          ]
+        },
+        "transform": {
+          "translate": [
+            0.15,
+            2.5,
+            -0.41
+          ],
+          "rotate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.09,
+          "value": 0.48,
+          "metal": 0.73,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "mirror",
+            "plane": "yz"
+          }
+        ]
+      }
+    ],
+    "ground": null,
+    "defaults": {
+      "camera": {
+        "yaw": 0.6,
+        "pitch": 0.25,
+        "distance": 6,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 6
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.55,
+        "distance": 30,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.3,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.08,
+        "motionBlurStrength": 0.4
+      }
+    }
+  }
+}

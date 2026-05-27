@@ -1,14 +1,14 @@
 {
   "result": {
     "demoId": "spiral-vase",
-    "version": "v3.9",
+    "version": "v3.10",
     "model": "claude-sonnet-4-5",
-    "elapsed": "17.9s",
+    "elapsed": "15.6s",
     "tokens": {
-      "input": 47587,
-      "output": 1292
+      "input": 50541,
+      "output": 1234
     },
-    "costUSD": "0.1621",
+    "costUSD": "0.1701",
     "subjectCount": 5,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
@@ -65,23 +65,23 @@
     "typeCounts": {
       "revolve": 1,
       "torus": 3,
-      "cylinder": 1
+      "ellipsoid": 1
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Celadon Vase (mei ping)"
+    "sceneName": "Celadon vase (mei ping)"
   },
   "sceneData": {
     "v": 1,
-    "name": "Celadon Vase (mei ping)",
+    "name": "Celadon vase (mei ping)",
     "source": {
       "format": "llm-lift",
       "prompt": "一只花瓶",
-      "from2dCode": "28-vertex polygon profile, mei ping silhouette, celadon green, decorative bands"
+      "from2dCode": "28-vertex polygon profile (mei ping silhouette), celadon green, decorative bands, mouth cavity"
     },
     "subjects": [
       {
-        "id": "vase",
+        "id": "vase-body",
         "type": "revolve",
         "args": {
           "offset": 0
@@ -164,17 +164,39 @@
         "material": {
           "hue": 0.42,
           "sat": 0.35,
-          "value": 0.72,
+          "value": 0.7,
           "metal": 0.15,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-upper",
+        "id": "rim-ring",
         "type": "torus",
         "args": {
-          "radius": 0.285,
-          "thickness": 0.015
+          "radius": 0.138,
+          "thickness": 0.022
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.68,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.4,
+          "sat": 0.28,
+          "value": 0.45,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stripe-upper",
+        "type": "torus",
+        "args": {
+          "radius": 0.305,
+          "thickness": 0.027
         },
         "transform": {
           "translate": [
@@ -184,19 +206,19 @@
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "hue": 0.4,
+          "sat": 0.28,
+          "value": 0.45,
+          "metal": 0.1,
           "glow": 0
         }
       },
       {
-        "id": "decorative-band-lower",
+        "id": "stripe-lower",
         "type": "torus",
         "args": {
-          "radius": 0.195,
-          "thickness": 0.012
+          "radius": 0.245,
+          "thickness": 0.015
         },
         "transform": {
           "translate": [
@@ -206,51 +228,32 @@
           ]
         },
         "material": {
-          "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
-          "glow": 0
-        }
-      },
-      {
-        "id": "rim-ring",
-        "type": "torus",
-        "args": {
-          "radius": 0.135,
-          "thickness": 0.018
-        },
-        "transform": {
-          "translate": [
-            0,
-            0.68,
-            0
-          ]
-        },
-        "material": {
-          "hue": 0.38,
-          "sat": 0.45,
-          "value": 0.5,
-          "metal": 0.2,
+          "hue": 0.4,
+          "sat": 0.28,
+          "value": 0.45,
+          "metal": 0.1,
           "glow": 0
         }
       },
       {
         "id": "mouth-cavity",
-        "type": "cylinder",
+        "type": "ellipsoid",
         "args": {
-          "radius": 0.1,
-          "height": 0.08
+          "dims": [
+            0.12,
+            0.025,
+            0.12
+          ]
         },
         "transform": {
           "translate": [
             0,
-            0.68,
+            0.7,
             0
           ]
         },
         "material": {
-          "hue": 0.05,
+          "hue": 0.08,
           "sat": 0.25,
           "value": 0.18,
           "metal": 0,
@@ -264,7 +267,7 @@
       "material": {
         "hue": 0.1,
         "sat": 0.12,
-        "value": 0.75
+        "value": 0.68
       }
     },
     "defaults": {
@@ -272,7 +275,7 @@
         "yaw": 0.55,
         "pitch": 0.2,
         "distance": 2.8,
-        "focal": 1.5,
+        "focal": 1.6,
         "targetX": 0,
         "targetY": 0,
         "targetZ": 0,
@@ -280,21 +283,21 @@
         "focalDistance": 2.8
       },
       "light": {
-        "azimuth": -0.7,
-        "altitude": 0.6,
+        "azimuth": -0.65,
+        "altitude": 0.52,
         "distance": 12,
         "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.35
+        "strength": 0.38
       },
       "postFx": {
         "exposure": 1.08,
-        "vignetteStrength": 0.3,
-        "bloomMix": 0.18,
-        "bloomThreshold": 0.88,
+        "vignetteStrength": 0.32,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.85,
         "lensFlareStrength": 0,
         "motionBlurStrength": 0
       }

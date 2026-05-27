@@ -1,0 +1,680 @@
+{
+  "result": {
+    "demoId": "generic-harbor",
+    "version": "v3.12",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "37.8s",
+    "tokens": {
+      "input": 54072,
+      "output": 3000
+    },
+    "costUSD": "0.2072",
+    "subjectCount": 18,
+    "newAtomsUsedCount": 1,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        1
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 16,
+    "patternUsageCount": 2,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 17,
+      "min": -1.4,
+      "max": 20,
+      "range": 21.4,
+      "stdev": 6.461662292690256
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 2,
+      "array": 2,
+      "mirror": 0,
+      "total": 4
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "large-arg×1",
+    "sanityErrors": 1,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 9,
+      "union": 2,
+      "rounded_box": 2,
+      "cylinder": 2,
+      "capsule": 1,
+      "bird-silhouette": 1,
+      "waves": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Harbor scene — commercial port"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Harbor scene — commercial port",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "港口",
+      "from2dCode": "Bare harbor — quay + 1 cargo ship + 1 dock crane. Minimal 2D silhouette."
+    },
+    "subjects": [
+      {
+        "id": "quay-platform",
+        "type": "box",
+        "args": {
+          "dims": [
+            80,
+            1.2,
+            12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.6,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.4
+        }
+      },
+      {
+        "id": "cargo-ship-hero",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                16,
+                3.5,
+                5.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.8,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.08,
+              "value": 0.32,
+              "metal": 0.15,
+              "glow": 0
+            }
+          },
+          {
+            "id": "deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                16.5,
+                0.4,
+                6
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                2.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0.05,
+              "value": 0.45,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "cabin-main",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                3.2,
+                2.8,
+                4.5
+              ],
+              "cornerR": 0.15
+            },
+            "transform": {
+              "translate": [
+                -4.5,
+                4.5,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.05,
+              "sat": 0.08,
+              "value": 0.88,
+              "metal": 0.1,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bridge",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                2.4,
+                1.8,
+                3.8
+              ],
+              "cornerR": 0.12
+            },
+            "transform": {
+              "translate": [
+                -4.5,
+                6.8,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.05,
+              "sat": 0.08,
+              "value": 0.92,
+              "metal": 0.1,
+              "glow": 0
+            }
+          },
+          {
+            "id": "smokestack-1",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.4,
+              "height": 2.2
+            },
+            "transform": {
+              "translate": [
+                -3.2,
+                7.2,
+                1.4
+              ]
+            },
+            "material": {
+              "hue": 0.02,
+              "sat": 0.85,
+              "value": 0.55,
+              "metal": 0.3,
+              "glow": 0
+            }
+          },
+          {
+            "id": "smokestack-2",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.4,
+              "height": 2.2
+            },
+            "transform": {
+              "translate": [
+                -3.2,
+                7.2,
+                -1.4
+              ]
+            },
+            "material": {
+              "hue": 0.02,
+              "sat": 0.85,
+              "value": 0.55,
+              "metal": 0.3,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 3,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                0,
+                0,
+                0
+              ],
+              "size": [
+                120,
+                60
+              ]
+            },
+            "separation": 35,
+            "heading": {
+              "jitter": 0.15
+            },
+            "scale": {
+              "jitter": 0.12
+            },
+            "translate": {
+              "jitter": [
+                4,
+                0,
+                3
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "dock-crane",
+        "type": "union",
+        "children": [
+          {
+            "id": "crane-base",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.2,
+                0.8,
+                2.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.4,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.65,
+              "value": 0.45,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "crane-pillar",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.6,
+                8,
+                0.6
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                4.8,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.55,
+              "value": 0.42,
+              "metal": 0.25,
+              "glow": 0
+            }
+          },
+          {
+            "id": "crane-boom",
+            "type": "box",
+            "args": {
+              "dims": [
+                12,
+                0.5,
+                0.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                6,
+                9,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.55,
+              "value": 0.42,
+              "metal": 0.25,
+              "glow": 0
+            }
+          },
+          {
+            "id": "crane-hook-cable",
+            "type": "capsule",
+            "args": {
+              "a": [
+                8,
+                9,
+                0
+              ],
+              "b": [
+                8,
+                5.5,
+                0
+              ],
+              "radius": 0.05
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.2,
+              "metal": 0.5,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 4,
+            "axis": "x",
+            "spacing": 28,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.03
+            },
+            "translate": {
+              "jitter": [
+                0.5,
+                0,
+                0.3
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "container-stack",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.4,
+            2.4,
+            6
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.02,
+          "sat": 0.85,
+          "value": 0.6,
+          "metal": 0.15,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 6,
+            "axis": "x",
+            "spacing": 3.5,
+            "origin": "start",
+            "scale": {
+              "jitter": 0.08
+            },
+            "translate": {
+              "jitter": [
+                0.2,
+                0,
+                0.2
+              ]
+            },
+            "rotateY": {
+              "jitter": 0.05
+            }
+          }
+        ]
+      },
+      {
+        "id": "warehouse-building",
+        "type": "box",
+        "args": {
+          "dims": [
+            35,
+            5.5,
+            10
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.75,
+            20
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.5
+        }
+      },
+      {
+        "id": "warehouse-roof",
+        "type": "box",
+        "args": {
+          "dims": [
+            36,
+            0.4,
+            11
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            5.7,
+            20
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.75,
+          "value": 0.5,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "gull",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "bodyRadius": 0.08,
+          "wingSpan": 0.65,
+          "wingRise": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            12,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 5,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                13,
+                5
+              ],
+              "size": [
+                80,
+                5,
+                40
+              ]
+            },
+            "scale": {
+              "jitter": 0.18
+            },
+            "translate": {
+              "jitter": [
+                3,
+                1,
+                2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 4,
+          "amp": 0.22,
+          "angle": 0.4,
+          "speed": 0.7
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.7,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0,
+          "kind": "sea"
+        }
+      }
+    ],
+    "ground": {
+      "y": -2.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.65,
+        "value": 0.22
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 65,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 3.5,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 60
+      },
+      "light": {
+        "azimuth": 0.75,
+        "altitude": 0.32,
+        "distance": 90,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.08,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "harbor-haze",
+        "kind": "fog",
+        "center": [
+          0,
+          2,
+          10
+        ],
+        "size": [
+          100,
+          6,
+          50
+        ],
+        "density": 0.4,
+        "color": [
+          190,
+          205,
+          215
+        ],
+        "noiseScale": 1.3,
+        "colorIntensity": 1
+      }
+    ]
+  }
+}

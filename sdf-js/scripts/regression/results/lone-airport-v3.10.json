@@ -1,0 +1,767 @@
+{
+  "result": {
+    "demoId": "lone-airport",
+    "version": "v3.10",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "40.1s",
+    "tokens": {
+      "input": 49808,
+      "output": 3372
+    },
+    "costUSD": "0.2000",
+    "subjectCount": 25,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 23,
+    "patternUsageCount": 3,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 25,
+      "min": -28,
+      "max": 24,
+      "range": 52,
+      "stdev": 11.826614054749568
+    },
+    "v30AtomsUsedCount": 6,
+    "v30AtomsUsed": [
+      [
+        "biplane",
+        3
+      ],
+      [
+        "car-simple",
+        3
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 2,
+      "mirror": 0,
+      "total": 2
+    },
+    "sanitySummary": "large-arg×1",
+    "sanityErrors": 1,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "cylinder": 4,
+      "rounded_box": 1,
+      "sphere": 2,
+      "box": 9,
+      "biplane": 3,
+      "car-simple": 3,
+      "cone": 1,
+      "bird-silhouette": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Regional Airport Control Tower"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Regional Airport Control Tower",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "支线机场塔台",
+      "from2dCode": "Bare regional airport control tower + small terminal building side view. 2D shows single tower (rounded cylinder + glass cabin + mast) and low terminal block. NO planes/vehicles in 2D — scene completion territory."
+    },
+    "subjects": [
+      {
+        "id": "control-tower-shaft",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.6,
+          "height": 8
+        },
+        "transform": {
+          "translate": [
+            0,
+            4,
+            0
+          ]
+        },
+        "material": "matte-white",
+        "pattern": {
+          "kind": "cells",
+          "scale": 8,
+          "strength": 0.15
+        }
+      },
+      {
+        "id": "control-cabin",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            1.8,
+            1.2,
+            1.8
+          ],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            8.9,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.55,
+          "value": 0.7,
+          "metal": 0.25,
+          "glow": 0.8
+        }
+      },
+      {
+        "id": "antenna-mast",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.03,
+          "height": 1.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            10.4,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.12,
+          "metal": 0.7,
+          "glow": 0
+        }
+      },
+      {
+        "id": "antenna-beacon",
+        "type": "sphere",
+        "args": {
+          "radius": 0.12
+        },
+        "transform": {
+          "translate": [
+            0,
+            11.35,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.85,
+          "value": 0.8,
+          "metal": 0,
+          "glow": 2.5
+        }
+      },
+      {
+        "id": "terminal-main",
+        "type": "box",
+        "args": {
+          "dims": [
+            10,
+            3.2,
+            6
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            1.6,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.25
+        }
+      },
+      {
+        "id": "terminal-roof",
+        "type": "box",
+        "args": {
+          "dims": [
+            10.4,
+            0.4,
+            6.4
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            3.4,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.35,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "terminal-window-1",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.12,
+            1.8,
+            1.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            2,
+            2.2
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.5,
+          "value": 0.75,
+          "metal": 0.15,
+          "glow": 0.6
+        }
+      },
+      {
+        "id": "terminal-window-2",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.12,
+            1.8,
+            1.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.5,
+          "value": 0.75,
+          "metal": 0.15,
+          "glow": 0.6
+        }
+      },
+      {
+        "id": "terminal-window-3",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.12,
+            1.8,
+            1.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            2,
+            -2.2
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.5,
+          "value": 0.75,
+          "metal": 0.15,
+          "glow": 0.6
+        }
+      },
+      {
+        "id": "apron-pavement",
+        "type": "box",
+        "args": {
+          "dims": [
+            50,
+            0.2,
+            40
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.1,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.28,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "runway-strip",
+        "type": "box",
+        "args": {
+          "dims": [
+            8,
+            0.05,
+            90
+          ]
+        },
+        "transform": {
+          "translate": [
+            -20,
+            0.03,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "parked-plane-1",
+        "type": "biplane",
+        "args": {
+          "scale": 1.2
+        },
+        "transform": {
+          "translate": [
+            6,
+            0,
+            12
+          ],
+          "rotate": [
+            0,
+            2.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.88,
+          "metal": 0.4,
+          "glow": 0
+        }
+      },
+      {
+        "id": "parked-plane-2",
+        "type": "biplane",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            4,
+            0,
+            18
+          ],
+          "rotate": [
+            0,
+            2.8,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.5,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "parked-plane-3",
+        "type": "biplane",
+        "args": {
+          "scale": 1.1
+        },
+        "transform": {
+          "translate": [
+            8,
+            0,
+            24
+          ],
+          "rotate": [
+            0,
+            2.9,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.75,
+          "value": 0.7,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "runway-edge-lights",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.08,
+          "height": 0.5
+        },
+        "transform": {
+          "translate": [
+            -20,
+            0.25,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.12,
+          "metal": 0.6,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 18,
+            "axis": "z",
+            "spacing": 5,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.03
+            },
+            "translate": {
+              "jitter": [
+                0.1,
+                0,
+                0.2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "lamp-head-proto",
+        "type": "sphere",
+        "args": {
+          "radius": 0.1
+        },
+        "transform": {
+          "translate": [
+            -20,
+            0.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.75,
+          "value": 1,
+          "metal": 0,
+          "glow": 2
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 18,
+            "axis": "z",
+            "spacing": 5,
+            "origin": "center",
+            "translate": {
+              "jitter": [
+                0.1,
+                0,
+                0.2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "service-vehicle-1",
+        "type": "car-simple",
+        "args": {
+          "scale": 0.8
+        },
+        "transform": {
+          "translate": [
+            14,
+            0,
+            8
+          ],
+          "rotate": [
+            0,
+            1.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.7,
+          "value": 0.65,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "service-vehicle-2",
+        "type": "car-simple",
+        "args": {
+          "scale": 0.7
+        },
+        "transform": {
+          "translate": [
+            11,
+            0,
+            -6
+          ],
+          "rotate": [
+            0,
+            0.8,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.55,
+          "value": 0.5,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "fuel-truck",
+        "type": "car-simple",
+        "args": {
+          "scale": 1
+        },
+        "transform": {
+          "translate": [
+            3,
+            0,
+            20
+          ],
+          "rotate": [
+            0,
+            3.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.92,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "windsock-pole",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.05,
+          "height": 4
+        },
+        "transform": {
+          "translate": [
+            -8,
+            2,
+            -12
+          ]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "windsock-cone",
+        "type": "cone",
+        "args": {
+          "height": 1.2,
+          "baseRadius": 0.3
+        },
+        "transform": {
+          "translate": [
+            -8,
+            4.6,
+            -12
+          ],
+          "rotate": [
+            0,
+            0,
+            1.2
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.85,
+          "value": 0.8,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hangar-back",
+        "type": "box",
+        "args": {
+          "dims": [
+            18,
+            6,
+            12
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            3,
+            -28
+          ]
+        },
+        "material": "silver",
+        "pattern": {
+          "kind": "cells",
+          "scale": 4,
+          "strength": 0.2
+        }
+      },
+      {
+        "id": "hangar-roof",
+        "type": "box",
+        "args": {
+          "dims": [
+            18.5,
+            0.6,
+            12.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            6.3,
+            -28
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.18,
+          "metal": 0.6,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -5,
+            14,
+            -8
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        }
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            3,
+            15,
+            -6
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            0
+          ]
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "ground",
+      "material": {
+        "hue": 0.25,
+        "sat": 0.2,
+        "value": 0.32,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.6,
+        "pitch": 0.18,
+        "distance": 35,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 4,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": -0.8,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.05
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      }
+    }
+  }
+}

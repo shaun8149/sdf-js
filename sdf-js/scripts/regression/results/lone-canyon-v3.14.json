@@ -1,0 +1,438 @@
+{
+  "result": {
+    "demoId": "lone-canyon",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "28.1s",
+    "tokens": {
+      "input": 59430,
+      "output": 2022
+    },
+    "costUSD": "0.2086",
+    "subjectCount": 9,
+    "newAtomsUsedCount": 1,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        1
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 9,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 9,
+      "min": 8,
+      "max": 72,
+      "range": 64,
+      "stdev": 23.608431220463547
+    },
+    "v30AtomsUsedCount": 3,
+    "v30AtomsUsed": [
+      [
+        "rock-boulder",
+        3
+      ]
+    ],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 1,
+      "array": 0,
+      "mirror": 0,
+      "total": 1
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "large-arg×1",
+    "sanityErrors": 1,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "terrain-canyon": 1,
+      "cone": 3,
+      "extrude": 1,
+      "rock-boulder": 3,
+      "bird-silhouette": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Canyon vista — peer-level nature completion"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Canyon vista — peer-level nature completion",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "峡谷",
+      "from2dCode": "Bare canyon V-shape walls + floor, red-sandstone palette. Scene completion: terrain-canyon primitive + distant peaks + river + birds + cinematic atmosphere."
+    },
+    "subjects": [
+      {
+        "id": "canyon-terrain",
+        "type": "terrain-canyon",
+        "args": {
+          "width": 45,
+          "depth": 80,
+          "height": 18,
+          "valleyWidth": 8,
+          "erosion": 0.65
+        },
+        "transform": {
+          "translate": [
+            0,
+            -3,
+            15
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.72,
+          "value": 0.58,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "distant-peak-left",
+        "type": "cone",
+        "args": {
+          "height": 22,
+          "baseRadius": 14
+        },
+        "transform": {
+          "translate": [
+            -38,
+            11,
+            65
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.45,
+          "value": 0.68,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "distant-peak-right",
+        "type": "cone",
+        "args": {
+          "height": 18,
+          "baseRadius": 12
+        },
+        "transform": {
+          "translate": [
+            30,
+            9,
+            58
+          ]
+        },
+        "material": {
+          "hue": 0.06,
+          "sat": 0.48,
+          "value": 0.65,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "distant-peak-center-back",
+        "type": "cone",
+        "args": {
+          "height": 20,
+          "baseRadius": 13
+        },
+        "transform": {
+          "translate": [
+            -5,
+            10,
+            72
+          ]
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.42,
+          "value": 0.72,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "river-segment",
+        "type": "extrude",
+        "args": {
+          "height": 0.3
+        },
+        "source": {
+          "type": "polygon",
+          "args": {
+            "points": [
+              [
+                -1.5,
+                0
+              ],
+              [
+                -1.2,
+                -8
+              ],
+              [
+                -0.8,
+                -16
+              ],
+              [
+                -0.3,
+                -24
+              ],
+              [
+                0.2,
+                -32
+              ],
+              [
+                0.8,
+                -40
+              ],
+              [
+                1.3,
+                -48
+              ],
+              [
+                1.5,
+                -56
+              ]
+            ]
+          },
+          "id": "subjects_4_-source"
+        },
+        "transform": {
+          "translate": [
+            0,
+            -2.8,
+            20
+          ],
+          "rotate": [
+            1.5708,
+            0,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.55,
+          "sat": 0.65,
+          "value": 0.48,
+          "kind": "sea"
+        }
+      },
+      {
+        "id": "rock-boulder-1",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 2.2
+        },
+        "transform": {
+          "translate": [
+            -8,
+            -2.5,
+            12
+          ]
+        },
+        "material": {
+          "hue": 0.06,
+          "sat": 0.55,
+          "value": 0.52,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rock-boulder-2",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 1.8
+        },
+        "transform": {
+          "translate": [
+            12,
+            -2.2,
+            18
+          ]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.58,
+          "value": 0.5,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "rock-boulder-3",
+        "type": "rock-boulder",
+        "args": {
+          "scale": 1.5
+        },
+        "transform": {
+          "translate": [
+            -14,
+            -2.6,
+            25
+          ]
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.5,
+          "value": 0.55,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "soaring-bird",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.28,
+          "bodyRadius": 0.08,
+          "wingSpan": 0.85,
+          "wingRise": 0.15
+        },
+        "transform": {
+          "translate": [
+            0,
+            12,
+            8
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.2,
+          "metal": 0,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 4,
+            "region": {
+              "type": "box3",
+              "center": [
+                0,
+                14,
+                15
+              ],
+              "size": [
+                50,
+                6,
+                40
+              ]
+            },
+            "separation": 8,
+            "heading": "random",
+            "scale": {
+              "jitter": 0.25
+            },
+            "translate": {
+              "jitter": [
+                3,
+                1,
+                3
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "ground": {
+      "y": -3,
+      "region": "canyon-floor",
+      "material": {
+        "hue": 0.06,
+        "sat": 0.6,
+        "value": 0.42,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.12,
+        "distance": 35,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 3,
+        "targetZ": 18,
+        "aperture": 0.5,
+        "focalDistance": 32
+      },
+      "light": {
+        "azimuth": 0.75,
+        "altitude": 0.38,
+        "distance": 90,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.5
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.38,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0.08,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "atmospheric-haze",
+        "kind": "fog",
+        "center": [
+          0,
+          5,
+          35
+        ],
+        "size": [
+          60,
+          8,
+          70
+        ],
+        "density": 0.35,
+        "color": [
+          210,
+          195,
+          175
+        ],
+        "noiseScale": 1.4
+      }
+    ]
+  }
+}

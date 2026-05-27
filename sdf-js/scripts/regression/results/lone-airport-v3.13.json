@@ -1,0 +1,772 @@
+{
+  "result": {
+    "demoId": "lone-airport",
+    "version": "v3.13",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "42.1s",
+    "tokens": {
+      "input": 56314,
+      "output": 3512
+    },
+    "costUSD": "0.2216",
+    "subjectCount": 23,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 19,
+    "patternUsageCount": 2,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 22,
+      "min": -0.2,
+      "max": 1.65,
+      "range": 1.8499999999999999,
+      "stdev": 0.4079742335082101
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 2,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 1,
+      "array": 2,
+      "mirror": 0,
+      "total": 3
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "cylinder": 7,
+      "rounded_box": 1,
+      "rep": 1,
+      "sphere": 2,
+      "box": 7,
+      "pyramid": 1,
+      "union": 3,
+      "capsule": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Regional Airport — control tower + apron"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Regional Airport — control tower + apron",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "支线机场塔台",
+      "from2dCode": "Bare control tower + terminal building side view. Scene completion adds parked planes, ground vehicles, runway lights per v3.11 table."
+    },
+    "subjects": [
+      {
+        "id": "tower-base",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.6,
+          "height": 2
+        },
+        "transform": {
+          "translate": [
+            0,
+            1,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.45
+        }
+      },
+      {
+        "id": "tower-cabin",
+        "type": "rounded_box",
+        "args": {
+          "dims": [
+            1.1,
+            0.5,
+            1.1
+          ],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.25,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.65,
+          "value": 0.85,
+          "metal": 0.25,
+          "glow": 0.6
+        }
+      },
+      {
+        "id": "cabin-windows",
+        "type": "rep",
+        "args": {
+          "period": [
+            0.28,
+            0,
+            0
+          ],
+          "count": [
+            4,
+            0,
+            1
+          ]
+        },
+        "source": {
+          "id": "cabin-window-single",
+          "type": "box",
+          "args": {
+            "dims": [
+              0.18,
+              0.38,
+              0.05
+            ]
+          },
+          "material": {
+            "hue": 0.55,
+            "sat": 0.75,
+            "value": 1,
+            "metal": 0,
+            "glow": 1.2,
+            "kind": "emissive"
+          }
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.25,
+            0.58
+          ]
+        }
+      },
+      {
+        "id": "antenna-mast",
+        "type": "cylinder",
+        "args": {
+          "radius": 0.02,
+          "height": 0.85
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.925,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.1,
+          "metal": 0.75,
+          "glow": 0
+        }
+      },
+      {
+        "id": "antenna-tip",
+        "type": "sphere",
+        "args": {
+          "radius": 0.06
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.35,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.85,
+          "value": 0.85,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "terminal-body",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.8,
+            1.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            0.4,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3.5,
+          "strength": 0.4
+        }
+      },
+      {
+        "id": "terminal-roof",
+        "type": "pyramid",
+        "args": {
+          "height": 0.25
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            0.925,
+            0
+          ],
+          "scale": [
+            2.5,
+            1,
+            1.8
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.45,
+          "value": 0.4,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "terminal-entrance",
+        "type": "box",
+        "args": {
+          "dims": [
+            0.6,
+            0.65,
+            0.1
+          ]
+        },
+        "transform": {
+          "translate": [
+            2.8,
+            0.325,
+            0.95
+          ]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.6,
+          "value": 0.75,
+          "metal": 0.15,
+          "glow": 0.4
+        }
+      },
+      {
+        "id": "parked-plane",
+        "type": "union",
+        "children": [
+          {
+            "id": "plane-fuselage",
+            "type": "capsule",
+            "args": {
+              "a": [
+                0,
+                0,
+                -1.8
+              ],
+              "b": [
+                0,
+                0,
+                1.8
+              ],
+              "radius": 0.35
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.92,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "plane-wing-right",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.08,
+                0.55
+              ]
+            },
+            "transform": {
+              "translate": [
+                1.4,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.9,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "plane-wing-left",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.08,
+                0.55
+              ]
+            },
+            "transform": {
+              "translate": [
+                -1.4,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.9,
+              "metal": 0.2,
+              "glow": 0
+            }
+          },
+          {
+            "id": "plane-tail",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.05,
+                0.55,
+                0.35
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.275,
+                1.65
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.88,
+              "metal": 0.2,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0.35,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 4,
+            "axis": "z",
+            "spacing": 6.5,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.08
+            },
+            "translate": {
+              "jitter": [
+                0.3,
+                0,
+                0.2
+              ]
+            },
+            "rotateY": {
+              "jitter": 0.12
+            }
+          }
+        ]
+      },
+      {
+        "id": "ground-vehicle",
+        "type": "union",
+        "children": [
+          {
+            "id": "vehicle-body",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.55,
+                0.25,
+                0.35
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.125,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.12,
+              "sat": 0.75,
+              "value": 0.88,
+              "metal": 0.1,
+              "glow": 0
+            }
+          },
+          {
+            "id": "vehicle-cab",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.25,
+                0.18,
+                0.3
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.1,
+                0.34,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.6,
+              "sat": 0.55,
+              "value": 0.7,
+              "metal": 0.15,
+              "glow": 0
+            }
+          },
+          {
+            "id": "vehicle-wheel-fl",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.08,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                0.18,
+                0.08,
+                -0.2
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.1,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "vehicle-wheel-fr",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.08,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                0.18,
+                0.08,
+                0.2
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.1,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "vehicle-wheel-rl",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.08,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                -0.22,
+                0.08,
+                -0.2
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.1,
+              "metal": 0,
+              "glow": 0
+            }
+          },
+          {
+            "id": "vehicle-wheel-rr",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.08,
+              "height": 0.05
+            },
+            "transform": {
+              "translate": [
+                -0.22,
+                0.08,
+                0.2
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.1,
+              "metal": 0,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 3,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                4,
+                0,
+                0
+              ],
+              "size": [
+                8,
+                24
+              ]
+            },
+            "separation": 4,
+            "heading": {
+              "jitter": 0.5
+            },
+            "scale": {
+              "jitter": 0.12
+            },
+            "translate": {
+              "jitter": [
+                0.4,
+                0,
+                0.4
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "runway-lamp",
+        "type": "union",
+        "children": [
+          {
+            "id": "lamp-post",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.04,
+              "height": 1.2
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.6,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.12,
+              "metal": 0.7,
+              "glow": 0
+            }
+          },
+          {
+            "id": "lamp-head",
+            "type": "sphere",
+            "args": {
+              "radius": 0.08
+            },
+            "transform": {
+              "translate": [
+                0,
+                1.25,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.88,
+              "value": 1,
+              "metal": 0,
+              "glow": 2.5,
+              "kind": "emissive"
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 12,
+            "axis": "z",
+            "spacing": 4,
+            "origin": "start",
+            "translate": {
+              "jitter": [
+                0.1,
+                0,
+                0.05
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "apron",
+      "material": {
+        "hue": 0.08,
+        "sat": 0.1,
+        "value": 0.35
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.55,
+        "pitch": 0.22,
+        "distance": 28,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 28
+      },
+      "light": {
+        "azimuth": 0.85,
+        "altitude": 0.32,
+        "distance": 60,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.25,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.1,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "apron-haze",
+        "kind": "fog",
+        "center": [
+          0,
+          0.8,
+          0
+        ],
+        "size": [
+          35,
+          2,
+          35
+        ],
+        "density": 0.5,
+        "color": [
+          200,
+          210,
+          220
+        ],
+        "noiseScale": 1.2
+      }
+    ]
+  }
+}

@@ -106,16 +106,39 @@ const V37_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 // DomainGroup args ambiguity + added modPolar/mirrorOctant/curve/elongate/
 // displace + Worked Example 14.
 const V38_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.8.md`, 'utf-8');
-// v3.9 reads from the LIVE compositor prompt. Fixes brass/leather preset
-// hallucination (whitelist + trap section, + missing deep-water/shallow-water
-// added to visible list) + adds Worked Example 11b for weak-cue cinematic
-// recognition (forest-meteors / 雪山 / 海边的灯塔 type prompts).
-const V39_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+// v3.9 frozen 2026-05-26 (after v3.8-vs-v3.9 regression). Brass/leather
+// preset whitelist + Worked Example 11b weak-cue cinematic recognition.
+const V39_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.9.md`, 'utf-8');
+// v3.10 frozen 2026-05-26 (after v3.9-vs-v3.10 focused 3-demo regression).
+// Ships Generator-S Phase 2: `array` + `mirror` variant ops + Examples 9b/9c.
+const V310_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.10.md`, 'utf-8');
+// v3.11 frozen 2026-05-26 (after v3.10-vs-v3.11 focused regression).
+// Scene completion section + Example 15 + 4 counter-examples (singular noun
+// → peer-level world).
+const V311_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.11.md`, 'utf-8');
+// v3.12 frozen 2026-05-26 (after v3.11-vs-v3.12 cross-axis fix regression).
+// Adds "DO NOT drop cinematic" directive + Example 15 cinematic block.
+const V312_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.12.md`, 'utf-8');
+// v3.13 frozen 2026-05-26 (after v3.12-vs-v3.13 + v3.14 atom-adoption broader).
+// Ships 3 composite atoms + Example 16 + decision row.
+const V313_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.13.md`, 'utf-8');
+// v3.14 frozen 2026-05-27 (after v3.14 cross-axis 18-demo matrix caught atom
+// adoption regression 4/4 → 1/4). Leisure + nature scene-completion rows.
+const V314_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.14.md`, 'utf-8');
+// v3.15 reads from the LIVE compositor prompt. Fixes 3 v3.14 backlog items:
+// (1) atom re-emphasis — Example 17 → 16 cross-reference + PRIORITY decision
+// row language + "🥇 BEFORE reading the table" scene-completion atom reminder.
+// (2) sanity rule type-aware whitelist — runway/apron/canyon/terrain-* get
+//     threshold 200 instead of 50 (6 cumulative false-positive incidents).
+// (3) (in flight) concert-stage composite atom for leisure category.
+const V315_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
 const PROMPTS = {
   'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
   'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
   'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT, 'v3.7': V37_PROMPT,
-  'v3.8': V38_PROMPT, 'v3.9': V39_PROMPT,
+  'v3.8': V38_PROMPT, 'v3.9': V39_PROMPT, 'v3.10': V310_PROMPT, 'v3.11': V311_PROMPT,
+  'v3.12': V312_PROMPT, 'v3.13': V313_PROMPT, 'v3.14': V314_PROMPT,
+  'v3.15': V315_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
@@ -125,6 +148,23 @@ const DEMOS = [
   'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
   // v3.2 sprint addition — forest theme should trigger new vocabulary
   'forest-meteors',
+  // v3.10 sprint addition — Generator-S Phase 2 ops triggers:
+  //   roman-colonnade       → array (equispaced columns + lintel)
+  //   fighter-jet-bilateral → mirror (wings + tail-fins L/R pair with phaseFlip)
+  //   fleet-of-destroyers   → scatter (5 ships in formation)
+  'roman-colonnade', 'fighter-jet-bilateral', 'fleet-of-destroyers',
+  // v3.11 sprint addition — Scene completion (PEER-LEVEL world):
+  //   lone-carrier  ("航母") — minimal prompt → expect escort fleet + birds + clouds
+  //   lone-airport  ("支线机场塔台") — minimal prompt → expect parked planes + ground vehicles
+  'lone-carrier', 'lone-airport',
+  // v3.14 sprint addition — broader composite atom adoption probes:
+  //   generic-airport ("机场") — expect airport-apron atom (vs hand-emit Phase 2)
+  //   generic-harbor  ("港口") — expect harbor-quay atom
+  'generic-airport', 'generic-harbor',
+  // v3.14 (later sprint) — leisure + nature scene-completion probes:
+  //   lone-concert ("音乐会") — leisure (audience scatter + stage lamps array + speakers mirror)
+  //   lone-canyon  ("峡谷")  — nature (terrain-canyon + distant peaks + birds + river)
+  'lone-concert', 'lone-canyon',
 ];
 
 // M3 atoms (v2-era): what we wanted LLM to use in v2 baseline
@@ -313,6 +353,51 @@ function countPatternUsage(subjects) {
   return n;
 }
 
+// v3.13 metric: track composite atom adoption (Track 5.4a). The LLM emits
+// `type: 'carrier-strike-group'` (or similar) as a single subject and the
+// compile-time expander unpacks it. Count appearances in raw output.
+const COMPOSITE_ATOMS = new Set([
+  'carrier-strike-group', 'airport-apron', 'harbor-quay',
+  'concert-stage',  // v3.15 leisure
+]);
+function countCompositeAtoms(subjects) {
+  const counts = {};
+  const walk = (subs) => {
+    for (const s of subs || []) {
+      if (s && typeof s.type === 'string' && COMPOSITE_ATOMS.has(s.type)) {
+        counts[s.type] = (counts[s.type] || 0) + 1;
+      }
+      if (Array.isArray(s.children)) walk(s.children);
+    }
+  };
+  walk(subjects);
+  return counts;
+}
+
+// v3.10 metric: count Generator-S variant ops used in scene. Returns
+// { scatter: N, array: N, mirror: N, total: N } across all subjects.
+// Walks children too (variants can be authored on inner unions).
+function countVariantOps(subjects) {
+  const counts = { scatter: 0, array: 0, mirror: 0, total: 0 };
+  const walk = (subs) => {
+    for (const s of subs || []) {
+      if (Array.isArray(s.variants)) {
+        for (const v of s.variants) {
+          if (v && typeof v.op === 'string' && counts[v.op] !== undefined) {
+            counts[v.op] += 1;
+            counts.total += 1;
+          } else if (v && typeof v.op === 'string') {
+            counts.total += 1;
+          }
+        }
+      }
+      if (Array.isArray(s.children)) walk(s.children);
+    }
+  };
+  walk(subjects);
+  return counts;
+}
+
 // v3.2 metric: count usage of each non-default material.kind. Returns
 // {sea, mountain, emissive, translucent} histogram across all subjects.
 function countMaterialKinds(subjects) {
@@ -425,6 +510,11 @@ async function liftOne(demoId, systemPrompt, version) {
     materialKindsUsed,  // { sea: N, mountain: N, emissive: N, translucent: N }
     // v3.7 cinematic adoption metrics
     cinematic: v37CinematicMetrics(sceneData),
+    // v3.10 Generator-S variant op adoption — does the LLM actually emit
+    // `array` / `mirror` (Phase 2 ops) when prompts suggest them?
+    variantOps: countVariantOps(sceneData.subjects),
+    // v3.13 Composite atom adoption — Track 5.4a high-level shortcut types
+    compositeAtoms: countCompositeAtoms(sceneData.subjects),
     // Track 5.1 sanity metrics — populated only on compileOk.
     sanitySummary, sanityErrors, sanityWarnings,
     typeCounts,
@@ -439,7 +529,11 @@ async function liftOne(demoId, systemPrompt, version) {
 async function main() {
   const target = process.argv[2] || 'all';
   const versionArg = process.argv[3] || 'all-versions';
-  const demos = (target === 'all') ? DEMOS : [target];
+  let demos;
+  if (target === 'all')                  demos = DEMOS;
+  else if (target === 'v3.10-new')       demos = ['roman-colonnade', 'fighter-jet-bilateral', 'fleet-of-destroyers'];
+  else if (target.includes(','))         demos = target.split(',').map(s => s.trim()).filter(Boolean);
+  else                                   demos = [target];
   let versions;
   if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
@@ -454,6 +548,12 @@ async function main() {
   else if (versionArg === 'v3.5-vs-v3.7') versions = ['v3.5', 'v3.7'];
   else if (versionArg === 'v3.7-vs-v3.8') versions = ['v3.7', 'v3.8'];
   else if (versionArg === 'v3.8-vs-v3.9') versions = ['v3.8', 'v3.9'];
+  else if (versionArg === 'v3.9-vs-v3.10') versions = ['v3.9', 'v3.10'];
+  else if (versionArg === 'v3.10-vs-v3.11') versions = ['v3.10', 'v3.11'];
+  else if (versionArg === 'v3.11-vs-v3.12') versions = ['v3.11', 'v3.12'];
+  else if (versionArg === 'v3.12-vs-v3.13') versions = ['v3.12', 'v3.13'];
+  else if (versionArg === 'v3.13-vs-v3.14') versions = ['v3.13', 'v3.14'];
+  else if (versionArg === 'v3.14-vs-v3.15') versions = ['v3.14', 'v3.15'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
   else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
 
@@ -479,10 +579,18 @@ async function main() {
         const kindsStr = `e${kk.emissive || 0}/t${kk.translucent || 0}/s${kk.sea || 0}/m${kk.mountain || 0}`;
         const c = r.cinematic || {};
         const cinStr = `pfx${c.postFx || 0}/ap${c.aperture || 0}/vol${c.volumeCount || 0}/sh${c.seqShots || 0}/mot${c.seqMotion || 0}/rel${c.relativeToUses || 0}`;
+        const vo = r.variantOps || { scatter: 0, array: 0, mirror: 0 };
+        const voStr = (vo.scatter + vo.array + vo.mirror)
+          ? ` · genS[s${vo.scatter}/a${vo.array}/m${vo.mirror}]` : '';
+        const ca = r.compositeAtoms || {};
+        const caEntries = Object.entries(ca);
+        const caStr = caEntries.length
+          ? ` · atom[${caEntries.map(([k,n])=>`${k.split('-').map(w=>w[0]).join('')}${n}`).join('+')}]`
+          : '';
         const sanityStr = (r.sanityErrors || r.sanityWarnings)
           ? ` · sanity[E${r.sanityErrors}/W${r.sanityWarnings}: ${r.sanitySummary}]`
           : '';
-        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}]${sanityStr} · $${r.costUSD}`);
+        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}]${voStr}${caStr}${sanityStr} · $${r.costUSD}`);
       }
     }
     const cmp = { demoId: id, runs };

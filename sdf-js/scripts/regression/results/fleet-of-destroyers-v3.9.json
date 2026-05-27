@@ -1,0 +1,881 @@
+{
+  "result": {
+    "demoId": "fleet-of-destroyers",
+    "version": "v3.9",
+    "model": "claude-sonnet-4-5",
+    "elapsed": "50.0s",
+    "tokens": {
+      "input": 47132,
+      "output": 4062
+    },
+    "costUSD": "0.2023",
+    "subjectCount": 33,
+    "newAtomsUsedCount": 2,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 26,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 28,
+      "min": -5,
+      "max": 0,
+      "range": 5,
+      "stdev": 1.4598146024305236
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "waves": 1,
+      "union": 5,
+      "box": 15,
+      "cylinder": 5,
+      "capsule": 5,
+      "bird-silhouette": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Destroyer fleet — 5 ships in echelon"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Destroyer fleet — 5 ships in echelon",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "5 艘驱逐舰组成的舰队编队，海面上排成一列",
+      "from2dCode": "5 destroyers via parametric destroyer(cx,cy,scale) helper — hull + 2-tier superstructure + gun + mast, echelon formation"
+    },
+    "subjects": [
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 3.2,
+          "amp": 0.22,
+          "angle": 0.4,
+          "speed": 0.7
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.5,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.72,
+          "value": 0.38,
+          "metal": 0,
+          "glow": 0,
+          "kind": "sea"
+        }
+      },
+      {
+        "id": "destroyer-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "d1-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.8,
+                0.8,
+                1.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d1-superstructure-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.7,
+                1
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.4,
+                0.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d1-superstructure-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.4,
+                0.7,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.6,
+                1.45,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d1-gun",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12,
+              "height": 0.8
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d1-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.6,
+                1.8,
+                0
+              ],
+              "b": [
+                -0.6,
+                3.4,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.28,
+              "metal": 0.7,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            -22,
+            0,
+            -5
+          ],
+          "scale": 0.9
+        }
+      },
+      {
+        "id": "destroyer-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "d2-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.8,
+                0.8,
+                1.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d2-superstructure-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.7,
+                1
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.4,
+                0.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d2-superstructure-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.4,
+                0.7,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.6,
+                1.45,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d2-gun",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12,
+              "height": 0.8
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d2-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.6,
+                1.8,
+                0
+              ],
+              "b": [
+                -0.6,
+                3.4,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.28,
+              "metal": 0.7,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            -11,
+            0,
+            -2
+          ],
+          "scale": 1
+        }
+      },
+      {
+        "id": "destroyer-3",
+        "type": "union",
+        "children": [
+          {
+            "id": "d3-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.8,
+                0.8,
+                1.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d3-superstructure-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.7,
+                1
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.4,
+                0.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d3-superstructure-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.4,
+                0.7,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.6,
+                1.45,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d3-gun",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12,
+              "height": 0.8
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d3-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.6,
+                1.8,
+                0
+              ],
+              "b": [
+                -0.6,
+                3.4,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.28,
+              "metal": 0.7,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1.05
+        }
+      },
+      {
+        "id": "destroyer-4",
+        "type": "union",
+        "children": [
+          {
+            "id": "d4-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.8,
+                0.8,
+                1.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d4-superstructure-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.7,
+                1
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.4,
+                0.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d4-superstructure-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.4,
+                0.7,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.6,
+                1.45,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d4-gun",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12,
+              "height": 0.8
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d4-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.6,
+                1.8,
+                0
+              ],
+              "b": [
+                -0.6,
+                3.4,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.28,
+              "metal": 0.7,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            11,
+            0,
+            -2
+          ],
+          "scale": 1
+        }
+      },
+      {
+        "id": "destroyer-5",
+        "type": "union",
+        "children": [
+          {
+            "id": "d5-hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                3.8,
+                0.8,
+                1.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d5-superstructure-1",
+            "type": "box",
+            "args": {
+              "dims": [
+                2.4,
+                0.7,
+                1
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.4,
+                0.75,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d5-superstructure-2",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.4,
+                0.7,
+                0.8
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.6,
+                1.45,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.62,
+              "sat": 0.08,
+              "value": 0.35,
+              "metal": 0.75,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d5-gun",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12,
+              "height": 0.8
+            },
+            "transform": {
+              "translate": [
+                2.6,
+                0.3,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                1.5708
+              ]
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.85,
+              "glow": 0
+            }
+          },
+          {
+            "id": "d5-mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.6,
+                1.8,
+                0
+              ],
+              "b": [
+                -0.6,
+                3.4,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.28,
+              "metal": 0.7,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            22,
+            0,
+            -5
+          ],
+          "scale": 0.9
+        }
+      },
+      {
+        "id": "bird-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            -8,
+            6.5,
+            -3
+          ]
+        }
+      },
+      {
+        "id": "bird-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            5,
+            7.2,
+            -2.5
+          ]
+        }
+      }
+    ],
+    "ground": {
+      "y": -1.5,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.75,
+        "value": 0.22,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.05,
+        "pitch": 0.12,
+        "distance": 35,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.42,
+        "distance": 45,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.38
+      }
+    }
+  }
+}

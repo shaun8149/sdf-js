@@ -1,0 +1,363 @@
+{
+  "result": {
+    "demoId": "generic-airport",
+    "version": "v3.13",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "23.0s",
+    "tokens": {
+      "input": 56126,
+      "output": 1559
+    },
+    "costUSD": "0.1918",
+    "subjectCount": 9,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 8,
+    "patternUsageCount": 2,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 8,
+      "min": 0,
+      "max": 3.08,
+      "range": 3.08,
+      "stdev": 1.0186142547598676
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 2
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "compositeAtoms": {
+      "airport-apron": 1
+    },
+    "sanitySummary": "large-arg×2",
+    "sanityErrors": 2,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 8,
+      "airport-apron": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Airport apron — composite atom"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Airport apron — composite atom",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "机场",
+      "from2dCode": "Bare airport silhouette: terminal + 1 plane + runway strip. Minimal 2D → atom enriches."
+    },
+    "subjects": [
+      {
+        "id": "terminal-building",
+        "type": "box",
+        "args": {
+          "dims": [
+            14,
+            3.5,
+            6
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            1.75,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3,
+          "strength": 0.4
+        }
+      },
+      {
+        "id": "terminal-roof",
+        "type": "box",
+        "args": {
+          "dims": [
+            13,
+            0.4,
+            6.5
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            3.7,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.08,
+          "sat": 0.25,
+          "value": 0.45,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "terminal-windows-front",
+        "type": "box",
+        "args": {
+          "dims": [
+            10,
+            1.8,
+            0.15
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            2.2,
+            3.08
+          ]
+        },
+        "material": {
+          "hue": 0.55,
+          "sat": 0.7,
+          "value": 0.92,
+          "metal": 0.15,
+          "glow": 0.8,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "control-tower-base",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.2,
+            5,
+            2.2
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            2.5,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 3.5,
+          "strength": 0.35
+        }
+      },
+      {
+        "id": "control-tower-cabin",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.8,
+            1.5,
+            2.8
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            5.75,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.65,
+          "value": 0.88,
+          "metal": 0.2,
+          "glow": 0.4,
+          "kind": "translucent"
+        }
+      },
+      {
+        "id": "runway",
+        "type": "box",
+        "args": {
+          "dims": [
+            120,
+            0.08,
+            8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.04,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.1,
+          "sat": 0.08,
+          "value": 0.25,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "runway-centerline",
+        "type": "box",
+        "args": {
+          "dims": [
+            115,
+            0.1,
+            0.25
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.01,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.15,
+          "sat": 0.15,
+          "value": 0.92,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "apron-ground",
+        "type": "box",
+        "args": {
+          "dims": [
+            25,
+            0.08,
+            35
+          ]
+        },
+        "transform": {
+          "translate": [
+            -22,
+            -0.04,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.12,
+          "sat": 0.1,
+          "value": 0.32,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "airport-apron-composite",
+        "type": "airport-apron",
+        "args": {
+          "parkedPlaneCount": 5,
+          "parkedPlaneSpacing": 7,
+          "groundVehicleCount": 3,
+          "lampCount": 14,
+          "lampSpacing": 8,
+          "cinematic": true
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.5,
+      "region": "ground",
+      "material": {
+        "hue": 0.25,
+        "sat": 0.15,
+        "value": 0.35
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": -0.6,
+        "pitch": 0.22,
+        "distance": 45,
+        "focal": 1.4,
+        "targetX": -8,
+        "targetY": 2,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 42
+      },
+      "light": {
+        "azimuth": 0.85,
+        "altitude": 0.38,
+        "distance": 90,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.35,
+        "bloomMix": 0.22,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0.1,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "apron-haze",
+        "kind": "fog",
+        "center": [
+          -10,
+          1.5,
+          0
+        ],
+        "size": [
+          35,
+          3,
+          40
+        ],
+        "density": 0.5,
+        "color": [
+          190,
+          205,
+          220
+        ],
+        "noiseScale": 1.4
+      }
+    ]
+  }
+}

@@ -3,27 +3,27 @@
     "demoId": "clock-915",
     "version": "v3.9",
     "model": "claude-sonnet-4-5",
-    "elapsed": "34.1s",
+    "elapsed": "23.7s",
     "tokens": {
       "input": 48749,
-      "output": 2439
+      "output": 1643
     },
-    "costUSD": "0.1828",
-    "subjectCount": 18,
+    "costUSD": "0.1709",
+    "subjectCount": 10,
     "newAtomsUsedCount": 0,
     "newAtomsUsed": [],
     "newIQTypesUsedCount": 0,
     "newIQTypesUsed": [],
-    "materialUsageCount": 18,
-    "patternUsageCount": 0,
+    "materialUsageCount": 10,
+    "patternUsageCount": 1,
     "variantsUsedCount": 0,
     "variantsUsed": [],
     "zSpread": {
       "count": 4,
-      "min": -0.5,
-      "max": 0.075,
-      "range": 0.575,
-      "stdev": 0.23461071480220166
+      "min": -0.3,
+      "max": 0.04,
+      "range": 0.33999999999999997,
+      "stdev": 0.13665650368716448
     },
     "v30AtomsUsedCount": 0,
     "v30AtomsUsed": [],
@@ -36,8 +36,8 @@
       "translucent": 0
     },
     "cinematic": {
-      "postFx": 0,
-      "aperture": 0,
+      "postFx": 1,
+      "aperture": 1,
       "volumeCount": 0,
       "flameVols": 0,
       "smokeVols": 0,
@@ -53,22 +53,33 @@
       "velocityScaleUses": 0,
       "sceneStateKeys": 0
     },
+    "variantOps": {
+      "scatter": 0,
+      "array": 0,
+      "mirror": 0,
+      "total": 0
+    },
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
     "typeCounts": {
       "box": 1,
-      "cylinder": 3,
-      "capsule": 14
+      "torus": 1,
+      "cylinder": 1,
+      "capsule": 6,
+      "sphere": 1
     },
     "compileOk": true,
     "compileErr": null,
-    "sceneName": "Wall clock showing 9:15"
+    "sceneName": "Wall clock 9:15"
   },
   "sceneData": {
     "v": 1,
-    "name": "Wall clock showing 9:15",
+    "name": "Wall clock 9:15",
     "source": {
       "format": "llm-lift",
       "prompt": "挂在墙上的9点15分的钟",
-      "from2dCode": "Clock face with bezel, 12 hour ticks + 60 minute ticks, hour hand at 9.25, minute hand at 3, center boss. Warm plaster wall background."
+      "from2dCode": "2D circular clock face with bezel, 12 hour ticks, 60 minute ticks, hour hand at 9.25 position, minute hand at 3 position, center boss, warm plaster wall background"
     },
     "subjects": [
       {
@@ -77,7 +88,7 @@
         "args": {
           "dims": [
             4,
-            3,
+            3.5,
             0.15
           ]
         },
@@ -85,7 +96,7 @@
           "translate": [
             0,
             0,
-            -0.5
+            -0.3
           ]
         },
         "material": {
@@ -94,27 +105,37 @@
           "value": 0.88,
           "metal": 0,
           "glow": 0
+        },
+        "pattern": {
+          "kind": "cells",
+          "scale": 3,
+          "strength": 0.12
         }
       },
       {
         "id": "clock-bezel",
-        "type": "cylinder",
+        "type": "torus",
         "args": {
-          "radius": 0.56,
-          "height": 0.08
+          "radius": 0.53,
+          "thickness": 0.06
         },
         "transform": {
           "translate": [
             0,
+            0.4,
+            0
+          ],
+          "rotate": [
+            1.5708,
             0,
             0
           ]
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.12,
+          "sat": 0.25,
           "value": 0.12,
-          "metal": 0.25,
+          "metal": 0.15,
           "glow": 0
         }
       },
@@ -123,19 +144,24 @@
         "type": "cylinder",
         "args": {
           "radius": 0.5,
-          "height": 0.02
+          "height": 0.04
         },
         "transform": {
           "translate": [
             0,
+            0.4,
+            0
+          ],
+          "rotate": [
+            1.5708,
             0,
-            0.04
+            0
           ]
         },
         "material": {
           "hue": 0.12,
           "sat": 0.08,
-          "value": 0.96,
+          "value": 0.98,
           "metal": 0,
           "glow": 0
         }
@@ -146,19 +172,19 @@
         "args": {
           "a": [
             0,
-            0.44,
-            0.05
+            0.82,
+            0
           ],
           "b": [
             0,
-            0.38,
-            0.05
+            0.74,
+            0
           ],
-          "radius": 0.014
+          "radius": 0.012
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.15,
+          "sat": 0.3,
           "value": 0.1,
           "metal": 0,
           "glow": 0
@@ -170,19 +196,19 @@
         "args": {
           "a": [
             0.44,
-            0,
-            0.05
+            0.4,
+            0
           ],
           "b": [
             0.38,
-            0,
-            0.05
+            0.4,
+            0
           ],
-          "radius": 0.014
+          "radius": 0.012
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.15,
+          "sat": 0.3,
           "value": 0.1,
           "metal": 0,
           "glow": 0
@@ -194,19 +220,19 @@
         "args": {
           "a": [
             0,
-            -0.44,
-            0.05
+            -0.02,
+            0
           ],
           "b": [
             0,
-            -0.38,
-            0.05
+            0.06,
+            0
           ],
-          "radius": 0.014
+          "radius": 0.012
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.15,
+          "sat": 0.3,
           "value": 0.1,
           "metal": 0,
           "glow": 0
@@ -218,211 +244,19 @@
         "args": {
           "a": [
             -0.44,
-            0,
-            0.05
+            0.4,
+            0
           ],
           "b": [
             -0.38,
-            0,
-            0.05
+            0.4,
+            0
           ],
-          "radius": 0.014
+          "radius": 0.012
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-1",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.221,
-            0.381,
-            0.05
-          ],
-          "b": [
-            0.19,
-            0.329,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-2",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.381,
-            0.221,
-            0.05
-          ],
-          "b": [
-            0.329,
-            0.19,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-4",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.381,
-            -0.221,
-            0.05
-          ],
-          "b": [
-            0.329,
-            -0.19,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-5",
-        "type": "capsule",
-        "args": {
-          "a": [
-            0.221,
-            -0.381,
-            0.05
-          ],
-          "b": [
-            0.19,
-            -0.329,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-7",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -0.221,
-            -0.381,
-            0.05
-          ],
-          "b": [
-            -0.19,
-            -0.329,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-8",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -0.381,
-            -0.221,
-            0.05
-          ],
-          "b": [
-            -0.329,
-            -0.19,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-10",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -0.381,
-            0.221,
-            0.05
-          ],
-          "b": [
-            -0.329,
-            0.19,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
-          "value": 0.1,
-          "metal": 0,
-          "glow": 0
-        }
-      },
-      {
-        "id": "tick-11",
-        "type": "capsule",
-        "args": {
-          "a": [
-            -0.221,
-            0.381,
-            0.05
-          ],
-          "b": [
-            -0.19,
-            0.329,
-            0.05
-          ],
-          "radius": 0.014
-        },
-        "material": {
-          "hue": 0.08,
-          "sat": 0.15,
+          "sat": 0.3,
           "value": 0.1,
           "metal": 0,
           "glow": 0
@@ -433,22 +267,22 @@
         "type": "capsule",
         "args": {
           "a": [
-            0.046,
-            -0.013,
-            0.06
+            0.03,
+            0.42,
+            0.02
           ],
           "b": [
-            -0.254,
-            0.074,
-            0.06
+            -0.26,
+            0.43,
+            0.02
           ],
-          "radius": 0.018
+          "radius": 0.016
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.12,
+          "sat": 0.35,
           "value": 0.08,
-          "metal": 0.15,
+          "metal": 0.05,
           "glow": 0
         }
       },
@@ -457,44 +291,43 @@
         "type": "capsule",
         "args": {
           "a": [
-            -0.046,
-            0,
-            0.07
+            -0.03,
+            0.4,
+            0.03
           ],
           "b": [
-            0.336,
-            0,
-            0.07
+            0.34,
+            0.4,
+            0.03
           ],
-          "radius": 0.012
+          "radius": 0.01
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.12,
+          "sat": 0.35,
           "value": 0.08,
-          "metal": 0.15,
+          "metal": 0.05,
           "glow": 0
         }
       },
       {
         "id": "center-boss",
-        "type": "cylinder",
+        "type": "sphere",
         "args": {
-          "radius": 0.03,
-          "height": 0.018
+          "radius": 0.028
         },
         "transform": {
           "translate": [
             0,
-            0,
-            0.075
+            0.4,
+            0.04
           ]
         },
         "material": {
           "hue": 0.08,
-          "sat": 0.12,
+          "sat": 0.3,
           "value": 0.1,
-          "metal": 0.5,
+          "metal": 0.2,
           "glow": 0
         }
       }
@@ -505,21 +338,31 @@
         "yaw": 0,
         "pitch": 0,
         "distance": 2.8,
-        "focal": 1.5,
+        "focal": 1.4,
         "targetX": 0,
-        "targetY": 0,
-        "targetZ": 0
+        "targetY": 0.4,
+        "targetZ": 0,
+        "aperture": 0.3,
+        "focalDistance": 2.8
       },
       "light": {
-        "azimuth": -0.7,
+        "azimuth": -0.6,
         "altitude": 0.5,
         "distance": 12,
-        "intensity": 1
+        "intensity": 1.05
       },
       "shadow": {
         "enabled": true,
         "mode": "darken",
-        "strength": 0.25
+        "strength": 0.28
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.25,
+        "bloomMix": 0.12,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0,
+        "motionBlurStrength": 0
       }
     }
   }

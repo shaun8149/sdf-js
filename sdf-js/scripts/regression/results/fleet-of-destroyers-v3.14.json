@@ -1,0 +1,606 @@
+{
+  "result": {
+    "demoId": "fleet-of-destroyers",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "37.0s",
+    "tokens": {
+      "input": 59944,
+      "output": 2728
+    },
+    "costUSD": "0.2208",
+    "subjectCount": 18,
+    "newAtomsUsedCount": 5,
+    "newAtomsUsed": [
+      [
+        "bird-silhouette",
+        3
+      ],
+      [
+        "cloud-puff",
+        2
+      ]
+    ],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 17,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 15,
+      "min": -40,
+      "max": 0.9,
+      "range": 40.9,
+      "stdev": 12.577676874349871
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 1,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 1,
+      "mirror": 0,
+      "total": 1
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 1,
+      "box": 4,
+      "rounded_box": 2,
+      "capped_cylinder": 2,
+      "capsule": 1,
+      "cylinder": 1,
+      "sphere": 1,
+      "waves": 1,
+      "bird-silhouette": 3,
+      "cloud-puff": 2
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Destroyer Fleet Formation"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Destroyer Fleet Formation",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "5 艘驱逐舰组成的舰队编队，海面上排成一列",
+      "from2dCode": "5 destroyers in echelon formation via parametric helper function"
+    },
+    "subjects": [
+      {
+        "id": "destroyer",
+        "type": "union",
+        "children": [
+          {
+            "id": "hull",
+            "type": "box",
+            "args": {
+              "dims": [
+                10,
+                1.4,
+                2.2
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.2,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "deck",
+            "type": "box",
+            "args": {
+              "dims": [
+                9.5,
+                0.3,
+                2.5
+              ]
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.7,
+                0
+              ]
+            },
+            "material": "stone"
+          },
+          {
+            "id": "superstructure-lower",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                3,
+                1.2,
+                1.8
+              ],
+              "cornerR": 0.08
+            },
+            "transform": {
+              "translate": [
+                -0.5,
+                1.65,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.08,
+              "value": 0.78,
+              "metal": 0.15,
+              "glow": 0
+            }
+          },
+          {
+            "id": "superstructure-upper",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                1.8,
+                1,
+                1.4
+              ],
+              "cornerR": 0.06
+            },
+            "transform": {
+              "translate": [
+                -0.8,
+                2.55,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.08,
+              "value": 0.78,
+              "metal": 0.15,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bridge-windows",
+            "type": "box",
+            "args": {
+              "dims": [
+                1.6,
+                0.4,
+                1.45
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.8,
+                2.55,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.65,
+              "value": 0.92,
+              "metal": 0.35,
+              "glow": 0.3
+            }
+          },
+          {
+            "id": "forward-gun",
+            "type": "capped_cylinder",
+            "args": {
+              "a": [
+                3.2,
+                0.85,
+                0
+              ],
+              "b": [
+                4.5,
+                0.85,
+                0
+              ],
+              "radius": 0.15
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.65,
+              "glow": 0
+            }
+          },
+          {
+            "id": "mast",
+            "type": "capsule",
+            "args": {
+              "a": [
+                -0.8,
+                2.95,
+                0
+              ],
+              "b": [
+                -0.8,
+                4.5,
+                0
+              ],
+              "radius": 0.08
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.82,
+              "metal": 0.45,
+              "glow": 0
+            }
+          },
+          {
+            "id": "radar-array",
+            "type": "box",
+            "args": {
+              "dims": [
+                0.35,
+                0.25,
+                0.35
+              ]
+            },
+            "transform": {
+              "translate": [
+                -0.8,
+                4.35,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.58,
+              "sat": 0.05,
+              "value": 0.88,
+              "metal": 0.25,
+              "glow": 0
+            }
+          },
+          {
+            "id": "smokestack",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.25,
+              "height": 1.2
+            },
+            "transform": {
+              "translate": [
+                -2.5,
+                1.65,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.05,
+              "sat": 0.12,
+              "value": 0.22,
+              "metal": 0.35,
+              "glow": 0
+            }
+          },
+          {
+            "id": "aft-gun",
+            "type": "capped_cylinder",
+            "args": {
+              "a": [
+                -4.2,
+                0.85,
+                0
+              ],
+              "b": [
+                -5,
+                0.85,
+                0
+              ],
+              "radius": 0.12
+            },
+            "material": {
+              "hue": 0,
+              "sat": 0,
+              "value": 0.25,
+              "metal": 0.65,
+              "glow": 0
+            }
+          },
+          {
+            "id": "bow-anchor",
+            "type": "sphere",
+            "args": {
+              "radius": 0.18
+            },
+            "transform": {
+              "translate": [
+                4.8,
+                0.5,
+                0.9
+              ]
+            },
+            "material": {
+              "hue": 0.08,
+              "sat": 0.15,
+              "value": 0.28,
+              "metal": 0.55,
+              "glow": 0
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 5,
+            "axis": "x",
+            "spacing": 28,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.08
+            },
+            "translate": {
+              "jitter": [
+                2,
+                0,
+                1.5
+              ]
+            },
+            "rotateY": {
+              "jitter": 0.12
+            }
+          }
+        ]
+      },
+      {
+        "id": "sea",
+        "type": "waves",
+        "args": {
+          "freq": 3.5,
+          "amp": 0.18,
+          "angle": 0.3,
+          "speed": 0.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            -1.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.65,
+          "value": 0.45,
+          "kind": "sea"
+        }
+      },
+      {
+        "id": "gull-1",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.22,
+          "wingSpan": 0.6
+        },
+        "transform": {
+          "translate": [
+            -18,
+            8.5,
+            -8
+          ],
+          "rotate": [
+            0,
+            0.6,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "gull-2",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.2,
+          "wingSpan": 0.55
+        },
+        "transform": {
+          "translate": [
+            22,
+            9.2,
+            -6
+          ],
+          "rotate": [
+            0,
+            -0.4,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "gull-3",
+        "type": "bird-silhouette",
+        "args": {
+          "bodyLength": 0.18,
+          "wingSpan": 0.5
+        },
+        "transform": {
+          "translate": [
+            8,
+            7.8,
+            -5
+          ],
+          "rotate": [
+            0,
+            0.2,
+            0
+          ]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 0.95,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "cloud-1",
+        "type": "cloud-puff",
+        "args": {
+          "width": 3.5,
+          "height": 1.2,
+          "depth": 2
+        },
+        "transform": {
+          "translate": [
+            -25,
+            12,
+            -35
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.08,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "cloud-2",
+        "type": "cloud-puff",
+        "args": {
+          "width": 4,
+          "height": 1.4,
+          "depth": 2.2
+        },
+        "transform": {
+          "translate": [
+            18,
+            13,
+            -40
+          ]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.08,
+          "value": 0.96,
+          "metal": 0,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -1.2,
+      "region": "seabed",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.7,
+        "value": 0.25
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.12,
+        "distance": 65,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 60
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.32,
+        "distance": 55,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.42
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.38,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.12,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "sea-mist",
+        "kind": "fog",
+        "center": [
+          0,
+          -0.4,
+          0
+        ],
+        "size": [
+          140,
+          1.2,
+          80
+        ],
+        "density": 0.08,
+        "color": [
+          190,
+          205,
+          220
+        ],
+        "noiseScale": 1
+      }
+    ]
+  }
+}

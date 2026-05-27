@@ -1,0 +1,348 @@
+{
+  "result": {
+    "demoId": "lone-concert",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "21.9s",
+    "tokens": {
+      "input": 59513,
+      "output": 1420
+    },
+    "costUSD": "0.1998",
+    "subjectCount": 7,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 6,
+    "patternUsageCount": 0,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 7,
+      "min": -4,
+      "max": 8,
+      "range": 12,
+      "stdev": 3.4106675389466634
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 1,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 1,
+      "aperture": 1,
+      "volumeCount": 1,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 1,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 1,
+      "array": 1,
+      "mirror": 1,
+      "total": 3
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "box": 3,
+      "union": 1,
+      "rounded_box": 1,
+      "sphere": 1,
+      "capsule": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Outdoor Concert — Scene Completion"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Outdoor Concert — Scene Completion",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "音乐会",
+      "from2dCode": "Bare stage + backdrop + 2 speakers. Minimal 2D → scene-completion applies: audience scatter, stage lamps array, cinematic atmosphere."
+    },
+    "subjects": [
+      {
+        "id": "stage-floor",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            0.6,
+            8
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0.3,
+            0
+          ]
+        },
+        "material": "matte-black"
+      },
+      {
+        "id": "backdrop",
+        "type": "box",
+        "args": {
+          "dims": [
+            16,
+            6,
+            0.3
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            3,
+            -4
+          ]
+        },
+        "material": {
+          "hue": 0.85,
+          "sat": 0.3,
+          "value": 0.2,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "speaker",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.2,
+            2.5,
+            1
+          ]
+        },
+        "transform": {
+          "translate": [
+            8,
+            1.25,
+            2
+          ]
+        },
+        "material": "matte-black",
+        "variants": [
+          {
+            "op": "mirror",
+            "plane": "yz"
+          }
+        ]
+      },
+      {
+        "id": "stage-lamp",
+        "type": "union",
+        "children": [
+          {
+            "id": "sl-housing",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.4,
+                0.4,
+                0.4
+              ],
+              "cornerR": 0.05
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "material": "matte-black"
+          },
+          {
+            "id": "sl-bulb",
+            "type": "sphere",
+            "args": {
+              "radius": 0.18
+            },
+            "transform": {
+              "translate": [
+                0,
+                -0.15,
+                0
+              ]
+            },
+            "material": {
+              "hue": 0.1,
+              "sat": 0.6,
+              "value": 1,
+              "metal": 0,
+              "glow": 0.9,
+              "kind": "emissive"
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            5.5,
+            -1
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 6,
+            "axis": "x",
+            "spacing": 2.6,
+            "origin": "center"
+          }
+        ]
+      },
+      {
+        "id": "audience-figure",
+        "type": "capsule",
+        "args": {
+          "a": [
+            0,
+            0,
+            0
+          ],
+          "b": [
+            0,
+            1.6,
+            0
+          ],
+          "radius": 0.25
+        },
+        "transform": {
+          "translate": [
+            0,
+            0,
+            8
+          ]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.05,
+          "value": 0.25,
+          "metal": 0,
+          "glow": 0
+        },
+        "variants": [
+          {
+            "op": "scatter",
+            "count": 30,
+            "region": {
+              "type": "rectXZ",
+              "center": [
+                0,
+                0,
+                12
+              ],
+              "size": [
+                20,
+                12
+              ]
+            },
+            "separation": 1,
+            "heading": "aligned",
+            "scale": {
+              "jitter": 0.08
+            },
+            "translate": {
+              "jitter": [
+                0.3,
+                0,
+                0.3
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "concert-floor",
+      "material": {
+        "hue": 0.1,
+        "sat": 0.05,
+        "value": 0.18,
+        "metal": 0,
+        "glow": 0
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.18,
+        "distance": 24,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 2,
+        "targetZ": 6,
+        "aperture": 0.7,
+        "focalDistance": 15
+      },
+      "light": {
+        "azimuth": 0,
+        "altitude": 0.35,
+        "distance": 30,
+        "intensity": 1.6
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.45
+      },
+      "postFx": {
+        "exposure": 1.2,
+        "vignetteStrength": 0.5,
+        "bloomMix": 0.45,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.25,
+        "motionBlurStrength": 0
+      }
+    },
+    "volumes": [
+      {
+        "id": "stage-haze",
+        "kind": "fog",
+        "center": [
+          0,
+          3,
+          2
+        ],
+        "size": [
+          20,
+          6,
+          12
+        ],
+        "density": 0.12,
+        "color": [
+          95,
+          85,
+          70
+        ],
+        "noiseScale": 1.2
+      }
+    ]
+  }
+}

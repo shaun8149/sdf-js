@@ -1,0 +1,296 @@
+{
+  "result": {
+    "demoId": "roman-colonnade",
+    "version": "v3.14",
+    "model": "claude-sonnet-4-5-20250929",
+    "elapsed": "15.1s",
+    "tokens": {
+      "input": 59469,
+      "output": 1153
+    },
+    "costUSD": "0.1957",
+    "subjectCount": 7,
+    "newAtomsUsedCount": 0,
+    "newAtomsUsed": [],
+    "newIQTypesUsedCount": 0,
+    "newIQTypesUsed": [],
+    "materialUsageCount": 6,
+    "patternUsageCount": 6,
+    "variantsUsedCount": 0,
+    "variantsUsed": [],
+    "zSpread": {
+      "count": 7,
+      "min": 0,
+      "max": 0,
+      "range": 0,
+      "stdev": 0
+    },
+    "v30AtomsUsedCount": 0,
+    "v30AtomsUsed": [],
+    "v32AtomsUsedCount": 0,
+    "v32AtomsUsed": [],
+    "materialKindsUsed": {
+      "sea": 0,
+      "mountain": 0,
+      "emissive": 0,
+      "translucent": 0
+    },
+    "cinematic": {
+      "postFx": 0,
+      "aperture": 0,
+      "volumeCount": 0,
+      "flameVols": 0,
+      "smokeVols": 0,
+      "fogVols": 0,
+      "godRayVols": 0,
+      "volAttachTo": 0,
+      "volSceneStateKey": 0,
+      "seqShots": 0,
+      "seqMotion": 0,
+      "seqPhases": 0,
+      "relativeToUses": 0,
+      "shakeUses": 0,
+      "velocityScaleUses": 0,
+      "sceneStateKeys": 0
+    },
+    "variantOps": {
+      "scatter": 0,
+      "array": 1,
+      "mirror": 0,
+      "total": 1
+    },
+    "compositeAtoms": {},
+    "sanitySummary": "clean",
+    "sanityErrors": 0,
+    "sanityWarnings": 0,
+    "typeCounts": {
+      "union": 1,
+      "rounded_box": 2,
+      "cylinder": 1,
+      "box": 2,
+      "pyramid": 1
+    },
+    "compileOk": true,
+    "compileErr": null,
+    "sceneName": "Roman Colonnade"
+  },
+  "sceneData": {
+    "v": 1,
+    "name": "Roman Colonnade",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "罗马柱廊，一排古典石柱",
+      "from2dCode": "5 columns evenly spaced, each with base+shaft+capital, lintel spanning top, triangular pediment crown"
+    },
+    "subjects": [
+      {
+        "id": "column",
+        "type": "union",
+        "children": [
+          {
+            "id": "base",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.9,
+                0.3,
+                0.9
+              ],
+              "cornerR": 0.04
+            },
+            "transform": {
+              "translate": [
+                0,
+                0.15,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "brick",
+              "scale": 3.5,
+              "strength": 0.35
+            }
+          },
+          {
+            "id": "shaft",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.35,
+              "height": 4
+            },
+            "transform": {
+              "translate": [
+                0,
+                2.15,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "cells",
+              "scale": 4,
+              "strength": 0.2
+            }
+          },
+          {
+            "id": "capital",
+            "type": "rounded_box",
+            "args": {
+              "dims": [
+                0.95,
+                0.35,
+                0.95
+              ],
+              "cornerR": 0.05
+            },
+            "transform": {
+              "translate": [
+                0,
+                4.35,
+                0
+              ]
+            },
+            "material": "stone",
+            "pattern": {
+              "kind": "brick",
+              "scale": 3,
+              "strength": 0.3
+            }
+          }
+        ],
+        "transform": {
+          "translate": [
+            0,
+            0,
+            0
+          ]
+        },
+        "variants": [
+          {
+            "op": "array",
+            "count": 7,
+            "axis": "z",
+            "spacing": 2.6,
+            "origin": "center",
+            "scale": {
+              "jitter": 0.02
+            },
+            "translate": {
+              "jitter": [
+                0,
+                0,
+                0.05
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "lintel",
+        "type": "box",
+        "args": {
+          "dims": [
+            1.5,
+            0.5,
+            18
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            4.85,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.5,
+          "strength": 0.4
+        }
+      },
+      {
+        "id": "pediment",
+        "type": "pyramid",
+        "args": {
+          "height": 1.8
+        },
+        "transform": {
+          "translate": [
+            0,
+            5.6,
+            0
+          ],
+          "scale": [
+            1.8,
+            1,
+            9.5
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "brick",
+          "scale": 2.8,
+          "strength": 0.35
+        }
+      },
+      {
+        "id": "floor-platform",
+        "type": "box",
+        "args": {
+          "dims": [
+            2.5,
+            0.35,
+            19
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            -0.18,
+            0
+          ]
+        },
+        "material": "stone",
+        "pattern": {
+          "kind": "hex",
+          "scale": 4.5,
+          "strength": 0.5
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.5,
+      "region": "ground",
+      "material": "stone",
+      "pattern": {
+        "kind": "hex",
+        "scale": 5,
+        "strength": 0.45
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.35,
+        "pitch": 0.18,
+        "distance": 18,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 2.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.85,
+        "altitude": 0.35,
+        "distance": 80,
+        "intensity": 1.1
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.55
+      }
+    }
+  }
+}
