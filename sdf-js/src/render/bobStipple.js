@@ -253,13 +253,21 @@ export function bobStipple(ctx, layers, options = {}) {
   // 调密度（painted.js scenes 7/8 公式）+ region 调 colorBase（painted.js regionOffset 表）。
   // hit/normal 暂不用但 contract 留着——未来扩展（如点彩 normal-driven brush 方向）兼容。
   const probeCamera = createCamera({
-    yaw: options.yaw ?? 0.5,
-    pitch: options.pitch ?? 0.35,
-    distance: options.cameraDist ?? 4,
+    yaw:      options.yaw      ?? 0.5,
+    pitch:    options.pitch    ?? 0.35,
+    distance: options.cameraDist ?? options.distance ?? 4,
+    target:   options.target   ?? [0, 0, 0],
   });
+  // Probe march settings. Defaults work for unit-scale scenes; lifted
+  // 3D scenes have camera distance 50-90 and need much larger maxDist
+  // or rays never reach the subject. Caller passes via options.
+  const probeMaxDist  = options.maxDist  ?? Math.max(10, (options.distance ?? options.cameraDist ?? 4) * 3);
+  const probeMaxSteps = options.maxSteps ?? 120;
   const preparedLayers = layers.map(({ sdf, color }) => {
     if (sdf instanceof SDF3) {
-      const probe = makeProbe((p) => sdf(p), { camera: probeCamera });
+      const probe = makeProbe((p) => sdf(p), {
+        camera: probeCamera, maxDist: probeMaxDist, maxSteps: probeMaxSteps,
+      });
       return { color, is3D: true, probe };
     }
     return { color, is3D: false, sdf };

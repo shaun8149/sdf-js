@@ -31,6 +31,10 @@ export function traceThrough(field, seed, opts = {}) {
     maxSteps = 500,
     bounds = null,
     isValidPos = null,
+    // Pasma stop conditions (B in the optimization roadmap)
+    stopOnReversal = false,
+    stopOnDivergence = false,
+    divergenceThreshold = -0.7,  // dot(f0, fc) > -0.7 = within ~135° of start
   } = opts;
 
   const inBounds = (x, y) => {
@@ -40,37 +44,55 @@ export function traceThrough(field, seed, opts = {}) {
   };
   const valid = (x, y) => isValidPos ? isValidPos(x, y) : true;
 
-  // 正向
+  // Initial direction at seed (used by stopOnDivergence)
+  const aSeed = field(seed[0], seed[1]);
+  const f0 = [Math.cos(aSeed), Math.sin(aSeed)];
+
+  // Forward extend
   const fwd = [];
   {
     let [x, y] = seed;
+    let fpx = f0[0], fpy = f0[1];  // previous direction
     for (let i = 0; i < maxSteps; i++) {
       if (!inBounds(x, y) || !valid(x, y)) break;
       fwd.push([x, y]);
       const a = field(x, y);
-      x += Math.cos(a) * stepSize;
-      y += Math.sin(a) * stepSize;
+      const fcx = Math.cos(a), fcy = Math.sin(a);
+      // (B.1) Reversal: previous vs current direction flipped → stop
+      if (stopOnReversal && (fpx * fcx + fpy * fcy) <= 0) break;
+      // (B.2) Divergence: current direction past divergenceThreshold of seed
+      // direction → stop. Default -0.7 ≈ 135° cone.
+      if (stopOnDivergence && (f0[0] * fcx + f0[1] * fcy) < divergenceThreshold) break;
+      x += fcx * stepSize;
+      y += fcy * stepSize;
+      fpx = fcx; fpy = fcy;
     }
   }
 
-  // 反向（从 seed 出发，按 -field 方向）
+  // Backward extend (negate direction; mirror the same stop logic)
   const back = [];
   {
     let [x, y] = seed;
-    // 第一步先沿反方向走一步，避免和 fwd 第一个点重复
-    const a0 = field(x, y);
-    x -= Math.cos(a0) * stepSize;
-    y -= Math.sin(a0) * stepSize;
+    // First step backwards from seed
+    x -= f0[0] * stepSize;
+    y -= f0[1] * stepSize;
+    let fpx = -f0[0], fpy = -f0[1];   // backward direction at seed
     for (let i = 0; i < maxSteps; i++) {
       if (!inBounds(x, y) || !valid(x, y)) break;
       back.push([x, y]);
       const a = field(x, y);
-      x -= Math.cos(a) * stepSize;
-      y -= Math.sin(a) * stepSize;
+      // current step direction = -field (we're going backward)
+      const fcx = -Math.cos(a), fcy = -Math.sin(a);
+      if (stopOnReversal && (fpx * fcx + fpy * fcy) <= 0) break;
+      // Diverge check against backward seed direction (-f0)
+      if (stopOnDivergence && ((-f0[0]) * fcx + (-f0[1]) * fcy) < divergenceThreshold) break;
+      x += fcx * stepSize;
+      y += fcy * stepSize;
+      fpx = fcx; fpy = fcy;
     }
   }
 
-  // 拼接：reverse(back) + fwd
+  // Stitch: reverse(back) + fwd
   back.reverse();
   const centerline = back.concat(fwd);
 
@@ -81,7 +103,23 @@ export function traceThrough(field, seed, opts = {}) {
   };
 }
 
-// ---- Spatial grid for collision detection --------------------------------
+// ---- Spatial collision detection ------------------------------------------
+//
+// Two implementations, same { add(x,y), hasNearby(x,y,r) } interface:
+//
+//   SpatialGrid  — fixed-cellSize hash grid. O(1) per query. cellSize must
+//                  be >= largest possible query radius. Best when dsep is
+//                  constant or has a small known max.
+//
+//   QuadTree     — adaptive bucket-and-split (Pasma's QT). Each node holds
+//                  up to 8 points, then splits into 4 children. Query
+//                  recurses into overlapping subtrees only. NO max-radius
+//                  assumption — every query carries its own radius. This is
+//                  what enables Pasma's brightness-driven variable spacing
+//                  without a worst-case cellSize budget.
+//
+// densePack picks based on the `spatialIndex` opt (default 'grid'; switch
+// to 'quadtree' for Pasma-style adaptive radius).
 
 class SpatialGrid {
   constructor(bounds, cellSize) {
@@ -121,6 +159,79 @@ class SpatialGrid {
           const dy = cell[i][1] - y;
           if (dx * dx + dy * dy < dsepSq) return true;
         }
+      }
+    }
+    return false;
+  }
+}
+
+// QuadTree (port of Pasma's Q/Qa/Qh from Universal Rayhatcher). Each node:
+//   { x, y, w, p: points[], r: [child0, child1, child2, child3] | null }
+// where (x, y) is the BOTTOM-LEFT corner and w is the side length.
+// Split on add when p.length reaches BUCKET_SIZE.
+const QT_BUCKET = 8;
+
+class QuadTreeNode {
+  constructor(x, y, w) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.p = [];        // points up to QT_BUCKET; after that we split
+    this.r = null;      // 4 children [TR, BR, TL, BL] in (lower-left at) (x+w/2, y+w/2) etc
+  }
+}
+
+class QuadTree {
+  constructor(bounds) {
+    // Snap to a square that covers the bounds (QT works best square)
+    const W = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+    this.root = new QuadTreeNode(bounds.minX, bounds.minY, W);
+  }
+  add(x, y) { this._add(this.root, x, y); }
+  _add(q, x, y) {
+    // If already split, recurse into child whose quadrant contains (x, y)
+    if (q.r) {
+      const hw = q.w / 2;
+      const i = (x >= q.x + hw ? 1 : 0) + (y >= q.y + hw ? 2 : 0);
+      this._add(q.r[i], x, y);
+      return;
+    }
+    // Otherwise add to leaf bucket
+    q.p.push([x, y]);
+    if (q.p.length > QT_BUCKET && q.w > 1e-6) {
+      // Split: create 4 children covering each quadrant
+      const hw = q.w / 2;
+      q.r = [
+        new QuadTreeNode(q.x,      q.y,      hw),  // 0: BL
+        new QuadTreeNode(q.x + hw, q.y,      hw),  // 1: BR
+        new QuadTreeNode(q.x,      q.y + hw, hw),  // 2: TL
+        new QuadTreeNode(q.x + hw, q.y + hw, hw),  // 3: TR
+      ];
+      // Re-bucket existing points
+      const old = q.p;
+      q.p = [];
+      for (let i = 0; i < old.length; i++) this._add(q, old[i][0], old[i][1]);
+    }
+  }
+  // Any stored point within Euclidean distance `dsep` of (x, y)?
+  hasNearby(x, y, dsep) {
+    return this._hasNearby(this.root, x, y, dsep * dsep, dsep);
+  }
+  _hasNearby(q, x, y, rSq, r) {
+    // Reject node whose AABB doesn't overlap the query disk's bounding box
+    if (x + r < q.x || x - r > q.x + q.w) return false;
+    if (y + r < q.y || y - r > q.y + q.w) return false;
+    // Check this node's points
+    const pts = q.p;
+    for (let i = 0; i < pts.length; i++) {
+      const dx = pts[i][0] - x;
+      const dy = pts[i][1] - y;
+      if (dx * dx + dy * dy < rSq) return true;
+    }
+    // Recurse into children
+    if (q.r) {
+      for (let i = 0; i < 4; i++) {
+        if (this._hasNearby(q.r[i], x, y, rSq, r)) return true;
       }
     }
     return false;
@@ -167,6 +278,14 @@ export function densePack(field, opts = {}) {
     maxStepsPerLine = 2000,
     rng = Math.random,
     extraValid = null,
+    // Pasma stop conditions (B) — caller can opt in
+    stopOnReversal = false,
+    stopOnDivergence = false,
+    divergenceThreshold = -0.7,
+    // Spatial index choice (E): 'grid' (default, fixed cellSize) vs
+    // 'quadtree' (adaptive, no max-radius assumption — needed when dsep
+    // varies a lot per query point, e.g., Pasma's brightness-driven spacing)
+    spatialIndex = 'grid',
   } = opts;
 
   // dsep 可以是数字或函数。函数模式下 grid cell 用 dsepMax 当上界
@@ -177,7 +296,10 @@ export function densePack(field, opts = {}) {
   if (!bounds) throw new Error('densePack: bounds required');
 
   // 用 dsep (或 dsepMax) 作 cellSize → 邻域查 3x3 = 半径 1.5×cellSize 内全覆盖
-  const grid = new SpatialGrid(bounds, gridCellSize);
+  // QuadTree 模式下不用 cellSize（每次 query 带自己的半径）
+  const grid = spatialIndex === 'quadtree'
+    ? new QuadTree(bounds)
+    : new SpatialGrid(bounds, gridCellSize);
   // 每点自己的 dtest = dsep(x,y) * ratio。函数模式下逐点重算
   const dtestAt = (x, y) => getDsep(x, y) * dtestRatio;
 
@@ -227,6 +349,9 @@ export function densePack(field, opts = {}) {
       maxSteps: maxStepsPerLine,
       bounds,
       isValidPos,
+      stopOnReversal,
+      stopOnDivergence,
+      divergenceThreshold,
     });
 
     if (sl.centerline.length < minLength) continue;
@@ -319,27 +444,35 @@ export function gradientPerpField(sdf, eps = 0.001) {
  * "贴皮"地走 —— 不再是 2D 洋葱环，而是 Pasma Universal Rayhatcher 那种
  * 沿 3D 曲面缠绕的线。
  *
- * 数学：
- *   1. probe 给我们 hit (3D 点) 和 normal (3D 法向)
- *   2. 选一个参考向量 R（默认 [1, 0, 0] 世界水平）
- *   3. 切向 T3D = R - (R·N)·N  —— R 在表面切平面上的投影
- *   4. 用相机 basis (right, up, fwd) 投影 T3D 到屏幕，取 atan2 得到 2D 角度
+ * 两种 mode（视觉差异显著）：
+ *
+ *   'cross-nfw' (DEFAULT, Pasma signature):
+ *     T3D = cross(N, fw)  —— 表面切平面与"屏幕平行平面"的交线方向
+ *     视觉：线条像纬度圈，在 sphere 上绕纬线、在 torus 上绕大圆、
+ *     在 box 上贴面走 — 跟相机视角自然耦合，"缠绕"感强。
+ *
+ *   'horizontal-ref' (legacy, 我们 2025-2026 早期实现):
+ *     T3D = R - (R·N)·N  —— 固定参考向量 R=[1,0,0] 投影到切平面
+ *     视觉：线条跟世界 X 轴关联，旋转物体时线条跟着物体转。
+ *     适合静态镜头或物体方向有意义的场景。
  *
  * 通用透视投影（相机 5-tuple）：
  *   camP = P - cam,  depth = camP · fwd
  *   tDotFwd = T · fwd
  *   dx =  T·right · depth - camP·right · tDotFwd
- *   dy = -(T·up    · depth - camP·up    · tDotFwd)    (y-flip)
+ *   dy =  T·up    · depth - camP·up    · tDotFwd
  *
  * @param {(x:number,y:number)=>{hit:?number[], normal:?number[]}} probe
  * @param {object} [opts]
- * @param {[number,number,number]} [opts.ref=[1,0,0]]   - 参考向量
+ * @param {'cross-nfw'|'horizontal-ref'} [opts.mode='cross-nfw']
+ * @param {[number,number,number]} [opts.ref=[1,0,0]]   - 仅 horizontal-ref 模式用
  * @param {{cam:number[], fwd:number[], right:number[], up:number[], focal:number}} [opts.camera]
  *        - 相机 5-tuple。默认 = 正面平视 cam=[0,0,-3.5]
  * @returns {(x,y)=>number}  field function (angle)
  */
 export function projectedTangentField(probe, opts = {}) {
   const {
+    mode   = 'cross-nfw',
     ref    = [1, 0, 0],
     camera = {
       cam:   [0, 0, -3.5],
@@ -356,15 +489,29 @@ export function projectedTangentField(probe, opts = {}) {
 
     const N = data.normal;
     const P = data.hit;
-    const R = ref;
 
-    // R - (R·N)·N
-    const rDotN = R[0]*N[0] + R[1]*N[1] + R[2]*N[2];
-    const T = [
-      R[0] - rDotN * N[0],
-      R[1] - rDotN * N[1],
-      R[2] - rDotN * N[2],
-    ];
+    // Tangent vector in 3D — mode determines algorithm
+    let T;
+    if (mode === 'cross-nfw') {
+      // Pasma's `hd = X(n, fw)` — cross product gives a vector perpendicular
+      // to BOTH the surface normal and the camera view direction. This is
+      // the surface's "horizontal contour" direction at this pixel.
+      const fw = camera.fwd;
+      T = [
+        N[1] * fw[2] - N[2] * fw[1],
+        N[2] * fw[0] - N[0] * fw[2],
+        N[0] * fw[1] - N[1] * fw[0],
+      ];
+    } else {
+      // horizontal-ref: project a fixed world-frame reference onto tangent plane
+      const R = ref;
+      const rDotN = R[0]*N[0] + R[1]*N[1] + R[2]*N[2];
+      T = [
+        R[0] - rDotN * N[0],
+        R[1] - rDotN * N[1],
+        R[2] - rDotN * N[2],
+      ];
+    }
 
     // 通用透视投影 —— 用相机 basis 算 dx, dy
     const camP = [P[0] - camera.cam[0], P[1] - camera.cam[1], P[2] - camera.cam[2]];
@@ -378,7 +525,6 @@ export function projectedTangentField(probe, opts = {}) {
 
     const dx = tDotR * depth - cpDotR * tDotFwd;
     const dy = tDotU * depth - cpDotU * tDotFwd;
-    // 2026-05-15: 跟 probe.rayFor 一起统一到 math-y-up；旧 `-(...)` 是 y-down 时代
 
     if (Math.abs(dx) < 1e-9 && Math.abs(dy) < 1e-9) return 0;
     return Math.atan2(dy, dx);

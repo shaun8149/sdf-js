@@ -87,12 +87,14 @@ void buildView(int viewIdx, vec2 uv, out vec3 ro, out vec3 rd) {
     ro = c + vec3(uv.x * r, uv.y * r, r * 3.0);
     rd = vec3(0.0, 0.0, -1.0);
   } else {
-    // ISO view: perspective. Camera at (1,1,1)*r, looking at center.
-    vec3 camPos = c + vec3(r * 2.0, r * 1.8, r * 2.0);
+    // ISO view: perspective. Tightened so model fills the quadrant similarly
+    // to the 3 ortho views. Earlier camera at 2× extent with focal=1.5 made
+    // the model appear ~half size vs the ortho views.
+    vec3 camPos = c + vec3(r * 1.4, r * 1.2, r * 1.4);
     vec3 fwd = normalize(c - camPos);
     vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
     vec3 up = cross(fwd, right);
-    float focal = 1.5;
+    float focal = 2.5;
     ro = camPos;
     rd = normalize(uv.x * right + uv.y * up + focal * fwd);
   }

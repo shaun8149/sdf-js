@@ -19,6 +19,10 @@ export { bands } from './bands.js';
 export { sandFrame } from './sand.js';
 export { painted } from './painted.js';
 export { bobStipple } from './bobStipple.js';
+// "BOB" pill alias — compositor's bob pill dispatches to the bobStipple
+// algorithm via this alias. Future β (GPU-native BOB-style shader) will
+// re-route this export without changing the pill or call sites.
+export { bobStipple as bob } from './bobStipple.js';
 export { raymarched } from './raymarched.js';
 export { flowLines } from './flowLines.js';
 export { hatch, hatchSvg, computeHatchLayers } from './hatch.js';

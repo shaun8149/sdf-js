@@ -151,6 +151,57 @@ class SketchyEllipse extends SketchyShape {
 }
 
 // ---------------------------------------------------------------------------
+// SketchyRectangle — port of Sarkissian's SketchyRect → SketchyQuad. Pen
+// traces a zig-zag between the rectangle's TOP and BOTTOM edges (straight
+// lines, NOT sqrt curve). Critical for thin shapes (trunks, branches): unlike
+// SketchyEllipse where x=±rx forces ht=0, the rect has constant ±h/2 along
+// each edge so even n=2 substeps trace the full vertical extent.
+// w = full width, h = full height (NOT semi-axes).
+// ---------------------------------------------------------------------------
+class SketchyRectangle extends SketchyShape {
+  constructor(cx, cy, w, h, hatchDensity) {
+    super();
+    this.x = cx;
+    this.y = cy;
+    // Corner layout (local, centered): top-left, top-right, bottom-right, bottom-left
+    const halfW = w * 0.5, halfH = h * 0.5;
+    const x1 = -halfW, y1 = -halfH;
+    const x2 = +halfW, y2 = -halfH;
+    const x3 = +halfW, y3 = +halfH;
+    const x4 = -halfW, y4 = +halfH;
+    // Step count along the WIDTH (top/bottom edges = d12 = d34 = w in
+    // Sarkissian's SketchyQuad). Using h here was a bug — for a tall thin
+    // trunk (h=200, w=0.5), it produced 1000 substeps × 2 = 2000 waypoints,
+    // making each trunk take hundreds of thousands of pen ticks. The correct
+    // count is just along the rect's short axis.
+    const nSubSteps = Math.max(2, Math.round(w / Math.max(hatchDensity, 0.05)));
+    const pts = [];
+    for (let i = 0; i < nSubSteps; i++) {
+      const m = i / Math.max(1, nSubSteps - 1);
+      // Top-edge waypoint (lerp 1→2)
+      let px = x1 + (x2 - x1) * m;
+      let py = y1 + (y2 - y1) * m;
+      // Small noise wobble (Sarkissian's noise(.08x, .08y)*TAU * 1px)
+      const na1 = (Math.sin(px * 0.4 + py * 0.4) * 0.5 + 0.5) * Math.PI * 2;
+      px += Math.cos(na1);
+      py += Math.sin(na1);
+      pts.push([px, py]);
+      // Bottom-edge waypoint (lerp 4→3)
+      let qx = x4 + (x3 - x4) * m;
+      let qy = y4 + (y3 - y4) * m;
+      const na2 = (Math.sin(qx * 0.4 + qy * 0.4) * 0.5 + 0.5) * Math.PI * 2;
+      qx += Math.cos(na2);
+      qy += Math.sin(na2);
+      pts.push([qx, qy]);
+    }
+    this.points = pts;
+    this.pen = [pts[0][0], pts[0][1]];
+    this.penV = [0, 0];
+    this.penTargetIndex = 1;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Hash-derived palette (S2=c decision). Produces:
 //   paper: warm off-white background
 //   stroke: 6 color slots ordered by "lightness rank" (used as gradient
@@ -176,52 +227,96 @@ function hsv2rgb(h, s, v) {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
+// ---------------------------------------------------------------------------
+// Curated palettes ported from Sarkissian's palettes.js (OpenProcessing
+// sketch 2040291). The visual signature of "Eucalyptus and Sagebrush"
+// depends heavily on these specific color choices — they are NOT random
+// HSV — so we ship them verbatim. Hex → RGB.
+// ---------------------------------------------------------------------------
+const hex2rgb = (hex) => {
+  const h = hex.replace('#', '');
+  const v = h.length === 3
+    ? h.split('').map(c => parseInt(c + c, 16))
+    : [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+  return v;
+};
+const lerpRGB = (a, b, t) => [
+  Math.round(a[0] * (1 - t) + b[0] * t),
+  Math.round(a[1] * (1 - t) + b[1] * t),
+  Math.round(a[2] * (1 - t) + b[2] * t),
+];
+
+const CURATED_PALETTES = [
+  {  // 0: monochrome grayscale
+    stroke: ['#000', '#222', '#444', '#777', '#ddd', '#fff'].map(hex2rgb),
+    tree:   ['#000', '#222', '#444', '#777', '#ddd', '#fff'].map(hex2rgb),
+  },
+  {  // 1: synthwave (deep blue → magenta → orange)
+    stroke: ['#0f0347','#1c0682','#114ff2','#114ff2','#d91c2f','#d91c2f',
+             '#fe3da7','#fe3da7','#f79357','#f79357','#fbc442','#fbc442'].map(hex2rgb),
+    tree:   ['#0f0347','#1c0682','#114ff2','#5f317d','#5f317d','#bb39a2',
+             '#bb39a2','#f45969','#f45969','#fbc442'].map(hex2rgb),
+  },
+  {  // 2: dusty rose + teal
+    stroke: ['#1a1d28','#377D71','#8879B0','#FBA1A1','#FBC5C5'].map(hex2rgb),
+    tree:   ['#1a1d28','#2d3351','#214942','#214942','#704723','#6dad9f',
+             '#6dad9f','#f99d9d','#f8b861'].map(hex2rgb),
+  },
+  {  // 3: lavender + coral (with explicit lerp midpoints)
+    stroke: [
+      hex2rgb('#29264E'),
+      lerpRGB(hex2rgb('#29264E'), hex2rgb('#9881F5'), 0.5),
+      hex2rgb('#9881F5'),
+      lerpRGB(hex2rgb('#9881F5'), hex2rgb('#82AFF9'), 0.5),
+      hex2rgb('#F97D81'),
+      lerpRGB(hex2rgb('#F97D81'), hex2rgb('#fcbcbe'), 0.5),
+      hex2rgb('#fcbcbe'),
+      hex2rgb('#f7c066'),
+    ],
+    tree: ['#29264E','#354e6f','#8475bd','#6daba5','#fcbcde','#f7c066'].map(hex2rgb),
+  },
+  {  // 4: olive + flame
+    stroke: ['#232601','#4a69fe','#226330','#ef412f','#efac25','#eeefd0'].map(hex2rgb),
+    tree:   ['#232601','#232601','#6b8adc','#226330','#c4685b','#c1a953','#eeefd0'].map(hex2rgb),
+  },
+  {  // 5: midnight + sunset
+    stroke: ['#040B21','#0C282D','#2B4039','#9A422E','#d87d1b','#DFB4BF','#F3E7DC'].map(hex2rgb),
+    tree:   ['#040B21','#0C282D','#2B4039','#9A422E','#d87d1b','#DFB4BF','#F3E7DC'].map(hex2rgb),
+  },
+];
+
+const CURATED_PAPER = [216, 213, 206]; // '#dfd8ce' — Sarkissian's paper color
+
 export function buildPalette(rng, opts = {}) {
-  // Phase 2: opts allow external bias of palette family. When provided,
-  // these override the rng draws — used by bonsai-nft to pick from a
-  // curated set of "palette families" (jewel-tone / sunset / cold / etc.)
-  // rather than fully-random palettes per token.
-  // Paper: warm earth-toned off-white. Slight hash perturbation per token.
-  const paperH = opts.paperHue ?? (0.07 + rng.random_num(-0.02, 0.03));
-  const paperS = opts.paperSat ?? (0.18 + rng.random_num(-0.05, 0.05));
-  const paperV = opts.paperVal ?? (0.84 + rng.random_num(-0.04, 0.04));
-  const paper = hsv2rgb(paperH, paperS, paperV);
-  // Master hue rotation — defines whole palette identity for this token.
-  const masterHue = opts.masterHue ?? rng.random_dec();
-  const sat = opts.saturation ?? (0.45 + rng.random_num(-0.20, 0.25));
-  // 6 stroke colors, lightness ramp from dark to light:
-  // crayon strokes layer over paper; need 6 grades from shadow → highlight.
-  const stroke = [];
-  for (let i = 0; i < 6; i++) {
-    const t = i / 5;
-    const h = (masterHue + t * 0.12) % 1;       // slight hue shift along ramp
-    const s = sat * (1 - t * 0.4);              // less saturated at highlight
-    const v = 0.25 + t * 0.60;                  // 0.25 → 0.85
-    stroke.push(hsv2rgb(h, s, v));
-  }
-  // Tree colors: 3 deep greens / browns (always darker, distinct hue).
-  const treeHue = (masterHue + 0.4) % 1;        // ~complementary
-  const tree = [
-    hsv2rgb(treeHue, 0.60, 0.28),               // dark trunk
-    hsv2rgb(treeHue, 0.55, 0.42),               // mid foliage
-    hsv2rgb(treeHue, 0.45, 0.55),               // light foliage
-  ];
-  return { paper, stroke, tree };
+  // Phase 2: opts.paletteIndex can pick a specific curated set.
+  // Otherwise: hash picks one of 6 curated palettes per token.
+  const idx = opts.paletteIndex ?? rng.random_int(0, CURATED_PALETTES.length - 1);
+  const cur = CURATED_PALETTES[idx];
+  return {
+    paper: opts.paper || CURATED_PAPER,
+    stroke: cur.stroke,
+    tree: cur.tree,
+    paletteIndex: idx,
+  };
 }
 
-// Pick a stroke color by lightValue ∈ [0, 1]. Lerp between adjacent stops.
+export function paletteColor(palette, br) {
+  const arr = palette.stroke;
+  const idx = Math.max(0, Math.min(arr.length - 1, Math.floor(br * arr.length)));
+  return arr[idx];
+}
+
+export function treePaletteColor(palette, br) {
+  const arr = palette.tree;
+  const idx = Math.max(0, Math.min(arr.length - 1, Math.floor(br * arr.length)));
+  return arr[idx];
+}
+
+// Pick a stroke color by lightValue ∈ [0, 1]. Indexes the stroke palette
+// directly (curated palettes have hand-tuned color jumps — lerping between
+// adjacent stops would dilute the signature).
 export function sampleStroke(palette, lightValue) {
-  const v = Math.max(0, Math.min(1, lightValue)) * 5;
-  const lo = Math.floor(v);
-  const hi = Math.min(5, lo + 1);
-  const t = v - lo;
-  const a = palette.stroke[lo];
-  const b = palette.stroke[hi];
-  return [
-    Math.round(a[0] * (1 - t) + b[0] * t),
-    Math.round(a[1] * (1 - t) + b[1] * t),
-    Math.round(a[2] * (1 - t) + b[2] * t),
-  ];
+  return paletteColor(palette, Math.max(0, Math.min(1, lightValue)));
 }
 
 // ---------------------------------------------------------------------------
@@ -387,6 +482,447 @@ function computeSlopeAngle(baked, boxSize, worldP, camState, focal, width, heigh
   return Math.atan2(sB[1] - sA[1], sB[0] - sA[0]);
 }
 
+// =============================================================================
+// SARKISSIAN 2D TOP-DOWN PIPELINE (faithful port of sketch 2040291)
+// -----------------------------------------------------------------------------
+// When a heightmap is available (bonsai-mountain bake), crayon switches to 2D
+// top-down painting per Sarkissian's algorithm. No raymarch. The bake's
+// heightmap directly becomes hMap; gradient·light becomes lMap.
+// =============================================================================
+
+// Convert Atlas bake → Sarkissian hMap (raw height in [0,1]) and lMap
+// (normal · light dot product, in [-1, 1]). 100×100 resolution matches the
+// original — keeps stroke density looking right.
+function prepareSarkissianMaps(baked, boxSize, lightDir, mapW = 100, mapH = 100) {
+  const hMap = new Array(mapW);
+  const lMap = new Array(mapW);
+  for (let i = 0; i < mapW; i++) {
+    hMap[i] = new Float32Array(mapH);
+    lMap[i] = new Float32Array(mapH);
+    for (let j = 0; j < mapH; j++) {
+      const u = (i + 0.5) / mapW, v = (j + 0.5) / mapH;
+      const x = (u - 0.5) * 2 * boxSize[0];
+      const z = (v - 0.5) * 2 * boxSize[2];
+      hMap[i][j] = Math.max(0, sampleHeightmap(baked, boxSize, x, z));
+    }
+  }
+  // Second pass: normal · light from finite-difference gradient (Sarkissian
+  // line 90-94 in map.js).
+  for (let i = 0; i < mapW; i++) {
+    for (let j = 0; j < mapH; j++) {
+      const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
+      const j1 = (j === mapH - 1) ? mapH - 2 : j + 1;
+      const iDir = (i === mapW - 1) ? -1 : 1;
+      const jDir = (j === mapH - 1) ? -1 : 1;
+      const dhx = (hMap[i1][j] - hMap[i][j]) * iDir;
+      const dhz = (hMap[i][j1] - hMap[i][j]) * jDir;
+      // Sarkissian uses (dh/dx, dh/dz, 0) as the normal (2D treatment, no y),
+      // then normalizes. We do the same.
+      const len = Math.hypot(dhx, dhz) || 1e-6;
+      const nx = dhx / len, ny = dhz / len;
+      // Dot with 2D light direction
+      lMap[i][j] = nx * lightDir[0] + ny * lightDir[1];
+    }
+  }
+  return { hMap, lMap, mapW, mapH };
+}
+
+// 2nd-derivative magnitude squared at (i, j). Used for stroke length:
+// gentle curvature → long strokes (plains); sharp curvature → short strokes
+// (cliffs / ridges).
+function hMapCurvatureMagSq(hMap, mapW, mapH, i, j) {
+  const i0 = i, j0 = j;
+  const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
+  const j1 = (j === mapH - 1) ? mapH - 2 : j + 1;
+  // First derivatives
+  const dhx0 = hMap[i1][j0] - hMap[i0][j0];
+  const dhz0 = hMap[i0][j1] - hMap[i0][j0];
+  // Second derivatives
+  const i2 = (i1 === mapW - 1) ? mapW - 2 : i1 + 1;
+  const j2 = (j1 === mapH - 1) ? mapH - 2 : j1 + 1;
+  const dhx1 = hMap[i2][j0] - hMap[i1][j0];
+  const dhz1 = hMap[i0][j2] - hMap[i0][j1];
+  const ddx = dhx1 - dhx0;
+  const ddz = dhz1 - dhz0;
+  return ddx * ddx + ddz * ddz;
+}
+
+// addTreeSpecs — port of Sarkissian's addTree() (line 381-514).
+//   • 1 trunk (vertical "weighted line" — thin elongated rect)
+//   • 4-5 clumps, each with: 1 branch line + 2-20 foliage ellipses
+// Foliage color computed from per-leaf internal normal · lightDir.
+function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scaleK) {
+  const specs = [];
+  const wiggle = 2 * scaleK;
+  // 1) Trunk — vertical weighted line from (x, y) to (x, y - treeHt)
+  const tx1 = x + rng.random_num(-1, 1) * wiggle;
+  const ty1 = y + rng.random_num(-1, 1) * wiggle;
+  const tx2 = x + rng.random_num(-1, 1) * wiggle;
+  const ty2 = y - treeHt + rng.random_num(-1, 1) * wiggle;
+  const trLen = Math.hypot(tx2 - tx1, ty2 - ty1);
+  const trAng = Math.atan2(ty2 - ty1, tx2 - tx1);
+  specs.push({
+    shapeKind: 'rect',
+    px: (tx1 + tx2) * 0.5, py: (ty1 + ty2) * 0.5,
+    w: 0.5 * scaleK,             // Sarkissian constructor weight = 0.5
+    h: trLen,                    // full line length
+    hatchDensity: 0.2,           // unscaled (rect step count = max(w,h)/hd)
+    angle: trAng + Math.PI / 2,
+    colorBase: treePaletteColor(palette, rng.random_num(0, 0.5)),
+    alpha: 0.25,
+    wt: 1.5 * scaleK, maxV: 0.3, density: 1, wobble: 0.2,
+    depth: z,
+  });
+
+  // 2) 4-5 clumps
+  const nClumps = Math.round(rng.random_num(4, 5));
+  for (let cl = 0; cl < nClumps; cl++) {
+    const branchHt = rng.random_num(0.1, 1);
+    const branchStartY = y + (-treeHt) * branchHt;  // lerp(y, y-treeHt, branchHt)
+    // clumpOffset: (0, -random(treeHt*0.7) * map(branchHt, 0.1, 1, 0.5, 0.8))
+    //              then rotate by random(-π/2, π/2), then y *= random(1,2)
+    let cOffX = 0;
+    let cOffY = -rng.random_num(0, treeHt * 0.7) *
+                (0.5 + (0.8 - 0.5) * (branchHt - 0.1) / 0.9);
+    const rotA = rng.random_num(-1, 1) * Math.PI / 2;
+    const ca = Math.cos(rotA), sa = Math.sin(rotA);
+    const cOffXR = ca * cOffX - sa * cOffY;
+    const cOffYR = (sa * cOffX + ca * cOffY) * rng.random_num(1, 2);
+    cOffX = cOffXR; cOffY = cOffYR;
+
+    // Branch line from (x, branchStartY) to (x + cOffX, y - treeHt + cOffY)
+    const bx1 = x, by1 = branchStartY;
+    const bx2 = x + cOffX, by2 = y - treeHt + cOffY;
+    const brLen = Math.hypot(bx2 - bx1, by2 - by1);
+    const brAng = Math.atan2(by2 - by1, bx2 - bx1);
+    specs.push({
+      shapeKind: 'rect',
+      px: (bx1 + bx2) * 0.5, py: (by1 + by2) * 0.5,
+      w: 0.25 * scaleK,         // Sarkissian branch weight = 0.25
+      h: brLen,
+      hatchDensity: 0.1,
+      angle: brAng + Math.PI / 2,
+      colorBase: treePaletteColor(palette, 0),  // darkest
+      alpha: 0.25,
+      wt: 1.5 * scaleK, maxV: 0.3, density: 1, wobble: 0.2,
+      depth: z,
+    });
+
+    // Foliage: 2-10 leaf ellipses (Sarkissian uses 2-20; halved to keep
+    // total spec count tractable for animation)
+    const nLeaves = Math.round(rng.random_num(2, 10));
+    for (let lf = 0; lf < nLeaves; lf++) {
+      const r = rng.random_num(2, 3) * scaleK *
+                (1.5 + (1 - 1.5) * lf / Math.max(1, nLeaves));
+      let oX = rng.random_num(0, r * 1.8), oY = 0;
+      const aRot = rng.random_num(0, Math.PI * 2);
+      const cR = Math.cos(aRot), sR = Math.sin(aRot);
+      [oX, oY] = [cR * oX - sR * oY, sR * oX + cR * oY];
+      const folX = x + oX + cOffX;
+      const folY = y - treeHt + oY + cOffY;
+
+      // Internal "leaf normal" — Sarkissian line 480-484
+      const nx = -cOffX * 0.3 - oX;
+      const ny = cOffY * 0.3 + oY + 6 * scaleK;
+      const nlen = Math.hypot(nx, ny) || 1;
+      const dt = (nx / nlen) * lightDir[0] + (ny / nlen) * lightDir[1];
+      // br = pow(norm(dt, -1, 1), map(lightValue, 0, 1, 8, 1)) + map(lv, 0, 1, 0, 0.2)
+      const normDt = Math.max(0, (dt + 1) * 0.5);
+      const powExp = 8 + (1 - 8) * lightValue;
+      const addOff = 0 + (0.2 - 0) * lightValue;
+      let br = Math.pow(normDt, powExp) + addOff + rng.random_num(-1, 1) * 0.1;
+      br = Math.max(0, Math.min(1, br));
+
+      specs.push({
+        px: folX, py: folY,
+        rx: 4 * scaleK, ry: r * 2,
+        hatchDensity: rng.random_num(1, 1.1),
+        // Slight per-leaf angle jitter via deterministic noise approximation
+        angle: (Math.sin(folX * 0.03 + folY * 0.03) * Math.PI / 6),
+        colorBase: treePaletteColor(palette, br),
+        alpha: 0.25,
+        wt: 2.5 * scaleK, maxV: 1, density: 2, wobble: 0.2,
+        depth: z,
+      });
+    }
+  }
+  return specs;
+}
+
+// addBushSpecs — port of Sarkissian's addBush() (line 516-588).
+// 4-5 clumps, each with a flatter rock-cluster.
+function addBushSpecs(rng, palette, x, y, z, lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK) {
+  const specs = [];
+  const nClumps = Math.round(rng.random_num(4, 5));
+
+  // Terrain normal at (i, j) — used for rock angle (line 581-583)
+  const i1 = (i >= mapW - 1) ? mapW - 2 : i + 1;
+  const j1 = (j >= mapH - 1) ? mapH - 2 : j + 1;
+  const dhx = hMap[i1][j] - hMap[i][j];
+  const dhz = hMap[i][j1] - hMap[i][j];
+  const nLen = Math.hypot(dhx, dhz) || 1e-6;
+  const nrmX = dhx / nLen;
+
+  for (let cl = 0; cl < nClumps; cl++) {
+    let cOffX = 0;
+    let cOffY = -rng.random_num(0, rockHt * 0.1);
+    const rotA = rng.random_num(-1, 1) * Math.PI / 2;
+    const ca = Math.cos(rotA), sa = Math.sin(rotA);
+    cOffX = ca * cOffX - sa * cOffY;
+    cOffY = sa * cOffX + ca * cOffY;
+    cOffY = -Math.abs(cOffY);
+
+    const nRocks = Math.round(rng.random_num(10, 20) * 0.4);
+    for (let r0 = 0; r0 < nRocks; r0++) {
+      const r = rng.random_num(2, 3) * scaleK *
+                (1.5 + (1 - 1.5) * r0 / Math.max(1, nRocks));
+      let oX = rng.random_num(0, r * 1.5), oY = 0;
+      const aRot = rng.random_num(0, Math.PI * 2);
+      const cR = Math.cos(aRot), sR = Math.sin(aRot);
+      [oX, oY] = [cR * oX - sR * oY, sR * oX + cR * oY];
+      oY = -Math.abs(oY);
+
+      const rkX = x + oX + cOffX;
+      const rkY = y + oY + cOffY;
+
+      // Internal normal for rock brightness
+      const nx = -cOffX * 0.3 - oX;
+      const ny = cOffY * 0.3 + oY + 6 * scaleK;
+      const nl = Math.hypot(nx, ny) || 1;
+      const dt = (nx / nl) * lightDir[0] + (ny / nl) * lightDir[1];
+      const normDt = Math.max(0, (dt + 1) * 0.5);
+      const powExp = 8 + (1 - 8) * lightValue;
+      const addOff = 0 + (0.2 - 0) * lightValue;
+      let br = Math.pow(normDt, powExp) + addOff + rng.random_num(-1, 1) * 0.4;
+      br = Math.max(0, Math.min(1, br));
+
+      const baseAng = ((1 - Math.max(-1, Math.min(1, nrmX))) * 0.5) * (Math.PI / 2)
+                    + Math.PI / 4 + (Math.round(rng.random_dec()) * 2 - 1) * Math.PI
+                    + Math.PI / 2;
+
+      specs.push({
+        px: rkX, py: rkY,
+        rx: r * 2, ry: 4 * scaleK,
+        hatchDensity: rng.random_num(1, 1.1),
+        angle: baseAng + ((nx / nl) > 0 ? -1 : 1) * rng.random_num(Math.PI / 8, Math.PI / 4),
+        colorBase: treePaletteColor(palette, br),
+        alpha: 0.25,
+        wt: 1.5 * scaleK, maxV: 1, density: 2, wobble: 0.2,
+        depth: z,
+      });
+    }
+  }
+  return specs;
+}
+
+// Build Sarkissian-style 2D scribble specs. Renders the baked heightmap as
+// a top-down painted landscape with the algorithm from mySketch.js.js.
+// Two passes:
+//   (1) Vegetation pre-pass — 1600 candidates, place trees/bushes where the
+//       gradient direction favors it. Each placement also darkens lMap
+//       (cast shadow) so subsequent terrain strokes see the dark spot.
+//   (2) Main terrain pass — 8000 scribbles using the (possibly shadowed) lMap.
+function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
+  const { hMap, lMap, mapW, mapH } = maps;
+  const { terrainHt, warpSz, lightAngle, noiseScale = 0.01 } = params;
+  const lightDir = [Math.cos(lightAngle), Math.sin(lightAngle)];
+  const targetSz = canvasSize;
+  const scaleK = targetSz / 400;  // Sarkissian's original target was 400px
+  const nShapes = 8000;
+  // Vegetation candidates: Sarkissian uses nShapes * 0.2 = 1600, but each
+  // accepted tree expands to ~50 specs (1 trunk + 4-5 branches + ~40 leaves).
+  // At 1600 we'd produce ~30k vegetation specs — too slow. 500 still yields
+  // dense forest after expansion (~15k specs) while staying responsive.
+  const nVeg = 500;
+  const specs = [];
+
+  // ── PASS 1: Vegetation candidates + lMap shadow casting ─────────────────
+  const treeToScrubThresh = rng.random_num(0.18, 0.28);
+  const plantThresh = Math.max(0.3, Math.min(0.45, rng.random_num(0.3, 0.5)));
+  const plantSide = rng.random_dec() < 0.5 ? -1 : 1;
+  const plantSlopeLeniency = rng.random_num(0.01, 0.1);
+
+  for (let v = 0; v < nVeg; v++) {
+    let x = rng.random_num(0, targetSz);
+    let y = rng.random_num(0, targetSz);
+    const i = Math.max(0, Math.min(mapW - 1, Math.floor(x / targetSz * mapW)));
+    const j = Math.max(0, Math.min(mapH - 1, Math.floor(y / targetSz * mapH)));
+    const ns = hMap[i][j];
+    // Sarkissian's `if (ns != 0)` filters water at the strict-zero boundary
+    // because his hMap is amplified to [0, ~12.5] with snap to floor(*1e5)/1e5.
+    // Our raw heightmap is [0, 1] with noise everywhere → ns is rarely exactly
+    // 0. Use a real water-line threshold so vegetation doesn't grow on flats.
+    if (ns < 0.08) continue;
+    // Position warp (same as main pass — vegetation sits ON the warped terrain)
+    const swirl = ns * Math.PI * 4;
+    x += Math.cos(swirl) * warpSz;
+    y += Math.sin(swirl) * warpSz;
+    y += ns * terrainHt;
+    const z = y + 10;   // Sarkissian: vegetation z = y + 10 (drawn AFTER bg)
+
+    // Surface normal at (i, j) — same convention as lMap (2D, dh/dx & dh/dz)
+    const i1 = (i >= mapW - 1) ? mapW - 2 : i + 1;
+    const j1 = (j >= mapH - 1) ? mapH - 2 : j + 1;
+    const dhx = hMap[i1][j] - hMap[i][j];
+    const dhz = hMap[i][j1] - hMap[i][j];
+    const nLen = Math.hypot(dhx, dhz) || 1e-6;
+    const nrmX = dhx / nLen;
+    // 2nd derivative x-component (line 154-160 condition)
+    const i2 = (i1 >= mapW - 1) ? mapW - 2 : i1 + 1;
+    const dhx1 = hMap[i2][j] - hMap[i1][j];
+    const nrm2x = (dhx1 - dhx) * 100;  // amplify for threshold
+
+    // Plant placement criteria (Sarkissian line 154-160)
+    const plantOk = Math.abs(nrmX) < plantThresh && (
+      plantSide < 0
+        ? nrm2x < rng.random_num(0, plantSlopeLeniency)
+        : nrm2x > rng.random_num(-plantSlopeLeniency, 0)
+    );
+    if (!plantOk) continue;
+
+    // Tree noise approximation (smooth pseudo-random per cell)
+    const treeNs = 0.5 + 0.4 * (Math.sin(i * 0.7 + 1234) + Math.cos(j * 0.9 + 1234)) * 0.5;
+    const treeHtNs = 0.5 + 0.4 * (Math.sin(i * 1.3 + 100) + Math.cos(j * 1.1 + 123)) * 0.5;
+    const dt = lMap[i][j];
+    const lightValue = (dt + 1) * 0.5;
+
+    // Veg-z is shifted into a high band so EVERY vegetation spec is drawn
+    // AFTER all terrain (after descending sort + pop-from-tail). Sarkissian's
+    // original lets trees tie with same-y terrain z=y and relies on his
+    // sparser strokes not covering them; our denser strokes would consistently
+    // cover trees in the tie → trees only visible where terrain doesn't
+    // overlap (= top edge of canvas only). Large +VEG_Z_OFFSET fixes that.
+    // Within vegetation, the y component preserves the natural near/far order.
+    const VEG_Z_OFFSET = 100000;
+    // Sarkissian's `ns < PI * 2.5` keeps trees off the highest terrain (he uses
+    // amplified hMap range [0, ~12.5], so PI*2.5 ≈ 63% of peak). Our raw scale:
+    // 0.625 = same 62.5% threshold. Above this → bush only (no tall trees on
+    // bare peaks).
+    const TREE_MAX_NS = 0.625;
+    // Tree height scaled by terrain elevation so low-slope trees are short
+    // and peaks-adjacent trees are taller — avoids tall trees on flat ground.
+    const nsT = Math.min(1, (ns - 0.08) / (TREE_MAX_NS - 0.08));
+    let shadowLength = 0.5;
+    if (treeNs > treeToScrubThresh) {
+      // Tree (with possible understory bush)
+      if (ns < TREE_MAX_NS && j > 4) {
+        // Halved range vs. Sarkissian + terrain-elevation scale
+        const treeHt = (6 + treeHtNs * 30) * scaleK * (0.4 + nsT * 0.6);
+        const treeSpecs = addTreeSpecs(rng, palette, x, y, y + VEG_Z_OFFSET,
+          lightValue, treeHt, lightDir, scaleK);
+        for (const s of treeSpecs) specs.push(s);
+        shadowLength = 1;
+      }
+      if (rng.random_dec() < 0.5) {
+        const rockHt = (8 + treeHtNs * 40) * 0.5 * scaleK;
+        const bushSpecs = addBushSpecs(rng, palette, x, y, y + VEG_Z_OFFSET + 0.0001,
+          lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK);
+        for (const s of bushSpecs) specs.push(s);
+      }
+    } else {
+      // Bush only
+      const rockHt = (8 + treeHtNs * 40) * scaleK;
+      const bushSpecs = addBushSpecs(rng, palette, x, y, y + VEG_Z_OFFSET + 0.0001,
+        lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK);
+      for (const s of bushSpecs) specs.push(s);
+    }
+
+    // Cast shadow on lMap (line 175-186)
+    const sw = (4 + treeHtNs * 4) * shadowLength;
+    const sh = 1 + treeHtNs * 2;
+    const swInt = Math.ceil(sw);
+    const shInt = Math.ceil(sh);
+    const shadowDx = Math.cos(lightAngle) * sw * 0.5;
+    const shadowDz = Math.sin(lightAngle) * sh * 0.5;
+    for (let __i = -swInt; __i <= swInt; __i++) {
+      for (let __j = -shInt; __j <= shInt; __j++) {
+        const _i = Math.floor(i + __i + shadowDx);
+        const _j = Math.floor(j + __j + shadowDz);
+        if (_i >= 0 && _i < mapW && _j >= 0 && _j < mapH) {
+          lMap[_i][_j] = lMap[_i][_j] * 0.3 + (-1) * 0.7;  // lerp toward -1 by 0.7
+        }
+      }
+    }
+  }
+
+  for (let s = 0; s < nShapes; s++) {
+    let x = rng.random_num(0, targetSz);
+    let y = rng.random_num(0, targetSz);
+
+    const i = Math.max(0, Math.min(mapW - 1, Math.floor(x / targetSz * mapW)));
+    const j = Math.max(0, Math.min(mapH - 1, Math.floor(y / targetSz * mapH)));
+    const ns = hMap[i][j];
+
+    // Position warp (Sarkissian line 200-204):
+    //   x += cos(h * scale) * warpSz;
+    //   y += sin(h * scale) * warpSz;
+    //   y += h * terrainHt;     (terrainHt is NEGATIVE → high terrain pushes UP)
+    // h is normalized to a "swirl angle" so cos/sin produce locally varied warp.
+    const swirl = ns * Math.PI * 4;
+    x += Math.cos(swirl) * warpSz;
+    y += Math.sin(swirl) * warpSz;
+    y += ns * terrainHt;
+
+    const z = y;  // depth = warped screen y (NOT raw y)
+
+    const dt = lMap[i][j];
+    const lightValue = (dt + 1) * 0.5;  // [-1, 1] → [0, 1]
+
+    // 2nd derivative → stroke length (gentle curvature = long, sharp = short)
+    const nrm2 = hMapCurvatureMagSq(hMap, mapW, mapH, i, j);
+    const minStrokeLen = 15 * (targetSz / 400);  // scale-relative
+    const maxStrokeLen = 24 * (targetSz / 400);
+    const lenT = Math.max(0, Math.min(1, (nrm2 - 0.0001) / (0.0008 - 0.0001)));
+    const r = maxStrokeLen + (minStrokeLen - maxStrokeLen) * lenT;
+
+    // Multi-scribble: 1-3 layers, more layers in warped/high-terrain areas
+    const warpAmt = Math.abs(y - z);  // = abs(ns * terrainHt + sin(swirl)*warpSz)
+    const maxScribblesBase = Math.abs(terrainHt) + Math.abs(warpSz);
+    const nScribbles = Math.max(1, Math.floor(
+      1 + (warpAmt / Math.max(1, maxScribblesBase)) * rng.random_num(0, 2)
+    ));
+
+    // Angle from gradient direction (line 244 in original)
+    const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
+    const dhx = hMap[i1][j] - hMap[i][j];
+    // Sarkissian uses map(nrm.x, 1, -1, 0, PI/2) + PI/4 + random π flip
+    const nxNorm = Math.max(-1, Math.min(1, dhx * 100));  // approximate normal.x
+    const baseAngle = ((1 - nxNorm) * 0.5) * (Math.PI / 2) + Math.PI / 4;
+    const flip = rng.random_dec() < 0.5 ? 0 : Math.PI;
+
+    // Color via Sarkissian's lerp formula:
+    //   t = |lightValue - 0.5| * 2  → 0 at mid-light, 1 at extremes
+    //   colorIdx = lerp(landValue, lightValue, t)
+    // Land value: noise-driven; we approximate via a smooth hash at (i, j).
+    const landValue = 0.4 + 0.3 * (Math.sin(i * 0.31 + 13) + Math.sin(j * 0.27 + 7)) * 0.5;
+    const mixT = Math.abs(lightValue - 0.5) * 2;
+    const colorT = landValue * (1 - mixT) + lightValue * mixT;
+    const color = paletteColor(palette, colorT);
+
+    for (let k = 0; k < nScribbles; k++) {
+      const wobbleAngle = rng.random_num(0, Math.PI * 2);
+      specs.push({
+        px: x, py: y,
+        rx: 5 * (targetSz / 400),
+        ry: r * rng.random_num(0.9, 1.1),
+        hatchDensity: rng.random_num(1, 2),
+        angle: baseAngle + flip,
+        wobbleAngle,
+        colorBase: color,
+        alpha: 0.25,  // = 64/255 (Sarkissian uses alpha=64)
+        depth: z,     // screen-y depth (larger z = closer to viewer = drawn last)
+      });
+    }
+  }
+
+  // Painter's algo (Sarkissian line 276-279): sort DESCENDING by z so that
+  // pop() from tail yields smallest z first → background painted first, then
+  // progressively foreground stuff. With ascending sort the order inverts
+  // and later-drawn terrain strokes cover trees that were placed earlier.
+  specs.sort((a, b) => b.depth - a.depth);
+  return specs;
+}
+
 // ---------------------------------------------------------------------------
 // Internal canvas — sibling of #c-gpu. Created lazily.
 // ---------------------------------------------------------------------------
@@ -431,7 +967,11 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   let boxSize = [0.5, 1.0, 0.5];
 
   const SCRIBBLES_TOTAL = 2800;
-  const TICKS_PER_FRAME = 1500;  // many physics ticks/frame → fast playback
+  // Tick budget per rAF — each tick advances one active scribble by one pen
+  // step + density stamps. Sarkissian uses 2000; we use 6000 for 3× faster
+  // playback. Combined with the SketchyRectangle bug fix this gives a ~50×
+  // total speedup for vegetation-heavy scenes.
+  const TICKS_PER_FRAME = 6000;
 
   function resizeIfNeeded() {
     const ref = document.getElementById('c-gpu');
@@ -498,27 +1038,87 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   }
 
   function makeScribbleFromSpec(spec) {
-    const sk = new SketchyEllipse(spec.px, spec.py, spec.rx, spec.ry, 1.6, false);
-    sk.wt = spec.wt;
-    sk.maxV = 1.0;
-    sk.acc = 0.02;
-    sk.density = 2;
-    sk.wobble = 0.2;
+    // Sarkissian default for terrain scribbles (line 238-247):
+    // weight=2.5, maxV=1, acc=0.02, density=2, wobble=0.2.
+    // Trunk/branch/foliage specs override these via spec.wt/maxV/density/...
+    //
+    // shapeKind dispatch: 'rect' for trunks/branches (straight-edge zig-zag,
+    // needed for thin shapes — ellipse degenerates at the boundary).
+    // Default 'ellipse' for foliage and terrain scribbles.
+    let sk;
+    if (spec.shapeKind === 'rect') {
+      sk = new SketchyRectangle(
+        spec.px, spec.py,
+        spec.w ?? (spec.rx * 2),
+        spec.h ?? (spec.ry * 2),
+        spec.hatchDensity ?? 0.2,
+      );
+    } else {
+      sk = new SketchyEllipse(
+        spec.px, spec.py, spec.rx, spec.ry,
+        spec.hatchDensity ?? 1.6, false,
+      );
+    }
+    sk.wt = spec.wt ?? 2.5;
+    sk.maxV = spec.maxV ?? 1.0;
+    sk.acc = spec.acc ?? 0.02;
+    sk.density = spec.density ?? 2;
+    sk.wobble = spec.wobble ?? 0.2;
     sk.angle = spec.angle;
     const c = spec.colorBase;
     sk.color = [c[0], c[1], c[2], spec.alpha];
     return sk;
   }
 
-  // Pre-bake all scribble specs (raymarch + slope + color), sort by depth so
-  // animation plays back back-to-front (painter's algorithm). Also generates
-  // a sparse "sky" pass of low-opacity light strokes for atmosphere.
+  // Pre-bake all scribble specs. Two paths:
+  //   (A) When bake is available → Sarkissian 2D top-down (faithful port of
+  //       his Eucalyptus & Sagebrush sketch). NO raymarch.
+  //   (B) Fallback for non-heightmap scenes → original 3D raymarch path.
   function prebakeSpecs() {
     const w = crayonCanvas.width, h = crayonCanvas.height;
+    if (baked) return prebakeSpecsSarkissian(w, h);
+    return prebakeSpecsRaymarch(w, h);
+  }
+
+  // ── Path A: Sarkissian 2D top-down ────────────────────────────────────────
+  function prebakeSpecsSarkissian(w, h) {
+    // Light angle: -π/2 ± π/3, matching original line 69
+    const lightAngle = -Math.PI / 2 + (runRng.random_dec() < 0.5 ? -1 : 1) * Math.PI / 3;
+    const lightDir = [Math.cos(lightAngle), Math.sin(lightAngle)];
+    // Sarkissian's units: targetSz=400, terrainHt=-0.2*targetSz=-80, warpSz=10.
+    // We use ~85% of canvas min-dim as the painting area so margins stay.
+    const targetSz = Math.min(w, h) * 0.85;
+    const terrainHt = -0.2 * targetSz;
+    const warpSz = 10 * (targetSz / 400);
+    const maps = prepareSarkissianMaps(baked, boxSize, lightDir);
+    const specs = prepareSarkissianSpecs(runRng, palette, maps, targetSz, {
+      terrainHt, warpSz, lightAngle,
+    });
+    // Center the painted area on canvas. Sarkissian translates by
+    // (W/2 - targetSz/2, H/2 - (maxY-minY)/2 - minY).
+    if (specs.length === 0) return specs;
+    let minPy = Infinity, maxPy = -Infinity;
+    for (const s of specs) {
+      if (s.py < minPy) minPy = s.py;
+      if (s.py > maxPy) maxPy = s.py;
+    }
+    const offsetX = (w - targetSz) * 0.5;
+    const offsetY = h * 0.5 - (minPy + maxPy) * 0.5;
+    for (const s of specs) {
+      s.px += offsetX;
+      s.py += offsetY;
+      s.depth += offsetY;
+    }
+    // Re-sort after offset (depth changed) — actually offsetY shifts all
+    // depths uniformly so relative order is unchanged; skip resort.
+    return specs;
+  }
+
+  // ── Path B: 3D raymarch (legacy / non-heightmap scenes) ───────────────────
+  function prebakeSpecsRaymarch(w, h) {
     const focal = (getControls && getControls().fov) || 1.5;
     const surfaceSpecs = [];
     const skySpecs = [];
-    // Oversample so we get enough HITS (rays that miss go to sky bucket).
     let attempts = 0;
     const maxAttempts = SCRIBBLES_TOTAL * 3;
     while (surfaceSpecs.length < SCRIBBLES_TOTAL && attempts < maxAttempts) {
@@ -529,18 +1129,14 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
       if (spec) {
         surfaceSpecs.push(spec);
       } else if (skySpecs.length < 350) {
-        // Sparse sky stroke — light, big, low opacity, random angle. Big
-        // depth so they paint FIRST (background).
         const c = sampleStroke(palette, 0.88);
         skySpecs.push({
           px, py, angle: runRng.random_num(0, Math.PI * 2),
           colorBase: c, rx: 16, ry: 5, wt: 5, alpha: 0.05,
-          depth: 999,                                       // pushes to back of sort
+          depth: 999,
         });
       }
     }
-    // Painter's algorithm — far (high depth) drawn FIRST. Sort ASCending and
-    // pop from end so the LAST element popped first = highest depth = back.
     const all = skySpecs.concat(surfaceSpecs);
     all.sort((a, b) => a.depth - b.depth);
     return all;

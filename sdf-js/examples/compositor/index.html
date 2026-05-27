@@ -50,6 +50,252 @@
     }
     body.scenes-mode #tab-content > * { max-width: 1400px; margin-left: auto; margin-right: auto; }
 
+    /* ============ 2D Edit tab: Pencil-style sidebar (left) + canvas viewport (right) ============ */
+    /* Reuse #tab-content (left) as full-height sidebar; #render-area (right) as canvas viewport. */
+    body.editmode-2d #code-screen { display: none; }
+    body.editmode-2d #tab-content {
+      padding: 0; gap: 0; background: #141414;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    body.editmode-2d #render-area {
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0d0d0d 70%);
+    }
+    body.editmode-2d #render-area #canvas-wrap { display: none; }   /* hide compositor's own canvases */
+
+    /* Hide renderer pills when in 2D edit mode (they don't apply to direct editing) */
+    body.editmode-2d #render-controls { display: none; }
+
+    /* --- Sidebar: tabs + content --- */
+    .e2d-sidebar-brand {
+      padding: 14px 18px 8px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid #1f1f1f;
+    }
+    .e2d-sidebar-brand .text { font-weight: 700; font-size: 13px; color: #ffd070; }
+    .e2d-sidebar-brand .sub  { color: #777; font-weight: 400; font-size: 11px; margin-left: 6px; }
+    .e2d-subtabs {
+      display: flex; align-items: center;
+      padding: 12px 16px 0;
+      gap: 6px;
+    }
+    .e2d-subtabs .subtab {
+      background: transparent; border: none;
+      color: #888; padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer; font-family: inherit; font-size: 13px;
+    }
+    .e2d-subtabs .subtab:hover { color: #ddd; }
+    .e2d-subtabs .subtab.active { background: #2a2a2a; color: #fff; }
+
+    .e2d-panel {
+      flex: 1; min-height: 0; overflow: hidden;
+      display: none; flex-direction: column;
+    }
+    .e2d-panel.active { display: flex; }
+
+    /* Agent (chat) */
+    .e2d-chat-history {
+      flex: 1; overflow-y: auto;
+      padding: 14px 18px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .e2d-chat-history .msg { margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; }
+    .e2d-chat-history .msg.user      { background: #2a3540; color: #eee; }
+    .e2d-chat-history .msg.assistant { background: #1c1c1c; color: #b8b8b8; }
+    .e2d-chat-history .placeholder {
+      color: #555; font-style: italic; font-size: 12px;
+      padding: 24px 8px; text-align: center; line-height: 1.5;
+    }
+    .e2d-chat-input-wrap {
+      padding: 10px 14px 14px;
+      border-top: 1px solid #1f1f1f;
+    }
+    .e2d-chat-input {
+      width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a;
+      color: #ddd; padding: 10px 12px; border-radius: 8px;
+      font-size: 13px; font-family: inherit; resize: none;
+      min-height: 56px; line-height: 1.4;
+    }
+    .e2d-chat-input:focus { outline: none; border-color: #4a6a8a; }
+    .e2d-chat-input:disabled { color: #555; cursor: not-allowed; }
+    .e2d-chat-input::placeholder { color: #555; }
+    .e2d-chat-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0 0; font-size: 11px;
+    }
+    .e2d-chat-actions .model { color: #888; }
+    .e2d-chat-actions .send {
+      background: #2a3540; border: 1px solid #3a4a55;
+      color: #ffd070; padding: 4px 12px; border-radius: 4px;
+      font-size: 12px; font-family: inherit; cursor: pointer;
+    }
+    .e2d-chat-actions .send:disabled { color: #555; cursor: not-allowed; }
+    .e2d-chat-history .patch-apply,
+    .e2d-chat-history .patch-reject {
+      padding: 4px 10px; font-size: 11px;
+      border: 1px solid; border-radius: 4px;
+      font-family: inherit; cursor: pointer;
+      background: transparent;
+    }
+    .e2d-chat-history .patch-apply {
+      background: #2a3540; color: #ffd070; border-color: #3a4a55;
+    }
+    .e2d-chat-history .patch-apply:hover { background: #3a4a55; }
+    .e2d-chat-history .patch-reject {
+      color: #888; border-color: #2a2a2a;
+    }
+    .e2d-chat-history .patch-reject:hover { background: #1f1f1f; color: #ddd; }
+
+    /* Layers panel */
+    .e2d-panel-body {
+      flex: 1; min-height: 0; overflow-y: auto;
+      padding: 12px 14px;
+    }
+    .e2d-panel-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4px 8px;
+      font-size: 11px; color: #888; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .e2d-panel-row .add-btn {
+      background: transparent; border: none; color: #888;
+      cursor: pointer; font-size: 16px; padding: 0 6px;
+    }
+    .e2d-panel-row .add-btn:hover { color: #ffd070; }
+    .e2d-layer-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 8px; border-radius: 4px;
+      font-size: 12px; cursor: pointer;
+    }
+    .e2d-layer-row:hover { background: #1f1f1f; }
+    .e2d-layer-row.active { background: #2a3540; }
+    .e2d-layer-row.active .name { color: #ffd070; }
+    .e2d-layer-row .eye { width: 16px; text-align: center; opacity: 0.7; cursor: pointer; font-size: 13px; }
+    .e2d-layer-row .eye:hover { opacity: 1; }
+    .e2d-layer-row .name { flex: 1; }
+    .e2d-layer-row .count { color: #666; font-size: 10px; }
+    .e2d-layer-row { flex-wrap: wrap; }   /* allow opacity row to wrap below */
+    .e2d-layer-row .row-actions {
+      display: flex; gap: 2px; opacity: 0;
+      transition: opacity 0.1s;
+    }
+    .e2d-layer-row:hover .row-actions,
+    .e2d-layer-row.active .row-actions { opacity: 1; }
+    .e2d-layer-row .layer-btn {
+      background: transparent; border: none;
+      color: #888; padding: 2px 6px;
+      font-size: 11px; line-height: 1;
+      cursor: pointer; border-radius: 3px;
+    }
+    .e2d-layer-row .layer-btn:hover:not(:disabled) { background: #2a2a2a; color: #fff; }
+    .e2d-layer-row .layer-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    .e2d-layer-row .layer-name-edit {
+      flex: 1; background: #2a2a2a; border: 1px solid #4a6a8a;
+      color: #fff; padding: 2px 6px; border-radius: 3px;
+      font-size: 12px; font-family: inherit;
+    }
+    .e2d-layer-row .layer-name-edit:focus { outline: none; }
+    .e2d-layer-opacity {
+      flex-basis: 100%;
+      display: grid; grid-template-columns: 50px 1fr 30px;
+      align-items: center; gap: 6px;
+      padding: 4px 4px 2px 28px;
+      font-size: 10px; color: #888;
+    }
+    .e2d-layer-opacity input[type=range] {
+      width: 100%; accent-color: #4a9eff; height: 14px;
+    }
+    .e2d-layer-opacity .opacity-val { text-align: right; color: #aaa; }
+
+    /* Inspector panel */
+    .e2d-inspector-empty {
+      color: #555; font-size: 12px; font-style: italic;
+      text-align: center; padding: 32px 12px;
+    }
+    body.editmode-2d .inspector-section { margin-bottom: 14px; }
+    body.editmode-2d .inspector-section h4 {
+      margin: 0 0 8px;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #888;
+    }
+    body.editmode-2d .inspector-field {
+      display: grid; grid-template-columns: 56px 1fr;
+      align-items: center; gap: 8px; margin-bottom: 5px;
+      font-size: 11px;
+    }
+    body.editmode-2d .inspector-field label { color: #888; }
+    body.editmode-2d .inspector-field input {
+      background: #1f1f1f; border: 1px solid #2f2f2f;
+      color: #ddd; padding: 4px 6px; border-radius: 3px;
+      font-size: 11px; font-family: inherit; width: 100%;
+    }
+    body.editmode-2d .inspector-field input:focus { outline: none; border-color: #4a6a8a; }
+    body.editmode-2d .inspector-field input:disabled { color: #666; cursor: not-allowed; }
+    body.editmode-2d .inspector-field input[type=color] {
+      padding: 0; height: 22px; cursor: pointer;
+    }
+
+    /* --- Canvas viewport (in #render-area) --- */
+    .e2d-viewport-wrap {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .e2d-canvas {
+      background: #f0ebe1;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+      cursor: crosshair;
+      border-radius: 2px;
+    }
+    .e2d-overlay {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    /* Floating tool palette */
+    .e2d-tools {
+      position: absolute;
+      left: 14px; top: 50%; transform: translateY(-50%);
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 6px 4px;
+      display: flex; flex-direction: column; gap: 2px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 10;
+    }
+    .e2d-tool {
+      width: 38px; height: 38px;
+      background: transparent; border: none; border-radius: 6px;
+      color: #999; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: inherit; position: relative;
+    }
+    .e2d-tool:hover { background: #2a2a2a; color: #fff; }
+    .e2d-tool.active {
+      background: #2a3540; color: #ffd070;
+      box-shadow: inset 0 0 0 1px #3a4a55;
+    }
+    .e2d-tool svg { width: 18px; height: 18px; stroke-width: 1.5; fill: none; stroke: currentColor; }
+    .e2d-tool .tip {
+      position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+      background: #2a2a2a; color: #ddd; padding: 4px 8px; border-radius: 4px;
+      font-size: 11px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; z-index: 20;
+    }
+    .e2d-tool:hover .tip { opacity: 1; }
+    .e2d-tool-divider { width: 24px; height: 1px; background: #2a2a2a; margin: 4px auto; }
+
+    .e2d-indicator {
+      position: absolute; background: #1a1a1a; border: 1px solid #2a2a2a;
+      padding: 4px 10px; border-radius: 6px;
+      font-size: 11px; color: #999; z-index: 10;
+    }
+    .e2d-shape-count { left: 14px; bottom: 14px; }
+    .e2d-zoom { right: 14px; bottom: 14px; }
+
+
     .scenes-hero {
       text-align: center; padding: 8px 0 28px;
       border-bottom: 1px solid #2a2a2a; margin-bottom: 28px;
@@ -239,6 +485,13 @@
     .pill:not(:first-child) { border-left: none; }
     .pill:hover { background: #3a3a3a; color: #ddd; }
     .pill.active { background: #ffd070; color: #1a1a1a; border-color: #ffd070; }
+    /* Standalone pill (outside .pill-group) — always fully rounded with full border */
+    #btn-new-hash {
+      border-radius: 3px; border-left: 1px solid #3a3a3a;
+      background: #1f1f1f; color: #ffd070;
+    }
+    #btn-new-hash:hover { background: #2a2a2a; color: #ffe090; }
+    #btn-new-hash:active { transform: scale(0.96); }
 
     /* ============ Second screen: code panel ============ */
     #code-screen {
@@ -519,9 +772,8 @@
         <button class="tab" data-tab="generator">
           <span class="icon">⚂</span> Generator
         </button>
-        <button class="tab stub" data-tab="2d-edit" disabled>
+        <button class="tab" data-tab="2d-edit">
           <span class="icon">▣</span> 2D Edit
-          <span class="stub-badge">M3</span>
         </button>
         <button class="tab stub" data-tab="3d-edit" disabled>
           <span class="icon">⌬</span> 3D Edit
@@ -532,7 +784,7 @@
       <div id="render-controls">
         <div class="pill-group" id="renderer-pills">
           <button class="pill active" data-renderer="silhouette">Silhouette</button>
-          <button class="pill" data-renderer="stipple">Stipple</button>
+          <button class="pill" data-renderer="bob">BOB</button>
           <button class="pill" data-renderer="hatch">Lines</button>
           <button class="pill" data-renderer="fly3d">FLY 3D</button>
           <button class="pill" data-renderer="bob-gpu">BOB GPU</button>
@@ -540,6 +792,7 @@
           <button class="pill" data-renderer="crayon">Crayon</button>
           <button class="pill" data-renderer="topo">Topo</button>
         </div>
+        <button id="btn-new-hash" class="pill" title="Roll a new tokenHash → new style + new shape">🎲 New Style</button>
       </div>
     </div>
 

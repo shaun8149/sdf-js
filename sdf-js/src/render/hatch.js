@@ -23,11 +23,23 @@ import { smoothStart3 } from '../math/easing.js';
 // 跟 examples/sdf/test-pasma-capsules.js 同一套 mechanism (移植于此，让 MVP 也获益)。
 // 跟 painted.js 3D 通路 density = 1 - 0.92·I² 的视觉签名对齐。
 // caller 可以 override：layer.intensityDsep = false 退化为均匀 dsep。
+//
+// 两套 dsepFn 公式（layer.pasmaStyle 切换）：
+//   legacy (默认):   dsep = lerp(dsepDark, dsepLight, smoothEase(intensity))
+//   pasma (C + D):   dsep = dsepDark / clamp(1 - g^0.4, eps, 1)
+//                    where g = mix(intensity, mistShade, smoothstep(mistStart, maxDist, hit_t))
+//     - 亮区 g 大 → 1-g^0.4 小 → 除完大 dsep → 笔触稀
+//     - 暗区 g 小 → 1-g^0.4 大 → 除完小 dsep → 笔触密
+//     - mist：远处 g→mistShade，渐淡到背景
 const DEFAULTS_3D = {
   dsepDark:     0.003,  // 暗处线最密
   dsepLight:    0.020,  // 亮处线最稀 (= 默认 layer.dsep)
   intensityMin: 0.40,   // intensity remap 下界（< 这值 → ir=0 → 最密）
   intensityMax: 1.00,   // remap 上界
+  // Pasma-style (C + D)
+  mistStart:    0.65,   // smoothstep 起点（probe.t / probe.maxDist 比例）
+  mistShade:    0.85,   // 远处 g 收敛到这个值（0=纯黑, 1=纯白）
+  pasmaGamma:   0.4,    // g^pasmaGamma 的指数（Pasma 用 0.4）
 };
 const clamp01 = v => Math.max(0, Math.min(1, v));
 
@@ -66,23 +78,49 @@ export function computeHatchLayers(layers, opts = {}) {
     let fieldForPack = layer.field;
     let packExtra = {};  // 额外塞给 packHatch 的 opts (dsep 函数 + dsepMax + extraValid)
     if (sdf instanceof SDF3) {
-      // Pasma rayhatching：ortho camera (yaw=0.5, pitch=0.35, distance=4)。makeProbe
-      // 返回 4-value probe {intensity, region, hit, normal}。projectedTangentField
-      // 共享同一个 camera 保持视空间一致。
-      const camera = createCamera({ yaw: 0.5, pitch: 0.35, distance: 4 });
-      const probe = makeProbe((p) => sdf(p), { camera });
-      fieldForPack = projectedTangentField(probe, { camera });
+      // Pasma rayhatching：ortho camera。makeProbe 返回 4-value probe
+      // {intensity, region, hit, normal}。projectedTangentField 共享同一
+      // camera 保持视空间一致。Layer 可传入 cameraOpts 覆盖默认（lifted
+      // SceneData 经由 compositor 的 reRenderStored 注入 scene.cameraStatic）.
+      // Probe maxDist/maxSteps must scale with camera.distance for lifted
+      // scenes (default maxDist=10 misses anything beyond unit-scale).
+      const co = layer.cameraOpts || {};
+      const camera = createCamera({
+        yaw:      co.yaw      ?? 0.5,
+        pitch:    co.pitch    ?? 0.35,
+        distance: co.distance ?? 4,
+        target:   co.target   ?? [0, 0, 0],
+      });
+      const probeMaxDist  = layer.maxDist  ?? Math.max(10, (co.distance ?? 4) * 3);
+      const probeMaxSteps = layer.maxSteps ?? 120;
+      const probe = makeProbe((p) => sdf(p), {
+        camera, maxDist: probeMaxDist, maxSteps: probeMaxSteps,
+      });
+      // Pasma's `cross(n, fw)` mode is default — gives the canonical
+      // rayhatching "wrapping" look. Caller can switch to legacy by
+      // passing `layer.tangentMode: 'horizontal-ref'`.
+      fieldForPack = projectedTangentField(probe, {
+        camera,
+        mode: layer.tangentMode || 'cross-nfw',
+      });
 
       // SDF3 默认走 intensity-modulated dsep + region mask (BOB scenes 7/8 signature)
       // 移植于 test-pasma-capsules.js 的 dsepFn / inScene 逻辑，统一进 render.hatch
       // → MVP / streamline-scenes / 任何 hatch caller 都自动获得密度调制 + 区域 mask
       const intensityDsep = layer.intensityDsep !== false;  // 默认开
+      // Pasma-style: dsep = dsepDark / clamp(1 - g^0.4, eps, 1) + mist
+      // Default ON for the SDF3 path (matches Universal Rayhatcher signature).
+      const pasmaStyle = layer.pasmaStyle !== false;
 
       if (intensityDsep) {
         const dsepDark = layer.dsepDark ?? DEFAULTS_3D.dsepDark;
         const dsepLight = layer.dsepLight ?? layer.dsep ?? DEFAULTS_3D.dsepLight;
         const iMin = layer.intensityMin ?? DEFAULTS_3D.intensityMin;
         const iMax = layer.intensityMax ?? DEFAULTS_3D.intensityMax;
+        // Pasma mist + gamma params
+        const mistStart = layer.mistStart ?? DEFAULTS_3D.mistStart;
+        const mistShade = layer.mistShade ?? DEFAULTS_3D.mistShade;
+        const pasmaGamma = layer.pasmaGamma ?? DEFAULTS_3D.pasmaGamma;
 
         // sdf wrapper: 'object' 和 'ground' 都算 inside (background → outside)
         // 跟 test-pasma-capsules 的 inScene 同语义
@@ -92,18 +130,49 @@ export function computeHatchLayers(layers, opts = {}) {
           return -0.01;
         };
 
-        // dsep 函数：intensity → easing → [dsepDark, dsepLight]
-        // 暗处 intensity ≈ 0 → ir=0 → 最密 (dsepDark)；亮处 intensity ≈ 1 → 最稀
-        const dsepFn = (x, y) => {
-          const r = probe(x, y);
-          if (!r.hit || r.region === 'background') return dsepLight;
-          const i = clamp01(r.intensity);
-          const ir = clamp01((i - iMin) / (iMax - iMin));
-          const t = smoothStart3(ir);
-          return dsepDark + (dsepLight - dsepDark) * t;
-        };
+        let dsepFn;
+        if (pasmaStyle) {
+          // (C + D) Pasma formula: brightness g = lambert blended with mist,
+          // dsep = dsepDark / clamp(1 - g^gamma, eps, 1)
+          dsepFn = (x, y) => {
+            const r = probe(x, y);
+            if (!r.hit || r.region === 'background') return dsepLight;
+            const intensity = clamp01(r.intensity);
+            // Mist: smoothstep from mistStart..1.0 of normalized t blends g→mistShade
+            const tNorm = clamp01((r.t / (r.maxDist || 1)));
+            const mistT = smoothStart3(clamp01((tNorm - mistStart) / Math.max(1e-6, 1 - mistStart)));
+            const g = intensity * (1 - mistT) + mistShade * mistT;
+            // 1 - g^gamma maps high g → small denominator → big dsep (sparse)
+            const inv = clamp01(1 - Math.pow(g, pasmaGamma));
+            const denom = Math.max(1e-3, inv);
+            const dsepVal = dsepDark / denom;
+            // Clamp final value to [dsepDark, dsepLight] so packing stays sane
+            return Math.max(dsepDark, Math.min(dsepLight, dsepVal));
+          };
+        } else {
+          // Legacy: intensity → easing → [dsepDark, dsepLight]
+          dsepFn = (x, y) => {
+            const r = probe(x, y);
+            if (!r.hit || r.region === 'background') return dsepLight;
+            const i = clamp01(r.intensity);
+            const ir = clamp01((i - iMin) / (iMax - iMin));
+            const t = smoothStart3(ir);
+            return dsepDark + (dsepLight - dsepDark) * t;
+          };
+        }
 
-        packExtra = { dsep: dsepFn, dsepMax: dsepLight };
+        packExtra = {
+          dsep: dsepFn,
+          dsepMax: dsepLight,
+          // (B) Pasma stop conditions are default ON for SDF3 path
+          stopOnReversal: layer.stopOnReversal !== false,
+          stopOnDivergence: layer.stopOnDivergence !== false,
+          divergenceThreshold: layer.divergenceThreshold ?? -0.7,
+          // (E) QuadTree default ON for Pasma-style variable dsep — the
+          // adaptive radius is what makes brightness-driven spacing work
+          // without a worst-case cellSize blow-up.
+          spatialIndex: layer.spatialIndex || (pasmaStyle ? 'quadtree' : 'grid'),
+        };
       } else {
         // intensityDsep=false 退化为简单 hit-test + uniform dsep
         sdfForPack = (p) => probe(p[0], p[1]).hit ? -0.01 : 0.01;

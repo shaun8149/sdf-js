@@ -198,7 +198,7 @@ export function makeProbe(sdf3, opts = {}) {
     const { ro, rd } = rayFor(camera, x, y);
     const t = raymarch3(ro, rd, sdf3, maxSteps, maxDist, eps);
     if (t < 0) {
-      return { intensity: 0, region: 'background', hit: null, normal: null };
+      return { intensity: 0, region: 'background', hit: null, normal: null, t: maxDist, maxDist };
     }
 
     const hit = v.add(ro, v.mul(rd, t));
@@ -226,6 +226,8 @@ export function makeProbe(sdf3, opts = {}) {
       region,
       hit,
       normal,
+      t,         // hit distance — used by Pasma-style mist formula in hatch.js
+      maxDist,   // expose so callers can compute smoothstep(mistStart, maxDist, t)
     };
   };
 }

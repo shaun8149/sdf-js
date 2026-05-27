@@ -27,7 +27,7 @@ function getUrlTokenHash() {
     return p.get('tokenHash') || null;
   } catch (_) { return null; }
 }
-const URL_TOKEN_HASH = getUrlTokenHash();
+let URL_TOKEN_HASH = getUrlTokenHash();  // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
 import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
@@ -42,6 +42,7 @@ import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { createBlueprintRenderer } from '../../src/render/blueprint.js';
 import { createCrayonRenderer } from '../../src/render/crayonRenderer.js';
 import { createStreamlineRenderer } from '../../src/render/streamlineRenderer.js';
+import * as edit2d from './edit2d.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';
 
 const $ = id => document.getElementById(id);
@@ -1026,9 +1027,138 @@ function drawErrorOverlay(ctx, msg) {
 }
 
 // Re-render with stored layers (called when renderer/pattern pill switches)
+// ---------------------------------------------------------------------------
+// Path A — subject-as-layers for CPU renderers on lifted 3D scenes
+// ---------------------------------------------------------------------------
+// bobStipple and hatch were designed for layered 2D input where each
+// `{sdf, color}` is a distinct region. When fed a single union SDF (entire
+// lifted scene), the multi-region BOB two-palette aesthetic collapses.
+//
+// Path A: expose the scene's compiled.subjects array as N layers, each
+// with its own SDF and a color derived from the subject's resolved
+// material. groundSdf becomes layer 0 (back-most). The renderer algorithm
+// is UNCHANGED — only the input shape changes.
+// ---------------------------------------------------------------------------
+
+function hsvToRgb(h, s, v) {
+  // h, s, v in [0, 1]; returns [r, g, b] in [0, 255]
+  const i = Math.floor(h * 6);
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
+  let r = 0, g = 0, b = 0;
+  switch (i % 6) {
+    case 0: r = v; g = t; b = p; break;
+    case 1: r = q; g = v; b = p; break;
+    case 2: r = p; g = v; b = t; break;
+    case 3: r = p; g = q; b = v; break;
+    case 4: r = t; g = p; b = v; break;
+    case 5: r = v; g = p; b = q; break;
+  }
+  return [(r * 255) | 0, (g * 255) | 0, (b * 255) | 0];
+}
+
+function materialToRgb(mat, fallback = [205, 95, 87]) {
+  if (!mat) return fallback;
+  // Resolved material is {hue, sat, value, metal, glow, kind}. v1 ignores
+  // kind/metal — just HSV → RGB. v2 (future) routes kinds to specialized
+  // brush idioms.
+  const h = (mat.hue ?? 0);
+  const s = (mat.sat ?? 0);
+  const v = (mat.value ?? 1);
+  return hsvToRgb(h, s, v);
+}
+
+function buildLiftSceneLayers(gpuScene, cameraOpts) {
+  // gpuScene.scene = compiled SceneData ({sdf, groundSdf, subjects:[{id,sdf,...}], ...})
+  const compiled = gpuScene.scene;
+  if (!compiled) return [{ sdf: gpuScene.sdf, color: [205, 95, 87], ...(cameraOpts ? { cameraOpts } : {}) }];
+
+  const layers = [];
+
+  // Ground first (back-most) so subjects paint over it
+  if (compiled.groundSdf) {
+    layers.push({
+      sdf: compiled.groundSdf,
+      color: materialToRgb(compiled.groundSdf._subjectMaterial, [180, 165, 140]),
+      ...(cameraOpts ? { cameraOpts } : {}),
+    });
+  }
+
+  // BACKGROUND FILL LAYER (compile.js line 781 workaround):
+  // compile.js drops union-children's leaf SDFs from subjectInfos (passes []
+  // for regionInfos). For unions like "rocket" (20+ children: stage tanks,
+  // fairings, engines), this means NONE of those children show up in
+  // compiled.subjects, so the per-subject layer loop misses the entire
+  // rocket. BOB GPU sees the rocket because it uses the full compiled.sdf
+  // (post-union); Path A's per-subject coloring scheme alone misses it.
+  //
+  // Fix: add the FULL gpuScene.sdf as the FIRST (back-most) layer with a
+  // neutral fallback color. Subject-level layers paint over it with their
+  // own colors. Geometry never gets lost; subjects with explicit material
+  // still get their own brush palette.
+  if (gpuScene.sdf) {
+    layers.push({
+      sdf: gpuScene.sdf,
+      color: [180, 175, 165],  // neutral warm gray
+      ...(cameraOpts ? { cameraOpts } : {}),
+    });
+  }
+
+  // Subjects in authored order (later subjects paint on top in BOB's
+  // brush-stack loop). compiled.subjects contains BOTH leaf primitives
+  // AND wrapping BooleanGroup SDFs — render only the entries with a
+  // material set. This filters out group-level SDFs (which cover the
+  // full union area and would otherwise paint over every leaf with the
+  // fallback color when group.material is null).
+  for (const info of (compiled.subjects || [])) {
+    if (!info || !info.sdf) continue;
+    const mat = info.sdf._subjectMaterial;
+    if (!mat) continue;  // skip group / unionless leaf without explicit material
+    layers.push({
+      sdf: info.sdf,
+      color: materialToRgb(mat),
+      ...(cameraOpts ? { cameraOpts } : {}),
+    });
+  }
+
+  return layers.length > 0
+    ? layers
+    : [{ sdf: gpuScene.sdf, color: [205, 95, 87], ...(cameraOpts ? { cameraOpts } : {}) }];
+}
+
 function reRenderStored() {
+  const ctx = $('c').getContext('2d');
+  const active = state.activeRenderer;
+  if (!isGpuRenderer(active)) {
+    const gpuScene = getActiveGpuScene();
+    if (gpuScene && gpuScene.sdf) {
+      const cs = gpuScene.scene?.cameraStatic;
+      const cameraOpts = cs ? {
+        yaw: cs.yaw, pitch: cs.pitch, distance: cs.distance,
+        target: [cs.targetX, cs.targetY, cs.targetZ],
+      } : null;
+      // Ortho view = world half-width the perspective camera frames at
+      // distance d with focal F (= d / F). Strict parity with BOB GPU's
+      // perspective framing — if BOB GPU doesn't render something (e.g.,
+      // rocket-launch's rocket is hidden inside gantry at t=0 because the
+      // animation hasn't fired), BOB CPU + Lines shouldn't render it
+      // either. Slight pad (× 1.05) for a hair of margin.
+      const focal = cs?.focal || 1.5;
+      const view = cs ? Math.max(1, (cs.distance / focal) * 1.05) : 1.0;
+      const synthLayers = buildLiftSceneLayers(gpuScene, cameraOpts);
+      const opts = {
+        ...(state.lastRenderOpts || {}),
+        ...(cameraOpts || {}),
+        view,
+        background: [240, 235, 225],
+      };
+      doRender(ctx, synthLayers, opts);
+      return;
+    }
+  }
   if (state.layers) {
-    const ctx = $('c').getContext('2d');
     doRender(ctx, state.layers, state.lastRenderOpts || {});
   } else {
     drawPlaceholder();
@@ -1198,15 +1328,11 @@ const TAB_CONTENT = {
     </div>
   `,
 
-  '2d-edit': () => `
-    <h2>2D Editor</h2>
-    <p>Mini-DSL script editor + (later) node graph view, both editing the same SceneData.</p>
-    <div class="placeholder">
-      <b>M3 (2 weeks):</b> Mini-DSL parser (Python sdf compatible syntax with <code>|=</code> / <code>&=</code> / <code>-=</code>) + Monaco editor + live silhouette preview.
-      <br><br>
-      <b>M3.5 (2-3 weeks):</b> node graph view with AST↔script dual-sync.
-    </div>
-  `,
+  // 2D Editor — Pencil-style. Sidebar (Agent / Layers / Inspector tabs +
+  // chat + layers + inspector content) mounts into #tab-content; canvas
+  // viewport with floating tool palette mounts into #render-area. Wired
+  // up in renderActiveTab → edit2d.init({...}).
+  '2d-edit': () => '',  // edit2d.init() writes its own markup into both containers
 
   '3d-edit': () => `
     <h2>3D Editor</h2>
@@ -1222,8 +1348,15 @@ function renderActiveTab() {
   $('tab-content').dataset.activeTab = state.activeTab;
 
   // Scenes tab uses a full-width gallery layout (canvas + code panel hidden).
+  // 2D Edit tab uses Pencil-style sidebar (left) + canvas viewport (right).
   // All other tabs use the standard sidebar + canvas split.
   document.body.classList.toggle('scenes-mode', state.activeTab === 'scenes');
+  document.body.classList.toggle('editmode-2d', state.activeTab === '2d-edit');
+
+  // edit2d module owns its own DOM; tear down if we're leaving the tab.
+  if (state.activeTab !== '2d-edit' && edit2d.getInstance()) {
+    edit2d.destroy();
+  }
 
   updateCanvasVisibility();
 
@@ -1233,6 +1366,11 @@ function renderActiveTab() {
     wireTextTab();
   } else if (state.activeTab === 'generator') {
     wireGeneratorTab();
+  } else if (state.activeTab === '2d-edit') {
+    edit2d.init({
+      sidebarEl: $('tab-content'),
+      viewportEl: $('render-area'),
+    });
   }
 }
 
@@ -1799,7 +1937,13 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     const bp = ensureBlueprintRenderer();
     if (scene.cameraStatic) {
       const cs = scene.cameraStatic;
-      bp.setModelBounds([cs.targetX, cs.targetY, cs.targetZ], cs.distance * 0.6);
+      // Model half-extent the perspective camera frames at distance `d` with
+      // focal `F` is d/F (because edge of normalized screen at distance d
+      // lies at world half-width d/focal). Earlier `cs.distance * 0.6`
+      // assumed default focal ~1.5 and shrank everything when focal was
+      // higher (e.g., bonsai uses focal=5 → views were 3× too zoomed-out).
+      const focal = cs.focal || 1.5;
+      bp.setModelBounds([cs.targetX, cs.targetY, cs.targetZ], cs.distance / focal);
     }
     // Sprint 12: Rune heightmap → blueprint texture (same data as FLY 3D).
     if (bp.setRuneHeightmap) bp.setRuneHeightmap(scene.bakedHeightmap || null);
@@ -2301,6 +2445,48 @@ $$('#renderer-pills .pill').forEach(btn => {
     setStatus(`renderer → ${state.activeRenderer}`);
   });
 });
+
+// 🎲 New Style — reroll tokenHash. For hash-driven scenes (bonsai-mountain etc)
+// this changes both the mountain SHAPE (via terrain-eroded-rune bake) and the
+// renderer styling (Topo style/treatment, Crayon palette, etc).
+//
+// reRenderStored alone uses the cached `compiled` so the bonsai bake doesn't
+// re-run — we must call renderLiftedSceneData(stored JSON) to force recompile
+// with the new tokenHash, then re-issue the CPU draw.
+(function wireNewHashButton() {
+  const btn = document.getElementById('btn-new-hash');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const newHash = '0x' + [...Array(64)].map(() =>
+      Math.floor(Math.random() * 16).toString(16)).join('');
+    URL_TOKEN_HASH = newHash;
+    try {
+      const url = new URL(window.location);
+      url.searchParams.set('tokenHash', newHash);
+      window.history.replaceState(null, '', url);
+    } catch (_) {}
+    setStatus(`🎲 new tokenHash → ${newHash.slice(0, 10)}…`);
+
+    // Recompile lifted scene with new hash → re-bake hash-driven primitives
+    // (terrain-eroded-rune, future ones). Without this only renderers that
+    // read URL at draw-time (Topo, Crayon) would change.
+    if (state.textLiftSceneJSON) {
+      try {
+        renderLiftedSceneData(
+          state.textLiftSceneJSON,
+          state.textLiftSourcePrompt || '',
+          '🎲 new tokenHash',
+          { shufflePalette: false },
+        );
+      } catch (e) {
+        console.error('[new-hash] recompile failed', e);
+      }
+    }
+    // CPU renderers need an explicit re-draw — GPU is already redrawing
+    // continuously via RAF.
+    if (!isGpuRenderer(state.activeRenderer)) reRenderStored();
+  });
+})();
 
 // =============================================================================
 // Placeholder canvas (when no scene loaded)
