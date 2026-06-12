@@ -61,7 +61,7 @@ three.js sits at **rung 1.5** — it has mesh state (great for rendering) but no
 
 1. **Identity-preserving edit at object granularity is impossible.** Object-level regeneration is real — these systems can swap one door without disturbing the rest of the scene. But say "make this door iron and keep the dents and the handle." What you get is **a different door**, roughly door-shaped and iron, not the door you had with iron and the dents preserved. Iteration is resampling at object grain, not editing. Atlas's `circle(0.3)` edited to `circle(0.35)` is the *same primitive, larger* — a different category of operation altogether.
 
-2. **Dynamics must be a separately-authored solver.** Bullet / PhysX / Rapier do this well; the LLM can configure them (mass, friction, restitution) but cannot author the laws — those live in tens of thousands of lines of C++ solver code outside the LLM's writing surface. **Determinism on this path is an engineering achievement** — Rapier explicitly supports cross-platform-determinism mode; RTS lockstep physics is a 20-year discipline. On Atlas it is the **structural default**: you have to break it (`Math.random` outside the rng helper, variable `dt`, mutable cross-tick state) to lose it.
+2. **Engines give you parameter knobs over a family of laws, not authorship of laws.** `setGravity(0, -12.7, 0)` is one line — Bullet, PhysX, Rapier all handle 1.3× Earth's gravity trivially. Custom forces inside the Newtonian family (n-body gravity, magnetism) are doable by bypassing the built-in pipeline — *Outer Wilds* famously did this in Unity, **reinventing a small rule runtime inside the engine** to escape Unity's default gravity assumption. (That game's existence is the strongest field evidence we have: brilliant teams have to fight the engine's defaults to get behavior the engine didn't anticipate.) What no engine gives you is **law-family authorship** — non-Coulomb friction, modified inertia, position-varying time flow — because the shape of "what must be true" (Signorini conditions, Coulomb cones, shared global `dt`) is compile-time fixed in the solver's C++. Determinism on this path is an engineering achievement (Rapier supports cross-platform-determinism mode; RTS lockstep physics is a 20-year discipline). On Atlas, both law authorship and determinism are **structural defaults** — you have to break them (`Math.random` outside the rng helper, variable `dt`, mutable cross-tick state) to lose them.
 
 3. **State lives in three disjoint stores:** mesh arrays (GPU), scene-graph transforms (CPU), physics-engine internal buffers (solver-private). Fork, time-travel, multiplayer-sync, audit are each engineering *projects* on this path. On Atlas they are *properties* of the substrate. ([Determinism CI](sdf-js/scripts/world/test-determinism.mjs) verifies bit-equal replay across 600 ticks; full-mode log is human-readable JSON.)
 
@@ -74,6 +74,18 @@ Atlas inverts the family on all three:
 **Where we don't try to compete.** Atlas's simulator covers **authorable-laws dynamics** — fields, swarms, orbits, resources, rule systems, particle flow, rocket-style integration. It does NOT cover **solver-grade contact physics** — a 500-box pile, ragdoll, constraint-rich rigid-body chains. Bullet / PhysX / Rapier do those well; we don't try to. The trade is explicit: **give up solver-grade contact, gain savegame-native composable worlds whose laws the LLM authors.**
 
 **The real adjacency to flag.** Sampled-asset AI is one competing path. A more sophisticated one is **Claude Code emitting Bevy / Godot / Unity ECS systems** — there the LLM does write code that runs, ECS gives a loop contract close in shape to our `step()` rule fold, and Rust / C# / GDScript are well within LLM's writing skill. Atlas's differentiation against this path is narrower but durable: **web-native zero-install** (browser URL = experience, no runtime to ship), **determinism by default** rather than by engineering discipline, **savegame as a single human-readable JSON document** rather than engine-specific binary serialization, and **dimension-agnostic by SDF math** (works in ℝⁿ; ECS components are 3D-shaped). A sophisticated reader will think of this competitor within 60 seconds — better to surface it than be asked.
+
+**The killer compression of all this** — ask each path how it would let you visit a tidally-locked ocean world where surface gravity is 1.3× Earth's, kilometer-tall waves are driven by tidal forces from an orbiting black hole, and gravitational time dilation means an hour on the surface is seven years outside. (The physics is Kip Thorne's published science; the example is canonical in hard SF.)
+
+- In a **physics engine**: a solver retrofit project. The 1.3g is one line; the tidal forces are doable with custom-pipeline code; the **time dilation alone — `dt` as a function of position — requires rewriting the integrator architecture**, because every solver line and every cache assumes a shared global `dt`.
+- In a **video model** (Sora-class): an impossible out-of-distribution generalization. No training footage exists for self-consistent differential time flow as an *interactive* system. Watching *Interstellar* a million times teaches the visual texture of the wave scene, not a coherent simulable world.
+- In **Atlas**: a ~15-line patch. `gravity: 9.8 → 12.7`, plus a tidal-force rule in the `forces` phase, plus a `timeScale(p)` rule that multiplies `dt` per region. The patch lives in the savegame — anyone can `diff` and read exactly how this world differs from Earth in three laws.
+
+This is the entire rung-2 argument compressed into one axis:
+
+> **Physics engines bind laws at compile time. Learning models bind laws at training time. Rule runtimes bind laws at runtime.**
+>
+> A world is a set of rules; another world is a diff.
 
 **The clean summary:**
 
@@ -147,6 +159,8 @@ SDF is dimension-agnostic: a signed distance field is a function `d(p): ℝⁿ �
 A 4D world in Atlas is a SceneData with one extra coordinate, rendered by **slicing**: the camera becomes a moving hyperplane `w = c`, and a hypersphere appears as a sphere that grows and shrinks as you scrub through w. The same WASD fly camera plus one scroll axis is a complete 4D explorer.
 
 This is the deepest consequence of the spec-first route. **Video-based world models can only learn worlds that have been filmed; a world-spec language can define worlds that have never appeared.** Diffusion models a distribution over our world's appearances. An SDF + transition-rule stack can simulate non-Euclidean spaces, 4D mechanics, and counterfactual physics — anywhere a distance function and an update rule can be written, a world can run.
+
+**What can be written is not just the *shape* of the world but the *laws* of the world.** SDF gives us symbolic geometry; the M7 rule-runtime gives us symbolic dynamics. The world-spec language extends to wherever both halves can be written — and "both halves can be written" is the boundary of what Atlas claims, no more, no less.
 
 A minimal 4D slice-explorer demo is queued on the bench (see roadmap) so this section's claim ships with a reproducible artifact, not just an argument.
 
@@ -362,8 +376,9 @@ M5 and M6 are the commercial-thesis demonstrations: LLM produces *editable* outp
 1. **Editorial illustration** — Lotta Nieminen tradition; magazine / book / poster art. Same single artist creates 5-50 illustrations per year, each $500-5000 commission.
 2. **Presentation visuals (PPT / Keynote / Gamma)** — AI-PPT generation tools (Gamma, Tome, Beautiful.ai) solve text but leave the visual layer dead. Our preset library composes 30-50 visuals per deck sharing one style.
 3. **Emoji / icon / sticker** — recognition depends on exact structure. WeChat / LINE / Slack emoji packs are billion-yuan markets. Diffusion structurally cannot make a consistent emoji set; we natively can.
+4. **Worldbuilding for fiction** — science fiction authors, game worldbuilders, film pre-production designers, RPG system designers, hard-SF physics-illustrators. The Kip-Thorne–for-Nolan workflow: derive a different set of laws, project the consequences, hand-author scenes informed by those projections. Today this work is done with paper, math, and intuition — **no tool exists that lets these authors write the laws, press play, and watch emergence**. Rule-runtime simulators (Atlas's M7 layer) are the first thing natively serving this audience. Market sits upstream of every game-world we love and every credible piece of hard-SF physics-illustration; even a small footprint cascades into adjacent creative industries.
 
-These three segments share one supply-side property: **the visual is reused at multiplied scale** (one motif used 30× across a deck; one icon set used by millions; one preset applied to 100 editorial pieces). Diffusion's per-generation cost is a tax on this supply economy. SDF's deterministic preset model is the inverse — supply compounds.
+The first three segments share one supply-side property: **the visual is reused at multiplied scale** (one motif used 30× across a deck; one icon set used by millions; one preset applied to 100 editorial pieces). Diffusion's per-generation cost is a tax on this supply economy. SDF's deterministic preset model is the inverse — supply compounds.
 
 ---
 
