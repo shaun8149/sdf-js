@@ -104,6 +104,14 @@ LLM-emitted rules carry their phase; a rule in the wrong phase (e.g. a force rul
 patching positions) fails the declaration check. This is the loop contract made
 explicit — the part game engines got right.
 
+**Integrator guarantee (not an accident — a promise):** the phase order
+`forces` (writes vel) → `integrate` (writes pos) enforces **semi-implicit
+(symplectic) Euler** — velocity updates before position, the industry-standard
+ordering that keeps oscillating systems (orbits, springs) energy-stable. Explicit
+Euler (pos before vel) drifts and explodes; the phase contract makes that ordering
+unwritable. Do not "upgrade" to RK4 — symplectic Euler at fixed dt is the right
+tool for this runtime.
+
 The runtime's `step()` folds over phases, then rules:
 
 ```js
@@ -351,6 +359,13 @@ A2 ship → Scene B.
   Atlas's simulator layer covers **law-writable dynamics** (fields, flocking, orbits,
   resources, rule systems) — solver-grade contact physics is a different problem and
   we do not claim it.
+  **Recorded future path (do not build this slice):** if/when contact-ish physics is
+  needed, the route is **XPBD — constraints as rules**, not a solver port. Each XPBD
+  constraint (distance, bending, volume) is a few-line position-projection function
+  that fits the `constrain` phase natively and stays LLM-writable/auditable/toggleable.
+  Cloth, ropes, and soft bodies enter Atlas through that door; Sequential-Impulse /
+  PGS solvers never do. Narrowphase queries stay free via `sdfQuery` (d = penetration,
+  ∇d = contact normal); sphere tracing along the velocity gives CCD for free.
 - Variable dt / substeps. Multiplayer. Rule hot-reload across workers. GPU-compute
   particle simulation (worker + typed arrays first; move to GPGPU only if 2k boids
   @ 60fps fails on CPU).
