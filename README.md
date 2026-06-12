@@ -39,6 +39,45 @@ This is a **structural separation of domains**, not a "diffusion is worse" claim
 | Pattern / textile / motif libraries | Cannot reproduce the same motif consistently | Motif data is loaded, not generated |
 | Anything plotter-output (vector) | Outputs raster, must be vectorized lossy | Native vector polyline output |
 
+### The architecture boundary (where we differ from three.js / Unity / mesh-pipeline AI)
+
+The diffusion boundary above is about input *modality* (pixel-sampling vs symbolic structure). This second boundary is about *system architecture* — what kind of 3D substrate the AI is generating into. Same active-concession pattern: each system below is excellent within its own architecture; the question is *which architecture is reachable by an LLM writing code*.
+
+**A rung map across existing 3D systems** — by state shape × loop contract × LLM writability:
+
+| | Representative system | State shape | Loop contract | LLM writes natively? |
+| --- | --- | --- | --- | --- |
+| **rung-0** | three.js (static, one `renderer.render()` call) | Sampled mesh tree | Optional | No — RPC into renderer only |
+| **rung-1** | p5 sketch | Globals + `frameCount` | Required, no purity contract | Partially (short sketches only) |
+| **rung-1.5** | three.js + user-written `animate()` | Mesh tree + keyframe tween | User code, no enforced contract | Tween yes, mesh no |
+| **rung-2** | Unity / Unreal / Bevy | ECS components on GameObjects | Enforced `Update()` per system | Possible but engineering-heavy |
+| **rung-2 LLM-native** | **Atlas / M7** | **SDF symbolic tree + `Rule[]`** | **Pure `step()`** | **Yes — native fit** |
+
+three.js sits at **rung 1.5** — it has mesh state (great for rendering) but no enforced loop contract (dynamics are user code). The same three.js app can be entirely static, keyframe-animated, or coupled to a physics engine — three.js doesn't pick. That's why the clean shorthand below is "graph without a loop contract."
+
+**Why mesh-pipeline AI (VAST Eden, Tripo, Sloyd, Meshy) is structurally locked out of the rung-2 world-model market:**
+
+1. **Output is a mesh asset.** An LLM cannot natively edit a 50k-vertex array — only regenerate it (one forward pass → one new mesh). Iteration is resampling, not editing. The same per-generation cost curve diffusion suffers from (see the diffusion boundary table above) applies here too — every variant is another full inference.
+2. **No loop contract.** Dynamics requires bolting on Bullet / PhysX — another subsystem the LLM cannot natively write. The "LLM writes the laws of the world" claim collapses because the laws live inside a black-box physics solver.
+3. **State is fragmented.** Mesh arrays + transform matrices + physics-engine internal buffers = three disjoint stores. **State is not a document.** Savegame-native persistence is impossible without architectural surgery.
+
+Atlas inverts each of these:
+
+1. **Output is an SDF expression tree.** The LLM *is* writing expressions.
+2. **Loop contract is `step(world, actions, dt) → newWorld`, a pure function.** The LLM *is* writing functions.
+3. **State is one `World` object.** Savegame *is* serializing it. ([Determinism CI](sdf-js/scripts/world/test-determinism.mjs) verifies this is bit-equal across replay.)
+
+**The clean summary:**
+
+- **p5** is "loop without a graph."
+- **three.js** is "graph without a loop contract."
+- **Unity** is "graph + loop contract, but state is an asset and dynamics is a C# project."
+- **Atlas / M7** is **"symbolic graph + pure loop contract"** — both axes explicit, both axes LLM-writable.
+
+Or shorter still:
+
+> **three.js lets the LLM call the renderer; Atlas lets the LLM write the world.**
+
 ### Why this architecture beats diffusion — 10 axes
 
 Across four themes, ten architectural advantages distinguish a code-based SDF generator from a statistical pixel sampler. The conclusion is at the bottom.
