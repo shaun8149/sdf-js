@@ -39,9 +39,11 @@ This is a **structural separation of domains**, not a "diffusion is worse" claim
 | Pattern / textile / motif libraries | Cannot reproduce the same motif consistently | Motif data is loaded, not generated |
 | Anything plotter-output (vector) | Outputs raster, must be vectorized lossy | Native vector polyline output |
 
-### The architecture boundary (where we differ from three.js / Unity / mesh-pipeline AI)
+### The architecture boundary (where we differ from three.js / Unity / sampled-asset AI)
 
 The diffusion boundary above is about input *modality* (pixel-sampling vs symbolic structure). This second boundary is about *system architecture* — what kind of 3D substrate the AI is generating into. Same active-concession pattern: each system below is excellent within its own architecture; the question is *which architecture is reachable by an LLM writing code*.
+
+**Two families, not two products.** SDF is one point in a larger **symbolic-representation family** that LLMs can natively write: OpenSCAD, CadQuery / build123d, JSCAD, L-systems, CSG trees, bpy procedural scripts, parametric CAD. The opposing family is **sampled-asset**: meshes, NeRF, Gaussian Splat, voxel grids, point clouds. The load-bearing claim is family-to-family. SDF's specific advantages *within* the symbolic family — dimension-agnostic (`d(p): ℝⁿ → ℝ` works at any n), single-expression representation (a tree, not an API call sequence), GPU-native compile path, continuous infinite resolution — make it the optimal point for web-native simulator work; but the architectural contrast below runs at the family level, not as a product-vs-product fight.
 
 **A rung map across existing 3D systems** — by state shape × loop contract × LLM writability:
 
@@ -55,23 +57,29 @@ The diffusion boundary above is about input *modality* (pixel-sampling vs symbol
 
 three.js sits at **rung 1.5** — it has mesh state (great for rendering) but no enforced loop contract (dynamics are user code). The same three.js app can be entirely static, keyframe-animated, or coupled to a physics engine — three.js doesn't pick. That's why the clean shorthand below is "graph without a loop contract."
 
-**Why mesh-pipeline AI (VAST Eden, Tripo, Sloyd, Meshy) is structurally locked out of the rung-2 world-model market:**
+**Why sampled-asset AI (VAST Eden, Tripo, Trellis, Hunyuan3D, CSM, Sloyd, Meshy) is structurally outside the rung-2 world-model market:**
 
-1. **Output is a mesh asset.** An LLM cannot natively edit a 50k-vertex array — only regenerate it (one forward pass → one new mesh). Iteration is resampling, not editing. The same per-generation cost curve diffusion suffers from (see the diffusion boundary table above) applies here too — every variant is another full inference.
-2. **No loop contract.** Dynamics requires bolting on Bullet / PhysX — another subsystem the LLM cannot natively write. The "LLM writes the laws of the world" claim collapses because the laws live inside a black-box physics solver.
-3. **State is fragmented.** Mesh arrays + transform matrices + physics-engine internal buffers = three disjoint stores. **State is not a document.** Savegame-native persistence is impossible without architectural surgery.
+1. **Identity-preserving edit at object granularity is impossible.** Object-level regeneration is real — these systems can swap one door without disturbing the rest of the scene. But say "make this door iron and keep the dents and the handle." What you get is **a different door**, roughly door-shaped and iron, not the door you had with iron and the dents preserved. Iteration is resampling at object grain, not editing. Atlas's `circle(0.3)` edited to `circle(0.35)` is the *same primitive, larger* — a different category of operation altogether.
 
-Atlas inverts each of these:
+2. **Dynamics must be a separately-authored solver.** Bullet / PhysX / Rapier do this well; the LLM can configure them (mass, friction, restitution) but cannot author the laws — those live in tens of thousands of lines of C++ solver code outside the LLM's writing surface. **Determinism on this path is an engineering achievement** — Rapier explicitly supports cross-platform-determinism mode; RTS lockstep physics is a 20-year discipline. On Atlas it is the **structural default**: you have to break it (`Math.random` outside the rng helper, variable `dt`, mutable cross-tick state) to lose it.
 
-1. **Output is an SDF expression tree.** The LLM *is* writing expressions.
-2. **Loop contract is `step(world, actions, dt) → newWorld`, a pure function.** The LLM *is* writing functions.
-3. **State is one `World` object.** Savegame *is* serializing it. ([Determinism CI](sdf-js/scripts/world/test-determinism.mjs) verifies this is bit-equal across replay.)
+3. **State lives in three disjoint stores:** mesh arrays (GPU), scene-graph transforms (CPU), physics-engine internal buffers (solver-private). Fork, time-travel, multiplayer-sync, audit are each engineering *projects* on this path. On Atlas they are *properties* of the substrate. ([Determinism CI](sdf-js/scripts/world/test-determinism.mjs) verifies bit-equal replay across 600 ticks; full-mode log is human-readable JSON.)
+
+Atlas inverts the family on all three:
+
+1. **Output is a symbolic expression tree.** The LLM *is* writing expressions.
+2. **Loop contract is `step(world, actions, dt) → newWorld`, a pure function.** The LLM *is* writing functions, not configuring a solver.
+3. **State is one `World` object.** Savegame *is* serializing it.
+
+**Where we don't try to compete.** Atlas's simulator covers **authorable-laws dynamics** — fields, swarms, orbits, resources, rule systems, particle flow, rocket-style integration. It does NOT cover **solver-grade contact physics** — a 500-box pile, ragdoll, constraint-rich rigid-body chains. Bullet / PhysX / Rapier do those well; we don't try to. The trade is explicit: **give up solver-grade contact, gain savegame-native composable worlds whose laws the LLM authors.**
+
+**The real adjacency to flag.** Sampled-asset AI is one competing path. A more sophisticated one is **Claude Code emitting Bevy / Godot / Unity ECS systems** — there the LLM does write code that runs, ECS gives a loop contract close in shape to our `step()` rule fold, and Rust / C# / GDScript are well within LLM's writing skill. Atlas's differentiation against this path is narrower but durable: **web-native zero-install** (browser URL = experience, no runtime to ship), **determinism by default** rather than by engineering discipline, **savegame as a single human-readable JSON document** rather than engine-specific binary serialization, and **dimension-agnostic by SDF math** (works in ℝⁿ; ECS components are 3D-shaped). A sophisticated reader will think of this competitor within 60 seconds — better to surface it than be asked.
 
 **The clean summary:**
 
 - **p5** is "loop without a graph."
 - **three.js** is "graph without a loop contract."
-- **Unity** is "graph + loop contract, but state is an asset and dynamics is a C# project."
+- **Unity / Bevy** is "graph + loop contract, but state is an asset graph and dynamics is an engine project."
 - **Atlas / M7** is **"symbolic graph + pure loop contract"** — both axes explicit, both axes LLM-writable.
 
 Or shorter still:
