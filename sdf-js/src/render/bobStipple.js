@@ -26,6 +26,89 @@ import { makeProbe, createCamera } from '../sdf/probe.js';
 const rgbStr = (c) =>
   `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
 
+// ---------------------------------------------------------------------------
+// BOB pigments — verbatim port of ~/BOB/sketch.js lines 3-22 (20 hand-curated
+// high-contrast palette sets). This is the SOURCE of BOB's signature vibrant
+// color vibration. Original picks 2 of these per artwork (random + shuffle +
+// startIndex offset) and alternates between them per brush layer.
+//
+// Sizes vary: 8-30 hex colors per set. Index 0=warm earth, 1=desert/rust,
+// 2=ede0df-pink-pop, 3=jewel-tone, 4=neon-pop, 5=primary-electric,
+// 6=red-blue-yellow, 7=peach+cream, 8=variation-rust-jewel, 9=copy of 8,
+// 10=russet-blue, 11=blue-water-pastel, 12=red-jewel-cream, 13=tropical,
+// 14=teal-orange, 15=earth-jewel, 16=indigo-water, 17=desert-mute,
+// 18=brown-cream, 19=sage-cream.
+// ---------------------------------------------------------------------------
+const BOB_PIGMENTS = [
+  ['#fec601','#97c6c9','#feb101','#f8868e','#fedd01','#358489','#e5392b','#816eca','#1f7f48','#006aa3'],
+  ['#f3e8d7','#7e1803','#a45107','#f7d15d','#bb290b','#678282','#799aaf','#205b8e','#d1ad74','#ecd8a6','#f8c051','#cf3702','#fdd07f','#d96305'],
+  ['#e44d36','#d999cb','#12a29b','#f7d923','#ede0df','#159014','#713c97','#0e5f4a','#229d38','#103731','#b6d611','#78b9c8'],
+  ['#b1b6b9','#788bb5','#c4a62d','#398a8a','#2bb559','#fcbd02','#8e3f36','#bd4f74','#87bbb4','#337bb6','#92acca','#d9b376','#ce544f','#096150','#dbd1b7','#986bb7','#e17b09','#a91b1a','#1d8f90','#fbc42b','#f0e9df','#6c9f07','#e1d553','#f65401','#58c3bf'],
+  ['#880000','#aaffee','#cc44cc','#00cc55','#eeee77','#dd8855','#ff7777','#aaff66','#0088ff'],
+  ['#14bd9c','#fd3711','#2575e4','#fff35f','#0e7f57','#de373d','#17bcad','#fe5600','#0d4ed9','#fc2527','#fdfe82','#ff1300','#4b87d5','#318424','#fb4335','#2bb263','#046b58','#01b5aa'],
+  ['#09931e','#002baa','#1c77c3','#ff2702','#236846','#ff6900','#feec00','#fcd300','#a3023b','#f20256','#0aa922'],
+  ['#6e81b2','#a6616e','#f27562','#fbda53','#fefe87','#adc59e','#fdddd6','#453f67','#c8f1c0','#fd3324'],
+  ['#f44f39','#fe918c','#a03d29','#b53f35','#faa81e','#7b2528','#de2e2e','#de6755','#2e5139','#b8bf4b','#7cb1e3','#564d8f','#f8e119','#f9be5f','#c77c42','#472b74','#b56aa2','#1f3496','#55a4c9','#162f51','#009ec3','#2f4940','#77bb66','#4dc1a4','#115361'],
+  ['#f44f39','#fe918c','#a03d29','#b53f35','#faa81e','#7b2528','#de2e2e','#de6755','#2e5139','#b8bf4b','#7cb1e3','#564d8f','#f8e119','#f9be5f','#c77c42','#472b74','#b56aa2','#1f3496','#55a4c9','#162f51','#009ec3','#2f4940','#77bb66','#4dc1a4','#115361'],
+  ['#ee6104','#45623d','#1759bd','#e12e00','#f5db00','#249d41','#00a9fc','#e2e8a5','#f6a762'],
+  ['#bbd3c4','#2b557d','#376187','#f6efc0','#0085df','#1874bf','#5288c4','#e1c19e','#717eab','#dfa03f','#bd9984','#dbaa74','#e98667','#d97670','#d75d5c','#f79a5d','#9ea9c2','#ffe7a4','#c8d0dc','#dbdce1','#ecc5c4'],
+  ['#b10900','#529a81','#2844b5','#ffb949','#e4cc61','#c88eab','#b02866','#0a3620','#7991c3','#e9f0a7'],
+  ['#037243','#018d58','#cf586c','#dce8e2','#028ede','#004fa8','#852541','#f9f04c','#ef7ca3','#d13230','#e5ddbe','#dd8e51','#dd8fa5','#8bd0c7','#1e2743'],
+  ['#148965','#155434','#0c6ebc','#0caff7','#50beed','#9d43a0','#116658','#6d2548','#30b163','#b83c27'],
+  ['#dbcc4f','#862821','#25645b','#478c77','#bd3c63','#20514b','#f38f05','#cc4317','#f9d302','#224038','#d64506','#07aa78','#e5e2c1','#f4c60e','#46b79c','#82b18b','#b5042b','#d00b1f'],
+  ['#423977','#1788f0','#1780f0','#3e7788','#3f6c81','#1859d9','#17a2fd','#136ce2','#42487c','#426084','#196dde','#971369','#1a3cd1','#5135c0','#33a18f','#648340','#0d775d','#033363','#fbb752'],
+  ['#524644','#d5d5d5','#c23e36','#c3a9a5','#13629f','#d5ad01','#455051','#6e527c'],
+  ['#9c523b','#cdac70','#e1d7b3','#c9c9d3','#d6d3ce','#896d57','#e0b76f','#747e6f','#956f41','#ad540c','#395251','#494c39','#eebf6d','#6e7b6d','#caba91'],
+  ['#dac99e','#6f7f83','#789387','#9ca8aa','#dad5b6','#617a69','#517362','#a0bab7','#438289','#eee9cc','#cfe1d3','#92baaf','#efe6c7','#526853','#cdc4b5'],
+];
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  if (h.length === 3) {
+    return [
+      parseInt(h[0] + h[0], 16),
+      parseInt(h[1] + h[1], 16),
+      parseInt(h[2] + h[2], 16),
+    ];
+  }
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
+
+// Fisher-Yates in-place shuffle using provided rng (deterministic per seed).
+function shufInPlace(arr, rng) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// Pick & prepare BOB-style palette: random 2-of-20 pigments + shuf each +
+// startIndex rotation (verbatim of sketch.js lines 120-123 + 207). Returns
+// { pal, pal2, pickA, pickB } — index pairs help debug determinism.
+function pickBobPalettes(rng) {
+  const idxA = Math.floor(rng() * BOB_PIGMENTS.length);
+  const idxB = Math.floor(rng() * BOB_PIGMENTS.length);
+  const palA = BOB_PIGMENTS[idxA].map(hexToRgb);
+  const palB = BOB_PIGMENTS[idxB].map(hexToRgb);
+  shufInPlace(palA, rng);
+  shufInPlace(palB, rng);
+  // startIndex: BOB uses `(startIndex + colorOffset + 1) % pal.length`. We
+  // bake it into the palette by ROTATING the array — keeps existing
+  // colorBase formula unchanged (no startIndex parameter needed downstream).
+  const startA = Math.floor(rng() * palA.length);
+  const startB = Math.floor(rng() * palB.length);
+  return {
+    pal:  palA.slice(startA).concat(palA.slice(0, startA)),
+    pal2: palB.slice(startB).concat(palB.slice(0, startB)),
+    pickA: idxA, pickB: idxB,
+    startA, startB,
+  };
+}
+
 // ---- HSL helpers (for color spread) ----------------------------------------
 
 function rgbToHsl(r, g, b) {
@@ -201,13 +284,21 @@ function drawBrush(ctx, cx, cy, r, n, rng, gaussian) {
  * @param {boolean} [options.stippleBackground=true] - 背景也参与点彩（BOB
  *   原版行为：每个 cell 都画笔触，未命中 SDF 时用 bg 颜色采样。关掉
  *   就是 "subject 上点彩 + 背景平涂"的混合模式。
+ * @param {boolean} [options.bobPaletteMode=true] - **DEFAULT ON** — pick 2-of-20
+ *   BOB hand-curated pigments (hash-seeded via `seed`), Fisher-Yates shuffle
+ *   each, random startIndex rotation. Yields the vivid BOB signature color
+ *   vibration. Sets colorPalette + colorPalette2 internally.
+ * @param {boolean} [options.useLlmColor=false] - Opt-in: bypass BOB pigments
+ *   and use the per-subject LLM color + HSL spread expansion (analogous +/-
+ *   15° hue / complement / darkened). Was the previous default; muted look.
+ *   Setting this to true disables bobPaletteMode regardless of its value.
  * @param {number}  [options.colorSpread=0]  - 0=单色 mono / 1=完全 HSL 展开
  *   (BOB-like 震颤优化色)。每个 LLM 色派生 5 色 palette（+/-15° hue / 互补 /
- *   暗化），按 brushLayer 循环取。**只在 colorPalette=null 时生效**。
+ *   暗化），按 brushLayer 循环取。**只在 useLlmColor=true 时生效**。
  * @param {number}  [options.complementWeight=0.5] - 互补色独立权重（0=无 / 1=最强）
  * @param {[number,number,number][]} [options.colorPalette=null] - 显式调色板（RGB 数组）。
- *   非 null 时**完全覆盖 LLM 颜色**，按 BOB 原版 `(colorBase + layerIdx) % len` 取色。
- *   每个 SDF 层 N 自动得到 colorBase = (N+1)*3+1，背景 colorBase = 0。
+ *   非 null 时**完全覆盖**（无论 bobPaletteMode / useLlmColor 设置），
+ *   按 BOB 原版 `(colorBase + layerIdx) % len` 取色。
  * @param {[number,number,number][]} [options.colorPalette2=null] - 第二调色板。
  *   设置后 brush 奇数层用 palette2（BOB 两套交替）。null = 单 palette。
  */
@@ -232,19 +323,23 @@ export function bobStipple(ctx, layers, options = {}) {
   const gap = options.gap ?? 0.75;
   const sdfThreshold = options.sdfThreshold ?? -0.001;
   const stippleBackground = options.stippleBackground ?? true;
-  // LLM 模式专用（colorPalette=null 时启用 HSL spread）。原 painted.js 没有，
+  // LLM 模式专用（useLlmColor=true 时启用 HSL spread）。原 painted.js 没有，
   // 但 user 决策 5 保留这个 slider 给 LLM 模式用，palette 模式完全 bypass
   const colorSpread = options.colorSpread ?? 0;
   const complementWeight = options.complementWeight ?? 0.5;
-  const colorPalette = options.colorPalette ?? null;
-  const colorPalette2 = options.colorPalette2 ?? null;
+  // Mode selection (2026-06-03):
+  //   bobPaletteMode (default ON): use BOB's 20-pigment system. Yields vivid
+  //     red+blue+green+yellow vibration — THE BOB visual signature.
+  //   useLlmColor (default OFF, opt-in): use per-subject LLM color + HSL
+  //     spread. Muted look but lets caller drive subject colors.
+  //   If explicit colorPalette is passed, it ALWAYS wins (back-compat).
+  const bobPaletteMode = options.bobPaletteMode ?? true;
+  const useLlmColor = options.useLlmColor ?? false;
+  let colorPalette = options.colorPalette ?? null;
+  let colorPalette2 = options.colorPalette2 ?? null;
   // regionOffset: BOB scenes 7/8 idiom，3D probe 命中 region → palette 索引偏移
   // 默认值跟 painted.js 一致
   const regionOffset = options.regionOffset ?? { background: 1, ground: 2, object: 3 };
-  // 预转 palette 为 fillStyle 字符串，避免循环里重复 rgbStr
-  const paletteStr  = colorPalette  ? colorPalette.map(rgbStr)  : null;
-  const palette2Str = colorPalette2 ? colorPalette2.map(rgbStr) : null;
-  const paletteMode = !!paletteStr;
 
   const bgFn = makeBgFn(options.background ?? [255, 255, 255], view);
 
@@ -277,6 +372,21 @@ export function bobStipple(ctx, layers, options = {}) {
   const noise = (x, y) => (perlin(x, y) + 1) / 2;
   const rng = makeRng(seed);
   const gaussian = makeGaussian(rng);
+
+  // ---- BOB pigment auto-pick (verbatim of sketch.js lines 120-123 + 207) ----
+  // If bobPaletteMode is on AND user didn't pass explicit colorPalette AND
+  // didn't request LLM color mode, synthesize colorPalette + colorPalette2
+  // from BOB's 20 hand-curated pigments. Uses the same `rng` (seed-driven)
+  // so identical `seed` → identical palette pair (deterministic per token).
+  if (bobPaletteMode && !useLlmColor && !colorPalette) {
+    const picked = pickBobPalettes(rng);
+    colorPalette = picked.pal;
+    colorPalette2 = picked.pal2;
+  }
+  // 预转 palette 为 fillStyle 字符串，避免循环里重复 rgbStr
+  const paletteStr  = colorPalette  ? colorPalette.map(rgbStr)  : null;
+  const palette2Str = colorPalette2 ? colorPalette2.map(rgbStr) : null;
+  const paletteMode = !!paletteStr;
 
   // ---- 1. background ----
   // background === null → 跳过填底，stipple 直接叠在已有 canvas 像素上（pattern 等已画好）
@@ -355,6 +465,10 @@ export function bobStipple(ctx, layers, options = {}) {
 
       // Top-most hit wins（layers 从底到顶，反向遍历）
       // 2D layer: sdf([wx,wy]) < threshold；3D layer: probe(wx,wy) 4-value contract
+      // Probe is ORTHOGRAPHIC (focal=0 default in createCamera) — rayFor's
+      // ortho path uses (x, y) as WORLD offsets for parallel ray origins,
+      // so passing wx/wy = ±view is correct (NOT screen [-1, +1] — that
+      // would clamp all rays to ±1 world unit around camera).
       let hitColor = null;
       let hitLayerIdx = -1;
       let hitIntensity = 1;     // SDF3 才用；SDF2 默认 1（不调密度）

@@ -8,4 +8,10 @@ export {
   hatch,
   gradientPerpField,
   projectedTangentField,
+  // SOURCERY idioms 4 + 5
+  analyzeCoverage,
+  bucketCount,
+  bucketFeatures,
+  isBalancedComposition,
+  rejectionSample,
 } from './streamline.js';

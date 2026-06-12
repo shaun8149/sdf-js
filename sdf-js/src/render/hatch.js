@@ -30,15 +30,17 @@ import { smoothStart3 } from '../math/easing.js';
 //                    where g = mix(intensity, mistShade, smoothstep(mistStart, maxDist, hit_t))
 //     - 亮区 g 大 → 1-g^0.4 小 → 除完大 dsep → 笔触稀
 //     - 暗区 g 小 → 1-g^0.4 大 → 除完小 dsep → 笔触密
-//     - mist：远处 g→mistShade，渐淡到背景
+//     - mist：远处 g→mistShade。SOURCERY/Pasma 原版均用 mistShade=1.0（远处淡到
+//       纯白 = 最稀 = 大气透视）。早期我用过 0.85 折中灰但视觉上"远处发灰"不自然。
 const DEFAULTS_3D = {
   dsepDark:     0.003,  // 暗处线最密
   dsepLight:    0.020,  // 亮处线最稀 (= 默认 layer.dsep)
   intensityMin: 0.40,   // intensity remap 下界（< 这值 → ir=0 → 最密）
   intensityMax: 1.00,   // remap 上界
-  // Pasma-style (C + D)
+  // Pasma-style (C + D) + SOURCERY idiom 3
   mistStart:    0.65,   // smoothstep 起点（probe.t / probe.maxDist 比例）
-  mistShade:    0.85,   // 远处 g 收敛到这个值（0=纯黑, 1=纯白）
+  mistShade:    1.00,   // 远处 g 收敛值。1.0 = 淡到纯白/最稀 (Pasma/SOURCERY 默认)；
+                        // 0.85 = 中灰 (我之前的 default)；0 = 远处变最密变黑
   pasmaGamma:   0.4,    // g^pasmaGamma 的指数（Pasma 用 0.4）
 };
 const clamp01 = v => Math.max(0, Math.min(1, v));
@@ -97,11 +99,14 @@ export function computeHatchLayers(layers, opts = {}) {
         camera, maxDist: probeMaxDist, maxSteps: probeMaxSteps,
       });
       // Pasma's `cross(n, fw)` mode is default — gives the canonical
-      // rayhatching "wrapping" look. Caller can switch to legacy by
-      // passing `layer.tangentMode: 'horizontal-ref'`.
+      // rayhatching "wrapping" look. Caller can switch via:
+      //   layer.tangentMode: 'horizontal-ref'  (legacy world-X projected)
+      //   layer.tangentMode: 'cross-tilted'    (SOURCERY: hv = up+6·fwd+2·right)
+      //                       + layer.referenceTilt: {up, fwd, right}  overrides
       fieldForPack = projectedTangentField(probe, {
         camera,
         mode: layer.tangentMode || 'cross-nfw',
+        referenceTilt: layer.referenceTilt,
       });
 
       // SDF3 默认走 intensity-modulated dsep + region mask (BOB scenes 7/8 signature)
@@ -172,6 +177,11 @@ export function computeHatchLayers(layers, opts = {}) {
           // adaptive radius is what makes brightness-driven spacing work
           // without a worst-case cellSize blow-up.
           spatialIndex: layer.spatialIndex || (pasmaStyle ? 'quadtree' : 'grid'),
+          // (SOURCERY 1) Skip-tolerance: let streamline cross 1-2 invalid
+          // samples without breaking → longer, more continuous lines that
+          // bridge QT collision zones. Default 2 in pasmaStyle (matches
+          // SOURCERY's `sh < 2`).
+          skipTolerance: layer.skipTolerance ?? (pasmaStyle ? 2 : 0),
         };
       } else {
         // intensityDsep=false 退化为简单 hit-test + uniform dsep

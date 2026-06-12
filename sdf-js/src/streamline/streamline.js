@@ -35,6 +35,13 @@ export function traceThrough(field, seed, opts = {}) {
     stopOnReversal = false,
     stopOnDivergence = false,
     divergenceThreshold = -0.7,  // dot(f0, fc) > -0.7 = within ~135° of start
+    // SOURCERY idiom 1: skip-tolerance. Allow up to N consecutive invalid
+    // (extraValid=false, e.g., QT collision zone or transient mask gap)
+    // samples before terminating. Points are still appended to centerline
+    // during the skip — only the streamline TERMINATION is deferred. This
+    // produces longer / smoother streamlines that bridge over thin "no
+    // draw" regions instead of fragmenting into shorter segments.
+    skipTolerance = 0,   // 0 = old behavior (Universal Rayhatcher)
   } = opts;
 
   const inBounds = (x, y) => {
@@ -53,9 +60,16 @@ export function traceThrough(field, seed, opts = {}) {
   {
     let [x, y] = seed;
     let fpx = f0[0], fpy = f0[1];  // previous direction
+    let skipCount = 0;             // (SOURCERY 1) consecutive invalid samples
     for (let i = 0; i < maxSteps; i++) {
-      if (!inBounds(x, y) || !valid(x, y)) break;
+      if (!inBounds(x, y)) break;
       fwd.push([x, y]);
+      if (valid(x, y)) {
+        skipCount = 0;
+      } else {
+        skipCount++;
+        if (skipCount > skipTolerance) break;
+      }
       const a = field(x, y);
       const fcx = Math.cos(a), fcy = Math.sin(a);
       // (B.1) Reversal: previous vs current direction flipped → stop
@@ -77,9 +91,16 @@ export function traceThrough(field, seed, opts = {}) {
     x -= f0[0] * stepSize;
     y -= f0[1] * stepSize;
     let fpx = -f0[0], fpy = -f0[1];   // backward direction at seed
+    let skipCount = 0;
     for (let i = 0; i < maxSteps; i++) {
-      if (!inBounds(x, y) || !valid(x, y)) break;
+      if (!inBounds(x, y)) break;
       back.push([x, y]);
+      if (valid(x, y)) {
+        skipCount = 0;
+      } else {
+        skipCount++;
+        if (skipCount > skipTolerance) break;
+      }
       const a = field(x, y);
       // current step direction = -field (we're going backward)
       const fcx = -Math.cos(a), fcy = -Math.sin(a);
@@ -286,6 +307,10 @@ export function densePack(field, opts = {}) {
     // 'quadtree' (adaptive, no max-radius assumption — needed when dsep
     // varies a lot per query point, e.g., Pasma's brightness-driven spacing)
     spatialIndex = 'grid',
+    // SOURCERY idiom 1: tolerate brief excursions through invalid (QT
+    // collision / extraValid=false) regions so streamlines stay continuous.
+    // Default 0 = old strict break-on-first-invalid.
+    skipTolerance = 0,
   } = opts;
 
   // dsep 可以是数字或函数。函数模式下 grid cell 用 dsepMax 当上界
@@ -352,6 +377,7 @@ export function densePack(field, opts = {}) {
       stopOnReversal,
       stopOnDivergence,
       divergenceThreshold,
+      skipTolerance,
     });
 
     if (sl.centerline.length < minLength) continue;
@@ -464,16 +490,25 @@ export function gradientPerpField(sdf, eps = 0.001) {
  *
  * @param {(x:number,y:number)=>{hit:?number[], normal:?number[]}} probe
  * @param {object} [opts]
- * @param {'cross-nfw'|'horizontal-ref'} [opts.mode='cross-nfw']
+ * @param {'cross-nfw'|'cross-tilted'|'horizontal-ref'} [opts.mode='cross-nfw']
+ *        - 'cross-nfw'     : T = N × fwd            (Pasma Universal Rayhatcher)
+ *        - 'cross-tilted'  : T = N × hv             (SOURCERY idiom 2 — tilted reference)
+ *                            where hv = normalize(up·tiltUp + fwd·tiltFwd + right·tiltRight)
+ *        - 'horizontal-ref': T = R - (R·N)·N        (project ref onto tangent plane)
  * @param {[number,number,number]} [opts.ref=[1,0,0]]   - 仅 horizontal-ref 模式用
+ * @param {{up:number, fwd:number, right:number}} [opts.referenceTilt]
+ *        - 仅 cross-tilted 模式用。混合权重定义 hv。SOURCERY 用 {up:1, fwd:6, right:2}
+ *        默认 = SOURCERY 原值。视觉效果：笔触沿 hv 在切平面上的投影方向 = 倾斜的纬度圈
+ *        （而非水平等距线）；适合给同一形状换一种"螺旋包裹"的视觉签名。
  * @param {{cam:number[], fwd:number[], right:number[], up:number[], focal:number}} [opts.camera]
  *        - 相机 5-tuple。默认 = 正面平视 cam=[0,0,-3.5]
  * @returns {(x,y)=>number}  field function (angle)
  */
 export function projectedTangentField(probe, opts = {}) {
   const {
-    mode   = 'cross-nfw',
-    ref    = [1, 0, 0],
+    mode          = 'cross-nfw',
+    ref           = [1, 0, 0],
+    referenceTilt = { up: 1, fwd: 6, right: 2 },   // SOURCERY values
     camera = {
       cam:   [0, 0, -3.5],
       fwd:   [0, 0,  1],
@@ -482,6 +517,21 @@ export function projectedTangentField(probe, opts = {}) {
       focal: 2,
     },
   } = opts;
+
+  // Pre-compute the tilted hatching reference vector `hv` once per field
+  // (cross-tilted mode only). hv = normalize(up·tiltUp + fwd·tiltFwd + right·tiltRight)
+  let hv = null;
+  if (mode === 'cross-tilted') {
+    const fw = camera.fwd, up = camera.up, rt = camera.right;
+    const tu = referenceTilt.up    ?? 1;
+    const tf = referenceTilt.fwd   ?? 6;
+    const tr = referenceTilt.right ?? 2;
+    const hx = up[0] * tu + fw[0] * tf + rt[0] * tr;
+    const hy = up[1] * tu + fw[1] * tf + rt[1] * tr;
+    const hz = up[2] * tu + fw[2] * tf + rt[2] * tr;
+    const hl = Math.hypot(hx, hy, hz) || 1;
+    hv = [hx / hl, hy / hl, hz / hl];
+  }
 
   return (x, y) => {
     const data = probe(x, y);
@@ -501,6 +551,15 @@ export function projectedTangentField(probe, opts = {}) {
         N[1] * fw[2] - N[2] * fw[1],
         N[2] * fw[0] - N[0] * fw[2],
         N[0] * fw[1] - N[1] * fw[0],
+      ];
+    } else if (mode === 'cross-tilted' && hv) {
+      // SOURCERY's `hd = X(n, hv)` where hv = normalize(up + 6*fwd + 2*right).
+      // Result: lines wrap surface at an angle instead of horizontal — visually
+      // like a screw thread vs latitude rings.
+      T = [
+        N[1] * hv[2] - N[2] * hv[1],
+        N[2] * hv[0] - N[0] * hv[2],
+        N[0] * hv[1] - N[1] * hv[0],
       ];
     } else {
       // horizontal-ref: project a fixed world-frame reference onto tangent plane
@@ -529,4 +588,180 @@ export function projectedTangentField(probe, opts = {}) {
     if (Math.abs(dx) < 1e-9 && Math.abs(dy) < 1e-9) return 0;
     return Math.atan2(dy, dx);
   };
+}
+
+// ----------------------------------------------------------------------------
+// SOURCERY idioms 4 + 5: Coverage analysis utility
+// ----------------------------------------------------------------------------
+// Random-sample a probe across screen coords to estimate scene composition.
+// Returns counters useful for two unrelated decisions:
+//   • idiom 4 (rejection sampler): is this scene worth rendering, or should
+//     the caller reroll the hash? SOURCERY's gate: dense ∈ [3%, 30%], sky
+//     ∈ [5%, 45%], fg ≤ 20%. If outside, regenerate.
+//   • idiom 5 (fxhash features): bucket the region counts as collector-
+//     filterable attributes (`cliff`, `ground`, `thing`, `sky`). The caller
+//     decides the y-thresholds for region tagging (default = SOURCERY).
+//
+// The probe is expected to follow the 5-value contract:
+//   { intensity, region, hit, normal, t, maxDist }
+// (`t` and `maxDist` come from src/sdf/probe.js since 2026-05-27.)
+//
+// Usage (rejection loop):
+//   while (attempts++ < N) {
+//     buildScene(seed);
+//     const probe = makeProbe(...);
+//     const stats = analyzeCoverage(probe);
+//     if (stats.dense > 3 && stats.dense < 30 &&
+//         stats.sky > 5 && stats.sky < 45 && stats.fg < 20) break;
+//     seed = newSeed();
+//   }
+//
+// Usage (features):
+//   const stats = analyzeCoverage(probe, { regionByY: hit => ... });
+//   const features = bucketFeatures(stats.regions);
+//
+// Convention: y is `hit[1]` in world space. Region indices [0, 3]:
+//   0 = sky (no hit)
+//   1 = "thing" (high y)
+//   2 = "ground" (mid y)
+//   3 = "cliff" (low y)
+//
+// @param {(x, y) => {intensity, region, hit, normal, t, maxDist}} probe
+// @param {object} [opts]
+// @param {number} [opts.samples=1023]    - SOURCERY's K (= 2^10 - 1)
+// @param {()=>number} [opts.rng=Math.random]
+// @param {number} [opts.aspect=16/9]     - screen aspect; sx ∈ [-aspect/2, +aspect/2], sy ∈ [-0.5, +0.5]
+// @param {number} [opts.denseDsep=0.01]  - probe.c < this counts as "dense"
+//                                          (only used if probe returns c — see notes)
+// @param {(hit:[number,number,number])=>number} [opts.regionByY]
+//                                          hit → region index 1..3. Default = SOURCERY.
+// @returns {{
+//   samples: number,
+//   sky: number, dense: number, fg: number,    // raw counts
+//   skyPct: number, densePct: number, fgPct: number,
+//   regions: number[4],                         // [sky, thing, ground, cliff]
+// }}
+export function analyzeCoverage(probe, opts = {}) {
+  const {
+    samples = 1023,
+    rng = Math.random,
+    aspect = 16 / 9,
+    fgT = null,                  // probe.t < fgT → "foreground". null → maxDist*0.067 (SOURCERY 5/75)
+    skyT = null,                 // probe.t > skyT → "sky/miss". null → maxDist*0.987 (SOURCERY 74/75)
+    regionByY = (hit) => hit[1] > 0.8 ? 1 : hit[1] < -0.3 ? 3 : 2,
+  } = opts;
+  const half = aspect / 2;
+  let sky = 0, dense = 0, fg = 0;
+  const regions = [0, 0, 0, 0];   // index = region id
+  for (let i = 0; i < samples; i++) {
+    const sx = rng() * aspect - half;
+    const sy = rng() - 0.5;
+    const r = probe(sx, sy);
+    if (!r || !r.hit) {
+      sky++;
+      regions[0]++;
+      continue;
+    }
+    // SOURCERY uses absolute distances (max 75 world units). If caller
+    // didn't override, derive from probe's maxDist.
+    const md = r.maxDist || 1;
+    const _fgT  = fgT  ?? md * (5 / 75);
+    const _skyT = skyT ?? md * (74 / 75);
+    if (r.t > _skyT) {
+      sky++;
+      regions[0]++;
+      continue;
+    }
+    if (r.t < _fgT) fg++;
+    if (r.intensity < 0.1) dense++;   // dark = densely hatched
+    const region = regionByY(r.hit) || 2;
+    regions[Math.max(0, Math.min(3, region))]++;
+  }
+  return {
+    samples,
+    sky, dense, fg,
+    skyPct: 100 * sky / samples,
+    densePct: 100 * dense / samples,
+    fgPct: 100 * fg / samples,
+    regions,
+  };
+}
+
+// SOURCERY's `z(p)`: bucketize a count to multiples of p for fxhash-style
+// collector filtering. count → percent-ish (count/10) → snap to nearest p.
+//   bucketCount(count=23, p=4) = round(23/10/4) * 4 = round(0.575) * 4 = 4
+export function bucketCount(count, p) {
+  return Math.round(count / 10 / p) * p;
+}
+
+// Convert analyzeCoverage's `regions` array into SOURCERY-style features.
+// Caller can override the buckets if they want different granularity.
+export function bucketFeatures(regions, buckets = { cliff: 1, ground: 2, thing: 4, sky: 4 }) {
+  return {
+    cliff:  bucketCount(regions[3], buckets.cliff),
+    ground: bucketCount(regions[2], buckets.ground),
+    thing:  bucketCount(regions[1], buckets.thing),
+    sky:    bucketCount(regions[0], buckets.sky),
+  };
+}
+
+// Default SOURCERY gate for rejection sampler. Returns true if composition
+// is "balanced" (= caller should render this scene). Returns false → reroll.
+//   dense ∈ [3%, 30%]   not too uniform, not too dark
+//   sky   ∈ [5%, 45%]   some sky, but not all sky
+//   fg    ≤ 20%         foreground doesn't dominate
+export function isBalancedComposition(stats, gate = {}) {
+  const {
+    minDense = 3,  maxDense = 30,
+    minSky   = 5,  maxSky   = 45,
+    maxFg    = 20,
+  } = gate;
+  return stats.densePct >= minDense && stats.densePct <= maxDense
+      && stats.skyPct   >= minSky   && stats.skyPct   <= maxSky
+      && stats.fgPct    <= maxFg;
+}
+
+// SOURCERY idiom 4: rejection-sampler loop. Caller supplies a `buildProbe(seed)`
+// factory; we try up to `maxAttempts` seeds and return the first one that
+// passes `isBalancedComposition` (or the last attempt's seed if none pass).
+//
+// Returns { seed, probe, stats, attempts, accepted }. `accepted=false` means
+// no seed in maxAttempts gave a balanced composition; caller may still want
+// to render the best attempt.
+//
+// @param {(seed:number) => Function} buildProbe   - seed → probe(x, y)
+// @param {(_:void) => number} seedGen             - returns a fresh seed each call
+// @param {object} [opts]
+// @param {number} [opts.maxAttempts=5]
+// @param {object} [opts.gate]                    - threshold overrides for
+//   isBalancedComposition
+// @param {object} [opts.coverage]                - overrides for analyzeCoverage
+export function rejectionSample(buildProbe, seedGen, opts = {}) {
+  const { maxAttempts = 5, gate, coverage } = opts;
+  let bestSeed = null, bestProbe = null, bestStats = null;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const seed = seedGen();
+    const probe = buildProbe(seed);
+    const stats = analyzeCoverage(probe, coverage);
+    if (isBalancedComposition(stats, gate)) {
+      return { seed, probe, stats, attempts: attempt + 1, accepted: true };
+    }
+    // Track best-so-far by closeness to gate (cheap heuristic: smallest
+    // sum of "out-of-band" distances)
+    if (!bestStats || _gateDistance(stats, gate) < _gateDistance(bestStats, gate)) {
+      bestSeed = seed; bestProbe = probe; bestStats = stats;
+    }
+  }
+  return {
+    seed: bestSeed, probe: bestProbe, stats: bestStats,
+    attempts: maxAttempts, accepted: false,
+  };
+}
+
+function _gateDistance(s, gate = {}) {
+  const { minDense = 3, maxDense = 30, minSky = 5, maxSky = 45, maxFg = 20 } = gate;
+  const oob = (v, lo, hi) => v < lo ? lo - v : v > hi ? v - hi : 0;
+  return oob(s.densePct, minDense, maxDense)
+       + oob(s.skyPct,   minSky,   maxSky)
+       + oob(s.fgPct,    0,        maxFg);
 }

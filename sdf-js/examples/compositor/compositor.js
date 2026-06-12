@@ -1148,11 +1148,18 @@ function reRenderStored() {
       const focal = cs?.focal || 1.5;
       const view = cs ? Math.max(1, (cs.distance / focal) * 1.05) : 1.0;
       const synthLayers = buildLiftSceneLayers(gpuScene, cameraOpts);
+      // Hash → numeric seed for CPU renderers (bobStipple picks 2-of-20
+      // pigments from this). Same hash → same palette pair (deterministic).
+      // 🎲 New Style button rolls a new tokenHash, so palette rerolls too.
+      const hashSeed = URL_TOKEN_HASH
+        ? Array.from(URL_TOKEN_HASH).reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0)
+        : 42;
       const opts = {
         ...(state.lastRenderOpts || {}),
         ...(cameraOpts || {}),
         view,
         background: [240, 235, 225],
+        seed: hashSeed,
       };
       doRender(ctx, synthLayers, opts);
       return;
