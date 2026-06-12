@@ -1,5 +1,10 @@
-# M7 — Transition Rules Runtime (v2)
+# M7 — Transition Rules Runtime (v2.1)
 
+> v2.1 changes: rules now declare `phase` + `reads`/`writes` (ECS-style scheduling
+> discipline, conflict lint at load time); step() folds over phases; §10 adds a
+> **pending-approval proposal** for SceneData sub-scene instancing (M0 territory —
+> not part of M7, do not implement without sign-off).
+>
 > Goal: turn Atlas from a world-spec language into a rung-2 world simulator.
 > First target: **Scene A — a 3D flow-field particle world** (A1 fields, A2 flocking),
 > chosen because emergence is the demo and `field/` + `streamline/` already exist.
@@ -58,25 +63,60 @@ at the step boundary, not per-assignment).
 ```js
 Rule = {
   id:      string,
+  phase:   "input" | "forces" | "integrate" | "constrain" | "sync",
+  reads:   string[],         // declared data dependencies, e.g. ["params.rocket.fuel", "particles.pos", "fields"]
+  writes:  string[],         // declared outputs, e.g. ["particles.vel"]  — wildcard tails allowed: "params.rocket.*"
   enabled: boolean,                                  // toggleable live from UI
   applies: (world) => boolean,                       // cheap guard, pure
   apply:   (world, actions, dt) => Effect            // PURE. No I/O, no Date, no bare Math.random
 }
 
 Effect = { patches?: Patch[], particles?: ParticleBlock }
-Patch  = { path: string, value: any }                // last-write-wins within a tick, rule order = array order
+Patch  = { path: string, value: any }
 ```
 
-The runtime's `step()` is fold-over-rules:
+**Why declarations (ECS lesson).** With a flat rule array, two LLM-emitted rules that
+silently write the same path resolve by last-write-wins — invisible until it bites.
+Declared read/write sets let the runtime do three things at **load time**, before a
+single tick runs:
+
+1. **Conflict lint**: two enabled rules in the same phase writing overlapping paths →
+   load rejected with a named conflict (not a runtime surprise).
+2. **Declaration check**: a rule whose `apply` emits a patch outside its declared
+   `writes` is rejected. For LLM-emitted rules this is free self-audit — the model
+   must state its intent, and the runtime holds it to it.
+3. **Dataflow visualization**: the Laws panel can render reads→writes as a graph,
+   which is the audit story made visible.
+
+### 1.4 Phases & scheduling
+
+Rules execute in fixed phase order; array order only breaks ties **within** a phase:
+
+| phase | what belongs here | Scene A examples | Scene B examples |
+| --- | --- | --- | --- |
+| `input`     | drain actions into state | stir, drop-obstacle, set-mode-weights | cut-engine, add-payload |
+| `forces`    | accumulate accelerations / steering | field blend, flock-separation/alignment/cohesion, flock-avoid | thrust, gravity |
+| `integrate` | advance positions from velocities | integrate, respawn | integrate, fuel-burn |
+| `constrain` | clamp / resolve violations | bounds | ground-collision |
+| `sync`      | write through to scene/render state | scene.subjects updates | exhaust scale, crash pose |
+
+LLM-emitted rules carry their phase; a rule in the wrong phase (e.g. a force rule
+patching positions) fails the declaration check. This is the loop contract made
+explicit — the part game engines got right.
+
+The runtime's `step()` folds over phases, then rules:
 
 ```js
+const PHASES = ["input", "forces", "integrate", "constrain", "sync"];
+
 function step(world, actions) {
   let particles = world.particles;
   const patches = [];
-  for (const rule of world.rules) {
-    if (rule.enabled && rule.applies(world)) {
+  for (const phase of PHASES) {
+    for (const rule of world.rules) {
+      if (rule.phase !== phase || !rule.enabled || !rule.applies(world)) continue;
       const fx = rule.apply({ ...world, particles }, actions, world.clock.dt);
-      if (fx.patches)   patches.push(...fx.patches);
+      if (fx.patches)   patches.push(...assertDeclared(rule, fx.patches));
       if (fx.particles) particles = fx.particles;
     }
   }
@@ -90,9 +130,10 @@ function step(world, actions) {
 
 Design rationale: **pure functions** make replay/fork/savegame structurally free;
 **many small rules** make every law of the world separately auditable and separately
-toggleable — which is the demo.
+toggleable — which is the demo; **declared dataflow + phases** keep that auditability
+intact as the rule count grows past what eyeballs can order.
 
-### 1.4 Actions
+### 1.5 Actions
 
 ```js
 Action = { tick: number, type: string, subjectId?: string, payload?: any }
@@ -127,6 +168,10 @@ LLM-emitted rule modules are untrusted code.
   from `src/math/`, `sampleField`, `sdfQuery` (see A1). No `fetch`, no DOM, no `eval`.
 - Static lint on emitted source: reject `Date`, `Math.random`, `fetch`, `import`,
   unbounded `while`.
+- **Declaration enforcement (load + runtime):** emitted patches outside the rule's
+  declared `writes` → rule rejected; same-phase write overlap between enabled rules →
+  load rejected with a named conflict (§1.3). Declarations are part of the LLM's
+  emitted module and are checked against behavior, not trusted.
 - Per-tick budget: over N ms → tick dropped, rule flagged in the Laws panel
   (a visibly "broken law", not a frozen page).
 
@@ -302,9 +347,44 @@ A2 ship → Scene B.
 
 ## 9. Out of scope, recorded so they don't creep in
 
-- SDF-vs-SDF collision response (avoidance ≠ contact resolution).
+- SDF-vs-SDF collision response (avoidance ≠ contact resolution). Scope discipline:
+  Atlas's simulator layer covers **law-writable dynamics** (fields, flocking, orbits,
+  resources, rule systems) — solver-grade contact physics is a different problem and
+  we do not claim it.
 - Variable dt / substeps. Multiplayer. Rule hot-reload across workers. GPU-compute
   particle simulation (worker + typed arrays first; move to GPGPU only if 2k boids
   @ 60fps fails on CPU).
+- **Change detection** (Bevy-style "run only when declared `reads` changed") — the
+  `reads` declarations from §1.3 make this a cheap future optimization; do not build
+  it this slice.
 - 4D: the slice explorer reuses this runtime later (a `w`-translate rule + scroll
   action; curl noise generalizes to 4D potential). Do not special-case anything now.
+
+---
+
+## 10. PROPOSAL (pending approval — touches locked M0, not part of M7)
+
+### SceneData sub-scene instancing
+
+**Status: proposal only. SceneData v1 is locked (2026-05-17). Do NOT implement
+without explicit sign-off; recorded here so the idea survives.**
+
+Godot's `.tscn` lesson: a scene should be embeddable in another scene as an instance,
+with local overrides, while staying a human-readable text document. Proposed addition
+to a future SceneData v2:
+
+```js
+subject = { id, ref: "scene:cathedral@v3", overrides: { translate: [...], scale: ... } }
+```
+
+- Compile step resolves refs into the SDF tree (cycle detection required).
+- Editing the referenced scene updates all instances; overrides stay local.
+- What it buys: build-once-reuse-everywhere composition, generator templates that
+  assemble worlds from a scene library, and scenes as tradable units with stable
+  identity — the document stays a document.
+- Cost: ref resolution semantics, versioning (`@v3`), and serialize/diff rules all
+  need spec work. That is M0-spec-amendment work, on its own timeline, after M7 ships.
+
+Counter-lesson recorded alongside (Unity): keep every serialized artifact hand-readable
+and hand-editable JSON. No binary encodings in TickLog lean mode — 15 KB vs 50 KB does
+not matter; readability is the non-renewable asset.

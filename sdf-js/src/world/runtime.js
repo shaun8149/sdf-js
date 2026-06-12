@@ -1,40 +1,53 @@
 // =============================================================================
-// world/runtime.js — step() + accumulator loop (M7 §1.3)
+// world/runtime.js — step() + accumulator loop (M7 §1.4 — v2.1)
 //
-// step(world, actions) is the fold-over-rules. Each enabled rule's apply()
-// returns an Effect ({ patches, particles }); patches accumulate, particles
-// thread through. After the fold:
+// step(world, actions) is the fold-over-phases-then-rules. In v2.1 phases are
+// fixed: input → forces → integrate → constrain → sync. Within a phase, rules
+// execute in array order; cross-phase, the order is always the phase order.
+// This is the loop contract made explicit — the part game engines (Bevy, Unity,
+// Unreal) got right.
+//
+// Each rule's apply() returns an Effect ({ patches, particles }):
+//   - patches accumulate; assertDeclared enforces that emitted paths are
+//     within the rule's declared writes set
+//   - particles thread through in-tick (rules in later phases see the previous
+//     rules' particle output)
+//
+// After the fold:
 //   - applyPatches commits patches structurally onto the world
-//   - clock advances by exactly dt (which is fixed at 1/60 throughout — never
-//     read from the wall clock inside a rule)
+//   - clock advances by exactly dt (fixed 1/60, never read from wall clock)
 //   - the tick is appended to world.log
-//
-// The runtime is pure: same (world, actions) → same next world. That is what
-// makes the determinism CI (§2.4) possible.
 // =============================================================================
 
 import { applyPatches } from './patch.js';
 import { appendTick } from './log.js';
+import { PHASES, assertDeclared } from './rules.js';
 
 export function step(world, actions = []) {
   let particles = world.particles;
   const patches = [];
 
   const rules = world.rules || [];
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-    if (!rule || rule.enabled === false) continue;
-    if (rule.applies && !rule.applies(world)) continue;
 
-    // Rules see particles threaded through prior rules in the same tick.
-    const view = particles === world.particles ? world : { ...world, particles };
-    const fx = rule.apply(view, actions, world.clock.dt);
+  for (let p = 0; p < PHASES.length; p++) {
+    const phase = PHASES[p];
+    for (let i = 0; i < rules.length; i++) {
+      const rule = rules[i];
+      if (!rule || rule.enabled === false) continue;
+      if (rule.phase !== phase) continue;
+      if (rule.applies && !rule.applies(world)) continue;
 
-    if (!fx) continue;
-    if (fx.patches && fx.patches.length) {
-      for (let k = 0; k < fx.patches.length; k++) patches.push(fx.patches[k]);
+      // Rules see particles threaded through prior rules in the same tick.
+      const view = particles === world.particles ? world : { ...world, particles };
+      const fx = rule.apply(view, actions, world.clock.dt);
+
+      if (!fx) continue;
+      if (fx.patches && fx.patches.length) {
+        const checked = assertDeclared(rule, fx.patches);
+        for (let k = 0; k < checked.length; k++) patches.push(checked[k]);
+      }
+      if (fx.particles) particles = fx.particles;
     }
-    if (fx.particles) particles = fx.particles;
   }
 
   let next = applyPatches(world, patches);
