@@ -1,0 +1,22 @@
+{
+  "name": "atlas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Atlas — LLM-native illustration platform. Built on sdf-js. Root package: tooling + CI orchestration.",
+  "scripts": {
+    "test": "node scripts/run-tests.mjs",
+    "test:smoke": "node scripts/run-tests.mjs smoke",
+    "test:sanity": "node scripts/run-tests.mjs sanity",
+    "test:world": "node scripts/run-tests.mjs world",
+    "test:scene": "node scripts/run-tests.mjs scene",
+    "test:generator": "node scripts/run-tests.mjs generator",
+    "test:port-shader": "node scripts/run-tests.mjs port-shader",
+    "test:regression": "echo 'Requires ANTHROPIC_API_KEY. Excluded from CI.' && node sdf-js/scripts/regression/lift-regression.mjs",
+    "serve": "cd sdf-js && python3 dev-server.py 8001"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "SEE LICENSE IN LICENSE.md"
+}

@@ -1,5 +1,7 @@
 # Atlas
 
+[![tests](https://github.com/shaun8149/sdf-js/actions/workflows/tests.yml/badge.svg)](https://github.com/shaun8149/sdf-js/actions/workflows/tests.yml)
+
 [![Coastal lighthouse 3D lift — striped lantern tower on a rocky promontory, the moon hangs in a quantized teal sky over a multi-coloured autoscope-style horizon, rendered through BOB GPU's two-pass sand-painting shader.](docs/lighthouse-v2.png)](docs/lighthouse-v2.png)
 
 *Prompt: `海边的灯塔` (5 characters). Same prompt + same 2D code, lifted twice — once with the v1 lift prompt (no semantic types taught) and once with the v2 prompt (18 named atom + component types). v1 emit: 0 atoms (the original 3D had no moon and no stars). v2 emit: **moon × 1, star × 15, plus the tower** shown here. The library expansion → prompt rewrite → atom emission is a fully quantified loop — [scripts/regression](sdf-js/scripts/regression/README.md) reproduces the result for $0.07 per demo.*
