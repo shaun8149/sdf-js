@@ -14,7 +14,7 @@
 // surreal scene-composition idiom。
 // =============================================================================
 
-import { SDF2, SDF3 } from '../sdf/core.js';
+import { SDF3 } from '../sdf/core.js'; // SDF2 used in JSDoc only
 import { raymarch3 } from '../sdf/raymarch.js';
 
 // Mulberry32 PRNG（只用来决定 Smith arc tile 朝向 A/B，不参与 size 决策）

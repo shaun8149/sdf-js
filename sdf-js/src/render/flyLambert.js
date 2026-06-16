@@ -6,7 +6,7 @@
 // 的独立 demo 页 shader-lambert-browser.js 用同样的 shader template + fly-controls。
 // =============================================================================
 
-import { compileSDF3ToGLSL, canCompileSDF3, IMIN_GLSL } from '../sdf/sdf3.compile.js';
+import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
 import {
@@ -1714,7 +1714,10 @@ export function createFly3DRenderer({
     return sh;
   }
 
-  function uploadSDF(sdf) {
+  // uploadSDF was the original GLSL upload entry; it's referenced in nearby
+  // comments as the conceptual upload step. The function body is kept for
+  // future use (re-upload on SDF tree change) but is not currently called.
+  function _uploadSDF(sdf) {
     // emitObjectIndex: true → scene() updates `minIndex` global with the closest
     // leaf's index. Fragment shader uses minIndex to pick per-subject color via
     // an IQ cosine palette — fixes the "everything is grey" look.

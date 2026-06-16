@@ -30,7 +30,7 @@ import {
   octahedron,
   pyramid,
 } from '../../../sdf/d3.js';
-import { union, dilate, unionRound, unionChamfer, unionSoft } from '../../../sdf/dn.js';
+import { dilate, unionRound, unionChamfer, unionSoft } from '../../../sdf/dn.js';
 
 // =============================================================================
 // Atom composition uses hg_sdf boolean variants where it gives a clear visual

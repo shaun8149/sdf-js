@@ -484,7 +484,7 @@ const PRIMS = {
   // primitive's SDF = (p.y - sample(u_heightmap, p.xz).x * boxSize.y) bounded
   // to box. Args: [boxSizeX, boxSizeY, boxSizeZ, waterHeight].
   // REQUIRES u_heightmap uniform + u_runeActive uniform (set by renderer).
-  'terrain-eroded-rune': ([bx, by, bz, waterHeight], p) =>
+  'terrain-eroded-rune': ([bx, by, bz, _waterHeight], p) =>
     `sdTerrainErodedRune(${p}, vec3(${flt(bx)}, ${flt(by)}, ${flt(bz)}))`,
 
   // Forest sprint: 4 atoms. See sdf3.glsl.js for full helper descriptions.

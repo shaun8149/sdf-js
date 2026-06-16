@@ -27,10 +27,11 @@ import { Random } from '../util/random.js';
 
 // ---------------------------------------------------------------------------
 // Small vec3 helpers (kept local to avoid pulling in three.js-style libs).
+// `add` / `mul` reserved for future ops; underscore-prefixed so lint passes.
 // ---------------------------------------------------------------------------
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-const mul = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
+const _add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const _mul = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const len = (a) => Math.sqrt(dot(a, a));
 const norm = (a) => {
@@ -218,7 +219,9 @@ class SketchyRectangle extends SketchyShape {
 //   tree:  3 deep colors for tree/vegetation accent
 // All HSV-derived from rng so each tokenHash → distinct palette.
 // ---------------------------------------------------------------------------
-function hsv2rgb(h, s, v) {
+function _hsv2rgb(h, s, v) {
+  // Kept for future palette generation; currently the renderer uses the
+  // pre-baked CURATED_PALETTES below.
   const i = Math.floor(h * 6);
   const f = h * 6 - i;
   const p = v * (1 - s);
@@ -851,7 +854,7 @@ function addBushSpecs(
 //   (2) Main terrain pass — 8000 scribbles using the (possibly shadowed) lMap.
 function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
   const { hMap, lMap, mapW, mapH } = maps;
-  const { terrainHt, warpSz, lightAngle, noiseScale = 0.01 } = params;
+  const { terrainHt, warpSz, lightAngle } = params;
   const lightDir = [Math.cos(lightAngle), Math.sin(lightAngle)];
   const targetSz = canvasSize;
   const scaleK = targetSz / 400; // Sarkissian's original target was 400px
@@ -885,7 +888,7 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
     x += Math.cos(swirl) * warpSz;
     y += Math.sin(swirl) * warpSz;
     y += ns * terrainHt;
-    const z = y + 10; // Sarkissian: vegetation z = y + 10 (drawn AFTER bg)
+    const _z = y + 10; // Sarkissian: vegetation z = y + 10 (drawn AFTER bg) — reserved for z-sorting
 
     // Surface normal at (i, j) — same convention as lMap (2D, dh/dx & dh/dz)
     const i1 = i >= mapW - 1 ? mapW - 2 : i + 1;
@@ -1112,7 +1115,7 @@ function getOrCreateCrayonCanvas() {
 // ---------------------------------------------------------------------------
 // createCrayonRenderer factory.
 // ---------------------------------------------------------------------------
-export function createCrayonRenderer({ canvas, getControls, onFps }) {
+export function createCrayonRenderer({ canvas: _canvas, getControls, onFps }) {
   // We ignore the passed-in canvas (it's c-gpu, which is WebGL) — create our own.
   const crayonCanvas = getOrCreateCrayonCanvas();
   const ctx = crayonCanvas.getContext('2d', { alpha: false });
@@ -1125,7 +1128,6 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   let paletteOpts = {}; // Phase 2: external buildPalette override
   let specQueue = []; // pre-baked scribble specs, sorted (back→front)
   let currentScribble = null; // single active SketchyShape (Sarkissian pattern)
-  let drawnCount = 0;
   let rafId = null;
   let runRng = null; // per-render rng (deterministic stamp pattern)
   let fpsLast = performance.now();
@@ -1330,7 +1332,6 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
       const r = currentScribble.step(ctx, rngRaw);
       if (r === 'done') {
         currentScribble = null;
-        drawnCount++;
       }
     }
 
@@ -1385,7 +1386,6 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
       paintBackground();
       // Pre-bake all specs upfront (raymarch + slope + color), sort back→front
       currentScribble = null;
-      drawnCount = 0;
       specQueue = prebakeSpecs();
       fpsLast = performance.now();
       frameCount = 0;

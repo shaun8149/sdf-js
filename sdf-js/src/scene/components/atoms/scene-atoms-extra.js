@@ -27,12 +27,11 @@ import {
   capsule,
   ellipsoid,
   cone,
-  octahedron,
   pyramid,
   torus,
   tri_prism,
 } from '../../../sdf/d3.js';
-import { union, unionRound, unionSoft, unionChamfer } from '../../../sdf/dn.js';
+import { unionRound, unionSoft, unionChamfer } from '../../../sdf/dn.js';
 
 // =============================================================================
 // ANIMALS — quadruped helper + 6 species

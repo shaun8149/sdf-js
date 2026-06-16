@@ -25,7 +25,6 @@ import {
   segment,
   arc,
   ring,
-  equilateral_triangle,
   hexagon,
   polygon,
   triangle,
@@ -202,7 +201,7 @@ import {
   groove,
   tongue,
 } from '../sdf/dn.js';
-import { evalT, isTimeExpr } from '../sdf/time.js';
+import { evalT } from '../sdf/time.js';
 import {
   validate,
   PRIMITIVE_TYPES,

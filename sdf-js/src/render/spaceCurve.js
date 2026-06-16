@@ -14,9 +14,9 @@
 // 切成多段保留 inside 部分）。
 // =============================================================================
 
-import { SDF2, SDF3 } from '../sdf/core.js';
+import { SDF3 } from '../sdf/core.js'; // SDF2 used in JSDoc only
 import { raymarch3 } from '../sdf/raymarch.js';
-import { createPerlin } from '../field/noise.js';
+// createPerlin removed 2026-06-16 (Wave 2 audit): unused import.
 
 // ---- 共用 mask helpers（与 truchet 同模式）---------------------------------
 

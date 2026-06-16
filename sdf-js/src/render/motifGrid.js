@@ -16,9 +16,9 @@
 // 支持 SDF mask（cell center 测试）让 pattern 只在 subject 之外画。
 // =============================================================================
 
-import { SDF2, SDF3 } from '../sdf/core.js';
+import { SDF3 } from '../sdf/core.js'; // SDF2 used in JSDoc only — not imported in JS
 import { raymarch3 } from '../sdf/raymarch.js';
-import { compileMotifLibrary, DEFAULT_MOTIFS, DEFAULT_ORDER } from '../motifs/index.js';
+import { compileMotifLibrary, DEFAULT_ORDER } from '../motifs/index.js';
 
 // 把 SDF3/SDF2 mask → boolean inside-test（cell center 用）
 function makeMaskTest(mask, maskInvert, opts) {

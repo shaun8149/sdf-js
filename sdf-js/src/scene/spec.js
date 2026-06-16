@@ -909,7 +909,7 @@ function validateSubject(subj, path, errors, warnings) {
 // DomainGroup args
 // =============================================================================
 
-function validateDomainArgs(type, args, path, errors, warnings) {
+function validateDomainArgs(type, args, path, errors, _warnings) {
   if (args == null) args = {};
   if (typeof args !== 'object') {
     errors.push(`${path}: args must be an object`);
@@ -1351,7 +1351,7 @@ export const SHOT_RENDERERS = new Set(['default', 'blueprint']);
 // =============================================================================
 export const VOLUME_KINDS = new Set(['smoke', 'flame', 'fog', 'god-rays']);
 
-function validateVolumes(vols, errors, warnings) {
+function validateVolumes(vols, errors, _warnings) {
   if (!Array.isArray(vols)) {
     errors.push('volumes: must be an array');
     return;

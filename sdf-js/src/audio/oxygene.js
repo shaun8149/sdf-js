@@ -110,7 +110,7 @@ export function createOxygeneSynth() {
   const conga = (t) => tonehit(t, 195, 0.3, 0.165);
   const smallbongo = (t) => tonehit(t, 600, 0.3, 0.05);
   const largebongo = (t) => tonehit(t, 400, 0.3, 0.08);
-  const claves = (t) => tonehit(t, 2200, 0.45, 0.05);
+  const _claves = (t) => tonehit(t, 2200, 0.45, 0.05); // percussion preset reserved for future patterns
   const rimshot = (t) => tonehit(t, 1860, 0.22, 0.01);
 
   // Hi-hat / cymbal — filtered noise burst.

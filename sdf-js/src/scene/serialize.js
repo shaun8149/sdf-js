@@ -17,8 +17,6 @@
 
 import { validate } from './spec.js';
 import { parseExpr, stringifyExpr } from './expr.js';
-import { isTimeExpr } from '../sdf/time.js';
-
 // =============================================================================
 // Parse
 // =============================================================================
@@ -148,7 +146,7 @@ function normalizeChannelInPlace(ch) {
   if (ch.expr != null && ch.value == null) {
     try {
       ch.value = parseExpr(ch.expr);
-    } catch (e) {
+    } catch (_e) {
       // If expr is too complex for v1 parser, leave value undefined and warn
       // (validation has already accepted it as a syntactic string; caller's
       // problem at compile time if it can't be evaluated).
@@ -160,7 +158,7 @@ function normalizeChannelInPlace(ch) {
   if (ch.value != null && ch.expr == null) {
     try {
       ch.expr = stringifyExpr(ch.value);
-    } catch (e) {
+    } catch (_e) {
       // Complex structured value can't be stringified to expr; leave expr undefined.
     }
     return;

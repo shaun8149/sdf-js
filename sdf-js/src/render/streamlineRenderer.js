@@ -671,7 +671,7 @@ function getOrCreateTopoCanvas() {
 // SECTION 10 — Renderer factory
 // =============================================================================
 
-export function createStreamlineRenderer({ canvas, getControls, onFps }) {
+export function createStreamlineRenderer({ canvas: _canvas, getControls: _getControls, onFps }) {
   const topoCanvas = getOrCreateTopoCanvas();
   const ctx = topoCanvas.getContext('2d', { alpha: false });
   if (!ctx) throw new Error('[topo] Canvas2D context unavailable');
@@ -875,7 +875,10 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   // Returns { specs: [...], type } where type drives the draw routine.
   // ---------------------------------------------------------------------------
   function buildPatchPrimitives(panel, ctxParams) {
-    const { rng, perlinFn, view, style, isPatchwork, treatment, scatterMode, mode } = ctxParams;
+    const { rng, perlinFn, view, style, isPatchwork, treatment, scatterMode } = ctxParams;
+    // `mode` is part of ctxParams (set at line ~1204) but currently unused
+    // inside buildPatchPrimitives; not destructured to keep the surface
+    // tight. Re-add if patch-level mode branching is needed later.
 
     // Per-patch flow params
     const perlinOffsetU = rng.random_num(0, 100);
@@ -1125,7 +1128,9 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     return { axis, cellSize, holes, cellCount };
   }
 
-  function latticeSnap(u, v, filter) {
+  // latticeSnap is reserved for a future lattice filter mode that snaps
+  // streamline seeds to cell centers; not currently wired into any call site.
+  function _latticeSnap(u, v, filter) {
     if (filter.axis === 'u') {
       const cell = Math.floor(u / filter.cellSize);
       if (filter.holes.has(cell)) return null;

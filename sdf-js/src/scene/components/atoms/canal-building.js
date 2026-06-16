@@ -68,7 +68,7 @@ export function canalWindowsSDF({
   density = 0.4,
   seed = 1.0,
 } = {}) {
-  const inst = SDF3((p) => {
+  const inst = SDF3((_p) => {
     // CPU stub: just an empty SDF — glow planes are GPU-only.
     return 1e3;
   });

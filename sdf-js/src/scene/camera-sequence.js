@@ -28,8 +28,6 @@
 // transition: 'cut' = 段间硬切（不与前段插值）；'blend' = 与前一段做 dolly。
 // =============================================================================
 
-const TWO_PI = Math.PI * 2;
-
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }

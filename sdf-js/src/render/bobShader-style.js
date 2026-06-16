@@ -32,7 +32,7 @@
 // 概率分布严格跟 autoscope sketch.js setup() 对齐。
 // =============================================================================
 
-import { PALETTES, SKIES, PAPERS, bakePaletteTexture, hexToVec3 } from '../palette/autoscope.js';
+import { PALETTES, SKIES, PAPERS, bakePaletteTexture } from '../palette/autoscope.js';
 
 // =============================================================================
 // DEFAULT_STYLE — identity Generator-V output
