@@ -1,8 +1,8 @@
-> **DRAFT — 未发布。** Channel: 个人公众号 / 长文渠道（跟 Hyperliquid 那篇同一个）。最终编辑权归作者。
+> **DRAFT — 未发布。** 系列第一篇。后两篇：《一扇没人开的门，和一个迟到三十年的执行者》《"我做不到。" —— 模型说，然后我们一起做了》。Channel: 个人长文渠道。最终编辑权归作者。
 
 # 世界模型有一个状态表示问题
 
-VAST 之前宣布拿了两亿美元做 "Project Eden"，定位是 "AI 3D world generator"。OpenAI 的 Sora 不停往"世界模拟器"的方向 reposition，DeepMind 的 Genie 喊出 "foundation world model"。这些公司都在说"世界模型"，但他们指的不是同一个东西 —— 实际上，他们指的是三件完全不同的事。
+VAST 之前宣布融资近两亿美元押注 3D world generator 方向，定位是 "AI 3D world generator"。OpenAI 的 Sora 不停往"世界模拟器"的方向 reposition，DeepMind 的 Genie 喊出 "foundation world model"。这些公司都在说"世界模型"，但他们指的不是同一个东西 —— 实际上，他们指的是三件完全不同的事。
 
 主流叙述把这三件事压成同一句话，因为"世界模型"这个词太好用 —— 模糊到任何在做生成式 3D 的人都能往自己身上套。但这三件事之间的区别，决定了未来十年这个市场的版图。我想把它们拆开。
 
@@ -77,7 +77,7 @@ VAST、Tripo、Hunyuan3D、Trellis、CSM 这些公司的输出底物全部是 me
 
 *Outer Wilds*（Mobius Digital，2019）是一款基于 n-body 引力的太空探索游戏：行星互相绕转，玩家的物理由当前主导星球的引力场决定。**他们用 Unity 做的**。Unity 默认是 Newtonian 单一向下重力。所以他们做了什么？
 
-他们绕开 Unity 的内置重力系统，**在 Unity 内部用 C# 手写了一套 n-body simulation**。从此 Unity 对他们来说不是物理引擎了 —— 只是渲染引擎 + 一个 update loop 入口。法则全部在他们手写的 `GravityVolume` / `GravityController` 里。
+他们绕开 Unity 的内置重力系统，**在 Unity 内部用 C# 手写了一套 n-body simulation 和自己的引力体系统**。从此 Unity 对他们来说不是物理引擎了 —— 只是渲染引擎 + 一个 update loop 入口。法则全部由他们自己的 gravity controller 模块负责。
 
 这是"在 game engine 默认架构里争取异质物理"的活案例：**一支天才团队，要做引擎架构没预想的事，不得不在引擎里重新发明一个小型规则运行时**。
 
@@ -85,17 +85,17 @@ VAST、Tripo、Hunyuan3D、Trellis、CSM 这些公司的输出底物全部是 me
 
 如果你把 Outer Wilds 团队当时做的事抽象出来 —— state 显式、规则可写、每帧 fold over rules —— 那基本就是 rung 2 LLM-native 范式。他们没有 LLM，他们手写 C#。但骨架是一样的。
 
-## 米勒星 —— 但杀招不是浪
+## 一颗潮汐锁定的海洋行星 —— 但杀招不是浪
 
 到这里我们手上有了一个 framework + 一个 evidence。接下来用一个 thought experiment 测试它的极限。
 
-我选 *Interstellar* 里米勒星 —— 巨浪星，物理顾问 Kip Thorne 设计。这颗星有三个区分性物理特征：
+我选物理学家 Kip Thorne 在 *The Science of Interstellar*（2014）里详细推导过的那颗"潮汐锁定海洋行星" —— 大众也许更熟悉它在那部电影里的名字。它有三个区分性物理特征：
 
 1. **1.3× 地球表面重力**
-2. **来自 Gargantua 黑洞的潮汐力主导海洋动力学** —— 那个一公里高的浪不是随机的，是 ~1 小时一次的潮汐周期
+2. **来自附近黑洞的潮汐力主导海洋动力学** —— 那一公里高的浪不是随机的，是 ~1 小时一次的潮汐周期
 3. **重力时间膨胀：表面 1 小时 = 外部 7 年**
 
-电影 IP 不商用，但物理本身是 Thorne 公开发表的学术，可以随便引（参见 *The Science of Interstellar*, 2014）。我管这种世界叫"潮汐锁定的海洋行星"。
+电影 IP 我不引，但物理本身是 Thorne 公开发表的学术，可以自由讨论。
 
 现在问三种架构：如果一个用户想"访问"这颗星，每种架构要做什么？
 
@@ -111,7 +111,7 @@ VAST、Tripo、Hunyuan3D、Trellis、CSM 这些公司的输出底物全部是 me
 
 这件事对物理引擎意味着什么？**整个引擎架构建立在"全场共享一个 dt"之上**。每一行 solver 都假设这个 dt，每一个 broadphase cache 都用这个 dt 更新，每一对接触约束都用这个 dt 求冲量。要支持空间变化的 dt，**等于重写引擎**。Bullet、PhysX、Rapier 全部如此，没有一个例外。
 
-对视频模型呢？更绝望。Sora 这类模型学的是"看起来像物理"，但**它从来没见过差速时间流作为可交互系统**。给它一万小时 *Interstellar* 它学到的是"米勒星海浪的电影质感"，*不是*一个时间流自洽、潮汐周期自洽、玩家进去可以触发反事实的世界。反事实物理对统计模型是结构性的分布外 —— 它只能预测训练分布里出现过的下一帧。
+对视频模型呢？更绝望。Sora 这类模型学的是"看起来像物理"，但**它从来没见过差速时间流作为可交互系统**。给它一万小时电影素材它学到的是"巨浪场景的电影质感"，*不是*一个时间流自洽、潮汐周期自洽、玩家进去可以触发反事实的世界。反事实物理对统计模型是结构性的分布外 —— 它只能预测训练分布里出现过的下一帧。
 
 而在规则运行时里？时间膨胀是什么？给每个 subject 一个 `timeScale` 参数，让所有 forces / integrate 规则用 `dt × timeScale(p)` 步进。几行代码。**因为状态是显式的，每个区域的本地时钟可读可审计可序列化**。
 
@@ -119,7 +119,7 @@ VAST、Tripo、Hunyuan3D、Trellis、CSM 这些公司的输出底物全部是 me
 
 把三种回答排成一行：
 
-> **地球到米勒星的距离 —— 在物理引擎里是一次 solver 改造工程，在视频模型里是一次不可能的 OOD 泛化，在规则运行时里是 ~15 行 patch（`gravity 9.8 → 12.7` + 潮汐力规则 + `timeScale(p)` 规则）。而且这个 patch 本身就存在 savegame 里，任何人能 diff 出"这个世界和地球差在哪三条法则"。**
+> **从地球到这样一颗星的距离 —— 在物理引擎里是一次 solver 改造工程，在视频模型里是一次不可能的 OOD 泛化，在规则运行时里是 ~15 行 patch（`gravity 9.8 → 12.7` + 潮汐力规则 + `timeScale(p)` 规则）。而且这个 patch 本身就存在 savegame 里，任何人能 diff 出"这个世界和地球差在哪三条法则"。**
 
 这就是 binding-time 这个轴的杀伤力。
 
@@ -139,13 +139,13 @@ VAST、Tripo、Hunyuan3D、Trellis、CSM 这些公司的输出底物全部是 me
 
 ## 收尾
 
-绕回开头：VAST 拿了两亿美元做 "AI 3D world generator"。Sora 朝"世界模拟器" reposition。Genie 喊"foundation world model"。
+绕回开头：VAST 押注 3D world generator，Sora 朝"世界模拟器" reposition，Genie 喊"foundation world model"。
 
 到这里你应该能看出来，他们仨在解的不是同一个问题。VAST 在做 rung 1 + 0.5 rung 物理外挂，他们的客户是游戏工作室；Sora 在赌 rung 3 像素学习，他们的客户是内容消费者；Genie 在赌 rung 3 + agent action loop，他们的客户暂时还是研究员。
 
 **rung 2 LLM-native 这一块 —— 法则在运行时绑定、状态是符号文档、demo 是改三行代码看世界变化 —— 目前没有大玩家在做**。这不是因为这块不值得做，是因为它需要的技术栈跟 rung 1 / rung 3 路线的玩家擅长的不一样：你要懂符号几何（SDF），要懂 LLM × code 那一面，要懂 game engine 设计但要有意识地拒绝 game engine 的默认架构。三种技能交叉的人不多。
 
-我和团队在做的 Atlas（开源仓 sdf-js，在 github.com/shaun8149/sdf-js）是这块的一次尝试。这篇文章不是为了 pitch 这个项目 —— 我更在意 framing 本身能不能立住。如果 framing 是对的，未来会有 N 个这样的项目；如果是错的，提前发现也好。
+我自己在做的 Atlas（开源仓 sdf-js，在 github.com/shaun8149/sdf-js）是这块的一次尝试。这篇文章不是为了 pitch 这个项目 —— 我更在意 framing 本身能不能立住。如果 framing 是对的，未来会有 N 个这样的项目；如果是错的，提前发现也好。
 
 最后回到 1 个比喻。
 
