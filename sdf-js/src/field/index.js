@@ -38,11 +38,11 @@ export const constant = (theta) => () => theta;
 export function radial({ cx = 0, cy = 0, mode = 'tangent' } = {}) {
   return (x, y) => {
     const a = Math.atan2(y - cy, x - cx);
-    if (mode === 'normal')   return a;
-    if (mode === 'tangent')  return a + Math.PI / 2;
-    if (mode === 'spiral')   return a + Math.PI / 4;
-    if (mode === 'cos')      return a + Math.PI / 2 + Math.cos(a);
-    if (mode === 'sin')      return a + Math.PI / 2 + Math.sin(a);
+    if (mode === 'normal') return a;
+    if (mode === 'tangent') return a + Math.PI / 2;
+    if (mode === 'spiral') return a + Math.PI / 4;
+    if (mode === 'cos') return a + Math.PI / 2 + Math.cos(a);
+    if (mode === 'sin') return a + Math.PI / 2 + Math.sin(a);
     return a;
   };
 }
@@ -50,12 +50,13 @@ export function radial({ cx = 0, cy = 0, mode = 'tangent' } = {}) {
 // ---- 组合算子 -------------------------------------------------------------
 
 /** 角度叠加：f1(x,y) + f2(x,y) + ... */
-export const add = (...fields) => (x, y) =>
-  fields.reduce((s, f) => s + f(x, y), 0);
+export const add =
+  (...fields) =>
+  (x, y) =>
+    fields.reduce((s, f) => s + f(x, y), 0);
 
 /** 线性混合：weight 在 [0,1]，0 = 全 a、1 = 全 b */
-export const blend = (a, b, weight) => (x, y) =>
-  a(x, y) * (1 - weight) + b(x, y) * weight;
+export const blend = (a, b, weight) => (x, y) => a(x, y) * (1 - weight) + b(x, y) * weight;
 
 /** 输出乘常数（配合 add 做加权叠加） */
 export const scale = (field, k) => (x, y) => field(x, y) * k;
@@ -66,7 +67,8 @@ export const scale = (field, k) => (x, y) => field(x, y) * k;
  */
 export function perturb(base, { cx, cy, radius, amount }) {
   return (x, y) => {
-    const dx = x - cx, dy = y - cy;
+    const dx = x - cx,
+      dy = y - cy;
     const d = Math.sqrt(dx * dx + dy * dy);
     if (d >= radius) return base(x, y);
     const t = 1 - d / radius;
@@ -84,8 +86,7 @@ export const warp = (base, warpFn) => (x, y) => {
 };
 
 /** 角度量化：把输出 snap 到 step 的整数倍 */
-export const quantize = (base, step) => (x, y) =>
-  Math.round(base(x, y) / step) * step;
+export const quantize = (base, step) => (x, y) => Math.round(base(x, y) / step) * step;
 
 /**
  * 域重复：把 (x, y) fold 到一个周期格里再 evaluate base。

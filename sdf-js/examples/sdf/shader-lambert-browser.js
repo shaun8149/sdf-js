@@ -13,16 +13,35 @@
 // =============================================================================
 
 import {
-  sphere, box, plane, capsule,
-  torus, cylinder, capped_cylinder, ellipsoid, rounded_box,
-  cone, capped_cone,
-  tetrahedron, octahedron, dodecahedron, icosahedron,
-  pyramid, wireframe_box,
-  twist, bend,
+  sphere,
+  box,
+  plane,
+  capsule,
+  torus,
+  cylinder,
+  capped_cylinder,
+  ellipsoid,
+  rounded_box,
+  cone,
+  capped_cone,
+  tetrahedron,
+  octahedron,
+  dodecahedron,
+  icosahedron,
+  pyramid,
+  wireframe_box,
+  twist,
+  bend,
 } from '../../src/sdf/d3.js';
 import {
-  union, intersection, difference,
-  blend, dilate, erode, shell, negate,
+  union,
+  intersection,
+  difference,
+  blend,
+  dilate,
+  erode,
+  shell,
+  negate,
 } from '../../src/sdf/dn.js';
 import { compileSDF3ToGLSL } from '../../src/sdf/sdf3.compile.js';
 import { attachFlyControls } from '../../src/input/fly-controls.js';
@@ -120,10 +139,10 @@ const camState = {
 };
 const defaultCam = { position: [...camState.position], yaw: camState.yaw, pitch: camState.pitch };
 
-let compiledGLSL = null;     // 最近一次成功 compile 出来的 SDF3 GLSL（不含库）
-let program = null;          // 当前 WebGL program
-let uniformsCache = {};      // uniform location cache
-let dirty = true;            // 需要重绘（连续 raf 一直 true）
+let compiledGLSL = null; // 最近一次成功 compile 出来的 SDF3 GLSL（不含库）
+let program = null; // 当前 WebGL program
+let uniformsCache = {}; // uniform location cache
+let dirty = true; // 需要重绘（连续 raf 一直 true）
 
 // =============================================================================
 // DOM
@@ -164,7 +183,9 @@ sceneSrc.addEventListener('keydown', (e) => {
 const SLIDERS = ['light-azim', 'light-alt', 'light-dist', 'fov'];
 SLIDERS.forEach((id) => {
   const el = $(id);
-  const update = () => { $(id + '-val').textContent = (+el.value).toFixed(2); };
+  const update = () => {
+    $(id + '-val').textContent = (+el.value).toFixed(2);
+  };
   el.addEventListener('input', update);
   update();
 });
@@ -177,14 +198,33 @@ $('cam-reset').addEventListener('click', resetCamera);
 
 // 在 textarea 上下文里暴露的 SDF binding
 const SCENE_API = {
-  sphere, box, plane, capsule,
-  torus, cylinder, capped_cylinder, ellipsoid, rounded_box,
-  cone, capped_cone,
-  tetrahedron, octahedron, dodecahedron, icosahedron,
-  pyramid, wireframe_box,
-  twist, bend,
-  union, intersection, difference,
-  blend, dilate, erode, shell, negate,
+  sphere,
+  box,
+  plane,
+  capsule,
+  torus,
+  cylinder,
+  capped_cylinder,
+  ellipsoid,
+  rounded_box,
+  cone,
+  capped_cone,
+  tetrahedron,
+  octahedron,
+  dodecahedron,
+  icosahedron,
+  pyramid,
+  wireframe_box,
+  twist,
+  bend,
+  union,
+  intersection,
+  difference,
+  blend,
+  dilate,
+  erode,
+  shell,
+  negate,
   Math,
 };
 const SCENE_KEYS = Object.keys(SCENE_API);
@@ -222,7 +262,10 @@ function compileScene() {
   if (rebuildProgram()) {
     const sceneOnly = compileSDF3ToGLSL(sdf, { sceneFnName: 'sceneSDF', includeLibrary: false });
     const lines = (sceneOnly.glsl || '').split('\n').length;
-    setStatus(`OK · ${lines}-line scene fn · ${(result.glsl.length / 1024).toFixed(1)} KB GLSL total`, true);
+    setStatus(
+      `OK · ${lines}-line scene fn · ${(result.glsl.length / 1024).toFixed(1)} KB GLSL total`,
+      true,
+    );
   }
 }
 
@@ -414,8 +457,16 @@ function rebuildProgram() {
 
   uniformsCache = {};
   for (const name of [
-    'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
-    'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn',
+    'u_resolution',
+    'u_camPos',
+    'u_camFwd',
+    'u_camRight',
+    'u_camUp',
+    'u_focal',
+    'u_lightPos',
+    'u_shadowsOn',
+    'u_groundOn',
+    'u_checkerOn',
   ]) {
     uniformsCache[name] = gl.getUniformLocation(program, name);
   }
@@ -427,8 +478,10 @@ function rebuildProgram() {
 // =============================================================================
 
 function computeFwd(yaw, pitch) {
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
   return [sy * cp, -sp, cy * cp];
 }
 function computeRight(fwd) {
@@ -437,11 +490,7 @@ function computeRight(fwd) {
   return [fwd[2] / m, 0, -fwd[0] / m];
 }
 function cross(a, b) {
-  return [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0],
-  ];
+  return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 }
 
 function lightFromSpherical(azim, alt, dist) {
@@ -462,22 +511,31 @@ function draw() {
   // build camera basis
   const fwd = computeFwd(camState.yaw, camState.pitch);
   const right = computeRight(fwd);
-  const up = cross(fwd, right);  // world-y-up; cross 顺序 fwd×right 保证 up 跟 world up 同号
+  const up = cross(fwd, right); // world-y-up; cross 顺序 fwd×right 保证 up 跟 world up 同号
   const focal = +$('fov').value;
 
   // light position from spherical
-  const lpos = lightFromSpherical(+$('light-azim').value, +$('light-alt').value, +$('light-dist').value);
+  const lpos = lightFromSpherical(
+    +$('light-azim').value,
+    +$('light-alt').value,
+    +$('light-dist').value,
+  );
 
   gl.useProgram(program);
   gl.uniform2f(uniformsCache.u_resolution, canvas.width, canvas.height);
-  gl.uniform3f(uniformsCache.u_camPos, camState.position[0], camState.position[1], camState.position[2]);
+  gl.uniform3f(
+    uniformsCache.u_camPos,
+    camState.position[0],
+    camState.position[1],
+    camState.position[2],
+  );
   gl.uniform3f(uniformsCache.u_camFwd, fwd[0], fwd[1], fwd[2]);
   gl.uniform3f(uniformsCache.u_camRight, right[0], right[1], right[2]);
   gl.uniform3f(uniformsCache.u_camUp, up[0], up[1], up[2]);
   gl.uniform1f(uniformsCache.u_focal, focal);
   gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
   gl.uniform1f(uniformsCache.u_shadowsOn, $('shadow-on').checked ? 1.0 : 0.0);
-  gl.uniform1f(uniformsCache.u_groundOn,  $('ground-on').checked  ? 1.0 : 0.0);
+  gl.uniform1f(uniformsCache.u_groundOn, $('ground-on').checked ? 1.0 : 0.0);
   gl.uniform1f(uniformsCache.u_checkerOn, $('checker-on').checked ? 1.0 : 0.0);
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -503,8 +561,8 @@ function loop() {
 function updateReadouts() {
   const p = camState.position;
   $('pos-readout').textContent = `${p[0].toFixed(2)} ${p[1].toFixed(2)} ${p[2].toFixed(2)}`;
-  const yd = (camState.yaw   * 180 / Math.PI).toFixed(0);
-  const pd = (camState.pitch * 180 / Math.PI).toFixed(0);
+  const yd = ((camState.yaw * 180) / Math.PI).toFixed(0);
+  const pd = ((camState.pitch * 180) / Math.PI).toFixed(0);
   $('yp-readout').textContent = `${yd}° / ${pd}°`;
 }
 
@@ -518,11 +576,16 @@ function resetCamera() {
 // Wire up fly controls
 // =============================================================================
 
-attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
-  speed: 1.5,
-  speedBoost: 4.0,
-  onReset: resetCamera,
-});
+attachFlyControls(
+  canvas,
+  () => camState,
+  (patch) => Object.assign(camState, patch),
+  {
+    speed: 1.5,
+    speedBoost: 4.0,
+    onReset: resetCamera,
+  },
+);
 
 // =============================================================================
 // Init

@@ -30,7 +30,9 @@
 
 const TWO_PI = Math.PI * 2;
 
-function lerp(a, b, t) { return a + (b - a) * t; }
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
 function lerp3(a, b, t) {
   return [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
 }
@@ -86,9 +88,9 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
     // 非 loop 结束后停在最后一帧
     const last = shots[shots.length - 1];
     return {
-      pos:    [...(last.pos    || [0, 0, 0])],
+      pos: [...(last.pos || [0, 0, 0])],
       target: [...(last.target || [0, 0, 0])],
-      fov:    Number(last.fov ?? 25),
+      fov: Number(last.fov ?? 25),
       aperture: Number(last.aperture ?? 0),
       focalDistance: Number(last.focalDistance ?? distance(last.pos, last.target)),
       shotIndex: shots.length - 1,
@@ -123,7 +125,7 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   const resolvePos = (rawPos) =>
     resolveShotTarget(rawPos || [0, 0, 0], subjectBase, subjectOffsets);
 
-  const endPos    = resolvePos(shot.pos);
+  const endPos = resolvePos(shot.pos);
   const endTarget = resolveTarget(shot.target);
   const endState = {
     pos: endPos,
@@ -137,7 +139,7 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   const transition = shot.transition || 'cut';
   if (transition === 'blend' && idx > 0) {
     const prev = shots[idx - 1];
-    const startPos    = resolvePos(prev.pos);
+    const startPos = resolvePos(prev.pos);
     const startTarget = resolveTarget(prev.target);
     startState = {
       pos: startPos,
@@ -160,15 +162,15 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   const allKeys = new Set([...Object.keys(startSceneState), ...Object.keys(endSceneState)]);
   for (const k of allKeys) {
     const a = typeof startSceneState[k] === 'number' ? startSceneState[k] : 0;
-    const b = typeof endSceneState[k]   === 'number' ? endSceneState[k]   : 0;
+    const b = typeof endSceneState[k] === 'number' ? endSceneState[k] : 0;
     blendedSceneState[k] = lerp(a, b, blend);
   }
 
   const out = {
-    pos:    lerp3(startState.pos,    endState.pos,    blend),
+    pos: lerp3(startState.pos, endState.pos, blend),
     target: lerp3(startState.target, endState.target, blend),
-    fov:           lerp(startState.fov,           endState.fov,           blend),
-    aperture:      lerp(startState.aperture,      endState.aperture,      blend),
+    fov: lerp(startState.fov, endState.fov, blend),
+    aperture: lerp(startState.aperture, endState.aperture, blend),
     focalDistance: lerp(startState.focalDistance, endState.focalDistance, blend),
     shotIndex: idx,
     shotBlend: blend,
@@ -186,8 +188,8 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   const shakeAmt = resolveShake(shot.shake, subjectOffsets);
   if (shakeAmt > 0) {
     const d = Math.max(1, distance(out.pos, out.target));
-    const k = shakeAmt * 0.05 / d;
-    out.target[0] += shakeNoise(tSec * 9.7  + 1.0) * k;
+    const k = (shakeAmt * 0.05) / d;
+    out.target[0] += shakeNoise(tSec * 9.7 + 1.0) * k;
     out.target[1] += shakeNoise(tSec * 11.3 + 2.0) * k;
     out.target[2] += shakeNoise(tSec * 13.1 + 3.0) * k;
   }
@@ -197,7 +199,9 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
 
 function distance(a, b) {
   if (!a || !b) return 5;
-  const dx = a[0] - b[0], dy = a[1] - b[1], dz = a[2] - b[2];
+  const dx = a[0] - b[0],
+    dy = a[1] - b[1],
+    dz = a[2] - b[2];
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
@@ -221,7 +225,7 @@ export function evaluateSubjectMotion(seq, tSec) {
   for (const m of seq.subjectMotion) {
     const id = m.subjectId;
     if (!id) continue;
-    const axis = (m.axis === 'x' || m.axis === 'y' || m.axis === 'z') ? m.axis : 'y';
+    const axis = m.axis === 'x' || m.axis === 'y' || m.axis === 'z' ? m.axis : 'y';
     const axisIdx = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
 
     // Loop time over total motion duration if cameraSequence loops
@@ -231,15 +235,15 @@ export function evaluateSubjectMotion(seq, tSec) {
     else if (t > total) t = total;
 
     // Walk phases accumulating displacement + carrying velocity forward
-    let s = 0;      // accumulated displacement so far
-    let u = 0;      // carried velocity at phase boundary
-    let v = 0;      // instant velocity at time t (for shake)
+    let s = 0; // accumulated displacement so far
+    let u = 0; // carried velocity at phase boundary
+    let v = 0; // instant velocity at time t (for shake)
     let acc = 0;
-    for (const p of (m.phases || [])) {
+    for (const p of m.phases || []) {
       const dur = p.duration || 0;
-      const a   = p.a || 0;
-      const v0  = p.v0 || 0;
-      const uPhase = u + v0;  // phase carries previous + injects v0
+      const a = p.a || 0;
+      const v0 = p.v0 || 0;
+      const uPhase = u + v0; // phase carries previous + injects v0
       if (t < acc + dur) {
         // Inside this phase
         const dt = t - acc;
@@ -256,7 +260,7 @@ export function evaluateSubjectMotion(seq, tSec) {
     }
     const offset = [0, 0, 0];
     const velocity = [0, 0, 0];
-    offset[axisIdx]   = s;
+    offset[axisIdx] = s;
     velocity[axisIdx] = v;
     out[id] = { offset, velocity };
   }
@@ -274,8 +278,12 @@ export function resolveShotTarget(rawTarget, subjectBaseTargets, subjectOffsets)
     const id = rawTarget.relativeTo;
     const offset = rawTarget.offset || [0, 0, 0];
     const base = subjectBaseTargets[id] || [0, 0, 0];
-    const motion = (subjectOffsets && subjectOffsets[id]) ? subjectOffsets[id].offset : [0, 0, 0];
-    return [base[0] + motion[0] + offset[0], base[1] + motion[1] + offset[1], base[2] + motion[2] + offset[2]];
+    const motion = subjectOffsets && subjectOffsets[id] ? subjectOffsets[id].offset : [0, 0, 0];
+    return [
+      base[0] + motion[0] + offset[0],
+      base[1] + motion[1] + offset[1],
+      base[2] + motion[2] + offset[2],
+    ];
   }
   return [0, 0, 0];
 }
@@ -309,7 +317,7 @@ export function resolveShake(rawShake, subjectOffsets) {
     const vs = rawShake.velocityScale || 0;
     if (vs > 0 && rawShake.scaleWith && subjectOffsets[rawShake.scaleWith]) {
       const v = subjectOffsets[rawShake.scaleWith].velocity;
-      const vMag = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+      const vMag = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
       return base + vs * vMag;
     }
     return base;
@@ -331,7 +339,7 @@ export function resolveShake(rawShake, subjectOffsets) {
  * sees the right number.
  */
 function fovDegreesToFlyFocal(fovDeg) {
-  const halfRad = (fovDeg * Math.PI / 180) * 0.5;
+  const halfRad = ((fovDeg * Math.PI) / 180) * 0.5;
   // Clamp to a sane range; tan(0) → ∞, tan(π/2) → 0
   const t = Math.max(0.02, Math.min(2.0, Math.tan(halfRad)));
   return 1.0 / t;
@@ -353,7 +361,7 @@ export function sequenceStateToCamState(state) {
     position: [...state.pos],
     yaw,
     pitch,
-    fov: fovDegreesToFlyFocal(state.fov),  // converted to FLY 3D focal multiplier
+    fov: fovDegreesToFlyFocal(state.fov), // converted to FLY 3D focal multiplier
     aperture: state.aperture,
     focalDistance: state.focalDistance,
   };

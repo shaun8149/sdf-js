@@ -8,50 +8,68 @@ import { ROBOT, ROBOT_CODE } from './robot-shapes.js';
 
 // 形状预设：返回 SDF2 实例 + 展示用代码字符串
 const SHAPES = {
-  ring:        { sdf: () => sdf.circle(0.7).difference(sdf.circle(0.3)),
-                 code: 'circle(0.7).difference(circle(0.3))' },
-  circle:      { sdf: () => sdf.circle(0.7),
-                 code: 'circle(0.7)' },
-  square:      { sdf: () => sdf.rectangle([1.4, 1.4]),
-                 code: 'rectangle([1.4, 1.4])' },
-  rounded:     { sdf: () => sdf.rounded_rectangle([1.4, 1.4], 0.25),
-                 code: 'rounded_rectangle([1.4, 1.4], 0.25)' },
-  ellipse:     { sdf: () => sdf.circle(0.9).scale([1, 0.6]),
-                 code: 'circle(0.9).scale([1, 0.6])' },
-  hexagon:     { sdf: () => sdf.hexagon(0.7),
-                 code: 'hexagon(0.7)' },
-  triangle:    { sdf: () => sdf.equilateral_triangle().scale(0.7),
-                 code: 'equilateral_triangle().scale(0.7)' },
-  figure_eight:{ sdf: () => sdf.circle(0.45).translate([-0.35, 0])
-                              .union(sdf.circle(0.45).translate([0.35, 0])),
-                 code: 'circle(0.45).translate([-0.35,0])\n  .union(circle(0.45).translate([0.35,0]))' },
-  cross:       { sdf: () => sdf.rectangle([1.5, 0.5])
-                              .union(sdf.rectangle([0.5, 1.5])),
-                 code: 'rectangle([1.5,0.5])\n  .union(rectangle([0.5,1.5]))' },
-  tall:        { sdf: () => sdf.rectangle([0.6, 1.6]),
-                 code: 'rectangle([0.6, 1.6])' },
+  ring: {
+    sdf: () => sdf.circle(0.7).difference(sdf.circle(0.3)),
+    code: 'circle(0.7).difference(circle(0.3))',
+  },
+  circle: { sdf: () => sdf.circle(0.7), code: 'circle(0.7)' },
+  square: { sdf: () => sdf.rectangle([1.4, 1.4]), code: 'rectangle([1.4, 1.4])' },
+  rounded: {
+    sdf: () => sdf.rounded_rectangle([1.4, 1.4], 0.25),
+    code: 'rounded_rectangle([1.4, 1.4], 0.25)',
+  },
+  ellipse: { sdf: () => sdf.circle(0.9).scale([1, 0.6]), code: 'circle(0.9).scale([1, 0.6])' },
+  hexagon: { sdf: () => sdf.hexagon(0.7), code: 'hexagon(0.7)' },
+  triangle: {
+    sdf: () => sdf.equilateral_triangle().scale(0.7),
+    code: 'equilateral_triangle().scale(0.7)',
+  },
+  figure_eight: {
+    sdf: () =>
+      sdf
+        .circle(0.45)
+        .translate([-0.35, 0])
+        .union(sdf.circle(0.45).translate([0.35, 0])),
+    code: 'circle(0.45).translate([-0.35,0])\n  .union(circle(0.45).translate([0.35,0]))',
+  },
+  cross: {
+    sdf: () => sdf.rectangle([1.5, 0.5]).union(sdf.rectangle([0.5, 1.5])),
+    code: 'rectangle([1.5,0.5])\n  .union(rectangle([0.5,1.5]))',
+  },
+  tall: { sdf: () => sdf.rectangle([0.6, 1.6]), code: 'rectangle([0.6, 1.6])' },
   // 机器人：定义在 robot-shapes.js（共享给 ca-animate）。在那里改唯一一处即可
   robot: { sdf: () => ROBOT, code: ROBOT_CODE },
 };
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const W = canvas.width,
+  H = canvas.height;
 const BG = '#eee8e2';
 
 const $ = (id) => document.getElementById(id);
 const els = {
-  shape: $('shape'), shapeCode: $('shape-code'),
-  initiate: $('initiate'), iv: $('iv'),
-  extend: $('extend'),     xv: $('xv'),
-  solid: $('solid'),       sv: $('sv'),
-  vertical: $('vertical'), vv: $('vv'),
-  roundness: $('roundness'), rv: $('rv'),
-  gridDim: $('gridDim'),   gv: $('gv'),
+  shape: $('shape'),
+  shapeCode: $('shape-code'),
+  initiate: $('initiate'),
+  iv: $('iv'),
+  extend: $('extend'),
+  xv: $('xv'),
+  solid: $('solid'),
+  sv: $('sv'),
+  vertical: $('vertical'),
+  vv: $('vv'),
+  roundness: $('roundness'),
+  rv: $('rv'),
+  gridDim: $('gridDim'),
+  gv: $('gv'),
   colorMode: $('colorMode'),
-  groupSize: $('groupSize'), gsv: $('gsv'),
-  hSym: $('hSym'), vSym: $('vSym'),
-  rebuild: $('rebuild'),   save: $('save'),
+  groupSize: $('groupSize'),
+  gsv: $('gsv'),
+  hSym: $('hSym'),
+  vSym: $('vSym'),
+  rebuild: $('rebuild'),
+  save: $('save'),
 };
 
 function rebuild() {
@@ -67,15 +85,15 @@ function rebuild() {
   const isInside = fromSdf2(sdf2, gridDim);
 
   const grid = caGrid(isInside, gridDim, {
-    initiateChance:  parseFloat(els.initiate.value),
+    initiateChance: parseFloat(els.initiate.value),
     extensionChance: parseFloat(els.extend.value),
-    solidness:       parseFloat(els.solid.value),
-    verticalChance:  parseFloat(els.vertical.value),
-    roundness:       parseFloat(els.roundness.value),
-    colorMode:       els.colorMode.value,
-    groupSize:       parseFloat(els.groupSize.value),
-    hSymmetric:      els.hSym.checked,
-    vSymmetric:      els.vSym.checked,
+    solidness: parseFloat(els.solid.value),
+    verticalChance: parseFloat(els.vertical.value),
+    roundness: parseFloat(els.roundness.value),
+    colorMode: els.colorMode.value,
+    groupSize: parseFloat(els.groupSize.value),
+    hSymmetric: els.hSym.checked,
+    vSymmetric: els.vSym.checked,
   });
 
   // 网格居中铺画布

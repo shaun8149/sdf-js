@@ -23,12 +23,16 @@ export function chamferBoxSDF({ dims = [0.5, 0.3], chamfer = 0.08 } = {}) {
     let px = Math.abs(p[0]) - hx;
     let py = Math.abs(p[1]) - hy;
     // Swap so px >= py (the longer-out axis)
-    if (py > px) { const t = px; px = py; py = t; }
+    if (py > px) {
+      const t = px;
+      px = py;
+      py = t;
+    }
     // After swap: chamfer cut applies along the (px, py + chamfer) corner
     py = py + c;
     // Inside both faces? Negative distance to nearer face.
     if (py < 0 && py + px * (1 - Math.SQRT2) < 0) {
-      return px;  // inside, closest face is px-aligned
+      return px; // inside, closest face is px-aligned
     }
     if (px < py) {
       // On the chamfer 45° line
@@ -45,14 +49,14 @@ export const chamferBoxSpec = {
   type: 'chamfer-box',
   category: '2d-primitive',
   args: {
-    dims:    { type: 'array',  default: [0.5, 0.3], doc: 'half-extents [hx, hy]' },
-    chamfer: { type: 'number', default: 0.08,       doc: '45° cut size at each corner' },
+    dims: { type: 'array', default: [0.5, 0.3], doc: 'half-extents [hx, hy]' },
+    chamfer: { type: 'number', default: 0.08, doc: '45° cut size at each corner' },
   },
   source: {
-    portedFrom:     'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
+    portedFrom: 'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
     originalAuthor: 'Mason',
-    license:        'MIT',
-    portedAt:       '2026-05-27',
-    porter:         'Atlas /port-shader (Track 4 batch)',
+    license: 'MIT',
+    portedAt: '2026-05-27',
+    porter: 'Atlas /port-shader (Track 4 batch)',
   },
 };

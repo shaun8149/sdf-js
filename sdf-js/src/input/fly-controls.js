@@ -29,12 +29,12 @@
 
 export function attachFlyControls(canvas, getState, setState, opts = {}) {
   const {
-    speed = 2.0,              // world unit / 秒
-    speedBoost = 3.0,         // Shift 乘子
+    speed = 2.0, // world unit / 秒
+    speedBoost = 3.0, // Shift 乘子
     mouseSensitivity = 0.003, // rad / pixel
-    pitchClamp = 1.40,        // ≈ ±80°，防极点 gimbal
-    wheelStep = 0.005,        // wheel deltaY 系数
-    onReset = null,           // R 键回调
+    pitchClamp = 1.4, // ≈ ±80°，防极点 gimbal
+    wheelStep = 0.005, // wheel deltaY 系数
+    onReset = null, // R 键回调
   } = opts;
 
   const keys = new Set();
@@ -44,8 +44,10 @@ export function attachFlyControls(canvas, getState, setState, opts = {}) {
 
   // ---- 工具函数 -----------------------------------------------------------
   const computeFwd = (yaw, pitch) => {
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
-    const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
     return [sy * cp, -sp, cy * cp];
   };
   const computeRight = (fwd) => {
@@ -61,7 +63,7 @@ export function attachFlyControls(canvas, getState, setState, opts = {}) {
     if (!pointerLocked) canvas.requestPointerLock();
   };
   const onLockChange = () => {
-    pointerLocked = (document.pointerLockElement === canvas);
+    pointerLocked = document.pointerLockElement === canvas;
     if (pointerLocked) {
       canvas.style.cursor = 'none';
       if (!rafId) {
@@ -71,7 +73,10 @@ export function attachFlyControls(canvas, getState, setState, opts = {}) {
     } else {
       canvas.style.cursor = '';
       keys.clear();
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
     }
   };
 
@@ -113,20 +118,42 @@ export function attachFlyControls(canvas, getState, setState, opts = {}) {
     const dt = Math.min((time - lastTime) / 1000, 0.1);
     lastTime = time;
 
-    const boost = (keys.has('ShiftLeft') || keys.has('ShiftRight')) ? speedBoost : 1.0;
+    const boost = keys.has('ShiftLeft') || keys.has('ShiftRight') ? speedBoost : 1.0;
     const step = speed * boost * dt;
 
-    let dx = 0, dy = 0, dz = 0;
+    let dx = 0,
+      dy = 0,
+      dz = 0;
     const s = getState();
     const fwd = computeFwd(s.yaw, s.pitch);
     const right = computeRight(fwd);
 
-    if (keys.has('KeyW')) { dx += fwd[0]; dy += fwd[1]; dz += fwd[2]; }
-    if (keys.has('KeyS')) { dx -= fwd[0]; dy -= fwd[1]; dz -= fwd[2]; }
-    if (keys.has('KeyD')) { dx += right[0]; dy += right[1]; dz += right[2]; }
-    if (keys.has('KeyA')) { dx -= right[0]; dy -= right[1]; dz -= right[2]; }
-    if (keys.has('Space') || keys.has('KeyQ')) { dy += 1; }
-    if (keys.has('ControlLeft') || keys.has('ControlRight') || keys.has('KeyE')) { dy -= 1; }
+    if (keys.has('KeyW')) {
+      dx += fwd[0];
+      dy += fwd[1];
+      dz += fwd[2];
+    }
+    if (keys.has('KeyS')) {
+      dx -= fwd[0];
+      dy -= fwd[1];
+      dz -= fwd[2];
+    }
+    if (keys.has('KeyD')) {
+      dx += right[0];
+      dy += right[1];
+      dz += right[2];
+    }
+    if (keys.has('KeyA')) {
+      dx -= right[0];
+      dy -= right[1];
+      dz -= right[2];
+    }
+    if (keys.has('Space') || keys.has('KeyQ')) {
+      dy += 1;
+    }
+    if (keys.has('ControlLeft') || keys.has('ControlRight') || keys.has('KeyE')) {
+      dy -= 1;
+    }
 
     const mag = Math.hypot(dx, dy, dz);
     if (mag > 1e-6) {

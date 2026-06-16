@@ -19,13 +19,14 @@
  * @param {boolean} [options.flipY=true]
  */
 export function bands(ctx, sdf, options = {}) {
-  const W = ctx.canvas.width, H = ctx.canvas.height;
-  const view             = options.view ?? 1.6;
-  const flipY            = options.flipY ?? true;
-  const bandFreq         = options.bandFreq ?? 10;
+  const W = ctx.canvas.width,
+    H = ctx.canvas.height;
+  const view = options.view ?? 1.6;
+  const flipY = options.flipY ?? true;
+  const bandFreq = options.bandFreq ?? 10;
   const isolineSharpness = options.isolineSharpness ?? 200;
   // 默认色：BOB 蓝/红组合
-  const ic = options.insideColor  ?? [77, 115, 166];
+  const ic = options.insideColor ?? [77, 115, 166];
   const oc = options.outsideColor ?? [166, 115, 77];
 
   const img = ctx.createImageData(W, H);
@@ -37,7 +38,7 @@ export function bands(ctx, sdf, options = {}) {
       const wy = flipY ? -((y / H) * 2 * view - view) : (y / H) * 2 * view - view;
       const d = sdf([wx, wy]);
 
-      const insideMix = 1 - Math.exp(-Math.abs(d) * 4);    // 离边界越远越饱和
+      const insideMix = 1 - Math.exp(-Math.abs(d) * 4); // 离边界越远越饱和
       const band = 0.7 + 0.3 * Math.cos(d * Math.PI * bandFreq);
       const base = d < 0 ? ic : oc;
       let r = base[0] / 255 + 0.25 * insideMix * band;
@@ -46,10 +47,12 @@ export function bands(ctx, sdf, options = {}) {
 
       // 边界黑线（距离接近 0 → 暗）
       const edge = 1 - Math.exp(-Math.abs(d) * isolineSharpness);
-      r *= edge; g *= edge; b *= edge;
+      r *= edge;
+      g *= edge;
+      b *= edge;
 
       const i = (y * W + x) * 4;
-      data[i]     = Math.min(255, Math.max(0, r * 255));
+      data[i] = Math.min(255, Math.max(0, r * 255));
       data[i + 1] = Math.min(255, Math.max(0, g * 255));
       data[i + 2] = Math.min(255, Math.max(0, b * 255));
       data[i + 3] = 255;

@@ -33,7 +33,10 @@ const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const mul = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const len = (a) => Math.sqrt(dot(a, a));
-const norm = (a) => { const l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+const norm = (a) => {
+  const l = len(a) || 1;
+  return [a[0] / l, a[1] / l, a[2] / l];
+};
 
 // ---------------------------------------------------------------------------
 // SketchyShape — physics pen base class. Subclasses populate `points` (target
@@ -44,17 +47,18 @@ const norm = (a) => { const l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / 
 // ---------------------------------------------------------------------------
 export class SketchyShape {
   constructor() {
-    this.wt = 1;                          // stroke weight (max stamp radius)
-    this.maxV = 3;                        // max pen velocity per tick
-    this.acc = 0.005;                     // acceleration toward next target
-    this.color = [0, 0, 0, 0.25];         // rgba, alpha low for layering
-    this.density = 1;                     // stamps per tick
-    this.wobble = 0;                      // random tangential noise
-    this.angle = 0;                       // shape rotation (radians)
-    this.x = 0; this.y = 0;
-    this.points = [];                     // target path
-    this.pen = [0, 0];                    // current pen pos (local to x,y,angle)
-    this.penV = [0, 0];                   // pen velocity
+    this.wt = 1; // stroke weight (max stamp radius)
+    this.maxV = 3; // max pen velocity per tick
+    this.acc = 0.005; // acceleration toward next target
+    this.color = [0, 0, 0, 0.25]; // rgba, alpha low for layering
+    this.density = 1; // stamps per tick
+    this.wobble = 0; // random tangential noise
+    this.angle = 0; // shape rotation (radians)
+    this.x = 0;
+    this.y = 0;
+    this.points = []; // target path
+    this.pen = [0, 0]; // current pen pos (local to x,y,angle)
+    this.penV = [0, 0]; // pen velocity
     this.penTargetIndex = 0;
     this.lineLen = 0;
   }
@@ -164,11 +168,16 @@ class SketchyRectangle extends SketchyShape {
     this.x = cx;
     this.y = cy;
     // Corner layout (local, centered): top-left, top-right, bottom-right, bottom-left
-    const halfW = w * 0.5, halfH = h * 0.5;
-    const x1 = -halfW, y1 = -halfH;
-    const x2 = +halfW, y2 = -halfH;
-    const x3 = +halfW, y3 = +halfH;
-    const x4 = -halfW, y4 = +halfH;
+    const halfW = w * 0.5,
+      halfH = h * 0.5;
+    const x1 = -halfW,
+      y1 = -halfH;
+    const x2 = +halfW,
+      y2 = -halfH;
+    const x3 = +halfW,
+      y3 = +halfH;
+    const x4 = -halfW,
+      y4 = +halfH;
     // Step count along the WIDTH (top/bottom edges = d12 = d34 = w in
     // Sarkissian's SketchyQuad). Using h here was a bug — for a tall thin
     // trunk (h=200, w=0.5), it produced 1000 substeps × 2 = 2000 waypoints,
@@ -217,12 +226,36 @@ function hsv2rgb(h, s, v) {
   const t = v * (1 - (1 - f) * s);
   let r, g, b;
   switch (i % 6) {
-    case 0: r = v; g = t; b = p; break;
-    case 1: r = q; g = v; b = p; break;
-    case 2: r = p; g = v; b = t; break;
-    case 3: r = p; g = q; b = v; break;
-    case 4: r = t; g = p; b = v; break;
-    case 5: r = v; g = p; b = q; break;
+    case 0:
+      r = v;
+      g = t;
+      b = p;
+      break;
+    case 1:
+      r = q;
+      g = v;
+      b = p;
+      break;
+    case 2:
+      r = p;
+      g = v;
+      b = t;
+      break;
+    case 3:
+      r = p;
+      g = q;
+      b = v;
+      break;
+    case 4:
+      r = t;
+      g = p;
+      b = v;
+      break;
+    case 5:
+      r = v;
+      g = p;
+      b = q;
+      break;
   }
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
@@ -235,9 +268,10 @@ function hsv2rgb(h, s, v) {
 // ---------------------------------------------------------------------------
 const hex2rgb = (hex) => {
   const h = hex.replace('#', '');
-  const v = h.length === 3
-    ? h.split('').map(c => parseInt(c + c, 16))
-    : [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+  const v =
+    h.length === 3
+      ? h.split('').map((c) => parseInt(c + c, 16))
+      : [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
   return v;
 };
 const lerpRGB = (a, b, t) => [
@@ -247,22 +281,57 @@ const lerpRGB = (a, b, t) => [
 ];
 
 const CURATED_PALETTES = [
-  {  // 0: monochrome grayscale
+  {
+    // 0: monochrome grayscale
     stroke: ['#000', '#222', '#444', '#777', '#ddd', '#fff'].map(hex2rgb),
-    tree:   ['#000', '#222', '#444', '#777', '#ddd', '#fff'].map(hex2rgb),
+    tree: ['#000', '#222', '#444', '#777', '#ddd', '#fff'].map(hex2rgb),
   },
-  {  // 1: synthwave (deep blue → magenta → orange)
-    stroke: ['#0f0347','#1c0682','#114ff2','#114ff2','#d91c2f','#d91c2f',
-             '#fe3da7','#fe3da7','#f79357','#f79357','#fbc442','#fbc442'].map(hex2rgb),
-    tree:   ['#0f0347','#1c0682','#114ff2','#5f317d','#5f317d','#bb39a2',
-             '#bb39a2','#f45969','#f45969','#fbc442'].map(hex2rgb),
+  {
+    // 1: synthwave (deep blue → magenta → orange)
+    stroke: [
+      '#0f0347',
+      '#1c0682',
+      '#114ff2',
+      '#114ff2',
+      '#d91c2f',
+      '#d91c2f',
+      '#fe3da7',
+      '#fe3da7',
+      '#f79357',
+      '#f79357',
+      '#fbc442',
+      '#fbc442',
+    ].map(hex2rgb),
+    tree: [
+      '#0f0347',
+      '#1c0682',
+      '#114ff2',
+      '#5f317d',
+      '#5f317d',
+      '#bb39a2',
+      '#bb39a2',
+      '#f45969',
+      '#f45969',
+      '#fbc442',
+    ].map(hex2rgb),
   },
-  {  // 2: dusty rose + teal
-    stroke: ['#1a1d28','#377D71','#8879B0','#FBA1A1','#FBC5C5'].map(hex2rgb),
-    tree:   ['#1a1d28','#2d3351','#214942','#214942','#704723','#6dad9f',
-             '#6dad9f','#f99d9d','#f8b861'].map(hex2rgb),
+  {
+    // 2: dusty rose + teal
+    stroke: ['#1a1d28', '#377D71', '#8879B0', '#FBA1A1', '#FBC5C5'].map(hex2rgb),
+    tree: [
+      '#1a1d28',
+      '#2d3351',
+      '#214942',
+      '#214942',
+      '#704723',
+      '#6dad9f',
+      '#6dad9f',
+      '#f99d9d',
+      '#f8b861',
+    ].map(hex2rgb),
   },
-  {  // 3: lavender + coral (with explicit lerp midpoints)
+  {
+    // 3: lavender + coral (with explicit lerp midpoints)
     stroke: [
       hex2rgb('#29264E'),
       lerpRGB(hex2rgb('#29264E'), hex2rgb('#9881F5'), 0.5),
@@ -273,15 +342,23 @@ const CURATED_PALETTES = [
       hex2rgb('#fcbcbe'),
       hex2rgb('#f7c066'),
     ],
-    tree: ['#29264E','#354e6f','#8475bd','#6daba5','#fcbcde','#f7c066'].map(hex2rgb),
+    tree: ['#29264E', '#354e6f', '#8475bd', '#6daba5', '#fcbcde', '#f7c066'].map(hex2rgb),
   },
-  {  // 4: olive + flame
-    stroke: ['#232601','#4a69fe','#226330','#ef412f','#efac25','#eeefd0'].map(hex2rgb),
-    tree:   ['#232601','#232601','#6b8adc','#226330','#c4685b','#c1a953','#eeefd0'].map(hex2rgb),
+  {
+    // 4: olive + flame
+    stroke: ['#232601', '#4a69fe', '#226330', '#ef412f', '#efac25', '#eeefd0'].map(hex2rgb),
+    tree: ['#232601', '#232601', '#6b8adc', '#226330', '#c4685b', '#c1a953', '#eeefd0'].map(
+      hex2rgb,
+    ),
   },
-  {  // 5: midnight + sunset
-    stroke: ['#040B21','#0C282D','#2B4039','#9A422E','#d87d1b','#DFB4BF','#F3E7DC'].map(hex2rgb),
-    tree:   ['#040B21','#0C282D','#2B4039','#9A422E','#d87d1b','#DFB4BF','#F3E7DC'].map(hex2rgb),
+  {
+    // 5: midnight + sunset
+    stroke: ['#040B21', '#0C282D', '#2B4039', '#9A422E', '#d87d1b', '#DFB4BF', '#F3E7DC'].map(
+      hex2rgb,
+    ),
+    tree: ['#040B21', '#0C282D', '#2B4039', '#9A422E', '#d87d1b', '#DFB4BF', '#F3E7DC'].map(
+      hex2rgb,
+    ),
   },
 ];
 
@@ -331,7 +408,7 @@ function rayHitSDF(sdfFn, ro, rd, maxDist = 100, maxSteps = 80, eps = 0.001) {
     const d = sdfFn(p);
     if (Math.abs(d) < eps) return { p, t, steps: i };
     if (t > maxDist) return null;
-    t += Math.max(d, eps * 2);   // small floor to escape near-zero stalls
+    t += Math.max(d, eps * 2); // small floor to escape near-zero stalls
   }
   return null;
 }
@@ -339,7 +416,8 @@ function rayHitSDF(sdfFn, ro, rd, maxDist = 100, maxSteps = 80, eps = 0.001) {
 // Bilinear-sample heightmap value at world XZ. Returns scaled world Y.
 // Extracted to module scope so gradient queries can reuse it.
 export function sampleHeightmap(baked, boxSize, x, z) {
-  const W = baked.width, H = baked.height;
+  const W = baked.width,
+    H = baked.height;
   const data = baked.data;
   const u = Math.max(0, Math.min(1, x / (2 * boxSize[0]) + 0.5));
   const v = Math.max(0, Math.min(1, z / (2 * boxSize[2]) + 0.5));
@@ -363,7 +441,8 @@ export function sampleHeightmap(baked, boxSize, x, z) {
 // Heightmap-specific hit (faster + accurate for terrain-eroded-rune).
 // Returns world-position + heightmap-channel sample.
 function rayHitHeightmap(baked, ro, rd, boxSize, maxDist = 10, maxSteps = 60) {
-  const W = baked.width, H = baked.height;
+  const W = baked.width,
+    H = baked.height;
   const data = baked.data;
   const sampleH = (x, z) => sampleHeightmap(baked, boxSize, x, z);
   // Sphere-trace into the heightmap-as-SDF: p.y - h(p.xz)
@@ -407,8 +486,10 @@ function rayHitHeightmap(baked, ro, rd, boxSize, maxDist = 10, maxSteps = 60) {
 export function buildCameraRay(camState, focal, width, height, px, py) {
   // Match flyLambert.computeFwd convention exactly: Y is -sin(pitch) so
   // positive pitch puts camera ABOVE target looking DOWN at it.
-  const cp = Math.cos(camState.pitch), sp = Math.sin(camState.pitch);
-  const cy = Math.cos(camState.yaw),   sy = Math.sin(camState.yaw);
+  const cp = Math.cos(camState.pitch),
+    sp = Math.sin(camState.pitch);
+  const cy = Math.cos(camState.yaw),
+    sy = Math.sin(camState.yaw);
   const fwd = [sy * cp, -sp, cy * cp];
   const right = [cy, 0, -sy];
   // up = cross(fwd, right)  (right-handed; cross(right, fwd) gives DOWN)
@@ -418,8 +499,8 @@ export function buildCameraRay(camState, focal, width, height, px, py) {
     fwd[0] * right[1] - fwd[1] * right[0],
   ];
   const aspect = width / height;
-  const uvx = (px / width * 2 - 1) * aspect;
-  const uvy = (1 - py / height * 2);
+  const uvx = ((px / width) * 2 - 1) * aspect;
+  const uvy = 1 - (py / height) * 2;
   const rd = norm([
     uvx * right[0] + uvy * up[0] + focal * fwd[0],
     uvx * right[1] + uvy * up[1] + focal * fwd[1],
@@ -433,8 +514,10 @@ export function buildCameraRay(camState, focal, width, height, px, py) {
 // basis as buildCameraRay (above). Returns null if the point is behind camera.
 // ---------------------------------------------------------------------------
 export function projectWorldToScreen(world, camState, focal, width, height) {
-  const cp = Math.cos(camState.pitch), sp = Math.sin(camState.pitch);
-  const cy = Math.cos(camState.yaw),   sy = Math.sin(camState.yaw);
+  const cp = Math.cos(camState.pitch),
+    sp = Math.sin(camState.pitch);
+  const cy = Math.cos(camState.yaw),
+    sy = Math.sin(camState.yaw);
   const fwd = [sy * cp, -sp, cy * cp];
   const right = [cy, 0, -sy];
   const up = [
@@ -448,10 +531,10 @@ export function projectWorldToScreen(world, camState, focal, width, height) {
   const xCam = dot(dp, right);
   const yCam = dot(dp, up);
   const aspect = width / height;
-  const uvx = (focal * xCam / zCam) / aspect;   // [-1, 1] horizontally
-  const uvy = focal * yCam / zCam;              // [-1, 1] vertically (+up)
+  const uvx = (focal * xCam) / zCam / aspect; // [-1, 1] horizontally
+  const uvy = (focal * yCam) / zCam; // [-1, 1] vertically (+up)
   const px = (uvx * 0.5 + 0.5) * width;
-  const py = (1 - (uvy * 0.5 + 0.5)) * height;  // flip y for screen coords
+  const py = (1 - (uvy * 0.5 + 0.5)) * height; // flip y for screen coords
   return [px, py, zCam];
 }
 
@@ -472,10 +555,10 @@ function computeSlopeAngle(baked, boxSize, worldP, camState, focal, width, heigh
   // Build 3D neighbor world points: walk along the steepest-descent direction
   // by a small step + lift to surface. Project the descent vector to screen.
   const gradMag = Math.hypot(dhdx, dhdz) || 1e-6;
-  const descX = -dhdx / gradMag;        // downhill direction in world XZ
+  const descX = -dhdx / gradMag; // downhill direction in world XZ
   const descZ = -dhdz / gradMag;
   const stepLen = 0.04;
-  const neighbor = [x + descX * stepLen, h0 + (-gradMag) * stepLen, z + descZ * stepLen];
+  const neighbor = [x + descX * stepLen, h0 + -gradMag * stepLen, z + descZ * stepLen];
   const sA = projectWorldToScreen(worldP, camState, focal, width, height);
   const sB = projectWorldToScreen(neighbor, camState, focal, width, height);
   if (!sA || !sB) return 0;
@@ -500,7 +583,8 @@ function prepareSarkissianMaps(baked, boxSize, lightDir, mapW = 100, mapH = 100)
     hMap[i] = new Float32Array(mapH);
     lMap[i] = new Float32Array(mapH);
     for (let j = 0; j < mapH; j++) {
-      const u = (i + 0.5) / mapW, v = (j + 0.5) / mapH;
+      const u = (i + 0.5) / mapW,
+        v = (j + 0.5) / mapH;
       const x = (u - 0.5) * 2 * boxSize[0];
       const z = (v - 0.5) * 2 * boxSize[2];
       hMap[i][j] = Math.max(0, sampleHeightmap(baked, boxSize, x, z));
@@ -510,16 +594,17 @@ function prepareSarkissianMaps(baked, boxSize, lightDir, mapW = 100, mapH = 100)
   // line 90-94 in map.js).
   for (let i = 0; i < mapW; i++) {
     for (let j = 0; j < mapH; j++) {
-      const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
-      const j1 = (j === mapH - 1) ? mapH - 2 : j + 1;
-      const iDir = (i === mapW - 1) ? -1 : 1;
-      const jDir = (j === mapH - 1) ? -1 : 1;
+      const i1 = i === mapW - 1 ? mapW - 2 : i + 1;
+      const j1 = j === mapH - 1 ? mapH - 2 : j + 1;
+      const iDir = i === mapW - 1 ? -1 : 1;
+      const jDir = j === mapH - 1 ? -1 : 1;
       const dhx = (hMap[i1][j] - hMap[i][j]) * iDir;
       const dhz = (hMap[i][j1] - hMap[i][j]) * jDir;
       // Sarkissian uses (dh/dx, dh/dz, 0) as the normal (2D treatment, no y),
       // then normalizes. We do the same.
       const len = Math.hypot(dhx, dhz) || 1e-6;
-      const nx = dhx / len, ny = dhz / len;
+      const nx = dhx / len,
+        ny = dhz / len;
       // Dot with 2D light direction
       lMap[i][j] = nx * lightDir[0] + ny * lightDir[1];
     }
@@ -531,15 +616,16 @@ function prepareSarkissianMaps(baked, boxSize, lightDir, mapW = 100, mapH = 100)
 // gentle curvature → long strokes (plains); sharp curvature → short strokes
 // (cliffs / ridges).
 function hMapCurvatureMagSq(hMap, mapW, mapH, i, j) {
-  const i0 = i, j0 = j;
-  const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
-  const j1 = (j === mapH - 1) ? mapH - 2 : j + 1;
+  const i0 = i,
+    j0 = j;
+  const i1 = i === mapW - 1 ? mapW - 2 : i + 1;
+  const j1 = j === mapH - 1 ? mapH - 2 : j + 1;
   // First derivatives
   const dhx0 = hMap[i1][j0] - hMap[i0][j0];
   const dhz0 = hMap[i0][j1] - hMap[i0][j0];
   // Second derivatives
-  const i2 = (i1 === mapW - 1) ? mapW - 2 : i1 + 1;
-  const j2 = (j1 === mapH - 1) ? mapH - 2 : j1 + 1;
+  const i2 = i1 === mapW - 1 ? mapW - 2 : i1 + 1;
+  const j2 = j1 === mapH - 1 ? mapH - 2 : j1 + 1;
   const dhx1 = hMap[i2][j0] - hMap[i1][j0];
   const dhz1 = hMap[i0][j2] - hMap[i0][j1];
   const ddx = dhx1 - dhx0;
@@ -563,14 +649,18 @@ function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scale
   const trAng = Math.atan2(ty2 - ty1, tx2 - tx1);
   specs.push({
     shapeKind: 'rect',
-    px: (tx1 + tx2) * 0.5, py: (ty1 + ty2) * 0.5,
-    w: 0.5 * scaleK,             // Sarkissian constructor weight = 0.5
-    h: trLen,                    // full line length
-    hatchDensity: 0.2,           // unscaled (rect step count = max(w,h)/hd)
+    px: (tx1 + tx2) * 0.5,
+    py: (ty1 + ty2) * 0.5,
+    w: 0.5 * scaleK, // Sarkissian constructor weight = 0.5
+    h: trLen, // full line length
+    hatchDensity: 0.2, // unscaled (rect step count = max(w,h)/hd)
     angle: trAng + Math.PI / 2,
     colorBase: treePaletteColor(palette, rng.random_num(0, 0.5)),
     alpha: 0.25,
-    wt: 1.5 * scaleK, maxV: 0.3, density: 1, wobble: 0.2,
+    wt: 1.5 * scaleK,
+    maxV: 0.3,
+    density: 1,
+    wobble: 0.2,
     depth: z,
   });
 
@@ -578,33 +668,40 @@ function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scale
   const nClumps = Math.round(rng.random_num(4, 5));
   for (let cl = 0; cl < nClumps; cl++) {
     const branchHt = rng.random_num(0.1, 1);
-    const branchStartY = y + (-treeHt) * branchHt;  // lerp(y, y-treeHt, branchHt)
+    const branchStartY = y + -treeHt * branchHt; // lerp(y, y-treeHt, branchHt)
     // clumpOffset: (0, -random(treeHt*0.7) * map(branchHt, 0.1, 1, 0.5, 0.8))
     //              then rotate by random(-π/2, π/2), then y *= random(1,2)
     let cOffX = 0;
-    let cOffY = -rng.random_num(0, treeHt * 0.7) *
-                (0.5 + (0.8 - 0.5) * (branchHt - 0.1) / 0.9);
-    const rotA = rng.random_num(-1, 1) * Math.PI / 2;
-    const ca = Math.cos(rotA), sa = Math.sin(rotA);
+    let cOffY = -rng.random_num(0, treeHt * 0.7) * (0.5 + ((0.8 - 0.5) * (branchHt - 0.1)) / 0.9);
+    const rotA = (rng.random_num(-1, 1) * Math.PI) / 2;
+    const ca = Math.cos(rotA),
+      sa = Math.sin(rotA);
     const cOffXR = ca * cOffX - sa * cOffY;
     const cOffYR = (sa * cOffX + ca * cOffY) * rng.random_num(1, 2);
-    cOffX = cOffXR; cOffY = cOffYR;
+    cOffX = cOffXR;
+    cOffY = cOffYR;
 
     // Branch line from (x, branchStartY) to (x + cOffX, y - treeHt + cOffY)
-    const bx1 = x, by1 = branchStartY;
-    const bx2 = x + cOffX, by2 = y - treeHt + cOffY;
+    const bx1 = x,
+      by1 = branchStartY;
+    const bx2 = x + cOffX,
+      by2 = y - treeHt + cOffY;
     const brLen = Math.hypot(bx2 - bx1, by2 - by1);
     const brAng = Math.atan2(by2 - by1, bx2 - bx1);
     specs.push({
       shapeKind: 'rect',
-      px: (bx1 + bx2) * 0.5, py: (by1 + by2) * 0.5,
-      w: 0.25 * scaleK,         // Sarkissian branch weight = 0.25
+      px: (bx1 + bx2) * 0.5,
+      py: (by1 + by2) * 0.5,
+      w: 0.25 * scaleK, // Sarkissian branch weight = 0.25
       h: brLen,
       hatchDensity: 0.1,
       angle: brAng + Math.PI / 2,
-      colorBase: treePaletteColor(palette, 0),  // darkest
+      colorBase: treePaletteColor(palette, 0), // darkest
       alpha: 0.25,
-      wt: 1.5 * scaleK, maxV: 0.3, density: 1, wobble: 0.2,
+      wt: 1.5 * scaleK,
+      maxV: 0.3,
+      density: 1,
+      wobble: 0.2,
       depth: z,
     });
 
@@ -612,11 +709,12 @@ function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scale
     // total spec count tractable for animation)
     const nLeaves = Math.round(rng.random_num(2, 10));
     for (let lf = 0; lf < nLeaves; lf++) {
-      const r = rng.random_num(2, 3) * scaleK *
-                (1.5 + (1 - 1.5) * lf / Math.max(1, nLeaves));
-      let oX = rng.random_num(0, r * 1.8), oY = 0;
+      const r = rng.random_num(2, 3) * scaleK * (1.5 + ((1 - 1.5) * lf) / Math.max(1, nLeaves));
+      let oX = rng.random_num(0, r * 1.8),
+        oY = 0;
       const aRot = rng.random_num(0, Math.PI * 2);
-      const cR = Math.cos(aRot), sR = Math.sin(aRot);
+      const cR = Math.cos(aRot),
+        sR = Math.sin(aRot);
       [oX, oY] = [cR * oX - sR * oY, sR * oX + cR * oY];
       const folX = x + oX + cOffX;
       const folY = y - treeHt + oY + cOffY;
@@ -634,14 +732,19 @@ function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scale
       br = Math.max(0, Math.min(1, br));
 
       specs.push({
-        px: folX, py: folY,
-        rx: 4 * scaleK, ry: r * 2,
+        px: folX,
+        py: folY,
+        rx: 4 * scaleK,
+        ry: r * 2,
         hatchDensity: rng.random_num(1, 1.1),
         // Slight per-leaf angle jitter via deterministic noise approximation
-        angle: (Math.sin(folX * 0.03 + folY * 0.03) * Math.PI / 6),
+        angle: (Math.sin(folX * 0.03 + folY * 0.03) * Math.PI) / 6,
         colorBase: treePaletteColor(palette, br),
         alpha: 0.25,
-        wt: 2.5 * scaleK, maxV: 1, density: 2, wobble: 0.2,
+        wt: 2.5 * scaleK,
+        maxV: 1,
+        density: 2,
+        wobble: 0.2,
         depth: z,
       });
     }
@@ -651,13 +754,28 @@ function addTreeSpecs(rng, palette, x, y, z, lightValue, treeHt, lightDir, scale
 
 // addBushSpecs — port of Sarkissian's addBush() (line 516-588).
 // 4-5 clumps, each with a flatter rock-cluster.
-function addBushSpecs(rng, palette, x, y, z, lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK) {
+function addBushSpecs(
+  rng,
+  palette,
+  x,
+  y,
+  z,
+  lightValue,
+  rockHt,
+  hMap,
+  mapW,
+  mapH,
+  i,
+  j,
+  lightDir,
+  scaleK,
+) {
   const specs = [];
   const nClumps = Math.round(rng.random_num(4, 5));
 
   // Terrain normal at (i, j) — used for rock angle (line 581-583)
-  const i1 = (i >= mapW - 1) ? mapW - 2 : i + 1;
-  const j1 = (j >= mapH - 1) ? mapH - 2 : j + 1;
+  const i1 = i >= mapW - 1 ? mapW - 2 : i + 1;
+  const j1 = j >= mapH - 1 ? mapH - 2 : j + 1;
   const dhx = hMap[i1][j] - hMap[i][j];
   const dhz = hMap[i][j1] - hMap[i][j];
   const nLen = Math.hypot(dhx, dhz) || 1e-6;
@@ -666,19 +784,21 @@ function addBushSpecs(rng, palette, x, y, z, lightValue, rockHt, hMap, mapW, map
   for (let cl = 0; cl < nClumps; cl++) {
     let cOffX = 0;
     let cOffY = -rng.random_num(0, rockHt * 0.1);
-    const rotA = rng.random_num(-1, 1) * Math.PI / 2;
-    const ca = Math.cos(rotA), sa = Math.sin(rotA);
+    const rotA = (rng.random_num(-1, 1) * Math.PI) / 2;
+    const ca = Math.cos(rotA),
+      sa = Math.sin(rotA);
     cOffX = ca * cOffX - sa * cOffY;
     cOffY = sa * cOffX + ca * cOffY;
     cOffY = -Math.abs(cOffY);
 
     const nRocks = Math.round(rng.random_num(10, 20) * 0.4);
     for (let r0 = 0; r0 < nRocks; r0++) {
-      const r = rng.random_num(2, 3) * scaleK *
-                (1.5 + (1 - 1.5) * r0 / Math.max(1, nRocks));
-      let oX = rng.random_num(0, r * 1.5), oY = 0;
+      const r = rng.random_num(2, 3) * scaleK * (1.5 + ((1 - 1.5) * r0) / Math.max(1, nRocks));
+      let oX = rng.random_num(0, r * 1.5),
+        oY = 0;
       const aRot = rng.random_num(0, Math.PI * 2);
-      const cR = Math.cos(aRot), sR = Math.sin(aRot);
+      const cR = Math.cos(aRot),
+        sR = Math.sin(aRot);
       [oX, oY] = [cR * oX - sR * oY, sR * oX + cR * oY];
       oY = -Math.abs(oY);
 
@@ -696,18 +816,25 @@ function addBushSpecs(rng, palette, x, y, z, lightValue, rockHt, hMap, mapW, map
       let br = Math.pow(normDt, powExp) + addOff + rng.random_num(-1, 1) * 0.4;
       br = Math.max(0, Math.min(1, br));
 
-      const baseAng = ((1 - Math.max(-1, Math.min(1, nrmX))) * 0.5) * (Math.PI / 2)
-                    + Math.PI / 4 + (Math.round(rng.random_dec()) * 2 - 1) * Math.PI
-                    + Math.PI / 2;
+      const baseAng =
+        (1 - Math.max(-1, Math.min(1, nrmX))) * 0.5 * (Math.PI / 2) +
+        Math.PI / 4 +
+        (Math.round(rng.random_dec()) * 2 - 1) * Math.PI +
+        Math.PI / 2;
 
       specs.push({
-        px: rkX, py: rkY,
-        rx: r * 2, ry: 4 * scaleK,
+        px: rkX,
+        py: rkY,
+        rx: r * 2,
+        ry: 4 * scaleK,
         hatchDensity: rng.random_num(1, 1.1),
-        angle: baseAng + ((nx / nl) > 0 ? -1 : 1) * rng.random_num(Math.PI / 8, Math.PI / 4),
+        angle: baseAng + (nx / nl > 0 ? -1 : 1) * rng.random_num(Math.PI / 8, Math.PI / 4),
         colorBase: treePaletteColor(palette, br),
         alpha: 0.25,
-        wt: 1.5 * scaleK, maxV: 1, density: 2, wobble: 0.2,
+        wt: 1.5 * scaleK,
+        maxV: 1,
+        density: 2,
+        wobble: 0.2,
         depth: z,
       });
     }
@@ -727,7 +854,7 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
   const { terrainHt, warpSz, lightAngle, noiseScale = 0.01 } = params;
   const lightDir = [Math.cos(lightAngle), Math.sin(lightAngle)];
   const targetSz = canvasSize;
-  const scaleK = targetSz / 400;  // Sarkissian's original target was 400px
+  const scaleK = targetSz / 400; // Sarkissian's original target was 400px
   const nShapes = 8000;
   // Vegetation candidates: Sarkissian uses nShapes * 0.2 = 1600, but each
   // accepted tree expands to ~50 specs (1 trunk + 4-5 branches + ~40 leaves).
@@ -745,8 +872,8 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
   for (let v = 0; v < nVeg; v++) {
     let x = rng.random_num(0, targetSz);
     let y = rng.random_num(0, targetSz);
-    const i = Math.max(0, Math.min(mapW - 1, Math.floor(x / targetSz * mapW)));
-    const j = Math.max(0, Math.min(mapH - 1, Math.floor(y / targetSz * mapH)));
+    const i = Math.max(0, Math.min(mapW - 1, Math.floor((x / targetSz) * mapW)));
+    const j = Math.max(0, Math.min(mapH - 1, Math.floor((y / targetSz) * mapH)));
     const ns = hMap[i][j];
     // Sarkissian's `if (ns != 0)` filters water at the strict-zero boundary
     // because his hMap is amplified to [0, ~12.5] with snap to floor(*1e5)/1e5.
@@ -758,26 +885,26 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
     x += Math.cos(swirl) * warpSz;
     y += Math.sin(swirl) * warpSz;
     y += ns * terrainHt;
-    const z = y + 10;   // Sarkissian: vegetation z = y + 10 (drawn AFTER bg)
+    const z = y + 10; // Sarkissian: vegetation z = y + 10 (drawn AFTER bg)
 
     // Surface normal at (i, j) — same convention as lMap (2D, dh/dx & dh/dz)
-    const i1 = (i >= mapW - 1) ? mapW - 2 : i + 1;
-    const j1 = (j >= mapH - 1) ? mapH - 2 : j + 1;
+    const i1 = i >= mapW - 1 ? mapW - 2 : i + 1;
+    const j1 = j >= mapH - 1 ? mapH - 2 : j + 1;
     const dhx = hMap[i1][j] - hMap[i][j];
     const dhz = hMap[i][j1] - hMap[i][j];
     const nLen = Math.hypot(dhx, dhz) || 1e-6;
     const nrmX = dhx / nLen;
     // 2nd derivative x-component (line 154-160 condition)
-    const i2 = (i1 >= mapW - 1) ? mapW - 2 : i1 + 1;
+    const i2 = i1 >= mapW - 1 ? mapW - 2 : i1 + 1;
     const dhx1 = hMap[i2][j] - hMap[i1][j];
-    const nrm2x = (dhx1 - dhx) * 100;  // amplify for threshold
+    const nrm2x = (dhx1 - dhx) * 100; // amplify for threshold
 
     // Plant placement criteria (Sarkissian line 154-160)
-    const plantOk = Math.abs(nrmX) < plantThresh && (
-      plantSide < 0
+    const plantOk =
+      Math.abs(nrmX) < plantThresh &&
+      (plantSide < 0
         ? nrm2x < rng.random_num(0, plantSlopeLeniency)
-        : nrm2x > rng.random_num(-plantSlopeLeniency, 0)
-    );
+        : nrm2x > rng.random_num(-plantSlopeLeniency, 0));
     if (!plantOk) continue;
 
     // Tree noise approximation (smooth pseudo-random per cell)
@@ -808,22 +935,59 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
       if (ns < TREE_MAX_NS && j > 4) {
         // Halved range vs. Sarkissian + terrain-elevation scale
         const treeHt = (6 + treeHtNs * 30) * scaleK * (0.4 + nsT * 0.6);
-        const treeSpecs = addTreeSpecs(rng, palette, x, y, y + VEG_Z_OFFSET,
-          lightValue, treeHt, lightDir, scaleK);
+        const treeSpecs = addTreeSpecs(
+          rng,
+          palette,
+          x,
+          y,
+          y + VEG_Z_OFFSET,
+          lightValue,
+          treeHt,
+          lightDir,
+          scaleK,
+        );
         for (const s of treeSpecs) specs.push(s);
         shadowLength = 1;
       }
       if (rng.random_dec() < 0.5) {
         const rockHt = (8 + treeHtNs * 40) * 0.5 * scaleK;
-        const bushSpecs = addBushSpecs(rng, palette, x, y, y + VEG_Z_OFFSET + 0.0001,
-          lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK);
+        const bushSpecs = addBushSpecs(
+          rng,
+          palette,
+          x,
+          y,
+          y + VEG_Z_OFFSET + 0.0001,
+          lightValue,
+          rockHt,
+          hMap,
+          mapW,
+          mapH,
+          i,
+          j,
+          lightDir,
+          scaleK,
+        );
         for (const s of bushSpecs) specs.push(s);
       }
     } else {
       // Bush only
       const rockHt = (8 + treeHtNs * 40) * scaleK;
-      const bushSpecs = addBushSpecs(rng, palette, x, y, y + VEG_Z_OFFSET + 0.0001,
-        lightValue, rockHt, hMap, mapW, mapH, i, j, lightDir, scaleK);
+      const bushSpecs = addBushSpecs(
+        rng,
+        palette,
+        x,
+        y,
+        y + VEG_Z_OFFSET + 0.0001,
+        lightValue,
+        rockHt,
+        hMap,
+        mapW,
+        mapH,
+        i,
+        j,
+        lightDir,
+        scaleK,
+      );
       for (const s of bushSpecs) specs.push(s);
     }
 
@@ -839,7 +1003,7 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
         const _i = Math.floor(i + __i + shadowDx);
         const _j = Math.floor(j + __j + shadowDz);
         if (_i >= 0 && _i < mapW && _j >= 0 && _j < mapH) {
-          lMap[_i][_j] = lMap[_i][_j] * 0.3 + (-1) * 0.7;  // lerp toward -1 by 0.7
+          lMap[_i][_j] = lMap[_i][_j] * 0.3 + -1 * 0.7; // lerp toward -1 by 0.7
         }
       }
     }
@@ -849,8 +1013,8 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
     let x = rng.random_num(0, targetSz);
     let y = rng.random_num(0, targetSz);
 
-    const i = Math.max(0, Math.min(mapW - 1, Math.floor(x / targetSz * mapW)));
-    const j = Math.max(0, Math.min(mapH - 1, Math.floor(y / targetSz * mapH)));
+    const i = Math.max(0, Math.min(mapW - 1, Math.floor((x / targetSz) * mapW)));
+    const j = Math.max(0, Math.min(mapH - 1, Math.floor((y / targetSz) * mapH)));
     const ns = hMap[i][j];
 
     // Position warp (Sarkissian line 200-204):
@@ -863,31 +1027,32 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
     y += Math.sin(swirl) * warpSz;
     y += ns * terrainHt;
 
-    const z = y;  // depth = warped screen y (NOT raw y)
+    const z = y; // depth = warped screen y (NOT raw y)
 
     const dt = lMap[i][j];
-    const lightValue = (dt + 1) * 0.5;  // [-1, 1] → [0, 1]
+    const lightValue = (dt + 1) * 0.5; // [-1, 1] → [0, 1]
 
     // 2nd derivative → stroke length (gentle curvature = long, sharp = short)
     const nrm2 = hMapCurvatureMagSq(hMap, mapW, mapH, i, j);
-    const minStrokeLen = 15 * (targetSz / 400);  // scale-relative
+    const minStrokeLen = 15 * (targetSz / 400); // scale-relative
     const maxStrokeLen = 24 * (targetSz / 400);
     const lenT = Math.max(0, Math.min(1, (nrm2 - 0.0001) / (0.0008 - 0.0001)));
     const r = maxStrokeLen + (minStrokeLen - maxStrokeLen) * lenT;
 
     // Multi-scribble: 1-3 layers, more layers in warped/high-terrain areas
-    const warpAmt = Math.abs(y - z);  // = abs(ns * terrainHt + sin(swirl)*warpSz)
+    const warpAmt = Math.abs(y - z); // = abs(ns * terrainHt + sin(swirl)*warpSz)
     const maxScribblesBase = Math.abs(terrainHt) + Math.abs(warpSz);
-    const nScribbles = Math.max(1, Math.floor(
-      1 + (warpAmt / Math.max(1, maxScribblesBase)) * rng.random_num(0, 2)
-    ));
+    const nScribbles = Math.max(
+      1,
+      Math.floor(1 + (warpAmt / Math.max(1, maxScribblesBase)) * rng.random_num(0, 2)),
+    );
 
     // Angle from gradient direction (line 244 in original)
-    const i1 = (i === mapW - 1) ? mapW - 2 : i + 1;
+    const i1 = i === mapW - 1 ? mapW - 2 : i + 1;
     const dhx = hMap[i1][j] - hMap[i][j];
     // Sarkissian uses map(nrm.x, 1, -1, 0, PI/2) + PI/4 + random π flip
-    const nxNorm = Math.max(-1, Math.min(1, dhx * 100));  // approximate normal.x
-    const baseAngle = ((1 - nxNorm) * 0.5) * (Math.PI / 2) + Math.PI / 4;
+    const nxNorm = Math.max(-1, Math.min(1, dhx * 100)); // approximate normal.x
+    const baseAngle = (1 - nxNorm) * 0.5 * (Math.PI / 2) + Math.PI / 4;
     const flip = rng.random_dec() < 0.5 ? 0 : Math.PI;
 
     // Color via Sarkissian's lerp formula:
@@ -902,15 +1067,16 @@ function prepareSarkissianSpecs(rng, palette, maps, canvasSize, params) {
     for (let k = 0; k < nScribbles; k++) {
       const wobbleAngle = rng.random_num(0, Math.PI * 2);
       specs.push({
-        px: x, py: y,
+        px: x,
+        py: y,
         rx: 5 * (targetSz / 400),
         ry: r * rng.random_num(0.9, 1.1),
         hatchDensity: rng.random_num(1, 2),
         angle: baseAngle + flip,
         wobbleAngle,
         colorBase: color,
-        alpha: 0.25,  // = 64/255 (Sarkissian uses alpha=64)
-        depth: z,     // screen-y depth (larger z = closer to viewer = drawn last)
+        alpha: 0.25, // = 64/255 (Sarkissian uses alpha=64)
+        depth: z, // screen-y depth (larger z = closer to viewer = drawn last)
       });
     }
   }
@@ -952,16 +1118,16 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   const ctx = crayonCanvas.getContext('2d', { alpha: false });
   if (!ctx) throw new Error('[crayon] Canvas2D context unavailable');
 
-  let baked = null;            // bakedHeightmap if scene has terrain-eroded-rune
-  let sdfFn = null;            // CPU SDF function
+  let baked = null; // bakedHeightmap if scene has terrain-eroded-rune
+  let sdfFn = null; // CPU SDF function
   let camState = { position: [0, 0.5, -3], yaw: 0, pitch: 0 };
   let palette = null;
-  let paletteOpts = {};        // Phase 2: external buildPalette override
-  let specQueue = [];          // pre-baked scribble specs, sorted (back→front)
-  let currentScribble = null;  // single active SketchyShape (Sarkissian pattern)
+  let paletteOpts = {}; // Phase 2: external buildPalette override
+  let specQueue = []; // pre-baked scribble specs, sorted (back→front)
+  let currentScribble = null; // single active SketchyShape (Sarkissian pattern)
   let drawnCount = 0;
   let rafId = null;
-  let runRng = null;           // per-render rng (deterministic stamp pattern)
+  let runRng = null; // per-render rng (deterministic stamp pattern)
   let fpsLast = performance.now();
   let frameCount = 0;
   let boxSize = [0.5, 1.0, 0.5];
@@ -1000,13 +1166,13 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     let lightValue = 0.55;
     if (baked && hit.height != null) {
       const above = Math.max(0, (hit.height - 0.23) / 0.45);
-      lightValue = 0.20 + above * 0.70;
-      if (hit.trees > 0.4) lightValue = 0.30;
-      if (hit.ridge < -0.3) lightValue = 0.10;
+      lightValue = 0.2 + above * 0.7;
+      if (hit.trees > 0.4) lightValue = 0.3;
+      if (hit.ridge < -0.3) lightValue = 0.1;
     } else if (hit.p[1] < 0.05) {
-      lightValue = 0.30;
+      lightValue = 0.3;
     } else {
-      lightValue = 0.70;
+      lightValue = 0.7;
     }
     const isTree = baked && hit.trees > 0.55 && runRng.random_dec() < 0.5;
     const colorBase = isTree
@@ -1015,8 +1181,9 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
 
     // Slope-aligned angle — strokes "flow downhill" so brushwork reads as
     // sculpted relief rather than random scribble noise.
-    const angle = computeSlopeAngle(baked, boxSize, hit.p, camState, focal, w, h)
-      + (runRng.random_dec() < 0.5 ? 0 : Math.PI);   // random ±180° flip à la Sarkissian
+    const angle =
+      computeSlopeAngle(baked, boxSize, hit.p, camState, focal, w, h) +
+      (runRng.random_dec() < 0.5 ? 0 : Math.PI); // random ±180° flip à la Sarkissian
 
     // Anchor noise — small random displacement of the pixel position so the
     // stroke center isn't exactly on a uniform grid (organic placement).
@@ -1026,14 +1193,15 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     const anchorPy = py + Math.sin(offA) * offR;
 
     return {
-      px: anchorPx, py: anchorPy,
+      px: anchorPx,
+      py: anchorPy,
       angle,
       colorBase,
-      rx: 4 + runRng.random_num(-1, 2),               // narrow width (was 5-10)
-      ry: 20 + runRng.random_num(-6, 14),             // elongated (was 12-24)
+      rx: 4 + runRng.random_num(-1, 2), // narrow width (was 5-10)
+      ry: 20 + runRng.random_num(-6, 14), // elongated (was 12-24)
       wt: 2.4 + runRng.random_num(-0.4, 0.8),
-      alpha: isTree ? 0.30 : 0.24,
-      depth: hit.t,                                    // sort key — far→near
+      alpha: isTree ? 0.3 : 0.24,
+      depth: hit.t, // sort key — far→near
     };
   }
 
@@ -1048,16 +1216,14 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     let sk;
     if (spec.shapeKind === 'rect') {
       sk = new SketchyRectangle(
-        spec.px, spec.py,
-        spec.w ?? (spec.rx * 2),
-        spec.h ?? (spec.ry * 2),
+        spec.px,
+        spec.py,
+        spec.w ?? spec.rx * 2,
+        spec.h ?? spec.ry * 2,
         spec.hatchDensity ?? 0.2,
       );
     } else {
-      sk = new SketchyEllipse(
-        spec.px, spec.py, spec.rx, spec.ry,
-        spec.hatchDensity ?? 1.6, false,
-      );
+      sk = new SketchyEllipse(spec.px, spec.py, spec.rx, spec.ry, spec.hatchDensity ?? 1.6, false);
     }
     sk.wt = spec.wt ?? 2.5;
     sk.maxV = spec.maxV ?? 1.0;
@@ -1075,7 +1241,8 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   //       his Eucalyptus & Sagebrush sketch). NO raymarch.
   //   (B) Fallback for non-heightmap scenes → original 3D raymarch path.
   function prebakeSpecs() {
-    const w = crayonCanvas.width, h = crayonCanvas.height;
+    const w = crayonCanvas.width,
+      h = crayonCanvas.height;
     if (baked) return prebakeSpecsSarkissian(w, h);
     return prebakeSpecsRaymarch(w, h);
   }
@@ -1083,7 +1250,7 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
   // ── Path A: Sarkissian 2D top-down ────────────────────────────────────────
   function prebakeSpecsSarkissian(w, h) {
     // Light angle: -π/2 ± π/3, matching original line 69
-    const lightAngle = -Math.PI / 2 + (runRng.random_dec() < 0.5 ? -1 : 1) * Math.PI / 3;
+    const lightAngle = -Math.PI / 2 + ((runRng.random_dec() < 0.5 ? -1 : 1) * Math.PI) / 3;
     const lightDir = [Math.cos(lightAngle), Math.sin(lightAngle)];
     // Sarkissian's units: targetSz=400, terrainHt=-0.2*targetSz=-80, warpSz=10.
     // We use ~85% of canvas min-dim as the painting area so margins stay.
@@ -1092,12 +1259,15 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     const warpSz = 10 * (targetSz / 400);
     const maps = prepareSarkissianMaps(baked, boxSize, lightDir);
     const specs = prepareSarkissianSpecs(runRng, palette, maps, targetSz, {
-      terrainHt, warpSz, lightAngle,
+      terrainHt,
+      warpSz,
+      lightAngle,
     });
     // Center the painted area on canvas. Sarkissian translates by
     // (W/2 - targetSz/2, H/2 - (maxY-minY)/2 - minY).
     if (specs.length === 0) return specs;
-    let minPy = Infinity, maxPy = -Infinity;
+    let minPy = Infinity,
+      maxPy = -Infinity;
     for (const s of specs) {
       if (s.py < minPy) minPy = s.py;
       if (s.py > maxPy) maxPy = s.py;
@@ -1131,8 +1301,14 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
       } else if (skySpecs.length < 350) {
         const c = sampleStroke(palette, 0.88);
         skySpecs.push({
-          px, py, angle: runRng.random_num(0, Math.PI * 2),
-          colorBase: c, rx: 16, ry: 5, wt: 5, alpha: 0.05,
+          px,
+          py,
+          angle: runRng.random_num(0, Math.PI * 2),
+          colorBase: c,
+          rx: 16,
+          ry: 5,
+          wt: 5,
+          alpha: 0.05,
           depth: 999,
         });
       }
@@ -1149,7 +1325,7 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
     while (budget-- > 0) {
       if (!currentScribble) {
         if (specQueue.length === 0) break;
-        currentScribble = makeScribbleFromSpec(specQueue.pop());  // far→near order
+        currentScribble = makeScribbleFromSpec(specQueue.pop()); // far→near order
       }
       const r = currentScribble.step(ctx, rngRaw);
       if (r === 'done') {
@@ -1175,9 +1351,7 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
 
   return {
     render(sdfArg, compiled) {
-      sdfFn = (sdfArg && typeof sdfArg.f === 'function')
-        ? (p) => sdfArg.f(p)
-        : null;
+      sdfFn = sdfArg && typeof sdfArg.f === 'function' ? (p) => sdfArg.f(p) : null;
       // Camera from compiled.cameraStatic if available
       if (compiled && compiled.cameraStatic) {
         const cs = compiled.cameraStatic;
@@ -1187,16 +1361,22 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
             cs.targetY + cs.distance * Math.sin(cs.pitch),
             cs.targetZ - cs.distance * Math.cos(cs.yaw) * Math.cos(cs.pitch),
           ],
-          yaw: cs.yaw, pitch: cs.pitch,
+          yaw: cs.yaw,
+          pitch: cs.pitch,
         };
       }
       // Resolve rng for palette + stamp determinism — pull token from URL.
       const urlHash = (() => {
-        try { return new URLSearchParams(window.location.search).get('tokenHash'); } catch (_) { return null; }
+        try {
+          return new URLSearchParams(window.location.search).get('tokenHash');
+        } catch (_) {
+          return null;
+        }
       })();
-      const seedHash = urlHash
-        || (compiled && compiled.meta && compiled.meta.hash)
-        || '0x' + 'a3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
+      const seedHash =
+        urlHash ||
+        (compiled && compiled.meta && compiled.meta.hash) ||
+        '0x' + 'a3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
       runRng = new Random(seedHash);
       palette = buildPalette(runRng, paletteOpts);
       // Show + size the canvas
@@ -1215,24 +1395,36 @@ export function createCrayonRenderer({ canvas, getControls, onFps }) {
       return { bytes: 0 };
     },
     unmount() {
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       crayonCanvas.style.display = 'none';
       currentScribble = null;
       specQueue = [];
     },
-    canRender(_sdf) { return true; },
-    setRuneHeightmap(b) { baked = b; if (b) boxSize = [0.5, 1.0, 0.5]; },
+    canRender(_sdf) {
+      return true;
+    },
+    setRuneHeightmap(b) {
+      baked = b;
+      if (b) boxSize = [0.5, 1.0, 0.5];
+    },
     /**
      * Phase 2: bias the buildPalette draws so the per-token palette identity
      * lands in a curated family (jewel-tone / sunset / arctic / etc.) rather
      * than uniform-random. Pass { masterHue, saturation, paperHue/Sat/Val }.
      */
-    setPaletteOpts(opts) { paletteOpts = opts || {}; },
+    setPaletteOpts(opts) {
+      paletteOpts = opts || {};
+    },
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
       if (patch.yaw != null) camState.yaw = patch.yaw;
       if (patch.pitch != null) camState.pitch = patch.pitch;
     },
-    getCamState() { return { ...camState, position: [...camState.position] }; },
+    getCamState() {
+      return { ...camState, position: [...camState.position] };
+    },
   };
 }

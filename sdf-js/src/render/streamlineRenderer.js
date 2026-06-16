@@ -36,21 +36,24 @@ import { createPerlin } from '../field/noise.js';
 // =============================================================================
 
 function oklchToRgb(L, C, h) {
-  const Lp = L / 100, Cp = C / 100;
+  const Lp = L / 100,
+    Cp = C / 100;
   const hRad = (h * Math.PI) / 180;
   const a = Cp ? Cp * Math.cos(hRad) : 0;
   const b = Cp ? Cp * Math.sin(hRad) : 0;
   const lr = Lp + 0.3963377774 * a + 0.2158037573 * b;
   const lg = Lp - 0.1055613458 * a - 0.0638541728 * b;
-  const lb = Lp - 0.0894841775 * a - 1.2914855480 * b;
-  const l = lr * lr * lr, m = lg * lg * lg, s = lb * lb * lb;
+  const lb = Lp - 0.0894841775 * a - 1.291485548 * b;
+  const l = lr * lr * lr,
+    m = lg * lg * lg,
+    s = lb * lb * lb;
   const toSrgb = (x) => {
     const c = Math.max(0, Math.min(1, x));
     return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
   };
   return [
     Math.round(toSrgb(4.0767245293 * l - 3.3072168827 * m + 0.2307590544 * s) * 255),
-    Math.round(toSrgb(-1.2681437731 * l + 2.6093323231 * m - 0.3411344290 * s) * 255),
+    Math.round(toSrgb(-1.2681437731 * l + 2.6093323231 * m - 0.341134429 * s) * 255),
     Math.round(toSrgb(-0.0041119885 * l - 0.7034763098 * m + 1.7068625689 * s) * 255),
   ];
 }
@@ -59,11 +62,7 @@ function makeOklchPalette(L, C, hue0, hueSweep) {
   const stops = [];
   for (let i = 0; i < 5; i++) {
     const t = i / 4;
-    stops.push(oklchToRgb(
-      L[0] + (L[1] - L[0]) * t,
-      C[0] + (C[1] - C[0]) * t,
-      hue0 + hueSweep * t,
-    ));
+    stops.push(oklchToRgb(L[0] + (L[1] - L[0]) * t, C[0] + (C[1] - C[0]) * t, hue0 + hueSweep * t));
   }
   return stops;
 }
@@ -71,22 +70,22 @@ function makeOklchPalette(L, C, hue0, hueSweep) {
 // Riso-printer ink anchors (approximated from riso-colors npm + paper-colors).
 // Used by warhol / neon / riso / metallic / starfall styles.
 const RISO_ANCHORS = [
-  [255,  40, 130],  // fluorescent pink
-  [240,  85,  60],  // orange
-  [255, 145,  50],  // marigold
-  [255, 230,  85],  // sun yellow
-  [120, 220,  90],  // green
-  [70,  185, 215],  // sky blue
-  [55,   95, 230],  // medium blue
-  [125,  60, 215],  // violet
-  [225,  60, 180],  // magenta
-  [40,   90,  50],  // forest
-  [195,  35,  75],  // crimson
-  [248, 195, 105],  // sand
-  [90,  205, 200],  // teal
-  [180, 200, 230],  // pale blue
-  [240, 240,  70],  // electric yellow
-  [180,  90, 130],  // dusty rose
+  [255, 40, 130], // fluorescent pink
+  [240, 85, 60], // orange
+  [255, 145, 50], // marigold
+  [255, 230, 85], // sun yellow
+  [120, 220, 90], // green
+  [70, 185, 215], // sky blue
+  [55, 95, 230], // medium blue
+  [125, 60, 215], // violet
+  [225, 60, 180], // magenta
+  [40, 90, 50], // forest
+  [195, 35, 75], // crimson
+  [248, 195, 105], // sand
+  [90, 205, 200], // teal
+  [180, 200, 230], // pale blue
+  [240, 240, 70], // electric yellow
+  [180, 90, 130], // dusty rose
 ];
 
 function pickRiso(rng, n) {
@@ -106,18 +105,18 @@ function pickRiso(rng, n) {
 // =============================================================================
 
 const STYLE_WEIGHTS = [
-  ['acrylic',     24],
-  ['pencil',      24],
-  ['warhol',       9],
-  ['neon',         7],
-  ['screenprint',  6],
-  ['lino',         4],
-  ['riso',         5],
-  ['minimal',      6],
-  ['invert',       2],
-  ['metallic',     4],
-  ['drift',        3],
-  ['starfall',     1],
+  ['acrylic', 24],
+  ['pencil', 24],
+  ['warhol', 9],
+  ['neon', 7],
+  ['screenprint', 6],
+  ['lino', 4],
+  ['riso', 5],
+  ['minimal', 6],
+  ['invert', 2],
+  ['metallic', 4],
+  ['drift', 3],
+  ['starfall', 1],
 ];
 
 function rollStyle(rng) {
@@ -137,98 +136,156 @@ function buildStyle(name, rng) {
       const sweep = rng.random_num(40, 90) * (rng.random_bool(0.5) ? 1 : -1);
       const stops = makeOklchPalette([35, 85], [25, 32], hue, sweep);
       const paper = oklchToRgb(rng.random_num(70, 92), rng.random_num(8, 22), hue + 180);
-      return { name, paper, stops, composite: 'source-over', alphaMul: 0.6, widthMul: 1.0, lengthMul: 1.0 };
+      return {
+        name,
+        paper,
+        stops,
+        composite: 'source-over',
+        alphaMul: 0.6,
+        widthMul: 1.0,
+        lengthMul: 1.0,
+      };
     }
     case 'pencil': {
       const ink = [45, 40, 55];
       return {
-        name, paper: [250, 248, 244],
+        name,
+        paper: [250, 248, 244],
         stops: [ink, ink, ink, ink, ink],
-        composite: 'multiply', alphaMul: 0.65, widthMul: 0.7, lengthMul: 1.0, mono: true,
+        composite: 'multiply',
+        alphaMul: 0.65,
+        widthMul: 0.7,
+        lengthMul: 1.0,
+        mono: true,
       };
     }
     case 'warhol': {
       const pair = pickRiso(rng, 2);
       const paper = pickRiso(rng, 1)[0];
       return {
-        name, paper,
+        name,
+        paper,
         stops: [pair[0], pair[0], pair[1], pair[1], pair[0]],
-        composite: 'source-over', alphaMul: 0.70, widthMul: 1.05, lengthMul: 1.0,
+        composite: 'source-over',
+        alphaMul: 0.7,
+        widthMul: 1.05,
+        lengthMul: 1.0,
       };
     }
     case 'neon': {
       const inks = pickRiso(rng, 2);
       return {
-        name, paper: [10, 8, 18],
+        name,
+        paper: [10, 8, 18],
         stops: [inks[0], inks[0], inks[0], inks[1], inks[1]],
-        composite: 'screen', alphaMul: 0.55, widthMul: 0.9, lengthMul: 1.0,
+        composite: 'screen',
+        alphaMul: 0.55,
+        widthMul: 0.9,
+        lengthMul: 1.0,
       };
     }
     case 'screenprint': {
       const paper = pickRiso(rng, 1)[0];
       const ink = [250, 248, 245];
       return {
-        name, paper,
+        name,
+        paper,
         stops: [ink, ink, ink, ink, ink],
-        composite: 'source-over', alphaMul: 0.88, widthMul: 1.1, lengthMul: 1.0, mono: true,
+        composite: 'source-over',
+        alphaMul: 0.88,
+        widthMul: 1.1,
+        lengthMul: 1.0,
+        mono: true,
       };
     }
     case 'lino': {
       const paper = pickRiso(rng, 1)[0];
       const ink = [18, 14, 22];
       return {
-        name, paper,
+        name,
+        paper,
         stops: [ink, ink, ink, ink, ink],
-        composite: 'source-over', alphaMul: 0.95, widthMul: 1.15, lengthMul: 1.0, mono: true,
+        composite: 'source-over',
+        alphaMul: 0.95,
+        widthMul: 1.15,
+        lengthMul: 1.0,
+        mono: true,
       };
     }
     case 'riso': {
       const inks = pickRiso(rng, 4);
       return {
-        name, paper: [240, 232, 218],
+        name,
+        paper: [240, 232, 218],
         stops: [inks[0], inks[1], inks[2], inks[3], inks[0]],
-        composite: 'multiply', alphaMul: 0.58, widthMul: 1.0, lengthMul: 1.0,
+        composite: 'multiply',
+        alphaMul: 0.58,
+        widthMul: 1.0,
+        lengthMul: 1.0,
       };
     }
     case 'minimal': {
       const ink = [22, 20, 26];
       return {
-        name, paper: [248, 248, 244],
+        name,
+        paper: [248, 248, 244],
         stops: [ink, ink, ink, ink, ink],
-        composite: 'source-over', alphaMul: 0.62, widthMul: 0.9, lengthMul: 1.0, mono: true,
+        composite: 'source-over',
+        alphaMul: 0.62,
+        widthMul: 0.9,
+        lengthMul: 1.0,
+        mono: true,
       };
     }
     case 'invert': {
       const ink = [232, 228, 220];
       return {
-        name, paper: [16, 16, 20],
+        name,
+        paper: [16, 16, 20],
         stops: [ink, ink, ink, ink, ink],
-        composite: 'source-over', alphaMul: 0.58, widthMul: 0.9, lengthMul: 1.0, mono: true,
+        composite: 'source-over',
+        alphaMul: 0.58,
+        widthMul: 0.9,
+        lengthMul: 1.0,
+        mono: true,
       };
     }
     case 'metallic': {
       const inks = pickRiso(rng, 2);
       return {
-        name, paper: [18, 16, 26],
+        name,
+        paper: [18, 16, 26],
         stops: [[55, 55, 75], [80, 80, 100], inks[0], inks[1], [240, 232, 218]],
-        composite: 'screen', alphaMul: 0.60, widthMul: 0.95, lengthMul: 1.0, metallic: true,
+        composite: 'screen',
+        alphaMul: 0.6,
+        widthMul: 0.95,
+        lengthMul: 1.0,
+        metallic: true,
       };
     }
     case 'drift': {
       const hue = rng.random_num(0, 360);
       const stops = makeOklchPalette([55, 90], [18, 26], hue, rng.random_num(70, 160));
       return {
-        name, paper: oklchToRgb(28, 16, hue + 180),
+        name,
+        paper: oklchToRgb(28, 16, hue + 180),
         stops,
-        composite: 'screen', alphaMul: 0.26, widthMul: 0.7, lengthMul: 2.4,
+        composite: 'screen',
+        alphaMul: 0.26,
+        widthMul: 0.7,
+        lengthMul: 2.4,
       };
     }
     case 'starfall': {
       const inks = pickRiso(rng, 2);
       return {
-        name, paper: [8, 6, 16],
+        name,
+        paper: [8, 6, 16],
         stops: [[55, 80, 200], [110, 90, 240], inks[0], inks[1], [255, 250, 220]],
-        composite: 'screen', alphaMul: 0.65, widthMul: 0.85, lengthMul: 2.0,
+        composite: 'screen',
+        alphaMul: 0.65,
+        widthMul: 0.85,
+        lengthMul: 2.0,
       };
     }
   }
@@ -274,7 +331,8 @@ const SIN30 = Math.sin(Math.PI / 6);
 function projectIso(world, view) {
   const xRel = world[0] - (view.targetX || 0);
   const zRel = world[2] - (view.targetZ || 0);
-  const cosT = view.rotCos ?? 1, sinT = view.rotSin ?? 0;
+  const cosT = view.rotCos ?? 1,
+    sinT = view.rotSin ?? 0;
   const xR = xRel * cosT - zRel * sinT;
   const zR = xRel * sinT + zRel * cosT;
   return [
@@ -296,46 +354,65 @@ function parametricTerrain(u, v, baked, boxSize) {
 //  water dependency — Subscape just renders the full terrain clamped to ≥ 0).
 function computeMountainBounds(baked, boxSize, N = 64) {
   const FALLBACK = {
-    bboxCenterX: 0, bboxCenterZ: 0,
-    extentX: boxSize[0], extentZ: boxSize[2],
+    bboxCenterX: 0,
+    bboxCenterZ: 0,
+    extentX: boxSize[0],
+    extentZ: boxSize[2],
     peakY: boxSize[1],
-    peakX: 0, peakZ: 0,
+    peakX: 0,
+    peakZ: 0,
   };
   if (!baked) return FALLBACK;
-  let peakY = 0, peakX = 0, peakZ = 0;
+  let peakY = 0,
+    peakX = 0,
+    peakZ = 0;
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
-      const u = (i + 0.5) / N, v = (j + 0.5) / N;
+      const u = (i + 0.5) / N,
+        v = (j + 0.5) / N;
       const x = (u - 0.5) * 2 * boxSize[0];
       const z = (v - 0.5) * 2 * boxSize[2];
       const h = sampleHeightmap(baked, boxSize, x, z);
-      if (h > peakY) { peakY = h; peakX = x; peakZ = z; }
+      if (h > peakY) {
+        peakY = h;
+        peakX = x;
+        peakZ = z;
+      }
     }
   }
   if (peakY <= 0.001) return FALLBACK;
-  const threshold = peakY * 0.20;
-  let minX = Infinity, maxX = -Infinity;
-  let minZ = Infinity, maxZ = -Infinity;
+  const threshold = peakY * 0.2;
+  let minX = Infinity,
+    maxX = -Infinity;
+  let minZ = Infinity,
+    maxZ = -Infinity;
   let anyLand = false;
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
-      const u = (i + 0.5) / N, v = (j + 0.5) / N;
+      const u = (i + 0.5) / N,
+        v = (j + 0.5) / N;
       const x = (u - 0.5) * 2 * boxSize[0];
       const z = (v - 0.5) * 2 * boxSize[2];
       const h = sampleHeightmap(baked, boxSize, x, z);
       if (h > threshold) {
         anyLand = true;
-        if (x < minX) minX = x; if (x > maxX) maxX = x;
-        if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (z < minZ) minZ = z;
+        if (z > maxZ) maxZ = z;
       }
     }
   }
   if (!anyLand) {
     // Single-pixel peak — give it minimum extent around the peak position
     return {
-      bboxCenterX: peakX, bboxCenterZ: peakZ,
-      extentX: 0.08, extentZ: 0.08,
-      peakY, peakX, peakZ,
+      bboxCenterX: peakX,
+      bboxCenterZ: peakZ,
+      extentX: 0.08,
+      extentZ: 0.08,
+      peakY,
+      peakX,
+      peakZ,
     };
   }
   const bboxCenterX = (minX + maxX) * 0.5;
@@ -352,7 +429,9 @@ function surfaceNormal(baked, boxSize, x, z, eps = 0.012) {
   const hz1 = sampleHeightmap(baked, boxSize, x, z + eps);
   const dhx = (hx1 - hx0) / (2 * eps);
   const dhz = (hz1 - hz0) / (2 * eps);
-  const nx = -dhx, ny = 1, nz = -dhz;
+  const nx = -dhx,
+    ny = 1,
+    nz = -dhz;
   const len = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
   return [nx / len, ny / len, nz / len];
 }
@@ -373,15 +452,11 @@ const LIGHT_DIR = (() => {
 const SQRT3 = Math.sqrt(3);
 function makeViewDir(cosT, sinT) {
   // R(-θ) acting on (1, _, 1): xz = (cos·1 + sin·1, -sin·1 + cos·1) = (cos+sin, cos-sin)
-  return [
-    (cosT + sinT) / SQRT3,
-    1 / SQRT3,
-    (cosT - sinT) / SQRT3,
-  ];
+  return [(cosT + sinT) / SQRT3, 1 / SQRT3, (cosT - sinT) / SQRT3];
 }
 
 // Subscape Part 3 explicitly: discrete Lambert levels [0, 0.3, 0.75, 1].
-const LAMBERT_LEVELS = [0, 0.30, 0.75, 1.0];
+const LAMBERT_LEVELS = [0, 0.3, 0.75, 1.0];
 
 function lambertDiscrete(n) {
   const dot = Math.max(0, n[0] * LIGHT_DIR[0] + n[1] * LIGHT_DIR[1] + n[2] * LIGHT_DIR[2]);
@@ -409,19 +484,32 @@ function isBackFacing(n, viewDir, threshold = -0.55) {
 
 function quadtreeSplit(rng, rect, depth = 3, minSize = 0.14, splitJitter = 0.5) {
   const [[x0, y0], [x1, y1]] = rect;
-  const w = x1 - x0, h = y1 - y0;
+  const w = x1 - x0,
+    h = y1 - y0;
   if (depth <= 0 || (w < minSize && h < minSize)) return [rect];
   const horiz = rng.random_dec() < (h > w ? 0.65 : 0.35);
   const split = 0.5 + (rng.random_dec() - 0.5) * splitJitter;
   let r1, r2;
   if (horiz) {
     const cy = y0 + h * split;
-    r1 = [[x0, y0], [x1, cy]];
-    r2 = [[x0, cy], [x1, y1]];
+    r1 = [
+      [x0, y0],
+      [x1, cy],
+    ];
+    r2 = [
+      [x0, cy],
+      [x1, y1],
+    ];
   } else {
     const cx = x0 + w * split;
-    r1 = [[x0, y0], [cx, y1]];
-    r2 = [[cx, y0], [x1, y1]];
+    r1 = [
+      [x0, y0],
+      [cx, y1],
+    ];
+    r2 = [
+      [cx, y0],
+      [x1, y1],
+    ];
   }
   return [
     ...quadtreeSplit(rng, r1, depth - 1, minSize, splitJitter),
@@ -442,18 +530,23 @@ function poissonDisk2D(rng, rect, radius, k = 18) {
   const active = [];
   const points = [];
 
-  function inBounds(p) { return p[0] >= x0 && p[0] < x1 && p[1] >= y0 && p[1] < y1; }
-  function gridXY(p) { return [
-    Math.min(gw - 1, Math.max(0, Math.floor((p[0] - x0) / cell))),
-    Math.min(gh - 1, Math.max(0, Math.floor((p[1] - y0) / cell))),
-  ]; }
+  function inBounds(p) {
+    return p[0] >= x0 && p[0] < x1 && p[1] >= y0 && p[1] < y1;
+  }
+  function gridXY(p) {
+    return [
+      Math.min(gw - 1, Math.max(0, Math.floor((p[0] - x0) / cell))),
+      Math.min(gh - 1, Math.max(0, Math.floor((p[1] - y0) / cell))),
+    ];
+  }
   function farFromAll(p) {
     const [gx, gy] = gridXY(p);
     for (let yy = Math.max(0, gy - 2); yy <= Math.min(gh - 1, gy + 2); yy++) {
       for (let xx = Math.max(0, gx - 2); xx <= Math.min(gw - 1, gx + 2); xx++) {
         const q = grid[yy * gw + xx];
         if (q) {
-          const dx = q[0] - p[0], dy = q[1] - p[1];
+          const dx = q[0] - p[0],
+            dy = q[1] - p[1];
           if (dx * dx + dy * dy < radius * radius) return false;
         }
       }
@@ -464,7 +557,8 @@ function poissonDisk2D(rng, rect, radius, k = 18) {
   const p0 = [rng.random_num(x0, x1), rng.random_num(y0, y1)];
   const [g0x, g0y] = gridXY(p0);
   grid[g0y * gw + g0x] = p0;
-  active.push(p0); points.push(p0);
+  active.push(p0);
+  points.push(p0);
 
   let safety = 6000;
   while (active.length && safety-- > 0) {
@@ -506,11 +600,21 @@ function uniformGrid2D(rng, rect, cellSize) {
 // =============================================================================
 
 function traceUVStroke(u0, v0, panel, params) {
-  const { perlinFn, baked, boxSize, freq, stepLen, maxSteps,
-          angleBias, perlinOffsetU, perlinOffsetV } = params;
+  const {
+    perlinFn,
+    baked,
+    boxSize,
+    freq,
+    stepLen,
+    maxSteps,
+    angleBias,
+    perlinOffsetU,
+    perlinOffsetV,
+  } = params;
   const [[uMin, vMin], [uMax, vMax]] = panel;
   const path = [];
-  let u = u0, v = v0;
+  let u = u0,
+    v = v0;
   for (let i = 0; i < maxSteps; i++) {
     if (u < uMin || u > uMax || v < vMin || v > vMax) break;
     if (u < 0.005 || u > 0.995 || v < 0.005 || v > 0.995) break;
@@ -529,7 +633,8 @@ function traceUVStroke(u0, v0, panel, params) {
 
 function projectStrokePath(strokePath, baked, boxSize, view, doBackfaceCull) {
   if (strokePath.length < 2) return null;
-  const w2 = view.W + 60, h2 = view.H + 60;
+  const w2 = view.W + 60,
+    h2 = view.H + 60;
   const out = [];
   for (const step of strokePath) {
     if (doBackfaceCull) {
@@ -556,7 +661,8 @@ function getOrCreateTopoCanvas() {
   cv.id = 'c-topo';
   cv.style.cssText = ref.style.cssText || '';
   cv.style.display = 'none';
-  cv.width = ref.width; cv.height = ref.height;
+  cv.width = ref.width;
+  cv.height = ref.height;
   if (ref.parentNode) ref.parentNode.insertBefore(cv, ref.nextSibling);
   return cv;
 }
@@ -575,9 +681,13 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   let boxSize = [0.5, 1.0, 0.5];
   // Recomputed each time the bake is replaced (new tokenHash → new bonsai shape).
   let mountainBounds = {
-    bboxCenterX: 0, bboxCenterZ: 0,
-    extentX: 0.5, extentZ: 0.5,
-    peakY: 1.0, peakX: 0, peakZ: 0,
+    bboxCenterX: 0,
+    bboxCenterZ: 0,
+    extentX: 0.5,
+    extentZ: 0.5,
+    peakY: 1.0,
+    peakX: 0,
+    peakZ: 0,
   };
   // Box base depth (under the terrain): Subscape draws ~5 stacked horizontal
   // slices below the terrain floor at y=0.
@@ -592,32 +702,37 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   }
 
   function buildView() {
-    const W = topoCanvas.width, H = topoCanvas.height;
+    const W = topoCanvas.width,
+      H = topoCanvas.height;
     // Projection target = bbox center; rotation puts peak at -135° back diag.
     const tx = mountainBounds.bboxCenterX;
     const tz = mountainBounds.bboxCenterZ;
     const pxRel = mountainBounds.peakX - tx;
     const pzRel = mountainBounds.peakZ - tz;
     const peakDist = Math.sqrt(pxRel * pxRel + pzRel * pzRel);
-    const TARGET_ANGLE = -3 * Math.PI / 4;
+    const TARGET_ANGLE = (-3 * Math.PI) / 4;
     const peakAngle = peakDist > 0.01 ? Math.atan2(pzRel, pxRel) : TARGET_ANGLE;
     const theta = TARGET_ANGLE - peakAngle;
-    const cosT = Math.cos(theta), sinT = Math.sin(theta);
+    const cosT = Math.cos(theta),
+      sinT = Math.sin(theta);
 
     // Box base wraps the mountain bbox (not full footprint) so the box and
     // mountain look like one unit. Add small padding so strokes near bbox
     // edge meet the box wall, not protrude past it.
-    const padK = 1.10;
+    const padK = 1.1;
     const boxEx = mountainBounds.extentX * padK;
     const boxEz = mountainBounds.extentZ * padK;
 
     // Sample heightmap WITHIN bbox-padded area (where strokes actually draw)
     // plus the 8 box corners (4 top y=0, 4 bottom y=-depth) to find true iso
     // extents. Auto-center on this iso bounding box.
-    let minIsoX = Infinity, maxIsoX = -Infinity;
-    let minIsoY = Infinity, maxIsoY = -Infinity;
+    let minIsoX = Infinity,
+      maxIsoX = -Infinity;
+    let minIsoY = Infinity,
+      maxIsoY = -Infinity;
     const projectSample = (x, y, z) => {
-      const xRel = x - tx, zRel = z - tz;
+      const xRel = x - tx,
+        zRel = z - tz;
       const xR = xRel * cosT - zRel * sinT;
       const zR = xRel * sinT + zRel * cosT;
       const ix = (xR - zR) * COS30;
@@ -629,11 +744,14 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     };
     if (baked) {
       const Ns = 24;
-      const xMin = tx - boxEx, xMax = tx + boxEx;
-      const zMin = tz - boxEz, zMax = tz + boxEz;
+      const xMin = tx - boxEx,
+        xMax = tx + boxEx;
+      const zMin = tz - boxEz,
+        zMax = tz + boxEz;
       for (let i = 0; i <= Ns; i++) {
         for (let j = 0; j <= Ns; j++) {
-          const t1 = i / Ns, t2 = j / Ns;
+          const t1 = i / Ns,
+            t2 = j / Ns;
           const x = xMin + t1 * (xMax - xMin);
           const z = zMin + t2 * (zMax - zMin);
           const h = Math.max(0, sampleHeightmap(baked, boxSize, x, z));
@@ -642,8 +760,12 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
       }
     }
     // Box-base corners (bbox-padded, at y=0 and y=-depth)
-    for (const [cx0, cz0] of [[tx+boxEx, tz+boxEz], [tx-boxEx, tz+boxEz],
-                               [tx-boxEx, tz-boxEz], [tx+boxEx, tz-boxEz]]) {
+    for (const [cx0, cz0] of [
+      [tx + boxEx, tz + boxEz],
+      [tx - boxEx, tz + boxEz],
+      [tx - boxEx, tz - boxEz],
+      [tx + boxEx, tz - boxEz],
+    ]) {
       projectSample(cx0, 0, cz0);
       projectSample(cx0, -BOX_BASE_DEPTH, cz0);
     }
@@ -659,12 +781,19 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     const cy = H * 0.5 - isoCenterY * scale;
 
     return {
-      cx, cy, scale, W, H,
-      targetX: tx, targetZ: tz,
+      cx,
+      cy,
+      scale,
+      W,
+      H,
+      targetX: tx,
+      targetZ: tz,
       // Box base wraps mountain area + small padding → mountain visually
       // sits inside its own platform regardless of where bake placed it.
-      boxExtentX: boxEx, boxExtentZ: boxEz,
-      rotCos: cosT, rotSin: sinT,
+      boxExtentX: boxEx,
+      boxExtentZ: boxEz,
+      rotCos: cosT,
+      rotSin: sinT,
       viewDir: makeViewDir(cosT, sinT),
     };
   }
@@ -695,8 +824,10 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     // Box base sits UNDER the terrain — Subscape draws ~5 horizontal slices
     // descending from y=0 (terrain floor) down to y=-BOX_BASE_DEPTH. The top
     // layer at y=0 visually meets the lowest terrain sample.
-    const ex = view.boxExtentX, ez = view.boxExtentZ;
-    const cx = view.targetX, cz = view.targetZ;
+    const ex = view.boxExtentX,
+      ez = view.boxExtentZ;
+    const cx = view.targetX,
+      cz = view.targetZ;
     const layerYs = [
       0.0,
       -BOX_BASE_DEPTH * 0.25,
@@ -763,9 +894,12 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     // Seed scatter — Poisson default, Grid 8% of tokens.
     // density = target seeds per unit area; ~50% will land below water /
     // backface, so we set density high to keep visible-front populated.
-    const density = treatment === 'stippled'
-      ? rng.random_int(14000, 22000)
-      : (treatment === 'brushed' ? rng.random_int(5000, 8500) : rng.random_int(9000, 15000));
+    const density =
+      treatment === 'stippled'
+        ? rng.random_int(14000, 22000)
+        : treatment === 'brushed'
+          ? rng.random_int(5000, 8500)
+          : rng.random_int(9000, 15000);
     const area = (panel[1][0] - panel[0][0]) * (panel[1][1] - panel[0][1]);
     const targetN = Math.max(20, Math.round(area * density));
     // Bridson 2D packing density ≈ 1 / (2·√3·r²) → invert for r given target.
@@ -796,10 +930,11 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         const bandIdx = patchBandIdx >= 0 ? patchBandIdx : Math.min(4, Math.floor(altNorm * 5));
         const color = style.stops[bandIdx];
         const alpha = style.alphaMul * lamMul;
-        const radius = (style.widthMul * (1.2 + rng.random_num(0, 0.7)));
+        const radius = style.widthMul * (1.2 + rng.random_num(0, 0.7));
         // Painter's depth in ROTATED frame (camera direction is rotated, so
         // unrotated x+z gives wrong back-to-front order).
-        const xRelDot = wp[0] - view.targetX, zRelDot = wp[2] - view.targetZ;
+        const xRelDot = wp[0] - view.targetX,
+          zRelDot = wp[2] - view.targetZ;
         const xRDot = xRelDot * view.rotCos - zRelDot * view.rotSin;
         const zRDot = xRelDot * view.rotSin + zRelDot * view.rotCos;
         specs.push({ kind: 'dot', sx, sy, color, alpha, radius, depth: -(xRDot + zRDot) });
@@ -816,8 +951,15 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
       if (isBackFacing(nSeed, view.viewDir)) continue;
 
       const strokeRaw = traceUVStroke(u0, v0, panel, {
-        perlinFn, baked, boxSize, freq, stepLen, maxSteps,
-        angleBias, perlinOffsetU, perlinOffsetV,
+        perlinFn,
+        baked,
+        boxSize,
+        freq,
+        stepLen,
+        maxSteps,
+        angleBias,
+        perlinOffsetU,
+        perlinOffsetV,
       });
       if (strokeRaw.length < 3) continue;
 
@@ -838,7 +980,8 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
       const alpha = style.alphaMul * lamMul * (treatment === 'brushed' ? 0.7 : 1.0);
 
       // Painter's depth in ROTATED frame
-      const xRelD = midRaw[0] - view.targetX, zRelD = midRaw[2] - view.targetZ;
+      const xRelD = midRaw[0] - view.targetX,
+        zRelD = midRaw[2] - view.targetZ;
       const xRD = xRelD * view.rotCos - zRelD * view.rotSin;
       const zRD = xRelD * view.rotSin + zRelD * view.rotCos;
       const depth = -(xRD + zRD);
@@ -849,13 +992,22 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         // approximation (segment-by-segment lerp).
         const altColor = style.stops[(bandIdx + 2) % style.stops.length];
         specs.push({
-          kind: 'blendedLine', screenPath, color, altColor,
-          alpha, lineWidth, depth,
+          kind: 'blendedLine',
+          screenPath,
+          color,
+          altColor,
+          alpha,
+          lineWidth,
+          depth,
         });
       } else {
         specs.push({
-          kind: 'line', screenPath, color,
-          alpha, lineWidth, depth,
+          kind: 'line',
+          screenPath,
+          color,
+          alpha,
+          lineWidth,
+          depth,
         });
       }
     }
@@ -904,7 +1056,7 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   // ---------------------------------------------------------------------------
   function renderWireframe(rng, view, style) {
     if (!baked) return 0;
-    const N = rng.random_int(34, 56);  // mesh resolution
+    const N = rng.random_int(34, 56); // mesh resolution
     const ink = style.stops[2];
     const alpha = style.alphaMul * 0.9;
     ctx.strokeStyle = `rgba(${ink[0]},${ink[1]},${ink[2]},${alpha})`;
@@ -922,8 +1074,10 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
     let count = 0;
     for (let j = 0; j < N; j++) {
       for (let i = 0; i < N; i++) {
-        const x0 = xMin + i * dx, z0 = zMin + j * dz;
-        const x1 = x0 + dx,        z1 = z0 + dz;
+        const x0 = xMin + i * dx,
+          z0 = zMin + j * dz;
+        const x1 = x0 + dx,
+          z1 = z0 + dz;
         const ha = sampleHeightmap(baked, boxSize, x0, z0);
         const hb = sampleHeightmap(baked, boxSize, x1, z0);
         const hc = sampleHeightmap(baked, boxSize, x1, z1);
@@ -938,8 +1092,10 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         const ccz = (a[2] + b[2] + c[2] + d[2]) / 4;
         const n = surfaceNormal(baked, boxSize, ccx, ccz);
         if (isBackFacing(n, view.viewDir, 0)) continue;
-        const pa = projectIso(a, view), pb = projectIso(b, view);
-        const pc = projectIso(c, view), pd = projectIso(d, view);
+        const pa = projectIso(a, view),
+          pb = projectIso(b, view);
+        const pc = projectIso(c, view),
+          pd = projectIso(d, view);
         ctx.beginPath();
         ctx.moveTo(pa[0], pa[1]);
         ctx.lineTo(pb[0], pb[1]);
@@ -984,11 +1140,14 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
   return {
     render(_sdfArg, _compiled) {
       const urlHash = (() => {
-        try { return new URLSearchParams(window.location.search).get('tokenHash'); }
-        catch (_) { return null; }
+        try {
+          return new URLSearchParams(window.location.search).get('tokenHash');
+        } catch (_) {
+          return null;
+        }
       })();
-      const seedHash = urlHash
-        || '0xa3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
+      const seedHash =
+        urlHash || '0xa3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d';
       const rng = new Random(seedHash);
 
       // ── Trait rolls ────────────────────────────────────────────────────────
@@ -1030,17 +1189,15 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
       } else {
         // BSP root = bbox-padded uv region (matches what box base wraps).
         // Heights still clamp to 0; strokes near bbox edge sit at y=0 = box top.
-        const uMin = (view.targetX - view.boxExtentX) / boxSize[0] * 0.5 + 0.5;
-        const uMax = (view.targetX + view.boxExtentX) / boxSize[0] * 0.5 + 0.5;
-        const vMin = (view.targetZ - view.boxExtentZ) / boxSize[2] * 0.5 + 0.5;
-        const vMax = (view.targetZ + view.boxExtentZ) / boxSize[2] * 0.5 + 0.5;
+        const uMin = ((view.targetX - view.boxExtentX) / boxSize[0]) * 0.5 + 0.5;
+        const uMax = ((view.targetX + view.boxExtentX) / boxSize[0]) * 0.5 + 0.5;
+        const vMin = ((view.targetZ - view.boxExtentZ) / boxSize[2]) * 0.5 + 0.5;
+        const vMax = ((view.targetZ + view.boxExtentZ) / boxSize[2]) * 0.5 + 0.5;
         const rootRect = [
           [Math.max(0, uMin), Math.max(0, vMin)],
           [Math.min(1, uMax), Math.min(1, vMax)],
         ];
-        const panels = isPatchwork
-          ? quadtreeSplit(rng, rootRect, 3, 0.14, 0.5)
-          : [rootRect];
+        const panels = isPatchwork ? quadtreeSplit(rng, rootRect, 3, 0.14, 0.5) : [rootRect];
         panelCount = panels.length;
 
         const allSpecs = [];
@@ -1066,10 +1223,11 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
             const pivotX = s.kind === 'dot' ? s.sx : s.screenPath[0][0];
             const pivotY = s.kind === 'dot' ? s.sy : s.screenPath[0][1];
             // Map screen back to a fake UV via canvas extent (loose; good enough)
-            const ratio = filter.axis === 'u'
-              ? (pivotX / view.W)
-              : (pivotY / view.H);
-            const cell = Math.min(filter.cellCount - 1, Math.max(0, Math.floor(ratio * filter.cellCount)));
+            const ratio = filter.axis === 'u' ? pivotX / view.W : pivotY / view.H;
+            const cell = Math.min(
+              filter.cellCount - 1,
+              Math.max(0, Math.floor(ratio * filter.cellCount)),
+            );
             if (!filter.holes.has(cell)) specs.push(s);
           }
         }
@@ -1095,8 +1253,12 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         primCount,
       };
     },
-    unmount() { topoCanvas.style.display = 'none'; },
-    canRender(_sdf) { return true; },
+    unmount() {
+      topoCanvas.style.display = 'none';
+    },
+    canRender(_sdf) {
+      return true;
+    },
     setRuneHeightmap(b) {
       baked = b;
       if (b) {
@@ -1106,12 +1268,16 @@ export function createStreamlineRenderer({ canvas, getControls, onFps }) {
         mountainBounds = { centerX: 0, centerZ: 0, extentX: 0.5, extentZ: 0.5, peakY: 1.0 };
       }
     },
-    setPaletteOpts(_opts) { /* iso/style are hash-driven; external palette ignored */ },
+    setPaletteOpts(_opts) {
+      /* iso/style are hash-driven; external palette ignored */
+    },
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
       if (patch.yaw != null) camState.yaw = patch.yaw;
       if (patch.pitch != null) camState.pitch = patch.pitch;
     },
-    getCamState() { return { ...camState, position: [...camState.position] }; },
+    getCamState() {
+      return { ...camState, position: [...camState.position] };
+    },
   };
 }

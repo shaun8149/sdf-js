@@ -14,7 +14,8 @@ import { numLit, vecLit } from './time.js';
 // ---- Primitives ------------------------------------------------------------
 
 export const sphere = (radius = 1, center = v.ORIGIN) => {
-  const r0 = numLit(radius), c0 = vecLit(center);
+  const r0 = numLit(radius),
+    c0 = vecLit(center);
   const inst = SDF3((p) => v.length(v.sub(p, c0)) - r0);
   inst.ast = { kind: 'prim', name: 'sphere', args: [radius, center] };
   return inst;
@@ -29,7 +30,9 @@ export const box = (size = 1, center = v.ORIGIN) => {
     const qx = Math.abs(p[0] - c0[0]) - half[0];
     const qy = Math.abs(p[1] - c0[1]) - half[1];
     const qz = Math.abs(p[2] - c0[2]) - half[2];
-    const ox = Math.max(qx, 0), oy = Math.max(qy, 0), oz = Math.max(qz, 0);
+    const ox = Math.max(qx, 0),
+      oy = Math.max(qy, 0),
+      oz = Math.max(qz, 0);
     const outside = Math.sqrt(ox * ox + oy * oy + oz * oz);
     const inside = Math.min(Math.max(qx, qy, qz), 0);
     return outside + inside;
@@ -49,7 +52,9 @@ export const plane = (normal = v.UP, point = v.ORIGIN) => {
 // 胶囊体（capsule）SDF：圆柱 + 两端半球。a, b 是胶囊轴的两个端点（球心），r 是半径。
 // 算法：把 p 投影到线段 a→b 上 clamp 到 [0,1]，距离最近投影点减去 r。
 export const capsule = (a, b, r) => {
-  const a0 = vecLit(a), b0 = vecLit(b), r0 = numLit(r);
+  const a0 = vecLit(a),
+    b0 = vecLit(b),
+    r0 = numLit(r);
   const inst = SDF3((p) => {
     const pa = v.sub(p, a0);
     const ba = v.sub(b0, a0);
@@ -66,7 +71,8 @@ export const capsule = (a, b, r) => {
 // torus（环形面包）：旋转轴 = Y。majorR = 中心圆环半径，minorR = 管半径。
 // 等价于 circle(minorR).translate([majorR, 0]).revolve(0)，但 native 更直接。
 export const torus = (majorR = 0.4, minorR = 0.1) => {
-  const R0 = numLit(majorR), r0 = numLit(minorR);
+  const R0 = numLit(majorR),
+    r0 = numLit(minorR);
   const inst = SDF3((p) => {
     const radial = Math.sqrt(p[0] * p[0] + p[2] * p[2]) - R0;
     return Math.sqrt(radial * radial + p[1] * p[1]) - r0;
@@ -78,11 +84,13 @@ export const torus = (majorR = 0.4, minorR = 0.1) => {
 // cylinder（圆柱）：轴 = Y，有限高度。radius + height。
 // 等价于 circle(r).extrude(h)，但 native 更直接。
 export const cylinder = (radius = 0.3, height = 1.0) => {
-  const r0 = numLit(radius), h0 = numLit(height);
+  const r0 = numLit(radius),
+    h0 = numLit(height);
   const inst = SDF3((p) => {
     const r = Math.sqrt(p[0] * p[0] + p[2] * p[2]) - r0;
     const a = Math.abs(p[1]) - h0 / 2;
-    const o0 = Math.max(r, 0), o1 = Math.max(a, 0);
+    const o0 = Math.max(r, 0),
+      o1 = Math.max(a, 0);
     return Math.sqrt(o0 * o0 + o1 * o1) + Math.min(Math.max(r, a), 0);
   });
   inst.ast = { kind: 'prim', name: 'cylinder', args: [radius, height] };
@@ -92,10 +100,16 @@ export const cylinder = (radius = 0.3, height = 1.0) => {
 // capped_cylinder：任意两点 a / b 之间的圆柱。管道 / 肢体 / 灯柱必备。
 // IQ canonical formula（用 baba 归一化 避免 sqrt 提前）。
 export const capped_cylinder = (a, b, radius = 0.1) => {
-  const a0 = vecLit(a), b0 = vecLit(b), r0 = numLit(radius);
+  const a0 = vecLit(a),
+    b0 = vecLit(b),
+    r0 = numLit(radius);
   const inst = SDF3((p) => {
-    const bax = b0[0] - a0[0], bay = b0[1] - a0[1], baz = b0[2] - a0[2];
-    const pax = p[0] - a0[0], pay = p[1] - a0[1], paz = p[2] - a0[2];
+    const bax = b0[0] - a0[0],
+      bay = b0[1] - a0[1],
+      baz = b0[2] - a0[2];
+    const pax = p[0] - a0[0],
+      pay = p[1] - a0[1],
+      paz = p[2] - a0[2];
     const baba = bax * bax + bay * bay + baz * baz;
     const paba = pax * bax + pay * bay + paz * baz;
     const cx = pax * baba - bax * paba;
@@ -108,7 +122,7 @@ export const capped_cylinder = (a, b, radius = 0.1) => {
     let d;
     if (Math.max(x, y) < 0) d = -Math.min(x2, y2);
     else d = (x > 0 ? x2 : 0) + (y > 0 ? y2 : 0);
-    return Math.sign(d) * Math.sqrt(Math.abs(d)) / baba;
+    return (Math.sign(d) * Math.sqrt(Math.abs(d))) / baba;
   });
   inst.ast = { kind: 'prim', name: 'capped_cylinder', args: [a, b, radius] };
   return inst;
@@ -119,12 +133,16 @@ export const capped_cylinder = (a, b, radius = 0.1) => {
 export const ellipsoid = (radii = [0.4, 0.3, 0.4]) => {
   const [rx, ry, rz] = vecLit(radii);
   const inst = SDF3((p) => {
-    const px = p[0] / rx, py = p[1] / ry, pz = p[2] / rz;
+    const px = p[0] / rx,
+      py = p[1] / ry,
+      pz = p[2] / rz;
     const k0 = Math.sqrt(px * px + py * py + pz * pz);
-    if (k0 < 1e-9) return -Math.min(rx, ry, rz);  // 中心点
-    const px2 = p[0] / (rx * rx), py2 = p[1] / (ry * ry), pz2 = p[2] / (rz * rz);
+    if (k0 < 1e-9) return -Math.min(rx, ry, rz); // 中心点
+    const px2 = p[0] / (rx * rx),
+      py2 = p[1] / (ry * ry),
+      pz2 = p[2] / (rz * rz);
     const k1 = Math.sqrt(px2 * px2 + py2 * py2 + pz2 * pz2);
-    return k0 * (k0 - 1) / k1;
+    return (k0 * (k0 - 1)) / k1;
   });
   inst.ast = { kind: 'prim', name: 'ellipsoid', args: [radii] };
   return inst;
@@ -135,14 +153,17 @@ export const rounded_box = (size = 0.6, radius = 0.05) => {
   const sRaw = Array.isArray(size) ? size : [size, size, size];
   const s = vecLit(sRaw);
   const r0 = numLit(radius);
-  const halfx = s[0] / 2, halfy = s[1] / 2, halfz = s[2] / 2;
+  const halfx = s[0] / 2,
+    halfy = s[1] / 2,
+    halfz = s[2] / 2;
   const inst = SDF3((p) => {
     const qx = Math.abs(p[0]) - halfx + r0;
     const qy = Math.abs(p[1]) - halfy + r0;
     const qz = Math.abs(p[2]) - halfz + r0;
-    const ox = Math.max(qx, 0), oy = Math.max(qy, 0), oz = Math.max(qz, 0);
-    return Math.sqrt(ox * ox + oy * oy + oz * oz)
-         + Math.min(Math.max(qx, qy, qz), 0) - r0;
+    const ox = Math.max(qx, 0),
+      oy = Math.max(qy, 0),
+      oz = Math.max(qz, 0);
+    return Math.sqrt(ox * ox + oy * oy + oz * oz) + Math.min(Math.max(qx, qy, qz), 0) - r0;
   });
   inst.ast = { kind: 'prim', name: 'rounded_box', args: [size, radius] };
   return inst;
@@ -151,10 +172,17 @@ export const rounded_box = (size = 0.6, radius = 0.05) => {
 // capped_cone：任意两点 a/b 之间的截锥（frustum）。ra = a 端半径，rb = b 端半径。
 // IQ canonical formula（用 baba 归一化）。
 export const capped_cone = (a, b, ra = 0.3, rb = 0.1) => {
-  const a0 = vecLit(a), b0 = vecLit(b), ra0 = numLit(ra), rb0 = numLit(rb);
+  const a0 = vecLit(a),
+    b0 = vecLit(b),
+    ra0 = numLit(ra),
+    rb0 = numLit(rb);
   const inst = SDF3((p) => {
-    const bax = b0[0] - a0[0], bay = b0[1] - a0[1], baz = b0[2] - a0[2];
-    const pax = p[0] - a0[0], pay = p[1] - a0[1], paz = p[2] - a0[2];
+    const bax = b0[0] - a0[0],
+      bay = b0[1] - a0[1],
+      baz = b0[2] - a0[2];
+    const pax = p[0] - a0[0],
+      pay = p[1] - a0[1],
+      paz = p[2] - a0[2];
     const baba = bax * bax + bay * bay + baz * baz;
     const papa = pax * pax + pay * pay + paz * paz;
     const paba = (pax * bax + pay * bay + paz * baz) / baba;
@@ -167,7 +195,7 @@ export const capped_cone = (a, b, ra = 0.3, rb = 0.1) => {
     const f = Math.max(0, Math.min(1, (rba * (x - ra0) + paba * baba) / k));
     const cbx = x - ra0 - f * rba;
     const cby = paba - f;
-    const s = (cbx < 0 && cay < 0) ? -1 : 1;
+    const s = cbx < 0 && cay < 0 ? -1 : 1;
     return s * Math.sqrt(Math.min(cax * cax + cay * cay * baba, cbx * cbx + cby * cby * baba));
   });
   inst.ast = { kind: 'prim', name: 'capped_cone', args: [a, b, ra, rb] };
@@ -178,7 +206,8 @@ export const capped_cone = (a, b, ra = 0.3, rb = 0.1) => {
 // 内部用 capped_cone（tip 用 0.001 微小半径避免数学退化）。
 // AST override：cone 是独立 primitive，不要继承 capped_cone 的 AST。
 export const cone = (height = 0.5, baseRadius = 0.3) => {
-  const h0 = numLit(height), r0 = numLit(baseRadius);
+  const h0 = numLit(height),
+    r0 = numLit(baseRadius);
   const inst = capped_cone([0, -h0 / 2, 0], [0, h0 / 2, 0], r0, 0.001);
   inst.ast = { kind: 'prim', name: 'cone', args: [height, baseRadius] };
   return inst;
@@ -189,10 +218,10 @@ export const cone = (height = 0.5, baseRadius = 0.3) => {
 // tetrahedron：四面体（D4 骰子 / 钻石尖端）。r = 顶点距原点。
 export const tetrahedron = (r = 0.4) => {
   const r0 = numLit(r);
-  const inst = SDF3((p) => (Math.max(
-    Math.abs(p[0] + p[1]) - p[2],
-    Math.abs(p[0] - p[1]) + p[2]
-  ) - r0) / Math.sqrt(3));
+  const inst = SDF3(
+    (p) =>
+      (Math.max(Math.abs(p[0] + p[1]) - p[2], Math.abs(p[0] - p[1]) + p[2]) - r0) / Math.sqrt(3),
+  );
   inst.ast = { kind: 'prim', name: 'tetrahedron', args: [r] };
   return inst;
 };
@@ -206,10 +235,19 @@ export const octahedron = (r = 0.4) => {
     const pz = Math.abs(p[2]);
     const m = px + py + pz - r0;
     let qx, qy, qz;
-    if (3 * px < m) { qx = px; qy = py; qz = pz; }
-    else if (3 * py < m) { qx = py; qy = pz; qz = px; }
-    else if (3 * pz < m) { qx = pz; qy = px; qz = py; }
-    else return m * 0.57735027;
+    if (3 * px < m) {
+      qx = px;
+      qy = py;
+      qz = pz;
+    } else if (3 * py < m) {
+      qx = py;
+      qy = pz;
+      qz = px;
+    } else if (3 * pz < m) {
+      qx = pz;
+      qy = px;
+      qz = py;
+    } else return m * 0.57735027;
     const k = Math.max(0, Math.min(r0, 0.5 * (qz - qy + r0)));
     const dx = qx;
     const dy = qy - r0 + k;
@@ -225,7 +263,8 @@ export const dodecahedron = (r = 0.4) => {
   const r0 = numLit(r);
   const phi = (1 + Math.sqrt(5)) / 2;
   const len = Math.sqrt(1 + (1 + phi) * (1 + phi));
-  const nx = 1 / len, ny = (1 + phi) / len;
+  const nx = 1 / len,
+    ny = (1 + phi) / len;
   const inst = SDF3((p) => {
     const px = Math.abs(p[0]) / r0;
     const py = Math.abs(p[1]) / r0;
@@ -245,7 +284,8 @@ export const icosahedron = (r = 0.4) => {
   const R = r0 * 0.8506507174597755;
   const phi = (1 + Math.sqrt(5)) / 2;
   const len = Math.sqrt(1 + (1 + phi) * (1 + phi));
-  const nx = 1 / len, ny = (1 + phi) / len;
+  const nx = 1 / len,
+    ny = (1 + phi) / len;
   const w13 = 1 / Math.sqrt(3);
   const inst = SDF3((p) => {
     const px = Math.abs(p[0]) / R;
@@ -269,8 +309,13 @@ export const pyramid = (h = 0.5) => {
   const inst = SDF3((p) => {
     let px = Math.abs(p[0]);
     let pz = Math.abs(p[2]);
-    if (pz > px) { const t = px; px = pz; pz = t; }
-    px -= 0.5; pz -= 0.5;
+    if (pz > px) {
+      const t = px;
+      px = pz;
+      pz = t;
+    }
+    px -= 0.5;
+    pz -= 0.5;
     const py = p[1];
     const qx = pz;
     const qy = h0 * py - 0.5 * px;
@@ -307,12 +352,15 @@ export const slab3 = (opts = {}) => {
 export const wireframe_box = (size = 0.6, thickness = 0.04) => {
   const sRaw = Array.isArray(size) ? size : [size, size, size];
   const s = vecLit(sRaw);
-  const bx = s[0] / 2, by = s[1] / 2, bz = s[2] / 2;
+  const bx = s[0] / 2,
+    by = s[1] / 2,
+    bz = s[2] / 2;
   const e = numLit(thickness);
   const dist3 = (a, b, c) => {
-    const ox = Math.max(a, 0), oy = Math.max(b, 0), oz = Math.max(c, 0);
-    return Math.sqrt(ox * ox + oy * oy + oz * oz)
-         + Math.min(Math.max(a, Math.max(b, c)), 0);
+    const ox = Math.max(a, 0),
+      oy = Math.max(b, 0),
+      oz = Math.max(c, 0);
+    return Math.sqrt(ox * ox + oy * oy + oz * oz) + Math.min(Math.max(a, Math.max(b, c)), 0);
   };
   const inst = SDF3((p) => {
     const px = Math.abs(p[0]) - bx;
@@ -321,10 +369,7 @@ export const wireframe_box = (size = 0.6, thickness = 0.04) => {
     const qx = Math.abs(px + e) - e;
     const qy = Math.abs(py + e) - e;
     const qz = Math.abs(pz + e) - e;
-    return Math.min(Math.min(
-      dist3(px, qy, qz),
-      dist3(qx, py, qz)),
-      dist3(qx, qy, pz));
+    return Math.min(Math.min(dist3(px, qy, qz), dist3(qx, py, qz)), dist3(qx, qy, pz));
   });
   inst.ast = { kind: 'prim', name: 'wireframe_box', args: [size, thickness] };
   return inst;
@@ -334,7 +379,8 @@ export const wireframe_box = (size = 0.6, thickness = 0.04) => {
 //   halfWidth = 三角形底半宽（X 方向），halfLength = 棱柱半长（Z 方向）
 //   GLSL 端用 IQ sdTriPrism（已在 sdf3.glsl.js）
 export const tri_prism = (halfWidth = 0.3, halfLength = 0.1) => {
-  const hw = numLit(halfWidth), hl = numLit(halfLength);
+  const hw = numLit(halfWidth),
+    hl = numLit(halfLength);
   const k = Math.sqrt(3);
   const hxScaled = hw * 0.5 * k;
   const inst = SDF3((p) => {
@@ -345,12 +391,14 @@ export const tri_prism = (halfWidth = 0.3, halfLength = 0.1) => {
     if (px + k * py > 0.0) {
       const npx = (px - k * py) / 2.0;
       const npy = (-k * px - py) / 2.0;
-      px = npx; py = npy;
+      px = npx;
+      py = npy;
     }
     px -= Math.max(-2.0, Math.min(0.0, px));
     const d1 = Math.sqrt(px * px + py * py) * Math.sign(-py) * hxScaled;
     const d2 = Math.abs(p[2]) - hl;
-    const a = Math.max(d1, 0), b = Math.max(d2, 0);
+    const a = Math.max(d1, 0),
+      b = Math.max(d2, 0);
     return Math.sqrt(a * a + b * b) + Math.min(0, Math.max(d1, d2));
   });
   inst.ast = { kind: 'prim', name: 'tri_prism', args: [halfWidth, halfLength] };
@@ -372,13 +420,11 @@ export const cutSphere = (r = 0.5, h = 0.0) => {
   const inst = SDF3((p) => {
     const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
     const qy = p[1];
-    const s = Math.max(
-      (h - r) * qx * qx + w * w * (h + r - 2 * qy),
-      h * qx - w * qy,
-    );
+    const s = Math.max((h - r) * qx * qx + w * w * (h + r - 2 * qy), h * qx - w * qy);
     if (s < 0) return Math.sqrt(qx * qx + qy * qy) - r;
     if (qx < w) return h - qy;
-    const dx = qx - w, dy = qy - h;
+    const dx = qx - w,
+      dy = qy - h;
     return Math.sqrt(dx * dx + dy * dy);
   });
   inst.ast = { kind: 'prim', name: 'cut-sphere', args: [r, h] };
@@ -391,9 +437,10 @@ export const cutHollowSphere = (r = 0.5, h = 0.0, t = 0.02) => {
   const inst = SDF3((p) => {
     const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
     const qy = p[1];
-    const d = (h * qx < w * qy)
-      ? Math.sqrt((qx - w) ** 2 + (qy - h) ** 2)
-      : Math.abs(Math.sqrt(qx * qx + qy * qy) - r);
+    const d =
+      h * qx < w * qy
+        ? Math.sqrt((qx - w) ** 2 + (qy - h) ** 2)
+        : Math.abs(Math.sqrt(qx * qx + qy * qy) - r);
     return d - t;
   });
   inst.ast = { kind: 'prim', name: 'cut-hollow-sphere', args: [r, h, t] };
@@ -408,7 +455,8 @@ export const deathStar = (ra = 0.5, rb = 0.35, d = 0.5) => {
     const px = p[0];
     const py = Math.sqrt(p[1] * p[1] + p[2] * p[2]);
     if (px * b - py * a > d * Math.max(b - py, 0)) {
-      const dx = px - a, dy = py - b;
+      const dx = px - a,
+        dy = py - b;
       return Math.sqrt(dx * dx + dy * dy);
     }
     const inner = Math.sqrt(px * px + py * py) - ra;
@@ -424,7 +472,8 @@ export const roundedCylinder = (ra = 0.3, rb = 0.05, h = 0.5) => {
   const inst = SDF3((p) => {
     const dx = Math.sqrt(p[0] * p[0] + p[2] * p[2]) - 2 * ra + rb;
     const dy = Math.abs(p[1]) - h;
-    const ox = Math.max(dx, 0), oy = Math.max(dy, 0);
+    const ox = Math.max(dx, 0),
+      oy = Math.max(dy, 0);
     return Math.min(Math.max(dx, dy), 0) + Math.sqrt(ox * ox + oy * oy) - rb;
   });
   inst.ast = { kind: 'prim', name: 'rounded-cylinder', args: [ra, rb, h] };
@@ -461,17 +510,20 @@ export const vesicaSegment = (a = [0, 0, 0], b = [0, 1, 0], w = 0.2) => {
   const l = Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 + (b[2] - a[2]) ** 2);
   const v0 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l, (b[2] - a[2]) / l];
   const inst = SDF3((p) => {
-    const dx = p[0] - c[0], dy = p[1] - c[1], dz = p[2] - c[2];
+    const dx = p[0] - c[0],
+      dy = p[1] - c[1],
+      dz = p[2] - c[2];
     const y = dx * v0[0] + dy * v0[1] + dz * v0[2];
-    const ax = dx - y * v0[0], ay = dy - y * v0[1], az = dz - y * v0[2];
+    const ax = dx - y * v0[0],
+      ay = dy - y * v0[1],
+      az = dz - y * v0[2];
     const qx = Math.sqrt(ax * ax + ay * ay + az * az);
     const qy = Math.abs(y);
     const r = 0.5 * l;
-    const d0 = 0.5 * (r * r - w * w) / w;
-    const h = (r * qx < d0 * (qy - r))
-      ? [0, r, 0]
-      : [-d0, 0, d0 + w];
-    const ddx = qx - h[0], ddy = qy - h[1];
+    const d0 = (0.5 * (r * r - w * w)) / w;
+    const h = r * qx < d0 * (qy - r) ? [0, r, 0] : [-d0, 0, d0 + w];
+    const ddx = qx - h[0],
+      ddy = qy - h[1];
     return Math.sqrt(ddx * ddx + ddy * ddy) - h[2];
   });
   inst.ast = { kind: 'prim', name: 'vesica-segment', args: [a, b, w] };
@@ -480,9 +532,11 @@ export const vesicaSegment = (a = [0, 0, 0], b = [0, 1, 0], w = 0.2) => {
 
 // Infinite cylinder: axisXZ = [cx, cz] axis offset in XZ plane; radius.
 export const cylinderInf = (axisXZ = [0, 0], radius = 0.3) => {
-  const cx = axisXZ[0], cz = axisXZ[1];
+  const cx = axisXZ[0],
+    cz = axisXZ[1];
   const inst = SDF3((p) => {
-    const dx = p[0] - cx, dz = p[2] - cz;
+    const dx = p[0] - cx,
+      dz = p[2] - cz;
     return Math.sqrt(dx * dx + dz * dz) - radius;
   });
   inst.ast = { kind: 'prim', name: 'cylinder-inf', args: [axisXZ, radius] };
@@ -491,14 +545,16 @@ export const cylinderInf = (axisXZ = [0, 0], radius = 0.3) => {
 
 // Infinite cone: tip at origin, half-aperture angle. Cone opens upward.
 export const coneInf = (halfAperture = Math.PI / 6) => {
-  const sa = Math.sin(halfAperture), ca = Math.cos(halfAperture);
+  const sa = Math.sin(halfAperture),
+    ca = Math.cos(halfAperture);
   const inst = SDF3((p) => {
     const qx = Math.sqrt(p[0] * p[0] + p[2] * p[2]);
     const qy = -p[1];
     const dotQC = Math.max(qx * sa + qy * ca, 0);
-    const dx = qx - sa * dotQC, dy = qy - ca * dotQC;
+    const dx = qx - sa * dotQC,
+      dy = qy - ca * dotQC;
     const d = Math.sqrt(dx * dx + dy * dy);
-    return d * ((qx * ca - qy * sa < 0) ? -1 : 1);
+    return d * (qx * ca - qy * sa < 0 ? -1 : 1);
   });
   inst.ast = { kind: 'prim', name: 'cone-inf', args: [halfAperture] };
   return inst;
@@ -512,11 +568,14 @@ export const coneInf = (halfAperture = Math.PI / 6) => {
 // freq=波长，amp=振幅，angle=绕 Y 旋转（让波纹斜向），speed=时间标度（0 = 静止）
 // ============================================================================
 export const waves = (freq = 2, amp = 0.5, angle = 0, speed = 0) => {
-  const f0 = numLit(freq), a0 = numLit(amp), ang0 = numLit(angle);
+  const f0 = numLit(freq),
+    a0 = numLit(amp),
+    ang0 = numLit(angle);
   // speed 是 shader-side time scale，CPU 端 freeze u_time=0 → speed*0=0，所以不用 speed
-  const c = Math.cos(ang0), s = Math.sin(ang0);
+  const c = Math.cos(ang0),
+    s = Math.sin(ang0);
   const inst = SDF3((p) => {
-    const pz = -s * p[0] + c * p[2];  // rotateY(p, angle).z
+    const pz = -s * p[0] + c * p[2]; // rotateY(p, angle).z
     return p[1] + Math.sin(pz / f0) * a0 - a0;
   });
   inst.ast = { kind: 'prim', name: 'waves', args: [freq, amp, angle, speed] };
@@ -579,7 +638,7 @@ const _polarFold = (x, y, n) => {
   const angle = (2 * Math.PI) / n;
   let a = Math.atan2(y, x) + angle * 0.5;
   const r = Math.hypot(x, y);
-  a = ((a % angle) + angle) % angle - angle * 0.5;
+  a = (((a % angle) + angle) % angle) - angle * 0.5;
   return [Math.cos(a) * r, Math.sin(a) * r];
 };
 
@@ -587,11 +646,20 @@ export const modPolar = defineOp3('modPolar', (other, opts = {}) => {
   const axis = opts.axis ?? 'y';
   const n = opts.repetitions ?? 6;
   if (axis === 'x') {
-    return (p) => { const [y, z] = _polarFold(p[1], p[2], n); return other.f([p[0], y, z]); };
+    return (p) => {
+      const [y, z] = _polarFold(p[1], p[2], n);
+      return other.f([p[0], y, z]);
+    };
   } else if (axis === 'z') {
-    return (p) => { const [x, y] = _polarFold(p[0], p[1], n); return other.f([x, y, p[2]]); };
+    return (p) => {
+      const [x, y] = _polarFold(p[0], p[1], n);
+      return other.f([x, y, p[2]]);
+    };
   } else {
-    return (p) => { const [x, z] = _polarFold(p[0], p[2], n); return other.f([x, p[1], z]); };
+    return (p) => {
+      const [x, z] = _polarFold(p[0], p[2], n);
+      return other.f([x, p[1], z]);
+    };
   }
 });
 
@@ -603,7 +671,11 @@ export const modPolar = defineOp3('modPolar', (other, opts = {}) => {
 const _mirrorOctant2D = (x, y, d1, d2) => {
   let qx = Math.abs(x) - d1;
   let qy = Math.abs(y) - d2;
-  if (qy > qx) { const t = qx; qx = qy; qy = t; }
+  if (qy > qx) {
+    const t = qx;
+    qx = qy;
+    qy = t;
+  }
   return [qx, qy];
 };
 
@@ -611,11 +683,20 @@ export const mirrorOctant = defineOp3('mirrorOctant', (other, opts = {}) => {
   const plane = opts.plane ?? 'xz';
   const [d1, d2] = Array.isArray(opts.dist) ? opts.dist : [0, 0];
   if (plane === 'xy') {
-    return (p) => { const [x, y] = _mirrorOctant2D(p[0], p[1], d1, d2); return other.f([x, y, p[2]]); };
+    return (p) => {
+      const [x, y] = _mirrorOctant2D(p[0], p[1], d1, d2);
+      return other.f([x, y, p[2]]);
+    };
   } else if (plane === 'yz') {
-    return (p) => { const [y, z] = _mirrorOctant2D(p[1], p[2], d1, d2); return other.f([p[0], y, z]); };
+    return (p) => {
+      const [y, z] = _mirrorOctant2D(p[1], p[2], d1, d2);
+      return other.f([p[0], y, z]);
+    };
   } else {
-    return (p) => { const [x, z] = _mirrorOctant2D(p[0], p[2], d1, d2); return other.f([x, p[1], z]); };
+    return (p) => {
+      const [x, z] = _mirrorOctant2D(p[0], p[2], d1, d2);
+      return other.f([x, p[1], z]);
+    };
   }
 });
 

@@ -25,8 +25,10 @@ function makeMaskTest(mask, maskInvert, opts) {
   if (!mask) return null;
   if (mask instanceof SDF3) {
     const { yaw = 0.5, pitch = 0.35, cameraDist = 4 } = opts;
-    const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
     const inverseRotate = (p) => {
       const x = p[0] * cy - p[2] * sy;
       const z0 = p[0] * sy + p[2] * cy;
@@ -75,14 +77,18 @@ export function computeMotifGridPolylines(opts = {}) {
     flipY = true,
     mask = null,
     maskInvert = false,
-    yaw, pitch, cameraDist,
+    yaw,
+    pitch,
+    cameraDist,
   } = opts;
 
   const library = opts.library ?? compileMotifLibrary();
   const order = opts.order ?? DEFAULT_ORDER;
 
   const maskTest = opts.maskFn
-    ? (maskInvert ? (wx, wy) => !opts.maskFn(wx, wy) : opts.maskFn)
+    ? maskInvert
+      ? (wx, wy) => !opts.maskFn(wx, wy)
+      : opts.maskFn
     : makeMaskTest(mask, maskInvert, { yaw, pitch, cameraDist });
 
   const polylines = [];
@@ -93,10 +99,7 @@ export function computeMotifGridPolylines(opts = {}) {
     const scale = halfSize * motifMargin; // motif 半宽 = cell 半宽 × margin
     const ySign = flipY ? -1 : 1;
     for (const pts of motifPolylines) {
-      const placed = pts.map(([mx, my]) => [
-        cx + mx * scale,
-        cy + my * scale * ySign,
-      ]);
+      const placed = pts.map(([mx, my]) => [cx + mx * scale, cy + my * scale * ySign]);
       polylines.push(placed);
     }
   }
@@ -114,8 +117,8 @@ export function computeMotifGridPolylines(opts = {}) {
     const stride = Math.pow(bandScale, b);
 
     // Band y-range：flipY=true 时 top 在 +view，所以 band 0 是 y ∈ [+view - bandHeight, +view]
-    const yTop = flipY ? (view - b * bandHeight) : (-view + b * bandHeight);
-    const yBot = flipY ? (yTop - bandHeight) : (yTop + bandHeight);
+    const yTop = flipY ? view - b * bandHeight : -view + b * bandHeight;
+    const yBot = flipY ? yTop - bandHeight : yTop + bandHeight;
     const yMin = Math.min(yTop, yBot);
     const yMax = Math.max(yTop, yBot);
 
@@ -168,17 +171,18 @@ export function motifGrid(ctx, opts = {}) {
   } = opts;
 
   const canvas = ctx.canvas;
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.width,
+    H = canvas.height;
 
   if (background !== null) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, W, H);
   }
 
-  const wxToPx = wx => (wx + view) / (2 * view) * W;
+  const wxToPx = (wx) => ((wx + view) / (2 * view)) * W;
   const wyToPx = flipY
-    ? wy => (view - wy) / (2 * view) * H
-    : wy => (wy + view) / (2 * view) * H;
+    ? (wy) => ((view - wy) / (2 * view)) * H
+    : (wy) => ((wy + view) / (2 * view)) * H;
 
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;

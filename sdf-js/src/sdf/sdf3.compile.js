@@ -42,9 +42,11 @@ const fltLit = (n) => {
 // 嵌套 sum 直接 inline。AST 紧凑表达：amp · sin(freq · t + phase) 等
 function emitTimeExpr(e) {
   if (e.form === 'linear') return `(${fltLit(e.coef)} * u_time)`;
-  if (e.form === 'sin')    return `(${fltLit(e.amp)} * sin(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
-  if (e.form === 'cos')    return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
-  if (e.form === 'sum')    return `(${e.terms.map(fltOrTime).join(' + ')})`;
+  if (e.form === 'sin')
+    return `(${fltLit(e.amp)} * sin(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
+  if (e.form === 'cos')
+    return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
+  if (e.form === 'sum') return `(${e.terms.map(fltOrTime).join(' + ')})`;
   // Sprint 4: uniform reference — emit raw GLSL string (caller must declare
   // the uniform externally). Used for subject motion offsets driven from JS
   // per frame (u_subjectOffset[slot].y for rocket lift-off etc).
@@ -85,16 +87,24 @@ const eq3 = (a, b, eps = 1e-6) =>
 // Rodrigues：给 axis-angle 算 3×3 旋转矩阵。返回 column-major 9 元数组（GLSL mat3 顺序）
 function rotAxisAngleMat(angle, axis) {
   const [x, y, z] = normalize3(axis);
-  const c = Math.cos(angle), s = Math.sin(angle), C = 1 - c;
+  const c = Math.cos(angle),
+    s = Math.sin(angle),
+    C = 1 - c;
   // Standard rotation matrix in row-major:
   //   [ c+x²C    xyC-zs  xzC+ys ]
   //   [ xyC+zs   c+y²C   yzC-xs ]
   //   [ xzC-ys   yzC+xs  c+z²C  ]
   // Column-major: cols = [col0, col1, col2]
   return [
-    c + x * x * C,        x * y * C + z * s,    x * z * C - y * s,   // col 0
-    x * y * C - z * s,    c + y * y * C,        y * z * C + x * s,   // col 1
-    x * z * C + y * s,    y * z * C - x * s,    c + z * z * C,        // col 2
+    c + x * x * C,
+    x * y * C + z * s,
+    x * z * C - y * s, // col 0
+    x * y * C - z * s,
+    c + y * y * C,
+    y * z * C + x * s, // col 1
+    x * z * C + y * s,
+    y * z * C - x * s,
+    c + z * z * C, // col 2
   ];
 }
 
@@ -142,27 +152,28 @@ function _hashPoints(points) {
  * @returns {{ glsl: string|null, error: string|null }}
  */
 export function compileSDF3ToGLSL(sdf, opts = {}) {
-  const {
-    includeLibrary = true,
-    sceneFnName = 'scene',
-    emitObjectIndex = false,
-  } = opts;
+  const { includeLibrary = true, sceneFnName = 'scene', emitObjectIndex = false } = opts;
 
   if (!(sdf instanceof SDF3)) {
     return { glsl: null, error: 'not an SDF3 instance' };
   }
   if (!sdf.ast) {
-    return { glsl: null, error: 'SDF has no AST (probably CA / motif / streamline source, CPU-only)' };
+    return {
+      glsl: null,
+      error: 'SDF has no AST (probably CA / motif / streamline source, CPU-only)',
+    };
   }
 
   _compileExtras = new Map();
   try {
-    let body, leafMaterials = null, leafPatterns = null;
+    let body,
+      leafMaterials = null,
+      leafPatterns = null;
     if (emitObjectIndex) {
       const result = compileWithObjectIndex(sdf, sceneFnName);
       body = result.body;
       leafMaterials = result.leafMaterials;
-      leafPatterns  = result.leafPatterns;
+      leafPatterns = result.leafPatterns;
     } else {
       const expr = walk(sdf, 'p');
       body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
@@ -207,7 +218,7 @@ function flattenUnion(sdf, parentK = null, parentMaterial = null, parentPattern 
   // Child tags override parent (top-level subject wins over any outer union it
   // gets merged into).
   const material = sdf._subjectMaterial !== undefined ? sdf._subjectMaterial : parentMaterial;
-  const pattern  = sdf._subjectPattern  !== undefined ? sdf._subjectPattern  : parentPattern;
+  const pattern = sdf._subjectPattern !== undefined ? sdf._subjectPattern : parentPattern;
 
   const ast = sdf.ast;
   if (ast?.kind === 'op' && ast.name === 'union') {
@@ -232,7 +243,7 @@ function compileWithObjectIndex(sdf, sceneFnName) {
   body += `  minIndex = 0.0;\n`;
   body += `  float d = ${flt(MAX_DIST_INIT)};\n`;
   const leafMaterials = [];
-  const leafPatterns  = [];
+  const leafPatterns = [];
   for (const { leaf, k, material, pattern } of leaves) {
     const expr = walk(leaf, 'p');
     if (k != null) {
@@ -299,8 +310,7 @@ const half = (x) => mulT(x, 0.5);
 const halfNeg = (x) => mulT(x, -0.5);
 
 const PRIMS = {
-  sphere: ([radius, center], p) =>
-    `sdSphere(${p} - ${vec3(center)}, ${flt(radius)})`,
+  sphere: ([radius, center], p) => `sdSphere(${p} - ${vec3(center)}, ${flt(radius)})`,
 
   box: ([size, center], p) => {
     const s = asArr3(size);
@@ -313,22 +323,18 @@ const PRIMS = {
     return `dot(${vec3(point)} - ${p}, ${vec3(n)})`;
   },
 
-  capsule: ([a, b, r], p) =>
-    `sdCapsule(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r)})`,
+  capsule: ([a, b, r], p) => `sdCapsule(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r)})`,
 
-  torus: ([majorR, minorR], p) =>
-    `sdTorus(${p}, ${vec2([majorR, minorR])})`,
+  torus: ([majorR, minorR], p) => `sdTorus(${p}, ${vec2([majorR, minorR])})`,
 
   // d3.cylinder(radius, height) → IQ sdCylinder(p, vec2(radius, height/2))
-  cylinder: ([radius, height], p) =>
-    `sdCylinder(${p}, ${vec2([radius, half(height)])})`,
+  cylinder: ([radius, height], p) => `sdCylinder(${p}, ${vec2([radius, half(height)])})`,
 
   // d3.capped_cylinder(a, b, radius) → IQ sdCylinder(p, a, b, r)（不同重载）
   capped_cylinder: ([a, b, radius], p) =>
     `sdCylinder(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(radius)})`,
 
-  ellipsoid: ([radii], p) =>
-    `sdEllipsoid(${p}, ${vec3(radii)})`,
+  ellipsoid: ([radii], p) => `sdEllipsoid(${p}, ${vec3(radii)})`,
 
   rounded_box: ([size, radius], p) => {
     const s = asArr3(size);
@@ -341,7 +347,8 @@ const PRIMS = {
 
   // d3.cone(height, baseRadius) → 用 capped_cone 形式 emit，tip 用 0.001 半径
   cone: ([height, baseRadius], p) => {
-    const a = [0, halfNeg(height), 0], b = [0, half(height), 0];
+    const a = [0, halfNeg(height), 0],
+      b = [0, half(height), 0];
     return `sdCappedCone(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(baseRadius)}, ${flt(0.001)})`;
   },
 
@@ -367,11 +374,11 @@ const PRIMS = {
   //   hex-prism, octagon-prism, round-cone, rhombus, horseshoe, u-shape
 
   'capped-torus': ([capAngle, majorR, minorR], p) => {
-    const s = Math.sin(capAngle), c = Math.cos(capAngle);
+    const s = Math.sin(capAngle),
+      c = Math.cos(capAngle);
     return `sdCappedTorus(${p}, ${vec2([s, c])}, ${flt(majorR)}, ${flt(minorR)})`;
   },
-  'hex-prism': ([apothem, halfHeight], p) =>
-    `sdHexPrism(${p}, ${vec2([apothem, halfHeight])})`,
+  'hex-prism': ([apothem, halfHeight], p) => `sdHexPrism(${p}, ${vec2([apothem, halfHeight])})`,
   'octagon-prism': ([apothem, halfHeight], p) =>
     `sdOctogonPrism(${p}, ${flt(apothem)}, ${flt(halfHeight)})`,
   'round-cone': ([baseRadius, topRadius, height], p) =>
@@ -379,21 +386,21 @@ const PRIMS = {
   rhombus: ([la, lb, h, cornerR], p) =>
     `sdRhombus(${p}, ${flt(la)}, ${flt(lb)}, ${flt(h)}, ${flt(cornerR)})`,
   horseshoe: ([openAngle, radius, length, halfWidth, halfDepth], p) => {
-    const c = Math.cos(openAngle), s = Math.sin(openAngle);
+    const c = Math.cos(openAngle),
+      s = Math.sin(openAngle);
     return `sdHorseshoe(${p}, ${vec2([c, s])}, ${flt(radius)}, ${flt(length)}, ${vec2([halfWidth, halfDepth])})`;
   },
   'u-shape': ([radius, legLength, halfWidth, halfDepth], p) =>
     `sdU(${p}, ${flt(radius)}, ${flt(legLength)}, ${vec2([halfWidth, halfDepth])})`,
 
-  tetrahedron:  ([r], p) => `sdTetrahedron(${p}, ${flt(r)})`,
-  octahedron:   ([r], p) => `sdOctahedron(${p}, ${flt(r)})`,
+  tetrahedron: ([r], p) => `sdTetrahedron(${p}, ${flt(r)})`,
+  octahedron: ([r], p) => `sdOctahedron(${p}, ${flt(r)})`,
   dodecahedron: ([r], p) => `sdDodecahedron(${p}, ${flt(r)})`,
-  icosahedron:  ([r], p) => `sdIcosahedron(${p}, ${flt(r)})`,
-  pyramid:      ([h], p) => `sdPyramid(${p}, ${flt(h)})`,
+  icosahedron: ([r], p) => `sdIcosahedron(${p}, ${flt(r)})`,
+  pyramid: ([h], p) => `sdPyramid(${p}, ${flt(h)})`,
 
   // tri_prism(halfWidth, halfLength) → IQ sdTriPrism(p, vec2(hw, hl))
-  tri_prism: ([halfWidth, halfLength], p) =>
-    `sdTriPrism(${p}, ${vec2([halfWidth, halfLength])})`,
+  tri_prism: ([halfWidth, halfLength], p) => `sdTriPrism(${p}, ${vec2([halfWidth, halfLength])})`,
 
   wireframe_box: ([size, thickness], p) => {
     const s = asArr3(size);
@@ -407,8 +414,7 @@ const PRIMS = {
   // afl_ext-inspired open-ocean heightfield (time-aware; sea shading is
   // routed via material.kind === 'sea' which the renderer matches on a
   // dedicated branch — see flyLambert.js for the fresnel + atmosphere path).
-  'sea-surface': ([depth, scale], p) =>
-    `sdSeaSurface(${p}, ${flt(depth)}, ${flt(scale)})`,
+  'sea-surface': ([depth, scale], p) => `sdSeaSurface(${p}, ${flt(depth)}, ${flt(scale)})`,
 
   // Canal building — box shell with procedural window grid carved into all
   // 4 facades. Args: [width, height, winX, winY].
@@ -427,8 +433,7 @@ const PRIMS = {
 
   // Canal lamp bulb head (3 spheres). Pole = pair with separate cylinder.
   // Args: [bulbY, bulbR].
-  'canal-lamp-bulb': ([bulbY, bulbR], p) =>
-    `sdCanalLampBulb(${p}, ${flt(bulbY)}, ${flt(bulbR)})`,
+  'canal-lamp-bulb': ([bulbY, bulbR], p) => `sdCanalLampBulb(${p}, ${flt(bulbY)}, ${flt(bulbR)})`,
 
   // IQ Elevated-style mountain terrain (heightfield with gradient-decay fbm).
   // Args: [maxHeight, hwRatio]. material.kind='mountain' routes shading via
@@ -440,13 +445,19 @@ const PRIMS = {
   // sharpening + mountain-mask blending on top of derivative-damped fbm.
   // 2026-05-25: added IQ Rainforest cliff-injection + canopy-bumps args.
   // Args: [maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount].
-  'terrain-elevated': ([maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount], p) =>
+  'terrain-elevated': (
+    [maxHeight, scale, ridgePower, mountainness, cliffStart, cliffEnd, cliffJump, canopyAmount],
+    p,
+  ) =>
     `sdTerrainElevated(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(cliffStart)}, ${flt(cliffEnd)}, ${flt(cliffJump)}, ${flt(canopyAmount)})`,
 
   // IQ Rainforest-style terrain with lakes. Same elevated terrain equation
   // with a low-freq lake mask carving flat lake-floor pockets.
   // Args: [maxHeight, scale, ridgePower, mountainness, waterLevel, lakeScale, lakeAmount].
-  'terrain-with-lakes': ([maxHeight, scale, ridgePower, mountainness, waterLevel, lakeScale, lakeAmount], p) =>
+  'terrain-with-lakes': (
+    [maxHeight, scale, ridgePower, mountainness, waterLevel, lakeScale, lakeAmount],
+    p,
+  ) =>
     `sdTerrainLakes(${p}, ${flt(maxHeight)}, ${flt(scale)}, ${flt(ridgePower)}, ${flt(mountainness)}, ${flt(waterLevel)}, ${flt(lakeScale)}, ${flt(lakeAmount)})`,
 
   // IQ Snow Bridge-style parametric stone arch bridge. Single SDF function
@@ -481,11 +492,9 @@ const PRIMS = {
   'stylized-tree': ([trunkLen, trunkRad, leafSize, windK], p) =>
     `sdStylizedTree(${p}, ${flt(trunkLen)}, ${flt(trunkRad)}, ${flt(leafSize)}, ${flt(windK)})`,
   // maple-leaf(scale, rand) — single 3D leaf (compose with rep for fallen-leaf scatter).
-  'maple-leaf': ([scale, rand], p) =>
-    `sdMapleLeaf3D(${p}, ${flt(scale)}, ${flt(rand)})`,
+  'maple-leaf': ([scale, rand], p) => `sdMapleLeaf3D(${p}, ${flt(scale)}, ${flt(rand)})`,
   // forest-flower(stemH, bloomR) — 5-petal flower (compose with rep for fields).
-  'forest-flower': ([stemH, bloomR], p) =>
-    `sdForestFlower(${p}, ${flt(stemH)}, ${flt(bloomR)})`,
+  'forest-flower': ([stemH, bloomR], p) => `sdForestFlower(${p}, ${flt(stemH)}, ${flt(bloomR)})`,
   // meteor-streak(origin, velocity, trailLen, period, activeFrac, phase) — animated
   // emissive capsule. origin + velocity are vec3 arrays. Auto-attaches emissive
   // material.kind unless author overrides.
@@ -498,14 +507,11 @@ const PRIMS = {
 
   // -- 2026-05-23 IQ P2 batch (8 new primitives) -----------------------------
   // sdCutSphere(p, r, h) — sphere of radius r cut at horizontal plane height h.
-  'cut-sphere': ([r, h], p) =>
-    `sdCutSphere(${p}, ${flt(r)}, ${flt(h)})`,
+  'cut-sphere': ([r, h], p) => `sdCutSphere(${p}, ${flt(r)}, ${flt(h)})`,
   // sdCutHollowSphere(p, r, h, t) — cut sphere with shell thickness t.
-  'cut-hollow-sphere': ([r, h, t], p) =>
-    `sdCutHollowSphere(${p}, ${flt(r)}, ${flt(h)}, ${flt(t)})`,
+  'cut-hollow-sphere': ([r, h, t], p) => `sdCutHollowSphere(${p}, ${flt(r)}, ${flt(h)}, ${flt(t)})`,
   // sdDeathStar(p, ra, rb, d) — sphere ra carved by sphere rb at distance d.
-  'death-star': ([ra, rb, d], p) =>
-    `sdDeathStar(${p}, ${flt(ra)}, ${flt(rb)}, ${flt(d)})`,
+  'death-star': ([ra, rb, d], p) => `sdDeathStar(${p}, ${flt(ra)}, ${flt(rb)}, ${flt(d)})`,
   // sdRoundedCylinder(p, ra, rb, h) — cylinder with rolled-rounded rim.
   'rounded-cylinder': ([ra, rb, h], p) =>
     `sdRoundedCylinder(${p}, ${flt(ra)}, ${flt(rb)}, ${flt(h)})`,
@@ -513,8 +519,7 @@ const PRIMS = {
   'round-cone-ab': ([a, b, r1, r2], p) =>
     `sdRoundConeAB(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r1)}, ${flt(r2)})`,
   // sdVesicaSegment(p, a, b, w) — lens/eye shape along segment.
-  'vesica-segment': ([a, b, w], p) =>
-    `sdVesicaSegment(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(w)})`,
+  'vesica-segment': ([a, b, w], p) => `sdVesicaSegment(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(w)})`,
   // sdCylinderInf(p, c) — infinite cylinder. c.xy = axis XZ offset, c.z = radius.
   'cylinder-inf': ([axisXZ, radius], p) => {
     const cx = Array.isArray(axisXZ) ? axisXZ[0] : 0;
@@ -523,7 +528,8 @@ const PRIMS = {
   },
   // sdConeInf(p, c) — infinite cone, c = sin/cos of half-aperture. Tip at origin.
   'cone-inf': ([halfAperture], p) => {
-    const s = Math.sin(halfAperture), c = Math.cos(halfAperture);
+    const s = Math.sin(halfAperture),
+      c = Math.cos(halfAperture);
     return `sdConeInf(${p}, ${vec2([s, c])})`;
   },
 };
@@ -558,7 +564,7 @@ function emitBooleanVariant(opFn, argKeys, defaults = {}) {
   return (sdf, p) => {
     const { children, opts } = sdf.ast;
     const ds = children.map((c) => walk(c, p));
-    const argStr = argKeys.map(k => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
+    const argStr = argKeys.map((k) => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
     let acc = ds[0];
     for (let i = 1; i < ds.length; i++) {
       acc = `${opFn}(${acc}, ${ds[i]}, ${argStr})`;
@@ -573,11 +579,13 @@ function emitPair(opFn, argKeys, defaults = {}) {
   return (sdf, p) => {
     const { children, opts } = sdf.ast;
     if (children.length !== 2) {
-      throw new Error(`${sdf.ast.name}: requires exactly 2 children (host + modifier), got ${children.length}`);
+      throw new Error(
+        `${sdf.ast.name}: requires exactly 2 children (host + modifier), got ${children.length}`,
+      );
     }
     const a = walk(children[0], p);
     const b = walk(children[1], p);
-    const argStr = argKeys.map(k => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
+    const argStr = argKeys.map((k) => flt(opts[k] ?? defaults[k] ?? 0.05)).join(', ');
     return `${opFn}(${a}, ${b}, ${argStr})`;
   };
 }
@@ -595,7 +603,7 @@ const OPS = {
     const inner = walk(sdf.ast.children[0], `(${p} / ${vec3(s)})`);
     // Distance compensation: multiply by min(scale_factors)。如果都是 number 走
     // JS Math.min；如果含 time-expr 则 emit GLSL min() 让 GPU 算
-    const allNum = s.every(x => typeof x === 'number');
+    const allNum = s.every((x) => typeof x === 'number');
     if (allNum) return `(${inner}) * ${fltLit(Math.min(s[0], s[1], s[2]))}`;
     return `(${inner}) * min(${flt(s[0])}, min(${flt(s[1])}, ${flt(s[2])}))`;
   },
@@ -604,16 +612,18 @@ const OPS = {
   // axis 必须静态（numbers only）；angle 可 time-expr（任意轴时 angle 也必须静态）
   rotate: (sdf, p) => {
     const [angle, axis = [0, 0, 1]] = sdf.ast.scalars;
-    if (!Array.isArray(axis) || !axis.every(x => typeof x === 'number')) {
+    if (!Array.isArray(axis) || !axis.every((x) => typeof x === 'number')) {
       throw new Error(`rotate: axis must be static numbers, time-modulated axis not supported`);
     }
     const ax = normalize3(axis);
-    if (eq3(ax, [1, 0, 0]))  return walk(sdf.ast.children[0], `(rotX_inv(${flt(angle)}) * ${p})`);
-    if (eq3(ax, [0, 1, 0]))  return walk(sdf.ast.children[0], `(rotY_inv(${flt(angle)}) * ${p})`);
-    if (eq3(ax, [0, 0, 1]))  return walk(sdf.ast.children[0], `(rotZ_inv(${flt(angle)}) * ${p})`);
+    if (eq3(ax, [1, 0, 0])) return walk(sdf.ast.children[0], `(rotX_inv(${flt(angle)}) * ${p})`);
+    if (eq3(ax, [0, 1, 0])) return walk(sdf.ast.children[0], `(rotY_inv(${flt(angle)}) * ${p})`);
+    if (eq3(ax, [0, 0, 1])) return walk(sdf.ast.children[0], `(rotZ_inv(${flt(angle)}) * ${p})`);
     // 任意 axis：Rodrigues mat3 在 JS 预算，需要 static angle
     if (isTimeExpr(angle)) {
-      throw new Error(`rotate: time-modulated angle requires axis-aligned rotation (X/Y/Z), not arbitrary axis`);
+      throw new Error(
+        `rotate: time-modulated angle requires axis-aligned rotation (X/Y/Z), not arbitrary axis`,
+      );
     }
     const m = rotAxisAngleMat(-angle, ax);
     const mat = `mat3(${m.map(fltLit).join(', ')})`;
@@ -622,11 +632,14 @@ const OPS = {
 
   // ---- artistic ops -------------------------------------------------------
   twist: (sdf, p) => walk(sdf.ast.children[0], `opTwist(${p}, ${flt(sdf.ast.scalars[0])})`),
-  bend:  (sdf, p) => walk(sdf.ast.children[0], `opBend(${p}, ${flt(sdf.ast.scalars[0])})`),
+  bend: (sdf, p) => walk(sdf.ast.children[0], `opBend(${p}, ${flt(sdf.ast.scalars[0])})`),
   // curve(amp, freq, driverAxisIdx) — sinusoidal x-offset driven by another axis.
   // Generalisation of the Venice canal idiom (x += amp * sin(z * freq)).
-  curve: (sdf, p) => walk(sdf.ast.children[0],
-    `opCurve(${p}, ${flt(sdf.ast.scalars[0])}, ${flt(sdf.ast.scalars[1])}, ${Math.trunc(sdf.ast.scalars[2])})`),
+  curve: (sdf, p) =>
+    walk(
+      sdf.ast.children[0],
+      `opCurve(${p}, ${flt(sdf.ast.scalars[0])}, ${flt(sdf.ast.scalars[1])}, ${Math.trunc(sdf.ast.scalars[2])})`,
+    ),
 
   // hg_sdf-style polar repetition. Emits one of polarModX/Y/Z based on axis.
   modPolar: (sdf, p) => {
@@ -643,44 +656,46 @@ const OPS = {
     const { opts, children } = sdf.ast;
     const plane = opts.plane ?? 'xz';
     const dist = Array.isArray(opts.dist) ? opts.dist : [0, 0];
-    const fn = plane === 'xy' ? 'mirrorOctantXY' : plane === 'yz' ? 'mirrorOctantYZ' : 'mirrorOctantXZ';
+    const fn =
+      plane === 'xy' ? 'mirrorOctantXY' : plane === 'yz' ? 'mirrorOctantYZ' : 'mirrorOctantXZ';
     return walk(children[0], `${fn}(${p}, ${vec2(dist)})`);
   },
 
   // ---- boolean ops --------------------------------------------------------
-  union:        emitBoolean('opUnion',     'opSmoothUnion'),
+  union: emitBoolean('opUnion', 'opSmoothUnion'),
   intersection: emitBoolean('opIntersect', 'opSmoothIntersect'),
-  difference:   emitBoolean('opDifference','opSmoothDifference'),
+  difference: emitBoolean('opDifference', 'opSmoothDifference'),
 
   // hg_sdf-style boolean variants (Mercury "Hg" library). Each variant is a
   // left-fold using a different GLSL helper at the join.
-  unionChamfer:        emitBooleanVariant('opChamferUnion',      ['r']),
-  intersectionChamfer: emitBooleanVariant('opChamferIntersect',  ['r']),
-  differenceChamfer:   emitBooleanVariant('opChamferDifference', ['r']),
-  unionRound:          emitBooleanVariant('opRoundUnion',        ['r']),
-  intersectionRound:   emitBooleanVariant('opRoundIntersect',    ['r']),
-  differenceRound:     emitBooleanVariant('opRoundDifference',   ['r']),
+  unionChamfer: emitBooleanVariant('opChamferUnion', ['r']),
+  intersectionChamfer: emitBooleanVariant('opChamferIntersect', ['r']),
+  differenceChamfer: emitBooleanVariant('opChamferDifference', ['r']),
+  unionRound: emitBooleanVariant('opRoundUnion', ['r']),
+  intersectionRound: emitBooleanVariant('opRoundIntersect', ['r']),
+  differenceRound: emitBooleanVariant('opRoundDifference', ['r']),
   // Soft = cubic smooth-min (alternative to opSmoothUnion). r controls reach.
-  unionSoft:           emitBooleanVariant('opSoftUnion',         ['r'], { r: 0.1 }),
+  unionSoft: emitBooleanVariant('opSoftUnion', ['r'], { r: 0.1 }),
   // Stairs/Columns take (r, n). n = number of stair steps / columnar bumps.
-  unionStairs:         emitBooleanVariant('opStairsUnion',       ['r', 'n'], { r: 0.1, n: 3 }),
-  intersectionStairs:  emitBooleanVariant('opStairsIntersect',   ['r', 'n'], { r: 0.1, n: 3 }),
-  differenceStairs:    emitBooleanVariant('opStairsDifference',  ['r', 'n'], { r: 0.1, n: 3 }),
-  unionColumns:        emitBooleanVariant('opColumnsUnion',      ['r', 'n'], { r: 0.1, n: 3 }),
-  intersectionColumns: emitBooleanVariant('opColumnsIntersect',  ['r', 'n'], { r: 0.1, n: 3 }),
-  differenceColumns:   emitBooleanVariant('opColumnsDifference', ['r', 'n'], { r: 0.1, n: 3 }),
+  unionStairs: emitBooleanVariant('opStairsUnion', ['r', 'n'], { r: 0.1, n: 3 }),
+  intersectionStairs: emitBooleanVariant('opStairsIntersect', ['r', 'n'], { r: 0.1, n: 3 }),
+  differenceStairs: emitBooleanVariant('opStairsDifference', ['r', 'n'], { r: 0.1, n: 3 }),
+  unionColumns: emitBooleanVariant('opColumnsUnion', ['r', 'n'], { r: 0.1, n: 3 }),
+  intersectionColumns: emitBooleanVariant('opColumnsIntersect', ['r', 'n'], { r: 0.1, n: 3 }),
+  differenceColumns: emitBooleanVariant('opColumnsDifference', ['r', 'n'], { r: 0.1, n: 3 }),
 
   // Surface modifications: 2-children (host + modifier), not commutative.
-  pipe:    emitPair('opPipe',    ['r'],        { r: 0.05 }),
-  engrave: emitPair('opEngrave', ['r'],        { r: 0.05 }),
-  groove:  emitPair('opGroove',  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
-  tongue:  emitPair('opTongue',  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
+  pipe: emitPair('opPipe', ['r'], { r: 0.05 }),
+  engrave: emitPair('opEngrave', ['r'], { r: 0.05 }),
+  groove: emitPair('opGroove', ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
+  tongue: emitPair('opTongue', ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
 
   // ---- decoration ---------------------------------------------------------
   negate: (sdf, p) => `(-${walk(sdf.ast.children[0], p)})`,
   dilate: (sdf, p) => `(${walk(sdf.ast.children[0], p)} - ${flt(sdf.ast.scalars[0])})`,
-  erode:  (sdf, p) => `(${walk(sdf.ast.children[0], p)} + ${flt(sdf.ast.scalars[0])})`,
-  shell:  (sdf, p) => `(abs(${walk(sdf.ast.children[0], p)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
+  erode: (sdf, p) => `(${walk(sdf.ast.children[0], p)} + ${flt(sdf.ast.scalars[0])})`,
+  shell: (sdf, p) =>
+    `(abs(${walk(sdf.ast.children[0], p)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
 
   // ---- distance lerp ------------------------------------------------------
   // blend 跟 smooth-union 不同：是距离值的 lerp（mix(d1, d2, K)）
@@ -767,17 +782,17 @@ const OPS = {
   },
 
   // xor(b) — symmetric-difference of two SDFs. Bound (interior over-estimates).
-  xor: emitBoolean('opXor', 'opXor'),  // no smooth variant; reuse op for both
+  xor: emitBoolean('opXor', 'opXor'), // no smooth variant; reuse op for both
 
   // ---- 2026-05-23 IQ P4 batch (smin variants) ------------------------------
   // Each is a smooth-union with a different blending profile. r controls
   // the join radius. Children may pass per-instance _k overriding opts.r.
-  unionExp:      emitBooleanVariant('opSminExp',      ['r'], { r: 0.1 }),
-  unionRoot:     emitBooleanVariant('opSminRoot',     ['r'], { r: 0.1 }),
-  unionCubic:    emitBooleanVariant('opSminCubic',    ['r'], { r: 0.1 }),
-  unionQuartic:  emitBooleanVariant('opSminQuartic',  ['r'], { r: 0.1 }),
+  unionExp: emitBooleanVariant('opSminExp', ['r'], { r: 0.1 }),
+  unionRoot: emitBooleanVariant('opSminRoot', ['r'], { r: 0.1 }),
+  unionCubic: emitBooleanVariant('opSminCubic', ['r'], { r: 0.1 }),
+  unionQuartic: emitBooleanVariant('opSminQuartic', ['r'], { r: 0.1 }),
   unionCircular: emitBooleanVariant('opSminCircular', ['r'], { r: 0.1 }),
-  unionCircGeo:  emitBooleanVariant('opSminCircGeo',  ['r'], { r: 0.1 }),
+  unionCircGeo: emitBooleanVariant('opSminCircGeo', ['r'], { r: 0.1 }),
 };
 
 // =============================================================================
@@ -807,11 +822,9 @@ function walk2(sdf, q) {
 }
 
 const PRIMS2 = {
-  circle2: ([radius, center], q) =>
-    `(length(${q} - ${vec2(center)}) - ${flt(radius)})`,
+  circle2: ([radius, center], q) => `(length(${q} - ${vec2(center)}) - ${flt(radius)})`,
 
-  ellipse2: ([rx, ry, center], q) =>
-    `sd2Ellipse(${q} - ${vec2(center)}, ${vec2([rx, ry])})`,
+  ellipse2: ([rx, ry, center], q) => `sd2Ellipse(${q} - ${vec2(center)}, ${vec2([rx, ry])})`,
 
   rectangle2: ([size, center], q) => {
     const s = [half(size[0]), half(size[1])];
@@ -828,8 +841,7 @@ const PRIMS2 = {
     return `sd2RoundBox(${q} - ${vec2(center)}, ${vec2(s)}, ${flt(r)})`;
   },
 
-  segment2: ([a, b, r], q) =>
-    `sd2Segment(${q}, ${vec2(a)}, ${vec2(b)}, ${flt(r)})`,
+  segment2: ([a, b, r], q) => `sd2Segment(${q}, ${vec2(a)}, ${vec2(b)}, ${flt(r)})`,
 
   ring2: ([radius, thickness, center], q) =>
     `sd2Ring(${q} - ${vec2(center)}, ${flt(radius)}, ${flt(thickness)})`,
@@ -896,9 +908,9 @@ function emitBoolean2(hardFn, smoothFn) {
 }
 
 const OPS2 = {
-  union:        emitBoolean2('opUnion',     'opSmoothUnion'),
+  union: emitBoolean2('opUnion', 'opSmoothUnion'),
   intersection: emitBoolean2('opIntersect', 'opSmoothIntersect'),
-  difference:   emitBoolean2('opDifference','opSmoothDifference'),
+  difference: emitBoolean2('opDifference', 'opSmoothDifference'),
 
   // 2D transforms — mirror 3D translate/rotate/scale onto vec2 input.
   translate: (sdf, q) => {
@@ -922,19 +934,22 @@ const OPS2 = {
     const angle = sdf.ast.scalars[0];
     if (isTimeExpr(angle)) {
       // emit GLSL rotation matrix using runtime u_time
-      return walk2(sdf.ast.children[0],
-        `(mat2(cos(${flt(angle)}), sin(${flt(angle)}), -sin(${flt(angle)}), cos(${flt(angle)})) * ${q})`);
+      return walk2(
+        sdf.ast.children[0],
+        `(mat2(cos(${flt(angle)}), sin(${flt(angle)}), -sin(${flt(angle)}), cos(${flt(angle)})) * ${q})`,
+      );
     }
-    const c = Math.cos(-angle), s = Math.sin(-angle);
-    return walk2(sdf.ast.children[0],
-      `(mat2(${flt(c)}, ${flt(s)}, ${flt(-s)}, ${flt(c)}) * ${q})`);
+    const c = Math.cos(-angle),
+      s = Math.sin(-angle);
+    return walk2(sdf.ast.children[0], `(mat2(${flt(c)}, ${flt(s)}, ${flt(-s)}, ${flt(c)}) * ${q})`);
   },
 
   // 2D decorations — d/r dilate-erode etc.
   negate: (sdf, q) => `(-${walk2(sdf.ast.children[0], q)})`,
   dilate: (sdf, q) => `(${walk2(sdf.ast.children[0], q)} - ${flt(sdf.ast.scalars[0])})`,
-  erode:  (sdf, q) => `(${walk2(sdf.ast.children[0], q)} + ${flt(sdf.ast.scalars[0])})`,
-  shell:  (sdf, q) => `(abs(${walk2(sdf.ast.children[0], q)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
+  erode: (sdf, q) => `(${walk2(sdf.ast.children[0], q)} + ${flt(sdf.ast.scalars[0])})`,
+  shell: (sdf, q) =>
+    `(abs(${walk2(sdf.ast.children[0], q)}) - ${flt(mulT(sdf.ast.scalars[0], 0.5))})`,
 };
 
 // ---- introspection ---------------------------------------------------------

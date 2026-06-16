@@ -15,8 +15,33 @@ const sceneOverride = parseInt(location.hash.slice(1), 10);
 const pa = makePa(sceneOverride);
 
 // BOB pigments 双调色板。每次刷新洗牌让配色不同
-const PALETTE  = ['#e44d36','#d999cb','#12a29b','#f7d923','#159014','#713c97','#0e5f4a','#229d38','#103731','#b6d611','#78b9c8','#ede0df'];
-const PALETTE2 = ['#09931e','#002baa','#1c77c3','#ff2702','#feec00','#236846','#ff6900','#fcd300','#a3023b','#f20256','#0aa922'];
+const PALETTE = [
+  '#e44d36',
+  '#d999cb',
+  '#12a29b',
+  '#f7d923',
+  '#159014',
+  '#713c97',
+  '#0e5f4a',
+  '#229d38',
+  '#103731',
+  '#b6d611',
+  '#78b9c8',
+  '#ede0df',
+];
+const PALETTE2 = [
+  '#09931e',
+  '#002baa',
+  '#1c77c3',
+  '#ff2702',
+  '#feec00',
+  '#236846',
+  '#ff6900',
+  '#fcd300',
+  '#a3023b',
+  '#f20256',
+  '#0aa922',
+];
 
 const shuf = (arr) => {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -44,22 +69,22 @@ window.setup = () => {
   const probe = is3d ? makeProbe(pa.scene) : null;
 
   painter = render.painted(window, sdfs, {
-    palette:         PALETTE,
-    palette2:        PALETTE2,
-    startIndex:      Math.floor(Math.random() * PALETTE.length),
-    view:            pa.view,
-    flipY:           pa.yConvention === 'up',       // 每个 scene 在 makePa 里自报
+    palette: PALETTE,
+    palette2: PALETTE2,
+    startIndex: Math.floor(Math.random() * PALETTE.length),
+    view: pa.view,
+    flipY: pa.yConvention === 'up', // 每个 scene 在 makePa 里自报
     middleScaleSize: pa.middleScaleSize,
-    smallScaleSize:  pa.smallScaleSize,
-    middleRotate:    pa.middleRotate,
-    layers:          pa.layers,
-    smallOffset:     pa.smallOffset,
-    smallSegs:       pa.smallSegs,
-    noiseScale:      pa.noiseScale,
-    rH:              pa.rH,
-    rV:              pa.rV,
-    brushSpeed:      pa.brushSpeed,
-    probe,                                          // 2D 场景 = null；3D 场景 = (x,y)=>{intensity,region}
+    smallScaleSize: pa.smallScaleSize,
+    middleRotate: pa.middleRotate,
+    layers: pa.layers,
+    smallOffset: pa.smallOffset,
+    smallSegs: pa.smallSegs,
+    noiseScale: pa.noiseScale,
+    rH: pa.rH,
+    rV: pa.rV,
+    brushSpeed: pa.brushSpeed,
+    probe, // 2D 场景 = null；3D 场景 = (x,y)=>{intensity,region}
   });
 
   document.getElementById('stats').textContent =
@@ -79,7 +104,7 @@ document.getElementById('re').addEventListener('click', () => {
   location.reload();
 });
 
-document.querySelectorAll('[data-scene]').forEach(btn => {
+document.querySelectorAll('[data-scene]').forEach((btn) => {
   btn.addEventListener('click', () => {
     location.hash = btn.dataset.scene;
     location.reload();

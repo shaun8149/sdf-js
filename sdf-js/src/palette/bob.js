@@ -14,14 +14,33 @@
 
 // 12 色，偏暖且分散（红 / 粉紫 / 青 / 黄 / 绿 / 紫 / 深绿 / 亮绿 / 深绿 / 黄绿 / 浅蓝 / 米白）
 export const PIGMENTS = [
-  '#e44d36', '#d999cb', '#12a29b', '#f7d923', '#159014', '#713c97',
-  '#0e5f4a', '#229d38', '#103731', '#b6d611', '#78b9c8', '#ede0df',
+  '#e44d36',
+  '#d999cb',
+  '#12a29b',
+  '#f7d923',
+  '#159014',
+  '#713c97',
+  '#0e5f4a',
+  '#229d38',
+  '#103731',
+  '#b6d611',
+  '#78b9c8',
+  '#ede0df',
 ];
 
 // 11 色，偏冷且更高对比（绿 / 深蓝 / 蓝 / 红 / 亮黄 / 深绿 / 橙 / 金黄 / 紫红 / 玫红 / 翠绿）
 export const PIGMENTS_2 = [
-  '#09931e', '#002baa', '#1c77c3', '#ff2702', '#feec00', '#236846',
-  '#ff6900', '#fcd300', '#a3023b', '#f20256', '#0aa922',
+  '#09931e',
+  '#002baa',
+  '#1c77c3',
+  '#ff2702',
+  '#feec00',
+  '#236846',
+  '#ff6900',
+  '#fcd300',
+  '#a3023b',
+  '#f20256',
+  '#0aa922',
 ];
 
 // 两套合并，方便统一抽样
@@ -50,4 +69,4 @@ export function pick(arr, rng = Math.random) {
 
 // 按 colorBase + offset 索引（painted 风格典型用法）
 export const indexAt = (arr, colorBase, offset = 0) =>
-  arr[((colorBase + offset) % arr.length + arr.length) % arr.length];
+  arr[(((colorBase + offset) % arr.length) + arr.length) % arr.length];

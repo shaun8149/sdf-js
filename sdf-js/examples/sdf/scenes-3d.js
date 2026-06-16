@@ -36,38 +36,44 @@ const sceneSphereSdf = (p) => {
   const dx = p[0] - sphere_pos[0];
   const dy = p[1] - sphere_pos[1];
   const dz = p[2] - sphere_pos[2];
-  const ball = Math.sqrt(dx*dx + dy*dy + dz*dz) - sphere_radius;
+  const ball = Math.sqrt(dx * dx + dy * dy + dz * dz) - sphere_radius;
   return Math.min(ground, ball);
 };
 
 // Region 分类：比较 hit 到地面 vs 球的距离
 const regionForSphere = (hit) => {
   const groundD = Math.abs(hit[1] + 1);
-  const dx = hit[0] - sphere_pos[0], dy = hit[1] - sphere_pos[1], dz = hit[2] - sphere_pos[2];
-  const ballD = Math.abs(Math.sqrt(dx*dx + dy*dy + dz*dz) - sphere_radius);
+  const dx = hit[0] - sphere_pos[0],
+    dy = hit[1] - sphere_pos[1],
+    dz = hit[2] - sphere_pos[2];
+  const ballD = Math.abs(Math.sqrt(dx * dx + dy * dy + dz * dz) - sphere_radius);
   return groundD < ballD ? 'ground' : 'object';
 };
 
-const makeProbeSphere = (camera, lightPos, shadows = true) => makeProbe(sceneSphereSdf, {
-  camera,
-  lightPos,  // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
-  regionFn: regionForSphere,
-  shadows,   // 可 caller override (preview mode 关 shadow 省 2× raymarch)
-});
+const makeProbeSphere = (camera, lightPos, shadows = true) =>
+  makeProbe(sceneSphereSdf, {
+    camera,
+    lightPos, // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
+    regionFn: regionForSphere,
+    shadows, // 可 caller override (preview mode 关 shadow 省 2× raymarch)
+  });
 
 // ----- Scene 16: 4 个垂直胶囊体 ---------------------------------------------
 const CAPSULES = [
-  { x: -0.8, z: -0.3, h: 0.9, r: 0.32 },  // 前左：矮
-  { x: -0.2, z:  0.5, h: 1.4, r: 0.36 },  // 后左：中高
-  { x:  0.4, z:  0.4, h: 1.7, r: 0.40 },  // 后右：最高最粗
-  { x:  0.5, z: -0.5, h: 1.1, r: 0.32 },  // 前右：中低
+  { x: -0.8, z: -0.3, h: 0.9, r: 0.32 }, // 前左：矮
+  { x: -0.2, z: 0.5, h: 1.4, r: 0.36 }, // 后左：中高
+  { x: 0.4, z: 0.4, h: 1.7, r: 0.4 }, // 后右：最高最粗
+  { x: 0.5, z: -0.5, h: 1.1, r: 0.32 }, // 前右：中低
 ];
 
-const capsuleEndpoints = (c) => [[c.x, -1, c.z], [c.x, -1 + c.h, c.z]];
+const capsuleEndpoints = (c) => [
+  [c.x, -1, c.z],
+  [c.x, -1 + c.h, c.z],
+];
 
 // 联合 SDF：地面（y = -1 平面）∪ 所有胶囊
 const sceneCapSdf = (p) => {
-  let d = p[1] + 1;  // 地面
+  let d = p[1] + 1; // 地面
   for (const c of CAPSULES) {
     const [a, b] = capsuleEndpoints(c);
     d = Math.min(d, capsule(a, b, c.r)(p));
@@ -86,17 +92,23 @@ const regionForCapsules = (hit) => {
   return groundD < nearestCapD ? 'ground' : 'object';
 };
 
-const makeProbeCapsules = (camera, lightPos, shadows = true) => makeProbe(sceneCapSdf, {
-  camera,
-  lightPos,  // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
-  regionFn: regionForCapsules,
-  shadows,
-});
+const makeProbeCapsules = (camera, lightPos, shadows = true) =>
+  makeProbe(sceneCapSdf, {
+    camera,
+    lightPos, // undefined → 用 probe.js 的 DEFAULT_LIGHT_POSITION
+    regionFn: regionForCapsules,
+    shadows,
+  });
 
 // ---- 派发 -----------------------------------------------------------------
 // makeProbe(scene, camera?, lightPos?, shadows?) — camera + lightPos + shadows 都可省略
 // shadows=false 用于 preview mode（鼠标拖动时不算阴影，速度 2× 快）
-export const makeProbe_scene = (scene, camera = DEFAULT_CAMERA, lightPos = undefined, shadows = true) => {
+export const makeProbe_scene = (
+  scene,
+  camera = DEFAULT_CAMERA,
+  lightPos = undefined,
+  shadows = true,
+) => {
   if (scene === 15) return makeProbeSphere(camera, lightPos, shadows);
   if (scene === 16) return makeProbeCapsules(camera, lightPos, shadows);
   return null;

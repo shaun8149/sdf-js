@@ -11,7 +11,7 @@
 function mulberry32(seed) {
   let s = seed | 0;
   return () => {
-    s = (s + 0x6D2B79F5) | 0;
+    s = (s + 0x6d2b79f5) | 0;
     let t = s;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -21,8 +21,14 @@ function mulberry32(seed) {
 
 // 八个梯度向量（2D Perlin 经典）
 const GRAD = [
-  [ 1,  1], [-1,  1], [ 1, -1], [-1, -1],
-  [ 1,  0], [-1,  0], [ 0,  1], [ 0, -1],
+  [1, 1],
+  [-1, 1],
+  [1, -1],
+  [-1, -1],
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
 ];
 
 // Quintic ease（5-th degree smoothstep，Perlin 改进版用的）
@@ -59,15 +65,15 @@ export function createPerlin(seed = 0) {
     const u = fade(xf);
     const v = fade(yf);
 
-    const aa = p[p[xi]     + yi    ] & 7;
-    const ab = p[p[xi]     + yi + 1] & 7;
-    const ba = p[p[xi + 1] + yi    ] & 7;
+    const aa = p[p[xi] + yi] & 7;
+    const ab = p[p[xi] + yi + 1] & 7;
+    const ba = p[p[xi + 1] + yi] & 7;
     const bb = p[p[xi + 1] + yi + 1] & 7;
 
     const dot = (i, dx, dy) => GRAD[i][0] * dx + GRAD[i][1] * dy;
 
-    const x1 = lerp(dot(aa, xf,     yf),     dot(ba, xf - 1, yf),     u);
-    const x2 = lerp(dot(ab, xf,     yf - 1), dot(bb, xf - 1, yf - 1), u);
+    const x1 = lerp(dot(aa, xf, yf), dot(ba, xf - 1, yf), u);
+    const x2 = lerp(dot(ab, xf, yf - 1), dot(bb, xf - 1, yf - 1), u);
     return lerp(x1, x2, v);
   };
 }

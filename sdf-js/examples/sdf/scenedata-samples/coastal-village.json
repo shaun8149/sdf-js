@@ -9,18 +9,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
+        {
+          "channel": "transform.translate.x",
+          "value": { "kind": "time", "form": "linear", "coef": 3.0 }
+        }
       ],
       "source": {
         "id": "bird-e",
         "type": "union",
         "transform": { "translate": [0, 7, -3] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "7 + 0.25 * cos(t * 3.5)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "7 + 0.25 * cos(t * 3.5)" }],
         "children": [
-          { "id": "bird-e-body",  "type": "capsule", "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 } },
-          { "id": "bird-e-wings", "type": "capsule", "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 } }
+          {
+            "id": "bird-e-body",
+            "type": "capsule",
+            "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 }
+          },
+          {
+            "id": "bird-e-wings",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 }
+          }
         ]
       }
     },
@@ -31,18 +40,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": -2.2 } }
+        {
+          "channel": "transform.translate.x",
+          "value": { "kind": "time", "form": "linear", "coef": -2.2 }
+        }
       ],
       "source": {
         "id": "bird-w",
         "type": "union",
         "transform": { "translate": [0, 9, -6] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "9 + 0.2 * cos(t * 4)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "9 + 0.2 * cos(t * 4)" }],
         "children": [
-          { "id": "bird-w-body",  "type": "capsule", "args": { "a": [-0.18, 0, 0], "b": [0.18, 0, 0], "radius": 0.04 } },
-          { "id": "bird-w-wings", "type": "capsule", "args": { "a": [0, 0, -0.25], "b": [0, 0, 0.25], "radius": 0.04 } }
+          {
+            "id": "bird-w-body",
+            "type": "capsule",
+            "args": { "a": [-0.18, 0, 0], "b": [0.18, 0, 0], "radius": 0.04 }
+          },
+          {
+            "id": "bird-w-wings",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.25], "b": [0, 0, 0.25], "radius": 0.04 }
+          }
         ]
       }
     },
@@ -53,18 +71,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.z", "value": { "kind": "time", "form": "linear", "coef": 1.8 } }
+        {
+          "channel": "transform.translate.z",
+          "value": { "kind": "time", "form": "linear", "coef": 1.8 }
+        }
       ],
       "source": {
         "id": "bird-i",
         "type": "union",
         "transform": { "translate": [6, 5, 0] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "5 + 0.18 * cos(t * 3)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "5 + 0.18 * cos(t * 3)" }],
         "children": [
-          { "id": "bird-i-body",  "type": "capsule", "args": { "a": [0, 0, -0.2], "b": [0, 0, 0.2], "radius": 0.05 } },
-          { "id": "bird-i-wings", "type": "capsule", "args": { "a": [-0.28, 0, 0], "b": [0.28, 0, 0], "radius": 0.05 } }
+          {
+            "id": "bird-i-body",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.2], "b": [0, 0, 0.2], "radius": 0.05 }
+          },
+          {
+            "id": "bird-i-wings",
+            "type": "capsule",
+            "args": { "a": [-0.28, 0, 0], "b": [0.28, 0, 0], "radius": 0.05 }
+          }
         ]
       }
     },
@@ -93,9 +120,7 @@
       "args": { "dims": [2.5, 3, 2.5] },
       "transform": { "translate": [3, 0.5, -1] },
       "region": "house",
-      "animation": [
-        { "channel": "args.dims", "expr": "2.5 + 0.2 * sin(t * 0.3)" }
-      ]
+      "animation": [{ "channel": "args.dims", "expr": "2.5 + 0.2 * sin(t * 0.3)" }]
     },
     {
       "id": "sea",
@@ -107,20 +132,30 @@
   "ground": { "y": -1.5, "region": "ground" },
   "defaults": {
     "camera": {
-      "yaw": 0, "pitch": 0.1, "distance": 25, "focal": 1.5,
-      "targetX": 0, "targetY": 1, "targetZ": 0,
-      "animation": [
-        { "channel": "targetZ", "expr": "0.25 * t" }
-      ]
+      "yaw": 0,
+      "pitch": 0.1,
+      "distance": 25,
+      "focal": 1.5,
+      "targetX": 0,
+      "targetY": 1,
+      "targetZ": 0,
+      "animation": [{ "channel": "targetZ", "expr": "0.25 * t" }]
     },
     "light": {
-      "azimuth": 0.5, "altitude": 0.6, "distance": 30,
+      "azimuth": 0.5,
+      "altitude": 0.6,
+      "distance": 30,
       "animation": [
-        { "channel": "azimuth", "value": { "kind": "time", "form": "cos", "amp": 1.0, "freq": 0.05, "phase": 0 } }
+        {
+          "channel": "azimuth",
+          "value": { "kind": "time", "form": "cos", "amp": 1.0, "freq": 0.05, "phase": 0 }
+        }
       ]
     },
     "shadow": {
-      "enabled": true, "mode": "hueRotate180", "strength": 0.35
+      "enabled": true,
+      "mode": "hueRotate180",
+      "strength": 0.35
     }
   }
 }

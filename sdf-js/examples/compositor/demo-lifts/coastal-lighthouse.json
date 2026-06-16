@@ -19,11 +19,7 @@
           "radius": 0.65
         },
         "transform": {
-          "translate": [
-            -8,
-            18,
-            -25
-          ]
+          "translate": [-8, 18, -25]
         },
         "region": "moon"
       },
@@ -35,11 +31,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -12,
-            22,
-            -28
-          ]
+          "translate": [-12, 22, -28]
         },
         "region": "star"
       },
@@ -51,11 +43,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -6,
-            20,
-            -26
-          ]
+          "translate": [-6, 20, -26]
         },
         "region": "star"
       },
@@ -67,11 +55,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -3,
-            24,
-            -30
-          ]
+          "translate": [-3, 24, -30]
         },
         "region": "star"
       },
@@ -83,11 +67,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            2,
-            22,
-            -27
-          ]
+          "translate": [2, 22, -27]
         },
         "region": "star"
       },
@@ -99,11 +79,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            6,
-            21,
-            -29
-          ]
+          "translate": [6, 21, -29]
         },
         "region": "star"
       },
@@ -115,11 +91,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            10,
-            23,
-            -28
-          ]
+          "translate": [10, 23, -28]
         },
         "region": "star"
       },
@@ -131,11 +103,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            14,
-            20,
-            -26
-          ]
+          "translate": [14, 20, -26]
         },
         "region": "star"
       },
@@ -147,11 +115,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -14,
-            18,
-            -27
-          ]
+          "translate": [-14, 18, -27]
         },
         "region": "star"
       },
@@ -163,11 +127,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -4,
-            19,
-            -25
-          ]
+          "translate": [-4, 19, -25]
         },
         "region": "star"
       },
@@ -179,11 +139,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            8,
-            19,
-            -28
-          ]
+          "translate": [8, 19, -28]
         },
         "region": "star"
       },
@@ -195,11 +151,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            3,
-            25,
-            -29
-          ]
+          "translate": [3, 25, -29]
         },
         "region": "star"
       },
@@ -211,11 +163,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -9,
-            24,
-            -27
-          ]
+          "translate": [-9, 24, -27]
         },
         "region": "star"
       },
@@ -227,11 +175,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            12,
-            25,
-            -30
-          ]
+          "translate": [12, 25, -30]
         },
         "region": "star"
       },
@@ -243,11 +187,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            -10,
-            21,
-            -29
-          ]
+          "translate": [-10, 21, -29]
         },
         "region": "star"
       },
@@ -259,11 +199,7 @@
           "shape": "octahedron"
         },
         "transform": {
-          "translate": [
-            5,
-            18,
-            -26
-          ]
+          "translate": [5, 18, -26]
         },
         "region": "star"
       },
@@ -277,11 +213,7 @@
           "speed": 0.8
         },
         "transform": {
-          "translate": [
-            0,
-            -1.2,
-            0
-          ]
+          "translate": [0, -1.2, 0]
         },
         "region": "water"
       },
@@ -289,18 +221,10 @@
         "id": "cliff-main",
         "type": "box",
         "args": {
-          "dims": [
-            5,
-            2.8,
-            3.5
-          ]
+          "dims": [5, 2.8, 3.5]
         },
         "transform": {
-          "translate": [
-            -1.5,
-            -0.2,
-            0
-          ]
+          "translate": [-1.5, -0.2, 0]
         },
         "material": "stone",
         "pattern": {
@@ -313,18 +237,10 @@
         "id": "cliff-promontory",
         "type": "box",
         "args": {
-          "dims": [
-            2.2,
-            1.8,
-            2
-          ]
+          "dims": [2.2, 1.8, 2]
         },
         "transform": {
-          "translate": [
-            0.3,
-            0.1,
-            0.8
-          ]
+          "translate": [0.3, 0.1, 0.8]
         },
         "material": "stone",
         "pattern": {
@@ -337,18 +253,10 @@
         "id": "grass-patch-1",
         "type": "box",
         "args": {
-          "dims": [
-            2,
-            0.12,
-            1.8
-          ]
+          "dims": [2, 0.12, 1.8]
         },
         "transform": {
-          "translate": [
-            0.2,
-            1.06,
-            0.6
-          ]
+          "translate": [0.2, 1.06, 0.6]
         },
         "material": "leaf-green"
       },
@@ -356,18 +264,10 @@
         "id": "grass-patch-2",
         "type": "box",
         "args": {
-          "dims": [
-            1.5,
-            0.1,
-            1.4
-          ]
+          "dims": [1.5, 0.1, 1.4]
         },
         "transform": {
-          "translate": [
-            -1.8,
-            0.9,
-            0.2
-          ]
+          "translate": [-1.8, 0.9, 0.2]
         },
         "material": "leaf-green"
       },
@@ -378,11 +278,7 @@
           "scale": 0.6
         },
         "transform": {
-          "translate": [
-            -0.8,
-            -1,
-            1.5
-          ]
+          "translate": [-0.8, -1, 1.5]
         },
         "material": "stone"
       },
@@ -393,11 +289,7 @@
           "scale": 0.4
         },
         "transform": {
-          "translate": [
-            1.5,
-            -1.1,
-            1.2
-          ]
+          "translate": [1.5, -1.1, 1.2]
         },
         "material": "stone"
       },
@@ -408,11 +300,7 @@
           "scale": 0.5
         },
         "transform": {
-          "translate": [
-            2.2,
-            -1.05,
-            0.9
-          ]
+          "translate": [2.2, -1.05, 0.9]
         },
         "material": "stone"
       },
@@ -423,11 +311,7 @@
           "scale": 0.45
         },
         "transform": {
-          "translate": [
-            -2.8,
-            -0.9,
-            1
-          ]
+          "translate": [-2.8, -0.9, 1]
         },
         "material": "stone"
       },
@@ -438,11 +322,7 @@
           "scale": 0.35
         },
         "transform": {
-          "translate": [
-            0.5,
-            -1.15,
-            1.8
-          ]
+          "translate": [0.5, -1.15, 1.8]
         },
         "material": "stone"
       },
@@ -450,16 +330,8 @@
         "id": "tower-base",
         "type": "capped_cylinder",
         "args": {
-          "a": [
-            0,
-            1.1,
-            0
-          ],
-          "b": [
-            0,
-            4.5,
-            0
-          ],
+          "a": [0, 1.1, 0],
+          "b": [0, 4.5, 0],
           "radius": 0.52
         },
         "material": "matte-white"
@@ -472,11 +344,7 @@
           "height": 0.35
         },
         "transform": {
-          "translate": [
-            0,
-            2.3,
-            0
-          ]
+          "translate": [0, 2.3, 0]
         },
         "material": {
           "hue": 0.98,
@@ -494,11 +362,7 @@
           "height": 0.35
         },
         "transform": {
-          "translate": [
-            0,
-            3.2,
-            0
-          ]
+          "translate": [0, 3.2, 0]
         },
         "material": {
           "hue": 0.98,
@@ -516,11 +380,7 @@
           "thickness": 0.08
         },
         "transform": {
-          "translate": [
-            0,
-            4.55,
-            0
-          ]
+          "translate": [0, 4.55, 0]
         },
         "material": "matte-black"
       },
@@ -532,11 +392,7 @@
           "height": 0.06
         },
         "transform": {
-          "translate": [
-            0,
-            4.52,
-            0
-          ]
+          "translate": [0, 4.52, 0]
         },
         "material": "matte-black"
       },
@@ -548,11 +404,7 @@
           "height": 0.5
         },
         "transform": {
-          "translate": [
-            0,
-            4.95,
-            0
-          ]
+          "translate": [0, 4.95, 0]
         },
         "material": {
           "hue": 0.12,
@@ -570,11 +422,7 @@
           "baseRadius": 0.5
         },
         "transform": {
-          "translate": [
-            0,
-            5.53,
-            0
-          ]
+          "translate": [0, 5.53, 0]
         },
         "material": "matte-black"
       },
@@ -585,11 +433,7 @@
           "radius": 0.08
         },
         "transform": {
-          "translate": [
-            0,
-            6.25,
-            0
-          ]
+          "translate": [0, 6.25, 0]
         },
         "material": "matte-black"
       },
@@ -597,19 +441,11 @@
         "id": "door",
         "type": "rounded_box",
         "args": {
-          "dims": [
-            0.3,
-            0.6,
-            0.08
-          ],
+          "dims": [0.3, 0.6, 0.08],
           "cornerR": 0.08
         },
         "transform": {
-          "translate": [
-            0,
-            1.4,
-            0.53
-          ]
+          "translate": [0, 1.4, 0.53]
         },
         "material": "wood"
       },
@@ -617,19 +453,11 @@
         "id": "window-1",
         "type": "rounded_box",
         "args": {
-          "dims": [
-            0.22,
-            0.32,
-            0.06
-          ],
+          "dims": [0.22, 0.32, 0.06],
           "cornerR": 0.06
         },
         "transform": {
-          "translate": [
-            0,
-            2.1,
-            0.53
-          ]
+          "translate": [0, 2.1, 0.53]
         },
         "material": {
           "hue": 0.12,
@@ -643,19 +471,11 @@
         "id": "window-2",
         "type": "rounded_box",
         "args": {
-          "dims": [
-            0.22,
-            0.32,
-            0.06
-          ],
+          "dims": [0.22, 0.32, 0.06],
           "cornerR": 0.06
         },
         "transform": {
-          "translate": [
-            0,
-            3,
-            0.53
-          ]
+          "translate": [0, 3, 0.53]
         },
         "material": {
           "hue": 0.12,
@@ -669,19 +489,11 @@
         "id": "window-3",
         "type": "rounded_box",
         "args": {
-          "dims": [
-            0.22,
-            0.32,
-            0.06
-          ],
+          "dims": [0.22, 0.32, 0.06],
           "cornerR": 0.06
         },
         "transform": {
-          "translate": [
-            0,
-            3.9,
-            0.53
-          ]
+          "translate": [0, 3.9, 0.53]
         },
         "material": {
           "hue": 0.12,
@@ -701,11 +513,7 @@
           "windK": 0.2
         },
         "transform": {
-          "translate": [
-            -3.5,
-            1.1,
-            1.5
-          ]
+          "translate": [-3.5, 1.1, 1.5]
         },
         "material": {
           "hue": 0.3,
@@ -726,11 +534,7 @@
           "windK": 0.22
         },
         "transform": {
-          "translate": [
-            3.2,
-            1,
-            1.2
-          ]
+          "translate": [3.2, 1, 1.2]
         },
         "material": {
           "hue": 0.28,
@@ -751,11 +555,7 @@
           "windK": 0.18
         },
         "transform": {
-          "translate": [
-            -5.5,
-            0.8,
-            2.5
-          ]
+          "translate": [-5.5, 0.8, 2.5]
         },
         "material": {
           "hue": 0.29,
@@ -774,27 +574,15 @@
           "density": 0.12
         },
         "transform": {
-          "translate": [
-            0,
-            1.12,
-            0
-          ]
+          "translate": [0, 1.12, 0]
         }
       },
       {
         "id": "flower-meadow",
         "type": "rep",
         "args": {
-          "period": [
-            1.2,
-            0,
-            1.2
-          ],
-          "count": [
-            6,
-            0,
-            5
-          ]
+          "period": [1.2, 0, 1.2],
+          "count": [6, 0, 5]
         },
         "source": {
           "id": "flower-source",
@@ -812,11 +600,7 @@
           }
         },
         "transform": {
-          "translate": [
-            -2.5,
-            1.12,
-            0.8
-          ]
+          "translate": [-2.5, 1.12, 0.8]
         }
       },
       {
@@ -826,11 +610,7 @@
           "scale": 1.2
         },
         "transform": {
-          "translate": [
-            0,
-            0,
-            0
-          ]
+          "translate": [0, 0, 0]
         },
         "material": "matte-white",
         "variants": [
@@ -839,15 +619,8 @@
             "count": 6,
             "region": {
               "type": "rectXZ",
-              "center": [
-                0,
-                0,
-                20
-              ],
-              "size": [
-                40,
-                25
-              ]
+              "center": [0, 0, 20],
+              "size": [40, 25]
             },
             "separation": 6,
             "heading": {
@@ -857,11 +630,7 @@
               "jitter": 0.2
             },
             "translate": {
-              "jitter": [
-                0.5,
-                0,
-                0.5
-              ]
+              "jitter": [0.5, 0, 0.5]
             }
           }
         ]
@@ -876,11 +645,7 @@
           "wingRise": 0.1
         },
         "transform": {
-          "translate": [
-            0,
-            0,
-            0
-          ]
+          "translate": [0, 0, 0]
         },
         "region": "bird",
         "variants": [
@@ -889,16 +654,8 @@
             "count": 8,
             "region": {
               "type": "box3",
-              "center": [
-                0,
-                12,
-                5
-              ],
-              "size": [
-                30,
-                4,
-                25
-              ]
+              "center": [0, 12, 5],
+              "size": [30, 4, 25]
             },
             "separation": 2,
             "heading": "random",
@@ -906,11 +663,7 @@
               "jitter": 0.3
             },
             "translate": {
-              "jitter": [
-                0.5,
-                0.5,
-                0.5
-              ]
+              "jitter": [0.5, 0.5, 0.5]
             }
           }
         ]

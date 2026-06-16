@@ -139,11 +139,7 @@ gl.useProgram(prog);
 // 全屏覆盖三角形（一个三角形比两个矩形快一点）
 const buf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-  -1, -1,
-   3, -1,
-  -1,  3,
-]), gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 const aPos = gl.getAttribLocation(prog, 'aPos');
 gl.enableVertexAttribArray(aPos);
 gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
@@ -153,12 +149,12 @@ const setVec3 = (name, v) =>
   gl.uniform3f(gl.getUniformLocation(prog, name), v[0] / 255, v[1] / 255, v[2] / 255);
 gl.uniform2f(gl.getUniformLocation(prog, 'uResolution'), canvas.width, canvas.height);
 gl.uniform1f(gl.getUniformLocation(prog, 'uViewHalf'), 1.2);
-setVec3('uSkyTop',     [219, 198, 175]);
-setVec3('uSkyBot',     [240, 198, 168]);
-setVec3('uGroundColor',[196, 138, 92]);
-setVec3('uMoonColor',  [248, 232, 195]);
-setVec3('uCactusColor',[76,  118, 88]);
-setVec3('uGateColor',  [54,  36,  28]);
+setVec3('uSkyTop', [219, 198, 175]);
+setVec3('uSkyBot', [240, 198, 168]);
+setVec3('uGroundColor', [196, 138, 92]);
+setVec3('uMoonColor', [248, 232, 195]);
+setVec3('uCactusColor', [76, 118, 88]);
+setVec3('uGateColor', [54, 36, 28]);
 
 // 单帧渲染（场景静态）
 const t0 = performance.now();

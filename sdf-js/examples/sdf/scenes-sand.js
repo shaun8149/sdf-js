@@ -11,11 +11,11 @@ import { makePa, makesdf } from './scenes.js';
 
 const sceneOverride = parseInt(location.hash.slice(1), 10);
 const pa = makePa(sceneOverride);
-const sdfs = makesdf(pa, { invert: false });             // 沙画模式不反转
+const sdfs = makesdf(pa, { invert: false }); // 沙画模式不反转
 
 // ---- 调色板（与用户原代码一致 + 多图层扩展）------------------------------
-const BG       = '#432';
-const OUTSIDE  = '#f80';
+const BG = '#432';
+const OUTSIDE = '#f80';
 const BOUNDARY = '#f5f5f5';
 const LAYER_INSIDE = ['#06c', '#0a8', '#dc4', '#92c', '#f60', '#3bd', '#e44', '#aa6'];
 
@@ -44,9 +44,13 @@ window.setup = () => {
 
   // 渲染图例
   const names = LAYER_NAMES[pa.scene] || sdfs.map((_, i) => `layer ${i}`);
-  document.getElementById('legend').innerHTML = layers.map((_, i) =>
-    `<span class="legend-swatch" style="background:${layers[i].color}"></span>${names[i] || `layer ${i}`}`
-  ).join(' &nbsp;&nbsp; ') +
+  document.getElementById('legend').innerHTML =
+    layers
+      .map(
+        (_, i) =>
+          `<span class="legend-swatch" style="background:${layers[i].color}"></span>${names[i] || `layer ${i}`}`,
+      )
+      .join(' &nbsp;&nbsp; ') +
     ` &nbsp;&nbsp;<span class="legend-swatch" style="background:${BOUNDARY}"></span>boundary` +
     ` &nbsp;&nbsp;<span class="legend-swatch" style="background:${OUTSIDE}"></span>outside`;
 
@@ -63,7 +67,7 @@ window.draw = () => {
     boundaryColor: BOUNDARY,
     band: 0.01,
     dotRadius: 0.5,
-    flipY: pa.yConvention === 'up',     // 每个 scene 在 makePa 里自报
+    flipY: pa.yConvention === 'up', // 每个 scene 在 makePa 里自报
   });
 };
 
@@ -77,7 +81,7 @@ document.getElementById('clear').addEventListener('click', () => {
   background(BG);
 });
 
-document.querySelectorAll('[data-scene]').forEach(btn => {
+document.querySelectorAll('[data-scene]').forEach((btn) => {
   btn.addEventListener('click', () => {
     location.hash = btn.dataset.scene;
     location.reload();

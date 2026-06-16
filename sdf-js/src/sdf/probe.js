@@ -49,8 +49,10 @@ export function createCamera({
   focal = 0,
   target = [0, 0, 0],
 } = {}) {
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
   // 相机位置 = target + offset by (yaw, pitch, distance)
   const cam = [
     target[0] + distance * sy * cp,
@@ -61,7 +63,7 @@ export function createCamera({
   const fwd = v.normalize(v.sub(target, cam));
   // right: world-up × forward
   let right = v.cross([0, 1, 0], fwd);
-  if (v.length(right) < 1e-6) right = [1, 0, 0];   // 极点退化
+  if (v.length(right) < 1e-6) right = [1, 0, 0]; // 极点退化
   right = v.normalize(right);
   // 相机 up = forward × right
   const up = v.normalize(v.cross(fwd, right));
@@ -84,14 +86,11 @@ export function createCamera({
  * @param {number} [opts.pitch=0] - 俯仰 (rad, + = 向下看)
  * @param {number} [opts.focal=0] - 0=ortho / >0=perspective
  */
-export function createFlyCamera({
-  position = [0, 0, -3.5],
-  yaw = 0,
-  pitch = 0,
-  focal = 0,
-} = {}) {
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+export function createFlyCamera({ position = [0, 0, -3.5], yaw = 0, pitch = 0, focal = 0 } = {}) {
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
   // fwd 公式：yaw=0,pitch=0 → [0,0,1]（看 +Z）；+pitch → -Y 分量（看下）
   const fwd = [sy * cp, -sp, cy * cp];
   // right = world_up × fwd
@@ -113,13 +112,11 @@ export function createFlyCamera({
  * 默认 azim=-0.46, alt=0.59, dist=5.39 → 等效 [-2, 3, -4] (DEFAULT_LIGHT_POSITION)。
  */
 export function lightFromSpherical(azimuth, altitude, distance) {
-  const cp = Math.cos(altitude), sp = Math.sin(altitude);
-  const cy = Math.cos(azimuth),  sy = Math.sin(azimuth);
-  return [
-    distance * sy * cp,
-    distance * sp,
-    -distance * cy * cp,
-  ];
+  const cp = Math.cos(altitude),
+    sp = Math.sin(altitude);
+  const cy = Math.cos(azimuth),
+    sy = Math.sin(azimuth);
+  return [distance * sy * cp, distance * sp, -distance * cy * cp];
 }
 
 // ----------------------------------------------------------------------------
@@ -143,10 +140,7 @@ export function lightFromSpherical(azimuth, altitude, distance) {
  */
 export function rayFor(camera, x, y) {
   if (camera.type === 'orthographic') {
-    const ro = v.add(
-      camera.cam,
-      v.add(v.mul(camera.right, x), v.mul(camera.up, y)),
-    );
+    const ro = v.add(camera.cam, v.add(v.mul(camera.right, x), v.mul(camera.up, y)));
     return { ro, rd: camera.fwd };
   }
   // perspective
@@ -209,7 +203,7 @@ export function makeProbe(sdf3, opts = {}) {
     let vec_to_light = v.sub(hit, lightPos);
     const light_dist_sqr = v.dot(vec_to_light, vec_to_light);
     vec_to_light = v.mul(vec_to_light, -1 / Math.sqrt(light_dist_sqr));
-    let light = v.dot(normal, vec_to_light) * 30 / light_dist_sqr;
+    let light = (v.dot(normal, vec_to_light) * 30) / light_dist_sqr;
 
     if (shadows) {
       // 沿法向偏移避免自命中，朝光发射一条 ray，命中比光距离近 → 阴影
@@ -226,8 +220,8 @@ export function makeProbe(sdf3, opts = {}) {
       region,
       hit,
       normal,
-      t,         // hit distance — used by Pasma-style mist formula in hatch.js
-      maxDist,   // expose so callers can compute smoothstep(mistStart, maxDist, t)
+      t, // hit distance — used by Pasma-style mist formula in hatch.js
+      maxDist, // expose so callers can compute smoothstep(mistStart, maxDist, t)
     };
   };
 }

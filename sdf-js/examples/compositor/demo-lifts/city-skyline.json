@@ -25,19 +25,25 @@
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": 0.6, "pitch": -0.05, "distance": 6, "focal": 1.0,
-        "targetX": 0, "targetY": 2.5, "targetZ": 0,
-        "aperture": 0.0, "focalDistance": 8
+        "yaw": 0.6,
+        "pitch": -0.05,
+        "distance": 6,
+        "focal": 1.0,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": 0,
+        "aperture": 0.0,
+        "focalDistance": 8
       },
       "light": { "azimuth": -0.6, "altitude": 0.45, "distance": 60, "intensity": 1.1 },
       "shadow": { "enabled": true, "mode": "darken", "strength": 0.45 },
       "postFx": {
         "exposure": 1.05,
-        "vignetteStrength": 0.30,
+        "vignetteStrength": 0.3,
         "bloomMix": 0.18,
         "bloomThreshold": 0.85,
         "lensFlareStrength": 0.05,
-        "motionBlurStrength": 0.30
+        "motionBlurStrength": 0.3
       }
     }
   }

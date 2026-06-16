@@ -13,19 +13,27 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 const DEMOS = [
-  'china-carrier', 'gothic-cathedral', 'spiral-vase', 'mountain-village',
-  'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
+  'china-carrier',
+  'gothic-cathedral',
+  'spiral-vase',
+  'mountain-village',
+  'clock-915',
+  'vintage-bicycle',
+  'dining-setting',
+  'coastal-lighthouse',
   'forest-meteors',
 ];
 
 const dryRun = process.argv.includes('--dry-run');
-const versionArg = process.argv.find(a => a.startsWith('--version='));
+const versionArg = process.argv.find((a) => a.startsWith('--version='));
 const SOURCE_VERSION = versionArg ? versionArg.split('=')[1] : 'v3.3';
 
 console.log(`Demo-lifts upgrade ${dryRun ? '[DRY RUN]' : '[WRITE MODE]'} — ${SOURCE_VERSION}`);
 console.log('=====================================\n');
 
-let upgraded = 0, skipped = 0, missing = 0;
+let upgraded = 0,
+  skipped = 0,
+  missing = 0;
 
 for (const id of DEMOS) {
   const demoPath = `${REPO}/sdf-js/examples/compositor/demo-lifts/${id}.json`;
@@ -44,7 +52,9 @@ for (const id of DEMOS) {
 
   const upgrade = JSON.parse(readFileSync(upgradeSrc, 'utf-8'));
   if (upgrade.result?.error) {
-    console.log(`  ${id.padEnd(20)} ⏭  ${SOURCE_VERSION} run had error: ${upgrade.result.error.slice(0, 50)} (skip)`);
+    console.log(
+      `  ${id.padEnd(20)} ⏭  ${SOURCE_VERSION} run had error: ${upgrade.result.error.slice(0, 50)} (skip)`,
+    );
     skipped++;
     continue;
   }
@@ -57,11 +67,11 @@ for (const id of DEMOS) {
   // Stats before/after
   const before = JSON.parse(readFileSync(demoPath, 'utf-8'));
   const beforeSubjects = before.sceneData?.subjects?.length || 0;
-  const afterSubjects  = upgrade.sceneData.subjects?.length || 0;
+  const afterSubjects = upgrade.sceneData.subjects?.length || 0;
   const beforeMat = countWithField(before.sceneData?.subjects, 'material');
-  const afterMat  = countWithField(upgrade.sceneData.subjects, 'material');
+  const afterMat = countWithField(upgrade.sceneData.subjects, 'material');
   const beforePat = countWithField(before.sceneData?.subjects, 'pattern');
-  const afterPat  = countWithField(upgrade.sceneData.subjects, 'pattern');
+  const afterPat = countWithField(upgrade.sceneData.subjects, 'pattern');
 
   // Merge: keep id/title/prompt/code2d/meta from old; replace sceneData
   const merged = {
@@ -85,9 +95,9 @@ for (const id of DEMOS) {
 
   console.log(
     `  ${id.padEnd(20)} ✓  ` +
-    `subj ${beforeSubjects}→${afterSubjects} · ` +
-    `mat ${beforeMat}→${afterMat} · ` +
-    `pat ${beforePat}→${afterPat}`
+      `subj ${beforeSubjects}→${afterSubjects} · ` +
+      `mat ${beforeMat}→${afterMat} · ` +
+      `pat ${beforePat}→${afterPat}`,
   );
   upgraded++;
 }
@@ -106,4 +116,7 @@ console.log(`\n═══ Summary ═══`);
 console.log(`  upgraded: ${upgraded}`);
 console.log(`  skipped:  ${skipped}`);
 console.log(`  missing:  ${missing}`);
-if (dryRun) console.log(`\n  ${dryRun ? 'DRY RUN — no files written. Re-run without --dry-run to apply.' : ''}`);
+if (dryRun)
+  console.log(
+    `\n  ${dryRun ? 'DRY RUN — no files written. Re-run without --dry-run to apply.' : ''}`,
+  );

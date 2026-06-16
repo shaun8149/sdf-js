@@ -10,10 +10,7 @@
 // 都能正确组合并出图。
 // =============================================================================
 
-import {
-  sphere, box, plane,
-  union, intersection, difference,
-} from '../../src/index.js';
+import { sphere, box, plane, union, intersection, difference } from '../../src/index.js';
 import * as v from '../../src/sdf/vec.js';
 
 // ---- 面板配置 --------------------------------------------------------------
@@ -68,19 +65,22 @@ const panels = [
     code: 'sphere(1) & box(1.5) − rod.orient(X|Y|Z)',
     sdf: sphere(1)
       .intersection(box(1.5))
-      .difference(union(
-        box([0.5, 0.5, 3]).orient([1, 0, 0]),
-        box([0.5, 0.5, 3]).orient([0, 1, 0]),
-        box([0.5, 0.5, 3]).orient([0, 0, 1]),
-      )),
+      .difference(
+        union(
+          box([0.5, 0.5, 3]).orient([1, 0, 0]),
+          box([0.5, 0.5, 3]).orient([0, 1, 0]),
+          box([0.5, 0.5, 3]).orient([0, 0, 1]),
+        ),
+      ),
   },
 ];
 
 // ---- Raymarcher ------------------------------------------------------------
 
-const W = 192, H = 192;
+const W = 192,
+  H = 192;
 const camPos = [0, 0, -4.2];
-const focal = 1.25;                                       // 焦距，越小透视越强
+const focal = 1.25; // 焦距，越小透视越强
 const lightDir = v.normalize([0.55, 0.7, -0.45]);
 const bgTop = [10, 12, 18];
 const bgBot = [22, 26, 36];
@@ -89,8 +89,7 @@ const bgBot = [22, 26, 36];
 // 用户原本写的 SDF 不变（方块还是轴对齐），只在渲染入口加这层"看的角度"。
 const VIEW_YAW = 0.55;
 const VIEW_PITCH = -0.35;
-const viewRotate = (sdf) =>
-  sdf.rotate(VIEW_YAW, v.Y).rotate(VIEW_PITCH, v.X);
+const viewRotate = (sdf) => sdf.rotate(VIEW_YAW, v.Y).rotate(VIEW_PITCH, v.X);
 
 function raymarch(sdf, ro, rd) {
   let t = 0;
@@ -116,13 +115,13 @@ function shade(sdf, hit) {
   if (!hit) return null;
   const n = gradient(sdf, hit[1]);
   const lambert = Math.max(0, v.dot(n, lightDir));
-  const ambient = 0.10;                                   // 压深阴影
+  const ambient = 0.1; // 压深阴影
   const k = ambient + (1 - ambient) * lambert;
   // 法线染色：把法线 xyz 偏移映射到 RGB，让相邻面颜色不同 → 棱角清晰
   return [
     Math.floor(255 * k * (0.45 + 0.45 * Math.abs(n[0]))),
     Math.floor(255 * k * (0.45 + 0.45 * Math.abs(n[1]))),
-    Math.floor(255 * k * (0.55 + 0.40 * Math.abs(n[2]))),
+    Math.floor(255 * k * (0.55 + 0.4 * Math.abs(n[2]))),
   ];
 }
 
@@ -139,11 +138,13 @@ function renderPanel(sdf, canvas) {
       const col = shade(sdf, hit);
       const i = (y * W + x) * 4;
       if (col) {
-        data[i] = col[0]; data[i + 1] = col[1]; data[i + 2] = col[2];
+        data[i] = col[0];
+        data[i + 1] = col[1];
+        data[i + 2] = col[2];
       } else {
         // 垂直渐变背景
         const t = y / H;
-        data[i]     = bgTop[0] * (1 - t) + bgBot[0] * t;
+        data[i] = bgTop[0] * (1 - t) + bgBot[0] * t;
         data[i + 1] = bgTop[1] * (1 - t) + bgBot[1] * t;
         data[i + 2] = bgTop[2] * (1 - t) + bgBot[2] * t;
       }

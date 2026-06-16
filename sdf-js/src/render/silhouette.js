@@ -18,7 +18,7 @@ function makeBgFn(bg, view) {
   if (bg && bg.top && bg.bottom) {
     const { top, bottom } = bg;
     return (_wx, wy) => {
-      const t = (wy + view) / (2 * view);   // 0(底) → 1(顶)
+      const t = (wy + view) / (2 * view); // 0(底) → 1(顶)
       return [
         bottom[0] + (top[0] - bottom[0]) * t,
         bottom[1] + (top[1] - bottom[1]) * t,
@@ -46,18 +46,21 @@ const smoothstep = (e0, e1, x) => {
  * @param {boolean} [options.flipY=true] - +Y 朝上
  */
 export function silhouette(ctx, layers, options = {}) {
-  const W = ctx.canvas.width, H = ctx.canvas.height;
+  const W = ctx.canvas.width,
+    H = ctx.canvas.height;
   const view = options.view ?? 1.2;
   const flipY = options.flipY ?? true;
-  const aa = options.antialias ?? (2 * view / W);
+  const aa = options.antialias ?? (2 * view) / W;
   const bgFn = makeBgFn(options.background ?? [255, 255, 255], view);
 
   // SDF3 自动用 3D 投影 silhouette：orthographic raymarch hit → flat color
   const yaw = options.yaw ?? 0.5;
   const pitch = options.pitch ?? 0.35;
   const cameraDist = options.cameraDist ?? 4;
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
   const inverseRotate = (p) => {
     const x = p[0] * cy - p[2] * sy;
     const z0 = p[0] * sy + p[2] * cy;
@@ -76,9 +79,7 @@ export function silhouette(ctx, layers, options = {}) {
   // background === null → 透明合成模式：起始色取已有 canvas 像素（保留底层 pattern）
   // 否则：bgFn 决定背景色（纯色 / 渐变 / 函数）
   const transparentBg = options.background === null;
-  const img = transparentBg
-    ? ctx.getImageData(0, 0, W, H)
-    : ctx.createImageData(W, H);
+  const img = transparentBg ? ctx.getImageData(0, 0, W, H) : ctx.createImageData(W, H);
   const data = img.data;
 
   for (let y = 0; y < H; y++) {
@@ -99,7 +100,14 @@ export function silhouette(ctx, layers, options = {}) {
         let t;
         if (layer.is3D) {
           // 3D path: 正交 raymarch，命中 = 实色覆盖
-          const tHit = raymarch3([wx, wy, cameraDist], [0, 0, -1], layer.sdf3Cam, 80, cameraDist * 3, 0.001);
+          const tHit = raymarch3(
+            [wx, wy, cameraDist],
+            [0, 0, -1],
+            layer.sdf3Cam,
+            80,
+            cameraDist * 3,
+            0.001,
+          );
           t = tHit < 0 ? 0 : 1;
         } else {
           const d = layer.sdf([wx, wy]);
@@ -107,7 +115,7 @@ export function silhouette(ctx, layers, options = {}) {
           // edges) would propagate via the blend below and turn pixels black.
           // Skip such layers cleanly instead of poisoning the running color.
           if (!Number.isFinite(d)) continue;
-          t = smoothstep(aa, -aa, d);    // d<0 → t=1（实色覆盖），d>0 → t=0（透明）
+          t = smoothstep(aa, -aa, d); // d<0 → t=1（实色覆盖），d>0 → t=0（透明）
         }
         col = [
           col[0] + (color[0] - col[0]) * t,
@@ -116,7 +124,10 @@ export function silhouette(ctx, layers, options = {}) {
         ];
       }
 
-      data[i] = col[0]; data[i + 1] = col[1]; data[i + 2] = col[2]; data[i + 3] = 255;
+      data[i] = col[0];
+      data[i + 1] = col[1];
+      data[i + 2] = col[2];
+      data[i + 3] = 255;
     }
   }
   ctx.putImageData(img, 0, 0);

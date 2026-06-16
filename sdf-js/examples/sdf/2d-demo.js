@@ -10,9 +10,17 @@
 // =============================================================================
 
 import {
-  circle, rectangle, rounded_rectangle, hexagon, equilateral_triangle,
-  polygon, triangle, line,
-  union, intersection, difference,
+  circle,
+  rectangle,
+  rounded_rectangle,
+  hexagon,
+  equilateral_triangle,
+  polygon,
+  triangle,
+  line,
+  union,
+  intersection,
+  difference,
   render,
 } from '../../src/index.js';
 
@@ -55,8 +63,9 @@ const panels = [
   {
     title: 'triangle + circle, smooth union',
     code: 'triangle.union(circle.translate.k(0.15))',
-    sdf: triangle([-0.8, -0.6], [0.8, -0.6], [0, 0.9])
-      .union(circle(0.4).translate([0.7, 0.7]).k(0.15)),
+    sdf: triangle([-0.8, -0.6], [0.8, -0.6], [0, 0.9]).union(
+      circle(0.4).translate([0.7, 0.7]).k(0.15),
+    ),
   },
   {
     title: 'circle ∩ rectangle',
@@ -92,17 +101,17 @@ const panels = [
   {
     title: 'smooth blob (3 circles soft-unioned)',
     code: 'circle.union(circle.k(0.2), circle.k(0.2))',
-    sdf: circle(0.55).translate([-0.4, 0]).union(
-      circle(0.55).translate([0.4, 0]).k(0.2),
-      circle(0.55).translate([0, 0.6]).k(0.2),
-    ),
+    sdf: circle(0.55)
+      .translate([-0.4, 0])
+      .union(circle(0.55).translate([0.4, 0]).k(0.2), circle(0.55).translate([0, 0.6]).k(0.2)),
   },
 ];
 
 // ---- 渲染 ------------------------------------------------------------------
 // IQ 风格距离场可视化全部在 render.bands 里。这里只指定画布尺寸 + 视野。
 
-const W = 256, H = 256;
+const W = 256,
+  H = 256;
 
 // ---- DOM 装配 -------------------------------------------------------------
 

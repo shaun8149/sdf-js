@@ -27,20 +27,29 @@ export function hsvToRgb(h, s, v) {
 
 // RGB(0-255) → HSL(h:0-360, s:0-100, l:0-100)
 export function rgbToHsl(r, g, b) {
-  r /= 255; g /= 255; b /= 255;
+  r /= 255;
+  g /= 255;
+  b /= 255;
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const l = (max + min) / 2;
   let h, s;
   if (max === min) {
-    h = 0; s = 0;
+    h = 0;
+    s = 0;
   } else {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
     }
     h /= 6;
   }
@@ -49,7 +58,9 @@ export function rgbToHsl(r, g, b) {
 
 // HSL(h:0-360, s:0-100, l:0-100) → RGB(0-255)
 export function hslToRgb(h, s, l) {
-  h /= 360; s /= 100; l /= 100;
+  h /= 360;
+  s /= 100;
+  l /= 100;
   if (s === 0) {
     const v = Math.round(l * 255);
     return [v, v, v];
@@ -57,22 +68,22 @@ export function hslToRgb(h, s, l) {
   const hue2rgb = (p, q, t) => {
     if (t < 0) t += 1;
     if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
     return p;
   };
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
   const p = 2 * l - q;
   return [
-    Math.round(hue2rgb(p, q, h + 1/3) * 255),
-    Math.round(hue2rgb(p, q, h)       * 255),
-    Math.round(hue2rgb(p, q, h - 1/3) * 255),
+    Math.round(hue2rgb(p, q, h + 1 / 3) * 255),
+    Math.round(hue2rgb(p, q, h) * 255),
+    Math.round(hue2rgb(p, q, h - 1 / 3) * 255),
   ];
 }
 
 // RGB → CSS 字符串
-export const rgbToCss = ([r, g, b]) => `rgb(${r|0},${g|0},${b|0})`;
+export const rgbToCss = ([r, g, b]) => `rgb(${r | 0},${g | 0},${b | 0})`;
 
 // ---- 核心：从 (i, j) 坐标生成颜色 -----------------------------------------
 
@@ -87,7 +98,9 @@ export function generateColor(i, j, Xmax = 100, Ymax = 100) {
   // 1. 纯饱和 HSV 取 RGB
   const theHue = (i / Xmax) * 360;
   let [r, g, b] = hsvToRgb(theHue, 1, 1);
-  r *= 255; g *= 255; b *= 255;
+  r *= 255;
+  g *= 255;
+  b *= 255;
 
   // 2. 与反相亮度灰平均（感知均匀化）
   const bright = 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -100,30 +113,30 @@ export function generateColor(i, j, Xmax = 100, Ymax = 100) {
   let [hh, ss, ll] = rgbToHsl(r, g, b);
 
   // 4. 按色相位置（x）做局部饱和缩放
-  const x = i * 100 / Xmax;
+  const x = (i * 100) / Xmax;
   if (x >= 20 && x < 35) ss *= 1 - (x - 20) / 15;
   if (x >= 35 && x <= 50) ss *= (x - 35) / 15;
-  if (x >= 60 && x < 80) ss *= 1 - 0.5 * (x - 60) / 20;
-  if (x >= 80 && x <= 100) ss *= 0.5 + 0.5 * (x - 80) / 20;
+  if (x >= 60 && x < 80) ss *= 1 - (0.5 * (x - 60)) / 20;
+  if (x >= 80 && x <= 100) ss *= 0.5 + (0.5 * (x - 80)) / 20;
 
   // 5. 按亮度位置（jp）做 lightness 重映射
   //    jp <= 50：从 0 拉到 ll 原值（暗端往下推到 0）
   //    jp > 50：从 ll 原值拉到 100（亮端往上推到 100）
-  const jp = j * 100 / Ymax;
+  const jp = (j * 100) / Ymax;
   if (jp <= 50) {
     const limit = ll;
     ll = (jp / 50) * limit;
   } else if (jp > 50 && jp < 100) {
     const limit = 100 - ll;
-    ll = ll + (jp - 50) / 50 * limit;
+    ll = ll + ((jp - 50) / 50) * limit;
   }
 
   // 6. 角落补偿：x∈[12,18]∪[18,24] × j∈[60,80] 额外饱和度微调
   if (x >= 12 && x <= 18 && jp >= 60 && jp <= 80) {
-    ss *= 1 - 0.25 * (x - 12) / 6;
+    ss *= 1 - (0.25 * (x - 12)) / 6;
   }
   if (x > 18 && x <= 24 && jp >= 60 && jp <= 80) {
-    ss *= 0.85 + 0.15 * (x - 18) / 6;
+    ss *= 0.85 + (0.15 * (x - 18)) / 6;
   }
 
   // 7. HSL → RGB
@@ -256,7 +269,7 @@ export function definingRedGroup(num = 5, rng = Math.random) {
 export function* nColor(i, n) {
   while (true) {
     for (let k = 0; k < n; k++) {
-      yield generateColor(i, (k + 1) * 100 / n, 100, 100);
+      yield generateColor(i, ((k + 1) * 100) / n, 100, 100);
     }
   }
 }
@@ -293,7 +306,8 @@ export class ColorGenerator {
    * @param {()=>number} [rng=Math.random]
    */
   create(scale = 1, range = 2, offset = 0, rng = Math.random) {
-    const N = scale, M = range;
+    const N = scale,
+      M = range;
     const buildHues = (count) =>
       Array.from({ length: count }, (_, idx) => {
         const hue = (offset + (idx / count) * 10 * M) % 100;
@@ -329,7 +343,13 @@ export class ColorGenerator {
     return this;
   }
 
-  getColor()  { return this.colorSet[this.colorIdx++ % this.colorSet.length]; }
-  getBlack()  { return this.BLACK[this.blackIdx++   % this.BLACK.length]; }
-  getWhite()  { return this.WHITE[this.whiteIdx++   % this.WHITE.length]; }
+  getColor() {
+    return this.colorSet[this.colorIdx++ % this.colorSet.length];
+  }
+  getBlack() {
+    return this.BLACK[this.blackIdx++ % this.BLACK.length];
+  }
+  getWhite() {
+    return this.WHITE[this.whiteIdx++ % this.WHITE.length];
+  }
 }

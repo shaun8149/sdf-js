@@ -20,7 +20,16 @@
 //   any sky    → cloud puffs
 // =============================================================================
 
-import { sphere, box, cylinder, capsule, ellipsoid, cone, octahedron, pyramid } from '../../../sdf/d3.js';
+import {
+  sphere,
+  box,
+  cylinder,
+  capsule,
+  ellipsoid,
+  cone,
+  octahedron,
+  pyramid,
+} from '../../../sdf/d3.js';
 import { union, dilate, unionRound, unionChamfer, unionSoft } from '../../../sdf/dn.js';
 
 // =============================================================================
@@ -84,10 +93,26 @@ export function sunSDF({ radius = 0.4, haloThickness = 0.06 } = {}) {
  */
 export function cloudPuffSDF({ width = 1.0, height = 0.45, depth = 0.6 } = {}) {
   const main = ellipsoid([width * 0.5, height * 0.5, depth * 0.5]);
-  const left = ellipsoid([width * 0.32, height * 0.42, depth * 0.42]).translate([-width * 0.38, height * 0.06, 0]);
-  const right = ellipsoid([width * 0.32, height * 0.42, depth * 0.42]).translate([width * 0.38, height * 0.06, 0]);
-  const top1 = ellipsoid([width * 0.24, height * 0.30, depth * 0.30]).translate([-width * 0.12, height * 0.30, 0]);
-  const top2 = ellipsoid([width * 0.22, height * 0.28, depth * 0.30]).translate([width * 0.14, height * 0.32, 0]);
+  const left = ellipsoid([width * 0.32, height * 0.42, depth * 0.42]).translate([
+    -width * 0.38,
+    height * 0.06,
+    0,
+  ]);
+  const right = ellipsoid([width * 0.32, height * 0.42, depth * 0.42]).translate([
+    width * 0.38,
+    height * 0.06,
+    0,
+  ]);
+  const top1 = ellipsoid([width * 0.24, height * 0.3, depth * 0.3]).translate([
+    -width * 0.12,
+    height * 0.3,
+    0,
+  ]);
+  const top2 = ellipsoid([width * 0.22, height * 0.28, depth * 0.3]).translate([
+    width * 0.14,
+    height * 0.32,
+    0,
+  ]);
   // unionSoft cubic blend — fluffy cumulus blob. Without it the 5 ellipsoids
   // have visible seams. r scales with overall cloud size.
   return unionSoft(main, left, right, top1, top2, { r: Math.max(width, depth) * 0.12 });
@@ -105,8 +130,11 @@ export function cloudPuffSDF({ width = 1.0, height = 0.45, depth = 0.6 } = {}) {
  * @param {number} [opts.layers=3]            number of cone layers (2-5)
  */
 export function pineTreeSDF({
-  trunkHeight = 0.5, trunkRadius = 0.1,
-  foliageHeight = 1.4, foliageBaseR = 0.55, layers = 3,
+  trunkHeight = 0.5,
+  trunkRadius = 0.1,
+  foliageHeight = 1.4,
+  foliageBaseR = 0.55,
+  layers = 3,
 } = {}) {
   // trunk: cylinder centered at y = trunkHeight/2
   const trunk = cylinder(trunkRadius, trunkHeight).translate([0, trunkHeight / 2, 0]);
@@ -116,8 +144,8 @@ export function pineTreeSDF({
   const parts = [trunk];
   for (let i = 0; i < layers; i++) {
     // each cone takes 1.5 * layerH (overlap) and gets smaller upward
-    const t = i / Math.max(layers - 1, 1);            // 0..1
-    const r = foliageBaseR * (1 - t * 0.55);          // taper
+    const t = i / Math.max(layers - 1, 1); // 0..1
+    const r = foliageBaseR * (1 - t * 0.55); // taper
     const h = layerH * 1.4;
     const yCenter = trunkHeight + i * layerH * 0.85 + h / 2 - 0.05;
     parts.push(cone(h, r).translate([0, yCenter, 0]));
@@ -140,8 +168,16 @@ export function broadleafTreeSDF({ trunkHeight = 0.7, trunkRadius = 0.09, foliag
   // 3-sphere cluster centered at top of trunk
   const yTop = trunkHeight + foliageR * 0.55;
   const main = sphere(foliageR).translate([0, yTop, 0]);
-  const sideL = sphere(foliageR * 0.62).translate([-foliageR * 0.55, yTop - foliageR * 0.1, foliageR * 0.1]);
-  const sideR = sphere(foliageR * 0.62).translate([foliageR * 0.55, yTop - foliageR * 0.1, -foliageR * 0.1]);
+  const sideL = sphere(foliageR * 0.62).translate([
+    -foliageR * 0.55,
+    yTop - foliageR * 0.1,
+    foliageR * 0.1,
+  ]);
+  const sideR = sphere(foliageR * 0.62).translate([
+    foliageR * 0.55,
+    yTop - foliageR * 0.1,
+    -foliageR * 0.1,
+  ]);
   // unionSoft r ~ 5% of foliage — blobs the 3 spheres into one organic
   // foliage mass with a soft fillet where trunk meets canopy.
   return unionSoft(trunk, main, sideL, sideR, { r: foliageR * 0.09 });
@@ -182,13 +218,19 @@ export function cottageSDF({ width = 0.8, height = 0.6, roofHeight = 0.45 } = {}
  * @param {number} [opts.flagSide=1]    +1 = flag points +X, -1 = -X
  */
 export function flagOnPoleSDF({
-  poleHeight = 2.0, poleRadius = 0.04,
-  flagWidth = 0.5, flagHeight = 0.3, flagSide = 1,
+  poleHeight = 2.0,
+  poleRadius = 0.04,
+  flagWidth = 0.5,
+  flagHeight = 0.3,
+  flagSide = 1,
 } = {}) {
   const pole = cylinder(poleRadius, poleHeight).translate([0, poleHeight / 2, 0]);
   const flagYCenter = poleHeight - flagHeight * 0.6;
-  const flag = box([flagWidth, flagHeight, 0.012])
-    .translate([flagSide * (flagWidth / 2 + poleRadius), flagYCenter, 0]);
+  const flag = box([flagWidth, flagHeight, 0.012]).translate([
+    flagSide * (flagWidth / 2 + poleRadius),
+    flagYCenter,
+    0,
+  ]);
   // unionRound r=0.005 — tiny fillet where flag meets pole. Reads as fabric
   // attached to pole rather than two free-floating shapes.
   return unionRound(pole, flag, { r: 0.005 });
@@ -204,7 +246,10 @@ export function flagOnPoleSDF({
  * @param {number} [opts.wingRise=0.1]    how high wingtips rise above body
  */
 export function birdSilhouetteSDF({
-  bodyLength = 0.18, bodyRadius = 0.025, wingSpan = 0.45, wingRise = 0.1,
+  bodyLength = 0.18,
+  bodyRadius = 0.025,
+  wingSpan = 0.45,
+  wingRise = 0.1,
 } = {}) {
   const body = capsule([-bodyLength / 2, 0, 0], [bodyLength / 2, 0, 0], bodyRadius);
   const wingL = ellipsoid([wingSpan / 2, 0.012, 0.05]).translate([-wingSpan / 4, wingRise / 2, 0]);

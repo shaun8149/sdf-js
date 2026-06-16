@@ -32,13 +32,20 @@
             "id": "engine-bell",
             "type": "capped_cone",
             "args": { "a": [-2.2, 0, 0], "b": [-3.1, 0, 0], "r1": 0.58, "r2": 0.66 },
-            "material": { "hue": 0.6, "sat": 0.10, "value": 0.18, "metal": 0.85, "glow": 0.0 }
+            "material": { "hue": 0.6, "sat": 0.1, "value": 0.18, "metal": 0.85, "glow": 0.0 }
           },
           {
             "id": "engine-inner",
             "type": "capped_cone",
-            "args": { "a": [-2.5, 0, 0], "b": [-3.0, 0, 0], "r1": 0.50, "r2": 0.58 },
-            "material": { "hue": 0.04, "sat": 0.85, "value": 0.45, "metal": 0.30, "glow": 1.2, "kind": "emissive" }
+            "args": { "a": [-2.5, 0, 0], "b": [-3.0, 0, 0], "r1": 0.5, "r2": 0.58 },
+            "material": {
+              "hue": 0.04,
+              "sat": 0.85,
+              "value": 0.45,
+              "metal": 0.3,
+              "glow": 1.2,
+              "kind": "emissive"
+            }
           },
           {
             "id": "cockpit-canopy",
@@ -51,41 +58,41 @@
             "id": "wing-left",
             "type": "box",
             "args": { "dims": [3.8, 0.14, 1.6] },
-            "transform": { "translate": [-0.3, -0.10, -2.4] },
+            "transform": { "translate": [-0.3, -0.1, -2.4] },
             "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
           },
           {
             "id": "wing-right",
             "type": "box",
             "args": { "dims": [3.8, 0.14, 1.6] },
-            "transform": { "translate": [-0.3, -0.10, 2.4] },
+            "transform": { "translate": [-0.3, -0.1, 2.4] },
             "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
           },
           {
             "id": "wing-tip-pylon-L",
             "type": "box",
-            "args": { "dims": [0.6, 0.10, 0.10] },
-            "transform": { "translate": [-0.3, -0.20, -3.2] },
-            "material": { "hue": 0.6, "sat": 0.08, "value": 0.30, "metal": 0.70, "glow": 0.0 }
+            "args": { "dims": [0.6, 0.1, 0.1] },
+            "transform": { "translate": [-0.3, -0.2, -3.2] },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.3, "metal": 0.7, "glow": 0.0 }
           },
           {
             "id": "wing-tip-pylon-R",
             "type": "box",
-            "args": { "dims": [0.6, 0.10, 0.10] },
-            "transform": { "translate": [-0.3, -0.20, 3.2] },
-            "material": { "hue": 0.6, "sat": 0.08, "value": 0.30, "metal": 0.70, "glow": 0.0 }
+            "args": { "dims": [0.6, 0.1, 0.1] },
+            "transform": { "translate": [-0.3, -0.2, 3.2] },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.3, "metal": 0.7, "glow": 0.0 }
           },
           {
             "id": "h-stab-left",
             "type": "box",
-            "args": { "dims": [1.4, 0.10, 0.6] },
+            "args": { "dims": [1.4, 0.1, 0.6] },
             "transform": { "translate": [-2.4, 0.05, -1.0] },
             "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
           },
           {
             "id": "h-stab-right",
             "type": "box",
-            "args": { "dims": [1.4, 0.10, 0.6] },
+            "args": { "dims": [1.4, 0.1, 0.6] },
             "transform": { "translate": [-2.4, 0.05, 1.0] },
             "material": { "hue": 0.58, "sat": 0.06, "value": 0.55, "metal": 0.55, "glow": 0.0 }
           },
@@ -99,14 +106,14 @@
           {
             "id": "intake-left",
             "type": "capped_cone",
-            "args": { "a": [1.2, -0.42, -0.55], "b": [-0.5, -0.42, -0.55], "r1": 0.30, "r2": 0.35 },
-            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.70, "glow": 0.0 }
+            "args": { "a": [1.2, -0.42, -0.55], "b": [-0.5, -0.42, -0.55], "r1": 0.3, "r2": 0.35 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.7, "glow": 0.0 }
           },
           {
             "id": "intake-right",
             "type": "capped_cone",
-            "args": { "a": [1.2, -0.42, 0.55], "b": [-0.5, -0.42, 0.55], "r1": 0.30, "r2": 0.35 },
-            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.70, "glow": 0.0 }
+            "args": { "a": [1.2, -0.42, 0.55], "b": [-0.5, -0.42, 0.55], "r1": 0.3, "r2": 0.35 },
+            "material": { "hue": 0.6, "sat": 0.08, "value": 0.25, "metal": 0.7, "glow": 0.0 }
           },
           {
             "id": "pitot-tube",
@@ -122,9 +129,22 @@
             "source": {
               "id": "insignia-L-star",
               "type": "polygon",
-              "args": { "points": [[0,0.34],[-0.0823,0.1133],[-0.3234,0.1051],[-0.1331,-0.0433],[-0.1998,-0.2751],[0,-0.14],[0.1998,-0.2751],[0.1331,-0.0433],[0.3234,0.1051],[0.0823,0.1133]] }
+              "args": {
+                "points": [
+                  [0, 0.34],
+                  [-0.0823, 0.1133],
+                  [-0.3234, 0.1051],
+                  [-0.1331, -0.0433],
+                  [-0.1998, -0.2751],
+                  [0, -0.14],
+                  [0.1998, -0.2751],
+                  [0.1331, -0.0433],
+                  [0.3234, 0.1051],
+                  [0.0823, 0.1133]
+                ]
+              }
             },
-            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.10, "glow": 0.0 }
+            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.1, "glow": 0.0 }
           },
           {
             "id": "insignia-R",
@@ -134,9 +154,22 @@
             "source": {
               "id": "insignia-R-star",
               "type": "polygon",
-              "args": { "points": [[0,0.34],[-0.0823,0.1133],[-0.3234,0.1051],[-0.1331,-0.0433],[-0.1998,-0.2751],[0,-0.14],[0.1998,-0.2751],[0.1331,-0.0433],[0.3234,0.1051],[0.0823,0.1133]] }
+              "args": {
+                "points": [
+                  [0, 0.34],
+                  [-0.0823, 0.1133],
+                  [-0.3234, 0.1051],
+                  [-0.1331, -0.0433],
+                  [-0.1998, -0.2751],
+                  [0, -0.14],
+                  [0.1998, -0.2751],
+                  [0.1331, -0.0433],
+                  [0.3234, 0.1051],
+                  [0.0823, 0.1133]
+                ]
+              }
             },
-            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.10, "glow": 0.0 }
+            "material": { "hue": 0.0, "sat": 0.92, "value": 0.85, "metal": 0.1, "glow": 0.0 }
           }
         ]
       },
@@ -144,9 +177,9 @@
         "id": "mountain-terrain",
         "type": "terrain-elevated",
         "args": {
-          "maxHeight":    80.0,
-          "scale":        0.010,
-          "ridgePower":   2.6,
+          "maxHeight": 80.0,
+          "scale": 0.01,
+          "ridgePower": 2.6,
           "mountainness": 0.42
         },
         "transform": { "translate": [0, -32.0, 0] }
@@ -155,9 +188,15 @@
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": -0.4, "pitch": -0.05, "distance": 22, "focal": 1.2,
-        "targetX": 0, "targetY": 0, "targetZ": 0,
-        "aperture": 0.5, "focalDistance": 22
+        "yaw": -0.4,
+        "pitch": -0.05,
+        "distance": 22,
+        "focal": 1.2,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 22
       },
       "light": { "azimuth": 1.6, "altitude": 0.22, "distance": 50, "intensity": 1.15 },
       "shadow": { "enabled": true, "mode": "darken", "strength": 0.45 },
@@ -174,8 +213,8 @@
       {
         "id": "contrail-left",
         "kind": "smoke",
-        "center": [-7.0, -0.10, -2.4],
-        "size": [5.5, 0.30, 0.30],
+        "center": [-7.0, -0.1, -2.4],
+        "size": [5.5, 0.3, 0.3],
         "density": 2.6,
         "color": [240, 245, 252],
         "noiseScale": 1.8,
@@ -184,8 +223,8 @@
       {
         "id": "contrail-right",
         "kind": "smoke",
-        "center": [-7.0, -0.10, 2.4],
-        "size": [5.5, 0.30, 0.30],
+        "center": [-7.0, -0.1, 2.4],
+        "size": [5.5, 0.3, 0.3],
         "density": 2.6,
         "color": [240, 245, 252],
         "noiseScale": 1.8,
@@ -227,7 +266,7 @@
         "kind": "fog",
         "center": [40, 4.0, -25],
         "size": [12, 3, 8],
-        "density": 0.30,
+        "density": 0.3,
         "color": [235, 230, 220],
         "noiseScale": 1.0
       },
@@ -256,9 +295,7 @@
         {
           "subjectId": "jet",
           "axis": "x",
-          "phases": [
-            { "duration": 24.0, "v0": 14.0, "a": 0.4 }
-          ]
+          "phases": [{ "duration": 24.0, "v0": 14.0, "a": 0.4 }]
         }
       ],
       "shots": [
@@ -304,7 +341,7 @@
           "focalDistance": 7,
           "ease": "smooth",
           "transition": "blend",
-          "shake": { "amount": 0.20, "velocityScale": 0.05, "scaleWith": "jet" },
+          "shake": { "amount": 0.2, "velocityScale": 0.05, "scaleWith": "jet" },
           "sceneState": { "afterburner": 1.2 }
         },
         {
@@ -316,7 +353,7 @@
           "focalDistance": 22,
           "ease": "smooth",
           "transition": "blend",
-          "shake": { "amount": 0.30, "velocityScale": 0.06, "scaleWith": "jet" },
+          "shake": { "amount": 0.3, "velocityScale": 0.06, "scaleWith": "jet" },
           "sceneState": { "afterburner": 1.3 }
         },
         {

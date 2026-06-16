@@ -44,7 +44,8 @@ import { PALETTES, SKIES, PAPERS, bakePaletteTexture, hexToVec3 } from '../palet
 
 export const DEFAULT_STYLE = Object.freeze({
   // chess offset
-  xMod: 1, yMod: 1,
+  xMod: 1,
+  yMod: 1,
 
   // chess pattern + coloration
   coloration: 0,
@@ -67,8 +68,10 @@ export const DEFAULT_STYLE = Object.freeze({
   colorLeak: 0.25,
 
   // global transforms (BOB-renderer-applied)
-  mirrorX: false, mirrorZ: false,
-  twist: 0, twistType: 0,
+  mirrorX: false,
+  mirrorZ: false,
+  twist: 0,
+  twistType: 0,
   gridRot: [0, 0, 0],
   rotateCanvas: 0.0,
 
@@ -83,9 +86,9 @@ export const DEFAULT_STYLE = Object.freeze({
   // palette colors (selected from pool by Generator-V; null = caller picks)
   palette1: null,
   palette2: null,
-  paper:    null,
-  sky1:     null,
-  sky2:     null,
+  paper: null,
+  sky1: null,
+  sky2: null,
 });
 
 // =============================================================================
@@ -135,28 +138,28 @@ export function randomizeBobStyle(rng) {
 
     // coloration + coldiv
     coloration: rng.random_dec() < 0.025 ? 3 : rng.random_choice([0, 0, 0, 0, 1, 2, 2]),
-    coldiv:     rng.random_choice([0.25, 0.5, 0.75, 1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3, 4]),
+    coldiv: rng.random_choice([0.25, 0.5, 0.75, 1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3, 4]),
 
     // rendering modes
-    renderType:     rng.random_choice([0, 1]),
-    shadow:         rng.random_choice([0, 1, 1, 2, 3, 3, 3]),
+    renderType: rng.random_choice([0, 1]),
+    shadow: rng.random_choice([0, 1, 1, 2, 3, 3, 3]),
     shadowStrength: rng.random_num(0.15, 0.35),
 
     // tuning
-    exposure:   rng.random_num(2.0, 3.0),
+    exposure: rng.random_num(2.0, 3.0),
     saturation: 0.8,
-    margin:     rng.random_num(0.08, 0.2),
+    margin: rng.random_num(0.08, 0.2),
 
     // noise (post FS)
-    nFactor:   rng.random_choice([0.5, 0.5, 0.75, 0.75, 1, 1, 1, 1, 1, 1.5]),
-    nOffset:   rng.random_choice([0, 0.5, 1]) * rng.random_choice([-1, 1]),
-    noiseCap:  rng.random_num(0.1, 0.8) * rng.random_choice([1, 0.5]),
+    nFactor: rng.random_choice([0.5, 0.5, 0.75, 0.75, 1, 1, 1, 1, 1, 1.5]),
+    nOffset: rng.random_choice([0, 0.5, 1]) * rng.random_choice([-1, 1]),
+    noiseCap: rng.random_num(0.1, 0.8) * rng.random_choice([1, 0.5]),
     colorLeak: rng.random_num(0.05, 0.6),
 
     // global transforms (BOB-renderer-applied)
-    mirrorX:   rng.random_bool(0.15),
-    mirrorZ:   rng.random_bool(0.15),
-    twist:     rng.random_bool(0.5) ? rng.random_num(-0.2, 0.2) : 0,
+    mirrorX: rng.random_bool(0.15),
+    mirrorZ: rng.random_bool(0.15),
+    twist: rng.random_bool(0.5) ? rng.random_num(-0.2, 0.2) : 0,
     twistType: rng.random_choice([0, 1, 1, 2]),
     gridRot: [
       rng.random_bool(0.2) ? rng.random_choice([Math.PI / 4, Math.PI / 2]) : 0,
@@ -167,18 +170,18 @@ export function randomizeBobStyle(rng) {
 
     // animation (autoscope buffer.frag modes 1-9; 0 = static)
     animation: rng.random_choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
-    length:    60,
+    length: 60,
 
     // palette baking opts (consumed by bakePaletteTexture below)
-    paletteSkipRate:  0.05,
+    paletteSkipRate: 0.05,
     paletteBgIsBlack: rng.random_bool(0.25),
 
     // palette colors — shuffled selections from curated pools
     palette1: rngShuffle(rng, rng.random_choice(PALETTES).slice()),
     palette2: rngShuffle(rng, rng.random_choice(PALETTES).slice()),
-    paper:    rng.random_choice(PAPERS),
-    sky1:     rng.random_choice(rng.random_choice(SKIES).slice()),
-    sky2:     rng.random_choice(rng.random_choice(SKIES).slice()),
+    paper: rng.random_choice(PAPERS),
+    sky1: rng.random_choice(rng.random_choice(SKIES).slice()),
+    sky2: rng.random_choice(rng.random_choice(SKIES).slice()),
   };
 }
 
@@ -196,9 +199,9 @@ export function applyStyleGate(style, enabled) {
     // preserve palette colors selected by Generator-V (color is data, not knob)
     palette1: style.palette1,
     palette2: style.palette2,
-    paper:    style.paper,
-    sky1:     style.sky1,
-    sky2:     style.sky2,
+    paper: style.paper,
+    sky1: style.sky1,
+    sky2: style.sky2,
   };
 }
 
@@ -209,12 +212,15 @@ export function applyStyleGate(style, enabled) {
 export function describeStyle(s) {
   const twistAxis = ['Y', 'Z', 'X'][s.twistType] || 'Y';
   const grNote = (v) =>
-    v === 0 ? '0'
-      : Math.abs(v - Math.PI / 4) < 1e-4 ? 'π/4'
-      : Math.abs(v - Math.PI / 2) < 1e-4 ? 'π/2'
-      : v.toFixed(2);
+    v === 0
+      ? '0'
+      : Math.abs(v - Math.PI / 4) < 1e-4
+        ? 'π/4'
+        : Math.abs(v - Math.PI / 2) < 1e-4
+          ? 'π/2'
+          : v.toFixed(2);
   const gr = s.gridRot.map(grNote).join(',');
-  const chess = (s.xMod === 0 && s.yMod === 0) ? 'flat' : `${s.xMod}/${s.yMod}`;
+  const chess = s.xMod === 0 && s.yMod === 0 ? 'flat' : `${s.xMod}/${s.yMod}`;
   return [
     `mirror ${s.mirrorX ? 'X' : '·'}${s.mirrorZ ? 'Z' : '·'}`,
     `twist ${(+s.twist).toFixed(2)}/${twistAxis}`,
@@ -244,7 +250,7 @@ export function describeStyle(s) {
 
 export function bakeStylePalette(gl, style) {
   return bakePaletteTexture(gl, style.palette1, style.palette2, style.paper, {
-    skipRate:  style.paletteSkipRate,
+    skipRate: style.paletteSkipRate,
     bgIsBlack: style.paletteBgIsBlack,
   });
 }

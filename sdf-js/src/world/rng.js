@@ -18,9 +18,9 @@
 
 // 32-bit SplitMix variant. Produces float in [0, 1).
 function splitmix32(x) {
-  x = (x + 0x9E3779B9) >>> 0;
-  x = Math.imul(x ^ (x >>> 16), 0x85EBCA6B) >>> 0;
-  x = Math.imul(x ^ (x >>> 13), 0xC2B2AE35) >>> 0;
+  x = (x + 0x9e3779b9) >>> 0;
+  x = Math.imul(x ^ (x >>> 16), 0x85ebca6b) >>> 0;
+  x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35) >>> 0;
   return ((x ^ (x >>> 16)) >>> 0) / 4294967296;
 }
 
@@ -39,7 +39,7 @@ function hashStr(s) {
 export function makeRng(seed, ruleId, tick) {
   const base = (seed ^ hashStr(ruleId) ^ Math.imul(tick + 1, 2654435761)) >>> 0;
   let n = 0;
-  return () => splitmix32((base + (n++)) >>> 0);
+  return () => splitmix32((base + n++) >>> 0);
 }
 
 // Direct positional access — useful for cross-tick streams that need to be

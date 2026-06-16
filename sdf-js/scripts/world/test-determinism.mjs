@@ -118,9 +118,10 @@ const KICKS = [
 
 function runForward(world, ticks) {
   for (let i = 0; i < ticks; i++) {
-    const actionsThisTick = KICKS.filter((a) => a.tick === world.clock.tick).map(
-      (a) => ({ ...a, tick: world.clock.tick }),
-    );
+    const actionsThisTick = KICKS.filter((a) => a.tick === world.clock.tick).map((a) => ({
+      ...a,
+      tick: world.clock.tick,
+    }));
     world = step(world, actionsThisTick);
   }
   return world;
@@ -140,8 +141,7 @@ function deepEqual(a, b, path = '') {
       const bb = new Float64Array([b]);
       const u8a = new Uint8Array(ba.buffer);
       const u8b = new Uint8Array(bb.buffer);
-      for (let i = 0; i < 8; i++)
-        if (u8a[i] !== u8b[i]) return { eq: false, where: path, a, b };
+      for (let i = 0; i < 8; i++) if (u8a[i] !== u8b[i]) return { eq: false, where: path, a, b };
       return { eq: true };
     }
     return { eq: false, where: path, a, b };
@@ -152,8 +152,7 @@ function deepEqual(a, b, path = '') {
   if (keysA.length !== keysB.length)
     return { eq: false, where: path + ' (key count)', a: keysA, b: keysB };
   for (let i = 0; i < keysA.length; i++) {
-    if (keysA[i] !== keysB[i])
-      return { eq: false, where: path + ' (key)', a: keysA, b: keysB };
+    if (keysA[i] !== keysB[i]) return { eq: false, where: path + ' (key)', a: keysA, b: keysB };
     const r = deepEqual(a[keysA[i]], b[keysA[i]], `${path}.${keysA[i]}`);
     if (!r.eq) return r;
   }
@@ -383,7 +382,9 @@ console.log(`\n[6] declaration check — runtime rejects patches outside declare
   }
   report(
     'undeclared patch path throws at runtime',
-    caught != null && caught.message.includes('cheater') && caught.message.includes('params.bar.baz'),
+    caught != null &&
+      caught.message.includes('cheater') &&
+      caught.message.includes('params.bar.baz'),
     caught ? `error: ${caught.message}` : 'no error thrown',
   );
 

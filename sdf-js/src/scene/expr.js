@@ -33,13 +33,13 @@ import { linearT, sinT, cosT, sumT, mulT, isTimeExpr } from '../sdf/time.js';
 
 const TOKEN_TYPES = {
   NUMBER: 'NUMBER',
-  IDENT:  'IDENT',
-  PLUS:   'PLUS',
-  MINUS:  'MINUS',
-  STAR:   'STAR',
+  IDENT: 'IDENT',
+  PLUS: 'PLUS',
+  MINUS: 'MINUS',
+  STAR: 'STAR',
   LPAREN: 'LPAREN',
   RPAREN: 'RPAREN',
-  EOF:    'EOF',
+  EOF: 'EOF',
 };
 
 function tokenize(src) {
@@ -47,12 +47,35 @@ function tokenize(src) {
   let i = 0;
   while (i < src.length) {
     const c = src[i];
-    if (c === ' ' || c === '\t' || c === '\n') { i++; continue; }
-    if (c === '+') { tokens.push({ type: TOKEN_TYPES.PLUS, pos: i }); i++; continue; }
-    if (c === '-') { tokens.push({ type: TOKEN_TYPES.MINUS, pos: i }); i++; continue; }
-    if (c === '*') { tokens.push({ type: TOKEN_TYPES.STAR, pos: i }); i++; continue; }
-    if (c === '(') { tokens.push({ type: TOKEN_TYPES.LPAREN, pos: i }); i++; continue; }
-    if (c === ')') { tokens.push({ type: TOKEN_TYPES.RPAREN, pos: i }); i++; continue; }
+    if (c === ' ' || c === '\t' || c === '\n') {
+      i++;
+      continue;
+    }
+    if (c === '+') {
+      tokens.push({ type: TOKEN_TYPES.PLUS, pos: i });
+      i++;
+      continue;
+    }
+    if (c === '-') {
+      tokens.push({ type: TOKEN_TYPES.MINUS, pos: i });
+      i++;
+      continue;
+    }
+    if (c === '*') {
+      tokens.push({ type: TOKEN_TYPES.STAR, pos: i });
+      i++;
+      continue;
+    }
+    if (c === '(') {
+      tokens.push({ type: TOKEN_TYPES.LPAREN, pos: i });
+      i++;
+      continue;
+    }
+    if (c === ')') {
+      tokens.push({ type: TOKEN_TYPES.RPAREN, pos: i });
+      i++;
+      continue;
+    }
 
     // Number: [0-9]+ (.[0-9]+)?
     if (c >= '0' && c <= '9') {
@@ -70,10 +93,14 @@ function tokenize(src) {
     // Identifier: [a-zA-Z_][a-zA-Z0-9_]*
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_') {
       let j = i;
-      while (j < src.length && ((src[j] >= 'a' && src[j] <= 'z') ||
-                                (src[j] >= 'A' && src[j] <= 'Z') ||
-                                (src[j] >= '0' && src[j] <= '9') ||
-                                src[j] === '_')) j++;
+      while (
+        j < src.length &&
+        ((src[j] >= 'a' && src[j] <= 'z') ||
+          (src[j] >= 'A' && src[j] <= 'Z') ||
+          (src[j] >= '0' && src[j] <= '9') ||
+          src[j] === '_')
+      )
+        j++;
       tokens.push({ type: TOKEN_TYPES.IDENT, value: src.slice(i, j), pos: i });
       i = j;
       continue;
@@ -95,8 +122,12 @@ class Parser {
     this.pos = 0;
     this.src = src;
   }
-  peek() { return this.tokens[this.pos]; }
-  consume() { return this.tokens[this.pos++]; }
+  peek() {
+    return this.tokens[this.pos];
+  }
+  consume() {
+    return this.tokens[this.pos++];
+  }
   expect(type) {
     const t = this.consume();
     if (t.type !== type) {
@@ -155,7 +186,9 @@ class Parser {
       // function call?
       if (this.peek().type === TOKEN_TYPES.LPAREN) {
         if (t.value !== 'sin' && t.value !== 'cos') {
-          throw new Error(`Unsupported function "${t.value}" at position ${t.pos} (v1 supports: sin, cos)`);
+          throw new Error(
+            `Unsupported function "${t.value}" at position ${t.pos} (v1 supports: sin, cos)`,
+          );
         }
         this.consume(); // (
         const arg = this.parseExpr();
@@ -194,7 +227,9 @@ function mulValues(a, b) {
   if (typeof a === 'number') return mulT(b, a);
   if (typeof b === 'number') return mulT(a, b);
   // Time × Time — not supported in v1
-  throw new Error(`Multiplication of two time-dependent expressions not supported in v1 (use structured "value" form)`);
+  throw new Error(
+    `Multiplication of two time-dependent expressions not supported in v1 (use structured "value" form)`,
+  );
 }
 
 // sin/cos with TimeExpr arg of shape (freq*t + phase) or (t*freq + phase) etc.
@@ -308,12 +343,14 @@ export function stringifyExpr(v) {
     return `${formatNumber(v.amp)} * ${inner}`;
   }
   if (v.form === 'sum') {
-    return v.terms.map((t, i) => {
-      const s = stringifyExpr(t);
-      if (i === 0) return s;
-      if (s.startsWith('-')) return ` - ${s.slice(1)}`;
-      return ` + ${s}`;
-    }).join('');
+    return v.terms
+      .map((t, i) => {
+        const s = stringifyExpr(t);
+        if (i === 0) return s;
+        if (s.startsWith('-')) return ` - ${s.slice(1)}`;
+        return ` + ${s}`;
+      })
+      .join('');
   }
   throw new Error(`stringifyExpr: unknown form "${v.form}"`);
 }

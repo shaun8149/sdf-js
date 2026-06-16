@@ -16,18 +16,10 @@
         "id": "wall",
         "type": "box",
         "args": {
-          "dims": [
-            4.5,
-            3.5,
-            0.3
-          ]
+          "dims": [4.5, 3.5, 0.3]
         },
         "transform": {
-          "translate": [
-            0,
-            1.2,
-            -0.5
-          ]
+          "translate": [0, 1.2, -0.5]
         },
         "material": "linen",
         "pattern": {
@@ -48,16 +40,8 @@
               "thickness": 0.08
             },
             "transform": {
-              "translate": [
-                0,
-                1.2,
-                0
-              ],
-              "rotate": [
-                1.5708,
-                0,
-                0
-              ]
+              "translate": [0, 1.2, 0],
+              "rotate": [1.5708, 0, 0]
             },
             "material": "matte-black"
           },
@@ -69,16 +53,8 @@
               "height": 0.05
             },
             "transform": {
-              "translate": [
-                0,
-                1.2,
-                0
-              ],
-              "rotate": [
-                1.5708,
-                0,
-                0
-              ]
+              "translate": [0, 1.2, 0],
+              "rotate": [1.5708, 0, 0]
             },
             "material": "matte-white"
           }
@@ -88,18 +64,10 @@
         "id": "tick-12",
         "type": "box",
         "args": {
-          "dims": [
-            0.014,
-            0.06,
-            0.006
-          ]
+          "dims": [0.014, 0.06, 0.006]
         },
         "transform": {
-          "translate": [
-            0,
-            1.61,
-            0.025
-          ]
+          "translate": [0, 1.61, 0.025]
         },
         "material": "matte-black"
       },
@@ -107,18 +75,10 @@
         "id": "tick-3",
         "type": "box",
         "args": {
-          "dims": [
-            0.06,
-            0.014,
-            0.006
-          ]
+          "dims": [0.06, 0.014, 0.006]
         },
         "transform": {
-          "translate": [
-            0.41,
-            1.2,
-            0.025
-          ]
+          "translate": [0.41, 1.2, 0.025]
         },
         "material": "matte-black"
       },
@@ -126,18 +86,10 @@
         "id": "tick-6",
         "type": "box",
         "args": {
-          "dims": [
-            0.014,
-            0.06,
-            0.006
-          ]
+          "dims": [0.014, 0.06, 0.006]
         },
         "transform": {
-          "translate": [
-            0,
-            0.79,
-            0.025
-          ]
+          "translate": [0, 0.79, 0.025]
         },
         "material": "matte-black"
       },
@@ -145,18 +97,10 @@
         "id": "tick-9",
         "type": "box",
         "args": {
-          "dims": [
-            0.06,
-            0.014,
-            0.006
-          ]
+          "dims": [0.06, 0.014, 0.006]
         },
         "transform": {
-          "translate": [
-            -0.41,
-            1.2,
-            0.025
-          ]
+          "translate": [-0.41, 1.2, 0.025]
         },
         "material": "matte-black"
       },
@@ -164,200 +108,96 @@
         "id": "tick-1",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            0.21,
-            1.556,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            0.5236
-          ]
+          "translate": [0.21, 1.556, 0.025],
+          "rotate": [0, 0, 0.5236]
         }
       },
       {
         "id": "tick-2",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            0.356,
-            1.41,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            1.0472
-          ]
+          "translate": [0.356, 1.41, 0.025],
+          "rotate": [0, 0, 1.0472]
         }
       },
       {
         "id": "tick-4",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            0.356,
-            0.99,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            -1.0472
-          ]
+          "translate": [0.356, 0.99, 0.025],
+          "rotate": [0, 0, -1.0472]
         }
       },
       {
         "id": "tick-5",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            0.21,
-            0.844,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            -0.5236
-          ]
+          "translate": [0.21, 0.844, 0.025],
+          "rotate": [0, 0, -0.5236]
         }
       },
       {
         "id": "tick-7",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            -0.21,
-            0.844,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            0.5236
-          ]
+          "translate": [-0.21, 0.844, 0.025],
+          "rotate": [0, 0, 0.5236]
         }
       },
       {
         "id": "tick-8",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            -0.356,
-            0.99,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            1.0472
-          ]
+          "translate": [-0.356, 0.99, 0.025],
+          "rotate": [0, 0, 1.0472]
         }
       },
       {
         "id": "tick-10",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            -0.356,
-            1.41,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            -1.0472
-          ]
+          "translate": [-0.356, 1.41, 0.025],
+          "rotate": [0, 0, -1.0472]
         }
       },
       {
         "id": "tick-11",
         "type": "box",
         "args": {
-          "dims": [
-            0.012,
-            0.05,
-            0.005
-          ]
+          "dims": [0.012, 0.05, 0.005]
         },
         "transform": {
-          "translate": [
-            -0.21,
-            1.556,
-            0.025
-          ],
-          "rotate": [
-            0,
-            0,
-            -0.5236
-          ]
+          "translate": [-0.21, 1.556, 0.025],
+          "rotate": [0, 0, -0.5236]
         }
       },
       {
         "id": "hour-hand",
         "type": "capsule",
         "args": {
-          "a": [
-            0.025,
-            1.2,
-            0.03
-          ],
-          "b": [
-            -0.275,
-            1.236,
-            0.03
-          ],
+          "a": [0.025, 1.2, 0.03],
+          "b": [-0.275, 1.236, 0.03],
           "radius": 0.018
         },
         "material": "matte-black"
@@ -366,16 +206,8 @@
         "id": "minute-hand",
         "type": "capsule",
         "args": {
-          "a": [
-            -0.025,
-            1.2,
-            0.035
-          ],
-          "b": [
-            0.36,
-            1.2,
-            0.035
-          ],
+          "a": [-0.025, 1.2, 0.035],
+          "b": [0.36, 1.2, 0.035],
           "radius": 0.012
         },
         "material": "matte-black"
@@ -388,16 +220,8 @@
           "height": 0.012
         },
         "transform": {
-          "translate": [
-            0,
-            1.2,
-            0.035
-          ],
-          "rotate": [
-            1.5708,
-            0,
-            0
-          ]
+          "translate": [0, 1.2, 0.035],
+          "rotate": [1.5708, 0, 0]
         },
         "material": "matte-black"
       },
@@ -408,11 +232,7 @@
           "scale": 0.8
         },
         "transform": {
-          "translate": [
-            -1.8,
-            0,
-            0.3
-          ]
+          "translate": [-1.8, 0, 0.3]
         },
         "material": {
           "hue": 0.07,
@@ -429,16 +249,8 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            1.2,
-            0,
-            0.5
-          ],
-          "rotate": [
-            0,
-            -0.5,
-            0
-          ]
+          "translate": [1.2, 0, 0.5],
+          "rotate": [0, -0.5, 0]
         },
         "material": "wood"
       },
@@ -450,11 +262,7 @@
           "height": 0.65
         },
         "transform": {
-          "translate": [
-            -1.6,
-            0,
-            0.4
-          ]
+          "translate": [-1.6, 0, 0.4]
         },
         "material": "wood"
       },
@@ -468,52 +276,21 @@
           "type": "polygon",
           "args": {
             "points": [
-              [
-                0,
-                -0.08
-              ],
-              [
-                0.05,
-                -0.08
-              ],
-              [
-                0.06,
-                -0.05
-              ],
-              [
-                0.08,
-                0
-              ],
-              [
-                0.07,
-                0.05
-              ],
-              [
-                0.04,
-                0.09
-              ],
-              [
-                0.04,
-                0.12
-              ],
-              [
-                0.045,
-                0.14
-              ],
-              [
-                0,
-                0.14
-              ]
+              [0, -0.08],
+              [0.05, -0.08],
+              [0.06, -0.05],
+              [0.08, 0],
+              [0.07, 0.05],
+              [0.04, 0.09],
+              [0.04, 0.12],
+              [0.045, 0.14],
+              [0, 0.14]
             ]
           },
           "id": "subjects_20_-source"
         },
         "transform": {
-          "translate": [
-            -1.6,
-            0.65,
-            0.4
-          ]
+          "translate": [-1.6, 0.65, 0.4]
         },
         "material": "porcelain"
       },
@@ -525,11 +302,7 @@
           "bloomRadius": 0.035
         },
         "transform": {
-          "translate": [
-            -1.58,
-            0.79,
-            0.4
-          ]
+          "translate": [-1.58, 0.79, 0.4]
         },
         "material": {
           "hue": 0.92,
@@ -547,11 +320,7 @@
           "bloomRadius": 0.03
         },
         "transform": {
-          "translate": [
-            -1.62,
-            0.79,
-            0.42
-          ]
+          "translate": [-1.62, 0.79, 0.42]
         },
         "material": {
           "hue": 0.15,

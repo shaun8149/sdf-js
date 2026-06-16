@@ -13,10 +13,14 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.halfHeight=0.5]
  */
 export function octagonPrismSDF({ apothem = 0.3, halfHeight = 0.5 } = {}) {
-  const r = apothem, h = halfHeight;
-  const kx = -0.9238795325, ky = 0.3826834323, kz = 0.4142135623;
+  const r = apothem,
+    h = halfHeight;
+  const kx = -0.9238795325,
+    ky = 0.3826834323,
+    kz = 0.4142135623;
   const inst = SDF3((p) => {
-    let px = Math.abs(p[0]), py = Math.abs(p[1]);
+    let px = Math.abs(p[0]),
+      py = Math.abs(p[1]);
     const pz = Math.abs(p[2]);
     // first fold
     let dot = Math.min(kx * px + ky * py, 0);
@@ -24,7 +28,7 @@ export function octagonPrismSDF({ apothem = 0.3, halfHeight = 0.5 } = {}) {
     py -= 2 * dot * ky;
     // second fold (mirror x)
     dot = Math.min(-kx * px + ky * py, 0);
-    px -= 2 * dot * (-kx);
+    px -= 2 * dot * -kx;
     py -= 2 * dot * ky;
     // edge projection
     px -= Math.max(-kz * r, Math.min(kz * r, px));
@@ -47,6 +51,8 @@ export const octagonPrismSpec = {
   source: {
     portedFrom: 'https://iquilezles.org/articles/distfunctions/',
     originalAuthor: 'Inigo Quilez',
-    license: 'MIT', portedAt: '2026-05-18', porter: 'Atlas /port-shader batch port',
+    license: 'MIT',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader batch port',
   },
 };

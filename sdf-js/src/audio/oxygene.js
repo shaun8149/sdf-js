@@ -19,18 +19,18 @@ const N = (() => {
   // Octaves 1-6 (we use ~ A1 to C7)
   for (let oct = 1; oct <= 7; oct++) {
     const base = (oct + 1) * 12;
-    o[`c${oct}`]  = base;
+    o[`c${oct}`] = base;
     o[`cs${oct}`] = base + 1;
-    o[`d${oct}`]  = base + 2;
+    o[`d${oct}`] = base + 2;
     o[`ds${oct}`] = base + 3;
-    o[`e${oct}`]  = base + 4;
-    o[`f${oct}`]  = base + 5;
+    o[`e${oct}`] = base + 4;
+    o[`f${oct}`] = base + 5;
     o[`fs${oct}`] = base + 6;
-    o[`g${oct}`]  = base + 7;
+    o[`g${oct}`] = base + 7;
     o[`gs${oct}`] = base + 8;
-    o[`a${oct}`]  = base + 9;
+    o[`a${oct}`] = base + 9;
     o[`as${oct}`] = base + 10;
-    o[`b${oct}`]  = base + 11;
+    o[`b${oct}`] = base + 11;
   }
   return o;
 })();
@@ -44,15 +44,15 @@ export function createOxygeneSynth() {
   let isPlaying = false;
   let nextNoteTime = 0;
   let schedulerTimer = null;
-  let bar = 0;  // global bar counter for pattern selection
+  let bar = 0; // global bar counter for pattern selection
   // Caller may want to capture the live audio stream for video recording.
   let mediaStreamDest = null;
 
   const BPM = 123;
-  const SUBDIV = 60 / BPM / 3;   // 12 subdivisions per bar — drum step length
-  const BAR    = SUBDIV * 12;    // one bar = 1.463 sec
-  const LOOKAHEAD = 0.1;         // schedule 100ms in advance
-  const TICK = 25;               // refill every 25ms
+  const SUBDIV = 60 / BPM / 3; // 12 subdivisions per bar — drum step length
+  const BAR = SUBDIV * 12; // one bar = 1.463 sec
+  const LOOKAHEAD = 0.1; // schedule 100ms in advance
+  const TICK = 25; // refill every 25ms
 
   // ---- Setup ----
   function ensureContext() {
@@ -66,7 +66,7 @@ export function createOxygeneSynth() {
     dryBus = ctx.createGain();
     dryBus.gain.value = 1.0;
     const delay = ctx.createDelay(1.0);
-    delay.delayTime.value = 60 / BPM / 2;  // half-beat delay
+    delay.delayTime.value = 60 / BPM / 2; // half-beat delay
     const fb = ctx.createGain();
     fb.gain.value = 0.55;
     const dampingHigh = ctx.createBiquadFilter();
@@ -91,7 +91,8 @@ export function createOxygeneSynth() {
     gain.gain.setValueAtTime(0.55, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.17);
     osc.connect(gain).connect(dryBus);
-    osc.start(t); osc.stop(t + 0.18);
+    osc.start(t);
+    osc.stop(t + 0.18);
   }
 
   // Tank-style tone hits — sine with short envelope. Used for congas / bongos /
@@ -103,13 +104,14 @@ export function createOxygeneSynth() {
     gain.gain.setValueAtTime(amp, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + decay);
     osc.connect(gain).connect(dryBus);
-    osc.start(t); osc.stop(t + decay + 0.02);
+    osc.start(t);
+    osc.stop(t + decay + 0.02);
   }
-  const conga       = (t) => tonehit(t, 195, 0.30, 0.165);
-  const smallbongo  = (t) => tonehit(t, 600, 0.30, 0.05);
-  const largebongo  = (t) => tonehit(t, 400, 0.30, 0.08);
-  const claves      = (t) => tonehit(t, 2200, 0.45, 0.05);
-  const rimshot     = (t) => tonehit(t, 1860, 0.22, 0.01);
+  const conga = (t) => tonehit(t, 195, 0.3, 0.165);
+  const smallbongo = (t) => tonehit(t, 600, 0.3, 0.05);
+  const largebongo = (t) => tonehit(t, 400, 0.3, 0.08);
+  const claves = (t) => tonehit(t, 2200, 0.45, 0.05);
+  const rimshot = (t) => tonehit(t, 1860, 0.22, 0.01);
 
   // Hi-hat / cymbal — filtered noise burst.
   function noise(t, decay, amp, hpCut) {
@@ -125,9 +127,10 @@ export function createOxygeneSynth() {
     gain.gain.setValueAtTime(amp, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + decay);
     src.connect(hp).connect(gain).connect(dryBus);
-    src.start(t); src.stop(t + decay + 0.05);
+    src.start(t);
+    src.stop(t + decay + 0.05);
   }
-  const hihat  = (t) => noise(t, 0.04, 0.20, 7000);
+  const hihat = (t) => noise(t, 0.04, 0.2, 7000);
   const cymbal = (t) => noise(t, 0.22, 0.18, 5500);
 
   // Quijada (donkey-jawbone) — ringing 2.7kHz click. Stylized as decaying sine.
@@ -135,17 +138,22 @@ export function createOxygeneSynth() {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.frequency.value = 2700;
-    gain.gain.setValueAtTime(0.20, t);
+    gain.gain.setValueAtTime(0.2, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
     osc.connect(gain).connect(dryBus);
-    osc.start(t); osc.stop(t + 0.13);
+    osc.start(t);
+    osc.stop(t + 0.13);
   }
 
   // ---- Bass — varsaw-style detuned saw with quick filter sweep ----
   function playBass(t, midi, dur) {
     const freq = midiHz(midi);
-    const osc1 = ctx.createOscillator(); osc1.type = 'sawtooth'; osc1.frequency.value = freq;
-    const osc2 = ctx.createOscillator(); osc2.type = 'sawtooth'; osc2.frequency.value = freq * 1.005;  // detune
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sawtooth';
+    osc1.frequency.value = freq;
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'sawtooth';
+    osc2.frequency.value = freq * 1.005; // detune
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
     lp.Q.value = 6;
@@ -153,13 +161,16 @@ export function createOxygeneSynth() {
     lp.frequency.exponentialRampToValueAtTime(180, t + Math.min(dur, 0.6));
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.30, t + 0.01);
-    gain.gain.setValueAtTime(0.30, t + Math.max(0.02, dur - 0.05));
+    gain.gain.linearRampToValueAtTime(0.3, t + 0.01);
+    gain.gain.setValueAtTime(0.3, t + Math.max(0.02, dur - 0.05));
     gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-    osc1.connect(lp); osc2.connect(lp);
+    osc1.connect(lp);
+    osc2.connect(lp);
     lp.connect(gain).connect(dryBus);
-    osc1.start(t); osc1.stop(t + dur + 0.05);
-    osc2.start(t); osc2.stop(t + dur + 0.05);
+    osc1.start(t);
+    osc1.stop(t + dur + 0.05);
+    osc2.start(t);
+    osc2.stop(t + dur + 0.05);
   }
 
   // ---- Lead synth1 — bright sawtooth pad with sweep + delay send ----
@@ -181,13 +192,16 @@ export function createOxygeneSynth() {
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, t);
     gain.gain.linearRampToValueAtTime(0.16, t + 0.04);
-    gain.gain.setValueAtTime(0.13, t + Math.max(0.05, dur - 0.10));
+    gain.gain.setValueAtTime(0.13, t + Math.max(0.05, dur - 0.1));
     gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
     for (const o of oscs) o.connect(lp);
     lp.connect(gain);
     gain.connect(dryBus);
-    gain.connect(delayBus);  // echo send
-    for (const o of oscs) { o.start(t); o.stop(t + dur + 0.05); }
+    gain.connect(delayBus); // echo send
+    for (const o of oscs) {
+      o.start(t);
+      o.stop(t + dur + 0.05);
+    }
   }
 
   // ---- Patterns ----
@@ -206,19 +220,25 @@ export function createOxygeneSynth() {
   // Bass pattern — Oxygene's iconic descending arpeggio. C minor.
   // pitch indices (over note registry) + duration-in-subdivisions per step
   const BASS_PATS = [
-    { p: [N.c2, N.as1, N.c2, N.g1, N.as1, N.g1, N.c2, N.as1, N.c2, N.c2, N.as1, N.g1],
-      d: [3, 2, 3, 1, 2, 1, 3, 2, 3, 1, 2, 1] },
-    { p: [N.d2, N.c2, N.d2, N.d2, N.c2, N.a1, N.d2, N.c2, N.d2, N.d2, N.c2, N.a1],
-      d: [3, 2, 3, 1, 2, 1, 3, 2, 3, 1, 2, 1] },
-    { p: [N.f2, N.ds2, N.c2, N.f2, N.ds2, N.c2, N.f2, N.ds2, N.c2, N.c2, N.ds2, N.c2],
-      d: [3, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 1] },
+    {
+      p: [N.c2, N.as1, N.c2, N.g1, N.as1, N.g1, N.c2, N.as1, N.c2, N.c2, N.as1, N.g1],
+      d: [3, 2, 3, 1, 2, 1, 3, 2, 3, 1, 2, 1],
+    },
+    {
+      p: [N.d2, N.c2, N.d2, N.d2, N.c2, N.a1, N.d2, N.c2, N.d2, N.d2, N.c2, N.a1],
+      d: [3, 2, 3, 1, 2, 1, 3, 2, 3, 1, 2, 1],
+    },
+    {
+      p: [N.f2, N.ds2, N.c2, N.f2, N.ds2, N.c2, N.f2, N.ds2, N.c2, N.c2, N.ds2, N.c2],
+      d: [3, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 1],
+    },
   ];
 
   // Lead pattern — recognizable Oxygene Pt.4 melody fragment.
   const LEAD_PATS = [
-    { p: [N.c6, N.g5, N.ds5, N.g5, N.c5],            d: [5, 1, 2, 3, 13] },
-    { p: [N.as5, N.a5, N.g5, N.a5, N.d5],            d: [5, 1, 2, 3, 13] },
-    { p: [N.a5, N.g5, N.f5, N.c5],                    d: [2, 1, 2, 7] },
+    { p: [N.c6, N.g5, N.ds5, N.g5, N.c5], d: [5, 1, 2, 3, 13] },
+    { p: [N.as5, N.a5, N.g5, N.a5, N.d5], d: [5, 1, 2, 3, 13] },
+    { p: [N.a5, N.g5, N.f5, N.c5], d: [2, 1, 2, 7] },
   ];
 
   // ---- Scheduler ----
@@ -294,14 +314,19 @@ export function createOxygeneSynth() {
   function stop() {
     if (!isPlaying) return;
     isPlaying = false;
-    if (schedulerTimer) { clearInterval(schedulerTimer); schedulerTimer = null; }
+    if (schedulerTimer) {
+      clearInterval(schedulerTimer);
+      schedulerTimer = null;
+    }
     if (master) {
       master.gain.cancelScheduledValues(ctx.currentTime);
       master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.12);
     }
   }
 
-  function isOn() { return isPlaying; }
+  function isOn() {
+    return isPlaying;
+  }
 
   /**
    * Connect the synth output to a MediaStreamDestination for recording.

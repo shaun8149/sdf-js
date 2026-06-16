@@ -19,15 +19,15 @@
 // 2D-SceneData v1
 // ---------------------------------------------------------------------------
 const DEFAULT_CANVAS = { width: 1024, height: 1024, background: [240, 235, 225] };
-const DEFAULT_LAYER  = { id: 'L1', name: 'Layer 1', visible: true, opacity: 1.0 };
-const DEFAULT_FILL   = [205, 95, 87];
+const DEFAULT_LAYER = { id: 'L1', name: 'Layer 1', visible: true, opacity: 1.0 };
+const DEFAULT_FILL = [205, 95, 87];
 
 const API_KEY_STORAGE = 'atlas-anthropic-key';
-const DEFAULT_MODEL   = 'claude-sonnet-4-5';
+const DEFAULT_MODEL = 'claude-sonnet-4-5';
 const EDIT_PROMPT_URL = './edit-2d-prompt.md';
 let _editSystemPrompt = null;
 
-let _instance = null;  // Module-level singleton (one editor per page)
+let _instance = null; // Module-level singleton (one editor per page)
 
 export function init({ sidebarEl, viewportEl }) {
   if (_instance) destroy();
@@ -42,7 +42,9 @@ export function destroy() {
   }
 }
 
-export function getInstance() { return _instance; }
+export function getInstance() {
+  return _instance;
+}
 
 // ---------------------------------------------------------------------------
 class Editor2D {
@@ -53,7 +55,7 @@ class Editor2D {
     this.nextLayerSeq = 2;
     this.state = {
       canvas: { ...DEFAULT_CANVAS },
-      layers: [ { ...DEFAULT_LAYER } ],
+      layers: [{ ...DEFAULT_LAYER }],
       shapes: [],
       activeLayerId: 'L1',
       selectedShapeIds: [],
@@ -61,8 +63,8 @@ class Editor2D {
     };
     this.dragState = null;
     this.onResize = () => this.fitCanvas();
-    this.chatHistory = [];   // [{ role: 'user'|'assistant'|'system', text }]
-    this.undoStack   = [];   // stack of prior `state.shapes` snapshots (Day 5 will do deeper)
+    this.chatHistory = []; // [{ role: 'user'|'assistant'|'system', text }]
+    this.undoStack = []; // stack of prior `state.shapes` snapshots (Day 5 will do deeper)
     this.buildUI();
     this.wireEvents();
     this.fitCanvas();
@@ -165,13 +167,13 @@ class Editor2D {
     this.viewportEl.appendChild(this.viewportRoot);
 
     // Cache element refs (scoped to our viewportRoot, not the whole #render-area)
-    this.$canvas      = this.viewportRoot.querySelector('[data-role=canvas]');
-    this.$overlay     = this.viewportRoot.querySelector('[data-role=overlay]');
-    this.$shapeCount  = this.viewportRoot.querySelector('[data-role=shape-count]');
-    this.$tools       = this.viewportRoot.querySelector('[data-role=tools]');
-    this.$layersList  = this.sidebarEl.querySelector('[data-role=layers-list]');
-    this.$inspector   = this.sidebarEl.querySelector('[data-role=inspector]');
-    this.ctx          = this.$canvas.getContext('2d');
+    this.$canvas = this.viewportRoot.querySelector('[data-role=canvas]');
+    this.$overlay = this.viewportRoot.querySelector('[data-role=overlay]');
+    this.$shapeCount = this.viewportRoot.querySelector('[data-role=shape-count]');
+    this.$tools = this.viewportRoot.querySelector('[data-role=tools]');
+    this.$layersList = this.sidebarEl.querySelector('[data-role=layers-list]');
+    this.$inspector = this.sidebarEl.querySelector('[data-role=inspector]');
+    this.ctx = this.$canvas.getContext('2d');
   }
 
   // -------------------------------------------------------------------------
@@ -203,7 +205,10 @@ class Editor2D {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       const key = e.key.toLowerCase();
       const map = { v: 'select', r: 'rectangle', c: 'circle', p: 'polygon', s: 'star', l: 'line' };
-      if (map[key]) { this.setTool(map[key]); e.preventDefault(); }
+      if (map[key]) {
+        this.setTool(map[key]);
+        e.preventDefault();
+      }
     };
     document.addEventListener('keydown', this.onKeyDown);
 
@@ -222,7 +227,7 @@ class Editor2D {
           if (isShift) {
             const idx = this.state.selectedShapeIds.indexOf(shape.id);
             if (idx >= 0) this.state.selectedShapeIds.splice(idx, 1);
-            else          this.state.selectedShapeIds.push(shape.id);
+            else this.state.selectedShapeIds.push(shape.id);
           } else if (!this.state.selectedShapeIds.includes(shape.id)) {
             this.state.selectedShapeIds = [shape.id];
           }
@@ -232,10 +237,10 @@ class Editor2D {
             ids: [...this.state.selectedShapeIds],
             startPointer: p,
             originalTranslates: Object.fromEntries(
-              this.state.selectedShapeIds.map(id => {
-                const s = this.state.shapes.find(sh => sh.id === id);
+              this.state.selectedShapeIds.map((id) => {
+                const s = this.state.shapes.find((sh) => sh.id === id);
                 return [id, [...(s?.transform.translate || [0, 0])]];
-              })
+              }),
             ),
           };
           this.$canvas.setPointerCapture(e.pointerId);
@@ -263,7 +268,7 @@ class Editor2D {
         const dy = p[1] - this.dragState.startPointer[1];
         // Group move: shift every selected shape by the same delta.
         for (const id of this.dragState.ids) {
-          const shape = this.state.shapes.find(s => s.id === id);
+          const shape = this.state.shapes.find((s) => s.id === id);
           if (!shape) continue;
           const orig = this.dragState.originalTranslates[id];
           shape.transform.translate = [orig[0] + dx, orig[1] + dy];
@@ -296,13 +301,17 @@ class Editor2D {
       if (e.key === 'Delete' || e.key === 'Backspace') {
         if (this.state.selectedShapeIds.length === 0) return;
         const drop = new Set(this.state.selectedShapeIds);
-        this.state.shapes = this.state.shapes.filter(s => !drop.has(s.id));
+        this.state.shapes = this.state.shapes.filter((s) => !drop.has(s.id));
         this.state.selectedShapeIds = [];
-        this.render(); this.renderLayers(); this.renderSelectionOverlay(); this.renderInspector();
+        this.render();
+        this.renderLayers();
+        this.renderSelectionOverlay();
+        this.renderInspector();
         e.preventDefault();
       } else if (e.key === 'Escape') {
         this.state.selectedShapeIds = [];
-        this.renderSelectionOverlay(); this.renderInspector();
+        this.renderSelectionOverlay();
+        this.renderInspector();
       } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
         // Cmd/Ctrl + Z → undo last patch
         this.undoLastPatch();
@@ -310,12 +319,14 @@ class Editor2D {
       } else if ((e.metaKey || e.ctrlKey) && (e.key === ']' || e.key === '[')) {
         // Z-order: Cmd/Ctrl + ] = bring forward (front of array), + [ = send back.
         if (this.state.selectedShapeIds.length === 0) return;
-        const front = (e.key === ']');
+        const front = e.key === ']';
         const sel = new Set(this.state.selectedShapeIds);
-        const keep = this.state.shapes.filter(s => !sel.has(s.id));
-        const moved = this.state.shapes.filter(s => sel.has(s.id));
+        const keep = this.state.shapes.filter((s) => !sel.has(s.id));
+        const moved = this.state.shapes.filter((s) => sel.has(s.id));
         this.state.shapes = front ? [...keep, ...moved] : [...moved, ...keep];
-        this.render(); this.renderLayers(); this.renderSelectionOverlay();
+        this.render();
+        this.renderLayers();
+        this.renderSelectionOverlay();
         e.preventDefault();
       }
     };
@@ -327,13 +338,13 @@ class Editor2D {
     for (const btn of this.$tools.querySelectorAll('.e2d-tool')) {
       btn.classList.toggle('active', btn.dataset.tool === tool);
     }
-    this.$canvas.style.cursor = (tool === 'select') ? 'default' : 'crosshair';
+    this.$canvas.style.cursor = tool === 'select' ? 'default' : 'crosshair';
   }
 
   canvasCoords(e) {
     const rect = this.$canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (this.$canvas.width  / rect.width);
-    const y = (e.clientY - rect.top)  * (this.$canvas.height / rect.height);
+    const x = (e.clientX - rect.left) * (this.$canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (this.$canvas.height / rect.height);
     return [x, y];
   }
 
@@ -342,13 +353,13 @@ class Editor2D {
   // -------------------------------------------------------------------------
   render() {
     const { width, height, background } = this.state.canvas;
-    if (this.$canvas.width !== width)  this.$canvas.width  = width;
+    if (this.$canvas.width !== width) this.$canvas.width = width;
     if (this.$canvas.height !== height) this.$canvas.height = height;
 
     this.ctx.fillStyle = rgbToCss(background);
     this.ctx.fillRect(0, 0, width, height);
 
-    const layerById = new Map(this.state.layers.map(l => [l.id, l]));
+    const layerById = new Map(this.state.layers.map((l) => [l.id, l]));
     for (const shape of this.state.shapes) {
       const layer = layerById.get(shape.layerId);
       if (layer && !layer.visible) continue;
@@ -366,8 +377,8 @@ class Editor2D {
     const ctx = this.ctx;
     const { type, args, transform, fill, stroke } = shape;
     const [tx, ty] = transform.translate || [0, 0];
-    const rot      = transform.rotate ?? 0;
-    const sc       = transform.scale  ?? 1;
+    const rot = transform.rotate ?? 0;
+    const sc = transform.scale ?? 1;
 
     ctx.translate(tx, ty);
     if (rot) ctx.rotate(rot);
@@ -385,7 +396,9 @@ class Editor2D {
       if (stroke) ctx.strokeRect(-w / 2, -h / 2, w, h);
     } else if (type === 'circle') {
       const r = args.radius;
-      ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fill();
       if (stroke) ctx.stroke();
     } else if (type === 'polygon') {
       const pts = args.points || [];
@@ -393,7 +406,8 @@ class Editor2D {
         ctx.beginPath();
         ctx.moveTo(pts[0][0], pts[0][1]);
         for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-        ctx.closePath(); ctx.fill();
+        ctx.closePath();
+        ctx.fill();
         if (stroke) ctx.stroke();
       }
     } else if (type === 'star') {
@@ -402,18 +416,25 @@ class Editor2D {
       const innerR = args.innerR ?? outerR * 0.4;
       ctx.beginPath();
       for (let i = 0; i < points * 2; i++) {
-        const r = (i % 2 === 0) ? outerR : innerR;
+        const r = i % 2 === 0 ? outerR : innerR;
         const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
-        const x = Math.cos(a) * r, y = Math.sin(a) * r;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        const x = Math.cos(a) * r,
+          y = Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
-      ctx.closePath(); ctx.fill();
+      ctx.closePath();
+      ctx.fill();
       if (stroke) ctx.stroke();
     } else if (type === 'line') {
-      const [ax, ay] = args.a, [bx, by] = args.b;
+      const [ax, ay] = args.a,
+        [bx, by] = args.b;
       ctx.strokeStyle = stroke ? rgbToCss(stroke.color) : rgbToCss(fill);
       ctx.lineWidth = stroke ? stroke.width : 4;
-      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
     }
   }
 
@@ -422,7 +443,7 @@ class Editor2D {
     const N = this.state.layers.length;
     for (let i = N - 1; i >= 0; i--) {
       const layer = this.state.layers[i];
-      const count = this.state.shapes.filter(s => s.layerId === layer.id).length;
+      const count = this.state.shapes.filter((s) => s.layerId === layer.id).length;
       const row = document.createElement('div');
       row.className = 'e2d-layer-row' + (layer.id === this.state.activeLayerId ? ' active' : '');
       row.dataset.layerId = layer.id;
@@ -435,7 +456,7 @@ class Editor2D {
       const actions = row.querySelector('.row-actions');
       actions.innerHTML = `
         <button class="layer-btn" data-action="move-up"   title="Move up"   ${i === N - 1 ? 'disabled' : ''}>▲</button>
-        <button class="layer-btn" data-action="move-down" title="Move down" ${i === 0     ? 'disabled' : ''}>▼</button>
+        <button class="layer-btn" data-action="move-down" title="Move down" ${i === 0 ? 'disabled' : ''}>▼</button>
         <button class="layer-btn" data-action="delete-layer" title="Delete" ${N === 1 ? 'disabled' : ''}>×</button>
       `;
       // Opacity slider (separate row body underneath, only when active)
@@ -458,30 +479,40 @@ class Editor2D {
         e.stopPropagation();
         if (action === 'toggle-visible') {
           layer.visible = !layer.visible;
-          this.render(); this.renderLayers();
+          this.render();
+          this.renderLayers();
         } else if (action === 'select-layer') {
           this.state.activeLayerId = layer.id;
           this.renderLayers();
         } else if (action === 'move-up') {
           if (i < N - 1) {
-            [this.state.layers[i], this.state.layers[i + 1]] = [this.state.layers[i + 1], this.state.layers[i]];
-            this.render(); this.renderLayers();
+            [this.state.layers[i], this.state.layers[i + 1]] = [
+              this.state.layers[i + 1],
+              this.state.layers[i],
+            ];
+            this.render();
+            this.renderLayers();
           }
         } else if (action === 'move-down') {
           if (i > 0) {
-            [this.state.layers[i], this.state.layers[i - 1]] = [this.state.layers[i - 1], this.state.layers[i]];
-            this.render(); this.renderLayers();
+            [this.state.layers[i], this.state.layers[i - 1]] = [
+              this.state.layers[i - 1],
+              this.state.layers[i],
+            ];
+            this.render();
+            this.renderLayers();
           }
         } else if (action === 'delete-layer') {
           if (N === 1) return;
           // Reassign shapes on deleted layer to first remaining
-          const fallbackId = (i === 0 ? this.state.layers[1].id : this.state.layers[0].id);
+          const fallbackId = i === 0 ? this.state.layers[1].id : this.state.layers[0].id;
           for (const s of this.state.shapes) {
             if (s.layerId === layer.id) s.layerId = fallbackId;
           }
           this.state.layers.splice(i, 1);
           if (this.state.activeLayerId === layer.id) this.state.activeLayerId = fallbackId;
-          this.render(); this.renderLayers();
+          this.render();
+          this.renderLayers();
         }
       });
 
@@ -491,7 +522,8 @@ class Editor2D {
         const span = e.target;
         const oldName = layer.name;
         const input = document.createElement('input');
-        input.type = 'text'; input.value = oldName;
+        input.type = 'text';
+        input.value = oldName;
         input.className = 'layer-name-edit';
         const commit = () => {
           layer.name = input.value.trim() || oldName;
@@ -500,10 +532,14 @@ class Editor2D {
         input.addEventListener('blur', commit);
         input.addEventListener('keydown', (ev) => {
           if (ev.key === 'Enter') input.blur();
-          if (ev.key === 'Escape') { input.value = oldName; input.blur(); }
+          if (ev.key === 'Escape') {
+            input.value = oldName;
+            input.blur();
+          }
         });
         span.replaceWith(input);
-        input.focus(); input.select();
+        input.focus();
+        input.select();
       });
 
       // Opacity slider live-update
@@ -526,7 +562,12 @@ class Editor2D {
       addBtn.dataset.wired = '1';
       addBtn.addEventListener('click', () => {
         const id = `L${this.nextLayerSeq++}`;
-        this.state.layers.push({ id, name: `Layer ${this.nextLayerSeq - 1}`, visible: true, opacity: 1.0 });
+        this.state.layers.push({
+          id,
+          name: `Layer ${this.nextLayerSeq - 1}`,
+          visible: true,
+          opacity: 1.0,
+        });
         this.state.activeLayerId = id;
         this.renderLayers();
       });
@@ -539,8 +580,10 @@ class Editor2D {
   buildShapeFromDrag({ tool, start, current }) {
     const [sx, sy] = start;
     const [cx, cy] = current;
-    const cxMid = (sx + cx) / 2, cyMid = (sy + cy) / 2;
-    const w = Math.abs(cx - sx), h = Math.abs(cy - sy);
+    const cxMid = (sx + cx) / 2,
+      cyMid = (sy + cy) / 2;
+    const w = Math.abs(cx - sx),
+      h = Math.abs(cy - sy);
     if (w < 4 && h < 4) return null;
 
     const id = `s${this.nextShapeId++}`;
@@ -561,8 +604,11 @@ class Editor2D {
     }
     if (tool === 'star') {
       const outerR = Math.max(w, h) / 2;
-      return { ...common, type: 'star',
-               args: { points: 5, outerR: Math.max(outerR, 8), innerR: Math.max(outerR, 8) * 0.4 } };
+      return {
+        ...common,
+        type: 'star',
+        args: { points: 5, outerR: Math.max(outerR, 8), innerR: Math.max(outerR, 8) * 0.4 },
+      };
     }
     if (tool === 'polygon') {
       const outerR = Math.max(w, h) / 2;
@@ -575,9 +621,12 @@ class Editor2D {
       return { ...common, type: 'polygon', args: { points: pts } };
     }
     if (tool === 'line') {
-      return { ...common, type: 'line',
-               args: { a: [sx - cxMid, sy - cyMid], b: [cx - cxMid, cy - cyMid] },
-               stroke: { color: [...DEFAULT_FILL], width: 4 } };
+      return {
+        ...common,
+        type: 'line',
+        args: { a: [sx - cxMid, sy - cyMid], b: [cx - cxMid, cy - cyMid] },
+        stroke: { color: [...DEFAULT_FILL], width: 4 },
+      };
     }
     return null;
   }
@@ -588,14 +637,14 @@ class Editor2D {
     if (!this.dragState || this.dragState.kind !== 'add') return;
     const rect = this.$canvas.getBoundingClientRect();
     const vpRect = this.viewportRoot.getBoundingClientRect();
-    const sx = this.dragState.start[0]   * (rect.width  / this.$canvas.width)  + rect.left;
-    const sy = this.dragState.start[1]   * (rect.height / this.$canvas.height) + rect.top;
-    const cx = this.dragState.current[0] * (rect.width  / this.$canvas.width)  + rect.left;
+    const sx = this.dragState.start[0] * (rect.width / this.$canvas.width) + rect.left;
+    const sy = this.dragState.start[1] * (rect.height / this.$canvas.height) + rect.top;
+    const cx = this.dragState.current[0] * (rect.width / this.$canvas.width) + rect.left;
     const cy = this.dragState.current[1] * (rect.height / this.$canvas.height) + rect.top;
     const left = Math.min(sx, cx) - vpRect.left;
-    const top  = Math.min(sy, cy) - vpRect.top;
-    const w    = Math.abs(cx - sx);
-    const h    = Math.abs(cy - sy);
+    const top = Math.min(sy, cy) - vpRect.top;
+    const w = Math.abs(cx - sx);
+    const h = Math.abs(cy - sy);
     const node = document.createElement('div');
     node.dataset.role = 'drag-preview';
     node.style.cssText = `position:absolute; left:${left}px; top:${top}px; width:${w}px; height:${h}px; border: 1px dashed #ffd070; background: rgba(255,208,112,0.08); pointer-events: none;`;
@@ -606,14 +655,19 @@ class Editor2D {
   // Layout fitting
   // -------------------------------------------------------------------------
   fitCanvas() {
-    const vw = this.viewportRoot.clientWidth - 80;   // leave margin for floating tools
+    const vw = this.viewportRoot.clientWidth - 80; // leave margin for floating tools
     const vh = this.viewportRoot.clientHeight - 40;
     if (vw <= 0 || vh <= 0) return;
     const aspect = this.state.canvas.width / this.state.canvas.height;
     let w, h;
-    if (vw / vh > aspect) { h = vh; w = h * aspect; }
-    else                  { w = vw; h = w / aspect; }
-    this.$canvas.style.width  = w + 'px';
+    if (vw / vh > aspect) {
+      h = vh;
+      w = h * aspect;
+    } else {
+      w = vw;
+      h = w / aspect;
+    }
+    this.$canvas.style.width = w + 'px';
     this.$canvas.style.height = h + 'px';
   }
 
@@ -626,7 +680,7 @@ class Editor2D {
   // -------------------------------------------------------------------------
   pickShapeAt(x, y) {
     const ctx = this.ctx;
-    const layerById = new Map(this.state.layers.map(l => [l.id, l]));
+    const layerById = new Map(this.state.layers.map((l) => [l.id, l]));
     // Walk top-of-stack first (last drawn = visually on top)
     for (let i = this.state.shapes.length - 1; i >= 0; i--) {
       const shape = this.state.shapes[i];
@@ -635,7 +689,7 @@ class Editor2D {
       ctx.save();
       const [tx, ty] = shape.transform.translate || [0, 0];
       const rot = shape.transform.rotate ?? 0;
-      const sc  = shape.transform.scale  ?? 1;
+      const sc = shape.transform.scale ?? 1;
       ctx.translate(tx, ty);
       if (rot) ctx.rotate(rot);
       if (sc !== 1) ctx.scale(sc, sc);
@@ -644,7 +698,7 @@ class Editor2D {
       let hit = false;
       if (shape.type === 'line') {
         // Line has no fillable region — use isPointInStroke with thick line width
-        ctx.lineWidth = (shape.stroke?.width || 4) + 6;  // 6px slop for picking
+        ctx.lineWidth = (shape.stroke?.width || 4) + 6; // 6px slop for picking
         hit = ctx.isPointInStroke(x, y);
       } else {
         hit = ctx.isPointInPath(x, y);
@@ -677,10 +731,12 @@ class Editor2D {
       const outerR = args.outerR ?? 50;
       const innerR = args.innerR ?? outerR * 0.4;
       for (let i = 0; i < points * 2; i++) {
-        const r = (i % 2 === 0) ? outerR : innerR;
+        const r = i % 2 === 0 ? outerR : innerR;
         const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
-        const x = Math.cos(a) * r, y = Math.sin(a) * r;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        const x = Math.cos(a) * r,
+          y = Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.closePath();
     } else if (type === 'line') {
@@ -696,7 +752,8 @@ class Editor2D {
     const { type, args, transform } = shape;
     const [tx, ty] = transform.translate || [0, 0];
     const sc = transform.scale ?? 1;
-    let halfW = 4, halfH = 4;
+    let halfW = 4,
+      halfH = 4;
     if (type === 'rectangle') {
       halfW = (args.size[0] / 2) * sc;
       halfH = (args.size[1] / 2) * sc;
@@ -706,17 +763,25 @@ class Editor2D {
       halfW = halfH = (args.outerR ?? 50) * sc;
     } else if (type === 'polygon') {
       const pts = args.points || [];
-      let mnX = Infinity, mxX = -Infinity, mnY = Infinity, mxY = -Infinity;
+      let mnX = Infinity,
+        mxX = -Infinity,
+        mnY = Infinity,
+        mxY = -Infinity;
       for (const [px, py] of pts) {
-        if (px < mnX) mnX = px; if (px > mxX) mxX = px;
-        if (py < mnY) mnY = py; if (py > mxY) mxY = py;
+        if (px < mnX) mnX = px;
+        if (px > mxX) mxX = px;
+        if (py < mnY) mnY = py;
+        if (py > mxY) mxY = py;
       }
       if (isFinite(mnX)) {
         halfW = Math.max(Math.abs(mnX), Math.abs(mxX)) * sc;
         halfH = Math.max(Math.abs(mnY), Math.abs(mxY)) * sc;
       }
     } else if (type === 'line') {
-      const ax = args.a[0], ay = args.a[1], bx = args.b[0], by = args.b[1];
+      const ax = args.a[0],
+        ay = args.a[1],
+        bx = args.b[0],
+        by = args.b[1];
       halfW = Math.max(Math.abs(ax), Math.abs(bx)) * sc;
       halfH = Math.max(Math.abs(ay), Math.abs(by)) * sc;
     }
@@ -731,19 +796,22 @@ class Editor2D {
     for (const n of [...this.$overlay.querySelectorAll('[data-role=selection]')]) n.remove();
     if (this.state.selectedShapeIds.length === 0) return;
 
-    const rect   = this.$canvas.getBoundingClientRect();
+    const rect = this.$canvas.getBoundingClientRect();
     const vpRect = this.viewportRoot.getBoundingClientRect();
-    const sx = (cx) => (cx * rect.width  / this.$canvas.width)  + rect.left - vpRect.left;
-    const sy = (cy) => (cy * rect.height / this.$canvas.height) + rect.top  - vpRect.top;
+    const sx = (cx) => (cx * rect.width) / this.$canvas.width + rect.left - vpRect.left;
+    const sy = (cy) => (cy * rect.height) / this.$canvas.height + rect.top - vpRect.top;
 
     const single = this.state.selectedShapeIds.length === 1;
     for (const id of this.state.selectedShapeIds) {
-      const shape = this.state.shapes.find(s => s.id === id);
+      const shape = this.state.shapes.find((s) => s.id === id);
       if (!shape) continue;
       const bb = this.shapeBboxCanvas(shape);
-      const x1 = sx(bb.x), y1 = sy(bb.y);
-      const x2 = sx(bb.x + bb.w), y2 = sy(bb.y + bb.h);
-      const w = x2 - x1, h = y2 - y1;
+      const x1 = sx(bb.x),
+        y1 = sy(bb.y);
+      const x2 = sx(bb.x + bb.w),
+        y2 = sy(bb.y + bb.h);
+      const w = x2 - x1,
+        h = y2 - y1;
 
       // Bounding rectangle (slightly different look for multi-select)
       const box = document.createElement('div');
@@ -752,27 +820,27 @@ class Editor2D {
       box.style.cssText = `position:absolute; left:${x1}px; top:${y1}px; width:${w}px; height:${h}px; border:1px ${borderStyle} #4a9eff; pointer-events: none; box-sizing: border-box;`;
       this.$overlay.appendChild(box);
 
-      if (!single) continue;  // skip handles for multi-select (Day 3 simplification)
+      if (!single) continue; // skip handles for multi-select (Day 3 simplification)
 
       // 8 handles (single selection only)
       const cxMid = (x1 + x2) / 2;
       const cyMid = (y1 + y2) / 2;
       const handles = [
-        ['nw', x1,    y1,    'nwse-resize'],
-        ['n',  cxMid, y1,    'ns-resize'  ],
-        ['ne', x2,    y1,    'nesw-resize'],
-        ['e',  x2,    cyMid, 'ew-resize'  ],
-        ['se', x2,    y2,    'nwse-resize'],
-        ['s',  cxMid, y2,    'ns-resize'  ],
-        ['sw', x1,    y2,    'nesw-resize'],
-        ['w',  x1,    cyMid, 'ew-resize'  ],
+        ['nw', x1, y1, 'nwse-resize'],
+        ['n', cxMid, y1, 'ns-resize'],
+        ['ne', x2, y1, 'nesw-resize'],
+        ['e', x2, cyMid, 'ew-resize'],
+        ['se', x2, y2, 'nwse-resize'],
+        ['s', cxMid, y2, 'ns-resize'],
+        ['sw', x1, y2, 'nesw-resize'],
+        ['w', x1, cyMid, 'ew-resize'],
       ];
       for (const [name, hx, hy, cursor] of handles) {
         const hEl = document.createElement('div');
         hEl.dataset.role = 'selection';
         hEl.dataset.handle = name;
         hEl.dataset.shapeId = id;
-        hEl.style.cssText = `position:absolute; left:${hx-4}px; top:${hy-4}px; width:8px; height:8px; background:#fff; border:1px solid #4a9eff; pointer-events: auto; cursor: ${cursor}; box-sizing: border-box;`;
+        hEl.style.cssText = `position:absolute; left:${hx - 4}px; top:${hy - 4}px; width:8px; height:8px; background:#fff; border:1px solid #4a9eff; pointer-events: auto; cursor: ${cursor}; box-sizing: border-box;`;
         hEl.addEventListener('pointerdown', (e) => this.onHandleDown(e, name, id));
         this.$overlay.appendChild(hEl);
       }
@@ -780,14 +848,15 @@ class Editor2D {
   }
 
   onHandleDown(e, handle, shapeId) {
-    e.stopPropagation();  // don't trigger canvas pointerdown
-    const shape = this.state.shapes.find(s => s.id === shapeId);
+    e.stopPropagation(); // don't trigger canvas pointerdown
+    const shape = this.state.shapes.find((s) => s.id === shapeId);
     if (!shape) return;
     const bb = this.shapeBboxCanvas(shape);
     const startPointer = this.canvasCoords(e);
     this.dragState = {
       kind: 'resize',
-      handle, shapeId,
+      handle,
+      shapeId,
       startBbox: { ...bb },
       startPointer,
       // Snapshot the original args so we can scale from
@@ -813,19 +882,22 @@ class Editor2D {
   applyResizeDrag(p) {
     const ds = this.dragState;
     if (!ds || ds.kind !== 'resize') return;
-    const shape = this.state.shapes.find(s => s.id === ds.shapeId);
+    const shape = this.state.shapes.find((s) => s.id === ds.shapeId);
     if (!shape) return;
     const bb = ds.startBbox;
 
     // Compute new bbox edges. Anchor opposite edge of dragged handle.
-    let left = bb.x, top = bb.y, right = bb.x + bb.w, bottom = bb.y + bb.h;
-    if (ds.handle.includes('w')) left   = p[0];
-    if (ds.handle.includes('e')) right  = p[0];
-    if (ds.handle.includes('n')) top    = p[1];
+    let left = bb.x,
+      top = bb.y,
+      right = bb.x + bb.w,
+      bottom = bb.y + bb.h;
+    if (ds.handle.includes('w')) left = p[0];
+    if (ds.handle.includes('e')) right = p[0];
+    if (ds.handle.includes('n')) top = p[1];
     if (ds.handle.includes('s')) bottom = p[1];
     // Normalize (handle drag past opposite edge)
-    if (right < left)  [left, right] = [right, left];
-    if (bottom < top)  [top, bottom] = [bottom, top];
+    if (right < left) [left, right] = [right, left];
+    if (bottom < top) [top, bottom] = [bottom, top];
     const newW = Math.max(8, right - left);
     const newH = Math.max(8, bottom - top);
     const cxMid = (left + right) / 2;
@@ -874,8 +946,14 @@ class Editor2D {
     }
     if (ids.length > 1) {
       // Multi-select: show count + group fill picker that recolors all selected
-      const fills = ids.map(id => this.state.shapes.find(s => s.id === id)?.fill).filter(Boolean);
-      const commonFill = fills.every(f => f[0] === fills[0][0] && f[1] === fills[0][1] && f[2] === fills[0][2]) ? fills[0] : [128,128,128];
+      const fills = ids
+        .map((id) => this.state.shapes.find((s) => s.id === id)?.fill)
+        .filter(Boolean);
+      const commonFill = fills.every(
+        (f) => f[0] === fills[0][0] && f[1] === fills[0][1] && f[2] === fills[0][2],
+      )
+        ? fills[0]
+        : [128, 128, 128];
       this.$inspector.innerHTML = `
         <div class="inspector-section">
           <h4>${ids.length} shapes selected</h4>
@@ -888,17 +966,19 @@ class Editor2D {
           <div class="inspector-field"><label>color</label> <input type="color" data-field="group-fill" value="${rgbToHex(commonFill)}"></div>
         </div>
       `;
-      this.$inspector.querySelector('input[data-field=group-fill]')?.addEventListener('input', (e) => {
-        const rgb = hexToRgb(e.target.value);
-        for (const id of ids) {
-          const s = this.state.shapes.find(sh => sh.id === id);
-          if (s) s.fill = [...rgb];
-        }
-        this.render();
-      });
+      this.$inspector
+        .querySelector('input[data-field=group-fill]')
+        ?.addEventListener('input', (e) => {
+          const rgb = hexToRgb(e.target.value);
+          for (const id of ids) {
+            const s = this.state.shapes.find((sh) => sh.id === id);
+            if (s) s.fill = [...rgb];
+          }
+          this.render();
+        });
       return;
     }
-    const shape = this.state.shapes.find(s => s.id === ids[0]);
+    const shape = this.state.shapes.find((s) => s.id === ids[0]);
     if (!shape) {
       this.$inspector.innerHTML = `<div class="e2d-inspector-empty">Shape not found.</div>`;
       return;
@@ -906,22 +986,22 @@ class Editor2D {
     const t = shape.transform;
     const tx = (t.translate?.[0] ?? 0).toFixed(1);
     const ty = (t.translate?.[1] ?? 0).toFixed(1);
-    const rot = ((t.rotate ?? 0) * 180 / Math.PI).toFixed(1);
+    const rot = (((t.rotate ?? 0) * 180) / Math.PI).toFixed(1);
     const fillHex = rgbToHex(shape.fill);
 
     // Per-type args row
     let argsRow = '';
     if (shape.type === 'rectangle') {
       argsRow = `
-        <div class="inspector-field"><label>width</label> <input type="number" data-field="args.size.0" value="${(shape.args.size[0]||0).toFixed(1)}"></div>
-        <div class="inspector-field"><label>height</label> <input type="number" data-field="args.size.1" value="${(shape.args.size[1]||0).toFixed(1)}"></div>`;
+        <div class="inspector-field"><label>width</label> <input type="number" data-field="args.size.0" value="${(shape.args.size[0] || 0).toFixed(1)}"></div>
+        <div class="inspector-field"><label>height</label> <input type="number" data-field="args.size.1" value="${(shape.args.size[1] || 0).toFixed(1)}"></div>`;
     } else if (shape.type === 'circle') {
-      argsRow = `<div class="inspector-field"><label>radius</label> <input type="number" data-field="args.radius" value="${(shape.args.radius||0).toFixed(1)}"></div>`;
+      argsRow = `<div class="inspector-field"><label>radius</label> <input type="number" data-field="args.radius" value="${(shape.args.radius || 0).toFixed(1)}"></div>`;
     } else if (shape.type === 'star') {
       argsRow = `
         <div class="inspector-field"><label>points</label> <input type="number" data-field="args.points" value="${shape.args.points ?? 5}" step="1"></div>
-        <div class="inspector-field"><label>outerR</label> <input type="number" data-field="args.outerR" value="${(shape.args.outerR||0).toFixed(1)}"></div>
-        <div class="inspector-field"><label>innerR</label> <input type="number" data-field="args.innerR" value="${(shape.args.innerR||0).toFixed(1)}"></div>`;
+        <div class="inspector-field"><label>outerR</label> <input type="number" data-field="args.outerR" value="${(shape.args.outerR || 0).toFixed(1)}"></div>
+        <div class="inspector-field"><label>innerR</label> <input type="number" data-field="args.innerR" value="${(shape.args.innerR || 0).toFixed(1)}"></div>`;
     }
 
     this.$inspector.innerHTML = `
@@ -947,7 +1027,7 @@ class Editor2D {
     `;
 
     // Wire inspector input changes
-    this.$inspector.querySelectorAll('input[data-field]').forEach(inp => {
+    this.$inspector.querySelectorAll('input[data-field]').forEach((inp) => {
       const apply = () => this.applyInspectorEdit(shape, inp.dataset.field, inp.value);
       inp.addEventListener('input', apply);
     });
@@ -961,9 +1041,9 @@ class Editor2D {
     } else if (field === 'transform.translate.1') {
       shape.transform.translate[1] = parseFloat(value) || 0;
     } else if (field === 'transform.rotate.deg') {
-      shape.transform.rotate = (parseFloat(value) || 0) * Math.PI / 180;
+      shape.transform.rotate = ((parseFloat(value) || 0) * Math.PI) / 180;
     } else if (field.startsWith('args.')) {
-      const path = field.split('.').slice(1);  // ['size', '0']
+      const path = field.split('.').slice(1); // ['size', '0']
       let target = shape.args;
       for (let i = 0; i < path.length - 1; i++) target = target[path[i]];
       const leaf = path[path.length - 1];
@@ -979,12 +1059,15 @@ class Editor2D {
   // -------------------------------------------------------------------------
   wireChat() {
     this.$chatHistory = this.sidebarEl.querySelector('[data-role=chat-history]');
-    this.$chatInput   = this.sidebarEl.querySelector('[data-role=chat-input]');
-    this.$chatSend    = this.sidebarEl.querySelector('[data-role=chat-send]');
+    this.$chatInput = this.sidebarEl.querySelector('[data-role=chat-input]');
+    this.$chatSend = this.sidebarEl.querySelector('[data-role=chat-send]');
     const submit = () => this.handleChatSubmit();
     this.$chatSend.addEventListener('click', submit);
     this.$chatInput.addEventListener('keydown', (e) => {
-      if ((e.key === 'Enter') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); }
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        submit();
+      }
     });
   }
 
@@ -993,7 +1076,10 @@ class Editor2D {
     if (!text) return;
     const apiKey = localStorage.getItem(API_KEY_STORAGE);
     if (!apiKey) {
-      this.appendChat('system', 'No Anthropic API key. Set it in the Text tab first (top of code panel).');
+      this.appendChat(
+        'system',
+        'No Anthropic API key. Set it in the Text tab first (top of code panel).',
+      );
       this.renderChat();
       return;
     }
@@ -1093,7 +1179,7 @@ class Editor2D {
           else {
             const idx = parseInt(last, 10);
             if (op.op === 'add') target.splice(idx, 0, op.value);
-            else                 target[idx] = op.value;
+            else target[idx] = op.value;
           }
         } else if (target && typeof target === 'object') {
           target[last] = op.value;
@@ -1206,7 +1292,7 @@ class Editor2D {
     this.$chatHistory.innerHTML = html;
     this.$chatHistory.scrollTop = this.$chatHistory.scrollHeight;
     // Wire patch action buttons
-    this.$chatHistory.querySelectorAll('.patch-apply').forEach(btn => {
+    this.$chatHistory.querySelectorAll('.patch-apply').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.dataset.idx, 10);
         const m = this.chatHistory[idx];
@@ -1220,11 +1306,15 @@ class Editor2D {
         }
       });
     });
-    this.$chatHistory.querySelectorAll('.patch-reject').forEach(btn => {
+    this.$chatHistory.querySelectorAll('.patch-reject').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.dataset.idx, 10);
         const m = this.chatHistory[idx];
-        if (m) { m.ops = null; m.text = '✗ rejected'; this.renderChat(); }
+        if (m) {
+          m.ops = null;
+          m.text = '✗ rejected';
+          this.renderChat();
+        }
       });
     });
   }
@@ -1246,18 +1336,22 @@ class Editor2D {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function rgbToCss([r, g, b]) { return `rgb(${r|0},${g|0},${b|0})`; }
+function rgbToCss([r, g, b]) {
+  return `rgb(${r | 0},${g | 0},${b | 0})`;
+}
 function rgbToHex([r, g, b]) {
-  const h = (n) => ('0' + (n|0).toString(16)).slice(-2);
+  const h = (n) => ('0' + (n | 0).toString(16)).slice(-2);
   return `#${h(r)}${h(g)}${h(b)}`;
 }
 function hexToRgb(hex) {
   const s = hex.replace(/^#/, '');
-  return [parseInt(s.slice(0,2), 16), parseInt(s.slice(2,4), 16), parseInt(s.slice(4,6), 16)];
+  return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)];
 }
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s).replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+  );
 }
 
 // JSON Pointer segment decoding (RFC 6901): ~1 → /, ~0 → ~
@@ -1269,8 +1363,8 @@ function decodeJsonPointerSegment(s) {
 function opSummary(op) {
   if (!op || !op.op) return '(invalid op)';
   if (op.op === 'replace') return `replace ${op.path} → ${shortValue(op.value)}`;
-  if (op.op === 'add')     return `add     ${op.path} = ${shortValue(op.value)}`;
-  if (op.op === 'remove')  return `remove  ${op.path}`;
+  if (op.op === 'add') return `add     ${op.path} = ${shortValue(op.value)}`;
+  if (op.op === 'remove') return `remove  ${op.path}`;
   return `${op.op} ${op.path || ''}`;
 }
 function shortValue(v) {
@@ -1278,7 +1372,7 @@ function shortValue(v) {
   if (typeof v === 'number') return v.toString();
   if (typeof v === 'string') return JSON.stringify(v);
   if (Array.isArray(v)) {
-    if (v.length <= 4 && v.every(x => typeof x === 'number')) return `[${v.join(', ')}]`;
+    if (v.length <= 4 && v.every((x) => typeof x === 'number')) return `[${v.join(', ')}]`;
     return `Array(${v.length})`;
   }
   if (typeof v === 'object') {

@@ -251,15 +251,20 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
 
   function uploadSDF(sdf) {
     const result = compileSDF3ToGLSL(sdf, {
-      sceneFnName: 'sceneSDF', includeLibrary: true, emitObjectIndex: false,
+      sceneFnName: 'sceneSDF',
+      includeLibrary: true,
+      emitObjectIndex: false,
     });
     if (result.error) throw new Error(`[blueprint] compileSDF3ToGLSL: ${result.error}`);
     const fragSource = buildFragmentShader(result.glsl);
     let entry = programCache.get(fragSource);
     if (!entry) {
       let fs;
-      try { fs = compileShader(fragSource, gl.FRAGMENT_SHADER); }
-      catch (e) { throw new Error(`[blueprint] frag compile: ${e.message}`); }
+      try {
+        fs = compileShader(fragSource, gl.FRAGMENT_SHADER);
+      } catch (e) {
+        throw new Error(`[blueprint] frag compile: ${e.message}`);
+      }
       const prog = gl.createProgram();
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
@@ -282,8 +287,16 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     program = entry.prog;
     gl.useProgram(program);
     uniformsCache = {};
-    for (const name of ['u_resolution', 'u_modelCenter', 'u_modelExtent', 'u_lightPos', 'u_time',
-                        'u_heightmap', 'u_runeActive']) {  // Sprint 12 Rune erosion
+    for (const name of [
+      'u_resolution',
+      'u_modelCenter',
+      'u_modelExtent',
+      'u_lightPos',
+      'u_time',
+      'u_heightmap',
+      'u_runeActive',
+    ]) {
+      // Sprint 12 Rune erosion
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
     return fragSource.length;
@@ -291,7 +304,8 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
 
   // Sprint 12 Rune erosion heightmap. Same pipeline as flyLambert.setRuneHeightmap.
   let runeHeightmapTex = null;
-  let runeHeightmapW = 0, runeHeightmapH = 0;
+  let runeHeightmapW = 0,
+    runeHeightmapH = 0;
 
   function lightFromSpherical(azim, alt, dist) {
     return [
@@ -301,7 +315,8 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     ];
   }
 
-  let frameCount = 0, fpsLast = performance.now();
+  let frameCount = 0,
+    fpsLast = performance.now();
   function draw() {
     if (!program) return;
     const c = getControls();
@@ -359,39 +374,63 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.flush();
-      const fragSource = buildFragmentShader(compileSDF3ToGLSL(sdf, {
-        sceneFnName: 'sceneSDF', includeLibrary: true, emitObjectIndex: false,
-      }).glsl);
+      const fragSource = buildFragmentShader(
+        compileSDF3ToGLSL(sdf, {
+          sceneFnName: 'sceneSDF',
+          includeLibrary: true,
+          emitObjectIndex: false,
+        }).glsl,
+      );
       const bytes = fragSource.length;
       if (pendingRender != null) cancelAnimationFrame(pendingRender);
       pendingRender = requestAnimationFrame(() => {
         pendingRender = null;
-        try { uploadSDF(sdf); } catch (e) { console.error('[blueprint] upload failed:', e); return; }
-        if (!rafId) { fpsLast = performance.now(); frameCount = 0; loop(); }
+        try {
+          uploadSDF(sdf);
+        } catch (e) {
+          console.error('[blueprint] upload failed:', e);
+          return;
+        }
+        if (!rafId) {
+          fpsLast = performance.now();
+          frameCount = 0;
+          loop();
+        }
       });
       return { bytes };
     },
     unmount() {
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-      if (pendingRender != null) { cancelAnimationFrame(pendingRender); pendingRender = null; }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      if (pendingRender != null) {
+        cancelAnimationFrame(pendingRender);
+        pendingRender = null;
+      }
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     },
-    canRender(sdf) { return canCompileSDF3(sdf); },
+    canRender(sdf) {
+      return canCompileSDF3(sdf);
+    },
     // Sprint 12 Rune erosion: upload CPU-baked heightmap from compile.js as
     // a WebGL2 RGBA32F texture for sdTerrainErodedRune sampling. null clears.
     setRuneHeightmap(baked) {
       if (!baked) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
         runeHeightmapTex = null;
-        runeHeightmapW = 0; runeHeightmapH = 0;
+        runeHeightmapW = 0;
+        runeHeightmapH = 0;
         return;
       }
       const { data, width, height } = baked;
       if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
-        throw new Error(`[blueprint] setRuneHeightmap: bad data shape ${data?.length} vs ${width*height*4}`);
+        throw new Error(
+          `[blueprint] setRuneHeightmap: bad data shape ${data?.length} vs ${width * height * 4}`,
+        );
       }
       if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
@@ -420,15 +459,23 @@ export function createBlueprintRenderer({ canvas, getControls, onFps }) {
     // No-op stubs to match FLY 3D public API (so compositor pill switch
     // doesn't have to special-case blueprint).
     setCamState() {},
-    getCamState() { return { position: [...modelCenter], yaw: 0, pitch: 0 }; },
+    getCamState() {
+      return { position: [...modelCenter], yaw: 0, pitch: 0 };
+    },
     setPostFx() {},
     setSequence() {},
     setVolumes() {},
     setSequenceTime() {},
     setSequencePaused() {},
-    getSequenceTime() { return 0; },
-    getSequenceDuration() { return 0; },
-    isSequenceActive() { return false; },
+    getSequenceTime() {
+      return 0;
+    },
+    getSequenceDuration() {
+      return 0;
+    },
+    isSequenceActive() {
+      return false;
+    },
     resetCamera() {},
   };
 }

@@ -31,7 +31,10 @@ export class Random {
       let c = parseInt(uint128Hex.substring(16, 24), 16);
       let d = parseInt(uint128Hex.substring(24, 32), 16);
       return function () {
-        a |= 0; b |= 0; c |= 0; d |= 0;
+        a |= 0;
+        b |= 0;
+        c |= 0;
+        d |= 0;
         let t = (((a + b) | 0) + d) | 0;
         d = (d + 1) | 0;
         a = b ^ (b >>> 9);
@@ -56,9 +59,19 @@ export class Random {
     this.useA = !this.useA;
     return this.useA ? this.prngA() : this.prngB();
   }
-  random_num(a, b) { return a + (b - a) * this.random_dec(); }
-  random_int(a, b) { return Math.floor(this.random_num(a, b + 1)); }
-  random_bool(p) { return this.random_dec() < p; }
-  random_choice(list) { return list[this.random_int(0, list.length - 1)]; }
-  random_angle() { return this.random_num(0, Math.PI * 2); }
+  random_num(a, b) {
+    return a + (b - a) * this.random_dec();
+  }
+  random_int(a, b) {
+    return Math.floor(this.random_num(a, b + 1));
+  }
+  random_bool(p) {
+    return this.random_dec() < p;
+  }
+  random_choice(list) {
+    return list[this.random_int(0, list.length - 1)];
+  }
+  random_angle() {
+    return this.random_num(0, Math.PI * 2);
+  }
 }

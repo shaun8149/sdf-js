@@ -12,7 +12,11 @@
 // 区别只在 visual register：一个 fill，一个 line。
 // =============================================================================
 
-import { hatch as packHatch, gradientPerpField, projectedTangentField } from '../streamline/index.js';
+import {
+  hatch as packHatch,
+  gradientPerpField,
+  projectedTangentField,
+} from '../streamline/index.js';
 import { SDF3 } from '../sdf/core.js';
 import { makeProbe, createCamera } from '../sdf/probe.js';
 import { smoothStart3 } from '../math/easing.js';
@@ -33,17 +37,17 @@ import { smoothStart3 } from '../math/easing.js';
 //     - mist：远处 g→mistShade。SOURCERY/Pasma 原版均用 mistShade=1.0（远处淡到
 //       纯白 = 最稀 = 大气透视）。早期我用过 0.85 折中灰但视觉上"远处发灰"不自然。
 const DEFAULTS_3D = {
-  dsepDark:     0.003,  // 暗处线最密
-  dsepLight:    0.020,  // 亮处线最稀 (= 默认 layer.dsep)
-  intensityMin: 0.40,   // intensity remap 下界（< 这值 → ir=0 → 最密）
-  intensityMax: 1.00,   // remap 上界
+  dsepDark: 0.003, // 暗处线最密
+  dsepLight: 0.02, // 亮处线最稀 (= 默认 layer.dsep)
+  intensityMin: 0.4, // intensity remap 下界（< 这值 → ir=0 → 最密）
+  intensityMax: 1.0, // remap 上界
   // Pasma-style (C + D) + SOURCERY idiom 3
-  mistStart:    0.65,   // smoothstep 起点（probe.t / probe.maxDist 比例）
-  mistShade:    1.00,   // 远处 g 收敛值。1.0 = 淡到纯白/最稀 (Pasma/SOURCERY 默认)；
-                        // 0.85 = 中灰 (我之前的 default)；0 = 远处变最密变黑
-  pasmaGamma:   0.4,    // g^pasmaGamma 的指数（Pasma 用 0.4）
+  mistStart: 0.65, // smoothstep 起点（probe.t / probe.maxDist 比例）
+  mistShade: 1.0, // 远处 g 收敛值。1.0 = 淡到纯白/最稀 (Pasma/SOURCERY 默认)；
+  // 0.85 = 中灰 (我之前的 default)；0 = 远处变最密变黑
+  pasmaGamma: 0.4, // g^pasmaGamma 的指数（Pasma 用 0.4）
 };
-const clamp01 = v => Math.max(0, Math.min(1, v));
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
 // ---- 3D rayhatching helpers ------------------------------------------------
 // 这是 Piter Pasma "Universal Rayhatcher" 的核心：raymarch 找 hit，取表面切向，
@@ -68,7 +72,7 @@ export function computeHatchLayers(layers, opts = {}) {
     const {
       sdf,
       color,
-      dsep = 0.020,
+      dsep = 0.02,
       stepSize = 0.005,
       lineWidth = 0.6,
       seedCount = 4000,
@@ -78,7 +82,7 @@ export function computeHatchLayers(layers, opts = {}) {
 
     let sdfForPack = sdf;
     let fieldForPack = layer.field;
-    let packExtra = {};  // 额外塞给 packHatch 的 opts (dsep 函数 + dsepMax + extraValid)
+    let packExtra = {}; // 额外塞给 packHatch 的 opts (dsep 函数 + dsepMax + extraValid)
     if (sdf instanceof SDF3) {
       // Pasma rayhatching：ortho camera。makeProbe 返回 4-value probe
       // {intensity, region, hit, normal}。projectedTangentField 共享同一
@@ -88,15 +92,17 @@ export function computeHatchLayers(layers, opts = {}) {
       // scenes (default maxDist=10 misses anything beyond unit-scale).
       const co = layer.cameraOpts || {};
       const camera = createCamera({
-        yaw:      co.yaw      ?? 0.5,
-        pitch:    co.pitch    ?? 0.35,
+        yaw: co.yaw ?? 0.5,
+        pitch: co.pitch ?? 0.35,
         distance: co.distance ?? 4,
-        target:   co.target   ?? [0, 0, 0],
+        target: co.target ?? [0, 0, 0],
       });
-      const probeMaxDist  = layer.maxDist  ?? Math.max(10, (co.distance ?? 4) * 3);
+      const probeMaxDist = layer.maxDist ?? Math.max(10, (co.distance ?? 4) * 3);
       const probeMaxSteps = layer.maxSteps ?? 120;
       const probe = makeProbe((p) => sdf(p), {
-        camera, maxDist: probeMaxDist, maxSteps: probeMaxSteps,
+        camera,
+        maxDist: probeMaxDist,
+        maxSteps: probeMaxSteps,
       });
       // Pasma's `cross(n, fw)` mode is default — gives the canonical
       // rayhatching "wrapping" look. Caller can switch via:
@@ -112,7 +118,7 @@ export function computeHatchLayers(layers, opts = {}) {
       // SDF3 默认走 intensity-modulated dsep + region mask (BOB scenes 7/8 signature)
       // 移植于 test-pasma-capsules.js 的 dsepFn / inScene 逻辑，统一进 render.hatch
       // → MVP / streamline-scenes / 任何 hatch caller 都自动获得密度调制 + 区域 mask
-      const intensityDsep = layer.intensityDsep !== false;  // 默认开
+      const intensityDsep = layer.intensityDsep !== false; // 默认开
       // Pasma-style: dsep = dsepDark / clamp(1 - g^0.4, eps, 1) + mist
       // Default ON for the SDF3 path (matches Universal Rayhatcher signature).
       const pasmaStyle = layer.pasmaStyle !== false;
@@ -144,8 +150,10 @@ export function computeHatchLayers(layers, opts = {}) {
             if (!r.hit || r.region === 'background') return dsepLight;
             const intensity = clamp01(r.intensity);
             // Mist: smoothstep from mistStart..1.0 of normalized t blends g→mistShade
-            const tNorm = clamp01((r.t / (r.maxDist || 1)));
-            const mistT = smoothStart3(clamp01((tNorm - mistStart) / Math.max(1e-6, 1 - mistStart)));
+            const tNorm = clamp01(r.t / (r.maxDist || 1));
+            const mistT = smoothStart3(
+              clamp01((tNorm - mistStart) / Math.max(1e-6, 1 - mistStart)),
+            );
             const g = intensity * (1 - mistT) + mistShade * mistT;
             // 1 - g^gamma maps high g → small denominator → big dsep (sparse)
             const inv = clamp01(1 - Math.pow(g, pasmaGamma));
@@ -185,16 +193,21 @@ export function computeHatchLayers(layers, opts = {}) {
         };
       } else {
         // intensityDsep=false 退化为简单 hit-test + uniform dsep
-        sdfForPack = (p) => probe(p[0], p[1]).hit ? -0.01 : 0.01;
+        sdfForPack = (p) => (probe(p[0], p[1]).hit ? -0.01 : 0.01);
       }
     } else if (!fieldForPack) {
       fieldForPack = gradientPerpField(sdf);
     }
 
     const streamlines = packHatch(sdfForPack, fieldForPack, {
-      view, dsep, stepSize, seedCount, maxStreamlines, minLength,
+      view,
+      dsep,
+      stepSize,
+      seedCount,
+      maxStreamlines,
+      minLength,
       seedStrategy: 'grid',
-      ...packExtra,  // SDF3 时覆盖 dsep / dsepMax
+      ...packExtra, // SDF3 时覆盖 dsep / dsepMax
     });
 
     out.push({ streamlines, color, lineWidth });
@@ -224,24 +237,21 @@ export function computeHatchLayers(layers, opts = {}) {
  * @returns {number[]}  每层实际画出的流线数（debug 用）
  */
 export function hatch(ctx, layers, opts = {}) {
-  const {
-    view = 1.0,
-    background = '#fdf9f6',
-    flipY = false,
-  } = opts;
+  const { view = 1.0, background = '#fdf9f6', flipY = false } = opts;
 
   const canvas = ctx.canvas;
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.width,
+    H = canvas.height;
 
   if (background !== null) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, W, H);
   }
 
-  const wxToPx = wx => (wx + view) / (2 * view) * W;
+  const wxToPx = (wx) => ((wx + view) / (2 * view)) * W;
   const wyToPx = flipY
-    ? wy => (view - wy) / (2 * view) * H
-    : wy => (wy + view) / (2 * view) * H;
+    ? (wy) => ((view - wy) / (2 * view)) * H
+    : (wy) => ((wy + view) / (2 * view)) * H;
 
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
@@ -297,10 +307,10 @@ export function hatchSvg(layers, opts = {}) {
     precision = 2,
   } = opts;
 
-  const wxToPx = wx => (wx + view) / (2 * view) * width;
+  const wxToPx = (wx) => ((wx + view) / (2 * view)) * width;
   const wyToPx = flipY
-    ? wy => (view - wy) / (2 * view) * height
-    : wy => (wy + view) / (2 * view) * height;
+    ? (wy) => ((view - wy) / (2 * view)) * height
+    : (wy) => ((wy + view) / (2 * view)) * height;
   const fmt = (n) => n.toFixed(precision);
 
   const computed = computeHatchLayers(layers, { view });
@@ -313,7 +323,9 @@ export function hatchSvg(layers, opts = {}) {
     parts.push(`<rect width="${width}" height="${height}" fill="${escapeXml(background)}"/>`);
   }
   for (const { streamlines, color, lineWidth } of computed) {
-    parts.push(`<g stroke="${escapeXml(color)}" stroke-width="${lineWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none">`);
+    parts.push(
+      `<g stroke="${escapeXml(color)}" stroke-width="${lineWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none">`,
+    );
     for (const sl of streamlines) {
       const pts = sl.centerline;
       if (pts.length < 2) continue;
@@ -330,5 +342,8 @@ export function hatchSvg(layers, opts = {}) {
 }
 
 function escapeXml(s) {
-  return String(s).replace(/[<>&"']/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&apos;' }[c]));
+  return String(s).replace(
+    /[<>&"']/g,
+    (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c],
+  );
 }

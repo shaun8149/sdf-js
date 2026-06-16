@@ -31,14 +31,21 @@ const SUBJECT_COUNT_ERROR = 100;
 // runways, aprons, canyons, roads — infrastructure naturally extends 80-200m.
 // LLM-emitted scenes with hand-built `runway` boxes or atom-emitted
 // `terrain-canyon` primitives shouldn't trip rule 2.
-const LARGE_ARG_ID_WHITELIST = /^(runway|apron|tarmac|road|highway|pier|quay|dock|stream|river|coastline|shoreline)(\b|[-_])/i;
+const LARGE_ARG_ID_WHITELIST =
+  /^(runway|apron|tarmac|road|highway|pier|quay|dock|stream|river|coastline|shoreline)(\b|[-_])/i;
 const LARGE_ARG_TYPE_WHITELIST = new Set([
-  'terrain-canyon', 'terrain-heightmap', 'terrain-elevated', 'terrain-with-lakes',
-  'terrain-eroded-rune', 'procedural-city', 'sea-surface', 'waves',
+  'terrain-canyon',
+  'terrain-heightmap',
+  'terrain-elevated',
+  'terrain-with-lakes',
+  'terrain-eroded-rune',
+  'procedural-city',
+  'sea-surface',
+  'waves',
   'stream-segment',
 ]);
-const LARGE_ARG_RELAXED_THRESHOLD = 200;  // whitelisted subjects: warn at >200
-const LARGE_ARG_DEFAULT_THRESHOLD = 50;   // everyone else: warn at >50
+const LARGE_ARG_RELAXED_THRESHOLD = 200; // whitelisted subjects: warn at >200
+const LARGE_ARG_DEFAULT_THRESHOLD = 50; // everyone else: warn at >50
 
 function isLargeArgWhitelisted(subj) {
   if (!subj || typeof subj !== 'object') return false;
@@ -58,7 +65,9 @@ const HALF_PI = Math.PI / 2;
 function subjectBbox(subj) {
   const t = (subj.transform && subj.transform.translate) || [0, 0, 0];
   const a = subj.args || {};
-  let halfX = 1, halfY = 1, halfZ = 1;
+  let halfX = 1,
+    halfY = 1,
+    halfZ = 1;
 
   if (Array.isArray(a.dims) && a.dims.length >= 3) {
     halfX = Math.abs(a.dims[0]) * 0.5;
@@ -72,23 +81,28 @@ function subjectBbox(subj) {
     halfX = Math.abs(a.boxSize[0]);
     halfY = Math.abs(a.boxSize[1]);
     halfZ = Math.abs(a.boxSize[2]);
+  } else if (Array.isArray(a.a) && Array.isArray(a.b) && typeof a.radius === 'number') {
+    // capsule: bbox covers a→b with radius padding
+    // ORDER MATTERS: this check must precede the generic `a.radius` check
+    // below, otherwise it's unreachable (caught by ESLint no-dupe-else-if
+    // 2026-06-16).
+    const r = a.radius;
+    halfX = Math.max(Math.abs(a.a[0]), Math.abs(a.b[0])) + r;
+    halfY = Math.max(Math.abs(a.a[1]), Math.abs(a.b[1])) + r;
+    halfZ = Math.max(Math.abs(a.a[2]), Math.abs(a.b[2])) + r;
   } else if (typeof a.radius === 'number' && typeof a.height === 'number') {
     halfX = a.radius;
     halfY = a.height * 0.5;
     halfZ = a.radius;
   } else if (typeof a.radius === 'number') {
     halfX = halfY = halfZ = a.radius;
-  } else if (Array.isArray(a.a) && Array.isArray(a.b) && typeof a.radius === 'number') {
-    // capsule: bbox covers a→b with radius padding
-    const r = a.radius;
-    halfX = Math.max(Math.abs(a.a[0]), Math.abs(a.b[0])) + r;
-    halfY = Math.max(Math.abs(a.a[1]), Math.abs(a.b[1])) + r;
-    halfZ = Math.max(Math.abs(a.a[2]), Math.abs(a.b[2])) + r;
   }
   // Apply transform.scale (uniform or per-axis), if present
   const s = subj.transform && subj.transform.scale;
   if (typeof s === 'number') {
-    halfX *= s; halfY *= s; halfZ *= s;
+    halfX *= s;
+    halfY *= s;
+    halfZ *= s;
   } else if (Array.isArray(s) && s.length >= 3) {
     halfX *= Math.abs(s[0]);
     halfY *= Math.abs(s[1]);
@@ -160,26 +174,48 @@ function walkSubjectChecks(subjects, issues) {
       // subjects (6 cumulative pre-fix false-positives). Whitelisted subjects
       // get threshold 200; others stay 50.
       const largeThreshold = isLargeArgWhitelisted(s)
-        ? LARGE_ARG_RELAXED_THRESHOLD : LARGE_ARG_DEFAULT_THRESHOLD;
+        ? LARGE_ARG_RELAXED_THRESHOLD
+        : LARGE_ARG_DEFAULT_THRESHOLD;
       if (s.args && typeof s.args === 'object') {
         const scalarFields = [
-          'radius', 'height', 'length', 'width', 'depth', 'thickness',
-          'r', 'r1', 'r2', 'majorR', 'minorR',
-          'cornerR', 'edgeR', 'halfLen', 'halfWidth', 'halfLength',
-          'amplitude', 'frequency', 'k', 'amount',
+          'radius',
+          'height',
+          'length',
+          'width',
+          'depth',
+          'thickness',
+          'r',
+          'r1',
+          'r2',
+          'majorR',
+          'minorR',
+          'cornerR',
+          'edgeR',
+          'halfLen',
+          'halfWidth',
+          'halfLength',
+          'amplitude',
+          'frequency',
+          'k',
+          'amount',
         ];
         for (const f of scalarFields) {
           const v = s.args[f];
           if (typeof v === 'number') {
             if (v > largeThreshold) {
               issues.push({
-                path: `${path}.args.${f}`, severity: 'high', rule: 'large-arg',
+                path: `${path}.args.${f}`,
+                severity: 'high',
+                rule: 'large-arg',
                 message: `${s.type || s.id} .args.${f} = ${v.toFixed(2)} (> ${largeThreshold}; scale typo? typical objects fit in 1-30)`,
-                suggestion: 'verify intent; values way above threshold usually indicate missed decimal point',
+                suggestion:
+                  'verify intent; values way above threshold usually indicate missed decimal point',
               });
             } else if (v > 0 && v < 0.001) {
               issues.push({
-                path: `${path}.args.${f}`, severity: 'med', rule: 'tiny-arg',
+                path: `${path}.args.${f}`,
+                severity: 'med',
+                rule: 'tiny-arg',
                 message: `${s.type || s.id} .args.${f} = ${v.toExponential(2)} (< 0.001; nearly invisible)`,
                 suggestion: 'check if value should be larger',
               });
@@ -194,7 +230,9 @@ function walkSubjectChecks(subjects, issues) {
             for (let k = 0; k < v.length; k++) {
               if (typeof v[k] === 'number' && Math.abs(v[k]) > largeThreshold) {
                 issues.push({
-                  path: `${path}.args.${f}[${k}]`, severity: 'high', rule: 'large-arg',
+                  path: `${path}.args.${f}[${k}]`,
+                  severity: 'high',
+                  rule: 'large-arg',
                   message: `${s.type || s.id} .args.${f}[${k}] = ${v[k].toFixed(2)} (|v| > ${largeThreshold})`,
                   suggestion: 'verify intent',
                 });
@@ -209,9 +247,12 @@ function walkSubjectChecks(subjects, issues) {
         if (typeof val === 'number') {
           if (!Number.isFinite(val)) {
             issues.push({
-              path: where, severity: 'high', rule: 'non-finite',
+              path: where,
+              severity: 'high',
+              rule: 'non-finite',
               message: `non-finite number (${val}) at ${where}`,
-              suggestion: 'check arithmetic / source expression for divide-by-zero or NaN propagation',
+              suggestion:
+                'check arithmetic / source expression for divide-by-zero or NaN propagation',
             });
           }
         } else if (Array.isArray(val)) {
@@ -257,7 +298,8 @@ function checkDuplicateIds(subjects, issues) {
         if (seen.has(s.id)) {
           issues.push({
             path,
-            severity: 'high', rule: 'duplicate-id',
+            severity: 'high',
+            rule: 'duplicate-id',
             message: `duplicate subject id "${s.id}" (first seen at ${seen.get(s.id)})`,
             suggestion: 'rename one — motionSlots / setSubjectBaseTargets use id as key',
           });
@@ -281,8 +323,10 @@ function checkCamera(sceneData, compiled, issues) {
   if (!cam || typeof cam.targetX !== 'number') return;
   const target = [cam.targetX, cam.targetY, cam.targetZ];
   // Camera position from spherical (matches sphericalToCamState convention).
-  const sp = Math.sin(cam.pitch), cp = Math.cos(cam.pitch);
-  const sy = Math.sin(cam.yaw),   cyc = Math.cos(cam.yaw);
+  const sp = Math.sin(cam.pitch),
+    cp = Math.cos(cam.pitch);
+  const sy = Math.sin(cam.yaw),
+    cyc = Math.cos(cam.yaw);
   const pos = [
     cam.targetX - cam.distance * sy * cp,
     cam.targetY + cam.distance * sp,
@@ -296,7 +340,8 @@ function checkCamera(sceneData, compiled, issues) {
     if (target[i] < bb.min[i] - MARGIN || target[i] > bb.max[i] + MARGIN) {
       issues.push({
         path: 'defaults.camera',
-        severity: 'med', rule: 'camera-target-out',
+        severity: 'med',
+        rule: 'camera-target-out',
         message: `camera.target${'XYZ'[i]} = ${target[i].toFixed(1)} is outside scene bbox [${bb.min[i].toFixed(1)}, ${bb.max[i].toFixed(1)}] + margin ${MARGIN}. Camera will look at empty space.`,
         suggestion: 'move target into scene bounds or extend scene with more subjects',
       });
@@ -312,13 +357,19 @@ function checkCamera(sceneData, compiled, issues) {
       if (!s || typeof s !== 'object') continue;
       const path = `${parentPath}[${i}]`;
       const b = subjectBbox(s);
-      if (pos[0] >= b.min[0] && pos[0] <= b.max[0] &&
-          pos[1] >= b.min[1] && pos[1] <= b.max[1] &&
-          pos[2] >= b.min[2] && pos[2] <= b.max[2]) {
+      if (
+        pos[0] >= b.min[0] &&
+        pos[0] <= b.max[0] &&
+        pos[1] >= b.min[1] &&
+        pos[1] <= b.max[1] &&
+        pos[2] >= b.min[2] &&
+        pos[2] <= b.max[2]
+      ) {
         issues.push({
           path,
-          severity: 'med', rule: 'camera-inside-subject',
-          message: `camera position [${pos.map(v=>v.toFixed(1)).join(',')}] is inside the bbox of subject "${s.id || s.type}" — view will be inside-out or all-black`,
+          severity: 'med',
+          rule: 'camera-inside-subject',
+          message: `camera position [${pos.map((v) => v.toFixed(1)).join(',')}] is inside the bbox of subject "${s.id || s.type}" — view will be inside-out or all-black`,
           suggestion: 'move camera target / increase camera.distance',
         });
       }
@@ -337,7 +388,8 @@ function checkLight(sceneData, issues) {
   if (light.altitude < -HALF_PI - 0.01 || light.altitude > HALF_PI + 0.01) {
     issues.push({
       path: 'defaults.light.altitude',
-      severity: 'low', rule: 'light-altitude-out',
+      severity: 'low',
+      rule: 'light-altitude-out',
       message: `light.altitude = ${light.altitude.toFixed(3)} is outside [-π/2, π/2] = [-1.57, 1.57] (sun underground / above zenith)`,
       suggestion: 'clamp to [-π/2, π/2]; typical sunset 0.1-0.3, noon ~1.0',
     });
@@ -355,14 +407,16 @@ function checkSubjectCount(subjects, issues) {
   if (n > SUBJECT_COUNT_ERROR) {
     issues.push({
       path: 'subjects',
-      severity: 'high', rule: 'subject-count-exceeded',
+      severity: 'high',
+      rule: 'subject-count-exceeded',
       message: `top-level subjects.length = ${n} (> hard cap ${SUBJECT_COUNT_ERROR}; GPU SDF eval scales O(N) per ray, will tank fps)`,
       suggestion: `reduce array/scatter count; use SDF-domain rep for >${SUBJECT_COUNT_ERROR} identical copies`,
     });
   } else if (n > SUBJECT_COUNT_WARN) {
     issues.push({
       path: 'subjects',
-      severity: 'med', rule: 'subject-count-high',
+      severity: 'med',
+      rule: 'subject-count-high',
       message: `top-level subjects.length = ${n} (> soft warn ${SUBJECT_COUNT_WARN}; render perf may suffer)`,
       suggestion: `consider lowering count or using SDF-domain rep for identical copies`,
     });
@@ -382,13 +436,15 @@ export function sanityCheck(sceneData, compiled) {
   checkCamera(sceneData, compiled, issues);
   checkLight(sceneData, issues);
 
-  const errors   = issues.filter(i => i.severity === 'high');
-  const warnings = issues.filter(i => i.severity !== 'high');
+  const errors = issues.filter((i) => i.severity === 'high');
+  const warnings = issues.filter((i) => i.severity !== 'high');
   // Compact summary string for one-line console + regression tally
   const counts = {};
   for (const i of issues) counts[i.rule] = (counts[i.rule] || 0) + 1;
   const summary = Object.keys(counts).length
-    ? Object.entries(counts).map(([k, v]) => `${k}×${v}`).join(' ')
+    ? Object.entries(counts)
+        .map(([k, v]) => `${k}×${v}`)
+        .join(' ')
     : 'clean';
   return { errors, warnings, all: issues, summary };
 }
@@ -398,7 +454,7 @@ export function sanityCheck(sceneData, compiled) {
 // ---------------------------------------------------------------------------
 export function logSanityIssues(issues, { prefix = '[sanity]' } = {}) {
   for (const i of issues) {
-    const tag = i.severity === 'high' ? '✗' : (i.severity === 'med' ? '⚠' : '·');
+    const tag = i.severity === 'high' ? '✗' : i.severity === 'med' ? '⚠' : '·';
     const suffix = i.suggestion ? `\n    ↳ ${i.suggestion}` : '';
     // Use console.warn for everything so it's filterable in browser DevTools
     console.warn(`${prefix} ${tag} ${i.rule} @ ${i.path}: ${i.message}${suffix}`);

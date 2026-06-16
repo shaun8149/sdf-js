@@ -18,10 +18,16 @@ import { Random } from '../src/util/random.js';
 
 const HASH = '0x' + 'c'.repeat(64);
 
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 function ok(cond, name) {
-  if (cond) { pass++; console.log(`  ✓ ${name}`); }
-  else      { fail++; console.log(`  ✗ ${name}`); }
+  if (cond) {
+    pass++;
+    console.log(`  ✓ ${name}`);
+  } else {
+    fail++;
+    console.log(`  ✗ ${name}`);
+  }
 }
 
 console.log(`Registered composite atom types: ${[...COMPOSITE_ATOM_TYPES].join(', ')}`);
@@ -29,8 +35,7 @@ console.log(`Registered composite atom types: ${[...COMPOSITE_ATOM_TYPES].join('
 const baseScene = (compositeSubject) => ({
   v: 1,
   defaults: {
-    camera: { yaw: 0.4, pitch: 0.2, distance: 60, focal: 1.5,
-              targetX: 0, targetY: 2, targetZ: 0 },
+    camera: { yaw: 0.4, pitch: 0.2, distance: 60, focal: 1.5, targetX: 0, targetY: 2, targetZ: 0 },
     light: { altitude: 0.5, azimuth: 0.6, distance: 80, intensity: 1.1 },
   },
   subjects: [
@@ -48,29 +53,58 @@ console.log('\n[carrier-strike-group]:');
   const scene = baseScene({ id: 'fleet', type: 'carrier-strike-group', args: {} });
   // Step 1: expand composite (happens inside compile() too, but call here to inspect)
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.subjects.length === 5, `expands to 5 subjects (1 hero + 4 peer atom-emitted: escort + gull + cloud + sea) got ${expanded.subjects.length}`);
-  ok(expanded.subjects.some(s => s.id === 'escort-destroyer'), 'has escort-destroyer subject');
-  ok(expanded.subjects.some(s => s.id === 'gull'), 'has gull subject');
-  ok(expanded.subjects.some(s => s.id === 'cloud'), 'has cloud subject');
-  ok(expanded.subjects.some(s => s.id === 'sea'), 'has sea subject (auto)');
+  ok(
+    expanded.subjects.length === 5,
+    `expands to 5 subjects (1 hero + 4 peer atom-emitted: escort + gull + cloud + sea) got ${expanded.subjects.length}`,
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'escort-destroyer'),
+    'has escort-destroyer subject',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'gull'),
+    'has gull subject',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'cloud'),
+    'has cloud subject',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'sea'),
+    'has sea subject (auto)',
+  );
   ok(expanded.defaults?.postFx?.exposure !== undefined, 'cinematic postFx merged into defaults');
-  ok(expanded.defaults?.camera?.aperture === 0.6, `camera.aperture merged (=${expanded.defaults?.camera?.aperture})`);
+  ok(
+    expanded.defaults?.camera?.aperture === 0.6,
+    `camera.aperture merged (=${expanded.defaults?.camera?.aperture})`,
+  );
   ok(Array.isArray(expanded.volumes) && expanded.volumes[0]?.kind === 'fog', 'fog volume added');
 
   // Step 2: expand variants
   const expandedVariants = expandVariants(expanded, new Random(HASH));
   // After variant expansion: escort × 4 + gull × 6 + cloud × 3 = 13 expansions + hero + sea = 15
-  console.log(`    After Generator-S expansion: ${expandedVariants.subjects.length} top-level subjects`);
-  ok(expandedVariants.subjects.length >= 14 && expandedVariants.subjects.length <= 16,
-     `expanded subject count in [14, 16] (got ${expandedVariants.subjects.length})`);
+  console.log(
+    `    After Generator-S expansion: ${expandedVariants.subjects.length} top-level subjects`,
+  );
+  ok(
+    expandedVariants.subjects.length >= 14 && expandedVariants.subjects.length <= 16,
+    `expanded subject count in [14, 16] (got ${expandedVariants.subjects.length})`,
+  );
 
   // Step 3: compile
-  let compiled, threw = null;
-  try { compiled = compile(scene); } catch (e) { threw = e.message; }
+  let compiled,
+    threw = null;
+  try {
+    compiled = compile(scene);
+  } catch (e) {
+    threw = e.message;
+  }
   ok(!threw, `compile() succeeded (err: ${threw})`);
   if (compiled) {
-    ok(compiled.sanityResult?.errors.length === 0,
-       `sanity clean (got ${compiled.sanityResult?.errors.length} errors, ${compiled.sanityResult?.warnings.length} warnings)`);
+    ok(
+      compiled.sanityResult?.errors.length === 0,
+      `sanity clean (got ${compiled.sanityResult?.errors.length} errors, ${compiled.sanityResult?.warnings.length} warnings)`,
+    );
   }
 }
 
@@ -82,18 +116,24 @@ console.log('\n[carrier-strike-group with args override]:');
   const scene = baseScene({
     id: 'fleet',
     type: 'carrier-strike-group',
-    args: { escortCount: 2, birdCount: 3, cloudCount: 0, cinematic: false, sea: false }
+    args: { escortCount: 2, birdCount: 3, cloudCount: 0, cinematic: false, sea: false },
   });
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.subjects.length === 4, `4 subjects (hero + escort + gull + cloud, no sea) got ${expanded.subjects.length}`);
+  ok(
+    expanded.subjects.length === 4,
+    `4 subjects (hero + escort + gull + cloud, no sea) got ${expanded.subjects.length}`,
+  );
   ok(!expanded.defaults?.postFx, 'postFx not added (cinematic=false)');
   ok(!Array.isArray(expanded.volumes) || expanded.volumes.length === 0, 'no fog volume');
   // escort-destroyer's variants.count should be 2
-  const escort = expanded.subjects.find(s => s.id === 'escort-destroyer');
-  ok(escort?.variants?.[0]?.count === 2, `escort count override = 2 (got ${escort?.variants?.[0]?.count})`);
-  const gull = expanded.subjects.find(s => s.id === 'gull');
+  const escort = expanded.subjects.find((s) => s.id === 'escort-destroyer');
+  ok(
+    escort?.variants?.[0]?.count === 2,
+    `escort count override = 2 (got ${escort?.variants?.[0]?.count})`,
+  );
+  const gull = expanded.subjects.find((s) => s.id === 'gull');
   ok(gull?.variants?.[0]?.count === 3, `gull count override = 3`);
-  const cloud = expanded.subjects.find(s => s.id === 'cloud');
+  const cloud = expanded.subjects.find((s) => s.id === 'cloud');
   ok(cloud?.variants?.[0]?.count === 0, `cloud count override = 0`);
 }
 
@@ -104,16 +144,35 @@ console.log('\n[airport-apron]:');
 {
   const scene = baseScene({ id: 'apron', type: 'airport-apron', args: {} });
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.subjects.length === 4, `4 subjects (hero + parked-plane + ground-vehicle + runway-lamp) got ${expanded.subjects.length}`);
-  ok(expanded.subjects.some(s => s.id === 'parked-plane'), 'has parked-plane');
-  ok(expanded.subjects.some(s => s.id === 'ground-vehicle'), 'has ground-vehicle');
-  ok(expanded.subjects.some(s => s.id === 'runway-lamp'), 'has runway-lamp');
-  const planeArr = expanded.subjects.find(s => s.id === 'parked-plane').variants[0];
-  ok(planeArr.op === 'array' && planeArr.count === 4 && planeArr.axis === 'z',
-     `parked-plane uses array op axis=z count=4 (got ${JSON.stringify(planeArr).slice(0,80)})`);
+  ok(
+    expanded.subjects.length === 4,
+    `4 subjects (hero + parked-plane + ground-vehicle + runway-lamp) got ${expanded.subjects.length}`,
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'parked-plane'),
+    'has parked-plane',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'ground-vehicle'),
+    'has ground-vehicle',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'runway-lamp'),
+    'has runway-lamp',
+  );
+  const planeArr = expanded.subjects.find((s) => s.id === 'parked-plane').variants[0];
+  ok(
+    planeArr.op === 'array' && planeArr.count === 4 && planeArr.axis === 'z',
+    `parked-plane uses array op axis=z count=4 (got ${JSON.stringify(planeArr).slice(0, 80)})`,
+  );
 
-  let compiled, threw = null;
-  try { compiled = compile(scene); } catch (e) { threw = e.message; }
+  let compiled,
+    threw = null;
+  try {
+    compiled = compile(scene);
+  } catch (e) {
+    threw = e.message;
+  }
   ok(!threw, `compile() succeeded (err: ${threw})`);
   if (compiled) {
     ok(compiled.sanityResult?.errors.length === 0, `sanity clean`);
@@ -127,14 +186,34 @@ console.log('\n[harbor-quay]:');
 {
   const scene = baseScene({ id: 'quay', type: 'harbor-quay', args: {} });
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.subjects.some(s => s.id === 'cargo-ship'), 'has cargo-ship');
-  ok(expanded.subjects.some(s => s.id === 'harbor-crane'), 'has harbor-crane');
-  ok(expanded.subjects.some(s => s.id === 'container-stack'), 'has container-stack');
-  ok(expanded.subjects.some(s => s.id === 'gull'), 'has gull');
-  ok(expanded.subjects.some(s => s.id === 'sea'), 'has sea');
+  ok(
+    expanded.subjects.some((s) => s.id === 'cargo-ship'),
+    'has cargo-ship',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'harbor-crane'),
+    'has harbor-crane',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'container-stack'),
+    'has container-stack',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'gull'),
+    'has gull',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'sea'),
+    'has sea',
+  );
 
-  let compiled, threw = null;
-  try { compiled = compile(scene); } catch (e) { threw = e.message; }
+  let compiled,
+    threw = null;
+  try {
+    compiled = compile(scene);
+  } catch (e) {
+    threw = e.message;
+  }
   ok(!threw, `compile() succeeded (err: ${threw})`);
   if (compiled) {
     ok(compiled.sanityResult?.errors.length === 0, `sanity clean`);
@@ -148,18 +227,43 @@ console.log('\n[concert-stage]:');
 {
   const scene = baseScene({ id: 'concert', type: 'concert-stage', args: {} });
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.subjects.length === 6,
-     `6 subjects (hero + stage-floor + backdrop + speaker + lamp + audience) got ${expanded.subjects.length}`);
-  ok(expanded.subjects.some(s => s.id === 'stage-floor'),    'has stage-floor');
-  ok(expanded.subjects.some(s => s.id === 'stage-backdrop'), 'has stage-backdrop');
-  ok(expanded.subjects.some(s => s.id === 'speaker'),        'has speaker (mirror)');
-  ok(expanded.subjects.some(s => s.id === 'stage-lamp'),     'has stage-lamp (array)');
-  ok(expanded.subjects.some(s => s.id === 'audience-figure'),'has audience-figure (scatter)');
-  ok(expanded.volumes?.[0]?.kind === 'fog',                  'stage-haze fog volume added');
-  ok(expanded.defaults?.camera?.aperture === 0.7,            `aperture 0.7 (got ${expanded.defaults?.camera?.aperture})`);
+  ok(
+    expanded.subjects.length === 6,
+    `6 subjects (hero + stage-floor + backdrop + speaker + lamp + audience) got ${expanded.subjects.length}`,
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'stage-floor'),
+    'has stage-floor',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'stage-backdrop'),
+    'has stage-backdrop',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'speaker'),
+    'has speaker (mirror)',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'stage-lamp'),
+    'has stage-lamp (array)',
+  );
+  ok(
+    expanded.subjects.some((s) => s.id === 'audience-figure'),
+    'has audience-figure (scatter)',
+  );
+  ok(expanded.volumes?.[0]?.kind === 'fog', 'stage-haze fog volume added');
+  ok(
+    expanded.defaults?.camera?.aperture === 0.7,
+    `aperture 0.7 (got ${expanded.defaults?.camera?.aperture})`,
+  );
 
-  let compiled, threw = null;
-  try { compiled = compile(scene); } catch (e) { threw = e.message; }
+  let compiled,
+    threw = null;
+  try {
+    compiled = compile(scene);
+  } catch (e) {
+    threw = e.message;
+  }
   ok(!threw, `compile() succeeded (err: ${threw})`);
   if (compiled) {
     ok(compiled.sanityResult?.errors.length === 0, `sanity clean`);
@@ -173,9 +277,13 @@ console.log('\n[idempotency] scene without composite types unchanged:');
 {
   const scene = {
     v: 1,
-    defaults: { camera: { yaw:0, pitch:0.2, distance:10, focal:1.5, targetX:0, targetY:0, targetZ:0 },
-                light: { altitude:0.5, azimuth:0.5, distance:50, intensity:1.0 } },
-    subjects: [{ id: 'sphere', type: 'sphere', args: { radius: 1 }, transform: { translate: [0,0,0] } }],
+    defaults: {
+      camera: { yaw: 0, pitch: 0.2, distance: 10, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { altitude: 0.5, azimuth: 0.5, distance: 50, intensity: 1.0 },
+    },
+    subjects: [
+      { id: 'sphere', type: 'sphere', args: { radius: 1 }, transform: { translate: [0, 0, 0] } },
+    ],
   };
   const expanded = expandCompositeAtoms(scene);
   ok(expanded.subjects.length === 1, 'still 1 subject');
@@ -191,10 +299,17 @@ console.log('\n[author override] explicit camera.aperture wins:');
   const scene = {
     v: 1,
     defaults: {
-      camera: { yaw:0, pitch:0.2, distance:60, focal:1.5,
-                targetX:0, targetY:2, targetZ:0,
-                aperture: 1.2 },  // author explicit
-      light: { altitude:0.5, azimuth:0.5, distance:80, intensity:1.0 },
+      camera: {
+        yaw: 0,
+        pitch: 0.2,
+        distance: 60,
+        focal: 1.5,
+        targetX: 0,
+        targetY: 2,
+        targetZ: 0,
+        aperture: 1.2,
+      }, // author explicit
+      light: { altitude: 0.5, azimuth: 0.5, distance: 80, intensity: 1.0 },
     },
     subjects: [
       { id: 'hero', type: 'sphere', args: { radius: 2 } },
@@ -202,8 +317,10 @@ console.log('\n[author override] explicit camera.aperture wins:');
     ],
   };
   const expanded = expandCompositeAtoms(scene);
-  ok(expanded.defaults.camera.aperture === 1.2,
-     `author aperture=1.2 preserved (got ${expanded.defaults.camera.aperture})`);
+  ok(
+    expanded.defaults.camera.aperture === 1.2,
+    `author aperture=1.2 preserved (got ${expanded.defaults.camera.aperture})`,
+  );
 }
 
 console.log(`\n${pass}/${pass + fail} tests passed`);

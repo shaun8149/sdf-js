@@ -34,22 +34,21 @@ export function traceThrough(field, seed, opts = {}) {
     // Pasma stop conditions (B in the optimization roadmap)
     stopOnReversal = false,
     stopOnDivergence = false,
-    divergenceThreshold = -0.7,  // dot(f0, fc) > -0.7 = within ~135° of start
+    divergenceThreshold = -0.7, // dot(f0, fc) > -0.7 = within ~135° of start
     // SOURCERY idiom 1: skip-tolerance. Allow up to N consecutive invalid
     // (extraValid=false, e.g., QT collision zone or transient mask gap)
     // samples before terminating. Points are still appended to centerline
     // during the skip — only the streamline TERMINATION is deferred. This
     // produces longer / smoother streamlines that bridge over thin "no
     // draw" regions instead of fragmenting into shorter segments.
-    skipTolerance = 0,   // 0 = old behavior (Universal Rayhatcher)
+    skipTolerance = 0, // 0 = old behavior (Universal Rayhatcher)
   } = opts;
 
   const inBounds = (x, y) => {
     if (!bounds) return true;
-    return x >= bounds.minX && x < bounds.maxX
-        && y >= bounds.minY && y < bounds.maxY;
+    return x >= bounds.minX && x < bounds.maxX && y >= bounds.minY && y < bounds.maxY;
   };
-  const valid = (x, y) => isValidPos ? isValidPos(x, y) : true;
+  const valid = (x, y) => (isValidPos ? isValidPos(x, y) : true);
 
   // Initial direction at seed (used by stopOnDivergence)
   const aSeed = field(seed[0], seed[1]);
@@ -59,8 +58,9 @@ export function traceThrough(field, seed, opts = {}) {
   const fwd = [];
   {
     let [x, y] = seed;
-    let fpx = f0[0], fpy = f0[1];  // previous direction
-    let skipCount = 0;             // (SOURCERY 1) consecutive invalid samples
+    let fpx = f0[0],
+      fpy = f0[1]; // previous direction
+    let skipCount = 0; // (SOURCERY 1) consecutive invalid samples
     for (let i = 0; i < maxSteps; i++) {
       if (!inBounds(x, y)) break;
       fwd.push([x, y]);
@@ -71,15 +71,17 @@ export function traceThrough(field, seed, opts = {}) {
         if (skipCount > skipTolerance) break;
       }
       const a = field(x, y);
-      const fcx = Math.cos(a), fcy = Math.sin(a);
+      const fcx = Math.cos(a),
+        fcy = Math.sin(a);
       // (B.1) Reversal: previous vs current direction flipped → stop
-      if (stopOnReversal && (fpx * fcx + fpy * fcy) <= 0) break;
+      if (stopOnReversal && fpx * fcx + fpy * fcy <= 0) break;
       // (B.2) Divergence: current direction past divergenceThreshold of seed
       // direction → stop. Default -0.7 ≈ 135° cone.
-      if (stopOnDivergence && (f0[0] * fcx + f0[1] * fcy) < divergenceThreshold) break;
+      if (stopOnDivergence && f0[0] * fcx + f0[1] * fcy < divergenceThreshold) break;
       x += fcx * stepSize;
       y += fcy * stepSize;
-      fpx = fcx; fpy = fcy;
+      fpx = fcx;
+      fpy = fcy;
     }
   }
 
@@ -90,7 +92,8 @@ export function traceThrough(field, seed, opts = {}) {
     // First step backwards from seed
     x -= f0[0] * stepSize;
     y -= f0[1] * stepSize;
-    let fpx = -f0[0], fpy = -f0[1];   // backward direction at seed
+    let fpx = -f0[0],
+      fpy = -f0[1]; // backward direction at seed
     let skipCount = 0;
     for (let i = 0; i < maxSteps; i++) {
       if (!inBounds(x, y)) break;
@@ -103,13 +106,15 @@ export function traceThrough(field, seed, opts = {}) {
       }
       const a = field(x, y);
       // current step direction = -field (we're going backward)
-      const fcx = -Math.cos(a), fcy = -Math.sin(a);
-      if (stopOnReversal && (fpx * fcx + fpy * fcy) <= 0) break;
+      const fcx = -Math.cos(a),
+        fcy = -Math.sin(a);
+      if (stopOnReversal && fpx * fcx + fpy * fcy <= 0) break;
       // Diverge check against backward seed direction (-f0)
-      if (stopOnDivergence && ((-f0[0]) * fcx + (-f0[1]) * fcy) < divergenceThreshold) break;
+      if (stopOnDivergence && -f0[0] * fcx + -f0[1] * fcy < divergenceThreshold) break;
       x += fcx * stepSize;
       y += fcy * stepSize;
-      fpx = fcx; fpy = fcy;
+      fpx = fcx;
+      fpy = fcy;
     }
   }
 
@@ -197,8 +202,8 @@ class QuadTreeNode {
     this.x = x;
     this.y = y;
     this.w = w;
-    this.p = [];        // points up to QT_BUCKET; after that we split
-    this.r = null;      // 4 children [TR, BR, TL, BL] in (lower-left at) (x+w/2, y+w/2) etc
+    this.p = []; // points up to QT_BUCKET; after that we split
+    this.r = null; // 4 children [TR, BR, TL, BL] in (lower-left at) (x+w/2, y+w/2) etc
   }
 }
 
@@ -208,7 +213,9 @@ class QuadTree {
     const W = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
     this.root = new QuadTreeNode(bounds.minX, bounds.minY, W);
   }
-  add(x, y) { this._add(this.root, x, y); }
+  add(x, y) {
+    this._add(this.root, x, y);
+  }
   _add(q, x, y) {
     // If already split, recurse into child whose quadrant contains (x, y)
     if (q.r) {
@@ -223,10 +230,10 @@ class QuadTree {
       // Split: create 4 children covering each quadrant
       const hw = q.w / 2;
       q.r = [
-        new QuadTreeNode(q.x,      q.y,      hw),  // 0: BL
-        new QuadTreeNode(q.x + hw, q.y,      hw),  // 1: BR
-        new QuadTreeNode(q.x,      q.y + hw, hw),  // 2: TL
-        new QuadTreeNode(q.x + hw, q.y + hw, hw),  // 3: TR
+        new QuadTreeNode(q.x, q.y, hw), // 0: BL
+        new QuadTreeNode(q.x + hw, q.y, hw), // 1: BR
+        new QuadTreeNode(q.x, q.y + hw, hw), // 2: TL
+        new QuadTreeNode(q.x + hw, q.y + hw, hw), // 3: TR
       ];
       // Re-bucket existing points
       const old = q.p;
@@ -322,9 +329,8 @@ export function densePack(field, opts = {}) {
 
   // 用 dsep (或 dsepMax) 作 cellSize → 邻域查 3x3 = 半径 1.5×cellSize 内全覆盖
   // QuadTree 模式下不用 cellSize（每次 query 带自己的半径）
-  const grid = spatialIndex === 'quadtree'
-    ? new QuadTree(bounds)
-    : new SpatialGrid(bounds, gridCellSize);
+  const grid =
+    spatialIndex === 'quadtree' ? new QuadTree(bounds) : new SpatialGrid(bounds, gridCellSize);
   // 每点自己的 dtest = dsep(x,y) * ratio。函数模式下逐点重算
   const dtestAt = (x, y) => getDsep(x, y) * dtestRatio;
 
@@ -338,16 +344,15 @@ export function densePack(field, opts = {}) {
       ]);
     }
   } else if (seedStrategy === 'grid') {
-    const sx = Math.ceil(Math.sqrt(seedCount * (bounds.maxX - bounds.minX) / (bounds.maxY - bounds.minY)));
+    const sx = Math.ceil(
+      Math.sqrt((seedCount * (bounds.maxX - bounds.minX)) / (bounds.maxY - bounds.minY)),
+    );
     const sy = Math.ceil(seedCount / sx);
     const dx = (bounds.maxX - bounds.minX) / sx;
     const dy = (bounds.maxY - bounds.minY) / sy;
     for (let i = 0; i < sx; i++) {
       for (let j = 0; j < sy; j++) {
-        seeds.push([
-          bounds.minX + (i + 0.5) * dx,
-          bounds.minY + (j + 0.5) * dy,
-        ]);
+        seeds.push([bounds.minX + (i + 0.5) * dx, bounds.minY + (j + 0.5) * dy]);
       }
     }
   } else {
@@ -506,14 +511,14 @@ export function gradientPerpField(sdf, eps = 0.001) {
  */
 export function projectedTangentField(probe, opts = {}) {
   const {
-    mode          = 'cross-nfw',
-    ref           = [1, 0, 0],
-    referenceTilt = { up: 1, fwd: 6, right: 2 },   // SOURCERY values
+    mode = 'cross-nfw',
+    ref = [1, 0, 0],
+    referenceTilt = { up: 1, fwd: 6, right: 2 }, // SOURCERY values
     camera = {
-      cam:   [0, 0, -3.5],
-      fwd:   [0, 0,  1],
-      right: [1, 0,  0],
-      up:    [0, 1,  0],
+      cam: [0, 0, -3.5],
+      fwd: [0, 0, 1],
+      right: [1, 0, 0],
+      up: [0, 1, 0],
       focal: 2,
     },
   } = opts;
@@ -522,9 +527,11 @@ export function projectedTangentField(probe, opts = {}) {
   // (cross-tilted mode only). hv = normalize(up·tiltUp + fwd·tiltFwd + right·tiltRight)
   let hv = null;
   if (mode === 'cross-tilted') {
-    const fw = camera.fwd, up = camera.up, rt = camera.right;
-    const tu = referenceTilt.up    ?? 1;
-    const tf = referenceTilt.fwd   ?? 6;
+    const fw = camera.fwd,
+      up = camera.up,
+      rt = camera.right;
+    const tu = referenceTilt.up ?? 1;
+    const tf = referenceTilt.fwd ?? 6;
     const tr = referenceTilt.right ?? 2;
     const hx = up[0] * tu + fw[0] * tf + rt[0] * tr;
     const hy = up[1] * tu + fw[1] * tf + rt[1] * tr;
@@ -547,40 +554,29 @@ export function projectedTangentField(probe, opts = {}) {
       // to BOTH the surface normal and the camera view direction. This is
       // the surface's "horizontal contour" direction at this pixel.
       const fw = camera.fwd;
-      T = [
-        N[1] * fw[2] - N[2] * fw[1],
-        N[2] * fw[0] - N[0] * fw[2],
-        N[0] * fw[1] - N[1] * fw[0],
-      ];
+      T = [N[1] * fw[2] - N[2] * fw[1], N[2] * fw[0] - N[0] * fw[2], N[0] * fw[1] - N[1] * fw[0]];
     } else if (mode === 'cross-tilted' && hv) {
       // SOURCERY's `hd = X(n, hv)` where hv = normalize(up + 6*fwd + 2*right).
       // Result: lines wrap surface at an angle instead of horizontal — visually
       // like a screw thread vs latitude rings.
-      T = [
-        N[1] * hv[2] - N[2] * hv[1],
-        N[2] * hv[0] - N[0] * hv[2],
-        N[0] * hv[1] - N[1] * hv[0],
-      ];
+      T = [N[1] * hv[2] - N[2] * hv[1], N[2] * hv[0] - N[0] * hv[2], N[0] * hv[1] - N[1] * hv[0]];
     } else {
       // horizontal-ref: project a fixed world-frame reference onto tangent plane
       const R = ref;
-      const rDotN = R[0]*N[0] + R[1]*N[1] + R[2]*N[2];
-      T = [
-        R[0] - rDotN * N[0],
-        R[1] - rDotN * N[1],
-        R[2] - rDotN * N[2],
-      ];
+      const rDotN = R[0] * N[0] + R[1] * N[1] + R[2] * N[2];
+      T = [R[0] - rDotN * N[0], R[1] - rDotN * N[1], R[2] - rDotN * N[2]];
     }
 
     // 通用透视投影 —— 用相机 basis 算 dx, dy
     const camP = [P[0] - camera.cam[0], P[1] - camera.cam[1], P[2] - camera.cam[2]];
-    const depth   = camP[0]*camera.fwd[0]   + camP[1]*camera.fwd[1]   + camP[2]*camera.fwd[2];
+    const depth = camP[0] * camera.fwd[0] + camP[1] * camera.fwd[1] + camP[2] * camera.fwd[2];
     if (depth <= 1e-6) return 0;
-    const tDotFwd = T[0]*camera.fwd[0]   + T[1]*camera.fwd[1]   + T[2]*camera.fwd[2];
-    const tDotR   = T[0]*camera.right[0] + T[1]*camera.right[1] + T[2]*camera.right[2];
-    const tDotU   = T[0]*camera.up[0]    + T[1]*camera.up[1]    + T[2]*camera.up[2];
-    const cpDotR  = camP[0]*camera.right[0] + camP[1]*camera.right[1] + camP[2]*camera.right[2];
-    const cpDotU  = camP[0]*camera.up[0]    + camP[1]*camera.up[1]    + camP[2]*camera.up[2];
+    const tDotFwd = T[0] * camera.fwd[0] + T[1] * camera.fwd[1] + T[2] * camera.fwd[2];
+    const tDotR = T[0] * camera.right[0] + T[1] * camera.right[1] + T[2] * camera.right[2];
+    const tDotU = T[0] * camera.up[0] + T[1] * camera.up[1] + T[2] * camera.up[2];
+    const cpDotR =
+      camP[0] * camera.right[0] + camP[1] * camera.right[1] + camP[2] * camera.right[2];
+    const cpDotU = camP[0] * camera.up[0] + camP[1] * camera.up[1] + camP[2] * camera.up[2];
 
     const dx = tDotR * depth - cpDotR * tDotFwd;
     const dy = tDotU * depth - cpDotU * tDotFwd;
@@ -646,13 +642,15 @@ export function analyzeCoverage(probe, opts = {}) {
     samples = 1023,
     rng = Math.random,
     aspect = 16 / 9,
-    fgT = null,                  // probe.t < fgT → "foreground". null → maxDist*0.067 (SOURCERY 5/75)
-    skyT = null,                 // probe.t > skyT → "sky/miss". null → maxDist*0.987 (SOURCERY 74/75)
-    regionByY = (hit) => hit[1] > 0.8 ? 1 : hit[1] < -0.3 ? 3 : 2,
+    fgT = null, // probe.t < fgT → "foreground". null → maxDist*0.067 (SOURCERY 5/75)
+    skyT = null, // probe.t > skyT → "sky/miss". null → maxDist*0.987 (SOURCERY 74/75)
+    regionByY = (hit) => (hit[1] > 0.8 ? 1 : hit[1] < -0.3 ? 3 : 2),
   } = opts;
   const half = aspect / 2;
-  let sky = 0, dense = 0, fg = 0;
-  const regions = [0, 0, 0, 0];   // index = region id
+  let sky = 0,
+    dense = 0,
+    fg = 0;
+  const regions = [0, 0, 0, 0]; // index = region id
   for (let i = 0; i < samples; i++) {
     const sx = rng() * aspect - half;
     const sy = rng() - 0.5;
@@ -665,7 +663,7 @@ export function analyzeCoverage(probe, opts = {}) {
     // SOURCERY uses absolute distances (max 75 world units). If caller
     // didn't override, derive from probe's maxDist.
     const md = r.maxDist || 1;
-    const _fgT  = fgT  ?? md * (5 / 75);
+    const _fgT = fgT ?? md * (5 / 75);
     const _skyT = skyT ?? md * (74 / 75);
     if (r.t > _skyT) {
       sky++;
@@ -673,16 +671,18 @@ export function analyzeCoverage(probe, opts = {}) {
       continue;
     }
     if (r.t < _fgT) fg++;
-    if (r.intensity < 0.1) dense++;   // dark = densely hatched
+    if (r.intensity < 0.1) dense++; // dark = densely hatched
     const region = regionByY(r.hit) || 2;
     regions[Math.max(0, Math.min(3, region))]++;
   }
   return {
     samples,
-    sky, dense, fg,
-    skyPct: 100 * sky / samples,
-    densePct: 100 * dense / samples,
-    fgPct: 100 * fg / samples,
+    sky,
+    dense,
+    fg,
+    skyPct: (100 * sky) / samples,
+    densePct: (100 * dense) / samples,
+    fgPct: (100 * fg) / samples,
     regions,
   };
 }
@@ -698,10 +698,10 @@ export function bucketCount(count, p) {
 // Caller can override the buckets if they want different granularity.
 export function bucketFeatures(regions, buckets = { cliff: 1, ground: 2, thing: 4, sky: 4 }) {
   return {
-    cliff:  bucketCount(regions[3], buckets.cliff),
+    cliff: bucketCount(regions[3], buckets.cliff),
     ground: bucketCount(regions[2], buckets.ground),
-    thing:  bucketCount(regions[1], buckets.thing),
-    sky:    bucketCount(regions[0], buckets.sky),
+    thing: bucketCount(regions[1], buckets.thing),
+    sky: bucketCount(regions[0], buckets.sky),
   };
 }
 
@@ -711,14 +711,14 @@ export function bucketFeatures(regions, buckets = { cliff: 1, ground: 2, thing: 
 //   sky   ∈ [5%, 45%]   some sky, but not all sky
 //   fg    ≤ 20%         foreground doesn't dominate
 export function isBalancedComposition(stats, gate = {}) {
-  const {
-    minDense = 3,  maxDense = 30,
-    minSky   = 5,  maxSky   = 45,
-    maxFg    = 20,
-  } = gate;
-  return stats.densePct >= minDense && stats.densePct <= maxDense
-      && stats.skyPct   >= minSky   && stats.skyPct   <= maxSky
-      && stats.fgPct    <= maxFg;
+  const { minDense = 3, maxDense = 30, minSky = 5, maxSky = 45, maxFg = 20 } = gate;
+  return (
+    stats.densePct >= minDense &&
+    stats.densePct <= maxDense &&
+    stats.skyPct >= minSky &&
+    stats.skyPct <= maxSky &&
+    stats.fgPct <= maxFg
+  );
 }
 
 // SOURCERY idiom 4: rejection-sampler loop. Caller supplies a `buildProbe(seed)`
@@ -738,7 +738,9 @@ export function isBalancedComposition(stats, gate = {}) {
 // @param {object} [opts.coverage]                - overrides for analyzeCoverage
 export function rejectionSample(buildProbe, seedGen, opts = {}) {
   const { maxAttempts = 5, gate, coverage } = opts;
-  let bestSeed = null, bestProbe = null, bestStats = null;
+  let bestSeed = null,
+    bestProbe = null,
+    bestStats = null;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const seed = seedGen();
     const probe = buildProbe(seed);
@@ -749,19 +751,24 @@ export function rejectionSample(buildProbe, seedGen, opts = {}) {
     // Track best-so-far by closeness to gate (cheap heuristic: smallest
     // sum of "out-of-band" distances)
     if (!bestStats || _gateDistance(stats, gate) < _gateDistance(bestStats, gate)) {
-      bestSeed = seed; bestProbe = probe; bestStats = stats;
+      bestSeed = seed;
+      bestProbe = probe;
+      bestStats = stats;
     }
   }
   return {
-    seed: bestSeed, probe: bestProbe, stats: bestStats,
-    attempts: maxAttempts, accepted: false,
+    seed: bestSeed,
+    probe: bestProbe,
+    stats: bestStats,
+    attempts: maxAttempts,
+    accepted: false,
   };
 }
 
 function _gateDistance(s, gate = {}) {
   const { minDense = 3, maxDense = 30, minSky = 5, maxSky = 45, maxFg = 20 } = gate;
-  const oob = (v, lo, hi) => v < lo ? lo - v : v > hi ? v - hi : 0;
-  return oob(s.densePct, minDense, maxDense)
-       + oob(s.skyPct,   minSky,   maxSky)
-       + oob(s.fgPct,    0,        maxFg);
+  const oob = (v, lo, hi) => (v < lo ? lo - v : v > hi ? v - hi : 0);
+  return (
+    oob(s.densePct, minDense, maxDense) + oob(s.skyPct, minSky, maxSky) + oob(s.fgPct, 0, maxFg)
+  );
 }

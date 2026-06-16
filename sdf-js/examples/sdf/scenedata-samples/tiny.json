@@ -13,17 +13,29 @@
   "ground": { "y": -1, "region": "ground" },
   "defaults": {
     "camera": {
-      "yaw": 0, "pitch": 0.2, "distance": 5, "focal": 1.5,
-      "targetX": 0, "targetY": 0, "targetZ": 0,
+      "yaw": 0,
+      "pitch": 0.2,
+      "distance": 5,
+      "focal": 1.5,
+      "targetX": 0,
+      "targetY": 0,
+      "targetZ": 0,
       "animation": [
-        { "channel": "yaw", "value": { "kind": "time", "form": "sin", "amp": 0.4, "freq": 0.15, "phase": 0 } }
+        {
+          "channel": "yaw",
+          "value": { "kind": "time", "form": "sin", "amp": 0.4, "freq": 0.15, "phase": 0 }
+        }
       ]
     },
     "light": {
-      "azimuth": 0.6, "altitude": 0.8, "distance": 8
+      "azimuth": 0.6,
+      "altitude": 0.8,
+      "distance": 8
     },
     "shadow": {
-      "enabled": true, "mode": "channelSwap", "strength": 0.35
+      "enabled": true,
+      "mode": "channelSwap",
+      "strength": 0.35
     }
   }
 }

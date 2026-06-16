@@ -58,26 +58,26 @@
  */
 export function* painted(p, sdfs, options = {}) {
   const {
-    palette         = DEFAULT_PALETTE,
-    palette2        = DEFAULT_PALETTE_2,
-    startIndex      = 0,
-    maxSize         = 2048,
+    palette = DEFAULT_PALETTE,
+    palette2 = DEFAULT_PALETTE_2,
+    startIndex = 0,
+    maxSize = 2048,
     middleScaleSize = 6,
-    smallScaleSize  = 2,
-    middleRotate    = 0.0015,
-    layers          = 5,
-    smallOffset     = 4,
-    smallSegs       = 5,
-    noiseScale      = 0.04,
-    rH              = 0.6,
-    rV              = 0,
-    brushSpeed      = 2,
-    view            = 1.0,
-    flipY           = true,
-    sdfThreshold    = -0.001,
-    gap             = 0.75,
-    probe           = null,
-    regionOffset    = { background: 1, ground: 2, object: 3 },
+    smallScaleSize = 2,
+    middleRotate = 0.0015,
+    layers = 5,
+    smallOffset = 4,
+    smallSegs = 5,
+    noiseScale = 0.04,
+    rH = 0.6,
+    rV = 0,
+    brushSpeed = 2,
+    view = 1.0,
+    flipY = true,
+    sdfThreshold = -0.001,
+    gap = 0.75,
+    probe = null,
+    regionOffset = { background: 1, ground: 2, object: 3 },
   } = options;
 
   const csize = p.width;
@@ -112,7 +112,8 @@ export function* painted(p, sdfs, options = {}) {
       x = x * Math.cos(middleRotate) - y * Math.sin(middleRotate);
       y = x * Math.sin(middleRotate) + y * Math.cos(middleRotate);
       const [dx, dy] = bend(x, y);
-      x += dx; y += dy;
+      x += dx;
+      y += dy;
       elements.push({ x, y, i, j, colorBase: startIndex });
     }
   }
@@ -121,9 +122,7 @@ export function* painted(p, sdfs, options = {}) {
   // 像素 → SDF 世界坐标，按 flipY 决定是否翻 y
   const pxToWorld = (px, py) => {
     const wx = (px / csize) * 2 * view - view;
-    const wy = flipY
-      ? -((py / csize) * 2 * view - view)
-      : (py / csize) * 2 * view - view;
+    const wy = flipY ? -((py / csize) * 2 * view - view) : (py / csize) * 2 * view - view;
     return [wx, wy];
   };
 
@@ -141,7 +140,7 @@ export function* painted(p, sdfs, options = {}) {
       const base = Math.floor(dl);
       // 随机化舍入：把小数部分当概率，让密度可以连续变化（不是阶梯式）
       e.layerCount = base + (p.random() < dl - base ? 1 : 0);
-      e.colorBase  = startIndex + (regionOffset[region] || 1);
+      e.colorBase = startIndex + (regionOffset[region] || 1);
     }
   } else {
     // ---- 2D 通路：标准 SDF 命中 → colorBase。
@@ -152,9 +151,17 @@ export function* painted(p, sdfs, options = {}) {
           // BOB 原版 colorBase 公式（每个 SDF 占 3 格独立窗口，+1 防止与
           // "未命中"的 startIndex 撞色）
           const colorOffset =
-            index === 0 ? 0 :
-            index === 1 ? (e.i % 2 !== 0 ? 0 : 1) :
-                          (e.i % 2 !== 0 ? 0 : (e.j % 2 === 0 ? 1 : 2));
+            index === 0
+              ? 0
+              : index === 1
+                ? e.i % 2 !== 0
+                  ? 0
+                  : 1
+                : e.i % 2 !== 0
+                  ? 0
+                  : e.j % 2 === 0
+                    ? 1
+                    : 2;
           e.colorBase = startIndex + index * 3 + colorOffset + 1;
         }
       });
@@ -164,18 +171,24 @@ export function* painted(p, sdfs, options = {}) {
   // ---- drawSegment: 渐进式画。yield 让 caller 在 raf/draw 里推进 -----------
   const yieldEvery = 200 * brushSpeed;
   for (let i = 0; i < elements.length; i++) {
-    if ((i % yieldEvery) === 0) yield;
+    if (i % yieldEvery === 0) yield;
     const e = elements[i];
     // 3D 通路给每个 cell 自己的 layer 数；2D 通路用全局 layers
-    const n = (e.layerCount !== undefined) ? e.layerCount : layers;
+    const n = e.layerCount !== undefined ? e.layerCount : layers;
     for (let layerIdx = 0; layerIdx < n; layerIdx++) {
-      const pal = (layerIdx % 2 === 0) ? palette : palette2;
+      const pal = layerIdx % 2 === 0 ? palette : palette2;
       p.fill(pal[(e.colorBase + layerIdx) % pal.length]);
       const xoffset = (p.noise(e.x * noiseScale, e.y * noiseScale, layerIdx) - 0.5) * smallOffset;
-      const yoffset = (p.noise(e.x * noiseScale + 1000, e.y * noiseScale + 1000, layerIdx) - 0.5) * smallOffset;
+      const yoffset =
+        (p.noise(e.x * noiseScale + 1000, e.y * noiseScale + 1000, layerIdx) - 0.5) * smallOffset;
       const layerOffset = layerIdx + 0.5 - layers / 2;
-      drawBrush(p, e.x + xoffset + layerOffset * rH, e.y + yoffset + layerOffset * rV,
-                cellSize * gap / 2, smallSegs);
+      drawBrush(
+        p,
+        e.x + xoffset + layerOffset * rH,
+        e.y + yoffset + layerOffset * rV,
+        (cellSize * gap) / 2,
+        smallSegs,
+      );
     }
   }
 }
@@ -209,11 +222,30 @@ function drawBrush(p, x, y, r, n) {
 
 // BOB pigments 高对比组 1（红/蓝/绿/黄交错）
 const DEFAULT_PALETTE = [
-  '#e44d36', '#d999cb', '#12a29b', '#f7d923', '#159014', '#713c97',
-  '#0e5f4a', '#229d38', '#103731', '#b6d611', '#78b9c8', '#ede0df',
+  '#e44d36',
+  '#d999cb',
+  '#12a29b',
+  '#f7d923',
+  '#159014',
+  '#713c97',
+  '#0e5f4a',
+  '#229d38',
+  '#103731',
+  '#b6d611',
+  '#78b9c8',
+  '#ede0df',
 ];
 // 高对比组 2
 const DEFAULT_PALETTE_2 = [
-  '#09931e', '#002baa', '#1c77c3', '#ff2702', '#feec00', '#236846',
-  '#ff6900', '#fcd300', '#a3023b', '#f20256', '#0aa922',
+  '#09931e',
+  '#002baa',
+  '#1c77c3',
+  '#ff2702',
+  '#feec00',
+  '#236846',
+  '#ff6900',
+  '#fcd300',
+  '#a3023b',
+  '#f20256',
+  '#0aa922',
 ];

@@ -14,19 +14,25 @@
 // =============================================================================
 
 class MoveTo {
-  constructor(p) { this.p0 = p; }
-  pAt() { return [this.p0[0], this.p0[1]]; }
-  length() { return 0; }
+  constructor(p) {
+    this.p0 = p;
+  }
+  pAt() {
+    return [this.p0[0], this.p0[1]];
+  }
+  length() {
+    return 0;
+  }
 }
 
 class LineTo {
-  constructor(p0, p1) { this.p0 = p0; this.p1 = p1; }
+  constructor(p0, p1) {
+    this.p0 = p0;
+    this.p1 = p1;
+  }
   pAt(t) {
     const nt = 1 - t;
-    return [
-      nt * this.p0[0] + t * this.p1[0],
-      nt * this.p0[1] + t * this.p1[1],
-    ];
+    return [nt * this.p0[0] + t * this.p1[0], nt * this.p0[1] + t * this.p1[1]];
   }
   length() {
     const dx = this.p1[0] - this.p0[0];
@@ -37,7 +43,10 @@ class LineTo {
 
 class BezierTo {
   constructor(p0, c0, c1, p1) {
-    this.p0 = p0; this.c0 = c0; this.c1 = c1; this.p1 = p1;
+    this.p0 = p0;
+    this.c0 = c0;
+    this.c1 = c1;
+    this.p1 = p1;
     this._length = null;
   }
   pAt(t) {

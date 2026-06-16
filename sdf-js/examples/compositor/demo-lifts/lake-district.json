@@ -16,13 +16,13 @@
         "id": "lake-terrain",
         "type": "terrain-with-lakes",
         "args": {
-          "maxHeight":    32.0,
-          "scale":        0.024,
-          "ridgePower":   2.5,
+          "maxHeight": 32.0,
+          "scale": 0.024,
+          "ridgePower": 2.5,
           "mountainness": 0.28,
-          "waterLevel":   0.0,
-          "lakeScale":    0.0028,
-          "lakeAmount":   0.22
+          "waterLevel": 0.0,
+          "lakeScale": 0.0028,
+          "lakeAmount": 0.22
         },
         "transform": { "translate": [0, -4.0, 0] }
       },
@@ -36,9 +36,15 @@
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": -0.3, "pitch": -0.20, "distance": 30, "focal": 1.1,
-        "targetX": 0, "targetY": 3, "targetZ": 0,
-        "aperture": 0.3, "focalDistance": 30
+        "yaw": -0.3,
+        "pitch": -0.2,
+        "distance": 30,
+        "focal": 1.1,
+        "targetX": 0,
+        "targetY": 3,
+        "targetZ": 0,
+        "aperture": 0.3,
+        "focalDistance": 30
       },
       "light": { "azimuth": -1.2, "altitude": 0.62, "distance": 50, "intensity": 1.1 },
       "shadow": { "enabled": true, "mode": "darken", "strength": 0.42 },

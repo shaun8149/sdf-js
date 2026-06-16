@@ -35,7 +35,9 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.minorR=0.02]      minor radius (tube thickness)
  */
 export function linkSDF({ halfLength = 0.13, majorR = 0.1, minorR = 0.02 } = {}) {
-  const le = halfLength, r1 = majorR, r2 = minorR;
+  const le = halfLength,
+    r1 = majorR,
+    r2 = minorR;
 
   const inst = SDF3((p) => {
     // q = (p.x, max(|p.y|-le, 0), p.z) — elongates the torus along Y
@@ -57,17 +59,21 @@ export const linkSpec = {
   type: 'link',
   category: 'primitive',
   args: {
-    halfLength: { type: 'number', default: 0.13, doc: 'Half-length of the straight section (Y elongation)' },
-    majorR:     { type: 'number', default: 0.1,  doc: 'Major radius of the loop cross-section' },
-    minorR:     { type: 'number', default: 0.02, doc: 'Minor radius (tube thickness)' },
+    halfLength: {
+      type: 'number',
+      default: 0.13,
+      doc: 'Half-length of the straight section (Y elongation)',
+    },
+    majorR: { type: 'number', default: 0.1, doc: 'Major radius of the loop cross-section' },
+    minorR: { type: 'number', default: 0.02, doc: 'Minor radius (tube thickness)' },
   },
   source: {
-    portedFrom:     'https://iquilezles.org/articles/distfunctions/',
-    algorithmRef:   'IQ "Link - exact" SDF',
+    portedFrom: 'https://iquilezles.org/articles/distfunctions/',
+    algorithmRef: 'IQ "Link - exact" SDF',
     originalAuthor: 'Inigo Quilez (canonical SDF article)',
-    license:        'MIT (canonical IQ SDF article)',
-    portedAt:       '2026-05-18',
-    porter:         'Atlas /port-shader skill — second invocation (dogfood)',
+    license: 'MIT (canonical IQ SDF article)',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader skill — second invocation (dogfood)',
   },
   thumbnail: null,
 };

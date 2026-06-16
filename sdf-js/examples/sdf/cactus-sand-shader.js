@@ -110,20 +110,16 @@ gl.useProgram(prog);
 // 全屏覆盖三角形
 const buf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-  -1, -1,
-   3, -1,
-  -1,  3,
-]), gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 const aPos = gl.getAttribLocation(prog, 'aPos');
 gl.enableVertexAttribArray(aPos);
 gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
 // uniform locations
 const uResolution = gl.getUniformLocation(prog, 'uResolution');
-const uViewHalf   = gl.getUniformLocation(prog, 'uViewHalf');
-const uTime       = gl.getUniformLocation(prog, 'uTime');
-const uGrainRate  = gl.getUniformLocation(prog, 'uGrainRate');
+const uViewHalf = gl.getUniformLocation(prog, 'uViewHalf');
+const uTime = gl.getUniformLocation(prog, 'uTime');
+const uGrainRate = gl.getUniformLocation(prog, 'uGrainRate');
 
 gl.uniform2f(uResolution, canvas.width, canvas.height);
 gl.uniform1f(uViewHalf, 1.0);

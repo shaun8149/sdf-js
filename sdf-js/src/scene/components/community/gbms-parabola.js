@@ -21,7 +21,7 @@ export function parabolaSDF({ k = 1.0 } = {}) {
     const py = p[1];
     const ik = 1.0 / kk;
     // Solve cubic for closest point (x, k*x*x) on y = k*x²
-    const pCoef = ik * (py - 0.5 * ik) / 3.0;
+    const pCoef = (ik * (py - 0.5 * ik)) / 3.0;
     const qCoef = 0.25 * ik * ik * px;
     const h = qCoef * qCoef - pCoef * pCoef * pCoef;
     const r = Math.sqrt(Math.abs(h));
@@ -45,13 +45,17 @@ export const parabolaSpec = {
   type: 'parabola',
   category: '2d-primitive',
   args: {
-    k: { type: 'number', default: 1.0, doc: 'quadratic coefficient (y = k*x²); larger = tighter curve' },
+    k: {
+      type: 'number',
+      default: 1.0,
+      doc: 'quadratic coefficient (y = k*x²); larger = tighter curve',
+    },
   },
   source: {
-    portedFrom:     'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
+    portedFrom: 'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
     originalAuthor: 'Mason — adapted from IQ canonical SDF article (Cardano closed-form)',
-    license:        'MIT',
-    portedAt:       '2026-05-27',
-    porter:         'Atlas /port-shader (Track 4 batch)',
+    license: 'MIT',
+    portedAt: '2026-05-27',
+    porter: 'Atlas /port-shader (Track 4 batch)',
   },
 };

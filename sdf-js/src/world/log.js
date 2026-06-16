@@ -37,9 +37,7 @@ export function newLog({ seed, initial, mode = 'full' }) {
 }
 
 export function appendTick(log, { tick, actions, patches }) {
-  const entry = log.mode === 'full'
-    ? { tick, actions, patches }
-    : { tick, actions };
+  const entry = log.mode === 'full' ? { tick, actions, patches } : { tick, actions };
   return { ...log, ticks: [...log.ticks, entry] };
 }
 

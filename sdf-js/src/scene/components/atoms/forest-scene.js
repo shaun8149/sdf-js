@@ -31,19 +31,25 @@ export function stylizedTreeSDF({
   trunkLen = 5.0,
   trunkRad = 0.4,
   leafSize = 0.18,
-  windK    = 0.12,
+  windK = 0.12,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: trunk capsule + canopy sphere bound (no leaves on CPU).
-    const dx = p[0], dy = p[1], dz = p[2];
+    const dx = p[0],
+      dy = p[1],
+      dz = p[2];
     // Capsule trunk from y=0 to y=trunkLen
     const yClamp = Math.max(0, Math.min(trunkLen, dy));
-    const tx = dx, ty = dy - yClamp, tz = dz;
-    const dTrunk = Math.sqrt(tx*tx + ty*ty + tz*tz) - trunkRad;
+    const tx = dx,
+      ty = dy - yClamp,
+      tz = dz;
+    const dTrunk = Math.sqrt(tx * tx + ty * ty + tz * tz) - trunkRad;
     // Canopy sphere
     const cy = trunkLen * 0.95;
-    const cdx = dx, cdy = dy - cy, cdz = dz;
-    const dCanopy = Math.sqrt(cdx*cdx + cdy*cdy + cdz*cdz) - trunkLen * 0.55;
+    const cdx = dx,
+      cdy = dy - cy,
+      cdz = dz;
+    const dCanopy = Math.sqrt(cdx * cdx + cdy * cdy + cdz * cdz) - trunkLen * 0.55;
     return Math.min(dTrunk, dCanopy);
   });
   inst.ast = { kind: 'prim', name: 'stylized-tree', args: [trunkLen, trunkRad, leafSize, windK] };
@@ -60,8 +66,10 @@ export function stylizedTreeSDF({
 export function mapleLeafSDF({ scale = 0.15, rand = 0.5 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: a tiny bounding sphere (leaf surface detail GPU-only).
-    const dx = p[0], dy = p[1] - scale, dz = p[2];
-    return Math.sqrt(dx*dx + dy*dy + dz*dz) - scale * 1.3;
+    const dx = p[0],
+      dy = p[1] - scale,
+      dz = p[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz) - scale * 1.3;
   });
   inst.ast = { kind: 'prim', name: 'maple-leaf', args: [scale, rand] };
   return inst;
@@ -79,8 +87,10 @@ export function mapleLeafSDF({ scale = 0.15, rand = 0.5 } = {}) {
 export function forestFlowerSDF({ stemH = 1.0, bloomR = 0.16 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: small sphere at bloom location
-    const dx = p[0], dy = p[1] - stemH, dz = p[2];
-    return Math.sqrt(dx*dx + dy*dy + dz*dz) - bloomR;
+    const dx = p[0],
+      dy = p[1] - stemH,
+      dz = p[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz) - bloomR;
   });
   inst.ast = { kind: 'prim', name: 'forest-flower', args: [stemH, bloomR] };
   return inst;
@@ -110,7 +120,7 @@ export function forestFlowerSDF({ stemH = 1.0, bloomR = 0.16 } = {}) {
  * @param {number} [opts.bladeHeight=0.4]  Max tip y for blades
  * @param {number} [opts.density=0.10]     pMod2 cell size (smaller = denser)
  */
-export function grassFieldSDF({ bladeHeight = 0.4, density = 0.10 } = {}) {
+export function grassFieldSDF({ bladeHeight = 0.4, density = 0.1 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: slab above max blade tip
     return p[1] - bladeHeight * 1.3;
@@ -120,12 +130,12 @@ export function grassFieldSDF({ bladeHeight = 0.4, density = 0.10 } = {}) {
 }
 
 export function meteorStreakSDF({
-  origin     = [-15, 18, 25],
-  velocity   = [3.5, -2.5, 0.5],
-  trailLen   = 1.4,
-  period     = 7.0,
+  origin = [-15, 18, 25],
+  velocity = [3.5, -2.5, 0.5],
+  trailLen = 1.4,
+  period = 7.0,
   activeFrac = 0.5,
-  phase      = 0.0,
+  phase = 0.0,
 } = {}) {
   // CPU stub: always-far so meteor never contributes to region queries / CPU
   // raymarch. Meteors are GPU-emissive-only.

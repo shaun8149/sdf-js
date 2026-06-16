@@ -19,10 +19,18 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.halfDepth=0.04]       half-extent along Z (out-of-plane)
  */
 export function horseshoeSDF({
-  openAngle = Math.PI / 3, radius = 0.4, length = 0.1, halfWidth = 0.08, halfDepth = 0.04,
+  openAngle = Math.PI / 3,
+  radius = 0.4,
+  length = 0.1,
+  halfWidth = 0.08,
+  halfDepth = 0.04,
 } = {}) {
-  const cx = Math.cos(openAngle), cy = Math.sin(openAngle);
-  const r = radius, le = length, wx = halfWidth, wy = halfDepth;
+  const cx = Math.cos(openAngle),
+    cy = Math.sin(openAngle);
+  const r = radius,
+    le = length,
+    wx = halfWidth,
+    wy = halfDepth;
   const inst = SDF3((p) => {
     let px = Math.abs(p[0]);
     const py = p[1];
@@ -30,9 +38,9 @@ export function horseshoeSDF({
     const l = Math.sqrt(px * px + py * py);
     // 2x2 mat * p.xy : mat = [[-cx, cy], [cy, cx]]
     let tx = -cx * px + cy * py;
-    let ty =  cy * px + cx * py;
+    let ty = cy * px + cx * py;
     if (!(ty > 0 || tx > 0)) tx = l * (-cx >= 0 ? 1 : -1);
-    if (!(tx > 0))           ty = l;
+    if (!(tx > 0)) ty = l;
     tx = tx - le;
     ty = Math.abs(ty - r);
     const insideMin = Math.min(0, Math.max(tx, ty));
@@ -44,7 +52,11 @@ export function horseshoeSDF({
     const dy = Math.abs(qy) - wy;
     return Math.min(Math.max(dx, dy), 0) + Math.sqrt(Math.max(dx, 0) ** 2 + Math.max(dy, 0) ** 2);
   });
-  inst.ast = { kind: 'prim', name: 'horseshoe', args: [openAngle, radius, length, halfWidth, halfDepth] };
+  inst.ast = {
+    kind: 'prim',
+    name: 'horseshoe',
+    args: [openAngle, radius, length, halfWidth, halfDepth],
+  };
   return inst;
 }
 
@@ -53,14 +65,16 @@ export const horseshoeSpec = {
   category: 'primitive',
   args: {
     openAngle: { type: 'number', default: Math.PI / 3 },
-    radius:    { type: 'number', default: 0.4 },
-    length:    { type: 'number', default: 0.1 },
+    radius: { type: 'number', default: 0.4 },
+    length: { type: 'number', default: 0.1 },
     halfWidth: { type: 'number', default: 0.08 },
     halfDepth: { type: 'number', default: 0.04 },
   },
   source: {
     portedFrom: 'https://iquilezles.org/articles/distfunctions/',
     originalAuthor: 'Inigo Quilez',
-    license: 'MIT', portedAt: '2026-05-18', porter: 'Atlas /port-shader batch port',
+    license: 'MIT',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader batch port',
   },
 };

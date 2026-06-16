@@ -22,11 +22,7 @@
           "speed": 0.8
         },
         "transform": {
-          "translate": [
-            0,
-            -1.2,
-            0
-          ]
+          "translate": [0, -1.2, 0]
         },
         "material": {
           "hue": 0.58,
@@ -41,18 +37,10 @@
         "id": "waterline-stripe",
         "type": "box",
         "args": {
-          "dims": [
-            18,
-            0.25,
-            4.6
-          ]
+          "dims": [18, 0.25, 4.6]
         },
         "transform": {
-          "translate": [
-            0,
-            -1,
-            0
-          ]
+          "translate": [0, -1, 0]
         },
         "material": {
           "hue": 0,
@@ -71,16 +59,8 @@
           "wingSpan": 0.6
         },
         "transform": {
-          "translate": [
-            -3.5,
-            8.5,
-            -4
-          ],
-          "rotate": [
-            0,
-            0.6,
-            0
-          ]
+          "translate": [-3.5, 8.5, -4],
+          "rotate": [0, 0.6, 0]
         },
         "material": {
           "hue": 0.6,
@@ -98,16 +78,8 @@
           "wingSpan": 0.55
         },
         "transform": {
-          "translate": [
-            2.8,
-            9.2,
-            -3.5
-          ],
-          "rotate": [
-            0,
-            -0.4,
-            0
-          ]
+          "translate": [2.8, 9.2, -3.5],
+          "rotate": [0, -0.4, 0]
         },
         "material": {
           "hue": 0.6,
@@ -125,16 +97,8 @@
           "wingSpan": 0.5
         },
         "transform": {
-          "translate": [
-            6.5,
-            7.8,
-            5
-          ],
-          "rotate": [
-            0,
-            -0.8,
-            0
-          ]
+          "translate": [6.5, 7.8, 5],
+          "rotate": [0, -0.8, 0]
         },
         "material": {
           "hue": 0.6,
@@ -152,18 +116,10 @@
             "id": "hull-main",
             "type": "box",
             "args": {
-              "dims": [
-                18,
-                3.2,
-                4.5
-              ]
+              "dims": [18, 3.2, 4.5]
             },
             "transform": {
-              "translate": [
-                0,
-                -0.1,
-                0
-              ]
+              "translate": [0, -0.1, 0]
             },
             "material": "matte-black",
             "region": "hull"
@@ -172,18 +128,10 @@
             "id": "hull-upper",
             "type": "box",
             "args": {
-              "dims": [
-                18,
-                1.8,
-                4.2
-              ]
+              "dims": [18, 1.8, 4.2]
             },
             "transform": {
-              "translate": [
-                0,
-                0.7,
-                0
-              ]
+              "translate": [0, 0.7, 0]
             },
             "material": {
               "hue": 0.6,
@@ -201,21 +149,9 @@
               "height": 2.8
             },
             "transform": {
-              "translate": [
-                9.2,
-                -0.5,
-                0
-              ],
-              "rotate": [
-                0,
-                0,
-                1.5708
-              ],
-              "scale": [
-                2.5,
-                1,
-                2.2
-              ]
+              "translate": [9.2, -0.5, 0],
+              "rotate": [0, 0, 1.5708],
+              "scale": [2.5, 1, 2.2]
             },
             "material": {
               "hue": 0.6,
@@ -233,21 +169,9 @@
               "height": 1.5
             },
             "transform": {
-              "translate": [
-                -9.2,
-                -0.3,
-                0
-              ],
-              "rotate": [
-                0,
-                0,
-                -1.5708
-              ],
-              "scale": [
-                1.8,
-                1,
-                2.2
-              ]
+              "translate": [-9.2, -0.3, 0],
+              "rotate": [0, 0, -1.5708],
+              "scale": [1.8, 1, 2.2]
             },
             "material": "matte-black",
             "region": "hull"
@@ -256,18 +180,10 @@
             "id": "flight-deck",
             "type": "box",
             "args": {
-              "dims": [
-                18.5,
-                0.35,
-                5.8
-              ]
+              "dims": [18.5, 0.35, 5.8]
             },
             "transform": {
-              "translate": [
-                0,
-                1.7,
-                0
-              ]
+              "translate": [0, 1.7, 0]
             },
             "material": "stone",
             "pattern": {
@@ -285,41 +201,21 @@
                 "id": "ramp-wedge",
                 "type": "box",
                 "args": {
-                  "dims": [
-                    2.8,
-                    1.8,
-                    5.8
-                  ]
+                  "dims": [2.8, 1.8, 5.8]
                 },
                 "transform": {
-                  "translate": [
-                    8,
-                    2.75,
-                    0
-                  ],
-                  "rotate": [
-                    0,
-                    0,
-                    0.35
-                  ]
+                  "translate": [8, 2.75, 0],
+                  "rotate": [0, 0, 0.35]
                 }
               },
               {
                 "id": "ramp-cut-back",
                 "type": "box",
                 "args": {
-                  "dims": [
-                    3,
-                    2.5,
-                    6
-                  ]
+                  "dims": [3, 2.5, 6]
                 },
                 "transform": {
-                  "translate": [
-                    6.5,
-                    1.8,
-                    0
-                  ]
+                  "translate": [6.5, 1.8, 0]
                 }
               }
             ],
@@ -336,18 +232,10 @@
             "id": "deck-centerline",
             "type": "box",
             "args": {
-              "dims": [
-                16,
-                0.05,
-                0.12
-              ]
+              "dims": [16, 0.05, 0.12]
             },
             "transform": {
-              "translate": [
-                -0.5,
-                1.92,
-                0
-              ]
+              "translate": [-0.5, 1.92, 0]
             },
             "material": {
               "hue": 0.15,
@@ -362,18 +250,10 @@
             "id": "deck-edge-port",
             "type": "box",
             "args": {
-              "dims": [
-                16,
-                0.05,
-                0.1
-              ]
+              "dims": [16, 0.05, 0.1]
             },
             "transform": {
-              "translate": [
-                -0.5,
-                1.92,
-                -2.85
-              ]
+              "translate": [-0.5, 1.92, -2.85]
             },
             "material": {
               "hue": 0.15,
@@ -388,18 +268,10 @@
             "id": "deck-edge-starboard",
             "type": "box",
             "args": {
-              "dims": [
-                16,
-                0.05,
-                0.1
-              ]
+              "dims": [16, 0.05, 0.1]
             },
             "transform": {
-              "translate": [
-                -0.5,
-                1.92,
-                2.85
-              ]
+              "translate": [-0.5, 1.92, 2.85]
             },
             "material": {
               "hue": 0.15,
@@ -414,19 +286,11 @@
             "id": "island-base",
             "type": "rounded_box",
             "args": {
-              "dims": [
-                2.6,
-                2.5,
-                2.2
-              ],
+              "dims": [2.6, 2.5, 2.2],
               "cornerR": 0.15
             },
             "transform": {
-              "translate": [
-                3,
-                3.15,
-                2
-              ]
+              "translate": [3, 3.15, 2]
             },
             "material": {
               "hue": 0.6,
@@ -441,19 +305,11 @@
             "id": "island-mid",
             "type": "rounded_box",
             "args": {
-              "dims": [
-                2,
-                1.6,
-                1.8
-              ],
+              "dims": [2, 1.6, 1.8],
               "cornerR": 0.12
             },
             "transform": {
-              "translate": [
-                3.1,
-                5,
-                2
-              ]
+              "translate": [3.1, 5, 2]
             },
             "material": {
               "hue": 0.6,
@@ -468,19 +324,11 @@
             "id": "island-top",
             "type": "rounded_box",
             "args": {
-              "dims": [
-                1.6,
-                0.9,
-                1.4
-              ],
+              "dims": [1.6, 0.9, 1.4],
               "cornerR": 0.1
             },
             "transform": {
-              "translate": [
-                3,
-                6.2,
-                2
-              ]
+              "translate": [3, 6.2, 2]
             },
             "material": {
               "hue": 0.6,
@@ -495,18 +343,10 @@
             "id": "island-win-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                0.28,
-                0.08
-              ]
+              "dims": [0.4, 0.28, 0.08]
             },
             "transform": {
-              "translate": [
-                2.2,
-                3,
-                3.15
-              ]
+              "translate": [2.2, 3, 3.15]
             },
             "material": {
               "hue": 0.58,
@@ -521,18 +361,10 @@
             "id": "island-win-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                0.28,
-                0.08
-              ]
+              "dims": [0.4, 0.28, 0.08]
             },
             "transform": {
-              "translate": [
-                3,
-                3,
-                3.15
-              ]
+              "translate": [3, 3, 3.15]
             },
             "material": {
               "hue": 0.58,
@@ -547,18 +379,10 @@
             "id": "island-win-3",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                0.28,
-                0.08
-              ]
+              "dims": [0.4, 0.28, 0.08]
             },
             "transform": {
-              "translate": [
-                3.8,
-                3,
-                3.15
-              ]
+              "translate": [3.8, 3, 3.15]
             },
             "material": {
               "hue": 0.58,
@@ -577,11 +401,7 @@
               "height": 4
             },
             "transform": {
-              "translate": [
-                3,
-                8.7,
-                2
-              ]
+              "translate": [3, 8.7, 2]
             },
             "material": {
               "hue": 0.6,
@@ -596,16 +416,8 @@
             "id": "mast-crossbar",
             "type": "capsule",
             "args": {
-              "a": [
-                2.4,
-                7.8,
-                2
-              ],
-              "b": [
-                3.6,
-                7.8,
-                2
-              ],
+              "a": [2.4, 7.8, 2],
+              "b": [3.6, 7.8, 2],
               "radius": 0.05
             },
             "material": {
@@ -621,18 +433,10 @@
             "id": "radar-main-face",
             "type": "box",
             "args": {
-              "dims": [
-                0.7,
-                0.5,
-                0.12
-              ]
+              "dims": [0.7, 0.5, 0.12]
             },
             "transform": {
-              "translate": [
-                3,
-                9.5,
-                2.55
-              ]
+              "translate": [3, 9.5, 2.55]
             },
             "material": {
               "hue": 0.6,
@@ -647,18 +451,10 @@
             "id": "radar-port-face",
             "type": "box",
             "args": {
-              "dims": [
-                0.12,
-                0.7,
-                0.5
-              ]
+              "dims": [0.12, 0.7, 0.5]
             },
             "transform": {
-              "translate": [
-                2.45,
-                7.8,
-                2
-              ]
+              "translate": [2.45, 7.8, 2]
             },
             "material": {
               "hue": 0.6,
@@ -673,18 +469,10 @@
             "id": "radar-starboard-face",
             "type": "box",
             "args": {
-              "dims": [
-                0.12,
-                0.7,
-                0.5
-              ]
+              "dims": [0.12, 0.7, 0.5]
             },
             "transform": {
-              "translate": [
-                3.55,
-                7.8,
-                2
-              ]
+              "translate": [3.55, 7.8, 2]
             },
             "material": {
               "hue": 0.6,
@@ -702,11 +490,7 @@
               "radius": 0.22
             },
             "transform": {
-              "translate": [
-                5.5,
-                2.15,
-                0
-              ]
+              "translate": [5.5, 2.15, 0]
             },
             "material": {
               "hue": 0.6,
@@ -724,11 +508,7 @@
               "radius": 0.2
             },
             "transform": {
-              "translate": [
-                -1,
-                2.15,
-                -2.7
-              ]
+              "translate": [-1, 2.15, -2.7]
             },
             "material": {
               "hue": 0.6,
@@ -746,11 +526,7 @@
               "radius": 0.2
             },
             "transform": {
-              "translate": [
-                -1,
-                2.15,
-                2.7
-              ]
+              "translate": [-1, 2.15, 2.7]
             },
             "material": {
               "hue": 0.6,
@@ -768,11 +544,7 @@
               "radius": 0.18
             },
             "transform": {
-              "translate": [
-                -6,
-                2.1,
-                0
-              ]
+              "translate": [-6, 2.1, 0]
             },
             "material": {
               "hue": 0.6,
@@ -787,18 +559,10 @@
             "id": "j15-1-body",
             "type": "ellipsoid",
             "args": {
-              "dims": [
-                0.7,
-                0.18,
-                0.22
-              ]
+              "dims": [0.7, 0.18, 0.22]
             },
             "transform": {
-              "translate": [
-                5,
-                2.1,
-                1.8
-              ]
+              "translate": [5, 2.1, 1.8]
             },
             "material": {
               "hue": 0.6,
@@ -817,16 +581,8 @@
               "halfLength": 1.2
             },
             "transform": {
-              "translate": [
-                4.8,
-                2.1,
-                0.5
-              ],
-              "rotate": [
-                0,
-                1.5708,
-                0.15
-              ]
+              "translate": [4.8, 2.1, 0.5],
+              "rotate": [0, 1.5708, 0.15]
             },
             "material": {
               "hue": 0.6,
@@ -845,16 +601,8 @@
               "halfLength": 1.2
             },
             "transform": {
-              "translate": [
-                4.8,
-                2.1,
-                3.1
-              ],
-              "rotate": [
-                0,
-                -1.5708,
-                -0.15
-              ]
+              "translate": [4.8, 2.1, 3.1],
+              "rotate": [0, -1.5708, -0.15]
             },
             "material": {
               "hue": 0.6,
@@ -869,18 +617,10 @@
             "id": "j15-2-body",
             "type": "ellipsoid",
             "args": {
-              "dims": [
-                0.68,
-                0.17,
-                0.21
-              ]
+              "dims": [0.68, 0.17, 0.21]
             },
             "transform": {
-              "translate": [
-                -2,
-                2.08,
-                -1.5
-              ]
+              "translate": [-2, 2.08, -1.5]
             },
             "material": {
               "hue": 0.6,
@@ -899,16 +639,8 @@
               "halfLength": 1.15
             },
             "transform": {
-              "translate": [
-                -2.2,
-                2.08,
-                -2.7
-              ],
-              "rotate": [
-                0,
-                1.5708,
-                0.15
-              ]
+              "translate": [-2.2, 2.08, -2.7],
+              "rotate": [0, 1.5708, 0.15]
             },
             "material": {
               "hue": 0.6,
@@ -927,16 +659,8 @@
               "halfLength": 1.15
             },
             "transform": {
-              "translate": [
-                -2.2,
-                2.08,
-                -0.3
-              ],
-              "rotate": [
-                0,
-                -1.5708,
-                -0.15
-              ]
+              "translate": [-2.2, 2.08, -0.3],
+              "rotate": [0, -1.5708, -0.15]
             },
             "material": {
               "hue": 0.6,
@@ -951,18 +675,10 @@
             "id": "j15-3-body",
             "type": "ellipsoid",
             "args": {
-              "dims": [
-                0.68,
-                0.17,
-                0.21
-              ]
+              "dims": [0.68, 0.17, 0.21]
             },
             "transform": {
-              "translate": [
-                -6,
-                2.08,
-                1.2
-              ]
+              "translate": [-6, 2.08, 1.2]
             },
             "material": {
               "hue": 0.6,
@@ -981,16 +697,8 @@
               "halfLength": 1.15
             },
             "transform": {
-              "translate": [
-                -6.2,
-                2.08,
-                0
-              ],
-              "rotate": [
-                0,
-                1.5708,
-                0.15
-              ]
+              "translate": [-6.2, 2.08, 0],
+              "rotate": [0, 1.5708, 0.15]
             },
             "material": {
               "hue": 0.6,
@@ -1009,16 +717,8 @@
               "halfLength": 1.15
             },
             "transform": {
-              "translate": [
-                -6.2,
-                2.08,
-                2.4
-              ],
-              "rotate": [
-                0,
-                -1.5708,
-                -0.15
-              ]
+              "translate": [-6.2, 2.08, 2.4],
+              "rotate": [0, -1.5708, -0.15]
             },
             "material": {
               "hue": 0.6,
@@ -1037,11 +737,7 @@
               "height": 2.5
             },
             "transform": {
-              "translate": [
-                1.8,
-                8.95,
-                2
-              ]
+              "translate": [1.8, 8.95, 2]
             },
             "material": {
               "hue": 0.6,
@@ -1055,18 +751,10 @@
             "id": "flag-body",
             "type": "box",
             "args": {
-              "dims": [
-                0.08,
-                0.6,
-                0.9
-              ]
+              "dims": [0.08, 0.6, 0.9]
             },
             "transform": {
-              "translate": [
-                1.8,
-                9.85,
-                2.48
-              ]
+              "translate": [1.8, 9.85, 2.48]
             },
             "material": {
               "hue": 0,
@@ -1081,11 +769,7 @@
             "type": "octahedron",
             "args": {},
             "transform": {
-              "translate": [
-                1.85,
-                10,
-                2.18
-              ],
+              "translate": [1.85, 10, 2.18],
               "scale": 0.12
             },
             "material": {
@@ -1105,11 +789,7 @@
               "depth": 0.35
             },
             "transform": {
-              "translate": [
-                2.5,
-                10.5,
-                2
-              ]
+              "translate": [2.5, 10.5, 2]
             },
             "material": {
               "hue": 0.08,
@@ -1128,11 +808,7 @@
               "depth": 0.28
             },
             "transform": {
-              "translate": [
-                2.2,
-                11.2,
-                2
-              ]
+              "translate": [2.2, 11.2, 2]
             },
             "material": {
               "hue": 0.08,
@@ -1146,18 +822,10 @@
             "id": "wake-foam-1",
             "type": "ellipsoid",
             "args": {
-              "dims": [
-                5.5,
-                0.4,
-                1.8
-              ]
+              "dims": [5.5, 0.4, 1.8]
             },
             "transform": {
-              "translate": [
-                -7.5,
-                -0.9,
-                0
-              ]
+              "translate": [-7.5, -0.9, 0]
             },
             "material": {
               "hue": 0.58,
@@ -1171,18 +839,10 @@
             "id": "wake-foam-2",
             "type": "ellipsoid",
             "args": {
-              "dims": [
-                3.5,
-                0.3,
-                1.2
-              ]
+              "dims": [3.5, 0.3, 1.2]
             },
             "transform": {
-              "translate": [
-                -8.5,
-                -1,
-                0
-              ]
+              "translate": [-8.5, -1, 0]
             },
             "material": {
               "hue": 0.58,
@@ -1194,11 +854,7 @@
           }
         ],
         "transform": {
-          "translate": [
-            0,
-            0,
-            0
-          ]
+          "translate": [0, 0, 0]
         },
         "variants": [
           {
@@ -1206,15 +862,8 @@
             "count": 5,
             "region": {
               "type": "rectXZ",
-              "center": [
-                0,
-                0,
-                0
-              ],
-              "size": [
-                180,
-                120
-              ]
+              "center": [0, 0, 0],
+              "size": [180, 120]
             },
             "separation": 30,
             "heading": "aligned",
@@ -1222,11 +871,7 @@
               "jitter": 0.1
             },
             "translate": {
-              "jitter": [
-                3,
-                0,
-                3
-              ]
+              "jitter": [3, 0, 3]
             }
           }
         ]

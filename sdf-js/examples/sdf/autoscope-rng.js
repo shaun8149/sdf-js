@@ -76,6 +76,6 @@ export function writeSplitHashToURL(sceneHash, styleHash) {
   const url = new URL(window.location);
   url.searchParams.set('sceneHash', sceneHash);
   url.searchParams.set('styleHash', styleHash);
-  url.searchParams.delete('hash');  // remove legacy single-hash param
+  url.searchParams.delete('hash'); // remove legacy single-hash param
   window.history.replaceState(null, '', url);
 }

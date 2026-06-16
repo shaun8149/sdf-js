@@ -14,7 +14,7 @@ import * as tyler from '../../src/palette/tyler.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
 // ============================================================================
 // Fly 3D renderer (lazy singleton — only init'd when user first picks Fly 3D pill)
@@ -28,11 +28,11 @@ function getFly3D() {
     canvas: wgl,
     getControls: () => ({
       lightAzim: +$('fly-light-azim').value,
-      lightAlt:  +$('fly-light-alt').value,
+      lightAlt: +$('fly-light-alt').value,
       lightDist: +$('fly-light-dist').value,
-      fov:       +$('fly-focal').value,
+      fov: +$('fly-focal').value,
       shadowsOn: $('fly-shadows').checked,
-      groundOn:  $('fly-ground').checked,
+      groundOn: $('fly-ground').checked,
       checkerOn: $('fly-checker').checked,
     }),
     onFps: (fps) => {
@@ -41,8 +41,8 @@ function getFly3D() {
     },
     onCamUpdate: (s) => {
       const r = $('fly3d-readout');
-      if (r) r.textContent =
-        `pos: ${s.position.map(x => x.toFixed(2)).join(' ')} · yaw ${(s.yaw*180/Math.PI).toFixed(0)}° pitch ${(s.pitch*180/Math.PI).toFixed(0)}°`;
+      if (r)
+        r.textContent = `pos: ${s.position.map((x) => x.toFixed(2)).join(' ')} · yaw ${((s.yaw * 180) / Math.PI).toFixed(0)}° pitch ${((s.pitch * 180) / Math.PI).toFixed(0)}°`;
     },
   });
   return _fly3dRenderer;
@@ -58,26 +58,26 @@ function getBobShader() {
   if (!wgl) return null;
   _bobShaderRenderer = createBobShaderRenderer({
     canvas: wgl,
-    twoPass: true,              // ← autoscope 2-pass FBO 沙画（跟 autoscope-clone 同款）
+    twoPass: true, // ← autoscope 2-pass FBO 沙画（跟 autoscope-clone 同款）
     bufferResolution: 320,
     getControls: () => ({
       lightAzim: +$('bob-light-azim').value,
-      lightAlt:  +$('bob-light-alt').value,
-      lightDist: 6,  // BOB 模式光源距离固定（autoscope 没暴露 dist slider）
-      fov:        +$('bob-focal').value,
-      coldiv:     +$('bob-coldiv').value,
+      lightAlt: +$('bob-light-alt').value,
+      lightDist: 6, // BOB 模式光源距离固定（autoscope 没暴露 dist slider）
+      fov: +$('bob-focal').value,
+      coldiv: +$('bob-coldiv').value,
       coloration: +$('bob-coloration').value,
       shadowMode: +$('bob-shadow-mode').value,
       shadowStrength: +$('bob-shadow-strength').value,
-      shadowsOn:  $('bob-shadows').checked,
-      groundOn:   $('bob-ground').checked,
+      shadowsOn: $('bob-shadows').checked,
+      groundOn: $('bob-ground').checked,
       noiseSpeed: +$('bob-noise').value,
-      exposure:   +$('bob-exposure').value,
+      exposure: +$('bob-exposure').value,
       saturation: +$('bob-saturation').value,
-      worldScale: 8.0,  // MVP: LLM ~0.5-unit SDF → 8.0 给 spaceCol 量化补偿。autoscope-clone 用 0.5（10-unit SDF）
+      worldScale: 8.0, // MVP: LLM ~0.5-unit SDF → 8.0 给 spaceCol 量化补偿。autoscope-clone 用 0.5（10-unit SDF）
       // Post-process（沙画 noise）—— 跟 autoscope-clone 同款
-      postNoise:    +$('bob-post-noise').value,
-      postNFactor:  1.0,
+      postNoise: +$('bob-post-noise').value,
+      postNFactor: 1.0,
       postNoiseCap: 0.5,
     }),
     onFps: (fps) => {
@@ -86,8 +86,8 @@ function getBobShader() {
     },
     onCamUpdate: (s) => {
       const r = $('bob-readout');
-      if (r) r.textContent =
-        `pos: ${s.position.map(x => x.toFixed(2)).join(' ')} · yaw ${(s.yaw*180/Math.PI).toFixed(0)}° pitch ${(s.pitch*180/Math.PI).toFixed(0)}°`;
+      if (r)
+        r.textContent = `pos: ${s.position.map((x) => x.toFixed(2)).join(' ')} · yaw ${((s.yaw * 180) / Math.PI).toFixed(0)}° pitch ${((s.pitch * 180) / Math.PI).toFixed(0)}°`;
     },
     onPaletteChange: (sample) => {
       // sample = { palette1, palette2, paper, sky1, sky2 }
@@ -114,14 +114,10 @@ function getBobShader() {
 
 const hexToRgb = (hex) => {
   const h = hex.replace('#', '');
-  return [
-    parseInt(h.slice(0, 2), 16),
-    parseInt(h.slice(2, 4), 16),
-    parseInt(h.slice(4, 6), 16),
-  ];
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 };
 
-const BOB_PIGMENTS_RGB   = bobPalette.PIGMENTS.map(hexToRgb);
+const BOB_PIGMENTS_RGB = bobPalette.PIGMENTS.map(hexToRgb);
 const BOB_PIGMENTS_2_RGB = bobPalette.PIGMENTS_2.map(hexToRgb);
 
 // Fidenza schemes 在 tyler.js 是 weighted random factory（fg/bg → 单 HSB 三元组）
@@ -131,7 +127,7 @@ function bakeFidenzaPalettes(samplesPerScheme = 60, topK = 12, seed = 42) {
   function mulberry32(s) {
     s = s | 0;
     return () => {
-      s = (s + 0x6D2B79F5) | 0;
+      s = (s + 0x6d2b79f5) | 0;
       let t = s;
       t = Math.imul(t ^ (t >>> 15), t | 1);
       t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -146,7 +142,7 @@ function bakeFidenzaPalettes(samplesPerScheme = 60, topK = 12, seed = 42) {
       const seen = new Map();
       for (let i = 0; i < samplesPerScheme; i++) {
         const hsb = fg();
-        const rgb = tyler.hsbToRgb(hsb).map(v => Math.round(v));
+        const rgb = tyler.hsbToRgb(hsb).map((v) => Math.round(v));
         const key = rgb.join(',');
         seen.set(key, (seen.get(key) || 0) + 1);
       }
@@ -167,9 +163,13 @@ const FIDENZA_PALETTES = bakeFidenzaPalettes();
 // 色源表：key 给 select option 用，每条记录 palette + palette2 + 显示名
 const COLOR_SOURCES = {
   llm: { name: 'LLM 颜色 (默认 HSL 展开)', palette: null, palette2: null },
-  'bob:1':    { name: 'BOB Set 1 (12 色 偏暖)', palette: BOB_PIGMENTS_RGB,   palette2: null },
-  'bob:2':    { name: 'BOB Set 2 (11 色 偏冷)', palette: BOB_PIGMENTS_2_RGB, palette2: null },
-  'bob:both': { name: 'BOB 双套交替 (BOB 原版)', palette: BOB_PIGMENTS_RGB,  palette2: BOB_PIGMENTS_2_RGB },
+  'bob:1': { name: 'BOB Set 1 (12 色 偏暖)', palette: BOB_PIGMENTS_RGB, palette2: null },
+  'bob:2': { name: 'BOB Set 2 (11 色 偏冷)', palette: BOB_PIGMENTS_2_RGB, palette2: null },
+  'bob:both': {
+    name: 'BOB 双套交替 (BOB 原版)',
+    palette: BOB_PIGMENTS_RGB,
+    palette2: BOB_PIGMENTS_2_RGB,
+  },
 };
 
 // Fidenza schemes 全部加进去
@@ -204,14 +204,16 @@ function applyArrangement(layers, nx, ny, view, padding = 0) {
   // 3D 场景跳过 arrangement：2D 的 scale([sx,sy]) / translate([ox,oy]) 应用到 SDF3
   // 会让 z 分量变 NaN，整个 SDF 不可用。3D arrangement 留作未来扩展。
   if (layers.length > 0 && layers[0].sdf instanceof SDF3) {
-    if (Nx > 1 || Ny > 1) console.warn('[arrangement] 3D 场景暂不支持 NxN tile，已跳过 arrangement');
+    if (Nx > 1 || Ny > 1)
+      console.warn('[arrangement] 3D 场景暂不支持 NxN tile，已跳过 arrangement');
     return layers;
   }
-  const sx = 1 / Nx, sy = 1 / Ny;
-  const px = Nx > 1 ? 2 * view / Nx : 100 * view;  // huge period = effective no-rep
-  const py = Ny > 1 ? 2 * view / Ny : 100 * view;
-  const ox = (Nx > 1 && Nx % 2 === 0) ? px / 2 : 0;
-  const oy = (Ny > 1 && Ny % 2 === 0) ? py / 2 : 0;
+  const sx = 1 / Nx,
+    sy = 1 / Ny;
+  const px = Nx > 1 ? (2 * view) / Nx : 100 * view; // huge period = effective no-rep
+  const py = Ny > 1 ? (2 * view) / Ny : 100 * view;
+  const ox = Nx > 1 && Nx % 2 === 0 ? px / 2 : 0;
+  const oy = Ny > 1 && Ny % 2 === 0 ? py / 2 : 0;
   const opts = padding > 0 ? { padding } : undefined;
   return layers.map(({ sdf, color }) => ({
     sdf: sdf.scale([sx, sy]).rep([px, py], opts).translate([ox, oy]),
@@ -236,8 +238,10 @@ function buildSubjectMaskFn(layers, yaw, pitch, cameraDist) {
   if (!layers || layers.length === 0) return null;
   // ⚠ 静态 import 不能在函数里 await，假定 raymarch3 / SDF3 已经 import 到模块顶部
   // 这里用 sniff 方式：layer.sdf 是 SDF3 实例 → raymarch；否则 → 2D inside-test
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
   const inverseRotate = (p) => {
     const x = p[0] * cy - p[2] * sy;
     const z0 = p[0] * sy + p[2] * cy;
@@ -313,7 +317,7 @@ function drawBackgroundPattern(ctx, view, flipY, layers = null) {
     lineWidth: 0.5,
     background: '#fdf9f6',
     maskFn,
-    maskInvert: true,  // pattern 只在 subject 之外
+    maskInvert: true, // pattern 只在 subject 之外
   };
   if (patternMode === 'truchet') {
     render.truchet(ctx, { ...common, cellSize: density, densityField });
@@ -333,7 +337,16 @@ window.__renderDispatch = (ctx, layers, options) => {
   const view = options.view ?? 1.2;
   const flipY = options.flipY ?? true;
   const padding = parseInt($('p-rep-padding')?.value || '0');
-  console.log('[dispatch] mode =', mode, '| layers =', layers.length, '| view =', view, '| arrangement =', nx + 'x' + ny);
+  console.log(
+    '[dispatch] mode =',
+    mode,
+    '| layers =',
+    layers.length,
+    '| view =',
+    view,
+    '| arrangement =',
+    nx + 'x' + ny,
+  );
 
   const arrLayers = applyArrangement(layers, nx, ny, view, padding);
 
@@ -349,22 +362,28 @@ window.__renderDispatch = (ctx, layers, options) => {
     render.bobStipple(ctx, arrLayers, {
       ...subjectOptions,
       ...readStippleParams(),
-      colorPalette:  source.palette,
+      colorPalette: source.palette,
       colorPalette2: source.palette2,
       // pattern 模式下关 stippleBackground —— 否则 stipple 会用白色把 pattern 反覆盖
       ...(patternPainted ? { stippleBackground: false } : {}),
     });
   } else if (mode === 'hatch') {
-    const toCss = (c) => Array.isArray(c)
-      ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`
-      : (c || '#fdf9f6');
+    const toCss = (c) =>
+      Array.isArray(c) ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})` : c || '#fdf9f6';
     const bg = subjectOptions.background;
     // patternPainted 时 bg=null → hatch 跳过 fillRect，保留底纹；否则按原 bg 处理
-    const bgStr = bg === null ? null
-      : Array.isArray(bg) ? toCss(bg)
-      : (bg && bg.top ? toCss(bg.top) : (bg || '#fdf9f6'));
+    const bgStr =
+      bg === null
+        ? null
+        : Array.isArray(bg)
+          ? toCss(bg)
+          : bg && bg.top
+            ? toCss(bg.top)
+            : bg || '#fdf9f6';
     const hatchLayers = arrLayers.map(({ sdf, color, ...rest }) => ({
-      sdf, color: toCss(color), ...rest,
+      sdf,
+      color: toCss(color),
+      ...rest,
     }));
     render.hatch(ctx, hatchLayers, {
       view,
@@ -373,24 +392,36 @@ window.__renderDispatch = (ctx, layers, options) => {
     });
   } else if (mode === 'raymarched') {
     // Lambert 不支持透明合成——pattern 会被覆盖；warn 用户
-    if (patternPainted) console.warn('[dispatch] Lambert + background pattern: pattern is overwritten (Lambert fills opaque)');
+    if (patternPainted)
+      console.warn(
+        '[dispatch] Lambert + background pattern: pattern is overwritten (Lambert fills opaque)',
+      );
     render.raymarched(ctx, arrLayers, options);
   } else if (mode === 'fly3d') {
     // Fly 3D = GPU shader Lambert + pointer-lock fly cam。layers[0].sdf 直接送
     // compiler；arrangement / pattern 都不支持（GPU 全填 + 没 rep AST compile）
-    if (patternPainted) console.warn('[dispatch] Fly 3D + pattern: GPU shader fills opaque, pattern overwritten');
+    if (patternPainted)
+      console.warn('[dispatch] Fly 3D + pattern: GPU shader fills opaque, pattern overwritten');
     const fly = getFly3D();
-    if (!fly) { $('status').textContent = '⚠ Fly 3D: WebGL not available'; return; }
-    if (!layers.length || !layers[0]?.sdf) { $('status').textContent = '⚠ Fly 3D: no SDF in scene'; return; }
+    if (!fly) {
+      $('status').textContent = '⚠ Fly 3D: WebGL not available';
+      return;
+    }
+    if (!layers.length || !layers[0]?.sdf) {
+      $('status').textContent = '⚠ Fly 3D: no SDF in scene';
+      return;
+    }
     const baseSdf = layers[0].sdf;
     const check = fly.canRender(baseSdf);
     if (!check.ok) {
-      $('status').textContent = `⚠ Fly 3D 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持，留 v1）`;
+      $('status').textContent =
+        `⚠ Fly 3D 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持，留 v1）`;
       return;
     }
     try {
       const { bytes } = fly.render(baseSdf);
-      $('status').textContent = `✓ Fly 3D · GPU shader ${(bytes / 1024).toFixed(1)}KB · 点击 canvas 进 WASD fly mode`;
+      $('status').textContent =
+        `✓ Fly 3D · GPU shader ${(bytes / 1024).toFixed(1)}KB · 点击 canvas 进 WASD fly mode`;
     } catch (e) {
       $('status').textContent = `✗ Fly 3D shader error: ${e.message}`;
       console.error('[fly3d]', e);
@@ -398,14 +429,22 @@ window.__renderDispatch = (ctx, layers, options) => {
   } else if (mode === 'bob-shader') {
     // BOB GPU = Autoscope-style 量化色块 + 时间漂移噪声 + imin object-index。
     // 跟 Fly 3D 共享 #c-webgl canvas，互斥 mount/unmount。
-    if (patternPainted) console.warn('[dispatch] BOB GPU + pattern: GPU shader fills opaque, pattern overwritten');
+    if (patternPainted)
+      console.warn('[dispatch] BOB GPU + pattern: GPU shader fills opaque, pattern overwritten');
     const bob = getBobShader();
-    if (!bob) { $('status').textContent = '⚠ BOB GPU: WebGL not available'; return; }
-    if (!layers.length || !layers[0]?.sdf) { $('status').textContent = '⚠ BOB GPU: no SDF in scene'; return; }
+    if (!bob) {
+      $('status').textContent = '⚠ BOB GPU: WebGL not available';
+      return;
+    }
+    if (!layers.length || !layers[0]?.sdf) {
+      $('status').textContent = '⚠ BOB GPU: no SDF in scene';
+      return;
+    }
     const baseSdf = layers[0].sdf;
     const check = bob.canRender(baseSdf);
     if (!check.ok) {
-      $('status').textContent = `⚠ BOB GPU 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持）`;
+      $('status').textContent =
+        `⚠ BOB GPU 不能编译：${check.error}（含 extrude/revolve/rep 的 SDF 暂不支持）`;
       return;
     }
     // 调试：递归 flatten union 算总 leaf 数（=spaceCol 的 objNum 多样性上限）
@@ -419,15 +458,20 @@ window.__renderDispatch = (ctx, layers, options) => {
     const ast = baseSdf.ast;
     const leafCount = countLeaves(baseSdf);
     if (ast?.kind === 'op' && ast.name === 'union') {
-      console.log(`[bob-shader] flattened to ${leafCount} leaves (top union: ${ast.children.length} direct + nested recursed)`);
+      console.log(
+        `[bob-shader] flattened to ${leafCount} leaves (top union: ${ast.children.length} direct + nested recursed)`,
+      );
     } else if (leafCount > 1) {
       console.log(`[bob-shader] top is '${ast?.name}' but ${leafCount} leaves found by recursion`);
     } else {
-      console.warn(`[bob-shader] only 1 leaf (top='${ast?.name ?? ast?.kind}') → reduced color variety. LLM should wrap scene as union(...) of named parts.`);
+      console.warn(
+        `[bob-shader] only 1 leaf (top='${ast?.name ?? ast?.kind}') → reduced color variety. LLM should wrap scene as union(...) of named parts.`,
+      );
     }
     try {
       const { bytes } = bob.render(baseSdf);
-      $('status').textContent = `✓ BOB GPU · GPU shader ${(bytes / 1024).toFixed(1)}KB · Autoscope-style · 🎨 Shuffle 换调色板`;
+      $('status').textContent =
+        `✓ BOB GPU · GPU shader ${(bytes / 1024).toFixed(1)}KB · Autoscope-style · 🎨 Shuffle 换调色板`;
     } catch (e) {
       $('status').textContent = `✗ BOB GPU shader error: ${e.message}`;
       console.error('[bob-shader]', e);
@@ -472,10 +516,10 @@ function injectRenderModeHint(userPrompt) {
   const mode = $('render-mode')?.value || 'silhouette';
   const hints = {
     silhouette: `[Renderer: Silhouette — flat-color filled regions, smoothstep 1-px AA. Accepts SDF2 (per-pixel inside-test) OR SDF3 (raymarch hit → flat color projected silhouette). Choose SDF dim by subject: flat editorial / icon / emoji → SDF2; physical 3D forms (vase / cup / column / dice / volumetric thing) → SDF3.]`,
-    stipple:    `[Renderer: Stipple (BOB 点彩) — multi-layer brush stipple, painterly register (Lotta / Bonnard / 后印象派). Accepts SDF2 (standard 2D inside-test) OR SDF3 (per-cell raymarch probe → Lambert intensity modulates brush density: dark = dense stipple, bright = sparse). Choose SDF dim by subject — both modes work, SDF3 produces volumetric shading via stipple density.]`,
-    hatch:      `[Renderer: Lines (Pasma 流线 hatching) — contour-following evenly-spaced streamlines (Piter Pasma / generative plotter aesthetic). Accepts SDF2 (lines follow 2D contour, gradient-perp field) OR SDF3 (auto-detects → Pasma 3D rayhatching: lines wrap around the surface following projected tangents, true "缠绕表面" effect). Choose SDF dim by subject. Color = line stroke. NO dilate outline.]`,
+    stipple: `[Renderer: Stipple (BOB 点彩) — multi-layer brush stipple, painterly register (Lotta / Bonnard / 后印象派). Accepts SDF2 (standard 2D inside-test) OR SDF3 (per-cell raymarch probe → Lambert intensity modulates brush density: dark = dense stipple, bright = sparse). Choose SDF dim by subject — both modes work, SDF3 produces volumetric shading via stipple density.]`,
+    hatch: `[Renderer: Lines (Pasma 流线 hatching) — contour-following evenly-spaced streamlines (Piter Pasma / generative plotter aesthetic). Accepts SDF2 (lines follow 2D contour, gradient-perp field) OR SDF3 (auto-detects → Pasma 3D rayhatching: lines wrap around the surface following projected tangents, true "缠绕表面" effect). Choose SDF dim by subject. Color = line stroke. NO dilate outline.]`,
     raymarched: `[Renderer: Lambert (Raymarched) — orthographic raymarched 3D with diffuse shading. REQUIRES SDF3 — use extrude / revolve / native 3D primitives (sphere/box/cylinder/torus/cone/etc.) / twist / bend / elongate. Single SDF3 + single color recommended. NO dilate outline.]`,
-    fly3d:      `[Renderer: Fly 3D (Shader Lambert, GPU) — WebGL fragment shader raymarcher with pointer-lock fly camera (WASD + mouse). REQUIRES SDF3 — supports native primitives (sphere/box/cylinder/torus/capsule/capped_cone/cone/ellipsoid/rounded_box/tetrahedron/octahedron/dodecahedron/icosahedron/pyramid/wireframe_box) + transforms (translate/scale/rotate) + boolean (union/intersection/difference incl. smooth_k) + twist/bend/shell/dilate/erode/blend/negate. DOES NOT YET support extrude / revolve / rep (CPU fallback only) — prefer native 3D primitives + Boolean composition over 2D-upgrade ops. Single composed SDF3.]`,
+    fly3d: `[Renderer: Fly 3D (Shader Lambert, GPU) — WebGL fragment shader raymarcher with pointer-lock fly camera (WASD + mouse). REQUIRES SDF3 — supports native primitives (sphere/box/cylinder/torus/capsule/capped_cone/cone/ellipsoid/rounded_box/tetrahedron/octahedron/dodecahedron/icosahedron/pyramid/wireframe_box) + transforms (translate/scale/rotate) + boolean (union/intersection/difference incl. smooth_k) + twist/bend/shell/dilate/erode/blend/negate. DOES NOT YET support extrude / revolve / rep (CPU fallback only) — prefer native 3D primitives + Boolean composition over 2D-upgrade ops. Single composed SDF3.]`,
     'bob-shader': `[Renderer: BOB GPU (Autoscope-style) — WebGL shader with Autoscope-style quantized palette coloring + time-animated drifting noise + per-object color separation via imin. REQUIRES SDF3 (same compile path as Fly 3D). **CRUCIAL**: structure the scene as a top-level union(...) of multiple distinct primitives — each child gets a unique object index → distinct color block, producing BOB-like 多色震颤. AVOID single monolithic SDF (collapses to one color). PREFER 3-10 named parts via union. Smooth-union k=0.05~0.15 keeps geometry organic. Supports: native 3D primitives + transforms + boolean + twist/bend/shell/dilate/erode/blend/negate. NO extrude / revolve / rep.]`,
   };
   const hint = hints[mode];
@@ -615,7 +659,10 @@ $('generate').addEventListener('click', run);
 // Re-render manually (after user edits generated code)
 $('rerender').addEventListener('click', async () => {
   const code = $('code-output').value;
-  if (!code.trim()) { $('status').textContent = '✗ 没代码可渲染'; return; }
+  if (!code.trim()) {
+    $('status').textContent = '✗ 没代码可渲染';
+    return;
+  }
   $('status').textContent = '重新渲染…';
   try {
     await renderCode(code);
@@ -627,10 +674,10 @@ $('rerender').addEventListener('click', async () => {
 });
 
 // Keyboard shortcuts
-$('prompt').addEventListener('keydown', e => {
+$('prompt').addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') run();
 });
-$('code-output').addEventListener('keydown', e => {
+$('code-output').addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') $('rerender').click();
 });
 
@@ -655,8 +702,8 @@ function initArrangement() {
   const nxInput = $('p-nx');
   const nyInput = $('p-ny');
   const padSlider = $('p-rep-padding');
-  if (nxInput)   nxInput.value   = stored('sdf-mvp-nx', '1');
-  if (nyInput)   nyInput.value   = stored('sdf-mvp-ny', '1');
+  if (nxInput) nxInput.value = stored('sdf-mvp-nx', '1');
+  if (nyInput) nyInput.value = stored('sdf-mvp-ny', '1');
   if (padSlider) padSlider.value = stored('sdf-mvp-rep-padding', '0');
   const padVal = $('p-rep-padding-val');
   if (padVal) padVal.textContent = padSlider?.value || '0';
@@ -672,13 +719,13 @@ function initArrangement() {
       }, 250);
     });
   };
-  handle(nxInput,   null,   'sdf-mvp-nx',          'X');
-  handle(nyInput,   null,   'sdf-mvp-ny',          'Y');
+  handle(nxInput, null, 'sdf-mvp-nx', 'X');
+  handle(nyInput, null, 'sdf-mvp-ny', 'Y');
   handle(padSlider, padVal, 'sdf-mvp-rep-padding', 'Tile padding');
 }
 
 // Example prompts
-document.querySelectorAll('[data-example]').forEach(btn => {
+document.querySelectorAll('[data-example]').forEach((btn) => {
   btn.addEventListener('click', () => {
     $('prompt').value = btn.dataset.example;
   });
@@ -716,7 +763,7 @@ function addToHistory(prompt, code, model) {
 }
 
 function deleteFromHistory(id) {
-  saveHistory(loadHistory().filter(e => e.id !== id));
+  saveHistory(loadHistory().filter((e) => e.id !== id));
   renderHistoryList();
 }
 
@@ -728,7 +775,9 @@ function clearHistory() {
 
 function formatTime(ts) {
   const diff = Date.now() - ts;
-  const min = 60 * 1000, hour = 60 * min, day = 24 * hour;
+  const min = 60 * 1000,
+    hour = 60 * min,
+    day = 24 * hour;
   if (diff < min) return '刚刚';
   if (diff < hour) return `${Math.floor(diff / min)}分前`;
   if (diff < day) return `${Math.floor(diff / hour)}小时前`;
@@ -737,9 +786,17 @@ function formatTime(ts) {
 }
 
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
+  return String(s).replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[c],
+  );
 }
 
 function renderHistoryList() {
@@ -750,18 +807,20 @@ function renderHistoryList() {
     el.innerHTML = '<div class="history-empty">还没有历史 — 生成后自动保存</div>';
     return;
   }
-  el.innerHTML = history.map(entry => {
-    const short = entry.prompt.length > 60 ? entry.prompt.slice(0, 60) + '…' : entry.prompt;
-    return `<div class="history-item">
+  el.innerHTML = history
+    .map((entry) => {
+      const short = entry.prompt.length > 60 ? entry.prompt.slice(0, 60) + '…' : entry.prompt;
+      return `<div class="history-item">
       <span class="history-prompt" data-load="${entry.id}" title="${escapeHtml(entry.prompt)}">${escapeHtml(short)}</span>
       <span class="history-time">${formatTime(entry.timestamp)}</span>
       <button class="history-del" data-del="${entry.id}" title="删除">×</button>
     </div>`;
-  }).join('');
-  el.querySelectorAll('[data-load]').forEach(elem => {
+    })
+    .join('');
+  el.querySelectorAll('[data-load]').forEach((elem) => {
     elem.addEventListener('click', () => loadHistoryEntry(parseInt(elem.dataset.load)));
   });
-  el.querySelectorAll('[data-del]').forEach(elem => {
+  el.querySelectorAll('[data-del]').forEach((elem) => {
     elem.addEventListener('click', (e) => {
       e.stopPropagation();
       deleteFromHistory(parseInt(elem.dataset.del));
@@ -770,11 +829,12 @@ function renderHistoryList() {
 }
 
 async function loadHistoryEntry(id) {
-  const entry = loadHistory().find(e => e.id === id);
+  const entry = loadHistory().find((e) => e.id === id);
   if (!entry) return;
   $('prompt').value = entry.prompt;
   $('code-output').value = entry.code;
-  $('code-stats').textContent = `loaded from history · ${new Date(entry.timestamp).toLocaleString()}`;
+  $('code-stats').textContent =
+    `loaded from history · ${new Date(entry.timestamp).toLocaleString()}`;
   $('status').textContent = `加载历史: "${entry.prompt.slice(0, 30)}…", 渲染中…`;
   $('status').style.color = '#444';
   try {
@@ -795,25 +855,69 @@ $('history-clear')?.addEventListener('click', clearHistory);
 const STIPPLE_PARAMS_KEY = 'sdf-mvp-stipple-params';
 
 const STIPPLE_DEFAULTS = {
-  brushLayers: 5, gap: 0.75, smallOffset: 4, smallSegs: 5,
-  smallScaleSize: 3, noiseScale: 0.04, rH: 0.6, rV: 0, seed: 42,
-  colorSpread: 0, complementWeight: 0.5,
+  brushLayers: 5,
+  gap: 0.75,
+  smallOffset: 4,
+  smallSegs: 5,
+  smallScaleSize: 3,
+  noiseScale: 0.04,
+  rH: 0.6,
+  rV: 0,
+  seed: 42,
+  colorSpread: 0,
+  complementWeight: 0.5,
 };
 
 // Preset 起步点（每个 preset 也指定 colorSource）
 // preset 应用时同时把 color-source select 切到对应值
 const STIPPLE_PRESETS = {
   // 水彩点彩：LLM 颜色 + HSL 展开。用户 2026-05-14 验证的参数（5 层 / smallSegs=3 圆点 / rH=1.4 强横向 weave）
-  watercolor:  { brushLayers: 5,  gap: 0.9,  smallOffset: 2,   smallSegs: 3, smallScaleSize: 2, noiseScale: 0.035, rH: 1.4, rV: 0, seed: 42, colorSpread: 0.6, complementWeight: 0.4,
-                 colorSource: 'llm' },
+  watercolor: {
+    brushLayers: 5,
+    gap: 0.9,
+    smallOffset: 2,
+    smallSegs: 3,
+    smallScaleSize: 2,
+    noiseScale: 0.035,
+    rH: 1.4,
+    rV: 0,
+    seed: 42,
+    colorSpread: 0.6,
+    complementWeight: 0.4,
+    colorSource: 'llm',
+  },
   // BOB 经典：BOB 双套 pigments + BOB 原版 4px cell + 可见 weave（无 HSL 展开）
   // BOB painted.js 默认 smallScaleSize=2 → 4px cell，是 BOB 视觉的关键
-  bob:         { brushLayers: 5,  gap: 0.75, smallOffset: 2,   smallSegs: 5, smallScaleSize: 2, noiseScale: 0.04, rH: 0.6, rV: 0,  seed: 42, colorSpread: 0,   complementWeight: 0.5,
-                 colorSource: 'bob:both' },
+  bob: {
+    brushLayers: 5,
+    gap: 0.75,
+    smallOffset: 2,
+    smallSegs: 5,
+    smallScaleSize: 2,
+    noiseScale: 0.04,
+    rH: 0.6,
+    rV: 0,
+    seed: 42,
+    colorSpread: 0,
+    complementWeight: 0.5,
+    colorSource: 'bob:both',
+  },
   // Fidenza-BOB：Fidenza rad palette + 用户 2026-05-14 验证的 BOB-style 调参
   // （3 层笔触 + 大笔触 1.0 + 中等抖动 + smallSegs=3 圆点 + rH/rV 偏移制造 weave）
-  fidenzaBob:  { brushLayers: 3,  gap: 1.0,  smallOffset: 2,   smallSegs: 3, smallScaleSize: 2, noiseScale: 0.035, rH: 1.1, rV: -0.4, seed: 42, colorSpread: 0, complementWeight: 0.5,
-                 colorSource: 'fidenza:rad' },
+  fidenzaBob: {
+    brushLayers: 3,
+    gap: 1.0,
+    smallOffset: 2,
+    smallSegs: 3,
+    smallScaleSize: 2,
+    noiseScale: 0.035,
+    rH: 1.1,
+    rV: -0.4,
+    seed: 42,
+    colorSpread: 0,
+    complementWeight: 0.5,
+    colorSource: 'fidenza:rad',
+  },
 };
 
 function loadStippleParams() {
@@ -836,16 +940,16 @@ function readStippleParams() {
     return el ? parse(el.value) : STIPPLE_DEFAULTS[id.replace(/^p-/, '')];
   };
   return {
-    brushLayers:      get('p-brushLayers',      parseInt),
-    gap:              get('p-gap'),
-    smallOffset:      get('p-smallOffset'),
-    smallSegs:        get('p-smallSegs',        parseInt),
-    smallScaleSize:   get('p-smallScaleSize',   parseInt),
-    noiseScale:       get('p-noiseScale'),
-    rH:               get('p-rH'),
-    rV:               get('p-rV'),
-    seed:             get('p-seed',             parseInt),
-    colorSpread:      get('p-colorSpread'),
+    brushLayers: get('p-brushLayers', parseInt),
+    gap: get('p-gap'),
+    smallOffset: get('p-smallOffset'),
+    smallSegs: get('p-smallSegs', parseInt),
+    smallScaleSize: get('p-smallScaleSize', parseInt),
+    noiseScale: get('p-noiseScale'),
+    rH: get('p-rH'),
+    rV: get('p-rV'),
+    seed: get('p-seed', parseInt),
+    colorSpread: get('p-colorSpread'),
     complementWeight: get('p-complementWeight'),
   };
 }
@@ -890,26 +994,29 @@ function populateColorSourceDropdown() {
   const sel = $('color-source');
   if (!sel) return;
   // BOB group + Fidenza group via optgroup
-  const bobOpts = [], fidenzaOpts = [], llmOpt = [];
+  const bobOpts = [],
+    fidenzaOpts = [],
+    llmOpt = [];
   for (const [key, src] of Object.entries(COLOR_SOURCES)) {
     const o = document.createElement('option');
-    o.value = key; o.textContent = src.name;
+    o.value = key;
+    o.textContent = src.name;
     if (key === 'llm') llmOpt.push(o);
     else if (key.startsWith('bob:')) bobOpts.push(o);
     else if (key.startsWith('fidenza:')) fidenzaOpts.push(o);
   }
   sel.innerHTML = '';
-  llmOpt.forEach(o => sel.appendChild(o));
+  llmOpt.forEach((o) => sel.appendChild(o));
   if (bobOpts.length) {
     const og = document.createElement('optgroup');
     og.label = 'BOB pigments';
-    bobOpts.forEach(o => og.appendChild(o));
+    bobOpts.forEach((o) => og.appendChild(o));
     sel.appendChild(og);
   }
   if (fidenzaOpts.length) {
     const og = document.createElement('optgroup');
     og.label = 'Fidenza schemes (Tyler Hobbs)';
-    fidenzaOpts.forEach(o => og.appendChild(o));
+    fidenzaOpts.forEach((o) => og.appendChild(o));
     sel.appendChild(og);
   }
   // Restore from localStorage
@@ -929,7 +1036,8 @@ function updateColorSwatchesAndLabel() {
   if (!swatchesEl) return;
   if (!source || !source.palette) {
     // LLM: 显示渐变 placeholder（LLM 颜色不是固定 palette）
-    swatchesEl.innerHTML = '<div class="qql-swatch" style="background: linear-gradient(90deg, #4a6fa5, #a55a89, #6e9a4e, #c4a850, #8a4e7e); flex: 1;"></div>';
+    swatchesEl.innerHTML =
+      '<div class="qql-swatch" style="background: linear-gradient(90deg, #4a6fa5, #a55a89, #6e9a4e, #c4a850, #8a4e7e); flex: 1;"></div>';
     return;
   }
   // 合并 palette + palette2（如有），取前 12 色
@@ -937,7 +1045,10 @@ function updateColorSwatchesAndLabel() {
     ? [...source.palette.slice(0, 6), ...source.palette2.slice(0, 6)]
     : source.palette.slice(0, 12);
   swatchesEl.innerHTML = combined
-    .map(c => `<div class="qql-swatch" style="background: rgb(${c[0]|0},${c[1]|0},${c[2]|0});"></div>`)
+    .map(
+      (c) =>
+        `<div class="qql-swatch" style="background: rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0});"></div>`,
+    )
     .join('');
 }
 
@@ -947,7 +1058,7 @@ function initStippleParams() {
   updateColorSwatchesAndLabel();
 
   // Slider change handlers
-  document.querySelectorAll('#stipple-params input[type="range"]').forEach(slider => {
+  document.querySelectorAll('#stipple-params input[type="range"]').forEach((slider) => {
     slider.addEventListener('input', () => {
       const valSpan = $(`${slider.id}-val`);
       if (valSpan) valSpan.textContent = slider.value;
@@ -964,12 +1075,14 @@ function initStippleParams() {
   });
 
   // Preset pill buttons (QQL-style)
-  document.querySelectorAll('#preset-pills [data-preset]').forEach(btn => {
+  document.querySelectorAll('#preset-pills [data-preset]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const preset = STIPPLE_PRESETS[btn.dataset.preset];
       if (!preset) return;
       // 更新 active state
-      document.querySelectorAll('#preset-pills .qql-pill').forEach(b => b.classList.remove('active'));
+      document
+        .querySelectorAll('#preset-pills .qql-pill')
+        .forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       // 更新 preset label
       const labelEl = $('preset-label');
@@ -1013,22 +1126,27 @@ function initRenderModePills() {
   }
   // 同步 pill 状态到 select 当前值
   const sync = () => {
-    document.querySelectorAll('#render-mode-pills .qql-pill').forEach(b => {
+    document.querySelectorAll('#render-mode-pills .qql-pill').forEach((b) => {
       b.classList.toggle('active', b.dataset.renderMode === select.value);
     });
     if (labelEl) {
       labelEl.textContent =
-        select.value === 'stipple'    ? 'Stipple (BOB)' :
-        select.value === 'hatch'      ? 'Lines (Pasma)' :
-        select.value === 'raymarched' ? 'Lambert (Raymarched)' :
-        select.value === 'fly3d'      ? 'Fly 3D (Shader Lambert)' :
-        select.value === 'bob-shader' ? 'BOB GPU (Autoscope)' :
-                                        'Silhouette';
+        select.value === 'stipple'
+          ? 'Stipple (BOB)'
+          : select.value === 'hatch'
+            ? 'Lines (Pasma)'
+            : select.value === 'raymarched'
+              ? 'Lambert (Raymarched)'
+              : select.value === 'fly3d'
+                ? 'Fly 3D (Shader Lambert)'
+                : select.value === 'bob-shader'
+                  ? 'BOB GPU (Autoscope)'
+                  : 'Silhouette';
     }
   };
   sync();
   // Pill click → 更新 select + dispatch change
-  document.querySelectorAll('#render-mode-pills [data-render-mode]').forEach(btn => {
+  document.querySelectorAll('#render-mode-pills [data-render-mode]').forEach((btn) => {
     btn.addEventListener('click', () => {
       select.value = btn.dataset.renderMode;
       localStorage.setItem('sdf-mvp-render-mode', btn.dataset.renderMode);
@@ -1067,20 +1185,20 @@ function updatePatternCardVisibility() {
 // 时 → 显示 webgl canvas；切到其它 mode → 隐藏 webgl canvas + unmount 两个 controller。
 function updateWebGLCanvasVisibility() {
   const mode = $('render-mode')?.value;
-  const isFly3D    = mode === 'fly3d';
-  const isBobGPU   = mode === 'bob-shader';
-  const isWebGL    = isFly3D || isBobGPU;
+  const isFly3D = mode === 'fly3d';
+  const isBobGPU = mode === 'bob-shader';
+  const isWebGL = isFly3D || isBobGPU;
   const c2d = $('c');
   const cwgl = $('c-webgl');
   const flyCard = $('fly3d-card');
   const bobCard = $('bob-shader-card');
-  if (c2d)  c2d.style.display  = isWebGL ? 'none' : '';
+  if (c2d) c2d.style.display = isWebGL ? 'none' : '';
   if (cwgl) cwgl.style.display = isWebGL ? '' : 'none';
-  if (flyCard) flyCard.style.display = isFly3D  ? '' : 'none';
+  if (flyCard) flyCard.style.display = isFly3D ? '' : 'none';
   if (bobCard) bobCard.style.display = isBobGPU ? '' : 'none';
   // 互斥：进 BOB GPU 时 unmount fly3d，反之亦然
-  if (!isFly3D  && _fly3dRenderer)      _fly3dRenderer.unmount();
-  if (!isBobGPU && _bobShaderRenderer)  _bobShaderRenderer.unmount();
+  if (!isFly3D && _fly3dRenderer) _fly3dRenderer.unmount();
+  if (!isBobGPU && _bobShaderRenderer) _bobShaderRenderer.unmount();
 }
 // 保留旧名兼容
 const updateFly3DVisibility = updateWebGLCanvasVisibility;
@@ -1107,15 +1225,14 @@ async function exportCurrentHatchAsSvg() {
   const arrLayers = applyArrangement(layers, nx, ny, view, padding);
 
   // hatch.js 期望 color 是 CSS 字符串；layers 里可能是 [r,g,b] 数组
-  const toCss = (c) => Array.isArray(c)
-    ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`
-    : (c || '#1a1a1a');
+  const toCss = (c) =>
+    Array.isArray(c) ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})` : c || '#1a1a1a';
   const bg = options.background;
-  const bgStr = Array.isArray(bg)
-    ? toCss(bg)
-    : (bg && bg.top ? toCss(bg.top) : (bg || '#fdf9f6'));
+  const bgStr = Array.isArray(bg) ? toCss(bg) : bg && bg.top ? toCss(bg.top) : bg || '#fdf9f6';
   const svgLayers = arrLayers.map(({ sdf, color, ...rest }) => ({
-    sdf, color: toCss(color), ...rest,
+    sdf,
+    color: toCss(color),
+    ...rest,
   }));
 
   const canvas = document.getElementById('c');
@@ -1132,7 +1249,11 @@ async function exportCurrentHatchAsSvg() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  const promptText = $('prompt')?.value?.trim().slice(0, 40).replace(/[^a-zA-Z0-9_-]+/g, '-') || 'hatch';
+  const promptText =
+    $('prompt')
+      ?.value?.trim()
+      .slice(0, 40)
+      .replace(/[^a-zA-Z0-9_-]+/g, '-') || 'hatch';
   a.download = `sdf-hatch-${promptText}-${Date.now()}.svg`;
   document.body.appendChild(a);
   a.click();
@@ -1156,7 +1277,7 @@ function initPatternPills() {
   if (stored && validModes.includes(stored)) select.value = stored;
 
   const sync = () => {
-    document.querySelectorAll('#pattern-mode-pills .qql-pill').forEach(b => {
+    document.querySelectorAll('#pattern-mode-pills .qql-pill').forEach((b) => {
       b.classList.toggle('active', b.dataset.patternMode === select.value);
     });
     const labels = { none: 'None', truchet: 'Truchet', gosper: 'Gosper', motifs: 'Motifs' };
@@ -1168,19 +1289,19 @@ function initPatternPills() {
     const showTruchetOnly = select.value === 'truchet';
     const showCurveOnly = select.value === 'gosper';
     const showMotifsOnly = select.value === 'motifs';
-    document.querySelectorAll('.pattern-truchet-only').forEach(el => {
+    document.querySelectorAll('.pattern-truchet-only').forEach((el) => {
       el.style.display = showTruchetOnly ? '' : 'none';
     });
-    document.querySelectorAll('.pattern-curve-only').forEach(el => {
+    document.querySelectorAll('.pattern-curve-only').forEach((el) => {
       el.style.display = showCurveOnly ? '' : 'none';
     });
-    document.querySelectorAll('.pattern-motifs-only').forEach(el => {
+    document.querySelectorAll('.pattern-motifs-only').forEach((el) => {
       el.style.display = showMotifsOnly ? '' : 'none';
     });
   };
   sync();
 
-  document.querySelectorAll('#pattern-mode-pills [data-pattern-mode]').forEach(btn => {
+  document.querySelectorAll('#pattern-mode-pills [data-pattern-mode]').forEach((btn) => {
     btn.addEventListener('click', () => {
       select.value = btn.dataset.patternMode;
       localStorage.setItem('sdf-mvp-pattern-mode', btn.dataset.patternMode);
@@ -1195,7 +1316,13 @@ $('pattern-mode')?.addEventListener('change', () => {
 });
 
 // Pattern 参数 slider 实时重渲（debounced）
-['p-pattern-density', 'p-pattern-depth', 'p-pattern-variation', 'p-pattern-band-size', 'p-pattern-bands'].forEach(id => {
+[
+  'p-pattern-density',
+  'p-pattern-depth',
+  'p-pattern-variation',
+  'p-pattern-band-size',
+  'p-pattern-bands',
+].forEach((id) => {
   const slider = $(id);
   if (!slider) return;
   const valEl = $(`${id}-val`);
@@ -1215,7 +1342,9 @@ function initFly3DControls() {
     const s = $(id);
     const v = $(id + '-val');
     if (!s) return;
-    const update = () => { if (v) v.textContent = (+s.value).toFixed(2); };
+    const update = () => {
+      if (v) v.textContent = (+s.value).toFixed(2);
+    };
     s.addEventListener('input', update);
     update();
   };
@@ -1238,7 +1367,7 @@ function initBobShaderControls() {
     update();
   };
   wireSlider('bob-coldiv', 2);
-  wireSlider('bob-noise', 5);   // 0.00008 这种小数得 5 位
+  wireSlider('bob-noise', 5); // 0.00008 这种小数得 5 位
   wireSlider('bob-post-noise', 2);
   wireSlider('bob-light-azim', 2);
   wireSlider('bob-light-alt', 2);

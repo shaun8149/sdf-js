@@ -26,35 +26,43 @@ function encodeEndpoint(x, y, xmin, ymin, xmax, ymax) {
  * accept=false 表示线段完全在外部，不应画。
  */
 export function clipLine(x0, y0, x1, y1, clipX, clipY, clipW, clipH) {
-  const xmin = clipX, ymin = clipY;
-  const xmax = clipX + clipW, ymax = clipY + clipH;
+  const xmin = clipX,
+    ymin = clipY;
+  const xmax = clipX + clipW,
+    ymax = clipY + clipH;
   let e0 = encodeEndpoint(x0, y0, xmin, ymin, xmax, ymax);
   let e1 = encodeEndpoint(x1, y1, xmin, ymin, xmax, ymax);
 
   while (true) {
     if (e0 === 0 && e1 === 0) return [x0, y0, x1, y1, true];
-    if ((e0 & e1) !== 0)       return [x0, y0, x1, y1, false];
+    if ((e0 & e1) !== 0) return [x0, y0, x1, y1, false];
 
     const code = e0 !== 0 ? e0 : e1;
     let nx, ny;
-    if (code & 1) {                    // 左外
+    if (code & 1) {
+      // 左外
       nx = xmin;
       ny = ((y1 - y0) / (x1 - x0)) * (nx - x0) + y0;
-    } else if (code & 2) {             // 右外
+    } else if (code & 2) {
+      // 右外
       nx = xmax;
       ny = ((y1 - y0) / (x1 - x0)) * (nx - x0) + y0;
-    } else if (code & 8) {             // 下外
+    } else if (code & 8) {
+      // 下外
       ny = ymax;
       nx = ((x1 - x0) / (y1 - y0)) * (ny - y0) + x0;
-    } else if (code & 4) {             // 上外
+    } else if (code & 4) {
+      // 上外
       ny = ymin;
       nx = ((x1 - x0) / (y1 - y0)) * (ny - y0) + x0;
     }
     if (code === e0) {
-      x0 = nx; y0 = ny;
+      x0 = nx;
+      y0 = ny;
       e0 = encodeEndpoint(x0, y0, xmin, ymin, xmax, ymax);
     } else {
-      x1 = nx; y1 = ny;
+      x1 = nx;
+      y1 = ny;
       e1 = encodeEndpoint(x1, y1, xmin, ymin, xmax, ymax);
     }
   }
@@ -88,39 +96,49 @@ export function drawLineSquare(ctx, x, y, w, step, angle) {
   }
 
   // 基准线方程：y = slope * x + c，过方块中心
-  const cx = x + w / 2, cy = y + w / 2;
+  const cx = x + w / 2,
+    cy = y + w / 2;
   const c = cy - slope * cx;
   // 线在 x 方向上的延伸（让端点足够远，确保能被裁剪算法处理）
   const xLeft = x - w / 2;
   const xRight = x + w + w / 2;
 
   let i = 0;
-  let upOk = true, downOk = true;
+  let upOk = true,
+    downOk = true;
   while (upOk || downOk) {
-    const offset = i * step / cosA;
+    const offset = (i * step) / cosA;
 
     // 中心线（i=0 时上下重合）只画一次
     if (upOk) {
-      const x0 = xLeft, x1 = xRight;
+      const x0 = xLeft,
+        x1 = xRight;
       const y0 = slope * x0 + c + offset;
       const y1 = slope * x1 + c + offset;
       const [a, b, e, f, ok] = clipLine(x0, y0, x1, y1, x, y, w, w);
       if (ok) {
-        ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(e, f); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(a, b);
+        ctx.lineTo(e, f);
+        ctx.stroke();
       }
       upOk = ok;
     }
     if (downOk && i > 0) {
-      const x0 = xLeft, x1 = xRight;
+      const x0 = xLeft,
+        x1 = xRight;
       const y0 = slope * x0 + c - offset;
       const y1 = slope * x1 + c - offset;
       const [a, b, e, f, ok] = clipLine(x0, y0, x1, y1, x, y, w, w);
       if (ok) {
-        ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(e, f); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(a, b);
+        ctx.lineTo(e, f);
+        ctx.stroke();
       }
       downOk = ok;
     }
     i++;
-    if (i > 10000) break;  // safety
+    if (i > 10000) break; // safety
   }
 }

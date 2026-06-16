@@ -28,7 +28,9 @@ const PI = Math.PI;
 
 let _idCounter = 0;
 
-export function resetIdCounter() { _idCounter = 0; }
+export function resetIdCounter() {
+  _idCounter = 0;
+}
 
 function nextId(prefix) {
   return `${prefix}-${++_idCounter}`;
@@ -305,9 +307,7 @@ export function cutouts(loc, offsets, w, h, rot1 = 0, rot2 = 0) {
 export function tree1(loc, height, opts = {}) {
   const { breathe = true } = opts;
   const trunkR = mul(height, 0.02);
-  const crownR = breathe
-    ? add(mul(height, 0.5), sinT(0.075, 1, 0))
-    : mul(height, 0.5);
+  const crownR = breathe ? add(mul(height, 0.5), sinT(0.075, 1, 0)) : mul(height, 0.5);
   return {
     id: nextId('tree1'),
     type: 'union',
@@ -333,9 +333,7 @@ export function tree1(loc, height, opts = {}) {
 export function tree2(loc, height, opts = {}) {
   const { breathe = true } = opts;
   const trunkR = mul(height, 0.015);
-  const crownR = breathe
-    ? add(mul(height, 0.15), sinT(0.04, 1 / 1.5, 0))
-    : mul(height, 0.15);
+  const crownR = breathe ? add(mul(height, 0.15), sinT(0.04, 1 / 1.5, 0)) : mul(height, 0.15);
   return {
     id: nextId('tree2'),
     type: 'union',

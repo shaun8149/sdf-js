@@ -14,14 +14,16 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.minorR=0.1]          minor radius (tube thickness)
  */
 export function cappedTorusSDF({ capAngle = Math.PI / 2, majorR = 0.4, minorR = 0.1 } = {}) {
-  const sinA = Math.sin(capAngle), cosA = Math.cos(capAngle);
-  const ra = majorR, rb = minorR;
+  const sinA = Math.sin(capAngle),
+    cosA = Math.cos(capAngle);
+  const ra = majorR,
+    rb = minorR;
   const inst = SDF3((p) => {
     const px = Math.abs(p[0]);
     const py = p[1];
     const pz = p[2];
     const dotPxy = px * sinA + py * cosA;
-    const k = (cosA * px > sinA * py) ? dotPxy : Math.sqrt(px * px + py * py);
+    const k = cosA * px > sinA * py ? dotPxy : Math.sqrt(px * px + py * py);
     return Math.sqrt(px * px + py * py + pz * pz + ra * ra - 2 * ra * k) - rb;
   });
   inst.ast = { kind: 'prim', name: 'capped-torus', args: [capAngle, majorR, minorR] };
@@ -33,14 +35,14 @@ export const cappedTorusSpec = {
   category: 'primitive',
   args: {
     capAngle: { type: 'number', default: Math.PI / 2 },
-    majorR:   { type: 'number', default: 0.4 },
-    minorR:   { type: 'number', default: 0.1 },
+    majorR: { type: 'number', default: 0.4 },
+    minorR: { type: 'number', default: 0.1 },
   },
   source: {
-    portedFrom:     'https://iquilezles.org/articles/distfunctions/',
+    portedFrom: 'https://iquilezles.org/articles/distfunctions/',
     originalAuthor: 'Inigo Quilez',
-    license:        'MIT (canonical IQ SDF article)',
-    portedAt:       '2026-05-18',
-    porter:         'Atlas /port-shader batch port',
+    license: 'MIT (canonical IQ SDF article)',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader batch port',
   },
 };

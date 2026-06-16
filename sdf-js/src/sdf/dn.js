@@ -16,9 +16,12 @@ const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
 // 把"最后一个参数若是 {k}"切出来；剩下的都视为 SDF2/SDF3
 const splitOpts = (rest) => {
-  if (rest.length && typeof rest[rest.length - 1] === 'object' &&
-      !(rest[rest.length - 1] instanceof SDF2) &&
-      !(rest[rest.length - 1] instanceof SDF3)) {
+  if (
+    rest.length &&
+    typeof rest[rest.length - 1] === 'object' &&
+    !(rest[rest.length - 1] instanceof SDF2) &&
+    !(rest[rest.length - 1] instanceof SDF3)
+  ) {
     return [rest.slice(0, -1), rest[rest.length - 1]];
   }
   return [rest, {}];
@@ -41,8 +44,8 @@ export const union = defineOpN('union', (a, ...rest) => {
       if (K === null) {
         d1 = Math.min(d1, d2);
       } else {
-        const h = clamp01(0.5 + 0.5 * (d2 - d1) / K);
-        d1 = (d2 + (d1 - d2) * h) - K * h * (1 - h);
+        const h = clamp01(0.5 + (0.5 * (d2 - d1)) / K);
+        d1 = d2 + (d1 - d2) * h - K * h * (1 - h);
       }
     }
     return d1;
@@ -59,8 +62,8 @@ export const difference = defineOpN('difference', (a, ...rest) => {
       if (K === null) {
         d1 = Math.max(d1, -d2);
       } else {
-        const h = clamp01(0.5 - 0.5 * (d2 + d1) / K);
-        d1 = (d1 + (-d2 - d1) * h) + K * h * (1 - h);
+        const h = clamp01(0.5 - (0.5 * (d2 + d1)) / K);
+        d1 = d1 + (-d2 - d1) * h + K * h * (1 - h);
       }
     }
     return d1;
@@ -77,8 +80,8 @@ export const intersection = defineOpN('intersection', (a, ...rest) => {
       if (K === null) {
         d1 = Math.max(d1, d2);
       } else {
-        const h = clamp01(0.5 - 0.5 * (d2 - d1) / K);
-        d1 = (d2 + (d1 - d2) * h) + K * h * (1 - h);
+        const h = clamp01(0.5 - (0.5 * (d2 - d1)) / K);
+        d1 = d2 + (d1 - d2) * h + K * h * (1 - h);
       }
     }
     return d1;
@@ -98,7 +101,7 @@ export const intersection = defineOpN('intersection', (a, ...rest) => {
 // nest the operations: unionChamfer(a, unionRound(b, c, {r: 0.02}), {r: 0.1}).
 // =============================================================================
 
-const SQRT_HALF = Math.SQRT1_2;  // 0.70710678 — chamfer diagonal scaling
+const SQRT_HALF = Math.SQRT1_2; // 0.70710678 — chamfer diagonal scaling
 
 // chamfer = 45° flat between two surfaces
 const _opChamferUnion = (a, b, r) => Math.min(Math.min(a, b), (a + b - r) * SQRT_HALF);
@@ -107,39 +110,55 @@ const _opChamferDifference = (a, b, r) => _opChamferIntersect(a, -b, r);
 
 // round = quarter-circle bevel
 const _opRoundUnion = (a, b, r) => {
-  const ux = Math.max(r - a, 0), uy = Math.max(r - b, 0);
+  const ux = Math.max(r - a, 0),
+    uy = Math.max(r - b, 0);
   return Math.max(r, Math.min(a, b)) - Math.hypot(ux, uy);
 };
 const _opRoundIntersect = (a, b, r) => {
-  const ux = Math.max(r + a, 0), uy = Math.max(r + b, 0);
+  const ux = Math.max(r + a, 0),
+    uy = Math.max(r + b, 0);
   return Math.min(-r, Math.max(a, b)) + Math.hypot(ux, uy);
 };
 const _opRoundDifference = (a, b, r) => _opRoundIntersect(a, -b, r);
 
 // Generic left-fold builder. opFn = (acc, d, ...args) → newAcc
-const _makeVariant = (opFn, defaults) => (a, ...rest) => {
-  const [bs, opts] = splitOpts(rest);
-  const r = opts.r ?? defaults.r ?? 0.05;
-  return (p) => {
-    let d1 = a.f(p);
-    for (const b of bs) {
-      d1 = opFn(d1, b.f(p), r);
-    }
-    return d1;
+const _makeVariant =
+  (opFn, defaults) =>
+  (a, ...rest) => {
+    const [bs, opts] = splitOpts(rest);
+    const r = opts.r ?? defaults.r ?? 0.05;
+    return (p) => {
+      let d1 = a.f(p);
+      for (const b of bs) {
+        d1 = opFn(d1, b.f(p), r);
+      }
+      return d1;
+    };
   };
-};
 
-export const unionChamfer        = defineOpN('unionChamfer',        _makeVariant(_opChamferUnion,        { r: 0.05 }));
-export const intersectionChamfer = defineOpN('intersectionChamfer', _makeVariant(_opChamferIntersect,    { r: 0.05 }));
-export const differenceChamfer   = defineOpN('differenceChamfer',   _makeVariant(_opChamferDifference,   { r: 0.05 }));
-export const unionRound          = defineOpN('unionRound',          _makeVariant(_opRoundUnion,          { r: 0.05 }));
-export const intersectionRound   = defineOpN('intersectionRound',   _makeVariant(_opRoundIntersect,      { r: 0.05 }));
-export const differenceRound     = defineOpN('differenceRound',     _makeVariant(_opRoundDifference,     { r: 0.05 }));
+export const unionChamfer = defineOpN('unionChamfer', _makeVariant(_opChamferUnion, { r: 0.05 }));
+export const intersectionChamfer = defineOpN(
+  'intersectionChamfer',
+  _makeVariant(_opChamferIntersect, { r: 0.05 }),
+);
+export const differenceChamfer = defineOpN(
+  'differenceChamfer',
+  _makeVariant(_opChamferDifference, { r: 0.05 }),
+);
+export const unionRound = defineOpN('unionRound', _makeVariant(_opRoundUnion, { r: 0.05 }));
+export const intersectionRound = defineOpN(
+  'intersectionRound',
+  _makeVariant(_opRoundIntersect, { r: 0.05 }),
+);
+export const differenceRound = defineOpN(
+  'differenceRound',
+  _makeVariant(_opRoundDifference, { r: 0.05 }),
+);
 
 // Soft = cubic-polynomial smooth join (different formula than opSmoothUnion)
 const _opSoftUnion = (a, b, r) => {
   const e = Math.max(r - Math.abs(a - b), 0);
-  return Math.min(a, b) - e * e * 0.25 / r;
+  return Math.min(a, b) - (e * e * 0.25) / r;
 };
 
 // Stairs — N stair steps at join boundary. Takes (r, n).
@@ -157,7 +176,7 @@ const _pR45 = (x, y) => [(x + y) * Math.SQRT1_2, (y - x) * Math.SQRT1_2];
 const _opColumnsUnion = (a, b, r, n) => {
   if (a < r && b < r) {
     let [px, py] = _pR45(a, b);
-    const cr = r * Math.SQRT2 / ((n - 1) * 2 + Math.SQRT2);
+    const cr = (r * Math.SQRT2) / ((n - 1) * 2 + Math.SQRT2);
     px -= Math.SQRT1_2 * r;
     px += cr * Math.SQRT2;
     if (n % 2 === 1) py += cr;
@@ -174,7 +193,7 @@ const _opColumnsDifference = (a0, b, r, n) => {
   const m = Math.min(aa, b);
   if (aa < r && b < r) {
     let [px, py] = _pR45(aa, b);
-    const cr = r * Math.SQRT2 / n * 0.5;
+    const cr = ((r * Math.SQRT2) / n) * 0.5;
     px -= Math.SQRT1_2 * r;
     px += cr * Math.SQRT2;
     if (n % 2 === 1) py += cr;
@@ -190,26 +209,46 @@ const _opColumnsDifference = (a0, b, r, n) => {
 const _opColumnsIntersect = (a, b, r, n) => _opColumnsDifference(a, -b, r, n);
 
 // Two-arg variant builder (r + n). Soft uses r only but n is harmless extra.
-const _makeVariant2 = (opFn, defaults) => (a, ...rest) => {
-  const [bs, opts] = splitOpts(rest);
-  const r = opts.r ?? defaults.r ?? 0.1;
-  const n = opts.n ?? defaults.n ?? 3;
-  return (p) => {
-    let d1 = a.f(p);
-    for (const b of bs) {
-      d1 = opFn(d1, b.f(p), r, n);
-    }
-    return d1;
+const _makeVariant2 =
+  (opFn, defaults) =>
+  (a, ...rest) => {
+    const [bs, opts] = splitOpts(rest);
+    const r = opts.r ?? defaults.r ?? 0.1;
+    const n = opts.n ?? defaults.n ?? 3;
+    return (p) => {
+      let d1 = a.f(p);
+      for (const b of bs) {
+        d1 = opFn(d1, b.f(p), r, n);
+      }
+      return d1;
+    };
   };
-};
 
-export const unionSoft         = defineOpN('unionSoft',         _makeVariant(_opSoftUnion,         { r: 0.1 }));
-export const unionStairs       = defineOpN('unionStairs',       _makeVariant2(_opStairsUnion,      { r: 0.1, n: 3 }));
-export const intersectionStairs= defineOpN('intersectionStairs',_makeVariant2(_opStairsIntersect,  { r: 0.1, n: 3 }));
-export const differenceStairs  = defineOpN('differenceStairs',  _makeVariant2(_opStairsDifference, { r: 0.1, n: 3 }));
-export const unionColumns      = defineOpN('unionColumns',      _makeVariant2(_opColumnsUnion,     { r: 0.1, n: 3 }));
-export const intersectionColumns=defineOpN('intersectionColumns',_makeVariant2(_opColumnsIntersect, { r: 0.1, n: 3 }));
-export const differenceColumns = defineOpN('differenceColumns', _makeVariant2(_opColumnsDifference,{ r: 0.1, n: 3 }));
+export const unionSoft = defineOpN('unionSoft', _makeVariant(_opSoftUnion, { r: 0.1 }));
+export const unionStairs = defineOpN(
+  'unionStairs',
+  _makeVariant2(_opStairsUnion, { r: 0.1, n: 3 }),
+);
+export const intersectionStairs = defineOpN(
+  'intersectionStairs',
+  _makeVariant2(_opStairsIntersect, { r: 0.1, n: 3 }),
+);
+export const differenceStairs = defineOpN(
+  'differenceStairs',
+  _makeVariant2(_opStairsDifference, { r: 0.1, n: 3 }),
+);
+export const unionColumns = defineOpN(
+  'unionColumns',
+  _makeVariant2(_opColumnsUnion, { r: 0.1, n: 3 }),
+);
+export const intersectionColumns = defineOpN(
+  'intersectionColumns',
+  _makeVariant2(_opColumnsIntersect, { r: 0.1, n: 3 }),
+);
+export const differenceColumns = defineOpN(
+  'differenceColumns',
+  _makeVariant2(_opColumnsDifference, { r: 0.1, n: 3 }),
+);
 
 // =============================================================================
 // hg_sdf surface modifications — asymmetric (host A, modifier B) pairs
@@ -218,35 +257,41 @@ export const differenceColumns = defineOpN('differenceColumns', _makeVariant2(_o
 // and the modifier curve/line. Not commutative — order matters.
 // =============================================================================
 
-const _opPipe    = (a, b, r) => Math.hypot(a, b) - r;
+const _opPipe = (a, b, r) => Math.hypot(a, b) - r;
 const _opEngrave = (a, b, r) => Math.max(a, (a + r - Math.abs(b)) * Math.SQRT1_2);
-const _opGroove  = (a, b, ra, rb) => Math.max(a, Math.min(a + ra, rb - Math.abs(b)));
-const _opTongue  = (a, b, ra, rb) => Math.min(a, Math.max(a - ra, Math.abs(b) - rb));
+const _opGroove = (a, b, ra, rb) => Math.max(a, Math.min(a + ra, rb - Math.abs(b)));
+const _opTongue = (a, b, ra, rb) => Math.min(a, Math.max(a - ra, Math.abs(b) - rb));
 
 // Build a 2-child op (host, modifier) that takes either {r} or {ra, rb}.
 // argKeys lists what to pull from opts (e.g. ['r'] or ['ra', 'rb']).
-const _makePair = (opFn, argKeys, defaults) => (a, ...rest) => {
-  const [bs, opts] = splitOpts(rest);
-  if (bs.length !== 1) {
-    throw new Error(`expected exactly 2 SDFs (host + modifier), got ${1 + bs.length}`);
-  }
-  const args = argKeys.map(k => opts[k] ?? defaults[k]);
-  const b = bs[0];
-  return (p) => opFn(a.f(p), b.f(p), ...args);
-};
+const _makePair =
+  (opFn, argKeys, defaults) =>
+  (a, ...rest) => {
+    const [bs, opts] = splitOpts(rest);
+    if (bs.length !== 1) {
+      throw new Error(`expected exactly 2 SDFs (host + modifier), got ${1 + bs.length}`);
+    }
+    const args = argKeys.map((k) => opts[k] ?? defaults[k]);
+    const b = bs[0];
+    return (p) => opFn(a.f(p), b.f(p), ...args);
+  };
 
-export const pipe    = defineOpN('pipe',    _makePair(_opPipe,    ['r'],        { r: 0.05 }));
-export const engrave = defineOpN('engrave', _makePair(_opEngrave, ['r'],        { r: 0.05 }));
-export const groove  = defineOpN('groove',  _makePair(_opGroove,  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }));
-export const tongue  = defineOpN('tongue',  _makePair(_opTongue,  ['ra', 'rb'], { ra: 0.05, rb: 0.02 }));
+export const pipe = defineOpN('pipe', _makePair(_opPipe, ['r'], { r: 0.05 }));
+export const engrave = defineOpN('engrave', _makePair(_opEngrave, ['r'], { r: 0.05 }));
+export const groove = defineOpN(
+  'groove',
+  _makePair(_opGroove, ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
+);
+export const tongue = defineOpN(
+  'tongue',
+  _makePair(_opTongue, ['ra', 'rb'], { ra: 0.05, rb: 0.02 }),
+);
 
 export const negate = defineOpN('negate', (a) => (p) => -a.f(p));
 
 export const dilate = defineOpN('dilate', (a, r) => (p) => a.f(p) - r);
 export const erode = defineOpN('erode', (a, r) => (p) => a.f(p) + r);
-export const shell = defineOpN('shell', (a, thickness) =>
-  (p) => Math.abs(a.f(p)) - thickness / 2,
-);
+export const shell = defineOpN('shell', (a, thickness) => (p) => Math.abs(a.f(p)) - thickness / 2);
 
 /**
  * 域重复（domain repetition / pMod）：把每个轴 fold 到 [-P/2, +P/2] 后再 evaluate a。
@@ -269,7 +314,7 @@ export const shell = defineOpN('shell', (a, thickness) =>
 export const rep = defineOpN('rep', (a, period, options = {}) => {
   const { count = null, padding = 0 } = options;
   // 0 = 该轴不重复（substitute 1e6 让 mod 退化为 identity；跟 GLSL rep3 一致）
-  const getP   = (i) => {
+  const getP = (i) => {
     const val = Array.isArray(period) ? (period[i] ?? period[0]) : period;
     return val === 0 ? 1e6 : val;
   };
@@ -277,8 +322,8 @@ export const rep = defineOpN('rep', (a, period, options = {}) => {
     if (count === null) return null;
     return Array.isArray(count) ? (count[i] ?? count[0]) : count;
   };
-  const getPad = (i) => Array.isArray(padding) ? (padding[i] ?? padding[0]) : padding;
-  const padIsZero = (Array.isArray(padding) ? padding.every(v => v === 0) : padding === 0);
+  const getPad = (i) => (Array.isArray(padding) ? (padding[i] ?? padding[0]) : padding);
+  const padIsZero = Array.isArray(padding) ? padding.every((v) => v === 0) : padding === 0;
 
   return (p) => {
     const dim = p.length;
@@ -302,8 +347,10 @@ export const rep = defineOpN('rep', (a, period, options = {}) => {
     // padding 通路：邻居 (2*pad+1)^dim 个 tile 求 min
     let best = Infinity;
     if (dim === 2) {
-      const pad0 = getPad(0), pad1 = getPad(1);
-      const P0 = getP(0), P1 = getP(1);
+      const pad0 = getPad(0),
+        pad1 = getPad(1);
+      const P0 = getP(0),
+        P1 = getP(1);
       for (let n0 = -pad0; n0 <= pad0; n0++) {
         for (let n1 = -pad1; n1 <= pad1; n1++) {
           const d = a.f([p[0] - P0 * (idx[0] + n0), p[1] - P1 * (idx[1] + n1)]);
@@ -311,8 +358,12 @@ export const rep = defineOpN('rep', (a, period, options = {}) => {
         }
       }
     } else if (dim === 3) {
-      const pad0 = getPad(0), pad1 = getPad(1), pad2 = getPad(2);
-      const P0 = getP(0), P1 = getP(1), P2 = getP(2);
+      const pad0 = getPad(0),
+        pad1 = getPad(1),
+        pad2 = getPad(2);
+      const P0 = getP(0),
+        P1 = getP(1),
+        P2 = getP(2);
       for (let n0 = -pad0; n0 <= pad0; n0++) {
         for (let n1 = -pad1; n1 <= pad1; n1++) {
           for (let n2 = -pad2; n2 <= pad2; n2++) {
@@ -393,7 +444,7 @@ export const blend = defineOpN('blend', (a, ...rest) => {
     let d1 = a.f(p);
     for (const b of bs) {
       const d2 = b.f(p);
-      const K = (opts.k != null) ? opts.k : (b._k != null ? b._k : defaultK);
+      const K = opts.k != null ? opts.k : b._k != null ? b._k : defaultK;
       d1 = K * d2 + (1 - K) * d1;
     }
     return d1;
@@ -435,56 +486,77 @@ export const displace = defineOpN('displace', (a, b) => (p) => a.f(p) + b.f(p));
 // =============================================================================
 
 // Helper for left-fold smooth-union with a custom smin function.
-const _makeSminVariant = (sminFn, defaultR) => (a, ...rest) => {
-  const [bs, opts] = splitOpts(rest);
-  const r0 = opts.r ?? defaultR;
-  return (p) => {
-    let acc = a.f(p);
-    for (const b of bs) {
-      const r = b._k != null ? b._k : r0;
-      acc = sminFn(acc, b.f(p), r);
-    }
-    return acc;
+const _makeSminVariant =
+  (sminFn, defaultR) =>
+  (a, ...rest) => {
+    const [bs, opts] = splitOpts(rest);
+    const r0 = opts.r ?? defaultR;
+    return (p) => {
+      let acc = a.f(p);
+      for (const b of bs) {
+        const r = b._k != null ? b._k : r0;
+        acc = sminFn(acc, b.f(p), r);
+      }
+      return acc;
+    };
   };
-};
 
 // Exponential smin — non-rigid, generalizes to N values.
-export const unionExp = defineOpN('unionExp', _makeSminVariant((a, b, k) => {
-  k *= 1.0;
-  return -k * Math.log2(Math.pow(2, -a / k) + Math.pow(2, -b / k));
-}, 0.1));
+export const unionExp = defineOpN(
+  'unionExp',
+  _makeSminVariant((a, b, k) => {
+    k *= 1.0;
+    return -k * Math.log2(Math.pow(2, -a / k) + Math.pow(2, -b / k));
+  }, 0.1),
+);
 
 // Root smin — DD family, asymptotic, non-rigid.
-export const unionRoot = defineOpN('unionRoot', _makeSminVariant((a, b, k) => {
-  k *= 2.0;
-  const x = b - a;
-  return 0.5 * (a + b - Math.sqrt(x * x + k * k));
-}, 0.1));
+export const unionRoot = defineOpN(
+  'unionRoot',
+  _makeSminVariant((a, b, k) => {
+    k *= 2.0;
+    const x = b - a;
+    return 0.5 * (a + b - Math.sqrt(x * x + k * k));
+  }, 0.1),
+);
 
 // Cubic polynomial smin — C2 smoothness, locally supported, rigid.
-export const unionCubic = defineOpN('unionCubic', _makeSminVariant((a, b, k) => {
-  k *= 6.0;
-  const h = Math.max(k - Math.abs(a - b), 0) / k;
-  return Math.min(a, b) - h * h * h * k * (1 / 6);
-}, 0.1));
+export const unionCubic = defineOpN(
+  'unionCubic',
+  _makeSminVariant((a, b, k) => {
+    k *= 6.0;
+    const h = Math.max(k - Math.abs(a - b), 0) / k;
+    return Math.min(a, b) - h * h * h * k * (1 / 6);
+  }, 0.1),
+);
 
 // Quartic polynomial smin — higher-order continuity.
-export const unionQuartic = defineOpN('unionQuartic', _makeSminVariant((a, b, k) => {
-  k *= 16 / 3;
-  const h = Math.max(k - Math.abs(a - b), 0) / k;
-  return Math.min(a, b) - h * h * h * (4 - h) * k * (1 / 16);
-}, 0.1));
+export const unionQuartic = defineOpN(
+  'unionQuartic',
+  _makeSminVariant((a, b, k) => {
+    k *= 16 / 3;
+    const h = Math.max(k - Math.abs(a - b), 0) / k;
+    return Math.min(a, b) - h * h * h * (4 - h) * k * (1 / 16);
+  }, 0.1),
+);
 
 // Circular smin — exact-circular fillet profile.
-export const unionCircular = defineOpN('unionCircular', _makeSminVariant((a, b, k) => {
-  k *= 1 / (1 - Math.sqrt(0.5));
-  const h = Math.max(k - Math.abs(a - b), 0) / k;
-  return Math.min(a, b) - k * 0.5 * (1 + h - Math.sqrt(1 - h * (h - 2)));
-}, 0.1));
+export const unionCircular = defineOpN(
+  'unionCircular',
+  _makeSminVariant((a, b, k) => {
+    k *= 1 / (1 - Math.sqrt(0.5));
+    const h = Math.max(k - Math.abs(a - b), 0) / k;
+    return Math.min(a, b) - k * 0.5 * (1 + h - Math.sqrt(1 - h * (h - 2)));
+  }, 0.1),
+);
 
 // Circular geometrical smin — locally supported, rigid, slight over-estimate.
-export const unionCircGeo = defineOpN('unionCircGeo', _makeSminVariant((a, b, k) => {
-  k *= 1 / (1 - Math.sqrt(0.5));
-  const dx = Math.max(k - a, 0), dy = Math.max(k - b, 0);
-  return Math.max(k, Math.min(a, b)) - Math.sqrt(dx * dx + dy * dy);
-}, 0.1));
+export const unionCircGeo = defineOpN(
+  'unionCircGeo',
+  _makeSminVariant((a, b, k) => {
+    k *= 1 / (1 - Math.sqrt(0.5));
+    const dx = Math.max(k - a, 0),
+      dy = Math.max(k - b, 0);
+    return Math.max(k, Math.min(a, b)) - Math.sqrt(dx * dx + dy * dy);
+  }, 0.1),
+);

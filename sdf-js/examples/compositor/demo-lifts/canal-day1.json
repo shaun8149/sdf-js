@@ -15,7 +15,7 @@
       {
         "id": "right-bank-shell",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "rb-rep",
           "type": "rep",
@@ -33,7 +33,7 @@
       {
         "id": "right-bank-lights",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "rb-lights-rep",
           "type": "rep",
@@ -42,7 +42,14 @@
           "source": {
             "id": "rb-lights",
             "type": "canal-windows",
-            "args": { "width": 2.2, "height": 4.5, "winX": 5, "winY": 7, "density": 0.55, "seed": 7.3 },
+            "args": {
+              "width": 2.2,
+              "height": 4.5,
+              "winX": 5,
+              "winY": 7,
+              "density": 0.55,
+              "seed": 7.3
+            },
             "transform": { "translate": [6, 0, 0] },
             "material": { "hue": 0.13, "sat": 0.7, "value": 1.0, "metal": 0, "glow": 1.5 }
           }
@@ -51,7 +58,7 @@
       {
         "id": "left-bank-shell",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "lb-rep",
           "type": "rep",
@@ -69,7 +76,7 @@
       {
         "id": "left-bank-lights",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "lb-lights-rep",
           "type": "rep",
@@ -78,16 +85,23 @@
           "source": {
             "id": "lb-lights",
             "type": "canal-windows",
-            "args": { "width": 2.2, "height": 5.0, "winX": 5, "winY": 8, "density": 0.5, "seed": 31.7 },
+            "args": {
+              "width": 2.2,
+              "height": 5.0,
+              "winX": 5,
+              "winY": 8,
+              "density": 0.5,
+              "seed": 31.7
+            },
             "transform": { "translate": [-6, 0, 0] },
-            "material": { "hue": 0.10, "sat": 0.75, "value": 1.0, "metal": 0, "glow": 1.5 }
+            "material": { "hue": 0.1, "sat": 0.75, "value": 1.0, "metal": 0, "glow": 1.5 }
           }
         }
       },
       {
         "id": "bridge-near",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "br-near",
           "type": "canal-bridge",
@@ -99,7 +113,7 @@
       {
         "id": "bridge-far",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "br-far",
           "type": "canal-bridge",
@@ -111,7 +125,7 @@
       {
         "id": "right-embankment",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "re-box",
           "type": "box",
@@ -123,7 +137,7 @@
       {
         "id": "left-embankment",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "le-box",
           "type": "box",
@@ -135,7 +149,7 @@
       {
         "id": "right-poles",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "rp-rep",
           "type": "rep",
@@ -153,7 +167,7 @@
       {
         "id": "right-bulbs",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "rblb-rep",
           "type": "rep",
@@ -171,7 +185,7 @@
       {
         "id": "left-poles",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "lp-rep",
           "type": "rep",
@@ -189,7 +203,7 @@
       {
         "id": "left-bulbs",
         "type": "curve",
-        "args": { "amplitude": 4, "frequency": 0.10, "axis": "z" },
+        "args": { "amplitude": 4, "frequency": 0.1, "axis": "z" },
         "source": {
           "id": "lblb-rep",
           "type": "rep",
@@ -214,11 +228,19 @@
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": 0, "pitch": 0.08, "distance": 25, "focal": 1.5,
-        "targetX": 0, "targetY": 2.5, "targetZ": 22
+        "yaw": 0,
+        "pitch": 0.08,
+        "distance": 25,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 2.5,
+        "targetZ": 22
       },
       "light": {
-        "azimuth": 0.6, "altitude": 0.12, "distance": 40, "intensity": 1.0
+        "azimuth": 0.6,
+        "altitude": 0.12,
+        "distance": 40,
+        "intensity": 1.0
       },
       "shadow": { "enabled": false, "mode": "channelSwap", "strength": 0 }
     }

@@ -8,7 +8,7 @@
 export const ORIGIN = [0, 0];
 export const X = [1, 0];
 export const Y = [0, 1];
-export const UP = Y;          // 2D 上方向是 +Y（与 BOB 一致）
+export const UP = Y; // 2D 上方向是 +Y（与 BOB 一致）
 
 export const add = (a, b) => [a[0] + b[0], a[1] + b[1]];
 export const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
@@ -30,17 +30,14 @@ export const normalize = (a) => {
 };
 
 // 标量自动展成 [s, s]
-export const asVec2 = (v) =>
-  typeof v === 'number' ? [v, v] : [v[0], v[1]];
+export const asVec2 = (v) => (typeof v === 'number' ? [v, v] : [v[0], v[1]]);
 
 // 2x2 矩阵以行主序展开为 [m00, m01, m10, m11]
-export const matMul = (m, v) => [
-  m[0] * v[0] + m[1] * v[1],
-  m[2] * v[0] + m[3] * v[1],
-];
+export const matMul = (m, v) => [m[0] * v[0] + m[1] * v[1], m[2] * v[0] + m[3] * v[1]];
 
 // 2D 旋转矩阵：逆时针 angle 弧度
 export const rotMat = (angle) => {
-  const c = Math.cos(angle), s = Math.sin(angle);
+  const c = Math.cos(angle),
+    s = Math.sin(angle);
   return [c, -s, s, c];
 };

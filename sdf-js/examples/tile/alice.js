@@ -15,7 +15,8 @@ import { field, render, palette, math } from '../../src/index.js';
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const W = canvas.width,
+  H = canvas.height;
 
 // ---- 参数（每次刷新随机一组）---------------------------------------------
 
@@ -23,16 +24,16 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const params = {
   borderRatio: 0.12,
-  scl:         pick([8, 12, 16]),       // tile 网格密度 = canvas / scl
-  freq:        pick([4, 6, 8]),
-  phase:       1,
-  domains:     5,
-  range:       pick([1, 2]),
-  scale:       pick([8, 10, 16, 20]),
-  minStep:     pick([0.1, 0.15, 0.2]),
-  maxStep:     pick([0.7, 0.8]),
+  scl: pick([8, 12, 16]), // tile 网格密度 = canvas / scl
+  freq: pick([4, 6, 8]),
+  phase: 1,
+  domains: 5,
+  range: pick([1, 2]),
+  scale: pick([8, 10, 16, 20]),
+  minStep: pick([0.1, 0.15, 0.2]),
+  maxStep: pick([0.7, 0.8]),
   colorOffset: Math.random() * 100,
-  unit:        150,    // proto 球极半径
+  unit: 150, // proto 球极半径
 };
 
 // ---- 颜色 -----------------------------------------------------------------
@@ -49,14 +50,14 @@ const WHITE = () => palette.generative.definingWhite();
 const BLACK = () => palette.generative.definingBlack();
 
 // 把 [r,g,b] 转成 CSS string
-const css = ([r, g, b]) => `rgb(${r|0},${g|0},${b|0})`;
+const css = ([r, g, b]) => `rgb(${r | 0},${g | 0},${b | 0})`;
 
 // ---- proto 场（解析的、整张图一个 field 实例）-----------------------------
 
 const protoField = field.protoOpacity({
-  r:       params.unit,
-  freq:    params.freq,
-  phase:   params.phase,
+  r: params.unit,
+  freq: params.freq,
+  phase: params.phase,
   domains: params.domains,
 });
 
@@ -76,11 +77,15 @@ function render_alice() {
   const offset = W - border;
   const count = Math.floor(offset / params.scl);
   const cell = offset / count;
-  const direction = Math.random();    // 决定 normalizedX/Y 朝向（4 种）
+  const direction = Math.random(); // 决定 normalizedX/Y 朝向（4 种）
 
   render.tileGrid(ctx, {
-    bounds: { minX: border / 2, maxX: border / 2 + offset,
-              minY: border / 2, maxY: border / 2 + offset },
+    bounds: {
+      minX: border / 2,
+      maxX: border / 2 + offset,
+      minY: border / 2,
+      maxY: border / 2 + offset,
+    },
     cellSize: cell,
     tile: (ctx, info) => {
       const { x, y, w, i, j } = info;
@@ -96,14 +101,11 @@ function render_alice() {
       const nY = y / H;
       const nXcentered = x / W - 0.5;
       const normalized =
-        direction > 0.75 ? 1 - nY :
-        direction > 0.5  ? nY :
-        direction > 0.25 ? 1 - (x / W) :
-                           (x / W);
+        direction > 0.75 ? 1 - nY : direction > 0.5 ? nY : direction > 0.25 ? 1 - x / W : x / W;
       const zeroToOne = wrap1d(nXcentered, 0.1) - 0.02;
 
       // —— 两遍叠加：原版顺序 front 先画，back 后画（覆盖在上面）——
-      drawTile(ctx, x, y, w, opac,       normalized,            [0.33,  0.5],  'front');
+      drawTile(ctx, x, y, w, opac, normalized, [0.33, 0.5], 'front');
       drawTile(ctx, x, y, w, zeroToOne, Math.sqrt(normalized), [-0.01, 0.67], 'back');
     },
   });
@@ -120,14 +122,15 @@ function drawTile(ctx, x, y, w, colorAttr, stepAttr, [T1, T2], type) {
     // colorGen.getColor()**。这里复刻这个推进行为 —— 让 colorGen 序列每格都
     // 前进一次（而不是只在"真的用 color"时前进），渐变循环速率才对得上。
     const cgColor = colorGen.getColor();
-    if      (colorAttr < T1) strokeStyle = css(WHITE());   // 原版 pal[2] = WHITE
+    if (colorAttr < T1)
+      strokeStyle = css(WHITE()); // 原版 pal[2] = WHITE
     else if (colorAttr < T2) strokeStyle = 'rgb(150,150,150)';
-    else                     strokeStyle = css(cgColor);
+    else strokeStyle = css(cgColor);
   } else {
     // back pass —— 三个分支都画线，> T2 时沿用上一格的 stroke（原版隐式行为）
-    if      (colorAttr < T1) strokeStyle = css(WHITE());
+    if (colorAttr < T1) strokeStyle = css(WHITE());
     else if (colorAttr < T2) strokeStyle = css(colorGen2.next().value);
-    else                     strokeStyle = lastStrokeStyle;
+    else strokeStyle = lastStrokeStyle;
     lastStrokeStyle = strokeStyle;
   }
 
@@ -140,7 +143,7 @@ function drawTile(ctx, x, y, w, colorAttr, stepAttr, [T1, T2], type) {
 
   ctx.strokeStyle = strokeStyle;
   ctx.lineWidth = 1;
-  ctx.lineCap = 'round';   // 匹配 p5 strokeCap(ROUND) 默认
+  ctx.lineCap = 'round'; // 匹配 p5 strokeCap(ROUND) 默认
   render.drawLineSquare(ctx, x, y, w, step, angle);
 }
 

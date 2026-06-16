@@ -16,16 +16,21 @@
 // 工厂：每次都生成一个全新的 callable 类，确保 SDF2 和 SDF3 的 prototype 互不污染
 function makeSDFClass() {
   function SDF(f) {
-    const inst = function (p) { return f(p); };
+    const inst = function (p) {
+      return f(p);
+    };
     Object.setPrototypeOf(inst, SDF.prototype);
     inst.f = f;
     inst._k = null;
-    inst.ast = null;  // GLSL compile 用；null = 不支持 compile（如 CA / streamline 生成的 SDF）
+    inst.ast = null; // GLSL compile 用；null = 不支持 compile（如 CA / streamline 生成的 SDF）
     return inst;
   }
   SDF.prototype = Object.create(Function.prototype);
   SDF.prototype.constructor = SDF;
-  SDF.prototype.k = function (k) { this._k = k; return this; };
+  SDF.prototype.k = function (k) {
+    this._k = k;
+    return this;
+  };
   return SDF;
 }
 
@@ -41,12 +46,14 @@ export function classifyArgs(args) {
   let opts = {};
   let rest = args;
   const last = args[args.length - 1];
-  if (args.length > 0
-      && typeof last === 'object'
-      && last !== null
-      && !Array.isArray(last)
-      && !(last instanceof SDF2)
-      && !(last instanceof SDF3)) {
+  if (
+    args.length > 0 &&
+    typeof last === 'object' &&
+    last !== null &&
+    !Array.isArray(last) &&
+    !(last instanceof SDF2) &&
+    !(last instanceof SDF3)
+  ) {
     opts = last;
     rest = args.slice(0, -1);
   }

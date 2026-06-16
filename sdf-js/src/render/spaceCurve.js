@@ -24,8 +24,10 @@ function makeMaskTest(mask, maskInvert, opts) {
   if (!mask) return null;
   if (mask instanceof SDF3) {
     const { yaw = 0.5, pitch = 0.35, cameraDist = 4 } = opts;
-    const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
     const inverseRotate = (p) => {
       const x = p[0] * cy - p[2] * sy;
       const z0 = p[0] * sy + p[2] * cy;
@@ -80,15 +82,12 @@ function hilbertPoints(depth, view) {
   const pts = [];
   function rec(n, x, y, xi, xj, yi, yj) {
     if (n <= 0) {
-      pts.push([
-        x + (xi + yi) / 2,
-        y + (xj + yj) / 2,
-      ]);
+      pts.push([x + (xi + yi) / 2, y + (xj + yj) / 2]);
     } else {
-      rec(n - 1, x,               y,               yi / 2, yj / 2, xi / 2, xj / 2);
-      rec(n - 1, x + xi / 2,      y + xj / 2,      xi / 2, xj / 2, yi / 2, yj / 2);
+      rec(n - 1, x, y, yi / 2, yj / 2, xi / 2, xj / 2);
+      rec(n - 1, x + xi / 2, y + xj / 2, xi / 2, xj / 2, yi / 2, yj / 2);
       rec(n - 1, x + xi / 2 + yi / 2, y + xj / 2 + yj / 2, xi / 2, xj / 2, yi / 2, yj / 2);
-      rec(n - 1, x + xi / 2 + yi, y + xj / 2 + yj,  -yi / 2, -yj / 2, -xi / 2, -xj / 2);
+      rec(n - 1, x + xi / 2 + yi, y + xj / 2 + yj, -yi / 2, -yj / 2, -xi / 2, -xj / 2);
     }
   }
   // 从 (-view, -view) 出发，xi 方向 +2*view（水平），yj 方向 +2*view（垂直）
@@ -120,7 +119,9 @@ function gosperPoints(depth, view) {
   }
   // walk turtle
   const angle = Math.PI / 3;
-  let x = 0, y = 0, dir = 0; // 初始朝右
+  let x = 0,
+    y = 0,
+    dir = 0; // 初始朝右
   const stepLen = 1;
   const pts = [[0, 0]];
   for (const c of s) {
@@ -135,7 +136,10 @@ function gosperPoints(depth, view) {
     }
   }
   // 归一化到 [-view, +view]² —— 找 bbox 后线性映射
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
   for (const [px, py] of pts) {
     if (px < minX) minX = px;
     if (px > maxX) maxX = px;
@@ -146,41 +150,31 @@ function gosperPoints(depth, view) {
   const h = maxY - minY || 1;
   const scale = Math.min((2 * view) / w, (2 * view) / h);
   // 居中
-  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-  return pts.map(([px, py]) => [
-    (px - cx) * scale,
-    (py - cy) * scale,
-  ]);
+  const cx = (minX + maxX) / 2,
+    cy = (minY + maxY) / 2;
+  return pts.map(([px, py]) => [(px - cx) * scale, (py - cy) * scale]);
 }
 
 // ---- Public compute APIs ---------------------------------------------------
 
 export function computeHilbertPolylines(opts = {}) {
-  const {
-    view = 1.0,
-    depth = 5,
-    mask = null,
-    maskInvert = false,
-    yaw, pitch, cameraDist,
-  } = opts;
+  const { view = 1.0, depth = 5, mask = null, maskInvert = false, yaw, pitch, cameraDist } = opts;
   const pts = hilbertPoints(depth, view);
   const maskTest = opts.maskFn
-    ? (maskInvert ? (wx, wy) => !opts.maskFn(wx, wy) : opts.maskFn)
+    ? maskInvert
+      ? (wx, wy) => !opts.maskFn(wx, wy)
+      : opts.maskFn
     : makeMaskTest(mask, maskInvert, { yaw, pitch, cameraDist });
   return splitByMask(pts, maskTest);
 }
 
 export function computeGosperPolylines(opts = {}) {
-  const {
-    view = 1.0,
-    depth = 4,
-    mask = null,
-    maskInvert = false,
-    yaw, pitch, cameraDist,
-  } = opts;
+  const { view = 1.0, depth = 4, mask = null, maskInvert = false, yaw, pitch, cameraDist } = opts;
   const pts = gosperPoints(depth, view);
   const maskTest = opts.maskFn
-    ? (maskInvert ? (wx, wy) => !opts.maskFn(wx, wy) : opts.maskFn)
+    ? maskInvert
+      ? (wx, wy) => !opts.maskFn(wx, wy)
+      : opts.maskFn
     : makeMaskTest(mask, maskInvert, { yaw, pitch, cameraDist });
   return splitByMask(pts, maskTest);
 }
@@ -196,15 +190,16 @@ function drawPolylines(ctx, polylines, opts) {
     flipY = true,
   } = opts;
 
-  const W = ctx.canvas.width, H = ctx.canvas.height;
+  const W = ctx.canvas.width,
+    H = ctx.canvas.height;
   if (background !== null) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, W, H);
   }
-  const wxToPx = wx => (wx + view) / (2 * view) * W;
+  const wxToPx = (wx) => ((wx + view) / (2 * view)) * W;
   const wyToPx = flipY
-    ? wy => (view - wy) / (2 * view) * H
-    : wy => (wy + view) / (2 * view) * H;
+    ? (wy) => ((view - wy) / (2 * view)) * H
+    : (wy) => ((wy + view) / (2 * view)) * H;
 
   ctx.strokeStyle = color;
   ctx.lineCap = 'round';

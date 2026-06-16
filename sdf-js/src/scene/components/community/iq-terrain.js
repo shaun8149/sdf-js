@@ -23,10 +23,7 @@ import { SDF3 } from '../../../sdf/core.js';
  *                                        (smaller = wider mountains; 0.08 ~
  *                                        Himalayas-feel at world scale ~10)
  */
-export function terrainHeightmapSDF({
-  maxHeight = 30.0,
-  hwRatio = 0.08,
-} = {}) {
+export function terrainHeightmapSDF({ maxHeight = 30.0, hwRatio = 0.08 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: just a sloped plane at y=0 (real eval is GPU-only because
     // 7-octave fbm per sample is too expensive for CPU raymarch fallback).
@@ -42,14 +39,15 @@ export const terrainHeightmapSpec = {
   category: 'primitive-heightfield',
   args: {
     maxHeight: { type: 'number', default: 30.0, doc: 'Peak Y in world units' },
-    hwRatio:   { type: 'number', default: 0.08, doc: 'Horizontal-to-vertical scale ratio' },
+    hwRatio: { type: 'number', default: 0.08, doc: 'Horizontal-to-vertical scale ratio' },
   },
   source: {
-    inspiration:    'Reinder Nijhoff Himalayas Shadertoy (CC BY-NC-SA, idiom-only)',
-    algorithmRef:   'IQ MdX3Rr "Elevated" (value noise + analytical derivatives)',
-    license:        'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
-    portedAt:       '2026-05-21',
-    porter:         'Atlas /port-shader pipeline — snow-mountain sprint',
-    notes:          'GPU evaluates 7-octave fbm; renderer mountain-shading branch uses 15-octave for normal.',
+    inspiration: 'Reinder Nijhoff Himalayas Shadertoy (CC BY-NC-SA, idiom-only)',
+    algorithmRef: 'IQ MdX3Rr "Elevated" (value noise + analytical derivatives)',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
+    portedAt: '2026-05-21',
+    porter: 'Atlas /port-shader pipeline — snow-mountain sprint',
+    notes:
+      'GPU evaluates 7-octave fbm; renderer mountain-shading branch uses 15-octave for normal.',
   },
 };

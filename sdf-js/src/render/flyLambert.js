@@ -9,7 +9,11 @@
 import { compileSDF3ToGLSL, canCompileSDF3, IMIN_GLSL } from '../sdf/sdf3.compile.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
-import { evaluateCameraSequence, sequenceStateToCamState, totalDuration as seqTotalDuration } from '../scene/camera-sequence.js';
+import {
+  evaluateCameraSequence,
+  sequenceStateToCamState,
+  totalDuration as seqTotalDuration,
+} from '../scene/camera-sequence.js';
 
 const VS_SRC = `attribute vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
@@ -1495,7 +1499,13 @@ void main() {
 // cost (with MAX_STEPS=200 + Lambert+LUT+reflection+sky+AA per pixel, this is
 // the difference between smooth 60fps and choppy 20fps on a fleet scene).
 // Adjust upward (closer to 1.0) for sharper detail at perf cost.
-export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, renderScale = 0.6 }) {
+export function createFly3DRenderer({
+  canvas,
+  getControls,
+  onCamUpdate,
+  onFps,
+  renderScale = 0.6,
+}) {
   // Sprint 1 (2026-05-24): WebGL2 + EXT_color_buffer_float required for HDR
   // rgba16f scene FBO. Fallback to WebGL1 is intentionally NOT provided — once
   // FLY 3D adopts HDR pipeline, the post-FX shader's tonemap/bloom/DoF math
@@ -1504,13 +1514,17 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // surface a clear error than ship a broken-looking renderer.
   const gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: false });
   if (!gl) {
-    throw new Error('[fly3d] WebGL2 not supported (Sprint 1+ requires WebGL2 for HDR pipeline). ' +
-      'Update browser or fall back to BOB GPU renderer.');
+    throw new Error(
+      '[fly3d] WebGL2 not supported (Sprint 1+ requires WebGL2 for HDR pipeline). ' +
+        'Update browser or fall back to BOB GPU renderer.',
+    );
   }
   const colorBufferFloatExt = gl.getExtension('EXT_color_buffer_float');
   if (!colorBufferFloatExt) {
-    throw new Error('[fly3d] EXT_color_buffer_float not supported (rgba16f FBO unavailable). ' +
-      'Update GPU driver or fall back to BOB GPU renderer.');
+    throw new Error(
+      '[fly3d] EXT_color_buffer_float not supported (rgba16f FBO unavailable). ' +
+        'Update GPU driver or fall back to BOB GPU renderer.',
+    );
   }
   // OES_texture_float_linear lets the bloom FBO be sampled with LINEAR
   // filtering (smooth upsample). If missing, postfx falls back to NEAREST
@@ -1553,15 +1567,15 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // declarations + the rationale comment near `uniform vec4 u_leafMaterial`.
   const MAX_MATERIAL = 256;
   const materialLUT = new Float32Array(MAX_MATERIAL * 4);
-  const toneLUT     = new Float32Array(MAX_MATERIAL * 4);
-  const patternLUT  = new Float32Array(MAX_MATERIAL * 4);
+  const toneLUT = new Float32Array(MAX_MATERIAL * 4);
+  const patternLUT = new Float32Array(MAX_MATERIAL * 4);
 
   // Sprint 3 volume LUTs — 3 vec4 slots per volume (kindCenter / sizeDensity / color)
   // up to MAX_VOLUMES=12 (matches shader). Re-uploaded per render() via setVolumes().
   const MAX_VOLUMES = 12;
-  const volumeKindCenterLUT  = new Float32Array(MAX_VOLUMES * 4);
+  const volumeKindCenterLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
-  const volumeColorLUT       = new Float32Array(MAX_VOLUMES * 4);
+  const volumeColorLUT = new Float32Array(MAX_VOLUMES * 4);
   // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
   // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
   // flame subset of the volume LUTs.
@@ -1577,15 +1591,17 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // slot; evaluator gives us subjectId → offset per frame; we map by slot here).
   const MAX_SUBJECT_MOTION = 4;
   const subjectOffsetLUT = new Float32Array(MAX_SUBJECT_MOTION * 3);
-  let activeMotionSlots = {};  // { subjectId: slot } — set by setMotionSlots()
+  let activeMotionSlots = {}; // { subjectId: slot } — set by setMotionSlots()
   let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
-  let activeCityMode = false;  // set by setCityMode() when scene has procedural-city
+  let activeCityMode = false; // set by setCityMode() when scene has procedural-city
   // Sprint 12 Rune erosion: CPU-baked heightmap uploaded as WebGL2 RGBA32F.
   // setRuneHeightmap({data, width, height}) creates/updates this; pass null to clear.
   let runeHeightmapTex = null;
-  let runeHeightmapW = 0, runeHeightmapH = 0;
-  let _runeBindLogged = false, _runeBindWarned = false;  // one-time diagnostic flags
-  let runeWaterTint = [0.0, 0.20, 0.30];  // Phase 2: settable via setRuneWaterTint
+  let runeHeightmapW = 0,
+    runeHeightmapH = 0;
+  let _runeBindLogged = false,
+    _runeBindWarned = false; // one-time diagnostic flags
+  let runeWaterTint = [0.0, 0.2, 0.3]; // Phase 2: settable via setRuneWaterTint
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -1601,12 +1617,14 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   //
   // Sprint 1: FBO is now rgba16f (HDR linear color + linear depth in alpha)
   // instead of RGBA8. Tonemap moved from scene shader → postfx composite.
-  let sceneFbo = null, sceneTex = null;
-  let sceneFboW = 0, sceneFboH = 0;
+  let sceneFbo = null,
+    sceneTex = null;
+  let sceneFboW = 0,
+    sceneFboH = 0;
 
   // (Re)allocate the offscreen FBO when canvas size or renderScale changes.
   function ensureSceneFbo() {
-    const targetW = Math.max(1, Math.floor(canvas.width  * renderScale));
+    const targetW = Math.max(1, Math.floor(canvas.width * renderScale));
     const targetH = Math.max(1, Math.floor(canvas.height * renderScale));
     if (sceneFbo && targetW === sceneFboW && targetH === sceneFboH) return;
     if (sceneFbo) gl.deleteFramebuffer(sceneFbo);
@@ -1642,23 +1660,29 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
   // When non-null, drives camState per frame from a timeline (overrides WASD
   // fly camera until user explicitly takes back via fly keys / mouse).
   let activeSequence = null;
-  let sequenceStartTime = 0;  // performance.now() origin for sequence playback
+  let sequenceStartTime = 0; // performance.now() origin for sequence playback
   let sequencePaused = false;
   let sequencePausedAt = 0;
-  let userTookCam = false;    // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
+  let userTookCam = false; // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
   // Previous-frame camera state — fed to postfx motion blur reproject. Stored
   // in WORLD-SPACE basis (pos + fwd + right + up + fov) so the shader can
   // compute "where would this pixel have been on screen one frame ago?".
   // Updated AT END of every draw() call.
   const prevCam = {
-    pos: [0, 0, 0], fwd: [0, 0, 1], right: [1, 0, 0], up: [0, 1, 0], fov: 25,
+    pos: [0, 0, 0],
+    fwd: [0, 0, 1],
+    right: [1, 0, 0],
+    up: [0, 1, 0],
+    fov: 25,
   };
-  let prevCamValid = false;  // first frame: no prev → motion blur skipped
+  let prevCamValid = false; // first frame: no prev → motion blur skipped
 
   // ---- camera math ----
   function computeFwd(yaw, pitch) {
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
-    const cy = Math.cos(yaw),   sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
     return [sy * cp, -sp, cy * cp];
   }
   function computeRight(fwd) {
@@ -1667,11 +1691,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     return [fwd[2] / m, 0, -fwd[0] / m];
   }
   function cross(a, b) {
-    return [
-      a[1] * b[2] - a[2] * b[1],
-      a[2] * b[0] - a[0] * b[2],
-      a[0] * b[1] - a[1] * b[0],
-    ];
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
   }
   function lightFromSpherical(azim, alt, dist) {
     return [
@@ -1766,12 +1786,26 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
 
     uniformsCache = {};
     for (const name of [
-      'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
-      'u_lightPos', 'u_shadowsOn', 'u_groundOn', 'u_checkerOn', 'u_reflectOn',
+      'u_resolution',
+      'u_camPos',
+      'u_camFwd',
+      'u_camRight',
+      'u_camUp',
+      'u_focal',
+      'u_lightPos',
+      'u_shadowsOn',
+      'u_groundOn',
+      'u_checkerOn',
+      'u_reflectOn',
       'u_time',
-      'u_leafMaterial[0]', 'u_leafTone[0]', 'u_leafPattern[0]',
+      'u_leafMaterial[0]',
+      'u_leafTone[0]',
+      'u_leafPattern[0]',
       // Sprint 3 volume uniforms
-      'u_volumeKindCenter[0]', 'u_volumeSizeDensity[0]', 'u_volumeColor[0]', 'u_volumeCount',
+      'u_volumeKindCenter[0]',
+      'u_volumeSizeDensity[0]',
+      'u_volumeColor[0]',
+      'u_volumeCount',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
@@ -1792,12 +1826,14 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     materialLUT.fill(0);
     toneLUT.fill(0);
     for (let i = 0; i < MAX_MATERIAL; i++) {
-      materialLUT[i * 4 + 1] = -1.0;  // sat sentinel
-      toneLUT[i * 4 + 0]     = 1.0;   // value default
+      materialLUT[i * 4 + 1] = -1.0; // sat sentinel
+      toneLUT[i * 4 + 0] = 1.0; // value default
     }
     const leafMaterials = result.leafMaterials || [];
     if (leafMaterials.length > MAX_MATERIAL) {
-      console.warn(`[fly3d] scene has ${leafMaterials.length} leaves; LUT capped at ${MAX_MATERIAL}. Excess leaves render with hash-palette fallback.`);
+      console.warn(
+        `[fly3d] scene has ${leafMaterials.length} leaves; LUT capped at ${MAX_MATERIAL}. Excess leaves render with hash-palette fallback.`,
+      );
     }
     for (let i = 0; i < Math.min(leafMaterials.length, MAX_MATERIAL); i++) {
       const m = leafMaterials[i];
@@ -1890,9 +1926,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       const slot = activeMotionSlots[id];
       const off = frameSubjectOffsets[id];
       if (slot >= 0 && slot < MAX_SUBJECT_MOTION && off) {
-        subjectOffsetLUT[slot*3]   = off.offset[0];
-        subjectOffsetLUT[slot*3+1] = off.offset[1];
-        subjectOffsetLUT[slot*3+2] = off.offset[2];
+        subjectOffsetLUT[slot * 3] = off.offset[0];
+        subjectOffsetLUT[slot * 3 + 1] = off.offset[1];
+        subjectOffsetLUT[slot * 3 + 2] = off.offset[2];
       }
     }
 
@@ -1901,21 +1937,25 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     for (let i = 0; i < activeVolumeCount; i++) {
       const meta = volumeMeta[i];
       if (!meta) continue;
-      let cx = meta.baseCenter[0], cy = meta.baseCenter[1], cz = meta.baseCenter[2];
+      let cx = meta.baseCenter[0],
+        cy = meta.baseCenter[1],
+        cz = meta.baseCenter[2];
       if (meta.attachTo && frameSubjectOffsets[meta.attachTo]) {
         const off = frameSubjectOffsets[meta.attachTo].offset;
-        cx += off[0]; cy += off[1]; cz += off[2];
+        cx += off[0];
+        cy += off[1];
+        cz += off[2];
       }
-      volumeKindCenterLUT[i*4+1] = cx;
-      volumeKindCenterLUT[i*4+2] = cy;
-      volumeKindCenterLUT[i*4+3] = cz;
+      volumeKindCenterLUT[i * 4 + 1] = cx;
+      volumeKindCenterLUT[i * 4 + 2] = cy;
+      volumeKindCenterLUT[i * 4 + 3] = cz;
       // sceneStateKey multiplier on density. Allows shot.sceneState.thrusterLevel
       // to scale flame density 0..1 (off / on) without changing the JSON volume.
       let densityMul = 1.0;
       if (meta.sceneStateKey && typeof frameSceneState[meta.sceneStateKey] === 'number') {
         densityMul = frameSceneState[meta.sceneStateKey];
       }
-      volumeSizeDensityLUT[i*4+3] = meta.baseDensity * densityMul;
+      volumeSizeDensityLUT[i * 4 + 3] = meta.baseDensity * densityMul;
     }
 
     const fwd = computeFwd(camState.yaw, camState.pitch);
@@ -1945,7 +1985,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uniformsCache.u_resolution, sceneFboW, sceneFboH);
-    gl.uniform3f(uniformsCache.u_camPos, camState.position[0], camState.position[1], camState.position[2]);
+    gl.uniform3f(
+      uniformsCache.u_camPos,
+      camState.position[0],
+      camState.position[1],
+      camState.position[2],
+    );
     gl.uniform3f(uniformsCache.u_camFwd, fwd[0], fwd[1], fwd[2]);
     gl.uniform3f(uniformsCache.u_camRight, right[0], right[1], right[2]);
     gl.uniform3f(uniformsCache.u_camUp, up[0], up[1], up[2]);
@@ -1954,11 +1999,11 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     gl.uniform1f(uniformsCache.u_focal, activeFov);
     gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
-    gl.uniform1f(uniformsCache.u_groundOn,  c.groundOn  ? 1.0 : 0.0);
+    gl.uniform1f(uniformsCache.u_groundOn, c.groundOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_checkerOn, c.checkerOn ? 1.0 : 0.0);
     // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
     // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
-    gl.uniform1f(uniformsCache.u_reflectOn, (c.reflectOn === false) ? 0.0 : 1.0);
+    gl.uniform1f(uniformsCache.u_reflectOn, c.reflectOn === false ? 0.0 : 1.0);
     // Sprint 8: Blueprint-as-shot mode toggle (1 when current cameraSequence shot
     // has renderer='blueprint'). Replaces full HDR shading with silhouette-on-
     // graph-paper schematic look. Volumes are skipped in this mode.
@@ -1978,7 +2023,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
       gl.uniform1i(uniformsCache.u_heightmap, 1);
       if (!_runeBindLogged) {
-        console.log(`[fly3d] u_heightmap bound to TEXTURE1, uniform loc=${uniformsCache.u_heightmap}, u_runeActive loc=${uniformsCache.u_runeActive}`);
+        console.log(
+          `[fly3d] u_heightmap bound to TEXTURE1, uniform loc=${uniformsCache.u_heightmap}, u_runeActive loc=${uniformsCache.u_runeActive}`,
+        );
         _runeBindLogged = true;
       }
     } else if (uniformsCache.u_heightmap != null) {
@@ -1993,7 +2040,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       gl.uniform1i(uniformsCache.u_heightmap, 7);
     } else if (runeHeightmapTex != null && uniformsCache.u_heightmap == null) {
       if (!_runeBindWarned) {
-        console.warn('[fly3d] runeHeightmapTex exists but uniformsCache.u_heightmap is null — GLSL optimized away the sampler? Check that sdTerrainErodedRune is actually emitted.');
+        console.warn(
+          '[fly3d] runeHeightmapTex exists but uniformsCache.u_heightmap is null — GLSL optimized away the sampler? Check that sdTerrainErodedRune is actually emitted.',
+        );
         _runeBindWarned = true;
       }
     }
@@ -2001,7 +2050,12 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       gl.uniform1f(uniformsCache.u_runeActive, runeHeightmapTex != null ? 1.0 : 0.0);
     }
     if (uniformsCache.u_runeWaterTint != null) {
-      gl.uniform3f(uniformsCache.u_runeWaterTint, runeWaterTint[0], runeWaterTint[1], runeWaterTint[2]);
+      gl.uniform3f(
+        uniformsCache.u_runeWaterTint,
+        runeWaterTint[0],
+        runeWaterTint[1],
+        runeWaterTint[2],
+      );
     }
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
@@ -2048,19 +2102,19 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     // the ramped value and we override here. Untouched shots keep the global.
     if (sequenceExposure != null) framePostFx.exposure = sequenceExposure;
     // Current-frame camera basis (for motion blur reproject in postfx)
-    framePostFx._curCamPos    = camState.position;
-    framePostFx._curCamFwd    = fwd;
-    framePostFx._curCamRight  = right;
-    framePostFx._curCamUp     = up;
-    framePostFx._curCamFov    = activeFov;
+    framePostFx._curCamPos = camState.position;
+    framePostFx._curCamFwd = fwd;
+    framePostFx._curCamRight = right;
+    framePostFx._curCamUp = up;
+    framePostFx._curCamFov = activeFov;
     // Previous-frame camera basis (motion blur). First frame has no prev →
     // skip motion blur by sending zero-strength signal.
     framePostFx._prevCamValid = prevCamValid;
-    framePostFx._prevCamPos   = prevCam.pos;
-    framePostFx._prevCamFwd   = prevCam.fwd;
+    framePostFx._prevCamPos = prevCam.pos;
+    framePostFx._prevCamFwd = prevCam.fwd;
     framePostFx._prevCamRight = prevCam.right;
-    framePostFx._prevCamUp    = prevCam.up;
-    framePostFx._prevCamFov   = prevCam.fov;
+    framePostFx._prevCamUp = prevCam.up;
+    framePostFx._prevCamFov = prevCam.fov;
     // Sprint 6: pack flame volumes into heat-haze LUT for the composite pass.
     // Only kind=1 (flame); god-rays are too diffuse for haze. Reuses the per-
     // frame mutated volumeKindCenterLUT (already includes subject motion).
@@ -2078,7 +2132,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       // Skip flames with effectively zero density (sceneStateKey * baseDensity)
       // so pre-ignition rocket has no haze.
       if (density < 0.1) continue;
-      heatHazeLUT[hazeCount * 4]     = cx;
+      heatHazeLUT[hazeCount * 4] = cx;
       heatHazeLUT[hazeCount * 4 + 1] = cy;
       heatHazeLUT[hazeCount * 4 + 2] = cz;
       heatHazeLUT[hazeCount * 4 + 3] = Math.max(sx, sy, sz);
@@ -2092,29 +2146,45 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
     prevCam.pos[0] = camState.position[0];
     prevCam.pos[1] = camState.position[1];
     prevCam.pos[2] = camState.position[2];
-    prevCam.fwd[0] = fwd[0];   prevCam.fwd[1] = fwd[1];   prevCam.fwd[2] = fwd[2];
-    prevCam.right[0] = right[0]; prevCam.right[1] = right[1]; prevCam.right[2] = right[2];
-    prevCam.up[0] = up[0];     prevCam.up[1] = up[1];     prevCam.up[2] = up[2];
+    prevCam.fwd[0] = fwd[0];
+    prevCam.fwd[1] = fwd[1];
+    prevCam.fwd[2] = fwd[2];
+    prevCam.right[0] = right[0];
+    prevCam.right[1] = right[1];
+    prevCam.right[2] = right[2];
+    prevCam.up[0] = up[0];
+    prevCam.up[1] = up[1];
+    prevCam.up[2] = up[2];
     prevCam.fov = activeFov;
     prevCamValid = true;
 
     if (_debugFirstDraw) {
       _debugFirstDraw = false;
       const err = gl.getError();
-      const errName = err === gl.NO_ERROR ? 'NO_ERROR'
-        : err === gl.INVALID_ENUM ? 'INVALID_ENUM'
-        : err === gl.INVALID_VALUE ? 'INVALID_VALUE'
-        : err === gl.INVALID_OPERATION ? 'INVALID_OPERATION'
-        : err === gl.INVALID_FRAMEBUFFER_OPERATION ? 'INVALID_FRAMEBUFFER_OPERATION'
-        : err === gl.OUT_OF_MEMORY ? 'OUT_OF_MEMORY'
-        : err === gl.CONTEXT_LOST_WEBGL ? 'CONTEXT_LOST_WEBGL'
-        : `0x${err.toString(16)}`;
+      const errName =
+        err === gl.NO_ERROR
+          ? 'NO_ERROR'
+          : err === gl.INVALID_ENUM
+            ? 'INVALID_ENUM'
+            : err === gl.INVALID_VALUE
+              ? 'INVALID_VALUE'
+              : err === gl.INVALID_OPERATION
+                ? 'INVALID_OPERATION'
+                : err === gl.INVALID_FRAMEBUFFER_OPERATION
+                  ? 'INVALID_FRAMEBUFFER_OPERATION'
+                  : err === gl.OUT_OF_MEMORY
+                    ? 'OUT_OF_MEMORY'
+                    : err === gl.CONTEXT_LOST_WEBGL
+                      ? 'CONTEXT_LOST_WEBGL'
+                      : `0x${err.toString(16)}`;
       console.log('%c[fly3d] first frame drawn', 'color:#7fa97f; font-weight:600', {
         glError: errName,
-        canvasW: canvas.width, canvasH: canvas.height,
+        canvasW: canvas.width,
+        canvasH: canvas.height,
         canvasVisible: canvas.style.display,
         camPos: camState.position,
-        camYaw: camState.yaw, camPitch: camState.pitch,
+        camYaw: camState.yaw,
+        camPitch: camState.pitch,
         a_pos_loc: a_pos,
       });
     }
@@ -2187,15 +2257,20 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
           return;
         }
         if (!flyHandle) {
-          flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
-            speed: 1.5,
-            speedBoost: 4.0,
-            onReset: () => {
-              camState.position = [...defaultCam.position];
-              camState.yaw = defaultCam.yaw;
-              camState.pitch = defaultCam.pitch;
+          flyHandle = attachFlyControls(
+            canvas,
+            () => camState,
+            (patch) => Object.assign(camState, patch),
+            {
+              speed: 1.5,
+              speedBoost: 4.0,
+              onReset: () => {
+                camState.position = [...defaultCam.position];
+                camState.yaw = defaultCam.yaw;
+                camState.pitch = defaultCam.pitch;
+              },
             },
-          });
+          );
         }
         _debugFirstDraw = true;
         timeStart = performance.now();
@@ -2220,9 +2295,18 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      * unmount has always done this; FLY 3D missed it pre-Sprint-1.
      */
     unmount() {
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-      if (pendingRender != null) { cancelAnimationFrame(pendingRender); pendingRender = null; }
-      if (flyHandle) { flyHandle.detach(); flyHandle = null; }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      if (pendingRender != null) {
+        cancelAnimationFrame(pendingRender);
+        pendingRender = null;
+      }
+      if (flyHandle) {
+        flyHandle.detach();
+        flyHandle = null;
+      }
       // Clear scene FBO so its rgba16f doesn't keep stale HDR pixels that
       // post-FX would composite into the next first frame.
       if (sceneFbo) {
@@ -2251,13 +2335,13 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
 
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
-      if (patch.yaw != null)   camState.yaw   = patch.yaw;
+      if (patch.yaw != null) camState.yaw = patch.yaw;
       if (patch.pitch != null) camState.pitch = patch.pitch;
       // Also update `defaultCam` so R-key reset jumps back to the LAST-SET
       // scene camera, not the hardcoded fly3d module default [0, 0.3, -3]
       // (which is meaningless for compositor scenes with their own cameras).
       if (patch.position) defaultCam.position = [...patch.position];
-      if (patch.yaw != null)   defaultCam.yaw   = patch.yaw;
+      if (patch.yaw != null) defaultCam.yaw = patch.yaw;
       if (patch.pitch != null) defaultCam.pitch = patch.pitch;
     },
 
@@ -2269,7 +2353,9 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       return canCompileSDF3(sdf);
     },
 
-    getCamState() { return { ...camState, position: [...camState.position] }; },
+    getCamState() {
+      return { ...camState, position: [...camState.position] };
+    },
 
     /**
      * Apply per-scene post-FX overrides (called by compositor when loading a
@@ -2286,40 +2372,52 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
      * auto-detected and normalized to 0-1.
      */
     setVolumes(volumes) {
-      const KIND_INDEX = { 'smoke': 0, 'flame': 1, 'fog': 2, 'god-rays': 3 };
+      const KIND_INDEX = { smoke: 0, flame: 1, fog: 2, 'god-rays': 3 };
       const list = Array.isArray(volumes) ? volumes : [];
       activeVolumeCount = Math.min(list.length, MAX_VOLUMES);
       for (let i = 0; i < activeVolumeCount; i++) {
         const v = list[i];
         const kind = KIND_INDEX[v.kind] ?? 0;
-        const cx = v.center[0], cy = v.center[1], cz = v.center[2];
-        const sx = v.size[0],   sy = v.size[1],   sz = v.size[2];
-        const density = (typeof v.density === 'number') ? v.density : 1.0;
-        const noiseScale = (typeof v.noiseScale === 'number') ? v.noiseScale : 2.5;
+        const cx = v.center[0],
+          cy = v.center[1],
+          cz = v.center[2];
+        const sx = v.size[0],
+          sy = v.size[1],
+          sz = v.size[2];
+        const density = typeof v.density === 'number' ? v.density : 1.0;
+        const noiseScale = typeof v.noiseScale === 'number' ? v.noiseScale : 2.5;
         // Auto-normalize color: max > 1 → assume 0-255 sRGB (then renorm to 0-1).
         // Sprint 5: optional `colorIntensity` multiplier (default 1.0). Lets
         // flame volumes push HDR brightness so they actually trigger bloom
         // and read as "fire" not "wisp". e.g. colorIntensity: 3.0 makes the
         // already-bright orange color emit at 3× → bloom kicks in heavily.
-        let r = 0.8, g = 0.8, b = 0.8;
+        let r = 0.8,
+          g = 0.8,
+          b = 0.8;
         if (Array.isArray(v.color)) {
           [r, g, b] = v.color;
-          if (Math.max(r, g, b) > 1.01) { r /= 255; g /= 255; b /= 255; }
+          if (Math.max(r, g, b) > 1.01) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+          }
         }
-        const colorIntensity = (typeof v.colorIntensity === 'number') ? v.colorIntensity : 1.0;
-        r *= colorIntensity; g *= colorIntensity; b *= colorIntensity;
-        volumeKindCenterLUT[i*4]   = kind;
-        volumeKindCenterLUT[i*4+1] = cx;
-        volumeKindCenterLUT[i*4+2] = cy;
-        volumeKindCenterLUT[i*4+3] = cz;
-        volumeSizeDensityLUT[i*4]   = sx;
-        volumeSizeDensityLUT[i*4+1] = sy;
-        volumeSizeDensityLUT[i*4+2] = sz;
-        volumeSizeDensityLUT[i*4+3] = density;
-        volumeColorLUT[i*4]   = r;
-        volumeColorLUT[i*4+1] = g;
-        volumeColorLUT[i*4+2] = b;
-        volumeColorLUT[i*4+3] = noiseScale;
+        const colorIntensity = typeof v.colorIntensity === 'number' ? v.colorIntensity : 1.0;
+        r *= colorIntensity;
+        g *= colorIntensity;
+        b *= colorIntensity;
+        volumeKindCenterLUT[i * 4] = kind;
+        volumeKindCenterLUT[i * 4 + 1] = cx;
+        volumeKindCenterLUT[i * 4 + 2] = cy;
+        volumeKindCenterLUT[i * 4 + 3] = cz;
+        volumeSizeDensityLUT[i * 4] = sx;
+        volumeSizeDensityLUT[i * 4 + 1] = sy;
+        volumeSizeDensityLUT[i * 4 + 2] = sz;
+        volumeSizeDensityLUT[i * 4 + 3] = density;
+        volumeColorLUT[i * 4] = r;
+        volumeColorLUT[i * 4 + 1] = g;
+        volumeColorLUT[i * 4 + 2] = b;
+        volumeColorLUT[i * 4 + 3] = noiseScale;
         // Sprint 4: stash per-volume metadata so draw() can re-mutate the LUTs
         // each frame based on subject motion (attachTo) + per-shot sceneState.
         volumeMeta[i] = {
@@ -2376,13 +2474,16 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       if (!baked) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
         runeHeightmapTex = null;
-        runeHeightmapW = 0; runeHeightmapH = 0;
+        runeHeightmapW = 0;
+        runeHeightmapH = 0;
         console.log('[fly3d] setRuneHeightmap(null) — cleared');
         return;
       }
       const { data, width, height } = baked;
       if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
-        throw new Error(`[fly3d] setRuneHeightmap: data must be Float32Array(${width}*${height}*4); got len=${data?.length}`);
+        throw new Error(
+          `[fly3d] setRuneHeightmap: data must be Float32Array(${width}*${height}*4); got len=${data?.length}`,
+        );
       }
       if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
@@ -2390,15 +2491,25 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, width, height, 0, gl.RGBA, gl.FLOAT, data);
         const err = gl.getError();
-        if (err !== gl.NO_ERROR) console.error(`[fly3d] texImage2D RGBA32F error 0x${err.toString(16)}`);
+        if (err !== gl.NO_ERROR)
+          console.error(`[fly3d] texImage2D RGBA32F error 0x${err.toString(16)}`);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         runeHeightmapW = width;
         runeHeightmapH = height;
-        const sample = data.slice(width * (height >> 1) * 4 + (width >> 1) * 4, width * (height >> 1) * 4 + (width >> 1) * 4 + 4);
-        console.log(`[fly3d] setRuneHeightmap upload ${width}×${height} RGBA32F (${(data.byteLength / 1024).toFixed(0)} KB), center texel = [${Array.from(sample).map(x => x.toFixed(3)).join(', ')}]`);
+        const sample = data.slice(
+          width * (height >> 1) * 4 + (width >> 1) * 4,
+          width * (height >> 1) * 4 + (width >> 1) * 4 + 4,
+        );
+        console.log(
+          `[fly3d] setRuneHeightmap upload ${width}×${height} RGBA32F (${(data.byteLength / 1024).toFixed(0)} KB), center texel = [${Array.from(
+            sample,
+          )
+            .map((x) => x.toFixed(3))
+            .join(', ')}]`,
+        );
       } else {
         gl.bindTexture(gl.TEXTURE_2D, runeHeightmapTex);
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, gl.FLOAT, data);
@@ -2423,7 +2534,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
       sequenceStartTime = performance.now();
       sequencePaused = false;
       userTookCam = false;
-      prevCamValid = false;  // motion blur skip on cut-over frame
+      prevCamValid = false; // motion blur skip on cut-over frame
     },
     setSequenceTime(tSec) {
       if (!activeSequence) return;
@@ -2437,7 +2548,7 @@ export function createFly3DRenderer({ canvas, getControls, onCamUpdate, onFps, r
         sequencePaused = true;
       } else if (!paused && sequencePaused) {
         // Resume: shift start time forward by paused duration
-        sequenceStartTime += (performance.now() - sequencePausedAt);
+        sequenceStartTime += performance.now() - sequencePausedAt;
         sequencePaused = false;
         userTookCam = false;
       }

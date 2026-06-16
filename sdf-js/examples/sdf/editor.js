@@ -13,22 +13,26 @@ import * as sdf from '../../src/index.js';
 // ---- Primitive 的参数 schema -----------------------------------------------
 // "common" 三项 (x, y, rotation) 自动每个 primitive 都加；下面只列 type-specific
 const SCHEMA = {
-  circle:               { specific: [{ name: 'r',      label: 'radius',  default: 0.30 }] },
-  rectangle:            { specific: [
-                          { name: 'w', label: 'w', default: 0.40 },
-                          { name: 'h', label: 'h', default: 0.30 },
-                        ]},
-  rounded_rectangle:    { specific: [
-                          { name: 'w',      label: 'w',      default: 0.40 },
-                          { name: 'h',      label: 'h',      default: 0.30 },
-                          { name: 'radius', label: 'corner', default: 0.05 },
-                        ]},
-  hexagon:              { specific: [{ name: 'r',      label: 'r',      default: 0.30 }] },
-  equilateral_triangle: { specific: [{ name: 'scale',  label: 'scale',  default: 0.40 }] },
+  circle: { specific: [{ name: 'r', label: 'radius', default: 0.3 }] },
+  rectangle: {
+    specific: [
+      { name: 'w', label: 'w', default: 0.4 },
+      { name: 'h', label: 'h', default: 0.3 },
+    ],
+  },
+  rounded_rectangle: {
+    specific: [
+      { name: 'w', label: 'w', default: 0.4 },
+      { name: 'h', label: 'h', default: 0.3 },
+      { name: 'radius', label: 'corner', default: 0.05 },
+    ],
+  },
+  hexagon: { specific: [{ name: 'r', label: 'r', default: 0.3 }] },
+  equilateral_triangle: { specific: [{ name: 'scale', label: 'scale', default: 0.4 }] },
 };
 const COMMON = [
-  { name: 'x',        label: 'x',  default: 0 },
-  { name: 'y',        label: 'y',  default: 0 },
+  { name: 'x', label: 'x', default: 0 },
+  { name: 'y', label: 'y', default: 0 },
   { name: 'rotation', label: 'rotation', default: 0 },
 ];
 
@@ -58,7 +62,7 @@ function makeLayer(type) {
   return {
     id: nextId++,
     type,
-    op: 'union',                                            // 第一层时被忽略
+    op: 'union', // 第一层时被忽略
     k: 0,
     params,
   };
@@ -66,10 +70,10 @@ function makeLayer(type) {
 
 // ---- 构造 SDF（在 onChange 中调）------------------------------------------
 const PRIM_FN = {
-  circle:               (p) => sdf.circle(p.r),
-  rectangle:            (p) => sdf.rectangle([p.w, p.h]),
-  rounded_rectangle:    (p) => sdf.rounded_rectangle([p.w, p.h], p.radius),
-  hexagon:              (p) => sdf.hexagon(p.r),
+  circle: (p) => sdf.circle(p.r),
+  rectangle: (p) => sdf.rectangle([p.w, p.h]),
+  rounded_rectangle: (p) => sdf.rounded_rectangle([p.w, p.h], p.radius),
+  hexagon: (p) => sdf.hexagon(p.r),
   equilateral_triangle: (p) => sdf.equilateral_triangle().scale(p.scale || 1),
 };
 
@@ -98,18 +102,24 @@ function buildSdf(state) {
 function primExpr(layer) {
   const p = layer.params;
   switch (layer.type) {
-    case 'circle':               return `circle(${fmt(p.r)})`;
-    case 'rectangle':            return `rectangle([${fmt(p.w)}, ${fmt(p.h)}])`;
-    case 'rounded_rectangle':    return `rounded_rectangle([${fmt(p.w)}, ${fmt(p.h)}], ${fmt(p.radius)})`;
-    case 'hexagon':              return `hexagon(${fmt(p.r)})`;
-    case 'equilateral_triangle': return `equilateral_triangle().scale(${fmt(p.scale)})`;
+    case 'circle':
+      return `circle(${fmt(p.r)})`;
+    case 'rectangle':
+      return `rectangle([${fmt(p.w)}, ${fmt(p.h)}])`;
+    case 'rounded_rectangle':
+      return `rounded_rectangle([${fmt(p.w)}, ${fmt(p.h)}], ${fmt(p.radius)})`;
+    case 'hexagon':
+      return `hexagon(${fmt(p.r)})`;
+    case 'equilateral_triangle':
+      return `equilateral_triangle().scale(${fmt(p.scale)})`;
   }
 }
 
 function chainExpr(layer) {
   let expr = primExpr(layer);
   if (layer.params.rotation) expr += `.rotate(${fmt(layer.params.rotation)})`;
-  const x = layer.params.x || 0, y = layer.params.y || 0;
+  const x = layer.params.x || 0,
+    y = layer.params.y || 0;
   if (x !== 0 || y !== 0) expr += `.translate([${fmt(x)}, ${fmt(y)}])`;
   return expr;
 }
@@ -124,7 +134,7 @@ function generateCode(state) {
     return `// no shapes yet`;
   }
 
-  const usedTypes = new Set(state.layers.map(l => TYPE_LABEL[l.type]));
+  const usedTypes = new Set(state.layers.map((l) => TYPE_LABEL[l.type]));
   const importLine = `import { ${[...usedTypes].sort().join(', ')} } from 'sdf-js';`;
 
   const parts = [];
@@ -143,9 +153,9 @@ function generateCode(state) {
 }
 
 // ---- DOM 渲染 -------------------------------------------------------------
-const layersEl  = document.getElementById('layers');
-const codeEl    = document.getElementById('code');
-const statsEl   = document.getElementById('stats');
+const layersEl = document.getElementById('layers');
+const codeEl = document.getElementById('code');
+const statsEl = document.getElementById('stats');
 
 function renderLayers() {
   layersEl.innerHTML = '';
@@ -154,13 +164,15 @@ function renderLayers() {
     div.className = 'layer';
     div.dataset.id = layer.id;
 
-    const opRow = i === 0
-      ? '<div class="op-row" style="opacity:0.5; font-size:11px; color:var(--ink-faint);">base layer</div>'
-      : `
+    const opRow =
+      i === 0
+        ? '<div class="op-row" style="opacity:0.5; font-size:11px; color:var(--ink-faint);">base layer</div>'
+        : `
         <div class="op-row">
           <select class="op">
-            ${OPS.map(o =>
-              `<option value="${o}" ${o === layer.op ? 'selected' : ''}>${o === 'union' ? '∪ union' : o === 'intersection' ? '∩ intersect' : '− difference'}</option>`
+            ${OPS.map(
+              (o) =>
+                `<option value="${o}" ${o === layer.op ? 'selected' : ''}>${o === 'union' ? '∪ union' : o === 'intersection' ? '∩ intersect' : '− difference'}</option>`,
             ).join('')}
           </select>
           <span class="k-row">
@@ -171,11 +183,15 @@ function renderLayers() {
       `;
 
     const allParams = [...SCHEMA[layer.type].specific, ...COMMON];
-    const paramsHtml = allParams.map(({ name, label }) => `
+    const paramsHtml = allParams
+      .map(
+        ({ name, label }) => `
       <label>${label}
         <input type="number" name="${name}" step="0.05" value="${fmt(layer.params[name])}" />
       </label>
-    `).join('');
+    `,
+      )
+      .join('');
 
     div.innerHTML = `
       <header>
@@ -204,7 +220,7 @@ document.getElementById('toolbar').addEventListener('click', (e) => {
 layersEl.addEventListener('click', (e) => {
   if (!e.target.classList.contains('del')) return;
   const id = parseInt(e.target.closest('.layer').dataset.id, 10);
-  state.layers = state.layers.filter(l => l.id !== id);
+  state.layers = state.layers.filter((l) => l.id !== id);
   onChange({ rerenderLayers: true });
 });
 
@@ -212,7 +228,7 @@ layersEl.addEventListener('input', (e) => {
   const layerEl = e.target.closest('.layer');
   if (!layerEl) return;
   const id = parseInt(layerEl.dataset.id, 10);
-  const layer = state.layers.find(l => l.id === id);
+  const layer = state.layers.find((l) => l.id === id);
   if (!layer) return;
 
   if (e.target.classList.contains('op')) {
@@ -237,7 +253,9 @@ document.getElementById('copy').addEventListener('click', async () => {
     const btn = document.getElementById('copy');
     const old = btn.textContent;
     btn.textContent = 'copied';
-    setTimeout(() => { btn.textContent = old; }, 1200);
+    setTimeout(() => {
+      btn.textContent = old;
+    }, 1200);
   } catch {
     codeEl.select();
     document.execCommand('copy');
@@ -250,8 +268,8 @@ document.getElementById('clear').addEventListener('click', () => {
 
 // ---- 沙画渲染（p5 global mode）-------------------------------------------
 const BG = '#432';
-const COL_INSIDE   = '#06c';
-const COL_OUTSIDE  = '#f80';
+const COL_INSIDE = '#06c';
+const COL_OUTSIDE = '#f80';
 const COL_BOUNDARY = '#f5f5f5';
 const BAND = 0.01;
 const PER_FRAME = 1000;
@@ -278,9 +296,9 @@ window.draw = () => {
     const wy = R(2) - 1;
     const d = currentSdf([wx, wy]);
     let col;
-    if (d < -BAND)            col = COL_INSIDE;
-    else if (d > BAND)        col = COL_OUTSIDE;
-    else                      col = COL_BOUNDARY;
+    if (d < -BAND) col = COL_INSIDE;
+    else if (d > BAND) col = COL_OUTSIDE;
+    else col = COL_BOUNDARY;
     fill(col);
     circle(((wx + 1) * width) / 2, ((wy + 1) * height) / 2, 1);
   }
@@ -298,7 +316,7 @@ function onChange({ rerenderLayers = false } = {}) {
   currentSdf = buildSdf(state);
 
   if (p5Ready) {
-    background(BG);                                       // 清画布让新形状从头铺
+    background(BG); // 清画布让新形状从头铺
     frameCount = 0;
   }
 }

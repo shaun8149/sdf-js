@@ -42,17 +42,15 @@ function hash2(x, y) {
   // Rune's GLSL: vec2 k = vec2(0.3183099, 0.3678794);
   //              x = x * k + k.yx;
   //              return -1.0 + 2.0 * fract(16.0 * k * fract(x.x * x.y * (x.x + x.y)));
-  const kx = 0.3183099, ky = 0.3678794;
+  const kx = 0.3183099,
+    ky = 0.3678794;
   const px = x * kx + ky;
   const py = y * ky + kx;
   const xy = px * py * (px + py);
   const fxy = xy - Math.floor(xy);
   const a = 16 * kx * fxy;
   const b = 16 * ky * fxy;
-  return [
-    -1 + 2 * (a - Math.floor(a)),
-    -1 + 2 * (b - Math.floor(b)),
-  ];
+  return [-1 + 2 * (a - Math.floor(a)), -1 + 2 * (b - Math.floor(b))];
 }
 
 // ---------------------------------------------------------------------------
@@ -67,20 +65,24 @@ const TAU = Math.PI * 2;
 function phacelleNoise(px, py, ndx, ndy, freq, offset, normalization) {
   // sideDir = perp(normDir) × freq × TAU
   const sdx = -ndy * freq * TAU;
-  const sdy =  ndx * freq * TAU;
+  const sdy = ndx * freq * TAU;
   const off = offset * TAU;
 
-  const pInt_x = Math.floor(px), pInt_y = Math.floor(py);
-  const pFrac_x = px - pInt_x,  pFrac_y = py - pInt_y;
+  const pInt_x = Math.floor(px),
+    pInt_y = Math.floor(py);
+  const pFrac_x = px - pInt_x,
+    pFrac_y = py - pInt_y;
 
-  let phaseX = 0, phaseY = 0, weightSum = 0;
+  let phaseX = 0,
+    phaseY = 0,
+    weightSum = 0;
   // 4×4 cell window centered on the integer cell
   for (let j = -1; j <= 2; j++) {
     for (let i = -1; i <= 2; i++) {
       const gridX = pInt_x + i;
       const gridY = pInt_y + j;
       const [roX, roY] = hash2(gridX, gridY);
-      const randX = roX * 0.5;  // [-0.5, 0.5]
+      const randX = roX * 0.5; // [-0.5, 0.5]
       const randY = roY * 0.5;
       // vector from cell point to current p
       const vx = pFrac_x - i - randX;
@@ -114,12 +116,19 @@ function phacelleNoise(px, py, ndx, ndy, freq, offset, normalization) {
 // ---------------------------------------------------------------------------
 // Utility easing functions (Rune's GLSL helpers).
 // ---------------------------------------------------------------------------
-function clamp01(x) { return Math.max(0, Math.min(1, x)); }
-function powInv(t, p) { return 1 - Math.pow(1 - clamp01(t), p); }
-function easeOut(t) { const v = 1 - clamp01(t); return 1 - v * v; }
+function clamp01(x) {
+  return Math.max(0, Math.min(1, x));
+}
+function powInv(t, p) {
+  return 1 - Math.pow(1 - clamp01(t), p);
+}
+function easeOut(t) {
+  const v = 1 - clamp01(t);
+  return 1 - v * v;
+}
 function smoothStart(t, smoothing) {
   if (t >= smoothing) return t - 0.5 * smoothing;
-  return 0.5 * t * t / smoothing;
+  return (0.5 * t * t) / smoothing;
 }
 function safeNormalize2(x, y) {
   const l = Math.sqrt(x * x + y * y);
@@ -142,29 +151,48 @@ function safeNormalize2(x, y) {
 // Inputs match Rune's GLSL signature; see his blog for parameter meanings.
 // ---------------------------------------------------------------------------
 function erosionFilter(
-  px, py,
-  h, dhx, dhy,
+  px,
+  py,
+  h,
+  dhx,
+  dhy,
   fadeTarget,
   // stylistic
-  strength, gullyWeight, detail,
-  roundingX, roundingY, roundingZ, roundingW,
-  onsetX, onsetY, onsetZ, onsetW,
-  assumedSlopeX, assumedSlopeY,
+  strength,
+  gullyWeight,
+  detail,
+  roundingX,
+  roundingY,
+  roundingZ,
+  roundingW,
+  onsetX,
+  onsetY,
+  onsetZ,
+  onsetW,
+  assumedSlopeX,
+  assumedSlopeY,
   // scale
-  scale, octaves, lacunarity,
+  scale,
+  octaves,
+  lacunarity,
   // other
-  gain, cellScale, normalization,
+  gain,
+  cellScale,
+  normalization,
 ) {
   strength *= scale;
   fadeTarget = Math.max(-1, Math.min(1, fadeTarget));
 
-  const inH = h, inDhx = dhx, inDhy = dhy;
+  const inH = h,
+    inDhx = dhx,
+    inDhy = dhy;
   let freq = 1.0 / (scale * cellScale);
   const slopeLength = Math.max(Math.sqrt(dhx * dhx + dhy * dhy), 1e-10);
   let magnitude = 0;
   let roundingMult = 1.0;
 
-  const roundingForInput = roundingZ *
+  const roundingForInput =
+    roundingZ *
     (roundingY * clamp01(fadeTarget + 0.5) + roundingX * (1 - clamp01(fadeTarget + 0.5)));
   let combiMask = easeOut(smoothStart(slopeLength * onsetX, roundingForInput * onsetX));
 
@@ -196,23 +224,25 @@ function erosionFilter(
 
     // Fade gullies towards fadeTarget based on combiMask
     const fadedH = fadeTarget * (1 - combiMask) + gulliesH * gullyWeight * combiMask;
-    const fadedX = 0           * (1 - combiMask) + gulliesX * gullyWeight * combiMask;
-    const fadedY = 0           * (1 - combiMask) + gulliesY * gullyWeight * combiMask;
+    const fadedX = 0 * (1 - combiMask) + gulliesX * gullyWeight * combiMask;
+    const fadedY = 0 * (1 - combiMask) + gulliesY * gullyWeight * combiMask;
 
-    h   += fadedH * strength;
+    h += fadedH * strength;
     dhx += fadedX * strength;
     dhy += fadedY * strength;
     magnitude += strength;
     fadeTarget = fadedH;
 
     // Update mask using new octave's contribution
-    const roundingForOctave = roundingMult *
+    const roundingForOctave =
+      roundingMult *
       (roundingY * clamp01(phacelle.cos + 0.5) + roundingX * (1 - clamp01(phacelle.cos + 0.5)));
     const newMask = easeOut(smoothStart(sloping * onsetY, roundingForOctave * onsetY));
     combiMask = powInv(combiMask, detail) * newMask;
 
     // Ridge map update (different onset, no rounding)
-    ridgeMapFadeTarget = ridgeMapFadeTarget * (1 - ridgeMapCombiMask) + gulliesH * ridgeMapCombiMask;
+    ridgeMapFadeTarget =
+      ridgeMapFadeTarget * (1 - ridgeMapCombiMask) + gulliesH * ridgeMapCombiMask;
     const newRidgeMapMask = easeOut(sloping * onsetW);
     ridgeMapCombiMask = ridgeMapCombiMask * newRidgeMapMask;
 
@@ -240,30 +270,30 @@ function erosionFilter(
 // ---------------------------------------------------------------------------
 export const DEFAULT_EROSION_PARAMS = {
   // visual axis (hash-perturbed)
-  strength:     0.22,
-  gullyWeight:  0.5,
-  detail:       1.5,
-  roundingX:    0.1,   // ridge rounding
-  roundingY:    0.0,   // crease rounding
-  onset:        [0.7, 1.25, 2.8, 1.5],
-  cellScale:    0.7,
+  strength: 0.22,
+  gullyWeight: 0.5,
+  detail: 1.5,
+  roundingX: 0.1, // ridge rounding
+  roundingY: 0.0, // crease rounding
+  onset: [0.7, 1.25, 2.8, 1.5],
+  cellScale: 0.7,
   // geological axis (fixed)
-  scale:        0.15,
-  octaves:      5,
-  lacunarity:   2.0,
-  gain:         0.5,
+  scale: 0.15,
+  octaves: 5,
+  lacunarity: 2.0,
+  gain: 0.5,
   normalization: 0.5,
-  roundingZ:    0.1,   // height function multiplier (fixed for scale match)
-  roundingW:    2.0,   // per-octave rounding multiplier (matches lacunarity)
+  roundingZ: 0.1, // height function multiplier (fixed for scale match)
+  roundingW: 2.0, // per-octave rounding multiplier (matches lacunarity)
   assumedSlope: [0.7, 1.0],
   // height function (default Rune bump) — halved 2026-05-26 to match
   // wooden pedestal box at half-box height. waterHeight 0.23 (top of frame),
   // defaultHeight 0.20 (corners submerged → island visible).
-  defaultHeight: 0.20,
-  bumpAmount:    0.1,
+  defaultHeight: 0.2,
+  bumpAmount: 0.1,
   // shading thresholds (synced to waterHeight; tree placement uses grassHeight)
-  waterHeight:  0.23,
-  grassHeight:  0.235,
+  waterHeight: 0.23,
+  grassHeight: 0.235,
 };
 
 // ---------------------------------------------------------------------------
@@ -273,17 +303,17 @@ export const DEFAULT_EROSION_PARAMS = {
 export function jitterParams(rng, defaults = DEFAULT_EROSION_PARAMS) {
   const r = () => rng.random_num(-1, 1);
   const p = { ...defaults };
-  p.strength    = clamp01(defaults.strength    + r() * 0.075);   // ±0.075 → [0.145, 0.295]
-  p.gullyWeight = clamp01(defaults.gullyWeight + r() * 0.2);     // ±0.2   → [0.3, 0.7]
-  p.detail      =          defaults.detail     + r() * 0.5;      // ±0.5   → [1.0, 2.0]
-  p.roundingX   = clamp01(defaults.roundingX   + r() * 0.1);     // ±0.1   → [0.0, 0.2]
-  p.roundingY   = clamp01(defaults.roundingY   + r() * 0.1);     // ±0.1   → [0.0, 0.1]
-  p.cellScale   =          defaults.cellScale  + r() * 0.2;      // ±0.2   → [0.5, 0.9]
-  p.onset       = [
+  p.strength = clamp01(defaults.strength + r() * 0.075); // ±0.075 → [0.145, 0.295]
+  p.gullyWeight = clamp01(defaults.gullyWeight + r() * 0.2); // ±0.2   → [0.3, 0.7]
+  p.detail = defaults.detail + r() * 0.5; // ±0.5   → [1.0, 2.0]
+  p.roundingX = clamp01(defaults.roundingX + r() * 0.1); // ±0.1   → [0.0, 0.2]
+  p.roundingY = clamp01(defaults.roundingY + r() * 0.1); // ±0.1   → [0.0, 0.1]
+  p.cellScale = defaults.cellScale + r() * 0.2; // ±0.2   → [0.5, 0.9]
+  p.onset = [
     Math.max(0.1, defaults.onset[0] + r() * 0.14),
     Math.max(0.1, defaults.onset[1] + r() * 0.25),
     Math.max(0.1, defaults.onset[2] + r() * 0.56),
-    Math.max(0.1, defaults.onset[3] + r() * 0.30),
+    Math.max(0.1, defaults.onset[3] + r() * 0.3),
   ];
   // Noise domain offset — gives totally different terrains for same params,
   // different hash. Range chosen large enough to land in disjoint noise regions.
@@ -306,12 +336,12 @@ function generateBumpField(rng, overrides = {}) {
   // (numBumps=1, big brush) vs "5-peak ridge" (numBumps=5, small brush each)
   // for visible per-token diversity. Atlas defaults preserved when absent.
   const numBumps = overrides.numBumps ?? rng.random_int(1, 3);
-  const totalBudget = overrides.budget ?? 0.50;
-  const [cLo, cHi] = overrides.centerRange ?? [0.30, 0.70];
-  const [bLo, bHi] = overrides.brushRange  ?? [0.25, 0.45];
+  const totalBudget = overrides.budget ?? 0.5;
+  const [cLo, cHi] = overrides.centerRange ?? [0.3, 0.7];
+  const [bLo, bHi] = overrides.brushRange ?? [0.25, 0.45];
   const bumps = [];
   for (let i = 0; i < numBumps; i++) {
-    const remainingBudget = totalBudget * (numBumps - i) / numBumps;
+    const remainingBudget = (totalBudget * (numBumps - i)) / numBumps;
     bumps.push({
       cx: rng.random_num(cLo, cHi),
       cy: rng.random_num(cLo, cHi),
@@ -324,12 +354,17 @@ function generateBumpField(rng, overrides = {}) {
 
 // Evaluate sum of bumps at uv. Returns [h, dh/dx, dh/dy].
 function initialPaintBumps(ux, uy, defaultHeight, bumps) {
-  let h = defaultHeight, dhx = 0, dhy = 0;
+  let h = defaultHeight,
+    dhx = 0,
+    dhy = 0;
   for (const b of bumps) {
-    const dx = b.cx - ux, dy = b.cy - uy;
+    const dx = b.cx - ux,
+      dy = b.cy - uy;
     const dist = Math.sqrt(dx * dx + dy * dy);
     const freq = 1 / b.brush;
-    let x = 1 - freq * dist; if (x < 0) x = 0; if (x > 1) x = 1;
+    let x = 1 - freq * dist;
+    if (x < 0) x = 0;
+    if (x > 1) x = 1;
     const bumpH = x * x * (3 - 2 * x);
     const slopeMag = 6 * x * (1 - x) * freq;
     h += bumpH * b.amount;
@@ -362,7 +397,8 @@ export function bakeHeightmap(rng, paramsIn = {}, resolution = 512) {
   // Phase 2: paramsIn.bumpOverrides can bias count/budget/range per consumer.
   const bumps = generateBumpField(rng, paramsIn.bumpOverrides || {});
 
-  const W = resolution, H = resolution;
+  const W = resolution,
+    H = resolution;
   const data = new Float32Array(W * H * 4);
   const offX = params.noiseOffsetX || 0;
   const offY = params.noiseOffsetY || 0;
@@ -379,13 +415,31 @@ export function bakeHeightmap(rng, paramsIn = {}, resolution = 512) {
       const ph = ux + offX;
       const pq = uy + offY;
       const er = erosionFilter(
-        ph, pq, h0, dhx0, dhy0, fadeTarget,
-        params.strength, params.gullyWeight, params.detail,
-        params.roundingX, params.roundingY, params.roundingZ, params.roundingW,
-        params.onset[0], params.onset[1], params.onset[2], params.onset[3],
-        params.assumedSlope[0], params.assumedSlope[1],
-        params.scale, params.octaves, params.lacunarity,
-        params.gain, params.cellScale, params.normalization,
+        ph,
+        pq,
+        h0,
+        dhx0,
+        dhy0,
+        fadeTarget,
+        params.strength,
+        params.gullyWeight,
+        params.detail,
+        params.roundingX,
+        params.roundingY,
+        params.roundingZ,
+        params.roundingW,
+        params.onset[0],
+        params.onset[1],
+        params.onset[2],
+        params.onset[3],
+        params.assumedSlope[0],
+        params.assumedSlope[1],
+        params.scale,
+        params.octaves,
+        params.lacunarity,
+        params.gain,
+        params.cellScale,
+        params.normalization,
       );
       const eroded = h0 + er.dh;
       // 4. Tree placement (geometric component only — shader adds fine noise
@@ -395,19 +449,22 @@ export function bakeHeightmap(rng, paramsIn = {}, resolution = 512) {
       const normalLenSq = 1 + (dhx0 + er.dhx) * (dhx0 + er.dhx) + (dhy0 + er.dhy) * (dhy0 + er.dhy);
       const normalY = 1 / Math.sqrt(normalLenSq);
       const occlusion = er.dh / Math.max(1e-6, er.magnitude) + 0.5;
-      const treesAmount = (
-        smoothstep(params.grassHeight + 0.05, params.grassHeight + 0.01, eroded + 0.01 + (occlusion - 0.8) * 0.05) *
+      const treesAmount =
+        smoothstep(
+          params.grassHeight + 0.05,
+          params.grassHeight + 0.01,
+          eroded + 0.01 + (occlusion - 0.8) * 0.05,
+        ) *
         smoothstep(0.0, 0.4, occlusion) *
         smoothstep(0.95, 1.0, normalY) *
         smoothstep(-1.4, 0.0, er.ridgeMap) *
-        smoothstep(params.waterHeight + 0.0, params.waterHeight + 0.007, eroded)
-      );
+        smoothstep(params.waterHeight + 0.0, params.waterHeight + 0.007, eroded);
       // 5. Pack into 4 channels (all in [0, 1] for clean texture upload)
       const idx = (j * W + i) * 4;
       data[idx + 0] = clamp01(eroded);
-      data[idx + 1] = clamp01(er.ridgeMap * 0.5 + 0.5);  // [-1,1] → [0,1]
+      data[idx + 1] = clamp01(er.ridgeMap * 0.5 + 0.5); // [-1,1] → [0,1]
       data[idx + 2] = clamp01(treesAmount);
-      data[idx + 3] = clamp01(er.dh / Math.max(1e-6, er.magnitude) * 0.5 + 0.5);
+      data[idx + 3] = clamp01((er.dh / Math.max(1e-6, er.magnitude)) * 0.5 + 0.5);
     }
   }
 
@@ -429,18 +486,17 @@ function smoothstep(a, b, x) {
 // ---------------------------------------------------------------------------
 import { SDF3 } from '../../../sdf/core.js';
 
-export function terrainErodedRuneSDF({
-  boxSize     = [0.5, 1.0, 0.5],
-  waterHeight = 0.46,
-} = {}) {
+export function terrainErodedRuneSDF({ boxSize = [0.5, 1.0, 0.5], waterHeight = 0.46 } = {}) {
   const [bx, by, bz] = boxSize;
   const inst = SDF3((p) => {
     // CPU stub: just the box bound. Real heightmap-as-SDF lives on GPU.
     const dx = Math.abs(p[0]) - bx;
     const dy = Math.abs(p[1] - by * 0.5) - by * 0.5;
     const dz = Math.abs(p[2]) - bz;
-    return Math.min(Math.max(dx, Math.max(dy, dz)), 0) +
-      Math.hypot(Math.max(dx, 0), Math.max(dy, 0), Math.max(dz, 0));
+    return (
+      Math.min(Math.max(dx, Math.max(dy, dz)), 0) +
+      Math.hypot(Math.max(dx, 0), Math.max(dy, 0), Math.max(dz, 0))
+    );
   });
   inst.ast = {
     kind: 'prim',

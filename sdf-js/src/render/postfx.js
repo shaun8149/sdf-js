@@ -428,21 +428,21 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
     u_dofMaxRadius: gl.getUniformLocation(compositeProgram, 'u_dofMaxRadius'),
     u_time: gl.getUniformLocation(compositeProgram, 'u_time'),
     // Sprint 2 motion blur uniforms
-    u_curCamPos:     gl.getUniformLocation(compositeProgram, 'u_curCamPos'),
-    u_curCamFwd:     gl.getUniformLocation(compositeProgram, 'u_curCamFwd'),
-    u_curCamRight:   gl.getUniformLocation(compositeProgram, 'u_curCamRight'),
-    u_curCamUp:      gl.getUniformLocation(compositeProgram, 'u_curCamUp'),
-    u_curCamFocal:   gl.getUniformLocation(compositeProgram, 'u_curCamFocal'),
-    u_prevCamPos:    gl.getUniformLocation(compositeProgram, 'u_prevCamPos'),
-    u_prevCamFwd:    gl.getUniformLocation(compositeProgram, 'u_prevCamFwd'),
-    u_prevCamRight:  gl.getUniformLocation(compositeProgram, 'u_prevCamRight'),
-    u_prevCamUp:     gl.getUniformLocation(compositeProgram, 'u_prevCamUp'),
-    u_prevCamFocal:  gl.getUniformLocation(compositeProgram, 'u_prevCamFocal'),
+    u_curCamPos: gl.getUniformLocation(compositeProgram, 'u_curCamPos'),
+    u_curCamFwd: gl.getUniformLocation(compositeProgram, 'u_curCamFwd'),
+    u_curCamRight: gl.getUniformLocation(compositeProgram, 'u_curCamRight'),
+    u_curCamUp: gl.getUniformLocation(compositeProgram, 'u_curCamUp'),
+    u_curCamFocal: gl.getUniformLocation(compositeProgram, 'u_curCamFocal'),
+    u_prevCamPos: gl.getUniformLocation(compositeProgram, 'u_prevCamPos'),
+    u_prevCamFwd: gl.getUniformLocation(compositeProgram, 'u_prevCamFwd'),
+    u_prevCamRight: gl.getUniformLocation(compositeProgram, 'u_prevCamRight'),
+    u_prevCamUp: gl.getUniformLocation(compositeProgram, 'u_prevCamUp'),
+    u_prevCamFocal: gl.getUniformLocation(compositeProgram, 'u_prevCamFocal'),
     u_motionBlurStrength: gl.getUniformLocation(compositeProgram, 'u_motionBlurStrength'),
-    u_prevCamValid:  gl.getUniformLocation(compositeProgram, 'u_prevCamValid'),
-    u_sceneMaxDist:  gl.getUniformLocation(compositeProgram, 'u_sceneMaxDist'),
+    u_prevCamValid: gl.getUniformLocation(compositeProgram, 'u_prevCamValid'),
+    u_sceneMaxDist: gl.getUniformLocation(compositeProgram, 'u_sceneMaxDist'),
     // Sprint 6: heat haze. Array uniform fetched by [0] indexed name.
-    u_heatHaze:      gl.getUniformLocation(compositeProgram, 'u_heatHaze[0]'),
+    u_heatHaze: gl.getUniformLocation(compositeProgram, 'u_heatHaze[0]'),
     u_heatHazeCount: gl.getUniformLocation(compositeProgram, 'u_heatHazeCount'),
   };
 
@@ -481,16 +481,16 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
 
   function render(sceneTex, sceneW, sceneH, canvasW, canvasH, params, tSec) {
     const p = params || {};
-    const exposure          = p.exposure          ?? 1.0;
-    const vignetteStrength  = p.vignetteStrength  ?? 0.4;
-    const bloomMix          = p.bloomMix          ?? 0.15;
-    const bloomThreshold    = p.bloomThreshold    ?? 0.8;
+    const exposure = p.exposure ?? 1.0;
+    const vignetteStrength = p.vignetteStrength ?? 0.4;
+    const bloomMix = p.bloomMix ?? 0.15;
+    const bloomThreshold = p.bloomThreshold ?? 0.8;
     const lensFlareStrength = p.lensFlareStrength ?? 0.2;
-    const gamma             = p.gamma             ?? 2.2;
-    const aperture          = p.aperture          ?? 0.0;
-    const focalDistance     = p.focalDistance     ?? 5.0;
-    const focalLength       = p.focalLength       ?? 0.15;
-    const dofMaxRadius      = p.dofMaxRadius      ?? 0.05;
+    const gamma = p.gamma ?? 2.2;
+    const aperture = p.aperture ?? 0.0;
+    const focalDistance = p.focalDistance ?? 5.0;
+    const focalLength = p.focalLength ?? 0.15;
+    const dofMaxRadius = p.dofMaxRadius ?? 0.05;
 
     // ---- Pass A: bloom pre-blur ----
     gl.bindFramebuffer(gl.FRAMEBUFFER, bloomFbo);
@@ -534,17 +534,22 @@ export function createPostFxPipeline(gl, vbuf, opts = {}) {
     gl.uniform1f(compU.u_sceneMaxDist, sceneMaxDist);
     gl.uniform1f(compU.u_prevCamValid, p._prevCamValid ? 1.0 : 0.0);
     if (p._curCamPos) {
-      gl.uniform3f(compU.u_curCamPos,   p._curCamPos[0],   p._curCamPos[1],   p._curCamPos[2]);
-      gl.uniform3f(compU.u_curCamFwd,   p._curCamFwd[0],   p._curCamFwd[1],   p._curCamFwd[2]);
+      gl.uniform3f(compU.u_curCamPos, p._curCamPos[0], p._curCamPos[1], p._curCamPos[2]);
+      gl.uniform3f(compU.u_curCamFwd, p._curCamFwd[0], p._curCamFwd[1], p._curCamFwd[2]);
       gl.uniform3f(compU.u_curCamRight, p._curCamRight[0], p._curCamRight[1], p._curCamRight[2]);
-      gl.uniform3f(compU.u_curCamUp,    p._curCamUp[0],    p._curCamUp[1],    p._curCamUp[2]);
+      gl.uniform3f(compU.u_curCamUp, p._curCamUp[0], p._curCamUp[1], p._curCamUp[2]);
       gl.uniform1f(compU.u_curCamFocal, p._curCamFov);
     }
     if (p._prevCamPos) {
-      gl.uniform3f(compU.u_prevCamPos,   p._prevCamPos[0],   p._prevCamPos[1],   p._prevCamPos[2]);
-      gl.uniform3f(compU.u_prevCamFwd,   p._prevCamFwd[0],   p._prevCamFwd[1],   p._prevCamFwd[2]);
-      gl.uniform3f(compU.u_prevCamRight, p._prevCamRight[0], p._prevCamRight[1], p._prevCamRight[2]);
-      gl.uniform3f(compU.u_prevCamUp,    p._prevCamUp[0],    p._prevCamUp[1],    p._prevCamUp[2]);
+      gl.uniform3f(compU.u_prevCamPos, p._prevCamPos[0], p._prevCamPos[1], p._prevCamPos[2]);
+      gl.uniform3f(compU.u_prevCamFwd, p._prevCamFwd[0], p._prevCamFwd[1], p._prevCamFwd[2]);
+      gl.uniform3f(
+        compU.u_prevCamRight,
+        p._prevCamRight[0],
+        p._prevCamRight[1],
+        p._prevCamRight[2],
+      );
+      gl.uniform3f(compU.u_prevCamUp, p._prevCamUp[0], p._prevCamUp[1], p._prevCamUp[2]);
       gl.uniform1f(compU.u_prevCamFocal, p._prevCamFov);
     }
 

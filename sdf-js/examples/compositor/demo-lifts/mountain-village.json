@@ -20,11 +20,7 @@
           "baseRadius": 10
         },
         "transform": {
-          "translate": [
-            -18,
-            6,
-            48
-          ]
+          "translate": [-18, 6, 48]
         },
         "material": {
           "hue": 0.6,
@@ -42,11 +38,7 @@
           "baseRadius": 13
         },
         "transform": {
-          "translate": [
-            -3,
-            8,
-            52
-          ]
+          "translate": [-3, 8, 52]
         },
         "material": {
           "hue": 0.6,
@@ -64,11 +56,7 @@
           "baseRadius": 11
         },
         "transform": {
-          "translate": [
-            15,
-            7,
-            50
-          ]
+          "translate": [15, 7, 50]
         },
         "material": {
           "hue": 0.6,
@@ -86,11 +74,7 @@
           "baseRadius": 9
         },
         "transform": {
-          "translate": [
-            -12,
-            5,
-            32
-          ]
+          "translate": [-12, 5, 32]
         },
         "material": {
           "hue": 0.3,
@@ -108,11 +92,7 @@
           "baseRadius": 10
         },
         "transform": {
-          "translate": [
-            2,
-            6,
-            35
-          ]
+          "translate": [2, 6, 35]
         },
         "material": {
           "hue": 0.3,
@@ -130,11 +110,7 @@
           "baseRadius": 9.5
         },
         "transform": {
-          "translate": [
-            16,
-            5.5,
-            33
-          ]
+          "translate": [16, 5.5, 33]
         },
         "material": {
           "hue": 0.3,
@@ -152,11 +128,7 @@
           "height": 3
         },
         "transform": {
-          "translate": [
-            -8,
-            1.5,
-            18
-          ]
+          "translate": [-8, 1.5, 18]
         },
         "material": {
           "hue": 0.28,
@@ -174,11 +146,7 @@
           "height": 3.5
         },
         "transform": {
-          "translate": [
-            3,
-            1.75,
-            20
-          ]
+          "translate": [3, 1.75, 20]
         },
         "material": {
           "hue": 0.28,
@@ -196,11 +164,7 @@
           "height": 3.2
         },
         "transform": {
-          "translate": [
-            13,
-            1.6,
-            19
-          ]
+          "translate": [13, 1.6, 19]
         },
         "material": {
           "hue": 0.28,
@@ -214,18 +178,10 @@
         "id": "stream-pond",
         "type": "ellipsoid",
         "args": {
-          "dims": [
-            1.2,
-            0.05,
-            0.6
-          ]
+          "dims": [1.2, 0.05, 0.6]
         },
         "transform": {
-          "translate": [
-            0.5,
-            0.025,
-            3
-          ]
+          "translate": [0.5, 0.025, 3]
         },
         "material": {
           "hue": 0.55,
@@ -239,16 +195,8 @@
         "id": "stream-narrow",
         "type": "capsule",
         "args": {
-          "a": [
-            -2.8,
-            0,
-            3.2
-          ],
-          "b": [
-            0,
-            0,
-            3
-          ],
+          "a": [-2.8, 0, 3.2],
+          "b": [0, 0, 3],
           "radius": 0.12
         },
         "material": {
@@ -263,16 +211,8 @@
         "id": "path-lower",
         "type": "capsule",
         "args": {
-          "a": [
-            1,
-            0.01,
-            -2
-          ],
-          "b": [
-            0.5,
-            0.01,
-            1.5
-          ],
+          "a": [1, 0.01, -2],
+          "b": [0.5, 0.01, 1.5],
           "radius": 0.18
         },
         "material": {
@@ -287,16 +227,8 @@
         "id": "path-mid",
         "type": "capsule",
         "args": {
-          "a": [
-            0.5,
-            0.01,
-            1.5
-          ],
-          "b": [
-            -0.8,
-            0.01,
-            3
-          ],
+          "a": [0.5, 0.01, 1.5],
+          "b": [-0.8, 0.01, 3],
           "radius": 0.14
         },
         "material": {
@@ -311,16 +243,8 @@
         "id": "path-upper",
         "type": "capsule",
         "args": {
-          "a": [
-            -0.8,
-            0.01,
-            3
-          ],
-          "b": [
-            -1.8,
-            0.01,
-            4.2
-          ],
+          "a": [-0.8, 0.01, 3],
+          "b": [-1.8, 0.01, 4.2],
           "radius": 0.12
         },
         "material": {
@@ -340,11 +264,7 @@
           "roofHeight": 1
         },
         "transform": {
-          "translate": [
-            -6.2,
-            0.9,
-            4.2
-          ]
+          "translate": [-6.2, 0.9, 4.2]
         },
         "material": "stone",
         "pattern": {
@@ -360,16 +280,8 @@
           "height": 1
         },
         "transform": {
-          "translate": [
-            -6.2,
-            2.8,
-            4.2
-          ],
-          "scale": [
-            1.92,
-            1,
-            1.92
-          ]
+          "translate": [-6.2, 2.8, 4.2],
+          "scale": [1.92, 1, 1.92]
         },
         "material": "terracotta"
       },
@@ -377,18 +289,10 @@
         "id": "house-1-chimney",
         "type": "box",
         "args": {
-          "dims": [
-            0.22,
-            0.55,
-            0.22
-          ]
+          "dims": [0.22, 0.55, 0.22]
         },
         "transform": {
-          "translate": [
-            -5.8,
-            3.55,
-            4.2
-          ]
+          "translate": [-5.8, 3.55, 4.2]
         },
         "material": {
           "hue": 0.1,
@@ -407,11 +311,7 @@
           "roofHeight": 0.9
         },
         "transform": {
-          "translate": [
-            -3.8,
-            0.8,
-            3.8
-          ]
+          "translate": [-3.8, 0.8, 3.8]
         },
         "material": "stone",
         "pattern": {
@@ -427,16 +327,8 @@
           "height": 0.9
         },
         "transform": {
-          "translate": [
-            -3.8,
-            2.5,
-            3.8
-          ],
-          "scale": [
-            1.7,
-            1,
-            1.7
-          ]
+          "translate": [-3.8, 2.5, 3.8],
+          "scale": [1.7, 1, 1.7]
         },
         "material": "terracotta"
       },
@@ -444,18 +336,10 @@
         "id": "house-2-chimney",
         "type": "box",
         "args": {
-          "dims": [
-            0.19,
-            0.5,
-            0.19
-          ]
+          "dims": [0.19, 0.5, 0.19]
         },
         "transform": {
-          "translate": [
-            -3.45,
-            3.15,
-            3.8
-          ]
+          "translate": [-3.45, 3.15, 3.8]
         },
         "material": {
           "hue": 0.1,
@@ -474,11 +358,7 @@
           "roofHeight": 1.1
         },
         "transform": {
-          "translate": [
-            -1.4,
-            1,
-            4
-          ]
+          "translate": [-1.4, 1, 4]
         },
         "material": "stone",
         "pattern": {
@@ -494,16 +374,8 @@
           "height": 1.1
         },
         "transform": {
-          "translate": [
-            -1.4,
-            3.1,
-            4
-          ],
-          "scale": [
-            2.14,
-            1,
-            2.14
-          ]
+          "translate": [-1.4, 3.1, 4],
+          "scale": [2.14, 1, 2.14]
         },
         "material": "terracotta"
       },
@@ -511,18 +383,10 @@
         "id": "house-3-chimney",
         "type": "box",
         "args": {
-          "dims": [
-            0.24,
-            0.6,
-            0.24
-          ]
+          "dims": [0.24, 0.6, 0.24]
         },
         "transform": {
-          "translate": [
-            -0.96,
-            3.7,
-            4
-          ]
+          "translate": [-0.96, 3.7, 4]
         },
         "material": {
           "hue": 0.1,
@@ -541,11 +405,7 @@
           "roofHeight": 0.8
         },
         "transform": {
-          "translate": [
-            1.6,
-            0.75,
-            3.6
-          ]
+          "translate": [1.6, 0.75, 3.6]
         },
         "material": "stone",
         "pattern": {
@@ -561,16 +421,8 @@
           "height": 0.8
         },
         "transform": {
-          "translate": [
-            1.6,
-            2.35,
-            3.6
-          ],
-          "scale": [
-            1.6,
-            1,
-            1.6
-          ]
+          "translate": [1.6, 2.35, 3.6],
+          "scale": [1.6, 1, 1.6]
         },
         "material": "terracotta"
       },
@@ -583,11 +435,7 @@
           "roofHeight": 1
         },
         "transform": {
-          "translate": [
-            4,
-            0.85,
-            3.9
-          ]
+          "translate": [4, 0.85, 3.9]
         },
         "material": "stone",
         "pattern": {
@@ -603,16 +451,8 @@
           "height": 1
         },
         "transform": {
-          "translate": [
-            4,
-            2.7,
-            3.9
-          ],
-          "scale": [
-            1.82,
-            1,
-            1.82
-          ]
+          "translate": [4, 2.7, 3.9],
+          "scale": [1.82, 1, 1.82]
         },
         "material": "terracotta"
       },
@@ -620,18 +460,10 @@
         "id": "house-5-chimney",
         "type": "box",
         "args": {
-          "dims": [
-            0.2,
-            0.55,
-            0.2
-          ]
+          "dims": [0.2, 0.55, 0.2]
         },
         "transform": {
-          "translate": [
-            4.37,
-            3.45,
-            3.9
-          ]
+          "translate": [4.37, 3.45, 3.9]
         },
         "material": {
           "hue": 0.1,
@@ -650,11 +482,7 @@
           "roofHeight": 0.8
         },
         "transform": {
-          "translate": [
-            -5,
-            0.65,
-            6.5
-          ]
+          "translate": [-5, 0.65, 6.5]
         },
         "material": "stone",
         "pattern": {
@@ -670,16 +498,8 @@
           "height": 0.8
         },
         "transform": {
-          "translate": [
-            -5,
-            2.05,
-            6.5
-          ],
-          "scale": [
-            1.39,
-            1,
-            1.39
-          ]
+          "translate": [-5, 2.05, 6.5],
+          "scale": [1.39, 1, 1.39]
         },
         "material": "terracotta"
       },
@@ -687,18 +507,10 @@
         "id": "church-tower-base",
         "type": "box",
         "args": {
-          "dims": [
-            0.95,
-            3,
-            0.95
-          ]
+          "dims": [0.95, 3, 0.95]
         },
         "transform": {
-          "translate": [
-            -1.4,
-            1.5,
-            5
-          ]
+          "translate": [-1.4, 1.5, 5]
         },
         "material": "stone",
         "pattern": {
@@ -714,16 +526,8 @@
           "height": 1.4
         },
         "transform": {
-          "translate": [
-            -1.4,
-            4.4,
-            5
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ]
+          "translate": [-1.4, 4.4, 5],
+          "scale": [1, 1, 1]
         },
         "material": "matte-black"
       },
@@ -731,18 +535,10 @@
         "id": "church-cross-vertical",
         "type": "box",
         "args": {
-          "dims": [
-            0.05,
-            0.28,
-            0.05
-          ]
+          "dims": [0.05, 0.28, 0.05]
         },
         "transform": {
-          "translate": [
-            -1.4,
-            5.94,
-            5
-          ]
+          "translate": [-1.4, 5.94, 5]
         },
         "material": "matte-black"
       },
@@ -750,18 +546,10 @@
         "id": "church-cross-horizontal",
         "type": "box",
         "args": {
-          "dims": [
-            0.18,
-            0.05,
-            0.05
-          ]
+          "dims": [0.18, 0.05, 0.05]
         },
         "transform": {
-          "translate": [
-            -1.4,
-            5.84,
-            5
-          ]
+          "translate": [-1.4, 5.84, 5]
         },
         "material": "matte-black"
       },
@@ -769,16 +557,8 @@
         "id": "church-window",
         "type": "capped_cone",
         "args": {
-          "a": [
-            -1.4,
-            2.2,
-            4.52
-          ],
-          "b": [
-            -1.4,
-            2.7,
-            4.52
-          ],
+          "a": [-1.4, 2.2, 4.52],
+          "b": [-1.4, 2.7, 4.52],
           "r1": 0.15,
           "r2": 0.05
         },
@@ -799,11 +579,7 @@
           "depth": 0.36
         },
         "transform": {
-          "translate": [
-            -5.8,
-            4.25,
-            4.2
-          ]
+          "translate": [-5.8, 4.25, 4.2]
         },
         "material": {
           "hue": 0.12,
@@ -822,11 +598,7 @@
           "depth": 0.28
         },
         "transform": {
-          "translate": [
-            -0.96,
-            4,
-            4
-          ]
+          "translate": [-0.96, 4, 4]
         },
         "material": {
           "hue": 0.12,
@@ -845,11 +617,7 @@
           "depth": 0.24
         },
         "transform": {
-          "translate": [
-            4.37,
-            4.2,
-            3.9
-          ]
+          "translate": [4.37, 4.2, 3.9]
         },
         "material": {
           "hue": 0.12,
@@ -866,16 +634,8 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            -1.5,
-            0,
-            1
-          ],
-          "rotate": [
-            0,
-            0.5,
-            0
-          ]
+          "translate": [-1.5, 0, 1],
+          "rotate": [0, 0.5, 0]
         },
         "material": {
           "hue": 0.1,
@@ -892,16 +652,8 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            3.5,
-            0,
-            0.8
-          ],
-          "rotate": [
-            0,
-            -0.3,
-            0
-          ]
+          "translate": [3.5, 0, 0.8],
+          "rotate": [0, -0.3, 0]
         },
         "material": {
           "hue": 0.1,
@@ -918,16 +670,8 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            -4.5,
-            0,
-            0.7
-          ],
-          "rotate": [
-            0,
-            0.8,
-            0
-          ]
+          "translate": [-4.5, 0, 0.7],
+          "rotate": [0, 0.8, 0]
         },
         "material": {
           "hue": 0.07,
@@ -944,11 +688,7 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            5.5,
-            0,
-            1.2
-          ]
+          "translate": [5.5, 0, 1.2]
         },
         "material": "matte-white"
       },
@@ -959,11 +699,7 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            5.9,
-            0,
-            1.6
-          ]
+          "translate": [5.9, 0, 1.6]
         },
         "material": "matte-white"
       },
@@ -974,11 +710,7 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            6.3,
-            0,
-            1.4
-          ]
+          "translate": [6.3, 0, 1.4]
         },
         "material": "matte-white"
       },
@@ -989,16 +721,8 @@
           "scale": 1
         },
         "transform": {
-          "translate": [
-            -2,
-            0,
-            2.2
-          ],
-          "rotate": [
-            0,
-            -0.6,
-            0
-          ]
+          "translate": [-2, 0, 2.2],
+          "rotate": [0, -0.6, 0]
         },
         "material": {
           "hue": 0.08,
@@ -1016,11 +740,7 @@
           "height": 0.4
         },
         "transform": {
-          "translate": [
-            -0.5,
-            0,
-            1
-          ]
+          "translate": [-0.5, 0, 1]
         },
         "material": "wood"
       },
@@ -1032,16 +752,8 @@
           "height": 0.4
         },
         "transform": {
-          "translate": [
-            2.8,
-            0,
-            1
-          ],
-          "rotate": [
-            0,
-            0.3,
-            0
-          ]
+          "translate": [2.8, 0, 1],
+          "rotate": [0, 0.3, 0]
         },
         "material": "wood"
       },
@@ -1053,11 +765,7 @@
           "wallHeight": 0.5
         },
         "transform": {
-          "translate": [
-            0.8,
-            0,
-            2.5
-          ]
+          "translate": [0.8, 0, 2.5]
         },
         "material": "stone"
       },
@@ -1069,11 +777,7 @@
           "bloomRadius": 0.12
         },
         "transform": {
-          "translate": [
-            -3,
-            0,
-            1.8
-          ]
+          "translate": [-3, 0, 1.8]
         },
         "material": {
           "hue": 0.92,
@@ -1091,11 +795,7 @@
           "bloomRadius": 0.13
         },
         "transform": {
-          "translate": [
-            -2.6,
-            0,
-            2
-          ]
+          "translate": [-2.6, 0, 2]
         },
         "material": {
           "hue": 0.98,
@@ -1113,11 +813,7 @@
           "bloomRadius": 0.11
         },
         "transform": {
-          "translate": [
-            -3.3,
-            0,
-            1.5
-          ]
+          "translate": [-3.3, 0, 1.5]
         },
         "material": {
           "hue": 0.15,
@@ -1134,11 +830,7 @@
           "radius": 0.32
         },
         "transform": {
-          "translate": [
-            -1,
-            0.16,
-            2
-          ]
+          "translate": [-1, 0.16, 2]
         },
         "material": {
           "hue": 0.3,
@@ -1155,11 +847,7 @@
           "radius": 0.28
         },
         "transform": {
-          "translate": [
-            1.5,
-            0.14,
-            2.2
-          ]
+          "translate": [1.5, 0.14, 2.2]
         },
         "material": {
           "hue": 0.3,
@@ -1180,11 +868,7 @@
           "layers": 4
         },
         "transform": {
-          "translate": [
-            0,
-            0,
-            0
-          ]
+          "translate": [0, 0, 0]
         },
         "material": {
           "hue": 0.28,
@@ -1199,15 +883,8 @@
             "count": 18,
             "region": {
               "type": "rectXZ",
-              "center": [
-                0,
-                0,
-                0
-              ],
-              "size": [
-                45,
-                45
-              ]
+              "center": [0, 0, 0],
+              "size": [45, 45]
             },
             "separation": 3.5,
             "heading": "random",
@@ -1215,11 +892,7 @@
               "jitter": 0.4
             },
             "translate": {
-              "jitter": [
-                1,
-                0,
-                1
-              ]
+              "jitter": [1, 0, 1]
             }
           }
         ]

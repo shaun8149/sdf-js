@@ -16,16 +16,24 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.halfWidth=0.06]  half-thickness of the bar in the XY plane
  * @param {number} [opts.halfDepth=0.04]  half-extent along Z (out-of-plane)
  */
-export function uShapeSDF({ radius = 0.3, legLength = 0.2, halfWidth = 0.06, halfDepth = 0.04 } = {}) {
-  const r = radius, le = legLength, wx = halfWidth, wy = halfDepth;
+export function uShapeSDF({
+  radius = 0.3,
+  legLength = 0.2,
+  halfWidth = 0.06,
+  halfDepth = 0.04,
+} = {}) {
+  const r = radius,
+    le = legLength,
+    wx = halfWidth,
+    wy = halfDepth;
   const inst = SDF3((p) => {
     const py = p[1];
     // p.x = (p.y > 0) ? abs(p.x) : length(p.xy)
-    let px = (py > 0) ? Math.abs(p[0]) : Math.sqrt(p[0] * p[0] + py * py);
+    let px = py > 0 ? Math.abs(p[0]) : Math.sqrt(p[0] * p[0] + py * py);
     px = Math.abs(px - r);
     const pyAdj = py - le;
     const k = Math.max(px, pyAdj);
-    const qx = (k < 0) ? -k : Math.sqrt(Math.max(px, 0) ** 2 + Math.max(pyAdj, 0) ** 2);
+    const qx = k < 0 ? -k : Math.sqrt(Math.max(px, 0) ** 2 + Math.max(pyAdj, 0) ** 2);
     const qy = Math.abs(p[2]);
     const dx = qx - wx;
     const dy = qy - wy;
@@ -39,7 +47,7 @@ export const uShapeSpec = {
   type: 'u-shape',
   category: 'primitive',
   args: {
-    radius:    { type: 'number', default: 0.3 },
+    radius: { type: 'number', default: 0.3 },
     legLength: { type: 'number', default: 0.2 },
     halfWidth: { type: 'number', default: 0.06 },
     halfDepth: { type: 'number', default: 0.04 },
@@ -47,6 +55,8 @@ export const uShapeSpec = {
   source: {
     portedFrom: 'https://iquilezles.org/articles/distfunctions/',
     originalAuthor: 'Inigo Quilez',
-    license: 'MIT', portedAt: '2026-05-18', porter: 'Atlas /port-shader batch port',
+    license: 'MIT',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader batch port',
   },
 };

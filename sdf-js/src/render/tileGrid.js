@@ -21,8 +21,8 @@
 export function tileGrid(ctx, { bounds, cellSize, border = 0, tile }) {
   const minX = bounds.minX + border;
   const minY = bounds.minY + border;
-  const totalW = (bounds.maxX - bounds.minX) - 2 * border;
-  const totalH = (bounds.maxY - bounds.minY) - 2 * border;
+  const totalW = bounds.maxX - bounds.minX - 2 * border;
+  const totalH = bounds.maxY - bounds.minY - 2 * border;
 
   const cols = Math.max(1, Math.floor(totalW / cellSize));
   const rows = Math.max(1, Math.floor(totalH / cellSize));
@@ -34,9 +34,16 @@ export function tileGrid(ctx, { bounds, cellSize, border = 0, tile }) {
       const x = minX + i * w;
       const y = minY + j * h;
       tile(ctx, {
-        x, y, w, h,
-        cx: x + w / 2, cy: y + h / 2,
-        i, j, cols, rows,
+        x,
+        y,
+        w,
+        h,
+        cx: x + w / 2,
+        cy: y + h / 2,
+        i,
+        j,
+        cols,
+        rows,
       });
     }
   }

@@ -9,18 +9,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": 5.0 } }
+        {
+          "channel": "transform.translate.x",
+          "value": { "kind": "time", "form": "linear", "coef": 5.0 }
+        }
       ],
       "source": {
         "id": "bird-he",
         "type": "union",
         "transform": { "translate": [0, 9, 2] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "9 + 0.3 * cos(t * 4)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "9 + 0.3 * cos(t * 4)" }],
         "children": [
-          { "id": "bird-he-body",  "type": "capsule", "args": { "a": [-0.25, 0, 0], "b": [0.25, 0, 0], "radius": 0.06 } },
-          { "id": "bird-he-wings", "type": "capsule", "args": { "a": [0, 0, -0.35], "b": [0, 0, 0.35], "radius": 0.06 } }
+          {
+            "id": "bird-he-body",
+            "type": "capsule",
+            "args": { "a": [-0.25, 0, 0], "b": [0.25, 0, 0], "radius": 0.06 }
+          },
+          {
+            "id": "bird-he-wings",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.35], "b": [0, 0, 0.35], "radius": 0.06 }
+          }
         ]
       }
     },
@@ -31,18 +40,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.x", "value": { "kind": "time", "form": "linear", "coef": -3.5 } }
+        {
+          "channel": "transform.translate.x",
+          "value": { "kind": "time", "form": "linear", "coef": -3.5 }
+        }
       ],
       "source": {
         "id": "bird-mw",
         "type": "union",
         "transform": { "translate": [0, 6, -4] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "6 + 0.2 * cos(t * 3.5)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "6 + 0.2 * cos(t * 3.5)" }],
         "children": [
-          { "id": "bird-mw-body",  "type": "capsule", "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 } },
-          { "id": "bird-mw-wings", "type": "capsule", "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 } }
+          {
+            "id": "bird-mw-body",
+            "type": "capsule",
+            "args": { "a": [-0.2, 0, 0], "b": [0.2, 0, 0], "radius": 0.05 }
+          },
+          {
+            "id": "bird-mw-wings",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.28], "b": [0, 0, 0.28], "radius": 0.05 }
+          }
         ]
       }
     },
@@ -53,18 +71,27 @@
       "region": "birds",
       "transform": { "translate": [0, 0, 0] },
       "animation": [
-        { "channel": "transform.translate.z", "value": { "kind": "time", "form": "linear", "coef": 3.0 } }
+        {
+          "channel": "transform.translate.z",
+          "value": { "kind": "time", "form": "linear", "coef": 3.0 }
+        }
       ],
       "source": {
         "id": "bird-ln",
         "type": "union",
         "transform": { "translate": [4, 5, 0] },
-        "animation": [
-          { "channel": "transform.translate.y", "expr": "5 + 0.2 * cos(t * 3)" }
-        ],
+        "animation": [{ "channel": "transform.translate.y", "expr": "5 + 0.2 * cos(t * 3)" }],
         "children": [
-          { "id": "bird-ln-body",  "type": "capsule", "args": { "a": [0, 0, -0.22], "b": [0, 0, 0.22], "radius": 0.05 } },
-          { "id": "bird-ln-wings", "type": "capsule", "args": { "a": [-0.3, 0, 0], "b": [0.3, 0, 0], "radius": 0.05 } }
+          {
+            "id": "bird-ln-body",
+            "type": "capsule",
+            "args": { "a": [0, 0, -0.22], "b": [0, 0, 0.22], "radius": 0.05 }
+          },
+          {
+            "id": "bird-ln-wings",
+            "type": "capsule",
+            "args": { "a": [-0.3, 0, 0], "b": [0.3, 0, 0], "radius": 0.05 }
+          }
         ]
       }
     },
@@ -74,9 +101,7 @@
       "args": { "dims": [3, 4, 3] },
       "transform": { "translate": [0, 1, 0] },
       "region": "house",
-      "animation": [
-        { "channel": "args.dims", "expr": "3 + 0.3 * sin(t * 0.4)" }
-      ]
+      "animation": [{ "channel": "args.dims", "expr": "3 + 0.3 * sin(t * 0.4)" }]
     },
     {
       "id": "house-roof",
@@ -89,14 +114,23 @@
   "ground": { "y": -1, "region": "ground" },
   "defaults": {
     "camera": {
-      "yaw": 0, "pitch": 0.15, "distance": 15, "focal": 1.5,
-      "targetX": 0, "targetY": 1, "targetZ": 0
+      "yaw": 0,
+      "pitch": 0.15,
+      "distance": 15,
+      "focal": 1.5,
+      "targetX": 0,
+      "targetY": 1,
+      "targetZ": 0
     },
     "light": {
-      "azimuth": 0.5, "altitude": 0.7, "distance": 20
+      "azimuth": 0.5,
+      "altitude": 0.7,
+      "distance": 20
     },
     "shadow": {
-      "enabled": true, "mode": "hueRotate180", "strength": 0.4
+      "enabled": true,
+      "mode": "hueRotate180",
+      "strength": 0.4
     }
   }
 }

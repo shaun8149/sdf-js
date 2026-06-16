@@ -37,6 +37,10 @@ export function motifToPolylines(motifPaths, samplesPerPath = 40, bboxHalf = MOT
 }
 
 // 把整个 motif library 预编译为 polylines（renderer 启动时调一次，省 per-cell parse）
-export function compileMotifLibrary(motifs = DEFAULT_MOTIFS, samplesPerPath = 40, bboxHalf = MOTIF_BBOX_HALF) {
-  return motifs.map(m => motifToPolylines(m, samplesPerPath, bboxHalf));
+export function compileMotifLibrary(
+  motifs = DEFAULT_MOTIFS,
+  samplesPerPath = 40,
+  bboxHalf = MOTIF_BBOX_HALF,
+) {
+  return motifs.map((m) => motifToPolylines(m, samplesPerPath, bboxHalf));
 }

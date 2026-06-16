@@ -15,18 +15,18 @@
       "seed": "0xa3f1c92b48d6e077152834f9b62d8e1c93a4f7b528e6c1d09f3b475a682c9e1d",
       "camera": {
         "yaw": 0.785,
-        "pitch": 0.50,
+        "pitch": 0.5,
         "distance": 2.8,
         "focal": 5.0,
         "targetX": 0,
-        "targetY": 0.50,
+        "targetY": 0.5,
         "targetZ": 0,
         "aperture": 0.0,
         "focalDistance": 2.8
       },
       "light": {
         "azimuth": -1.0,
-        "altitude": 0.40,
+        "altitude": 0.4,
         "distance": 50,
         "intensity": 1.1
       },
@@ -36,9 +36,9 @@
         "strength": 0.55
       },
       "postFx": {
-        "exposure": 1.10,
-        "vignetteStrength": 0.20,
-        "bloomMix": 0.10,
+        "exposure": 1.1,
+        "vignetteStrength": 0.2,
+        "bloomMix": 0.1,
         "bloomThreshold": 0.95,
         "lensFlareStrength": 0.0,
         "motionBlurStrength": 0.0
@@ -57,7 +57,7 @@
       {
         "id": "pedestal-frame",
         "type": "wireframe_box",
-        "args": { "dims": [1.10, 0.21, 1.10], "thickness": 0.022 },
+        "args": { "dims": [1.1, 0.21, 1.1], "thickness": 0.022 },
         "transform": { "translate": [0, 0.105, 0] },
         "material": { "hue": 0.08, "sat": 0.65, "value": 0.28, "metal": 0.0, "glow": 0.0 }
       }

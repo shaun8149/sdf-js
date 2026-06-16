@@ -55,9 +55,7 @@ const TESTS = [
 // -----------------------------------------------------------------------------
 
 const filterCategory = process.argv[2];
-const selected = filterCategory
-  ? TESTS.filter((t) => t.category === filterCategory)
-  : TESTS;
+const selected = filterCategory ? TESTS.filter((t) => t.category === filterCategory) : TESTS;
 
 if (selected.length === 0) {
   console.error(

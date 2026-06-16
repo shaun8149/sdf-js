@@ -15,7 +15,11 @@
 // =============================================================================
 
 import * as renderModule from '../../src/render/index.js';
-import { generateSceneData, randomSceneTypeData, SCENE_NAMES_DATA } from '../sdf/autoscope-scenes-data.js';
+import {
+  generateSceneData,
+  randomSceneTypeData,
+  SCENE_NAMES_DATA,
+} from '../sdf/autoscope-scenes-data.js';
 import { compile as compileSceneData } from '../../src/scene/index.js';
 
 // Sprint 12 (Rune erosion / NFT): read tokenHash from URL once at module load.
@@ -25,18 +29,29 @@ function getUrlTokenHash() {
   try {
     const p = new URLSearchParams(window.location.search);
     return p.get('tokenHash') || null;
-  } catch (_) { return null; }
+  } catch (_) {
+    return null;
+  }
 }
-let URL_TOKEN_HASH = getUrlTokenHash();  // mutable — #btn-new-hash reroll updates this
+let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
-import { Random, generateHash, readHashFromURL, writeHashToURL, isValidHash } from '../sdf/autoscope-rng.js';
+import {
+  Random,
+  generateHash,
+  readHashFromURL,
+  writeHashToURL,
+  isValidHash,
+} from '../sdf/autoscope-rng.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 import { createSynth } from '../../src/audio/index.js';
 // Generator-V: BOB GPU style randomizer (palette / chess / render params per styleHash).
 // Imported here so compositor's BOB GPU mode shares the same Generator-V layer
 // as the standalone autoscope-clone — keeps Atlas thesis Point #10 unified.
 import {
-  DEFAULT_STYLE, randomizeBobStyle, applyStyleGate, describeStyle,
+  DEFAULT_STYLE,
+  randomizeBobStyle,
+  applyStyleGate,
+  describeStyle,
 } from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { createBlueprintRenderer } from '../../src/render/blueprint.js';
@@ -45,8 +60,8 @@ import { createStreamlineRenderer } from '../../src/render/streamlineRenderer.js
 import * as edit2d from './edit2d.js';
 import { union as sdfUnion } from '../../src/sdf/dn.js';
 
-const $ = id => document.getElementById(id);
-const $$ = sel => document.querySelectorAll(sel);
+const $ = (id) => document.getElementById(id);
+const $$ = (sel) => document.querySelectorAll(sel);
 
 // =============================================================================
 // Central state
@@ -55,46 +70,46 @@ const $$ = sel => document.querySelectorAll(sel);
 const state = {
   activeTab: 'scenes',
   activeRenderer: 'silhouette',
-  scene: null,                         // SceneData v1 — set by tabs that emit it (generator-tab)
-  layers: null,                        // [{ sdf, color }, ...] — set by text-tab (legacy MVP-style)
-  lastRenderOpts: null,                // remember view/etc. for re-render on pill switch
-  history: [],                         // [{ id, prompt, code, usage, timestamp }, ...] most-recent-first
+  scene: null, // SceneData v1 — set by tabs that emit it (generator-tab)
+  layers: null, // [{ sdf, color }, ...] — set by text-tab (legacy MVP-style)
+  lastRenderOpts: null, // remember view/etc. for re-render on pill switch
+  history: [], // [{ id, prompt, code, usage, timestamp }, ...] most-recent-first
   selectedHistoryId: null,
   // generator-tab state
-  genHash: null,                       // current hash hex string
-  genSceneTypeChoice: 'random',        // 'random' | '0'..'5'
-  bobRenderer: null,                   // lazy createBobShaderRenderer instance — stylized autoscope-style
-  blueprintRenderer: null,             // lazy createBlueprintRenderer — 4-view engineering drawing
-  fly3dRenderer: null,                 // lazy createFly3DRenderer instance — clean Lambert + WASD fly
-  crayonRenderer: null,                // lazy createCrayonRenderer — Sprint 12-3d Canvas2D physics-pen
-  topoRenderer: null,                  // lazy createStreamlineRenderer — Sprint 12-3c downhill pen-strokes
-  genScene: null,                      // generator-tab compiled scene
-  genSdf: null,                        // generator-tab final SDF (subjects ∪ ground)
+  genHash: null, // current hash hex string
+  genSceneTypeChoice: 'random', // 'random' | '0'..'5'
+  bobRenderer: null, // lazy createBobShaderRenderer instance — stylized autoscope-style
+  blueprintRenderer: null, // lazy createBlueprintRenderer — 4-view engineering drawing
+  fly3dRenderer: null, // lazy createFly3DRenderer instance — clean Lambert + WASD fly
+  crayonRenderer: null, // lazy createCrayonRenderer — Sprint 12-3d Canvas2D physics-pen
+  topoRenderer: null, // lazy createStreamlineRenderer — Sprint 12-3c downhill pen-strokes
+  genScene: null, // generator-tab compiled scene
+  genSdf: null, // generator-tab final SDF (subjects ∪ ground)
   // text-tab lift state
-  textLiftScene: null,                 // compiled SceneData from 3D lift
-  textLiftSdf: null,                   // text-tab lift final SDF
-  textLiftSceneJSON: null,             // raw SceneData JSON (for the 3D code pane + export)
-  textLiftSourcePrompt: null,          // original prompt that was lifted
-  liftMode: false,                     // true when text-tab showing 3D lift (canvas swap)
+  textLiftScene: null, // compiled SceneData from 3D lift
+  textLiftSdf: null, // text-tab lift final SDF
+  textLiftSceneJSON: null, // raw SceneData JSON (for the 3D code pane + export)
+  textLiftSourcePrompt: null, // original prompt that was lifted
+  liftMode: false, // true when text-tab showing 3D lift (canvas swap)
 
   // Light UI override — when non-null, the user has moved a slider and these
   // values take precedence over scene.lightStatic. Reset to null when user
   // clicks "Reset to scene default" or loads a new scene.
-  lightOverride: null,                 // { azimuth, altitude, distance } | null
+  lightOverride: null, // { azimuth, altitude, distance } | null
 
   // Generator-V (BOB GPU style) — per-styleHash randomized palette / chess /
   // render uniforms. Independent from scene (orthogonal axis per thesis #10).
   // Only consumed when activeRenderer === 'bob-gpu'. Initialized from URL
   // ?styleHash= on bootstrap; "🎲 New style" button generates new hash.
-  styleHash: null,                     // 0x... hex string
-  bobStyle: { ...DEFAULT_STYLE },      // current Generator-V output
+  styleHash: null, // 0x... hex string
+  bobStyle: { ...DEFAULT_STYLE }, // current Generator-V output
 
   // Generator-S (scene variant expansion) — per-sceneHash deterministic
   // scatter/array/etc. Independent from style (orthogonal axis #10).
   // Drives expandVariants() in scene/generator-s.js. Default hash is constant
   // so demo lifts render identically across reloads; user can override via
   // ?sceneHash= URL param to roll a new variant ordering.
-  sceneHash: null,                     // 0x... hex string
+  sceneHash: null, // 0x... hex string
 };
 
 const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo']);
@@ -130,7 +145,7 @@ function addHistoryEntry(entry) {
 }
 
 function deleteHistoryEntry(id) {
-  state.history = state.history.filter(h => h.id !== id);
+  state.history = state.history.filter((h) => h.id !== id);
   saveHistory();
   if (state.selectedHistoryId === id) {
     state.selectedHistoryId = null;
@@ -162,8 +177,8 @@ function formatTime(ts) {
 // =============================================================================
 
 let DEMO_MANIFEST = null;
-let activeDemoId = null;      // currently-loaded bundled-demo id, if any
-let activeSavedId = null;     // currently-loaded saved-scene id, if any
+let activeDemoId = null; // currently-loaded bundled-demo id, if any
+let activeSavedId = null; // currently-loaded saved-scene id, if any
 
 const SAVED_SCENES_KEY = 'atlas-saved-scenes';
 const SAVED_SCENES_CAP = 50;
@@ -171,7 +186,9 @@ const SAVED_SCENES_CAP = 50;
 function loadSavedScenes() {
   try {
     return JSON.parse(localStorage.getItem(SAVED_SCENES_KEY) || '[]');
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function persistSavedScenes(arr) {
@@ -215,7 +232,7 @@ function saveCurrentScene() {
 
 function deleteSavedScene(id) {
   if (!confirm('Delete this saved scene?')) return;
-  const all = loadSavedScenes().filter(s => s.id !== id);
+  const all = loadSavedScenes().filter((s) => s.id !== id);
   persistSavedScenes(all);
   if (activeSavedId === id) {
     activeSavedId = null;
@@ -258,7 +275,7 @@ async function upgradeSavedScene(id) {
     return;
   }
   const all = loadSavedScenes();
-  const idx = all.findIndex(s => s.id === id);
+  const idx = all.findIndex((s) => s.id === id);
   if (idx < 0) return;
   const entry = all[idx];
   if (!entry.prompt || !entry.code2d) {
@@ -304,9 +321,15 @@ async function upgradeAllSavedScenes() {
     setStatus('no saved scenes to upgrade', true);
     return;
   }
-  if (!confirm(`Re-lift all ${all.length} saved scenes with the current v2.3 prompt? Uses ~${(all.length * 0.15).toFixed(2)} USD of API credit.`)) return;
+  if (
+    !confirm(
+      `Re-lift all ${all.length} saved scenes with the current v2.3 prompt? Uses ~${(all.length * 0.15).toFixed(2)} USD of API credit.`,
+    )
+  )
+    return;
 
-  let okCount = 0, failCount = 0;
+  let okCount = 0,
+    failCount = 0;
   for (let i = 0; i < all.length; i++) {
     const entry = all[i];
     if (!entry.prompt || !entry.code2d) {
@@ -323,8 +346,11 @@ async function upgradeAllSavedScenes() {
       }
       // Reload fresh — other tabs may have mutated localStorage between iterations
       const current = loadSavedScenes();
-      const idx = current.findIndex(s => s.id === entry.id);
-      if (idx < 0) { failCount++; continue; }
+      const idx = current.findIndex((s) => s.id === entry.id);
+      if (idx < 0) {
+        failCount++;
+        continue;
+      }
       current[idx] = { ...entry, sceneData: newSceneData, upgradedAt: Date.now() };
       persistSavedScenes(current);
       okCount++;
@@ -338,18 +364,23 @@ async function upgradeAllSavedScenes() {
 }
 
 function downloadSavedScene(id) {
-  const entry = loadSavedScenes().find(s => s.id === id);
+  const entry = loadSavedScenes().find((s) => s.id === id);
   if (!entry) return;
-  const slug = entry.name.toLowerCase()
-    .replace(/[^a-z0-9 -]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .slice(0, 40) || 'untitled';
+  const slug =
+    entry.name
+      .toLowerCase()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 40) || 'untitled';
   const blob = new Blob([JSON.stringify(entry, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `${slug}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  a.href = url;
+  a.download = `${slug}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   setStatus(`↓ downloaded "${entry.name}"`);
 }
@@ -388,11 +419,12 @@ function buildShareUrl(entry) {
 }
 
 function shareSavedScene(id) {
-  const entry = loadSavedScenes().find(s => s.id === id);
+  const entry = loadSavedScenes().find((s) => s.id === id);
   if (!entry) return;
   const url = buildShareUrl(entry);
   navigator.clipboard.writeText(url).then(
-    () => setStatus(`✓ shareable URL copied (${(url.length / 1024).toFixed(1)} KB) — paste anywhere`),
+    () =>
+      setStatus(`✓ shareable URL copied (${(url.length / 1024).toFixed(1)} KB) — paste anywhere`),
     () => {
       // Clipboard might be blocked — fall back to prompt for manual copy
       window.prompt('Copy this URL:', url);
@@ -468,11 +500,16 @@ function dismissSharedBanner() {
 }
 
 // Back-compat shim — older code calls renderScenesPopover; route to the tab grids.
-function renderScenesPopover() { renderScenesTab(); }
+function renderScenesPopover() {
+  renderScenesTab();
+}
 
 function loadSavedSceneById(id) {
-  const entry = loadSavedScenes().find(s => s.id === id);
-  if (!entry) { setStatus('✗ saved scene not found', true); return; }
+  const entry = loadSavedScenes().find((s) => s.id === id);
+  if (!entry) {
+    setStatus('✗ saved scene not found', true);
+    return;
+  }
   setStatus(`⋯ loading saved: ${entry.name}`);
   try {
     state.selectedHistoryId = null;
@@ -485,7 +522,12 @@ function loadSavedSceneById(id) {
       `▶ saved scene · "${escapeHtml(entry.name)}"`,
     );
     // Also populate the 2D code pane so user sees both panels
-    setCodeDisplay(entry.code2d || '', entry.prompt || entry.name, `saved · "${entry.name}"`, entry.sceneData);
+    setCodeDisplay(
+      entry.code2d || '',
+      entry.prompt || entry.name,
+      `saved · "${entry.name}"`,
+      entry.sceneData,
+    );
     renderDemoGallery();
     setStatus(`✓ loaded saved: ${entry.name} — click canvas to fly`);
   } catch (e) {
@@ -530,9 +572,12 @@ function renderScenesTab() {
   }
 
   // Bundled cards
-  bundledEl.innerHTML = bundled.length === 0
-    ? `<div class="scenes-empty" style="grid-column: 1 / -1;">No bundled scenes available.</div>`
-    : bundled.map(d => `
+  bundledEl.innerHTML =
+    bundled.length === 0
+      ? `<div class="scenes-empty" style="grid-column: 1 / -1;">No bundled scenes available.</div>`
+      : bundled
+          .map(
+            (d) => `
         <div class="scene-card-big ${d.status} ${d.id === activeDemoId ? 'active' : ''}" data-bundled="${d.id}">
           <div class="scene-emoji">${sceneEmoji(d)}</div>
           <div class="scene-footer">
@@ -540,12 +585,17 @@ function renderScenesTab() {
             <div class="scene-sub">${escapeHtml(d.thesisPoint || '')}</div>
           </div>
         </div>
-      `).join('');
+      `,
+          )
+          .join('');
 
   // Saved cards
-  savedEl.innerHTML = saved.length === 0
-    ? `<div class="scenes-empty" style="grid-column: 1 / -1;">No saved scenes yet.<br>Lift a 2D prompt to 3D in the Text tab, then click ✨ Save Scene.</div>`
-    : saved.map(s => `
+  savedEl.innerHTML =
+    saved.length === 0
+      ? `<div class="scenes-empty" style="grid-column: 1 / -1;">No saved scenes yet.<br>Lift a 2D prompt to 3D in the Text tab, then click ✨ Save Scene.</div>`
+      : saved
+          .map(
+            (s) => `
         <div class="scene-card-big saved ${s.id === activeSavedId ? 'active' : ''}" data-saved="${s.id}">
           <div class="scene-emoji">${sceneEmoji(s)}</div>
           <div class="scene-actions">
@@ -559,13 +609,15 @@ function renderScenesTab() {
             <div class="scene-sub">${s.upgradedAt ? '<span style="color:#7fa97f;">⚡ v2.3</span> · ' : ''}${formatTime(s.savedAt)} · ${escapeHtml(s.prompt?.slice(0, 28) || '')}</div>
           </div>
         </div>
-      `).join('');
+      `,
+          )
+          .join('');
 
   // Wire bundled clicks
-  bundledEl.querySelectorAll('.scene-card-big[data-bundled]').forEach(card => {
+  bundledEl.querySelectorAll('.scene-card-big[data-bundled]').forEach((card) => {
     card.addEventListener('click', (e) => {
-      e.stopPropagation();  // don't trigger the click-outside deselect below
-      const demo = bundled.find(x => x.id === card.dataset.bundled);
+      e.stopPropagation(); // don't trigger the click-outside deselect below
+      const demo = bundled.find((x) => x.id === card.dataset.bundled);
       if (!demo) return;
       if (demo.status === 'ready') {
         loadDemoScene(demo);
@@ -594,14 +646,14 @@ function renderScenesTab() {
   clearSelectionOnBgClick(savedEl);
 
   // Wire saved clicks
-  savedEl.querySelectorAll('.scene-card-big[data-saved]').forEach(card => {
+  savedEl.querySelectorAll('.scene-card-big[data-saved]').forEach((card) => {
     card.addEventListener('click', (e) => {
       if (e.target.closest('.scene-act-btn')) return;
       loadSavedSceneById(card.dataset.saved);
       switchToTab('text');
     });
   });
-  savedEl.querySelectorAll('.scene-act-btn').forEach(btn => {
+  savedEl.querySelectorAll('.scene-act-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const id = btn.dataset.id;
@@ -619,7 +671,9 @@ function renderScenesTab() {
 
 // Back-compat shim: code in many places still calls renderDemoGallery().
 // Route them all to renderScenesTab now that the grids live in the Scenes tab.
-function renderDemoGallery() { renderScenesTab(); }
+function renderDemoGallery() {
+  renderScenesTab();
+}
 
 function switchToTab(tabName) {
   const btn = document.querySelector(`.tab[data-tab="${tabName}"]`);
@@ -664,14 +718,15 @@ async function loadDemoScene(demo) {
       throw new Error(`compile failed: ${e.message}`);
     }
 
-    const renderSdf = (compiled.groundSdf && compiled.sdf)
-      ? sdfUnion(compiled.sdf, compiled.groundSdf)
-      : (compiled.sdf || compiled.groundSdf);
+    const renderSdf =
+      compiled.groundSdf && compiled.sdf
+        ? sdfUnion(compiled.sdf, compiled.groundSdf)
+        : compiled.sdf || compiled.groundSdf;
     if (!renderSdf) throw new Error('empty SDF');
 
     state.textLiftScene = compiled;
     state.textLiftSdf = renderSdf;
-    state.textLiftSceneJSON = data.sceneData;  // raw — keeps cameraSequence / defaults.postFx alive past compile
+    state.textLiftSceneJSON = data.sceneData; // raw — keeps cameraSequence / defaults.postFx alive past compile
     state.textLiftSourcePrompt = data.prompt;
     state.liftMode = true;
     state.selectedHistoryId = null;
@@ -685,7 +740,12 @@ async function loadDemoScene(demo) {
     renderHistoryList();
     const { bytes } = updateCanvasVisibility();
 
-    setCodeDisplay(data.code2d || '', data.prompt, `demo · pre-lifted · ${(bytes / 1024).toFixed(1)} KB GLSL`, data.sceneData || null);
+    setCodeDisplay(
+      data.code2d || '',
+      data.prompt,
+      `demo · pre-lifted · ${(bytes / 1024).toFixed(1)} KB GLSL`,
+      data.sceneData || null,
+    );
     $('scene-info').textContent = `demo · ${data.title}`;
     if ($('lift-info')) {
       $('lift-info').innerHTML = `demo loaded · click canvas to fly (WASD + mouse)`;
@@ -747,7 +807,11 @@ async function loadLiftSystemPrompt() {
  */
 function getActiveGpuScene() {
   if (state.activeTab === 'text' && state.liftMode) {
-    return { scene: state.textLiftScene, sdf: state.textLiftSdf, rawScene: state.textLiftSceneJSON };
+    return {
+      scene: state.textLiftScene,
+      sdf: state.textLiftSdf,
+      rawScene: state.textLiftSceneJSON,
+    };
   }
   if (state.activeTab === 'generator') {
     return { scene: state.genScene, sdf: state.genSdf, rawScene: state.genSceneJSON || null };
@@ -802,20 +866,31 @@ function stripJsonComments(src) {
     const ch = src[i];
     if (inString) {
       out += ch;
-      if (ch === '\\' && i + 1 < n) { out += src[i + 1]; i += 2; continue; }
+      if (ch === '\\' && i + 1 < n) {
+        out += src[i + 1];
+        i += 2;
+        continue;
+      }
       if (ch === '"') inString = false;
       i++;
       continue;
     }
-    if (ch === '"') { inString = true; out += ch; i++; continue; }
+    if (ch === '"') {
+      inString = true;
+      out += ch;
+      i++;
+      continue;
+    }
     if (ch === '/' && i + 1 < n) {
       const next = src[i + 1];
-      if (next === '/') { // line comment — skip to end of line
+      if (next === '/') {
+        // line comment — skip to end of line
         i += 2;
         while (i < n && src[i] !== '\n') i++;
         continue;
       }
-      if (next === '*') { // block comment — skip to closing */
+      if (next === '*') {
+        // block comment — skip to closing */
         i += 2;
         while (i + 1 < n && !(src[i] === '*' && src[i + 1] === '/')) i++;
         i += 2;
@@ -840,16 +915,28 @@ function stripTrailingCommas(src) {
     const ch = src[i];
     if (inString) {
       out += ch;
-      if (ch === '\\' && i + 1 < n) { out += src[i + 1]; i += 2; continue; }
+      if (ch === '\\' && i + 1 < n) {
+        out += src[i + 1];
+        i += 2;
+        continue;
+      }
       if (ch === '"') inString = false;
       i++;
       continue;
     }
-    if (ch === '"') { inString = true; out += ch; i++; continue; }
+    if (ch === '"') {
+      inString = true;
+      out += ch;
+      i++;
+      continue;
+    }
     if (ch === ',') {
       let j = i + 1;
       while (j < n && /\s/.test(src[j])) j++;
-      if (j < n && (src[j] === ']' || src[j] === '}')) { i++; continue; }
+      if (j < n && (src[j] === ']' || src[j] === '}')) {
+        i++;
+        continue;
+      }
     }
     out += ch;
     i++;
@@ -877,7 +964,9 @@ function parseLiftResponse(text) {
   try {
     return JSON.parse(sanitised);
   } catch (e) {
-    throw new Error(`Failed to parse lift JSON: ${e.message}\n\nRaw LLM output (first 500 chars):\n${text.slice(0, 500)}`);
+    throw new Error(
+      `Failed to parse lift JSON: ${e.message}\n\nRaw LLM output (first 500 chars):\n${text.slice(0, 500)}`,
+    );
   }
 }
 
@@ -965,7 +1054,7 @@ async function executeGeneratedCode(rawCode) {
     console.groupEnd();
     throw e;
   } finally {
-    setTimeout(() => URL.revokeObjectURL(url), 5000);  // allow async finishing
+    setTimeout(() => URL.revokeObjectURL(url), 5000); // allow async finishing
   }
 }
 
@@ -1011,7 +1100,8 @@ function doRender(ctx, layers, opts) {
 }
 
 function drawErrorOverlay(ctx, msg) {
-  const w = ctx.canvas.width, h = ctx.canvas.height;
+  const w = ctx.canvas.width,
+    h = ctx.canvas.height;
   ctx.fillStyle = 'rgba(58, 31, 31, 0.92)';
   ctx.fillRect(40, h / 2 - 50, w - 80, 100);
   ctx.fillStyle = '#d9afaf';
@@ -1047,14 +1137,40 @@ function hsvToRgb(h, s, v) {
   const p = v * (1 - s);
   const q = v * (1 - f * s);
   const t = v * (1 - (1 - f) * s);
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
   switch (i % 6) {
-    case 0: r = v; g = t; b = p; break;
-    case 1: r = q; g = v; b = p; break;
-    case 2: r = p; g = v; b = t; break;
-    case 3: r = p; g = q; b = v; break;
-    case 4: r = t; g = p; b = v; break;
-    case 5: r = v; g = p; b = q; break;
+    case 0:
+      r = v;
+      g = t;
+      b = p;
+      break;
+    case 1:
+      r = q;
+      g = v;
+      b = p;
+      break;
+    case 2:
+      r = p;
+      g = v;
+      b = t;
+      break;
+    case 3:
+      r = p;
+      g = q;
+      b = v;
+      break;
+    case 4:
+      r = t;
+      g = p;
+      b = v;
+      break;
+    case 5:
+      r = v;
+      g = p;
+      b = q;
+      break;
   }
   return [(r * 255) | 0, (g * 255) | 0, (b * 255) | 0];
 }
@@ -1064,16 +1180,17 @@ function materialToRgb(mat, fallback = [205, 95, 87]) {
   // Resolved material is {hue, sat, value, metal, glow, kind}. v1 ignores
   // kind/metal — just HSV → RGB. v2 (future) routes kinds to specialized
   // brush idioms.
-  const h = (mat.hue ?? 0);
-  const s = (mat.sat ?? 0);
-  const v = (mat.value ?? 1);
+  const h = mat.hue ?? 0;
+  const s = mat.sat ?? 0;
+  const v = mat.value ?? 1;
   return hsvToRgb(h, s, v);
 }
 
 function buildLiftSceneLayers(gpuScene, cameraOpts) {
   // gpuScene.scene = compiled SceneData ({sdf, groundSdf, subjects:[{id,sdf,...}], ...})
   const compiled = gpuScene.scene;
-  if (!compiled) return [{ sdf: gpuScene.sdf, color: [205, 95, 87], ...(cameraOpts ? { cameraOpts } : {}) }];
+  if (!compiled)
+    return [{ sdf: gpuScene.sdf, color: [205, 95, 87], ...(cameraOpts ? { cameraOpts } : {}) }];
 
   const layers = [];
 
@@ -1101,7 +1218,7 @@ function buildLiftSceneLayers(gpuScene, cameraOpts) {
   if (gpuScene.sdf) {
     layers.push({
       sdf: gpuScene.sdf,
-      color: [180, 175, 165],  // neutral warm gray
+      color: [180, 175, 165], // neutral warm gray
       ...(cameraOpts ? { cameraOpts } : {}),
     });
   }
@@ -1112,10 +1229,10 @@ function buildLiftSceneLayers(gpuScene, cameraOpts) {
   // material set. This filters out group-level SDFs (which cover the
   // full union area and would otherwise paint over every leaf with the
   // fallback color when group.material is null).
-  for (const info of (compiled.subjects || [])) {
+  for (const info of compiled.subjects || []) {
     if (!info || !info.sdf) continue;
     const mat = info.sdf._subjectMaterial;
-    if (!mat) continue;  // skip group / unionless leaf without explicit material
+    if (!mat) continue; // skip group / unionless leaf without explicit material
     layers.push({
       sdf: info.sdf,
       color: materialToRgb(mat),
@@ -1135,10 +1252,14 @@ function reRenderStored() {
     const gpuScene = getActiveGpuScene();
     if (gpuScene && gpuScene.sdf) {
       const cs = gpuScene.scene?.cameraStatic;
-      const cameraOpts = cs ? {
-        yaw: cs.yaw, pitch: cs.pitch, distance: cs.distance,
-        target: [cs.targetX, cs.targetY, cs.targetZ],
-      } : null;
+      const cameraOpts = cs
+        ? {
+            yaw: cs.yaw,
+            pitch: cs.pitch,
+            distance: cs.distance,
+            target: [cs.targetX, cs.targetY, cs.targetZ],
+          }
+        : null;
       // Ortho view = world half-width the perspective camera frames at
       // distance d with focal F (= d / F). Strict parity with BOB GPU's
       // perspective framing — if BOB GPU doesn't render something (e.g.,
@@ -1179,14 +1300,14 @@ function reRenderStored() {
 // Emoji glyphs for the big card grid — by demo id, then by category fallback.
 // Keeps the gallery visually scannable without pre-baked thumbnails.
 const DEMO_EMOJI_BY_ID = {
-  'china-carrier':     '⚓',
-  'gothic-cathedral':  '⛪',
-  'spiral-vase':       '🏺',
-  'mountain-village':  '⛰️',
-  'clock-915':         '🕘',
-  'vintage-bicycle':   '🚲',
-  'dining-setting':    '🍽️',
-  'coastal-lighthouse':'🗼',
+  'china-carrier': '⚓',
+  'gothic-cathedral': '⛪',
+  'spiral-vase': '🏺',
+  'mountain-village': '⛰️',
+  'clock-915': '🕘',
+  'vintage-bicycle': '🚲',
+  'dining-setting': '🍽️',
+  'coastal-lighthouse': '🗼',
 };
 function sceneEmoji(entry) {
   if (entry.id && DEMO_EMOJI_BY_ID[entry.id]) return DEMO_EMOJI_BY_ID[entry.id];
@@ -1197,7 +1318,7 @@ function sceneEmoji(entry) {
 }
 
 const TAB_CONTENT = {
-  'scenes': () => `
+  scenes: () => `
     <div class="scenes-hero">
       <h1>Atlas Scene Gallery</h1>
       <p>LLM-generated, editable 3D scenes you can fly through. Click any to open. <span class="cta" id="scenes-cta-text">Or write your own → Text tab</span></p>
@@ -1219,7 +1340,7 @@ const TAB_CONTENT = {
     </div>
   `,
 
-  'text': () => `
+  text: () => `
     <h2>Text → SDF</h2>
     <p>Type a scene description → Anthropic Claude writes sdf-js code → render via shared renderer pool. Full code shows in the panel below the canvas.</p>
 
@@ -1285,7 +1406,7 @@ const TAB_CONTENT = {
     <div id="history-list"></div>
   `,
 
-  'generator': () => `
+  generator: () => `
     <h2>Generator → SceneData</h2>
     <p>Pick a generator template + hash → SceneData v1 → BOB GPU render. Same hash always produces the same scene (URL-shareable, zero token cost for variants — thesis Point #10).</p>
 
@@ -1339,7 +1460,7 @@ const TAB_CONTENT = {
   // chat + layers + inspector content) mounts into #tab-content; canvas
   // viewport with floating tool palette mounts into #render-area. Wired
   // up in renderActiveTab → edit2d.init({...}).
-  '2d-edit': () => '',  // edit2d.init() writes its own markup into both containers
+  '2d-edit': () => '', // edit2d.init() writes its own markup into both containers
 
   '3d-edit': () => `
     <h2>3D Editor</h2>
@@ -1389,28 +1510,31 @@ function renderActiveTab() {
  * strings can read the GLSL size.
  */
 function updateCanvasVisibility(opts = {}) {
-  const have3D = state.activeTab === 'generator' ||
-                 (state.activeTab === 'text' && state.liftMode);
+  const have3D = state.activeTab === 'generator' || (state.activeTab === 'text' && state.liftMode);
   const showGpu = have3D && isGpuRenderer(state.activeRenderer);
   // Canvas2D renderers (crayon / topo) use their own sibling <canvas> elements.
   // Hide c-gpu when one of them is active; show the matching one.
   const isCrayon = state.activeRenderer === 'crayon';
-  const isTopo   = state.activeRenderer === 'topo';
+  const isTopo = state.activeRenderer === 'topo';
   const showWebgl = showGpu && !isCrayon && !isTopo;
   $('c').style.display = showGpu ? 'none' : 'block';
   $('c-gpu').style.display = showWebgl ? 'block' : 'none';
   const crayonCv = document.getElementById('c-crayon');
-  if (crayonCv) crayonCv.style.display = (showGpu && isCrayon) ? 'block' : 'none';
+  if (crayonCv) crayonCv.style.display = showGpu && isCrayon ? 'block' : 'none';
   const topoCv = document.getElementById('c-topo');
-  if (topoCv) topoCv.style.display = (showGpu && isTopo) ? 'block' : 'none';
+  if (topoCv) topoCv.style.display = showGpu && isTopo ? 'block' : 'none';
   const fsBtn = $('btn-fullscreen');
   const shuffleBtn = $('btn-shuffle-palette');
   const lightPanel = $('light-panel');
   if (fsBtn) fsBtn.style.display = showGpu ? 'inline-flex' : 'none';
   // Shuffle only meaningful for BOB GPU (FLY 3D doesn't have a palette concept)
-  if (shuffleBtn) shuffleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
+  if (shuffleBtn)
+    shuffleBtn.style.display =
+      showGpu && state.activeRenderer === 'bob-gpu' ? 'inline-flex' : 'none';
   const newStyleBtn = $('btn-new-style');
-  if (newStyleBtn) newStyleBtn.style.display = (showGpu && state.activeRenderer === 'bob-gpu') ? 'inline-flex' : 'none';
+  if (newStyleBtn)
+    newStyleBtn.style.display =
+      showGpu && state.activeRenderer === 'bob-gpu' ? 'inline-flex' : 'none';
   if (lightPanel) lightPanel.style.display = showGpu ? 'block' : 'none';
   // 2026-05-24: when canvas becomes hidden (e.g. switch to Scenes tab),
   // unmount any active GPU renderer so its RAF loop stops. Without this the
@@ -1441,8 +1565,8 @@ function updateCanvasVisibility(opts = {}) {
 function ensureGpuRendererActive() {
   if (isGpuRenderer(state.activeRenderer)) return;
   state.activeRenderer = 'bob-gpu';
-  $$('#renderer-pills .pill').forEach(b =>
-    b.classList.toggle('active', b.dataset.renderer === state.activeRenderer)
+  $$('#renderer-pills .pill').forEach((b) =>
+    b.classList.toggle('active', b.dataset.renderer === state.activeRenderer),
   );
 }
 
@@ -1563,7 +1687,8 @@ function wireTextTab() {
   // Lift to 3D handlers
   $('btn-lift-3d').addEventListener('click', () => liftCurrent2DTo3D());
   $('btn-relift').addEventListener('click', () => {
-    if (!confirm('Force a fresh LLM lift? This costs ~$0.20 and overwrites the cached scene.')) return;
+    if (!confirm('Force a fresh LLM lift? This costs ~$0.20 and overwrites the cached scene.'))
+      return;
     liftCurrent2DTo3D({ forceFresh: true });
   });
   $('btn-back-to-2d').addEventListener('click', exitLiftMode);
@@ -1585,12 +1710,12 @@ function refreshLiftButtonState() {
   if (!liftBtn) return;
 
   const code = $('code-display').value;
-  const selected = state.history.find(h => h.id === state.selectedHistoryId);
+  const selected = state.history.find((h) => h.id === state.selectedHistoryId);
   // A history entry is considered "matched" only when its 2D code still
   // matches what's in the textarea. If the user pasted/edited code, drop the
   // implied prompt-from-history binding — lift will fall back to prompting.
   const matchedHistory = selected && selected.code2d === code ? selected : null;
-  const haveBoth = !!code;  // code is enough; missing prompt is handled at lift time
+  const haveBoth = !!code; // code is enough; missing prompt is handled at lift time
   const hasCachedLift = !!matchedHistory?.lift?.sceneData;
   // Save button shows whenever we have a 3D scene actively displayed —
   // covers fresh lifts, cached lifts, demos, and edited JSON re-renders.
@@ -1629,7 +1754,12 @@ function refreshLiftButtonState() {
   }
 }
 
-function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shufflePalette = true } = {}) {
+function renderLiftedSceneData(
+  sceneData,
+  originalPrompt,
+  infoLineHtml,
+  { shufflePalette = true } = {},
+) {
   const liftInfo = $('lift-info');
   let compiled;
   try {
@@ -1638,9 +1768,10 @@ function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shuffl
     throw new Error(`SceneData compile failed: ${compileErr.message}`);
   }
 
-  const renderSdf = (compiled.groundSdf && compiled.sdf)
-    ? sdfUnion(compiled.sdf, compiled.groundSdf)
-    : (compiled.sdf || compiled.groundSdf);
+  const renderSdf =
+    compiled.groundSdf && compiled.sdf
+      ? sdfUnion(compiled.sdf, compiled.groundSdf)
+      : compiled.sdf || compiled.groundSdf;
   if (!renderSdf) throw new Error('empty SDF — no subjects + no ground');
 
   state.textLiftScene = compiled;
@@ -1693,14 +1824,17 @@ function renderLiftedSceneData(sceneData, originalPrompt, infoLineHtml, { shuffl
 
 async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
   const code = $('code-display').value;
-  const selected = state.history.find(h => h.id === state.selectedHistoryId);
+  const selected = state.history.find((h) => h.id === state.selectedHistoryId);
   // A history entry is "matched" only when its stored code matches the
   // textarea. Pasted/edited code → unmatched → prompt-from-user path.
   const matchedHistory = selected && selected.code2d === code ? selected : null;
   const liftBtn = $('btn-lift-3d');
   const liftInfo = $('lift-info');
   if (!code) {
-    if (liftInfo) { liftInfo.style.color = '#d9afaf'; liftInfo.textContent = '✗ no 2D scene to lift'; }
+    if (liftInfo) {
+      liftInfo.style.color = '#d9afaf';
+      liftInfo.textContent = '✗ no 2D scene to lift';
+    }
     setStatus('✗ no 2D scene to lift', true);
     return;
   }
@@ -1736,13 +1870,19 @@ async function liftCurrent2DTo3D({ forceFresh = false } = {}) {
     } catch (e) {
       // Cache might be incompatible with current spec — fall through to fresh lift
       console.warn('cached lift failed to render, falling back to fresh LLM call:', e);
-      if (liftInfo) { liftInfo.style.color = '#d9afaf'; liftInfo.textContent = `✗ cached scene failed: ${e.message}. Will re-lift.`; }
+      if (liftInfo) {
+        liftInfo.style.color = '#d9afaf';
+        liftInfo.textContent = `✗ cached scene failed: ${e.message}. Will re-lift.`;
+      }
     }
   }
 
   const apiKey = ($('api-key')?.value || localStorage.getItem(STORAGE_KEY) || '').trim();
   if (!apiKey) {
-    if (liftInfo) { liftInfo.style.color = '#d9afaf'; liftInfo.textContent = '✗ Anthropic API key required'; }
+    if (liftInfo) {
+      liftInfo.style.color = '#d9afaf';
+      liftInfo.textContent = '✗ Anthropic API key required';
+    }
     setStatus('✗ Anthropic API key required', true);
     return;
   }
@@ -1808,7 +1948,8 @@ function exitLiftMode() {
   if (saveBtn) saveBtn.style.display = 'none';
   renderDemoGallery();
   $('scene-info').textContent = state.selectedHistoryId
-    ? state.history.find(h => h.id === state.selectedHistoryId)?.prompt?.slice(0, 40) || 'No scene'
+    ? state.history.find((h) => h.id === state.selectedHistoryId)?.prompt?.slice(0, 40) ||
+      'No scene'
     : 'No scene';
   setStatus('back to 2D');
 }
@@ -1838,7 +1979,9 @@ function ensureFly3dRenderer() {
         checkerOn: false,
       };
     },
-    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
   });
   return state.fly3dRenderer;
 }
@@ -1877,21 +2020,26 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // tuples) — NOT the raw JSON. defaults.postFx + cameraSequence live on the
     // raw sceneData JSON, accessible via rawScene.
     if (fly.setPostFx) {
-      fly.setPostFx(rawScene || {}, (rawScene && rawScene.defaults && rawScene.defaults.camera) || null);
+      fly.setPostFx(
+        rawScene || {},
+        (rawScene && rawScene.defaults && rawScene.defaults.camera) || null,
+      );
     }
     // Sprint 2: cameraSequence drives the camera if present. Show timeline UI.
     if (fly.setSequence) {
-      const seq = (rawScene && rawScene.cameraSequence) ? rawScene.cameraSequence : null;
+      const seq = rawScene && rawScene.cameraSequence ? rawScene.cameraSequence : null;
       fly.setSequence(seq);
-      window._lastSceneForTimeline = rawScene;  // loop toggle reads/writes seq.loop
+      window._lastSceneForTimeline = rawScene; // loop toggle reads/writes seq.loop
       // Defer UI update to next tick — timeline UI helpers haven't been
       // function-hoisted on first compositor load. After bootstrap they
       // exist; setTimeout(0) guarantees they're reachable.
-      setTimeout(() => { if (typeof updateTimelineUI === 'function') updateTimelineUI(); }, 0);
+      setTimeout(() => {
+        if (typeof updateTimelineUI === 'function') updateTimelineUI();
+      }, 0);
     }
     // Sprint 3: volumetric primitives (smoke / flame / fog / god-rays).
     if (fly.setVolumes) {
-      fly.setVolumes((rawScene && Array.isArray(rawScene.volumes)) ? rawScene.volumes : []);
+      fly.setVolumes(rawScene && Array.isArray(rawScene.volumes) ? rawScene.volumes : []);
     }
     // Sprint A7: voxel-walk for procedural-city primitive. Walks subject tree
     // for any 'procedural-city' type — enables u_cityActive in shader so
@@ -1920,7 +2068,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
           const t = s.transform.translate;
           // Skip if any axis was already wrapped in a time-expr (motion subject's
           // base goes through anyway — the uniform fills in the dynamic delta).
-          const nums = t.slice(0, 3).map(x => typeof x === 'number' ? x : 0);
+          const nums = t.slice(0, 3).map((x) => (typeof x === 'number' ? x : 0));
           baseTargets[s.id] = nums;
         }
       }
@@ -2031,11 +2179,15 @@ function ensureTopoRenderer() {
       const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
       const light = state.lightOverride ?? sceneLight;
       return {
-        lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance,
+        lightAzim: light.azimuth,
+        lightAlt: light.altitude,
+        lightDist: light.distance,
         fov: cam?.focal || 1.5,
       };
     },
-    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
   });
   return state.topoRenderer;
 }
@@ -2053,11 +2205,15 @@ function ensureCrayonRenderer() {
       const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
       const light = state.lightOverride ?? sceneLight;
       return {
-        lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance,
+        lightAzim: light.azimuth,
+        lightAlt: light.altitude,
+        lightDist: light.distance,
         fov: cam?.focal || 1.5,
       };
     },
-    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
   });
   return state.crayonRenderer;
 }
@@ -2074,7 +2230,9 @@ function ensureBlueprintRenderer() {
       const light = state.lightOverride ?? sceneLight;
       return { lightAzim: light.azimuth, lightAlt: light.altitude, lightDist: light.distance };
     },
-    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
   });
   return state.blueprintRenderer;
 }
@@ -2102,36 +2260,54 @@ function ensureBobRenderer() {
       return {
         ...state.bobStyle,
         // bobShader expects these renamed fields:
-        shadowMode:     sceneShadowMode ?? state.bobStyle.shadow ?? 0,
-        postNFactor:    state.bobStyle.nFactor,
-        postNoiseCap:   state.bobStyle.noiseCap,
-        postColorLeak:  state.bobStyle.colorLeak,
+        shadowMode: sceneShadowMode ?? state.bobStyle.shadow ?? 0,
+        postNFactor: state.bobStyle.nFactor,
+        postNoiseCap: state.bobStyle.noiseCap,
+        postColorLeak: state.bobStyle.colorLeak,
         // SceneData-driven (override style):
         lightAzim: light.azimuth,
-        lightAlt:  light.altitude,
+        lightAlt: light.altitude,
         lightDist: light.distance,
-        fov:       cam.focal || 1.5,
+        fov: cam.focal || 1.5,
         shadowStrength: shadow?.strength ?? state.bobStyle.shadowStrength,
-        shadowsOn:     shadow?.enabled !== false,
+        shadowsOn: shadow?.enabled !== false,
         // Compositor-specific defaults:
-        groundOn:   false,
+        groundOn: false,
         noiseSpeed: 0.00016,
         worldScale: 0.5,
       };
     },
-    onFps: (fps) => { $('fps').textContent = `FPS: ${fps.toFixed(0)}`; },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
   });
   return state.bobRenderer;
 }
 
 function defaultBobControls() {
   return {
-    lightAzim: 0.5, lightAlt: 0.7, lightDist: 30, fov: 1.5,
-    coldiv: 1.1, coloration: 0, shadowMode: 0, shadowStrength: 0.35,
-    shadowsOn: true, groundOn: false, noiseSpeed: 0.00016,
-    exposure: 1.05, saturation: 1.0, worldScale: 0.5,
-    postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
-    mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+    lightAzim: 0.5,
+    lightAlt: 0.7,
+    lightDist: 30,
+    fov: 1.5,
+    coldiv: 1.1,
+    coloration: 0,
+    shadowMode: 0,
+    shadowStrength: 0.35,
+    shadowsOn: true,
+    groundOn: false,
+    noiseSpeed: 0.00016,
+    exposure: 1.05,
+    saturation: 1.0,
+    worldScale: 0.5,
+    postNoise: 1.0,
+    postNFactor: 1.0,
+    postNoiseCap: 0.5,
+    mirrorX: false,
+    mirrorZ: false,
+    twist: 0,
+    twistType: 0,
+    gridRot: [0, 0, 0],
   };
 }
 
@@ -2163,7 +2339,7 @@ function regenerateSceneHash() {
   state.sceneHash = generateHash();
   // Re-load active demo to pick up the new expansion.
   if (state.activeDemoId) {
-    const demo = state.demos?.find(d => d.id === state.activeDemoId);
+    const demo = state.demos?.find((d) => d.id === state.activeDemoId);
     if (demo) loadDemoScene(demo);
   }
 }
@@ -2225,7 +2401,7 @@ function generateGeneratorScene({ keepCamera = false } = {}) {
 
   const rng = new Random(state.genHash);
   const choice = state.genSceneTypeChoice;
-  const sceneType = choice === 'random' ? randomSceneTypeData(rng) : (+choice);
+  const sceneType = choice === 'random' ? randomSceneTypeData(rng) : +choice;
 
   const sceneData = generateSceneData(sceneType, rng);
   let compiled;
@@ -2238,9 +2414,10 @@ function generateGeneratorScene({ keepCamera = false } = {}) {
   }
 
   // Union ground into the SDF tree (compile returns it separately)
-  const renderSdf = (compiled.groundSdf && compiled.sdf)
-    ? sdfUnion(compiled.sdf, compiled.groundSdf)
-    : (compiled.sdf || compiled.groundSdf);
+  const renderSdf =
+    compiled.groundSdf && compiled.sdf
+      ? sdfUnion(compiled.sdf, compiled.groundSdf)
+      : compiled.sdf || compiled.groundSdf;
 
   if (!renderSdf) {
     setStatus('✗ empty scene', true);
@@ -2266,7 +2443,8 @@ function generateGeneratorScene({ keepCamera = false } = {}) {
       anims: cam=${camAnim} light=${lightAnim}<br>
       shader: ${(bytes / 1024).toFixed(1)} KB GLSL
     `;
-    $('scene-info').textContent = `${SCENE_NAMES_DATA[sceneType]} · hash ${state.genHash.slice(0, 8)}…`;
+    $('scene-info').textContent =
+      `${SCENE_NAMES_DATA[sceneType]} · hash ${state.genHash.slice(0, 8)}…`;
     setStatus(`✓ rendered: ${SCENE_NAMES_DATA[sceneType]}`);
   } catch (e) {
     setStatus(`✗ render error: ${e.message}`, true);
@@ -2278,7 +2456,7 @@ function wireGeneratorTab() {
   // Init hash from URL or generate fresh
   if (!state.genHash) {
     const urlHash = readHashFromURL();
-    state.genHash = (urlHash && isValidHash(urlHash)) ? urlHash : generateHash();
+    state.genHash = urlHash && isValidHash(urlHash) ? urlHash : generateHash();
   }
   $('gen-hash-input').value = state.genHash;
   $('gen-scene-type').value = state.genSceneTypeChoice;
@@ -2337,22 +2515,26 @@ function renderHistoryList() {
     list.innerHTML = `<div class="history-empty">No generations yet. Try a prompt!</div>`;
     return;
   }
-  list.innerHTML = state.history.map(h => `
+  list.innerHTML = state.history
+    .map(
+      (h) => `
     <div class="history-item ${h.id === state.selectedHistoryId ? 'active' : ''}" data-id="${h.id}">
       <span class="history-prompt">${escapeHtml(h.prompt)}</span>
       <span class="history-time">${formatTime(h.timestamp)}</span>
       <button class="history-del" data-id="${h.id}" title="Delete">×</button>
     </div>
-  `).join('');
+  `,
+    )
+    .join('');
 
-  list.querySelectorAll('.history-item').forEach(item => {
-    item.addEventListener('click', e => {
-      if (e.target.classList.contains('history-del')) return;  // delegated below
+  list.querySelectorAll('.history-item').forEach((item) => {
+    item.addEventListener('click', (e) => {
+      if (e.target.classList.contains('history-del')) return; // delegated below
       loadHistoryEntry(item.dataset.id);
     });
   });
-  list.querySelectorAll('.history-del').forEach(btn => {
-    btn.addEventListener('click', e => {
+  list.querySelectorAll('.history-del').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
       e.stopPropagation();
       deleteHistoryEntry(btn.dataset.id);
     });
@@ -2360,7 +2542,7 @@ function renderHistoryList() {
 }
 
 async function loadHistoryEntry(id) {
-  const entry = state.history.find(h => h.id === id);
+  const entry = state.history.find((h) => h.id === id);
   if (!entry) return;
   state.selectedHistoryId = id;
   activeDemoId = null;
@@ -2386,7 +2568,10 @@ async function loadHistoryEntry(id) {
 }
 
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  return s.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+  );
 }
 
 // =============================================================================
@@ -2425,22 +2610,22 @@ function setCodeDisplay(code, prompt, meta, sceneJSON) {
 // Tab switching + pill controls
 // =============================================================================
 
-$$('.tab').forEach(btn => {
+$$('.tab').forEach((btn) => {
   btn.addEventListener('click', () => {
     if (btn.classList.contains('stub')) return;
     const tab = btn.dataset.tab;
     state.activeTab = tab;
-    $$('.tab').forEach(b => b.classList.toggle('active', b === btn));
+    $$('.tab').forEach((b) => b.classList.toggle('active', b === btn));
     renderActiveTab();
     setStatus(`tab → ${tab}`);
   });
 });
 
-$$('#renderer-pills .pill').forEach(btn => {
+$$('#renderer-pills .pill').forEach((btn) => {
   btn.addEventListener('click', () => {
     const newR = btn.dataset.renderer;
     state.activeRenderer = newR;
-    $$('#renderer-pills .pill').forEach(b => b.classList.toggle('active', b === btn));
+    $$('#renderer-pills .pill').forEach((b) => b.classList.toggle('active', b === btn));
 
     if (!isGpuRenderer(newR)) {
       // 2D pill: release any GPU renderer first (cancels its RAF + pointer lock).
@@ -2464,8 +2649,8 @@ $$('#renderer-pills .pill').forEach(btn => {
   const btn = document.getElementById('btn-new-hash');
   if (!btn) return;
   btn.addEventListener('click', () => {
-    const newHash = '0x' + [...Array(64)].map(() =>
-      Math.floor(Math.random() * 16).toString(16)).join('');
+    const newHash =
+      '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
     URL_TOKEN_HASH = newHash;
     try {
       const url = new URL(window.location);
@@ -2502,7 +2687,8 @@ $$('#renderer-pills .pill').forEach(btn => {
 function drawPlaceholder() {
   const canvas = $('c');
   const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
+  const w = canvas.width,
+    h = canvas.height;
 
   ctx.fillStyle = '#f4efdc';
   ctx.fillRect(0, 0, w, h);
@@ -2532,10 +2718,18 @@ function drawPlaceholder() {
   ctx.lineWidth = 2;
   const c = 28;
   ctx.beginPath();
-  ctx.moveTo(20, 20 + c); ctx.lineTo(20, 20); ctx.lineTo(20 + c, 20);
-  ctx.moveTo(w - 20 - c, 20); ctx.lineTo(w - 20, 20); ctx.lineTo(w - 20, 20 + c);
-  ctx.moveTo(w - 20, h - 20 - c); ctx.lineTo(w - 20, h - 20); ctx.lineTo(w - 20 - c, h - 20);
-  ctx.moveTo(20 + c, h - 20); ctx.lineTo(20, h - 20); ctx.lineTo(20, h - 20 - c);
+  ctx.moveTo(20, 20 + c);
+  ctx.lineTo(20, 20);
+  ctx.lineTo(20 + c, 20);
+  ctx.moveTo(w - 20 - c, 20);
+  ctx.lineTo(w - 20, 20);
+  ctx.lineTo(w - 20, 20 + c);
+  ctx.moveTo(w - 20, h - 20 - c);
+  ctx.lineTo(w - 20, h - 20);
+  ctx.lineTo(w - 20 - c, h - 20);
+  ctx.moveTo(20 + c, h - 20);
+  ctx.lineTo(20, h - 20);
+  ctx.lineTo(20, h - 20 - c);
   ctx.stroke();
 }
 
@@ -2549,7 +2743,10 @@ function setStatus(msg, isError = false) {
   el.textContent = msg;
   el.className = isError ? 'err' : '';
   clearTimeout(statusTimer);
-  statusTimer = setTimeout(() => { el.textContent = 'ready'; el.className = ''; }, 4000);
+  statusTimer = setTimeout(() => {
+    el.textContent = 'ready';
+    el.className = '';
+  }, 4000);
 }
 
 function updateSceneInfo() {
@@ -2557,7 +2754,8 @@ function updateSceneInfo() {
     const n = state.scene.subjects?.length ?? 0;
     $('scene-info').textContent = `${state.scene.name ?? 'scene'} · ${n} subjects`;
   } else if (state.layers) {
-    $('scene-info').textContent = `${state.layers.length} layer${state.layers.length === 1 ? '' : 's'}`;
+    $('scene-info').textContent =
+      `${state.layers.length} layer${state.layers.length === 1 ? '' : 's'}`;
   } else {
     $('scene-info').textContent = 'No scene';
   }
@@ -2578,7 +2776,9 @@ updateSceneInfo();
 // Global GPU canvas pointerdown: signal to gpuCameraLoop that user has
 // taken manual camera control (so scene.evalCamera animation stops fighting
 // WASD/mouse input). Applies to both text-tab lift mode and generator-tab.
-$('c-gpu').addEventListener('pointerdown', () => { userTookCam = true; });
+$('c-gpu').addEventListener('pointerdown', () => {
+  userTookCam = true;
+});
 
 // ----- Shared-scene URL banner handlers -----
 $('btn-save-shared')?.addEventListener('click', saveSharedScene);
@@ -2592,7 +2792,11 @@ function updateTimelineUI() {
   const bar = document.getElementById('timeline-bar');
   if (!bar) return;
   const fly = state.fly3dRenderer;
-  const hasSeq = state.activeRenderer === 'fly3d' && fly && fly.getSequenceDuration && fly.getSequenceDuration() > 0;
+  const hasSeq =
+    state.activeRenderer === 'fly3d' &&
+    fly &&
+    fly.getSequenceDuration &&
+    fly.getSequenceDuration() > 0;
   bar.style.display = hasSeq ? 'flex' : 'none';
   if (!hasSeq) return;
   const dur = fly.getSequenceDuration();
@@ -2601,8 +2805,9 @@ function updateTimelineUI() {
   if (scrubber && document.activeElement !== scrubber) {
     scrubber.value = String(Math.round((t / dur) * 1000));
   }
-  const fmt = s => {
-    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  const fmt = (s) => {
+    const m = Math.floor(s / 60),
+      sec = Math.floor(s % 60);
     return `${m}:${sec.toString().padStart(2, '0')}`;
   };
   const timeEl = document.getElementById('timeline-time');
@@ -2700,10 +2905,10 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   // record MP4 (Firefox + older Chrome). Both formats carry audio when the
   // Oxygene synth is playing (audio track added below).
   const FORMAT_CANDIDATES = [
-    'video/mp4;codecs=avc1.42E01F,mp4a.40.2',  // H.264 baseline + AAC
-    'video/mp4;codecs=avc1.42E01F',             // H.264 video only
-    'video/mp4',                                  // generic mp4
-    'video/webm;codecs=vp9,opus',                // WebM VP9 + Opus audio
+    'video/mp4;codecs=avc1.42E01F,mp4a.40.2', // H.264 baseline + AAC
+    'video/mp4;codecs=avc1.42E01F', // H.264 video only
+    'video/mp4', // generic mp4
+    'video/webm;codecs=vp9,opus', // WebM VP9 + Opus audio
     'video/webm;codecs=vp9',
     'video/webm;codecs=vp8,opus',
     'video/webm;codecs=vp8',
@@ -2711,14 +2916,17 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   ];
   let mimeType = null;
   for (const f of FORMAT_CANDIDATES) {
-    if (MediaRecorder.isTypeSupported(f)) { mimeType = f; break; }
+    if (MediaRecorder.isTypeSupported(f)) {
+      mimeType = f;
+      break;
+    }
   }
   if (!mimeType) {
     setStatus('✗ record: no supported video format in this browser', true);
     return;
   }
   const isMp4 = mimeType.startsWith('video/mp4');
-  const ext   = isMp4 ? 'mp4' : 'webm';
+  const ext = isMp4 ? 'mp4' : 'webm';
   const blobType = isMp4 ? 'video/mp4' : 'video/webm';
 
   // Disable loop during recording so the sequence stops at its natural end.
@@ -2744,7 +2952,7 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   // AudioContext start needs its own gesture flow.
   const videoStream = canvas.captureStream(30);
   const tracks = [...videoStream.getVideoTracks()];
-  const synth = (typeof window._getOxygeneSynth === 'function') ? window._getOxygeneSynth() : null;
+  const synth = typeof window._getOxygeneSynth === 'function' ? window._getOxygeneSynth() : null;
   if (synth && synth.isOn()) {
     const audioStream = synth.getMediaStream();
     tracks.push(...audioStream.getAudioTracks());
@@ -2752,13 +2960,17 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
   const stream = new MediaStream(tracks);
   const chunks = [];
   const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 12_000_000 });
-  recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+  recorder.ondataavailable = (e) => {
+    if (e.data && e.data.size > 0) chunks.push(e.data);
+  };
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: blobType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const baseName = (sceneRef?.name || sceneRef?.id || 'atlas-scene')
-      .toString().replace(/[^a-zA-Z0-9-_]+/g, '-').slice(0, 60);
+      .toString()
+      .replace(/[^a-zA-Z0-9-_]+/g, '-')
+      .slice(0, 60);
     const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
     a.href = url;
     a.download = `${baseName}-${stamp}.${ext}`;
@@ -2780,23 +2992,28 @@ document.getElementById('timeline-record')?.addEventListener('click', async () =
     btn.style.color = '';
   };
 
-  recorder.start(100);  // emit a chunk every 100ms
-  setStatus(`⏺ recording ${dur.toFixed(1)}s of ${sceneRef?.name || 'scene'}… (${ext.toUpperCase()})`);
+  recorder.start(100); // emit a chunk every 100ms
+  setStatus(
+    `⏺ recording ${dur.toFixed(1)}s of ${sceneRef?.name || 'scene'}… (${ext.toUpperCase()})`,
+  );
 
   // Stop at sequence end + 0.3s buffer so the final fade-to-black is captured.
-  setTimeout(() => {
-    if (recorder.state === 'recording') recorder.stop();
-    // Only stop video tracks. Audio tracks come from the synth's shared
-    // MediaStreamDestination — stopping them would break future recordings.
-    videoStream.getTracks().forEach(t => t.stop());
-  }, (dur + 0.3) * 1000);
+  setTimeout(
+    () => {
+      if (recorder.state === 'recording') recorder.stop();
+      // Only stop video tracks. Audio tracks come from the synth's shared
+      // MediaStreamDestination — stopping them would break future recordings.
+      videoStream.getTracks().forEach((t) => t.stop());
+    },
+    (dur + 0.3) * 1000,
+  );
 });
 
 // Space-bar play/pause shortcut when fly3d active + sequence present
 window.addEventListener('keydown', (e) => {
   if (e.code !== 'Space') return;
-  if (document.activeElement?.tagName === 'INPUT'
-      || document.activeElement?.tagName === 'TEXTAREA') return;
+  if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA')
+    return;
   const fly = state.fly3dRenderer;
   if (!fly || !fly.getSequenceDuration || fly.getSequenceDuration() === 0) return;
   if (state.activeRenderer !== 'fly3d') return;
@@ -2809,7 +3026,7 @@ function toggleFullscreen() {
   const wrap = $('canvas-wrap');
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     const fn = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
-    if (fn) fn.call(wrap).catch(e => setStatus(`✗ fullscreen failed: ${e.message}`, true));
+    if (fn) fn.call(wrap).catch((e) => setStatus(`✗ fullscreen failed: ${e.message}`, true));
   } else {
     const fn = document.exitFullscreen || document.webkitExitFullscreen;
     if (fn) fn.call(document);
@@ -2840,9 +3057,13 @@ $('btn-new-style')?.addEventListener('click', () => {
 
 // Shift+S keyboard shortcut for New Style (BOB GPU only)
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'S' && e.shiftKey && state.activeRenderer === 'bob-gpu'
-      && document.activeElement?.tagName !== 'INPUT'
-      && document.activeElement?.tagName !== 'TEXTAREA') {
+  if (
+    e.key === 'S' &&
+    e.shiftKey &&
+    state.activeRenderer === 'bob-gpu' &&
+    document.activeElement?.tagName !== 'INPUT' &&
+    document.activeElement?.tagName !== 'TEXTAREA'
+  ) {
     e.preventDefault();
     $('btn-new-style')?.click();
   }
@@ -2850,10 +3071,10 @@ window.addEventListener('keydown', (e) => {
 
 // ----- Light control panel (GPU renderers only) -----
 const LIGHT_PRESETS = {
-  goldenHour: { azimuth: 0.60, altitude: 0.25, distance: 35 },  // low warm sun
-  midday:     { azimuth: 0.50, altitude: 0.95, distance: 30 },  // high cool sun
-  sideLight:  { azimuth: 1.10, altitude: 0.55, distance: 32 },  // 3/4 dramatic
-  dusk:       { azimuth: -1.0, altitude: 0.18, distance: 38 },  // sun behind — silhouette
+  goldenHour: { azimuth: 0.6, altitude: 0.25, distance: 35 }, // low warm sun
+  midday: { azimuth: 0.5, altitude: 0.95, distance: 30 }, // high cool sun
+  sideLight: { azimuth: 1.1, altitude: 0.55, distance: 32 }, // 3/4 dramatic
+  dusk: { azimuth: -1.0, altitude: 0.18, distance: 38 }, // sun behind — silhouette
 };
 
 function getCurrentLight() {
@@ -2865,20 +3086,22 @@ function getCurrentLight() {
 
 function updateLightSliders() {
   const light = getCurrentLight();
-  const azimEl = $('light-azim'), altEl = $('light-alt'), distEl = $('light-dist');
+  const azimEl = $('light-azim'),
+    altEl = $('light-alt'),
+    distEl = $('light-dist');
   if (!azimEl) return;
   azimEl.value = light.azimuth;
-  altEl.value  = light.altitude;
+  altEl.value = light.altitude;
   distEl.value = light.distance;
   $('light-azim-val').textContent = (+light.azimuth).toFixed(2);
-  $('light-alt-val').textContent  = (+light.altitude).toFixed(2);
+  $('light-alt-val').textContent = (+light.altitude).toFixed(2);
   $('light-dist-val').textContent = Math.round(+light.distance);
 }
 
 function applyLightOverride(partial) {
   const current = getCurrentLight();
   state.lightOverride = {
-    azimuth:  partial.azimuth  ?? current.azimuth,
+    azimuth: partial.azimuth ?? current.azimuth,
     altitude: partial.altitude ?? current.altitude,
     distance: partial.distance ?? current.distance,
   };
@@ -2893,12 +3116,18 @@ $('light-panel-header')?.addEventListener('click', () => {
 });
 
 // Sliders
-$('light-azim')?.addEventListener('input', (e) => applyLightOverride({ azimuth: parseFloat(e.target.value) }));
-$('light-alt') ?.addEventListener('input', (e) => applyLightOverride({ altitude: parseFloat(e.target.value) }));
-$('light-dist')?.addEventListener('input', (e) => applyLightOverride({ distance: parseFloat(e.target.value) }));
+$('light-azim')?.addEventListener('input', (e) =>
+  applyLightOverride({ azimuth: parseFloat(e.target.value) }),
+);
+$('light-alt')?.addEventListener('input', (e) =>
+  applyLightOverride({ altitude: parseFloat(e.target.value) }),
+);
+$('light-dist')?.addEventListener('input', (e) =>
+  applyLightOverride({ distance: parseFloat(e.target.value) }),
+);
 
 // Preset chips
-document.querySelectorAll('.light-preset-chip').forEach(btn => {
+document.querySelectorAll('.light-preset-chip').forEach((btn) => {
   btn.addEventListener('click', () => {
     const preset = LIGHT_PRESETS[btn.dataset.preset];
     if (preset) applyLightOverride(preset);
@@ -2913,18 +3142,28 @@ $('light-reset')?.addEventListener('click', () => {
 
 window.addEventListener('keydown', (e) => {
   const target = e.target;
-  const typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+  const typing =
+    target &&
+    (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
   if (typing) return;
   const gpuVisible = $('c-gpu').style.display !== 'none';
   if (!gpuVisible) return;
-  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen(); }
-  else if (e.key === 's' || e.key === 'S') { e.preventDefault(); shuffleBobPalette(); }
+  if (e.key === 'f' || e.key === 'F') {
+    e.preventDefault();
+    toggleFullscreen();
+  } else if (e.key === 's' || e.key === 'S') {
+    e.preventDefault();
+    shuffleBobPalette();
+  }
 });
 
 // Wire code-screen elements (they exist on initial page load, before any tab content renders)
 $('btn-copy-code')?.addEventListener('click', () => {
   const code = $('code-display').value;
-  if (!code) { setStatus('no code to copy', true); return; }
+  if (!code) {
+    setStatus('no code to copy', true);
+    return;
+  }
   navigator.clipboard.writeText(code).then(
     () => setStatus('✓ code copied'),
     () => setStatus('✗ clipboard failed', true),
@@ -2933,7 +3172,10 @@ $('btn-copy-code')?.addEventListener('click', () => {
 
 async function runCurrentCode() {
   const code = $('code-display').value;
-  if (!code) { setStatus('no code to re-run', true); return; }
+  if (!code) {
+    setStatus('no code to re-run', true);
+    return;
+  }
   setStatus('⋯ executing edited code…');
   try {
     await executeGeneratedCode(code);
@@ -2966,7 +3208,10 @@ $('code-display')?.addEventListener('input', () => refreshLiftButtonState());
 // 3D SceneData pane: copy + re-render handlers
 $('btn-copy-scene')?.addEventListener('click', () => {
   const txt = $('scene-display').value;
-  if (!txt) { setStatus('no SceneData to copy', true); return; }
+  if (!txt) {
+    setStatus('no SceneData to copy', true);
+    return;
+  }
   navigator.clipboard.writeText(txt).then(
     () => setStatus('✓ SceneData JSON copied'),
     () => setStatus('✗ clipboard failed', true),
@@ -2975,21 +3220,29 @@ $('btn-copy-scene')?.addEventListener('click', () => {
 
 async function rerenderCurrentScene() {
   const txt = $('scene-display').value.trim();
-  if (!txt) { setStatus('no SceneData to render', true); return; }
+  if (!txt) {
+    setStatus('no SceneData to render', true);
+    return;
+  }
   let sceneData;
   try {
     sceneData = JSON.parse(txt);
   } catch (e) {
     setStatus(`✗ invalid JSON: ${e.message}`, true);
     const meta = $('code-3d-meta');
-    if (meta) { meta.textContent = `✗ ${e.message}`; meta.style.color = '#d9afaf'; }
+    if (meta) {
+      meta.textContent = `✗ ${e.message}`;
+      meta.style.color = '#d9afaf';
+    }
     return;
   }
   const meta = $('code-3d-meta');
   if (meta) meta.style.color = '#666';
   try {
     const prompt = state.textLiftSourcePrompt || sceneData.name || 'edited scene';
-    renderLiftedSceneData(sceneData, prompt, '✓ re-rendered from edited JSON', { shufflePalette: false });
+    renderLiftedSceneData(sceneData, prompt, '✓ re-rendered from edited JSON', {
+      shufflePalette: false,
+    });
     setStatus('✓ scene re-rendered from edited JSON');
   } catch (e) {
     setStatus(`✗ scene re-render: ${e.message}`, true);
@@ -3014,13 +3267,17 @@ bootstrapBobStyle();
 // expandVariants() at every scene load. URL ?sceneHash= override supported.
 bootstrapSceneHash();
 
-Promise.all([loadSystemPrompt(), loadLiftSystemPrompt(), loadDemoManifest()]).then(([n2d, nLift]) => {
-  renderScenesTab();
-  const demoCount = DEMO_MANIFEST?.demos?.length ?? 0;
-  const ready = DEMO_MANIFEST?.demos?.filter(d => d.status === 'ready').length ?? 0;
-  setStatus(`✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c · styleHash ${state.styleHash.slice(0, 8)}…`);
+Promise.all([loadSystemPrompt(), loadLiftSystemPrompt(), loadDemoManifest()]).then(
+  ([n2d, nLift]) => {
+    renderScenesTab();
+    const demoCount = DEMO_MANIFEST?.demos?.length ?? 0;
+    const ready = DEMO_MANIFEST?.demos?.filter((d) => d.status === 'ready').length ?? 0;
+    setStatus(
+      `✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c · styleHash ${state.styleHash.slice(0, 8)}…`,
+    );
 
-  // Auto-load shared scene from URL hash (runs after system prompts are ready
-  // so any LLM-side machinery is available, though shared loads don't need it)
-  checkSharedSceneInUrl();
-});
+    // Auto-load shared scene from URL hash (runs after system prompts are ready
+    // so any LLM-side machinery is available, though shared loads don't need it)
+    checkSharedSceneInUrl();
+  },
+);

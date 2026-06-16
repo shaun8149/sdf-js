@@ -16,18 +16,10 @@
         "id": "plaza-floor",
         "type": "box",
         "args": {
-          "dims": [
-            28,
-            0.3,
-            26
-          ]
+          "dims": [28, 0.3, 26]
         },
         "transform": {
-          "translate": [
-            0,
-            -3.1,
-            -4
-          ]
+          "translate": [0, -3.1, -4]
         },
         "material": "stone",
         "pattern": {
@@ -44,16 +36,8 @@
           "wingSpan": 0.65
         },
         "transform": {
-          "translate": [
-            -4.5,
-            6.2,
-            2
-          ],
-          "rotate": [
-            0,
-            0.5,
-            0
-          ]
+          "translate": [-4.5, 6.2, 2],
+          "rotate": [0, 0.5, 0]
         },
         "region": "bird"
       },
@@ -65,16 +49,8 @@
           "wingSpan": 0.58
         },
         "transform": {
-          "translate": [
-            5.2,
-            7,
-            1.5
-          ],
-          "rotate": [
-            0,
-            -0.4,
-            0
-          ]
+          "translate": [5.2, 7, 1.5],
+          "rotate": [0, -0.4, 0]
         },
         "region": "bird"
       },
@@ -86,11 +62,7 @@
           "basinHeight": 0.5
         },
         "transform": {
-          "translate": [
-            0,
-            -2.6,
-            10
-          ]
+          "translate": [0, -2.6, 10]
         },
         "material": "stone"
       },
@@ -116,36 +88,20 @@
                 "id": "plinth-base",
                 "type": "box",
                 "args": {
-                  "dims": [
-                    12,
-                    0.35,
-                    14
-                  ]
+                  "dims": [12, 0.35, 14]
                 },
                 "transform": {
-                  "translate": [
-                    0,
-                    -2.65,
-                    -2.5
-                  ]
+                  "translate": [0, -2.65, -2.5]
                 }
               },
               {
                 "id": "plinth-upper",
                 "type": "box",
                 "args": {
-                  "dims": [
-                    10,
-                    0.45,
-                    12
-                  ]
+                  "dims": [10, 0.45, 12]
                 },
                 "transform": {
-                  "translate": [
-                    0,
-                    -2.15,
-                    -2.5
-                  ]
+                  "translate": [0, -2.15, -2.5]
                 }
               }
             ]
@@ -154,18 +110,10 @@
             "id": "nave-body",
             "type": "box",
             "args": {
-              "dims": [
-                4,
-                5.2,
-                12
-              ]
+              "dims": [4, 5.2, 12]
             },
             "transform": {
-              "translate": [
-                0,
-                -0.1,
-                -2.5
-              ]
+              "translate": [0, -0.1, -2.5]
             },
             "material": "stone",
             "pattern": {
@@ -178,18 +126,10 @@
             "id": "transept-left",
             "type": "box",
             "args": {
-              "dims": [
-                3.2,
-                3.6,
-                3
-              ]
+              "dims": [3.2, 3.6, 3]
             },
             "transform": {
-              "translate": [
-                -3.6,
-                -1.2,
-                -2
-              ]
+              "translate": [-3.6, -1.2, -2]
             },
             "material": "stone",
             "pattern": {
@@ -202,18 +142,10 @@
             "id": "transept-right",
             "type": "box",
             "args": {
-              "dims": [
-                3.2,
-                3.6,
-                3
-              ]
+              "dims": [3.2, 3.6, 3]
             },
             "transform": {
-              "translate": [
-                3.6,
-                -1.2,
-                -2
-              ]
+              "translate": [3.6, -1.2, -2]
             },
             "material": "stone",
             "pattern": {
@@ -230,11 +162,7 @@
               "height": 4
             },
             "transform": {
-              "translate": [
-                0,
-                -1,
-                -8.5
-              ]
+              "translate": [0, -1, -8.5]
             },
             "material": "stone",
             "pattern": {
@@ -251,11 +179,7 @@
               "baseRadius": 2.1
             },
             "transform": {
-              "translate": [
-                0,
-                1,
-                -8.5
-              ]
+              "translate": [0, 1, -8.5]
             },
             "material": "terracotta"
           },
@@ -263,18 +187,10 @@
             "id": "tower-left",
             "type": "box",
             "args": {
-              "dims": [
-                1.8,
-                9.5,
-                2.2
-              ]
+              "dims": [1.8, 9.5, 2.2]
             },
             "transform": {
-              "translate": [
-                -3,
-                2.2,
-                3.5
-              ]
+              "translate": [-3, 2.2, 3.5]
             },
             "material": "stone",
             "pattern": {
@@ -287,18 +203,10 @@
             "id": "tower-right",
             "type": "box",
             "args": {
-              "dims": [
-                1.8,
-                9.5,
-                2.2
-              ]
+              "dims": [1.8, 9.5, 2.2]
             },
             "transform": {
-              "translate": [
-                3,
-                2.2,
-                3.5
-              ]
+              "translate": [3, 2.2, 3.5]
             },
             "material": "stone",
             "pattern": {
@@ -314,16 +222,8 @@
               "height": 2.6
             },
             "transform": {
-              "translate": [
-                -3,
-                8.3,
-                3.5
-              ],
-              "scale": [
-                1.8,
-                1,
-                2.2
-              ]
+              "translate": [-3, 8.3, 3.5],
+              "scale": [1.8, 1, 2.2]
             },
             "material": "matte-black"
           },
@@ -334,16 +234,8 @@
               "height": 2.6
             },
             "transform": {
-              "translate": [
-                3,
-                8.3,
-                3.5
-              ],
-              "scale": [
-                1.8,
-                1,
-                2.2
-              ]
+              "translate": [3, 8.3, 3.5],
+              "scale": [1.8, 1, 2.2]
             },
             "material": "matte-black"
           },
@@ -351,18 +243,10 @@
             "id": "fleche-base",
             "type": "box",
             "args": {
-              "dims": [
-                0.5,
-                4.2,
-                0.5
-              ]
+              "dims": [0.5, 4.2, 0.5]
             },
             "transform": {
-              "translate": [
-                0,
-                3.5,
-                -2
-              ]
+              "translate": [0, 3.5, -2]
             },
             "material": "matte-black"
           },
@@ -373,16 +257,8 @@
               "height": 5
             },
             "transform": {
-              "translate": [
-                0,
-                5.6,
-                -2
-              ],
-              "scale": [
-                0.48,
-                1,
-                0.48
-              ]
+              "translate": [0, 5.6, -2],
+              "scale": [0.48, 1, 0.48]
             },
             "material": "matte-black"
           },
@@ -393,16 +269,8 @@
               "height": 1.2
             },
             "transform": {
-              "translate": [
-                -3.6,
-                0.6,
-                -2
-              ],
-              "scale": [
-                0.7,
-                1,
-                0.7
-              ]
+              "translate": [-3.6, 0.6, -2],
+              "scale": [0.7, 1, 0.7]
             },
             "material": "matte-black"
           },
@@ -413,16 +281,8 @@
               "height": 1.2
             },
             "transform": {
-              "translate": [
-                3.6,
-                0.6,
-                -2
-              ],
-              "scale": [
-                0.7,
-                1,
-                0.7
-              ]
+              "translate": [3.6, 0.6, -2],
+              "scale": [0.7, 1, 0.7]
             },
             "material": "matte-black"
           },
@@ -434,16 +294,8 @@
               "thickness": 0.12
             },
             "transform": {
-              "translate": [
-                0,
-                2,
-                4.05
-              ],
-              "rotate": [
-                1.5708,
-                0,
-                0
-              ]
+              "translate": [0, 2, 4.05],
+              "rotate": [1.5708, 0, 0]
             },
             "material": "stone"
           },
@@ -455,16 +307,8 @@
               "height": 0.08
             },
             "transform": {
-              "translate": [
-                0,
-                2,
-                4.02
-              ],
-              "rotate": [
-                1.5708,
-                0,
-                0
-              ]
+              "translate": [0, 2, 4.02],
+              "rotate": [1.5708, 0, 0]
             },
             "material": {
               "hue": 0.02,
@@ -478,16 +322,8 @@
             "id": "portal-center-arch",
             "type": "capped_cone",
             "args": {
-              "a": [
-                0,
-                -2.8,
-                4
-              ],
-              "b": [
-                0,
-                -0.8,
-                4
-              ],
+              "a": [0, -2.8, 4],
+              "b": [0, -0.8, 4],
               "r1": 0.7,
               "r2": 0.25
             },
@@ -497,18 +333,10 @@
             "id": "portal-center-door",
             "type": "box",
             "args": {
-              "dims": [
-                1.25,
-                2.2,
-                0.12
-              ]
+              "dims": [1.25, 2.2, 0.12]
             },
             "transform": {
-              "translate": [
-                0,
-                -1.9,
-                4.08
-              ]
+              "translate": [0, -1.9, 4.08]
             },
             "material": "wood"
           },
@@ -516,16 +344,8 @@
             "id": "portal-left-arch",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -2,
-                -2.8,
-                4
-              ],
-              "b": [
-                -2,
-                -1.2,
-                4
-              ],
+              "a": [-2, -2.8, 4],
+              "b": [-2, -1.2, 4],
               "r1": 0.5,
               "r2": 0.18
             },
@@ -535,18 +355,10 @@
             "id": "portal-left-door",
             "type": "box",
             "args": {
-              "dims": [
-                0.9,
-                1.8,
-                0.12
-              ]
+              "dims": [0.9, 1.8, 0.12]
             },
             "transform": {
-              "translate": [
-                -2,
-                -2,
-                4.08
-              ]
+              "translate": [-2, -2, 4.08]
             },
             "material": "wood"
           },
@@ -554,16 +366,8 @@
             "id": "portal-right-arch",
             "type": "capped_cone",
             "args": {
-              "a": [
-                2,
-                -2.8,
-                4
-              ],
-              "b": [
-                2,
-                -1.2,
-                4
-              ],
+              "a": [2, -2.8, 4],
+              "b": [2, -1.2, 4],
               "r1": 0.5,
               "r2": 0.18
             },
@@ -573,18 +377,10 @@
             "id": "portal-right-door",
             "type": "box",
             "args": {
-              "dims": [
-                0.9,
-                1.8,
-                0.12
-              ]
+              "dims": [0.9, 1.8, 0.12]
             },
             "transform": {
-              "translate": [
-                2,
-                -2,
-                4.08
-              ]
+              "translate": [2, -2, 4.08]
             },
             "material": "wood"
           },
@@ -592,16 +388,8 @@
             "id": "nave-window-left",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -1,
-                -1.5,
-                4
-              ],
-              "b": [
-                -1,
-                0.8,
-                4
-              ],
+              "a": [-1, -1.5, 4],
+              "b": [-1, 0.8, 4],
               "r1": 0.32,
               "r2": 0.12
             },
@@ -611,18 +399,10 @@
             "id": "nave-glass-left",
             "type": "box",
             "args": {
-              "dims": [
-                0.64,
-                2.3,
-                0.08
-              ]
+              "dims": [0.64, 2.3, 0.08]
             },
             "transform": {
-              "translate": [
-                -1,
-                -0.35,
-                4.02
-              ]
+              "translate": [-1, -0.35, 4.02]
             },
             "material": {
               "hue": 0.58,
@@ -636,16 +416,8 @@
             "id": "nave-window-right",
             "type": "capped_cone",
             "args": {
-              "a": [
-                1,
-                -1.5,
-                4
-              ],
-              "b": [
-                1,
-                0.8,
-                4
-              ],
+              "a": [1, -1.5, 4],
+              "b": [1, 0.8, 4],
               "r1": 0.32,
               "r2": 0.12
             },
@@ -655,18 +427,10 @@
             "id": "nave-glass-right",
             "type": "box",
             "args": {
-              "dims": [
-                0.64,
-                2.3,
-                0.08
-              ]
+              "dims": [0.64, 2.3, 0.08]
             },
             "transform": {
-              "translate": [
-                1,
-                -0.35,
-                4.02
-              ]
+              "translate": [1, -0.35, 4.02]
             },
             "material": {
               "hue": 0.58,
@@ -680,16 +444,8 @@
             "id": "clerestory-left",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -0.8,
-                1.8,
-                4
-              ],
-              "b": [
-                -0.8,
-                3.2,
-                4
-              ],
+              "a": [-0.8, 1.8, 4],
+              "b": [-0.8, 3.2, 4],
               "r1": 0.26,
               "r2": 0.1
             },
@@ -699,18 +455,10 @@
             "id": "clerestory-glass-left",
             "type": "box",
             "args": {
-              "dims": [
-                0.52,
-                1.4,
-                0.08
-              ]
+              "dims": [0.52, 1.4, 0.08]
             },
             "transform": {
-              "translate": [
-                -0.8,
-                2.5,
-                4.02
-              ]
+              "translate": [-0.8, 2.5, 4.02]
             },
             "material": {
               "hue": 0.1,
@@ -724,16 +472,8 @@
             "id": "clerestory-right",
             "type": "capped_cone",
             "args": {
-              "a": [
-                0.8,
-                1.8,
-                4
-              ],
-              "b": [
-                0.8,
-                3.2,
-                4
-              ],
+              "a": [0.8, 1.8, 4],
+              "b": [0.8, 3.2, 4],
               "r1": 0.26,
               "r2": 0.1
             },
@@ -743,18 +483,10 @@
             "id": "clerestory-glass-right",
             "type": "box",
             "args": {
-              "dims": [
-                0.52,
-                1.4,
-                0.08
-              ]
+              "dims": [0.52, 1.4, 0.08]
             },
             "transform": {
-              "translate": [
-                0.8,
-                2.5,
-                4.02
-              ]
+              "translate": [0.8, 2.5, 4.02]
             },
             "material": {
               "hue": 0.1,
@@ -768,16 +500,8 @@
             "id": "tower-window-left-1",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -3,
-                3.5,
-                4.6
-              ],
-              "b": [
-                -3,
-                4.8,
-                4.6
-              ],
+              "a": [-3, 3.5, 4.6],
+              "b": [-3, 4.8, 4.6],
               "r1": 0.24,
               "r2": 0.09
             },
@@ -787,18 +511,10 @@
             "id": "tower-glass-left-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.48,
-                1.3,
-                0.08
-              ]
+              "dims": [0.48, 1.3, 0.08]
             },
             "transform": {
-              "translate": [
-                -3,
-                4.15,
-                4.58
-              ]
+              "translate": [-3, 4.15, 4.58]
             },
             "material": {
               "hue": 0.58,
@@ -812,16 +528,8 @@
             "id": "tower-window-left-2",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -3,
-                5.2,
-                4.6
-              ],
-              "b": [
-                -3,
-                6.5,
-                4.6
-              ],
+              "a": [-3, 5.2, 4.6],
+              "b": [-3, 6.5, 4.6],
               "r1": 0.24,
               "r2": 0.09
             },
@@ -831,18 +539,10 @@
             "id": "tower-glass-left-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.48,
-                1.3,
-                0.08
-              ]
+              "dims": [0.48, 1.3, 0.08]
             },
             "transform": {
-              "translate": [
-                -3,
-                5.85,
-                4.58
-              ]
+              "translate": [-3, 5.85, 4.58]
             },
             "material": {
               "hue": 0.58,
@@ -856,16 +556,8 @@
             "id": "tower-window-right-1",
             "type": "capped_cone",
             "args": {
-              "a": [
-                3,
-                3.5,
-                4.6
-              ],
-              "b": [
-                3,
-                4.8,
-                4.6
-              ],
+              "a": [3, 3.5, 4.6],
+              "b": [3, 4.8, 4.6],
               "r1": 0.24,
               "r2": 0.09
             },
@@ -875,18 +567,10 @@
             "id": "tower-glass-right-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.48,
-                1.3,
-                0.08
-              ]
+              "dims": [0.48, 1.3, 0.08]
             },
             "transform": {
-              "translate": [
-                3,
-                4.15,
-                4.58
-              ]
+              "translate": [3, 4.15, 4.58]
             },
             "material": {
               "hue": 0.58,
@@ -900,16 +584,8 @@
             "id": "tower-window-right-2",
             "type": "capped_cone",
             "args": {
-              "a": [
-                3,
-                5.2,
-                4.6
-              ],
-              "b": [
-                3,
-                6.5,
-                4.6
-              ],
+              "a": [3, 5.2, 4.6],
+              "b": [3, 6.5, 4.6],
               "r1": 0.24,
               "r2": 0.09
             },
@@ -919,18 +595,10 @@
             "id": "tower-glass-right-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.48,
-                1.3,
-                0.08
-              ]
+              "dims": [0.48, 1.3, 0.08]
             },
             "transform": {
-              "translate": [
-                3,
-                5.85,
-                4.58
-              ]
+              "translate": [3, 5.85, 4.58]
             },
             "material": {
               "hue": 0.58,
@@ -944,16 +612,8 @@
             "id": "nave-side-window-xpos-1",
             "type": "capped_cone",
             "args": {
-              "a": [
-                2.01,
-                -1,
-                2
-              ],
-              "b": [
-                2.01,
-                1.2,
-                2
-              ],
+              "a": [2.01, -1, 2],
+              "b": [2.01, 1.2, 2],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -963,18 +623,10 @@
             "id": "nave-side-glass-xpos-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                2.01,
-                0.1,
-                2
-              ]
+              "translate": [2.01, 0.1, 2]
             },
             "material": {
               "hue": 0.58,
@@ -988,16 +640,8 @@
             "id": "nave-side-window-xpos-2",
             "type": "capped_cone",
             "args": {
-              "a": [
-                2.01,
-                -1,
-                0
-              ],
-              "b": [
-                2.01,
-                1.2,
-                0
-              ],
+              "a": [2.01, -1, 0],
+              "b": [2.01, 1.2, 0],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1007,18 +651,10 @@
             "id": "nave-side-glass-xpos-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                2.01,
-                0.1,
-                0
-              ]
+              "translate": [2.01, 0.1, 0]
             },
             "material": {
               "hue": 0.58,
@@ -1032,16 +668,8 @@
             "id": "nave-side-window-xpos-3",
             "type": "capped_cone",
             "args": {
-              "a": [
-                2.01,
-                -1,
-                -2
-              ],
-              "b": [
-                2.01,
-                1.2,
-                -2
-              ],
+              "a": [2.01, -1, -2],
+              "b": [2.01, 1.2, -2],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1051,18 +679,10 @@
             "id": "nave-side-glass-xpos-3",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                2.01,
-                0.1,
-                -2
-              ]
+              "translate": [2.01, 0.1, -2]
             },
             "material": {
               "hue": 0.58,
@@ -1076,16 +696,8 @@
             "id": "nave-side-window-xpos-4",
             "type": "capped_cone",
             "args": {
-              "a": [
-                2.01,
-                -1,
-                -4
-              ],
-              "b": [
-                2.01,
-                1.2,
-                -4
-              ],
+              "a": [2.01, -1, -4],
+              "b": [2.01, 1.2, -4],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1095,18 +707,10 @@
             "id": "nave-side-glass-xpos-4",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                2.01,
-                0.1,
-                -4
-              ]
+              "translate": [2.01, 0.1, -4]
             },
             "material": {
               "hue": 0.58,
@@ -1120,16 +724,8 @@
             "id": "nave-side-window-xneg-1",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -2.01,
-                -1,
-                2
-              ],
-              "b": [
-                -2.01,
-                1.2,
-                2
-              ],
+              "a": [-2.01, -1, 2],
+              "b": [-2.01, 1.2, 2],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1139,18 +735,10 @@
             "id": "nave-side-glass-xneg-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                -2.01,
-                0.1,
-                2
-              ]
+              "translate": [-2.01, 0.1, 2]
             },
             "material": {
               "hue": 0.58,
@@ -1164,16 +752,8 @@
             "id": "nave-side-window-xneg-2",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -2.01,
-                -1,
-                0
-              ],
-              "b": [
-                -2.01,
-                1.2,
-                0
-              ],
+              "a": [-2.01, -1, 0],
+              "b": [-2.01, 1.2, 0],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1183,18 +763,10 @@
             "id": "nave-side-glass-xneg-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                -2.01,
-                0.1,
-                0
-              ]
+              "translate": [-2.01, 0.1, 0]
             },
             "material": {
               "hue": 0.58,
@@ -1208,16 +780,8 @@
             "id": "nave-side-window-xneg-3",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -2.01,
-                -1,
-                -2
-              ],
-              "b": [
-                -2.01,
-                1.2,
-                -2
-              ],
+              "a": [-2.01, -1, -2],
+              "b": [-2.01, 1.2, -2],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1227,18 +791,10 @@
             "id": "nave-side-glass-xneg-3",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                -2.01,
-                0.1,
-                -2
-              ]
+              "translate": [-2.01, 0.1, -2]
             },
             "material": {
               "hue": 0.58,
@@ -1252,16 +808,8 @@
             "id": "nave-side-window-xneg-4",
             "type": "capped_cone",
             "args": {
-              "a": [
-                -2.01,
-                -1,
-                -4
-              ],
-              "b": [
-                -2.01,
-                1.2,
-                -4
-              ],
+              "a": [-2.01, -1, -4],
+              "b": [-2.01, 1.2, -4],
               "r1": 0.22,
               "r2": 0.08
             },
@@ -1271,18 +819,10 @@
             "id": "nave-side-glass-xneg-4",
             "type": "box",
             "args": {
-              "dims": [
-                0.1,
-                2.2,
-                0.44
-              ]
+              "dims": [0.1, 2.2, 0.44]
             },
             "transform": {
-              "translate": [
-                -2.01,
-                0.1,
-                -4
-              ]
+              "translate": [-2.01, 0.1, -4]
             },
             "material": {
               "hue": 0.58,
@@ -1296,23 +836,11 @@
             "id": "buttress-left-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                -2.4,
-                -0.8,
-                1.5
-              ],
-              "rotate": [
-                0,
-                0,
-                -0.35
-              ]
+              "translate": [-2.4, -0.8, 1.5],
+              "rotate": [0, 0, -0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1325,23 +853,11 @@
             "id": "buttress-left-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                -2.4,
-                -0.8,
-                -1
-              ],
-              "rotate": [
-                0,
-                0,
-                -0.35
-              ]
+              "translate": [-2.4, -0.8, -1],
+              "rotate": [0, 0, -0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1354,23 +870,11 @@
             "id": "buttress-left-3",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                -2.4,
-                -0.8,
-                -3.5
-              ],
-              "rotate": [
-                0,
-                0,
-                -0.35
-              ]
+              "translate": [-2.4, -0.8, -3.5],
+              "rotate": [0, 0, -0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1383,23 +887,11 @@
             "id": "buttress-right-1",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                2.4,
-                -0.8,
-                1.5
-              ],
-              "rotate": [
-                0,
-                0,
-                0.35
-              ]
+              "translate": [2.4, -0.8, 1.5],
+              "rotate": [0, 0, 0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1412,23 +904,11 @@
             "id": "buttress-right-2",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                2.4,
-                -0.8,
-                -1
-              ],
-              "rotate": [
-                0,
-                0,
-                0.35
-              ]
+              "translate": [2.4, -0.8, -1],
+              "rotate": [0, 0, 0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1441,23 +921,11 @@
             "id": "buttress-right-3",
             "type": "box",
             "args": {
-              "dims": [
-                0.4,
-                3,
-                0.5
-              ]
+              "dims": [0.4, 3, 0.5]
             },
             "transform": {
-              "translate": [
-                2.4,
-                -0.8,
-                -3.5
-              ],
-              "rotate": [
-                0,
-                0,
-                0.35
-              ]
+              "translate": [2.4, -0.8, -3.5],
+              "rotate": [0, 0, 0.35]
             },
             "material": "stone",
             "pattern": {
@@ -1468,11 +936,7 @@
           }
         ],
         "transform": {
-          "translate": [
-            0,
-            0,
-            0
-          ]
+          "translate": [0, 0, 0]
         },
         "variants": [
           {
@@ -1480,15 +944,8 @@
             "count": 3,
             "region": {
               "type": "rectXZ",
-              "center": [
-                0,
-                0,
-                -5
-              ],
-              "size": [
-                80,
-                25
-              ]
+              "center": [0, 0, -5],
+              "size": [80, 25]
             },
             "separation": 18,
             "heading": "aligned",
@@ -1496,11 +953,7 @@
               "jitter": 0.08
             },
             "translate": {
-              "jitter": [
-                0.5,
-                0,
-                0.5
-              ]
+              "jitter": [0.5, 0, 0.5]
             }
           }
         ]

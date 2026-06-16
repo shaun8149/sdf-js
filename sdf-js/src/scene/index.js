@@ -22,7 +22,12 @@ export { parseExpr, stringifyExpr, normalizeChannel } from './expr.js';
 
 // Re-export enum tables for editor / LLM SKILL.md consumers
 export {
-  PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS,
-  SHADOW_MODES, SOURCE_FORMATS,
-  SUBJECT_CHANNEL_PATHS, CAMERA_CHANNEL_PATHS, LIGHT_CHANNEL_PATHS,
+  PRIMITIVE_TYPES,
+  BOOLEAN_OPS,
+  DOMAIN_OPS,
+  SHADOW_MODES,
+  SOURCE_FORMATS,
+  SUBJECT_CHANNEL_PATHS,
+  CAMERA_CHANNEL_PATHS,
+  LIGHT_CHANNEL_PATHS,
 } from './spec.js';

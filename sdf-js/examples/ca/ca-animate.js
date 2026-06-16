@@ -13,33 +13,42 @@ import { caGrid, caRects, caShuffle, caDrawRectsAt, fromSdf2 } from '../../src/c
 import { ROBOT } from './robot-shapes.js';
 
 const SHAPES = {
-  ring:        () => sdf.circle(0.7).difference(sdf.circle(0.3)),
-  circle:      () => sdf.circle(0.7),
-  ellipse:     () => sdf.circle(0.9).scale([1, 0.6]),
-  hexagon:     () => sdf.hexagon(0.7),
-  figure_eight:() => sdf.circle(0.45).translate([-0.35, 0])
-                       .union(sdf.circle(0.45).translate([0.35, 0])),
-  cross:       () => sdf.rectangle([1.5, 0.5]).union(sdf.rectangle([0.5, 1.5])),
-  rounded:     () => sdf.rounded_rectangle([1.4, 1.4], 0.25),
+  ring: () => sdf.circle(0.7).difference(sdf.circle(0.3)),
+  circle: () => sdf.circle(0.7),
+  ellipse: () => sdf.circle(0.9).scale([1, 0.6]),
+  hexagon: () => sdf.hexagon(0.7),
+  figure_eight: () =>
+    sdf
+      .circle(0.45)
+      .translate([-0.35, 0])
+      .union(sdf.circle(0.45).translate([0.35, 0])),
+  cross: () => sdf.rectangle([1.5, 0.5]).union(sdf.rectangle([0.5, 1.5])),
+  rounded: () => sdf.rounded_rectangle([1.4, 1.4], 0.25),
   // 机器人：定义在 robot-shapes.js（共享给 ca.js）。在那里改唯一一处即可
-  robot:       () => ROBOT,
+  robot: () => ROBOT,
 };
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const W = canvas.width,
+  H = canvas.height;
 const BG = '#eee8e2';
 const HOLD_FRAMES = 25;
 
 const $ = (id) => document.getElementById(id);
 const els = {
   shape: $('shape'),
-  frames: $('frames'),     fv: $('fv'),
-  movement: $('movement'), mv: $('mv'),
+  frames: $('frames'),
+  fv: $('fv'),
+  movement: $('movement'),
+  mv: $('mv'),
   symmetric: $('symmetric'),
-  gridDim: $('gridDim'),   gv: $('gv'),
-  roundness: $('roundness'), rv: $('rv'),
-  rebuild: $('rebuild'),   pause: $('pause'),
+  gridDim: $('gridDim'),
+  gv: $('gv'),
+  roundness: $('roundness'),
+  rv: $('rv'),
+  rebuild: $('rebuild'),
+  pause: $('pause'),
   stats: $('stats'),
 };
 
@@ -48,7 +57,8 @@ let rects = [];
 let totalFrames = 200;
 let tick = 0;
 let cellSize = 16;
-let offsetX = 0, offsetY = 0;
+let offsetX = 0,
+  offsetY = 0;
 let paused = false;
 let rafId = 0;
 
@@ -60,15 +70,15 @@ function regenerate() {
 
   // 与 ca.html 默认机器人配置完全一致
   const grid = caGrid(isInside, gridDim, {
-    initiateChance:  0.85,
+    initiateChance: 0.85,
     extensionChance: 0.75,
-    solidness:       0.56,
-    verticalChance:  0.50,
-    roundness:       parseFloat(els.roundness.value),
-    colorMode:       'group',
-    groupSize:       0.82,
-    hSymmetric:      true,
-    vSymmetric:      false,
+    solidness: 0.56,
+    verticalChance: 0.5,
+    roundness: parseFloat(els.roundness.value),
+    colorMode: 'group',
+    groupSize: 0.82,
+    hSymmetric: true,
+    vSymmetric: false,
   });
 
   rects = caRects(grid);
@@ -80,7 +90,7 @@ function regenerate() {
   });
 
   // 居中：以原始位置（grid 中心）为基准计算 offset
-  cellSize = Math.floor(Math.min(W, H) / (gridDim + 8));    // 留点边
+  cellSize = Math.floor(Math.min(W, H) / (gridDim + 8)); // 留点边
   const total = cellSize * (gridDim + 1);
   // 必须取整，否则 fillRect 在小数坐标抗锯齿，相邻矩形边界 50% 覆盖叠加→看到背景色"白网格"
   offsetX = Math.floor((W - total) / 2);
@@ -99,7 +109,8 @@ function frame() {
   // 倒着播 path：tick=0 看 path[末尾](最散) → tick=末尾 看 path[0](原位)
   const pathIdx = totalFrames - tick - 1;
   caDrawRectsAt(ctx, rects, pathIdx, cellSize, {
-    offsetX, offsetY,
+    offsetX,
+    offsetY,
     stroke: false,
   });
 
@@ -109,8 +120,7 @@ function frame() {
     return;
   }
 
-  els.stats.textContent =
-    `${rects.length} rects · frame ${tick}/${totalFrames} · ${(tick / totalFrames * 100).toFixed(0)}%`;
+  els.stats.textContent = `${rects.length} rects · frame ${tick}/${totalFrames} · ${((tick / totalFrames) * 100).toFixed(0)}%`;
 
   tick++;
   rafId = requestAnimationFrame(frame);
@@ -125,10 +135,10 @@ const updateAndRebuild = () => {
   regenerate();
 };
 
-['frames', 'movement', 'gridDim', 'roundness'].forEach(k => {
+['frames', 'movement', 'gridDim', 'roundness'].forEach((k) => {
   els[k].addEventListener('input', updateAndRebuild);
 });
-['shape', 'symmetric'].forEach(k => {
+['shape', 'symmetric'].forEach((k) => {
   els[k].addEventListener('change', regenerate);
 });
 els.rebuild.addEventListener('click', regenerate);

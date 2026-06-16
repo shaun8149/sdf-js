@@ -27,15 +27,7 @@
 export const PHASES = ['input', 'forces', 'integrate', 'constrain', 'sync'];
 const PHASE_SET = new Set(PHASES);
 
-export function makeRule({
-  id,
-  phase,
-  reads = [],
-  writes = [],
-  enabled = true,
-  applies,
-  apply,
-}) {
+export function makeRule({ id, phase, reads = [], writes = [], enabled = true, applies, apply }) {
   if (typeof id !== 'string' || !id) {
     throw new Error('rule.id must be a non-empty string');
   }

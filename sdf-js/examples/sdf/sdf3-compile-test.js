@@ -8,9 +8,23 @@
 // =============================================================================
 
 import {
-  sphere, box, torus, cylinder, capsule, cone, capped_cone,
-  ellipsoid, rounded_box, tetrahedron, octahedron, dodecahedron, icosahedron,
-  pyramid, wireframe_box, twist, bend,
+  sphere,
+  box,
+  torus,
+  cylinder,
+  capsule,
+  cone,
+  capped_cone,
+  ellipsoid,
+  rounded_box,
+  tetrahedron,
+  octahedron,
+  dodecahedron,
+  icosahedron,
+  pyramid,
+  wireframe_box,
+  twist,
+  bend,
 } from '../../src/sdf/d3.js';
 import { union, difference, intersection, blend, dilate, shell } from '../../src/sdf/dn.js';
 import { compileSDF3ToGLSL } from '../../src/sdf/sdf3.compile.js';
@@ -24,101 +38,93 @@ const PI = Math.PI;
 const PRESETS = [
   {
     name: 'smooth_union',
-    source:
-`union(
+    source: `union(
   sphere(0.4).translate([-0.3, 0, 0]),
   box(0.5).translate([0.3, 0, 0]).rotate(Math.PI/6, [0, 1, 0]),
   { k: 0.15 }
 )`,
-    build: () => union(
-      sphere(0.4).translate([-0.3, 0, 0]),
-      box(0.5).translate([0.3, 0, 0]).rotate(PI / 6, [0, 1, 0]),
-      { k: 0.15 },
-    ),
+    build: () =>
+      union(
+        sphere(0.4).translate([-0.3, 0, 0]),
+        box(0.5)
+          .translate([0.3, 0, 0])
+          .rotate(PI / 6, [0, 1, 0]),
+        { k: 0.15 },
+      ),
   },
   {
     name: 'difference + torus rotate',
-    source:
-`box(0.7).translate([0,0,0])
+    source: `box(0.7).translate([0,0,0])
   .difference(torus(0.5, 0.15).rotate(Math.PI/2, [1,0,0]))`,
-    build: () => box(0.7).difference(
-      torus(0.5, 0.15).rotate(PI / 2, [1, 0, 0]),
-    ),
+    build: () => box(0.7).difference(torus(0.5, 0.15).rotate(PI / 2, [1, 0, 0])),
   },
   {
     name: 'twist + shell',
-    source:
-`box([0.25, 0.7, 0.25]).twist(3.0).shell(0.04)`,
+    source: `box([0.25, 0.7, 0.25]).twist(3.0).shell(0.04)`,
     build: () => box([0.25, 0.7, 0.25]).twist(3.0).shell(0.04),
   },
   {
     name: 'platonic stack',
-    source:
-`union(
+    source: `union(
   icosahedron(0.3).translate([-0.55, 0.3, 0]),
   dodecahedron(0.3).translate([0, 0.3, 0]),
   octahedron(0.3).translate([0.55, 0.3, 0]),
   tetrahedron(0.4).translate([0, -0.4, 0]),
   { k: 0.05 }
 )`,
-    build: () => union(
-      icosahedron(0.3).translate([-0.55, 0.3, 0]),
-      dodecahedron(0.3).translate([0, 0.3, 0]),
-      octahedron(0.3).translate([0.55, 0.3, 0]),
-      tetrahedron(0.4).translate([0, -0.4, 0]),
-      { k: 0.05 },
-    ),
+    build: () =>
+      union(
+        icosahedron(0.3).translate([-0.55, 0.3, 0]),
+        dodecahedron(0.3).translate([0, 0.3, 0]),
+        octahedron(0.3).translate([0.55, 0.3, 0]),
+        tetrahedron(0.4).translate([0, -0.4, 0]),
+        { k: 0.05 },
+      ),
   },
   {
     name: 'capsule chain',
-    source:
-`union(
+    source: `union(
   capsule([-0.5, -0.4, 0], [0.5, 0.4, 0], 0.08),
   capsule([0.5, 0.4, 0], [-0.3, 0.5, 0.3], 0.08),
   capsule([-0.3, 0.5, 0.3], [-0.4, -0.3, -0.2], 0.08),
   { k: 0.05 }
 )`,
-    build: () => union(
-      capsule([-0.5, -0.4, 0], [0.5, 0.4, 0], 0.08),
-      capsule([0.5, 0.4, 0], [-0.3, 0.5, 0.3], 0.08),
-      capsule([-0.3, 0.5, 0.3], [-0.4, -0.3, -0.2], 0.08),
-      { k: 0.05 },
-    ),
+    build: () =>
+      union(
+        capsule([-0.5, -0.4, 0], [0.5, 0.4, 0], 0.08),
+        capsule([0.5, 0.4, 0], [-0.3, 0.5, 0.3], 0.08),
+        capsule([-0.3, 0.5, 0.3], [-0.4, -0.3, -0.2], 0.08),
+        { k: 0.05 },
+      ),
   },
   {
     name: 'rounded_box + difference cylinder',
-    source:
-`rounded_box([0.9, 0.6, 0.6], 0.08)
+    source: `rounded_box([0.9, 0.6, 0.6], 0.08)
   .difference(cylinder(0.18, 1.0).rotate(Math.PI/2, [1,0,0]))`,
-    build: () => rounded_box([0.9, 0.6, 0.6], 0.08).difference(
-      cylinder(0.18, 1.0).rotate(PI / 2, [1, 0, 0]),
-    ),
+    build: () =>
+      rounded_box([0.9, 0.6, 0.6], 0.08).difference(cylinder(0.18, 1.0).rotate(PI / 2, [1, 0, 0])),
   },
   {
     name: 'wireframe_box + sphere',
-    source:
-`union(
+    source: `union(
   wireframe_box(1.1, 0.025),
   sphere(0.35)
 )`,
-    build: () => union(
-      wireframe_box(1.1, 0.025),
-      sphere(0.35),
-    ),
+    build: () => union(wireframe_box(1.1, 0.025), sphere(0.35)),
   },
   {
     name: 'cone + ellipsoid',
-    source:
-`union(
+    source: `union(
   cone(0.7, 0.4).translate([0, -0.05, 0]),
   ellipsoid([0.35, 0.2, 0.25]).translate([0, 0.5, 0]),
   { k: 0.08 }
 )`,
-    build: () => union(
-      cone(0.7, 0.4).translate([0, -0.05, 0]),
-      ellipsoid([0.35, 0.2, 0.25]).translate([0, 0.5, 0]),
-      { k: 0.08 },
-    ),
+    build: () =>
+      union(
+        cone(0.7, 0.4).translate([0, -0.05, 0]),
+        ellipsoid([0.35, 0.2, 0.25]).translate([0, 0.5, 0]),
+        { k: 0.08 },
+      ),
   },
 ];
 
@@ -307,7 +313,7 @@ PRESETS.forEach((p, i) => {
   const b = document.createElement('button');
   b.textContent = p.name;
   b.onclick = () => {
-    [...btns.children].forEach(x => x.classList.remove('active'));
+    [...btns.children].forEach((x) => x.classList.remove('active'));
     b.classList.add('active');
     renderPreset(p);
   };

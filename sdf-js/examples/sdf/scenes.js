@@ -9,21 +9,28 @@
 // =============================================================================
 
 import {
-  circle, rectangle, rounded_rectangle, line,
-  equilateral_triangle, polygon, triangle, trapezoid, flower,
+  circle,
+  rectangle,
+  rounded_rectangle,
+  line,
+  equilateral_triangle,
+  polygon,
+  triangle,
+  trapezoid,
+  flower,
   union,
   SDF2,
 } from '../../src/index.js';
 
 // ---- v2 (LLM × SDF round 2) 场景 SDF 入口 ---------------------------------
 // 每个 v2 文件 export 一个 getSdfs() 返回该场景的 base SDF 列表（不含 dilate 描边）
-import { getSdfs as treeV2Sdfs }      from './test-tree-v2.js';
-import { getSdfs as boatV2Sdfs }      from './test-boat-v2.js';
+import { getSdfs as treeV2Sdfs } from './test-tree-v2.js';
+import { getSdfs as boatV2Sdfs } from './test-boat-v2.js';
 import { getSdfs as cathedralV2Sdfs } from './test-cathedral-v2.js';
 import { getSdfs as butterflyV2Sdfs } from './test-butterfly-v2.js';
-import { getSdfs as hatmanV2Sdfs }    from './test-hatman-v2.js';
-import { getDanceSdfs as danceSdfs }  from './llm-round1.js';
-import { getSdfs as seuratV2Sdfs }    from './test-seurat-v2.js';
+import { getSdfs as hatmanV2Sdfs } from './test-hatman-v2.js';
+import { getDanceSdfs as danceSdfs } from './llm-round1.js';
+import { getSdfs as seuratV2Sdfs } from './test-seurat-v2.js';
 
 // ---- BOB-style random helper (r() / r([arr]) / r(lo, hi)) ------------------
 export const r = (...args) => {
@@ -38,25 +45,25 @@ export const r = (...args) => {
 //                'up'   = math 约定（y+ 朝上，LLM v2 输出习惯）
 //   view:        半边长（世界坐标 ±view）
 const SCENE_META = {
-  1:  { yConvention: 'down', view: 1.0 },     // BOB cactus
-  2:  { yConvention: 'down', view: 1.0 },     // BOB tree + boat
-  3:  { yConvention: 'down', view: 1.0 },     // BOB bridge
-  4:  { yConvention: 'down', view: 1.0 },     // BOB buildings (far)
-  5:  { yConvention: 'down', view: 1.0 },     // BOB buildings (near)
-  6:  { yConvention: 'down', view: 1.0 },     // BOB brick wall
-  7:  { yConvention: 'down', view: 1.0 },     // BOB folded-plane bird
-  8:  { yConvention: 'up',   view: 1.2 },     // LLM v2 tree
-  9:  { yConvention: 'up',   view: 1.2 },     // LLM v2 boat
-  10: { yConvention: 'up',   view: 1.2 },     // LLM v2 cathedral
-  11: { yConvention: 'up',   view: 1.2 },     // LLM v2 butterfly
-  12: { yConvention: 'up',   view: 1.2 },     // LLM v2 hatman
-  13: { yConvention: 'up',   view: 1.2 },     // LLM (v1) Matisse dance
-  14: { yConvention: 'up',   view: 1.2 },     // LLM v2 seurat
+  1: { yConvention: 'down', view: 1.0 }, // BOB cactus
+  2: { yConvention: 'down', view: 1.0 }, // BOB tree + boat
+  3: { yConvention: 'down', view: 1.0 }, // BOB bridge
+  4: { yConvention: 'down', view: 1.0 }, // BOB buildings (far)
+  5: { yConvention: 'down', view: 1.0 }, // BOB buildings (near)
+  6: { yConvention: 'down', view: 1.0 }, // BOB brick wall
+  7: { yConvention: 'down', view: 1.0 }, // BOB folded-plane bird
+  8: { yConvention: 'up', view: 1.2 }, // LLM v2 tree
+  9: { yConvention: 'up', view: 1.2 }, // LLM v2 boat
+  10: { yConvention: 'up', view: 1.2 }, // LLM v2 cathedral
+  11: { yConvention: 'up', view: 1.2 }, // LLM v2 butterfly
+  12: { yConvention: 'up', view: 1.2 }, // LLM v2 hatman
+  13: { yConvention: 'up', view: 1.2 }, // LLM (v1) Matisse dance
+  14: { yConvention: 'up', view: 1.2 }, // LLM v2 seurat
   // ---- 3D 场景：probe-based painted 渲染（其它 renderer 暂不支持）-----------
   // 2026-05-15: probe.rayFor 统一到 math-y-up 后，3D 场景 yConvention 必须 'up'
   // 才让 painted.pxToWorld(flipY=true) → 传 math-y-up → 跟 probe 一致
-  15: { yConvention: 'up', view: 1.0, kind: '3d' },     // BOB 原 7：单球+平面
-  16: { yConvention: 'up', view: 1.0, kind: '3d' },     // BOB 原 8：4 胶囊+平面
+  15: { yConvention: 'up', view: 1.0, kind: '3d' }, // BOB 原 7：单球+平面
+  16: { yConvention: 'up', view: 1.0, kind: '3d' }, // BOB 原 8：4 胶囊+平面
 };
 
 // pa 参数集合（每次加载或调用产生一组）。
@@ -64,39 +71,37 @@ const SCENE_META = {
 //   8..14  LLM × SDF round 2 的 v2 场景（昨天用改良 SKILL.md prompt 跑出的输出）
 // 随机池只取 1..6（不含鸟和 v2），其它场景需要 URL hash 显式指定。
 export const makePa = (sceneOverride) => {
-  const _scene = (sceneOverride >= 1 && sceneOverride <= 16)
-    ? sceneOverride
-    : r([1, 2, 3, 4, 5, 6]);
+  const _scene = sceneOverride >= 1 && sceneOverride <= 16 ? sceneOverride : r([1, 2, 3, 4, 5, 6]);
   const meta = SCENE_META[_scene] || { yConvention: 'down', view: 1.0 };
   return {
-    scene:              _scene,
-    view:               meta.view,
-    yConvention:        meta.yConvention,
-    kind:               meta.kind || '2d',     // '2d' (default) | '3d'
+    scene: _scene,
+    view: meta.view,
+    yConvention: meta.yConvention,
+    kind: meta.kind || '2d', // '2d' (default) | '3d'
     // 场景几何参数（与 BOB sketch.js 的 setPa 对齐）
-    cy:                 0.4,
-    cy2:                -0.75,
-    moonlocalation1:    r() * 2 - 1,
-    moonlocalation2:    r() * 1.2 - 0.6,
-    bridgelocation:     r() * 0.5 - 0.25,
-    gatelocation:       r(0.75, 0.99),
-    MOON:               r() > 0.5,
-    wallRotate:         r([0, 1, 2, 3]),
-    wallFract:          r([3, 4, 5, 6]),
-    wallSize:           r([1, 1.2, 1.5, 1.8, 2, 2.2, 2]),
+    cy: 0.4,
+    cy2: -0.75,
+    moonlocalation1: r() * 2 - 1,
+    moonlocalation2: r() * 1.2 - 0.6,
+    bridgelocation: r() * 0.5 - 0.25,
+    gatelocation: r(0.75, 0.99),
+    MOON: r() > 0.5,
+    wallRotate: r([0, 1, 2, 3]),
+    wallFract: r([3, 4, 5, 6]),
+    wallSize: r([1, 1.2, 1.5, 1.8, 2, 2.2, 2]),
     // 渲染相关参数（painted 用）
-    middleScaleSize:    6,
-    smallScaleSize:     2,
-    middleRotate:       r(-0.0025, 0.0025),
+    middleScaleSize: 6,
+    smallScaleSize: 2,
+    middleRotate: r(-0.0025, 0.0025),
     smallscalevariance: r(0.1, 0.2),
-    layers:             r([3, 4, 5, 6, 7]),
-    smallOffset:        r([1, 2, 3, 4, 5, 6, 7, 8]),
-    smallSegs:          r([4, 5, 6, 7]),
-    noiseScale:         r(0.02, 0.06),
-    rH:                 r() < 0.7 ? r(0.1, 1.2) : 0,
-    rV:                 r() < 0.3 ? r(0.1, 1.2) : 0,
-    brushSpeed:         r([1, 2, 3, 4]),
-    bg:                 '#fdf9f6',
+    layers: r([3, 4, 5, 6, 7]),
+    smallOffset: r([1, 2, 3, 4, 5, 6, 7, 8]),
+    smallSegs: r([4, 5, 6, 7]),
+    noiseScale: r(0.02, 0.06),
+    rH: r() < 0.7 ? r(0.1, 1.2) : 0,
+    rV: r() < 0.3 ? r(0.1, 1.2) : 0,
+    brushSpeed: r([1, 2, 3, 4]),
+    bg: '#fdf9f6',
   };
 };
 
@@ -115,29 +120,29 @@ const makeMoon = (cx) => {
   const small = circle(0.55).translate([-0.15, -0.45]);
   return SDF2(([x, y]) => {
     const px = (x - cx) * 2;
-    const py = (y - (-0.8)) * 2;
+    const py = (y - -0.8) * 2;
     return Math.max(big.f([px, py]), -small.f([px, py])) / 2;
   });
 };
 const makeSunset = (cx, cy) => circle(0.25).translate([cx, cy]);
 
-const tiltedLine = (cy, k = 0) =>
-  SDF2(([x, y]) => -(y - cy - k * x));
-const sineLine = (cy, k = 0) =>
-  SDF2(([x, y]) => -(y - cy - 0.05 * Math.sin(k * x * Math.PI * 10)));
+const tiltedLine = (cy, k = 0) => SDF2(([x, y]) => -(y - cy - k * x));
+const sineLine = (cy, k = 0) => SDF2(([x, y]) => -(y - cy - 0.05 * Math.sin(k * x * Math.PI * 10)));
 
 // Scene 1 - 仙人掌 + 十字门
 const makeCactus = () =>
   union(
-    rounded_rectangle([0.30, 1.60], [0, 0.15, 0, 0.15]),
-    rounded_rectangle([0.20, 0.80], [0, 0.10, 0, 0.10]).translate([ 0.30,  0.10]),
-    rounded_rectangle([0.20, 0.80], [0, 0.10, 0, 0.10]).translate([-0.30, -0.10]),
-    rounded_rectangle([0.20, 0.20], 0.05).translate([ 0.20, 0.40]),
-    rounded_rectangle([0.20, 0.20], 0.05).translate([-0.20, 0.20]),
-  ).scale(1 / 1.5).translate([0, 0.2]);
+    rounded_rectangle([0.3, 1.6], [0, 0.15, 0, 0.15]),
+    rounded_rectangle([0.2, 0.8], [0, 0.1, 0, 0.1]).translate([0.3, 0.1]),
+    rounded_rectangle([0.2, 0.8], [0, 0.1, 0, 0.1]).translate([-0.3, -0.1]),
+    rounded_rectangle([0.2, 0.2], 0.05).translate([0.2, 0.4]),
+    rounded_rectangle([0.2, 0.2], 0.05).translate([-0.2, 0.2]),
+  )
+    .scale(1 / 1.5)
+    .translate([0, 0.2]);
 
 const makeCrossGate = (cx) =>
-  rectangle([0.20, 0.20])
+  rectangle([0.2, 0.2])
     .difference(rectangle([0.16, 0.16]))
     .rotate(Math.PI / 4)
     .scale([0.5, 1])
@@ -149,7 +154,8 @@ const makeTree = () => {
   return SDF2(([x, y]) => {
     const flowerD = flowerSDF.f([x, y]);
     const angle = Math.PI / 25;
-    const c = Math.cos(angle), s = Math.sin(angle);
+    const c = Math.cos(angle),
+      s = Math.sin(angle);
     const px = c * x - s * y;
     const py = s * x + c * y;
     let linsin = Math.abs(px) - 0.04 - 0.01 * Math.sin(py * 3.14 * 8);
@@ -166,8 +172,8 @@ const makeBoat = (cy) => {
   // BOB 的 sdTrapezoid 内部有 p[1] = -p[1] 翻转，sdTriangle 没有 →
   // BOB 原版船帆尖端朝下（船 + 水中倒影 / 或者 BOB 写错了）。
   // 这里把帆的顶点 y 取反，让尖端朝上（正常船的视觉）。
-  const sail1 = triangle([0, 0],     [0, 0.8],  [0.35, 0]);
-  const sail2 = triangle([0, 0.05],  [0, 0.7],  [-0.35, 0.05]);
+  const sail1 = triangle([0, 0], [0, 0.8], [0.35, 0]);
+  const sail2 = triangle([0, 0.05], [0, 0.7], [-0.35, 0.05]);
   return SDF2(([x, y]) => {
     const px = (x - 0.8) * 4;
     const py = (-y - (-cy + 0.05)) * 4;
@@ -178,8 +184,8 @@ const makeBoat = (cy) => {
 
 // Scene 3 - 拱桥
 const makeBridge = (cx, cy, leftLeaning) => {
-  const c1 = circle(0.8).translate(leftLeaning ? [ 0.2, 0] : [-0.2, 0]);
-  const c2 = circle(0.8).translate(leftLeaning ? [-0.3, 0] : [ 0.3, 0]);
+  const c1 = circle(0.8).translate(leftLeaning ? [0.2, 0] : [-0.2, 0]);
+  const c2 = circle(0.8).translate(leftLeaning ? [-0.3, 0] : [0.3, 0]);
   return SDF2(([wx, wy]) => {
     const x = wx + cx;
     const y = wy;
@@ -189,7 +195,7 @@ const makeBridge = (cx, cy, leftLeaning) => {
     let under = Math.max(moon, -y - cy);
     let minLine = Infinity;
     for (let i = 0; i < 7; i++) {
-      const lin = Math.abs((-y + cy) + 0.1 * i) - 0.025;
+      const lin = Math.abs(-y + cy + 0.1 * i) - 0.025;
       if (lin < minLine) minLine = lin;
     }
     under = Math.max(minLine, under);
@@ -208,20 +214,22 @@ const makeBridge = (cx, cy, leftLeaning) => {
 const makeBuildings = (scene, { invert = true } = {}) => {
   // BOB sdf_box 把 [w,h] 当"全尺寸"（内部 *0.5 → 半边长）。
   // 我的 rectangle(size) 也是收全尺寸，内部 /2 → 半边长。所以这里直接用 BOB 原值。
-  const outer = rectangle([0.6, 1.6]);                      // 半边 [0.3, 0.8]
-  const inner = rectangle([0.5, 1.5]);                      // 半边 [0.25, 0.75]
-  const win   = rectangle([0.2, 0.2]);                      // 半边 [0.1, 0.1]
+  const outer = rectangle([0.6, 1.6]); // 半边 [0.3, 0.8]
+  const inner = rectangle([0.5, 1.5]); // 半边 [0.25, 0.75]
+  const win = rectangle([0.2, 0.2]); // 半边 [0.1, 0.1]
 
   // BOB sdEtriangle(q, r) 行内复刻：内部 p[1] = -p[1] 让三角尖朝 Y-down 的上方
   const sdEtriangle = (qx, qy, r) => {
     const k = Math.sqrt(3);
-    let p0 = qx, p1 = -qy;
+    let p0 = qx,
+      p1 = -qy;
     p0 = Math.abs(p0) - r / 2;
     p1 = p1 + r / k / 2;
     if (k * p1 + p0 > 0) {
       const np0 = (p0 - k * p1) / 2;
       const np1 = (-k * p0 - p1) / 2;
-      p0 = np0; p1 = np1;
+      p0 = np0;
+      p1 = np1;
     }
     p0 -= Math.max(-r, Math.min(0, p0));
     return -Math.sqrt(p0 * p0 + p1 * p1) * Math.sign(p1);
@@ -230,7 +238,7 @@ const makeBuildings = (scene, { invert = true } = {}) => {
   // 单个 id 的建筑 SDF（标准形式：negative-inside）
   const buildingForId = (x, y, id) => {
     const offsetY = scene === 4 ? 0.22 + id * 0.05 : 0.22 - id * 0.05;
-    const scaleN  = scene === 4 ? 4 + id * 0.75   : 4 - id * 0.75;
+    const scaleN = scene === 4 ? 4 + id * 0.75 : 4 - id * 0.75;
     if (scaleN <= 0.1) return Infinity;
 
     const lx = x - 0.33 * id;
@@ -240,7 +248,8 @@ const makeBuildings = (scene, { invert = true } = {}) => {
     const roof = sdEtriangle(bx, by + 1, 0.6);
     const building0 = Math.max(outer.f([bx, by]), -inner.f([bx, by]));
 
-    let wx = bx, wy = by;
+    let wx = bx,
+      wy = by;
     if (Math.abs(bx) < 0.1) wx = sdfRep(bx, 0.25);
     if (Math.abs(by) < 0.8) wy = sdfRep(by, 0.4);
     const window = win.f([wx, wy]);
@@ -270,7 +279,8 @@ const makeBuildings = (scene, { invert = true } = {}) => {
 // Scene 6 - 砖墙
 const brickPattern = (pa) =>
   SDF2(([x, y]) => {
-    let px = x, py = y;
+    let px = x,
+      py = y;
     if (py > -0.5) {
       px *= pa.wallFract;
       py *= pa.wallFract;
@@ -285,7 +295,8 @@ const brickPattern = (pa) =>
     const half = (0.45 + offset) * pa.wallSize * 0.5;
     const qx = Math.abs(px - 0.05) - half;
     const qy = Math.abs(py - 0.05) - half;
-    const ox = Math.max(qx, 0), oy = Math.max(qy, 0);
+    const ox = Math.max(qx, 0),
+      oy = Math.max(qy, 0);
     return Math.min(Math.max(qx, qy), 0) + Math.sqrt(ox * ox + oy * oy);
   });
 
@@ -326,7 +337,7 @@ const makeBird = () =>
     const lin63 = y + 0.35 * x + 0.64;
     const lin6 = Math.max(Math.max(-lin62, lin63), -lin61);
 
-    const lin71 = y - 0.30 * x + 1.00;
+    const lin71 = y - 0.3 * x + 1.0;
     const lin72 = y - 3.69 * x + 2.08;
     const lin73 = y + 0.26 * x + 0.67;
     const lin7 = Math.max(Math.max(lin72, lin73), -lin71);
@@ -338,7 +349,7 @@ const makeBird = () =>
 
     const lin91 = y - 3.67 * x + 2.02;
     const lin92 = y + 2.62 * x + 0.08;
-    const lin93 = y - 0.40 * x + 0.91;
+    const lin93 = y - 0.4 * x + 0.91;
     const lin9 = Math.max(Math.max(lin93, -lin92), -lin91);
 
     const lin101 = y - 1.12 * x + 1.09;
@@ -346,12 +357,12 @@ const makeBird = () =>
     const lin103 = y - 0.43 * x + 0.92;
     const lin10 = Math.max(Math.max(lin103, -lin102), -lin101);
 
-    const lin111 = y - 0.46 * x + 0.90;
+    const lin111 = y - 0.46 * x + 0.9;
     const lin112 = y + 1.17 * x + 0.99;
     const lin113 = y + 0.02 * x + 0.84;
     const lin11f = Math.max(Math.max(lin113, -lin112), -lin111);
 
-    const lin121 = y + 1.90 * x + 1.05;
+    const lin121 = y + 1.9 * x + 1.05;
     const lin122 = y + 0.38 * x + 0.78;
     const lin123 = y + 0.68 * x + 0.74;
     const lin12f = Math.max(Math.max(lin123, -lin122), -lin121);
@@ -367,23 +378,37 @@ const makeBird = () =>
     const lin14f = Math.max(Math.max(lin143, -lin142), -lin141);
 
     return Math.min(
-      lin1, lin2, lin3, lin4, lin5, lin6, lin7,
-      lin8, lin9, lin10, lin11f, lin12f, lin13f, lin14f,
+      lin1,
+      lin2,
+      lin3,
+      lin4,
+      lin5,
+      lin6,
+      lin7,
+      lin8,
+      lin9,
+      lin10,
+      lin11f,
+      lin12f,
+      lin13f,
+      lin14f,
     );
   });
 
 const makeWall = (pa) => {
   const bricks = brickPattern(pa);
   return SDF2(([x, y]) => {
-    let px = x - (-0.5), py = y;
-    const ang = pa.wallRotate * Math.PI / 2;
-    const c = Math.cos(ang), s = Math.sin(ang);
-    [px, py] = [c * px + s * py, -s * px + c * py];     // BOB 的 rot2+trans2 ≈ 旋转 -ang
-    px *= 2;                                              // 列主序 [2,0,0,1] → px *= 2
+    let px = x - -0.5,
+      py = y;
+    const ang = (pa.wallRotate * Math.PI) / 2;
+    const c = Math.cos(ang),
+      s = Math.sin(ang);
+    [px, py] = [c * px + s * py, -s * px + c * py]; // BOB 的 rot2+trans2 ≈ 旋转 -ang
+    px *= 2; // 列主序 [2,0,0,1] → px *= 2
     const shx = (1 - px) * 0.5;
     const shy = -py;
     const sh = shx * shy;
-    py = sh * px + py;                                    // 列主序 [1,sh,0,1] → py = sh*px+py
+    py = sh * px + py; // 列主序 [1,sh,0,1] → py = sh*px+py
     return bricks.f([px, py]);
   });
 };
@@ -396,9 +421,7 @@ export const makesdf = (pa, options = {}) => {
 
   // 场景 1/2/3 共享：月（或落日）+ 地平线
   if ([1, 2, 3].includes(pa.scene)) {
-    sdfs.push(pa.MOON
-      ? makeMoon(pa.moonlocalation1)
-      : makeSunset(pa.moonlocalation1, pa.cy2));
+    sdfs.push(pa.MOON ? makeMoon(pa.moonlocalation1) : makeSunset(pa.moonlocalation1, pa.cy2));
     sdfs.push(tiltedLine(pa.cy));
   }
 
@@ -434,8 +457,8 @@ export const makesdf = (pa, options = {}) => {
   }
 
   // ---- 8..14: LLM v2 场景 ----
-  if (pa.scene === 8)  sdfs.push(...treeV2Sdfs());
-  if (pa.scene === 9)  sdfs.push(...boatV2Sdfs());
+  if (pa.scene === 8) sdfs.push(...treeV2Sdfs());
+  if (pa.scene === 9) sdfs.push(...boatV2Sdfs());
   if (pa.scene === 10) sdfs.push(...cathedralV2Sdfs());
   if (pa.scene === 11) sdfs.push(...butterflyV2Sdfs());
   if (pa.scene === 12) sdfs.push(...hatmanV2Sdfs());

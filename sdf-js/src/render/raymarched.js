@@ -55,7 +55,8 @@ function makeBgFn(bg, view) {
  * @param {number}  [options.eps=0.0008]     - 命中阈值
  */
 export function raymarched(ctx, layers, options = {}) {
-  const W = ctx.canvas.width, H = ctx.canvas.height;
+  const W = ctx.canvas.width,
+    H = ctx.canvas.height;
   const view = options.view ?? 1.2;
   const yaw = options.yaw ?? 0.5;
   const pitch = options.pitch ?? 0.35;
@@ -67,8 +68,10 @@ export function raymarched(ctx, layers, options = {}) {
   const bgFn = makeBgFn(options.background ?? [240, 240, 240], view);
 
   // 旋转矩阵：把 camera-space 点旋转到 scene-space（应用相机的"逆旋转"到点）
-  const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw);
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch);
   const inverseRotate = (p) => {
     // 逆 yaw（绕 Y）
     let x = p[0] * cy - p[2] * sy;
@@ -81,7 +84,7 @@ export function raymarched(ctx, layers, options = {}) {
   };
 
   // SDF 统一 callable：layer.sdf 可能是 SDF2 或 SDF3，统一用 (p) => distance 调
-  const callSdf = (sdf, p) => sdf(p);  // SDF instances 是 callable
+  const callSdf = (sdf, p) => sdf(p); // SDF instances 是 callable
 
   // 场景 union SDF（camera-space 输入 → 内部 inverseRotate 到 scene-space）
   const unionSdf = (p) => {
@@ -96,10 +99,14 @@ export function raymarched(ctx, layers, options = {}) {
 
   // 命中点找最近层 index
   function findLayer(p_scene) {
-    let bestD = Infinity, bestIdx = 0;
+    let bestD = Infinity,
+      bestIdx = 0;
     for (let i = 0; i < layers.length; i++) {
       const d = Math.abs(callSdf(layers[i].sdf, p_scene));
-      if (d < bestD) { bestD = d; bestIdx = i; }
+      if (d < bestD) {
+        bestD = d;
+        bestIdx = i;
+      }
     }
     return bestIdx;
   }
@@ -140,7 +147,10 @@ export function raymarched(ctx, layers, options = {}) {
       }
 
       const i = (y * W + x) * 4;
-      data[i] = col[0]; data[i + 1] = col[1]; data[i + 2] = col[2]; data[i + 3] = 255;
+      data[i] = col[0];
+      data[i + 1] = col[1];
+      data[i + 2] = col[2];
+      data[i + 3] = 255;
     }
   }
   ctx.putImageData(img, 0, 0);

@@ -30,12 +30,7 @@ import { SDF3 } from '../../../sdf/core.js';
  * @param {number} [opts.winX=5]      Window count along facade X axis
  * @param {number} [opts.winY=8]      Window count along facade Y axis
  */
-export function canalBuildingSDF({
-  width = 2.0,
-  height = 6.0,
-  winX = 5,
-  winY = 8,
-} = {}) {
+export function canalBuildingSDF({ width = 2.0, height = 6.0, winX = 5, winY = 8 } = {}) {
   const inst = SDF3((p) => {
     // Cheap CPU approximation: just the building shell (no windows). GPU
     // path computes the real thing via sdCanalBuilding GLSL helper.
@@ -66,15 +61,22 @@ export function canalBuildingSDF({
  * @param {number} [opts.seed=1.0]     Hash seed for per-window lit roulette
  */
 export function canalWindowsSDF({
-  width = 2.0, height = 6.0,
-  winX = 5, winY = 8,
-  density = 0.4, seed = 1.0,
+  width = 2.0,
+  height = 6.0,
+  winX = 5,
+  winY = 8,
+  density = 0.4,
+  seed = 1.0,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: just an empty SDF — glow planes are GPU-only.
     return 1e3;
   });
-  inst.ast = { kind: 'prim', name: 'canal-windows', args: [width, height, winX, winY, density, seed] };
+  inst.ast = {
+    kind: 'prim',
+    name: 'canal-windows',
+    args: [width, height, winX, winY, density, seed],
+  };
   return inst;
 }
 
@@ -86,9 +88,7 @@ export function canalWindowsSDF({
  * @param {number} [opts.archR=1.6]      Arch radius (cuts through bridge body)
  * @param {number} [opts.thickness=1.2]  Bridge width along Z (walkway)
  */
-export function canalBridgeSDF({
-  span = 8.0, archR = 1.6, thickness = 1.2,
-} = {}) {
+export function canalBridgeSDF({ span = 8.0, archR = 1.6, thickness = 1.2 } = {}) {
   const inst = SDF3((p) => {
     // CPU shell stub — bridge box without arch (GPU does the real subtraction).
     const halfY = archR;
@@ -108,17 +108,17 @@ export const canalWindowsSpec = {
   type: 'canal-windows',
   category: 'primitive-architectural',
   args: {
-    width:   { type: 'number', default: 2.0 },
-    height:  { type: 'number', default: 6.0 },
-    winX:    { type: 'number', default: 5 },
-    winY:    { type: 'number', default: 8 },
+    width: { type: 'number', default: 2.0 },
+    height: { type: 'number', default: 6.0 },
+    winX: { type: 'number', default: 5 },
+    winY: { type: 'number', default: 8 },
     density: { type: 'number', default: 0.4, doc: 'Fraction of windows lit (0..1)' },
-    seed:    { type: 'number', default: 1.0, doc: 'Hash seed for lit/dark roulette' },
+    seed: { type: 'number', default: 1.0, doc: 'Hash seed for lit/dark roulette' },
   },
   source: {
     inspiration: 'Venice canal Shadertoy — lit-window randomness idiom',
-    license:     'PolyForm Noncommercial 1.0.0',
-    portedAt:    '2026-05-21',
+    license: 'PolyForm Noncommercial 1.0.0',
+    portedAt: '2026-05-21',
   },
 };
 
@@ -126,14 +126,14 @@ export const canalBridgeSpec = {
   type: 'canal-bridge',
   category: 'primitive-architectural',
   args: {
-    span:      { type: 'number', default: 8.0 },
-    archR:     { type: 'number', default: 1.6 },
+    span: { type: 'number', default: 8.0 },
+    archR: { type: 'number', default: 1.6 },
     thickness: { type: 'number', default: 1.2 },
   },
   source: {
     inspiration: 'Venice canal Shadertoy — bridge = (box ∪ tri-prism) - cylinder',
-    license:     'PolyForm Noncommercial 1.0.0',
-    portedAt:    '2026-05-21',
+    license: 'PolyForm Noncommercial 1.0.0',
+    portedAt: '2026-05-21',
   },
 };
 
@@ -148,16 +148,14 @@ export const canalBridgeSpec = {
  *                                    (caller places this at the top of pole)
  * @param {number} [opts.bulbR=0.3]   Main bulb radius (side bulbs are 0.7×)
  */
-export function canalLampBulbSDF({
-  bulbY = 4.0,
-  bulbR = 0.3,
-} = {}) {
+export function canalLampBulbSDF({ bulbY = 4.0, bulbR = 0.3 } = {}) {
   const inst = SDF3((p) => {
     const sideY = bulbY - 0.6 * bulbR;
     const sideZ = 1.2 * bulbR;
     const bigBulb = Math.sqrt(p[0] ** 2 + (p[1] - bulbY) ** 2 + p[2] ** 2) - bulbR;
     const leftBulb = Math.sqrt(p[0] ** 2 + (p[1] - sideY) ** 2 + (p[2] - sideZ) ** 2) - bulbR * 0.7;
-    const rightBulb = Math.sqrt(p[0] ** 2 + (p[1] - sideY) ** 2 + (p[2] + sideZ) ** 2) - bulbR * 0.7;
+    const rightBulb =
+      Math.sqrt(p[0] ** 2 + (p[1] - sideY) ** 2 + (p[2] + sideZ) ** 2) - bulbR * 0.7;
     return Math.min(bigBulb, Math.min(leftBulb, rightBulb));
   });
   inst.ast = { kind: 'prim', name: 'canal-lamp-bulb', args: [bulbY, bulbR] };
@@ -173,8 +171,8 @@ export const canalLampBulbSpec = {
   },
   source: {
     inspiration: 'Reinder Nijhoff Venice Shadertoy (CC BY-NC-SA, idiom-only port)',
-    license:     'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
-    portedAt:    '2026-05-21',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
+    portedAt: '2026-05-21',
   },
 };
 
@@ -182,17 +180,17 @@ export const canalBuildingSpec = {
   type: 'canal-building',
   category: 'primitive-architectural',
   args: {
-    width:  { type: 'number', default: 2.0, doc: 'Footprint half-width on X/Z (square base)' },
+    width: { type: 'number', default: 2.0, doc: 'Footprint half-width on X/Z (square base)' },
     height: { type: 'number', default: 6.0, doc: 'Half-height on Y; total height = 2*height' },
-    winX:   { type: 'number', default: 5,   doc: 'Window count per facade horizontal' },
-    winY:   { type: 'number', default: 8,   doc: 'Window count per facade vertical' },
+    winX: { type: 'number', default: 5, doc: 'Window count per facade horizontal' },
+    winY: { type: 'number', default: 8, doc: 'Window count per facade vertical' },
   },
   source: {
-    inspiration:    'Venice canal Shadertoy (no license; idiom-only)',
-    license:        'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
-    portedAt:       '2026-05-21',
-    porter:         'Atlas /port-shader pipeline — canal sprint Day 1',
-    notes:          'GPU emits real procedural windows; JS-side stub is shell-only.',
+    inspiration: 'Venice canal Shadertoy (no license; idiom-only)',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation)',
+    portedAt: '2026-05-21',
+    porter: 'Atlas /port-shader pipeline — canal sprint Day 1',
+    notes: 'GPU emits real procedural windows; JS-side stub is shell-only.',
   },
   thumbnail: null,
 };

@@ -27,16 +27,22 @@ export const ellipse = (rx = 1, ry = 1, center = v.ORIGIN) => {
   const inst = SDF2((p) => {
     let px = Math.abs(p[0] - center[0]);
     let py = Math.abs(p[1] - center[1]);
-    let ax = rx, ay = ry;
+    let ax = rx,
+      ay = ry;
     // IQ formula assumes p.y >= p.x in the canonical orientation; swap if needed
     if (px > py) {
-      const t = px; px = py; py = t;
-      const u = ax; ax = ay; ay = u;
+      const t = px;
+      px = py;
+      py = t;
+      const u = ax;
+      ax = ay;
+      ay = u;
     }
     const l = ay * ay - ax * ax;
-    const m = ax * px / l;
-    const n = ay * py / l;
-    const m2 = m * m, n2 = n * n;
+    const m = (ax * px) / l;
+    const n = (ay * py) / l;
+    const m2 = m * m,
+      n2 = n * n;
     const c = (m2 + n2 - 1) / 3;
     const c3 = c * c * c;
     const q = c3 + m2 * n2 * 2;
@@ -57,7 +63,7 @@ export const ellipse = (rx = 1, ry = 1, center = v.ORIGIN) => {
       const rxv = -s - u - c * 4 + 2 * m2;
       const ryv = (s - u) * Math.sqrt(3);
       const rm = Math.sqrt(rxv * rxv + ryv * ryv);
-      co = (ryv / Math.sqrt(rm - rxv) + 2 * g / rm - m) / 2;
+      co = (ryv / Math.sqrt(rm - rxv) + (2 * g) / rm - m) / 2;
     }
     const sinCo = Math.sqrt(Math.max(0, 1 - co * co));
     const rxFinal = ax * co;
@@ -80,8 +86,10 @@ export const line = (normal = v.UP, point = v.ORIGIN) => {
 //   线条、笔画、钟表指针、肢体、植物茎秆都可以用它。
 export const segment = (a, b, r = 0.05) => {
   const inst = SDF2((p) => {
-    const pax = p[0] - a[0], pay = p[1] - a[1];
-    const bax = b[0] - a[0], bay = b[1] - a[1];
+    const pax = p[0] - a[0],
+      pay = p[1] - a[1];
+    const bax = b[0] - a[0],
+      bay = b[1] - a[1];
     const baba = bax * bax + bay * bay;
     if (baba === 0) return Math.sqrt(pax * pax + pay * pay) - r;
     const t = Math.max(0, Math.min(1, (pax * bax + pay * bay) / baba));
@@ -100,7 +108,12 @@ export const segment = (a, b, r = 0.05) => {
 //     π       → 完整圆环（= ring）
 //   开口默认在 -Y 方向。需要别的朝向用 .rotate(angle)。
 //   IQ formula: https://iquilezles.org/articles/distfunctions2d/
-export const arc = (radius = 1, halfAperture = Math.PI / 2, thickness = 0.05, center = v.ORIGIN) => {
+export const arc = (
+  radius = 1,
+  halfAperture = Math.PI / 2,
+  thickness = 0.05,
+  center = v.ORIGIN,
+) => {
   const scx = Math.sin(halfAperture);
   const scy = Math.cos(halfAperture);
   const half = thickness / 2;
@@ -139,11 +152,13 @@ export const rectangle = (size = 1, center = v.ORIGIN, a = null, b = null) => {
     return rectangle(sz, ctr);
   }
   const s = v.asVec2(size);
-  const halfx = s[0] / 2, halfy = s[1] / 2;
+  const halfx = s[0] / 2,
+    halfy = s[1] / 2;
   const inst = SDF2((p) => {
     const qx = Math.abs(p[0] - center[0]) - halfx;
     const qy = Math.abs(p[1] - center[1]) - halfy;
-    const ox = Math.max(qx, 0), oy = Math.max(qy, 0);
+    const ox = Math.max(qx, 0),
+      oy = Math.max(qy, 0);
     const outside = Math.sqrt(ox * ox + oy * oy);
     const inside = Math.min(Math.max(qx, qy), 0);
     return outside + inside;
@@ -169,16 +184,16 @@ export const rounded_rectangle = (size, radius = 0, center = v.ORIGIN) => {
     throw new TypeError('rounded_rectangle: radius must be number or [r0, r1, r2, r3]');
   }
   const s = v.asVec2(size);
-  const halfx = s[0] / 2, halfy = s[1] / 2;
+  const halfx = s[0] / 2,
+    halfy = s[1] / 2;
   const inst = SDF2((p) => {
     const dx = p[0] - center[0];
     const dy = p[1] - center[1];
-    const r = dx > 0
-      ? (dy > 0 ? r0 : r1)
-      : (dy > 0 ? r2 : r3);
+    const r = dx > 0 ? (dy > 0 ? r0 : r1) : dy > 0 ? r2 : r3;
     const qx = Math.abs(dx) - halfx + r;
     const qy = Math.abs(dy) - halfy + r;
-    const ox = Math.max(qx, 0), oy = Math.max(qy, 0);
+    const ox = Math.max(qx, 0),
+      oy = Math.max(qy, 0);
     return Math.min(Math.max(qx, qy), 0) + Math.sqrt(ox * ox + oy * oy) - r;
   });
   inst.ast = { kind: 'prim', name: 'rounded_rectangle2', args: [s, [r0, r1, r2, r3], center] };
@@ -194,7 +209,8 @@ export const equilateral_triangle = () =>
     if (x + k * y > 0) {
       const nx = (x - k * y) / 2;
       const ny = (-k * x - y) / 2;
-      x = nx; y = ny;
+      x = nx;
+      y = ny;
     }
     x -= Math.max(-2, Math.min(0, x));
     return -Math.sqrt(x * x + y * y) * Math.sign(y);
@@ -202,12 +218,13 @@ export const equilateral_triangle = () =>
 
 // 正六边形，r 是外接圆半径（与 Python 一致：内部把 r 折算成中心到边距离）
 export const hexagon = (r = 1) => {
-  const rs = r * Math.sqrt(3) / 2;
+  const rs = (r * Math.sqrt(3)) / 2;
   return SDF2((p) => {
     const k0 = -Math.sqrt(3) / 2;
     const k1 = 0.5;
     const k2 = Math.tan(Math.PI / 6);
-    let px = Math.abs(p[0]), py = Math.abs(p[1]);
+    let px = Math.abs(p[0]),
+      py = Math.abs(p[1]);
     const m = 2 * Math.min(k0 * px + k1 * py, 0);
     px -= k0 * m;
     py -= k1 * m;
@@ -232,7 +249,8 @@ export const polygon = (points) => {
     }
   }
   if (pts.length > 1) {
-    const first = pts[0], last = pts[pts.length - 1];
+    const first = pts[0],
+      last = pts[pts.length - 1];
     if (first[0] === last[0] && first[1] === last[1]) pts.pop();
   }
   const n = pts.length;
@@ -243,13 +261,17 @@ export const polygon = (points) => {
     let s = 1;
     for (let i = 0; i < n; i++) {
       const j = (i + n - 1) % n;
-      const vi = pts[i], vj = pts[j];
-      const ex = vj[0] - vi[0], ey = vj[1] - vi[1];
+      const vi = pts[i],
+        vj = pts[j];
+      const ex = vj[0] - vi[0],
+        ey = vj[1] - vi[1];
       const len2 = ex * ex + ey * ey;
       if (len2 === 0) continue; // belt-and-suspenders: skip any residual zero edges
-      const wx = p[0] - vi[0], wy = p[1] - vi[1];
+      const wx = p[0] - vi[0],
+        wy = p[1] - vi[1];
       const t = Math.max(0, Math.min(1, (wx * ex + wy * ey) / len2));
-      const bx = wx - ex * t, by = wy - ey * t;
+      const bx = wx - ex * t,
+        by = wy - ey * t;
       d = Math.min(d, bx * bx + by * by);
       // Crossing-number test: p[1] 是否跨过这条边
       const c1 = p[1] >= vi[1];
@@ -285,8 +307,11 @@ export const flower = (amp = 0.12, freq = 10, offset = 20, baseR = 0.2) =>
 // 算法：先把 p 投影到 ab 轴上的参数 t∈[0,1]，再算到锥侧/到端盖的最近距离
 export const trapezoid = (a, b, ra, rb) =>
   SDF2((p) => {
-    const py = -p[1];                                     // 与 BOB 一致：Y 轴翻转
-    const ax = a[0], ay = a[1], bx = b[0], by = b[1];
+    const py = -p[1]; // 与 BOB 一致：Y 轴翻转
+    const ax = a[0],
+      ay = a[1],
+      bx = b[0],
+      by = b[1];
     const rba = rb - ra;
     const baba = (bx - ax) * (bx - ax) + (by - ay) * (by - ay);
     const papa = (p[0] - ax) * (p[0] - ax) + (py - ay) * (py - ay);
@@ -298,11 +323,8 @@ export const trapezoid = (a, b, ra, rb) =>
     const ft = Math.max(0, Math.min(1, (rba * (x - ra) + paba * baba) / k));
     const cbx = x - ra - ft * rba;
     const cby = paba - ft;
-    const sgn = (cbx < 0 && cay < 0) ? -1 : 1;
-    return sgn * Math.sqrt(Math.min(
-      cax * cax + cay * cay * baba,
-      cbx * cbx + cby * cby * baba,
-    ));
+    const sgn = cbx < 0 && cay < 0 ? -1 : 1;
+    return sgn * Math.sqrt(Math.min(cax * cax + cay * cay * baba, cbx * cbx + cby * cby * baba));
   });
 
 // ---- Tier 2: Editorial 高频 + IQ 装饰 primitives -------------------------
@@ -311,20 +333,24 @@ export const trapezoid = (a, b, ra, rb) =>
 
 // 心形（IQ heart）。scale 控制大小；底尖在原点附近（y=0），顶部 lobe 在 y≈+1*scale。
 // 用前可 `.translate([0, -scale*0.4])` 把心居中。
-export const heart = (scale = 0.4) => SDF2((p) => {
-  const x = Math.abs(p[0]) / scale;
-  const y = p[1] / scale;
-  if (y + x > 1) {
-    const dx = x - 0.25, dy = y - 0.75;
-    return (Math.sqrt(dx * dx + dy * dy) - Math.SQRT2 / 4) * scale;
-  }
-  const dx0 = x, dy0 = y - 1;
-  const t = Math.max(x + y, 0) * 0.5;
-  const dx1 = x - t, dy1 = y - t;
-  const d0 = dx0 * dx0 + dy0 * dy0;
-  const d1 = dx1 * dx1 + dy1 * dy1;
-  return Math.sqrt(Math.min(d0, d1)) * Math.sign(x - y) * scale;
-});
+export const heart = (scale = 0.4) =>
+  SDF2((p) => {
+    const x = Math.abs(p[0]) / scale;
+    const y = p[1] / scale;
+    if (y + x > 1) {
+      const dx = x - 0.25,
+        dy = y - 0.75;
+      return (Math.sqrt(dx * dx + dy * dy) - Math.SQRT2 / 4) * scale;
+    }
+    const dx0 = x,
+      dy0 = y - 1;
+    const t = Math.max(x + y, 0) * 0.5;
+    const dx1 = x - t,
+      dy1 = y - t;
+    const d0 = dx0 * dx0 + dy0 * dy0;
+    const d1 = dx1 * dx1 + dy1 * dy1;
+    return Math.sqrt(Math.min(d0, d1)) * Math.sign(x - y) * scale;
+  });
 
 // n 角星：用 2n 个 vertex（外/内半径交替）做 polygon。
 // innerR 默认 = outerR * (n==5 ? 0.382 : 0.5)（5 角星黄金比）
@@ -333,8 +359,8 @@ export const star = (points = 5, outerR = 0.5, innerR = null) => {
   const ir = innerR ?? outerR * (n === 5 ? 0.382 : 0.5);
   const verts = [];
   for (let i = 0; i < 2 * n; i++) {
-    const angle = (i * Math.PI / n) - Math.PI / 2; // 起点朝上
-    const r = (i % 2 === 0) ? outerR : ir;
+    const angle = (i * Math.PI) / n - Math.PI / 2; // 起点朝上
+    const r = i % 2 === 0 ? outerR : ir;
     verts.push([Math.cos(angle) * r, Math.sin(angle) * r]);
   }
   return polygon(verts);
@@ -352,7 +378,8 @@ export const moon = (thickness = 0.12, size = 0.4) => {
     const px = p[0];
     const py = Math.abs(p[1]);
     if (d * (px * b - py * a) > d * d * Math.max(b - py, 0)) {
-      const dx = px - a, dy = py - b;
+      const dx = px - a,
+        dy = py - b;
       return Math.sqrt(dx * dx + dy * dy);
     }
     const dpx = px - d;
@@ -368,13 +395,18 @@ export const cross = (armLength = 0.4, halfThickness = 0.1, cornerRadius = 0) =>
   SDF2((p) => {
     let px = Math.abs(p[0]);
     let py = Math.abs(p[1]);
-    if (py > px) { const t = px; px = py; py = t; }
+    if (py > px) {
+      const t = px;
+      px = py;
+      py = t;
+    }
     const qx = px - armLength;
     const qy = py - halfThickness;
     const k = Math.max(qy, qx);
-    const wx = (k > 0) ? qx : (halfThickness - px);
-    const wy = (k > 0) ? qy : -k;
-    const ox = Math.max(wx, 0), oy = Math.max(wy, 0);
+    const wx = k > 0 ? qx : halfThickness - px;
+    const wy = k > 0 ? qy : -k;
+    const ox = Math.max(wx, 0),
+      oy = Math.max(wy, 0);
     return Math.sign(k) * Math.sqrt(ox * ox + oy * oy) + cornerRadius;
   });
 
@@ -393,7 +425,8 @@ export const pie = (halfAperture = Math.PI / 4, radius = 0.5) => {
     const l = Math.sqrt(px * px + py * py) - radius;
     const dot = px * cx + py * cy;
     const cl = Math.max(0, Math.min(radius, dot));
-    const dx = px - cx * cl, dy = py - cy * cl;
+    const dx = px - cx * cl,
+      dy = py - cy * cl;
     const m = Math.sqrt(dx * dx + dy * dy);
     return Math.max(l, m * Math.sign(cy * px - cx * py));
   });
@@ -414,11 +447,12 @@ export const horseshoe = (openAngle = Math.PI / 3, radius = 0.4, thickness = 0.0
     const l = Math.sqrt(px * px + py * py);
     const rx = -cax * px + cay * py;
     const ry = cay * px + cax * py;
-    px = (ry > 0 || rx > 0) ? rx : l * Math.sign(-cax);
-    py = (rx > 0) ? ry : l;
+    px = ry > 0 || rx > 0 ? rx : l * Math.sign(-cax);
+    py = rx > 0 ? ry : l;
     px = px - wHalf;
     py = Math.abs(py - radius) - wHalf;
-    const ox = Math.max(px, 0), oy = Math.max(py, 0);
+    const ox = Math.max(px, 0),
+      oy = Math.max(py, 0);
     return Math.sqrt(ox * ox + oy * oy) + Math.min(0, Math.max(px, py));
   });
 };
@@ -450,20 +484,28 @@ export const egg = (ra = 0.4, rb = 0.15) => {
 // 任意倾斜的盒子（IQ oriented box）。a, b 是 centerline 的两端点，thickness = 宽度。
 // 替代 rotate(angle).rectangle 的心智负担——直接给两端点画一个长方形。
 export const oriented_box = (a, b, thickness = 0.1) => {
-  const ax = a[0], ay = a[1], bx = b[0], by = b[1];
-  const dx = bx - ax, dy = by - ay;
+  const ax = a[0],
+    ay = a[1],
+    bx = b[0],
+    by = b[1];
+  const dx = bx - ax,
+    dy = by - ay;
   const l = Math.sqrt(dx * dx + dy * dy) || 1e-9;
-  const dirX = dx / l, dirY = dy / l;
-  const midX = (ax + bx) / 2, midY = (ay + by) / 2;
+  const dirX = dx / l,
+    dirY = dy / l;
+  const midX = (ax + bx) / 2,
+    midY = (ay + by) / 2;
   const halfL = l / 2;
   const halfT = thickness / 2;
   return SDF2((p) => {
-    const qx0 = p[0] - midX, qy0 = p[1] - midY;
+    const qx0 = p[0] - midX,
+      qy0 = p[1] - midY;
     const qx = dirX * qx0 + dirY * qy0;
     const qy = -dirY * qx0 + dirX * qy0;
     const ax_ = Math.abs(qx) - halfL;
     const ay_ = Math.abs(qy) - halfT;
-    const ox = Math.max(ax_, 0), oy = Math.max(ay_, 0);
+    const ox = Math.max(ax_, 0),
+      oy = Math.max(ay_, 0);
     return Math.sqrt(ox * ox + oy * oy) + Math.min(0, Math.max(ax_, ay_));
   });
 };
@@ -473,8 +515,10 @@ export const oriented_box = (a, b, thickness = 0.1) => {
 // 注意：这跟现有的 `trapezoid(a, b, ra, rb)`（capsule-style，圆端帽）不同 ——
 // isosceles_trapezoid 是 IQ 标准的等腰梯形，顶底是水平直边。
 export const isosceles_trapezoid = (r1 = 0.2, r2 = 0.4, h = 0.3) => {
-  const k1x = r2, k1y = h;
-  const k2x = r2 - r1, k2y = 2 * h;
+  const k1x = r2,
+    k1y = h;
+  const k2x = r2 - r1,
+    k2y = 2 * h;
   const k2DotK2 = k2x * k2x + k2y * k2y;
   return SDF2((p) => {
     const px = Math.abs(p[0]);
@@ -486,7 +530,7 @@ export const isosceles_trapezoid = (r1 = 0.2, r2 = 0.4, h = 0.3) => {
     const tt = Math.max(0, Math.min(1, cbDot / k2DotK2));
     const cbx = px - k1x + k2x * tt;
     const cby = py - k1y + k2y * tt;
-    const s = (cbx < 0 && cay < 0) ? -1 : 1;
+    const s = cbx < 0 && cay < 0 ? -1 : 1;
     const da = cax * cax + cay * cay;
     const db = cbx * cbx + cby * cby;
     return s * Math.sqrt(Math.min(da, db));
@@ -496,32 +540,48 @@ export const isosceles_trapezoid = (r1 = 0.2, r2 = 0.4, h = 0.3) => {
 // 平行四边形（IQ parallelogram）。
 //   halfWidth = 半宽（顶底等长），halfHeight = 半高，skew = 顶边相对底边的水平偏移
 export const parallelogram = (halfWidth = 0.3, halfHeight = 0.2, skew = 0.1) => {
-  const wi = halfWidth, he = halfHeight;
-  const ex = skew, ey = he;
+  const wi = halfWidth,
+    he = halfHeight;
+  const ex = skew,
+    ey = he;
   const eDotE = ex * ex + ey * ey;
   return SDF2((p) => {
-    let px = p[0], py = p[1];
-    if (py < 0) { px = -px; py = -py; }
-    let wx = px - ex, wy = py - ey;
+    let px = p[0],
+      py = p[1];
+    if (py < 0) {
+      px = -px;
+      py = -py;
+    }
+    let wx = px - ex,
+      wy = py - ey;
     wx -= Math.max(-wi, Math.min(wi, wx));
     let dx = wx * wx + wy * wy;
     let dy = -wy;
     const s = px * ey - py * ex;
-    if (s < 0) { px = -px; py = -py; }
-    let vx = px - wi, vy = py;
+    if (s < 0) {
+      px = -px;
+      py = -py;
+    }
+    let vx = px - wi,
+      vy = py;
     const vDotE = vx * ex + vy * ey;
     const tt = Math.max(-1, Math.min(1, vDotE / eDotE));
-    vx -= ex * tt; vy -= ey * tt;
+    vx -= ex * tt;
+    vy -= ey * tt;
     const dx2 = vx * vx + vy * vy;
     const dy2 = wi * he - Math.abs(s);
-    if (dx2 < dx) { dx = dx2; dy = dy2; }
+    if (dx2 < dx) {
+      dx = dx2;
+      dy = dy2;
+    }
     return Math.sqrt(dx) * Math.sign(-dy);
   });
 };
 
 // 菱形 / 钻石形（IQ rhombus）。halfWidth / halfHeight 是横/纵半轴。
 export const rhombus = (halfWidth = 0.3, halfHeight = 0.2) => {
-  const bx = halfWidth, by = halfHeight;
+  const bx = halfWidth,
+    by = halfHeight;
   const bDotB = bx * bx + by * by;
   return SDF2((p) => {
     const px = Math.abs(p[0]);
@@ -539,26 +599,35 @@ export const rhombus = (halfWidth = 0.3, halfHeight = 0.2) => {
 // 二次贝塞尔曲线（IQ quadratic bezier）。A/B/C 是 3 个控制点，thickness 半厚度。
 // 算法：求点到 Bezier 的最近距离，需解三次方程。
 export const quadratic_bezier = (A, B, C, thickness = 0.02) => {
-  const ax0 = A[0], ay0 = A[1];
-  const bx0 = B[0], by0 = B[1];
-  const cx0 = C[0], cy0 = C[1];
+  const ax0 = A[0],
+    ay0 = A[1];
+  const bx0 = B[0],
+    by0 = B[1];
+  const cx0 = C[0],
+    cy0 = C[1];
   return SDF2((p) => {
-    const aax = bx0 - ax0, aay = by0 - ay0;
-    const bbx = ax0 - 2 * bx0 + cx0, bby = ay0 - 2 * by0 + cy0;
-    const ccx = aax * 2, ccy = aay * 2;
-    const dx = ax0 - p[0], dy = ay0 - p[1];
+    const aax = bx0 - ax0,
+      aay = by0 - ay0;
+    const bbx = ax0 - 2 * bx0 + cx0,
+      bby = ay0 - 2 * by0 + cy0;
+    const ccx = aax * 2,
+      ccy = aay * 2;
+    const dx = ax0 - p[0],
+      dy = ay0 - p[1];
     const denom = bbx * bbx + bby * bby;
     if (denom < 1e-12) {
       // 退化为线段
-      const lx = cx0 - ax0, ly = cy0 - ay0;
+      const lx = cx0 - ax0,
+        ly = cy0 - ay0;
       const ll = lx * lx + ly * ly;
       const tt = ll < 1e-12 ? 0 : Math.max(0, Math.min(1, -(dx * lx + dy * ly) / ll));
-      const qx = dx + lx * tt, qy = dy + ly * tt;
+      const qx = dx + lx * tt,
+        qy = dy + ly * tt;
       return Math.sqrt(qx * qx + qy * qy) - thickness;
     }
     const kk = 1 / denom;
     const kx = kk * (aax * bbx + aay * bby);
-    const ky = kk * (2 * (aax * aax + aay * aay) + (dx * bbx + dy * bby)) / 3;
+    const ky = (kk * (2 * (aax * aax + aay * aay) + (dx * bbx + dy * bby))) / 3;
     const kz = kk * (dx * aax + dy * aay);
     const p_ = ky - kx * kx;
     const p3 = p_ * p_ * p_;
@@ -567,7 +636,8 @@ export const quadratic_bezier = (A, B, C, thickness = 0.02) => {
     let res;
     if (h >= 0) {
       const sh = Math.sqrt(h);
-      const x1 = (-q - sh) / 2, x2 = (-q + sh) / 2;
+      const x1 = (-q - sh) / 2,
+        x2 = (-q + sh) / 2;
       const u = Math.sign(x1) * Math.pow(Math.abs(x1), 1 / 3);
       const v_ = Math.sign(x2) * Math.pow(Math.abs(x2), 1 / 3);
       const t = Math.max(0, Math.min(1, u + v_ - kx));
@@ -577,7 +647,8 @@ export const quadratic_bezier = (A, B, C, thickness = 0.02) => {
     } else {
       const z = Math.sqrt(-p_);
       const v_ = Math.acos(q / (p_ * z * 2)) / 3;
-      const m = Math.cos(v_), n = Math.sin(v_) * Math.sqrt(3);
+      const m = Math.cos(v_),
+        n = Math.sin(v_) * Math.sqrt(3);
       const t1 = Math.max(0, Math.min(1, (m + m) * z - kx));
       const t2 = Math.max(0, Math.min(1, (-n - m) * z - kx));
       const qx1 = dx + (ccx + bbx * t1) * t1;
@@ -608,13 +679,15 @@ export const slab = (opts = {}) => {
 };
 
 // rounded_x: 圆角 X / 十字形（IQ rounded x）。w = X 臂的全长，r = 圆角半径
-export const rounded_x = (w = 0.4, r = 0.05) => SDF2((p) => {
-  const px = Math.abs(p[0]);
-  const py = Math.abs(p[1]);
-  const q = Math.min(px + py, w) * 0.5;
-  const dx = px - q, dy = py - q;
-  return Math.sqrt(dx * dx + dy * dy) - r;
-});
+export const rounded_x = (w = 0.4, r = 0.05) =>
+  SDF2((p) => {
+    const px = Math.abs(p[0]);
+    const py = Math.abs(p[1]);
+    const q = Math.min(px + py, w) * 0.5;
+    const dx = px - q,
+      dy = py - q;
+    return Math.sqrt(dx * dx + dy * dy) - r;
+  });
 
 // vesica: 双圆交集的透镜形（眼睛 / 鱼 / 叶子 / 月牙 editorial 高频）。
 //   r = 两个圆的半径，d = 圆心到中线的距离（必须 d < r）
@@ -625,10 +698,12 @@ export const vesica = (r = 0.4, d = 0.2) => {
     const px = Math.abs(p[0]);
     const py = Math.abs(p[1]);
     if ((py - b) * d > px * b) {
-      const dx = px, dy = py - b;
+      const dx = px,
+        dy = py - b;
       return Math.sqrt(dx * dx + dy * dy);
     }
-    const dx = px + d, dy = py;
+    const dx = px + d,
+      dy = py;
     return Math.sqrt(dx * dx + dy * dy) - r;
   });
 };
@@ -636,8 +711,9 @@ export const vesica = (r = 0.4, d = 0.2) => {
 // ---- Transforms ------------------------------------------------------------
 // 注：elongate 已搬到 dn.js（unified 2D/3D，按 SDF 维度自动派发）
 
-export const translate = defineOp2('translate', (other, offset) =>
-  (p) => other.f(v.sub(p, offset)),
+export const translate = defineOp2(
+  'translate',
+  (other, offset) => (p) => other.f(v.sub(p, offset)),
 );
 
 export const scale = defineOp2('scale', (other, factor) => {
@@ -659,9 +735,10 @@ export const rotate = defineOp2('rotate', (other, angle) => {
 //   rectangle([0.4, 0.2]).extrude(0.1)   长方体
 //   polygon([...]).extrude(0.2)          多边形 prism（heart 立体吊坠 / 立体字母）
 export const extrude = defineOp23('extrude', (sdf2d, h) => (p) => {
-  const d  = sdf2d.f([p[0], p[1]]);
+  const d = sdf2d.f([p[0], p[1]]);
   const w1 = Math.abs(p[2]) - h / 2;
-  const o0 = Math.max(d, 0), o1 = Math.max(w1, 0);
+  const o0 = Math.max(d, 0),
+    o1 = Math.max(w1, 0);
   return Math.sqrt(o0 * o0 + o1 * o1) + Math.min(Math.max(d, w1), 0);
 });
 
@@ -677,7 +754,8 @@ export const extrude_to = defineOp23('extrude_to', (sdfA, sdfB, h, easing = (t) 
   const t = easing(tRaw);
   const d = dA + (dB - dA) * t;
   const w1 = Math.abs(p[2]) - h / 2;
-  const o0 = Math.max(d, 0), o1 = Math.max(w1, 0);
+  const o0 = Math.max(d, 0),
+    o1 = Math.max(w1, 0);
   return Math.sqrt(o0 * o0 + o1 * o1) + Math.min(Math.max(d, w1), 0);
 });
 

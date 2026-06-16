@@ -16,12 +16,12 @@
         "id": "red-canyon",
         "type": "terrain-canyon",
         "args": {
-          "maxHeight":    38.0,
-          "scale":        0.014,
-          "ridgePower":   2.2,
+          "maxHeight": 38.0,
+          "scale": 0.014,
+          "ridgePower": 2.2,
           "mountainness": 0.22,
-          "displaceAmt":  5.0,
-          "yStretch":     4.0
+          "displaceAmt": 5.0,
+          "yStretch": 4.0
         },
         "transform": { "translate": [0, -8, 0] }
       }
@@ -29,9 +29,15 @@
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": 0.4, "pitch": -0.08, "distance": 30, "focal": 1.0,
-        "targetX": 0, "targetY": 5, "targetZ": 0,
-        "aperture": 0.4, "focalDistance": 35
+        "yaw": 0.4,
+        "pitch": -0.08,
+        "distance": 30,
+        "focal": 1.0,
+        "targetX": 0,
+        "targetY": 5,
+        "targetZ": 0,
+        "aperture": 0.4,
+        "focalDistance": 35
       },
       "light": { "azimuth": 2.4, "altitude": 0.16, "distance": 80, "intensity": 1.25 },
       "shadow": { "enabled": true, "mode": "darken", "strength": 0.5 },
@@ -39,7 +45,7 @@
         "exposure": 1.0,
         "vignetteStrength": 0.42,
         "bloomMix": 0.24,
-        "bloomThreshold": 0.80,
+        "bloomThreshold": 0.8,
         "lensFlareStrength": 0.18,
         "motionBlurStrength": 0.45
       }

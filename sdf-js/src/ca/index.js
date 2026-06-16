@@ -9,8 +9,4 @@
 // 接口，不依赖任何 sdf/ 内部细节。
 // =============================================================================
 
-export {
-  caGrid, caRects, caShuffle,
-  caDraw, caDrawRects, caDrawRectsAt,
-  fromSdf2,
-} from './ca.js';
+export { caGrid, caRects, caShuffle, caDraw, caDrawRects, caDrawRectsAt, fromSdf2 } from './ca.js';

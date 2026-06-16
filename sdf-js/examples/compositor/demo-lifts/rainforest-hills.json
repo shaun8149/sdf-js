@@ -16,35 +16,48 @@
         "id": "rainforest-mountain",
         "type": "terrain-elevated",
         "args": {
-          "maxHeight":    28.0,
-          "scale":        0.028,
-          "ridgePower":   1.4,
+          "maxHeight": 28.0,
+          "scale": 0.028,
+          "ridgePower": 1.4,
           "mountainness": 0.42,
-          "cliffStart":   22.0,
-          "cliffEnd":     28.0,
-          "cliffJump":    0.0,
+          "cliffStart": 22.0,
+          "cliffEnd": 28.0,
+          "cliffJump": 0.0,
           "canopyAmount": 1.0
         },
         "transform": { "translate": [0, -2, 0] },
-        "material": { "hue": 0.33, "sat": 0.40, "value": 0.70, "metal": 0.0, "glow": 0.0, "kind": "mountain" }
+        "material": {
+          "hue": 0.33,
+          "sat": 0.4,
+          "value": 0.7,
+          "metal": 0.0,
+          "glow": 0.0,
+          "kind": "mountain"
+        }
       }
     ],
     "ground": null,
     "defaults": {
       "camera": {
-        "yaw": 0.5, "pitch": -0.05, "distance": 30, "focal": 1.1,
-        "targetX": 0, "targetY": 8, "targetZ": 0,
-        "aperture": 0.3, "focalDistance": 35
+        "yaw": 0.5,
+        "pitch": -0.05,
+        "distance": 30,
+        "focal": 1.1,
+        "targetX": 0,
+        "targetY": 8,
+        "targetZ": 0,
+        "aperture": 0.3,
+        "focalDistance": 35
       },
-      "light": { "azimuth": -0.8, "altitude": 0.50, "distance": 60, "intensity": 1.15 },
+      "light": { "azimuth": -0.8, "altitude": 0.5, "distance": 60, "intensity": 1.15 },
       "shadow": { "enabled": true, "mode": "darken", "strength": 0.42 },
       "postFx": {
         "exposure": 1.05,
         "vignetteStrength": 0.38,
-        "bloomMix": 0.20,
+        "bloomMix": 0.2,
         "bloomThreshold": 0.85,
         "lensFlareStrength": 0.06,
-        "motionBlurStrength": 0.40
+        "motionBlurStrength": 0.4
       }
     },
     "volumes": [

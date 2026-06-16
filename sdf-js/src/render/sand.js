@@ -27,14 +27,15 @@
  *                                          约定差异是历史遗留，由 lib 默认 + caller 显式覆盖共同决定。
  */
 export function sandFrame(ctx, layers, options = {}) {
-  const W = ctx.canvas.width, H = ctx.canvas.height;
-  const view          = options.view ?? 1;
-  const samples       = options.samples ?? 1000;
-  const outsideColor  = options.outsideColor ?? '#f80';
+  const W = ctx.canvas.width,
+    H = ctx.canvas.height;
+  const view = options.view ?? 1;
+  const samples = options.samples ?? 1000;
+  const outsideColor = options.outsideColor ?? '#f80';
   const boundaryColor = options.boundaryColor ?? '#f5f5f5';
-  const band          = options.band ?? 0.01;
-  const dotRadius     = options.dotRadius ?? 0.5;
-  const flipY         = options.flipY ?? false;
+  const band = options.band ?? 0.01;
+  const dotRadius = options.dotRadius ?? 0.5;
+  const flipY = options.flipY ?? false;
 
   // 重置任何 caller 在 ctx 上预设的 transform（典型是 p5 的 pixelDensity scale）。
   // 我们要按内部像素直接 fillRect，所以必须在 identity 变换下画。
@@ -61,9 +62,7 @@ export function sandFrame(ctx, layers, options = {}) {
 
     // 世界 → 像素（[-view, +view] → [0, W]；y 翻转可选）
     const px = ((wx + view) / (2 * view)) * W;
-    const py = flipY
-      ? ((view - wy) / (2 * view)) * H
-      : ((wy + view) / (2 * view)) * H;
+    const py = flipY ? ((view - wy) / (2 * view)) * H : ((wy + view) / (2 * view)) * H;
 
     ctx.fillStyle = col;
     ctx.fillRect(px - dotRadius, py - dotRadius, dotRadius * 2, dotRadius * 2);

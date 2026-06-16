@@ -17,24 +17,76 @@
 import { SDF2, SDF3 } from '../sdf/core.js';
 import { sumT, uniformT } from '../sdf/time.js';
 import {
-  circle, ellipse, rectangle, rounded_rectangle, line, segment, arc, ring,
-  equilateral_triangle, hexagon, polygon, triangle, trapezoid, flower,
-  heart, star, moon, cross, rounded_cross, pie, pie_slice, horseshoe, egg,
-  oriented_box, isosceles_trapezoid, parallelogram, rhombus, quadratic_bezier,
-  slab, rounded_x, vesica,
-  extrude, extrude_to, revolve,
+  circle,
+  ellipse,
+  rectangle,
+  rounded_rectangle,
+  line,
+  segment,
+  arc,
+  ring,
+  equilateral_triangle,
+  hexagon,
+  polygon,
+  triangle,
+  trapezoid,
+  heart,
+  // flower / star / moon / horseshoe / rhombus removed 2026-06-16:
+  //   their SceneData factories are now the community ports
+  //   (flowerSDF / starSDF / moonSDF / horseshoeSDF / rhombusSDF) defined
+  //   below — the d2 versions were shadowed by JS object key dedup.
+  cross,
+  rounded_cross,
+  pie,
+  pie_slice,
+  egg,
+  oriented_box,
+  isosceles_trapezoid,
+  parallelogram,
+  quadratic_bezier,
+  slab,
+  rounded_x,
+  vesica,
+  extrude,
+  extrude_to,
+  revolve,
 } from '../sdf/d2.js';
 import {
-  sphere, box, plane, capsule,
-  torus, cylinder, capped_cylinder, ellipsoid, rounded_box,
-  cone, capped_cone,
-  tetrahedron, octahedron, dodecahedron, icosahedron,
-  pyramid, slab3, wireframe_box, tri_prism, waves,
-  rotateXYZ, twist, bend, curve,
-  modPolar, mirrorOctant,
+  sphere,
+  box,
+  plane,
+  capsule,
+  torus,
+  cylinder,
+  capped_cylinder,
+  ellipsoid,
+  rounded_box,
+  cone,
+  capped_cone,
+  tetrahedron,
+  octahedron,
+  dodecahedron,
+  icosahedron,
+  pyramid,
+  slab3,
+  wireframe_box,
+  tri_prism,
+  waves,
+  rotateXYZ,
+  twist,
+  bend,
+  curve,
+  modPolar,
+  mirrorOctant,
   // 2026-05-23 IQ P2 batch (8 new primitives)
-  cutSphere, cutHollowSphere, deathStar, roundedCylinder,
-  roundConeAB, vesicaSegment, cylinderInf, coneInf,
+  cutSphere,
+  cutHollowSphere,
+  deathStar,
+  roundedCylinder,
+  roundConeAB,
+  vesicaSegment,
+  cylinderInf,
+  coneInf,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
 import { linkSDF } from './components/community/iq-link.js';
@@ -46,7 +98,12 @@ import { rhombusSDF } from './components/community/iq-rhombus.js';
 import { horseshoeSDF } from './components/community/iq-horseshoe.js';
 import { uShapeSDF } from './components/community/iq-u-shape.js';
 import { seaSurfaceSDF } from './components/community/aflext-sea-surface.js';
-import { canalBuildingSDF, canalWindowsSDF, canalBridgeSDF, canalLampBulbSDF } from './components/atoms/canal-building.js';
+import {
+  canalBuildingSDF,
+  canalWindowsSDF,
+  canalBridgeSDF,
+  canalLampBulbSDF,
+} from './components/atoms/canal-building.js';
 import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
 import { terrainElevatedSDF } from './components/community/kk-elevated.js';
 import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.js';
@@ -62,39 +119,99 @@ import { chamferBoxSDF } from './components/community/gbms-chamfer-box.js';
 import { parabolaSDF } from './components/community/gbms-parabola.js';
 import { Random } from '../util/random.js';
 import { sanityCheck, logSanityIssues } from './sanity.js';
-import { stylizedTreeSDF, mapleLeafSDF, forestFlowerSDF, meteorStreakSDF, grassFieldSDF } from './components/atoms/forest-scene.js';
 import {
-  moonSDF, starSDF, sunSDF, cloudPuffSDF,
-  pineTreeSDF, broadleafTreeSDF,
-  cottageSDF, flagOnPoleSDF, birdSilhouetteSDF,
+  stylizedTreeSDF,
+  mapleLeafSDF,
+  forestFlowerSDF,
+  meteorStreakSDF,
+  grassFieldSDF,
+} from './components/atoms/forest-scene.js';
+import {
+  moonSDF,
+  starSDF,
+  sunSDF,
+  cloudPuffSDF,
+  pineTreeSDF,
+  broadleafTreeSDF,
+  cottageSDF,
+  flagOnPoleSDF,
+  birdSilhouetteSDF,
 } from './components/atoms/scene-atoms.js';
 import {
   // animals
-  cowSDF, horseSDF, pigSDF, dogSDF, sheepSDF, catSDF,
+  cowSDF,
+  horseSDF,
+  pigSDF,
+  dogSDF,
+  sheepSDF,
+  catSDF,
   // landscape
-  rockBoulderSDF, fenceSectionSDF, hillMoundSDF, streamSegmentSDF,
+  rockBoulderSDF,
+  fenceSectionSDF,
+  hillMoundSDF,
+  streamSegmentSDF,
   // architecture
-  towerSquareSDF, churchSpireSDF, gazeboSDF, wellSDF, fountainSDF,
+  towerSquareSDF,
+  churchSpireSDF,
+  gazeboSDF,
+  wellSDF,
+  fountainSDF,
   // vehicles
-  sailboatSmallSDF, carSimpleSDF, wagonSDF, biplaneSDF,
+  sailboatSmallSDF,
+  carSimpleSDF,
+  wagonSDF,
+  biplaneSDF,
   // furniture
-  chairSDF, tableRoundSDF, lampStandingSDF, bookshelfSDF, wineBottleSDF,
+  chairSDF,
+  tableRoundSDF,
+  lampStandingSDF,
+  bookshelfSDF,
+  wineBottleSDF,
   // mechanical
-  gearFlatSDF, pipeLBendSDF, smokestackSDF, windmillSDF,
+  gearFlatSDF,
+  pipeLBendSDF,
+  smokestackSDF,
+  windmillSDF,
   // plants
-  flowerSDF, mushroomSDF, bushSDF, vineSDF, grassTuftSDF,
+  flowerSDF,
+  mushroomSDF,
+  bushSDF,
+  vineSDF,
+  grassTuftSDF,
 } from './components/atoms/scene-atoms-extra.js';
 import {
-  union, difference, intersection, rep,
-  unionChamfer, intersectionChamfer, differenceChamfer,
-  unionRound,   intersectionRound,   differenceRound,
+  union,
+  difference,
+  intersection,
+  rep,
+  unionChamfer,
+  intersectionChamfer,
+  differenceChamfer,
+  unionRound,
+  intersectionRound,
+  differenceRound,
   unionSoft,
-  unionStairs,  intersectionStairs,  differenceStairs,
-  unionColumns, intersectionColumns, differenceColumns,
-  pipe, engrave, groove, tongue,
+  unionStairs,
+  intersectionStairs,
+  differenceStairs,
+  unionColumns,
+  intersectionColumns,
+  differenceColumns,
+  pipe,
+  engrave,
+  groove,
+  tongue,
 } from '../sdf/dn.js';
 import { evalT, isTimeExpr } from '../sdf/time.js';
-import { validate, PRIMITIVE_TYPES, BOOLEAN_OPS, DOMAIN_OPS, normalizeType, resolveMaterial, resolvePattern } from './spec.js';
+import {
+  validate,
+  PRIMITIVE_TYPES,
+  BOOLEAN_OPS,
+  DOMAIN_OPS,
+  normalizeType,
+  resolveMaterial,
+  resolvePattern,
+} from './spec.js';
 import { expandCompositeAtoms } from './composite-atoms.js';
 import { normalizeChannel } from './expr.js';
 
@@ -108,322 +225,385 @@ import { normalizeChannel } from './expr.js';
 
 const PRIMITIVE_FACTORIES = {
   // -- 2D --
-  circle:           (a) => circle(a.radius ?? 1, a.center),
-  ellipse:          (a) => ellipse(a.rx ?? 1, a.ry ?? 1, a.center),
-  rectangle:        (a) => rectangle(a.dims ?? a.size ?? 1, a.center, a.a, a.b),
-  rounded_rectangle:(a) => rounded_rectangle(a.dims ?? a.size ?? 1, a.cornerR ?? a.radius ?? 0, a.center),
-  triangle:         (a) => triangle(a.a ?? a.p0, a.b ?? a.p1, a.c ?? a.p2),
-  hexagon:          (a) => hexagon(a.radius ?? 1),
-  polygon:          (a) => polygon(a.points ?? []),
-  star:             (a) => star(a.points ?? 5, a.outerR ?? 0.5, a.innerR),
-  heart:            (a) => heart(a.scale ?? 0.4),
-  arc:              (a) => arc(a.radius ?? 1, a.halfAperture ?? Math.PI / 2, a.thickness ?? 0.05, a.center),
-  segment:          (a) => segment(a.a, a.b, a.radius ?? a.r ?? 0.05),
-  ring:             (a) => ring(a.radius ?? 1, a.thickness ?? 0.05, a.center),
-  moon:             (a) => moon(a.thickness ?? 0.12, a.size ?? 0.4),
-  cross:            (a) => cross(a.armLength ?? 0.4, a.halfT ?? a.halfThickness ?? 0.1, a.cornerR ?? a.cornerRadius ?? 0),
-  rounded_cross:    (a) => rounded_cross(a.armLength ?? 0.4, a.halfT ?? a.halfThickness ?? 0.1, a.cornerR ?? a.cornerRadius ?? 0.025),
-  pie:              (a) => pie(a.halfAperture ?? Math.PI / 4, a.radius ?? 0.5),
-  pie_slice:        (a) => pie_slice(a.halfAperture ?? Math.PI / 4, a.radius ?? 0.5),
-  horseshoe:        (a) => horseshoe(a.openAngle ?? Math.PI / 3, a.radius ?? a.r ?? 0.4, a.thickness ?? 0.08),
-  egg:              (a) => egg(a.ra ?? 0.4, a.rb ?? 0.15),
-  trapezoid:        (a) => trapezoid(a.a, a.b, a.ra, a.rb),
+  circle: (a) => circle(a.radius ?? 1, a.center),
+  ellipse: (a) => ellipse(a.rx ?? 1, a.ry ?? 1, a.center),
+  rectangle: (a) => rectangle(a.dims ?? a.size ?? 1, a.center, a.a, a.b),
+  rounded_rectangle: (a) =>
+    rounded_rectangle(a.dims ?? a.size ?? 1, a.cornerR ?? a.radius ?? 0, a.center),
+  triangle: (a) => triangle(a.a ?? a.p0, a.b ?? a.p1, a.c ?? a.p2),
+  hexagon: (a) => hexagon(a.radius ?? 1),
+  polygon: (a) => polygon(a.points ?? []),
+  // NOTE: star/moon/horseshoe/rhombus/flower factories are defined below in
+  // the "Community 2D ports" block (lines ~335-460). They take a different
+  // arg shape (radius / shape / la / lb / ...) and supersede any earlier
+  // d2-style entries here. Do NOT re-add d2-style versions for these names
+  // — JS object key dedup silently picks the later one and ESLint flags it
+  // (no-dupe-keys). Removed 2026-06-16 per Wave 2 audit.
+  heart: (a) => heart(a.scale ?? 0.4),
+  arc: (a) => arc(a.radius ?? 1, a.halfAperture ?? Math.PI / 2, a.thickness ?? 0.05, a.center),
+  segment: (a) => segment(a.a, a.b, a.radius ?? a.r ?? 0.05),
+  ring: (a) => ring(a.radius ?? 1, a.thickness ?? 0.05, a.center),
+  cross: (a) =>
+    cross(a.armLength ?? 0.4, a.halfT ?? a.halfThickness ?? 0.1, a.cornerR ?? a.cornerRadius ?? 0),
+  rounded_cross: (a) =>
+    rounded_cross(
+      a.armLength ?? 0.4,
+      a.halfT ?? a.halfThickness ?? 0.1,
+      a.cornerR ?? a.cornerRadius ?? 0.025,
+    ),
+  pie: (a) => pie(a.halfAperture ?? Math.PI / 4, a.radius ?? 0.5),
+  pie_slice: (a) => pie_slice(a.halfAperture ?? Math.PI / 4, a.radius ?? 0.5),
+  egg: (a) => egg(a.ra ?? 0.4, a.rb ?? 0.15),
+  trapezoid: (a) => trapezoid(a.a, a.b, a.ra, a.rb),
   isosceles_trapezoid: (a) => isosceles_trapezoid(a.r1 ?? 0.2, a.r2 ?? 0.4, a.h ?? 0.3),
-  parallelogram:    (a) => parallelogram(a.halfWidth ?? a.w ?? 0.3, a.halfHeight ?? a.h ?? 0.2, a.skew ?? 0.1),
-  rhombus:          (a) => rhombus(a.halfWidth ?? a.w ?? 0.3, a.halfHeight ?? a.h ?? 0.2),
-  oriented_box:     (a) => oriented_box(a.a, a.b, a.thickness ?? 0.1),
+  parallelogram: (a) =>
+    parallelogram(a.halfWidth ?? a.w ?? 0.3, a.halfHeight ?? a.h ?? 0.2, a.skew ?? 0.1),
+  oriented_box: (a) => oriented_box(a.a, a.b, a.thickness ?? 0.1),
   quadratic_bezier: (a) => quadratic_bezier(a.A, a.B, a.C, a.thickness ?? a.t ?? 0.02),
-  flower:           (a) => flower(a.amp ?? 0.12, a.freq ?? 10, a.offset ?? 20, a.baseR ?? 0.2),
-  line:             (a) => line(a.normal, a.point),
-  slab:             (a) => slab(a),
-  rounded_x:        (a) => rounded_x(a.w ?? 0.4, a.r ?? 0.05),
-  vesica:           (a) => vesica(a),
+  line: (a) => line(a.normal, a.point),
+  slab: (a) => slab(a),
+  rounded_x: (a) => rounded_x(a.w ?? 0.4, a.r ?? 0.05),
+  vesica: (a) => vesica(a),
 
   // -- Community 2D ports (Track 4 — /port-shader pipeline dogfood) --
-  'cut-disk':       (a) => cutDiskSDF({ radius: a.radius ?? 0.5, cut: a.cut ?? 0 }),
+  'cut-disk': (a) => cutDiskSDF({ radius: a.radius ?? 0.5, cut: a.cut ?? 0 }),
   // -- Community 2D ports (Track 4 batch — 2026-05-27, gbms pentagon family + parabola + chamfer) --
-  pentagon:         (a) => pentagonSDF({ radius: a.radius ?? 0.5 }),
-  octogon:          (a) => octogonSDF({ radius: a.radius ?? 0.5 }),
-  hexagram:         (a) => hexagramSDF({ radius: a.radius ?? 0.5 }),
-  'chamfer-box':    (a) => chamferBoxSDF({ dims: a.dims ?? a.size ?? [0.5, 0.3], chamfer: a.chamfer ?? 0.08 }),
-  parabola:         (a) => parabolaSDF({ k: a.k ?? 1.0 }),
+  pentagon: (a) => pentagonSDF({ radius: a.radius ?? 0.5 }),
+  octogon: (a) => octogonSDF({ radius: a.radius ?? 0.5 }),
+  hexagram: (a) => hexagramSDF({ radius: a.radius ?? 0.5 }),
+  'chamfer-box': (a) =>
+    chamferBoxSDF({ dims: a.dims ?? a.size ?? [0.5, 0.3], chamfer: a.chamfer ?? 0.08 }),
+  parabola: (a) => parabolaSDF({ k: a.k ?? 1.0 }),
 
   // -- 3D --
-  sphere:        (a) => sphere(a.radius ?? 1, a.center),
-  box:           (a) => box(a.dims ?? a.size ?? 1, a.center),
-  rounded_box:   (a) => rounded_box(a.dims ?? a.size ?? 0.6, a.cornerR ?? a.radius ?? 0.05),
-  torus:         (a) => torus(a.majorR ?? a.radius ?? 0.4, a.minorR ?? a.thickness ?? 0.1),
-  capsule:       (a) => capsule(a.a, a.b, a.radius ?? a.r ?? 0.1),
-  cylinder:      (a) => cylinder(a.radius ?? 0.3, a.height ?? 1.0),
+  sphere: (a) => sphere(a.radius ?? 1, a.center),
+  box: (a) => box(a.dims ?? a.size ?? 1, a.center),
+  rounded_box: (a) => rounded_box(a.dims ?? a.size ?? 0.6, a.cornerR ?? a.radius ?? 0.05),
+  torus: (a) => torus(a.majorR ?? a.radius ?? 0.4, a.minorR ?? a.thickness ?? 0.1),
+  capsule: (a) => capsule(a.a, a.b, a.radius ?? a.r ?? 0.1),
+  cylinder: (a) => cylinder(a.radius ?? 0.3, a.height ?? 1.0),
   capped_cylinder: (a) => capped_cylinder(a.a, a.b, a.radius ?? 0.1),
-  cone:          (a) => cone(a.height ?? 0.5, a.baseRadius ?? a.radius ?? 0.3),
-  capped_cone:   (a) => capped_cone(a.a, a.b, a.r1 ?? a.ra ?? 0.3, a.r2 ?? a.rb ?? 0.1),
-  ellipsoid:     (a) => ellipsoid(a.dims ?? a.radii ?? [0.4, 0.3, 0.4]),
-  plane:         (a) => plane(a.normal ?? [0, 1, 0], a.point ?? a.offset ?? [0, 0, 0]),
-  pyramid:       (a) => pyramid(a.height ?? a.h ?? 0.5),
-  slab3:         (a) => slab3(a),
+  cone: (a) => cone(a.height ?? 0.5, a.baseRadius ?? a.radius ?? 0.3),
+  capped_cone: (a) => capped_cone(a.a, a.b, a.r1 ?? a.ra ?? 0.3, a.r2 ?? a.rb ?? 0.1),
+  ellipsoid: (a) => ellipsoid(a.dims ?? a.radii ?? [0.4, 0.3, 0.4]),
+  plane: (a) => plane(a.normal ?? [0, 1, 0], a.point ?? a.offset ?? [0, 0, 0]),
+  pyramid: (a) => pyramid(a.height ?? a.h ?? 0.5),
+  slab3: (a) => slab3(a),
   wireframe_box: (a) => wireframe_box(a.dims ?? a.size ?? 0.6, a.edgeR ?? a.thickness ?? 0.04),
-  tri_prism:     (a) => tri_prism(a.halfWidth ?? 0.3, a.halfLength ?? 0.1),
-  prism:         (a) => tri_prism(a.halfWidth ?? 0.3, a.halfLength ?? 0.1),
-  tetrahedron:   (a) => tetrahedron(a.radius ?? a.r ?? 0.4),
-  octahedron:    (a) => octahedron(a.radius ?? a.r ?? 0.4),
-  dodecahedron:  (a) => dodecahedron(a.radius ?? a.r ?? 0.4),
-  icosahedron:   (a) => icosahedron(a.radius ?? a.r ?? 0.4),
+  tri_prism: (a) => tri_prism(a.halfWidth ?? 0.3, a.halfLength ?? 0.1),
+  prism: (a) => tri_prism(a.halfWidth ?? 0.3, a.halfLength ?? 0.1),
+  tetrahedron: (a) => tetrahedron(a.radius ?? a.r ?? 0.4),
+  octahedron: (a) => octahedron(a.radius ?? a.r ?? 0.4),
+  dodecahedron: (a) => dodecahedron(a.radius ?? a.r ?? 0.4),
+  icosahedron: (a) => icosahedron(a.radius ?? a.r ?? 0.4),
 
   // -- Community-ported (see src/scene/components/community/) --
-  'solid-angle': (a) => solidAngleSDF({
-    halfAperture: a.halfAperture ?? Math.PI / 6,
-    radius:       a.radius       ?? 0.5,
-  }),
-  link: (a) => linkSDF({
-    halfLength: a.halfLength ?? a.le         ?? 0.13,
-    majorR:     a.majorR     ?? a.radius     ?? 0.1,
-    minorR:     a.minorR     ?? a.thickness  ?? 0.02,
-  }),
-  'capped-torus': (a) => cappedTorusSDF({
-    capAngle: a.capAngle ?? a.halfAperture ?? Math.PI / 2,
-    majorR:   a.majorR   ?? a.radius       ?? 0.4,
-    minorR:   a.minorR   ?? a.thickness    ?? 0.1,
-  }),
-  'hex-prism': (a) => hexPrismSDF({
-    apothem:    a.apothem    ?? a.radius     ?? 0.3,
-    halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
-  }),
-  'octagon-prism': (a) => octagonPrismSDF({
-    apothem:    a.apothem    ?? a.radius     ?? 0.3,
-    halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
-  }),
-  'round-cone': (a) => roundConeSDF({
-    baseRadius: a.baseRadius ?? a.r1 ?? 0.3,
-    topRadius:  a.topRadius  ?? a.r2 ?? 0.1,
-    height:     a.height     ?? a.h  ?? 0.6,
-  }),
-  rhombus: (a) => rhombusSDF({
-    la:      a.la      ?? 0.4,
-    lb:      a.lb      ?? 0.2,
-    h:       a.h       ?? a.halfHeight ?? 0.05,
-    cornerR: a.cornerR ?? a.ra         ?? 0.02,
-  }),
-  horseshoe: (a) => horseshoeSDF({
-    openAngle: a.openAngle ?? Math.PI / 3,
-    radius:    a.radius    ?? a.r  ?? 0.4,
-    length:    a.length    ?? a.le ?? 0.1,
-    halfWidth: a.halfWidth ?? 0.08,
-    halfDepth: a.halfDepth ?? 0.04,
-  }),
-  'u-shape': (a) => uShapeSDF({
-    radius:    a.radius    ?? a.r  ?? 0.3,
-    legLength: a.legLength ?? a.le ?? 0.2,
-    halfWidth: a.halfWidth ?? 0.06,
-    halfDepth: a.halfDepth ?? 0.04,
-  }),
+  'solid-angle': (a) =>
+    solidAngleSDF({
+      halfAperture: a.halfAperture ?? Math.PI / 6,
+      radius: a.radius ?? 0.5,
+    }),
+  link: (a) =>
+    linkSDF({
+      halfLength: a.halfLength ?? a.le ?? 0.13,
+      majorR: a.majorR ?? a.radius ?? 0.1,
+      minorR: a.minorR ?? a.thickness ?? 0.02,
+    }),
+  'capped-torus': (a) =>
+    cappedTorusSDF({
+      capAngle: a.capAngle ?? a.halfAperture ?? Math.PI / 2,
+      majorR: a.majorR ?? a.radius ?? 0.4,
+      minorR: a.minorR ?? a.thickness ?? 0.1,
+    }),
+  'hex-prism': (a) =>
+    hexPrismSDF({
+      apothem: a.apothem ?? a.radius ?? 0.3,
+      halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
+    }),
+  'octagon-prism': (a) =>
+    octagonPrismSDF({
+      apothem: a.apothem ?? a.radius ?? 0.3,
+      halfHeight: a.halfHeight ?? a.halfLength ?? 0.5,
+    }),
+  'round-cone': (a) =>
+    roundConeSDF({
+      baseRadius: a.baseRadius ?? a.r1 ?? 0.3,
+      topRadius: a.topRadius ?? a.r2 ?? 0.1,
+      height: a.height ?? a.h ?? 0.6,
+    }),
+  rhombus: (a) =>
+    rhombusSDF({
+      la: a.la ?? 0.4,
+      lb: a.lb ?? 0.2,
+      h: a.h ?? a.halfHeight ?? 0.05,
+      cornerR: a.cornerR ?? a.ra ?? 0.02,
+    }),
+  horseshoe: (a) =>
+    horseshoeSDF({
+      openAngle: a.openAngle ?? Math.PI / 3,
+      radius: a.radius ?? a.r ?? 0.4,
+      length: a.length ?? a.le ?? 0.1,
+      halfWidth: a.halfWidth ?? 0.08,
+      halfDepth: a.halfDepth ?? 0.04,
+    }),
+  'u-shape': (a) =>
+    uShapeSDF({
+      radius: a.radius ?? a.r ?? 0.3,
+      legLength: a.legLength ?? a.le ?? 0.2,
+      halfWidth: a.halfWidth ?? 0.06,
+      halfDepth: a.halfDepth ?? 0.04,
+    }),
 
   // -- Atlas scene atoms (high-semantic composites of primitives, hand-authored) --
-  moon:  (a) => moonSDF({ radius: a.radius ?? 0.4 }),
-  star:  (a) => starSDF({ radius: a.radius ?? 0.08, shape: a.shape ?? 'octahedron' }),
-  sun:   (a) => sunSDF({ radius: a.radius ?? 0.4, haloThickness: a.haloThickness ?? 0.06 }),
-  'cloud-puff': (a) => cloudPuffSDF({
-    width:  a.width  ?? a.dims?.[0] ?? 1.0,
-    height: a.height ?? a.dims?.[1] ?? 0.45,
-    depth:  a.depth  ?? a.dims?.[2] ?? 0.6,
-  }),
-  'tree-pine': (a) => pineTreeSDF({
-    trunkHeight:   a.trunkHeight   ?? 0.5,
-    trunkRadius:   a.trunkRadius   ?? 0.1,
-    foliageHeight: a.foliageHeight ?? 1.4,
-    foliageBaseR:  a.foliageBaseR  ?? a.foliageR ?? 0.55,
-    layers:        a.layers        ?? 3,
-  }),
-  'tree-broadleaf': (a) => broadleafTreeSDF({
-    trunkHeight: a.trunkHeight ?? 0.7,
-    trunkRadius: a.trunkRadius ?? 0.09,
-    foliageR:    a.foliageR    ?? a.foliageRadius ?? 0.55,
-  }),
-  cottage: (a) => cottageSDF({
-    width:      a.width      ?? a.size ?? 0.8,
-    height:     a.height     ?? 0.6,
-    roofHeight: a.roofHeight ?? a.roofPitch ?? 0.45,
-  }),
-  'flag-on-pole': (a) => flagOnPoleSDF({
-    poleHeight: a.poleHeight ?? a.height    ?? 2.0,
-    poleRadius: a.poleRadius ?? 0.04,
-    flagWidth:  a.flagWidth  ?? a.width     ?? 0.5,
-    flagHeight: a.flagHeight ?? 0.3,
-    flagSide:   a.flagSide   ?? 1,
-  }),
-  'bird-silhouette': (a) => birdSilhouetteSDF({
-    bodyLength: a.bodyLength ?? 0.18,
-    bodyRadius: a.bodyRadius ?? 0.025,
-    wingSpan:   a.wingSpan   ?? 0.45,
-    wingRise:   a.wingRise   ?? 0.1,
-  }),
+  moon: (a) => moonSDF({ radius: a.radius ?? 0.4 }),
+  star: (a) => starSDF({ radius: a.radius ?? 0.08, shape: a.shape ?? 'octahedron' }),
+  sun: (a) => sunSDF({ radius: a.radius ?? 0.4, haloThickness: a.haloThickness ?? 0.06 }),
+  'cloud-puff': (a) =>
+    cloudPuffSDF({
+      width: a.width ?? a.dims?.[0] ?? 1.0,
+      height: a.height ?? a.dims?.[1] ?? 0.45,
+      depth: a.depth ?? a.dims?.[2] ?? 0.6,
+    }),
+  'tree-pine': (a) =>
+    pineTreeSDF({
+      trunkHeight: a.trunkHeight ?? 0.5,
+      trunkRadius: a.trunkRadius ?? 0.1,
+      foliageHeight: a.foliageHeight ?? 1.4,
+      foliageBaseR: a.foliageBaseR ?? a.foliageR ?? 0.55,
+      layers: a.layers ?? 3,
+    }),
+  'tree-broadleaf': (a) =>
+    broadleafTreeSDF({
+      trunkHeight: a.trunkHeight ?? 0.7,
+      trunkRadius: a.trunkRadius ?? 0.09,
+      foliageR: a.foliageR ?? a.foliageRadius ?? 0.55,
+    }),
+  cottage: (a) =>
+    cottageSDF({
+      width: a.width ?? a.size ?? 0.8,
+      height: a.height ?? 0.6,
+      roofHeight: a.roofHeight ?? a.roofPitch ?? 0.45,
+    }),
+  'flag-on-pole': (a) =>
+    flagOnPoleSDF({
+      poleHeight: a.poleHeight ?? a.height ?? 2.0,
+      poleRadius: a.poleRadius ?? 0.04,
+      flagWidth: a.flagWidth ?? a.width ?? 0.5,
+      flagHeight: a.flagHeight ?? 0.3,
+      flagSide: a.flagSide ?? 1,
+    }),
+  'bird-silhouette': (a) =>
+    birdSilhouetteSDF({
+      bodyLength: a.bodyLength ?? 0.18,
+      bodyRadius: a.bodyRadius ?? 0.025,
+      wingSpan: a.wingSpan ?? 0.45,
+      wingRise: a.wingRise ?? 0.1,
+    }),
 
   // -- v3.0 atom expansion — animals --
-  cow:    (a) => cowSDF({ scale: a.scale ?? 1 }),
-  horse:  (a) => horseSDF({ scale: a.scale ?? 1 }),
-  pig:    (a) => pigSDF({ scale: a.scale ?? 1 }),
-  dog:    (a) => dogSDF({ scale: a.scale ?? 1 }),
-  sheep:  (a) => sheepSDF({ scale: a.scale ?? 1 }),
-  cat:    (a) => catSDF({ scale: a.scale ?? 1 }),
+  cow: (a) => cowSDF({ scale: a.scale ?? 1 }),
+  horse: (a) => horseSDF({ scale: a.scale ?? 1 }),
+  pig: (a) => pigSDF({ scale: a.scale ?? 1 }),
+  dog: (a) => dogSDF({ scale: a.scale ?? 1 }),
+  sheep: (a) => sheepSDF({ scale: a.scale ?? 1 }),
+  cat: (a) => catSDF({ scale: a.scale ?? 1 }),
   // -- landscape --
-  'rock-boulder':   (a) => rockBoulderSDF({ scale: a.scale ?? 1 }),
-  'fence-section':  (a) => fenceSectionSDF({ length: a.length ?? 1.5, height: a.height ?? 0.5 }),
-  'hill-mound':     (a) => hillMoundSDF({ radius: a.radius ?? 1.5, height: a.height ?? 0.5 }),
-  'stream-segment': (a) => streamSegmentSDF({ length: a.length ?? 2.0, width: a.width ?? 0.3, depth: a.depth ?? 0.05 }),
+  'rock-boulder': (a) => rockBoulderSDF({ scale: a.scale ?? 1 }),
+  'fence-section': (a) => fenceSectionSDF({ length: a.length ?? 1.5, height: a.height ?? 0.5 }),
+  'hill-mound': (a) => hillMoundSDF({ radius: a.radius ?? 1.5, height: a.height ?? 0.5 }),
+  'stream-segment': (a) =>
+    streamSegmentSDF({ length: a.length ?? 2.0, width: a.width ?? 0.3, depth: a.depth ?? 0.05 }),
   // -- architecture --
-  'tower-square':   (a) => towerSquareSDF({ width: a.width ?? 1.0, height: a.height ?? 4.0, roofHeight: a.roofHeight ?? 0.8 }),
-  'church-spire':   (a) => churchSpireSDF({ width: a.width ?? 0.8, baseHeight: a.baseHeight ?? 1.5, spireHeight: a.spireHeight ?? 2.5 }),
-  gazebo:           (a) => gazeboSDF({ radius: a.radius ?? 0.8, height: a.height ?? 1.2, roofHeight: a.roofHeight ?? 0.6 }),
-  well:             (a) => wellSDF({ radius: a.radius ?? 0.4, wallHeight: a.wallHeight ?? 0.5 }),
-  fountain:         (a) => fountainSDF({ radius: a.radius ?? 0.7, basinHeight: a.basinHeight ?? 0.3 }),
+  'tower-square': (a) =>
+    towerSquareSDF({
+      width: a.width ?? 1.0,
+      height: a.height ?? 4.0,
+      roofHeight: a.roofHeight ?? 0.8,
+    }),
+  'church-spire': (a) =>
+    churchSpireSDF({
+      width: a.width ?? 0.8,
+      baseHeight: a.baseHeight ?? 1.5,
+      spireHeight: a.spireHeight ?? 2.5,
+    }),
+  gazebo: (a) =>
+    gazeboSDF({
+      radius: a.radius ?? 0.8,
+      height: a.height ?? 1.2,
+      roofHeight: a.roofHeight ?? 0.6,
+    }),
+  well: (a) => wellSDF({ radius: a.radius ?? 0.4, wallHeight: a.wallHeight ?? 0.5 }),
+  fountain: (a) => fountainSDF({ radius: a.radius ?? 0.7, basinHeight: a.basinHeight ?? 0.3 }),
   // -- vehicles --
   'sailboat-small': (a) => sailboatSmallSDF({ scale: a.scale ?? 1 }),
-  'car-simple':     (a) => carSimpleSDF({ scale: a.scale ?? 1 }),
-  wagon:            (a) => wagonSDF({ scale: a.scale ?? 1 }),
-  biplane:          (a) => biplaneSDF({ scale: a.scale ?? 1 }),
+  'car-simple': (a) => carSimpleSDF({ scale: a.scale ?? 1 }),
+  wagon: (a) => wagonSDF({ scale: a.scale ?? 1 }),
+  biplane: (a) => biplaneSDF({ scale: a.scale ?? 1 }),
   // -- furniture --
-  chair:            (a) => chairSDF({ scale: a.scale ?? 1 }),
-  'table-round':    (a) => tableRoundSDF({ radius: a.radius ?? 0.5, height: a.height ?? 0.5 }),
-  'lamp-standing':  (a) => lampStandingSDF({ scale: a.scale ?? 1 }),
-  bookshelf:        (a) => bookshelfSDF({ width: a.width ?? 0.8, height: a.height ?? 1.5, depth: a.depth ?? 0.25 }),
-  'wine-bottle':    (a) => wineBottleSDF({ scale: a.scale ?? 1 }),
+  chair: (a) => chairSDF({ scale: a.scale ?? 1 }),
+  'table-round': (a) => tableRoundSDF({ radius: a.radius ?? 0.5, height: a.height ?? 0.5 }),
+  'lamp-standing': (a) => lampStandingSDF({ scale: a.scale ?? 1 }),
+  bookshelf: (a) =>
+    bookshelfSDF({ width: a.width ?? 0.8, height: a.height ?? 1.5, depth: a.depth ?? 0.25 }),
+  'wine-bottle': (a) => wineBottleSDF({ scale: a.scale ?? 1 }),
   // -- mechanical --
-  'gear-flat':      (a) => gearFlatSDF({ radius: a.radius ?? 0.5, thickness: a.thickness ?? 0.08, teeth: a.teeth ?? 12 }),
-  'pipe-l-bend':    (a) => pipeLBendSDF({ scale: a.scale ?? 1 }),
-  smokestack:       (a) => smokestackSDF({ radius: a.radius ?? 0.25, height: a.height ?? 3.0 }),
-  windmill:         (a) => windmillSDF({ scale: a.scale ?? 1 }),
+  'gear-flat': (a) =>
+    gearFlatSDF({ radius: a.radius ?? 0.5, thickness: a.thickness ?? 0.08, teeth: a.teeth ?? 12 }),
+  'pipe-l-bend': (a) => pipeLBendSDF({ scale: a.scale ?? 1 }),
+  smokestack: (a) => smokestackSDF({ radius: a.radius ?? 0.25, height: a.height ?? 3.0 }),
+  windmill: (a) => windmillSDF({ scale: a.scale ?? 1 }),
   // -- plants --
-  flower:           (a) => flowerSDF({ stemHeight: a.stemHeight ?? 0.6, bloomRadius: a.bloomRadius ?? 0.12 }),
-  mushroom:         (a) => mushroomSDF({ stemHeight: a.stemHeight ?? 0.15, capRadius: a.capRadius ?? 0.12 }),
-  bush:             (a) => bushSDF({ radius: a.radius ?? 0.4 }),
-  vine:             (a) => vineSDF({ length: a.length ?? 1.0, thickness: a.thickness ?? 0.02 }),
-  'grass-tuft':     (a) => grassTuftSDF({ count: a.count ?? 5, height: a.height ?? 0.15 }),
+  flower: (a) => flowerSDF({ stemHeight: a.stemHeight ?? 0.6, bloomRadius: a.bloomRadius ?? 0.12 }),
+  mushroom: (a) =>
+    mushroomSDF({ stemHeight: a.stemHeight ?? 0.15, capRadius: a.capRadius ?? 0.12 }),
+  bush: (a) => bushSDF({ radius: a.radius ?? 0.4 }),
+  vine: (a) => vineSDF({ length: a.length ?? 1.0, thickness: a.thickness ?? 0.02 }),
+  'grass-tuft': (a) => grassTuftSDF({ count: a.count ?? 5, height: a.height ?? 0.15 }),
 
   // -- Time-aware --
-  waves:         (a) => waves(a.freq ?? 2, a.amp ?? 0.5, a.angle ?? 0, a.speed ?? 0),
+  waves: (a) => waves(a.freq ?? 2, a.amp ?? 0.5, a.angle ?? 0, a.speed ?? 0),
 
   // -- Heightfield-as-SDF (afl_ext-inspired open-ocean) --
   // Auto-attaches material.kind='sea' downstream so the renderer routes hits
   // through its sea-shading branch (fresnel + atmosphere reflection + sun glint).
   // Authors can also override colour by passing an explicit material with a
   // custom kind value, but defaults already give the iconic open-ocean look.
-  'sea-surface':    (a) => seaSurfaceSDF({ depth: a.depth ?? 1.0, scale: a.scale ?? 0.6 }),
+  'sea-surface': (a) => seaSurfaceSDF({ depth: a.depth ?? 1.0, scale: a.scale ?? 0.6 }),
 
   // -- Venice-style procedural building (canal sprint Day 1) --
-  'canal-building': (a) => canalBuildingSDF({
-    width:  a.width  ?? 2.0,
-    height: a.height ?? 6.0,
-    winX:   a.winX   ?? 5,
-    winY:   a.winY   ?? 8,
-  }),
-  'canal-windows': (a) => canalWindowsSDF({
-    width:   a.width   ?? 2.0,
-    height:  a.height  ?? 6.0,
-    winX:    a.winX    ?? 5,
-    winY:    a.winY    ?? 8,
-    density: a.density ?? 0.4,
-    seed:    a.seed    ?? 1.0,
-  }),
-  'canal-bridge': (a) => canalBridgeSDF({
-    span:      a.span      ?? 8.0,
-    archR:     a.archR     ?? 1.6,
-    thickness: a.thickness ?? 1.2,
-  }),
-  'canal-lamp-bulb': (a) => canalLampBulbSDF({
-    bulbY: a.bulbY ?? 4.0,
-    bulbR: a.bulbR ?? 0.3,
-  }),
-  'terrain-heightmap': (a) => terrainHeightmapSDF({
-    maxHeight: a.maxHeight ?? 30.0,
-    hwRatio:   a.hwRatio   ?? 0.08,
-  }),
-  'terrain-elevated': (a) => terrainElevatedSDF({
-    maxHeight:    a.maxHeight    ?? 60.0,
-    scale:        a.scale        ?? 0.012,
-    ridgePower:   a.ridgePower   ?? 2.4,
-    mountainness: a.mountainness ?? 0.4,
-    cliffStart:   a.cliffStart   ?? 600.0,
-    cliffEnd:     a.cliffEnd     ?? 600.0,
-    cliffJump:    a.cliffJump    ?? 0.0,
-    canopyAmount: a.canopyAmount ?? 0.0,
-  }),
-  'terrain-with-lakes': (a) => terrainWithLakesSDF({
-    maxHeight:    a.maxHeight    ?? 60.0,
-    scale:        a.scale        ?? 0.012,
-    ridgePower:   a.ridgePower   ?? 2.4,
-    mountainness: a.mountainness ?? 0.4,
-    waterLevel:   a.waterLevel   ?? 0.0,
-    lakeScale:    a.lakeScale    ?? 0.0008,
-    lakeAmount:   a.lakeAmount   ?? 0.30,
-  }),
-  'arch-bridge': (a) => archBridgeSDF({
-    bridgeLen:   a.bridgeLen   ?? a.length      ?? 30.0,
-    bridgeWidth: a.bridgeWidth ?? a.width       ?? 4.0,
-    archH:       a.archH       ?? a.archHeight  ?? 6.0,
-    railH:       a.railH       ?? a.railHeight  ?? 1.5,
-    cornerOff:   a.cornerOff   ?? a.cornerOffset?? 10.0,
-  }),
-  'terrain-canyon': (a) => terrainCanyonSDF({
-    maxHeight:    a.maxHeight    ?? 35.0,
-    scale:        a.scale        ?? 0.015,
-    ridgePower:   a.ridgePower   ?? 2.0,
-    mountainness: a.mountainness ?? 0.20,
-    displaceAmt:  a.displaceAmt  ?? 4.0,
-    yStretch:     a.yStretch     ?? 4.0,
-  }),
-  'procedural-city': (a) => proceduralCitySDF({
-    blockSize: a.blockSize ?? 1.0,
-    maxHeight: a.maxHeight ?? 18.0,
-    downtownK: a.downtownK ?? 4.0,
-  }),
-  'terrain-eroded-rune': (a) => terrainErodedRuneSDF({
-    boxSize:     a.boxSize     ?? [0.5, 1.0, 0.5],
-    waterHeight: a.waterHeight ?? 0.46,
-  }),
+  'canal-building': (a) =>
+    canalBuildingSDF({
+      width: a.width ?? 2.0,
+      height: a.height ?? 6.0,
+      winX: a.winX ?? 5,
+      winY: a.winY ?? 8,
+    }),
+  'canal-windows': (a) =>
+    canalWindowsSDF({
+      width: a.width ?? 2.0,
+      height: a.height ?? 6.0,
+      winX: a.winX ?? 5,
+      winY: a.winY ?? 8,
+      density: a.density ?? 0.4,
+      seed: a.seed ?? 1.0,
+    }),
+  'canal-bridge': (a) =>
+    canalBridgeSDF({
+      span: a.span ?? 8.0,
+      archR: a.archR ?? 1.6,
+      thickness: a.thickness ?? 1.2,
+    }),
+  'canal-lamp-bulb': (a) =>
+    canalLampBulbSDF({
+      bulbY: a.bulbY ?? 4.0,
+      bulbR: a.bulbR ?? 0.3,
+    }),
+  'terrain-heightmap': (a) =>
+    terrainHeightmapSDF({
+      maxHeight: a.maxHeight ?? 30.0,
+      hwRatio: a.hwRatio ?? 0.08,
+    }),
+  'terrain-elevated': (a) =>
+    terrainElevatedSDF({
+      maxHeight: a.maxHeight ?? 60.0,
+      scale: a.scale ?? 0.012,
+      ridgePower: a.ridgePower ?? 2.4,
+      mountainness: a.mountainness ?? 0.4,
+      cliffStart: a.cliffStart ?? 600.0,
+      cliffEnd: a.cliffEnd ?? 600.0,
+      cliffJump: a.cliffJump ?? 0.0,
+      canopyAmount: a.canopyAmount ?? 0.0,
+    }),
+  'terrain-with-lakes': (a) =>
+    terrainWithLakesSDF({
+      maxHeight: a.maxHeight ?? 60.0,
+      scale: a.scale ?? 0.012,
+      ridgePower: a.ridgePower ?? 2.4,
+      mountainness: a.mountainness ?? 0.4,
+      waterLevel: a.waterLevel ?? 0.0,
+      lakeScale: a.lakeScale ?? 0.0008,
+      lakeAmount: a.lakeAmount ?? 0.3,
+    }),
+  'arch-bridge': (a) =>
+    archBridgeSDF({
+      bridgeLen: a.bridgeLen ?? a.length ?? 30.0,
+      bridgeWidth: a.bridgeWidth ?? a.width ?? 4.0,
+      archH: a.archH ?? a.archHeight ?? 6.0,
+      railH: a.railH ?? a.railHeight ?? 1.5,
+      cornerOff: a.cornerOff ?? a.cornerOffset ?? 10.0,
+    }),
+  'terrain-canyon': (a) =>
+    terrainCanyonSDF({
+      maxHeight: a.maxHeight ?? 35.0,
+      scale: a.scale ?? 0.015,
+      ridgePower: a.ridgePower ?? 2.0,
+      mountainness: a.mountainness ?? 0.2,
+      displaceAmt: a.displaceAmt ?? 4.0,
+      yStretch: a.yStretch ?? 4.0,
+    }),
+  'procedural-city': (a) =>
+    proceduralCitySDF({
+      blockSize: a.blockSize ?? 1.0,
+      maxHeight: a.maxHeight ?? 18.0,
+      downtownK: a.downtownK ?? 4.0,
+    }),
+  'terrain-eroded-rune': (a) =>
+    terrainErodedRuneSDF({
+      boxSize: a.boxSize ?? [0.5, 1.0, 0.5],
+      waterHeight: a.waterHeight ?? 0.46,
+    }),
 
   // -- Forest sprint (stylized-tree + maple-leaf + flower + meteor) --
-  'stylized-tree': (a) => stylizedTreeSDF({
-    trunkLen: a.trunkLen ?? a.trunkHeight ?? 5.0,
-    trunkRad: a.trunkRad ?? a.trunkRadius ?? 0.4,
-    leafSize: a.leafSize ?? 0.18,
-    windK:    a.windK    ?? a.wind        ?? 0.12,
-  }),
-  'maple-leaf': (a) => mapleLeafSDF({
-    scale: a.scale ?? 0.15,
-    rand:  a.rand  ?? a.seed ?? 0.5,
-  }),
-  'forest-flower': (a) => forestFlowerSDF({
-    stemH:  a.stemH  ?? a.stemHeight ?? 1.0,
-    bloomR: a.bloomR ?? a.bloomRadius ?? 0.16,
-  }),
-  'grass-field': (a) => grassFieldSDF({
-    bladeHeight: a.bladeHeight ?? a.height ?? 0.40,
-    density:     a.density     ?? a.cellSize ?? 0.10,
-  }),
-  'meteor-streak': (a) => meteorStreakSDF({
-    origin:     a.origin     ?? [-15, 18, 25],
-    velocity:   a.velocity   ?? [3.5, -2.5, 0.5],
-    trailLen:   a.trailLen   ?? a.length ?? 1.4,
-    period:     a.period     ?? 7.0,
-    activeFrac: a.activeFrac ?? 0.5,
-    phase:      a.phase      ?? 0.0,
-  }),
+  'stylized-tree': (a) =>
+    stylizedTreeSDF({
+      trunkLen: a.trunkLen ?? a.trunkHeight ?? 5.0,
+      trunkRad: a.trunkRad ?? a.trunkRadius ?? 0.4,
+      leafSize: a.leafSize ?? 0.18,
+      windK: a.windK ?? a.wind ?? 0.12,
+    }),
+  'maple-leaf': (a) =>
+    mapleLeafSDF({
+      scale: a.scale ?? 0.15,
+      rand: a.rand ?? a.seed ?? 0.5,
+    }),
+  'forest-flower': (a) =>
+    forestFlowerSDF({
+      stemH: a.stemH ?? a.stemHeight ?? 1.0,
+      bloomR: a.bloomR ?? a.bloomRadius ?? 0.16,
+    }),
+  'grass-field': (a) =>
+    grassFieldSDF({
+      bladeHeight: a.bladeHeight ?? a.height ?? 0.4,
+      density: a.density ?? a.cellSize ?? 0.1,
+    }),
+  'meteor-streak': (a) =>
+    meteorStreakSDF({
+      origin: a.origin ?? [-15, 18, 25],
+      velocity: a.velocity ?? [3.5, -2.5, 0.5],
+      trailLen: a.trailLen ?? a.length ?? 1.4,
+      period: a.period ?? 7.0,
+      activeFrac: a.activeFrac ?? 0.5,
+      phase: a.phase ?? 0.0,
+    }),
 
   // -- 2026-05-23 IQ P2 batch — 8 new 3D primitives ----------------------
-  'cut-sphere':       (a) => cutSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0),
-  'cut-hollow-sphere':(a) => cutHollowSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0, a.t ?? a.thickness ?? 0.02),
-  'death-star':       (a) => deathStar(a.ra ?? 0.5, a.rb ?? 0.35, a.d ?? a.distance ?? 0.5),
-  'rounded-cylinder': (a) => roundedCylinder(a.ra ?? a.radius ?? 0.3, a.rb ?? a.cornerR ?? 0.05, a.h ?? a.height ?? 0.5),
-  'round-cone-ab':    (a) => roundConeAB(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.r1 ?? a.ra ?? 0.2, a.r2 ?? a.rb ?? 0.1),
-  'vesica-segment':   (a) => vesicaSegment(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.w ?? a.width ?? 0.2),
-  'cylinder-inf':     (a) => cylinderInf(a.axisXZ ?? a.axis ?? [0, 0], a.radius ?? a.r ?? 0.3),
-  'cone-inf':         (a) => coneInf(a.halfAperture ?? a.angle ?? Math.PI / 6),
+  'cut-sphere': (a) => cutSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0),
+  'cut-hollow-sphere': (a) =>
+    cutHollowSphere(a.radius ?? a.r ?? 0.5, a.h ?? a.height ?? 0.0, a.t ?? a.thickness ?? 0.02),
+  'death-star': (a) => deathStar(a.ra ?? 0.5, a.rb ?? 0.35, a.d ?? a.distance ?? 0.5),
+  'rounded-cylinder': (a) =>
+    roundedCylinder(a.ra ?? a.radius ?? 0.3, a.rb ?? a.cornerR ?? 0.05, a.h ?? a.height ?? 0.5),
+  'round-cone-ab': (a) =>
+    roundConeAB(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.r1 ?? a.ra ?? 0.2, a.r2 ?? a.rb ?? 0.1),
+  'vesica-segment': (a) => vesicaSegment(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], a.w ?? a.width ?? 0.2),
+  'cylinder-inf': (a) => cylinderInf(a.axisXZ ?? a.axis ?? [0, 0], a.radius ?? a.r ?? 0.3),
+  'cone-inf': (a) => coneInf(a.halfAperture ?? a.angle ?? Math.PI / 6),
 
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.
-  extrude:      null,
-  extrude_to:   null,
-  revolve:      null,
+  extrude: null,
+  extrude_to: null,
+  revolve: null,
 };
 
 const PSEUDO_PRIMITIVES = new Set(['extrude', 'revolve', 'extrude_to']);
@@ -485,10 +665,12 @@ export function compile(sceneData, options = {}) {
     for (const s of subs || []) {
       if (s.type === 'terrain-eroded-rune') return s;
       if (Array.isArray(s.children)) {
-        const f = findErodedRune(s.children); if (f) return f;
+        const f = findErodedRune(s.children);
+        if (f) return f;
       }
       if (s.source) {
-        const f = findErodedRune([s.source]); if (f) return f;
+        const f = findErodedRune([s.source]);
+        if (f) return f;
       }
     }
     return null;
@@ -536,34 +718,95 @@ export function compile(sceneData, options = {}) {
       if (topLevelMat != null) {
         compiled.sdf._subjectMaterial = topLevelMat;
       } else if (subj.type === 'sea-surface' && compiled.sdf._subjectMaterial == null) {
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.58, sat: 0.4, value: 0.2, metal: 0, glow: 0, kind: 'sea' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.58,
+          sat: 0.4,
+          value: 0.2,
+          metal: 0,
+          glow: 0,
+          kind: 'sea',
+        });
       } else if (subj.type === 'procedural-city' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach building material kind for window grid + sky reflection.
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.85, metal: 0.4, glow: 0, kind: 'building' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.6,
+          sat: 0.05,
+          value: 0.85,
+          metal: 0.4,
+          glow: 0,
+          kind: 'building',
+        });
       } else if (subj.type === 'terrain-eroded-rune' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach Rune full-shading material kind (cliff/dirt/grass/snow/
         // sand/tree/drainage all dispatched inside material kind=7 branch).
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.3, sat: 0.5, value: 0.6, metal: 0, glow: 0, kind: 'eroded-terrain' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.3,
+          sat: 0.5,
+          value: 0.6,
+          metal: 0,
+          glow: 0,
+          kind: 'eroded-terrain',
+        });
       } else if (subj.type === 'terrain-canyon' && compiled.sdf._subjectMaterial == null) {
         // Auto-attach mountain material with red-orange sandstone tint.
         // mountain branch reads leafMat.x/y to tint the rock + ground layers
         // (see Sprint A5 mountain rock tint upgrade). Default canyon = Bryce.
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.06, sat: 0.62, value: 0.85, metal: 0, glow: 0, kind: 'mountain' });
-      } else if ((subj.type === 'terrain-heightmap' || subj.type === 'terrain-elevated' || subj.type === 'terrain-with-lakes') && compiled.sdf._subjectMaterial == null) {
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.06,
+          sat: 0.62,
+          value: 0.85,
+          metal: 0,
+          glow: 0,
+          kind: 'mountain',
+        });
+      } else if (
+        (subj.type === 'terrain-heightmap' ||
+          subj.type === 'terrain-elevated' ||
+          subj.type === 'terrain-with-lakes') &&
+        compiled.sdf._subjectMaterial == null
+      ) {
         // Mountain material: hue/sat/value mostly irrelevant — mountain branch
         // uses snow/rock palette internally. kind=2 routes to that branch.
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.6, sat: 0.05, value: 0.7, metal: 0, glow: 0, kind: 'mountain' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.6,
+          sat: 0.05,
+          value: 0.7,
+          metal: 0,
+          glow: 0,
+          kind: 'mountain',
+        });
       } else if (subj.type === 'meteor-streak' && compiled.sdf._subjectMaterial == null) {
         // Meteor: warm-white emissive (warm tail trail). kind=3 routes to the
         // emissive branch in flyLambert (bypass lighting, base * (1 + 4*glow)).
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.10, sat: 0.35, value: 1.0, metal: 0, glow: 2.0, kind: 'emissive' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.1,
+          sat: 0.35,
+          value: 1.0,
+          metal: 0,
+          glow: 2.0,
+          kind: 'emissive',
+        });
       } else if (subj.type === 'maple-leaf' && compiled.sdf._subjectMaterial == null) {
         // Maple leaf: autumn red default + translucent kind=4 → HG backlight
         // when sun behind leaf. Author can override with any HSV + kind.
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.02, sat: 0.85, value: 0.55, metal: 0, glow: 0, kind: 'translucent' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.02,
+          sat: 0.85,
+          value: 0.55,
+          metal: 0,
+          glow: 0,
+          kind: 'translucent',
+        });
       } else if (subj.type === 'grass-field' && compiled.sdf._subjectMaterial == null) {
         // Grass: fresh green + translucent kind=4 → HG backlight at twilight.
-        compiled.sdf._subjectMaterial = resolveMaterial({ hue: 0.28, sat: 0.70, value: 0.50, metal: 0, glow: 0, kind: 'translucent' });
+        compiled.sdf._subjectMaterial = resolveMaterial({
+          hue: 0.28,
+          sat: 0.7,
+          value: 0.5,
+          metal: 0,
+          glow: 0,
+          kind: 'translucent',
+        });
       }
       // (compiled.sdf already keeps any nested-propagated _subjectMaterial.)
       const topLevelPat = resolvePattern(subj.pattern);
@@ -598,7 +841,7 @@ export function compile(sceneData, options = {}) {
     // Default material so renderer doesn't fall to a random hash-palette
     // color. Authors can override by setting `ground.material` in SceneData.
     groundSdf._subjectMaterial = resolveMaterial(sceneData.ground.material ?? 'stone');
-    groundSdf._subjectPattern  = resolvePattern(sceneData.ground.pattern ?? null);
+    groundSdf._subjectPattern = resolvePattern(sceneData.ground.pattern ?? null);
   }
 
   // Camera / light / shadow
@@ -663,7 +906,9 @@ export function compile(sceneData, options = {}) {
       compileResult.sanityResult = sanityCheck(sceneData, compileResult);
       const sr = compileResult.sanityResult;
       if (sr.all.length > 0) {
-        logSanityIssues(sr.all, { prefix: `[sanity ${sceneData.id || sceneData.name || '<scene>'}]` });
+        logSanityIssues(sr.all, {
+          prefix: `[sanity ${sceneData.id || sceneData.name || '<scene>'}]`,
+        });
       }
     } catch (e) {
       console.warn(`[sanity] checker itself threw: ${e.message}`);
@@ -731,7 +976,7 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
 
 function compilePseudoPrimitive(subj, defaultRegion, subjectInfos) {
   // extrude / revolve / extrude_to wrap a 2D source
-  const source = compileSubject(subj.source, defaultRegion, []);  // don't track source in flat list
+  const source = compileSubject(subj.source, defaultRegion, []); // don't track source in flat list
   const args = resolveAnimatedArgs(subj);
 
   let sdf;
@@ -778,7 +1023,7 @@ function compilePseudoPrimitive(subj, defaultRegion, subjectInfos) {
 function compileBoolean(subj, defaultRegion, subjectInfos) {
   // children may have their own regions; BooleanGroup.region OVERRIDES (Rule A in SPEC.md).
   const groupRegion = subj.region ?? defaultRegion;
-  const children = subj.children.map(c => compileSubject(c, groupRegion, []));  // children regions discarded for SubjectInfo
+  const children = subj.children.map((c) => compileSubject(c, groupRegion, [])); // children regions discarded for SubjectInfo
   // Unwrap if single child (Rule 5 warning case)
   if (children.length === 1) {
     let sdf = applyTransform(children[0].sdf, subj.transform, subj.animation);
@@ -800,16 +1045,17 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
   // apply — outer transform stays on the result there.
   const hasOuterTransform = subj.transform != null || hasTransformAnim(subj.animation);
   const isUnionLike = subj.type === 'union' || subj.type === 'smoothUnion';
-  const childSdfs = (isUnionLike && hasOuterTransform)
-    ? children.map(c => {
-        const t = applyTransform(c.sdf, subj.transform, subj.animation);
-        // applyTransform creates wrappers that drop _subjectMaterial — re-attach
-        // it from the inner child so flattenUnion finds it on the wrapper.
-        if (c.sdf._subjectMaterial !== undefined) t._subjectMaterial = c.sdf._subjectMaterial;
-        if (c.sdf._subjectPattern !== undefined)  t._subjectPattern  = c.sdf._subjectPattern;
-        return t;
-      })
-    : children.map(c => c.sdf);
+  const childSdfs =
+    isUnionLike && hasOuterTransform
+      ? children.map((c) => {
+          const t = applyTransform(c.sdf, subj.transform, subj.animation);
+          // applyTransform creates wrappers that drop _subjectMaterial — re-attach
+          // it from the inner child so flattenUnion finds it on the wrapper.
+          if (c.sdf._subjectMaterial !== undefined) t._subjectMaterial = c.sdf._subjectMaterial;
+          if (c.sdf._subjectPattern !== undefined) t._subjectPattern = c.sdf._subjectPattern;
+          return t;
+        })
+      : children.map((c) => c.sdf);
   // When transforms have been pushed down, skip the outer applyTransform below.
   const skipOuterTransform = isUnionLike && hasOuterTransform;
   let sdf;
@@ -887,14 +1133,22 @@ function compileBoolean(subj, defaultRegion, subjectInfos) {
 
 function compileDomain(subj, defaultRegion, subjectInfos) {
   const region = subj.region ?? defaultRegion;
-  const source = compileSubject(subj.source, region, []);  // source-level region passed through
+  const source = compileSubject(subj.source, region, []); // source-level region passed through
 
   const args = subj.args ?? {};
   let sdf;
 
   if (subj.type === 'rep') {
     // rep(sdf, period, options?)
-    sdf = rep(source.sdf, args.period, args.count != null ? { count: args.count } : (args.padding != null ? { padding: args.padding } : undefined));
+    sdf = rep(
+      source.sdf,
+      args.period,
+      args.count != null
+        ? { count: args.count }
+        : args.padding != null
+          ? { padding: args.padding }
+          : undefined,
+    );
   } else if (subj.type === 'mirror') {
     sdf = applyMirror(source.sdf, args.axis);
   } else if (subj.type === 'twist') {
@@ -969,7 +1223,7 @@ function resolveAnimatedArgs(subj) {
   for (const ch of subj.animation) {
     if (typeof ch.channel !== 'string' || !ch.channel.startsWith('args.')) continue;
     const expr = normalizeChannel(ch);
-    if (expr == null) continue;  // skip incomplete channels (validator warned)
+    if (expr == null) continue; // skip incomplete channels (validator warned)
     const key = ch.channel.slice('args.'.length);
     args[key] = expr;
   }
@@ -999,7 +1253,7 @@ function applyTransform(sdf, transform, animation) {
   // Rotate (Euler XYZ)
   const rotVec = resolveVec3Field(t.rotate, animMap, 'transform.rotate', [0, 0, 0]);
   if (!isVec3Zero(rotVec)) {
-    if (rotVec.every(c => typeof c === 'number')) {
+    if (rotVec.every((c) => typeof c === 'number')) {
       sdf = rotateXYZ(sdf, rotVec);
     } else {
       // Time-modulated axis-aligned rotation: compose X then Y then Z
@@ -1025,7 +1279,9 @@ function applyTransform(sdf, transform, animation) {
 
 function hasTransformAnim(animation) {
   if (!Array.isArray(animation)) return false;
-  return animation.some(ch => typeof ch.channel === 'string' && ch.channel.startsWith('transform.'));
+  return animation.some(
+    (ch) => typeof ch.channel === 'string' && ch.channel.startsWith('transform.'),
+  );
 }
 
 function collectTransformAnims(animation) {
@@ -1041,7 +1297,8 @@ function collectTransformAnims(animation) {
 }
 
 function resolveVec3Field(staticVec, animMap, prefix, defaultVec) {
-  const base = Array.isArray(staticVec) && staticVec.length === 3 ? [...staticVec] : [...defaultVec];
+  const base =
+    Array.isArray(staticVec) && staticVec.length === 3 ? [...staticVec] : [...defaultVec];
   const axes = ['x', 'y', 'z'];
   for (let i = 0; i < 3; i++) {
     const channelKey = `${prefix}.${axes[i]}`;
@@ -1051,7 +1308,7 @@ function resolveVec3Field(staticVec, animMap, prefix, defaultVec) {
 }
 
 function isVec3Zero(v) {
-  return v.every(c => typeof c === 'number' && c === 0);
+  return v.every((c) => typeof c === 'number' && c === 0);
 }
 
 function isComponentZero(c) {
@@ -1085,7 +1342,7 @@ function injectSubjectMotionTransforms(subjects, motionSlots) {
     const base = Array.isArray(t.translate) ? t.translate.slice(0, 3) : [0, 0, 0];
     while (base.length < 3) base.push(0);
     t.translate = base.map((v, i) =>
-      sumT(v, uniformT(`u_subjectOffset[${slot}].${axisLetter[i]}`))
+      sumT(v, uniformT(`u_subjectOffset[${slot}].${axisLetter[i]}`)),
     );
   }
 }
@@ -1130,8 +1387,8 @@ function pickShadow(shadow) {
 function makeEvaluator(spec, staticState) {
   const channels = Array.isArray(spec.animation)
     ? spec.animation
-        .map(ch => ({ field: ch.channel, timeExpr: normalizeChannel(ch) }))
-        .filter(c => c.timeExpr != null)  // skip incomplete channels (validator warned)
+        .map((ch) => ({ field: ch.channel, timeExpr: normalizeChannel(ch) }))
+        .filter((c) => c.timeExpr != null) // skip incomplete channels (validator warned)
     : [];
 
   if (channels.length === 0) {
@@ -1162,7 +1419,7 @@ function makeRegionFn(subjectInfos, groundInfo) {
     for (const info of subjectInfos) {
       const d = info.sdf.f ? info.sdf.f(p) : info.sdf(p);
       // Some SDFs return 1xN arrays; normalize
-      const dv = typeof d === 'number' ? d : (d.length === 1 ? d[0] : d[0][0]);
+      const dv = typeof d === 'number' ? d : d.length === 1 ? d[0] : d[0][0];
       if (dv <= REGION_EPS) return info.region;
     }
     if (groundInfo && p[1] !== undefined && p[1] <= groundInfo.y + REGION_EPS) {

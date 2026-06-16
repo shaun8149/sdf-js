@@ -11,8 +11,12 @@
 // =============================================================================
 
 import {
-  Random, generateHash, isValidHash,
-  readSceneHashFromURL, readStyleHashFromURL, writeSplitHashToURL,
+  Random,
+  generateHash,
+  isValidHash,
+  readSceneHashFromURL,
+  readStyleHashFromURL,
+  writeSplitHashToURL,
 } from './autoscope-rng.js';
 import {
   generateSceneData,
@@ -23,11 +27,14 @@ import { compile as compileSceneData } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 // Generator-V: BOB GPU style randomizer + applyStyleGate + describe
 import {
-  DEFAULT_STYLE, randomizeBobStyle, applyStyleGate, describeStyle,
+  DEFAULT_STYLE,
+  randomizeBobStyle,
+  applyStyleGate,
+  describeStyle,
 } from '../../src/render/bobShader-style.js';
-import { union as sdfUnion } from '../../src/sdf/dn.js';  // also has side-effect of registering .rep / .union etc on SDF3.prototype
+import { union as sdfUnion } from '../../src/sdf/dn.js'; // also has side-effect of registering .rep / .union etc on SDF3.prototype
 
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
 // =============================================================================
 // State
@@ -42,18 +49,18 @@ let currentStyleHash = readStyleHashFromURL();
 if (!isValidHash(currentStyleHash)) currentStyleHash = generateHash();
 writeSplitHashToURL(currentSceneHash, currentStyleHash);
 
-let currentSceneTypeChoice = 'random';  // dropdown value
+let currentSceneTypeChoice = 'random'; // dropdown value
 let currentSdf = null;
-let currentCompiled = null;  // SceneData mode: { sdf, evalCamera, evalLight, ... }; null in Direct SDF mode
+let currentCompiled = null; // SceneData mode: { sdf, evalCamera, evalLight, ... }; null in Direct SDF mode
 let renderer = null;
-let currentStyle = { ...DEFAULT_STYLE };  // Generator-V output (palette/chess/render uniforms)
+let currentStyle = { ...DEFAULT_STYLE }; // Generator-V output (palette/chess/render uniforms)
 let sceneStartTime = performance.now();
-let userTookCameraControl = false;        // set on canvas click → yields scene camera anim to fly-controls
+let userTookCameraControl = false; // set on canvas click → yields scene camera anim to fly-controls
 
 // Initial camera：autoscope 缺省 ortho 视角不能完全 match 透视，用 close+low+lookdown 模拟
 // pos=[0, 3, -15] pitch=0.30 → horizon at uv.y ≈ 1.5*tan(0.3) ≈ 0.46
 // → sky 只占顶部 ~27%（贴近 autoscope "背景很少看到" 的 framing）
-const INITIAL_CAM = { position: [0, 3, -15], yaw: 0, pitch: 0.30 };
+const INITIAL_CAM = { position: [0, 3, -15], yaw: 0, pitch: 0.3 };
 
 // =============================================================================
 // UI wire-up: slider value display
@@ -85,39 +92,39 @@ function ensureRenderer() {
   const canvas = $('cv');
   renderer = createBobShaderRenderer({
     canvas,
-    twoPass: true,              // ← autoscope 2-pass FBO sand painting
-    bufferResolution: 320,      // 低分 buffer，全屏 canvas 上呈"颗粒/水彩"感
+    twoPass: true, // ← autoscope 2-pass FBO sand painting
+    bufferResolution: 320, // 低分 buffer，全屏 canvas 上呈"颗粒/水彩"感
     getControls: () => {
       // Generator-V output gated by knobs-on toggle (mirror/twist/gridRot/etc).
       const styleGated = applyStyleGate(currentStyle, $('knobs-on').checked);
       return {
         // Style-driven (Generator-V) — spread FIRST so locked-baseline below wins
         ...styleGated,
-        postNoiseCap:  styleGated.noiseCap,
+        postNoiseCap: styleGated.noiseCap,
         postColorLeak: styleGated.colorLeak,
         // Light + camera (locked):
         lightAzim: 0.6,
-        lightAlt:  0.5,
+        lightAlt: 0.5,
         lightDist: 50,
-        fov:        +$('focal').value,
-        shadowsOn:  true,  // shadows-on checkbox removed; always on
-        groundOn:   false,
+        fov: +$('focal').value,
+        shadowsOn: true, // shadows-on checkbox removed; always on
+        groundOn: false,
         // Locked baseline (UI sliders removed on user request — visual identity signed off):
-        noiseSpeed:     0.00016,
-        exposure:       1.50,
-        saturation:     0.65,
-        shadowStrength: 0.30,
-        postNFactor:    0.40,
-        shadowMode:     0,
+        noiseSpeed: 0.00016,
+        exposure: 1.5,
+        saturation: 0.65,
+        shadowStrength: 0.3,
+        postNFactor: 0.4,
+        shadowMode: 0,
         // Slider-controlled:
-        coldiv:     +$('coldiv').value,
+        coldiv: +$('coldiv').value,
         worldScale: +$('world-scale').value,
         coloration: +$('coloration').value,
         // Camera control (independent of knobs-on style randomization).
         // Both override styleGated values when checked. Renderer unchanged.
-        animation:    $('cam-orbit')?.checked ? 2     : (styleGated.animation    ?? 0),
+        animation: $('cam-orbit')?.checked ? 2 : (styleGated.animation ?? 0),
         rotateCanvas: $('cam-drift')?.checked ? 0.008 : (styleGated.rotateCanvas ?? 0),
-        seed:       1.0,
+        seed: 1.0,
       };
     },
     onFps: (fps) => {
@@ -126,9 +133,10 @@ function ensureRenderer() {
     },
     onCamUpdate: (s) => {
       const r = $('pos-readout');
-      if (r) r.textContent = s.position.map(x => x.toFixed(1)).join(' ');
+      if (r) r.textContent = s.position.map((x) => x.toFixed(1)).join(' ');
       const yp = $('yp-readout');
-      if (yp) yp.textContent = `${(s.yaw * 180 / Math.PI).toFixed(0)}° ${(s.pitch * 180 / Math.PI).toFixed(0)}°`;
+      if (yp)
+        yp.textContent = `${((s.yaw * 180) / Math.PI).toFixed(0)}° ${((s.pitch * 180) / Math.PI).toFixed(0)}°`;
     },
     onPaletteChange: (sample) => {
       const renderRow = (id, colors) => {
@@ -163,7 +171,7 @@ function regenerateScene({ keepCamera = false } = {}) {
   // sceneRng — deterministic from sceneHash, drives Generator-S (SDF structure)
   const rng = new Random(currentSceneHash);
   const sceneTypeChoice = $('scene-type').value;
-  const sceneType = sceneTypeChoice === 'random' ? randomSceneType(rng) : (+sceneTypeChoice);
+  const sceneType = sceneTypeChoice === 'random' ? randomSceneType(rng) : +sceneTypeChoice;
 
   // SceneData → compile → SDF (single pipeline, 2026-05-23 removed legacy "Direct SDF" path)
   const sceneData = generateSceneData(sceneType, rng);
@@ -179,7 +187,7 @@ function regenerateScene({ keepCamera = false } = {}) {
     } else {
       sdf = compiled.sdf || compiled.groundSdf;
     }
-    currentCompiled = compiled;  // enables cameraLoop scene-driven camera/light anim
+    currentCompiled = compiled; // enables cameraLoop scene-driven camera/light anim
     leafCount = compiled.subjects.length;
     const camAnim = compiled.cameraStatic && (sceneData.defaults.camera.animation?.length || 0);
     const lightAnim = sceneData.defaults.light.animation?.length || 0;
@@ -209,7 +217,10 @@ function regenerateScene({ keepCamera = false } = {}) {
   try {
     const { bytes } = bob.render(sdf);
     const totalMs = (performance.now() - startTime).toFixed(0);
-    setStatus(`✓ ${SCENE_NAMES[sceneType]} · ${(bytes / 1024).toFixed(1)} KB shader · ${totalMs} ms${extraStatus}`, true);
+    setStatus(
+      `✓ ${SCENE_NAMES[sceneType]} · ${(bytes / 1024).toFixed(1)} KB shader · ${totalMs} ms${extraStatus}`,
+      true,
+    );
     $('leaves').textContent = `${leafCount} subjects`;
   } catch (e) {
     setStatus(`✗ render error: ${e.message}`, false);
@@ -261,7 +272,10 @@ $('btn-new-style').addEventListener('click', () => {
 $('btn-share').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(window.location.href);
-    setStatus(`✓ URL copied (sceneHash ${currentSceneHash.slice(0, 8)}… × styleHash ${currentStyleHash.slice(0, 8)}…)`, true);
+    setStatus(
+      `✓ URL copied (sceneHash ${currentSceneHash.slice(0, 8)}… × styleHash ${currentStyleHash.slice(0, 8)}…)`,
+      true,
+    );
   } catch {
     prompt('Copy this URL:', window.location.href);
   }
@@ -301,7 +315,11 @@ $('style-hash-input').addEventListener('change', (e) => {
 
 // Spacebar = New scene；Shift+Space = New style（pointer-lock 时被 fly-controls 用）
 window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && document.pointerLockElement !== $('cv') && document.activeElement?.tagName !== 'INPUT') {
+  if (
+    e.code === 'Space' &&
+    document.pointerLockElement !== $('cv') &&
+    document.activeElement?.tagName !== 'INPUT'
+  ) {
     e.preventDefault();
     if (e.shiftKey) $('btn-new-style').click();
     else $('btn-new-scene').click();

@@ -17,6 +17,6 @@
     "model": "claude-sonnet-4-6",
     "tokenUsage2D": { "input_tokens": 0, "output_tokens": 0 },
     "tokenUsageLift": { "input_tokens": 0, "output_tokens": 0 },
-    "costUSD": 0.20
+    "costUSD": 0.2
   }
 }

@@ -25,13 +25,13 @@
 import { SDF3 } from '../../../sdf/core.js';
 
 export function terrainWithLakesSDF({
-  maxHeight    = 60.0,
-  scale        = 0.012,
-  ridgePower   = 2.4,
+  maxHeight = 60.0,
+  scale = 0.012,
+  ridgePower = 2.4,
   mountainness = 0.4,
-  waterLevel   = 0.0,
-  lakeScale    = 0.0008,
-  lakeAmount   = 0.30,
+  waterLevel = 0.0,
+  lakeScale = 0.0008,
+  lakeAmount = 0.3,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub — same approximation as terrain-elevated (real eval is GPU
@@ -50,21 +50,38 @@ export const terrainWithLakesSpec = {
   type: 'terrain-with-lakes',
   category: 'primitive-heightfield',
   args: {
-    maxHeight:    { type: 'number', default: 60.0,   doc: 'Peak Y in world units' },
-    scale:        { type: 'number', default: 0.012,  doc: 'Horizontal terrain scale' },
-    ridgePower:   { type: 'number', default: 2.4,    doc: 'Peak sharpness (1=soft hills, 3=alpine)' },
-    mountainness: { type: 'number', default: 0.4,    doc: 'Fraction of land area covered by mountains' },
-    waterLevel:   { type: 'number', default: 0.0,    doc: 'Y coordinate of lake floors (place water plane at same Y)' },
-    lakeScale:    { type: 'number', default: 0.0008, doc: 'Horizontal lake-mask freq (smaller = bigger lakes)' },
-    lakeAmount:   { type: 'number', default: 0.30,   doc: 'Fraction of surface area occupied by lakes (0-1)' },
+    maxHeight: { type: 'number', default: 60.0, doc: 'Peak Y in world units' },
+    scale: { type: 'number', default: 0.012, doc: 'Horizontal terrain scale' },
+    ridgePower: { type: 'number', default: 2.4, doc: 'Peak sharpness (1=soft hills, 3=alpine)' },
+    mountainness: {
+      type: 'number',
+      default: 0.4,
+      doc: 'Fraction of land area covered by mountains',
+    },
+    waterLevel: {
+      type: 'number',
+      default: 0.0,
+      doc: 'Y coordinate of lake floors (place water plane at same Y)',
+    },
+    lakeScale: {
+      type: 'number',
+      default: 0.0008,
+      doc: 'Horizontal lake-mask freq (smaller = bigger lakes)',
+    },
+    lakeAmount: {
+      type: 'number',
+      default: 0.3,
+      doc: 'Fraction of surface area occupied by lakes (0-1)',
+    },
   },
   source: {
-    inspiration:  'IQ MdX3Rr "Rainforest" envelope() (CC educational, recipe-only port)',
+    inspiration: 'IQ MdX3Rr "Rainforest" envelope() (CC educational, recipe-only port)',
     algorithmRef: 'IQ derivative-damped fbm + lake-mask multiplicative carve',
-    license:      'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
-    portedAt:     '2026-05-24',
-    porter:       'Atlas terrain upgrade sprint — IQ Elevated + Rainforest study',
-    notes:        'GPU evaluates 8-octave terrain fbm + 1 lake mask lookup per sample. ' +
-                  'Pair with `waves` primitive at y=waterLevel for actual water surface.',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
+    portedAt: '2026-05-24',
+    porter: 'Atlas terrain upgrade sprint — IQ Elevated + Rainforest study',
+    notes:
+      'GPU evaluates 8-octave terrain fbm + 1 lake mask lookup per sample. ' +
+      'Pair with `waves` primitive at y=waterLevel for actual water surface.',
   },
 };

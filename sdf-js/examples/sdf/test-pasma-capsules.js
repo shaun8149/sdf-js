@@ -16,19 +16,19 @@ import { attachFlyControls } from '../../src/input/fly-controls.js';
 import { densePack, projectedTangentField } from '../../src/streamline/index.js';
 import * as easing from '../../src/math/easing.js';
 import { createPerlin } from '../../src/field/noise.js';
-const perlinNoise = createPerlin(42);             // 固定 seed，让结果可复现
+const perlinNoise = createPerlin(42); // 固定 seed，让结果可复现
 
 // 从 URL hash 读取 scene（默认 16 capsules，跟旧 URL 兼容）
 // 支持 #15 = 单球 + 地面 / #16 = 4 胶囊 + 地面
 const SCENE = (() => {
   const h = parseInt(location.hash.slice(1), 10);
-  return (h === 15 || h === 16) ? h : 16;
+  return h === 15 || h === 16 ? h : 16;
 })();
 // 同步 painted-scenes link
 const paintedLink = document.getElementById('painted-link');
 if (paintedLink) paintedLink.href = `./painted-scenes.html#${SCENE}`;
 // 高亮当前 scene button
-document.querySelectorAll('[data-scene]').forEach(btn => {
+document.querySelectorAll('[data-scene]').forEach((btn) => {
   if (parseInt(btn.dataset.scene, 10) === SCENE) btn.style.fontWeight = 'bold';
   btn.addEventListener('click', () => {
     location.hash = btn.dataset.scene;
@@ -37,161 +37,237 @@ document.querySelectorAll('[data-scene]').forEach(btn => {
 });
 
 const EASING_FNS = {
-  'linear':              easing.linear,
-  'smoothStart2':        easing.smoothStart2,
-  'smoothStart3':        easing.smoothStart3,
-  'smoothStart4':        easing.smoothStart4,
-  'smoothStop2':         easing.smoothStop2,
-  'smoothStop3':         easing.smoothStop3,
-  'smoothStop4':         easing.smoothStop4,
-  'smoothStep2':         easing.smoothStep2,
-  'smoothStep3':         easing.smoothStep3,
-  'smoothStepBounce':    easing.smoothStepBounce,
-  'smoothStepElastic':   easing.smoothStepElastic,
+  linear: easing.linear,
+  smoothStart2: easing.smoothStart2,
+  smoothStart3: easing.smoothStart3,
+  smoothStart4: easing.smoothStart4,
+  smoothStop2: easing.smoothStop2,
+  smoothStop3: easing.smoothStop3,
+  smoothStop4: easing.smoothStop4,
+  smoothStep2: easing.smoothStep2,
+  smoothStep3: easing.smoothStep3,
+  smoothStepBounce: easing.smoothStepBounce,
+  smoothStepElastic: easing.smoothStepElastic,
 };
 
 // ---- Named recipes（按 SKILL.md idiom #8 的美学 register 表）-------------
 const PRESETS = {
   'pasma-clean': {
-    label:        'pasma-clean (几何纯度 / 平视)',
-    DSEP_DARK:    0.004,  DSEP_LIGHT:    0.040,
-    IMIN:         0.50,   IMAX:          1.00,
-    EASING:       'smoothStart3',
-    INT_WARP_AMP: 0.00,   INT_WARP_FREQ: 8.0,
-    SP_WARP_AMP:  0.000,  SP_WARP_FREQ:  5.0,   SP_WARP_LAYERS: 1,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+    label: 'pasma-clean (几何纯度 / 平视)',
+    DSEP_DARK: 0.004,
+    DSEP_LIGHT: 0.04,
+    IMIN: 0.5,
+    IMAX: 1.0,
+    EASING: 'smoothStart3',
+    INT_WARP_AMP: 0.0,
+    INT_WARP_FREQ: 8.0,
+    SP_WARP_AMP: 0.0,
+    SP_WARP_FREQ: 5.0,
+    SP_WARP_LAYERS: 1,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
   'pasma-3q': {
-    label:        'pasma-3q (俯视 3/4 angle, 接近原作)',
-    DSEP_DARK:    0.004,  DSEP_LIGHT:    0.040,
-    IMIN:         0.50,   IMAX:          1.00,
-    EASING:       'smoothStart3',
-    INT_WARP_AMP: 0.00,   INT_WARP_FREQ: 8.0,
-    SP_WARP_AMP:  0.000,  SP_WARP_FREQ:  5.0,   SP_WARP_LAYERS: 1,
-    CAM_YAW: -0.30, CAM_PITCH: 0.30, CAM_DIST: 3.0,    // 左偏 17° + 俯 17° + 拉近
+    label: 'pasma-3q (俯视 3/4 angle, 接近原作)',
+    DSEP_DARK: 0.004,
+    DSEP_LIGHT: 0.04,
+    IMIN: 0.5,
+    IMAX: 1.0,
+    EASING: 'smoothStart3',
+    INT_WARP_AMP: 0.0,
+    INT_WARP_FREQ: 8.0,
+    SP_WARP_AMP: 0.0,
+    SP_WARP_FREQ: 5.0,
+    SP_WARP_LAYERS: 1,
+    CAM_YAW: -0.3,
+    CAM_PITCH: 0.3,
+    CAM_DIST: 3.0, // 左偏 17° + 俯 17° + 拉近
   },
   'henry-moore': {
-    label:        'henry-moore (biomorphic 雕塑)',
-    DSEP_DARK:    0.005,  DSEP_LIGHT:    0.045,
-    IMIN:         0.45,   IMAX:          1.00,
-    EASING:       'smoothStart2',
-    INT_WARP_AMP: 0.00,   INT_WARP_FREQ: 8.0,
-    SP_WARP_AMP:  0.050,  SP_WARP_FREQ:  4.0,   SP_WARP_LAYERS: 1,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+    label: 'henry-moore (biomorphic 雕塑)',
+    DSEP_DARK: 0.005,
+    DSEP_LIGHT: 0.045,
+    IMIN: 0.45,
+    IMAX: 1.0,
+    EASING: 'smoothStart2',
+    INT_WARP_AMP: 0.0,
+    INT_WARP_FREQ: 8.0,
+    SP_WARP_AMP: 0.05,
+    SP_WARP_FREQ: 4.0,
+    SP_WARP_LAYERS: 1,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
   'eroded-stone': {
-    label:        'eroded-stone (风化石 / 陶器)',
-    DSEP_DARK:    0.004,  DSEP_LIGHT:    0.035,
-    IMIN:         0.55,   IMAX:          1.00,
-    EASING:       'smoothStart3',
-    INT_WARP_AMP: 0.08,   INT_WARP_FREQ: 12.0,
-    SP_WARP_AMP:  0.030,  SP_WARP_FREQ:  7.0,   SP_WARP_LAYERS: 2,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+    label: 'eroded-stone (风化石 / 陶器)',
+    DSEP_DARK: 0.004,
+    DSEP_LIGHT: 0.035,
+    IMIN: 0.55,
+    IMAX: 1.0,
+    EASING: 'smoothStart3',
+    INT_WARP_AMP: 0.08,
+    INT_WARP_FREQ: 12.0,
+    SP_WARP_AMP: 0.03,
+    SP_WARP_FREQ: 7.0,
+    SP_WARP_LAYERS: 2,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
   'ink-wash': {
-    label:        'ink-wash (水墨 / sumi-e)',
-    DSEP_DARK:    0.003,  DSEP_LIGHT:    0.050,
-    IMIN:         0.55,   IMAX:          1.00,
-    EASING:       'smoothStop3',
-    INT_WARP_AMP: 0.20,   INT_WARP_FREQ: 15.0,
-    SP_WARP_AMP:  0.000,  SP_WARP_FREQ:  5.0,   SP_WARP_LAYERS: 1,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+    label: 'ink-wash (水墨 / sumi-e)',
+    DSEP_DARK: 0.003,
+    DSEP_LIGHT: 0.05,
+    IMIN: 0.55,
+    IMAX: 1.0,
+    EASING: 'smoothStop3',
+    INT_WARP_AMP: 0.2,
+    INT_WARP_FREQ: 15.0,
+    SP_WARP_AMP: 0.0,
+    SP_WARP_FREQ: 5.0,
+    SP_WARP_LAYERS: 1,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
   'chalk-grain': {
-    label:        'chalk-grain (粉笔 / 细颗粒)',
-    DSEP_DARK:    0.005,  DSEP_LIGHT:    0.035,
-    IMIN:         0.50,   IMAX:          1.00,
-    EASING:       'smoothStart2',
-    INT_WARP_AMP: 0.10,   INT_WARP_FREQ: 25.0,
-    SP_WARP_AMP:  0.000,  SP_WARP_FREQ:  5.0,   SP_WARP_LAYERS: 1,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+    label: 'chalk-grain (粉笔 / 细颗粒)',
+    DSEP_DARK: 0.005,
+    DSEP_LIGHT: 0.035,
+    IMIN: 0.5,
+    IMAX: 1.0,
+    EASING: 'smoothStart2',
+    INT_WARP_AMP: 0.1,
+    INT_WARP_FREQ: 25.0,
+    SP_WARP_AMP: 0.0,
+    SP_WARP_FREQ: 5.0,
+    SP_WARP_LAYERS: 1,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
-  'biomorph': {
-    label:        'biomorph (Brancusi / Henry Moore 抽象有机体)',
-    DSEP_DARK:    0.005,  DSEP_LIGHT:    0.045,
-    IMIN:         0.50,   IMAX:          1.00,
-    EASING:       'smoothStart2',
-    INT_WARP_AMP: 0.00,   INT_WARP_FREQ: 8.0,
-    SP_WARP_AMP:  0.060,  SP_WARP_FREQ:  6.0,   SP_WARP_LAYERS: 3,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+  biomorph: {
+    label: 'biomorph (Brancusi / Henry Moore 抽象有机体)',
+    DSEP_DARK: 0.005,
+    DSEP_LIGHT: 0.045,
+    IMIN: 0.5,
+    IMAX: 1.0,
+    EASING: 'smoothStart2',
+    INT_WARP_AMP: 0.0,
+    INT_WARP_FREQ: 8.0,
+    SP_WARP_AMP: 0.06,
+    SP_WARP_FREQ: 6.0,
+    SP_WARP_LAYERS: 3,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
-  'marble': {
-    label:        'marble (大理石纹 / 几何不变，密度生 vein)',
-    DSEP_DARK:    0.004,  DSEP_LIGHT:    0.045,
-    IMIN:         0.50,   IMAX:          1.00,
-    EASING:       'smoothStart2',
-    INT_WARP_AMP: 0.25,   INT_WARP_FREQ: 28.0,
-    SP_WARP_AMP:  0.010,  SP_WARP_FREQ:  25.0,  SP_WARP_LAYERS: 3,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+  marble: {
+    label: 'marble (大理石纹 / 几何不变，密度生 vein)',
+    DSEP_DARK: 0.004,
+    DSEP_LIGHT: 0.045,
+    IMIN: 0.5,
+    IMAX: 1.0,
+    EASING: 'smoothStart2',
+    INT_WARP_AMP: 0.25,
+    INT_WARP_FREQ: 28.0,
+    SP_WARP_AMP: 0.01,
+    SP_WARP_FREQ: 25.0,
+    SP_WARP_LAYERS: 3,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
-  'turbulence': {
-    label:        'turbulence (湍流 / 火焰)',
-    DSEP_DARK:    0.004,  DSEP_LIGHT:    0.060,
-    IMIN:         0.40,   IMAX:          1.00,
-    EASING:       'smoothStep3',
-    INT_WARP_AMP: 0.15,   INT_WARP_FREQ: 18.0,
-    SP_WARP_AMP:  0.080,  SP_WARP_FREQ:  12.0,  SP_WARP_LAYERS: 3,
-    CAM_YAW: 0, CAM_PITCH: 0, CAM_DIST: 3.5,
+  turbulence: {
+    label: 'turbulence (湍流 / 火焰)',
+    DSEP_DARK: 0.004,
+    DSEP_LIGHT: 0.06,
+    IMIN: 0.4,
+    IMAX: 1.0,
+    EASING: 'smoothStep3',
+    INT_WARP_AMP: 0.15,
+    INT_WARP_FREQ: 18.0,
+    SP_WARP_AMP: 0.08,
+    SP_WARP_FREQ: 12.0,
+    SP_WARP_LAYERS: 3,
+    CAM_YAW: 0,
+    CAM_PITCH: 0,
+    CAM_DIST: 3.5,
   },
 };
 
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
 function readParams() {
   return {
-    DSEP_DARK:      parseFloat($('dsep-dark').value),
-    DSEP_LIGHT:     parseFloat($('dsep-light').value),
-    EASING:         $('easing').value,
-    IMIN:           parseFloat($('imin').value),
-    IMAX:           parseFloat($('imax').value),
-    SEED_COUNT:     parseInt($('seed-count').value, 10),
-    STEP_SIZE:      parseFloat($('step-size').value),
-    INT_WARP_AMP:   parseFloat($('int-warp-amp').value),
-    INT_WARP_FREQ:  parseFloat($('int-warp-freq').value),
-    SP_WARP_AMP:    parseFloat($('sp-warp-amp').value),
-    SP_WARP_FREQ:   parseFloat($('sp-warp-freq').value),
+    DSEP_DARK: parseFloat($('dsep-dark').value),
+    DSEP_LIGHT: parseFloat($('dsep-light').value),
+    EASING: $('easing').value,
+    IMIN: parseFloat($('imin').value),
+    IMAX: parseFloat($('imax').value),
+    SEED_COUNT: parseInt($('seed-count').value, 10),
+    STEP_SIZE: parseFloat($('step-size').value),
+    INT_WARP_AMP: parseFloat($('int-warp-amp').value),
+    INT_WARP_FREQ: parseFloat($('int-warp-freq').value),
+    SP_WARP_AMP: parseFloat($('sp-warp-amp').value),
+    SP_WARP_FREQ: parseFloat($('sp-warp-freq').value),
     SP_WARP_LAYERS: parseInt($('sp-warp-layers').value, 10),
-    CAM_YAW:        parseFloat($('cam-yaw').value),
-    CAM_PITCH:      parseFloat($('cam-pitch').value),
-    CAM_PX:         parseFloat($('cam-px').value),
-    CAM_PY:         parseFloat($('cam-py').value),
-    CAM_PZ:         parseFloat($('cam-pz').value),
-    LIGHT_AZIM:     parseFloat($('light-azim').value),
-    LIGHT_ALT:      parseFloat($('light-alt').value),
-    LIGHT_DIST:     parseFloat($('light-dist').value),
+    CAM_YAW: parseFloat($('cam-yaw').value),
+    CAM_PITCH: parseFloat($('cam-pitch').value),
+    CAM_PX: parseFloat($('cam-px').value),
+    CAM_PY: parseFloat($('cam-py').value),
+    CAM_PZ: parseFloat($('cam-pz').value),
+    LIGHT_AZIM: parseFloat($('light-azim').value),
+    LIGHT_ALT: parseFloat($('light-alt').value),
+    LIGHT_DIST: parseFloat($('light-dist').value),
   };
 }
 
 function updateLabels(p) {
-  $('dsep-dark-v').textContent     = p.DSEP_DARK.toFixed(3);
-  $('dsep-light-v').textContent    = p.DSEP_LIGHT.toFixed(3);
-  $('imin-v').textContent          = p.IMIN.toFixed(2);
-  $('imax-v').textContent          = p.IMAX.toFixed(2);
-  $('seed-count-v').textContent    = p.SEED_COUNT;
-  $('step-size-v').textContent     = p.STEP_SIZE.toFixed(3);
-  $('int-warp-amp-v').textContent  = p.INT_WARP_AMP.toFixed(2);
+  $('dsep-dark-v').textContent = p.DSEP_DARK.toFixed(3);
+  $('dsep-light-v').textContent = p.DSEP_LIGHT.toFixed(3);
+  $('imin-v').textContent = p.IMIN.toFixed(2);
+  $('imax-v').textContent = p.IMAX.toFixed(2);
+  $('seed-count-v').textContent = p.SEED_COUNT;
+  $('step-size-v').textContent = p.STEP_SIZE.toFixed(3);
+  $('int-warp-amp-v').textContent = p.INT_WARP_AMP.toFixed(2);
   $('int-warp-freq-v').textContent = p.INT_WARP_FREQ.toFixed(1);
-  $('sp-warp-amp-v').textContent   = p.SP_WARP_AMP.toFixed(3);
-  $('sp-warp-freq-v').textContent  = p.SP_WARP_FREQ.toFixed(1);
+  $('sp-warp-amp-v').textContent = p.SP_WARP_AMP.toFixed(3);
+  $('sp-warp-freq-v').textContent = p.SP_WARP_FREQ.toFixed(1);
   $('sp-warp-layers-v').textContent = p.SP_WARP_LAYERS;
-  $('cam-yaw-v').textContent       = (p.CAM_YAW   * 180 / Math.PI).toFixed(0) + '°';
-  $('cam-pitch-v').textContent     = (p.CAM_PITCH * 180 / Math.PI).toFixed(0) + '°';
-  $('cam-px-v').textContent        = p.CAM_PX.toFixed(2);
-  $('cam-py-v').textContent        = p.CAM_PY.toFixed(2);
-  $('cam-pz-v').textContent        = p.CAM_PZ.toFixed(2);
-  $('light-azim-v').textContent    = (p.LIGHT_AZIM * 180 / Math.PI).toFixed(0) + '°';
-  $('light-alt-v').textContent     = (p.LIGHT_ALT  * 180 / Math.PI).toFixed(0) + '°';
-  $('light-dist-v').textContent    = p.LIGHT_DIST.toFixed(1);
+  $('cam-yaw-v').textContent = ((p.CAM_YAW * 180) / Math.PI).toFixed(0) + '°';
+  $('cam-pitch-v').textContent = ((p.CAM_PITCH * 180) / Math.PI).toFixed(0) + '°';
+  $('cam-px-v').textContent = p.CAM_PX.toFixed(2);
+  $('cam-py-v').textContent = p.CAM_PY.toFixed(2);
+  $('cam-pz-v').textContent = p.CAM_PZ.toFixed(2);
+  $('light-azim-v').textContent = ((p.LIGHT_AZIM * 180) / Math.PI).toFixed(0) + '°';
+  $('light-alt-v').textContent = ((p.LIGHT_ALT * 180) / Math.PI).toFixed(0) + '°';
+  $('light-dist-v').textContent = p.LIGHT_DIST.toFixed(1);
 }
 
 const CONTROL_IDS = [
-  'dsep-dark', 'dsep-light', 'easing', 'imin', 'imax',
-  'seed-count', 'step-size',
-  'int-warp-amp', 'int-warp-freq',
-  'sp-warp-amp', 'sp-warp-freq', 'sp-warp-layers',
-  'cam-yaw', 'cam-pitch',
-  'cam-px', 'cam-py', 'cam-pz',
-  'light-azim', 'light-alt', 'light-dist',
+  'dsep-dark',
+  'dsep-light',
+  'easing',
+  'imin',
+  'imax',
+  'seed-count',
+  'step-size',
+  'int-warp-amp',
+  'int-warp-freq',
+  'sp-warp-amp',
+  'sp-warp-freq',
+  'sp-warp-layers',
+  'cam-yaw',
+  'cam-pitch',
+  'cam-px',
+  'cam-py',
+  'cam-pz',
+  'light-azim',
+  'light-alt',
+  'light-dist',
 ];
 
 // 双 timer 调度：preview (快、低质量、drag 时跟手) + final (慢、高质量、松手后)
@@ -205,11 +281,11 @@ function scheduleRun() {
   updateLabels(readParams());
   clearTimeout(previewTimer);
   clearTimeout(finalTimer);
-  previewTimer = setTimeout(() => runHatch(true),  50);
-  finalTimer   = setTimeout(() => runHatch(false), 600);
+  previewTimer = setTimeout(() => runHatch(true), 50);
+  finalTimer = setTimeout(() => runHatch(false), 600);
 }
 
-CONTROL_IDS.forEach(id => {
+CONTROL_IDS.forEach((id) => {
   const el = $(id);
   el.addEventListener('input', scheduleRun);
   el.addEventListener('change', scheduleRun);
@@ -226,35 +302,37 @@ $('randomize-easing').addEventListener('click', () => {
 function applyPreset(name) {
   const preset = PRESETS[name];
   if (!preset) return;
-  $('dsep-dark').value     = preset.DSEP_DARK;
-  $('dsep-light').value    = preset.DSEP_LIGHT;
-  $('imin').value          = preset.IMIN;
-  $('imax').value          = preset.IMAX;
-  $('easing').value        = preset.EASING;
-  $('int-warp-amp').value  = preset.INT_WARP_AMP;
+  $('dsep-dark').value = preset.DSEP_DARK;
+  $('dsep-light').value = preset.DSEP_LIGHT;
+  $('imin').value = preset.IMIN;
+  $('imax').value = preset.IMAX;
+  $('easing').value = preset.EASING;
+  $('int-warp-amp').value = preset.INT_WARP_AMP;
   $('int-warp-freq').value = preset.INT_WARP_FREQ;
-  $('sp-warp-amp').value     = preset.SP_WARP_AMP;
-  $('sp-warp-freq').value    = preset.SP_WARP_FREQ;
-  $('sp-warp-layers').value  = preset.SP_WARP_LAYERS;
+  $('sp-warp-amp').value = preset.SP_WARP_AMP;
+  $('sp-warp-freq').value = preset.SP_WARP_FREQ;
+  $('sp-warp-layers').value = preset.SP_WARP_LAYERS;
   // Preset 用的是 orbit camera 语义 (CAM_YAW/PITCH/DIST)，转换到当前 fly camera：
   //   fly_yaw = -orbit_yaw（convention 翻转）
   //   fly_pitch = orbit_pitch
   //   fly_pos = orbit cam position = [D·sin(Y)·cos(P), D·sin(P), -D·cos(Y)·cos(P)]
-  const ocy = preset.CAM_YAW   ?? 0;
+  const ocy = preset.CAM_YAW ?? 0;
   const ocp = preset.CAM_PITCH ?? 0;
-  const ocd = preset.CAM_DIST  ?? 3.5;
-  const cp = Math.cos(ocp), sp = Math.sin(ocp);
-  const cy = Math.cos(ocy), sy = Math.sin(ocy);
-  $('cam-yaw').value   = (-ocy).toFixed(3);
+  const ocd = preset.CAM_DIST ?? 3.5;
+  const cp = Math.cos(ocp),
+    sp = Math.sin(ocp);
+  const cy = Math.cos(ocy),
+    sy = Math.sin(ocy);
+  $('cam-yaw').value = (-ocy).toFixed(3);
   $('cam-pitch').value = ocp.toFixed(3);
-  $('cam-px').value    = (ocd * sy * cp).toFixed(2);
-  $('cam-py').value    = (ocd * sp).toFixed(2);
-  $('cam-pz').value    = (-ocd * cy * cp).toFixed(2);
+  $('cam-px').value = (ocd * sy * cp).toFixed(2);
+  $('cam-py').value = (ocd * sp).toFixed(2);
+  $('cam-pz').value = (-ocd * cy * cp).toFixed(2);
   scheduleRun();
 }
-$('preset').addEventListener('change', e => applyPreset(e.target.value));
+$('preset').addEventListener('change', (e) => applyPreset(e.target.value));
 
-const clamp01 = v => Math.max(0, Math.min(1, v));
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
 // ---- IQ recursive domain warp ---------------------------------------------
 // LAYERS=1 = 标准单层 warp（跟之前的代码等价）
@@ -267,11 +345,12 @@ const clamp01 = v => Math.max(0, Math.min(1, v));
 function fbmWarpedCoord(x, y, amp, freq, layers) {
   if (amp === 0 || layers < 1) return [x, y];
   const intermediateAmp = amp * 4;
-  let qx = 0, qy = 0;
+  let qx = 0,
+    qy = 0;
   for (let l = 0; l < layers; l++) {
     const sx = x + intermediateAmp * qx;
     const sy = y + intermediateAmp * qy;
-    qx = perlinNoise(sx * freq,        sy * freq);
+    qx = perlinNoise(sx * freq, sy * freq);
     qy = perlinNoise(sx * freq + 1000, sy * freq + 1000);
   }
   return [x + amp * qx, y + amp * qy];
@@ -290,9 +369,9 @@ function runHatch(preview = false) {
   // 跟 scenes-3d.js DEFAULT_CAMERA focal=2 一致（透视）
   const camera = createFlyCamera({
     position: [p.CAM_PX, p.CAM_PY, p.CAM_PZ],
-    yaw:      p.CAM_YAW,
-    pitch:    p.CAM_PITCH,
-    focal:    2,
+    yaw: p.CAM_YAW,
+    pitch: p.CAM_PITCH,
+    focal: 2,
   });
   // 光源球坐标 → Cartesian (scene engine convention #4)
   const lightPos = lightFromSpherical(p.LIGHT_AZIM, p.LIGHT_ALT, p.LIGHT_DIST);
@@ -307,7 +386,8 @@ function runHatch(preview = false) {
     ? rawProbeForCam
     : (x, y) => {
         if (x === _lx && y === _ly) return _lr;
-        _lx = x; _ly = y;
+        _lx = x;
+        _ly = y;
         const [xW, yW] = fbmWarpedCoord(x, y, p.SP_WARP_AMP, p.SP_WARP_FREQ, p.SP_WARP_LAYERS);
         _lr = rawProbeForCam(xW, yW);
         return _lr;
@@ -315,7 +395,7 @@ function runHatch(preview = false) {
 
   // ---- field / inScene / dsepFn 都基于这个 spatial-warped probe -------------
   const field = projectedTangentField(probe, {
-    ref:    [1, 0, 0],
+    ref: [1, 0, 0],
     camera,
   });
 
@@ -347,7 +427,7 @@ function runHatch(preview = false) {
   const previewSeedCount = Math.max(500, Math.round(p.SEED_COUNT / 4));
   const previewStepSize = Math.min(0.015, p.STEP_SIZE * 2.5);
   const seedCount = preview ? previewSeedCount : p.SEED_COUNT;
-  const stepSize  = preview ? previewStepSize  : p.STEP_SIZE;
+  const stepSize = preview ? previewStepSize : p.STEP_SIZE;
   const maxStepsPerLine = preview ? 400 : 800;
   // Preview 时 dsep 也用 light 端（线稀，trace 数少）
   const effectiveDsepFn = preview ? () => p.DSEP_LIGHT : dsepFn;
@@ -357,23 +437,24 @@ function runHatch(preview = false) {
   setTimeout(() => {
     const t0 = performance.now();
     const streamlines = densePack(field, {
-      bounds:          { minX: -VIEW, maxX: VIEW, minY: -VIEW, maxY: VIEW },
-      dsep:            effectiveDsepFn,
-      dsepMax:         p.DSEP_LIGHT,
+      bounds: { minX: -VIEW, maxX: VIEW, minY: -VIEW, maxY: VIEW },
+      dsep: effectiveDsepFn,
+      dsepMax: p.DSEP_LIGHT,
       stepSize,
-      minLength:       6,
+      minLength: 6,
       seedCount,
-      seedStrategy:    'grid',
-      maxStreamlines:  Math.max(seedCount, 5000),
+      seedStrategy: 'grid',
+      maxStreamlines: Math.max(seedCount, 5000),
       maxStepsPerLine,
-      extraValid:      inScene,
+      extraValid: inScene,
     });
     const elapsed = performance.now() - t0;
 
     // ---- 渲染 ----
     const canvas = $('c');
     const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
+    const W = canvas.width,
+      H = canvas.height;
     ctx.fillStyle = '#fdfdfd';
     ctx.fillRect(0, 0, W, H);
     ctx.strokeStyle = '#181818';
@@ -381,10 +462,10 @@ function runHatch(preview = false) {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    const wxToPx = wx => (wx + VIEW) / (2 * VIEW) * W;
+    const wxToPx = (wx) => ((wx + VIEW) / (2 * VIEW)) * W;
     // 2026-05-15: probe.rayFor 统一到 math-y-up；streamline 端用 flipY=true 映射
     // (world +y → screen top) 才匹配。旧 `(wy+V)/(2V)*H` 是 y-down 时代的产物。
-    const wyToPx = wy => (VIEW - wy) / (2 * VIEW) * H;
+    const wyToPx = (wy) => ((VIEW - wy) / (2 * VIEW)) * H;
 
     for (const sl of streamlines) {
       const pts = sl.centerline;
@@ -398,13 +479,16 @@ function runHatch(preview = false) {
     }
 
     const warpTag = [];
-    if (p.INT_WARP_AMP > 0 && !preview) warpTag.push(`int-warp ${p.INT_WARP_AMP.toFixed(2)}@${p.INT_WARP_FREQ}`);
-    if (p.SP_WARP_AMP > 0 && !preview)  warpTag.push(`sp-warp ${p.SP_WARP_AMP.toFixed(3)}@${p.SP_WARP_FREQ}×${p.SP_WARP_LAYERS}L`);
+    if (p.INT_WARP_AMP > 0 && !preview)
+      warpTag.push(`int-warp ${p.INT_WARP_AMP.toFixed(2)}@${p.INT_WARP_FREQ}`);
+    if (p.SP_WARP_AMP > 0 && !preview)
+      warpTag.push(`sp-warp ${p.SP_WARP_AMP.toFixed(3)}@${p.SP_WARP_FREQ}×${p.SP_WARP_LAYERS}L`);
     const tag = preview ? ' · ⚡ preview' : '';
     $('stats').textContent =
-      `${streamlines.length} lines · dsep ${p.DSEP_DARK}→${p.DSEP_LIGHT} · curve=${p.EASING} · i ∈ [${imin.toFixed(2)},${imax.toFixed(2)}]`
-      + (warpTag.length ? ` · ${warpTag.join(' / ')}` : '')
-      + tag + ` · ${elapsed.toFixed(0)}ms`;
+      `${streamlines.length} lines · dsep ${p.DSEP_DARK}→${p.DSEP_LIGHT} · curve=${p.EASING} · i ∈ [${imin.toFixed(2)},${imax.toFixed(2)}]` +
+      (warpTag.length ? ` · ${warpTag.join(' / ')}` : '') +
+      tag +
+      ` · ${elapsed.toFixed(0)}ms`;
   }, 30);
 }
 
@@ -418,12 +502,17 @@ runHatch();
 const canvasEl = $('c');
 const DEFAULTS = { yaw: 0, pitch: 0, position: [0, 0, -3.5] };
 
-attachFlyControls(canvasEl,
+attachFlyControls(
+  canvasEl,
   // getState：从 5 个 slider 读最新
   () => ({
-    yaw:      parseFloat($('cam-yaw').value),
-    pitch:    parseFloat($('cam-pitch').value),
-    position: [parseFloat($('cam-px').value), parseFloat($('cam-py').value), parseFloat($('cam-pz').value)],
+    yaw: parseFloat($('cam-yaw').value),
+    pitch: parseFloat($('cam-pitch').value),
+    position: [
+      parseFloat($('cam-px').value),
+      parseFloat($('cam-py').value),
+      parseFloat($('cam-pz').value),
+    ],
   }),
   // setState：写回 slider + trigger input event（→ 既更新 label 又触发 debounced rerender）
   (partial) => {

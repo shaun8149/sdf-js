@@ -20,7 +20,8 @@
 // 2D 旋转：把 (x, y) 绕原点旋转 angle 弧度（保持 Alice 原作的轴向约定：
 //   nx = cos·x + sin·y, ny = cos·y - sin·x，等价于绕 z 轴 -angle 旋转）
 function rotateAbout(x, y, angle) {
-  const c = Math.cos(angle), s = Math.sin(angle);
+  const c = Math.cos(angle),
+    s = Math.sin(angle);
   return [c * x + s * y, c * y - s * x];
 }
 
@@ -29,7 +30,7 @@ function rotateAbout(x, y, angle) {
  * @returns alpha ∈ [0, π]
  */
 export function calculateAlpha(x, y, r) {
-  return Math.acos(2 * r * x / (x * x + y * y + r * r));
+  return Math.acos((2 * r * x) / (x * x + y * y + r * r));
 }
 
 /**
@@ -50,7 +51,7 @@ export function protoOpacity({ r = 150, freq = 4, phase = 1, domains = 5 } = {})
     for (let i = 0; i < domains; i++) {
       const a = step * i;
       const [xr, yr] = a === 0 ? [x, y] : rotateAbout(x, y, a);
-      const alpha = Math.acos(2 * r * xr / (xr * xr + yr * yr + r * r));
+      const alpha = Math.acos((2 * r * xr) / (xr * xr + yr * yr + r * r));
       sum += (trig(alpha * freq) + 1) / 2;
     }
     return sum / domains;
@@ -69,7 +70,7 @@ export function protoAlpha({ r = 150, domains = 5 } = {}) {
     for (let i = 0; i < domains; i++) {
       const a = step * i;
       const [xr, yr] = a === 0 ? [x, y] : rotateAbout(x, y, a);
-      sum += Math.acos(2 * r * xr / (xr * xr + yr * yr + r * r));
+      sum += Math.acos((2 * r * xr) / (xr * xr + yr * yr + r * r));
     }
     return sum / domains;
   };

@@ -34,8 +34,7 @@ export const normalize = (a) => {
 };
 
 // 标准化为数组形式：标量 → [s, s, s]
-export const asVec3 = (v) =>
-  typeof v === 'number' ? [v, v, v] : [v[0], v[1], v[2]];
+export const asVec3 = (v) => (typeof v === 'number' ? [v, v, v] : [v[0], v[1], v[2]]);
 
 // 3x3 矩阵 × 3x1 向量
 export const matMul = (m, v) => [
@@ -51,8 +50,14 @@ export const rotMat = (angle, axis) => {
   const s = Math.sin(angle);
   const t = 1 - c;
   return [
-    t * x * x + c,     t * x * y - s * z, t * x * z + s * y,
-    t * x * y + s * z, t * y * y + c,     t * y * z - s * x,
-    t * x * z - s * y, t * y * z + s * x, t * z * z + c,
+    t * x * x + c,
+    t * x * y - s * z,
+    t * x * z + s * y,
+    t * x * y + s * z,
+    t * y * y + c,
+    t * y * z - s * x,
+    t * x * z - s * y,
+    t * y * z + s * x,
+    t * z * z + c,
   ];
 };

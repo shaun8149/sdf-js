@@ -62,7 +62,7 @@ export function expandVariants(scene, rng) {
   if (!scene || !Array.isArray(scene.subjects)) return scene;
   // Quick path: no subject has variants → return scene as-is (don't even
   // touch rng; preserves caller's deterministic stream for non-variant scenes)
-  const anyVariant = scene.subjects.some(s => Array.isArray(s.variants) && s.variants.length > 0);
+  const anyVariant = scene.subjects.some((s) => Array.isArray(s.variants) && s.variants.length > 0);
   if (!anyVariant) return scene;
 
   const newSubjects = [];
@@ -85,8 +85,8 @@ function expandOne(prototype, spec, rng) {
     return [stripVariants(prototype)];
   }
   if (spec.op === 'scatter') return opScatter(prototype, spec, rng);
-  if (spec.op === 'array')   return opArray(prototype, spec, rng);
-  if (spec.op === 'mirror')  return opMirror(prototype, spec, rng);
+  if (spec.op === 'array') return opArray(prototype, spec, rng);
+  if (spec.op === 'mirror') return opMirror(prototype, spec, rng);
   return [stripVariants(prototype)];
 }
 
@@ -128,11 +128,11 @@ function opScatter(prototype, spec, rng) {
   const positions = samplePositions(region, count, separation, rng);
   const baseTransform = prototype.transform || {};
   const baseTranslate = baseTransform.translate || [0, 0, 0];
-  const baseScale = baseTransform.scale;  // can be number, array, or undefined
+  const baseScale = baseTransform.scale; // can be number, array, or undefined
 
   return positions.map((basePos, i) => {
     // per-instance position jitter (small, added on top of region sample)
-    const tjit = translateJitter.map(v => (rng.random_dec() - 0.5) * 2 * v);
+    const tjit = translateJitter.map((v) => (rng.random_dec() - 0.5) * 2 * v);
     const translate = [
       basePos[0] + baseTranslate[0] + tjit[0],
       basePos[1] + baseTranslate[1] + tjit[1],
@@ -148,7 +148,7 @@ function opScatter(prototype, spec, rng) {
     if (typeof baseScale === 'number') {
       scale = baseScale * sFactor;
     } else if (Array.isArray(baseScale)) {
-      scale = baseScale.map(v => v * sFactor);
+      scale = baseScale.map((v) => v * sFactor);
     } else if (sFactor !== 1) {
       scale = sFactor;
     }
@@ -170,7 +170,7 @@ function opScatter(prototype, spec, rng) {
       },
     };
     if (Array.isArray(out.children)) {
-      out.children = out.children.map(c => rewriteIds(c, `-${i}`));
+      out.children = out.children.map((c) => rewriteIds(c, `-${i}`));
     }
     if (out.source) {
       out.source = rewriteIds(out.source, `-${i}`);
@@ -186,7 +186,7 @@ function rewriteIds(subj, suffix) {
   const out = { ...subj };
   if (typeof out.id === 'string') out.id = `${out.id}${suffix}`;
   if (Array.isArray(out.children)) {
-    out.children = out.children.map(c => rewriteIds(c, suffix));
+    out.children = out.children.map((c) => rewriteIds(c, suffix));
   }
   if (out.source) out.source = rewriteIds(out.source, suffix);
   return out;
@@ -211,7 +211,7 @@ function samplePositions(region, count, separation, rng) {
   if (positions.length < count) {
     console.warn(
       `[generator-s] scatter: only ${positions.length}/${count} positions placed ` +
-      `(separation=${separation} too tight for region; consider larger region or smaller separation)`
+        `(separation=${separation} too tight for region; consider larger region or smaller separation)`,
     );
   }
   return positions;
@@ -241,7 +241,9 @@ function samplePoint(region, rng) {
 function meetsMinDistance(p, existing, minDist) {
   const minSq = minDist * minDist;
   for (const q of existing) {
-    const dx = p[0] - q[0], dy = p[1] - q[1], dz = p[2] - q[2];
+    const dx = p[0] - q[0],
+      dy = p[1] - q[1],
+      dz = p[2] - q[2];
     if (dx * dx + dy * dy + dz * dz < minSq) return false;
   }
   return true;
@@ -284,14 +286,12 @@ function opArray(prototype, spec, rng) {
   // Start mode: offsets 0, 1, 2, ... × spacing.
   const offsets = [];
   for (let i = 0; i < count; i++) {
-    const t = origin === 'center'
-      ? (i - (count - 1) * 0.5) * spacing
-      : i * spacing;
+    const t = origin === 'center' ? (i - (count - 1) * 0.5) * spacing : i * spacing;
     offsets.push(t);
   }
 
   return offsets.map((off, i) => {
-    const tjit = translateJitter.map(v => (rng.random_dec() - 0.5) * 2 * v);
+    const tjit = translateJitter.map((v) => (rng.random_dec() - 0.5) * 2 * v);
     const translate = [
       baseTranslate[0] + axis[0] * off + tjit[0],
       baseTranslate[1] + axis[1] * off + tjit[1],
@@ -359,9 +359,16 @@ function opMirror(prototype, spec, rng) {
   //  for Y-up scenes the common case is mirror plane=yz + Y rotation, which
   //  becomes -Y rotation when reflected.)
   const refRotate = [...baseRotate];
-  if (plane === 'yz') { refRotate[1] = -refRotate[1]; refRotate[2] = -refRotate[2]; }
-  else if (plane === 'xz') { refRotate[0] = -refRotate[0]; refRotate[2] = -refRotate[2]; }
-  else if (plane === 'xy') { refRotate[0] = -refRotate[0]; refRotate[1] = -refRotate[1]; }
+  if (plane === 'yz') {
+    refRotate[1] = -refRotate[1];
+    refRotate[2] = -refRotate[2];
+  } else if (plane === 'xz') {
+    refRotate[0] = -refRotate[0];
+    refRotate[2] = -refRotate[2];
+  } else if (plane === 'xy') {
+    refRotate[0] = -refRotate[0];
+    refRotate[1] = -refRotate[1];
+  }
 
   // Optional Y-axis jitter on top
   refRotate[1] += (rng.random_dec() - 0.5) * 2 * rotYJitter;
@@ -379,7 +386,7 @@ function opMirror(prototype, spec, rng) {
   // each term in a sum. Also legacy { phase: ... } at channel level is
   // preserved for back-compat with earlier test scenes.
   if (phaseFlip !== 0 && Array.isArray(mirrored.animation)) {
-    mirrored.animation = mirrored.animation.map(ch => addPhaseFlip(ch, phaseFlip));
+    mirrored.animation = mirrored.animation.map((ch) => addPhaseFlip(ch, phaseFlip));
   }
 
   return [orig, mirrored];
@@ -396,8 +403,8 @@ function buildInstance(prototype, index, baseTransform, override) {
   const cloned = stripVariants(prototype);
   const transform = { ...baseTransform };
   if (override.translate !== undefined) transform.translate = override.translate;
-  if (override.rotate !== undefined)    transform.rotate    = override.rotate;
-  if (override.scale !== undefined)     transform.scale     = override.scale;
+  if (override.rotate !== undefined) transform.rotate = override.rotate;
+  if (override.scale !== undefined) transform.scale = override.scale;
 
   const out = {
     ...cloned,
@@ -405,7 +412,7 @@ function buildInstance(prototype, index, baseTransform, override) {
     transform,
   };
   if (Array.isArray(out.children)) {
-    out.children = out.children.map(c => rewriteIds(c, `-${index}`));
+    out.children = out.children.map((c) => rewriteIds(c, `-${index}`));
   }
   if (out.source) {
     out.source = rewriteIds(out.source, `-${index}`);
@@ -430,7 +437,7 @@ function resolveAxisVec(axis) {
 function computeScale(baseScale, factor) {
   if (factor === 1) return baseScale;
   if (typeof baseScale === 'number') return baseScale * factor;
-  if (Array.isArray(baseScale)) return baseScale.map(v => v * factor);
+  if (Array.isArray(baseScale)) return baseScale.map((v) => v * factor);
   return factor;
 }
 
@@ -458,8 +465,10 @@ function addPhaseFlipToTimeExpr(te, flip) {
     return { ...te, phase: te.phase + flip };
   }
   if (te.form === 'sum' && Array.isArray(te.terms)) {
-    return { ...te, terms: te.terms.map(t =>
-      typeof t === 'number' ? t : addPhaseFlipToTimeExpr(t, flip)) };
+    return {
+      ...te,
+      terms: te.terms.map((t) => (typeof t === 'number' ? t : addPhaseFlipToTimeExpr(t, flip))),
+    };
   }
   return te;
 }

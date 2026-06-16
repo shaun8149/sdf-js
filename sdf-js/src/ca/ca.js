@@ -18,17 +18,17 @@
 const DEFAULT_COLORS = ['#8ec07c', '#fabd2f', '#fb472c', '#d38693', '#314550'];
 
 const DEFAULT_OPTS = {
-  colors:           DEFAULT_COLORS,
-  initiateChance:   0.9,    // 起新房间（已在 active 区里）的概率
-  extensionChance:  0.86,   // 已有房间向外延伸的概率
-  solidness:        0.5,    // 起新房间（从空白起手）的概率
-  verticalChance:   0.5,    // case 9 里偏垂直 vs 水平延伸
-  roundness:        0,      // 0 = 全 fuzz，1 = 硬边
-  colorMode:        'group',// 'random' | 'main' | 'group' | 其他=纯 main
-  groupSize:        0.82,   // group 模式下色彩聚合度
-  hSymmetric:       true,
-  vSymmetric:       false,
-  simple:           false,  // true = 跳过 SDF 检查（铺满整网格）
+  colors: DEFAULT_COLORS,
+  initiateChance: 0.9, // 起新房间（已在 active 区里）的概率
+  extensionChance: 0.86, // 已有房间向外延伸的概率
+  solidness: 0.5, // 起新房间（从空白起手）的概率
+  verticalChance: 0.5, // case 9 里偏垂直 vs 水平延伸
+  roundness: 0, // 0 = 全 fuzz，1 = 硬边
+  colorMode: 'group', // 'random' | 'main' | 'group' | 其他=纯 main
+  groupSize: 0.82, // group 模式下色彩聚合度
+  hSymmetric: true,
+  vSymmetric: false,
+  simple: false, // true = 跳过 SDF 检查（铺满整网格）
 };
 
 // =============================================================================
@@ -153,7 +153,7 @@ function createNewBlock(left, top, ctx) {
   } else if (ctx.colorMode === 'group') {
     // 邻居优先继承（产生色彩聚合），偶尔换 main
     const keep = Math.random() > 0.5 ? left.color : top.color;
-    ctx.mainColor = Math.random() > ctx.groupSize ? pick() : (keep || ctx.mainColor);
+    ctx.mainColor = Math.random() > ctx.groupSize ? pick() : keep || ctx.mainColor;
     color = ctx.mainColor;
   } else {
     color = ctx.mainColor;
@@ -184,8 +184,10 @@ export function caRects(grid) {
     while (c.x1 + w < grid[c.y1].length && !grid[c.y1][c.x1 + w].v) w++;
     let h = 1;
     while (c.y1 + h < grid.length && !grid[c.y1 + h][c.x1].h) h++;
-    c.w = w; c.h = h;
-    c.x2 = c.x1 + w; c.y2 = c.y1 + h;
+    c.w = w;
+    c.h = h;
+    c.x2 = c.x1 + w;
+    c.y2 = c.y1 + h;
   }
   return corners;
 }
@@ -211,8 +213,14 @@ export function caDraw(ctx, grid, cellSize, options = {}) {
       const cell = grid[i][j];
       const px = offsetX + j * cellSize;
       const py = offsetY + i * cellSize;
-      if (cell.h) { ctx.moveTo(px, py); ctx.lineTo(px + cellSize, py); }
-      if (cell.v) { ctx.moveTo(px, py); ctx.lineTo(px, py + cellSize); }
+      if (cell.h) {
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + cellSize, py);
+      }
+      if (cell.v) {
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, py + cellSize);
+      }
     }
   }
   ctx.stroke();
@@ -224,7 +232,8 @@ export function caDrawRects(ctx, rects, cellSize, options = {}) {
   for (const r of rects) {
     const px = offsetX + r.x1 * cellSize;
     const py = offsetY + r.y1 * cellSize;
-    const w = r.w * cellSize, h = r.h * cellSize;
+    const w = r.w * cellSize,
+      h = r.h * cellSize;
     ctx.fillStyle = r.color || '#fff';
     ctx.fillRect(px, py, w, h);
     ctx.strokeStyle = lineColor;
@@ -258,9 +267,9 @@ export function fromSdf2(sdf2, gridDim, options = {}) {
 export function caShuffle(rects, options = {}) {
   const {
     frames = 200,
-    holdFrames = 25,        // 路径开头停留多少帧（= 反向播放时末尾的"装配后悬停"）
-    movementLength = 0.82,  // 1 - 每帧重启新 shift 的概率
-    symmetric = true,       // 上半场对称运动（两侧镜像移动）
+    holdFrames = 25, // 路径开头停留多少帧（= 反向播放时末尾的"装配后悬停"）
+    movementLength = 0.82, // 1 - 每帧重启新 shift 的概率
+    symmetric = true, // 上半场对称运动（两侧镜像移动）
   } = options;
 
   // 初始化：每个 rect 在 holdFrames 内停留在原位
@@ -276,17 +285,18 @@ export function caShuffle(rects, options = {}) {
   let sym = symmetric;
 
   for (let i = holdFrames; i < frames; i++) {
-    if (i === Math.floor(frames / 2)) sym = false;  // 后半场放开对称约束
+    if (i === Math.floor(frames / 2)) sym = false; // 后半场放开对称约束
 
     // 每个 rect 把当前位置 push 到 path[i]
     for (const r of rects) r.path.push({ x: r.x1, y: r.y1 });
 
     if (startNewPart) {
       chosen = rects[Math.floor(Math.random() * rects.length)];
-      origin = sym ? rects.filter(r => r.id === chosen.id) : [chosen];
-      direction = (sym && origin.length === 1)
-        ? Math.floor(Math.random() * 2) * 2     // 仅 N(0) / S(2)
-        : Math.floor(Math.random() * (sym ? 3 : 4));
+      origin = sym ? rects.filter((r) => r.id === chosen.id) : [chosen];
+      direction =
+        sym && origin.length === 1
+          ? Math.floor(Math.random() * 2) * 2 // 仅 N(0) / S(2)
+          : Math.floor(Math.random() * (sym ? 3 : 4));
     }
     startNewPart = Math.random() > movementLength;
 
@@ -306,33 +316,48 @@ export function caShuffle(rects, options = {}) {
 const isVertical = (dir) => dir === 0 || dir === 2;
 const mirrorDir = (dir) => [0, 3, 2, 1][dir];
 
-function shiftAll(rects, dir, time) { for (const r of rects) shift(r, dir, time); }
+function shiftAll(rects, dir, time) {
+  for (const r of rects) shift(r, dir, time);
+}
 function shift(r, dir, time) {
-  let sx = 0, sy = 0;
-  if (dir === 0) sy = -1;       // North
-  else if (dir === 1) sx = 1;   // East
-  else if (dir === 2) sy = 1;   // South
-  else if (dir === 3) sx = -1;  // West
-  r.x1 += sx; r.y1 += sy; r.x2 += sx; r.y2 += sy;
+  let sx = 0,
+    sy = 0;
+  if (dir === 0)
+    sy = -1; // North
+  else if (dir === 1)
+    sx = 1; // East
+  else if (dir === 2)
+    sy = 1; // South
+  else if (dir === 3) sx = -1; // West
+  r.x1 += sx;
+  r.y1 += sy;
+  r.x2 += sx;
+  r.y2 += sy;
   r.path[time] = { x: r.x1, y: r.y1 };
 }
 
 function getNeighborhood(seedRects, allRects, dir) {
   let ns = seedRects;
-  let ms = unionRects(ns, ns.flatMap(n => allRects.filter(r => isNeighbor(n, r, dir))));
+  let ms = unionRects(
+    ns,
+    ns.flatMap((n) => allRects.filter((r) => isNeighbor(n, r, dir))),
+  );
   while (ms.length > ns.length) {
     ns = ms;
-    ms = unionRects(ns, ns.flatMap(n => allRects.filter(r => isNeighbor(n, r, dir))));
+    ms = unionRects(
+      ns,
+      ns.flatMap((n) => allRects.filter((r) => isNeighbor(n, r, dir))),
+    );
   }
   return ms;
 }
 
 function isNeighbor(r1, r2, dir) {
   if (r1 === r2) return false;
-  if (dir === 0) return r2.y2 === r1.y1 && r2.x1 < r1.x2 && r2.x2 > r1.x1;  // N
-  if (dir === 1) return r2.x1 === r1.x2 && r2.y1 < r1.y2 && r2.y2 > r1.y1;  // E
-  if (dir === 2) return r2.y1 === r1.y2 && r2.x1 < r1.x2 && r2.x2 > r1.x1;  // S
-  if (dir === 3) return r2.x2 === r1.x1 && r2.y1 < r1.y2 && r2.y2 > r1.y1;  // W
+  if (dir === 0) return r2.y2 === r1.y1 && r2.x1 < r1.x2 && r2.x2 > r1.x1; // N
+  if (dir === 1) return r2.x1 === r1.x2 && r2.y1 < r1.y2 && r2.y2 > r1.y1; // E
+  if (dir === 2) return r2.y1 === r1.y2 && r2.x1 < r1.x2 && r2.x2 > r1.x1; // S
+  if (dir === 3) return r2.x2 === r1.x1 && r2.y1 < r1.y2 && r2.y2 > r1.y1; // W
   return false;
 }
 
@@ -349,8 +374,10 @@ function unionRects(a, b) {
 // =============================================================================
 export function caDrawRectsAt(ctx, rects, frame, cellSize, options = {}) {
   const {
-    offsetX = 0, offsetY = 0,
-    lineColor = '#000', lineWidth = 2,
+    offsetX = 0,
+    offsetY = 0,
+    lineColor = '#000',
+    lineWidth = 2,
     defaultFill = '#fff',
     stroke = true,
   } = options;
@@ -360,7 +387,8 @@ export function caDrawRectsAt(ctx, rects, frame, cellSize, options = {}) {
     const pos = r.path[frame];
     const px = offsetX + pos.x * cellSize;
     const py = offsetY + pos.y * cellSize;
-    const w = r.w * cellSize, h = r.h * cellSize;
+    const w = r.w * cellSize,
+      h = r.h * cellSize;
     ctx.fillStyle = r.color || defaultFill;
     ctx.fillRect(px, py, w, h);
     if (stroke && lineWidth > 0) {

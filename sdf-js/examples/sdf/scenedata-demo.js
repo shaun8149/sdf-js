@@ -14,17 +14,17 @@
 import { parse, compile } from '../../src/scene/index.js';
 import { createBobShaderRenderer } from '../../src/render/bobShader.js';
 
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
 // =============================================================================
 // State
 // =============================================================================
 
 let renderer = null;
-let compiled = null;  // result of compile(parsedScene)
-let currentSampleId = 'birds-house';   // sensible default — exercises animation + rep
+let compiled = null; // result of compile(parsedScene)
+let currentSampleId = 'birds-house'; // sensible default — exercises animation + rep
 let sceneStartTime = performance.now();
-let userTookCameraControl = false;   // set when user clicks canvas → pause scene camera anim
+let userTookCameraControl = false; // set when user clicks canvas → pause scene camera anim
 
 // =============================================================================
 // Load + render
@@ -121,27 +121,31 @@ function ensureRenderer() {
       return {
         // Light: scene-driven azim/alt/distance (allows animation)
         lightAzim: light.azimuth,
-        lightAlt:  light.altitude,
+        lightAlt: light.altitude,
         lightDist: light.distance,
         // Camera: focal from scene (renderer handles pos/yaw/pitch via fly-controls)
-        fov:       cam.focal,
+        fov: cam.focal,
         // BOB GPU palette / shadow controls
-        coldiv:        +$('coldiv-val')?.value || 1.1,
-        coloration:    0,
-        shadowMode:    shadow ? modeNameToInt(shadow.mode) : 0,
+        coldiv: +$('coldiv-val')?.value || 1.1,
+        coloration: 0,
+        shadowMode: shadow ? modeNameToInt(shadow.mode) : 0,
         shadowStrength: shadow ? shadow.strength : 0.35,
-        shadowsOn:     shadow ? shadow.enabled : true,
-        groundOn:      !!compiled.ground,
-        noiseSpeed:    0.00016,
-        exposure:      1.05,
-        saturation:    1.0,
-        worldScale:    0.5,  // autoscope-clone idiom — matches 10-unit-ish scenes
+        shadowsOn: shadow ? shadow.enabled : true,
+        groundOn: !!compiled.ground,
+        noiseSpeed: 0.00016,
+        exposure: 1.05,
+        saturation: 1.0,
+        worldScale: 0.5, // autoscope-clone idiom — matches 10-unit-ish scenes
         // Sand painting
-        postNoise:     1.0,
-        postNFactor:   1.0,
-        postNoiseCap:  0.5,
+        postNoise: 1.0,
+        postNFactor: 1.0,
+        postNoiseCap: 0.5,
         // Knobs all zero (no mirror/twist/gridRot in our SceneData yet)
-        mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+        mirrorX: false,
+        mirrorZ: false,
+        twist: 0,
+        twistType: 0,
+        gridRot: [0, 0, 0],
       };
     },
     onFps: (fps) => {
@@ -181,17 +185,36 @@ cameraLoop();
 // User clicks canvas → take camera control (yields scene anim)
 $('cv').addEventListener('pointerdown', () => {
   userTookCameraControl = true;
-  setStatus('• Camera control: user (Pointer Lock). Reload sample to restore scene animation.', true);
+  setStatus(
+    '• Camera control: user (Pointer Lock). Reload sample to restore scene animation.',
+    true,
+  );
 });
 
 function defaultControls() {
   return {
-    lightAzim: 0.5, lightAlt: 0.7, lightDist: 8, fov: 1.5,
-    coldiv: 1.1, coloration: 0, shadowMode: 0, shadowStrength: 0.35,
-    shadowsOn: true, groundOn: true, noiseSpeed: 0.00016,
-    exposure: 1.05, saturation: 1.0, worldScale: 0.5,
-    postNoise: 1.0, postNFactor: 1.0, postNoiseCap: 0.5,
-    mirrorX: false, mirrorZ: false, twist: 0, twistType: 0, gridRot: [0, 0, 0],
+    lightAzim: 0.5,
+    lightAlt: 0.7,
+    lightDist: 8,
+    fov: 1.5,
+    coldiv: 1.1,
+    coloration: 0,
+    shadowMode: 0,
+    shadowStrength: 0.35,
+    shadowsOn: true,
+    groundOn: true,
+    noiseSpeed: 0.00016,
+    exposure: 1.05,
+    saturation: 1.0,
+    worldScale: 0.5,
+    postNoise: 1.0,
+    postNFactor: 1.0,
+    postNoiseCap: 0.5,
+    mirrorX: false,
+    mirrorZ: false,
+    twist: 0,
+    twistType: 0,
+    gridRot: [0, 0, 0],
   };
 }
 

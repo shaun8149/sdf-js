@@ -38,7 +38,9 @@ const MODEL = process.env.MODEL || 'claude-sonnet-4-5';
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!API_KEY) {
   console.error('✗ ANTHROPIC_API_KEY env var required.');
-  console.error('  export ANTHROPIC_API_KEY=sk-ant-... && node sdf-js/scripts/regression/lift-regression.mjs');
+  console.error(
+    '  export ANTHROPIC_API_KEY=sk-ant-... && node sdf-js/scripts/regression/lift-regression.mjs',
+  );
   process.exit(1);
 }
 
@@ -53,7 +55,8 @@ async function preflight() {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: MODEL, max_tokens: 8,
+        model: MODEL,
+        max_tokens: 8,
         messages: [{ role: 'user', content: 'reply with: ok' }],
       }),
     });
@@ -85,8 +88,8 @@ const REPO = '/Users/hexiaoyang/Documents/sdf-main';
 //        example 7 — frozen 2026-05-23
 // v3.3 = 山间村落 + 海岸灯塔 augmentation rows updated to v3.2 vocabulary —
 //        read from LIVE file so future edits flow into next regression run
-const V1_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
-const V2_PROMPT  = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
+const V1_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v1.md`, 'utf-8');
+const V2_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.md`, 'utf-8');
 const V21_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.1.md`, 'utf-8');
 const V22_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.2.md`, 'utf-8');
 const V23_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v2.3.md`, 'utf-8');
@@ -111,116 +114,213 @@ const V38_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt
 const V39_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.9.md`, 'utf-8');
 // v3.10 frozen 2026-05-26 (after v3.9-vs-v3.10 focused 3-demo regression).
 // Ships Generator-S Phase 2: `array` + `mirror` variant ops + Examples 9b/9c.
-const V310_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.10.md`, 'utf-8');
+const V310_PROMPT = readFileSync(
+  `${REPO}/sdf-js/scripts/regression/system-prompt-v3.10.md`,
+  'utf-8',
+);
 // v3.11 frozen 2026-05-26 (after v3.10-vs-v3.11 focused regression).
 // Scene completion section + Example 15 + 4 counter-examples (singular noun
 // → peer-level world).
-const V311_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.11.md`, 'utf-8');
+const V311_PROMPT = readFileSync(
+  `${REPO}/sdf-js/scripts/regression/system-prompt-v3.11.md`,
+  'utf-8',
+);
 // v3.12 frozen 2026-05-26 (after v3.11-vs-v3.12 cross-axis fix regression).
 // Adds "DO NOT drop cinematic" directive + Example 15 cinematic block.
-const V312_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.12.md`, 'utf-8');
+const V312_PROMPT = readFileSync(
+  `${REPO}/sdf-js/scripts/regression/system-prompt-v3.12.md`,
+  'utf-8',
+);
 // v3.13 frozen 2026-05-26 (after v3.12-vs-v3.13 + v3.14 atom-adoption broader).
 // Ships 3 composite atoms + Example 16 + decision row.
-const V313_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.13.md`, 'utf-8');
+const V313_PROMPT = readFileSync(
+  `${REPO}/sdf-js/scripts/regression/system-prompt-v3.13.md`,
+  'utf-8',
+);
 // v3.14 frozen 2026-05-27 (after v3.14 cross-axis 18-demo matrix caught atom
 // adoption regression 4/4 → 1/4). Leisure + nature scene-completion rows.
-const V314_PROMPT = readFileSync(`${REPO}/sdf-js/scripts/regression/system-prompt-v3.14.md`, 'utf-8');
+const V314_PROMPT = readFileSync(
+  `${REPO}/sdf-js/scripts/regression/system-prompt-v3.14.md`,
+  'utf-8',
+);
 // v3.15 reads from the LIVE compositor prompt. Fixes 3 v3.14 backlog items:
 // (1) atom re-emphasis — Example 17 → 16 cross-reference + PRIORITY decision
 // row language + "🥇 BEFORE reading the table" scene-completion atom reminder.
 // (2) sanity rule type-aware whitelist — runway/apron/canyon/terrain-* get
 //     threshold 200 instead of 50 (6 cumulative false-positive incidents).
 // (3) (in flight) concert-stage composite atom for leisure category.
-const V315_PROMPT = readFileSync(`${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`, 'utf-8');
+const V315_PROMPT = readFileSync(
+  `${REPO}/sdf-js/examples/compositor/system-prompt-lift-3d.md`,
+  'utf-8',
+);
 const PROMPTS = {
-  'v1': V1_PROMPT, 'v2': V2_PROMPT, 'v2.1': V21_PROMPT, 'v2.2': V22_PROMPT,
-  'v2.3': V23_PROMPT, 'v3.0': V30_PROMPT, 'v3.1': V31_PROMPT, 'v3.2': V32_PROMPT,
-  'v3.3': V33_PROMPT, 'v3.4': V34_PROMPT, 'v3.5': V35_PROMPT, 'v3.7': V37_PROMPT,
-  'v3.8': V38_PROMPT, 'v3.9': V39_PROMPT, 'v3.10': V310_PROMPT, 'v3.11': V311_PROMPT,
-  'v3.12': V312_PROMPT, 'v3.13': V313_PROMPT, 'v3.14': V314_PROMPT,
+  v1: V1_PROMPT,
+  v2: V2_PROMPT,
+  'v2.1': V21_PROMPT,
+  'v2.2': V22_PROMPT,
+  'v2.3': V23_PROMPT,
+  'v3.0': V30_PROMPT,
+  'v3.1': V31_PROMPT,
+  'v3.2': V32_PROMPT,
+  'v3.3': V33_PROMPT,
+  'v3.4': V34_PROMPT,
+  'v3.5': V35_PROMPT,
+  'v3.7': V37_PROMPT,
+  'v3.8': V38_PROMPT,
+  'v3.9': V39_PROMPT,
+  'v3.10': V310_PROMPT,
+  'v3.11': V311_PROMPT,
+  'v3.12': V312_PROMPT,
+  'v3.13': V313_PROMPT,
+  'v3.14': V314_PROMPT,
   'v3.15': V315_PROMPT,
 };
 const RESULTS_DIR = `${REPO}/sdf-js/scripts/regression/results`;
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
 const DEMOS = [
-  'china-carrier', 'gothic-cathedral', 'spiral-vase', 'mountain-village',
-  'clock-915', 'vintage-bicycle', 'dining-setting', 'coastal-lighthouse',
+  'china-carrier',
+  'gothic-cathedral',
+  'spiral-vase',
+  'mountain-village',
+  'clock-915',
+  'vintage-bicycle',
+  'dining-setting',
+  'coastal-lighthouse',
   // v3.2 sprint addition — forest theme should trigger new vocabulary
   'forest-meteors',
   // v3.10 sprint addition — Generator-S Phase 2 ops triggers:
   //   roman-colonnade       → array (equispaced columns + lintel)
   //   fighter-jet-bilateral → mirror (wings + tail-fins L/R pair with phaseFlip)
   //   fleet-of-destroyers   → scatter (5 ships in formation)
-  'roman-colonnade', 'fighter-jet-bilateral', 'fleet-of-destroyers',
+  'roman-colonnade',
+  'fighter-jet-bilateral',
+  'fleet-of-destroyers',
   // v3.11 sprint addition — Scene completion (PEER-LEVEL world):
   //   lone-carrier  ("航母") — minimal prompt → expect escort fleet + birds + clouds
   //   lone-airport  ("支线机场塔台") — minimal prompt → expect parked planes + ground vehicles
-  'lone-carrier', 'lone-airport',
+  'lone-carrier',
+  'lone-airport',
   // v3.14 sprint addition — broader composite atom adoption probes:
   //   generic-airport ("机场") — expect airport-apron atom (vs hand-emit Phase 2)
   //   generic-harbor  ("港口") — expect harbor-quay atom
-  'generic-airport', 'generic-harbor',
+  'generic-airport',
+  'generic-harbor',
   // v3.14 (later sprint) — leisure + nature scene-completion probes:
   //   lone-concert ("音乐会") — leisure (audience scatter + stage lamps array + speakers mirror)
   //   lone-canyon  ("峡谷")  — nature (terrain-canyon + distant peaks + birds + river)
-  'lone-concert', 'lone-canyon',
+  'lone-concert',
+  'lone-canyon',
 ];
 
 // M3 atoms (v2-era): what we wanted LLM to use in v2 baseline
 const NEW_ATOMS = new Set([
-  'moon', 'star', 'sun', 'cloud-puff',
-  'tree-pine', 'tree-broadleaf', 'cottage', 'flag-on-pole', 'bird-silhouette',
+  'moon',
+  'star',
+  'sun',
+  'cloud-puff',
+  'tree-pine',
+  'tree-broadleaf',
+  'cottage',
+  'flag-on-pole',
+  'bird-silhouette',
 ]);
 const NEW_IQ_TYPES = new Set([
-  'solid-angle', 'link', 'capped-torus', 'hex-prism', 'octagon-prism',
-  'round-cone', 'rhombus', 'horseshoe', 'u-shape',
+  'solid-angle',
+  'link',
+  'capped-torus',
+  'hex-prism',
+  'octagon-prism',
+  'round-cone',
+  'rhombus',
+  'horseshoe',
+  'u-shape',
 ]);
 // v3.0 expansion atoms: 33 new types across 7 categories
 const V30_ATOMS = new Set([
   // animals
-  'cow', 'horse', 'pig', 'dog', 'sheep', 'cat',
+  'cow',
+  'horse',
+  'pig',
+  'dog',
+  'sheep',
+  'cat',
   // landscape
-  'rock-boulder', 'fence-section', 'hill-mound', 'stream-segment',
+  'rock-boulder',
+  'fence-section',
+  'hill-mound',
+  'stream-segment',
   // architecture
-  'tower-square', 'church-spire', 'gazebo', 'well', 'fountain',
+  'tower-square',
+  'church-spire',
+  'gazebo',
+  'well',
+  'fountain',
   // vehicles
-  'sailboat-small', 'car-simple', 'wagon', 'biplane',
+  'sailboat-small',
+  'car-simple',
+  'wagon',
+  'biplane',
   // furniture
-  'chair', 'table-round', 'lamp-standing', 'bookshelf', 'wine-bottle',
+  'chair',
+  'table-round',
+  'lamp-standing',
+  'bookshelf',
+  'wine-bottle',
   // mechanical
-  'gear-flat', 'pipe-l-bend', 'smokestack', 'windmill',
+  'gear-flat',
+  'pipe-l-bend',
+  'smokestack',
+  'windmill',
   // plants
-  'flower', 'mushroom', 'bush', 'vine', 'grass-tuft',
+  'flower',
+  'mushroom',
+  'bush',
+  'vine',
+  'grass-tuft',
 ]);
 
 // v3.2 expansion atoms: 5 new forest atoms + 2 new material kinds. Track adoption.
 const V32_ATOMS = new Set([
-  'stylized-tree', 'maple-leaf', 'forest-flower', 'grass-field', 'meteor-streak',
+  'stylized-tree',
+  'maple-leaf',
+  'forest-flower',
+  'grass-field',
+  'meteor-streak',
 ]);
 
 // v3.7 cinematic adoption — counts presence of new top-level fields + sub-fields.
 // Returns a flat object suitable for one-line console output + summary table.
 function v37CinematicMetrics(sceneData) {
   const m = {
-    postFx: 0,             // 1 if defaults.postFx is an object with any key
-    aperture: 0,           // 1 if camera.aperture > 0 OR any shot.aperture > 0
-    volumeCount: 0,        // total volumes[] entries
-    flameVols: 0, smokeVols: 0, fogVols: 0, godRayVols: 0,
-    volAttachTo: 0,        // volumes with attachTo set
-    volSceneStateKey: 0,   // volumes with sceneStateKey set
-    seqShots: 0,           // cameraSequence.shots.length (0 if absent)
-    seqMotion: 0,          // subjectMotion entries
-    seqPhases: 0,          // total motion phases across all motion entries
-    relativeToUses: 0,     // shot.pos/target.relativeTo + volume.attachTo references
-    shakeUses: 0,          // shots with shake set (number or object form)
-    velocityScaleUses: 0,  // shots whose shake has velocityScale > 0
-    sceneStateKeys: 0,     // unique sceneState keys across shots
+    postFx: 0, // 1 if defaults.postFx is an object with any key
+    aperture: 0, // 1 if camera.aperture > 0 OR any shot.aperture > 0
+    volumeCount: 0, // total volumes[] entries
+    flameVols: 0,
+    smokeVols: 0,
+    fogVols: 0,
+    godRayVols: 0,
+    volAttachTo: 0, // volumes with attachTo set
+    volSceneStateKey: 0, // volumes with sceneStateKey set
+    seqShots: 0, // cameraSequence.shots.length (0 if absent)
+    seqMotion: 0, // subjectMotion entries
+    seqPhases: 0, // total motion phases across all motion entries
+    relativeToUses: 0, // shot.pos/target.relativeTo + volume.attachTo references
+    shakeUses: 0, // shots with shake set (number or object form)
+    velocityScaleUses: 0, // shots whose shake has velocityScale > 0
+    sceneStateKeys: 0, // unique sceneState keys across shots
   };
-  if (sceneData.defaults?.postFx && typeof sceneData.defaults.postFx === 'object'
-      && Object.keys(sceneData.defaults.postFx).length > 0) m.postFx = 1;
-  if (typeof sceneData.defaults?.camera?.aperture === 'number'
-      && sceneData.defaults.camera.aperture > 0) m.aperture = 1;
+  if (
+    sceneData.defaults?.postFx &&
+    typeof sceneData.defaults.postFx === 'object' &&
+    Object.keys(sceneData.defaults.postFx).length > 0
+  )
+    m.postFx = 1;
+  if (
+    typeof sceneData.defaults?.camera?.aperture === 'number' &&
+    sceneData.defaults.camera.aperture > 0
+  )
+    m.aperture = 1;
   const vols = Array.isArray(sceneData.volumes) ? sceneData.volumes : [];
   m.volumeCount = vols.length;
   for (const v of vols) {
@@ -228,7 +328,10 @@ function v37CinematicMetrics(sceneData) {
     else if (v.kind === 'smoke') m.smokeVols += 1;
     else if (v.kind === 'fog') m.fogVols += 1;
     else if (v.kind === 'god-rays') m.godRayVols += 1;
-    if (v.attachTo) { m.volAttachTo += 1; m.relativeToUses += 1; }
+    if (v.attachTo) {
+      m.volAttachTo += 1;
+      m.relativeToUses += 1;
+    }
     if (v.sceneStateKey) m.volSceneStateKey += 1;
   }
   const seq = sceneData.cameraSequence;
@@ -239,8 +342,12 @@ function v37CinematicMetrics(sceneData) {
     for (const s of shots) {
       if (s.shake != null) {
         m.shakeUses += 1;
-        if (typeof s.shake === 'object' && typeof s.shake.velocityScale === 'number'
-            && s.shake.velocityScale > 0) m.velocityScaleUses += 1;
+        if (
+          typeof s.shake === 'object' &&
+          typeof s.shake.velocityScale === 'number' &&
+          s.shake.velocityScale > 0
+        )
+          m.velocityScaleUses += 1;
       }
       for (const ptr of [s.pos, s.target]) {
         if (ptr && typeof ptr === 'object' && !Array.isArray(ptr) && ptr.relativeTo) {
@@ -262,24 +369,33 @@ function v37CinematicMetrics(sceneData) {
   return m;
 }
 // Material kinds beyond default Lambert. Track usage of each.
-const MATERIAL_KINDS = new Set([
-  'sea', 'mountain', 'emissive', 'translucent',
-]);
+const MATERIAL_KINDS = new Set(['sea', 'mountain', 'emissive', 'translucent']);
 
 // v2.1 boolean variants (hg_sdf-style joins)
 const BOOLEAN_VARIANTS = new Set([
-  'unionChamfer', 'intersectionChamfer', 'differenceChamfer',
-  'unionRound',   'intersectionRound',   'differenceRound',
+  'unionChamfer',
+  'intersectionChamfer',
+  'differenceChamfer',
+  'unionRound',
+  'intersectionRound',
+  'differenceRound',
   'unionSoft',
-  'unionStairs',  'intersectionStairs',  'differenceStairs',
-  'unionColumns', 'intersectionColumns', 'differenceColumns',
-  'pipe', 'engrave', 'groove', 'tongue',
+  'unionStairs',
+  'intersectionStairs',
+  'differenceStairs',
+  'unionColumns',
+  'intersectionColumns',
+  'differenceColumns',
+  'pipe',
+  'engrave',
+  'groove',
+  'tongue',
 ]);
 
 // Anthropic pricing for sonnet-4-6 (approximate, in USD per 1M tokens)
 const PRICE_INPUT = 3.0;
 const PRICE_OUTPUT = 15.0;
-const PRICE_INPUT_CACHE_HIT = 0.30;
+const PRICE_INPUT_CACHE_HIT = 0.3;
 
 async function callAnthropic(systemPrompt, userMessage) {
   const t0 = Date.now();
@@ -312,7 +428,8 @@ function parseSceneJson(text) {
   if (!fenceMatch && !jsonStr.startsWith('{')) {
     const firstBrace = jsonStr.indexOf('{');
     const lastBrace = jsonStr.lastIndexOf('}');
-    if (firstBrace >= 0 && lastBrace > firstBrace) jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
+    if (firstBrace >= 0 && lastBrace > firstBrace)
+      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
   }
   return JSON.parse(jsonStr);
 }
@@ -357,8 +474,10 @@ function countPatternUsage(subjects) {
 // `type: 'carrier-strike-group'` (or similar) as a single subject and the
 // compile-time expander unpacks it. Count appearances in raw output.
 const COMPOSITE_ATOMS = new Set([
-  'carrier-strike-group', 'airport-apron', 'harbor-quay',
-  'concert-stage',  // v3.15 leisure
+  'carrier-strike-group',
+  'airport-apron',
+  'harbor-quay',
+  'concert-stage', // v3.15 leisure
 ]);
 function countCompositeAtoms(subjects) {
   const counts = {};
@@ -405,7 +524,12 @@ function countMaterialKinds(subjects) {
   const walk = (subs) => {
     for (const s of subs || []) {
       const m = s.material;
-      if (m && typeof m === 'object' && typeof m.kind === 'string' && counts[m.kind] !== undefined) {
+      if (
+        m &&
+        typeof m === 'object' &&
+        typeof m.kind === 'string' &&
+        counts[m.kind] !== undefined
+      ) {
         counts[m.kind] += 1;
       }
       if (Array.isArray(s.children)) walk(s.children);
@@ -430,11 +554,15 @@ function collectZCoords(subjects, acc = []) {
 function zSpread(subjects) {
   const zs = collectZCoords(subjects);
   if (zs.length < 2) return { count: zs.length, min: 0, max: 0, range: 0, stdev: 0 };
-  const min = Math.min(...zs), max = Math.max(...zs);
+  const min = Math.min(...zs),
+    max = Math.max(...zs);
   const mean = zs.reduce((s, z) => s + z, 0) / zs.length;
   const variance = zs.reduce((s, z) => s + (z - mean) ** 2, 0) / zs.length;
   return {
-    count: zs.length, min, max, range: max - min,
+    count: zs.length,
+    min,
+    max,
+    range: max - min,
     stdev: Math.sqrt(variance),
   };
 }
@@ -447,10 +575,15 @@ async function liftOne(demoId, systemPrompt, version) {
   let raw, usage, elapsed;
   try {
     const r = await callAnthropic(systemPrompt, userMessage);
-    raw = r.text; usage = r.usage; elapsed = r.elapsed;
+    raw = r.text;
+    usage = r.usage;
+    elapsed = r.elapsed;
   } catch (e) {
     const errRecord = { demoId, version, error: `API: ${e.message}` };
-    writeFileSync(`${RESULTS_DIR}/${demoId}-${version}-error.json`, JSON.stringify(errRecord, null, 2));
+    writeFileSync(
+      `${RESULTS_DIR}/${demoId}-${version}-error.json`,
+      JSON.stringify(errRecord, null, 2),
+    );
     return errRecord;
   }
 
@@ -459,55 +592,67 @@ async function liftOne(demoId, systemPrompt, version) {
     sceneData = parseSceneJson(raw);
   } catch (e) {
     writeFileSync(`${RESULTS_DIR}/${demoId}-${version}-raw.txt`, raw);
-    return { demoId, version, error: `parse: ${e.message}`, rawSavedTo: `${demoId}-${version}-raw.txt` };
+    return {
+      demoId,
+      version,
+      error: `parse: ${e.message}`,
+      rawSavedTo: `${demoId}-${version}-raw.txt`,
+    };
   }
 
   const types = collectTypes(sceneData.subjects);
-  const typeCounts = types.reduce((m, t) => (m[t] = (m[t] || 0) + 1, m), {});
-  const newAtomsUsed   = Object.entries(typeCounts).filter(([t]) => NEW_ATOMS.has(t));
+  const typeCounts = types.reduce((m, t) => ((m[t] = (m[t] || 0) + 1), m), {});
+  const newAtomsUsed = Object.entries(typeCounts).filter(([t]) => NEW_ATOMS.has(t));
   const newIQTypesUsed = Object.entries(typeCounts).filter(([t]) => NEW_IQ_TYPES.has(t));
-  const variantsUsed   = Object.entries(typeCounts).filter(([t]) => BOOLEAN_VARIANTS.has(t));
-  const v30AtomsUsed   = Object.entries(typeCounts).filter(([t]) => V30_ATOMS.has(t));
-  const v32AtomsUsed   = Object.entries(typeCounts).filter(([t]) => V32_ATOMS.has(t));
+  const variantsUsed = Object.entries(typeCounts).filter(([t]) => BOOLEAN_VARIANTS.has(t));
+  const v30AtomsUsed = Object.entries(typeCounts).filter(([t]) => V30_ATOMS.has(t));
+  const v32AtomsUsed = Object.entries(typeCounts).filter(([t]) => V32_ATOMS.has(t));
   const materialKindsUsed = countMaterialKinds(sceneData.subjects);
 
-  let compileOk = false, compileErr = null;
-  let sanitySummary = 'compile-fail', sanityErrors = 0, sanityWarnings = 0;
+  let compileOk = false,
+    compileErr = null;
+  let sanitySummary = 'compile-fail',
+    sanityErrors = 0,
+    sanityWarnings = 0;
   try {
     const compiled = compile(sceneData);
     compileOk = true;
     if (compiled.sanityResult) {
-      sanitySummary  = compiled.sanityResult.summary;
-      sanityErrors   = compiled.sanityResult.errors.length;
+      sanitySummary = compiled.sanityResult.summary;
+      sanityErrors = compiled.sanityResult.errors.length;
       sanityWarnings = compiled.sanityResult.warnings.length;
     }
-  } catch (e) { compileErr = String(e.message || e).slice(0, 200); }
+  } catch (e) {
+    compileErr = String(e.message || e).slice(0, 200);
+  }
 
   const costUSD = (usage.input_tokens * PRICE_INPUT + usage.output_tokens * PRICE_OUTPUT) / 1e6;
 
   const result = {
-    demoId, version, model: MODEL,
+    demoId,
+    version,
+    model: MODEL,
     elapsed: `${elapsed}s`,
     tokens: { input: usage.input_tokens, output: usage.output_tokens },
     costUSD: costUSD.toFixed(4),
     subjectCount: countSubjects(sceneData.subjects),
     newAtomsUsedCount: newAtomsUsed.reduce((s, [_, c]) => s + c, 0),
-    newAtomsUsed,        // [[type, count], ...]
+    newAtomsUsed, // [[type, count], ...]
     newIQTypesUsedCount: newIQTypesUsed.reduce((s, [_, c]) => s + c, 0),
     newIQTypesUsed,
     // v2.1 metrics
     materialUsageCount: countMaterialUsage(sceneData.subjects),
-    patternUsageCount:  countPatternUsage(sceneData.subjects),
-    variantsUsedCount:  variantsUsed.reduce((s, [_, c]) => s + c, 0),
+    patternUsageCount: countPatternUsage(sceneData.subjects),
+    variantsUsedCount: variantsUsed.reduce((s, [_, c]) => s + c, 0),
     variantsUsed,
-    zSpread: zSpread(sceneData.subjects),  // {count, min, max, range, stdev}
+    zSpread: zSpread(sceneData.subjects), // {count, min, max, range, stdev}
     // v3.0 metrics — adoption of new 33-atom expansion
     v30AtomsUsedCount: v30AtomsUsed.reduce((s, [_, c]) => s + c, 0),
     v30AtomsUsed,
     // v3.2 metrics — adoption of forest atoms + material.kind expansion
     v32AtomsUsedCount: v32AtomsUsed.reduce((s, [_, c]) => s + c, 0),
     v32AtomsUsed,
-    materialKindsUsed,  // { sea: N, mountain: N, emissive: N, translucent: N }
+    materialKindsUsed, // { sea: N, mountain: N, emissive: N, translucent: N }
     // v3.7 cinematic adoption metrics
     cinematic: v37CinematicMetrics(sceneData),
     // v3.10 Generator-S variant op adoption — does the LLM actually emit
@@ -516,13 +661,19 @@ async function liftOne(demoId, systemPrompt, version) {
     // v3.13 Composite atom adoption — Track 5.4a high-level shortcut types
     compositeAtoms: countCompositeAtoms(sceneData.subjects),
     // Track 5.1 sanity metrics — populated only on compileOk.
-    sanitySummary, sanityErrors, sanityWarnings,
+    sanitySummary,
+    sanityErrors,
+    sanityWarnings,
     typeCounts,
-    compileOk, compileErr,
+    compileOk,
+    compileErr,
     sceneName: sceneData.name,
   };
 
-  writeFileSync(`${RESULTS_DIR}/${demoId}-${version}.json`, JSON.stringify({ result, sceneData }, null, 2));
+  writeFileSync(
+    `${RESULTS_DIR}/${demoId}-${version}.json`,
+    JSON.stringify({ result, sceneData }, null, 2),
+  );
   return result;
 }
 
@@ -530,12 +681,18 @@ async function main() {
   const target = process.argv[2] || 'all';
   const versionArg = process.argv[3] || 'all-versions';
   let demos;
-  if (target === 'all')                  demos = DEMOS;
-  else if (target === 'v3.10-new')       demos = ['roman-colonnade', 'fighter-jet-bilateral', 'fleet-of-destroyers'];
-  else if (target.includes(','))         demos = target.split(',').map(s => s.trim()).filter(Boolean);
-  else                                   demos = [target];
+  if (target === 'all') demos = DEMOS;
+  else if (target === 'v3.10-new')
+    demos = ['roman-colonnade', 'fighter-jet-bilateral', 'fleet-of-destroyers'];
+  else if (target.includes(','))
+    demos = target
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  else demos = [target];
   let versions;
-  if (versionArg === 'all-versions') versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5'];
+  if (versionArg === 'all-versions')
+    versions = ['v1', 'v2', 'v2.1', 'v2.2', 'v2.3', 'v3.0', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5'];
   else if (versionArg === 'v2-vs-v2.1') versions = ['v2', 'v2.1'];
   else if (versionArg === 'v2.1-vs-v2.2') versions = ['v2.1', 'v2.2'];
   else if (versionArg === 'v2.2-vs-v2.3') versions = ['v2.2', 'v2.3'];
@@ -555,10 +712,15 @@ async function main() {
   else if (versionArg === 'v3.13-vs-v3.14') versions = ['v3.13', 'v3.14'];
   else if (versionArg === 'v3.14-vs-v3.15') versions = ['v3.14', 'v3.15'];
   else if (PROMPTS[versionArg]) versions = [versionArg];
-  else { console.error(`✗ unknown version: ${versionArg}`); process.exit(1); }
+  else {
+    console.error(`✗ unknown version: ${versionArg}`);
+    process.exit(1);
+  }
 
   const calls = demos.length * versions.length;
-  console.log(`Lift regression: ${demos.length} demo(s) × ${versions.length} version(s) = ${calls} API calls`);
+  console.log(
+    `Lift regression: ${demos.length} demo(s) × ${versions.length} version(s) = ${calls} API calls`,
+  );
   console.log(`Versions: ${versions.join(', ')}`);
   console.log(`Estimated cost: $${(calls * 0.15).toFixed(2)} (~$0.15 each)`);
   console.log(`Model: ${MODEL}\n`);
@@ -580,17 +742,30 @@ async function main() {
         const c = r.cinematic || {};
         const cinStr = `pfx${c.postFx || 0}/ap${c.aperture || 0}/vol${c.volumeCount || 0}/sh${c.seqShots || 0}/mot${c.seqMotion || 0}/rel${c.relativeToUses || 0}`;
         const vo = r.variantOps || { scatter: 0, array: 0, mirror: 0 };
-        const voStr = (vo.scatter + vo.array + vo.mirror)
-          ? ` · genS[s${vo.scatter}/a${vo.array}/m${vo.mirror}]` : '';
+        const voStr =
+          vo.scatter + vo.array + vo.mirror
+            ? ` · genS[s${vo.scatter}/a${vo.array}/m${vo.mirror}]`
+            : '';
         const ca = r.compositeAtoms || {};
         const caEntries = Object.entries(ca);
         const caStr = caEntries.length
-          ? ` · atom[${caEntries.map(([k,n])=>`${k.split('-').map(w=>w[0]).join('')}${n}`).join('+')}]`
+          ? ` · atom[${caEntries
+              .map(
+                ([k, n]) =>
+                  `${k
+                    .split('-')
+                    .map((w) => w[0])
+                    .join('')}${n}`,
+              )
+              .join('+')}]`
           : '';
-        const sanityStr = (r.sanityErrors || r.sanityWarnings)
-          ? ` · sanity[E${r.sanityErrors}/W${r.sanityWarnings}: ${r.sanitySummary}]`
-          : '';
-        console.log(` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}]${voStr}${caStr}${sanityStr} · $${r.costUSD}`);
+        const sanityStr =
+          r.sanityErrors || r.sanityWarnings
+            ? ` · sanity[E${r.sanityErrors}/W${r.sanityWarnings}: ${r.sanitySummary}]`
+            : '';
+        console.log(
+          ` ✓ ${r.subjectCount} subj · atoms ${r.newAtomsUsedCount}+${r.v30AtomsUsedCount}v3+${r.v32AtomsUsedCount}v32 · ${r.materialUsageCount} mat (${kindsStr}) · ${r.patternUsageCount} pat · ${r.variantsUsedCount} var · zR=${r.zSpread.range.toFixed(1)} · cin[${cinStr}]${voStr}${caStr}${sanityStr} · $${r.costUSD}`,
+        );
       }
     }
     const cmp = { demoId: id, runs };
@@ -600,7 +775,7 @@ async function main() {
 
   // Pretty summary table — focused on v2.1's hypothesis metrics
   console.log('═══ Summary ═══');
-  const rows = summary.map(s => {
+  const rows = summary.map((s) => {
     const row = { demo: s.demoId };
     for (const v of versions) {
       const r = s.runs[v];
@@ -628,31 +803,43 @@ async function main() {
       const r = s.runs[v];
       if (r.error) continue;
       totals[v].atoms += r.newAtomsUsedCount;
-      totals[v].iq    += r.newIQTypesUsedCount;
-      totals[v].mat   += r.materialUsageCount;
-      totals[v].pat   += r.patternUsageCount;
-      totals[v].var   += r.variantsUsedCount;
-      totals[v].cost  += parseFloat(r.costUSD);
+      totals[v].iq += r.newIQTypesUsedCount;
+      totals[v].mat += r.materialUsageCount;
+      totals[v].pat += r.patternUsageCount;
+      totals[v].var += r.variantsUsedCount;
+      totals[v].cost += parseFloat(r.costUSD);
     }
   }
   console.log(`\nTotals across all demos:`);
   for (const v of versions) {
     const t = totals[v];
-    console.log(`  ${v.padEnd(5)} · atoms=${t.atoms.toString().padStart(3)} · iq=${t.iq.toString().padStart(3)} · materials=${t.mat.toString().padStart(3)} · patterns=${t.pat.toString().padStart(3)} · variants=${t.var.toString().padStart(3)} · cost=$${t.cost.toFixed(4)}`);
+    console.log(
+      `  ${v.padEnd(5)} · atoms=${t.atoms.toString().padStart(3)} · iq=${t.iq.toString().padStart(3)} · materials=${t.mat.toString().padStart(3)} · patterns=${t.pat.toString().padStart(3)} · variants=${t.var.toString().padStart(3)} · cost=$${t.cost.toFixed(4)}`,
+    );
     totalCost += t.cost;
   }
   console.log(`  combined cost: $${totalCost.toFixed(4)}`);
 
-  writeFileSync(`${RESULTS_DIR}/summary.json`, JSON.stringify({
-    ranAt: new Date().toISOString(),
-    model: MODEL,
-    versions,
-    totals,
-    totalCost,
-    demos: summary,
-  }, null, 2));
+  writeFileSync(
+    `${RESULTS_DIR}/summary.json`,
+    JSON.stringify(
+      {
+        ranAt: new Date().toISOString(),
+        model: MODEL,
+        versions,
+        totals,
+        totalCost,
+        demos: summary,
+      },
+      null,
+      2,
+    ),
+  );
 
   console.log(`\nResults saved to ${RESULTS_DIR}/`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

@@ -21,7 +21,7 @@ import { raymarch3 } from '../sdf/raymarch.js';
 function makeRng(seed) {
   let s = seed | 0;
   return () => {
-    s = (s + 0x6D2B79F5) | 0;
+    s = (s + 0x6d2b79f5) | 0;
     let t = s;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -34,8 +34,10 @@ function makeMaskTest(mask, maskInvert, opts) {
   if (!mask) return null;
   if (mask instanceof SDF3) {
     const { yaw = 0.5, pitch = 0.35, cameraDist = 4 } = opts;
-    const cy = Math.cos(yaw),   sy = Math.sin(yaw);
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
     const inverseRotate = (p) => {
       const x = p[0] * cy - p[2] * sy;
       const z0 = p[0] * sy + p[2] * cy;
@@ -82,18 +84,22 @@ export function computeTruchetPolylines(opts = {}) {
     seed = 42,
     mask = null,
     maskInvert = false,
-    yaw, pitch, cameraDist,
+    yaw,
+    pitch,
+    cameraDist,
   } = opts;
 
   const maskTest = opts.maskFn
-    ? (maskInvert ? (wx, wy) => !opts.maskFn(wx, wy) : opts.maskFn)
+    ? maskInvert
+      ? (wx, wy) => !opts.maskFn(wx, wy)
+      : opts.maskFn
     : makeMaskTest(mask, maskInvert, { yaw, pitch, cameraDist });
   const densityField = opts.densityField || null;
   const rng = makeRng(seed);
 
   // 分到何深由 cellSize 决定（最细叶子尺寸）
   // 例：view=1.2, cellSize=0.01 → maxDepth = ceil(log2(240)) = 8
-  const maxDepth = Math.max(1, Math.ceil(Math.log2(2 * view / cellSize)));
+  const maxDepth = Math.max(1, Math.ceil(Math.log2((2 * view) / cellSize)));
   // 有 field 时：minDepth = maxDepth - 6 → 理论 6 octave / 64× tile size 范围
   // （之前 -4 = 16×，实际 p1/p99 只有 5× 因为 minDepth 一定 subdivide，两端被压）
   const minDepth = densityField ? Math.max(1, maxDepth - 6) : maxDepth;
@@ -190,17 +196,18 @@ export function truchet(ctx, opts = {}) {
   } = opts;
 
   const canvas = ctx.canvas;
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.width,
+    H = canvas.height;
 
   if (background !== null) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, W, H);
   }
 
-  const wxToPx = wx => (wx + view) / (2 * view) * W;
+  const wxToPx = (wx) => ((wx + view) / (2 * view)) * W;
   const wyToPx = flipY
-    ? wy => (view - wy) / (2 * view) * H
-    : wy => (wy + view) / (2 * view) * H;
+    ? (wy) => ((view - wy) / (2 * view)) * H
+    : (wy) => ((wy + view) / (2 * view)) * H;
 
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;

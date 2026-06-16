@@ -9,33 +9,34 @@ import { field, streamline, render } from '../../src/index.js';
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const W = canvas.width,
+  H = canvas.height;
 const BG = '#fbf9f4';
 
 const els = {
-  scale:        document.getElementById('scale'),
-  scaleVal:     document.getElementById('scale-val'),
-  dsep:         document.getElementById('dsep'),
-  dsepVal:      document.getElementById('dsep-val'),
-  seedCount:    document.getElementById('seedCount'),
+  scale: document.getElementById('scale'),
+  scaleVal: document.getElementById('scale-val'),
+  dsep: document.getElementById('dsep'),
+  dsepVal: document.getElementById('dsep-val'),
+  seedCount: document.getElementById('seedCount'),
   seedCountVal: document.getElementById('seedCount-val'),
-  lineWidth:    document.getElementById('lineWidth'),
+  lineWidth: document.getElementById('lineWidth'),
   lineWidthVal: document.getElementById('lineWidth-val'),
-  regen:        document.getElementById('regen'),
-  save:         document.getElementById('save'),
-  stats:        document.getElementById('stats'),
+  regen: document.getElementById('regen'),
+  save: document.getElementById('save'),
+  stats: document.getElementById('stats'),
 };
 
 let currentSeed = Math.floor(Math.random() * 1_000_000);
 
 function regenerate() {
-  const scale     = parseFloat(els.scale.value);
-  const dsep      = parseFloat(els.dsep.value);
+  const scale = parseFloat(els.scale.value);
+  const dsep = parseFloat(els.dsep.value);
   const seedCount = parseInt(els.seedCount.value, 10);
   const lineWidth = parseFloat(els.lineWidth.value);
 
-  els.scaleVal.textContent     = scale.toFixed(4);
-  els.dsepVal.textContent      = dsep.toFixed(0);
+  els.scaleVal.textContent = scale.toFixed(4);
+  els.dsepVal.textContent = dsep.toFixed(0);
   els.seedCountVal.textContent = seedCount;
   els.lineWidthVal.textContent = lineWidth.toFixed(1);
 
@@ -74,7 +75,7 @@ function regenerate() {
 }
 
 // 调一个参数 → 重新生成（保持同 seed，方便对比单参数影响）
-['scale', 'dsep', 'seedCount', 'lineWidth'].forEach(k => {
+['scale', 'dsep', 'seedCount', 'lineWidth'].forEach((k) => {
   els[k].addEventListener('input', regenerate);
 });
 

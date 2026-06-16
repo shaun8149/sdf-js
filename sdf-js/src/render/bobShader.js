@@ -22,8 +22,13 @@
 
 import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
 import {
-  PALETTES, SKIES, PAPERS,
-  pickShuffled, pick, bakePaletteTexture, hexToVec3,
+  PALETTES,
+  SKIES,
+  PAPERS,
+  pickShuffled,
+  pick,
+  bakePaletteTexture,
+  hexToVec3,
 } from '../palette/autoscope.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 
@@ -867,9 +872,13 @@ void main() {
 // ============================================================================
 
 export function createBobShaderRenderer({
-  canvas, getControls, onCamUpdate, onFps, onPaletteChange,
-  twoPass = false,           // ← autoscope 2-pass FBO + post-process
-  bufferResolution = 320,    // FBO 边长（默认 320×320 — autoscope idiom）
+  canvas,
+  getControls,
+  onCamUpdate,
+  onFps,
+  onPaletteChange,
+  twoPass = false, // ← autoscope 2-pass FBO + post-process
+  bufferResolution = 320, // FBO 边长（默认 320×320 — autoscope idiom）
 }) {
   // Sprint 1 (2026-05-24): switch to WebGL2 context. Canvas shares a single
   // context with FLY 3D — once FLY 3D opens it as webgl2, this call returns
@@ -892,12 +901,13 @@ export function createBobShaderRenderer({
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
-  let paletteState = null;  // { tex, length, palette1, palette2, paper, sky1, sky2 }
+  let paletteState = null; // { tex, length, palette1, palette2, paper, sky1, sky2 }
   // Sprint 12 Rune erosion heightmap (uploaded by setRuneHeightmap, sampled
   // in shader's sdTerrainErodedRune). Bound to texture unit 2 so it doesn't
   // collide with the palette texture (unit 0).
   let runeHeightmapTex = null;
-  let runeHeightmapW = 0, runeHeightmapH = 0;
+  let runeHeightmapW = 0,
+    runeHeightmapH = 0;
 
   // ---- one-time vbuf + vs ----
   const vbuf = gl.createBuffer();
@@ -919,14 +929,26 @@ export function createBobShaderRenderer({
   const vs = compileShader(VS_SRC, gl.VERTEX_SHADER);
 
   // ---- 2-pass FBO setup（autoscope sand painting）------------------------
-  let fbo = null, bufferTex = null;
-  let postProgram = null, postUniforms = {};
+  let fbo = null,
+    bufferTex = null;
+  let postProgram = null,
+    postUniforms = {};
   if (twoPass) {
     // Color attachment: bufferResolution × bufferResolution RGBA8
     bufferTex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, bufferTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, bufferResolution, bufferResolution, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);  // autoscope idiom: 块状放大
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      bufferResolution,
+      bufferResolution,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null,
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); // autoscope idiom: 块状放大
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -950,13 +972,29 @@ export function createBobShaderRenderer({
       throw new Error(`postProgram link failed: ${gl.getProgramInfoLog(postProgram)}`);
     }
     for (const name of [
-      'u_buffer', 'u_palette', 'u_resolution', 'u_bufferRes', 'u_time',
-      'u_paletteLen', 'u_sky1', 'u_sky2', 'u_bg',
-      'u_grid', 'u_ratio',
-      'u_renderType', 'u_shadow', 'u_shadowStrength',
-      'u_margin', 'u_saturation', 'u_exposure',
-      'u_colorLeak', 'u_noiseCap', 'u_nFactor', 'u_nOffset',
-      'u_rotateCanvas', 'u_seed',
+      'u_buffer',
+      'u_palette',
+      'u_resolution',
+      'u_bufferRes',
+      'u_time',
+      'u_paletteLen',
+      'u_sky1',
+      'u_sky2',
+      'u_bg',
+      'u_grid',
+      'u_ratio',
+      'u_renderType',
+      'u_shadow',
+      'u_shadowStrength',
+      'u_margin',
+      'u_saturation',
+      'u_exposure',
+      'u_colorLeak',
+      'u_noiseCap',
+      'u_nFactor',
+      'u_nOffset',
+      'u_rotateCanvas',
+      'u_seed',
     ]) {
       postUniforms[name] = gl.getUniformLocation(postProgram, name);
     }
@@ -964,8 +1002,10 @@ export function createBobShaderRenderer({
 
   // ---- camera math ----
   function computeFwd(yaw, pitch) {
-    const cp = Math.cos(pitch), sp = Math.sin(pitch);
-    const cy = Math.cos(yaw), sy = Math.sin(yaw);
+    const cp = Math.cos(pitch),
+      sp = Math.sin(pitch);
+    const cy = Math.cos(yaw),
+      sy = Math.sin(yaw);
     return [sy * cp, -sp, cy * cp];
   }
   function computeRight(fwd) {
@@ -989,18 +1029,19 @@ export function createBobShaderRenderer({
     if (paletteState && paletteState.tex) gl.deleteTexture(paletteState.tex);
     const palette1 = pickShuffled(PALETTES);
     const palette2 = pickShuffled(PALETTES);
-    const paper    = pick(PAPERS);
+    const paper = pick(PAPERS);
     // Pick sky1 and sky2 from TWO different SKIES sub-palettes.
     // SKIES contains some monochromatic sub-palettes (e.g. all-blue tones);
     // when both sky1+sky2 came from the same sub-palette the gradient was flat.
     // Cross-palette pairing guarantees hue contrast in the sky gradient.
-    const skyA     = pickShuffled(SKIES);
-    const skyB     = pickShuffled(SKIES);
-    const sky1     = skyA[0];
-    const sky2     = skyB[0];
+    const skyA = pickShuffled(SKIES);
+    const skyB = pickShuffled(SKIES);
+    const sky1 = skyA[0];
+    const sky2 = skyB[0];
     const { tex, length } = bakePaletteTexture(gl, palette1, palette2, paper);
     paletteState = {
-      tex, length,
+      tex,
+      length,
       paletteVec: { paper: hexToVec3(paper), sky1: hexToVec3(sky1), sky2: hexToVec3(sky2) },
       sample: { palette1, palette2, paper, sky1, sky2 },
     };
@@ -1018,11 +1059,12 @@ export function createBobShaderRenderer({
     if (paletteState && paletteState.tex) gl.deleteTexture(paletteState.tex);
     const { palette1, palette2, paper, sky1, sky2 } = style;
     const { tex, length } = bakePaletteTexture(gl, palette1, palette2, paper, {
-      skipRate:  style.paletteSkipRate  ?? 0.05,
+      skipRate: style.paletteSkipRate ?? 0.05,
       bgIsBlack: style.paletteBgIsBlack ?? false,
     });
     paletteState = {
-      tex, length,
+      tex,
+      length,
       paletteVec: { paper: hexToVec3(paper), sky1: hexToVec3(sky1), sky2: hexToVec3(sky2) },
       sample: { palette1, palette2, paper, sky1, sky2 },
     };
@@ -1035,7 +1077,7 @@ export function createBobShaderRenderer({
     const result = compileSDF3ToGLSL(sdf, {
       sceneFnName: 'sceneSDF',
       includeLibrary: true,
-      emitObjectIndex: true,  // BOB GPU 关键：side-effect imin → minIndex 给 spaceCol 用
+      emitObjectIndex: true, // BOB GPU 关键：side-effect imin → minIndex 给 spaceCol 用
     });
     if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
 
@@ -1077,18 +1119,45 @@ export function createBobShaderRenderer({
 
     uniformsCache = {};
     for (const name of [
-      'u_resolution', 'u_camPos', 'u_camFwd', 'u_camRight', 'u_camUp', 'u_focal',
-      'u_lightPos', 'u_time', 'u_palette', 'u_paletteLen',
-      'u_paper', 'u_sky1', 'u_sky2',
-      'u_coldiv', 'u_coloration', 'u_shadowMode', 'u_shadowStrength',
-      'u_shadowsOn', 'u_groundOn', 'u_noiseSpeed', 'u_exposure', 'u_saturation', 'u_worldScale',
-      'u_mirror', 'u_twist', 'u_twistType', 'u_gridRot', 'u_simpleColor',
+      'u_resolution',
+      'u_camPos',
+      'u_camFwd',
+      'u_camRight',
+      'u_camUp',
+      'u_focal',
+      'u_lightPos',
+      'u_time',
+      'u_palette',
+      'u_paletteLen',
+      'u_paper',
+      'u_sky1',
+      'u_sky2',
+      'u_coldiv',
+      'u_coloration',
+      'u_shadowMode',
+      'u_shadowStrength',
+      'u_shadowsOn',
+      'u_groundOn',
+      'u_noiseSpeed',
+      'u_exposure',
+      'u_saturation',
+      'u_worldScale',
+      'u_mirror',
+      'u_twist',
+      'u_twistType',
+      'u_gridRot',
+      'u_simpleColor',
       // Autoscope idiom upgrade (2026-05-23): xMod/yMod chess + renderType + rotateCanvas
-      'u_xMod', 'u_yMod', 'u_renderType', 'u_rotateCanvas',
+      'u_xMod',
+      'u_yMod',
+      'u_renderType',
+      'u_rotateCanvas',
       // Autoscope animation modes 1-9 (idiom #6, 2026-05-23)
-      'u_animation', 'u_length',
+      'u_animation',
+      'u_length',
       // Sprint 12 Rune erosion heightmap sampler + active flag.
-      'u_heightmap', 'u_runeActive',
+      'u_heightmap',
+      'u_runeActive',
     ]) {
       uniformsCache[name] = gl.getUniformLocation(program, name);
     }
@@ -1211,7 +1280,7 @@ export function createBobShaderRenderer({
       gl.uniform1f(postUniforms.u_paletteLen, paletteState.length);
       gl.uniform3f(postUniforms.u_sky1, ...paletteState.paletteVec.sky1);
       gl.uniform3f(postUniforms.u_sky2, ...paletteState.paletteVec.sky2);
-      gl.uniform3f(postUniforms.u_bg,   ...paletteState.paletteVec.paper);
+      gl.uniform3f(postUniforms.u_bg, ...paletteState.paletteVec.paper);
 
       gl.uniform2f(postUniforms.u_resolution, canvas.width, canvas.height);
       gl.uniform2f(postUniforms.u_bufferRes, bufferResolution, bufferResolution);
@@ -1258,15 +1327,20 @@ export function createBobShaderRenderer({
     render(sdf) {
       const bytes = uploadSDF(sdf);
       if (!flyHandle) {
-        flyHandle = attachFlyControls(canvas, () => camState, (patch) => Object.assign(camState, patch), {
-          speed: 1.5,
-          speedBoost: 4.0,
-          onReset: () => {
-            camState.position = [...defaultCam.position];
-            camState.yaw = defaultCam.yaw;
-            camState.pitch = defaultCam.pitch;
+        flyHandle = attachFlyControls(
+          canvas,
+          () => camState,
+          (patch) => Object.assign(camState, patch),
+          {
+            speed: 1.5,
+            speedBoost: 4.0,
+            onReset: () => {
+              camState.position = [...defaultCam.position];
+              camState.yaw = defaultCam.yaw;
+              camState.pitch = defaultCam.pitch;
+            },
           },
-        });
+        );
       }
       if (!rafId) {
         fpsLast = performance.now();
@@ -1276,8 +1350,14 @@ export function createBobShaderRenderer({
       return { bytes };
     },
     unmount() {
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-      if (flyHandle) { flyHandle.detach(); flyHandle = null; }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      if (flyHandle) {
+        flyHandle.detach();
+        flyHandle = null;
+      }
       // Clear framebuffer to black so the next scene doesn't briefly show
       // stale pixels from this one while its new shader is compiling.
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -1302,13 +1382,17 @@ export function createBobShaderRenderer({
     canRender(sdf) {
       return canCompileSDF3(sdf);
     },
-    getCamState() { return { ...camState, position: [...camState.position] }; },
+    getCamState() {
+      return { ...camState, position: [...camState.position] };
+    },
     setCamState(patch) {
       if (patch.position) camState.position = [...patch.position];
-      if (patch.yaw != null)   camState.yaw   = patch.yaw;
+      if (patch.yaw != null) camState.yaw = patch.yaw;
       if (patch.pitch != null) camState.pitch = patch.pitch;
     },
-    getPaletteSample() { return paletteState?.sample ?? null; },
+    getPaletteSample() {
+      return paletteState?.sample ?? null;
+    },
     // Sprint 12 Rune erosion heightmap (CPU bake from compile.js → GPU texture).
     // Same shape as flyLambert.setRuneHeightmap and blueprint.setRuneHeightmap;
     // BOB binds to TEXTURE2 (palette is on 0). null clears.
@@ -1316,12 +1400,15 @@ export function createBobShaderRenderer({
       if (!baked) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);
         runeHeightmapTex = null;
-        runeHeightmapW = 0; runeHeightmapH = 0;
+        runeHeightmapW = 0;
+        runeHeightmapH = 0;
         return;
       }
       const { data, width, height } = baked;
       if (!(data instanceof Float32Array) || data.length !== width * height * 4) {
-        throw new Error(`[bob-gpu] setRuneHeightmap: bad data shape ${data?.length} vs ${width*height*4}`);
+        throw new Error(
+          `[bob-gpu] setRuneHeightmap: bad data shape ${data?.length} vs ${width * height * 4}`,
+        );
       }
       if (!runeHeightmapTex || width !== runeHeightmapW || height !== runeHeightmapH) {
         if (runeHeightmapTex) gl.deleteTexture(runeHeightmapTex);

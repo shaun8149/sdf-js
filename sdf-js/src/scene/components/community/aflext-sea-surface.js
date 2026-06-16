@@ -48,15 +48,20 @@ export const seaSurfaceSpec = {
   category: 'primitive-heightfield',
   args: {
     depth: { type: 'number', default: 1.0, doc: 'Wave amplitude / depth in world units' },
-    scale: { type: 'number', default: 0.6, doc: 'Horizontal wave frequency scale (bigger = choppier)' },
+    scale: {
+      type: 'number',
+      default: 0.6,
+      doc: 'Horizontal wave frequency scale (bigger = choppier)',
+    },
   },
   source: {
-    inspiration:    'https://www.shadertoy.com/view/Ms2SD1',
+    inspiration: 'https://www.shadertoy.com/view/Ms2SD1',
     originalAuthor: 'afl_ext',
-    license:        'MIT (independent reimplementation, retains idiom only)',
-    portedAt:       '2026-05-21',
-    porter:         'Atlas /port-shader pipeline — second port',
-    notes:          'GPU path is the real implementation; JS-side is a cheap approximation for CPU fallback paths.',
+    license: 'MIT (independent reimplementation, retains idiom only)',
+    portedAt: '2026-05-21',
+    porter: 'Atlas /port-shader pipeline — second port',
+    notes:
+      'GPU path is the real implementation; JS-side is a cheap approximation for CPU fallback paths.',
   },
   thumbnail: null,
 };

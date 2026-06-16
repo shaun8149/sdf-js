@@ -24,12 +24,12 @@
 import { SDF3 } from '../../../sdf/core.js';
 
 export function terrainCanyonSDF({
-  maxHeight    = 35.0,
-  scale        = 0.015,
-  ridgePower   = 2.0,
-  mountainness = 0.20,
-  displaceAmt  = 4.0,
-  yStretch     = 4.0,
+  maxHeight = 35.0,
+  scale = 0.015,
+  ridgePower = 2.0,
+  mountainness = 0.2,
+  displaceAmt = 4.0,
+  yStretch = 4.0,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: cheap sloped plane (real eval is GPU-only because
@@ -48,20 +48,29 @@ export const terrainCanyonSpec = {
   type: 'terrain-canyon',
   category: 'primitive-heightfield',
   args: {
-    maxHeight:    { type: 'number', default: 35.0,  doc: 'Peak Y in world units' },
-    scale:        { type: 'number', default: 0.015, doc: 'Horizontal terrain scale' },
-    ridgePower:   { type: 'number', default: 2.0,   doc: 'Peak sharpness (1=soft, 3=sharp)' },
-    mountainness: { type: 'number', default: 0.20,  doc: 'Fraction of land area covered by cliffs' },
-    displaceAmt:  { type: 'number', default: 4.0,   doc: '3D displacement amplitude (3-8 for canyon)' },
-    yStretch:     { type: 'number', default: 4.0,   doc: 'Y multiplier on displacement noise (4=vertical striations)' },
+    maxHeight: { type: 'number', default: 35.0, doc: 'Peak Y in world units' },
+    scale: { type: 'number', default: 0.015, doc: 'Horizontal terrain scale' },
+    ridgePower: { type: 'number', default: 2.0, doc: 'Peak sharpness (1=soft, 3=sharp)' },
+    mountainness: { type: 'number', default: 0.2, doc: 'Fraction of land area covered by cliffs' },
+    displaceAmt: {
+      type: 'number',
+      default: 4.0,
+      doc: '3D displacement amplitude (3-8 for canyon)',
+    },
+    yStretch: {
+      type: 'number',
+      default: 4.0,
+      doc: 'Y multiplier on displacement noise (4=vertical striations)',
+    },
   },
   source: {
-    inspiration:  'IQ Canyon XdsXDS map() function (CC educational, recipe-only)',
+    inspiration: 'IQ Canyon XdsXDS map() function (CC educational, recipe-only)',
     algorithmRef: 'heightmap fbm + 3D displacement overlay with Y-axis frequency stretch',
-    license:      'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
-    portedAt:     '2026-05-24',
-    porter:       'Atlas canyon sprint — third terrain primitive after elevated + with-lakes',
-    notes:        'GPU-only. Pair with mountain material kind + red-orange hue for sandstone look. ' +
-                  'Y-stretch 4× is the secret to vertical wall striations.',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
+    portedAt: '2026-05-24',
+    porter: 'Atlas canyon sprint — third terrain primitive after elevated + with-lakes',
+    notes:
+      'GPU-only. Pair with mountain material kind + red-orange hue for sandstone look. ' +
+      'Y-stretch 4× is the secret to vertical wall striations.',
   },
 };

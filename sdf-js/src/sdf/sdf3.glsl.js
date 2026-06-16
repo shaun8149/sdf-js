@@ -2275,13 +2275,33 @@ float opExtrusion(float d2, float pz, float h) {
 
 export const SDF3_GLSL_PRIMITIVES = [
   // IQ primitives
-  'sdPlane', 'sdSphere', 'sdBox', 'sdBoxFrame', 'sdEllipsoid',
-  'sdTorus', 'sdCappedTorus', 'sdHexPrism', 'sdOctogonPrism',
-  'sdCapsule', 'sdRoundCone', 'sdTriPrism', 'sdCylinder',
-  'sdCone', 'sdCappedCone', 'sdSolidAngle', 'sdLink', 'sdOctahedron',
-  'sdPyramid', 'sdRhombus', 'sdHorseshoe', 'sdU',
+  'sdPlane',
+  'sdSphere',
+  'sdBox',
+  'sdBoxFrame',
+  'sdEllipsoid',
+  'sdTorus',
+  'sdCappedTorus',
+  'sdHexPrism',
+  'sdOctogonPrism',
+  'sdCapsule',
+  'sdRoundCone',
+  'sdTriPrism',
+  'sdCylinder',
+  'sdCone',
+  'sdCappedCone',
+  'sdSolidAngle',
+  'sdLink',
+  'sdOctahedron',
+  'sdPyramid',
+  'sdRhombus',
+  'sdHorseshoe',
+  'sdU',
   // d3.js extensions
-  'sdRoundedBox', 'sdTetrahedron', 'sdDodecahedron', 'sdIcosahedron',
+  'sdRoundedBox',
+  'sdTetrahedron',
+  'sdDodecahedron',
+  'sdIcosahedron',
   // time-aware
   'sdWaves',
   'sdSeaSurface',
@@ -2292,40 +2312,76 @@ export const SDF3_GLSL_PRIMITIVES = [
   'sdCanalLampBulb',
   'sdTerrainHeightmap',
   // Forest sprint
-  'sdMapleLeaf2D', 'sdMapleLeaf3D', 'sdWavyCapsule',
-  'sdStylizedTree', 'sdForestFlower', 'sdMeteorStreak',
+  'sdMapleLeaf2D',
+  'sdMapleLeaf3D',
+  'sdWavyCapsule',
+  'sdStylizedTree',
+  'sdForestFlower',
+  'sdMeteorStreak',
   'sdGrassField',
   // 2026-05-23 IQ P2 batch
-  'sdCutSphere', 'sdCutHollowSphere', 'sdDeathStar',
-  'sdRoundedCylinder', 'sdRoundConeAB', 'sdVesicaSegment',
-  'sdCylinderInf', 'sdConeInf',
+  'sdCutSphere',
+  'sdCutHollowSphere',
+  'sdDeathStar',
+  'sdRoundedCylinder',
+  'sdRoundConeAB',
+  'sdVesicaSegment',
+  'sdCylinderInf',
+  'sdConeInf',
 ];
 
 export const SDF3_GLSL_OPS = [
-  'opUnion', 'opIntersect', 'opDifference',
-  'opSmoothUnion', 'opSmoothIntersect', 'opSmoothDifference',
-  'opShell', 'opDilate', 'opErode',
+  'opUnion',
+  'opIntersect',
+  'opDifference',
+  'opSmoothUnion',
+  'opSmoothIntersect',
+  'opSmoothDifference',
+  'opShell',
+  'opDilate',
+  'opErode',
   // 2026-05-23 IQ P3 batch
-  'opElongate3', 'opDisplace', 'opXor',
+  'opElongate3',
+  'opDisplace',
+  'opXor',
   // 2026-05-23 IQ P4 smin variants
-  'opSminExp', 'opSminRoot', 'opSminCubic', 'opSminQuartic',
-  'opSminCircular', 'opSminCircGeo',
+  'opSminExp',
+  'opSminRoot',
+  'opSminCubic',
+  'opSminQuartic',
+  'opSminCircular',
+  'opSminCircGeo',
   // Lp norms
-  'length6', 'length8',
+  'length6',
+  'length8',
 ];
 
 export const SDF2_GLSL_PRIMITIVES = [
-  'sd2Circle', 'sd2Box', 'sd2RoundBox', 'sd2Segment', 'sd2Ring', 'sd2Ellipse',
+  'sd2Circle',
+  'sd2Box',
+  'sd2RoundBox',
+  'sd2Segment',
+  'sd2Ring',
+  'sd2Ellipse',
   // polygon emitted per-instance as sd2Polygon_HASH(vec2)
 ];
 
 export const SDF2_GLSL_OPS = [
   // pseudo-3D ops backed by SDF2 distance:
-  'opExtrusion',  // 2D → 3D extrusion
+  'opExtrusion', // 2D → 3D extrusion
 ];
 
 export const SDF3_GLSL_TRANSFORMS = [
-  'opTranslate', 'opScale', 'opTwist', 'opBend',
-  'rotX', 'rotY', 'rotZ', 'rotX_inv', 'rotY_inv', 'rotZ_inv',
-  'rep3', 'repL3',
+  'opTranslate',
+  'opScale',
+  'opTwist',
+  'opBend',
+  'rotX',
+  'rotY',
+  'rotZ',
+  'rotX_inv',
+  'rotY_inv',
+  'rotZ_inv',
+  'rep3',
+  'repL3',
 ];

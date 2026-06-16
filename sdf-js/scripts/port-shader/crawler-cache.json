@@ -10,8 +10,16 @@
       "candidatesJudged": 4,
       "ported": ["cut-disk"],
       "skipped": [
-        { "url": "https://www.shadertoy.com/view/4sXBRn", "function": "Jellyfish", "reason": "CC BY-NC-SA — copyleft, incompatible with PolyForm" },
-        { "url": "https://www.shadertoy.com/view/3tXXRn", "function": "Tentacle", "reason": "Shadertoy default = CC BY-NC-SA, no explicit override" }
+        {
+          "url": "https://www.shadertoy.com/view/4sXBRn",
+          "function": "Jellyfish",
+          "reason": "CC BY-NC-SA — copyleft, incompatible with PolyForm"
+        },
+        {
+          "url": "https://www.shadertoy.com/view/3tXXRn",
+          "function": "Tentacle",
+          "reason": "Shadertoy default = CC BY-NC-SA, no explicit override"
+        }
       ],
       "deferred": [],
       "notes": "Track 4 dogfood — first end-to-end /port-shader run with new MIT source (gbms) instead of IQ. gbms has 11 novel 2D primitives; this round shipped 1 (cut-disk), 10 remain as future port candidates."
@@ -23,7 +31,13 @@
       "candidatesJudged": 5,
       "ported": ["pentagon", "octogon", "hexagram", "chamfer-box", "parabola"],
       "skipped": [],
-      "deferred": ["sdPentagram", "sdUnevenCapsule", "sdParabolaSegment", "sdBlobbyCross", "sdOrientedVesica"],
+      "deferred": [
+        "sdPentagram",
+        "sdUnevenCapsule",
+        "sdParabolaSegment",
+        "sdBlobbyCross",
+        "sdOrientedVesica"
+      ],
       "notes": "Track 4 batch — 5/10 remaining gbms primitives ported in one sprint. Same MIT source as cut-disk. Skipped GLSL emit + sdf3.glsl helpers (CPU-only like cut-disk). Pentagon needed y-flip for Atlas math coords (IQ formula assumes image coords). 25/25 smoke green + all prior tests pass."
     }
   ],

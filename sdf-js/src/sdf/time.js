@@ -85,7 +85,7 @@ export function mulT(expr, k) {
   if (!isTimeExpr(expr)) throw new Error(`mulT: unexpected ${typeof expr}`);
   if (expr.form === 'linear') return { ...expr, coef: expr.coef * k };
   if (expr.form === 'sin' || expr.form === 'cos') return { ...expr, amp: expr.amp * k };
-  if (expr.form === 'sum')    return { ...expr, terms: expr.terms.map(t => mulT(t, k)) };
+  if (expr.form === 'sum') return { ...expr, terms: expr.terms.map((t) => mulT(t, k)) };
   if (expr.form === 'uniform') {
     // Scale by k by wrapping in a sum with a scaled-ref string. We're in a
     // closed world (only transform.translate uses uniform form in v1), so
@@ -104,10 +104,10 @@ export function evalT(expr, t = 0) {
   if (typeof expr === 'number') return expr;
   if (!isTimeExpr(expr)) throw new Error(`evalT: expected number or time-expr, got ${typeof expr}`);
   if (expr.form === 'linear') return expr.coef * t;
-  if (expr.form === 'sin')    return expr.amp * Math.sin(expr.freq * t + expr.phase);
-  if (expr.form === 'cos')    return expr.amp * Math.cos(expr.freq * t + expr.phase);
-  if (expr.form === 'sum')    return expr.terms.reduce((acc, term) => acc + evalT(term, t), 0);
-  if (expr.form === 'uniform') return 0;  // GPU-only; CPU sees zero offset
+  if (expr.form === 'sin') return expr.amp * Math.sin(expr.freq * t + expr.phase);
+  if (expr.form === 'cos') return expr.amp * Math.cos(expr.freq * t + expr.phase);
+  if (expr.form === 'sum') return expr.terms.reduce((acc, term) => acc + evalT(term, t), 0);
+  if (expr.form === 'uniform') return 0; // GPU-only; CPU sees zero offset
   throw new Error(`evalT: unknown form '${expr.form}'`);
 }
 
@@ -122,5 +122,5 @@ export function numLit(x, t = 0) {
 
 export function vecLit(v, t = 0) {
   if (!Array.isArray(v)) return numLit(v, t);
-  return v.map(x => numLit(x, t));
+  return v.map((x) => numLit(x, t));
 }

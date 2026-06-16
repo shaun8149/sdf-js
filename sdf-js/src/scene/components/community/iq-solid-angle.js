@@ -67,17 +67,21 @@ export const solidAngleSpec = {
   type: 'solid-angle',
   category: 'primitive',
   args: {
-    halfAperture: { type: 'number', default: Math.PI / 6, doc: 'Half angle from +Y axis in radians' },
-    radius:       { type: 'number', default: 0.5,         doc: 'Spherical bound radius' },
+    halfAperture: {
+      type: 'number',
+      default: Math.PI / 6,
+      doc: 'Half angle from +Y axis in radians',
+    },
+    radius: { type: 'number', default: 0.5, doc: 'Spherical bound radius' },
   },
   source: {
-    portedFrom:    'https://github.com/flightphone/shaderty/blob/main/glsl/pine.glsl#L135',
-    algorithmRef:  'https://iquilezles.org/articles/distfunctions/',
+    portedFrom: 'https://github.com/flightphone/shaderty/blob/main/glsl/pine.glsl#L135',
+    algorithmRef: 'https://iquilezles.org/articles/distfunctions/',
     originalAuthor: 'Inigo Quilez (canonical SDF article)',
-    repoForkedBy:   'flightphone',
-    license:        'MIT (canonical IQ SDF article)',
-    portedAt:       '2026-05-18',
-    porter:         'Atlas /port-shader pipeline Day 1 — manual walkthrough',
+    repoForkedBy: 'flightphone',
+    license: 'MIT (canonical IQ SDF article)',
+    portedAt: '2026-05-18',
+    porter: 'Atlas /port-shader pipeline Day 1 — manual walkthrough',
   },
   thumbnail: null, // TODO: headless silhouette render
 };

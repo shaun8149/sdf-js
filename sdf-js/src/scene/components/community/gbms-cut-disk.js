@@ -65,13 +65,13 @@ export const cutDiskSpec = {
   category: '2d-primitive',
   args: {
     radius: { type: 'number', default: 0.5, doc: 'circle radius before the cut' },
-    cut:    { type: 'number', default: 0.1, doc: 'y-level of the chord cut, in [-radius, radius]' },
+    cut: { type: 'number', default: 0.1, doc: 'y-level of the chord cut, in [-radius, radius]' },
   },
   source: {
-    portedFrom:     'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
+    portedFrom: 'https://github.com/Games-by-Mason/gbms/blob/main/include/gbms/sd.glsl',
     originalAuthor: 'Mason — adapted from IQ canonical SDF article',
-    license:        'MIT',
-    portedAt:       '2026-05-26',
-    porter:         'Atlas /port-shader skill (Track 4 dogfood)',
+    license: 'MIT',
+    portedAt: '2026-05-26',
+    porter: 'Atlas /port-shader skill (Track 4 dogfood)',
   },
 };

@@ -20,11 +20,11 @@
 import { SDF3 } from '../../../sdf/core.js';
 
 export function archBridgeSDF({
-  bridgeLen   = 30.0,
+  bridgeLen = 30.0,
   bridgeWidth = 4.0,
-  archH       = 6.0,
-  railH       = 1.5,
-  cornerOff   = 10.0,
+  archH = 6.0,
+  railH = 1.5,
+  cornerOff = 10.0,
 } = {}) {
   const inst = SDF3((p) => {
     // CPU stub: bounding box ≈ bridge envelope. Real SDF is GPU-only because
@@ -50,19 +50,21 @@ export const archBridgeSpec = {
   type: 'arch-bridge',
   category: 'primitive-architecture',
   args: {
-    bridgeLen:   { type: 'number', default: 30.0, doc: 'Total span along Z' },
-    bridgeWidth: { type: 'number', default: 4.0,  doc: 'Half-width of deck along X' },
-    archH:       { type: 'number', default: 6.0,  doc: 'Arch crown height above deck' },
-    railH:       { type: 'number', default: 1.5,  doc: 'Rail post height above deck' },
-    cornerOff:   { type: 'number', default: 10.0, doc: 'Z offset of corner posts from center' },
+    bridgeLen: { type: 'number', default: 30.0, doc: 'Total span along Z' },
+    bridgeWidth: { type: 'number', default: 4.0, doc: 'Half-width of deck along X' },
+    archH: { type: 'number', default: 6.0, doc: 'Arch crown height above deck' },
+    railH: { type: 'number', default: 1.5, doc: 'Rail post height above deck' },
+    cornerOff: { type: 'number', default: 10.0, doc: 'Z offset of corner posts from center' },
   },
   source: {
-    inspiration:  'IQ MdXGzr "Snow Bridge" bridge() function (CC educational, recipe-only)',
-    algorithmRef: 'cosine arch curve + mod() baluster repetition + abs() mirror + cosine vase profile',
-    license:      'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
-    portedAt:     '2026-05-24',
-    porter:       'Atlas snow-bridge sprint — first parametric building atom',
-    notes:        'GPU-only — CPU stub is bounding box approximation. 1 SDF eval ≈ 60 unioned atoms ' +
-                  'but ~10× faster. Pair with material kind="snowy" for winter scenes.',
+    inspiration: 'IQ MdXGzr "Snow Bridge" bridge() function (CC educational, recipe-only)',
+    algorithmRef:
+      'cosine arch curve + mod() baluster repetition + abs() mirror + cosine vase profile',
+    license: 'PolyForm Noncommercial 1.0.0 (independent reimplementation, no source copied)',
+    portedAt: '2026-05-24',
+    porter: 'Atlas snow-bridge sprint — first parametric building atom',
+    notes:
+      'GPU-only — CPU stub is bounding box approximation. 1 SDF eval ≈ 60 unioned atoms ' +
+      'but ~10× faster. Pair with material kind="snowy" for winter scenes.',
   },
 };
