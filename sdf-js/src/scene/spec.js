@@ -176,6 +176,8 @@ export const PRIMITIVE_TYPES = new Set([
   'line-3d',
   // Atlas chart atom (2026-06-18) — pie/donut chart, angular SDF + extrusion.
   'pie-3d',
+  // Atlas chart atom (2026-06-18) — KPI dashboard card (rounded box + semantic metadata).
+  'kpi-card-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

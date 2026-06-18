@@ -408,6 +408,12 @@ const PRIMS = {
   'pie-3d': ([, , outerR, innerR, thickness], p) =>
     `sdPie3d(${p}, ${flt(outerR)}, ${flt(innerR)}, ${flt(thickness)})`,
 
+  // kpi-card-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/kpi-card-3d.js
+  // Rounded box geometry. value/label/unit/trend/trendValue are AST-only
+  // semantic metadata for future material/typography layer.
+  'kpi-card-3d': ([width, height, depth, r /* value, label, unit, trend, trendValue */], p) =>
+    `sdRoundedBox(${p}, ${vec3([half(width), half(height), half(depth)])}, ${flt(r)})`,
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

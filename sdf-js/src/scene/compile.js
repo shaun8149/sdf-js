@@ -112,6 +112,7 @@ import { bar3dSDF } from './components/charts/data/bar-3d.js';
 import { column3dSDF } from './components/charts/data/column-3d.js';
 import { line3dSDF } from './components/charts/data/line-3d.js';
 import { pie3dSDF } from './components/charts/data/pie-3d.js';
+import { kpiCard3dSDF } from './components/charts/data/kpi-card-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -355,6 +356,18 @@ const PRIMITIVE_FACTORIES = {
       thickness: a.thickness ?? a.depth ?? 0.3,
       startAngle: a.startAngle ?? Math.PI / 2,
       clockwise: a.clockwise ?? true,
+    }),
+  'kpi-card-3d': (a) =>
+    kpiCard3dSDF({
+      width: a.width ?? 1.6,
+      height: a.height ?? 1.0,
+      depth: a.depth ?? a.thickness ?? 0.15,
+      cornerRadius: a.cornerRadius ?? a.radius ?? 0.08,
+      value: a.value ?? 0,
+      label: a.label ?? '',
+      unit: a.unit ?? '',
+      trend: a.trend ?? 'flat',
+      trendValue: a.trendValue ?? 0,
     }),
   link: (a) =>
     linkSDF({
