@@ -48,6 +48,20 @@ const TESTS = [
   { category: 'port-shader', file: 'sdf-js/scripts/port-shader/test-solid-angle.mjs' },
   { category: 'port-shader', file: 'sdf-js/scripts/port-shader/test-link.mjs' },
   { category: 'port-shader', file: 'sdf-js/scripts/port-shader/test-batch-iq.mjs' },
+
+  // Sprint 1 chart + icon + presentation atoms (Atlas use case Stage 1 supply)
+  { category: 'atom', file: 'sdf-js/scripts/test-pyramid-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-bar-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-column-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-line-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-pie-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-kpi-card-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-business-icons.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-cover-3d.mjs' },
+  { category: 'atom', file: 'sdf-js/scripts/test-grid-layout.mjs' },
+
+  // M0.3 PDF parser (Atlas use case PPT-lift workflow)
+  { category: 'parser', file: 'sdf-js/scripts/test-pdf-parser.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
