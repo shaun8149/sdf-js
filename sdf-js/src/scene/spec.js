@@ -172,6 +172,8 @@ export const PRIMITIVE_TYPES = new Set([
   'bar-3d',
   // Atlas chart atom (2026-06-18) — horizontal variant of bar-3d (axis swap).
   'column-3d',
+  // Atlas chart atom (2026-06-18) — polyline + sphere markers, supports closed loop.
+  'line-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

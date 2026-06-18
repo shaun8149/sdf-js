@@ -391,6 +391,17 @@ const PRIMS = {
     return `sdColumn3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
   },
 
+  // line-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/line-3d.js
+  // Polyline with sphere markers. N points + N-1 capsule connectors + optional
+  // closed loop. closedFlag = 0 or 1 (passed as float for ABI uniformity).
+  'line-3d': (
+    [paddedValues, count, pointSpacing, pointRadius, lineThickness, maxH, closedFlag],
+    p,
+  ) => {
+    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
+    return `sdLine3d(${p}, ${arrLit}, ${flt(count)}, ${flt(pointSpacing)}, ${flt(pointRadius)}, ${flt(lineThickness)}, ${flt(maxH)}, ${flt(closedFlag)})`;
+  },
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

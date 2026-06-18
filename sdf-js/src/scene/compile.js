@@ -110,6 +110,7 @@ import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
 import { pyramid3dSDF } from './components/charts/hierarchy/pyramid-3d.js';
 import { bar3dSDF } from './components/charts/data/bar-3d.js';
 import { column3dSDF } from './components/charts/data/column-3d.js';
+import { line3dSDF } from './components/charts/data/line-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -333,6 +334,16 @@ const PRIMITIVE_FACTORIES = {
       barDepth: a.barDepth ?? a.depth ?? 0.4,
       gap: a.gap ?? 0.1,
       maxHeight: a.maxHeight ?? a.length ?? a.scale ?? 2.0,
+    }),
+  'line-3d': (a) =>
+    line3dSDF({
+      values: a.values ?? a.data ?? [0.3, 0.5, 0.7, 0.4, 0.8, 0.9],
+      count: a.count ?? null,
+      pointSpacing: a.pointSpacing ?? a.spacing ?? 0.5,
+      pointRadius: a.pointRadius ?? a.markerSize ?? 0.08,
+      lineThickness: a.lineThickness ?? a.thickness ?? 0.04,
+      maxHeight: a.maxHeight ?? a.scale ?? 2.0,
+      closed: a.closed ?? false,
     }),
   link: (a) =>
     linkSDF({

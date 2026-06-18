@@ -2218,6 +2218,46 @@ float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, 
   return sdBar3d(vec3(-p.y, p.x, p.z), values, count, barW, barD, gap, maxH);
 }
 
+// line-3d (Atlas chart atom, charts/data/) — polyline + sphere markers.
+// N points at (xStart + i*spacing, values[i]*maxH, 0), connected by N-1
+// capsule segments. Optional closed loop. closedFlag passed as float (0/1).
+float sdLine3d(vec3 p, float values[32], float count, float pointSpacing, float pointRadius, float lineThickness, float maxH, float closedFlag) {
+  float totalX = (count - 1.0) * pointSpacing;
+  float xStart = -totalX * 0.5;
+  float minDist = 1e10;
+
+  // Point markers (skip if pointRadius == 0)
+  if (pointRadius > 0.0) {
+    for (int i = 0; i < 32; i++) {
+      if (float(i) >= count) break;
+      vec3 pi = vec3(xStart + float(i) * pointSpacing, values[i] * maxH, 0.0);
+      float d = length(p - pi) - pointRadius;
+      minDist = min(minDist, d);
+    }
+  }
+
+  // Line segments (skip if lineThickness == 0 or only 1 point)
+  if (lineThickness > 0.0 && count > 1.0) {
+    for (int i = 0; i < 31; i++) {
+      if (float(i) >= count - 1.0) break;
+      vec3 a = vec3(xStart + float(i) * pointSpacing, values[i] * maxH, 0.0);
+      vec3 b = vec3(xStart + float(i + 1) * pointSpacing, values[i + 1] * maxH, 0.0);
+      float d = sdCapsule(p, a, b, lineThickness);
+      minDist = min(minDist, d);
+    }
+    // Closed loop: last → first
+    if (closedFlag > 0.5 && count > 2.0) {
+      int lastIdx = int(count) - 1;
+      vec3 a = vec3(xStart + float(lastIdx) * pointSpacing, values[lastIdx] * maxH, 0.0);
+      vec3 b = vec3(xStart, values[0] * maxH, 0.0);
+      float d = sdCapsule(p, a, b, lineThickness);
+      minDist = min(minDist, d);
+    }
+  }
+
+  return minDist;
+}
+
 // pyramid-3d (Atlas chart atom, charts/hierarchy/) — stacked N-level pyramid
 // with linear width taper from baseW (bottom) to topW (top), centered at origin.
 // Loop bounded to 20 levels (matches JS clamp in pyramid3dSDF).
