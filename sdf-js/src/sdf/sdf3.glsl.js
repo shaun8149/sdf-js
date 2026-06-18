@@ -2188,6 +2188,26 @@ float length8(vec3 p) {
   return pow(p.x + p.y + p.z, 1.0 / 8.0);
 }
 
+// bar-3d (Atlas chart atom, charts/data/) — N data-driven bars along X axis,
+// each height = values[i] * maxH. Bars sit on y=0 plane (bottom), X-centered.
+// MAX 32 bars (GLSL float[32] array literal cap matches JS clamp in bar3dSDF).
+float sdBar3d(vec3 p, float values[32], float count, float barW, float barD, float gap, float maxH) {
+  float totalX = count * barW + (count - 1.0) * gap;
+  float xStart = -totalX * 0.5 + barW * 0.5;
+  float minDist = 1e10;
+  for (int i = 0; i < 32; i++) {
+    if (float(i) >= count) break;
+    float v = values[i];
+    if (v <= 0.0) continue;
+    float h = v * maxH;
+    float xc = xStart + float(i) * (barW + gap);
+    float yc = h * 0.5;
+    float d = sdBox(p - vec3(xc, yc, 0.0), vec3(barW * 0.5, h * 0.5, barD * 0.5));
+    minDist = min(minDist, d);
+  }
+  return minDist;
+}
+
 // pyramid-3d (Atlas chart atom, charts/hierarchy/) — stacked N-level pyramid
 // with linear width taper from baseW (bottom) to topW (top), centered at origin.
 // Loop bounded to 20 levels (matches JS clamp in pyramid3dSDF).

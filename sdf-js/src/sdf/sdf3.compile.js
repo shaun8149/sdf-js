@@ -375,6 +375,14 @@ const PRIMS = {
   'pyramid-3d': ([levels, baseW, topW, layerH, gap, depth], p) =>
     `sdPyramid3d(${p}, ${flt(levels)}, ${flt(baseW)}, ${flt(topW)}, ${flt(layerH)}, ${flt(gap)}, ${flt(depth)})`,
 
+  // bar-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/bar-3d.js
+  // Data-driven bar chart, N bars along X (max 32, GLSL float[32] cap).
+  // First atom with array-typed input — values padded to 32 with 0s on JS side.
+  'bar-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
+    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
+    return `sdBar3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
+  },
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

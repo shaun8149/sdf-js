@@ -108,6 +108,7 @@ import { terrainElevatedSDF } from './components/community/kk-elevated.js';
 import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.js';
 import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
 import { pyramid3dSDF } from './components/charts/hierarchy/pyramid-3d.js';
+import { bar3dSDF } from './components/charts/data/bar-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -313,6 +314,15 @@ const PRIMITIVE_FACTORIES = {
       layerHeight: a.layerHeight ?? a.thickness ?? 0.3,
       gap: a.gap ?? 0.05,
       depth: a.depth ?? 0.6,
+    }),
+  'bar-3d': (a) =>
+    bar3dSDF({
+      values: a.values ?? a.data ?? [0.3, 0.7, 1.0, 0.5, 0.8],
+      count: a.count ?? null,
+      barWidth: a.barWidth ?? a.width ?? 0.4,
+      barDepth: a.barDepth ?? a.depth ?? 0.4,
+      gap: a.gap ?? 0.1,
+      maxHeight: a.maxHeight ?? a.scale ?? 2.0,
     }),
   link: (a) =>
     linkSDF({
