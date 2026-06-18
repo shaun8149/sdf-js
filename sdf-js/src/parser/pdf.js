@@ -95,10 +95,16 @@ async function parsePage(pdf, pageNum) {
       };
     });
 
-  // Title heuristic: largest font size text in top half of page.
-  // If multiple items tie on size, pick the topmost (smallest y).
-  const topHalfItems = items.filter((it) => it.y < H * 0.5);
-  const titleCandidates = topHalfItems.length > 0 ? topHalfItems : items;
+  // Title heuristic: largest font size text in top half, **excluding** items
+  // that look like in-chart labels (pure numbers, percentage signs, single
+  // characters). Real titles contain letters.
+  // Known limitation: multi-line titles (e.g. "3D SPHERES" + "FILL LEVELS"
+  // on two lines) only extract the first line — PDF.js gives each text run
+  // as its own item, joining is deferred to Sprint 2 (need x/y/font clustering).
+  const titleLikeRegex = /[A-Za-z一-鿿]{2,}/; // ≥2 letters/CJK = word-y
+  const topHalfItems = items.filter((it) => it.y < H * 0.5 && titleLikeRegex.test(it.text));
+  const titleCandidates =
+    topHalfItems.length > 0 ? topHalfItems : items.filter((it) => titleLikeRegex.test(it.text));
   let title = null;
   if (titleCandidates.length > 0) {
     const maxSize = Math.max(...titleCandidates.map((it) => it.fontSize));
@@ -109,20 +115,24 @@ async function parsePage(pdf, pageNum) {
 
   // Body: everything not in the title (matched by text equality).
   // Detect bullets: lines starting with •, ▪, -, *, ▸, ◦, ◾
+  // Drop empty-after-strip items (PDF decoration glyphs that had only a
+  // bullet character with no following text).
   const bulletPrefix = /^[•▪■▸◦○●▶*\-·▪▫]\s*/;
   const body = items
     .filter((it) => it.text !== title)
     .map((it) => {
       const isBullet = bulletPrefix.test(it.text);
+      const cleaned = isBullet ? it.text.replace(bulletPrefix, '').trim() : it.text;
       return {
         kind: isBullet ? 'bullet' : 'paragraph',
-        text: isBullet ? it.text.replace(bulletPrefix, '').trim() : it.text,
+        text: cleaned,
         level: 0, // TODO: detect indent level by x offset
         bbox: { x: it.x, y: it.y, w: it.w, h: it.h },
         fontSize: it.fontSize,
         fontFamily: it.fontFamily,
       };
-    });
+    })
+    .filter((b) => b.text.length > 0); // drop empty-text items
 
   // Visuals: defer to Sprint 2 (need PDF op-stream walking). For now empty.
   const visuals = [];
