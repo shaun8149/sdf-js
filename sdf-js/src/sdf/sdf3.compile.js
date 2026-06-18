@@ -402,6 +402,12 @@ const PRIMS = {
     return `sdLine3d(${p}, ${arrLit}, ${flt(count)}, ${flt(pointSpacing)}, ${flt(pointRadius)}, ${flt(lineThickness)}, ${flt(maxH)}, ${flt(closedFlag)})`;
   },
 
+  // pie-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/pie-3d.js
+  // GLSL only uses geometry params (disc/donut SDF). Slice values + startAngle
+  // + clockwise are AST-only (for future material layer slice coloring).
+  'pie-3d': ([, , outerR, innerR, thickness], p) =>
+    `sdPie3d(${p}, ${flt(outerR)}, ${flt(innerR)}, ${flt(thickness)})`,
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

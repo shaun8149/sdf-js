@@ -111,6 +111,7 @@ import { pyramid3dSDF } from './components/charts/hierarchy/pyramid-3d.js';
 import { bar3dSDF } from './components/charts/data/bar-3d.js';
 import { column3dSDF } from './components/charts/data/column-3d.js';
 import { line3dSDF } from './components/charts/data/line-3d.js';
+import { pie3dSDF } from './components/charts/data/pie-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -344,6 +345,16 @@ const PRIMITIVE_FACTORIES = {
       lineThickness: a.lineThickness ?? a.thickness ?? 0.04,
       maxHeight: a.maxHeight ?? a.scale ?? 2.0,
       closed: a.closed ?? false,
+    }),
+  'pie-3d': (a) =>
+    pie3dSDF({
+      values: a.values ?? a.data ?? [0.3, 0.2, 0.15, 0.2, 0.15],
+      count: a.count ?? null,
+      outerRadius: a.outerRadius ?? a.radius ?? 1.0,
+      innerRadius: a.innerRadius ?? a.holeRadius ?? 0,
+      thickness: a.thickness ?? a.depth ?? 0.3,
+      startAngle: a.startAngle ?? Math.PI / 2,
+      clockwise: a.clockwise ?? true,
     }),
   link: (a) =>
     linkSDF({

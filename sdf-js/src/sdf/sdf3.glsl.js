@@ -2218,6 +2218,22 @@ float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, 
   return sdBar3d(vec3(-p.y, p.x, p.z), values, count, barW, barD, gap, maxH);
 }
 
+// pie-3d (Atlas chart atom, charts/data/) — disc/donut SDF + Z extrusion.
+// Slice values stored in JS-side AST for future material layer (color per
+// slice via atan2 lookup), but SDF geometry is just the disc shape. Per-
+// slice MIN approach is mathematically INVALID for union SDFs (boundary
+// points return 0 instead of radial distance) — see pie-3d.js header.
+float sdPie3d(vec3 p, float outerR, float innerR, float thickness) {
+  float lenXY = length(p.xy);
+  float radial = lenXY - outerR;
+  if (innerR > 0.0) {
+    radial = max(radial, -(lenXY - innerR));
+  }
+  // IQ 2D→3D extrusion along Z
+  vec2 w = vec2(radial, abs(p.z) - thickness * 0.5);
+  return min(max(w.x, w.y), 0.0) + length(max(w, vec2(0.0)));
+}
+
 // line-3d (Atlas chart atom, charts/data/) — polyline + sphere markers.
 // N points at (xStart + i*spacing, values[i]*maxH, 0), connected by N-1
 // capsule segments. Optional closed loop. closedFlag passed as float (0/1).
