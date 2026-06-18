@@ -2187,6 +2187,23 @@ float length8(vec3 p) {
   p = p * p; p = p * p; p = p * p;
   return pow(p.x + p.y + p.z, 1.0 / 8.0);
 }
+
+// pyramid-3d (Atlas chart atom, charts/hierarchy/) — stacked N-level pyramid
+// with linear width taper from baseW (bottom) to topW (top), centered at origin.
+// Loop bounded to 20 levels (matches JS clamp in pyramid3dSDF).
+float sdPyramid3d(vec3 p, float levels, float baseW, float topW, float layerH, float gap, float depth) {
+  float totalH = levels * layerH + (levels - 1.0) * gap;
+  float minDist = 1e10;
+  for (int i = 0; i < 20; i++) {
+    if (float(i) >= levels) break;
+    float t = levels > 1.0 ? float(i) / (levels - 1.0) : 0.0;
+    float w = baseW + t * (topW - baseW);
+    float yc = float(i) * (layerH + gap) - totalH * 0.5 + layerH * 0.5;
+    float d = sdBox(p - vec3(0.0, yc, 0.0), vec3(w * 0.5, layerH * 0.5, depth * 0.5));
+    minDist = min(minDist, d);
+  }
+  return minDist;
+}
 `;
 
 // =============================================================================

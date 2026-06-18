@@ -107,6 +107,7 @@ import { terrainHeightmapSDF } from './components/community/iq-terrain.js';
 import { terrainElevatedSDF } from './components/community/kk-elevated.js';
 import { terrainWithLakesSDF } from './components/community/iq-rainforest-lakes.js';
 import { archBridgeSDF } from './components/community/iq-arch-bridge.js';
+import { pyramid3dSDF } from './components/charts/hierarchy/pyramid-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -301,6 +302,17 @@ const PRIMITIVE_FACTORIES = {
     solidAngleSDF({
       halfAperture: a.halfAperture ?? Math.PI / 6,
       radius: a.radius ?? 0.5,
+    }),
+
+  // -- Atlas chart atoms (see src/scene/components/charts/) --
+  'pyramid-3d': (a) =>
+    pyramid3dSDF({
+      levels: a.levels ?? 5,
+      baseWidth: a.baseWidth ?? a.base ?? 2.0,
+      topWidth: a.topWidth ?? a.top ?? 0.4,
+      layerHeight: a.layerHeight ?? a.thickness ?? 0.3,
+      gap: a.gap ?? 0.05,
+      depth: a.depth ?? 0.6,
     }),
   link: (a) =>
     linkSDF({

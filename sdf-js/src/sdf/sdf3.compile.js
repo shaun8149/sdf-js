@@ -368,6 +368,13 @@ const PRIMS = {
   link: ([halfLength, majorR, minorR], p) =>
     `sdLink(${p}, ${flt(halfLength)}, ${flt(majorR)}, ${flt(minorR)})`,
 
+  // pyramid-3d (Atlas chart atom, 2026-06-18) — see components/charts/hierarchy/pyramid-3d.js
+  // Stacked N-level pyramid with linear width taper. First Atlas-built chart
+  // atom for next-gen Prezi use case (parametric levels = exact by construction,
+  // diffusion baseline cannot do this).
+  'pyramid-3d': ([levels, baseW, topW, layerH, gap, depth], p) =>
+    `sdPyramid3d(${p}, ${flt(levels)}, ${flt(baseW)}, ${flt(topW)}, ${flt(layerH)}, ${flt(gap)}, ${flt(depth)})`,
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

@@ -165,6 +165,9 @@ export const PRIMITIVE_TYPES = new Set([
   'terrain-canyon',
   'arch-bridge',
   'procedural-city',
+  // Atlas chart atom (2026-06-18) — first taxonomy charts/hierarchy/ entry.
+  // First Atlas-built atom for next-gen Prezi use case lock.
+  'pyramid-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai
