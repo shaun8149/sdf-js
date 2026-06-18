@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas — text-3d visual verify (Wave 1: digits + KPI)</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="page" style="max-width: 1280px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>text-3d.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Atlas typography Wave 1: digits 0–9 plus KPI symbols
+            (<code>% . - + $</code>) as hand-crafted monoline SDFs built from
+            IQ <code>segment</code>, <code>arc</code>, <code>ring</code>, and
+            <code>circle</code> primitives. Each glyph is a real distance
+            field (anti-aliased for free, extrudable, composable). No font
+            atlas, no MSDF, no textures.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="./pdf-mapping-demo.html">pdf → 3d</a>
+          <a href="./bar-3d-test.html">bar-3d</a>
+        </div>
+      </div>
+      <div class="panel-grid" id="grid"></div>
+    </div>
+    <script type="module" src="./text-3d-test.js"></script>
+  </body>
+</html>

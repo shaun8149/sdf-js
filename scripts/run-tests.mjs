@@ -65,6 +65,9 @@ const TESTS = [
 
   // M1.5 SlideData → SceneData mapper (Atlas use case auto-build pipeline)
   { category: 'mapper', file: 'sdf-js/scripts/test-slide-mapper.mjs' },
+
+  // Atlas typography Wave 1 — digits + KPI symbols as SDF glyphs.
+  { category: 'typography', file: 'sdf-js/scripts/test-text-3d.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
