@@ -113,6 +113,7 @@ import { column3dSDF } from './components/charts/data/column-3d.js';
 import { line3dSDF } from './components/charts/data/line-3d.js';
 import { pie3dSDF } from './components/charts/data/pie-3d.js';
 import { kpiCard3dSDF } from './components/charts/data/kpi-card-3d.js';
+import { businessIconSDF } from './components/icons/business.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -368,6 +369,13 @@ const PRIMITIVE_FACTORIES = {
       unit: a.unit ?? '',
       trend: a.trend ?? 'flat',
       trendValue: a.trendValue ?? 0,
+    }),
+  'business-icon': (a) =>
+    businessIconSDF({
+      name: a.name ?? 'check',
+      size: a.size ?? 1.0,
+      thickness: a.thickness ?? 0.15,
+      depth: a.depth ?? 0.15,
     }),
   link: (a) =>
     linkSDF({

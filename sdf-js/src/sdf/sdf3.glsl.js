@@ -2218,6 +2218,91 @@ float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, 
   return sdBar3d(vec3(-p.y, p.x, p.z), values, count, barW, barD, gap, maxH);
 }
 
+// business-icon (Atlas icon set, icons/business/) — 10-icon dispatcher.
+// id 0=arrow-up, 1=arrow-down, 2=check, 3=x-mark, 4=dollar, 5=percent,
+// 6=person, 7=gear, 8=document, 9=calendar. See components/icons/business.js.
+float sdBusinessIcon(vec3 p, float iconId, float size, float thickness, float depth) {
+  float half = size * 0.5;
+  float r = thickness * 0.5;
+  float halfD = depth * 0.5;
+  int id = int(iconId + 0.5);
+
+  if (id == 0) {  // arrow-up
+    vec3 apex = vec3(0.0, half, 0.0);
+    return min(
+      sdCapsule(p, apex, vec3(-half, -half * 0.5, 0.0), r),
+      sdCapsule(p, apex, vec3(half, -half * 0.5, 0.0), r)
+    );
+  }
+  if (id == 1) {  // arrow-down (chevron y-flipped)
+    vec3 q = vec3(p.x, -p.y, p.z);
+    vec3 apex = vec3(0.0, half, 0.0);
+    return min(
+      sdCapsule(q, apex, vec3(-half, -half * 0.5, 0.0), r),
+      sdCapsule(q, apex, vec3(half, -half * 0.5, 0.0), r)
+    );
+  }
+  if (id == 2) {  // check ✓
+    return min(
+      sdCapsule(p, vec3(-half * 0.7, -half * 0.1, 0.0), vec3(-half * 0.1, -half * 0.5, 0.0), r),
+      sdCapsule(p, vec3(-half * 0.1, -half * 0.5, 0.0), vec3(half * 0.6, half * 0.5, 0.0), r)
+    );
+  }
+  if (id == 3) {  // x-mark ✗
+    return min(
+      sdCapsule(p, vec3(-half, -half, 0.0), vec3(half, half, 0.0), r),
+      sdCapsule(p, vec3(-half, half, 0.0), vec3(half, -half, 0.0), r)
+    );
+  }
+  if (id == 4) {  // dollar $ (vertical bar + 2 hats)
+    float d = sdCapsule(p, vec3(0.0, half, 0.0), vec3(0.0, -half, 0.0), r);
+    d = min(d, sdCapsule(p, vec3(-half * 0.5, half * 0.5, 0.0), vec3(half * 0.5, half * 0.5, 0.0), r));
+    d = min(d, sdCapsule(p, vec3(-half * 0.5, -half * 0.5, 0.0), vec3(half * 0.5, -half * 0.5, 0.0), r));
+    return d;
+  }
+  if (id == 5) {  // percent (2 spheres + diagonal)
+    float sR = thickness * 1.2;
+    float d = length(p - vec3(-half * 0.5, half * 0.5, 0.0)) - sR;
+    d = min(d, length(p - vec3(half * 0.5, -half * 0.5, 0.0)) - sR);
+    d = min(d, sdCapsule(p, vec3(-half, -half, 0.0), vec3(half, half, 0.0), r));
+    return d;
+  }
+  if (id == 6) {  // person (head + body)
+    float d = length(p - vec3(0.0, half * 0.4, 0.0)) - half * 0.35;
+    d = min(d, sdRoundedBox(p - vec3(0.0, -half * 0.4, 0.0), vec3(half * 0.6, half * 0.4, halfD), half * 0.3));
+    return d;
+  }
+  if (id == 7) {  // gear (ring + 6 teeth)
+    float lenXY = length(p.xy);
+    float outerR = half * 0.85;
+    float innerR = half * 0.4;
+    float discO = lenXY - outerR;
+    vec2 wO = vec2(discO, abs(p.z) - halfD);
+    float discOExt = min(max(wO.x, wO.y), 0.0) + length(max(wO, vec2(0.0)));
+    float discI = lenXY - innerR;
+    vec2 wI = vec2(discI, abs(p.z) - halfD);
+    float discIExt = min(max(wI.x, wI.y), 0.0) + length(max(wI, vec2(0.0)));
+    float d = max(discOExt, -discIExt);
+    for (int i = 0; i < 6; i++) {
+      float a = float(i) * 1.0471975511965976;  // π/3
+      float tx = cos(a) * half * 0.92;
+      float ty = sin(a) * half * 0.92;
+      d = min(d, length(p - vec3(tx, ty, 0.0)) - half * 0.15);
+    }
+    return d;
+  }
+  if (id == 8) {  // document (rounded rect)
+    return sdRoundedBox(p, vec3(size * 0.4, size * 0.5, halfD), size * 0.04);
+  }
+  if (id == 9) {  // calendar (rect + 2 binding bumps)
+    float d = sdRoundedBox(p, vec3(size * 0.45, size * 0.45, halfD), size * 0.05);
+    d = min(d, sdRoundedBox(p - vec3(-size * 0.2, size * 0.55, 0.0), vec3(size * 0.05, size * 0.1, halfD * 1.5), size * 0.02));
+    d = min(d, sdRoundedBox(p - vec3(size * 0.2, size * 0.55, 0.0), vec3(size * 0.05, size * 0.1, halfD * 1.5), size * 0.02));
+    return d;
+  }
+  return 1e6;  // unknown icon id
+}
+
 // pie-3d (Atlas chart atom, charts/data/) — disc/donut SDF + Z extrusion.
 // Slice values stored in JS-side AST for future material layer (color per
 // slice via atan2 lookup), but SDF geometry is just the disc shape. Per-

@@ -414,6 +414,11 @@ const PRIMS = {
   'kpi-card-3d': ([width, height, depth, r /* value, label, unit, trend, trendValue */], p) =>
     `sdRoundedBox(${p}, ${vec3([half(width), half(height), half(depth)])}, ${flt(r)})`,
 
+  // business-icon (Atlas icon set, 2026-06-18) — see components/icons/business.js
+  // 10-icon dispatcher: iconId 0-9 (name string is AST-only).
+  'business-icon': ([iconId, size, thickness, depth /* name */], p) =>
+    `sdBusinessIcon(${p}, ${flt(iconId)}, ${flt(size)}, ${flt(thickness)}, ${flt(depth)})`,
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)
