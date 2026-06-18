@@ -11,3 +11,4 @@ node_modules/
 
 # 产物
 *.stl
+.gstack/
