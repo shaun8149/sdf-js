@@ -419,6 +419,11 @@ const PRIMS = {
   'business-icon': ([iconId, size, thickness, depth /* name */], p) =>
     `sdBusinessIcon(${p}, ${flt(iconId)}, ${flt(size)}, ${flt(thickness)}, ${flt(depth)})`,
 
+  // cover-3d (Atlas atom, 2026-06-18) — see components/presentation/cover-3d.js
+  // Stage + backdrop. title/subtitle are AST-only semantic metadata.
+  'cover-3d': ([sw, sd, st, bh, bt, r /* title, subtitle */], p) =>
+    `sdCover3d(${p}, ${flt(sw)}, ${flt(sd)}, ${flt(st)}, ${flt(bh)}, ${flt(bt)}, ${flt(r)})`,
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

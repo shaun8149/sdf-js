@@ -114,6 +114,7 @@ import { line3dSDF } from './components/charts/data/line-3d.js';
 import { pie3dSDF } from './components/charts/data/pie-3d.js';
 import { kpiCard3dSDF } from './components/charts/data/kpi-card-3d.js';
 import { businessIconSDF } from './components/icons/business.js';
+import { cover3dSDF } from './components/presentation/cover-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -376,6 +377,17 @@ const PRIMITIVE_FACTORIES = {
       size: a.size ?? 1.0,
       thickness: a.thickness ?? 0.15,
       depth: a.depth ?? 0.15,
+    }),
+  'cover-3d': (a) =>
+    cover3dSDF({
+      stageWidth: a.stageWidth ?? a.width ?? 4.0,
+      stageDepth: a.stageDepth ?? a.depth ?? 2.0,
+      stageThickness: a.stageThickness ?? a.floorThickness ?? 0.2,
+      backdropHeight: a.backdropHeight ?? a.wallHeight ?? 2.5,
+      backdropThickness: a.backdropThickness ?? a.wallThickness ?? 0.15,
+      cornerRadius: a.cornerRadius ?? a.radius ?? 0.1,
+      title: a.title ?? '',
+      subtitle: a.subtitle ?? '',
     }),
   link: (a) =>
     linkSDF({

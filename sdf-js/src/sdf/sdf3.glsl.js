@@ -2218,6 +2218,21 @@ float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, 
   return sdBar3d(vec3(-p.y, p.x, p.z), values, count, barW, barD, gap, maxH);
 }
 
+// cover-3d (Atlas atom, presentation/) — stage + backdrop composition.
+// Stage is a horizontal floor plate (top surface at y=0). Backdrop is a
+// vertical wall at the back. If backdropHeight==0 OR backdropThickness==0,
+// only stage is rendered.
+float sdCover3d(vec3 p, float stageW, float stageD, float stageT, float backdropH, float backdropT, float r) {
+  float rStage = min(r, min(stageW, min(stageD, stageT)) * 0.5);
+  // Stage: floor, top at y=0
+  float dStage = sdRoundedBox(p - vec3(0.0, -stageT * 0.5, 0.0), vec3(stageW * 0.5, stageT * 0.5, stageD * 0.5), rStage);
+  if (backdropH <= 0.0 || backdropT <= 0.0) return dStage;
+  // Backdrop: vertical wall at z = -stageD/2 - backdropT/2
+  float rBack = min(r, min(stageW, min(backdropH, backdropT)) * 0.5);
+  float dBack = sdRoundedBox(p - vec3(0.0, backdropH * 0.5, -stageD * 0.5 - backdropT * 0.5), vec3(stageW * 0.5, backdropH * 0.5, backdropT * 0.5), rBack);
+  return min(dStage, dBack);
+}
+
 // business-icon (Atlas icon set, icons/business/) — 10-icon dispatcher.
 // id 0=arrow-up, 1=arrow-down, 2=check, 3=x-mark, 4=dollar, 5=percent,
 // 6=person, 7=gear, 8=document, 9=calendar. See components/icons/business.js.

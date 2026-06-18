@@ -180,6 +180,8 @@ export const PRIMITIVE_TYPES = new Set([
   'kpi-card-3d',
   // Atlas icon set (2026-06-18) — 10-icon business pack (dispatched by name).
   'business-icon',
+  // Atlas presentation atom (2026-06-18) — cover slide stage + backdrop.
+  'cover-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai
