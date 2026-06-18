@@ -62,6 +62,9 @@ const TESTS = [
 
   // M0.3 PDF parser (Atlas use case PPT-lift workflow)
   { category: 'parser', file: 'sdf-js/scripts/test-pdf-parser.mjs' },
+
+  // M1.5 SlideData → SceneData mapper (Atlas use case auto-build pipeline)
+  { category: 'mapper', file: 'sdf-js/scripts/test-slide-mapper.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
