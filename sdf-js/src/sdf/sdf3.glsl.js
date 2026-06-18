@@ -2188,6 +2188,11 @@ float length8(vec3 p) {
   return pow(p.x + p.y + p.z, 1.0 / 8.0);
 }
 
+// column-3d (Atlas chart atom, charts/data/) — horizontal bar chart.
+// Delegates to sdBar3d with axis swap: world (X, Y, Z) → bar input (-Y, X, Z).
+// Result: bars stack along world Y (top to bottom), grow along world +X.
+float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, float gap, float maxH);
+
 // bar-3d (Atlas chart atom, charts/data/) — N data-driven bars along X axis,
 // each height = values[i] * maxH. Bars sit on y=0 plane (bottom), X-centered.
 // MAX 32 bars (GLSL float[32] array literal cap matches JS clamp in bar3dSDF).
@@ -2206,6 +2211,11 @@ float sdBar3d(vec3 p, float values[32], float count, float barW, float barD, flo
     minDist = min(minDist, d);
   }
   return minDist;
+}
+
+// column-3d body (forward-declared above)
+float sdColumn3d(vec3 p, float values[32], float count, float barW, float barD, float gap, float maxH) {
+  return sdBar3d(vec3(-p.y, p.x, p.z), values, count, barW, barD, gap, maxH);
 }
 
 // pyramid-3d (Atlas chart atom, charts/hierarchy/) — stacked N-level pyramid

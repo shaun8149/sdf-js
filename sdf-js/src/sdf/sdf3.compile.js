@@ -383,6 +383,14 @@ const PRIMS = {
     return `sdBar3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
   },
 
+  // column-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/column-3d.js
+  // Horizontal bar chart. Same args as bar-3d, GLSL emits sdColumn3d (delegates
+  // to sdBar3d with axis swap on input).
+  'column-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
+    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
+    return `sdColumn3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
+  },
+
   // ---- Batch port 2026-05-18: 7 IQ-canonical primitives that already had GLSL
   // helpers in SDF3_GLSL but were missing JS-side bindings + emit dispatch.
   //   capped-torus(capAngle, majorR, minorR) → sdCappedTorus(p, vec2(sin,cos), ra, rb)

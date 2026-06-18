@@ -26,7 +26,63 @@
 
 import { SDF3 } from '../../../../sdf/core.js';
 
-const MAX_BARS = 32;
+export const MAX_BARS = 32;
+
+/**
+ * Shared distance evaluator: N axis-aligned bars on the y=0 plane, growing
+ * in +Y, arranged along X. Used by bar-3d (canonical orientation) and by
+ * column-3d (rotated 90° via axis swap on input p — see column-3d.js).
+ *
+ * Returns raw distance (not an SDF3 instance). Caller wraps in SDF3().
+ *
+ * @param {[number,number,number]} p     world position
+ * @param {number}   N                   resolved bar count (0..MAX_BARS)
+ * @param {number[]} vals                resolved bar heights (length N)
+ * @param {number}   barWidth            X width per bar
+ * @param {number}   barDepth            Z depth per bar
+ * @param {number}   gap                 X gap between bars
+ * @param {number}   maxHeight           Y for value=1
+ */
+export function evalBarsSDF(p, N, vals, barWidth, barDepth, gap, maxHeight) {
+  if (N === 0) return 1e6;
+  const totalX = N * barWidth + (N - 1) * gap;
+  const xStart = -totalX / 2 + barWidth / 2;
+  let minDist = Infinity;
+  for (let i = 0; i < N; i++) {
+    const h = vals[i] * maxHeight;
+    if (h <= 0) continue;
+    const xc = xStart + i * (barWidth + gap);
+    const yc = h / 2;
+    const qx = Math.abs(p[0] - xc) - barWidth / 2;
+    const qy = Math.abs(p[1] - yc) - h / 2;
+    const qz = Math.abs(p[2]) - barDepth / 2;
+    const dx = Math.max(qx, 0);
+    const dy = Math.max(qy, 0);
+    const dz = Math.max(qz, 0);
+    const outside = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    const inside = Math.min(Math.max(qx, qy, qz), 0);
+    const d = outside + inside;
+    if (d < minDist) minDist = d;
+  }
+  return minDist === Infinity ? 1e6 : minDist;
+}
+
+/**
+ * Shared param resolver: clamp count to [0, MAX_BARS], filter values to N
+ * non-negative finite numbers, pad values to MAX_BARS with zeros for the
+ * GLSL float[32] emit. Returns { N, vals, paddedValues }.
+ */
+export function resolveBarParams(values, count) {
+  const N = Math.max(0, Math.min(MAX_BARS, Math.floor(count ?? values.length)));
+  const vals = [];
+  for (let i = 0; i < N; i++) {
+    const v = values[i];
+    vals.push(Number.isFinite(v) ? Math.max(0, v) : 0);
+  }
+  const paddedValues = vals.slice();
+  while (paddedValues.length < MAX_BARS) paddedValues.push(0);
+  return { N, vals, paddedValues };
+}
 
 /**
  * Data-driven bar chart SDF.
@@ -47,43 +103,9 @@ export function bar3dSDF({
   gap = 0.1,
   maxHeight = 2.0,
 } = {}) {
-  // Resolve final count + values list (clamped to MAX_BARS for GLSL compat)
-  const N = Math.max(0, Math.min(MAX_BARS, Math.floor(count ?? values.length)));
-  const vals = [];
-  for (let i = 0; i < N; i++) {
-    const v = values[i];
-    vals.push(Number.isFinite(v) ? Math.max(0, v) : 0);
-  }
+  const { N, vals, paddedValues } = resolveBarParams(values, count);
 
-  const totalX = N > 0 ? N * barWidth + (N - 1) * gap : 0;
-  const xStart = -totalX / 2 + barWidth / 2;
-
-  const inst = SDF3((p) => {
-    if (N === 0) return 1e6; // degenerate: nothing
-    let minDist = Infinity;
-    for (let i = 0; i < N; i++) {
-      const h = vals[i] * maxHeight;
-      if (h <= 0) continue; // skip zero-height bars (no surface)
-      const xc = xStart + i * (barWidth + gap);
-      const yc = h / 2;
-      // sdBox(p - [xc, yc, 0], [barWidth/2, h/2, barDepth/2])
-      const qx = Math.abs(p[0] - xc) - barWidth / 2;
-      const qy = Math.abs(p[1] - yc) - h / 2;
-      const qz = Math.abs(p[2]) - barDepth / 2;
-      const dx = Math.max(qx, 0);
-      const dy = Math.max(qy, 0);
-      const dz = Math.max(qz, 0);
-      const outside = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      const inside = Math.min(Math.max(qx, qy, qz), 0);
-      const d = outside + inside;
-      if (d < minDist) minDist = d;
-    }
-    return minDist === Infinity ? 1e6 : minDist;
-  });
-
-  // GLSL emit needs fixed-length array. Pad to MAX_BARS with zeros.
-  const paddedValues = vals.slice();
-  while (paddedValues.length < MAX_BARS) paddedValues.push(0);
+  const inst = SDF3((p) => evalBarsSDF(p, N, vals, barWidth, barDepth, gap, maxHeight));
 
   inst.ast = {
     kind: 'prim',
