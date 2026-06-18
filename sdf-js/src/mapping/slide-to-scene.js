@@ -43,27 +43,57 @@ const sceneSkeleton = () => ({
 /**
  * Detect "N percentage labels" pattern (chart-of-percentages).
  * Returns { values: number[], confidence: 0-1 } or null.
+ *
+ * Two PDF idioms we have to handle:
+ *   - "50" + "%" as separate text runs (e.g. test-deck slide 18) → regex sees
+ *     "50" → matches \d+%? (no suffix).
+ *   - "50%" as one glued run (e.g. test-deck slide 1) → \d+%? matches with
+ *     suffix; parseInt strips the % to recover 50.
+ *
+ * Chart chrome filtering: axis tick labels (e.g. "0%", "50%", "100%" at small
+ * font next to the y-axis) are noise, not data. We cluster numeric items by
+ * font size and keep only the dominant (largest) group — assumes data labels
+ * are typeset bigger than axis ticks, which is the convention in every
+ * percent-list slide we've seen.
  */
 function detectPercentList(slide) {
-  // Find body items whose text is pure number (no letters)
-  const numItems = slide.body
-    .filter((b) => /^\d+$/.test(b.text.trim()))
-    .map((b) => ({ value: parseInt(b.text.trim(), 10), bbox: b.bbox }));
+  const NUMERIC_PERCENT = /^(\d+)%?$/;
+  const candidates = slide.body
+    .map((b) => {
+      const m = NUMERIC_PERCENT.exec(b.text.trim());
+      return m ? { value: parseInt(m[1], 10), bbox: b.bbox, fontSize: b.fontSize } : null;
+    })
+    .filter((c) => c !== null);
 
-  if (numItems.length < 3) return null;
+  if (candidates.length < 3) return null;
   // Reject if numbers don't look like percentages (most > 100 = not percentages)
-  const inPercentRange = numItems.filter((n) => n.value >= 0 && n.value <= 100);
-  if (inPercentRange.length / numItems.length < 0.7) return null;
+  const inPercentRange = candidates.filter((n) => n.value >= 0 && n.value <= 100);
+  if (inPercentRange.length / candidates.length < 0.7) return null;
+
+  // Font-size cluster: drop items that are dramatically smaller than the
+  // largest (assumed axis ticks / chrome). Only filter when there's a clear
+  // 3× gap — many real charts encode value via font size (e.g. "80" at 48pt
+  // next to "20" at 18pt are BOTH data, ratio 2.7×, must keep both). Axis
+  // ticks in our corpus sit at 10pt vs data at 36pt = 3.3×, gets dropped.
+  const fontSizes = inPercentRange.map((n) => n.fontSize || 0).filter((fs) => fs > 0);
+  const maxFs = fontSizes.length ? Math.max(...fontSizes) : 0;
+  const minFs = fontSizes.length ? Math.min(...fontSizes) : 0;
+  const dataItems =
+    maxFs > 0 && maxFs / Math.max(minFs, 0.01) >= 3.0
+      ? inPercentRange.filter((n) => (n.fontSize || 0) >= maxFs / 3.0)
+      : inPercentRange;
+
+  if (dataItems.length < 3) return null;
 
   // Sort by Y then X (reading order — top-to-bottom, left-to-right per row)
-  const sorted = [...inPercentRange].sort((a, b) => {
+  const sorted = [...dataItems].sort((a, b) => {
     const dy = a.bbox.y - b.bbox.y;
     if (Math.abs(dy) > 30) return dy; // different rows
     return a.bbox.x - b.bbox.x;
   });
 
   const values = sorted.map((n) => n.value / 100); // normalize 0-1
-  return { values, confidence: Math.min(1, numItems.length / 4) };
+  return { values, confidence: Math.min(1, dataItems.length / 4) };
 }
 
 /**
