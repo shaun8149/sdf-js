@@ -148,8 +148,25 @@ ok(big !== null, 'larger height builds');
 // Probing at (0.22*2, 1.4, 0) = (0.44, 1.4, 0) should be inside the rim scaled 2x.
 ok(big([0.44, 1.4, 0]) < 0, '"9" with height 2.0 has rim at x=0.44, y=1.4 (inside)');
 
+console.log('\nTest group 6: Wave 2 Batch 1 — straight-vertical letters (I L T E F H, pipe)');
+for (const ch of ['I', 'L', 'T', 'E', 'F', 'H']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' (pipe) builds`);
+  ok(g.advance > 0, `'${ch}' (pipe) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (pipe) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' (pipe) probe finite`);
+}
+
+const pipeI = buildPipeGlyph('I');
+ok(pipeI.sdf([0, 0.5, 0]) < 0, '"I" pipe stem middle is inside');
+
+const pipeH = buildPipeGlyph('H');
+ok(pipeH.sdf([0, 0.5, 0]) < 0, '"H" pipe crossbar center is inside');
+ok(pipeH.sdf([-0.2, 0.5, 0]) < 0, '"H" pipe left vertical is inside');
+ok(pipeH.sdf([0.2, 0.5, 0]) < 0, '"H" pipe right vertical is inside');
+
 // -----------------------------------------------------------------------------
-console.log('\nTest group 6: pipeRadius defensive clamp (Trap 1 protection)');
+console.log('\nTest group 7: pipeRadius defensive clamp (Trap 1 protection)');
 const { compile } = await import('../src/scene/compile.js');
 
 const tinyScene = {

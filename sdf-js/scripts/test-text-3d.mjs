@@ -22,7 +22,30 @@ console.log('=== text-3d smoke test ===\n');
 
 // -----------------------------------------------------------------------------
 console.log('Test group 1: glyph coverage');
-const expected = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '%', '.', '-', '+', '$', ' '];
+const expected = [
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '%',
+  '.',
+  '-',
+  '+',
+  '$',
+  ' ',
+  'I',
+  'L',
+  'T',
+  'E',
+  'F',
+  'H',
+];
 const supported = supportedChars();
 for (const ch of expected) {
   ok(supported.includes(ch), `glyph table includes '${ch}'`);
@@ -68,6 +91,24 @@ ok(text2dSDF({ text: '' }) === null, 'empty text returns null');
 for (const align of ['left', 'center', 'right']) {
   ok(text2dSDF({ text: '100', align }) !== null, `align='${align}' builds`);
 }
+
+// Wave 2 Batch 1: straight-vertical letters (I L T E F H)
+const batch1 = ['I', 'L', 'T', 'E', 'F', 'H'];
+for (const ch of batch1) {
+  const g = buildGlyph(ch);
+  ok(g !== null, `'${ch}' (extruded) builds`);
+  ok(g.advance > 0, `'${ch}' (extruded) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (extruded) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5])), `'${ch}' (extruded) probe finite`);
+}
+// "I" specific: bare vertical capsule, probe at center should be inside
+const letterI = buildGlyph('I');
+ok(letterI.sdf([0, 0.5]) < 0, '"I" middle of stem is inside');
+// "H" specific: probe at crossbar middle should be inside
+const letterH = buildGlyph('H');
+ok(letterH.sdf([0, 0.5]) < 0, '"H" crossbar center is inside');
+ok(letterH.sdf([-0.2, 0.5]) < 0, '"H" left vertical at midheight is inside');
+ok(letterH.sdf([0.2, 0.5]) < 0, '"H" right vertical at midheight is inside');
 
 // -----------------------------------------------------------------------------
 console.log('\nTest group 4: text3dExtrudedSDF extrusion');

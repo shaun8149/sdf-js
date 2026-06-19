@@ -109,7 +109,7 @@ ok(isParseable(rKpi.code2d), 'kpi-feature code2d parses as valid JS');
 // -----------------------------------------------------------------------------
 console.log('\nTest group 3: cover (title + subtitle)');
 const slideCover = emptySlideData(0, 'pdf');
-slideCover.title = 'My Deck Title';
+slideCover.title = 'My Awesome Deck';
 slideCover.layout = 'cover';
 slideCover.body = [
   {
@@ -125,7 +125,8 @@ slideCover.pageSize = { width: 960, height: 540 };
 
 const rCover = emitSlide2dCode(slideCover);
 ok(rCover.pattern === 'cover', `detected cover (got ${rCover.pattern})`);
-// Wave 1 font only has digits + KPI symbols. Letters-only strings fall back
+// Wave 1 + Wave 2 Batch 1 font has digits + KPI symbols + uppercase I L T E F H.
+// Strings with unsupported chars (lowercase, other uppercase) fall back
 // to a placeholder rectangle (visible as a colored block) — the actual text
 // content lives in the lift prompt instead. Header comment still mentions
 // the title, but the title runtime expression must be a rectangle, not
@@ -135,10 +136,10 @@ ok(
   'title with all-letters falls back to placeholder rectangle',
 );
 ok(
-  !rCover.code2d.includes("text2dSDF({ text: 'My Deck Title'"),
+  !rCover.code2d.includes("text2dSDF({ text: 'My Awesome Deck'"),
   'no text2dSDF call for unrenderable title (would crash)',
 );
-ok(rCover.prompt.includes('My Deck Title'), 'unrenderable title still surfaced via prompt');
+ok(rCover.prompt.includes('My Awesome Deck'), 'unrenderable title still surfaced via prompt');
 ok(isParseable(rCover.code2d), 'cover code2d parses as valid JS');
 
 // -----------------------------------------------------------------------------

@@ -167,11 +167,55 @@ const SYMBOL_BUILDERS = {
   ' ': (_r) => ({ advance: 0.35, sdf: null }),
 };
 
+// ---- Uppercase letter glyphs (Wave 2+) --------------------------------------
+
+const LETTER_BUILDERS = {
+  // Wave 2 Batch 1: straight-vertical letters (I L T E F H)
+  I: (r) => ({
+    advance: 0.25,
+    sdf: segment([0, 0], [0, 1.0], r),
+  }),
+  L: (r) => ({
+    advance: 0.5,
+    sdf: union(segment([-0.2, 0], [-0.2, 1.0], r), segment([-0.2, 0], [0.2, 0], r)),
+  }),
+  T: (r) => ({
+    advance: 0.55,
+    sdf: union(segment([0, 0], [0, 1.0], r), segment([-0.25, 1.0], [0.25, 1.0], r)),
+  }),
+  E: (r) => ({
+    advance: 0.5,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      segment([-0.2, 1.0], [0.2, 1.0], r),
+      segment([-0.2, 0.5], [0.15, 0.5], r),
+      segment([-0.2, 0], [0.2, 0], r),
+    ),
+  }),
+  F: (r) => ({
+    advance: 0.5,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      segment([-0.2, 1.0], [0.2, 1.0], r),
+      segment([-0.2, 0.5], [0.15, 0.5], r),
+    ),
+  }),
+  H: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      segment([0.2, 0], [0.2, 1.0], r),
+      segment([-0.2, 0.5], [0.2, 0.5], r),
+    ),
+  }),
+};
+
 // ---- Public API -------------------------------------------------------------
 
 export const GLYPH_BUILDERS = {
   ...DIGIT_BUILDERS,
   ...SYMBOL_BUILDERS,
+  ...LETTER_BUILDERS,
 };
 
 /** Build a single glyph's 2D SDF in unit cap-height space. Returns { sdf, advance } or null if char unknown. */
