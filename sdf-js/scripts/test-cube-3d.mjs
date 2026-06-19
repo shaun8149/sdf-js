@@ -283,5 +283,93 @@ console.log('\nTest group 2: cube3dSDF core (solid material)');
   }
 }
 
+console.log('\nTest group 3: Labels');
+
+// Front-face labels (default mode)
+{
+  const sdf = cube3dSDF({
+    count: 3,
+    arrangement: 'row',
+    cubeSize: 1.0,
+    spacing: 0.4,
+    labels: ['1', '2', '3'],
+    labelMaterial: 'pipe',
+    labelScale: 0.5,
+  });
+  ok(sdf !== null, 'labels front-face: SDF non-null');
+  // Front face of cube 1 (origin) is at z = +0.5. The label is on top of the face.
+  // Point JUST IN FRONT of the front face center should be near the label.
+  ok(Number.isFinite(sdf.f([0, 0, 0.6])), 'labels front-face: finite at probe');
+}
+
+// Stricter: label SDF should make the front face have geometry slightly closer
+// than a bare cube would.
+{
+  const labeled = cube3dSDF({
+    count: 1,
+    cubeSize: 1.0,
+    labels: ['8'],
+    labelMaterial: 'pipe',
+    labelScale: 0.6,
+  });
+  const bare = cube3dSDF({ count: 1, cubeSize: 1.0, labels: [] });
+  // At point just outside front face center (where label sits), labeled SDF
+  // should be ≤ bare SDF (label pulls geometry forward).
+  const probe = [0, 0, 0.55]; // 0.05 outside cube front face
+  const dLabeled = labeled.f(probe);
+  const dBare = bare.f(probe);
+  ok(
+    dLabeled <= dBare + 1e-3,
+    `label front-face probe: labeled (${dLabeled.toFixed(3)}) ≤ bare (${dBare.toFixed(3)})`,
+  );
+}
+
+// labelOnAllFaces: same label on all 6 faces
+{
+  const sdf = cube3dSDF({
+    count: 1,
+    cubeSize: 1.0,
+    labels: ['W'],
+    labelOnAllFaces: true,
+    labelMaterial: 'pipe',
+    labelScale: 0.5,
+  });
+  ok(sdf !== null, 'labelOnAllFaces: SDF non-null');
+  // Labels should sit on each face. Probe just outside each face should be near labels.
+  for (const probe of [
+    [0, 0, 0.55],
+    [0, 0, -0.55],
+    [0.55, 0, 0],
+    [-0.55, 0, 0],
+    [0, 0.55, 0],
+    [0, -0.55, 0],
+  ]) {
+    ok(Number.isFinite(sdf.f(probe)), `labelOnAllFaces: finite at ${JSON.stringify(probe)}`);
+  }
+}
+
+// labelsByFace: each face has independent label
+{
+  const sdf = cube3dSDF({
+    count: 1,
+    cubeSize: 1.0,
+    labelsByFace: [['A', 'B', 'C', 'D', 'E', 'F']], // 6 letters one per face
+    labelMaterial: 'pipe',
+    labelScale: 0.5,
+  });
+  ok(sdf !== null, 'labelsByFace: SDF non-null');
+  // Probe each face — all should be finite
+  for (const probe of [
+    [0, 0, 0.55],
+    [0, 0, -0.55],
+    [0.55, 0, 0],
+    [-0.55, 0, 0],
+    [0, 0.55, 0],
+    [0, -0.55, 0],
+  ]) {
+    ok(Number.isFinite(sdf.f(probe)), `labelsByFace: finite at ${JSON.stringify(probe)}`);
+  }
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

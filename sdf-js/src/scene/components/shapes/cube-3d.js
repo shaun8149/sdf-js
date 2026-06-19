@@ -261,6 +261,102 @@ export function cube3dSDF({
     cubes.push(cube);
   }
 
+  // 4. Labels (front-face only mode)
+  if (labels.length > 0 && !labelOnAllFaces && !labelsByFace) {
+    const labelFn = labelMaterial === 'extruded' ? text3dExtrudedSDF : text3dPipeSDF;
+    for (let i = 0; i < Math.min(labels.length, positions.length); i++) {
+      const labelText = labels[i];
+      if (!labelText || labelText === '') continue;
+      const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
+      const labelHeight = cubeSizeI * labelScale;
+      const labelSdf = labelFn({
+        text: labelText,
+        height: labelHeight,
+        ...(labelMaterial === 'pipe'
+          ? { pipeRadius: labelHeight * 0.06 }
+          : { depth: cubeSizeI * 0.05 }),
+        align: 'center',
+      });
+      if (labelSdf === null) continue;
+      // Place on +Z face of cube i (slight bump out to avoid Z-fight)
+      const labelPos = [positions[i][0], positions[i][1], positions[i][2] + cubeSizeI / 2 + 0.005];
+      cubes.push(labelSdf.translate(labelPos));
+    }
+  }
+
+  if (labelOnAllFaces && labels.length > 0) {
+    const labelFn = labelMaterial === 'extruded' ? text3dExtrudedSDF : text3dPipeSDF;
+    // 6 face transforms: face center offset + rotation to face outward
+    const faceOps = [
+      { offset: [0, 0, 1], rot: { angle: 0, axis: [0, 1, 0] } }, // +Z (front)
+      { offset: [0, 0, -1], rot: { angle: Math.PI, axis: [0, 1, 0] } }, // -Z (back)
+      { offset: [1, 0, 0], rot: { angle: Math.PI / 2, axis: [0, 1, 0] } }, // +X
+      { offset: [-1, 0, 0], rot: { angle: -Math.PI / 2, axis: [0, 1, 0] } }, // -X
+      { offset: [0, 1, 0], rot: { angle: -Math.PI / 2, axis: [1, 0, 0] } }, // +Y
+      { offset: [0, -1, 0], rot: { angle: Math.PI / 2, axis: [1, 0, 0] } }, // -Y
+    ];
+    for (let i = 0; i < Math.min(labels.length, positions.length); i++) {
+      const labelText = labels[i];
+      if (!labelText) continue;
+      const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
+      const labelHeight = cubeSizeI * labelScale;
+      const baseLabel = labelFn({
+        text: labelText,
+        height: labelHeight,
+        ...(labelMaterial === 'pipe'
+          ? { pipeRadius: labelHeight * 0.06 }
+          : { depth: cubeSizeI * 0.05 }),
+        align: 'center',
+      });
+      if (baseLabel === null) continue;
+      for (const face of faceOps) {
+        const facePos = [
+          positions[i][0] + face.offset[0] * (cubeSizeI / 2 + 0.005),
+          positions[i][1] + face.offset[1] * (cubeSizeI / 2 + 0.005),
+          positions[i][2] + face.offset[2] * (cubeSizeI / 2 + 0.005),
+        ];
+        cubes.push(baseLabel.rotate(face.rot.angle, face.rot.axis).translate(facePos));
+      }
+    }
+  }
+
+  if (labelsByFace && labelsByFace.length > 0) {
+    const labelFn = labelMaterial === 'extruded' ? text3dExtrudedSDF : text3dPipeSDF;
+    const faceOps = [
+      { offset: [0, 0, 1], rot: { angle: 0, axis: [0, 1, 0] } },
+      { offset: [0, 0, -1], rot: { angle: Math.PI, axis: [0, 1, 0] } },
+      { offset: [0, 1, 0], rot: { angle: -Math.PI / 2, axis: [1, 0, 0] } },
+      { offset: [0, -1, 0], rot: { angle: Math.PI / 2, axis: [1, 0, 0] } },
+      { offset: [-1, 0, 0], rot: { angle: -Math.PI / 2, axis: [0, 1, 0] } },
+      { offset: [1, 0, 0], rot: { angle: Math.PI / 2, axis: [0, 1, 0] } },
+    ];
+    for (let i = 0; i < Math.min(labelsByFace.length, positions.length); i++) {
+      const perFace = labelsByFace[i];
+      if (!Array.isArray(perFace)) continue;
+      const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
+      const labelHeight = cubeSizeI * labelScale;
+      for (let f = 0; f < Math.min(perFace.length, 6); f++) {
+        const txt = perFace[f];
+        if (!txt) continue;
+        const label = labelFn({
+          text: txt,
+          height: labelHeight,
+          ...(labelMaterial === 'pipe'
+            ? { pipeRadius: labelHeight * 0.06 }
+            : { depth: cubeSizeI * 0.05 }),
+          align: 'center',
+        });
+        if (label === null) continue;
+        const facePos = [
+          positions[i][0] + faceOps[f].offset[0] * (cubeSizeI / 2 + 0.005),
+          positions[i][1] + faceOps[f].offset[1] * (cubeSizeI / 2 + 0.005),
+          positions[i][2] + faceOps[f].offset[2] * (cubeSizeI / 2 + 0.005),
+        ];
+        cubes.push(label.rotate(faceOps[f].rot.angle, faceOps[f].rot.axis).translate(facePos));
+      }
+    }
+  }
+
   // 3. Union all cubes (skip if only 1)
   return cubes.length === 1 ? cubes[0] : union(...cubes);
 }
