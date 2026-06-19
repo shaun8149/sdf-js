@@ -54,6 +54,7 @@ import {
   describeStyle,
 } from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
+import { createStudioRenderer } from '../../src/render/studio.js';
 import { createBlueprintRenderer } from '../../src/render/blueprint.js';
 import { createCrayonRenderer } from '../../src/render/crayonRenderer.js';
 import { createStreamlineRenderer } from '../../src/render/streamlineRenderer.js';
@@ -81,6 +82,7 @@ const state = {
   bobRenderer: null, // lazy createBobShaderRenderer instance — stylized autoscope-style
   blueprintRenderer: null, // lazy createBlueprintRenderer — 4-view engineering drawing
   fly3dRenderer: null, // lazy createFly3DRenderer instance — clean Lambert + WASD fly
+  studioRenderer: null, // lazy createStudioRenderer — clean test stage (checker floor, no sky/fog)
   crayonRenderer: null, // lazy createCrayonRenderer — Sprint 12-3d Canvas2D physics-pen
   topoRenderer: null, // lazy createStreamlineRenderer — Sprint 12-3c downhill pen-strokes
   genScene: null, // generator-tab compiled scene
@@ -112,7 +114,7 @@ const state = {
   sceneHash: null, // 0x... hex string
 };
 
-const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo']);
+const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo', 'studio']);
 const isGpuRenderer = (name) => GPU_RENDERERS.has(name);
 
 // =============================================================================
@@ -689,6 +691,7 @@ async function loadDemoScene(demo) {
   // new render() call below will restart the loop with the new SDF.
   if (state.bobRenderer) state.bobRenderer.unmount();
   if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+  if (state.studioRenderer) state.studioRenderer.unmount();
   // 2026-05-24: clear stale active-scene state BEFORE awaiting fetch.
   // Why: card click does `loadDemoScene(demo); switchToTab('text');` — the
   // sync switchToTab triggers updateCanvasVisibility → runActiveGpuRenderer,
@@ -1546,6 +1549,7 @@ function updateCanvasVisibility(opts = {}) {
   // stale "demo · 火箭发射 · FPS: 80" text from before they navigated away.
   if (!showGpu) {
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.studioRenderer) state.studioRenderer.unmount();
     if (state.bobRenderer) state.bobRenderer.unmount();
     const fpsEl = $('fps');
     if (fpsEl) fpsEl.textContent = 'FPS: --';
@@ -1942,6 +1946,7 @@ function exitLiftMode() {
   // a hidden canvas, and the next scene won't show stale pixels.
   if (state.bobRenderer) state.bobRenderer.unmount();
   if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+  if (state.studioRenderer) state.studioRenderer.unmount();
   updateCanvasVisibility();
   refreshLiftButtonState();
   const saveBtn = $('btn-save-scene');
@@ -1984,6 +1989,39 @@ function ensureFly3dRenderer() {
     },
   });
   return state.fly3dRenderer;
+}
+
+// Studio: stripped-down FLY 3D sibling — neutral grey bg + checker floor + no
+// fog / clouds / lens flares / volumes. Atom test stage for inspecting
+// individual subjects in a clean environment.
+function ensureStudioRenderer() {
+  if (state.studioRenderer) return state.studioRenderer;
+  const canvas = $('c-gpu');
+  state.studioRenderer = createStudioRenderer({
+    canvas,
+    getControls: () => {
+      const { scene } = getActiveGpuScene();
+      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+      const light = state.lightOverride ?? sceneLight;
+      const cam = scene?.cameraStatic;
+      return {
+        lightAzim: light.azimuth,
+        lightAlt: light.altitude,
+        lightDist: light.distance,
+        fov: cam?.focal || 1.5,
+        shadowsOn: true,
+        // Studio's whole point: render a built-in checker ground plane so the
+        // atom has a visible "stage". groundOn unions a y=GROUND_Y plane into
+        // mapWithGround; checkerOn picks the grey-checker shading branch.
+        groundOn: true,
+        checkerOn: true,
+      };
+    },
+    onFps: (fps) => {
+      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+    },
+  });
+  return state.studioRenderer;
 }
 
 /**
@@ -2081,11 +2119,39 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
       console.error(e);
       return { bytes: 0 };
     }
+  } else if (state.activeRenderer === 'studio') {
+    // Studio: clean atom test stage (neutral bg + checker floor + no fog).
+    // Same SDF compile path as fly3d; the difference is the renderer's own
+    // shader template (sky/fog/clouds/lens-flares stripped, ground+checker on).
+    // Don't unmount self — ensureStudioRenderer() reuses the existing instance.
+    if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.bobRenderer) state.bobRenderer.unmount();
+    if (state.blueprintRenderer) state.blueprintRenderer.unmount();
+    if (state.crayonRenderer) state.crayonRenderer.unmount();
+    if (state.topoRenderer) state.topoRenderer.unmount();
+    const st = ensureStudioRenderer();
+    if (!keepCamera && scene.cameraStatic) st.setCamState(sphericalToCamState(scene.cameraStatic));
+    if (st.setPostFx) {
+      st.setPostFx(
+        rawScene || {},
+        (rawScene && rawScene.defaults && rawScene.defaults.camera) || null,
+      );
+    }
+    // Sprint 12: Rune heightmap → studio texture (same data as FLY 3D).
+    if (st.setRuneHeightmap) st.setRuneHeightmap(scene.bakedHeightmap || null);
+    try {
+      return st.render(sdf);
+    } catch (e) {
+      setStatus(`✗ studio render: ${e.message}`, true);
+      console.error(e);
+      return { bytes: 0 };
+    }
   } else if (state.activeRenderer === 'blueprint') {
     // Sprint 3: 4-view engineering drawing. Reuses sceneSDF compile path; needs
     // model bbox to frame the ortho views. Derive from scene.cameraStatic
     // (target XYZ + distance). FLY 3D + BOB GPU must be unmounted first.
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.studioRenderer) state.studioRenderer.unmount();
     if (state.bobRenderer) state.bobRenderer.unmount();
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
@@ -2112,6 +2178,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
   } else if (state.activeRenderer === 'crayon') {
     // 4th renderer (Sprint 12-3d): Canvas2D physics-pen scribble accumulator.
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.studioRenderer) state.studioRenderer.unmount();
     if (state.bobRenderer) state.bobRenderer.unmount();
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
@@ -2129,6 +2196,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // flow downhill following heightmap gradient; hash selects mono vs
     // multi-color palette mode.
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.studioRenderer) state.studioRenderer.unmount();
     if (state.bobRenderer) state.bobRenderer.unmount();
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     if (state.crayonRenderer) state.crayonRenderer.unmount();
@@ -2144,6 +2212,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
   } else {
     // default to bob-gpu
     if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+    if (state.studioRenderer) state.studioRenderer.unmount();
     if (state.blueprintRenderer) state.blueprintRenderer.unmount();
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
@@ -2631,6 +2700,7 @@ $$('#renderer-pills .pill').forEach((btn) => {
       // 2D pill: release any GPU renderer first (cancels its RAF + pointer lock).
       if (state.bobRenderer) state.bobRenderer.unmount();
       if (state.fly3dRenderer) state.fly3dRenderer.unmount();
+      if (state.studioRenderer) state.studioRenderer.unmount();
     }
     updateCanvasVisibility();
     if (!isGpuRenderer(newR)) reRenderStored();
