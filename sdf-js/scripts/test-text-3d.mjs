@@ -4,7 +4,7 @@
 
 import '../src/sdf/index.js';
 import { buildGlyph, supportedChars } from '../src/scene/components/typography/glyphs.js';
-import { text2dSDF, text3dSDF } from '../src/scene/components/typography/text-3d.js';
+import { text2dSDF, text3dExtrudedSDF } from '../src/scene/components/typography/text-3d.js';
 
 let pass = 0,
   fail = 0;
@@ -70,16 +70,16 @@ for (const align of ['left', 'center', 'right']) {
 }
 
 // -----------------------------------------------------------------------------
-console.log('\nTest group 4: text3dSDF extrusion');
-const t3 = text3dSDF({ text: '90%', depth: 0.2 });
-ok(t3 !== null, 'text3dSDF("90%") returns non-null');
+console.log('\nTest group 4: text3dExtrudedSDF extrusion');
+const t3 = text3dExtrudedSDF({ text: '90%', depth: 0.2 });
+ok(t3 !== null, 'text3dExtrudedSDF("90%") returns non-null');
 ok(Number.isFinite(t3([0, 0.5, 0])), '3D SDF at (0,0.5,0) is finite');
 // At z=0.5 (well outside ±depth/2 = ±0.1), should be positive ≈ |z|-0.1
 const outside = t3([0, 0.5, 0.5]);
 ok(outside > 0.3, `outside Z bounds is positive (got ${outside.toFixed(3)})`);
 
 // Custom height should still compose correctly
-const tBig = text3dSDF({ text: '42', height: 2.0, depth: 0.4 });
+const tBig = text3dExtrudedSDF({ text: '42', height: 2.0, depth: 0.4 });
 ok(tBig !== null, 'larger height (2.0) builds');
 
 // -----------------------------------------------------------------------------

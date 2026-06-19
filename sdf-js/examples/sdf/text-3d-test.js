@@ -2,14 +2,14 @@
 // text-3d-test — visual verify for typography Wave 1 (digits + KPI symbols)
 // -----------------------------------------------------------------------------
 // 6 panels: every digit, the % symbol, a few common KPI strings.
-// Pattern cloned from bar-3d-test / cover-3d-test. Each panel = one text3dSDF.
+// Pattern cloned from bar-3d-test / cover-3d-test. Each panel = one text3dExtrudedSDF.
 //
 // Open: http://localhost:8001/examples/sdf/text-3d-test.html
 // =============================================================================
 
 import '../../src/sdf/index.js';
 
-import { text3dSDF } from '../../src/scene/components/typography/text-3d.js';
+import { text3dExtrudedSDF } from '../../src/scene/components/typography/text-3d.js';
 import * as v from '../../src/sdf/vec.js';
 
 const W = 256,
@@ -19,16 +19,24 @@ const panels = [
   {
     title: 'Every digit',
     code: '"0123456789"',
-    sdf: text3dSDF({ text: '0123456789', height: 0.9 }),
+    sdf: text3dExtrudedSDF({ text: '0123456789', height: 0.9 }),
   },
-  { title: 'KPI: 90%', code: '"90%" h=1.4', sdf: text3dSDF({ text: '90%', height: 1.4 }) },
-  { title: 'KPI: 100%', code: '"100%"', sdf: text3dSDF({ text: '100%', height: 1.2 }) },
-  { title: 'Big symbol stack', code: '"%$+-."', sdf: text3dSDF({ text: '%$+-.', height: 1.1 }) },
-  { title: 'Mixed: $ + decimal', code: '"$3.14"', sdf: text3dSDF({ text: '$3.14', height: 1.0 }) },
+  { title: 'KPI: 90%', code: '"90%" h=1.4', sdf: text3dExtrudedSDF({ text: '90%', height: 1.4 }) },
+  { title: 'KPI: 100%', code: '"100%"', sdf: text3dExtrudedSDF({ text: '100%', height: 1.2 }) },
+  {
+    title: 'Big symbol stack',
+    code: '"%$+-."',
+    sdf: text3dExtrudedSDF({ text: '%$+-.', height: 1.1 }),
+  },
+  {
+    title: 'Mixed: $ + decimal',
+    code: '"$3.14"',
+    sdf: text3dExtrudedSDF({ text: '$3.14', height: 1.0 }),
+  },
   {
     title: 'Thick stroke',
     code: '"42" sw=0.22 d=0.4',
-    sdf: text3dSDF({ text: '42', strokeWidth: 0.22, height: 1.6, depth: 0.4 }),
+    sdf: text3dExtrudedSDF({ text: '42', strokeWidth: 0.22, height: 1.6, depth: 0.4 }),
   },
 ];
 

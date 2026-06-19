@@ -80,7 +80,7 @@ export function text2dSDF({ text, strokeWidth = 0.12, letterSpacing = 0, align =
  * @param {'left'|'center'|'right'} [opts.align='center']
  * @returns {SDF3|null}
  */
-export function text3dSDF({
+export function text3dExtrudedSDF({
   text,
   strokeWidth = 0.12,
   height = 1.0,
@@ -96,8 +96,8 @@ export function text3dSDF({
 }
 
 /** Spec metadata for the renderer / mapper layer. */
-export const text3dSpec = {
-  type: 'text-3d',
+export const text3dExtrudedSpec = {
+  type: 'text-3d-extruded',
   category: 'typography',
   args: {
     text: { type: 'string', required: true },
@@ -109,7 +109,7 @@ export const text3dSpec = {
   },
   source: {
     type: 'first-party',
-    family: 'Atlas typography (Wave 1: digits + KPI symbols)',
+    family: 'Atlas typography (Wave 1: digits + KPI symbols, extruded variant)',
     license: 'PolyForm Noncommercial 1.0.0',
   },
 };
