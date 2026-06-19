@@ -902,6 +902,15 @@ const PRIMS2 = {
   ring2: ([radius, thickness, center], q) =>
     `sd2Ring(${q} - ${vec2(center)}, ${flt(radius)}, ${flt(thickness)})`,
 
+  // 2D partial arc (IQ canonical). args = [radius, halfAperture, thickness, center].
+  // Pre-bake sin/cos of halfAperture since GLSL helper expects sc = (sin, cos).
+  arc2: ([radius, halfAperture, thickness, center], q) => {
+    const s = Math.sin(halfAperture);
+    const c = Math.cos(halfAperture);
+    const half = thickness / 2;
+    return `sd2Arc(${q} - ${vec2(center)}, ${vec2([s, c])}, ${flt(radius)}, ${flt(half)})`;
+  },
+
   // Polygon: emit a unique helper function per shape (variable-vertex-count
   // can't be a generic library function in GLSL ES 1.00). Dedup via FNV-1a
   // hash so the same polygon shared by two subjects compiles to one helper.

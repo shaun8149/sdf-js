@@ -117,7 +117,7 @@ export const arc = (
   const scx = Math.sin(halfAperture);
   const scy = Math.cos(halfAperture);
   const half = thickness / 2;
-  return SDF2((p) => {
+  const inst = SDF2((p) => {
     const px = Math.abs(p[0] - center[0]);
     const py = p[1] - center[1];
     let d;
@@ -130,6 +130,8 @@ export const arc = (
     }
     return d - half;
   });
+  inst.ast = { kind: 'prim', name: 'arc2', args: [radius, halfAperture, thickness, center] };
+  return inst;
 };
 
 // 圆环（hollow circle）：等价于 shell(circle(r), thickness) 但更直接。

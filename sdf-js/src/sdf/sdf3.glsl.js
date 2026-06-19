@@ -2361,13 +2361,20 @@ float sdLine3d(vec3 p, float values[32], float count, float pointSpacing, float 
       float d = sdCapsule(p, a, b, lineThickness);
       minDist = min(minDist, d);
     }
-    // Closed loop: last → first
+    // Closed loop: last → first.
+    // GLSL ES 1.00 disallows non-const array indexing (e.g. values[lastIdx]
+    // where lastIdx is a runtime int). Use a for-loop iterator pattern —
+    // i IS the array index, allowed by the spec, and we early-break when we
+    // hit the actual last valid index.
     if (closedFlag > 0.5 && count > 2.0) {
-      int lastIdx = int(count) - 1;
-      vec3 a = vec3(xStart + float(lastIdx) * pointSpacing, values[lastIdx] * maxH, 0.0);
-      vec3 b = vec3(xStart, values[0] * maxH, 0.0);
-      float d = sdCapsule(p, a, b, lineThickness);
-      minDist = min(minDist, d);
+      for (int i = 0; i < 32; i++) {
+        if (i == int(count) - 1) {
+          vec3 a = vec3(xStart + float(i) * pointSpacing, values[i] * maxH, 0.0);
+          vec3 b = vec3(xStart, values[0] * maxH, 0.0);
+          minDist = min(minDist, sdCapsule(p, a, b, lineThickness));
+          break;
+        }
+      }
     }
   }
 
@@ -2422,6 +2429,17 @@ float sd2Segment(vec2 p, vec2 a, vec2 b, float r) {
 
 float sd2Ring(vec2 p, float r, float thickness) {
   return abs(length(p) - r) - thickness * 0.5;
+}
+
+// IQ canonical 2D partial-arc — https://iquilezles.org/articles/distfunctions2d/
+//   sc = (sin(halfAperture), cos(halfAperture))
+//   ra = ring radius (to tube centerline)
+//   rb = tube half-thickness
+// Mirrors the JS arc() in d2.js — used by text2dSDF glyphs (digits 0/2/3/5/6/9)
+// when those glyphs are extruded to 3D via text-3d-extruded.
+float sd2Arc(vec2 p, vec2 sc, float ra, float rb) {
+  p.x = abs(p.x);
+  return ((sc.y * p.x > sc.x * p.y) ? length(p - sc * ra) : abs(length(p) - ra)) - rb;
 }
 
 // IQ exact ellipse — https://iquilezles.org/articles/ellipsedist/
@@ -2565,6 +2583,7 @@ export const SDF2_GLSL_PRIMITIVES = [
   'sd2RoundBox',
   'sd2Segment',
   'sd2Ring',
+  'sd2Arc',
   'sd2Ellipse',
   // polygon emitted per-instance as sd2Polygon_HASH(vec2)
 ];
