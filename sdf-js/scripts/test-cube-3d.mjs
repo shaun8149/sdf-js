@@ -615,6 +615,76 @@ console.log('\nTest group 8: GLSL emit (real-browser GPU prerequisite)');
       `GLSL: material '${mat}' emits sdBoxFrame`,
     );
   }
+
+  // Explicit cube colors must survive into the per-leaf material LUT.
+  {
+    const sdf = cube3dSDF({
+      count: 2,
+      arrangement: 'row',
+      cubeSize: 0.5,
+      colors: ['#ff0000', '#00ff00'],
+    });
+    const result = compileSDF3ToGLSL(sdf, { entry: 'map_cube_colors', emitObjectIndex: true });
+    ok(result.leafMaterials.length === 2, 'GLSL colors: two cube leaves emitted');
+    ok(
+      approxEq(result.leafMaterials[0].hue, 0) &&
+        approxEq(result.leafMaterials[0].sat, 1) &&
+        approxEq(result.leafMaterials[0].value, 1),
+      'GLSL colors: first cube is red material',
+    );
+    ok(
+      approxEq(result.leafMaterials[1].hue, 1 / 3) &&
+        approxEq(result.leafMaterials[1].sat, 1) &&
+        approxEq(result.leafMaterials[1].value, 1),
+      'GLSL colors: second cube is green material',
+    );
+  }
+
+  // SceneData transforms wrap primitives; cube-3d must keep per-cube leaves
+  // instead of collapsing the whole transformed union into one silver material.
+  {
+    const { compile } = await import('../src/scene/compile.js');
+    const scene = {
+      v: 1,
+      name: 'cube-3d transformed colors',
+      defaults: {
+        camera: {
+          yaw: 0,
+          pitch: 0.2,
+          distance: 8,
+          focal: 1.5,
+          targetX: 0,
+          targetY: 0,
+          targetZ: 0,
+        },
+        light: { altitude: 0.5, azimuth: 0.6, distance: 15, intensity: 1.2 },
+      },
+      subjects: [
+        {
+          id: 'cubes',
+          type: 'cube-3d',
+          args: {
+            count: 2,
+            arrangement: 'row',
+            cubeSize: 0.5,
+            colors: ['#ff0000', '#00ff00'],
+          },
+          transform: { translate: [0, 0.3, 0] },
+          material: 'silver',
+        },
+      ],
+    };
+    const compiled = compile(scene, { sanity: false });
+    const result = compileSDF3ToGLSL(compiled.sdf, {
+      entry: 'map_transformed_cube_colors',
+      emitObjectIndex: true,
+    });
+    ok(result.leafMaterials.length === 2, 'SceneData colors: transform preserves cube leaves');
+    ok(
+      result.leafMaterials[0].sat > 0.99 && result.leafMaterials[1].sat > 0.99,
+      'SceneData colors: cube colors override subject silver material',
+    );
+  }
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);

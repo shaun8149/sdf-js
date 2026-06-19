@@ -206,33 +206,107 @@ export function cubeAutoId(i) {
   return i * 1.7 + 13.0;
 }
 
+const NAMED_COLORS = {
+  black: [0, 0, 0],
+  white: [1, 1, 1],
+  gray: [0.5, 0.5, 0.5],
+  grey: [0.5, 0.5, 0.5],
+  red: [1, 0, 0],
+  green: [0, 0.7, 0.25],
+  blue: [0.12, 0.48, 1],
+  yellow: [1, 0.85, 0],
+  cyan: [0, 0.8, 1],
+  magenta: [1, 0, 0.8],
+  orange: [1, 0.45, 0],
+  purple: [0.45, 0.25, 0.9],
+};
+
+function clamp01(x) {
+  return Math.max(0, Math.min(1, x));
+}
+
+function parseHexColor(input) {
+  const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(input);
+  if (!match) return null;
+  const hex = match[1];
+  const full =
+    hex.length === 3
+      ? hex
+          .split('')
+          .map((ch) => ch + ch)
+          .join('')
+      : hex;
+  const n = Number.parseInt(full, 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
+
+function colorToRgb(color) {
+  if (Array.isArray(color) && color.length >= 3) {
+    const scale = color.some((c) => c > 1) ? 255 : 1;
+    return [clamp01(color[0] / scale), clamp01(color[1] / scale), clamp01(color[2] / scale)];
+  }
+  if (typeof color === 'string') {
+    const normalized = color.trim().toLowerCase();
+    return NAMED_COLORS[normalized] ?? parseHexColor(normalized);
+  }
+  return null;
+}
+
+function rgbToMaterial(rgb) {
+  const [r, g, b] = rgb.map(clamp01);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let hue = 0;
+  if (d !== 0) {
+    if (max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+    else if (max === g) hue = ((b - r) / d + 2) / 6;
+    else hue = ((r - g) / d + 4) / 6;
+  }
+  return {
+    hue,
+    sat: max === 0 ? 0 : d / max,
+    value: max,
+    metal: 0,
+    glow: 0,
+    kind: 0,
+  };
+}
+
+function cubeColorMaterial(color, index) {
+  const rgb = colorToRgb(color) ?? autoColor(cubeAutoId(index));
+  return rgbToMaterial(rgb);
+}
+
 // ---- Main API ---------------------------------------------------------------
 
 /**
  * Build a cube-3d SDF tree. See spec for full args reference.
  * Returns SDF3 (or null if count <= 0).
  */
-export function cube3dSDF({
-  count = 5,
-  arrangement = 'row',
-  cubeSize = 0.6,
-  cornerRadius = 0.04,
-  spacing = 0.2,
-  arrangementParams = {},
-  labels = [],
-  labelsByFace = null,
-  labelOnAllFaces = false,
-  labelMaterial = 'pipe',
-  labelScale = 0.6,
-  material = 'solid',
-  colors = [],
-  connector = 'none',
-  connectorThickness = 0.04,
-  connectorIndices = null,
-  cubeSizes = null,
-  cubeRotations = null,
-  cubeOffsets = null,
-} = {}) {
+export function cube3dSDF(args = {}) {
+  const hasExplicitColors = Object.prototype.hasOwnProperty.call(args, 'colors');
+  const {
+    count = 5,
+    arrangement = 'row',
+    cubeSize = 0.6,
+    cornerRadius = 0.04,
+    spacing = 0.2,
+    arrangementParams = {},
+    labels = [],
+    labelsByFace = null,
+    labelOnAllFaces = false,
+    labelMaterial = 'pipe',
+    labelScale = 0.6,
+    material = 'solid',
+    colors = [],
+    connector = 'none',
+    connectorThickness = 0.04,
+    connectorIndices = null,
+    cubeSizes = null,
+    cubeRotations = null,
+    cubeOffsets = null,
+  } = args;
   if (count <= 0) return null;
 
   // 1. Compute positions via arrangement
@@ -271,6 +345,9 @@ export function cube3dSDF({
       if (rz) cube = cube.rotate(rz, [0, 0, 1]);
     }
     cube = cube.translate(effectivePositions[i]);
+    if (hasExplicitColors) {
+      cube._subjectMaterial = cubeColorMaterial(colors[i], i);
+    }
     cubes.push(cube);
   }
 
