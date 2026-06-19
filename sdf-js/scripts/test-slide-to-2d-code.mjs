@@ -125,8 +125,20 @@ slideCover.pageSize = { width: 960, height: 540 };
 
 const rCover = emitSlide2dCode(slideCover);
 ok(rCover.pattern === 'cover', `detected cover (got ${rCover.pattern})`);
-ok(rCover.code2d.includes('My Deck Title'), 'title in code');
-ok(rCover.code2d.includes('A subheadline'), 'subtitle in code');
+// Wave 1 font only has digits + KPI symbols. Letters-only strings fall back
+// to a placeholder rectangle (visible as a colored block) — the actual text
+// content lives in the lift prompt instead. Header comment still mentions
+// the title, but the title runtime expression must be a rectangle, not
+// text2dSDF (which would return null and crash on .translate).
+ok(
+  rCover.code2d.includes('const title    = rectangle('),
+  'title with all-letters falls back to placeholder rectangle',
+);
+ok(
+  !rCover.code2d.includes("text2dSDF({ text: 'My Deck Title'"),
+  'no text2dSDF call for unrenderable title (would crash)',
+);
+ok(rCover.prompt.includes('My Deck Title'), 'unrenderable title still surfaced via prompt');
 ok(isParseable(rCover.code2d), 'cover code2d parses as valid JS');
 
 // -----------------------------------------------------------------------------

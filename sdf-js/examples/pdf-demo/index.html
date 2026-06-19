@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas — PDF → 2D SDF grid (Step 2a)</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .panel canvas {
+        width: 100%;
+        background: #f4f6fa;
+        border: 1px solid #e4e7ee;
+        border-radius: 4px;
+      }
+      .pattern-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+      .tag-percent-list { background: #dcebfb; color: #1c4378; }
+      .tag-kpi-feature  { background: #fde6cf; color: #8a4a16; }
+      .tag-cover        { background: #e2e0fb; color: #382a78; }
+      .tag-fallback     { background: #ececec; color: #555;    }
+      .prompt-line {
+        font-size: 11px;
+        color: #687184;
+        line-height: 1.4;
+        margin-top: 6px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page" style="max-width: 1280px;">
+      <div class="demo-meta">
+        <div>
+          <h1><em>pdf → 2d sdf.</em></h1>
+          <p class="tagline" style="margin-bottom: 0;">
+            Atlas Step 2a — every slide of the test deck rendered as a 2D SDF
+            via the deterministic emitter
+            (<code>src/mapping/slide-to-2d-code.js</code>) + the silhouette
+            renderer that the compositor already ships. No LLM in this view —
+            this is the 2D preview that feeds <code>callLiftLLM</code> in
+            Step 2b. Click any panel later to open the detail view + lift to 3D.
+          </p>
+        </div>
+        <div class="links">
+          <a href="../index.html">index</a>
+          <a href="../compositor/index.html">compositor</a>
+          <a href="../sdf/text-3d-test.html">text-3d</a>
+        </div>
+      </div>
+      <div class="panel-grid" id="grid"></div>
+    </div>
+    <script type="module" src="./pdf-demo.js"></script>
+  </body>
+</html>

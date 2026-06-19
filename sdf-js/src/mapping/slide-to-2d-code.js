@@ -23,6 +23,41 @@
 // context and should favor regular geometric shapes / axis-aligned layouts.
 // =============================================================================
 
+import { supportedChars } from '../scene/components/typography/glyphs.js';
+
+// ---- Typography support check -----------------------------------------------
+// Wave 1 only ships digits + KPI symbols (0-9, %, ., -, +, $, space). Letters
+// come in Wave 2-3. Until then, slide titles like "3D SPHERES" mostly drop
+// to nothing and crash the emitted code (.translate() on null). The emitter
+// must check first and either render available chars or fall back to a
+// placeholder rectangle that visually signals "text here, font lacks glyphs".
+
+const SUPPORTED_GLYPHS = new Set(supportedChars());
+
+/** Does this string have ANY char that renders in current Wave 1 font? */
+function hasAnyRenderable(text) {
+  if (typeof text !== 'string' || text.length === 0) return false;
+  for (const ch of text) {
+    if (SUPPORTED_GLYPHS.has(ch) && ch !== ' ') return true;
+  }
+  return false;
+}
+
+/**
+ * Emit a 2D text expression OR a placeholder rectangle.
+ *   - If text has any supported char → text2dSDF(...).translate(...)
+ *   - Otherwise → rectangle(...) sized roughly like the text would have been
+ * Returns a JS expression string suitable for `const x = <expr>;`.
+ */
+function emitTextOrPlaceholder(text, { height, strokeWidth, tx, ty }) {
+  if (hasAnyRenderable(text)) {
+    return `text2dSDF({ text: '${escapeStr(text)}', height: ${height}, strokeWidth: ${strokeWidth} }).translate([${tx}, ${ty}])`;
+  }
+  // Placeholder: rough character-count-based width, height matches requested
+  const estWidth = Math.min(1.8, Math.max(0.2, text.length * height * 0.45));
+  return `rectangle([${estWidth.toFixed(3)}, ${(height * 0.6).toFixed(3)}], [${tx}, ${ty}])`;
+}
+
 // ---- Pattern detectors (carried over from deleted slide-to-scene.js) --------
 
 /** Look for ≥3 numeric labels (with optional %) that look like percentages 0-100. */
@@ -146,7 +181,7 @@ function emitPercentListCode(slide, p) {
       return `  rectangle([${halfW} * 2, ${h}], [${x}, ${yc}]),`;
     })
     .join('\n');
-  // Numeric labels above each bar
+  // Numeric labels above each bar — these are always renderable (digits + %).
   const labelLines = p.values
     .map((v, i) => {
       const x = xs[i].toFixed(3);
@@ -154,9 +189,9 @@ function emitPercentListCode(slide, p) {
       return `  text2dSDF({ text: '${Math.round(v * 100)}%', height: 0.08, strokeWidth: 0.014 }).translate([${x}, ${y}]),`;
     })
     .join('\n');
-  // Title (if present and contains letters)
+  // Title — falls back to placeholder rectangle when Wave 1 font lacks glyphs.
   const titleLine = slide.title
-    ? `text2dSDF({ text: '${escapeStr(slide.title)}', height: 0.13, strokeWidth: 0.018 }).translate([0, 0.7])`
+    ? emitTextOrPlaceholder(slide.title, { height: 0.13, strokeWidth: 0.018, tx: 0, ty: 0.7 })
     : null;
   // Stage line below bars
   const stage = `rectangle([1.95, 0.02], [0, -0.52])`;
@@ -194,11 +229,19 @@ ${RENDER_TAIL}
 
 function emitKpiFeatureCode(slide, k) {
   const titleLine = slide.title
-    ? `text2dSDF({ text: '${escapeStr(slide.title)}', height: 0.12, strokeWidth: 0.018 }).translate([0, 0.72])`
+    ? emitTextOrPlaceholder(slide.title, { height: 0.12, strokeWidth: 0.018, tx: 0, ty: 0.72 })
     : null;
   // Pick a short caption from body items that aren't the headline number
-  const caption =
+  const captionText =
     slide.body.find((b) => /[A-Za-z一-龥]{4,}/.test(b.text) && b.fontSize < 20)?.text || '';
+  const captionLine = captionText
+    ? emitTextOrPlaceholder(captionText.slice(0, 40), {
+        height: 0.07,
+        strokeWidth: 0.012,
+        tx: 0,
+        ty: -0.62,
+      })
+    : null;
   const code = `${HEADER('kpi-feature', slide.index, slide.title || '(untitled)')}
 ${COMMON_IMPORTS}
 
@@ -210,13 +253,13 @@ const bigValue = text2dSDF({ text: '${k.label}', height: 0.7, strokeWidth: 0.08,
 
 const pedestal = rounded_rectangle([1.6, 0.06], 0.03, [0, -0.45]);
 ${titleLine ? `const title = ${titleLine};` : ''}
-${caption ? `const caption = text2dSDF({ text: '${escapeStr(caption.slice(0, 40))}', height: 0.07, strokeWidth: 0.012 }).translate([0, -0.62]);` : ''}
+${captionLine ? `const caption = ${captionLine};` : ''}
 
 const layers = [
   { sdf: pedestal, color: SOFT_INK },
   { sdf: bigValue, color: ACCENT },
 ${titleLine ? '  { sdf: title,    color: INK },' : ''}
-${caption ? '  { sdf: caption,  color: SOFT_INK },' : ''}
+${captionLine ? '  { sdf: caption,  color: SOFT_INK },' : ''}
 ];
 
 ${RENDER_TAIL}
@@ -226,18 +269,32 @@ ${RENDER_TAIL}
 }
 
 function emitCoverCode(slide, c) {
+  const titleLine = emitTextOrPlaceholder(c.title, {
+    height: 0.22,
+    strokeWidth: 0.028,
+    tx: 0,
+    ty: 0.18,
+  });
+  const subtitleLine = c.subtitle
+    ? emitTextOrPlaceholder(c.subtitle.slice(0, 60), {
+        height: 0.08,
+        strokeWidth: 0.012,
+        tx: 0,
+        ty: -0.1,
+      })
+    : null;
   const code = `${HEADER('cover', slide.index, c.title)}
 ${COMMON_IMPORTS}
 
 ${COMMON_PALETTE}
 
-const title    = text2dSDF({ text: '${escapeStr(c.title)}', height: 0.22, strokeWidth: 0.028 }).translate([0, 0.18]);
-${c.subtitle ? `const subtitle = text2dSDF({ text: '${escapeStr(c.subtitle.slice(0, 60))}', height: 0.08, strokeWidth: 0.012 }).translate([0, -0.10]);` : ''}
+const title    = ${titleLine};
+${subtitleLine ? `const subtitle = ${subtitleLine};` : ''}
 const underline = rectangle([0.6, 0.02], [0, -0.30]);
 
 const layers = [
   { sdf: title,    color: INK },
-${c.subtitle ? '  { sdf: subtitle, color: SOFT_INK },' : ''}
+${subtitleLine ? '  { sdf: subtitle, color: SOFT_INK },' : ''}
   { sdf: underline, color: ACCENT },
 ];
 
@@ -249,12 +306,18 @@ ${RENDER_TAIL}
 
 function emitFallbackCode(slide) {
   const title = slide.title || '(untitled)';
+  const titleLine = emitTextOrPlaceholder(title, {
+    height: 0.16,
+    strokeWidth: 0.022,
+    tx: 0,
+    ty: 0.0,
+  });
   const code = `${HEADER('fallback', slide.index, title)}
 ${COMMON_IMPORTS}
 
 ${COMMON_PALETTE}
 
-const title = text2dSDF({ text: '${escapeStr(title)}', height: 0.16, strokeWidth: 0.022 }).translate([0, 0.0]);
+const title = ${titleLine};
 
 const layers = [
   { sdf: title, color: INK },
