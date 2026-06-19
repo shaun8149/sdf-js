@@ -1070,6 +1070,13 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   const factory = PRIMITIVE_FACTORIES[normalizeType(subj.type)];
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
+  const region = subj.region ?? defaultRegion;
+
+  // Typography primitives can legitimately return null when none of the input
+  // characters are renderable. Treat that as an empty/no-op primitive.
+  if (sdf == null) {
+    return { sdf: null, region };
+  }
 
   // 3. Apply transform
   sdf = applyTransform(sdf, subj.transform, subj.animation);
@@ -1087,7 +1094,6 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   }
 
   // 5. Region tracking
-  const region = subj.region ?? defaultRegion;
   subjectInfos.push({ id: subj.id, region, sdf });
 
   return { sdf, region };
