@@ -75,6 +75,9 @@ const TESTS = [
 
   // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
+
+  // Layer 2 — Atlas Present (deck library + editor + present mode)
+  { category: 'present', file: 'sdf-js/scripts/test-deck-model.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
