@@ -1,21 +1,15 @@
 // =============================================================================
-// deck-model.js — Atlas Present Layer 2 data model
+// deck-model.js — Atlas Present Layer 2 data model (CANVAS MODE)
 // -----------------------------------------------------------------------------
-// Pure JS / no DOM. Defines Deck + Slide types (JSDoc), CRUD operations,
-// localStorage persistence + migration.
+// Pure JS / no DOM. Defines Deck + Canvas + Waypoint types (JSDoc), CRUD
+// operations, localStorage v2 persistence.
 //
 // localStorage key: 'atlas-decks'
-//   shape: { version: 2, decks: Deck[] }  ← UPDATED in Canvas Mode pivot 2026-06-19
+//   shape: { version: 2, decks: Deck[] }
+//   v1 (PPT-mode) decks silently dropped on first v2 load.
 //
-// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 3 (Canvas Mode pivot).
-// Until then, do NOT extend or "improve" this file. See plan
-// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
-//
-// Per [[compositor-layered-for-presentation]] memory: this lives in
-// Layer 2 (presentation app), calls Layer 1 (compositor-api) only when
-// needed for compile/render — but for Sprint 1 the model is pure data.
-//
-// Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-design.md
+// Spec: docs/superpowers/specs/2026-06-19-atlas-present-canvas-mode-design.md
+// Plan: docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
 // =============================================================================
 
 /**
@@ -24,39 +18,60 @@
  */
 
 /**
- * @typedef {object} DeckDefaults
- * @property {'cut'} transitionType — Sprint 1 only supports 'cut'
- * @property {number} transitionDuration — ms; 0 for cut
+ * @typedef {object} DeckTween
+ * @property {number} durationMs — default 800
+ * @property {'linear'|'ease-in-out'} easing — default 'ease-in-out'
  */
 
 /**
- * @typedef {object} SlideSource
- * @property {'compositor-saved'|'compositor-demo'|'blank'} type
- * @property {string} [refId] — id of source scene/demo
- * @property {number} addedAt — ms epoch
+ * @typedef {object} CameraSpherical
+ * @property {number} yaw — radians
+ * @property {number} pitch — radians
+ * @property {number} distance
+ * @property {number} targetX
+ * @property {number} targetY
+ * @property {number} targetZ
+ * @property {number} [focal]
  */
 
 /**
- * @typedef {object} Slide
- * @property {string} id — uuid
+ * @typedef {object} Waypoint
+ * @property {string} id
  * @property {string} [title]
- * @property {object} sceneData — SceneData v1 schema (inline, not reference)
- * @property {SlideSource} [source]
+ * @property {CameraSpherical} camera
+ */
+
+/**
+ * @typedef {object} SceneDataSubject
+ * @property {string} id
+ * @property {string} type — atom name (cube-3d / text-3d-pipe / etc)
+ * @property {object} args — atom-specific args
+ * @property {{translate?:number[], rotate?:number[], scale?:number}} [transform]
+ * @property {string} [material] — material name
+ */
+
+/**
+ * @typedef {object} SceneData
+ * @property {1} v
+ * @property {string} name
+ * @property {SceneDataSubject[]} subjects
+ * @property {object} [defaults]
  */
 
 /**
  * @typedef {object} Deck
- * @property {string} id — uuid
+ * @property {string} id
  * @property {string} title
- * @property {number} createdAt — ms epoch
- * @property {number} updatedAt — ms epoch
+ * @property {number} createdAt
+ * @property {number} updatedAt
  * @property {Theme} theme
- * @property {DeckDefaults} defaults
- * @property {Slide[]} slides
+ * @property {SceneData} canvas — the persistent 3D scene
+ * @property {Waypoint[]} waypoints
+ * @property {DeckTween} tween
  */
 
 export const DECKS_STORAGE_KEY = 'atlas-decks';
-export const STORAGE_VERSION = 1;
+export const STORAGE_VERSION = 2;
 
 // ---- ID helpers -------------------------------------------------------------
 
@@ -67,10 +82,37 @@ function uuid() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-// ---- CRUD operations --------------------------------------------------------
+// ---- Defaults ---------------------------------------------------------------
+
+function defaultCanvas() {
+  return {
+    v: 1,
+    name: 'canvas',
+    subjects: [],
+    defaults: {
+      camera: {
+        yaw: 0.3,
+        pitch: -0.15,
+        distance: 8,
+        focal: 1.5,
+        targetX: 0,
+        targetY: 0.5,
+        targetZ: 0,
+      },
+      light: { azimuth: 0.6, altitude: 0.55, distance: 25, intensity: 1.2 },
+      shadow: { enabled: true, mode: 'darken', strength: 0.4 },
+    },
+  };
+}
+
+function defaultTween() {
+  return { durationMs: 800, easing: 'ease-in-out' };
+}
+
+// ---- Deck CRUD --------------------------------------------------------------
 
 /**
- * Create a new deck with default theme + empty slides.
+ * Create a new deck with an empty canvas (no subjects) and no waypoints.
  *
  * @param {string} [title='Untitled Deck']
  * @returns {Deck}
@@ -82,79 +124,127 @@ export function createDeck(title) {
     title: title || 'Untitled Deck',
     createdAt: now,
     updatedAt: now,
-    theme: {
-      renderer: 'studio',
-    },
-    defaults: {
-      transitionType: 'cut',
-      transitionDuration: 0,
-    },
-    slides: [],
+    theme: { renderer: 'studio' },
+    canvas: defaultCanvas(),
+    waypoints: [],
+    tween: defaultTween(),
   };
 }
 
+// ---- Subject CRUD (operates on deck.canvas.subjects) ------------------------
+
 /**
- * Add a slide to a deck (mutates deck, appends to slides array, updates updatedAt).
+ * Add a subject to the canvas. Mutates deck + updates updatedAt.
  *
  * @param {Deck} d
- * @param {Partial<Slide>} slideInput — sceneData required; id auto-assigned if missing
- * @returns {Slide} the added slide
+ * @param {Partial<SceneDataSubject>} subjectInput — `type` required
+ * @returns {SceneDataSubject} the added subject
  */
-export function addSlide(d, slideInput) {
-  if (!slideInput || !slideInput.sceneData) {
-    throw new Error('[deck-model] addSlide: slideInput.sceneData required');
+export function addSubjectToCanvas(d, subjectInput) {
+  if (!subjectInput || !subjectInput.type) {
+    throw new Error('[deck-model] addSubjectToCanvas: subjectInput.type required');
   }
-  const slide = {
-    id: slideInput.id || uuid(),
-    title: slideInput.title,
-    sceneData: slideInput.sceneData,
-    source: slideInput.source,
+  const subject = {
+    id: subjectInput.id || uuid(),
+    type: subjectInput.type,
+    args: subjectInput.args || {},
+    transform: subjectInput.transform || {},
+    ...(subjectInput.material ? { material: subjectInput.material } : {}),
   };
-  d.slides.push(slide);
+  d.canvas.subjects.push(subject);
   d.updatedAt = Date.now();
-  return slide;
+  return subject;
 }
 
 /**
- * Remove a slide from a deck by id (mutates deck, updates updatedAt if found).
+ * Remove a subject from canvas by id. Returns true if removed, false if not found.
  *
  * @param {Deck} d
- * @param {string} slideId
- * @returns {boolean} true if removed, false if id not found
+ * @param {string} subjectId
+ * @returns {boolean}
  */
-export function removeSlide(d, slideId) {
-  const idx = d.slides.findIndex((s) => s.id === slideId);
+export function removeSubjectFromCanvas(d, subjectId) {
+  const idx = d.canvas.subjects.findIndex((s) => s.id === subjectId);
   if (idx === -1) return false;
-  d.slides.splice(idx, 1);
+  d.canvas.subjects.splice(idx, 1);
+  d.updatedAt = Date.now();
+  return true;
+}
+
+// ---- Waypoint CRUD ----------------------------------------------------------
+
+/**
+ * Add a waypoint to the deck. Mutates + updates updatedAt.
+ *
+ * @param {Deck} d
+ * @param {Partial<Waypoint>} waypointInput — `camera` required
+ * @returns {Waypoint}
+ */
+export function addWaypoint(d, waypointInput) {
+  if (!waypointInput || !waypointInput.camera) {
+    throw new Error('[deck-model] addWaypoint: waypointInput.camera required');
+  }
+  const wp = {
+    id: waypointInput.id || uuid(),
+    ...(waypointInput.title ? { title: waypointInput.title } : {}),
+    camera: { ...waypointInput.camera },
+  };
+  d.waypoints.push(wp);
+  d.updatedAt = Date.now();
+  return wp;
+}
+
+/**
+ * Remove waypoint by id.
+ *
+ * @param {Deck} d
+ * @param {string} waypointId
+ * @returns {boolean}
+ */
+export function removeWaypoint(d, waypointId) {
+  const idx = d.waypoints.findIndex((w) => w.id === waypointId);
+  if (idx === -1) return false;
+  d.waypoints.splice(idx, 1);
   d.updatedAt = Date.now();
   return true;
 }
 
 /**
- * Move a slide from one index to another (mutates deck, updates updatedAt).
- * Clamps toIdx to [0, slides.length-1]. Out-of-bounds fromIdx is no-op.
+ * Reorder waypoints. Out-of-bounds fromIdx is no-op; toIdx clamped to length.
  *
  * @param {Deck} d
  * @param {number} fromIdx
  * @param {number} toIdx
- * @returns {boolean} true if moved, false if no-op
+ * @returns {boolean}
  */
-export function moveSlide(d, fromIdx, toIdx) {
-  if (fromIdx < 0 || fromIdx >= d.slides.length) return false;
-  const clampedTo = Math.max(0, Math.min(toIdx, d.slides.length - 1));
+export function moveWaypoint(d, fromIdx, toIdx) {
+  if (fromIdx < 0 || fromIdx >= d.waypoints.length) return false;
+  const clampedTo = Math.max(0, Math.min(toIdx, d.waypoints.length - 1));
   if (clampedTo === fromIdx) return false;
-  const [moved] = d.slides.splice(fromIdx, 1);
-  d.slides.splice(clampedTo, 0, moved);
+  const [moved] = d.waypoints.splice(fromIdx, 1);
+  d.waypoints.splice(clampedTo, 0, moved);
   d.updatedAt = Date.now();
   return true;
 }
 
 /**
- * Read raw storage shape. Initializes empty + version if missing.
+ * Update an existing waypoint's camera (re-capture). Returns false if not found.
  *
- * @private
- * @returns {{version:number, decks:Deck[]}}
+ * @param {Deck} d
+ * @param {string} waypointId
+ * @param {CameraSpherical} newCamera
+ * @returns {boolean}
  */
+export function updateWaypointCamera(d, waypointId, newCamera) {
+  const wp = d.waypoints.find((w) => w.id === waypointId);
+  if (!wp) return false;
+  wp.camera = { ...newCamera };
+  d.updatedAt = Date.now();
+  return true;
+}
+
+// ---- Storage ----------------------------------------------------------------
+
 function readStorage() {
   const raw = localStorage.getItem(DECKS_STORAGE_KEY);
   if (!raw) return { version: STORAGE_VERSION, decks: [] };
@@ -167,12 +257,6 @@ function readStorage() {
   }
 }
 
-/**
- * Write raw storage shape.
- *
- * @private
- * @param {{version:number, decks:Deck[]}} shape
- */
 function writeStorage(shape) {
   try {
     localStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(shape));
@@ -183,7 +267,8 @@ function writeStorage(shape) {
 }
 
 /**
- * Migrate storage shape across versions. Sprint 1 has only v1.
+ * Migrate raw storage shape. v1 (PPT-mode) silently dropped — returns empty
+ * v2 storage. v2 passes through.
  *
  * @param {object} raw
  * @returns {{version:number, decks:Deck[]}}
@@ -192,55 +277,34 @@ export function migrateDecksStorage(raw) {
   if (!raw || typeof raw !== 'object') {
     return { version: STORAGE_VERSION, decks: [] };
   }
+  if (raw.version !== STORAGE_VERSION) {
+    // v1 PPT-mode → silently drop. No real users to preserve.
+    return { version: STORAGE_VERSION, decks: [] };
+  }
   if (!Array.isArray(raw.decks)) {
     return { version: STORAGE_VERSION, decks: [] };
   }
   return { version: STORAGE_VERSION, decks: raw.decks };
 }
 
-/**
- * Save a single deck to storage (creates or updates).
- *
- * @param {Deck} d
- */
 export function saveDeckToStorage(d) {
   const shape = readStorage();
   const idx = shape.decks.findIndex((existing) => existing.id === d.id);
-  if (idx >= 0) {
-    shape.decks[idx] = d;
-  } else {
-    shape.decks.push(d);
-  }
+  if (idx >= 0) shape.decks[idx] = d;
+  else shape.decks.push(d);
   writeStorage(shape);
 }
 
-/**
- * Load a single deck by id. Returns null if not found.
- *
- * @param {string} id
- * @returns {Deck|null}
- */
 export function loadDeckFromStorage(id) {
   const shape = readStorage();
   return shape.decks.find((d) => d.id === id) || null;
 }
 
-/**
- * List all decks sorted by updatedAt (most recent first).
- *
- * @returns {Deck[]}
- */
 export function listDecks() {
   const shape = readStorage();
   return [...shape.decks].sort((a, b) => b.updatedAt - a.updatedAt);
 }
 
-/**
- * Delete a deck by id. Returns true if deleted, false if not found.
- *
- * @param {string} id
- * @returns {boolean}
- */
 export function deleteDeckFromStorage(id) {
   const shape = readStorage();
   const idx = shape.decks.findIndex((d) => d.id === id);
@@ -250,13 +314,6 @@ export function deleteDeckFromStorage(id) {
   return true;
 }
 
-/**
- * Rename a deck (load, update title, save). Updates updatedAt.
- *
- * @param {string} id
- * @param {string} newTitle
- * @returns {boolean} true if renamed, false if id not found
- */
 export function renameDeck(id, newTitle) {
   const d = loadDeckFromStorage(id);
   if (!d) return false;
@@ -267,11 +324,11 @@ export function renameDeck(id, newTitle) {
 }
 
 /**
- * Duplicate a deck — deep copy with new id + suffix " (copy)" on title.
- * Slide ids are also reassigned (so future edits don't conflict).
+ * Duplicate a deck — deep copy with new id + " (copy)" suffix. Canvas subjects
+ * + waypoints all get fresh ids.
  *
- * @param {string} id — source deck id
- * @returns {Deck|null} the new deck, or null if source not found
+ * @param {string} id
+ * @returns {Deck|null}
  */
 export function duplicateDeck(id) {
   const src = loadDeckFromStorage(id);
@@ -283,11 +340,11 @@ export function duplicateDeck(id) {
     title: `${src.title} (copy)`,
     createdAt: now,
     updatedAt: now,
-    slides: src.slides.map((s) => ({
-      ...s,
-      id: uuid(),
-      sceneData: JSON.parse(JSON.stringify(s.sceneData)),
-    })),
+    canvas: {
+      ...src.canvas,
+      subjects: src.canvas.subjects.map((s) => ({ ...s, id: uuid() })),
+    },
+    waypoints: src.waypoints.map((w) => ({ ...w, id: uuid() })),
   };
   saveDeckToStorage(copy);
   return copy;

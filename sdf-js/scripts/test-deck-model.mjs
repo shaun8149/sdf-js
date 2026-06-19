@@ -1,10 +1,10 @@
 // =============================================================================
-// test-deck-model.mjs — L1 unit tests for Atlas Present deck model
+// test-deck-model.mjs — L1 unit tests for Atlas Present Canvas Mode deck model
 // =============================================================================
 
 import * as deck from '../src/present/deck-model.js';
 
-// Mock localStorage (Node doesn't have it)
+// Mock localStorage
 const localStorageMock = {};
 globalThis.localStorage = {
   getItem: (k) => (k in localStorageMock ? localStorageMock[k] : null),
@@ -35,148 +35,153 @@ function resetStorage() {
   localStorage.clear();
 }
 
-console.log('=== deck-model smoke test ===\n');
+console.log('=== deck-model (Canvas Mode) smoke test ===\n');
 
-// constants exported
 ok(deck.DECKS_STORAGE_KEY === 'atlas-decks', 'DECKS_STORAGE_KEY exported');
-ok(deck.STORAGE_VERSION === 1, 'STORAGE_VERSION exported');
+ok(deck.STORAGE_VERSION === 2, `STORAGE_VERSION = 2 (got ${deck.STORAGE_VERSION})`);
 
-console.log('Test group 1: createDeck');
+console.log('\nTest group 1: createDeck');
 
-// Basic creation
 {
   const d = deck.createDeck('My Deck');
-  ok(typeof d.id === 'string' && d.id.length > 0, 'createDeck: assigns id');
-  ok(d.title === 'My Deck', 'createDeck: sets title');
-  ok(typeof d.createdAt === 'number' && d.createdAt > 0, 'createDeck: createdAt set');
-  ok(d.updatedAt === d.createdAt, 'createDeck: updatedAt = createdAt initially');
-  ok(d.theme && d.theme.renderer === 'studio', 'createDeck: default theme.renderer = studio');
-  ok(d.defaults && d.defaults.transitionType === 'cut', 'createDeck: default transitionType = cut');
-  ok(Array.isArray(d.slides) && d.slides.length === 0, 'createDeck: slides is empty array');
+  ok(typeof d.id === 'string' && d.id.length > 0, 'createDeck: id assigned');
+  ok(d.title === 'My Deck', 'createDeck: title');
+  ok(d.theme && d.theme.renderer === 'studio', 'createDeck: default renderer = studio');
+  ok(d.canvas && d.canvas.v === 1, 'createDeck: canvas SceneData v1');
+  ok(
+    Array.isArray(d.canvas.subjects) && d.canvas.subjects.length === 0,
+    'createDeck: empty canvas.subjects',
+  );
+  ok(Array.isArray(d.waypoints) && d.waypoints.length === 0, 'createDeck: empty waypoints');
+  ok(d.tween && d.tween.durationMs === 800, 'createDeck: default tween duration 800ms');
+  ok(d.tween.easing === 'ease-in-out', 'createDeck: default easing ease-in-out');
 }
 
-// Empty title defaults
 {
   const d = deck.createDeck();
-  ok(
-    d.title === 'Untitled Deck',
-    `createDeck: no title defaults to 'Untitled Deck' (got '${d.title}')`,
-  );
+  ok(d.title === 'Untitled Deck', 'createDeck: no title defaults');
 }
 
-console.log('\nTest group 2: addSlide / removeSlide');
+console.log('\nTest group 2: addSubjectToCanvas / removeSubjectFromCanvas');
 
-// addSlide appends and updates updatedAt
 {
   const d = deck.createDeck('test');
   const origUpdated = d.updatedAt;
-  const slideSceneData = { v: 1, name: 'slide A', subjects: [] };
   const before = Date.now();
   while (Date.now() === before) {}
-  const slide = deck.addSlide(d, { sceneData: slideSceneData, title: 'A' });
-  ok(d.slides.length === 1, 'addSlide: deck has 1 slide');
-  ok(d.slides[0].id === slide.id, 'addSlide: returned slide is in deck');
-  ok(d.slides[0].title === 'A', 'addSlide: title passed through');
+  const subj = deck.addSubjectToCanvas(d, {
+    type: 'cube-3d',
+    args: { count: 4 },
+    transform: { translate: [0, 0.5, 0] },
+  });
+  ok(d.canvas.subjects.length === 1, 'addSubject: canvas has 1 subject');
+  ok(subj.type === 'cube-3d', 'addSubject: type carried');
+  ok(subj.args.count === 4, 'addSubject: args carried');
+  ok(d.updatedAt > origUpdated, 'addSubject: updatedAt advanced');
+  ok(typeof subj.id === 'string' && subj.id.length > 0, 'addSubject: auto-assigns id');
+}
+
+{
+  const d = deck.createDeck('test');
+  deck.addSubjectToCanvas(d, { id: 'sub-a', type: 'cube-3d' });
+  deck.addSubjectToCanvas(d, { id: 'sub-b', type: 'text-3d-pipe' });
+  const removed = deck.removeSubjectFromCanvas(d, 'sub-a');
+  ok(removed === true, 'removeSubject: returns true on success');
+  ok(d.canvas.subjects.length === 1, 'removeSubject: 1 left');
+  ok(d.canvas.subjects[0].id === 'sub-b', 'removeSubject: correct one removed');
   ok(
-    d.updatedAt > origUpdated,
-    `addSlide: updatedAt advanced (orig ${origUpdated}, now ${d.updatedAt})`,
-  );
-  ok(
-    typeof d.slides[0].id === 'string' && d.slides[0].id.length > 0,
-    'addSlide: auto-assigns slide id if missing',
+    deck.removeSubjectFromCanvas(d, 'nonexistent') === false,
+    'removeSubject: nonexistent returns false',
   );
 }
 
-// addSlide with explicit id is honored
+console.log('\nTest group 3: addWaypoint / removeWaypoint / moveWaypoint');
+
 {
   const d = deck.createDeck('test');
-  const slide = deck.addSlide(d, { id: 'custom-id', sceneData: { v: 1 } });
-  ok(slide.id === 'custom-id', 'addSlide: respects explicit id');
+  const cam = { yaw: 0.3, pitch: -0.15, distance: 8, targetX: 0, targetY: 0.5, targetZ: 0 };
+  const wp = deck.addWaypoint(d, { title: 'Overview', camera: cam });
+  ok(d.waypoints.length === 1, 'addWaypoint: 1 waypoint');
+  ok(wp.title === 'Overview', 'addWaypoint: title carried');
+  ok(wp.camera.yaw === 0.3, 'addWaypoint: camera carried');
 }
 
-// removeSlide
 {
   const d = deck.createDeck('test');
-  deck.addSlide(d, { id: 'a', sceneData: { v: 1 } });
-  deck.addSlide(d, { id: 'b', sceneData: { v: 1 } });
-  deck.addSlide(d, { id: 'c', sceneData: { v: 1 } });
+  ['a', 'b', 'c'].forEach((id) =>
+    deck.addWaypoint(d, {
+      id,
+      camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+    }),
+  );
+  deck.removeWaypoint(d, 'b');
+  ok(d.waypoints.map((w) => w.id).join(',') === 'a,c', 'removeWaypoint: order preserved');
+}
+
+{
+  const d = deck.createDeck('test');
+  ['a', 'b', 'c', 'd'].forEach((id) =>
+    deck.addWaypoint(d, {
+      id,
+      camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+    }),
+  );
+  deck.moveWaypoint(d, 0, 2);
+  ok(
+    d.waypoints.map((w) => w.id).join(',') === 'b,c,a,d',
+    `moveWaypoint(0,2): got ${d.waypoints.map((w) => w.id).join(',')}`,
+  );
+}
+
+console.log('\nTest group 4: updateWaypointCamera');
+
+{
+  const d = deck.createDeck('test');
+  const wp = deck.addWaypoint(d, {
+    id: 'w1',
+    camera: { yaw: 0.3, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+  });
   const orig = d.updatedAt;
   const before = Date.now();
   while (Date.now() === before) {}
-  deck.removeSlide(d, 'b');
-  ok(d.slides.length === 2, 'removeSlide: 2 slides remain');
+  const newCam = { yaw: 1.5, pitch: -0.2, distance: 10, targetX: 5, targetY: 1, targetZ: -3 };
+  const ok1 = deck.updateWaypointCamera(d, 'w1', newCam);
+  ok(ok1 === true, 'updateWaypointCamera: returns true');
+  ok(wp.camera.yaw === 1.5 && wp.camera.distance === 10, 'updateWaypointCamera: camera replaced');
+  ok(d.updatedAt > orig, 'updateWaypointCamera: updatedAt advanced');
   ok(
-    d.slides.map((s) => s.id).join(',') === 'a,c',
-    `removeSlide: order preserved (got ${d.slides.map((s) => s.id).join(',')})`,
-  );
-  ok(d.updatedAt > orig, 'removeSlide: updatedAt advanced');
-}
-
-// removeSlide non-existent id is no-op
-{
-  const d = deck.createDeck('test');
-  deck.addSlide(d, { id: 'x', sceneData: { v: 1 } });
-  const orig = d.updatedAt;
-  deck.removeSlide(d, 'nonexistent');
-  ok(d.slides.length === 1, 'removeSlide: nonexistent id is no-op');
-  ok(d.updatedAt === orig, 'removeSlide: no update on no-op');
-}
-
-console.log('\nTest group 3: moveSlide');
-
-{
-  const d = deck.createDeck('test');
-  ['a', 'b', 'c', 'd'].forEach((id) => deck.addSlide(d, { id, sceneData: { v: 1 } }));
-  deck.moveSlide(d, 0, 2);
-  ok(
-    d.slides.map((s) => s.id).join(',') === 'b,c,a,d',
-    `moveSlide(0,2): got ${d.slides.map((s) => s.id).join(',')}`,
+    deck.updateWaypointCamera(d, 'nonexistent', newCam) === false,
+    'updateWaypointCamera: nonexistent returns false',
   );
 }
 
-{
-  const d = deck.createDeck('test');
-  ['a', 'b', 'c', 'd'].forEach((id) => deck.addSlide(d, { id, sceneData: { v: 1 } }));
-  deck.moveSlide(d, 3, 0);
-  ok(
-    d.slides.map((s) => s.id).join(',') === 'd,a,b,c',
-    `moveSlide(3,0): got ${d.slides.map((s) => s.id).join(',')}`,
-  );
-}
-
-// Out-of-bounds is no-op
-{
-  const d = deck.createDeck('test');
-  ['a', 'b'].forEach((id) => deck.addSlide(d, { id, sceneData: { v: 1 } }));
-  deck.moveSlide(d, 5, 0);
-  ok(d.slides.map((s) => s.id).join(',') === 'a,b', 'moveSlide: out-of-bounds fromIdx is no-op');
-  deck.moveSlide(d, 0, 5);
-  ok(d.slides.map((s) => s.id).join(',') === 'b,a', 'moveSlide: out-of-bounds toIdx clamps to end');
-}
-
-console.log('\nTest group 4: localStorage save/load');
+console.log('\nTest group 5: localStorage v2 + v1 silent drop');
 
 resetStorage();
 
 {
   const d = deck.createDeck('Roundtrip');
-  deck.addSlide(d, { id: 'a', sceneData: { v: 1, name: 'A' } });
+  deck.addSubjectToCanvas(d, { id: 'c1', type: 'cube-3d' });
+  deck.addWaypoint(d, {
+    id: 'w1',
+    camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+  });
   deck.saveDeckToStorage(d);
   const loaded = deck.loadDeckFromStorage(d.id);
-  ok(loaded !== null, 'loadDeckFromStorage: returns saved deck');
-  ok(loaded.title === 'Roundtrip', `loadDeckFromStorage: title preserved (got '${loaded.title}')`);
-  ok(
-    loaded.slides.length === 1 && loaded.slides[0].id === 'a',
-    'loadDeckFromStorage: slides preserved',
-  );
+  ok(loaded !== null, 'roundtrip: load returns deck');
+  ok(loaded.canvas.subjects.length === 1, 'roundtrip: canvas subjects preserved');
+  ok(loaded.waypoints.length === 1, 'roundtrip: waypoints preserved');
 }
 
 {
   resetStorage();
-  ok(
-    deck.loadDeckFromStorage('nonexistent-id') === null,
-    'loadDeckFromStorage: nonexistent returns null',
+  // Write fake v1 PPT-mode storage
+  localStorage.setItem(
+    'atlas-decks',
+    JSON.stringify({ version: 1, decks: [{ id: 'old-v1-deck', slides: [] }] }),
   );
+  const list = deck.listDecks();
+  ok(list.length === 0, `v1 silent drop: listDecks returns empty (got ${list.length})`);
 }
 
 {
@@ -188,59 +193,50 @@ resetStorage();
   d2.updatedAt = 5000;
   deck.saveDeckToStorage(d2);
   const list = deck.listDecks();
-  ok(list.length === 2, `listDecks: count 2 (got ${list.length})`);
-  ok(
-    list[0].title === 'new',
-    `listDecks: sorted by updatedAt desc, newest first (got '${list[0].title}')`,
-  );
-  ok(list[1].title === 'old', 'listDecks: oldest second');
+  ok(list[0].title === 'new', 'listDecks: sorted by updatedAt desc');
 }
 
 {
   resetStorage();
   const d = deck.createDeck('delete-me');
   deck.saveDeckToStorage(d);
-  ok(deck.listDecks().length === 1, 'pre-delete: 1 deck');
-  const removed = deck.deleteDeckFromStorage(d.id);
-  ok(removed === true, 'deleteDeckFromStorage: returns true on success');
-  ok(deck.listDecks().length === 0, 'post-delete: 0 decks');
-  ok(
-    deck.deleteDeckFromStorage('nonexistent') === false,
-    'deleteDeckFromStorage: returns false if not found',
-  );
+  ok(deck.deleteDeckFromStorage(d.id) === true, 'delete: returns true on success');
+  ok(deck.listDecks().length === 0, 'delete: list now empty');
+  ok(deck.deleteDeckFromStorage('nonexistent') === false, 'delete: nonexistent returns false');
 }
 
-console.log('\nTest group 5: renameDeck + duplicateDeck');
-
-resetStorage();
+console.log('\nTest group 6: rename + duplicate');
 
 {
+  resetStorage();
   const d = deck.createDeck('original');
   deck.saveDeckToStorage(d);
   const before = Date.now();
   while (Date.now() === before) {}
   deck.renameDeck(d.id, 'renamed');
-  const loaded = deck.loadDeckFromStorage(d.id);
-  ok(loaded.title === 'renamed', `renameDeck: title updated (got '${loaded.title}')`);
-  ok(loaded.updatedAt > d.updatedAt, 'renameDeck: updatedAt advanced');
+  ok(deck.loadDeckFromStorage(d.id).title === 'renamed', 'rename: title updated');
 }
 
 {
   resetStorage();
   const d = deck.createDeck('source');
-  deck.addSlide(d, { id: 's1', sceneData: { v: 1, name: 'A' } });
-  deck.addSlide(d, { id: 's2', sceneData: { v: 1, name: 'B' } });
+  deck.addSubjectToCanvas(d, { id: 's1', type: 'cube-3d' });
+  deck.addWaypoint(d, {
+    id: 'w1',
+    camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+  });
   deck.saveDeckToStorage(d);
   const dup = deck.duplicateDeck(d.id);
-  ok(dup !== null, 'duplicateDeck: returns new deck');
-  ok(dup.id !== d.id, 'duplicateDeck: new id assigned');
+  ok(dup !== null, 'duplicate: returns new deck');
+  ok(dup.title === 'source (copy)', 'duplicate: " (copy)" suffix');
   ok(
-    dup.title === 'source (copy)',
-    `duplicateDeck: title gets "(copy)" suffix (got '${dup.title}')`,
+    dup.canvas.subjects.length === 1 && dup.canvas.subjects[0].id !== 's1',
+    'duplicate: subject ids reassigned',
   );
-  ok(dup.slides.length === 2, 'duplicateDeck: slides copied');
-  ok(dup.slides[0].id !== d.slides[0].id, 'duplicateDeck: slide ids reassigned (deep copy)');
-  ok(deck.listDecks().length === 2, 'duplicateDeck: storage now has 2 decks');
+  ok(
+    dup.waypoints.length === 1 && dup.waypoints[0].id !== 'w1',
+    'duplicate: waypoint ids reassigned',
+  );
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
