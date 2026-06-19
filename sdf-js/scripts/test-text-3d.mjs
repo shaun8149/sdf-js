@@ -49,6 +49,13 @@ const expected = [
   'G',
   'O',
   'Q',
+  'A',
+  'K',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
 ];
 const supported = supportedChars();
 for (const ch of expected) {
@@ -135,6 +142,27 @@ ok(letterC.sdf([0.28, 0.5]) > 0.05, '"C" extruded right rim is outside (opening)
 const letterQ = buildGlyph('Q');
 ok(letterQ.sdf([0, 0.5]) > 0.1, '"Q" extruded center is hollow (like O)');
 ok(letterQ.sdf([0.25, -0.02]) < 0.05, '"Q" extruded tail near baseline is close to surface');
+
+console.log('\nTest group 9: Wave 2 Batch 3 — diagonal-stroke letters (A K V W X Y Z, extruded)');
+for (const ch of ['A', 'K', 'V', 'W', 'X', 'Y', 'Z']) {
+  const g = buildGlyph(ch);
+  ok(g !== null, `'${ch}' (extruded) builds`);
+  ok(g.advance > 0, `'${ch}' (extruded) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (extruded) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5])), `'${ch}' (extruded) probe finite`);
+}
+// "A" — apex at (0, 1.0) should be inside, gap below apex outside
+const letterA = buildGlyph('A');
+ok(letterA.sdf([0, 1.0]) < 0, '"A" apex is inside');
+ok(letterA.sdf([0, 0.45]) < 0, '"A" crossbar center is inside');
+ok(letterA.sdf([0, 0.7]) > 0, '"A" above crossbar interior is outside (open triangle)');
+// "X" — center of cross should be inside (both diagonals overlap)
+const letterX = buildGlyph('X');
+ok(letterX.sdf([0, 0.5]) < 0, '"X" cross center is inside');
+// "Y" — junction at (0, 0.5) should be inside
+const letterY = buildGlyph('Y');
+ok(letterY.sdf([0, 0.5]) < 0, '"Y" junction is inside');
+ok(letterY.sdf([0, 0]) < 0, '"Y" stem base is inside');
 
 // -----------------------------------------------------------------------------
 console.log('\nTest group 4: text3dExtrudedSDF extrusion');

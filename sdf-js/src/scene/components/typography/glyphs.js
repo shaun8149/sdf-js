@@ -228,6 +228,56 @@ const LETTER_BUILDERS = {
     advance: 0.7,
     sdf: union(ring(0.28, r * 2, [0, 0.5]), segment([0.15, 0.05], [0.32, -0.08], r)),
   }),
+  // ---- Wave 2 Batch 3: diagonal-stroke letters (A K V W X Y Z) ----
+  A: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      segment([-0.25, 0], [0, 1.0], r),
+      segment([0.25, 0], [0, 1.0], r),
+      segment([-0.15, 0.45], [0.15, 0.45], r),
+    ),
+  }),
+  K: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      segment([-0.2, 0.5], [0.2, 1.0], r),
+      segment([-0.2, 0.5], [0.2, 0], r),
+    ),
+  }),
+  V: (r) => ({
+    advance: 0.6,
+    sdf: union(segment([-0.25, 1.0], [0, 0], r), segment([0.25, 1.0], [0, 0], r)),
+  }),
+  W: (r) => ({
+    advance: 0.9,
+    sdf: union(
+      segment([-0.4, 1.0], [-0.2, 0], r),
+      segment([-0.2, 0], [0, 0.6], r),
+      segment([0, 0.6], [0.2, 0], r),
+      segment([0.2, 0], [0.4, 1.0], r),
+    ),
+  }),
+  X: (r) => ({
+    advance: 0.6,
+    sdf: union(segment([-0.25, 1.0], [0.25, 0], r), segment([0.25, 1.0], [-0.25, 0], r)),
+  }),
+  Y: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      segment([-0.25, 1.0], [0, 0.5], r),
+      segment([0.25, 1.0], [0, 0.5], r),
+      segment([0, 0.5], [0, 0], r),
+    ),
+  }),
+  Z: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.22, 1.0], [0.22, 1.0], r),
+      segment([0.22, 1.0], [-0.22, 0], r),
+      segment([-0.22, 0], [0.22, 0], r),
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------

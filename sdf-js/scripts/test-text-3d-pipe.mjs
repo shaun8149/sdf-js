@@ -180,6 +180,20 @@ const pipeC = buildPipeGlyph('C');
 ok(pipeC.sdf([-0.28, 0.5, 0]) < 0, '"C" pipe left rim is inside (arc covers left)');
 ok(pipeC.sdf([0.28, 0.5, 0]) > 0.05, '"C" pipe right rim is outside (opening)');
 
+console.log('\nTest group 9: Wave 2 Batch 3 — diagonal-stroke letters (A K V W X Y Z, pipe)');
+for (const ch of ['A', 'K', 'V', 'W', 'X', 'Y', 'Z']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' (pipe) builds`);
+  ok(g.advance > 0, `'${ch}' (pipe) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (pipe) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' (pipe) probe finite`);
+}
+const pipeA = buildPipeGlyph('A');
+ok(pipeA.sdf([0, 1.0, 0]) < 0, '"A" pipe apex is inside');
+ok(pipeA.sdf([0, 0.45, 0]) < 0, '"A" pipe crossbar center is inside');
+const pipeX = buildPipeGlyph('X');
+ok(pipeX.sdf([0, 0.5, 0]) < 0, '"X" pipe cross center is inside');
+
 // -----------------------------------------------------------------------------
 console.log('\nTest group 8: pipeRadius defensive clamp (Trap 1 protection)');
 const { compile } = await import('../src/scene/compile.js');

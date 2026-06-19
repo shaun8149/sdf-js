@@ -109,7 +109,7 @@ ok(isParseable(rKpi.code2d), 'kpi-feature code2d parses as valid JS');
 // -----------------------------------------------------------------------------
 console.log('\nTest group 3: cover (title + subtitle)');
 const slideCover = emptySlideData(0, 'pdf');
-slideCover.title = 'My Awesome Deck';
+slideCover.title = 'My Awesome Deck'; // Contains supported letter "A" from Batch 3 (should use text2dSDF)
 slideCover.layout = 'cover';
 slideCover.body = [
   {
@@ -125,22 +125,40 @@ slideCover.pageSize = { width: 960, height: 540 };
 
 const rCover = emitSlide2dCode(slideCover);
 ok(rCover.pattern === 'cover', `detected cover (got ${rCover.pattern})`);
-// Wave 1 + Wave 2 Batch 1 font has digits + KPI symbols + uppercase I L T E F H.
-// Strings with unsupported chars (lowercase, other uppercase) fall back
-// to a placeholder rectangle (visible as a colored block) — the actual text
-// content lives in the lift prompt instead. Header comment still mentions
-// the title, but the title runtime expression must be a rectangle, not
-// text2dSDF (which would return null and crash on .translate).
+// Wave 2 Batch 3 adds A K V W X Y Z. "My Awesome Deck" now has supported letter "A",
+// so it should use text2dSDF. Use a title with NO supported chars for rectangle fallback.
 ok(
-  rCover.code2d.includes('const title    = rectangle('),
-  'title with all-letters falls back to placeholder rectangle',
+  rCover.code2d.includes("text2dSDF({ text: 'My Awesome Deck'"),
+  'title with supported letters uses text2dSDF',
+);
+ok(rCover.prompt.includes('My Awesome Deck'), 'title text surfaced via prompt');
+
+// Now test actual fallback with a title that has NO supported chars
+const slideCoverUnsupported = emptySlideData(1, 'pdf');
+slideCoverUnsupported.title = 'my unsupported deck'; // All lowercase, no digits
+slideCoverUnsupported.layout = 'cover';
+slideCoverUnsupported.body = [];
+slideCoverUnsupported.pageSize = { width: 960, height: 540 };
+
+const rCoverUnsupported = emitSlide2dCode(slideCoverUnsupported);
+ok(
+  rCoverUnsupported.pattern === 'cover',
+  `fallback slide detected cover (got ${rCoverUnsupported.pattern})`,
 );
 ok(
-  !rCover.code2d.includes("text2dSDF({ text: 'My Awesome Deck'"),
-  'no text2dSDF call for unrenderable title (would crash)',
+  rCoverUnsupported.code2d.includes('const title    = rectangle('),
+  'title with NO supported chars falls back to placeholder rectangle',
 );
-ok(rCover.prompt.includes('My Awesome Deck'), 'unrenderable title still surfaced via prompt');
-ok(isParseable(rCover.code2d), 'cover code2d parses as valid JS');
+ok(
+  !rCoverUnsupported.code2d.includes("text2dSDF({ text: 'my unsupported deck'"),
+  'no text2dSDF call for title with no renderable chars',
+);
+ok(rCoverUnsupported.prompt.includes('my unsupported deck'), 'unsupported title still in prompt');
+ok(isParseable(rCover.code2d), 'cover code2d with supported letters parses as valid JS');
+ok(
+  isParseable(rCoverUnsupported.code2d),
+  'cover code2d with unsupported letters parses as valid JS',
+);
 
 // -----------------------------------------------------------------------------
 console.log('\nTest group 4: fallback (no clues)');
