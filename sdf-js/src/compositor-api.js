@@ -26,6 +26,9 @@
 import { compile } from './scene/compile.js';
 import { expandVariants } from './scene/generator-s.js';
 import { union as sdfUnion } from './sdf/dn.js';
+import { createStudioRenderer } from './render/studio.js';
+import { createFly3DRenderer } from './render/flyLambert.js';
+import { silhouette } from './render/silhouette.js';
 
 // Constants
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
@@ -286,4 +289,45 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
   return { text: data.content[0].text, usage: data.usage };
 }
 
-// Exports populated by subsequent tasks.
+/**
+ * Create a renderer instance for the given renderer id. Returns an object
+ * with `.render(sdf)` and `.unmount()` methods. Caller owns lifecycle.
+ *
+ * Sprint 1 supports: 'studio', 'fly3d', 'silhouette'. Sprint 2+ will add
+ * 'bob-gpu', 'blueprint', 'crayon', 'topo', 'bob', 'lines'.
+ *
+ * @param {string} rendererId
+ * @param {HTMLCanvasElement} canvas
+ * @param {object} [opts]
+ * @param {Function} [opts.getControls] — for GPU renderers; receives renderer time + returns camera/light state
+ * @param {Function} [opts.onFps] — for GPU renderers; called per frame with FPS
+ * @returns {{render:Function, unmount:Function}}
+ */
+export function createRendererForId(rendererId, canvas, opts = {}) {
+  if (rendererId === 'silhouette') {
+    return {
+      render(layers, renderOpts = {}) {
+        const ctx = canvas.getContext('2d');
+        silhouette(ctx, layers, renderOpts);
+      },
+      unmount() {
+        // No-op for CPU silhouette
+      },
+    };
+  }
+  if (rendererId === 'studio') {
+    return createStudioRenderer({
+      canvas,
+      getControls: opts.getControls || (() => ({})),
+      onFps: opts.onFps || (() => {}),
+    });
+  }
+  if (rendererId === 'fly3d') {
+    return createFly3DRenderer({
+      canvas,
+      getControls: opts.getControls || (() => ({})),
+      onFps: opts.onFps || (() => {}),
+    });
+  }
+  throw new Error(`[compositor-api] unknown renderer id: ${rendererId}`);
+}

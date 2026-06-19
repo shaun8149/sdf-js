@@ -159,7 +159,37 @@ await (async () => {
   }
 })();
 
-// [More tests added in Task 1.6]
+// createRendererForId: known renderer ids return an object with .render and .unmount
+{
+  const fakeCanvas = { getContext: () => ({}) };
+  for (const id of ['studio', 'fly3d', 'silhouette']) {
+    try {
+      const r = api.createRendererForId(id, fakeCanvas);
+      ok(typeof r.render === 'function', `createRendererForId('${id}'): has .render`);
+      ok(typeof r.unmount === 'function', `createRendererForId('${id}'): has .unmount`);
+    } catch (e) {
+      if (id === 'silhouette') {
+        ok(false, `createRendererForId('${id}'): threw on fake canvas (${e.message})`);
+      } else {
+        ok(
+          true,
+          `createRendererForId('${id}'): threw on fake canvas (expected — no WebGL in Node)`,
+        );
+      }
+    }
+  }
+}
+
+// createRendererForId: unknown id throws
+{
+  let threw = false;
+  try {
+    api.createRendererForId('bogus', {});
+  } catch (e) {
+    threw = /unknown.*renderer/i.test(e.message);
+  }
+  ok(threw, 'createRendererForId: throws on unknown id');
+}
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
