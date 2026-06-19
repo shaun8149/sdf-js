@@ -4,9 +4,12 @@
 // One parameterized atom (19 args, 10 arrangements, 3 materials, 4 connectors,
 // 3 label modes) covering ~96 reference slides across 5 PresentationLoad cube
 // templates (Cubes Count D1501, Connected D2628, Glass D2431, Buzzword D7031,
-// Cubes Count D1501-variant). Reuses existing rounded_box + wireframe_box
-// primitives (verified shipped in d3.js); delegates label glyphs to existing
-// text3dPipeSDF / text3dExtrudedSDF (Wave 1+2 typography).
+// Cubes Count D1501-variant). Reuses existing primitives (all verified shipped 2026-06-19):
+//   - rounded_box (d3.js:152, .ast set, GLSL emit registered)
+//   - wireframe_box (d3.js:352, .ast set, GLSL emit at sdf3.compile.js:463,
+//     GLSL helper sdBoxFrame at sdf3.glsl.js:58, registered in SDF3_GLSL_PRIMITIVES)
+//   - capsule (d3.js:54, for connector geometry)
+//   - text3dPipeSDF + text3dExtrudedSDF (Wave 1+2 typography, label glyph source)
 //
 // Auto-color: when caller passes empty colors[], each cube gets a float id
 // (i * 1.7 + 13.0) → IQ shadertoy formula 0.2 + 0.2*sin(id*2 + vec3(0,1,2))
