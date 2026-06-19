@@ -25,6 +25,37 @@ import { union } from '../../../sdf/dn.js';
 import { extrude } from '../../../sdf/d2.js';
 
 /**
+ * Walk a resolved-glyph list (output of per-char buildGlyph) and lay them out
+ * with per-character advance widths + alignment, translating each glyph by
+ * its cumulative x-cursor position. Returns the array of placed SDF copies
+ * (caller is responsible for union + any further wrap like scale / extrude).
+ *
+ * Shared between text2dSDF (2D) and text3dPipeSDF (3D). Wave 2-3 letter
+ * additions will reuse without duplication.
+ *
+ * @param {Array<{sdf: any|null, advance: number}>} resolved
+ * @param {'2d'|'3d'} axis
+ * @param {'left'|'center'|'right'} align
+ * @param {number} letterSpacing
+ * @returns {Array<any>}   non-null placed SDFs (skipped glyphs with null sdf)
+ */
+function layoutGlyphs(resolved, axis, align, letterSpacing) {
+  const totalWidth =
+    resolved.reduce((acc, g) => acc + g.advance + letterSpacing, 0) - letterSpacing;
+  const startX = align === 'center' ? -totalWidth / 2 : align === 'right' ? -totalWidth : 0;
+  let cursor = startX;
+  const placed = [];
+  for (const g of resolved) {
+    if (g.sdf !== null) {
+      const centerX = cursor + g.advance / 2;
+      placed.push(axis === '3d' ? g.sdf.translate([centerX, 0, 0]) : g.sdf.translate([centerX, 0]));
+    }
+    cursor += g.advance + letterSpacing;
+  }
+  return placed;
+}
+
+/**
  * Build a 2D text SDF (unit cap-height) ready for caller-side .scale() /
  * .translate() / .extrude(). Returns null if the string contains zero
  * renderable characters (all unknown / all spaces).
@@ -48,22 +79,7 @@ export function text2dSDF({ text, strokeWidth = 0.12, letterSpacing = 0, align =
   }
   if (resolved.length === 0) return null;
 
-  // Total width = sum of (advance + letterSpacing) - last spacer
-  const totalWidth =
-    resolved.reduce((acc, g) => acc + g.advance + letterSpacing, 0) - letterSpacing;
-  const startX = align === 'center' ? -totalWidth / 2 : align === 'right' ? -totalWidth : 0;
-
-  // Walk the cursor, translating each non-null glyph to its centered slot.
-  let cursor = startX;
-  const placed = [];
-  for (const g of resolved) {
-    if (g.sdf !== null) {
-      const centerX = cursor + g.advance / 2;
-      placed.push(g.sdf.translate([centerX, 0]));
-    }
-    cursor += g.advance + letterSpacing;
-  }
-
+  const placed = layoutGlyphs(resolved, '2d', align, letterSpacing);
   if (placed.length === 0) return null;
   return placed.length === 1 ? placed[0] : union(...placed);
 }
@@ -144,20 +160,7 @@ export function text3dPipeSDF({
   }
   if (resolved.length === 0) return null;
 
-  const totalWidth =
-    resolved.reduce((acc, g) => acc + g.advance + letterSpacing, 0) - letterSpacing;
-  const startX = align === 'center' ? -totalWidth / 2 : align === 'right' ? -totalWidth : 0;
-
-  let cursor = startX;
-  const placed = [];
-  for (const g of resolved) {
-    if (g.sdf !== null) {
-      const centerX = cursor + g.advance / 2;
-      placed.push(g.sdf.translate([centerX, 0, 0]));
-    }
-    cursor += g.advance + letterSpacing;
-  }
-
+  const placed = layoutGlyphs(resolved, '3d', align, letterSpacing);
   if (placed.length === 0) return null;
   const combined = placed.length === 1 ? placed[0] : union(...placed);
   return height === 1 ? combined : combined.scale(height);
