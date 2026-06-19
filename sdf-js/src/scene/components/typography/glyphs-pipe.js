@@ -122,6 +122,72 @@ const GLYPH_BUILDERS = {
       pipeArcSpan(0, 0.25, 0.22, Math.PI / 2, Math.PI + Math.PI / 2, r), // bottom: mid at -X
     ),
   }),
+
+  // 4 — left diagonal + crossbar + right vertical
+  4: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([0.12, 1.0, 0], [-0.22, 0.32, 0], r), // diagonal
+      capsule([-0.22, 0.32, 0], [0.22, 0.32, 0], r), // crossbar
+      capsule([0.12, 1.0, 0], [0.12, 0, 0], r), // right vertical
+    ),
+  }),
+
+  // 6 — bottom closed ring + curved top hook (capsule + partial arc combo)
+  6: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      torus(0.22, r)
+        .rotate(Math.PI / 2, [1, 0, 0])
+        .translate([0, 0.3, 0]), // bottom loop
+      capsule([-0.22, 0.3, 0], [-0.22, 0.7, 0], r), // left side connector going up
+      pipeArcSpan(0, 0.7, 0.22, Math.PI / 2, Math.PI, r), // top hook (upper-left quadrant)
+    ),
+  }),
+
+  // 7 — top horizontal + diagonal down to baseline
+  7: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([-0.22, 1.0, 0], [0.22, 1.0, 0], r), // top
+      capsule([0.22, 1.0, 0], [-0.1, 0, 0], r), // diagonal
+    ),
+  }),
+
+  // 8 — two stacked toruses
+  8: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      torus(0.2, r)
+        .rotate(Math.PI / 2, [1, 0, 0])
+        .translate([0, 0.74, 0]),
+      torus(0.22, r)
+        .rotate(Math.PI / 2, [1, 0, 0])
+        .translate([0, 0.26, 0]),
+    ),
+  }),
+
+  // 9 — top closed ring + tail capsule pulled to baseline
+  // (subtraction philosophy: no bottom hook — capsule round cap closes naturally)
+  9: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      torus(0.22, r)
+        .rotate(Math.PI / 2, [1, 0, 0])
+        .translate([0, 0.7, 0]),
+      capsule([0.22, 0.7, 0], [0.22, 0.0, 0], r),
+    ),
+  }),
+
+  // % — two sphere dots + diagonal capsule
+  '%': (r) => ({
+    advance: 0.7,
+    sdf: union(
+      sphere(r * 1.8).translate([-0.18, 0.78, 0]),
+      sphere(r * 1.8).translate([0.18, 0.22, 0]),
+      capsule([-0.3, 0.05, 0], [0.3, 0.95, 0], r),
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------

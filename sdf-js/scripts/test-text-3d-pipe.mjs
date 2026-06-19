@@ -95,5 +95,34 @@ ok(dollar.sdf([0, 0.5, 0]) < 0, '"$" central bar at midline is inside');
 ok(dollar.sdf([0, 1.05, 0]) < 0, '"$" bar extends above cap (y=1.1) — probe at 1.05');
 ok(dollar.sdf([0, -0.05, 0]) < 0, '"$" bar extends below baseline (y=-0.1) — probe at -0.05');
 
+console.log('\nTest group 4: Group C glyphs (4 6 7 8 9 %)');
+
+for (const ch of ['4', '6', '7', '8', '9', '%']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' builds`);
+  ok(g.advance > 0, `'${ch}' positive advance`);
+  ok(g.sdf !== null, `'${ch}' has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' SDF probe finite`);
+}
+
+// "8" — two stacked rings; center of each ring should be hollow
+const eight = buildPipeGlyph('8', 0.06);
+ok(eight.sdf([0, 0.74, 0]) > 0.05, '"8" top ring center is hollow');
+ok(eight.sdf([0, 0.26, 0]) > 0.05, '"8" bottom ring center is hollow');
+ok(eight.sdf([0.2, 0.74, 0]) < 0, '"8" top ring right rim is inside');
+
+// "9" — top ring + tail capsule
+const nine = buildPipeGlyph('9', 0.06);
+ok(nine.sdf([0, 0.7, 0]) > 0.05, '"9" top ring center is hollow');
+ok(nine.sdf([0.22, 0.7, 0]) < 0, '"9" top ring +X rim is inside');
+ok(nine.sdf([0.22, 0.3, 0]) < 0, '"9" tail midpoint is inside');
+ok(nine.sdf([0.22, 0.0, 0]) < 0, '"9" tail bottom end (capsule cap) is inside');
+
+// "%" — sphere dots + diagonal capsule
+const pct = buildPipeGlyph('%', 0.06);
+ok(pct.sdf([-0.18, 0.78, 0]) < 0, '"%" top-left dot is inside');
+ok(pct.sdf([0.18, 0.22, 0]) < 0, '"%" bottom-right dot is inside');
+ok(pct.sdf([0, 0.5, 0]) < 0.05, '"%" diagonal at center close to surface');
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
