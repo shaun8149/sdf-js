@@ -3,6 +3,11 @@
 // -----------------------------------------------------------------------------
 // Audience-facing UI: fullscreen, ←→/space/esc/home/end keys, cursor auto-hide,
 // renderer LOCKED to deck.theme.renderer, camera LOCKED (no drag/WASD).
+//
+// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 5 (Canvas Mode pivot).
+// Canvas Mode will compile canvas ONCE + tween camera between waypoints on key.
+// Do NOT extend or "improve" this file. See plan
+// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
 // =============================================================================
 
 import * as deckModel from './deck-model.js';

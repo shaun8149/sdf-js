@@ -5,7 +5,11 @@
 // localStorage persistence + migration.
 //
 // localStorage key: 'atlas-decks'
-//   shape: { version: 1, decks: Deck[] }
+//   shape: { version: 2, decks: Deck[] }  ← UPDATED in Canvas Mode pivot 2026-06-19
+//
+// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 3 (Canvas Mode pivot).
+// Until then, do NOT extend or "improve" this file. See plan
+// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
 //
 // Per [[compositor-layered-for-presentation]] memory: this lives in
 // Layer 2 (presentation app), calls Layer 1 (compositor-api) only when

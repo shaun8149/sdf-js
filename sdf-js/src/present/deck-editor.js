@@ -2,6 +2,11 @@
 // deck-editor.js — Atlas Present deck editor page
 // -----------------------------------------------------------------------------
 // 3-pane layout: slide list (left) + preview (center) + settings (right).
+//
+// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 4 (Canvas Mode pivot).
+// New center pane will be a 3D canvas viewport with waypoint rail + atom palette.
+// Do NOT extend or "improve" this file. See plan
+// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
 // -----------------------------------------------------------------------------
 import * as deckModel from './deck-model.js';
 import { createRendererForId, compileScene } from '../compositor-api.js';
