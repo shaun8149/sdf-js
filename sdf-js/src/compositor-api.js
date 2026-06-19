@@ -12,6 +12,8 @@
 //
 // Exports (added incrementally in Phase 1 tasks 1.2-1.6):
 //   - sphericalToCamState(cam) — spherical camera → Cartesian eye position
+//   - camStateToSpherical(camState, referenceCam) — Cartesian eye position
+//     → spherical waypoint camera
 //   - compileScene(sceneData, opts) — compile + expandVariants + sdfUnion
 //   - parseLiftResponse(text) — LLM JSON-isms stripper (markdown fence,
 //     trailing comma, // comment, /* */ — load-bearing)
@@ -50,6 +52,50 @@ export function sphericalToCamState(cam) {
     yaw: cam.yaw,
     pitch: cam.pitch,
   };
+}
+
+/**
+ * Convert a renderer camera state back to Atlas Present's spherical waypoint
+ * schema. GPU renderers only expose eye position + yaw/pitch; they do not track
+ * a persistent orbit target, so callers provide a reference camera whose
+ * distance/focal define the capture plane.
+ *
+ * @param {{position:[number,number,number], yaw:number, pitch:number}} state
+ * @param {{distance?:number, focal?:number, yaw?:number, pitch?:number}} [referenceCam]
+ * @returns {{targetX:number, targetY:number, targetZ:number, yaw:number, pitch:number, distance:number, focal?:number}}
+ */
+export function camStateToSpherical(state, referenceCam = {}) {
+  const position = state?.position;
+  if (!position || position.length < 3) {
+    throw new Error('[compositor-api] camStateToSpherical: state.position vec3 required');
+  }
+  const px = finiteOr(position[0], null);
+  const py = finiteOr(position[1], null);
+  const pz = finiteOr(position[2], null);
+  if (px === null || py === null || pz === null) {
+    throw new Error('[compositor-api] camStateToSpherical: state.position must be finite');
+  }
+
+  const yaw = finiteOr(state.yaw, finiteOr(referenceCam.yaw, 0));
+  const pitch = finiteOr(state.pitch, finiteOr(referenceCam.pitch, 0));
+  const refDistance = finiteOr(referenceCam.distance, 8);
+  const distance = refDistance > 0 ? refDistance : 8;
+  const cp = Math.cos(pitch);
+  const out = {
+    yaw,
+    pitch,
+    distance,
+    targetX: px + distance * Math.sin(yaw) * cp,
+    targetY: py - distance * Math.sin(pitch),
+    targetZ: pz + distance * Math.cos(yaw) * cp,
+  };
+  const focal = finiteOr(referenceCam.focal, null);
+  if (focal !== null) out.focal = focal;
+  return out;
+}
+
+function finiteOr(value, fallback) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
 /**

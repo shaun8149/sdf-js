@@ -19,7 +19,12 @@
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { createRendererForId, compileScene, sphericalToCamState } from '../compositor-api.js';
+import {
+  camStateToSpherical,
+  createRendererForId,
+  compileScene,
+  sphericalToCamState,
+} from '../compositor-api.js';
 import { ATOM_PALETTE } from './atom-palette.js';
 import { tweenCamera, easeInOut } from './waypoint-tween.js';
 
@@ -29,6 +34,16 @@ let currentWaypointId = null;
 let renderer = null;
 let canvas = null;
 let activeTween = null;
+
+const FALLBACK_CAMERA = {
+  yaw: 0.3,
+  pitch: -0.15,
+  distance: 8,
+  focal: 1.5,
+  targetX: 0,
+  targetY: 0.5,
+  targetZ: 0,
+};
 
 export async function mountDeckEditor(target, deckId) {
   const deck = deckModel.loadDeckFromStorage(deckId);
@@ -104,8 +119,8 @@ function renderCanvas() {
       });
     } else {
       const cam = currentWaypointId
-        ? currentDeck.waypoints.find((w) => w.id === currentWaypointId)?.camera
-        : currentDeck.canvas.defaults?.camera;
+        ? cameraForWaypoint(currentWaypointId)
+        : fallbackCamera();
       if (cam && renderer.setCamState) {
         renderer.setCamState(sphericalToCamState(cam));
       }
@@ -189,9 +204,12 @@ function selectWaypointAndTween(waypointId) {
     activeTween = null;
   }
 
-  const fromCam = readCurrentCamera() || currentDeck.canvas.defaults?.camera || wp.camera;
+  const fromCam =
+    readCurrentCamera() ||
+    (currentWaypointId ? cameraForWaypoint(currentWaypointId) : fallbackCamera());
+  const toCam = isSphericalCamera(wp.camera) ? wp.camera : fallbackCamera();
 
-  activeTween = tweenCamera(fromCam, wp.camera, {
+  activeTween = tweenCamera(fromCam, toCam, {
     durationMs: 200,
     easing: easeInOut,
     onFrame: (cam) => {
@@ -211,23 +229,19 @@ function selectWaypointAndTween(waypointId) {
 
 function readCurrentCamera() {
   if (!renderer) return null;
+  const referenceCam = currentWaypointId ? cameraForWaypoint(currentWaypointId) : fallbackCamera();
   if (typeof renderer.getCamState === 'function') {
-    return renderer.getCamState();
+    try {
+      return camStateToSpherical(renderer.getCamState(), referenceCam);
+    } catch (e) {
+      console.warn('[deck-editor] current renderer camera is invalid:', e.message);
+    }
   }
-  const wp = currentDeck.waypoints.find((w) => w.id === currentWaypointId);
-  return wp?.camera ?? null;
+  return referenceCam;
 }
 
 function handleAddWaypoint() {
-  const cam = readCurrentCamera() ||
-    currentDeck.canvas.defaults?.camera || {
-      yaw: 0.3,
-      pitch: -0.15,
-      distance: 8,
-      targetX: 0,
-      targetY: 0.5,
-      targetZ: 0,
-    };
+  const cam = readCurrentCamera() || fallbackCamera();
   const title = prompt('Waypoint title:', `Waypoint ${currentDeck.waypoints.length + 1}`);
   if (title === null) return;
   const wp = deckModel.addWaypoint(currentDeck, {
@@ -259,8 +273,8 @@ function renderInspectorPane() {
         <input type="text" id="input-waypoint-title" value="${escapeHtml(wp.title || '')}" placeholder="(no title)" />
       </div>
       <div class="settings-row meta">
-        Camera: yaw=${wp.camera.yaw.toFixed(2)} pitch=${wp.camera.pitch.toFixed(2)} dist=${wp.camera.distance.toFixed(2)}<br>
-        Target: ${wp.camera.targetX.toFixed(2)}, ${wp.camera.targetY.toFixed(2)}, ${wp.camera.targetZ.toFixed(2)}
+        Camera: yaw=${formatCameraNumber(wp.camera?.yaw)} pitch=${formatCameraNumber(wp.camera?.pitch)} dist=${formatCameraNumber(wp.camera?.distance)}<br>
+        Target: ${formatCameraNumber(wp.camera?.targetX)}, ${formatCameraNumber(wp.camera?.targetY)}, ${formatCameraNumber(wp.camera?.targetZ)}
       </div>
       <div class="settings-row">
         <button id="btn-recapture-waypoint">Re-capture from current view</button>
@@ -321,6 +335,29 @@ function renderInspectorPane() {
 function formatTranslate(t) {
   if (!t || t.length !== 3) return '[0,0,0]';
   return `[${t.map((n) => n.toFixed(1)).join(',')}]`;
+}
+
+function formatCameraNumber(n) {
+  return typeof n === 'number' && Number.isFinite(n) ? n.toFixed(2) : 'n/a';
+}
+
+function isSphericalCamera(cam) {
+  return (
+    cam &&
+    ['yaw', 'pitch', 'distance', 'targetX', 'targetY', 'targetZ'].every(
+      (k) => typeof cam[k] === 'number' && Number.isFinite(cam[k]),
+    )
+  );
+}
+
+function fallbackCamera() {
+  const cam = currentDeck?.canvas?.defaults?.camera;
+  return isSphericalCamera(cam) ? cam : FALLBACK_CAMERA;
+}
+
+function cameraForWaypoint(waypointId) {
+  const wp = currentDeck?.waypoints.find((w) => w.id === waypointId);
+  return isSphericalCamera(wp?.camera) ? wp.camera : fallbackCamera();
 }
 
 // ---- Handlers ---------------------------------------------------------------
