@@ -1,24 +1,25 @@
 // =============================================================================
-// present-mode.js — Atlas Present fullscreen playback
+// present-mode.js — Atlas Present Canvas Mode fullscreen playback
 // -----------------------------------------------------------------------------
-// Audience-facing UI: fullscreen, ←→/space/esc/home/end keys, cursor auto-hide,
-// renderer LOCKED to deck.theme.renderer, camera LOCKED (no drag/WASD).
+// Compiles deck.canvas ONCE, mounts renderer ONCE, then tweens camera between
+// waypoints on ←→ keys. No scene rebuild between waypoints — the canvas is
+// persistent (Prezi-style).
 //
-// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 5 (Canvas Mode pivot).
-// Canvas Mode will compile canvas ONCE + tween camera between waypoints on key.
-// Do NOT extend or "improve" this file. See plan
-// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
+// Camera is LOCKED (no drag / WASD). Renderer LOCKED to deck.theme.renderer.
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { createRendererForId, compileScene } from '../compositor-api.js';
+import { createRendererForId, compileScene, sphericalToCamState } from '../compositor-api.js';
+import { tweenCamera, easeInOut, easeLinear } from './waypoint-tween.js';
 
 let deck = null;
-let slideIdx = 0;
+let waypointIdx = 0;
 let renderer = null;
 let canvas = null;
 let cursorHideTimer = null;
 let counterHideTimer = null;
+let activeTween = null;
+let _compiledSdf = null;
 
 export async function mountPresentMode(target, deckId) {
   deck = deckModel.loadDeckFromStorage(deckId);
@@ -26,17 +27,17 @@ export async function mountPresentMode(target, deckId) {
     target.innerHTML = `<div class="page-pad">Deck not found: ${deckId}<br><a href="./">← Library</a></div>`;
     return;
   }
-  if (deck.slides.length === 0) {
-    target.innerHTML = `<div class="page-pad">Deck "${deck.title}" has no slides.<br><a href="./?deck=${deckId}">← Editor</a></div>`;
+  if (deck.waypoints.length === 0) {
+    target.innerHTML = `<div class="page-pad">Deck "${deck.title}" has no waypoints.<br><a href="./?deck=${deckId}">← Editor</a></div>`;
     return;
   }
-  slideIdx = 0;
+  waypointIdx = 0;
 
   target.innerHTML = `
     <div class="present-stage" id="present-stage">
       <canvas id="present-canvas"></canvas>
       <div class="present-counter" id="present-counter"></div>
-      <div class="present-exit-hint" id="present-exit-hint">Press <kbd>esc</kbd> to exit</div>
+      <div class="present-exit-hint">Press <kbd>esc</kbd> to exit</div>
     </div>
   `;
   canvas = document.getElementById('present-canvas');
@@ -49,11 +50,20 @@ export async function mountPresentMode(target, deckId) {
     return;
   }
 
-  // Try to enter fullscreen (requires user gesture in some browsers; suppress
-  // error if blocked — present mode still works in a regular window).
-  // Skip when `&nofs=1` is set (useful for headless testing / debugging).
-  const skipFs = new URLSearchParams(location.search).get('nofs') === '1';
-  if (!skipFs) {
+  // Compile canvas ONCE
+  let compiled;
+  try {
+    compiled = compileScene(deck.canvas);
+  } catch (e) {
+    target.innerHTML = `<div class="page-pad">Canvas compile error: ${e.message}<br><a href="./?deck=${deckId}">← Editor</a></div>`;
+    return;
+  }
+  _compiledSdf = compiled.sdf;
+
+  // Fullscreen (best-effort)
+  const params = new URLSearchParams(location.search);
+  const skipFullscreen = params.get('nofs') === '1';
+  if (!skipFullscreen) {
     try {
       if (document.documentElement.requestFullscreen) {
         await document.documentElement.requestFullscreen();
@@ -63,24 +73,19 @@ export async function mountPresentMode(target, deckId) {
     }
   }
 
-  // Hide cursor after 2s idle
+  // Snap camera to waypoint 0 (no tween for initial frame)
+  applyCamera(deck.waypoints[0].camera);
+  renderCurrentFrame();
+  updateCounter();
+
   resetCursorHide();
   document.addEventListener('mousemove', resetCursorHide);
-
-  // Key handlers
   document.addEventListener('keydown', handleKey);
-
-  // Click anywhere → next
   canvas.addEventListener('click', goNext);
-
-  // Window resize → refit canvas + re-render
   window.addEventListener('resize', () => {
     fitCanvasToWindow();
-    renderCurrentSlide();
+    renderCurrentFrame();
   });
-
-  renderCurrentSlide();
-  updateCounter();
 }
 
 function fitCanvasToWindow() {
@@ -89,17 +94,21 @@ function fitCanvasToWindow() {
   canvas.height = window.innerHeight;
 }
 
-function renderCurrentSlide() {
-  if (!deck || !renderer || !canvas) return;
-  if (slideIdx < 0 || slideIdx >= deck.slides.length) return;
-  const slide = deck.slides[slideIdx];
+function applyCamera(cam) {
+  if (renderer && renderer.setCamState) {
+    renderer.setCamState(sphericalToCamState(cam));
+  }
+}
+
+function renderCurrentFrame() {
+  if (!renderer || !_compiledSdf) return;
   try {
-    const compiled = compileScene(slide.sceneData);
     if (deck.theme.renderer === 'silhouette') {
-      const layers = [{ sdf: compiled.sdf, color: [200, 200, 200], stroke: 0 }];
-      renderer.render(layers, { background: [13, 13, 13] });
+      renderer.render([{ sdf: _compiledSdf, color: [200, 200, 200], stroke: 0 }], {
+        background: [13, 13, 13],
+      });
     } else {
-      renderer.render(compiled.sdf);
+      renderer.render(_compiledSdf);
     }
   } catch (e) {
     console.error('[present-mode] render failed:', e);
@@ -109,7 +118,7 @@ function renderCurrentSlide() {
 function updateCounter() {
   const el = document.getElementById('present-counter');
   if (!el) return;
-  el.textContent = `${slideIdx + 1} / ${deck.slides.length}`;
+  el.textContent = `${waypointIdx + 1} / ${deck.waypoints.length}`;
   el.classList.remove('hidden');
   if (counterHideTimer) clearTimeout(counterHideTimer);
   counterHideTimer = setTimeout(() => el.classList.add('hidden'), 2000);
@@ -123,35 +132,56 @@ function resetCursorHide() {
   }, 2000);
 }
 
+function startTweenToWaypoint(targetIdx) {
+  if (targetIdx < 0 || targetIdx >= deck.waypoints.length) return;
+  if (activeTween) {
+    activeTween.cancel();
+    activeTween = null;
+  }
+  const fromCam = deck.waypoints[waypointIdx].camera;
+  const toCam = deck.waypoints[targetIdx].camera;
+  waypointIdx = targetIdx;
+  updateCounter();
+
+  const easingFn = deck.tween.easing === 'linear' ? easeLinear : easeInOut;
+  activeTween = tweenCamera(fromCam, toCam, {
+    durationMs: deck.tween.durationMs,
+    easing: easingFn,
+    onFrame: (cam) => {
+      applyCamera(cam);
+      renderCurrentFrame();
+    },
+    onComplete: () => {
+      activeTween = null;
+    },
+  });
+}
+
 function goNext() {
-  if (slideIdx < deck.slides.length - 1) {
-    slideIdx++;
-    renderCurrentSlide();
-    updateCounter();
+  if (waypointIdx < deck.waypoints.length - 1) {
+    startTweenToWaypoint(waypointIdx + 1);
   }
 }
 
 function goPrev() {
-  if (slideIdx > 0) {
-    slideIdx--;
-    renderCurrentSlide();
-    updateCounter();
+  if (waypointIdx > 0) {
+    startTweenToWaypoint(waypointIdx - 1);
   }
 }
 
 function goFirst() {
-  slideIdx = 0;
-  renderCurrentSlide();
-  updateCounter();
+  if (waypointIdx !== 0) startTweenToWaypoint(0);
 }
 
 function goLast() {
-  slideIdx = deck.slides.length - 1;
-  renderCurrentSlide();
-  updateCounter();
+  if (waypointIdx !== deck.waypoints.length - 1) startTweenToWaypoint(deck.waypoints.length - 1);
 }
 
 async function exitPresent() {
+  if (activeTween) {
+    activeTween.cancel();
+    activeTween = null;
+  }
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
   } catch (e) {
