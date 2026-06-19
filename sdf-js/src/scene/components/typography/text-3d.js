@@ -20,6 +20,7 @@
 // =============================================================================
 
 import { buildGlyph } from './glyphs.js';
+import { buildPipeGlyph } from './glyphs-pipe.js';
 import { union } from '../../../sdf/dn.js';
 import { extrude } from '../../../sdf/d2.js';
 
@@ -110,6 +111,71 @@ export const text3dExtrudedSpec = {
   source: {
     type: 'first-party',
     family: 'Atlas typography (Wave 1: digits + KPI symbols, extruded variant)',
+    license: 'PolyForm Noncommercial 1.0.0',
+  },
+};
+
+/**
+ * Build a 3D pipe text SDF. Each glyph is composed from capsule/torus/sphere
+ * primitives in unit cap-height space, then optionally scaled by `height`.
+ * Returns null if the string has zero renderable characters.
+ *
+ * @param {object} opts
+ * @param {string} opts.text
+ * @param {number} [opts.pipeRadius=0.06]   Tube radius (analogue to extruded strokeWidth/2).
+ * @param {number} [opts.height=1.0]        Cap height in scene units.
+ * @param {number} [opts.letterSpacing=0]   Extra gap between glyphs (unit space).
+ * @param {'left'|'center'|'right'} [opts.align='center']
+ * @returns {SDF3|null}
+ */
+export function text3dPipeSDF({
+  text,
+  pipeRadius = 0.06,
+  height = 1.0,
+  letterSpacing = 0,
+  align = 'center',
+} = {}) {
+  if (typeof text !== 'string' || text.length === 0) return null;
+
+  const resolved = [];
+  for (const ch of text) {
+    const g = buildPipeGlyph(ch, pipeRadius);
+    if (g !== null) resolved.push(g);
+  }
+  if (resolved.length === 0) return null;
+
+  const totalWidth =
+    resolved.reduce((acc, g) => acc + g.advance + letterSpacing, 0) - letterSpacing;
+  const startX = align === 'center' ? -totalWidth / 2 : align === 'right' ? -totalWidth : 0;
+
+  let cursor = startX;
+  const placed = [];
+  for (const g of resolved) {
+    if (g.sdf !== null) {
+      const centerX = cursor + g.advance / 2;
+      placed.push(g.sdf.translate([centerX, 0, 0]));
+    }
+    cursor += g.advance + letterSpacing;
+  }
+
+  if (placed.length === 0) return null;
+  const combined = placed.length === 1 ? placed[0] : union(...placed);
+  return height === 1 ? combined : combined.scale(height);
+}
+
+export const text3dPipeSpec = {
+  type: 'text-3d-pipe',
+  category: 'typography',
+  args: {
+    text: { type: 'string', required: true },
+    pipeRadius: { type: 'number', default: 0.06 },
+    height: { type: 'number', default: 1.0 },
+    letterSpacing: { type: 'number', default: 0 },
+    align: { type: 'enum', values: ['left', 'center', 'right'], default: 'center' },
+  },
+  source: {
+    type: 'first-party',
+    family: 'Atlas typography (Wave 1-pipe: digits + KPI symbols, true 3D)',
     license: 'PolyForm Noncommercial 1.0.0',
   },
 };

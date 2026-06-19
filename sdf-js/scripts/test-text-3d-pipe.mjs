@@ -124,5 +124,29 @@ ok(pct.sdf([-0.18, 0.78, 0]) < 0, '"%" top-left dot is inside');
 ok(pct.sdf([0.18, 0.22, 0]) < 0, '"%" bottom-right dot is inside');
 ok(pct.sdf([0, 0.5, 0]) < 0.05, '"%" diagonal at center close to surface');
 
+console.log('\nTest group 5: text3dPipeSDF multi-char composition');
+const { text3dPipeSDF } = await import('../src/scene/components/typography/text-3d.js');
+
+// Multi-char "90%" composes
+const kpi = text3dPipeSDF({ text: '90%', height: 1.0, pipeRadius: 0.06 });
+ok(kpi !== null, 'text3dPipeSDF("90%") non-null');
+ok(Number.isFinite(kpi([0, 0.5, 0])), 'composed SDF probe finite at center');
+
+// Empty string returns null
+ok(text3dPipeSDF({ text: '' }) === null, 'empty string returns null');
+
+// All-unknown chars returns null
+ok(text3dPipeSDF({ text: 'abc' }) === null, 'all-unknown returns null');
+
+// Mixed known + unknown drops unknown, builds anyway
+ok(text3dPipeSDF({ text: '9a0%' }) !== null, 'mixed known+unknown builds (drops unknown)');
+
+// height parameter scales the SDF
+const big = text3dPipeSDF({ text: '9', height: 2.0, pipeRadius: 0.12 });
+ok(big !== null, 'larger height builds');
+// At height 2.0, the "9" top ring is at y=0.7*2=1.4. The tube radius is 0.12*2=0.24.
+// Probing at (0.22*2, 1.4, 0) = (0.44, 1.4, 0) should be inside the rim scaled 2x.
+ok(big([0.44, 1.4, 0]) < 0, '"9" with height 2.0 has rim at x=0.44, y=1.4 (inside)');
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
