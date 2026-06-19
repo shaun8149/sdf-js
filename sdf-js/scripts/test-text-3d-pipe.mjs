@@ -165,8 +165,23 @@ ok(pipeH.sdf([0, 0.5, 0]) < 0, '"H" pipe crossbar center is inside');
 ok(pipeH.sdf([-0.2, 0.5, 0]) < 0, '"H" pipe left vertical is inside');
 ok(pipeH.sdf([0.2, 0.5, 0]) < 0, '"H" pipe right vertical is inside');
 
+console.log('\nTest group 7: Wave 2 Batch 2 — open-arc letters (C G O Q, pipe)');
+for (const ch of ['C', 'G', 'O', 'Q']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' (pipe) builds`);
+  ok(g.advance > 0, `'${ch}' (pipe) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (pipe) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' (pipe) probe finite`);
+}
+const pipeO = buildPipeGlyph('O');
+ok(pipeO.sdf([0, 0.5, 0]) > 0.1, '"O" pipe center is hollow');
+ok(pipeO.sdf([0.28, 0.5, 0]) < 0, '"O" pipe right rim is inside');
+const pipeC = buildPipeGlyph('C');
+ok(pipeC.sdf([-0.28, 0.5, 0]) < 0, '"C" pipe left rim is inside (arc covers left)');
+ok(pipeC.sdf([0.28, 0.5, 0]) > 0.05, '"C" pipe right rim is outside (opening)');
+
 // -----------------------------------------------------------------------------
-console.log('\nTest group 7: pipeRadius defensive clamp (Trap 1 protection)');
+console.log('\nTest group 8: pipeRadius defensive clamp (Trap 1 protection)');
 const { compile } = await import('../src/scene/compile.js');
 
 const tinyScene = {

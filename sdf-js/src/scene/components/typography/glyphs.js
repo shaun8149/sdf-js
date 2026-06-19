@@ -208,6 +208,26 @@ const LETTER_BUILDERS = {
       segment([-0.2, 0.5], [0.2, 0.5], r),
     ),
   }),
+  // ---- Wave 2 Batch 2: open-arc letters (C G O Q) -------------------------
+  O: (r) => ({
+    advance: 0.65,
+    sdf: ring(0.28, r * 2, [0, 0.5]),
+  }),
+  C: (r) => ({
+    advance: 0.6,
+    sdf: arcSpan(0, 0.5, 0.28, Math.PI / 2 + Math.PI / 8, (3 * Math.PI) / 2 - Math.PI / 8, r * 2),
+  }),
+  G: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      arcSpan(0, 0.5, 0.28, Math.PI / 2 + Math.PI / 8, (3 * Math.PI) / 2 - Math.PI / 8, r * 2),
+      segment([0.28, 0.5], [0.05, 0.5], r),
+    ),
+  }),
+  Q: (r) => ({
+    advance: 0.7,
+    sdf: union(ring(0.28, r * 2, [0, 0.5]), segment([0.15, 0.05], [0.32, -0.08], r)),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------

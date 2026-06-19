@@ -227,6 +227,33 @@ const GLYPH_BUILDERS = {
       capsule([-0.2, 0.5, 0], [0.2, 0.5, 0], r),
     ),
   }),
+  // ---- Wave 2 Batch 2: open-arc letters (C G O Q) -------------------------
+  O: (r) => ({
+    advance: 0.65,
+    sdf: torus(0.28, r)
+      .rotate(Math.PI / 2, [1, 0, 0])
+      .translate([0, 0.5, 0]),
+  }),
+  C: (r) => ({
+    advance: 0.6,
+    sdf: pipeArcSpan(0, 0.5, 0.28, Math.PI / 2 + Math.PI / 8, (3 * Math.PI) / 2 - Math.PI / 8, r),
+  }),
+  G: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      pipeArcSpan(0, 0.5, 0.28, Math.PI / 2 + Math.PI / 8, (3 * Math.PI) / 2 - Math.PI / 8, r),
+      capsule([0.28, 0.5, 0], [0.05, 0.5, 0], r),
+    ),
+  }),
+  Q: (r) => ({
+    advance: 0.7,
+    sdf: union(
+      torus(0.28, r)
+        .rotate(Math.PI / 2, [1, 0, 0])
+        .translate([0, 0.5, 0]),
+      capsule([0.15, 0.05, 0], [0.32, -0.08, 0], r),
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------

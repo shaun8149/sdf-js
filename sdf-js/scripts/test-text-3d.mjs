@@ -45,6 +45,10 @@ const expected = [
   'E',
   'F',
   'H',
+  'C',
+  'G',
+  'O',
+  'Q',
 ];
 const supported = supportedChars();
 for (const ch of expected) {
@@ -109,6 +113,28 @@ const letterH = buildGlyph('H');
 ok(letterH.sdf([0, 0.5]) < 0, '"H" crossbar center is inside');
 ok(letterH.sdf([-0.2, 0.5]) < 0, '"H" left vertical at midheight is inside');
 ok(letterH.sdf([0.2, 0.5]) < 0, '"H" right vertical at midheight is inside');
+
+// Test group 7: Wave 2 Batch 2 — open-arc letters (C G O Q, extruded)
+console.log('\nTest group 7: Wave 2 Batch 2 — open-arc letters (C G O Q, extruded)');
+for (const ch of ['C', 'G', 'O', 'Q']) {
+  const g = buildGlyph(ch);
+  ok(g !== null, `'${ch}' (extruded) builds`);
+  ok(g.advance > 0, `'${ch}' (extruded) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (extruded) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5])), `'${ch}' (extruded) probe finite`);
+}
+// "O" — center should be hollow (inside the ring)
+const letterO = buildGlyph('O');
+ok(letterO.sdf([0, 0.5]) > 0.1, '"O" extruded center is hollow with margin');
+ok(letterO.sdf([0.28, 0.5]) < 0, '"O" extruded right rim is inside');
+// "C" — center hollow, left side inside (arc on left), right side outside (opening)
+const letterC = buildGlyph('C');
+ok(letterC.sdf([-0.28, 0.5]) < 0, '"C" extruded left rim is inside (arc covers left)');
+ok(letterC.sdf([0.28, 0.5]) > 0.05, '"C" extruded right rim is outside (opening)');
+// "Q" — like O but with tail
+const letterQ = buildGlyph('Q');
+ok(letterQ.sdf([0, 0.5]) > 0.1, '"Q" extruded center is hollow (like O)');
+ok(letterQ.sdf([0.25, -0.02]) < 0.05, '"Q" extruded tail near baseline is close to surface');
 
 // -----------------------------------------------------------------------------
 console.log('\nTest group 4: text3dExtrudedSDF extrusion');
