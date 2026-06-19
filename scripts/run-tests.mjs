@@ -69,6 +69,9 @@ const TESTS = [
   // Atlas typography Wave 1 — digits + KPI symbols as SDF glyphs.
   { category: 'typography', file: 'sdf-js/scripts/test-text-3d.mjs' },
   { category: 'typography', file: 'sdf-js/scripts/test-text-3d-pipe.mjs' },
+
+  // Sprint: PresentationLoad-style 3D Shape atoms (cube / sphere / pyramid variants).
+  { category: 'shapes', file: 'sdf-js/scripts/test-cube-3d.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
