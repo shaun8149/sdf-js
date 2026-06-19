@@ -242,9 +242,15 @@ export function cube3dSDF({
   }
   const positions = arrangement_fn(count, cubeSize, spacing, arrangementParams);
 
-  // 2. Build per-cube SDFs
+  // 2a. Compute effective positions (arrangement + per-cube offset)
+  const effectivePositions = positions.map((p, i) => {
+    const o = cubeOffsets && cubeOffsets[i] != null ? cubeOffsets[i] : [0, 0, 0];
+    return [p[0] + o[0], p[1] + o[1], p[2] + o[2]];
+  });
+
+  // 2b. Build per-cube SDFs
   const cubes = [];
-  for (let i = 0; i < positions.length; i++) {
+  for (let i = 0; i < effectivePositions.length; i++) {
     const size = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
     let cube;
     if (material === 'solid') {
@@ -257,14 +263,21 @@ export function cube3dSDF({
     } else {
       throw new Error(`[cube-3d] unknown material: ${material}`);
     }
-    cube = cube.translate(positions[i]);
+    // Apply per-cube rotation (around cube center, before translate)
+    if (cubeRotations && cubeRotations[i] != null) {
+      const [rx, ry, rz] = cubeRotations[i];
+      if (rx) cube = cube.rotate(rx, [1, 0, 0]);
+      if (ry) cube = cube.rotate(ry, [0, 1, 0]);
+      if (rz) cube = cube.rotate(rz, [0, 0, 1]);
+    }
+    cube = cube.translate(effectivePositions[i]);
     cubes.push(cube);
   }
 
   // 4. Labels (front-face only mode)
   if (labels.length > 0 && !labelOnAllFaces && !labelsByFace) {
     const labelFn = labelMaterial === 'extruded' ? text3dExtrudedSDF : text3dPipeSDF;
-    for (let i = 0; i < Math.min(labels.length, positions.length); i++) {
+    for (let i = 0; i < Math.min(labels.length, effectivePositions.length); i++) {
       const labelText = labels[i];
       if (!labelText || labelText === '') continue;
       const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
@@ -279,7 +292,11 @@ export function cube3dSDF({
       });
       if (labelSdf === null) continue;
       // Place on +Z face of cube i (slight bump out to avoid Z-fight)
-      const labelPos = [positions[i][0], positions[i][1], positions[i][2] + cubeSizeI / 2 + 0.005];
+      const labelPos = [
+        effectivePositions[i][0],
+        effectivePositions[i][1],
+        effectivePositions[i][2] + cubeSizeI / 2 + 0.005,
+      ];
       cubes.push(labelSdf.translate(labelPos));
     }
   }
@@ -295,7 +312,7 @@ export function cube3dSDF({
       { offset: [0, 1, 0], rot: { angle: -Math.PI / 2, axis: [1, 0, 0] } }, // +Y
       { offset: [0, -1, 0], rot: { angle: Math.PI / 2, axis: [1, 0, 0] } }, // -Y
     ];
-    for (let i = 0; i < Math.min(labels.length, positions.length); i++) {
+    for (let i = 0; i < Math.min(labels.length, effectivePositions.length); i++) {
       const labelText = labels[i];
       if (!labelText) continue;
       const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
@@ -311,9 +328,9 @@ export function cube3dSDF({
       if (baseLabel === null) continue;
       for (const face of faceOps) {
         const facePos = [
-          positions[i][0] + face.offset[0] * (cubeSizeI / 2 + 0.005),
-          positions[i][1] + face.offset[1] * (cubeSizeI / 2 + 0.005),
-          positions[i][2] + face.offset[2] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][0] + face.offset[0] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][1] + face.offset[1] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][2] + face.offset[2] * (cubeSizeI / 2 + 0.005),
         ];
         cubes.push(baseLabel.rotate(face.rot.angle, face.rot.axis).translate(facePos));
       }
@@ -330,7 +347,7 @@ export function cube3dSDF({
       { offset: [-1, 0, 0], rot: { angle: -Math.PI / 2, axis: [0, 1, 0] } },
       { offset: [1, 0, 0], rot: { angle: Math.PI / 2, axis: [0, 1, 0] } },
     ];
-    for (let i = 0; i < Math.min(labelsByFace.length, positions.length); i++) {
+    for (let i = 0; i < Math.min(labelsByFace.length, effectivePositions.length); i++) {
       const perFace = labelsByFace[i];
       if (!Array.isArray(perFace)) continue;
       const cubeSizeI = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
@@ -348,9 +365,9 @@ export function cube3dSDF({
         });
         if (label === null) continue;
         const facePos = [
-          positions[i][0] + faceOps[f].offset[0] * (cubeSizeI / 2 + 0.005),
-          positions[i][1] + faceOps[f].offset[1] * (cubeSizeI / 2 + 0.005),
-          positions[i][2] + faceOps[f].offset[2] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][0] + faceOps[f].offset[0] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][1] + faceOps[f].offset[1] * (cubeSizeI / 2 + 0.005),
+          effectivePositions[i][2] + faceOps[f].offset[2] * (cubeSizeI / 2 + 0.005),
         ];
         cubes.push(label.rotate(faceOps[f].rot.angle, faceOps[f].rot.axis).translate(facePos));
       }
@@ -358,13 +375,13 @@ export function cube3dSDF({
   }
 
   // 5. Connectors
-  if (connector === 'pipe-through' && positions.length >= 2) {
-    const a = positions[0];
-    const b = positions[positions.length - 1];
+  if (connector === 'pipe-through' && effectivePositions.length >= 2) {
+    const a = effectivePositions[0];
+    const b = effectivePositions[effectivePositions.length - 1];
     cubes.push(capsule(a, b, connectorThickness));
-  } else if (connector === 'pipe-vertical' && positions.length >= 2) {
-    for (let i = 1; i < positions.length; i++) {
-      cubes.push(capsule(positions[i - 1], positions[i], connectorThickness));
+  } else if (connector === 'pipe-vertical' && effectivePositions.length >= 2) {
+    for (let i = 1; i < effectivePositions.length; i++) {
+      cubes.push(capsule(effectivePositions[i - 1], effectivePositions[i], connectorThickness));
     }
   } else if (connector === 'spokes') {
     if (arrangement !== 'hub-spokes') {
@@ -372,12 +389,12 @@ export function cube3dSDF({
         `[cube-3d] connector='spokes' requires arrangement='hub-spokes' (got '${arrangement}')`,
       );
     }
-    const anchor = positions[0];
+    const anchor = effectivePositions[0];
     const indices =
-      connectorIndices ?? Array.from({ length: positions.length - 1 }, (_, k) => k + 1);
+      connectorIndices ?? Array.from({ length: effectivePositions.length - 1 }, (_, k) => k + 1);
     for (const idx of indices) {
-      if (idx < 1 || idx >= positions.length) continue;
-      cubes.push(capsule(anchor, positions[idx], connectorThickness));
+      if (idx < 1 || idx >= effectivePositions.length) continue;
+      cubes.push(capsule(anchor, effectivePositions[idx], connectorThickness));
     }
   } else if (connector !== 'none') {
     throw new Error(`[cube-3d] unknown connector: ${connector}`);

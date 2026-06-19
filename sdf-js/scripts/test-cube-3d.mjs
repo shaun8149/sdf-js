@@ -459,5 +459,163 @@ console.log('\nTest group 4: Connectors');
   ok(sdf.f([0.55, 0, 0]) > 0, `connector=none: gap point outside (got ${sdf.f([0.55, 0, 0])})`);
 }
 
+console.log('\nTest group 5: Per-cube transforms');
+
+// cubeSizes: per-cube size override
+{
+  // Cube at origin, size 1.0 vs sized override 2.0 — bigger cube extends further
+  const sdfDefault = cube3dSDF({ count: 1, cubeSize: 1.0 });
+  const sdfBig = cube3dSDF({ count: 1, cubeSize: 1.0, cubeSizes: [2.0] });
+  // Probe at [0.7, 0, 0]: default cube (half-extent 0.5) → outside; big cube (half-extent 1.0) → inside
+  ok(sdfDefault.f([0.7, 0, 0]) > 0, 'cubeSizes baseline: 0.7 outside default cube');
+  ok(sdfBig.f([0.7, 0, 0]) < 0, `cubeSizes: 0.7 inside big cube (got ${sdfBig.f([0.7, 0, 0])})`);
+}
+
+// cubeOffsets: per-cube delta position
+{
+  const sdf = cube3dSDF({
+    count: 3,
+    arrangement: 'row',
+    cubeSize: 0.6,
+    spacing: 0.1,
+    cubeOffsets: [null, [0, 0, 1.0], null], // push middle cube forward by 1.0 in Z
+  });
+  // Cube 1 originally at origin; offset pushes it to [0, 0, 1.0]
+  ok(sdf.f([0, 0, 1.0]) < 0, `cubeOffsets: middle cube at [0,0,1.0] (got ${sdf.f([0, 0, 1.0])})`);
+  ok(
+    sdf.f([0, 0, 0]) > 0,
+    `cubeOffsets: original middle position [0,0,0] now empty (got ${sdf.f([0, 0, 0])})`,
+  );
+}
+
+// cubeRotations: per-cube euler rotation
+{
+  const sdf = cube3dSDF({
+    count: 1,
+    cubeSize: 1.0,
+    cubeRotations: [[0, Math.PI / 4, 0]], // rotate 45° around Y
+  });
+  ok(sdf !== null, 'cubeRotations: SDF non-null');
+  // Rotated cube has different corners — the diagonal corner at [0.707, 0, 0]
+  // (sqrt(2)/2) should be near the rotated cube's edge
+  ok(
+    Math.abs(sdf.f([0.707, 0, 0])) < 0.1,
+    `cubeRotations: 45° rotated cube near edge at sqrt(2)/2 (got ${sdf.f([0.707, 0, 0])})`,
+  );
+}
+
+console.log('\nTest group 6: Edge cases');
+
+// Mismatched colors length — should NOT throw (silent pad/truncate)
+{
+  const sdf = cube3dSDF({ count: 5, colors: ['#ff0000', '#00ff00'] });
+  ok(sdf !== null, 'mismatched colors: SDF non-null (silent pad)');
+}
+
+// Unknown arrangement throws
+{
+  let threw = false;
+  try {
+    cube3dSDF({ count: 3, arrangement: 'bogus' });
+  } catch (e) {
+    threw = e.message.includes('arrangement');
+  }
+  ok(threw, 'unknown arrangement: throws');
+}
+
+// Unknown material throws
+{
+  let threw = false;
+  try {
+    cube3dSDF({ count: 3, material: 'bogus' });
+  } catch (e) {
+    threw = e.message.includes('material');
+  }
+  ok(threw, 'unknown material: throws');
+}
+
+// labelOnAllFaces + labelsByFace: pick labelsByFace, ignore labelOnAllFaces (no throw)
+{
+  const sdf = cube3dSDF({
+    count: 1,
+    labels: ['X'],
+    labelOnAllFaces: true,
+    labelsByFace: [['A', 'B', 'C', 'D', 'E', 'F']],
+  });
+  ok(sdf !== null, 'both label modes set: SDF non-null (labelsByFace wins)');
+}
+
+console.log('\nTest group 7: End-to-end SceneData compile');
+
+// SceneData v1 → compile pipeline
+{
+  const { compile } = await import('../src/scene/compile.js');
+  const scene = {
+    v: 1,
+    name: 'cube-3d smoke',
+    defaults: {
+      camera: {
+        yaw: 0.4,
+        pitch: 0.2,
+        distance: 10,
+        focal: 1.5,
+        targetX: 0,
+        targetY: 0.3,
+        targetZ: 0,
+      },
+      light: { altitude: 0.5, azimuth: 0.6, distance: 15, intensity: 1.2 },
+    },
+    subjects: [
+      {
+        id: 'cubes',
+        type: 'cube-3d',
+        args: { count: 3, arrangement: 'row', cubeSize: 0.5, spacing: 0.3 },
+        transform: { translate: [0, 0.3, 0] },
+        material: 'silver',
+      },
+    ],
+  };
+  let compiled;
+  try {
+    compiled = compile(scene);
+    ok(compiled.sdf !== null, 'SceneData compile: non-null SDF');
+    ok(typeof compiled.sdf.f === 'function', 'SceneData compile: SDF has .f');
+    ok(Number.isFinite(compiled.sdf.f([0, 0.3, 0])), 'SceneData compile: finite at scene origin');
+  } catch (e) {
+    ok(false, `SceneData compile threw: ${e.message}`);
+  }
+}
+
+console.log('\nTest group 8: GLSL emit (real-browser GPU prerequisite)');
+
+// Verify cube-3d compiles to valid GLSL — does NOT actually run on GPU,
+// just verifies the SDF tree can be walked and emitted without throws.
+{
+  const { canCompileSDF3, compileSDF3ToGLSL } = await import('../src/sdf/sdf3.compile.js');
+
+  for (const arr of ['row', 'grid', 'grid3d', 'stack']) {
+    const sdf = cube3dSDF({ count: 3, arrangement: arr, cubeSize: 0.5, material: 'solid' });
+    ok(canCompileSDF3(sdf).ok, `GLSL: ${arr} canCompile`);
+    let result;
+    try {
+      result = compileSDF3ToGLSL(sdf, { entry: `map_${arr}` });
+      ok(typeof result.glsl === 'string' && result.glsl.length > 0, `GLSL: ${arr} emit non-empty`);
+    } catch (e) {
+      ok(false, `GLSL: ${arr} emit threw: ${e.message}`);
+    }
+  }
+
+  // Wireframe + glass also emit
+  for (const mat of ['wireframe', 'glass']) {
+    const sdf = cube3dSDF({ count: 2, arrangement: 'row', cubeSize: 0.5, material: mat });
+    ok(canCompileSDF3(sdf).ok, `GLSL: material '${mat}' canCompile`);
+    const result = compileSDF3ToGLSL(sdf, { entry: `map_${mat}` });
+    ok(
+      result.glsl.includes('sdBoxFrame') || mat === 'solid',
+      `GLSL: material '${mat}' emits sdBoxFrame`,
+    );
+  }
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

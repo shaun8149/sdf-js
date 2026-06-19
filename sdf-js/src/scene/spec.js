@@ -190,6 +190,11 @@ export const PRIMITIVE_TYPES = new Set([
   // toruses + spheres. Use for floating monumental text (hero KPIs, sculpted
   // titles, neon signage). Same glyph coverage as text-3d-extruded.
   'text-3d-pipe',
+  // Atlas Shape atom (2026-06-19) — parameterized cube cluster covering ~96
+  // PresentationLoad reference slides (10 arrangements × 3 materials × 4
+  // connectors × 3 label modes + per-cube size/rotation/offset overrides).
+  // See sdf-js/src/scene/components/shapes/cube-3d.js.
+  'cube-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

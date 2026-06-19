@@ -116,6 +116,7 @@ import { kpiCard3dSDF } from './components/charts/data/kpi-card-3d.js';
 import { businessIconSDF } from './components/icons/business.js';
 import { cover3dSDF } from './components/presentation/cover-3d.js';
 import { text3dExtrudedSDF, text3dPipeSDF } from './components/typography/text-3d.js';
+import { cube3dSDF } from './components/shapes/cube-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -420,6 +421,7 @@ const PRIMITIVE_FACTORIES = {
       align: a.align ?? 'center',
     });
   },
+  'cube-3d': (a) => cube3dSDF(a),
   link: (a) =>
     linkSDF({
       halfLength: a.halfLength ?? a.le ?? 0.13,
