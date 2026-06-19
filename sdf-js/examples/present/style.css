@@ -1,0 +1,122 @@
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; min-height: 100vh;
+  font-family: -apple-system, system-ui, sans-serif;
+  background: #0d0d0d;
+  color: #ccc;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#route-target {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-pad {
+  padding: 40px;
+}
+
+/* ---- Topbar ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 44px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+}
+.topbar .brand {
+  font-weight: 700;
+  font-size: 15px;
+  color: #ffd070;
+}
+.topbar .brand .sub {
+  color: #888;
+  font-weight: 400;
+  margin-left: 6px;
+  font-size: 12px;
+}
+.topbar .spacer {
+  flex: 1;
+}
+.topbar button, .topbar a {
+  background: #2a2a2a;
+  color: #ffd070;
+  border: 1px solid #3a3a3a;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+}
+.topbar button:hover, .topbar a:hover {
+  background: #3a3a3a;
+}
+
+/* ---- Library page ---- */
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+.deck-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.deck-card h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #ddd;
+}
+.deck-card .meta {
+  color: #888;
+  font-size: 12px;
+}
+.deck-card .actions {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.deck-card .actions button {
+  background: #2a2a2a;
+  color: #ccc;
+  border: 1px solid #3a3a3a;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.deck-card .actions button:hover {
+  background: #3a3a3a;
+}
+.deck-card .actions .primary {
+  background: #ffd070;
+  color: #1a1a1a;
+  border-color: #ffd070;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  color: #888;
+}
+.empty-state h2 {
+  color: #ccc;
+  font-weight: 400;
+  margin-bottom: 16px;
+}

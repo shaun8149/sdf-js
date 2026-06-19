@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Atlas · Present</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%23ffd070'/></svg>">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Router populated by router-init.js based on URL query -->
+    <div id="route-target"></div>
+  </div>
+
+  <script type="module">
+    // Inline router — three modes based on URL query:
+    //   /examples/present/                  → library page
+    //   /examples/present/?deck=<id>        → editor page
+    //   /examples/present/?deck=<id>&present=1 → present mode
+    const params = new URLSearchParams(location.search);
+    const deckId = params.get('deck');
+    const present = params.get('present') === '1';
+    const target = document.getElementById('route-target');
+
+    if (deckId && present) {
+      const { mountPresentMode } = await import('../../src/present/present-mode.js');
+      await mountPresentMode(target, deckId);
+    } else if (deckId) {
+      const { mountDeckEditor } = await import('../../src/present/deck-editor.js');
+      await mountDeckEditor(target, deckId);
+    } else {
+      const { mountDeckLibrary } = await import('../../src/present/deck-library.js');
+      await mountDeckLibrary(target);
+    }
+  </script>
+</body>
+</html>
