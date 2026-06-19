@@ -228,7 +228,7 @@ For each section i (0-indexed):
 |                                                               |
 |   1            2            3            4            5      |
 | ┌───┐       ┌───┐       ┌───┐       ┌───┐       ┌───┐         |
-| │ A │──────►│ B │──────►│ C │──────►│ D │──────►│ E │         |
+| │[A]│──────►│[B]│──────►│[C]│──────►│[D]│──────►│[E]│         |
 | └───┘       └───┘       └───┘       └───┘       └───┘         |
 |  Title       Title      Title       Title       Title         |
 |  Page 1      Page 2     Page 3      Page 4      Page 5        |
@@ -237,13 +237,31 @@ For each section i (0-indexed):
 +---------------------------------------------------------------+
 ```
 
-**渲染算法**:
-1. Canvas 宽度: N * 200px + padding, 高度: 400px (固定 Sprint 1)
-2. 每 section: 一个 ~150×150 px 方块, 内部用 `silhouette` renderer 渲染 sceneData 的 SDF (silhouette 是 CPU 2D 渲染器, 把 SDF 渲染成 2D 黑白侧影)
-3. 编号: 1, 2, 3, ... 在每个块上方
-4. 箭头: 块之间的连接线 + 箭头头部 (Sprint 1 timeline = 一字横行带箭头)
-5. 标题: 块下方
-6. Header: Deck title + 元信息
+### 5.2.1 渲染分工 — Atlas IP 边界 (per memory hard rule 5)
+
+- **Atlas native**: 每个 section 块**内部**的 slide 内容缩略图 — 用 `silhouette` CPU renderer 渲染 sceneData 的 SDF
+- **Canvas2D + system fonts (3rd-party)**: 所有 chrome — 边框 / 箭头 / 编号 / 标题 / page# / 顶部 header
+
+### 5.2.2 渲染算法
+
+1. Canvas 总尺寸: N * 200px + padding, 高度 400px (固定 Sprint 1)
+2. Header (顶部): `ctx.font = 'bold 16px sans-serif'` + `ctx.fillText('Q1 Sales Deck', ...)`; 元信息 `ctx.font = '11px sans-serif'`. **系统字体, 不用 SDF**
+3. 每 section 框: `ctx.strokeRect(x, y, 150, 150)` 画边框
+4. 每 section 内 (~140×140 px inside frame): 单独 mount silhouette CPU renderer 渲染 sceneData → 黑白侧影. **这是 Atlas SDF 渲染入口**
+5. 每 section 编号 (上方 "1", "2"...): `ctx.font = 'bold 24px sans-serif'` + `ctx.fillText(String(i+1), ...)`. **系统字体**
+6. 每 section 标题 (下方): `ctx.font = '12px sans-serif'` + `ctx.fillText(region.title, ...)`. **系统字体, 长字符串 truncate ellipsis**
+7. 箭头 (块之间): `ctx.beginPath(); ctx.moveTo + lineTo + 三角形头`. Canvas2D 原生, **不用 Atlas SDF**
+8. Page# (下方 "Page 1"...): `ctx.font = '10px sans-serif'`. **系统字体**
+
+**关键拒绝**:
+- ❌ 不用 SDF text 渲染编号 / 标题 / page# (over-engineered)
+- ❌ 不用 SDF 画箭头 (Canvas2D `lineTo` 简单 100x)
+- ❌ 不引入 p5.js for Sprint 1 (原生 Canvas2D 足够; p5 Sprint 3+ 互动 info graphic 时再考虑)
+- ✅ 但 section 内的 slide 缩略图 必须走 Atlas silhouette renderer (那是 Atlas 差异化)
+
+### 5.2.3 字体策略
+
+Sprint 1 用 sans-serif 系统栈: `font-family: -apple-system, system-ui, sans-serif` (跟 compositor 一致). 不引入 Web Font (额外加载 + FOUT 复杂度). Sprint 3+ 主题系统再考虑可选 web font。
 
 ### 5.3 Export PNG
 
@@ -311,7 +329,7 @@ Sprint 1 deck-view 就是个 static page. 没 ←→ key, 没 fullscreen, 没 cu
 |---|---|---|
 | `sdf-js/src/present/pipeline.js` | ~200 | parsePdf → emit 2D → sequential lift queue + storage updates (NO streaming UX) |
 | `sdf-js/src/present/linear-layout.js` | ~60 | Compute section regions for Linear archetype (centerX = i*spacing, bbox from sceneData) |
-| `sdf-js/src/present/info-graphic-render.js` | ~180 | Render sections to 2D info graphic (canvas API + silhouette per section + arrows + numbers + titles) |
+| `sdf-js/src/present/info-graphic-render.js` | ~150 | Compose info graphic: Canvas2D + system fonts for chrome (header / borders / arrows / labels / numbers / titles); call into silhouette renderer ONLY for slide thumbnail inside each section frame |
 | `sdf-js/src/present/library-page.js` | ~150 | Library list + Import PDF + card actions |
 | `sdf-js/src/present/deck-view.js` | ~100 | Load deck + trigger info-graphic-render + Export PNG button |
 | `sdf-js/scripts/test-linear-layout.mjs` | ~80 | L1 tests for region computation (~12 assertions) |
@@ -453,6 +471,28 @@ Sections 各自的 sceneData 在 render 时合并 (info-graphic-render 内部); 
 ### Rule 8 — Sprint 1 ship 不 import waypoint-tween.js
 
 `waypoint-tween.js` 留在 codebase (Sprint 2 起用), 但 Sprint 1 不 import 它。如果 Sprint 1 代码 import 它 = 提示有 3D-leak。
+
+### Rule 9 — Atlas IP 边界 (per memory hard rule 5)
+
+**用 Atlas SDF**:
+- 每 section 块内部的 slide 内容缩略图 (silhouette CPU renderer 渲染 sceneData) ✓
+- (Sprint 2+) 3D Play mode 内 in-scene 3D 文字 (text-3d-pipe / text-3d-extruded atom)
+
+**用 Canvas2D + 系统字体 (3rd-party / 原生 API)**:
+- Info graphic 的所有 chrome (header / 边框 / 箭头 / section 编号 / section 标题 / page# / footer)
+- Library page UI 文字
+- 所有按钮 label / progress text
+
+**判别问句**:
+- 这个东西被光照 / 摄像机变换 / 材质处理吗? Yes → Atlas SDF; No → Canvas2D
+- 这个东西需要 LLM 写代码生成吗? Yes → Atlas atom; No → 手写 Canvas2D
+- 反例: 用 SDF 渲染 "Page 3" 标签是 over-engineered (违反 rule 9)
+
+### Rule 10 — Sprint 1 不引入新 3rd-party 依赖
+
+- ✅ 用现有: Canvas2D API (浏览器原生), 系统字体 ("system-ui, sans-serif"), pdf.js (已在 codebase)
+- ❌ 不引入: p5.js (Sprint 3+ 互动 info graphic 再考虑), three.js (Sprint 2+ 3D Play 决定), 任何 web font (FOUT 复杂度)
+- 依赖 footprint 维持简洁 — Sprint 1 deliverable 用现有工具够
 
 ---
 
