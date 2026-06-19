@@ -35,6 +35,7 @@ function getUrlTokenHash() {
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
+import { sphericalToCamState } from '../../src/compositor-api.js';
 import {
   Random,
   generateHash,
@@ -2434,18 +2435,6 @@ function writeStyleHashToURL(hash) {
 
 function shadowModeNameToInt(mode) {
   return { channelSwap: 0, hueRotate180: 1, hueRotate90: 2, darken: 3 }[mode] ?? 0;
-}
-
-function sphericalToCamState(cam) {
-  return {
-    position: [
-      cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
-      cam.targetY + cam.distance * Math.sin(cam.pitch),
-      cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
-    ],
-    yaw: cam.yaw,
-    pitch: cam.pitch,
-  };
 }
 
 let gpuSceneStartTime = performance.now();

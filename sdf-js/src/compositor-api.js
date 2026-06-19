@@ -26,4 +26,23 @@
 // Constants
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
 
+/**
+ * Convert spherical camera coords (target + yaw/pitch/distance) to Cartesian
+ * eye position. Used by all 3D renderers when applying `scene.cameraStatic`.
+ *
+ * @param {{targetX:number, targetY:number, targetZ:number, yaw:number, pitch:number, distance:number}} cam
+ * @returns {{position:[number,number,number], yaw:number, pitch:number}}
+ */
+export function sphericalToCamState(cam) {
+  return {
+    position: [
+      cam.targetX - cam.distance * Math.sin(cam.yaw) * Math.cos(cam.pitch),
+      cam.targetY + cam.distance * Math.sin(cam.pitch),
+      cam.targetZ - cam.distance * Math.cos(cam.yaw) * Math.cos(cam.pitch),
+    ],
+    yaw: cam.yaw,
+    pitch: cam.pitch,
+  };
+}
+
 // Exports populated by subsequent tasks.
