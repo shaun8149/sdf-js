@@ -371,5 +371,93 @@ console.log('\nTest group 3: Labels');
   }
 }
 
+console.log('\nTest group 4: Connectors');
+
+// pipe-through: 4 cubes row, single skewer
+{
+  const sdf = cube3dSDF({
+    count: 4,
+    arrangement: 'row',
+    cubeSize: 0.6,
+    spacing: 0.4,
+    connector: 'pipe-through',
+    connectorThickness: 0.05,
+  });
+  ok(sdf !== null, 'pipe-through 4-row: SDF non-null');
+  // Probe between cubes (should be INSIDE the pipe, SDF < 0)
+  ok(
+    sdf.f([0.5, 0, 0]) < 0,
+    `pipe-through 4-row: gap point should be inside pipe (got ${sdf.f([0.5, 0, 0])})`,
+  );
+  // Probe far above cubes (should be outside)
+  ok(sdf.f([0, 5, 0]) > 0, 'pipe-through 4-row: far above is outside');
+}
+
+// pipe-vertical: 3 cubes stack with risers between
+{
+  const sdf = cube3dSDF({
+    count: 3,
+    arrangement: 'stack',
+    cubeSize: 0.5,
+    spacing: 0.3,
+    connector: 'pipe-vertical',
+    connectorThickness: 0.04,
+  });
+  ok(sdf !== null, 'pipe-vertical 3-stack: SDF non-null');
+  // Between cube 0 and cube 1, on Y axis, should be inside the riser
+  // cube positions: [0, -0.8, 0], [0, 0, 0], [0, 0.8, 0]; gap midpoint at [0, -0.4, 0]
+  ok(
+    sdf.f([0, -0.4, 0]) < 0,
+    `pipe-vertical: midpoint between cubes inside riser (got ${sdf.f([0, -0.4, 0])})`,
+  );
+}
+
+// spokes: anchor + 4 satellites, only indices [1, 3] connected
+{
+  const sdf = cube3dSDF({
+    count: 5,
+    arrangement: 'hub-spokes',
+    cubeSize: 0.4,
+    arrangementParams: { anchorSize: 0.8, arc: Math.PI },
+    connector: 'spokes',
+    connectorIndices: [1, 3],
+    connectorThickness: 0.04,
+  });
+  ok(sdf !== null, 'spokes selective: SDF non-null');
+  // Midpoint between anchor (origin) and satellite 1: should be inside spoke
+  const positions = ARRANGEMENTS['hub-spokes'](5, 0.4, 0.2, { anchorSize: 0.8, arc: Math.PI });
+  const sat1 = positions[1];
+  const midSat1 = [sat1[0] / 2, sat1[1] / 2, sat1[2] / 2];
+  ok(sdf.f(midSat1) < 0.1, `spokes: midpoint to satellite 1 near spoke (got ${sdf.f(midSat1)})`);
+}
+
+// spokes invalid arrangement throws
+{
+  let threw = false;
+  try {
+    cube3dSDF({
+      count: 3,
+      arrangement: 'row', // INVALID for spokes
+      connector: 'spokes',
+    });
+  } catch (e) {
+    threw = e.message.includes('spokes');
+  }
+  ok(threw, 'spokes + non-hub-spokes arrangement: throws');
+}
+
+// connector='none' (default): no connector geometry
+{
+  const sdf = cube3dSDF({
+    count: 3,
+    arrangement: 'row',
+    cubeSize: 0.6,
+    spacing: 0.5,
+    connector: 'none',
+  });
+  // Big gap (0.5 spacing) midpoint should be OUTSIDE (no connector)
+  ok(sdf.f([0.55, 0, 0]) > 0, `connector=none: gap point outside (got ${sdf.f([0.55, 0, 0])})`);
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

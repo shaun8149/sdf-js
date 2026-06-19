@@ -357,6 +357,32 @@ export function cube3dSDF({
     }
   }
 
+  // 5. Connectors
+  if (connector === 'pipe-through' && positions.length >= 2) {
+    const a = positions[0];
+    const b = positions[positions.length - 1];
+    cubes.push(capsule(a, b, connectorThickness));
+  } else if (connector === 'pipe-vertical' && positions.length >= 2) {
+    for (let i = 1; i < positions.length; i++) {
+      cubes.push(capsule(positions[i - 1], positions[i], connectorThickness));
+    }
+  } else if (connector === 'spokes') {
+    if (arrangement !== 'hub-spokes') {
+      throw new Error(
+        `[cube-3d] connector='spokes' requires arrangement='hub-spokes' (got '${arrangement}')`,
+      );
+    }
+    const anchor = positions[0];
+    const indices =
+      connectorIndices ?? Array.from({ length: positions.length - 1 }, (_, k) => k + 1);
+    for (const idx of indices) {
+      if (idx < 1 || idx >= positions.length) continue;
+      cubes.push(capsule(anchor, positions[idx], connectorThickness));
+    }
+  } else if (connector !== 'none') {
+    throw new Error(`[cube-3d] unknown connector: ${connector}`);
+  }
+
   // 3. Union all cubes (skip if only 1)
   return cubes.length === 1 ? cubes[0] : union(...cubes);
 }
