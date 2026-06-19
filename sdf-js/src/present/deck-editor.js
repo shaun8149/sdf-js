@@ -1,20 +1,34 @@
 // =============================================================================
-// deck-editor.js — Atlas Present deck editor page
+// deck-editor.js — Atlas Present Canvas Mode deck editor
 // -----------------------------------------------------------------------------
-// 3-pane layout: slide list (left) + preview (center) + settings (right).
+// 3-pane layout:
+//   LEFT — waypoint rail (numbered list + select + drag-reorder + [+W] capture)
+//   CENTER — 3D canvas viewport (full size, free orbit via compositor controls)
+//   RIGHT — inspector pane: selected waypoint + subjects list + add subject + deck settings
 //
-// ⚠️ DEPRECATED PPT-MODE IMPL — full rewrite in Plan Phase 4 (Canvas Mode pivot).
-// New center pane will be a 3D canvas viewport with waypoint rail + atom palette.
-// Do NOT extend or "improve" this file. See plan
-// docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
-// -----------------------------------------------------------------------------
-import * as deckModel from './deck-model.js';
-import { createRendererForId, compileScene } from '../compositor-api.js';
+// User flow:
+//   1. New deck has empty canvas + no waypoints
+//   2. Add subject via right-pane form (type + xyz) → mutates deck.canvas.subjects
+//      → recompile + re-render canvas
+//   3. Orbit camera in viewport (free)
+//   4. + Waypoint button → captures current camera as a new waypoint
+//   5. Click waypoint → camera tweens (200ms) to preview that framing
+//   6. ▶ Present → switch to present mode (separate URL flag)
+//
+// Calls Layer 1 via compositor-api.js. Does NOT touch compositor internals.
+// =============================================================================
 
+import * as deckModel from './deck-model.js';
+import { createRendererForId, compileScene, sphericalToCamState } from '../compositor-api.js';
+import { ATOM_PALETTE } from './atom-palette.js';
+import { tweenCamera, easeInOut } from './waypoint-tween.js';
+
+// Module-scope editor state.
 let currentDeck = null;
-let currentSlideIdx = -1;
-let currentRenderer = null;
-let currentCanvas = null;
+let currentWaypointId = null;
+let renderer = null;
+let canvas = null;
+let activeTween = null;
 
 export async function mountDeckEditor(target, deckId) {
   const deck = deckModel.loadDeckFromStorage(deckId);
@@ -23,240 +37,371 @@ export async function mountDeckEditor(target, deckId) {
     return;
   }
   currentDeck = deck;
-  currentSlideIdx = deck.slides.length > 0 ? 0 : -1;
+  currentWaypointId = deck.waypoints[0]?.id ?? null;
 
   target.innerHTML = `
     <div class="topbar">
       <a href="./" class="btn-back">← Library</a>
-      <div class="brand" style="margin-left: 16px;" id="editor-deck-title">${escapeHtml(deck.title)}</div>
+      <div class="brand" style="margin-left: 16px;">${escapeHtml(deck.title)}</div>
       <div class="spacer"></div>
       <button id="btn-present-current">▶ Present</button>
     </div>
-    <div class="editor-body">
-      <aside class="slide-rail" id="slide-rail"></aside>
-      <main class="preview-pane" id="preview-pane">
-        <canvas id="preview-canvas" width="640" height="360"></canvas>
-        <div class="preview-meta" id="preview-meta"></div>
+    <div class="editor-body canvas-mode">
+      <aside class="waypoint-rail" id="waypoint-rail"></aside>
+      <main class="canvas-viewport" id="canvas-viewport">
+        <canvas id="canvas-3d"></canvas>
+        <div class="viewport-meta" id="viewport-meta"></div>
       </main>
-      <aside class="settings-pane" id="settings-pane"></aside>
+      <aside class="inspector-pane" id="inspector-pane"></aside>
     </div>
   `;
   document.getElementById('btn-present-current').addEventListener('click', () => {
     location.search = `?deck=${deck.id}&present=1`;
   });
 
-  renderSlideRail();
-  renderSettingsPane();
-  renderPreview();
+  await mountRenderer();
+  renderWaypointRail();
+  renderInspectorPane();
+  fitAndRender();
+
+  window.addEventListener('resize', fitAndRender);
 }
 
-function renderSlideRail() {
-  const rail = document.getElementById('slide-rail');
+async function mountRenderer() {
+  canvas = document.getElementById('canvas-3d');
+  fitCanvasToContainer();
+  try {
+    renderer = createRendererForId(currentDeck.theme.renderer, canvas);
+  } catch (e) {
+    console.error('[deck-editor] renderer create failed:', e);
+    document.getElementById('viewport-meta').textContent = `Renderer error: ${e.message}`;
+  }
+}
+
+function fitCanvasToContainer() {
+  if (!canvas) return;
+  const container = canvas.parentElement;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  if (w > 0 && h > 0) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+}
+
+function fitAndRender() {
+  fitCanvasToContainer();
+  renderCanvas();
+}
+
+function renderCanvas() {
+  if (!renderer || !canvas || !currentDeck) return;
+  try {
+    const compiled = compileScene(currentDeck.canvas);
+    if (currentDeck.theme.renderer === 'silhouette') {
+      renderer.render([{ sdf: compiled.sdf, color: [200, 200, 200], stroke: 0 }], {
+        background: [13, 13, 13],
+      });
+    } else {
+      const cam = currentWaypointId
+        ? currentDeck.waypoints.find((w) => w.id === currentWaypointId)?.camera
+        : currentDeck.canvas.defaults?.camera;
+      if (cam && renderer.setCamState) {
+        renderer.setCamState(sphericalToCamState(cam));
+      }
+      renderer.render(compiled.sdf);
+    }
+    updateViewportMeta();
+  } catch (e) {
+    console.error('[deck-editor] render failed:', e);
+    document.getElementById('viewport-meta').textContent = `Render error: ${e.message}`;
+  }
+}
+
+function updateViewportMeta() {
+  const meta = document.getElementById('viewport-meta');
+  if (!meta) return;
+  const wpCount = currentDeck.waypoints.length;
+  const subjCount = currentDeck.canvas.subjects.length;
+  meta.textContent = `${subjCount} subject${subjCount === 1 ? '' : 's'} · ${wpCount} waypoint${wpCount === 1 ? '' : 's'} · ${currentDeck.theme.renderer}`;
+}
+
+// ---- Waypoint rail ----------------------------------------------------------
+
+function renderWaypointRail() {
+  const rail = document.getElementById('waypoint-rail');
   rail.innerHTML = `
-    ${currentDeck.slides
+    ${currentDeck.waypoints
       .map(
-        (s, i) => `
-      <div class="slide-thumb ${i === currentSlideIdx ? 'selected' : ''}" data-idx="${i}" draggable="true">
+        (w, i) => `
+      <div class="waypoint-thumb ${w.id === currentWaypointId ? 'selected' : ''}" data-id="${w.id}" draggable="true">
         <div class="thumb-num">${i + 1}</div>
-        <div class="thumb-title">${escapeHtml(s.title || `Slide ${i + 1}`)}</div>
+        <div class="thumb-title">${escapeHtml(w.title || `Waypoint ${i + 1}`)}</div>
       </div>
     `,
       )
       .join('')}
-    <button class="btn-add-slide" id="btn-add-slide">+ Add Slide</button>
+    <button class="btn-add-waypoint" id="btn-add-waypoint">+ Capture current view</button>
   `;
-  rail.querySelectorAll('.slide-thumb').forEach((el) => {
+
+  rail.querySelectorAll('.waypoint-thumb').forEach((el) => {
     el.addEventListener('click', () => {
-      currentSlideIdx = parseInt(el.dataset.idx, 10);
-      renderSlideRail();
-      renderSettingsPane();
-      renderPreview();
+      selectWaypointAndTween(el.dataset.id);
     });
-  });
-  // Drag-to-reorder
-  let draggedIdx = null;
-  rail.querySelectorAll('.slide-thumb').forEach((el) => {
     el.addEventListener('dragstart', (e) => {
-      draggedIdx = parseInt(el.dataset.idx, 10);
       el.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(draggedIdx));
+      e.dataTransfer.setData('text/plain', el.dataset.id);
     });
     el.addEventListener('dragend', () => {
       el.classList.remove('dragging');
-      draggedIdx = null;
-      rail.querySelectorAll('.slide-thumb').forEach((t) => t.classList.remove('drop-target'));
+      rail.querySelectorAll('.waypoint-thumb').forEach((t) => t.classList.remove('drop-target'));
     });
     el.addEventListener('dragover', (e) => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
       el.classList.add('drop-target');
     });
-    el.addEventListener('dragleave', () => {
-      el.classList.remove('drop-target');
-    });
+    el.addEventListener('dragleave', () => el.classList.remove('drop-target'));
     el.addEventListener('drop', (e) => {
       e.preventDefault();
       el.classList.remove('drop-target');
-      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
-      const toIdx = parseInt(el.dataset.idx, 10);
-      if (Number.isFinite(fromIdx) && Number.isFinite(toIdx) && fromIdx !== toIdx) {
-        deckModel.moveSlide(currentDeck, fromIdx, toIdx);
+      const fromId = e.dataTransfer.getData('text/plain');
+      const toId = el.dataset.id;
+      if (fromId !== toId) {
+        const fromIdx = currentDeck.waypoints.findIndex((w) => w.id === fromId);
+        const toIdx = currentDeck.waypoints.findIndex((w) => w.id === toId);
+        deckModel.moveWaypoint(currentDeck, fromIdx, toIdx);
         deckModel.saveDeckToStorage(currentDeck);
-        currentSlideIdx = toIdx;
-        renderSlideRail();
-        renderSettingsPane();
-        renderPreview();
+        renderWaypointRail();
       }
     });
   });
-  document.getElementById('btn-add-slide')?.addEventListener('click', handleAddSlide);
+
+  document.getElementById('btn-add-waypoint').addEventListener('click', handleAddWaypoint);
 }
 
-function renderSettingsPane() {
-  const pane = document.getElementById('settings-pane');
-  const slide = currentSlideIdx >= 0 ? currentDeck.slides[currentSlideIdx] : null;
+function selectWaypointAndTween(waypointId) {
+  const wp = currentDeck.waypoints.find((w) => w.id === waypointId);
+  if (!wp) return;
+
+  if (activeTween) {
+    activeTween.cancel();
+    activeTween = null;
+  }
+
+  const fromCam = readCurrentCamera() || currentDeck.canvas.defaults?.camera || wp.camera;
+
+  activeTween = tweenCamera(fromCam, wp.camera, {
+    durationMs: 200,
+    easing: easeInOut,
+    onFrame: (cam) => {
+      if (renderer && renderer.setCamState) {
+        renderer.setCamState(sphericalToCamState(cam));
+      }
+    },
+    onComplete: () => {
+      activeTween = null;
+    },
+  });
+
+  currentWaypointId = waypointId;
+  renderWaypointRail();
+  renderInspectorPane();
+}
+
+function readCurrentCamera() {
+  if (!renderer) return null;
+  if (typeof renderer.getCamState === 'function') {
+    return renderer.getCamState();
+  }
+  const wp = currentDeck.waypoints.find((w) => w.id === currentWaypointId);
+  return wp?.camera ?? null;
+}
+
+function handleAddWaypoint() {
+  const cam = readCurrentCamera() ||
+    currentDeck.canvas.defaults?.camera || {
+      yaw: 0.3,
+      pitch: -0.15,
+      distance: 8,
+      targetX: 0,
+      targetY: 0.5,
+      targetZ: 0,
+    };
+  const title = prompt('Waypoint title:', `Waypoint ${currentDeck.waypoints.length + 1}`);
+  if (title === null) return;
+  const wp = deckModel.addWaypoint(currentDeck, {
+    title: title || `Waypoint ${currentDeck.waypoints.length + 1}`,
+    camera: { ...cam },
+  });
+  deckModel.saveDeckToStorage(currentDeck);
+  currentWaypointId = wp.id;
+  renderWaypointRail();
+  renderInspectorPane();
+  updateViewportMeta();
+}
+
+// ---- Inspector pane ---------------------------------------------------------
+
+function renderInspectorPane() {
+  const pane = document.getElementById('inspector-pane');
+  const wp = currentWaypointId
+    ? currentDeck.waypoints.find((w) => w.id === currentWaypointId)
+    : null;
   const RENDERERS = ['studio', 'fly3d', 'silhouette'];
   pane.innerHTML = `
-    <h3>Deck</h3>
+    ${
+      wp
+        ? `
+      <h3>Waypoint ${currentDeck.waypoints.findIndex((w) => w.id === wp.id) + 1}</h3>
+      <div class="settings-row">
+        <label>Title</label>
+        <input type="text" id="input-waypoint-title" value="${escapeHtml(wp.title || '')}" placeholder="(no title)" />
+      </div>
+      <div class="settings-row meta">
+        Camera: yaw=${wp.camera.yaw.toFixed(2)} pitch=${wp.camera.pitch.toFixed(2)} dist=${wp.camera.distance.toFixed(2)}<br>
+        Target: ${wp.camera.targetX.toFixed(2)}, ${wp.camera.targetY.toFixed(2)}, ${wp.camera.targetZ.toFixed(2)}
+      </div>
+      <div class="settings-row">
+        <button id="btn-recapture-waypoint">Re-capture from current view</button>
+      </div>
+      <div class="settings-row">
+        <button id="btn-delete-waypoint">Delete waypoint</button>
+      </div>
+    `
+        : '<div class="settings-row meta">No waypoint selected. Capture one with the [+ Capture] button on the left.</div>'
+    }
+
+    <h3 style="margin-top: 24px;">Subjects (${currentDeck.canvas.subjects.length})</h3>
+    ${currentDeck.canvas.subjects.length === 0 ? '<div class="settings-row meta">Empty canvas. Add a subject below.</div>' : ''}
+    ${currentDeck.canvas.subjects
+      .map(
+        (s) => `
+      <div class="subject-row" data-id="${s.id}">
+        <span class="subject-type">${escapeHtml(s.type)}</span>
+        <span class="subject-pos">at ${formatTranslate(s.transform?.translate)}</span>
+        <button class="btn-remove-subject" data-id="${s.id}">×</button>
+      </div>
+    `,
+      )
+      .join('')}
+    <div class="settings-row">
+      <button id="btn-add-subject">+ Add subject</button>
+    </div>
+
+    <h3 style="margin-top: 24px;">Deck</h3>
     <div class="settings-row">
       <label>Renderer</label>
       <select id="select-renderer">
         ${RENDERERS.map((r) => `<option value="${r}" ${r === currentDeck.theme.renderer ? 'selected' : ''}>${r}</option>`).join('')}
       </select>
     </div>
-    <div class="settings-row meta">${currentDeck.slides.length} slides</div>
-
-    ${
-      slide
-        ? `
-      <h3 style="margin-top: 24px;">Slide ${currentSlideIdx + 1}</h3>
-      <div class="settings-row">
-        <label>Title</label>
-        <input type="text" id="input-slide-title" value="${escapeHtml(slide.title || '')}" placeholder="(no title)" />
-      </div>
-      <div class="settings-row">
-        <button id="btn-remove-slide">Remove Slide</button>
-      </div>
-    `
-        : '<div class="settings-row meta" style="margin-top: 24px;">No slide selected. Add a slide to start.</div>'
-    }
+    <div class="settings-row meta">
+      Tween: ${currentDeck.tween.durationMs}ms ${currentDeck.tween.easing}
+    </div>
   `;
-  document.getElementById('select-renderer')?.addEventListener('change', handleRendererChange);
-  document.getElementById('input-slide-title')?.addEventListener('change', handleSlideTitleChange);
-  document.getElementById('btn-remove-slide')?.addEventListener('click', handleRemoveSlide);
+
+  document
+    .getElementById('input-waypoint-title')
+    ?.addEventListener('change', handleWaypointTitleChange);
+  document
+    .getElementById('btn-recapture-waypoint')
+    ?.addEventListener('click', handleRecaptureWaypoint);
+  document.getElementById('btn-delete-waypoint')?.addEventListener('click', handleDeleteWaypoint);
+  document.getElementById('btn-add-subject').addEventListener('click', handleAddSubjectFlow);
+  document.getElementById('select-renderer').addEventListener('change', handleRendererChange);
+  pane.querySelectorAll('.btn-remove-subject').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleRemoveSubject(btn.dataset.id);
+    });
+  });
 }
 
-function renderPreview() {
-  const canvas = document.getElementById('preview-canvas');
-  const meta = document.getElementById('preview-meta');
-  if (currentSlideIdx < 0 || !currentDeck.slides[currentSlideIdx]) {
-    meta.textContent = 'No slide selected';
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#888';
-    ctx.font = '14px sans-serif';
-    ctx.fillText('Empty preview', 20, 30);
-    return;
-  }
-  const slide = currentDeck.slides[currentSlideIdx];
-  const rendererId = currentDeck.theme.renderer;
-  meta.textContent = `Slide ${currentSlideIdx + 1} / ${currentDeck.slides.length} · ${rendererId}`;
-
-  if (currentRenderer && currentCanvas === canvas && currentRenderer.__rendererId === rendererId) {
-    try {
-      renderSlideToCurrentRenderer(slide);
-    } catch (e) {
-      console.error('[deck-editor] preview render failed:', e);
-      meta.textContent = `Render error: ${e.message}`;
-    }
-    return;
-  }
-  if (currentRenderer) {
-    try {
-      currentRenderer.unmount();
-    } catch (e) {
-      console.warn('[deck-editor] previous renderer unmount failed:', e);
-    }
-  }
-  try {
-    currentRenderer = createRendererForId(rendererId, canvas);
-    currentRenderer.__rendererId = rendererId;
-    currentCanvas = canvas;
-    renderSlideToCurrentRenderer(slide);
-  } catch (e) {
-    console.error('[deck-editor] renderer create failed:', e);
-    meta.textContent = `Renderer error (${rendererId}): ${e.message}`;
-  }
-}
-
-function renderSlideToCurrentRenderer(slide) {
-  const rendererId = currentDeck.theme.renderer;
-  if (rendererId === 'silhouette') {
-    const compiled = compileScene(slide.sceneData);
-    const layers = [{ sdf: compiled.sdf, color: [200, 200, 200], stroke: 0 }];
-    currentRenderer.render(layers, { background: [13, 13, 13] });
-  } else {
-    const compiled = compileScene(slide.sceneData);
-    currentRenderer.render(compiled.sdf);
-  }
+function formatTranslate(t) {
+  if (!t || t.length !== 3) return '[0,0,0]';
+  return `[${t.map((n) => n.toFixed(1)).join(',')}]`;
 }
 
 // ---- Handlers ---------------------------------------------------------------
 
-function handleAddSlide() {
-  const demoId = prompt('Add slide from compositor demo id (e.g. "cube-3d-showcase"):');
-  if (!demoId) return;
-  loadDemoAndAddSlide(demoId);
+function handleWaypointTitleChange(e) {
+  const wp = currentDeck.waypoints.find((w) => w.id === currentWaypointId);
+  if (!wp) return;
+  wp.title = e.target.value;
+  currentDeck.updatedAt = Date.now();
+  deckModel.saveDeckToStorage(currentDeck);
+  renderWaypointRail();
 }
 
-async function loadDemoAndAddSlide(demoId) {
-  try {
-    const res = await fetch(`../compositor/demo-lifts/${demoId}.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!data.sceneData) throw new Error('demo has no sceneData');
-    deckModel.addSlide(currentDeck, {
-      title: data.title || demoId,
-      sceneData: data.sceneData,
-      source: { type: 'compositor-demo', refId: demoId, addedAt: Date.now() },
-    });
-    deckModel.saveDeckToStorage(currentDeck);
-    currentSlideIdx = currentDeck.slides.length - 1;
-    renderSlideRail();
-    renderSettingsPane();
-    renderPreview();
-  } catch (e) {
-    alert(`Failed to add slide: ${e.message}`);
+function handleRecaptureWaypoint() {
+  const wp = currentDeck.waypoints.find((w) => w.id === currentWaypointId);
+  if (!wp) return;
+  const cam = readCurrentCamera() || wp.camera;
+  deckModel.updateWaypointCamera(currentDeck, currentWaypointId, cam);
+  deckModel.saveDeckToStorage(currentDeck);
+  renderInspectorPane();
+}
+
+function handleDeleteWaypoint() {
+  if (!currentWaypointId) return;
+  if (!confirm('Delete this waypoint?')) return;
+  deckModel.removeWaypoint(currentDeck, currentWaypointId);
+  deckModel.saveDeckToStorage(currentDeck);
+  currentWaypointId = currentDeck.waypoints[0]?.id ?? null;
+  renderWaypointRail();
+  renderInspectorPane();
+  updateViewportMeta();
+}
+
+function handleAddSubjectFlow() {
+  const types = ATOM_PALETTE.map((p, i) => `${i + 1}: ${p.type} — ${p.displayName}`).join('\n');
+  const choice = prompt(`Pick atom type (1-${ATOM_PALETTE.length}):\n${types}`);
+  if (!choice) return;
+  const n = parseInt(choice, 10);
+  if (!Number.isFinite(n) || n < 1 || n > ATOM_PALETTE.length) {
+    alert('Invalid choice');
+    return;
   }
+  const entry = ATOM_PALETTE[n - 1];
+  const xyz = prompt(`Position [x,y,z] for ${entry.type} (e.g. "0,0.5,0"):`, '0,0.5,0');
+  if (!xyz) return;
+  const parts = xyz.split(',').map((s) => parseFloat(s.trim()));
+  if (parts.length !== 3 || parts.some((p) => !Number.isFinite(p))) {
+    alert('Invalid position');
+    return;
+  }
+  deckModel.addSubjectToCanvas(currentDeck, {
+    type: entry.type,
+    args: { ...entry.defaultArgs },
+    transform: { translate: parts },
+    material: 'silver',
+  });
+  deckModel.saveDeckToStorage(currentDeck);
+  renderInspectorPane();
+  renderCanvas();
+}
+
+function handleRemoveSubject(subjectId) {
+  if (!confirm('Remove this subject?')) return;
+  deckModel.removeSubjectFromCanvas(currentDeck, subjectId);
+  deckModel.saveDeckToStorage(currentDeck);
+  renderInspectorPane();
+  renderCanvas();
 }
 
 function handleRendererChange(e) {
   currentDeck.theme.renderer = e.target.value;
   currentDeck.updatedAt = Date.now();
   deckModel.saveDeckToStorage(currentDeck);
-  renderPreview();
-}
-
-function handleSlideTitleChange(e) {
-  if (currentSlideIdx < 0) return;
-  currentDeck.slides[currentSlideIdx].title = e.target.value;
-  currentDeck.updatedAt = Date.now();
-  deckModel.saveDeckToStorage(currentDeck);
-  renderSlideRail();
-}
-
-function handleRemoveSlide() {
-  if (currentSlideIdx < 0) return;
-  const slide = currentDeck.slides[currentSlideIdx];
-  if (!confirm(`Remove slide "${slide.title || `Slide ${currentSlideIdx + 1}`}"?`)) return;
-  deckModel.removeSlide(currentDeck, slide.id);
-  deckModel.saveDeckToStorage(currentDeck);
-  currentSlideIdx = Math.min(currentSlideIdx, currentDeck.slides.length - 1);
-  renderSlideRail();
-  renderSettingsPane();
-  renderPreview();
+  if (renderer) {
+    try {
+      renderer.unmount();
+    } catch (err) {
+      console.warn('[deck-editor] previous renderer unmount failed:', err);
+    }
+  }
+  mountRenderer().then(fitAndRender);
 }
 
 // ---- Helpers ----------------------------------------------------------------
