@@ -97,7 +97,48 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
   );
 }
 
-// [More tests added in Tasks 1.4-1.6]
+// parseLiftResponse: strips markdown fence
+{
+  const raw = '```json\n{"v": 1, "subjects": []}\n```';
+  const parsed = api.parseLiftResponse(raw);
+  ok(
+    parsed.v === 1 && Array.isArray(parsed.subjects),
+    `parseLiftResponse: strips markdown fence (got ${JSON.stringify(parsed)})`,
+  );
+}
+
+// parseLiftResponse: strips trailing comma
+{
+  const raw = '{"a": 1, "b": 2,}';
+  const parsed = api.parseLiftResponse(raw);
+  ok(parsed.a === 1 && parsed.b === 2, 'parseLiftResponse: strips trailing comma');
+}
+
+// parseLiftResponse: strips // comments
+{
+  const raw = '{"a": 1, // this is a comment\n"b": 2}';
+  const parsed = api.parseLiftResponse(raw);
+  ok(parsed.a === 1 && parsed.b === 2, 'parseLiftResponse: strips // comments');
+}
+
+// parseLiftResponse: strips /* */ comments
+{
+  const raw = '{"a": 1, /* block comment */ "b": 2}';
+  const parsed = api.parseLiftResponse(raw);
+  ok(parsed.a === 1 && parsed.b === 2, 'parseLiftResponse: strips /* */ comments');
+}
+
+// parseLiftResponse: preserves comment-like sequences inside strings
+{
+  const raw = '{"url": "http://example.com/path"}';
+  const parsed = api.parseLiftResponse(raw);
+  ok(
+    parsed.url === 'http://example.com/path',
+    'parseLiftResponse: preserves // inside string values',
+  );
+}
+
+// [More tests added in Tasks 1.5-1.6]
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

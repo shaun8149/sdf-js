@@ -35,7 +35,7 @@ function getUrlTokenHash() {
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
-import { sphericalToCamState } from '../../src/compositor-api.js';
+import { sphericalToCamState, parseLiftResponse } from '../../src/compositor-api.js';
 import {
   Random,
   generateHash,
@@ -855,123 +855,6 @@ async function callLiftLLM(originalPrompt, code2d, apiKey, model = DEFAULT_MODEL
 
   const data = await response.json();
   return { text: data.content[0].text, usage: data.usage };
-}
-
-// Strip JS-style line (//) and block (/* */) comments from JSON-ish text
-// without touching comment-like sequences that appear inside string values.
-// LLMs sometimes use comments as section dividers — strict JSON.parse rejects
-// them, but the actual scene data is fine, so we sanitise rather than fail.
-function stripJsonComments(src) {
-  let out = '';
-  let i = 0;
-  const n = src.length;
-  let inString = false;
-  while (i < n) {
-    const ch = src[i];
-    if (inString) {
-      out += ch;
-      if (ch === '\\' && i + 1 < n) {
-        out += src[i + 1];
-        i += 2;
-        continue;
-      }
-      if (ch === '"') inString = false;
-      i++;
-      continue;
-    }
-    if (ch === '"') {
-      inString = true;
-      out += ch;
-      i++;
-      continue;
-    }
-    if (ch === '/' && i + 1 < n) {
-      const next = src[i + 1];
-      if (next === '/') {
-        // line comment — skip to end of line
-        i += 2;
-        while (i < n && src[i] !== '\n') i++;
-        continue;
-      }
-      if (next === '*') {
-        // block comment — skip to closing */
-        i += 2;
-        while (i + 1 < n && !(src[i] === '*' && src[i + 1] === '/')) i++;
-        i += 2;
-        continue;
-      }
-    }
-    out += ch;
-    i++;
-  }
-  return out;
-}
-
-// Trailing commas in arrays/objects are another common LLM JSON-isms. Strip
-// only when followed by `]` or `}` (not inside strings — caller already
-// handed us comment-stripped text, but strings still need protection).
-function stripTrailingCommas(src) {
-  let out = '';
-  let i = 0;
-  const n = src.length;
-  let inString = false;
-  while (i < n) {
-    const ch = src[i];
-    if (inString) {
-      out += ch;
-      if (ch === '\\' && i + 1 < n) {
-        out += src[i + 1];
-        i += 2;
-        continue;
-      }
-      if (ch === '"') inString = false;
-      i++;
-      continue;
-    }
-    if (ch === '"') {
-      inString = true;
-      out += ch;
-      i++;
-      continue;
-    }
-    if (ch === ',') {
-      let j = i + 1;
-      while (j < n && /\s/.test(src[j])) j++;
-      if (j < n && (src[j] === ']' || src[j] === '}')) {
-        i++;
-        continue;
-      }
-    }
-    out += ch;
-    i++;
-  }
-  return out;
-}
-
-function parseLiftResponse(text) {
-  // LLM may wrap JSON in ```json ... ``` fence, or emit prose around it.
-  const fenceMatch = text.match(/```(?:json)?\s*\n([\s\S]*?)\n```/);
-  let jsonStr = fenceMatch ? fenceMatch[1] : text.trim();
-
-  // If no fence, try to find the first { and matching } at end
-  if (!fenceMatch && !jsonStr.startsWith('{')) {
-    const firstBrace = jsonStr.indexOf('{');
-    const lastBrace = jsonStr.lastIndexOf('}');
-    if (firstBrace >= 0 && lastBrace > firstBrace) {
-      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
-    }
-  }
-
-  // Sanitise LLM JSON-isms (comments, trailing commas) before strict parse.
-  const sanitised = stripTrailingCommas(stripJsonComments(jsonStr));
-
-  try {
-    return JSON.parse(sanitised);
-  } catch (e) {
-    throw new Error(
-      `Failed to parse lift JSON: ${e.message}\n\nRaw LLM output (first 500 chars):\n${text.slice(0, 500)}`,
-    );
-  }
 }
 
 async function callLLM(userPrompt, apiKey, model = DEFAULT_MODEL) {
