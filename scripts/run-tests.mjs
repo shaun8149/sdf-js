@@ -63,8 +63,8 @@ const TESTS = [
   // M0.3 PDF parser (Atlas use case PPT-lift workflow)
   { category: 'parser', file: 'sdf-js/scripts/test-pdf-parser.mjs' },
 
-  // M1.5 SlideData → SceneData mapper (Atlas use case auto-build pipeline)
-  { category: 'mapper', file: 'sdf-js/scripts/test-slide-mapper.mjs' },
+  // M1.5 SlideData → 2D SDF code emitter (consumed by compositor + lift LLM)
+  { category: 'mapper', file: 'sdf-js/scripts/test-slide-to-2d-code.mjs' },
 
   // Atlas typography Wave 1 — digits + KPI symbols as SDF glyphs.
   { category: 'typography', file: 'sdf-js/scripts/test-text-3d.mjs' },
