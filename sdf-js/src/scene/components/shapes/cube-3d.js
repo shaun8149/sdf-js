@@ -26,8 +26,162 @@ import { text3dPipeSDF, text3dExtrudedSDF } from '../typography/text-3d.js';
 // Each arrangement returns an array of cube positions [x, y, z] for indices
 // 0..count-1. All centered around origin.
 
+// Mulberry32 — minimal seeded PRNG. Same seed → same sequence.
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 export const ARRANGEMENTS = {
-  // [Implemented in Phase 2 tasks 2.2-2.10]
+  row: (count, cubeSize, spacing) => {
+    const stride = cubeSize + spacing;
+    const offset = ((count - 1) / 2) * stride;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      positions.push([i * stride - offset, 0, 0]);
+    }
+    return positions;
+  },
+
+  flow: (count, cubeSize, spacing) => {
+    // flow is row with 1.5× spacing
+    return ARRANGEMENTS.row(count, cubeSize, spacing * 1.5);
+  },
+
+  stack: (count, cubeSize, spacing) => {
+    const stride = cubeSize + spacing;
+    const offset = ((count - 1) / 2) * stride;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      positions.push([0, i * stride - offset, 0]);
+    }
+    return positions;
+  },
+
+  steps: (count, cubeSize, spacing, params = {}) => {
+    const stepHeight = params.stepHeight ?? 0.3;
+    const ascending = params.ascending !== false;
+    const stride = cubeSize + spacing;
+    const offsetX = ((count - 1) / 2) * stride;
+    const dir = ascending ? 1 : -1;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      positions.push([i * stride - offsetX, i * stepHeight * dir, 0]);
+    }
+    return positions;
+  },
+
+  grid: (count, cubeSize, spacing, params = {}) => {
+    const cols = params.cols ?? Math.ceil(Math.sqrt(count));
+    const rows = Math.ceil(count / cols);
+    const stride = cubeSize + spacing;
+    const offsetX = ((cols - 1) / 2) * stride;
+    const offsetZ = ((rows - 1) / 2) * stride;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      positions.push([col * stride - offsetX, 0, row * stride - offsetZ]);
+    }
+    return positions;
+  },
+
+  grid3d: (count, cubeSize, spacing, params = {}) => {
+    const cols = params.cols ?? 3;
+    const rows = params.rows ?? 3;
+    const stride = cubeSize + spacing;
+    const offsetX = ((cols - 1) / 2) * stride;
+    const offsetY = ((rows - 1) / 2) * stride;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      const x = i % cols;
+      const y = Math.floor(i / cols) % rows;
+      const z = Math.floor(i / (cols * rows));
+      positions.push([x * stride - offsetX, y * stride - offsetY, z * stride]);
+    }
+    const maxZ = Math.max(...positions.map((p) => p[2]));
+    const offsetZ = maxZ / 2;
+    return positions.map((p) => [p[0], p[1], p[2] - offsetZ]);
+  },
+
+  semicircle: (count, cubeSize, spacing, params = {}) => {
+    const arc = params.arc ?? Math.PI;
+    const stride = cubeSize + spacing;
+    const radius = (count * stride) / arc;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      const t = count === 1 ? 0.5 : i / (count - 1);
+      const theta = -arc / 2 + t * arc;
+      positions.push([radius * Math.sin(theta), 0, radius * Math.cos(theta) - radius]);
+    }
+    const meanZ = positions.reduce((s, p) => s + p[2], 0) / count;
+    return positions.map((p) => [p[0], p[1], p[2] - meanZ]);
+  },
+
+  'hub-spokes': (count, cubeSize, spacing, params = {}) => {
+    const anchorSize = params.anchorSize ?? 1.0;
+    const arc = params.arc ?? Math.PI;
+    const positions = [[0, 0, 0]];
+    if (count <= 1) return positions;
+    const radius = 2 * anchorSize;
+    for (let i = 1; i < count; i++) {
+      const t = count === 2 ? 0.5 : (i - 1) / (count - 2);
+      const theta = -arc / 2 + t * arc;
+      positions.push([radius * Math.sin(theta), 0, radius * Math.cos(theta)]);
+    }
+    return positions;
+  },
+
+  tower: (count, cubeSize, spacing, params = {}) => {
+    const baseRows = params.baseRows ?? 3;
+    const baseCols = params.baseCols ?? 3;
+    const towerCount = params.towerCount ?? Math.max(0, count - baseRows * baseCols);
+    const baseCount = Math.min(count, baseRows * baseCols);
+    const stride = cubeSize + spacing;
+    const offsetX = ((baseCols - 1) / 2) * stride;
+    const offsetZ = ((baseRows - 1) / 2) * stride;
+    const positions = [];
+    for (let i = 0; i < baseCount; i++) {
+      const col = i % baseCols;
+      const row = Math.floor(i / baseCols);
+      positions.push([col * stride - offsetX, 0, row * stride - offsetZ]);
+    }
+    const baseTop = cubeSize / 2 + cubeSize / 2;
+    for (let i = 0; i < towerCount; i++) {
+      positions.push([0, baseTop + i * stride, 0]);
+    }
+    return positions;
+  },
+
+  cluster: (count, cubeSize, spacing, params = {}) => {
+    const radius = params.radius ?? 1.5;
+    const zJitter = params.zJitter ?? 0.3;
+    const seed = params.seed ?? 1;
+    const rng = mulberry32(seed);
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      let u, v, s;
+      do {
+        u = 2 * rng() - 1;
+        v = 2 * rng() - 1;
+        s = u * u + v * v;
+      } while (s >= 1 || s === 0);
+      const factor = 2 * Math.sqrt(1 - s);
+      const x = u * factor;
+      const y = v * factor;
+      const z = 1 - 2 * s;
+      const r2 = rng();
+      const gauss = Math.sqrt(-2 * Math.log(Math.max(r2, 1e-9))) * Math.cos(2 * Math.PI * rng());
+      positions.push([x * radius, y * radius * 0.5, z * radius + gauss * zJitter]);
+    }
+    return positions;
+  },
 };
 
 // ---- Auto-color -------------------------------------------------------------
