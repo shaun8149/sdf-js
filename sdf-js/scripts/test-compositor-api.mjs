@@ -138,7 +138,28 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
   );
 }
 
-// [More tests added in Tasks 1.5-1.6]
+// loadSystemPromptLift: function exists with correct arity
+ok(typeof api.loadSystemPromptLift === 'function', 'loadSystemPromptLift: function exported');
+ok(
+  api.loadSystemPromptLift.length === 1,
+  `loadSystemPromptLift: arity 1 (got ${api.loadSystemPromptLift.length})`,
+);
+
+// callLiftLLM: function exists with correct arity
+ok(typeof api.callLiftLLM === 'function', 'callLiftLLM: function exported');
+ok(api.callLiftLLM.length === 3, `callLiftLLM: arity 3 (got ${api.callLiftLLM.length})`);
+
+// callLiftLLM: throws without apiKey
+await (async () => {
+  try {
+    await api.callLiftLLM('test prompt', '// 2d code', null);
+    ok(false, 'callLiftLLM: should throw without apiKey');
+  } catch (e) {
+    ok(/api[\s-]*key/i.test(e.message), `callLiftLLM: error mentions api key (got: ${e.message})`);
+  }
+})();
+
+// [More tests added in Task 1.6]
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

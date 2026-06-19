@@ -219,4 +219,71 @@ export function parseLiftResponse(text) {
   }
 }
 
+// Module-private cache for the lift system prompt. Fetched once per
+// loadSystemPromptLift() call; subsequent callLiftLLM calls reuse it.
+let CACHED_SYSTEM_PROMPT_LIFT = '';
+
+/**
+ * Fetch + cache the lift system prompt markdown file. Called automatically
+ * by callLiftLLM if cache is empty.
+ *
+ * @param {string} fetchBase — absolute or relative URL of the prompt file
+ *   (e.g., '/examples/compositor/system-prompt-lift-3d.md')
+ * @returns {Promise<number>} byte length of loaded prompt
+ */
+export async function loadSystemPromptLift(fetchBase) {
+  if (CACHED_SYSTEM_PROMPT_LIFT) return CACHED_SYSTEM_PROMPT_LIFT.length;
+  const res = await fetch(fetchBase);
+  if (!res.ok) throw new Error(`Failed to load lift prompt: ${res.status}`);
+  CACHED_SYSTEM_PROMPT_LIFT = await res.text();
+  return CACHED_SYSTEM_PROMPT_LIFT.length;
+}
+
+/**
+ * Call Anthropic Messages API with the lift system prompt.
+ *
+ * @param {string} originalPrompt — user's original generation prompt
+ * @param {string} code2d — 2D SDF JS code to lift
+ * @param {string} apiKey — Anthropic API key (BYOK)
+ * @param {object} [opts]
+ * @param {string} [opts.model=DEFAULT_LIFT_MODEL]
+ * @param {string} [opts.promptUrl='/examples/compositor/system-prompt-lift-3d.md']
+ * @returns {Promise<{text:string, usage:object}>}
+ */
+export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
+  if (!apiKey) throw new Error('Anthropic API key required');
+  if (!CACHED_SYSTEM_PROMPT_LIFT) {
+    const promptUrl = opts.promptUrl || '/examples/compositor/system-prompt-lift-3d.md';
+    await loadSystemPromptLift(promptUrl);
+  }
+  if (!CACHED_SYSTEM_PROMPT_LIFT) throw new Error('Lift system prompt not loaded');
+
+  const userMessage = `## Original user prompt\n\n${originalPrompt}\n\n## 2D SDF code\n\n\`\`\`js\n${code2d}\n\`\`\``;
+  const model = opts.model || DEFAULT_LIFT_MODEL;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 8192,
+      system: CACHED_SYSTEM_PROMPT_LIFT,
+      messages: [{ role: 'user', content: userMessage }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API ${response.status}: ${errText.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  return { text: data.content[0].text, usage: data.usage };
+}
+
 // Exports populated by subsequent tasks.

@@ -35,7 +35,12 @@ function getUrlTokenHash() {
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
-import { sphericalToCamState, parseLiftResponse } from '../../src/compositor-api.js';
+import {
+  sphericalToCamState,
+  parseLiftResponse,
+  callLiftLLM,
+  loadSystemPromptLift,
+} from '../../src/compositor-api.js';
 import {
   Random,
   generateHash,
@@ -777,7 +782,6 @@ function autofillDemoPrompt(demo) {
 const STORAGE_KEY = 'atlas-anthropic-key';
 const DEFAULT_MODEL = 'claude-sonnet-4-6';
 let SYSTEM_PROMPT = '';
-let SYSTEM_PROMPT_LIFT = '';
 
 async function loadSystemPrompt() {
   try {
@@ -788,18 +792,6 @@ async function loadSystemPrompt() {
   } catch (e) {
     setStatus(`✗ system prompt load failed: ${e.message}`, true);
     throw e;
-  }
-}
-
-async function loadLiftSystemPrompt() {
-  try {
-    const res = await fetch('./system-prompt-lift-3d.md');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    SYSTEM_PROMPT_LIFT = await res.text();
-    return SYSTEM_PROMPT_LIFT.length;
-  } catch (e) {
-    console.warn(`Lift system prompt load failed: ${e.message}`);
-    return 0;
   }
 }
 
@@ -821,40 +813,6 @@ function getActiveGpuScene() {
     return { scene: state.genScene, sdf: state.genSdf, rawScene: state.genSceneJSON || null };
   }
   return { scene: null, sdf: null, rawScene: null };
-}
-
-async function callLiftLLM(originalPrompt, code2d, apiKey, model = DEFAULT_MODEL) {
-  if (!SYSTEM_PROMPT_LIFT) {
-    await loadLiftSystemPrompt();
-  }
-  if (!SYSTEM_PROMPT_LIFT) throw new Error('Lift system prompt not loaded');
-  if (!apiKey) throw new Error('Anthropic API key required');
-
-  const userMessage = `## Original user prompt\n\n${originalPrompt}\n\n## 2D SDF code\n\n\`\`\`js\n${code2d}\n\`\`\``;
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 8192,
-      system: SYSTEM_PROMPT_LIFT,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Anthropic API ${response.status}: ${errText.slice(0, 300)}`);
-  }
-
-  const data = await response.json();
-  return { text: data.content[0].text, usage: data.usage };
 }
 
 async function callLLM(userPrompt, apiKey, model = DEFAULT_MODEL) {
@@ -3213,17 +3171,19 @@ bootstrapBobStyle();
 // expandVariants() at every scene load. URL ?sceneHash= override supported.
 bootstrapSceneHash();
 
-Promise.all([loadSystemPrompt(), loadLiftSystemPrompt(), loadDemoManifest()]).then(
-  ([n2d, nLift]) => {
-    renderScenesTab();
-    const demoCount = DEMO_MANIFEST?.demos?.length ?? 0;
-    const ready = DEMO_MANIFEST?.demos?.filter((d) => d.status === 'ready').length ?? 0;
-    setStatus(
-      `✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c · styleHash ${state.styleHash.slice(0, 8)}…`,
-    );
+Promise.all([
+  loadSystemPrompt(),
+  loadSystemPromptLift('./system-prompt-lift-3d.md'),
+  loadDemoManifest(),
+]).then(([n2d, nLift]) => {
+  renderScenesTab();
+  const demoCount = DEMO_MANIFEST?.demos?.length ?? 0;
+  const ready = DEMO_MANIFEST?.demos?.filter((d) => d.status === 'ready').length ?? 0;
+  setStatus(
+    `✓ ready · demos: ${ready}/${demoCount} pre-lifted · prompts: 2D ${n2d}c, lift ${nLift}c · styleHash ${state.styleHash.slice(0, 8)}…`,
+  );
 
-    // Auto-load shared scene from URL hash (runs after system prompts are ready
-    // so any LLM-side machinery is available, though shared loads don't need it)
-    checkSharedSceneInUrl();
-  },
-);
+  // Auto-load shared scene from URL hash (runs after system prompts are ready
+  // so any LLM-side machinery is available, though shared loads don't need it)
+  checkSharedSceneInUrl();
+});
