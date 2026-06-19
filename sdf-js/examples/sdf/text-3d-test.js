@@ -9,7 +9,7 @@
 
 import '../../src/sdf/index.js';
 
-import { text3dExtrudedSDF } from '../../src/scene/components/typography/text-3d.js';
+import { text3dExtrudedSDF, text3dPipeSDF } from '../../src/scene/components/typography/text-3d.js';
 import * as v from '../../src/sdf/vec.js';
 
 const W = 256,
@@ -37,6 +37,16 @@ const panels = [
     title: 'Thick stroke',
     code: '"42" sw=0.22 d=0.4',
     sdf: text3dExtrudedSDF({ text: '42', strokeWidth: 0.22, height: 1.6, depth: 0.4 }),
+  },
+  {
+    title: 'PIPE: 90% (compare to extruded above)',
+    code: 'text-3d-pipe "90%" h=1.4 pipeR=0.15',
+    sdf: text3dPipeSDF({ text: '90%', height: 1.4, pipeRadius: 0.15 }),
+  },
+  {
+    title: 'PIPE: all digits',
+    code: 'text-3d-pipe "0123456789" h=0.9',
+    sdf: text3dPipeSDF({ text: '0123456789', height: 0.9, pipeRadius: 0.06 }),
   },
 ];
 
