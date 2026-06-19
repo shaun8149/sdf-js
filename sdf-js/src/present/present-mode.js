@@ -21,6 +21,16 @@ let counterHideTimer = null;
 let activeTween = null;
 let _compiledSdf = null;
 
+const FALLBACK_CAMERA = {
+  yaw: 0.3,
+  pitch: -0.15,
+  distance: 8,
+  focal: 1.5,
+  targetX: 0,
+  targetY: 0.5,
+  targetZ: 0,
+};
+
 export async function mountPresentMode(target, deckId) {
   deck = deckModel.loadDeckFromStorage(deckId);
   if (!deck) {
@@ -74,7 +84,7 @@ export async function mountPresentMode(target, deckId) {
   }
 
   // Snap camera to waypoint 0 (no tween for initial frame)
-  applyCamera(deck.waypoints[0].camera);
+  applyCamera(cameraForWaypoint(0));
   renderCurrentFrame();
   updateCounter();
 
@@ -138,8 +148,8 @@ function startTweenToWaypoint(targetIdx) {
     activeTween.cancel();
     activeTween = null;
   }
-  const fromCam = deck.waypoints[waypointIdx].camera;
-  const toCam = deck.waypoints[targetIdx].camera;
+  const fromCam = cameraForWaypoint(waypointIdx);
+  const toCam = cameraForWaypoint(targetIdx);
   waypointIdx = targetIdx;
   updateCounter();
 
@@ -218,4 +228,23 @@ function handleKey(e) {
     default:
       break;
   }
+}
+
+function isSphericalCamera(cam) {
+  return (
+    cam &&
+    ['yaw', 'pitch', 'distance', 'targetX', 'targetY', 'targetZ'].every(
+      (k) => typeof cam[k] === 'number' && Number.isFinite(cam[k]),
+    )
+  );
+}
+
+function fallbackCamera() {
+  const cam = deck?.canvas?.defaults?.camera;
+  return isSphericalCamera(cam) ? cam : FALLBACK_CAMERA;
+}
+
+function cameraForWaypoint(idx) {
+  const cam = deck?.waypoints[idx]?.camera;
+  return isSphericalCamera(cam) ? cam : fallbackCamera();
 }

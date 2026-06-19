@@ -41,6 +41,29 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
   );
 }
 
+// camStateToSpherical: round-trips renderer state back to waypoint schema
+{
+  const cam = {
+    targetX: 1,
+    targetY: 2,
+    targetZ: -3,
+    yaw: 0.7,
+    pitch: -0.25,
+    distance: 9,
+    focal: 1.8,
+  };
+  const state = api.sphericalToCamState(cam);
+  const roundtrip = api.camStateToSpherical(state, cam);
+  ok(
+    Math.abs(roundtrip.targetX - cam.targetX) < 1e-9 &&
+      Math.abs(roundtrip.targetY - cam.targetY) < 1e-9 &&
+      Math.abs(roundtrip.targetZ - cam.targetZ) < 1e-9,
+    'camStateToSpherical: reconstructs target from renderer state',
+  );
+  ok(roundtrip.distance === 9, 'camStateToSpherical: preserves reference distance');
+  ok(roundtrip.focal === 1.8, 'camStateToSpherical: preserves reference focal');
+}
+
 // compileScene
 {
   const scene = {
