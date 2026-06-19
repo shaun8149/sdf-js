@@ -71,5 +71,29 @@ ok(plus.sdf([0, 0.5, 0]) < 0, '"+" center is inside (both strokes overlap)');
 ok(plus.sdf([0.2, 0.5, 0]) < 0, '"+" right end of horizontal stroke is inside');
 ok(plus.sdf([0, 0.7, 0]) < 0, '"+" top end of vertical stroke is inside');
 
+console.log('\nTest group 3: Group B glyphs (arc-based: 2 3 5 $)');
+
+for (const ch of ['2', '3', '5', '$']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' builds`);
+  ok(g.advance > 0, `'${ch}' positive advance`);
+  ok(g.sdf !== null, `'${ch}' has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' SDF probe finite`);
+}
+
+// "3" — two arcs opening LEFT (midpoint on RIGHT side):
+// Top arc center (0, 0.75) radius 0.22, span (-π/2, +π/2) → +X midpoint
+const three = buildPipeGlyph('3', 0.06);
+// Probe on top-right arc rim (+X side of top arc center)
+ok(three.sdf([0.22, 0.75, 0]) < 0, '"3" top arc right side (+X) is inside');
+// Probe on LEFT of top arc (should be OUTSIDE because arc opens left)
+ok(three.sdf([-0.22, 0.75, 0]) > 0.05, '"3" top arc LEFT side is outside (opening)');
+
+// "$" — central vertical bar should be present
+const dollar = buildPipeGlyph('$', 0.06);
+ok(dollar.sdf([0, 0.5, 0]) < 0, '"$" central bar at midline is inside');
+ok(dollar.sdf([0, 1.05, 0]) < 0, '"$" bar extends above cap (y=1.1) — probe at 1.05');
+ok(dollar.sdf([0, -0.05, 0]) < 0, '"$" bar extends below baseline (y=-0.1) — probe at -0.05');
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

@@ -79,6 +79,49 @@ const GLYPH_BUILDERS = {
 
   // space — no SDF, advance only
   ' ': (_r) => ({ advance: 0.35, sdf: null }),
+
+  // 2 — top arc opening down + diagonal sweep + base capsule
+  // Top arc: center (0, 0.7), R 0.22, span (π, 0) sweeping CCW through +π/2 (top opening at bottom)
+  2: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      pipeArcSpan(0, 0.7, 0.22, 0, Math.PI, r),
+      capsule([0.22, 0.7, 0], [-0.2, 0, 0], r), // diagonal from arc right-end to baseline left
+      capsule([-0.2, 0, 0], [0.22, 0, 0], r), // base
+    ),
+  }),
+
+  // 3 — two stacked arcs opening to the LEFT (midpoints on +X)
+  3: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      pipeArcSpan(0, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r),
+      pipeArcSpan(0, 0.25, 0.22, -Math.PI / 2, Math.PI / 2, r),
+    ),
+  }),
+
+  // 5 — top horizontal + left vertical + bottom belly arc
+  // Belly arc: center (0, 0.3) R 0.25, opens UP-LEFT (midpoint near +X going slightly down)
+  5: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([-0.2, 1.0, 0], [0.22, 1.0, 0], r), // top horizontal
+      capsule([-0.2, 1.0, 0], [-0.2, 0.55, 0], r), // left vertical
+      capsule([-0.2, 0.55, 0], [0.05, 0.55, 0], r), // midline horiz to belly tangent
+      pipeArcSpan(0, 0.3, 0.25, -Math.PI / 2, Math.PI + Math.PI / 6, r), // belly: ~210° arc opening up-left
+    ),
+  }),
+
+  // $ — central bar extending past cap height + two arcs forming S
+  // Top arc opens LEFT (mid at +X), bottom arc opens RIGHT (mid at -X)
+  $: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([0, 1.1, 0], [0, -0.1, 0], r),
+      pipeArcSpan(0, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r), // top: mid at +X
+      pipeArcSpan(0, 0.25, 0.22, Math.PI / 2, Math.PI + Math.PI / 2, r), // bottom: mid at -X
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------
