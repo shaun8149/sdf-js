@@ -399,14 +399,27 @@ const PRIMITIVE_FACTORIES = {
       letterSpacing: a.letterSpacing ?? a.spacing ?? 0,
       align: a.align ?? 'center',
     }),
-  'text-3d-pipe': (a) =>
-    text3dPipeSDF({
+  'text-3d-pipe': (a) => {
+    // Defensive clamp: pipeRadius < 0.04 renders as a thin wire that
+    // visually disappears at any reasonable camera distance. Lift v3.16
+    // prompt documents this as Trap 1, but enforce at runtime too — LLM
+    // hallucination of `pipeRadius: 0.01` would otherwise silently fail.
+    const requestedR = a.pipeRadius ?? a.tubeRadius ?? 0.06;
+    const PIPE_RADIUS_MIN = 0.04;
+    const safeR = Math.max(requestedR, PIPE_RADIUS_MIN);
+    if (safeR !== requestedR) {
+      console.warn(
+        `[compile] text-3d-pipe pipeRadius clamped ${requestedR} → ${safeR} (Trap 1: thin pipe disappears at distance)`,
+      );
+    }
+    return text3dPipeSDF({
       text: a.text ?? '',
-      pipeRadius: a.pipeRadius ?? a.tubeRadius ?? 0.06,
+      pipeRadius: safeR,
       height: a.height ?? a.size ?? 1.0,
       letterSpacing: a.letterSpacing ?? a.spacing ?? 0,
       align: a.align ?? 'center',
-    }),
+    });
+  },
   link: (a) =>
     linkSDF({
       halfLength: a.halfLength ?? a.le ?? 0.13,

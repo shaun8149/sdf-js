@@ -148,5 +148,58 @@ ok(big !== null, 'larger height builds');
 // Probing at (0.22*2, 1.4, 0) = (0.44, 1.4, 0) should be inside the rim scaled 2x.
 ok(big([0.44, 1.4, 0]) < 0, '"9" with height 2.0 has rim at x=0.44, y=1.4 (inside)');
 
+// -----------------------------------------------------------------------------
+console.log('\nTest group 6: pipeRadius defensive clamp (Trap 1 protection)');
+const { compile } = await import('../src/scene/compile.js');
+
+const tinyScene = {
+  v: 1,
+  defaults: {
+    camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+    light: { yaw: 0, pitch: 0, azimuth: 0.5, altitude: 0.6, distance: 5, intensity: 1 },
+  },
+  subjects: [
+    { type: 'text-3d-pipe', id: 'tiny', args: { text: '9', pipeRadius: 0.01 }, region: 'object' },
+  ],
+};
+
+// Capture console.warn to verify the clamp fires + that the compile still succeeds
+const warns = [];
+const origWarn = console.warn;
+console.warn = (...args) => warns.push(args.join(' '));
+let compiledTiny;
+try {
+  compiledTiny = compile(tinyScene, { sanity: false });
+} finally {
+  console.warn = origWarn;
+}
+ok(
+  compiledTiny.sdf !== null,
+  'sub-clamp pipeRadius still produces a valid SDF (degrades gracefully)',
+);
+ok(
+  warns.some((w) => w.includes('pipeRadius clamped')),
+  'console.warn fired with clamp diagnostic',
+);
+
+// Above-clamp values should NOT trigger the warn
+const fineScene = {
+  ...tinyScene,
+  subjects: [
+    {
+      ...tinyScene.subjects[0],
+      args: { ...tinyScene.subjects[0].args, pipeRadius: 0.06 },
+    },
+  ],
+};
+const warns2 = [];
+console.warn = (...args) => warns2.push(args.join(' '));
+try {
+  compile(fineScene, { sanity: false });
+} finally {
+  console.warn = origWarn;
+}
+ok(warns2.length === 0, 'safe pipeRadius (0.06) does NOT trigger clamp warn');
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
