@@ -181,6 +181,15 @@
       "status": "ready",
       "file": "forest-meteors.json",
       "prompt": "树·山·花·流星"
+    },
+    {
+      "id": "wave-1-pipe-showcase",
+      "title": "Wave 1-pipe typography",
+      "thesisPoint": "Atlas typography Wave 1-pipe atom showcase — 16 glyphs (digits + KPI symbols) rendered as true 3D capsule/torus/sphere unions, not extruded 2D outlines. Demonstrates the architectural distinction (text-3d-pipe vs text-3d-extruded) shipped 2026-06-19.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "wave-1-pipe-showcase.json",
+      "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs in true 3D pipe style"
     }
   ]
 }

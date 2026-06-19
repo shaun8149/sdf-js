@@ -1,0 +1,55 @@
+{
+  "id": "wave-1-pipe-showcase",
+  "title": "Wave 1-pipe typography showcase",
+  "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs (digits 0-9 + KPI symbols % . - + $ space) rendered in true 3D pipe style. Three rows: digits, symbols, hero KPI.",
+  "code2d": "// Synthetic showcase — NOT produced by the 2D-generation LLM pass.\n// Hand-authored to exercise every Wave 1-pipe glyph at scale.\n// Renders all digits in a row at the top, KPI symbols in the middle,\n// and a hero '90%' at the bottom to show monumental scale.\nexport const render = (ctx) => { /* renders via silhouette as text2dSDF for 2D preview */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "Wave 1-pipe showcase",
+    "source": { "format": "synthetic", "prompt": "Wave 1-pipe showcase" },
+    "subjects": [
+      {
+        "id": "digits-row",
+        "type": "text-3d-pipe",
+        "args": { "text": "0123456789", "height": 0.8, "pipeRadius": 0.08, "align": "center" },
+        "transform": { "translate": [0, 3.0, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "symbols-row",
+        "type": "text-3d-pipe",
+        "args": { "text": "% $ + - .", "height": 0.6, "pipeRadius": 0.06, "align": "center" },
+        "transform": { "translate": [0, 1.8, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "hero-kpi",
+        "type": "text-3d-pipe",
+        "args": { "text": "90%", "height": 1.8, "pipeRadius": 0.18, "align": "center" },
+        "transform": { "translate": [0, 0.2, 0] },
+        "material": "silver"
+      }
+    ],
+    "ground": { "y": -0.3, "region": "ground" },
+    "defaults": {
+      "camera": {
+        "yaw": 0.0,
+        "pitch": 0.1,
+        "distance": 12,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.8,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "synthetic",
+    "promptVersion": "v3.16",
+    "pattern": "typography-showcase",
+    "costUSD": 0
+  }
+}
