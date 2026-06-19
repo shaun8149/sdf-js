@@ -202,5 +202,86 @@ console.log('Test group 1: Arrangement math');
   );
 }
 
+console.log('\nTest group 2: cube3dSDF core (solid material)');
+
+// 5 cubes in a row, solid material
+{
+  const sdf = cube3dSDF({
+    count: 5,
+    arrangement: 'row',
+    cubeSize: 0.6,
+    spacing: 0.2,
+    material: 'solid',
+  });
+  ok(sdf !== null, 'solid 5-row: SDF non-null');
+  // Probe at cube 0 center (-1.6, 0, 0) — should be inside
+  ok(sdf.f([-1.6, 0, 0]) < 0, `solid 5-row: cube 0 center inside (got ${sdf.f([-1.6, 0, 0])})`);
+  // Probe at cube 2 center (0, 0, 0) — inside
+  ok(sdf.f([0, 0, 0]) < 0, `solid 5-row: cube 2 center inside (got ${sdf.f([0, 0, 0])})`);
+  // Probe far away — outside
+  ok(sdf.f([10, 10, 10]) > 0, 'solid 5-row: far point outside');
+}
+
+// 1 cube, smoke test edge case
+{
+  const sdf = cube3dSDF({ count: 1, arrangement: 'row', cubeSize: 0.6 });
+  ok(sdf !== null, 'solid count=1: SDF non-null');
+  ok(sdf.f([0, 0, 0]) < 0, 'solid count=1: center inside');
+}
+
+// 0 cubes → null
+{
+  const sdf = cube3dSDF({ count: 0 });
+  ok(sdf === null, 'count=0: SDF null');
+}
+
+// 3 cubes, wireframe material
+{
+  const sdf = cube3dSDF({ count: 3, arrangement: 'row', cubeSize: 0.6, material: 'wireframe' });
+  ok(sdf !== null, 'wireframe 3-row: SDF non-null');
+  // Center of cube 1 (origin) is HOLLOW for wireframe — SDF > 0
+  ok(sdf.f([0, 0, 0]) > 0, `wireframe 3-row: cube center hollow (got ${sdf.f([0, 0, 0])})`);
+  // Edge of cube 1 should be CLOSE to 0 (on the frame)
+  ok(
+    Math.abs(sdf.f([0.3, 0.3, 0])) < 0.1,
+    `wireframe 3-row: cube edge near frame (got ${sdf.f([0.3, 0.3, 0])})`,
+  );
+}
+
+// 1 cube, glass material — should have BOTH solid + frame components
+{
+  const sdf = cube3dSDF({ count: 1, cubeSize: 1.0, material: 'glass' });
+  ok(sdf !== null, 'glass 1: SDF non-null');
+  // Inner point (origin) should be SOLID (inside the 95% inner cube)
+  ok(sdf.f([0, 0, 0]) < 0, `glass 1: center solid (inside inner cube, got ${sdf.f([0, 0, 0])})`);
+  // Frame edge (0.5, 0.5, 0) should also be near 0 (on the outer frame)
+  ok(
+    Math.abs(sdf.f([0.5, 0.5, 0])) < 0.05,
+    `glass 1: outer frame edge near 0 (got ${sdf.f([0.5, 0.5, 0])})`,
+  );
+}
+
+// Sanity: every arrangement produces a non-null compileable SDF
+{
+  console.log('\nTest group 2.5: every arrangement compiles to SDF');
+  const arrangements = [
+    'row',
+    'flow',
+    'semicircle',
+    'hub-spokes',
+    'steps',
+    'stack',
+    'tower',
+    'grid',
+    'grid3d',
+    'cluster',
+  ];
+  for (const arr of arrangements) {
+    const sdf = cube3dSDF({ count: 5, arrangement: arr, cubeSize: 0.4, spacing: 0.1 });
+    ok(sdf !== null, `arrangement '${arr}': non-null SDF`);
+    ok(Number.isFinite(sdf.f([0, 0, 0])), `arrangement '${arr}': finite SDF at origin`);
+  }
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

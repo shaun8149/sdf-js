@@ -233,8 +233,36 @@ export function cube3dSDF({
   cubeRotations = null,
   cubeOffsets = null,
 } = {}) {
-  // [Implemented in Phase 3+]
-  return null;
+  if (count <= 0) return null;
+
+  // 1. Compute positions via arrangement
+  const arrangement_fn = ARRANGEMENTS[arrangement];
+  if (!arrangement_fn) {
+    throw new Error(`[cube-3d] unknown arrangement: ${arrangement}`);
+  }
+  const positions = arrangement_fn(count, cubeSize, spacing, arrangementParams);
+
+  // 2. Build per-cube SDFs
+  const cubes = [];
+  for (let i = 0; i < positions.length; i++) {
+    const size = cubeSizes && cubeSizes[i] != null ? cubeSizes[i] : cubeSize;
+    let cube;
+    if (material === 'solid') {
+      cube = rounded_box(size, cornerRadius);
+    } else if (material === 'wireframe') {
+      cube = wireframe_box(size, connectorThickness);
+    } else if (material === 'glass') {
+      // Composite: inner solid (95% size) + outer wireframe shell
+      cube = union(rounded_box(size * 0.95, cornerRadius), wireframe_box(size, connectorThickness));
+    } else {
+      throw new Error(`[cube-3d] unknown material: ${material}`);
+    }
+    cube = cube.translate(positions[i]);
+    cubes.push(cube);
+  }
+
+  // 3. Union all cubes (skip if only 1)
+  return cubes.length === 1 ? cubes[0] : union(...cubes);
 }
 
 // ---- Spec (for compile.js validation + lift prompt) -------------------------
