@@ -1814,6 +1814,67 @@ user mental model of "concert" = audience + lights + atmosphere.
 
 **❌ Trap 4**: Text painted on a back-wall using pipe → letters bulge off the wall like alien growths. **Fix**: wall-mounted text uses `text-3d-extruded` with `depth: 0.02`.
 
+## cube-3d
+
+- args: { count, arrangement, cubeSize, cornerRadius, spacing, arrangementParams, labels, labelsByFace, labelOnAllFaces, labelMaterial, labelScale, material, colors, connector, connectorThickness, connectorIndices, cubeSizes, cubeRotations, cubeOffsets }
+- one atom covers 10 spatial layouts × 3 materials × 4 connector modes
+- glyphs in labels come from existing text-3d Wave 1+2 (digits 0-9, uppercase A-Z, % . - + $)
+
+### Decision rules for cube-3d
+
+- Numbered process steps (1, 2, 3, 4) on connected cubes → `arrangement:'row'` + `connector:'pipe-through'` + `labels:['1','2','3','4']`
+- Word-as-letters ("BUSINESS", "OUR", "BUY") → `arrangement:'row'`, `spacing:0`, `labels: word.split('')`
+- 4-W cluster (WHAT/HOW/WHY/WHEN visible from many angles) → `arrangement:'cluster'` + `labelOnAllFaces:true`
+- Org/hierarchy with base + top → `arrangement:'tower'` (use `pyramid-3d` if smoother apex is required)
+- Rubik / cubic grid → `arrangement:'grid3d'`
+- Drawer pushed forward off grid → `arrangement:'grid'` + `cubeOffsets: [null, null, [0,0,0.5], null, ...]`
+- Glass / transparent aesthetic → `material:'glass'`
+- Selective hub connector (only some satellites linked) → `arrangement:'hub-spokes'` + `connector:'spokes'` + `connectorIndices:[0,2,4]`
+
+### Traps for cube-3d
+
+1. Don't use cube-3d for numeric bar charts where bar HEIGHT encodes value → use `bar-3d`. Cube-3d cubes are equal-sized (unless `cubeSizes` is explicitly set).
+2. `labels.length !== count` is silently truncated/padded — explicit count match expected.
+3. `material:'glass'` + `connector:'pipe-through'` looks muddy (refraction through cylinder + glass) — prefer one or the other.
+4. `arrangement:'hub-spokes'` requires count ≥ 2 (anchor + at least one satellite).
+
+### Worked example 1 (cube-3d) — Process step row
+
+```json
+{
+  "type": "cube-3d",
+  "args": { "count": 4, "arrangement": "row", "cubeSize": 0.6, "spacing": 0.4,
+            "labels": ["1","2","3","4"], "labelOnAllFaces": false,
+            "connector": "pipe-through", "colors": ["#3B82F6", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+  "transform": { "translate": [0, 0.3, 0] }
+}
+```
+
+### Worked example 2 (cube-3d) — Buzzword cluster
+
+```json
+{
+  "type": "cube-3d",
+  "args": { "count": 4, "arrangement": "cluster", "cubeSize": 0.8,
+            "arrangementParams": { "radius": 1.2, "zJitter": 0.3, "seed": 7 },
+            "labels": ["WHAT","HOW","WHY","WHEN"], "labelOnAllFaces": true,
+            "material": "solid", "colors": ["#1E90FF","#888888","#1E90FF","#1E90FF"] },
+  "transform": { "translate": [0, 0.4, 0] }
+}
+```
+
+### Worked example 3 (cube-3d) — Glass Rubik
+
+```json
+{
+  "type": "cube-3d",
+  "args": { "count": 27, "arrangement": "grid3d",
+            "arrangementParams": { "cols": 3, "rows": 3, "depth": 3 },
+            "cubeSize": 0.4, "spacing": 0.05, "material": "glass" },
+  "transform": { "translate": [0, 0.6, 0] }
+}
+```
+
 # Lifting strategy — 2D → 3D translation rules
 
 The 2D scene is almost always shown from a fixed viewpoint (usually side
