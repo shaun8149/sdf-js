@@ -115,7 +115,7 @@ import { pie3dSDF } from './components/charts/data/pie-3d.js';
 import { kpiCard3dSDF } from './components/charts/data/kpi-card-3d.js';
 import { businessIconSDF } from './components/icons/business.js';
 import { cover3dSDF } from './components/presentation/cover-3d.js';
-import { text3dSDF } from './components/typography/text-3d.js';
+import { text3dExtrudedSDF, text3dPipeSDF } from './components/typography/text-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -390,12 +390,20 @@ const PRIMITIVE_FACTORIES = {
       title: a.title ?? '',
       subtitle: a.subtitle ?? '',
     }),
-  'text-3d': (a) =>
-    text3dSDF({
+  'text-3d-extruded': (a) =>
+    text3dExtrudedSDF({
       text: a.text ?? '',
       strokeWidth: a.strokeWidth ?? a.weight ?? 0.12,
       height: a.height ?? a.size ?? 1.0,
       depth: a.depth ?? a.thickness ?? 0.2,
+      letterSpacing: a.letterSpacing ?? a.spacing ?? 0,
+      align: a.align ?? 'center',
+    }),
+  'text-3d-pipe': (a) =>
+    text3dPipeSDF({
+      text: a.text ?? '',
+      pipeRadius: a.pipeRadius ?? a.tubeRadius ?? 0.06,
+      height: a.height ?? a.size ?? 1.0,
       letterSpacing: a.letterSpacing ?? a.spacing ?? 0,
       align: a.align ?? 'center',
     }),

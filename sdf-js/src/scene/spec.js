@@ -182,10 +182,14 @@ export const PRIMITIVE_TYPES = new Set([
   'business-icon',
   // Atlas presentation atom (2026-06-18) — cover slide stage + backdrop.
   'cover-3d',
-  // Atlas typography (2026-06-18 Wave 1) — multi-char text composed from IQ
-  // 2D primitives (segment/arc/ring/circle), extruded along Z. Wave 1 covers
-  // digits 0-9 + KPI symbols (% . - + $). Unknown chars are silently dropped.
-  'text-3d',
+  // Atlas typography (2026-06-18 Wave 1) — text as 2D outline pushed along Z.
+  // Use for surface-flush text (signage, axis labels, watermarks).
+  // Wave 1: digits 0-9 + KPI symbols (% . - + $). Unknown chars dropped.
+  'text-3d-extruded',
+  // Atlas typography (2026-06-19 Wave 1-pipe) — true 3D text from capsules +
+  // toruses + spheres. Use for floating monumental text (hero KPIs, sculpted
+  // titles, neon signage). Same glyph coverage as text-3d-extruded.
+  'text-3d-pipe',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

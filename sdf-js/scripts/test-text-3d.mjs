@@ -83,26 +83,51 @@ const tBig = text3dExtrudedSDF({ text: '42', height: 2.0, depth: 0.4 });
 ok(tBig !== null, 'larger height (2.0) builds');
 
 // -----------------------------------------------------------------------------
-console.log('\nTest group 5: end-to-end SceneData → compile → SDF probe');
+console.log(
+  '\nTest group 5: end-to-end SceneData → compile (text-3d-extruded — regression after rename)',
+);
 const { compile } = await import('../src/scene/compile.js');
-const scene = {
+
+const stdDefaults = {
+  camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+  light: { yaw: 0, pitch: 0, azimuth: 0.5, altitude: 0.6, distance: 5, intensity: 1 },
+};
+
+// text-3d-extruded compiles (regression: old type name 'text-3d' is gone)
+const sceneExt = {
   v: 1,
-  defaults: {
-    camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
-    light: { yaw: 0, pitch: 0, azimuth: 0.5, altitude: 0.6, distance: 5, intensity: 1 },
-  },
+  defaults: stdDefaults,
   subjects: [
     {
-      type: 'text-3d',
-      id: 'kpi',
+      type: 'text-3d-extruded',
+      id: 'sign',
       args: { text: '90%', height: 1.0, depth: 0.2 },
       region: 'object',
     },
   ],
 };
-const compiled = compile(scene, { sanity: false });
-ok(compiled.sdf !== null, 'scene with text-3d subject compiles');
-ok(Number.isFinite(compiled.sdf.f([0, 0.5, 0])), 'compiled SDF probe is finite');
+const cExt = compile(sceneExt, { sanity: false });
+ok(cExt.sdf !== null, 'text-3d-extruded scene compiles');
+ok(Number.isFinite(cExt.sdf.f([0, 0.5, 0])), 'extruded compiled SDF probe finite');
+
+// -----------------------------------------------------------------------------
+console.log('\nTest group 6: end-to-end SceneData → compile (text-3d-pipe — new atom)');
+
+const scenePipe = {
+  v: 1,
+  defaults: stdDefaults,
+  subjects: [
+    {
+      type: 'text-3d-pipe',
+      id: 'kpi',
+      args: { text: '90%', height: 2.0, pipeRadius: 0.15 },
+      region: 'object',
+    },
+  ],
+};
+const cPipe = compile(scenePipe, { sanity: false });
+ok(cPipe.sdf !== null, 'text-3d-pipe scene compiles');
+ok(Number.isFinite(cPipe.sdf.f([0, 1.0, 0])), 'pipe compiled SDF probe finite at y=1.0');
 
 // -----------------------------------------------------------------------------
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
