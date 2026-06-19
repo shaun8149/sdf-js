@@ -379,6 +379,15 @@
       "status": "ready",
       "file": "wave-1-pipe-showcase.json",
       "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs in true 3D pipe style"
+    },
+    {
+      "id": "cube-3d-showcase",
+      "title": "Cube-3D atom showcase",
+      "thesisPoint": "Atlas cube-3d atom L3 showcase — 4 scenes cover 5 PresentationLoad templates (Connected pipe-through row + Buzzword 4W cluster + Glass Rubik 3x3x3 grid3d + Hub-spokes selective connectorIndices). One atom × 5 templates = renderer-as-preset thesis applied to slide-deck geometry vocabulary.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "cube-3d-showcase.json",
+      "prompt": "Cube-3D atom showcase"
     }
   ]
 }

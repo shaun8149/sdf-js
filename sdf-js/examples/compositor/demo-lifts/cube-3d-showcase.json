@@ -1,0 +1,102 @@
+{
+  "id": "cube-3d-showcase",
+  "title": "Cube-3D atom showcase (4 scenes)",
+  "prompt": "Cube-3D atom showcase — 4 scenes across the 5 PresentationLoad cube templates: Connected (pipe-through row), Buzzword (4W cluster), Glass Rubik (3x3x3 grid3d glass), Hub-spokes (selective connector).",
+  "code2d": "// Synthetic showcase — NOT produced by the 2D-generation LLM pass.\n// Hand-authored to exercise the cube-3d atom across all 5 PresentationLoad templates:\n//   1. Connected row with pipe-through + numeric labels\n//   2. Buzzword 4W cluster with all-faces text\n//   3. Glass Rubik 3x3x3 grid3d\n//   4. Hub-spokes with selective connector indices\nexport const render = (ctx) => { /* renders via silhouette as composed cubes */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "cube-3d showcase",
+    "source": { "format": "synthetic", "prompt": "cube-3d showcase" },
+    "subjects": [
+      {
+        "id": "connected-row",
+        "type": "cube-3d",
+        "args": {
+          "count": 4,
+          "arrangement": "row",
+          "cubeSize": 0.6,
+          "spacing": 0.4,
+          "labels": ["1", "2", "3", "4"],
+          "labelOnAllFaces": false,
+          "labelMaterial": "pipe",
+          "labelScale": 0.5,
+          "connector": "pipe-through",
+          "connectorThickness": 0.04,
+          "colors": ["#3B82F6", "#FFFFFF", "#FFFFFF", "#FFFFFF"]
+        },
+        "transform": { "translate": [0, 2.5, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "buzzword-cluster",
+        "type": "cube-3d",
+        "args": {
+          "count": 4,
+          "arrangement": "cluster",
+          "cubeSize": 0.8,
+          "arrangementParams": { "radius": 1.5, "zJitter": 0.3, "seed": 7 },
+          "labels": ["WHAT", "HOW", "WHY", "WHEN"],
+          "labelOnAllFaces": true,
+          "labelMaterial": "pipe",
+          "labelScale": 0.4,
+          "colors": ["#1E90FF", "#888888", "#1E90FF", "#1E90FF"]
+        },
+        "transform": { "translate": [0, 0.5, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "glass-rubik",
+        "type": "cube-3d",
+        "args": {
+          "count": 27,
+          "arrangement": "grid3d",
+          "arrangementParams": { "cols": 3, "rows": 3, "depth": 3 },
+          "cubeSize": 0.35,
+          "spacing": 0.05,
+          "cornerRadius": 0.03,
+          "material": "glass",
+          "connectorThickness": 0.025
+        },
+        "transform": { "translate": [-3, 0.5, 0] },
+        "material": "clear-glass"
+      },
+      {
+        "id": "hub-spokes",
+        "type": "cube-3d",
+        "args": {
+          "count": 5,
+          "arrangement": "hub-spokes",
+          "arrangementParams": { "anchorSize": 0.8, "arc": 3.14159 },
+          "cubeSize": 0.5,
+          "connector": "spokes",
+          "connectorIndices": [1, 2, 4],
+          "connectorThickness": 0.04,
+          "colors": ["#888888", "#10B981", "#FFFFFF", "#10B981", "#FFFFFF"]
+        },
+        "transform": { "translate": [3, 0.5, 0] },
+        "material": "silver"
+      }
+    ],
+    "ground": { "y": -0.3, "region": "ground" },
+    "defaults": {
+      "camera": {
+        "yaw": 0.3,
+        "pitch": 0.2,
+        "distance": 16,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.2,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "synthetic",
+    "promptVersion": "v3.17",
+    "pattern": "cube-3d-showcase",
+    "costUSD": 0
+  }
+}
