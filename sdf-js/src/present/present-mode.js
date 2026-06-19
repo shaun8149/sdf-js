@@ -160,7 +160,7 @@ function goLast() {
 async function exitPresent() {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
-  } catch (e) {
+  } catch (_e) {
     /* ignore */
   }
   location.search = `?${new URLSearchParams({ deck: deck.id }).toString()}`;
