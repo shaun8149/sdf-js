@@ -267,3 +267,6 @@ html, body {
 .btn-back:hover {
   background: #3a3a3a;
 }
+
+.slide-thumb.dragging { opacity: 0.4; }
+.slide-thumb.drop-target { border-color: #ffd070; }

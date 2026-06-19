@@ -68,8 +68,44 @@ function renderSlideRail() {
       renderPreview();
     });
   });
+  // Drag-to-reorder
+  let draggedIdx = null;
+  rail.querySelectorAll('.slide-thumb').forEach((el) => {
+    el.addEventListener('dragstart', (e) => {
+      draggedIdx = parseInt(el.dataset.idx, 10);
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(draggedIdx));
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+      draggedIdx = null;
+      rail.querySelectorAll('.slide-thumb').forEach((t) => t.classList.remove('drop-target'));
+    });
+    el.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      el.classList.add('drop-target');
+    });
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('drop-target');
+    });
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      el.classList.remove('drop-target');
+      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const toIdx = parseInt(el.dataset.idx, 10);
+      if (Number.isFinite(fromIdx) && Number.isFinite(toIdx) && fromIdx !== toIdx) {
+        deckModel.moveSlide(currentDeck, fromIdx, toIdx);
+        deckModel.saveDeckToStorage(currentDeck);
+        currentSlideIdx = toIdx;
+        renderSlideRail();
+        renderSettingsPane();
+        renderPreview();
+      }
+    });
+  });
   document.getElementById('btn-add-slide')?.addEventListener('click', handleAddSlide);
-  // Drag reorder wiring added in Task 4.2
 }
 
 function renderSettingsPane() {
