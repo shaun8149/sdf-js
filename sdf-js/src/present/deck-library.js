@@ -58,7 +58,7 @@ function renderDeckCard(d) {
   return `
     <div class="deck-card">
       <h3>${escapeHtml(d.title)}</h3>
-      <div class="meta">${d.slides.length} slides · ${updated}</div>
+      <div class="meta">${d.waypoints?.length ?? d.slides?.length ?? 0} waypoints · ${updated}</div>
       <div class="actions">
         <button id="btn-present-${d.id}" class="primary">▶</button>
         <button id="btn-edit-${d.id}">✎</button>
