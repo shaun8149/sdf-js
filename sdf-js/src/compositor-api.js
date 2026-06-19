@@ -23,6 +23,10 @@
 // Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-design.md
 // =============================================================================
 
+import { compile } from './scene/compile.js';
+import { expandVariants } from './scene/generator-s.js';
+import { union as sdfUnion } from './sdf/dn.js';
+
 // Constants
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
 
@@ -42,6 +46,47 @@ export function sphericalToCamState(cam) {
     ],
     yaw: cam.yaw,
     pitch: cam.pitch,
+  };
+}
+
+/**
+ * Compile a SceneData v1 to a ready-to-render SDF tree.
+ *
+ * Wraps the 3-step pattern: expandVariants (Generator-S scatter) → compile()
+ * → sdfUnion(sdf, groundSdf). Callers receive the unified SDF directly
+ * instead of having to remember the union step.
+ *
+ * @param {object} sceneData — SceneData v1 (must have `v: 1`)
+ * @param {object} opts
+ * @param {number} [opts.sceneHash=1] — drives Generator-S variant PRNG
+ * @returns {{sdf:object, subjects:Array, cameraStatic:object|null, lightStatic:object|null, groundSdf:object|null, bakedHeightmap:object|null}}
+ */
+export function compileScene(sceneData, opts = {}) {
+  const sceneHash = opts.sceneHash ?? 1;
+  const rng = mulberry32(sceneHash);
+  const expanded = expandVariants(sceneData, rng);
+  const compiled = compile(expanded);
+  const unifiedSdf = compiled.groundSdf ? sdfUnion(compiled.sdf, compiled.groundSdf) : compiled.sdf;
+  return {
+    sdf: unifiedSdf,
+    subjects: compiled.subjects,
+    cameraStatic: compiled.cameraStatic ?? null,
+    lightStatic: compiled.lightStatic ?? null,
+    groundSdf: compiled.groundSdf ?? null,
+    bakedHeightmap: compiled.bakedHeightmap ?? null,
+  };
+}
+
+// Mulberry32 — minimal seeded PRNG. Matches the one used elsewhere in Atlas
+// (see src/scene/components/shapes/cube-3d.js).
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
 

@@ -41,7 +41,63 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
   );
 }
 
-// [More tests added in Tasks 1.3-1.6]
+// compileScene
+{
+  const scene = {
+    v: 1,
+    name: 'compileScene smoke',
+    subjects: [
+      {
+        id: 'box',
+        type: 'box',
+        args: { size: 0.5 },
+        transform: { translate: [0, 0, 0] },
+        material: 'silver',
+      },
+    ],
+    defaults: {
+      camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { altitude: 0.5, azimuth: 0.5, distance: 50, intensity: 1.0 },
+    },
+  };
+  const compiled = api.compileScene(scene);
+  ok(compiled.sdf !== null && compiled.sdf !== undefined, 'compileScene: returns non-null SDF');
+  ok(typeof compiled.sdf.f === 'function', 'compileScene: SDF has .f method');
+  ok(
+    compiled.sdf.f([0, 0, 0]) < 0,
+    `compileScene: box center inside (got ${compiled.sdf.f([0, 0, 0])})`,
+  );
+  ok(compiled.sdf.f([10, 10, 10]) > 0, 'compileScene: far point outside');
+}
+
+// compileScene: handles seed for Generator-S variants
+{
+  const sceneNoVariants = {
+    v: 1,
+    name: 'no variants',
+    subjects: [
+      {
+        id: 'b',
+        type: 'box',
+        args: { size: 0.5 },
+        transform: { translate: [0, 0, 0] },
+        material: 'silver',
+      },
+    ],
+    defaults: {
+      camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { altitude: 0.5, azimuth: 0.5, distance: 50, intensity: 1.0 },
+    },
+  };
+  const compiledA = api.compileScene(sceneNoVariants, { sceneHash: 1 });
+  const compiledB = api.compileScene(sceneNoVariants, { sceneHash: 1 });
+  ok(
+    compiledA.sdf.f([0, 0, 0]) === compiledB.sdf.f([0, 0, 0]),
+    'compileScene: deterministic same-seed',
+  );
+}
+
+// [More tests added in Tasks 1.4-1.6]
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
