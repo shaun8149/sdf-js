@@ -19,6 +19,9 @@
 //   - callLiftLLM(originalPrompt, code2d, apiKey, opts) — Anthropic API call
 //   - createRendererForId(rendererId, canvas, opts) — factory for studio
 //     / fly3d / silhouette / etc renderer instances
+//   - rendererControlsForCompiledScene(compiled) — stable GPU controls
+//   - applyCompiledSceneToRenderer(renderer, compiled, sceneData) — push
+//     SceneData camera/sequence/volume side channels into GPU renderers
 //
 // Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-design.md
 // =============================================================================
@@ -67,17 +70,114 @@ export function sphericalToCamState(cam) {
 export function compileScene(sceneData, opts = {}) {
   const sceneHash = opts.sceneHash ?? 1;
   const rng = mulberry32(sceneHash);
-  const expanded = expandVariants(sceneData, rng);
+  // compile() mutates parts of SceneData (nested source ids, subject motion
+  // transforms). Layer 1 callers pass persisted deck/demo objects, so isolate
+  // those writes to this compile-only copy.
+  const expanded = expandVariants(cloneSceneData(sceneData), rng);
   const compiled = compile(expanded);
-  const unifiedSdf = compiled.groundSdf ? sdfUnion(compiled.sdf, compiled.groundSdf) : compiled.sdf;
+  const unifiedSdf =
+    compiled.groundSdf && compiled.sdf
+      ? sdfUnion(compiled.sdf, compiled.groundSdf)
+      : (compiled.sdf ?? compiled.groundSdf);
   return {
     sdf: unifiedSdf,
     subjects: compiled.subjects,
     cameraStatic: compiled.cameraStatic ?? null,
     lightStatic: compiled.lightStatic ?? null,
+    shadowStatic: compiled.shadowStatic ?? null,
     groundSdf: compiled.groundSdf ?? null,
     bakedHeightmap: compiled.bakedHeightmap ?? null,
+    volumes: compiled.volumes ?? [],
+    motionSlots: compiled.motionSlots ?? {},
   };
+}
+
+function cloneSceneData(sceneData) {
+  if (!sceneData || typeof sceneData !== 'object') return sceneData;
+  if (typeof structuredClone === 'function') return structuredClone(sceneData);
+  return JSON.parse(JSON.stringify(sceneData));
+}
+
+/**
+ * Build the control object expected by GPU renderers from a compiled scene.
+ * createRendererForId also uses this as its safe default so renderer callers
+ * never upload undefined/NaN fov or light uniforms.
+ *
+ * @param {object|null} compiled
+ * @returns {{lightAzim:number, lightAlt:number, lightDist:number, fov:number, shadowsOn:boolean, groundOn:boolean, checkerOn:boolean}}
+ */
+export function rendererControlsForCompiledScene(compiled) {
+  const light = compiled?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+  const cam = compiled?.cameraStatic || null;
+  return {
+    lightAzim: light.azimuth,
+    lightAlt: light.altitude,
+    lightDist: light.distance,
+    fov: cam?.focal ?? 1.5,
+    shadowsOn: compiled?.shadowStatic?.enabled !== false,
+    groundOn: false,
+    checkerOn: false,
+  };
+}
+
+/**
+ * Push SceneData side channels into stateful GPU renderers before render().
+ * The SDF tree only carries geometry/materials; camera, post-FX, volumes and
+ * cameraSequence are parallel renderer inputs.
+ *
+ * @param {object} renderer
+ * @param {object} compiled
+ * @param {object} sceneData
+ */
+export function applyCompiledSceneToRenderer(renderer, compiled, sceneData) {
+  if (!renderer || !compiled) return;
+  if (renderer.setCamState && compiled.cameraStatic) {
+    renderer.setCamState(sphericalToCamState(compiled.cameraStatic));
+  }
+  if (renderer.setPostFx) {
+    renderer.setPostFx(sceneData || {}, sceneData?.defaults?.camera || null);
+  }
+  if (renderer.setSequence) {
+    renderer.setSequence(sceneData?.cameraSequence || null);
+  }
+  if (renderer.setVolumes) {
+    renderer.setVolumes(Array.isArray(sceneData?.volumes) ? sceneData.volumes : []);
+  }
+  if (renderer.setRuneHeightmap) {
+    renderer.setRuneHeightmap(compiled.bakedHeightmap || null);
+  }
+  if (renderer.setMotionSlots) {
+    renderer.setMotionSlots(compiled.motionSlots || {});
+  }
+  if (renderer.setSubjectBaseTargets) {
+    renderer.setSubjectBaseTargets(subjectBaseTargets(sceneData?.subjects));
+  }
+  if (renderer.setCityMode) {
+    renderer.setCityMode(hasSubjectType(sceneData?.subjects, 'procedural-city'));
+  }
+}
+
+function subjectBaseTargets(subjects) {
+  const baseTargets = {};
+  if (!Array.isArray(subjects)) return baseTargets;
+  for (const s of subjects) {
+    if (s?.id && Array.isArray(s.transform?.translate)) {
+      const t = s.transform.translate;
+      baseTargets[s.id] = t.slice(0, 3).map((x) => (typeof x === 'number' ? x : 0));
+    }
+  }
+  return baseTargets;
+}
+
+function hasSubjectType(subjects, type) {
+  if (!Array.isArray(subjects)) return false;
+  for (const s of subjects) {
+    if (!s || typeof s !== 'object') continue;
+    if (s.type === type) return true;
+    if (hasSubjectType(s.children, type)) return true;
+    if (s.source && hasSubjectType([s.source], type)) return true;
+  }
+  return false;
 }
 
 // Mulberry32 — minimal seeded PRNG. Matches the one used elsewhere in Atlas
@@ -318,14 +418,14 @@ export function createRendererForId(rendererId, canvas, opts = {}) {
   if (rendererId === 'studio') {
     return createStudioRenderer({
       canvas,
-      getControls: opts.getControls || (() => ({})),
+      getControls: opts.getControls || (() => rendererControlsForCompiledScene(null)),
       onFps: opts.onFps || (() => {}),
     });
   }
   if (rendererId === 'fly3d') {
     return createFly3DRenderer({
       canvas,
-      getControls: opts.getControls || (() => ({})),
+      getControls: opts.getControls || (() => rendererControlsForCompiledScene(null)),
       onFps: opts.onFps || (() => {}),
     });
   }
