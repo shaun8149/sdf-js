@@ -2130,7 +2130,11 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
     const st = ensureStudioRenderer();
-    if (!keepCamera && scene.cameraStatic) st.setCamState(sphericalToCamState(scene.cameraStatic));
+    // Studio deliberately IGNORES scene.cameraStatic — its job is a
+    // predictable atom-evaluation framing (close + slight downward pitch)
+    // regardless of whatever camera the scene was authored for. User can
+    // drag / WASD to reframe. Studio's own camState default ([0, 1.5, -2.5],
+    // pitch=-0.25) is the starting pose.
     if (st.setPostFx) {
       st.setPostFx(
         rawScene || {},

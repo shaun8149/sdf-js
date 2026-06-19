@@ -77,7 +77,6 @@
         "material": "silver"
       }
     ],
-    "ground": { "y": -0.3, "region": "ground" },
     "defaults": {
       "camera": {
         "yaw": 0.3,
