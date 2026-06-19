@@ -785,11 +785,11 @@ void main() {
         glowK  = leafMat.w;
       }
     } else if (u_checkerOn > 0.5) {
-      // Studio: cool neutral grey checker. Tiles 1 unit per square (matches
-      // GROUND_Y=-1 scale; bigger feels less busy for atom-evaluation framing).
-      // Inspired by IQ Shadertoy Xds3zN floor branch.
+      // Studio: cool neutral grey checker. Tiles 1 unit per square. Contrast
+      // bumped (~0.42 delta per channel) to match IQ Shadertoy Xds3zN ref —
+      // previous 0.20 delta was nearly invisible under studio's flat lighting.
       float c = checker(p.xz);
-      base = mix(vec3(0.85, 0.85, 0.88), vec3(0.65, 0.65, 0.68), c);
+      base = mix(vec3(0.92, 0.92, 0.94), vec3(0.50, 0.50, 0.53), c);
     } else {
       base = vec3(0.78, 0.78, 0.80);
     }
@@ -1539,8 +1539,12 @@ export function createStudioRenderer({
     console.warn('[studio] WebGL context restored — re-upload required');
   });
 
-  const camState = { position: [0, 0.3, -3.0], yaw: 0, pitch: 0 };
-  const defaultCam = { position: [...camState.position], yaw: 0, pitch: 0 };
+  // Studio default camera: eye 1.5 above ground, 2.5 units back, slight
+  // downward pitch — frames a single atom at ~0.5..1.5 height filling most
+  // of the canvas (matches IQ Shadertoy Xds3zN ref framing). User can WASD
+  // / drag to reframe; this is just the initial pose.
+  const camState = { position: [0, 1.5, -2.5], yaw: 0, pitch: -0.25 };
+  const defaultCam = { position: [...camState.position], yaw: 0, pitch: -0.25 };
 
   let program = null;
   let uniformsCache = {};
