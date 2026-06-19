@@ -1,0 +1,73 @@
+{
+  "id": "wave-1-extruded-showcase",
+  "title": "Wave 1-extruded typography showcase",
+  "prompt": "Wave 1-extruded atom showcase — all 16 supported glyphs rendered as 2D outlines extruded along Z. Mirror of wave-1-pipe-showcase for side-by-side comparison.",
+  "code2d": "// Synthetic showcase — NOT produced by the 2D-generation LLM pass.\n// Mirror of wave-1-pipe-showcase but using text-3d-extruded.\n// Same 3 rows (digits / KPI symbols / hero 90%) but flat-faced 2.5D\n// extrusion instead of true 3D pipe geometry.\nexport const render = (ctx) => { /* renders via silhouette as text2dSDF for 2D preview */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "Wave 1-extruded showcase",
+    "source": { "format": "synthetic", "prompt": "Wave 1-extruded showcase" },
+    "subjects": [
+      {
+        "id": "digits-row",
+        "type": "text-3d-extruded",
+        "args": {
+          "text": "0123456789",
+          "height": 0.8,
+          "depth": 0.15,
+          "strokeWidth": 0.12,
+          "align": "center"
+        },
+        "transform": { "translate": [0, 3.0, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "symbols-row",
+        "type": "text-3d-extruded",
+        "args": {
+          "text": "% $ + - .",
+          "height": 0.6,
+          "depth": 0.12,
+          "strokeWidth": 0.12,
+          "align": "center"
+        },
+        "transform": { "translate": [0, 1.8, 0] },
+        "material": "silver"
+      },
+      {
+        "id": "hero-kpi",
+        "type": "text-3d-extruded",
+        "args": {
+          "text": "90%",
+          "height": 1.8,
+          "depth": 0.3,
+          "strokeWidth": 0.22,
+          "align": "center"
+        },
+        "transform": { "translate": [0, 0.2, 0] },
+        "material": "silver"
+      }
+    ],
+    "ground": { "y": -0.3, "region": "ground" },
+    "defaults": {
+      "camera": {
+        "yaw": 0.0,
+        "pitch": 0.1,
+        "distance": 12,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.8,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "synthetic",
+    "promptVersion": "n/a (synthetic mirror)",
+    "pattern": "typography-showcase",
+    "costUSD": 0
+  }
+}

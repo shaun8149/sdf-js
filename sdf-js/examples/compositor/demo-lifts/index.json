@@ -190,6 +190,15 @@
       "status": "ready",
       "file": "wave-1-pipe-showcase.json",
       "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs in true 3D pipe style"
+    },
+    {
+      "id": "wave-1-extruded-showcase",
+      "title": "Wave 1-extruded typography",
+      "thesisPoint": "Atlas typography Wave 1-extruded atom showcase. Same 16 glyphs as Wave 1-pipe but rendered as 2D outlines extruded along Z (flat faces, sharp edges). Side-by-side with wave-1-pipe-showcase = visual proof of the extruded vs pipe atom dichotomy.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "wave-1-extruded-showcase.json",
+      "prompt": "Wave 1-extruded atom showcase"
     }
   ]
 }
