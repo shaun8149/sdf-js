@@ -36,5 +36,40 @@ ok(upperHalf([0, 0.3, 0]) < 0, 'upper-half ring includes +Y point (inside)');
 // Lower half should be FAR from arc (well past pipeRadius)
 ok(upperHalf([0, -0.3, 0]) > 0.1, 'upper-half ring excludes -Y point (outside)');
 
+console.log('\nTest group 2: Group A glyphs (sphere/capsule/torus only)');
+
+// Each Group A glyph builds + has positive advance + has SDF (except space)
+for (const ch of ['0', '1', '.', '-', '+', ' ']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' builds`);
+  ok(g.advance > 0, `'${ch}' positive advance (${g.advance})`);
+  if (ch === ' ') {
+    ok(g.sdf === null, `'${ch}' (space) has null SDF`);
+    continue;
+  }
+  ok(g.sdf !== null, `'${ch}' has non-null SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' SDF probe at (0,0.5,0) finite`);
+}
+
+// "0" specific probes
+const zero = buildPipeGlyph('0', 0.06);
+ok(zero.sdf([0, 0.5, 0]) > 0.1, '"0" center is hollow with margin > pipeRadius');
+ok(zero.sdf([0.22, 0.5, 0]) < 0, '"0" on tube circle (+X side) is inside');
+ok(zero.sdf([0, 0.72, 0]) < 0, '"0" on tube circle (+Y side, top of ring) is inside');
+ok(zero.sdf([0, 0.5, 0.1]) > 0, '"0" 0.10 outside tube in Z direction is outside');
+
+// "1" specific probes
+const one = buildPipeGlyph('1', 0.06);
+ok(one.sdf([0, 0.5, 0]) < 0, '"1" middle of vertical stem is inside');
+ok(one.sdf([0, 0.0, 0]) < 0, '"1" baseline end (round cap) is inside');
+ok(one.sdf([0, 1.0, 0]) < 0, '"1" top end (round cap) is inside');
+ok(one.sdf([0.2, 0.5, 0]) > 0.1, '"1" 0.2 to the side is outside (no flag/serif in pipe)');
+
+// "+" specific probes (2 capsules crossing at y=0.5)
+const plus = buildPipeGlyph('+', 0.06);
+ok(plus.sdf([0, 0.5, 0]) < 0, '"+" center is inside (both strokes overlap)');
+ok(plus.sdf([0.2, 0.5, 0]) < 0, '"+" right end of horizontal stroke is inside');
+ok(plus.sdf([0, 0.7, 0]) < 0, '"+" top end of vertical stroke is inside');
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

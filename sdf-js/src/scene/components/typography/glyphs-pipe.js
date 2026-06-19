@@ -45,7 +45,40 @@ export function pipeArcSpan(cx, cy, R, a0, a1, pipeR) {
 // Each builder takes pipeRadius `r` and returns { sdf: SDF3, advance: number }.
 
 const GLYPH_BUILDERS = {
-  // [Implemented in subsequent tasks]
+  // 0 — single torus, rotated to lie in XY plane (torus default = XZ plane)
+  0: (r) => ({
+    advance: 0.6,
+    sdf: torus(0.22, r)
+      .rotate(Math.PI / 2, [1, 0, 0])
+      .translate([0, 0.5, 0]),
+  }),
+
+  // 1 — single vertical capsule (no serif, no flag — round caps give closure)
+  1: (r) => ({
+    advance: 0.35,
+    sdf: capsule([0, 0, 0], [0, 1.0, 0], r),
+  }),
+
+  // . — small sphere on baseline
+  '.': (r) => ({
+    advance: 0.25,
+    sdf: sphere(r * 1.6).translate([0, r * 1.6, 0]),
+  }),
+
+  // - — horizontal capsule at midline
+  '-': (r) => ({
+    advance: 0.45,
+    sdf: capsule([-0.18, 0.5, 0], [0.18, 0.5, 0], r),
+  }),
+
+  // + — two crossing capsules at midline
+  '+': (r) => ({
+    advance: 0.55,
+    sdf: union(capsule([-0.2, 0.5, 0], [0.2, 0.5, 0], r), capsule([0, 0.3, 0], [0, 0.7, 0], r)),
+  }),
+
+  // space — no SDF, advance only
+  ' ': (_r) => ({ advance: 0.35, sdf: null }),
 };
 
 // ---- Public API -------------------------------------------------------------
