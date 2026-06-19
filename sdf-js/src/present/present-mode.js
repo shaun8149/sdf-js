@@ -6,7 +6,12 @@
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { createRendererForId, compileScene } from '../compositor-api.js';
+import {
+  applyCompiledSceneToRenderer,
+  createRendererForId,
+  compileScene,
+  rendererControlsForCompiledScene,
+} from '../compositor-api.js';
 
 let deck = null;
 let slideIdx = 0;
@@ -14,18 +19,20 @@ let renderer = null;
 let canvas = null;
 let cursorHideTimer = null;
 let counterHideTimer = null;
+let currentCompiledScene = null;
 
 export async function mountPresentMode(target, deckId) {
   deck = deckModel.loadDeckFromStorage(deckId);
   if (!deck) {
-    target.innerHTML = `<div class="page-pad">Deck not found: ${deckId}<br><a href="./">← Library</a></div>`;
+    target.innerHTML = `<div class="page-pad">Deck not found: ${escapeHtml(deckId)}<br><a href="./">← Library</a></div>`;
     return;
   }
   if (deck.slides.length === 0) {
-    target.innerHTML = `<div class="page-pad">Deck "${deck.title}" has no slides.<br><a href="./?deck=${deckId}">← Editor</a></div>`;
+    target.innerHTML = `<div class="page-pad">Deck "${escapeHtml(deck.title)}" has no slides.<br><a href="./?deck=${encodeURIComponent(deckId)}">← Editor</a></div>`;
     return;
   }
   slideIdx = 0;
+  currentCompiledScene = null;
 
   target.innerHTML = `
     <div class="present-stage" id="present-stage">
@@ -38,9 +45,11 @@ export async function mountPresentMode(target, deckId) {
   fitCanvasToWindow();
 
   try {
-    renderer = createRendererForId(deck.theme.renderer, canvas);
+    renderer = createRendererForId(deck.theme.renderer, canvas, {
+      getControls: () => rendererControlsForCompiledScene(currentCompiledScene),
+    });
   } catch (e) {
-    target.innerHTML = `<div class="page-pad">Renderer error (${deck.theme.renderer}): ${e.message}<br><a href="./?deck=${deckId}">← Editor</a></div>`;
+    target.innerHTML = `<div class="page-pad">Renderer error (${escapeHtml(deck.theme.renderer)}): ${escapeHtml(e.message)}<br><a href="./?deck=${encodeURIComponent(deckId)}">← Editor</a></div>`;
     return;
   }
 
@@ -90,6 +99,8 @@ function renderCurrentSlide() {
   const slide = deck.slides[slideIdx];
   try {
     const compiled = compileScene(slide.sceneData);
+    currentCompiledScene = compiled;
+    applyCompiledSceneToRenderer(renderer, compiled, slide.sceneData);
     if (deck.theme.renderer === 'silhouette') {
       const layers = [{ sdf: compiled.sdf, color: [200, 200, 200], stroke: 0 }];
       renderer.render(layers, { background: [13, 13, 13] });
@@ -152,7 +163,7 @@ async function exitPresent() {
   } catch (e) {
     /* ignore */
   }
-  location.search = `?deck=${deck.id}`;
+  location.search = `?${new URLSearchParams({ deck: deck.id }).toString()}`;
 }
 
 function handleKey(e) {
@@ -183,4 +194,12 @@ function handleKey(e) {
     default:
       break;
   }
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

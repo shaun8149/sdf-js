@@ -4,21 +4,28 @@
 // 3-pane layout: slide list (left) + preview (center) + settings (right).
 // -----------------------------------------------------------------------------
 import * as deckModel from './deck-model.js';
-import { createRendererForId, compileScene } from '../compositor-api.js';
+import {
+  applyCompiledSceneToRenderer,
+  createRendererForId,
+  compileScene,
+  rendererControlsForCompiledScene,
+} from '../compositor-api.js';
 
 let currentDeck = null;
 let currentSlideIdx = -1;
 let currentRenderer = null;
 let currentCanvas = null;
+let currentCompiledScene = null;
 
 export async function mountDeckEditor(target, deckId) {
   const deck = deckModel.loadDeckFromStorage(deckId);
   if (!deck) {
-    target.innerHTML = `<div class="page-pad">Deck not found: ${deckId}<br><a href="./">← Library</a></div>`;
+    target.innerHTML = `<div class="page-pad">Deck not found: ${escapeHtml(deckId)}<br><a href="./">← Library</a></div>`;
     return;
   }
   currentDeck = deck;
   currentSlideIdx = deck.slides.length > 0 ? 0 : -1;
+  currentCompiledScene = null;
 
   target.innerHTML = `
     <div class="topbar">
@@ -37,7 +44,7 @@ export async function mountDeckEditor(target, deckId) {
     </div>
   `;
   document.getElementById('btn-present-current').addEventListener('click', () => {
-    location.search = `?deck=${deck.id}&present=1`;
+    location.search = `?${new URLSearchParams({ deck: deck.id, present: '1' }).toString()}`;
   });
 
   renderSlideRail();
@@ -146,6 +153,7 @@ function renderPreview() {
   const canvas = document.getElementById('preview-canvas');
   const meta = document.getElementById('preview-meta');
   if (currentSlideIdx < 0 || !currentDeck.slides[currentSlideIdx]) {
+    currentCompiledScene = null;
     meta.textContent = 'No slide selected';
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#1a1a1a';
@@ -176,7 +184,9 @@ function renderPreview() {
     }
   }
   try {
-    currentRenderer = createRendererForId(rendererId, canvas);
+    currentRenderer = createRendererForId(rendererId, canvas, {
+      getControls: () => rendererControlsForCompiledScene(currentCompiledScene),
+    });
     currentRenderer.__rendererId = rendererId;
     currentCanvas = canvas;
     renderSlideToCurrentRenderer(slide);
@@ -188,12 +198,13 @@ function renderPreview() {
 
 function renderSlideToCurrentRenderer(slide) {
   const rendererId = currentDeck.theme.renderer;
+  const compiled = compileScene(slide.sceneData);
+  currentCompiledScene = compiled;
+  applyCompiledSceneToRenderer(currentRenderer, compiled, slide.sceneData);
   if (rendererId === 'silhouette') {
-    const compiled = compileScene(slide.sceneData);
     const layers = [{ sdf: compiled.sdf, color: [200, 200, 200], stroke: 0 }];
     currentRenderer.render(layers, { background: [13, 13, 13] });
   } else {
-    const compiled = compileScene(slide.sceneData);
     currentRenderer.render(compiled.sdf);
   }
 }
