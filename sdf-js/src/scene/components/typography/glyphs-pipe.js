@@ -307,6 +307,76 @@ const GLYPH_BUILDERS = {
       capsule([-0.22, 0, 0], [0.22, 0, 0], r),
     ),
   }),
+  // ---- Wave 2 Batch 4: combo letters (B D J M N P R S U) -----------------
+  B: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([-0.2, 0, 0], [-0.2, 1.0, 0], r),
+      pipeArcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r),
+      pipeArcSpan(-0.05, 0.25, 0.22, -Math.PI / 2, Math.PI / 2, r),
+    ),
+  }),
+  D: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      capsule([-0.2, 0, 0], [-0.2, 1.0, 0], r),
+      pipeArcSpan(-0.05, 0.5, 0.5, -Math.PI / 2, Math.PI / 2, r),
+    ),
+  }),
+  J: (r) => ({
+    advance: 0.45,
+    sdf: union(
+      capsule([0.15, 1.0, 0], [0.15, 0.18, 0], r),
+      pipeArcSpan(0, 0.18, 0.15, -Math.PI, 0, r),
+    ),
+  }),
+  M: (r) => ({
+    advance: 0.75,
+    sdf: union(
+      capsule([-0.3, 0, 0], [-0.3, 1.0, 0], r),
+      capsule([0.3, 0, 0], [0.3, 1.0, 0], r),
+      capsule([-0.3, 1.0, 0], [0, 0.4, 0], r),
+      capsule([0.3, 1.0, 0], [0, 0.4, 0], r),
+    ),
+  }),
+  N: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      capsule([-0.22, 0, 0], [-0.22, 1.0, 0], r),
+      capsule([0.22, 0, 0], [0.22, 1.0, 0], r),
+      capsule([-0.22, 1.0, 0], [0.22, 0, 0], r),
+    ),
+  }),
+  P: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([-0.2, 0, 0], [-0.2, 1.0, 0], r),
+      pipeArcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r),
+    ),
+  }),
+  R: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      capsule([-0.2, 0, 0], [-0.2, 1.0, 0], r),
+      pipeArcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r),
+      capsule([-0.05, 0.53, 0], [0.2, 0, 0], r),
+    ),
+  }),
+  S: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      pipeArcSpan(0, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r),
+      pipeArcSpan(0, 0.25, 0.22, Math.PI / 2, (3 * Math.PI) / 2, r),
+    ),
+  }),
+  U: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      capsule([-0.22, 0.25, 0], [-0.22, 1.0, 0], r),
+      capsule([0.22, 0.25, 0], [0.22, 1.0, 0], r),
+      pipeArcSpan(0, 0.25, 0.22, -Math.PI, 0, r),
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------

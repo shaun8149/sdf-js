@@ -194,6 +194,22 @@ ok(pipeA.sdf([0, 0.45, 0]) < 0, '"A" pipe crossbar center is inside');
 const pipeX = buildPipeGlyph('X');
 ok(pipeX.sdf([0, 0.5, 0]) < 0, '"X" pipe cross center is inside');
 
+console.log('\nTest group 10: Wave 2 Batch 4 — combo letters (B D J M N P R S U, pipe)');
+for (const ch of ['B', 'D', 'J', 'M', 'N', 'P', 'R', 'S', 'U']) {
+  const g = buildPipeGlyph(ch);
+  ok(g !== null, `'${ch}' (pipe) builds`);
+  ok(g.advance > 0, `'${ch}' (pipe) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (pipe) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5, 0])), `'${ch}' (pipe) probe finite`);
+}
+const pipeB = buildPipeGlyph('B');
+ok(pipeB.sdf([-0.2, 0.5, 0]) < 0, '"B" pipe vertical on left is inside');
+const pipeM = buildPipeGlyph('M');
+ok(pipeM.sdf([-0.3, 0.5, 0]) < 0, '"M" pipe left vertical is inside');
+const pipeU = buildPipeGlyph('U');
+ok(pipeU.sdf([0, 0.05, 0]) < 0, '"U" pipe bottom arc is inside');
+ok(pipeU.sdf([0, 0.7, 0]) > 0.05, '"U" pipe interior is open at top');
+
 // -----------------------------------------------------------------------------
 console.log('\nTest group 8: pipeRadius defensive clamp (Trap 1 protection)');
 const { compile } = await import('../src/scene/compile.js');

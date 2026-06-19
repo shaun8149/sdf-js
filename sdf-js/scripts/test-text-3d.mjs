@@ -56,6 +56,15 @@ const expected = [
   'X',
   'Y',
   'Z',
+  'B',
+  'D',
+  'J',
+  'M',
+  'N',
+  'P',
+  'R',
+  'S',
+  'U',
 ];
 const supported = supportedChars();
 for (const ch of expected) {
@@ -163,6 +172,29 @@ ok(letterX.sdf([0, 0.5]) < 0, '"X" cross center is inside');
 const letterY = buildGlyph('Y');
 ok(letterY.sdf([0, 0.5]) < 0, '"Y" junction is inside');
 ok(letterY.sdf([0, 0]) < 0, '"Y" stem base is inside');
+
+// Test group 10: Wave 2 Batch 4 — combo letters (B D J M N P R S U, extruded)
+console.log('\nTest group 10: Wave 2 Batch 4 — combo letters (B D J M N P R S U, extruded)');
+for (const ch of ['B', 'D', 'J', 'M', 'N', 'P', 'R', 'S', 'U']) {
+  const g = buildGlyph(ch);
+  ok(g !== null, `'${ch}' (extruded) builds`);
+  ok(g.advance > 0, `'${ch}' (extruded) positive advance`);
+  ok(g.sdf !== null, `'${ch}' (extruded) has SDF`);
+  ok(Number.isFinite(g.sdf([0, 0.5])), `'${ch}' (extruded) probe finite`);
+}
+// "B" — vertical at left and arcs on right
+const letterB = buildGlyph('B');
+ok(letterB.sdf([-0.2, 0.5]) < 0, '"B" vertical on left is inside');
+ok(letterB.sdf([0.15, 0.75]) < 0, '"B" top arc rim is inside');
+// "M" — both verticals should be inside
+const letterM = buildGlyph('M');
+ok(letterM.sdf([-0.3, 0.5]) < 0, '"M" left vertical at midheight is inside');
+ok(letterM.sdf([0.3, 0.5]) < 0, '"M" right vertical at midheight is inside');
+// "U" — verticals + bottom arc
+const letterU = buildGlyph('U');
+ok(letterU.sdf([-0.22, 0.7]) < 0, '"U" left vertical at high is inside');
+ok(letterU.sdf([0, 0.05]) < 0, '"U" bottom arc midpoint is inside');
+ok(letterU.sdf([0, 0.7]) > 0.05, '"U" interior at top is outside (open top)');
 
 // -----------------------------------------------------------------------------
 console.log('\nTest group 4: text3dExtrudedSDF extrusion');

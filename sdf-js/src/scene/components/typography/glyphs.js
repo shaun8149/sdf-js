@@ -278,6 +278,73 @@ const LETTER_BUILDERS = {
       segment([-0.22, 0], [0.22, 0], r),
     ),
   }),
+  // ---- Wave 2 Batch 4: combo letters (B D J M N P R S U) -----------------
+  B: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      arcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r * 2),
+      arcSpan(-0.05, 0.25, 0.22, -Math.PI / 2, Math.PI / 2, r * 2),
+    ),
+  }),
+  D: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      arcSpan(-0.05, 0.5, 0.5, -Math.PI / 2, Math.PI / 2, r * 2),
+    ),
+  }),
+  J: (r) => ({
+    advance: 0.45,
+    sdf: union(segment([0.15, 1.0], [0.15, 0.18], r), arcSpan(0, 0.18, 0.15, -Math.PI, 0, r * 2)),
+  }),
+  M: (r) => ({
+    advance: 0.75,
+    sdf: union(
+      segment([-0.3, 0], [-0.3, 1.0], r),
+      segment([0.3, 0], [0.3, 1.0], r),
+      segment([-0.3, 1.0], [0, 0.4], r),
+      segment([0.3, 1.0], [0, 0.4], r),
+    ),
+  }),
+  N: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      segment([-0.22, 0], [-0.22, 1.0], r),
+      segment([0.22, 0], [0.22, 1.0], r),
+      segment([-0.22, 1.0], [0.22, 0], r),
+    ),
+  }),
+  P: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      arcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r * 2),
+    ),
+  }),
+  R: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      segment([-0.2, 0], [-0.2, 1.0], r),
+      arcSpan(-0.05, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r * 2),
+      segment([-0.05, 0.53], [0.2, 0], r),
+    ),
+  }),
+  S: (r) => ({
+    advance: 0.55,
+    sdf: union(
+      arcSpan(0, 0.75, 0.22, -Math.PI / 2, Math.PI / 2, r * 2),
+      arcSpan(0, 0.25, 0.22, Math.PI / 2, (3 * Math.PI) / 2, r * 2),
+    ),
+  }),
+  U: (r) => ({
+    advance: 0.6,
+    sdf: union(
+      segment([-0.22, 0.25], [-0.22, 1.0], r),
+      segment([0.22, 0.25], [0.22, 1.0], r),
+      arcSpan(0, 0.25, 0.22, -Math.PI, 0, r * 2),
+    ),
+  }),
 };
 
 // ---- Public API -------------------------------------------------------------
