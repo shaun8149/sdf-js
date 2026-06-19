@@ -72,6 +72,9 @@ const TESTS = [
 
   // Sprint: PresentationLoad-style 3D Shape atoms (cube / sphere / pyramid variants).
   { category: 'shapes', file: 'sdf-js/scripts/test-cube-3d.mjs' },
+
+  // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
+  { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
