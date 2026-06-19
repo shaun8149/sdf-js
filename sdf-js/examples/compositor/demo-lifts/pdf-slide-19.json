@@ -1,0 +1,497 @@
+{
+  "id": "pdf-slide-19",
+  "title": "Slide 19: 2D SPHERES",
+  "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+  "code2d": "// =============================================================================\n// Atlas presentation demo — slide 19: \"2D SPHERES\"\n// Pattern detected: percent-list\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\n// 10 percentage data points: 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%\nconst bars = union(\n  rectangle([0.064 * 2, 0.090], [-0.900, -0.455]),\n  rectangle([0.064 * 2, 0.180], [-0.700, -0.410]),\n  rectangle([0.064 * 2, 0.270], [-0.500, -0.365]),\n  rectangle([0.064 * 2, 0.360], [-0.300, -0.320]),\n  rectangle([0.064 * 2, 0.450], [-0.100, -0.275]),\n  rectangle([0.064 * 2, 0.540], [0.100, -0.230]),\n  rectangle([0.064 * 2, 0.630], [0.300, -0.185]),\n  rectangle([0.064 * 2, 0.720], [0.500, -0.140]),\n  rectangle([0.064 * 2, 0.810], [0.700, -0.095]),\n  rectangle([0.064 * 2, 0.900], [0.900, -0.050]),\n);\n\nconst labels = union(\n  text2dSDF({ text: '10%', height: 0.08, strokeWidth: 0.014 }).translate([-0.900, -0.350]),\n  text2dSDF({ text: '20%', height: 0.08, strokeWidth: 0.014 }).translate([-0.700, -0.260]),\n  text2dSDF({ text: '30%', height: 0.08, strokeWidth: 0.014 }).translate([-0.500, -0.170]),\n  text2dSDF({ text: '40%', height: 0.08, strokeWidth: 0.014 }).translate([-0.300, -0.080]),\n  text2dSDF({ text: '50%', height: 0.08, strokeWidth: 0.014 }).translate([-0.100, 0.010]),\n  text2dSDF({ text: '60%', height: 0.08, strokeWidth: 0.014 }).translate([0.100, 0.100]),\n  text2dSDF({ text: '70%', height: 0.08, strokeWidth: 0.014 }).translate([0.300, 0.190]),\n  text2dSDF({ text: '80%', height: 0.08, strokeWidth: 0.014 }).translate([0.500, 0.280]),\n  text2dSDF({ text: '90%', height: 0.08, strokeWidth: 0.014 }).translate([0.700, 0.370]),\n  text2dSDF({ text: '100%', height: 0.08, strokeWidth: 0.014 }).translate([0.900, 0.460]),\n);\n\nconst stage = rectangle([1.95, 0.02], [0, -0.52]);\nconst title = text2dSDF({ text: '2D SPHERES', height: 0.13, strokeWidth: 0.018 }).translate([0, 0.7]);\n\nconst layers = [\n  { sdf: stage,  color: SOFT_INK },\n  { sdf: bars,   color: ACCENT },\n  { sdf: labels, color: INK },\n  { sdf: title,  color: INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
+  "sceneData": {
+    "v": 1,
+    "name": "Presentation slide 19: 2D SPHERES bar chart",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+      "from2dCode": "10 bars at X positions -0.9 to 0.9, heights 0.09 to 0.90; text labels above each bar; stage rectangle; title \"2D SPHERES\" at top"
+    },
+    "subjects": [
+      {
+        "id": "stage-platform",
+        "type": "rounded_box",
+        "args": {
+          "dims": [20, 0.3, 6],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [0, -0.15, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.62,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-10pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 0.9, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-9, 0.45, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-10pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "10%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-9, 1.25, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-20pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 1.8, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-7, 0.9, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-20pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "20%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-7, 2.15, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-30pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 2.7, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-5, 1.35, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-30pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "30%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-5, 3.05, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-40pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 3.6, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-3, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-40pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "40%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-3, 3.95, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-50pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 4.5, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-1, 2.25, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-50pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "50%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-1, 4.85, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-60pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 5.4, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [1, 2.7, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-60pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "60%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [1, 5.75, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-70pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 6.3, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [3, 3.15, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-70pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "70%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [3, 6.65, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-80pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 7.2, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [5, 3.6, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-80pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "80%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [5, 7.55, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-90pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 8.1, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [7, 4.05, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-90pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "90%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [7, 8.45, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-100pct",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.65, 9, 0.65],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [9, 4.5, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.08,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-100pct",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "100%",
+          "height": 0.45,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [9, 9.35, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.42,
+          "value": 0.22,
+          "metal": 0,
+          "glow": 0
+        }
+      },
+      {
+        "id": "title-text",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "2D SPHERES",
+          "height": 1.2,
+          "pipeRadius": 0.14,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 11.5, 0]
+        },
+        "material": {
+          "hue": 0.66,
+          "sat": 0.48,
+          "value": 0.2,
+          "metal": 0.08,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.3,
+      "region": "floor",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.05,
+        "value": 0.88
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.35,
+        "distance": 28,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 4.5,
+        "targetZ": 0,
+        "aperture": 0.15,
+        "focalDistance": 28
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.55,
+        "distance": 80,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.3
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.28,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0,
+        "motionBlurStrength": 0
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "claude-sonnet-4-5",
+    "promptVersion": "v3.17",
+    "pattern": "percent-list",
+    "slideIndex": 19,
+    "tokenUsageLift": {
+      "input_tokens": 64269,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 3502,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.245337,
+    "elapsedSec": 38.1
+  }
+}

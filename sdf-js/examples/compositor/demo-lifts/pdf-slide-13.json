@@ -1,0 +1,118 @@
+{
+  "id": "pdf-slide-13",
+  "title": "Slide 13: 2D SPHERES",
+  "prompt": "Presentation slide 13: text-only slide with title \"2D SPHERES\". Lift to a minimal 3D scene with the title as the only subject on a clean stage.",
+  "code2d": "// =============================================================================\n// Atlas presentation demo — slide 13: \"2D SPHERES\"\n// Pattern detected: fallback\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\nconst title = text2dSDF({ text: '2D SPHERES', height: 0.16, strokeWidth: 0.022 }).translate([0, 0]);\n\nconst layers = [\n  { sdf: title, color: INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
+  "sceneData": {
+    "v": 1,
+    "name": "Slide 13: 2D SPHERES title",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "Presentation slide 13: text-only slide with title \"2D SPHERES\". Lift to a minimal 3D scene with the title as the only subject on a clean stage.",
+      "from2dCode": "text2dSDF({ text: '2D SPHERES', height: 0.16, strokeWidth: 0.022 }). Title is the only content. Clean background gradient (cool blue-white)."
+    },
+    "subjects": [
+      {
+        "id": "title-2d-spheres",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "2D SPHERES",
+          "height": 1.2,
+          "pipeRadius": 0.14,
+          "letterSpacing": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.35,
+          "metal": 0.75,
+          "glow": 0
+        }
+      },
+      {
+        "id": "stage-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [6, 0.25, 2.5],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [0, 0.125, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.08,
+          "value": 0.92,
+          "metal": 0.15,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": 0,
+      "region": "ground",
+      "material": {
+        "hue": 0.6,
+        "sat": 0.12,
+        "value": 0.88
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.25,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0,
+        "aperture": 0.3,
+        "focalDistance": 8
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.5,
+        "distance": 30,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.35
+      },
+      "postFx": {
+        "exposure": 1.05,
+        "vignetteStrength": 0.3,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.85,
+        "lensFlareStrength": 0.05,
+        "motionBlurStrength": 0
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "claude-sonnet-4-5",
+    "promptVersion": "v3.17",
+    "pattern": "fallback",
+    "slideIndex": 13,
+    "tokenUsageLift": {
+      "input_tokens": 63409,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 836,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.202767,
+    "elapsedSec": 13.1
+  }
+}

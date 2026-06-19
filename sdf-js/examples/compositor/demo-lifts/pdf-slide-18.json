@@ -1,0 +1,495 @@
+{
+  "id": "pdf-slide-18",
+  "title": "Slide 18: 3D SPHERES",
+  "prompt": "Presentation slide 18: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+  "code2d": "// =============================================================================\n// Atlas presentation demo — slide 18: \"3D SPHERES\"\n// Pattern detected: percent-list\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\n// 10 percentage data points: 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%\nconst bars = union(\n  rectangle([0.064 * 2, 0.090], [-0.900, -0.455]),\n  rectangle([0.064 * 2, 0.180], [-0.700, -0.410]),\n  rectangle([0.064 * 2, 0.270], [-0.500, -0.365]),\n  rectangle([0.064 * 2, 0.360], [-0.300, -0.320]),\n  rectangle([0.064 * 2, 0.450], [-0.100, -0.275]),\n  rectangle([0.064 * 2, 0.540], [0.100, -0.230]),\n  rectangle([0.064 * 2, 0.630], [0.300, -0.185]),\n  rectangle([0.064 * 2, 0.720], [0.500, -0.140]),\n  rectangle([0.064 * 2, 0.810], [0.700, -0.095]),\n  rectangle([0.064 * 2, 0.900], [0.900, -0.050]),\n);\n\nconst labels = union(\n  text2dSDF({ text: '10%', height: 0.08, strokeWidth: 0.014 }).translate([-0.900, -0.350]),\n  text2dSDF({ text: '20%', height: 0.08, strokeWidth: 0.014 }).translate([-0.700, -0.260]),\n  text2dSDF({ text: '30%', height: 0.08, strokeWidth: 0.014 }).translate([-0.500, -0.170]),\n  text2dSDF({ text: '40%', height: 0.08, strokeWidth: 0.014 }).translate([-0.300, -0.080]),\n  text2dSDF({ text: '50%', height: 0.08, strokeWidth: 0.014 }).translate([-0.100, 0.010]),\n  text2dSDF({ text: '60%', height: 0.08, strokeWidth: 0.014 }).translate([0.100, 0.100]),\n  text2dSDF({ text: '70%', height: 0.08, strokeWidth: 0.014 }).translate([0.300, 0.190]),\n  text2dSDF({ text: '80%', height: 0.08, strokeWidth: 0.014 }).translate([0.500, 0.280]),\n  text2dSDF({ text: '90%', height: 0.08, strokeWidth: 0.014 }).translate([0.700, 0.370]),\n  text2dSDF({ text: '100%', height: 0.08, strokeWidth: 0.014 }).translate([0.900, 0.460]),\n);\n\nconst stage = rectangle([1.95, 0.02], [0, -0.52]);\nconst title = text2dSDF({ text: '3D SPHERES', height: 0.13, strokeWidth: 0.018 }).translate([0, 0.7]);\n\nconst layers = [\n  { sdf: stage,  color: SOFT_INK },\n  { sdf: bars,   color: ACCENT },\n  { sdf: labels, color: INK },\n  { sdf: title,  color: INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
+  "sceneData": {
+    "v": 1,
+    "name": "3D SPHERES — percent-list bar chart",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "Presentation slide 18: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+      "from2dCode": "10 bars via rectangle union, labels via text2dSDF, stage + title. SEMANTIC HINT: presentation scene — axis-aligned geometric, pedestal stage, camera tilted above."
+    },
+    "subjects": [
+      {
+        "id": "stage-platform",
+        "type": "rounded_box",
+        "args": {
+          "dims": [16, 0.3, 4.5],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [0, -0.15, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.6,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-10",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 0.9, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [-7.2, 0.45, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-20",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 1.8, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [-5.6, 0.9, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-30",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 2.7, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [-4, 1.35, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-40",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 3.6, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [-2.4, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-50",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 4.5, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [-0.8, 2.25, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-60",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 5.4, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [0.8, 2.7, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-70",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 6.3, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [2.4, 3.15, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-80",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 7.2, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [4, 3.6, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-90",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 8.1, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [5.6, 4.05, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-100",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8, 9, 0.8],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [7.2, 4.5, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.7,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-10",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "10%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-7.2, 1.15, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-20",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "20%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-5.6, 2.1, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-30",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "30%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-4, 3.05, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-40",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "40%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-2.4, 4, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-50",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "50%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-0.8, 4.95, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-60",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "60%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0.8, 5.9, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-70",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "70%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [2.4, 6.85, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-80",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "80%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [4, 7.8, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-90",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "90%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [5.6, 8.75, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-100",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "100%",
+          "height": 0.5,
+          "pipeRadius": 0.06,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [7.2, 9.7, 1]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.75,
+          "value": 0.25,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "title-3d-spheres",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "3D SPHERES",
+          "height": 1,
+          "pipeRadius": 0.12,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 11.5, 0]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.8,
+          "value": 0.2,
+          "metal": 0.1,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.5,
+      "region": "ground",
+      "material": {
+        "hue": 0.6,
+        "sat": 0.04,
+        "value": 0.85
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.35,
+        "distance": 22,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 4.5,
+        "targetZ": 0,
+        "aperture": 0.15,
+        "focalDistance": 22
+      },
+      "light": {
+        "azimuth": 0.65,
+        "altitude": 0.55,
+        "distance": 50,
+        "intensity": 1.05
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.3
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.25,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.88
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "claude-sonnet-4-5",
+    "promptVersion": "v3.17",
+    "pattern": "percent-list",
+    "slideIndex": 18,
+    "tokenUsageLift": {
+      "input_tokens": 64269,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 3469,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.244842,
+    "elapsedSec": 38.7
+  }
+}

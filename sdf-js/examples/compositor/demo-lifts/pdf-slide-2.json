@@ -1,0 +1,230 @@
+{
+  "id": "pdf-slide-2",
+  "title": "Slide 2: 3D SPHERES",
+  "prompt": "Presentation slide 2: \"3D SPHERES\". A chart of 3 percentage values (10%, 60%, 50%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+  "code2d": "// =============================================================================\n// Atlas presentation demo — slide 2: \"3D SPHERES\"\n// Pattern detected: percent-list\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\n// 3 percentage data points: 10%, 60%, 50%\nconst bars = union(\n  rectangle([0.070 * 2, 0.090], [-0.900, -0.455]),\n  rectangle([0.070 * 2, 0.540], [0.000, -0.230]),\n  rectangle([0.070 * 2, 0.450], [0.900, -0.275]),\n);\n\nconst labels = union(\n  text2dSDF({ text: '10%', height: 0.08, strokeWidth: 0.014 }).translate([-0.900, -0.350]),\n  text2dSDF({ text: '60%', height: 0.08, strokeWidth: 0.014 }).translate([0.000, 0.100]),\n  text2dSDF({ text: '50%', height: 0.08, strokeWidth: 0.014 }).translate([0.900, 0.010]),\n);\n\nconst stage = rectangle([1.95, 0.02], [0, -0.52]);\nconst title = text2dSDF({ text: '3D SPHERES', height: 0.13, strokeWidth: 0.018 }).translate([0, 0.7]);\n\nconst layers = [\n  { sdf: stage,  color: SOFT_INK },\n  { sdf: bars,   color: ACCENT },\n  { sdf: labels, color: INK },\n  { sdf: title,  color: INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
+  "sceneData": {
+    "v": 1,
+    "name": "3D SPHERES — bar chart presentation",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "Presentation slide 2: '3D SPHERES'. A chart of 3 percentage values (10%, 60%, 50%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+      "from2dCode": "Bars at x=[-0.9, 0, 0.9] with heights [0.09, 0.54, 0.45]. Labels '10%', '60%', '50%'. Stage rectangle at y=-0.52. Title '3D SPHERES' at y=0.7."
+    },
+    "subjects": [
+      {
+        "id": "stage-base",
+        "type": "rounded_box",
+        "args": {
+          "dims": [6.5, 0.15, 2],
+          "cornerR": 0.05
+        },
+        "transform": {
+          "translate": [0, -0.5, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.35,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-10",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.55, 0.9, 0.55],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [-2.7, 0.05, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-60",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.55, 5.4, 0.55],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [0, 2.35, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar-50",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.55, 4.5, 0.55],
+          "cornerR": 0.04
+        },
+        "transform": {
+          "translate": [2.7, 1.9, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.65,
+          "value": 0.55,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-10",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "10%",
+          "height": 0.5,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-2.7, 1.2, 0]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.05,
+          "value": 0.15,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-60",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "60%",
+          "height": 0.5,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 5.5, 0]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.05,
+          "value": 0.15,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "label-50",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "50%",
+          "height": 0.5,
+          "pipeRadius": 0.08,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [2.7, 4.7, 0]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.05,
+          "value": 0.15,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "title-hero",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "3D SPHERES",
+          "height": 0.8,
+          "pipeRadius": 0.12,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 7.2, 0]
+        },
+        "material": {
+          "hue": 0.65,
+          "sat": 0.05,
+          "value": 0.12,
+          "metal": 0.25,
+          "glow": 0
+        }
+      }
+    ],
+    "ground": {
+      "y": -0.65,
+      "region": "ground",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.12,
+        "value": 0.82
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.28,
+        "distance": 16,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 3,
+        "targetZ": 0,
+        "aperture": 0.15,
+        "focalDistance": 16
+      },
+      "light": {
+        "azimuth": -0.6,
+        "altitude": 0.5,
+        "distance": 45,
+        "intensity": 1.15
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.35
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.28,
+        "bloomMix": 0.18,
+        "bloomThreshold": 0.88,
+        "lensFlareStrength": 0
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-19",
+    "model": "claude-sonnet-4-5",
+    "promptVersion": "v3.17",
+    "pattern": "percent-list",
+    "slideIndex": 2,
+    "tokenUsageLift": {
+      "input_tokens": 63747,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1568,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.214761,
+    "elapsedSec": 20.2
+  }
+}
