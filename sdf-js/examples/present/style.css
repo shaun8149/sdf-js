@@ -120,3 +120,150 @@ html, body {
   font-weight: 400;
   margin-bottom: 16px;
 }
+
+/* ---- Editor page ---- */
+.editor-body {
+  display: grid;
+  grid-template-columns: 220px 1fr 280px;
+  flex: 1;
+  min-height: 0;
+}
+
+.slide-rail {
+  background: #141414;
+  border-right: 1px solid #2a2a2a;
+  padding: 12px;
+  overflow-y: auto;
+}
+.slide-thumb {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slide-thumb:hover {
+  background: #222;
+}
+.slide-thumb.selected {
+  border-color: #ffd070;
+  background: #2a2520;
+}
+.slide-thumb .thumb-num {
+  color: #ffd070;
+  font-weight: 700;
+  font-size: 12px;
+  width: 18px;
+}
+.slide-thumb .thumb-title {
+  color: #ddd;
+  font-size: 12px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-add-slide {
+  width: 100%;
+  background: #2a2a2a;
+  color: #ffd070;
+  border: 1px dashed #3a3a3a;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.btn-add-slide:hover {
+  background: #3a3a3a;
+}
+
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: #0d0d0d;
+}
+.preview-pane canvas {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  max-width: 100%;
+  max-height: 70vh;
+}
+.preview-meta {
+  color: #888;
+  font-size: 12px;
+}
+
+.settings-pane {
+  background: #141414;
+  border-left: 1px solid #2a2a2a;
+  padding: 20px;
+  overflow-y: auto;
+}
+.settings-pane h3 {
+  margin: 0 0 12px 0;
+  color: #ddd;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.settings-row {
+  margin-bottom: 12px;
+}
+.settings-row label {
+  display: block;
+  color: #888;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+.settings-row input, .settings-row select {
+  width: 100%;
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #2a2a2a;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  border-radius: 3px;
+}
+.settings-row.meta {
+  color: #888;
+  font-size: 12px;
+}
+.settings-row button {
+  background: #2a2a2a;
+  color: #ccc;
+  border: 1px solid #3a3a3a;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  width: 100%;
+}
+.settings-row button:hover {
+  background: #3a3a3a;
+}
+
+.btn-back {
+  background: #2a2a2a;
+  color: #ffd070;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 13px;
+  border: 1px solid #3a3a3a;
+}
+.btn-back:hover {
+  background: #3a3a3a;
+}
