@@ -47,6 +47,8 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-intersect.mjs' },
   // IQ-shader program W8 — fractals (mandelbrot/bulb, quaternion julia, menger…)
   { category: 'math', file: 'sdf-js/scripts/test-fractal.mjs' },
+  // IQ-shader program W9 — procedural effects (clouds, deform, feedback, life)
+  { category: 'math', file: 'sdf-js/scripts/test-effects.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },

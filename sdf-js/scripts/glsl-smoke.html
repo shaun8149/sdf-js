@@ -23,6 +23,7 @@
       import { BOUNDS_GLSL } from '../src/sdf/bounds.js';
       import { INTERSECT_GLSL } from '../src/sdf/intersect.js';
       import { FRACTAL_GLSL } from '../src/sdf/fractal.js';
+      import { EFFECTS_GLSL } from '../src/sdf/effects.js';
 
       const gl = document.getElementById('c').getContext('webgl2');
       const vsSrc = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
@@ -37,6 +38,7 @@ ${SDG_GLSL}
 ${BOUNDS_GLSL}
 ${INTERSECT_GLSL}
 ${FRACTAL_GLSL}
+${EFFECTS_GLSL}
 void main(){
   float s = smootherstep(0.5) + parabola(0.5, 2.0) + gain(0.3, 3.0)
     + cubicPulse(0.5, 0.2, 0.5) + smoothstepInteg(0.7) + invSmoothstep(0.4)
@@ -76,6 +78,8 @@ void main(){
   s += mandelbrot2(p * 0.3, 64) + mandelbrotTrap(p * 0.3, 32)
     + mandelbulbDE(vec3(p, 0.5), 8.0, 6) + juliaQuatDE(vec3(p, 0.5), vec4(-0.2, 0.6, 0.2, 0.2), 8)
     + mengerSDF(vec3(p, 0.5), 3) + sierpinskiSDF(vec3(p, 0.5), 6);
+  s += clouds2D(p, 1.0) + planeDeformPolar(p).x + planeDeformTwist(p, 0.5).y
+    + feedbackBlend(vec3(0.2), vec3(0.8), 0.5).x + lifeRule(1.0, 2.0);
   gl_FragColor = vec4(vec3(clamp01(s * 0.01)), 1.0);
 }`;
 
@@ -99,7 +103,7 @@ void main(){
         if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
           throw new Error('link: ' + gl.getProgramInfoLog(pr));
         }
-        console.log('GLSL-SMOKE-OK …+intersect+fractal');
+        console.log('GLSL-SMOKE-OK …+fractal+effects');
         document.title = 'SMOKE OK';
       } catch (e) {
         console.error('GLSL-SMOKE-FAIL ' + e.message);
