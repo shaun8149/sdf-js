@@ -208,6 +208,11 @@ export const PRIMITIVE_TYPES = new Set([
   'diamond-3d',
   'gear-3d',
   'cube-segmented-3d',
+  // Sprint 3 circle family — torus/cylinder/cone/box + union/difference/modPolar.
+  'circle-frame-3d',
+  'circle-stack-3d',
+  'circle-segmented-3d',
+  'circle-loop-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

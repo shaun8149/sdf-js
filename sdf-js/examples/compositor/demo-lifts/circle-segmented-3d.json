@@ -1,0 +1,39 @@
+{
+  "id": "circle-segmented-3d",
+  "title": "Circle · Segmented",
+  "prompt": "circle-segmented-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "circle-segmented-3d",
+    "source": { "format": "synthetic", "prompt": "circle-segmented-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "circle-segmented-3d",
+        "args": { "segments": 6 },
+        "transform": { "translate": [0, 0.7, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 6,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.7,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "circle-segmented-3d",
+    "costUSD": 0
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "circle-stack-3d",
+  "title": "Circle · Stack",
+  "prompt": "circle-stack-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "circle-stack-3d",
+    "source": { "format": "synthetic", "prompt": "circle-stack-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "circle-stack-3d",
+        "args": { "count": 4 },
+        "transform": { "translate": [0, 0.7, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 6,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.7,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "circle-stack-3d",
+    "costUSD": 0
+  }
+}

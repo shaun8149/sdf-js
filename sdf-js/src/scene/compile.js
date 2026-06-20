@@ -125,6 +125,10 @@ import { arrow3dSDF } from './components/shapes/arrow-3d.js';
 import { diamond3dSDF } from './components/shapes/diamond-3d.js';
 import { gear3dSDF } from './components/shapes/gear-3d.js';
 import { cubeSegmented3dSDF } from './components/shapes/cube-segmented-3d.js';
+import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
+import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
+import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
+import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -497,6 +501,37 @@ const PRIMITIVE_FACTORIES = {
       size: a.size ?? 1.2,
       gap: a.gap ?? 0.08,
       axis: a.axis ?? 'x',
+    }),
+  'circle-frame-3d': (a) =>
+    circleFrame3dSDF({
+      radius: a.radius ?? 0.7,
+      frameWidth: a.frameWidth ?? a.tube ?? 0.12,
+      backDepth: a.backDepth ?? a.depth ?? 0.06,
+      back: a.back ?? true,
+    }),
+  'circle-stack-3d': (a) =>
+    circleStack3dSDF({
+      count: a.count ?? 4,
+      radius: a.radius ?? 0.7,
+      taper: a.taper ?? 0.85,
+      diskHeight: a.diskHeight ?? a.thickness ?? 0.18,
+      gap: a.gap ?? 0.06,
+    }),
+  'circle-segmented-3d': (a) =>
+    circleSegmented3dSDF({
+      segments: a.segments ?? a.count ?? 6,
+      radius: a.radius ?? 0.8,
+      innerRatio: a.innerRatio ?? 0.55,
+      thickness: a.thickness ?? a.depth ?? 0.2,
+      gapWidth: a.gapWidth ?? 0.12,
+    }),
+  'circle-loop-3d': (a) =>
+    circleLoop3dSDF({
+      segments: a.segments ?? a.count ?? 4,
+      radius: a.radius ?? 0.7,
+      tube: a.tube ?? 0.07,
+      headLength: a.headLength ?? 0.34,
+      headRadius: a.headRadius ?? 0.16,
     }),
   link: (a) =>
     linkSDF({
