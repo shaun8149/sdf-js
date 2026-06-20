@@ -35,6 +35,29 @@ import { Random } from './util/random.js';
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
 
 /**
+ * Appended to system prompt when callLiftLLM is invoked with opts.mode === '2d'.
+ * Atlas Present 2D mode renders text via Canvas2D outside the SDF tree, so the
+ * LLM must NOT emit text-3d-extruded or text-3d-pipe subjects (those would
+ * render as ugly SDF glyphs in 2D silhouette/lines/crayon/topo renderers).
+ *
+ * Defense layer 1 of 2. Layer 2: sanitize2dSceneData() runtime filter.
+ */
+const MODE_2D_ADDENDUM = `
+
+## 2D-mode constraints (Atlas Present)
+
+This call is for 2D rendering. NEVER emit subjects with type
+'text-3d-extruded' or 'text-3d-pipe'. Atlas Present renders all
+text via Canvas2D outside the SDF tree in 2D mode. SDF glyphs in
+2D mode look bad (silhouette/lines/crayon/topo cannot render text
+typography cleanly).
+
+If the slide content is text-heavy, choose archetype 'text-card'
+and emit minimal context geometry (e.g., a backdrop primitive) —
+do NOT emit text glyphs as SDF subjects.
+`;
+
+/**
  * Convert spherical camera coords (target + yaw/pitch/distance) to Cartesian
  * eye position. Used by all 3D renderers when applying `scene.cameraStatic`.
  *
@@ -282,7 +305,10 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
       system: [
         {
           type: 'text',
-          text: CACHED_SYSTEM_PROMPT_LIFT,
+          text:
+            opts.mode === '2d'
+              ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
+              : CACHED_SYSTEM_PROMPT_LIFT,
           cache_control: { type: 'ephemeral' },
         },
       ],
@@ -340,4 +366,23 @@ export function createRendererForId(rendererId, canvas, opts = {}) {
     });
   }
   throw new Error(`[compositor-api] unknown renderer id: ${rendererId}`);
+}
+
+/**
+ * Runtime sanitizer for 2D-mode sceneData. Defense layer 2 of 2 (paired with
+ * the MODE_2D_ADDENDUM in callLiftLLM). Filters out any subjects with type
+ * 'text-3d-extruded' or 'text-3d-pipe' since those render badly in 2D.
+ *
+ * @param {object} sceneData
+ * @returns {object} new sceneData with filtered subjects (input untouched)
+ */
+export function sanitize2dSceneData(sceneData) {
+  if (!sceneData || typeof sceneData !== 'object') return sceneData;
+  if (!Array.isArray(sceneData.subjects)) return sceneData;
+  return {
+    ...sceneData,
+    subjects: sceneData.subjects.filter(
+      (s) => s && s.type !== 'text-3d-extruded' && s.type !== 'text-3d-pipe',
+    ),
+  };
 }
