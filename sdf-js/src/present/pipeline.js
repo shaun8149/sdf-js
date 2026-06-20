@@ -158,11 +158,6 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
           // v3.18 — LLM picks one of 7 archetypes per call, stochasticity
           // produces 2-3 different archetypes across 3 calls.
           const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
-          if (cancelled) {
-            onEvent({ type: 'cancelled' });
-            running = false;
-            return;
-          }
           const sceneData = deps.parseLiftResponse(llmResult.text);
           const archetype = extractArchetype(sceneData);
 

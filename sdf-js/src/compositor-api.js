@@ -63,7 +63,7 @@ export function sphericalToCamState(cam) {
  * @param {object} sceneData — SceneData v1 (must have `v: 1`)
  * @param {object} opts
  * @param {number} [opts.sceneHash=1] — drives Generator-S variant PRNG
- * @returns {{sdf:object, subjects:Array, cameraStatic:object|null, lightStatic:object|null, groundSdf:object|null, bakedHeightmap:object|null}}
+ * @returns {{sdf:object, subjects:Array, expandedSceneData:object, cameraStatic:object|null, lightStatic:object|null, groundSdf:object|null, bakedHeightmap:object|null}}
  */
 export function compileScene(sceneData, opts = {}) {
   const sceneHash = opts.sceneHash ?? 1;
@@ -74,6 +74,7 @@ export function compileScene(sceneData, opts = {}) {
   return {
     sdf: unifiedSdf,
     subjects: compiled.subjects,
+    expandedSceneData: expanded,
     cameraStatic: compiled.cameraStatic ?? null,
     lightStatic: compiled.lightStatic ?? null,
     groundSdf: compiled.groundSdf ?? null,

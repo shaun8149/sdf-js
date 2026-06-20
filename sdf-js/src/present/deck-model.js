@@ -117,6 +117,30 @@ export function deriveStatus(variants) {
   return 'pending';
 }
 
+function selectFirstReadyVariantIfNeeded(section) {
+  if (!section || !Array.isArray(section.variants)) return false;
+  if (deriveStatus(section.variants) !== 'ready') return false;
+  const selected = section.variants[section.selectedVariantIndex];
+  if (selected?.status === 'ready') return false;
+  const firstReadyIdx = section.variants.findIndex((v) => v.status === 'ready');
+  if (firstReadyIdx === -1) return false;
+  section.selectedVariantIndex = firstReadyIdx;
+  return true;
+}
+
+function normalizeDeckRuntimeState(deck) {
+  if (!deck || !Array.isArray(deck.sections)) return deck;
+  for (const section of deck.sections) {
+    if (!Array.isArray(section.variants)) continue;
+    for (const variant of section.variants) {
+      if (variant.status === 'lifting') variant.status = 'pending';
+    }
+    section.status = deriveStatus(section.variants);
+    selectFirstReadyVariantIfNeeded(section);
+  }
+  return deck;
+}
+
 // ---- ID helpers -------------------------------------------------------------
 
 function uuid() {
@@ -197,6 +221,7 @@ export function updateVariantStatus(deck, sectionId, variantIndex, status, paylo
   if (payload.liftError !== undefined) variant.liftError = payload.liftError;
   if (payload.archetype !== undefined) variant.archetype = payload.archetype;
   section.status = deriveStatus(section.variants);
+  selectFirstReadyVariantIfNeeded(section);
   deck.updatedAt = Date.now();
   return true;
 }
@@ -285,7 +310,7 @@ export function migrateDecksStorage(raw) {
   if (!Array.isArray(raw.decks)) {
     return { version: STORAGE_VERSION, decks: [] };
   }
-  return { version: STORAGE_VERSION, decks: raw.decks };
+  return { version: STORAGE_VERSION, decks: raw.decks.map((deck) => normalizeDeckRuntimeState(deck)) };
 }
 
 export function saveDeckToStorage(deck) {

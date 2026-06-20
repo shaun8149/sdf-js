@@ -11,9 +11,8 @@
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { renderInfoGraphic, computeCanvasSize } from './info-graphic-render.js';
-import { compileScene, createRendererForId } from '../compositor-api.js';
-import { computeView } from './linear-layout.js';
+import { renderInfoGraphic, computeCanvasSize, compileThumbnailScene } from './info-graphic-render.js';
+import { createRendererForId } from '../compositor-api.js';
 
 // Section layout constants — must match info-graphic-render.js
 const SECTION_WIDTH = 200;
@@ -171,8 +170,7 @@ function handleVariantSelect(deck, sectionId, variantIdx, renderMain) {
 function drawVariantThumb(canvas, sceneData) {
   try {
     const renderer = createRendererForId('silhouette', canvas);
-    const compiled = compileScene(sceneData);
-    const view = computeView(sceneData);
+    const { compiled, view } = compileThumbnailScene(sceneData);
     renderer.render([{ sdf: compiled.sdf, color: [60, 60, 60] }], {
       background: [245, 245, 245],
       view,

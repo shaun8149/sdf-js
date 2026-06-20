@@ -257,6 +257,38 @@ console.log(
   ok(deck.sections[2].status === 'ready', 'section 2 derived status=ready');
 }
 
+console.log('\nTest group 2b: first variant error auto-selects first ready sibling');
+
+{
+  const deck = createDeck('variant0-error', { type: 'pdf', fileName: 'e0.pdf', pageCount: 1 });
+  let callCount = 0;
+  const deps = {
+    parsePDFFromBytes: async () => [{ pageIndex: 0, title: 'A', body: [] }],
+    emitSlide2dCode: () => '// A',
+    callLiftLLM: async () => {
+      callCount++;
+      if (callCount === 1) throw new Error('variant 0 failed');
+      return {
+        text: JSON.stringify({ v: 1, name: 'list: A', subjects: [] }),
+        usage: {},
+      };
+    },
+    parseLiftResponse: (text) => JSON.parse(text),
+    saveDeck: () => {},
+  };
+
+  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps, { onEvent: () => {} });
+  await pipeline.start();
+
+  ok(deck.sections[0].status === 'ready', 'section ready after siblings succeed');
+  ok(deck.sections[0].variants[0].status === 'error', 'variant 0 captured error');
+  ok(deck.sections[0].variants[1].status === 'ready', 'variant 1 ready');
+  ok(
+    deck.sections[0].selectedVariantIndex === 1,
+    `selectedVariantIndex moved to first ready sibling (got ${deck.sections[0].selectedVariantIndex})`,
+  );
+}
+
 console.log('\nTest group 3: parse error aborts pipeline');
 
 {
@@ -324,6 +356,10 @@ console.log('\nTest group 4: cancel stops further lifts (granular at variant bou
   ok(cancelEvent !== undefined, 'cancelled event emitted');
   // Section 0 variant 0 got the lift-ready (since cancel only halts before the
   // *next* lift). Variants 1 & 2 of section 0 + all of sections 1,2 stay pending.
+  ok(
+    deck.sections[0].variants[0].status === 'ready',
+    `section 0 variant 0 ready after in-flight lift completes (got '${deck.sections[0].variants[0].status}')`,
+  );
   ok(
     deck.sections[0].variants[1].status === 'pending',
     `section 0 variant 1 still pending after cancel (got '${deck.sections[0].variants[1].status}')`,
