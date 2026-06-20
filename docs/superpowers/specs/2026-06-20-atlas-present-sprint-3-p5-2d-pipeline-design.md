@@ -40,7 +40,7 @@ Solve the **black-blob failure mode** observed in Sprint 2 manual L3 testing on 
 | 3 | Sprint 3 architecture pattern | **Hybrid: SceneData canonical, `p5-sketch` is new subject type** carrying P5 code in args.code |
 | 4 | iframe sandbox security model | **iframe sandbox=`allow-scripts`** + postMessage protocol (isolated from main page DOM/localStorage) |
 | 5 | iframe mount strategy | **Lazy per-visual iframe** + IntersectionObserver-based unmount when off-screen |
-| 6 | SDF helper bundle exposure | **BOB-full subset** — ~40 functions from BOB code (sdf_box / sdf_circle / sdf_moon / sdRoundBox / sdTriangle / sdTrapezoid / sub2 / add2 / mul2 / dot2 / len2 / rot2 / trans2 / clamp1/2 / max2 / min2 / fract1/2 / scale2 / sdf_bridge1/2 / sdf_BTC / sdf_cactus / sdf_tree / sdf_wall / sdEtriangle / sdf_flower / sdf_line / sdf_line2 / sdfSunset / sdf_building / xRepeated / sdf_rep) |
+| 6 | SDF helper bundle exposure | **BOB primitives subset** — ~28 general-purpose math + SDF functions. **BOB composites REMOVED** (sdfSunset / sdf_building / sdf_bridge1/2 / sdf_BTC / sdf_cactus / sdf_tree / sdf_wall / sdf_flower) — those are BOB-art-specific creative vocabulary; LLM should compose its own from primitives. See §7 for final inventory. |
 | 7 | Mixed-subject SceneData (p5-sketch + traditional) | **NOT supported in Sprint 3** — LLM must emit either all p5-sketch OR all traditional in single variant. Mixed handling Sprint 4+ |
 | 8 | PR strategy | **Add to Sprint 2's PR #9** (same branch `sprint-2-napkin-doc-viewer`), not new PR |
 
@@ -209,17 +209,15 @@ iframe.style.borderRadius = '8px';
 | main → iframe | `export` | `{}` | Request PNG export |
 | iframe → main | `exportResult` | `{dataUrl}` | PNG data URL ready |
 
-## 7. SDF helper bundle inventory (40 functions, ~10KB minified payload)
+## 7. SDF helper bundle inventory (~28 functions, ~6KB minified payload)
 
-Sourced verbatim from BOB code shared by user 2026-06-20. Categorized:
+Sourced from BOB code shared by user 2026-06-20. **BOB-specific composite SDFs REMOVED** (Sprint 3 amendment 2026-06-20 afternoon): sdfSunset / sdf_building / sdf_bridge1 / sdf_bridge2 / sdf_BTC / sdf_cactus / sdf_tree / sdf_wall / sdf_flower are BOB-art creative vocabulary, not general primitives. LLM should compose specific scenes from general primitives, not be limited to BOB's specific imagery library.
 
-**Vector math (15)**: `sub2`, `add2`, `mul2`, `dot2`, `len2`, `lenSq2`, `rot2`, `trans2`, `clamp1`, `clamp2`, `max2`, `min2`, `fract1`, `fract2`, `scale2`
+**Vector math (17)**: `sub2`, `add2`, `mul2`, `dot2`, `len2`, `lenSq2`, `rot2`, `trans2`, `clamp1`, `clamp2`, `max2`, `min2`, `fract1`, `fract2`, `scale2`, `eq2`, `step1`
 
-**SDF primitives (15)**: `sdf_box`, `sdf_circle`, `sdRoundBox`, `sdTriangle`, `sdTrapezoid`, `sdEtriangle`, `sdf_line`, `sdf_line2`, `sdf_moon`, `sdfSunset`, `sdf_flower`, `sdf_building`, `sdf_bridge1`, `sdf_bridge2`, `sdf_BTC`
+**General SDF primitives (11)**: `sdf_box`, `sdf_circle`, `sdRoundBox`, `sdTriangle`, `sdTrapezoid`, `sdEtriangle`, `sdf_line`, `sdf_line2`, `sdf_moon`, `xRepeated`, `sdf_rep`
 
-**SDF utilities (5)**: `sdf_cactus`, `sdf_tree`, `sdf_wall`, `xRepeated`, `sdf_rep`
-
-**Misc (5)**: `eq2`, `step1` (utility), color helpers if needed (TBD plan-time)
+`sdf_moon` kept because it's the general "occluded circle" idiom (Math.max(circle1, -circle2)) useful for any crescent/cutout shape, not just moons. `xRepeated` + `sdf_rep` kept as useful repetition idioms for grid/array layouts.
 
 Helpers are exposed as `window.*` globals inside iframe via `sdf-helper-bundle.js`. LLM-generated P5 sketch can call them directly:
 
@@ -244,40 +242,95 @@ function draw() {
 }
 ```
 
-## 8. Lift LLM routing (system prompt v3.19 → v3.20)
+## 8. Lift LLM routing — 3-tier content-driven priority (system prompt v3.19 → v3.20)
 
-New section in `examples/compositor/system-prompt-lift-3d.md` (~60 lines added before existing 2D-mode addendum):
+**Major Sprint 3 amendment (2026-06-20 afternoon)**: routing is NOT archetype-only. User insight: a paragraph's content has 3 visual-information layers, each best served by a different rendering strategy. Atlas's STRENGTH is concrete-object SDF illustration (already validated Sprint 1 v4); we add P5 for the layers SDF doesn't naturally handle.
+
+### The 3-tier content extraction
+
+For each user-selected paragraph, the LLM examines the text for 3 features in priority order:
+
+**Tier A — Concrete nouns / objects** (Atlas's strongest capability, already shipped Sprint 1 v4):
+- Examples: "robot", "cube", "table", "cathedral", "carrier", "tree", "city", "factory", "chair"
+- Atlas SDF capability: lift v3.17+ already knows how to compose `sphere` / `cube-3d` / `cylinder` / `capsule` / 40+ atom primitives into a recognizable scene
+- Cost-free: leverages existing Sprint 1 v4 capability with zero new code
+- Output: traditional-subjects SceneData (NOT p5-sketch)
+
+**Tier B — Numbers / metrics** (Gamma-style PPT central insight):
+- Examples: "$3 billion", "78%", "10x", "13 sections", "2023", "30%", "5 stages"
+- Key fact: most informational paragraphs have a number as the load-bearing assertion. PPT/Gamma decks center layout on the number.
+- Atlas approach in 2D mode: P5 sketch with the number as visual focus (huge `textSize`, supporting label small, minimal context geometry)
+- Output: p5-sketch SceneData (one subject of type 'p5-sketch' with args.code containing a P5 sketch optimized for number-prominence)
+
+**Tier C — Textual logical relations** (fallback for purely abstract content):
+- Examples: "the agent explores → builds hypotheses → tests → refines" (sequence), "A vs B" (compare), "X is a kind of Y" (hierarchy), "X depends on Y depends on Z" (relation)
+- No concrete objects, no central number — just relational structure
+- Atlas approach: P5 sketch using vector primitives (boxes / arrows / lines / labels) to express the relationship
+- Output: p5-sketch SceneData with relational-layout P5 code
+
+### How 6 variants exploit the 3 tiers for diversity
+
+Sprint 1.5's variant convergence failure (all 6 = text-card) is addressed: the LLM is INSTRUCTED to span tiers across the 6 variants when content supports it. Worked example:
+
+Selected: "In 2023, the cube on the table was replaced by 3 spheres, increasing throughput by 40%."
+LLM detects: Tier A (cube/table/spheres = concrete) + Tier B (2023/3/40% = numbers) + Tier C (replaced by / increasing = relations)
+
+Default 6 variant generation:
+- variant 1: **Tier A** — SDF SceneData with `cube` + `sphere` × 3 + `cube` (table-like) — concrete scene
+- variant 2: **Tier B** — p5-sketch with "40%" as huge `textSize(180)` + small "throughput ↑" label
+- variant 3: **Tier C** — p5-sketch: small cube → arrow → row of 3 small spheres (transformation diagram)
+- variant 4: **Tier A variation** — SDF SceneData simpler, just 3 spheres in row
+- variant 5: **Tier B variation** — p5-sketch with "2023" as timeline marker + "+40%" annotation
+- variant 6: **Tier C variation** — p5-sketch: 2-column compare (left: "before, cube" / right: "after, 3 spheres + 40%")
+
+User picks whichever fits their narrative. Convergence problem solved: variants are intentionally tier-diverse, not stylistic variants of the same idea.
+
+When content lacks one of the tiers, LLM still spans the available tiers, possibly repeating with variation. E.g., pure text-card content (no numbers, no concrete nouns) → all 6 variants are Tier C, but using DIFFERENT relational layouts (vertical list, horizontal cards, radial spokes, callout boxes, comparison grid, timeline).
+
+### System prompt v3.20 content (replaces my earlier archetype-only Step 4)
+
+Added to `examples/compositor/system-prompt-lift-3d.md` (replaces old Step 4 section ~80 lines):
 
 ```markdown
-## Step 4: 2D-mode subject-type routing (Sprint 3)
+## Step 4: 2D-mode content-tier routing (Sprint 3)
 
-When opts.mode === '2d', choose subject type per archetype:
+When opts.mode === '2d', analyze the user's selected text for 3 content tiers:
 
-| Archetype | Subject type | Why |
-|---|---|---|
-| text-card | p5-sketch | Pure text needs typography + layout; SDF cannot do this in 2D |
-| list | p5-sketch | Multiple items + labels + spacing; vector primitives natively express |
-| compare | p5-sketch | Two/four sides with labels + arrows; vector + text natively |
-| hierarchy | p5-sketch | Tree with parent/child labels + connection lines; vector + text |
-| relation | p5-sketch | Nodes + edges + labels; vector + text |
-| sequence | LLM choice (abstract → p5-sketch; concrete steps with physical objects → traditional) |
-| kpi-hero | traditional (sphere/cube/text-3d-extruded with sized number) — concrete |
+Tier A (concrete nouns): explicit physical objects mentioned in text
+  → emit traditional-subject SceneData (sphere/cube/cylinder/cathedral/etc.)
+  This uses Atlas's strongest capability and reuses Sprint 1 v4 atom library.
 
-When emitting p5-sketch, ENTIRE sceneData.subjects must be exactly one element of type 'p5-sketch'. Do NOT mix p5-sketch with traditional subjects. (Sprint 4+ may allow mixing.)
+Tier B (numbers/metrics): any digit-bearing assertion in text
+  → emit p5-sketch with number as visual focus (large textSize, minimal context)
+  Most informational paragraphs center on a number; Gamma-style PPT pattern.
 
-When emitting p5-sketch, the args.code field must be a complete P5 sketch with setup() and draw(). It runs inside a sandboxed iframe with these globals available:
+Tier C (textual logical relations): when no concrete object and no central number,
+  pure abstract relationships (sequence / compare / hierarchy / network)
+  → emit p5-sketch with relational layout (boxes/arrows/labels via P5 vector)
 
-- P5 standard API (createCanvas, fill, stroke, vertex, rect, ellipse, text, ...)
-- Atlas SDF helpers: sdf_box, sdf_circle, sdRoundBox, sdTriangle, sdTrapezoid, sdEtriangle, sdf_line, sdf_line2, sdf_moon, sdfSunset, sdf_flower, sdf_building, sdf_bridge1, sdf_bridge2, sdf_BTC, sdf_cactus, sdf_tree, sdf_wall, xRepeated, sdf_rep
-- Vector math: sub2, add2, mul2, dot2, len2, lenSq2, rot2, trans2, clamp1, clamp2, max2, min2, fract1, fract2, scale2, eq2
+For 6 variants per ⚡: span tiers when possible. If text has all 3 tiers, allocate
+~2 variants per tier. If only 1 tier present, vary within tier (different layouts).
+Never emit all 6 as same tier with minor variation (Sprint 1.5 failure mode).
+
+When emitting p5-sketch, ENTIRE sceneData.subjects must be exactly one element of
+type 'p5-sketch'. NO mixing p5-sketch with traditional subjects in single variant
+(Sprint 4+ may allow).
+
+When emitting p5-sketch, args.code is a complete P5 sketch with setup() and draw().
+Runs in sandboxed iframe with these globals available:
+
+- P5 standard API (createCanvas, fill, stroke, vertex, rect, ellipse, text, textSize, textFont, ...)
+- Atlas SDF helpers: sdf_box, sdf_circle, sdRoundBox, sdTriangle, sdTrapezoid, sdEtriangle,
+  sdf_line, sdf_line2, sdf_moon, xRepeated, sdf_rep
+- Vector math: sub2, add2, mul2, dot2, len2, lenSq2, rot2, trans2, clamp1, clamp2,
+  max2, min2, fract1, fract2, scale2, eq2, step1
 - Atlas branding palette as window.__brandingPalette: { bg: [r,g,b], silhouetteColor: [r,g,b] }
 
-Use system fonts via P5 textFont('sans-serif'). Use brandingPalette colors for fill/stroke to maintain visual consistency.
-
-Sketch must call createCanvas(600, 360) and complete drawing within draw() (use noLoop() at end to freeze frame).
+Use textFont('sans-serif'). Use brandingPalette for fill/stroke. Call createCanvas(600, 360).
+Complete drawing in single draw() then noLoop() to freeze.
 ```
 
-Plus 2-3 worked examples in the prompt (text-card example, list example, compare example showing actual P5 code).
+Plus 3 worked examples in the prompt (Tier A, B, C each one — showing actual P5 sketch source for Tier B/C and SceneData JSON for Tier A).
 
 ## 9. Data flow (happy path, Sprint 3-specific)
 
@@ -340,7 +393,7 @@ Start: 33 test files (Sprint 2 end). New: +1 (test-p5-sandbox.mjs). End: **34 te
 | Lesson | Honor in Sprint 3 by |
 |---|---|
 | Sprint 1.5: SDF text in 2D = ugly | Sprint 3 introduces p5-sketch type which renders text via Canvas2D inside P5 sketch (system fonts) — no SDF text. MODE_2D_ADDENDUM + sanitize2dSceneData from Sprint 2 Phase 4 still active for traditional subjects. |
-| Sprint 1.5: variant convergence on text-heavy content | Sprint 3 directly addresses: text-heavy content now defaults to p5-sketch which can express multi-element layouts properly. 6 variants of "list" can have different P5 sketch interpretations (boxes vs cards vs callouts) — divergence is in the P5 layout, not just SDF parameter jitter. |
+| Sprint 1.5: variant convergence on text-heavy content | Sprint 3 directly addresses via §8 3-tier routing: LLM is INSTRUCTED to span Tier A (concrete) / Tier B (numbers) / Tier C (abstract relations) across 6 variants. Convergence happens only when content has only 1 tier (then within-tier variation). This is the load-bearing fix for Sprint 1.5's variant-divergence failure on Aether AI page 4. |
 | Sprint 1.5: PR body over-claimed | Sprint 3 PR body amendment will document: "p5-sketch path verified end-to-end with real Anthropic API on at least 1 abstract paragraph; subjective quality of P5-sketch variants vs traditional SDF variants honestly compared in PR body" — concrete observations, not "should work" |
 | Sprint 1.5: TDD discipline | Sprint 3 Phase 2 (test-p5-sandbox.mjs) + Phase 3 (deck-model p5-sketch acceptance tests) precede implementation |
 | Sprint 2: Phase 8 real-API smoke blocked by API key in chat | Sprint 3 Phase 6 browse smoke will use SAME pattern: rely on user having key already in headless browse OR user manually testing post-merge. No more pasting keys in chat. |
