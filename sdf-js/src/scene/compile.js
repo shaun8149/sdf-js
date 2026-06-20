@@ -132,6 +132,9 @@ import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
 import { flowChart3dSDF } from './components/charts/diagrams/flow-chart-3d.js';
+import { treeDiagram3dSDF } from './components/charts/diagrams/tree-diagram-3d.js';
+import { mindmap3dSDF } from './components/charts/diagrams/mindmap-3d.js';
+import { timeline3dSDF } from './components/charts/diagrams/timeline-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -563,6 +566,36 @@ const PRIMITIVE_FACTORIES = {
       nodeD: a.nodeD ?? 0.2,
       gap: a.gap ?? 0.55,
       linkThickness: a.linkThickness ?? a.thickness ?? 0.05,
+    }),
+  'tree-diagram-3d': (a) =>
+    treeDiagram3dSDF({
+      levels: a.levels ?? a.depth ?? 3,
+      branching: a.branching ?? a.fanout ?? 2,
+      nodeRadius: a.nodeRadius ?? 0.18,
+      levelWidth: a.levelWidth ?? 0.95,
+      spread: a.spread ?? 2.6,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.04,
+    }),
+  'mindmap-3d': (a) =>
+    mindmap3dSDF({
+      branches: a.branches ?? a.count ?? 5,
+      centerRadius: a.centerRadius ?? 0.34,
+      branchRadius: a.branchRadius ?? 0.2,
+      leafRadius: a.leafRadius ?? 0.12,
+      mainDist: a.mainDist ?? 1.1,
+      leafDist: a.leafDist ?? 0.55,
+      leavesPerBranch: a.leavesPerBranch ?? 2,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.04,
+    }),
+  'timeline-3d': (a) =>
+    timeline3dSDF({
+      count: a.count ?? a.milestones ?? 5,
+      axisLength: a.axisLength ?? 3.4,
+      axisRadius: a.axisRadius ?? 0.05,
+      markerRadius: a.markerRadius ?? 0.16,
+      stemHeight: a.stemHeight ?? 0.45,
+      stemThickness: a.stemThickness ?? 0.035,
+      alternate: a.alternate ?? true,
     }),
   link: (a) =>
     linkSDF({

@@ -358,6 +358,36 @@
       "file": "flow-chart-3d.json",
       "renderer": "studio",
       "prompt": "Diagram · Flow Chart"
+    },
+    {
+      "id": "tree-diagram-3d",
+      "title": "Diagram · Tree",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "tree-diagram-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Tree"
+    },
+    {
+      "id": "mindmap-3d",
+      "title": "Diagram · Mind Map",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "mindmap-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Mind Map"
+    },
+    {
+      "id": "timeline-3d",
+      "title": "Diagram · Timeline",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "timeline-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Timeline"
     }
   ]
 }
