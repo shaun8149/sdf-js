@@ -1,5 +1,5 @@
 // =============================================================================
-// test-deck-model.mjs — L1 unit tests for Atlas Present Canvas Mode deck model
+// test-deck-model.mjs — L1 unit tests for Atlas Present Sprint 1 v4 deck model
 // =============================================================================
 
 import * as deck from '../src/present/deck-model.js';
@@ -35,154 +35,180 @@ function resetStorage() {
   localStorage.clear();
 }
 
-console.log('=== deck-model (Canvas Mode) smoke test ===\n');
+console.log('=== deck-model (Sprint 1 v4) smoke test ===\n');
 
+// Constants
 ok(deck.DECKS_STORAGE_KEY === 'atlas-decks', 'DECKS_STORAGE_KEY exported');
-ok(deck.STORAGE_VERSION === 2, `STORAGE_VERSION = 2 (got ${deck.STORAGE_VERSION})`);
+ok(deck.STORAGE_VERSION === 3, `STORAGE_VERSION = 3 (got ${deck.STORAGE_VERSION})`);
 
 console.log('\nTest group 1: createDeck');
 
 {
-  const d = deck.createDeck('My Deck');
+  const d = deck.createDeck('My Deck', { type: 'pdf', fileName: 'q1.pdf', pageCount: 5 });
   ok(typeof d.id === 'string' && d.id.length > 0, 'createDeck: id assigned');
   ok(d.title === 'My Deck', 'createDeck: title');
-  ok(d.theme && d.theme.renderer === 'studio', 'createDeck: default renderer = studio');
-  ok(d.canvas && d.canvas.v === 1, 'createDeck: canvas SceneData v1');
   ok(
-    Array.isArray(d.canvas.subjects) && d.canvas.subjects.length === 0,
-    'createDeck: empty canvas.subjects',
+    d.source.type === 'pdf' && d.source.fileName === 'q1.pdf' && d.source.pageCount === 5,
+    'createDeck: source carried',
   );
-  ok(Array.isArray(d.waypoints) && d.waypoints.length === 0, 'createDeck: empty waypoints');
-  ok(d.tween && d.tween.durationMs === 800, 'createDeck: default tween duration 800ms');
-  ok(d.tween.easing === 'ease-in-out', 'createDeck: default easing ease-in-out');
+  ok(d.layout.archetype === 'linear', 'createDeck: archetype = linear');
+  ok(d.layout.spacing === 6, 'createDeck: spacing default = 6');
+  ok(Array.isArray(d.sections) && d.sections.length === 0, 'createDeck: sections empty array');
 }
 
 {
   const d = deck.createDeck();
   ok(d.title === 'Untitled Deck', 'createDeck: no title defaults');
+  ok(d.source.type === 'pdf', 'createDeck: source defaults to pdf');
 }
 
-console.log('\nTest group 2: addSubjectToCanvas / removeSubjectFromCanvas');
+console.log('\nTest group 2: addPendingSections');
 
 {
-  const d = deck.createDeck('test');
+  const d = deck.createDeck('test', { type: 'pdf', fileName: 'x.pdf', pageCount: 3 });
   const origUpdated = d.updatedAt;
   const before = Date.now();
   while (Date.now() === before) {}
-  const subj = deck.addSubjectToCanvas(d, {
-    type: 'cube-3d',
-    args: { count: 4 },
-    transform: { translate: [0, 0.5, 0] },
-  });
-  ok(d.canvas.subjects.length === 1, 'addSubject: canvas has 1 subject');
-  ok(subj.type === 'cube-3d', 'addSubject: type carried');
-  ok(subj.args.count === 4, 'addSubject: args carried');
-  ok(d.updatedAt > origUpdated, 'addSubject: updatedAt advanced');
-  ok(typeof subj.id === 'string' && subj.id.length > 0, 'addSubject: auto-assigns id');
-}
-
-{
-  const d = deck.createDeck('test');
-  deck.addSubjectToCanvas(d, { id: 'sub-a', type: 'cube-3d' });
-  deck.addSubjectToCanvas(d, { id: 'sub-b', type: 'text-3d-pipe' });
-  const removed = deck.removeSubjectFromCanvas(d, 'sub-a');
-  ok(removed === true, 'removeSubject: returns true on success');
-  ok(d.canvas.subjects.length === 1, 'removeSubject: 1 left');
-  ok(d.canvas.subjects[0].id === 'sub-b', 'removeSubject: correct one removed');
+  const added = deck.addPendingSections(d, [
+    { slideData: { title: 'A' }, code2d: '// code A', prompt: 'A' },
+    { slideData: { title: 'B' }, code2d: '// code B', prompt: 'B' },
+    { slideData: { title: 'C' }, code2d: '// code C', prompt: 'C' },
+  ]);
+  ok(added.length === 3, 'addPendingSections: returns 3 added entries');
+  ok(d.sections.length === 3, 'addPendingSections: deck has 3 sections');
   ok(
-    deck.removeSubjectFromCanvas(d, 'nonexistent') === false,
-    'removeSubject: nonexistent returns false',
+    d.sections.every((s) => s.status === 'pending'),
+    'addPendingSections: all status = pending',
   );
-}
-
-console.log('\nTest group 3: addWaypoint / removeWaypoint / moveWaypoint');
-
-{
-  const d = deck.createDeck('test');
-  const cam = { yaw: 0.3, pitch: -0.15, distance: 8, targetX: 0, targetY: 0.5, targetZ: 0 };
-  const wp = deck.addWaypoint(d, { title: 'Overview', camera: cam });
-  ok(d.waypoints.length === 1, 'addWaypoint: 1 waypoint');
-  ok(wp.title === 'Overview', 'addWaypoint: title carried');
-  ok(wp.camera.yaw === 0.3, 'addWaypoint: camera carried');
-}
-
-{
-  const d = deck.createDeck('test');
-  ['a', 'b', 'c'].forEach((id) =>
-    deck.addWaypoint(d, {
-      id,
-      camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
-    }),
-  );
-  deck.removeWaypoint(d, 'b');
-  ok(d.waypoints.map((w) => w.id).join(',') === 'a,c', 'removeWaypoint: order preserved');
-}
-
-{
-  const d = deck.createDeck('test');
-  ['a', 'b', 'c', 'd'].forEach((id) =>
-    deck.addWaypoint(d, {
-      id,
-      camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
-    }),
-  );
-  deck.moveWaypoint(d, 0, 2);
   ok(
-    d.waypoints.map((w) => w.id).join(',') === 'b,c,a,d',
-    `moveWaypoint(0,2): got ${d.waypoints.map((w) => w.id).join(',')}`,
+    d.sections[0].pageIndex === 0 && d.sections[2].pageIndex === 2,
+    'addPendingSections: pageIndex assigned correctly',
+  );
+  ok(d.updatedAt > origUpdated, 'addPendingSections: updatedAt advanced');
+  ok(
+    d.sections.every((s) => typeof s.id === 'string' && s.id.length > 0),
+    'addPendingSections: section ids assigned',
   );
 }
 
-console.log('\nTest group 4: updateWaypointCamera');
+// Subsequent addPendingSections continues pageIndex from where it left off
+{
+  const d = deck.createDeck('multi');
+  deck.addPendingSections(d, [{ slideData: {}, code2d: '' }]);
+  deck.addPendingSections(d, [
+    { slideData: {}, code2d: '' },
+    { slideData: {}, code2d: '' },
+  ]);
+  ok(d.sections.length === 3, 'addPendingSections: cumulative across calls');
+  ok(d.sections[2].pageIndex === 2, 'addPendingSections: pageIndex continues from prior batch');
+}
+
+console.log('\nTest group 3: updateSectionStatus');
 
 {
   const d = deck.createDeck('test');
-  const wp = deck.addWaypoint(d, {
-    id: 'w1',
-    camera: { yaw: 0.3, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
-  });
-  const orig = d.updatedAt;
+  deck.addPendingSections(d, [{ slideData: {}, code2d: '' }]);
+  const sId = d.sections[0].id;
+  const origUpdated = d.updatedAt;
   const before = Date.now();
   while (Date.now() === before) {}
-  const newCam = { yaw: 1.5, pitch: -0.2, distance: 10, targetX: 5, targetY: 1, targetZ: -3 };
-  const ok1 = deck.updateWaypointCamera(d, 'w1', newCam);
-  ok(ok1 === true, 'updateWaypointCamera: returns true');
-  ok(wp.camera.yaw === 1.5 && wp.camera.distance === 10, 'updateWaypointCamera: camera replaced');
-  ok(d.updatedAt > orig, 'updateWaypointCamera: updatedAt advanced');
+
+  const ok1 = deck.updateSectionStatus(d, sId, 'lifting');
+  ok(ok1 === true, 'updateSectionStatus: returns true on success');
+  ok(d.sections[0].status === 'lifting', 'updateSectionStatus: status updated');
+  ok(d.updatedAt > origUpdated, 'updateSectionStatus: updatedAt advanced');
+
+  const sceneData = {
+    v: 1,
+    subjects: [{ id: 'a', type: 'cube-3d', args: {}, transform: { translate: [0, 0, 0] } }],
+  };
+  deck.updateSectionStatus(d, sId, 'ready', {
+    sceneData,
+    region: {
+      centerX: 0,
+      centerY: 0,
+      centerZ: 0,
+      halfWidth: 0.5,
+      halfHeight: 0.5,
+      halfDepth: 0.5,
+      title: 'A',
+    },
+  });
+  ok(d.sections[0].sceneData === sceneData, 'updateSectionStatus: payload merged (sceneData)');
+  ok(d.sections[0].region.centerX === 0, 'updateSectionStatus: payload merged (region)');
+
+  deck.updateSectionStatus(d, sId, 'error', { liftError: 'API timeout' });
+  ok(d.sections[0].liftError === 'API timeout', 'updateSectionStatus: error payload merged');
+
+  const ok2 = deck.updateSectionStatus(d, 'nonexistent-id', 'ready');
+  ok(ok2 === false, 'updateSectionStatus: nonexistent id returns false');
+}
+
+console.log('\nTest group 4: sectionStatusCounts');
+
+{
+  const d = deck.createDeck('counts');
+  deck.addPendingSections(d, [
+    { slideData: {}, code2d: '' },
+    { slideData: {}, code2d: '' },
+    { slideData: {}, code2d: '' },
+    { slideData: {}, code2d: '' },
+  ]);
+  let counts = deck.sectionStatusCounts(d);
+  ok(counts.total === 4 && counts.pending === 4, 'sectionStatusCounts: 4 pending');
+
+  deck.updateSectionStatus(d, d.sections[0].id, 'lifting');
+  deck.updateSectionStatus(d, d.sections[1].id, 'ready');
+  deck.updateSectionStatus(d, d.sections[2].id, 'error', { liftError: 'x' });
+
+  counts = deck.sectionStatusCounts(d);
   ok(
-    deck.updateWaypointCamera(d, 'nonexistent', newCam) === false,
-    'updateWaypointCamera: nonexistent returns false',
+    counts.pending === 1 && counts.lifting === 1 && counts.ready === 1 && counts.error === 1,
+    `sectionStatusCounts: mixed (got ${JSON.stringify(counts)})`,
   );
 }
 
-console.log('\nTest group 5: localStorage v2 + v1 silent drop');
+console.log('\nTest group 5: localStorage v3 + v1/v2 silent drop');
 
 resetStorage();
 
 {
-  const d = deck.createDeck('Roundtrip');
-  deck.addSubjectToCanvas(d, { id: 'c1', type: 'cube-3d' });
-  deck.addWaypoint(d, {
-    id: 'w1',
-    camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
-  });
+  const d = deck.createDeck('Roundtrip', { type: 'pdf', fileName: 'r.pdf', pageCount: 2 });
+  deck.addPendingSections(d, [
+    { slideData: { title: 'A' }, code2d: '// A' },
+    { slideData: { title: 'B' }, code2d: '// B' },
+  ]);
   deck.saveDeckToStorage(d);
   const loaded = deck.loadDeckFromStorage(d.id);
   ok(loaded !== null, 'roundtrip: load returns deck');
-  ok(loaded.canvas.subjects.length === 1, 'roundtrip: canvas subjects preserved');
-  ok(loaded.waypoints.length === 1, 'roundtrip: waypoints preserved');
+  ok(loaded.title === 'Roundtrip', 'roundtrip: title preserved');
+  ok(loaded.sections.length === 2, 'roundtrip: sections preserved');
+  ok(loaded.source.fileName === 'r.pdf', 'roundtrip: source preserved');
 }
 
+// v1 silent drop
 {
   resetStorage();
-  // Write fake v1 PPT-mode storage
   localStorage.setItem(
     'atlas-decks',
-    JSON.stringify({ version: 1, decks: [{ id: 'old-v1-deck', slides: [] }] }),
+    JSON.stringify({ version: 1, decks: [{ id: 'v1-deck', slides: [] }] }),
   );
   const list = deck.listDecks();
-  ok(list.length === 0, `v1 silent drop: listDecks returns empty (got ${list.length})`);
+  ok(list.length === 0, 'v1 silent drop: listDecks empty');
 }
+
+// v2 silent drop
+{
+  resetStorage();
+  localStorage.setItem(
+    'atlas-decks',
+    JSON.stringify({ version: 2, decks: [{ id: 'v2-deck', canvas: {}, waypoints: [] }] }),
+  );
+  const list = deck.listDecks();
+  ok(list.length === 0, 'v2 silent drop: listDecks empty');
+}
+
+console.log('\nTest group 6: listDecks sort + delete');
 
 {
   resetStorage();
@@ -201,11 +227,11 @@ resetStorage();
   const d = deck.createDeck('delete-me');
   deck.saveDeckToStorage(d);
   ok(deck.deleteDeckFromStorage(d.id) === true, 'delete: returns true on success');
-  ok(deck.listDecks().length === 0, 'delete: list now empty');
-  ok(deck.deleteDeckFromStorage('nonexistent') === false, 'delete: nonexistent returns false');
+  ok(deck.listDecks().length === 0, 'delete: list empty');
+  ok(deck.deleteDeckFromStorage('nonexistent') === false, 'delete: nonexistent false');
 }
 
-console.log('\nTest group 6: rename + duplicate');
+console.log('\nTest group 7: rename + duplicate (re-lift required)');
 
 {
   resetStorage();
@@ -220,23 +246,32 @@ console.log('\nTest group 6: rename + duplicate');
 {
   resetStorage();
   const d = deck.createDeck('source');
-  deck.addSubjectToCanvas(d, { id: 's1', type: 'cube-3d' });
-  deck.addWaypoint(d, {
-    id: 'w1',
-    camera: { yaw: 0, pitch: 0, distance: 5, targetX: 0, targetY: 0, targetZ: 0 },
+  deck.addPendingSections(d, [{ slideData: { title: 'A' }, code2d: '// A' }]);
+  // Simulate lift completion
+  deck.updateSectionStatus(d, d.sections[0].id, 'ready', {
+    sceneData: { v: 1, subjects: [] },
+    region: {
+      centerX: 0,
+      centerY: 0,
+      centerZ: 0,
+      halfWidth: 0.5,
+      halfHeight: 0.5,
+      halfDepth: 0.5,
+      title: 'A',
+    },
   });
   deck.saveDeckToStorage(d);
+
   const dup = deck.duplicateDeck(d.id);
   ok(dup !== null, 'duplicate: returns new deck');
   ok(dup.title === 'source (copy)', 'duplicate: " (copy)" suffix');
-  ok(
-    dup.canvas.subjects.length === 1 && dup.canvas.subjects[0].id !== 's1',
-    'duplicate: subject ids reassigned',
-  );
-  ok(
-    dup.waypoints.length === 1 && dup.waypoints[0].id !== 'w1',
-    'duplicate: waypoint ids reassigned',
-  );
+  ok(dup.sections.length === 1, 'duplicate: sections count preserved');
+  ok(dup.sections[0].id !== d.sections[0].id, 'duplicate: section ids reassigned');
+  ok(dup.sections[0].status === 'pending', 'duplicate: status reset to pending (re-lift required)');
+  ok(dup.sections[0].sceneData === undefined, 'duplicate: sceneData stripped (re-lift required)');
+  ok(dup.sections[0].region === undefined, 'duplicate: region stripped (re-lift required)');
+  ok(dup.sections[0].slideData?.title === 'A', 'duplicate: slideData carried (input preserved)');
+  ok(dup.sections[0].code2d === '// A', 'duplicate: code2d carried (input preserved)');
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);

@@ -1,53 +1,50 @@
 // =============================================================================
-// deck-model.js — Atlas Present Layer 2 data model (CANVAS MODE)
+// deck-model.js — Atlas Present Layer 2 data model (Sprint 1 v4 / 2D Info Graphic)
 // -----------------------------------------------------------------------------
-// Pure JS / no DOM. Defines Deck + Canvas + Waypoint types (JSDoc), CRUD
-// operations, localStorage v2 persistence.
+// Pure JS / no DOM. Mode-agnostic schema centered on `sections + region`.
+// 2D Info Graphic mode uses region.centerX/Y for 2D layout; Sprint 2 3D Play
+// mode will derive its view from the same region (proving mode-agnosticism).
 //
-// localStorage key: 'atlas-decks'
-//   shape: { version: 2, decks: Deck[] }
-//   v1 (PPT-mode) decks silently dropped on first v2 load.
+// localStorage key: 'atlas-decks', version 3
+//   v1 (PPT-mode) + v2 (Canvas Mode) silent drop on first v3 load.
 //
-// Spec: docs/superpowers/specs/2026-06-19-atlas-present-canvas-mode-design.md
-// Plan: docs/superpowers/plans/2026-06-19-atlas-present-canvas-mode-plan.md
+// HARD RULE (per memory hard rule 5 + spec Rule 9): this file MUST NOT contain 3D vocabulary tokens — namely: camera, yaw, pitch, distance, focal, waypoint, cameraSequence, tween, easing. CI grep verifies. Use mode-agnostic words instead: region, sections, bbox, center, halfSize.
+//
+// Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-v4-design.md
+// Plan: docs/superpowers/plans/2026-06-19-atlas-present-sprint-1-v4-plan.md
 // =============================================================================
 
 /**
- * @typedef {object} Theme
- * @property {string} renderer — one of 'studio'|'fly3d'|'silhouette' (Sprint 1)
+ * @typedef {object} DeckSource
+ * @property {'pdf'} type — Sprint 2+ adds 'text' | 'docx'
+ * @property {string} fileName
+ * @property {number} pageCount
  */
 
 /**
- * @typedef {object} DeckTween
- * @property {number} durationMs — default 800
- * @property {'linear'|'ease-in-out'} easing — default 'ease-in-out'
+ * @typedef {object} DeckLayout
+ * @property {'linear'} archetype — Sprint 3+ adds 'radial' | 'grid' | ...
+ * @property {number} spacing — section centers spacing (default 6)
  */
 
 /**
- * @typedef {object} CameraSpherical
- * @property {number} yaw — radians
- * @property {number} pitch — radians
- * @property {number} distance
- * @property {number} targetX
- * @property {number} targetY
- * @property {number} targetZ
- * @property {number} [focal]
- */
-
-/**
- * @typedef {object} Waypoint
- * @property {string} id
+ * @typedef {object} Region
+ * @property {number} centerX
+ * @property {number} centerY
+ * @property {number} centerZ
+ * @property {number} halfWidth
+ * @property {number} halfHeight
+ * @property {number} halfDepth
  * @property {string} [title]
- * @property {CameraSpherical} camera
  */
 
 /**
  * @typedef {object} SceneDataSubject
  * @property {string} id
- * @property {string} type — atom name (cube-3d / text-3d-pipe / etc)
- * @property {object} args — atom-specific args
+ * @property {string} type
+ * @property {object} args
  * @property {{translate?:number[], rotate?:number[], scale?:number}} [transform]
- * @property {string} [material] — material name
+ * @property {string} [material]
  */
 
 /**
@@ -59,19 +56,31 @@
  */
 
 /**
+ * @typedef {object} SectionEntry
+ * @property {string} id
+ * @property {number} pageIndex — 0-based source page index
+ * @property {'pending'|'lifting'|'ready'|'error'} status
+ * @property {object} [slideData] — SlideData v1 from parser
+ * @property {string} [code2d] — emitted 2D code (input to lift LLM)
+ * @property {string} [prompt] — user-facing label / title
+ * @property {SceneData} [sceneData] — lift output (when status === 'ready')
+ * @property {Region} [region] — computed via linear-layout when sceneData ready
+ * @property {string} [liftError]
+ */
+
+/**
  * @typedef {object} Deck
  * @property {string} id
  * @property {string} title
  * @property {number} createdAt
  * @property {number} updatedAt
- * @property {Theme} theme
- * @property {SceneData} canvas — the persistent 3D scene
- * @property {Waypoint[]} waypoints
- * @property {DeckTween} tween
+ * @property {DeckSource} source
+ * @property {DeckLayout} layout
+ * @property {SectionEntry[]} sections
  */
 
 export const DECKS_STORAGE_KEY = 'atlas-decks';
-export const STORAGE_VERSION = 2;
+export const STORAGE_VERSION = 3;
 
 // ---- ID helpers -------------------------------------------------------------
 
@@ -82,165 +91,79 @@ function uuid() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-// ---- Defaults ---------------------------------------------------------------
-
-function defaultCanvas() {
-  return {
-    v: 1,
-    name: 'canvas',
-    subjects: [],
-    defaults: {
-      camera: {
-        yaw: 0.3,
-        pitch: -0.15,
-        distance: 8,
-        focal: 1.5,
-        targetX: 0,
-        targetY: 0.5,
-        targetZ: 0,
-      },
-      light: { azimuth: 0.6, altitude: 0.55, distance: 25, intensity: 1.2 },
-      shadow: { enabled: true, mode: 'darken', strength: 0.4 },
-    },
-  };
-}
-
-function defaultTween() {
-  return { durationMs: 800, easing: 'ease-in-out' };
-}
-
 // ---- Deck CRUD --------------------------------------------------------------
 
 /**
- * Create a new deck with an empty canvas (no subjects) and no waypoints.
+ * Create a new deck with empty sections.
  *
- * @param {string} [title='Untitled Deck']
+ * @param {string} title
+ * @param {DeckSource} source
  * @returns {Deck}
  */
-export function createDeck(title) {
+export function createDeck(title, source) {
   const now = Date.now();
   return {
     id: uuid(),
     title: title || 'Untitled Deck',
     createdAt: now,
     updatedAt: now,
-    theme: { renderer: 'studio' },
-    canvas: defaultCanvas(),
-    waypoints: [],
-    tween: defaultTween(),
+    source: source ?? { type: 'pdf', fileName: '', pageCount: 0 },
+    layout: { archetype: 'linear', spacing: 6 },
+    sections: [],
   };
 }
 
-// ---- Subject CRUD (operates on deck.canvas.subjects) ------------------------
+/**
+ * Bulk-add sections in 'pending' status. Called by pipeline after parse.
+ *
+ * @param {Deck} deck
+ * @param {Array<{slideData:object, code2d:string, prompt?:string}>} entries
+ * @returns {SectionEntry[]} the newly added sections
+ */
+export function addPendingSections(deck, entries) {
+  const added = entries.map((e, i) => ({
+    id: uuid(),
+    pageIndex: deck.sections.length + i,
+    status: 'pending',
+    slideData: e.slideData,
+    code2d: e.code2d,
+    prompt: e.prompt,
+  }));
+  deck.sections.push(...added);
+  deck.updatedAt = Date.now();
+  return added;
+}
 
 /**
- * Add a subject to the canvas. Mutates deck + updates updatedAt.
+ * Update a section's status and optional payload (e.g., sceneData on 'ready').
  *
- * @param {Deck} d
- * @param {Partial<SceneDataSubject>} subjectInput — `type` required
- * @returns {SceneDataSubject} the added subject
+ * @param {Deck} deck
+ * @param {string} sectionId
+ * @param {'pending'|'lifting'|'ready'|'error'} status
+ * @param {object} [payload] — merged into the section (e.g., {sceneData, region} or {liftError})
+ * @returns {boolean} true if updated, false if section not found
  */
-export function addSubjectToCanvas(d, subjectInput) {
-  if (!subjectInput || !subjectInput.type) {
-    throw new Error('[deck-model] addSubjectToCanvas: subjectInput.type required');
+export function updateSectionStatus(deck, sectionId, status, payload = {}) {
+  const section = deck.sections.find((s) => s.id === sectionId);
+  if (!section) return false;
+  section.status = status;
+  Object.assign(section, payload);
+  deck.updatedAt = Date.now();
+  return true;
+}
+
+/**
+ * Count sections in each status. Useful for library card progress UI.
+ *
+ * @param {Deck} deck
+ * @returns {{pending:number, lifting:number, ready:number, error:number, total:number}}
+ */
+export function sectionStatusCounts(deck) {
+  const counts = { pending: 0, lifting: 0, ready: 0, error: 0, total: deck.sections.length };
+  for (const s of deck.sections) {
+    counts[s.status]++;
   }
-  const subject = {
-    id: subjectInput.id || uuid(),
-    type: subjectInput.type,
-    args: subjectInput.args || {},
-    transform: subjectInput.transform || {},
-    ...(subjectInput.material ? { material: subjectInput.material } : {}),
-  };
-  d.canvas.subjects.push(subject);
-  d.updatedAt = Date.now();
-  return subject;
-}
-
-/**
- * Remove a subject from canvas by id. Returns true if removed, false if not found.
- *
- * @param {Deck} d
- * @param {string} subjectId
- * @returns {boolean}
- */
-export function removeSubjectFromCanvas(d, subjectId) {
-  const idx = d.canvas.subjects.findIndex((s) => s.id === subjectId);
-  if (idx === -1) return false;
-  d.canvas.subjects.splice(idx, 1);
-  d.updatedAt = Date.now();
-  return true;
-}
-
-// ---- Waypoint CRUD ----------------------------------------------------------
-
-/**
- * Add a waypoint to the deck. Mutates + updates updatedAt.
- *
- * @param {Deck} d
- * @param {Partial<Waypoint>} waypointInput — `camera` required
- * @returns {Waypoint}
- */
-export function addWaypoint(d, waypointInput) {
-  if (!waypointInput || !waypointInput.camera) {
-    throw new Error('[deck-model] addWaypoint: waypointInput.camera required');
-  }
-  const wp = {
-    id: waypointInput.id || uuid(),
-    ...(waypointInput.title ? { title: waypointInput.title } : {}),
-    camera: { ...waypointInput.camera },
-  };
-  d.waypoints.push(wp);
-  d.updatedAt = Date.now();
-  return wp;
-}
-
-/**
- * Remove waypoint by id.
- *
- * @param {Deck} d
- * @param {string} waypointId
- * @returns {boolean}
- */
-export function removeWaypoint(d, waypointId) {
-  const idx = d.waypoints.findIndex((w) => w.id === waypointId);
-  if (idx === -1) return false;
-  d.waypoints.splice(idx, 1);
-  d.updatedAt = Date.now();
-  return true;
-}
-
-/**
- * Reorder waypoints. Out-of-bounds fromIdx is no-op; toIdx clamped to length.
- *
- * @param {Deck} d
- * @param {number} fromIdx
- * @param {number} toIdx
- * @returns {boolean}
- */
-export function moveWaypoint(d, fromIdx, toIdx) {
-  if (fromIdx < 0 || fromIdx >= d.waypoints.length) return false;
-  const clampedTo = Math.max(0, Math.min(toIdx, d.waypoints.length - 1));
-  if (clampedTo === fromIdx) return false;
-  const [moved] = d.waypoints.splice(fromIdx, 1);
-  d.waypoints.splice(clampedTo, 0, moved);
-  d.updatedAt = Date.now();
-  return true;
-}
-
-/**
- * Update an existing waypoint's camera (re-capture). Returns false if not found.
- *
- * @param {Deck} d
- * @param {string} waypointId
- * @param {CameraSpherical} newCamera
- * @returns {boolean}
- */
-export function updateWaypointCamera(d, waypointId, newCamera) {
-  const wp = d.waypoints.find((w) => w.id === waypointId);
-  if (!wp) return false;
-  wp.camera = { ...newCamera };
-  d.updatedAt = Date.now();
-  return true;
+  return counts;
 }
 
 // ---- Storage ----------------------------------------------------------------
@@ -267,8 +190,8 @@ function writeStorage(shape) {
 }
 
 /**
- * Migrate raw storage shape. v1 (PPT-mode) silently dropped — returns empty
- * v2 storage. v2 passes through.
+ * Migrate storage shape. v1 (PPT-mode) + v2 (Canvas Mode) silent drop.
+ * Only v3 passes through.
  *
  * @param {object} raw
  * @returns {{version:number, decks:Deck[]}}
@@ -278,7 +201,6 @@ export function migrateDecksStorage(raw) {
     return { version: STORAGE_VERSION, decks: [] };
   }
   if (raw.version !== STORAGE_VERSION) {
-    // v1 PPT-mode → silently drop. No real users to preserve.
     return { version: STORAGE_VERSION, decks: [] };
   }
   if (!Array.isArray(raw.decks)) {
@@ -287,11 +209,11 @@ export function migrateDecksStorage(raw) {
   return { version: STORAGE_VERSION, decks: raw.decks };
 }
 
-export function saveDeckToStorage(d) {
+export function saveDeckToStorage(deck) {
   const shape = readStorage();
-  const idx = shape.decks.findIndex((existing) => existing.id === d.id);
-  if (idx >= 0) shape.decks[idx] = d;
-  else shape.decks.push(d);
+  const idx = shape.decks.findIndex((existing) => existing.id === deck.id);
+  if (idx >= 0) shape.decks[idx] = deck;
+  else shape.decks.push(deck);
   writeStorage(shape);
 }
 
@@ -315,17 +237,18 @@ export function deleteDeckFromStorage(id) {
 }
 
 export function renameDeck(id, newTitle) {
-  const d = loadDeckFromStorage(id);
-  if (!d) return false;
-  d.title = newTitle;
-  d.updatedAt = Date.now();
-  saveDeckToStorage(d);
+  const deck = loadDeckFromStorage(id);
+  if (!deck) return false;
+  deck.title = newTitle;
+  deck.updatedAt = Date.now();
+  saveDeckToStorage(deck);
   return true;
 }
 
 /**
- * Duplicate a deck — deep copy with new id + " (copy)" suffix. Canvas subjects
- * + waypoints all get fresh ids.
+ * Duplicate a deck — deep copy with new id + " (copy)" suffix. Sections reset
+ * to 'pending' status (lifted sceneData is per-content; copying loses lift —
+ * user must re-lift). Section ids reassigned.
  *
  * @param {string} id
  * @returns {Deck|null}
@@ -340,11 +263,15 @@ export function duplicateDeck(id) {
     title: `${src.title} (copy)`,
     createdAt: now,
     updatedAt: now,
-    canvas: {
-      ...src.canvas,
-      subjects: src.canvas.subjects.map((s) => ({ ...s, id: uuid() })),
-    },
-    waypoints: src.waypoints.map((w) => ({ ...w, id: uuid() })),
+    sections: src.sections.map((s) => ({
+      id: uuid(),
+      pageIndex: s.pageIndex,
+      status: 'pending',
+      slideData: s.slideData,
+      code2d: s.code2d,
+      prompt: s.prompt,
+      // sceneData + region + liftError dropped — re-lift required
+    })),
   };
   saveDeckToStorage(copy);
   return copy;
