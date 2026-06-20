@@ -279,7 +279,13 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
     body: JSON.stringify({
       model,
       max_tokens: 8192,
-      system: CACHED_SYSTEM_PROMPT_LIFT,
+      system: [
+        {
+          type: 'text',
+          text: CACHED_SYSTEM_PROMPT_LIFT,
+          cache_control: { type: 'ephemeral' },
+        },
+      ],
       messages: [{ role: 'user', content: userMessage }],
     }),
   });
