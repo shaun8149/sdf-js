@@ -239,5 +239,171 @@ console.log('\n--- moussa-rounded-polygon ---');
   ok(recorded3.length === 0, 'silently no-ops on <3 vertices');
 }
 
+// ----- moussa-delaunay-voronoi (Sprint 5 Tier B) -----
+console.log('\n--- moussa-delaunay-voronoi ---');
+{
+  const { delaunayTriangles, voronoiCells } = loadIdiom('moussa-delaunay-voronoi.js');
+  ok(typeof delaunayTriangles === 'function', 'delaunayTriangles exported');
+  ok(typeof voronoiCells === 'function', 'voronoiCells exported');
+
+  // Simple 4 points in a square — should triangulate into 2 triangles
+  const sq = [
+    [100, 100],
+    [200, 100],
+    [200, 200],
+    [100, 200],
+  ];
+  const tris = delaunayTriangles(sq, { minX: 0, maxX: 300, minY: 0, maxY: 300 });
+  ok(Array.isArray(tris), 'tris is array');
+  ok(tris.length === 2, `4-point square → 2 triangles (got ${tris.length})`);
+  ok(
+    tris.every((t) => t.circumcenter !== null),
+    'every triangle has circumcenter',
+  );
+  ok(
+    tris.every((t) => t.circumradius > 0),
+    'every triangle has positive circumradius',
+  );
+
+  // 10 random points — Delaunay invariant: no point inside any circumcircle
+  const rng = ((s) => () => ((s = (s * 1664525 + 1013904223) | 0), (s >>> 0) / 0xffffffff))(7);
+  const pts = [];
+  for (let i = 0; i < 10; i++) pts.push([50 + rng() * 200, 50 + rng() * 200]);
+  const tris2 = delaunayTriangles(pts, { minX: 0, maxX: 300, minY: 0, maxY: 300 });
+  ok(tris2.length > 0, `10 points → ${tris2.length} triangles`);
+  let violations = 0;
+  for (const t of tris2) {
+    for (const p of pts) {
+      // Skip the triangle's own vertices
+      if (
+        (p[0] === t.a[0] && p[1] === t.a[1]) ||
+        (p[0] === t.b[0] && p[1] === t.b[1]) ||
+        (p[0] === t.c[0] && p[1] === t.c[1])
+      )
+        continue;
+      const dx = p[0] - t.circumcenter.x,
+        dy = p[1] - t.circumcenter.y;
+      if (dx * dx + dy * dy < t.circumradius * t.circumradius - 1) violations++;
+    }
+  }
+  ok(
+    violations === 0,
+    `Delaunay invariant: no point inside any circumcircle (${violations} violations)`,
+  );
+
+  // Voronoi: each site gets a polygon
+  const cells = voronoiCells(tris2, pts);
+  ok(cells.length === pts.length, `voronoi cells match site count (${cells.length})`);
+  ok(
+    cells.every((c) => Array.isArray(c.polygon)),
+    'every cell has polygon array',
+  );
+  ok(
+    cells.some((c) => c.polygon.length >= 3),
+    'at least one cell is a proper polygon (≥3 vertices)',
+  );
+}
+
+// ----- moussa-perlin-flow-field (Sprint 5 Tier B) -----
+console.log('\n--- moussa-perlin-flow-field ---');
+{
+  const { buildFlowField, traceFlowLines } = loadIdiom('moussa-perlin-flow-field.js');
+  ok(typeof buildFlowField === 'function', 'buildFlowField exported');
+  ok(typeof traceFlowLines === 'function', 'traceFlowLines exported');
+
+  const grid = buildFlowField(600, 360, { spacing: 30, noiseScale: 0.01, seed: 42 });
+  ok(Array.isArray(grid), 'grid is array');
+  ok(
+    grid.length === Math.ceil(600 / 30),
+    `grid x-dim = ${Math.ceil(600 / 30)}, got ${grid.length}`,
+  );
+  ok(
+    grid[0].length === Math.ceil(360 / 30),
+    `grid y-dim = ${Math.ceil(360 / 30)}, got ${grid[0].length}`,
+  );
+  ok(
+    grid.every((col) => col.every((g) => typeof g.angle === 'number')),
+    'every cell has numeric angle',
+  );
+  ok(grid._spacing === 30, 'grid stores spacing metadata');
+
+  // Deterministic: same seed → same angles
+  const grid2 = buildFlowField(600, 360, { spacing: 30, noiseScale: 0.01, seed: 42 });
+  ok(grid[0][0].angle === grid2[0][0].angle, 'same seed = same angles (deterministic)');
+
+  // Trace lines
+  const lines = traceFlowLines(grid, { lineCount: 20, stepsPerLine: 30, stepLength: 4, seed: 1 });
+  ok(Array.isArray(lines), 'lines is array');
+  ok(lines.length > 0, `produced ${lines.length} lines`);
+  ok(
+    lines.every((line) => line.length >= 2),
+    'every line has ≥2 points',
+  );
+  ok(
+    lines.every((line) => line.every(([x, y]) => x >= 0 && x <= 600 && y >= 0 && y <= 360)),
+    'all line points within canvas bounds',
+  );
+}
+
+// ----- moussa-hooke-brush-stroke (Sprint 5 Tier B) -----
+console.log('\n--- moussa-hooke-brush-stroke ---');
+{
+  const { springBrushStroke } = loadIdiom('moussa-hooke-brush-stroke.js');
+  ok(typeof springBrushStroke === 'function', 'springBrushStroke exported');
+
+  // Single segment line
+  const stroke = springBrushStroke(
+    [
+      [0, 0],
+      [100, 0],
+    ],
+    { brushSize: 10, stepSize: 5 },
+  );
+  ok(Array.isArray(stroke), 'stroke is array');
+  ok(stroke.length > 0, `produced ${stroke.length} points`);
+  ok(
+    stroke.every(
+      (p) => typeof p.x === 'number' && typeof p.y === 'number' && typeof p.thickness === 'number',
+    ),
+    'every stroke point has {x, y, thickness}',
+  );
+  ok(
+    stroke.every((p) => p.thickness >= 1 && p.thickness <= 10),
+    'thickness in [minThickness, brushSize]',
+  );
+
+  // Final point snaps to last waypoint
+  const final = stroke[stroke.length - 1];
+  ok(final.x === 100 && final.y === 0, 'final point snaps to last waypoint');
+
+  // Multi-segment path
+  const stroke2 = springBrushStroke(
+    [
+      [0, 0],
+      [50, 50],
+      [100, 0],
+    ],
+    { brushSize: 8, stepSize: 2 },
+  );
+  ok(stroke2.length > stroke.length, 'longer path → more points');
+
+  // Edge: 2-point path
+  const tiny = springBrushStroke(
+    [
+      [0, 0],
+      [10, 10],
+    ],
+    {},
+  );
+  ok(tiny.length >= 1, 'tiny path produces at least 1 point');
+
+  // Edge: degenerate (1 point)
+  const single = springBrushStroke([[5, 5]], { brushSize: 4 });
+  ok(
+    single.length === 1 && single[0].thickness === 4,
+    'single waypoint returns 1 point with brushSize',
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
