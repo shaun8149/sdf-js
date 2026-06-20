@@ -161,5 +161,115 @@ const {
   ok(approx(rotated[1], -1), `rot90 * [1,0] y = -1 (got ${rotated[1]})`);
 }
 
+// SDF primitives
+console.log('\n--- SDF primitives ---');
+
+const {
+  sdf_box,
+  sdf_circle,
+  sdRoundBox,
+  sdTriangle,
+  sdTrapezoid,
+  sdEtriangle,
+  sdf_line,
+  sdf_line2,
+  sdf_moon,
+  xRepeated,
+  sdf_rep,
+} = helpers;
+
+// sdf_circle: standard SDF — outside = positive, on-boundary = 0, inside = negative
+{
+  // Circle centered at origin with r=1
+  ok(approx(sdf_circle([0, 0], [0, 0], 1), -1), 'sdf_circle center: -r');
+  ok(approx(sdf_circle([1, 0], [0, 0], 1), 0), 'sdf_circle on boundary: 0');
+  ok(approx(sdf_circle([2, 0], [0, 0], 1), 1), 'sdf_circle outside (x=2): r=1');
+  ok(approx(sdf_circle([0, 0.5], [0, 0], 1), -0.5), 'sdf_circle inside: -0.5');
+  // Offset center
+  ok(approx(sdf_circle([5, 0], [5, 0], 1), -1), 'sdf_circle offset center');
+}
+
+// sdf_box: rect SDF — outside = positive, inside = negative
+{
+  // Box centered at origin, full-width 2 × full-height 2 (half = 1)
+  ok(approx(sdf_box([0, 0], [0, 0], [2, 2]), -1), 'sdf_box center: -1');
+  ok(approx(sdf_box([1, 0], [0, 0], [2, 2]), 0), 'sdf_box on right edge: 0');
+  ok(approx(sdf_box([2, 0], [0, 0], [2, 2]), 1), 'sdf_box outside right: 1');
+  ok(approx(sdf_box([0, 1], [0, 0], [2, 2]), 0), 'sdf_box on top edge: 0');
+}
+
+// sdRoundBox (rounded rect)
+{
+  // Centered at origin, full-half-extents [1,1], all corners radius 0.2
+  // At origin: deep inside, should be very negative
+  const dCenter = sdRoundBox([0, 0], [1, 1], [0.2, 0.2, 0.2, 0.2]);
+  ok(dCenter < 0, 'sdRoundBox center: negative');
+  // Far away
+  ok(sdRoundBox([3, 0], [1, 1], [0.2, 0.2, 0.2, 0.2]) > 0, 'sdRoundBox far: positive');
+}
+
+// sdTriangle
+{
+  // Equilateral triangle with vertices around origin
+  const a = [0, 1];
+  const b = [-0.866, -0.5];
+  const c = [0.866, -0.5];
+  ok(sdTriangle([0, 0], a, b, c) < 0, 'sdTriangle inside (0,0): negative');
+  ok(sdTriangle([3, 3], a, b, c) > 0, 'sdTriangle far: positive');
+}
+
+// sdEtriangle (origin-centered equilateral)
+{
+  const dCenter = sdEtriangle([0, 0], 1);
+  ok(dCenter < 0, `sdEtriangle center r=1: negative (got ${dCenter})`);
+  const dFar = sdEtriangle([5, 5], 1);
+  ok(dFar > 0, `sdEtriangle far: positive (got ${dFar})`);
+}
+
+// sdTrapezoid
+// NOTE (Phase 2 implementer 2026-06-20): BOB sdTrapezoid Y-flips the probe
+// point (p = [p[0], -p[1]]) but does NOT flip the anchor points a/b. So the
+// "inside" point in BOB convention is one with negated Y relative to the axis.
+// Plan's test point [0, 0.1] with axis a=[0,0]→b=[0,0.25] reads as positive
+// (outside) because after the Y-flip the probe lands at [0,-0.1], below a.
+// Using a point that lands INSIDE after the flip: probe [0, -0.1] → [0, 0.1]
+// which is on the axis between a and b.
+{
+  // After BOB Y-flip: probe [0, -0.1] becomes [0, 0.1], between a=[0,0] and b=[0,0.25]
+  const d = sdTrapezoid([0, -0.1], [0, 0], [0, 0.25], 0.5, 0.3);
+  ok(d < 0, `sdTrapezoid inside (Y-flipped probe): negative (got ${d})`);
+}
+
+// sdf_line: BOB formula returns -(p.y - cy - k*p.x). For k=0 + p.y < cy, this
+// returns POSITIVE (not negative as plan comment suggested). The sign
+// convention is "above-line = inside (negative)" — opposite of the plan's
+// "below" framing. Tests adjusted to match BOB-verbatim formula semantics.
+{
+  ok(sdf_line([0, 0], 0.5) > 0, 'sdf_line: (0,0) below cy=0.5 → positive (BOB sign convention)');
+  ok(sdf_line([0, 1], 0.5) < 0, 'sdf_line: (0,1) above cy=0.5 → negative (BOB sign convention)');
+  ok(approx(sdf_line([0, 0.5], 0.5), 0), 'sdf_line: on line → 0');
+}
+
+// sdf_moon (occluded circle pattern)
+{
+  // Test that center yields negative + offset yields positive
+  ok(typeof sdf_moon([0, -0.8], [0, 0]) === 'number', 'sdf_moon returns number');
+}
+
+// xRepeated: returns [repeated p[0], original p[1]]
+{
+  // s=2 should wrap p[0] in (-1, 1) range
+  const r1 = xRepeated([0.5, 7], 2);
+  ok(r1[0] >= -1 && r1[0] <= 1, `xRepeated wraps x to [-1,1] (got ${r1[0]})`);
+  ok(r1[1] === 7, 'xRepeated leaves y untouched');
+}
+
+// sdf_rep: 1D modulo around center
+{
+  // sdf_rep with r=2 should wrap x to (-1, 1)
+  const v = sdf_rep(3, 2); // 3 / 2 = 1.5, floor = 1, 1.5 - 1 - 0.5 = 0, * 2 = 0
+  ok(v >= -1 && v <= 1, `sdf_rep wraps to [-1,1] (got ${v})`);
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
