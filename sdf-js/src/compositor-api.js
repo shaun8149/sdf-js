@@ -163,6 +163,7 @@ needed.
 | **springBrushStroke(waypoints, opts)** (Sprint 5) | Hand-drawn connector lines / arrows / annotation underlines (kill "AI sterile vector" feel) | Spring chain (Hooke) walks input polyline; output has thickness modulated by local speed |
 | **getChromotomePalettes() + hexToRgb()** (Sprint 6, kgolid MIT) | Rich multi-color palettes (3-7 colors + bg + stroke per palette) beyond Atlas's 2-color branding presets. Use when content benefits from cultural/aesthetic palette diversity (vintage / saturated / earth tones / mid-century) | ~23 hand-curated palettes from chromotome (hilda / jung / ranganath / kovecses). LLM can pick by name or random, override window.__brandingPalette for one variant |
 | **marchingSquaresLines + marchingSquaresPolygons + buildNoiseGrid** (Sprint 6, kgolid MIT) | Contour extraction from 2D scalar grid — heatmap / density / topology visualization. Decorative background (buildNoiseGrid + draw lines at multiple thresholds) | Classic 16-case dispatch, pure JS no P5 dep. Pairs with chromotome (each level = palette color) |
+| **generateApparatusGrid + drawApparatusGrid** (Sprint 7, kgolid MIT) | Compositional layouts where content is itself COMPOSITIONAL — team/department/unit org charts, scheduled blocks, multi-tier dashboards with implicit grouping, system component diagrams. "Robot anatomy / blueprint of a fictional machine" aesthetic. | 9-block state machine + 3 probabilities + 4 color modes + H/V symmetry + ellipse boundary mask. Pairs perfectly with chromotome multi-color palettes. |
 
 LLM inlines the FUNCTION DEFINITION into the sketch code (no import — iframe
 sandbox is classic JS not module loader). Examples follow.
@@ -326,6 +327,35 @@ hand-drawn arrows** (spring-physics applied to slightly arched waypoint paths)
 with thickness modulation — slow segments thick, fast straights thin. Looks
 sketch-noted, not vector-perfect. **Use for sequence/hierarchy/flow content
 where "designed by hand" feel matters more than crisp engineering precision.**
+
+## Worked example — Sprint 7 (apparatus compositional layout for team/system content)
+
+User text: "Our engineering organization has 8 teams across 3 product lines."
+LLM detects: compositional content (teams within product lines). Use
+apparatus-CA grid for "robot anatomy / system blueprint" aesthetic — each
+team = colored room with shared walls indicating shared product line.
+
+\`\`\`json
+{
+  "v": 1, "name": "hierarchy: Engineering Org Apparatus",
+  "subjects": [{
+    "id": "sketch-apparatus-org",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function generateApparatusGrid(o={}){const d={xdim:24,ydim:14,radius_x:10,radius_y:6,initiate_chance:0.85,extension_chance:0.85,vertical_chance:0.5,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.15,solidness:0.55,colors:['#ec5526','#f4ac12','#9ebbc1','#f7f4e2','#1e1b1e'],color_mode:'group',group_size:0.75,simple:false};const opts={...d,...o};const ctx={...opts,main_color:opts.colors[Math.floor(Math.random()*opts.colors.length)],id_counter:0};function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(ctx.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;ctx.main_color=Math.random()>ctx.group_size?gr(ctx.colors):k||ctx.main_color;col=ctx.main_color;}else col=ctx.main_color;return{h:true,v:true,in:true,col,id:ctx.id_counter++};}function sb(x,y){return ap(x,y,-(1-ctx.roundness))&&Math.random()<=ctx.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=ctx.initiate_chance;}function ex(x,y){return ap(x,y,1-ctx.roundness)&&Math.random()<=ctx.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=ctx.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=new Array(opts.ydim+1);for(let y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(let x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>g[y].length/2){const m=g[y][g[y].length-x],mv=g[y][g[y].length-x+1];g[y][x]=dc(m);if(mv)g[y][x].v=mv.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){background(247,244,224);const g=generateApparatusGrid();const cs=20,ox=(600-25*cs)/2,oy=30;noStroke();for(let y=0;y<g.length;y++)for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}stroke(30,27,30);strokeWeight(1.5);for(let y=0;y<g.length;y++)for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}fill(30);noStroke();textFont('sans-serif');textSize(14);textAlign(CENTER,TOP);text('8 teams · 3 product lines',300,330);}"
+    }
+  }]
+}
+\`\`\`
+
+Result: ~14×24 grid composition with **multiple colored "rooms"** (teams)
+clustered into groups (product lines via group color mode) inside an
+ellipse boundary, with shared walls between rooms. H-symmetric so the
+composition feels engineered. Each generated variant is unique but the
+aesthetic is consistent — "engineering org as machine blueprint".
+**Use this pattern when content describes compositional structure**
+(teams, components, modules, sub-systems) where the COMPOSITION itself
+is the message.
 `;
 
 /**
