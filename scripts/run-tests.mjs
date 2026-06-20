@@ -39,6 +39,8 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-filter.mjs' },
   // IQ-shader program W4 — lighting (sphere AO/shadow, outdoor model, fog)
   { category: 'math', file: 'sdf-js/scripts/test-lighting.mjs' },
+  // IQ-shader program W5 — SDFs with analytic gradients (sdg*)
+  { category: 'math', file: 'sdf-js/scripts/test-sdg.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
