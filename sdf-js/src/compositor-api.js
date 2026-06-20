@@ -158,6 +158,9 @@ needed.
 | **packShapes(w, h, count, opts)** | Generalize wedge — fill outline with arbitrary shapes (dollar bills, soldiers, icons), not just circles | Spatial-hash grid collision, supports custom inside-test for SDF region |
 | **createGraphics(w, h) buffer** | Multi-instance pattern (3 carriers / 5 servers / N copies of expensive shape) | P5 native — render expensive sub-pattern once to offscreen buffer, image() stamp N times |
 | **roundedPolyPath(ctx, vertices, radius)** | Hierarchy/network nodes with smooth corners (any-shape, not just rect) | drawingContext.arcTo() per corner — supports per-vertex radius |
+| **delaunayTriangles(points, bounds) + voronoiCells(tris, points)** (Sprint 5) | Organic region partitioning — market share / population density / territory layouts where rectangular grid feels wrong | Bowyer-Watson incremental insertion; each input point becomes its own polygon cell via circumcenter dual |
+| **buildFlowField + traceFlowLines(grid, opts)** (Sprint 5) | Generative background TEXTURE only — subtle low-opacity flow streamlines behind foreground content | Deterministic 2D value noise → angle grid → traced flow lines. Atlas's visual identity texture vs flat Napkin/antvis look |
+| **springBrushStroke(waypoints, opts)** (Sprint 5) | Hand-drawn connector lines / arrows / annotation underlines (kill "AI sterile vector" feel) | Spring chain (Hooke) walks input polyline; output has thickness modulated by local speed |
 
 LLM inlines the FUNCTION DEFINITION into the sketch code (no import — iframe
 sandbox is classic JS not module loader). Examples follow.
@@ -271,6 +274,56 @@ Result: 8 KPI cards arranged non-uniformly — 1 large hero ($100M ARR big text)
 hierarchy matches importance, vs Sprint 3 uniform grid. **Use this pattern
 when content has multiple KPIs with implicit ranking** (hero metric +
 supporting metrics).
+
+## Worked example — Sprint 5 (organic market-share via delaunayTriangles + voronoiCells)
+
+User text: "AWS holds 32% cloud market share, Azure 23%, GCP 11%, others 34%."
+LLM detects: market share / proportional data. NOT amenable to rectangular grid
+(rectangles don't communicate "territory"). Use Voronoi cells = organic regions.
+
+\`\`\`json
+{
+  "v": 1, "name": "kpi-hero: Cloud Market Share Territories",
+  "subjects": [{
+    "id": "sketch-voronoi-share",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function _cc(a,b,c){const ax=a[0],ay=a[1],bx=b[0],by=b[1],cx=c[0],cy=c[1];const d=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));if(Math.abs(d)<1e-12)return null;const ux=((ax*ax+ay*ay)*(by-cy)+(bx*bx+by*by)*(cy-ay)+(cx*cx+cy*cy)*(ay-by))/d;const uy=((ax*ax+ay*ay)*(cx-bx)+(bx*bx+by*by)*(ax-cx)+(cx*cx+cy*cy)*(bx-ax))/d;return{x:ux,y:uy,r:Math.hypot(ux-ax,uy-ay)};}function _ek(p,q){return p[0]<q[0]||(p[0]===q[0]&&p[1]<q[1])?(p[0]+','+p[1]+'|'+q[0]+','+q[1]):(q[0]+','+q[1]+'|'+p[0]+','+p[1]);}function _mk(a,b,c){const cc=_cc(a,b,c);return{a,b,c,cc,cr:cc?cc.r:0};}function delaunayTriangles(pts,bd){const dx=bd.maxX-bd.minX,dy=bd.maxY-bd.minY,cx=(bd.minX+bd.maxX)/2,cy=(bd.minY+bd.maxY)/2,m=Math.max(dx,dy)*20;const sa=[cx-m,cy+m*0.5],sb=[cx+m,cy+m*0.5],sc=[cx,cy-m];let tris=[_mk(sa,sb,sc)];for(const p of pts){const edges=new Map(),bad=[];tris=tris.filter(t=>{if(t.cc){const dxc=p[0]-t.cc.x,dyc=p[1]-t.cc.y;if(dxc*dxc+dyc*dyc<t.cr*t.cr-1e-9){bad.push(t);for(const[u,v]of[[t.a,t.b],[t.b,t.c],[t.c,t.a]])edges.set(_ek(u,v),(edges.get(_ek(u,v))||0)+1);return false;}}return true;});for(const t of bad)for(const[u,v]of[[t.a,t.b],[t.b,t.c],[t.c,t.a]])if(edges.get(_ek(u,v))===1)tris.push(_mk(u,v,p));}const sup=[sa,sb,sc];return tris.filter(t=>{for(const v of[t.a,t.b,t.c])for(const s of sup)if(v[0]===s[0]&&v[1]===s[1])return false;return true;});}function voronoiCells(tris,sites){return sites.map(s=>{const inc=tris.filter(t=>(t.a[0]===s[0]&&t.a[1]===s[1])||(t.b[0]===s[0]&&t.b[1]===s[1])||(t.c[0]===s[0]&&t.c[1]===s[1]));const cs=inc.map(t=>t.cc).filter(c=>c).map(c=>({x:c.x,y:c.y,a:Math.atan2(c.y-s[1],c.x-s[0])})).sort((a,b)=>a.a-b.a);return{site:s,polygon:cs.map(c=>[c.x,c.y])};});}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg,fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const data=[{label:'AWS',share:0.32,seed:[200,180]},{label:'Azure',share:0.23,seed:[400,150]},{label:'GCP',share:0.11,seed:[450,290]},{label:'Others',share:0.34,seed:[150,300]}];const sites=data.map(d=>d.seed);const tris=delaunayTriangles(sites,{minX:-200,maxX:800,minY:-200,maxY:560});const cells=voronoiCells(tris,sites);noStroke();for(let i=0;i<cells.length;i++){const c=cells[i],alpha=80+data[i].share*400;fill(fg[0],fg[1],fg[2],alpha);if(c.polygon.length>=3){beginShape();for(const v of c.polygon)vertex(v[0],v[1]);endShape(CLOSE);}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);for(const t of tris){noFill();line(t.cc.x,t.cc.y,t.cc.x+1,t.cc.y);}noStroke();fill(bg[0],bg[1],bg[2]);textFont('sans-serif');textAlign(CENTER,CENTER);for(let i=0;i<data.length;i++){textSize(20);text(data[i].label,sites[i][0],sites[i][1]-8);textSize(16);text(Math.round(data[i].share*100)+'%',sites[i][0],sites[i][1]+12);}}"
+    }
+  }]
+}
+\`\`\`
+
+Result: 4 organic Voronoi territories filled with palette opacity proportional
+to market share (AWS biggest darkest region, GCP smallest faintest). Labels
++ percentages centered on each site. **Use this pattern when proportions
+imply territorial competition** (market share, demographics, voting blocks).
+NOT a substitute for irregularGridPack (use that for KPI dashboards).
+
+## Worked example — Sprint 5 (hand-drawn connectors via springBrushStroke)
+
+User text: "Backend → Frontend → Mobile architecture flow"
+LLM detects: sequence with concrete components. Use boxes + Hooke-spring
+connector lines for hand-drawn feel (vs sterile straight vectors).
+
+\`\`\`json
+{
+  "v": 1, "name": "sequence: Architecture Flow Hand-Drawn",
+  "subjects": [{
+    "id": "sketch-hooke-connectors",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function springBrushStroke(wp,opts){if(wp.length<2)return wp.map(([x,y])=>({x,y,thickness:opts.brushSize||8}));const k=opts.springK||0.4,fr=opts.friction||0.55,st=opts.stepSize||2,bs=opts.brushSize||8,sf=opts.speedToThicknessFactor||0.8,mt=opts.minThickness||1;const sg=[];let tl=0;for(let i=1;i<wp.length;i++){const[x0,y0]=wp[i-1],[x1,y1]=wp[i],dx=x1-x0,dy=y1-y0,sl=Math.hypot(dx,dy);sg.push({x0,y0,dx,dy,sl,t0:tl});tl+=sl;}if(tl===0)return[{x:wp[0][0],y:wp[0][1],thickness:bs}];let bx=wp[0][0],by=wp[0][1],vx=0,vy=0;const out=[];for(let d=0;d<=tl;d+=st){let s=sg[0];for(let i=0;i<sg.length;i++)if(d>=sg[i].t0&&d<=sg[i].t0+sg[i].sl){s=sg[i];break;}const lt=s.sl>0?(d-s.t0)/s.sl:0,cx=s.x0+s.dx*lt,cy=s.y0+s.dy*lt;vx+=(cx-bx)*k;vy+=(cy-by)*k;vx*=fr;vy*=fr;bx+=vx;by+=vy;const sp=Math.hypot(vx,vy);out.push({x:bx,y:by,thickness:Math.max(mt,bs-sp*sf)});}const last=wp[wp.length-1];if(out.length>0){out[out.length-1].x=last[0];out[out.length-1].y=last[1];}return out;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg,fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const stages=['Backend','Frontend','Mobile'];const bw=140,bh=70,gap=50,cy=180,sx=(600-3*bw-2*gap)/2;noFill();stroke(fg[0],fg[1],fg[2]);strokeWeight(2);for(let i=0;i<3;i++)rect(sx+i*(bw+gap),cy-bh/2,bw,bh,10);noStroke();fill(fg[0],fg[1],fg[2]);textFont('sans-serif');textSize(18);textAlign(CENTER,CENTER);for(let i=0;i<3;i++)text(stages[i],sx+i*(bw+gap)+bw/2,cy);for(let i=0;i<2;i++){const x1=sx+i*(bw+gap)+bw+4,x2=sx+(i+1)*(bw+gap)-4;const mid=(x1+x2)/2;const wp=[[x1,cy],[mid,cy-15],[x2,cy]];const stk=springBrushStroke(wp,{brushSize:5,springK:0.32,friction:0.6,stepSize:1.5});for(let j=1;j<stk.length;j++){stroke(fg[0],fg[1],fg[2]);strokeWeight(stk[j].thickness);line(stk[j-1].x,stk[j-1].y,stk[j].x,stk[j].y);}noStroke();fill(fg[0]);triangle(x2,cy,x2-8,cy-5,x2-8,cy+5);}}"
+    }
+  }]
+}
+\`\`\`
+
+Result: 3 labeled boxes (Backend / Frontend / Mobile) connected by **wobbly
+hand-drawn arrows** (spring-physics applied to slightly arched waypoint paths)
+with thickness modulation — slow segments thick, fast straights thin. Looks
+sketch-noted, not vector-perfect. **Use for sequence/hierarchy/flow content
+where "designed by hand" feel matters more than crisp engineering precision.**
 `;
 
 /**
