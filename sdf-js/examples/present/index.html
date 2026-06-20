@@ -23,8 +23,8 @@
     const target = document.getElementById('route-target');
 
     if (deckId) {
-      const { mountDeckView } = await import('../../src/present/deck-view.js');
-      await mountDeckView(target, deckId);
+      const { mountDocumentView } = await import('../../src/present/document-view.js');
+      await mountDocumentView(target, deckId);
     } else {
       const { mountLibraryPage } = await import('../../src/present/library-page.js');
       await mountLibraryPage(target);
