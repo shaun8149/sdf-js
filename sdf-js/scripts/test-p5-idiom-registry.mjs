@@ -405,5 +405,112 @@ console.log('\n--- moussa-hooke-brush-stroke ---');
   );
 }
 
+// ----- kgolid-chromotome-palettes (Sprint 6) -----
+console.log('\n--- kgolid-chromotome-palettes ---');
+{
+  const {
+    getChromotomePalettes,
+    getChromotomePaletteByName,
+    getRandomChromotomePalette,
+    hexToRgb,
+  } = loadIdiom('kgolid-chromotome-palettes.js');
+  ok(typeof getChromotomePalettes === 'function', 'getChromotomePalettes exported');
+  ok(typeof getChromotomePaletteByName === 'function', 'getChromotomePaletteByName exported');
+  ok(typeof getRandomChromotomePalette === 'function', 'getRandomChromotomePalette exported');
+  ok(typeof hexToRgb === 'function', 'hexToRgb exported');
+
+  const all = getChromotomePalettes();
+  ok(Array.isArray(all), 'getChromotomePalettes returns array');
+  ok(all.length >= 20, `>=20 palettes shipped (got ${all.length})`);
+  ok(
+    all.every((p) => typeof p.name === 'string' && Array.isArray(p.colors) && p.colors.length >= 3),
+    'every palette has name + colors[≥3]',
+  );
+  ok(
+    all.every((p) => typeof p.background === 'string' && p.background.startsWith('#')),
+    'every palette has hex background',
+  );
+  ok(
+    all.every((p) => p.source && p.source.startsWith('chromotome:')),
+    'every palette credits chromotome source',
+  );
+
+  const found = getChromotomePaletteByName('hilda01');
+  ok(found && found.name === 'hilda01', 'getChromotomePaletteByName works');
+  ok(getChromotomePaletteByName('nope') === null, 'returns null for unknown');
+
+  // Deterministic random with seeded rand
+  let seed = 0;
+  const rng = () => (seed = (seed + 0.37) % 1);
+  const r1 = getRandomChromotomePalette(rng);
+  ok(r1 && typeof r1.name === 'string', 'getRandomChromotomePalette returns palette');
+
+  // hexToRgb conversions
+  const rgb = hexToRgb('#ff8000');
+  ok(
+    rgb[0] === 255 && rgb[1] === 128 && rgb[2] === 0,
+    `hexToRgb #ff8000 → [255,128,0] (got ${rgb})`,
+  );
+  ok(hexToRgb('#fff')[0] === 255, '3-digit hex expands correctly');
+  ok(hexToRgb('xxxxxx')[0] === 0, 'invalid hex (non-hex chars) returns [0,0,0]');
+  ok(hexToRgb('')[0] === 0, 'empty string returns [0,0,0]');
+}
+
+// ----- kgolid-marching-squares (Sprint 6) -----
+console.log('\n--- kgolid-marching-squares ---');
+{
+  const { marchingSquaresLines, marchingSquaresPolygons, buildNoiseGrid } = loadIdiom(
+    'kgolid-marching-squares.js',
+  );
+  ok(typeof marchingSquaresLines === 'function', 'marchingSquaresLines exported');
+  ok(typeof marchingSquaresPolygons === 'function', 'marchingSquaresPolygons exported');
+  ok(typeof buildNoiseGrid === 'function', 'buildNoiseGrid exported');
+
+  // Trivial 3×3 grid: 4 corners high, center low → contour around center
+  const grid = [
+    [1, 1, 1],
+    [1, 0, 1],
+    [1, 1, 1],
+  ];
+  const lines = marchingSquaresLines(grid, 0.5, { cellSize: 10 });
+  ok(Array.isArray(lines), 'returns array');
+  ok(lines.length === 4, `3x3 center-hole → 4 segments (got ${lines.length})`);
+  ok(
+    lines.every((s) => typeof s.x1 === 'number' && typeof s.x2 === 'number'),
+    'segments have x1/y1/x2/y2 numbers',
+  );
+
+  // Threshold above all values → no contour
+  ok(marchingSquaresLines(grid, 100, {}).length === 0, 'threshold above max → no segments');
+  // Threshold below all values → no contour
+  ok(marchingSquaresLines(grid, -1, {}).length === 0, 'threshold below min → no segments');
+
+  // Polygons: full-cell fill when all corners above threshold
+  const allHigh = [
+    [1, 1],
+    [1, 1],
+  ];
+  const polys = marchingSquaresPolygons(allHigh, 0.5, { cellSize: 10 });
+  ok(polys.length === 1 && polys[0].length === 4, 'all-above cell → 1 polygon with 4 vertices');
+
+  // buildNoiseGrid determinism + shape
+  const ng1 = buildNoiseGrid(20, 10, { scale: 0.2, seed: 7 });
+  const ng2 = buildNoiseGrid(20, 10, { scale: 0.2, seed: 7 });
+  ok(ng1.length === 10 && ng1[0].length === 20, 'grid shape: rows × cols');
+  ok(ng1[5][10] === ng2[5][10], 'same seed = same grid (deterministic)');
+  ok(
+    ng1.every((row) => row.every((v) => v >= 0 && v <= 1)),
+    'noise values in [0, 1]',
+  );
+
+  // Contour count grows with grid density
+  const sparse = marchingSquaresLines(buildNoiseGrid(10, 10, { scale: 0.3, seed: 1 }), 0.5, {});
+  const dense = marchingSquaresLines(buildNoiseGrid(40, 40, { scale: 0.3, seed: 1 }), 0.5, {});
+  ok(
+    dense.length > sparse.length,
+    `denser grid → more contour segments (${sparse.length} → ${dense.length})`,
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
