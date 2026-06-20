@@ -1,0 +1,39 @@
+{
+  "id": "waterfall-3d",
+  "title": "Chart · Waterfall",
+  "prompt": "waterfall-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "waterfall-3d",
+    "source": { "format": "synthetic", "prompt": "waterfall-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "waterfall-3d",
+        "args": { "count": 5 },
+        "transform": { "translate": [0, 0.05, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.8,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "waterfall-3d",
+    "costUSD": 0
+  }
+}

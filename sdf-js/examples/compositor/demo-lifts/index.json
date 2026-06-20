@@ -438,6 +438,56 @@
       "file": "bullet-list-3d.json",
       "renderer": "studio",
       "prompt": "Chart · Bullet List"
+    },
+    {
+      "id": "funnel-3d",
+      "title": "Chart · Funnel",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "funnel-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Funnel"
+    },
+    {
+      "id": "venn-3d",
+      "title": "Chart · Venn",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "venn-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Venn"
+    },
+    {
+      "id": "waterfall-3d",
+      "title": "Chart · Waterfall",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "waterfall-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Waterfall"
+    },
+    {
+      "id": "scatter-3d",
+      "title": "Chart · Scatter",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "scatter-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Scatter"
+    },
+    {
+      "id": "gantt-3d",
+      "title": "Chart · Gantt",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "gantt-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Gantt"
     }
   ]
 }

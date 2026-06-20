@@ -228,6 +228,12 @@ export const PRIMITIVE_TYPES = new Set([
   'agenda-list-3d',
   'layer-stack-3d',
   'bullet-list-3d',
+  // Sprint 5 Wave B — data-viz (funnel / venn / waterfall / scatter / gantt).
+  'funnel-3d',
+  'venn-3d',
+  'waterfall-3d',
+  'scatter-3d',
+  'gantt-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai
