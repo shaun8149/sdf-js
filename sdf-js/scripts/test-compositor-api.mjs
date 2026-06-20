@@ -138,6 +138,10 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
     compiled && compiled.sdf && typeof compiled.sdf.f === 'function',
     'compileScene: scatter variants produce a usable SDF',
   );
+  ok(
+    compiled?.expandedSceneData?.subjects?.length === 3,
+    `compileScene: exposes expanded sceneData subjects for layout/render helpers (got ${compiled?.expandedSceneData?.subjects?.length})`,
+  );
 }
 
 // parseLiftResponse: strips markdown fence

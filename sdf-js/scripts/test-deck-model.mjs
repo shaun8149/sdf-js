@@ -233,6 +233,38 @@ console.log('\nTest group 4: updateVariantStatus (Sprint 1.5)');
   ok(bad3 === false, 'updateVariantStatus: nonexistent sectionId returns false');
 }
 
+{
+  const d = deck.createDeck('auto-select-ready');
+  deck.addPendingSections(d, [{ slideData: {}, code2d: '' }]);
+  const sId = d.sections[0].id;
+
+  deck.updateVariantStatus(d, sId, 0, 'error', { liftError: 'first variant failed' });
+  ok(d.sections[0].selectedVariantIndex === 0, 'auto-select: no ready variant yet, selection unchanged');
+
+  deck.updateVariantStatus(d, sId, 1, 'ready', {
+    sceneData: { v: 1, name: 'list: fallback', subjects: [] },
+    region: {
+      centerX: 0,
+      centerY: 0,
+      centerZ: 0,
+      halfWidth: 0.5,
+      halfHeight: 0.5,
+      halfDepth: 0.5,
+      title: 'fallback',
+    },
+    archetype: 'list',
+  });
+  ok(
+    d.sections[0].selectedVariantIndex === 1,
+    `auto-select: first ready variant selected when default failed (got ${d.sections[0].selectedVariantIndex})`,
+  );
+
+  deck.updateVariantStatus(d, sId, 2, 'ready', {
+    sceneData: { v: 1, name: 'compare: later', subjects: [] },
+  });
+  ok(d.sections[0].selectedVariantIndex === 1, 'auto-select: existing ready selection preserved');
+}
+
 console.log('\nTest group 5: selectVariant (Sprint 1.5)');
 
 {
@@ -381,6 +413,44 @@ resetStorage();
   const migrated = deck.migrateDecksStorage({ version: 3, decks: [{ id: 'old' }] });
   ok(migrated.version === 4, 'v3 raw → version 4');
   ok(migrated.decks.length === 0, 'v3 decks dropped');
+}
+
+// v4 transient lifting states are reset on read; no pipeline can finish them after reload.
+{
+  resetStorage();
+  localStorage.setItem(
+    'atlas-decks',
+    JSON.stringify({
+      version: 4,
+      decks: [
+        {
+          id: 'v4-stale-lifting',
+          title: 'stale',
+          createdAt: 1,
+          updatedAt: 1,
+          source: { type: 'pdf', fileName: 'stale.pdf', pageCount: 1 },
+          layout: { archetype: 'linear', spacing: 6 },
+          sections: [
+            {
+              id: 's1',
+              pageIndex: 0,
+              status: 'lifting',
+              selectedVariantIndex: 0,
+              variants: [
+                { status: 'lifting' },
+                { status: 'ready', sceneData: { v: 1, subjects: [] } },
+                { status: 'pending' },
+              ],
+            },
+          ],
+        },
+      ],
+    }),
+  );
+  const loaded = deck.loadDeckFromStorage('v4-stale-lifting');
+  ok(loaded.sections[0].variants[0].status === 'pending', 'v4 normalize: stale lifting variant reset');
+  ok(loaded.sections[0].status === 'ready', 'v4 normalize: section status re-derived from ready sibling');
+  ok(loaded.sections[0].selectedVariantIndex === 1, 'v4 normalize: selected ready sibling after reload');
 }
 
 console.log('\nTest group 10: listDecks sort + delete');

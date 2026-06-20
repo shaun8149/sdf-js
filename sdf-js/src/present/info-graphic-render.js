@@ -79,6 +79,12 @@ export function renderInfoGraphic(deck, canvas) {
   }
 }
 
+export function compileThumbnailScene(sceneData) {
+  const compiled = compileScene(sceneData);
+  const view = computeView(compiled.expandedSceneData ?? sceneData);
+  return { compiled, view };
+}
+
 /**
  * Header: deck title + source info.
  *
@@ -130,7 +136,7 @@ function drawSection(ctx, section, index, x, y) {
   if (section.status === 'ready' && variant?.sceneData) {
     drawSliceThumbnail(ctx, variant.sceneData, x, thumbY, THUMBNAIL_SIZE);
   } else {
-    drawPlaceholder(ctx, x, thumbY, THUMBNAIL_SIZE, section.status, variant?.liftError);
+    drawPlaceholder(ctx, x, thumbY, THUMBNAIL_SIZE, variant?.status ?? section.status, variant?.liftError);
   }
 
   // Title (below thumbnail)
@@ -162,8 +168,7 @@ function drawSliceThumbnail(ctx, sceneData, x, y, size) {
     tempCanvas.width = size;
     tempCanvas.height = size;
     const renderer = createRendererForId('silhouette', tempCanvas);
-    const compiled = compileScene(sceneData);
-    const view = computeView(sceneData);
+    const { compiled, view } = compileThumbnailScene(sceneData);
     renderer.render([{ sdf: compiled.sdf, color: [60, 60, 60] }], {
       background: [245, 245, 245],
       view,

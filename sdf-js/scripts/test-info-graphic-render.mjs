@@ -2,7 +2,7 @@
 // test-info-graphic-render.mjs — L1 unit tests for info graphic renderer
 // =============================================================================
 
-import { computeCanvasSize, renderInfoGraphic } from '../src/present/info-graphic-render.js';
+import { computeCanvasSize, renderInfoGraphic, compileThumbnailScene } from '../src/present/info-graphic-render.js';
 import { createDeck, addPendingSections } from '../src/present/deck-model.js';
 
 // Mock localStorage
@@ -73,6 +73,34 @@ console.log('\nTest group 2: renderInfoGraphic export shape');
 
 ok(typeof renderInfoGraphic === 'function', 'renderInfoGraphic: function exported');
 ok(renderInfoGraphic.length === 2, `renderInfoGraphic: arity 2 (got ${renderInfoGraphic.length})`);
+
+console.log('\nTest group 3: thumbnail view uses expanded Generator-S subjects');
+
+{
+  const scene = {
+    v: 1,
+    name: 'array view',
+    subjects: [
+      {
+        id: 'box',
+        type: 'box',
+        args: { size: 0.5 },
+        transform: { translate: [0, 0, 0] },
+        variants: [{ op: 'array', count: 3, axis: 'x', spacing: 20 }],
+      },
+    ],
+    defaults: {
+      camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { altitude: 0.5, azimuth: 0.5, distance: 50, intensity: 1.0 },
+    },
+  };
+  const { view, compiled } = compileThumbnailScene(scene);
+  ok(
+    compiled.expandedSceneData.subjects.length === 3,
+    `array variants expanded to 3 subjects (got ${compiled.expandedSceneData.subjects.length})`,
+  );
+  ok(view === 30, `thumbnail view fits expanded +/-20 subject spread (got ${view})`);
+}
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
