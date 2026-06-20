@@ -143,6 +143,25 @@ When using Atlas SDF helpers inside a p5-sketch's args.code:
 
 - All other helpers (sdf_box, sdf_circle, sdRoundBox, sdTriangle, sdf_moon, xRepeated, sdf_rep) use standard SDF conventions with no Y-flip: inside = negative, outside = positive, point passed in is the point evaluated directly.
 
+## P5 idiom library (Sprint 4 — inspired by Gorilla Sun / Ahmad Moussa)
+
+Higher-level composition patterns LLM can INLINE into args.code to elevate
+P5 sketches beyond uniform grids + basic shapes. Files live at
+sdf-js/examples/p5-idiom-registry/ — NOT auto-loaded into iframe (would bloat
+helper bundle). LLM inlines the function definition into the sketch when
+needed.
+
+| Idiom | When to use | What it does |
+|---|---|---|
+| **packCirclesInSDF(sdfFn, opts)** | Wedge upgrade — fill any outline with **variable-size organic circles** (vs uniform grid in v3.20) | Recursive growth; child radius = parent × 0.8-0.95; respects SDF inside-test |
+| **irregularGridPack(divX, divY, passes)** | L6-6C SaaS metric grids — non-uniform KPI cards (1 hero + 2 medium + 4 small) | Multi-pass boolean grid sweep with descending size arrays |
+| **packShapes(w, h, count, opts)** | Generalize wedge — fill outline with arbitrary shapes (dollar bills, soldiers, icons), not just circles | Spatial-hash grid collision, supports custom inside-test for SDF region |
+| **createGraphics(w, h) buffer** | Multi-instance pattern (3 carriers / 5 servers / N copies of expensive shape) | P5 native — render expensive sub-pattern once to offscreen buffer, image() stamp N times |
+| **roundedPolyPath(ctx, vertices, radius)** | Hierarchy/network nodes with smooth corners (any-shape, not just rect) | drawingContext.arcTo() per corner — supports per-vertex radius |
+
+LLM inlines the FUNCTION DEFINITION into the sketch code (no import — iframe
+sandbox is classic JS not module loader). Examples follow.
+
 ## Worked example — Priority 1 (SDF DIRECT, literal concrete)
 
 User text: "A cathedral on a hill in the morning"
@@ -202,6 +221,56 @@ Output:
 Result: 3 labeled rectangles ("Explore" / "Hypothesize" / "Refine") in a row
 with arrows between. Standard infographic — no SDF metaphor available for
 pure-abstract content, so P5 vector handles it.
+
+## Worked example — Priority 2 ⭐ upgrade (variable-size organic packing via packCirclesInSDF)
+
+User text: "Each carrier requires $13 billion of taxpayer money"
+LLM detects: concrete (carrier) + number ($13B) → carrier-from-coins, but
+this time use **variable-size organic packing** for richer visual.
+
+\`\`\`json
+{
+  "v": 1, "name": "kpi-hero: $13B Aircraft Carrier",
+  "subjects": [{
+    "id": "sketch-organic-coins",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function packCirclesInSDF(sdfFn,opts){const b=opts.bounds,mn=opts.maxNodes||500,ma=opts.maxAttempts||5000,mbl=opts.minBranchLen||0.04,mxbl=opts.maxBranchLen||0.15,rR=opts.rootR||0.05,d=opts.decay||0.92,miR=opts.minR||0.008,mxR=opts.maxR||0.3,p=opts.pad||0.005,T=Math.PI*2;const ns=[];function ins(x,y){return sdfFn(x,y)<0;}function ib(x,y,r){return x-r>=b.minX&&x+r<=b.maxX&&y-r>=b.minY&&y+r<=b.maxY;}function col(cx,cy,cr){for(let i=0;i<ns.length;i++){const dx=ns[i].x-cx,dy=ns[i].y-cy,dd=Math.sqrt(dx*dx+dy*dy);if(dd<ns[i].r+cr+p)return true;}return false;}for(let r=0,a=0;r<(opts.rootCount||1)&&a<200;a++){const x=b.minX+Math.random()*(b.maxX-b.minX),y=b.minY+Math.random()*(b.maxY-b.minY);if(!ins(x,y)||!ib(x,y,rR)||col(x,y,rR))continue;ns.push({x,y,r:rR,depth:12});r++;}let at=0;while(ns.length<mn&&at<ma){at++;const pi=Math.floor(Math.random()*ns.length),pa=ns[pi];if(pa.depth<=0)continue;const an=Math.random()*T,ds=mbl+Math.random()*(mxbl-mbl),cr=Math.max(miR,Math.min(mxR,pa.r*(0.8+Math.random()*0.15))),cx=pa.x+Math.cos(an)*(pa.r+ds+cr),cy=pa.y+Math.sin(an)*(pa.r+ds+cr);if(!ins(cx,cy)||!ib(cx,cy,cr)||col(cx,cy,cr))continue;ns.push({x:cx,y:cy,r:cr,depth:pa.depth-1});}return ns;}function setup(){createCanvas(600,360);noLoop();noStroke();}function draw(){const bg=window.__brandingPalette.bg,fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const carrierSdf=(x,y)=>{const h=Math.max(Math.abs(x)-1.4,Math.abs(y-0.05)-0.25);const i=Math.max(Math.abs(x+0.3)-0.6,Math.abs(y-0.45)-0.25);return Math.min(h,i);};const cs=packCirclesInSDF(carrierSdf,{bounds:{minX:-1.5,maxX:1.5,minY:-0.5,maxY:0.8},maxNodes:600,rootCount:3,rootR:0.06,decay:0.93,minR:0.012,maxR:0.08});fill(fg[0],fg[1],fg[2]);for(const c of cs){const px=(c.x+1.5)*200,py=180-c.y*180;ellipse(px,py,c.r*200,c.r*200);}fill(fg[0],fg[1],fg[2]);textFont('sans-serif');textSize(56);textAlign(CENTER,TOP);text('$13B',300,30);textSize(14);text('per carrier',300,100);}"
+    }
+  }]
+}
+\`\`\`
+
+Result: carrier silhouette filled with ~600 ORGANIC variable-size coins
+(big roots clustering, small leaves filling gaps) instead of uniform grid.
+More "money pile" feel, less "polka dot" feel. The packCirclesInSDF helper
+is INLINED into the sketch (LLM copy-pastes the function body into args.code).
+**Use this pattern for Priority 2 metaphors that benefit from organic density.**
+
+## Worked example — Priority 2/3 hybrid (irregular KPI grid via irregularGridPack)
+
+User text: "Our SaaS reached $100M ARR with 92% margin, $50 CAC, $5000 LTV"
+LLM detects: pure numbers, no concrete anchor. Sprint 3 emitted 8 uniform
+rounded_box (boring grid). Use irregularGridPack for visual hierarchy.
+
+\`\`\`json
+{
+  "v": 1, "name": "kpi-hero: SaaS Metrics Dashboard",
+  "subjects": [{
+    "id": "sketch-irregular-kpi",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];for(let x=0;x<gx;x++)for(let y=0;y<gy;y++){const w=sx[Math.floor(Math.random()*sx.length)],h=sy[Math.floor(Math.random()*sy.length)];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h});}}}return r;}function setup(){createCanvas(600,360);noLoop();noStroke();}function draw(){const bg=window.__brandingPalette.bg,fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const rects=irregularGridPack(8,5,[{sizesArrX:[3,4],sizesArrY:[2,3]},{sizesArrX:[2],sizesArrY:[1,2]},{sizesArrX:[1],sizesArrY:[1]}]);const labels=['$100M ARR','92%','$50 CAC','$5000 LTV','18mo','top 5%','1.8','MAGIC'];const cellW=600/8,cellH=360/5,pad=8;rects.slice(0,labels.length).forEach((r,i)=>{const px=r.x*cellW+pad,py=r.y*cellH+pad,pw=r.w*cellW-pad*2,ph=r.h*cellH-pad*2;noFill();stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);rect(px,py,pw,ph,6);noStroke();fill(fg[0],fg[1],fg[2]);textFont('sans-serif');textAlign(CENTER,CENTER);const fontSize=r.w*r.h>=6?32:(r.w*r.h>=4?22:14);textSize(fontSize);text(labels[i]||'',px+pw/2,py+ph/2);});}"
+    }
+  }]
+}
+\`\`\`
+
+Result: 8 KPI cards arranged non-uniformly — 1 large hero ($100M ARR big text),
+2 medium (92%, others), 4-5 small (Magic Number, top 5%, CAC, LTV). Visual
+hierarchy matches importance, vs Sprint 3 uniform grid. **Use this pattern
+when content has multiple KPIs with implicit ranking** (hero metric +
+supporting metrics).
 `;
 
 /**
