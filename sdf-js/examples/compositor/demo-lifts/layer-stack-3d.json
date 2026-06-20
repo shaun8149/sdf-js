@@ -1,0 +1,39 @@
+{
+  "id": "layer-stack-3d",
+  "title": "Chart · Layer Stack",
+  "prompt": "layer-stack-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "layer-stack-3d",
+    "source": { "format": "synthetic", "prompt": "layer-stack-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "layer-stack-3d",
+        "args": { "layers": 4 },
+        "transform": { "translate": [0, 0.7, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.7,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "layer-stack-3d",
+    "costUSD": 0
+  }
+}

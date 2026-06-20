@@ -135,6 +135,11 @@ import { flowChart3dSDF } from './components/charts/diagrams/flow-chart-3d.js';
 import { treeDiagram3dSDF } from './components/charts/diagrams/tree-diagram-3d.js';
 import { mindmap3dSDF } from './components/charts/diagrams/mindmap-3d.js';
 import { timeline3dSDF } from './components/charts/diagrams/timeline-3d.js';
+import { matrixGrid3dSDF } from './components/charts/matrix/matrix-grid-3d.js';
+import { progression3dSDF } from './components/charts/progression/progression-3d.js';
+import { agendaList3dSDF } from './components/charts/agenda/agenda-list-3d.js';
+import { layerStack3dSDF } from './components/charts/layers/layer-stack-3d.js';
+import { bulletList3dSDF } from './components/charts/lists/bullet-list-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -596,6 +601,49 @@ const PRIMITIVE_FACTORIES = {
       stemHeight: a.stemHeight ?? 0.45,
       stemThickness: a.stemThickness ?? 0.035,
       alternate: a.alternate ?? true,
+    }),
+  'matrix-grid-3d': (a) =>
+    matrixGrid3dSDF({
+      rows: a.rows ?? 2,
+      cols: a.cols ?? 2,
+      cardW: a.cardW ?? 0.9,
+      cardH: a.cardH ?? 0.7,
+      cardD: a.cardD ?? a.depth ?? 0.18,
+      gap: a.gap ?? 0.18,
+    }),
+  'progression-3d': (a) =>
+    progression3dSDF({
+      steps: a.steps ?? a.count ?? 5,
+      run: a.run ?? 0.5,
+      stepRise: a.stepRise ?? 0.3,
+      depth: a.depth ?? 0.5,
+    }),
+  'agenda-list-3d': (a) =>
+    agendaList3dSDF({
+      items: a.items ?? a.count ?? 5,
+      rowHeight: a.rowHeight ?? 0.5,
+      chipSize: a.chipSize ?? 0.34,
+      lineW: a.lineW ?? 2.0,
+      lineH: a.lineH ?? 0.22,
+      depth: a.depth ?? 0.12,
+    }),
+  'layer-stack-3d': (a) =>
+    layerStack3dSDF({
+      layers: a.layers ?? a.count ?? 4,
+      layerW: a.layerW ?? 1.8,
+      layerD: a.layerD ?? 1.2,
+      layerH: a.layerH ?? 0.22,
+      gap: a.gap ?? 0.12,
+      taper: a.taper ?? 1.0,
+    }),
+  'bullet-list-3d': (a) =>
+    bulletList3dSDF({
+      items: a.items ?? a.count ?? 5,
+      rowHeight: a.rowHeight ?? 0.45,
+      bulletRadius: a.bulletRadius ?? 0.11,
+      lineW: a.lineW ?? 1.8,
+      lineH: a.lineH ?? 0.16,
+      depth: a.depth ?? 0.1,
     }),
   link: (a) =>
     linkSDF({

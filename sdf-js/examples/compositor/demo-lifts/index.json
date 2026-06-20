@@ -388,6 +388,56 @@
       "file": "timeline-3d.json",
       "renderer": "studio",
       "prompt": "Diagram · Timeline"
+    },
+    {
+      "id": "matrix-grid-3d",
+      "title": "Chart · Matrix Grid",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "matrix-grid-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Matrix Grid"
+    },
+    {
+      "id": "progression-3d",
+      "title": "Chart · Progression",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "progression-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Progression"
+    },
+    {
+      "id": "agenda-list-3d",
+      "title": "Chart · Agenda",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "agenda-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Agenda"
+    },
+    {
+      "id": "layer-stack-3d",
+      "title": "Chart · Layer Stack",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "layer-stack-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Layer Stack"
+    },
+    {
+      "id": "bullet-list-3d",
+      "title": "Chart · Bullet List",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "bullet-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Bullet List"
     }
   ]
 }
