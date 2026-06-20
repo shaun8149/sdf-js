@@ -47,6 +47,38 @@ existing `community/` shader port convention (e.g., `iq-solid-angle.js`).
 | `kgolid-chromotome-palettes.js` | [chromotome](https://github.com/kgolid/chromotome) — MIT (c) kgolid. ~23 palettes curated from hilda + jung + ranganath + kovecses sub-collections (originals: ~120-150 palettes total) | **Major branding upgrade candidate**: current Atlas branding-palettes.js ships 5 simple 2-color presets ({bg, silhouetteColor}). Chromotome adds multi-color palettes (3-7 colors + bg + stroke per palette) enabling KPI cards each in different palette color, cultural/aesthetic diversity (vintage children's book / saturated animal / Indian textile / mid-century modern). Sprint 7 candidate: upgrade Atlas branding system in-place. |
 | `kgolid-marching-squares.js` | [topographic](https://github.com/kgolid/topographic) — MIT (c) kgolid | Contour extraction from 2D scalar grid (heightmap, density field, data metric). Outputs line segments OR filled polygons per threshold via classic 16-case dispatch. Self-contained pure-JS (no P5 dep). Includes `buildNoiseGrid` convenience for testing/decorative use. Pairs with chromotome (each level = palette color) + perlin flow field (use noise as scalar if no data). |
 
+### Sprint 7 Tier D — Apparatus CA (kgolid p5ycho deep dive)
+
+| File | Source | Atlas use case |
+|---|---|---|
+| `kgolid-apparatus-ca.js` | [apparatus-generator](https://github.com/kgolid/apparatus-generator) canonical npm-style version (MIT) + [p5ycho/apparat / apparat2 / apparat3 / apparat4](https://github.com/kgolid/p5ycho) (4 evolution stages, p5ycho/apparat4 added H-symmetry) | Decorative compositional layout — 9-block state machine produces "robot anatomy / blueprint of a fictional machine" aesthetic. Use when content is COMPOSITIONAL (team/department/unit org charts, scheduled blocks, multi-tier dashboards with implicit grouping, system component diagrams). Pairs perfectly with chromotome palettes. |
+
+**Atlas ALSO has** `sdf-js/src/ca/ca.js` — full engine-layer port + SDF region generalization (any SDF predicate as boundary, not just ellipse). The iframe-side idiom here is the STANDALONE inline-able variant for LLM-generated p5-sketches (iframe can't import engine modules). Both implement the same 9-block state machine.
+
+### Sprint 7 p5ycho survey — other sketches assessed (~80 total folders)
+
+Folder scan + algorithm read of high-interest candidates. **Recommended Sprint 8+ ports** (3), assessed-and-deferred (5), skip (rest):
+
+**Tier E candidates (Sprint 8+ if user wants):**
+
+| Sketch | Algorithm | Atlas use case |
+|---|---|---|
+| **p5ycho/colonization** | Space-colonization / DLA-style: random seed points → nearest-source node finder + iterative growth + kill-range | Organic tree/dendrite/branch structures. Different from packCirclesInSDF (circles). Use: process flow trees, dependency graphs, neural network diagrams. ~3.4KB, single sketch.js. |
+| **p5ycho/lindenmayer** | L-system: F-axiom + 4 production rules + turtle drawing with angle/extension chaos | Organic decorative fractal plants. Use: tree atom decoration, sketch-note plant motifs, organic branding ornaments. ~3.5KB. |
+| **p5ycho/weave** | Multi-layer Perlin flow-field with palette per layer | Tier B alternative aesthetic to moussa-perlin-flow-field — layered + palette-aware. Use as decorative background where chromotome palette should appear in flow texture. ~3.9KB. |
+
+**Assessed and DEFERRED (low Atlas-value-add or overlap with existing idioms):**
+
+- **growth / growth2-4 / trunk / trunk2-3** — generic organic growth, overlaps with colonization + circle pack
+- **hexagon** — hex tessellation, narrow vs Atlas's irregularGridPack
+- **tectonic / tectonic2** — plate patterns, interesting but specialized
+- **horizon / horizon2-4 / topography** — landscape; Atlas already has marching squares
+- **patchwork / patchwork2-4** — tile compositions, overlaps with apparatus
+
+**SKIP (visual demos with limited algorithmic reuse):**
+
+- blanket / block-waves / blocks / fractured_square / gaussian / grid / hypo / interpolate / lab / layout / perlin / random_shapes / reaction_diffusion / smokerings / stripes / trace / voronoi (we have Delaunay/Voronoi from Moussa)
+
 ### Sprint 5 NOT-ported reference: `srcdoc` iframe pattern
 
 Moussa's [Building an Embeddable Javascript Widget](https://www.gorillasun.de/blog/building-an-embeddable-javascript-widget/) validates our Sprint 3 iframe sandbox approach (both use `sandbox='allow-scripts'` only — same security posture). His variant uses `srcdoc` attribute for fully self-contained iframes (avoids external file dependency / CSP issues) whereas we load `p5-sandbox-iframe.html` as external src. Not ported as code idiom — would require redesigning iframe lifecycle. Optional Sprint 6+ if we hit CSP issues.

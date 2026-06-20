@@ -512,5 +512,117 @@ console.log('\n--- kgolid-marching-squares ---');
   );
 }
 
+// ----- kgolid-apparatus-ca (Sprint 7) -----
+console.log('\n--- kgolid-apparatus-ca ---');
+{
+  const { generateApparatusGrid, drawApparatusGrid } = loadIdiom('kgolid-apparatus-ca.js');
+  ok(typeof generateApparatusGrid === 'function', 'generateApparatusGrid exported');
+  ok(typeof drawApparatusGrid === 'function', 'drawApparatusGrid exported');
+
+  // Default options
+  const grid = generateApparatusGrid({});
+  ok(Array.isArray(grid), 'returns 2D array');
+  ok(grid.length === 19, `default ydim 18 + 1 = 19 rows (got ${grid.length})`);
+  ok(grid[0].length === 25, `default xdim 24 + 1 = 25 cols (got ${grid[0].length})`);
+
+  // First row + first col are blank cells (boundary)
+  ok(
+    grid[0].every((c) => !c.in && !c.h && !c.v && c.col === null),
+    'row 0 all blank',
+  );
+  ok(
+    grid.every((row) => !row[0].in && !row[0].h && !row[0].v),
+    'col 0 all blank',
+  );
+
+  // Cell shape contract
+  ok(
+    grid.every((row) =>
+      row.every(
+        (c) => typeof c.h === 'boolean' && typeof c.v === 'boolean' && typeof c.in === 'boolean',
+      ),
+    ),
+    'every cell has h/v/in booleans',
+  );
+
+  // At least SOME cells have in=true (algo produces non-empty rooms)
+  const insideCount = grid.flat().filter((c) => c.in).length;
+  ok(insideCount > 0, `produced ${insideCount} inside cells (>0)`);
+
+  // Inside cells have non-null col (when in)
+  ok(
+    grid
+      .flat()
+      .filter((c) => c.in)
+      .every((c) => c.col !== null),
+    'every inside cell has color',
+  );
+
+  // Inside cells have non-null id
+  ok(
+    grid
+      .flat()
+      .filter((c) => c.in)
+      .every((c) => c.id !== null),
+    'every inside cell has id',
+  );
+
+  // Multiple distinct ids = multiple rooms generated
+  const ids = new Set(
+    grid
+      .flat()
+      .filter((c) => c.in)
+      .map((c) => c.id),
+  );
+  ok(ids.size >= 2, `≥2 distinct room ids (got ${ids.size})`);
+
+  // simple:true skips boundary → full grid filled inside
+  const simpleGrid = generateApparatusGrid({ simple: true, xdim: 8, ydim: 6 });
+  const insideSimple = simpleGrid.flat().filter((c) => c.in).length;
+  ok(insideSimple > 30, `simple mode fills most cells (${insideSimple})`);
+
+  // Custom xdim / ydim respected
+  const tiny = generateApparatusGrid({ xdim: 10, ydim: 6, radius_x: 5, radius_y: 3 });
+  ok(tiny.length === 7 && tiny[0].length === 11, 'custom dims respected');
+
+  // color_mode = 'random' produces ≥2 distinct colors when palette has ≥2
+  let randomColors = new Set();
+  for (let i = 0; i < 20 && randomColors.size < 2; i++) {
+    const g = generateApparatusGrid({ color_mode: 'random', colors: ['#aaa', '#bbb', '#ccc'] });
+    g.flat()
+      .filter((c) => c.in)
+      .forEach((c) => randomColors.add(c.col));
+  }
+  ok(randomColors.size >= 2, `random color_mode emits multi colors (got ${randomColors.size})`);
+
+  // H-symmetry: right half mirrors left
+  const symGrid = generateApparatusGrid({
+    horizontal_symmetry: true,
+    vertical_symmetry: false,
+    xdim: 20,
+    ydim: 14,
+  });
+  let mirrorOk = true;
+  const yMid = 7; // sample middle row
+  for (let x = 1; x < symGrid[yMid].length / 2; x++) {
+    const left = symGrid[yMid][x];
+    const right = symGrid[yMid][symGrid[yMid].length - x];
+    if (left.in !== right.in) {
+      mirrorOk = false;
+      break;
+    }
+  }
+  ok(mirrorOk, 'H-symmetric: row reflects left ↔ right');
+
+  // drawApparatusGrid doesn't crash with no P5 globals (early-exit safe)
+  let crashed = false;
+  try {
+    drawApparatusGrid(grid, { cellSize: 10 });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'drawApparatusGrid safe when no P5 globals available');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
