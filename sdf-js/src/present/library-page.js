@@ -6,7 +6,7 @@
 
 import * as deckModel from './deck-model.js';
 import { createPipeline } from './pipeline.js';
-import { parsePDFFromBytes } from '../parser/index.js';
+import { parsePDFFromBytes } from '../parser/pdf.js';
 import { emitSlide2dCode } from '../mapping/slide-to-2d-code.js';
 import { callLiftLLM, parseLiftResponse } from '../compositor-api.js';
 

@@ -17,16 +17,35 @@
 //   3. Graceful fallback — bad page → emit empty SlideData, don't crash
 // =============================================================================
 
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import fs from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import { emptySlideData, classifyLayout, validateSlideData } from './slidedata.js';
 
-// pdfjs-dist v4+ requires explicit worker path even in Node. Point it at the
-// bundled legacy worker (single-threaded Node uses main thread anyway, but
-// pdfjs throws if workerSrc is unset).
-const require = createRequire(import.meta.url);
-pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+// Browser-safe pdfjs loader — both module import + worker config are deferred
+// to first use so this file loads in the browser without resolving bare
+// specifiers (CORS blocks `pdfjs-dist/...` at top-level in pure ES modules).
+//
+// Node uses the bundled legacy worker via createRequire (single-threaded).
+// Browser uses unpkg CDN (no build step in this MVP; swap to a vendored copy
+// in Sprint 2 if offline use becomes important).
+const PDFJS_BROWSER_CDN = 'https://unpkg.com/pdfjs-dist@4.0.379/legacy/build/pdf.mjs';
+const PDFJS_WORKER_BROWSER_CDN = 'https://unpkg.com/pdfjs-dist@4.0.379/legacy/build/pdf.worker.mjs';
+
+let pdfjsModule = null;
+async function getPdfjs() {
+  if (pdfjsModule) return pdfjsModule;
+  if (typeof window === 'undefined') {
+    // Node — resolve the locally installed copy.
+    pdfjsModule = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const { createRequire } = await import('node:module');
+    const require = createRequire(import.meta.url);
+    pdfjsModule.GlobalWorkerOptions.workerSrc =
+      require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+  } else {
+    // Browser — pull from CDN at call time.
+    pdfjsModule = await import(/* @vite-ignore */ PDFJS_BROWSER_CDN);
+    pdfjsModule.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_BROWSER_CDN;
+  }
+  return pdfjsModule;
+}
 
 /**
  * Parse a PDF file from disk (Node only). Wraps parsePDFFromBytes after
@@ -36,6 +55,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/p
  * @returns {Promise<SlideData[]>}
  */
 export async function parsePDF(filePath) {
+  // Node-only dynamic import — keeps top-of-module browser-safe.
+  const { default: fs } = await import('node:fs/promises');
   const buffer = await fs.readFile(filePath);
   return parsePDFFromBytes(new Uint8Array(buffer), filePath);
 }
@@ -50,6 +71,7 @@ export async function parsePDF(filePath) {
  * @returns {Promise<SlideData[]>}
  */
 export async function parsePDFFromBytes(data, sourceLabel = '<bytes>') {
+  const pdfjs = await getPdfjs();
   const loadingTask = pdfjs.getDocument({
     data,
     useSystemFonts: true,
