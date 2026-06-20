@@ -40,6 +40,11 @@ existing `community/` shader port convention (e.g., `iq-solid-angle.js`).
 | `moussa-perlin-flow-field.js` | [Perlin Flow Fields Part I](https://www.gorillasun.de/blog/perlin-noise-flow-fields-in-processing-part-i/) + [Part II](https://www.gorillasun.de/blog/perlin-noise-flow-fields-in-processing-part-ii/) | Subtle generative background texture — wind/fluid streamlines via 2D noise → angle grid → traced flow lines. Use as low-opacity background, not foreground IP. Tier B visual identity (Atlas P5 output looks distinctive vs flat Napkin/antvis). Replaced P5's noise() with deterministic 2D value-noise so output is reproducible without seeding P5. |
 | `moussa-hooke-brush-stroke.js` | [Brush Strokes with Hooke's Law](https://www.gorillasun.de/blog/simulating-brush-strokes-with-hookes-law-in-p5js-and-processing/) — Moussa credits BUN | Hand-drawn line aesthetic. Original is animated cursor-follow; this STATIC port simulates the spring chain along a fixed input polyline → outputs wobbly version with thickness modulated by local "speed" (slow corners = thick, fast straights = thin). Use for connector arrows / annotation underlines / org chart connections to escape "AI sterile vector" feel. |
 
+Voronoi note: small metric datasets often put every real site on the convex
+hull, which yields unbounded cells with fewer than 3 circumcenters. Add
+off-canvas frame sites to the triangulation, then draw only the real data cells,
+when you need every territory to be a filled polygon.
+
 ### Sprint 5 NOT-ported reference: `srcdoc` iframe pattern
 
 Moussa's [Building an Embeddable Javascript Widget](https://www.gorillasun.de/blog/building-an-embeddable-javascript-widget/) validates our Sprint 3 iframe sandbox approach (both use `sandbox='allow-scripts'` only — same security posture). His variant uses `srcdoc` attribute for fully self-contained iframes (avoids external file dependency / CSP issues) whereas we load `p5-sandbox-iframe.html` as external src. Not ported as code idiom — would require redesigning iframe lifecycle. Optional Sprint 6+ if we hit CSP issues.
