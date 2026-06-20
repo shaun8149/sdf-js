@@ -45,6 +45,8 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-bounds.mjs' },
   // IQ-shader program W7 — analytic ray intersectors + sphere density / ibilinear
   { category: 'math', file: 'sdf-js/scripts/test-intersect.mjs' },
+  // IQ-shader program W8 — fractals (mandelbrot/bulb, quaternion julia, menger…)
+  { category: 'math', file: 'sdf-js/scripts/test-fractal.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
