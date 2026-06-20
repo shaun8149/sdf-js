@@ -1997,7 +1997,10 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (!keepCamera && scene !== _lastStudioFramedScene && sdf && sdf.f) {
       _lastStudioFramedScene = scene;
       try {
-        const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 12, res: 40 });
+        // iso > 0 (sample where the SDF is within ~0.12 of a surface) so THIN
+        // atoms — flat rings, arrow shafts, gear teeth — aren't missed between
+        // grid samples; the bbox inflates ~iso, negligible for framing.
+        const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 10, res: 56, iso: 0.12 });
         const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
         if (!bb.empty && maxDim > 0.05 && maxDim < 20) {
           const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);

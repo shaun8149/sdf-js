@@ -288,6 +288,46 @@
       "file": "cube-segmented-3d.json",
       "renderer": "studio",
       "prompt": "Cube · Segmented"
+    },
+    {
+      "id": "circle-frame-3d",
+      "title": "Circle · Frame",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-frame-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Frame"
+    },
+    {
+      "id": "circle-stack-3d",
+      "title": "Circle · Stack",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-stack-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Stack"
+    },
+    {
+      "id": "circle-segmented-3d",
+      "title": "Circle · Segmented",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-segmented-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Segmented"
+    },
+    {
+      "id": "circle-loop-3d",
+      "title": "Circle · Loop",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-loop-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Loop"
     }
   ]
 }

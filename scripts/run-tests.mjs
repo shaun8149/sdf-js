@@ -105,6 +105,10 @@ const TESTS = [
   { category: 'shapes', file: 'sdf-js/scripts/test-diamond-3d.mjs' },
   { category: 'shapes', file: 'sdf-js/scripts/test-gear-3d.mjs' },
   { category: 'shapes', file: 'sdf-js/scripts/test-cube-segmented-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-circle-frame-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-circle-stack-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-circle-segmented-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-circle-loop-3d.mjs' },
 
   // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
