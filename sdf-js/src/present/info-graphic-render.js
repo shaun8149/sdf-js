@@ -19,6 +19,7 @@
 
 import { compileScene, createRendererForId } from '../compositor-api.js';
 import { computeView } from './linear-layout.js';
+import { getSelectedVariant } from './deck-model.js';
 
 const SECTION_WIDTH = 200;
 const SECTION_HEIGHT = 300;
@@ -124,18 +125,19 @@ function drawSection(ctx, section, index, x, y) {
   ctx.lineWidth = 1;
   ctx.strokeRect(x, thumbY, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 
-  // Thumbnail content
-  if (section.status === 'ready' && section.sceneData) {
-    drawSliceThumbnail(ctx, section.sceneData, x, thumbY, THUMBNAIL_SIZE);
+  // Thumbnail content — read from selected variant (Sprint 1.5 v4 schema)
+  const variant = getSelectedVariant(section);
+  if (section.status === 'ready' && variant?.sceneData) {
+    drawSliceThumbnail(ctx, variant.sceneData, x, thumbY, THUMBNAIL_SIZE);
   } else {
-    drawPlaceholder(ctx, x, thumbY, THUMBNAIL_SIZE, section.status, section.liftError);
+    drawPlaceholder(ctx, x, thumbY, THUMBNAIL_SIZE, section.status, variant?.liftError);
   }
 
   // Title (below thumbnail)
   const titleY = thumbY + THUMBNAIL_SIZE + 12;
   ctx.fillStyle = '#222';
   ctx.font = '13px -apple-system, system-ui, sans-serif';
-  const title = section.region?.title || section.prompt || `Page ${index + 1}`;
+  const title = variant?.region?.title || section.prompt || `Page ${index + 1}`;
   const truncated = truncateText(ctx, title, THUMBNAIL_SIZE);
   ctx.fillText(truncated, x, titleY);
 
