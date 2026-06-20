@@ -16,7 +16,14 @@ Solve the **black-blob failure mode** observed in Sprint 2 manual L3 testing on 
 - Atlas Present's differentiation is NOT "SDF generative art". It is **"LLM + Agentic Coding writes code that drives any rendering framework"**.
 - 2D → P5.js (LLM strong at JS code, P5 native to abstract vector + can host SDF math as helpers).
 - 3D → GLSL Shader (Sprint 4+, same code-generative pattern).
-- SDF stays as a tool subset, available where it shines (concrete 3D objects, BOB-style spatial classifier patterns), NOT forced onto abstract 2D content.
+- SDF stays as a tool subset, available where it shines.
+
+**Atlas's TRUE strategic SDF advantage (locked 2026-06-20 afternoon, last lesson)**:
+- Not just "draw concrete objects literally"
+- **"Concrete composition for ANY concept" (metaphorical SDF)** — SDF can take an outline of one concrete thing (carrier) and FILL it with units of another concrete thing (coins) to express an abstract assertion ("expensive"). Vector primitives cannot do this effortlessly.
+- This is the BOB pattern: SDF as spatial classifier (`sdf(x,y) < threshold` for any shape) + grid cells colored by membership = arbitrary outline filled with arbitrary contents.
+- LLM should HUNT for metaphorical SDF opportunities even on abstract content (numbers, relationships), not jump to P5 vector immediately.
+- P5 is **fallback / 防退化 (graceful degradation)** — when no concrete metaphor available for the content, P5 vector + textbox guarantees a legible output. Not the main IP stage.
 
 **Concrete user-visible promise:** when user selects an abstract paragraph and clicks ⚡, at least 4 of 6 generated variants render as legible 2D infographics (boxes / labels / arrows / icons rendered via P5 vector primitives in iframe sandbox), not solid black silhouette blobs.
 
@@ -242,75 +249,114 @@ function draw() {
 }
 ```
 
-## 8. Lift LLM routing — 3-tier content-driven priority (system prompt v3.19 → v3.20)
+## 8. Lift LLM routing — 3-priority preference (SDF first, P5 fallback) (system prompt v3.19 → v3.20)
 
-**Major Sprint 3 amendment (2026-06-20 afternoon)**: routing is NOT archetype-only. User insight: a paragraph's content has 3 visual-information layers, each best served by a different rendering strategy. Atlas's STRENGTH is concrete-object SDF illustration (already validated Sprint 1 v4); we add P5 for the layers SDF doesn't naturally handle.
+**Major Sprint 3 amendment (2026-06-20 afternoon, final lesson)**: routing is NOT 3 equal tiers. **SDF gets first 2 priorities (literal + metaphorical); P5 is fallback (graceful degradation) for content where no concrete metaphor lands.** SDF metaphor is Atlas's real wedge that vector primitives cannot replicate.
 
-### The 3-tier content extraction
+### The 3-priority routing
 
-For each user-selected paragraph, the LLM examines the text for 3 features in priority order:
+For each user-selected paragraph, the LLM tries priorities in order:
 
-**Tier A — Concrete nouns / objects** (Atlas's strongest capability, already shipped Sprint 1 v4):
-- Examples: "robot", "cube", "table", "cathedral", "carrier", "tree", "city", "factory", "chair"
-- Atlas SDF capability: lift v3.17+ already knows how to compose `sphere` / `cube-3d` / `cylinder` / `capsule` / 40+ atom primitives into a recognizable scene
-- Cost-free: leverages existing Sprint 1 v4 capability with zero new code
-- Output: traditional-subjects SceneData (NOT p5-sketch)
+**Priority 1 — SDF DIRECT (literal concrete)** (Atlas Sprint 1 v4 capability, FREE):
+- Trigger: text contains concrete nouns ("robot", "cube", "cathedral", "carrier", "tree")
+- Output: traditional-subjects SceneData using existing 40+ atom primitives
+- Renderer: existing 4 CPU 2D renderers (silhouette / lines / crayon / topo)
+- Example: "The cathedral on the hill" → SceneData with `cathedral-atom` + `terrain-with-lakes`
 
-**Tier B — Numbers / metrics** (Gamma-style PPT central insight):
-- Examples: "$3 billion", "78%", "10x", "13 sections", "2023", "30%", "5 stages"
-- Key fact: most informational paragraphs have a number as the load-bearing assertion. PPT/Gamma decks center layout on the number.
-- Atlas approach in 2D mode: P5 sketch with the number as visual focus (huge `textSize`, supporting label small, minimal context geometry)
-- Output: p5-sketch SceneData (one subject of type 'p5-sketch' with args.code containing a P5 sketch optimized for number-prominence)
+**Priority 2 — SDF METAPHORICAL (concrete composition for abstract concept)** ⭐ Atlas's real wedge:
+- Trigger: text contains numbers / abstract assertion BUT a concrete metaphor expresses it well
+- LLM hunts for metaphor: money→coins / time→hourglass+sand / growth→steps+tower / quantity→N-of-something / network→constellation+stars
+- Output: BOB-style SceneData — outline of one concrete (carrier) FILLED with units of another concrete (coins) via SDF compositional pattern
+- Renderer: existing CPU 2D renderers (silhouette is enough — the meaning is in the composition, not surface detail)
+- **This is what vector primitives CANNOT do effortlessly.** Vector needs you to manually place each coin along carrier path. SDF tests `sdf(x,y) < threshold` per grid cell and fills with whatever — arbitrary outline + arbitrary fill = arbitrary metaphor.
+- Example: "$3B to build a carrier" → SceneData with carrier outline + grid cells inside filled with `sdf_circle` (coin)
+- Example: "time is running out" → hourglass outline + grid cells inside filled with falling-particle SDF
 
-**Tier C — Textual logical relations** (fallback for purely abstract content):
-- Examples: "the agent explores → builds hypotheses → tests → refines" (sequence), "A vs B" (compare), "X is a kind of Y" (hierarchy), "X depends on Y depends on Z" (relation)
-- No concrete objects, no central number — just relational structure
-- Atlas approach: P5 sketch using vector primitives (boxes / arrows / lines / labels) to express the relationship
-- Output: p5-sketch SceneData with relational-layout P5 code
+**Priority 3 — P5 FALLBACK (graceful degradation, 防退化)**:
+- Trigger: text is purely abstract relationship AND no concrete metaphor fits (LLM cannot conjure one)
+- Output: p5-sketch SceneData with vector primitives (boxes / arrows / lines / textboxes)
+- Renderer: new 2d-p5 iframe sandbox
+- **This is NOT Atlas's IP stage.** It's a fallback so users never get a degenerate black blob. It exists to make the product complete, not to compete with Napkin/antvis on this layer.
+- Example: "X depends on Y depends on Z" with no other concrete content → p5-sketch with 3 boxes + arrows
 
-### How 6 variants exploit the 3 tiers for diversity
+### How 6 variants exploit the priority hierarchy
 
-Sprint 1.5's variant convergence failure (all 6 = text-card) is addressed: the LLM is INSTRUCTED to span tiers across the 6 variants when content supports it. Worked example:
+Sprint 1.5's variant convergence failure (all 6 = text-card) is addressed by SDF metaphor exploration:
 
-Selected: "In 2023, the cube on the table was replaced by 3 spheres, increasing throughput by 40%."
-LLM detects: Tier A (cube/table/spheres = concrete) + Tier B (2023/3/40% = numbers) + Tier C (replaced by / increasing = relations)
+Default 6-variant allocation (when content has concrete + numbers + abstract):
+- **~3-4 variants in Priority 1 + 2 (SDF, literal + metaphorical)** — Atlas IP stage
+- **~2-3 variants in Priority 3 (P5, fallback)** — defensive coverage
 
-Default 6 variant generation:
-- variant 1: **Tier A** — SDF SceneData with `cube` + `sphere` × 3 + `cube` (table-like) — concrete scene
-- variant 2: **Tier B** — p5-sketch with "40%" as huge `textSize(180)` + small "throughput ↑" label
-- variant 3: **Tier C** — p5-sketch: small cube → arrow → row of 3 small spheres (transformation diagram)
-- variant 4: **Tier A variation** — SDF SceneData simpler, just 3 spheres in row
-- variant 5: **Tier B variation** — p5-sketch with "2023" as timeline marker + "+40%" annotation
-- variant 6: **Tier C variation** — p5-sketch: 2-column compare (left: "before, cube" / right: "after, 3 spheres + 40%")
+When content has only abstract (no concrete nouns, no number-with-metaphor):
+- 1-2 variants in Priority 2 (LLM tries to invent metaphor — may succeed)
+- 4-5 variants in Priority 3 (different P5 layouts: vertical list / radial / cards / timeline / compare)
 
-User picks whichever fits their narrative. Convergence problem solved: variants are intentionally tier-diverse, not stylistic variants of the same idea.
+### Worked example — "$3 billion to build an aircraft carrier"
 
-When content lacks one of the tiers, LLM still spans the available tiers, possibly repeating with variation. E.g., pure text-card content (no numbers, no concrete nouns) → all 6 variants are Tier C, but using DIFFERENT relational layouts (vertical list, horizontal cards, radial spokes, callout boxes, comparison grid, timeline).
+LLM detects:
+- Concrete noun: "aircraft carrier" → Priority 1 available
+- Number: "$3 billion" → Priority 2 metaphor: coins / dollar bills as fill of carrier outline
+- Pure abstract relations: minimal here (the assertion IS "concrete + price")
+
+Optimal 6 variants:
+- **v1: Priority 1** — SDF SceneData: literal carrier + literal ground + literal sky (Sprint 1 v4 standard) → silhouette renderer = carrier silhouette
+- **v2: Priority 2** ⭐ wedge — SDF SceneData: outline of carrier composed of ~1000 `sdf_circle` (coin) grid → silhouette = carrier-shape made of coins. **VECTOR CANNOT DO THIS easily**
+- **v3: Priority 2** ⭐ wedge — SDF SceneData: digit "3" (using existing `text-3d-extruded` outline) filled with dollar-bill-shape primitives (sdRoundBox arrays) → silhouette = giant "3" made of money
+- **v4: Priority 1 variation** — SDF SceneData: just the carrier + faint coin scattering around (less aggressive metaphor)
+- **v5: Priority 3 fallback** — p5-sketch: large text "$3B" + small "carrier program" label + minimal context shape
+- **v6: Priority 3 fallback** — p5-sketch: timeline showing budget growth or compare ($3B vs hospitals/schools)
+
+User picks whichever fits narrative. **v2 + v3 are Atlas's real differentiation** — Napkin and antvis cannot produce them; their vector pipeline gives flat numbers/text but no compositional metaphor.
+
+Convergence problem solved AND wedge highlighted: LLM is INSTRUCTED to attempt SDF metaphor when numeric/abstract content is present, before falling back to P5.
 
 ### System prompt v3.20 content (replaces my earlier archetype-only Step 4)
 
 Added to `examples/compositor/system-prompt-lift-3d.md` (replaces old Step 4 section ~80 lines):
 
 ```markdown
-## Step 4: 2D-mode content-tier routing (Sprint 3)
+## Step 4: 2D-mode 3-priority routing (Sprint 3) — SDF FIRST, P5 fallback
 
-When opts.mode === '2d', analyze the user's selected text for 3 content tiers:
+When opts.mode === '2d', try these priorities IN ORDER. SDF priorities are
+Atlas's wedge that vector cannot replicate. P5 is graceful-degradation fallback.
 
-Tier A (concrete nouns): explicit physical objects mentioned in text
-  → emit traditional-subject SceneData (sphere/cube/cylinder/cathedral/etc.)
-  This uses Atlas's strongest capability and reuses Sprint 1 v4 atom library.
+Priority 1 — SDF DIRECT (literal concrete):
+  If text contains concrete physical objects (cathedral / carrier / cube / robot
+  / tree / city / chair), emit traditional-subject SceneData with sphere /
+  cube-3d / cylinder / 40+ existing atom primitives. This uses Atlas's
+  strongest capability and reuses Sprint 1 v4 atom library. Renders via
+  silhouette / lines / crayon / topo.
 
-Tier B (numbers/metrics): any digit-bearing assertion in text
-  → emit p5-sketch with number as visual focus (large textSize, minimal context)
-  Most informational paragraphs center on a number; Gamma-style PPT pattern.
+Priority 2 — SDF METAPHORICAL (concrete composition for abstract concept) ⭐:
+  If text contains number / abstract assertion BUT a concrete metaphor expresses
+  it well, HUNT for the metaphor and emit SDF compositional scene:
+    - money / expensive → coins (sdf_circle) filling carrier outline (sdRoundBox + composition)
+    - time / duration → hourglass outline + particle SDFs as sand falling
+    - growth / 10x → steps / tower / ladder rising
+    - quantity (N items) → N concrete-shape SDFs (one per item, repeated via xRepeated)
+    - network → constellation (sdf_circle stars + sdf_line connections)
+    - process / pipeline → assembly-line shapes
+  Output: SceneData where Subject A's outline (defined by sdf_box / sdRoundBox /
+  sdEtriangle outline shape) is FILLED with Subject B units (sdf_circle / small
+  primitive arranged via xRepeated or grid). Uses Atlas's compositional pattern
+  that vector primitives cannot replicate.
 
-Tier C (textual logical relations): when no concrete object and no central number,
-  pure abstract relationships (sequence / compare / hierarchy / network)
-  → emit p5-sketch with relational layout (boxes/arrows/labels via P5 vector)
+  This is Atlas's REAL WEDGE. Always try Priority 2 before falling to P5.
 
-For 6 variants per ⚡: span tiers when possible. If text has all 3 tiers, allocate
-~2 variants per tier. If only 1 tier present, vary within tier (different layouts).
-Never emit all 6 as same tier with minor variation (Sprint 1.5 failure mode).
+Priority 3 — P5 FALLBACK (graceful degradation, 防退化):
+  Only when text is purely abstract relationship AND no concrete metaphor fits
+  (you genuinely cannot conjure one). Emit p5-sketch with vector primitives
+  (boxes / arrows / lines / textboxes). This is fallback, not Atlas IP — its
+  purpose is preventing degenerate output, not competing with Napkin/antvis on
+  this layer.
+
+For 6 variants per ⚡:
+  - Allocate ~3-4 variants in Priority 1+2 when content has concrete or
+    metaphorical-eligible material (Atlas IP stage)
+  - Allocate ~2-3 variants in Priority 3 (fallback coverage)
+  - Pure-abstract content: 1-2 try Priority 2 (invent metaphor), 4-5 Priority 3
+    with different layouts (vertical / radial / cards / timeline / compare)
+  - NEVER emit all 6 same-tier same-style (Sprint 1.5 convergence failure)
 
 When emitting p5-sketch, ENTIRE sceneData.subjects must be exactly one element of
 type 'p5-sketch'. NO mixing p5-sketch with traditional subjects in single variant
@@ -330,7 +376,10 @@ Use textFont('sans-serif'). Use brandingPalette for fill/stroke. Call createCanv
 Complete drawing in single draw() then noLoop() to freeze.
 ```
 
-Plus 3 worked examples in the prompt (Tier A, B, C each one — showing actual P5 sketch source for Tier B/C and SceneData JSON for Tier A).
+Plus 3 worked examples in the prompt:
+- Priority 1 example: a literal-concrete prompt (e.g., "a cathedral on a hill") → SceneData with cathedral atom
+- **Priority 2 example (CRITICAL — Atlas wedge)**: "$3 billion to build a carrier" → SceneData with carrier outline + coin-fill grid (BOB pattern). LLM needs explicit example of compositional metaphor or it won't try.
+- Priority 3 example: "X depends on Y depends on Z" → p5-sketch with 3 boxes + arrows
 
 ## 9. Data flow (happy path, Sprint 3-specific)
 
@@ -393,7 +442,8 @@ Start: 33 test files (Sprint 2 end). New: +1 (test-p5-sandbox.mjs). End: **34 te
 | Lesson | Honor in Sprint 3 by |
 |---|---|
 | Sprint 1.5: SDF text in 2D = ugly | Sprint 3 introduces p5-sketch type which renders text via Canvas2D inside P5 sketch (system fonts) — no SDF text. MODE_2D_ADDENDUM + sanitize2dSceneData from Sprint 2 Phase 4 still active for traditional subjects. |
-| Sprint 1.5: variant convergence on text-heavy content | Sprint 3 directly addresses via §8 3-tier routing: LLM is INSTRUCTED to span Tier A (concrete) / Tier B (numbers) / Tier C (abstract relations) across 6 variants. Convergence happens only when content has only 1 tier (then within-tier variation). This is the load-bearing fix for Sprint 1.5's variant-divergence failure on Aether AI page 4. |
+| Sprint 1.5: variant convergence on text-heavy content | Sprint 3 directly addresses via §8 3-priority routing: LLM is INSTRUCTED to span Priority 1 (literal SDF) / Priority 2 (metaphorical SDF) / Priority 3 (P5 fallback) across 6 variants. Convergence happens only when content has truly no concrete material AND no metaphor lands (then 4-5 Priority 3 with layout variation). This is the load-bearing fix for Sprint 1.5's variant-divergence failure on Aether AI page 4. |
+| 2026-06-20 final reframe (afternoon): SDF metaphor is Atlas wedge | Sprint 3 promotes "metaphorical SDF" (Priority 2) above "P5 vector" in routing hierarchy. P5 is explicitly framed as fallback / 防退化, not equal partner. The carrier-from-coins example is locked into v3.20 worked-example library so LLM tries metaphor before falling to P5. **Without this routing, LLM would default to vector for any non-literal content and Atlas's real IP would never show up in output.** |
 | Sprint 1.5: PR body over-claimed | Sprint 3 PR body amendment will document: "p5-sketch path verified end-to-end with real Anthropic API on at least 1 abstract paragraph; subjective quality of P5-sketch variants vs traditional SDF variants honestly compared in PR body" — concrete observations, not "should work" |
 | Sprint 1.5: TDD discipline | Sprint 3 Phase 2 (test-p5-sandbox.mjs) + Phase 3 (deck-model p5-sketch acceptance tests) precede implementation |
 | Sprint 2: Phase 8 real-API smoke blocked by API key in chat | Sprint 3 Phase 6 browse smoke will use SAME pattern: rely on user having key already in headless browse OR user manually testing post-merge. No more pasting keys in chat. |
@@ -402,6 +452,7 @@ Start: 33 test files (Sprint 2 end). New: +1 (test-p5-sandbox.mjs). End: **34 te
 
 - **Mixed subjects** (p5-sketch + traditional in same sceneData) — would allow scenes like "concrete object + label callout via P5 text overlay"
 - **GLSL Shader 3D output** — Atlas Present 3D Play mode (Sprint 4+) follows same pattern: LLM emits shader code as subject.type === 'glsl-shader' with args.code = GLSL source
+- **SDF metaphor library** (Sprint 5+) — curated collection of "metaphor recipes" LLM can pull from: money→coins, time→hourglass, growth→steps, network→constellation, etc. Each recipe = (outline-shape, fill-unit, composition-pattern). Sprint 3 ships v3.20 prompt with 1-2 metaphor worked examples; library expansion is Sprint 5+ work as we learn which metaphors LLM produces well vs poorly
 - **Per-element coloring** (Napkin Colors menu) — currently Branding swap is whole-palette; individual color picker is Sprint 5+
 - **Font picker** (Napkin Fonts menu) — currently system-ui only; choice library Sprint 5+
 - **Size aspect-ratio picker** (Napkin Size menu) — currently fixed 600×360; choice 1:1/16:9/4:5 Sprint 5+
