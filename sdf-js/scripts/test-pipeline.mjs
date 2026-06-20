@@ -1,12 +1,11 @@
 // =============================================================================
-// test-pipeline.mjs — L1 unit tests for Atlas Present Sprint 1.5 v4 pipeline
-// (variant-aware: 3 lifts per section, archetype extraction)
+// test-pipeline.mjs — L1 unit tests for Atlas Present Sprint 2 visual-pipeline
 // =============================================================================
 
-import { createPipeline } from '../src/present/pipeline.js';
-import { createDeck, VARIANT_COUNT, addPendingSections } from '../src/present/deck-model.js';
+import { createVisualPipeline, extractArchetype, VARIANT_COUNT } from '../src/present/pipeline.js';
+import { createDeck, addVisual, setDocument } from '../src/present/deck-model.js';
 
-// Mock localStorage (deck-model uses it via saveDeck callback closure, not directly)
+// Mock localStorage (deck-model uses it via saveDeck closure)
 const localStorageMock = {};
 globalThis.localStorage = {
   getItem: (k) => (k in localStorageMock ? localStorageMock[k] : null),
@@ -26,398 +25,297 @@ let pass = 0,
 function ok(cond, name) {
   if (cond) {
     pass++;
-    console.log(`  ok ${name}`);
+    console.log(`  ✓ ${name}`);
   } else {
     fail++;
-    console.log(`  FAIL ${name}`);
+    console.log(`  ✗ ${name}`);
   }
 }
 
-console.log('=== pipeline (Sprint 1.5 v4 variants) smoke test ===\n');
-
-// Helpers
-function makeMockDeps(opts = {}) {
-  const slides = opts.slides ?? [
-    { pageIndex: 0, title: 'A', body: [] },
-    { pageIndex: 1, title: 'B', body: [] },
-    { pageIndex: 2, title: 'C', body: [] },
-  ];
-  const liftBehavior = opts.liftBehavior ?? 'success';
-  const saveLog = opts.saveLog ?? [];
-  return {
-    saveLog,
-    deps: {
-      parsePDFFromBytes: async () => slides,
-      emitSlide2dCode: (sd) => `// code for ${sd.title}`,
-      callLiftLLM: async (prompt, code2d) => {
-        if (liftBehavior === 'success') {
-          return {
-            text: JSON.stringify({
-              v: 1,
-              name: 'list: ' + prompt,
-              subjects: [
-                { id: 'a', type: 'cube-3d', args: {}, transform: { translate: [0, 0, 0] } },
-              ],
-            }),
-            usage: {},
-          };
-        }
-        if (liftBehavior === 'error') {
-          throw new Error('mock lift error');
-        }
-        if (liftBehavior === 'error-page-1' && prompt.includes('B')) {
-          throw new Error('selective error for B');
-        }
-        return {
-          text: JSON.stringify({ v: 1, name: 'list: ' + prompt, subjects: [] }),
-          usage: {},
-        };
-      },
-      parseLiftResponse: (text) => JSON.parse(text),
-      saveDeck: (deck) =>
-        saveLog.push({
-          ts: Date.now(),
-          sectionCount: deck.sections.length,
-          statuses: deck.sections.map((s) => s.status),
-        }),
-    },
-  };
-}
-
-console.log('Test group 1: happy path (3 sections × 3 variants all lift successfully)');
-
-{
-  const deck = createDeck('test', { type: 'pdf', fileName: 'test.pdf', pageCount: 3 });
-  const events = [];
-  const { saveLog, deps } = makeMockDeps();
-  const pipeline = createPipeline(deck, new Uint8Array(10), 'fake-api-key', deps, {
-    onEvent: (e) => events.push(e),
+function makeDeckWithVisual() {
+  const deck = createDeck('test', { type: 'pdf', fileName: 't.pdf', pageCount: 1 });
+  setDocument(deck, {
+    flowingText: 'Hello world example text',
+    pages: [{ startOffset: 0, endOffset: 24, pageNumber: 1 }],
+    headings: [],
   });
-  await pipeline.start();
-
-  // Event sequence — Sprint 1.5: 3 sections × 3 variants = 9 lift-start / 9 lift-ready
-  ok(events[0]?.type === 'parse-start', 'first event = parse-start');
-  ok(
-    events[1]?.type === 'parse-done' && events[1].sectionCount === 3,
-    'parse-done with sectionCount 3',
-  );
-  const liftStarts = events.filter((e) => e.type === 'lift-start');
-  const liftReadys = events.filter((e) => e.type === 'lift-ready');
-  ok(
-    liftStarts.length === 3 * VARIANT_COUNT,
-    `${3 * VARIANT_COUNT} lift-start events (3 sections × 3 variants), got ${liftStarts.length}`,
-  );
-  ok(
-    liftReadys.length === 3 * VARIANT_COUNT,
-    `${3 * VARIANT_COUNT} lift-ready events, got ${liftReadys.length}`,
-  );
-  ok(
-    liftStarts.every((e) => typeof e.variantIndex === 'number'),
-    'every lift-start event carries variantIndex',
-  );
-  ok(
-    liftReadys.every((e) => typeof e.variantIndex === 'number'),
-    'every lift-ready event carries variantIndex',
-  );
-  ok(
-    liftReadys.every((e) => typeof e.archetype === 'string'),
-    'every lift-ready event carries archetype field',
-  );
-  ok(events[events.length - 1].type === 'all-done', 'last event = all-done');
-
-  // Sequential per section: variants 0,1,2 in order, then next section
-  // Section 0 variants come before section 1 variants
-  const section0Starts = liftStarts.filter((e) => e.pageIndex === 0);
-  const section1Starts = liftStarts.filter((e) => e.pageIndex === 1);
-  ok(section0Starts.length === 3, 'section 0 has 3 lift-start events');
-  ok(
-    section0Starts[0].variantIndex === 0 &&
-      section0Starts[1].variantIndex === 1 &&
-      section0Starts[2].variantIndex === 2,
-    'section 0 variants lifted in order 0 -> 1 -> 2',
-  );
-  // Section 0's last variant lift-start comes before section 1's first variant lift-start
-  const lastS0Idx = events.lastIndexOf(section0Starts[2]);
-  const firstS1Idx = events.indexOf(section1Starts[0]);
-  ok(lastS0Idx < firstS1Idx, 'section 0 completes all 3 variants before section 1 begins');
-
-  // Deck state
-  ok(deck.sections.length === 3, 'deck has 3 sections');
-  ok(
-    deck.sections.every((s) => s.status === 'ready'),
-    'all sections derived status = ready',
-  );
-  ok(
-    deck.sections.every((s) => s.variants.length === VARIANT_COUNT),
-    `every section has ${VARIANT_COUNT} variants`,
-  );
-  ok(
-    deck.sections.every((s) => s.variants.every((v) => v.status === 'ready')),
-    'every variant of every section status = ready',
-  );
-  ok(
-    deck.sections.every((s) => s.variants.every((v) => v.sceneData !== undefined)),
-    'every variant has sceneData',
-  );
-  ok(
-    deck.sections.every((s) => s.variants.every((v) => v.region !== undefined)),
-    'every variant has region',
-  );
-  ok(
-    deck.sections.every((s) => s.variants.every((v) => v.archetype === 'list')),
-    "every variant has archetype === 'list' (from mock sceneData.name 'list: ...')",
-  );
-
-  // saveDeck: 1 (after addPendingSections) + 3 sections × 3 variants × 2 (lifting + ready) = 19
-  ok(
-    saveLog.length >= 1 + 3 * VARIANT_COUNT * 2,
-    `saveDeck called >= 19 times (got ${saveLog.length})`,
-  );
+  const visual = addVisual(deck, { startOffset: 0, endOffset: 11, text: 'Hello world' });
+  return { deck, visualId: visual.id };
 }
 
-console.log(
-  '\nTest group 2: variant error tolerance (Sprint 1.5 v2 — error in 1 variant of 1 section does not abort other variants in same section, others continue normally)',
-);
-
-{
-  // Strategy: error on the 2nd lift call only. That's section 0 variant 1.
-  // Section 0 should end with variants[0]=ready, variants[1]=error, variants[2]=ready
-  // → section.status derived = 'ready' (any ready beats error).
-  // Sections 1 and 2 should all-variants-ready.
-  const deck = createDeck('error-test', { type: 'pdf', fileName: 'e.pdf', pageCount: 3 });
-  const events = [];
+function makeMockDeps(opts = {}) {
+  const archetypes = opts.archetypes ?? [
+    'sequence',
+    'list',
+    'compare',
+    'hierarchy',
+    'relation',
+    'kpi-hero',
+  ];
   let callCount = 0;
-  const deps = {
-    parsePDFFromBytes: async () => [
-      { pageIndex: 0, title: 'A', body: [] },
-      { pageIndex: 1, title: 'B', body: [] },
-      { pageIndex: 2, title: 'C', body: [] },
-    ],
-    emitSlide2dCode: (sd) => `// ${sd.title}`,
-    callLiftLLM: async (prompt) => {
-      callCount++;
-      if (callCount === 2) throw new Error('mock variant error');
-      return {
-        text: JSON.stringify({ v: 1, name: 'list: ' + prompt, subjects: [] }),
-        usage: {},
+  return {
+    callLiftLLM: async (prompt, code2d, apiKey, callOpts) => {
+      const idx = callCount++;
+      if (opts.failOnIndex !== undefined && idx === opts.failOnIndex) {
+        throw new Error(`mock error on variant ${idx}`);
+      }
+      if (opts.captureOpts) opts.captureOpts.push(callOpts);
+      const archetype = archetypes[idx] || 'list';
+      const sceneData = {
+        v: 1,
+        name: `${archetype}: Hello world`,
+        subjects: [
+          { id: 'a', type: 'sphere', args: {}, transform: { translate: [0, 0, 0] } },
+          // Inject a text-3d-pipe subject to verify sanitize is being called
+          {
+            id: 'b',
+            type: 'text-3d-pipe',
+            args: { text: 'should be filtered' },
+            transform: { translate: [0, 1, 0] },
+          },
+        ],
       };
+      return { text: JSON.stringify(sceneData), usage: {} };
     },
     parseLiftResponse: (text) => JSON.parse(text),
-    saveDeck: () => {},
-  };
-
-  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps, {
-    onEvent: (e) => events.push(e),
-  });
-  await pipeline.start();
-
-  const errorEvents = events.filter((e) => e.type === 'lift-error');
-  ok(errorEvents.length === 1, `1 lift-error event, got ${errorEvents.length}`);
-  ok(
-    errorEvents[0].variantIndex === 1 && errorEvents[0].pageIndex === 0,
-    `error tagged variantIndex=1 pageIndex=0 (got vi=${errorEvents[0].variantIndex} pi=${errorEvents[0].pageIndex})`,
-  );
-
-  // Variant-granular error
-  ok(
-    deck.sections[0].variants[1].status === 'error',
-    `section 0 variant 1 status=error, got ${deck.sections[0].variants[1].status}`,
-  );
-  ok(
-    deck.sections[0].variants[1].liftError === 'mock variant error',
-    `section 0 variant 1 liftError text preserved (got '${deck.sections[0].variants[1].liftError}')`,
-  );
-
-  // Sibling variants of same section still succeeded
-  ok(
-    deck.sections[0].variants[0].status === 'ready',
-    'section 0 variant 0 ready (sibling not aborted)',
-  );
-  ok(
-    deck.sections[0].variants[2].status === 'ready',
-    'section 0 variant 2 ready (sibling not aborted)',
-  );
-
-  // Section status derived: any ready → section ready
-  ok(
-    deck.sections[0].status === 'ready',
-    `section 0 derived status='ready' (any variant ready beats error), got '${deck.sections[0].status}'`,
-  );
-
-  // Other sections fully ready
-  ok(
-    deck.sections[1].variants.every((v) => v.status === 'ready'),
-    'section 1: all 3 variants ready (subsequent sections unaffected)',
-  );
-  ok(
-    deck.sections[2].variants.every((v) => v.status === 'ready'),
-    'section 2: all 3 variants ready (subsequent sections unaffected)',
-  );
-  ok(deck.sections[1].status === 'ready', 'section 1 derived status=ready');
-  ok(deck.sections[2].status === 'ready', 'section 2 derived status=ready');
-}
-
-console.log('\nTest group 3: parse error aborts pipeline');
-
-{
-  const deck = createDeck('parseerr', { type: 'pdf', fileName: 'p.pdf', pageCount: 0 });
-  const events = [];
-  const deps = {
-    parsePDFFromBytes: async () => {
-      throw new Error('bad pdf');
+    sanitize2dSceneData: (sd) => {
+      if (!sd || !Array.isArray(sd.subjects)) return sd;
+      return {
+        ...sd,
+        subjects: sd.subjects.filter(
+          (s) => s.type !== 'text-3d-pipe' && s.type !== 'text-3d-extruded',
+        ),
+      };
     },
-    emitSlide2dCode: () => '',
-    callLiftLLM: async () => ({ text: '{}', usage: {} }),
-    parseLiftResponse: (t) => JSON.parse(t),
     saveDeck: () => {},
   };
-  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps, {
+}
+
+console.log('=== pipeline (Sprint 2 visual-pipeline) smoke test ===\n');
+
+console.log('Constants');
+ok(VARIANT_COUNT === 6, `VARIANT_COUNT re-exported as 6 (got ${VARIANT_COUNT})`);
+
+console.log('\nTest group 1: extractArchetype');
+{
+  ok(extractArchetype({ name: 'sequence: Q3 Roadmap' }) === 'sequence', 'extract sequence');
+  ok(extractArchetype({ name: 'text-card: Definition' }) === 'text-card', 'extract text-card');
+  ok(
+    extractArchetype({ name: 'unknown-archetype: Title' }) === 'unknown',
+    'unknown archetype → unknown',
+  );
+  ok(extractArchetype({ name: 'no colon prefix' }) === 'unknown', 'no colon → unknown');
+  ok(extractArchetype({}) === 'unknown', 'missing name → unknown');
+  ok(extractArchetype(null) === 'unknown', 'null sceneData → unknown');
+}
+
+console.log('\nTest group 2: happy path (6 lifts, 6 different archetypes via mock)');
+
+{
+  const { deck, visualId } = makeDeckWithVisual();
+  const events = [];
+  const capturedOpts = [];
+  const deps = makeMockDeps({ captureOpts: capturedOpts });
+
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, {
     onEvent: (e) => events.push(e),
   });
   await pipeline.start();
 
-  ok(events[0].type === 'parse-start', 'first event parse-start');
-  ok(events[1].type === 'parse-error', 'second event parse-error');
-  ok(events[1].error.message === 'bad pdf', 'error message preserved');
+  const starts = events.filter((e) => e.type === 'lift-start');
+  const readys = events.filter((e) => e.type === 'lift-ready');
+  ok(starts.length === 6, `6 lift-start events (got ${starts.length})`);
+  ok(readys.length === 6, `6 lift-ready events (got ${readys.length})`);
+  ok(events[events.length - 1].type === 'all-done', 'last event = all-done');
+
+  // Verify opts.mode = '2d' was passed to every callLiftLLM call
+  ok(capturedOpts.length === 6, '6 callLiftLLM invocations');
   ok(
-    events.find((e) => e.type === 'lift-start') === undefined,
-    'no lift attempted after parse error',
+    capturedOpts.every((o) => o?.mode === '2d'),
+    'every callLiftLLM call passed opts.mode = 2d',
   );
-  ok(deck.sections.length === 0, 'deck has no sections on parse error');
+
+  // Verify deck state
+  const visual = deck.visuals[0];
+  ok(
+    visual.variants.every((v) => v.status === 'ready'),
+    'all 6 variants ready',
+  );
+  ok(
+    visual.variants.every((v) => v.sceneData !== undefined),
+    'all variants have sceneData',
+  );
+  ok(
+    visual.variants.every((v) => v.archetype !== 'unknown'),
+    'all variants extracted valid archetypes',
+  );
+  ok(visual.status === 'ready', 'visual status derived to ready');
 }
 
-console.log('\nTest group 4: cancel stops further lifts (granular at variant boundary)');
+console.log('\nTest group 3: sanitize2dSceneData was invoked (text-3d-pipe removed)');
 
 {
-  const deck = createDeck('cancel', { type: 'pdf', fileName: 'c.pdf', pageCount: 3 });
+  const { deck, visualId } = makeDeckWithVisual();
+  const deps = makeMockDeps();
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, { onEvent: () => {} });
+  await pipeline.start();
+  const visual = deck.visuals[0];
+  for (let i = 0; i < 6; i++) {
+    const subjects = visual.variants[i].sceneData?.subjects ?? [];
+    ok(
+      subjects.every((s) => s.type !== 'text-3d-pipe'),
+      `variant ${i}: no text-3d-pipe subjects after sanitize`,
+    );
+  }
+}
+
+console.log('\nTest group 4: error tolerance — single variant error does not abort');
+
+{
+  const { deck, visualId } = makeDeckWithVisual();
+  const events = [];
+  const deps = makeMockDeps({ failOnIndex: 2 });
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, {
+    onEvent: (e) => events.push(e),
+  });
+  await pipeline.start();
+
+  const errors = events.filter((e) => e.type === 'lift-error');
+  const readys = events.filter((e) => e.type === 'lift-ready');
+  ok(errors.length === 1, `1 lift-error (got ${errors.length})`);
+  ok(errors[0].variantIndex === 2, `error on variant 2`);
+  ok(readys.length === 5, `5 lift-ready (got ${readys.length})`);
+
+  const visual = deck.visuals[0];
+  ok(visual.variants[2].status === 'error', 'variant 2 = error');
+  ok(
+    visual.variants[2].liftError === 'mock error on variant 2',
+    'variant 2 liftError text preserved',
+  );
+  ok(visual.status === 'ready', 'visual status = ready (5 of 6 ready)');
+}
+
+console.log('\nTest group 5: cancel stops further lifts');
+
+{
+  const { deck, visualId } = makeDeckWithVisual();
   const events = [];
   let liftCallCount = 0;
   let pipelineRef;
   const deps = {
-    parsePDFFromBytes: async () => [
-      { pageIndex: 0, title: 'A', body: [] },
-      { pageIndex: 1, title: 'B', body: [] },
-      { pageIndex: 2, title: 'C', body: [] },
-    ],
-    emitSlide2dCode: (sd) => `// ${sd.title}`,
     callLiftLLM: async () => {
       liftCallCount++;
-      if (liftCallCount === 1) {
-        // Trigger cancel after first lift starts
-        pipelineRef.cancel();
-      }
-      return {
-        text: JSON.stringify({ v: 1, name: 'list: page', subjects: [] }),
-        usage: {},
-      };
+      if (liftCallCount === 2) pipelineRef.cancel();
+      return { text: JSON.stringify({ v: 1, name: 'list: Test', subjects: [] }), usage: {} };
     },
-    parseLiftResponse: (t) => JSON.parse(t),
+    parseLiftResponse: (text) => JSON.parse(text),
+    sanitize2dSceneData: (sd) => sd,
     saveDeck: () => {},
   };
-  pipelineRef = createPipeline(deck, new Uint8Array(10), 'k', deps, {
+  pipelineRef = createVisualPipeline(deck, visualId, 'fake-key', deps, {
     onEvent: (e) => events.push(e),
   });
   await pipelineRef.start();
 
-  ok(liftCallCount === 1, `only 1 lift call before cancel (got ${liftCallCount})`);
-  const cancelEvent = events.find((e) => e.type === 'cancelled');
-  ok(cancelEvent !== undefined, 'cancelled event emitted');
-  // Section 0 variant 0 got the lift-ready (since cancel only halts before the
-  // *next* lift). Variants 1 & 2 of section 0 + all of sections 1,2 stay pending.
-  ok(
-    deck.sections[0].variants[1].status === 'pending',
-    `section 0 variant 1 still pending after cancel (got '${deck.sections[0].variants[1].status}')`,
-  );
-  ok(
-    deck.sections[0].variants[2].status === 'pending',
-    `section 0 variant 2 still pending after cancel (got '${deck.sections[0].variants[2].status}')`,
-  );
-  ok(
-    deck.sections[1].variants.every((v) => v.status === 'pending'),
-    'section 1: all 3 variants still pending after cancel',
-  );
-  ok(
-    deck.sections[2].variants.every((v) => v.status === 'pending'),
-    'section 2: all 3 variants still pending after cancel',
-  );
+  ok(liftCallCount === 2, `only 2 lift calls before cancel (got ${liftCallCount})`);
+  ok(events.find((e) => e.type === 'cancelled') !== undefined, 'cancelled event emitted');
+  const visual = deck.visuals[0];
+  ok(visual.variants[2].status === 'pending', 'variant 2 still pending after cancel');
+  ok(visual.variants[5].status === 'pending', 'variant 5 still pending after cancel');
 }
 
-console.log(
-  '\nTest group 5: archetype extraction (Sprint 1.5 v2 — 3 different archetypes across 3 lifts)',
-);
+console.log('\nTest group 6: visual not found returns lift-error');
 
 {
-  const deck = createDeck('archetype-test', { type: 'pdf', fileName: 't.pdf', pageCount: 1 });
+  const { deck } = makeDeckWithVisual();
   const events = [];
-  let callCount = 0;
-  const archetypes = ['sequence: Page Title', 'list: Page Title', 'compare: Page Title'];
-  const deps = {
-    parsePDFFromBytes: async () => [{ pageIndex: 0, title: 'p1', body: [] }],
-    emitSlide2dCode: () => '// code',
-    callLiftLLM: async () => {
-      const name = archetypes[callCount++];
-      return { text: JSON.stringify({ v: 1, name, subjects: [] }), usage: {} };
-    },
-    parseLiftResponse: (text) => JSON.parse(text),
-    saveDeck: () => {},
-  };
-
-  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps, {
+  const deps = makeMockDeps();
+  const pipeline = createVisualPipeline(deck, 'nonexistent-id', 'fake-key', deps, {
     onEvent: (e) => events.push(e),
   });
   await pipeline.start();
-
-  ok(
-    deck.sections[0].variants[0].archetype === 'sequence',
-    `variant 0 archetype='sequence', got '${deck.sections[0].variants[0].archetype}'`,
-  );
-  ok(
-    deck.sections[0].variants[1].archetype === 'list',
-    `variant 1 archetype='list', got '${deck.sections[0].variants[1].archetype}'`,
-  );
-  ok(
-    deck.sections[0].variants[2].archetype === 'compare',
-    `variant 2 archetype='compare', got '${deck.sections[0].variants[2].archetype}'`,
-  );
-
-  const readyEvents = events.filter((e) => e.type === 'lift-ready');
-  ok(readyEvents.length === 3, '3 lift-ready events');
-  ok(readyEvents[0].archetype === 'sequence', 'lift-ready event 0 carries archetype=sequence');
-  ok(readyEvents[1].archetype === 'list', 'lift-ready event 1 carries archetype=list');
-  ok(readyEvents[2].archetype === 'compare', 'lift-ready event 2 carries archetype=compare');
+  ok(events.length === 1 && events[0].type === 'lift-error', 'fires lift-error');
+  ok(events[0].error === 'visual not found', 'error message');
+  ok(events[0].variantIndex === -1, 'variantIndex = -1 (no specific variant)');
 }
 
-console.log(
-  '\nTest group 6: archetype fallback to "unknown" (Sprint 1.5 v2 — malformed sceneData.name)',
-);
+console.log('\nTest group 7: p5-sketch subject acceptance (Sprint 3)');
 
 {
-  const deck = createDeck('fallback-test', { type: 'pdf', fileName: 't.pdf', pageCount: 1 });
-  let callIdx = 0;
-  // Three cases: name missing entirely, name has no colon, name has unrecognized archetype
-  const malformedNames = [undefined, 'no colon prefix at all', 'invalid-archetype: Title'];
-  const deps = {
-    parsePDFFromBytes: async () => [{ pageIndex: 0, title: 'p', body: [] }],
-    emitSlide2dCode: () => '',
-    callLiftLLM: async () => {
-      const name = malformedNames[callIdx++];
-      const sceneData = { v: 1, subjects: [] };
-      if (name !== undefined) sceneData.name = name;
-      return { text: JSON.stringify(sceneData), usage: {} };
-    },
-    parseLiftResponse: (text) => JSON.parse(text),
-    saveDeck: () => {},
+  // Mock lift returns SceneData with single p5-sketch subject
+  const { deck, visualId } = makeDeckWithVisual();
+  const deps = makeMockDeps();
+  let callCount = 0;
+  deps.callLiftLLM = async () => {
+    callCount++;
+    return {
+      text: JSON.stringify({
+        v: 1,
+        name: 'text-card: Hello',
+        subjects: [
+          {
+            id: 'sketch-' + callCount,
+            type: 'p5-sketch',
+            args: {
+              code: 'function setup(){createCanvas(600,360);}function draw(){background(255);}',
+            },
+          },
+        ],
+      }),
+      usage: {},
+    };
   };
 
-  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps, { onEvent: () => {} });
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, { onEvent: () => {} });
   await pipeline.start();
 
-  for (let i = 0; i < 3; i++) {
-    ok(
-      deck.sections[0].variants[i].archetype === 'unknown',
-      `variant ${i} archetype falls back to 'unknown', got '${deck.sections[0].variants[i].archetype}'`,
-    );
-  }
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  ok(
+    visual.variants.every((v) => v.status === 'ready'),
+    'all 6 variants ready',
+  );
+  ok(
+    visual.variants.every((v) => v.sceneData?.subjects?.[0]?.type === 'p5-sketch'),
+    'all 6 variants have p5-sketch subject',
+  );
+  ok(
+    visual.variants.every((v) => typeof v.sceneData.subjects[0].args.code === 'string'),
+    'all 6 variants have args.code string',
+  );
+}
+
+console.log('\nTest group 8: p5-sketch mixed-subject rejection (Sprint 3)');
+
+{
+  // Mock returns SceneData with both p5-sketch AND a traditional subject (cube-3d)
+  // Pipeline should reject this variant as liftError
+  const { deck, visualId } = makeDeckWithVisual();
+  const deps = makeMockDeps();
+  deps.callLiftLLM = async () => ({
+    text: JSON.stringify({
+      v: 1,
+      name: 'text-card: Mixed',
+      subjects: [
+        { id: 'sketch', type: 'p5-sketch', args: { code: 'function setup(){}function draw(){}' } },
+        { id: 'cube', type: 'cube-3d', args: {}, transform: { translate: [0, 0, 0] } },
+      ],
+    }),
+    usage: {},
+  });
+
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, { onEvent: () => {} });
+  await pipeline.start();
+
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  ok(
+    visual.variants.every((v) => v.status === 'error'),
+    'all variants error on mixed subjects (Sprint 3 constraint)',
+  );
+  ok(
+    visual.variants[0].liftError?.includes('mixed') ||
+      visual.variants[0].liftError?.includes('single'),
+    `liftError mentions constraint: "${visual.variants[0].liftError}"`,
+  );
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);

@@ -234,5 +234,54 @@ await (async () => {
   ok(threw, 'createRendererForId: throws on unknown id');
 }
 
+console.log('\nTest group: sanitize2dSceneData (Sprint 2 Phase 4)');
+
+{
+  const input = {
+    v: 1,
+    name: 'test',
+    subjects: [
+      { id: 'a', type: 'cube-3d', args: {}, transform: { translate: [0, 0, 0] } },
+      {
+        id: 'b',
+        type: 'text-3d-extruded',
+        args: { text: 'hello' },
+        transform: { translate: [0, 0, 0] },
+      },
+      {
+        id: 'c',
+        type: 'text-3d-pipe',
+        args: { text: 'world' },
+        transform: { translate: [0, 0, 0] },
+      },
+      { id: 'd', type: 'sphere', args: {}, transform: { translate: [0, 0, 0] } },
+    ],
+  };
+  const out = api.sanitize2dSceneData(input);
+  ok(out.subjects.length === 2, `sanitize: 4 → 2 subjects (got ${out.subjects.length})`);
+  ok(
+    out.subjects.every((s) => s.type !== 'text-3d-extruded'),
+    'sanitize: no text-3d-extruded survives',
+  );
+  ok(
+    out.subjects.every((s) => s.type !== 'text-3d-pipe'),
+    'sanitize: no text-3d-pipe survives',
+  );
+  ok(input.subjects.length === 4, 'sanitize: input not mutated (immutable)');
+  ok(out.name === 'test' && out.v === 1, 'sanitize: other fields preserved');
+
+  const empty = api.sanitize2dSceneData({ v: 1, name: 'empty', subjects: [] });
+  ok(
+    Array.isArray(empty.subjects) && empty.subjects.length === 0,
+    'sanitize: empty subjects array OK',
+  );
+
+  const noSubjects = api.sanitize2dSceneData({ v: 1, name: 'no-subjects' });
+  ok(noSubjects.name === 'no-subjects', 'sanitize: missing subjects field passes through');
+
+  const nullInput = api.sanitize2dSceneData(null);
+  ok(nullInput === null, 'sanitize: null input returns null');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

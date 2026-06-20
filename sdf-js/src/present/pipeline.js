@@ -1,31 +1,26 @@
 // =============================================================================
-// pipeline.js — Atlas Present Sprint 1.5 v4 PDF → 2D code → lift pipeline
+// pipeline.js — Atlas Present Sprint 2 visual generation pipeline
 // -----------------------------------------------------------------------------
-// Orchestrates:
-//   1. parsePDFFromBytes(uint8Array) → SlideData[]
-//   2. emitSlide2dCode(slideData) → code2d per slide (sync)
-//   3. Sequential lift queue: for each section, run VARIANT_COUNT (3) lifts
-//      serially. All 3 calls use the IDENTICAL prompt — divergence comes from
-//      Anthropic default temperature (~1.0) + the archetype-first system
-//      prompt v3.18 (LLM picks one of 7 archetypes per call, stochasticity
-//      produces 2-3 different archetypes across 3 calls for most slides).
-//   4. extractArchetype(sceneData) parses sceneData.name prefix
-//      ("<archetype>: <title>") into variant.archetype.
-//   5. Save deck to storage after each variant status change.
+// Per-selection (not per-section) 6-lift queue. Called when user clicks ⚡
+// on a text selection. Each visual gets VARIANT_COUNT (6) independent lift
+// calls in serial. Identical prompts; divergence relies on LLM stochasticity
+// at default Anthropic temperature.
 //
-// NO streaming UX (Sprint 1 waits for all lifted before render). Sprint 2+
-// adds streaming for 3D Play mode.
+// Lift contract opts.mode = '2d' enforced (per spec Decision 11 + Phase 4).
+// Runtime sanitize2dSceneData applied to each lift output before persistence.
 //
-// Mode-agnostic: this file deals with sections + variants + regions, not
-// 3D-view state.
+// Events emitted via opts.onEvent({type, ...}):
+//   - {type: 'lift-start', visualId, variantIndex}
+//   - {type: 'lift-ready', visualId, variantIndex, archetype}
+//   - {type: 'lift-error', visualId, variantIndex, error}
+//   - {type: 'all-done', visualId}
+//   - {type: 'cancelled', visualId}
 //
-// Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-v4-design.md §4
+// Spec: docs/superpowers/specs/2026-06-20-atlas-present-sprint-2-napkin-paragraph-design.md §6
 // =============================================================================
 
-import { VARIANT_COUNT, addPendingSections, updateVariantStatus } from './deck-model.js';
-import { computeRegions } from './linear-layout.js';
+import { updateVisualVariantStatus, VARIANT_COUNT } from './deck-model.js';
 
-/** Archetypes recognized by extractArchetype (matches system-prompt-lift-3d.md v3.18). */
 const VALID_ARCHETYPES = [
   'sequence',
   'list',
@@ -37,11 +32,34 @@ const VALID_ARCHETYPES = [
 ];
 
 /**
- * Extract archetype label from sceneData.name (format: "<archetype>: <title>").
- * Falls back to 'unknown' if name is missing, not a string, lacks a colon,
- * or carries an unrecognized archetype.
+ * Sprint 3 constraint: if a SceneData contains any p5-sketch subject, then
+ * ALL subjects must be p5-sketch (mixed-subjects not yet supported).
+ * Additionally, args.code must be a non-empty string.
  *
- * Matches the 7 archetypes locked in system-prompt-lift-3d.md v3.18.
+ * Throws Error with message describing the violation.
+ *
+ * @param {object} sceneData
+ */
+function validateP5SketchConstraint(sceneData) {
+  if (!sceneData || !Array.isArray(sceneData.subjects)) return;
+  const subjects = sceneData.subjects;
+  const p5Subjects = subjects.filter((s) => s?.type === 'p5-sketch');
+  if (p5Subjects.length === 0) return; // No p5-sketch, no constraint to check
+  if (p5Subjects.length !== subjects.length) {
+    throw new Error(
+      'p5-sketch must be the single subject in SceneData (Sprint 3 constraint: no mixed subjects with traditional types)',
+    );
+  }
+  for (const s of p5Subjects) {
+    if (typeof s.args?.code !== 'string' || s.args.code.length === 0) {
+      throw new Error('p5-sketch subject requires args.code as non-empty string');
+    }
+  }
+}
+
+/**
+ * Extract archetype label from sceneData.name prefix ("<archetype>: <title>").
+ * Falls back to 'unknown' if missing/malformed/unrecognized.
  *
  * @param {object} sceneData
  * @returns {string}
@@ -56,35 +74,23 @@ export function extractArchetype(sceneData) {
 }
 
 /**
- * Create a pipeline state machine. Returns handle with start/cancel methods +
- * event emitter for status changes.
+ * Create a visual-pipeline state machine. Returns handle with start/cancel.
  *
  * Pipeline contract:
- *   - deps.parsePDFFromBytes(uint8Array) → Promise<SlideData[]>
- *   - deps.emitSlide2dCode(slideData) → string (code2d)
- *   - deps.callLiftLLM(prompt, code2d, apiKey) → Promise<{text: string, usage: object}>
- *   - deps.parseLiftResponse(text) → object (sceneData)
- *   - deps.saveDeck(deck) → void (called after each status change)
+ *   deps.callLiftLLM(prompt, code2d, apiKey, opts) → {text, usage}
+ *   deps.parseLiftResponse(text) → object (sceneData)
+ *   deps.sanitize2dSceneData(sceneData) → sanitized sceneData
+ *   deps.saveDeck(deck) → void (called after each status change)
  *
- * Events emitted via opts.onEvent({type, ...details}):
- *   - {type: 'parse-start'}
- *   - {type: 'parse-done', sectionCount: number}
- *   - {type: 'parse-error', error: Error}
- *   - {type: 'lift-start', sectionId: string, pageIndex: number, variantIndex: number}
- *   - {type: 'lift-ready', sectionId: string, pageIndex: number, variantIndex: number, archetype: string}
- *   - {type: 'lift-error', sectionId: string, pageIndex: number, variantIndex: number, error: string}
- *   - {type: 'all-done'}
- *   - {type: 'cancelled'}
- *
- * @param {Deck} deck — must have source + sections (will be mutated by pipeline)
- * @param {Uint8Array} pdfBytes
- * @param {string} apiKey — Anthropic API key
- * @param {object} deps — dependency injection (for testability)
- * @param {object} opts
- * @param {Function} opts.onEvent
+ * @param {object} deck
+ * @param {string} visualId — visual must already exist in deck.visuals
+ * @param {string} apiKey
+ * @param {object} deps
+ * @param {object} [opts]
+ * @param {Function} [opts.onEvent]
  * @returns {{start: Function, cancel: Function, isRunning: Function}}
  */
-export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
+export function createVisualPipeline(deck, visualId, apiKey, deps, opts = {}) {
   let cancelled = false;
   let running = false;
   const onEvent = opts.onEvent ?? (() => {});
@@ -93,127 +99,59 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
     if (running) return;
     running = true;
 
-    // 1. Parse PDF
-    onEvent({ type: 'parse-start' });
-    let slides;
-    try {
-      slides = await deps.parsePDFFromBytes(pdfBytes, deck.source.fileName);
-    } catch (e) {
-      onEvent({ type: 'parse-error', error: e });
+    const visual = deck.visuals.find((v) => v.id === visualId);
+    if (!visual) {
+      onEvent({ type: 'lift-error', visualId, variantIndex: -1, error: 'visual not found' });
       running = false;
       return;
     }
-    if (cancelled) {
-      onEvent({ type: 'cancelled' });
-      running = false;
-      return;
-    }
-    onEvent({ type: 'parse-done', sectionCount: slides.length });
 
-    // 2. Emit 2D code per slide
-    const sectionInputs = slides.map((slideData) => {
-      const code2d = deps.emitSlide2dCode(slideData);
-      return {
-        slideData,
-        code2d: typeof code2d === 'string' ? code2d : (code2d.code2d ?? ''),
-        prompt: slideData.title || `Page ${slideData.pageIndex + 1}`,
-      };
-    });
+    // Compose the lift prompt from the textAnchor
+    const liftPrompt = visual.textAnchor.text;
+    // 2D pipeline doesn't have a separate 2D-code intermediate. Pass the
+    // textAnchor.text as code2d arg so the LLM has the raw user-selected text
+    // for context. The lift system prompt + MODE_2D_ADDENDUM is generic enough.
+    const code2d = `// User selected text:\n// ${visual.textAnchor.text.replace(/\n/g, '\n// ')}`;
 
-    // 3. Add to deck as pending sections (each gets VARIANT_COUNT=3 pending variants)
-    addPendingSections(deck, sectionInputs);
-    deps.saveDeck(deck);
-
-    // 4. Sequential lift queue — outer: sections, inner: variants
-    for (const section of deck.sections) {
+    for (let variantIndex = 0; variantIndex < visual.variants.length; variantIndex++) {
       if (cancelled) {
-        onEvent({ type: 'cancelled' });
+        onEvent({ type: 'cancelled', visualId });
         running = false;
         return;
       }
-      // Skip whole section if all variants already terminal (resume support)
-      if (section.variants.every((v) => v.status === 'ready' || v.status === 'error')) continue;
+      const variant = visual.variants[variantIndex];
+      if (variant.status !== 'pending') continue; // skip already-done variant
 
-      for (let variantIndex = 0; variantIndex < section.variants.length; variantIndex++) {
+      onEvent({ type: 'lift-start', visualId, variantIndex });
+      updateVisualVariantStatus(deck, visualId, variantIndex, 'lifting');
+      deps.saveDeck(deck);
+
+      try {
+        const llmResult = await deps.callLiftLLM(liftPrompt, code2d, apiKey, { mode: '2d' });
         if (cancelled) {
-          onEvent({ type: 'cancelled' });
+          onEvent({ type: 'cancelled', visualId });
           running = false;
           return;
         }
-        const variant = section.variants[variantIndex];
-        if (variant.status !== 'pending') continue;
+        const rawSceneData = deps.parseLiftResponse(llmResult.text);
+        // Sprint 3: validate p5-sketch constraint (no mixed subjects)
+        validateP5SketchConstraint(rawSceneData); // throws on violation
+        const sceneData = deps.sanitize2dSceneData(rawSceneData);
+        const archetype = extractArchetype(sceneData);
 
-        onEvent({
-          type: 'lift-start',
-          sectionId: section.id,
-          pageIndex: section.pageIndex,
-          variantIndex,
-        });
-        updateVariantStatus(deck, section.id, variantIndex, 'lifting');
+        updateVisualVariantStatus(deck, visualId, variantIndex, 'ready', { sceneData, archetype });
         deps.saveDeck(deck);
-
-        try {
-          // v2: identical prompt across all 3 variants. Divergence comes from
-          // Anthropic default temperature (~1.0) + archetype-first system prompt
-          // v3.18 — LLM picks one of 7 archetypes per call, stochasticity
-          // produces 2-3 different archetypes across 3 calls.
-          const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
-          if (cancelled) {
-            onEvent({ type: 'cancelled' });
-            running = false;
-            return;
-          }
-          const sceneData = deps.parseLiftResponse(llmResult.text);
-          const archetype = extractArchetype(sceneData);
-
-          // Compute region for this variant using the *selected* variant's
-          // sceneData for already-ready siblings (keeps linear-layout stable
-          // when later variants land first).
-          const regions = computeRegions(
-            deck.sections.map((s, i) => {
-              if (i === section.pageIndex) {
-                return { sceneData, title: section.prompt };
-              }
-              const sel = s.variants[s.selectedVariantIndex];
-              return {
-                sceneData: sel?.sceneData ?? { v: 1, subjects: [] },
-                title: s.prompt,
-              };
-            }),
-            deck.layout.spacing,
-          );
-          const region = regions[section.pageIndex];
-
-          updateVariantStatus(deck, section.id, variantIndex, 'ready', {
-            sceneData,
-            region,
-            archetype,
-          });
-          deps.saveDeck(deck);
-          onEvent({
-            type: 'lift-ready',
-            sectionId: section.id,
-            pageIndex: section.pageIndex,
-            variantIndex,
-            archetype,
-          });
-        } catch (e) {
-          updateVariantStatus(deck, section.id, variantIndex, 'error', { liftError: e.message });
-          deps.saveDeck(deck);
-          onEvent({
-            type: 'lift-error',
-            sectionId: section.id,
-            pageIndex: section.pageIndex,
-            variantIndex,
-            error: e.message,
-          });
-          // Continue to next variant (don't abort whole section on 1 variant error)
-        }
-      } // end variants loop
-    } // end sections loop
+        onEvent({ type: 'lift-ready', visualId, variantIndex, archetype });
+      } catch (e) {
+        updateVisualVariantStatus(deck, visualId, variantIndex, 'error', { liftError: e.message });
+        deps.saveDeck(deck);
+        onEvent({ type: 'lift-error', visualId, variantIndex, error: e.message });
+        // Continue to next variant (don't abort on single variant error)
+      }
+    }
 
     if (!cancelled) {
-      onEvent({ type: 'all-done' });
+      onEvent({ type: 'all-done', visualId });
     }
     running = false;
   }
@@ -221,7 +159,6 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
   function cancel() {
     cancelled = true;
   }
-
   function isRunning() {
     return running;
   }
@@ -229,5 +166,4 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
   return { start, cancel, isRunning };
 }
 
-// VARIANT_COUNT re-exported for convenience (callers can use it for UI labels).
 export { VARIANT_COUNT };

@@ -35,6 +35,176 @@ import { Random } from './util/random.js';
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
 
 /**
+ * Appended to system prompt when callLiftLLM is invoked with opts.mode === '2d'.
+ *
+ * Layer 1: original Sprint 2 constraint — forbids text-3d-* subjects.
+ *
+ * Layer 2 (Sprint 3 amendment): Step 4 — 3-priority content-driven routing
+ * (SDF DIRECT → SDF METAPHORICAL → P5 FALLBACK). Tells LLM to hunt for SDF
+ * compositional metaphor (Atlas wedge) before falling to P5 vector.
+ *
+ * Defense layer 1 of 2. Layer 2: sanitize2dSceneData() runtime filter.
+ */
+const MODE_2D_ADDENDUM = `
+
+## 2D-mode constraints (Atlas Present)
+
+This call is for 2D rendering. NEVER emit subjects with type
+'text-3d-extruded' or 'text-3d-pipe'. Atlas Present renders all
+text via Canvas2D outside the SDF tree in 2D mode. SDF glyphs in
+2D mode look bad (silhouette/lines/crayon/topo cannot render text
+typography cleanly).
+
+## Step 4: 2D-mode 3-priority routing (Sprint 3) — SDF FIRST, P5 fallback
+
+When opts.mode === '2d', try these priorities IN ORDER. SDF priorities are
+Atlas's wedge that vector cannot replicate. P5 is graceful-degradation fallback.
+
+Priority 1 — SDF DIRECT (literal concrete):
+  If text contains concrete physical objects (cathedral / carrier / cube / robot
+  / tree / city / chair / cathedral), emit traditional-subject SceneData with
+  sphere / cube-3d / cylinder / capsule / 40+ existing atom primitives. Uses
+  Atlas's strongest capability and reuses existing atom library. Renders via
+  silhouette / lines / crayon / topo.
+
+Priority 2 — SDF METAPHORICAL (concrete composition for abstract concept) ⭐:
+  If text contains number / abstract assertion BUT a concrete metaphor expresses
+  it well, HUNT for the metaphor and emit SDF compositional scene:
+    - money / expensive → coins (sdf_circle filled inside larger outline)
+    - time / duration → hourglass outline + particle SDFs as sand falling
+    - growth / 10x → steps / tower / ladder rising
+    - quantity (N items) → N concrete-shape SDFs (one per item, repeated)
+    - network → constellation (sdf_circle nodes + sdf_line edges)
+    - process / pipeline → assembly-line shapes
+  Output: SceneData where Subject A's outline (sdf_box / sdRoundBox / sdEtriangle)
+  is FILLED with Subject B units (sdf_circle / small primitive arranged via grid
+  iteration) — see worked example below. Atlas's REAL WEDGE.
+
+  ALWAYS try Priority 2 before falling to P5.
+
+Priority 3 — P5 FALLBACK (graceful degradation, 防退化):
+  Only when text is purely abstract relationship AND no concrete metaphor fits.
+  Emit single 'p5-sketch' subject with args.code as a complete P5 sketch.
+  Fallback, not Atlas IP — its purpose is preventing degenerate output, not
+  competing with Napkin/antvis on this layer.
+
+For 6 variants per ⚡:
+  - Allocate ~3-4 variants in Priority 1+2 when content has concrete or
+    metaphor-eligible material (Atlas IP stage)
+  - Allocate ~2-3 variants in Priority 3 (fallback coverage)
+  - Pure-abstract content: 1-2 try Priority 2 (invent metaphor), 4-5 Priority 3
+    with different layouts (vertical / radial / cards / timeline / compare)
+  - NEVER emit all 6 same-tier same-style (Sprint 1.5 convergence failure)
+
+## p5-sketch subject type (Sprint 3)
+
+When emitting Priority 3 (or as alternative to Priority 2 for pure abstract):
+
+  {
+    "v": 1,
+    "name": "<archetype>: <title>",
+    "subjects": [{
+      "id": "sketch-<uuid>",
+      "type": "p5-sketch",
+      "args": {
+        "code": "function setup() { createCanvas(600, 360); ... } function draw() { ... }",
+        "canvasWidth": 600,
+        "canvasHeight": 360
+      }
+    }]
+  }
+
+Constraints:
+- ENTIRE subjects array must be exactly one p5-sketch entry (NO mixing with
+  traditional types in Sprint 3 — pipeline will reject mixed scenes)
+- args.code is a complete P5 sketch with setup() + draw()
+- Sketch runs in sandboxed iframe with these globals available:
+  * P5 API: createCanvas, fill, stroke, vertex, rect, ellipse, text, textSize,
+    textFont, line, push, pop, translate, rotate, scale, noLoop, ...
+  * Atlas SDF helpers (28 functions): sdf_box, sdf_circle, sdRoundBox,
+    sdTriangle, sdTrapezoid, sdEtriangle, sdf_line, sdf_line2, sdf_moon,
+    sub2, add2, mul2, dot2, len2, lenSq2, rot2, trans2, clamp1, clamp2,
+    max2, min2, fract1, fract2, scale2, eq2, step1, xRepeated, sdf_rep
+  * Branding palette: window.__brandingPalette = { bg: [r,g,b], silhouetteColor: [r,g,b] }
+- Use textFont('sans-serif') for any text. Use brandingPalette for fill/stroke
+  to maintain visual consistency across renderer cycles.
+- Call createCanvas(600, 360) inside setup(). End draw() with noLoop() to freeze
+  the frame (saves CPU; we render once, no animation needed).
+
+## SDF helper conventions (gotchas for sketches calling Atlas helpers)
+
+When using Atlas SDF helpers inside a p5-sketch's args.code:
+
+- **sdf_line(p, cy, k)**: returns NEGATIVE for points ABOVE the line y = cy + k*p[0]; POSITIVE below. Treat upper half-plane as inside (SDF "inside = negative" convention). Don't flip the sign for visual "below the line" intuition.
+
+- **sdTrapezoid(p, a, b, ra, rb)**: the function Y-flips the probe internally. Pass anchor points a, b AND probe p all in standard Y-up (positive y = upward); the function handles the internal flip. Anchor b should have a HIGHER y than a for a trapezoid extending upward.
+
+- **sdEtriangle(p, r)**: also Y-flips probe internally. Pass p in standard Y-up; the triangle's apex points UPWARD in standard Y-up after the flip.
+
+- All other helpers (sdf_box, sdf_circle, sdRoundBox, sdTriangle, sdf_moon, xRepeated, sdf_rep) use standard SDF conventions with no Y-flip: inside = negative, outside = positive, point passed in is the point evaluated directly.
+
+## Worked example — Priority 1 (SDF DIRECT, literal concrete)
+
+User text: "A cathedral on a hill in the morning"
+LLM detects concrete nouns: cathedral, hill.
+Output:
+\`\`\`json
+{
+  "v": 1, "name": "kpi-hero: Cathedral on Hill",
+  "subjects": [
+    { "id": "cathedral", "type": "cathedral", "args": {}, "transform": { "translate": [0, 1, 0] } },
+    { "id": "hill", "type": "terrain-with-lakes", "args": {}, "transform": { "translate": [0, -1, 0] } }
+  ]
+}
+\`\`\`
+
+## Worked example — Priority 2 ⭐ (SDF METAPHORICAL, Atlas wedge)
+
+User text: "$3 billion was spent building this aircraft carrier"
+LLM detects: concrete (carrier) + number (3B = money concept) → carrier-from-coins metaphor.
+Output: a P5 sketch (since the metaphor requires custom composition not in
+existing atom library — falls into a single p5-sketch subject that uses Atlas
+SDF helpers inside the sketch):
+\`\`\`json
+{
+  "v": 1, "name": "kpi-hero: $3B Aircraft Carrier",
+  "subjects": [{
+    "id": "sketch-1",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function setup() { createCanvas(600, 360); noStroke(); noLoop(); } function draw() { const bg = window.__brandingPalette.bg; const fg = window.__brandingPalette.silhouetteColor; background(bg[0], bg[1], bg[2]); fill(fg[0], fg[1], fg[2]); for (let py = 0; py < 360; py += 8) { for (let px = 0; px < 600; px += 8) { const x = (px / 600) * 2 - 1; const y = -((py / 360) * 2 - 1); const inCarrier = sdf_box([x, y], [0, -0.1], [1.6, 0.3]) < 0 || sdf_box([x, y], [-0.4, 0.2], [0.8, 0.4]) < 0; if (inCarrier) ellipse(px + 4, py + 4, 6, 6); } } textFont('sans-serif'); textSize(48); textAlign(CENTER, TOP); fill(fg[0], fg[1], fg[2]); text('$3B', 300, 20); }"
+    }
+  }]
+}
+\`\`\`
+Result: A carrier silhouette composed of ~3000 small circles (the "coins"),
+with "$3B" labeled at top. Vector libraries cannot do this effortlessly —
+they would need explicit point placement. SDF tests inside/outside per grid
+cell, so any outline + any fill = arbitrary metaphor.
+
+## Worked example — Priority 3 (P5 FALLBACK, abstract relationship)
+
+User text: "The agent explores the environment, builds hypotheses, and refines its world model"
+LLM detects: no concrete nouns, no central number, pure sequential abstract.
+Output:
+\`\`\`json
+{
+  "v": 1, "name": "sequence: Explore-Hypothesize-Refine",
+  "subjects": [{
+    "id": "sketch-2",
+    "type": "p5-sketch",
+    "args": {
+      "code": "function setup() { createCanvas(600, 360); noStroke(); noLoop(); } function draw() { const bg = window.__brandingPalette.bg; const fg = window.__brandingPalette.silhouetteColor; background(bg[0], bg[1], bg[2]); const steps = ['Explore', 'Hypothesize', 'Refine']; const bw = 140, bh = 80, gap = 40; const totalW = 3 * bw + 2 * gap; const startX = (600 - totalW) / 2; fill(fg[0], fg[1], fg[2]); textFont('sans-serif'); textSize(18); textAlign(CENTER, CENTER); for (let i = 0; i < 3; i++) { const x = startX + i * (bw + gap); noFill(); stroke(fg[0], fg[1], fg[2]); strokeWeight(2); rect(x, 140, bw, bh, 8); fill(fg[0], fg[1], fg[2]); noStroke(); text(steps[i], x + bw / 2, 180); if (i < 2) { stroke(fg[0], fg[1], fg[2]); line(x + bw + 4, 180, x + bw + gap - 4, 180); const ax = x + bw + gap - 4, ay = 180; line(ax, ay, ax - 8, ay - 4); line(ax, ay, ax - 8, ay + 4); } } }"
+    }
+  }]
+}
+\`\`\`
+Result: 3 labeled rectangles ("Explore" / "Hypothesize" / "Refine") in a row
+with arrows between. Standard infographic — no SDF metaphor available for
+pure-abstract content, so P5 vector handles it.
+`;
+
+/**
  * Convert spherical camera coords (target + yaw/pitch/distance) to Cartesian
  * eye position. Used by all 3D renderers when applying `scene.cameraStatic`.
  *
@@ -282,7 +452,10 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
       system: [
         {
           type: 'text',
-          text: CACHED_SYSTEM_PROMPT_LIFT,
+          text:
+            opts.mode === '2d'
+              ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
+              : CACHED_SYSTEM_PROMPT_LIFT,
           cache_control: { type: 'ephemeral' },
         },
       ],
@@ -340,4 +513,23 @@ export function createRendererForId(rendererId, canvas, opts = {}) {
     });
   }
   throw new Error(`[compositor-api] unknown renderer id: ${rendererId}`);
+}
+
+/**
+ * Runtime sanitizer for 2D-mode sceneData. Defense layer 2 of 2 (paired with
+ * the MODE_2D_ADDENDUM in callLiftLLM). Filters out any subjects with type
+ * 'text-3d-extruded' or 'text-3d-pipe' since those render badly in 2D.
+ *
+ * @param {object} sceneData
+ * @returns {object} new sceneData with filtered subjects (input untouched)
+ */
+export function sanitize2dSceneData(sceneData) {
+  if (!sceneData || typeof sceneData !== 'object') return sceneData;
+  if (!Array.isArray(sceneData.subjects)) return sceneData;
+  return {
+    ...sceneData,
+    subjects: sceneData.subjects.filter(
+      (s) => s && s.type !== 'text-3d-extruded' && s.type !== 'text-3d-pipe',
+    ),
+  };
 }

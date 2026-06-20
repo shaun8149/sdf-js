@@ -237,6 +237,10 @@ export const PRIMITIVE_TYPES = new Set([
   'vesica-segment',
   'cylinder-inf',
   'cone-inf',
+  // Sprint 3: P5 sketch as opaque subject. Carries P5 code in args.code,
+  // routed to 2d-p5 iframe sandbox renderer by visual-panel (NOT compiled
+  // to SDF). Sentinel factory returns a no-op SDF.
+  'p5-sketch',
 ]);
 
 // =============================================================================
