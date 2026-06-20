@@ -1,84 +1,77 @@
 // =============================================================================
-// deck-model.js — Atlas Present Layer 2 data model (Sprint 1.5 v4 / variants)
+// deck-model.js — Atlas Present Layer 2 data model (Sprint 2 v5 / Napkin)
 // -----------------------------------------------------------------------------
-// Pure JS / no DOM. Mode-agnostic schema centered on `sections + region`.
-// 2D Info Graphic mode uses region.centerX/Y for 2D layout; Sprint 2 3D Play
-// mode will derive its view from the same region (proving mode-agnosticism).
+// Pure JS / no DOM. Document-anchored schema: each deck has ONE document
+// (flowing text + page boundaries + headings) and zero-or-more visuals
+// anchored to text-range offsets. NO sections, NO regions, NO 3D vocab.
 //
-// localStorage key: 'atlas-decks', version 4
-//   v1 (PPT-mode) + v2 (Canvas Mode) + v3 (Sprint 1 v4 flat shape) silent drop
-//   on first v4 load. Each section now carries variants[VARIANT_COUNT=3] +
-//   selectedVariantIndex. Variants diverge via stochastic lift LLM (default
-//   temperature ~1.0) given the archetype-first prompt v3.18. Each variant
-//   may carry an optional `archetype` field (populated by pipeline from
-//   sceneData.name prefix after a successful lift).
+// localStorage key: 'atlas-decks', version 5
+//   v1 (PPT-mode) + v2 (Canvas Mode) + v3 (Sprint 1 v4) + v4 (Sprint 1.5)
+//   ALL silent drop on first v5 load.
 //
-// HARD RULE (per memory hard rule 5 + spec Rule 9): this file MUST NOT contain 3D vocabulary tokens — namely: camera, yaw, pitch, distance, focal, waypoint, cameraSequence, tween, easing. CI grep verifies. Use mode-agnostic words instead: region, sections, bbox, center, halfSize.
+// HARD RULE (per memory hard rule 5 + spec Rule 4): this file
+//   MUST NOT contain 3D vocabulary tokens — the forbidden list:
+//   MUST NOT contain : camera, yaw, pitch, distance, focal, waypoint,
+//   MUST NOT contain : cameraSequence, tween, easing.
+//   CI grep verifies the rule. Use mode-agnostic words instead: visual,
+//   textAnchor, offset, archetype, variant, palette.
 //
-// Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-v4-design.md
-// Plan: docs/superpowers/plans/2026-06-19-atlas-present-sprint-1-v4-plan.md
+// Spec: docs/superpowers/specs/2026-06-20-atlas-present-sprint-2-napkin-paragraph-design.md
 // =============================================================================
 
 /**
  * @typedef {object} DeckSource
- * @property {'pdf'} type — Sprint 2+ adds 'text' | 'docx'
+ * @property {'pdf'} type
  * @property {string} fileName
  * @property {number} pageCount
  */
 
 /**
- * @typedef {object} DeckLayout
- * @property {'linear'} archetype — Sprint 3+ adds 'radial' | 'grid' | ...
- * @property {number} spacing — section centers spacing (default 6)
+ * @typedef {object} PageBoundary
+ * @property {number} startOffset
+ * @property {number} endOffset
+ * @property {number} pageNumber
  */
 
 /**
- * @typedef {object} Region
- * @property {number} centerX
- * @property {number} centerY
- * @property {number} centerZ
- * @property {number} halfWidth
- * @property {number} halfHeight
- * @property {number} halfDepth
- * @property {string} [title]
+ * @typedef {object} Heading
+ * @property {number} offset
+ * @property {1|2|3} level
+ * @property {string} text
  */
 
 /**
- * @typedef {object} SceneDataSubject
- * @property {string} id
- * @property {string} type
- * @property {object} args
- * @property {{translate?:number[], rotate?:number[], scale?:number}} [transform]
- * @property {string} [material]
+ * @typedef {object} DocumentData
+ * @property {string} flowingText
+ * @property {PageBoundary[]} pages
+ * @property {Heading[]} headings
  */
 
 /**
- * @typedef {object} SceneData
- * @property {1} v
- * @property {string} name
- * @property {SceneDataSubject[]} subjects
- * @property {object} [defaults]
+ * @typedef {object} TextAnchor
+ * @property {number} startOffset
+ * @property {number} endOffset
+ * @property {string} text
  */
 
 /**
- * @typedef {object} SectionVariant
+ * @typedef {object} VisualVariant
  * @property {'pending'|'lifting'|'ready'|'error'} status
- * @property {string} [archetype] — extracted from sceneData.name when ready (e.g. 'sequence' / 'list' / 'compare' / 'hierarchy' / 'relation' / 'kpi-hero' / 'text-card')
- * @property {SceneData} [sceneData] — present when status === 'ready'
- * @property {Region} [region] — present when status === 'ready'
- * @property {string} [liftError] — present when status === 'error'
+ * @property {string} [archetype]
+ * @property {object} [sceneData]
+ * @property {string} [liftError]
  */
 
 /**
- * @typedef {object} SectionEntry
+ * @typedef {object} Visual
  * @property {string} id
- * @property {number} pageIndex — 0-based source page index
- * @property {'pending'|'lifting'|'ready'|'error'} status — derived from variants (see deriveStatus)
- * @property {object} [slideData] — SlideData v1 from parser
- * @property {string} [code2d] — emitted 2D code (input to lift LLM)
- * @property {string} [prompt] — user-facing label / title
- * @property {SectionVariant[]} variants — always exactly VARIANT_COUNT (3) entries
- * @property {number} selectedVariantIndex — 0..2 — which variant is "active"
+ * @property {TextAnchor} textAnchor
+ * @property {number} createdAt
+ * @property {'pending'|'lifting'|'ready'|'error'} status — derived from variants
+ * @property {VisualVariant[]} variants — exactly VARIANT_COUNT (6) entries
+ * @property {number} selectedVariantIndex
+ * @property {string} activeEffect — renderer id from ACTIVE_EFFECTS
+ * @property {string} activeBranding — palette preset id (from branding-palettes.js)
  */
 
 /**
@@ -88,34 +81,16 @@
  * @property {number} createdAt
  * @property {number} updatedAt
  * @property {DeckSource} source
- * @property {DeckLayout} layout
- * @property {SectionEntry[]} sections
+ * @property {DocumentData|null} document — null until setDocument is called
+ * @property {Visual[]} visuals
  */
 
 export const DECKS_STORAGE_KEY = 'atlas-decks';
-export const STORAGE_VERSION = 4;
-
-/** Number of stochastic variants generated per section (Sprint 1.5). */
-export const VARIANT_COUNT = 3;
-
-/**
- * Derive a section's aggregated status from its variants.
- *
- * Rules:
- *   - 'lifting' if any variant is currently lifting (in-flight beats all)
- *   - 'ready'   if at least 1 variant is ready (and none lifting)
- *   - 'error'   if all variants are error
- *   - 'pending' otherwise (all pending, or pending+error mix)
- *
- * @param {SectionVariant[]} variants
- * @returns {'pending'|'lifting'|'ready'|'error'}
- */
-export function deriveStatus(variants) {
-  if (variants.some((v) => v.status === 'lifting')) return 'lifting';
-  if (variants.some((v) => v.status === 'ready')) return 'ready';
-  if (variants.every((v) => v.status === 'error')) return 'error';
-  return 'pending';
-}
+export const STORAGE_VERSION = 5;
+export const VARIANT_COUNT = 6;
+export const ACTIVE_EFFECTS = ['silhouette', 'lines', 'crayon', 'topo'];
+export const DEFAULT_EFFECT = 'silhouette';
+export const DEFAULT_BRANDING = 'mono-light';
 
 // ---- ID helpers -------------------------------------------------------------
 
@@ -126,10 +101,25 @@ function uuid() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+// ---- Status derivation ------------------------------------------------------
+
+/**
+ * Derive aggregated visual status from its variants.
+ *
+ * @param {VisualVariant[]} variants
+ * @returns {'pending'|'lifting'|'ready'|'error'}
+ */
+export function deriveStatus(variants) {
+  if (variants.some((v) => v.status === 'lifting')) return 'lifting';
+  if (variants.some((v) => v.status === 'ready')) return 'ready';
+  if (variants.every((v) => v.status === 'error')) return 'error';
+  return 'pending';
+}
+
 // ---- Deck CRUD --------------------------------------------------------------
 
 /**
- * Create a new deck with empty sections.
+ * Create a new empty deck (no document yet, no visuals).
  *
  * @param {string} title
  * @param {DeckSource} source
@@ -143,106 +133,149 @@ export function createDeck(title, source) {
     createdAt: now,
     updatedAt: now,
     source: source ?? { type: 'pdf', fileName: '', pageCount: 0 },
-    layout: { archetype: 'linear', spacing: 6 },
-    sections: [],
+    document: null,
+    visuals: [],
   };
 }
 
 /**
- * Bulk-add sections in 'pending' status. Called by pipeline after parse.
+ * Set the document data after PDF parse + text extraction.
  *
  * @param {Deck} deck
- * @param {Array<{slideData:object, code2d:string, prompt?:string}>} entries
- * @returns {SectionEntry[]} the newly added sections
+ * @param {DocumentData} document
  */
-export function addPendingSections(deck, entries) {
-  const added = entries.map((e, i) => ({
-    id: uuid(),
-    pageIndex: deck.sections.length + i,
-    status: 'pending',
-    slideData: e.slideData,
-    code2d: e.code2d,
-    prompt: e.prompt,
-    variants: Array.from({ length: VARIANT_COUNT }, () => ({
-      status: 'pending',
-      // archetype/sceneData/region/liftError populated by pipeline as lifts complete
-    })),
-    selectedVariantIndex: 0,
-  }));
-  deck.sections.push(...added);
+export function setDocument(deck, document) {
+  deck.document = document;
   deck.updatedAt = Date.now();
-  return added;
 }
 
 /**
- * Update a single variant's status + optionally merge payload. After the
- * variant update, derive and apply the section's aggregated status.
+ * Add a new visual anchored to a text range. Visual starts with VARIANT_COUNT
+ * pending variants, selectedVariantIndex = 0, default effect + branding.
  *
  * @param {Deck} deck
- * @param {string} sectionId
- * @param {number} variantIndex — 0..VARIANT_COUNT-1
- * @param {'pending'|'lifting'|'ready'|'error'} status
- * @param {object} [payload] — merged into the variant: { sceneData, region, liftError, archetype }
- * @returns {boolean} true if update succeeded
+ * @param {TextAnchor} textAnchor
+ * @returns {Visual} the newly created visual
  */
-export function updateVariantStatus(deck, sectionId, variantIndex, status, payload = {}) {
-  const section = deck.sections.find((s) => s.id === sectionId);
-  if (!section) return false;
-  if (!Array.isArray(section.variants)) return false;
-  if (variantIndex < 0 || variantIndex >= section.variants.length) return false;
-  const variant = section.variants[variantIndex];
-  variant.status = status;
-  if (payload.sceneData !== undefined) variant.sceneData = payload.sceneData;
-  if (payload.region !== undefined) variant.region = payload.region;
-  if (payload.liftError !== undefined) variant.liftError = payload.liftError;
-  if (payload.archetype !== undefined) variant.archetype = payload.archetype;
-  section.status = deriveStatus(section.variants);
+export function addVisual(deck, textAnchor) {
+  const visual = {
+    id: uuid(),
+    textAnchor: {
+      startOffset: textAnchor.startOffset,
+      endOffset: textAnchor.endOffset,
+      text: textAnchor.text,
+    },
+    createdAt: Date.now(),
+    status: 'pending',
+    variants: Array.from({ length: VARIANT_COUNT }, () => ({ status: 'pending' })),
+    selectedVariantIndex: 0,
+    activeEffect: DEFAULT_EFFECT,
+    activeBranding: DEFAULT_BRANDING,
+  };
+  deck.visuals.push(visual);
+  deck.updatedAt = Date.now();
+  return visual;
+}
+
+/**
+ * Remove a visual by id.
+ *
+ * @param {Deck} deck
+ * @param {string} visualId
+ * @returns {boolean} true if removed
+ */
+export function removeVisual(deck, visualId) {
+  const idx = deck.visuals.findIndex((v) => v.id === visualId);
+  if (idx === -1) return false;
+  deck.visuals.splice(idx, 1);
   deck.updatedAt = Date.now();
   return true;
 }
 
 /**
- * Switch a section's selectedVariantIndex (UI: user picks a variant).
+ * Update a single variant of a visual + derive aggregated visual status.
  *
  * @param {Deck} deck
- * @param {string} sectionId
- * @param {number} variantIndex — 0..VARIANT_COUNT-1
+ * @param {string} visualId
+ * @param {number} variantIndex 0..VARIANT_COUNT-1
+ * @param {'pending'|'lifting'|'ready'|'error'} status
+ * @param {object} [payload] merged into variant: {sceneData, archetype, liftError}
  * @returns {boolean}
  */
-export function selectVariant(deck, sectionId, variantIndex) {
-  const section = deck.sections.find((s) => s.id === sectionId);
-  if (!section) return false;
-  if (!Array.isArray(section.variants)) return false;
-  if (variantIndex < 0 || variantIndex >= section.variants.length) return false;
-  section.selectedVariantIndex = variantIndex;
+export function updateVisualVariantStatus(deck, visualId, variantIndex, status, payload = {}) {
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  if (!visual) return false;
+  if (variantIndex < 0 || variantIndex >= visual.variants.length) return false;
+  const variant = visual.variants[variantIndex];
+  variant.status = status;
+  if (payload.sceneData !== undefined) variant.sceneData = payload.sceneData;
+  if (payload.archetype !== undefined) variant.archetype = payload.archetype;
+  if (payload.liftError !== undefined) variant.liftError = payload.liftError;
+  visual.status = deriveStatus(visual.variants);
   deck.updatedAt = Date.now();
   return true;
 }
 
 /**
- * Convenience accessor for a section's currently selected variant.
+ * Switch the selectedVariantIndex of a visual (UI: user picks a variant).
  *
- * @param {SectionEntry} section
- * @returns {SectionVariant | null} null if no variants array (corrupt)
+ * @param {Deck} deck
+ * @param {string} visualId
+ * @param {number} variantIndex 0..VARIANT_COUNT-1
+ * @returns {boolean}
  */
-export function getSelectedVariant(section) {
-  if (!section || !Array.isArray(section.variants)) return null;
-  const idx = Number.isInteger(section.selectedVariantIndex) ? section.selectedVariantIndex : 0;
-  return section.variants[idx] || section.variants[0] || null;
+export function selectVisualVariant(deck, visualId, variantIndex) {
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  if (!visual) return false;
+  if (variantIndex < 0 || variantIndex >= visual.variants.length) return false;
+  visual.selectedVariantIndex = variantIndex;
+  deck.updatedAt = Date.now();
+  return true;
 }
 
 /**
- * Count sections in each status. Useful for library card progress UI.
+ * Accessor for the currently-selected variant of a visual.
+ *
+ * @param {Visual} visual
+ * @returns {VisualVariant | null}
+ */
+export function getSelectedVisualVariant(visual) {
+  if (!visual || !Array.isArray(visual.variants)) return null;
+  const idx = Number.isInteger(visual.selectedVariantIndex) ? visual.selectedVariantIndex : 0;
+  return visual.variants[idx] || visual.variants[0] || null;
+}
+
+/**
+ * Set the active renderer for a visual. Must be one of ACTIVE_EFFECTS.
  *
  * @param {Deck} deck
- * @returns {{pending:number, lifting:number, ready:number, error:number, total:number}}
+ * @param {string} visualId
+ * @param {string} effect
+ * @returns {boolean}
  */
-export function sectionStatusCounts(deck) {
-  const counts = { pending: 0, lifting: 0, ready: 0, error: 0, total: deck.sections.length };
-  for (const s of deck.sections) {
-    counts[s.status]++;
-  }
-  return counts;
+export function setActiveEffect(deck, visualId, effect) {
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  if (!visual) return false;
+  if (!ACTIVE_EFFECTS.includes(effect)) return false;
+  visual.activeEffect = effect;
+  deck.updatedAt = Date.now();
+  return true;
+}
+
+/**
+ * Set the active branding preset for a visual.
+ *
+ * @param {Deck} deck
+ * @param {string} visualId
+ * @param {string} brandingId
+ * @returns {boolean}
+ */
+export function setActiveBranding(deck, visualId, brandingId) {
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  if (!visual) return false;
+  visual.activeBranding = brandingId;
+  deck.updatedAt = Date.now();
+  return true;
 }
 
 // ---- Storage ----------------------------------------------------------------
@@ -269,28 +302,21 @@ function writeStorage(shape) {
 }
 
 /**
- * Migrate storage shape. v1 (PPT-mode) + v2 (Canvas Mode) + v3 (Sprint 1 v4
- * flat shape) silent drop. Only v4 (Sprint 1.5 variants) passes through.
+ * Migrate storage. v1/v2/v3/v4 silent drop. Only v5 passes through.
  *
  * @param {object} raw
  * @returns {{version:number, decks:Deck[]}}
  */
 export function migrateDecksStorage(raw) {
-  if (!raw || typeof raw !== 'object') {
-    return { version: STORAGE_VERSION, decks: [] };
-  }
-  if (raw.version !== STORAGE_VERSION) {
-    return { version: STORAGE_VERSION, decks: [] };
-  }
-  if (!Array.isArray(raw.decks)) {
-    return { version: STORAGE_VERSION, decks: [] };
-  }
+  if (!raw || typeof raw !== 'object') return { version: STORAGE_VERSION, decks: [] };
+  if (raw.version !== STORAGE_VERSION) return { version: STORAGE_VERSION, decks: [] };
+  if (!Array.isArray(raw.decks)) return { version: STORAGE_VERSION, decks: [] };
   return { version: STORAGE_VERSION, decks: raw.decks };
 }
 
 export function saveDeckToStorage(deck) {
   const shape = readStorage();
-  const idx = shape.decks.findIndex((existing) => existing.id === deck.id);
+  const idx = shape.decks.findIndex((d) => d.id === deck.id);
   if (idx >= 0) shape.decks[idx] = deck;
   else shape.decks.push(deck);
   writeStorage(shape);
@@ -325,9 +351,9 @@ export function renameDeck(id, newTitle) {
 }
 
 /**
- * Duplicate a deck — deep copy with new id + " (copy)" suffix. Sections reset
- * to 'pending' status (lifted sceneData is per-content; copying loses lift —
- * user must re-lift). Section ids reassigned.
+ * Duplicate a deck — deep copy with new id + " (copy)" suffix. document is
+ * preserved (it's PDF text, independent of lifts). Visuals are dropped
+ * (user needs to re-generate against the copy).
  *
  * @param {string} id
  * @returns {Deck|null}
@@ -342,19 +368,8 @@ export function duplicateDeck(id) {
     title: `${src.title} (copy)`,
     createdAt: now,
     updatedAt: now,
-    sections: src.sections.map((s) => ({
-      id: uuid(),
-      pageIndex: s.pageIndex,
-      status: 'pending',
-      slideData: s.slideData,
-      code2d: s.code2d,
-      prompt: s.prompt,
-      variants: Array.from({ length: VARIANT_COUNT }, () => ({
-        status: 'pending',
-        // archetype/sceneData/region/liftError dropped — re-lift required
-      })),
-      selectedVariantIndex: 0,
-    })),
+    document: src.document ? JSON.parse(JSON.stringify(src.document)) : null,
+    visuals: [], // drop visuals on duplicate
   };
   saveDeckToStorage(copy);
   return copy;
