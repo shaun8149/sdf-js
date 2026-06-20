@@ -31,6 +31,9 @@ const TESTS = [
   // Geometry sanity checker (M5 prereq)
   { category: 'sanity', file: 'sdf-js/scripts/test-sanity.mjs' },
 
+  // IQ-shader program W1 — remapping / easing math toolkit (recipe-only ports)
+  { category: 'math', file: 'sdf-js/scripts/test-easing.mjs' },
+
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
 
