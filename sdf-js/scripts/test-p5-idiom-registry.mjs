@@ -302,6 +302,40 @@ console.log('\n--- moussa-delaunay-voronoi ---');
     cells.some((c) => c.polygon.length >= 3),
     'at least one cell is a proper polygon (≥3 vertices)',
   );
+
+  // Regression for the MODE_2D_ADDENDUM market-share worked example:
+  // with only four business sites every site sits on the convex hull, so add
+  // off-canvas frame sites before slicing back to the real data cells.
+  const marketSites = [
+    [200, 180],
+    [400, 150],
+    [450, 290],
+    [150, 300],
+  ];
+  const frameSites = [
+    [-300, -300],
+    [900, -300],
+    [900, 660],
+    [-300, 660],
+    [300, -300],
+    [900, 180],
+    [300, 660],
+    [-300, 180],
+  ];
+  const marketTris = delaunayTriangles(marketSites.concat(frameSites), {
+    minX: -400,
+    maxX: 1000,
+    minY: -400,
+    maxY: 760,
+  });
+  const marketCells = voronoiCells(marketTris, marketSites.concat(frameSites)).slice(
+    0,
+    marketSites.length,
+  );
+  ok(
+    marketCells.every((c) => c.polygon.length >= 3),
+    'market-share frame sites make every business cell drawable',
+  );
 }
 
 // ----- moussa-perlin-flow-field (Sprint 5 Tier B) -----
