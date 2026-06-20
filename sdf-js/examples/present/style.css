@@ -18,9 +18,7 @@ html, body {
   flex-direction: column;
 }
 
-.page-pad {
-  padding: 40px;
-}
+.page-pad { padding: 40px; }
 
 /* ---- Topbar ---- */
 .topbar {
@@ -42,9 +40,7 @@ html, body {
   margin-left: 6px;
   font-size: 12px;
 }
-.topbar .spacer {
-  flex: 1;
-}
+.topbar .spacer { flex: 1; }
 .topbar button, .topbar a {
   background: #2a2a2a;
   color: #ffd070;
@@ -56,14 +52,12 @@ html, body {
   font-family: inherit;
   text-decoration: none;
 }
-.topbar button:hover, .topbar a:hover {
-  background: #3a3a3a;
-}
+.topbar button:hover, .topbar a:hover { background: #3a3a3a; }
 
 /* ---- Library page ---- */
 .library-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   padding: 24px;
 }
@@ -74,7 +68,7 @@ html, body {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .deck-card h3 {
   margin: 0;
@@ -83,6 +77,11 @@ html, body {
 }
 .deck-card .meta {
   color: #888;
+  font-size: 12px;
+  word-break: break-all;
+}
+.deck-card .status {
+  color: #ffd070;
   font-size: 12px;
 }
 .deck-card .actions {
@@ -101,8 +100,10 @@ html, body {
   cursor: pointer;
   font-family: inherit;
 }
-.deck-card .actions button:hover {
-  background: #3a3a3a;
+.deck-card .actions button:hover { background: #3a3a3a; }
+.deck-card .actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .deck-card .actions .primary {
   background: #ffd070;
@@ -121,329 +122,48 @@ html, body {
   margin-bottom: 16px;
 }
 
-/* ---- Editor page ---- */
-.editor-body {
-  display: grid;
-  grid-template-columns: 220px 1fr 280px;
-  flex: 1;
-  min-height: 0;
-}
-
-.slide-rail {
-  background: #141414;
-  border-right: 1px solid #2a2a2a;
-  padding: 12px;
-  overflow-y: auto;
-}
-.slide-thumb {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
+/* ---- Deck view (info graphic) ---- */
+.deck-view-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  padding: 12px 24px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  gap: 16px;
 }
-.slide-thumb:hover {
-  background: #222;
-}
-.slide-thumb.selected {
-  border-color: #ffd070;
-  background: #2a2520;
-}
-.slide-thumb .thumb-num {
-  color: #ffd070;
-  font-weight: 700;
-  font-size: 12px;
-  width: 18px;
-}
-.slide-thumb .thumb-title {
+.deck-view-header h2 {
+  margin: 0;
+  font-size: 16px;
   color: #ddd;
-  font-size: 12px;
   flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
-.btn-add-slide {
-  width: 100%;
-  background: #2a2a2a;
-  color: #ffd070;
-  border: 1px dashed #3a3a3a;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 12px;
-  margin-top: 8px;
-}
-.btn-add-slide:hover {
-  background: #3a3a3a;
-}
-
-.preview-pane {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 24px;
-  background: #0d0d0d;
-}
-.preview-pane canvas {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  max-width: 100%;
-  max-height: 70vh;
-}
-.preview-meta {
-  color: #888;
-  font-size: 12px;
-}
-
-.settings-pane {
-  background: #141414;
-  border-left: 1px solid #2a2a2a;
-  padding: 20px;
-  overflow-y: auto;
-}
-.settings-pane h3 {
-  margin: 0 0 12px 0;
-  color: #ddd;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.settings-row {
-  margin-bottom: 12px;
-}
-.settings-row label {
-  display: block;
-  color: #888;
-  font-size: 11px;
-  margin-bottom: 4px;
-}
-.settings-row input, .settings-row select {
-  width: 100%;
-  background: #1a1a1a;
-  color: #ddd;
-  border: 1px solid #2a2a2a;
-  padding: 6px 8px;
-  font-family: inherit;
-  font-size: 13px;
-  border-radius: 3px;
-}
-.settings-row.meta {
-  color: #888;
-  font-size: 12px;
-}
-.settings-row button {
-  background: #2a2a2a;
-  color: #ccc;
-  border: 1px solid #3a3a3a;
-  padding: 6px 12px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 12px;
-  width: 100%;
-}
-.settings-row button:hover {
-  background: #3a3a3a;
-}
-
-.btn-back {
-  background: #2a2a2a;
+.deck-view-header a {
   color: #ffd070;
   text-decoration: none;
-  padding: 6px 12px;
+  font-size: 13px;
+}
+.deck-view-header button {
+  background: #ffd070;
+  color: #1a1a1a;
+  border: none;
+  padding: 6px 14px;
   border-radius: 3px;
   font-size: 13px;
-  border: 1px solid #3a3a3a;
-}
-.btn-back:hover {
-  background: #3a3a3a;
-}
-
-.slide-thumb.dragging { opacity: 0.4; }
-.slide-thumb.drop-target { border-color: #ffd070; }
-
-/* ---- Present mode ---- */
-.present-stage {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: #0d0d0d;
-  overflow: hidden;
-}
-.present-stage canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-.present-counter {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  color: #888;
-  font-size: 14px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 6px 12px;
-  border-radius: 3px;
-  transition: opacity 0.3s;
-}
-.present-counter.hidden { opacity: 0; }
-.present-exit-hint {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  color: #555;
-  font-size: 11px;
-}
-.present-exit-hint kbd {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
-  border-radius: 3px;
-  padding: 1px 6px;
-  color: #888;
-  font-family: monospace;
-}
-
-/* ---- Canvas Mode editor (Sprint 1 Canvas Mode pivot) ---- */
-.editor-body.canvas-mode {
-  display: grid;
-  grid-template-columns: 220px 1fr 320px;
-}
-
-.editor-body.canvas-mode .canvas-viewport {
-  position: relative;
-  background: #0d0d0d;
-  overflow: hidden;
-  padding: 0;
-  display: block;
-}
-.editor-body.canvas-mode .canvas-viewport canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: #1a1a1a;
-  border: none;
-  max-width: none;
-  max-height: none;
-}
-.editor-body.canvas-mode .viewport-meta {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  color: #888;
-  font-size: 12px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 4px 10px;
-  border-radius: 3px;
-  pointer-events: none;
-}
-
-.editor-body.canvas-mode .waypoint-rail {
-  background: #141414;
-  border-right: 1px solid #2a2a2a;
-  padding: 12px;
-  overflow-y: auto;
-}
-.waypoint-thumb {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.waypoint-thumb:hover {
-  background: #222;
-}
-.waypoint-thumb.selected {
-  border-color: #ffd070;
-  background: #2a2520;
-}
-.waypoint-thumb.dragging { opacity: 0.4; }
-.waypoint-thumb.drop-target { border-color: #ffd070; }
-.waypoint-thumb .thumb-num {
-  color: #ffd070;
-  font-weight: 700;
-  font-size: 12px;
-  width: 18px;
-}
-.waypoint-thumb .thumb-title {
-  color: #ddd;
-  font-size: 12px;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.btn-add-waypoint {
-  width: 100%;
-  background: #2a2a2a;
-  color: #ffd070;
-  border: 1px dashed #3a3a3a;
-  padding: 10px;
-  border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 12px;
-  margin-top: 8px;
 }
-.btn-add-waypoint:hover { background: #3a3a3a; }
 
-.editor-body.canvas-mode .inspector-pane {
-  background: #141414;
-  border-left: 1px solid #2a2a2a;
-  padding: 20px;
-  overflow-y: auto;
-}
-.inspector-pane h3 {
-  margin: 0 0 12px 0;
-  color: #ddd;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.subject-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 3px;
-  margin-bottom: 4px;
-  font-size: 12px;
-}
-.subject-row .subject-type {
-  color: #ffd070;
-  font-weight: 600;
-}
-.subject-row .subject-pos {
-  color: #888;
+.info-graphic-stage {
   flex: 1;
-  font-family: monospace;
+  padding: 24px;
+  overflow: auto;
+  background: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
-.subject-row .btn-remove-subject {
-  background: #2a2a2a;
-  color: #888;
-  border: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 14px;
+.info-graphic-stage canvas {
+  background: #fafafa;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border-radius: 4px;
 }
-.subject-row .btn-remove-subject:hover { background: #3a2a2a; color: #ff6666; }
