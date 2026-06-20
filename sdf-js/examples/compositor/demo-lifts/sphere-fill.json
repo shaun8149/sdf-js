@@ -1,0 +1,46 @@
+{
+  "id": "sphere-fill",
+  "title": "Sphere · Fill Levels",
+  "prompt": "sphere-fill-3d atom — a row of glass spheres with liquid fill levels (25/50/75/100%) for capacity / progress.",
+  "code2d": "// Synthetic showcase — sphere-fill-3d atom.\nexport const render = (ctx) => { /* wireframe cage + cutSphere liquid cap */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "sphere fill levels",
+    "source": { "format": "synthetic", "prompt": "sphere fill levels" },
+    "subjects": [
+      {
+        "id": "fill-levels",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.25, 0.5, 0.75, 1.0],
+          "radius": 0.6,
+          "spacing": 0.4,
+          "cage": true,
+          "cageThickness": 0.03
+        },
+        "transform": { "translate": [0, 1.0, 0], "scale": 0.32 },
+        "material": "clear-glass"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.3,
+        "pitch": 0.18,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.8,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-20",
+    "model": "synthetic",
+    "promptVersion": "v3.17",
+    "pattern": "sphere-fill",
+    "costUSD": 0
+  }
+}

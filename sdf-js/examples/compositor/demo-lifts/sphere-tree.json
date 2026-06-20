@@ -1,0 +1,48 @@
+{
+  "id": "sphere-tree",
+  "title": "Sphere · Tree",
+  "prompt": "sphere-tree-3d atom — a top-down hierarchical sphere tree with parent→child links (org / taxonomy).",
+  "code2d": "// Synthetic showcase — sphere-tree-3d atom.\nexport const render = (ctx) => { /* level-by-level spheres + parent links */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "sphere tree",
+    "source": { "format": "synthetic", "prompt": "sphere tree" },
+    "subjects": [
+      {
+        "id": "tree",
+        "type": "sphere-tree-3d",
+        "args": {
+          "levels": 3,
+          "branching": 2,
+          "rootRadius": 0.42,
+          "radiusFalloff": 0.78,
+          "levelHeight": 1.1,
+          "spread": 3.4,
+          "linkThickness": 0.05
+        },
+        "transform": { "translate": [0, 0.9, 0], "scale": 0.36 },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.25,
+        "pitch": 0.12,
+        "distance": 8.5,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.6,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-20",
+    "model": "synthetic",
+    "promptVersion": "v3.17",
+    "pattern": "sphere-tree",
+    "costUSD": 0
+  }
+}

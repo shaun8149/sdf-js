@@ -743,6 +743,18 @@ async function loadDemoScene(demo) {
     gpuSceneStartTime = performance.now();
     userTookCam = false;
 
+    // Per-demo renderer preference. A demo manifest entry may set
+    // `"renderer": "studio"` (or any GPU renderer) to open in that renderer
+    // instead of the bob-gpu default — e.g. atom-showcase scenes use the clean
+    // studio test stage. ensureGpuRendererActive() then keeps it (studio is a
+    // GPU renderer) rather than forcing bob-gpu.
+    if (demo.renderer && GPU_RENDERERS.has(demo.renderer)) {
+      state.activeRenderer = demo.renderer;
+      $$('#renderer-pills .pill').forEach((b) =>
+        b.classList.toggle('active', b.dataset.renderer === state.activeRenderer),
+      );
+    }
+
     ensureGpuRendererActive();
     refreshLiftButtonState();
     renderDemoGallery();

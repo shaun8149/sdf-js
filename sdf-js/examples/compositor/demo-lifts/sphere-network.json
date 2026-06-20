@@ -1,0 +1,47 @@
+{
+  "id": "sphere-network",
+  "title": "Sphere · Network",
+  "prompt": "sphere-network-3d atom — a central hub connected to satellite spheres by capsule links (network / mind-map).",
+  "code2d": "// Synthetic showcase — sphere-network-3d atom.\nexport const render = (ctx) => { /* hub + satellites + capsule links */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "sphere network",
+    "source": { "format": "synthetic", "prompt": "sphere network" },
+    "subjects": [
+      {
+        "id": "network",
+        "type": "sphere-network-3d",
+        "args": {
+          "count": 7,
+          "hubRadius": 0.55,
+          "satelliteRadius": 0.28,
+          "radius": 1.5,
+          "linkThickness": 0.06,
+          "arrangement": "ring"
+        },
+        "transform": { "translate": [0, 1.0, 0], "scale": 0.5 },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.35,
+        "pitch": 0.32,
+        "distance": 7.5,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-20",
+    "model": "synthetic",
+    "promptVersion": "v3.17",
+    "pattern": "sphere-network",
+    "costUSD": 0
+  }
+}

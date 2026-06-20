@@ -129,186 +129,6 @@
       "prompt": "开阔的海面"
     },
     {
-      "id": "pdf-slide-0",
-      "title": "Slide 0: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 0 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-0.json",
-      "prompt": "Presentation slide 0: \"3D SPHERES\". A chart of 3 percentage values (20%, 40%, 80%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-1",
-      "title": "Slide 1: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 1 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-1.json",
-      "prompt": "Presentation slide 1: \"3D SPHERES\". A chart of 4 percentage values (20%, 50%, 80%, 90%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-10",
-      "title": "Slide 10: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 10 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-10.json",
-      "prompt": "Presentation slide 10: \"3D SPHERES\". A chart of 4 percentage values (50%, 30%, 30%, 20%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-11",
-      "title": "Slide 11: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 11 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-11.json",
-      "prompt": "Presentation slide 11: \"3D SPHERES\". A chart of 5 percentage values (10%, 20%, 30%, 40%, 50%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-12",
-      "title": "Slide 12: 2D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 12 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-12.json",
-      "prompt": "Presentation slide 12: \"2D SPHERES\". A single hero KPI value of 90%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
-    },
-    {
-      "id": "pdf-slide-13",
-      "title": "Slide 13: 2D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 13 lifted via v3.17 prompt. Pattern: fallback. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-13.json",
-      "prompt": "Presentation slide 13: text-only slide with title \"2D SPHERES\". Lift to a minimal 3D scene with the title as the only subject on a clean stage."
-    },
-    {
-      "id": "pdf-slide-14",
-      "title": "Slide 14: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 14 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-14.json",
-      "prompt": "Presentation slide 14: \"3D SPHERES\". A single hero KPI value of 100%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
-    },
-    {
-      "id": "pdf-slide-15",
-      "title": "Slide 15: 2D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 15 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-15.json",
-      "prompt": "Presentation slide 15: \"2D SPHERES\". A chart of 3 percentage values (80%, 60%, 70%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-16",
-      "title": "Slide 16: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 16 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-16.json",
-      "prompt": "Presentation slide 16: \"3D SPHERES\". A chart of 3 percentage values (20%, 40%, 90%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-17",
-      "title": "Slide 17: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 17 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-17.json",
-      "prompt": "Presentation slide 17: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-18",
-      "title": "Slide 18: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 18 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-18.json",
-      "prompt": "Presentation slide 18: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-19",
-      "title": "Slide 19: 2D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 19 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-19.json",
-      "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-2",
-      "title": "Slide 2: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 2 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-2.json",
-      "prompt": "Presentation slide 2: \"3D SPHERES\". A chart of 3 percentage values (10%, 60%, 50%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-3",
-      "title": "Slide 3: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 3 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-3.json",
-      "prompt": "Presentation slide 3: \"3D SPHERES\". A single hero KPI value of 50%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
-    },
-    {
-      "id": "pdf-slide-4",
-      "title": "Slide 4: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 4 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-4.json",
-      "prompt": "Presentation slide 4: \"3D SPHERES\". A single hero KPI value of 100%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
-    },
-    {
-      "id": "pdf-slide-5",
-      "title": "Slide 5: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 5 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-5.json",
-      "prompt": "Presentation slide 5: \"3D SPHERES\". A chart of 5 percentage values (20%, 40%, 50%, 100%, 80%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-6",
-      "title": "Slide 6: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 6 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-6.json",
-      "prompt": "Presentation slide 6: \"3D SPHERES\". A chart of 3 percentage values (50%, 100%, 80%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-7",
-      "title": "Slide 7: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 7 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-7.json",
-      "prompt": "Presentation slide 7: \"3D SPHERES\". A chart of 3 percentage values (80%, 50%, 60%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-8",
-      "title": "Slide 8: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 8 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-8.json",
-      "prompt": "Presentation slide 8: \"3D SPHERES\". A chart of 5 percentage values (10%, 20%, 30%, 40%, 50%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
-      "id": "pdf-slide-9",
-      "title": "Slide 9: 3D SPHERES",
-      "thesisPoint": "M1.5 Step 2b — PDF deck slide 9 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
-      "category": "presentation-slide",
-      "status": "ready",
-      "file": "pdf-slide-9.json",
-      "prompt": "Presentation slide 9: \"3D SPHERES\". A chart of 5 percentage values (60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
-    },
-    {
       "id": "rainforest-hills",
       "title": "雨林山岭",
       "thesisPoint": "Sprint A6 (recipe-only IQ Rainforest XlsBR4) — adds 5 mountain shader idioms in one batch: (1) cliff smoothstep injection (terrain-elevated new args, structural rock faces) (2) canopy mosaic (per-cell hash variation, distant terrain reads as dense tree canopy) (3) wavelength-dependent fog (RGB different extinction, distant terrain desaturates + blue) (4) cliff bump (fbm normal perturbation masked by 1-|n.y|) (5) cloud shadow projection (projected noise density gives dappled forest light). All backward-compat — existing scenes unchanged.",
@@ -388,6 +208,46 @@
       "status": "ready",
       "file": "cube-3d-showcase.json",
       "prompt": "Cube-3D atom showcase"
+    },
+    {
+      "id": "sphere-fill",
+      "title": "Sphere · Fill Levels",
+      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-fill-3d — glass spheres with cutSphere liquid fill levels (0..1) in a wireframe cage. Composite atom from shipped GLSL-emit primitives.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "sphere-fill.json",
+      "renderer": "studio",
+      "prompt": "Sphere fill levels"
+    },
+    {
+      "id": "sphere-network",
+      "title": "Sphere · Network",
+      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-network-3d — central hub + satellite spheres + capsule links (network / mind-map). Composite atom.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "sphere-network.json",
+      "renderer": "studio",
+      "prompt": "Sphere network"
+    },
+    {
+      "id": "sphere-tree",
+      "title": "Sphere · Tree",
+      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-tree-3d — top-down hierarchical sphere tree with parent→child links (org / taxonomy). Composite atom.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "sphere-tree.json",
+      "renderer": "studio",
+      "prompt": "Sphere tree"
+    },
+    {
+      "id": "sphere-segmented",
+      "title": "Sphere · Divisions",
+      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-segmented-3d — sphere split into exploded longitudinal wedges (divisions / exploded view). sphere ∩ half-planes per wedge.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "sphere-segmented.json",
+      "renderer": "studio",
+      "prompt": "Sphere divisions"
     }
   ]
 }

@@ -1,0 +1,45 @@
+{
+  "id": "sphere-segmented",
+  "title": "Sphere · Divisions",
+  "prompt": "sphere-segmented-3d atom — a sphere split into exploded longitudinal wedges (divisions / market share / exploded view).",
+  "code2d": "// Synthetic showcase — sphere-segmented-3d atom.\nexport const render = (ctx) => { /* sphere ∩ half-planes per wedge, exploded */ };",
+  "sceneData": {
+    "v": 1,
+    "name": "sphere divisions",
+    "source": { "format": "synthetic", "prompt": "sphere divisions" },
+    "subjects": [
+      {
+        "id": "divisions",
+        "type": "sphere-segmented-3d",
+        "args": {
+          "segments": 8,
+          "radius": 0.9,
+          "explode": 0.2,
+          "gapAngle": 0.06
+        },
+        "transform": { "translate": [0, 1.0, 0], "scale": 0.45 },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.35,
+        "distance": 5,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-20",
+    "model": "synthetic",
+    "promptVersion": "v3.17",
+    "pattern": "sphere-segmented",
+    "costUSD": 0
+  }
+}
