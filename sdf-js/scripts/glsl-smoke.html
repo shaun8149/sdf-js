@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GLSL smoke (loading)</title>
+  </head>
+  <body>
+    <!--
+      Dev tool: compile a GLSL helper-library string in a real WebGL2 context
+      (GLSL ES 1.00 dialect, matching the studio/fly shaders) to catch GPU-only
+      compile errors (reserved words, fwidth/derivatives, ES-1.00 limits) that
+      node --check cannot. Logs "GLSL-SMOKE-OK <lib>" or "GLSL-SMOKE-FAIL ...".
+      Reused per IQ-shader wave; add the wave's library + a main() that
+      references its functions so nothing is dead-stripped.
+    -->
+    <canvas id="c" width="8" height="8"></canvas>
+    <script type="module">
+      import { EASING_GLSL } from '../src/sdf/easing.js';
+
+      const gl = document.getElementById('c').getContext('webgl2');
+      const vsSrc = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
+      const fsSrc = `#ifdef GL_ES
+precision highp float;
+#endif
+${EASING_GLSL}
+void main(){
+  float s = smootherstep(0.5) + parabola(0.5, 2.0) + gain(0.3, 3.0)
+    + cubicPulse(0.5, 0.2, 0.5) + smoothstepInteg(0.7) + invSmoothstep(0.4)
+    + pcurve(0.5, 2.0, 2.0) + expImpulse(0.2, 8.0) + expStep(0.3, 5.0, 2.0)
+    + sinc(0.1, 1.0) + sigmoid(0.2) + almostIdentity(0.5, 1.0, 0.2)
+    + remap(5.0, 0.0, 10.0, 0.0, 1.0) + remapClamp(15.0, 0.0, 10.0, 0.0, 1.0)
+    + smoothstep01(0.5);
+  gl_FragColor = vec4(vec3(clamp01(s * 0.01)), 1.0);
+}`;
+
+      function compile(type, src) {
+        const sh = gl.createShader(type);
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+          throw new Error(gl.getShaderInfoLog(sh));
+        }
+        return sh;
+      }
+
+      try {
+        const vs = compile(gl.VERTEX_SHADER, vsSrc);
+        const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
+        const pr = gl.createProgram();
+        gl.attachShader(pr, vs);
+        gl.attachShader(pr, fs);
+        gl.linkProgram(pr);
+        if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
+          throw new Error('link: ' + gl.getProgramInfoLog(pr));
+        }
+        console.log('GLSL-SMOKE-OK easing');
+        document.title = 'SMOKE OK';
+      } catch (e) {
+        console.error('GLSL-SMOKE-FAIL ' + e.message);
+        document.title = 'SMOKE FAIL';
+      }
+    </script>
+  </body>
+</html>
