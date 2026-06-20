@@ -718,6 +718,14 @@ const PRIMITIVE_FACTORIES = {
   'cylinder-inf': (a) => cylinderInf(a.axisXZ ?? a.axis ?? [0, 0], a.radius ?? a.r ?? 0.3),
   'cone-inf': (a) => coneInf(a.halfAperture ?? a.angle ?? Math.PI / 6),
 
+  // Sprint 3: p5-sketch is rendered by 2d-p5 iframe sandbox, NOT compiled to
+  // SDF. visual-panel detects this subject type before compile() and routes
+  // to mountP5Renderer. compile() callers (e.g., CPU renderers) shouldn't be
+  // asked to render p5-sketch directly — if they are, this returns a sentinel
+  // "always outside" SDF so the renderer produces an empty image rather than
+  // crashing.
+  'p5-sketch': () => () => 1e9, // SDF that returns large positive (always outside)
+
   // -- 2D → 3D pseudo-primitives (handled separately because of `source` field) --
   // Marker entries; actual compile happens in compilePseudoPrimitive.
   extrude: null,
