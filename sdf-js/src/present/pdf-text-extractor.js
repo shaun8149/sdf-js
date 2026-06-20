@@ -47,6 +47,40 @@
  * @returns {DocumentData}
  */
 export function extractDocumentData(slides) {
-  // Implementation in Task 2.2-2.4
-  return { flowingText: '', pages: [], headings: [] };
+  if (!Array.isArray(slides) || slides.length === 0) {
+    return { flowingText: '', pages: [], headings: [] };
+  }
+
+  const pages = [];
+  const headings = [];
+  let flowingText = '';
+
+  for (const slide of slides) {
+    const startOffset = flowingText.length;
+
+    // Append title (treated as heading) if present
+    if (slide.title && typeof slide.title === 'string' && slide.title.length > 0) {
+      flowingText += slide.title;
+      flowingText += '\n';
+    }
+
+    // Append body elements separated by newlines
+    if (Array.isArray(slide.body)) {
+      for (const element of slide.body) {
+        if (element && typeof element.text === 'string' && element.text.length > 0) {
+          flowingText += element.text;
+          flowingText += '\n';
+        }
+      }
+    }
+
+    const endOffset = flowingText.length;
+    pages.push({
+      pageNumber: (slide.index ?? pages.length) + 1, // 1-based for user display
+      startOffset,
+      endOffset,
+    });
+  }
+
+  return { flowingText, pages, headings };
 }
