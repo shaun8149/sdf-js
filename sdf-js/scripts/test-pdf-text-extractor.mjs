@@ -186,5 +186,214 @@ console.log('=== pdf-text-extractor smoke test ===\n');
   );
 }
 
+// Heading detection — slide.title is always a heading
+{
+  const slides = [
+    {
+      index: 0,
+      sourceFormat: 'pdf',
+      title: 'Big Heading',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'normal body text here',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+  ];
+  const doc = extractDocumentData(slides);
+
+  ok(doc.headings.length >= 1, 'heading from title: at least 1 heading detected');
+  const titleHeading = doc.headings.find((h) => h.text === 'Big Heading');
+  ok(titleHeading !== undefined, 'heading from title: text "Big Heading" found');
+  ok(titleHeading.level === 1, `heading from title: level = 1 (got ${titleHeading?.level})`);
+  ok(
+    typeof titleHeading.offset === 'number' && titleHeading.offset === 0,
+    `heading from title: offset = 0 (got ${titleHeading?.offset})`,
+  );
+}
+
+// Heading detection — large body element promoted to heading
+{
+  const slides = [
+    {
+      index: 0,
+      sourceFormat: 'pdf',
+      title: null,
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'body text small',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 10,
+          fontFamily: null,
+        },
+        {
+          kind: 'paragraph',
+          text: 'LARGE HEADING TEXT',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 20,
+          fontFamily: null,
+        },
+        {
+          kind: 'paragraph',
+          text: 'body text small again',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 10,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+  ];
+  const doc = extractDocumentData(slides);
+  ok(
+    doc.headings.length === 1,
+    `large-text heading detected: headings.length = 1 (got ${doc.headings.length})`,
+  );
+  ok(
+    doc.headings[0].text === 'LARGE HEADING TEXT',
+    `large-text heading: text matches (got "${doc.headings[0].text}")`,
+  );
+  ok(
+    doc.headings[0].level >= 1 && doc.headings[0].level <= 3,
+    `large-text heading: level in 1..3 (got ${doc.headings[0].level})`,
+  );
+}
+
+// Heading detection — no false positives on uniform body text
+{
+  const slides = [
+    {
+      index: 0,
+      sourceFormat: 'pdf',
+      title: null,
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'a',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+        {
+          kind: 'paragraph',
+          text: 'b',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+        {
+          kind: 'paragraph',
+          text: 'c',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+  ];
+  const doc = extractDocumentData(slides);
+  ok(doc.headings.length === 0, `uniform body: no headings detected (got ${doc.headings.length})`);
+}
+
+// Heading detection — offset points to heading text in flowingText
+{
+  const slides = [
+    {
+      index: 0,
+      sourceFormat: 'pdf',
+      title: 'Title One',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'body1',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+    {
+      index: 1,
+      sourceFormat: 'pdf',
+      title: 'Title Two',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'body2',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+  ];
+  const doc = extractDocumentData(slides);
+  ok(doc.headings.length === 2, `2 titles: 2 headings (got ${doc.headings.length})`);
+  const sliceAtOffset0 = doc.flowingText.slice(
+    doc.headings[0].offset,
+    doc.headings[0].offset + 'Title One'.length,
+  );
+  ok(
+    sliceAtOffset0 === 'Title One',
+    `heading[0] offset slice = "Title One" (got "${sliceAtOffset0}")`,
+  );
+  const sliceAtOffset1 = doc.flowingText.slice(
+    doc.headings[1].offset,
+    doc.headings[1].offset + 'Title Two'.length,
+  );
+  ok(
+    sliceAtOffset1 === 'Title Two',
+    `heading[1] offset slice = "Title Two" (got "${sliceAtOffset1}")`,
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
