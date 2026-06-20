@@ -28,6 +28,7 @@ export default [
       'memory/**',
       'package-lock.json',
       '*.min.js',
+      '**/*.min.js',
     ],
   },
 
