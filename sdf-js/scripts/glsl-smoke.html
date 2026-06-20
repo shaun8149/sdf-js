@@ -20,6 +20,7 @@
       import { FILTER_GLSL } from '../src/sdf/filter.js';
       import { LIGHTING_GLSL } from '../src/sdf/lighting.js';
       import { SDG_GLSL } from '../src/sdf/sdg.js';
+      import { BOUNDS_GLSL } from '../src/sdf/bounds.js';
 
       const gl = document.getElementById('c').getContext('webgl2');
       const vsSrc = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
@@ -31,6 +32,7 @@ ${NOISE_GLSL}
 ${FILTER_GLSL}
 ${LIGHTING_GLSL}
 ${SDG_GLSL}
+${BOUNDS_GLSL}
 void main(){
   float s = smootherstep(0.5) + parabola(0.5, 2.0) + gain(0.3, 3.0)
     + cubicPulse(0.5, 0.2, 0.5) + smoothstepInteg(0.7) + invSmoothstep(0.4)
@@ -59,6 +61,8 @@ void main(){
     + sdgSegment(p, vec2(-1.0, 0.0), vec2(1.0, 0.0)).z
     + sdgSphere(vec3(p, 0.5), 1.0).x + sdgBox3(vec3(p, 0.5), vec3(1.0, 0.7, 0.5)).y
     + sdgTorus(vec3(p, 0.5), 1.0, 0.3).z;
+  s += sphereProjRadius(5.0, 1.0, 1.5) + sdBoxLinf(vec3(p, 0.5), vec3(1.0))
+    + sdBoundingBox(vec3(p, 0.5), vec3(-1.5), vec3(1.5));
   gl_FragColor = vec4(vec3(clamp01(s * 0.01)), 1.0);
 }`;
 
@@ -82,7 +86,7 @@ void main(){
         if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
           throw new Error('link: ' + gl.getProgramInfoLog(pr));
         }
-        console.log('GLSL-SMOKE-OK easing+noise+filter+lighting+sdg');
+        console.log('GLSL-SMOKE-OK easing+noise+filter+lighting+sdg+bounds');
         document.title = 'SMOKE OK';
       } catch (e) {
         console.error('GLSL-SMOKE-FAIL ' + e.message);
