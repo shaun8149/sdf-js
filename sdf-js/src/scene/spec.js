@@ -234,6 +234,11 @@ export const PRIMITIVE_TYPES = new Set([
   'waterfall-3d',
   'scatter-3d',
   'gantt-3d',
+  // Sprint 5 Wave C — fishbone / traffic-light / radial-spoke + puzzle-piece.
+  'fishbone-3d',
+  'traffic-light-3d',
+  'radial-spoke-3d',
+  'puzzle-piece-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

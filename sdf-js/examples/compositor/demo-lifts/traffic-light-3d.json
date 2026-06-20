@@ -1,0 +1,39 @@
+{
+  "id": "traffic-light-3d",
+  "title": "Chart · Traffic Light",
+  "prompt": "traffic-light-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "traffic-light-3d",
+    "source": { "format": "synthetic", "prompt": "traffic-light-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "traffic-light-3d",
+        "args": { "lights": 3 },
+        "transform": { "translate": [0, 0.95, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.25,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.95,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "traffic-light-3d",
+    "costUSD": 0
+  }
+}

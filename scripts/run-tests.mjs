@@ -132,6 +132,12 @@ const TESTS = [
   { category: 'diagram', file: 'sdf-js/scripts/test-scatter-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-gantt-3d.mjs' },
 
+  // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
+  { category: 'diagram', file: 'sdf-js/scripts/test-fishbone-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-traffic-light-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-radial-spoke-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-puzzle-piece-3d.mjs' },
+
   // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
 

@@ -145,6 +145,10 @@ import { venn3dSDF } from './components/charts/data/venn-3d.js';
 import { waterfall3dSDF } from './components/charts/data/waterfall-3d.js';
 import { scatter3dSDF } from './components/charts/data/scatter-3d.js';
 import { gantt3dSDF } from './components/charts/data/gantt-3d.js';
+import { fishbone3dSDF } from './components/charts/diagrams/fishbone-3d.js';
+import { trafficLight3dSDF } from './components/charts/data/traffic-light-3d.js';
+import { radialSpoke3dSDF } from './components/charts/data/radial-spoke-3d.js';
+import { puzzlePiece3dSDF } from './components/shapes/puzzle-piece-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -689,6 +693,38 @@ const PRIMITIVE_FACTORIES = {
       barH: a.barH ?? 0.26,
       depth: a.depth ?? 0.18,
       trackLength: a.trackLength ?? 3.0,
+    }),
+  'fishbone-3d': (a) =>
+    fishbone3dSDF({
+      ribs: a.ribs ?? a.count ?? 6,
+      spineLength: a.spineLength ?? 2.8,
+      spineRadius: a.spineRadius ?? 0.05,
+      ribLength: a.ribLength ?? 0.7,
+      ribThickness: a.ribThickness ?? 0.04,
+      headSize: a.headSize ?? 0.3,
+    }),
+  'traffic-light-3d': (a) =>
+    trafficLight3dSDF({
+      lights: a.lights ?? a.count ?? 3,
+      lightRadius: a.lightRadius ?? 0.22,
+      spacing: a.spacing ?? 0.55,
+      housingPad: a.housingPad ?? 0.12,
+      depth: a.depth ?? 0.3,
+    }),
+  'radial-spoke-3d': (a) =>
+    radialSpoke3dSDF({
+      spokes: a.spokes ?? a.count ?? 8,
+      hubRadius: a.hubRadius ?? 0.25,
+      spokeThickness: a.spokeThickness ?? 0.05,
+      minLen: a.minLen ?? 0.55,
+      maxLen: a.maxLen ?? 1.2,
+      nodeRadius: a.nodeRadius ?? 0.1,
+    }),
+  'puzzle-piece-3d': (a) =>
+    puzzlePiece3dSDF({
+      size: a.size ?? 1.0,
+      depth: a.depth ?? 0.25,
+      knob: a.knob ?? 0.24,
     }),
   link: (a) =>
     linkSDF({

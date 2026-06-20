@@ -488,6 +488,46 @@
       "file": "gantt-3d.json",
       "renderer": "studio",
       "prompt": "Chart · Gantt"
+    },
+    {
+      "id": "fishbone-3d",
+      "title": "Chart · Fishbone",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "fishbone-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Fishbone"
+    },
+    {
+      "id": "traffic-light-3d",
+      "title": "Chart · Traffic Light",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "traffic-light-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Traffic Light"
+    },
+    {
+      "id": "radial-spoke-3d",
+      "title": "Chart · Radial Spoke",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "radial-spoke-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Radial Spoke"
+    },
+    {
+      "id": "puzzle-piece-3d",
+      "title": "Shape · Puzzle Piece",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "puzzle-piece-3d.json",
+      "renderer": "studio",
+      "prompt": "Shape · Puzzle Piece"
     }
   ]
 }
