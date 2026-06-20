@@ -110,6 +110,11 @@ const TESTS = [
   { category: 'shapes', file: 'sdf-js/scripts/test-circle-segmented-3d.mjs' },
   { category: 'shapes', file: 'sdf-js/scripts/test-circle-loop-3d.mjs' },
 
+  // Sprint 4: node-edge chart atoms (relationship graph / org chart / flow chart).
+  { category: 'diagram', file: 'sdf-js/scripts/test-relationship-graph-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-org-chart-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-flow-chart-3d.mjs' },
+
   // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
 
