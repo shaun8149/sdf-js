@@ -344,5 +344,50 @@ console.log('\nTest group 11: listDecks sort + delete + rename + duplicate');
   ok(dup.id !== d.id, 'duplicate: new id');
 }
 
+console.log(
+  '\nTest group 12: p5-sketch subject in addVisual + updateVisualVariantStatus (Sprint 3)',
+);
+
+{
+  resetStorage();
+  const d = createDeck('p5-deck', { type: 'pdf', fileName: 'p.pdf', pageCount: 1 });
+  setDocument(d, {
+    flowingText: 'sample',
+    pages: [{ startOffset: 0, endOffset: 6, pageNumber: 1 }],
+    headings: [],
+  });
+  const v = addVisual(d, { startOffset: 0, endOffset: 6, text: 'sample' });
+
+  // updateVisualVariantStatus accepts SceneData with p5-sketch subject
+  const p5SceneData = {
+    v: 1,
+    name: 'text-card: Sample',
+    subjects: [
+      {
+        id: 'sk-0',
+        type: 'p5-sketch',
+        args: {
+          code: 'function setup(){createCanvas(600,360);}function draw(){background(255);}',
+        },
+      },
+    ],
+  };
+  const r = updateVisualVariantStatus(d, v.id, 0, 'ready', {
+    sceneData: p5SceneData,
+    archetype: 'text-card',
+  });
+  ok(r === true, 'updateVisualVariantStatus accepts p5-sketch sceneData');
+  ok(v.variants[0].sceneData.subjects[0].type === 'p5-sketch', 'p5-sketch subject stored');
+  ok(typeof v.variants[0].sceneData.subjects[0].args.code === 'string', 'args.code preserved');
+
+  // saveDeckToStorage + loadDeckFromStorage roundtrip preserves p5-sketch
+  saveDeckToStorage(d);
+  const loaded = loadDeckFromStorage(d.id);
+  ok(
+    loaded.visuals[0].variants[0].sceneData.subjects[0].type === 'p5-sketch',
+    'p5-sketch survives storage roundtrip',
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

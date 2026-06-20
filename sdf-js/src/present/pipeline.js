@@ -32,6 +32,32 @@ const VALID_ARCHETYPES = [
 ];
 
 /**
+ * Sprint 3 constraint: if a SceneData contains any p5-sketch subject, then
+ * ALL subjects must be p5-sketch (mixed-subjects not yet supported).
+ * Additionally, args.code must be a non-empty string.
+ *
+ * Throws Error with message describing the violation.
+ *
+ * @param {object} sceneData
+ */
+function validateP5SketchConstraint(sceneData) {
+  if (!sceneData || !Array.isArray(sceneData.subjects)) return;
+  const subjects = sceneData.subjects;
+  const p5Subjects = subjects.filter((s) => s?.type === 'p5-sketch');
+  if (p5Subjects.length === 0) return; // No p5-sketch, no constraint to check
+  if (p5Subjects.length !== subjects.length) {
+    throw new Error(
+      'p5-sketch must be the single subject in SceneData (Sprint 3 constraint: no mixed subjects with traditional types)',
+    );
+  }
+  for (const s of p5Subjects) {
+    if (typeof s.args?.code !== 'string' || s.args.code.length === 0) {
+      throw new Error('p5-sketch subject requires args.code as non-empty string');
+    }
+  }
+}
+
+/**
  * Extract archetype label from sceneData.name prefix ("<archetype>: <title>").
  * Falls back to 'unknown' if missing/malformed/unrecognized.
  *
@@ -108,6 +134,8 @@ export function createVisualPipeline(deck, visualId, apiKey, deps, opts = {}) {
           return;
         }
         const rawSceneData = deps.parseLiftResponse(llmResult.text);
+        // Sprint 3: validate p5-sketch constraint (no mixed subjects)
+        validateP5SketchConstraint(rawSceneData); // throws on violation
         const sceneData = deps.sanitize2dSceneData(rawSceneData);
         const archetype = extractArchetype(sceneData);
 

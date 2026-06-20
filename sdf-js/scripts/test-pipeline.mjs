@@ -239,5 +239,84 @@ console.log('\nTest group 6: visual not found returns lift-error');
   ok(events[0].variantIndex === -1, 'variantIndex = -1 (no specific variant)');
 }
 
+console.log('\nTest group 7: p5-sketch subject acceptance (Sprint 3)');
+
+{
+  // Mock lift returns SceneData with single p5-sketch subject
+  const { deck, visualId } = makeDeckWithVisual();
+  const deps = makeMockDeps();
+  let callCount = 0;
+  deps.callLiftLLM = async () => {
+    callCount++;
+    return {
+      text: JSON.stringify({
+        v: 1,
+        name: 'text-card: Hello',
+        subjects: [
+          {
+            id: 'sketch-' + callCount,
+            type: 'p5-sketch',
+            args: {
+              code: 'function setup(){createCanvas(600,360);}function draw(){background(255);}',
+            },
+          },
+        ],
+      }),
+      usage: {},
+    };
+  };
+
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, { onEvent: () => {} });
+  await pipeline.start();
+
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  ok(
+    visual.variants.every((v) => v.status === 'ready'),
+    'all 6 variants ready',
+  );
+  ok(
+    visual.variants.every((v) => v.sceneData?.subjects?.[0]?.type === 'p5-sketch'),
+    'all 6 variants have p5-sketch subject',
+  );
+  ok(
+    visual.variants.every((v) => typeof v.sceneData.subjects[0].args.code === 'string'),
+    'all 6 variants have args.code string',
+  );
+}
+
+console.log('\nTest group 8: p5-sketch mixed-subject rejection (Sprint 3)');
+
+{
+  // Mock returns SceneData with both p5-sketch AND a traditional subject (cube-3d)
+  // Pipeline should reject this variant as liftError
+  const { deck, visualId } = makeDeckWithVisual();
+  const deps = makeMockDeps();
+  deps.callLiftLLM = async () => ({
+    text: JSON.stringify({
+      v: 1,
+      name: 'text-card: Mixed',
+      subjects: [
+        { id: 'sketch', type: 'p5-sketch', args: { code: 'function setup(){}function draw(){}' } },
+        { id: 'cube', type: 'cube-3d', args: {}, transform: { translate: [0, 0, 0] } },
+      ],
+    }),
+    usage: {},
+  });
+
+  const pipeline = createVisualPipeline(deck, visualId, 'fake-key', deps, { onEvent: () => {} });
+  await pipeline.start();
+
+  const visual = deck.visuals.find((v) => v.id === visualId);
+  ok(
+    visual.variants.every((v) => v.status === 'error'),
+    'all variants error on mixed subjects (Sprint 3 constraint)',
+  );
+  ok(
+    visual.variants[0].liftError?.includes('mixed') ||
+      visual.variants[0].liftError?.includes('single'),
+    `liftError mentions constraint: "${visual.variants[0].liftError}"`,
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
