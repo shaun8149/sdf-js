@@ -19,7 +19,7 @@
           "linkThickness": 0.06,
           "arrangement": "ring"
         },
-        "transform": { "translate": [0, 1.0, 0], "scale": 0.5 },
+        "transform": { "translate": [0, 1.0, 0] },
         "material": "silver"
       }
     ],

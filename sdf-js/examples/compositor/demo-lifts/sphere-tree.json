@@ -20,7 +20,7 @@
           "spread": 3.4,
           "linkThickness": 0.05
         },
-        "transform": { "translate": [0, 0.9, 0], "scale": 0.36 },
+        "transform": { "translate": [0, 1.2, 0] },
         "material": "silver"
       }
     ],

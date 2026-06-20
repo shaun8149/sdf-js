@@ -17,7 +17,7 @@
           "explode": 0.2,
           "gapAngle": 0.06
         },
-        "transform": { "translate": [0, 1.0, 0], "scale": 0.45 },
+        "transform": { "translate": [0, 0.9, 0] },
         "material": "silver"
       }
     ],
