@@ -22,6 +22,9 @@ const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 /** Exact signed distance from point (px,py) to an axis-aligned ellipse with
  *  semi-axes (ax,ay). IQ's robust closed form. Negative inside. */
 export function distToEllipse(px, py, ax, ay) {
+  if (Math.abs(ax - ay) <= 1e-12 * Math.max(1, Math.abs(ax), Math.abs(ay))) {
+    return Math.hypot(px, py) - Math.abs(ax);
+  }
   let pxa = Math.abs(px),
     pya = Math.abs(py);
   let a = ax,
@@ -109,6 +112,7 @@ export function lyapunovLogistic(r, n) {
 // -----------------------------------------------------------------------------
 export const EXTRA_GLSL = /* glsl */ `
 float distToEllipse(vec2 p, vec2 ab){
+  if (abs(ab.x - ab.y) <= 1e-8*max(1.0, max(abs(ab.x), abs(ab.y)))) return length(p) - abs(ab.x);
   p = abs(p);
   if (p.x > p.y){ p = p.yx; ab = ab.yx; }
   float l = ab.y*ab.y - ab.x*ab.x;

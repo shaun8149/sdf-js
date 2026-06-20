@@ -45,6 +45,9 @@ console.log('exact ellipse distance');
   ok(near(distToEllipse(3, 0, ab[0], ab[1]), 1, 0.02), 'point outside on major axis → ≈1');
   ok(distToEllipse(0, 0, ab[0], ab[1]) < 0, 'centre is inside (negative)');
   ok(distToEllipse(4, 4, ab[0], ab[1]) > 0, 'far point outside (positive)');
+  ok(near(distToEllipse(0, 0, 1, 1), -1), 'equal axes: centre matches circle SDF');
+  ok(near(distToEllipse(1, 0, 1, 1), 0), 'equal axes: boundary stays finite');
+  ok(near(distToEllipse(2, 0, 1, 1), 1), 'equal axes: outside distance matches circle');
 }
 
 console.log('\ndirectional derivative of an SDF');
