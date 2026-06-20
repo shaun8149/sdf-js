@@ -49,11 +49,6 @@ function makeElement({ offset = null, children = [] } = {}) {
 
 function makeRoot(lines) {
   const root = makeElement({ children: lines });
-  Object.defineProperty(root, 'textContent', {
-    get() {
-      return root.childNodes.map((child) => child.textContent || '').join('');
-    },
-  });
   root.querySelectorAll = (selector) => {
     if (selector !== '[data-offset]') return [];
     return lines;
