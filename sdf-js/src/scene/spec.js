@@ -195,6 +195,13 @@ export const PRIMITIVE_TYPES = new Set([
   // connectors × 3 label modes + per-cube size/rotation/offset overrides).
   // See sdf-js/src/scene/components/shapes/cube-3d.js.
   'cube-3d',
+  // Atlas Shape atoms (2026-06-20) — Sprint 2 sphere family. Composite atoms
+  // (sphere/cut-sphere/torus/capsule + union), GLSL emit via leaf primitives.
+  // See sdf-js/src/scene/components/shapes/sphere-*.js.
+  'sphere-fill-3d',
+  'sphere-network-3d',
+  'sphere-tree-3d',
+  'sphere-segmented-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai
