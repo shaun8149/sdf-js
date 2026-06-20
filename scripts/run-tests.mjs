@@ -82,6 +82,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-linear-layout.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-info-graphic-render.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-deck-view.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
