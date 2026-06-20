@@ -53,6 +53,8 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-mathx.mjs' },
   // IQ-shader program W11 — cleanup (ellipse dist, box shadow, SDF AO, lyapunov)
   { category: 'math', file: 'sdf-js/scripts/test-extra.mjs' },
+  // IQ-shader program W13 — gap-fill (2D bbox, multires/box AO, GI, implicit dist)
+  { category: 'math', file: 'sdf-js/scripts/test-gaps.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
