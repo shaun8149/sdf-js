@@ -82,5 +82,109 @@ console.log('=== pdf-text-extractor smoke test ===\n');
   );
 }
 
+// Multi-page — offset continuity
+{
+  const slides = [
+    {
+      index: 0,
+      sourceFormat: 'pdf',
+      title: 'Page A',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'aaa',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+    {
+      index: 1,
+      sourceFormat: 'pdf',
+      title: 'Page B',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'bbb',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+    {
+      index: 2,
+      sourceFormat: 'pdf',
+      title: 'Page C',
+      body: [
+        {
+          kind: 'paragraph',
+          text: 'ccc',
+          level: 0,
+          bbox: { x: 0, y: 0, w: 0, h: 0 },
+          fontSize: 12,
+          fontFamily: null,
+        },
+      ],
+      visuals: [],
+      layout: 'title-content',
+      theme: {},
+      notes: null,
+      pageSize: { width: 612, height: 792 },
+      screenshot: null,
+      classified: null,
+    },
+  ];
+  const doc = extractDocumentData(slides);
+
+  ok(doc.pages.length === 3, 'multi-page: 3 pages');
+  ok(doc.pages[0].pageNumber === 1, 'multi-page: page[0].pageNumber = 1');
+  ok(doc.pages[1].pageNumber === 2, 'multi-page: page[1].pageNumber = 2');
+  ok(doc.pages[2].pageNumber === 3, 'multi-page: page[2].pageNumber = 3');
+
+  ok(doc.pages[0].startOffset === 0, 'multi-page: page[0].startOffset = 0');
+  ok(
+    doc.pages[0].endOffset === doc.pages[1].startOffset,
+    'multi-page: page[0].endOffset == page[1].startOffset (continuity)',
+  );
+  ok(
+    doc.pages[1].endOffset === doc.pages[2].startOffset,
+    'multi-page: page[1].endOffset == page[2].startOffset',
+  );
+  ok(
+    doc.pages[2].endOffset === doc.flowingText.length,
+    'multi-page: last endOffset = full text length',
+  );
+
+  // Slicing by page boundaries should reproduce the page text
+  const page1Text = doc.flowingText.slice(doc.pages[0].startOffset, doc.pages[0].endOffset);
+  ok(
+    page1Text.includes('Page A') && page1Text.includes('aaa'),
+    'multi-page: slice page[0] = original page A content',
+  );
+  const page2Text = doc.flowingText.slice(doc.pages[1].startOffset, doc.pages[1].endOffset);
+  ok(
+    page2Text.includes('Page B') && page2Text.includes('bbb'),
+    'multi-page: slice page[1] = original page B content',
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
