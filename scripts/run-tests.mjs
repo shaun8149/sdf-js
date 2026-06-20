@@ -92,6 +92,7 @@ const TESTS = [
   // Layer 2 — Atlas Present (deck library + editor + present mode)
   { category: 'present', file: 'sdf-js/scripts/test-pdf-text-extractor.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-p5-sandbox.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-p5-idiom-registry.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-deck-model.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-waypoint-tween.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
