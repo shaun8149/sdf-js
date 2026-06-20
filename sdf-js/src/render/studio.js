@@ -214,6 +214,19 @@ float checker(vec2 p) {
   return mod(i.x + i.y, 2.0);
 }
 
+// IQ analytic box-filtered checkerboard (Shadertoy Xds3zN). w is the pixel's
+// footprint in tile space (passed in, not fwidth() — this shader is GLSL ES
+// 1.00 where derivatives need an unreliable extension). The integral-of-checker
+// trick averages the pattern over that footprint → crisp tiles up close, smooth
+// neutral grey at distance, zero moire / aliasing.
+// Returns 0..1 (0=one tile colour, 1=the other, ~0.5 when far → grey).
+float checkersGradBox(vec2 p, vec2 w) {
+  w = max(w, vec2(0.001));
+  vec2 i = 2.0 * (abs(fract((p - 0.5 * w) * 0.5) - 0.5)
+                - abs(fract((p + 0.5 * w) * 0.5) - 0.5)) / w;
+  return 0.5 - 0.5 * i.x * i.y;
+}
+
 // Stochastic AA dither uses hash21 from NOISE_GLSL (Hoskins canonical naming:
 // 2-in 1-out). Removed local duplicate to avoid GLSL redefinition error now
 // that the noise library is prepended via includeLibrary=true.
@@ -705,9 +718,10 @@ void main() {
 
   vec3 col;
   if (!hit) {
-    // Studio: solid neutral cool-grey background (no sky / no stars / no clouds).
-    // Picked light enough that mid-grey checker floor reads as floor, not sky.
-    col = vec3(0.85, 0.87, 0.90);
+    // Studio: cool-grey background, slightly darkened + a faint top-down
+    // gradient so the dark checker floor reads as brighter-lit-floor against it
+    // and the image keeps contrast instead of washing out toward the horizon.
+    col = mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
   } else {
     // ---- Shading ----
     vec3 p = ro + rd * t;
@@ -785,11 +799,16 @@ void main() {
         glowK  = leafMat.w;
       }
     } else if (u_checkerOn > 0.5) {
-      // Studio: cool neutral grey checker. Tiles 1 unit per square. Contrast
-      // bumped (~0.42 delta per channel) to match IQ Shadertoy Xds3zN ref —
-      // previous 0.20 delta was nearly invisible under studio's flat lighting.
-      float c = checker(p.xz);
-      base = mix(vec3(0.92, 0.92, 0.94), vec3(0.50, 0.50, 0.53), c);
+      // Studio: dark low-contrast checker, analytically box-filtered (IQ
+      // Xds3zN). Darker tiles (≈0.16..0.26) than before so lit subjects read as
+      // brighter than the floor and "pop" — matches the IQ Primitives ground,
+      // which is intentionally dark. Filtering kills the distance moire.
+      // Analytic pixel footprint on the ground (no fwidth → GLSL ES 1.00 safe):
+      // grows with hit distance t and with grazing angle (1/|rd.y|) so distant /
+      // shallow tiles average to grey instead of shimmering.
+      float fpw = t * 1.33 / max(u_resolution.y, 1.0) / max(abs(rd.y), 0.12);
+      float c = checkersGradBox(p.xz, vec2(fpw));
+      base = mix(vec3(0.26, 0.26, 0.28), vec3(0.16, 0.16, 0.18), c);
     } else {
       base = vec3(0.78, 0.78, 0.80);
     }
@@ -1350,7 +1369,10 @@ void main() {
       // ±10% albedo variance to break up plastic-looking uniformity. The
       // 6.0 scale gives ~6 visible bumps per world unit — good for stone /
       // wood / brick at typical camera distance.
-      float plasticGate = (1.0 - metalK) * (1.0 - smoothstep(0.0, 0.5, glowK));
+      // Gate by matId>1.5 so the ground checker stays a clean filtered pattern —
+      // fbm albedo noise on the floor reads as "muddy" vs the IQ reference.
+      float plasticGate =
+        step(1.5, matId) * (1.0 - metalK) * (1.0 - smoothstep(0.0, 0.5, glowK));
       float texDetail = fbm3_lite(p * 6.0);
       base *= mix(1.0, 0.82 + 0.36 * texDetail, plasticGate * 0.7);
 
@@ -1371,11 +1393,14 @@ void main() {
       float specBoost = 0.45 + 1.8 * metalK;
 
       vec3 lin = vec3(0.0);
-      lin += base * sunCol    * diff * shadowK * 1.35 * diffK;
-      lin += base * skyCol    * skyL * ao      * 0.55 * diffK;
-      lin += base * bounceCol * bnc  * ao      * 0.18 * diffK;
+      // Key/fill ratio raised for "pop": stronger sun key, lower flat sky fill,
+      // trimmed rim. Ambient terms stay multiplied by AO so crevices/contacts
+      // darken (grounds the subject — the main thing flat studio lighting lacked).
+      lin += base * sunCol    * diff * shadowK * 1.55 * diffK;
+      lin += base * skyCol    * skyL * ao      * 0.38 * diffK;
+      lin += base * bounceCol * bnc  * ao      * 0.16 * diffK;
       lin += specTint * sunCol * spec * shadowK * specBoost;
-      lin += rimCol * rim * ao                 * 0.22;
+      lin += rimCol * rim * ao                 * 0.14;
 
       // Sprint 6: procedural-IBL env reflection. For metallic objects, sample
       // sky() in the reflection direction as the environment map. Free (no
@@ -1470,6 +1495,17 @@ void main() {
     col = bp;
   }
 
+  // Studio P2: gentle contrast lift + subtle vignette, applied in linear HDR
+  // before the postfx ACES/gamma pass (studio-only — does not touch shared
+  // postfx, so FLY 3D's cinematic look is unaffected). pow(>1) is monotonic and
+  // HDR-safe (no smoothstep blow-up on speculars > 1.0).
+  if (u_blueprintMode < 0.5) {
+    col = pow(max(col, vec3(0.0)), vec3(1.07));
+    vec2 vigUV = gl_FragCoord.xy / max(u_resolution, vec2(1.0));
+    vec2 vd = vigUV - 0.5;
+    col *= 1.0 - 0.24 * dot(vd, vd);
+  }
+
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
   // which propagates through bloom Gaussian + DoF taps and explodes as black
   // rectangles on canvas (~30-40 px each). Replace NaN per-channel with 0,
@@ -1504,7 +1540,11 @@ export function createStudioRenderer({
   getControls,
   onCamUpdate,
   onFps,
-  renderScale = 0.6,
+  // Studio renders single atoms (cheap SDFs), so we can afford supersampling:
+  // renderScale 2.0 = render at 2× canvas then the LINEAR blit downsamples →
+  // clean 2×2 SSAA (kills the jaggy edges + checker shimmer the old 0.6 upscale
+  // made worse). Bump down toward 1.0 if a heavy scene is loaded in studio.
+  renderScale = 2.0,
 }) {
   // Sprint 1 (2026-05-24): WebGL2 + EXT_color_buffer_float required for HDR
   // rgba16f scene FBO. Fallback to WebGL1 is intentionally NOT provided — once
