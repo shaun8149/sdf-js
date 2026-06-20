@@ -22,5 +22,5 @@ export async function parseDeck(filePath) {
   }
 }
 
-export { parsePDF } from './pdf.js';
+export { parsePDF, parsePDFFromBytes } from './pdf.js';
 export { emptySlideData, validateSlideData, classifyLayout } from './slidedata.js';

@@ -29,13 +29,27 @@ const require = createRequire(import.meta.url);
 pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
 
 /**
- * Parse a PDF file into SlideData[].
+ * Parse a PDF file from disk (Node only). Wraps parsePDFFromBytes after
+ * fs.readFile.
+ *
  * @param {string} filePath - Absolute path to .pdf
  * @returns {Promise<SlideData[]>}
  */
 export async function parsePDF(filePath) {
   const buffer = await fs.readFile(filePath);
-  const data = new Uint8Array(buffer);
+  return parsePDFFromBytes(new Uint8Array(buffer), filePath);
+}
+
+/**
+ * Parse a PDF from raw bytes (browser + Node compatible). Browser callers pass
+ * a Uint8Array from File API ArrayBuffer; Node `parsePDF(filePath)` wraps this
+ * after fs.readFile.
+ *
+ * @param {Uint8Array} data - PDF bytes
+ * @param {string} [sourceLabel] - optional source label for error messages
+ * @returns {Promise<SlideData[]>}
+ */
+export async function parsePDFFromBytes(data, sourceLabel = '<bytes>') {
   const loadingTask = pdfjs.getDocument({
     data,
     useSystemFonts: true,
@@ -52,7 +66,7 @@ export async function parsePDF(filePath) {
     } catch (e) {
       // Graceful fallback: emit empty SlideData with error noted
       const fallback = emptySlideData(i - 1, 'pdf');
-      fallback.notes = `[parse error] ${e.message}`;
+      fallback.notes = `[parse error in ${sourceLabel} page ${i}] ${e.message}`;
       slides.push(fallback);
     }
   }
