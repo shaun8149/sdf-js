@@ -117,6 +117,10 @@ import { businessIconSDF } from './components/icons/business.js';
 import { cover3dSDF } from './components/presentation/cover-3d.js';
 import { text3dExtrudedSDF, text3dPipeSDF } from './components/typography/text-3d.js';
 import { cube3dSDF } from './components/shapes/cube-3d.js';
+import { sphereFill3dSDF } from './components/shapes/sphere-fill-3d.js';
+import { sphereNetwork3dSDF } from './components/shapes/sphere-network-3d.js';
+import { sphereTree3dSDF } from './components/shapes/sphere-tree-3d.js';
+import { sphereSegmented3dSDF } from './components/shapes/sphere-segmented-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -422,6 +426,42 @@ const PRIMITIVE_FACTORIES = {
     });
   },
   'cube-3d': (a) => cube3dSDF(a),
+  'sphere-fill-3d': (a) =>
+    sphereFill3dSDF({
+      levels: a.levels ?? a.fills ?? [0.25, 0.5, 0.75, 1.0],
+      count: a.count ?? null,
+      radius: a.radius ?? 0.6,
+      spacing: a.spacing ?? a.gap ?? 0.3,
+      cage: a.cage ?? true,
+      cageThickness: a.cageThickness ?? 0.025,
+      fillScale: a.fillScale ?? 0.92,
+    }),
+  'sphere-network-3d': (a) =>
+    sphereNetwork3dSDF({
+      count: a.count ?? 6,
+      hubRadius: a.hubRadius ?? 0.5,
+      satelliteRadius: a.satelliteRadius ?? a.nodeRadius ?? 0.28,
+      radius: a.radius ?? a.orbit ?? 1.5,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.05,
+      arrangement: a.arrangement ?? 'ring',
+    }),
+  'sphere-tree-3d': (a) =>
+    sphereTree3dSDF({
+      levels: a.levels ?? a.depth ?? 3,
+      branching: a.branching ?? a.fanout ?? 2,
+      rootRadius: a.rootRadius ?? a.radius ?? 0.4,
+      radiusFalloff: a.radiusFalloff ?? 0.78,
+      levelHeight: a.levelHeight ?? 1.0,
+      spread: a.spread ?? a.width ?? 3.0,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.045,
+    }),
+  'sphere-segmented-3d': (a) =>
+    sphereSegmented3dSDF({
+      segments: a.segments ?? a.count ?? 6,
+      radius: a.radius ?? 0.7,
+      explode: a.explode ?? a.gap ?? 0.12,
+      gapAngle: a.gapAngle ?? 0.06,
+    }),
   link: (a) =>
     linkSDF({
       halfLength: a.halfLength ?? a.le ?? 0.13,
