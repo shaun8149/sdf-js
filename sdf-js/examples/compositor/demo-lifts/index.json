@@ -248,6 +248,46 @@
       "file": "sphere-segmented.json",
       "renderer": "studio",
       "prompt": "Sphere divisions"
+    },
+    {
+      "id": "arrow-3d",
+      "title": "Arrow",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "arrow-3d.json",
+      "renderer": "studio",
+      "prompt": "Arrow"
+    },
+    {
+      "id": "diamond-3d",
+      "title": "Diamond",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "diamond-3d.json",
+      "renderer": "studio",
+      "prompt": "Diamond"
+    },
+    {
+      "id": "gear-3d",
+      "title": "Gear",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "gear-3d.json",
+      "renderer": "studio",
+      "prompt": "Gear"
+    },
+    {
+      "id": "cube-segmented-3d",
+      "title": "Cube · Segmented",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "cube-segmented-3d.json",
+      "renderer": "studio",
+      "prompt": "Cube · Segmented"
     }
   ]
 }

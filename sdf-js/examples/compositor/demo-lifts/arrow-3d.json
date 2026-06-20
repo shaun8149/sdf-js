@@ -1,0 +1,34 @@
+{
+  "id": "arrow-3d",
+  "title": "Arrow",
+  "prompt": "arrow-3d atom — directional arrow (shaft + cone head); single or double.",
+  "code2d": "// Synthetic showcase — arrow-3d atom.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "arrow",
+    "source": { "format": "synthetic", "prompt": "arrow" },
+    "subjects": [
+      {
+        "id": "arrow",
+        "type": "arrow-3d",
+        "args": { "length": 1.8, "double": false },
+        "transform": { "translate": [0, 0.6, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.25,
+        "distance": 6,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.6,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": { "generatedAt": "2026-06-21", "model": "synthetic", "pattern": "arrow-3d", "costUSD": 0 }
+}

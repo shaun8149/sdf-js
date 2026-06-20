@@ -121,6 +121,10 @@ import { sphereFill3dSDF } from './components/shapes/sphere-fill-3d.js';
 import { sphereNetwork3dSDF } from './components/shapes/sphere-network-3d.js';
 import { sphereTree3dSDF } from './components/shapes/sphere-tree-3d.js';
 import { sphereSegmented3dSDF } from './components/shapes/sphere-segmented-3d.js';
+import { arrow3dSDF } from './components/shapes/arrow-3d.js';
+import { diamond3dSDF } from './components/shapes/diamond-3d.js';
+import { gear3dSDF } from './components/shapes/gear-3d.js';
+import { cubeSegmented3dSDF } from './components/shapes/cube-segmented-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -461,6 +465,38 @@ const PRIMITIVE_FACTORIES = {
       radius: a.radius ?? 0.7,
       explode: a.explode ?? a.gap ?? 0.12,
       gapAngle: a.gapAngle ?? 0.06,
+    }),
+  'arrow-3d': (a) =>
+    arrow3dSDF({
+      length: a.length ?? 1.6,
+      shaftWidth: a.shaftWidth ?? a.width ?? 0.18,
+      headLength: a.headLength ?? 0.5,
+      headWidth: a.headWidth ?? 0.5,
+      depth: a.depth ?? 0.3,
+      double: a.double ?? false,
+    }),
+  'diamond-3d': (a) =>
+    diamond3dSDF({
+      width: a.width ?? 0.9,
+      crownHeight: a.crownHeight ?? 0.3,
+      pavilionHeight: a.pavilionHeight ?? 0.7,
+      tableRatio: a.tableRatio ?? 0.45,
+    }),
+  'gear-3d': (a) =>
+    gear3dSDF({
+      teeth: a.teeth ?? 12,
+      radius: a.radius ?? 0.7,
+      thickness: a.thickness ?? a.depth ?? 0.25,
+      toothDepth: a.toothDepth ?? 0.16,
+      toothWidth: a.toothWidth ?? 0.18,
+      holeRadius: a.holeRadius ?? 0.22,
+    }),
+  'cube-segmented-3d': (a) =>
+    cubeSegmented3dSDF({
+      segments: a.segments ?? a.count ?? 4,
+      size: a.size ?? 1.2,
+      gap: a.gap ?? 0.08,
+      axis: a.axis ?? 'x',
     }),
   link: (a) =>
     linkSDF({
