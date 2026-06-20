@@ -55,6 +55,16 @@ existing `community/` shader port convention (e.g., `iq-solid-angle.js`).
 
 **Atlas ALSO has** `sdf-js/src/ca/ca.js` — full engine-layer port + SDF region generalization (any SDF predicate as boundary, not just ellipse). The iframe-side idiom here is the STANDALONE inline-able variant for LLM-generated p5-sketches (iframe can't import engine modules). Both implement the same 9-block state machine.
 
+### Sprint 8 Tier E — kgolid p5ycho trio (closing absorption)
+
+| File | Source | Atlas use case |
+|---|---|---|
+| `kgolid-space-colonization.js` | [p5ycho/colonization](https://github.com/kgolid/p5ycho/tree/master/colonization) | Organic branching tree growth via source attraction + pruning. Different from packCirclesInSDF (packs) — BRANCHES toward source cloud. Use for: process flow trees, dependency graphs, neural diagrams, "reach/expansion" visualizations. Static port (run all iterations in one call) for iframe noLoop. |
+| `kgolid-lindenmayer-lsystem.js` | [p5ycho/lindenmayer](https://github.com/kgolid/p5ycho/tree/master/lindenmayer) | L-system string-rewriting fractal plants via turtle graphics. 4 classic presets from Moussa's defaults (balanced/asymmetric/symmetric/wide_canopy). Use for: branding ornament, "growth" content metaphor, section dividers, low-opacity background filler trees. |
+| `kgolid-weave-flow-dashes.js` | [p5ycho/weave](https://github.com/kgolid/p5ycho/tree/master/weave) | Multi-layer Perlin flow field as SHORT directional dashes (not long streamlines like moussa-perlin-flow-field). Each cell probes N angles for max gradient, emits 1 dash. N layers with independent noise offsets → woven fabric texture. Pairs with chromotome palettes for layered color woven look. |
+
+These 3 close out the Sprint 7 "Sprint 8+ candidates" list. **kgolid p5ycho absorption COMPLETE** — apparatus (Sprint 7) + chromotome + marching-squares (Sprint 6) + this trio = 6 idioms total from kgolid sources.
+
 ### Sprint 7 p5ycho survey — other sketches assessed (~80 total folders)
 
 Folder scan + algorithm read of high-interest candidates. **Recommended Sprint 8+ ports** (3), assessed-and-deferred (5), skip (rest):
