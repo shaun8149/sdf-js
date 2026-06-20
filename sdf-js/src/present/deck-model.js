@@ -232,21 +232,6 @@ export function getSelectedVariant(section) {
 }
 
 /**
- * @deprecated Sprint 1 v4 entry. Sprint 1.5+ should use updateVariantStatus.
- *   This wrapper updates variants[0] only. Kept temporarily for migration.
- *   To remove in Phase 6 after pipeline.js + library-page.js fully migrate.
- *
- * @param {Deck} deck
- * @param {string} sectionId
- * @param {'pending'|'lifting'|'ready'|'error'} status
- * @param {object} [payload]
- * @returns {boolean}
- */
-export function updateSectionStatus(deck, sectionId, status, payload = {}) {
-  return updateVariantStatus(deck, sectionId, 0, status, payload);
-}
-
-/**
  * Count sections in each status. Useful for library card progress UI.
  *
  * @param {Deck} deck

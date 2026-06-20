@@ -288,33 +288,6 @@ console.log('\nTest group 6: getSelectedVariant (Sprint 1.5)');
   );
 }
 
-console.log('\nTest group 7: deprecated updateSectionStatus wrapper');
-
-{
-  const d = deck.createDeck('test');
-  deck.addPendingSections(d, [{ slideData: {}, code2d: '' }]);
-  const sId = d.sections[0].id;
-
-  const r = deck.updateSectionStatus(d, sId, 'lifting');
-  ok(r === true, 'updateSectionStatus (deprecated): returns true');
-  ok(d.sections[0].variants[0].status === 'lifting', 'updateSectionStatus: updates variants[0]');
-  ok(d.sections[0].status === 'lifting', 'updateSectionStatus: section status derived');
-
-  deck.updateSectionStatus(d, sId, 'ready', {
-    sceneData: { v: 1, name: 'kpi-hero: 42', subjects: [] },
-    region: { centerX: 0, centerY: 0, centerZ: 0, halfWidth: 0.5, halfHeight: 0.5, halfDepth: 0.5 },
-  });
-  ok(
-    d.sections[0].variants[0].sceneData?.name === 'kpi-hero: 42',
-    'updateSectionStatus: payload merged to variants[0]',
-  );
-
-  ok(
-    deck.updateSectionStatus(d, 'nonexistent', 'ready') === false,
-    'updateSectionStatus: nonexistent id false',
-  );
-}
-
 console.log('\nTest group 8: sectionStatusCounts');
 
 {
