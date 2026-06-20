@@ -29,6 +29,7 @@ import { union as sdfUnion } from './sdf/dn.js';
 import { createStudioRenderer } from './render/studio.js';
 import { createFly3DRenderer } from './render/flyLambert.js';
 import { silhouette } from './render/silhouette.js';
+import { Random } from './util/random.js';
 
 // Constants
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
@@ -66,7 +67,7 @@ export function sphericalToCamState(cam) {
  */
 export function compileScene(sceneData, opts = {}) {
   const sceneHash = opts.sceneHash ?? 1;
-  const rng = mulberry32(sceneHash);
+  const rng = new Random(sceneHashToToken(sceneHash));
   const expanded = expandVariants(sceneData, rng);
   const compiled = compile(expanded);
   const unifiedSdf = compiled.groundSdf ? sdfUnion(compiled.sdf, compiled.groundSdf) : compiled.sdf;
@@ -80,17 +81,20 @@ export function compileScene(sceneData, opts = {}) {
   };
 }
 
-// Mulberry32 — minimal seeded PRNG. Matches the one used elsewhere in Atlas
-// (see src/scene/components/shapes/cube-3d.js).
-function mulberry32(seed) {
-  let a = seed >>> 0;
-  return function () {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+// Map an integer sceneHash → 64-hex token expected by `Random` (which uses
+// SFC32 internally and slices the hex into two 128-bit seeds). Repeats the
+// integer's 8-hex representation 8 times to fill 64 chars — deterministic,
+// same int always yields same sequence, distinct ints yield distinct seeds.
+//
+// Pre-fix this file used a bare `mulberry32()` PRNG that returned a plain
+// function. `expandVariants` (and Generator-S in general) requires the
+// `Random` instance API (`random_dec` / `random_num` / etc.), so passing a
+// function caused `rng.random_dec is not a function` on any scene containing
+// a `variants: [{op: 'scatter'|'array'|'mirror'}]` subject. See
+// sdf-js/docs/sprint-1.5-phase-2-investigation.md for full root-cause notes.
+function sceneHashToToken(sceneHash) {
+  const intHex = (sceneHash >>> 0).toString(16).padStart(8, '0');
+  return '0x' + intHex.repeat(8);
 }
 
 // Strip JS-style line (//) and block (/* */) comments from JSON-ish text
