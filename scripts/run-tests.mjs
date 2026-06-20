@@ -77,6 +77,7 @@ const TESTS = [
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
 
   // Layer 2 — Atlas Present (deck library + editor + present mode)
+  { category: 'present', file: 'sdf-js/scripts/test-pdf-text-extractor.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-deck-model.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-waypoint-tween.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
