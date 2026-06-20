@@ -96,6 +96,38 @@ For 6 variants per ⚡:
     with different layouts (vertical / radial / cards / timeline / compare)
   - NEVER emit all 6 same-tier same-style (Sprint 1.5 convergence failure)
 
+## Typography (Sprint 12 — Inter + IBM Plex Mono available in iframe)
+
+The iframe sandbox preloads 2 web fonts via Google Fonts link:
+- **Inter** (weights 400 / 500 / 600 / 700 / 900) — modern UI sans-serif. Use
+  for ALL foreground text (labels, titles, body). Replaces system sans-serif.
+- **IBM Plex Mono** (weights 400 / 500 / 700) — monospace. Use for code-like
+  content + digit-aligned numerics (dollar amounts, percentages, tables).
+
+Usage in P5 sketch:
+- textFont('Inter') sets font family; default weight 400
+- For bold/heavy weights, use drawingContext for precise control:
+    drawingContext.font = "700 56px Inter";
+    drawingContext.textAlign = "center";
+    drawingContext.fillText('$3B', 300, 80);
+- textSize() still works but only changes size, not weight
+
+**Typography hierarchy** (matches modern infographic conventions):
+- Hero KPI / number: 56-96 px Inter weight 700-900 (or IBM Plex Mono 700 for digits)
+- Section title: 24-32 px Inter weight 600
+- Card label: 14-18 px Inter weight 500
+- Body / caption: 11-14 px Inter weight 400
+- Numeric values: IBM Plex Mono (tabular digits align cleanly)
+
+textAlign:
+- Hero centered: textAlign(CENTER, CENTER)
+- Card label horizontal-center + top: textAlign(CENTER, TOP)
+- Body left-aligned: textAlign(LEFT, TOP)
+
+NEVER use 'Arial' / 'Helvetica' / 'sans-serif' / 'serif' — they look amateur
+on a polished infographic. The Inter + IBM Plex Mono pair is Atlas's visual
+identity (replaces v3.20-v3.25 prompt default of textFont('sans-serif')).
+
 ## JSON output discipline (Sprint 11 — CRITICAL when inlining sketch code)
 
 When emitting p5-sketch SceneData, **args.code is a JSON string field**.
@@ -157,8 +189,10 @@ Constraints:
     sub2, add2, mul2, dot2, len2, lenSq2, rot2, trans2, clamp1, clamp2,
     max2, min2, fract1, fract2, scale2, eq2, step1, xRepeated, sdf_rep
   * Branding palette: window.__brandingPalette = { bg: [r,g,b], silhouetteColor: [r,g,b] }
-- Use textFont('sans-serif') for any text. Use brandingPalette for fill/stroke
-  to maintain visual consistency across renderer cycles.
+- Use textFont('Inter') for any text (system sans-serif fallback). For
+  numeric / digit-aligned content ($, %, etc.), use textFont('IBM Plex Mono').
+  See "Typography" section for full hierarchy guidance. Use brandingPalette
+  for fill/stroke to maintain visual consistency across renderer cycles.
 - Call createCanvas(600, 360) inside setup(). End draw() with noLoop() to freeze
   the frame (saves CPU; we render once, no animation needed).
 
