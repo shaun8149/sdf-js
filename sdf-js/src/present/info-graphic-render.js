@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { compileScene, createRendererForId } from '../compositor-api.js';
+import { computeView } from './linear-layout.js';
 
 const SECTION_WIDTH = 200;
 const SECTION_HEIGHT = 300;
@@ -160,9 +161,10 @@ function drawSliceThumbnail(ctx, sceneData, x, y, size) {
     tempCanvas.height = size;
     const renderer = createRendererForId('silhouette', tempCanvas);
     const compiled = compileScene(sceneData);
+    const view = computeView(sceneData);
     renderer.render([{ sdf: compiled.sdf, color: [60, 60, 60] }], {
       background: [245, 245, 245],
-      view: 2.5,
+      view,
     });
     ctx.drawImage(tempCanvas, x, y);
   } catch (e) {
