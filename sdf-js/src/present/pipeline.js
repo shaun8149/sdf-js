@@ -23,7 +23,67 @@
 // =============================================================================
 
 import { VARIANT_COUNT, addPendingSections, updateVariantStatus } from './deck-model.js';
-import { computeRegions } from './linear-layout.js';
+
+// -----------------------------------------------------------------------------
+// Inlined region computation (was linear-layout.js, deleted in Sprint 2).
+// Sprint 2 document viewer no longer uses regions for layout, but pipeline
+// still attaches a region to each variant for backwards-compat with the
+// SceneData shape consumed downstream. Kept minimal — no auto-fit/view logic.
+// -----------------------------------------------------------------------------
+
+const DEFAULT_SPACING = 6;
+
+function computeBoundingBox(sceneData) {
+  const subjects = sceneData?.subjects ?? [];
+  if (subjects.length === 0) {
+    return {
+      centerX: 0,
+      centerY: 0,
+      centerZ: 0,
+      halfWidth: 0.5,
+      halfHeight: 0.5,
+      halfDepth: 0.5,
+    };
+  }
+  let minX = Infinity,
+    minY = Infinity,
+    minZ = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity,
+    maxZ = -Infinity;
+  for (const s of subjects) {
+    const t = s.transform?.translate ?? [0, 0, 0];
+    if (t[0] < minX) minX = t[0];
+    if (t[1] < minY) minY = t[1];
+    if (t[2] < minZ) minZ = t[2];
+    if (t[0] > maxX) maxX = t[0];
+    if (t[1] > maxY) maxY = t[1];
+    if (t[2] > maxZ) maxZ = t[2];
+  }
+  return {
+    centerX: (minX + maxX) / 2,
+    centerY: (minY + maxY) / 2,
+    centerZ: (minZ + maxZ) / 2,
+    halfWidth: Math.max(0.5, (maxX - minX) / 2),
+    halfHeight: Math.max(0.5, (maxY - minY) / 2),
+    halfDepth: Math.max(0.5, (maxZ - minZ) / 2),
+  };
+}
+
+function computeRegions(sections, spacing = DEFAULT_SPACING) {
+  return sections.map((section, i) => {
+    const bbox = computeBoundingBox(section.sceneData);
+    return {
+      centerX: i * spacing,
+      centerY: bbox.centerY,
+      centerZ: bbox.centerZ,
+      halfWidth: bbox.halfWidth,
+      halfHeight: bbox.halfHeight,
+      halfDepth: bbox.halfDepth,
+      title: section.title || `Page ${i + 1}`,
+    };
+  });
+}
 
 /** Archetypes recognized by extractArchetype (matches system-prompt-lift-3d.md v3.18). */
 const VALID_ARCHETYPES = [
