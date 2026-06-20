@@ -624,5 +624,170 @@ console.log('\n--- kgolid-apparatus-ca ---');
   ok(!crashed, 'drawApparatusGrid safe when no P5 globals available');
 }
 
+// ----- kgolid-space-colonization (Sprint 8) -----
+console.log('\n--- kgolid-space-colonization ---');
+{
+  const { spaceColonization } = loadIdiom('kgolid-space-colonization.js');
+  ok(typeof spaceColonization === 'function', 'spaceColonization exported');
+
+  const result = spaceColonization({
+    width: 600,
+    height: 360,
+    sourceCount: 100,
+    rootCount: 3,
+    gaussianSpread: 80,
+    killRange: 12,
+    growth: 5,
+    maxIterations: 100,
+    seed: 7,
+  });
+  ok(
+    typeof result === 'object' && Array.isArray(result.edges) && Array.isArray(result.nodes),
+    'returns {edges, nodes}',
+  );
+  ok(result.nodes.length > 3, `grew beyond initial 3 roots (${result.nodes.length})`);
+  ok(result.edges.length > 0, `produced ${result.edges.length} edges`);
+  ok(
+    result.edges.every((e) => typeof e.x1 === 'number' && typeof e.x2 === 'number'),
+    'edges have x1/y1/x2/y2 numbers',
+  );
+
+  // Determinism: same seed → same result
+  const r2 = spaceColonization({
+    width: 600,
+    height: 360,
+    sourceCount: 100,
+    rootCount: 3,
+    gaussianSpread: 80,
+    killRange: 12,
+    growth: 5,
+    maxIterations: 100,
+    seed: 7,
+  });
+  ok(result.nodes.length === r2.nodes.length, 'same seed = same node count');
+
+  // Different seed → different result
+  const r3 = spaceColonization({
+    width: 600,
+    height: 360,
+    sourceCount: 100,
+    rootCount: 3,
+    gaussianSpread: 80,
+    killRange: 12,
+    growth: 5,
+    maxIterations: 100,
+    seed: 99,
+  });
+  ok(
+    result.nodes.length !== r3.nodes.length || result.nodes[5].x !== r3.nodes[5].x,
+    'different seed = different tree',
+  );
+
+  // Uniform sources mode
+  const uniform = spaceColonization({
+    width: 600,
+    height: 360,
+    sourceCount: 50,
+    sourceMode: 'uniform',
+    rootCount: 2,
+    killRange: 10,
+    growth: 5,
+    maxIterations: 60,
+    seed: 1,
+  });
+  ok(uniform.nodes.length > 2, 'uniform source mode also grows tree');
+}
+
+// ----- kgolid-lindenmayer-lsystem (Sprint 8) -----
+console.log('\n--- kgolid-lindenmayer-lsystem ---');
+{
+  const { lSystemSegments, LSYSTEM_PRESETS } = loadIdiom('kgolid-lindenmayer-lsystem.js');
+  ok(typeof lSystemSegments === 'function', 'lSystemSegments exported');
+  ok(
+    typeof LSYSTEM_PRESETS === 'object' && Object.keys(LSYSTEM_PRESETS).length === 4,
+    '4 presets available (balanced/asymmetric/symmetric/wide_canopy)',
+  );
+
+  const segs = lSystemSegments({
+    rule: 'FF[+F][-F]',
+    generations: 3,
+    extension: 100,
+    angle: Math.PI / 8,
+    startX: 300,
+    startY: 350,
+    seed: 7,
+  });
+  ok(Array.isArray(segs), 'returns array');
+  ok(segs.length > 0, `produced ${segs.length} segments`);
+  ok(
+    segs.every((s) => typeof s.x1 === 'number' && typeof s.depth === 'number'),
+    'segs have x1/y1/x2/y2 + depth',
+  );
+
+  const small = lSystemSegments({ rule: 'FF[+F][-F]', generations: 2, seed: 7 });
+  const big = lSystemSegments({ rule: 'FF[+F][-F]', generations: 4, seed: 7 });
+  ok(big.length > small.length, `more gens → more segs (${small.length} → ${big.length})`);
+
+  let crashed = false;
+  try {
+    lSystemSegments({ rule: 'F]', generations: 2 });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'unbalanced brackets do not crash (silent pop on empty stack)');
+
+  const empty = lSystemSegments({ axiom: '', rule: 'F', generations: 3 });
+  ok(empty.length === 0, 'empty axiom → no segments');
+
+  const preset = lSystemSegments({ rule: LSYSTEM_PRESETS.balanced, generations: 3, seed: 1 });
+  ok(preset.length > 0, 'preset rule produces segments');
+}
+
+// ----- kgolid-weave-flow-dashes (Sprint 8) -----
+console.log('\n--- kgolid-weave-flow-dashes ---');
+{
+  const { weaveFlowDashes } = loadIdiom('kgolid-weave-flow-dashes.js');
+  ok(typeof weaveFlowDashes === 'function', 'weaveFlowDashes exported');
+
+  const dashes = weaveFlowDashes({
+    width: 300,
+    height: 200,
+    cellSize: 20,
+    layers: 3,
+    seed: 1,
+  });
+  ok(Array.isArray(dashes), 'returns array');
+  ok(dashes.length === 15 * 10 * 3, `expected 450 dashes (${dashes.length})`);
+  ok(
+    dashes.every((d) => typeof d.x === 'number' && typeof d.dx === 'number'),
+    'dashes have x/y/dx/dy numbers',
+  );
+  ok(
+    dashes.every((d) => d.layer >= 0 && d.layer < 3),
+    'all dashes have valid layer index',
+  );
+
+  const layerCounts = [0, 0, 0];
+  for (const d of dashes) layerCounts[d.layer]++;
+  ok(
+    layerCounts.every((c) => c === 150),
+    `each layer has 150 dashes (got ${layerCounts.join(',')})`,
+  );
+
+  const d2 = weaveFlowDashes({ width: 300, height: 200, cellSize: 20, layers: 3, seed: 1 });
+  ok(d2[100].dx === dashes[100].dx, 'same seed = same dash direction');
+
+  const layer0Dashes = dashes.filter((d) => d.layer === 0);
+  const layer1Dashes = dashes.filter((d) => d.layer === 1);
+  let differs = false;
+  for (let i = 0; i < layer0Dashes.length; i++) {
+    if (layer0Dashes[i].dx !== layer1Dashes[i].dx) {
+      differs = true;
+      break;
+    }
+  }
+  ok(differs, 'different layers have different flow patterns');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
