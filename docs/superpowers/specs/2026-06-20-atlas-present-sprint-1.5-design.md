@@ -22,6 +22,7 @@ Lift Sprint 1 v4 output quality from "barely usable" to "consistently usable" by
 - NOT per-section re-lift UI (Sprint 3+)
 - NOT changing atomic unit from slide → paragraph (Napkin-style — not Atlas's path)
 - NOT competing with Napkin on 2D polish (their territory, 2-year head start; Atlas differentiates via 3D Play + spatial narrative + variant)
+- **NOT TOC-driven deck-level archetype** (the auto-extract-TOC + nesting mechanism that gives whole-document spatial structure — locked by user 2026-06-20 in [[atlas-present-spatial-narrative-thesis]] memory § "嵌套的具体 implementation 路径". Atlas's true differentiator vs Napkin/antvis (neither does this). **Deferred to Sprint 3** when archetype taxonomy extends to deck level via the same 7 classes. Sprint 1.5 ships slide-level archetype only — the fractal lower half.)
 
 ## 3. The 4 deliverables (locked)
 
