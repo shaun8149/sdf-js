@@ -1,12 +1,17 @@
 // =============================================================================
-// deck-model.js — Atlas Present Layer 2 data model (Sprint 1 v4 / 2D Info Graphic)
+// deck-model.js — Atlas Present Layer 2 data model (Sprint 1.5 v4 / variants)
 // -----------------------------------------------------------------------------
 // Pure JS / no DOM. Mode-agnostic schema centered on `sections + region`.
 // 2D Info Graphic mode uses region.centerX/Y for 2D layout; Sprint 2 3D Play
 // mode will derive its view from the same region (proving mode-agnosticism).
 //
-// localStorage key: 'atlas-decks', version 3
-//   v1 (PPT-mode) + v2 (Canvas Mode) silent drop on first v3 load.
+// localStorage key: 'atlas-decks', version 4
+//   v1 (PPT-mode) + v2 (Canvas Mode) + v3 (Sprint 1 v4 flat shape) silent drop
+//   on first v4 load. Each section now carries variants[VARIANT_COUNT=3] +
+//   selectedVariantIndex. Variants diverge via stochastic lift LLM (default
+//   temperature ~1.0) given the archetype-first prompt v3.18. Each variant
+//   may carry an optional `archetype` field (populated by pipeline from
+//   sceneData.name prefix after a successful lift).
 //
 // HARD RULE (per memory hard rule 5 + spec Rule 9): this file MUST NOT contain 3D vocabulary tokens — namely: camera, yaw, pitch, distance, focal, waypoint, cameraSequence, tween, easing. CI grep verifies. Use mode-agnostic words instead: region, sections, bbox, center, halfSize.
 //
@@ -56,16 +61,24 @@
  */
 
 /**
+ * @typedef {object} SectionVariant
+ * @property {'pending'|'lifting'|'ready'|'error'} status
+ * @property {string} [archetype] — extracted from sceneData.name when ready (e.g. 'sequence' / 'list' / 'compare' / 'hierarchy' / 'relation' / 'kpi-hero' / 'text-card')
+ * @property {SceneData} [sceneData] — present when status === 'ready'
+ * @property {Region} [region] — present when status === 'ready'
+ * @property {string} [liftError] — present when status === 'error'
+ */
+
+/**
  * @typedef {object} SectionEntry
  * @property {string} id
  * @property {number} pageIndex — 0-based source page index
- * @property {'pending'|'lifting'|'ready'|'error'} status
+ * @property {'pending'|'lifting'|'ready'|'error'} status — derived from variants (see deriveStatus)
  * @property {object} [slideData] — SlideData v1 from parser
  * @property {string} [code2d] — emitted 2D code (input to lift LLM)
  * @property {string} [prompt] — user-facing label / title
- * @property {SceneData} [sceneData] — lift output (when status === 'ready')
- * @property {Region} [region] — computed via linear-layout when sceneData ready
- * @property {string} [liftError]
+ * @property {SectionVariant[]} variants — always exactly VARIANT_COUNT (3) entries
+ * @property {number} selectedVariantIndex — 0..2 — which variant is "active"
  */
 
 /**
@@ -80,7 +93,29 @@
  */
 
 export const DECKS_STORAGE_KEY = 'atlas-decks';
-export const STORAGE_VERSION = 3;
+export const STORAGE_VERSION = 4;
+
+/** Number of stochastic variants generated per section (Sprint 1.5). */
+export const VARIANT_COUNT = 3;
+
+/**
+ * Derive a section's aggregated status from its variants.
+ *
+ * Rules:
+ *   - 'lifting' if any variant is currently lifting (in-flight beats all)
+ *   - 'ready'   if at least 1 variant is ready (and none lifting)
+ *   - 'error'   if all variants are error
+ *   - 'pending' otherwise (all pending, or pending+error mix)
+ *
+ * @param {SectionVariant[]} variants
+ * @returns {'pending'|'lifting'|'ready'|'error'}
+ */
+export function deriveStatus(variants) {
+  if (variants.some((v) => v.status === 'lifting')) return 'lifting';
+  if (variants.some((v) => v.status === 'ready')) return 'ready';
+  if (variants.every((v) => v.status === 'error')) return 'error';
+  return 'pending';
+}
 
 // ---- ID helpers -------------------------------------------------------------
 
@@ -128,6 +163,11 @@ export function addPendingSections(deck, entries) {
     slideData: e.slideData,
     code2d: e.code2d,
     prompt: e.prompt,
+    variants: Array.from({ length: VARIANT_COUNT }, () => ({
+      status: 'pending',
+      // archetype/sceneData/region/liftError populated by pipeline as lifts complete
+    })),
+    selectedVariantIndex: 0,
   }));
   deck.sections.push(...added);
   deck.updatedAt = Date.now();
@@ -135,21 +175,60 @@ export function addPendingSections(deck, entries) {
 }
 
 /**
- * Update a section's status and optional payload (e.g., sceneData on 'ready').
+ * Update a single variant's status + optionally merge payload. After the
+ * variant update, derive and apply the section's aggregated status.
  *
  * @param {Deck} deck
  * @param {string} sectionId
+ * @param {number} variantIndex — 0..VARIANT_COUNT-1
  * @param {'pending'|'lifting'|'ready'|'error'} status
- * @param {object} [payload] — merged into the section (e.g., {sceneData, region} or {liftError})
- * @returns {boolean} true if updated, false if section not found
+ * @param {object} [payload] — merged into the variant: { sceneData, region, liftError, archetype }
+ * @returns {boolean} true if update succeeded
  */
-export function updateSectionStatus(deck, sectionId, status, payload = {}) {
+export function updateVariantStatus(deck, sectionId, variantIndex, status, payload = {}) {
   const section = deck.sections.find((s) => s.id === sectionId);
   if (!section) return false;
-  section.status = status;
-  Object.assign(section, payload);
+  if (!Array.isArray(section.variants)) return false;
+  if (variantIndex < 0 || variantIndex >= section.variants.length) return false;
+  const variant = section.variants[variantIndex];
+  variant.status = status;
+  if (payload.sceneData !== undefined) variant.sceneData = payload.sceneData;
+  if (payload.region !== undefined) variant.region = payload.region;
+  if (payload.liftError !== undefined) variant.liftError = payload.liftError;
+  if (payload.archetype !== undefined) variant.archetype = payload.archetype;
+  section.status = deriveStatus(section.variants);
   deck.updatedAt = Date.now();
   return true;
+}
+
+/**
+ * Switch a section's selectedVariantIndex (UI: user picks a variant).
+ *
+ * @param {Deck} deck
+ * @param {string} sectionId
+ * @param {number} variantIndex — 0..VARIANT_COUNT-1
+ * @returns {boolean}
+ */
+export function selectVariant(deck, sectionId, variantIndex) {
+  const section = deck.sections.find((s) => s.id === sectionId);
+  if (!section) return false;
+  if (!Array.isArray(section.variants)) return false;
+  if (variantIndex < 0 || variantIndex >= section.variants.length) return false;
+  section.selectedVariantIndex = variantIndex;
+  deck.updatedAt = Date.now();
+  return true;
+}
+
+/**
+ * Convenience accessor for a section's currently selected variant.
+ *
+ * @param {SectionEntry} section
+ * @returns {SectionVariant | null} null if no variants array (corrupt)
+ */
+export function getSelectedVariant(section) {
+  if (!section || !Array.isArray(section.variants)) return null;
+  const idx = Number.isInteger(section.selectedVariantIndex) ? section.selectedVariantIndex : 0;
+  return section.variants[idx] || section.variants[0] || null;
 }
 
 /**
@@ -190,8 +269,8 @@ function writeStorage(shape) {
 }
 
 /**
- * Migrate storage shape. v1 (PPT-mode) + v2 (Canvas Mode) silent drop.
- * Only v3 passes through.
+ * Migrate storage shape. v1 (PPT-mode) + v2 (Canvas Mode) + v3 (Sprint 1 v4
+ * flat shape) silent drop. Only v4 (Sprint 1.5 variants) passes through.
  *
  * @param {object} raw
  * @returns {{version:number, decks:Deck[]}}
@@ -270,7 +349,11 @@ export function duplicateDeck(id) {
       slideData: s.slideData,
       code2d: s.code2d,
       prompt: s.prompt,
-      // sceneData + region + liftError dropped — re-lift required
+      variants: Array.from({ length: VARIANT_COUNT }, () => ({
+        status: 'pending',
+        // archetype/sceneData/region/liftError dropped — re-lift required
+      })),
+      selectedVariantIndex: 0,
     })),
   };
   saveDeckToStorage(copy);

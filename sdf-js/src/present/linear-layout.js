@@ -85,3 +85,22 @@ export function computeRegions(sections, spacing = DEFAULT_SPACING) {
     };
   });
 }
+
+/**
+ * Compute auto-fit silhouette view radius from sceneData bbox.
+ *
+ * `view` defines silhouette renderer's half-extent in world units (canvas
+ * maps to [-view, +view]² square). Too small → content overflows (black
+ * blob); too large → content shrinks to dot.
+ *
+ * Strategy: 1.5× max(halfWidth, halfHeight) for 50% margin around content.
+ * Clamped to [0.5, 50] to prevent degenerate or stray-outlier views.
+ *
+ * @param {object} sceneData
+ * @returns {number}
+ */
+export function computeView(sceneData) {
+  const bbox = computeBoundingBox(sceneData);
+  const raw = Math.max(bbox.halfWidth, bbox.halfHeight) * 1.5;
+  return Math.min(50, Math.max(0.5, raw));
+}

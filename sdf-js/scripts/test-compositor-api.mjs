@@ -97,6 +97,49 @@ ok(api.DEFAULT_LIFT_MODEL === 'claude-sonnet-4-6', 'DEFAULT_LIFT_MODEL exported'
   );
 }
 
+// compileScene: variants scatter spec — regression test for Sprint 1.5 Phase 2.
+// Pre-fix `rng` was a bare `mulberry32()` function; passing it to expandVariants
+// caused `rng.random_dec is not a function`. The fix swaps to `new Random(...)`.
+// Without the fix this throws; with the fix it returns a valid expanded SDF.
+{
+  const sceneWithScatter = {
+    v: 1,
+    name: 'scatter variants',
+    subjects: [
+      {
+        id: 'tree',
+        type: 'sphere',
+        args: { r: 0.3 },
+        transform: { translate: [0, 0, 0] },
+        material: 'silver',
+        variants: [
+          {
+            op: 'scatter',
+            count: 3,
+            region: { type: 'rectXZ', size: [4, 4] },
+          },
+        ],
+      },
+    ],
+    defaults: {
+      camera: { yaw: 0, pitch: 0, distance: 5, focal: 1.5, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { altitude: 0.5, azimuth: 0.5, distance: 50, intensity: 1.0 },
+    },
+  };
+  let threw = null;
+  let compiled = null;
+  try {
+    compiled = api.compileScene(sceneWithScatter, { sceneHash: 42 });
+  } catch (e) {
+    threw = e;
+  }
+  ok(threw === null, `compileScene: scatter variants do not throw (got ${threw && threw.message})`);
+  ok(
+    compiled && compiled.sdf && typeof compiled.sdf.f === 'function',
+    'compileScene: scatter variants produce a usable SDF',
+  );
+}
+
 // parseLiftResponse: strips markdown fence
 {
   const raw = '```json\n{"v": 1, "subjects": []}\n```';

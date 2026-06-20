@@ -137,5 +137,63 @@ ok(ll.DEFAULT_SPACING === 6, 'DEFAULT_SPACING === 6');
   ok(regions[1].title === 'Named', 'with title: preserves');
 }
 
+// computeView tests (Sprint 1.5 Phase 1)
+{
+  // Empty sceneData → min view 0.75 (0.5 floor * 1.5 margin)
+  const view = ll.computeView({ v: 1, subjects: [] });
+  console.assert(
+    view === 0.75,
+    `empty sceneData view: expected 0.75 (min 0.5 * 1.5 margin), got ${view}`,
+  );
+  console.log('  ✓ computeView empty sceneData → 0.75');
+}
+{
+  // Single subject at origin → still 0.75 (computeBoundingBox returns 0.5 min for single-point)
+  const view = ll.computeView({
+    v: 1,
+    subjects: [
+      { id: 'a', type: 'cube-3d', args: { dims: [2, 2, 2] }, transform: { translate: [0, 0, 0] } },
+    ],
+  });
+  console.assert(view === 0.75, `single subject view: expected 0.75 (min floor), got ${view}`);
+  console.log('  ✓ computeView single subject → 0.75');
+}
+{
+  // Wide spread (translate +/- 10) → view = halfWidth * 1.5 = 15
+  const view = ll.computeView({
+    v: 1,
+    subjects: [
+      { id: 'a', type: 'cube-3d', args: {}, transform: { translate: [-10, 0, 0] } },
+      { id: 'b', type: 'cube-3d', args: {}, transform: { translate: [10, 0, 0] } },
+    ],
+  });
+  console.assert(view === 15, `wide subject view: expected 15, got ${view}`);
+  console.log('  ✓ computeView wide subject → 15');
+}
+{
+  // Outlier translate +/- 100 → halfWidth=100, would be 150, capped at 50
+  const view = ll.computeView({
+    v: 1,
+    subjects: [
+      { id: 'a', type: 'cube-3d', args: {}, transform: { translate: [-100, 0, 0] } },
+      { id: 'b', type: 'cube-3d', args: {}, transform: { translate: [100, 0, 0] } },
+    ],
+  });
+  console.assert(view === 50, `outlier subject view: expected cap=50, got ${view}`);
+  console.log('  ✓ computeView outlier capped → 50');
+}
+{
+  // Tall subject (Y axis) → view from halfHeight = 5, view = 7.5
+  const view = ll.computeView({
+    v: 1,
+    subjects: [
+      { id: 'a', type: 'cube-3d', args: {}, transform: { translate: [0, -5, 0] } },
+      { id: 'b', type: 'cube-3d', args: {}, transform: { translate: [0, 5, 0] } },
+    ],
+  });
+  console.assert(view === 7.5, `tall subject view: expected 7.5, got ${view}`);
+  console.log('  ✓ computeView tall subject → 7.5');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

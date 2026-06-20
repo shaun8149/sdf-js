@@ -1,23 +1,59 @@
 // =============================================================================
-// pipeline.js — Atlas Present Sprint 1 v4 PDF → 2D code → lift pipeline
+// pipeline.js — Atlas Present Sprint 1.5 v4 PDF → 2D code → lift pipeline
 // -----------------------------------------------------------------------------
 // Orchestrates:
 //   1. parsePDFFromBytes(uint8Array) → SlideData[]
 //   2. emitSlide2dCode(slideData) → code2d per slide (sync)
-//   3. Sequential lift queue: callLiftLLM(prompt, code2d, apiKey) per section
-//      → update section.sceneData + section.region via deck-model.updateSectionStatus
-//   4. Save deck to storage after each section status change
+//   3. Sequential lift queue: for each section, run VARIANT_COUNT (3) lifts
+//      serially. All 3 calls use the IDENTICAL prompt — divergence comes from
+//      Anthropic default temperature (~1.0) + the archetype-first system
+//      prompt v3.18 (LLM picks one of 7 archetypes per call, stochasticity
+//      produces 2-3 different archetypes across 3 calls for most slides).
+//   4. extractArchetype(sceneData) parses sceneData.name prefix
+//      ("<archetype>: <title>") into variant.archetype.
+//   5. Save deck to storage after each variant status change.
 //
 // NO streaming UX (Sprint 1 waits for all lifted before render). Sprint 2+
 // adds streaming for 3D Play mode.
 //
-// Mode-agnostic: this file deals with sections + regions, not 3D-view state.
+// Mode-agnostic: this file deals with sections + variants + regions, not
+// 3D-view state.
 //
 // Spec: docs/superpowers/specs/2026-06-19-atlas-present-sprint-1-v4-design.md §4
 // =============================================================================
 
-import * as deckModel from './deck-model.js';
+import { VARIANT_COUNT, addPendingSections, updateVariantStatus } from './deck-model.js';
 import { computeRegions } from './linear-layout.js';
+
+/** Archetypes recognized by extractArchetype (matches system-prompt-lift-3d.md v3.18). */
+const VALID_ARCHETYPES = [
+  'sequence',
+  'list',
+  'compare',
+  'hierarchy',
+  'relation',
+  'kpi-hero',
+  'text-card',
+];
+
+/**
+ * Extract archetype label from sceneData.name (format: "<archetype>: <title>").
+ * Falls back to 'unknown' if name is missing, not a string, lacks a colon,
+ * or carries an unrecognized archetype.
+ *
+ * Matches the 7 archetypes locked in system-prompt-lift-3d.md v3.18.
+ *
+ * @param {object} sceneData
+ * @returns {string}
+ */
+export function extractArchetype(sceneData) {
+  const name = sceneData?.name;
+  if (typeof name !== 'string') return 'unknown';
+  const colonIdx = name.indexOf(':');
+  if (colonIdx === -1) return 'unknown';
+  const candidate = name.slice(0, colonIdx).trim().toLowerCase();
+  return VALID_ARCHETYPES.includes(candidate) ? candidate : 'unknown';
+}
 
 /**
  * Create a pipeline state machine. Returns handle with start/cancel methods +
@@ -34,9 +70,9 @@ import { computeRegions } from './linear-layout.js';
  *   - {type: 'parse-start'}
  *   - {type: 'parse-done', sectionCount: number}
  *   - {type: 'parse-error', error: Error}
- *   - {type: 'lift-start', sectionId: string, pageIndex: number}
- *   - {type: 'lift-ready', sectionId: string, pageIndex: number}
- *   - {type: 'lift-error', sectionId: string, pageIndex: number, error: string}
+ *   - {type: 'lift-start', sectionId: string, pageIndex: number, variantIndex: number}
+ *   - {type: 'lift-ready', sectionId: string, pageIndex: number, variantIndex: number, archetype: string}
+ *   - {type: 'lift-error', sectionId: string, pageIndex: number, variantIndex: number, error: string}
  *   - {type: 'all-done'}
  *   - {type: 'cancelled'}
  *
@@ -84,56 +120,97 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
       };
     });
 
-    // 3. Add to deck as pending sections
-    deckModel.addPendingSections(deck, sectionInputs);
+    // 3. Add to deck as pending sections (each gets VARIANT_COUNT=3 pending variants)
+    addPendingSections(deck, sectionInputs);
     deps.saveDeck(deck);
 
-    // 4. Sequential lift queue
+    // 4. Sequential lift queue — outer: sections, inner: variants
     for (const section of deck.sections) {
       if (cancelled) {
         onEvent({ type: 'cancelled' });
         running = false;
         return;
       }
-      if (section.status !== 'pending') continue; // skip already-lifted (resume support)
+      // Skip whole section if all variants already terminal (resume support)
+      if (section.variants.every((v) => v.status === 'ready' || v.status === 'error')) continue;
 
-      onEvent({ type: 'lift-start', sectionId: section.id, pageIndex: section.pageIndex });
-      deckModel.updateSectionStatus(deck, section.id, 'lifting');
-      deps.saveDeck(deck);
-
-      try {
-        const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
+      for (let variantIndex = 0; variantIndex < section.variants.length; variantIndex++) {
         if (cancelled) {
           onEvent({ type: 'cancelled' });
           running = false;
           return;
         }
-        const sceneData = deps.parseLiftResponse(llmResult.text);
-        // Compute region for this section (Linear archetype, derive from sceneData bbox)
-        const regions = computeRegions(
-          deck.sections.map((s, i) =>
-            i === section.pageIndex
-              ? { sceneData, title: section.prompt }
-              : { sceneData: s.sceneData ?? { v: 1, subjects: [] }, title: s.prompt },
-          ),
-          deck.layout.spacing,
-        );
-        const region = regions[section.pageIndex];
-        deckModel.updateSectionStatus(deck, section.id, 'ready', { sceneData, region });
-        deps.saveDeck(deck);
-        onEvent({ type: 'lift-ready', sectionId: section.id, pageIndex: section.pageIndex });
-      } catch (e) {
-        deckModel.updateSectionStatus(deck, section.id, 'error', { liftError: e.message });
-        deps.saveDeck(deck);
+        const variant = section.variants[variantIndex];
+        if (variant.status !== 'pending') continue;
+
         onEvent({
-          type: 'lift-error',
+          type: 'lift-start',
           sectionId: section.id,
           pageIndex: section.pageIndex,
-          error: e.message,
+          variantIndex,
         });
-        // Continue to next section
-      }
-    }
+        updateVariantStatus(deck, section.id, variantIndex, 'lifting');
+        deps.saveDeck(deck);
+
+        try {
+          // v2: identical prompt across all 3 variants. Divergence comes from
+          // Anthropic default temperature (~1.0) + archetype-first system prompt
+          // v3.18 — LLM picks one of 7 archetypes per call, stochasticity
+          // produces 2-3 different archetypes across 3 calls.
+          const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
+          if (cancelled) {
+            onEvent({ type: 'cancelled' });
+            running = false;
+            return;
+          }
+          const sceneData = deps.parseLiftResponse(llmResult.text);
+          const archetype = extractArchetype(sceneData);
+
+          // Compute region for this variant using the *selected* variant's
+          // sceneData for already-ready siblings (keeps linear-layout stable
+          // when later variants land first).
+          const regions = computeRegions(
+            deck.sections.map((s, i) => {
+              if (i === section.pageIndex) {
+                return { sceneData, title: section.prompt };
+              }
+              const sel = s.variants[s.selectedVariantIndex];
+              return {
+                sceneData: sel?.sceneData ?? { v: 1, subjects: [] },
+                title: s.prompt,
+              };
+            }),
+            deck.layout.spacing,
+          );
+          const region = regions[section.pageIndex];
+
+          updateVariantStatus(deck, section.id, variantIndex, 'ready', {
+            sceneData,
+            region,
+            archetype,
+          });
+          deps.saveDeck(deck);
+          onEvent({
+            type: 'lift-ready',
+            sectionId: section.id,
+            pageIndex: section.pageIndex,
+            variantIndex,
+            archetype,
+          });
+        } catch (e) {
+          updateVariantStatus(deck, section.id, variantIndex, 'error', { liftError: e.message });
+          deps.saveDeck(deck);
+          onEvent({
+            type: 'lift-error',
+            sectionId: section.id,
+            pageIndex: section.pageIndex,
+            variantIndex,
+            error: e.message,
+          });
+          // Continue to next variant (don't abort whole section on 1 variant error)
+        }
+      } // end variants loop
+    } // end sections loop
 
     if (!cancelled) {
       onEvent({ type: 'all-done' });
@@ -151,3 +228,6 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
 
   return { start, cancel, isRunning };
 }
+
+// VARIANT_COUNT re-exported for convenience (callers can use it for UI labels).
+export { VARIANT_COUNT };
