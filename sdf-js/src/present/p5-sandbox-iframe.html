@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas Present P5 Sandbox</title>
+  <style>
+    html, body { margin: 0; padding: 0; overflow: hidden; background: #fff; }
+    #sketch-container { width: 100%; height: 100%; }
+    #sketch-container canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div id="sketch-container"></div>
+  <!-- P5.js library loaded first (~900KB) -->
+  <script src="/public/p5.min.js"></script>
+  <!-- Atlas SDF helper bundle exposes 28 functions as window globals -->
+  <script src="/src/present/sdf-helper-bundle.js"></script>
+  <script>
+    // postMessage protocol with parent (visual-panel via p5-renderer.js)
+    // Parent → iframe: {type: 'init', code, palette}    — render this sketch
+    // Parent → iframe: {type: 'export'}                  — request PNG dataUrl
+    // iframe → parent: {type: 'ready'}                   — sketch loaded + drawing
+    // iframe → parent: {type: 'error', message, stack}   — sketch threw
+    // iframe → parent: {type: 'exportResult', dataUrl}   — PNG ready
+
+    let sketchRunning = false;
+
+    window.addEventListener('message', function (e) {
+      if (!e.data || typeof e.data !== 'object') return;
+
+      if (e.data.type === 'init') {
+        // Inject branding palette as global
+        window.__brandingPalette = e.data.palette || { bg: [255, 255, 255], silhouetteColor: [40, 40, 40] };
+        try {
+          // Evaluate user's P5 sketch code. P5 detects globally-defined
+          // setup() and draw() and starts the loop automatically.
+          eval(e.data.code);
+          sketchRunning = true;
+          window.parent.postMessage({ type: 'ready' }, '*');
+        } catch (err) {
+          window.parent.postMessage({
+            type: 'error',
+            message: String(err && err.message) || 'unknown error',
+            stack: String(err && err.stack) || ''
+          }, '*');
+        }
+      } else if (e.data.type === 'export') {
+        const canvas = document.querySelector('#sketch-container canvas');
+        if (canvas) {
+          try {
+            const dataUrl = canvas.toDataURL('image/png');
+            window.parent.postMessage({ type: 'exportResult', dataUrl: dataUrl }, '*');
+          } catch (err) {
+            window.parent.postMessage({
+              type: 'error',
+              message: 'export failed: ' + (err && err.message),
+              stack: String(err && err.stack) || ''
+            }, '*');
+          }
+        } else {
+          window.parent.postMessage({
+            type: 'error',
+            message: 'no canvas to export',
+            stack: ''
+          }, '*');
+        }
+      }
+    });
+
+    // Optional: announce we're alive on load (parent uses this to know iframe is reachable
+    // before sending init payload, but in practice the iframe is faster than the parent's
+    // mount → postMessage path, so this is just defensive).
+    document.addEventListener('DOMContentLoaded', function () {
+      window.parent.postMessage({ type: 'loaded' }, '*');
+    });
+  </script>
+</body>
+</html>
