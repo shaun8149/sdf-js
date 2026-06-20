@@ -24,7 +24,7 @@ export async function mountDeckView(target, deckId) {
   if (!deck) {
     target.innerHTML = `
       <div class="page-pad">
-        Deck not found: ${deckId}<br>
+        Deck not found: ${escapeHtml(deckId)}<br>
         <a href="./">← Library</a>
       </div>
     `;
