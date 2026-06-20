@@ -145,7 +145,22 @@ system: [
 
 **Hypothesis:** Aether AI test pages 12/13 succeeded because they happen to fit `relation` / `hierarchy` archetypes that LLM intuited. Pages 7 (pure text) and 1/6/9/11 (text-heavy) failed because LLM had no `text-card` fallback archetype documented and reverted to free-form geometry.
 
-**Fix:** Add a section to [`sdf-js/examples/compositor/system-prompt-lift-3d.md`](sdf-js/examples/compositor/system-prompt-lift-3d.md) (~30 lines) introducing 7-class archetype taxonomy before the existing "Output contract" section:
+**Fix:** Add a 3-step section to [`sdf-js/examples/compositor/system-prompt-lift-3d.md`](sdf-js/examples/compositor/system-prompt-lift-3d.md) (~80 lines) before the existing "Output contract" section. Covers all 5 antvis-validated discipline dimensions, **not just archetype taxonomy**:
+
+| antvis dimension | Atlas v3.18 equivalent |
+|---|---|
+| 1. First-line constraint (`infographic <template>`) | Step 1 `MANDATORY scene.name` + hard rule |
+| 2. Archetype taxonomy (7 classes) | Step 1 table (7 classes — see substitution note below) |
+| 3. Data field constraint (1 template = 1 data field, no mixing) | **Step 2 stick-to-archetype consistency rule** |
+| 4. Decision algorithm (decision table) | Step 1 "When to pick" column |
+| 5. Icon discipline (every item/step/node has icon) | **Step 3 semantic marker rule** |
+
+**Archetype substitution rationale** (we deviate from antvis's 7 classes in 2 slots):
+- antvis `chart` (bar/line/pie) → Atlas `kpi-hero`. Reason: SDF doesn't render chart axes well; the meaningful unit in PDF slides is usually a single number/quote, not a bar chart. `chart` deferred to Sprint 3+ when we add genuine SDF chart atoms.
+- antvis `quadrant` (2x2/SWOT) → folded into `compare` (a 4-cell compare). Reason: SDF realization is identical (split by axis). `quadrant` as separate archetype redundant.
+- Atlas added `text-card` (pure-text fallback). Reason: antvis doesn't need this because they handle text via icon-rich templates; we need it because text-heavy PDF slides without any structure currently produce black-blob geometry (Aether AI pages 1/6/7/9/11).
+
+**The full v3.18 prompt section:**
 
 ```
 ## Step 1: Pick a slide archetype FIRST
@@ -156,21 +171,53 @@ Before emitting any subject, identify the slide's structural archetype:
 |---|---|---|
 | sequence | ordered steps / timeline / process / pipeline | linear arrangement of objects along X axis with arrows/connectors |
 | list | bullet points / unordered items / feature grid | row or grid of equal-weight objects (icons or text-3d-pipe per item) |
-| compare | A vs B / pros vs cons / before vs after | bilateral arrangement (mirror around YZ plane or split by X) |
+| compare | A vs B / pros vs cons / before vs after / 2x2 / SWOT / 4-quadrant | bilateral arrangement (mirror around YZ plane) OR 4-cell grid (split X and Z) |
 | hierarchy | tree / org chart / taxonomy / nested categories | branching arrangement (parent center, children radiating) |
 | relation | network / dependency graph / mind map | nodes (spheres) + edges (capsules) in 2D plane or 3D space |
 | kpi-hero | single number / quote / claim / chart highlight | 1 large central object (text-3d-pipe digit or sphere) dominates view |
 | text-card | pure-text page / definition / paragraph / quote (fallback when no structure detected) | text-3d-pipe title centered + 1-2 minimal context objects |
 
-Set scene.name to "<archetype>: <slide title>" (e.g. "sequence: Q3 Roadmap", "text-card: Definition").
+MANDATORY: Set scene.name to "<archetype>: <slide title>" — e.g. "sequence: Q3 Roadmap", "text-card: Definition". Atlas Present extracts the archetype prefix for the variant picker UI label.
 
-THEN emit SceneData realizing that archetype with appropriate atoms.
+Hard rule: never emit a free-form scene without first claiming an archetype. Pages with mostly text default to `text-card` rather than improvising geometry. When unclear which of 2-3 archetypes fits, pick one and proceed — divergence across variants is intentional (Atlas pipeline runs 3 independent lifts per slide; users see all variants in a picker UI).
 
-Hard rule: never emit a free-form scene without first claiming an archetype.
-Pages with mostly text default to `text-card` rather than improvising geometry.
+## Step 2: Realize the archetype consistently (no mixing)
+
+Once you pick an archetype, ALL subjects in this scene must participate in its structural pattern. Do NOT mix subjects from different archetypes in the same `subjects` list.
+
+Examples of correct consistency:
+- `sequence` → all subjects participate in the linear arrangement (no orphan items off-axis). The arrangement IS the message.
+- `compare` → exactly 2 (binary) or 4 (quadrant/SWOT) top-level subject groups. Everything else nested as children/internals of those groups.
+- `hierarchy` → 1 root subject, children radiate; no peer-level items beyond the root tree.
+- `list` → all items have equal visual weight (same size/material range). No "hero" item promoted above peers.
+- `relation` → nodes are visually similar (uniform sphere or capsule). Edges (capsules) connect them; nothing else floats free.
+- `kpi-hero` → 1 dominant central object (>50% of view). Other objects are visual support (background, frame, label), not peer content.
+- `text-card` → text-3d-pipe (the chosen title or definition) is the focal point. Minimal context objects only.
+
+Anti-pattern: emitting a `sequence` of 3 steps PLUS a free-floating `kpi-hero` number off to the side. Pick ONE archetype per slide; nest sub-content INSIDE the chosen pattern, don't park it alongside.
+
+If a slide genuinely contains 2 archetypes (e.g., "sequence of compare blocks"), pick the OUTER archetype (sequence) and treat inner blocks as opaque sub-units of each step. Nested archetypes are emergent from `sequence` items containing groups, NOT from mixing top-level archetypes.
+
+## Step 3: Add semantic markers to every unit (icon discipline)
+
+To prevent the "abstract unlabeled identical-primitive blob" failure mode, every discrete unit in your chosen archetype MUST carry a semantic marker:
+
+| Archetype | Unit | Marker options (pick one) |
+|---|---|---|
+| sequence | each step | text-3d-pipe digit ("1"/"2"/"3"), text-3d-pipe glyph (first letter of step label), small primitive (sphere/cube/cylinder) representing step concept |
+| list | each item | text-3d-pipe glyph (first letter of item label), small primitive representing concept |
+| hierarchy | each node | text-3d-pipe glyph or small primitive |
+| relation | each node | small primitive (sphere = uniform node), differentiated by material/color |
+| compare | each side's head | text-3d-pipe label or distinct primitive |
+| kpi-hero | the central object | inherent — the number/quote IS the marker |
+| text-card | the title | inherent — the text-3d-pipe glyphs ARE the markers |
+
+Fallback rule: if you don't know what specific marker fits, use a small text-3d-pipe glyph of the first letter of the item's label. NEVER emit a list/sequence/hierarchy with unlabeled identical primitives — that defeats the archetype's purpose (the structure should make WHAT each item is legible at a glance).
+
+Marker sizing: markers are accents, not the main geometry. Roughly 20-40% the size of the structural object they label.
 ```
 
-**Token cost:** ~150 tokens added to system prompt → with prompt caching from §3.3 → negligible per-call cost.
+**Token cost:** ~600 tokens added to system prompt → with prompt caching from §3.3 → negligible per-call cost.
 
 **Files:** `sdf-js/examples/compositor/system-prompt-lift-3d.md` (insert before existing "Output contract" section, bump version v3.17 → v3.18).
 

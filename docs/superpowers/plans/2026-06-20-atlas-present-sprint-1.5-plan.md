@@ -45,12 +45,12 @@ Expected: version is `v3.17` (current). "Output contract" header should be aroun
 Find the `version: 3.17` line in the frontmatter at top. Change to `version: 3.18`. In the `description:` field (which is a single long line listing all version notes), append at the very end (before the closing quote):
 
 ```
-v3.18 (2026-06-20) adds archetype-first discipline (Step 1 section) — 7-class taxonomy (sequence/list/compare/hierarchy/relation/kpi-hero/text-card) + decision table. Inspired by AntV/Infographic + LangChat Slides production evidence that "list N templates + decision table" prompt pattern is essential for LLM-driven infographic generation. Slide-archetype is now the LLM's FIRST decision before emitting subjects. scene.name MUST encode the chosen archetype as `"<archetype>: <title>"`. Fixes "free-form scene on text-heavy slide" failure mode (Aether AI pages 1/6/7/9/11 black-blob class).
+v3.18 (2026-06-20) adds 3-step archetype-first discipline (Steps 1-3) — covers all 5 antvis-validated dimensions: (1) first-line constraint via MANDATORY scene.name `"<archetype>: <title>"`; (2) 7-class taxonomy (sequence/list/compare/hierarchy/relation/kpi-hero/text-card; chart→kpi-hero + quadrant folded into compare + new text-card fallback); (3) data-field constraint via Step 2 stick-to-archetype consistency rule (no mixing archetypes top-level); (4) decision algorithm via Step 1 "When to pick" column; (5) icon discipline via Step 3 semantic marker rule (every list item/sequence step/hierarchy node carries a marker — text-3d-pipe digit/glyph or small primitive — to prevent unlabeled-blob failure mode). Inspired by AntV/Infographic + LangChat Slides production evidence. Slide-archetype is now the LLM's FIRST decision before emitting subjects. Fixes "free-form scene on text-heavy slide" failure mode (Aether AI pages 1/6/7/9/11 black-blob class) + the "abstract unlabeled identical-primitive blob" failure mode.
 ```
 
-- [ ] **Step 3: Insert the Step 1 section BEFORE existing "Output contract" or "# Output contract" header**
+- [ ] **Step 3: Insert the 3-step section BEFORE existing "Output contract" or "# Output contract" header**
 
-Find the exact line where "Output contract" appears (header level varies; could be `#`, `##`, etc.). Use Edit tool with the existing header as old_string, new_string = the new Step 1 section followed by the original header. Content to insert:
+Find the exact line where "Output contract" appears (header level varies; could be `#`, `##`, etc.). Use Edit tool with the existing header as old_string, new_string = the new 3-step section followed by the original header. Content to insert (covers all 5 antvis-validated discipline dimensions — archetype taxonomy, decision table, first-line constraint, stick-to-archetype consistency, semantic marker discipline):
 
 ```markdown
 # Step 1: Pick a slide archetype FIRST
@@ -61,7 +61,7 @@ Before emitting any subject, identify the slide's structural archetype:
 |---|---|---|
 | `sequence` | ordered steps / timeline / process / pipeline | linear arrangement of objects along X axis with arrows/connectors |
 | `list` | bullet points / unordered items / feature grid | row or grid of equal-weight objects (icons or text-3d-pipe per item) |
-| `compare` | A vs B / pros vs cons / before vs after | bilateral arrangement (mirror around YZ plane or split by X) |
+| `compare` | A vs B / pros vs cons / before vs after / 2x2 / SWOT / 4-quadrant | bilateral arrangement (mirror around YZ plane) OR 4-cell grid (split X and Z) |
 | `hierarchy` | tree / org chart / taxonomy / nested categories | branching arrangement (parent center, children radiating) |
 | `relation` | network / dependency graph / mind map | nodes (spheres) + edges (capsules) in 2D plane or 3D space |
 | `kpi-hero` | single number / quote / claim / chart highlight | 1 large central object (text-3d-pipe digit or sphere) dominates view |
@@ -70,6 +70,41 @@ Before emitting any subject, identify the slide's structural archetype:
 **MANDATORY**: Set `scene.name` to `"<archetype>: <slide title>"` — e.g. `"sequence: Q3 Roadmap"`, `"text-card: Definition of Causal Models"`. Atlas Present extracts the archetype prefix for the variant picker UI label.
 
 **Hard rule**: never emit a free-form scene without first claiming an archetype. Pages with mostly text default to `text-card` rather than improvising geometry. When unclear which of 2-3 archetypes fits, pick one and proceed — divergence across variants is intentional (Atlas pipeline runs 3 independent lifts per slide; users see all variants in a picker UI).
+
+# Step 2: Realize the archetype consistently (no mixing)
+
+Once you pick an archetype, ALL subjects in this scene must participate in its structural pattern. Do NOT mix subjects from different archetypes in the same `subjects` list.
+
+Examples of correct consistency:
+- `sequence` → all subjects participate in the linear arrangement (no orphan items off-axis). The arrangement IS the message.
+- `compare` → exactly 2 (binary) or 4 (quadrant/SWOT) top-level subject groups. Everything else nested as children/internals of those groups.
+- `hierarchy` → 1 root subject, children radiate; no peer-level items beyond the root tree.
+- `list` → all items have equal visual weight (same size/material range). No "hero" item promoted above peers.
+- `relation` → nodes are visually similar (uniform sphere or capsule). Edges (capsules) connect them; nothing else floats free.
+- `kpi-hero` → 1 dominant central object (>50% of view). Other objects are visual support (background, frame, label), not peer content.
+- `text-card` → text-3d-pipe (the chosen title or definition) is the focal point. Minimal context objects only.
+
+Anti-pattern: emitting a `sequence` of 3 steps PLUS a free-floating `kpi-hero` number off to the side. Pick ONE archetype per slide; nest sub-content INSIDE the chosen pattern, don't park it alongside.
+
+If a slide genuinely contains 2 archetypes (e.g., "sequence of compare blocks"), pick the OUTER archetype (`sequence`) and treat inner blocks as opaque sub-units of each step. Nested archetypes are emergent from `sequence` items containing groups, NOT from mixing top-level archetypes.
+
+# Step 3: Add semantic markers to every unit (icon discipline)
+
+To prevent the "abstract unlabeled identical-primitive blob" failure mode, every discrete unit in your chosen archetype MUST carry a semantic marker:
+
+| Archetype | Unit | Marker options (pick one) |
+|---|---|---|
+| `sequence` | each step | text-3d-pipe digit ("1"/"2"/"3"), text-3d-pipe glyph (first letter of step label), small primitive (sphere/cube/cylinder) representing step concept |
+| `list` | each item | text-3d-pipe glyph (first letter of item label), small primitive representing concept |
+| `hierarchy` | each node | text-3d-pipe glyph or small primitive |
+| `relation` | each node | small primitive (sphere = uniform node), differentiated by material/color |
+| `compare` | each side's head | text-3d-pipe label or distinct primitive |
+| `kpi-hero` | the central object | inherent — the number/quote IS the marker |
+| `text-card` | the title | inherent — the text-3d-pipe glyphs ARE the markers |
+
+Fallback rule: if you don't know what specific marker fits, use a small text-3d-pipe glyph of the first letter of the item's label. NEVER emit a list/sequence/hierarchy with unlabeled identical primitives — that defeats the archetype's purpose (the structure should make WHAT each item is legible at a glance).
+
+Marker sizing: markers are accents, not the main geometry. Roughly 20-40% the size of the structural object they label.
 
 ```
 
@@ -97,23 +132,42 @@ Expected: `34/34 test files passed`. (The system prompt is loaded at runtime; no
 
 ```bash
 git add sdf-js/examples/compositor/system-prompt-lift-3d.md
-git commit -m "Sprint 1.5 Phase 2.5: lift prompt v3.18 - archetype-first discipline
+git commit -m "Sprint 1.5 Phase 2.5: lift prompt v3.18 - 3-step archetype-first discipline
 
-Add 'Step 1: Pick a slide archetype FIRST' section before Output contract.
-7-class taxonomy: sequence / list / compare / hierarchy / relation /
-kpi-hero / text-card. Decision table + typical SDF realization per class.
+Covers all 5 antvis-validated prompt-design dimensions in one section
+(~80 lines added before Output contract):
+
+  Step 1: Pick archetype FIRST (dimensions 1+2+4 — first-line constraint
+    via MANDATORY scene.name + 7-class taxonomy + decision table)
+  Step 2: Realize archetype consistently (dimension 3 — no mixing, all
+    subjects participate in chosen pattern; nested only via grouping)
+  Step 3: Add semantic markers (dimension 5 — icon discipline, every
+    list item/sequence step/hierarchy node carries marker like
+    text-3d-pipe digit/glyph or small primitive)
+
+7-class taxonomy (with Atlas adaptations vs antvis):
+  - sequence / list / compare / hierarchy / relation (same as antvis)
+  - kpi-hero (replaces antvis chart - SDF doesn't render axes well;
+    chart deferred to Sprint 3+)
+  - compare absorbs antvis quadrant (4-cell = SDF-equivalent split)
+  - text-card NEW (no antvis equivalent - needed for text-heavy PDF
+    pages that currently produce black-blob geometry)
 
 scene.name MUST encode archetype as '<archetype>: <title>'. Atlas Present
-pipeline extracts this for variant picker UI label.
+pipeline extractArchetype() parses prefix for variant picker UI label.
 
-Inspired by AntV/Infographic (5.5k stars, 276 templates) + LangChat Slides
-(production product) - both validate 'list N templates + decision table'
-prompt pattern. Atlas v3.17 had 0 archetype guidance; v3.18 adds it.
+Inspired by AntV/Infographic (5.5k stars, 276 templates) + LangChat
+Slides (production product) - both validate 'archetype-first + decision
+table + icon discipline' prompt pattern. Atlas v3.17 had 0 of these;
+v3.18 adds all 5.
 
-Expected effect: Aether AI pages 1/6/7/9/11 (text-heavy black-blob class)
-now should pick 'text-card' or 'list' archetype instead of free-form.
-Validates Sprint 1.5 v2 variant generation (3 independent lifts diverge
-to different archetypes via stochasticity at default temperature)."
+Expected effect:
+- Aether AI pages 1/6/7/9/11 (text-heavy black-blob class) now should
+  pick 'text-card' or 'list' archetype instead of free-form geometry
+- 'Abstract unlabeled identical-primitive blob' failure mode prevented
+  by Step 3 semantic marker requirement
+- Sprint 1.5 v2 variant generation validated: 3 independent lifts
+  diverge to different archetypes via default-temperature stochasticity"
 ```
 
 ### v2 override 2: Phase 4 (Task 4.1) — schema changes
