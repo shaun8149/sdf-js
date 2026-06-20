@@ -114,6 +114,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-p5-sandbox.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-p5-idiom-registry.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-deck-model.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-branding-palettes.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-waypoint-tween.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
 ];
