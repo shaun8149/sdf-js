@@ -14,6 +14,556 @@
 
 ---
 
+## ⚠️ v2 amendment (2026-06-20 evening, after antvis/LangChat investigation)
+
+**Override the v1 plan below per these patches. Apply in order before executing any phase.**
+
+### v2 change summary
+
+Variant divergence mechanism switched from **style-hint scan** (minimal/abstract/dense suffixes appended to prompt) → **archetype scan** (3 identical lift calls, LLM picks archetype from new system-prompt-lift-3d.md §"Step 1" taxonomy).
+
+Inspired by AntV/Infographic (5.5k stars / 276 templates) and LangChat Slides (Vue + @antv/infographic shipped product) — both prove "list N templates explicitly + decision table" works for LLM-driven infographic generation at production scale. Our v3.17 lift prompt currently has 0 archetype guidance; adding it is the cheapest highest-ROI lift improvement.
+
+### v2 override 1: NEW Phase 2.5 (~1 hr, between Phase 2 and Phase 3)
+
+**Files:**
+- Modify: `sdf-js/examples/compositor/system-prompt-lift-3d.md`
+
+**Task 2.5.1: Add archetype-first taxonomy + decision table**
+
+- [ ] **Step 1: Read the current prompt header to find version + insertion point**
+
+```bash
+head -50 sdf-js/examples/compositor/system-prompt-lift-3d.md
+grep -n "^# Output contract\|^## Output contract" sdf-js/examples/compositor/system-prompt-lift-3d.md
+```
+
+Expected: version is `v3.17` (current). "Output contract" header should be around line 80-150. Confirm exact line.
+
+- [ ] **Step 2: Bump version v3.17 → v3.18 in YAML frontmatter**
+
+Find the `version: 3.17` line in the frontmatter at top. Change to `version: 3.18`. In the `description:` field (which is a single long line listing all version notes), append at the very end (before the closing quote):
+
+```
+v3.18 (2026-06-20) adds archetype-first discipline (Step 1 section) — 7-class taxonomy (sequence/list/compare/hierarchy/relation/kpi-hero/text-card) + decision table. Inspired by AntV/Infographic + LangChat Slides production evidence that "list N templates + decision table" prompt pattern is essential for LLM-driven infographic generation. Slide-archetype is now the LLM's FIRST decision before emitting subjects. scene.name MUST encode the chosen archetype as `"<archetype>: <title>"`. Fixes "free-form scene on text-heavy slide" failure mode (Aether AI pages 1/6/7/9/11 black-blob class).
+```
+
+- [ ] **Step 3: Insert the Step 1 section BEFORE existing "Output contract" or "# Output contract" header**
+
+Find the exact line where "Output contract" appears (header level varies; could be `#`, `##`, etc.). Use Edit tool with the existing header as old_string, new_string = the new Step 1 section followed by the original header. Content to insert:
+
+```markdown
+# Step 1: Pick a slide archetype FIRST
+
+Before emitting any subject, identify the slide's structural archetype:
+
+| Archetype | When to pick | Typical SDF realization |
+|---|---|---|
+| `sequence` | ordered steps / timeline / process / pipeline | linear arrangement of objects along X axis with arrows/connectors |
+| `list` | bullet points / unordered items / feature grid | row or grid of equal-weight objects (icons or text-3d-pipe per item) |
+| `compare` | A vs B / pros vs cons / before vs after | bilateral arrangement (mirror around YZ plane or split by X) |
+| `hierarchy` | tree / org chart / taxonomy / nested categories | branching arrangement (parent center, children radiating) |
+| `relation` | network / dependency graph / mind map | nodes (spheres) + edges (capsules) in 2D plane or 3D space |
+| `kpi-hero` | single number / quote / claim / chart highlight | 1 large central object (text-3d-pipe digit or sphere) dominates view |
+| `text-card` | pure-text page / definition / paragraph / quote (fallback when no structure detected) | text-3d-pipe title centered + 1-2 minimal context objects |
+
+**MANDATORY**: Set `scene.name` to `"<archetype>: <slide title>"` — e.g. `"sequence: Q3 Roadmap"`, `"text-card: Definition of Causal Models"`. Atlas Present extracts the archetype prefix for the variant picker UI label.
+
+**Hard rule**: never emit a free-form scene without first claiming an archetype. Pages with mostly text default to `text-card` rather than improvising geometry. When unclear which of 2-3 archetypes fits, pick one and proceed — divergence across variants is intentional (Atlas pipeline runs 3 independent lifts per slide; users see all variants in a picker UI).
+
+```
+
+(Note: leave a blank line after the closing ``` for spacing.)
+
+- [ ] **Step 4: Verify the file still parses as valid markdown (no broken frontmatter)**
+
+```bash
+head -3 sdf-js/examples/compositor/system-prompt-lift-3d.md
+# Should show `---`, `name: atlas-lift-2d-to-3d`, `version: 3.18`
+
+grep -n "^# Step 1: Pick a slide archetype FIRST" sdf-js/examples/compositor/system-prompt-lift-3d.md
+# Should find the new section
+```
+
+- [ ] **Step 5: Run npm test to verify no test broke**
+
+```bash
+npm test 2>&1 | tail -5
+```
+
+Expected: `34/34 test files passed`. (The system prompt is loaded at runtime; no test references its content structure.)
+
+- [ ] **Step 6: Commit Phase 2.5**
+
+```bash
+git add sdf-js/examples/compositor/system-prompt-lift-3d.md
+git commit -m "Sprint 1.5 Phase 2.5: lift prompt v3.18 - archetype-first discipline
+
+Add 'Step 1: Pick a slide archetype FIRST' section before Output contract.
+7-class taxonomy: sequence / list / compare / hierarchy / relation /
+kpi-hero / text-card. Decision table + typical SDF realization per class.
+
+scene.name MUST encode archetype as '<archetype>: <title>'. Atlas Present
+pipeline extracts this for variant picker UI label.
+
+Inspired by AntV/Infographic (5.5k stars, 276 templates) + LangChat Slides
+(production product) - both validate 'list N templates + decision table'
+prompt pattern. Atlas v3.17 had 0 archetype guidance; v3.18 adds it.
+
+Expected effect: Aether AI pages 1/6/7/9/11 (text-heavy black-blob class)
+now should pick 'text-card' or 'list' archetype instead of free-form.
+Validates Sprint 1.5 v2 variant generation (3 independent lifts diverge
+to different archetypes via stochasticity at default temperature)."
+```
+
+### v2 override 2: Phase 4 (Task 4.1) — schema changes
+
+**v2 supersedes the v1 STYLE_HINTS approach.** When you reach Phase 4 Task 4.1, apply these patches to the v1 instructions:
+
+**Patch 4.1-A: Skip Step 4 (`STYLE_HINTS` constant). Replace with:**
+
+```js
+// In deck-model.js, where v1 Step 4 says to add STYLE_HINTS:
+// SKIP - no constant needed. Variants don't carry style hints.
+
+// Keep deriveStatus exactly as v1 Step 4 wrote it (unchanged):
+export function deriveStatus(variants) {
+  if (variants.some((v) => v.status === 'lifting')) return 'lifting';
+  if (variants.some((v) => v.status === 'ready')) return 'ready';
+  if (variants.every((v) => v.status === 'error')) return 'error';
+  return 'pending';
+}
+
+// Add VARIANT_COUNT constant instead:
+export const VARIANT_COUNT = 3;
+```
+
+**Patch 4.1-B: Replace Step 3 (`SectionEntry` JSDoc) with:**
+
+```js
+/**
+ * @typedef {object} SectionVariant
+ * @property {'pending'|'lifting'|'ready'|'error'} status
+ * @property {string} [archetype] — extracted from sceneData.name when ready (e.g. 'sequence' / 'list' / 'compare' / 'hierarchy' / 'relation' / 'kpi-hero' / 'text-card')
+ * @property {object} [sceneData] — present when status === 'ready'
+ * @property {object} [region] — present when status === 'ready'
+ * @property {string} [liftError] — present when status === 'error'
+ */
+
+/**
+ * @typedef {object} SectionEntry
+ * @property {string} id
+ * @property {number} pageIndex
+ * @property {'pending'|'lifting'|'ready'|'error'} status — derived from variants (see deriveStatus)
+ * @property {object} slideData
+ * @property {string} code2d
+ * @property {string} prompt
+ * @property {SectionVariant[]} variants — always exactly VARIANT_COUNT (3) entries
+ * @property {number} selectedVariantIndex — 0..2
+ */
+```
+
+**Patch 4.1-C: Replace Step 5 (section construction) with:**
+
+```js
+{
+  id: <uuid>,
+  pageIndex: <n>,
+  status: 'pending',
+  slideData: <data>,
+  code2d: <str>,
+  prompt: <str>,
+  variants: Array.from({ length: VARIANT_COUNT }, () => ({
+    status: 'pending',
+    // archetype/sceneData/region/liftError populated by pipeline as lift completes
+  })),
+  selectedVariantIndex: 0,
+}
+```
+
+**Patch 4.1-D: Skip references to `STYLE_HINTS` everywhere.** When v1 says "import STYLE_HINTS" or "test STYLE_HINTS export", remove that import/test. Replace with import/test of `VARIANT_COUNT`.
+
+**Patch 4.1-E: Update commit message at v1 Step 13:**
+
+Use this commit message instead:
+
+```
+git commit -m "Sprint 1.5 Phase 4: deck-model v4 schema (variants[VARIANT_COUNT] + selectedVariantIndex + archetype-divergence)
+
+Schema v3 -> v4: section.sceneData/region/liftError migrated into
+section.variants[3]. Each variant carries optional 'archetype' field
+(populated by pipeline from sceneData.name prefix after lift) + own
+status + optional sceneData/region/liftError. No styleHint - variants
+diverge via stochastic lift LLM (default temperature ~1.0) given
+archetype-first prompt v3.18.
+
+New exports: VARIANT_COUNT, deriveStatus, updateVariantStatus,
+selectVariant, getSelectedVariant.
+
+Deprecated (kept temporarily): updateSectionStatus wrapper -> variants[0].
+To remove in Phase 6 after pipeline.js + library-page.js fully migrate.
+
+Migration: v3 silent drop (per spec §3.4 lock 2026-06-20, consistent with
+v1/v2 silent drop policy from Sprint 1 v4).
+
+CI grep clean (no 3D vocabulary outside banner)."
+```
+
+### v2 override 3: Phase 4 (Task 4.2) — test patches
+
+**Patch 4.2-A: Skip Step 4 test block that asserts styleHints (minimal/abstract/dense).** Replace with these tests:
+
+```js
+console.assert(VARIANT_COUNT === 3, 'VARIANT_COUNT exports as 3');
+console.log('  ✓ VARIANT_COUNT = 3');
+
+console.assert(Array.isArray(section.variants), 'section.variants should be an array');
+console.assert(section.variants.length === VARIANT_COUNT, `section should have ${VARIANT_COUNT} variants, got ${section.variants.length}`);
+console.log(`  ✓ section has ${VARIANT_COUNT} variants`);
+
+console.assert(
+  section.variants.every((v) => v.archetype === undefined),
+  'variants start without archetype (populated by pipeline after lift)',
+);
+console.log('  ✓ variants start with no archetype');
+
+console.assert(section.selectedVariantIndex === 0, `selectedVariantIndex default should be 0, got ${section.selectedVariantIndex}`);
+console.log('  ✓ selectedVariantIndex defaults to 0');
+
+console.assert(
+  section.variants.every((v) => v.status === 'pending'),
+  'all variants should start as pending',
+);
+console.log('  ✓ all variants start pending');
+```
+
+**Patch 4.2-B: In v1 Step 6 `updateVariantStatus` test**, add a test for `archetype` payload:
+
+```js
+// After existing payload test for sceneData/region
+updateVariantStatus(deck, sectionId, 0, 'ready', {
+  sceneData: { v: 1, subjects: [], name: 'sequence: Test Slide' },
+  region: { centerX: 0, centerY: 0, halfWidth: 0.5, halfHeight: 0.5 },
+  archetype: 'sequence',
+});
+console.assert(deck.sections[0].variants[0].archetype === 'sequence', 'archetype merged into variant');
+console.log('  ✓ updateVariantStatus accepts archetype in payload');
+```
+
+Also update `updateVariantStatus` implementation in deck-model.js (v1 Step 6) to merge `archetype`:
+
+```js
+if (payload.archetype !== undefined) variant.archetype = payload.archetype;
+```
+
+**Patch 4.2-C: Skip v1 Step 8 tests that reference `styleHint === 'minimal' / 'dense'`.** Replace with:
+
+```js
+{
+  const deck = createDeck('Test', { type: 'pdf', fileName: 'a.pdf', pageCount: 1 });
+  addSections(deck, [{ slideData: {}, code2d: '// code', prompt: 'page 1' }]);
+  const section = deck.sections[0];
+
+  const v = getSelectedVariant(section);
+  console.assert(v !== null, 'getSelectedVariant returns non-null');
+  console.assert(v.status === 'pending', 'default variant is at index 0, status pending');
+  console.log('  ✓ getSelectedVariant returns selectedVariantIndex variant');
+
+  selectVariant(deck, section.id, 2);
+  const v2 = getSelectedVariant(section);
+  console.assert(v2 === section.variants[2], 'after select, returns new variant by reference');
+  console.log('  ✓ getSelectedVariant tracks selectedVariantIndex');
+
+  const bad = getSelectedVariant({});
+  console.assert(bad === null, 'empty object returns null');
+  console.log('  ✓ corrupt section returns null');
+}
+```
+
+### v2 override 4: Phase 5 (Task 5.1) — pipeline patches
+
+**v2 simplifies the v1 pipeline approach significantly.** No `styleHintDescription`. No prompt mutation. Just 3 identical lift calls + archetype extraction.
+
+**Patch 5.1-A: Replace Step 2 (`import STYLE_HINTS`) with:**
+
+```js
+import {
+  VARIANT_COUNT,
+  updateVariantStatus,
+  addSections,
+  // ... existing imports
+} from './deck-model.js';
+```
+
+**Patch 5.1-B: Replace Step 3 (the entire inner loop) with:**
+
+```js
+for (const section of deck.sections) {
+  if (cancelled) {
+    onEvent({ type: 'cancelled' });
+    running = false;
+    return;
+  }
+  if (section.variants.every((v) => v.status === 'ready' || v.status === 'error')) continue;
+
+  for (let variantIndex = 0; variantIndex < section.variants.length; variantIndex++) {
+    if (cancelled) {
+      onEvent({ type: 'cancelled' });
+      running = false;
+      return;
+    }
+    const variant = section.variants[variantIndex];
+    if (variant.status !== 'pending') continue;
+
+    onEvent({
+      type: 'lift-start',
+      sectionId: section.id,
+      pageIndex: section.pageIndex,
+      variantIndex,
+    });
+    updateVariantStatus(deck, section.id, variantIndex, 'lifting');
+    deps.saveDeck(deck);
+
+    try {
+      // v2: identical prompt across all variants. Divergence via stochastic LLM
+      // (Anthropic default temperature ~1.0). Archetype-first system prompt v3.18
+      // gives LLM the 7-class taxonomy.
+      const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
+      if (cancelled) {
+        onEvent({ type: 'cancelled' });
+        running = false;
+        return;
+      }
+      const sceneData = deps.parseLiftResponse(llmResult.text);
+
+      // Extract archetype from sceneData.name (format: "<archetype>: <title>")
+      const archetype = extractArchetype(sceneData);
+
+      const regions = computeRegions(
+        deck.sections.map((s, i) => {
+          if (i === section.pageIndex) {
+            return { sceneData, title: section.prompt };
+          }
+          const sel = s.variants[s.selectedVariantIndex];
+          return {
+            sceneData: sel?.sceneData ?? { v: 1, subjects: [] },
+            title: s.prompt,
+          };
+        }),
+        deck.layout.spacing,
+      );
+      const region = regions[section.pageIndex];
+
+      updateVariantStatus(deck, section.id, variantIndex, 'ready', {
+        sceneData,
+        region,
+        archetype,
+      });
+      deps.saveDeck(deck);
+      onEvent({
+        type: 'lift-ready',
+        sectionId: section.id,
+        pageIndex: section.pageIndex,
+        variantIndex,
+        archetype,
+      });
+    } catch (e) {
+      updateVariantStatus(deck, section.id, variantIndex, 'error', { liftError: e.message });
+      deps.saveDeck(deck);
+      onEvent({
+        type: 'lift-error',
+        sectionId: section.id,
+        pageIndex: section.pageIndex,
+        variantIndex,
+        error: e.message,
+      });
+    }
+  }
+}
+```
+
+**Patch 5.1-C: Replace Step 4 (`styleHintDescription`) with `extractArchetype`:**
+
+```js
+const VALID_ARCHETYPES = [
+  'sequence', 'list', 'compare', 'hierarchy', 'relation', 'kpi-hero', 'text-card',
+];
+
+/**
+ * Extract archetype label from sceneData.name (format: "<archetype>: <title>").
+ * Falls back to 'unknown' if name is missing or doesn't match expected format.
+ *
+ * @param {object} sceneData
+ * @returns {string}
+ */
+function extractArchetype(sceneData) {
+  const name = sceneData?.name;
+  if (typeof name !== 'string') return 'unknown';
+  const colonIdx = name.indexOf(':');
+  if (colonIdx === -1) return 'unknown';
+  const candidate = name.slice(0, colonIdx).trim().toLowerCase();
+  return VALID_ARCHETYPES.includes(candidate) ? candidate : 'unknown';
+}
+```
+
+**Patch 5.1-D: Replace Step 6 (test updates) with:**
+
+Update test events to expect `variantIndex` + `archetype` (no `styleHint`):
+
+```js
+const liftStartEvents = events.filter((e) => e.type === 'lift-start');
+console.assert(liftStartEvents.length === 3, `1 section × 3 variants = 3 lift-start events, got ${liftStartEvents.length}`);
+console.assert(liftStartEvents.every((e) => typeof e.variantIndex === 'number'), 'lift-start events have variantIndex');
+console.log('  ✓ 3 lift-start events with variantIndex');
+
+const liftReadyEvents = events.filter((e) => e.type === 'lift-ready');
+console.assert(liftReadyEvents.length === 3, `3 lift-ready events, got ${liftReadyEvents.length}`);
+console.log('  ✓ 3 lift-ready events');
+```
+
+Add a new test for archetype extraction:
+
+```js
+console.log('\n--- archetype extraction test (Sprint 1.5 v2) ---');
+
+{
+  // Mock LLM that returns sceneData.name with proper archetype prefix
+  const deck = createDeck('Test', { type: 'pdf', fileName: 'a.pdf', pageCount: 1 });
+  addSections(deck, [{ slideData: { title: 'page 1' }, code2d: '// code', prompt: 'page 1' }]);
+
+  let callCount = 0;
+  const archetypeSequence = ['sequence: Page Title', 'list: Page Title', 'compare: Page Title'];
+  const mockDeps = {
+    parsePDFFromBytes: async () => [{ title: 'page 1' }],
+    emitSlide2dCode: () => '// code',
+    callLiftLLM: async () => {
+      const name = archetypeSequence[callCount++];
+      return { text: JSON.stringify({ v: 1, name, subjects: [] }) };
+    },
+    parseLiftResponse: (text) => JSON.parse(text),
+    saveDeck: () => {},
+  };
+
+  const events = [];
+  const pipeline = createPipeline(deck, new Uint8Array(0), 'fake-key', mockDeps, {
+    onEvent: (e) => events.push(e),
+  });
+  await pipeline.start();
+
+  console.assert(deck.sections[0].variants[0].archetype === 'sequence', `variant 0 archetype=sequence, got ${deck.sections[0].variants[0].archetype}`);
+  console.assert(deck.sections[0].variants[1].archetype === 'list', `variant 1 archetype=list`);
+  console.assert(deck.sections[0].variants[2].archetype === 'compare', `variant 2 archetype=compare`);
+  console.log('  ✓ archetype extracted from sceneData.name and merged into variants');
+
+  // lift-ready events also carry archetype
+  const readyEvents = events.filter((e) => e.type === 'lift-ready');
+  console.assert(readyEvents[0].archetype === 'sequence', 'lift-ready event carries archetype');
+  console.log('  ✓ lift-ready event carries archetype');
+}
+
+{
+  // Fallback when sceneData.name missing or malformed
+  const deck = createDeck('Test', { type: 'pdf', fileName: 'a.pdf', pageCount: 1 });
+  addSections(deck, [{ slideData: {}, code2d: '', prompt: 'p' }]);
+
+  let callIdx = 0;
+  const malformedNames = [undefined, 'no colon prefix', 'invalid-archetype: Title'];
+  const mockDeps = {
+    parsePDFFromBytes: async () => [{ title: 'p' }],
+    emitSlide2dCode: () => '',
+    callLiftLLM: async () => {
+      const name = malformedNames[callIdx++];
+      const sceneData = { v: 1, subjects: [] };
+      if (name !== undefined) sceneData.name = name;
+      return { text: JSON.stringify(sceneData) };
+    },
+    parseLiftResponse: (text) => JSON.parse(text),
+    saveDeck: () => {},
+  };
+
+  const pipeline = createPipeline(deck, new Uint8Array(0), 'fake-key', mockDeps, { onEvent: () => {} });
+  await pipeline.start();
+
+  // All 3 should fall back to 'unknown'
+  for (let i = 0; i < 3; i++) {
+    console.assert(
+      deck.sections[0].variants[i].archetype === 'unknown',
+      `variant ${i} archetype falls back to 'unknown', got '${deck.sections[0].variants[i].archetype}'`,
+    );
+  }
+  console.log('  ✓ malformed scene.name falls back to archetype=unknown');
+}
+```
+
+Keep the "variant error tolerance" test from v1 Step 6 unchanged (still applies).
+
+**Patch 5.1-E: Update commit message at v1 Step 9:**
+
+```
+git commit -m "Sprint 1.5 Phase 5: pipeline variant generation v2 (3 lifts, archetype divergence)
+
+Inner loop runs 3 variants per section serial. All 3 lift calls use
+IDENTICAL prompt (no style hint suffix in v2). Divergence comes from
+Anthropic default temperature (~1.0) + archetype-first system prompt
+v3.18 — LLM picks one of 7 archetypes per call, stochasticity produces
+2-3 different archetypes across 3 calls for most slides.
+
+extractArchetype() parses sceneData.name prefix ('<archetype>: <title>')
+into variant.archetype field. Falls back to 'unknown' if malformed.
+
+VALID_ARCHETYPES = [sequence, list, compare, hierarchy, relation,
+kpi-hero, text-card] - matches Phase 2.5 system prompt v3.18 taxonomy.
+
+Variant errors are tolerated. Section status derived via deriveStatus
+(ready if any ready). Cancel checkpoint moved inside variant loop.
+
+Pipeline test updated for 3× event count + new archetype extraction
+tests (3 successful extracts + malformed-name fallback test)."
+```
+
+### v2 override 5: Phase 6.2 (deck-view.js) — picker label shows archetype
+
+**Patch 6.2-A: In v1 Step 5 `openVariantPicker`, change the label section.** Instead of showing `variant.styleHint`, show `variant.archetype`:
+
+```js
+const label = document.createElement('div');
+label.className = 'variant-thumb-label';
+const archetypeLabel = variant.archetype || (variant.status === 'pending' ? 'pending' : '...');
+label.textContent = archetypeLabel;
+if (variant.status === 'error') {
+  label.textContent += ' (error)';
+} else if (variant.status === 'pending' || variant.status === 'lifting') {
+  label.textContent = variant.status;
+}
+thumbWrapper.appendChild(label);
+```
+
+(Everything else in Phase 6 stays unchanged.)
+
+### v2 override 6: Phase 7 PR body
+
+**When opening the PR (v1 Phase 7 Task 7.1 Step 3)**, update body to mention v2 archetype divergence (not style hint):
+
+In the PR body, replace section §4 ("Per-section variant generation") with:
+
+```markdown
+4. **Per-section variant generation (archetype divergence)** — 3 variants per section, each from an independent lift call. Variants diverge via Anthropic default temperature + archetype-first system prompt v3.18 — LLM picks one of 7 archetypes per call. User clicks section thumbnail → picker shows 3 variants labeled with archetype (sequence / list / compare / etc.).
+```
+
+Also add a new bullet for Phase 2.5:
+
+```markdown
+5. **Lift system prompt v3.17 → v3.18** — Step 1 archetype-first taxonomy added (7 classes + decision table). Inspired by AntV/Infographic + LangChat Slides production evidence.
+```
+
+(Renumber subsequent bullets if any.)
+
+### v2 amendment END — v1 plan resumes below
+
+The v1 sections below remain authoritative for everything not patched by overrides 1-6 above. When implementing, apply overrides first, then follow v1 instructions for unpatched parts.
+
+---
+
 ## File structure
 
 ### Modified files

@@ -84,9 +84,9 @@ system: [
 
 **Files:** `sdf-js/src/compositor-api.js`
 
-### 3.4 Per-section variant generation
+### 3.4 Per-section variant generation (archetype-divergence, not style-divergence)
 
-**Core feature.** 3 variants per section, user picks 1.
+**Core feature.** 3 variants per section, user picks 1. **v2 design (2026-06-20 update):** variants diverge by **archetype choice** (LLM picks from 7-class taxonomy), not by style hint. Inspired by AntV/LangChat Slides existence proof.
 
 **Data contract change (v3 → v4 schema, silent drop v3 per user lock):**
 
@@ -105,8 +105,8 @@ system: [
   slideData, code2d, prompt,
   variants: [
     {
-      styleHint: 'minimal'|'abstract'|'dense',
       status: 'pending'|'lifting'|'ready'|'error',
+      archetype?: string,  // extracted from sceneData.name when ready, e.g. "sequence" / "list" / "compare" / etc.
       sceneData?, region?, liftError?
     },
     /* always exactly 3 entries */
@@ -121,26 +121,58 @@ system: [
 - `'ready'` if at least 1 variant ready
 - `'error'` if all 3 variants error
 
-**Style hints (locked):**
-```
-variant 0 → "minimal, focus on the core concept with few large objects"
-variant 1 → "abstract, use geometric shapes that suggest the idea metaphorically"
-variant 2 → "dense, include multiple objects showing all key entities"
-```
+**Divergence mechanism (locked):** 3 independent lift calls with **identical prompt** + default LLM temperature (~1.0 per Anthropic default). The lift system prompt (see §3.5) lists 7 archetypes + decision table — LLM picks one per call. Stochastic divergence at default temperature is sufficient to produce 2-3 different archetypes across 3 calls for most slides; if 3 calls happen to produce same archetype, user just sees 3 similar options (degraded but not broken UX).
 
-Appended to user prompt: `${section.prompt} — Style: ${styleHint}`.
+**Why no explicit "previously chose X" chaining:** YAGNI for Sprint 1.5. LangChat Slides ships with 3 independent stochastic LLM calls and works. Sprint 2 can add chain-aware prompting if real-world testing shows pathological clustering.
+
+**Archetype extraction:** lift LLM is instructed (per §3.5) to set `sceneData.name` to `"<archetype>: <slide title>"`. Pipeline extracts the prefix word into `variant.archetype` for display in picker UI.
 
 **Lift sequence (locked):** serial. Variant 0 of section i → variant 1 of section i → variant 2 of section i → variant 0 of section i+1. Cancel checkpoint between each variant.
 
-**Selected-by-default:** variant 0 (minimal). User can pick another in deck-view.
+**Selected-by-default:** variant 0. User can pick another in deck-view.
 
 **UI changes:**
-- **Library card progress:** "Lifting N/13 sections" (section ready when ≥1 variant ready). Don't surface variant granularity in library — too noisy.
-- **Deck-view thumbnail:** main thumbnail = `variants[selectedVariantIndex].sceneData`. Click → expand below main thumb: 3 small thumbnails of all variants → click a candidate → update `selectedVariantIndex` + save deck + re-render info graphic.
+- **Library card progress:** "Lifting N/13 sections" (section ready when ≥1 variant ready). Don't surface variant granularity in library.
+- **Deck-view thumbnail:** main thumbnail = `variants[selectedVariantIndex].sceneData`. Click → expand below main thumb: 3 small thumbnails of all variants, each labeled with its `archetype` (e.g. "sequence" / "list") → click a candidate → update `selectedVariantIndex` + save deck + re-render info graphic.
 
 **Cost:** 3× lift per section. Aether AI 13 pages = 39 lifts ≈ $3-4 (offset partially by prompt caching from §3.3 → ~$1.50 net add).
 
-**Files:** `deck-model.js` (schema), `pipeline.js` (loop), `info-graphic-render.js` (variant-aware), `deck-view.js` (variant picker UI), `library-page.js` (progress label).
+**Files:** `deck-model.js` (schema), `pipeline.js` (loop, archetype extraction), `info-graphic-render.js` (variant-aware), `deck-view.js` (variant picker UI with archetype labels), `library-page.js` (progress label).
+
+### 3.5 Archetype-first lift system prompt (NEW)
+
+**Core insight from AntV/LangChat Slides:** their LLM prompts force **template choice as first decision** by listing N templates explicitly + decision table. Their 9-month 5.5k star validation + LangChat's shipping product proves this pattern works at production scale. Our lift system prompt v3.17 (~5k tokens, 18 worked examples) currently lacks this discipline — LLM is taught how to assemble specific scenes (carrier / cathedral) but not how to first choose an overall STRUCTURE.
+
+**Hypothesis:** Aether AI test pages 12/13 succeeded because they happen to fit `relation` / `hierarchy` archetypes that LLM intuited. Pages 7 (pure text) and 1/6/9/11 (text-heavy) failed because LLM had no `text-card` fallback archetype documented and reverted to free-form geometry.
+
+**Fix:** Add a section to [`sdf-js/examples/compositor/system-prompt-lift-3d.md`](sdf-js/examples/compositor/system-prompt-lift-3d.md) (~30 lines) introducing 7-class archetype taxonomy before the existing "Output contract" section:
+
+```
+## Step 1: Pick a slide archetype FIRST
+
+Before emitting any subject, identify the slide's structural archetype:
+
+| Archetype | When to pick | Typical SDF realization |
+|---|---|---|
+| sequence | ordered steps / timeline / process / pipeline | linear arrangement of objects along X axis with arrows/connectors |
+| list | bullet points / unordered items / feature grid | row or grid of equal-weight objects (icons or text-3d-pipe per item) |
+| compare | A vs B / pros vs cons / before vs after | bilateral arrangement (mirror around YZ plane or split by X) |
+| hierarchy | tree / org chart / taxonomy / nested categories | branching arrangement (parent center, children radiating) |
+| relation | network / dependency graph / mind map | nodes (spheres) + edges (capsules) in 2D plane or 3D space |
+| kpi-hero | single number / quote / claim / chart highlight | 1 large central object (text-3d-pipe digit or sphere) dominates view |
+| text-card | pure-text page / definition / paragraph / quote (fallback when no structure detected) | text-3d-pipe title centered + 1-2 minimal context objects |
+
+Set scene.name to "<archetype>: <slide title>" (e.g. "sequence: Q3 Roadmap", "text-card: Definition").
+
+THEN emit SceneData realizing that archetype with appropriate atoms.
+
+Hard rule: never emit a free-form scene without first claiming an archetype.
+Pages with mostly text default to `text-card` rather than improvising geometry.
+```
+
+**Token cost:** ~150 tokens added to system prompt → with prompt caching from §3.3 → negligible per-call cost.
+
+**Files:** `sdf-js/examples/compositor/system-prompt-lift-3d.md` (insert before existing "Output contract" section, bump version v3.17 → v3.18).
 
 ## 4. File map
 
@@ -148,13 +180,13 @@ Appended to user prompt: `${section.prompt} — Style: ${styleHint}`.
 |---|---|---|
 | `sdf-js/src/present/info-graphic-render.js` | Modify `drawSliceThumbnail` (view), modify call sites to read `variants[selectedVariantIndex].sceneData/region` | 1 + 6 |
 | `sdf-js/src/scene/sanity.js` OR atom factory | Investigation-driven fix for rng error | 2 |
-| `sdf-js/examples/compositor/system-prompt-lift-3d.md` | Possible API surface doc addition | 2 |
+| `sdf-js/examples/compositor/system-prompt-lift-3d.md` | (Phase 2) Possible API surface doc addition + **(Phase 2.5) archetype-first 7-class taxonomy + decision table, bump v3.17 → v3.18** | 2 + **2.5** |
 | `sdf-js/src/compositor-api.js` | `system` → array with `cache_control` | 3 |
-| `sdf-js/src/present/deck-model.js` | REWRITE schema to v4 (variants[]) | 4 |
+| `sdf-js/src/present/deck-model.js` | REWRITE schema to v4 (variants[] with `archetype` field, no `styleHint`) | 4 |
 | `sdf-js/scripts/test-deck-model.mjs` | REWRITE for v4 schema | 4 |
-| `sdf-js/src/present/pipeline.js` | Inner variant loop + style hint suffix | 5 |
-| `sdf-js/scripts/test-pipeline.mjs` | Add variant generation assertions | 5 |
-| `sdf-js/src/present/deck-view.js` | Variant picker UI (click thumb → 3-thumb panel) | 6 |
+| `sdf-js/src/present/pipeline.js` | Inner variant loop (3 independent lift calls, no prompt mutation) + archetype extraction from `sceneData.name` | 5 |
+| `sdf-js/scripts/test-pipeline.mjs` | Add variant generation assertions (3 lifts, archetype extraction) | 5 |
+| `sdf-js/src/present/deck-view.js` | Variant picker UI (click thumb → 3-thumb panel with archetype labels) | 6 |
 | `sdf-js/src/present/library-page.js` | Progress label tweak | 6 |
 | `sdf-js/scripts/test-info-graphic-render.mjs` | Update for `variants[selectedVariantIndex]` adaptation | 6 |
 
