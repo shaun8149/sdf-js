@@ -18,6 +18,7 @@
 import * as deckModel from './deck-model.js';
 import { compileScene, createRendererForId } from '../compositor-api.js';
 import { BRANDING_PALETTES, getPalette } from './branding-palettes.js';
+import { mountP5Renderer } from './p5-renderer.js';
 
 const RENDERERS = ['silhouette', 'lines', 'crayon', 'topo'];
 
@@ -35,6 +36,10 @@ export function mountVisualPanel(wrapper, deck, visualId) {
 
   function getVisual() {
     return deck.visuals.find((v) => v.id === visualId);
+  }
+
+  function isP5SketchVariant(variant) {
+    return variant?.sceneData?.subjects?.[0]?.type === 'p5-sketch';
   }
 
   function render() {
@@ -71,6 +76,11 @@ export function mountVisualPanel(wrapper, deck, visualId) {
     if (sel.status === 'pending') {
       return `<div class="visual-placeholder">⏳ pending…</div>`;
     }
+    // Sprint 3: p5-sketch variants render via iframe (mounted in p5-mount div)
+    if (isP5SketchVariant(sel)) {
+      return `<div class="p5-mount" style="width: 600px; height: 360px;" data-visual-id="${visual.id}"></div>`;
+    }
+    // Traditional sceneData renders via canvas
     return `<canvas class="visual-canvas" width="600" height="360" data-visual-id="${visual.id}"></canvas>`;
   }
 
@@ -99,10 +109,12 @@ export function mountVisualPanel(wrapper, deck, visualId) {
   }
 
   function renderMenu(visual) {
+    const sel = deckModel.getSelectedVisualVariant(visual);
+    const isP5 = isP5SketchVariant(sel);
     return `
       <div class="visual-menu">
         <button data-action="swap-layout">Swap Layout</button>
-        <button data-action="effects">Effects (${visual.activeEffect})</button>
+        <button data-action="effects" ${isP5 ? 'disabled title="Effects N/A for P5 sketch variants"' : ''}>${isP5 ? 'Effects (n/a)' : 'Effects (' + visual.activeEffect + ')'}</button>
         <button data-action="export">Export Visual</button>
         <button data-action="swap-branding">Swap Branding</button>
       </div>
@@ -170,10 +182,16 @@ export function mountVisualPanel(wrapper, deck, visualId) {
     deckModel.saveDeckToStorage(deck);
   }
 
-  function exportPng(visual) {
-    const canvas = wrapper.querySelector('.visual-canvas');
-    if (!canvas) return;
-    const dataUrl = canvas.toDataURL('image/png');
+  async function exportPng(visual) {
+    const sel = deckModel.getSelectedVisualVariant(visual);
+    let dataUrl = null;
+    if (isP5SketchVariant(sel) && p5Handle) {
+      dataUrl = await p5Handle.exportPng();
+    } else {
+      const canvas = wrapper.querySelector('.visual-canvas');
+      if (canvas) dataUrl = canvas.toDataURL('image/png');
+    }
+    if (!dataUrl) return;
     const a = document.createElement('a');
     a.href = dataUrl;
     a.download = `${(visual.textAnchor.text || 'visual').slice(0, 30).replace(/[^a-z0-9_-]/gi, '-')}.png`;
@@ -182,21 +200,70 @@ export function mountVisualPanel(wrapper, deck, visualId) {
     document.body.removeChild(a);
   }
 
+  let p5Handle = null; // Per-instance handle for current p5 renderer (Sprint 3)
+
   function renderActiveVariantCanvas(visual) {
-    const canvas = wrapper.querySelector('.visual-canvas');
-    if (!canvas) return;
     const sel = deckModel.getSelectedVisualVariant(visual);
     if (!sel || sel.status !== 'ready' || !sel.sceneData) return;
-    renderVariantToCanvas(canvas, sel.sceneData, visual.activeEffect, visual.activeBranding);
 
-    // Render thumbnails inside picker
+    // Sprint 3: route to p5 renderer if variant is p5-sketch
+    if (isP5SketchVariant(sel)) {
+      // Destroy any prior p5 handle (in case we switched variants)
+      if (p5Handle) {
+        p5Handle.destroy();
+        p5Handle = null;
+      }
+      // Find or create p5 mount container inside the main visual area
+      let p5Mount = wrapper.querySelector('.visual-main .p5-mount');
+      if (!p5Mount) {
+        // The renderMainArea() output gave us a canvas; replace it with a p5-mount div
+        const visualMain = wrapper.querySelector('.visual-main');
+        if (visualMain) {
+          visualMain.innerHTML =
+            '<div class="p5-mount" style="width: 600px; height: 360px;"></div>';
+          p5Mount = visualMain.querySelector('.p5-mount');
+        }
+      }
+      if (p5Mount) {
+        const palette = getPalette(visual.activeBranding);
+        p5Handle = mountP5Renderer(p5Mount, sel.sceneData, palette);
+      }
+    } else {
+      // Traditional sceneData → render via active CPU effect
+      if (p5Handle) {
+        p5Handle.destroy();
+        p5Handle = null;
+      }
+      const canvas = wrapper.querySelector('.visual-canvas');
+      if (!canvas) return;
+      renderVariantToCanvas(canvas, sel.sceneData, visual.activeEffect, visual.activeBranding);
+    }
+
+    // Render picker thumbnails — for p5-sketch variants, show placeholder
+    // (rendering 6 iframes simultaneously is expensive; only mount the selected
+    // variant via iframe. Thumbnails show static info.)
     if (pickerOpen) {
       wrapper.querySelectorAll('.thumb-canvas').forEach((thumb) => {
         const idx = parseInt(thumb.dataset.variantIndex, 10);
         const v = visual.variants[idx];
         if (v?.status === 'ready' && v.sceneData) {
-          renderVariantToCanvas(thumb, v.sceneData, visual.activeEffect, visual.activeBranding);
+          if (isP5SketchVariant(v)) {
+            // Render placeholder for p5-sketch thumbnails
+            const ctx = thumb.getContext('2d');
+            const palette = getPalette(visual.activeBranding);
+            ctx.fillStyle = `rgb(${palette.bg.join(',')})`;
+            ctx.fillRect(0, 0, thumb.width, thumb.height);
+            ctx.fillStyle = `rgb(${palette.silhouetteColor.join(',')})`;
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('P5 sketch', thumb.width / 2, thumb.height / 2 - 6);
+            ctx.fillText(`(${v.archetype || 'fallback'})`, thumb.width / 2, thumb.height / 2 + 8);
+          } else {
+            renderVariantToCanvas(thumb, v.sceneData, visual.activeEffect, visual.activeBranding);
+          }
         } else {
+          // pending/lifting/error placeholder (existing logic)
           const ctx = thumb.getContext('2d');
           ctx.fillStyle = '#eee';
           ctx.fillRect(0, 0, thumb.width, thumb.height);
@@ -264,6 +331,10 @@ export function mountVisualPanel(wrapper, deck, visualId) {
   return {
     refresh: render,
     destroy: () => {
+      if (p5Handle) {
+        p5Handle.destroy();
+        p5Handle = null;
+      }
       wrapper.innerHTML = '';
     },
   };
