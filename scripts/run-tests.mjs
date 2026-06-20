@@ -35,6 +35,8 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-easing.mjs' },
   // IQ-shader program W2 — noise w/ analytic derivatives, warp, voronoise/edges
   { category: 'math', file: 'sdf-js/scripts/test-noise.mjs' },
+  // IQ-shader program W3 — band-limited filtering / texturing (checker/grid/etc)
+  { category: 'math', file: 'sdf-js/scripts/test-filter.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
