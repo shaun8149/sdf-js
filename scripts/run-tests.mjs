@@ -33,6 +33,8 @@ const TESTS = [
 
   // IQ-shader program W1 — remapping / easing math toolkit (recipe-only ports)
   { category: 'math', file: 'sdf-js/scripts/test-easing.mjs' },
+  // IQ-shader program W2 — noise w/ analytic derivatives, warp, voronoise/edges
+  { category: 'math', file: 'sdf-js/scripts/test-noise.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },

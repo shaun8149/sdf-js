@@ -16,6 +16,7 @@
     <canvas id="c" width="8" height="8"></canvas>
     <script type="module">
       import { EASING_GLSL } from '../src/sdf/easing.js';
+      import { NOISE_GLSL } from '../src/sdf/noise.js';
 
       const gl = document.getElementById('c').getContext('webgl2');
       const vsSrc = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
@@ -23,6 +24,7 @@
 precision highp float;
 #endif
 ${EASING_GLSL}
+${NOISE_GLSL}
 void main(){
   float s = smootherstep(0.5) + parabola(0.5, 2.0) + gain(0.3, 3.0)
     + cubicPulse(0.5, 0.2, 0.5) + smoothstepInteg(0.7) + invSmoothstep(0.4)
@@ -30,6 +32,10 @@ void main(){
     + sinc(0.1, 1.0) + sigmoid(0.2) + almostIdentity(0.5, 1.0, 0.2)
     + remap(5.0, 0.0, 10.0, 0.0, 1.0) + remapClamp(15.0, 0.0, 10.0, 0.0, 1.0)
     + smoothstep01(0.5);
+  vec2 p = vec2(1.3, 2.7);
+  s += valueNoiseD2(p).x + valueNoiseD3(vec3(p, 0.5)).x + gradientNoiseD2(p).x
+    + fbmD2(p, 5).x + domainWarp2(p) + voronoise2(p, 1.0, 0.5)
+    + voronoiSmooth2(p, 8.0) + voronoiEdges2(p).y;
   gl_FragColor = vec4(vec3(clamp01(s * 0.01)), 1.0);
 }`;
 
@@ -53,7 +59,7 @@ void main(){
         if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
           throw new Error('link: ' + gl.getProgramInfoLog(pr));
         }
-        console.log('GLSL-SMOKE-OK easing');
+        console.log('GLSL-SMOKE-OK easing+noise');
         document.title = 'SMOKE OK';
       } catch (e) {
         console.error('GLSL-SMOKE-FAIL ' + e.message);
