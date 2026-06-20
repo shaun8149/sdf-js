@@ -202,6 +202,12 @@ export const PRIMITIVE_TYPES = new Set([
   'sphere-network-3d',
   'sphere-tree-3d',
   'sphere-segmented-3d',
+  // Atlas Shape atoms (2026-06-21) — Sprint 3 simple shapes. Composite atoms
+  // (box/cone/cylinder/octahedron/capped-cone + union/difference/modPolar).
+  'arrow-3d',
+  'diamond-3d',
+  'gear-3d',
+  'cube-segmented-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

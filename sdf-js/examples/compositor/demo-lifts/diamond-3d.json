@@ -1,0 +1,39 @@
+{
+  "id": "diamond-3d",
+  "title": "Diamond",
+  "prompt": "diamond-3d atom — brilliant-cut gem (crown frustum + pavilion cone).",
+  "code2d": "// Synthetic showcase — diamond-3d atom.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "diamond",
+    "source": { "format": "synthetic", "prompt": "diamond" },
+    "subjects": [
+      {
+        "id": "diamond",
+        "type": "diamond-3d",
+        "args": { "width": 1.0 },
+        "transform": { "translate": [0, 0.8, 0] },
+        "material": "clear-glass"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.2,
+        "distance": 5,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.8,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "diamond-3d",
+    "costUSD": 0
+  }
+}
