@@ -18,7 +18,7 @@
           "cage": true,
           "cageThickness": 0.03
         },
-        "transform": { "translate": [0, 1.0, 0], "scale": 0.32 },
+        "transform": { "translate": [0, 0.7, 0] },
         "material": "clear-glass"
       }
     ],

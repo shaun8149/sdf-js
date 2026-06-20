@@ -61,6 +61,8 @@ import {
 } from '../../src/render/bobShader-style.js';
 import { createFly3DRenderer } from '../../src/render/flyLambert.js';
 import { createStudioRenderer } from '../../src/render/studio.js';
+// W12 auto-framing (IQ-shader bounds library): bbox(SDF) → camera fit.
+import { bbox3FromSDF, cameraFitFromBBox } from '../../src/sdf/bounds.js';
 import { createBlueprintRenderer } from '../../src/render/blueprint.js';
 import { createCrayonRenderer } from '../../src/render/crayonRenderer.js';
 import { createStreamlineRenderer } from '../../src/render/streamlineRenderer.js';
@@ -1884,6 +1886,7 @@ function ensureStudioRenderer() {
  * pointer-lock doesn't leak and RAF loops don't compete for the canvas.
  */
 let _lastRenderedScene = null;
+let _lastStudioFramedScene = null; // W12: studio auto-frames each scene once
 function runActiveGpuRenderer({ keepCamera = false } = {}) {
   const { sdf, scene, rawScene } = getActiveGpuScene();
   if (!sdf || !scene) return { bytes: 0 };
@@ -1984,11 +1987,41 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
     const st = ensureStudioRenderer();
-    // Studio deliberately IGNORES scene.cameraStatic — its job is a
-    // predictable atom-evaluation framing (close + slight downward pitch)
-    // regardless of whatever camera the scene was authored for. User can
-    // drag / WASD to reframe. Studio's own camState default ([0, 1.5, -2.5],
-    // pitch=-0.25) is the starting pose.
+    // W12 auto-framing: instead of a fixed pose (which forced atoms to be hand-
+    // scaled to fit), compute the SDF's bounding box and fit the camera to it —
+    // once per scene. The camera is placed at target − forward·distance for a
+    // fixed 3/4 elevated angle, so it always looks at the subject. Skipped for
+    // re-renders of the same scene, and for unbounded/huge SDFs (e.g. an
+    // in-SDF ground plane or terrain → bbox hits the search radius), which keep
+    // studio's neutral default pose.
+    if (!keepCamera && scene !== _lastStudioFramedScene && sdf && sdf.f) {
+      _lastStudioFramedScene = scene;
+      try {
+        const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 12, res: 40 });
+        const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
+        if (!bb.empty && maxDim > 0.05 && maxDim < 20) {
+          const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);
+          const yaw = 0.5;
+          const pitch = 0.32; // downward in studio's convention (fwd.y = −sin pitch)
+          const cp = Math.cos(pitch),
+            sp = Math.sin(pitch),
+            cy = Math.cos(yaw),
+            sy = Math.sin(yaw);
+          const fwd = [sy * cp, -sp, cy * cp];
+          st.setCamState({
+            position: [
+              fit.target[0] - fwd[0] * fit.distance,
+              fit.target[1] - fwd[1] * fit.distance,
+              fit.target[2] - fwd[2] * fit.distance,
+            ],
+            yaw,
+            pitch,
+          });
+        }
+      } catch (e) {
+        /* unbounded SDF / eval error → keep studio's default pose */
+      }
+    }
     if (st.setPostFx) {
       st.setPostFx(
         rawScene || {},
