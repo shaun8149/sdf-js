@@ -191,14 +191,17 @@ export function sierpinskiSDF(px, py, pz, iters) {
 export const FRACTAL_GLSL = /* glsl */ `
 float mandelbrot2(vec2 c, int maxIter){
   vec2 z = vec2(0.0); int i = 0;
+  int limit = maxIter;
+  if (limit > 1024) limit = 1024;
+  bool escaped = false;
   for (int k = 0; k < 1024; k++){
-    if (k >= maxIter) break;
+    if (k >= limit) break;
     z = vec2(z.x*z.x - z.y*z.y + c.x, 2.0*z.x*z.y + c.y);
     i = k;
-    if (dot(z,z) > 256.0) { i = k; break; }
+    if (dot(z,z) > 256.0) { escaped = true; i = k; break; }
     i = k + 1;
   }
-  if (i >= maxIter) return float(maxIter);
+  if (!escaped) return float(maxIter);
   float l = length(z);
   return float(i) + 1.0 - log(log(l))/log(2.0);
 }
