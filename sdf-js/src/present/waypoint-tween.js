@@ -1,14 +1,14 @@
 // =============================================================================
-// waypoint-tween.js — Atlas Present Canvas Mode camera tweening
+// waypoint-tween.js — Atlas Present 3D Play camera tweening
 // -----------------------------------------------------------------------------
-// Pure functions + RAF loop for animating camera between waypoints (spherical
-// coords: yaw, pitch, distance, targetX/Y/Z). Used by editor (preview-tween,
-// 200ms) and present mode (cinematic-tween, 800ms).
-//
-// Layer 2 owns this loop. Does NOT touch compositor's gpuCameraLoop or
-// scene.evalCamera — that's for cameraSequence-driven scenes only.
-//
-// Spec: docs/superpowers/specs/2026-06-19-atlas-present-canvas-mode-design.md §4
+// ⚠️ DEFERRED Sprint 1 v4 (2D Info Graphic mode). Sprint 2 will re-introduce
+// 3D Play mode and consume these tween utilities. Sprint 1 code must NOT
+// import this file — if grep finds an import in src/present/*.js (excluding
+// this file + its own test), that's a 3D-leak.
+// -----------------------------------------------------------------------------
+// Pure functions + RAF loop for animating camera between section regions
+// (spherical coords: yaw, pitch, distance, targetX/Y/Z). Sprint 2 will use
+// for editor preview tween + present mode cinematic tween.
 // =============================================================================
 
 const TWO_PI = Math.PI * 2;

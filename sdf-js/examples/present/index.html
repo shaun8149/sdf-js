@@ -13,24 +13,21 @@
   </div>
 
   <script type="module">
-    // Inline router — three modes based on URL query:
-    //   /examples/present/                  → library page
-    //   /examples/present/?deck=<id>        → editor page
-    //   /examples/present/?deck=<id>&present=1 → present mode
+    // Inline router — Sprint 1 v4 has two modes:
+    //   /examples/present/             → library page (list decks + Import PDF)
+    //   /examples/present/?deck=<id>   → deck-view (info graphic + Export PNG)
+    //
+    // Sprint 2 will re-add editor / present mode routes.
     const params = new URLSearchParams(location.search);
     const deckId = params.get('deck');
-    const present = params.get('present') === '1';
     const target = document.getElementById('route-target');
 
-    if (deckId && present) {
-      const { mountPresentMode } = await import('../../src/present/present-mode.js');
-      await mountPresentMode(target, deckId);
-    } else if (deckId) {
-      const { mountDeckEditor } = await import('../../src/present/deck-editor.js');
-      await mountDeckEditor(target, deckId);
+    if (deckId) {
+      const { mountDeckView } = await import('../../src/present/deck-view.js');
+      await mountDeckView(target, deckId);
     } else {
-      const { mountDeckLibrary } = await import('../../src/present/deck-library.js');
-      await mountDeckLibrary(target);
+      const { mountLibraryPage } = await import('../../src/present/library-page.js');
+      await mountLibraryPage(target);
     }
   </script>
 </body>
