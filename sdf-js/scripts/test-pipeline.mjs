@@ -37,18 +37,21 @@ console.log('=== pipeline (Sprint 1 v4) smoke test ===\n');
 // Helpers
 function makeMockDeps(opts = {}) {
   const slides = opts.slides ?? [
-    { pageIndex: 0, title: 'A', body: [] },
-    { pageIndex: 1, title: 'B', body: [] },
-    { pageIndex: 2, title: 'C', body: [] },
+    { index: 0, title: 'A', body: [] },
+    { index: 1, title: 'B', body: [] },
+    { index: 2, title: 'C', body: [] },
   ];
   const liftBehavior = opts.liftBehavior ?? 'success';
   const saveLog = opts.saveLog ?? [];
+  const prompts = opts.prompts ?? [];
   return {
     saveLog,
+    prompts,
     deps: {
       parsePDFFromBytes: async () => slides,
-      emitSlide2dCode: (sd) => `// code for ${sd.title}`,
+      emitSlide2dCode: opts.emitSlide2dCode ?? ((sd) => `// code for ${sd.title}`),
       callLiftLLM: async (prompt, code2d) => {
+        prompts.push({ prompt, code2d });
         if (liftBehavior === 'success') {
           return {
             text: JSON.stringify({
@@ -147,7 +150,31 @@ console.log('\nTest group 2: lift error on one section, others continue');
   ok(deck.sections[2].status === 'ready', 'section 2 continued to ready after section 1 error');
 }
 
-console.log('\nTest group 3: parse error aborts pipeline');
+console.log('\nTest group 3: emitted prompt object is preserved');
+
+{
+  const deck = createDeck('prompt', { type: 'pdf', fileName: 'prompt.pdf', pageCount: 2 });
+  const slides = [
+    { index: 4, title: null, body: [] },
+    { index: 5, title: 'Raw title', body: [] },
+  ];
+  const { deps, prompts } = makeMockDeps({
+    slides,
+    emitSlide2dCode: (sd) => ({
+      prompt: sd.title ? `Semantic prompt for ${sd.title}` : '',
+      code2d: `// semantic code ${sd.index}`,
+    }),
+  });
+  const pipeline = createPipeline(deck, new Uint8Array(10), 'k', deps);
+  await pipeline.start();
+
+  ok(prompts[0].prompt === 'Page 5', 'untitled real SlideData.index falls back to Page 5');
+  ok(prompts[1].prompt === 'Semantic prompt for Raw title', 'emitter prompt sent to lift LLM');
+  ok(deck.sections[1].prompt === 'Semantic prompt for Raw title', 'emitter prompt persisted');
+  ok(prompts[1].code2d === '// semantic code 5', 'emitter code2d sent to lift LLM');
+}
+
+console.log('\nTest group 4: parse error aborts pipeline');
 
 {
   const deck = createDeck('parseerr', { type: 'pdf', fileName: 'p.pdf', pageCount: 0 });
@@ -176,7 +203,7 @@ console.log('\nTest group 3: parse error aborts pipeline');
   ok(deck.sections.length === 0, 'deck has no sections on parse error');
 }
 
-console.log('\nTest group 4: cancel stops further lifts');
+console.log('\nTest group 5: cancel stops further lifts');
 
 {
   const deck = createDeck('cancel', { type: 'pdf', fileName: 'c.pdf', pageCount: 3 });
@@ -185,9 +212,9 @@ console.log('\nTest group 4: cancel stops further lifts');
   let pipelineRef;
   const deps = {
     parsePDFFromBytes: async () => [
-      { pageIndex: 0, title: 'A', body: [] },
-      { pageIndex: 1, title: 'B', body: [] },
-      { pageIndex: 2, title: 'C', body: [] },
+      { index: 0, title: 'A', body: [] },
+      { index: 1, title: 'B', body: [] },
+      { index: 2, title: 'C', body: [] },
     ],
     emitSlide2dCode: (sd) => `// ${sd.title}`,
     callLiftLLM: async () => {
@@ -209,6 +236,7 @@ console.log('\nTest group 4: cancel stops further lifts');
   ok(liftCallCount === 1, `only 1 lift call before cancel (got ${liftCallCount})`);
   const cancelEvent = events.find((e) => e.type === 'cancelled');
   ok(cancelEvent !== undefined, 'cancelled event emitted');
+  ok(deck.sections[0].status === 'pending', 'in-flight section reverted to pending after cancel');
   // Sections 1 and 2 should still be 'pending' (never started)
   ok(deck.sections[1].status === 'pending', 'section 1 still pending after cancel');
   ok(deck.sections[2].status === 'pending', 'section 2 still pending after cancel');

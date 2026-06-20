@@ -66,6 +66,7 @@ function renderDeckCard(deck) {
   const counts = deckModel.sectionStatusCounts(deck);
   const isLifting = counts.lifting > 0 || counts.pending > 0;
   const isReady = counts.ready === counts.total && counts.total > 0;
+  const canView = canViewDeck(deck);
   const statusLabel = isReady
     ? `Lifted ✓ (${counts.total})`
     : isLifting
@@ -80,7 +81,7 @@ function renderDeckCard(deck) {
       <div class="meta">${escapeHtml(deck.source.fileName)} · ${counts.total} sections</div>
       <div class="status">${statusLabel} · ${updated}</div>
       <div class="actions">
-        <button id="btn-view-${deck.id}" ${isReady ? 'class="primary"' : 'disabled'}>View</button>
+        <button id="btn-view-${deck.id}" ${canView ? 'class="primary"' : 'disabled'}>View</button>
         <button id="btn-rename-${deck.id}">Rename</button>
         <button id="btn-delete-${deck.id}">Delete</button>
       </div>
@@ -175,6 +176,11 @@ function handleDelete(deckId) {
 }
 
 // ---- Helpers ----------------------------------------------------------------
+
+export function canViewDeck(deck) {
+  const counts = deckModel.sectionStatusCounts(deck);
+  return counts.ready > 0 && counts.pending === 0 && counts.lifting === 0;
+}
 
 function escapeHtml(s) {
   return String(s)

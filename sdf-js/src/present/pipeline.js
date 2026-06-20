@@ -25,7 +25,7 @@ import { computeRegions } from './linear-layout.js';
  *
  * Pipeline contract:
  *   - deps.parsePDFFromBytes(uint8Array) → Promise<SlideData[]>
- *   - deps.emitSlide2dCode(slideData) → string (code2d)
+ *   - deps.emitSlide2dCode(slideData) → string OR {prompt, code2d}
  *   - deps.callLiftLLM(prompt, code2d, apiKey) → Promise<{text: string, usage: object}>
  *   - deps.parseLiftResponse(text) → object (sceneData)
  *   - deps.saveDeck(deck) → void (called after each status change)
@@ -76,11 +76,13 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
 
     // 2. Emit 2D code per slide
     const sectionInputs = slides.map((slideData) => {
-      const code2d = deps.emitSlide2dCode(slideData);
+      const emitted = deps.emitSlide2dCode(slideData);
+      const code2d = typeof emitted === 'string' ? emitted : (emitted.code2d ?? '');
+      const fallbackPrompt = slideData.title || `Page ${slideIndex(slideData) + 1}`;
       return {
         slideData,
-        code2d: typeof code2d === 'string' ? code2d : (code2d.code2d ?? ''),
-        prompt: slideData.title || `Page ${slideData.pageIndex + 1}`,
+        code2d,
+        prompt: typeof emitted === 'string' ? fallbackPrompt : (emitted.prompt || fallbackPrompt),
       };
     });
 
@@ -104,6 +106,8 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
       try {
         const llmResult = await deps.callLiftLLM(section.prompt, section.code2d, apiKey);
         if (cancelled) {
+          deckModel.updateSectionStatus(deck, section.id, 'pending');
+          deps.saveDeck(deck);
           onEvent({ type: 'cancelled' });
           running = false;
           return;
@@ -150,4 +154,10 @@ export function createPipeline(deck, pdfBytes, apiKey, deps, opts = {}) {
   }
 
   return { start, cancel, isRunning };
+}
+
+function slideIndex(slideData) {
+  if (Number.isFinite(slideData.index)) return slideData.index;
+  if (Number.isFinite(slideData.pageIndex)) return slideData.pageIndex;
+  return 0;
 }

@@ -184,6 +184,17 @@ const rEsc = emitSlide2dCode(slideEsc);
 ok(rEsc.code2d.includes("\\'"), 'apostrophe escaped in emitted string');
 ok(isParseable(rEsc.code2d), 'escaped string parses correctly');
 
+const slideNewline = emptySlideData(8, 'pdf');
+slideNewline.title = 'Line\n90%';
+slideNewline.layout = 'cover';
+slideNewline.body = [];
+slideNewline.pageSize = { width: 960, height: 540 };
+
+const rNewline = emitSlide2dCode(slideNewline);
+ok(rNewline.code2d.includes('Line 90%'), 'newline sanitized in generated comments');
+ok(rNewline.code2d.includes('Line\\n90%'), 'newline escaped in emitted string literal');
+ok(isParseable(rNewline.code2d), 'newline-bearing title parses correctly');
+
 // -----------------------------------------------------------------------------
 console.log('\nTest group 6: priority — percent-list beats cover when both detected');
 const slideBoth = emptySlideData(2, 'pdf');

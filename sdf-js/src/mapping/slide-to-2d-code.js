@@ -149,7 +149,7 @@ const HEADER = (
   slideIdx,
   title,
 ) => `// =============================================================================
-// Atlas presentation demo — slide ${slideIdx}: "${title}"
+// Atlas presentation demo — slide ${slideIdx}: "${escapeCommentText(title)}"
 // Pattern detected: ${slidePattern}
 //
 // SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular
@@ -332,7 +332,17 @@ ${RENDER_TAIL}
 // ---- Helpers ----------------------------------------------------------------
 
 function escapeStr(s) {
-  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return String(s)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+function escapeCommentText(s) {
+  return String(s).replace(/[\r\n\u2028\u2029]+/g, ' ');
 }
 
 // ---- Public entry -----------------------------------------------------------
