@@ -12,6 +12,8 @@
 // =============================================================================
 
 import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
+// W12 pattern-AA: band-limited filtering library (checkersFiltered, filterWidth).
+import { FILTER_GLSL } from '../sdf/filter.js';
 import { attachFlyControls } from '../input/fly-controls.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
 import {
@@ -27,6 +29,8 @@ function buildFragmentShader(sceneGlsl) {
   return `#ifdef GL_ES
 precision highp float;
 #endif
+
+${FILTER_GLSL}
 
 ${sceneGlsl}
 
@@ -219,13 +223,7 @@ float checker(vec2 p) {
 // 1.00 where derivatives need an unreliable extension). The integral-of-checker
 // trick averages the pattern over that footprint → crisp tiles up close, smooth
 // neutral grey at distance, zero moire / aliasing.
-// Returns 0..1 (0=one tile colour, 1=the other, ~0.5 when far → grey).
-float checkersGradBox(vec2 p, vec2 w) {
-  w = max(w, vec2(0.001));
-  vec2 i = 2.0 * (abs(fract((p - 0.5 * w) * 0.5) - 0.5)
-                - abs(fract((p + 0.5 * w) * 0.5) - 0.5)) / w;
-  return 0.5 - 0.5 * i.x * i.y;
-}
+// (Filtered checker now comes from FILTER_GLSL.checkersFiltered — W12 wiring.)
 
 // Stochastic AA dither uses hash21 from NOISE_GLSL (Hoskins canonical naming:
 // 2-in 1-out). Removed local duplicate to avoid GLSL redefinition error now
@@ -287,10 +285,15 @@ void fetchLeafData(float idx, out vec4 mat, out vec4 tone, out vec4 pat) {
 // surface-color overlay (no geometry change). Uses the surface normal to
 // pick a 2D projection so brick / hex courses align with the world up-axis
 // regardless of which way the wall faces.
-vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat) {
+vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat, float fw) {
   int code = int(pat.x + 0.5);
   float scale = pat.y;
-  float strength = pat.z;
+  // W12 pattern-AA: ew = pixel footprint in pattern space. Edge smoothsteps
+  // widen to ew so distant features (sub-pixel) blur instead of shimmering, and
+  // the pattern fades into the flat base once a tile is smaller than a pixel.
+  float ew = fw * scale;
+  float patFade = 1.0 - smoothstep(0.6, 1.4, ew);
+  float strength = pat.z * patFade;
   vec3 nAbs = abs(normal);
 
   if (code == 1) {
@@ -307,7 +310,7 @@ vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat) {
     }
     vec2 bp = brickPattern2(uv * scale, vec2(1.0, 0.4));
     float brickTint = 0.80 + 0.40 * bp.x;
-    float mortar = smoothstep(0.0, 0.05, bp.y);  // 1 = brick face, 0 = mortar
+    float mortar = smoothstep(0.0, max(0.05, ew), bp.y);  // 1 = brick face, 0 = mortar
     vec3 brickColor = base * brickTint;
     vec3 mortarColor = base * 0.45;
     return mix(base, mix(mortarColor, brickColor, mortar), strength);
@@ -324,14 +327,14 @@ vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat) {
     }
     vec2 hp = hexTile(uv * scale, 1.0);
     float hexTint = 0.85 + 0.30 * hp.x;
-    float grid = smoothstep(0.0, 0.04, hp.y);
+    float grid = smoothstep(0.0, max(0.04, ew), hp.y);
     return mix(base, base * hexTint * grid, strength);
   }
   if (code == 3) {
     // cells — voronoi 3D, naturally orientation-independent
     vec3 vor = voronoi3D(worldP * scale);
     float cellTint = 0.78 + 0.44 * vor.x;
-    float edge = smoothstep(0.0, 0.08, vor.z);
+    float edge = smoothstep(0.0, max(0.08, ew), vor.z);
     return mix(base, base * cellTint * (0.7 + 0.3 * edge), strength);
   }
   if (code == 4) {
@@ -806,8 +809,8 @@ void main() {
       // Analytic pixel footprint on the ground (no fwidth → GLSL ES 1.00 safe):
       // grows with hit distance t and with grazing angle (1/|rd.y|) so distant /
       // shallow tiles average to grey instead of shimmering.
-      float fpw = t * 1.33 / max(u_resolution.y, 1.0) / max(abs(rd.y), 0.12);
-      float c = checkersGradBox(p.xz, vec2(fpw));
+      float fpw = filterWidth(t, u_resolution.y, rd.y, 1.5);
+      float c = checkersFiltered(p.xz, vec2(fpw));
       base = mix(vec3(0.26, 0.26, 0.28), vec3(0.16, 0.16, 0.18), c);
     } else {
       base = vec3(0.78, 0.78, 0.80);
@@ -820,7 +823,10 @@ void main() {
     // brick courses are horizontal regardless of which way the wall faces).
     // leafPat was already fetched above in the combined fetchLeafData call.
     if (matId > 1.5 && !isSea && !isMountain && leafPat.x > 0.5) {
-      base = applyPattern(base, p, n, leafPat);
+      // W12 pattern-AA: footprint at the hit (distance + grazing via dot(n,rd))
+      // → ray-differential anti-aliasing inside applyPattern.
+      float patFW = filterWidth(t, u_resolution.y, dot(n, rd), 1.5);
+      base = applyPattern(base, p, n, leafPat, patFW);
     }
 
     if (isSea) {
