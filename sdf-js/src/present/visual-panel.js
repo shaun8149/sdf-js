@@ -122,10 +122,13 @@ export function mountVisualPanel(wrapper, deck, visualId) {
   }
 
   function attachEventHandlers(visual) {
-    wrapper.querySelector('.visual-canvas')?.addEventListener('click', () => {
+    // Menu opens on click — either canvas (traditional variant) or p5-mount (p5-sketch variant)
+    const toggleMenu = () => {
       menuOpen = !menuOpen;
       render();
-    });
+    };
+    wrapper.querySelector('.visual-canvas')?.addEventListener('click', toggleMenu);
+    wrapper.querySelector('.p5-mount')?.addEventListener('click', toggleMenu);
     wrapper.querySelector('.picker-close')?.addEventListener('click', () => {
       pickerOpen = false;
       render();

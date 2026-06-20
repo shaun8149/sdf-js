@@ -11,8 +11,9 @@
 </head>
 <body>
   <div id="sketch-container"></div>
-  <!-- P5.js library loaded first (~900KB) -->
-  <script src="/public/p5.min.js"></script>
+  <!-- P5.js library is loaded DYNAMICALLY after user code is eval'd (see init handler).
+       Loading p5 statically here caused it to auto-init at DOMContentLoaded before
+       window.setup/draw were defined, then sit inert. -->
   <!-- Atlas SDF helper bundle exposes 28 functions as window globals -->
   <script src="/src/present/sdf-helper-bundle.js"></script>
   <script>
@@ -32,11 +33,26 @@
         // Inject branding palette as global
         window.__brandingPalette = e.data.palette || { bg: [255, 255, 255], silhouetteColor: [40, 40, 40] };
         try {
-          // Evaluate user's P5 sketch code. P5 detects globally-defined
-          // setup() and draw() and starts the loop automatically.
-          eval(e.data.code);
-          sketchRunning = true;
-          window.parent.postMessage({ type: 'ready' }, '*');
+          // Indirect eval — runs in global scope so function declarations hoist to window.
+          // (Direct eval() inside this callback would keep setup/draw local to the listener.)
+          window.eval(e.data.code);
+          // Now load p5 dynamically — it auto-detects window.setup/draw on script load.
+          const p5Script = document.createElement('script');
+          p5Script.src = '/public/p5.min.js';
+          p5Script.onload = function () {
+            // P5 1.x auto-runs on script load when DOMContentLoaded has already fired,
+            // detecting window.setup / window.draw that we just defined.
+            sketchRunning = true;
+            window.parent.postMessage({ type: 'ready' }, '*');
+          };
+          p5Script.onerror = function () {
+            window.parent.postMessage({
+              type: 'error',
+              message: 'failed to load /public/p5.min.js',
+              stack: ''
+            }, '*');
+          };
+          document.body.appendChild(p5Script);
         } catch (err) {
           window.parent.postMessage({
             type: 'error',

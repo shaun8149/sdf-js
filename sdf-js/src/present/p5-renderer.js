@@ -73,6 +73,10 @@ export function mountP5Renderer(wrapper, sceneData, palette) {
     iframe.style.borderRadius = '8px';
     iframe.style.background = '#fff';
     iframe.style.display = 'block';
+    // pointer-events: none lets clicks pass through to .p5-mount parent (menu toggle).
+    // visual-panel preview is non-interactive — sketches with mouse input only matter
+    // in full-screen "play" mode (Sprint 4+), which mounts the sketch in a different wrapper.
+    iframe.style.pointerEvents = 'none';
 
     messageListener = (e) => {
       // Only accept messages from our iframe
