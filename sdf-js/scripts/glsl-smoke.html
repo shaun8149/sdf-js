@@ -24,6 +24,7 @@
       import { INTERSECT_GLSL } from '../src/sdf/intersect.js';
       import { FRACTAL_GLSL } from '../src/sdf/fractal.js';
       import { EFFECTS_GLSL } from '../src/sdf/effects.js';
+      import { MATHX_GLSL } from '../src/sdf/mathx.js';
 
       const gl = document.getElementById('c').getContext('webgl2');
       const vsSrc = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
@@ -39,6 +40,7 @@ ${BOUNDS_GLSL}
 ${INTERSECT_GLSL}
 ${FRACTAL_GLSL}
 ${EFFECTS_GLSL}
+${MATHX_GLSL}
 void main(){
   float s = smootherstep(0.5) + parabola(0.5, 2.0) + gain(0.3, 3.0)
     + cubicPulse(0.5, 0.2, 0.5) + smoothstepInteg(0.7) + invSmoothstep(0.4)
@@ -80,6 +82,11 @@ void main(){
     + mengerSDF(vec3(p, 0.5), 3) + sierpinskiSDF(vec3(p, 0.5), 6);
   s += clouds2D(p, 1.0) + planeDeformPolar(p).x + planeDeformTwist(p, 0.5).y
     + feedbackBlend(vec3(0.2), vec3(0.8), 0.5).x + lifeRule(1.0, 2.0);
+  s += qRotate(qFromAxisAngle(vec3(0.0, 0.0, 1.0), 1.57), vec3(p, 0.5)).y
+    + qMul(vec4(0.0, 0.0, 0.0, 1.0), vec4(0.0, 0.0, 0.0, 1.0)).w + fourierSquare(0.25, 8)
+    + triangleArea(vec3(0.0), vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0))
+    + distToTriangle(vec3(p, 1.0), vec3(0.0), vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0))
+    + sphereUV(vec3(p, 0.5)).x;
   gl_FragColor = vec4(vec3(clamp01(s * 0.01)), 1.0);
 }`;
 
@@ -103,7 +110,7 @@ void main(){
         if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
           throw new Error('link: ' + gl.getProgramInfoLog(pr));
         }
-        console.log('GLSL-SMOKE-OK …+fractal+effects');
+        console.log('GLSL-SMOKE-OK …+effects+mathx (all 10 libs)');
         document.title = 'SMOKE OK';
       } catch (e) {
         console.error('GLSL-SMOKE-FAIL ' + e.message);
