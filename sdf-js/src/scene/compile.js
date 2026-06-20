@@ -129,6 +129,9 @@ import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
 import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
+import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
+import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
+import { flowChart3dSDF } from './components/charts/diagrams/flow-chart-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -532,6 +535,34 @@ const PRIMITIVE_FACTORIES = {
       tube: a.tube ?? 0.07,
       headLength: a.headLength ?? 0.34,
       headRadius: a.headRadius ?? 0.16,
+    }),
+  'relationship-graph-3d': (a) =>
+    relationshipGraph3dSDF({
+      count: a.count ?? 6,
+      radius: a.radius ?? 1.3,
+      nodeRadius: a.nodeRadius ?? 0.26,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.05,
+      edges: a.edges ?? null,
+    }),
+  'org-chart-3d': (a) =>
+    orgChart3dSDF({
+      levels: a.levels ?? a.depth ?? 3,
+      branching: a.branching ?? a.fanout ?? 2,
+      nodeW: a.nodeW ?? 0.5,
+      nodeH: a.nodeH ?? 0.3,
+      nodeD: a.nodeD ?? 0.18,
+      levelHeight: a.levelHeight ?? 0.9,
+      spread: a.spread ?? a.width ?? 3.4,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.04,
+    }),
+  'flow-chart-3d': (a) =>
+    flowChart3dSDF({
+      steps: a.steps ?? a.count ?? 4,
+      nodeW: a.nodeW ?? 0.6,
+      nodeH: a.nodeH ?? 0.4,
+      nodeD: a.nodeD ?? 0.2,
+      gap: a.gap ?? 0.55,
+      linkThickness: a.linkThickness ?? a.thickness ?? 0.05,
     }),
   link: (a) =>
     linkSDF({

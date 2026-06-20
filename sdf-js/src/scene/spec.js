@@ -213,6 +213,10 @@ export const PRIMITIVE_TYPES = new Set([
   'circle-stack-3d',
   'circle-segmented-3d',
   'circle-loop-3d',
+  // Sprint 4 node-edge charts — sphere/box nodes + capsule edges (+ cone arrows).
+  'relationship-graph-3d',
+  'org-chart-3d',
+  'flow-chart-3d',
   // Rune Skovbo Johansen's Advanced Terrain Erosion Filter (MPL-2.0 — see
   // src/scene/components/community/rune-erosion-filter.js). CPU-baked
   // heightmap uploaded to GPU as sampler2D u_heightmap. Box-bounded bonsai

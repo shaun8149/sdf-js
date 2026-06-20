@@ -328,6 +328,36 @@
       "file": "circle-loop-3d.json",
       "renderer": "studio",
       "prompt": "Circle · Loop"
+    },
+    {
+      "id": "relationship-graph-3d",
+      "title": "Diagram · Relationship Graph",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "relationship-graph-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Relationship Graph"
+    },
+    {
+      "id": "org-chart-3d",
+      "title": "Diagram · Org Chart",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "org-chart-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Org Chart"
+    },
+    {
+      "id": "flow-chart-3d",
+      "title": "Diagram · Flow Chart",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "flow-chart-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Flow Chart"
     }
   ]
 }
