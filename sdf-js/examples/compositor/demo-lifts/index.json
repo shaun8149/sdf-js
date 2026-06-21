@@ -1298,6 +1298,16 @@
       "file": "deck-tour.json",
       "renderer": "studio",
       "prompt": "Spatial Deck · camera tour (Step 2)"
+    },
+    {
+      "id": "data-labels-proto",
+      "title": "Data labels (SDF) — prototype",
+      "thesisPoint": "Data labels bound to geometry → SDF text-3d (the in-scene half of the two-text-systems split).",
+      "category": "prototype",
+      "status": "ready",
+      "file": "data-labels-proto.json",
+      "renderer": "studio",
+      "prompt": "bar chart with SDF value labels"
     }
   ]
 }
