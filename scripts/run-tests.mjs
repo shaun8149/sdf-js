@@ -131,6 +131,7 @@ const TESTS = [
   { category: 'diagram', file: 'sdf-js/scripts/test-waterfall-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-scatter-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-gantt-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-gauge-3d.mjs' },
 
   // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
   { category: 'diagram', file: 'sdf-js/scripts/test-fishbone-3d.mjs' },

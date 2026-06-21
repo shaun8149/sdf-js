@@ -234,6 +234,7 @@ export const PRIMITIVE_TYPES = new Set([
   'waterfall-3d',
   'scatter-3d',
   'gantt-3d',
+  'gauge-3d', // KPI gauge / speedometer (cockpit dashboards)
   // Sprint 5 Wave C — fishbone / traffic-light / radial-spoke + puzzle-piece.
   'fishbone-3d',
   'traffic-light-3d',
