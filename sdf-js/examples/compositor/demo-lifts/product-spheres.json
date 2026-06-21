@@ -1,0 +1,130 @@
+{
+  "id": "product-spheres",
+  "title": "3D Spheres · Colour cluster",
+  "prompt": "spheres: 3D Spheres · Colour cluster",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"spheres\").",
+  "sceneData": {
+    "v": 1,
+    "name": "3D Spheres · Colour cluster",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "spheres product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "sphere",
+        "args": {
+          "radius": 0.85
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.6
+        },
+        "transform": {
+          "translate": [-1.5, 0.78, 0.2]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.75,
+          "value": 0.6,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.55
+        },
+        "transform": {
+          "translate": [1.4, 0.82, -0.1]
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.88,
+          "value": 0.85,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s3",
+        "type": "sphere",
+        "args": {
+          "radius": 0.42
+        },
+        "transform": {
+          "translate": [0.6, 1.5, -0.3]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s4",
+        "type": "sphere",
+        "args": {
+          "radius": 0.4
+        },
+        "transform": {
+          "translate": [-0.8, 1.45, -0.2]
+        },
+        "material": {
+          "hue": 0.5,
+          "sat": 0.72,
+          "value": 0.7,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.1099999999999999,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "spheres",
+    "costUSD": 0
+  }
+}

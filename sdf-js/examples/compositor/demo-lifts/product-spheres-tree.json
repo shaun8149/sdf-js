@@ -1,0 +1,66 @@
+{
+  "id": "product-spheres-tree",
+  "title": "3D Spheres · Tree structure",
+  "prompt": "spheres: 3D Spheres · Tree structure",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"spheres\").",
+  "sceneData": {
+    "v": 1,
+    "name": "3D Spheres · Tree structure",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "spheres product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "sphere-tree-3d",
+        "args": {
+          "levels": 3,
+          "branching": 2,
+          "rootRadius": 0.4,
+          "levelHeight": 1,
+          "spread": 3
+        },
+        "transform": {
+          "translate": [0, 1.6, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.6,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "spheres",
+    "costUSD": 0
+  }
+}
