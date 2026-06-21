@@ -690,7 +690,7 @@ is the message.
  * atoms (text-3d-extruded, text-3d-pipe) are intentionally EXCLUDED — they are
  * implementation details of other atoms; LLM does not emit them directly.
  */
-const MODE_3D_ADDENDUM = `
+export const MODE_3D_ADDENDUM = `
 
 ## 3D atom catalog (Phase C — clean addendum, 2026-06-22)
 
