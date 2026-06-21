@@ -1182,6 +1182,167 @@ console.log('\n--- venn atom ---');
   ok(!crashed, 'single-set no crash');
 }
 
+// ----- B3 PR 2: shapes/circle-* atoms (frame / loop / segmented / stack) -----
+
+console.log('\n--- circle-frame atom ---');
+{
+  const spec = await getAtomSpec('circle-frame');
+  ok(spec.type === 'circle-frame', 'circle-frame spec.type');
+  ok(spec.category === 'shapes', `category = ${spec.category}`);
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(c, 'circle-frame', { label: 'JC', title: 'Jane Chen' }, 'pseudo3d', {
+    w: 280,
+    h: 280,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+  });
+  ok(recorded.includes('Jane Chen'), 'title rendered');
+  ok(recorded.includes('JC'), 'center label rendered');
+
+  // back=false (open ring only)
+  recorded.length = 0;
+  await renderAtom(c, 'circle-frame', { label: 'AB', back: false }, 'pseudo3d', {
+    w: 240,
+    h: 240,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+  });
+  ok(recorded.includes('AB'), 'open-ring variant label rendered');
+}
+
+console.log('\n--- circle-loop atom ---');
+{
+  const spec = await getAtomSpec('circle-loop');
+  ok(spec.type === 'circle-loop', 'circle-loop spec.type');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'circle-loop',
+    { segments: 4, labels: ['Plan', 'Do', 'Check', 'Act'], title: 'PDCA Cycle' },
+    'pseudo3d',
+    {
+      w: 360,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('PDCA Cycle'), 'title rendered');
+  ok(
+    recorded.includes('Plan') &&
+      recorded.includes('Do') &&
+      recorded.includes('Check') &&
+      recorded.includes('Act'),
+    'all 4 segment labels rendered',
+  );
+
+  // No labels variant, default segments
+  recorded.length = 0;
+  await renderAtom(c, 'circle-loop', {}, 'pseudo3d', {
+    w: 300,
+    h: 300,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'default segments no-labels renders without crash');
+
+  // Segments clamped
+  recorded.length = 0;
+  await renderAtom(c, 'circle-loop', { segments: 99 }, 'pseudo3d', {
+    w: 300,
+    h: 300,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'segments=99 clamps without crash');
+}
+
+console.log('\n--- circle-segmented atom ---');
+{
+  const spec = await getAtomSpec('circle-segmented');
+  ok(spec.type === 'circle-segmented', 'circle-segmented spec.type');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'circle-segmented',
+    {
+      segments: 6,
+      labels: ['Discover', 'Design', 'Build', 'Test', 'Launch', 'Scale'],
+      title: 'Process Phases',
+    },
+    'pseudo3d',
+    {
+      w: 400,
+      h: 400,
+      palette: {
+        bg: [255, 255, 255],
+        silhouetteColor: [0, 0, 0],
+        colors: [
+          [60, 130, 200],
+          [200, 80, 80],
+        ],
+      },
+    },
+  );
+  ok(recorded.includes('Process Phases'), 'title rendered');
+  ok(recorded.includes('Discover') && recorded.includes('Scale'), 'segment labels rendered');
+
+  // No labels variant
+  recorded.length = 0;
+  await renderAtom(c, 'circle-segmented', { segments: 4, innerRatio: 0.4 }, 'pseudo3d', {
+    w: 300,
+    h: 300,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'no-labels variant renders without crash');
+}
+
+console.log('\n--- circle-stack atom ---');
+{
+  const spec = await getAtomSpec('circle-stack');
+  ok(spec.type === 'circle-stack', 'circle-stack spec.type');
+  ok(spec.args.layers.required, 'layers required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'circle-stack',
+    {
+      title: 'Maturity Stack',
+      layers: [
+        { label: 'Foundation', sublabel: 'Year 1' },
+        { label: 'Build', sublabel: 'Year 2' },
+        { label: 'Scale', sublabel: 'Year 3' },
+        { label: 'Optimize', sublabel: 'Year 4+' },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 480,
+      h: 380,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Maturity Stack'), 'title rendered');
+  ok(recorded.includes('Foundation') && recorded.includes('Optimize'), 'layer labels rendered');
+  ok(recorded.includes('Year 1') && recorded.includes('Year 4+'), 'sublabels rendered');
+
+  // Empty layers — no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'circle-stack', { layers: [] }, 'pseudo3d', {
+      w: 300,
+      h: 300,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty layers no crash');
+}
+
 function stubCtxWithIcon(recorded) {
   const c = stubCtxWithEllipse(recorded);
   // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash

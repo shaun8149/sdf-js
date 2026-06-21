@@ -56,6 +56,13 @@ const ATOM_LOADERS = {
   'gear-cluster': () => import('./shapes/gear-cluster.js'),
   'puzzle-pieces': () => import('./shapes/puzzle-pieces.js'),
 
+  // Shapes circle family — B3 PR 2 (2D twins of circle-frame-3d / circle-loop-3d /
+  // circle-segmented-3d / circle-stack-3d).
+  'circle-frame': () => import('./shapes/circle-frame.js'),
+  'circle-loop': () => import('./shapes/circle-loop.js'),
+  'circle-segmented': () => import('./shapes/circle-segmented.js'),
+  'circle-stack': () => import('./shapes/circle-stack.js'),
+
   // Charts/data extensions
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
