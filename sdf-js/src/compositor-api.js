@@ -90,6 +90,7 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
     - mindmap         args: { root:{label,children?:[...]}, title? }
     - relationship-graph args: { nodes:[{id,label,group?,size?,x?,y?}], edges:[{from,to,label?,weight?}], title? }
     - timeline        args: { events:[{date,label,sublabel?}], title?, axisLabel? }
+    - fishbone        args: { effect:string, branches:[{label,causes?:string[]}] (2-8), title? }
 
   CHARTS / HIERARCHY:
     - pyramid         args: { layers:[{label,sublabel?,value?}], title?, inverted? }
@@ -99,6 +100,15 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
 
   CHARTS / MATRIX:
     - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title? }
+
+  CHARTS / AGENDA:
+    - agenda-list     args: { items:[{label,sublabel?}] (1-12), title?, numbered?, highlight? }
+
+  CHARTS / LAYERS:
+    - layer-stack     args: { layers:[{label,sublabel?,color?}] (1-10), title?, direction?:'top-down'|'bottom-up', taper? }
+
+  CHARTS / LISTS:
+    - bullet-list     args: { items:[{label,sublabel?,status?:'done'|'todo'|'highlight'}] (1-12), title? }
 
   SHAPES (decorative iconic — single primitives, 1:1 with 3D shapes/*-3d):
     - arrow           args: { label?, color?, direction?:'right'|'up'|'left'|'down' }

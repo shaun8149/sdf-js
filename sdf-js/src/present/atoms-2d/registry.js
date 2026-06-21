@@ -70,6 +70,13 @@ const ATOM_LOADERS = {
   'sphere-tree': () => import('./shapes/sphere-tree.js'),
   'cube-segmented': () => import('./shapes/cube-segmented.js'),
 
+  // Diagrams / lists / layers / agenda — B3 PR 4 (2D twins of agenda-list-3d /
+  // fishbone-3d / layer-stack-3d / bullet-list-3d). Completes B3.
+  'agenda-list': () => import('./charts/agenda/agenda-list.js'),
+  fishbone: () => import('./charts/diagrams/fishbone.js'),
+  'layer-stack': () => import('./charts/layers/layer-stack.js'),
+  'bullet-list': () => import('./charts/lists/bullet-list.js'),
+
   // Charts/data extensions
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),

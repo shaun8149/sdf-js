@@ -1500,6 +1500,189 @@ console.log('\n--- cube-segmented atom ---');
   ok(true, 'defaults render without crash');
 }
 
+// ----- B3 PR 4: agenda-list / fishbone / layer-stack / bullet-list -----
+
+console.log('\n--- agenda-list atom ---');
+{
+  const spec = await getAtomSpec('agenda-list');
+  ok(spec.type === 'agenda-list', 'agenda-list spec.type');
+  ok(spec.args.items.required, 'items required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'agenda-list',
+    {
+      title: 'Today’s Agenda',
+      items: [
+        { label: 'Recap last quarter', sublabel: '5 min' },
+        { label: 'Goals review', sublabel: '15 min' },
+        { label: 'Next-quarter plan', sublabel: '20 min' },
+        { label: 'Q&A', sublabel: '10 min' },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 520,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Today’s Agenda'), 'title rendered');
+  ok(recorded.includes('Recap last quarter'), 'first label rendered');
+  ok(recorded.includes('5 min') && recorded.includes('10 min'), 'sublabels rendered');
+  ok(recorded.includes('1') && recorded.includes('4'), 'chip numbers rendered');
+
+  // Empty items — no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'agenda-list', { items: [] }, 'pseudo3d', {
+      w: 300,
+      h: 300,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty items no crash');
+}
+
+console.log('\n--- fishbone atom ---');
+{
+  const spec = await getAtomSpec('fishbone');
+  ok(spec.type === 'fishbone', 'fishbone spec.type');
+  ok(spec.args.effect.required, 'effect required');
+  ok(spec.args.branches.required, 'branches required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'fishbone',
+    {
+      title: 'Q3 Conversion Drop',
+      effect: 'Low Conversion',
+      branches: [
+        { label: 'Marketing', causes: ['Targeting', 'Channels'] },
+        { label: 'Product', causes: ['Onboarding'] },
+        { label: 'Pricing', causes: ['Tier confusion'] },
+        { label: 'Support', causes: ['Slow response'] },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 720,
+      h: 380,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Q3 Conversion Drop'), 'title rendered');
+  ok(recorded.includes('Low Conversion'), 'effect rendered (head box)');
+  ok(recorded.includes('Marketing') && recorded.includes('Support'), 'branch labels rendered');
+  ok(
+    recorded.includes('Targeting') && recorded.includes('Slow response'),
+    'sub-cause labels rendered',
+  );
+}
+
+console.log('\n--- layer-stack atom ---');
+{
+  const spec = await getAtomSpec('layer-stack');
+  ok(spec.type === 'layer-stack', 'layer-stack spec.type');
+  ok(spec.args.layers.required, 'layers required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'layer-stack',
+    {
+      title: 'OSI Model',
+      layers: [
+        { label: 'Physical', sublabel: 'Layer 1' },
+        { label: 'Data Link', sublabel: 'Layer 2' },
+        { label: 'Network', sublabel: 'Layer 3' },
+        { label: 'Application', sublabel: 'Layer 7' },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 480,
+      h: 440,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('OSI Model'), 'title rendered');
+  ok(recorded.includes('Physical') && recorded.includes('Application'), 'layer labels rendered');
+  ok(recorded.includes('Layer 1') && recorded.includes('Layer 7'), 'sublabels rendered');
+
+  // top-down direction
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'layer-stack',
+    {
+      layers: [{ label: 'A' }, { label: 'B' }, { label: 'C' }],
+      direction: 'top-down',
+      taper: 0.85,
+    },
+    'pseudo3d',
+    { w: 400, h: 360, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('A') && recorded.includes('C'), 'top-down + taper renders without crash');
+}
+
+console.log('\n--- bullet-list atom ---');
+{
+  const spec = await getAtomSpec('bullet-list');
+  ok(spec.type === 'bullet-list', 'bullet-list spec.type');
+  ok(spec.args.items.required, 'items required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'bullet-list',
+    {
+      title: 'Key Improvements',
+      items: [
+        { label: 'Faster onboarding', status: 'done' },
+        { label: 'Better defaults' },
+        { label: 'Edge-case fixes', status: 'highlight' },
+        { label: 'Docs refresh', status: 'todo' },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 520,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Key Improvements'), 'title rendered');
+  ok(
+    recorded.includes('Faster onboarding') && recorded.includes('Docs refresh'),
+    'all item labels rendered',
+  );
+
+  // Sublabels variant
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'bullet-list',
+    {
+      items: [
+        { label: 'Speed', sublabel: '3× faster' },
+        { label: 'Cost', sublabel: '40% reduction' },
+      ],
+    },
+    'pseudo3d',
+    { w: 400, h: 200, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('3× faster') && recorded.includes('40% reduction'), 'sublabels rendered');
+}
+
 function stubCtxWithIcon(recorded) {
   const c = stubCtxWithEllipse(recorded);
   // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash
