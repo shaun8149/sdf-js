@@ -58,6 +58,16 @@
         atom: { type: 'kpi-card', args: { value: '$10M', label: 'Total ARR' } } },
       { title: 'Long Label',
         atom: { type: 'kpi-card', args: { value: '94%', label: 'Customer Satisfaction Score', sublabel: 'Based on Q3 NPS survey, n=1,250', trend: 'up', trendValue: '+3pt', icon: 'heart' } } },
+      // ---- Bar chart samples (Phase 1a) ----
+      { title: 'Bar — Quarterly Revenue',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' } } },
+      { title: 'Bar — Market Share',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [32, 23, 11, 8, 26], labels: ['AWS', 'Azure', 'GCP', 'Alibaba', 'Others'], format: 'percent', title: 'Cloud Market Share' } } },
+      { title: 'Bar — Survey Response',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [62, 48, 35, 22, 18, 12], labels: ['Pricing', 'UX', 'Speed', 'Docs', 'Mobile', 'API'], format: 'number', title: 'Top Pain Points (% mentions)' } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
@@ -97,13 +107,14 @@
         card.innerHTML = `<h3>${sample.title}</h3>`;
 
         const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 180;
+        const sz = sample.size || { w: 320, h: 180 };
+        canvas.width = sz.w;
+        canvas.height = sz.h;
         card.appendChild(canvas);
 
         const sceneData = {
           subjects: [
-            { ...sample.atom, x: 20, y: 20, w: 280, h: 140, style: 'pseudo3d' },
+            { ...sample.atom, x: 20, y: 20, w: sz.w - 40, h: sz.h - 40, style: 'pseudo3d' },
           ],
         };
         const result = await renderSceneDataToCanvas(canvas, sceneData, { palette });
