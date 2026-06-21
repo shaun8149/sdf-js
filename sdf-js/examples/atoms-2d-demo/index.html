@@ -68,6 +68,26 @@
       { title: 'Bar — Survey Response',
         size: { w: 540, h: 280 },
         atom: { type: 'bar', args: { values: [62, 48, 35, 22, 18, 12], labels: ['Pricing', 'UX', 'Speed', 'Docs', 'Mobile', 'API'], format: 'number', title: 'Top Pain Points (% mentions)' } } },
+      // ---- Line chart samples (Phase 1b) ----
+      { title: 'Line — Revenue Trajectory',
+        size: { w: 540, h: 300 },
+        atom: { type: 'line', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)', showValues: true } } },
+      { title: 'Line — With Annotation',
+        size: { w: 540, h: 300 },
+        atom: { type: 'line', args: { values: [120, 142, 168, 240, 285, 310], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], format: 'number', title: 'MAU (thousands)', annotations: [{ index: 3, text: '↑ feature launch' }] } } },
+      { title: 'Line — Steady Growth',
+        size: { w: 540, h: 280 },
+        atom: { type: 'line', args: { values: [85, 88, 92, 94, 96, 95, 97], labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7'], format: 'percent', title: 'Weekly Retention' } } },
+      // ---- Pie chart samples (Phase 1b) ----
+      { title: 'Pie — Solid Cloud Share',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [32, 23, 11, 8, 26], labels: ['AWS', 'Azure', 'GCP', 'Alibaba', 'Others'], format: 'percent', title: 'Cloud Market Share' } } },
+      { title: 'Pie — Donut + Center Label',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [45, 25, 15, 10, 5], labels: ['Eng', 'Sales', 'Marketing', 'Support', 'Other'], format: 'percent', title: 'Headcount Split', donutRatio: 0.55, centerLabel: '120' } } },
+      { title: 'Pie — Revenue by Segment',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [4.2, 2.1, 1.5, 0.8], labels: ['Enterprise', 'Mid-market', 'SMB', 'Indie'], format: 'currency', title: 'Revenue $M by Segment', donutRatio: 0.4 } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }

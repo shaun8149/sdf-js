@@ -321,5 +321,157 @@ console.log('\n--- bar atom ---');
   );
 }
 
+// ----- line atom (Phase 1b) -----
+console.log('\n--- line atom ---');
+{
+  const spec = await getAtomSpec('line');
+  ok(spec.type === 'line', 'line spec.type');
+  ok(spec.args.annotations.type.includes('index'), 'annotations spec describes shape');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'line',
+    {
+      values: [1.2, 1.8, 2.4, 3.1],
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      format: 'currency',
+      title: 'Revenue Trajectory',
+      annotations: [{ index: 2, text: '↑ launch' }],
+      showValues: true,
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 480, h: 280, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Revenue Trajectory'), 'title rendered');
+  ok(recorded.includes('Q1') && recorded.includes('Q4'), 'x labels rendered');
+  ok(
+    recorded.includes('$1.2') && recorded.includes('$3.1'),
+    'value labels rendered (showValues=true)',
+  );
+  ok(
+    recorded.some((t) => String(t).includes('launch')),
+    'annotation text rendered',
+  );
+
+  // n < 2 = no-op
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(c, 'line', { values: [1], labels: ['only'] }, 'pseudo3d', {
+      w: 100,
+      h: 100,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'n=1 no crash (silently no-op)');
+}
+
+// ----- pie atom (Phase 1b) -----
+console.log('\n--- pie atom ---');
+{
+  const spec = await getAtomSpec('pie');
+  ok(spec.type === 'pie', 'pie spec.type');
+  ok(spec.args.donutRatio.default === 0, 'donutRatio defaults to 0 (solid pie)');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'pie',
+    {
+      values: [32, 23, 11, 8, 26],
+      labels: ['AWS', 'Azure', 'GCP', 'Alibaba', 'Others'],
+      format: 'percent',
+      title: 'Cloud Market Share',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 400, h: 300, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Cloud Market Share'), 'title rendered');
+  ok(
+    recorded.some((t) => String(t).includes('AWS') && String(t).includes('32')),
+    'AWS label + 32% rendered',
+  );
+  ok(
+    recorded.some((t) => String(t).includes('Alibaba') && String(t).includes('8')),
+    'Alibaba label + 8% rendered',
+  );
+
+  // Donut mode + center label
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'pie',
+    {
+      values: [45, 25, 15, 10, 5],
+      labels: ['A', 'B', 'C', 'D', 'E'],
+      donutRatio: 0.55,
+      centerLabel: '120',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 400, h: 300, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('120'), 'donut center label drawn');
+
+  // Zero sum no crash
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(c, 'pie', { values: [0, 0, 0], labels: ['a', 'b', 'c'] }, 'pseudo3d', {
+      w: 100,
+      h: 100,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'zero-sum values → no crash');
+}
+
+// Shared stub ctx factory (used by tests above + may be used in future atom tests)
+function stubCtx(recorded) {
+  const c = {};
+  const noop = () => {};
+  for (const m of [
+    'save',
+    'restore',
+    'beginPath',
+    'closePath',
+    'moveTo',
+    'lineTo',
+    'quadraticCurveTo',
+    'arc',
+    'stroke',
+    'fill',
+    'fillRect',
+  ]) {
+    c[m] = noop;
+  }
+  c.measureText = (t) => ({ width: String(t).length * 7 });
+  c.createLinearGradient = () => ({ addColorStop: noop });
+  c.createRadialGradient = () => ({ addColorStop: noop });
+  c.fillText = (t) => recorded.push(t);
+  for (const p of [
+    'fillStyle',
+    'strokeStyle',
+    'lineWidth',
+    'lineCap',
+    'lineJoin',
+    'shadowColor',
+    'shadowBlur',
+    'shadowOffsetY',
+    'font',
+    'textAlign',
+    'textBaseline',
+  ]) {
+    Object.defineProperty(c, p, { set() {} });
+  }
+  return c;
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
