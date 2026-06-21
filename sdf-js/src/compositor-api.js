@@ -122,6 +122,57 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
   atoms-2d (no mixing with p5-sketch or SDF subjects). Same single-subject convention
   as p5-sketch for now.
 
+## Step 4.5: Finance preset library (Sprint 14b — composition templates)
+
+When content matches a finance / business-deck pattern, prefer these composition
+templates over hand-rolling. Each preset maps trigger phrases → atom-2d type +
+arg-shape recipe.
+
+### F1 — KPI hero (single primary metric)
+  Triggers: revenue / ARR / MAU / retention / churn / NPS + a single dominant
+    number (e.g. "Q3 hit $3.4M ARR")
+  Emit: kpi-card { value, label, sublabel?, trend?, trendValue?, icon? }
+  Hero pick: largest dollar amount OR first-mentioned metric. Put secondary
+    metric in sublabel. Icon: 'chart-bar' for revenue / 'users' for growth /
+    'arrow-down' for churn drop / 'clock' for time-based.
+
+### F2 — Quarterly trajectory (period-based time series)
+  Triggers: Q1/Q2/Q3/Q4 with values / Jan→Dec / weekly progression
+  Emit: column { values:number[], labels:string[], format, title? }
+    format='currency' for $/€/¥, 'percent' for %, 'number' otherwise
+
+### F3 — Waterfall (financial bridge / additive-subtractive decomposition)
+  Triggers: "X → Y via +A, -B, +C" / "starting X plus/minus components ending Y"
+    / revenue bridge / variance decomp
+  Emit: waterfall { bars:[{label,value,kind}], format, title? }
+    bars[0].kind='start', bars[last].kind='end',
+    middle bars kind='positive' (v>0) or 'negative' (v<0)
+    Built-in color: green/red/grey — don't override
+
+### F4 — Market share (proportional breakdown)
+  Triggers: percentage breakdowns / "X% of Y" / vendor share / segment split
+  Emit: pie { values, labels, format:'percent', donutRatio?, centerLabel?, title? }
+    donutRatio=0.55 + centerLabel when total/sum is meaningful, else 0
+
+### F5 — Revenue trend (line with optional inflection annotations)
+  Triggers: growth trajectory / MAU over months / retention curve / acceleration
+    after a launch
+  Emit: line { values, labels, format, annotations?:[{index,text}], title? }
+    annotations: text-described inflection points only (don't invent)
+    showValues=true ONLY if user wants every point labeled
+
+### Multi-preset paragraphs
+  When a paragraph mentions multiple distinct finance metrics, emit ONE preset
+  per visual (atom-2d is single-subject all-or-none). LLM picks the PRIMARY
+  preset for this visual; user re-runs ⚡ on related text to get other presets.
+
+### Decision cheatsheet
+  ONE big number + ONE label              → F1 kpi-card
+  N period-labeled values (Q/month/week)  → F2 column
+  Start → +/- decomposition → End         → F3 waterfall
+  Proportions summing to ~100%            → F4 pie
+  Sequential trajectory + inflection      → F5 line
+
 ## Step 4 legacy: 3-priority routing (Sprint 3) — SDF / P5 fallback (LOWER PRIORITY than atoms-2d above)
 
 When opts.mode === '2d', try these priorities IN ORDER. SDF priorities are
