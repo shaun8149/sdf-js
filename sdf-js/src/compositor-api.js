@@ -77,6 +77,11 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
     - waterfall       args: { bars:[{label,value,kind?:'start'|'positive'|'negative'|'end'}], format?, title? }
     - gantt           args: { tasks:[{label,start,end,color?,complete?}], periods?, title? }
     - sphere-fill     args: { value:0-100, label?, color?:[r,g,b], background?:'dark'|'light' }
+    - gauge           args: { value:0-1, label?, format?:'percent'|'number', title?, min?, max? }
+    - radial-spoke    args: { values:number[] (0-1), labels?, title?, colors? }
+    - scatter         args: { points:[{x:0-1, y:0-1, label?, group?, color?}], xAxis?, yAxis?, title? }
+    - traffic-light   args: { lights:[{color:'red'|'amber'|'green'|'blue'|[r,g,b], active?, label?}], title? }
+    - venn            args: { sets:[{label,color?,sublabel?}] (2-5), overlap?:0-1, title? }
 
   CHARTS / DIAGRAMS:
     - flow-chart      args: { steps:string[], sublabels?, highlight?, title?, orientation? }
