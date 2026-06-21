@@ -680,6 +680,199 @@ is the message.
 `;
 
 /**
+ * Appended to system prompt when callLiftLLM is invoked with opts.mode === '3d'.
+ *
+ * Phase C (2026-06-22) clean catalog of 41 user-facing 3D presentation atoms,
+ * organized parallel to MODE_2D_ADDENDUM, with the text-rendering layer split
+ * locked: ambient titles/subtitles → DOM overlay; object-attached labels → SDF.
+ *
+ * Scope: presentation atoms only (NOT scene composites in /atoms/). Typography
+ * atoms (text-3d-extruded, text-3d-pipe) are intentionally EXCLUDED — they are
+ * implementation details of other atoms; LLM does not emit them directly.
+ */
+const MODE_3D_ADDENDUM = `
+
+## 3D atom catalog (Phase C — clean addendum, 2026-06-22)
+
+This catalog supersedes scattered atom mentions in the legacy prompt above.
+When emitting \`subjects[].type\`, use the literal kebab-case type strings
+listed here.
+
+## ⚡ Text rendering layer split (CRITICAL — 2026-06-22 LOCK)
+
+Atlas 3D output has TWO independent text layers:
+
+**Layer 1 — SDF text (text-3d / glyphs / glyphs-pipe)**
+Only for **short data labels attached to a 3D object**. Examples:
+  - "$3.4M" centered on a kpi-card-3d
+  - "Q1 / Q2 / Q3" labels on individual bars in bar-3d
+  - "80%" overlaid on a sphere in sphere-fill-3d
+  - "Marketing / Product / Pricing" branch labels on fishbone-3d ribs
+These render IN the 3D world. Camera transforms apply. Cost is per-character
+SDF primitives — keep label strings short (≤ ~20 chars).
+
+**Layer 2 — DOM overlay layer**
+All ambient narrative text. Examples:
+  - Slide title "3D SPHERES - FILL LEVELS"
+  - Subtitle / template name "POWERPOINT TEMPLATE"
+  - Author / date / version metadata
+  - Body paragraphs / section dividers
+Renders as CSS Inter font ABOVE the canvas. NOT subject to 3D camera transforms.
+
+### Lift output schema (Phase C — extends prior SceneData v1)
+
+\`\`\`
+{
+  "v": 1,
+  "name": "...",
+  "subjects": [ ... ],     // 3D geometry + object-attached data labels (SDF)
+  "overlay": {              // ambient narrative text (NOT in SceneData proper)
+    "title": "...",         // big slide title (top)
+    "subtitle": "...",      // subtitle / framing copy
+    "author": "...",        // optional
+    "date": "...",          // optional
+    "version": "..."        // optional
+  }
+}
+\`\`\`
+
+**Rule of thumb**: does the text move with the camera (stick to a 3D object)?
+  - YES → object-attached → SDF (live inside atom's args)
+  - NO  → ambient → \`overlay\` field
+
+NEVER emit subjects with type \`text-3d-extruded\` or \`text-3d-pipe\` directly.
+These are internal — they are used internally by other atoms (kpi-card-3d, etc.)
+to render their data labels.
+
+## Atom catalog by category
+
+### CHARTS / AGENDA
+  - agenda-list-3d    args: { items?:number, rowHeight?, chipSize?, lineW?, lineH?, depth? }
+                      → numbered chip rows + content bars (meeting agenda)
+
+### CHARTS / DATA
+  - bar-3d            args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → vertical bars driven by values[]  [3D Option C: gaining labels/title/format]
+  - column-3d         args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → horizontal bars  [3D Option C: gaining labels/title/format]
+  - line-3d           args: { values?:number[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
+                      → polyline + point markers (time-series, radar)  [3D Option C: gaining labels/title]
+  - pie-3d            args: { values?:number[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
+                      → pie / donut (innerRadius>0)  [3D Option C: gaining labels/title]
+  - sphere-fill-3d    args: { levels?:number[], count?, radius?, spacing?, cage?, cageThickness?, fillScale? }
+                      → row of glass spheres with liquid fills (e.g. "20%/40%/80%" object-attached label per sphere)
+  - kpi-card-3d       args: { width?, height?, depth?, cornerRadius?, value?:number, label?:string, unit?:string, trend?:'up'|'down'|'flat', trendValue?:number }
+                      → rounded KPI card (value/label/unit are object-attached, render via internal text-3d)
+  - funnel-3d         args: { stages?:number, topRadius?, bottomRadius?, stageHeight?, gap? }
+                      → sales / conversion funnel
+  - gauge-3d          args: { value:0..1, radius?, tube?, needleLen?, needleWidth?, depth? }
+                      → speedometer dial (KPI gauge)
+  - gantt-3d          args: { tasks?:number, segments?:[{start,dur}], rowHeight?, barH?, depth?, trackLength? }
+                      → schedule / project timeline
+  - radial-spoke-3d   args: { spokes?:number, hubRadius?, spokeThickness?, minLen?, maxLen?, nodeRadius? }
+                      → spider / radar / radial bars
+  - scatter-3d        args: { count?, spread?, dotRadius?, axes?:boolean, axisRadius? }
+                      → XY dot cloud with L-axes
+  - traffic-light-3d  args: { lights?:number, lightRadius?, spacing?, housingPad?, depth? }
+                      → RAG status indicator
+  - venn-3d           args: { sets?:2..5, radius?, tube?, overlap? }
+                      → overlapping rings
+  - waterfall-3d      args: { count?:number, deltas?:number[], barW?, gap?, depth? }
+                      → cumulative gains/losses bridge
+
+### CHARTS / DIAGRAMS
+  - flow-chart-3d        args: { steps?:number, nodeW?, nodeH?, nodeD?, gap?, linkThickness? }
+                         → left-to-right process flow (boxes + connectors)
+  - tree-diagram-3d      args: { levels?:1..5, branching?:1..4, nodeRadius?, levelWidth?, spread?, linkThickness? }
+                         → left-to-right branching tree (sphere nodes)
+  - org-chart-3d         args: { levels?:1..5, branching?:1..5, nodeW?, nodeH?, nodeD?, levelHeight?, spread?, linkThickness? }
+                         → top-down org chart (box cards)
+  - mindmap-3d           args: { branches?:number, centerRadius?, branchRadius?, leafRadius?, mainDist?, leafDist?, leavesPerBranch?, linkThickness? }
+                         → radial mind map (centre + branches + leaves)
+  - relationship-graph-3d args: { count?, radius?, nodeRadius?, linkThickness?, edges?:[[i,j]] }
+                         → node-link network (ring layout + chords)
+  - timeline-3d          args: { count?, axisLength?, axisRadius?, markerRadius?, stemHeight?, stemThickness?, alternate? }
+                         → horizontal axis + milestone markers
+  - fishbone-3d          args: { ribs?:number, spineLength?, spineRadius?, ribLength?, ribThickness?, headSize? }
+                         → Ishikawa root-cause diagram (head + spine + alternating ribs)
+
+### CHARTS / HIERARCHY
+  - pyramid-3d        args: { levels?:1..20, baseWidth?, topWidth?, layerHeight?, gap?, depth? }
+                      → stacked tapered tiers
+
+### CHARTS / LAYERS
+  - layer-stack-3d    args: { layers?:number, layerW?, layerD?, layerH?, gap?, taper? }
+                      → stacked wide slabs (OSI / tech stack / strata)
+
+### CHARTS / LISTS
+  - bullet-list-3d    args: { items?:number, rowHeight?, bulletRadius?, lineW?, lineH?, depth? }
+                      → round bullet rows + content bars
+
+### CHARTS / MATRIX
+  - matrix-grid-3d    args: { rows?:1..6, cols?:1..6, cardW?, cardH?, cardD?, gap? }
+                      → N×M card grid (SWOT / 2×2 / BCG)  [3D Option C: gaining cells array data]
+
+### CHARTS / PROGRESSION
+  - progression-3d    args: { steps?:number, run?, stepRise?, depth? }
+                      → ascending staircase (growth / maturity)
+
+### ICONS
+  - business-icon     args: { name:'arrow-up'|'arrow-down'|'check'|'x-mark'|'dollar'|'percent'|'person'|'gear'|'document'|'calendar', size?, thickness?, depth? }
+                      → 10 core business icons (extruded). Use for small decoration / status badges.
+
+### PRESENTATION
+  - cover-3d          args: { stageWidth?, stageDepth?, stageThickness?, backdropHeight?, backdropThickness?, cornerRadius?, title?:string, subtitle?:string }
+                      → stage + backdrop cover composition. NOTE: title/subtitle/author/date/version belong in the top-level \`overlay\` field, NOT in args.  [3D Option C: gaining author/date/version + formal overlay routing]
+
+### SHAPES (single primitives)
+  - arrow-3d          args: { length?, shaftWidth?, headLength?, headWidth?, depth?, double? }
+                      → directional arrow (single or double-headed)
+  - cube-3d           args: { count?, arrangement?:'row'|'flow'|'semicircle'|'hub-spokes'|'steps'|'stack'|'tower'|'grid'|'grid3d'|'cluster', cubeSize?, cornerRadius?, spacing?, arrangementParams?, labels?, material?, colors?, connector? }
+                      → parameterized cube arrangement (rich layout modes — use for "N modules" / process steps / cluster diagrams)
+  - cube-segmented-3d args: { segments?, size?, gap?, axis?:'x'|'y'|'z' }
+                      → ONE cube sliced into N parallel slabs (sliced-bread look)
+  - diamond-3d        args: { width?, crownHeight?, pavilionHeight?, tableRatio? }
+                      → brilliant-cut gem (value / premium)
+  - gear-3d           args: { teeth?, radius?, thickness?, toothDepth?, toothWidth?, holeRadius? }
+                      → cog wheel
+  - puzzle-piece-3d   args: { size?, depth?, knob? }
+                      → SINGLE jigsaw piece (tab + blank). Distinct from 2D \`puzzle-pieces\` (multi).
+
+### SHAPES (circle family)
+  - circle-frame-3d   args: { radius?, frameWidth?, backDepth?, back? }
+                      → avatar / photo frame (ring + optional backing disk)
+  - circle-loop-3d    args: { segments?, radius?, tube?, headLength?, headRadius? }
+                      → cycle arrows around a ring (PDCA / lifecycle)
+  - circle-segmented-3d args: { segments?, radius?, innerRatio?, thickness?, gapWidth? }
+                      → flat segmented donut ring
+  - circle-stack-3d   args: { count?, radius?, taper?, diskHeight?, gap? }
+                      → tiered disks (wedding-cake / coin pile)
+
+### SHAPES (sphere family)
+  - sphere-network-3d args: { count?, hubRadius?, satelliteRadius?, radius?, linkThickness?, arrangement?:'ring'|'ring-xy'|'sphere' }
+                      → hub + N satellites with links
+  - sphere-segmented-3d args: { segments?:2..24, radius?, explode?, gapAngle? }
+                      → sphere split into longitudinal orange wedges
+  - sphere-tree-3d    args: { levels?:1..5, branching?:1..5, rootRadius?, radiusFalloff?, levelHeight?, spread?, linkThickness? }
+                      → top-down hierarchical sphere tree
+
+## Constraints
+
+- \`text-3d-extruded\` / \`text-3d-pipe\` are NEVER emitted as subjects. They are
+  used internally by other atoms (kpi-card-3d, etc.) for object-attached labels.
+- Slide titles and ambient copy go in the top-level \`overlay\` field, NOT in
+  \`subjects[].args.title\` or as separate text-3d subjects.
+- For 2D→3D lift mapping, the 2D atom's \`title\` arg maps to \`overlay.title\`;
+  data-bearing args (values, labels, items, sets) map to the equivalent 3D atom args.
+- Several 3D atoms are being updated by the 3D-side Option C effort to accept
+  data arrays + labels (bar-3d, column-3d, line-3d, pie-3d, sphere-fill-3d,
+  matrix-grid-3d, cover-3d). Lift LLM should write forward-compatible args:
+  if a 2D atom carries \`labels: ['Q1','Q2','Q3','Q4']\`, include that in the 3D
+  atom args even if the 3D atom currently ignores it. The 3D side will pick it
+  up once Option C lands.
+`;
+
+/**
  * Convert spherical camera coords (target + yaw/pitch/distance) to Cartesian
  * eye position. Used by all 3D renderers when applying `scene.cameraStatic`.
  *
@@ -924,7 +1117,9 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
         text:
           opts.mode === '2d'
             ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
-            : CACHED_SYSTEM_PROMPT_LIFT,
+            : opts.mode === '3d'
+              ? CACHED_SYSTEM_PROMPT_LIFT + MODE_3D_ADDENDUM
+              : CACHED_SYSTEM_PROMPT_LIFT,
         cache_control: { type: 'ephemeral' },
       },
     ],
