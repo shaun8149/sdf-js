@@ -73,12 +73,11 @@ Suggested decision line in the prompt:
   path keeps working; both coexist).
 - **Anchors mirror each atom's own layout** (same formulas the prompt documents),
   so labels land exactly on the rendered elements.
-- **Coverage NOW:** `bar-3d` / `column-3d` / `line-3d` / `pie-3d` — verified
-  end-to-end (#90). The 2D side can switch these to `args.labels` immediately.
-- **Follow-up (3D side):** `sphere-fill-3d` (labels parallel to `levels`) +
-  `matrix-grid-3d` (row-major `rows*cols` array) — connector extension to land
-  before the prompt uses `labels` for them; until then keep those two on
-  hand-emitted subjects.
+- **Coverage NOW (all six the addendum documents):** `bar-3d` / `column-3d` /
+  `line-3d` / `pie-3d` (#90), plus `sphere-fill-3d` (labels parallel to `levels`)
+  and `matrix-grid-3d` (row-major `rows*cols` array, row 0 on top) — connector
+  extension landed + browser-verified (SWOT S/W/O/T in the right corners). The
+  2D side can switch all six to `args.labels`.
 - **Not covered:** tree-shaped atoms (`tree-diagram-3d` / `org-chart-3d` /
   `mindmap-3d`) — internal node order undocumented (addendum's "open question for
   Phase D"). Keep on hand-emitted subjects until anchors exist.

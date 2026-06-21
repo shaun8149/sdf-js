@@ -9,6 +9,8 @@ export {
   lineAnchors,
   columnAnchors,
   pieAnchors,
+  sphereFillAnchors,
+  matrixAnchors,
   placeLabels,
   ANCHOR_FOR,
   expandChartLabels,

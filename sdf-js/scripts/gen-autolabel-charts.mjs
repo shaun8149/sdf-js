@@ -107,6 +107,45 @@ const DEMOS = [
     },
     cam(1.4, 9),
   ),
+  wrap(
+    'chart-autolabel-spherefill',
+    'Sphere-fill · auto-labels (#84 connector)',
+    'kpi-hero: Fill levels',
+    {
+      id: 'sf',
+      type: 'sphere-fill-3d',
+      args: {
+        levels: [0.2, 0.5, 0.8, 1.0],
+        labels: ['20%', '50%', '80%', '100%'],
+        radius: 0.6,
+        spacing: 0.4,
+      },
+      transform: { translate: [0, 1.0, 0] },
+      material: BLUE,
+    },
+    cam(1.0, 9),
+  ),
+  wrap(
+    'chart-autolabel-matrix',
+    'Matrix (SWOT) · auto-labels (#84 connector)',
+    'compare: SWOT',
+    {
+      id: 'mx',
+      type: 'matrix-grid-3d',
+      args: {
+        rows: 2,
+        cols: 2,
+        labels: ['S', 'W', 'O', 'T'],
+        cardW: 1.1,
+        cardH: 0.85,
+        cardD: 0.2,
+        gap: 0.22,
+      },
+      transform: { translate: [0, 1.3, 0] },
+      material: BLUE,
+    },
+    cam(1.3, 8),
+  ),
 ];
 
 const idxPath = `${OUT}/index.json`;
