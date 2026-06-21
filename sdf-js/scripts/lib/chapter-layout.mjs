@@ -58,13 +58,21 @@ export function pickLayout(n) {
 }
 
 // Build a chapter's flattened subjects + touring cameraSequence shots.
-// stations: [{ subjects:[…], cx, cy, cz }]  (cx/cy/cz = the station's own centre;
-// each station's subjects are recentred to its layout position).
-// idPrefix: globally-unique subject id prefix. Returns { subjects, shots }.
+// stations: [{ subjects:[…], cx, cy, cz, title? }]  (cx/cy/cz = the station's own
+// centre; each station's subjects are recentred to its layout position; title =
+// the per-station caption text — provenance, e.g. the source slide's name).
+// idPrefix: globally-unique subject id prefix.
+// Returns { subjects, shots, stationTitles:[{ t, title }] } where t = the time
+// (seconds, from the sequence start) at which the camera begins moving to that
+// station — the Layer-2 deck player switches the caption main line at each t.
+const TRAVEL = 2.4,
+  DWELL = 1.6;
 export function buildChapter(stations, kind, ty, idPrefix) {
   const places = layout(kind, stations.length, ty);
   const subjects = [];
   const shots = [];
+  const stationTitles = [];
+  let t = 0;
   stations.forEach((st, i) => {
     const { pos, cam } = places[i];
     const cx = st.cx ?? 0,
@@ -82,9 +90,11 @@ export function buildChapter(stations, kind, ty, idPrefix) {
         },
       });
     });
+    if (st.title) stationTitles.push({ t: Math.round(t * 100) / 100, title: st.title });
     const fr = { pos: cam.pos, target: cam.target, fov: 33, ease: 'smooth' };
-    shots.push({ duration: 2.4, ...fr, transition: i === 0 ? 'cut' : 'blend' });
-    shots.push({ duration: 1.6, ...fr, transition: 'blend' });
+    shots.push({ duration: TRAVEL, ...fr, transition: i === 0 ? 'cut' : 'blend' });
+    shots.push({ duration: DWELL, ...fr, transition: 'blend' });
+    t += TRAVEL + DWELL;
   });
-  return { subjects, shots };
+  return { subjects, shots, stationTitles };
 }

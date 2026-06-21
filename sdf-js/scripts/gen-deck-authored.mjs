@@ -133,8 +133,11 @@ function flushChapter() {
     cx: sl.cx,
     cy: sl.cy,
     cz: sl.cz,
+    // provenance: the per-station caption inherits the SOURCE slide's name —
+    // every word the viewer reads traces back to the real slide, never invented.
+    title: sl.sd.name || sl.id,
   }));
-  const { subjects, shots } = buildChapter(stations, kind, cy, `c${chapterIdx}s`);
+  const { subjects, shots, stationTitles } = buildChapter(stations, kind, cy, `c${chapterIdx}s`);
   const id = `deck-auth-ch${chapterIdx}`;
   const seg = wrap(id, `Chapter ${chapterIdx + 1} · ${chapterBuf.length} slides (${kind})`, {
     v: 1,
@@ -150,7 +153,8 @@ function flushChapter() {
     file: `${id}.json`,
     title: seg.title,
     kind: 'chapter',
-    durationSec: Math.round(shots.length * 2.2 * 10) / 10,
+    stationTitles,
+    durationSec: shots.reduce((a, s) => a + s.duration, 0),
   });
   chapterIdx++;
   chapterBuf = [];

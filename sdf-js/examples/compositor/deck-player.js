@@ -67,10 +67,11 @@ function makeCaption(wrap) {
   el.appendChild(sub);
   wrap.appendChild(el);
   return {
-    set(title, kind, i, n) {
-      main.textContent = title || '';
-      sub.textContent = `${kind === 'chapter' ? 'Chapter' : 'Slide'} · ${i + 1} / ${n}`;
+    set(mainText, subText) {
+      main.textContent = mainText || '';
+      sub.textContent = subText || '';
     },
+    setMain: (mainText) => (main.textContent = mainText || ''),
     show: () => (el.style.opacity = '1'),
     hide: () => (el.style.opacity = '0'),
   };
@@ -102,6 +103,7 @@ async function playDeck(id) {
     if (caption) caption.hide();
     fade(0);
     await sleep(FADE_MS);
+    let seqStart = performance.now();
     try {
       await window.atlasLoadScene({
         id: `${id}-seg${i}`,
@@ -109,20 +111,37 @@ async function playDeck(id) {
         file: seg.file,
         renderer: 'studio',
       });
+      seqStart = performance.now(); // sequence clock starts ~now (post-load)
     } catch (e) {
       console.error('[deck-player] segment load failed', seg, e);
     }
     await sleep(240); // let the new shader compile behind the fade
     fade(1);
     const dwell = Math.max(1, Number(seg.durationSec) || 6);
+    let ticker = null;
     if (caption) {
-      caption.set(seg.title, seg.kind, i, n);
+      const stations = Array.isArray(seg.stationTitles) ? seg.stationTitles : [];
+      const subline = `${seg.kind === 'chapter' ? 'Chapter' : 'Slide'} ${i + 1} / ${n}`;
+      if (stations.length) {
+        // per-station caption: switch the MAIN line as the camera reaches each
+        // station (station.t = seconds from sequence start). Sub = deck position.
+        const pick = () => {
+          const el = (performance.now() - seqStart) / 1000;
+          let cur = stations[0];
+          for (const s of stations) if (s.t <= el) cur = s;
+          caption.set(cur.title, subline);
+        };
+        pick();
+        ticker = setInterval(pick, 150);
+      } else {
+        caption.set(seg.title, subline);
+      }
       await sleep(260);
       caption.show();
-      // hide the caption shortly before the next transition for a clean wipe
       setTimeout(() => caption.hide(), Math.max(600, dwell * 1000 - 700));
     }
     await sleep(dwell * 1000);
+    if (ticker) clearInterval(ticker);
     i = (i + 1) % n;
   }
 }
