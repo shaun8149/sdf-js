@@ -309,6 +309,62 @@ function walk(sdf, p) {
 const half = (x) => mulT(x, 0.5);
 const halfNeg = (x) => mulT(x, -0.5);
 
+// Chart bars UNROLLED to an explicit min() of sdBox calls. The old emit used a
+// `float[32](...)` array constructor — that is GLSL ES 3.00 syntax and fails to
+// compile in the studio's ES 1.00 shader (so bar/column/line never rendered on
+// GPU). The values are known at compile time, so we unroll the real N bars into
+// inline sdBox expressions (no array, no loop) — ES-1.00-safe. Mirrors
+// evalBarsSDF: totalX = N*barW + (N-1)*gap; xStart = -totalX/2 + barW/2;
+// bar i centred at (xStart + i*(barW+gap), h/2, 0), half (barW/2, h/2, barD/2).
+function barBoxesExpr(point, paddedValues, count, barW, barD, gap, maxH) {
+  const N = Math.max(0, Math.min(32, Math.floor(count)));
+  const totalX = N * barW + (N - 1) * gap;
+  const xStart = -totalX / 2 + barW / 2;
+  const parts = [];
+  for (let i = 0; i < N; i++) {
+    const h = paddedValues[i] * maxH;
+    if (h <= 0) continue; // zero/negative bar → no box (matches evalBarsSDF skip)
+    const xc = xStart + i * (barW + gap);
+    parts.push(`sdBox(${point} - ${vec3([xc, h / 2, 0])}, ${vec3([barW / 2, h / 2, barD / 2])})`);
+  }
+  if (!parts.length) return '1e6';
+  return parts.reduce((a, e) => `min(${a}, ${e})`);
+}
+
+// line-3d UNROLLED (ES-1.00-safe, same reason as barBoxesExpr): sphere markers
+// at each point + capsule connectors between consecutive points + optional
+// closing capsule. Mirrors sdLine3d: totalX=(N-1)*pointSpacing; xStart=-totalX/2;
+// point i = (xStart + i*pointSpacing, values[i]*maxH, 0).
+function lineExpr(
+  point,
+  paddedValues,
+  count,
+  pointSpacing,
+  pointRadius,
+  lineThickness,
+  maxH,
+  closedFlag,
+) {
+  const N = Math.max(0, Math.min(32, Math.floor(count)));
+  const xStart = -((N - 1) * pointSpacing) / 2;
+  const pt = (i) => [xStart + i * pointSpacing, paddedValues[i] * maxH, 0];
+  const parts = [];
+  if (pointRadius > 0) {
+    for (let i = 0; i < N; i++)
+      parts.push(`sdSphere(${point} - ${vec3(pt(i))}, ${flt(pointRadius)})`);
+  }
+  if (lineThickness > 0 && N > 1) {
+    for (let i = 0; i < N - 1; i++) {
+      parts.push(`sdCapsule(${point}, ${vec3(pt(i))}, ${vec3(pt(i + 1))}, ${flt(lineThickness)})`);
+    }
+    if (closedFlag > 0.5 && N > 2) {
+      parts.push(`sdCapsule(${point}, ${vec3(pt(N - 1))}, ${vec3(pt(0))}, ${flt(lineThickness)})`);
+    }
+  }
+  if (!parts.length) return '1e6';
+  return parts.reduce((a, e) => `min(${a}, ${e})`);
+}
+
 const PRIMS = {
   sphere: ([radius, center], p) => `sdSphere(${p} - ${vec3(center)}, ${flt(radius)})`,
 
@@ -378,29 +434,24 @@ const PRIMS = {
   // bar-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/bar-3d.js
   // Data-driven bar chart, N bars along X (max 32, GLSL float[32] cap).
   // First atom with array-typed input — values padded to 32 with 0s on JS side.
-  'bar-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdBar3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
-  },
+  // Unrolled (ES-1.00-safe) — see barBoxesExpr above; no float[32] constructor.
+  'bar-3d': ([paddedValues, count, barW, barD, gap, maxH], p) =>
+    barBoxesExpr(p, paddedValues, count, barW, barD, gap, maxH),
 
   // column-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/column-3d.js
-  // Horizontal bar chart. Same args as bar-3d, GLSL emits sdColumn3d (delegates
-  // to sdBar3d with axis swap on input).
-  'column-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdColumn3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
-  },
+  // Horizontal bars: same unroll in the swapped frame the GLSL helper used —
+  // world (x,y,z) → bar input (-y, x, z).
+  'column-3d': ([paddedValues, count, barW, barD, gap, maxH], p) =>
+    barBoxesExpr(`vec3(-(${p}).y, (${p}).x, (${p}).z)`, paddedValues, count, barW, barD, gap, maxH),
 
   // line-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/line-3d.js
   // Polyline with sphere markers. N points + N-1 capsule connectors + optional
   // closed loop. closedFlag = 0 or 1 (passed as float for ABI uniformity).
+  // Unrolled (ES-1.00-safe) — see lineExpr above; no float[32] constructor.
   'line-3d': (
     [paddedValues, count, pointSpacing, pointRadius, lineThickness, maxH, closedFlag],
     p,
-  ) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdLine3d(${p}, ${arrLit}, ${flt(count)}, ${flt(pointSpacing)}, ${flt(pointRadius)}, ${flt(lineThickness)}, ${flt(maxH)}, ${flt(closedFlag)})`;
-  },
+  ) => lineExpr(p, paddedValues, count, pointSpacing, pointRadius, lineThickness, maxH, closedFlag),
 
   // pie-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/pie-3d.js
   // GLSL only uses geometry params (disc/donut SDF). Slice values + startAngle

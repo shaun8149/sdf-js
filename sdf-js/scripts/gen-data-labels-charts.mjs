@@ -3,18 +3,14 @@
 // gen-data-labels-charts.mjs — labeled charts using the shared data-labels
 // placement helper. Generalizes the bar prototype across chart types.
 //
-// HARD CONSTRAINT FOUND (real-browser GPU, 2026-06-21):
-//   SDF text-3d-pipe labels DO NOT co-exist with the LOOP/array chart atoms
-//   (bar-3d / line-3d / column-3d use a float[32] value loop). Even ONE label
-//   on a bar-3d overflows the single studio shader — the loop's instruction
-//   count + a glyph SDF together blow the GPU limit, though each renders fine
-//   alone. NON-loop atoms (pie-3d = a plain disc formula) tolerate SDF labels.
-// → Routing (matches the two-text-systems escape hatch):
-//   • pie / radial / any non-loop atom → SDF labels OK (labels-pie).
-//   • bar / column / line → build the bars from PLAIN BOXES (no loop atom) and
-//     label those (labels-bar), OR send labels to the overlay layer.
-// The anchor math in data-labels.mjs is correct for all four (validated); the
-// constraint is purely the GPU shader budget of loop-atom + glyph.
+// NOTE (2026-06-21): an earlier version claimed SDF labels couldn't co-exist
+// with the loop chart atoms (bar-3d/line-3d/column-3d). That was a symptom of a
+// `float[32](...)` ARRAY-CONSTRUCTOR bug in their GLSL emit (ES 3.00 syntax in
+// the ES 1.00 studio shader) — those atoms didn't render AT ALL. The emit is now
+// unrolled (sdf3.compile.js barBoxesExpr/lineExpr), so bar-3d renders AND takes
+// SDF labels fine (verified: bar-3d + 5 labels, 0 errors). So labels-bar now uses
+// the real bar-3d atom. The overlay path (data-label-overlay.js) remains a valid
+// cheaper, camera-tracked alternative — not a forced workaround anymore.
 //
 // Usage: node sdf-js/scripts/gen-data-labels-charts.mjs
 // =============================================================================
@@ -66,21 +62,16 @@ const REV_L = ['$1.2M', '$2.0M', '$3.4M', '$1.8M', '$2.6M'];
 const PIE = [0.35, 0.25, 0.22, 0.18];
 const PIE_L = ['35%', '25%', '22%', '18%'];
 
-// ---- labels-bar: PLAIN BOXES (no loop atom) + labels (GPU-safe) -------------
+// ---- labels-bar: the real bar-3d ATOM (now renders + takes SDF labels) ------
 const BAR = { barWidth: 0.5, barDepth: 0.5, gap: 0.45, maxHeight: 2.2 };
-const N = REV.length;
-const totalX = N * BAR.barWidth + (N - 1) * BAR.gap;
-const xStart = -totalX / 2 + BAR.barWidth / 2;
-const barBoxes = REV.map((v, i) => {
-  const h = v * BAR.maxHeight;
-  return {
-    id: `bar${i}`,
-    type: 'box',
-    args: { size: [BAR.barWidth, h, BAR.barDepth] },
-    transform: { translate: [xStart + i * (BAR.barWidth + BAR.gap), h / 2, 0] },
-    material: BLUE,
-  };
-});
+const barSubj = {
+  id: 'bars',
+  type: 'bar-3d',
+  args: { values: REV, ...BAR },
+  transform: { translate: [0, 0, 0] },
+  material: BLUE,
+};
+const barBoxes = [barSubj];
 const barLabels = placeLabels(barAnchors(REV, BAR), REV_L, { height: 0.3, pipeRadius: 0.05 });
 
 // ---- labels-pie: pie-3d ATOM (non-loop) + labels (GPU-safe) ------------------
@@ -103,12 +94,7 @@ const pieLabels = placeLabels(
 );
 
 const charts = [
-  wrap(
-    'labels-bar',
-    'Bar chart · value labels (box bars)',
-    [...barBoxes, ...barLabels],
-    cam(1.4, 9),
-  ),
+  wrap('labels-bar', 'Bar chart · value labels', [...barBoxes, ...barLabels], cam(1.4, 9)),
   wrap('labels-pie', 'Pie chart · slice labels', [pieSubj, ...pieLabels], cam(1.4, 8)),
 ];
 
