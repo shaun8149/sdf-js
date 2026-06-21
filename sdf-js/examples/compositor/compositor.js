@@ -1996,34 +1996,46 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // studio's neutral default pose.
     if (!keepCamera && scene !== _lastStudioFramedScene && sdf && sdf.f) {
       _lastStudioFramedScene = scene;
-      try {
-        // iso > 0 (sample where the SDF is within ~0.12 of a surface) so THIN
-        // atoms — flat rings, arrow shafts, gear teeth — aren't missed between
-        // grid samples; the bbox inflates ~iso, negligible for framing.
-        const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 10, res: 56, iso: 0.12 });
-        const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
-        if (!bb.empty && maxDim > 0.05 && maxDim < 20) {
-          const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);
-          const yaw = 0.5;
-          const pitch = 0.32; // downward in studio's convention (fwd.y = −sin pitch)
-          const cp = Math.cos(pitch),
-            sp = Math.sin(pitch),
-            cy = Math.cos(yaw),
-            sy = Math.sin(yaw);
-          const fwd = [sy * cp, -sp, cy * cp];
-          st.setCamState({
-            position: [
-              fit.target[0] - fwd[0] * fit.distance,
-              fit.target[1] - fwd[1] * fit.distance,
-              fit.target[2] - fwd[2] * fit.distance,
-            ],
-            yaw,
-            pitch,
-          });
+      const framedScene = scene;
+      // Auto-framing is a CPU bbox sweep (tens of thousands of sdf.f evals) — at
+      // the old radius:10/res:56 it cost ~95ms and froze scene entry, which read
+      // as "slow load vs Shadertoy". Fix: (1) DEFER off the critical path so the
+      // first studio frame paints immediately (≈1ms below), bbox + camera fit run
+      // next frame then re-render; (2) cheaper sweep — a smaller search radius
+      // gives FINER cells (better thin-atom capture) at far fewer evals.
+      requestAnimationFrame(() => {
+        if (framedScene !== _lastStudioFramedScene) return; // a newer scene loaded; abort
+        try {
+          // radius 6 (covers translated atoms) × res 36 → cell ~0.33; iso 0.2 so
+          // THIN atoms (flat rings / arrow shafts / gear teeth) still register.
+          const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 6, res: 36, iso: 0.2 });
+          const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
+          // maxDim ≥ ~11 means the sweep hit its boundary (unbounded SDF / ground
+          // plane) → keep studio's neutral default pose.
+          if (!bb.empty && maxDim > 0.05 && maxDim < 11) {
+            const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);
+            const yaw = 0.5;
+            const pitch = 0.32; // downward in studio's convention (fwd.y = −sin pitch)
+            const cp = Math.cos(pitch),
+              sp = Math.sin(pitch),
+              cy = Math.cos(yaw),
+              sy = Math.sin(yaw);
+            const fwd = [sy * cp, -sp, cy * cp];
+            st.setCamState({
+              position: [
+                fit.target[0] - fwd[0] * fit.distance,
+                fit.target[1] - fwd[1] * fit.distance,
+                fit.target[2] - fwd[2] * fit.distance,
+              ],
+              yaw,
+              pitch,
+            });
+            st.render(sdf); // re-render with the fitted camera (studio is on-demand)
+          }
+        } catch (e) {
+          /* unbounded SDF / eval error → keep studio's default pose */
         }
-      } catch (e) {
-        /* unbounded SDF / eval error → keep studio's default pose */
-      }
+      });
     }
     if (st.setPostFx) {
       st.setPostFx(

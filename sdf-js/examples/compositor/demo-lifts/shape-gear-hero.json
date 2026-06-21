@@ -1,0 +1,67 @@
+{
+  "id": "shape-gear-hero",
+  "title": "Gears · Single hero gear",
+  "prompt": "gear wheels: Gears · Single hero gear",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"gear wheels\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Gears · Single hero gear",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "gear wheels shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 18,
+          "radius": 1.1,
+          "thickness": 0.34,
+          "toothDepth": 0.2,
+          "toothWidth": 0.2,
+          "holeRadius": 0.4
+        },
+        "transform": {
+          "translate": [0, 1, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.02,
+          "value": 0.82,
+          "metal": 0.98,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "gear wheels",
+    "costUSD": 0
+  }
+}

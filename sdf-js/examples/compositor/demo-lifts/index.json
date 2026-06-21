@@ -528,6 +528,336 @@
       "file": "puzzle-piece-3d.json",
       "renderer": "studio",
       "prompt": "Shape · Puzzle Piece"
+    },
+    {
+      "id": "fill-slide-01",
+      "title": "Fill Levels · Cover (20/40/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-01.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cover (20/40/80)"
+    },
+    {
+      "id": "fill-slide-02",
+      "title": "Fill Levels · Row of 4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-02.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 4"
+    },
+    {
+      "id": "fill-slide-06",
+      "title": "Fill Levels · Cluster of 5",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-06.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cluster of 5"
+    },
+    {
+      "id": "fill-slide-03",
+      "title": "Fill Levels · Framed row + arrows (10/60/50)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-03.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Framed row + arrows (10/60/50)"
+    },
+    {
+      "id": "fill-slide-04",
+      "title": "Fill Levels · Hero 60%",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-04.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 60%"
+    },
+    {
+      "id": "fill-slide-05",
+      "title": "Fill Levels · Hero 100% + legend",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-05.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 100% + legend"
+    },
+    {
+      "id": "fill-slide-07",
+      "title": "Fill Levels · Row of 3 (50/100/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-07.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 3 (50/100/80)"
+    },
+    {
+      "id": "fill-slide-08",
+      "title": "Fill Levels · Cluster of 3 (60/50/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-08.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cluster of 3 (60/50/80)"
+    },
+    {
+      "id": "fill-slide-09",
+      "title": "Fill Levels · Row of 5 (10..90)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-09.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 (10..90)"
+    },
+    {
+      "id": "fill-slide-10",
+      "title": "Fill Levels · Grid of 6 (framed)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-10.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Grid of 6 (framed)"
+    },
+    {
+      "id": "fill-slide-11",
+      "title": "Fill Levels · Hero 30% + list",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-11.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 30% + list"
+    },
+    {
+      "id": "fill-slide-12",
+      "title": "Fill Levels · Row of 5 + captions",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-12.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 + captions"
+    },
+    {
+      "id": "fill-slide-13",
+      "title": "Fill Levels · Hero 90% + list",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-13.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 90% + list"
+    },
+    {
+      "id": "fill-slide-14",
+      "title": "Fill Levels · Bullet list of 4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-14.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Bullet list of 4"
+    },
+    {
+      "id": "fill-slide-15",
+      "title": "Fill Levels · Hero 100% + 4 labels",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-15.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 100% + 4 labels"
+    },
+    {
+      "id": "fill-slide-16",
+      "title": "Fill Levels · Vertical 3 (30/80/70)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-16.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Vertical 3 (30/80/70)"
+    },
+    {
+      "id": "fill-slide-17",
+      "title": "Fill Levels · Two heroes (80/90)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-17.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Two heroes (80/90)"
+    },
+    {
+      "id": "fill-slide-18",
+      "title": "Fill Levels · Progression grid 2×4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-18.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Progression grid 2×4"
+    },
+    {
+      "id": "fill-slide-19",
+      "title": "Fill Levels · Row of 5 (20..100)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-19.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 (20..100)"
+    },
+    {
+      "id": "fill-slide-20",
+      "title": "Fill Levels · Grid 2×5",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-20.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Grid 2×5"
+    },
+    {
+      "id": "shape-gear-mechanism",
+      "title": "Gears · Meshing mechanism",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"gear wheels\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-gear-mechanism.json",
+      "renderer": "studio",
+      "prompt": "Gears · Meshing mechanism"
+    },
+    {
+      "id": "shape-gear-hero",
+      "title": "Gears · Single hero gear",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"gear wheels\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-gear-hero.json",
+      "renderer": "studio",
+      "prompt": "Gears · Single hero gear"
+    },
+    {
+      "id": "shape-arrows-cycle",
+      "title": "Arrows · Cycle (4 stage)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"arrows\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-arrows-cycle.json",
+      "renderer": "studio",
+      "prompt": "Arrows · Cycle (4 stage)"
+    },
+    {
+      "id": "shape-arrows-row",
+      "title": "Arrows · Process row",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"arrows\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-arrows-row.json",
+      "renderer": "studio",
+      "prompt": "Arrows · Process row"
+    },
+    {
+      "id": "shape-cubes-row",
+      "title": "Cubes · Connected row",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"cubes\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-cubes-row.json",
+      "renderer": "studio",
+      "prompt": "Cubes · Connected row"
+    },
+    {
+      "id": "shape-cubes-grid",
+      "title": "Cubes · 3×3×3 grid",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"cubes\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-cubes-grid.json",
+      "renderer": "studio",
+      "prompt": "Cubes · 3×3×3 grid"
+    },
+    {
+      "id": "shape-pyramid-stepped",
+      "title": "Pyramids · Stepped 5-level",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"pyramids\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-pyramid-stepped.json",
+      "renderer": "studio",
+      "prompt": "Pyramids · Stepped 5-level"
+    },
+    {
+      "id": "shape-pyramid-smooth",
+      "title": "Pyramids · Smooth 4-level",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"pyramids\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-pyramid-smooth.json",
+      "renderer": "studio",
+      "prompt": "Pyramids · Smooth 4-level"
+    },
+    {
+      "id": "shape-puzzle-row",
+      "title": "Puzzles · Interlocking row of 4",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"puzzles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-puzzle-row.json",
+      "renderer": "studio",
+      "prompt": "Puzzles · Interlocking row of 4"
+    },
+    {
+      "id": "shape-puzzle-pair",
+      "title": "Puzzles · Two-piece fit",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"puzzles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-puzzle-pair.json",
+      "renderer": "studio",
+      "prompt": "Puzzles · Two-piece fit"
+    },
+    {
+      "id": "shape-circles-dial",
+      "title": "Circles · Segmented dial (6)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-dial.json",
+      "renderer": "studio",
+      "prompt": "Circles · Segmented dial (6)"
+    },
+    {
+      "id": "shape-circles-frames",
+      "title": "Circles · Avatar frames (3)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-frames.json",
+      "renderer": "studio",
+      "prompt": "Circles · Avatar frames (3)"
+    },
+    {
+      "id": "shape-circles-stack",
+      "title": "Circles · Tiered stack",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-stack.json",
+      "renderer": "studio",
+      "prompt": "Circles · Tiered stack"
     }
   ]
 }

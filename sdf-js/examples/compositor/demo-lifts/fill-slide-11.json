@@ -1,0 +1,76 @@
+{
+  "id": "fill-slide-11",
+  "title": "Fill Levels · Hero 30% + list",
+  "prompt": "kpi-hero: A single large fill sphere at 30% with a 4-item side list.",
+  "code2d": "// vision-authored from PDF slide (D0961 3D Spheres Fill Levels).",
+  "sceneData": {
+    "v": 1,
+    "name": "kpi-hero: Fill Levels · Hero 30% + list",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "A single large fill sphere at 30% with a 4-item side list."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.3],
+          "radius": 1.05,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 1.05,
+          "h": -0.42000000000000004
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": "porcelain"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "kpi-hero",
+    "costUSD": 0
+  }
+}
