@@ -88,6 +88,16 @@
       { title: 'Pie — Revenue by Segment',
         size: { w: 480, h: 320 },
         atom: { type: 'pie', args: { values: [4.2, 2.1, 1.5, 0.8], labels: ['Enterprise', 'Mid-market', 'SMB', 'Indie'], format: 'currency', title: 'Revenue $M by Segment', donutRatio: 0.4 } } },
+      // ---- Column chart samples (Phase 1c) ----
+      { title: 'Column — Quarterly Revenue',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' } } },
+      { title: 'Column — Monthly Signups',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [340, 420, 510, 580, 670, 820], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], format: 'number', title: 'Monthly Signups' } } },
+      { title: 'Column — Conversion by Channel',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [4.2, 8.7, 3.1, 12.5, 6.3], labels: ['Organic', 'Paid', 'Email', 'Referral', 'Social'], format: 'percent', title: 'Conversion Rate by Channel' } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
