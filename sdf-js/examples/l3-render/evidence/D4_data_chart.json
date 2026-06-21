@@ -1,0 +1,45 @@
+{
+  "id": "D4_data_chart",
+  "text": "Quarterly revenue trajectory: Q1 $1.2M, Q2 $1.8M, Q3 $2.4M, Q4 $3.1M — representing 158% annual growth.",
+  "feature": "kpi-hero + IBM Plex Mono digit alignment",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "sequence",
+      "p5CodeLen": 1992,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": []
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "sequence",
+      "sceneData": {
+        "v": 1,
+        "name": "sequence: Quarterly Revenue Trajectory",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Quarterly revenue trajectory: Q1 $1.2M, Q2 $1.8M, Q3 $2.4M, Q4 $3.1M — representing 158% annual growth.",
+          "from2dCode": "text-only prompt, no 2D SDF"
+        },
+        "subjects": [
+          {
+            "id": "sketch-revenue-bars",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const quarters=['Q1','Q2','Q3','Q4'];const values=[1.2,1.8,2.4,3.1];const labels=['$1.2M','$1.8M','$2.4M','$3.1M'];const maxVal=3.5;const barW=72;const gap=28;const totalW=4*barW+3*gap;const startX=(600-totalW)/2;const chartTop=60;const chartBot=280;const chartH=chartBot-chartTop;noStroke();for(let i=0;i<4;i++){const bh=(values[i]/maxVal)*chartH;const bx=startX+i*(barW+gap);const by=chartBot-bh;const alpha=120+Math.round((i/3)*135);fill(fg[0],fg[1],fg[2],alpha);rect(bx,by,barW,bh,6,6,0,0);fill(fg[0],fg[1],fg[2]);drawingContext.font='700 15px Inter';drawingContext.textAlign='center';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText(labels[i],bx+barW/2,by-10);drawingContext.font='500 14px Inter';drawingContext.fillText(quarters[i],bx+barW/2,chartBot+20);}stroke(fg[0],fg[1],fg[2]);strokeWeight(1);line(startX-8,chartBot,startX+totalW+8,chartBot);noStroke();fill(fg[0],fg[1],fg[2]);drawingContext.font='700 22px Inter';drawingContext.textAlign='center';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText('Quarterly Revenue',300,38);drawingContext.font='500 14px Inter';drawingContext.fillText('+158% annual growth',300,310);for(let i=0;i<3;i++){const x1=startX+(i+1)*(barW+gap)-gap/2;const bh1=(values[i]/maxVal)*chartH;const bh2=(values[i+1]/maxVal)*chartH;const y1=chartBot-bh1;const y2=chartBot-bh2;stroke(fg[0],fg[1],fg[2]);strokeWeight(1);drawingContext.setLineDash([4,4]);line(x1,Math.min(y1,y2)-4,x1,Math.max(y1,y2)-4);drawingContext.setLineDash([]);const pct=Math.round((values[i+1]-values[i])/values[i]*100);fill(fg[0],fg[1],fg[2]);drawingContext.font='400 11px Inter';drawingContext.textAlign='center';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText('+'+pct+'%',x1,(y1+y2)/2-bh1/6);}}"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

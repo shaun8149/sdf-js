@@ -1,0 +1,68 @@
+{
+  "id": "D6_dense_concept",
+  "text": "AI agents coordinate across 12 specialized roles: researcher, planner, coder, reviewer, executor, debugger, optimizer, monitor, communicator, integrator, validator, and orchestrator.",
+  "feature": "Sprint 13 multi-icon list + AT LEAST 1 icon per unit rule",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "relation",
+      "p5CodeLen": 4441,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": []
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: AI Agent Role Network",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "AI agents coordinate across 12 specialized roles: researcher, planner, coder, reviewer, executor, debugger, optimizer, monitor, communicator, integrator, validator, and orchestrator.",
+          "from2dCode": "text-only prompt, no 2D geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-agent-network",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const cx=300,cy=180,or=145,ir=52;const roles=[{name:'researcher',icon:'database'},{name:'planner',icon:'file'},{name:'coder',icon:'cube'},{name:'reviewer',icon:'check'},{name:'executor',icon:'lightning'},{name:'debugger',icon:'shield'},{name:'optimizer',icon:'chart-bar'},{name:'monitor',icon:'clock'},{name:'communicator',icon:'mail'},{name:'integrator',icon:'refresh'},{name:'validator',icon:'star'},{name:'orchestrator',icon:'globe'}];const n=roles.length;const nodePos=roles.map((_,i)=>{const a=(i/n)*Math.PI*2-Math.PI/2;return{x:cx+Math.cos(a)*or,y:cy+Math.sin(a)*or};});stroke(fg[0],fg[1],fg[2],35);strokeWeight(1);for(let i=0;i<n;i++){for(let j=i+1;j<n;j++){if(Math.abs(i-j)<=2||Math.abs(i-j)>=n-2||(i===0&&j===6)||(i===1&&j===7)||(i===2&&j===8)||(i===3&&j===9)||(i===4&&j===10)||(i===5&&j===11)){line(nodePos[i].x,nodePos[i].y,nodePos[j].x,nodePos[j].y);}}}const orchIdx=11;for(let i=0;i<n-1;i++){stroke(fg[0],fg[1],fg[2],55);strokeWeight(1.2);line(cx,cy,nodePos[i].x,nodePos[i].y);}noStroke();fill(fg[0],fg[1],fg[2],220);ellipse(cx,cy,ir*2,ir*2);fill(bg[0],bg[1],bg[2]);ellipse(cx,cy,ir*2-8,ir*2-8);drawingContext.font='700 11px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawingContext.textAlign='center';drawingContext.fillText('AGENT',cx,cy-6);drawingContext.fillText('HUB',cx,cy+8);const ICONS={database:'M12 2C8.13 2 5 3.79 5 6v12c0 2.21 3.13 4 7 4s7-1.79 7-4V6c0-2.21-3.13-4-7-4zm0 2c3.31 0 5 1.12 5 2s-1.69 2-5 2-5-1.12-5-2 1.69-2 5-2zm0 16c-3.31 0-5-1.12-5-2v-2.23C8.5 16.53 10.17 17 12 17s3.5-.47 5-1.23V18c0 .88-1.69 2-5 2zm0-5c-3.31 0-5-1.12-5-2v-2.23C8.5 11.53 10.17 12 12 12s3.5-.47 5-1.23V13c0 .88-1.69 2-5 2z',file:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z',cube:'M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A1 1 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.2v6.71zm14 0V9.2l-6 3.38v6.71l6-3.38z',check:'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z',lightning:'M7 2v11h3v9l7-12h-4l4-8H7z',shield:'M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7l-9-5z','chart-bar':'M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zM16.2 13h2.8v6h-2.8v-6z',clock:'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z',mail:'M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z',refresh:'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z',star:'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',globe:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'};function drawIcon(name,x,y,sz,col){const path=ICONS[name];if(!path)return;const dc=drawingContext;dc.save();dc.translate(x-sz/2,y-sz/2);dc.scale(sz/24,sz/24);const p=new Path2D(path);dc.fillStyle=col;dc.fill(p);dc.restore();}const nodeR=22;roles.forEach((role,i)=>{const pos=nodePos[i];const isOrch=i===11;const alpha=isOrch?255:210;fill(fg[0],fg[1],fg[2],alpha);noStroke();ellipse(pos.x,pos.y,nodeR*2,nodeR*2);fill(bg[0],bg[1],bg[2]);ellipse(pos.x,pos.y,nodeR*2-5,nodeR*2-5);const iconCol='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawIcon(role.icon,pos.x,pos.y-3,16,iconCol);drawingContext.font='500 9px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.9)';drawingContext.textAlign='center';drawingContext.fillText(role.name,pos.x,pos.y+13);});drawingContext.font='600 13px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawingContext.textAlign='center';drawingContext.fillText('12 Specialized Agent Roles',300,348);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 10,
+            "focal": 1.5,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    }
+  ]
+}
