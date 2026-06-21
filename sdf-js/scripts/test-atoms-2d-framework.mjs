@@ -878,6 +878,121 @@ console.log('\n--- shape atom ---');
   ok(recA.includes('Up'), 'arrow direction param works');
 }
 
+// ----- icon-badge atom (Phase 4) -----
+console.log('\n--- icon-badge atom ---');
+{
+  const spec = await getAtomSpec('icon-badge');
+  ok(spec.type === 'icon-badge', 'icon-badge spec.type');
+  ok(spec.category === 'icons', `category = ${spec.category}`);
+
+  // Render with stub ctx + scale/translate (used for SVG path)
+  const recorded = [];
+  const c = stubCtxWithIcon(recorded);
+  await renderAtom(c, 'icon-badge', { name: 'users', label: 'Engineering' }, 'pseudo3d', {
+    x: 0,
+    y: 0,
+    w: 240,
+    h: 240,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 100, 200]] },
+  });
+  ok(recorded.includes('Engineering'), 'label rendered');
+
+  // Spot-check several icon names
+  const knownNames = [
+    'users',
+    'lightning',
+    'cloud',
+    'shield',
+    'chart-bar',
+    'heart',
+    'check',
+    'arrow-up',
+  ];
+  for (const name of knownNames) {
+    const rec = [];
+    let crashed = false;
+    try {
+      await renderAtom(stubCtxWithIcon(rec), 'icon-badge', { name, label: name }, 'pseudo3d', {
+        w: 200,
+        h: 200,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+      });
+    } catch (e) {
+      crashed = true;
+    }
+    ok(!crashed, `icon "${name}" renders without crash`);
+  }
+
+  // Unknown icon name doesn't crash (silently warns)
+  let crashed = false;
+  try {
+    await renderAtom(stubCtxWithIcon([]), 'icon-badge', { name: 'nonexistent-icon' }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'unknown icon name no crash');
+}
+
+// ----- cover atom (Phase 4) -----
+console.log('\n--- cover atom ---');
+{
+  const spec = await getAtomSpec('cover');
+  ok(spec.type === 'cover', 'cover spec.type');
+  ok(spec.category === 'presentation', `category = ${spec.category}`);
+  ok(spec.args.title.required, 'title required');
+
+  const recorded = [];
+  const c = stubCtxWithIcon(recorded);
+  await renderAtom(
+    c,
+    'cover',
+    {
+      title: 'Q3 2025 Board Review',
+      subtitle: 'Acme Corp',
+      author: 'Sarah Chen',
+      date: 'Nov 2025',
+      version: 'v1.0',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 720, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Q3 2025 Board Review'), 'title rendered');
+  ok(recorded.includes('Acme Corp'), 'subtitle rendered');
+  ok(
+    recorded.some((t) => String(t).includes('Sarah Chen')),
+    'metadata strip includes author',
+  );
+
+  // Minimal cover (title only)
+  recorded.length = 0;
+  await renderAtom(c, 'cover', { title: 'Hello' }, 'pseudo3d', {
+    x: 0,
+    y: 0,
+    w: 720,
+    h: 400,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(recorded.includes('Hello'), 'title-only cover renders');
+}
+
+function stubCtxWithIcon(recorded) {
+  const c = stubCtxWithEllipse(recorded);
+  // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash
+  if (typeof globalThis.Path2D === 'undefined') {
+    globalThis.Path2D = function (data) {
+      this.data = data;
+    };
+  }
+  // ctx.stroke must accept optional Path2D arg
+  c.stroke = () => {};
+  c.scale = () => {};
+  return c;
+}
+
 function stubCtxWithEllipse(recorded) {
   const c = stubCtx(recorded);
   c.ellipse = () => {};
