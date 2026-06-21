@@ -1722,6 +1722,10 @@ export function createStudioRenderer({
   // When non-null, drives camState per frame from a timeline (overrides WASD
   // fly camera until user explicitly takes back via fly keys / mouse).
   let activeSequence = null;
+  // Snapshot of the camera basis the LAST frame rendered with — used by
+  // project() so Layer-2 overlay labels land exactly where the 3D point is
+  // drawn (no camera-convention duplication outside the renderer).
+  let lastCam = null;
   let sequenceStartTime = 0; // performance.now() origin for sequence playback
   let sequencePaused = false;
   let sequencePausedAt = 0;
@@ -2063,6 +2067,15 @@ export function createStudioRenderer({
     // FOV: sequence override > getControls() fallback
     const activeFov = sequenceFov ?? c.fov;
     gl.uniform1f(uniformsCache.u_focal, activeFov);
+    // record this frame's camera for project() (aspect = display canvas)
+    lastCam = {
+      pos: [camState.position[0], camState.position[1], camState.position[2]],
+      right,
+      up,
+      fwd,
+      focal: activeFov,
+      aspect: canvas.width / canvas.height,
+    };
     gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_groundOn, c.groundOn ? 1.0 : 0.0);
@@ -2606,6 +2619,29 @@ export function createStudioRenderer({
       sequencePaused = false;
       userTookCam = false;
       prevCamValid = false; // motion blur skip on cut-over frame
+    },
+    /**
+     * Project a world point to normalized screen coords (top-left origin, [0,1])
+     * using the LAST rendered frame's camera. Returns { x, y, visible }. visible
+     * is false when the point is behind the camera. Inverts the shader's ray
+     * setup (rd = uv.x*right + uv.y*up + focal*fwd; uv = (frag*2-res)/res.y), so
+     * overlay labels track the 3D point exactly even as the sequence camera moves.
+     */
+    project(world) {
+      if (!lastCam) return { x: 0, y: 0, visible: false };
+      const { pos, right, up, fwd, focal, aspect } = lastCam;
+      const vx = world[0] - pos[0],
+        vy = world[1] - pos[1],
+        vz = world[2] - pos[2];
+      const a = vx * right[0] + vy * right[1] + vz * right[2];
+      const b = vx * up[0] + vy * up[1] + vz * up[2];
+      const c = vx * fwd[0] + vy * fwd[1] + vz * fwd[2];
+      if (c <= 1e-4) return { x: 0, y: 0, visible: false }; // behind camera
+      const uvx = (focal * a) / c;
+      const uvy = (focal * b) / c;
+      const x = (uvx / aspect + 1) / 2; // uv.x ∈ [-aspect,aspect] → [0,1]
+      const y = 1 - (uvy + 1) / 2; // uv.y ∈ [-1,1] (bottom-up) → top-left [0,1]
+      return { x, y, visible: x >= -0.15 && x <= 1.15 && y >= -0.15 && y <= 1.15 };
     },
     setSequenceTime(tSec) {
       if (!activeSequence) return;

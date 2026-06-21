@@ -1,0 +1,180 @@
+{
+  "id": "labels-bar-overlay",
+  "title": "Bar chart · overlay labels (camera-tracked)",
+  "prompt": "bar chart labeled via DOM overlay (no SDF text), labels track the camera",
+  "code2d": "// box bars + overlay DOM labels (data-label-overlay.js).",
+  "annotations": [
+    {
+      "pos": [-1.9, 1, -0.35],
+      "text": "$1.2M"
+    },
+    {
+      "pos": [-0.95, 1.572, -0.35],
+      "text": "$2.0M"
+    },
+    {
+      "pos": [0, 2.3200000000000003, -0.35],
+      "text": "$3.4M"
+    },
+    {
+      "pos": [0.9499999999999997, 1.44, -0.35],
+      "text": "$1.8M"
+    },
+    {
+      "pos": [1.9, 1.8360000000000003, -0.35],
+      "text": "$2.6M"
+    }
+  ],
+  "sceneData": {
+    "v": 1,
+    "name": "Bar chart · overlay labels",
+    "source": {
+      "format": "authored",
+      "prompt": "overlay labels"
+    },
+    "subjects": [
+      {
+        "id": "bar0",
+        "type": "box",
+        "args": {
+          "size": [0.5, 0.8800000000000001, 0.5]
+        },
+        "transform": {
+          "translate": [-1.9, 0.44000000000000006, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar1",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.4520000000000002, 0.5]
+        },
+        "transform": {
+          "translate": [-0.95, 0.7260000000000001, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar2",
+        "type": "box",
+        "args": {
+          "size": [0.5, 2.2, 0.5]
+        },
+        "transform": {
+          "translate": [0, 1.1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar3",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.32, 0.5]
+        },
+        "transform": {
+          "translate": [0.9499999999999997, 0.66, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar4",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.7160000000000002, 0.5]
+        },
+        "transform": {
+          "translate": [1.9, 0.8580000000000001, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-2.4, 2.2, -7.5],
+          "target": [0, 1.1, 0],
+          "fov": 32,
+          "transition": "cut"
+        },
+        {
+          "duration": 5,
+          "pos": [2.4, 2.2, -7.5],
+          "target": [0, 1.1, 0],
+          "fov": 32,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5,
+          "pos": [-2.4, 2.2, -7.5],
+          "target": [0, 1.1, 0],
+          "fov": 32,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.2,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "overlay-labels",
+    "costUSD": 0
+  }
+}

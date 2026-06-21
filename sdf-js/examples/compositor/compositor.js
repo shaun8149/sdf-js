@@ -790,6 +790,16 @@ window.atlasLoadScene = (demoEntry) => {
   return p;
 };
 
+// Public Layer-1 hook: project a world point → normalized screen coords (top-left
+// [0,1]) using the studio renderer's last-rendered camera. The Layer-2 overlay
+// label system (data-label-overlay.js) uses this to pin DOM annotations onto 3D
+// chart elements — the cheap text path for LOOP chart atoms (bar/line/column),
+// whose geometry can't carry SDF labels without overflowing the shader.
+window.atlasProjectPoint = (worldXYZ) =>
+  state.studioRenderer && state.studioRenderer.project
+    ? state.studioRenderer.project(worldXYZ)
+    : { x: 0, y: 0, visible: false };
+
 function autofillDemoPrompt(demo) {
   const promptInput = $('prompt-input');
   if (!promptInput) return;
