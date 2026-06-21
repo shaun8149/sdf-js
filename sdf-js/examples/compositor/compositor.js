@@ -780,6 +780,16 @@ async function loadDemoScene(demo) {
   }
 }
 
+// Public Layer-1 hook for the Layer-2 deck player (deck-player.js): load a
+// SceneData (by demo-manifest-shaped entry) into the active GPU renderer. The
+// deck player sequences these + drives transitions; it never touches compositor
+// internals. Returns loadDemoScene's promise so the player can await the swap.
+window.atlasLoadScene = (demoEntry) => {
+  const p = loadDemoScene(demoEntry);
+  switchToTab('text'); // reveal the render canvas (mirrors gallery card behavior)
+  return p;
+};
+
 function autofillDemoPrompt(demo) {
   const promptInput = $('prompt-input');
   if (!promptInput) return;

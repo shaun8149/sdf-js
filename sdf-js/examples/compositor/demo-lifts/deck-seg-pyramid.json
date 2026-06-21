@@ -1,0 +1,87 @@
+{
+  "id": "deck-seg-pyramid",
+  "title": "Slide · pyramid (heavy)",
+  "prompt": "Slide · pyramid (heavy)",
+  "code2d": "// hybrid-deck segment (Atlas Present spatial narrative).",
+  "sceneData": {
+    "v": 1,
+    "name": "Slide · pyramid",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "pyramid"
+    },
+    "subjects": [
+      {
+        "id": "p",
+        "type": "pyramid-3d",
+        "args": {
+          "levels": 5,
+          "baseWidth": 2.2,
+          "topWidth": 0.3,
+          "layerHeight": 0.38,
+          "gap": 0.05,
+          "depth": 0.7
+        },
+        "transform": {
+          "translate": [0, 0.1, 0]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.85,
+          "value": 0.9,
+          "metal": 0.9,
+          "glow": 0
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [0, 3, -8.5],
+          "target": [0, 1, 0],
+          "fov": 32,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [-1.6, 1.6, -5.2],
+          "target": [0, 1, 0],
+          "fov": 32,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}

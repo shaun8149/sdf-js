@@ -1,0 +1,111 @@
+{
+  "id": "deck-seg-gears",
+  "title": "Slide · gear mechanism (heavy)",
+  "prompt": "Slide · gear mechanism (heavy)",
+  "code2d": "// hybrid-deck segment (Atlas Present spatial narrative).",
+  "sceneData": {
+    "v": 1,
+    "name": "Slide · gears",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "gear mechanism"
+    },
+    "subjects": [
+      {
+        "id": "g1",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 16,
+          "radius": 0.95,
+          "thickness": 0.3,
+          "toothDepth": 0.18,
+          "toothWidth": 0.2,
+          "holeRadius": 0.3
+        },
+        "transform": {
+          "translate": [-0.6, 1.1, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.45,
+          "metal": 0.6,
+          "glow": 0
+        }
+      },
+      {
+        "id": "g2",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 11,
+          "radius": 0.66,
+          "thickness": 0.3,
+          "toothDepth": 0.16,
+          "toothWidth": 0.18,
+          "holeRadius": 0.22
+        },
+        "transform": {
+          "translate": [1.05, 1.45, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-3, 2.5, -6.8],
+          "target": [0.2, 1.2, 0],
+          "fov": 32,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [3.4000000000000004, 2.5, -6.8],
+          "target": [0.2, 1.2, 0],
+          "fov": 32,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}
