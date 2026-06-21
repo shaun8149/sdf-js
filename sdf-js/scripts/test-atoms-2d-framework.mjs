@@ -475,6 +475,62 @@ console.log('\n--- column atom ---');
     'values suppressed when showValues=false',
   );
 }
+
+// ----- flow-chart atom (Phase 2a) -----
+console.log('\n--- flow-chart atom ---');
+{
+  const spec = await getAtomSpec('flow-chart');
+  ok(spec.type === 'flow-chart', 'flow-chart spec.type');
+  ok(spec.category === 'charts/diagrams', `category = ${spec.category}`);
+  ok(spec.args.steps.required, 'steps required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'flow-chart',
+    {
+      steps: ['Sign up', 'Verify', 'Onboard', 'Purchase'],
+      sublabels: ['Day 0', 'Day 0', 'Day 1', 'Day 3'],
+      highlight: 2,
+      title: 'User Journey',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 720, h: 200, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('User Journey'), 'title rendered');
+  ok(recorded.includes('Sign up') && recorded.includes('Purchase'), 'all step labels rendered');
+  ok(recorded.includes('Day 0') && recorded.includes('Day 3'), 'sublabels rendered');
+  ok(
+    ['1', '2', '3', '4'].every((d) => recorded.includes(d)),
+    'index numbers 1-4 rendered',
+  );
+
+  // Vertical orientation
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'flow-chart',
+    { steps: ['A', 'B', 'C'], orientation: 'vertical' },
+    'pseudo3d',
+    { x: 0, y: 0, w: 200, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('A') && recorded.includes('C'), 'vertical labels rendered');
+
+  // Empty steps no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'flow-chart', { steps: [] }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty steps no crash');
+}
+
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};
