@@ -47,6 +47,12 @@ const ATOM_LOADERS = {
   // Shapes (Phase 3) — single atom with kind param covering 6 primitives
   shape: () => import('./shapes/shape.js'),
 
+  // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
+  'icon-badge': () => import('./icons/icon-badge.js'),
+
+  // Presentation (Phase 4) — deck cover / title page
+  cover: () => import('./presentation/cover.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
