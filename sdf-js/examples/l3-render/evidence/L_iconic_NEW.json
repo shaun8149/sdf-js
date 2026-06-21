@@ -1,0 +1,381 @@
+{
+  "id": "L_iconic_NEW",
+  "text": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+  "rerun": false,
+  "expectedIdiom": null,
+  "expectedSprint12Font": null,
+  "expectedSprint13Icons": ["users", "cloud", "globe", "database"],
+  "wallMs": 235950,
+  "events": [
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 0
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 0,
+      "archetype": "relation"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 1
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 1,
+      "archetype": "relation"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 2
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 2,
+      "archetype": "relation"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 3
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 3,
+      "archetype": "relation"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 4
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 4,
+      "archetype": "relation"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 5
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0",
+      "variantIndex": 5,
+      "archetype": "relation"
+    },
+    {
+      "type": "all-done",
+      "visualId": "06942884-075a-4e30-ac7f-cf8d9eb8a8e0"
+    }
+  ],
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4581,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["packCirclesInSDF"]
+    },
+    {
+      "idx": 1,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 5131,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 1,
+      "sprint13_iconNames": ["cloud"],
+      "sprint5_8_idioms": ["irregularGridPack"]
+    },
+    {
+      "idx": 2,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4584,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 2,
+      "sprint13_iconNames": ["cloud", "globe"],
+      "sprint5_8_idioms": ["irregularGridPack"]
+    },
+    {
+      "idx": 3,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 5205,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 3,
+      "sprint13_iconNames": ["users", "cloud", "globe"],
+      "sprint5_8_idioms": ["irregularGridPack"]
+    },
+    {
+      "idx": 4,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 5711,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 2,
+      "sprint13_iconNames": ["users", "cloud"],
+      "sprint5_8_idioms": ["irregularGridPack"]
+    },
+    {
+      "idx": 5,
+      "status": "ready",
+      "error": null,
+      "archetype": "relation",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4909,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["springBrushStroke"]
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only slide"
+        },
+        "subjects": [
+          {
+            "id": "sketch-main",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function packCirclesInSDF(sdfFn,opts){const b=opts.bounds,mn=opts.maxNodes||500,mbl=opts.minBranchLen||0.04,mxbl=opts.maxBranchLen||0.15,rR=opts.rootR||0.05,p=opts.pad||0.005,T=Math.PI*2;const ns=[];function ins(x,y){return sdfFn(x,y)<0;}function ib(x,y,r){return x-r>=b.minX&&x+r<=b.maxX&&y-r>=b.minY&&y+r<=b.maxY;}function col(cx,cy,cr){for(let i=0;i<ns.length;i++){const dx=ns[i].x-cx,dy=ns[i].y-cy,dd=Math.sqrt(dx*dx+dy*dy);if(dd<ns[i].r+cr+p)return true;}return false;}for(let r=0,a=0;r<(opts.rootCount||1)&&a<200;a++){const x=b.minX+Math.random()*(b.maxX-b.minX),y=b.minY+Math.random()*(b.maxY-b.minY);if(!ins(x,y)||!ib(x,y,rR)||col(x,y,rR))continue;ns.push({x,y,r:rR,depth:10});r++;}let at=0,ma=opts.maxAttempts||4000;while(ns.length<mn&&at<ma){at++;const pi=Math.floor(Math.random()*ns.length),pa=ns[pi];if(pa.depth<=0)continue;const an=Math.random()*T,ds=mbl+Math.random()*(mxbl-mbl),cr=Math.max(opts.minR||0.01,Math.min(opts.maxR||0.08,pa.r*(0.82+Math.random()*0.14))),cx=pa.x+Math.cos(an)*(pa.r+ds+cr),cy=pa.y+Math.sin(an)*(pa.r+ds+cr);if(!ins(cx,cy)||!ib(cx,cy,cr)||col(cx,cy,cr))continue;ns.push({x:cx,y:cy,r:cr,depth:pa.depth-1});}return ns;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const cx=300,cy=188;const TEAMS=[{label:'Platform',angle:-0.6,color:[80,140,220]},{label:'Data',angle:0.6,color:[220,100,60]},{label:'API',angle:Math.PI-0.6,color:[60,180,120]},{label:'Mobile',angle:Math.PI+0.6,color:[160,80,200]}];const CLOUDS=[{label:'AWS',angle:-Math.PI/2,color:[255,160,40]},{label:'Azure',angle:Math.PI/6,color:[40,120,255]},{label:'GCP',angle:Math.PI*5/6,color:[50,200,100]}];const teamR=90,cloudR=55,nodeR=28,cloudNodeR=22;const teamPositions=TEAMS.map(t=>({x:cx+teamR*Math.cos(t.angle),y:cy+teamR*Math.sin(t.angle),label:t.label,color:t.color}));const cloudPositions=CLOUDS.map(c=>({x:cx+cloudR*Math.cos(c.angle),y:cy+cloudR*Math.sin(c.angle),label:c.label,color:c.color}));stroke(fg[0],fg[1],fg[2],40);strokeWeight(1);for(const t of teamPositions)for(const c of cloudPositions){line(t.x,t.y,c.x,c.y);}noStroke();fill(fg[0],fg[1],fg[2],18);ellipse(cx,cy,cloudR*2+cloudNodeR*2+16,cloudR*2+cloudNodeR*2+16);const REGIONCOLORS=[[220,80,60],[255,160,40],[60,180,120],[40,120,255],[160,80,200],[80,180,220],[200,160,40],[140,60,200],[60,200,160],[220,120,80],[100,160,255],[180,220,80]];const regionAngles=Array.from({length:12},(_,i)=>i*Math.PI*2/12);const regionRingR=160;for(let i=0;i<12;i++){const a=regionAngles[i],rx=cx+regionRingR*Math.cos(a),ry=cy+regionRingR*Math.sin(a);stroke(fg[0],fg[1],fg[2],22);strokeWeight(1);line(cx,cy,rx,ry);noStroke();fill(REGIONCOLORS[i][0],REGIONCOLORS[i][1],REGIONCOLORS[i][2],200);ellipse(rx,ry,18,18);fill(bg[0],bg[1],bg[2]);textFont('IBM Plex Mono');textSize(8);textAlign(CENTER,CENTER);text('R'+(i+1),rx,ry);}for(const t of teamPositions){noStroke();fill(t.color[0],t.color[1],t.color[2],230);ellipse(t.x,t.y,nodeR*2,nodeR*2);fill(bg[0],bg[1],bg[2]);textFont('Inter');drawingContext.font='600 11px Inter';drawingContext.textAlign='center';drawingContext.textBaseline='middle';drawingContext.fillStyle='rgba('+bg[0]+','+bg[1]+','+bg[2]+',1)';drawingContext.fillText(t.label,t.x,t.y);}for(const c of cloudPositions){noStroke();fill(c.color[0],c.color[1],c.color[2],230);ellipse(c.x,c.y,cloudNodeR*2,cloudNodeR*2);drawingContext.font='700 10px Inter';drawingContext.textAlign='center';drawingContext.textBaseline='middle';drawingContext.fillStyle='rgba('+bg[0]+','+bg[1]+','+bg[2]+',1)';drawingContext.fillText(c.label,c.x,c.y);}noStroke();fill(fg[0],fg[1],fg[2],255);drawingContext.font='700 22px Inter';drawingContext.textAlign='center';drawingContext.textBaseline='middle';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawingContext.fillText('1.2M',cx,cy-8);drawingContext.font='500 10px IBM Plex Mono';drawingContext.fillText('events/sec',cx,cy+9);const legendY=340;const items=[{label:'4 Product Teams',color:[120,160,220]},{label:'3 Cloud Providers',color:[255,160,40]},{label:'12 Regions',color:[60,180,120]}];const totalW=items.length*140;const lx=(600-totalW)/2;for(let i=0;i<items.length;i++){const ic=items[i].color,lox=lx+i*140+10;noStroke();fill(ic[0],ic[1],ic[2],200);ellipse(lox+6,legendY,10,10);fill(fg[0],fg[1],fg[2]);drawingContext.font='400 11px Inter';drawingContext.textAlign='left';drawingContext.textBaseline='middle';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawingContext.fillText(items[i].label,lox+14,legendY);}}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "idx": 1,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only prompt, no 2D geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-infra-dashboard",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];for(let x=0;x<gx;x++)for(let y=0;y<gy;y++){const w=sx[Math.floor(Math.random()*sx.length)],h=sy[Math.floor(Math.random()*sy.length)];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h});}}}return r;}function drawAtlasIcon(name,cx,cy,size,color){const ctx=drawingContext;const s=size/24;ctx.save();ctx.translate(cx-size/2,cy-size/2);ctx.scale(s,s);if(typeof color==='string')ctx.strokeStyle=color,ctx.fillStyle=color;else ctx.strokeStyle=`rgb(${color[0]},${color[1]},${color[2]})`,ctx.fillStyle=`rgb(${color[0]},${color[1]},${color[2]})`;ctx.lineWidth=1.5/s;ctx.lineCap='round';ctx.lineJoin='round';const icons={users:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',cloud:'M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z',globe:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z','chart-bar':'M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z',lightning:'M7 2v11h3v9l7-12h-4l4-8z'};const d=icons[name];if(!d)return;const p=new Path2D(d);ctx.stroke(p);ctx.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const PAD=18,GAP=10;const heroH=120,heroW=600-PAD*2;const teamsY=PAD+heroH+GAP;const teamsH=80;const cloudsY=teamsY+teamsH+GAP;const cloudsH=68;const regionsY=cloudsY+cloudsH+GAP;const regionsH=360-regionsY-PAD;noStroke();fill(fg[0],fg[1],fg[2],22);rect(PAD,PAD,heroW,heroH,10);drawingContext.font='700 42px IBM Plex Mono';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.textAlign='center';drawingContext.textBaseline='middle';drawingContext.fillText('1.2M',300,PAD+36);drawingContext.font='500 15px Inter';drawingContext.fillText('events / second',300,PAD+72);drawingContext.font='400 12px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.55)`;drawingContext.fillText('global infrastructure throughput',300,PAD+94);const teams=[{label:'Platform',icon:'users'},{label:'Data',icon:'chart-bar'},{label:'API',icon:'lightning'},{label:'Infra',icon:'globe'}];const tW=(600-PAD*2-GAP*3)/4;teams.forEach((t,i)=>{const tx=PAD+i*(tW+GAP),ty=teamsY;noStroke();fill(fg[0],fg[1],fg[2],18);rect(tx,ty,tW,teamsH,8);drawAtlasIcon(t.icon,tx+tW/2,ty+26,24,fg);drawingContext.font='600 13px Inter';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.textAlign='center';drawingContext.textBaseline='top';drawingContext.fillText(t.label,tx+tW/2,ty+46);drawingContext.font='400 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.5)`;drawingContext.fillText('product team',tx+tW/2,ty+62);});const clouds=[{label:'AWS',x:0},{label:'Azure',x:1},{label:'GCP',x:2}];const cW=(600-PAD*2-GAP*2)/3;clouds.forEach((c,i)=>{const cx=PAD+i*(cW+GAP),cy=cloudsY;noStroke();fill(fg[0],fg[1],fg[2],14);rect(cx,cy,cW,cloudsH,8);drawAtlasIcon('cloud',cx+cW/2,cy+22,24,fg);drawingContext.font='600 14px Inter';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.textAlign='center';drawingContext.textBaseline='top';drawingContext.fillText(c.label,cx+cW/2,cy+36);drawingContext.font='400 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.45)`;drawingContext.fillText('cloud provider',cx+cW/2,cy+52);});const rW=(600-PAD*2-GAP*11)/12;const regions=['US-E','US-W','EU-W','EU-C','AP-SE','AP-NE','SA-E','ME-S','AF-W','CA-C','AU-E','IN-W'];regions.forEach((r,i)=>{const rx=PAD+i*(rW+GAP),ry=regionsY;noStroke();fill(fg[0],fg[1],fg[2],i%3===0?28:16);rect(rx,ry,rW,regionsH,4);drawingContext.save();drawingContext.translate(rx+rW/2,ry+regionsH/2);drawingContext.rotate(-Math.PI/2);drawingContext.font='500 9px Inter';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.textAlign='center';drawingContext.textBaseline='middle';drawingContext.fillText(r,0,0);drawingContext.restore();});drawingContext.font='400 10px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.4)`;drawingContext.textAlign='left';drawingContext.textBaseline='bottom';drawingContext.fillText('12 regions worldwide',PAD,355);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 20
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 2,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only prompt, no 2D SDF generated"
+        },
+        "subjects": [
+          {
+            "id": "sketch-global-scale",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];for(let x=0;x<gx;x++)for(let y=0;y<gy;y++){const w=sx[Math.floor(Math.random()*sx.length)],h=sy[Math.floor(Math.random()*sy.length)];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h});}}}return r;}function drawAtlasIcon(name,cx,cy,size,color){const ctx=drawingContext;ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.8;ctx.lineCap='round';ctx.lineJoin='round';const s=size/24,tx=cx-size/2,ty=cy-size/2;ctx.translate(tx,ty);ctx.scale(s,s);ctx.beginPath();if(name==='users'){ctx.arc(8,7,3,0,Math.PI*2);ctx.moveTo(2,21);ctx.bezierCurveTo(2,17,5,14,8,14);ctx.bezierCurveTo(11,14,14,17,14,21);ctx.moveTo(16,3.13);ctx.bezierCurveTo(18.21,3.65,19.76,5.65,19.76,8);ctx.bezierCurveTo(19.76,10.35,18.21,12.35,16,12.87);ctx.moveTo(22,21);ctx.bezierCurveTo(22,18.5,20.5,16.4,18.5,15.5);ctx.stroke();}else if(name==='cloud'){ctx.moveTo(18,10);ctx.bezierCurveTo(17.3,6.53,14.32,4,10.7,4);ctx.bezierCurveTo(7.78,4,5.24,5.69,4.06,8.15);ctx.bezierCurveTo(1.73,8.69,0,10.79,0,13.33);ctx.bezierCurveTo(0,16.46,2.46,19,5.5,19);ctx.lineTo(18,19);ctx.bezierCurveTo(20.76,19,23,16.76,23,14);ctx.bezierCurveTo(23,11.36,20.9,9.22,18.27,9.04);ctx.stroke();}else if(name==='globe'){ctx.arc(12,12,9,0,Math.PI*2);ctx.moveTo(3,12);ctx.lineTo(21,12);ctx.moveTo(12,3);ctx.bezierCurveTo(9.33,6,8,9,8,12);ctx.bezierCurveTo(8,15,9.33,18,12,21);ctx.moveTo(12,3);ctx.bezierCurveTo(14.67,6,16,9,16,12);ctx.bezierCurveTo(16,15,14.67,18,12,21);ctx.stroke();}else if(name==='lightning'){ctx.moveTo(13,2);ctx.lineTo(4,14);ctx.lineTo(11,14);ctx.lineTo(11,22);ctx.lineTo(20,10);ctx.lineTo(13,10);ctx.closePath();ctx.stroke();}else if(name==='database'){ctx.ellipse(12,5,9,3,0,0,Math.PI*2);ctx.moveTo(3,5);ctx.lineTo(3,19);ctx.bezierCurveTo(3,20.66,7.03,22,12,22);ctx.bezierCurveTo(16.97,22,21,20.66,21,19);ctx.lineTo(21,5);ctx.moveTo(3,12);ctx.bezierCurveTo(3,13.66,7.03,15,12,15);ctx.bezierCurveTo(16.97,15,21,13.66,21,12);ctx.stroke();}ctx.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const fgs=`rgb(${fg[0]},${fg[1]},${fg[2]})`;const teamColors=['#4A90D9','#E85C4A','#F5A623','#7ED321'];const cloudColors=['#5B5EA6','#2E86AB','#A23B72'];const teams=[{label:'Platform',icon:'database'},{label:'Growth',icon:'lightning'},{label:'Infra',icon:'cloud'},{label:'Data',icon:'globe'}];const clouds=[{label:'AWS'},{label:'Azure'},{label:'GCP'}];const teamX=80,cloudX=380,topY=60,teamGap=65,cloudGap=80;const teamPositions=teams.map((t,i)=>({x:teamX,y:topY+i*teamGap}));const cloudPositions=clouds.map((c,i)=>({x:cloudX,y:topY+40+i*cloudGap}));strokeWeight(1);for(let ti=0;ti<teams.length;ti++){for(let ci=0;ci<clouds.length;ci++){const tp2=teamPositions[ti],cp=cloudPositions[ci];stroke(fg[0],fg[1],fg[2],50);line(tp2.x+60,tp2.y,cp.x-20,cp.y);}}for(let i=0;i<teamPositions.length;i++){const pos=teamPositions[i],col=teamColors[i];noStroke();fill(col);rect(pos.x-60,pos.y-22,120,44,8);fill(bg[0],bg[1],bg[2]);drawAtlasIcon(teams[i].icon,pos.x-30,pos.y,20,`rgb(${bg[0]},${bg[1]},${bg[2]})`);textFont('Inter');textSize(14);textAlign(LEFT,CENTER);fill(bg[0],bg[1],bg[2]);text(teams[i].label,pos.x-12,pos.y);}for(let i=0;i<cloudPositions.length;i++){const pos=cloudPositions[i],col=cloudColors[i];noStroke();fill(col);rect(pos.x-20,pos.y-22,120,44,8);drawAtlasIcon('cloud',pos.x+10,pos.y,20,`rgb(${bg[0]},${bg[1]},${bg[2]})`);textFont('Inter');textSize(14);textAlign(LEFT,CENTER);fill(bg[0],bg[1],bg[2]);text(clouds[i].label,pos.x+24,pos.y);}const regY=300,regX=300,regW=340,regH=38;noStroke();fill(fg[0],fg[1],fg[2],18);rect(regX-regW/2,regY-regH/2,regW,regH,6);drawAtlasIcon('globe',regX-regW/2+22,regY,18,fgs);textFont('Inter');textSize(13);textAlign(LEFT,CENTER);fill(fg[0],fg[1],fg[2]);text('12 regions worldwide',regX-regW/2+36,regY);drawingContext.font='700 42px IBM Plex Mono';drawingContext.fillStyle=fgs;drawingContext.textAlign='center';drawingContext.fillText('1.2M',510,120);textFont('Inter');textSize(12);textAlign(CENTER,TOP);fill(fg[0],fg[1],fg[2],180);text('events/sec',510,130);}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "idx": 3,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only input"
+        },
+        "subjects": [
+          {
+            "id": "sketch-main",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];for(let x=0;x<gx;x++)for(let y=0;y<gy;y++){const w=sx[0],h=sy[0];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h,label:p.label||'',sub:p.sub||''});break;}}}return r;}function drawAtlasIcon(name,x,y,size,color){const s=size/24;drawingContext.save();drawingContext.translate(x-size/2,y-size/2);drawingContext.scale(s,s);drawingContext.strokeStyle=color;drawingContext.fillStyle='none';drawingContext.lineWidth=1.5/s;drawingContext.lineCap='round';drawingContext.lineJoin='round';const p=new Path2D();if(name==='users'){p.arc(8,7,3,0,Math.PI*2);p.moveTo(2,21);p.bezierCurveTo(2,17,5,14,8,14);p.bezierCurveTo(11,14,14,17,14,21);p.moveTo(15,11);p.arc(18,7,3,0,Math.PI*2);p.moveTo(16,21);p.bezierCurveTo(16,17,13,14,16,14);}else if(name==='cloud'){p.moveTo(18,10);p.bezierCurveTo(18,7.2,15.8,5,13,5);p.bezierCurveTo(11.3,5,9.8,5.9,9,7.2);p.bezierCurveTo(8.4,7,7.7,7,7,7);p.bezierCurveTo(4.8,7,3,8.8,3,11);p.bezierCurveTo(3,13.2,4.8,15,7,15);p.lineTo(18,15);p.bezierCurveTo(20.2,15,22,13.2,22,11);p.bezierCurveTo(22,8.8,20.2,7,18,7);}else if(name==='globe'){p.arc(12,12,9,0,Math.PI*2);p.moveTo(3,12);p.lineTo(21,12);p.moveTo(12,3);p.bezierCurveTo(9,6,7.5,9,7.5,12);p.bezierCurveTo(7.5,15,9,18,12,21);p.moveTo(12,3);p.bezierCurveTo(15,6,16.5,9,16.5,12);p.bezierCurveTo(16.5,15,15,18,12,21);}else if(name==='lightning'){p.moveTo(13,2);p.lineTo(4.5,13);p.lineTo(10,13);p.lineTo(11,22);p.lineTo(19.5,11);p.lineTo(14,11);p.closePath();}else if(name==='chart-bar'){p.moveTo(3,3);p.lineTo(3,21);p.lineTo(21,21);p.moveTo(7,10);p.lineTo(7,21);p.moveTo(12,6);p.lineTo(12,21);p.moveTo(17,13);p.lineTo(17,21);}drawingContext.stroke(p);drawingContext.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const teams=[{name:'Team Alpha',icon:'users'},{name:'Team Beta',icon:'users'},{name:'Team Gamma',icon:'users'},{name:'Team Delta',icon:'users'}];const clouds=[{name:'AWS',icon:'cloud'},{name:'Azure',icon:'cloud'},{name:'GCP',icon:'cloud'}];const teamColor=[fg[0],fg[1],fg[2]];const cloudColor=[fg[0],fg[1],fg[2]];const accentR=Math.max(0,fg[0]-40);const accentG=Math.max(0,fg[1]-20);const accentB=Math.min(255,fg[2]+60);const cardW=118,cardH=68,teamY=30,cloudY=170;const teamStartX=18;const cloudStartX=90;noStroke();for(let i=0;i<4;i++){const cx=teamStartX+i*(cardW+10),cy=teamY;stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);noFill();rect(cx,cy,cardW,cardH,8);noStroke();drawAtlasIcon('users',cx+18,cy+20,22,'rgb('+fg[0]+','+fg[1]+','+fg[2]+')');fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(13);textAlign(LEFT,TOP);drawingContext.font='600 13px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='left';drawingContext.fillText(teams[i].name,cx+34,cy+14);textSize(10);fill(fg[0],fg[1],fg[2],160);drawingContext.font='400 10px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.6)';drawingContext.fillText('Product Team',cx+34,cy+30);}for(let i=0;i<3;i++){const cx=cloudStartX+i*(160+10),cy=cloudY;stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);noFill();rect(cx,cy,150,cardH,8);noStroke();drawAtlasIcon('cloud',cx+18,cy+20,22,'rgb('+fg[0]+','+fg[1]+','+fg[2]+')');drawingContext.font='600 13px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='left';drawingContext.fillText(clouds[i].name,cx+34,cy+14);drawingContext.font='400 10px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.6)';drawingContext.fillText('Cloud Provider',cx+34,cy+30);}stroke(fg[0],fg[1],fg[2]);strokeWeight(0.8);for(let t=0;t<4;t++){const tx=teamStartX+t*(cardW+10)+cardW/2,ty=teamY+cardH;for(let c=0;c<3;c++){const cx=cloudStartX+c*170+75,cy=cloudY;const mx=(tx+cx)/2,my=(ty+cy)/2;noFill();beginShape();vertex(tx,ty);bezierVertex(tx,my,cx,my,cx,cy);endShape();}}const regionColors=[];for(let i=0;i<12;i++){regionColors.push(i%3);}const regionW=38,regionH=28,regionStartX=22,regionY=270,regionGap=8;for(let i=0;i<12;i++){const cx=regionStartX+i*(regionW+regionGap),cy=regionY;const alpha=120+Math.floor((i/12)*100);fill(fg[0],fg[1],fg[2],alpha);noStroke();rect(cx,cy,regionW,regionH,4);drawingContext.font='700 10px IBM Plex Mono';drawingContext.fillStyle='rgb('+bg[0]+','+bg[1]+','+bg[2]+')';drawingContext.textAlign='center';drawingContext.fillText('R'+(i+1<10?'0':'')+(i+1),cx+regionW/2,cy+regionH/2+4);}drawAtlasIcon('globe',300,288,'rgb('+fg[0]+','+fg[1]+','+fg[2]+')');stroke(fg[0],fg[1],fg[2]);strokeWeight(0.5);for(let i=0;i<12;i++){const rx=regionStartX+i*(regionW+regionGap)+regionW/2,ry=regionY;for(let c=0;c<3;c++){if(i%3===c){const cx=cloudStartX+c*170+75,cy=cloudY+cardH;line(cx,cy,rx,ry);}}}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.5,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 4,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only prompt, no 2D SDF code"
+        },
+        "subjects": [
+          {
+            "id": "sketch-global-infra",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];let placed=false;for(let x=0;x<gx&&!placed;x++)for(let y=0;y<gy&&!placed;y++){const w=sx[0],h=sy[0];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h,label:p.label,value:p.value,icon:p.icon,color:p.color});placed=true;}}}return r;}function drawAtlasIcon(name,x,y,size,color){const s=size/24;push();translate(x,y);scale(s);const c=typeof color==='string'?color:('rgb('+color[0]+','+color[1]+','+color[2]+')');stroke(c);strokeWeight(1.5/s);noFill();if(name==='users'){ellipse(-5,-8,8,8);ellipse(5,-8,8,8);arc(-5,0,12,12,Math.PI,0);arc(5,0,12,12,Math.PI,0);}else if(name==='cloud'){noStroke();fill(c);ellipse(-5,-2,10,8);ellipse(3,-4,10,8);ellipse(0,2,14,8);rect(-7,-2,14,6);}else if(name==='globe'){ellipse(0,0,20,20);line(-10,0,10,0);line(0,-10,0,10);arc(0,0,8,20,0,Math.PI*2);noFill();stroke(c);}else if(name==='chart-bar'){noStroke();fill(c);rect(-8,4,4,-8);rect(-2,4,4,-14);rect(4,4,4,-6);}else if(name==='database'){noStroke();fill(c);ellipse(0,-6,16,6);rect(-8,-6,16,12);ellipse(0,6,16,6);}else if(name==='lightning'){noStroke();fill(c);beginShape();vertex(2,-10);vertex(-4,0);vertex(2,0);vertex(-2,10);vertex(8,-2);vertex(2,-2);endShape(CLOSE);}else if(name==='arrow-right'){stroke(c);strokeWeight(2/s);line(-8,0,8,0);line(3,-5,8,0);line(3,5,8,0);}pop();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const accent1=[59,130,246];const accent2=[16,185,129];const accent3=[245,158,11];const accent4=[239,68,68];const teamColors=[accent1,accent2,accent3,accent4];const cloudColors=[[99,102,241],[20,184,166],[251,146,60]];const teams=[{name:'Team Alpha',icon:'users'},{name:'Team Beta',icon:'users'},{name:'Team Gamma',icon:'users'},{name:'Team Delta',icon:'users'}];const clouds=[{name:'AWS',icon:'cloud'},{name:'Azure',icon:'cloud'},{name:'GCP',icon:'cloud'}];const heroY=30,heroH=60;fill(fg[0],fg[1],fg[2],18);noStroke();rect(20,heroY,560,heroH,10);fill(fg[0],fg[1],fg[2]);textFont('Inter');drawingContext.font='700 28px Inter';drawingContext.textAlign='center';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText('1.2M events / sec',300,heroY+38);drawingContext.font='400 13px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.6)';drawingContext.fillText('processed globally across 12 regions',300,heroY+56);const teamY=115,teamW=120,teamH=70,teamGap=14,teamStartX=(600-4*(teamW+teamGap)+teamGap)/2;for(let i=0;i<4;i++){const tx=teamStartX+i*(teamW+teamGap),ty=teamY,c=teamColors[i];noFill();stroke(c[0],c[1],c[2]);strokeWeight(1.5);rect(tx,ty,teamW,teamH,8);fill(c[0],c[1],c[2],30);noStroke();rect(tx,ty,teamW,teamH,8);drawAtlasIcon('users',tx+20,ty+22,28,[c[0],c[1],c[2]]);noStroke();fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(12);textAlign(LEFT,TOP);drawingContext.font='600 12px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText(teams[i].name,tx+38,ty+13);drawingContext.font='400 11px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.55)';drawingContext.fillText('product team',tx+38,ty+28);}const connY1=teamY+teamH+4,connY2=238-4;stroke(fg[0],fg[1],fg[2],40);strokeWeight(1);for(let i=0;i<4;i++){const tx=teamStartX+i*(teamW+teamGap)+teamW/2;for(let j=0;j<3;j++){const cloudW=150,cloudH=65,cloudGap=18,cloudStartX=(600-3*(cloudW+cloudGap)+cloudGap)/2,cx=cloudStartX+j*(cloudW+cloudGap)+cloudW/2;const midY=(connY1+connY2)/2;beginShape();vertex(tx,connY1);vertex(tx,midY-10);bezierVertex(tx,midY,cx,midY,cx,connY2);endShape();}}const cloudY=238,cloudW=150,cloudH=65,cloudGap=18,cloudStartX=(600-3*(cloudW+cloudGap)+cloudGap)/2;for(let j=0;j<3;j++){const cx=cloudStartX+j*(cloudW+cloudGap),c=cloudColors[j];noFill();stroke(c[0],c[1],c[2]);strokeWeight(1.5);rect(cx,cloudY,cloudW,cloudH,8);fill(c[0],c[1],c[2],25);noStroke();rect(cx,cloudY,cloudW,cloudH,8);drawAtlasIcon('cloud',cx+18,cloudY+22,28,[c[0],c[1],c[2]]);noStroke();fill(fg[0],fg[1],fg[2]);drawingContext.font='700 14px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.fillText(clouds[j].name,cx+40,cloudY+16);drawingContext.font='400 11px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.55)';drawingContext.fillText('cloud provider',cx+40,cloudY+30);}const regionY=325,regionDotR=5,regionCount=12,regionStartX=60,regionEndX=540,regionStep=(regionEndX-regionStartX)/(regionCount-1);const regionColors=[accent1,accent2,accent3,accent4,accent1,accent2,accent3,accent4,accent1,accent2,accent3,accent4];stroke(fg[0],fg[1],fg[2],25);strokeWeight(1);line(regionStartX,regionY,regionEndX,regionY);for(let k=0;k<regionCount;k++){const rx=regionStartX+k*regionStep,c=regionColors[k];noStroke();fill(c[0],c[1],c[2]);ellipse(rx,regionY,regionDotR*2,regionDotR*2);drawingContext.font='400 9px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.5)';drawingContext.textAlign='center';drawingContext.fillText('R'+(k+1),rx,regionY+15);}drawingContext.font='500 11px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',0.45)';drawingContext.textAlign='left';drawingContext.fillText('12 regions worldwide',regionStartX,regionY-10);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 10,
+            "focal": 1.5,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 5,
+      "status": "ready",
+      "archetype": "relation",
+      "sceneData": {
+        "v": 1,
+        "name": "relation: 4 Teams × 3 Clouds × 12 Regions",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our 4 product teams collaborate with 3 cloud providers across 12 regions worldwide, processing 1.2 million events per second.",
+          "from2dCode": "text-only prompt, no 2D SDF"
+        },
+        "subjects": [
+          {
+            "id": "sketch-main",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function springBrushStroke(wp,opts){if(wp.length<2)return wp.map(([x,y])=>({x,y,thickness:opts.brushSize||4}));const k=opts.springK||0.4,fr=opts.friction||0.55,st=opts.stepSize||2,bs=opts.brushSize||4,sf=opts.speedToThicknessFactor||0.6,mt=opts.minThickness||0.5;const sg=[];let tl=0;for(let i=1;i<wp.length;i++){const[x0,y0]=wp[i-1],[x1,y1]=wp[i],dx=x1-x0,dy=y1-y0,sl=Math.hypot(dx,dy);sg.push({x0,y0,dx,dy,sl,t0:tl});tl+=sl;}if(tl===0)return[{x:wp[0][0],y:wp[0][1],thickness:bs}];let bx=wp[0][0],by=wp[0][1],vx=0,vy=0;const out=[];for(let d=0;d<=tl;d+=st){let s=sg[0];for(let i=0;i<sg.length;i++)if(d>=sg[i].t0&&d<=sg[i].t0+sg[i].sl){s=sg[i];break;}const lt=s.sl>0?(d-s.t0)/s.sl:0,cx=s.x0+s.dx*lt,cy=s.y0+s.dy*lt;vx+=(cx-bx)*k;vy+=(cy-by)*k;vx*=fr;vy*=fr;bx+=vx;by+=vy;const sp=Math.hypot(vx,vy);out.push({x:bx,y:by,thickness:Math.max(mt,bs-sp*sf)});}return out;}function drawAtlasIcon(name,cx,cy,size,color){const s=size/24;const[r,g,b]=Array.isArray(color)?color:[40,40,40];drawingContext.save();drawingContext.translate(cx-size/2,cy-size/2);drawingContext.scale(s,s);drawingContext.strokeStyle=`rgb(${r},${g},${b})`;drawingContext.fillStyle=`rgb(${r},${g},${b})`;drawingContext.lineWidth=1.5/s;drawingContext.lineCap='round';drawingContext.lineJoin='round';const icons={users:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',cloud:'M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z',globe:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z','chart-bar':'M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z',lightning:'M7 2v11h3v9l7-12h-4l4-8z'};const d=icons[name];if(!d)return;const p=new Path2D(d);drawingContext.stroke(p);drawingContext.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const teams=[{label:'Team Alpha',icon:'users',x:90,y:90},{label:'Team Beta',icon:'users',x:90,y:170},{label:'Team Gamma',icon:'users',x:90,y:250},{label:'Team Delta',icon:'users',x:90,y:330}];const clouds=[{label:'AWS',icon:'cloud',x:310,y:120},{label:'Azure',icon:'cloud',x:310,y:200},{label:'GCP',icon:'cloud',x:310,y:280}];const regions=[{label:'12 Regions',icon:'globe',x:490,y:200}];const heroX=300,heroY=20;fill(fg[0],fg[1],fg[2]);textFont('Inter');drawingContext.font='700 17px Inter';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.textAlign='center';drawingContext.fillText('4 Teams · 3 Clouds · 12 Regions',300,22);drawingContext.font='500 12px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.55)`;drawingContext.fillText('1.2M events / sec',300,40);function drawNode(x,y,label,iconName,size){noStroke();fill(fg[0],fg[1],fg[2],18);ellipse(x,y,size,size);noFill();stroke(fg[0],fg[1],fg[2]);strokeWeight(1.4);ellipse(x,y,size,size);drawAtlasIcon(iconName,x,y-6,22,fg);noStroke();fill(fg[0],fg[1],fg[2]);drawingContext.font='500 11px Inter';drawingContext.textAlign='center';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.fillText(label,x,y+size/2+13);}function drawEdge(x1,y1,x2,y2,wobble){const mx=(x1+x2)/2,my=(y1+y2)/2+wobble;const wp=[[x1,y1],[mx,my],[x2,y2]];const pts=springBrushStroke(wp,{brushSize:1.8,springK:0.35,friction:0.6,stepSize:2,speedToThicknessFactor:0.5,minThickness:0.6});stroke(fg[0],fg[1],fg[2]);for(let i=1;i<pts.length;i++){strokeWeight(pts[i].thickness);line(pts[i-1].x,pts[i-1].y,pts[i].x,pts[i].y);}}const wobbles=[-18,-6,6,18];for(let ti=0;ti<teams.length;ti++){for(let ci=0;ci<clouds.length;ci++){drawEdge(teams[ti].x+30,teams[ti].y,clouds[ci].x-30,clouds[ci].y,wobbles[ti]*0.4+(ci-1)*8);}}for(let ci=0;ci<clouds.length;ci++){drawEdge(clouds[ci].x+30,clouds[ci].y,regions[0].x-30,regions[0].y,(ci-1)*10);}for(const t of teams)drawNode(t.x,t.y,t.label,t.icon,44);for(const c of clouds)drawNode(c.x,c.y,c.label,c.icon,44);drawNode(regions[0].x,regions[0].y,regions[0].label,regions[0].icon,52);noStroke();fill(fg[0],fg[1],fg[2]);drawingContext.font='700 22px IBM Plex Mono';drawingContext.textAlign='center';drawingContext.fillStyle=`rgb(${fg[0]},${fg[1]},${fg[2]})`;drawingContext.fillText('1.2M',490,190);drawingContext.font='500 10px Inter';drawingContext.fillText('events/sec',490,206);}"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

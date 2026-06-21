@@ -1,0 +1,451 @@
+{
+  "id": "L_apparat",
+  "text": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+  "rerun": true,
+  "expectedIdiom": "generateApparatusGrid",
+  "expectedSprint12Font": null,
+  "expectedSprint13Icons": null,
+  "wallMs": 200710,
+  "events": [
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 0
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 0,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 1
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 1,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 2
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 2,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 3
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 3,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 4
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 4,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "lift-start",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 5
+    },
+    {
+      "type": "lift-ready",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512",
+      "variantIndex": 5,
+      "archetype": "hierarchy"
+    },
+    {
+      "type": "all-done",
+      "visualId": "ade78802-8d37-4387-9c7e-8825dbec7512"
+    }
+  ],
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 3760,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 1,
+      "sprint13_iconNames": ["users"],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    },
+    {
+      "idx": 1,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4081,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    },
+    {
+      "idx": 2,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4047,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    },
+    {
+      "idx": 3,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4007,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    },
+    {
+      "idx": 4,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 4014,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    },
+    {
+      "idx": 5,
+      "status": "ready",
+      "error": null,
+      "archetype": "hierarchy",
+      "subjectTypes": ["p5-sketch"],
+      "p5CodeLen": 5293,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["generateApparatusGrid"]
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — 8 Teams × 3 Product Lines",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "text-only prompt, no prior 2D SDF"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:26,ydim:15,radius_x:11,radius_y:6.5,initiate_chance:0.82,extension_chance:0.82,vertical_chance:0.5,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.18,solidness:0.52,colors:['#3B82F6','#10B981','#F59E0B','#F3F4F6','#1E293B'],color_mode:'group',group_size:0.72,simple:false};const opts=Object.assign({},d,o);const ctx=Object.assign({},opts,{main_color:opts.colors[0],id_counter:0});function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){var f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){var col;if(ctx.color_mode==='group'){var k=Math.random()>0.5?l.col:t.col;ctx.main_color=Math.random()>ctx.group_size?gr(ctx.colors):k||ctx.main_color;col=ctx.main_color;}else col=ctx.main_color;return{h:true,v:true,in:true,col:col,id:ctx.id_counter++};}function sb(x,y){return ap(x,y,-(1-ctx.roundness))&&Math.random()<=ctx.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=ctx.initiate_chance;}function ex(x,y){return ap(x,y,1-ctx.roundness)&&Math.random()<=ctx.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=ctx.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}var g=new Array(opts.ydim+1);for(var y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(var x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>g[y].length/2){var m=g[y][g[y].length-x],mv=g[y][g[y].length-x+1];g[y][x]=dc(m);if(mv)g[y][x].v=mv.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){var bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];var fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);var g=generateApparatusGrid();var cs=19,ox=Math.floor((600-27*cs)/2),oy=28;noStroke();for(var y=0;y<g.length;y++){for(var x=0;x<g[y].length;x++){var c=g[y][x];if(c&&c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.8);for(var y2=0;y2<g.length;y2++){for(var x2=0;x2<g[y2].length;x2++){var c2=g[y2][x2];if(c2&&c2.h)line(ox+x2*cs,oy+y2*cs,ox+(x2+1)*cs,oy+y2*cs);if(c2&&c2.v)line(ox+x2*cs,oy+y2*cs,ox+x2*cs,oy+(y2+1)*cs);}}var legends=[{col:'#3B82F6',label:'Search'},{col:'#10B981',label:'Recommendations'},{col:'#F59E0B',label:'Infrastructure'}];var lx=28,ly=oy+16*cs+12;noStroke();textFont('Inter');textSize(13);for(var i=0;i<legends.length;i++){fill(legends[i].col);rect(lx,ly-10,13,13,3);fill(fg[0],fg[1],fg[2]);textAlign(LEFT,TOP);text(legends[i].label,lx+18,ly-10);lx+=legends[i].label.length*8+38;}fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(11);textAlign(RIGHT,TOP);text('8 teams · 3 product lines',572,ly-10);drawAtlasIcon('users',560,oy-14,18,fg);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.2,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 1,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — 8 Teams · 3 Product Lines",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "no 2d code — text-only input"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:22,ydim:13,radius_x:9,radius_y:5.5,initiate_chance:0.82,extension_chance:0.80,vertical_chance:0.48,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.18,solidness:0.58,colors:['#3B82F6','#10B981','#F59E0B','#F3F4F6','#1E293B'],color_mode:'group',group_size:0.72,simple:false};const opts=Object.assign({},d,o||{});let main_color=opts.colors[0],id_counter=0;function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(opts.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;main_color=Math.random()>opts.group_size?gr(opts.colors):k||main_color;col=main_color;}else col=main_color;return{h:true,v:true,in:true,col:col,id:id_counter++};}function sb(x,y){return ap(x,y,-(1-opts.roundness))&&Math.random()<=opts.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=opts.initiate_chance;}function ex(x,y){return ap(x,y,1-opts.roundness)&&Math.random()<=opts.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=opts.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=new Array(opts.ydim+1);for(let y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(let x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>Math.floor(g[y].length/2)){const m=g[y][g[y].length-x];const mv=g[y][g[y].length-x+1];g[y][x]=dc(m);if(mv)g[y][x].v=mv.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=[247,244,235];const ink=[22,20,18];background(bg[0],bg[1],bg[2]);const PALETTES={search:['#3B82F6','#60A5FA','#BFDBFE'],reco:['#10B981','#34D399','#A7F3D0'],infra:['#F59E0B','#FCD34D','#FEF3C7']};const g=generateApparatusGrid({xdim:22,ydim:13,radius_x:9,radius_y:5.5,colors:['#3B82F6','#10B981','#F59E0B','#E5E7EB'],color_mode:'group',group_size:0.70,solidness:0.56,initiate_chance:0.80,extension_chance:0.78,roundness:0.20,horizontal_symmetry:true});const cs=22;const ox=(600-22*cs)/2;const oy=38;noStroke();for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}}stroke(ink[0],ink[1],ink[2]);strokeWeight(1.5);for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}}const legends=[{label:'Search',col:'#3B82F6'},{label:'Recommendations',col:'#10B981'},{label:'Infrastructure',col:'#F59E0B'}];const lx=28,ly=332,lsz=10,lgap=160;noStroke();textFont('Inter');for(let i=0;i<legends.length;i++){fill(legends[i].col);rect(lx+i*lgap,ly,lsz,lsz,2);fill(ink[0],ink[1],ink[2]);textSize(12);textAlign(LEFT,TOP);text(legends[i].label,lx+i*lgap+lsz+6,ly+1);}fill(ink[0],ink[1],ink[2]);textSize(11);textAlign(CENTER,TOP);text('8 teams · 3 product lines',300,350);drawingContext.font='600 13px Inter';drawingContext.fillStyle='rgb(22,20,18)';drawingContext.textAlign='center';drawingContext.fillText('Engineering Organization',300,16);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 20,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 2,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — 8 Teams × 3 Product Lines",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "text-only prompt, no 2D SDF"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:22,ydim:13,radius_x:9.5,radius_y:5.8,initiate_chance:0.82,extension_chance:0.82,vertical_chance:0.5,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.18,solidness:0.58,colors:['#3B82F6','#10B981','#F59E0B','#F7F4E2','#1E293B'],color_mode:'group',group_size:0.72,simple:false};const opts=Object.assign({},d,o||{});const ctx=Object.assign({},opts,{main_color:opts.colors[0],id_counter:0});function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(ctx.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;ctx.main_color=Math.random()>ctx.group_size?gr(ctx.colors):k||ctx.main_color;col=ctx.main_color;}else col=ctx.main_color;return{h:true,v:true,in:true,col:col,id:ctx.id_counter++};}function sb(x,y){return ap(x,y,-(1-ctx.roundness))&&Math.random()<=ctx.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=ctx.initiate_chance;}function ex(x,y){return ap(x,y,1-ctx.roundness)&&Math.random()<=ctx.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=ctx.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=new Array(opts.ydim+1);for(let y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(let x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>Math.floor(g[y].length/2)){const mirX=g[y].length-x;const m=g[y][mirX];const mv=g[y][mirX+1];g[y][x]=dc(m);if(mv)g[y][x].v=mv.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=[247,244,224];const fg=[30,27,30];background(bg[0],bg[1],bg[2]);const grid=generateApparatusGrid({colors:['#3B82F6','#10B981','#F59E0B','#EFF6FF','#1E293B'],xdim:22,ydim:13,radius_x:9.5,radius_y:5.5,solidness:0.60,extension_chance:0.83,initiate_chance:0.83,group_size:0.70,roundness:0.18,horizontal_symmetry:true});const cs=22;const ox=Math.floor((600-22*cs)/2);const oy=18;noStroke();for(let y=0;y<grid.length;y++){for(let x=0;x<grid[y].length;x++){const c=grid[y][x];if(c&&c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);for(let y=0;y<grid.length;y++){for(let x=0;x<grid[y].length;x++){const c=grid[y][x];if(!c)continue;if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}}const lineH=oy+grid.length*cs+10;fill(fg[0],fg[1],fg[2]);noStroke();textFont('Inter');drawingContext.font='600 12px Inter';textAlign(LEFT,TOP);const legends=[{col:'#3B82F6',label:'Search (3 teams)'},{col:'#10B981',label:'Recommendations (3 teams)'},{col:'#F59E0B',label:'Infrastructure (2 teams)'}];let lx=30;for(const leg of legends){noStroke();fill(leg.col);rect(lx,lineH,10,10,2);fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(11);textAlign(LEFT,CENTER);text(leg.label,lx+14,lineH+5);lx+=textWidth(leg.label)+34;}fill(fg[0],fg[1],fg[2]);noStroke();drawingContext.font='500 11px Inter';textAlign(CENTER,TOP);text('8 teams · 3 product lines',300,lineH+18);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 3,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — Search · Recs · Infra",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "text-only prompt, no 2D SDF geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:22,ydim:13,radius_x:9.5,radius_y:5.5,initiate_chance:0.82,extension_chance:0.82,vertical_chance:0.5,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.18,solidness:0.58,colors:['#3B82F6','#10B981','#F59E0B','#F3F4F6','#1E293B'],color_mode:'group',group_size:0.72,simple:false};const opts=Object.assign({},d,o||{});const ctx=Object.assign({},opts,{main_color:opts.colors[0],id_counter:0});function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(ctx.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;ctx.main_color=Math.random()>ctx.group_size?gr(ctx.colors):(k||ctx.main_color);col=ctx.main_color;}else col=ctx.main_color;return{h:true,v:true,in:true,col:col,id:ctx.id_counter++};}function sb(x,y){return ap(x,y,-(1-ctx.roundness))&&Math.random()<=ctx.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=ctx.initiate_chance;}function ex(x,y){return ap(x,y,1-ctx.roundness)&&Math.random()<=ctx.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=ctx.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=[];for(let y=0;y<=opts.ydim;y++){g[y]=[];for(let x=0;x<=opts.xdim;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>Math.floor(opts.xdim/2)){const mx=opts.xdim-x,mc=g[y][mx],mc1=g[y][mx+1];g[y][x]=dc(mc);if(mc1)g[y][x].v=mc1.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const pal=['#3B82F6','#10B981','#F59E0B'];const labels={};let g;try{g=generateApparatusGrid({colors:pal,color_mode:'group',group_size:0.68,solidness:0.55,roundness:0.20,xdim:22,ydim:13,radius_x:9.5,radius_y:5.5});}catch(e){fill(fg[0],fg[1],fg[2]);textSize(14);text('render error: '+e.message,10,20);return;}const cs=22,ox=(600-22*cs)/2,oy=44;noStroke();for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c&&c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(!c)continue;if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}}noStroke();fill(fg[0],fg[1],fg[2]);textFont('Inter');textAlign(CENTER,TOP);textSize(13);text('8 teams · 3 product lines',300,14);const legendItems=[{col:'#3B82F6',label:'Search'},{col:'#10B981',label:'Recommendations'},{col:'#F59E0B',label:'Infrastructure'}];const lw=170,lstart=600/2-((legendItems.length*lw)/2);for(let i=0;i<legendItems.length;i++){const lx=lstart+i*lw;noStroke();fill(legendItems[i].col);rect(lx,330,14,14,3);fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(12);textAlign(LEFT,TOP);text(legendItems[i].label,lx+18,330);}}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.5,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    },
+    {
+      "idx": 4,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — 8 Teams × 3 Product Lines",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "text-only prompt, no 2D SDF code"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:26,ydim:14,radius_x:11,radius_y:6,initiate_chance:0.82,extension_chance:0.82,vertical_chance:0.48,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.18,solidness:0.58,colors:['#3B82F6','#10B981','#F59E0B','#F3F4F6','#1E293B'],color_mode:'group',group_size:0.72};const opts=Object.assign({},d,o);let main_color=opts.colors[0];let id_counter=0;function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(opts.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;main_color=Math.random()>opts.group_size?gr(opts.colors):k||main_color;col=main_color;}else col=main_color;return{h:true,v:true,in:true,col,id:id_counter++};}function sb(x,y){return ap(x,y,-(1-opts.roundness))&&Math.random()<=opts.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=opts.initiate_chance;}function ex(x,y){return ap(x,y,1-opts.roundness)&&Math.random()<=opts.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=opts.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=new Array(opts.ydim+1);for(let y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(let x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>Math.floor(opts.xdim/2)){const mx=opts.xdim-x,mc=g[y][mx],mn=g[y][mx+1];g[y][x]=dc(mc);if(mn)g[y][x].v=mn.v;}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const productLines=[{name:'Search',color:'#3B82F6'},{name:'Recommendations',color:'#10B981'},{name:'Infrastructure',color:'#F59E0B'}];const cs=20,g=generateApparatusGrid({colors:productLines.map(p=>p.color),xdim:26,ydim:14,radius_x:11,radius_y:6,group_size:0.70,solidness:0.56,roundness:0.20,horizontal_symmetry:true});const gridW=g[0].length*cs,gridH=g.length*cs;const ox=(600-gridW)/2,oy=44;noStroke();for(let y=0;y<g.length;y++)for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.4);for(let y=0;y<g.length;y++)for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}noStroke();fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(13);textAlign(CENTER,TOP);const legendY=oy+g.length*cs+10;const lx=[110,300,490];for(let i=0;i<productLines.length;i++){fill(productLines[i].color);ellipse(lx[i]-38,legendY+7,12,12);fill(fg[0],fg[1],fg[2]);textAlign(LEFT,TOP);text(productLines[i].name,lx[i]-28,legendY);}drawingContext.font='700 15px Inter';drawingContext.fillStyle='rgba('+fg[0]+','+fg[1]+','+fg[2]+',1)';drawingContext.textAlign='center';drawingContext.fillText('Engineering Org · 8 Teams · 3 Product Lines',300,16);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0
+          }
+        }
+      }
+    },
+    {
+      "idx": 5,
+      "status": "ready",
+      "archetype": "hierarchy",
+      "sceneData": {
+        "v": 1,
+        "name": "hierarchy: Engineering Org — 8 Teams × 3 Product Lines",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Our engineering org has 8 teams across 3 product lines: search, recommendations, and infrastructure.",
+          "from2dCode": "text-only, no 2D geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-apparatus-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function generateApparatusGrid(o){const d={xdim:24,ydim:14,radius_x:10,radius_y:6,initiate_chance:0.85,extension_chance:0.85,vertical_chance:0.5,horizontal_symmetry:true,vertical_symmetry:false,roundness:0.15,solidness:0.55,colors:['#3B82F6','#10B981','#F59E0B','#E5E7EB','#1E293B'],color_mode:'group',group_size:0.72,simple:false};const opts=Object.assign({},d,o);const ctx=Object.assign({},opts,{main_color:opts.colors[0],id_counter:0});function bc(){return{h:false,v:false,in:false,col:null,id:null};}function dc(c){return{h:c.h,v:c.v,in:c.in,col:c.col,id:c.id};}function gr(a){return a[Math.floor(Math.random()*a.length)];}function ap(x,y,fz){const f=1+Math.random()*fz,dx=(x-opts.xdim/2)/(opts.radius_x*f),dy=(y-opts.ydim/2)/(opts.radius_y*f);return dx*dx+dy*dy<1;}function nb(x,y,l,t){let col;if(ctx.color_mode==='group'){const k=Math.random()>0.5?l.col:t.col;ctx.main_color=Math.random()>ctx.group_size?gr(ctx.colors):k||ctx.main_color;col=ctx.main_color;}else col=ctx.main_color;return{h:true,v:true,in:true,col:col,id:ctx.id_counter++};}function sb(x,y){return ap(x,y,-(1-opts.roundness))&&Math.random()<=opts.solidness;}function sn(x,y){return ap(x,y,0)&&Math.random()<=opts.initiate_chance;}function ex(x,y){return ap(x,y,1-opts.roundness)&&Math.random()<=opts.extension_chance;}function nx(x,y,l,t){if(!l.in&&!t.in)return sb(x,y)?nb(x,y,l,t):bc();if(l.in&&!t.in){if(l.h&&ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};return sb(x,y)?nb(x,y,l,t):{h:false,v:true,in:false,col:null,id:null};}if(!l.in&&t.in){if(t.v&&ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};return sb(x,y)?nb(x,y,l,t):{h:true,v:false,in:false,col:null,id:null};}if(!l.h&&!t.v)return{h:false,v:false,in:true,col:l.col,id:l.id};if(l.h&&!t.v){if(ex(x,y))return{h:true,v:false,in:true,col:l.col,id:l.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(!l.h&&t.v){if(ex(x,y))return{h:false,v:true,in:true,col:t.col,id:t.id};if(sn(x,y))return nb(x,y,l,t);return{h:true,v:true,in:false,col:null,id:null};}if(Math.random()<=opts.vertical_chance)return{h:false,v:true,in:true,col:t.col,id:t.id};return{h:true,v:false,in:true,col:l.col,id:l.id};}const g=new Array(opts.ydim+1);for(let y=0;y<g.length;y++){g[y]=new Array(opts.xdim+1);for(let x=0;x<g[y].length;x++){if(y===0||x===0)g[y][x]=bc();else if(opts.horizontal_symmetry&&x>Math.floor(g[y].length/2)){const mx=g[y].length-x;const m=g[y][mx];const mv=g[y][mx+1]||null;if(m){g[y][x]=dc(m);if(mv)g[y][x].v=mv.v;}}else g[y][x]=nx(x,y,g[y][x-1],g[y-1][x]);}}return g;}function drawAtlasIcon(name,x,y,size,color){const h=size/2;const s=typeof color==='string'?color:('rgb('+color[0]+','+color[1]+','+color[2]+')');drawingContext.save();drawingContext.strokeStyle=s;drawingContext.fillStyle=s;drawingContext.lineWidth=size/12;drawingContext.lineCap='round';drawingContext.lineJoin='round';drawingContext.translate(x,y);const sc=size/24;drawingContext.scale(sc,sc);const icons={users:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',building:'M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16'};const d=icons[name]||icons['users'];const p=new Path2D(d);drawingContext.stroke(p);drawingContext.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const productLines=[{name:'Search',color:'#3B82F6',teams:['Indexing','Ranking','Query','Latency']},{name:'Recommendations',color:'#10B981',teams:['Collab Filter','Embeddings','A/B Infra','Personalization']},{name:'Infrastructure',color:'#F59E0B',teams:['Platform','DevOps','Data Eng','Security']}];const g=generateApparatusGrid({xdim:26,ydim:13,radius_x:11,radius_y:5.8,roundness:0.12,solidness:0.58,group_size:0.70,colors:['#3B82F6','#10B981','#F59E0B','#BFDBFE','#D1FAE5','#FDE68A'],color_mode:'group',horizontal_symmetry:true,initiate_chance:0.82,extension_chance:0.80,vertical_chance:0.48});const cs=19,ox=(600-26*cs)/2,oy=28;noStroke();for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(c&&c.in&&c.col){fill(c.col);rect(ox+x*cs,oy+y*cs,cs,cs);}}}stroke(fg[0],fg[1],fg[2]);strokeWeight(1.5);for(let y=0;y<g.length;y++){for(let x=0;x<g[y].length;x++){const c=g[y][x];if(!c)continue;if(c.h)line(ox+x*cs,oy+y*cs,ox+(x+1)*cs,oy+y*cs);if(c.v)line(ox+x*cs,oy+y*cs,ox+x*cs,oy+(y+1)*cs);}}const legendY=310;const lw=160,lh=36,lgap=14;const totalLW=3*lw+2*lgap;const lx=(600-totalLW)/2;for(let i=0;i<productLines.length;i++){const pl=productLines[i];const bx=lx+i*(lw+lgap),by=legendY;noStroke();fill(pl.color+'44');rect(bx,by,lw,lh,6);fill(pl.color);rect(bx,by,4,lh,3,0,0,3);noFill();stroke(pl.color);strokeWeight(1.2);rect(bx,by,lw,lh,6);noStroke();fill(fg[0],fg[1],fg[2]);textFont('Inter');textSize(12);textAlign(LEFT,CENTER);text(pl.name,bx+12,by+lh/2-7);fill(fg[0],fg[1],fg[2],180);textSize(10);text(pl.teams.slice(0,2).join(', ')+'...',bx+12,by+lh/2+7);}noStroke();fill(fg[0],fg[1],fg[2]);textFont('Inter');drawingContext.font='600 13px Inter';textAlign(CENTER,TOP);text('8 teams · 3 product lines',300,297);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    }
+  ]
+}

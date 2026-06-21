@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas L3 Render Harness</title>
+  <style>
+    body { margin: 20px; font-family: system-ui; }
+    h2 { margin: 10px 0 6px; font-size: 14px; }
+    iframe { border: 1px solid #ddd; }
+    .case { margin-bottom: 28px; }
+    .case .meta { font-size: 12px; color: #666; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Sprint 11/12/13 L3 visual verify</h1>
+  <p>Renders 1 selected variant per case in iframe sandbox. Use ?case=L_iconic_NEW&v=0 to view a single case.</p>
+  <div id="container"></div>
+
+  <script type="module">
+    const EVIDENCE_BASE = './evidence/';
+    const CASES = ['L_apparat', 'L_voronoi', 'L_colon', 'L_iconic_NEW', 'L_typo_NEW'];
+
+    const params = new URLSearchParams(location.search);
+    const onlyCase = params.get('case');
+    const onlyVariant = params.get('v') ? parseInt(params.get('v'), 10) : 0;
+    const cases = onlyCase ? [onlyCase] : CASES;
+
+    const container = document.getElementById('container');
+
+    async function renderCase(caseId) {
+      const res = await fetch(EVIDENCE_BASE + caseId + '.json');
+      const data = await res.json();
+      const variant = data.variants[onlyVariant];
+      const sceneData = variant?.sceneData;
+      if (!sceneData) {
+        container.insertAdjacentHTML('beforeend', `<div class="case"><h2>${caseId} v${onlyVariant}: NO DATA</h2></div>`);
+        return;
+      }
+      const p5 = sceneData.subjects.find(s => s.type === 'p5-sketch');
+      if (!p5) {
+        container.insertAdjacentHTML('beforeend', `<div class="case"><h2>${caseId}: not a p5-sketch</h2></div>`);
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'case';
+      div.innerHTML = `<h2>${caseId} v${onlyVariant} — ${sceneData.name || ''}</h2>
+        <div class="meta">archetype: ${data.analyses[onlyVariant].archetype} / code: ${data.analyses[onlyVariant].p5CodeLen} chars / Inter: ${data.analyses[onlyVariant].sprint12_usesInter} / icons: ${data.analyses[onlyVariant].sprint13_drawAtlasIconCount} (${data.analyses[onlyVariant].sprint13_iconNames.join(', ')}) / idioms: ${data.analyses[onlyVariant].sprint5_8_idioms.join(', ')}</div>`;
+
+      const iframe = document.createElement('iframe');
+      iframe.src = '/src/present/p5-sandbox-iframe.html';
+      iframe.sandbox = 'allow-scripts';
+      iframe.width = 600;
+      iframe.height = 360;
+      iframe.dataset.caseId = caseId;
+      div.appendChild(iframe);
+      container.appendChild(div);
+
+      // chromotome-ish palette (matches default branding)
+      const palette = { bg: [247, 244, 224], silhouetteColor: [30, 27, 30] };
+
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow.postMessage({
+          type: 'init',
+          code: p5.args.code,
+          palette,
+        }, '*');
+      });
+    }
+
+    (async () => {
+      for (const c of cases) {
+        await renderCase(c);
+      }
+    })();
+  </script>
+</body>
+</html>
