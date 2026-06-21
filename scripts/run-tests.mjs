@@ -88,6 +88,7 @@ const TESTS = [
   // M0.3 PDF parser (Atlas use case PPT-lift workflow)
   { category: 'parser', file: 'sdf-js/scripts/test-pdf-parser.mjs' },
   { category: 'parser', file: 'sdf-js/scripts/test-pdf-line-clustering.mjs' },
+  { category: 'parser', file: 'sdf-js/scripts/test-pdf-page-chrome.mjs' },
 
   // M1.5 SlideData → 2D SDF code emitter (consumed by compositor + lift LLM)
   { category: 'mapper', file: 'sdf-js/scripts/test-slide-to-2d-code.mjs' },
