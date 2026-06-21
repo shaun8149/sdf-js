@@ -1288,6 +1288,16 @@
       "file": "graphics-isometric-business.json",
       "renderer": "studio",
       "prompt": "Isometric Business · Object cluster"
+    },
+    {
+      "id": "deck-tour",
+      "title": "Spatial Deck · camera tour (Step 2)",
+      "thesisPoint": "Step 2 — spatial narrative: multi-slide deck in one 3D world + cameraSequence tour.",
+      "category": "spatial-deck",
+      "status": "ready",
+      "file": "deck-tour.json",
+      "renderer": "studio",
+      "prompt": "Spatial Deck · camera tour (Step 2)"
     }
   ]
 }
