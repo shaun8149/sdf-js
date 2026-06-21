@@ -928,6 +928,106 @@
       "file": "product-arrow.json",
       "renderer": "studio",
       "prompt": "Arrow Toolbox · Rising arrow"
+    },
+    {
+      "id": "product-gearwheels",
+      "title": "Gear Wheels 3D · Meshing (grey + blue)",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"gear wheels\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-gearwheels.json",
+      "renderer": "studio",
+      "prompt": "Gear Wheels 3D · Meshing (grey + blue)"
+    },
+    {
+      "id": "product-chrome-spheres",
+      "title": "Chrome Spheres · Receding row",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-chrome-spheres.json",
+      "renderer": "studio",
+      "prompt": "Chrome Spheres · Receding row"
+    },
+    {
+      "id": "product-spheres",
+      "title": "3D Spheres · Colour cluster",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Colour cluster"
+    },
+    {
+      "id": "product-spheres-network",
+      "title": "3D Spheres · Network",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-network.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Network"
+    },
+    {
+      "id": "product-spheres-tree",
+      "title": "3D Spheres · Tree structure",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-tree.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Tree structure"
+    },
+    {
+      "id": "product-circles-segmented",
+      "title": "3D Circles · Segmented ring",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circles-segmented.json",
+      "renderer": "studio",
+      "prompt": "3D Circles · Segmented ring"
+    },
+    {
+      "id": "product-circle-shapes",
+      "title": "3D Circle Shapes · Layered stack",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circle-shapes.json",
+      "renderer": "studio",
+      "prompt": "3D Circle Shapes · Layered stack"
+    },
+    {
+      "id": "product-cubes-segmented",
+      "title": "3D Cubes · Segmented",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-segmented.json",
+      "renderer": "studio",
+      "prompt": "3D Cubes · Segmented"
+    },
+    {
+      "id": "product-puzzle-toolbox",
+      "title": "Puzzle Toolbox 3D · Row of 5",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"puzzles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-puzzle-toolbox.json",
+      "renderer": "studio",
+      "prompt": "Puzzle Toolbox 3D · Row of 5"
+    },
+    {
+      "id": "product-circle-looping",
+      "title": "Circle Charts · Looping cycle",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circle-looping.json",
+      "renderer": "studio",
+      "prompt": "Circle Charts · Looping cycle"
     }
   ]
 }

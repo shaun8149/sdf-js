@@ -33,6 +33,7 @@ const M = {
   emerald: { hue: 0.4, sat: 0.72, value: 0.6, metal: 0.25, glow: 0 },
   crimson: { hue: 0.98, sat: 0.78, value: 0.62, metal: 0.25, glow: 0 },
   gold: { hue: 0.13, sat: 0.85, value: 0.9, metal: 0.9, glow: 0 },
+  chrome: { hue: 0.6, sat: 0.02, value: 0.85, metal: 0.98, glow: 0 },
 };
 
 const P2 = Math.PI / 2;
@@ -192,6 +193,154 @@ const SCENES = {
         [0.2, 1.2, 0.2],
         M.blue,
         [0, 0, 0.52],
+      ),
+    ],
+  },
+  // ---- Round 2: remaining 3D shape products (2026-06-21) ----
+  'product-gearwheels': {
+    title: 'Gear Wheels 3D · Meshing (grey + blue)',
+    cat: 'gear wheels',
+    subjects: [
+      S(
+        'gear-3d',
+        {
+          teeth: 16,
+          radius: 0.95,
+          thickness: 0.3,
+          toothDepth: 0.18,
+          toothWidth: 0.2,
+          holeRadius: 0.32,
+        },
+        [0, 1.0, 0],
+        M.grey,
+        [P2, 0, 0],
+      ),
+      S(
+        'gear-3d',
+        {
+          teeth: 11,
+          radius: 0.66,
+          thickness: 0.3,
+          toothDepth: 0.16,
+          toothWidth: 0.18,
+          holeRadius: 0.24,
+        },
+        [1.5, 1.55, 0],
+        M.blue,
+        [P2, 0, 0],
+      ),
+      S(
+        'gear-3d',
+        {
+          teeth: 9,
+          radius: 0.55,
+          thickness: 0.3,
+          toothDepth: 0.15,
+          toothWidth: 0.17,
+          holeRadius: 0.2,
+        },
+        [-1.2, 0.45, 0],
+        M.grey,
+        [P2, 0, 0],
+      ),
+    ],
+  },
+  'product-chrome-spheres': {
+    title: 'Chrome Spheres · Receding row',
+    cat: 'spheres',
+    subjects: [
+      S('sphere', { radius: 0.68 }, [1.3, 0.75, 0.5], M.green),
+      S('sphere', { radius: 0.54 }, [0.3, 0.85, 0.0], M.chrome),
+      S('sphere', { radius: 0.44 }, [-0.5, 0.92, -0.4], M.chrome),
+      S('sphere', { radius: 0.35 }, [-1.1, 1.0, -0.8], M.chrome),
+      S('sphere', { radius: 0.28 }, [-1.6, 1.05, -1.1], M.chrome),
+      S('sphere', { radius: 0.22 }, [-2.0, 1.1, -1.4], M.chrome),
+    ],
+  },
+  'product-spheres': {
+    title: '3D Spheres · Colour cluster',
+    cat: 'spheres',
+    subjects: [
+      S('sphere', { radius: 0.85 }, [0, 1.0, 0], M.blue),
+      S('sphere', { radius: 0.6 }, [-1.5, 0.78, 0.2], M.green),
+      S('sphere', { radius: 0.55 }, [1.4, 0.82, -0.1], M.orange),
+      S('sphere', { radius: 0.42 }, [0.6, 1.5, -0.3], M.grey),
+      S('sphere', { radius: 0.4 }, [-0.8, 1.45, -0.2], M.teal),
+    ],
+  },
+  'product-spheres-network': {
+    title: '3D Spheres · Network',
+    cat: 'spheres',
+    subjects: [
+      S(
+        'sphere-network-3d',
+        { count: 6, hubRadius: 0.45, satelliteRadius: 0.26, radius: 1.5, linkThickness: 0.05 },
+        [0, 1.3, 0],
+        M.blue,
+      ),
+    ],
+  },
+  'product-spheres-tree': {
+    title: '3D Spheres · Tree structure',
+    cat: 'spheres',
+    subjects: [
+      S(
+        'sphere-tree-3d',
+        { levels: 3, branching: 2, rootRadius: 0.4, levelHeight: 1.0, spread: 3.0 },
+        [0, 1.6, 0],
+        M.blue,
+      ),
+    ],
+  },
+  'product-circles-segmented': {
+    title: '3D Circles · Segmented ring',
+    cat: 'circles',
+    subjects: [
+      S(
+        'circle-segmented-3d',
+        { segments: 6, radius: 1.05, innerRatio: 0.5, thickness: 0.28, gapWidth: 0.14 },
+        [0, 1.0, 0],
+        M.blue,
+        [P2, 0, 0],
+      ),
+    ],
+  },
+  'product-circle-shapes': {
+    title: '3D Circle Shapes · Layered stack',
+    cat: 'circles',
+    subjects: [
+      S(
+        'circle-stack-3d',
+        { count: 5, radius: 0.95, taper: 0.82, diskHeight: 0.18, gap: 0.12 },
+        [0, 0.6, 0],
+        M.teal,
+      ),
+    ],
+  },
+  'product-cubes-segmented': {
+    title: '3D Cubes · Segmented',
+    cat: 'cubes',
+    subjects: [
+      S('cube-segmented-3d', { segments: 5, size: 1.6, gap: 0.12, axis: 'x' }, [0, 0.9, 0], M.blue),
+    ],
+  },
+  'product-puzzle-toolbox': {
+    title: 'Puzzle Toolbox 3D · Row of 5',
+    cat: 'puzzles',
+    subjects: ['blue', 'orange', 'emerald', 'crimson', 'gold'].map((c, i) =>
+      S('puzzle-piece-3d', { size: 1.0, depth: 0.3, knob: 0.24 }, [(i - 2) * 1.0, 0.8, 0], M[c]),
+    ),
+  },
+  'product-circle-looping': {
+    title: 'Circle Charts · Looping cycle',
+    cat: 'circles',
+    subjects: [
+      S(
+        'circle-loop-3d',
+        { segments: 5, radius: 1.0, tube: 0.08, headLength: 0.36, headRadius: 0.18 },
+        [0, 1.0, 0],
+        M.blue,
+        [P2, 0, 0],
       ),
     ],
   },
