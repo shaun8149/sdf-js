@@ -1308,6 +1308,26 @@
       "file": "data-labels-proto.json",
       "renderer": "studio",
       "prompt": "bar chart with SDF value labels"
+    },
+    {
+      "id": "labels-bar",
+      "title": "Bar chart · value labels (box bars)",
+      "thesisPoint": "Data labels bound to chart geometry → SDF (non-loop atoms / box charts only; loop atoms overflow).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "labels-bar.json",
+      "renderer": "studio",
+      "prompt": "Bar chart · value labels (box bars)"
+    },
+    {
+      "id": "labels-pie",
+      "title": "Pie chart · slice labels",
+      "thesisPoint": "Data labels bound to chart geometry → SDF (non-loop atoms / box charts only; loop atoms overflow).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "labels-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie chart · slice labels"
     }
   ]
 }
