@@ -751,10 +751,12 @@ carries fixed-position DOM narrative copy (titles, subtitles, author / date).
   - YES → object-attached → SDF or annotation overlay (see "Data label patterns" below)
   - NO  → ambient → \`overlay\` field
 
-\`text-3d-pipe\` IS a valid subject type for object-attached labels — emit it as a
-separate subject in \`subjects[]\` with \`transform.translate: [x,y,z]\` to position
-it at the data point. (Earlier Phase C v1 marked text-3d-pipe as "internal only";
-that was wrong — corrected by 3D side's labels-bar / labels-pie demos.)
+\`text-3d-pipe\` IS a valid subject type for object-attached labels. For the four
+auto-expand chart atoms (bar-3d / line-3d / column-3d / pie-3d) you don't need
+to emit it directly — include \`labels: string[]\` in the chart's args and the
+compositor auto-expands (Path A1, post-#89). For other chart atoms (sphere-fill,
+matrix-grid, etc.), emit text-3d-pipe as a separate subject with
+\`transform.translate: [x,y,z]\` (Path A2). See "Data label patterns" below.
 
 \`text-3d-extruded\` is rarely useful directly (the pipe variant looks better for
 labels). Prefer \`text-3d-pipe\`.
@@ -766,16 +768,26 @@ labels). Prefer \`text-3d-pipe\`.
                       → numbered chip rows + content bars (meeting agenda)
 
 ### CHARTS / DATA
-  - bar-3d            args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
-                      → vertical bars driven by values[]. Labels = separate text-3d-pipe subjects per bar (see "Data label patterns" below).
-  - column-3d         args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
-                      → horizontal bars. Labels = separate text-3d-pipe subjects per row.
-  - line-3d           args: { values?:number[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
-                      → polyline + point markers (time-series, radar). Labels = separate text-3d-pipe per point.
-  - pie-3d            args: { values?:number[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
-                      → pie / donut (innerRadius>0). Labels = separate text-3d-pipe at each slice mid-angle on the rim.
+
+The four atoms below (bar / line / column / pie) support \`args.labels: string[]\`
+parallel to \`args.values\` — compositor's \`expandChartLabels()\` automatically
+positions one text-3d-pipe SDF label per data element. Just include \`labels\` in
+the atom's args; nothing more to emit. (#89 connector.)
+
+  - bar-3d            args: { values?:number[], labels?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → vertical bars driven by values[]. labels[i] auto-rendered above bar i.
+  - column-3d         args: { values?:number[], labels?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → horizontal bars. labels[i] auto-rendered beyond row i's end.
+  - line-3d           args: { values?:number[], labels?:string[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
+                      → polyline + point markers. labels[i] auto-rendered above point i marker.
+  - pie-3d            args: { values?:number[], labels?:string[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
+                      → pie / donut (innerRadius>0). labels[i] auto-rendered at slice i's mid-angle on the rim.
+
+Other CHARTS / DATA atoms do NOT have auto-expansion — labels for these need
+manual text-3d-pipe subjects (Path A2 in "Data label patterns" below).
+
   - sphere-fill-3d    args: { levels?:number[], count?, radius?, spacing?, cage?, cageThickness?, fillScale? }
-                      → row of glass spheres with liquid fills. Labels = separate text-3d-pipe centred over each sphere (e.g. '20%','40%','80%').
+                      → row of glass spheres with liquid fills. For labels: emit separate text-3d-pipe centred over each sphere.
   - kpi-card-3d       args: { width?, height?, depth?, cornerRadius?, value?:number, label?:string, unit?:string, trend?:'up'|'down'|'flat', trendValue?:number }
                       → rounded KPI card (value/label/unit are object-attached, render via internal text-3d)
   - funnel-3d         args: { stages?:number, topRadius?, bottomRadius?, stageHeight?, gap? }
@@ -825,7 +837,7 @@ labels). Prefer \`text-3d-pipe\`.
 
 ### CHARTS / MATRIX
   - matrix-grid-3d    args: { rows?:1..6, cols?:1..6, cardW?, cardH?, cardD?, gap? }
-                      → N×M card grid (SWOT / 2×2 / BCG). Labels = separate text-3d-pipe centred on each card.
+                      → N×M card grid (SWOT / 2×2 / BCG). No auto-expand yet — emit separate text-3d-pipe centred on each card (Path A2).
 
 ### CHARTS / PROGRESSION
   - progression-3d    args: { steps?:number, run?, stepRise?, depth? }
@@ -871,58 +883,34 @@ labels). Prefer \`text-3d-pipe\`.
   - sphere-tree-3d    args: { levels?:1..5, branching?:1..5, rootRadius?, radiusFalloff?, levelHeight?, spread?, linkThickness? }
                       → top-down hierarchical sphere tree
 
-## ⚡ Data label patterns (Phase C v2 — corrects v1 Option C aspiration)
+## ⚡ Data label patterns (Phase C v3 — auto-expansion shipped in 3D-side #89)
 
-Object-attached data labels are emitted as **separate \`text-3d-pipe\` subjects**
-in the \`subjects\` array, positioned with \`transform.translate: [x,y,z]\`. This is
-the working contract per 3D side's labels-bar / labels-pie demos.
+Three paths for data labels. **Path A1 is the preferred default for the 4
+supported atoms** (bar-3d / line-3d / column-3d / pie-3d) — just include
+\`labels: string[]\` in the atom's args; compositor auto-renders them.
 
-(Phase C v1 spec'd \`label: string[]\` as an atom arg. That was aspirational — no
-runtime expansion exists. Lift LLM emits the separate-subjects pattern below
-instead. A future PR may add pipeline auto-expansion from \`label: string[]\` to
-positioned text-3d-pipe subjects, at which point this section will move back.)
+### Path A1 — auto-expand (PREFERRED for 4 atoms)
 
-### Two paths for data labels — pick by chart shape
+Supported atoms: \`bar-3d\` / \`line-3d\` / \`column-3d\` / \`pie-3d\`.
 
-**Path A — SDF labels (in-world)**
-Emit one \`text-3d-pipe\` subject per data point, positioned at the corresponding
-3D anchor. Renders inside the 3D scene; camera transforms apply.
+Just add \`labels: string[]\` to the atom's args, parallel to \`values\`.
+\`compositor / scene/chart-labels.js / expandChartLabels()\` runs at scene-load
+and renderLiftedSceneData time — for each chart subject carrying \`args.labels\`,
+it appends camera-facing \`text-3d-pipe\` subjects positioned via the atom's
+anchor maths (no manual placement; ZERO extra subjects in lift output).
 
-  - Recommended for: ≤ ~10 labels per chart. (text-3d-pipe is ~2k GLSL chars each.)
-  - All chart atoms support this — bar-3d / column-3d / line-3d / pie-3d /
-    sphere-fill-3d / matrix-grid-3d / etc. (The earlier "loop atoms can't take
-    SDF labels" finding was misdiagnosed; #87 fixed the underlying ES 1.00
-    shader compile error.)
+If \`labels.length < values.length\`, only those entries get labels. If \`labels\`
+is omitted or empty, the chart renders without labels (no error).
 
-**Path B — DOM annotation overlay (camera-tracked)**
-Add a top-level \`annotations: [{pos:[x,y,z], text}]\` array. The compositor's
-\`studio.project()\` API reprojects each pos onto the canvas every frame and
-positions a DOM div there. Tracks the moving camera. Zero shader cost.
+### Path A2 — manual placement (for non-auto-expand atoms)
 
-  - Recommended for: many labels (> 10), or when SDF text would crowd the scene.
-  - Renders as plain CSS (Inter font). No 3D lighting / depth effects on text.
-  - Available wherever the studio renderer is used.
+Use for chart atoms NOT in the auto-expand list yet: \`sphere-fill-3d\`,
+\`matrix-grid-3d\`, \`venn-3d\`, \`gauge-3d\`, \`radial-spoke-3d\`, \`scatter-3d\`,
+\`traffic-light-3d\`, \`waterfall-3d\`, \`fishbone-3d\`, etc.
 
-### Anchor positions per chart type
-
-For Path A, compute anchors using these formulas (mirrors each atom's layout
-math). For Path B, use the same anchors — \`pos\` is just [x,y,z] in world space.
-
-  - **bar-3d** (vertical bars along +X, grow up):
-    \`xStart = -(N*barW + (N-1)*gap)/2 + barW/2\`
-    bar i centre = \`(xStart + i*(barW+gap), values[i]*maxHeight, 0)\`
-    label anchor = \`(barCentreX, values[i]*maxHeight + 0.18, -barDepth/2 - 0.1)\` (above + on −z front face)
-
-  - **column-3d** (horizontal bars, frame swapped: bar i goes along +X at row i height):
-    Same anchor formula as bar-3d in the swapped frame.
-
-  - **line-3d** (point markers at value heights):
-    \`xStart = -((N-1)*pointSpacing)/2\`
-    label anchor = \`(xStart + i*pointSpacing, values[i]*maxHeight + 0.22, -0.12)\` (above the point, slightly in front)
-
-  - **pie-3d** (slices in the XY plane):
-    mid-angle \`θ = startAngle + cumulativeFraction[i] + 2π·values[i]/(2·Σvalues)\`
-    label anchor = \`(outerRadius·1.12·cos(θ), outerRadius·1.12·sin(θ), thickness/2 + 0.05)\` (on the rim, slightly past outer edge)
+Emit one \`text-3d-pipe\` subject per data point in \`subjects\`, positioned with
+\`transform.translate: [x,y,z]\` using the atom's known geometry. Anchor formulas
+for common Path A2 atoms:
 
   - **sphere-fill-3d** (row of spheres along +X):
     sphere i centre = \`(i·(2·radius+spacing) - (N-1)·(2·radius+spacing)/2, 0, 0)\`
@@ -932,78 +920,80 @@ math). For Path B, use the same anchors — \`pos\` is just [x,y,z] in world spa
     card (r,c) centre = \`((c - (cols-1)/2)·(cardW+gap), (r - (rows-1)/2)·(cardH+gap), cardD/2)\`
     label anchor = \`(cardCentreX, cardCentreY, cardCentreZ + 0.02)\` (on the front face)
 
+For other atoms not listed, infer the anchor from the atom's args + a small
+margin in front of the −z face.
+
+### Path B — DOM annotation overlay (camera-tracked, cheap)
+
+Add a top-level \`annotations: [{pos:[x,y,z], text}]\` array. The compositor's
+\`studio.project()\` reprojects each pos onto the canvas every frame and
+positions a DOM div there. Tracks the moving camera. Zero shader cost. Plain
+CSS (Inter font); no 3D lighting / depth on text.
+
+  - Use when: > ~10 labels per chart (Path A1/A2 budget tight) OR when the chart
+    atom has no anchor support AND geometry knowledge is too complex to infer.
+  - Available wherever the studio renderer is used.
+
 ### Lift mapping (2D atom args → 3D output)
 
 | 2D atom arg | Maps to | Notes |
 |---|---|---|
 | values / levels / points | same name in 3D atom args | per-object data |
-| labels: string[] | separate text-3d-pipe subjects in subjects[] (Path A) OR annotations[] (Path B) | LLM PRE-FORMATS each label string (emit '$3.4M', not 3.4 + format) |
+| labels: string[] (on bar / line / column / pie) | \`args.labels\` on the same atom (Path A1 auto-expand) | LLM emits pre-formatted strings ('$3.4M', not 3.4 + format) |
+| labels: string[] (on sphere-fill / matrix-grid / others) | separate \`text-3d-pipe\` subjects (Path A2) OR \`annotations[]\` (Path B) | LLM positions manually using anchor formulas |
 | title / subtitle | top-level \`overlay.title\` / \`overlay.subtitle\` | NOT in subjects[].args |
 | format ('currency' / 'percent') | (none) | LLM-side string formatting only |
 | author / date / version (cover) | top-level \`overlay.author\` / \`overlay.date\` / \`overlay.version\` | NOT in subjects[].args |
 
-### Tree-shaped atoms (open question for Phase D)
-
-For tree-diagram-3d / org-chart-3d / mindmap-3d, where to position labels per
-node is TBD. The atoms expose levels + branching as args but their internal node
-layout (DFS / BFS order) needs to be documented before labels-on-trees work.
-Phase D smoke decides.
-
 ### Label length
 
 Keep label strings short (≤ ~20 chars). text-3d-pipe cost is per-character.
-For long labels (e.g. multi-word descriptions), prefer Path B (annotation overlay).
+For long labels (e.g. multi-word descriptions), prefer Path B.
 
-### Worked example — bar chart with 5 SDF value labels (Path A)
+### Worked example — bar chart with 5 SDF value labels (Path A1, post-#89)
 
-Real example from \`labels-bar.json\` after 3D side's #87 fix:
+Real example from \`chart-autolabel-bar.json\`. ONE subject; \`expandChartLabels\`
+injects the 5 SDF labels at scene-load time.
 
 \`\`\`json
 {
   "v": 1,
-  "name": "Bar chart · value labels",
+  "name": "compare: Quarterly revenue",
   "subjects": [
     {
       "type": "bar-3d",
-      "args": { "values": [0.4, 0.66, 1, 0.6, 0.78],
-                "barWidth": 0.5, "barDepth": 0.5, "gap": 0.45, "maxHeight": 2.2 },
+      "args": {
+        "values": [0.4, 0.66, 1, 0.6, 0.78],
+        "labels": ["$1.2M", "$2.0M", "$3.4M", "$1.8M", "$2.6M"],
+        "barWidth": 0.5, "barDepth": 0.5, "gap": 0.45, "maxHeight": 2.2
+      },
       "transform": { "translate": [0, 0, 0] }
-    },
-    {
-      "type": "text-3d-pipe",
-      "args": { "text": "$1.2M", "height": 0.3, "pipeRadius": 0.05, "align": "center" },
-      "transform": { "translate": [-1.9, 1.06, -0.35] }
-    },
-    { "type": "text-3d-pipe",
-      "args": { "text": "$2.0M", "height": 0.3, "pipeRadius": 0.05, "align": "center" },
-      "transform": { "translate": [-0.95, 1.57, -0.35] } },
-    { "type": "text-3d-pipe",
-      "args": { "text": "$3.4M", "height": 0.3, "pipeRadius": 0.05, "align": "center" },
-      "transform": { "translate": [0, 2.32, -0.35] } },
-    { "type": "text-3d-pipe",
-      "args": { "text": "$1.8M", "height": 0.3, "pipeRadius": 0.05, "align": "center" },
-      "transform": { "translate": [0.95, 1.44, -0.35] } },
-    { "type": "text-3d-pipe",
-      "args": { "text": "$2.6M", "height": 0.3, "pipeRadius": 0.05, "align": "center" },
-      "transform": { "translate": [1.9, 1.836, -0.35] } }
+    }
   ]
 }
 \`\`\`
 
-(Positions computed via the bar-3d formula above. Note label x = bar centre x;
-label y = values[i]*maxHeight + margin (0.18 here); label z = -barDepth/2 - 0.1.)
+That's the entire scene. No manual text-3d-pipe subjects. No anchor math in
+the lift output. The renderer handles positioning per the atom's layout.
+
+(Phase C v1 spec'd this auto-expansion but the runtime hadn't shipped it; v2
+documented the manual fallback. v3, this version, is now real — \`bar-3d\` /
+\`line-3d\` / \`column-3d\` / \`pie-3d\` auto-expand. Other chart atoms still need
+Path A2 manual placement until they gain anchor support.)
 
 ## Constraints
 
 - Slide titles and ambient narrative copy go in the top-level \`overlay\` field,
   NOT in \`subjects[].args.title\` and NOT as separate text-3d subjects.
-- Per-data-point labels are SDF text-3d-pipe subjects (Path A) or
-  \`annotations[]\` DOM overlay entries (Path B). Pick by label count + chart
-  composition.
+- Per-data-point labels:
+    - For bar-3d / line-3d / column-3d / pie-3d: just include \`labels: string[]\`
+      in the atom's args (Path A1 auto-expand, post-#89). Compositor handles it.
+    - For other chart atoms (sphere-fill / matrix-grid / venn / etc.): emit
+      separate text-3d-pipe subjects with transform.translate (Path A2) OR use
+      top-level \`annotations: [{pos,text}]\` (Path B).
 - For 2D→3D lift mapping, the 2D atom's \`title\` arg maps to \`overlay.title\`;
-  data-bearing args (values, labels, items, sets) map to the equivalent 3D atom
-  args; the 2D atom's \`labels: string[]\` expands to separate text-3d-pipe
-  subjects or \`annotations[]\` entries per the "Data label patterns" above.
+  data-bearing args (values / labels / items / sets) map to the equivalent 3D
+  atom args.
 `;
 
 /**
