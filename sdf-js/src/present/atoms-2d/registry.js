@@ -30,7 +30,8 @@ const ATOM_LOADERS = {
   line: () => import('./charts/data/line.js'),
   pie: () => import('./charts/data/pie.js'),
   column: () => import('./charts/data/column.js'),
-  // Phase 1 (charts/data) complete: kpi-card / bar / line / pie / column
+  'sphere-fill': () => import('./charts/data/sphere-fill.js'),
+  // Phase 1 (charts/data) — kpi-card / bar / line / pie / column + sphere-fill
 
   // Charts / diagrams (Phase 2)
   'flow-chart': () => import('./charts/diagrams/flow-chart.js'),
@@ -46,6 +47,20 @@ const ATOM_LOADERS = {
 
   // Shapes (Phase 3) — single atom with kind param covering 6 primitives
   shape: () => import('./shapes/shape.js'),
+  'cube-grid': () => import('./shapes/cube-grid.js'),
+  'gear-cluster': () => import('./shapes/gear-cluster.js'),
+  'puzzle-pieces': () => import('./shapes/puzzle-pieces.js'),
+
+  // Charts/data extensions
+  funnel: () => import('./charts/data/funnel.js'),
+  waterfall: () => import('./charts/data/waterfall.js'),
+  gantt: () => import('./charts/data/gantt.js'),
+
+  // Progression (new category)
+  progression: () => import('./charts/progression/progression.js'),
+
+  // Matrix (new category)
+  'matrix-grid': () => import('./charts/matrix/matrix-grid.js'),
 
   // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
   'icon-badge': () => import('./icons/icon-badge.js'),
