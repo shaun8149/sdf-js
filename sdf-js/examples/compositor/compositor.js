@@ -1994,7 +1994,13 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // re-renders of the same scene, and for unbounded/huge SDFs (e.g. an
     // in-SDF ground plane or terrain → bbox hits the search radius), which keep
     // studio's neutral default pose.
-    if (!keepCamera && scene !== _lastStudioFramedScene && sdf && sdf.f) {
+    if (
+      !keepCamera &&
+      scene !== _lastStudioFramedScene &&
+      sdf &&
+      sdf.f &&
+      !(rawScene && rawScene.cameraSequence)
+    ) {
       _lastStudioFramedScene = scene;
       const framedScene = scene;
       // Auto-framing is a CPU bbox sweep (tens of thousands of sdf.f evals) — at
@@ -2045,6 +2051,11 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     }
     // Sprint 12: Rune heightmap → studio texture (same data as FLY 3D).
     if (st.setRuneHeightmap) st.setRuneHeightmap(scene.bakedHeightmap || null);
+    // Step 2 (spatial deck): a scene.cameraSequence flies the studio camera
+    // through multiple slide-stations laid out in one 3D world. Studio already
+    // plays it per-frame (draw loop) — just hand it the sequence (or null to
+    // detach + fall back to WASD / auto-frame).
+    if (st.setSequence) st.setSequence((rawScene && rawScene.cameraSequence) || null);
     try {
       return st.render(sdf);
     } catch (e) {
