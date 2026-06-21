@@ -1,18 +1,18 @@
 {
   "id": "deck-auth-ch2",
-  "title": "Chapter 3 · 1 slides",
-  "prompt": "Chapter 3 · 1 slides",
+  "title": "Chapter 3 · 1 slides (linear)",
+  "prompt": "Chapter 3 · 1 slides (linear)",
   "code2d": "// auto-authored deck segment.",
   "sceneData": {
     "v": 1,
     "name": "Chapter 3",
     "source": {
       "format": "authored",
-      "prompt": "light chapter"
+      "prompt": "light chapter (linear)"
     },
     "subjects": [
       {
-        "id": "c2s0_0",
+        "id": "liq0",
         "type": "sphere-fill-3d",
         "args": {
           "levels": [0.9],
@@ -32,7 +32,7 @@
         }
       },
       {
-        "id": "c2s0_1",
+        "id": "emp0",
         "type": "cut-sphere",
         "args": {
           "radius": 1.05,
@@ -48,18 +48,18 @@
       "loop": false,
       "shots": [
         {
-          "duration": 2.6,
-          "pos": [-1.2, 2.2, -6],
+          "duration": 2.4,
+          "pos": [-1.2, 2.6, -7],
           "target": [0, 1, 0],
-          "fov": 34,
+          "fov": 33,
           "ease": "smooth",
           "transition": "cut"
         },
         {
-          "duration": 1.8,
-          "pos": [-1.2, 2.2, -6],
+          "duration": 1.6,
+          "pos": [-1.2, 2.6, -7],
           "target": [0, 1, 0],
-          "fov": 34,
+          "fov": 33,
           "ease": "smooth",
           "transition": "blend"
         }

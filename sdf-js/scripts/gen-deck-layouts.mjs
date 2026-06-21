@@ -13,9 +13,10 @@
 // Usage: node sdf-js/scripts/gen-deck-layouts.mjs
 // =============================================================================
 
-import { writeFileSync, readFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { buildChapter } from './lib/chapter-layout.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, '../examples/compositor/demo-lifts');
@@ -57,68 +58,9 @@ const STATIONS = [
 ];
 const TY = 0.85;
 
-// layout → per-station { pos:[x,y,z], cam:{ pos, target } } (studio camera is
-// at −z looking +z; light atoms are orientation-agnostic so we frame from −z).
-function layout(kind, n, ty) {
-  const out = [];
-  if (kind === 'linear') {
-    const GAP = 6;
-    for (let i = 0; i < n; i++) {
-      const x = i * GAP;
-      out.push({ pos: [x, 0, 0], cam: { pos: [x - 1.2, ty + 1.6, -7], target: [x, ty, 0] } });
-    }
-  } else if (kind === 'arc') {
-    const R = 7,
-      spread = 1.15; // ~66° each side
-    for (let i = 0; i < n; i++) {
-      const a = n > 1 ? -spread + (2 * spread * i) / (n - 1) : 0;
-      const px = R * Math.sin(a),
-        pz = R * Math.cos(a) - R; // fan that bulges toward −z at the ends
-      const d = 6.5;
-      out.push({
-        pos: [px, 0, pz],
-        cam: { pos: [px * 0.5, ty + 1.6, pz - d], target: [px, ty, pz] },
-      });
-    }
-  } else {
-    // grid
-    const cols = Math.ceil(Math.sqrt(n)),
-      GX = 6,
-      GZ = 6;
-    for (let i = 0; i < n; i++) {
-      const c = i % cols,
-        r = Math.floor(i / cols);
-      const px = (c - (cols - 1) / 2) * GX,
-        pz = r * GZ;
-      out.push({ pos: [px, 0, pz], cam: { pos: [px, ty + 1.9, pz - 7], target: [px, ty, pz] } });
-    }
-  }
-  return out;
-}
-
-function buildChapter(kind) {
-  const places = layout(kind, STATIONS.length, TY);
-  const subjects = [];
-  const shots = [];
-  STATIONS.forEach((build, i) => {
-    const { pos, cam } = places[i];
-    build().forEach((s, j) => {
-      subjects.push({
-        id: `${kind}${i}_${j}`,
-        ...s,
-        transform: {
-          translate: [
-            s.transform.translate[0] + pos[0],
-            s.transform.translate[1] + pos[1],
-            s.transform.translate[2] + pos[2],
-          ],
-        },
-      });
-    });
-    const fr = { pos: cam.pos, target: cam.target, fov: 33, ease: 'smooth' };
-    shots.push({ duration: 2.4, ...fr, transition: i === 0 ? 'cut' : 'blend' });
-    shots.push({ duration: 1.6, ...fr, transition: 'blend' });
-  });
+function makeChapter(kind) {
+  const stations = STATIONS.map((build) => ({ subjects: build(), cx: 0, cy: 0, cz: 0 }));
+  const { subjects, shots } = buildChapter(stations, kind, TY, kind);
   const id = `deck-lay-${kind}`;
   return {
     id,
@@ -150,7 +92,7 @@ function buildChapter(kind) {
   };
 }
 
-const chapters = ['linear', 'arc', 'grid'].map(buildChapter);
+const chapters = ['linear', 'arc', 'grid'].map(makeChapter);
 for (const ch of chapters)
   writeFileSync(`${OUT}/${ch.id}.json`, JSON.stringify(ch, null, 2) + '\n');
 const deck = {
