@@ -531,6 +531,89 @@ console.log('\n--- flow-chart atom ---');
   ok(!crashed, 'empty steps no crash');
 }
 
+// ----- tree-diagram + org-chart (Phase 2b) -----
+console.log('\n--- tree-diagram atom ---');
+{
+  const spec = await getAtomSpec('tree-diagram');
+  ok(spec.type === 'tree-diagram', 'tree-diagram spec.type');
+  ok(spec.args.root.required, 'root required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'tree-diagram',
+    {
+      title: 'Org Tree',
+      root: {
+        label: 'Product',
+        children: [
+          { label: 'Engineering', children: [{ label: 'Backend' }, { label: 'Frontend' }] },
+          { label: 'Design' },
+        ],
+      },
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 600, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Org Tree'), 'title rendered');
+  ok(recorded.includes('Product'), 'root label rendered');
+  ok(recorded.includes('Engineering') && recorded.includes('Backend'), 'nested labels rendered');
+
+  // Empty root no crash
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(c, 'tree-diagram', { root: null }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'null root no crash');
+
+  // Single root no children
+  recorded.length = 0;
+  await renderAtom(c, 'tree-diagram', { root: { label: 'Lonely' } }, 'pseudo3d', {
+    w: 200,
+    h: 200,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(recorded.includes('Lonely'), 'single-node tree renders');
+}
+
+console.log('\n--- org-chart atom ---');
+{
+  const spec = await getAtomSpec('org-chart');
+  ok(spec.type === 'org-chart', 'org-chart spec.type');
+  ok(spec.args.root.required, 'root required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'org-chart',
+    {
+      title: 'Executive Team',
+      root: {
+        name: 'Sarah Chen',
+        title: 'CEO',
+        children: [
+          { name: 'Mike Park', title: 'CTO' },
+          { name: 'Lisa Wang', title: 'CMO' },
+        ],
+      },
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 600, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Executive Team'), 'title rendered');
+  ok(recorded.includes('Sarah Chen') && recorded.includes('CEO'), 'root name + title rendered');
+  ok(recorded.includes('Mike Park') && recorded.includes('CTO'), 'child name + title rendered');
+}
+
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};
@@ -542,6 +625,7 @@ function stubCtx(recorded) {
     'moveTo',
     'lineTo',
     'quadraticCurveTo',
+    'bezierCurveTo',
     'arc',
     'stroke',
     'fill',
