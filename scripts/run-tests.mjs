@@ -149,6 +149,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-branding-palettes.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-waypoint-tween.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atoms-2d-framework.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
