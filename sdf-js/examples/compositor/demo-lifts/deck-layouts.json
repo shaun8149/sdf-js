@@ -1,0 +1,24 @@
+{
+  "id": "deck-layouts",
+  "name": "Chapter layouts (linear / arc / grid)",
+  "segments": [
+    {
+      "file": "deck-lay-linear.json",
+      "title": "Linear layout · 5 stations",
+      "kind": "chapter",
+      "durationSec": 11
+    },
+    {
+      "file": "deck-lay-arc.json",
+      "title": "Arc layout · 5 stations",
+      "kind": "chapter",
+      "durationSec": 11
+    },
+    {
+      "file": "deck-lay-grid.json",
+      "title": "Grid layout · 5 stations",
+      "kind": "chapter",
+      "durationSec": 11
+    }
+  ]
+}
