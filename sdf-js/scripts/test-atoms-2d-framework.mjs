@@ -614,6 +614,110 @@ console.log('\n--- org-chart atom ---');
   ok(recorded.includes('Mike Park') && recorded.includes('CTO'), 'child name + title rendered');
 }
 
+// ----- mindmap atom (Phase 2c) -----
+console.log('\n--- mindmap atom ---');
+{
+  const spec = await getAtomSpec('mindmap');
+  ok(spec.type === 'mindmap', 'mindmap spec.type');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'mindmap',
+    {
+      title: 'Atlas',
+      root: {
+        label: 'Atlas',
+        children: [
+          { label: 'Engine', children: [{ label: 'SDF' }, { label: 'Renderer' }] },
+          { label: 'Present' },
+        ],
+      },
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 600, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Atlas'), 'root label rendered (also title)');
+  // Branch labels render but may be truncated for tight node radius (Engin… / Prese…)
+  ok(
+    recorded.some((t) => String(t).startsWith('Engine') || String(t).startsWith('Engin')),
+    'Engine branch label rendered (possibly truncated)',
+  );
+  ok(
+    recorded.some((t) => String(t).startsWith('Pres')),
+    'Present branch label rendered (possibly truncated)',
+  );
+  ok(
+    recorded.some((t) => String(t).includes('SDF')) ||
+      recorded.some((t) => String(t).includes('Render')),
+    'leaf labels rendered',
+  );
+
+  // Empty no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'mindmap', { root: null }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'null root no crash');
+}
+
+// ----- relationship-graph atom (Phase 2c) -----
+console.log('\n--- relationship-graph atom ---');
+{
+  const spec = await getAtomSpec('relationship-graph');
+  ok(spec.type === 'relationship-graph', 'relationship-graph spec.type');
+  ok(spec.args.nodes.required && spec.args.edges.required, 'nodes + edges required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'relationship-graph',
+    {
+      title: 'Team Deps',
+      nodes: [
+        { id: 'eng', label: 'Engineering', group: 0 },
+        { id: 'design', label: 'Design', group: 0 },
+        { id: 'figma', label: 'Figma', group: 1 },
+      ],
+      edges: [
+        { from: 'eng', to: 'figma', label: 'uses' },
+        { from: 'design', to: 'figma', label: 'uses' },
+      ],
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 600, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Team Deps'), 'title rendered');
+  // "Engineering" truncated for fixed node radius; check prefix only
+  ok(
+    recorded.some((t) => String(t).startsWith('Engin')) &&
+      recorded.some((t) => String(t).startsWith('Figm')),
+    'node labels rendered (possibly truncated)',
+  );
+  ok(recorded.filter((t) => t === 'uses').length === 2, 'edge labels rendered (2 "uses")');
+
+  // Empty nodes no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'relationship-graph', { nodes: [], edges: [] }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty nodes no crash');
+}
+
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};
