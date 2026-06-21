@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas 2D Atom Library Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 24px; font-family: 'Inter', system-ui; background: #fafafa; color: #1e1b1e; }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    h1 + p { margin: 0 0 24px; color: #666; font-size: 13px; }
+    .palette-bar { margin: 8px 0 24px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+    .palette-bar .label { color: #666; margin-right: 6px; }
+    .palette-bar button { padding: 4px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; font: inherit; border-radius: 3px; }
+    .palette-bar button.active { background: #1e1b1e; color: #fff; border-color: #1e1b1e; }
+    .palette-swatch { display: inline-flex; gap: 1px; margin-left: 4px; vertical-align: middle; }
+    .palette-swatch span { width: 8px; height: 12px; display: inline-block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .sample { background: var(--bg, #fff); padding: 0; border-radius: 6px; border: 1px solid #e5e5e5; overflow: hidden; }
+    .sample h3 { margin: 0; padding: 10px 14px; font-size: 12px; font-weight: 600; background: #f5f5f5; border-bottom: 1px solid #e5e5e5; }
+    .sample canvas { display: block; width: 100%; height: auto; }
+    .meta { padding: 8px 14px; font-size: 11px; color: #666; border-top: 1px solid #e5e5e5; font-family: 'IBM Plex Mono', monospace; }
+  </style>
+</head>
+<body>
+  <h1>Atlas 2D Atom Library — Pseudo-3D Style Demo</h1>
+  <p>Phase 0 hello-world: <code>kpi-card</code> atom rendered in main-page Canvas2D (not iframe). Switch palette to see how branding affects each atom.</p>
+  <div id="palette-bar" class="palette-bar"></div>
+  <div id="grid" class="grid"></div>
+
+  <script type="module">
+    import { renderSceneDataToCanvas } from '/src/present/atoms-2d/renderer.js';
+    import { listAtomTypes } from '/src/present/atoms-2d/registry.js';
+    import { BRANDING_PALETTES, getPalette } from '/src/present/branding-palettes.js';
+
+    const FEATURED_PALETTES = [
+      'mono-light',
+      'chromotome:hilda01',
+      'chromotome:jung_bird',
+      'chromotome:kov_03',
+      'chromotome:rag-mysore',
+    ];
+
+    let currentPaletteId = 'mono-light';
+
+    // Demo cases — KPI card in different content shapes
+    const SAMPLES = [
+      { title: 'Hero Revenue + Trend Up',
+        atom: { type: 'kpi-card', args: { value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs Q2 2024', trend: 'up', trendValue: '+127%', icon: 'chart-bar' } } },
+      { title: 'User Growth',
+        atom: { type: 'kpi-card', args: { value: '12,450', label: 'Monthly Active Users', sublabel: '+1.2k from last month', trend: 'up', trendValue: '+10.6%', icon: 'users' } } },
+      { title: 'Churn Drop',
+        atom: { type: 'kpi-card', args: { value: '2.1%', label: 'Monthly Churn', sublabel: 'down from 3.4%', trend: 'down', trendValue: '-1.3pt', icon: 'arrow-down' } } },
+      { title: 'NPS Steady',
+        atom: { type: 'kpi-card', args: { value: '68', label: 'NPS Score', sublabel: 'unchanged QoQ', trend: 'neutral', trendValue: '0', icon: 'star' } } },
+      { title: 'Minimal (no trend, no icon)',
+        atom: { type: 'kpi-card', args: { value: '$10M', label: 'Total ARR' } } },
+      { title: 'Long Label',
+        atom: { type: 'kpi-card', args: { value: '94%', label: 'Customer Satisfaction Score', sublabel: 'Based on Q3 NPS survey, n=1,250', trend: 'up', trendValue: '+3pt', icon: 'heart' } } },
+    ];
+
+    function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+
+    function renderPaletteBar() {
+      const bar = document.getElementById('palette-bar');
+      bar.innerHTML = '<span class="label">Palette:</span>';
+      for (const id of FEATURED_PALETTES) {
+        const p = getPalette(id);
+        if (!p) continue;
+        const btn = document.createElement('button');
+        btn.textContent = p.label || id;
+        if (id === currentPaletteId) btn.classList.add('active');
+        const sw = document.createElement('span');
+        sw.className = 'palette-swatch';
+        sw.innerHTML += `<span style="background:${rgbCss(p.bg)}"></span>`;
+        for (const c of (p.colors || [p.silhouetteColor]).slice(0, 4)) {
+          sw.innerHTML += `<span style="background:${rgbCss(c)}"></span>`;
+        }
+        btn.appendChild(sw);
+        btn.addEventListener('click', () => { currentPaletteId = id; renderAll(); });
+        bar.appendChild(btn);
+      }
+    }
+
+    async function renderAll() {
+      renderPaletteBar();
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      const palette = getPalette(currentPaletteId);
+      const sceneDataBg = rgbCss(palette.bg);
+
+      for (const sample of SAMPLES) {
+        const card = document.createElement('div');
+        card.className = 'sample';
+        card.style.setProperty('--bg', sceneDataBg);
+        card.innerHTML = `<h3>${sample.title}</h3>`;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 180;
+        card.appendChild(canvas);
+
+        const sceneData = {
+          subjects: [
+            { ...sample.atom, x: 20, y: 20, w: 280, h: 140, style: 'pseudo3d' },
+          ],
+        };
+        const result = await renderSceneDataToCanvas(canvas, sceneData, { palette });
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `rendered: ${result.rendered} / skipped: ${result.skipped} / errors: ${result.errors.length}`;
+        if (result.errors.length) meta.textContent += ' — ' + result.errors[0].error;
+        card.appendChild(meta);
+
+        grid.appendChild(card);
+      }
+    }
+
+    console.log('Loaded atoms:', listAtomTypes());
+    renderAll();
+  </script>
+</body>
+</html>
