@@ -20,6 +20,7 @@
 // =============================================================================
 
 import { updateVisualVariantStatus, VARIANT_COUNT } from './deck-model.js';
+import { isAtom2DType } from './atoms-2d/registry.js';
 
 const VALID_ARCHETYPES = [
   'sequence',
@@ -54,6 +55,25 @@ function validateP5SketchConstraint(sceneData) {
     if (typeof s.args?.code !== 'string' || s.args.code.length === 0) {
       throw new Error('p5-sketch subject requires args.code as non-empty string');
     }
+  }
+}
+
+/**
+ * Sprint 14a constraint: if a SceneData contains any atoms-2d subject, then
+ * ALL subjects must be atoms-2d types (no mixing with p5-sketch or traditional
+ * SDF subjects). Mirror of the p5-sketch constraint for the new atoms-2d path.
+ *
+ * @param {object} sceneData
+ */
+function validateAtom2DConstraint(sceneData) {
+  if (!sceneData || !Array.isArray(sceneData.subjects)) return;
+  const subjects = sceneData.subjects;
+  const atomSubjects = subjects.filter((s) => s && isAtom2DType(s.type));
+  if (atomSubjects.length === 0) return;
+  if (atomSubjects.length !== subjects.length) {
+    throw new Error(
+      'atoms-2d subjects must be the only subjects in SceneData (no mixing with p5-sketch or traditional SDF types)',
+    );
   }
 }
 
@@ -136,6 +156,7 @@ export function createVisualPipeline(deck, visualId, apiKey, deps, opts = {}) {
         const rawSceneData = deps.parseLiftResponse(llmResult.text);
         // Sprint 3: validate p5-sketch constraint (no mixed subjects)
         validateP5SketchConstraint(rawSceneData); // throws on violation
+        validateAtom2DConstraint(rawSceneData); // Sprint 14a: same all-or-none for atoms-2d
         const sceneData = deps.sanitize2dSceneData(rawSceneData);
         const archetype = extractArchetype(sceneData);
 

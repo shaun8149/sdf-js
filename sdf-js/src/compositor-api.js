@@ -55,7 +55,74 @@ text via Canvas2D outside the SDF tree in 2D mode. SDF glyphs in
 2D mode look bad (silhouette/lines/crayon/topo cannot render text
 typography cleanly).
 
-## Step 4: 2D-mode 3-priority routing (Sprint 3) — SDF FIRST, P5 fallback
+## Step 4: 2D-mode routing (Sprint 14a) — atoms-2d > SDF > P5 fallback
+
+When opts.mode === '2d', try priorities IN ORDER:
+
+Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint feel):
+  If content fits a known data viz pattern, emit \`{type: '<atom-2d-type>', args: {...}}\`.
+  Atoms render via main-page Canvas2D with gradient + shadow + iso edge (textbook
+  pseudo-3D look like PresentationLoad templates). This is the highest-quality
+  output for business viz patterns. ALWAYS try this first when applicable.
+
+  Available atoms-2d types (use these literal type strings):
+
+  CHARTS / DATA:
+    - kpi-card        args: { value, label, sublabel?, trend?, trendValue?, icon? }
+    - bar             args: { values:number[], labels:string[], format?:'currency'|'percent'|'number', max?, title? }
+    - column          args: { values, labels, format?, max?, title?, showValues? }
+    - line            args: { values, labels, format?, title?, annotations?, showPoints?, showValues? }
+    - pie             args: { values, labels, format?, title?, donutRatio?, centerLabel? }
+    - funnel          args: { stages:[{label,value?}], format?, title? }
+    - waterfall       args: { bars:[{label,value,kind?:'start'|'positive'|'negative'|'end'}], format?, title? }
+    - gantt           args: { tasks:[{label,start,end,color?,complete?}], periods?, title? }
+    - sphere-fill     args: { value:0-100, label?, color?:[r,g,b], background?:'dark'|'light' }
+
+  CHARTS / DIAGRAMS:
+    - flow-chart      args: { steps:string[], sublabels?, highlight?, title?, orientation? }
+    - tree-diagram    args: { root:{label,children?:[...]}, title? }
+    - org-chart       args: { root:{name,title?,children?:[...]}, title? }
+    - mindmap         args: { root:{label,children?:[...]}, title? }
+    - relationship-graph args: { nodes:[{id,label,group?,size?,x?,y?}], edges:[{from,to,label?,weight?}], title? }
+    - timeline        args: { events:[{date,label,sublabel?}], title?, axisLabel? }
+
+  CHARTS / HIERARCHY:
+    - pyramid         args: { layers:[{label,sublabel?,value?}], title?, inverted? }
+
+  CHARTS / PROGRESSION:
+    - progression     args: { steps:[{label,status?:'done'|'current'|'todo'}], title? }
+
+  CHARTS / MATRIX:
+    - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title? }
+
+  SHAPES (decorative iconic):
+    - shape           args: { kind:'cube'|'sphere'|'diamond'|'arrow'|'gear'|'cylinder', label?, color?, direction? }
+    - cube-grid       args: { size?, colors?, colorPattern?, spacing?, highlight?, title? }
+    - gear-cluster    args: { gears?, thickness?, title? }
+    - puzzle-pieces   args: { rows?, cols?, colors?, highlight?, title? }
+
+  ICONS:
+    - icon-badge      args: { name:'users'|'cloud'|'chart-bar'|'lightning'|...(24 names), label?, color? }
+
+  PRESENTATION:
+    - cover           args: { title (required), subtitle?, author?, date?, version? }
+
+  Worked example — emit single atom:
+    {
+      "v": 1,
+      "name": "kpi-hero: Q3 Revenue",
+      "subjects": [{
+        "type": "kpi-card",
+        "args": { "value": "$3.4M", "label": "Q3 Revenue", "sublabel": "vs Q2 2024",
+                  "trend": "up", "trendValue": "+127%", "icon": "chart-bar" }
+      }]
+    }
+
+  CONSTRAINT: if ANY subject is an atoms-2d type, ALL subjects in the array must be
+  atoms-2d (no mixing with p5-sketch or SDF subjects). Same single-subject convention
+  as p5-sketch for now.
+
+## Step 4 legacy: 3-priority routing (Sprint 3) — SDF / P5 fallback (LOWER PRIORITY than atoms-2d above)
 
 When opts.mode === '2d', try these priorities IN ORDER. SDF priorities are
 Atlas's wedge that vector cannot replicate. P5 is graceful-degradation fallback.
