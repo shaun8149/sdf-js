@@ -1,0 +1,257 @@
+{
+  "id": "deck-auth-solo-fill-slide-10",
+  "title": "list: Fill Levels · Grid of 6 (framed)",
+  "prompt": "list: Fill Levels · Grid of 6 (framed)",
+  "code2d": "// auto-authored deck segment.",
+  "sceneData": {
+    "v": 1,
+    "name": "list: Fill Levels · Grid of 6 (framed)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "A grid of six framed fill spheres at mixed levels."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.55],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.5, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": 0.050000000000000044
+        },
+        "transform": {
+          "translate": [-1.5, 1.8, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.75],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp1",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": 0.25
+        },
+        "transform": {
+          "translate": [0, 1.8, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq2",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.6],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [1.5, 1.8, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp2",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": 0.09999999999999998
+        },
+        "transform": {
+          "translate": [1.5, 1.8, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq3",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.2],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.5, 0.19999999999999996, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp3",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": -0.3
+        },
+        "transform": {
+          "translate": [-1.5, 0.19999999999999996, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq4",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.4],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 0.19999999999999996, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp4",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": -0.09999999999999998
+        },
+        "transform": {
+          "translate": [0, 0.19999999999999996, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq5",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.65],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [1.5, 0.19999999999999996, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp5",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": 0.15000000000000002
+        },
+        "transform": {
+          "translate": [1.5, 0.19999999999999996, 0]
+        },
+        "material": "porcelain"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.0000000000000002,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-1.5, 2.1999999999999997, -6.41],
+          "target": [0, 0.9999999999999997, 0],
+          "fov": 34,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [1.5, 2.1999999999999997, -6.41],
+          "target": [0, 0.9999999999999997, 0],
+          "fov": 34,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "id": "deck-auth-solo-fill-slide-07",
+  "title": "compare: Fill Levels · Row of 3 (50/100/80)",
+  "prompt": "compare: Fill Levels · Row of 3 (50/100/80)",
+  "code2d": "// auto-authored deck segment.",
+  "sceneData": {
+    "v": 1,
+    "name": "compare: Fill Levels · Row of 3 (50/100/80)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "A row of three fill spheres 50/100/80%, the middle one largest."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.5],
+          "radius": 0.62,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.9, 0.85, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.62,
+          "h": 0
+        },
+        "transform": {
+          "translate": [-1.9, 0.85, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [1],
+          "radius": 0.85,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "liq2",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.8],
+          "radius": 0.62,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [1.9, 0.85, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp2",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.62,
+          "h": 0.37200000000000005
+        },
+        "transform": {
+          "translate": [1.9, 0.85, 0]
+        },
+        "material": "porcelain"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-1.5, 2.08, -7.09],
+          "target": [0, 0.8800000000000001, 0],
+          "fov": 34,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [1.5, 2.08, -7.09],
+          "target": [0, 0.8800000000000001, 0],
+          "fov": 34,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}

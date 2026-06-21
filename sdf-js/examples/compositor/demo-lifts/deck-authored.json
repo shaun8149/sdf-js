@@ -1,0 +1,121 @@
+{
+  "id": "deck-authored",
+  "name": "Auto-authored hybrid deck (20 fill slides)",
+  "source": "fill-slide-01..20",
+  "segments": [
+    {
+      "file": "deck-auth-solo-fill-slide-01.json",
+      "title": "kpi-hero: Fill Levels · Cover (20/40/80)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-02.json",
+      "title": "compare: Fill Levels · Row of 4 (20/60/80/90)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-03.json",
+      "title": "sequence: Fill Levels · Framed row + arrows (10/60/50)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-ch0.json",
+      "title": "Chapter 1 · 2 slides",
+      "kind": "chapter",
+      "durationSec": 8.8
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-06.json",
+      "title": "compare: Fill Levels · Cluster of 5 (50/20/100/40/80)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-07.json",
+      "title": "compare: Fill Levels · Row of 3 (50/100/80)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-08.json",
+      "title": "compare: Fill Levels · Cluster of 3 (60/50/80)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-09.json",
+      "title": "compare: Fill Levels · Row of 5 (10..90)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-10.json",
+      "title": "list: Fill Levels · Grid of 6 (framed)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-ch1.json",
+      "title": "Chapter 2 · 1 slides",
+      "kind": "chapter",
+      "durationSec": 4.4
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-12.json",
+      "title": "compare: Fill Levels · Row of 5 + captions",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-ch2.json",
+      "title": "Chapter 3 · 1 slides",
+      "kind": "chapter",
+      "durationSec": 4.4
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-14.json",
+      "title": "list: Fill Levels · Bullet list of 4",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-ch3.json",
+      "title": "Chapter 4 · 1 slides",
+      "kind": "chapter",
+      "durationSec": 4.4
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-16.json",
+      "title": "list: Fill Levels · Vertical 3 (30/80/70)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-17.json",
+      "title": "compare: Fill Levels · Two heroes (80/90)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-18.json",
+      "title": "sequence: Fill Levels · Progression grid 2×4",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-19.json",
+      "title": "sequence: Fill Levels · Row of 5 (20..100)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-auth-solo-fill-slide-20.json",
+      "title": "list: Fill Levels · Grid 2×5",
+      "kind": "slide",
+      "durationSec": 6.5
+    }
+  ]
+}
