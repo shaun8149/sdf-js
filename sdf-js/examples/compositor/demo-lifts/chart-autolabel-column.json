@@ -1,0 +1,67 @@
+{
+  "id": "chart-autolabel-column",
+  "title": "Column chart · auto-labels (#84 connector)",
+  "prompt": "Column chart · auto-labels (#84 connector)",
+  "code2d": "// Column chart · auto-labels (#84 connector) — one chart atom + args.labels; connector injects labels.",
+  "sceneData": {
+    "v": 1,
+    "name": "compare: Quarterly figures",
+    "source": {
+      "format": "authored",
+      "prompt": "Column chart · auto-labels (#84 connector)"
+    },
+    "subjects": [
+      {
+        "id": "col",
+        "type": "column-3d",
+        "args": {
+          "values": [0.4, 0.66, 1, 0.6],
+          "labels": ["Q1", "Q2", "Q3", "Q4"],
+          "barWidth": 0.5,
+          "barDepth": 0.5,
+          "gap": 0.45,
+          "maxHeight": 2.2
+        },
+        "transform": {
+          "translate": [0, 1.4, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.2,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.4,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "chart-autolabel",
+    "costUSD": 0
+  }
+}

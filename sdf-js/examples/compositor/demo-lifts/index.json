@@ -1338,6 +1338,36 @@
       "file": "chart-autolabel-bar.json",
       "renderer": "studio",
       "prompt": "Bar chart · auto-labels from args.labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-pie",
+      "title": "Pie chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-line",
+      "title": "Line chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-line.json",
+      "renderer": "studio",
+      "prompt": "Line chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-column",
+      "title": "Column chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-column.json",
+      "renderer": "studio",
+      "prompt": "Column chart · auto-labels (#84 connector)"
     }
   ]
 }
