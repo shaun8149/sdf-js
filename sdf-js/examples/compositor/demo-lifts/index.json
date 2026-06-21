@@ -1368,6 +1368,26 @@
       "file": "chart-autolabel-column.json",
       "renderer": "studio",
       "prompt": "Column chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-spherefill",
+      "title": "Sphere-fill · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-spherefill.json",
+      "renderer": "studio",
+      "prompt": "Sphere-fill · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-matrix",
+      "title": "Matrix (SWOT) · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-matrix.json",
+      "renderer": "studio",
+      "prompt": "Matrix (SWOT) · auto-labels (#84 connector)"
     }
   ]
 }

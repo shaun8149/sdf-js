@@ -69,6 +69,67 @@ console.log('=== chart-labels (expandChartLabels connector) ===\n');
   );
 }
 
+// sphere-fill-3d: labels parallel to `levels` (not `values`)
+{
+  const scene = {
+    v: 1,
+    subjects: [
+      {
+        id: 'sf',
+        type: 'sphere-fill-3d',
+        args: { levels: [0.2, 0.5, 0.8], labels: ['20%', '50%', '80%'], radius: 0.6, spacing: 0.3 },
+      },
+    ],
+  };
+  const added = expandChartLabels(scene).subjects.filter((s) => s.type === 'text-3d-pipe');
+  ok(added.length === 3, 'sphere-fill: 3 labels from levels[] (not values)');
+  ok(
+    added.every((s, i) => s.args.text === ['20%', '50%', '80%'][i]),
+    'sphere-fill label texts match',
+  );
+  // middle sphere centred at x=0 (N=3 symmetric)
+  ok(Math.abs(added[1].transform.translate[0]) < 1e-9, 'sphere-fill middle label at x=0');
+  ok(added[0].transform.translate[2] < 0, 'sphere-fill label on −z (camera-facing) front');
+}
+
+// matrix-grid-3d: row-major flat array, row 0 on top
+{
+  const scene = {
+    v: 1,
+    subjects: [
+      {
+        id: 'm',
+        type: 'matrix-grid-3d',
+        args: {
+          rows: 2,
+          cols: 2,
+          labels: ['TL', 'TR', 'BL', 'BR'],
+          cardW: 0.9,
+          cardH: 0.7,
+          cardD: 0.18,
+          gap: 0.18,
+        },
+      },
+    ],
+  };
+  const added = expandChartLabels(scene).subjects.filter((s) => s.type === 'text-3d-pipe');
+  ok(added.length === 4, 'matrix: 4 labels for 2×2 (rows*cols)');
+  // index 0 = top-left: x<0 (left col), y>0 (top row, since y=(R-1-r)*strideY-offY, r=0 → +)
+  ok(
+    added[0].transform.translate[0] < 0 && added[0].transform.translate[1] > 0,
+    'matrix label[0] = top-left',
+  );
+  ok(
+    added[1].transform.translate[0] > 0 && added[1].transform.translate[1] > 0,
+    'matrix label[1] = top-right',
+  );
+  ok(added[2].transform.translate[1] < 0, 'matrix label[2] = bottom row');
+  ok(
+    added.every((s) => s.transform.translate[2] < 0),
+    'matrix labels on −z front',
+  );
+}
+
 // no-op cases
 {
   const noLabels = { v: 1, subjects: [{ id: 'b', type: 'bar-3d', args: { values: [0.5, 0.7] } }] };

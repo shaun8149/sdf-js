@@ -1,0 +1,65 @@
+{
+  "id": "chart-autolabel-spherefill",
+  "title": "Sphere-fill · auto-labels (#84 connector)",
+  "prompt": "Sphere-fill · auto-labels (#84 connector)",
+  "code2d": "// Sphere-fill · auto-labels (#84 connector) — one chart atom + args.labels; connector injects labels.",
+  "sceneData": {
+    "v": 1,
+    "name": "kpi-hero: Fill levels",
+    "source": {
+      "format": "authored",
+      "prompt": "Sphere-fill · auto-labels (#84 connector)"
+    },
+    "subjects": [
+      {
+        "id": "sf",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.2, 0.5, 0.8, 1],
+          "labels": ["20%", "50%", "80%", "100%"],
+          "radius": 0.6,
+          "spacing": 0.4
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.2,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "chart-autolabel",
+    "costUSD": 0
+  }
+}

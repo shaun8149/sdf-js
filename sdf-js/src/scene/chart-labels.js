@@ -84,11 +84,72 @@ export function pieAnchors(
   });
 }
 
+// sphere-fill-3d: row of spheres along +X (labels parallel to `levels`). anchor
+// = just in front of each sphere's front face (−z), centred at sphere height.
+export function sphereFillAnchors({
+  levels = [],
+  count,
+  radius = 0.6,
+  spacing = 0.3,
+  margin = 0.1,
+} = {}) {
+  const N = count != null ? Math.floor(count) : levels.length;
+  const stride = 2 * radius + spacing;
+  const offset = ((N - 1) / 2) * stride;
+  return Array.from({ length: N }, (_, i) => ({
+    x: i * stride - offset,
+    y: 0,
+    z: -(radius + margin),
+  }));
+}
+
+// matrix-grid-3d: R×C card grid, ROW-MAJOR with row 0 on TOP (matches the atom:
+// y = (R-1-r)*strideY - offY). labels[] is a flat row-major array (len R*C).
+export function matrixAnchors({
+  rows = 2,
+  cols = 2,
+  cardW = 0.9,
+  cardH = 0.7,
+  cardD = 0.18,
+  gap = 0.18,
+  margin = 0.04,
+} = {}) {
+  const R = Math.max(1, Math.min(6, Math.floor(rows)));
+  const C = Math.max(1, Math.min(6, Math.floor(cols)));
+  const strideX = cardW + gap;
+  const strideY = cardH + gap;
+  const offX = ((C - 1) / 2) * strideX;
+  const offY = ((R - 1) / 2) * strideY;
+  const out = [];
+  for (let r = 0; r < R; r++) {
+    for (let c = 0; c < C; c++) {
+      out.push({
+        x: c * strideX - offX,
+        y: (R - 1 - r) * strideY - offY,
+        z: -(cardD / 2 + margin),
+      });
+    }
+  }
+  return out;
+}
+
 export const ANCHOR_FOR = {
   'bar-3d': barAnchors,
   'line-3d': lineAnchors,
   'column-3d': columnAnchors,
   'pie-3d': pieAnchors,
+};
+
+// internal: type → (args) → anchor list. Unifies the values-array family
+// (bar/line/column/pie read args.values) with the shape-specific atoms
+// (sphere-fill reads args.levels; matrix-grid reads rows×cols).
+const ANCHORS_FROM_ARGS = {
+  'bar-3d': (a) => barAnchors(a.values || [], a),
+  'line-3d': (a) => lineAnchors(a.values || [], a),
+  'column-3d': (a) => columnAnchors(a.values || [], a),
+  'pie-3d': (a) => pieAnchors(a.values || [], a),
+  'sphere-fill-3d': (a) => sphereFillAnchors(a),
+  'matrix-grid-3d': (a) => matrixAnchors(a),
 };
 
 // turn anchors + label strings into camera-facing text-3d-pipe subjects.
@@ -120,13 +181,14 @@ export function expandChartLabels(sceneData) {
   if (!sceneData || !Array.isArray(sceneData.subjects)) return sceneData;
   const extra = [];
   sceneData.subjects.forEach((s, si) => {
-    const fn = ANCHOR_FOR[s && s.type];
+    const fn = ANCHORS_FROM_ARGS[s && s.type];
     const args = s && s.args;
     const labels = args && Array.isArray(args.labels) ? args.labels : null;
-    const values = args && Array.isArray(args.values) ? args.values : null;
-    if (!fn || !labels || !labels.length || !values || !values.length) return;
+    if (!fn || !labels || !labels.length) return;
+    const anchors = fn(args);
+    if (!anchors || !anchors.length) return;
     const tr = (s.transform && s.transform.translate) || [0, 0, 0];
-    const off = fn(values, args).map((a) => ({ x: a.x + tr[0], y: a.y + tr[1], z: a.z + tr[2] }));
+    const off = anchors.map((a) => ({ x: a.x + tr[0], y: a.y + tr[1], z: a.z + tr[2] }));
     // only label the elements that actually have a label string
     const n = Math.min(off.length, labels.length);
     extra.push(
