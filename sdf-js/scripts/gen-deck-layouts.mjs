@@ -56,14 +56,22 @@ const STATIONS = [
     S('sphere', { radius: 0.34 }, [0, 0.85, 0], M.gold),
   ],
 ];
+const STATION_TITLES = ['Spheres', 'Bars', 'Cubes', 'Peaks', 'Ring'];
 const TY = 0.85;
 
 function makeChapter(kind) {
-  const stations = STATIONS.map((build) => ({ subjects: build(), cx: 0, cy: 0, cz: 0 }));
-  const { subjects, shots } = buildChapter(stations, kind, TY, kind);
+  const stations = STATIONS.map((build, i) => ({
+    subjects: build(),
+    cx: 0,
+    cy: 0,
+    cz: 0,
+    title: STATION_TITLES[i],
+  }));
+  const { subjects, shots, stationTitles } = buildChapter(stations, kind, TY, kind);
   const id = `deck-lay-${kind}`;
   return {
     id,
+    stationTitles,
     title: `${kind[0].toUpperCase()}${kind.slice(1)} layout · 5 stations`,
     prompt: `chapter layout: ${kind}`,
     code2d: `// chapter layout demo (${kind}).`,
@@ -93,8 +101,11 @@ function makeChapter(kind) {
 }
 
 const chapters = ['linear', 'arc', 'grid'].map(makeChapter);
-for (const ch of chapters)
-  writeFileSync(`${OUT}/${ch.id}.json`, JSON.stringify(ch, null, 2) + '\n');
+for (const ch of chapters) {
+  // stationTitles live on the deck PLAYLIST entry (below), not in the scene file.
+  const { stationTitles: _st, ...sceneFile } = ch;
+  writeFileSync(`${OUT}/${ch.id}.json`, JSON.stringify(sceneFile, null, 2) + '\n');
+}
 const deck = {
   id: 'deck-layouts',
   name: 'Chapter layouts (linear / arc / grid)',
@@ -102,7 +113,8 @@ const deck = {
     file: `${ch.id}.json`,
     title: ch.title,
     kind: 'chapter',
-    durationSec: 11,
+    stationTitles: ch.stationTitles,
+    durationSec: ch.sceneData.cameraSequence.shots.reduce((a, s) => a + s.duration, 0),
   })),
 };
 writeFileSync(`${OUT}/deck-layouts.json`, JSON.stringify(deck, null, 2) + '\n');

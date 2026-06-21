@@ -25,7 +25,17 @@
       "file": "deck-auth-ch0.json",
       "title": "Chapter 1 · 2 slides (arc)",
       "kind": "chapter",
-      "durationSec": 8.8
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "kpi-hero: Fill Levels · Hero 60%"
+        },
+        {
+          "t": 4,
+          "title": "kpi-hero: Fill Levels · Hero 100% + legend"
+        }
+      ],
+      "durationSec": 8
     },
     {
       "file": "deck-auth-solo-fill-slide-06.json",
@@ -61,7 +71,13 @@
       "file": "deck-auth-ch1.json",
       "title": "Chapter 2 · 1 slides (linear)",
       "kind": "chapter",
-      "durationSec": 4.4
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "kpi-hero: Fill Levels · Hero 30% + list"
+        }
+      ],
+      "durationSec": 4
     },
     {
       "file": "deck-auth-solo-fill-slide-12.json",
@@ -73,7 +89,13 @@
       "file": "deck-auth-ch2.json",
       "title": "Chapter 3 · 1 slides (linear)",
       "kind": "chapter",
-      "durationSec": 4.4
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "kpi-hero: Fill Levels · Hero 90% + list"
+        }
+      ],
+      "durationSec": 4
     },
     {
       "file": "deck-auth-solo-fill-slide-14.json",
@@ -85,7 +107,13 @@
       "file": "deck-auth-ch3.json",
       "title": "Chapter 4 · 1 slides (linear)",
       "kind": "chapter",
-      "durationSec": 4.4
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "kpi-hero: Fill Levels · Hero 100% + 4 labels"
+        }
+      ],
+      "durationSec": 4
     },
     {
       "file": "deck-auth-solo-fill-slide-16.json",

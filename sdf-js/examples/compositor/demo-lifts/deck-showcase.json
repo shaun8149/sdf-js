@@ -1,0 +1,75 @@
+{
+  "id": "deck-showcase",
+  "name": "Atlas Present — showcase reel",
+  "note": "Curated playlist reusing existing segment scenes + narrative captions.",
+  "segments": [
+    {
+      "file": "deck-lay-arc.json",
+      "title": "Atlas Present",
+      "kind": "chapter",
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "Atlas Present"
+        },
+        {
+          "t": 4,
+          "title": "Describe your idea"
+        },
+        {
+          "t": 8,
+          "title": "AI builds the scene"
+        },
+        {
+          "t": 12,
+          "title": "Fly through it"
+        },
+        {
+          "t": 16,
+          "title": "Not slides — a world"
+        }
+      ],
+      "durationSec": 20
+    },
+    {
+      "file": "deck-seg-gears.json",
+      "title": "Rich detail gets its own scene",
+      "kind": "slide",
+      "durationSec": 6.01
+    },
+    {
+      "file": "deck-lay-grid.json",
+      "title": "Arrange in any layout",
+      "kind": "chapter",
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "Arrange in any layout"
+        },
+        {
+          "t": 4,
+          "title": "Linear rows"
+        },
+        {
+          "t": 8,
+          "title": "Sweeping arcs"
+        },
+        {
+          "t": 12,
+          "title": "Grids you weave through"
+        },
+        {
+          "t": 16,
+          "title": "Your structure, in space"
+        }
+      ],
+      "durationSec": 20
+    },
+    {
+      "file": "deck-seg-pyramid.json",
+      "title": "Hierarchies, monumental",
+      "kind": "slide",
+      "durationSec": 6.01
+    }
+  ]
+}
