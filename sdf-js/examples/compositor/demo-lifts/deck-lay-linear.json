@@ -1,0 +1,371 @@
+{
+  "id": "deck-lay-linear",
+  "title": "Linear layout · 5 stations",
+  "prompt": "chapter layout: linear",
+  "code2d": "// chapter layout demo (linear).",
+  "sceneData": {
+    "v": 1,
+    "name": "linear layout",
+    "source": {
+      "format": "authored",
+      "prompt": "linear layout"
+    },
+    "subjects": [
+      {
+        "id": "linear0_0",
+        "type": "sphere",
+        "args": {
+          "radius": 0.4
+        },
+        "transform": {
+          "translate": [-1, 0.7, 0]
+        },
+        "material": {
+          "hue": 0.33,
+          "sat": 0.8,
+          "value": 0.6,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear0_1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.55
+        },
+        "transform": {
+          "translate": [0, 0.85, 0]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.82,
+          "value": 0.62,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear0_2",
+        "type": "sphere",
+        "args": {
+          "radius": 0.68
+        },
+        "transform": {
+          "translate": [1.15, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear1_0",
+        "type": "box",
+        "args": {
+          "size": [0.4, 0.6, 0.4]
+        },
+        "transform": {
+          "translate": [5.13, 0.3, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear1_1",
+        "type": "box",
+        "args": {
+          "size": [0.4, 1, 0.4]
+        },
+        "transform": {
+          "translate": [5.71, 0.5, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear1_2",
+        "type": "box",
+        "args": {
+          "size": [0.4, 1.4, 0.4]
+        },
+        "transform": {
+          "translate": [6.29, 0.7, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear1_3",
+        "type": "box",
+        "args": {
+          "size": [0.4, 0.85, 0.4]
+        },
+        "transform": {
+          "translate": [6.87, 0.425, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear2_0",
+        "type": "box",
+        "args": {
+          "size": [0.7, 0.7, 0.7]
+        },
+        "transform": {
+          "translate": [11.35, 0.35, 0.15]
+        },
+        "material": {
+          "hue": 0.5,
+          "sat": 0.72,
+          "value": 0.7,
+          "metal": 0.28,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear2_1",
+        "type": "box",
+        "args": {
+          "size": [0.7, 0.7, 0.7]
+        },
+        "transform": {
+          "translate": [12.5, 0.5, -0.1]
+        },
+        "material": {
+          "hue": 0.5,
+          "sat": 0.72,
+          "value": 0.7,
+          "metal": 0.28,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear2_2",
+        "type": "box",
+        "args": {
+          "size": [0.7, 0.7, 0.7]
+        },
+        "transform": {
+          "translate": [11.95, 1.1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear3_0",
+        "type": "cone",
+        "args": {
+          "height": 1.6,
+          "baseRadius": 0.85
+        },
+        "transform": {
+          "translate": [18, 0.8, 0]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.85,
+          "value": 0.9,
+          "metal": 0.9,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear3_1",
+        "type": "cone",
+        "args": {
+          "height": 1.05,
+          "baseRadius": 0.55
+        },
+        "transform": {
+          "translate": [19.1, 0.52, 0.2]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.45,
+          "metal": 0.6,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear4_0",
+        "type": "torus",
+        "args": {
+          "radius": 0.7,
+          "thickness": 0.18
+        },
+        "transform": {
+          "translate": [24, 0.85, 0]
+        },
+        "material": {
+          "hue": 0.5,
+          "sat": 0.72,
+          "value": 0.7,
+          "metal": 0.28,
+          "glow": 0
+        }
+      },
+      {
+        "id": "linear4_1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.34
+        },
+        "transform": {
+          "translate": [24, 0.85, 0]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.85,
+          "value": 0.9,
+          "metal": 0.9,
+          "glow": 0
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 2.4,
+          "pos": [-1.2, 2.45, -7],
+          "target": [0, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "cut"
+        },
+        {
+          "duration": 1.6,
+          "pos": [-1.2, 2.45, -7],
+          "target": [0, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 2.4,
+          "pos": [4.8, 2.45, -7],
+          "target": [6, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 1.6,
+          "pos": [4.8, 2.45, -7],
+          "target": [6, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 2.4,
+          "pos": [10.8, 2.45, -7],
+          "target": [12, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 1.6,
+          "pos": [10.8, 2.45, -7],
+          "target": [12, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 2.4,
+          "pos": [16.8, 2.45, -7],
+          "target": [18, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 1.6,
+          "pos": [16.8, 2.45, -7],
+          "target": [18, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 2.4,
+          "pos": [22.8, 2.45, -7],
+          "target": [24, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 1.6,
+          "pos": [22.8, 2.45, -7],
+          "target": [24, 0.85, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.85,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-layout",
+    "costUSD": 0
+  }
+}
