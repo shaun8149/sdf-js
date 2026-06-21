@@ -1,0 +1,230 @@
+{
+  "id": "labels-bar",
+  "title": "Bar chart · value labels (box bars)",
+  "prompt": "Bar chart · value labels (box bars)",
+  "code2d": "// Bar chart · value labels (box bars) (data-labels helper).",
+  "sceneData": {
+    "v": 1,
+    "name": "Bar chart · value labels (box bars)",
+    "source": {
+      "format": "authored",
+      "prompt": "Bar chart · value labels (box bars)"
+    },
+    "subjects": [
+      {
+        "id": "bar0",
+        "type": "box",
+        "args": {
+          "size": [0.5, 0.8800000000000001, 0.5]
+        },
+        "transform": {
+          "translate": [-1.9, 0.44000000000000006, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar1",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.4520000000000002, 0.5]
+        },
+        "transform": {
+          "translate": [-0.95, 0.7260000000000001, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar2",
+        "type": "box",
+        "args": {
+          "size": [0.5, 2.2, 0.5]
+        },
+        "transform": {
+          "translate": [0, 1.1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar3",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.32, 0.5]
+        },
+        "transform": {
+          "translate": [0.9499999999999997, 0.66, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "bar4",
+        "type": "box",
+        "args": {
+          "size": [0.5, 1.7160000000000002, 0.5]
+        },
+        "transform": {
+          "translate": [1.9, 0.8580000000000001, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lbl0",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "$1.2M",
+          "height": 0.3,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-1.9, 1.06, -0.35]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.28
+        }
+      },
+      {
+        "id": "lbl1",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "$2.0M",
+          "height": 0.3,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-0.95, 1.6320000000000001, -0.35]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.28
+        }
+      },
+      {
+        "id": "lbl2",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "$3.4M",
+          "height": 0.3,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 2.3800000000000003, -0.35]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.28
+        }
+      },
+      {
+        "id": "lbl3",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "$1.8M",
+          "height": 0.3,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0.9499999999999997, 1.5, -0.35]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.28
+        }
+      },
+      {
+        "id": "lbl4",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "$2.6M",
+          "height": 0.3,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [1.9, 1.8960000000000001, -0.35]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.28
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.2,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.4,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "data-labels",
+    "costUSD": 0
+  }
+}
