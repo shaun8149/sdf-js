@@ -1,0 +1,64 @@
+{
+  "id": "shape-cubes-grid",
+  "title": "Cubes · 3×3×3 grid",
+  "prompt": "cubes: Cubes · 3×3×3 grid",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"cubes\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Cubes · 3×3×3 grid",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "cubes shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "cube-3d",
+        "args": {
+          "count": 27,
+          "arrangement": "grid3d",
+          "cubeSize": 0.42,
+          "spacing": 0.12
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.02,
+          "value": 0.82,
+          "metal": 0.98,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "cubes",
+    "costUSD": 0
+  }
+}
