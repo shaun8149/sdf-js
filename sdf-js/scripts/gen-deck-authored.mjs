@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { compile } from '../src/scene/index.js';
 import { compileSDF3ToGLSL } from '../src/sdf/sdf3.compile.js';
+import { buildChapter, pickLayout } from './lib/chapter-layout.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, '../examples/compositor/demo-lifts');
@@ -34,7 +35,6 @@ const CHAPTER_BUDGET = 2600; // max cumulative added-GLSL chars in one chapter s
 const SIMPLE_SUBJ = 2; // ≤ this many top subjects → chapterable
 const SIMPLE_EXTENT = 2.6; // ≤ this x-extent (world units) → chapterable
 const HEAVY_WEIGHT = 3000; // single-slide added chars above this → always solo
-const STATION_GAP = 5.0;
 
 const BASELINE = (() => {
   const c = compile({
@@ -124,36 +124,22 @@ let segIdx = 0;
 
 function flushChapter() {
   if (!chapterBuf.length) return;
-  // lay each buffered slide at a station along +X, shift subjects, tour camera
-  const subjects = [];
-  const shots = [];
-  chapterBuf.forEach((sl, i) => {
-    const Xi = i * STATION_GAP;
-    sl.sd.subjects.forEach((s, j) => {
-      const c = clone(s);
-      c.id = `c${chapterIdx}s${i}_${j}`;
-      c.transform = c.transform || {};
-      const tr = c.transform.translate || [0, 0, 0];
-      c.transform.translate = [tr[0] - sl.cx + Xi, tr[1], tr[2]];
-      subjects.push(c);
-    });
-    const hw = sl.extent / 2;
-    const zback = -Math.max(6, 1.7 * hw + 2.5);
-    const fr = {
-      pos: [Xi - 1.2, sl.cy + 1.2, zback],
-      target: [Xi, sl.cy, sl.cz],
-      fov: 34,
-      ease: 'smooth',
-    };
-    shots.push({ duration: 2.6, ...fr, transition: i === 0 ? 'cut' : 'blend' });
-    shots.push({ duration: 1.8, ...fr, transition: 'blend' });
-  });
-  const id = `deck-auth-ch${chapterIdx}`;
+  // auto-pick a layout by station count, then lay slides + tour camera via the
+  // shared chapter-layout helper (1 → linear, 2-3 → arc, 4+ → grid).
+  const kind = pickLayout(chapterBuf.length);
   const cy = chapterBuf.reduce((a, b) => a + b.cy, 0) / chapterBuf.length;
-  const seg = wrap(id, `Chapter ${chapterIdx + 1} · ${chapterBuf.length} slides`, {
+  const stations = chapterBuf.map((sl) => ({
+    subjects: sl.sd.subjects.map(clone),
+    cx: sl.cx,
+    cy: sl.cy,
+    cz: sl.cz,
+  }));
+  const { subjects, shots } = buildChapter(stations, kind, cy, `c${chapterIdx}s`);
+  const id = `deck-auth-ch${chapterIdx}`;
+  const seg = wrap(id, `Chapter ${chapterIdx + 1} · ${chapterBuf.length} slides (${kind})`, {
     v: 1,
     name: `Chapter ${chapterIdx + 1}`,
-    source: { format: 'authored', prompt: 'light chapter' },
+    source: { format: 'authored', prompt: `light chapter (${kind})` },
     subjects,
     cameraSequence: { loop: false, shots },
     defaults: DEFAULTS(cy),

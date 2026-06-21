@@ -1,18 +1,18 @@
 {
   "id": "deck-auth-ch0",
-  "title": "Chapter 1 · 2 slides",
-  "prompt": "Chapter 1 · 2 slides",
+  "title": "Chapter 1 · 2 slides (arc)",
+  "prompt": "Chapter 1 · 2 slides (arc)",
   "code2d": "// auto-authored deck segment.",
   "sceneData": {
     "v": 1,
     "name": "Chapter 1",
     "source": {
       "format": "authored",
-      "prompt": "light chapter"
+      "prompt": "light chapter (arc)"
     },
     "subjects": [
       {
-        "id": "c0s0_0",
+        "id": "liq0",
         "type": "sphere-fill-3d",
         "args": {
           "levels": [0.6],
@@ -21,7 +21,7 @@
           "fillScale": 1
         },
         "transform": {
-          "translate": [0, 1, 0]
+          "translate": [-6.389347581823647, 1, -4.140587913810898]
         },
         "material": {
           "hue": 0.58,
@@ -32,19 +32,19 @@
         }
       },
       {
-        "id": "c0s0_1",
+        "id": "emp0",
         "type": "cut-sphere",
         "args": {
           "radius": 1.05,
           "h": 0.20999999999999996
         },
         "transform": {
-          "translate": [0, 1, 0]
+          "translate": [-6.389347581823647, 1, -4.140587913810898]
         },
         "material": "porcelain"
       },
       {
-        "id": "c0s1_0",
+        "id": "liq0",
         "type": "sphere-fill-3d",
         "args": {
           "levels": [1],
@@ -53,7 +53,7 @@
           "fillScale": 1
         },
         "transform": {
-          "translate": [5, 1, 0]
+          "translate": [6.389347581823647, 1, -4.140587913810898]
         },
         "material": {
           "hue": 0.58,
@@ -68,34 +68,34 @@
       "loop": false,
       "shots": [
         {
-          "duration": 2.6,
-          "pos": [-1.2, 2.2, -6],
-          "target": [0, 1, 0],
-          "fov": 34,
+          "duration": 2.4,
+          "pos": [-3.1946737909118235, 2.6, -10.640587913810897],
+          "target": [-6.389347581823647, 1, -4.140587913810898],
+          "fov": 33,
           "ease": "smooth",
           "transition": "cut"
         },
         {
-          "duration": 1.8,
-          "pos": [-1.2, 2.2, -6],
-          "target": [0, 1, 0],
-          "fov": 34,
+          "duration": 1.6,
+          "pos": [-3.1946737909118235, 2.6, -10.640587913810897],
+          "target": [-6.389347581823647, 1, -4.140587913810898],
+          "fov": 33,
           "ease": "smooth",
           "transition": "blend"
         },
         {
-          "duration": 2.6,
-          "pos": [3.8, 2.2, -6],
-          "target": [5, 1, 0],
-          "fov": 34,
+          "duration": 2.4,
+          "pos": [3.1946737909118235, 2.6, -10.640587913810897],
+          "target": [6.389347581823647, 1, -4.140587913810898],
+          "fov": 33,
           "ease": "smooth",
           "transition": "blend"
         },
         {
-          "duration": 1.8,
-          "pos": [3.8, 2.2, -6],
-          "target": [5, 1, 0],
-          "fov": 34,
+          "duration": 1.6,
+          "pos": [3.1946737909118235, 2.6, -10.640587913810897],
+          "target": [6.389347581823647, 1, -4.140587913810898],
+          "fov": 33,
           "ease": "smooth",
           "transition": "blend"
         }

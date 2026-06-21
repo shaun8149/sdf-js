@@ -23,7 +23,7 @@
     },
     {
       "file": "deck-auth-ch0.json",
-      "title": "Chapter 1 · 2 slides",
+      "title": "Chapter 1 · 2 slides (arc)",
       "kind": "chapter",
       "durationSec": 8.8
     },
@@ -59,7 +59,7 @@
     },
     {
       "file": "deck-auth-ch1.json",
-      "title": "Chapter 2 · 1 slides",
+      "title": "Chapter 2 · 1 slides (linear)",
       "kind": "chapter",
       "durationSec": 4.4
     },
@@ -71,7 +71,7 @@
     },
     {
       "file": "deck-auth-ch2.json",
-      "title": "Chapter 3 · 1 slides",
+      "title": "Chapter 3 · 1 slides (linear)",
       "kind": "chapter",
       "durationSec": 4.4
     },
@@ -83,7 +83,7 @@
     },
     {
       "file": "deck-auth-ch3.json",
-      "title": "Chapter 4 · 1 slides",
+      "title": "Chapter 4 · 1 slides (linear)",
       "kind": "chapter",
       "durationSec": 4.4
     },
