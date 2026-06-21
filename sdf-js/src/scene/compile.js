@@ -1250,12 +1250,33 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
 
   // 2. Build base SDF. Normalize snake/kebab alias defensively (validator
   // already normalizes in place, but support direct callers too).
-  const factory = PRIMITIVE_FACTORIES[normalizeType(subj.type)];
+  const primitiveType = normalizeType(subj.type);
+  const factory = PRIMITIVE_FACTORIES[primitiveType];
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
 
   // 3. Apply transform
-  sdf = applyTransform(sdf, subj.transform, subj.animation);
+  const preTransformSdf = sdf;
+  const hasOuterTransform = subj.transform != null || hasTransformAnim(subj.animation);
+  if (primitiveType === 'cube-3d' && hasOuterTransform && isTopLevelUnionSdf(sdf)) {
+    sdf = applyTransformToUnionChildren(sdf, subj.transform, subj.animation);
+  } else {
+    sdf = applyTransform(sdf, subj.transform, subj.animation);
+    if (
+      primitiveType === 'cube-3d' &&
+      preTransformSdf?._subjectMaterial !== undefined &&
+      sdf._subjectMaterial === undefined
+    ) {
+      sdf._subjectMaterial = preTransformSdf._subjectMaterial;
+    }
+    if (
+      primitiveType === 'cube-3d' &&
+      preTransformSdf?._subjectPattern !== undefined &&
+      sdf._subjectPattern === undefined
+    ) {
+      sdf._subjectPattern = preTransformSdf._subjectPattern;
+    }
+  }
 
   // 4. Attach material/pattern at leaf level. Required when a primitive is
   // nested inside DomainGroup ops (rep / curve / mirror / twist / bend) —
@@ -1274,6 +1295,25 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   subjectInfos.push({ id: subj.id, region, sdf });
 
   return { sdf, region };
+}
+
+function isTopLevelUnionSdf(sdf) {
+  return sdf?.ast?.kind === 'op' && sdf.ast.name === 'union';
+}
+
+function copySubjectTags(target, source) {
+  if (source._subjectMaterial !== undefined) target._subjectMaterial = source._subjectMaterial;
+  if (source._subjectPattern !== undefined) target._subjectPattern = source._subjectPattern;
+  if (source._k != null) target._k = source._k;
+  return target;
+}
+
+function applyTransformToUnionChildren(sdf, transform, animation) {
+  const transformedChildren = sdf.ast.children.map((child) =>
+    copySubjectTags(applyTransform(child, transform, animation), child),
+  );
+  const opts = sdf.ast.opts && Object.keys(sdf.ast.opts).length > 0 ? sdf.ast.opts : null;
+  return opts ? union(...transformedChildren, opts) : union(...transformedChildren);
 }
 
 function compilePseudoPrimitive(subj, defaultRegion, subjectInfos) {
