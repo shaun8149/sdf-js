@@ -432,7 +432,49 @@ console.log('\n--- pie atom ---');
   ok(!crashed, 'zero-sum values → no crash');
 }
 
-// Shared stub ctx factory (used by tests above + may be used in future atom tests)
+// ----- column atom (Phase 1c) -----
+console.log('\n--- column atom ---');
+{
+  const spec = await getAtomSpec('column');
+  ok(spec.type === 'column', 'column spec.type');
+  ok(spec.args.values.required && spec.args.labels.required, 'column requires values + labels');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'column',
+    {
+      values: [1.2, 1.8, 2.4, 3.1],
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      format: 'currency',
+      title: 'Quarterly',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 480, h: 280, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Quarterly'), 'title rendered');
+  ok(recorded.includes('Q1') && recorded.includes('Q4'), 'X labels rendered');
+  ok(
+    recorded.includes('$1.2') && recorded.includes('$3.1'),
+    'values on top rendered (showValues default true)',
+  );
+
+  // showValues: false → no values drawn
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'column',
+    { values: [10, 20], labels: ['A', 'B'], showValues: false },
+    'pseudo3d',
+    { x: 0, y: 0, w: 200, h: 200, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('A') && recorded.includes('B'), 'labels still drawn');
+  ok(
+    !recorded.includes('10') && !recorded.includes('20'),
+    'values suppressed when showValues=false',
+  );
+}
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};
