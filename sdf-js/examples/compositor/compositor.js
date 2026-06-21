@@ -35,6 +35,7 @@ function getUrlTokenHash() {
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
+import { expandChartLabels } from '../../src/scene/chart-labels.js';
 import {
   sphericalToCamState,
   parseLiftResponse,
@@ -724,7 +725,10 @@ async function loadDemoScene(demo) {
       // → SFC32 PRNG so the same hash always yields the same expansion.
       const sceneRng = new Random(state.sceneHash);
       const variantScene = expandVariants(data.sceneData, sceneRng);
-      compiled = compileSceneData(variantScene, { tokenHash: URL_TOKEN_HASH });
+      // #84 connector: chart subjects with args.labels → SDF text-3d-pipe labels
+      // anchored on their elements (no-op if no chart carries labels).
+      const labeledScene = expandChartLabels(variantScene);
+      compiled = compileSceneData(labeledScene, { tokenHash: URL_TOKEN_HASH });
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
     }
@@ -1643,7 +1647,8 @@ function renderLiftedSceneData(
   const liftInfo = $('lift-info');
   let compiled;
   try {
-    compiled = compileSceneData(sceneData, { tokenHash: URL_TOKEN_HASH });
+    // #84 connector: expand chart args.labels → SDF labels before compile.
+    compiled = compileSceneData(expandChartLabels(sceneData), { tokenHash: URL_TOKEN_HASH });
   } catch (compileErr) {
     throw new Error(`SceneData compile failed: ${compileErr.message}`);
   }

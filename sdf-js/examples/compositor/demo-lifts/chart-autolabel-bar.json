@@ -1,0 +1,66 @@
+{
+  "id": "chart-autolabel-bar",
+  "title": "Bar chart · auto-labels from args.labels (#84 connector)",
+  "prompt": "bar-3d with args.labels — connector auto-generates SDF labels",
+  "code2d": "// bar-3d carries values+labels; expandChartLabels injects the labels.",
+  "sceneData": {
+    "v": 1,
+    "name": "compare: Quarterly revenue",
+    "source": {
+      "format": "authored",
+      "prompt": "auto-label bar"
+    },
+    "subjects": [
+      {
+        "id": "bars",
+        "type": "bar-3d",
+        "args": {
+          "values": [0.4, 0.66, 1, 0.6, 0.78],
+          "labels": ["$1.2M", "$2.0M", "$3.4M", "$1.8M", "$2.6M"],
+          "barWidth": 0.5,
+          "barDepth": 0.5,
+          "gap": 0.45,
+          "maxHeight": 2.2
+        },
+        "transform": {
+          "translate": [0, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.2,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.4,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "chart-autolabel",
+    "costUSD": 0
+  }
+}
