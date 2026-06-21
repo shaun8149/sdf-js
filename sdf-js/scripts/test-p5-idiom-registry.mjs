@@ -789,5 +789,43 @@ console.log('\n--- kgolid-weave-flow-dashes ---');
   ok(differs, 'different layers have different flow patterns');
 }
 
+// ----- atlas-icon-library (Sprint 13) -----
+console.log('\n--- atlas-icon-library ---');
+{
+  const { drawAtlasIcon, ATLAS_ICON_NAMES } = loadIdiom('atlas-icon-library.js');
+  ok(typeof drawAtlasIcon === 'function', 'drawAtlasIcon exported');
+  ok(Array.isArray(ATLAS_ICON_NAMES), 'ATLAS_ICON_NAMES is array');
+  ok(ATLAS_ICON_NAMES.length >= 20, `≥20 icons curated (got ${ATLAS_ICON_NAMES.length})`);
+  ok(
+    ATLAS_ICON_NAMES.every((n) => typeof n === 'string'),
+    'all names are strings',
+  );
+
+  // Spot-check key icons exist
+  const expected = ['user', 'users', 'database', 'arrow-right', 'check', 'lightning'];
+  ok(
+    expected.every((n) => ATLAS_ICON_NAMES.includes(n)),
+    `key icons present: ${expected.join(', ')}`,
+  );
+
+  // drawAtlasIcon safe to call with no drawingContext (Node test env)
+  let crashed = false;
+  try {
+    drawAtlasIcon('user', 100, 100, 32, '#000');
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'drawAtlasIcon no-op safe when drawingContext unavailable');
+
+  // Unknown icon doesn't crash
+  crashed = false;
+  try {
+    drawAtlasIcon('nonexistent', 100, 100, 32, '#000');
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'drawAtlasIcon unknown name no-op safe');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

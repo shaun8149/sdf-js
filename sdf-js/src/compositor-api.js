@@ -96,6 +96,59 @@ For 6 variants per ⚡:
     with different layouts (vertical / radial / cards / timeline / compare)
   - NEVER emit all 6 same-tier same-style (Sprint 1.5 convergence failure)
 
+## Iconography (Sprint 13 — drawAtlasIcon available)
+
+Atlas iframe ships a curated 24-icon library (Heroicons + Tabler MIT-licensed
+SVG path data, re-coded as drawingContext.Path2D for fast in-canvas render).
+LLM should INLINE drawAtlasIcon into args.code when content has obvious icon
+affordance — Napkin/Beautiful.ai use icons as the FIRST visual signal of
+abstract concepts. Closes one of Napkin's core moats.
+
+Signature: drawAtlasIcon(name, x, y, size, color)
+  name: one of the 24 ATLAS_ICON_NAMES (see below)
+  x, y: CENTER position (not top-left anchored)
+  size: bounding box edge (24=small, 32=card, 48=hero, 96=stamp)
+  color: '#hex' string OR [r,g,b] array OR 'inherit'
+
+The 24 icons grouped by affordance:
+
+| Affordance | Icons |
+|---|---|
+| People / org | user, users, building |
+| Concept | globe |
+| Charts / data | chart-bar, chart-pie, database, cloud |
+| Action / direction | arrow-right, arrow-up, arrow-down, refresh, check, x, plus |
+| Object / business | cube, file, mail |
+| Annotation / status | star, heart, lightning, clock, shield, question |
+
+Usage in P5 sketch:
+\`\`\`js
+const fg = window.__brandingPalette.silhouetteColor;
+// At KPI card top center: card icon + label below
+drawAtlasIcon('database', x, y, 32, fg);
+textFont('Inter'); textSize(14); textAlign(CENTER, TOP);
+fill(fg[0], fg[1], fg[2]);
+text('Storage', x, y + 22);
+\`\`\`
+
+LLM mapping content → icon:
+- "team / users / people / staff" → 'users'
+- "individual / person / customer / user" → 'user'
+- "company / office / org" → 'building'
+- "data / database / storage / records" → 'database'
+- "cloud / SaaS / hosted" → 'cloud'
+- "growth / increase" → 'arrow-up' or 'chart-bar'
+- "decline / decrease" → 'arrow-down'
+- "alert / warning / urgent" → 'lightning'
+- "secure / protected" → 'shield'
+- "time / duration / deadline" → 'clock'
+
+NEVER skip iconography on infographic-style P5 sketches — Atlas P5 sketches
+without icons look sparse vs Napkin. AT LEAST one icon per major content
+unit (KPI card, list item, hero callout). If content doesn't fit any of the
+24 icons cleanly, fall back to drawing a small SDF primitive (sdf_circle /
+sdf_box) at the same position.
+
 ## Typography (Sprint 12 — Inter + IBM Plex Mono available in iframe)
 
 The iframe sandbox preloads 2 web fonts via Google Fonts link:
