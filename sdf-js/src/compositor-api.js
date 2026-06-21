@@ -95,8 +95,13 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
   CHARTS / MATRIX:
     - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title? }
 
-  SHAPES (decorative iconic):
-    - shape           args: { kind:'cube'|'sphere'|'diamond'|'arrow'|'gear'|'cylinder', label?, color?, direction? }
+  SHAPES (decorative iconic — single primitives, 1:1 with 3D shapes/*-3d):
+    - arrow           args: { label?, color?, direction?:'right'|'up'|'left'|'down' }
+    - cube            args: { label?, color? }
+    - diamond         args: { label?, color? }
+    - gear            args: { label?, color? }
+
+  SHAPES (composites — multi-piece, no direct 3D twin; LLM may decompose on lift):
     - cube-grid       args: { size?, colors?, colorPattern?, spacing?, highlight?, title? }
     - gear-cluster    args: { gears?, thickness?, title? }
     - puzzle-pieces   args: { rows?, cols?, colors?, highlight?, title? }

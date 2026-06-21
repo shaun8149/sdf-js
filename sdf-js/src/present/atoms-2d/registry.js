@@ -45,8 +45,13 @@ const ATOM_LOADERS = {
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
 
-  // Shapes (Phase 3) — single atom with kind param covering 6 primitives
-  shape: () => import('./shapes/shape.js'),
+  // Shapes (Phase 3 — split from former `shape` enum to align 1:1 with 3D
+  // shapes/{arrow-3d, cube-3d, diamond-3d, gear-3d})
+  arrow: () => import('./shapes/arrow.js'),
+  cube: () => import('./shapes/cube.js'),
+  diamond: () => import('./shapes/diamond.js'),
+  gear: () => import('./shapes/gear.js'),
+  // Shapes composites (no 3D twin yet — flagged for 3D backlog)
   'cube-grid': () => import('./shapes/cube-grid.js'),
   'gear-cluster': () => import('./shapes/gear-cluster.js'),
   'puzzle-pieces': () => import('./shapes/puzzle-pieces.js'),
