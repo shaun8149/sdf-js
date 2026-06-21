@@ -751,16 +751,16 @@ to render their data labels.
                       → numbered chip rows + content bars (meeting agenda)
 
 ### CHARTS / DATA
-  - bar-3d            args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
-                      → vertical bars driven by values[]  [3D Option C: gaining labels/title/format]
-  - column-3d         args: { values?:number[], count?, barWidth?, barDepth?, gap?, maxHeight? }
-                      → horizontal bars  [3D Option C: gaining labels/title/format]
-  - line-3d           args: { values?:number[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
-                      → polyline + point markers (time-series, radar)  [3D Option C: gaining labels/title]
-  - pie-3d            args: { values?:number[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
-                      → pie / donut (innerRadius>0)  [3D Option C: gaining labels/title]
-  - sphere-fill-3d    args: { levels?:number[], count?, radius?, spacing?, cage?, cageThickness?, fillScale? }
-                      → row of glass spheres with liquid fills (e.g. "20%/40%/80%" object-attached label per sphere)
+  - bar-3d            args: { values?:number[], label?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → vertical bars driven by values[]. label[i] sticks to bar i (e.g. ['Q1','Q2','Q3','Q4'])
+  - column-3d         args: { values?:number[], label?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → horizontal bars. label[i] sticks to row i
+  - line-3d           args: { values?:number[], label?:string[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
+                      → polyline + point markers. label[i] sticks to point i marker (time-series, radar)
+  - pie-3d            args: { values?:number[], label?:string[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
+                      → pie / donut (innerRadius>0). label[i] sticks to slice i (emit pre-formatted e.g. '30%' not 0.3)
+  - sphere-fill-3d    args: { levels?:number[], label?:string[], count?, radius?, spacing?, cage?, cageThickness?, fillScale? }
+                      → row of glass spheres with liquid fills. label[i] sticks to sphere i (e.g. ['20%','40%','80%'])
   - kpi-card-3d       args: { width?, height?, depth?, cornerRadius?, value?:number, label?:string, unit?:string, trend?:'up'|'down'|'flat', trendValue?:number }
                       → rounded KPI card (value/label/unit are object-attached, render via internal text-3d)
   - funnel-3d         args: { stages?:number, topRadius?, bottomRadius?, stageHeight?, gap? }
@@ -809,8 +809,8 @@ to render their data labels.
                       → round bullet rows + content bars
 
 ### CHARTS / MATRIX
-  - matrix-grid-3d    args: { rows?:1..6, cols?:1..6, cardW?, cardH?, cardD?, gap? }
-                      → N×M card grid (SWOT / 2×2 / BCG)  [3D Option C: gaining cells array data]
+  - matrix-grid-3d    args: { rows?:1..6, cols?:1..6, label?:string[], cardW?, cardH?, cardD?, gap? }
+                      → N×M card grid (SWOT / 2×2 / BCG). label flat row-major: label[r*cols+c] → cell (r,c)
 
 ### CHARTS / PROGRESSION
   - progression-3d    args: { steps?:number, run?, stepRise?, depth? }
@@ -821,8 +821,8 @@ to render their data labels.
                       → 10 core business icons (extruded). Use for small decoration / status badges.
 
 ### PRESENTATION
-  - cover-3d          args: { stageWidth?, stageDepth?, stageThickness?, backdropHeight?, backdropThickness?, cornerRadius?, title?:string, subtitle?:string }
-                      → stage + backdrop cover composition. NOTE: title/subtitle/author/date/version belong in the top-level \`overlay\` field, NOT in args.  [3D Option C: gaining author/date/version + formal overlay routing]
+  - cover-3d          args: { stageWidth?, stageDepth?, stageThickness?, backdropHeight?, backdropThickness?, cornerRadius? }
+                      → stage + backdrop geometry ONLY. NO label / title / subtitle / author / date in args — ALL cover text lives in the top-level \`overlay\` field (cover-3d is a stage; the words live on the screen overlay above the stage, not on the stage geometry itself).
 
 ### SHAPES (single primitives)
   - arrow-3d          args: { length?, shaftWidth?, headLength?, headWidth?, depth?, double? }
@@ -856,6 +856,45 @@ to render their data labels.
   - sphere-tree-3d    args: { levels?:1..5, branching?:1..5, rootRadius?, radiusFalloff?, levelHeight?, spread?, linkThickness? }
                       → top-down hierarchical sphere tree
 
+## ⚡ Option C — \`label: string[]\` convention (2026-06-22 LOCK, written by Atlas 2D-side)
+
+Six data-bearing 3D atoms accept an optional \`label: string[]\` field. Index
+aligns with the atom's primary data array; renderer attaches each string to the
+corresponding 3D sub-object as a text-3d SDF label (in-world, follows camera).
+
+| 3D atom | data array | label[i] sticks to |
+|---|---|---|
+| bar-3d | values[] | bar i |
+| column-3d | values[] | row i |
+| line-3d | values[] | point i marker |
+| pie-3d | values[] | slice i |
+| sphere-fill-3d | levels[] | sphere i (e.g. ['20%','40%','80%']) |
+| matrix-grid-3d | (implicit rows*cols) | cell (r,c) at index r*cols+c (row-major) |
+
+cover-3d does NOT take \`label\` — its text (title/subtitle/author/date/version)
+lives entirely in the top-level \`overlay\` field. cover-3d is a stage geometry,
+not a label carrier.
+
+### 2D atom args → 3D mapping (for lift)
+
+| 2D arg | Routes to | Notes |
+|---|---|---|
+| values / levels / points | same name in 3D atom args | per-object data |
+| labels: string[] (plural) | label: string[] in 3D atom args (singular) | 2D side wrote plural; 3D side picked singular |
+| title / subtitle | top-level overlay.title / overlay.subtitle | NOT in subjects[].args |
+| format ('currency' / 'percent' / 'number') | (none) | LLM PRE-FORMATS the label strings. Emit \`label: ['$3.4M','$2.1M']\` directly, NOT \`values + format\` hint. |
+| author / date / version (cover) | top-level overlay.author / overlay.date / overlay.version | NOT in subjects[].args |
+
+### Tree-shaped atoms (open Phase D question)
+
+For tree-diagram-3d / org-chart-3d / mindmap-3d, the \`label: string[]\`
+traversal order is TBD by Phase D smoke. Default until decided: depth-first
+pre-order (root, child0, child0's children..., child1, ...).
+
+### Label length
+
+Keep label strings short (≤ ~20 chars). text-3d SDF cost is per-character.
+
 ## Constraints
 
 - \`text-3d-extruded\` / \`text-3d-pipe\` are NEVER emitted as subjects. They are
@@ -864,12 +903,9 @@ to render their data labels.
   \`subjects[].args.title\` or as separate text-3d subjects.
 - For 2D→3D lift mapping, the 2D atom's \`title\` arg maps to \`overlay.title\`;
   data-bearing args (values, labels, items, sets) map to the equivalent 3D atom args.
-- Several 3D atoms are being updated by the 3D-side Option C effort to accept
-  data arrays + labels (bar-3d, column-3d, line-3d, pie-3d, sphere-fill-3d,
-  matrix-grid-3d, cover-3d). Lift LLM should write forward-compatible args:
-  if a 2D atom carries \`labels: ['Q1','Q2','Q3','Q4']\`, include that in the 3D
-  atom args even if the 3D atom currently ignores it. The 3D side will pick it
-  up once Option C lands.
+- Option C (label-array convention) is now spec'd by the Atlas 2D-side and
+  shipped on the 3D-side. See the "Option C — \`label: string[]\` convention"
+  block above for the per-atom mapping table.
 `;
 
 /**
