@@ -117,6 +117,12 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
     - circle-segmented  args: { segments?:2-12, labels?, colors?, title?, innerRatio?, gap? }
     - circle-stack      args: { layers:[{label?,sublabel?,color?}] (1-8), title?, taper? }
 
+  SHAPES (sphere family + cube-segmented — 2D twins of 3D shapes/sphere-*-3d + cube-segmented-3d):
+    - sphere-network    args: { hub?:{label?,color?}, satellites:[{label?,color?}] (2-12), title? }
+    - sphere-segmented  args: { segments?:2-12, labels?, colors?, explode?:0-0.25, title? }
+    - sphere-tree       args: { root:{label?,color?,children?:[...]}, title? }
+    - cube-segmented    args: { segments?:2-8, axis?:'vertical'|'horizontal', gap?:0-0.3, color?, labels?, title? }
+
   ICONS:
     - icon-badge      args: { name:'users'|'cloud'|'chart-bar'|'lightning'|...(24 names), label?, color? }
 

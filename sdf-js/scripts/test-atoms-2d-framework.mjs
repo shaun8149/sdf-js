@@ -1343,6 +1343,163 @@ console.log('\n--- circle-stack atom ---');
   ok(!crashed, 'empty layers no crash');
 }
 
+// ----- B3 PR 3: shapes/sphere-* + cube-segmented atoms -----
+
+console.log('\n--- sphere-network atom ---');
+{
+  const spec = await getAtomSpec('sphere-network');
+  ok(spec.type === 'sphere-network', 'sphere-network spec.type');
+  ok(spec.args.satellites.required, 'satellites required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'sphere-network',
+    {
+      hub: { label: 'Platform' },
+      satellites: [{ label: 'API' }, { label: 'Web' }, { label: 'Mobile' }, { label: 'CLI' }],
+      title: 'Product Surface',
+    },
+    'pseudo3d',
+    {
+      w: 440,
+      h: 440,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Product Surface'), 'title rendered');
+  ok(recorded.includes('Platform'), 'hub label rendered');
+  ok(recorded.includes('API') && recorded.includes('CLI'), 'satellite labels rendered');
+
+  // Below minimum satellites — silent no-op
+  let crashed = false;
+  try {
+    await renderAtom(c, 'sphere-network', { satellites: [{ label: 'Only' }] }, 'pseudo3d', {
+      w: 300,
+      h: 300,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'single satellite no crash');
+}
+
+console.log('\n--- sphere-segmented atom ---');
+{
+  const spec = await getAtomSpec('sphere-segmented');
+  ok(spec.type === 'sphere-segmented', 'sphere-segmented spec.type');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'sphere-segmented',
+    { segments: 4, labels: ['N', 'S', 'E', 'W'], title: 'Regions', explode: 0.06 },
+    'pseudo3d',
+    {
+      w: 380,
+      h: 380,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Regions'), 'title rendered');
+  ok(recorded.includes('N') && recorded.includes('W'), 'segment labels rendered');
+
+  // No labels variant
+  recorded.length = 0;
+  await renderAtom(c, 'sphere-segmented', { segments: 8 }, 'pseudo3d', {
+    w: 300,
+    h: 300,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'no-labels 8-segment renders without crash');
+}
+
+console.log('\n--- sphere-tree atom ---');
+{
+  const spec = await getAtomSpec('sphere-tree');
+  ok(spec.type === 'sphere-tree', 'sphere-tree spec.type');
+  ok(spec.args.root.required, 'root required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'sphere-tree',
+    {
+      title: 'Decision Tree',
+      root: {
+        label: 'Start',
+        children: [
+          { label: 'Yes', children: [{ label: 'A' }, { label: 'B' }] },
+          { label: 'No', children: [{ label: 'C' }, { label: 'D' }] },
+        ],
+      },
+    },
+    'pseudo3d',
+    {
+      w: 560,
+      h: 400,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Decision Tree'), 'title rendered');
+  ok(recorded.includes('Start'), 'root label rendered');
+  ok(recorded.includes('Yes') && recorded.includes('No'), 'level-1 labels rendered');
+  ok(recorded.includes('A') && recorded.includes('D'), 'leaf labels rendered');
+
+  // Single-node tree (root only)
+  recorded.length = 0;
+  await renderAtom(c, 'sphere-tree', { root: { label: 'Alone' } }, 'pseudo3d', {
+    w: 300,
+    h: 200,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(recorded.includes('Alone'), 'single-node tree renders');
+}
+
+console.log('\n--- cube-segmented atom ---');
+{
+  const spec = await getAtomSpec('cube-segmented');
+  ok(spec.type === 'cube-segmented', 'cube-segmented spec.type');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'cube-segmented',
+    { segments: 4, labels: ['Q1', 'Q2', 'Q3', 'Q4'], title: 'Quarterly Layers' },
+    'pseudo3d',
+    {
+      w: 360,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Quarterly Layers'), 'title rendered');
+  ok(recorded.includes('Q1') && recorded.includes('Q4'), 'all slab labels rendered');
+
+  // Horizontal axis
+  recorded.length = 0;
+  await renderAtom(c, 'cube-segmented', { segments: 3, axis: 'horizontal' }, 'pseudo3d', {
+    w: 360,
+    h: 280,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'horizontal axis renders without crash');
+
+  // Defaults
+  recorded.length = 0;
+  await renderAtom(c, 'cube-segmented', {}, 'pseudo3d', {
+    w: 280,
+    h: 280,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(true, 'defaults render without crash');
+}
+
 function stubCtxWithIcon(recorded) {
   const c = stubCtxWithEllipse(recorded);
   // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash

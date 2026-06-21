@@ -63,6 +63,13 @@ const ATOM_LOADERS = {
   'circle-segmented': () => import('./shapes/circle-segmented.js'),
   'circle-stack': () => import('./shapes/circle-stack.js'),
 
+  // Shapes sphere family + cube-segmented — B3 PR 3 (2D twins of
+  // sphere-network-3d / sphere-segmented-3d / sphere-tree-3d / cube-segmented-3d).
+  'sphere-network': () => import('./shapes/sphere-network.js'),
+  'sphere-segmented': () => import('./shapes/sphere-segmented.js'),
+  'sphere-tree': () => import('./shapes/sphere-tree.js'),
+  'cube-segmented': () => import('./shapes/cube-segmented.js'),
+
   // Charts/data extensions
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
