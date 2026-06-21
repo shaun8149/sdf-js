@@ -1258,6 +1258,36 @@
       "file": "chart-break-even.json",
       "renderer": "studio",
       "prompt": "Break-Even Analysis"
+    },
+    {
+      "id": "graphics-isometric-city",
+      "title": "Isometric City · Skyline grid",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-isometric-city.json",
+      "renderer": "studio",
+      "prompt": "Isometric City · Skyline grid"
+    },
+    {
+      "id": "graphics-mountain",
+      "title": "Mountain Path · Peaks + summit flag",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-mountain.json",
+      "renderer": "studio",
+      "prompt": "Mountain Path · Peaks + summit flag"
+    },
+    {
+      "id": "graphics-isometric-business",
+      "title": "Isometric Business · Object cluster",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-isometric-business.json",
+      "renderer": "studio",
+      "prompt": "Isometric Business · Object cluster"
     }
   ]
 }
