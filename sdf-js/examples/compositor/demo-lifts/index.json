@@ -1388,6 +1388,16 @@
       "file": "chart-autolabel-matrix.json",
       "renderer": "studio",
       "prompt": "Matrix (SWOT) · auto-labels (#84 connector)"
+    },
+    {
+      "id": "deck-business",
+      "title": "Quarterly business review (data deck)",
+      "thesisPoint": "Convergence: connector-labelled real-data charts strung into a spatial-narrative deck.",
+      "category": "data-deck",
+      "status": "ready",
+      "file": "deck-business.json",
+      "renderer": "studio",
+      "prompt": "business data deck"
     }
   ]
 }
