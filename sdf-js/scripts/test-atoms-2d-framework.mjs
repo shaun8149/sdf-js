@@ -822,6 +822,71 @@ console.log('\n--- pyramid atom ---');
   ok(!crashed, 'empty layers no crash');
 }
 
+// ----- shape atom (Phase 3) -----
+console.log('\n--- shape atom ---');
+{
+  const spec = await getAtomSpec('shape');
+  ok(spec.type === 'shape', 'shape spec.type');
+  ok(spec.category === 'shapes', `shape category = ${spec.category}`);
+  ok(spec.args.kind.required, 'kind required');
+
+  // Each kind renders without crash
+  const kinds = ['cube', 'sphere', 'diamond', 'arrow', 'gear', 'cylinder'];
+  for (const kind of kinds) {
+    const recorded = [];
+    const c = stubCtxWithEllipse(recorded);
+    let crashed = false;
+    try {
+      await renderAtom(c, 'shape', { kind, label: `Test ${kind}` }, 'pseudo3d', {
+        x: 0,
+        y: 0,
+        w: 240,
+        h: 240,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 100, 200]] },
+      });
+    } catch (e) {
+      crashed = true;
+      console.error(`  ${kind} error: ${e.message}`);
+    }
+    ok(!crashed, `kind="${kind}" renders without crash`);
+    ok(recorded.includes(`Test ${kind}`), `kind="${kind}" label rendered`);
+  }
+
+  // Unknown kind falls back gracefully
+  const c2 = stubCtxWithEllipse([]);
+  let crashed = false;
+  try {
+    await renderAtom(c2, 'shape', { kind: 'nonexistent' }, 'pseudo3d', {
+      w: 240,
+      h: 240,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'unknown kind falls back gracefully (defaults to cube)');
+
+  // Arrow direction param
+  const recA = [];
+  await renderAtom(
+    stubCtxWithEllipse(recA),
+    'shape',
+    { kind: 'arrow', direction: 'up', label: 'Up' },
+    'pseudo3d',
+    { w: 240, h: 240, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recA.includes('Up'), 'arrow direction param works');
+}
+
+function stubCtxWithEllipse(recorded) {
+  const c = stubCtx(recorded);
+  c.ellipse = () => {};
+  c.translate = () => {};
+  c.rotate = () => {};
+  Object.defineProperty(c, 'globalAlpha', { set() {} });
+  return c;
+}
+
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};

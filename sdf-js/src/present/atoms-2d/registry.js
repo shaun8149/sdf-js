@@ -44,6 +44,9 @@ const ATOM_LOADERS = {
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
 
+  // Shapes (Phase 3) — single atom with kind param covering 6 primitives
+  shape: () => import('./shapes/shape.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
