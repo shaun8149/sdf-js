@@ -33,6 +33,9 @@ const ATOM_LOADERS = {
   // Phase 1 (charts/data) complete: kpi-card / bar / line / pie / column
 
   // Charts / diagrams (Phase 2)
+  'flow-chart': () => import('./charts/diagrams/flow-chart.js'),
+
+  // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
   // Icons (Phase 4)
