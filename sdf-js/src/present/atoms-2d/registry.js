@@ -38,6 +38,11 @@ const ATOM_LOADERS = {
   'org-chart': () => import('./charts/diagrams/org-chart.js'),
   mindmap: () => import('./charts/diagrams/mindmap.js'),
   'relationship-graph': () => import('./charts/diagrams/relationship-graph.js'),
+  timeline: () => import('./charts/diagrams/timeline.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms
+
+  // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
+  pyramid: () => import('./charts/hierarchy/pyramid.js'),
 
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
