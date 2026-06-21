@@ -718,6 +718,110 @@ console.log('\n--- relationship-graph atom ---');
   ok(!crashed, 'empty nodes no crash');
 }
 
+// ----- timeline atom (Phase 2c part 2) -----
+console.log('\n--- timeline atom ---');
+{
+  const spec = await getAtomSpec('timeline');
+  ok(spec.type === 'timeline', 'timeline spec.type');
+  ok(spec.args.events.required, 'events required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'timeline',
+    {
+      title: 'Milestones',
+      axisLabel: '2024-2026',
+      events: [
+        { date: '2024 Q1', label: 'Seed Round', sublabel: '$2M' },
+        { date: '2025 Q3', label: 'Series A', sublabel: '$15M' },
+      ],
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 800, h: 240, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Milestones'), 'title rendered');
+  ok(recorded.includes('2024-2026'), 'axis label rendered');
+  ok(recorded.includes('2024 Q1') && recorded.includes('2025 Q3'), 'event dates rendered');
+  ok(recorded.includes('Seed Round') && recorded.includes('Series A'), 'event labels rendered');
+  ok(recorded.includes('$2M') && recorded.includes('$15M'), 'event sublabels rendered');
+
+  let crashed = false;
+  try {
+    await renderAtom(c, 'timeline', { events: [] }, 'pseudo3d', {
+      w: 200,
+      h: 100,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty events no crash');
+}
+
+// ----- pyramid atom (Phase 2c part 2) -----
+console.log('\n--- pyramid atom ---');
+{
+  const spec = await getAtomSpec('pyramid');
+  ok(spec.type === 'pyramid', 'pyramid spec.type');
+  ok(spec.category === 'charts/hierarchy', `pyramid category = ${spec.category}`);
+  ok(spec.args.layers.required, 'layers required');
+
+  const recorded = [];
+  const c = stubCtx(recorded);
+  await renderAtom(
+    c,
+    'pyramid',
+    {
+      title: 'Maslow',
+      layers: [
+        { label: 'Physiological', sublabel: 'food/water' },
+        { label: 'Safety' },
+        { label: 'Self-Actualization' },
+      ],
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 480, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Maslow'), 'title rendered');
+  ok(
+    recorded.includes('Physiological') && recorded.includes('Self-Actualization'),
+    'layer labels rendered',
+  );
+  ok(recorded.includes('food/water'), 'sublabel rendered');
+
+  // Inverted + values
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'pyramid',
+    {
+      inverted: true,
+      layers: [
+        { label: 'Visitors', value: '10K' },
+        { label: 'Customers', value: '120' },
+      ],
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 480, h: 400, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('10K') && recorded.includes('120'), 'values rendered (inverted mode)');
+
+  // Empty no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'pyramid', { layers: [] }, 'pseudo3d', {
+      w: 200,
+      h: 200,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty layers no crash');
+}
+
 function stubCtx(recorded) {
   const c = {};
   const noop = () => {};

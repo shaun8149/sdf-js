@@ -124,6 +124,17 @@
       { title: 'Relationship — Team Dependencies',
         size: { w: 720, h: 460 },
         atom: { type: 'relationship-graph', args: { title: 'Team Dependencies', nodes: [{ id: 'eng', label: 'Engineering', group: 0 }, { id: 'design', label: 'Design', group: 0 }, { id: 'pm', label: 'Product Mgmt', group: 0 }, { id: 'figma', label: 'Figma', group: 1 }, { id: 'github', label: 'GitHub', group: 1 }, { id: 'jira', label: 'Jira', group: 1 }], edges: [{ from: 'eng', to: 'github', label: 'uses' }, { from: 'eng', to: 'jira', label: 'uses' }, { from: 'design', to: 'figma', label: 'uses' }, { from: 'design', to: 'jira', label: 'uses' }, { from: 'pm', to: 'jira', label: 'owns' }, { from: 'pm', to: 'figma', label: 'reviews' }] } } },
+      // ---- Timeline (Phase 2c part 2) ----
+      { title: 'Timeline — Company Milestones',
+        size: { w: 800, h: 280 },
+        atom: { type: 'timeline', args: { title: 'Company Milestones', axisLabel: '2024-2026', events: [{ date: '2024 Q1', label: 'Seed Round', sublabel: '$2M' }, { date: '2024 Q4', label: 'Product Launch', sublabel: 'Public beta' }, { date: '2025 Q3', label: 'Series A', sublabel: '$15M' }, { date: '2026 Q2', label: 'Profitable', sublabel: '$10M ARR' }] } } },
+      // ---- Pyramid (closes Phase 2) ----
+      { title: 'Pyramid — Maslow Hierarchy',
+        size: { w: 480, h: 480 },
+        atom: { type: 'pyramid', args: { title: "Maslow's Hierarchy", layers: [{ label: 'Physiological', sublabel: 'food, water, sleep' }, { label: 'Safety', sublabel: 'security, employment' }, { label: 'Belonging', sublabel: 'friends, family' }, { label: 'Esteem', sublabel: 'confidence, status' }, { label: 'Self-Actualization', sublabel: 'fulfillment' }] } } },
+      { title: 'Pyramid — Inverted Funnel',
+        size: { w: 480, h: 480 },
+        atom: { type: 'pyramid', args: { title: 'Sales Funnel', inverted: true, layers: [{ label: 'Visitors', value: '10K' }, { label: 'Trial', value: '1.2K' }, { label: 'Active', value: '400' }, { label: 'Paying', value: '120' }, { label: 'Champions', value: '24' }] } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
