@@ -232,5 +232,94 @@ console.log('\n--- trend variants ---');
   );
 }
 
+// ----- bar atom (Phase 1a) -----
+console.log('\n--- bar atom ---');
+{
+  const spec = await getAtomSpec('bar');
+  ok(spec.type === 'bar', 'bar spec.type matches');
+  ok(spec.category === 'charts/data', `bar spec.category = "${spec.category}"`);
+  ok(spec.args.values.required === true, 'bar values required');
+  ok(spec.args.labels.required === true, 'bar labels required');
+
+  // Smoke render with stub ctx (record values + labels drawn as fillText)
+  const recorded = [];
+  const c = {};
+  const noop = () => {};
+  for (const m of [
+    'save',
+    'restore',
+    'beginPath',
+    'closePath',
+    'moveTo',
+    'lineTo',
+    'quadraticCurveTo',
+    'arc',
+    'stroke',
+    'fill',
+    'fillRect',
+  ]) {
+    c[m] = noop;
+  }
+  c.measureText = (t) => ({ width: String(t).length * 7 });
+  c.createLinearGradient = () => ({ addColorStop: noop });
+  c.fillText = (t) => recorded.push(t);
+  for (const p of [
+    'fillStyle',
+    'strokeStyle',
+    'lineWidth',
+    'shadowColor',
+    'shadowBlur',
+    'shadowOffsetY',
+    'font',
+    'textAlign',
+    'textBaseline',
+  ]) {
+    Object.defineProperty(c, p, { set() {} });
+  }
+
+  await renderAtom(
+    c,
+    'bar',
+    {
+      values: [1.2, 1.8, 2.4, 3.1],
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      format: 'currency',
+      title: 'Quarterly Revenue',
+    },
+    'pseudo3d',
+    { x: 0, y: 0, w: 480, h: 280, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+
+  ok(recorded.includes('Quarterly Revenue'), 'title rendered');
+  ok(recorded.includes('Q1') && recorded.includes('Q4'), 'all labels rendered');
+  ok(recorded.includes('$1.2') && recorded.includes('$3.1'), 'currency-formatted values rendered');
+
+  // Empty input → no crash
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(c, 'bar', { values: [], labels: [] }, 'pseudo3d', {
+      w: 100,
+      h: 100,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty values+labels no crash');
+
+  // Mismatched lengths use min count
+  recorded.length = 0;
+  await renderAtom(c, 'bar', { values: [10, 20, 30, 40, 50], labels: ['A', 'B'] }, 'pseudo3d', {
+    w: 480,
+    h: 280,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+  });
+  ok(
+    recorded.filter((t) => t === 'A' || t === 'B').length === 2,
+    'mismatched labels/values → uses min (got 2 label draws)',
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

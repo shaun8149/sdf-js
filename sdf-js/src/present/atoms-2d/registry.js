@@ -26,7 +26,8 @@
 const ATOM_LOADERS = {
   // Charts / data
   'kpi-card': () => import('./charts/data/kpi-card.js'),
-  // Future Phase 1: bar / line / pie / column
+  bar: () => import('./charts/data/bar.js'),
+  // Future Phase 1: line / pie / column
 
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
