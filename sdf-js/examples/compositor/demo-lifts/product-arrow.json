@@ -1,0 +1,111 @@
+{
+  "id": "product-arrow",
+  "title": "Arrow Toolbox · Rising arrow",
+  "prompt": "arrows: Arrow Toolbox · Rising arrow",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"arrows\").",
+  "sceneData": {
+    "v": 1,
+    "name": "Arrow Toolbox · Rising arrow",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "arrows product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.1,
+          "shaftWidth": 0.22,
+          "headLength": 0.5,
+          "headWidth": 0.7,
+          "depth": 0.3
+        },
+        "transform": {
+          "translate": [-0.7, 0.5, -0.5],
+          "rotate": [0, 0, 0.5]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.5,
+          "shaftWidth": 0.3,
+          "headLength": 0.6,
+          "headWidth": 0.95,
+          "depth": 0.34
+        },
+        "transform": {
+          "translate": [-0.3, 0.8, -0.2],
+          "rotate": [0, 0, 0.5]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.26,
+          "metal": 0.4,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "arrow-3d",
+        "args": {
+          "length": 2.4,
+          "shaftWidth": 0.42,
+          "headLength": 0.95,
+          "headWidth": 1.3,
+          "depth": 0.42
+        },
+        "transform": {
+          "translate": [0.2, 1.2, 0.2],
+          "rotate": [0, 0, 0.52]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.8333333333333334,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "arrows",
+    "costUSD": 0
+  }
+}
