@@ -1328,6 +1328,16 @@
       "file": "labels-pie.json",
       "renderer": "studio",
       "prompt": "Pie chart · slice labels"
+    },
+    {
+      "id": "chart-autolabel-bar",
+      "title": "Bar chart · auto-labels from args.labels (#84 connector)",
+      "thesisPoint": "#84 connector: chart args.labels auto-expand into SDF text-3d-pipe labels at load (expandChartLabels).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-bar.json",
+      "renderer": "studio",
+      "prompt": "Bar chart · auto-labels from args.labels (#84 connector)"
     }
   ]
 }
