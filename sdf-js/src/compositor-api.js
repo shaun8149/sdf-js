@@ -96,6 +96,122 @@ For 6 variants per ⚡:
     with different layouts (vertical / radial / cards / timeline / compare)
   - NEVER emit all 6 same-tier same-style (Sprint 1.5 convergence failure)
 
+## Iconography (Sprint 13 — drawAtlasIcon available)
+
+Atlas iframe ships a curated 24-icon library (Heroicons + Tabler MIT-licensed
+SVG path data, re-coded as drawingContext.Path2D for fast in-canvas render).
+LLM should INLINE drawAtlasIcon into args.code when content has obvious icon
+affordance — Napkin/Beautiful.ai use icons as the FIRST visual signal of
+abstract concepts. Closes one of Napkin's core moats.
+
+Signature: drawAtlasIcon(name, x, y, size, color)
+  name: one of the 24 ATLAS_ICON_NAMES (see below)
+  x, y: CENTER position (not top-left anchored)
+  size: bounding box edge (24=small, 32=card, 48=hero, 96=stamp)
+  color: '#hex' string OR [r,g,b] array OR 'inherit'
+
+The 24 icons grouped by affordance:
+
+| Affordance | Icons |
+|---|---|
+| People / org | user, users, building |
+| Concept | globe |
+| Charts / data | chart-bar, chart-pie, database, cloud |
+| Action / direction | arrow-right, arrow-up, arrow-down, refresh, check, x, plus |
+| Object / business | cube, file, mail |
+| Annotation / status | star, heart, lightning, clock, shield, question |
+
+Usage in P5 sketch:
+\`\`\`js
+const fg = window.__brandingPalette.silhouetteColor;
+// At KPI card top center: card icon + label below
+drawAtlasIcon('database', x, y, 32, fg);
+textFont('Inter'); textSize(14); textAlign(CENTER, TOP);
+fill(fg[0], fg[1], fg[2]);
+text('Storage', x, y + 22);
+\`\`\`
+
+LLM mapping content → icon:
+- "team / users / people / staff" → 'users'
+- "individual / person / customer / user" → 'user'
+- "company / office / org" → 'building'
+- "data / database / storage / records" → 'database'
+- "cloud / SaaS / hosted" → 'cloud'
+- "growth / increase" → 'arrow-up' or 'chart-bar'
+- "decline / decrease" → 'arrow-down'
+- "alert / warning / urgent" → 'lightning'
+- "secure / protected" → 'shield'
+- "time / duration / deadline" → 'clock'
+
+NEVER skip iconography on infographic-style P5 sketches — Atlas P5 sketches
+without icons look sparse vs Napkin. AT LEAST one icon per major content
+unit (KPI card, list item, hero callout). If content doesn't fit any of the
+24 icons cleanly, fall back to drawing a small SDF primitive (sdf_circle /
+sdf_box) at the same position.
+
+## Typography (Sprint 12 — Inter + IBM Plex Mono available in iframe)
+
+The iframe sandbox preloads 2 web fonts via Google Fonts link:
+- **Inter** (weights 400 / 500 / 600 / 700 / 900) — modern UI sans-serif. Use
+  for ALL foreground text (labels, titles, body). Replaces system sans-serif.
+- **IBM Plex Mono** (weights 400 / 500 / 700) — monospace. Use for code-like
+  content + digit-aligned numerics (dollar amounts, percentages, tables).
+
+Usage in P5 sketch:
+- textFont('Inter') sets font family; default weight 400
+- For bold/heavy weights, use drawingContext for precise control:
+    drawingContext.font = "700 56px Inter";
+    drawingContext.textAlign = "center";
+    drawingContext.fillText('$3B', 300, 80);
+- textSize() still works but only changes size, not weight
+
+**Typography hierarchy** (matches modern infographic conventions):
+- Hero KPI / number: 56-96 px Inter weight 700-900 (or IBM Plex Mono 700 for digits)
+- Section title: 24-32 px Inter weight 600
+- Card label: 14-18 px Inter weight 500
+- Body / caption: 11-14 px Inter weight 400
+- Numeric values: IBM Plex Mono (tabular digits align cleanly)
+
+textAlign:
+- Hero centered: textAlign(CENTER, CENTER)
+- Card label horizontal-center + top: textAlign(CENTER, TOP)
+- Body left-aligned: textAlign(LEFT, TOP)
+
+NEVER use 'Arial' / 'Helvetica' / 'sans-serif' / 'serif' — they look amateur
+on a polished infographic. The Inter + IBM Plex Mono pair is Atlas's visual
+identity (replaces v3.20-v3.25 prompt default of textFont('sans-serif')).
+
+## JSON output discipline (Sprint 11 — CRITICAL when inlining sketch code)
+
+When emitting p5-sketch SceneData, **args.code is a JSON string field**.
+Sprint 10 L3 testing found ~10% of large-inline-code variants emitted
+invalid JSON ("Bad escaped character", "Bad control character") that
+parseLiftResponse cannot recover. Rules:
+
+- Inside args.code string, ALL backslashes MUST be doubled: \\\\ not \\
+- Inside args.code string, double quotes MUST be escaped: \\" not "
+- Inside args.code string, newlines MUST be \\n NOT raw newline character
+- NO raw tab / control characters inside args.code
+- Template literals (\`backticks\`) inside args.code = OK (backtick is not
+  a JSON-special character), but prefer single quotes for in-sketch strings
+  to avoid all escape ambiguity
+
+When generating large inline code (>500 chars), write it COMPACTLY on one
+line — no source-formatting newlines. P5 sketch parses fine without them.
+Example shape:
+\`\`\`json
+{
+  "args": {
+    "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){background(247,244,224);fill(40);text('Hello',300,180);}"
+  }
+}
+\`\`\`
+
+If you must use newlines inside args.code, encode them as the 2-char
+sequence \\n (backslash + n), not the literal newline character. Atlas
+parseLiftResponse strips standard JSON-isms (markdown fence, // comment,
+trailing comma) but cannot fix mid-string control characters.
+
 ## p5-sketch subject type (Sprint 3)
 
 When emitting Priority 3 (or as alternative to Priority 2 for pure abstract):
@@ -126,8 +242,10 @@ Constraints:
     sub2, add2, mul2, dot2, len2, lenSq2, rot2, trans2, clamp1, clamp2,
     max2, min2, fract1, fract2, scale2, eq2, step1, xRepeated, sdf_rep
   * Branding palette: window.__brandingPalette = { bg: [r,g,b], silhouetteColor: [r,g,b] }
-- Use textFont('sans-serif') for any text. Use brandingPalette for fill/stroke
-  to maintain visual consistency across renderer cycles.
+- Use textFont('Inter') for any text (system sans-serif fallback). For
+  numeric / digit-aligned content ($, %, etc.), use textFont('IBM Plex Mono').
+  See "Typography" section for full hierarchy guidance. Use brandingPalette
+  for fill/stroke to maintain visual consistency across renderer cycles.
 - Call createCanvas(600, 360) inside setup(). End draw() with noLoop() to freeze
   the frame (saves CPU; we render once, no animation needed).
 
@@ -210,6 +328,14 @@ with "$3B" labeled at top. Vector libraries cannot do this effortlessly —
 they would need explicit point placement. SDF tests inside/outside per grid
 cell, so any outline + any fill = arbitrary metaphor.
 
+**EXPECTED OUTPUT ANCHOR** (use to self-check before emitting):
+- ✅ Canvas mostly background-color with foreground "coins" forming a
+  recognizable carrier silhouette (long horizontal hull + small island on top)
+- ✅ "$3B" text label clearly visible at top (textSize ≥ 40)
+- ❌ NOT: solid black canvas (means background() called with fg color)
+- ❌ NOT: empty canvas (means inside test inverted — check sdfFn returns negative when inside)
+- ❌ NOT: 3-5 circles (means grid step too large — use step ≤ 8)
+
 ## Worked example — Priority 3 (P5 FALLBACK, abstract relationship)
 
 User text: "The agent explores the environment, builds hypotheses, and refines its world model"
@@ -230,6 +356,13 @@ Output:
 Result: 3 labeled rectangles ("Explore" / "Hypothesize" / "Refine") in a row
 with arrows between. Standard infographic — no SDF metaphor available for
 pure-abstract content, so P5 vector handles it.
+
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ 3 evenly-spaced rectangles with centered labels visible
+- ✅ Arrows between rectangles pointing left→right
+- ❌ NOT: overlapping rectangles (check rect width × N + gap × (N-1) ≤ canvas width)
+- ❌ NOT: text outside rectangles (use textAlign(CENTER, CENTER) + center coords)
+- ❌ NOT: rectangles touching canvas edge (leave ≥40px margin top/bottom)
 
 ## Worked example — Priority 2 ⭐ upgrade (variable-size organic packing via packCirclesInSDF)
 
@@ -256,6 +389,13 @@ More "money pile" feel, less "polka dot" feel. The packCirclesInSDF helper
 is INLINED into the sketch (LLM copy-pastes the function body into args.code).
 **Use this pattern for Priority 2 metaphors that benefit from organic density.**
 
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ Carrier silhouette visible — long horizontal hull, smaller island on top
+- ✅ ~300-800 variable-size circles densely packed inside silhouette (not on it)
+- ✅ Background palette color, circles in foreground color
+- ❌ NOT: empty canvas (packCirclesInSDF returned [] — check bounds/sdfFn polarity)
+- ❌ NOT: circles outside silhouette (check sdfFn returns negative INSIDE)
+
 ## Worked example — Priority 2/3 hybrid (irregular KPI grid via irregularGridPack)
 
 User text: "Our SaaS reached $100M ARR with 92% margin, $50 CAC, $5000 LTV"
@@ -280,6 +420,13 @@ Result: 8 KPI cards arranged non-uniformly — 1 large hero ($100M ARR big text)
 hierarchy matches importance, vs Sprint 3 uniform grid. **Use this pattern
 when content has multiple KPIs with implicit ranking** (hero metric +
 supporting metrics).
+
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ 1 large rect (≥30% canvas area) clearly dominant, with big text
+- ✅ Other rects clearly smaller, no overlaps, fits grid bounds
+- ✅ Each rect has centered label with size proportional to rect area
+- ❌ NOT: uniform grid of equal rects (defeats the purpose)
+- ❌ NOT: rects extending past canvas (check x+w ≤ canvas_width)
 
 ## Worked example — Sprint 5 (organic market-share via delaunayTriangles + voronoiCells)
 
@@ -306,6 +453,13 @@ to market share (AWS biggest darkest region, GCP smallest faintest). Labels
 imply territorial competition** (market share, demographics, voting blocks).
 NOT a substitute for irregularGridPack (use that for KPI dashboards).
 
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ N organic polygons tiling the canvas, each labeled with its name + value
+- ✅ Visual area roughly proportional to value (bigger share → bigger region)
+- ❌ NOT: rectangles (you're using Voronoi for a reason — keep polygons)
+- ❌ NOT: overlapping cells (Voronoi by definition doesn't overlap)
+- ❌ NOT: tiny labels overflowing (use textSize 14-20 + textAlign CENTER)
+
 ## Worked example — Sprint 5 (hand-drawn connectors via springBrushStroke)
 
 User text: "Backend → Frontend → Mobile architecture flow"
@@ -330,6 +484,13 @@ hand-drawn arrows** (spring-physics applied to slightly arched waypoint paths)
 with thickness modulation — slow segments thick, fast straights thin. Looks
 sketch-noted, not vector-perfect. **Use for sequence/hierarchy/flow content
 where "designed by hand" feel matters more than crisp engineering precision.**
+
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ N boxes with centered labels, arrows between them
+- ✅ Arrows have visible variable thickness (1-6px range), not uniform straight lines
+- ✅ Arrows curve slightly, not pixel-perfect straight
+- ❌ NOT: straight uniform vector arrows (defeats Hooke purpose — use atlas line() directly if not handwriting)
+- ❌ NOT: arrows missing arrowhead at endpoint (add triangle at endpoint)
 
 ## Worked example — Sprint 7 (apparatus compositional layout for team/system content)
 
@@ -359,6 +520,13 @@ aesthetic is consistent — "engineering org as machine blueprint".
 **Use this pattern when content describes compositional structure**
 (teams, components, modules, sub-systems) where the COMPOSITION itself
 is the message.
+
+**EXPECTED OUTPUT ANCHOR**:
+- ✅ Grid of rectangular "rooms" with colored fills + visible walls between them
+- ✅ Composition is bounded by an ellipse-shaped region (not filling full canvas corners)
+- ✅ Multiple colors visible (≥3 distinct fills from palette)
+- ❌ NOT: random scattered shapes (state machine should produce connected rooms)
+- ❌ NOT: monochrome (color_mode 'group' should produce clustered colors)
 `;
 
 /**
@@ -594,39 +762,86 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
 
   const userMessage = `## Original user prompt\n\n${originalPrompt}\n\n## 2D SDF code\n\n\`\`\`js\n${code2d}\n\`\`\``;
   const model = opts.model || DEFAULT_LIFT_MODEL;
+  const maxRetries = opts.maxRetries ?? 3;
+  const baseDelayMs = opts.baseDelayMs ?? 1000;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 8192,
-      system: [
-        {
-          type: 'text',
-          text:
-            opts.mode === '2d'
-              ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
-              : CACHED_SYSTEM_PROMPT_LIFT,
-          cache_control: { type: 'ephemeral' },
-        },
-      ],
-      messages: [{ role: 'user', content: userMessage }],
-    }),
+  const requestBody = JSON.stringify({
+    model,
+    max_tokens: 8192,
+    system: [
+      {
+        type: 'text',
+        text:
+          opts.mode === '2d'
+            ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
+            : CACHED_SYSTEM_PROMPT_LIFT,
+        cache_control: { type: 'ephemeral' },
+      },
+    ],
+    messages: [{ role: 'user', content: userMessage }],
   });
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Anthropic API ${response.status}: ${errText.slice(0, 300)}`);
-  }
+  // Sprint 11 (A): retry-with-exponential-backoff for transient errors.
+  // Retry on: network failures (fetch throws), 429 (rate limit), 5xx (server).
+  // Don't retry on: 4xx (other than 429) — would just fail again.
+  let lastError = null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (attempt > 0) {
+      // Exponential backoff: 1s, 2s, 4s (configurable via opts.baseDelayMs)
+      const delay = baseDelayMs * Math.pow(2, attempt - 1);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
 
-  const data = await response.json();
-  return { text: data.content[0].text, usage: data.usage };
+    let response;
+    try {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: requestBody,
+      });
+    } catch (fetchErr) {
+      // Network-level failure (DNS, connection reset, "Failed to fetch", etc.)
+      // ALWAYS transient — retry.
+      lastError = new Error(
+        `Anthropic API network error (attempt ${attempt + 1}/${maxRetries + 1}): ${fetchErr.message}`,
+      );
+      if (attempt < maxRetries) continue;
+      throw lastError;
+    }
+
+    if (response.ok) {
+      const data = await response.json();
+      return { text: data.content[0].text, usage: data.usage };
+    }
+
+    // Non-OK response: read error body
+    const errText = await response.text();
+    lastError = new Error(
+      `Anthropic API ${response.status} (attempt ${attempt + 1}/${maxRetries + 1}): ${errText.slice(0, 300)}`,
+    );
+
+    // Retryable: 429 (rate limit) or 5xx (server). Non-retryable: 4xx (other).
+    const retryable = response.status === 429 || (response.status >= 500 && response.status < 600);
+    if (!retryable || attempt >= maxRetries) {
+      throw lastError;
+    }
+    // Honor Retry-After header if present (429 sometimes includes it)
+    const retryAfter = response.headers.get('Retry-After');
+    if (retryAfter) {
+      const seconds = parseInt(retryAfter, 10);
+      if (!Number.isNaN(seconds) && seconds > 0 && seconds < 60) {
+        await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+      }
+    }
+    // Loop continues with exponential backoff at top
+  }
+  // Should be unreachable (loop either returns or throws), but defense in depth
+  throw lastError || new Error('Anthropic API: exhausted retries with no specific error');
 }
 
 /**
