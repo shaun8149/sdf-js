@@ -135,6 +135,25 @@
       { title: 'Pyramid — Inverted Funnel',
         size: { w: 480, h: 480 },
         atom: { type: 'pyramid', args: { title: 'Sales Funnel', inverted: true, layers: [{ label: 'Visitors', value: '10K' }, { label: 'Trial', value: '1.2K' }, { label: 'Active', value: '400' }, { label: 'Paying', value: '120' }, { label: 'Champions', value: '24' }] } } },
+      // ---- Shape primitives (Phase 3) ----
+      { title: 'Shape — Cube (Product)',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'cube', label: 'Product' } } },
+      { title: 'Shape — Sphere (Global)',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'sphere', label: 'Global', color: [60, 180, 100] } } },
+      { title: 'Shape — Diamond (Premium)',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'diamond', label: 'Premium', color: [180, 60, 180] } } },
+      { title: 'Shape — Arrow Up Growth',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'arrow', direction: 'up', label: '+127% Growth', color: [40, 160, 100] } } },
+      { title: 'Shape — Gear (Process)',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'gear', label: 'Process', color: [200, 130, 40] } } },
+      { title: 'Shape — Cylinder (Database)',
+        size: { w: 280, h: 280 },
+        atom: { type: 'shape', args: { kind: 'cylinder', label: 'Database', color: [60, 100, 200] } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
