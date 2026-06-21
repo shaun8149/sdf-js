@@ -298,6 +298,7 @@ for (const [id, def] of Object.entries(SCENES)) {
         },
         light: { azimuth: 0.6, altitude: 0.55, distance: 25, intensity: 1.2 },
         shadow: { enabled: true, mode: 'darken', strength: 0.4 },
+        studioBg: 'dark', // dramatic showcase background (matches the source deck)
       },
     },
     meta: { generatedAt: '2026-06-21', model: 'vision-authored', pattern: def.cat, costUSD: 0 },

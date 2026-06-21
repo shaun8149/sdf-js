@@ -64,7 +64,8 @@
         "enabled": true,
         "mode": "darken",
         "strength": 0.4
-      }
+      },
+      "studioBg": "dark"
     }
   },
   "meta": {

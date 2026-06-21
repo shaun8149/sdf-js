@@ -45,6 +45,7 @@ uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
 uniform float u_reflectOn;     // 0/1 toggle for ground reflection
+uniform float u_studioBg;      // 0=light test stage, 1=dark dramatic showcase (per-scene)
 // Sprint 8: blueprint shot mode. When set to 1, the entire scene is rendered
 // as a technical schematic — silhouette edges + light fill on a dark graph-
 // paper background. Set per-frame from cameraSequence shot.renderer field.
@@ -721,10 +722,14 @@ void main() {
 
   vec3 col;
   if (!hit) {
-    // Studio: cool-grey background, slightly darkened + a faint top-down
-    // gradient so the dark checker floor reads as brighter-lit-floor against it
-    // and the image keeps contrast instead of washing out toward the horizon.
-    col = mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
+    // Studio background. Light = neutral cool-grey test stage. Dark = dramatic
+    // cyclorama (deep slate, darker toward the top) so glossy showcase subjects
+    // pop against it like the source PresentationLoad decks.
+    if (u_studioBg > 0.5) {
+      col = mix(vec3(0.085, 0.10, 0.13), vec3(0.014, 0.018, 0.028), clamp(rd.y, 0.0, 1.0));
+    } else {
+      col = mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
+    }
   } else {
     // ---- Shading ----
     vec3 p = ro + rd * t;
@@ -812,6 +817,9 @@ void main() {
       float fpw = filterWidth(t, u_resolution.y, rd.y, 1.5);
       float c = checkersFiltered(p.xz, vec2(fpw));
       base = mix(vec3(0.26, 0.26, 0.28), vec3(0.16, 0.16, 0.18), c);
+      // Dramatic showcase: near-black floor with a barely-there checker — reads
+      // as a dark reflective studio surface (reflection + cast shadow preserved).
+      if (u_studioBg > 0.5) base = mix(vec3(0.05, 0.055, 0.072), vec3(0.028, 0.03, 0.045), c);
     } else {
       base = vec3(0.78, 0.78, 0.80);
     }
@@ -1406,7 +1414,10 @@ void main() {
       lin += base * skyCol    * skyL * ao      * 0.38 * diffK;
       lin += base * bounceCol * bnc  * ao      * 0.16 * diffK;
       lin += specTint * sunCol * spec * shadowK * specBoost;
-      lin += rimCol * rim * ao                 * 0.14;
+      // Dramatic showcase (u_studioBg): a tight hot specular + a stronger cool
+      // fresnel rim so glossy subjects glow at their edges against the dark bg.
+      lin += specTint * sunCol * pow(max(dot(n, H), 0.0), 96.0) * shadowK * u_studioBg * 1.1;
+      lin += rimCol * rim * ao * (0.14 + u_studioBg * 0.5);
 
       // Sprint 6: procedural-IBL env reflection. For metallic objects, sample
       // sky() in the reflection direction as the environment map. Free (no
@@ -1506,10 +1517,10 @@ void main() {
   // postfx, so FLY 3D's cinematic look is unaffected). pow(>1) is monotonic and
   // HDR-safe (no smoothstep blow-up on speculars > 1.0).
   if (u_blueprintMode < 0.5) {
-    col = pow(max(col, vec3(0.0)), vec3(1.07));
+    col = pow(max(col, vec3(0.0)), vec3(1.07 + u_studioBg * 0.06));
     vec2 vigUV = gl_FragCoord.xy / max(u_resolution, vec2(1.0));
     vec2 vd = vigUV - 0.5;
-    col *= 1.0 - 0.24 * dot(vd, vd);
+    col *= 1.0 - (0.24 + u_studioBg * 0.30) * dot(vd, vd);
   }
 
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
@@ -1644,6 +1655,7 @@ export function createStudioRenderer({
   let activeMotionSlots = {}; // { subjectId: slot } — set by setMotionSlots()
   let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
   let activeCityMode = false; // set by setCityMode() when scene has procedural-city
+  let studioBgDark = false; // set by setPostFx() from scene.defaults.studioBg === 'dark'
   // Sprint 12 Rune erosion: CPU-baked heightmap uploaded as WebGL2 RGBA32F.
   // setRuneHeightmap({data, width, height}) creates/updates this; pass null to clear.
   let runeHeightmapTex = null;
@@ -1850,6 +1862,7 @@ export function createStudioRenderer({
       'u_groundOn',
       'u_checkerOn',
       'u_reflectOn',
+      'u_studioBg',
       'u_time',
       'u_leafMaterial[0]',
       'u_leafTone[0]',
@@ -2057,6 +2070,7 @@ export function createStudioRenderer({
     // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
     // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
     gl.uniform1f(uniformsCache.u_reflectOn, c.reflectOn === false ? 0.0 : 1.0);
+    gl.uniform1f(uniformsCache.u_studioBg, studioBgDark ? 1.0 : 0.0);
     // Sprint 8: Blueprint-as-shot mode toggle (1 when current cameraSequence shot
     // has renderer='blueprint'). Replaces full HDR shading with silhouette-on-
     // graph-paper schematic look. Volumes are skipped in this mode.
@@ -2417,6 +2431,10 @@ export function createStudioRenderer({
      */
     setPostFx(scene, camera) {
       activePostFx = resolvePostFxParams(scene, camera);
+      // Per-scene dramatic background opt-in: scene.defaults.studioBg === 'dark'
+      // → dark cyclorama + punchier spec/rim/vignette (showcase decks). Default
+      // (absent) keeps the neutral light test stage used by the atom gallery.
+      studioBgDark = !!(scene && scene.defaults && scene.defaults.studioBg === 'dark');
     },
 
     /**
