@@ -1,0 +1,191 @@
+{
+  "id": "deck-auth-solo-fill-slide-03",
+  "title": "sequence: Fill Levels · Framed row + arrows (10/60/50)",
+  "prompt": "sequence: Fill Levels · Framed row + arrows (10/60/50)",
+  "code2d": "// auto-authored deck segment.",
+  "sceneData": {
+    "v": 1,
+    "name": "sequence: Fill Levels · Framed row + arrows (10/60/50)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "Three framed fill spheres 10/60/50% connected left-to-right by arrows."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.1],
+          "radius": 0.7,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-2.4, 0.9, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.7,
+          "h": -0.5599999999999999
+        },
+        "transform": {
+          "translate": [-2.4, 0.9, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.6],
+          "radius": 0.7,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 0.9, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp1",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.7,
+          "h": 0.13999999999999996
+        },
+        "transform": {
+          "translate": [0, 0.9, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq2",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.5],
+          "radius": 0.7,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [2.4, 0.9, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp2",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.7,
+          "h": 0
+        },
+        "transform": {
+          "translate": [2.4, 0.9, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "arrow0",
+        "type": "arrow-3d",
+        "args": {
+          "length": 0.9,
+          "shaftWidth": 0.1,
+          "headLength": 0.28,
+          "headWidth": 0.34,
+          "depth": 0.18
+        },
+        "transform": {
+          "translate": [-1.2, 0.9, 0]
+        },
+        "material": "silver"
+      },
+      {
+        "id": "arrow1",
+        "type": "arrow-3d",
+        "args": {
+          "length": 0.9,
+          "shaftWidth": 0.1,
+          "headLength": 0.28,
+          "headWidth": 0.34,
+          "depth": 0.18
+        },
+        "transform": {
+          "translate": [1.2, 0.9, 0]
+        },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-1.5, 2.1, -7.94],
+          "target": [0, 0.9000000000000001, 0],
+          "fov": 34,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [1.5, 2.1, -7.94],
+          "target": [0, 0.9000000000000001, 0],
+          "fov": 34,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}
