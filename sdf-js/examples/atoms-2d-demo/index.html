@@ -116,6 +116,14 @@
       { title: 'Org — Executive Team',
         size: { w: 720, h: 380 },
         atom: { type: 'org-chart', args: { title: 'Executive Team', root: { name: 'Sarah Chen', title: 'CEO', children: [{ name: 'Mike Park', title: 'CTO', children: [{ name: 'Alex Wu', title: 'Eng Manager' }, { name: 'Jamie Lee', title: 'Sr Engineer' }] }, { name: 'Lisa Wang', title: 'CMO', children: [{ name: 'Tom Chen', title: 'Brand Lead' }] }, { name: 'David Liu', title: 'CFO' }] } } } },
+      // ---- Mindmap (Phase 2c) ----
+      { title: 'Mindmap — Atlas Architecture',
+        size: { w: 720, h: 480 },
+        atom: { type: 'mindmap', args: { title: 'Atlas Architecture', root: { label: 'Atlas', children: [{ label: 'Engine', children: [{ label: 'SDF' }, { label: 'Renderer' }, { label: 'Compiler' }] }, { label: 'Present', children: [{ label: 'Atoms' }, { label: 'Pipeline' }] }, { label: 'Compositor', children: [{ label: 'Lift' }] }, { label: 'Studio' }] } } } },
+      // ---- Relationship graph (Phase 2c) ----
+      { title: 'Relationship — Team Dependencies',
+        size: { w: 720, h: 460 },
+        atom: { type: 'relationship-graph', args: { title: 'Team Dependencies', nodes: [{ id: 'eng', label: 'Engineering', group: 0 }, { id: 'design', label: 'Design', group: 0 }, { id: 'pm', label: 'Product Mgmt', group: 0 }, { id: 'figma', label: 'Figma', group: 1 }, { id: 'github', label: 'GitHub', group: 1 }, { id: 'jira', label: 'Jira', group: 1 }], edges: [{ from: 'eng', to: 'github', label: 'uses' }, { from: 'eng', to: 'jira', label: 'uses' }, { from: 'design', to: 'figma', label: 'uses' }, { from: 'design', to: 'jira', label: 'uses' }, { from: 'pm', to: 'jira', label: 'owns' }, { from: 'pm', to: 'figma', label: 'reviews' }] } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }

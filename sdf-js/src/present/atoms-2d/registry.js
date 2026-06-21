@@ -36,6 +36,8 @@ const ATOM_LOADERS = {
   'flow-chart': () => import('./charts/diagrams/flow-chart.js'),
   'tree-diagram': () => import('./charts/diagrams/tree-diagram.js'),
   'org-chart': () => import('./charts/diagrams/org-chart.js'),
+  mindmap: () => import('./charts/diagrams/mindmap.js'),
+  'relationship-graph': () => import('./charts/diagrams/relationship-graph.js'),
 
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
