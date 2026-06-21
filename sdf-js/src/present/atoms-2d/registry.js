@@ -61,6 +61,14 @@ const ATOM_LOADERS = {
   waterfall: () => import('./charts/data/waterfall.js'),
   gantt: () => import('./charts/data/gantt.js'),
 
+  // Charts/data — B3 PR 1 (2D twins of gauge-3d / radial-spoke-3d / scatter-3d /
+  // traffic-light-3d / venn-3d). Carry full data, not just count.
+  gauge: () => import('./charts/data/gauge.js'),
+  'radial-spoke': () => import('./charts/data/radial-spoke.js'),
+  scatter: () => import('./charts/data/scatter.js'),
+  'traffic-light': () => import('./charts/data/traffic-light.js'),
+  venn: () => import('./charts/data/venn.js'),
+
   // Progression (new category)
   progression: () => import('./charts/progression/progression.js'),
 

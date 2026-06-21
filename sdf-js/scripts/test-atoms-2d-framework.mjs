@@ -963,6 +963,225 @@ console.log('\n--- cover atom ---');
   ok(recorded.includes('Hello'), 'title-only cover renders');
 }
 
+// ----- B3 PR 1: charts/data new atoms (gauge / radial-spoke / scatter / traffic-light / venn) -----
+
+console.log('\n--- gauge atom ---');
+{
+  const spec = await getAtomSpec('gauge');
+  ok(spec.type === 'gauge', 'gauge spec.type');
+  ok(spec.category === 'charts/data', `category = ${spec.category}`);
+  ok(spec.args.value.required, 'value required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'gauge',
+    { value: 0.7, label: 'Utilization', title: 'Server Load', min: '0', max: '100' },
+    'pseudo3d',
+    {
+      w: 320,
+      h: 240,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('70%'), 'percent value rendered');
+  ok(recorded.includes('Utilization'), 'sub-label rendered');
+  ok(recorded.includes('Server Load'), 'title rendered');
+  ok(recorded.includes('0') && recorded.includes('100'), 'min/max ticks rendered');
+
+  // Number format
+  recorded.length = 0;
+  await renderAtom(c, 'gauge', { value: 0.42, format: 'number' }, 'pseudo3d', {
+    w: 240,
+    h: 200,
+    palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+  });
+  ok(
+    recorded.some((t) => String(t).includes('0.42')),
+    'number format renders raw value',
+  );
+}
+
+console.log('\n--- radial-spoke atom ---');
+{
+  const spec = await getAtomSpec('radial-spoke');
+  ok(spec.type === 'radial-spoke', 'radial-spoke spec.type');
+  ok(spec.args.values.required, 'values required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'radial-spoke',
+    {
+      values: [0.6, 0.9, 0.3, 0.75, 0.5, 0.8],
+      labels: ['Speed', 'Power', 'Range', 'Comfort', 'Safety', 'MPG'],
+      title: 'Vehicle Profile',
+    },
+    'pseudo3d',
+    {
+      w: 420,
+      h: 420,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Vehicle Profile'), 'title rendered');
+  ok(recorded.includes('Speed') && recorded.includes('MPG'), 'all labels rendered');
+
+  // Empty values — no crash
+  let crashed = false;
+  try {
+    await renderAtom(c, 'radial-spoke', { values: [] }, 'pseudo3d', {
+      w: 300,
+      h: 300,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty values no crash');
+}
+
+console.log('\n--- scatter atom ---');
+{
+  const spec = await getAtomSpec('scatter');
+  ok(spec.type === 'scatter', 'scatter spec.type');
+  ok(spec.args.points.required, 'points required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'scatter',
+    {
+      points: [
+        { x: 0.2, y: 0.3, label: 'A', group: 'g1' },
+        { x: 0.5, y: 0.7, label: 'B', group: 'g2' },
+        { x: 0.8, y: 0.4, label: 'C', group: 'g1' },
+      ],
+      xAxis: 'Cost',
+      yAxis: 'Value',
+      title: 'Cost vs Value',
+    },
+    'pseudo3d',
+    {
+      w: 500,
+      h: 400,
+      palette: {
+        bg: [255, 255, 255],
+        silhouetteColor: [0, 0, 0],
+        colors: [
+          [60, 130, 200],
+          [200, 80, 80],
+        ],
+      },
+    },
+  );
+  ok(recorded.includes('Cost vs Value'), 'title rendered');
+  ok(recorded.includes('A') && recorded.includes('C'), 'point labels rendered');
+  ok(recorded.includes('Cost'), 'xAxis label rendered');
+  ok(recorded.includes('Value'), 'yAxis label rendered');
+}
+
+console.log('\n--- traffic-light atom ---');
+{
+  const spec = await getAtomSpec('traffic-light');
+  ok(spec.type === 'traffic-light', 'traffic-light spec.type');
+  ok(spec.args.lights.required, 'lights required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'traffic-light',
+    {
+      lights: [
+        { color: 'red', active: false, label: 'Stop' },
+        { color: 'amber', active: false, label: 'Slow' },
+        { color: 'green', active: true, label: 'Go' },
+      ],
+      title: 'Project Status',
+    },
+    'pseudo3d',
+    { w: 240, h: 480, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('Project Status'), 'title rendered');
+  ok(recorded.includes('Stop') && recorded.includes('Go'), 'light labels rendered');
+
+  // No labels variant
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'traffic-light',
+    { lights: [{ color: 'red' }, { color: 'green', active: true }] },
+    'pseudo3d',
+    { w: 200, h: 360, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(true, 'no-labels variant renders without crash');
+}
+
+console.log('\n--- venn atom ---');
+{
+  const spec = await getAtomSpec('venn');
+  ok(spec.type === 'venn', 'venn spec.type');
+  ok(spec.args.sets.required, 'sets required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'venn',
+    {
+      sets: [{ label: 'Engineering' }, { label: 'Design' }, { label: 'Product' }],
+      title: 'Cross-functional Work',
+    },
+    'pseudo3d',
+    {
+      w: 480,
+      h: 420,
+      palette: {
+        bg: [255, 255, 255],
+        silhouetteColor: [0, 0, 0],
+        colors: [
+          [60, 130, 200],
+          [200, 80, 120],
+          [70, 180, 100],
+        ],
+      },
+    },
+  );
+  ok(recorded.includes('Cross-functional Work'), 'title rendered');
+  ok(
+    recorded.includes('Engineering') && recorded.includes('Design') && recorded.includes('Product'),
+    'all set labels rendered',
+  );
+
+  // 2-set variant
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'venn',
+    { sets: [{ label: 'A' }, { label: 'B' }], overlap: 0.5 },
+    'pseudo3d',
+    { w: 400, h: 300, palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] } },
+  );
+  ok(recorded.includes('A') && recorded.includes('B'), '2-set variant labels rendered');
+
+  // Below minimum sets — silent no-op
+  let crashed = false;
+  try {
+    await renderAtom(c, 'venn', { sets: [{ label: 'Only' }] }, 'pseudo3d', {
+      w: 300,
+      h: 300,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'single-set no crash');
+}
+
 function stubCtxWithIcon(recorded) {
   const c = stubCtxWithEllipse(recorded);
   // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash
@@ -1002,6 +1221,8 @@ function stubCtx(recorded) {
     'stroke',
     'fill',
     'fillRect',
+    'setLineDash',
+    'clip',
   ]) {
     c[m] = noop;
   }
