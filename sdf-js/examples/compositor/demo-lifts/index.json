@@ -1028,6 +1028,236 @@
       "file": "product-circle-looping.json",
       "renderer": "studio",
       "prompt": "Circle Charts · Looping cycle"
+    },
+    {
+      "id": "chart-data-bars",
+      "title": "Data Driven · 3D Bars",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-data-bars.json",
+      "renderer": "studio",
+      "prompt": "Data Driven · 3D Bars"
+    },
+    {
+      "id": "chart-data-columns",
+      "title": "Data Driven · Columns",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-data-columns.json",
+      "renderer": "studio",
+      "prompt": "Data Driven · Columns"
+    },
+    {
+      "id": "chart-pie",
+      "title": "Pie / Donut Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie / Donut Chart"
+    },
+    {
+      "id": "chart-line",
+      "title": "Line / Trend Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-line.json",
+      "renderer": "studio",
+      "prompt": "Line / Trend Chart"
+    },
+    {
+      "id": "chart-bcg-matrix",
+      "title": "BCG Matrix (2×2)",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-bcg-matrix.json",
+      "renderer": "studio",
+      "prompt": "BCG Matrix (2×2)"
+    },
+    {
+      "id": "chart-nine-field",
+      "title": "Nine-Field Matrix (3×3)",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-nine-field.json",
+      "renderer": "studio",
+      "prompt": "Nine-Field Matrix (3×3)"
+    },
+    {
+      "id": "chart-fishbone",
+      "title": "Fishbone / Ishikawa",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-fishbone.json",
+      "renderer": "studio",
+      "prompt": "Fishbone / Ishikawa"
+    },
+    {
+      "id": "chart-radial",
+      "title": "Radial Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-radial.json",
+      "renderer": "studio",
+      "prompt": "Radial Diagram"
+    },
+    {
+      "id": "chart-scatter",
+      "title": "Scatter Plot",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-scatter.json",
+      "renderer": "studio",
+      "prompt": "Scatter Plot"
+    },
+    {
+      "id": "chart-waterfall",
+      "title": "Waterfall Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-waterfall.json",
+      "renderer": "studio",
+      "prompt": "Waterfall Diagram"
+    },
+    {
+      "id": "chart-gantt",
+      "title": "Gantt Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-gantt.json",
+      "renderer": "studio",
+      "prompt": "Gantt Chart"
+    },
+    {
+      "id": "chart-venn",
+      "title": "Venn Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-venn.json",
+      "renderer": "studio",
+      "prompt": "Venn Diagram"
+    },
+    {
+      "id": "chart-tree",
+      "title": "Tree Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-tree.json",
+      "renderer": "studio",
+      "prompt": "Tree Diagram"
+    },
+    {
+      "id": "chart-timeline",
+      "title": "Project Timeline",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-timeline.json",
+      "renderer": "studio",
+      "prompt": "Project Timeline"
+    },
+    {
+      "id": "chart-org",
+      "title": "Org Chart 3D",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-org.json",
+      "renderer": "studio",
+      "prompt": "Org Chart 3D"
+    },
+    {
+      "id": "chart-layers",
+      "title": "3D Layers Parallel",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-layers.json",
+      "renderer": "studio",
+      "prompt": "3D Layers Parallel"
+    },
+    {
+      "id": "chart-list",
+      "title": "List Templates",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-list.json",
+      "renderer": "studio",
+      "prompt": "List Templates"
+    },
+    {
+      "id": "chart-7s",
+      "title": "7-S Model",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-7s.json",
+      "renderer": "studio",
+      "prompt": "7-S Model"
+    },
+    {
+      "id": "chart-gauge",
+      "title": "KPI Gauge",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-gauge.json",
+      "renderer": "studio",
+      "prompt": "KPI Gauge"
+    },
+    {
+      "id": "chart-traffic-light",
+      "title": "Traffic Light Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-traffic-light.json",
+      "renderer": "studio",
+      "prompt": "Traffic Light Chart"
+    },
+    {
+      "id": "chart-cockpit",
+      "title": "Cockpit Dashboard · gauges",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-cockpit.json",
+      "renderer": "studio",
+      "prompt": "Cockpit Dashboard · gauges"
+    },
+    {
+      "id": "chart-multiple-arrows",
+      "title": "Multiple Arrows",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-multiple-arrows.json",
+      "renderer": "studio",
+      "prompt": "Multiple Arrows"
+    },
+    {
+      "id": "chart-break-even",
+      "title": "Break-Even Analysis",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-break-even.json",
+      "renderer": "studio",
+      "prompt": "Break-Even Analysis"
     }
   ]
 }

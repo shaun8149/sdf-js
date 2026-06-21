@@ -145,6 +145,7 @@ import { venn3dSDF } from './components/charts/data/venn-3d.js';
 import { waterfall3dSDF } from './components/charts/data/waterfall-3d.js';
 import { scatter3dSDF } from './components/charts/data/scatter-3d.js';
 import { gantt3dSDF } from './components/charts/data/gantt-3d.js';
+import { gauge3dSDF } from './components/charts/data/gauge-3d.js';
 import { fishbone3dSDF } from './components/charts/diagrams/fishbone-3d.js';
 import { trafficLight3dSDF } from './components/charts/data/traffic-light-3d.js';
 import { radialSpoke3dSDF } from './components/charts/data/radial-spoke-3d.js';
@@ -693,6 +694,15 @@ const PRIMITIVE_FACTORIES = {
       barH: a.barH ?? 0.26,
       depth: a.depth ?? 0.18,
       trackLength: a.trackLength ?? 3.0,
+    }),
+  'gauge-3d': (a) =>
+    gauge3dSDF({
+      value: a.value ?? 0.7,
+      radius: a.radius ?? 0.9,
+      tube: a.tube ?? 0.1,
+      needleLen: a.needleLen ?? 0.8,
+      needleWidth: a.needleWidth ?? 0.07,
+      depth: a.depth ?? 0.2,
     }),
   'fishbone-3d': (a) =>
     fishbone3dSDF({

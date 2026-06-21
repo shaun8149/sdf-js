@@ -1,0 +1,132 @@
+{
+  "id": "chart-break-even",
+  "title": "Break-Even Analysis",
+  "prompt": "data: Break-Even Analysis",
+  "code2d": "// vision-authored chart-product cover (PresentationLoad Charts & Diagrams).",
+  "sceneData": {
+    "v": 1,
+    "name": "Break-Even Analysis",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "data chart product"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "box",
+        "args": {
+          "size": [3, 0.05, 0.05]
+        },
+        "transform": {
+          "translate": [0, 0.2, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.4,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "box",
+        "args": {
+          "size": [0.05, 2, 0.05]
+        },
+        "transform": {
+          "translate": [-1.5, 1.2, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.05,
+          "value": 0.4,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "box",
+        "args": {
+          "size": [3.2, 0.08, 0.12]
+        },
+        "transform": {
+          "translate": [0, 1.15, 0],
+          "rotate": [0, 0, 0.5]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s3",
+        "type": "box",
+        "args": {
+          "size": [3.2, 0.08, 0.12]
+        },
+        "transform": {
+          "translate": [0, 1.15, 0.04],
+          "rotate": [0, 0, -0.5]
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.88,
+          "value": 0.85,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s4",
+        "type": "sphere",
+        "args": {
+          "radius": 0.16
+        },
+        "transform": {
+          "translate": [0, 1.15, 0.12]
+        },
+        "material": {
+          "hue": 0.33,
+          "sat": 0.8,
+          "value": 0.62,
+          "metal": 0.2,
+          "glow": 0.1
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.97,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "data",
+    "costUSD": 0
+  }
+}
