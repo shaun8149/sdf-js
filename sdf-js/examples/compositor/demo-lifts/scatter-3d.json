@@ -1,0 +1,39 @@
+{
+  "id": "scatter-3d",
+  "title": "Chart · Scatter",
+  "prompt": "scatter-3d atom showcase.",
+  "code2d": "// Synthetic showcase.\nexport const render = (ctx) => {};",
+  "sceneData": {
+    "v": 1,
+    "name": "scatter-3d",
+    "source": { "format": "synthetic", "prompt": "scatter-3d" },
+    "subjects": [
+      {
+        "id": "s",
+        "type": "scatter-3d",
+        "args": { "count": 14 },
+        "transform": { "translate": [0, 1.5, 0] },
+        "material": "silver"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 8,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.5,
+        "targetZ": 0
+      },
+      "light": { "azimuth": 0.6, "altitude": 0.55, "distance": 25, "intensity": 1.2 },
+      "shadow": { "enabled": true, "mode": "darken", "strength": 0.4 }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "synthetic",
+    "pattern": "scatter-3d",
+    "costUSD": 0
+  }
+}

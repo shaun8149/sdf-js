@@ -135,6 +135,20 @@ import { flowChart3dSDF } from './components/charts/diagrams/flow-chart-3d.js';
 import { treeDiagram3dSDF } from './components/charts/diagrams/tree-diagram-3d.js';
 import { mindmap3dSDF } from './components/charts/diagrams/mindmap-3d.js';
 import { timeline3dSDF } from './components/charts/diagrams/timeline-3d.js';
+import { matrixGrid3dSDF } from './components/charts/matrix/matrix-grid-3d.js';
+import { progression3dSDF } from './components/charts/progression/progression-3d.js';
+import { agendaList3dSDF } from './components/charts/agenda/agenda-list-3d.js';
+import { layerStack3dSDF } from './components/charts/layers/layer-stack-3d.js';
+import { bulletList3dSDF } from './components/charts/lists/bullet-list-3d.js';
+import { funnel3dSDF } from './components/charts/data/funnel-3d.js';
+import { venn3dSDF } from './components/charts/data/venn-3d.js';
+import { waterfall3dSDF } from './components/charts/data/waterfall-3d.js';
+import { scatter3dSDF } from './components/charts/data/scatter-3d.js';
+import { gantt3dSDF } from './components/charts/data/gantt-3d.js';
+import { fishbone3dSDF } from './components/charts/diagrams/fishbone-3d.js';
+import { trafficLight3dSDF } from './components/charts/data/traffic-light-3d.js';
+import { radialSpoke3dSDF } from './components/charts/data/radial-spoke-3d.js';
+import { puzzlePiece3dSDF } from './components/shapes/puzzle-piece-3d.js';
 import { terrainCanyonSDF } from './components/community/iq-canyon.js';
 import { proceduralCitySDF } from './components/community/otavio-skyline.js';
 import { terrainErodedRuneSDF, bakeHeightmap } from './components/community/rune-erosion-filter.js';
@@ -596,6 +610,121 @@ const PRIMITIVE_FACTORIES = {
       stemHeight: a.stemHeight ?? 0.45,
       stemThickness: a.stemThickness ?? 0.035,
       alternate: a.alternate ?? true,
+    }),
+  'matrix-grid-3d': (a) =>
+    matrixGrid3dSDF({
+      rows: a.rows ?? 2,
+      cols: a.cols ?? 2,
+      cardW: a.cardW ?? 0.9,
+      cardH: a.cardH ?? 0.7,
+      cardD: a.cardD ?? a.depth ?? 0.18,
+      gap: a.gap ?? 0.18,
+    }),
+  'progression-3d': (a) =>
+    progression3dSDF({
+      steps: a.steps ?? a.count ?? 5,
+      run: a.run ?? 0.5,
+      stepRise: a.stepRise ?? 0.3,
+      depth: a.depth ?? 0.5,
+    }),
+  'agenda-list-3d': (a) =>
+    agendaList3dSDF({
+      items: a.items ?? a.count ?? 5,
+      rowHeight: a.rowHeight ?? 0.5,
+      chipSize: a.chipSize ?? 0.34,
+      lineW: a.lineW ?? 2.0,
+      lineH: a.lineH ?? 0.22,
+      depth: a.depth ?? 0.12,
+    }),
+  'layer-stack-3d': (a) =>
+    layerStack3dSDF({
+      layers: a.layers ?? a.count ?? 4,
+      layerW: a.layerW ?? 1.8,
+      layerD: a.layerD ?? 1.2,
+      layerH: a.layerH ?? 0.22,
+      gap: a.gap ?? 0.12,
+      taper: a.taper ?? 1.0,
+    }),
+  'bullet-list-3d': (a) =>
+    bulletList3dSDF({
+      items: a.items ?? a.count ?? 5,
+      rowHeight: a.rowHeight ?? 0.45,
+      bulletRadius: a.bulletRadius ?? 0.11,
+      lineW: a.lineW ?? 1.8,
+      lineH: a.lineH ?? 0.16,
+      depth: a.depth ?? 0.1,
+    }),
+  'funnel-3d': (a) =>
+    funnel3dSDF({
+      stages: a.stages ?? a.count ?? 4,
+      topRadius: a.topRadius ?? 0.95,
+      bottomRadius: a.bottomRadius ?? 0.22,
+      stageHeight: a.stageHeight ?? 0.4,
+      gap: a.gap ?? 0.06,
+    }),
+  'venn-3d': (a) =>
+    venn3dSDF({
+      sets: a.sets ?? a.count ?? 3,
+      radius: a.radius ?? 0.7,
+      tube: a.tube ?? 0.07,
+      overlap: a.overlap ?? 0.45,
+    }),
+  'waterfall-3d': (a) =>
+    waterfall3dSDF({
+      count: a.count ?? 5,
+      deltas: a.deltas ?? null,
+      barW: a.barW ?? 0.5,
+      gap: a.gap ?? 0.12,
+      depth: a.depth ?? 0.4,
+    }),
+  'scatter-3d': (a) =>
+    scatter3dSDF({
+      count: a.count ?? 12,
+      spread: a.spread ?? 1.4,
+      dotRadius: a.dotRadius ?? 0.09,
+      axes: a.axes ?? true,
+      axisRadius: a.axisRadius ?? 0.03,
+    }),
+  'gantt-3d': (a) =>
+    gantt3dSDF({
+      tasks: a.tasks ?? a.count ?? 4,
+      segments: a.segments ?? null,
+      rowHeight: a.rowHeight ?? 0.42,
+      barH: a.barH ?? 0.26,
+      depth: a.depth ?? 0.18,
+      trackLength: a.trackLength ?? 3.0,
+    }),
+  'fishbone-3d': (a) =>
+    fishbone3dSDF({
+      ribs: a.ribs ?? a.count ?? 6,
+      spineLength: a.spineLength ?? 2.8,
+      spineRadius: a.spineRadius ?? 0.05,
+      ribLength: a.ribLength ?? 0.7,
+      ribThickness: a.ribThickness ?? 0.04,
+      headSize: a.headSize ?? 0.3,
+    }),
+  'traffic-light-3d': (a) =>
+    trafficLight3dSDF({
+      lights: a.lights ?? a.count ?? 3,
+      lightRadius: a.lightRadius ?? 0.22,
+      spacing: a.spacing ?? 0.55,
+      housingPad: a.housingPad ?? 0.12,
+      depth: a.depth ?? 0.3,
+    }),
+  'radial-spoke-3d': (a) =>
+    radialSpoke3dSDF({
+      spokes: a.spokes ?? a.count ?? 8,
+      hubRadius: a.hubRadius ?? 0.25,
+      spokeThickness: a.spokeThickness ?? 0.05,
+      minLen: a.minLen ?? 0.55,
+      maxLen: a.maxLen ?? 1.2,
+      nodeRadius: a.nodeRadius ?? 0.1,
+    }),
+  'puzzle-piece-3d': (a) =>
+    puzzlePiece3dSDF({
+      size: a.size ?? 1.0,
+      depth: a.depth ?? 0.25,
+      knob: a.knob ?? 0.24,
     }),
   link: (a) =>
     linkSDF({

@@ -388,6 +388,146 @@
       "file": "timeline-3d.json",
       "renderer": "studio",
       "prompt": "Diagram · Timeline"
+    },
+    {
+      "id": "matrix-grid-3d",
+      "title": "Chart · Matrix Grid",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "matrix-grid-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Matrix Grid"
+    },
+    {
+      "id": "progression-3d",
+      "title": "Chart · Progression",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "progression-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Progression"
+    },
+    {
+      "id": "agenda-list-3d",
+      "title": "Chart · Agenda",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "agenda-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Agenda"
+    },
+    {
+      "id": "layer-stack-3d",
+      "title": "Chart · Layer Stack",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "layer-stack-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Layer Stack"
+    },
+    {
+      "id": "bullet-list-3d",
+      "title": "Chart · Bullet List",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "bullet-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Bullet List"
+    },
+    {
+      "id": "funnel-3d",
+      "title": "Chart · Funnel",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "funnel-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Funnel"
+    },
+    {
+      "id": "venn-3d",
+      "title": "Chart · Venn",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "venn-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Venn"
+    },
+    {
+      "id": "waterfall-3d",
+      "title": "Chart · Waterfall",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "waterfall-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Waterfall"
+    },
+    {
+      "id": "scatter-3d",
+      "title": "Chart · Scatter",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "scatter-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Scatter"
+    },
+    {
+      "id": "gantt-3d",
+      "title": "Chart · Gantt",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "gantt-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Gantt"
+    },
+    {
+      "id": "fishbone-3d",
+      "title": "Chart · Fishbone",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "fishbone-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Fishbone"
+    },
+    {
+      "id": "traffic-light-3d",
+      "title": "Chart · Traffic Light",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "traffic-light-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Traffic Light"
+    },
+    {
+      "id": "radial-spoke-3d",
+      "title": "Chart · Radial Spoke",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "radial-spoke-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Radial Spoke"
+    },
+    {
+      "id": "puzzle-piece-3d",
+      "title": "Shape · Puzzle Piece",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "puzzle-piece-3d.json",
+      "renderer": "studio",
+      "prompt": "Shape · Puzzle Piece"
     }
   ]
 }

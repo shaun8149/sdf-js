@@ -118,6 +118,26 @@ const TESTS = [
   { category: 'diagram', file: 'sdf-js/scripts/test-mindmap-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-timeline-3d.mjs' },
 
+  // Sprint 5 Wave A: taxonomy class-fillers (matrix / progression / agenda / layers / lists).
+  { category: 'diagram', file: 'sdf-js/scripts/test-matrix-grid-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-progression-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-agenda-list-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-layer-stack-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-bullet-list-3d.mjs' },
+
+  // Sprint 5 Wave B: data-viz (funnel / venn / waterfall / scatter / gantt).
+  { category: 'diagram', file: 'sdf-js/scripts/test-funnel-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-venn-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-waterfall-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-scatter-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-gantt-3d.mjs' },
+
+  // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
+  { category: 'diagram', file: 'sdf-js/scripts/test-fishbone-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-traffic-light-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-radial-spoke-3d.mjs' },
+  { category: 'shapes', file: 'sdf-js/scripts/test-puzzle-piece-3d.mjs' },
+
   // Layer 1 public API extracted from compositor.js (used by Layer 2 / MCP / tests)
   { category: 'api', file: 'sdf-js/scripts/test-compositor-api.mjs' },
 
