@@ -858,6 +858,76 @@
       "file": "shape-circles-stack.json",
       "renderer": "studio",
       "prompt": "Circles · Tiered stack"
+    },
+    {
+      "id": "product-diamond",
+      "title": "Diamond Charts · 3 gems",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"diamonds\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-diamond.json",
+      "renderer": "studio",
+      "prompt": "Diamond Charts · 3 gems"
+    },
+    {
+      "id": "product-cubes-flow",
+      "title": "Cubes Flow · Process row",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-flow.json",
+      "renderer": "studio",
+      "prompt": "Cubes Flow · Process row"
+    },
+    {
+      "id": "product-cubes-arc",
+      "title": "Cubes Semi-Circle · Arc of 7",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-arc.json",
+      "renderer": "studio",
+      "prompt": "Cubes Semi-Circle · Arc of 7"
+    },
+    {
+      "id": "product-spheres-sliced",
+      "title": "Spheres Sliced · Nested cross-section",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-sliced.json",
+      "renderer": "studio",
+      "prompt": "Spheres Sliced · Nested cross-section"
+    },
+    {
+      "id": "product-cubes-grid",
+      "title": "Cubes Shapes · 3×3×3 + accents",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-grid.json",
+      "renderer": "studio",
+      "prompt": "Cubes Shapes · 3×3×3 + accents"
+    },
+    {
+      "id": "product-puzzle",
+      "title": "Puzzle 3D · Interlocking + lifted",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"puzzles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-puzzle.json",
+      "renderer": "studio",
+      "prompt": "Puzzle 3D · Interlocking + lifted"
+    },
+    {
+      "id": "product-arrow",
+      "title": "Arrow Toolbox · Rising arrow",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"arrows\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-arrow.json",
+      "renderer": "studio",
+      "prompt": "Arrow Toolbox · Rising arrow"
     }
   ]
 }

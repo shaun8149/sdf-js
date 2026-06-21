@@ -23,7 +23,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = resolve(__dirname, '../examples/compositor/demo-lifts');
 
 const LIQUID = { hue: 0.58, sat: 0.85, value: 0.72, metal: 0.3, glow: 0 }; // vivid glossy azure fill
-const EMPTY = 'porcelain'; // clean white upper cap
+const EMPTY = 'porcelain'; // clean white upper cap (default)
+
+// Optional per-sphere overrides (sphere.c = liquid color, sphere.top = top cap):
+const C = {
+  green: { hue: 0.28, sat: 0.78, value: 0.62, metal: 0.2, glow: 0 },
+  red: { hue: 0.0, sat: 0.82, value: 0.62, metal: 0.2, glow: 0 },
+  blue: { hue: 0.58, sat: 0.85, value: 0.72, metal: 0.3, glow: 0 },
+};
+const GLASS_DARK = { hue: 0.6, sat: 0.28, value: 0.07, metal: 0.55, glow: 0 }; // dark glassy dome
+const LABEL = { hue: 0, sat: 0, value: 1.0, metal: 0, glow: 0.25 }; // bright white % label (slight glow → legible on any bg)
 
 // ---- Per-slide sphere layouts (vision-authored from each PDF page) ----------
 // sphere = { x, y, z, r, f }  (f = fill fraction 0..1)
@@ -32,18 +41,24 @@ const SLIDES = {
   'fill-slide-01': {
     title: 'Fill Levels · Cover (20/40/80)',
     pattern: 'kpi-hero',
-    prompt: 'Cover — three glass fill spheres at 20/40/80%, increasing in size.',
+    prompt:
+      'Cover — three overlapping glass fill spheres 20% green / 40% red / 80% blue, increasing in size, dark glassy domes.',
+    // Overlapping cluster receding back-left → front-right; coloured liquid +
+    // dark glass dome (matches the dark cover); blue 80% is biggest + front.
     spheres: [
-      { x: -1.75, y: 0.9, z: 0, r: 0.46, f: 0.2 },
-      { x: -0.35, y: 0.9, z: 0, r: 0.64, f: 0.4 },
-      { x: 1.5, y: 0.9, z: 0, r: 0.92, f: 0.8 },
+      { x: -2.05, y: 1.0, z: -0.6, r: 0.5, f: 0.2, c: C.green, top: GLASS_DARK, label: '20%' },
+      { x: -0.95, y: 0.95, z: -0.2, r: 0.7, f: 0.4, c: C.red, top: GLASS_DARK, label: '40%' },
+      { x: 0.75, y: 0.9, z: 0.35, r: 1.0, f: 0.8, c: C.blue, top: GLASS_DARK, label: '80%' },
     ],
   },
   'fill-slide-02': {
     title: 'Fill Levels · Row of 4 (20/60/80/90)',
     pattern: 'compare',
     prompt: 'A row of four fill spheres at 20/60/80/90%.',
-    spheres: rowOf([0.2, 0.6, 0.8, 0.9], { r: 0.55, spacing: 0.5, y: 0.9 }),
+    spheres: rowOf([0.2, 0.6, 0.8, 0.9], { r: 0.55, spacing: 0.5, y: 0.9 }).map((s, i) => ({
+      ...s,
+      label: ['20%', '60%', '80%', '90%'][i],
+    })),
   },
   'fill-slide-03': {
     title: 'Fill Levels · Framed row + arrows (10/60/50)',
@@ -69,11 +84,11 @@ const SLIDES = {
     pattern: 'compare',
     prompt: 'Five varied-size fill spheres clustered around a large 100% sphere.',
     spheres: [
-      { x: 0, y: 0.95, z: 0, r: 0.95, f: 1.0 },
-      { x: -2.15, y: 0.7, z: 0.2, r: 0.6, f: 0.5 },
-      { x: -1.05, y: 1.35, z: -0.3, r: 0.42, f: 0.2 },
-      { x: 1.05, y: 1.35, z: -0.3, r: 0.42, f: 0.4 },
-      { x: 2.15, y: 0.7, z: 0.2, r: 0.6, f: 0.8 },
+      { x: 0, y: 0.95, z: 0, r: 0.95, f: 1.0, label: '100%' },
+      { x: -2.15, y: 0.7, z: 0.2, r: 0.6, f: 0.5, label: '50%' },
+      { x: -1.05, y: 1.35, z: -0.3, r: 0.42, f: 0.2, label: '20%' },
+      { x: 1.05, y: 1.35, z: -0.3, r: 0.42, f: 0.4, label: '40%' },
+      { x: 2.15, y: 0.7, z: 0.2, r: 0.6, f: 0.8, label: '80%' },
     ],
   },
   'fill-slide-07': {
@@ -257,7 +272,7 @@ function sphereSubjects(s, idx) {
       type: 'sphere-fill-3d',
       args: { levels: [f], radius: s.r, cage: false, fillScale: 1.0 },
       transform: { translate: [s.x, s.y, s.z] },
-      material: LIQUID,
+      material: s.c || LIQUID, // per-sphere liquid color override
     });
   }
   // empty (top cap) — cut-sphere keeps y ≥ waterline; skip when full
@@ -267,7 +282,23 @@ function sphereSubjects(s, idx) {
       type: 'cut-sphere',
       args: { radius: s.r, h: s.r * (2 * f - 1) },
       transform: { translate: [s.x, s.y, s.z] },
-      material: EMPTY,
+      material: s.top || EMPTY, // per-sphere top-cap override (e.g. dark glass)
+    });
+  }
+  // optional % label — text-3d-pipe floating just in front of the sphere,
+  // centred horizontally, sitting on the lower (filled) half like the source.
+  if (s.label) {
+    const h = Math.max(0.26, Math.min(0.5, s.r * 0.55));
+    // The studio auto-frame camera sits at −z looking toward +z, so the label
+    // goes on the camera-facing (−z) side, rotated 180° about Y to face it.
+    subs.push({
+      id: `lab${idx}`,
+      type: 'text-3d-pipe',
+      args: { text: s.label, height: h, pipeRadius: 0.05, align: 'center' },
+      transform: {
+        translate: [s.x, s.y - h * 0.5 - s.r * 0.12, s.z - s.r - 0.1],
+      },
+      material: LABEL,
     });
   }
   return subs;

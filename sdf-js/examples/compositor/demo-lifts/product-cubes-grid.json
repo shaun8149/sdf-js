@@ -1,0 +1,119 @@
+{
+  "id": "product-cubes-grid",
+  "title": "Cubes Shapes · 3×3×3 + accents",
+  "prompt": "cubes: Cubes Shapes · 3×3×3 + accents",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"cubes\").",
+  "sceneData": {
+    "v": 1,
+    "name": "Cubes Shapes · 3×3×3 + accents",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "cubes product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "cube-3d",
+        "args": {
+          "count": 27,
+          "arrangement": "grid3d",
+          "cubeSize": 0.42,
+          "spacing": 0.14
+        },
+        "transform": {
+          "translate": [0, 1.1, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.26,
+          "metal": 0.4,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.42
+        },
+        "transform": {
+          "translate": [0.56, 1.66, 0.56]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.42
+        },
+        "transform": {
+          "translate": [-0.56, 0.54, 0.56]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s3",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.42
+        },
+        "transform": {
+          "translate": [0.56, 1.1, -0.56]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "cubes",
+    "costUSD": 0
+  }
+}

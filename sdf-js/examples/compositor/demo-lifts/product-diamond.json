@@ -1,0 +1,105 @@
+{
+  "id": "product-diamond",
+  "title": "Diamond Charts · 3 gems",
+  "prompt": "diamonds: Diamond Charts · 3 gems",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"diamonds\").",
+  "sceneData": {
+    "v": 1,
+    "name": "Diamond Charts · 3 gems",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "diamonds product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "diamond-3d",
+        "args": {
+          "width": 0.9,
+          "crownHeight": 0.32,
+          "pavilionHeight": 0.82,
+          "tableRatio": 0.45
+        },
+        "transform": {
+          "translate": [-1.75, 1.05, -0.5]
+        },
+        "material": {
+          "hue": 0.3,
+          "sat": 0.75,
+          "value": 0.6,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "diamond-3d",
+        "args": {
+          "width": 1.2,
+          "crownHeight": 0.42,
+          "pavilionHeight": 1.05,
+          "tableRatio": 0.45
+        },
+        "transform": {
+          "translate": [-0.5, 0.95, -0.1]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.8,
+          "value": 0.62,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "diamond-3d",
+        "args": {
+          "width": 1.6,
+          "crownHeight": 0.55,
+          "pavilionHeight": 1.35,
+          "tableRatio": 0.45
+        },
+        "transform": {
+          "translate": [1.2, 1, 0.35]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "diamonds",
+    "costUSD": 0
+  }
+}

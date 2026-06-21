@@ -1,0 +1,178 @@
+{
+  "id": "product-cubes-arc",
+  "title": "Cubes Semi-Circle · Arc of 7",
+  "prompt": "cubes: Cubes Semi-Circle · Arc of 7",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"cubes\").",
+  "sceneData": {
+    "v": 1,
+    "name": "Cubes Semi-Circle · Arc of 7",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "cubes product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [2.1384859175429782, 0.45, 0.07331352882524078],
+          "rotate": [0, 0.37699111843077515, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [1.6432871631554475, 0.45, -0.6892256831807404],
+          "rotate": [0, 0.7749261878854823, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [0.8912858488398371, 0.45, -1.2002852486535511],
+          "rotate": [0, 1.1728612573401893, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s3",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [1.408343819019456e-16, 0.45, -1.38],
+          "rotate": [0, 1.5707963267948966, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s4",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [-0.8912858488398359, 0.45, -1.2002852486535516],
+          "rotate": [0, 1.9687313962496034, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s5",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [-1.6432871631554478, 0.45, -0.6892256831807402],
+          "rotate": [0, 2.366666465704311, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s6",
+        "type": "cube-3d",
+        "args": {
+          "count": 1,
+          "cubeSize": 0.5
+        },
+        "transform": {
+          "translate": [-2.138485917542978, 0.45, 0.07331352882524023],
+          "rotate": [0, 2.764601535159018, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.46,
+          "metal": 0.5,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.45000000000000007,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "cubes",
+    "costUSD": 0
+  }
+}
