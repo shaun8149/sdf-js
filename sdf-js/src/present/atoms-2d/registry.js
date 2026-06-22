@@ -27,6 +27,7 @@ const ATOM_LOADERS = {
   // Charts / data
   'kpi-card': () => import('./charts/data/kpi-card.js'),
   bar: () => import('./charts/data/bar.js'),
+  'break-even': () => import('./charts/data/break-even.js'),
   line: () => import('./charts/data/line.js'),
   pie: () => import('./charts/data/pie.js'),
   column: () => import('./charts/data/column.js'),
