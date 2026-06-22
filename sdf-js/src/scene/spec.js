@@ -1257,8 +1257,17 @@ function validatePostFx(pfx, errors, warnings) {
 // 'cut' is the default transition between shots (hard cut); ease='blend' opts
 // into smoothly interpolating from the prev shot's end state.
 // =============================================================================
-const SHOT_EASES = new Set(['smooth', 'linear']);
+const SHOT_EASES = new Set(['smooth', 'linear', 'in', 'out', 'inout']);
 const SHOT_TRANSITIONS = new Set(['cut', 'blend']);
+
+// DoF fields (aperture / focalDistance) accept a number OR a [from, to] pair
+// (the pair ramps within the shot → rack focus).
+function isNumberOrPair(v) {
+  return (
+    typeof v === 'number' ||
+    (Array.isArray(v) && v.length === 2 && typeof v[0] === 'number' && typeof v[1] === 'number')
+  );
+}
 
 function validateCameraSequence(seq, errors, warnings) {
   if (typeof seq !== 'object' || seq == null) {
@@ -1354,11 +1363,11 @@ function validateCameraSequence(seq, errors, warnings) {
     } else if (shot.fov < 5 || shot.fov > 90) {
       warnings.push(`${tag}.fov ${shot.fov} outside typical [5, 90]`);
     }
-    if (shot.aperture != null && typeof shot.aperture !== 'number') {
-      errors.push(`${tag}.aperture: must be a number if provided`);
+    if (shot.aperture != null && !isNumberOrPair(shot.aperture)) {
+      errors.push(`${tag}.aperture: must be a number or [from, to] pair if provided`);
     }
-    if (shot.focalDistance != null && typeof shot.focalDistance !== 'number') {
-      errors.push(`${tag}.focalDistance: must be a number if provided`);
+    if (shot.focalDistance != null && !isNumberOrPair(shot.focalDistance)) {
+      errors.push(`${tag}.focalDistance: must be a number or [from, to] pair if provided`);
     }
     if (shot.ease != null && !SHOT_EASES.has(shot.ease)) {
       errors.push(`${tag}.ease: must be one of ${[...SHOT_EASES].join(' | ')}`);
