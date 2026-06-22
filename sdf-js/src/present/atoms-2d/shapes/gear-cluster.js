@@ -61,7 +61,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const h = opts.h ?? 320;
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
-  const baseColor = palette.colors?.[0] || [170, 170, 175];
+  const baseColor = palette.colors?.[0] || [180, 188, 200];
   const accentColor = palette.colors?.[1] || [60, 130, 200];
 
   const gears = Array.isArray(args.gears) && args.gears.length > 0 ? args.gears : DEFAULT_GEARS;
@@ -167,22 +167,23 @@ function drawGear(ctx, cx, cy, outerR, teeth, color, depth) {
   ctx.stroke();
   ctx.restore();
 
-  // 5) Specular highlight on front face (top-left, generic Phong)
+  // 5) Specular highlight on front face (top-left, generic Phong — brightened for cool silver)
   ctx.save();
-  ctx.globalAlpha = 0.18;
+  ctx.globalAlpha = 0.26;
   const specGrad = ctx.createRadialGradient(
     cx - outerR * 0.35,
     cy - outerR * 0.4,
     0,
     cx - outerR * 0.35,
     cy - outerR * 0.4,
-    outerR * 0.5,
+    outerR * 0.55,
   );
   specGrad.addColorStop(0, 'rgba(255,255,255,1)');
+  specGrad.addColorStop(0.5, 'rgba(220,228,240,0.6)');
   specGrad.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.fillStyle = specGrad;
   ctx.beginPath();
-  ctx.arc(cx - outerR * 0.35, cy - outerR * 0.4, outerR * 0.5, 0, Math.PI * 2);
+  ctx.arc(cx - outerR * 0.35, cy - outerR * 0.4, outerR * 0.55, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
