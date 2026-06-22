@@ -42,12 +42,19 @@ export async function mountLibraryPage(target) {
   for (const d of decks) {
     document.getElementById(`btn-view-${d.id}`)?.addEventListener('click', () => handleView(d.id));
     document
+      .getElementById(`btn-scaffold-${d.id}`)
+      ?.addEventListener('click', () => handleScaffold(d.id));
+    document
       .getElementById(`btn-rename-${d.id}`)
       ?.addEventListener('click', () => handleRename(d.id));
     document
       .getElementById(`btn-delete-${d.id}`)
       ?.addEventListener('click', () => handleDelete(d.id));
   }
+}
+
+function handleScaffold(id) {
+  location.search = `?deck=${id}&mode=scaffold`;
 }
 
 function renderCard(deck) {
@@ -61,6 +68,7 @@ function renderCard(deck) {
       <div class="meta">Updated ${updated}</div>
       <div class="actions">
         <button id="btn-view-${deck.id}" class="primary">View</button>
+        <button id="btn-scaffold-${deck.id}" title="Sprint 16: deck-level scaffold pipeline">⚙️ Scaffold</button>
         <button id="btn-rename-${deck.id}">Rename</button>
         <button id="btn-delete-${deck.id}">Delete</button>
       </div>
