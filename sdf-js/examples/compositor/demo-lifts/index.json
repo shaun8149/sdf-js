@@ -1408,6 +1408,26 @@
       "file": "stage-showcase.json",
       "renderer": "studio",
       "prompt": "metal objects on a studio stage"
+    },
+    {
+      "id": "stage-data-bars",
+      "title": "Revenue · on the studio stage",
+      "thesisPoint": "Stage composes with data atoms — a labelled bar chart in a lit room (facing:-z so labels read).",
+      "category": "scene-templates",
+      "status": "ready",
+      "file": "stage-data-bars.json",
+      "renderer": "studio",
+      "prompt": "revenue bar chart on a studio stage"
+    },
+    {
+      "id": "deck-studio-keynote",
+      "title": "Studio Keynote (staged spatial deck)",
+      "thesisPoint": "Stage × Present: a deck whose slides are staged — hero metals + a data chart in a lit studio room. Launch via ?deck=deck-studio-keynote.",
+      "category": "scene-templates",
+      "status": "ready",
+      "file": "deck-studio-keynote.json",
+      "renderer": "studio",
+      "prompt": "staged studio keynote deck"
     }
   ]
 }

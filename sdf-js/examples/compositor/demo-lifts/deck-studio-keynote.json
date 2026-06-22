@@ -1,0 +1,18 @@
+{
+  "id": "deck-studio-keynote",
+  "name": "Studio Keynote — staged spatial deck",
+  "segments": [
+    {
+      "file": "stage-showcase.json",
+      "title": "The lineup",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "stage-data-bars.json",
+      "title": "Revenue by quarter",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

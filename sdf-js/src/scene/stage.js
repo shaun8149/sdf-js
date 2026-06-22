@@ -48,13 +48,18 @@ export function expandStage(sceneData) {
   const t = 0.3; // wall thickness
   const wall = cfg.wall || WALL;
   const floor = cfg.floor || FLOOR;
+  // Which way the room opens (= the camera side). '+z' (default) suits hero
+  // objects; '-z' suits chart atoms, whose connector labels face -z, so the
+  // camera must sit on -z to read them. The solid back wall goes on the far side.
+  const facing = cfg.facing === '-z' ? -1 : 1;
+  const backZ = -facing * (d / 2 + t / 2); // solid wall opposite the open side
 
-  // Room shell. Front (+z) left open for the camera; floor top sits at y=0 so
-  // subjects authored on the ground plane rest on it.
+  // Room shell. Open side faces the camera; floor top sits at y=0 so subjects
+  // authored on the ground plane rest on it.
   const room = [
     box('__stage_floor', [w + 2 * t, t, d + 2 * t], [0, -t / 2, 0], floor),
     box('__stage_ceiling', [w + 2 * t, t, d + 2 * t], [0, h + t / 2, 0], CEIL),
-    box('__stage_wall_back', [w + 2 * t, h + 2 * t, t], [0, h / 2, -d / 2 - t / 2], wall),
+    box('__stage_wall_back', [w + 2 * t, h + 2 * t, t], [0, h / 2, backZ], wall),
     box('__stage_wall_left', [t, h + 2 * t, d + 2 * t], [-w / 2 - t / 2, h / 2, 0], wall),
     box('__stage_wall_right', [t, h + 2 * t, d + 2 * t], [w / 2 + t / 2, h / 2, 0], wall),
   ];
@@ -92,7 +97,7 @@ export function expandStage(sceneData) {
   // sequence below — supply a valid neutral one if the scene authored none.
   if (defaults.camera == null) {
     defaults.camera = {
-      yaw: 0,
+      yaw: facing < 0 ? Math.PI : 0,
       pitch: 0.2,
       distance: d / 2 + 3,
       focal: 1.6,
@@ -116,7 +121,7 @@ export function expandStage(sceneData) {
       shots: [
         {
           duration: 0.05,
-          pos: [w * 0.26, h * 0.62, d / 2 + 1.5],
+          pos: [w * 0.26 * facing, h * 0.62, facing * (d / 2 + 1.5)],
           target: [0, h * 0.16, 0],
           fov: 42,
           aperture: 0,

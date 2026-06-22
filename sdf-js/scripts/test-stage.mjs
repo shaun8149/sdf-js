@@ -93,5 +93,18 @@ const baseScene = () => ({
   ok(floor.args.dims[0] > 18, `custom size respected (floor width ${floor.args.dims[0]})`);
 }
 
+// facing:'-z' (for chart slides whose connector labels face -z) → solid back
+// wall on +z and default camera yaw flipped to π.
+{
+  const dPos = expandStage({ ...baseScene(), defaults: { stage: true } });
+  const backPos = dPos.subjects.find((x) => x.id === '__stage_wall_back').transform.translate[2];
+  ok(backPos < 0, `default facing +z → back wall on -z (z=${backPos})`);
+
+  const dNeg = expandStage({ ...baseScene(), defaults: { stage: { facing: '-z' } } });
+  const backNeg = dNeg.subjects.find((x) => x.id === '__stage_wall_back').transform.translate[2];
+  ok(backNeg > 0, `facing -z → back wall flips to +z (z=${backNeg})`);
+  ok(Math.abs(dNeg.defaults.camera.yaw - Math.PI) < 1e-6, 'facing -z → default camera yaw = π');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
