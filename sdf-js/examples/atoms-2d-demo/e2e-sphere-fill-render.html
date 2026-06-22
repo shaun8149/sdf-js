@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>E2E sphere-fill — 20 lifted slides</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 24px; font-family: 'Inter', system-ui; background: #f8f7f4; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    .card { background: white; border: 1px solid #e0ddd5; border-radius: 4px; overflow: hidden; }
+    .card h3 { margin: 0; padding: 8px 12px; font-size: 12px; background: #1e1b1e; color: white; font-family: 'IBM Plex Mono', monospace; }
+    .card .meta { font-size: 11px; color: #666; padding: 6px 12px; background: #f4f3ee; }
+    .card canvas { display: block; width: 100%; max-width: 1280px; }
+  </style>
+</head>
+<body>
+  <div class="grid" id="cards"></div>
+  <script type="module">
+    import { renderSceneDataToCanvas } from '/src/present/atoms-2d/renderer.js';
+    import { getPalette } from '/src/present/branding-palettes.js';
+    const palette = getPalette('mono-light');
+
+    const container = document.getElementById('cards');
+    const ids = Array.from({ length: 20 }, (_, i) => `slide-${String(i).padStart(2, '0')}`);
+    const W = 1280, H = 720;
+    const rendered = {};
+    for (const id of ids) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      try {
+        const res = await fetch(`/screens-e2e/lifts/${id}.json`);
+        if (!res.ok) throw new Error('fetch ' + res.status);
+        const entry = await res.json();
+        const sceneData = entry.sceneData;
+        // AUTO-LAYOUT: v3.34 MODE_2D_ADDENDUM doesn't yet teach LLM to emit per-atom
+        // x/y/w/h. Without positions, all atoms render at full canvas overlapping.
+        // Heuristic: split a 'cover' atom into a top title strip, rest goes into
+        // a row/grid of the remaining content atoms.
+        const subjects = sceneData.subjects || [];
+        const cover = subjects.find((s) => s.type === 'cover');
+        const contentAtoms = subjects.filter((s) => s.type !== 'cover');
+        const N = contentAtoms.length;
+        const TITLE_H = cover ? 110 : 0;
+        const PAD = 24;
+        const contentTop = TITLE_H + PAD;
+        const contentH = H - contentTop - PAD;
+        // Grid dims based on N
+        let cols, rows;
+        if (N <= 1) { cols = 1; rows = 1; }
+        else if (N <= 3) { cols = N; rows = 1; }
+        else if (N <= 4) { cols = 2; rows = 2; }
+        else if (N <= 6) { cols = 3; rows = 2; }
+        else if (N <= 9) { cols = 3; rows = 3; }
+        else { cols = Math.ceil(Math.sqrt(N)); rows = Math.ceil(N / cols); }
+        const cellW = (W - 2 * PAD) / cols;
+        const cellH = contentH / rows;
+        if (cover) {
+          cover.x = 0; cover.y = 0; cover.w = W; cover.h = TITLE_H;
+        }
+        contentAtoms.forEach((a, i) => {
+          const c = i % cols;
+          const r = Math.floor(i / cols);
+          a.x = PAD + c * cellW + 8;
+          a.y = contentTop + r * cellH + 8;
+          a.w = cellW - 16;
+          a.h = cellH - 16;
+        });
+        const subjectTypes = subjects.map((s) => s.type).join(', ');
+        const h = document.createElement('h3');
+        h.textContent = `${id}: ${entry.title || ''}`;
+        card.appendChild(h);
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `pattern=${entry.pattern} | atoms=[${subjectTypes}]`;
+        card.appendChild(meta);
+        const c = document.createElement('canvas');
+        c.id = `canvas-${id}`;
+        c.width = W;
+        c.height = H;
+        card.appendChild(c);
+        container.appendChild(card);
+        await renderSceneDataToCanvas(c, sceneData, { palette });
+        rendered[id] = 'OK';
+      } catch (e) {
+        rendered[id] = 'ERR: ' + e.message;
+        console.error(id, e);
+        const errEl = document.createElement('pre');
+        errEl.textContent = `${id} ERROR: ${e.message}`;
+        card.appendChild(errEl);
+        container.appendChild(card);
+      }
+    }
+    window.__RENDERED__ = rendered;
+    window.__SLIDE_IDS__ = ids;
+    console.log('rendered', JSON.stringify(rendered));
+  </script>
+</body>
+</html>
