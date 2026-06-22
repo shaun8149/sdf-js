@@ -45,7 +45,7 @@ export const spec = {
 
 const PAD = 14;
 const TITLE_FRAC = 0.1;
-const MARKER_RADIUS = 8;
+const MARKER_RADIUS = 9;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -106,43 +106,55 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // ---- Markers + events ----
   const n = events.length;
   const cardW = Math.min(140, axisLength / n - 12);
-  const cardH = Math.min(60, (y + h - plotTop) * 0.4);
-  const cardOffsetY = 36;
+  const cardH = Math.min(64, (y + h - plotTop) * 0.4);
+  const cardOffsetY = 32;
 
   for (let i = 0; i < n; i++) {
     const t = n === 1 ? 0.5 : i / (n - 1);
     const mx = axisLeft + t * axisLength;
     const above = i % 2 === 0; // alternate above/below
 
-    // Marker on axis
+    const cardCy = above ? axisY - cardOffsetY - cardH / 2 : axisY + cardOffsetY + cardH / 2;
+
+    // Connector line from marker to card (hairline, subtle)
     ctx.save();
-    ctx.shadowColor = rgbaCss([0, 0, 0], 0.2);
-    ctx.shadowBlur = 4;
+    ctx.strokeStyle = rgbaCss(fg, 0.22);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(mx, axisY + (above ? -MARKER_RADIUS : MARKER_RADIUS));
+    ctx.lineTo(mx, cardCy + (above ? cardH / 2 : -cardH / 2));
+    ctx.stroke();
+    ctx.restore();
+
+    // Marker on axis — filled circle with white center (button-like)
+    ctx.save();
+    ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
+    ctx.shadowBlur = 6;
     ctx.shadowOffsetY = 2;
+    // Outer filled circle
     const grad = ctx.createRadialGradient(
       mx - MARKER_RADIUS * 0.3,
       axisY - MARKER_RADIUS * 0.3,
-      MARKER_RADIUS * 0.1,
+      MARKER_RADIUS * 0.05,
       mx,
       axisY,
       MARKER_RADIUS,
     );
-    grad.addColorStop(0, rgbCss(lighten(accent, 0.2)));
+    grad.addColorStop(0, rgbCss(lighten(accent, 0.25)));
     grad.addColorStop(1, rgbCss(accent));
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(mx, axisY, MARKER_RADIUS, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-
-    // Connector line from marker to card
-    const cardCy = above ? axisY - cardOffsetY - cardH / 2 : axisY + cardOffsetY + cardH / 2;
-    ctx.strokeStyle = rgbaCss(accent, 0.4);
-    ctx.lineWidth = 1.2;
+    // White center dot
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
     ctx.beginPath();
-    ctx.moveTo(mx, axisY + (above ? -MARKER_RADIUS : MARKER_RADIUS));
-    ctx.lineTo(mx, cardCy + (above ? cardH / 2 : -cardH / 2));
-    ctx.stroke();
+    ctx.arc(mx, axisY, MARKER_RADIUS * 0.38, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
 
     // Event card
     drawEventCard(ctx, mx, cardCy, cardW, cardH, events[i], { fg, bg, accent });
@@ -153,46 +165,55 @@ function drawEventCard(ctx, cx, cy, w, h, event, colorCtx) {
   const { fg, bg, accent } = colorCtx;
   const nx = cx - w / 2;
   const ny = cy - h / 2;
-  const radius = 6;
+  const radius = 7;
 
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetY = 2;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.11);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 3;
 
+  // Card: subtle top-light gradient on warm off-white
+  const cardBg = bg && bg.length === 3 ? bg : [250, 250, 248];
   const gradient = ctx.createLinearGradient(nx, ny, nx, ny + h);
-  gradient.addColorStop(0, rgbCss(bg));
-  gradient.addColorStop(1, rgbCss(darken(bg, 0.04)));
+  gradient.addColorStop(0, rgbCss(lighten(cardBg, 0.04)));
+  gradient.addColorStop(1, rgbCss(darken(cardBg, 0.05)));
   ctx.fillStyle = gradient;
   roundedRectPath(ctx, nx, ny, w, h, radius);
   ctx.fill();
   ctx.restore();
 
-  ctx.strokeStyle = rgbaCss(fg, 0.15);
+  // Hairline border
+  ctx.strokeStyle = rgbaCss(fg, 0.12);
   ctx.lineWidth = 1;
   roundedRectPath(ctx, nx, ny, w, h, radius);
   ctx.stroke();
 
-  // Date (top, accent color, IBM Plex Mono)
+  // Top-edge accent strip (1px, accent color, subtle)
+  ctx.save();
+  ctx.fillStyle = rgbaCss(accent, 0.55);
+  ctx.fillRect(nx + radius, ny, w - radius * 2, 2);
+  ctx.restore();
+
+  // Date (top, accent color, Inter 600 small)
   if (event.date) {
     ctx.fillStyle = rgbCss(accent);
-    ctx.font = '600 11px IBM Plex Mono, monospace';
+    ctx.font = `600 ${Math.min(10, h * 0.17)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(String(event.date), cx, ny + 6);
+    ctx.fillText(String(event.date), cx, ny + 7);
   }
-  // Label (middle, Inter 600)
+  // Label (center, Inter 700)
   if (event.label) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `600 ${Math.min(13, h * 0.22)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.min(13, h * 0.23)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
-    ctx.textBaseline = event.sublabel ? 'middle' : 'middle';
-    ctx.fillText(String(event.label), cx, ny + h * (event.sublabel ? 0.5 : 0.55));
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(event.label), cx, ny + h * (event.sublabel ? 0.52 : 0.58));
   }
-  // Sublabel (bottom, faded)
+  // Sublabel (bottom, faded Inter 400)
   if (event.sublabel) {
-    ctx.fillStyle = rgbaCss(fg, 0.6);
-    ctx.font = `400 ${Math.min(11, h * 0.18)}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = rgbaCss(fg, 0.55);
+    ctx.font = `400 ${Math.min(10, h * 0.17)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(String(event.sublabel), cx, ny + h - 6);

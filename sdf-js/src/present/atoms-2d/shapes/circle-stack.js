@@ -44,7 +44,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const fg = palette.silhouetteColor || [30, 27, 30];
   const baseColors = palette.colors || [[60, 130, 200]];
 
-  const layers = Array.isArray(args.layers) ? args.layers.slice(0, 8) : [];
+  // Accept layers as array of objects OR integer shorthand (auto-generate N blank layers)
+  let rawLayers = args.layers;
+  if (typeof rawLayers === 'number' && rawLayers > 0) {
+    rawLayers = Array.from({ length: Math.min(rawLayers, 8) }, () => ({}));
+  }
+  const layers = Array.isArray(rawLayers) ? rawLayers.slice(0, 8) : [];
   const N = layers.length;
   if (N === 0) return;
   const taper = clamp(Number(args.taper ?? 0.85), 0.5, 1.0);
@@ -71,62 +76,87 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const diskRY = diskH * 0.32; // ellipse minor axis (iso flattening)
   const bottomRX = Math.min(stackW / 2 - 8, plotH * 0.4); // bottom disk major radius
 
+  // Ground shadow beneath the whole stack (bottom disk only)
+  ctx.save();
+  const groundShadowGrad = ctx.createRadialGradient(
+    stackCX,
+    plotBottom,
+    0,
+    stackCX,
+    plotBottom,
+    bottomRX * 0.9,
+  );
+  groundShadowGrad.addColorStop(0, 'rgba(0,0,0,0.13)');
+  groundShadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = groundShadowGrad;
+  ctx.beginPath();
+  ctx.ellipse(stackCX, plotBottom, bottomRX * 0.88, diskRY * 0.7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
   // Draw back-to-front (top first, bottom last so foreground overlaps)
   for (let i = N - 1; i >= 0; i--) {
     const layer = layers[i] || {};
     const rx = bottomRX * Math.pow(taper, i);
-    const cy = plotBottom - PAD - i * diskH - diskH * 0.5;
+    const diskCY = plotBottom - PAD - i * diskH - diskH * 0.5;
     const color = layer.color || baseColors[i % baseColors.length];
 
     // Side band (visible cylinder side between top and bottom ellipses)
     const bandH = diskH * 0.55;
     ctx.save();
-    ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 3;
+    ctx.shadowColor = rgbaCss([0, 0, 0], 0.16);
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
     const sideGrad = ctx.createLinearGradient(stackCX - rx, 0, stackCX + rx, 0);
-    sideGrad.addColorStop(0, rgbCss(darken(color, 0.2)));
-    sideGrad.addColorStop(0.5, rgbCss(color));
-    sideGrad.addColorStop(1, rgbCss(darken(color, 0.25)));
+    sideGrad.addColorStop(0, rgbCss(darken(color, 0.22)));
+    sideGrad.addColorStop(0.45, rgbCss(color));
+    sideGrad.addColorStop(1, rgbCss(darken(color, 0.28)));
     ctx.fillStyle = sideGrad;
     ctx.beginPath();
-    ctx.moveTo(stackCX - rx, cy);
-    ctx.lineTo(stackCX - rx, cy + bandH);
-    ctx.ellipse(stackCX, cy + bandH, rx, diskRY, 0, Math.PI, 0, true);
-    ctx.lineTo(stackCX + rx, cy);
-    ctx.ellipse(stackCX, cy, rx, diskRY, 0, 0, Math.PI, false);
+    ctx.moveTo(stackCX - rx, diskCY);
+    ctx.lineTo(stackCX - rx, diskCY + bandH);
+    ctx.ellipse(stackCX, diskCY + bandH, rx, diskRY, 0, Math.PI, 0, true);
+    ctx.lineTo(stackCX + rx, diskCY);
+    ctx.ellipse(stackCX, diskCY, rx, diskRY, 0, 0, Math.PI, false);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
 
-    // Top ellipse (lighter)
+    // Top ellipse (radial gradient from bright upper-left → warm mid)
     ctx.save();
     const topGrad = ctx.createRadialGradient(
-      stackCX - rx * 0.3,
-      cy - diskRY * 0.3,
+      stackCX - rx * 0.35,
+      diskCY - diskRY * 0.35,
       0,
       stackCX,
-      cy,
+      diskCY,
       rx,
     );
-    topGrad.addColorStop(0, rgbCss(lighten(color, 0.32)));
-    topGrad.addColorStop(1, rgbCss(lighten(color, 0.08)));
+    topGrad.addColorStop(0, rgbCss(lighten(color, 0.38)));
+    topGrad.addColorStop(0.5, rgbCss(lighten(color, 0.12)));
+    topGrad.addColorStop(1, rgbCss(color));
     ctx.fillStyle = topGrad;
     ctx.beginPath();
-    ctx.ellipse(stackCX, cy, rx, diskRY, 0, 0, Math.PI * 2);
+    ctx.ellipse(stackCX, diskCY, rx, diskRY, 0, 0, Math.PI * 2);
     ctx.fill();
-    // Thin rim
-    ctx.strokeStyle = rgbaCss(darken(color, 0.3), 0.5);
+    // Thin rim hairline
+    ctx.strokeStyle = rgbaCss(darken(color, 0.25), 0.4);
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.ellipse(stackCX, cy, rx, diskRY, 0, 0, Math.PI * 2);
+    ctx.ellipse(stackCX, diskCY, rx, diskRY, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    // Top-edge specular arc (1px, alpha 0.18)
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(stackCX, diskCY, rx * 0.82, diskRY * 0.82, 0, Math.PI * 1.1, Math.PI * 1.9);
     ctx.stroke();
     ctx.restore();
 
-    // Label to right of disk
+    // Label to right of disk (Inter 700 for label, 500 for sublabel)
     if (hasLabels && (layer.label || layer.sublabel)) {
       const labelX = x + PAD + stackW + 14;
-      const labelY = cy + bandH * 0.4;
+      const labelY = diskCY + bandH * 0.4;
       if (layer.label) {
         ctx.fillStyle = rgbCss(fg);
         ctx.font = `700 ${Math.round(h * 0.044)}px Inter, system-ui, sans-serif`;
@@ -135,7 +165,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.fillText(String(layer.label), labelX, labelY - (layer.sublabel ? 8 : 0));
       }
       if (layer.sublabel) {
-        ctx.fillStyle = rgbaCss(fg, 0.65);
+        ctx.fillStyle = rgbaCss(fg, 0.6);
         ctx.font = `500 ${Math.round(h * 0.034)}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';

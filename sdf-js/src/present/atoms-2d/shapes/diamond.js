@@ -54,27 +54,111 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
 function drawDiamond(ctx, cx, cy, size, color) {
   const s = size * 0.42;
-  ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 6;
 
-  // Right face (darker)
-  ctx.fillStyle = rgbCss(darken(color, 0.18));
+  // Ground shadow ellipse beneath gem
+  ctx.save();
+  const shadowGrad = ctx.createRadialGradient(cx, cy + s * 0.7, 0, cx, cy + s * 0.7, s * 0.65);
+  shadowGrad.addColorStop(0, 'rgba(0,0,0,0.18)');
+  shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = shadowGrad;
   ctx.beginPath();
-  ctx.moveTo(cx, cy - s);
-  ctx.lineTo(cx + s, cy);
-  ctx.lineTo(cx, cy + s);
+  ctx.ellipse(cx, cy + s * 0.72, s * 0.62, s * 0.14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.2);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
+
+  // 4 facets for gem-cut bevel:
+  // Top facet — brightest (lighten 0.25)
+  ctx.fillStyle = rgbCss(lighten(color, 0.25));
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - s); // top tip
+  ctx.lineTo(cx + s, cy); // right tip
+  ctx.lineTo(cx, cy); // center
+  ctx.lineTo(cx - s, cy); // left tip
   ctx.closePath();
   ctx.fill();
 
-  // Left face (lighter)
-  ctx.fillStyle = rgbCss(lighten(color, 0.12));
+  // Bottom facet — darkest (darken 0.18)
+  ctx.fillStyle = rgbCss(darken(color, 0.18));
+  ctx.beginPath();
+  ctx.moveTo(cx, cy + s); // bottom tip
+  ctx.lineTo(cx + s, cy); // right tip
+  ctx.lineTo(cx, cy); // center
+  ctx.lineTo(cx - s, cy); // left tip
+  ctx.closePath();
+  ctx.fill();
+
+  // Re-draw top half cleaner: left face upper (lighten 0.12) and right face upper (color)
+  // Right-upper facet (top-right triangle, base color)
+  ctx.fillStyle = rgbCss(color);
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - s);
+  ctx.lineTo(cx + s, cy);
+  ctx.lineTo(cx, cy);
+  ctx.closePath();
+  ctx.fill();
+
+  // Left-upper facet (lightest)
+  ctx.fillStyle = rgbCss(lighten(color, 0.22));
   ctx.beginPath();
   ctx.moveTo(cx, cy - s);
   ctx.lineTo(cx - s, cy);
-  ctx.lineTo(cx, cy + s);
+  ctx.lineTo(cx, cy);
   ctx.closePath();
+  ctx.fill();
+
+  // Right-lower facet (darkest)
+  ctx.fillStyle = rgbCss(darken(color, 0.22));
+  ctx.beginPath();
+  ctx.moveTo(cx + s, cy);
+  ctx.lineTo(cx, cy + s);
+  ctx.lineTo(cx, cy);
+  ctx.closePath();
+  ctx.fill();
+
+  // Left-lower facet (slightly dark)
+  ctx.fillStyle = rgbCss(darken(color, 0.08));
+  ctx.beginPath();
+  ctx.moveTo(cx - s, cy);
+  ctx.lineTo(cx, cy + s);
+  ctx.lineTo(cx, cy);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+
+  // Thin facet edge lines for gem-cut definition
+  ctx.save();
+  ctx.strokeStyle = rgbaCss([0, 0, 0], 0.1);
+  ctx.lineWidth = 0.75;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - s);
+  ctx.lineTo(cx, cy + s);
+  ctx.moveTo(cx - s, cy);
+  ctx.lineTo(cx + s, cy);
+  ctx.stroke();
+  ctx.restore();
+
+  // Specular highlight — tiny ellipse near upper-left tip
+  ctx.save();
+  ctx.globalAlpha = 0.55;
+  const specGrad = ctx.createRadialGradient(
+    cx - s * 0.28,
+    cy - s * 0.3,
+    0,
+    cx - s * 0.28,
+    cy - s * 0.3,
+    s * 0.14,
+  );
+  specGrad.addColorStop(0, 'rgba(255,255,255,0.92)');
+  specGrad.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = specGrad;
+  ctx.beginPath();
+  ctx.ellipse(cx - s * 0.28, cy - s * 0.3, s * 0.14, s * 0.1, -Math.PI / 5, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }

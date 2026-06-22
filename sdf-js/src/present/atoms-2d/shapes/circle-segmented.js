@@ -70,24 +70,47 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const segLen = (Math.PI * 2) / N;
   const gapAng = segLen * gap;
 
+  // Ground shadow beneath the donut
+  ctx.save();
+  const shadowGrad = ctx.createRadialGradient(
+    cx,
+    cy + outerR * 0.08,
+    outerR * 0.55,
+    cx,
+    cy + outerR * 0.08,
+    outerR * 1.05,
+  );
+  shadowGrad.addColorStop(0, 'rgba(0,0,0,0.10)');
+  shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = shadowGrad;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + outerR * 0.08, outerR * 1.02, outerR * 0.22, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
   for (let i = 0; i < N; i++) {
     const color = baseColors[i % baseColors.length];
     // Start at top (-π/2), clockwise
     const a0 = -Math.PI / 2 + i * segLen + gapAng * 0.5;
     const a1 = -Math.PI / 2 + (i + 1) * segLen - gapAng * 0.5;
+    const aMid = (a0 + a1) / 2;
 
     ctx.save();
-    ctx.shadowColor = rgbaCss([0, 0, 0], 0.16);
-    ctx.shadowBlur = 5;
-    ctx.shadowOffsetY = 2;
-    const grad = ctx.createLinearGradient(
-      cx + Math.cos((a0 + a1) / 2) * innerR,
-      cy + Math.sin((a0 + a1) / 2) * innerR,
-      cx + Math.cos((a0 + a1) / 2) * outerR,
-      cy + Math.sin((a0 + a1) / 2) * outerR,
-    );
-    grad.addColorStop(0, rgbCss(lighten(color, 0.18)));
-    grad.addColorStop(1, rgbCss(color));
+    ctx.shadowColor = rgbaCss([0, 0, 0], 0.14);
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 3;
+
+    // 3D bevel: radial gradient upper-left → lower-right (4-stop sphere-like shading)
+    const gradX0 = cx + Math.cos(aMid - 0.4) * innerR;
+    const gradY0 = cy + Math.sin(aMid - 0.4) * innerR;
+    const gradX1 = cx + Math.cos(aMid + 0.4) * outerR;
+    const gradY1 = cy + Math.sin(aMid + 0.4) * outerR;
+    const grad = ctx.createLinearGradient(gradX0, gradY0, gradX1, gradY1);
+    // bright upper-left → base color → darker lower-right
+    grad.addColorStop(0, rgbCss(lighten(color, 0.3)));
+    grad.addColorStop(0.4, rgbCss(lighten(color, 0.1)));
+    grad.addColorStop(0.75, rgbCss(color));
+    grad.addColorStop(1, rgbCss(darken(color, 0.12)));
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(cx, cy, outerR, a0, a1, false);
@@ -96,19 +119,58 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Label at outer midpoint
+    // Hairline segment divider — replace thick white gap with thin alpha line
+    if (gapAng < 0.01) {
+      // Only draw explicit dividers when gap is tiny (nearly seamless)
+      ctx.save();
+      ctx.strokeStyle = rgbaCss([255, 255, 255], 0.3);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a0) * innerR, cy + Math.sin(a0) * innerR);
+      ctx.lineTo(cx + Math.cos(a0) * outerR, cy + Math.sin(a0) * outerR);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Label at outer midpoint (Inter 700)
     if (labels && labels[i] != null) {
-      const aMid = (a0 + a1) / 2;
       const lr = outerR + 16;
       const lx = cx + Math.cos(aMid) * lr;
       const ly = cy + Math.sin(aMid) * lr;
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `600 ${Math.round(h * 0.04)}px Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${Math.round(h * 0.04)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = Math.cos(aMid) > 0.3 ? 'left' : Math.cos(aMid) < -0.3 ? 'right' : 'center';
       ctx.textBaseline = Math.sin(aMid) > 0.3 ? 'top' : Math.sin(aMid) < -0.3 ? 'bottom' : 'middle';
       ctx.fillText(String(labels[i]), lx, ly);
     }
   }
+
+  // Specular highlight — upper-left ellipse over the donut
+  ctx.save();
+  const specR = outerR * 0.38;
+  const specGrad = ctx.createRadialGradient(
+    cx - outerR * 0.35,
+    cy - outerR * 0.35,
+    0,
+    cx - outerR * 0.35,
+    cy - outerR * 0.35,
+    specR,
+  );
+  specGrad.addColorStop(0, 'rgba(255,255,255,0.35)');
+  specGrad.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = specGrad;
+  ctx.beginPath();
+  ctx.ellipse(
+    cx - outerR * 0.35,
+    cy - outerR * 0.35,
+    specR,
+    specR * 0.65,
+    -Math.PI / 5,
+    0,
+    Math.PI * 2,
+  );
+  ctx.fill();
+  ctx.restore();
 }
 
 function clamp(v, lo, hi) {
@@ -120,5 +182,13 @@ function lighten(rgb, amt) {
     Math.min(255, rgb[0] + (255 - rgb[0]) * amt),
     Math.min(255, rgb[1] + (255 - rgb[1]) * amt),
     Math.min(255, rgb[2] + (255 - rgb[2]) * amt),
+  ];
+}
+
+function darken(rgb, amt) {
+  return [
+    Math.max(0, rgb[0] * (1 - amt)),
+    Math.max(0, rgb[1] * (1 - amt)),
+    Math.max(0, rgb[2] * (1 - amt)),
   ];
 }
