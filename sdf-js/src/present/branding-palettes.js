@@ -63,13 +63,21 @@ export const BRANDING_PALETTES = [
 ];
 
 /**
- * Get a preset by id; fallback to first preset if id not found.
+ * Get a preset by id; fallback to mono-light (neutral) if id not found.
+ * Pre-Sprint-15B fallback was BRANDING_PALETTES[0] which was always
+ * mono-light; with atlas themes prepended, [0] is now editorial-navy.
+ * Explicit mono-light fallback preserves backward compat for callers
+ * that relied on neutral defaults.
  *
  * @param {string} id
  * @returns {BrandingPreset}
  */
 export function getPalette(id) {
-  return BRANDING_PALETTES.find((p) => p.id === id) || BRANDING_PALETTES[0];
+  return (
+    BRANDING_PALETTES.find((p) => p.id === id) ||
+    BRANDING_PALETTES.find((p) => p.id === 'mono-light') ||
+    BRANDING_PALETTES[0]
+  );
 }
 
 /**
