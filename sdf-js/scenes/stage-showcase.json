@@ -30,26 +30,36 @@
       }
     ],
     "cameraSequence": {
-      "loop": false,
+      "loop": true,
       "shots": [
         {
-          "duration": 2.6,
-          "pos": [3.6, 3.3, 10.5],
-          "target": [0, 0.9, -0.1],
-          "fov": 44,
-          "aperture": 0,
-          "focalDistance": 10.5,
-          "ease": "smooth",
+          "duration": 4.2,
+          "pos": [5.0, 3.4, 12.0],
+          "target": [-1.1, 1.1, 0],
+          "fov": 42,
+          "aperture": 0.4,
+          "focalDistance": 12.0,
+          "ease": "out",
           "exposure": [0, 1]
         },
         {
-          "duration": 5.4,
-          "pos": [-1.8, 2.0, 8.0],
-          "target": [0, 0.82, -0.25],
-          "fov": 47,
-          "aperture": 0,
-          "focalDistance": 8.0,
+          "duration": 4.6,
+          "pos": [6.0, 1.6, 4.2],
+          "target": [0, 0.9, 0],
+          "fov": 38,
+          "aperture": 0.85,
+          "focalDistance": [5.2, 9.3],
           "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5.2,
+          "pos": [-1.6, 2.2, 8.6],
+          "target": [-1.0, 0.95, 0],
+          "fov": 44,
+          "aperture": 0.5,
+          "focalDistance": 8.6,
+          "ease": "out",
           "transition": "blend"
         }
       ]

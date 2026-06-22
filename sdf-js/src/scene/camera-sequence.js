@@ -38,6 +38,31 @@ function smoothstep(t) {
   const c = Math.max(0, Math.min(1, t));
   return c * c * (3 - 2 * c);
 }
+function clamp01(t) {
+  return Math.max(0, Math.min(1, t));
+}
+// Per-shot easing vocabulary. 'smooth'/'inout' = ease-in-out (default), 'linear'
+// = constant velocity, 'in' = accelerate from rest (push-off), 'out' = decelerate
+// to a gentle SETTLE (the most cinematic arrival for a push-in/reveal).
+function applyEase(mode, t) {
+  const c = clamp01(t);
+  if (mode === 'linear') return c;
+  if (mode === 'in') return c * c;
+  if (mode === 'out') return 1 - (1 - c) * (1 - c);
+  return c * c * (3 - 2 * c); // 'smooth' | 'inout'
+}
+// DoF (aperture / focalDistance) accepts a number OR a [from, to] pair. A number
+// keeps the existing cross-shot blend; a pair ramps WITHIN the shot (rack focus —
+// the camera can hold while focus pulls from one subject to another).
+function dofSettle(v, fallback) {
+  if (typeof v === 'number') return v;
+  if (Array.isArray(v) && v.length === 2) return Number(v[1]); // settle = the 'to'
+  return fallback;
+}
+function dofValue(v, eased, blendedFallback) {
+  if (Array.isArray(v) && v.length === 2) return lerp(Number(v[0]), Number(v[1]), clamp01(eased));
+  return blendedFallback;
+}
 
 /**
  * Hash-noise for camera shake. Tiny + deterministic.
@@ -89,8 +114,8 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
       pos: [...(last.pos || [0, 0, 0])],
       target: [...(last.target || [0, 0, 0])],
       fov: Number(last.fov ?? 25),
-      aperture: Number(last.aperture ?? 0),
-      focalDistance: Number(last.focalDistance ?? distance(last.pos, last.target)),
+      aperture: dofSettle(last.aperture, 0),
+      focalDistance: dofSettle(last.focalDistance, distance(last.pos, last.target)),
       shotIndex: shots.length - 1,
       shotBlend: 1.0,
     };
@@ -110,7 +135,7 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   const shotDur = Number(shot.duration) || 1;
   const shotT = (t - acc) / shotDur;
   const easeMode = shot.ease || 'smooth';
-  const blend = easeMode === 'linear' ? shotT : smoothstep(shotT);
+  const blend = applyEase(easeMode, shotT);
 
   // Sprint 4: Resolve subject motion BEFORE building start/end states so
   // relativeTo target resolution sees current frame's subject positions.
@@ -129,8 +154,8 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
     pos: endPos,
     target: endTarget,
     fov: Number(shot.fov ?? 25),
-    aperture: Number(shot.aperture ?? 0),
-    focalDistance: Number(shot.focalDistance ?? distance(endPos, endTarget)),
+    aperture: dofSettle(shot.aperture, 0),
+    focalDistance: dofSettle(shot.focalDistance, distance(endPos, endTarget)),
   };
   let startState = endState;
   let startSceneState = shot.sceneState || {};
@@ -143,8 +168,8 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
       pos: startPos,
       target: startTarget,
       fov: Number(prev.fov ?? 25),
-      aperture: Number(prev.aperture ?? 0),
-      focalDistance: Number(prev.focalDistance ?? distance(startPos, startTarget)),
+      aperture: dofSettle(prev.aperture, 0),
+      focalDistance: dofSettle(prev.focalDistance, distance(startPos, startTarget)),
     };
     // Sprint 5: sceneState lerps too when blending. Without this, thrusterLevel
     // jumps abruptly from 0 → 1 at shot boundary (engine bursts on instead of
@@ -181,6 +206,12 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
     exposure: resolveExposure(shot, shotT),
     shotRenderer: typeof shot.renderer === 'string' ? shot.renderer : null,
   };
+
+  // Intra-shot DoF ramp (rack focus): a [from, to] focalDistance / aperture pulls
+  // focus across THIS shot while the camera can hold still — the classic focus
+  // pull from one subject to another. A plain number keeps the cross-shot blend.
+  out.aperture = dofValue(shot.aperture, blend, out.aperture);
+  out.focalDistance = dofValue(shot.focalDistance, blend, out.focalDistance);
 
   // Sprint 4: resolved shake (number OR {amount, velocityScale, scaleWith})
   const shakeAmt = resolveShake(shot.shake, subjectOffsets);
