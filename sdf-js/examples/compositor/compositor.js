@@ -1907,33 +1907,77 @@ function ensureFly3dRenderer() {
 // Studio: stripped-down FLY 3D sibling — neutral grey bg + checker floor + no
 // fog / clouds / lens flares / volumes. Atom test stage for inspecting
 // individual subjects in a clean environment.
+// One-time overlay shown when WebGL2 / GPU is unavailable — usually because the
+// browser disabled hardware acceleration after a GPU process crash. White canvas
+// + a cryptic console throw is useless to a user; this tells them what to do.
+function showGpuUnavailableOverlay() {
+  if (document.getElementById('gpu-unavailable-msg')) return;
+  const wrap = $('canvas-wrap');
+  if (!wrap) return;
+  if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+  const el = document.createElement('div');
+  el.id = 'gpu-unavailable-msg';
+  el.innerHTML =
+    '<b>GPU / WebGL2 unavailable</b><br><br>' +
+    'Your browser disabled hardware acceleration — this usually happens after a ' +
+    'GPU crash.<br><br>' +
+    '1. <b>Fully quit and reopen the browser</b> (not just the tab).<br>' +
+    '2. Check <code>chrome://gpu</code> — “WebGL2” should be <i>Hardware accelerated</i>.<br>' +
+    '3. Settings → System → enable <b>“Use graphics acceleration when available”</b>, then relaunch.';
+  Object.assign(el.style, {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%,-50%)',
+    maxWidth: '70%',
+    padding: '22px 26px',
+    borderRadius: '12px',
+    background: 'rgba(20,12,12,0.92)',
+    border: '1px solid rgba(255,140,140,0.35)',
+    color: '#f3e6e6',
+    font: '400 14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+    zIndex: '60',
+    textAlign: 'left',
+  });
+  wrap.appendChild(el);
+}
+
 function ensureStudioRenderer() {
   if (state.studioRenderer) return state.studioRenderer;
+  if (state.studioInitFailed) return null; // don't re-throw every frame
   const canvas = $('c-gpu');
-  state.studioRenderer = createStudioRenderer({
-    canvas,
-    getControls: () => {
-      const { scene } = getActiveGpuScene();
-      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
-      const light = state.lightOverride ?? sceneLight;
-      const cam = scene?.cameraStatic;
-      return {
-        lightAzim: light.azimuth,
-        lightAlt: light.altitude,
-        lightDist: light.distance,
-        fov: cam?.focal || 1.5,
-        shadowsOn: true,
-        // Studio's whole point: render a built-in checker ground plane so the
-        // atom has a visible "stage". groundOn unions a y=GROUND_Y plane into
-        // mapWithGround; checkerOn picks the grey-checker shading branch.
-        groundOn: true,
-        checkerOn: true,
-      };
-    },
-    onFps: (fps) => {
-      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
-    },
-  });
+  try {
+    state.studioRenderer = createStudioRenderer({
+      canvas,
+      getControls: () => {
+        const { scene } = getActiveGpuScene();
+        const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+        const light = state.lightOverride ?? sceneLight;
+        const cam = scene?.cameraStatic;
+        return {
+          lightAzim: light.azimuth,
+          lightAlt: light.altitude,
+          lightDist: light.distance,
+          fov: cam?.focal || 1.5,
+          shadowsOn: true,
+          // Studio's whole point: render a built-in checker ground plane so the
+          // atom has a visible "stage". groundOn unions a y=GROUND_Y plane into
+          // mapWithGround; checkerOn picks the grey-checker shading branch.
+          groundOn: true,
+          checkerOn: true,
+        };
+      },
+      onFps: (fps) => {
+        $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+      },
+    });
+  } catch (e) {
+    state.studioInitFailed = true;
+    console.error('[compositor] studio renderer init failed:', e);
+    setStatus(`✗ ${e.message}`, true);
+    showGpuUnavailableOverlay();
+    return null;
+  }
   return state.studioRenderer;
 }
 
@@ -2044,6 +2088,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
     const st = ensureStudioRenderer();
+    if (!st) return { bytes: 0 }; // WebGL2 unavailable — overlay already shown
     // W12 auto-framing: instead of a fixed pose (which forced atoms to be hand-
     // scaled to fit), compute the SDF's bounding box and fit the camera to it —
     // once per scene. The camera is placed at target − forward·distance for a
