@@ -114,16 +114,39 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
     ctx.restore();
 
-    // Label
+    // Label — wrap if too long for container width
     if (it.label) {
       const labelColor = status === 'todo' ? rgbaCss(fg, 0.55) : rgbCss(fg);
       const labelWeight = status === 'highlight' ? '700' : '600';
+      const labelFontSize = Math.min(
+        Math.round(rowH * 0.34),
+        // Cap font: long text in narrow containers shouldn't dominate row height
+        Math.round((x + w - textX - PAD) / Math.max(8, String(it.label).length * 0.45)),
+      );
       ctx.fillStyle = labelColor;
-      ctx.font = `${labelWeight} ${Math.round(rowH * 0.34)}px Inter, system-ui, sans-serif`;
+      ctx.font = `${labelWeight} ${labelFontSize}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      const labelY = it.sublabel ? rowCY - rowH * 0.12 : rowCY;
-      ctx.fillText(String(it.label), textX, labelY);
+      const maxW = x + w - textX - PAD;
+      const lineH = labelFontSize * 1.2;
+      const words = String(it.label).split(' ');
+      const lines = [];
+      let cur = '';
+      for (const word of words) {
+        const test = cur ? `${cur} ${word}` : word;
+        if (ctx.measureText(test).width > maxW && cur) {
+          lines.push(cur);
+          cur = word;
+        } else cur = test;
+      }
+      if (cur) lines.push(cur);
+      // Vertical center: cap lines so they fit in rowH
+      const maxLines = Math.max(1, Math.floor((rowH - 8) / lineH));
+      const usedLines = lines.slice(0, maxLines);
+      const startY = rowCY - ((usedLines.length - 1) * lineH) / 2 - (it.sublabel ? rowH * 0.1 : 0);
+      usedLines.forEach((line, li) => {
+        ctx.fillText(line, textX, startY + li * lineH);
+      });
     }
 
     // Sublabel

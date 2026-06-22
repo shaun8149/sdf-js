@@ -222,6 +222,41 @@ for (const i of slidesToBake) {
     layoutHint = `LAYOUT: ${Math.ceil(uniqValues.length / 5)}×5 grid uniform size`;
   }
 
+  // Pre-extract description blocks: a "DESCRIPTION ..." or "THIS IS A PLACEHOLDER TEXT"
+  // header followed by body lines until the next header / percent value
+  const descriptionBlocks = [];
+  let currentBlock = null;
+  const isDescHeader = (t) =>
+    /^DESCRIPTION(\s+(TEXT|\d+))?$/i.test(t.trim()) ||
+    /^THIS IS A PLACEHOLDER TEXT\.?$/i.test(t.trim());
+  for (const t of bodyTexts) {
+    const trim = t.trim();
+    if (isDescHeader(trim)) {
+      if (currentBlock) descriptionBlocks.push(currentBlock);
+      currentBlock = { header: trim.replace(/\.$/, ''), lines: [] };
+    } else if (
+      currentBlock &&
+      trim &&
+      !/^\d+\s*%?$|^%$/.test(trim) &&
+      trim !== 'FILL LEVELS' &&
+      !/subheadline/i.test(trim)
+    ) {
+      currentBlock.lines.push(trim);
+    }
+  }
+  if (currentBlock) descriptionBlocks.push(currentBlock);
+
+  const descHint =
+    descriptionBlocks.length > 0
+      ? `\n## DETECTED DESCRIPTION BLOCKS (${descriptionBlocks.length}): for EACH block, emit one \`bullet-list\` atom with the header as \`title\` and the lines as \`items[{label}]\`:\n` +
+        descriptionBlocks
+          .map(
+            (b, i) =>
+              `  Block ${i + 1}: title="${b.header}", items=[${b.lines.map((l) => `"${l}"`).join(', ')}]`,
+          )
+          .join('\n')
+      : '';
+
   // Detect 2D vs 3D variant from slide title
   const slideTitle = String(slide.title || '');
   const is2D = /\b2D\b/.test(slideTitle);
@@ -233,6 +268,7 @@ for (const i of slidesToBake) {
     `## Slide title: ${slideTitle}\n\n` +
     `## Original user prompt\n\n${cleanPrompt}\n` +
     styleHint +
+    descHint +
     `\n\n## Slide body text (CARRY THESE INTO atom args.caption — do NOT discard)\n\n` +
     bodyTexts.map((t) => `  - "${t}"`).join('\n') +
     `\n\n` +
@@ -255,12 +291,18 @@ for (const i of slidesToBake) {
     `2. **Body captions**: sphere-fill atom now accepts \`args.caption: string\`. Pass the relevant body text (e.g. "Description 1: Placeholder for your text" → \`caption: "Description 1"\`). Match each sphere to its nearest body description; don't lose user text.\n` +
     `3. **Atom selection**:\n` +
     `   - Sphere with fill % → \`sphere-fill\` (args: \`value\` 0-100, \`label\` "20%", \`caption\` "Description 1", \`color\` rgb, \`style\` "2d"|"3d")\n` +
-    `   - Title/cover slide → \`cover\` atom (args: \`title\`, \`subtitle\`)\n` +
+    `   - Title/cover slide → \`cover\` atom (args: \`title\`, \`subtitle\`). **Cover MUST be a TOP STRIP (h ≤ 120, y=0, x=0, w=1280) when used alongside other atoms.** NEVER cover at full canvas (h=720) unless slide is TITLE-ONLY with zero other atoms.\n` +
     `   - NEVER emit \`text-3d-pipe\`, \`box\`, \`rounded_box\`\n` +
     `4. **${layoutHint}**\n` +
     `5. **Match PL visual style**: PL doesn't use uniform grids when values differ — they use SIZE encoding, stage composition, hierarchy. Follow the layout hint above; don't default to row-of-equals.\n` +
     `6. **Color discipline (CRITICAL)**: Default \`color: [42, 96, 178]\` (blue) for ALL spheres unless the slide body text EXPLICITLY mentions colors (e.g. "DESCRIPTION 1 - red", "GREEN sphere"). Do NOT split spheres into orange/blue or red/blue based on value thresholds — PL keeps fill series monochrome to make value comparison clean. ONE color per slide unless slide body cites multi-color.\n` +
-    `7. **Connector arrows (PROCESS FLOW)**: When slide implies SEQUENTIAL flow — body text shows "Description 1 / Description 2 / Description 3" numbered series, OR words like "process / step / before / after / then" — emit \`arrow\` atom BETWEEN adjacent spheres for visual continuity. Position arrow between sphere centers (e.g. arrow at x=midpoint_between_two_spheres, y=sphere_center, w=80, h=60, args: \`direction: "right"\`, default color). Skip for non-flow slides (independent KPI dashboards, grid of values).\n`;
+    `7. **Connector arrows (PROCESS FLOW)**: When slide implies SEQUENTIAL flow — body text shows "Description 1 / Description 2 / Description 3" numbered series, OR words like "process / step / before / after / then" — emit \`arrow\` atom BETWEEN adjacent spheres for visual continuity. Position arrow between sphere centers (e.g. arrow at x=midpoint_between_two_spheres, y=sphere_center, w=80, h=60, args: \`direction: "right"\`, default color). Skip for non-flow slides (independent KPI dashboards, grid of values).\n` +
+    `8. **TEXT CARDS (PL "Description" panels)**: When slide body shows "DESCRIPTION 1/2/3..." or "DESCRIPTION TEXT" blocks each followed by 1-3 lines of body text, emit a \`bullet-list\` atom PER description block. Bullet-list args: \`title: "DESCRIPTION 1"\` (or "DESCRIPTION TEXT"), \`items: [{label: "Body line 1"}, {label: "Body line 2"}]\` (merge multi-line body into single item if a continuous sentence).\n` +
+    `   Layout templates for text-card-heavy slides:\n` +
+    `   - **1 hero sphere + N descriptions**: sphere at x=60, y=180, w=440, h=440. Descriptions stacked right: each bullet-list at x=540, y=80+i*160, w=680, h=140 (4 cards) OR y=60+i*200, h=180 (3 cards).\n` +
+    `   - **3 description rows (no spheres)**: 3 bullet-lists at y=80,290,500 each x=120, w=1040, h=180.\n` +
+    `   - **1 hero sphere + 3-4 descriptions around (leader-line style)**: sphere center (x=480, y=160, w=320, h=320). Descriptions at corners: top-left (x=40, y=120, w=400, h=180), top-right (x=840, y=120, w=400, h=180), bottom-left (x=40, y=480, w=400, h=180), bottom-right (x=840, y=480, w=400, h=180).\n` +
+    `   Do NOT drop description text — every DESCRIPTION header in body must map to a bullet-list atom.\n`;
   console.log(`[${i + 1}/${slides.length}] lifting ${id} (pattern=${pattern})...`);
   try {
     const { text, usage, elapsed } = await callAnthropic(userMessage);
