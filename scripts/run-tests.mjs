@@ -64,6 +64,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-type-aliases.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-gbms-batch.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-primitive-registry-sync.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-stage.mjs' },
 
   // Generator-S (Phase 2 ops: array, mirror)
   { category: 'generator', file: 'sdf-js/scripts/test-generator-s.mjs' },

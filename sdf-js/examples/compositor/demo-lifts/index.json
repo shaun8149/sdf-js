@@ -1398,6 +1398,16 @@
       "file": "deck-business.json",
       "renderer": "studio",
       "prompt": "business data deck"
+    },
+    {
+      "id": "stage-showcase",
+      "title": "Studio Stage · metals in a lit room",
+      "thesisPoint": "Scene-level stage: defaults.stage expands to an enclosed studio room (panel area lights + reflection-retrace) so metals reflect the actual walls.",
+      "category": "scene-templates",
+      "status": "ready",
+      "file": "stage-showcase.json",
+      "renderer": "studio",
+      "prompt": "metal objects on a studio stage"
     }
   ]
 }
