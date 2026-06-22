@@ -26,13 +26,24 @@
       "loop": false,
       "shots": [
         {
-          "duration": 0.05,
-          "pos": [-2.4, 3.0, -9.5],
-          "target": [0, 1.15, 0],
+          "duration": 2.4,
+          "pos": [-3.0, 3.4, -10.5],
+          "target": [0, 1.2, 0],
           "fov": 46,
           "aperture": 0,
-          "focalDistance": 9.5,
-          "ease": "linear"
+          "focalDistance": 10.5,
+          "ease": "smooth",
+          "exposure": [0, 1]
+        },
+        {
+          "duration": 5.0,
+          "pos": [-1.6, 2.7, -8.6],
+          "target": [0, 1.05, 0],
+          "fov": 47,
+          "aperture": 0,
+          "focalDistance": 8.6,
+          "ease": "smooth",
+          "transition": "blend"
         }
       ]
     },
