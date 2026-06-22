@@ -77,7 +77,9 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
 
   CHARTS / DATA:
     - kpi-card        args: { value, label, sublabel?, trend?, trendValue?, icon? }
-    - bar             args: { values:number[], labels:string[], format?:'currency'|'percent'|'number', max?, title? }
+    - bar             args: { values:number[], labels:string[], format?:'currency'|'percent'|'number', max?, title?,
+                              targetLine?:{value,label?} }
+                      (v3.33: targetLine adds vertical reference line at target x-position)
     - column          args: { values, labels, format?, max?, title?, showValues? }
     - line            args: { values, labels, format?, title?, annotations?, showPoints?, showValues? }
     - pie             args: { values, labels, format?, title?, donutRatio?, centerLabel? }
@@ -87,7 +89,9 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
     - sphere-fill     args: { value:0-100, label?, color?:[r,g,b], background?:'dark'|'light' }
     - gauge           args: { value:0-1, label?, format?:'percent'|'number', title?, min?, max? }
     - radial-spoke    args: { values:number[] (0-1), labels?, title?, colors? }
-    - scatter         args: { points:[{x:0-1, y:0-1, label?, group?, color?}], xAxis?, yAxis?, title? }
+    - scatter         args: { points:[{x:0-1, y:0-1, label?, group?, color?}], xAxis?, yAxis?, title?,
+                              regressionLine?:boolean }
+                      (v3.33: regressionLine adds OLS least-squares fit dashed line)
     - traffic-light   args: { lights:[{color:'red'|'amber'|'green'|'blue'|[r,g,b], active?, label?}], title? }
     - venn            args: { sets:[{label,color?,sublabel?}] (2-5), overlap?:0-1, title? }
 
@@ -107,7 +111,9 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
     - progression     args: { steps:[{label,status?:'done'|'current'|'todo'}], title? }
 
   CHARTS / MATRIX:
-    - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title? }
+    - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title?,
+                              quadrantAxes?:{x,y}, bubbles?:[{row,col,label?,size?}] }
+                      (v3.33: quadrantAxes + bubbles enable BCG-style 2×2 with axis labels + product bubbles per quadrant)
 
   CHARTS / AGENDA:
     - agenda-list     args: { items:[{label,sublabel?}] (1-12), title?, numbered?, highlight? }
@@ -117,6 +123,25 @@ Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint fee
 
   CHARTS / LISTS:
     - bullet-list     args: { items:[{label,sublabel?,status?:'done'|'todo'|'highlight'}] (1-12), title? }
+
+  CHARTS / STATISTICAL (v3.33 new):
+    - bubble          args: { points:[{x,y,size,label?,color?}], xAxis?, yAxis?, title?, sizeScale? }
+                      (xy scatter with bubble-size as 3rd dimension — product portfolio / risk maps)
+    - histogram       args: { bins:[{range:[lo,hi],count}], title?, bellCurve?, milestones?:[{value,label}] }
+                      (frequency distribution + optional gaussian overlay — survey response / score dist)
+    - break-even      args: { fixedCost, variableCostPerUnit, pricePerUnit, maxUnits?, title?, currency? }
+                      (3-line cost+revenue crossover chart — SaaS pricing / manufacturing unit economics)
+    - stacked-area    args: { series:[{name,values:[]}], xLabels:[], title?, format?:'number'|'currency'|'percent' }
+                      (N series accumulated over X axis — revenue by product over time)
+
+  CHARTS / FRAMEWORKS (v3.33 new):
+    - seven-s-model   args: { center?, satellites:[6×{label,description?}], title? }
+                      (McKinsey 7S hexagonal framework — org diagnostic / alignment audit)
+    - multiple-arrows args: { mode:'converge'|'diverge'|'parallel', arrows:[{label?,color?}], centerLabel?, title? }
+                      (multi-input/output flow patterns — converge: many→1, diverge: 1→many, parallel: N→N)
+    - nine-field-matrix args: { cells:[9×{label,sublabel?}], xAxis?, yAxis?, title?,
+                                bubbles?:[{row,col,label,size}] }
+                      (GE/McKinsey 3×3 with red/yellow/green priority bands — strategy portfolio)
 
   SHAPES (decorative iconic — single primitives, 1:1 with 3D shapes/*-3d):
     - arrow           args: { label?, color?, direction?:'right'|'up'|'left'|'down' }
@@ -722,6 +747,15 @@ fast-path (24) OR Phosphor baked library (~770 unique), so any name listed in
 the Step 5 categories is valid for \`icon-badge.args.name\`. Phosphor SVGs use
 a 256×256 viewBox + filled glyphs; hardcoded paths use 24×24 + monoline stroke;
 the renderer auto-picks the correct scale + paint mode per source.
+
+v3.33 (Sprint 15a — chart atom catalog expansion) — adds 7 new chart atoms
+covering PresentationLoad chart category gap: bubble / histogram / break-even
+/ stacked-area / seven-s-model / multiple-arrows / nine-field-matrix. Plus 3
+extensions to existing atoms (all backward-compat optional args):
+  - matrix-grid: + quadrantAxes:{x,y} + bubbles:[{row,col,label?,size?}] — BCG-style 2×2
+  - scatter: + regressionLine:bool — OLS dashed fit line
+  - bar: + targetLine:{value,label?} — vertical reference line
+atoms-2d registry now 51 entries (44 pre-15a + 7 new).
 `;
 
 /**
