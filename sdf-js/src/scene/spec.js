@@ -579,6 +579,14 @@ export const MATERIAL_KIND_INDEX = {
   // treeAmount channel > threshold, drainage darkening along ridgeMap creases.
   // Only valid on terrain-eroded-rune primitive (which uploads the texture).
   'eroded-terrain': 7,
+  // 8 = glass: real single-refraction transparent glass. The view ray refracts
+  // (Snell, ior ~1.45) and a secondary march SEES THROUGH to whatever is behind
+  // (e.g. coloured liquid inside a glass shell, or the distorted background),
+  // blended with a Fresnel-weighted env reflection + a sharp sun glint + a cool
+  // fresnel edge. Designed for thin hollow shells (so the refracted ray travels
+  // air, not solid — sphere-tracing can't march inside solids). Used by
+  // sphere-fill-3d's glass container (PresentationLoad "3D Spheres" look).
+  glass: 8,
 };
 
 // =============================================================================
