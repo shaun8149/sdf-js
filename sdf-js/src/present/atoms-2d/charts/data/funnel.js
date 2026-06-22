@@ -42,16 +42,31 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const h = opts.h ?? 380;
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
-  const colors = palette.colors || [[60, 130, 200]];
+  const baseColor = palette.colors?.[0] || [60, 130, 200];
 
   const stages = Array.isArray(args.stages) ? args.stages : [];
   const format = args.format || 'number';
   const n = stages.length;
   if (n === 0) return;
 
+  // Background
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
+  // Monotone gradient: palette.colors[0] lightest at top, darkening down
+  const makeStageColor = (i) => {
+    const darken = i * 0.08;
+    return [
+      Math.max(0, Math.round(baseColor[0] * (1 - darken))),
+      Math.max(0, Math.round(baseColor[1] * (1 - darken))),
+      Math.max(0, Math.round(baseColor[2] * (1 - darken))),
+    ];
+  };
+
   let plotTop = y + PAD;
   if (args.title) {
-    const ts = Math.round(h * 0.07);
+    const ts = Math.round(h * 0.065);
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${ts}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
@@ -60,18 +75,32 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + h * 0.13;
   }
 
+  // Reserve right column for value annotations (value + percentage)
+  const rightColW = 110;
   const plotH = y + h - plotTop - PAD;
-  const plotW = w - PAD * 2 - 100; // reserve right column for labels
+  const plotW = w - PAD * 2 - rightColW;
   const cx = x + PAD + plotW / 2;
   const topY = plotTop;
-  const botY = plotTop + plotH;
   const stageH = (plotH - STAGE_GAP * (n - 1)) / n;
 
-  // Width tapering: each stage gets narrower top→bottom
+  // Width tapering proportional to value when available, else linear
+  const values = stages.map((s) => (s.value != null ? Number(s.value) : null));
+  const firstValue = values[0] || 1;
   const maxW = plotW * 0.92;
   const minW = plotW * 0.22;
   const widthAt = (i) => {
-    // i=0 top (widest), i=n-1 bottom (narrowest); n stages means n+1 edges
+    if (values[i] != null && values[0] != null) {
+      // Proportional width: sqrt for visual balance
+      const ratio = Math.sqrt(values[i] / firstValue);
+      const wEdge = minW + (maxW - minW) * ratio;
+      // upper edge: width of this stage's value ratio
+      const ratioNext =
+        i + 1 < n && values[i + 1] != null
+          ? Math.sqrt(values[i + 1] / firstValue)
+          : ratio * (minW / maxW);
+      return [wEdge, minW + (maxW - minW) * ratioNext];
+    }
+    // Fallback linear
     const t0 = i / n;
     const t1 = (i + 1) / n;
     return [maxW + (minW - maxW) * t0, maxW + (minW - maxW) * t1];
@@ -81,46 +110,82 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const [wTop, wBot] = widthAt(i);
     const topEdgeY = topY + i * (stageH + STAGE_GAP);
     const botEdgeY = topEdgeY + stageH;
-    const color = colors[i % colors.length];
+    const color = makeStageColor(i);
     drawStage(ctx, cx, topEdgeY, botEdgeY, wTop, wBot, color);
 
-    // Label inside stage if room
+    // Label + value + percentage inside stage
     const labelText = stages[i].label || '';
     const valueText = stages[i].value != null ? formatValue(stages[i].value, format) : '';
+    const pctText =
+      stages[i].value != null && firstValue > 0 && i > 0
+        ? `${Math.round((Number(stages[i].value) / firstValue) * 100)}%`
+        : i === 0
+          ? '100%'
+          : '';
 
-    // Label inside (centered)
-    ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    ctx.font = `700 ${Math.min(16, stageH * 0.32)}px Inter, system-ui, sans-serif`;
+    const stageCy = (topEdgeY + botEdgeY) / 2;
+    const hasSubLine = valueText || pctText;
+    const labelFont = `700 ${Math.min(15, stageH * 0.3)}px Inter, system-ui, sans-serif`;
+    const subFont = `400 ${Math.min(11, stageH * 0.22)}px Inter, system-ui, sans-serif`;
+
+    // Label (white with subtle shadow)
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.35)';
+    ctx.shadowBlur = 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.97)';
+    ctx.font = labelFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const cy = (topEdgeY + botEdgeY) / 2;
-    ctx.fillText(labelText, cx, cy - (valueText ? stageH * 0.12 : 0));
+    ctx.fillText(labelText, cx, stageCy - (hasSubLine ? stageH * 0.1 : 0));
+    ctx.restore();
 
-    if (valueText) {
+    // Value + pct sub-line
+    if (hasSubLine) {
+      const subText = [valueText, pctText].filter(Boolean).join('  ·  ');
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.25)';
+      ctx.shadowBlur = 1;
       ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.font = `500 ${Math.min(12, stageH * 0.22)}px IBM Plex Mono, monospace`;
-      ctx.fillText(valueText, cx, cy + stageH * 0.18);
+      ctx.font = subFont;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(subText, cx, stageCy + stageH * 0.18);
+      ctx.restore();
     }
 
-    // Right column annotation (value larger)
+    // Right column: value label
     if (valueText) {
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `600 ${Math.min(14, stageH * 0.32)}px IBM Plex Mono, monospace`;
+      ctx.font = `600 ${Math.min(13, stageH * 0.3)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(valueText, cx + plotW / 2 + 12, cy);
+      ctx.fillText(valueText, cx + plotW / 2 + 12, stageCy);
+    }
+
+    // Drop-rate annotation between stages: "↓ XX%" in Inter 500 italic, small
+    if (i < n - 1 && stages[i].value != null && stages[i + 1].value != null) {
+      const dropPct = Math.round((1 - Number(stages[i + 1].value) / Number(stages[i].value)) * 100);
+      if (!isNaN(dropPct)) {
+        const gapY = botEdgeY + STAGE_GAP / 2;
+        ctx.fillStyle = rgbaCss(fg, 0.45);
+        ctx.font = `500 italic ${Math.min(10, stageH * 0.2)}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`↓ ${dropPct}%`, cx, gapY);
+      }
     }
   }
 }
 
 function drawStage(ctx, cx, topY, botY, wTop, wBot, color) {
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetY = 3;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.1); // softened: alpha 0.10
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 2;
 
+  // Inner gradient: lighten 0.08 from top-edge to bottom-edge
   const grad = ctx.createLinearGradient(0, topY, 0, botY);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.18)));
+  grad.addColorStop(0, rgbCss(lighten(color, 0.08)));
   grad.addColorStop(1, rgbCss(color));
   ctx.fillStyle = grad;
 
@@ -133,9 +198,22 @@ function drawStage(ctx, cx, topY, botY, wTop, wBot, color) {
   ctx.fill();
   ctx.restore();
 
-  // Top iso edge accent
+  // Hairline border: 1.5px, subtle
   ctx.save();
-  ctx.fillStyle = rgbaCss(lighten(color, 0.36), 0.55);
+  ctx.strokeStyle = rgbaCss(color, 0.25);
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(cx - wTop / 2, topY);
+  ctx.lineTo(cx + wTop / 2, topY);
+  ctx.lineTo(cx + wBot / 2, botY);
+  ctx.lineTo(cx - wBot / 2, botY);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+
+  // Top iso edge accent (subtle)
+  ctx.save();
+  ctx.fillStyle = rgbaCss(lighten(color, 0.15), 0.4);
   ctx.beginPath();
   ctx.moveTo(cx - wTop / 2, topY);
   ctx.lineTo(cx + wTop / 2, topY);

@@ -7,18 +7,23 @@
 // narrow apex. Use for: Maslow hierarchy, value pyramid, marketing funnel
 // (inverted), team structure.
 //
+// ORIENTATION CONVENTION (canonical):
+//   layers[0] = BASE (widest, rendered at BOTTOM of canvas)
+//   layers[n-1] = APEX (narrowest, rendered at TOP of canvas)
+//   Set inverted=true to flip (apex at bottom, funnel-like).
+//
 // Args:
 //   layers     — array of { label, sublabel?, value?, color? } from BASE (index 0) to APEX
 //   title      — optional chart title
 //   inverted   — bool, draw upside-down (funnel-like, apex at bottom)
 //
 // Render: pseudo-3D
-//   - Each layer: trapezoid (wider at bottom, narrower at top) with gradient
-//     + drop shadow + iso edge accent
-//   - Color cycles through palette.colors (or single-color gradient if mono)
-//   - Label centered in each layer (Inter 600, scales with layer height)
+//   - Each layer: trapezoid with subtle gradient (lighten 0.08) + drop shadow
+//     (alpha 0.10) + iso edge accent
+//   - Color: monotone gradient using palette.colors[0] hue, darkening per layer
+//   - Label centered in each layer (Inter 700, white + dark shadow for legibility)
 //   - Optional sublabel below label
-//   - Optional value (right-aligned, IBM Plex Mono, e.g. "$10M" or "40%")
+//   - Optional value (right-aligned, Inter 600)
 //
 // Per [[atlas-sprint14-finance-preset-plan]] — hierarchy family.
 // =============================================================================
@@ -58,16 +63,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const h = opts.h ?? 400;
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
-  const bg = palette.bg || [247, 244, 224];
+  const bg = palette.bg || null;
   const accent = palette.colors?.[0] || [60, 100, 200];
-  const layerColors = palette.colors || [
-    [60, 100, 200],
-    [200, 100, 60],
-    [60, 180, 100],
-    [180, 60, 180],
-    [200, 180, 60],
-    [120, 120, 120],
-  ];
+
+  // Monotone gradient: same hue as accent, darkening per layer
+  // Each layer i gets accent darkened by i * 0.07 (base stays near full, apex darkest)
+  const makeMonoColors = (base, count) => {
+    const result = [];
+    for (let i = 0; i < count; i++) {
+      const darken = i * 0.07;
+      result.push([
+        Math.max(0, Math.round(base[0] * (1 - darken))),
+        Math.max(0, Math.round(base[1] * (1 - darken))),
+        Math.max(0, Math.round(base[2] * (1 - darken))),
+      ]);
+    }
+    return result;
+  };
 
   const layers = Array.isArray(args.layers) ? args.layers : [];
   const title = args.title;
@@ -75,10 +87,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const n = layers.length;
   if (n === 0) return;
 
+  // Background
+  if (bg) {
+    ctx.fillStyle = rgbCss(bg);
+    ctx.fillRect(x, y, w, h);
+  } else {
+    ctx.fillStyle = '#fafaf8';
+    ctx.fillRect(x, y, w, h);
+  }
+
+  const layerColors = makeMonoColors(accent, n);
+
   // Title
   let plotTop = y + PAD;
   if (title) {
-    const titleSize = Math.round(h * 0.07);
+    const titleSize = Math.round(h * 0.065);
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
@@ -132,20 +155,20 @@ function drawLayer(ctx, cx, top, bottom, topW, botW, color, layer, info) {
 
   // Drop shadow + gradient body
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetY = 3;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.1); // softened: alpha 0.10
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 2;
   const gradient = ctx.createLinearGradient(0, top, 0, bottom);
-  gradient.addColorStop(0, rgbCss(lighten(color, 0.16)));
+  gradient.addColorStop(0, rgbCss(lighten(color, 0.08))); // lighten 0.08 max
   gradient.addColorStop(1, rgbCss(color));
   ctx.fillStyle = gradient;
   trapezoid();
   ctx.fill();
   ctx.restore();
 
-  // Top iso edge accent (lighter strip just below top edge)
+  // Top iso edge accent (subtle)
   ctx.save();
-  ctx.fillStyle = rgbaCss(lighten(color, 0.32), 0.55);
+  ctx.fillStyle = rgbaCss(lighten(color, 0.15), 0.45);
   ctx.beginPath();
   ctx.moveTo(cx - topW / 2, top);
   ctx.lineTo(cx + topW / 2, top);
@@ -155,30 +178,44 @@ function drawLayer(ctx, cx, top, bottom, topW, botW, color, layer, info) {
   ctx.fill();
   ctx.restore();
 
-  // Label (centered)
+  // Label (centered) — Inter 700 white with 2px dark shadow for legibility
   const layerH = bottom - top;
-  ctx.fillStyle = 'rgba(255,255,255,1)';
   const labelSize = Math.min(15, layerH * 0.32);
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 2;
+  ctx.shadowOffsetY = 1;
+  ctx.fillStyle = 'rgba(255,255,255,1)';
   ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = layer.sublabel ? 'bottom' : 'middle';
   const cy = (top + bottom) / 2;
   ctx.fillText(String(layer.label || ''), cx, layer.sublabel ? cy : cy + 2);
+  ctx.restore();
 
   if (layer.sublabel) {
-    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.80)';
     ctx.font = `400 ${Math.min(11, layerH * 0.2)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(String(layer.sublabel), cx, cy + 4);
+    ctx.restore();
   }
 
   // Value (right side if present, slightly indented from edge)
   if (layer.value !== undefined && layer.value !== null) {
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.font = '600 11px IBM Plex Mono, monospace';
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.font = `600 ${Math.min(12, layerH * 0.25)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(layer.value), cx + botW / 2 - 10, cy);
+    ctx.restore();
   }
 }
 
