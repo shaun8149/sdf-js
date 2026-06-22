@@ -6,10 +6,37 @@
 //
 // 数学公式大多来自 IQ 的 2D SDF 文章：
 //   https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+//
+// ── GLSL AST coverage (CPU-only boundary) ───────────────────────────────────
+// A primitive can be emitted to GLSL (GPU path) only if it sets `inst.ast`.
+// Currently 8 of the ~38 exports do:
+//     circle · ellipse · segment · arc · ring · rectangle ·
+//     rounded_rectangle · polygon
+// The rest (heart, star, moon, hexagon, triangle, trapezoid, cross, vesica, …)
+// are CPU-ONLY — they render via the 2D pipeline (silhouette / hatch / stipple)
+// but cannot compile to a fragment shader. This is fine by design: 2D scenes
+// default to the CPU renderers; the GPU path is for 3D (d3 + community ports).
+// See src/sdf/GPU-2D.md. Adding AST to the rest is a documented future sprint,
+// NOT a bug. The exported D2_GLSL_AST_PRIMITIVES set below is the source of truth.
 // =============================================================================
 
 import { SDF2, defineOp2, defineOp23 } from './core.js';
 import * as v from './vec2.js';
+
+// The 2D primitives that carry `inst.ast` and can therefore emit GLSL (GPU 2D
+// path). Everything else is CPU-only. Kept here as the single source of truth;
+// sdf3.compile.js / future GPU-2D code can consult it to warn instead of
+// silently producing a black shader. See file header + GPU-2D.md.
+export const D2_GLSL_AST_PRIMITIVES = new Set([
+  'circle',
+  'ellipse',
+  'segment',
+  'arc',
+  'ring',
+  'rectangle',
+  'rounded_rectangle',
+  'polygon',
+]);
 
 // ---- Primitives ------------------------------------------------------------
 

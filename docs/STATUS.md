@@ -2,7 +2,7 @@
 
 > Frequently-updated current state of decisions, ship status, and pending work. Vision and architecture live in [../README.md](../README.md); this file tracks **what's locked vs what's still moving**.
 >
-> Last update: 2026-05-17 (pre-M0-Day-2)
+> Last update: 2026-06-22
 
 ---
 
@@ -44,6 +44,34 @@ Full document: [memory/project_compositor_roadmap.md](../.claude/projects/-Users
 | **M4** | V1 polish — demo gallery, hero replacement, atlas.studio domain, brand surface | 1 week | ⏳ pending |
 | _deferred_ | Full 2D editor (Mini-DSL parser + Monaco + node graph dual-view) | 4–5 weeks | deferred per Saturday's revised plan — text-tab serves as 2D editor for v1; visual editor revisited if non-coder feedback demands |
 | _deferred_ | Full 3D viewport editor (three.js + transform gizmo + 3D primitive panel) | 3–4 weeks | deferred — Fly explorer + BOB GPU covers v1 "exploration" need; manual 3D composition revisited if user demands |
+
+---
+
+## Since M2 — Present layer + spatial narrative + data labels (2026-05 → 2026-06)
+
+Major capability ships after the M2 lift validation. Tracked here by capability
+(commit-level detail is in git log + memory).
+
+| Area | Status |
+|---|---|
+| **M3 Generator-S** (scatter / array / mirror variant expansion on lifted scenes) | 🟡 Phase 1–2 shipped — thesis #10 evidence in hand |
+| **Atlas Present layer** (`deck-model` / `visual-panel` / `atoms-2d` Canvas2D charts) | ✅ shipped — document-anchored decks, 6-variant picker, branding palettes |
+| **Compositor** | ✅ 10+ renderers (silhouette / hatch / bobStipple + FLY 3D / BOB GPU / studio / blueprint / crayon / topo) · **188 baked demo-lifts** |
+| **Spatial-narrative deck player** (Step 2: light chapters in one world + heavy slides own-scene; camera tour; captions; arc/grid layouts; auto-authoring) | ✅ shipped (PRs #68–#82) |
+| **Data labels** (loop-chart GLSL fix #87 · `expandChartLabels` connector #89/#93 · overlay path #86 · 6 chart atoms) — `args.labels` → SDF labels, e2e-verified with real LLM | ✅ shipped; convergence demo `deck-business` |
+| **Studio render-on-demand** (idle-stop: static scenes park the rAF loop; 0 GPU draws when idle) | ✅ shipped (#96) |
+
+---
+
+## Engineering hygiene sprint (2026-06-22)
+
+| Item | Status |
+|---|---|
+| **RendererRegistry** — single id/alias/factory source; fixes Present effect-cycle throw (lines/crayon/topo) | ✅ shipped (#97) |
+| **Primitive registry sync test** — spec `PRIMITIVE_TYPES` ↔ compile `PRIMITIVE_FACTORIES` drift guard in CI | ✅ shipped |
+| **STATUS.md / docs refresh** | ✅ this update |
+| compile.js split (`primitives/factories.js` + `registry.js`) | ⏳ planned |
+| compositor.js extract to `src/compositor/` | ⏳ planned |
 
 ---
 

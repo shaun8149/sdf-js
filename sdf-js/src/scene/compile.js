@@ -1049,6 +1049,15 @@ const PRIMITIVE_FACTORIES = {
 
 const PSEUDO_PRIMITIVES = new Set(['extrude', 'revolve', 'extrude_to']);
 
+// Exported for the registry-sync test (scripts/test-primitive-registry-sync.mjs):
+// the canonical types that have a real factory, and the pseudo (2D-source-wrap)
+// types. Lets the test assert spec.PRIMITIVE_TYPES ↔ factories stay in sync so a
+// type can't pass validate() but then throw in compile() for a missing factory.
+export const PRIMITIVE_FACTORY_TYPES = Object.keys(PRIMITIVE_FACTORIES).filter(
+  (k) => PRIMITIVE_FACTORIES[k] != null,
+);
+export const PSEUDO_PRIMITIVE_TYPES = [...PSEUDO_PRIMITIVES];
+
 // =============================================================================
 // Public API
 // =============================================================================
