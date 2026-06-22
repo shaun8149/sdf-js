@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Atlas Series A Pitch",
+    "body": [
+      "Atlas — LLM-native illustration platform",
+      "Series A fundraise · 2026-Q3",
+      "$15M to scale supply + distribution"
+    ]
+  },
+  {
+    "title": "The Problem",
+    "body": [
+      "Presentation visuals are stuck in 2008",
+      "PowerPoint icons + clipart + Lottie GIFs",
+      "AI-PPT tools fixed the text — visuals still dead",
+      "Designers spend 60% of their time on layout busywork"
+    ]
+  },
+  {
+    "title": "Total Addressable Market",
+    "body": [
+      "PPT/Keynote/Google Slides market: $4.8B annually",
+      "Editorial illustration + infographic: $2.1B",
+      "AI-augmented productivity: $48B by 2028",
+      "Initial wedge: 18M knowledge workers making decks weekly"
+    ]
+  },
+  {
+    "title": "Our Solution",
+    "body": [
+      "LLM writes structured intent",
+      "Atlas runtime renders illustration deterministically",
+      "Same content × {silhouette, 3D, lines, crayon} renderers",
+      "Editable: tweak the intent, regenerate the visual"
+    ]
+  },
+  {
+    "title": "Product Demo",
+    "body": [
+      "Upload PDF, get a scaffolded 3D deck",
+      "Inline ⚡ paragraph trigger for any text",
+      "Live-edit canvas with the LLM in the loop",
+      "Export to PPT/PDF/MP4 (forthcoming)"
+    ]
+  },
+  {
+    "title": "Traction",
+    "body": [
+      "Q1 2026: $0",
+      "Q2 2026: $120K ARR (10 design teams)",
+      "Q3 2026: $740K ARR (47 teams + 3 design agencies)",
+      "Q4 2026 forecast: $2.4M ARR · 110% net retention"
+    ]
+  },
+  {
+    "title": "Business Model",
+    "body": [
+      "Pro: $30/user/month — knowledge workers",
+      "Team: $200/seat/month — design teams (10+ seats)",
+      "Studio: $50K/year — agencies + enterprise (custom themes)",
+      "Break-even at ~$3M ARR · projected Q3 2027"
+    ]
+  },
+  {
+    "title": "The Team",
+    "body": [
+      "Sarah Chen — CEO, ex-Figma design infra lead",
+      "Alex Wu — CTO, ex-Anthropic research engineer",
+      "Diana Liu — Head of Design, ex-Apple Keynote team",
+      "20 engineers + 5 designers · NYC + remote"
+    ]
+  },
+  {
+    "title": "The Ask",
+    "body": [
+      "Raising $15M Series A",
+      "60% engineering · scaling 2D+3D atom library to 200 atoms",
+      "25% sales + community · agency partner program",
+      "15% reserve · 18-month runway · next milestone: $10M ARR"
+    ]
+  }
+]

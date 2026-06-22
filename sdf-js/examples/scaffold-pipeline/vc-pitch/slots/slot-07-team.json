@@ -1,0 +1,113 @@
+{
+  "slotIdx": 7,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Founders + key hires with credentials",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "The Team",
+  "sceneData": {
+    "name": "pitch-deck-vc/team",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "circle-image-hub-spoke",
+        "x": 80,
+        "y": 120,
+        "w": 520,
+        "h": 520,
+        "args": {
+          "center": {
+            "label": "Leadership",
+            "color": [255, 120, 40]
+          },
+          "satellites": [
+            {
+              "label": "Sarah Chen\nCEO\nex-Figma design infra",
+              "color": [20, 60, 180]
+            },
+            {
+              "label": "Alex Wu\nCTO\nex-Anthropic research",
+              "color": [20, 60, 180]
+            },
+            {
+              "label": "Diana Liu\nHead of Design\nex-Apple Keynote",
+              "color": [20, 60, 180]
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 160,
+        "args": {
+          "value": "20",
+          "label": "Engineers",
+          "sublabel": "Building the future of design tools",
+          "icon": "users"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 380,
+        "w": 520,
+        "h": 160,
+        "args": {
+          "value": "5",
+          "label": "Designers",
+          "sublabel": "Crafting world-class UX",
+          "icon": "palette"
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 720,
+        "y": 580,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "buildings",
+          "label": "NYC HQ",
+          "color": [60, 65, 90]
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 880,
+        "y": 580,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "globe",
+          "label": "Remote",
+          "color": [60, 65, 90]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["circle-image-hub-spoke", "isotype-stat-comparison", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 641,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 642,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.038400000000000004,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-06-22T15:02:37.103Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

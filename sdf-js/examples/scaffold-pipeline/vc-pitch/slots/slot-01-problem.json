@@ -1,0 +1,102 @@
+{
+  "slotIdx": 1,
+  "slotName": "problem",
+  "slotTitle": "Problem",
+  "slotPurpose": "Pain point — who hurts and how much",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "The Problem",
+  "sceneData": {
+    "name": "pitch-deck-vc/problem",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 120,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Presentation visuals are stuck in 2008",
+              "sublabel": "PowerPoint icons + clipart + Lottie GIFs",
+              "status": "highlight"
+            },
+            {
+              "label": "AI-PPT tools fixed the text — visuals still dead",
+              "sublabel": "Copy improved, but graphics remain templated"
+            },
+            {
+              "label": "Designers spend 60% of their time on layout busywork",
+              "sublabel": "Manual alignment, resizing, and formatting overhead"
+            }
+          ],
+          "title": "The Problem",
+          "numbered": false,
+          "highlight": 0
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 200,
+        "w": 480,
+        "h": 280,
+        "args": {
+          "value": "60%",
+          "label": "Designer Time Wasted",
+          "sublabel": "on layout busywork instead of creativity",
+          "trend": "down",
+          "trendValue": "should be 0%",
+          "icon": "users"
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 760,
+        "y": 520,
+        "w": 120,
+        "h": 120,
+        "args": {
+          "name": "warning-circle",
+          "label": "Outdated",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 920,
+        "y": 520,
+        "w": 120,
+        "h": 120,
+        "args": {
+          "name": "clock",
+          "label": "Time Drain",
+          "color": [20, 60, 180]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": ["org-chart", "gantt"],
+    "tokenUsage": {
+      "input_tokens": 664,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 576,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.037479,
+    "elapsedSec": 8.5,
+    "generatedAt": "2026-06-22T15:01:47.560Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

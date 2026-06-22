@@ -1,0 +1,106 @@
+{
+  "slotIdx": 2,
+  "slotName": "market-size",
+  "slotTitle": "Market Size",
+  "slotPurpose": "TAM/SAM/SOM with numbers",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Total Addressable Market",
+  "sceneData": {
+    "name": "pitch-deck-vc/market-size",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "pyramid",
+        "x": 80,
+        "y": 120,
+        "w": 520,
+        "h": 520,
+        "args": {
+          "layers": [
+            {
+              "label": "AI-augmented productivity",
+              "sublabel": "$48B by 2028",
+              "value": 48
+            },
+            {
+              "label": "PPT/Keynote/Google Slides",
+              "sublabel": "$4.8B annually",
+              "value": 4.8
+            },
+            {
+              "label": "Editorial illustration + infographic",
+              "sublabel": "$2.1B",
+              "value": 2.1
+            }
+          ],
+          "title": "Total Addressable Market",
+          "inverted": false
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 180,
+        "args": {
+          "value": "18M",
+          "label": "Knowledge Workers",
+          "sublabel": "making decks weekly",
+          "icon": "users",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 400,
+        "w": 250,
+        "h": 160,
+        "args": {
+          "value": "$4.8B",
+          "label": "Core Market",
+          "sublabel": "Presentation tools",
+          "icon": "chart-bar",
+          "color": [20, 60, 180]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 950,
+        "y": 400,
+        "w": 250,
+        "h": 160,
+        "args": {
+          "value": "$48B",
+          "label": "TAM 2028",
+          "sublabel": "AI productivity",
+          "icon": "lightning",
+          "color": [255, 120, 40]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["pyramid", "kpi-card", "sphere-fill", "bar"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 650,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 585,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.037572,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-06-22T15:01:55.027Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
