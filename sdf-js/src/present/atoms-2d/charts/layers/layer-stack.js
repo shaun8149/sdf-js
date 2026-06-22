@@ -85,15 +85,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const layerCY = plotTop + plotH - (visualIdx + 0.5) * (layerH + gap) + gap / 2;
     const color = layer.color || baseColors[i % baseColors.length];
 
-    // Side band (visible cylinder side)
+    // Layer body — softer drop shadow (0.13 alpha, 8px blur)
     ctx.save();
-    ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 2;
     const sideGrad = ctx.createLinearGradient(stackCX - layerW / 2, 0, stackCX + layerW / 2, 0);
-    sideGrad.addColorStop(0, rgbCss(darken(color, 0.18)));
-    sideGrad.addColorStop(0.5, rgbCss(color));
-    sideGrad.addColorStop(1, rgbCss(darken(color, 0.22)));
+    sideGrad.addColorStop(0, rgbCss(darken(color, 0.15)));
+    sideGrad.addColorStop(0.45, rgbCss(color));
+    sideGrad.addColorStop(1, rgbCss(darken(color, 0.2)));
     ctx.fillStyle = sideGrad;
     roundRect(
       ctx,
@@ -106,33 +106,35 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Top highlight band (suggests light from above)
+    // Top-edge highlight — 1px alpha 0.15 (hairline top-light)
     ctx.save();
-    ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.35);
-    roundRect(
-      ctx,
-      stackCX - layerW / 2,
-      layerCY - layerH / 2,
-      layerW,
-      Math.max(2, layerH * 0.12),
-      Math.min(8, layerH * 0.18),
-    );
+    const highlightH = Math.max(2, layerH * 0.1);
+    const rr = Math.min(8, layerH * 0.18);
+    ctx.fillStyle = rgbaCss(lighten(color, 0.45), 0.28);
+    roundRect(ctx, stackCX - layerW / 2, layerCY - layerH / 2, layerW, highlightH, rr);
     ctx.fill();
+    // 1px hairline white line at very top edge
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(stackCX - layerW / 2 + rr, layerCY - layerH / 2 + 0.5);
+    ctx.lineTo(stackCX + layerW / 2 - rr, layerCY - layerH / 2 + 0.5);
+    ctx.stroke();
     ctx.restore();
 
-    // Label inside layer center
+    // Label inside layer center (Inter 700, white)
     if (layer.label) {
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = 'rgba(255,255,255,0.96)';
       ctx.font = `700 ${Math.round(layerH * 0.35)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(layer.label), stackCX, layerCY);
     }
 
-    // Sublabel to right of stack
+    // Sublabel to right of stack (Inter 500, softer)
     if (layer.sublabel) {
-      ctx.fillStyle = rgbaCss(fg, 0.75);
-      ctx.font = `500 ${Math.round(layerH * 0.32)}px Inter, system-ui, sans-serif`;
+      ctx.fillStyle = rgbaCss(fg, 0.65);
+      ctx.font = `500 ${Math.round(layerH * 0.3)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(layer.sublabel), labelX, layerCY);

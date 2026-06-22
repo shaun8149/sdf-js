@@ -39,7 +39,7 @@ export const spec = {
   },
 };
 
-const PAD = 32;
+const PAD = 24;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -47,14 +47,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const w = opts.w ?? 720;
   const h = opts.h ?? 400;
   const palette = opts.palette || {};
-  const fg = palette.silhouetteColor || [30, 27, 30];
-  const bg = palette.bg || [247, 244, 224];
   const colors = palette.colors || [
     [60, 100, 200],
     [120, 60, 180],
   ];
   const accent = colors[0];
-  const accent2 = colors[1] || lighten(accent, 0.25);
 
   const title = args.title || '';
   const subtitle = args.subtitle;
@@ -62,88 +59,60 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const date = args.date;
   const version = args.version;
 
-  // ---- Gradient backdrop ----
-  // Diagonal gradient from accent2 (top-left) → accent (bottom-right)
+  // ---- Subtle diagonal gradient backdrop ----
+  // accent at top-left → lighten(accent, 0.20) bottom-right. Capped saturation.
   const bgGrad = ctx.createLinearGradient(x, y, x + w, y + h);
-  bgGrad.addColorStop(0, rgbCss(lighten(accent2, 0.05)));
-  bgGrad.addColorStop(1, rgbCss(darken(accent, 0.1)));
+  bgGrad.addColorStop(0, rgbCss(darken(accent, 0.05)));
+  bgGrad.addColorStop(1, rgbCss(lighten(accent, 0.2)));
   ctx.fillStyle = bgGrad;
   ctx.fillRect(x, y, w, h);
 
-  // ---- Decorative iso shape (top-right corner) ----
-  drawCornerDecoration(ctx, x + w - 100, y + 80, 60, accent);
+  // ---- Thin top-band hairline (stage-strip feel) ----
+  ctx.save();
+  ctx.fillStyle = 'rgba(255,255,255,0.20)';
+  ctx.fillRect(x, y, w, 2);
+  ctx.restore();
 
-  // ---- Title block (center-left) ----
+  // ---- Title block — vertical center, left-aligned ----
+  // Scale font relative to h but cap so short-strip (h≈100) stays readable.
+  const titleSize = Math.max(18, Math.min(Math.round(h * 0.14), 72));
+  const subtitleSize = Math.max(12, Math.min(Math.round(h * 0.065), 28));
+  const metaSize = Math.max(10, Math.min(Math.round(h * 0.038), 14));
+
   const titleX = x + PAD;
-  const titleY = y + h / 2 - 24;
-  ctx.fillStyle = 'rgba(255,255,255,0.98)';
-  ctx.font = `900 ${Math.round(h * 0.16)}px Inter, system-ui, sans-serif`;
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'bottom';
-  ctx.fillText(String(title), titleX, titleY);
 
-  // ---- Subtitle (below title) ----
+  // Vertical layout: start from center, nudge up slightly
+  const blockH = titleSize + (subtitle ? subtitleSize + 8 : 0);
+  const blockTop = y + (h - blockH) / 2 - (h > 160 ? 10 : 0);
+
+  // Title
+  ctx.fillStyle = 'rgba(255,255,255,0.97)';
+  ctx.font = `900 ${titleSize}px Inter, system-ui, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(String(title), titleX, blockTop);
+
+  // Subtitle
   if (subtitle) {
-    ctx.fillStyle = 'rgba(255,255,255,0.78)';
-    ctx.font = `500 ${Math.round(h * 0.075)}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.font = `500 ${subtitleSize}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
-    ctx.fillText(String(subtitle), titleX, titleY + 12);
+    ctx.fillText(String(subtitle), titleX, blockTop + titleSize + 8);
   }
 
-  // ---- Metadata strip (bottom) ----
+  // ---- Metadata strip — bottom-right ----
   const metaParts = [];
   if (author) metaParts.push(author);
   if (date) metaParts.push(date);
   if (version) metaParts.push(version);
-  if (metaParts.length > 0) {
-    ctx.fillStyle = 'rgba(255,255,255,0.65)';
-    ctx.font = `500 ${Math.round(h * 0.04)}px IBM Plex Mono, monospace`;
-    ctx.textAlign = 'left';
+  if (metaParts.length > 0 && h > 80) {
+    ctx.fillStyle = 'rgba(255,255,255,0.60)';
+    ctx.font = `500 ${metaSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
     const sep = '  ·  ';
-    ctx.fillText(metaParts.join(sep), titleX, y + h - PAD);
+    ctx.fillText(metaParts.join(sep), x + w - PAD, y + h - PAD * 0.6);
   }
-}
-
-function drawCornerDecoration(ctx, cx, cy, size, color) {
-  // Iso cube as decorative element
-  const s = size * 0.42;
-  const angle = Math.PI / 6;
-  const dx = Math.cos(angle) * s;
-  const dy = Math.sin(angle) * s;
-
-  ctx.save();
-  ctx.globalAlpha = 0.18;
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 6;
-
-  ctx.fillStyle = 'rgba(255,255,255,1)';
-  // Right face
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + dx, cy - dy);
-  ctx.lineTo(cx + dx, cy - dy + s * 2);
-  ctx.lineTo(cx, cy + s * 2);
-  ctx.closePath();
-  ctx.fill();
-  // Left face
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx - dx, cy - dy);
-  ctx.lineTo(cx - dx, cy - dy + s * 2);
-  ctx.lineTo(cx, cy + s * 2);
-  ctx.closePath();
-  ctx.fill();
-  // Top face
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx - dx, cy - dy);
-  ctx.lineTo(cx, cy - dy * 2);
-  ctx.lineTo(cx + dx, cy - dy);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
 }
 
 function lighten(rgb, amt) {
