@@ -180,10 +180,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const y0 = intercept; // y at x=0
       const y1 = slope + intercept; // y at x=1
 
+      // Don't clamp y0/y1 — that bends the line slope at the plot edge.
+      // ctx.clip() (below) handles the visual cropping correctly.
       const px0 = plotL + 0 * plotW;
-      const py0 = plotB - clamp(y0, 0, 1) * plotH;
+      const py0 = plotB - y0 * plotH;
       const px1 = plotL + 1 * plotW;
-      const py1 = plotB - clamp(y1, 0, 1) * plotH;
+      const py1 = plotB - y1 * plotH;
 
       // Accent color: palette accent or second color or dim fg
       const accentColor = palette.accentColor ||
