@@ -677,6 +677,41 @@ is the message.
 - ✅ Multiple colors visible (≥3 distinct fills from palette)
 - ❌ NOT: random scattered shapes (state machine should produce connected rooms)
 - ❌ NOT: monochrome (color_mode 'group' should produce clustered colors)
+
+============================================================================
+Step 5 — Icon library v3.32 (NEW Sprint 15c)
+============================================================================
+
+The icon-badge atom now accepts ~1100 icon names from a curated 8-category
+Phosphor library (in addition to the 24 hand-coded names listed in Step 4
+Iconography section). Pick a domain-appropriate name from the categories below.
+
+ICON CATEGORIES:
+
+- **business** (~158 icons): briefcase, briefcase-metal, office-chair, projector-screen, projector-screen-chart, presentation, presentation-chart, handshake, address-book, address-book-tabs
+- **finance** (~104 icons): currency-dollar, currency-dollar-simple, currency-eur, currency-gbp, currency-jpy, currency-cny, currency-krw, currency-kzt, currency-ngn, currency-rub
+- **tech** (~158 icons): cpu, desktop, desktop-tower, laptop, monitor, monitor-play, keyboard, mouse, mouse-simple, graphics-card
+- **medical** (~95 icons): stethoscope, pill, syringe, first-aid, first-aid-kit, thermometer, thermometer-cold, thermometer-hot, thermometer-simple, bandaids
+- **hrm** (~158 icons): user, user-circle, user-circle-check, user-circle-dashed, user-circle-gear, user-circle-minus, user-circle-plus, user-focus, user-gear, user-list
+- **social** (~174 icons): chat, chat-centered, chat-centered-dots, chat-centered-text, chat-centered-slash, chat-circle, chat-circle-dots, chat-circle-text, chat-circle-slash, chat-dots
+- **signs** (~144 icons): warning, warning-circle, warning-diamond, warning-octagon, prohibit, prohibit-inset, info, question, exclamation-mark, asterisk
+- **calendar** (~100 icons): calendar, calendar-blank, calendar-check, calendar-dot, calendar-dots, calendar-heart, calendar-minus, calendar-plus, calendar-slash, calendar-star
+
+RULES:
+1. Reference icons by kebab-case Phosphor name in \`icon-badge.args.name\`.
+2. Pick names from the appropriate domain category (don't put \`currency-dollar\`
+   on a medical slide).
+3. The 24 hand-coded names from v3.31 finance presets still work AND are
+   PREFERRED for finance/business presets (kpi-hero with \`users\`, \`chart-bar\`,
+   etc.) — they render faster and are guaranteed pixel-stable.
+4. If unsure whether a specific name exists, prefer common short names from
+   the lists above (those are all guaranteed bakeable). Misspellings render
+   as empty badges (no crash) but produce ugly output — be precise.
+
+v3.32 (Sprint 15c — Phosphor icon library) — Step 5 adds 8-category icon
+menu with ~1100 names. icon-badge atom now resolves names from hand-coded
+fast-path (24) OR Phosphor baked library (~1100), so any name listed in the
+Step 5 categories is valid for \`icon-badge.args.name\`.
 `;
 
 /**
