@@ -2,7 +2,40 @@
 
 > Frequently-updated current state of decisions, ship status, and pending work. Vision and architecture live in [../README.md](../README.md); this file tracks **what's locked vs what's still moving**.
 >
-> Last update: 2026-06-22
+> Last update: 2026-06-22 (Atlas Present 3D end — product-form lock + cinematic studio wave)
+
+---
+
+## ⭐ Product form (2026-06-22 LOCK)
+
+**Atlas = a spatial-narrative presenter.** Essence: pure-text input (uploaded or typed) → spatial-narrative output. The product is **two independent, complete products**:
+
+- **Stage 1 — 2D end** (a separate product): text → presentation-style 2D slides. Owns semantics / structure (TOC, archetype). Produces **pseudo-3D** infographic slides (the `atoms-2d` library — isometric / extruded / layered).
+- **Stage 2 — 3D end** (this repo's current focus): reads 2D slides (mainly **PDF**) → **lifts them visually to 3D**. **No semantics** — it recognises *visual structure* ("a cube here, a 3-layer bar chart there, at these positions"), not *meaning*. Each slide becomes a station in one continuous 3D world; the camera flies between them (one `cameraSequence`).
+
+**Why the visual lift is tractable**: Stage 1's slides are already **pseudo-3D**, so the lift is "un-flatten pseudo-3D back to real 3D" (near-deterministic) rather than "invent 3D from a flat image." A pseudo-3D 2D atom maps to its real-3D twin. Lift path: (a) visual recognition of the pseudo-3D atom → instantiate the 3D twin; (b) structure pass-through as a fallback when vision can't recognise.
+
+**stun demo** = upload a PresentationLoad PDF → ~5 s → a 3D flythrough version.
+
+Full thesis: `memory/project_atlas_present_spatial_narrative_thesis.md` (internal).
+
+## Atlas Present app + cinematic studio — ship wave (2026-06)
+
+| Area | Status |
+|---|---|
+| **`apps/present/`** — thin product host on the studio engine (studio-decoupling Phase 1 shared core + Phase 2 host) | ✅ shipped (#111 / #112) |
+| **three.js cinema landing** (`apps/present/landing/`) — official-site front door: dark room + monumental screen (MIT Seascape) + figure + click→push-in→deck. three.js QUARANTINED to the landing shell; product runtime stays SDF | ✅ shipped (#119) |
+| **studio renderer — premium PBR** — roughness axis (`material.roughness`) + studio-softbox reflections + clearcoat (`material.clearcoat`); two free `leafTone` slots, no new uniforms | ✅ shipped (#123) |
+| **studio renderer — cinematic lighting** — warm/cool key-fill + bigger key/fill ratio + softer shadows + cool kicker rim | ✅ shipped (#125) |
+| **camera language** — `cameraSequence` ease modes (`in`/`out`/`inout`) + **rack focus** (intra-shot `[from,to]` focalDistance/aperture); thirds-composed hero | ✅ shipped (#128) |
+
+## Atom library — 2D ↔ 3D alignment (2026-06-22 audit)
+
+The two atom libraries are the lift's vocabulary. `src/present/atoms-2d/` (~68 registered) ↔ `src/scene/components/` (42 `-3d` atoms).
+
+- **48 / 68 (≈71%) of 2D atoms have a 3D twin**; **0 3D atoms lack a 2D source** (3D ⊆ 2D).
+- **Core 100% aligned**: basic shapes (cube / arrow / diamond / gear / circle×4 / sphere×4), standard charts (bar / line / pie / column / kpi), core diagrams (flow / org / mindmap / timeline / tree / relationship), specialties (funnel / waterfall / gantt / gauge / venn / scatter / matrix / progression / pyramid / layer-stack).
+- **~20 gaps** = newer / specialty 2D atoms (isotype×3, break-even, bubble, histogram, seven-s, multiple-arrows, circle-image-hub-spoke, infinity-loop, nine-field-matrix, magazine-column-grid, cube-grid, gear-cluster, device-mockup×2, icon-badge). Fill on demand as the stun demo needs them; icon/device-mockup may not need 3D twins.
 
 ---
 

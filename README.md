@@ -170,7 +170,15 @@ A minimal 4D slice-explorer demo is queued on the bench (see roadmap) so this se
 
 ## What's in the box (current capability)
 
-### 6 renderers × any SDF dim (2D or 3D)
+### Atlas Present — the spatial-narrative presenter (first commercial product)
+
+Atlas's first application: **pure-text input → spatial-narrative output**. Built as two independent products — a **2D end** (text → presentation-style *pseudo-3D* slides) and a **3D end** (reads those slides as PDF → **lifts them visually to real 3D**, each slide a station in one continuous world the camera flies through). The 3D end recognises *visual structure*, not semantics — and because the 2D slides are already pseudo-3D, the lift is "un-flatten back to 3D," not "invent 3D from flat pixels." (Status + product-form lock: [docs/STATUS.md](docs/STATUS.md).)
+
+- **`apps/present/`** — the product host (a thin Layer-2 app standing on the studio engine).
+- **`apps/present/landing/`** — a cinematic three.js front door (dark room + a glowing screen + click-to-enter → hands off to the SDF deck). three.js is *quarantined* to this marketing shell; the product runtime stays studio/SDF.
+- **Atom libraries** — `src/present/atoms-2d/` (~68 registered pseudo-3D infographic atoms) ↔ `src/scene/components/` (42 `-3d` atoms). ≈71% of 2D atoms have a 3D twin; all core shapes/charts/diagrams aligned. These are the lift's vocabulary.
+
+### 7 renderers × any SDF dim (2D or 3D)
 
 Split into two implementation families. All renderers are polymorphic over SDF2 / SDF3 (12-cell matrix); the GPU family adds real-time interactivity.
 
@@ -189,6 +197,7 @@ Split into two implementation families. All renderers are polymorphic over SDF2 
 | --- | --- | --- |
 | **Fly 3D** | GPU Lambert + free-fly camera; preview & scene-composition mode | Standard 3D shading |
 | **BOB GPU** | GPU quantized-palette spaceCol + 2-pass FBO sand painting + scene-wide palette parity lock | Erik Swahn Autoscope / Aboriginal dot meets Bonnard / generative grid |
+| **Studio** | Cinematic HDR raymarch — premium PBR (roughness / softbox reflections / clearcoat), warm/cool key-fill + kicker lighting, volumetric beams/fog, `cameraSequence` with ease modes + rack focus, bloom/DoF post; render-on-demand idle-stop. The Atlas Present deck renderer. | Film lighting / product photography |
 
 Compile path: any SDF3 expression → GLSL via `sdf3.compile.js` (with optional `emitObjectIndex` for multi-object color separation). Same SDF tree feeds both canvas and GPU renderers.
 
