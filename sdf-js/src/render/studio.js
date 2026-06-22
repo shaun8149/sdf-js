@@ -797,12 +797,16 @@ void main() {
     bool isBuilding = false;    // material.kind == 'building'    (tone.y ~ 6)
     bool isEroded = false;      // material.kind == 'eroded-terrain' (tone.y ~ 7)
     bool isGlass = false;       // material.kind == 'glass'           (tone.y ~ 8)
+    bool isFill = false;        // material.kind == 'fill'            (tone.y ~ 9)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      // Check higher kinds first (7 > 6 > 5 > 4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 7.5) {
+      // Check higher kinds first (9 > 8 > 7 > ... > 1 > 0).
+      if (leafTone.y > 8.5) {
+        isFill = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x)); // liquid colour
+      } else if (leafTone.y > 7.5) {
         isGlass = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
       } else if (leafTone.y > 6.5) {
@@ -990,6 +994,37 @@ void main() {
       gcol += vec3(1.0) * pow(max(dot(n, Hg), 0.0), 140.0) * shadowK * 1.2; // sharp glint
       gcol += vec3(0.75, 0.85, 1.0) * pow(1.0 - ndv, 3.0) * 0.35;           // cool fresnel edge
       col = gcol;
+    } else if (isFill) {
+      // ---- Fill-gauge material kind (waterline two-tone) -------------------
+      // A SOLID sphere read as a "fill level": coloured liquid below a waterline,
+      // light glass above, crisp meniscus between. On a sphere the surface normal
+      // y-component IS the local height fraction, so the split is transform-free
+      // and needs no center/radius — just the per-leaf fill fraction (pat.w).
+      // Stylized on purpose: real glass refraction smears the level (see kind 8),
+      // so we keep the waterline crisp and the data readable.
+      float fillFrac = clamp(leafPat.w, 0.0, 1.0);
+      float waterline = 2.0 * fillFrac - 1.0;                  // n.y at the surface
+      float below = 1.0 - smoothstep(waterline - 0.012, waterline + 0.012, n.y);
+      vec3 liquidCol = base;                                   // material hue/sat/value
+      vec3 glassCol = mix(vec3(0.93, 0.95, 0.99), base, 0.10); // light, faint liquid tint
+      vec3 albedo = mix(glassCol, liquidCol, below);
+      // FLAT-ish data-viz lighting: a strong ambient floor so the liquid colour
+      // reads even on the down-facing (sun-shadowed) bottom of the sphere — a
+      // gauge must stay legible, not go realistically dark — plus a soft key for
+      // form and a faint sky tint.
+      vec3 sunColF = vec3(1.20, 0.94, 0.72);
+      float diffF = max(dot(n, toLight), 0.0);
+      vec3 litF = albedo * (0.62 + 0.55 * diffF * shadowK) * sunColF * 0.92
+                + albedo * sky(n, sunDir) * skyL * ao * 0.12;
+      // Glossy clearcoat sheen → glass look: tight white glint + cool fresnel rim.
+      float ndvF = max(dot(n, -rd), 0.0);
+      vec3 HgF = normalize(toLight + (-rd));
+      litF += vec3(1.0) * pow(max(dot(n, HgF), 0.0), 90.0) * shadowK * 0.6;
+      litF += vec3(0.85, 0.90, 1.0) * pow(1.0 - ndvF, 4.0) * 0.18;
+      // Crisp meniscus band where liquid meets glass.
+      float band = 1.0 - smoothstep(0.0, 0.045, abs(n.y - waterline));
+      litF += vec3(0.92, 0.96, 1.0) * band * 0.22;
+      col = litF;
     } else if (isSnowy) {
       // ---- Snowy material kind (IQ Snow Bridge recipe-only port) -----------
       // Standard Lambert with the underlying base color, then blend snow on top
@@ -2150,7 +2185,8 @@ export function createStudioRenderer({
       patternLUT[i * 4 + 0] = p.code;
       patternLUT[i * 4 + 1] = p.scale;
       patternLUT[i * 4 + 2] = p.strength;
-      // [3] reserved for future use (e.g. rotation, sub-variant)
+      // [3] = fill fraction (0..1) for material kind 9 (fill-gauge); 0 otherwise.
+      patternLUT[i * 4 + 3] = p.fill ?? 0;
     }
 
     // Upload LUTs ONCE per program load. Uniforms persist on the program
