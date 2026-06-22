@@ -28,4 +28,12 @@ const items4 = items6.slice(0, 4);
 await renderAtom(document.getElementById('c1').getContext('2d'), 'agenda-list', {items: items6, title: 'Agenda', subtitle: 'Q3 board review'}, 'pseudo3d', {x:0,y:0,w:1100,h:500,palette:theme});
 await renderAtom(document.getElementById('c2').getContext('2d'), 'agenda-list', {items: items4, title: 'Agenda'}, 'pseudo3d', {x:0,y:0,w:900,h:420,palette:theme});
 await renderAtom(document.getElementById('c3').getContext('2d'), 'agenda-list', {items: items4, title: 'Agenda'}, 'pseudo3d', {x:0,y:0,w:480,h:320,palette:theme});
+
+// Cover section-style test (PL slide 31 pattern)
+const sec = document.createElement('div');
+sec.innerHTML = `<div class="label" style="margin-top:24px;">Cover · style: section — PL section-divider</div><canvas id="c4" width="1280" height="500"></canvas><div class="label">Cover · style: gradient (default)</div><canvas id="c5" width="1280" height="500"></canvas>`;
+document.body.appendChild(sec);
+const navyTheme = {bg:[248,246,240], silhouetteColor:[22,35,70], accent:[38,70,130], colors:[[38,70,130]]};
+await renderAtom(document.getElementById('c4').getContext('2d'), 'cover', {title: 'OUR VISION', subtitle: 'Where we are going next.', style:'section'}, 'pseudo3d', {x:0,y:0,w:1280,h:500,palette:navyTheme});
+await renderAtom(document.getElementById('c5').getContext('2d'), 'cover', {title: 'OUR VISION', subtitle: 'Where we are going next.'}, 'pseudo3d', {x:0,y:0,w:1280,h:500,palette:navyTheme});
 </script></body></html>

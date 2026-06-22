@@ -319,8 +319,10 @@ for (const a of slotAssignments) {
     `1. **EVERY subject MUST have explicit x/y/w/h** in canvas pixels.\n` +
     `2. **Atom selection**: pick ONLY from the recommended_atoms menu (priority order). Fall back to cover+bullet-list ONLY if no recommended atom fits.\n` +
     `3. **Density — fill the canvas, don't leave 60% empty**. Aim for 3-6 subjects per slot (not 1). If source has 3 description blocks → emit 3 bullet-list / kpi-card / icon-badge atoms. If only 1, pair it with a cover top-strip + supporting context.\n` +
-    `4. **Slot 0 (cover)** = single cover atom, h=720 full (deck cover, not used mid-deck).\n` +
-    `5. **Cover atom when used mid-deck** (e.g. section header): h=120 TOP STRIP (x=0, y=0, w=1280). NEVER full-canvas cover unless slot 0.\n` +
+    `4. **Slot 0 (cover)** = single cover atom, h=720 full. style: 'gradient' default; pass title + subtitle + optional author.\n` +
+    `5. **Cover atom when used mid-deck**:\n` +
+    `   - For in-slide TITLE STRIP (e.g. "Section 2 — Products" band): h=120 TOP STRIP (x=0, y=0, w=1280). Default 'gradient' style.\n` +
+    `   - For SECTION DIVIDER slot (Vision / Mission / Values transition where entire slot is title hero): h=720 full canvas + \`args.style: "section"\` (PL-style deep accent + box-behind-title).\n` +
     `6. **Theme**: pass \`color\` args as theme accent or colors[]. Don't invent colors.\n` +
     `7. **Body text preservation**: every body line lands in an atom's args. Acceptable shapes:\n` +
     `   - \`bullet-list\` args.items = \`[{label: "body line 1"}, {label: "body line 2"}]\` — use \`label\` key explicitly, NOT \`text\` or plain strings.\n` +
