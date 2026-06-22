@@ -31,7 +31,7 @@
       'line': { args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' }, w: 480, h: 320 },
       'pie': { args: { values: [32, 23, 11, 8, 26], labels: ['AWS','Azure','GCP','Alibaba','Others'], format: 'percent', title: 'Cloud Market Share' }, w: 480, h: 320 },
       'column': { args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' }, w: 480, h: 320 },
-      'sphere-fill': { args: { value: 0.72, label: '72% Complete', title: 'Project Progress' }, w: 360, h: 360 },
+      'sphere-fill': { args: { value: 72, label: '72% Complete', title: 'Project Progress' }, w: 360, h: 360 },
       'funnel': { args: { stages: [{label:'Visitors', value: 10000}, {label:'Signup', value: 4000}, {label:'Trial', value: 1500}, {label:'Paid', value: 500}], title: 'Conversion Funnel' }, w: 480, h: 320 },
       'waterfall': { args: { bars: [{label:'Q1', value:100, kind:'start'}, {label:'New Sales', value:30, kind:'positive'}, {label:'Churn', value:-8, kind:'negative'}, {label:'Q2', value:122, kind:'end'}], format:'currency', title:'Q1 → Q2 Bridge' }, w: 480, h: 320 },
       'gantt': { args: { tasks: [{label:'Design', start:0, end:2}, {label:'Build', start:2, end:5}, {label:'Test', start:5, end:7}, {label:'Ship', start:7, end:8}], title: 'Project Timeline' }, w: 480, h: 320 },
@@ -75,9 +75,9 @@
       'circle-loop': { args: { items: [{label:'A'},{label:'B'},{label:'C'},{label:'D'}], title: 'Cycle' }, w: 360, h: 360 },
       'circle-segmented': { args: { segments: 5 }, w: 280, h: 280 },
       'circle-stack': { args: { layers: 4 }, w: 240, h: 240 },
-      'sphere-network': { args: { nodes: 5 }, w: 360, h: 320 },
+      'sphere-network': { args: { hub: {label:'Platform'}, satellites: [{label:'API'},{label:'Web'},{label:'Mobile'},{label:'CLI'},{label:'SDK'}], title: 'Product Surface' }, w: 480, h: 480 },
       'sphere-segmented': { args: { segments: 4 }, w: 240, h: 240 },
-      'sphere-tree': { args: { depth: 3 }, w: 320, h: 320 },
+      'sphere-tree': { args: { root: { label: 'Decision', children: [{label:'Yes',children:[{label:'Path A'},{label:'Path B'}]},{label:'No',children:[{label:'Path C'},{label:'Path D'}]}] }, title: 'Decision Tree' }, w: 480, h: 360 },
     };
 
     const container = document.getElementById('cards');
