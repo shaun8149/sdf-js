@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Scaffold Registry — 10 deck templates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body { margin: 0; padding: 24px; font-family: 'Inter', system-ui; background: #f8f7f4; color: #1e1b1e; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      h1 + p { margin: 0 0 24px; color: #666; font-size: 13px; }
+      .picker-box { background: white; border: 1px solid #d0cec3; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+      .picker-box label { display: block; font-size: 11px; color: #666; margin-bottom: 4px; font-family: 'IBM Plex Mono', monospace; }
+      .picker-box textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; box-sizing: border-box; }
+      .picker-box input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 14px; box-sizing: border-box; margin-bottom: 8px; }
+      .picker-box button { background: #1e1b1e; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+      .picker-result { margin-top: 16px; padding: 14px; background: #f4f1e9; border-radius: 4px; font-size: 13px; }
+      .picker-result strong { display: inline-block; padding: 2px 8px; border-radius: 3px; background: #1e1b1e; color: white; font-family: 'IBM Plex Mono', monospace; font-size: 11px; margin-right: 8px; }
+      .scaffold-card { background: white; border: 1px solid #d0cec3; border-radius: 6px; padding: 18px; margin-bottom: 14px; }
+      .scaffold-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+      .scaffold-id { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 8px; background: #1e1b1e; color: white; border-radius: 3px; }
+      .scaffold-label { font-size: 16px; font-weight: 700; }
+      .scaffold-desc { font-size: 12px; color: #666; margin-bottom: 12px; }
+      .scaffold-meta { display: flex; gap: 16px; font-size: 11px; color: #888; margin-bottom: 14px; }
+      .slot-row { display: flex; gap: 0; margin-bottom: 6px; }
+      .slot-cell { flex: 1; padding: 8px 10px; background: #f4f1e9; border: 1px solid #e0ddd0; border-right: none; font-size: 11px; line-height: 1.4; min-width: 0; }
+      .slot-cell:last-child { border-right: 1px solid #e0ddd0; }
+      .slot-name { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 10px; color: #1e1b1e; margin-bottom: 2px; }
+      .slot-title { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+      .slot-purpose { color: #666; margin-bottom: 4px; }
+      .slot-atoms { color: #555; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+      .slot-atoms .first { color: #1e1b1e; font-weight: 700; }
+      .theme-swatches { display: flex; gap: 4px; margin-top: 8px; }
+      .theme-swatch { width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15); }
+    </style>
+  </head>
+  <body>
+    <h1>Atlas Scaffold Registry — 10 canonical deck templates</h1>
+    <p>Sprint 15E: scaffold = slot sequence + recommended atoms per slot + theme affinity. Picker scores by keyword + audience + slot-count match.</p>
+
+    <div class="picker-box">
+      <label>TRY THE PICKER — type a deck title + paste rough body to see ranked scaffolds</label>
+      <input id="picker-title" placeholder="Title (e.g. Acme Series A Pitch)" />
+      <label>BODY (one paragraph per line)</label>
+      <textarea id="picker-body" rows="4" placeholder="Problem...&#10;Solution...&#10;Traction...&#10;Team..."></textarea>
+      <button id="picker-btn">Pick scaffold</button>
+      <div class="picker-result" id="picker-out" style="display:none;"></div>
+    </div>
+
+    <div id="scaffold-list"></div>
+
+    <script type="module">
+      import { SCAFFOLDS, scaffoldStats, getThemeAffinity } from '/src/present/scaffolds/registry.js';
+      import { pickScaffold, rankScaffolds } from '/src/present/scaffolds/picker.js';
+
+      const list = document.getElementById('scaffold-list');
+      for (const s of SCAFFOLDS) {
+        const card = document.createElement('div');
+        card.className = 'scaffold-card';
+        const head = document.createElement('div');
+        head.className = 'scaffold-head';
+        head.innerHTML = `<span class="scaffold-label">${s.label}</span><span class="scaffold-id">${s.id}</span>`;
+        card.appendChild(head);
+        const desc = document.createElement('div');
+        desc.className = 'scaffold-desc';
+        desc.textContent = s.description;
+        card.appendChild(desc);
+        const meta = document.createElement('div');
+        meta.className = 'scaffold-meta';
+        meta.innerHTML = `<span>${s.slots.length} slots</span><span>audience: ${s.audience}</span><span>keywords: ${s.keywords.slice(0, 4).join(', ')}…</span>`;
+        card.appendChild(meta);
+        const themes = getThemeAffinity(s);
+        const swatches = document.createElement('div');
+        swatches.className = 'theme-swatches';
+        for (const t of themes) {
+          const sw = document.createElement('div');
+          sw.className = 'theme-swatch';
+          sw.style.background = `rgb(${t.accent.join(',')})`;
+          sw.title = t.label;
+          swatches.appendChild(sw);
+        }
+        const swLabel = document.createElement('span');
+        swLabel.style.fontSize = '10px';
+        swLabel.style.color = '#666';
+        swLabel.style.marginLeft = '6px';
+        swLabel.style.fontFamily = 'IBM Plex Mono, monospace';
+        swLabel.textContent = themes.map((t) => t.id).join(' · ');
+        swatches.appendChild(swLabel);
+        card.appendChild(swatches);
+
+        const slotRow = document.createElement('div');
+        slotRow.className = 'slot-row';
+        for (const slot of s.slots) {
+          const cell = document.createElement('div');
+          cell.className = 'slot-cell';
+          const atoms = slot.recommended_atoms
+            .map((a, i) => (i === 0 ? `<span class="first">${a}</span>` : a))
+            .join(', ');
+          cell.innerHTML = `
+            <div class="slot-name">${slot.name}</div>
+            <div class="slot-title">${slot.title}</div>
+            <div class="slot-purpose">${slot.purpose}</div>
+            <div class="slot-atoms">${atoms}</div>
+          `;
+          slotRow.appendChild(cell);
+        }
+        card.appendChild(slotRow);
+        list.appendChild(card);
+      }
+
+      // Picker playground
+      document.getElementById('picker-btn').addEventListener('click', () => {
+        const title = document.getElementById('picker-title').value;
+        const body = document.getElementById('picker-body').value;
+        const bodyTexts = body.split('\n').filter((l) => l.trim());
+        const picked = pickScaffold({ title, bodyTexts });
+        const ranked = rankScaffolds({ title, bodyTexts }).slice(0, 5);
+        const out = document.getElementById('picker-out');
+        out.style.display = 'block';
+        out.innerHTML = `
+          <div style="margin-bottom:10px;">
+            <strong>WINNER</strong> ${picked.scaffold.label} (${picked.scaffold.id}) — score ${picked.score} ${picked.fallback ? '(fallback)' : ''}
+          </div>
+          <div style="margin-bottom:10px;font-size:11px;color:#666;">
+            theme: ${picked.theme.label} · signals: ${picked.signals.join(' · ') || 'none'}
+          </div>
+          <div style="margin-bottom:6px;font-weight:600;font-size:12px;">Top 5 ranked:</div>
+          ${ranked.map((r) => `<div style="font-size:11px;font-family:'IBM Plex Mono',monospace;padding:2px 0;">${r.score.toString().padStart(3)} · ${r.id.padEnd(22)} ${r.signals.slice(0, 3).join(' ')}</div>`).join('')}
+        `;
+      });
+
+      // Stats footer
+      const stats = scaffoldStats();
+      const footer = document.createElement('div');
+      footer.style.cssText = 'margin-top:32px;padding:14px;background:#1e1b1e;color:white;font-family:IBM Plex Mono,monospace;font-size:11px;border-radius:4px;';
+      footer.textContent = `📊 ${stats.scaffolds} scaffolds · ${stats.totalSlots} total slots · ${stats.avgSlotsPerScaffold} avg slots/scaffold · ${stats.uniqueAtomsReferenced} unique atoms referenced`;
+      document.body.appendChild(footer);
+    </script>
+  </body>
+</html>
