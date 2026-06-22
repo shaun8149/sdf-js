@@ -968,9 +968,7 @@ export const CATEGORIES = {
     'users',
     'users-three',
     'users-four',
-    // Trending & fire
-    'trend-up',
-    'trend-down',
+    // Fire & energy
     'fire',
     'fire-simple',
     'lightning',
@@ -1261,8 +1259,6 @@ export const CATEGORIES = {
     'recycle',
     // Progress & steps
     'steps',
-    'speedometer',
-    'gauge',
     // Lists / agenda-like
     'queue',
     // Playback controls (time-control metaphors)
@@ -1285,9 +1281,6 @@ export const CATEGORIES = {
     'playlist',
     // Log & history
     'log',
-    // Chart (time series)
-    'chart-line',
-    'chart-bar',
   ],
 };
 

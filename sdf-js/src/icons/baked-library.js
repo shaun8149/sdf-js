@@ -1,6 +1,6 @@
 // =============================================================================
 // sdf-js/src/icons/baked-library.js — GENERATED, DO NOT EDIT BY HAND
-// Generated: 2026-06-22T05:59:36.859Z
+// Generated: 2026-06-22T06:04:13.152Z
 // Source: @phosphor-icons/core@2.1.1 (MIT), regular weight
 // Re-generate: npm run build:icons
 // =============================================================================
