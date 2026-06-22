@@ -1607,6 +1607,16 @@ export function createStudioRenderer({
   let uniformsCache = {};
   let rafId = null;
   let flyHandle = null;
+  // Render-on-demand (idle-stop): the rAF loop stops itself when nothing is
+  // animating so a STATIC scene costs ~0 GPU after it settles (vs burning a full
+  // 200-step raymarch + post-fx every frame forever). Anything that changes the
+  // image — input, camera/scene/postFx change, an active cameraSequence, or a
+  // time-varying scene — calls wake()/keeps it driving. SETTLE_MAX extra frames
+  // render after the last change so temporal effects (motion-blur reprojection)
+  // resolve before the loop parks.
+  let settleFrames = 0;
+  let sceneAnimated = false; // set by setAnimated(): scene has u_time content (sea / city)
+  const SETTLE_MAX = 3;
   // Sprint 2 (2026-05-24): pending deferred render — see render() comments.
   // Heavy GPU compile is rAF-deferred so the cleared canvas paints first.
   let pendingRender = null;
@@ -2273,6 +2283,31 @@ export function createStudioRenderer({
   let frameCount = 0;
   let fpsLast = performance.now();
 
+  // Is the image still changing on its own (without new input)? Drives the
+  // idle-stop: a playing cameraSequence moves the camera; a time-varying scene
+  // (sea waves / city traffic) changes pixels via u_time. A FINISHED non-loop
+  // sequence with a static camera is NOT driving → the loop can park.
+  function isDriving() {
+    if (sceneAnimated) return true;
+    if (activeSequence && !sequencePaused && !userTookCam) {
+      if (activeSequence.loop) return true;
+      const tSec = (performance.now() - sequenceStartTime) / 1000;
+      if (tSec < seqTotalDuration(activeSequence)) return true;
+    }
+    return false;
+  }
+
+  // Restart the loop after an idle-stop (or just reset the settle countdown if
+  // it's already running). Called by every state change that alters the image.
+  function wake() {
+    settleFrames = 0;
+    if (!rafId) {
+      fpsLast = performance.now();
+      frameCount = 0;
+      rafId = requestAnimationFrame(loop);
+    }
+  }
+
   function loop() {
     draw();
     frameCount++;
@@ -2284,7 +2319,17 @@ export function createStudioRenderer({
       fpsLast = now;
     }
     if (onCamUpdate) onCamUpdate(camState);
-    rafId = requestAnimationFrame(loop);
+    // Render-on-demand: keep going while something animates; otherwise render a
+    // few settle frames then park (rafId = null). wake() revives it on change.
+    if (isDriving()) {
+      settleFrames = 0;
+      rafId = requestAnimationFrame(loop);
+    } else if (settleFrames < SETTLE_MAX) {
+      settleFrames++;
+      rafId = requestAnimationFrame(loop);
+    } else {
+      rafId = null;
+    }
   }
 
   // ---- public API ----
@@ -2340,7 +2385,10 @@ export function createStudioRenderer({
           flyHandle = attachFlyControls(
             canvas,
             () => camState,
-            (patch) => Object.assign(camState, patch),
+            (patch) => {
+              Object.assign(camState, patch);
+              wake(); // user fly input → revive the loop / reset settle
+            },
             {
               speed: 1.5,
               speedBoost: 4.0,
@@ -2354,6 +2402,7 @@ export function createStudioRenderer({
         }
         _debugFirstDraw = true;
         timeStart = performance.now();
+        settleFrames = 0; // new SDF → render fresh settle frames (revive if parked)
         if (!rafId) {
           fpsLast = performance.now();
           frameCount = 0;
@@ -2411,6 +2460,7 @@ export function createStudioRenderer({
       camState.position = [...defaultCam.position];
       camState.yaw = defaultCam.yaw;
       camState.pitch = defaultCam.pitch;
+      wake();
     },
 
     setCamState(patch) {
@@ -2423,6 +2473,22 @@ export function createStudioRenderer({
       if (patch.position) defaultCam.position = [...patch.position];
       if (patch.yaw != null) defaultCam.yaw = patch.yaw;
       if (patch.pitch != null) defaultCam.pitch = patch.pitch;
+      wake(); // camera moved → re-render
+    },
+
+    // Compositor sets this per scene: true when the scene changes pixels via
+    // u_time on its own (sea waves / city traffic), so the idle-stop keeps it
+    // rendering. Default false → static scenes park after settling.
+    setAnimated(v) {
+      sceneAnimated = !!v;
+      if (sceneAnimated) wake();
+    },
+
+    // Public nudge: re-render now / revive the parked loop. For any external
+    // control that changes what getControls() returns (light, fov, …) without
+    // going through render(). Safe to over-call (just resets the settle count).
+    requestRender() {
+      wake();
     },
 
     /**
@@ -2448,6 +2514,7 @@ export function createStudioRenderer({
       // → dark cyclorama + punchier spec/rim/vignette (showcase decks). Default
       // (absent) keeps the neutral light test stage used by the atom gallery.
       studioBgDark = !!(scene && scene.defaults && scene.defaults.studioBg === 'dark');
+      wake(); // post-fx params changed → re-render
     },
 
     /**
@@ -2513,6 +2580,7 @@ export function createStudioRenderer({
       }
       // Clear unused slots' metadata
       for (let i = activeVolumeCount; i < MAX_VOLUMES; i++) volumeMeta[i] = null;
+      wake(); // volumes changed → re-render
     },
 
     /**
@@ -2619,6 +2687,7 @@ export function createStudioRenderer({
       sequencePaused = false;
       userTookCam = false;
       prevCamValid = false; // motion blur skip on cut-over frame
+      wake(); // a sequence drives the camera → revive the loop
     },
     /**
      * Project a world point to normalized screen coords (top-left origin, [0,1])
@@ -2648,6 +2717,7 @@ export function createStudioRenderer({
       sequenceStartTime = performance.now() - tSec * 1000;
       sequencePaused = false;
       userTookCam = false;
+      wake();
     },
     setSequencePaused(paused) {
       if (paused && !sequencePaused) {
@@ -2658,6 +2728,7 @@ export function createStudioRenderer({
         sequenceStartTime += performance.now() - sequencePausedAt;
         sequencePaused = false;
         userTookCam = false;
+        wake(); // resumed → drive again
       }
     },
     getSequenceTime() {

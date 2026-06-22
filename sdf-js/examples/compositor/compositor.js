@@ -804,6 +804,25 @@ window.atlasProjectPoint = (worldXYZ) =>
     ? state.studioRenderer.project(worldXYZ)
     : { x: 0, y: 0, visible: false };
 
+// Does a scene animate ON ITS OWN via u_time (independent of camera motion)?
+// In the studio shader only sea/water surfaces (sdWaves) and city traffic move
+// by u_time; volumes too. Conservative substring match — erring toward `true`
+// just means that scene keeps rendering (no idle-stop), never a frozen anim.
+// Charts / lifted slides match nothing → they qualify for the idle-stop.
+function sceneHasTimeContent(rawScene) {
+  if (!rawScene) return false;
+  if (Array.isArray(rawScene.volumes) && rawScene.volumes.length) return true;
+  const matStr = (m) => (typeof m === 'string' ? m : (m && m.preset) || '') || '';
+  const animMat = (m) => /sea|water/i.test(matStr(m));
+  const animType = (t) => /city|terrain|ocean|sea/i.test(t || '');
+  const visit = (s) =>
+    !!s &&
+    (animType(s.type) ||
+      animMat(s.material) ||
+      (Array.isArray(s.children) && s.children.some(visit)));
+  return Array.isArray(rawScene.subjects) && rawScene.subjects.some(visit);
+}
+
 function autofillDemoPrompt(demo) {
   const promptInput = $('prompt-input');
   if (!promptInput) return;
@@ -2081,6 +2100,11 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // plays it per-frame (draw loop) — just hand it the sequence (or null to
     // detach + fall back to WASD / auto-frame).
     if (st.setSequence) st.setSequence((rawScene && rawScene.cameraSequence) || null);
+    // Render-on-demand: tell studio whether this scene animates ON ITS OWN via
+    // u_time (sea waves / city traffic). If not, the studio loop parks after the
+    // camera settles instead of burning GPU every frame on a static slide. A
+    // cameraSequence is handled separately (it drives the camera while playing).
+    if (st.setAnimated) st.setAnimated(sceneHasTimeContent(rawScene));
     try {
       return st.render(sdf);
     } catch (e) {
