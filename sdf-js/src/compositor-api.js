@@ -756,6 +756,41 @@ extensions to existing atoms (all backward-compat optional args):
   - scatter: + regressionLine:bool — OLS dashed fit line
   - bar: + targetLine:{value,label?} — vertical reference line
 atoms-2d registry now 51 entries (44 pre-15a + 7 new).
+
+  CHARTS / INFOGRAPHIC IDIOMS (v3.34 new):
+
+  COMPOSITE:
+    - circle-image-hub-spoke   args: { center:{label,color?}, satellites:[{label,color?}] (3-8) }
+                               (hub + N satellites with connector lines — central concept / ecosystem map)
+    - magazine-column-grid     args: { categories:[{name,items:[{label,value?}]}] (2-5) }
+                               (N-col mosaic grouped by category — product comparison / feature matrix)
+    - dashboard-multi-kpi-composite args: { kpis:[{value,label,sublabel?,trend?,trendValue?}] }
+                               (auto-layout 2/3/4/6-KPI dashboard — executive summary / metrics overview)
+
+  DEVICE:
+    - device-mockup-frame      args: { device:'phone'|'tablet'|'laptop'|'watch', title?, content?, color? }
+                               (single device frame — app screenshot / product UI demo)
+    - device-mockup-row        args: { devices:[{kind,label?,content?}] (2-5) }
+                               (N devices side-by-side — multi-platform / responsive showcase)
+
+  ISOTYPE:
+    - isotype-people-grid      args: { total, highlighted, personIcon?:'simple'|'business'|'casual', label? }
+                               (N×M people silhouettes with highlighted subset — survey stat / % of population)
+    - isotype-prop-row         args: { count, fillRatios:[], propShape?:'bottle'|'bulb'|'drop'|'circle', labels?:[] }
+                               (N props with variable fill levels — capacity / satisfaction / progress per item)
+    - isotype-stat-comparison  args: { stats:[{iconName?,count,label,caption?}] (2-5) }
+                               (N rows of role/count/icon — workforce breakdown / category headcount)
+
+  SPECIAL:
+    - infinity-loop-flow       args: { steps:[{label,description?}] (4-8) }
+                               (figure-8 process loop — continuous cycle / feedback loop / lifecycle)
+    - kpi-water-drop           args: { value:0..1, label, sublabel?, format?:'percent'|'number'|'currency' }
+                               (teardrop fill-level KPI — single impactful metric / completion rate)
+
+v3.34 (Sprint 15b — infographic idiom atoms) — adds 10 new infographic idiom
+atoms covering hub-spoke / grid mosaic / multi-KPI dashboard / device mockups
+/ isotype pictographs / figure-8 loop / water-drop KPI.
+atoms-2d registry now 61 entries — 51 pre-15b + 10 new infographic idiom atoms.
 `;
 
 /**

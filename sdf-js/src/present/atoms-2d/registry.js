@@ -43,7 +43,9 @@ const ATOM_LOADERS = {
   timeline: () => import('./charts/diagrams/timeline.js'),
   'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
   'multiple-arrows': () => import('./charts/diagrams/multiple-arrows.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows
+  'circle-image-hub-spoke': () => import('./charts/diagrams/circle-image-hub-spoke.js'),
+  'infinity-loop-flow': () => import('./charts/diagrams/infinity-loop-flow.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows + Sprint 15b circle-image-hub-spoke + infinity-loop-flow
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
@@ -79,12 +81,25 @@ const ATOM_LOADERS = {
   fishbone: () => import('./charts/diagrams/fishbone.js'),
   'layer-stack': () => import('./charts/layers/layer-stack.js'),
   'bullet-list': () => import('./charts/lists/bullet-list.js'),
+  // Charts / layers — Sprint 15b
+  'magazine-column-grid': () => import('./charts/layers/magazine-column-grid.js'),
+
+  // Shapes / device mockups — Sprint 15b B2
+  'device-mockup-frame': () => import('./shapes/device-mockup-frame.js'),
+  'device-mockup-row': () => import('./shapes/device-mockup-row.js'),
 
   // Charts/data extensions
+  'kpi-water-drop': () => import('./charts/data/kpi-water-drop.js'),
   'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
   gantt: () => import('./charts/data/gantt.js'),
+  'dashboard-multi-kpi-composite': () => import('./charts/data/dashboard-multi-kpi.js'),
+
+  // Charts/data — Sprint 15b B3: isotype infographic atoms (THE missing idiom)
+  'isotype-people-grid': () => import('./charts/data/isotype-people-grid.js'),
+  'isotype-prop-row': () => import('./charts/data/isotype-prop-row.js'),
+  'isotype-stat-comparison': () => import('./charts/data/isotype-stat-comparison.js'),
 
   // Charts/data — B3 PR 1 (2D twins of gauge-3d / radial-spoke-3d / scatter-3d /
   // traffic-light-3d / venn-3d). Carry full data, not just count.

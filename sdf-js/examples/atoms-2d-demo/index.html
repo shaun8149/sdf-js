@@ -442,6 +442,74 @@
             { label: 'Marketing' },
           ],
         } } },
+      // ---- Sprint 15b B1: circle-image-hub-spoke ----
+      { title: 'Hub-Spoke — Atlas Integrations (5 satellites)',
+        size: { w: 560, h: 440 },
+        atom: { type: 'circle-image-hub-spoke', args: {
+          title: 'Atlas Integrations',
+          center: { label: 'Atlas' },
+          satellites: [
+            { label: 'Sketch' }, { label: 'Notion' }, { label: 'Loom' },
+            { label: 'Figma' }, { label: 'Slack' },
+          ],
+        } } },
+      { title: 'Hub-Spoke — Ecosystem (6 satellites)',
+        size: { w: 580, h: 460 },
+        atom: { type: 'circle-image-hub-spoke', args: {
+          title: 'Customer Success Stories',
+          center: { label: 'Our Product' },
+          satellites: [
+            { label: 'Acme Corp' }, { label: 'TechCo' }, { label: 'DataFlow' },
+            { label: 'CloudBase' }, { label: 'NexGen' }, { label: 'ProServ' },
+          ],
+        } } },
+      // ---- Sprint 15b B1: magazine-column-grid ----
+      { title: 'Magazine Grid — Q3 Department Snapshot',
+        size: { w: 660, h: 420 },
+        atom: { type: 'magazine-column-grid', args: {
+          title: 'Q3 Department Snapshot',
+          categories: [
+            { name: 'Sales', items: [{ label: 'Revenue', value: '$3.4M' }, { label: 'Leads', value: '1,200' }, { label: 'Win Rate', value: '38%' }] },
+            { name: 'Product', items: [{ label: 'Releases', value: '8' }, { label: 'NPS', value: '72' }, { label: 'Features', value: '24' }] },
+            { name: 'Engineering', items: [{ label: 'PRs Merged', value: '340' }, { label: 'Uptime', value: '99.9%' }, { label: 'Bugs Fixed', value: '82' }] },
+          ],
+        } } },
+      { title: 'Magazine Grid — 4 columns (2-item each)',
+        size: { w: 720, h: 380 },
+        atom: { type: 'magazine-column-grid', args: {
+          title: 'Regional KPIs',
+          categories: [
+            { name: 'North', items: [{ label: 'Revenue', value: '$1.2M' }, { label: 'Growth', value: '+18%' }] },
+            { name: 'South', items: [{ label: 'Revenue', value: '$0.9M' }, { label: 'Growth', value: '+22%' }] },
+            { name: 'East', items: [{ label: 'Revenue', value: '$1.5M' }, { label: 'Growth', value: '+31%' }] },
+            { name: 'West', items: [{ label: 'Revenue', value: '$2.1M' }, { label: 'Growth', value: '+41%' }] },
+          ],
+        } } },
+      // ---- Sprint 15b B1: dashboard-multi-kpi-composite ----
+      { title: 'Dashboard — 4 KPIs (2×2)',
+        size: { w: 620, h: 420 },
+        atom: { type: 'dashboard-multi-kpi-composite', args: {
+          title: 'Q3 Dashboard',
+          kpis: [
+            { value: '$3.4M', label: 'Revenue', trend: 'up', trendValue: '+27%' },
+            { value: '12,450', label: 'MAU', trend: 'up', trendValue: '+10%' },
+            { value: '2.1%', label: 'Churn', trend: 'down', trendValue: '-1.3pt' },
+            { value: '68', label: 'NPS', trend: 'neutral' },
+          ],
+        } } },
+      { title: 'Dashboard — 6 KPIs (2×3)',
+        size: { w: 720, h: 420 },
+        atom: { type: 'dashboard-multi-kpi-composite', args: {
+          title: 'Executive Dashboard — Q4',
+          kpis: [
+            { value: '$5.2M', label: 'ARR', trend: 'up', trendValue: '+38%' },
+            { value: '18,200', label: 'MAU', trend: 'up', trendValue: '+46%' },
+            { value: '1.8%', label: 'Churn', trend: 'down', trendValue: '-0.3pt' },
+            { value: '74', label: 'NPS', trend: 'up', trendValue: '+6pt' },
+            { value: '94%', label: 'Uptime', trend: 'neutral' },
+            { value: '$420', label: 'CAC', trend: 'down', trendValue: '-12%' },
+          ],
+        } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
