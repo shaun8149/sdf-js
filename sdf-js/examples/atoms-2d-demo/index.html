@@ -213,6 +213,13 @@
       { title: 'Bubble — Risk Map',
         size: { w: 540, h: 420 },
         atom: { type: 'bubble', args: { title: 'Risk Exposure Map', xAxis: 'Probability', yAxis: 'Impact', sizeScale: 38, points: [{ x: 0.15, y: 0.8, size: 0.3, label: 'Reg' }, { x: 0.6, y: 0.65, size: 0.75, label: 'Market' }, { x: 0.85, y: 0.35, size: 0.5, label: 'Ops' }, { x: 0.4, y: 0.9, size: 0.55, label: 'Tech' }, { x: 0.7, y: 0.2, size: 0.2, label: 'Legal' }, { x: 0.25, y: 0.45, size: 0.4, label: 'People' }] } } },
+      // ---- Histogram (Sprint 15a Task 3.1) ----
+      { title: 'Histogram — Survey response distribution + bell curve',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Survey Response Distribution', bellCurve: true, milestones: [{ value: 25, label: 'Median' }], bins: [{ range: [0, 10], count: 5 }, { range: [10, 20], count: 12 }, { range: [20, 30], count: 18 }, { range: [30, 40], count: 14 }, { range: [40, 50], count: 7 }] } } },
+      { title: 'Histogram — Age distribution with milestones',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Customer Age Distribution', bins: [{ range: [18, 25], count: 320 }, { range: [25, 35], count: 540 }, { range: [35, 45], count: 410 }, { range: [45, 55], count: 290 }, { range: [55, 65], count: 180 }, { range: [65, 75], count: 90 }], milestones: [{ value: 38, label: 'Avg Age' }] } } },
       { title: 'Traffic light — Project status',
         size: { w: 280, h: 460 },
         atom: { type: 'traffic-light', args: { title: 'Project Status', lights: [{ color: 'red', label: 'Stop' }, { color: 'amber', label: 'Slow' }, { color: 'green', active: true, label: 'Go' }] } } },
