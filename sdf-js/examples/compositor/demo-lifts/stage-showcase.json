@@ -33,18 +33,29 @@
       "loop": false,
       "shots": [
         {
-          "duration": 0.05,
-          "pos": [0.3, 1.95, 8.2],
-          "target": [0, 0.78, -0.2],
-          "fov": 50,
+          "duration": 2.6,
+          "pos": [3.6, 3.3, 10.5],
+          "target": [0, 0.9, -0.1],
+          "fov": 44,
           "aperture": 0,
-          "focalDistance": 8.2,
-          "ease": "linear"
+          "focalDistance": 10.5,
+          "ease": "smooth",
+          "exposure": [0, 1]
+        },
+        {
+          "duration": 5.4,
+          "pos": [-1.8, 2.0, 8.0],
+          "target": [0, 0.82, -0.25],
+          "fov": 47,
+          "aperture": 0,
+          "focalDistance": 8.0,
+          "ease": "smooth",
+          "transition": "blend"
         }
       ]
     },
     "defaults": {
-      "stage": true
+      "stage": { "show": true }
     }
   },
   "meta": {

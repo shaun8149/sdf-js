@@ -722,16 +722,21 @@ async function loadDemoScene(demo) {
     const data = await res.json();
 
     let compiled;
+    let stagedScene;
     try {
       // Generator-S: expand `subjects[i].variants[]` into N flat subjects.
       // No-op (zero rng draws) if no subject has variants. Uses state.sceneHash
       // → SFC32 PRNG so the same hash always yields the same expansion.
       const sceneRng = new Random(state.sceneHash);
       const variantScene = expandVariants(data.sceneData, sceneRng);
+      // Stage connector wraps subjects in a studio room (+ panel lights, volumes,
+      // camera) when defaults.stage is set. Capture the staged scene so it can be
+      // stored as the rawScene below — otherwise setPostFx/setVolumes/setSequence
+      // get the UN-expanded scene and the lights/beams never reach the renderer.
+      stagedScene = expandStage(variantScene);
       // #84 connector: chart subjects with args.labels → SDF text-3d-pipe labels
-      // anchored on their elements (no-op if no chart carries labels). Stage
-      // connector wraps subjects in a studio room when defaults.stage is set.
-      const labeledScene = expandChartLabels(expandStage(variantScene));
+      // anchored on their elements (no-op if no chart carries labels).
+      const labeledScene = expandChartLabels(stagedScene);
       compiled = compileSceneData(labeledScene, { tokenHash: URL_TOKEN_HASH });
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
@@ -745,7 +750,7 @@ async function loadDemoScene(demo) {
 
     state.textLiftScene = compiled;
     state.textLiftSdf = renderSdf;
-    state.textLiftSceneJSON = data.sceneData; // raw — keeps cameraSequence / defaults.postFx alive past compile
+    state.textLiftSceneJSON = stagedScene || data.sceneData; // staged (expandStage) → keeps lights/volumes/camera/cameraSequence alive past compile
     state.textLiftSourcePrompt = data.prompt;
     state.liftMode = true;
     state.selectedHistoryId = null;
@@ -2103,6 +2108,12 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     }
     // Sprint 12: Rune heightmap → studio texture (same data as FLY 3D).
     if (st.setRuneHeightmap) st.setRuneHeightmap(scene.bakedHeightmap || null);
+    // Volumes (smoke / flame / fog / god-rays) — studio supports the volume
+    // raymarch pass but the dispatch never fed it (only FLY did). Wire it so
+    // stage "show" effects (spotlight beams + floor haze) actually render.
+    if (st.setVolumes) {
+      st.setVolumes(rawScene && Array.isArray(rawScene.volumes) ? rawScene.volumes : []);
+    }
     // Step 2 (spatial deck): a scene.cameraSequence flies the studio camera
     // through multiple slide-stations laid out in one 3D world. Studio already
     // plays it per-frame (draw loop) — just hand it the sequence (or null to

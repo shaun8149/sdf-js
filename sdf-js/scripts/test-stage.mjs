@@ -106,5 +106,20 @@ const baseScene = () => ({
   ok(Math.abs(dNeg.defaults.camera.yaw - Math.PI) < 1e-6, 'facing -z → default camera yaw = π');
 }
 
+// show mode: injects volumetric beams + floor haze
+{
+  const plain = expandStage({ ...baseScene(), defaults: { stage: true } });
+  ok(!plain.volumes || plain.volumes.length === 0, 'no show → no volumes');
+
+  const show = expandStage({ ...baseScene(), defaults: { stage: { show: true } } });
+  const vols = show.volumes || [];
+  ok(vols.length === 3, `show → 3 volumes (2 beams + haze), got ${vols.length}`);
+  ok(vols.filter((v) => v.kind === 'god-rays').length === 2, 'show → 2 god-ray beams');
+  ok(
+    vols.some((v) => v.kind === 'fog'),
+    'show → floor haze (fog)',
+  );
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
