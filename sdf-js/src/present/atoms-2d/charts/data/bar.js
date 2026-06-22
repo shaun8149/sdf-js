@@ -76,44 +76,60 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const format = args.format ?? 'number';
   const title = args.title;
 
-  // ---- Title (if present) ----
+  // ---- Background: warm off-white if palette.bg not set ----
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
+  // ---- Title (if present) — Inter 700 with proper padding ----
   let chartTop = y;
   if (title) {
-    const titleSize = Math.round(h * 0.07);
+    const titleSize = Math.min(28, Math.round(h * 0.09));
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${titleSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    ctx.fillText(title, x, y);
+    ctx.fillText(title, x + 20, y + 16);
     chartTop = y + h * DEFAULT_TITLE_FRAC;
   }
   const chartHeight = y + h - chartTop;
 
-  // ---- Compute label width (longest label) ----
-  const labelSize = Math.max(11, Math.round((chartHeight / n) * 0.32));
-  ctx.font = `500 ${labelSize}px Inter, system-ui, sans-serif`;
+  // ---- Compute label width (longest label) — Inter 600, 14-18px range ----
+  const labelSize = Math.max(14, Math.min(18, Math.round((chartHeight / n) * 0.32)));
+  ctx.font = `600 ${labelSize}px Inter, sans-serif`;
   let maxLabelW = 0;
   for (const l of labels.slice(0, n)) {
     const m = ctx.measureText(String(l));
     if (m.width > maxLabelW) maxLabelW = m.width;
   }
 
-  // ---- Compute value display + width ----
+  // ---- Compute value display + width — Inter 600 (not IBM Plex Mono) ----
   const formatted = values.slice(0, n).map((v) => formatValue(v, format));
-  const valueSize = Math.max(11, Math.round((chartHeight / n) * 0.34));
-  ctx.font = `600 ${valueSize}px IBM Plex Mono, monospace`;
+  const valueSize = Math.max(12, Math.min(16, Math.round((chartHeight / n) * 0.34)));
+  ctx.font = `600 ${valueSize}px Inter, sans-serif`;
   let maxValueW = 0;
   for (const v of formatted) {
     const m = ctx.measureText(v);
     if (m.width > maxValueW) maxValueW = m.width;
   }
 
-  // ---- Bar geometry ----
-  const barAreaLeft = x + maxLabelW + LABEL_GAP;
-  const barAreaRight = x + w - maxValueW - VALUE_GAP;
+  // ---- Bar geometry — increased bar height, outer padding 20px ----
+  const outerPad = 20;
+  const barAreaLeft = x + outerPad + maxLabelW + LABEL_GAP;
+  const barAreaRight = x + w - outerPad - maxValueW - VALUE_GAP;
   const barAreaW = Math.max(40, barAreaRight - barAreaLeft);
-  const barHeight = Math.min(36, (chartHeight - 8 * (n - 1)) / n);
+  const barHeight = Math.min(40, (chartHeight - 8 * (n - 1)) / n);
   const barGap = (chartHeight - barHeight * n) / Math.max(1, n - 1);
+
+  // ---- Hairline baseline at value=0 (x-axis, alpha 0.3) ----
+  ctx.save();
+  ctx.strokeStyle = rgbaCss(fg, 0.3);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(barAreaLeft, chartTop);
+  ctx.lineTo(barAreaLeft, chartTop + chartHeight);
+  ctx.stroke();
+  ctx.restore();
 
   // ---- Draw each bar ----
   for (let i = 0; i < n; i++) {
@@ -123,19 +139,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const barW = Math.max(2, barAreaW * lengthFrac);
     const barColor = colors ? colors[i % colors.length] : fallbackBar;
 
-    // Bar label (left)
+    // Bar label (left) — Inter 600
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `500 ${labelSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `600 ${labelSize}px Inter, sans-serif`;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(labels[i]), barAreaLeft - LABEL_GAP, cy + barHeight / 2);
 
-    // Bar body — pseudo-3D
+    // Bar body — pseudo-3D (subtle gradient)
     drawPseudoBar(ctx, barAreaLeft, cy, barW, barHeight, barColor);
 
-    // Value at end of bar
+    // Value at end of bar — Inter 600
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `600 ${valueSize}px IBM Plex Mono, monospace`;
+    ctx.font = `600 ${valueSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(formatted[i], barAreaLeft + barW + VALUE_GAP, cy + barHeight / 2);
@@ -188,15 +204,15 @@ function drawPseudoBar(ctx, x, y, w, h, color) {
   if (w <= 0 || h <= 0) return;
   const radius = Math.min(h / 2, 4);
 
-  // Shadow
+  // Shadow — soft (10px blur, alpha 0.12)
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 6;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 2;
 
-  // Gradient (top lighter, bottom darker for depth)
+  // Gradient (subtle 8% lighten — top lighter, almost flat)
   const gradient = ctx.createLinearGradient(x, y, x, y + h);
-  gradient.addColorStop(0, rgbaCss(lighten(color, 0.18), 1));
+  gradient.addColorStop(0, rgbaCss(lighten(color, 0.08), 1));
   gradient.addColorStop(1, rgbCss(color));
   ctx.fillStyle = gradient;
 
@@ -211,9 +227,9 @@ function drawPseudoBar(ctx, x, y, w, h, color) {
   ctx.fill();
   ctx.restore();
 
-  // Iso edge accent on top
+  // Iso edge accent on top — reduced to 10% lighten for subtlety
   ctx.save();
-  ctx.fillStyle = rgbaCss(lighten(color, 0.32), 0.7);
+  ctx.fillStyle = rgbaCss(lighten(color, 0.1), 0.6);
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x + w - radius, y);

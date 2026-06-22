@@ -59,13 +59,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const fg = palette.silhouetteColor || [30, 27, 30];
   const bg = palette.bg || [247, 244, 224];
   const colors = palette.colors || null;
+  // Softer / lower-saturation fallback palette
   const fallbackColors = [
-    [60, 100, 200],
-    [200, 100, 60],
-    [60, 180, 100],
-    [180, 60, 180],
-    [200, 180, 60],
-    [120, 120, 120],
+    [80, 115, 190],
+    [195, 110, 75],
+    [75, 165, 110],
+    [165, 80, 165],
+    [190, 170, 70],
+    [130, 130, 135],
   ];
 
   const values = Array.isArray(args.values) ? args.values : [];
@@ -81,12 +82,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const sum = values.slice(0, n).reduce((a, b) => a + b, 0);
   if (sum <= 0) return;
 
-  // ---- Title ----
+  // ---- Background: warm off-white if palette.bg not set ----
+  const bgRender = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgRender;
+  ctx.fillRect(x, y, w, h);
+
+  // ---- Title — Inter 700, 22-32px ----
   let plotTop = y + PAD;
   if (title) {
-    const titleSize = Math.round(h * 0.07);
+    const titleSize = Math.min(28, Math.max(22, Math.round(h * 0.08)));
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${titleSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(title, x + PAD, y + PAD);
@@ -125,21 +131,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     currentAngle = endAngle;
   }
 
-  // ---- Draw drop shadow for entire pie group ----
+  // ---- Drop shadow for entire pie group (softer: 10px blur, alpha 0.12) ----
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 4;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 3;
   ctx.fillStyle = rgbCss(fg);
   ctx.beginPath();
   ctx.arc(plotArea.cx, plotArea.cy, radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // ---- Draw each slice with radial gradient ----
+  // ---- Draw each slice with subtle radial gradient (10% lighten at edge) ----
   for (const s of slices) {
     ctx.save();
-    // Per-slice gradient: lighter at outer edge, slightly darker toward center
+    // Per-slice gradient: center slightly darker, outer edge 10% lighter
     const grad = ctx.createRadialGradient(
       plotArea.cx,
       plotArea.cy,
@@ -148,8 +154,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       plotArea.cy,
       radius,
     );
-    grad.addColorStop(0, rgbCss(darken(s.color, 0.12)));
-    grad.addColorStop(1, rgbCss(lighten(s.color, 0.06)));
+    grad.addColorStop(0, rgbCss(darken(s.color, 0.06)));
+    grad.addColorStop(1, rgbCss(lighten(s.color, 0.1)));
     ctx.fillStyle = grad;
 
     ctx.beginPath();
@@ -159,10 +165,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Slice separator (thin white line for visual crispness)
+    // Slice separator — white hairline 1.5px for crispness
     ctx.save();
-    ctx.strokeStyle = rgbCss(bg);
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = bgRender;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(plotArea.cx, plotArea.cy);
     ctx.lineTo(
@@ -173,38 +179,41 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
   }
 
-  // ---- Donut hole ----
+  // ---- Donut hole — fill with bg color ----
   if (donutRatio > 0) {
-    ctx.fillStyle = rgbCss(bg);
+    ctx.fillStyle = bgRender;
     ctx.beginPath();
     ctx.arc(plotArea.cx, plotArea.cy, innerRadius, 0, Math.PI * 2);
     ctx.fill();
 
     if (centerLabel) {
+      // Center label hierarchy: large value Inter 700, proper size
+      const centerFontSize = Math.min(28, Math.max(14, Math.round(innerRadius * 0.38)));
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `700 ${Math.round(innerRadius * 0.35)}px Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${centerFontSize}px Inter, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(centerLabel), plotArea.cx, plotArea.cy);
     }
   }
 
-  // ---- External labels with leader lines ----
-  ctx.font = `500 ${Math.round(h * 0.05)}px Inter, system-ui, sans-serif`;
+  // ---- External labels with thin leader lines — Inter 600 ----
+  const extLabelSize = Math.max(12, Math.min(16, Math.round(h * 0.052)));
+  ctx.font = `600 ${extLabelSize}px Inter, sans-serif`;
   ctx.fillStyle = rgbCss(fg);
   for (const s of slices) {
     if (s.fraction < SMALL_SEGMENT_THRESHOLD) continue; // skip too-small slices
 
     const labelText = `${s.label}  ${formatValue(s.value, s.fraction, format)}`;
-    const labelDist = radius + 14;
+    const labelDist = radius + 16;
     const tipX = plotArea.cx + Math.cos(s.midAngle) * radius;
     const tipY = plotArea.cy + Math.sin(s.midAngle) * radius;
     const labelX = plotArea.cx + Math.cos(s.midAngle) * labelDist;
     const labelY = plotArea.cy + Math.sin(s.midAngle) * labelDist;
     const onRight = Math.cos(s.midAngle) > 0;
 
-    // Leader line
-    ctx.strokeStyle = rgbaCss(fg, 0.4);
+    // Thin leader line (hairline alpha 0.35)
+    ctx.strokeStyle = rgbaCss(fg, 0.35);
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(tipX, tipY);
@@ -213,7 +222,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     ctx.textAlign = onRight ? 'left' : 'right';
     ctx.textBaseline = 'middle';
-    ctx.fillText(labelText, labelX + (onRight ? 4 : -4), labelY);
+    ctx.fillText(labelText, labelX + (onRight ? 5 : -5), labelY);
   }
 }
 
