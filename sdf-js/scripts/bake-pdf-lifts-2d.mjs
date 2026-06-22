@@ -136,20 +136,121 @@ for (const i of slidesToBake) {
   }
 
   const { prompt: rawPrompt, code2d, pattern } = emitSlide2dCode(slide);
-  // The emitter's prompt explicitly instructs 3D lift ("In 3D, lift to a clean
-  // bar/column chart on a stage..."). For 2D-mode atoms-2d testing we must
-  // override that — replace the 3D directive with an atoms-2d directive so
-  // the LLM doesn't follow the user prompt's 3D bias over the system addendum.
-  const prompt = rawPrompt
-    .replace(
-      /In 3D, lift to[^.]*\./gi,
-      'In 2D atoms-2d mode, route to an atoms-2d primitive per MODE_2D_ADDENDUM Priority 0.',
-    )
-    .replace(
-      /corporate keynote aesthetic, not naturalistic\./gi,
-      'Pick the canonical atoms-2d atom that fits the slide content (e.g. sphere-fill for "X% complete" / dashboard-multi-kpi-composite for grids of KPIs / bar+column for charts).',
-    );
-  const userMessage = `## Original user prompt\n\n${prompt}\n\n## Slide source 2D code\n\n\`\`\`js\n${code2d}\n\`\`\`\n\n## MODE\n\nThis is **2D mode (atoms-2d)**. Emit SceneData whose \`subjects[]\` consists of atoms-2d types (Priority 0). DO NOT emit \`text-3d-pipe\`, \`text-3d-extruded\`, \`box\`, \`rounded_box\`, or any SDF primitives — those are 3D-mode types. The output will be rendered via \`atoms-2d/renderer\` (Canvas2D, not GPU). Slide content describes spheres with fill-level percentages — STRONG signal to use \`sphere-fill\` atom (one per fill value).`;
+  // Strip emitter's 3D-mode bias
+  const cleanPrompt = rawPrompt
+    .replace(/In 3D, lift to[^.]*\./gi, 'In 2D atoms-2d mode.')
+    .replace(/corporate keynote aesthetic, not naturalistic\./gi, '');
+
+  // Extract ALL body text from the slide (LLM should use as captions)
+  const bodyTexts = (slide.body || [])
+    .map((b) => (typeof b === 'string' ? b : b.text || ''))
+    .filter((t) => t && t.length > 0);
+
+  // Detect % values to suggest layout pattern
+  const percentValues = [];
+  const percentRe = /(\d+)\s*%/g;
+  for (const t of bodyTexts) {
+    let m;
+    percentRe.lastIndex = 0;
+    while ((m = percentRe.exec(t)) !== null) percentValues.push(parseInt(m[1], 10));
+  }
+  const uniqValues = [...new Set(percentValues)];
+  let layoutHint = '';
+  if (uniqValues.length === 0) {
+    layoutHint = 'LAYOUT: single cover atom for title-only slide';
+  } else if (uniqValues.length === 1) {
+    layoutHint =
+      'LAYOUT: SINGLE HERO — one big sphere centered (w=460, h=460, x=410, y=120), descriptive text wrapped around as multiple cover/text atoms';
+  } else if (uniqValues.length === 2) {
+    layoutHint =
+      'LAYOUT: 2-up row — two spheres side-by-side, each w=380, h=380, at y=160. x positions: 200, 700';
+  } else if (uniqValues.length === 3) {
+    layoutHint =
+      'LAYOUT: 3-up row — three spheres at y=180. If one value dominates (100%): make CENTER sphere larger (w=420, h=420, x=430, y=120) and side spheres smaller (w=240, h=240, x=80/x=960, y=210). Otherwise equal sizing w=300, h=300, evenly spaced.';
+  } else if (uniqValues.length === 4) {
+    layoutHint = 'LAYOUT: 4-up row — four spheres at y=160, each w=260, h=320. x=20+i*310';
+  } else if (uniqValues.length === 5) {
+    const sorted = [...uniqValues].sort((a, b) => a - b);
+    const span = sorted[sorted.length - 1] - sorted[0];
+    const hasOneDominant = sorted[sorted.length - 1] === 100 && sorted.length >= 3;
+    if (hasOneDominant) {
+      // PL "stage" composition: 100% sphere in CENTER big, smaller wings around
+      layoutHint =
+        'LAYOUT: STAGE composition (one value dominates, e.g. 100%). Center hero + wings. EXACT positions:\n' +
+        '   - 100% sphere (biggest): x=480, y=200, w=320, h=320 (CENTER)\n' +
+        '   - 2nd largest (e.g. 80%): x=920, y=260, w=240, h=240 (right wing)\n' +
+        '   - 3rd (e.g. 50%): x=120, y=260, w=240, h=240 (left wing)\n' +
+        '   - 4th (e.g. 40%): x=160, y=560, w=140, h=140 (behind-right small, partial)\n' +
+        '   - 5th (e.g. 20%): x=380, y=120, w=120, h=120 (behind-left small)\n' +
+        '   Each x+w ≤ 1240 strictly. NO sphere off canvas.';
+    } else if (span >= 60) {
+      layoutHint =
+        'LAYOUT: SIZE-ENCODED row — 5 spheres at y=200 baseline. Each sphere size scales with value. EXACT coords:\n' +
+        '   - smallest value: x=80,  w=140, h=180\n' +
+        '   - 2nd:           x=260,  w=180, h=220\n' +
+        '   - middle:        x=480,  w=220, h=260\n' +
+        '   - 4th:           x=740,  w=240, h=280\n' +
+        '   - largest:       x=1010, w=260, h=300\n' +
+        '   All within 0-1240. Order spheres LEFT→RIGHT by value (ascending).';
+    } else {
+      layoutHint =
+        'LAYOUT: 5-up uniform row at y=200 — each w=220, h=300, x=40+i*240 (so x: 40, 280, 520, 760, 1000). All x+w ≤ 1240.';
+    }
+  } else if (uniqValues.length >= 6 && uniqValues.length <= 10) {
+    const sorted = [...uniqValues].sort((a, b) => a - b);
+    const isProgression =
+      sorted.length >= 5 && sorted.every((v, i) => i === 0 || v - sorted[i - 1] === 10);
+    if (isProgression) {
+      layoutHint =
+        `LAYOUT: ${uniqValues.length} sphere SIZE-ENCODED PROGRESSION in **2 ROWS OF 5**.\n` +
+        '   Row 1 (low values 10/20/30/40/50%): y_top = 80, sphere_h varies\n' +
+        '   Row 2 (high values 60/70/80/90/100%): y_top = 400, sphere_h varies\n' +
+        '   Within each row, 5 spheres evenly spaced left-to-right.\n' +
+        '   Sphere SIZE: w = h = 100 + value * 1.4. Examples:\n' +
+        '   - 10% → w=h=114, 20% → w=h=128, 30% → w=h=142, 40% → w=h=156, 50% → w=h=170\n' +
+        '   - 60% → w=h=184, 70% → w=h=198, 80% → w=h=212, 90% → w=h=226, 100% → w=h=240\n' +
+        '   x positions for each row (5 cells in canvas width 1280):\n' +
+        '   - column centers: 152, 392, 632, 872, 1112 → x = center - w/2\n' +
+        '   y positions: align bottoms to a baseline (so spheres "stand on a floor"):\n' +
+        '   - Row 1 baseline y_bottom = 360. So y = 360 - h\n' +
+        '   - Row 2 baseline y_bottom = 690. So y = 690 - h\n' +
+        '   NO sphere extends past x=1240 or y=700.';
+    } else {
+      layoutHint = `LAYOUT: ${Math.ceil(uniqValues.length / 5)}×5 grid uniform size — each w=210, h=260. y row 1 = 60, row 2 = 380. x = 40 + col*250 (col 0..4).`;
+    }
+  } else {
+    layoutHint = `LAYOUT: ${Math.ceil(uniqValues.length / 5)}×5 grid uniform size`;
+  }
+
+  const userMessage =
+    `## Original user prompt\n\n${cleanPrompt}\n\n` +
+    `## Slide body text (CARRY THESE INTO atom args.caption — do NOT discard)\n\n` +
+    bodyTexts.map((t) => `  - "${t}"`).join('\n') +
+    `\n\n` +
+    `## Slide source 2D code\n\n\`\`\`js\n${code2d}\n\`\`\`\n\n` +
+    `## REQUIRED OUTPUT — Atlas atoms-2d 2D mode\n\n` +
+    `Canvas size: **1280×720**. Use the full space.\n\n` +
+    `Emit SceneData JSON:\n` +
+    '```json\n' +
+    `{\n` +
+    `  "name": "compose: <title>",\n` +
+    `  "layout": "row|grid|hierarchy|size-encoded|stage|scatter|cover",\n` +
+    `  "subjects": [\n` +
+    `    { "type": "<atom-name>", "x": <px>, "y": <px>, "w": <px>, "h": <px>, "args": { ... } }\n` +
+    `  ]\n` +
+    `}\n` +
+    '```\n\n' +
+    `### MANDATORY rules:\n\n` +
+    `0. **CANVAS BOUNDS HARD LIMIT**: Every subject's \`x + w ≤ 1240\` AND \`y + h ≤ 700\`. NO sphere may extend off canvas (right edge, bottom edge). Validate before emitting. If layout requires bigger spheres than fit, scale them down proportionally.\n` +
+    `1. **EVERY subject MUST have explicit \`x\`, \`y\`, \`w\`, \`h\`** in canvas pixels. Missing positions → atoms overlap at full canvas. NO exceptions.\n` +
+    `2. **Body captions**: sphere-fill atom now accepts \`args.caption: string\`. Pass the relevant body text (e.g. "Description 1: Placeholder for your text" → \`caption: "Description 1"\`). Match each sphere to its nearest body description; don't lose user text.\n` +
+    `3. **Atom selection**:\n` +
+    `   - Sphere with fill % → \`sphere-fill\` (args: \`value\` 0-100, \`label\` "20%", \`caption\` "Description 1", \`color\` rgb)\n` +
+    `   - Title/cover slide → \`cover\` atom (args: \`title\`, \`subtitle\`)\n` +
+    `   - NEVER emit \`text-3d-pipe\`, \`box\`, \`rounded_box\`\n` +
+    `4. **${layoutHint}**\n` +
+    `5. **Match PL visual style**: PL doesn't use uniform grids when values differ — they use SIZE encoding, stage composition, hierarchy. Follow the layout hint above; don't default to row-of-equals.\n` +
+    `6. **Colors**: default \`[42, 96, 178]\` (blue). When slide shows colored variants (green/red/purple), use matching colors per sphere.\n`;
   console.log(`[${i + 1}/${slides.length}] lifting ${id} (pattern=${pattern})...`);
   try {
     const { text, usage, elapsed } = await callAnthropic(userMessage);
@@ -169,7 +270,7 @@ for (const i of slidesToBake) {
       title: `Slide ${i}: ${(slide.title || '(untitled)').slice(0, 60)}`,
       slideIndex: i,
       pattern,
-      prompt,
+      prompt: cleanPrompt,
       code2d,
       sceneData,
       meta: {

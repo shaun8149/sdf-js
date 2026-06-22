@@ -38,6 +38,7 @@ export const spec = {
   args: {
     value: { type: 'number (0-100)', required: true, example: 60 },
     label: { type: 'string?', example: '60%' },
+    caption: { type: 'string?', example: 'Description 1' },
     color: { type: '[r,g,b]?', example: [60, 130, 200] },
     background: { type: "'dark'|'light'", default: 'dark', example: 'dark' },
   },
@@ -205,13 +206,39 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // ---- 7) Label BELOW sphere (KPI card style) ----
   if (label) {
-    const labelY = cy + radius + labelAreaH * 0.45;
-    const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.55));
+    const labelY = cy + radius + labelAreaH * 0.35;
+    const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.42));
     ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = rgbCss(palette.silhouetteColor || [30, 27, 30]);
     ctx.fillText(label, cx, labelY);
+  }
+  // ---- 7b) Optional caption (smaller, below label) — for body description text ----
+  const caption = args.caption;
+  if (caption) {
+    const capY = cy + radius + labelAreaH * 0.75;
+    const capSize = Math.round(Math.min(radius * 0.18, labelAreaH * 0.22));
+    ctx.font = `500 ${capSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = rgbaCss(palette.silhouetteColor || [30, 27, 30], 0.7);
+    // Wrap caption if too long — simple word-break approach
+    const maxW = w - PAD * 2;
+    const words = String(caption).split(' ');
+    const lines = [];
+    let cur = '';
+    for (const word of words) {
+      const test = cur ? `${cur} ${word}` : word;
+      if (ctx.measureText(test).width > maxW && cur) {
+        lines.push(cur);
+        cur = word;
+      } else cur = test;
+    }
+    if (cur) lines.push(cur);
+    lines.slice(0, 3).forEach((line, i) => {
+      ctx.fillText(line, cx, capY + i * (capSize * 1.25));
+    });
   }
 }
 

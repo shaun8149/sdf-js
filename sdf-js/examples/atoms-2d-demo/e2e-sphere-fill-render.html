@@ -35,39 +35,45 @@
         if (!res.ok) throw new Error('fetch ' + res.status);
         const entry = await res.json();
         const sceneData = entry.sceneData;
-        // AUTO-LAYOUT: v3.34 MODE_2D_ADDENDUM doesn't yet teach LLM to emit per-atom
-        // x/y/w/h. Without positions, all atoms render at full canvas overlapping.
-        // Heuristic: split a 'cover' atom into a top title strip, rest goes into
-        // a row/grid of the remaining content atoms.
+        // v3.35: LLM should emit per-atom x/y/w/h. If any subject is missing
+        // positions, fall back to auto-grid as safety net (and log it as a gap).
         const subjects = sceneData.subjects || [];
-        const cover = subjects.find((s) => s.type === 'cover');
-        const contentAtoms = subjects.filter((s) => s.type !== 'cover');
-        const N = contentAtoms.length;
-        const TITLE_H = cover ? 110 : 0;
-        const PAD = 24;
-        const contentTop = TITLE_H + PAD;
-        const contentH = H - contentTop - PAD;
-        // Grid dims based on N
-        let cols, rows;
-        if (N <= 1) { cols = 1; rows = 1; }
-        else if (N <= 3) { cols = N; rows = 1; }
-        else if (N <= 4) { cols = 2; rows = 2; }
-        else if (N <= 6) { cols = 3; rows = 2; }
-        else if (N <= 9) { cols = 3; rows = 3; }
-        else { cols = Math.ceil(Math.sqrt(N)); rows = Math.ceil(N / cols); }
-        const cellW = (W - 2 * PAD) / cols;
-        const cellH = contentH / rows;
-        if (cover) {
-          cover.x = 0; cover.y = 0; cover.w = W; cover.h = TITLE_H;
+        const missingPos = subjects.filter(
+          (s) => s.x == null || s.y == null || s.w == null || s.h == null,
+        );
+        if (missingPos.length > 0) {
+          console.warn(
+            `${id}: ${missingPos.length}/${subjects.length} atoms missing positions — auto-gridding`,
+          );
+          const cover = subjects.find((s) => s.type === 'cover');
+          const contentAtoms = subjects.filter((s) => s.type !== 'cover');
+          const N = contentAtoms.length;
+          const TITLE_H = cover ? 110 : 0;
+          const PAD = 24;
+          const contentTop = TITLE_H + PAD;
+          const contentH = H - contentTop - PAD;
+          let cols, rows;
+          if (N <= 1) { cols = 1; rows = 1; }
+          else if (N <= 3) { cols = N; rows = 1; }
+          else if (N <= 4) { cols = 2; rows = 2; }
+          else if (N <= 6) { cols = 3; rows = 2; }
+          else if (N <= 9) { cols = 3; rows = 3; }
+          else { cols = Math.ceil(Math.sqrt(N)); rows = Math.ceil(N / cols); }
+          const cellW = (W - 2 * PAD) / cols;
+          const cellH = contentH / rows;
+          if (cover && cover.x == null) {
+            cover.x = 0; cover.y = 0; cover.w = W; cover.h = TITLE_H;
+          }
+          contentAtoms.forEach((a, i) => {
+            if (a.x != null) return;
+            const c = i % cols;
+            const r = Math.floor(i / cols);
+            a.x = PAD + c * cellW + 8;
+            a.y = contentTop + r * cellH + 8;
+            a.w = cellW - 16;
+            a.h = cellH - 16;
+          });
         }
-        contentAtoms.forEach((a, i) => {
-          const c = i % cols;
-          const r = Math.floor(i / cols);
-          a.x = PAD + c * cellW + 8;
-          a.y = contentTop + r * cellH + 8;
-          a.w = cellW - 16;
-          a.h = cellH - 16;
-        });
         const subjectTypes = subjects.map((s) => s.type).join(', ');
         const h = document.createElement('h3');
         h.textContent = `${id}: ${entry.title || ''}`;
