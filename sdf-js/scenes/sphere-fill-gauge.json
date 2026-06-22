@@ -1,0 +1,41 @@
+{
+  "id": "sphere-fill-gauge",
+  "title": "Fill-level spheres · on the studio stage",
+  "prompt": "four capacity gauges as glass spheres filling with blue liquid to different levels",
+  "code2d": "// sphere-fill-3d + material.kind:'fill' → solid spheres shaded as fill gauges (liquid below a waterline, glass above). PresentationLoad '3D Spheres Fill Levels' twin.",
+  "sceneData": {
+    "v": 1,
+    "name": "sphere fill gauges",
+    "subjects": [
+      {
+        "id": "gauges",
+        "type": "sphere-fill-3d",
+        "args": { "levels": [0.25, 0.5, 0.75, 1.0], "radius": 0.8, "spacing": 0.5 },
+        "transform": { "translate": [0, 1.0, 0] },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.82,
+          "value": 0.62,
+          "kind": "fill",
+          "roughness": 0.3,
+          "clearcoat": 0.5
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 8,
+          "pos": [0, 1.5, 7.5],
+          "target": [0, 1.0, 0],
+          "fov": 46,
+          "aperture": 0,
+          "focalDistance": 7.5,
+          "ease": "smooth"
+        }
+      ]
+    },
+    "defaults": { "stage": { "size": [14, 5.5, 10] } }
+  }
+}
