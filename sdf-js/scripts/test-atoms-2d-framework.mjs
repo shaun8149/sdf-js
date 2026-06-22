@@ -881,16 +881,23 @@ console.log('\n--- icon-badge atom ---');
   });
   ok(recorded.includes('Engineering'), 'label rendered');
 
-  // Spot-check several icon names
+  // Spot-check several icon names — mix of hardcoded fast path + Phosphor
+  // fallback (Sprint 15c). The Phosphor names cover the resolver's second
+  // branch, which would previously render at 10× size due to viewBox
+  // mismatch (Phosphor uses 256, hardcoded uses 24).
   const knownNames = [
-    'users',
-    'lightning',
-    'cloud',
-    'shield',
-    'chart-bar',
-    'heart',
-    'check',
-    'arrow-up',
+    'users', // hardcoded
+    'lightning', // hardcoded
+    'cloud', // hardcoded
+    'shield', // hardcoded
+    'chart-bar', // hardcoded
+    'heart', // hardcoded
+    'check', // hardcoded
+    'arrow-up', // hardcoded
+    'cpu', // Phosphor
+    'briefcase', // Phosphor
+    'chat-circle', // Phosphor
+    'currency-eur', // Phosphor
   ];
   for (const name of knownNames) {
     const rec = [];

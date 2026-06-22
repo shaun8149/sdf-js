@@ -23,6 +23,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../renderer.js';
+import { getIconPath2D, getAllCategories, getIconCategory } from '../../../icons/index.js';
 
 // SVG path data copied from sdf-js/examples/p5-idiom-registry/atlas-icon-library.js
 // Heroicons + Tabler MIT-licensed sources, re-coded as drawingContext.Path2D for
@@ -63,16 +64,57 @@ const _ICON_PATHS = {
     'M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10zm0-18c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8zm-1 13h2v2h-2v-2zm1-10c-2.2 0-4 1.8-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 .9-.5 1.4-1.2 1.9-.6.5-1.8 1.1-1.8 2.6v.5h2v-.5c0-.7.6-1 1.3-1.5.9-.7 1.7-1.4 1.7-2.7 0-2.4-1.6-4.3-4-4.3z',
 };
 
-export const ICON_BADGE_NAMES = Object.keys(_ICON_PATHS);
+// Resolve an icon name to a Path2D. Prefers the 24 hand-coded paths above
+// (preserves Sprint 14 prompt v3.31 references + avoids fetching from baked
+// map for fast-path icons). Falls through to Phosphor baked library (Sprint 15c).
+// Returns null if name is in neither, so callers can render a placeholder.
+//
+// Returns { path, viewBox, paintMode } so the renderer can pick the right
+// scale + paint operation per source:
+//   - hardcoded (Heroicons + Tabler): viewBox=24, paintMode='stroke'
+//   - Phosphor:                       viewBox=256, paintMode='fill'
+// Phosphor SVGs declare `fill="currentColor"` and ship CLOSED filled glyphs,
+// so stroking them produces hairline outlines of the shape boundary (wrong).
+// Hardcoded paths were authored as monoline strokes — stroking is correct.
+function resolveIconPath2D(name) {
+  if (Object.prototype.hasOwnProperty.call(_ICON_PATHS, name)) {
+    if (typeof Path2D === 'undefined') return null;
+    return { path: new Path2D(_ICON_PATHS[name]), viewBox: 24, paintMode: 'stroke' };
+  }
+  const p = getIconPath2D(name);
+  if (!p) return null;
+  return { path: p, viewBox: 256, paintMode: 'fill' };
+}
+
+// 24 hardcoded names (fast path / legacy compat) — used by lift prompt v3.31
+// finance presets which name these explicitly.
+export const ICON_BADGE_HARDCODED_NAMES = Object.keys(_ICON_PATHS);
+
+// Full universe = 24 hardcoded ∪ ~772 Phosphor. Computed lazily from
+// src/icons/categories.js so categories.js changes propagate without edits here.
+export function getIconBadgeNames() {
+  const set = new Set(ICON_BADGE_HARDCODED_NAMES);
+  for (const cat of getAllCategories()) {
+    for (const n of getIconCategory(cat)) set.add(n);
+  }
+  return Array.from(set).sort();
+}
+
+// Legacy export: kept so importers expecting an array still work. Snapshot
+// at module load (Phosphor library is frozen — Sprint 15c doesn't add
+// runtime registration; safe to snapshot once).
+export const ICON_BADGE_NAMES = getIconBadgeNames();
 
 export const spec = {
   type: 'icon-badge',
   category: 'icons',
   description:
-    '24 atlas icons (Heroicons + Tabler) wrapped in pseudo-3D circular badge with optional caption.',
+    '~775 atlas icons (24 hand-coded Heroicons + Tabler fast-path + ~770 Phosphor fallback) wrapped in pseudo-3D circular badge with optional caption.',
   args: {
     name: {
-      type: ICON_BADGE_NAMES.slice(0, 6).join('|') + '|... (24 total)',
+      type:
+        ICON_BADGE_HARDCODED_NAMES.slice(0, 6).join('|') +
+        `|... (${ICON_BADGE_NAMES.length} total: 24 hardcoded + Phosphor library)`,
       required: true,
       example: 'users',
     },
@@ -83,7 +125,8 @@ export const spec = {
 
 const PAD = 14;
 const LABEL_FRAC = 0.18;
-const SVG_VIEWBOX = 24;
+// SVG_VIEWBOX removed — resolveIconPath2D now returns per-source viewBox
+// (24 for hardcoded, 256 for Phosphor) so the renderer can scale correctly.
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -97,11 +140,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const name = args.name || 'star';
   const label = args.label;
 
-  const pathData = _ICON_PATHS[name];
-  if (!pathData) {
-    if (typeof console !== 'undefined') console.warn('[icon-badge] unknown name:', name);
+  const resolved = resolveIconPath2D(name);
+  if (!resolved) {
+    // Unknown name — skip entire badge render (safe-noop; lift prompt
+    // should only emit known names from ICON_BADGE_NAMES).
     return;
   }
+  const { path: iconPath, viewBox, paintMode } = resolved;
 
   const labelH = label ? h * LABEL_FRAC : 0;
   const cx = x + w / 2;
@@ -150,20 +195,26 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.restore();
 
   // ---- Draw icon path on top in white ----
+  // viewBox + paintMode are per-source (hardcoded=24/stroke, Phosphor=256/fill)
+  // so the Phosphor 256-unit glyphs don't render at 10× size as giant blobs.
   try {
-    const scale = (radius * 1.3) / SVG_VIEWBOX;
+    const scale = (radius * 1.3) / viewBox;
     ctx.save();
-    ctx.translate(cx - (SVG_VIEWBOX * scale) / 2, cy - (SVG_VIEWBOX * scale) / 2);
+    ctx.translate(cx - (viewBox * scale) / 2, cy - (viewBox * scale) / 2);
     ctx.scale(scale, scale);
     ctx.strokeStyle = 'rgba(255,255,255,0.96)';
     ctx.fillStyle = 'rgba(255,255,255,0.96)';
     ctx.lineWidth = 2 / scale;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    const path = new Path2D(pathData);
-    // Heroicons + Tabler icons mix filled glyphs and stroked outlines.
-    // Most icons look better STROKED; fill as fallback if path was filled.
-    ctx.stroke(path);
+    // Hardcoded Heroicons + Tabler paths are monoline → stroke.
+    // Phosphor regular weight ships closed filled glyphs (fill="currentColor")
+    // → fill, else strokes produce hairline outlines of the shape boundary.
+    if (paintMode === 'fill') {
+      ctx.fill(iconPath);
+    } else {
+      ctx.stroke(iconPath);
+    }
     ctx.restore();
   } catch (e) {
     // Path2D unavailable (Node test env) — silently skip icon glyph
