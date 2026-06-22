@@ -109,41 +109,68 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   for (let l = 0; l < L; l++) {
     for (const node of levels[l]) {
       const color = node.color || accent;
+      const nx = node._x;
+      const ny = node._y;
+      const nr = node._r;
+
+      // Ground shadow (soft ellipse)
       ctx.save();
-      ctx.shadowColor = rgbaCss([0, 0, 0], 0.2);
-      ctx.shadowBlur = 5;
-      ctx.shadowOffsetY = 2;
-      const grad = ctx.createRadialGradient(
-        node._x - node._r * 0.3,
-        node._y - node._r * 0.3,
-        0,
-        node._x,
-        node._y,
-        node._r,
-      );
-      grad.addColorStop(0, rgbCss(lighten(color, 0.32)));
-      grad.addColorStop(1, rgbCss(color));
-      ctx.fillStyle = grad;
+      ctx.filter = 'blur(4px)';
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
       ctx.beginPath();
-      ctx.arc(node._x, node._y, node._r, 0, Math.PI * 2);
+      ctx.ellipse(nx, ny + nr * 0.9, nr * 0.72, nr * 0.13, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
-      // Label (inside node if root or large; else below)
+      // Sphere body: full 3D radial gradient — highlight offset upper-left
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.20)';
+      ctx.shadowBlur = 7;
+      ctx.shadowOffsetY = 3;
+      const grad = ctx.createRadialGradient(nx - nr * 0.35, ny - nr * 0.4, nr * 0.08, nx, ny, nr);
+      grad.addColorStop(0.0, 'rgba(255,255,255,0.95)');
+      grad.addColorStop(0.15, rgbCss(lighten(color, 0.35)));
+      grad.addColorStop(0.55, rgbCss(color));
+      grad.addColorStop(1.0, rgbCss(darken(color, 0.35)));
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(nx, ny, nr, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Specular highlight ellipse (upper-left)
+      if (nr > 6) {
+        ctx.save();
+        const specCx = nx - nr * 0.35;
+        const specCy = ny - nr * 0.45;
+        const specRx = nr * 0.34;
+        const specRy = nr * 0.17;
+        const specGrad = ctx.createRadialGradient(specCx, specCy, 0, specCx, specCy, specRx);
+        specGrad.addColorStop(0.0, 'rgba(255,255,255,0.85)');
+        specGrad.addColorStop(0.45, 'rgba(255,255,255,0.35)');
+        specGrad.addColorStop(1.0, 'rgba(255,255,255,0)');
+        ctx.fillStyle = specGrad;
+        ctx.beginPath();
+        ctx.ellipse(specCx, specCy, specRx, specRy, -0.52, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Label (inside node if large enough; else below)
       if (node.label) {
-        const insideOk = node._r > 18;
+        const insideOk = nr > 18;
         if (insideOk) {
           ctx.fillStyle = 'white';
-          ctx.font = `700 ${Math.round(node._r * 0.5)}px Inter, system-ui, sans-serif`;
+          ctx.font = `700 ${Math.round(nr * 0.5)}px Inter, system-ui, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(String(node.label), node._x, node._y);
+          ctx.fillText(String(node.label), nx, ny);
         } else {
           ctx.fillStyle = rgbCss(fg);
           ctx.font = `600 ${Math.round(h * 0.034)}px Inter, system-ui, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText(String(node.label), node._x, node._y + node._r + 4);
+          ctx.fillText(String(node.label), nx, ny + nr + 4);
         }
       }
     }
@@ -169,5 +196,13 @@ function lighten(rgb, amt) {
     Math.min(255, rgb[0] + (255 - rgb[0]) * amt),
     Math.min(255, rgb[1] + (255 - rgb[1]) * amt),
     Math.min(255, rgb[2] + (255 - rgb[2]) * amt),
+  ];
+}
+
+function darken(rgb, amt) {
+  return [
+    Math.max(0, rgb[0] * (1 - amt)),
+    Math.max(0, rgb[1] * (1 - amt)),
+    Math.max(0, rgb[2] * (1 - amt)),
   ];
 }

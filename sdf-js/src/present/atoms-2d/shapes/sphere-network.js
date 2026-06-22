@@ -68,8 +68,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const sx = cx + Math.cos(a) * orbitR;
     const sy = cy + Math.sin(a) * orbitR;
     ctx.save();
-    ctx.strokeStyle = rgbaCss(fg, 0.28);
-    ctx.lineWidth = Math.max(1.2, orbitR * 0.012);
+    ctx.strokeStyle = rgbaCss(fg, 0.3);
+    ctx.lineWidth = Math.max(1.5, orbitR * 0.014);
     ctx.lineCap = 'round';
     ctx.beginPath();
     // Trim line ends so they don't poke into nodes
@@ -108,16 +108,44 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 }
 
 function drawNode(ctx, cx, cy, r, color, label, fg, isHub) {
+  // Ground shadow (soft ellipse, drawn before sphere body)
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetY = 2;
-  const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, 0, cx, cy, r);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.32)));
-  grad.addColorStop(1, rgbCss(color));
+  ctx.filter = 'blur(5px)';
+  ctx.fillStyle = 'rgba(0,0,0,0.16)';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + r * 0.9, r * 0.75, r * 0.14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Sphere body: full 3D radial gradient — highlight offset upper-left
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.22)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 3;
+  const grad = ctx.createRadialGradient(cx - r * 0.35, cy - r * 0.4, r * 0.08, cx, cy, r);
+  grad.addColorStop(0.0, 'rgba(255,255,255,0.95)');
+  grad.addColorStop(0.15, rgbCss(lighten(color, 0.35)));
+  grad.addColorStop(0.55, rgbCss(color));
+  grad.addColorStop(1.0, rgbCss(darken(color, 0.35)));
   ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Specular highlight ellipse (upper-left)
+  ctx.save();
+  const specCx = cx - r * 0.35;
+  const specCy = cy - r * 0.45;
+  const specRx = r * 0.35;
+  const specRy = r * 0.18;
+  const specGrad = ctx.createRadialGradient(specCx, specCy, 0, specCx, specCy, specRx);
+  specGrad.addColorStop(0.0, 'rgba(255,255,255,0.85)');
+  specGrad.addColorStop(0.45, 'rgba(255,255,255,0.38)');
+  specGrad.addColorStop(1.0, 'rgba(255,255,255,0)');
+  ctx.fillStyle = specGrad;
+  ctx.beginPath();
+  ctx.ellipse(specCx, specCy, specRx, specRy, -0.52, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
@@ -135,5 +163,13 @@ function lighten(rgb, amt) {
     Math.min(255, rgb[0] + (255 - rgb[0]) * amt),
     Math.min(255, rgb[1] + (255 - rgb[1]) * amt),
     Math.min(255, rgb[2] + (255 - rgb[2]) * amt),
+  ];
+}
+
+function darken(rgb, amt) {
+  return [
+    Math.max(0, rgb[0] * (1 - amt)),
+    Math.max(0, rgb[1] * (1 - amt)),
+    Math.max(0, rgb[2] * (1 - amt)),
   ];
 }

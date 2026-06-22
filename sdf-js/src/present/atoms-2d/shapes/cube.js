@@ -55,45 +55,114 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 }
 
 function drawCube(ctx, cx, cy, size, color) {
-  const s = size * 0.42;
-  const angle = Math.PI / 6;
-  const dx = Math.cos(angle) * s;
-  const dy = Math.sin(angle) * s;
+  // True isometric cube: r = half-edge projected length
+  // In isometric view: top face is a lozenge, left+right faces are parallelograms.
+  // Each face is equal in apparent area (classic isometric illusion).
+  //
+  // Geometry: cube edge length e in isometric:
+  //   dx (horizontal half-span) = e * cos(30°) = e * √3/2
+  //   dy_top (top face height)  = e * sin(30°) = e * 0.5
+  //   dy_side (side face height) = e  (vertical cube edge)
+  //
+  // We want the total visible height ≈ size * 0.80, total width ≈ size * 0.80
+  // Total width = 2 * dx = e * √3 ≈ 1.732e  → e ≈ size * 0.80 / 1.732
+  // We center cube so top-peak is above center and bottom is below center.
+
+  const e = size * 0.44; // edge length
+  const dx = e * Math.cos(Math.PI / 6); // ≈ e * 0.866, horizontal projection
+  const dyT = e * Math.sin(Math.PI / 6); // ≈ e * 0.5, top lozenge rise
+  const dyS = e; // side face height (vertical edge)
+
+  // Cube vertices in isometric:
+  //   Top peak:           (cx,       cy - dyT - dyS/2)
+  //   Top-left corner:    (cx - dx,  cy - dyS/2)
+  //   Top-right corner:   (cx + dx,  cy - dyS/2)
+  //   Center bottom:      (cx,       cy + dyT - dyS/2)
+  //   Left bottom:        (cx - dx,  cy - dyS/2 + dyS) = (cx - dx, cy + dyS/2)
+  //   Right bottom:       (cx + dx,  cy + dyS/2)
+  //   Bottom peak:        (cx,       cy + dyT + dyS/2)
+
+  // Shift so cube is centered vertically in available area
+  const midOff = dyT / 2; // push up slightly so visual center is at cy
+  const ty = cy - midOff; // adjusted vertical center
+
+  const topPeak = { x: cx, y: ty - dyT - dyS / 2 };
+  const topLeft = { x: cx - dx, y: ty - dyS / 2 };
+  const topRight = { x: cx + dx, y: ty - dyS / 2 };
+  const centerMid = { x: cx, y: ty + dyT - dyS / 2 };
+  const botLeft = { x: cx - dx, y: ty + dyS / 2 };
+  const botRight = { x: cx + dx, y: ty + dyS / 2 };
+  const botPeak = { x: cx, y: ty + dyT + dyS / 2 };
+
+  // Ground shadow ellipse (drawn first, behind all faces)
+  ctx.save();
+  ctx.filter = 'blur(10px)';
+  ctx.fillStyle = 'rgba(0,0,0,0.20)';
+  ctx.beginPath();
+  ctx.ellipse(cx, botPeak.y + 6, dx * 0.9, dyT * 0.45, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 6;
+  ctx.shadowColor = 'rgba(0,0,0,0.22)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
 
-  // Right face (darkest)
-  ctx.fillStyle = rgbCss(darken(color, 0.2));
+  // Right-front face (shadow side — slightly darker)
+  ctx.fillStyle = rgbCss(darken(color, 0.15));
   ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + dx, cy - dy);
-  ctx.lineTo(cx + dx, cy - dy + s * 2);
-  ctx.lineTo(cx, cy + s * 2);
+  ctx.moveTo(centerMid.x, centerMid.y);
+  ctx.lineTo(topRight.x, topRight.y);
+  ctx.lineTo(botRight.x, botRight.y);
+  ctx.lineTo(botPeak.x, botPeak.y);
   ctx.closePath();
   ctx.fill();
 
-  // Left face (medium)
+  // Left-front face (mid-tone — base color)
   ctx.fillStyle = rgbCss(color);
   ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx - dx, cy - dy);
-  ctx.lineTo(cx - dx, cy - dy + s * 2);
-  ctx.lineTo(cx, cy + s * 2);
+  ctx.moveTo(centerMid.x, centerMid.y);
+  ctx.lineTo(topLeft.x, topLeft.y);
+  ctx.lineTo(botLeft.x, botLeft.y);
+  ctx.lineTo(botPeak.x, botPeak.y);
   ctx.closePath();
   ctx.fill();
 
-  // Top face (lightest)
-  ctx.fillStyle = rgbCss(lighten(color, 0.2));
+  // Top face (brightest — light from above)
+  ctx.fillStyle = rgbCss(lighten(color, 0.3));
   ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx - dx, cy - dy);
-  ctx.lineTo(cx, cy - dy * 2);
-  ctx.lineTo(cx + dx, cy - dy);
+  ctx.moveTo(topPeak.x, topPeak.y);
+  ctx.lineTo(topLeft.x, topLeft.y);
+  ctx.lineTo(centerMid.x, centerMid.y);
+  ctx.lineTo(topRight.x, topRight.y);
   ctx.closePath();
   ctx.fill();
+
+  // Subtle edge outlines to crisp up the 3D look
+  ctx.strokeStyle = rgbaCss(darken(color, 0.2), 0.5);
+  ctx.lineWidth = 0.5;
+  // Top ridge lines
+  ctx.beginPath();
+  ctx.moveTo(topPeak.x, topPeak.y);
+  ctx.lineTo(topLeft.x, topLeft.y);
+  ctx.lineTo(centerMid.x, centerMid.y);
+  ctx.lineTo(topRight.x, topRight.y);
+  ctx.lineTo(topPeak.x, topPeak.y);
+  ctx.stroke();
+  // Vertical left/right edges
+  ctx.beginPath();
+  ctx.moveTo(topLeft.x, topLeft.y);
+  ctx.lineTo(botLeft.x, botLeft.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(topRight.x, topRight.y);
+  ctx.lineTo(botRight.x, botRight.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(centerMid.x, centerMid.y);
+  ctx.lineTo(botPeak.x, botPeak.y);
+  ctx.stroke();
+
   ctx.restore();
 }
 

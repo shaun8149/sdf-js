@@ -19,12 +19,13 @@
 //
 // Render technique (general CG, not specific to any vendor's templates):
 //   1. Soft elliptical floor shadow under sphere
-//   2. Outer glass shell: dark-to-darker radial gradient (subtle, thin rim)
+//   2. Glass sphere shell: faint translucent radial gradient (NOT dark fill)
 //   3. Liquid body: cap segment from bottom up to fill height, with
-//      vertical liquid gradient (lighter top, darker bottom)
-//   4. Liquid top surface: thin ellipse at fill level (perspective)
-//   5. Specular highlight: bright white spot upper-left (Phong reflection)
-//   6. Centered % text in white with subtle dark outline for legibility
+//      vertical liquid gradient (lighter top, darker bottom) + wavy surface
+//   4. Liquid top surface: thin perspective ellipse at fill level
+//   5. Glass rim overlay: thin circular stroke (subtle)
+//   6. Specular highlight: bright white spot upper-left (Phong reflection)
+//   7. Label BELOW sphere (KPI card style), not overlaid on sphere center
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
@@ -43,7 +44,8 @@ export const spec = {
 };
 
 const PAD = 14;
-const FLOOR_SHADOW_FRAC = 0.08;
+// Reserve bottom 22% of height for label (value text below sphere)
+const LABEL_FRAC = 0.22;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -54,167 +56,168 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const color = args.color || palette.colors?.[0] || [60, 130, 200];
   const value = clamp(Number(args.value ?? 0), 0, 100);
   const label = args.label != null ? String(args.label) : `${Math.round(value)}%`;
-  const background = args.background || 'dark';
 
-  // Reserve floor shadow space at bottom
+  // Layout: sphere occupies top 78%, label region below
+  const labelAreaH = h * LABEL_FRAC;
+  const sphereAreaH = h - labelAreaH - PAD * 2;
+  const sphereAreaW = w - PAD * 2;
+  const radius = Math.min(sphereAreaW, sphereAreaH) / 2;
   const cx = x + w / 2;
-  const cy = y + (h - h * FLOOR_SHADOW_FRAC) / 2 + PAD / 2;
-  const radius = Math.min(w - PAD * 2, h - PAD * 2 - h * FLOOR_SHADOW_FRAC) / 2;
+  const cy = y + PAD + sphereAreaH / 2;
 
-  // ---- 1) Floor shadow (elliptical) ----
-  const floorY = y + h - h * FLOOR_SHADOW_FRAC * 0.4;
+  // ---- 1) Ground shadow (elliptical, blurred) ----
+  const floorY = cy + radius * 0.93;
   ctx.save();
-  const floorGrad = ctx.createRadialGradient(cx, floorY, 1, cx, floorY, radius * 0.95);
-  floorGrad.addColorStop(0, rgbaCss([0, 0, 0], background === 'dark' ? 0.45 : 0.22));
-  floorGrad.addColorStop(0.7, rgbaCss([0, 0, 0], 0.1));
-  floorGrad.addColorStop(1, rgbaCss([0, 0, 0], 0));
-  ctx.fillStyle = floorGrad;
+  ctx.filter = 'blur(10px)';
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
   ctx.beginPath();
-  ctx.ellipse(cx, floorY, radius * 0.95, radius * 0.18, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, floorY, radius * 0.8, radius * 0.13, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // ---- 2) Outer glass shell (translucent dark base + rim) ----
+  // ---- 2) Glass sphere shell: faint translucent body (liquid shows through) ----
   ctx.save();
-  const glassBaseGrad = ctx.createRadialGradient(cx, cy, radius * 0.1, cx, cy, radius);
-  if (background === 'dark') {
-    glassBaseGrad.addColorStop(0, rgbaCss([20, 20, 20], 0.85));
-    glassBaseGrad.addColorStop(0.7, rgbaCss([10, 10, 10], 0.85));
-    glassBaseGrad.addColorStop(1, rgbaCss([0, 0, 0], 0.92));
-  } else {
-    glassBaseGrad.addColorStop(0, rgbaCss([235, 235, 235], 0.6));
-    glassBaseGrad.addColorStop(1, rgbaCss([200, 200, 205], 0.85));
-  }
-  ctx.fillStyle = glassBaseGrad;
+  const glassGrad = ctx.createRadialGradient(
+    cx - radius * 0.35,
+    cy - radius * 0.4,
+    radius * 0.05,
+    cx,
+    cy,
+    radius,
+  );
+  glassGrad.addColorStop(0.0, 'rgba(255,255,255,0.08)');
+  glassGrad.addColorStop(0.55, rgbaCss(color, 0.05));
+  glassGrad.addColorStop(1.0, rgbaCss(darken(color, 0.18), 0.2));
+  ctx.fillStyle = glassGrad;
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // ---- 3) Liquid fill (cap segment + colored body) ----
+  // ---- 3) Liquid fill clipped to sphere (with wavy surface) ----
   if (value > 0) {
     const fillRatio = value / 100;
-    // Liquid surface y: top of liquid (smaller fillRatio = lower)
     const fillTopY = cy + radius - 2 * radius * fillRatio;
-    drawLiquidBody(ctx, cx, cy, radius, fillTopY, color);
-    drawLiquidSurface(ctx, cx, fillTopY, radius, cy, color);
+    const crossDy = fillTopY - cy;
+    const crossR = Math.sqrt(Math.max(0, radius * radius - crossDy * crossDy));
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius - 1.5, 0, Math.PI * 2);
+    ctx.clip();
+
+    // Liquid vertical gradient: lighter near surface, richer at bottom
+    const grad = ctx.createLinearGradient(0, fillTopY, 0, cy + radius);
+    grad.addColorStop(0, rgbCss(lighten(color, 0.28)));
+    grad.addColorStop(0.25, rgbCss(lighten(color, 0.12)));
+    grad.addColorStop(1, rgbCss(darken(color, 0.25)));
+    ctx.fillStyle = grad;
+
+    // Draw liquid body with wavy top edge
+    ctx.beginPath();
+    const waveAmp = Math.min(3.5, radius * 0.028);
+    const waveCount = 4;
+    const leftX = cx - crossR;
+    const rightX = cx + crossR;
+    ctx.moveTo(leftX, fillTopY);
+    const waveStep = (rightX - leftX) / (waveCount * 2);
+    for (let i = 0; i < waveCount * 2; i++) {
+      const wx1 = leftX + i * waveStep;
+      const wx2 = leftX + (i + 1) * waveStep;
+      const wmidX = (wx1 + wx2) / 2;
+      const sign = i % 2 === 0 ? -1 : 1;
+      ctx.quadraticCurveTo(wmidX, fillTopY + sign * waveAmp, wx2, fillTopY);
+    }
+    // Arc around bottom of sphere
+    const angleRight = Math.acos(clamp(crossDy / radius, -1, 1));
+    ctx.arc(cx, cy, radius - 1.5, -angleRight + Math.PI * 0.5, angleRight + Math.PI * 0.5, false);
+    ctx.closePath();
+    ctx.fill();
+
+    // Inner side specular highlight on right wall of liquid
+    const sideGrad = ctx.createLinearGradient(cx - radius * 0.5, 0, cx + radius * 0.75, 0);
+    sideGrad.addColorStop(0.0, rgbaCss(lighten(color, 0.4), 0));
+    sideGrad.addColorStop(0.82, rgbaCss(lighten(color, 0.4), 0));
+    sideGrad.addColorStop(1.0, rgbaCss(lighten(color, 0.4), 0.28));
+    ctx.fillStyle = sideGrad;
+    ctx.fillRect(cx - radius, fillTopY, radius * 2, radius * 2);
+
+    ctx.restore();
+
+    // ---- 4) Liquid surface ellipse (perspective top of liquid) ----
+    if (crossR > 3) {
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(darken(color, 0.3), 0.55);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(cx, fillTopY, crossR, crossR * 0.15, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      const surfGrad = ctx.createLinearGradient(
+        0,
+        fillTopY - crossR * 0.15,
+        0,
+        fillTopY + crossR * 0.15,
+      );
+      surfGrad.addColorStop(0, rgbaCss(darken(color, 0.1), 0.55));
+      surfGrad.addColorStop(1, rgbaCss(lighten(color, 0.12), 0.28));
+      ctx.fillStyle = surfGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx, fillTopY, crossR, crossR * 0.15, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
-  // ---- 4) Glass overlay (outer rim — only outline, not refill) ----
+  // ---- 5) Glass rim (white outer stroke + subtle inner darkening) ----
   ctx.save();
-  ctx.strokeStyle = rgbaCss(background === 'dark' ? [255, 255, 255] : [120, 120, 130], 0.18);
-  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.32)';
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.stroke();
+  ctx.strokeStyle = rgbaCss(darken(color, 0.25), 0.1);
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius - 1.5, 0, Math.PI * 2);
+  ctx.stroke();
   ctx.restore();
 
-  // ---- 5) Specular highlight (Phong-style bright spot, upper area) ----
+  // ---- 6) Specular highlight (Phong-style, upper-left) ----
   ctx.save();
-  ctx.globalAlpha = 0.55;
-  const specCx = cx - radius * 0.25;
+  const specCx = cx - radius * 0.35;
   const specCy = cy - radius * 0.45;
-  const specR = radius * 0.32;
-  const specGrad = ctx.createRadialGradient(specCx, specCy, 0, specCx, specCy, specR);
-  specGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
-  specGrad.addColorStop(0.4, 'rgba(255,255,255,0.4)');
-  specGrad.addColorStop(1, 'rgba(255,255,255,0)');
+  const specRx = radius * 0.34;
+  const specRy = radius * 0.17;
+  const specGrad = ctx.createRadialGradient(specCx, specCy, 0, specCx, specCy, specRx);
+  specGrad.addColorStop(0.0, 'rgba(255,255,255,0.92)');
+  specGrad.addColorStop(0.3, 'rgba(255,255,255,0.55)');
+  specGrad.addColorStop(1.0, 'rgba(255,255,255,0)');
   ctx.fillStyle = specGrad;
   ctx.beginPath();
-  ctx.ellipse(specCx, specCy, specR, specR * 0.7, -0.3, 0, Math.PI * 2);
+  ctx.ellipse(specCx, specCy, specRx, specRy, -0.52, 0, Math.PI * 2);
   ctx.fill();
-  ctx.restore();
-
-  // Secondary tiny pin-prick highlight
-  ctx.save();
-  ctx.globalAlpha = 0.85;
+  // Tiny pin-prick highlight
   ctx.fillStyle = 'rgba(255,255,255,1)';
   ctx.beginPath();
-  ctx.arc(cx - radius * 0.15, cy - radius * 0.6, radius * 0.05, 0, Math.PI * 2);
+  ctx.arc(cx - radius * 0.18, cy - radius * 0.58, radius * 0.038, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // ---- 6) Centered % text (white with subtle dark outline) ----
+  // ---- 7) Label BELOW sphere (KPI card style) ----
   if (label) {
-    const textSize = Math.round(radius * 0.36);
-    ctx.font = `900 ${textSize}px Inter, system-ui, sans-serif`;
+    const labelY = cy + radius + labelAreaH * 0.45;
+    const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.55));
+    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    // text centered ON the liquid surface (more readable)
-    const liquidVisible = value > 8;
-    const textY = liquidVisible
-      ? cy + radius - 2 * radius * (value / 100) + radius * 0.18 // slightly below surface
-      : cy + radius * 0.4; // empty sphere: anchor lower-center
-
-    // Soft drop shadow for legibility on glass
-    ctx.save();
-    ctx.shadowColor = rgbaCss([0, 0, 0], 0.55);
-    ctx.shadowBlur = 6;
-    ctx.shadowOffsetY = 2;
-    ctx.fillStyle = 'rgba(255,255,255,0.98)';
-    ctx.fillText(label, cx, textY);
-    ctx.restore();
+    ctx.fillStyle = rgbCss(palette.silhouetteColor || [30, 27, 30]);
+    ctx.fillText(label, cx, labelY);
   }
 }
 
 // ============================================================================
-// Helpers — liquid body + surface
+// Helpers
 // ============================================================================
-
-function drawLiquidBody(ctx, cx, cy, radius, fillTopY, color) {
-  // Liquid = portion of sphere below fillTopY, with a vertical gradient
-  // showing depth (lighter near surface, darker at bottom).
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2);
-  ctx.clip();
-
-  const grad = ctx.createLinearGradient(0, fillTopY, 0, cy + radius);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.18)));
-  grad.addColorStop(1, rgbCss(darken(color, 0.18)));
-  ctx.fillStyle = grad;
-
-  // Fill the entire clipped circle bottom half (anything below fillTopY)
-  ctx.fillRect(cx - radius, fillTopY, radius * 2, radius * 2);
-
-  // Add subtle inner side specular (vertical highlight on right side suggesting
-  // light reflection through liquid)
-  const sideGrad = ctx.createLinearGradient(cx - radius * 0.5, 0, cx + radius * 0.7, 0);
-  sideGrad.addColorStop(0, rgbaCss(lighten(color, 0.4), 0));
-  sideGrad.addColorStop(0.85, rgbaCss(lighten(color, 0.4), 0));
-  sideGrad.addColorStop(1, rgbaCss(lighten(color, 0.4), 0.35));
-  ctx.fillStyle = sideGrad;
-  ctx.fillRect(cx - radius, fillTopY, radius * 2, radius * 2);
-  ctx.restore();
-}
-
-function drawLiquidSurface(ctx, cx, fillTopY, sphereR, sphereCy, color) {
-  // Top surface of liquid = ellipse at fillTopY with rx scaled by sphere
-  // cross-section at that height. Perspective makes the front of the ellipse
-  // curve toward viewer.
-  const dy = fillTopY - sphereCy;
-  const crossR = Math.sqrt(Math.max(0, sphereR * sphereR - dy * dy));
-  if (crossR < 2) return;
-
-  ctx.save();
-  // Slight outer rim line on top edge
-  ctx.strokeStyle = rgbaCss(darken(color, 0.4), 0.65);
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.ellipse(cx, fillTopY, crossR, crossR * 0.18, 0, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // Fill ellipse with light-to-dark vertical gradient (front edge lighter)
-  const grad = ctx.createLinearGradient(0, fillTopY - crossR * 0.18, 0, fillTopY + crossR * 0.18);
-  grad.addColorStop(0, rgbCss(darken(color, 0.12)));
-  grad.addColorStop(0.5, rgbCss(color));
-  grad.addColorStop(1, rgbCss(lighten(color, 0.08)));
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.ellipse(cx, fillTopY, crossR, crossR * 0.18, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
 
 function clamp(v, lo, hi) {
   return Math.max(lo, Math.min(hi, v));
