@@ -5,11 +5,17 @@
 // (SWOT / Eisenhower / BCG-style 2x2 strategic matrix).
 //
 // Args:
-//   rows / cols — grid dimensions (default 2x2)
-//   cells       — array of { label, sublabel?, color? } (row-major order)
-//   xAxis       — optional { low, high } axis labels (bottom)
-//   yAxis       — optional { low, high } axis labels (left)
-//   title       — optional title
+//   rows / cols    — grid dimensions (default 2x2)
+//   cells          — array of { label, sublabel?, color? } (row-major order)
+//   xAxis          — optional { low, high } axis labels (bottom)
+//   yAxis          — optional { low, high } axis labels (left)
+//   title          — optional title
+//   quadrantAxes   — optional { x: string, y: string } — named axis arrows for
+//                    BCG-style rendering (draws labeled arrows outside the grid)
+//   bubbles        — optional array of { row, col, label?, size? } — filled
+//                    circle overlays positioned at cell (row,col) center.
+//                    size is 0..1 relative to half the cell's smaller dimension
+//                    (default 0.5). Enables BCG product-bubble rendering.
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
@@ -34,6 +40,14 @@ export const spec = {
     xAxis: { type: '{ low, high }?', example: { low: 'Low', high: 'High' } },
     yAxis: { type: '{ low, high }?', example: { low: 'Low', high: 'High' } },
     title: { type: 'string?', example: 'SWOT Analysis' },
+    quadrantAxes: {
+      type: '{ x: string, y: string }?',
+      example: { x: 'Market Growth', y: 'Market Share' },
+    },
+    bubbles: {
+      type: 'array of { row, col, label?, size? }?',
+      example: [{ row: 0, col: 1, label: 'Stars', size: 0.5 }],
+    },
   },
 };
 
@@ -70,8 +84,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + h * 0.1;
   }
 
-  const yAxisW = yAxis ? AXIS_W : 0;
-  const xAxisH = xAxis ? 24 : 0;
+  // Reserve gutter space for axis labels. quadrantAxes (BCG-style) needs
+  // its own gutter even when xAxis/yAxis aren't set, otherwise the labels
+  // render off-canvas below/left of the visible area.
+  const hasQuadrantAxes = !!args.quadrantAxes;
+  const yAxisW = yAxis ? AXIS_W : hasQuadrantAxes && args.quadrantAxes.y ? 30 : 0;
+  const xAxisH = xAxis ? 24 : hasQuadrantAxes && args.quadrantAxes.x ? 28 : 0;
   const gridL = x + PAD + yAxisW;
   const gridR = x + w - PAD;
   const gridT = plotTop + PAD;
@@ -120,6 +138,113 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.textAlign = 'right';
     ctx.fillText(yAxis.high || '', gridB - gridT, 0);
     ctx.restore();
+  }
+
+  // ---- quadrantAxes — named arrow labels for BCG-style rendering ----
+  // Draw after cells so arrows appear on top of grid borders
+  if (args.quadrantAxes) {
+    const qa = args.quadrantAxes;
+    const arrowSize = 6;
+    const labelFontSize = Math.round(h * 0.042);
+    ctx.save();
+    ctx.strokeStyle = rgbaCss(fg, 0.65);
+    ctx.fillStyle = rgbaCss(fg, 0.65);
+    ctx.lineWidth = 1.5;
+    ctx.font = `600 ${labelFontSize}px Inter, system-ui, sans-serif`;
+
+    // X-axis arrow: below grid, left→right
+    if (qa.x) {
+      const ay = gridB + 14;
+      ctx.beginPath();
+      ctx.moveTo(gridL, ay);
+      ctx.lineTo(gridR, ay);
+      ctx.stroke();
+      // Arrow head right
+      ctx.beginPath();
+      ctx.moveTo(gridR, ay);
+      ctx.lineTo(gridR - arrowSize, ay - arrowSize / 2);
+      ctx.lineTo(gridR - arrowSize, ay + arrowSize / 2);
+      ctx.closePath();
+      ctx.fill();
+      // Label centered below arrow
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(qa.x), gridL + (gridR - gridL) / 2, ay + 4);
+    }
+
+    // Y-axis arrow: left of grid, bottom→top (rotated)
+    if (qa.y) {
+      const ax = gridL - 14;
+      ctx.save();
+      ctx.translate(ax, gridT + (gridB - gridT) / 2);
+      ctx.rotate(-Math.PI / 2);
+      // Arrow (pointing up = left after rotation)
+      ctx.beginPath();
+      ctx.moveTo(-(gridB - gridT) / 2, 0);
+      ctx.lineTo((gridB - gridT) / 2, 0);
+      ctx.stroke();
+      // Arrow head (pointing "up" = positive y direction)
+      ctx.beginPath();
+      ctx.moveTo((gridB - gridT) / 2, 0);
+      ctx.lineTo((gridB - gridT) / 2 - arrowSize, -arrowSize / 2);
+      ctx.lineTo((gridB - gridT) / 2 - arrowSize, arrowSize / 2);
+      ctx.closePath();
+      ctx.fill();
+      // Label
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(String(qa.y), 0, -4);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  // ---- bubbles — filled circle overlays per cell (BCG product units) ----
+  if (Array.isArray(args.bubbles) && args.bubbles.length > 0) {
+    const bubbleColors = palette.colors || colors;
+    for (let bi = 0; bi < args.bubbles.length; bi++) {
+      const b = args.bubbles[bi];
+      const bRow = clamp(Number(b.row) || 0, 0, rows - 1);
+      const bCol = clamp(Number(b.col) || 0, 0, cols - 1);
+      const sizeFrac = clamp(b.size != null ? Number(b.size) : 0.5, 0.05, 1);
+
+      // Cell center
+      const cellCx = gridL + bCol * cellW + cellW / 2;
+      const cellCy = gridT + bRow * cellH + cellH / 2;
+      const bubbleR = (Math.min(cellW, cellH) / 2) * sizeFrac * 0.7;
+
+      const bubbleColor = bubbleColors[(bRow * cols + bCol) % bubbleColors.length];
+
+      ctx.save();
+      ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 3;
+      const grad = ctx.createRadialGradient(
+        cellCx - bubbleR * 0.25,
+        cellCy - bubbleR * 0.25,
+        0,
+        cellCx,
+        cellCy,
+        bubbleR,
+      );
+      grad.addColorStop(0, rgbaCss(lighten(bubbleColor, 0.3), 0.92));
+      grad.addColorStop(1, rgbaCss(bubbleColor, 0.88));
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cellCx, cellCy, bubbleR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Bubble label
+      if (b.label) {
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        const labelSize = Math.max(9, Math.round(bubbleR * 0.45));
+        ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(b.label), cellCx, cellCy);
+      }
+    }
   }
 }
 

@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Sprint 15a — render fixtures for screenshots</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body { margin: 0; padding: 24px; font-family: 'Inter', system-ui; background: #f8f7f4; }
+      .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+      .card { background: white; border: 1px solid #e0ddd5; border-radius: 4px; padding: 0; }
+      .card h3 { margin: 0; padding: 8px 12px; font-size: 12px; background: #1e1b1e; color: white; font-weight: 600; }
+      .card canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="row" id="cards"></div>
+    <script type="module">
+      import { renderAtom } from '/src/present/atoms-2d/registry.js';
+
+      const PALETTE = {
+        bg: [248, 247, 244],
+        silhouetteColor: [30, 27, 30],
+        colors: [
+          [60, 100, 200],
+          [220, 80, 100],
+          [80, 170, 100],
+          [220, 170, 30],
+          [180, 60, 180],
+          [60, 170, 200],
+        ],
+      };
+
+      const SAMPLES = [
+        // 7 new atoms
+        {
+          id: 'bubble',
+          title: 'bubble — Product Portfolio',
+          w: 520, h: 360,
+          atom: { type: 'bubble', args: {
+            points: [
+              { x: 0.2, y: 0.3, size: 0.45, label: 'Product A' },
+              { x: 0.5, y: 0.7, size: 0.85, label: 'Product B' },
+              { x: 0.8, y: 0.4, size: 0.25, label: 'Product C' },
+              { x: 0.35, y: 0.85, size: 0.55, label: 'Product D' },
+            ],
+            xAxis: 'Market Cost',
+            yAxis: 'Revenue Potential',
+            title: 'Product Portfolio',
+          }},
+        },
+        {
+          id: 'histogram',
+          title: 'histogram — Distribution + Bell',
+          w: 520, h: 360,
+          atom: { type: 'histogram', args: {
+            bins: [
+              { range: [0, 10], count: 5 },
+              { range: [10, 20], count: 12 },
+              { range: [20, 30], count: 22 },
+              { range: [30, 40], count: 28 },
+              { range: [40, 50], count: 20 },
+              { range: [50, 60], count: 10 },
+              { range: [60, 70], count: 3 },
+            ],
+            title: 'Survey Response Distribution',
+            bellCurve: true,
+            milestones: [{ value: 35, label: 'Median' }],
+          }},
+        },
+        {
+          id: 'break-even',
+          title: 'break-even — SaaS Pricing',
+          w: 520, h: 360,
+          atom: { type: 'break-even', args: {
+            fixedCost: 50000,
+            variableCostPerUnit: 25,
+            pricePerUnit: 50,
+            maxUnits: 5000,
+            title: 'SaaS Break-Even Analysis',
+          }},
+        },
+        {
+          id: 'stacked-area',
+          title: 'stacked-area — Revenue by Product',
+          w: 540, h: 360,
+          atom: { type: 'stacked-area', args: {
+            series: [
+              { name: 'Product A', values: [10, 12, 15, 20, 25, 32] },
+              { name: 'Product B', values: [5, 8, 10, 14, 18, 24] },
+              { name: 'Product C', values: [3, 4, 6, 8, 11, 16] },
+            ],
+            xLabels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6'],
+            title: 'Revenue by Product Over Time',
+            format: 'currency',
+          }},
+        },
+        {
+          id: 'seven-s-model',
+          title: 'seven-s-model — McKinsey 7S',
+          w: 540, h: 540,
+          atom: { type: 'seven-s-model', args: {
+            center: 'Shared Values',
+            satellites: [
+              { label: 'Strategy' },
+              { label: 'Structure' },
+              { label: 'Systems' },
+              { label: 'Style' },
+              { label: 'Staff' },
+              { label: 'Skills' },
+            ],
+            title: 'McKinsey 7S Framework',
+          }},
+        },
+        {
+          id: 'multiple-arrows-converge',
+          title: 'multiple-arrows — Converge 3→1',
+          w: 520, h: 320,
+          atom: { type: 'multiple-arrows', args: {
+            mode: 'converge',
+            arrows: [{ label: 'Input A' }, { label: 'Input B' }, { label: 'Input C' }],
+            centerLabel: 'Output',
+            title: '3 → 1 Aggregation',
+          }},
+        },
+        {
+          id: 'multiple-arrows-diverge',
+          title: 'multiple-arrows — Diverge 1→4',
+          w: 520, h: 320,
+          atom: { type: 'multiple-arrows', args: {
+            mode: 'diverge',
+            arrows: [{ label: 'Web' }, { label: 'Mobile' }, { label: 'Email' }, { label: 'Social' }],
+            centerLabel: 'Marketing',
+            title: '1 → 4 Channels',
+          }},
+        },
+        {
+          id: 'multiple-arrows-parallel',
+          title: 'multiple-arrows — Parallel Workstreams',
+          w: 520, h: 320,
+          atom: { type: 'multiple-arrows', args: {
+            mode: 'parallel',
+            arrows: [{ label: 'Frontend' }, { label: 'Backend' }, { label: 'Infra' }],
+            title: '3 Parallel Workstreams',
+          }},
+        },
+        {
+          id: 'nine-field-matrix',
+          title: 'nine-field-matrix — GE/McKinsey',
+          w: 520, h: 520,
+          atom: { type: 'nine-field-matrix', args: {
+            cells: [
+              { label: 'Invest' }, { label: 'Invest' }, { label: 'Selective' },
+              { label: 'Invest' }, { label: 'Selective' }, { label: 'Harvest' },
+              { label: 'Selective' }, { label: 'Harvest' }, { label: 'Divest' },
+            ],
+            xAxis: 'Business Strength',
+            yAxis: 'Industry Attractiveness',
+            title: 'GE/McKinsey Matrix',
+            bubbles: [
+              { row: 0, col: 0, label: 'A', size: 0.5 },
+              { row: 1, col: 1, label: 'B', size: 0.6 },
+              { row: 2, col: 2, label: 'C', size: 0.4 },
+            ],
+          }},
+        },
+
+        // 3 extensions
+        {
+          id: 'matrix-grid-bcg',
+          title: 'matrix-grid — BCG quadrantAxes + bubbles',
+          w: 520, h: 480,
+          atom: { type: 'matrix-grid', args: {
+            rows: 2,
+            cols: 2,
+            cells: [
+              { label: 'Stars', sublabel: 'High growth, high share' },
+              { label: 'Question Marks', sublabel: 'High growth, low share' },
+              { label: 'Cash Cows', sublabel: 'Low growth, high share' },
+              { label: 'Dogs', sublabel: 'Low growth, low share' },
+            ],
+            quadrantAxes: { x: 'Market Share', y: 'Market Growth' },
+            bubbles: [
+              { row: 0, col: 0, label: 'P1', size: 0.5 },
+              { row: 0, col: 1, label: 'P2', size: 0.35 },
+              { row: 1, col: 0, label: 'P3', size: 0.6 },
+            ],
+            title: 'BCG Matrix — Product Portfolio',
+          }},
+        },
+        {
+          id: 'scatter-regression',
+          title: 'scatter — with regression line',
+          w: 520, h: 360,
+          atom: { type: 'scatter', args: {
+            points: [
+              { x: 0.1, y: 0.15 }, { x: 0.18, y: 0.22 }, { x: 0.25, y: 0.3 },
+              { x: 0.35, y: 0.36 }, { x: 0.45, y: 0.5 }, { x: 0.55, y: 0.55 },
+              { x: 0.65, y: 0.62 }, { x: 0.78, y: 0.7 }, { x: 0.88, y: 0.82 },
+            ],
+            xAxis: 'Marketing Spend',
+            yAxis: 'Revenue',
+            title: 'Spend vs Revenue (with trend)',
+            regressionLine: true,
+          }},
+        },
+        {
+          id: 'bar-targetline',
+          title: 'bar — with target line',
+          w: 540, h: 360,
+          atom: { type: 'bar', args: {
+            values: [1.2, 1.8, 2.4, 3.1],
+            labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+            format: 'currency',
+            title: 'Quarterly Revenue ($M)',
+            targetLine: { value: 2.5, label: 'Target $2.5M' },
+          }},
+        },
+      ];
+
+      const container = document.getElementById('cards');
+      for (const s of SAMPLES) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.id = `card-${s.id}`;
+        const h = document.createElement('h3');
+        h.textContent = s.title;
+        const c = document.createElement('canvas');
+        c.id = `canvas-${s.id}`;
+        c.width = s.w;
+        c.height = s.h;
+        card.appendChild(h);
+        card.appendChild(c);
+        container.appendChild(card);
+        const ctx = c.getContext('2d');
+        try {
+          await renderAtom(ctx, s.atom.type, s.atom.args, 'pseudo3d', {
+            x: 0,
+            y: 0,
+            w: s.w,
+            h: s.h,
+            palette: PALETTE,
+          });
+          console.log('OK:', s.id);
+        } catch (e) {
+          console.error('ERR:', s.id, e.message);
+        }
+      }
+      window.__SAMPLE_IDS__ = SAMPLES.map(s => s.id);
+    </script>
+  </body>
+</html>

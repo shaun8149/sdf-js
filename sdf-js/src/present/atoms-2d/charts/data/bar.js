@@ -8,12 +8,15 @@
 // "category vs metric" comparisons (e.g. "Q1/Q2/Q3/Q4 revenue").
 //
 // Args:
-//   values  — array of numbers (raw, will be normalized inside)
-//   labels  — array of strings (same length as values; left-side labels)
-//   format  — value display format: 'currency' | 'percent' | 'number' | function(v)
-//             (default: 'number')
-//   max     — optional explicit max for scaling. If not provided, max(values).
-//   title   — optional chart title above bars
+//   values     — array of numbers (raw, will be normalized inside)
+//   labels     — array of strings (same length as values; left-side labels)
+//   format     — value display format: 'currency' | 'percent' | 'number' | function(v)
+//               (default: 'number')
+//   max        — optional explicit max for scaling. If not provided, max(values).
+//   title      — optional chart title above bars
+//   targetLine — optional { value: number, label?: string } — draws a horizontal
+//               dashed reference line at the given value (same scale as bars).
+//               Useful for budget / target / benchmark overlays.
 //
 // Render: pseudo-3D (drawPseudo3D)
 //   - Each bar: gradient + drop shadow + subtle iso edge
@@ -43,6 +46,10 @@ export const spec = {
     },
     max: { type: 'number?', example: 4 },
     title: { type: 'string?', example: 'Quarterly Revenue ($M)' },
+    targetLine: {
+      type: '{ value: number, label?: string }?',
+      example: { value: 2.5, label: 'Target' },
+    },
   },
 };
 
@@ -132,6 +139,44 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(formatted[i], barAreaLeft + barW + VALUE_GAP, cy + barHeight / 2);
+  }
+
+  // ---- targetLine — horizontal dashed reference (optional) ----
+  if (args.targetLine != null && max > 0) {
+    const tValue = Number(args.targetLine.value);
+    if (Number.isFinite(tValue)) {
+      // Map value to x-pixel in bar area (same scale as bars)
+      const tFrac = tValue / max;
+      const tX = barAreaLeft + barAreaW * tFrac;
+
+      // Vertical span: from chartTop to chartTop+chartHeight (full bar area height)
+      const lineTop = chartTop;
+      const lineBottom = chartTop + chartHeight;
+
+      // Accent color: palette accent or a distinguishable red-orange
+      const accentColor = palette.accentColor || [210, 80, 60];
+
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(accentColor, 0.85);
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tX, lineTop);
+      ctx.lineTo(tX, lineBottom);
+      ctx.stroke();
+      ctx.restore();
+
+      // Label above the line at the top, right-aligned to line
+      if (args.targetLine.label) {
+        const labelFontSize = Math.max(10, Math.round(chartHeight * 0.08));
+        ctx.fillStyle = rgbaCss(accentColor, 0.9);
+        ctx.font = `600 ${labelFontSize}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(String(args.targetLine.label), tX, lineTop - 2);
+      }
+    }
   }
 }
 

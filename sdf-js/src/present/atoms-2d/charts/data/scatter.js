@@ -5,12 +5,17 @@
 // plot area. Used for correlation / distribution / XY data viz.
 //
 // Args:
-//   points — array of { x, y, label?, group?, color? } where x/y are 0..1
-//            normalized within the plot area (REQUIRED)
-//   xAxis  — optional axis label (bottom)
-//   yAxis  — optional axis label (rotated, left)
-//   title  — optional title (top-left)
-//   colors — optional [r,g,b][] cycled by point.group key
+//   points         — array of { x, y, label?, group?, color? } where x/y are
+//                    0..1 normalized within the plot area (REQUIRED)
+//   xAxis          — optional axis label (bottom)
+//   yAxis          — optional axis label (rotated, left)
+//   title          — optional title (top-left)
+//   colors         — optional [r,g,b][] cycled by point.group key
+//   regressionLine — optional boolean (default false). When true, computes
+//                    ordinary least-squares linear fit over all points and draws
+//                    a dashed line from x=0 to x=1 using the fitted slope +
+//                    intercept, clipped to the plot area. Uses palette accent
+//                    color with a 3-3 dash pattern.
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
@@ -39,6 +44,7 @@ export const spec = {
         [200, 80, 80],
       ],
     },
+    regressionLine: { type: 'boolean?', default: false, example: true },
   },
 };
 
@@ -140,6 +146,68 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(p.label), px + dotR + 4, py);
+    }
+  }
+
+  // ---- Regression line (least-squares OLS, optional) ----
+  if (args.regressionLine && N >= 2) {
+    // Compute means
+    let sumX = 0;
+    let sumY = 0;
+    for (const p of points) {
+      sumX += Number(p.x) || 0;
+      sumY += Number(p.y) || 0;
+    }
+    const meanX = sumX / N;
+    const meanY = sumY / N;
+
+    // Slope = Σ((xi - x̄)(yi - ȳ)) / Σ((xi - x̄)²)
+    let num = 0;
+    let den = 0;
+    for (const p of points) {
+      const dx = (Number(p.x) || 0) - meanX;
+      const dy = (Number(p.y) || 0) - meanY;
+      num += dx * dy;
+      den += dx * dx;
+    }
+    // Only draw if there is a non-degenerate slope (avoid div-by-zero for vertical data)
+    if (den > 1e-10) {
+      const slope = num / den;
+      const intercept = meanY - slope * meanX; // at x=0 normalized
+
+      // Line spans the full x extent (0..1 in data space), clipped to plot area
+      // y values may go outside [0,1]; clamp pixel coords to plot bounds
+      const y0 = intercept; // y at x=0
+      const y1 = slope + intercept; // y at x=1
+
+      // Don't clamp y0/y1 — that bends the line slope at the plot edge.
+      // ctx.clip() (below) handles the visual cropping correctly.
+      const px0 = plotL + 0 * plotW;
+      const py0 = plotB - y0 * plotH;
+      const px1 = plotL + 1 * plotW;
+      const py1 = plotB - y1 * plotH;
+
+      // Accent color: palette accent or second color or dim fg
+      const accentColor = palette.accentColor ||
+        (palette.colors && palette.colors[1]) || [100, 100, 180];
+
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(accentColor, 0.82);
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+      ctx.lineDashOffset = 0;
+      ctx.lineCap = 'round';
+
+      // Clip to plot area so the line doesn't extend outside axes
+      ctx.beginPath();
+      ctx.rect(plotL, plotT, plotW, plotH);
+      ctx.clip();
+
+      ctx.beginPath();
+      ctx.moveTo(px0, py0);
+      ctx.lineTo(px1, py1);
+      ctx.stroke();
+      ctx.restore();
     }
   }
 

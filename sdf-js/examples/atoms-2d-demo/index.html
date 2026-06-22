@@ -206,6 +206,20 @@
       { title: 'Scatter — Cost vs Value',
         size: { w: 520, h: 400 },
         atom: { type: 'scatter', args: { title: 'Cost vs Value', xAxis: 'Cost', yAxis: 'Value', points: [{ x: 0.2, y: 0.3, label: 'A', group: 'small' }, { x: 0.5, y: 0.7, label: 'B', group: 'large' }, { x: 0.8, y: 0.4, label: 'C', group: 'small' }, { x: 0.35, y: 0.85, label: 'D', group: 'large' }, { x: 0.65, y: 0.55, label: 'E', group: 'small' }] } } },
+      // ---- Bubble chart (Sprint 15a) ----
+      { title: 'Bubble — Product Portfolio',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Product Portfolio', xAxis: 'Cost', yAxis: 'Revenue', sizeScale: 40, points: [{ x: 0.2, y: 0.35, size: 0.45, label: 'Core' }, { x: 0.55, y: 0.75, size: 0.85, label: 'Platform' }, { x: 0.8, y: 0.45, size: 0.25, label: 'Add-on' }, { x: 0.35, y: 0.6, size: 0.6, label: 'Pro' }] } } },
+      { title: 'Bubble — Risk Map',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Risk Exposure Map', xAxis: 'Probability', yAxis: 'Impact', sizeScale: 38, points: [{ x: 0.15, y: 0.8, size: 0.3, label: 'Reg' }, { x: 0.6, y: 0.65, size: 0.75, label: 'Market' }, { x: 0.85, y: 0.35, size: 0.5, label: 'Ops' }, { x: 0.4, y: 0.9, size: 0.55, label: 'Tech' }, { x: 0.7, y: 0.2, size: 0.2, label: 'Legal' }, { x: 0.25, y: 0.45, size: 0.4, label: 'People' }] } } },
+      // ---- Histogram (Sprint 15a Task 3.1) ----
+      { title: 'Histogram — Survey response distribution + bell curve',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Survey Response Distribution', bellCurve: true, milestones: [{ value: 25, label: 'Median' }], bins: [{ range: [0, 10], count: 5 }, { range: [10, 20], count: 12 }, { range: [20, 30], count: 18 }, { range: [30, 40], count: 14 }, { range: [40, 50], count: 7 }] } } },
+      { title: 'Histogram — Age distribution with milestones',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Customer Age Distribution', bins: [{ range: [18, 25], count: 320 }, { range: [25, 35], count: 540 }, { range: [35, 45], count: 410 }, { range: [45, 55], count: 290 }, { range: [55, 65], count: 180 }, { range: [65, 75], count: 90 }], milestones: [{ value: 38, label: 'Avg Age' }] } } },
       { title: 'Traffic light — Project status',
         size: { w: 280, h: 460 },
         atom: { type: 'traffic-light', args: { title: 'Project Status', lights: [{ color: 'red', label: 'Stop' }, { color: 'amber', label: 'Slow' }, { color: 'green', active: true, label: 'Go' }] } } },
@@ -259,6 +273,37 @@
       { title: 'Matrix — SWOT 2x2',
         size: { w: 500, h: 500 },
         atom: { type: 'matrix-grid', args: { rows: 2, cols: 2, title: 'SWOT Analysis', cells: [{ label: 'Strengths' }, { label: 'Weaknesses' }, { label: 'Opportunities' }, { label: 'Threats' }] } } },
+      // ---- Nine-field matrix (GE/McKinsey) ----
+      { title: 'Nine-field Matrix — GE/McKinsey classic',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'GE / McKinsey Matrix',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' },
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' },
+            { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' }, { label: 'Divest', sublabel: 'Low priority' },
+          ],
+        } } },
+      { title: 'Nine-field Matrix — Portfolio with bubbles',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'Product Portfolio',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest' }, { label: 'Invest' }, { label: 'Selective' },
+            { label: 'Invest' }, { label: 'Selective' }, { label: 'Harvest' },
+            { label: 'Selective' }, { label: 'Harvest' }, { label: 'Divest' },
+          ],
+          bubbles: [
+            { row: 0, col: 0, label: 'Alpha', size: 0.65 },
+            { row: 0, col: 1, label: 'Beta', size: 0.5 },
+            { row: 1, col: 1, label: 'Gamma', size: 0.55 },
+            { row: 2, col: 2, label: 'Delta', size: 0.45 },
+          ],
+        } } },
       // ---- Shape primitives (Phase 3 — split from `shape` enum to 4 atoms 1:1 with 3D) ----
       { title: 'Cube — Product',
         size: { w: 280, h: 280 },
@@ -298,6 +343,105 @@
       { title: 'Cover — Series A Pitch',
         size: { w: 720, h: 400 },
         atom: { type: 'cover', args: { title: 'Atlas Present', subtitle: 'AI-native deck builder for consultants', author: 'Founding Team', date: '2026' } } },
+      // ---- Break-even (Sprint 15a) ----
+      { title: 'Break-even — SaaS Pricing Analysis',
+        size: { w: 600, h: 340 },
+        atom: { type: 'break-even', args: { fixedCost: 50000, variableCostPerUnit: 25, pricePerUnit: 50, maxUnits: 5000, title: 'SaaS Pricing Analysis', currency: '$' } } },
+      { title: 'Break-even — Manufacturing',
+        size: { w: 600, h: 340 },
+        atom: { type: 'break-even', args: { fixedCost: 120000, variableCostPerUnit: 40, pricePerUnit: 75, maxUnits: 8000, title: 'Manufacturing Break-Even', currency: '$' } } },
+      // ---- Stacked area (Sprint 15a Task 5.1) ----
+      { title: 'Stacked Area — Revenue by Product',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Revenue by Product Over Time ($M)',
+          format: 'currency',
+          xLabels: ['Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25'],
+          series: [
+            { name: 'Platform', values: [1.2, 1.5, 1.8, 2.1, 2.4, 2.8] },
+            { name: 'Add-ons', values: [0.4, 0.6, 0.9, 1.1, 1.4, 1.7] },
+            { name: 'Services', values: [0.2, 0.3, 0.4, 0.5, 0.7, 0.9] },
+          ],
+        } } },
+      { title: 'Stacked Area — Headcount by Team',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Headcount by Team Over Quarters',
+          format: 'number',
+          xLabels: ['Q1', 'Q2', 'Q3', 'Q4'],
+          series: [
+            { name: 'Engineering', values: [18, 24, 31, 38] },
+            { name: 'Sales', values: [8, 12, 16, 20] },
+            { name: 'Marketing', values: [4, 5, 7, 9] },
+            { name: 'Support', values: [3, 4, 5, 6] },
+          ],
+        } } },
+      // ---- Seven-S Model (Sprint 15a Task 6.1) ----
+      { title: 'McKinsey 7S Framework — Classic',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: '7S Framework',
+          center: 'Shared Values',
+          satellites: [
+            { label: 'Strategy' },
+            { label: 'Structure' },
+            { label: 'Systems' },
+            { label: 'Style' },
+            { label: 'Staff' },
+            { label: 'Skills' },
+          ],
+        } } },
+      { title: 'McKinsey 7S — Digital Transformation',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: 'Digital Transformation 7S',
+          center: 'Customer Focus',
+          satellites: [
+            { label: 'Strategy', description: 'Cloud-first' },
+            { label: 'Structure', description: 'Flat org' },
+            { label: 'Systems', description: 'AI-driven' },
+            { label: 'Style', description: 'Agile' },
+            { label: 'Staff', description: 'T-shaped' },
+            { label: 'Skills', description: 'Data literacy' },
+          ],
+        } } },
+      // ---- Multiple Arrows (Sprint 15a Task 7.1) ----
+      { title: 'Multiple Arrows — Converge (3 → 1)',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: '3 → 1 Aggregation',
+          mode: 'converge',
+          arrows: [
+            { label: 'Input A' },
+            { label: 'Input B' },
+            { label: 'Input C' },
+          ],
+          centerLabel: 'Output',
+        } } },
+      { title: 'Multiple Arrows — Diverge (1 → 4)',
+        size: { w: 560, h: 360 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Market Channels',
+          mode: 'diverge',
+          arrows: [
+            { label: 'Enterprise' },
+            { label: 'Mid-Market' },
+            { label: 'SMB' },
+            { label: 'Developer' },
+          ],
+          centerLabel: 'GTM',
+        } } },
+      { title: 'Multiple Arrows — Parallel Lanes',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Parallel Workstreams',
+          mode: 'parallel',
+          arrows: [
+            { label: 'Engineering' },
+            { label: 'Design' },
+            { label: 'Marketing' },
+          ],
+        } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }

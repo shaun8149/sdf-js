@@ -27,6 +27,7 @@ const ATOM_LOADERS = {
   // Charts / data
   'kpi-card': () => import('./charts/data/kpi-card.js'),
   bar: () => import('./charts/data/bar.js'),
+  'break-even': () => import('./charts/data/break-even.js'),
   line: () => import('./charts/data/line.js'),
   pie: () => import('./charts/data/pie.js'),
   column: () => import('./charts/data/column.js'),
@@ -40,7 +41,9 @@ const ATOM_LOADERS = {
   mindmap: () => import('./charts/diagrams/mindmap.js'),
   'relationship-graph': () => import('./charts/diagrams/relationship-graph.js'),
   timeline: () => import('./charts/diagrams/timeline.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms
+  'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
+  'multiple-arrows': () => import('./charts/diagrams/multiple-arrows.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
@@ -78,6 +81,7 @@ const ATOM_LOADERS = {
   'bullet-list': () => import('./charts/lists/bullet-list.js'),
 
   // Charts/data extensions
+  'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
   gantt: () => import('./charts/data/gantt.js'),
@@ -87,6 +91,8 @@ const ATOM_LOADERS = {
   gauge: () => import('./charts/data/gauge.js'),
   'radial-spoke': () => import('./charts/data/radial-spoke.js'),
   scatter: () => import('./charts/data/scatter.js'),
+  bubble: () => import('./charts/data/bubble.js'),
+  histogram: () => import('./charts/data/histogram.js'),
   'traffic-light': () => import('./charts/data/traffic-light.js'),
   venn: () => import('./charts/data/venn.js'),
 
@@ -95,6 +101,7 @@ const ATOM_LOADERS = {
 
   // Matrix (new category)
   'matrix-grid': () => import('./charts/matrix/matrix-grid.js'),
+  'nine-field-matrix': () => import('./charts/matrix/nine-field-matrix.js'),
 
   // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
   'icon-badge': () => import('./icons/icon-badge.js'),
