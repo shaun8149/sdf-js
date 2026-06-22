@@ -18,3 +18,4 @@ node_modules/
 # repo so the browser demo runs without the original file.
 sdf-js/fixtures/*.pdf
 sdf-js/fixtures/*.pptx
+screens/
