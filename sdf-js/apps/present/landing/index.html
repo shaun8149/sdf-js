@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Atlas Present</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #04060a;
+        overflow: hidden;
+        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', monospace;
+        cursor: pointer;
+        color: #dce6f5;
+      }
+      #c-landing {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+      }
+      .ui {
+        position: fixed;
+        z-index: 60;
+        user-select: none;
+        pointer-events: none;
+      }
+      #logo {
+        top: 26px;
+        left: 28px;
+        border: 1px solid rgba(180, 200, 230, 0.45);
+        padding: 7px 12px;
+        font-size: 15px;
+        letter-spacing: 0.14em;
+        font-weight: 600;
+      }
+      #logo b {
+        color: #fff;
+      }
+      #nav {
+        top: 32px;
+        right: 30px;
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        opacity: 0.62;
+      }
+      #nav span {
+        margin-left: 26px;
+      }
+      #nav .on {
+        opacity: 1;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 3px;
+      }
+      #title {
+        left: 30px;
+        bottom: 12%;
+        max-width: 520px;
+      }
+      #title h1 {
+        margin: 0 0 10px;
+        font-size: 40px;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+      }
+      #title p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        opacity: 0.66;
+      }
+      #title em {
+        font-style: normal;
+        color: #6fb6ff;
+      }
+      #enter-hint {
+        left: 50%;
+        bottom: 6%;
+        transform: translateX(-50%);
+        font-size: 13px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        animation: pulse 2.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.32;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+      /* hide the room UI once the user clicks to enter (during fly-in + 片头) */
+      body.entering #logo,
+      body.entering #nav,
+      body.entering #title,
+      body.entering #enter-hint {
+        opacity: 0;
+        animation: none;
+        transition: opacity 0.6s ease;
+      }
+      /* logo revealed during the post-click 片头 (over the fullscreen Star Nest) */
+      #enter-logo {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        letter-spacing: 0.46em;
+        font-weight: 600;
+        color: #eaf2ff;
+        text-shadow: 0 0 30px rgba(120, 170, 255, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1.6s ease;
+        z-index: 90;
+      }
+      #enter-logo b {
+        color: #6fb6ff;
+      }
+      #enter-logo.on {
+        opacity: 1;
+      }
+      #fade {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.9s ease-in;
+        z-index: 100;
+      }
+      #fade.on {
+        opacity: 1;
+      }
+      /* boot loader — covers the (synchronous) BOB shader compile on first load.
+         The sweep uses transform (compositor thread) so it stays smooth even while
+         the main thread is blocked compiling. */
+      #loading {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: #04060a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.8s ease;
+      }
+      #loading.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loading .brand {
+        font-size: 20px;
+        letter-spacing: 0.42em;
+        color: #cfe0f5;
+        font-weight: 600;
+      }
+      #loading .bar {
+        margin-top: 20px;
+        width: 170px;
+        height: 2px;
+        background: rgba(120, 160, 220, 0.16);
+        overflow: hidden;
+      }
+      #loading .bar::after {
+        content: '';
+        display: block;
+        width: 40%;
+        height: 100%;
+        background: #6fb6ff;
+        animation: load-sweep 1.15s ease-in-out infinite;
+      }
+      @keyframes load-sweep {
+        0% {
+          transform: translateX(-110%);
+        }
+        100% {
+          transform: translateX(380%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c-landing"></canvas>
+    <div id="logo" class="ui">ATLAS<b>:</b>PRESENT</div>
+    <div id="nav" class="ui">
+      <span class="on">Home</span><span>Gallery</span><span>Editor</span><span>About</span>
+    </div>
+    <div id="title" class="ui">
+      <h1>Spatial narrative,<br />not slides.</h1>
+      <p>You describe what you want to say. Atlas renders an <em>immersive 3D deck</em> — structure-aware, camera-driven, generated.</p>
+    </div>
+    <div id="enter-hint" class="ui" data-enter>click to enter ▸</div>
+    <div id="enter-logo">ATLAS<b>·</b>PRESENT</div>
+    <div id="fade"></div>
+    <div id="loading"><div class="brand">ATLAS·PRESENT</div><div class="bar"></div></div>
+    <script type="module" src="./landing.js"></script>
+  </body>
+</html>
