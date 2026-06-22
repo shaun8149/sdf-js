@@ -64,7 +64,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
   const bg = palette.bg || [247, 244, 224];
-  const accent = palette.colors?.[0] || [60, 100, 200];
+  const _accent = palette.colors?.[0] || [60, 100, 200];
+  void _accent;
 
   // ---- Drop shadow (softer: 10px blur, alpha 0.12) ----
   ctx.save();
@@ -106,26 +107,56 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(bg));
   }
 
-  // ---- Hero value (weight 900, generous left padding) ----
+  // ---- Hero value (weight 900, auto-scale to fit width) ----
+  // Sprint 17 quality fix: long values like "User Persona" / "1-2 Months"
+  // were getting truncated mid-word. Now we measure + scale down to fit.
   ctx.fillStyle = rgbCss(bg);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  const valueSize = Math.round(h * 0.34);
+  const availW = w - 44; // 22px padding each side
+  const valueText = String(args.value ?? '');
+  let valueSize = Math.round(h * 0.34);
+  const minValueSize = Math.round(h * 0.14);
   ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
+    valueSize -= 2;
+    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  }
   const valueY = y + h * 0.56;
-  ctx.fillText(String(args.value ?? ''), x + 22, valueY);
+  ctx.fillText(valueText, x + 22, valueY);
 
-  // ---- Label (Inter 700 for stronger hierarchy) ----
+  // ---- Label (Inter 700 for stronger hierarchy, auto-scale + ellipsis fallback) ----
   ctx.fillStyle = rgbaCss(bg, 0.85);
-  ctx.font = `700 ${Math.round(h * 0.11)}px Inter, system-ui, sans-serif`;
-  ctx.fillText(String(args.label ?? ''), x + 22, valueY + Math.round(h * 0.17));
+  let labelSize = Math.round(h * 0.11);
+  const minLabelSize = Math.round(h * 0.07);
+  const labelText = String(args.label ?? '');
+  ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
+    labelSize -= 1;
+    ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  }
+  ctx.fillText(fitText(ctx, labelText, availW), x + 22, valueY + Math.round(h * 0.17));
 
   // ---- Sublabel (Inter 400, faded, proper breathing room) ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(bg, 0.55);
     ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
-    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      x + 22,
+      valueY + Math.round(h * 0.29),
+    );
   }
+}
+
+// Truncate with ellipsis if even after font-scale it overflows.
+function fitText(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let s = text;
+  while (s.length > 1 && ctx.measureText(s + '…').width > maxW) {
+    s = s.slice(0, -1);
+  }
+  return s + '…';
 }
 
 // ============================================================================

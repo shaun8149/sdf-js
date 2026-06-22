@@ -1,0 +1,100 @@
+{
+  "deckName": "antfun-stress-test",
+  "sourceFile": "synthetic stress test reproducing observed LLM patterns",
+  "scaffold": {
+    "id": "company-overview",
+    "label": "Company Overview",
+    "description": "Reproduces ANTFUN export quality issues for atom-level regression testing",
+    "pickScore": 0,
+    "pickSignals": ["synthetic"],
+    "fallback": false,
+    "pickerMethod": "synthetic"
+  },
+  "theme": {
+    "id": "pitch-cobalt-orange",
+    "label": "Pitch · Cobalt Orange",
+    "macroCluster": "pitch",
+    "bg": [255, 255, 255],
+    "accent": [255, 120, 40],
+    "colors": [
+      [255, 120, 40],
+      [20, 60, 180],
+      [220, 220, 235],
+      [60, 65, 90]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + tagline",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "ANTFUN",
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "mission",
+      "slotTitle": "Mission",
+      "slotPurpose": "Why we exist",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Our Mission",
+      "mappingScore": 2,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-mission.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["bullet-list"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kpi-stress",
+      "slotTitle": "Strategic KPIs",
+      "slotPurpose": "Stress-test long kpi values",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Strategic Position",
+      "mappingScore": 2,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-kpi-stress.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 3,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0
+  },
+  "meta": {
+    "generatedAt": "2026-06-22T00:00:00Z",
+    "model": "synthetic",
+    "pipelineVersion": "sprint-17-stress-v1"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "slotIdx": 2,
+  "slotName": "kpi-stress",
+  "sceneData": {
+    "name": "company-overview/kpi-stress",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "kpi-card",
+        "x": 30,
+        "y": 30,
+        "w": 400,
+        "h": 200,
+        "args": {
+          "value": "User Persona",
+          "label": "Competitive Position",
+          "sublabel": "Mass-market trader"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 440,
+        "y": 30,
+        "w": 400,
+        "h": 200,
+        "args": {
+          "value": "Beyond Forex",
+          "label": "Market Gap",
+          "sublabel": "Underserved opportunity"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 850,
+        "y": 30,
+        "w": 400,
+        "h": 200,
+        "args": { "value": "1-2 Months", "label": "Timeline", "sublabel": "Launch window" }
+      },
+      {
+        "type": "kpi-card",
+        "x": 30,
+        "y": 250,
+        "w": 400,
+        "h": 200,
+        "args": { "value": "OpenClaw", "label": "AI Integration", "sublabel": "Inference layer" }
+      },
+      {
+        "type": "kpi-card",
+        "x": 440,
+        "y": 250,
+        "w": 400,
+        "h": 200,
+        "args": {
+          "value": "Agent Mentions",
+          "label": "Community Features",
+          "sublabel": "Telegram bot adoption"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 850,
+        "y": 250,
+        "w": 400,
+        "h": 200,
+        "args": { "value": "4 Weeks", "label": "Perp DEX Launch", "sublabel": "Time to MVP" }
+      },
+      {
+        "type": "kpi-card",
+        "x": 30,
+        "y": 470,
+        "w": 605,
+        "h": 220,
+        "args": {
+          "value": "$300K Daily",
+          "label": "Self-built Perp DEX",
+          "sublabel": "Trading volume week 4",
+          "trend": "up",
+          "trendValue": "+47%"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 645,
+        "y": 470,
+        "w": 605,
+        "h": 220,
+        "args": {
+          "value": "Prototype Ready",
+          "label": "Smart Money System",
+          "sublabel": "50K wallets labeled in real-time",
+          "trend": "neutral"
+        }
+      }
+    ]
+  }
+}
