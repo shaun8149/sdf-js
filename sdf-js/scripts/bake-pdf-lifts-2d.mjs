@@ -222,9 +222,18 @@ for (const i of slidesToBake) {
     layoutHint = `LAYOUT: ${Math.ceil(uniqValues.length / 5)}×5 grid uniform size`;
   }
 
+  // Detect 2D vs 3D variant from slide title
+  const slideTitle = String(slide.title || '');
+  const is2D = /\b2D\b/.test(slideTitle);
+  const styleHint = is2D
+    ? `\n## STYLE HINT: slide title contains "2D" → emit \`args.style: "2d"\` on EVERY sphere-fill. PL 2D slides use flat circles (gray ring + colored fill below), NOT 3D glass spheres.`
+    : `\n## STYLE HINT: slide title contains "3D" → default \`args.style: "3d"\` (glass + liquid + specular).`;
+
   const userMessage =
-    `## Original user prompt\n\n${cleanPrompt}\n\n` +
-    `## Slide body text (CARRY THESE INTO atom args.caption — do NOT discard)\n\n` +
+    `## Slide title: ${slideTitle}\n\n` +
+    `## Original user prompt\n\n${cleanPrompt}\n` +
+    styleHint +
+    `\n\n## Slide body text (CARRY THESE INTO atom args.caption — do NOT discard)\n\n` +
     bodyTexts.map((t) => `  - "${t}"`).join('\n') +
     `\n\n` +
     `## Slide source 2D code\n\n\`\`\`js\n${code2d}\n\`\`\`\n\n` +
@@ -245,7 +254,7 @@ for (const i of slidesToBake) {
     `1. **EVERY subject MUST have explicit \`x\`, \`y\`, \`w\`, \`h\`** in canvas pixels. Missing positions → atoms overlap at full canvas. NO exceptions.\n` +
     `2. **Body captions**: sphere-fill atom now accepts \`args.caption: string\`. Pass the relevant body text (e.g. "Description 1: Placeholder for your text" → \`caption: "Description 1"\`). Match each sphere to its nearest body description; don't lose user text.\n` +
     `3. **Atom selection**:\n` +
-    `   - Sphere with fill % → \`sphere-fill\` (args: \`value\` 0-100, \`label\` "20%", \`caption\` "Description 1", \`color\` rgb)\n` +
+    `   - Sphere with fill % → \`sphere-fill\` (args: \`value\` 0-100, \`label\` "20%", \`caption\` "Description 1", \`color\` rgb, \`style\` "2d"|"3d")\n` +
     `   - Title/cover slide → \`cover\` atom (args: \`title\`, \`subtitle\`)\n` +
     `   - NEVER emit \`text-3d-pipe\`, \`box\`, \`rounded_box\`\n` +
     `4. **${layoutHint}**\n` +

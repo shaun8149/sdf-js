@@ -41,6 +41,7 @@ export const spec = {
     caption: { type: 'string?', example: 'Description 1' },
     color: { type: '[r,g,b]?', example: [60, 130, 200] },
     background: { type: "'dark'|'light'", default: 'dark', example: 'dark' },
+    style: { type: "'2d'|'3d'", default: '3d', example: '3d' },
   },
 };
 
@@ -57,6 +58,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const color = args.color || palette.colors?.[0] || [60, 130, 200];
   const value = clamp(Number(args.value ?? 0), 0, 100);
   const label = args.label != null ? String(args.label) : `${Math.round(value)}%`;
+  const style = args.style === '2d' ? '2d' : '3d';
 
   // Layout: sphere occupies top 78%, label region below
   const labelAreaH = h * LABEL_FRAC;
@@ -65,6 +67,25 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const radius = Math.min(sphereAreaW, sphereAreaH) / 2;
   const cx = x + w / 2;
   const cy = y + PAD + sphereAreaH / 2;
+
+  // ---- 2D mode: flat circle with bottom-up fill (early return) ----
+  if (style === '2d') {
+    return draw2D(ctx, {
+      cx,
+      cy,
+      radius,
+      color,
+      value,
+      label,
+      args,
+      w,
+      h,
+      x,
+      y,
+      palette,
+      labelAreaH,
+    });
+  }
 
   // ---- 1) Ground shadow (elliptical, blurred) ----
   const floorY = cy + radius * 0.93;
@@ -264,4 +285,79 @@ function darken(rgb, amt) {
     Math.max(0, rgb[1] * (1 - amt)),
     Math.max(0, rgb[2] * (1 - amt)),
   ];
+}
+
+// 2D variant: flat circle outline + bottom-up colored fill — for "2D SPHERES" PL slides
+// (slide-12/13/15/19). Mirrors PL's flat infographic aesthetic — no specular, no
+// glass effect, no drop shadow, just a clean filled circle.
+function draw2D(ctx, p) {
+  const { cx, cy, radius, color, value, label, args, w, h, x, y, palette, labelAreaH } = p;
+  const gray = [220, 222, 226];
+
+  // 1) Gray ring outline (the "empty" sphere look)
+  ctx.save();
+  ctx.fillStyle = rgbCss(gray);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // 2) Colored fill clipped to circle, from bottom up to value%
+  if (value > 0) {
+    const fillRatio = value / 100;
+    const fillTopY = cy + radius - 2 * radius * fillRatio;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius - 1.5, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = rgbCss(color);
+    ctx.fillRect(cx - radius, fillTopY, radius * 2, radius * 2);
+    ctx.restore();
+  }
+
+  // 3) Hairline border (very subtle ring around the circle)
+  ctx.save();
+  ctx.strokeStyle = rgbaCss(darken(gray, 0.1), 0.6);
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // 4) Value label below
+  if (label) {
+    const labelY = cy + radius + labelAreaH * 0.35;
+    const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.42));
+    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = rgbCss(palette.silhouetteColor || [30, 27, 30]);
+    ctx.fillText(label, cx, labelY);
+  }
+
+  // 5) Optional caption below value (wrapped Inter 500)
+  const caption = args.caption;
+  if (caption) {
+    const capY = cy + radius + labelAreaH * 0.75;
+    const capSize = Math.round(Math.min(radius * 0.18, labelAreaH * 0.22));
+    ctx.font = `500 ${capSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = rgbaCss(palette.silhouetteColor || [30, 27, 30], 0.7);
+    const maxW = w - PAD * 2;
+    const words = String(caption).split(' ');
+    const lines = [];
+    let cur = '';
+    for (const word of words) {
+      const test = cur ? `${cur} ${word}` : word;
+      if (ctx.measureText(test).width > maxW && cur) {
+        lines.push(cur);
+        cur = word;
+      } else cur = test;
+    }
+    if (cur) lines.push(cur);
+    lines.slice(0, 3).forEach((line, i) => {
+      ctx.fillText(line, cx, capY + i * (capSize * 1.25));
+    });
+  }
 }
