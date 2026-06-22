@@ -1,0 +1,53 @@
+{
+  "id": "stage-showcase",
+  "title": "Studio Stage — metals in a lit room",
+  "prompt": "three metal objects on a studio stage, lit by ceiling softboxes",
+  "code2d": "// defaults.stage:true → expandStage injects room + panel area lights + camera.",
+  "sceneData": {
+    "v": 1,
+    "name": "studio stage showcase",
+    "subjects": [
+      {
+        "id": "gold_sphere",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [-2.5, 0.9, 0.2] },
+        "material": "gold"
+      },
+      {
+        "id": "silver_torus",
+        "type": "torus",
+        "args": { "R": 0.8, "r": 0.3 },
+        "transform": { "translate": [0.1, 0.9, -0.3] },
+        "material": "silver"
+      },
+      {
+        "id": "copper_box",
+        "type": "rounded_box",
+        "args": { "dims": [1.3, 1.3, 1.3], "radius": 0.12 },
+        "transform": { "translate": [2.6, 0.75, 0.2] },
+        "material": "copper"
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.05,
+          "pos": [0.3, 1.95, 8.2],
+          "target": [0, 0.78, -0.2],
+          "fov": 50,
+          "aperture": 0,
+          "focalDistance": 8.2,
+          "ease": "linear"
+        }
+      ]
+    },
+    "defaults": {
+      "stage": true
+    }
+  },
+  "meta": {
+    "thesisPoint": "scene-level stage: defaults.stage expands to a lit studio room (area lights + reflection-retrace)."
+  }
+}

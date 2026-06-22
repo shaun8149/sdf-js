@@ -36,6 +36,7 @@ function getUrlTokenHash() {
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
 import { expandChartLabels } from '../../src/scene/chart-labels.js';
+import { expandStage } from '../../src/scene/stage.js';
 // Renderer id set + classifier: single source of truth (renderer-registry).
 import {
   GPU_RENDERER_IDS as GPU_RENDERERS,
@@ -728,8 +729,9 @@ async function loadDemoScene(demo) {
       const sceneRng = new Random(state.sceneHash);
       const variantScene = expandVariants(data.sceneData, sceneRng);
       // #84 connector: chart subjects with args.labels → SDF text-3d-pipe labels
-      // anchored on their elements (no-op if no chart carries labels).
-      const labeledScene = expandChartLabels(variantScene);
+      // anchored on their elements (no-op if no chart carries labels). Stage
+      // connector wraps subjects in a studio room when defaults.stage is set.
+      const labeledScene = expandChartLabels(expandStage(variantScene));
       compiled = compileSceneData(labeledScene, { tokenHash: URL_TOKEN_HASH });
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
@@ -1666,6 +1668,10 @@ function renderLiftedSceneData(
   { shufflePalette = true } = {},
 ) {
   const liftInfo = $('lift-info');
+  // Stage connector: defaults.stage → studio room geometry + panel area lights +
+  // dark bg + interior camera. Reassign so BOTH the compiled SDF and the stored
+  // rawScene (state.textLiftSceneJSON below → setPostFx lights/camera) see it.
+  sceneData = expandStage(sceneData);
   let compiled;
   try {
     // #84 connector: expand chart args.labels → SDF labels before compile.
