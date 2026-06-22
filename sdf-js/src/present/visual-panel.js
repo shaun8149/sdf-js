@@ -16,13 +16,16 @@
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { compileScene, createRendererForId } from '../compositor-api.js';
+import { compileScene, createRendererForId, PRESENT_EFFECTS } from '../compositor-api.js';
 import { BRANDING_PALETTES, getPalette } from './branding-palettes.js';
 import { mountP5Renderer } from './p5-renderer.js';
 import { renderSceneDataToCanvas } from './atoms-2d/renderer.js';
 import { isAtom2DType } from './atoms-2d/registry.js';
 
-const RENDERERS = ['silhouette', 'lines', 'crayon', 'topo'];
+// Effect cycle order — the single source of truth lives in renderer-registry
+// (re-exported via compositor-api). createRendererForId now maps all four to a
+// CPU 2D renderer, so cycling no longer throws on lines/crayon/topo.
+const RENDERERS = PRESENT_EFFECTS;
 
 /**
  * Mount a visual panel for one visual into the wrapper element.

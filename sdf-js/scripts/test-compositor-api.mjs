@@ -4,6 +4,7 @@
 
 import '../src/sdf/index.js';
 import * as api from '../src/compositor-api.js';
+import { ACTIVE_EFFECTS } from '../src/present/deck-model.js';
 
 let pass = 0,
   fail = 0;
@@ -221,6 +222,43 @@ await (async () => {
       }
     }
   }
+}
+
+// P0 regression: ALL four Present effects must build a renderer WITHOUT throwing
+// (previously lines/crayon/topo hit "unknown renderer id" → Present effect cycle
+// crashed). CPU 2D renderers touch the canvas only in render(), so creation is
+// safe with a fake canvas in Node.
+{
+  ok(
+    Array.isArray(api.PRESENT_EFFECTS) && api.PRESENT_EFFECTS.length === 4,
+    'PRESENT_EFFECTS exported (4 effects)',
+  );
+  const fakeCanvas = { getContext: () => ({}) };
+  for (const id of api.PRESENT_EFFECTS) {
+    let r = null;
+    let threw = null;
+    try {
+      r = api.createRendererForId(id, fakeCanvas);
+    } catch (e) {
+      threw = e;
+    }
+    ok(threw === null, `createRendererForId('${id}'): no throw (P0 fix)`);
+    ok(
+      r && typeof r.render === 'function' && typeof r.unmount === 'function',
+      `createRendererForId('${id}'): returns {render, unmount}`,
+    );
+  }
+  ok(api.normalizeRendererId('lines') === 'hatch', "normalizeRendererId('lines') → 'hatch'");
+  ok(api.normalizeRendererId('bob') === 'bobStipple', "normalizeRendererId('bob') → 'bobStipple'");
+  ok(api.normalizeRendererId('studio') === 'studio', 'normalizeRendererId: pass-through');
+  ok(api.isGpuRenderer('studio') === true, "isGpuRenderer('studio') = true");
+  ok(api.isGpuRenderer('silhouette') === false, "isGpuRenderer('silhouette') = false");
+  ok(api.isGpuRenderer('lines') === false, "isGpuRenderer('lines') = false (CPU)");
+  // drift guard: deck-model keeps its own list (pure data model) — must match.
+  ok(
+    JSON.stringify(ACTIVE_EFFECTS) === JSON.stringify(api.PRESENT_EFFECTS),
+    'deck-model ACTIVE_EFFECTS matches registry PRESENT_EFFECTS',
+  );
 }
 
 // createRendererForId: unknown id throws
