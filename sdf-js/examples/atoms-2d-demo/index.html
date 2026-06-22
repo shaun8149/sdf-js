@@ -374,6 +374,43 @@
             { label: 'Skills', description: 'Data literacy' },
           ],
         } } },
+      // ---- Multiple Arrows (Sprint 15a Task 7.1) ----
+      { title: 'Multiple Arrows — Converge (3 → 1)',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: '3 → 1 Aggregation',
+          mode: 'converge',
+          arrows: [
+            { label: 'Input A' },
+            { label: 'Input B' },
+            { label: 'Input C' },
+          ],
+          centerLabel: 'Output',
+        } } },
+      { title: 'Multiple Arrows — Diverge (1 → 4)',
+        size: { w: 560, h: 360 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Market Channels',
+          mode: 'diverge',
+          arrows: [
+            { label: 'Enterprise' },
+            { label: 'Mid-Market' },
+            { label: 'SMB' },
+            { label: 'Developer' },
+          ],
+          centerLabel: 'GTM',
+        } } },
+      { title: 'Multiple Arrows — Parallel Lanes',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Parallel Workstreams',
+          mode: 'parallel',
+          arrows: [
+            { label: 'Engineering' },
+            { label: 'Design' },
+            { label: 'Marketing' },
+          ],
+        } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }

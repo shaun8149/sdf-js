@@ -42,7 +42,8 @@ const ATOM_LOADERS = {
   'relationship-graph': () => import('./charts/diagrams/relationship-graph.js'),
   timeline: () => import('./charts/diagrams/timeline.js'),
   'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model
+  'multiple-arrows': () => import('./charts/diagrams/multiple-arrows.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
