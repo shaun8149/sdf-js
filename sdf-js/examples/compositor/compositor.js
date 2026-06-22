@@ -34,9 +34,7 @@ function getUrlTokenHash() {
   }
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
-import { expandVariants } from '../../src/scene/generator-s.js';
-import { expandChartLabels } from '../../src/scene/chart-labels.js';
-import { expandStage } from '../../src/scene/stage.js';
+import { expandAndCompile, wireStudioScene } from '../../src/runtime/apply-studio-scene.js';
 // Renderer id set + classifier: single source of truth (renderer-registry).
 import {
   GPU_RENDERER_IDS as GPU_RENDERERS,
@@ -723,29 +721,24 @@ async function loadDemoScene(demo) {
 
     let compiled;
     let stagedScene;
+    let renderSdf;
     try {
-      // Generator-S: expand `subjects[i].variants[]` into N flat subjects.
-      // No-op (zero rng draws) if no subject has variants. Uses state.sceneHash
-      // → SFC32 PRNG so the same hash always yields the same expansion.
-      const sceneRng = new Random(state.sceneHash);
-      const variantScene = expandVariants(data.sceneData, sceneRng);
-      // Stage connector wraps subjects in a studio room (+ panel lights, volumes,
-      // camera) when defaults.stage is set. Capture the staged scene so it can be
-      // stored as the rawScene below — otherwise setPostFx/setVolumes/setSequence
-      // get the UN-expanded scene and the lights/beams never reach the renderer.
-      stagedScene = expandStage(variantScene);
-      // #84 connector: chart subjects with args.labels → SDF text-3d-pipe labels
-      // anchored on their elements (no-op if no chart carries labels).
-      const labeledScene = expandChartLabels(stagedScene);
-      compiled = compileSceneData(labeledScene, { tokenHash: URL_TOKEN_HASH });
+      // Connector pipeline + compile, defined once in src/runtime: expandVariants
+      // (Generator-S, deterministic via state.sceneHash) → expandStage (studio
+      // room + lights/volumes/camera) → expandChartLabels → compile → ground-union.
+      // stagedScene is kept as the renderer's rawScene below so its lights /
+      // volumes / cameraSequence survive past compile and reach the wiring.
+      const out = expandAndCompile(data.sceneData, {
+        rng: new Random(state.sceneHash),
+        tokenHash: URL_TOKEN_HASH,
+      });
+      stagedScene = out.stagedScene;
+      compiled = out.compiled;
+      renderSdf = out.sdf;
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
     }
 
-    const renderSdf =
-      compiled.groundSdf && compiled.sdf
-        ? sdfUnion(compiled.sdf, compiled.groundSdf)
-        : compiled.sdf || compiled.groundSdf;
     if (!renderSdf) throw new Error('empty SDF');
 
     state.textLiftScene = compiled;
@@ -813,24 +806,8 @@ window.atlasProjectPoint = (worldXYZ) =>
     ? state.studioRenderer.project(worldXYZ)
     : { x: 0, y: 0, visible: false };
 
-// Does a scene animate ON ITS OWN via u_time (independent of camera motion)?
-// In the studio shader only sea/water surfaces (sdWaves) and city traffic move
-// by u_time; volumes too. Conservative substring match — erring toward `true`
-// just means that scene keeps rendering (no idle-stop), never a frozen anim.
-// Charts / lifted slides match nothing → they qualify for the idle-stop.
-function sceneHasTimeContent(rawScene) {
-  if (!rawScene) return false;
-  if (Array.isArray(rawScene.volumes) && rawScene.volumes.length) return true;
-  const matStr = (m) => (typeof m === 'string' ? m : (m && m.preset) || '') || '';
-  const animMat = (m) => /sea|water/i.test(matStr(m));
-  const animType = (t) => /city|terrain|ocean|sea/i.test(t || '');
-  const visit = (s) =>
-    !!s &&
-    (animType(s.type) ||
-      animMat(s.material) ||
-      (Array.isArray(s.children) && s.children.some(visit)));
-  return Array.isArray(rawScene.subjects) && rawScene.subjects.some(visit);
-}
+// (sceneHasTimeContent moved to src/runtime/apply-studio-scene.js — the studio
+// idle-stop decision is part of the wiring it now owns.)
 
 function autofillDemoPrompt(demo) {
   const promptInput = $('prompt-input');
@@ -1673,27 +1650,24 @@ function renderLiftedSceneData(
   { shufflePalette = true } = {},
 ) {
   const liftInfo = $('lift-info');
-  // Stage connector: defaults.stage → studio room geometry + panel area lights +
-  // dark bg + interior camera. Reassign so BOTH the compiled SDF and the stored
-  // rawScene (state.textLiftSceneJSON below → setPostFx lights/camera) see it.
-  sceneData = expandStage(sceneData);
-  let compiled;
+  // Connector pipeline + compile, defined once in src/runtime (no variants on
+  // the lift path). expandStage rewrites the scene (studio room + lights +
+  // camera); stagedScene is stored as rawScene so those survive past compile.
+  let compiled, renderSdf, stagedScene;
   try {
-    // #84 connector: expand chart args.labels → SDF labels before compile.
-    compiled = compileSceneData(expandChartLabels(sceneData), { tokenHash: URL_TOKEN_HASH });
+    const out = expandAndCompile(sceneData, { tokenHash: URL_TOKEN_HASH });
+    stagedScene = out.stagedScene;
+    compiled = out.compiled;
+    renderSdf = out.sdf;
   } catch (compileErr) {
     throw new Error(`SceneData compile failed: ${compileErr.message}`);
   }
 
-  const renderSdf =
-    compiled.groundSdf && compiled.sdf
-      ? sdfUnion(compiled.sdf, compiled.groundSdf)
-      : compiled.sdf || compiled.groundSdf;
   if (!renderSdf) throw new Error('empty SDF — no subjects + no ground');
 
   state.textLiftScene = compiled;
   state.textLiftSdf = renderSdf;
-  state.textLiftSceneJSON = sceneData;
+  state.textLiftSceneJSON = stagedScene;
   state.textLiftSourcePrompt = originalPrompt;
   state.liftMode = true;
   gpuSceneStartTime = performance.now();
@@ -2145,54 +2119,12 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
         }
       });
     }
-    if (st.setPostFx) {
-      st.setPostFx(
-        rawScene || {},
-        (rawScene && rawScene.defaults && rawScene.defaults.camera) || null,
-      );
-    }
-    // Sprint 12: Rune heightmap → studio texture (same data as FLY 3D).
-    if (st.setRuneHeightmap) st.setRuneHeightmap(scene.bakedHeightmap || null);
-    // Volumes (smoke / flame / fog / god-rays) — studio supports the volume
-    // raymarch pass but the dispatch never fed it (only FLY did). Wire it so
-    // stage "show" effects (spotlight beams + floor haze) actually render.
-    if (st.setVolumes) {
-      st.setVolumes(rawScene && Array.isArray(rawScene.volumes) ? rawScene.volumes : []);
-    }
-    // GPU-cost guard: studio renders at renderScale² (2×2 SSAA = 4× fragment
-    // cost). A heavy scene — volumetric beams, big fleets, procedural city, or a
-    // dense subject list — at that cost can blow the GPU's ~2s watchdog (TDR)
-    // and hang the WHOLE browser. Drop to 1× (no SSAA) for those; keep crisp
-    // SSAA for the cheap single-atom scenes the studio was tuned for.
-    if (st.setRenderScale) {
-      const subjCount = rawScene && Array.isArray(rawScene.subjects) ? rawScene.subjects.length : 0;
-      const hasVolumes = rawScene && Array.isArray(rawScene.volumes) && rawScene.volumes.length > 0;
-      const hasCity =
-        rawScene && Array.isArray(rawScene.subjects)
-          ? JSON.stringify(rawScene.subjects).includes('"procedural-city"')
-          : false;
-      // A stage is inherently heavy — enclosed room (every ray hits a wall) +
-      // reflection-retrace (metals re-march to reflect the walls) + per-light
-      // soft shadows. So ANY staged scene runs at 1× even without volumes:
-      // otherwise a plain staged chart (seg2 of a deck) renders at 4× cost and
-      // TDR-hangs weaker GPUs while the show segment (volumes → already 1×) is
-      // fine — exactly the "seg1 plays, seg2 goes black" asymmetry.
-      const hasStage = !!(rawScene && rawScene.defaults && rawScene.defaults.stage);
-      const heavy = hasVolumes || hasCity || hasStage || subjCount > 16;
-      st.setRenderScale(heavy ? 1.0 : 2.0);
-    }
-    // Step 2 (spatial deck): a scene.cameraSequence flies the studio camera
-    // through multiple slide-stations laid out in one 3D world. Studio already
-    // plays it per-frame (draw loop) — just hand it the sequence (or null to
-    // detach + fall back to WASD / auto-frame).
-    if (st.setSequence) st.setSequence((rawScene && rawScene.cameraSequence) || null);
-    // Render-on-demand: tell studio whether this scene animates ON ITS OWN via
-    // u_time (sea waves / city traffic). If not, the studio loop parks after the
-    // camera settles instead of burning GPU every frame on a static slide. A
-    // cameraSequence is handled separately (it drives the camera while playing).
-    if (st.setAnimated) st.setAnimated(sceneHasTimeContent(rawScene));
+    // All studio feature wiring (postFx / heightmap / volumes / renderScale /
+    // cameraSequence / animated) + render lives in ONE place: src/runtime's
+    // wireStudioScene. Adding a studio feature = edit that, not this dispatch.
+    // (Auto-frame above is gallery-specific framing, so it stays here.)
     try {
-      return st.render(sdf);
+      return wireStudioScene(st, rawScene, scene, sdf);
     } catch (e) {
       setStatus(`✗ studio render: ${e.message}`, true);
       console.error(e);
