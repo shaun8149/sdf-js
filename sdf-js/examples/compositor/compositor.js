@@ -2114,6 +2114,21 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (st.setVolumes) {
       st.setVolumes(rawScene && Array.isArray(rawScene.volumes) ? rawScene.volumes : []);
     }
+    // GPU-cost guard: studio renders at renderScale² (2×2 SSAA = 4× fragment
+    // cost). A heavy scene — volumetric beams, big fleets, procedural city, or a
+    // dense subject list — at that cost can blow the GPU's ~2s watchdog (TDR)
+    // and hang the WHOLE browser. Drop to 1× (no SSAA) for those; keep crisp
+    // SSAA for the cheap single-atom scenes the studio was tuned for.
+    if (st.setRenderScale) {
+      const subjCount = rawScene && Array.isArray(rawScene.subjects) ? rawScene.subjects.length : 0;
+      const hasVolumes = rawScene && Array.isArray(rawScene.volumes) && rawScene.volumes.length > 0;
+      const hasCity =
+        rawScene && Array.isArray(rawScene.subjects)
+          ? JSON.stringify(rawScene.subjects).includes('"procedural-city"')
+          : false;
+      const heavy = hasVolumes || hasCity || subjCount > 16;
+      st.setRenderScale(heavy ? 1.0 : 2.0);
+    }
     // Step 2 (spatial deck): a scene.cameraSequence flies the studio camera
     // through multiple slide-stations laid out in one 3D world. Studio already
     // plays it per-frame (draw loop) — just hand it the sequence (or null to

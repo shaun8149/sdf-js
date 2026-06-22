@@ -1676,10 +1676,20 @@ export function createStudioRenderer({
 
   canvas.addEventListener('webglcontextlost', (e) => {
     console.error('[studio] WebGL context lost', e);
-    e.preventDefault();
+    e.preventDefault(); // allow the browser to restore later
+    // Park the loop — don't keep firing rAF against a dead context (which would
+    // spin uselessly, or worse re-submit work that re-trips the GPU watchdog).
+    contextLost = true;
+    if (rafId != null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
   });
   canvas.addEventListener('webglcontextrestored', () => {
-    console.warn('[studio] WebGL context restored — re-upload required');
+    console.warn('[studio] WebGL context restored — reviving loop');
+    contextLost = false;
+    program = null; // force a fresh GLSL program upload on the next render
+    wake();
   });
 
   // Studio default camera: eye 1.5 above ground, 2.5 units back, slight
@@ -1692,6 +1702,7 @@ export function createStudioRenderer({
   let program = null;
   let uniformsCache = {};
   let rafId = null;
+  let contextLost = false; // set by webglcontextlost handler — pauses the loop
   let flyHandle = null;
   // Render-on-demand (idle-stop): the rAF loop stops itself when nothing is
   // animating so a STATIC scene costs ~0 GPU after it settles (vs burning a full
@@ -1789,10 +1800,25 @@ export function createStudioRenderer({
   let sceneFboW = 0,
     sceneFboH = 0;
 
+  // Mutable internal-resolution scale (SSAA factor). setRenderScale() lowers it
+  // for heavy scenes (volumes / fleets) so the expensive fragment shader doesn't
+  // blow the GPU's ~2s watchdog (TDR) and hang the whole browser.
+  let curRenderScale = renderScale;
+
   // (Re)allocate the offscreen FBO when canvas size or renderScale changes.
+  // Hard-cap the internal long side: a hi-DPI / fullscreen canvas × SSAA can
+  // otherwise reach 3000²+ px of raymarch per frame → guaranteed TDR. Capping
+  // bounds the worst-case frame cost regardless of canvas size or DPI.
+  const MAX_INTERNAL_LONG = 1440;
   function ensureSceneFbo() {
-    const targetW = Math.max(1, Math.floor(canvas.width * renderScale));
-    const targetH = Math.max(1, Math.floor(canvas.height * renderScale));
+    let targetW = Math.max(1, Math.floor(canvas.width * curRenderScale));
+    let targetH = Math.max(1, Math.floor(canvas.height * curRenderScale));
+    const longSide = Math.max(targetW, targetH);
+    if (longSide > MAX_INTERNAL_LONG) {
+      const k = MAX_INTERNAL_LONG / longSide;
+      targetW = Math.max(1, Math.floor(targetW * k));
+      targetH = Math.max(1, Math.floor(targetH * k));
+    }
     if (sceneFbo && targetW === sceneFboW && targetH === sceneFboH) return;
     if (sceneFbo) gl.deleteFramebuffer(sceneFbo);
     if (sceneTex) gl.deleteTexture(sceneTex);
@@ -2421,7 +2447,7 @@ export function createStudioRenderer({
   // it's already running). Called by every state change that alters the image.
   function wake() {
     settleFrames = 0;
-    if (!rafId) {
+    if (!rafId && !contextLost) {
       fpsLast = performance.now();
       frameCount = 0;
       rafId = requestAnimationFrame(loop);
@@ -2429,6 +2455,10 @@ export function createStudioRenderer({
   }
 
   function loop() {
+    if (contextLost) {
+      rafId = null;
+      return;
+    }
     draw();
     frameCount++;
     const now = performance.now();
@@ -2602,6 +2632,18 @@ export function createStudioRenderer({
     setAnimated(v) {
       sceneAnimated = !!v;
       if (sceneAnimated) wake();
+    },
+
+    // Per-scene SSAA factor. The compositor lowers this for heavy scenes
+    // (volumes / fleets / theatrical stage) so the expensive fragment shader
+    // stays under the GPU watchdog (TDR) — a too-heavy frame hangs the whole
+    // browser, not just the tab. Reallocates the scene FBO on change.
+    setRenderScale(s) {
+      const v = Math.max(0.5, Math.min(2.0, Number(s) || 1.0));
+      if (v === curRenderScale) return;
+      curRenderScale = v;
+      ensureSceneFbo();
+      wake();
     },
 
     // Public nudge: re-render now / revive the parked loop. For any external
