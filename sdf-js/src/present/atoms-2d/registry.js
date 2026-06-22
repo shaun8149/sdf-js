@@ -43,7 +43,8 @@ const ATOM_LOADERS = {
   timeline: () => import('./charts/diagrams/timeline.js'),
   'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
   'multiple-arrows': () => import('./charts/diagrams/multiple-arrows.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows
+  'circle-image-hub-spoke': () => import('./charts/diagrams/circle-image-hub-spoke.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows + Sprint 15b circle-image-hub-spoke
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
@@ -79,12 +80,15 @@ const ATOM_LOADERS = {
   fishbone: () => import('./charts/diagrams/fishbone.js'),
   'layer-stack': () => import('./charts/layers/layer-stack.js'),
   'bullet-list': () => import('./charts/lists/bullet-list.js'),
+  // Charts / layers — Sprint 15b
+  'magazine-column-grid': () => import('./charts/layers/magazine-column-grid.js'),
 
   // Charts/data extensions
   'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
   gantt: () => import('./charts/data/gantt.js'),
+  'dashboard-multi-kpi-composite': () => import('./charts/data/dashboard-multi-kpi.js'),
 
   // Charts/data — B3 PR 1 (2D twins of gauge-3d / radial-spoke-3d / scatter-3d /
   // traffic-light-3d / venn-3d). Carry full data, not just count.
