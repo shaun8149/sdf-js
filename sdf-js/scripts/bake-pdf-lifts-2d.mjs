@@ -259,7 +259,8 @@ for (const i of slidesToBake) {
     `   - NEVER emit \`text-3d-pipe\`, \`box\`, \`rounded_box\`\n` +
     `4. **${layoutHint}**\n` +
     `5. **Match PL visual style**: PL doesn't use uniform grids when values differ — they use SIZE encoding, stage composition, hierarchy. Follow the layout hint above; don't default to row-of-equals.\n` +
-    `6. **Color discipline (CRITICAL)**: Default \`color: [42, 96, 178]\` (blue) for ALL spheres unless the slide body text EXPLICITLY mentions colors (e.g. "DESCRIPTION 1 - red", "GREEN sphere"). Do NOT split spheres into orange/blue or red/blue based on value thresholds — PL keeps fill series monochrome to make value comparison clean. ONE color per slide unless slide body cites multi-color.\n`;
+    `6. **Color discipline (CRITICAL)**: Default \`color: [42, 96, 178]\` (blue) for ALL spheres unless the slide body text EXPLICITLY mentions colors (e.g. "DESCRIPTION 1 - red", "GREEN sphere"). Do NOT split spheres into orange/blue or red/blue based on value thresholds — PL keeps fill series monochrome to make value comparison clean. ONE color per slide unless slide body cites multi-color.\n` +
+    `7. **Connector arrows (PROCESS FLOW)**: When slide implies SEQUENTIAL flow — body text shows "Description 1 / Description 2 / Description 3" numbered series, OR words like "process / step / before / after / then" — emit \`arrow\` atom BETWEEN adjacent spheres for visual continuity. Position arrow between sphere centers (e.g. arrow at x=midpoint_between_two_spheres, y=sphere_center, w=80, h=60, args: \`direction: "right"\`, default color). Skip for non-flow slides (independent KPI dashboards, grid of values).\n`;
   console.log(`[${i + 1}/${slides.length}] lifting ${id} (pattern=${pattern})...`);
   try {
     const { text, usage, elapsed } = await callAnthropic(userMessage);
