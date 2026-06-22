@@ -79,6 +79,7 @@ const ATOM_LOADERS = {
   'bullet-list': () => import('./charts/lists/bullet-list.js'),
 
   // Charts/data extensions
+  'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
   gantt: () => import('./charts/data/gantt.js'),

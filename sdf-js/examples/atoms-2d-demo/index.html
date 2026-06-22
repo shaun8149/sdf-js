@@ -319,6 +319,32 @@
       { title: 'Break-even — Manufacturing',
         size: { w: 600, h: 340 },
         atom: { type: 'break-even', args: { fixedCost: 120000, variableCostPerUnit: 40, pricePerUnit: 75, maxUnits: 8000, title: 'Manufacturing Break-Even', currency: '$' } } },
+      // ---- Stacked area (Sprint 15a Task 5.1) ----
+      { title: 'Stacked Area — Revenue by Product',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Revenue by Product Over Time ($M)',
+          format: 'currency',
+          xLabels: ['Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25'],
+          series: [
+            { name: 'Platform', values: [1.2, 1.5, 1.8, 2.1, 2.4, 2.8] },
+            { name: 'Add-ons', values: [0.4, 0.6, 0.9, 1.1, 1.4, 1.7] },
+            { name: 'Services', values: [0.2, 0.3, 0.4, 0.5, 0.7, 0.9] },
+          ],
+        } } },
+      { title: 'Stacked Area — Headcount by Team',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Headcount by Team Over Quarters',
+          format: 'number',
+          xLabels: ['Q1', 'Q2', 'Q3', 'Q4'],
+          series: [
+            { name: 'Engineering', values: [18, 24, 31, 38] },
+            { name: 'Sales', values: [8, 12, 16, 20] },
+            { name: 'Marketing', values: [4, 5, 7, 9] },
+            { name: 'Support', values: [3, 4, 5, 6] },
+          ],
+        } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
