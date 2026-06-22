@@ -1,0 +1,100 @@
+{
+  "slotIdx": 3,
+  "slotName": "feature-2",
+  "slotTitle": "Feature Highlight",
+  "slotPurpose": "Second feature with detail",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/feature-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "text-3d-pipe",
+        "x": 80,
+        "y": 60,
+        "w": 400,
+        "h": 80,
+        "args": {
+          "text": "FILL LEVELS",
+          "height": 0.8,
+          "pipeRadius": 0.14,
+          "align": "left"
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.85,
+          "value": 0.95,
+          "metal": 0.7,
+          "glow": 0
+        },
+        "transform": {
+          "translate": [-0.8, 0.3, 0]
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 80,
+        "y": 180,
+        "w": 280,
+        "h": 280,
+        "args": {
+          "value": 100,
+          "label": "Feature Completion",
+          "color": [255, 120, 40],
+          "background": "light"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 420,
+        "y": 180,
+        "w": 780,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "DESCRIPTION TEXT",
+              "sublabel": "This is a placeholder text. This text can be replaced with your own text.",
+              "status": "done"
+            },
+            {
+              "label": "DESCRIPTION TEXT",
+              "sublabel": "This is a placeholder text. This text can be replaced with your own text.",
+              "status": "done"
+            },
+            {
+              "label": "DESCRIPTION TEXT",
+              "sublabel": "This is a placeholder text. This text can be replaced with your own text.",
+              "status": "done"
+            }
+          ],
+          "title": "Enter your subheadline here",
+          "numbered": false
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["device-mockup-frame", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 680,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 552,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.037167,
+    "elapsedSec": 7.8,
+    "generatedAt": "2026-06-22T15:35:24.529Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

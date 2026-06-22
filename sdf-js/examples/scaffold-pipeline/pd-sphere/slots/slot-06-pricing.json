@@ -1,0 +1,71 @@
+{
+  "slotIdx": 6,
+  "slotName": "pricing",
+  "slotTitle": "Pricing",
+  "slotPurpose": "Plans + pricing tiers",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/pricing",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "magazine-column-grid",
+        "x": 40,
+        "y": 80,
+        "w": 1200,
+        "h": 600,
+        "args": {
+          "categories": [
+            {
+              "name": "FILL LEVELS",
+              "items": [
+                {
+                  "label": "DESCRIPTION 1",
+                  "value": "10%"
+                },
+                {
+                  "label": "DESCRIPTION 2",
+                  "value": "60%"
+                },
+                {
+                  "label": "DESCRIPTION 3",
+                  "value": "50%"
+                }
+              ]
+            }
+          ],
+          "title": "Pricing",
+          "subtitle": "Enter your subheadline here",
+          "colors": [
+            [255, 120, 40],
+            [20, 60, 180],
+            [220, 220, 235]
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["magazine-column-grid", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 661,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 278,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.033,
+    "elapsedSec": 4.2,
+    "generatedAt": "2026-06-22T15:35:41.794Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

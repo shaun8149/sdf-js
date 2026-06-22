@@ -26,6 +26,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { basename } from 'node:path';
 import { pickScaffold, distributeSources } from '../src/present/scaffolds/picker.js';
+import { pickScaffoldLLM } from '../src/present/scaffolds/picker-llm.js';
 import { getTheme } from '../src/present/themes.js';
 
 // --- args ---
@@ -40,6 +41,9 @@ const DECK_NAME = arg('--deck-name') || basename(SLIDEDATA_PATH).replace(/\.json
 const FORCE = args.includes('--force');
 const DRY_RUN = args.includes('--dry-run');
 const KEY_FILE = arg('--key-file', null);
+// Picker mode: 'llm' (v2 Claude-wrapped), 'v1' (deterministic keyword), 'auto'
+// (v2 with v1 fallback on error). Default: auto.
+const PICKER_MODE = arg('--picker', 'auto');
 
 // --- API key ---
 let API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -103,18 +107,32 @@ for (const slide of slides) {
 const deckTitle = allTitles[0] || DECK_NAME;
 const deckCombinedBody = [...allTitles, ...bodyTextsAll];
 
-const picked = pickScaffold({
-  title: deckTitle,
-  bodyTexts: deckCombinedBody,
-});
+async function pickStage0() {
+  const baseInput = { title: deckTitle, bodyTexts: deckCombinedBody };
+  if (PICKER_MODE === 'v1') {
+    const r = pickScaffold(baseInput);
+    return { ...r, method: r.fallback ? 'fallback' : 'v1' };
+  }
+  // 'llm' or 'auto' — both use picker-llm; the difference is what we do on
+  // error. picker-llm.js silently falls back when fallbackToV1=true (default).
+  // 'llm' mode disables fallback so errors are loud.
+  return await pickScaffoldLLM(baseInput, {
+    apiKey: API_KEY,
+    fallbackToV1: PICKER_MODE !== 'llm',
+    log: (...m) => console.log(' ', ...m),
+  });
+}
 
+const picked = await pickStage0();
 const scaffold = picked.scaffold;
 const theme = picked.theme;
+const pickerMethod = picked.method || 'unknown';
 
 console.log(
   `  picked: ${scaffold.id} (${scaffold.label})\n` +
     `  score:  ${picked.score}${picked.fallback ? ' [FALLBACK]' : ''}\n` +
-    `  signals: ${picked.signals.slice(0, 6).join(', ')}\n` +
+    `  method: ${pickerMethod}\n` +
+    `  signals: ${picked.signals.slice(0, 6).join(' | ')}\n` +
     `  theme:  ${theme.id} (${theme.label})\n` +
     `  slots:  ${scaffold.slots.length}\n`,
 );
@@ -380,6 +398,7 @@ const deckManifest = {
     pickScore: picked.score,
     pickSignals: picked.signals,
     fallback: picked.fallback,
+    pickerMethod,
   },
   theme: {
     id: theme.id,
