@@ -36,6 +36,11 @@ function getUrlTokenHash() {
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
 import { expandVariants } from '../../src/scene/generator-s.js';
 import { expandChartLabels } from '../../src/scene/chart-labels.js';
+// Renderer id set + classifier: single source of truth (renderer-registry).
+import {
+  GPU_RENDERER_IDS as GPU_RENDERERS,
+  isGpuRenderer,
+} from '../../src/render/renderer-registry.js';
 import {
   sphericalToCamState,
   parseLiftResponse,
@@ -122,9 +127,6 @@ const state = {
   // ?sceneHash= URL param to roll a new variant ordering.
   sceneHash: null, // 0x... hex string
 };
-
-const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo', 'studio']);
-const isGpuRenderer = (name) => GPU_RENDERERS.has(name);
 
 // =============================================================================
 // History storage (localStorage cap 30)
