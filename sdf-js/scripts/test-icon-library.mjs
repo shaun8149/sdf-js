@@ -130,5 +130,35 @@ it('Path2D paths render without throwing (smoke)', () => {
   }
 });
 
+// -------- Integration: icon-badge atom expanded universe --------
+
+import {
+  ICON_BADGE_NAMES,
+  ICON_BADGE_HARDCODED_NAMES,
+  getIconBadgeNames,
+} from '../src/present/atoms-2d/icons/icon-badge.js';
+
+it('icon-badge ICON_BADGE_HARDCODED_NAMES is 24', () => {
+  assert.equal(ICON_BADGE_HARDCODED_NAMES.length, 24);
+});
+
+it('icon-badge ICON_BADGE_NAMES includes all 24 hardcoded + Phosphor', () => {
+  for (const n of ICON_BADGE_HARDCODED_NAMES) {
+    assert.ok(ICON_BADGE_NAMES.includes(n), `hardcoded ${n} missing from full list`);
+  }
+  // Should be much larger than 24 (24 + ~772 Phosphor = ~796)
+  assert.ok(ICON_BADGE_NAMES.length >= 700, `Expected ≥700 total, got ${ICON_BADGE_NAMES.length}`);
+});
+
+it('getIconBadgeNames() returns sorted union (deterministic)', () => {
+  const a = getIconBadgeNames();
+  const b = getIconBadgeNames();
+  assert.deepEqual(a, b);
+  // sorted ascending
+  for (let i = 1; i < a.length; i++) {
+    assert.ok(a[i] >= a[i - 1], `not sorted at index ${i}: ${a[i - 1]} > ${a[i]}`);
+  }
+});
+
 console.log(`  ${passed} assertions passed`);
 if (process.exitCode) process.exit(process.exitCode);
