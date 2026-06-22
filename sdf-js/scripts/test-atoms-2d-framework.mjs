@@ -2065,5 +2065,149 @@ function stubCtx(recorded) {
   return c;
 }
 
+// ----- Sprint 15b B4: infinity-loop-flow -----
+console.log('\n--- infinity-loop-flow atom ---');
+{
+  const spec = await getAtomSpec('infinity-loop-flow');
+  ok(spec.type === 'infinity-loop-flow', 'infinity-loop-flow spec.type');
+  ok(spec.category === 'charts/diagrams', `category = ${spec.category}`);
+  ok(spec.args.steps.required, 'steps required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'infinity-loop-flow',
+    {
+      steps: [{ label: 'Plan' }, { label: 'Build' }, { label: 'Measure' }, { label: 'Learn' }],
+      title: 'Build-Measure-Learn Loop',
+    },
+    'pseudo3d',
+    {
+      w: 800,
+      h: 480,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Build-Measure-Learn Loop'), 'title rendered');
+  ok(recorded.includes('Plan') && recorded.includes('Learn'), 'step labels rendered');
+
+  // 6-step variant (Double Diamond)
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'infinity-loop-flow',
+      {
+        steps: [
+          { label: 'Discover' },
+          { label: 'Define' },
+          { label: 'Develop' },
+          { label: 'Deliver' },
+          { label: 'Deploy' },
+          { label: 'Monitor' },
+        ],
+        title: 'Double Diamond Process',
+      },
+      'pseudo3d',
+      {
+        w: 800,
+        h: 480,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, '6-step variant renders without crash');
+
+  // Empty steps — no crash
+  crashed = false;
+  try {
+    await renderAtom(c, 'infinity-loop-flow', { steps: [] }, 'pseudo3d', {
+      w: 600,
+      h: 400,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty steps no crash');
+}
+
+// ----- Sprint 15b B4: kpi-water-drop -----
+console.log('\n--- kpi-water-drop atom ---');
+{
+  const spec = await getAtomSpec('kpi-water-drop');
+  ok(spec.type === 'kpi-water-drop', 'kpi-water-drop spec.type');
+  ok(spec.category === 'charts/data', `category = ${spec.category}`);
+  ok(spec.args.value.required, 'value required');
+  ok(spec.args.label.required, 'label required');
+
+  const recorded = [];
+  const c = stubCtxWithEllipse(recorded);
+  await renderAtom(
+    c,
+    'kpi-water-drop',
+    { value: 0.72, label: 'Water Recycled', sublabel: 'Q3 2026', format: 'percent' },
+    'pseudo3d',
+    {
+      w: 280,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[0, 140, 200]] },
+    },
+  );
+  ok(recorded.includes('Water Recycled'), 'label rendered');
+  ok(recorded.includes('Q3 2026'), 'sublabel rendered');
+  ok(
+    recorded.some((t) => String(t).includes('72%')),
+    'percent value rendered',
+  );
+
+  // displayValue override
+  recorded.length = 0;
+  await renderAtom(
+    c,
+    'kpi-water-drop',
+    { value: 0.45, label: 'Green Energy', sublabel: 'Target 80%', displayValue: '45%' },
+    'pseudo3d',
+    {
+      w: 280,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[0, 140, 200]] },
+    },
+  );
+  ok(recorded.includes('Green Energy'), 'second sample label rendered');
+  ok(recorded.includes('45%'), 'displayValue override rendered');
+
+  // value=0 (empty drop) — no crash
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(c, 'kpi-water-drop', { value: 0, label: 'Empty' }, 'pseudo3d', {
+      w: 240,
+      h: 320,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'value=0 empty drop no crash');
+
+  // value=1 (full drop) — no crash
+  crashed = false;
+  try {
+    await renderAtom(c, 'kpi-water-drop', { value: 1, label: 'Full' }, 'pseudo3d', {
+      w: 240,
+      h: 320,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'value=1 full drop no crash');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

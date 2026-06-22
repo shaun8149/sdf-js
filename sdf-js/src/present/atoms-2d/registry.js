@@ -44,7 +44,8 @@ const ATOM_LOADERS = {
   'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
   'multiple-arrows': () => import('./charts/diagrams/multiple-arrows.js'),
   'circle-image-hub-spoke': () => import('./charts/diagrams/circle-image-hub-spoke.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows + Sprint 15b circle-image-hub-spoke
+  'infinity-loop-flow': () => import('./charts/diagrams/infinity-loop-flow.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model + multiple-arrows + Sprint 15b circle-image-hub-spoke + infinity-loop-flow
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
@@ -88,6 +89,7 @@ const ATOM_LOADERS = {
   'device-mockup-row': () => import('./shapes/device-mockup-row.js'),
 
   // Charts/data extensions
+  'kpi-water-drop': () => import('./charts/data/kpi-water-drop.js'),
   'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
   waterfall: () => import('./charts/data/waterfall.js'),
