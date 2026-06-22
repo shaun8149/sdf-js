@@ -206,6 +206,13 @@
       { title: 'Scatter — Cost vs Value',
         size: { w: 520, h: 400 },
         atom: { type: 'scatter', args: { title: 'Cost vs Value', xAxis: 'Cost', yAxis: 'Value', points: [{ x: 0.2, y: 0.3, label: 'A', group: 'small' }, { x: 0.5, y: 0.7, label: 'B', group: 'large' }, { x: 0.8, y: 0.4, label: 'C', group: 'small' }, { x: 0.35, y: 0.85, label: 'D', group: 'large' }, { x: 0.65, y: 0.55, label: 'E', group: 'small' }] } } },
+      // ---- Bubble chart (Sprint 15a) ----
+      { title: 'Bubble — Product Portfolio',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Product Portfolio', xAxis: 'Cost', yAxis: 'Revenue', sizeScale: 40, points: [{ x: 0.2, y: 0.35, size: 0.45, label: 'Core' }, { x: 0.55, y: 0.75, size: 0.85, label: 'Platform' }, { x: 0.8, y: 0.45, size: 0.25, label: 'Add-on' }, { x: 0.35, y: 0.6, size: 0.6, label: 'Pro' }] } } },
+      { title: 'Bubble — Risk Map',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Risk Exposure Map', xAxis: 'Probability', yAxis: 'Impact', sizeScale: 38, points: [{ x: 0.15, y: 0.8, size: 0.3, label: 'Reg' }, { x: 0.6, y: 0.65, size: 0.75, label: 'Market' }, { x: 0.85, y: 0.35, size: 0.5, label: 'Ops' }, { x: 0.4, y: 0.9, size: 0.55, label: 'Tech' }, { x: 0.7, y: 0.2, size: 0.2, label: 'Legal' }, { x: 0.25, y: 0.45, size: 0.4, label: 'People' }] } } },
       { title: 'Traffic light — Project status',
         size: { w: 280, h: 460 },
         atom: { type: 'traffic-light', args: { title: 'Project Status', lights: [{ color: 'red', label: 'Stop' }, { color: 'amber', label: 'Slow' }, { color: 'green', active: true, label: 'Go' }] } } },

@@ -87,6 +87,7 @@ const ATOM_LOADERS = {
   gauge: () => import('./charts/data/gauge.js'),
   'radial-spoke': () => import('./charts/data/radial-spoke.js'),
   scatter: () => import('./charts/data/scatter.js'),
+  bubble: () => import('./charts/data/bubble.js'),
   'traffic-light': () => import('./charts/data/traffic-light.js'),
   venn: () => import('./charts/data/venn.js'),
 
