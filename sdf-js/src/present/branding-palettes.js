@@ -25,6 +25,7 @@
 // =============================================================================
 
 import { CHROMOTOME_BRANDING_PALETTES } from './chromotome-palettes-data.js';
+import { ATLAS_THEMES } from './themes.js';
 
 /**
  * @typedef {object} BrandingPreset
@@ -50,20 +51,33 @@ const BUILT_IN_PALETTES = [
 ];
 
 /**
- * Full palette library: 5 built-in simple + ~23 chromotome multi-color (Sprint 9).
- * Iteration order: built-in first, then chromotome. Swap Branding menu cycles
- * through in this order. Total: 28 palettes.
+ * Full palette library: 9 Atlas themes (Sprint 15B, featured) + 5 built-in simple
+ * + ~23 chromotome multi-color (Sprint 9). Iteration order: Atlas themes first
+ * (3 macros × 3 colors), then legacy built-in, then chromotome. Total: 37
+ * palettes. Featured 9 are flagged `featured: true` for UI prioritization.
  */
-export const BRANDING_PALETTES = [...BUILT_IN_PALETTES, ...CHROMOTOME_BRANDING_PALETTES];
+export const BRANDING_PALETTES = [
+  ...ATLAS_THEMES,
+  ...BUILT_IN_PALETTES,
+  ...CHROMOTOME_BRANDING_PALETTES,
+];
 
 /**
- * Get a preset by id; fallback to first preset if id not found.
+ * Get a preset by id; fallback to mono-light (neutral) if id not found.
+ * Pre-Sprint-15B fallback was BRANDING_PALETTES[0] which was always
+ * mono-light; with atlas themes prepended, [0] is now editorial-navy.
+ * Explicit mono-light fallback preserves backward compat for callers
+ * that relied on neutral defaults.
  *
  * @param {string} id
  * @returns {BrandingPreset}
  */
 export function getPalette(id) {
-  return BRANDING_PALETTES.find((p) => p.id === id) || BRANDING_PALETTES[0];
+  return (
+    BRANDING_PALETTES.find((p) => p.id === id) ||
+    BRANDING_PALETTES.find((p) => p.id === 'mono-light') ||
+    BRANDING_PALETTES[0]
+  );
 }
 
 /**
