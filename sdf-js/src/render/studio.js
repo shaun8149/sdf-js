@@ -778,7 +778,7 @@ void main() {
     float shadowK = 1.0;
     if (u_shadowsOn > 0.5) {
       float lightDist = length(u_lightPos - p);
-      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 12.0);
+      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 8.0); // softer penumbra
     }
 
     // Base albedo + material params:
@@ -1424,8 +1424,11 @@ void main() {
       // sky() in the surface-normal direction (procedural IBL irradiance) —
       // upward-facing surfaces get zenith blue, lateral get horizon tint, and
       // at golden hour all ambient warms naturally. Replaces fixed constant.
-      vec3 sunCol    = vec3(1.05, 0.96, 0.84);
-      vec3 skyCol    = sky(n, sunDir) * 0.55;
+      // Cinematic warm/cool split: an amber KEY against a cool-blue FILL (replaces
+      // the near-neutral pair) — the classic film-lighting contrast that reads as
+      // "lit" rather than "evenly bright".
+      vec3 sunCol    = vec3(1.20, 0.94, 0.72);                                     // warm key
+      vec3 skyCol    = mix(sky(n, sunDir) * 0.55, vec3(0.32, 0.45, 0.82), 0.6);    // cool fill
       vec3 bounceCol = vec3(0.55, 0.48, 0.40);
       vec3 rimCol    = sky(normalize(n + vec3(0.0, 0.4, 0.0)), sunDir) * 0.7;
 
@@ -1440,12 +1443,12 @@ void main() {
       // Key/fill ratio raised for "pop": stronger sun key, lower flat sky fill,
       // trimmed rim. Ambient terms stay multiplied by AO so crevices/contacts
       // darken (grounds the subject — the main thing flat studio lighting lacked).
-      lin += base * sunCol    * diff * shadowK * 1.55 * diffK;
+      lin += base * sunCol    * diff * shadowK * 1.95 * diffK;
       // Sky ambient + ground bounce scale by u_ambientScale. A theatrical stage
       // (interiorDark) drops it near 0 so dark walls stay dark and the spotlight
       // cones + volumetric beams read; the spots + sun still pick out the hero.
       // Default 1.0 = unchanged for every other scene.
-      lin += base * skyCol    * skyL * ao      * 0.38 * diffK * u_ambientScale;
+      lin += base * skyCol    * skyL * ao      * 0.24 * diffK * u_ambientScale;
       lin += base * bounceCol * bnc  * ao      * 0.16 * diffK * u_ambientScale;
       // GGX microfacet specular (replaces the old Phong pow lobe). Roughness
       // tracks metalK: metals get a tight bright glint that reads as polished
@@ -1463,6 +1466,13 @@ void main() {
       // fresnel rim so glossy subjects glow at their edges against the dark bg.
       lin += specTint * sunCol * pow(max(dot(n, H), 0.0), 96.0) * shadowK * u_studioBg * 1.1;
       lin += rimCol * rim * ao * (0.14 + u_studioBg * 0.5);
+      // Cool KICKER (rim/back light): a cool edge light from roughly opposite the
+      // key (raised, behind the subject) that catches the silhouette and lifts the
+      // subject off a dark background. Concentrated on back-facing grazing edges
+      // (dot(n,kick) × fresnel). Unshadowed — it's an edge accent, not a key.
+      vec3 kickDir = normalize(vec3(-sunDir.x, max(sunDir.y, 0.25) + 0.25, -sunDir.z));
+      float kick = pow(max(dot(n, kickDir), 0.0), 2.0) * pow(1.0 - max(dot(n, V), 0.0), 1.5);
+      lin += vec3(0.42, 0.60, 1.0) * kick * (0.55 + u_studioBg * 0.85);
 
       // Stage area lights. Each extra light (emissive panel) adds soft-shadowed
       // diffuse fill + a GGX glint, so objects in a room are lit BY the room, not
