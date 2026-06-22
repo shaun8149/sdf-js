@@ -44,7 +44,7 @@
       ]
     },
     "defaults": {
-      "stage": true
+      "stage": { "show": true }
     }
   },
   "meta": {

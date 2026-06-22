@@ -113,6 +113,37 @@ export function expandStage(sceneData) {
 
   const out = { ...sceneData, defaults, subjects: [...room, ...sceneData.subjects] };
 
+  // Show mode: dramatic volumetric lighting — a spotlight beam under each panel
+  // + a low floor haze for the beams to glow in. Rendered by the studio volume
+  // raymarch pass (kind god-rays / fog). Turns a lit room into a "stage".
+  if (cfg.show) {
+    const beam = (id, x, color) => ({
+      id,
+      kind: 'god-rays',
+      center: [x, h * 0.48, 0],
+      size: [Math.max(2.2, w * 0.2), h * 0.95, Math.max(2.2, d * 0.18)],
+      density: 0.28,
+      color,
+      noiseScale: 1.4,
+      colorIntensity: 1.0,
+    });
+    const showVols = [
+      beam('__stage_beam_l', -px, [150, 180, 255]),
+      beam('__stage_beam_r', px, [255, 208, 150]),
+      {
+        id: '__stage_haze',
+        kind: 'fog',
+        center: [0, 0.5, 0],
+        size: [w, 1.0, d],
+        density: 0.05,
+        color: [184, 198, 222],
+        noiseScale: 0.8,
+      },
+    ];
+    const existingVols = Array.isArray(sceneData.volumes) ? sceneData.volumes : [];
+    out.volumes = [...existingVols, ...showVols];
+  }
+
   // Default interior camera (only if the scene authored none). studio ignores
   // defaults.camera for large bounded scenes, so we drive it with a sequence.
   if (!out.cameraSequence && !cfg.noCamera) {
