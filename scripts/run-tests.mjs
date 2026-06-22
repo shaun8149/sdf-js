@@ -157,6 +157,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-atoms-2d-framework.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-icon-library.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-scaffolds.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-picker-llm.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
