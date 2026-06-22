@@ -157,6 +157,26 @@ float calcAO(vec3 p, vec3 n) {
   return clamp(1.0 - 2.6 * occ, 0.0, 1.0);
 }
 
+// GGX / Cook-Torrance specular for the standard material — replaces the old
+// Phong pow() lobe. Energy-conserving microfacet highlight whose shape tracks
+// roughness (metals → low rough → tight bright glint that reads as metal; matte
+// → broad soft sheen). Single sun light, so we fold the NdotL cosine in here and
+// return a ready-to-add term. Schlick-GGX (Smith) geometry, Trowbridge-Reitz D.
+float ggxSpecular(vec3 n, vec3 v, vec3 l, float rough) {
+  vec3 h = normalize(v + l);
+  float a = max(rough * rough, 0.002);
+  float a2 = a * a;
+  float NdotH = max(dot(n, h), 0.0);
+  float NdotL = max(dot(n, l), 0.0);
+  float NdotV = max(dot(n, v), 0.0);
+  float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
+  float D = a2 / (3.14159265 * d * d + 1e-6);
+  float k = a * 0.5;
+  float gv = NdotV / (NdotV * (1.0 - k) + k);
+  float gl = NdotL / (NdotL * (1.0 - k) + k);
+  return (D * gv * gl) / (4.0 * NdotV * NdotL + 1e-3) * NdotL;
+}
+
 // nimitz-inspired atmospheric sky. Reacts to sun height: cool/blue at midday,
 // warm orange at low sun (golden hour). Strong halo. Optional horizon glow
 // when sun is below ~30° — gives sunrise / sunset mood without explicit
@@ -1413,27 +1433,45 @@ void main() {
       lin += base * sunCol    * diff * shadowK * 1.55 * diffK;
       lin += base * skyCol    * skyL * ao      * 0.38 * diffK;
       lin += base * bounceCol * bnc  * ao      * 0.16 * diffK;
-      lin += specTint * sunCol * spec * shadowK * specBoost;
+      // GGX microfacet specular (replaces the old Phong pow lobe). Roughness
+      // tracks metalK: metals get a tight bright glint that reads as polished
+      // metal, matte surfaces a broad soft sheen. specBoost keeps the prior
+      // metal/dielectric energy balance.
+      float rough = clamp(mix(0.52, 0.14, metalK), 0.05, 0.95);
+      float ggx = ggxSpecular(n, V, toLight, rough);
+      lin += specTint * sunCol * ggx * shadowK * specBoost;
       // Dramatic showcase (u_studioBg): a tight hot specular + a stronger cool
       // fresnel rim so glossy subjects glow at their edges against the dark bg.
       lin += specTint * sunCol * pow(max(dot(n, H), 0.0), 96.0) * shadowK * u_studioBg * 1.1;
       lin += rimCol * rim * ao * (0.14 + u_studioBg * 0.5);
 
-      // Sprint 6: procedural-IBL env reflection. For metallic objects, sample
-      // sky() in the reflection direction as the environment map. Free (no
-      // cubemap), updates automatically with sun. Sky already handles sun
-      // disk + halo so chrome / gold pick up the bright sun reflection.
-      // Dielectrics also get a weak env reflection (Schlick F0=0.04) — gives
-      // glass / polished stone / wet leaves a subtle sheen that fixed constants
-      // never had. Skipped on ground (handled by raymarchShort reflection below).
+      // Env reflection. Schlick-Fresnel weighted: metals are near-mirror,
+      // dielectrics get a subtle grazing sheen. The environment is found by a
+      // SECONDARY raymarch along the reflection ray (reflection-retrace) so a
+      // metal inside a room reflects the actual walls / emissive panels — not a
+      // flat sky sample (which read as "cheap chrome in a void"). When the
+      // reflection ray escapes the geometry (open / outdoor scenes, upward rays)
+      // we fall back to sky(). Reuses the same raymarchShort + shadeReflection
+      // the ground wet-floor reflection uses. (Idiom: reflect → re-trace → shade
+      // → blend, from the IQ-lineage fractal-museum mirror floor.)
       if (matId > 1.5) {
         vec3 R = reflect(rd, n);
-        vec3 envRefl = sky(R, sunDir);
         float F0 = mix(0.04, 1.0, metalK);
         float fres = F0 + (1.0 - F0) * pow(1.0 - max(dot(n, V), 0.0), 5.0);
-        vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
-        // Stronger for metals (chrome is mostly mirror), subtle for dielectrics.
-        lin = mix(lin, envTint, fres * (0.35 + 0.45 * metalK));
+        float reflW = fres * (0.35 + 0.55 * metalK);
+        // Skip the secondary march when the reflection would barely show
+        // (matte + near-normal incidence) — keeps cost on the pixels that read.
+        if (reflW > 0.02) {
+          vec3 envRefl;
+          vec3 rs = raymarchShort(p + n * 0.02, R, 14.0);
+          if (rs.y > 0.5) {
+            envRefl = shadeReflection(p + R * rs.x, R, rs.y, rs.z, sunDir);
+          } else {
+            envRefl = sky(R, sunDir);
+          }
+          vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
+          lin = mix(lin, envTint, reflW);
+        }
       }
 
       // Sprint 6: emissive-volume point lights. Flame + god-ray volumes light
