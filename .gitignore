@@ -19,3 +19,4 @@ node_modules/
 sdf-js/fixtures/*.pdf
 sdf-js/fixtures/*.pptx
 screens/
+key.txt
