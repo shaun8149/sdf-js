@@ -94,6 +94,11 @@ const ATOM_LOADERS = {
   gantt: () => import('./charts/data/gantt.js'),
   'dashboard-multi-kpi-composite': () => import('./charts/data/dashboard-multi-kpi.js'),
 
+  // Charts/data — Sprint 15b B3: isotype infographic atoms (THE missing idiom)
+  'isotype-people-grid': () => import('./charts/data/isotype-people-grid.js'),
+  'isotype-prop-row': () => import('./charts/data/isotype-prop-row.js'),
+  'isotype-stat-comparison': () => import('./charts/data/isotype-stat-comparison.js'),
+
   // Charts/data — B3 PR 1 (2D twins of gauge-3d / radial-spoke-3d / scatter-3d /
   // traffic-light-3d / venn-3d). Carry full data, not just count.
   gauge: () => import('./charts/data/gauge.js'),

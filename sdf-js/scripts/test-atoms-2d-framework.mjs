@@ -1690,6 +1690,315 @@ console.log('\n--- bullet-list atom ---');
   ok(recorded.includes('3× faster') && recorded.includes('40% reduction'), 'sublabels rendered');
 }
 
+// ----- Sprint 15b B3: isotype-people-grid -----
+console.log('\n--- isotype-people-grid atom ---');
+{
+  const spec = await getAtomSpec('isotype-people-grid');
+  ok(spec.type === 'isotype-people-grid', 'isotype-people-grid spec.type');
+  ok(spec.category === 'charts/data', `category = ${spec.category}`);
+  ok(spec.args.total.required, 'total required');
+  ok(spec.args.highlighted.required, 'highlighted required');
+
+  const recorded = [];
+  const c = stubCtxWithIsotype(recorded);
+  await renderAtom(
+    c,
+    'isotype-people-grid',
+    {
+      total: 100,
+      highlighted: 73,
+      personIcon: 'simple',
+      title: 'Customer Satisfaction',
+      label: '73 of 100 customers are highly satisfied',
+    },
+    'pseudo3d',
+    {
+      w: 480,
+      h: 360,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Customer Satisfaction'), 'title rendered');
+  ok(
+    recorded.some((t) => String(t).includes('73') && String(t).includes('100')),
+    'hero stat 73/100 rendered',
+  );
+  ok(
+    recorded.some((t) => String(t).includes('satisfied')),
+    'label text rendered',
+  );
+
+  // business variant
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-people-grid',
+      { total: 20, highlighted: 5, personIcon: 'business' },
+      'pseudo3d',
+      {
+        w: 400,
+        h: 300,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'business variant renders without crash');
+
+  // casual variant + minimal args
+  recorded.length = 0;
+  crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-people-grid',
+      { total: 10, highlighted: 3, personIcon: 'casual' },
+      'pseudo3d',
+      {
+        w: 300,
+        h: 240,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[200, 80, 80]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'casual variant renders without crash');
+
+  // highlighted=0 edge case
+  recorded.length = 0;
+  crashed = false;
+  try {
+    await renderAtom(c, 'isotype-people-grid', { total: 50, highlighted: 0 }, 'pseudo3d', {
+      w: 400,
+      h: 280,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'highlighted=0 no crash');
+}
+
+// ----- Sprint 15b B3: isotype-prop-row -----
+console.log('\n--- isotype-prop-row atom ---');
+{
+  const spec = await getAtomSpec('isotype-prop-row');
+  ok(spec.type === 'isotype-prop-row', 'isotype-prop-row spec.type');
+  ok(spec.category === 'charts/data', `category = ${spec.category}`);
+  ok(spec.args.count.required, 'count required');
+  ok(spec.args.fillRatios.required, 'fillRatios required');
+
+  const recorded = [];
+  const c = stubCtxWithIsotype(recorded);
+  await renderAtom(
+    c,
+    'isotype-prop-row',
+    {
+      count: 5,
+      fillRatios: [0.9, 0.7, 0.5, 0.3, 0.1],
+      propShape: 'bottle',
+      labels: ['North', 'East', 'South', 'West', 'Central'],
+      title: 'Recycling Rate by Region',
+    },
+    'pseudo3d',
+    {
+      w: 480,
+      h: 320,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Recycling Rate by Region'), 'title rendered');
+  ok(recorded.includes('North') && recorded.includes('Central'), 'labels rendered');
+
+  // bulb variant
+  let crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-prop-row',
+      { count: 3, fillRatios: [1.0, 0.5, 0.1], propShape: 'bulb' },
+      'pseudo3d',
+      {
+        w: 360,
+        h: 280,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'bulb variant renders without crash');
+
+  // drop variant
+  crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-prop-row',
+      {
+        count: 4,
+        fillRatios: [1.0, 0.72, 0.48, 0.21],
+        propShape: 'drop',
+        title: 'Water Conservation',
+      },
+      'pseudo3d',
+      {
+        w: 400,
+        h: 300,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'drop variant renders without crash');
+
+  // circle default + fill=0 edge case
+  crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-prop-row',
+      { count: 2, fillRatios: [0, 0], propShape: 'circle' },
+      'pseudo3d',
+      {
+        w: 280,
+        h: 200,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'fill=0 no crash');
+}
+
+// ----- Sprint 15b B3: isotype-stat-comparison -----
+console.log('\n--- isotype-stat-comparison atom ---');
+{
+  const spec = await getAtomSpec('isotype-stat-comparison');
+  ok(spec.type === 'isotype-stat-comparison', 'isotype-stat-comparison spec.type');
+  ok(spec.category === 'charts/data', `category = ${spec.category}`);
+  ok(spec.args.stats.required, 'stats required');
+
+  const recorded = [];
+  const c = stubCtxWithIsotype(recorded);
+  await renderAtom(
+    c,
+    'isotype-stat-comparison',
+    {
+      title: 'Hospital Staff Composition',
+      stats: [
+        { iconName: 'stethoscope', count: 100, label: 'Doctors', caption: 'Full-time' },
+        { iconName: 'first-aid', count: 25, label: 'Nurses' },
+        { iconName: 'briefcase', count: 12, label: 'Admin' },
+      ],
+    },
+    'pseudo3d',
+    {
+      w: 560,
+      h: 400,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+    },
+  );
+  ok(recorded.includes('Hospital Staff Composition'), 'title rendered');
+  ok(recorded.includes('Doctors') && recorded.includes('Admin'), 'stat labels rendered');
+  ok(recorded.includes('Full-time'), 'caption rendered');
+  ok(
+    recorded.some((t) => String(t) === '100') && recorded.some((t) => String(t) === '25'),
+    'count numbers rendered',
+  );
+
+  // count > 30 — should show ellipsis or large number
+  recorded.length = 0;
+  let crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-stat-comparison',
+      {
+        stats: [
+          { iconName: 'users', count: 200, label: 'Total Users' },
+          { count: 50, label: 'Admins' },
+        ],
+      },
+      'pseudo3d',
+      {
+        w: 500,
+        h: 300,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0], colors: [[60, 130, 200]] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'count > 30 (ellipsis mode) no crash');
+
+  // No iconName (should not crash)
+  recorded.length = 0;
+  crashed = false;
+  try {
+    await renderAtom(
+      c,
+      'isotype-stat-comparison',
+      {
+        stats: [
+          { count: 10, label: 'Items' },
+          { count: 5, label: 'Boxes' },
+        ],
+      },
+      'pseudo3d',
+      {
+        w: 400,
+        h: 240,
+        palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'no iconName no crash');
+
+  // Empty stats no crash
+  crashed = false;
+  try {
+    await renderAtom(c, 'isotype-stat-comparison', { stats: [] }, 'pseudo3d', {
+      w: 400,
+      h: 240,
+      palette: { bg: [255, 255, 255], silhouetteColor: [0, 0, 0] },
+    });
+  } catch (e) {
+    crashed = true;
+  }
+  ok(!crashed, 'empty stats no crash');
+}
+
+function stubCtxWithIsotype(recorded) {
+  const c = stubCtxWithIcon(recorded);
+  // isotype atoms read ctx.globalAlpha (e.g. `ctx.globalAlpha * 0.6`).
+  // stubCtxWithEllipse already defines globalAlpha as set-only. Redefine it
+  // with a getter so reads return a number instead of undefined.
+  let _globalAlpha = 1;
+  try {
+    Object.defineProperty(c, 'globalAlpha', {
+      get() {
+        return _globalAlpha;
+      },
+      set(v) {
+        _globalAlpha = v;
+      },
+      configurable: true,
+    });
+  } catch (_) {
+    // Already non-configurable — leave as-is; reads may return undefined but won't crash
+  }
+  return c;
+}
+
 function stubCtxWithIcon(recorded) {
   const c = stubCtxWithEllipse(recorded);
   // Path2D mock — returns dummy object so ctx.stroke(path) doesn't crash
