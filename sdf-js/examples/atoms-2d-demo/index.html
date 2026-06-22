@@ -273,6 +273,37 @@
       { title: 'Matrix — SWOT 2x2',
         size: { w: 500, h: 500 },
         atom: { type: 'matrix-grid', args: { rows: 2, cols: 2, title: 'SWOT Analysis', cells: [{ label: 'Strengths' }, { label: 'Weaknesses' }, { label: 'Opportunities' }, { label: 'Threats' }] } } },
+      // ---- Nine-field matrix (GE/McKinsey) ----
+      { title: 'Nine-field Matrix — GE/McKinsey classic',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'GE / McKinsey Matrix',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' },
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' },
+            { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' }, { label: 'Divest', sublabel: 'Low priority' },
+          ],
+        } } },
+      { title: 'Nine-field Matrix — Portfolio with bubbles',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'Product Portfolio',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest' }, { label: 'Invest' }, { label: 'Selective' },
+            { label: 'Invest' }, { label: 'Selective' }, { label: 'Harvest' },
+            { label: 'Selective' }, { label: 'Harvest' }, { label: 'Divest' },
+          ],
+          bubbles: [
+            { row: 0, col: 0, label: 'Alpha', size: 0.65 },
+            { row: 0, col: 1, label: 'Beta', size: 0.5 },
+            { row: 1, col: 1, label: 'Gamma', size: 0.55 },
+            { row: 2, col: 2, label: 'Delta', size: 0.45 },
+          ],
+        } } },
       // ---- Shape primitives (Phase 3 — split from `shape` enum to 4 atoms 1:1 with 3D) ----
       { title: 'Cube — Product',
         size: { w: 280, h: 280 },

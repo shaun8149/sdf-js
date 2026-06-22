@@ -101,6 +101,7 @@ const ATOM_LOADERS = {
 
   // Matrix (new category)
   'matrix-grid': () => import('./charts/matrix/matrix-grid.js'),
+  'nine-field-matrix': () => import('./charts/matrix/nine-field-matrix.js'),
 
   // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
   'icon-badge': () => import('./icons/icon-badge.js'),
