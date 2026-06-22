@@ -1451,7 +1451,12 @@ void main() {
       // tracks metalK: metals get a tight bright glint that reads as polished
       // metal, matte surfaces a broad soft sheen. specBoost keeps the prior
       // metal/dielectric energy balance.
-      float rough = clamp(mix(0.52, 0.14, metalK), 0.05, 0.95);
+      // Roughness is now a real PBR axis: explicit material.roughness (packed in
+      // leafTone.z, 0=mirror .. 1=matte) if the scene provides it, else derived
+      // from metal (the polished-metal default → every old scene unchanged).
+      float rough = (leafTone.z >= 0.0)
+        ? clamp(leafTone.z, 0.06, 0.95)
+        : clamp(mix(0.52, 0.20, metalK), 0.06, 0.95);
       float ggx = ggxSpecular(n, V, toLight, rough);
       lin += specTint * sunCol * ggx * shadowK * specBoost;
       // Dramatic showcase (u_studioBg): a tight hot specular + a stronger cool
@@ -1506,9 +1511,13 @@ void main() {
         vec3 R = reflect(rd, n);
         float F0 = mix(0.04, 1.0, metalK);
         float fres = F0 + (1.0 - F0) * pow(1.0 - max(dot(n, V), 0.0), 5.0);
-        float reflW = fres * (0.35 + 0.55 * metalK);
+        // Roughness drives reflection STRENGTH: a polished surface shows a strong
+        // crisp env reflection; a rough one mostly falls back to its diffuse + GGX
+        // shading (reflection weight tapers off). This is the correct direction
+        // and cheaper than a multi-tap cone-trace blur.
+        float reflW = fres * (0.35 + 0.55 * metalK) * (1.0 - 0.7 * rough);
         // Skip the secondary march when the reflection would barely show
-        // (matte + near-normal incidence) — keeps cost on the pixels that read.
+        // (matte / near-normal incidence) — keeps cost on the pixels that read.
         if (reflW > 0.02) {
           vec3 envRefl;
           vec3 rs = raymarchShort(p + n * 0.02, R, 14.0);
@@ -1518,7 +1527,28 @@ void main() {
             envRefl = sky(R, sunDir);
           }
           vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
+          // Studio softbox streaks: broad bright bands in the upper reflection
+          // hemisphere — the sweeping highlights that make product-shot metal read
+          // as premium. Added to the reflected env so metals pop even in a plain or
+          // dark room (where the reflected geometry is empty). Tinted toward the
+          // metal's own colour (gold reflects gold). Roughness softens them.
+          float sb = smoothstep(0.17, 0.0, abs(R.y - 0.52)) * 1.10
+                   + smoothstep(0.11, 0.0, abs(R.y - 0.16)) * 0.55;
+          sb *= (1.0 - 0.6 * rough);
+          envTint += vec3(sb) * (0.35 + 0.65 * metalK) * mix(vec3(1.0), base, 0.55);
           lin = mix(lin, envTint, reflW);
+        }
+
+        // Clearcoat: a thin glossy dielectric coat (lacquer / car-paint / wet
+        // gloss) ON TOP of the base. A second, tighter, WHITE specular lobe +
+        // a white fresnel EDGE sheen — independent of base colour (even gold's
+        // coat highlight is white). leafTone.w = strength. The fresnel edge is
+        // the bright "wet rim" (the 菲涅尔边缘).
+        float cc = leafTone.w;
+        if (cc > 0.001) {
+          float ccF = 0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+          lin += sunCol * ggxSpecular(n, V, toLight, 0.06) * shadowK * ccF * cc * 2.2;
+          lin += vec3(1.0) * pow(1.0 - max(dot(n, V), 0.0), 3.5) * cc * 0.28;
         }
       }
 
@@ -2055,6 +2085,10 @@ export function createStudioRenderer({
       // The renderer's sea-shading branch reads this to decide whether to
       // route a hit through Lambert or through the fresnel+atmosphere path.
       toneLUT[i * 4 + 1] = m.kind ?? 0;
+      // tone[2] = explicit microfacet roughness (0..1); -1 = derive from metal.
+      toneLUT[i * 4 + 2] = m.roughness ?? -1;
+      // tone[3] = clearcoat strength (0..1); a glossy dielectric coat on top.
+      toneLUT[i * 4 + 3] = m.clearcoat ?? 0;
     }
 
     // Build per-leaf pattern LUT. Default zeros = code=0 = no pattern.

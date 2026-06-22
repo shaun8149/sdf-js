@@ -470,9 +470,9 @@ export const MATERIAL_PRESETS = {
   'sky-blue': { hue: 0.58, sat: 0.55, value: 0.85, metal: 0.0, glow: 0.0 },
 
   // Metals — for bells / decorative elements / mechanical
-  gold: { hue: 0.13, sat: 0.85, value: 0.92, metal: 0.95, glow: 0.0 },
-  silver: { hue: 0.0, sat: 0.0, value: 0.82, metal: 0.95, glow: 0.0 },
-  copper: { hue: 0.06, sat: 0.7, value: 0.65, metal: 0.95, glow: 0.0 },
+  gold: { hue: 0.13, sat: 0.85, value: 0.92, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
+  silver: { hue: 0.0, sat: 0.0, value: 0.82, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
+  copper: { hue: 0.06, sat: 0.7, value: 0.65, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
 
   // Emissive — for lighthouse beacon / candle / sun / moon / LED
   'glow-warm': { hue: 0.1, sat: 0.95, value: 1.0, metal: 0.0, glow: 1.8 },
@@ -519,7 +519,7 @@ export function resolveMaterial(input) {
     // as full brightness so existing scenes keep working through schema change.
     // Default kind=0 (standard Lambert); presets that need a special branch
     // (e.g. future 'sea-water' preset) can override.
-    return { value: 1.0, kind: 0, ...preset };
+    return { value: 1.0, kind: 0, roughness: -1, clearcoat: 0, ...preset };
   }
   if (typeof input === 'object') {
     return {
@@ -528,6 +528,15 @@ export function resolveMaterial(input) {
       value: clamp01(input.value ?? 1),
       metal: clamp01(input.metal ?? 0),
       glow: clamp05(input.glow ?? 0),
+      // Explicit microfacet roughness (0 = mirror, 1 = matte). The -1 sentinel
+      // means "not specified" → the renderer derives roughness from metal
+      // (polished-metal default), so every existing scene is unchanged.
+      roughness: input.roughness == null ? -1 : clamp01(input.roughness),
+      // Clearcoat: a thin glossy dielectric coat (lacquer / car-paint / wet gloss).
+      // 0 = none, 1 = full. Adds a tight WHITE specular lobe + a white fresnel edge
+      // sheen ON TOP of the base material (the coat's highlight stays white even on
+      // gold). Default 0 → existing object-materials unchanged.
+      clearcoat: clamp01(input.clearcoat ?? 0),
       // Material kind routes to a specialised shading branch in the renderer.
       //   0 = standard Lambert (default), 1 = sea (fresnel + atmosphere reflection),
       //   reserved: 2 = skin/SSS, 3 = glass, ... (future).
