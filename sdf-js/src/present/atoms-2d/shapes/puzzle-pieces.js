@@ -91,6 +91,16 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const edges = makeEdges(rows, cols);
   const depth = tabSize * 0.45; // pseudo-3D thickness
 
+  // Slight alternating rotation per piece for scattered / dynamic look
+  // Pattern: top-left CW, top-right CCW, bottom-left CCW, bottom-right CW, etc.
+  // Values are small (5-10°) so pieces still look cohesive.
+  const rotAngles = [
+    [0.09, -0.07],
+    [-0.08, 0.1],
+    [0.07, -0.09],
+    [-0.1, 0.08],
+  ];
+
   // Draw back-to-front (top rows first so bottom rows overlap shadows)
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
@@ -99,7 +109,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const pieceY = oy + r * cellH;
       let color = baseColors[idx % baseColors.length];
       if (idx === highlight) color = accent;
-      drawPiece(ctx, pieceX, pieceY, cellW, cellH, tabSize, edges[r][c], color, depth);
+      // Pick a subtle rotation per piece (deterministic from r,c)
+      const rotRow = rotAngles[r % rotAngles.length];
+      const rotAngle = rotRow[c % rotRow.length];
+      drawPiece(ctx, pieceX, pieceY, cellW, cellH, tabSize, edges[r][c], color, depth, rotAngle);
     }
   }
 }
@@ -143,23 +156,34 @@ function makeEdges(rows, cols) {
 // Draw a single puzzle piece with pseudo-3D thickness
 // ============================================================================
 
-function drawPiece(ctx, x, y, w, h, tabSize, edge, color, depth) {
-  // Step 1: drop shadow + extruded side wall (offset down-right)
+function drawPiece(ctx, x, y, w, h, tabSize, edge, color, depth, rotAngle) {
+  const pcx = x + w / 2;
+  const pcy = y + h / 2;
+  const rot = rotAngle ?? 0;
+
+  ctx.save();
+  // Apply per-piece rotation around piece center
+  ctx.translate(pcx, pcy);
+  ctx.rotate(rot);
+  ctx.translate(-pcx, -pcy);
+
+  // Step 1: drop shadow (stronger than before) + extruded side wall
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = depth * 1.4;
-  ctx.shadowOffsetY = depth * 0.5;
+  ctx.shadowBlur = Math.max(depth * 2.2, 12);
+  ctx.shadowOffsetX = depth * 0.3;
+  ctx.shadowOffsetY = depth * 1.0;
   ctx.fillStyle = rgbCss(darken(color, 0.3));
   buildPiecePath(ctx, x, y + depth, w, h, tabSize, edge);
   ctx.fill();
   ctx.restore();
 
-  // Step 2: front face with gradient
+  // Step 2: front face with vertical gradient (lighter top → base → darker bottom)
   ctx.save();
   const grad = ctx.createLinearGradient(0, y, 0, y + h);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.2)));
-  grad.addColorStop(0.5, rgbCss(color));
-  grad.addColorStop(1, rgbCss(darken(color, 0.08)));
+  grad.addColorStop(0, rgbCss(lighten(color, 0.24)));
+  grad.addColorStop(0.45, rgbCss(color));
+  grad.addColorStop(1, rgbCss(darken(color, 0.1)));
   ctx.fillStyle = grad;
   buildPiecePath(ctx, x, y, w, h, tabSize, edge);
   ctx.fill();
@@ -169,15 +193,18 @@ function drawPiece(ctx, x, y, w, h, tabSize, edge, color, depth) {
   ctx.stroke();
   ctx.restore();
 
-  // Step 3: subtle highlight on top edge (suggests light from above)
+  // Step 3: specular highlight strip along top edge
   ctx.save();
-  ctx.strokeStyle = rgbaCss([255, 255, 255], 0.28);
-  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = rgbaCss([255, 255, 255], 0.32);
+  ctx.lineWidth = 1.5;
+  ctx.lineCap = 'round';
   ctx.beginPath();
-  ctx.moveTo(x + tabSize * 0.5, y + 1);
-  ctx.lineTo(x + w - tabSize * 0.5, y + 1);
+  ctx.moveTo(x + tabSize * 0.5, y + 1.5);
+  ctx.lineTo(x + w - tabSize * 0.5, y + 1.5);
   ctx.stroke();
   ctx.restore();
+
+  ctx.restore(); // undo per-piece rotation
 }
 
 function buildPiecePath(ctx, x, y, w, h, tabSize, edge) {
