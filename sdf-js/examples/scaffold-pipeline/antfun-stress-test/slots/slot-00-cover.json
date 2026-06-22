@@ -1,0 +1,22 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "sceneData": {
+    "name": "company-overview/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "ANTFUN",
+          "subtitle": "On-Chain Trading Super App",
+          "author": "Company Overview · 2026-Q3"
+        }
+      }
+    ]
+  }
+}

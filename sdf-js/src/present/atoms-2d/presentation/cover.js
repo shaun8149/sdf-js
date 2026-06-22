@@ -36,6 +36,11 @@ export const spec = {
     author: { type: 'string?', example: 'Sarah Chen, CEO' },
     date: { type: 'string?', example: 'November 2025' },
     version: { type: 'string?', example: 'v1.0' },
+    style: {
+      type: "'gradient'|'section'?",
+      default: "'gradient'",
+      example: 'section',
+    },
   },
 };
 
@@ -58,14 +63,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const author = args.author;
   const date = args.date;
   const version = args.version;
+  const style = args.style || 'gradient';
 
-  // ---- Subtle diagonal gradient backdrop ----
-  // accent at top-left → lighten(accent, 0.20) bottom-right. Capped saturation.
-  const bgGrad = ctx.createLinearGradient(x, y, x + w, y + h);
-  bgGrad.addColorStop(0, rgbCss(darken(accent, 0.05)));
-  bgGrad.addColorStop(1, rgbCss(lighten(accent, 0.2)));
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(x, y, w, h);
+  // ---- Backdrop: gradient (default) or section (deep accent + accent box behind title) ----
+  if (style === 'section') {
+    // Deep solid backdrop + decorative title-box behind text (PL D3180/031 pattern)
+    ctx.fillStyle = rgbCss(darken(accent, 0.32));
+    ctx.fillRect(x, y, w, h);
+  } else {
+    // Default: subtle diagonal gradient — accent → lighten(accent, 0.20)
+    const bgGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+    bgGrad.addColorStop(0, rgbCss(darken(accent, 0.05)));
+    bgGrad.addColorStop(1, rgbCss(lighten(accent, 0.2)));
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(x, y, w, h);
+  }
 
   // ---- Thin top-band hairline (stage-strip feel) ----
   ctx.save();
@@ -85,7 +97,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const blockH = titleSize + (subtitle ? subtitleSize + 8 : 0);
   const blockTop = y + (h - blockH) / 2 - (h > 160 ? 10 : 0);
 
-  // Title
+  // Title — for section style, draw accent box behind title (PL signature)
+  if (style === 'section') {
+    ctx.font = `900 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
+    const titleW = ctx.measureText(String(title)).width;
+    const boxX = titleX - 14;
+    const boxY = blockTop - 6;
+    const boxW = titleW + 28;
+    const boxH = titleSize + 14;
+    ctx.fillStyle = `rgba(${lighten(accent, 0.15)
+      .map((c) => Math.round(c))
+      .join(',')},0.85)`;
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+  }
   ctx.fillStyle = 'rgba(255,255,255,0.97)';
   ctx.font = `900 ${titleSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';

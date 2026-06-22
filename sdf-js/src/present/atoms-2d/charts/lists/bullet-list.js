@@ -44,7 +44,20 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const fg = palette.silhouetteColor || [30, 27, 30];
   const accent = palette.colors?.[0] || [60, 130, 200];
 
-  const items = Array.isArray(args.items) ? args.items.slice(0, 12) : [];
+  // Normalize items: tolerate LLM emitting plain strings OR objects with
+  // alternate label keys (text / name / title / value) instead of the spec's
+  // canonical `label`. Sprint 17 quality fix — was 50% of slots rendered
+  // empty bullets when LLM picked the wrong key.
+  const rawItems = Array.isArray(args.items) ? args.items.slice(0, 12) : [];
+  const items = rawItems.map((it) => {
+    if (typeof it === 'string') return { label: it };
+    if (!it || typeof it !== 'object') return { label: '' };
+    return {
+      ...it,
+      label: it.label || it.text || it.name || it.title || it.value || '',
+      sublabel: it.sublabel || it.subtitle || it.caption || it.description || '',
+    };
+  });
   const N = items.length;
   if (N === 0) return;
 

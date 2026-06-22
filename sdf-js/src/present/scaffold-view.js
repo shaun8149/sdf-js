@@ -294,12 +294,22 @@ export async function mountScaffoldView(target, deckId) {
       '/' +
       assignment.slot.name +
       '",\n  "layout": "row|grid|hierarchy|stage|cover",\n  "subjects": [\n    { "type": "<atom>", "x": <px>, "y": <px>, "w": <px>, "h": <px>, "args": { ... } }\n  ]\n}\n```\n\n' +
-      `Rules:\n0. Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
-      `1. EVERY subject MUST have explicit x/y/w/h.\n` +
-      `2. Pick ONLY from recommended_atoms menu; fall back to cover+bullet-list if needed.\n` +
-      `3. Slot 0 (cover) emits single cover atom (h=360 strip or h=720 full).\n` +
-      `4. Theme: pass color args as theme accent/colors[]. Don't invent colors.\n` +
-      `5. Preserve body text — every body line appears as atom label/caption/item.\n`;
+      `Rules (Sprint 17 polish — read CAREFULLY):\n` +
+      `0. **Canvas bounds**: Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
+      `1. **EVERY subject MUST have explicit x/y/w/h** in canvas pixels.\n` +
+      `2. **Atom selection**: pick ONLY from recommended_atoms menu (priority order). Fall back to cover+bullet-list ONLY if no recommended atom fits.\n` +
+      `3. **Density — fill the canvas, don't leave 60% empty**. Aim for 3-6 subjects per slot (not 1). If source has 3 description blocks → emit 3 bullet-list / kpi-card / icon-badge atoms. If only 1, pair it with a cover top-strip + supporting context.\n` +
+      `4. **Slot 0 (cover)** = single cover atom, h=720 full. style: 'gradient' (default) is fine; pass title + subtitle + optional author.\n` +
+      `5. **Cover atom when used mid-deck**:\n` +
+      `   - For an in-slide TITLE STRIP (e.g. "Section 2 — Products" header band): h=120 TOP STRIP (x=0, y=0, w=1280). Default 'gradient' style.\n` +
+      `   - For a SECTION DIVIDER slot (Vision / Mission / Values transition page where the entire slot is just a title hero): use h=720 full canvas + \`args.style: "section"\` (PL-style deep accent + box-behind-title).\n` +
+      `6. **Theme**: pass \`color\` args as theme accent or colors[]. Don't invent colors.\n` +
+      `7. **Body text preservation**: every body line should land in an atom's args. Acceptable shapes:\n` +
+      `   - \`bullet-list\` args.items = \`[{label: "body line 1"}, {label: "body line 2"}]\` (NOT [{text:...}] or plain strings; use \`label\` key explicitly)\n` +
+      `   - \`kpi-card\` args = \`{value: "HEADLINE TEXT", label: "Subtitle", sublabel: "Context"}\`\n` +
+      `   - \`icon-badge\` args = \`{name: "<phosphor-icon-name>", label: "Caption"}\`. Pick semantic icon: briefcase / chart-bar / users / star / shield / lightning / globe / mail / phone / calendar / target / trophy / brain / building. NEVER default to "star" — pick by meaning.\n` +
+      `8. **Empty bullets are a bug** — if items list is empty or only has \`{}\` objects, you've failed. Always populate items[].label with actual text from the source body.\n` +
+      `9. **Don't truncate** — for kpi-card.value, prefer 1-3 word headlines (e.g. "$3M", "User Persona", "1-2 Months", "Prototype Ready"). Long phrases go to .label or .sublabel.\n`;
 
     const systemPrompt = `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON SceneData object inside a \`\`\`json fence with no prose. Atoms are 2D Canvas primitives — no 3D, no text-3d-pipe.`;
 

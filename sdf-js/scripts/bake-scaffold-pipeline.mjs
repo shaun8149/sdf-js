@@ -314,13 +314,21 @@ for (const a of slotAssignments) {
     `  ]\n` +
     `}\n` +
     '```\n\n' +
-    `Rules:\n` +
-    `0. **CANVAS BOUNDS**: every subject's \`x + w ≤ 1240\` AND \`y + h ≤ 700\`.\n` +
-    `1. **EVERY subject MUST have explicit \`x\`, \`y\`, \`w\`, \`h\`** in canvas pixels.\n` +
-    `2. **Atom selection**: pick ONLY from the recommended_atoms menu above. If none fit, fall back to \`cover\` + \`bullet-list\` as universal escape.\n` +
-    `3. **Slot 0 (cover)** is special — emit a SINGLE cover atom filling x=0, y=0, w=1280, h=720 (or h=360 for half-cover at top of deck).\n` +
-    `4. **Theme**: pass \`color\` args as the theme accent or palette colors[]. Don't invent unrelated colors.\n` +
-    `5. **Preserve body text**: every body line should appear as an atom label/caption/item — don't discard.\n`;
+    `Rules (Sprint 17 polish — read CAREFULLY):\n` +
+    `0. **Canvas bounds**: Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
+    `1. **EVERY subject MUST have explicit x/y/w/h** in canvas pixels.\n` +
+    `2. **Atom selection**: pick ONLY from the recommended_atoms menu (priority order). Fall back to cover+bullet-list ONLY if no recommended atom fits.\n` +
+    `3. **Density — fill the canvas, don't leave 60% empty**. Aim for 3-6 subjects per slot (not 1). If source has 3 description blocks → emit 3 bullet-list / kpi-card / icon-badge atoms. If only 1, pair it with a cover top-strip + supporting context.\n` +
+    `4. **Slot 0 (cover)** = single cover atom, h=720 full. style: 'gradient' default; pass title + subtitle + optional author.\n` +
+    `5. **Cover atom when used mid-deck**:\n` +
+    `   - For in-slide TITLE STRIP (e.g. "Section 2 — Products" band): h=120 TOP STRIP (x=0, y=0, w=1280). Default 'gradient' style.\n` +
+    `   - For SECTION DIVIDER slot (Vision / Mission / Values transition where entire slot is title hero): h=720 full canvas + \`args.style: "section"\` (PL-style deep accent + box-behind-title).\n` +
+    `6. **Theme**: pass \`color\` args as theme accent or colors[]. Don't invent colors.\n` +
+    `7. **Body text preservation**: every body line lands in an atom's args. Acceptable shapes:\n` +
+    `   - \`bullet-list\` args.items = \`[{label: "body line 1"}, {label: "body line 2"}]\` — use \`label\` key explicitly, NOT \`text\` or plain strings.\n` +
+    `   - \`kpi-card\` args = \`{value: "HEADLINE", label: "Subtitle", sublabel: "Context"}\`. Keep value 1-3 words (e.g. "$3M", "1-2 Months", "Prototype Ready"); long phrases → .label or .sublabel.\n` +
+    `   - \`icon-badge\` args = \`{name: "<phosphor-name>", label: "Caption"}\`. Pick semantic icon: briefcase / chart-bar / users / shield / lightning / globe / mail / phone / calendar / target / trophy / brain / building / wallet / chat-circle / device-mobile / wrench / rocket. NEVER default to "star".\n` +
+    `8. **Empty bullets are a bug** — if items list is empty or only \`[{}]\` objects, you've failed. Populate every items[].label with actual text from source body.\n`;
 
   if (DRY_RUN) {
     slotLifts.push({
