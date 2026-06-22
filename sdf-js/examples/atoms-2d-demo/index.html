@@ -345,6 +345,35 @@
             { name: 'Support', values: [3, 4, 5, 6] },
           ],
         } } },
+      // ---- Seven-S Model (Sprint 15a Task 6.1) ----
+      { title: 'McKinsey 7S Framework — Classic',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: '7S Framework',
+          center: 'Shared Values',
+          satellites: [
+            { label: 'Strategy' },
+            { label: 'Structure' },
+            { label: 'Systems' },
+            { label: 'Style' },
+            { label: 'Staff' },
+            { label: 'Skills' },
+          ],
+        } } },
+      { title: 'McKinsey 7S — Digital Transformation',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: 'Digital Transformation 7S',
+          center: 'Customer Focus',
+          satellites: [
+            { label: 'Strategy', description: 'Cloud-first' },
+            { label: 'Structure', description: 'Flat org' },
+            { label: 'Systems', description: 'AI-driven' },
+            { label: 'Style', description: 'Agile' },
+            { label: 'Staff', description: 'T-shaped' },
+            { label: 'Skills', description: 'Data literacy' },
+          ],
+        } } },
     ];
 
     function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }

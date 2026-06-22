@@ -41,7 +41,8 @@ const ATOM_LOADERS = {
   mindmap: () => import('./charts/diagrams/mindmap.js'),
   'relationship-graph': () => import('./charts/diagrams/relationship-graph.js'),
   timeline: () => import('./charts/diagrams/timeline.js'),
-  // Phase 2 (charts/diagrams) complete: 7 atoms
+  'seven-s-model': () => import('./charts/diagrams/seven-s-model.js'),
+  // Phase 2 (charts/diagrams) complete: 7 atoms + Sprint 15a seven-s-model
 
   // Charts / hierarchy (Phase 2 closes with hierarchy/pyramid)
   pyramid: () => import('./charts/hierarchy/pyramid.js'),
