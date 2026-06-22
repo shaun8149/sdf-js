@@ -21,6 +21,8 @@ import { pickScaffold, distributeSources } from './scaffolds/picker.js';
 import { pickScaffoldLLM } from './scaffolds/picker-llm.js';
 import { getTheme } from './themes.js';
 import { renderAtom } from './atoms-2d/registry.js';
+import { exportDeckToPPTX } from './exporters/pptx.js';
+import { exportDeckToPDF } from './exporters/pdf.js';
 
 const ANTHROPIC_KEY_STORAGE = 'atlas-anthropic-key';
 const MODEL = 'claude-sonnet-4-5-20250929';
@@ -53,6 +55,7 @@ export async function mountScaffoldView(target, deckId) {
     slotLifts: null, // array of {slotIdx, status, sceneData?, costUSD?, error?}
     totalCost: 0,
     apiKey: localStorage.getItem(ANTHROPIC_KEY_STORAGE) || '',
+    export: { active: false, format: null, progress: 0, msg: '', error: null },
   };
 
   function render() {
@@ -66,6 +69,7 @@ export async function mountScaffoldView(target, deckId) {
         ${renderStage0(state)}
         ${state.pickerResult ? renderStage1(state) : ''}
         ${state.slotAssignments ? renderStage2(state) : ''}
+        ${state.stage === 'done' ? renderStage3Export(state) : ''}
         ${state.slotLifts ? renderDeckPreview(state) : ''}
       </div>
     `;
@@ -86,6 +90,54 @@ export async function mountScaffoldView(target, deckId) {
     document.getElementById('btn-confirm-scaffold')?.addEventListener('click', onConfirmScaffold);
     document.getElementById('btn-generate')?.addEventListener('click', onGenerateAll);
     document.getElementById('btn-set-key')?.addEventListener('click', onSetKey);
+    document.getElementById('btn-export-pptx')?.addEventListener('click', () => onExport('pptx'));
+    document.getElementById('btn-export-pdf')?.addEventListener('click', () => onExport('pdf'));
+  }
+
+  async function onExport(format) {
+    if (state.export.active) return;
+    state.export = { active: true, format, progress: 0, msg: 'Starting…', error: null };
+    render();
+
+    const exportInput = {
+      title: deck.title,
+      theme: state.pickerResult.theme,
+      scaffold: {
+        id: state.pickerResult.scaffold.id,
+        label: state.pickerResult.scaffold.label,
+      },
+      slots: state.slotLifts
+        .filter((l) => l.status === 'done' && l.sceneData)
+        .map((l) => {
+          const assignment = state.slotAssignments.find((a) => a.slotIdx === l.slotIdx);
+          return {
+            slotIdx: l.slotIdx,
+            slotName: l.slotName,
+            slotTitle: assignment?.slot?.title || l.slotName,
+            slotPurpose: assignment?.slot?.purpose || '',
+            sceneData: l.sceneData,
+          };
+        }),
+    };
+
+    const onProgress = (msg, pct) => {
+      state.export.msg = msg;
+      state.export.progress = pct;
+      render();
+    };
+
+    try {
+      const fn = format === 'pptx' ? exportDeckToPPTX : exportDeckToPDF;
+      const result = await fn(exportInput, { onProgress });
+      state.export.msg = `Downloaded: ${result.filename}`;
+      state.export.progress = 100;
+    } catch (e) {
+      state.export.error = e.message;
+      console.error(`[scaffold-view] export ${format} failed:`, e);
+    } finally {
+      state.export.active = false;
+      render();
+    }
   }
 
   function onSetKey() {
@@ -498,6 +550,37 @@ function renderStage2(state) {
           })
           .join('')}
       </div>
+    </section>
+  `;
+}
+
+function renderStage3Export(state) {
+  const liftsOK = state.slotLifts.filter((l) => l.status === 'done').length;
+  if (liftsOK === 0) return '';
+  const ex = state.export;
+  return `
+    <section style="border:1px solid #d0cec3; border-radius:6px; padding:18px; margin-bottom:16px; background:white;">
+      <h3 style="margin:0 0 8px; font-size:16px;">Stage 3 — Export</h3>
+      <div style="font-size:12px; color:#666; margin-bottom:12px;">
+        Atlas Present is the spatial visual <strong>presenter</strong>. PPTX = editable / shareable; PDF = archival / print. 3D handoff uses the underlying <code>deck.json</code>, not these.
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button id="btn-export-pptx" ${ex.active ? 'disabled' : ''} style="padding:10px 16px; background:#1e1b1e; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">
+          ${ex.active && ex.format === 'pptx' ? '⏳ Exporting PPTX…' : '⬇ Download PPTX'}
+        </button>
+        <button id="btn-export-pdf" ${ex.active ? 'disabled' : ''} style="padding:10px 16px; background:white; color:#1e1b1e; border:1px solid #1e1b1e; border-radius:4px; cursor:pointer; font-weight:600;">
+          ${ex.active && ex.format === 'pdf' ? '⏳ Exporting PDF…' : '⬇ Download PDF'}
+        </button>
+        <span style="font-size:12px; color:#888;">${liftsOK} slot${liftsOK !== 1 ? 's' : ''} baked</span>
+      </div>
+      ${
+        ex.active || ex.error || (ex.msg && ex.progress === 100)
+          ? `<div style="margin-top:12px; font-size:12px; ${ex.error ? 'color:#a00;' : 'color:#444;'}">
+              ${ex.error ? `ERROR: ${escapeHtml(ex.error)}` : `${escapeHtml(ex.msg)} (${Math.round(ex.progress)}%)`}
+              ${ex.active ? `<div style="margin-top:6px; background:#eee; height:4px; border-radius:2px; overflow:hidden;"><div style="background:#2a8; height:100%; width:${ex.progress}%; transition:width 0.2s;"></div></div>` : ''}
+            </div>`
+          : ''
+      }
     </section>
   `;
 }
