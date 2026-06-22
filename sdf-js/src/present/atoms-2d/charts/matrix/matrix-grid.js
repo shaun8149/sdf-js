@@ -84,8 +84,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + h * 0.1;
   }
 
-  const yAxisW = yAxis ? AXIS_W : 0;
-  const xAxisH = xAxis ? 24 : 0;
+  // Reserve gutter space for axis labels. quadrantAxes (BCG-style) needs
+  // its own gutter even when xAxis/yAxis aren't set, otherwise the labels
+  // render off-canvas below/left of the visible area.
+  const hasQuadrantAxes = !!args.quadrantAxes;
+  const yAxisW = yAxis ? AXIS_W : hasQuadrantAxes && args.quadrantAxes.y ? 30 : 0;
+  const xAxisH = xAxis ? 24 : hasQuadrantAxes && args.quadrantAxes.x ? 28 : 0;
   const gridL = x + PAD + yAxisW;
   const gridR = x + w - PAD;
   const gridT = plotTop + PAD;
