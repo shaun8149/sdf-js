@@ -2126,7 +2126,14 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
         rawScene && Array.isArray(rawScene.subjects)
           ? JSON.stringify(rawScene.subjects).includes('"procedural-city"')
           : false;
-      const heavy = hasVolumes || hasCity || subjCount > 16;
+      // A stage is inherently heavy — enclosed room (every ray hits a wall) +
+      // reflection-retrace (metals re-march to reflect the walls) + per-light
+      // soft shadows. So ANY staged scene runs at 1× even without volumes:
+      // otherwise a plain staged chart (seg2 of a deck) renders at 4× cost and
+      // TDR-hangs weaker GPUs while the show segment (volumes → already 1×) is
+      // fine — exactly the "seg1 plays, seg2 goes black" asymmetry.
+      const hasStage = !!(rawScene && rawScene.defaults && rawScene.defaults.stage);
+      const heavy = hasVolumes || hasCity || hasStage || subjCount > 16;
       st.setRenderScale(heavy ? 1.0 : 2.0);
     }
     // Step 2 (spatial deck): a scene.cameraSequence flies the studio camera
