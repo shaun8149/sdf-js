@@ -682,7 +682,7 @@ is the message.
 Step 5 — Icon library v3.32 (NEW Sprint 15c)
 ============================================================================
 
-The icon-badge atom now accepts ~1100 icon names from a curated 8-category
+The icon-badge atom now accepts ~770 icon names from a curated 8-category
 Phosphor library (in addition to the 24 hand-coded names listed in Step 4
 Iconography section). Pick a domain-appropriate name from the categories below.
 
@@ -709,9 +709,11 @@ RULES:
    as empty badges (no crash) but produce ugly output — be precise.
 
 v3.32 (Sprint 15c — Phosphor icon library) — Step 5 adds 8-category icon
-menu with ~1100 names. icon-badge atom now resolves names from hand-coded
-fast-path (24) OR Phosphor baked library (~1100), so any name listed in the
-Step 5 categories is valid for \`icon-badge.args.name\`.
+menu with ~770 unique names. icon-badge atom now resolves names from hand-coded
+fast-path (24) OR Phosphor baked library (~770 unique), so any name listed in
+the Step 5 categories is valid for \`icon-badge.args.name\`. Phosphor SVGs use
+a 256×256 viewBox + filled glyphs; hardcoded paths use 24×24 + monoline stroke;
+the renderer auto-picks the correct scale + paint mode per source.
 `;
 
 /**
