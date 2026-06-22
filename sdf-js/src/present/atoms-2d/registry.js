@@ -83,6 +83,10 @@ const ATOM_LOADERS = {
   // Charts / layers — Sprint 15b
   'magazine-column-grid': () => import('./charts/layers/magazine-column-grid.js'),
 
+  // Shapes / device mockups — Sprint 15b B2
+  'device-mockup-frame': () => import('./shapes/device-mockup-frame.js'),
+  'device-mockup-row': () => import('./shapes/device-mockup-row.js'),
+
   // Charts/data extensions
   'stacked-area': () => import('./charts/data/stacked-area.js'),
   funnel: () => import('./charts/data/funnel.js'),
