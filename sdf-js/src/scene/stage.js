@@ -39,6 +39,14 @@ const CEIL = { hue: 0.6, sat: 0.04, value: 0.34, metal: 0, glow: 0 };
 const PANEL_COOL = { hue: 0.6, sat: 0.05, value: 1.0, metal: 0, glow: 1.0 };
 const PANEL_WARM = { hue: 0.09, sat: 0.06, value: 1.0, metal: 0, glow: 0.9 };
 
+// Theatrical (show) palette — near-black room so the spotlight cones + volumetric
+// beams read as bright shafts against darkness (a lit mid-grey room washes them
+// out). Paired with defaults.interiorDark (kills sky ambient) + spotlight `dir`
+// on the panel lights so only the hero is lit and the walls stay dark.
+const WALL_DARK = { hue: 0.62, sat: 0.18, value: 0.09, metal: 0, glow: 0 };
+const FLOOR_DARK = { hue: 0.62, sat: 0.12, value: 0.13, metal: 0.25, glow: 0 };
+const CEIL_DARK = { hue: 0.62, sat: 0.2, value: 0.05, metal: 0, glow: 0 };
+
 export function expandStage(sceneData) {
   if (!sceneData || !sceneData.defaults || !sceneData.defaults.stage) return sceneData;
   if (!Array.isArray(sceneData.subjects)) return sceneData;
@@ -46,8 +54,10 @@ export function expandStage(sceneData) {
   const cfg = sceneData.defaults.stage === true ? {} : sceneData.defaults.stage;
   const [w, h, d] = cfg.size || [12, 5, 14];
   const t = 0.3; // wall thickness
-  const wall = cfg.wall || WALL;
-  const floor = cfg.floor || FLOOR;
+  const show = !!cfg.show;
+  const wall = cfg.wall || (show ? WALL_DARK : WALL);
+  const floor = cfg.floor || (show ? FLOOR_DARK : FLOOR);
+  const ceil = show ? CEIL_DARK : CEIL;
   // Which way the room opens (= the camera side). '+z' (default) suits hero
   // objects; '-z' suits chart atoms, whose connector labels face -z, so the
   // camera must sit on -z to read them. The solid back wall goes on the far side.
@@ -58,7 +68,7 @@ export function expandStage(sceneData) {
   // authored on the ground plane rest on it.
   const room = [
     box('__stage_floor', [w + 2 * t, t, d + 2 * t], [0, -t / 2, 0], floor),
-    box('__stage_ceiling', [w + 2 * t, t, d + 2 * t], [0, h + t / 2, 0], CEIL),
+    box('__stage_ceiling', [w + 2 * t, t, d + 2 * t], [0, h + t / 2, 0], ceil),
     box('__stage_wall_back', [w + 2 * t, h + 2 * t, t], [0, h / 2, backZ], wall),
     box('__stage_wall_left', [t, h + 2 * t, d + 2 * t], [-w / 2 - t / 2, h / 2, 0], wall),
     box('__stage_wall_right', [t, h + 2 * t, d + 2 * t], [w / 2 + t / 2, h / 2, 0], wall),
@@ -73,19 +83,20 @@ export function expandStage(sceneData) {
   room.push(box('__stage_panel_r', panelDims, [px, panelY, 0], PANEL_WARM));
 
   // The matching area lights (just below each panel, aimed down into the room).
+  // In show mode they become downward SPOTLIGHTS (dir) + run hotter, so the cones
+  // pool light on the hero and the dark walls stay dark; otherwise omni fill.
+  const spotDir = show ? [0, -1, 0] : [0, 0, 0];
+  const keyI = cfg.intensity ?? (show ? 4.5 : 3.0);
+  const fillI = cfg.intensity ?? (show ? 4.0 : 2.8);
   const stageLights = [
     {
       pos: [-px, h - 0.4, 0],
       color: [0.78, 0.84, 1.0],
-      intensity: cfg.intensity ?? 3.0,
+      intensity: keyI,
       radius: 2.3,
+      dir: spotDir,
     },
-    {
-      pos: [px, h - 0.4, 0],
-      color: [1.0, 0.9, 0.74],
-      intensity: cfg.intensity ?? 2.8,
-      radius: 2.3,
-    },
+    { pos: [px, h - 0.4, 0], color: [1.0, 0.9, 0.74], intensity: fillI, radius: 2.3, dir: spotDir },
   ];
 
   const defaults = { ...sceneData.defaults };
@@ -93,6 +104,9 @@ export function expandStage(sceneData) {
   const existing = Array.isArray(defaults.lights) ? defaults.lights : [];
   defaults.lights = [...existing, ...stageLights].slice(0, 4);
   if (defaults.studioBg == null) defaults.studioBg = 'dark';
+  // Show mode → theatrical dark interior: suppress sky ambient so the dark walls
+  // stay dark and the spotlight cones + beams read (renderer reads interiorDark).
+  if (show && defaults.interiorDark == null) defaults.interiorDark = 0.16;
   // validate() requires defaults.camera even though studio frames via the
   // sequence below — supply a valid neutral one if the scene authored none.
   if (defaults.camera == null) {
@@ -116,16 +130,16 @@ export function expandStage(sceneData) {
   // Show mode: dramatic volumetric lighting — a spotlight beam under each panel
   // + a low floor haze for the beams to glow in. Rendered by the studio volume
   // raymarch pass (kind god-rays / fog). Turns a lit room into a "stage".
-  if (cfg.show) {
+  if (show) {
     const beam = (id, x, color) => ({
       id,
       kind: 'god-rays',
       center: [x, h * 0.48, 0],
       size: [Math.max(2.2, w * 0.2), h * 0.95, Math.max(2.2, d * 0.18)],
-      density: 0.28,
+      density: 0.7,
       color,
       noiseScale: 1.4,
-      colorIntensity: 1.0,
+      colorIntensity: 1.6,
     });
     const showVols = [
       beam('__stage_beam_l', -px, [150, 180, 255]),

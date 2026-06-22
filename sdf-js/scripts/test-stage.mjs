@@ -119,6 +119,27 @@ const baseScene = () => ({
     vols.some((v) => v.kind === 'fog'),
     'show → floor haze (fog)',
   );
+  // theatrical: spotlight dir on panel lights + dark interior + dark walls
+  ok(
+    show.defaults.lights.every((l) => l.dir && l.dir[1] === -1),
+    'show → panel lights are downward spotlights (dir)',
+  );
+  ok(
+    show.defaults.interiorDark != null && show.defaults.interiorDark < 1,
+    'show → interiorDark set',
+  );
+  const swall = show.subjects.find((x) => x.id === '__stage_wall_back');
+  ok(swall.material.value < 0.2, `show → dark walls (value ${swall.material.value})`);
+
+  // plain (no show) keeps omni lights + full ambient + mid-grey walls
+  const plainLit = expandStage({ ...baseScene(), defaults: { stage: true } });
+  ok(
+    plainLit.defaults.lights.every(
+      (l) => !l.dir || (l.dir[0] === 0 && l.dir[1] === 0 && l.dir[2] === 0),
+    ),
+    'no show → omni lights (no spotlight dir)',
+  );
+  ok(plainLit.defaults.interiorDark == null, 'no show → no interiorDark (full ambient)');
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);

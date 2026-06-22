@@ -49,6 +49,8 @@ uniform int   u_numExtraLights;
 uniform vec3  u_extraLightPos[MAX_EXTRA_LIGHTS];
 uniform vec3  u_extraLightColor[MAX_EXTRA_LIGHTS];   // rgb * intensity (premultiplied)
 uniform float u_extraLightRadius[MAX_EXTRA_LIGHTS];  // penumbra softness, world units
+uniform vec3  u_extraLightDir[MAX_EXTRA_LIGHTS];     // spotlight aim; zero vec = omni point
+uniform float u_ambientScale;  // 1 = normal; ~0.18 for theatrical dark interior
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
@@ -1439,8 +1441,12 @@ void main() {
       // trimmed rim. Ambient terms stay multiplied by AO so crevices/contacts
       // darken (grounds the subject — the main thing flat studio lighting lacked).
       lin += base * sunCol    * diff * shadowK * 1.55 * diffK;
-      lin += base * skyCol    * skyL * ao      * 0.38 * diffK;
-      lin += base * bounceCol * bnc  * ao      * 0.16 * diffK;
+      // Sky ambient + ground bounce scale by u_ambientScale. A theatrical stage
+      // (interiorDark) drops it near 0 so dark walls stay dark and the spotlight
+      // cones + volumetric beams read; the spots + sun still pick out the hero.
+      // Default 1.0 = unchanged for every other scene.
+      lin += base * skyCol    * skyL * ao      * 0.38 * diffK * u_ambientScale;
+      lin += base * bounceCol * bnc  * ao      * 0.16 * diffK * u_ambientScale;
       // GGX microfacet specular (replaces the old Phong pow lobe). Roughness
       // tracks metalK: metals get a tight bright glint that reads as polished
       // metal, matte surfaces a broad soft sheen. specBoost keeps the prior
@@ -1466,6 +1472,16 @@ void main() {
         float ndl = max(dot(n, toL), 0.0);
         if (ndl <= 0.0) continue;
         float atten = 1.0 / (1.0 + 0.035 * ldist * ldist);
+        // Spotlight cone: if the light carries an aim direction, fall off outside
+        // a cone so it pools light on the subject and leaves the walls dark (a
+        // theatrical stage spot). Zero dir = omni point light (no cone). -toL is
+        // the light's outgoing direction toward this surface point.
+        vec3 sdir = u_extraLightDir[li];
+        if (dot(sdir, sdir) > 0.25) {
+          float ca = dot(-toL, normalize(sdir));
+          atten *= smoothstep(0.32, 0.72, ca); // ~71° outer, ~44° inner half-angle
+        }
+        if (atten <= 0.001) continue;
         float sh = 1.0;
         if (u_shadowsOn > 0.5) {
           float ksh = mix(18.0, 5.0, clamp(u_extraLightRadius[li] / 2.5, 0.0, 1.0));
@@ -1723,7 +1739,9 @@ export function createStudioRenderer({
   const extraLightPosLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
   const extraLightColorLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
   const extraLightRadiusLUT = new Float32Array(MAX_EXTRA_LIGHTS);
+  const extraLightDirLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
   let numExtraLights = 0;
+  let ambientScale = 1.0; // theatrical interiorDark drops sky-ambient near 0
   // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
   // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
   // flame subset of the volume LUTs.
@@ -1968,6 +1986,8 @@ export function createStudioRenderer({
       'u_extraLightPos[0]',
       'u_extraLightColor[0]',
       'u_extraLightRadius[0]',
+      'u_extraLightDir[0]',
+      'u_ambientScale',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
@@ -2262,6 +2282,9 @@ export function createStudioRenderer({
     if (uniformsCache['u_numExtraLights'] != null) {
       gl.uniform1i(uniformsCache['u_numExtraLights'], numExtraLights);
     }
+    if (uniformsCache['u_ambientScale'] != null) {
+      gl.uniform1f(uniformsCache['u_ambientScale'], ambientScale);
+    }
     if (numExtraLights > 0) {
       if (uniformsCache['u_extraLightPos[0]'] != null)
         gl.uniform3fv(uniformsCache['u_extraLightPos[0]'], extraLightPosLUT);
@@ -2269,6 +2292,8 @@ export function createStudioRenderer({
         gl.uniform3fv(uniformsCache['u_extraLightColor[0]'], extraLightColorLUT);
       if (uniformsCache['u_extraLightRadius[0]'] != null)
         gl.uniform1fv(uniformsCache['u_extraLightRadius[0]'], extraLightRadiusLUT);
+      if (uniformsCache['u_extraLightDir[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightDir[0]'], extraLightDirLUT);
     }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
@@ -2609,9 +2634,15 @@ export function createStudioRenderer({
       // → dark cyclorama + punchier spec/rim/vignette (showcase decks). Default
       // (absent) keeps the neutral light test stage used by the atom gallery.
       studioBgDark = !!(scene && scene.defaults && scene.defaults.studioBg === 'dark');
+      // Theatrical dark interior: suppress sky ambient so the spotlight cones +
+      // beams pop against dark walls. defaults.interiorDark = true (→ 0.18) or a
+      // 0-1 number; absent → 1.0 (unchanged).
+      const idark = scene && scene.defaults ? scene.defaults.interiorDark : null;
+      ambientScale =
+        idark == null || idark === false ? 1.0 : typeof idark === 'number' ? idark : 0.18;
       // Stage area lights: pack scene.defaults.lights → LUTs (color premultiplied
-      // by intensity; 0-255 auto-normalized like volumes). Absent/empty → 0 lights
-      // = no-op, every existing scene byte-identical.
+      // by intensity; 0-255 auto-normalized like volumes). A light with `dir`
+      // becomes a spotlight cone. Absent/empty → 0 lights = no-op.
       numExtraLights = 0;
       const lights = scene && scene.defaults && scene.defaults.lights;
       if (Array.isArray(lights)) {
@@ -2630,6 +2661,10 @@ export function createStudioRenderer({
           extraLightColorLUT[i * 3 + 1] = col[1] * cs * inten;
           extraLightColorLUT[i * 3 + 2] = col[2] * cs * inten;
           extraLightRadiusLUT[i] = L.radius == null ? 1.0 : L.radius;
+          const dir = L.dir || L.direction || [0, 0, 0]; // zero = omni point
+          extraLightDirLUT[i * 3] = dir[0];
+          extraLightDirLUT[i * 3 + 1] = dir[1];
+          extraLightDirLUT[i * 3 + 2] = dir[2];
         }
         numExtraLights = n;
       }
