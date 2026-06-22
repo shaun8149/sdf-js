@@ -5,7 +5,7 @@ Curated 8-category bake of [Phosphor Icons](https://phosphoricons.com)
 
 ## Inventory
 
-- 8 categories × ~150 icons = ~1100-1200 unique icons
+- 8 categories × ~100-180 icons (cross-category dedup → 772 unique total)
 - Regular weight only (Phosphor's modern default)
 - Categories: business / finance / tech / medical / hrm / social / signs / calendar
 
