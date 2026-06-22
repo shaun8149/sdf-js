@@ -99,7 +99,7 @@ export const spec = {
   type: 'icon-badge',
   category: 'icons',
   description:
-    '24 atlas icons (Heroicons + Tabler) wrapped in pseudo-3D circular badge with optional caption.',
+    '~775 atlas icons (24 hand-coded Heroicons + Tabler fast-path + ~770 Phosphor fallback) wrapped in pseudo-3D circular badge with optional caption.',
   args: {
     name: {
       type:
@@ -131,8 +131,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   const iconPath = resolveIconPath2D(name);
   if (!iconPath) {
-    // Unknown name — draw the badge but skip the icon (instead of crashing).
-    // Caller (lift prompt) should only emit known names; this is a safety net.
+    // Unknown name — skip entire badge render (safe-noop; lift prompt
+    // should only emit known names from ICON_BADGE_NAMES).
     return;
   }
 
