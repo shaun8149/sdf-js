@@ -66,17 +66,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const bg = palette.bg || [247, 244, 224];
   const accent = palette.colors?.[0] || [60, 100, 200];
 
-  // ---- Drop shadow ----
+  // ---- Drop shadow (softer: 10px blur, alpha 0.12) ----
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 14;
-  ctx.shadowOffsetY = 6;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
 
-  // ---- Rounded gradient body ----
+  // ---- Rounded gradient body (subtle 8% lighten only) ----
   const cardRadius = Math.min(w, h) * 0.06;
   const gradient = ctx.createLinearGradient(x, y, x, y + h);
   gradient.addColorStop(0, rgbaCss(lighten(fg, 0.08), 1));
-  gradient.addColorStop(1, rgbCss(fg));
+  gradient.addColorStop(1, rgbCss(darken(fg, 0.04)));
   ctx.fillStyle = gradient;
   roundedRectPath(ctx, x, y, w, h, cardRadius);
   ctx.fill();
@@ -96,35 +96,35 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.fill();
   ctx.restore();
 
-  // ---- Trend pill (top-right) ----
+  // ---- Trend pill (top-right) — softened shadow ----
   if (args.trend && args.trendValue) {
-    drawTrendPill(ctx, args.trend, args.trendValue, x + w - 12, y + 12, palette);
+    drawTrendPill(ctx, args.trend, args.trendValue, x + w - 20, y + 20, palette);
   }
 
   // ---- Icon (top-left) ----
   if (args.icon) {
-    drawIconStub(ctx, args.icon, x + 18, y + 22, 22, rgbCss(bg));
+    drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(bg));
   }
 
-  // ---- Hero value (centered) ----
+  // ---- Hero value (weight 900, generous left padding) ----
   ctx.fillStyle = rgbCss(bg);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   const valueSize = Math.round(h * 0.34);
   ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
-  const valueY = y + h * 0.55;
-  ctx.fillText(String(args.value ?? ''), x + 18, valueY);
+  const valueY = y + h * 0.56;
+  ctx.fillText(String(args.value ?? ''), x + 22, valueY);
 
-  // ---- Label (below value) ----
+  // ---- Label (Inter 700 for stronger hierarchy) ----
   ctx.fillStyle = rgbaCss(bg, 0.85);
-  ctx.font = `600 ${Math.round(h * 0.11)}px Inter, system-ui, sans-serif`;
-  ctx.fillText(String(args.label ?? ''), x + 18, valueY + Math.round(h * 0.17));
+  ctx.font = `700 ${Math.round(h * 0.11)}px Inter, system-ui, sans-serif`;
+  ctx.fillText(String(args.label ?? ''), x + 22, valueY + Math.round(h * 0.17));
 
-  // ---- Sublabel (below label) ----
+  // ---- Sublabel (Inter 400, faded, proper breathing room) ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(bg, 0.55);
     ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
-    ctx.fillText(String(args.sublabel), x + 18, valueY + Math.round(h * 0.28));
+    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
   }
 }
 
@@ -169,9 +169,15 @@ function drawTrendPill(ctx, trend, value, rightX, topY, palette) {
     arrowChar = '→';
   }
 
-  ctx.fillStyle = rgbaCss(pillColor, 0.95);
+  // Softer shadow on trend pill (reduced blur + alpha)
+  ctx.save();
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.1);
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 2;
+  ctx.fillStyle = rgbaCss(pillColor, 0.88);
   roundedRectPath(ctx, left, topY, pillW, pillH, pillH / 2);
   ctx.fill();
+  ctx.restore();
 
   ctx.fillStyle = 'rgba(255,255,255,1)';
   ctx.textAlign = 'left';

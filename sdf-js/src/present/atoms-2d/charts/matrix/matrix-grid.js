@@ -51,7 +51,7 @@ export const spec = {
   },
 };
 
-const PAD = 14;
+const PAD = 20;
 const AXIS_W = 50;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
@@ -105,7 +105,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const color = cell.color || colors[idx % colors.length];
       const cx = gridL + c * cellW;
       const cy = gridT + r * cellH;
-      drawCell(ctx, cx + 4, cy + 4, cellW - 8, cellH - 8, cell.label, cell.sublabel, color);
+      drawCell(ctx, cx + 6, cy + 6, cellW - 12, cellH - 12, cell.label, cell.sublabel, color, fg);
     }
   }
 
@@ -248,25 +248,36 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
 }
 
-function drawCell(ctx, x, y, w, h, label, sublabel, color) {
+function drawCell(ctx, x, y, w, h, label, sublabel, color, fg) {
+  // Drop shadow — 10px blur, alpha 0.08, embedded feel
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 8;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.08);
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 3;
-  const grad = ctx.createLinearGradient(0, y, 0, y + h);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.18)));
+  // Gradient fill: subtle 8% lighten from top-left to bottom-right
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  grad.addColorStop(0, rgbCss(lighten(color, 0.08)));
   grad.addColorStop(1, rgbCss(color));
   ctx.fillStyle = grad;
   roundRect(ctx, x, y, w, h, 8);
   ctx.fill();
   ctx.restore();
 
+  // Hairline border: palette.fg alpha 0.15, 1.5px
+  const borderFg = fg || [30, 27, 30];
+  ctx.save();
+  ctx.strokeStyle = rgbaCss(borderFg, 0.15);
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, x, y, w, h, 8);
+  ctx.stroke();
+  ctx.restore();
+
   // Top iso accent
-  ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.5);
+  ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.4);
   roundRect(ctx, x, y, w, 3, 8);
   ctx.fill();
 
-  // Label
+  // Label — Inter 700 with generous inner breathing room
   if (label) {
     ctx.fillStyle = 'rgba(255,255,255,0.97)';
     ctx.font = `700 ${Math.min(20, h * 0.18)}px Inter, system-ui, sans-serif`;
@@ -274,11 +285,12 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color) {
     ctx.textBaseline = sublabel ? 'bottom' : 'middle';
     ctx.fillText(label, x + w / 2, sublabel ? y + h / 2 - 4 : y + h / 2);
   }
+  // Sublabel — Inter 400, smaller, with line spacing
   if (sublabel) {
     ctx.fillStyle = 'rgba(255,255,255,0.78)';
-    ctx.font = `500 ${Math.min(13, h * 0.1)}px Inter, system-ui, sans-serif`;
+    ctx.font = `400 ${Math.min(13, h * 0.1)}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
-    ctx.fillText(sublabel, x + w / 2, y + h / 2 + 6);
+    ctx.fillText(sublabel, x + w / 2, y + h / 2 + 8);
   }
 }
 

@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Atlas atoms-2d — Polish baseline (all 51 atoms)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 16px; font-family: 'Inter', system-ui; background: #f8f7f4; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .card { background: white; border: 1px solid #e0ddd5; border-radius: 4px; overflow: hidden; }
+    .card h3 { margin: 0; padding: 6px 10px; font-size: 11px; background: #1e1b1e; color: white; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
+    .card canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div class="row" id="cards"></div>
+  <script type="module">
+    import { renderAtom, listAtomTypes } from '/src/present/atoms-2d/registry.js';
+    import { BRANDING_PALETTES, getPalette } from '/src/present/branding-palettes.js';
+
+    const palette = getPalette('mono-light');
+
+    // One canonical sample args per atom type. Use the spec's example values
+    // where available; fall back to safe minimal data.
+    const SAMPLES = {
+      'kpi-card': { args: { value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs Q2 2024', trend: 'up', trendValue: '+27%', icon: 'chart-bar' }, w: 360, h: 280 },
+      'bar': { args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' }, w: 480, h: 320 },
+      'line': { args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' }, w: 480, h: 320 },
+      'pie': { args: { values: [32, 23, 11, 8, 26], labels: ['AWS','Azure','GCP','Alibaba','Others'], format: 'percent', title: 'Cloud Market Share' }, w: 480, h: 320 },
+      'column': { args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' }, w: 480, h: 320 },
+      'sphere-fill': { args: { value: 0.72, label: '72% Complete', title: 'Project Progress' }, w: 360, h: 360 },
+      'funnel': { args: { stages: [{label:'Visitors', value: 10000}, {label:'Signup', value: 4000}, {label:'Trial', value: 1500}, {label:'Paid', value: 500}], title: 'Conversion Funnel' }, w: 480, h: 320 },
+      'waterfall': { args: { bars: [{label:'Q1', value:100, kind:'start'}, {label:'New Sales', value:30, kind:'positive'}, {label:'Churn', value:-8, kind:'negative'}, {label:'Q2', value:122, kind:'end'}], format:'currency', title:'Q1 → Q2 Bridge' }, w: 480, h: 320 },
+      'gantt': { args: { tasks: [{label:'Design', start:0, end:2}, {label:'Build', start:2, end:5}, {label:'Test', start:5, end:7}, {label:'Ship', start:7, end:8}], title: 'Project Timeline' }, w: 480, h: 320 },
+      'gauge': { args: { value: 0.74, label: '74%', sublabel: 'Target: 80%', title: 'OKR Progress' }, w: 360, h: 320 },
+      'radial-spoke': { args: { center: 'Hub', spokes: [{label:'A'},{label:'B'},{label:'C'},{label:'D'},{label:'E'},{label:'F'}], title: 'Radial Network' }, w: 480, h: 480 },
+      'scatter': { args: { points: [{x:0.2,y:0.3,label:'A'},{x:0.5,y:0.7,label:'B'},{x:0.8,y:0.4,label:'C'}], xAxis:'Cost', yAxis:'Value', title:'Cost vs Value' }, w: 480, h: 320 },
+      'traffic-light': { args: { lights: [{color:'red',active:false,label:'Stop'},{color:'amber',active:false,label:'Slow'},{color:'green',active:true,label:'Go'}], title: 'Project Status' }, w: 240, h: 360 },
+      'venn': { args: { circles: [{label:'A'},{label:'B'},{label:'C'}], intersections: [{labels:['A','B'],label:'AB'},{labels:['B','C'],label:'BC'},{labels:['A','C'],label:'AC'},{labels:['A','B','C'],label:'ABC'}], title: '3-circle Venn' }, w: 480, h: 480 },
+      'bubble': { args: { points: [{x:0.2,y:0.3,size:0.45,label:'Product A'},{x:0.5,y:0.7,size:0.85,label:'Product B'},{x:0.8,y:0.4,size:0.25,label:'Product C'}], xAxis: 'Market Cost', yAxis: 'Revenue', title: 'Product Portfolio' }, w: 480, h: 360 },
+      'histogram': { args: { bins: [{range:[0,10],count:5},{range:[10,20],count:12},{range:[20,30],count:22},{range:[30,40],count:28},{range:[40,50],count:20},{range:[50,60],count:10},{range:[60,70],count:3}], title: 'Survey Response Distribution', bellCurve: true, milestones: [{value:35,label:'Median'}] }, w: 480, h: 360 },
+      'break-even': { args: { fixedCost: 50000, variableCostPerUnit: 25, pricePerUnit: 50, maxUnits: 5000, title: 'SaaS Break-Even' }, w: 480, h: 360 },
+      'stacked-area': { args: { series: [{name:'A',values:[10,12,15,20,25,32]},{name:'B',values:[5,8,10,14,18,24]},{name:'C',values:[3,4,6,8,11,16]}], xLabels:['Q1','Q2','Q3','Q4','Q5','Q6'], title:'Revenue by Product', format:'currency' }, w: 540, h: 360 },
+      'seven-s-model': { args: { center: 'Shared Values', satellites: [{label:'Strategy'},{label:'Structure'},{label:'Systems'},{label:'Style'},{label:'Staff'},{label:'Skills'}], title: 'McKinsey 7S' }, w: 480, h: 480 },
+      'multiple-arrows': { args: { mode: 'converge', arrows: [{label:'Input A'},{label:'Input B'},{label:'Input C'}], centerLabel: 'Output', title: '3 → 1 Aggregation' }, w: 480, h: 320 },
+      'nine-field-matrix': { args: { cells: [{label:'Invest'},{label:'Invest'},{label:'Selective'},{label:'Invest'},{label:'Selective'},{label:'Harvest'},{label:'Selective'},{label:'Harvest'},{label:'Divest'}], xAxis:'Business Strength', yAxis:'Industry Attractiveness', title: 'GE/McKinsey' }, w: 480, h: 480 },
+      'flow-chart': { args: { steps: [{label:'Start'},{label:'Process'},{label:'Decision'},{label:'End'}], title: 'Linear Flow' }, w: 540, h: 280 },
+      'tree-diagram': { args: { root: 'CEO', children: [{label:'Eng', children:[{label:'Frontend'},{label:'Backend'}]}, {label:'Sales'}, {label:'Marketing'}], title: 'Org Tree' }, w: 540, h: 360 },
+      'org-chart': { args: { root: {label:'CEO'}, children: [{label:'CTO',children:[{label:'Eng'},{label:'Infra'}]},{label:'CFO'},{label:'CMO'}], title: 'Org Chart' }, w: 540, h: 360 },
+      'mindmap': { args: { root: 'Atlas', children: [{label:'2D'},{label:'3D'},{label:'P5'},{label:'Icons'}], title: 'Atlas Map' }, w: 540, h: 360 },
+      'relationship-graph': { args: { nodes: [{id:'a',label:'A'},{id:'b',label:'B'},{id:'c',label:'C'},{id:'d',label:'D'}], edges: [{from:'a',to:'b'},{from:'b',to:'c'},{from:'c',to:'d'},{from:'a',to:'c'}], title: 'Network' }, w: 480, h: 360 },
+      'timeline': { args: { events: [{date:'Q1',label:'Idea'},{date:'Q2',label:'Build'},{date:'Q3',label:'Launch'},{date:'Q4',label:'Scale'}], title: 'Roadmap' }, w: 540, h: 240 },
+      'pyramid': { args: { layers: [{label:'Vision'},{label:'Strategy'},{label:'Tactics'},{label:'Execution'}], title: 'Pyramid' }, w: 480, h: 360 },
+      'fishbone': { args: { effect: 'Low Conversion', branches: [{label:'Marketing',causes:['Targeting','Channel mix']},{label:'Product',causes:['Onboarding','Feature gaps']},{label:'Pricing',causes:['Tier confusion']},{label:'Support',causes:['Slow response']}], title: 'Q3 Conversion Drop' }, w: 540, h: 360 },
+      'matrix-grid': { args: { rows:2, cols:2, cells:[{label:'Strengths'},{label:'Weaknesses'},{label:'Opportunities'},{label:'Threats'}], title:'SWOT' }, w: 480, h: 480 },
+      'layer-stack': { args: { layers: [{label:'Application'},{label:'Service'},{label:'Data'},{label:'Infrastructure'}], title: 'Stack' }, w: 360, h: 360 },
+      'bullet-list': { args: { items: [{label:'First'},{label:'Second'},{label:'Third'}], title: 'Bullets' }, w: 480, h: 240 },
+      'agenda-list': { args: { items: [{label:'Intro'},{label:'Body'},{label:'Demo'},{label:'Q&A'}], title: 'Agenda' }, w: 480, h: 320 },
+      'progression': { args: { steps: [{label:'A'},{label:'B'},{label:'C'},{label:'D'}], current: 1, title: 'Progress' }, w: 540, h: 200 },
+      'icon-badge': { args: { name: 'briefcase', label: 'Business', color: [60, 100, 200] }, w: 200, h: 240 },
+      'cover': { args: { title: 'Atlas Present', subtitle: 'Sprint 15 polish wave', author: 'Atlas' }, w: 540, h: 320 },
+      // Shapes (pseudo-3D)
+      'arrow': { args: { direction: 'right', color: [60, 100, 200] }, w: 240, h: 160 },
+      'cube': { args: { color: [60, 100, 200] }, w: 240, h: 240 },
+      'cube-grid': { args: { rows: 3, cols: 3 }, w: 320, h: 320 },
+      'cube-segmented': { args: { segments: 4 }, w: 280, h: 280 },
+      'diamond': { args: { color: [220, 80, 100] }, w: 240, h: 240 },
+      'gear': { args: { teeth: 12 }, w: 240, h: 240 },
+      'gear-cluster': { args: { gears: 3 }, w: 320, h: 280 },
+      'puzzle-pieces': { args: { pieces: 4 }, w: 320, h: 320 },
+      'circle-frame': { args: { label: 'Core' }, w: 240, h: 240 },
+      'circle-loop': { args: { items: [{label:'A'},{label:'B'},{label:'C'},{label:'D'}], title: 'Cycle' }, w: 360, h: 360 },
+      'circle-segmented': { args: { segments: 5 }, w: 280, h: 280 },
+      'circle-stack': { args: { layers: 4 }, w: 240, h: 240 },
+      'sphere-network': { args: { nodes: 5 }, w: 360, h: 320 },
+      'sphere-segmented': { args: { segments: 4 }, w: 240, h: 240 },
+      'sphere-tree': { args: { depth: 3 }, w: 320, h: 320 },
+    };
+
+    const container = document.getElementById('cards');
+    const atomTypes = listAtomTypes().sort();
+    const rendered = {};
+
+    for (const type of atomTypes) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const h = document.createElement('h3');
+      h.textContent = type;
+      card.appendChild(h);
+      const sample = SAMPLES[type] || { args: {}, w: 320, h: 240 };
+      const c = document.createElement('canvas');
+      c.id = `canvas-${type}`;
+      c.width = sample.w;
+      c.height = sample.h;
+      card.appendChild(c);
+      container.appendChild(card);
+      const ctx = c.getContext('2d');
+      try {
+        await renderAtom(ctx, type, sample.args, 'pseudo3d', {
+          x: 0, y: 0, w: sample.w, h: sample.h, palette,
+        });
+        rendered[type] = 'OK';
+      } catch (e) {
+        rendered[type] = 'ERR: ' + e.message;
+        console.error(type, e);
+      }
+    }
+    window.__RENDERED__ = rendered;
+    window.__ATOM_TYPES__ = atomTypes;
+    console.log('Rendered:', JSON.stringify(rendered, null, 2));
+  </script>
+</body>
+</html>

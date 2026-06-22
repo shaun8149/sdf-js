@@ -33,10 +33,10 @@ export const spec = {
   },
 };
 
-const PAD = 14;
-const COLOR_POSITIVE = [60, 170, 110];
-const COLOR_NEGATIVE = [210, 80, 80];
-const COLOR_TOTAL = [80, 100, 130];
+const PAD = 22;
+const COLOR_POSITIVE = [76, 175, 129]; // #4caf81 green accent
+const COLOR_NEGATIVE = [224, 92, 92]; // #e05c5c red accent
+const COLOR_TOTAL = null; // resolved at draw time from palette.colors[0]
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -46,15 +46,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
 
+  const colorTotal = palette.colors?.[0] || [80, 100, 130];
   const bars = Array.isArray(args.bars) ? args.bars : [];
   const format = args.format || 'currency';
   const n = bars.length;
   if (n === 0) return;
 
+  // Background fill
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
   // Title
   let plotTop = y + PAD;
   if (args.title) {
-    const ts = Math.round(h * 0.07);
+    const ts = Math.round(h * 0.065);
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${ts}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
@@ -105,16 +111,29 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const baselineY = plotBottom - ((0 - minV) / range) * plotH;
   const yFor = (v) => plotBottom - ((v - minV) / range) * plotH;
 
-  // Zero baseline
+  // Axis hairline (1px, alpha 0.35)
   ctx.save();
-  ctx.strokeStyle = rgbaCss(fg, 0.2);
+  ctx.strokeStyle = rgbaCss(fg, 0.35);
   ctx.lineWidth = 1;
-  ctx.setLineDash([2, 3]);
+  ctx.setLineDash([]);
   ctx.beginPath();
-  ctx.moveTo(plotL, baselineY);
-  ctx.lineTo(plotR, baselineY);
+  ctx.moveTo(plotL, plotBottom);
+  ctx.lineTo(plotR, plotBottom);
   ctx.stroke();
   ctx.restore();
+
+  // Zero baseline (dashed, only if minV < 0)
+  if (minV < 0) {
+    ctx.save();
+    ctx.strokeStyle = rgbaCss(fg, 0.2);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(plotL, baselineY);
+    ctx.lineTo(plotR, baselineY);
+    ctx.stroke();
+    ctx.restore();
+  }
 
   const slotW = plotW / n;
   const barW = Math.min(56, slotW * 0.7);
@@ -126,13 +145,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const yBot = yFor(p.bottom);
     const colorBase =
       p.kind === 'start' || p.kind === 'end'
-        ? COLOR_TOTAL
+        ? colorTotal
         : p.kind === 'positive'
           ? COLOR_POSITIVE
           : COLOR_NEGATIVE;
     drawBar(ctx, cx - barW / 2, yTop, barW, yBot - yTop, colorBase);
 
-    // Connector from this bar's running level to next bar's starting level
+    // Connector dashed line: thin gray from top-of-this-bar to bottom-of-next-bar
     if (i < n - 1) {
       const next = positions[i + 1];
       const nextCx = plotL + slotW * (i + 1.5);
@@ -143,13 +162,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
             ? next.bottom
             : next.top,
       );
-      const leaveY = yFor(
-        running !== undefined ? (p.kind === 'negative' ? p.bottom : p.top) : p.top,
-      );
+      const leaveY = yFor(p.kind === 'negative' ? p.bottom : p.top);
       ctx.save();
-      ctx.strokeStyle = rgbaCss(fg, 0.32);
+      ctx.strokeStyle = rgbaCss(fg, 0.28);
       ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(cx + barW / 2, leaveY);
       ctx.lineTo(nextCx - barW / 2, nextStartY);
@@ -157,17 +174,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.restore();
     }
 
-    // Value label above (or below for negative)
+    // Value label above bar: Inter 700, proportional size
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `600 ${Math.round(h * 0.045)}px IBM Plex Mono, monospace`;
+    ctx.font = `700 ${Math.round(h * 0.035)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     const vText = formatValue(p.displayValue, format, p.kind);
     ctx.fillText(vText, cx, yTop - 4);
 
     // X label below
-    ctx.fillStyle = rgbaCss(fg, 0.85);
-    ctx.font = `500 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = rgbaCss(fg, 0.7);
+    ctx.font = `400 ${Math.round(h * 0.038)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(p.label || '', cx, plotBottom + 6);
@@ -178,23 +195,23 @@ function drawBar(ctx, x, y, w, h, color) {
   if (w <= 0 || Math.abs(h) < 1) return;
   const top = h >= 0 ? y : y + h;
   const ht = Math.abs(h);
-  const radius = Math.min(w / 2, 4);
+  const radius = Math.min(w / 2, 5);
 
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 6;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.1); // softened: alpha 0.10
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 2;
   const grad = ctx.createLinearGradient(0, top, 0, top + ht);
-  grad.addColorStop(0, rgbCss(lighten(color, 0.22)));
+  grad.addColorStop(0, rgbCss(lighten(color, 0.08))); // reduced: 0.08 max
   grad.addColorStop(1, rgbCss(color));
   ctx.fillStyle = grad;
   roundRect(ctx, x, top, w, ht, radius);
   ctx.fill();
   ctx.restore();
 
-  // Top iso accent
+  // Top edge highlight (subtle)
   ctx.save();
-  ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.55);
+  ctx.fillStyle = rgbaCss(lighten(color, 0.15), 0.45);
   roundRect(ctx, x, top, w, 2, radius);
   ctx.fill();
   ctx.restore();

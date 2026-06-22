@@ -43,10 +43,10 @@ export const spec = {
   },
 };
 
-const PAD = 14;
+const PAD = 20;
 const TITLE_FRAC = 0.12;
 const ARROW_LENGTH = 28;
-const NODE_PADDING = 12;
+const NODE_PADDING = 18;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -143,13 +143,14 @@ function drawVertical(ctx, steps, sublabels, highlight, x, y, w, h, colorCtx) {
 }
 
 function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorCtx) {
-  const { fg, bg, accent } = colorCtx;
-  const radius = 8;
+  const { accent } = colorCtx;
+  const radius = 10;
 
-  // Card body — pseudo-3D
+  // Card body — palette.colors[0] fill for all steps (consistent, not rainbow)
+  // Highlight: slightly lighter + accent border stroke
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.15);
-  ctx.shadowBlur = 8;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.1);
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 3;
 
   const gradient = ctx.createLinearGradient(nx, ny, nx, ny + nh);
@@ -157,29 +158,30 @@ function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorC
     gradient.addColorStop(0, rgbCss(lighten(accent, 0.12)));
     gradient.addColorStop(1, rgbCss(accent));
   } else {
-    gradient.addColorStop(0, rgbaCss(lighten(fg, 0.92), 1));
-    gradient.addColorStop(1, rgbaCss(lighten(fg, 0.85), 1));
+    // All non-highlight nodes use accent color with subtle gradient
+    gradient.addColorStop(0, rgbCss(lighten(accent, 0.08)));
+    gradient.addColorStop(1, rgbCss(accent));
   }
   ctx.fillStyle = gradient;
   roundedRectPath(ctx, nx, ny, nw, nh, radius);
   ctx.fill();
   ctx.restore();
 
-  // Highlight stroke
+  // Highlight stroke — accent border
   if (isHighlight) {
     ctx.save();
-    ctx.strokeStyle = rgbCss(accent);
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = rgbCss(lighten(accent, 0.5));
+    ctx.lineWidth = 2.5;
     roundedRectPath(ctx, nx, ny, nw, nh, radius);
     ctx.stroke();
     ctx.restore();
   }
 
-  // Index circle (top-left)
+  // Index circle (top-left) — white circle with accent text
   const circleR = 12;
-  const circleCx = nx + circleR + 6;
-  const circleCy = ny + circleR + 6;
-  ctx.fillStyle = rgbCss(accent);
+  const circleCx = nx + circleR + NODE_PADDING * 0.5;
+  const circleCy = ny + circleR + NODE_PADDING * 0.5;
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
   ctx.beginPath();
   ctx.arc(circleCx, circleCy, circleR, 0, Math.PI * 2);
   ctx.fill();
@@ -189,17 +191,17 @@ function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorC
   ctx.textBaseline = 'middle';
   ctx.fillText(String(idx), circleCx, circleCy + 1);
 
-  // Label (centered in remaining space)
-  const textX = nx + circleR * 2 + 12;
+  // Label — Inter 700 white, centered in remaining space, with generous inner padding
+  const textX = nx + circleR * 2 + NODE_PADDING;
   const textY = ny + nh / 2;
-  ctx.fillStyle = isHighlight ? rgbCss(colorCtx.bg) : rgbCss(colorCtx.fg);
-  ctx.font = `600 ${Math.min(15, nh * 0.22)}px Inter, system-ui, sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.97)';
+  ctx.font = `700 ${Math.min(15, nh * 0.22)}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = sublabel ? 'bottom' : 'middle';
   ctx.fillText(String(label), textX, sublabel ? textY : textY + 1);
 
   if (sublabel) {
-    ctx.fillStyle = isHighlight ? rgbaCss(colorCtx.bg, 0.75) : rgbaCss(colorCtx.fg, 0.6);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
     ctx.font = `400 ${Math.min(12, nh * 0.16)}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
     ctx.fillText(String(sublabel), textX, textY + 4);
@@ -209,9 +211,10 @@ function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorC
 function drawArrow(ctx, x0, y0, x1, y1, color) {
   const arrowHead = 8;
 
+  // 2.5px stroke, palette.fg alpha 0.5 — clean, not bold black
   ctx.save();
-  ctx.strokeStyle = rgbCss(color);
-  ctx.lineWidth = 2.4;
+  ctx.strokeStyle = rgbaCss(color, 0.5);
+  ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(x0, y0);
@@ -219,7 +222,7 @@ function drawArrow(ctx, x0, y0, x1, y1, color) {
   ctx.stroke();
   ctx.restore();
 
-  // Arrowhead (filled triangle)
+  // Arrowhead (filled triangle) — clean triangle, same color alpha 0.6
   const dx = x1 - x0;
   const dy = y1 - y0;
   const len = Math.sqrt(dx * dx + dy * dy);
@@ -230,7 +233,7 @@ function drawArrow(ctx, x0, y0, x1, y1, color) {
   const px = -uy;
   const py = ux;
 
-  ctx.fillStyle = rgbCss(color);
+  ctx.fillStyle = rgbaCss(color, 0.6);
   ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(

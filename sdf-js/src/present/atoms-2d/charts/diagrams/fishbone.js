@@ -33,7 +33,7 @@ export const spec = {
   },
 };
 
-const PAD = 16;
+const PAD = 22;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -48,6 +48,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const branches = Array.isArray(args.branches) ? args.branches.slice(0, 8) : [];
   const N = branches.length;
   if (N === 0) return;
+
+  // Warm off-white background
+  ctx.save();
+  ctx.fillStyle = 'rgba(252, 250, 245, 0.95)';
+  roundRect(ctx, x, y, w, h, 10);
+  ctx.fill();
+  ctx.restore();
 
   let plotTop = y + PAD;
   if (args.title) {
@@ -67,10 +74,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const spineR = x + w - PAD - headBoxW - 14;
   const spineLen = spineR - spineL;
 
-  // Spine line + arrow
+  // Spine line + arrow — 2.5px, fg color
   ctx.save();
   ctx.strokeStyle = rgbCss(fg);
-  ctx.lineWidth = Math.max(2.5, h * 0.008);
+  ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(spineL, spineCY);
@@ -87,15 +94,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.fill();
   ctx.restore();
 
-  // Head (effect) box on right
+  // Head (effect) box on right — drop shadow + accent gradient
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetY = 3;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 11;
+  ctx.shadowOffsetY = 4;
   const headBoxX = spineR + 24;
   const headBoxY = spineCY - headBoxH / 2;
   const headGrad = ctx.createLinearGradient(headBoxX, headBoxY, headBoxX, headBoxY + headBoxH);
-  headGrad.addColorStop(0, rgbCss(lighten(accent, 0.2)));
+  headGrad.addColorStop(0, rgbCss(lighten(accent, 0.1)));
   headGrad.addColorStop(1, rgbCss(accent));
   ctx.fillStyle = headGrad;
   roundRect(ctx, headBoxX, headBoxY, headBoxW, headBoxH, headBoxH * 0.18);
@@ -121,6 +128,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const ribAngle = (Math.PI / 6) * 1.0; // 30° from horizontal
   const ribLen = Math.min(h * 0.34, spineLen * 0.18);
 
+  // Use a single accent color (or up to 4 desaturated palette colors, not rainbow)
+  const ribColors =
+    palette.colors && palette.colors.length >= 2
+      ? palette.colors.slice(0, 4).map((c) => desaturate(c, 0.5))
+      : [accent];
+
   for (let i = 0; i < N; i++) {
     const b = branches[i] || {};
     const t = (i + 0.6) / (N + 0.6); // distribute along spine
@@ -129,10 +142,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const ribEndX = baseX - Math.cos(ribAngle) * ribLen;
     const ribEndY = spineCY + (up ? -1 : 1) * Math.sin(ribAngle) * ribLen;
 
-    // Rib line
+    // Rib line — accent color, 1.5-2px
+    const ribColor = ribColors[i % ribColors.length];
     ctx.save();
-    ctx.strokeStyle = rgbCss(darken(accent, 0.1));
-    ctx.lineWidth = Math.max(2, h * 0.006);
+    ctx.strokeStyle = rgbCss(ribColor);
+    ctx.lineWidth = 1.8;
     ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(baseX, spineCY);
@@ -140,14 +154,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.stroke();
     ctx.restore();
 
-    // Branch label at rib end
+    // Branch label at rib end — Inter 700, slightly larger
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.round(h * 0.046)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = up ? 'bottom' : 'top';
-    ctx.fillText(String(b.label || ''), ribEndX - 12, ribEndY + (up ? -6 : 6));
+    ctx.fillText(String(b.label || ''), ribEndX - 12, ribEndY + (up ? -8 : 8));
 
-    // Sub-causes — short stems off the rib
+    // Sub-causes — short stems off the rib with better spacing
     const causes = Array.isArray(b.causes) ? b.causes.slice(0, 4) : [];
     if (causes.length > 0) {
       for (let j = 0; j < causes.length; j++) {
@@ -156,13 +170,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         const stemBaseY = spineCY + (up ? -1 : 1) * Math.sin(ribAngle) * ribLen * ct;
         const stemLen = ribLen * 0.32;
         // Stem goes outward (perpendicular to rib in the up direction)
-        // Perpendicular vector (rotated 90° to the left of rib direction so it points outward)
         const stemEndX = stemBaseX - Math.sin(ribAngle) * stemLen * (up ? 1 : -1);
         const stemEndY = stemBaseY - Math.cos(ribAngle) * stemLen * (up ? 1 : 1) * 0.4; // mostly horizontal
 
+        // Sub-cause stem — hairline 1px alpha 0.35
         ctx.save();
-        ctx.strokeStyle = rgbaCss(fg, 0.45);
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = rgbaCss(fg, 0.35);
+        ctx.lineWidth = 1;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(stemBaseX, stemBaseY);
@@ -170,11 +184,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.stroke();
         ctx.restore();
 
-        ctx.fillStyle = rgbaCss(fg, 0.75);
+        // Sub-cause text — Inter 500, small, with gap from stem
+        ctx.fillStyle = rgbaCss(fg, 0.72);
         ctx.font = `500 ${Math.round(h * 0.032)}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
-        ctx.fillText(String(causes[j]), stemEndX - 4, stemEndY);
+        ctx.fillText(String(causes[j]), stemEndX - 6, stemEndY);
       }
     }
   }
@@ -220,10 +235,20 @@ function lighten(rgb, amt) {
   ];
 }
 
+// eslint-disable-next-line no-unused-vars
 function darken(rgb, amt) {
   return [
     Math.max(0, rgb[0] * (1 - amt)),
     Math.max(0, rgb[1] * (1 - amt)),
     Math.max(0, rgb[2] * (1 - amt)),
+  ];
+}
+
+function desaturate(rgb, amt) {
+  const lum = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+  return [
+    Math.round(rgb[0] + (lum - rgb[0]) * amt),
+    Math.round(rgb[1] + (lum - rgb[1]) * amt),
+    Math.round(rgb[2] + (lum - rgb[2]) * amt),
   ];
 }

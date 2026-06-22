@@ -46,10 +46,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const title = args.title;
   const label = args.label;
 
+  // Background
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
   let plotTop = y + PAD;
   if (title) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.08)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.round(h * 0.075)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(title, x + PAD, y + PAD);
@@ -59,11 +64,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const cx = x + w / 2;
   const arcRadius = Math.min((w - PAD * 2) / 2, h - plotTop - PAD * 2);
   const cy = plotTop + arcRadius + PAD * 0.4;
-  const tube = arcRadius * 0.13;
+  // Arc thickness: 14–16% of radius
+  const tube = arcRadius * 0.15;
 
-  // Track arc (full semicircle, dimmed)
+  // Background arc (full 180°): rgba(0,0,0,0.06) light gray
   ctx.save();
-  ctx.strokeStyle = rgbaCss(fg, 0.12);
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
   ctx.lineWidth = tube;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -71,11 +77,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.stroke();
   ctx.restore();
 
-  // Filled arc (from left to value)
+  // Foreground arc: palette.colors[0] with subtle gradient (lighten 0.08)
   const endAngle = Math.PI + value * Math.PI;
   ctx.save();
   const grad = ctx.createLinearGradient(cx - arcRadius, cy, cx + arcRadius, cy);
-  grad.addColorStop(0, rgbCss(lighten(accent, 0.2)));
+  grad.addColorStop(0, rgbCss(lighten(accent, 0.08)));
   grad.addColorStop(1, rgbCss(accent));
   ctx.strokeStyle = grad;
   ctx.lineWidth = tube;
@@ -85,15 +91,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.stroke();
   ctx.restore();
 
-  // Needle (pointing to value angle, from hub outward)
+  // Needle: thin 2–3px with center pivot dot (PL style minimal)
   const needleAng = Math.PI + value * Math.PI;
-  const needleLen = arcRadius * 0.92;
+  const needleLen = arcRadius * 0.78;
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetY = 2;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 4;
   ctx.strokeStyle = rgbCss(fg);
-  ctx.lineWidth = Math.max(2, tube * 0.32);
+  ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(cx, cy);
@@ -101,44 +106,46 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.stroke();
   ctx.restore();
 
-  // Hub (center dot)
+  // Center pivot dot
+  ctx.save();
   ctx.fillStyle = rgbCss(fg);
   ctx.beginPath();
-  ctx.arc(cx, cy, tube * 0.55, 0, Math.PI * 2);
+  ctx.arc(cx, cy, Math.max(3, tube * 0.28), 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
 
   // Min / max tick labels
-  const tickFont = `500 ${Math.round(h * 0.05)}px Inter, system-ui, sans-serif`;
+  const tickFont = `500 ${Math.round(h * 0.048)}px Inter, system-ui, sans-serif`;
   if (args.min) {
-    ctx.fillStyle = rgbaCss(fg, 0.65);
+    ctx.fillStyle = rgbaCss(fg, 0.55);
     ctx.font = tickFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(String(args.min), cx - arcRadius, cy + tube * 0.8);
   }
   if (args.max) {
-    ctx.fillStyle = rgbaCss(fg, 0.65);
+    ctx.fillStyle = rgbaCss(fg, 0.55);
     ctx.font = tickFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(String(args.max), cx + arcRadius, cy + tube * 0.8);
   }
 
-  // Big value text (below hub, inside the arc)
+  // Big value text: Inter 900, large, centered in gauge bowl
   const valueText = format === 'percent' ? `${Math.round(value * 100)}%` : String(value.toFixed(2));
   ctx.fillStyle = rgbCss(fg);
-  ctx.font = `700 ${Math.round(h * 0.18)}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${Math.round(h * 0.2)}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText(valueText, cx, cy + tube * 1.6);
+  ctx.fillText(valueText, cx, cy + tube * 1.4);
 
-  // Optional sub-label
+  // Sublabel: Inter 500, small, below value
   if (label) {
-    ctx.fillStyle = rgbaCss(fg, 0.7);
-    ctx.font = `500 ${Math.round(h * 0.06)}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = rgbaCss(fg, 0.6);
+    ctx.font = `500 ${Math.round(h * 0.055)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(String(label), cx, cy + tube * 1.6 + h * 0.2);
+    ctx.fillText(String(label), cx, cy + tube * 1.4 + h * 0.22);
   }
 }
 

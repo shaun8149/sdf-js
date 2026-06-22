@@ -14,11 +14,11 @@
 import { rgbCss, rgbaCss } from '../../renderer.js';
 
 const NAMED_COLORS = {
-  red: [220, 70, 70],
-  amber: [230, 165, 50],
+  red: [230, 80, 80],
+  amber: [245, 175, 55],
   yellow: [230, 200, 50],
-  green: [70, 180, 100],
-  blue: [70, 130, 220],
+  green: [80, 175, 110],
+  blue: [80, 130, 220],
   grey: [140, 140, 140],
 };
 
@@ -57,7 +57,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   let plotTop = y + PAD;
   if (args.title) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.05)}px Inter, system-ui, sans-serif`;
+    // Title sized proportional to canvas h (Inter 700)
+    ctx.font = `700 ${Math.round(h * 0.055)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(args.title, x + PAD, y + PAD);
@@ -76,22 +77,26 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const lightR = Math.min(housingW * 0.36, lightSlot * 0.38);
   const housingCX = housingX + housingW / 2;
 
-  // Housing rectangle (rounded)
+  // Housing rectangle (rounded) — near-black fg alpha 0.85 with subtle gradient
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.25);
-  ctx.shadowBlur = 10;
+  ctx.shadowBlur = 12;
   ctx.shadowOffsetY = 4;
+  // Near-black housing: palette.fg alpha 0.85 from top-left slightly lighter
+  const housingBase = fg.map((c) => Math.round(c * 0.22)); // very dark version of fg
   const housingGrad = ctx.createLinearGradient(
     housingX,
     housingTop,
     housingX + housingW,
-    housingTop,
+    housingTop + housingH,
   );
-  housingGrad.addColorStop(0, rgbCss(lighten([55, 55, 60], 0.1)));
-  housingGrad.addColorStop(1, rgbCss([55, 55, 60]));
+  housingGrad.addColorStop(0, rgbCss(lighten(housingBase, 0.12)));
+  housingGrad.addColorStop(1, rgbCss(housingBase));
   ctx.fillStyle = housingGrad;
+  ctx.globalAlpha = 0.87;
   roundRect(ctx, housingX, housingTop, housingW, housingH, lightR * 0.5);
   ctx.fill();
+  ctx.globalAlpha = 1;
   ctx.restore();
 
   // Lights
@@ -112,7 +117,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Light body
     ctx.save();
     if (isOn) {
-      // Glow
+      // Outer glow: radial gradient for bloom effect
       const glow = ctx.createRadialGradient(
         housingCX,
         cy,
@@ -127,7 +132,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.beginPath();
       ctx.arc(housingCX, cy, lightR * 1.8, 0, Math.PI * 2);
       ctx.fill();
+
+      // Bloom: shadow same color, alpha 0.3
+      ctx.shadowColor = rgbaCss(color, 0.3);
+      ctx.shadowBlur = 10;
     }
+    // Active: lighter at center radial gradient; Inactive: dim (alpha 0.35)
     const grad = ctx.createRadialGradient(
       housingCX - lightR * 0.3,
       cy - lightR * 0.3,
@@ -139,11 +149,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     if (isOn) {
       grad.addColorStop(0, rgbCss(lighten(color, 0.5)));
       grad.addColorStop(1, rgbCss(color));
+      ctx.fillStyle = grad;
     } else {
-      grad.addColorStop(0, rgbCss(darken(color, 0.3)));
-      grad.addColorStop(1, rgbCss(darken(color, 0.55)));
+      grad.addColorStop(0, rgbaCss(darken(color, 0.25), 0.35));
+      grad.addColorStop(1, rgbaCss(darken(color, 0.5), 0.35));
+      ctx.fillStyle = grad;
     }
-    ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(housingCX, cy, lightR, 0, Math.PI * 2);
     ctx.fill();
@@ -160,10 +171,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.restore();
     }
 
-    // Label to right of housing
+    // Label to right of housing — Inter 600 small, palette.fg
     if (lt.label) {
-      ctx.fillStyle = rgbCss(fg);
-      ctx.font = `${isOn ? '700' : '500'} ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+      ctx.fillStyle = isOn ? rgbCss(fg) : rgbaCss(fg, 0.55);
+      ctx.font = `600 ${Math.round(h * 0.042)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(lt.label), housingX + housingW + 14, cy);

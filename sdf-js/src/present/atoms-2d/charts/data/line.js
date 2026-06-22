@@ -80,12 +80,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const showValues = args.showValues === true;
   const hasAnn = annotations.length > 0;
 
-  // ---- Title ----
+  // ---- Background: warm off-white if palette.bg not set ----
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
+  // ---- Title — Inter 700, 22-32px ----
   let chartTop = y + PAD;
   if (title) {
-    const titleSize = Math.round(h * 0.07);
+    const titleSize = Math.min(28, Math.max(22, Math.round(h * 0.08)));
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${titleSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(title, x + PAD, y + PAD);
@@ -106,9 +111,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const maxV = Math.max(...values, minV + 1);
   const range = maxV - minV || 1;
 
-  // ---- Faint baseline grid (3 horizontal lines) ----
+  // ---- Hairline horizontal gridlines (alpha 0.15, 1px) ----
   ctx.save();
-  ctx.strokeStyle = rgbaCss(fg, 0.08);
+  ctx.strokeStyle = rgbaCss(fg, 0.15);
   ctx.lineWidth = 1;
   for (let i = 0; i <= 3; i++) {
     const gy = plotTop + (plotH * i) / 3;
@@ -127,10 +132,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     points.push({ x: xp, y: yp, value: values[i], label: labels[i] });
   }
 
-  // ---- Area fill (gradient under line) ----
+  // ---- Area fill (subtle gradient under line, alpha 0.10 max) ----
   const areaGradient = ctx.createLinearGradient(0, plotTop, 0, plotBottom);
-  areaGradient.addColorStop(0, rgbaCss(lineColor, 0.35));
-  areaGradient.addColorStop(1, rgbaCss(lineColor, 0.02));
+  areaGradient.addColorStop(0, rgbaCss(lineColor, 0.12));
+  areaGradient.addColorStop(1, rgbaCss(lineColor, 0.01));
   ctx.fillStyle = areaGradient;
   ctx.beginPath();
   ctx.moveTo(points[0].x, plotBottom);
@@ -139,13 +144,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.closePath();
   ctx.fill();
 
-  // ---- Connect line (with drop shadow) ----
+  // ---- Connect line (2.5px stroke, soft shadow) ----
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetY = 3;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 2;
   ctx.strokeStyle = rgbCss(lineColor);
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.beginPath();
@@ -154,48 +159,51 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.stroke();
   ctx.restore();
 
-  // ---- Point markers ----
+  // ---- Point markers (filled circles 6px outer, 4px inner) ----
   if (showPoints) {
     for (const p of points) {
       ctx.save();
-      ctx.shadowColor = rgbaCss([0, 0, 0], 0.2);
+      ctx.shadowColor = rgbaCss([0, 0, 0], 0.15);
       ctx.shadowBlur = 4;
-      ctx.shadowOffsetY = 2;
-      ctx.fillStyle = rgbCss(bg);
+      ctx.shadowOffsetY = 1;
+      // Outer ring in bg color
+      ctx.fillStyle = typeof bgColor === 'string' ? bgColor : rgbCss(bg);
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
+      // Inner filled dot in line color
       ctx.fillStyle = rgbCss(lineColor);
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  // ---- Value labels (optional) ----
+  // ---- Value labels (optional) — Inter 600 ----
   if (showValues) {
-    ctx.font = `600 ${Math.round(h * 0.05)}px IBM Plex Mono, monospace`;
+    ctx.font = `600 ${Math.max(11, Math.round(h * 0.05))}px Inter, sans-serif`;
     ctx.fillStyle = rgbCss(fg);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     for (const p of points) {
-      ctx.fillText(formatValue(p.value, format), p.x, p.y - 9);
+      ctx.fillText(formatValue(p.value, format), p.x, p.y - 12);
     }
   }
 
-  // ---- X labels (under each point) ----
-  ctx.font = `500 ${Math.round(h * 0.05)}px Inter, system-ui, sans-serif`;
+  // ---- X labels (under each point) — Inter 600, 14-18px ----
+  const xLabelSize = Math.max(14, Math.min(18, Math.round(h * 0.055)));
+  ctx.font = `600 ${xLabelSize}px Inter, sans-serif`;
   ctx.fillStyle = rgbaCss(fg, 0.75);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   for (const p of points) {
-    ctx.fillText(String(p.label), p.x, plotBottom + 6);
+    ctx.fillText(String(p.label), p.x, plotBottom + 8);
   }
 
   // ---- Annotations (callouts pointing to specific points) ----
   if (hasAnn) {
-    ctx.font = `600 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+    ctx.font = `600 ${Math.max(11, Math.round(h * 0.045))}px Inter, sans-serif`;
     ctx.fillStyle = rgbCss(lineColor);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';

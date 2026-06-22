@@ -49,7 +49,7 @@ export const spec = {
   },
 };
 
-const PAD = 14;
+const PAD = 20; // generous outer padding
 const TITLE_FRAC = 0.13;
 const X_LABEL_FRAC = 0.1;
 const VALUE_TOP_GAP = 6;
@@ -74,12 +74,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const title = args.title;
   const showValues = args.showValues !== false; // default true
 
-  // ---- Title row ----
+  // ---- Background: warm off-white if palette.bg not set ----
+  const bgColor = palette.bg ? rgbCss(palette.bg) : '#fafaf8';
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(x, y, w, h);
+
+  // ---- Title row — Inter 700, 22-32px ----
   let plotTop = y + PAD;
   if (title) {
-    const titleSize = Math.round(h * 0.07);
+    const titleSize = Math.min(28, Math.max(22, Math.round(h * 0.08)));
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${titleSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(title, x + PAD, y + PAD);
@@ -96,9 +101,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const plotRight = x + w - PAD;
   const plotW = plotRight - plotLeft;
 
-  // ---- Faint baseline ----
+  // ---- Hairline y-axis baseline (1px alpha 0.4) ----
   ctx.save();
-  ctx.strokeStyle = rgbaCss(fg, 0.15);
+  ctx.strokeStyle = rgbaCss(fg, 0.4);
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(plotLeft, plotBottom);
@@ -111,8 +116,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const columnW = Math.min(60, slotW * 0.7);
 
   // ---- Draw each column ----
-  const valueSize = Math.max(11, Math.round(h * 0.05));
-  const labelSize = Math.max(11, Math.round(h * 0.05));
+  const valueSize = Math.max(12, Math.min(16, Math.round(h * 0.055)));
+  const labelSize = Math.max(14, Math.min(18, Math.round(h * 0.055)));
 
   for (let i = 0; i < n; i++) {
     const v = values[i];
@@ -123,24 +128,24 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const colLeft = cx - columnW / 2;
     const color = colors ? colors[i % colors.length] : fallbackBar;
 
-    // Column body — pseudo-3D
+    // Column body — pseudo-3D (subtle gradient)
     drawPseudoColumn(ctx, colLeft, colTop, columnW, colH, color);
 
-    // Value on top
+    // Value on top — Inter 600
     if (showValues) {
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `600 ${valueSize}px IBM Plex Mono, monospace`;
+      ctx.font = `600 ${valueSize}px Inter, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.fillText(formatValue(v, format), cx, colTop - VALUE_TOP_GAP);
     }
 
-    // X label below
+    // X label below — Inter 600, 14-18px
     ctx.fillStyle = rgbaCss(fg, 0.85);
-    ctx.font = `500 ${labelSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `600 ${labelSize}px Inter, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(String(labels[i]), cx, plotBottom + 6);
+    ctx.fillText(String(labels[i]), cx, plotBottom + 8);
   }
 }
 
@@ -152,15 +157,15 @@ function drawPseudoColumn(ctx, x, y, w, h, color) {
   if (w <= 0 || h <= 0) return;
   const radius = Math.min(w / 2, 4);
 
-  // Shadow
+  // Shadow — soft (10px blur, alpha 0.12)
   ctx.save();
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = 6;
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 2;
 
-  // Gradient (left lighter, right darker for sidelit feel)
+  // Gradient (left lighter, right barely darker — subtle 8% lighten)
   const gradient = ctx.createLinearGradient(x, 0, x + w, 0);
-  gradient.addColorStop(0, rgbaCss(lighten(color, 0.18), 1));
+  gradient.addColorStop(0, rgbaCss(lighten(color, 0.08), 1));
   gradient.addColorStop(1, rgbCss(color));
   ctx.fillStyle = gradient;
 
@@ -175,9 +180,9 @@ function drawPseudoColumn(ctx, x, y, w, h, color) {
   ctx.fill();
   ctx.restore();
 
-  // Top iso edge accent
+  // Top iso edge accent — reduced to 10% lighten for subtlety
   ctx.save();
-  ctx.fillStyle = rgbaCss(lighten(color, 0.32), 0.7);
+  ctx.fillStyle = rgbaCss(lighten(color, 0.1), 0.6);
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
   ctx.lineTo(x + w - radius, y);
