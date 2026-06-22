@@ -250,18 +250,43 @@ async function playDeck(id) {
     }
   }
 
-  window.addEventListener('keydown', (e) => {
+  const onDeckKey = (e) => {
+    // ignore while typing in a field (prompt / api-key / code editors)
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
     if (e.key === ' ' || e.key === 'ArrowRight') {
       e.preventDefault();
       go(cur + 1);
     } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
       go(cur - 1);
     } else if (e.key === 'p' || e.key === 'P') {
       togglePause();
     } else if (e.key === 'r' || e.key === 'R') {
       go(cur);
     }
-  });
+  };
+  // Capture phase so deck nav wins over any bubble-phase consumer (fly controls
+  // etc.). One listener only (window capture fires before document/target) —
+  // the focus-grab below ensures the event actually dispatches.
+  window.addEventListener('keydown', onDeckKey, true);
+
+  // Make sure the page actually has keyboard focus (the #1 cause of "arrows do
+  // nothing"): focus a focusable wrap on load + whenever the stage is clicked.
+  if (wrap) {
+    if (!wrap.hasAttribute('tabindex')) wrap.tabIndex = -1;
+    wrap.style.outline = 'none';
+    const grab = () => {
+      try {
+        wrap.focus({ preventScroll: true });
+      } catch {
+        /* older browsers: focus() takes no options */
+        wrap.focus();
+      }
+    };
+    grab();
+    wrap.addEventListener('pointerdown', grab);
+  }
 
   showHint(wrap);
   go(0);
