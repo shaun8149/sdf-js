@@ -796,12 +796,16 @@ void main() {
     bool isSnowy = false;       // material.kind == 'snowy'       (tone.y ~ 5)
     bool isBuilding = false;    // material.kind == 'building'    (tone.y ~ 6)
     bool isEroded = false;      // material.kind == 'eroded-terrain' (tone.y ~ 7)
+    bool isGlass = false;       // material.kind == 'glass'           (tone.y ~ 8)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
       // Check higher kinds first (7 > 6 > 5 > 4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 6.5) {
+      if (leafTone.y > 7.5) {
+        isGlass = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+      } else if (leafTone.y > 6.5) {
         isEroded = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
       } else if (leafTone.y > 5.5) {
@@ -950,6 +954,42 @@ void main() {
                + backlight;
       float tFog = atmosphereDensity(p, t);
       col = mix(lit, vec3(0.85, 0.87, 0.90), tFog);
+    } else if (isGlass) {
+      // ---- Glass material kind (real single-refraction) --------------------
+      // The view ray refracts into the (thin, hollow) shell; a secondary march
+      // SEES THROUGH to whatever is inside/behind (coloured liquid, or the
+      // distorted background). That transmission is blended with a Fresnel env
+      // reflection (strong at grazing edges) + a sharp sun glint + a cool
+      // fresnel rim. ior 1.45. base = glass tint (white = clear glass).
+      float ndv = max(dot(n, -rd), 0.0);
+      float fres = 0.04 + 0.96 * pow(1.0 - ndv, 5.0);
+      // Fresnel env reflection (edges)
+      vec3 Rfl = reflect(rd, n);
+      vec3 rsR = raymarchShort(p + n * 0.02, Rfl, 16.0);
+      vec3 reflCol = (rsR.y > 0.5)
+        ? shadeReflection(p + Rfl * rsR.x, Rfl, rsR.y, rsR.z, sunDir)
+        : sky(Rfl, sunDir);
+      // Refraction — bend the view ray by Snell's law (ior ~1.45) and march the
+      // interior so we SEE THROUGH the glass. Start a touch past the thin shell
+      // wall so the secondary march travels interior air (sphere-trace can't
+      // march solids → glass shapes must be thin hollow shells). NOTE: this is a
+      // DECORATIVE transparent-glass capability — do NOT use it for fill gauges
+      // (sphere-fill), where refraction magnifies/fills the level and destroys
+      // the readable waterline; use a waterline material split there instead.
+      vec3 Rr = refract(rd, n, 1.0 / 1.45);
+      vec3 refrCol;
+      vec3 rs = raymarchShort(p + Rr * 0.07 - n * 0.015, Rr, 12.0);
+      if (rs.y > 0.5) {
+        refrCol = shadeReflection(p + Rr * rs.x, Rr, rs.y, rs.z, sunDir);
+      } else {
+        refrCol = sky(Rr, sunDir);
+      }
+      refrCol *= mix(vec3(1.0), base, 0.5); // tint by glass colour (white = clear)
+      vec3 gcol = mix(refrCol, reflCol, fres);
+      vec3 Hg = normalize(toLight + (-rd));
+      gcol += vec3(1.0) * pow(max(dot(n, Hg), 0.0), 140.0) * shadowK * 1.2; // sharp glint
+      gcol += vec3(0.75, 0.85, 1.0) * pow(1.0 - ndv, 3.0) * 0.35;           // cool fresnel edge
+      col = gcol;
     } else if (isSnowy) {
       // ---- Snowy material kind (IQ Snow Bridge recipe-only port) -----------
       // Standard Lambert with the underlying base color, then blend snow on top

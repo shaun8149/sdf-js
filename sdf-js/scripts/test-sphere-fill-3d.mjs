@@ -1,9 +1,13 @@
 // =============================================================================
 // L1 unit tests for the sphere-fill-3d atom.
 // -----------------------------------------------------------------------------
-// sphere-fill-3d renders a row of "fill level" spheres: each sphere is a glass
-// container (3-ring wireframe cage) holding a liquid fill cap (cutSphere) whose
-// height encodes a 0..1 fill fraction. Pure geometry — readable without color.
+// sphere-fill-3d renders a row of "fill level" spheres. Each sphere is a SOLID
+// sphere split at a waterline (height = 0..1 fill fraction) into two caps:
+//   - liquid cap (below waterline)  → part:'liquid'
+//   - glass  cap (above waterline)  → part:'glass'
+//   - part:'both' (default) unions them → a full solid sphere.
+// Pure geometry; the colored/light two-tone read is materialed at the scene/
+// shader level (see the atom's KNOWN LIMITATION note).
 //
 // PresentationLoad reference: "3D Spheres Fill Levels" (deck use case, P0).
 // =============================================================================
@@ -27,7 +31,7 @@ function ok(cond, name) {
 console.log('=== sphere-fill-3d unit test ===\n');
 
 // ---- Test group 1: defaults --------------------------------------------------
-console.log('Test group 1: defaults (4 spheres, last fully filled)');
+console.log('Test group 1: defaults (4 spheres, part:both → solid)');
 {
   const sdf = sphereFill3dSDF();
   ok(sdf != null, 'default sdf is non-null');
@@ -38,41 +42,58 @@ console.log('Test group 1: defaults (4 spheres, last fully filled)');
   ok(sdf.f([100, 0, 0]) > 0, 'far point is outside');
 }
 
-// ---- Test group 2: fill fraction discrimination ------------------------------
-console.log('\nTest group 2: fill fraction (cage off, isolate liquid)');
+// ---- Test group 2: part:'both' is a solid sphere at any fill -----------------
+console.log("\nTest group 2: part:'both' → solid sphere (both caps)");
+{
+  // Single half-full sphere at origin (waterline at y=0). Union of caps = solid.
+  const sdf = sphereFill3dSDF({ levels: [0.5], radius: 0.6 });
+  ok(sdf.f([0, -0.3, 0]) < 0, 'both: below waterline inside (liquid cap)');
+  ok(sdf.f([0, 0.3, 0]) < 0, 'both: above waterline inside (glass cap)');
+  ok(sdf.f([0, 0.9, 0]) > 0, 'both: outside the sphere radius');
+}
+
+// ---- Test group 3: part:'liquid' isolates the bottom cap ---------------------
+console.log("\nTest group 3: part:'liquid' (colored bottom cap)");
 {
   // Two spheres: empty + full. stride=1.5, offset=0.75 → x = -0.75, +0.75.
-  const sdf = sphereFill3dSDF({ levels: [0.0, 1.0], cage: false });
-  ok(sdf.f([0.75, 0, 0]) < 0, 'full sphere (fill=1.0) center inside');
-  ok(sdf.f([-0.75, 0, 0]) > 0, 'empty sphere (fill=0.0) center outside (no liquid, no cage)');
+  const sdf = sphereFill3dSDF({ levels: [0.0, 1.0], part: 'liquid' });
+  ok(sdf.f([0.75, 0, 0]) < 0, 'full (fill=1.0) liquid center inside');
+  ok(sdf.f([-0.75, 0, 0]) > 0, 'empty (fill=0.0) → no liquid, center outside');
 }
 {
-  // Single half-full sphere at origin, cage off. Liquid fills bottom half.
-  const sdf = sphereFill3dSDF({ levels: [0.5], cage: false });
-  ok(sdf.f([0, -0.3, 0]) < 0, 'half-fill: point below waterline is inside (liquid)');
-  ok(sdf.f([0, 0.3, 0]) > 0, 'half-fill: point above waterline is outside (air)');
+  // Single half-full sphere, liquid only: fills the bottom, air above.
+  const sdf = sphereFill3dSDF({ levels: [0.5], part: 'liquid' });
+  ok(sdf.f([0, -0.3, 0]) < 0, 'half liquid: below waterline inside');
+  ok(sdf.f([0, 0.3, 0]) > 0, 'half liquid: above waterline outside (no top cap)');
 }
 
-// ---- Test group 3: cage container -------------------------------------------
-console.log('\nTest group 3: wireframe cage container');
+// ---- Test group 4: part:'glass' isolates the top cap ------------------------
+console.log("\nTest group 4: part:'glass' (light top cap)");
 {
-  // Empty sphere with cage on: center hollow, but equator ring present.
-  const sdf = sphereFill3dSDF({ levels: [0.0], radius: 0.6, cage: true, cageThickness: 0.06 });
-  ok(sdf.f([0, 0, 0]) > 0, 'empty+cage: center is hollow (outside)');
-  ok(sdf.f([0.6, 0, 0]) < 0, 'empty+cage: equator ring at radius is inside');
+  // Single half-full sphere, glass only: fills the top, empty below.
+  const sdf = sphereFill3dSDF({ levels: [0.5], part: 'glass' });
+  ok(sdf.f([0, 0.3, 0]) < 0, 'half glass: above waterline inside');
+  ok(sdf.f([0, -0.3, 0]) > 0, 'half glass: below waterline outside (no bottom cap)');
+}
+{
+  // Brim-full → no empty top → glass-only emits nothing → null.
+  ok(
+    sphereFill3dSDF({ levels: [1.0], part: 'glass' }) === null,
+    'glass at fill=1.0 → null (no empty top)',
+  );
 }
 
-// ---- Test group 4: edge cases -----------------------------------------------
-console.log('\nTest group 4: edge cases');
+// ---- Test group 5: edge cases -----------------------------------------------
+console.log('\nTest group 5: edge cases');
 {
   ok(sphereFill3dSDF({ count: 0 }) === null, 'count=0 returns null');
   ok(sphereFill3dSDF({ levels: [], count: 0 }) === null, 'no spheres returns null');
-  const single = sphereFill3dSDF({ levels: [1.0], cage: false });
+  const single = sphereFill3dSDF({ levels: [1.0] });
   ok(single != null && single.f([0, 0, 0]) < 0, 'single full sphere at origin inside');
 }
 
-// ---- Test group 5: scene compile + GLSL emit ---------------------------------
-console.log('\nTest group 5: SceneData → compile → GLSL emit');
+// ---- Test group 6: scene compile + GLSL emit ---------------------------------
+console.log('\nTest group 6: SceneData → compile → GLSL emit');
 {
   const scene = {
     v: 1,
@@ -110,8 +131,7 @@ console.log('\nTest group 5: SceneData → compile → GLSL emit');
     }
     if (glsl) {
       const exprStr = typeof glsl === 'string' ? glsl : glsl.expr || JSON.stringify(glsl);
-      ok(exprStr.includes('sdCutSphere'), 'GLSL emit contains sdCutSphere (liquid fill)');
-      ok(exprStr.includes('sdTorus'), 'GLSL emit contains sdTorus (cage rings)');
+      ok(exprStr.includes('sdCutSphere'), 'GLSL emit contains sdCutSphere (waterline caps)');
     }
   }
 }
