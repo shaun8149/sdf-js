@@ -41,6 +41,14 @@ uniform vec3  u_camRight;
 uniform vec3  u_camUp;
 uniform float u_focal;
 uniform vec3  u_lightPos;
+// Stage area lights — extra point lights (e.g. emissive ceiling panels) that add
+// soft-shadowed diffuse + a glint to the STANDARD material, on top of the sun
+// (u_lightPos). numExtraLights=0 → every existing scene is byte-identical.
+#define MAX_EXTRA_LIGHTS 4
+uniform int   u_numExtraLights;
+uniform vec3  u_extraLightPos[MAX_EXTRA_LIGHTS];
+uniform vec3  u_extraLightColor[MAX_EXTRA_LIGHTS];   // rgb * intensity (premultiplied)
+uniform float u_extraLightRadius[MAX_EXTRA_LIGHTS];  // penumbra softness, world units
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
@@ -1445,6 +1453,30 @@ void main() {
       lin += specTint * sunCol * pow(max(dot(n, H), 0.0), 96.0) * shadowK * u_studioBg * 1.1;
       lin += rimCol * rim * ao * (0.14 + u_studioBg * 0.5);
 
+      // Stage area lights. Each extra light (emissive panel) adds soft-shadowed
+      // diffuse fill + a GGX glint, so objects in a room are lit BY the room, not
+      // only the sun. Soft-shadow sharpness eases with the light's radius (bigger
+      // panel → softer penumbra). Inverse-square-ish falloff. Loop bound is the
+      // const MAX (ES 1.00); u_numExtraLights breaks early — 0 → no-op.
+      for (int li = 0; li < MAX_EXTRA_LIGHTS; li++) {
+        if (li >= u_numExtraLights) break;
+        vec3 toL = u_extraLightPos[li] - p;
+        float ldist = length(toL);
+        toL /= max(ldist, 1e-4);
+        float ndl = max(dot(n, toL), 0.0);
+        if (ndl <= 0.0) continue;
+        float atten = 1.0 / (1.0 + 0.035 * ldist * ldist);
+        float sh = 1.0;
+        if (u_shadowsOn > 0.5) {
+          float ksh = mix(18.0, 5.0, clamp(u_extraLightRadius[li] / 2.5, 0.0, 1.0));
+          sh = softShadow(p + n * 0.002, toL, 0.02, ldist, ksh);
+        }
+        vec3 lc = u_extraLightColor[li];
+        lin += base * lc * ndl * atten * sh * diffK;
+        float ggxL = ggxSpecular(n, V, toL, rough);
+        lin += specTint * lc * ggxL * atten * sh * specBoost * 0.6;
+      }
+
       // Env reflection. Schlick-Fresnel weighted: metals are near-mirror,
       // dielectrics get a subtle grazing sheen. The environment is found by a
       // SECONDARY raymarch along the reflection ray (reflection-retrace) so a
@@ -1685,6 +1717,13 @@ export function createStudioRenderer({
   const volumeKindCenterLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeColorLUT = new Float32Array(MAX_VOLUMES * 4);
+  // Stage area lights (mirrors MAX_EXTRA_LIGHTS=4 in the shader). Packed by
+  // setPostFx() from scene.defaults.lights; uploaded each frame in render().
+  const MAX_EXTRA_LIGHTS = 4;
+  const extraLightPosLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
+  const extraLightColorLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
+  const extraLightRadiusLUT = new Float32Array(MAX_EXTRA_LIGHTS);
+  let numExtraLights = 0;
   // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
   // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
   // flame subset of the volume LUTs.
@@ -1924,6 +1963,11 @@ export function createStudioRenderer({
       'u_volumeSizeDensity[0]',
       'u_volumeColor[0]',
       'u_volumeCount',
+      // Stage area lights
+      'u_numExtraLights',
+      'u_extraLightPos[0]',
+      'u_extraLightColor[0]',
+      'u_extraLightRadius[0]',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
@@ -2212,6 +2256,19 @@ export function createStudioRenderer({
     // slot when no subject is at that slot, so a fixed-camera scene is unaffected).
     if (uniformsCache['u_subjectOffset[0]'] != null) {
       gl.uniform3fv(uniformsCache['u_subjectOffset[0]'], subjectOffsetLUT);
+    }
+    // Stage area lights (always upload — numExtraLights=0 makes the shader loop
+    // a no-op, so non-stage scenes are unaffected).
+    if (uniformsCache['u_numExtraLights'] != null) {
+      gl.uniform1i(uniformsCache['u_numExtraLights'], numExtraLights);
+    }
+    if (numExtraLights > 0) {
+      if (uniformsCache['u_extraLightPos[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightPos[0]'], extraLightPosLUT);
+      if (uniformsCache['u_extraLightColor[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightColor[0]'], extraLightColorLUT);
+      if (uniformsCache['u_extraLightRadius[0]'] != null)
+        gl.uniform1fv(uniformsCache['u_extraLightRadius[0]'], extraLightRadiusLUT);
     }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
@@ -2552,6 +2609,30 @@ export function createStudioRenderer({
       // → dark cyclorama + punchier spec/rim/vignette (showcase decks). Default
       // (absent) keeps the neutral light test stage used by the atom gallery.
       studioBgDark = !!(scene && scene.defaults && scene.defaults.studioBg === 'dark');
+      // Stage area lights: pack scene.defaults.lights → LUTs (color premultiplied
+      // by intensity; 0-255 auto-normalized like volumes). Absent/empty → 0 lights
+      // = no-op, every existing scene byte-identical.
+      numExtraLights = 0;
+      const lights = scene && scene.defaults && scene.defaults.lights;
+      if (Array.isArray(lights)) {
+        const n = Math.min(lights.length, MAX_EXTRA_LIGHTS);
+        for (let i = 0; i < n; i++) {
+          const L = lights[i] || {};
+          const pos = L.pos || L.position || [0, 5, 0];
+          const col = L.color || [1, 1, 1];
+          const inten = L.intensity == null ? 1 : L.intensity;
+          const cmax = Math.max(col[0], col[1], col[2]);
+          const cs = cmax > 1.5 ? 1 / 255 : 1; // auto-detect 0-255 vs 0-1
+          extraLightPosLUT[i * 3] = pos[0];
+          extraLightPosLUT[i * 3 + 1] = pos[1];
+          extraLightPosLUT[i * 3 + 2] = pos[2];
+          extraLightColorLUT[i * 3] = col[0] * cs * inten;
+          extraLightColorLUT[i * 3 + 1] = col[1] * cs * inten;
+          extraLightColorLUT[i * 3 + 2] = col[2] * cs * inten;
+          extraLightRadiusLUT[i] = L.radius == null ? 1.0 : L.radius;
+        }
+        numExtraLights = n;
+      }
       wake(); // post-fx params changed → re-render
     },
 
