@@ -25,6 +25,7 @@
 // =============================================================================
 
 import { CHROMOTOME_BRANDING_PALETTES } from './chromotome-palettes-data.js';
+import { ATLAS_THEMES } from './themes.js';
 
 /**
  * @typedef {object} BrandingPreset
@@ -50,11 +51,16 @@ const BUILT_IN_PALETTES = [
 ];
 
 /**
- * Full palette library: 5 built-in simple + ~23 chromotome multi-color (Sprint 9).
- * Iteration order: built-in first, then chromotome. Swap Branding menu cycles
- * through in this order. Total: 28 palettes.
+ * Full palette library: 9 Atlas themes (Sprint 15B, featured) + 5 built-in simple
+ * + ~23 chromotome multi-color (Sprint 9). Iteration order: Atlas themes first
+ * (3 macros × 3 colors), then legacy built-in, then chromotome. Total: 37
+ * palettes. Featured 9 are flagged `featured: true` for UI prioritization.
  */
-export const BRANDING_PALETTES = [...BUILT_IN_PALETTES, ...CHROMOTOME_BRANDING_PALETTES];
+export const BRANDING_PALETTES = [
+  ...ATLAS_THEMES,
+  ...BUILT_IN_PALETTES,
+  ...CHROMOTOME_BRANDING_PALETTES,
+];
 
 /**
  * Get a preset by id; fallback to first preset if id not found.

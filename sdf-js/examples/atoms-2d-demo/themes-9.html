@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Themes — 9 curated presets (3 macros × 3 colors)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&family=Quicksand:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: 'Inter', system-ui;
+        background: #f8f7f4;
+      }
+      h1 { font-size: 22px; margin: 0 0 4px; }
+      h1 + p { margin: 0 0 24px; color: #666; font-size: 13px; }
+      .macro-section { margin-bottom: 40px; }
+      .macro-section h2 { font-size: 16px; margin: 0 0 12px; padding: 6px 14px; background: #1e1b1e; color: white; display: inline-block; font-family: 'IBM Plex Mono', monospace; }
+      .theme-row { display: flex; gap: 12px; flex-wrap: wrap; }
+      .theme-card { background: white; border: 1px solid #e0ddd5; border-radius: 4px; overflow: hidden; }
+      .theme-card .head { padding: 8px 12px; font-size: 11px; background: #1e1b1e; color: white; font-family: 'IBM Plex Mono', monospace; }
+      .canvases { display: flex; gap: 0; }
+      .canvases canvas { display: block; border-right: 1px solid #eee; }
+      .canvases canvas:last-child { border-right: none; }
+    </style>
+  </head>
+  <body>
+    <h1>Atlas Themes — 9 curated presets</h1>
+    <p>3 macro clusters (Editorial / Pitch / Organic) × 3 color variants each. Same atoms rendered under each theme.</p>
+    <div id="root"></div>
+    <script type="module">
+      import { renderAtom } from '/src/present/atoms-2d/registry.js';
+      import { ATLAS_THEMES, THEME_MACROS } from '/src/present/themes.js';
+
+      // Sample atoms to render under each theme (kept compact for the matrix view)
+      const SAMPLES = [
+        {
+          id: 'kpi-hero',
+          w: 260, h: 200,
+          atom: { type: 'kpi-card', args: { value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs Q2', trend: 'up', trendValue: '+27%' } },
+        },
+        {
+          id: 'bar',
+          w: 260, h: 200,
+          atom: { type: 'bar', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1','Q2','Q3','Q4'], format: 'currency', title: 'Revenue ($M)' } },
+        },
+        {
+          id: 'sphere-fill',
+          w: 200, h: 200,
+          atom: { type: 'sphere-fill', args: { value: 72, label: '72%' } },
+        },
+        {
+          id: 'pie',
+          w: 260, h: 200,
+          atom: { type: 'pie', args: { values: [40, 30, 20, 10], labels: ['A','B','C','D'], format: 'percent', title: 'Share' } },
+        },
+      ];
+
+      const root = document.getElementById('root');
+      const rendered = {};
+
+      for (const macro of THEME_MACROS) {
+        const sec = document.createElement('div');
+        sec.className = 'macro-section';
+        const h = document.createElement('h2');
+        h.textContent = macro.label;
+        sec.appendChild(h);
+        const desc = document.createElement('div');
+        desc.style.cssText = 'font-size:11px;color:#666;margin-bottom:8px;';
+        desc.textContent = macro.description;
+        sec.appendChild(desc);
+        const row = document.createElement('div');
+        row.className = 'theme-row';
+        sec.appendChild(row);
+
+        const macroThemes = ATLAS_THEMES.filter((t) => t.macroCluster === macro.id);
+        for (const theme of macroThemes) {
+          const card = document.createElement('div');
+          card.className = 'theme-card';
+          card.style.background = `rgb(${theme.bg.join(',')})`;
+          const head = document.createElement('div');
+          head.className = 'head';
+          head.textContent = theme.id;
+          card.appendChild(head);
+          const canvWrap = document.createElement('div');
+          canvWrap.className = 'canvases';
+          for (const s of SAMPLES) {
+            const c = document.createElement('canvas');
+            c.id = `canvas-${theme.id}-${s.id}`;
+            c.width = s.w;
+            c.height = s.h;
+            canvWrap.appendChild(c);
+            const ctx = c.getContext('2d');
+            try {
+              await renderAtom(ctx, s.atom.type, s.atom.args, 'pseudo3d', {
+                x: 0, y: 0, w: s.w, h: s.h, palette: theme,
+              });
+              rendered[`${theme.id}-${s.id}`] = 'OK';
+            } catch (e) {
+              rendered[`${theme.id}-${s.id}`] = 'ERR: ' + e.message;
+            }
+          }
+          card.appendChild(canvWrap);
+          row.appendChild(card);
+        }
+        root.appendChild(sec);
+      }
+      window.__RENDERED__ = rendered;
+      window.__THEME_IDS__ = ATLAS_THEMES.map((t) => t.id);
+      console.log('Rendered:', JSON.stringify(rendered).slice(0, 200));
+    </script>
+  </body>
+</html>
