@@ -46,7 +46,6 @@ const PHOSPHOR_CATEGORIES = [
   'arrows',
 ];
 const BRAND_CATEGORIES = ['brand-social', 'brand-tools'];
-const FLAG_CATEGORY = 'flags';
 
 // ============================================================================
 // SVG path extraction helper — pull `d="..."` from an SVG file
@@ -99,6 +98,25 @@ function findSimpleIconsDir() {
   return null;
 }
 
+function loadSlugToHex() {
+  // simple-icons v16 SVGs have no inline fill= attr; brand hex lives in data JSON
+  const dataPath = `${REPO}/node_modules/simple-icons/data/simple-icons.json`;
+  if (!existsSync(dataPath)) {
+    console.warn('  WARN: simple-icons data JSON not found at', dataPath);
+    return {};
+  }
+  const raw = readFileSync(dataPath, 'utf8');
+  const data = JSON.parse(raw);
+  const map = {};
+  for (const key of Object.keys(data)) {
+    const entry = data[key];
+    if (entry && entry.slug && entry.hex) {
+      map[entry.slug] = '#' + entry.hex;
+    }
+  }
+  return map;
+}
+
 function bakeSimpleIcons() {
   const dir = findSimpleIconsDir();
   if (!dir) {
@@ -106,6 +124,9 @@ function bakeSimpleIcons() {
       `simple-icons not installed (looked in: ${SIMPLE_ICONS_DIR_CANDIDATES.join(', ')})`,
     );
   }
+  // Load slug→hex map from data JSON (v16+ SVGs have no inline fill attribute)
+  const slugToHex = loadSlugToHex();
+
   const baked = {};
   const missing = [];
   const wanted = new Set();
@@ -124,9 +145,8 @@ function bakeSimpleIcons() {
       missing.push(slug + ' (no <path d>)');
       continue;
     }
-    // Simple Icons brand color: pull from <title> sibling or from SVG fill attr
-    const fillMatch = svg.match(/fill="(#[0-9a-fA-F]{6})"/);
-    const color = fillMatch ? fillMatch[1] : '#000000';
+    // Brand color from data JSON; fall back to #000000 only if slug not found
+    const color = slugToHex[slug] ?? '#000000';
     baked[slug] = { path: d, color };
   }
   return { baked, missing };
@@ -134,6 +154,8 @@ function bakeSimpleIcons() {
 
 // ============================================================================
 // PHASE 3 — bake flag-icons (auto-pull all 207, not just the curated top-50)
+// Bakes ALL flag-icons SVGs — CATEGORIES['flags'] is informational only
+// (used by categories.js consumers + lift prompt), not by the bake.
 // ============================================================================
 function bakeFlagIcons() {
   if (!existsSync(FLAG_ICONS_DIR)) {
