@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Q3 2026 Quarterly Business Review",
+    "body": ["ANTFUN team review · 2026-09-30", "Operations + Product + GTM"]
+  },
+  {
+    "title": "Executive Summary",
+    "body": [
+      "Q3 ARR reached $740K — up 117% QoQ",
+      "Active wallets crossed 12,500 daily users",
+      "Insurance policy launched in week 8",
+      "Perp DEX prototype shipped end of quarter",
+      "3 strategic risks identified — see risks slide"
+    ]
+  },
+  {
+    "title": "KPI Dashboard",
+    "body": [
+      "ARR: $740K (target $600K, +23%)",
+      "DAU: 12,500 (target 8,000, +56%)",
+      "Trading volume: $4.2M daily (target $3M, +40%)",
+      "Retention D30: 92% (target 85%, +7pt)",
+      "NPS: 72 (target 60, +12pt)",
+      "Burn: $180K/mo (budget $250K, under by $70K)"
+    ]
+  },
+  {
+    "title": "Wins",
+    "body": [
+      "Self-custodial UX received Web3 Product Award",
+      "Sequoia follow-on $25M signed",
+      "Talent: hired 4 engineers from Coinbase + 2 from Anthropic",
+      "Press: TechCrunch / Bloomberg coverage 3 stories",
+      "Community: Discord crossed 24K members"
+    ]
+  },
+  {
+    "title": "Challenges",
+    "body": [
+      "Bridge integration delayed — third-party API instability",
+      "Perp DEX latency higher than target (2s vs 800ms goal)",
+      "Asia GTM slower due to regulatory uncertainty",
+      "Customer support response time avg 8h vs 2h SLA"
+    ]
+  },
+  {
+    "title": "Q4 Outlook",
+    "body": [
+      "ARR target $2.4M (3.2× Q3)",
+      "Launch Perp DEX with sub-second matching",
+      "Insurance policy expansion to 10 tokens",
+      "Asia regulatory clearance — Singapore + HK",
+      "Series B exploratory conversations"
+    ]
+  },
+  {
+    "title": "Next Steps",
+    "body": [
+      "Action: ship Perp DEX matching engine — Owner: Eng — Due: 2026-10-15",
+      "Action: insurance API beta — Owner: Product — Due: 2026-10-30",
+      "Action: Asia compliance docs — Owner: Legal — Due: 2026-11-10",
+      "Action: B-round pitch deck v1 — Owner: CEO — Due: 2026-11-30"
+    ]
+  }
+]
