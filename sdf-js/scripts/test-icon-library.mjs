@@ -10,6 +10,8 @@ import {
   getIconCategory,
   getAllCategories,
   hasIcon,
+  getBrandColor,
+  getFlagSvg,
 } from '../src/icons/index.js';
 import { CATEGORY_NAMES } from '../src/icons/categories.js';
 
@@ -60,7 +62,7 @@ it('getIconPath2D returns Path2D for known icon', () => {
   assert.ok(p instanceof Path2D);
 });
 
-it('getIconPath2D returns null for unknown icon', () => {
+it('getIconPath2D returns placeholder Path2D for unknown icon', () => {
   if (typeof Path2D === 'undefined') {
     globalThis.Path2D = class MockPath2D {
       constructor(d) {
@@ -68,23 +70,24 @@ it('getIconPath2D returns null for unknown icon', () => {
       }
     };
   }
-  assert.equal(getIconPath2D('does-not-exist'), null);
+  // resolveIcon now returns a placeholder on miss, so getIconPath2D returns its path
+  const p = getIconPath2D('does-not-exist');
+  assert.ok(p !== null, 'placeholder path is non-null');
+  assert.ok(p instanceof Path2D, 'placeholder path is a Path2D');
 });
 
-it('getAllCategories returns 8 category names', () => {
+it('getAllCategories returns 14 category names (Sprint 18 expansion)', () => {
   const cats = getAllCategories();
-  assert.equal(cats.length, 8);
+  assert.equal(cats.length, 14);
   assert.deepEqual(cats.slice().sort(), CATEGORY_NAMES.slice().sort());
 });
 
-it('getIconCategory returns non-empty list for each of 8 categories', () => {
+it('getIconCategory returns non-empty list for each of 14 categories', () => {
   for (const cat of CATEGORY_NAMES) {
     const names = getIconCategory(cat);
     assert.ok(Array.isArray(names), `${cat} not array`);
     assert.ok(names.length >= 5, `${cat} should have ≥5 icons (got ${names.length})`);
     for (const n of names) {
-      // Most names should be bakeable; if some missing, getIconPath returns null
-      // for those — but we expect the curation to be 0-missing per Phase 3 Step 3.
       assert.equal(typeof n, 'string', `${cat} has non-string entry`);
     }
   }
@@ -94,14 +97,25 @@ it('getIconCategory returns [] for unknown category', () => {
   assert.deepEqual(getIconCategory('not-a-category'), []);
 });
 
-it('every name returned by getIconCategory has a bakeable path', () => {
+it('every name returned by getIconCategory has a bakeable path or flag SVG', () => {
+  // Phosphor + brand cats: getIconPath must return non-null
+  // Flag cat: getFlagSvg must return non-null (flags store SVG body, not d path)
+  const FLAG_CATEGORY = 'flags';
   for (const cat of CATEGORY_NAMES) {
     for (const name of getIconCategory(cat)) {
-      const d = getIconPath(name);
-      assert.ok(
-        d !== null,
-        `${cat}/${name} missing from bake — fix categories.js or rerun build:icons`,
-      );
+      if (cat === FLAG_CATEGORY) {
+        const svg = getFlagSvg(name);
+        assert.ok(
+          svg !== null && svg.length > 0,
+          `flags/${name} missing from flag-icons bake — fix categories.js or rerun bake-icon-library-v2.mjs`,
+        );
+      } else {
+        const d = getIconPath(name);
+        assert.ok(
+          d !== null,
+          `${cat}/${name} missing from bake — fix categories.js or rerun bake-icon-library-v2.mjs`,
+        );
+      }
     }
   }
 });
@@ -112,6 +126,7 @@ it('total unique icons ≥ 700 (sanity floor)', () => {
   for (const c of allCats) {
     for (const n of getIconCategory(c)) unique.add(n);
   }
+  // Sprint 18: 3 sources → 699 Phosphor + 125 brand + 50 flags curated = 874+
   assert.ok(unique.size >= 700, `Expected ≥700 unique icons, got ${unique.size}`);
 });
 

@@ -131,8 +131,8 @@ console.log('\n--- drawPseudo3D smoke ---');
     'up arrow ↑ drawn',
   );
   ok(
-    calls.some((c) => Array.isArray(c) && c[0] === 'arc'),
-    'icon circle (stub) drawn',
+    calls.some((c) => c === 'fill'),
+    'icon fill drawn (Sprint 18: resolveIcon path)',
   );
   ok(
     calls.filter((c) => c === 'save').length === calls.filter((c) => c === 'restore').length,

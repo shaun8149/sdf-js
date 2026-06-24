@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Sprint 18 — Icons & Atom Enhancements Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body { margin: 0; padding: 24px; font-family: Inter, system-ui; background: #f8f7f4; }
+      h1 { font-size: 20px; margin: 0 0 4px; }
+      h1 + p { margin: 0 0 24px; color: #666; font-size: 12px; }
+      section { background: white; border: 1px solid #d0cec3; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+      section h2 { font-size: 14px; margin: 0 0 12px; font-family: monospace; background: #1e1b1e; color: white; display: inline-block; padding: 4px 10px; }
+      .cat-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 8px; font-size: 11px; }
+      .cat-row .name { font-family: monospace; background: #1e1b1e; color: white; padding: 2px 8px; border-radius: 3px; min-width: 110px; display: inline-block; }
+      canvas { display: block; border: 1px solid #eee; background: #fafaf8; margin-bottom: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Sprint 18 — Icons & Atom Enhancements Showcase</h1>
+    <p>Verifies icon library across 14 categories + 2 new atoms (icon-row, icon-grid) + 6 enhanced atoms with inline icons. Compare against PL D3180 reference visual quality.</p>
+
+    <section>
+      <h2>1. Library categories — 8 samples per category</h2>
+      <div id="cat-host"></div>
+    </section>
+
+    <section>
+      <h2>2. icon-row at 2 / 4 / 6 / 8 items</h2>
+      <canvas id="row-2" width="1200" height="240"></canvas>
+      <canvas id="row-4" width="1200" height="240"></canvas>
+      <canvas id="row-6" width="1200" height="240"></canvas>
+      <canvas id="row-8" width="1200" height="280"></canvas>
+    </section>
+
+    <section>
+      <h2>3. icon-grid at 4 / 6 / 9 / 12 items</h2>
+      <canvas id="grid-4" width="1200" height="480"></canvas>
+      <canvas id="grid-6" width="1200" height="480"></canvas>
+      <canvas id="grid-9" width="1200" height="560"></canvas>
+      <canvas id="grid-12" width="1200" height="560"></canvas>
+    </section>
+
+    <section>
+      <h2>4. Enhanced atoms — before/after (no icon / with icon)</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div><strong>bullet-list (no icons)</strong><canvas id="bl-no" width="600" height="280"></canvas></div>
+        <div><strong>bullet-list (with icons)</strong><canvas id="bl-yes" width="600" height="280"></canvas></div>
+        <div><strong>agenda-list (no icons)</strong><canvas id="al-no" width="600" height="320"></canvas></div>
+        <div><strong>agenda-list (with icons)</strong><canvas id="al-yes" width="600" height="320"></canvas></div>
+        <div><strong>progression (no icons)</strong><canvas id="pg-no" width="800" height="200"></canvas></div>
+        <div><strong>progression (with icons)</strong><canvas id="pg-yes" width="800" height="200"></canvas></div>
+        <div><strong>kpi-card (no icon)</strong><canvas id="kpi-no" width="400" height="240"></canvas></div>
+        <div><strong>kpi-card (with icon)</strong><canvas id="kpi-yes" width="400" height="240"></canvas></div>
+      </div>
+    </section>
+
+    <script type="module">
+      import { renderAtom } from '/src/present/atoms-2d/registry.js';
+      import { CATEGORIES, CATEGORY_NAMES } from '/src/icons/index.js';
+
+      const theme = {
+        bg: [248, 247, 244], silhouetteColor: [30, 27, 30],
+        colors: [[60, 100, 200]], accent: [60, 100, 200],
+      };
+
+      // 1. Category samples
+      const catHost = document.getElementById('cat-host');
+      for (const cat of CATEGORY_NAMES) {
+        const row = document.createElement('div');
+        row.className = 'cat-row';
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'name';
+        nameSpan.textContent = `${cat} (${CATEGORIES[cat].length})`;
+        row.appendChild(nameSpan);
+        const sampleNames = CATEGORIES[cat].slice(0, 8);
+        const c = document.createElement('canvas');
+        c.width = 1080; c.height = 80;
+        row.appendChild(c);
+        catHost.appendChild(row);
+
+        await renderAtom(c.getContext('2d'), 'icon-row', {
+          items: sampleNames.map((n) => {
+            const prefix = cat.startsWith('brand-') ? 'brand:' :
+                           cat === 'flags' ? '' : '';
+            return { icon: prefix + n, label: '' };
+          }),
+          colorMode: 'auto', iconStyle: 'plain',
+        }, 'pseudo3d', { x: 0, y: 0, w: 1080, h: 80, palette: theme });
+      }
+
+      // 2. icon-row sizes
+      const sampleItems = [
+        { icon: 'shield', label: 'Trust' },
+        { icon: 'sparkle', label: 'Quality' },
+        { icon: 'lightning', label: 'Speed' },
+        { icon: 'heart', label: 'Customer Focus' },
+        { icon: 'brain', label: 'Insight' },
+        { icon: 'rocket', label: 'Growth' },
+        { icon: 'globe', label: 'Reach' },
+        { icon: 'medal', label: 'Excellence' },
+      ];
+      for (const n of [2, 4, 6, 8]) {
+        const c = document.getElementById(`row-${n}`);
+        await renderAtom(c.getContext('2d'), 'icon-row', {
+          title: `${n} items`,
+          items: sampleItems.slice(0, n),
+        }, 'pseudo3d', { x: 0, y: 0, w: c.width, h: c.height, palette: theme });
+      }
+
+      // 3. icon-grid sizes
+      const gridItems = [
+        ...sampleItems,
+        { icon: 'gear', label: 'Engineering' },
+        { icon: 'palette', label: 'Design' },
+        { icon: 'megaphone', label: 'Marketing' },
+        { icon: 'wallet', label: 'Finance' },
+      ];
+      for (const n of [4, 6, 9, 12]) {
+        const c = document.getElementById(`grid-${n}`);
+        await renderAtom(c.getContext('2d'), 'icon-grid', {
+          title: `${n} items`,
+          items: gridItems.slice(0, n),
+        }, 'pseudo3d', { x: 0, y: 0, w: c.width, h: c.height, palette: theme });
+      }
+
+      // 4. Before/after enhanced atoms
+      // bullet-list
+      await renderAtom(document.getElementById('bl-no').getContext('2d'), 'bullet-list', {
+        title: 'Features', items: [
+          { label: 'Mobile-first wallet' }, { label: 'AI co-pilot' },
+          { label: 'End-to-end encryption' }, { label: 'Cross-chain' },
+        ],
+      }, 'pseudo3d', { x: 0, y: 0, w: 600, h: 280, palette: theme });
+      await renderAtom(document.getElementById('bl-yes').getContext('2d'), 'bullet-list', {
+        title: 'Features', items: [
+          { label: 'Mobile-first wallet', icon: 'device-mobile' },
+          { label: 'AI co-pilot', icon: 'brain' },
+          { label: 'End-to-end encryption', icon: 'lock-key' },
+          { label: 'Cross-chain', icon: 'link' },
+        ],
+      }, 'pseudo3d', { x: 0, y: 0, w: 600, h: 280, palette: theme });
+
+      // agenda-list
+      const agendaItems = [
+        { label: 'Recap last quarter', sublabel: '5 min' },
+        { label: 'KPI dashboard review', sublabel: '15 min' },
+        { label: 'Wins and challenges', sublabel: '20 min' },
+        { label: 'Next-quarter plan', sublabel: '20 min' },
+      ];
+      await renderAtom(document.getElementById('al-no').getContext('2d'), 'agenda-list', {
+        title: 'Agenda', items: agendaItems,
+      }, 'pseudo3d', { x: 0, y: 0, w: 600, h: 320, palette: theme });
+      await renderAtom(document.getElementById('al-yes').getContext('2d'), 'agenda-list', {
+        title: 'Agenda', items: agendaItems.map((it, i) =>
+          ({ ...it, icon: ['clock', 'chart-bar', 'trophy', 'calendar'][i] })),
+      }, 'pseudo3d', { x: 0, y: 0, w: 600, h: 320, palette: theme });
+
+      // progression
+      const steps = [{label:'Idea'},{label:'Build'},{label:'Ship'},{label:'Iterate'}];
+      await renderAtom(document.getElementById('pg-no').getContext('2d'), 'progression', {
+        title: 'Process', steps,
+      }, 'pseudo3d', { x: 0, y: 0, w: 800, h: 200, palette: theme });
+      await renderAtom(document.getElementById('pg-yes').getContext('2d'), 'progression', {
+        title: 'Process', steps: steps.map((s, i) =>
+          ({ ...s, icon: ['lightbulb', 'wrench', 'rocket', 'arrows-clockwise'][i] })),
+      }, 'pseudo3d', { x: 0, y: 0, w: 800, h: 200, palette: theme });
+
+      // kpi-card
+      await renderAtom(document.getElementById('kpi-no').getContext('2d'), 'kpi-card', {
+        value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs $2.6M Q2',
+        trend: 'up', trendValue: '+27%',
+      }, 'pseudo3d', { x: 0, y: 0, w: 400, h: 240, palette: theme });
+      await renderAtom(document.getElementById('kpi-yes').getContext('2d'), 'kpi-card', {
+        value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs $2.6M Q2',
+        trend: 'up', trendValue: '+27%', icon: 'chart-line-up',
+      }, 'pseudo3d', { x: 0, y: 0, w: 400, h: 240, palette: theme });
+    </script>
+  </body>
+</html>

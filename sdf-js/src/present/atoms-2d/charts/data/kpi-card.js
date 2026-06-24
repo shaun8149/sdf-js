@@ -25,6 +25,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'kpi-card',
@@ -219,16 +220,21 @@ function drawTrendPill(ctx, trend, value, rightX, topY, palette) {
   ctx.fillText(text, left + 20, topY + pillH / 2 + 1);
 }
 
-// Lightweight icon stub — Phase 0 placeholder before atoms-2d/icons/ Phase
-// 4 ships. Draws a simple circle outline so the layout space is occupied.
-// When Phase 4 lands, replace with renderAtom(ctx, args.icon, ..., 'pseudo3d').
+// Sprint 18: wired to icon library. cx/cy = top-left corner of the icon area.
 function drawIconStub(ctx, name, cx, cy, size, color) {
+  const resolved = resolveIcon(name);
+  if (!resolved.path) return;
+  const viewBox = resolved.source === 'brand' ? 24 : 256;
+  const scale = size / viewBox;
   ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
-  ctx.stroke();
+  try {
+    ctx.translate(cx - size / 2, cy - size / 2);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = color;
+    ctx.fill(resolved.path);
+  } catch (_) {
+    /* Path2D unavailable (Node) */
+  }
   ctx.restore();
 }
 

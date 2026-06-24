@@ -6,7 +6,7 @@
   "description": "Atlas — LLM-native illustration platform. Built on sdf-js. Root package: tooling + CI orchestration.",
   "scripts": {
     "test": "node scripts/run-tests.mjs",
-    "build:icons": "node scripts/bake-icon-library.mjs",
+    "build:icons": "node sdf-js/scripts/bake-icon-library-v2.mjs",
     "test:smoke": "node scripts/run-tests.mjs smoke",
     "test:sanity": "node scripts/run-tests.mjs sanity",
     "test:world": "node scripts/run-tests.mjs world",
@@ -45,6 +45,7 @@
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
     "flag-icons": "^7.2.3",
-    "pdfjs-dist": "^6.0.227"
+    "pdfjs-dist": "^6.0.227",
+    "simple-icons": "^16.24.0"
   }
 }

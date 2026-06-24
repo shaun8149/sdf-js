@@ -1,76 +1,234 @@
 // =============================================================================
-// sdf-js/src/icons/index.js — Atlas icon library runtime API
+// sdf-js/src/icons/index.js — Atlas icon library runtime API (Sprint 18)
 // -----------------------------------------------------------------------------
-// Wraps the baked Phosphor icon path map (./baked-library.js) + curated
-// category lists (./categories.js) with consumer-friendly accessors.
+// Unified resolver across 3 sources (Phosphor / Simple Icons / flag-icons)
+// with fuzzy fallback for typos. See:
+//   docs/superpowers/specs/2026-06-23-atlas-icons-and-text-minimization-sprint-18-design.md
 //
 // Consumers:
-//   - sdf-js/src/present/atoms-2d/icons/icon-badge.js (Canvas2D draw — uses
-//     getIconPath2D for the `new Path2D(...)` then ctx.fill / ctx.stroke)
-//   - lift system prompt v3.32 references this library indirectly by calling
-//     getIconCategory + getAllCategories during prompt-string assembly
-//     (NOT YET wired — see Task 6.1)
-//
-// Per docs/superpowers/specs/2026-06-22-atlas-present-sprint-15-design.md §7
-// and docs/superpowers/plans/2026-06-22-atlas-present-sprint-15c-icon-library-plan.md
-// Phase 4 Task 4.1.
+//   - sdf-js/src/present/atoms-2d/icons/{icon-badge,icon-row,icon-grid}.js
+//   - 6 atoms with inline-icon support (bullet-list / agenda-list / etc)
+//   - Lift prompt v4 (catalog injection)
 // =============================================================================
 
 import { BAKED_ICONS } from './baked-library.js';
-import { CATEGORIES, CATEGORY_NAMES } from './categories.js';
+import { BRAND_ICONS } from './brand-icons.js';
+import { FLAG_ICONS } from './flag-icons.js';
+import { CATEGORIES, CATEGORY_NAMES, getCategoryNames, getCategoryForIcon } from './categories.js';
+import { closestMatch } from './fuzzy.js';
+
+// Pre-compute a flat name list for fuzzy matching (across all 3 sources, plain/unprefixed)
+const PLAIN_NAMES = [
+  ...Object.keys(BAKED_ICONS),
+  ...Object.keys(BRAND_ICONS),
+  ...Object.keys(FLAG_ICONS),
+];
 
 /**
- * Raw SVG d attribute payload for an icon name. Returns null for unknown names.
- * Canvas2D consumers should usually prefer getIconPath2D.
- * @param {string} name kebab-case Phosphor name (e.g. 'briefcase', 'chart-line')
- * @returns {string|null}
+ * Resolved icon descriptor (full form).
+ * @typedef {object} IconResult
+ * @property {Path2D|null} path — Path2D for path-based icons; null for flags
+ * @property {string|null} color — Brand hex color; null for Phosphor / flags
+ * @property {string} source — 'phosphor' | 'brand' | 'flag' | 'fallback' | 'placeholder'
+ * @property {string} resolvedName — actual name used (may differ if fuzzy matched)
+ * @property {string|null} svgInner — Flag SVG inner body; null for non-flag
  */
-export function getIconPath(name) {
-  return Object.prototype.hasOwnProperty.call(BAKED_ICONS, name) ? BAKED_ICONS[name] : null;
+
+/**
+ * Build a placeholder IconResult for names that don't resolve to any known icon.
+ * Returns a filled-square Path2D in Phosphor 24-viewbox coords.
+ * If Path2D is unavailable (Node without shim), path is null.
+ * @param {string} name — the original input name, preserved for debugging
+ * @returns {IconResult}
+ */
+function _placeholderResult(name) {
+  const path = typeof Path2D !== 'undefined' ? new Path2D('M4 4h16v16H4z') : null;
+  return { path, color: null, source: 'placeholder', resolvedName: name, svgInner: null };
 }
 
 /**
- * Convenience: return a constructed Path2D wrapping the icon's d attr, or null.
- * Canvas2D consumer: ctx.fill(getIconPath2D('briefcase')).
+ * Full resolver — never returns null. On total miss, returns a placeholder
+ * IconResult: {source:'placeholder', path:<filled-square-Path2D>, color:null,
+ * svgInner:null, resolvedName:<input>}. Downstream atoms can always access
+ * .path without a null-check (it will be a Path2D or null only in Node without shim).
  *
- * Note: Path2D is a browser API. In Node tests without `canvas` package, callers
- * may shim global Path2D before invoking. Browser code never hits the null path
- * (Path2D is always available).
- * @param {string} name
- * @returns {Path2D|null}
+ * Prefer this over getIconPath2D when the atom needs any of:
+ *   - brand color (e.g. Slack purple, GitHub dark)
+ *   - flag SVG body (flags are multi-element SVGs, not single paths)
+ *   - source attribution ('phosphor' | 'brand' | 'flag' | 'fallback' | 'placeholder')
+ *   - the actual resolved name after fuzzy matching
+ *
+ * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
+ * @returns {IconResult}
+ */
+export function resolveIcon(name) {
+  if (!name || typeof name !== 'string') return _placeholderResult(name ?? '');
+  const lc = name.toLowerCase().trim();
+
+  // 1. Prefixed lookups (explicit source)
+  if (lc.startsWith('phosphor:')) return _phosphorResult(lc.slice(9)) ?? _placeholderResult(name);
+  if (lc.startsWith('brand:')) return _brandResult(lc.slice(6)) ?? _placeholderResult(name);
+  if (lc.startsWith('flag:')) return _flagResult(lc.slice(5)) ?? _placeholderResult(name);
+  if (lc.startsWith('country-')) return _flagResult(lc.slice(8)) ?? _placeholderResult(name);
+
+  // 2. Try Phosphor (most common)
+  if (Object.prototype.hasOwnProperty.call(BAKED_ICONS, lc)) {
+    return _phosphorResult(lc);
+  }
+  // 3. Try Brand (Simple Icons)
+  if (Object.prototype.hasOwnProperty.call(BRAND_ICONS, lc)) {
+    return _brandResult(lc);
+  }
+  // 4. Try flag (2-letter ISO code)
+  if (lc.length === 2 && Object.prototype.hasOwnProperty.call(FLAG_ICONS, lc)) {
+    return _flagResult(lc);
+  }
+  // 5. Fuzzy fallback across all sources
+  const match = closestMatch(lc, PLAIN_NAMES, 2);
+  if (match) {
+    const result = resolveIcon(match.name);
+    if (result && result.source !== 'placeholder') {
+      return { ...result, source: 'fallback', resolvedName: match.name };
+    }
+  }
+  // 6. No match — return placeholder so downstream atoms never get null
+  return _placeholderResult(name);
+}
+
+/**
+ * Get a Path2D for an icon by name. Returns the placeholder filled-square
+ * Path2D when the name doesn't resolve (no null returned — callers don't
+ * need null-guards before ctx.fill()).
+ *
+ * For full icon descriptor with source attribution, brand color, and
+ * fuzzy fallback info, use resolveIcon() instead.
+ *
+ * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
+ * @returns {Path2D|null} Path2D for known names + placeholder for unknown.
+ *   Returns null only when Path2D is unavailable (Node without shim).
  */
 export function getIconPath2D(name) {
-  const d = getIconPath(name);
-  if (d === null) return null;
-  if (typeof Path2D === 'undefined') return null;
-  return new Path2D(d);
+  const result = resolveIcon(name);
+  if (!result) return null;
+  return result.path ?? null;
+}
+
+// ----------------------------------------------------------------------------
+// Internal resolvers
+// ----------------------------------------------------------------------------
+
+function _phosphorResult(name) {
+  if (!Object.prototype.hasOwnProperty.call(BAKED_ICONS, name)) return null;
+  const path = typeof Path2D !== 'undefined' ? new Path2D(BAKED_ICONS[name]) : null;
+  return { path, color: null, source: 'phosphor', resolvedName: name, svgInner: null };
+}
+
+function _brandResult(slug) {
+  if (!Object.prototype.hasOwnProperty.call(BRAND_ICONS, slug)) return null;
+  const entry = BRAND_ICONS[slug];
+  const path = typeof Path2D !== 'undefined' ? new Path2D(entry.path) : null;
+  return { path, color: entry.color, source: 'brand', resolvedName: slug, svgInner: null };
+}
+
+function _flagResult(code) {
+  if (!Object.prototype.hasOwnProperty.call(FLAG_ICONS, code)) return null;
+  return {
+    path: null,
+    color: null,
+    source: 'flag',
+    resolvedName: code,
+    svgInner: FLAG_ICONS[code],
+  };
+}
+
+// ----------------------------------------------------------------------------
+// Sprint 15c backward-compat: getIconPath returns raw SVG `d` string or null.
+// Checks Phosphor first, then brand, so all 14 category names resolve.
+// ----------------------------------------------------------------------------
+export function getIconPath(name) {
+  if (!name) return null;
+  const lc = name.toLowerCase().trim();
+  if (Object.prototype.hasOwnProperty.call(BAKED_ICONS, lc)) return BAKED_ICONS[lc];
+  if (Object.prototype.hasOwnProperty.call(BRAND_ICONS, lc)) return BRAND_ICONS[lc].path;
+  return null;
 }
 
 /**
- * Quick membership check.
+ * Quick membership check (no fuzzy).
  * @param {string} name
  * @returns {boolean}
  */
 export function hasIcon(name) {
-  return Object.prototype.hasOwnProperty.call(BAKED_ICONS, name);
+  const lc = (name || '').toLowerCase().trim();
+  if (lc.startsWith('brand:'))
+    return Object.prototype.hasOwnProperty.call(BRAND_ICONS, lc.slice(6));
+  if (lc.startsWith('flag:')) return Object.prototype.hasOwnProperty.call(FLAG_ICONS, lc.slice(5));
+  return (
+    Object.prototype.hasOwnProperty.call(BAKED_ICONS, lc) ||
+    Object.prototype.hasOwnProperty.call(BRAND_ICONS, lc) ||
+    (lc.length === 2 && Object.prototype.hasOwnProperty.call(FLAG_ICONS, lc))
+  );
 }
 
 /**
- * Curated icon names belonging to a category. Returns [] for unknown category.
- * Names are guaranteed bakeable (see Phase 3 Task 3.1 Step 3 — bake script
- * exits non-zero on any missing name, so committed categories.js + baked-library.js
- * are always in sync).
- * @param {string} category one of 'business' | 'finance' | 'tech' | 'medical'
- *                          | 'hrm' | 'social' | 'signs' | 'calendar'
- * @returns {string[]}
+ * Get brand color for a Simple Icons entry. null for Phosphor / flags.
+ * @param {string} name
+ * @returns {string|null}
  */
-export function getIconCategory(category) {
-  return CATEGORIES[category] ? CATEGORIES[category].slice() : [];
+export function getIconBrandColor(name) {
+  const lc = (name || '').toLowerCase().trim();
+  const slug = lc.startsWith('brand:') ? lc.slice(6) : lc;
+  return BRAND_ICONS[slug]?.color ?? null;
 }
 
+/** Alias (test-icon-library.mjs imports getBrandColor) */
+export const getBrandColor = getIconBrandColor;
+
 /**
- * @returns {string[]} all 8 category names
+ * Get inner SVG body for a flag. Returns null if not found.
+ * @param {string} code — 2-letter ISO 3166-1 alpha-2 (e.g. 'cn', 'us')
+ * @returns {string|null}
  */
+export function getFlagSvg(code) {
+  const lc = (code || '').toLowerCase().trim();
+  return FLAG_ICONS[lc] ?? null;
+}
+
+export function getCategoryIcons(category) {
+  return getCategoryNames(category);
+}
+
 export function getAllCategories() {
   return CATEGORY_NAMES.slice();
+}
+
+/** Sprint 15c name alias */
+export const getIconCategory = getCategoryIcons;
+
+export { CATEGORIES, CATEGORY_NAMES, getCategoryForIcon };
+
+/**
+ * Build a compact catalog string for LLM system-prompt injection.
+ * One line per category, format:
+ *   ## category-name (count): name1, name2, name3, ... nameN
+ *
+ * For Sprint 18 brand-* categories, brand icons also note their slug
+ * prefix so the LLM uses `brand:slack` form (matches resolver).
+ *
+ * @returns {string}
+ */
+export function buildIconCatalogString() {
+  const lines = ["## Atlas Icon Catalog — names usable in any atom's `icon` arg", ''];
+  for (const cat of CATEGORY_NAMES) {
+    const names = CATEGORIES[cat];
+    const prefix = cat.startsWith('brand-') ? 'brand:' : cat === 'flags' ? 'flag:' : '';
+    const namesStr = names.map((n) => prefix + n).join(', ');
+    lines.push(`### ${cat} (${names.length})`);
+    lines.push(namesStr);
+    lines.push('');
+  }
+  lines.push(
+    'Resolution order: prefix (brand: / flag:) > Phosphor > Simple Icons > flag-icons > fuzzy fallback > placeholder.',
+  );
+  return lines.join('\n');
 }

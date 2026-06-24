@@ -13,6 +13,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'bullet-list',
@@ -85,9 +86,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       status === 'highlight' ? accent : status === 'done' ? darken(accent, 0.2) : [200, 200, 205];
     const isFilled = status !== 'todo';
 
-    // Bullet
+    // Bullet OR icon (Sprint 18: icon replaces bullet mark when it.icon is set)
     ctx.save();
-    if (isFilled) {
+    if (it.icon) {
+      const resolved = resolveIcon(it.icon);
+      const viewBox = resolved.source === 'brand' ? 24 : 256;
+      const iconSize = bulletR * 2.2;
+      const iconColor =
+        status === 'todo' ? [160, 160, 165] : status === 'done' ? darken(accent, 0.2) : accent;
+      try {
+        ctx.translate(bulletX - iconSize / 2, rowCY - iconSize / 2);
+        ctx.scale(iconSize / viewBox, iconSize / viewBox);
+        ctx.fillStyle = rgbCss(iconColor);
+        if (resolved.path) ctx.fill(resolved.path);
+      } catch (_) {
+        /* Path2D unavailable (Node) */
+      }
+    } else if (isFilled) {
       ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
       ctx.shadowBlur = 4;
       ctx.shadowOffsetY = 1.5;

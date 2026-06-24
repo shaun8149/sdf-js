@@ -14,6 +14,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'agenda-list',
@@ -128,8 +129,22 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Chip number
-    if (numbered) {
+    // Chip: icon (Sprint 18) OR number (original)
+    if (it.icon) {
+      const resolved = resolveIcon(it.icon);
+      const viewBox = resolved.source === 'brand' ? 24 : 256;
+      const iconSize = chipSize * 0.62;
+      ctx.save();
+      try {
+        ctx.translate(chipX - iconSize / 2, rowCY - iconSize / 2);
+        ctx.scale(iconSize / viewBox, iconSize / viewBox);
+        ctx.fillStyle = 'rgba(255,255,255,0.97)';
+        if (resolved.path) ctx.fill(resolved.path);
+      } catch (_) {
+        /* Path2D unavailable (Node) */
+      }
+      ctx.restore();
+    } else if (numbered) {
       ctx.fillStyle = 'white';
       ctx.font = `700 ${Math.round(chipSize * 0.5)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
@@ -230,11 +245,34 @@ function drawShowcase(
       ctx.fillText(numText, cellX, cellY);
     }
 
+    // Sprint 18: small icon badge to the left of label (alongside large number)
+    if (it.icon) {
+      const resolved = resolveIcon(it.icon);
+      const viewBox = resolved.source === 'brand' ? 24 : 256;
+      const iconSize = Math.min(numSize * 0.38, 32);
+      const iconCx =
+        cellX +
+        (numbered ? ctx.measureText(String(i + 1).padStart(2, '0')).width + 16 : 0) +
+        iconSize / 2;
+      const iconCy = cellY + Math.round(numSize * 0.18) + iconSize / 2;
+      ctx.save();
+      try {
+        ctx.translate(iconCx - iconSize / 2, iconCy - iconSize / 2);
+        ctx.scale(iconSize / viewBox, iconSize / viewBox);
+        ctx.fillStyle = isHi ? rgbCss(accent) : rgbaCss(fg, 0.7);
+        if (resolved.path) ctx.fill(resolved.path);
+      } catch (_) {
+        /* Path2D unavailable (Node) */
+      }
+      ctx.restore();
+    }
+
     // Label position: right of number (compute number width)
     ctx.font = `900 ${Math.round(numSize)}px "Inter Display", Inter, system-ui, sans-serif`;
     const numW = numbered ? ctx.measureText(String(i + 1).padStart(2, '0')).width + 16 : 0;
-    const labelX = cellX + numW;
-    const labelMaxW = colW - numW - 12;
+    const iconExtraW = it.icon ? Math.min(numSize * 0.38, 32) + 8 : 0;
+    const labelX = cellX + numW + iconExtraW;
+    const labelMaxW = colW - numW - iconExtraW - 12;
 
     // Item label (bold, dark)
     if (it.label) {

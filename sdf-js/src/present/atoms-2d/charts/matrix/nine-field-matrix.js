@@ -15,6 +15,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'nine-field-matrix',
@@ -109,7 +110,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const color = bandColorMap[bandName];
       const cx = gridL + c * cellW;
       const cy = gridT + r * cellH;
-      drawCell(ctx, cx + 4, cy + 4, cellW - 8, cellH - 8, cell.label, cell.sublabel, color);
+      drawCell(
+        ctx,
+        cx + 4,
+        cy + 4,
+        cellW - 8,
+        cellH - 8,
+        cell.label,
+        cell.sublabel,
+        color,
+        cell.icon,
+      );
     }
   }
 
@@ -259,7 +270,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function drawCell(ctx, x, y, w, h, label, sublabel, color) {
+function drawCell(ctx, x, y, w, h, label, sublabel, color, iconName) {
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
   ctx.shadowBlur = 8;
@@ -276,6 +287,23 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color) {
   ctx.fillStyle = rgbaCss(lighten(color, 0.45), 0.5);
   roundRect(ctx, x, y, w, 3, 8);
   ctx.fill();
+
+  // Sprint 18: small icon in top-left corner of cell
+  if (iconName) {
+    const resolved = resolveIcon(iconName);
+    const viewBox = resolved.source === 'brand' ? 24 : 256;
+    const iconSize = Math.min(h * 0.28, w * 0.28, 24);
+    ctx.save();
+    try {
+      ctx.translate(x + 6, y + 8);
+      ctx.scale(iconSize / viewBox, iconSize / viewBox);
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      if (resolved.path) ctx.fill(resolved.path);
+    } catch (_) {
+      /* Path2D unavailable (Node) */
+    }
+    ctx.restore();
+  }
 
   // Label
   if (label) {
