@@ -29,32 +29,47 @@ const PLAIN_NAMES = [
  * @typedef {object} IconResult
  * @property {Path2D|null} path — Path2D for path-based icons; null for flags
  * @property {string|null} color — Brand hex color; null for Phosphor / flags
- * @property {string} source — 'phosphor' | 'brand' | 'flag' | 'fallback'
+ * @property {string} source — 'phosphor' | 'brand' | 'flag' | 'fallback' | 'placeholder'
  * @property {string} resolvedName — actual name used (may differ if fuzzy matched)
  * @property {string|null} svgInner — Flag SVG inner body; null for non-flag
  */
 
 /**
- * Full resolver — returns an IconResult object or null if nothing matches.
+ * Build a placeholder IconResult for names that don't resolve to any known icon.
+ * Returns a filled-square Path2D in Phosphor 24-viewbox coords.
+ * If Path2D is unavailable (Node without shim), path is null.
+ * @param {string} name — the original input name, preserved for debugging
+ * @returns {IconResult}
+ */
+function _placeholderResult(name) {
+  const path = typeof Path2D !== 'undefined' ? new Path2D('M4 4h16v16H4z') : null;
+  return { path, color: null, source: 'placeholder', resolvedName: name, svgInner: null };
+}
+
+/**
+ * Full resolver — never returns null. On total miss, returns a placeholder
+ * IconResult: {source:'placeholder', path:<filled-square-Path2D>, color:null,
+ * svgInner:null, resolvedName:<input>}. Downstream atoms can always access
+ * .path without a null-check (it will be a Path2D or null only in Node without shim).
  *
  * Prefer this over getIconPath2D when the atom needs any of:
  *   - brand color (e.g. Slack purple, GitHub dark)
  *   - flag SVG body (flags are multi-element SVGs, not single paths)
- *   - source attribution ('phosphor' | 'brand' | 'flag' | 'fallback')
+ *   - source attribution ('phosphor' | 'brand' | 'flag' | 'fallback' | 'placeholder')
  *   - the actual resolved name after fuzzy matching
  *
  * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
- * @returns {IconResult|null}
+ * @returns {IconResult}
  */
 export function resolveIcon(name) {
-  if (!name || typeof name !== 'string') return null;
+  if (!name || typeof name !== 'string') return _placeholderResult(name ?? '');
   const lc = name.toLowerCase().trim();
 
   // 1. Prefixed lookups (explicit source)
-  if (lc.startsWith('phosphor:')) return _phosphorResult(lc.slice(9));
-  if (lc.startsWith('brand:')) return _brandResult(lc.slice(6));
-  if (lc.startsWith('flag:')) return _flagResult(lc.slice(5));
-  if (lc.startsWith('country-')) return _flagResult(lc.slice(8));
+  if (lc.startsWith('phosphor:')) return _phosphorResult(lc.slice(9)) ?? _placeholderResult(name);
+  if (lc.startsWith('brand:')) return _brandResult(lc.slice(6)) ?? _placeholderResult(name);
+  if (lc.startsWith('flag:')) return _flagResult(lc.slice(5)) ?? _placeholderResult(name);
+  if (lc.startsWith('country-')) return _flagResult(lc.slice(8)) ?? _placeholderResult(name);
 
   // 2. Try Phosphor (most common)
   if (Object.prototype.hasOwnProperty.call(BAKED_ICONS, lc)) {
@@ -72,10 +87,12 @@ export function resolveIcon(name) {
   const match = closestMatch(lc, PLAIN_NAMES, 2);
   if (match) {
     const result = resolveIcon(match.name);
-    if (result) return { ...result, source: 'fallback', resolvedName: match.name };
+    if (result && result.source !== 'placeholder') {
+      return { ...result, source: 'fallback', resolvedName: match.name };
+    }
   }
-  // 6. No match
-  return null;
+  // 6. No match — return placeholder so downstream atoms never get null
+  return _placeholderResult(name);
 }
 
 /**

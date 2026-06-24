@@ -62,7 +62,7 @@ it('getIconPath2D returns Path2D for known icon', () => {
   assert.ok(p instanceof Path2D);
 });
 
-it('getIconPath2D returns null for unknown icon', () => {
+it('getIconPath2D returns placeholder Path2D for unknown icon', () => {
   if (typeof Path2D === 'undefined') {
     globalThis.Path2D = class MockPath2D {
       constructor(d) {
@@ -70,7 +70,10 @@ it('getIconPath2D returns null for unknown icon', () => {
       }
     };
   }
-  assert.equal(getIconPath2D('does-not-exist'), null);
+  // resolveIcon now returns a placeholder on miss, so getIconPath2D returns its path
+  const p = getIconPath2D('does-not-exist');
+  assert.ok(p !== null, 'placeholder path is non-null');
+  assert.ok(p instanceof Path2D, 'placeholder path is a Path2D');
 });
 
 it('getAllCategories returns 14 category names (Sprint 18 expansion)', () => {

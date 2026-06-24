@@ -24,7 +24,6 @@ import {
   hasIcon,
   getCategoryIcons,
   getAllCategories,
-  CATEGORIES,
 } from '../src/icons/index.js';
 
 let pass = 0;
@@ -98,7 +97,7 @@ console.log('\n--- Fuzzy fallback (edit distance ≤2) ---');
   ok(r.resolvedName === 'briefcase', `resolved to briefcase (got ${r?.resolvedName})`);
 }
 
-console.log('\n--- Unknown name → null (no throw) ---');
+console.log('\n--- Unknown name → placeholder (no throw) ---');
 {
   let threw = false;
   let r;
@@ -108,9 +107,13 @@ console.log('\n--- Unknown name → null (no throw) ---');
     threw = true;
   }
   ok(!threw, 'unknown name does not throw');
-  ok(r === null, `unknown → null (got ${r})`);
-  // getIconPath2D also returns null for unknown
-  ok(getIconPath2D('xyznotrealxyz') === null, 'getIconPath2D(unknown) returns null');
+  ok(r.source === 'placeholder', `unknown → placeholder source (got ${r.source})`);
+  ok(r.path !== null, 'placeholder has Path2D so render does not break');
+  ok(r.color === null, 'placeholder has no brand color');
+  ok(r.resolvedName === 'xyznotrealxyz', 'placeholder preserves input name for debugging');
+  // getIconPath2D still returns null for unknown (placeholder path is non-null but getIconPath2D
+  // checks resolveIcon internally — now returns the placeholder path)
+  ok(getIconPath2D('xyznotrealxyz') !== null, 'getIconPath2D(unknown) returns placeholder Path2D');
 }
 
 console.log('\n--- hasIcon membership ---');
