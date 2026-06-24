@@ -158,6 +158,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-icon-library.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-scaffolds.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-picker-llm.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-icon-library-expanded.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atoms-icons.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
