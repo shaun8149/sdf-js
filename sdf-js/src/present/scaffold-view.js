@@ -333,35 +333,42 @@ export async function mountScaffoldView(target, deckId) {
       assignment.slot.name +
       '",\n  "layout": "row|grid|hierarchy|stage|cover",\n  "subjects": [\n    { "type": "<atom>", "x": <px>, "y": <px>, "w": <px>, "h": <px>, "args": { ... } }\n  ]\n}\n```\n\n' +
       workedExamples +
-      `Rules (Sprint 18 — text minimization + icons):\n` +
+      `Rules (Sprint 18 v5 — aggressive text minimization + atom variety):\n` +
       `0. **CANVAS BOUNDS**: Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
       `1. **EVERY subject MUST have explicit x/y/w/h** in canvas pixels.\n` +
       `2. **Atom selection**: pick from recommended_atoms (priority order). Use forbidden_atoms as hard negative.\n` +
-      `3. **NUMBERS → CHART, never prose**:\n` +
+      `3. **HARD TEXT BUDGET (this is a 3D theater, not a document!)**:\n` +
+      `   - icon-row / icon-grid items[].label: **≤ 2 words** (e.g. 'Trust', 'Self-Custodial', 'Cross-Chain' — NOT 'Self-custodial trading approach')\n` +
+      `   - bullet-list items[].label: **≤ 5 words** (was unlimited; now hard cap — strip verbs / articles / fluff)\n` +
+      `   - kpi-card.value: **1-3 words** (e.g. '$3M', '92%', '1-2 Months')\n` +
+      `   - cover.title: **≤ 3 words** for section strips; deck-cover allowed full title\n` +
+      `   - Any label exceeding budget gets the meaning compressed by you BEFORE emit\n` +
+      `4. **NUMBERS → CHART, never prose**:\n` +
       `   - 3+ KPI values → multiple \`kpi-card\` or 1 \`dashboard-multi-kpi-composite\`\n` +
       `   - Time series (4+ points) → \`line\` or \`bar\`\n` +
       `   - Proportions/shares → \`pie\` or \`waterfall\`\n` +
       `   - Funnel/pipeline → \`funnel\`\n` +
       `   - Single percentage → \`sphere-fill\` or \`kpi-card\` or \`kpi-water-drop\`\n` +
       `   - NEVER describe numbers in bullet-list when a chart fits\n` +
-      `4. **SHORT CONCEPTS → icon + 1-3 word label**, not phrase:\n` +
+      `5. **VARIETY rule**: Look at adjacent slots' emit history. If the previous slot used \`icon-row\`, prefer \`icon-grid\` / \`bullet-list\` / chart atom THIS slot. Goal: ≥ 6 distinct atom types across deck (cover excluded). Atoms you should rotate through: cover / icon-row / icon-grid / bullet-list / kpi-card / agenda-list / progression / pyramid / pie / line / bar / funnel / waterfall / scatter / sphere-fill / venn / matrix-grid / nine-field-matrix / dashboard-multi-kpi-composite / fishbone / mindmap / org-chart / tree-diagram / circle-image-hub-spoke / device-mockup-row / isotype-people-grid.\n` +
+      `6. **SHORT CONCEPTS → icon + 1-2 word label**, not phrase:\n` +
       `   - "Values: Trust, Quality, Speed, Customer Focus" → \`icon-row\` with [{icon:'shield',label:'Trust'},{icon:'sparkle',label:'Quality'},...]\n` +
       `   - Single-word bullets → \`icon-row\` (4-6 items) or \`icon-grid\` (6-12 items)\n` +
       `   - NEVER \`bullet-list\` with all 1-2-word items — use icon-row/grid\n` +
-      `5. **bullet-list MUST have inline icons** unless content is truly paragraph-like:\n` +
+      `7. **bullet-list MUST have inline icons** unless content is truly paragraph-like:\n` +
       `   - Every \`items[*]\` should have \`icon: '<name>'\` from the catalog above\n` +
       `   - Empty bullets (no icon, no real label) = a bug\n` +
-      `6. **Per-atom soft text budget**: ≤ 8 words per label / value / title (exception: bullet-list items can be longer when paragraph-like).\n` +
-      `7. **Cover atom**:\n` +
+      `8. **Cover atom**:\n` +
       `   - Slot 0 deck cover → h=720 full, style: 'gradient'\n` +
       `   - Mid-deck title strip → h=120 TOP STRIP\n` +
       `   - Section divider slot → h=720 full + style: 'section'\n` +
-      `8. **icon-row / icon-grid args**:\n` +
-      `   - items: [{icon: '<phosphor-name | brand:slug | flag:code>', label: '1-3 words', sublabel?: '3-5 words'}]\n` +
+      `9. **icon-row / icon-grid args**:\n` +
+      `   - items: [{icon: '<phosphor-name | brand:slug | flag:code>', label: '1-2 words MAX', sublabel?: '3-5 words'}]\n` +
       `   - icon-row: 2-8 items horizontally (auto wraps to 2 rows when ≥7)\n` +
       `   - icon-grid: 4-16 items (cols auto-picks)\n` +
       `   - colorMode default 'auto' (brand icons keep brand color; Phosphor uses theme accent)\n` +
-      `9. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n`;
+      `10. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
+      `11. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
 
     const systemPrompt =
       `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +
