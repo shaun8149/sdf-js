@@ -25,6 +25,7 @@ import { renderAtom } from './atoms-2d/registry.js';
 import { exportDeckToPPTX } from './exporters/pptx.js';
 import { exportDeckToPDF } from './exporters/pdf.js';
 import { buildIconCatalogString } from '../icons/index.js';
+import { buildAtomCatalogString } from './atoms-2d/catalog.js';
 
 const ANTHROPIC_KEY_STORAGE = 'atlas-anthropic-key';
 const MODEL = 'claude-sonnet-4-5-20250929';
@@ -411,6 +412,8 @@ export async function mountScaffoldView(target, deckId) {
       `# CORE GOAL: Atlas decks are 3D theatrical presentations. TEXT MUST BE MINIMAL. ` +
       `Use icons + charts to replace verbose phrases. Audience reads a slide in ` +
       `≤3 seconds; long prose disappears in 3D space.\n\n` +
+      (await buildAtomCatalogString()) +
+      '\n\n' +
       buildIconCatalogString();
 
     const t0 = Date.now();

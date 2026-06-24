@@ -107,7 +107,8 @@ export function sphereFillAnchors({
     xs.push(cx);
   }
   const mid = (xs[0] + xs[N - 1]) / 2;
-  const lvl = (i) => (i < levels.length && levels[i] != null ? levels[i] : (levels[levels.length - 1] ?? 0.5));
+  const lvl = (i) =>
+    i < levels.length && levels[i] != null ? levels[i] : (levels[levels.length - 1] ?? 0.5);
   return Array.from({ length: N }, (_, i) => {
     const r = radiusFor(i);
     // Sit the % in the MIDDLE of the coloured liquid (not at the centre/waterline):
