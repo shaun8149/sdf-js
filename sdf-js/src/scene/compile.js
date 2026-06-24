@@ -1402,8 +1402,30 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
 
-  // 3. Apply transform
-  sdf = applyTransform(sdf, subj.transform, subj.animation);
+  // 3. Apply transform. If the factory returned a UNION (a multi-leaf atom such
+  // as sphere-fill-3d, where each leaf carries its own _subjectMaterial /
+  // _subjectPattern), push the transform DOWN onto each union child instead of
+  // wrapping the union — otherwise applyTransform wraps the union AST in a
+  // translate/rotate/scale op node that flattenUnion (sdf3.compile) can't descend,
+  // collapsing all leaves into one and dropping their per-leaf material/pattern
+  // (same failure mode as the compileBoolean union push-down below). This is
+  // mathematically equivalent: the transform acts on the query point and min()
+  // distributes over union, so the geometry is unchanged.
+  const hasOuterTransform = subj.transform != null || hasTransformAnim(subj.animation);
+  const isUnion = sdf?.ast?.kind === 'op' && sdf.ast.name === 'union';
+  if (isUnion && hasOuterTransform) {
+    const k = sdf.ast.opts?.k;
+    const kids = sdf.ast.children.map((c) => {
+      const t = applyTransform(c, subj.transform, subj.animation);
+      // applyTransform wrappers drop leaf tags — re-attach from the inner child.
+      if (c._subjectMaterial !== undefined) t._subjectMaterial = c._subjectMaterial;
+      if (c._subjectPattern !== undefined) t._subjectPattern = c._subjectPattern;
+      return t;
+    });
+    sdf = k != null ? union(...kids, { k }) : union(...kids);
+  } else {
+    sdf = applyTransform(sdf, subj.transform, subj.animation);
+  }
 
   // 4. Attach material/pattern at leaf level. Required when a primitive is
   // nested inside DomainGroup ops (rep / curve / mirror / twist / bend) —

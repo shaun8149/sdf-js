@@ -584,9 +584,18 @@ export const MATERIAL_KIND_INDEX = {
   // (e.g. coloured liquid inside a glass shell, or the distorted background),
   // blended with a Fresnel-weighted env reflection + a sharp sun glint + a cool
   // fresnel edge. Designed for thin hollow shells (so the refracted ray travels
-  // air, not solid — sphere-tracing can't march inside solids). Used by
-  // sphere-fill-3d's glass container (PresentationLoad "3D Spheres" look).
+  // air, not solid — sphere-tracing can't march inside solids). A standalone
+  // decorative transparent-glass capability (NOT used by sphere-fill — see kind 9).
   glass: 8,
+  // 9 = fill-gauge: a SOLID sphere shaded as a "fill level" gauge. The surface is
+  // split at a waterline into a coloured liquid bottom (the material's hue/sat/
+  // value) and a light glass top, with a crisp meniscus band between. The fill
+  // fraction (0..1) rides per-leaf in the PATTERN LUT slot [3] (u_leafPattern.w);
+  // on a sphere the surface normal's y-component IS the local height, so the
+  // split is `n.y < 2*fill-1` — transform-invariant, no center/radius needed.
+  // This is how sphere-fill-3d renders the readable two-tone gauge (the caps/
+  // overlay approach can't, see project_studio_coincident_surface_material_limit).
+  fill: 9,
 };
 
 // =============================================================================
