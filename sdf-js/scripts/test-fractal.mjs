@@ -97,6 +97,11 @@ ok(typeof FRACTAL_GLSL === 'string' && FRACTAL_GLSL.length > 400, 'FRACTAL_GLSL 
 for (const fn of ['mandelbrot2', 'mandelbulbDE', 'juliaQuatDE', 'mengerSDF', 'sierpinskiSDF']) {
   ok(FRACTAL_GLSL.includes(fn), `FRACTAL_GLSL defines ${fn}`);
 }
+ok(
+  FRACTAL_GLSL.includes('bool escaped = false') &&
+    FRACTAL_GLSL.includes('if (!escaped) return float(maxIter);'),
+  'GLSL mandelbrot2 treats capped, non-escaped orbits as inside (no NaN smoothing)',
+);
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
