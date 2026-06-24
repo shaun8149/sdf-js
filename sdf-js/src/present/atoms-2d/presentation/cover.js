@@ -111,7 +111,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillRect(boxX, boxY, boxW, boxH);
   }
   ctx.fillStyle = 'rgba(255,255,255,0.97)';
-  ctx.font = `900 ${titleSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(String(title), titleX, blockTop);

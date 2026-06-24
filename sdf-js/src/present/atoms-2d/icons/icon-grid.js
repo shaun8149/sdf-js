@@ -70,11 +70,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   let plotTop = y + PAD;
   if (args.title) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.06)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.round(h * 0.075)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(args.title, x + PAD, y + PAD);
-    plotTop = y + PAD + Math.round(h * 0.06) + 12;
+    plotTop = y + PAD + Math.round(h * 0.075) + 12;
   }
 
   // ---- Column count ----
@@ -146,7 +146,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       if (it.sublabel) {
         ctx.fillStyle = rgbaCss(fg, 0.55);
-        ctx.font = `400 ${Math.round(rowH * 0.075)}px Inter, system-ui, sans-serif`;
+        ctx.font = `500 ${Math.round(rowH * 0.075)}px Inter, system-ui, sans-serif`;
         ctx.fillText(
           fitText(ctx, String(it.sublabel), colW - 16),
           cellCx,

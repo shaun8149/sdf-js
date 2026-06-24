@@ -80,7 +80,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + PAD + Math.round(h * 0.085) + 6;
     if (args.subtitle) {
       ctx.fillStyle = rgbaCss(fg, 0.6);
-      ctx.font = `400 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+      ctx.font = `500 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
       ctx.fillText(args.subtitle, x + PAD, plotTop);
       plotTop += Math.round(h * 0.045) + 12;
     } else {
@@ -151,7 +151,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       if (it.sublabel) {
         ctx.fillStyle = rgbaCss(fg, 0.55);
-        ctx.font = `400 ${Math.round(rowH * 0.085)}px Inter, system-ui, sans-serif`;
+        ctx.font = `500 ${Math.round(rowH * 0.085)}px Inter, system-ui, sans-serif`;
         ctx.fillText(
           fitText(ctx, String(it.sublabel), colW - 20),
           cellCx,

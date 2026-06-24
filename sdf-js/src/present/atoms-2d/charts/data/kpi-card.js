@@ -158,10 +158,10 @@ function _drawDark(ctx, args, opts = {}) {
   }
   ctx.fillText(fitText(ctx, labelText, availW), x + 22, valueY + Math.round(h * 0.17));
 
-  // ---- Sublabel ----
+  // ---- Sublabel (Inter 500, faded, proper breathing room) ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(bg, 0.55);
-    ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
     ctx.fillText(
       fitText(ctx, String(args.sublabel), availW),
       x + 22,
