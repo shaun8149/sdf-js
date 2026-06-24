@@ -1402,6 +1402,15 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
 
+  // A single-leaf atom can carry its per-leaf tags on the factory SDF itself
+  // (e.g. sphere-fill-3d with ONE sphere returns the bare sphere with its fill
+  // fraction on _subjectPattern). The non-union applyTransform branch below wraps
+  // the SDF and drops those tags (same as the union branch, which re-attaches per
+  // child) — capture them now so we can re-attach after transform. Without this a
+  // lone fill gauge loses its fill and renders as plain glass (fill=0).
+  const factoryMat = sdf?._subjectMaterial;
+  const factoryPat = sdf?._subjectPattern;
+
   // 3. Apply transform. If the factory returned a UNION (a multi-leaf atom such
   // as sphere-fill-3d, where each leaf carries its own _subjectMaterial /
   // _subjectPattern), push the transform DOWN onto each union child instead of
@@ -1425,6 +1434,10 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
     sdf = k != null ? union(...kids, { k }) : union(...kids);
   } else {
     sdf = applyTransform(sdf, subj.transform, subj.animation);
+    // Re-attach leaf tags the applyTransform wrapper dropped (mirrors the union
+    // branch above). Subject-level material/pattern in step 4 still overrides.
+    if (factoryMat !== undefined) sdf._subjectMaterial = factoryMat;
+    if (factoryPat !== undefined) sdf._subjectPattern = factoryPat;
   }
 
   // 4. Attach material/pattern at leaf level. Required when a primitive is
