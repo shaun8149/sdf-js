@@ -362,6 +362,7 @@ export async function mountScaffoldView(target, deckId) {
       `   - Slot 0 deck cover → h=720 full, style: 'gradient'\n` +
       `   - Mid-deck title strip → h=120 TOP STRIP\n` +
       `   - Section divider slot → h=720 full + style: 'section'\n` +
+      `   - **Section divider slot detected (slot name = 'section-divider')**: emit a SINGLE cover atom at x=0/y=0/w=1280/h=720 with \`args.style: 'section'\` (deep accent + box-behind-title). Title should be ≤ 3 words (e.g. 'PRODUCT', 'TEAM', 'VISION').\n` +
       `9. **icon-row / icon-grid args**:\n` +
       `   - items: [{icon: '<phosphor-name | brand:slug | flag:code>', label: '1-2 words MAX', sublabel?: '3-5 words'}]\n` +
       `   - icon-row: 2-8 items horizontally (auto wraps to 2 rows when ≥7)\n` +
