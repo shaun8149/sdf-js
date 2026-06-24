@@ -96,15 +96,16 @@ export function resolveIcon(name) {
 }
 
 /**
- * Get a Path2D for an icon by name. Returns null for unknown names,
- * brands (use resolveIcon for brand color), and flags (use resolveIcon
- * for the SVG body — flags are multi-element SVGs not single paths).
+ * Get a Path2D for an icon by name. Returns the placeholder filled-square
+ * Path2D when the name doesn't resolve (no null returned — callers don't
+ * need null-guards before ctx.fill()).
  *
  * For full icon descriptor with source attribution, brand color, and
  * fuzzy fallback info, use resolveIcon() instead.
  *
  * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
- * @returns {Path2D|null}
+ * @returns {Path2D|null} Path2D for known names + placeholder for unknown.
+ *   Returns null only when Path2D is unavailable (Node without shim).
  */
 export function getIconPath2D(name) {
   const result = resolveIcon(name);
