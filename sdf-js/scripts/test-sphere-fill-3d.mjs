@@ -128,5 +128,35 @@ console.log('\nTest group 5: SceneData → compile → GLSL emit');
   }
 }
 
+// ---- Test group 6: per-sphere colours (colors[]) -----------------------------
+console.log('\nTest group 6: per-sphere colours via colors[]');
+{
+  // Mix object HSV + preset string; one sphere left uncoloured (falls back).
+  const sdf = sphereFill3dSDF({
+    levels: [0.8, 0.4, 0.2],
+    colors: [{ hue: 0.58, sat: 0.82, value: 0.66 }, 'fruit-red'],
+  });
+  const kids = sdf.ast?.children ?? [];
+  ok(kids.length === 3, 'three sphere leaves');
+  // Sphere 0: object colour → per-leaf material, kind forced to fill (9).
+  ok(kids[0]?._subjectMaterial != null, 'sphere 0 has per-leaf material');
+  ok(kids[0]?._subjectMaterial?.kind === 9, 'sphere 0 material kind forced to fill (9)');
+  ok(Math.abs(kids[0]?._subjectMaterial?.hue - 0.58) < 1e-6, 'sphere 0 hue = 0.58 (blue)');
+  ok(kids[0]?._subjectMaterial?.roughness === 0.3, 'sphere 0 gets gauge roughness default 0.3');
+  // Sphere 1: preset 'fruit-red' resolves, kind still forced to fill.
+  ok(kids[1]?._subjectMaterial?.kind === 9, 'sphere 1 (preset) kind forced to fill');
+  ok(kids[1]?._subjectMaterial?.hue === 0.0, "sphere 1 preset 'fruit-red' hue = 0");
+  // Sphere 2: no colour → no per-leaf material → falls back to subject material.
+  ok(kids[2]?._subjectMaterial === undefined, 'sphere 2 (no colour) falls back to subject material');
+  // Fill fractions still independent of colour.
+  ok(kids[0]?._subjectPattern?.fill === 0.8, 'sphere 0 keeps its fill 0.8');
+}
+{
+  // Single coloured sphere: leaf returned directly, still carries its material.
+  const single = sphereFill3dSDF({ levels: [0.5], colors: [{ hue: 0.3, sat: 0.7, value: 0.6 }] });
+  ok(single?._subjectMaterial?.kind === 9, 'single coloured sphere kind = fill');
+  ok(Math.abs(single?._subjectMaterial?.hue - 0.3) < 1e-6, 'single coloured sphere hue = 0.3');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
