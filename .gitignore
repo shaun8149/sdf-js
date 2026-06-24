@@ -12,6 +12,7 @@ node_modules/
 # 产物
 *.stl
 .gstack/
+.playwright-mcp/
 
 # Test fixtures: real-world PDFs/PPTXs may be copyrighted templates — kept
 # local only. Pre-parsed baked JSON (e.g. pdf-mapping-data.json) ships in the
