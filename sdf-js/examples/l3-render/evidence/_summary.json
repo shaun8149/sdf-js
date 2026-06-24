@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-06-21T02:25:49.740Z",
+  "cases": {
+    "L_apparat": {
+      "ok": 6,
+      "err": 0,
+      "total": 6,
+      "wallMs": 200710,
+      "sprint12_inter_count": 6,
+      "sprint13_icon_count": 1,
+      "sprint13_total_icons": 1,
+      "idioms_adopted": ["generateApparatusGrid"]
+    },
+    "L_voronoi": {
+      "ok": 6,
+      "err": 0,
+      "total": 6,
+      "wallMs": 204778,
+      "sprint12_inter_count": 6,
+      "sprint13_icon_count": 0,
+      "sprint13_total_icons": 0,
+      "idioms_adopted": ["voronoiCells", "delaunayTriangles"]
+    },
+    "L_colon": {
+      "ok": 6,
+      "err": 0,
+      "total": 6,
+      "wallMs": 227532,
+      "sprint12_inter_count": 6,
+      "sprint13_icon_count": 0,
+      "sprint13_total_icons": 0,
+      "idioms_adopted": ["spaceColonization", "springBrushStroke"]
+    },
+    "L_iconic_NEW": {
+      "ok": 6,
+      "err": 0,
+      "total": 6,
+      "wallMs": 235950,
+      "sprint12_inter_count": 6,
+      "sprint13_icon_count": 4,
+      "sprint13_total_icons": 8,
+      "idioms_adopted": ["packCirclesInSDF", "irregularGridPack", "springBrushStroke"]
+    },
+    "L_typo_NEW": {
+      "ok": 6,
+      "err": 0,
+      "total": 6,
+      "wallMs": 165205,
+      "sprint12_inter_count": 6,
+      "sprint13_icon_count": 5,
+      "sprint13_total_icons": 12,
+      "idioms_adopted": ["irregularGridPack"]
+    }
+  },
+  "totalOk": 30,
+  "totalErr": 0,
+  "totalLifts": 30,
+  "completedAt": "2026-06-21T02:43:03.938Z"
+}

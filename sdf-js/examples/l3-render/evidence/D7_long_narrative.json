@@ -1,0 +1,75 @@
+{
+  "id": "D7_long_narrative",
+  "text": "Last quarter our recommendation engine A/B tested 4 ranking algorithms across 2.3 million users, finding the hybrid neural-collaborative approach increased click-through rate by 23% while reducing latency 40ms — we're rolling it out to all 12 markets next month.",
+  "feature": "Sprint 11 reliability + JSON discipline on long input",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "p5CodeLen": 3521,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": []
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "sceneData": {
+        "v": 1,
+        "name": "compare: A/B Test Results — Hybrid Neural-Collaborative Wins",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Last quarter our recommendation engine A/B tested 4 ranking algorithms across 2.3 million users, finding the hybrid neural-collaborative approach increased click-through rate by 23% while reducing latency 40ms — we're rolling it out to all 12 markets next month.",
+          "from2dCode": "text-only prompt, no 2D SDF geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-ab-test",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const fgA=`rgb(${fg[0]},${fg[1]},${fg[2]})`;const fgFade=`rgba(${fg[0]},${fg[1]},${fg[2]},0.35)`;const accent=`rgba(${fg[0]},${fg[1]},${fg[2]},0.85)`;drawingContext.save();drawingContext.font='700 13px Inter';drawingContext.fillStyle=fgFade;drawingContext.textAlign='center';drawingContext.fillText('RECOMMENDATION ENGINE  ·  Q3 A/B TEST',300,22);drawingContext.restore();const cards=[{label:'Collaborative\\nFilter',ctr:'+8%',lat:'220ms',winner:false,x:48,w:110},{label:'Content\\nBased',ctr:'+11%',lat:'195ms',winner:false,x:174,w:110},{label:'Matrix\\nFactorize',ctr:'+15%',lat:'180ms',winner:false,x:300,w:110},{label:'Hybrid Neural-\\nCollaborative',ctr:'+23%',lat:'140ms',winner:true,x:426,w:138}];const ch=220,cy=70;cards.forEach(c=>{const alpha=c.winner?1:0.38;drawingContext.save();drawingContext.globalAlpha=alpha;drawingContext.strokeStyle=fgA;drawingContext.lineWidth=c.winner?2:1;drawingContext.beginPath();drawingContext.roundRect(c.x,cy,c.w,ch,8);drawingContext.stroke();if(c.winner){drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.07)`;drawingContext.fill();}drawingContext.restore();const lns=c.label.split('\\n');drawingContext.save();drawingContext.font=`${c.winner?'600':'400'} 12px Inter`;drawingContext.fillStyle=c.winner?fgA:`rgba(${fg[0]},${fg[1]},${fg[2]},0.5)`;drawingContext.textAlign='center';lns.forEach((ln,i)=>drawingContext.fillText(ln,c.x+c.w/2,cy+20+i*16));drawingContext.restore();const barH=Math.round(parseInt(c.ctr)*4.5);const barY=cy+ch-55-barH;drawingContext.save();drawingContext.globalAlpha=c.winner?0.9:0.3;drawingContext.fillStyle=fgA;drawingContext.beginPath();drawingContext.roundRect(c.x+16,barY,c.w-32,barH,3);drawingContext.fill();drawingContext.restore();drawingContext.save();drawingContext.font=`${c.winner?'700':'500'} ${c.winner?26:18}px ${c.winner?'IBM Plex Mono':'Inter'}`;drawingContext.fillStyle=c.winner?fgA:`rgba(${fg[0]},${fg[1]},${fg[2]},0.45)`;drawingContext.textAlign='center';drawingContext.fillText(c.ctr,c.x+c.w/2,cy+ch-32);drawingContext.restore();drawingContext.save();drawingContext.font=`400 11px Inter`;drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},${c.winner?0.7:0.3})`;drawingContext.textAlign='center';drawingContext.fillText(c.lat+' latency',c.x+c.w/2,cy+ch-14);drawingContext.restore();});drawingContext.save();drawingContext.font='600 11px Inter';drawingContext.fillStyle=fgA;drawingContext.textAlign='center';drawingContext.fillText('✓ WINNER',426+69,cy-10);drawingContext.restore();const statsY=318;const stats=[{icon:'👥',val:'2.3M',lbl:'users tested'},{icon:'📈',val:'+23%',lbl:'CTR lift'},{icon:'⚡',val:'−40ms',lbl:'latency cut'},{icon:'🌍',val:'12',lbl:'markets next'}];const sw=600/4;stats.forEach((s,i)=>{const sx=i*sw+sw/2;drawingContext.save();drawingContext.font='700 15px IBM Plex Mono';drawingContext.fillStyle=fgA;drawingContext.textAlign='center';drawingContext.fillText(s.val,sx,statsY);drawingContext.font='400 10px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.5)`;drawingContext.fillText(s.lbl,sx,statsY+13);drawingContext.restore();});drawingContext.save();drawingContext.strokeStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.15)`;drawingContext.lineWidth=1;drawingContext.beginPath();drawingContext.moveTo(20,statsY-12);drawingContext.lineTo(580,statsY-12);drawingContext.stroke();drawingContext.restore();}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.2,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          },
+          "postFx": {
+            "exposure": 1,
+            "vignetteStrength": 0.25,
+            "bloomMix": 0.08,
+            "bloomThreshold": 0.9,
+            "lensFlareStrength": 0
+          }
+        }
+      }
+    }
+  ]
+}

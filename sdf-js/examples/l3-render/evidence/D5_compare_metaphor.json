@@ -1,0 +1,74 @@
+{
+  "id": "D5_compare_metaphor",
+  "text": "The lean startup runs with 5 engineers, 3 designers, and 2 product managers — shipping features 10x faster than enterprise teams of 50.",
+  "feature": "Atlas wedge — concrete metaphor for abstract comparison",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "p5CodeLen": 5374,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": true,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": []
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "sceneData": {
+        "v": 1,
+        "name": "compare: Lean Startup vs Enterprise Team",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "The lean startup runs with 5 engineers, 3 designers, and 2 product managers — shipping features 10x faster than enterprise teams of 50.",
+          "from2dCode": "text-only slide"
+        },
+        "subjects": [
+          {
+            "id": "sketch-lean-vs-enterprise",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const fc=(r,g,b,a)=>{fill(r,g,b,a||255);};const fgc=(a)=>{fill(fg[0],fg[1],fg[2],a||255);};const W=600,H=360;const accentBlue=[60,130,220];const accentOrange=[240,130,40];const accentGreen=[60,190,100];const accentGrey=[160,160,175];const midX=W/2;stroke(fg[0],fg[1],fg[2],30);strokeWeight(1);line(midX,20,midX,H-20);noStroke();drawingContext.font='700 13px Inter';drawingContext.fillStyle=`rgb(${accentBlue[0]},${accentBlue[1]},${accentBlue[2]})`;drawingContext.textAlign='center';drawingContext.fillText('LEAN STARTUP',midX/2,34);drawingContext.font='700 13px Inter';drawingContext.fillStyle=`rgb(${accentGrey[0]},${accentGrey[1]},${accentGrey[2]})`;drawingContext.fillText('ENTERPRISE',midX+midX/2,34);drawingContext.font='500 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.45)`;drawingContext.textAlign='center';drawingContext.fillText('10 people',midX/2,52);drawingContext.fillText('50 people',midX+midX/2,52);function drawAtlasIcon(name,x,y,sz,col){const c=typeof col==='string'?col:`rgb(${col[0]},${col[1]},${col[2]})`;drawingContext.strokeStyle=c;drawingContext.lineWidth=1.5;drawingContext.lineCap='round';drawingContext.lineJoin='round';const h=sz,w=sz,ox=x-sz/2,oy=y-sz/2;if(name==='users'){drawingContext.beginPath();drawingContext.arc(ox+w*0.35,oy+h*0.32,h*0.18,0,Math.PI*2);drawingContext.stroke();drawingContext.beginPath();drawingContext.moveTo(ox+w*0.10,oy+h*0.78);drawingContext.quadraticCurveTo(ox+w*0.35,oy+h*0.56,ox+w*0.60,oy+h*0.78);drawingContext.stroke();drawingContext.beginPath();drawingContext.arc(ox+w*0.65,oy+h*0.28,h*0.15,0,Math.PI*2);drawingContext.stroke();drawingContext.beginPath();drawingContext.moveTo(ox+w*0.50,oy+h*0.72);drawingContext.quadraticCurveTo(ox+w*0.70,oy+h*0.55,ox+w*0.90,oy+h*0.70);drawingContext.stroke();}else if(name==='lightning'){drawingContext.beginPath();drawingContext.moveTo(ox+w*0.62,oy+h*0.05);drawingContext.lineTo(ox+w*0.32,oy+h*0.50);drawingContext.lineTo(ox+w*0.55,oy+h*0.50);drawingContext.lineTo(ox+w*0.38,oy+h*0.95);drawingContext.lineTo(ox+w*0.72,oy+h*0.45);drawingContext.lineTo(ox+w*0.48,oy+h*0.45);drawingContext.closePath();drawingContext.stroke();}else if(name==='chart-bar'){drawingContext.beginPath();drawingContext.rect(ox+w*0.08,oy+h*0.55,w*0.22,h*0.35);drawingContext.rect(ox+w*0.39,oy+h*0.30,w*0.22,h*0.60);drawingContext.rect(ox+w*0.70,oy+h*0.10,w*0.22,h*0.80);drawingContext.stroke();}else if(name==='clock'){drawingContext.beginPath();drawingContext.arc(ox+w/2,oy+h/2,h*0.42,0,Math.PI*2);drawingContext.stroke();drawingContext.beginPath();drawingContext.moveTo(ox+w/2,oy+h*0.20);drawingContext.lineTo(ox+w/2,oy+h/2);drawingContext.lineTo(ox+w*0.70,oy+h/2);drawingContext.stroke();}else if(name==='check'){drawingContext.beginPath();drawingContext.moveTo(ox+w*0.15,oy+h*0.52);drawingContext.lineTo(ox+w*0.42,oy+h*0.76);drawingContext.lineTo(ox+w*0.85,oy+h*0.24);drawingContext.stroke();}}const rows=[{icon:'users',leanVal:'10',entVal:'50',leanSub:'5 eng · 3 des · 2 pm',entSub:'≈ 20 eng · 15 des · 15 pm',leanCol:accentBlue,entCol:accentGrey},{icon:'lightning',leanVal:'10×',entVal:'1×',leanSub:'feature velocity',entSub:'baseline velocity',leanCol:accentOrange,entCol:accentGrey},{icon:'clock',leanVal:'days',entVal:'months',leanSub:'cycle time per feature',entSub:'cycle time per feature',leanCol:accentGreen,entCol:accentGrey},{icon:'chart-bar',leanVal:'high',entVal:'diffuse',leanSub:'impact per person',entSub:'impact per person',leanCol:accentBlue,entCol:accentGrey}];const rowH=62,rowStartY=78;rows.forEach((row,i)=>{const y=rowStartY+i*rowH;const lx=midX/2,rx=midX+midX/2;drawingContext.strokeStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.08)`;drawingContext.lineWidth=1;drawingContext.beginPath();drawingContext.moveTo(20,y-2);drawingContext.lineTo(W-20,y-2);drawingContext.stroke();noStroke();fill(row.leanCol[0],row.leanCol[1],row.leanCol[2],18);rect(22,y,midX-36,rowH-8,8);fill(accentGrey[0],accentGrey[1],accentGrey[2],12);rect(midX+14,y,midX-36,rowH-8,8);noFill();drawAtlasIcon(row.icon,lx-52,y+rowH/2-6,26,row.leanCol);drawingContext.font='700 22px IBM Plex Mono';drawingContext.fillStyle=`rgb(${row.leanCol[0]},${row.leanCol[1]},${row.leanCol[2]})`;drawingContext.textAlign='center';drawingContext.fillText(row.leanVal,lx+8,y+rowH*0.46);drawingContext.font='400 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.55)`;drawingContext.fillText(row.leanSub,lx+8,y+rowH*0.72);drawAtlasIcon(row.icon,rx-52,y+rowH/2-6,26,accentGrey);drawingContext.font='700 22px IBM Plex Mono';drawingContext.fillStyle=`rgb(${row.entCol[0]},${row.entCol[1]},${row.entCol[2]})`;drawingContext.textAlign='center';drawingContext.fillText(row.entVal,rx+8,y+rowH*0.46);drawingContext.font='400 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.55)`;drawingContext.fillText(row.entSub,rx+8,y+rowH*0.72);});drawingContext.font='900 38px IBM Plex Mono';drawingContext.fillStyle=`rgb(${accentOrange[0]},${accentOrange[1]},${accentOrange[2]})`;drawingContext.textAlign='center';drawingContext.fillText('10×',W/2,H-18);drawingContext.font='500 11px Inter';drawingContext.fillStyle=`rgba(${fg[0]},${fg[1]},${fg[2]},0.40)`;drawingContext.fillText('faster',W/2,H-4);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.4,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          },
+          "postFx": {
+            "exposure": 1,
+            "vignetteStrength": 0.18,
+            "bloomMix": 0.08,
+            "bloomThreshold": 0.9
+          }
+        }
+      }
+    }
+  ]
+}

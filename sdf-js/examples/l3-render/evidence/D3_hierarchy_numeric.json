@@ -1,0 +1,68 @@
+{
+  "id": "D3_hierarchy_numeric",
+  "text": "Engineering's 35 people split across: 12 backend engineers, 8 frontend developers, 6 ML researchers, 5 DevOps engineers, and 4 security specialists.",
+  "feature": "hierarchy + numeric labels + multi-color",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "p5CodeLen": 4642,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": ["irregularGridPack"]
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "compare",
+      "sceneData": {
+        "v": 1,
+        "name": "compare: Engineering Org — 35 People",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "Engineering's 35 people split across: 12 backend engineers, 8 frontend developers, 6 ML researchers, 5 DevOps engineers, and 4 security specialists.",
+          "from2dCode": "text-only prompt, no 2D SDF primitives"
+        },
+        "subjects": [
+          {
+            "id": "sketch-eng-org",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function irregularGridPack(gx,gy,ps){const b=[];for(let x=0;x<gx;x++)b.push(new Array(gy).fill(1));const r=[];function tp(x,y,w,h){if(x+w>gx||y+h>gy)return false;for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)if(b[xc][yc]===0)return false;return true;}function oc(x,y,w,h){for(let xc=x;xc<x+w;xc++)for(let yc=y;yc<y+h;yc++)b[xc][yc]=0;}for(const p of ps){const sx=p.sizesArrX||[1],sy=p.sizesArrY||[1];for(let x=0;x<gx;x++)for(let y=0;y<gy;y++){const w=sx[Math.floor(Math.random()*sx.length)],h=sy[Math.floor(Math.random()*sy.length)];if(tp(x,y,w,h)){oc(x,y,w,h);r.push({x,y,w,h,label:p.label,value:p.value,color:p.color,icon:p.icon});}}}return r;}function drawAtlasIcon(name,x,y,size,color){const s=size/24;const icons={'database':'M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4zM4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4zM4 14v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z','users':'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z','cloud':'M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z','lightning':'M7 2v11h3v9l7-12h-4l4-8z','shield':'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z','chart-bar':'M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z','globe':'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'};const d=icons[name];if(!d)return;const ctx=drawingContext;ctx.save();ctx.translate(x-size/2,y-size/2);ctx.scale(s,s);const p=new Path2D(d);ctx.fillStyle=typeof color==='string'?color:('rgb('+color[0]+','+color[1]+','+color[2]+')');ctx.fill(p);ctx.restore();}function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette?window.__brandingPalette.bg:[247,244,224];const fg=window.__brandingPalette?window.__brandingPalette.silhouetteColor:[30,27,30];background(bg[0],bg[1],bg[2]);const teams=[{label:'Backend',value:12,pct:'34%',color:'#3B82F6',icon:'database',sizesArrX:[3],sizesArrY:[2]},{label:'Frontend',value:8,pct:'23%',color:'#10B981',icon:'globe',sizesArrX:[2],sizesArrY:[2]},{label:'ML',value:6,pct:'17%',color:'#8B5CF6',icon:'lightning',sizesArrX:[2],sizesArrY:[2]},{label:'DevOps',value:5,pct:'14%',color:'#F59E0B',icon:'cloud',sizesArrX:[2],sizesArrY:[1]},{label:'Security',value:4,pct:'11%',color:'#EF4444',icon:'shield',sizesArrX:[2],sizesArrY:[1]}];const gx=10,gy=6,cw=600/gx,ch=300/gy;const rects=irregularGridPack(gx,gy,teams.map(t=>({...t})));const pad=6;rects.forEach((r,i)=>{const team=teams.find(t=>t.label===r.label);if(!team)return;const px=r.x*cw+pad,py=40+r.y*ch+pad,pw=r.w*cw-pad*2,ph=r.h*ch-pad*2;drawingContext.save();drawingContext.beginPath();drawingContext.roundRect(px,py,pw,ph,10);drawingContext.fillStyle=team.color+'22';drawingContext.fill();drawingContext.strokeStyle=team.color;drawingContext.lineWidth=2;drawingContext.stroke();drawingContext.restore();const icx=px+28,icy=py+28;drawAtlasIcon(team.icon,icx,icy,28,team.color);fill(fg[0],fg[1],fg[2]);noStroke();textFont('Inter');if(pw>120&&ph>60){drawingContext.font='700 22px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='left';drawingContext.fillText(team.value+' '+team.label,px+14,py+ph/2+4);drawingContext.font='500 14px Inter';drawingContext.fillStyle=team.color;drawingContext.fillText(team.pct+' of team',px+14,py+ph/2+24);}else if(pw>80){drawingContext.font='700 16px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='left';drawingContext.fillText(team.value+' '+team.label,px+8,py+ph/2+6);}else{drawingContext.font='700 13px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='center';drawingContext.fillText(team.label,px+pw/2,py+ph/2+5);}});drawingContext.font='700 15px Inter';drawingContext.fillStyle='rgb('+fg[0]+','+fg[1]+','+fg[2]+')';drawingContext.textAlign='center';drawingContext.fillText('Engineering · 35 People',300,26);noFill();stroke(fg[0],fg[1],fg[2],40);strokeWeight(1);for(let x=0;x<=gx;x++)line(x*cw,40,x*cw,340);for(let y=0;y<=gy;y++)line(0,40+y*ch,600,40+y*ch);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 10,
+            "focal": 1,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          }
+        }
+      }
+    }
+  ]
+}

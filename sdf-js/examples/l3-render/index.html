@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas L3 Render Harness</title>
+  <style>
+    body { margin: 20px; font-family: system-ui; }
+    h2 { margin: 10px 0 6px; font-size: 14px; }
+    iframe { border: 1px solid #ddd; }
+    .case { margin-bottom: 28px; }
+    .case .meta { font-size: 12px; color: #666; margin-bottom: 6px; }
+    .palette-bar { margin: 8px 0 18px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+    .palette-bar .label { color: #666; margin-right: 6px; }
+    .palette-bar button { padding: 4px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; font: inherit; border-radius: 3px; }
+    .palette-bar button:hover { border-color: #888; }
+    .palette-bar button.active { background: #1e1b1e; color: #fff; border-color: #1e1b1e; }
+    .palette-swatch { display: inline-flex; gap: 1px; margin-left: 4px; vertical-align: middle; }
+    .palette-swatch span { width: 8px; height: 12px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>Sprint 11/12/13 L3 visual verify</h1>
+  <p>Renders 1 selected variant per case in iframe sandbox. Use <code>?case=L_iconic_NEW&v=0</code> for single case, <code>&palette=chromotome:hilda01</code> to set palette.</p>
+  <div id="palette-bar" class="palette-bar"></div>
+  <div id="container"></div>
+
+  <script type="module">
+    // 2026-06-21: import live branding palette module so harness can swap
+    // chromotome palettes — fixes "看到的都是白底黑色" feedback (was hardcoded mono).
+    import { BRANDING_PALETTES, getPalette } from '/src/present/branding-palettes.js';
+
+    const EVIDENCE_BASE = './evidence/';
+    const CASES = [
+      // Sprint 11/12/13 L3 verify cases
+      'L_apparat', 'L_voronoi', 'L_colon', 'L_iconic_NEW', 'L_typo_NEW',
+      // Sprint 13 user-verify 7 demos
+      'D1_kpi_pure', 'D2_icons_sequence', 'D3_hierarchy_numeric',
+      'D4_data_chart', 'D5_compare_metaphor', 'D6_dense_concept', 'D7_long_narrative',
+    ];
+
+    const params = new URLSearchParams(location.search);
+    const onlyCase = params.get('case');
+    const onlyVariant = params.get('v') ? parseInt(params.get('v'), 10) : 0;
+    const initialPaletteId = params.get('palette') || 'mono-light';
+    const cases = onlyCase ? [onlyCase] : CASES;
+
+    // Currently active palette id — set by URL param or button click
+    let currentPaletteId = initialPaletteId;
+
+    const container = document.getElementById('container');
+    const paletteBar = document.getElementById('palette-bar');
+
+    // ====== Palette switcher bar ======
+    // Pick a curated subset for the bar (full 28 would be overwhelming).
+    // 1 mono + 1 from each chromotome family.
+    const FEATURED_PALETTES = [
+      'mono-light',         // built-in default — control
+      'chromotome:hilda01', // saturated vintage children's book
+      'chromotome:hilda04',
+      'chromotome:jung_bird',  // bauhaus primaries
+      'chromotome:rag-mysore', // Indian textile (ranganath sub)
+      'chromotome:kov_06',  // mid-century modern
+    ];
+
+    function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+
+    function renderPaletteBar() {
+      paletteBar.innerHTML = '<span class="label">Palette:</span>';
+      for (const id of FEATURED_PALETTES) {
+        const p = getPalette(id);
+        if (!p) continue;
+        const btn = document.createElement('button');
+        btn.textContent = p.label || id;
+        if (id === currentPaletteId) btn.classList.add('active');
+        // Swatch — show bg + up to 4 colors
+        const swatch = document.createElement('span');
+        swatch.className = 'palette-swatch';
+        swatch.innerHTML += `<span style="background:${rgbCss(p.bg)}"></span>`;
+        if (p.colors) {
+          for (const c of p.colors.slice(0, 4)) {
+            swatch.innerHTML += `<span style="background:${rgbCss(c)}"></span>`;
+          }
+        } else {
+          swatch.innerHTML += `<span style="background:${rgbCss(p.silhouetteColor)}"></span>`;
+        }
+        btn.appendChild(swatch);
+        btn.addEventListener('click', () => {
+          currentPaletteId = id;
+          renderPaletteBar();
+          rerenderAll();
+        });
+        paletteBar.appendChild(btn);
+      }
+      // Show palette info
+      const cur = getPalette(currentPaletteId);
+      const info = document.createElement('span');
+      info.style.marginLeft = '12px';
+      info.style.color = '#666';
+      info.textContent = cur.colors
+        ? `${cur.colors.length} colors + bg + stroke`
+        : '2-color mono';
+      paletteBar.appendChild(info);
+    }
+
+    function buildPaletteForInjection(id) {
+      const p = getPalette(id);
+      // Inject FULL palette so LLM-emitted code that references
+      // window.__brandingPalette.colors[i] actually works
+      return {
+        id: p.id,
+        bg: p.bg,
+        silhouetteColor: p.silhouetteColor,
+        colors: p.colors || null,
+        stroke: p.stroke || p.silhouetteColor,
+      };
+    }
+
+    async function renderCase(caseId) {
+      const res = await fetch(EVIDENCE_BASE + caseId + '.json');
+      if (!res.ok) {
+        container.insertAdjacentHTML('beforeend',
+          `<div class="case"><h2>${caseId}: ${res.status} NOT FOUND</h2></div>`);
+        return;
+      }
+      const data = await res.json();
+      const variant = data.variants[onlyVariant];
+      const sceneData = variant?.sceneData;
+      if (!sceneData) {
+        container.insertAdjacentHTML('beforeend',
+          `<div class="case"><h2>${caseId} v${onlyVariant}: NO DATA</h2></div>`);
+        return;
+      }
+      const p5 = sceneData.subjects.find((s) => s.type === 'p5-sketch');
+      if (!p5) {
+        container.insertAdjacentHTML('beforeend',
+          `<div class="case"><h2>${caseId}: not a p5-sketch</h2></div>`);
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'case';
+      const a = data.analyses[onlyVariant];
+      div.innerHTML = `<h2>${caseId} v${onlyVariant} — ${sceneData.name || ''}</h2>
+        <div class="meta">archetype: ${a.archetype} / code: ${a.p5CodeLen} chars / Inter: ${a.sprint12_usesInter} / icons: ${a.sprint13_drawAtlasIconCount} (${a.sprint13_iconNames.join(', ')}) / idioms: ${a.sprint5_8_idioms.join(', ')}</div>`;
+
+      const iframe = document.createElement('iframe');
+      iframe.src = '/src/present/p5-sandbox-iframe.html';
+      iframe.sandbox = 'allow-scripts';
+      iframe.width = 600;
+      iframe.height = 360;
+      iframe.dataset.caseId = caseId;
+      div.appendChild(iframe);
+      container.appendChild(div);
+
+      const palette = buildPaletteForInjection(currentPaletteId);
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow.postMessage(
+          { type: 'init', code: p5.args.code, palette },
+          '*',
+        );
+      });
+    }
+
+    async function rerenderAll() {
+      container.innerHTML = '';
+      for (const c of cases) await renderCase(c);
+    }
+
+    renderPaletteBar();
+    rerenderAll();
+  </script>
+</body>
+</html>

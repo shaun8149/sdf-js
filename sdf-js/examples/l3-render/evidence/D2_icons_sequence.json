@@ -1,0 +1,73 @@
+{
+  "id": "D2_icons_sequence",
+  "text": "New user journey: sign up, verify email, complete onboarding, make first purchase, reach retention milestone.",
+  "feature": "Sprint 13 iconography per step + sequence archetype",
+  "analyses": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "sequence",
+      "p5CodeLen": 3206,
+      "sprint12_usesInter": true,
+      "sprint12_usesIBMPlexMono": false,
+      "sprint13_drawAtlasIconCount": 0,
+      "sprint13_iconNames": [],
+      "sprint5_8_idioms": []
+    }
+  ],
+  "variants": [
+    {
+      "idx": 0,
+      "status": "ready",
+      "archetype": "sequence",
+      "sceneData": {
+        "v": 1,
+        "name": "sequence: New User Journey",
+        "source": {
+          "format": "llm-lift",
+          "prompt": "New user journey: sign up, verify email, complete onboarding, make first purchase, reach retention milestone.",
+          "from2dCode": "minimal — text only, no SDF geometry"
+        },
+        "subjects": [
+          {
+            "id": "sketch-user-journey",
+            "type": "p5-sketch",
+            "args": {
+              "canvasWidth": 600,
+              "canvasHeight": 360,
+              "code": "function setup(){createCanvas(600,360);noLoop();}function draw(){const bg=window.__brandingPalette.bg;const fg=window.__brandingPalette.silhouetteColor;background(bg[0],bg[1],bg[2]);const steps=[{label:'Sign Up',icon:'user'},{label:'Verify Email',icon:'mail'},{label:'Onboarding',icon:'check'},{label:'First Purchase',icon:'star'},{label:'Retention',icon:'heart'}];const n=steps.length;const bw=88,bh=100,gap=18;const totalW=n*bw+(n-1)*gap;const sx=(600-totalW)/2;const cy=155;const f0=fg[0],f1=fg[1],f2=fg[2];function drawAtlasIcon(name,x,y,size,color){const s=size/24;drawingContext.save();drawingContext.translate(x-size/2,y-size/2);drawingContext.scale(s,s);drawingContext.strokeStyle=typeof color==='string'?color:'rgb('+color[0]+','+color[1]+','+color[2]+')';drawingContext.fillStyle='none';drawingContext.lineWidth=1.5/s;drawingContext.lineCap='round';drawingContext.lineJoin='round';const p=new Path2D();if(name==='user'){p.arc(12,8,4,0,Math.PI*2);p.moveTo(4,20);p.bezierCurveTo(4,16,8,14,12,14);p.bezierCurveTo(16,14,20,16,20,20);}else if(name==='mail'){p.rect(2,4,20,16);p.moveTo(2,4);p.lineTo(12,13);p.lineTo(22,4);}else if(name==='check'){p.moveTo(20,6);p.lineTo(9,17);p.lineTo(4,12);}else if(name==='star'){p.moveTo(12,2);p.lineTo(15.09,8.26);p.lineTo(22,9.27);p.lineTo(17,14.14);p.lineTo(18.18,21.02);p.lineTo(12,17.77);p.lineTo(5.82,21.02);p.lineTo(7,14.14);p.lineTo(2,9.27);p.lineTo(8.91,8.26);p.closePath();}else if(name==='heart'){p.moveTo(20.84,4.61);p.bezierCurveTo(20.26,4.03,19.57,3.57,18.82,3.26);p.bezierCurveTo(18.06,2.95,17.25,2.79,16.43,2.79);p.bezierCurveTo(15.61,2.79,14.8,2.95,14.04,3.26);p.bezierCurveTo(13.28,3.57,12.59,4.03,12,4.61);p.bezierCurveTo(11.41,4.03,10.72,3.57,9.96,3.26);p.bezierCurveTo(9.2,2.95,8.39,2.79,7.57,2.79);p.bezierCurveTo(5.84,2.79,4.18,3.47,2.96,4.69);p.bezierCurveTo(1.74,5.91,1.06,7.57,1.06,9.3);p.bezierCurveTo(1.06,11.03,1.74,12.69,2.96,13.91);p.lineTo(12,22.96);p.lineTo(21.04,13.91);p.bezierCurveTo(22.26,12.69,22.94,11.03,22.94,9.3);p.bezierCurveTo(22.94,7.57,22.26,5.91,21.04,4.69);}drawingContext.stroke(p);drawingContext.restore();}for(let i=0;i<n;i++){const x=sx+i*(bw+gap);const isFirst=(i===0);const card_alpha=isFirst?1:0.85;noFill();stroke(f0,f1,f2,220);strokeWeight(isFirst?2.5:1.5);rect(x,cy-bh/2,bw,bh,10);noStroke();fill(f0,f1,f2,isFirst?40:18);rect(x,cy-bh/2,bw,bh,10);drawAtlasIcon(steps[i].icon,x+bw/2,cy-18,32,[f0,f1,f2]);fill(f0,f1,f2);noStroke();textFont('Inter');textAlign(CENTER,CENTER);drawingContext.font='600 13px Inter';drawingContext.fillStyle='rgb('+f0+','+f1+','+f2+')';drawingContext.textAlign='center';drawingContext.fillText(steps[i].label,x+bw/2,cy+18);drawingContext.font='700 22px Inter';drawingContext.fillText(String(i+1),x+bw/2,cy+44);}for(let i=0;i<n-1;i++){const ax=sx+i*(bw+gap)+bw+4;const bx=sx+(i+1)*(bw+gap)-4;const my=cy;stroke(f0,f1,f2,160);strokeWeight(1.5);line(ax,my,bx-8,my);noStroke();fill(f0,f1,f2,160);triangle(bx,my,bx-8,my-4,bx-8,my+4);}fill(f0,f1,f2,200);noStroke();textFont('Inter');drawingContext.font='500 12px Inter';drawingContext.fillStyle='rgba('+f0+','+f1+','+f2+',0.7)';drawingContext.textAlign='center';drawingContext.fillText('New User Journey — 5 Steps to Retention',300,320);}"
+            }
+          }
+        ],
+        "ground": null,
+        "defaults": {
+          "camera": {
+            "yaw": 0,
+            "pitch": 0,
+            "distance": 8,
+            "focal": 1.4,
+            "targetX": 0,
+            "targetY": 0,
+            "targetZ": 0
+          },
+          "light": {
+            "azimuth": 0.5,
+            "altitude": 0.7,
+            "distance": 30,
+            "intensity": 1
+          },
+          "shadow": {
+            "enabled": false,
+            "mode": "darken",
+            "strength": 0.3
+          },
+          "postFx": {
+            "exposure": 1,
+            "vignetteStrength": 0.2,
+            "bloomMix": 0.08
+          }
+        }
+      }
+    }
+  ]
+}
