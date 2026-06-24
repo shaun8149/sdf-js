@@ -369,6 +369,7 @@ export async function mountScaffoldView(target, deckId) {
       `   - icon-grid: 4-16 items (cols auto-picks)\n` +
       `   - colorMode default 'auto' (brand icons keep brand color; Phosphor uses theme accent)\n` +
       `   - **iconSize: 'small'|'medium'|'large'** (Sprint 18 Tier 1) — default 'medium'. Use 'large' for hero slots (vision/values with only 3-4 items at h≥360). 'small' only for dense 12+ item grids.\n` +
+      `   - iconStyle: 'circle' (default; icon in pseudo-3D badge) | 'card' (item is white card with icon + label + sublabel; PL services 4-up pattern, use for services/features slots) | 'square'|'plain'\n` +
       `10. **kpi-card.style variants** (Sprint 18 Tier 1):\n` +
       `    - \`style: 'dark'\` (default): dark bg + white text — single hero KPI (e.g. one big number per slot)\n` +
       `    - \`style: 'light'\`: white bg + dark text + accent edge — dashboard grids of 3-6 KPIs (cleaner, less heavy)\n` +
