@@ -454,7 +454,15 @@ for (const a of slotAssignments) {
     `    - \`style: 'accent-border'\`: white bg + thick left accent border — single sidebar KPI (e.g. "30% retention" callout next to bullet content)\n` +
     `    - Mix styles within a deck: hero KPI dark + dashboard KPIs light. Don't use all-dark for 6-card grid (overwhelming).\n` +
     `11. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
-    `12. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
+    `12. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n` +
+    `13. **Semantic atom selection (Sprint 18 Tier 3 A.2)** — when slot purpose matches a specialized atom, USE IT instead of falling back to bullet-list:\n` +
+    `    - cause-analysis slots (Challenges / Risks / Blockers / Problems / Root Cause) → \`fishbone\` (effect=problem statement, branches=cause categories with sub-causes)\n` +
+    `    - dated action items / roadmap slots (Next Steps / Milestones / Roadmap / Action Items with due dates) → \`timeline\` (events: array of {date, label, sublabel?})\n` +
+    `    - time-series numeric slots (Growth / Traction / Trend) → \`line\` or \`column\`\n` +
+    `    - process / workflow slots (How It Works / Pipeline) → \`flow-chart\` or \`progression\`\n` +
+    `    - 2-set comparison slots (Before/After / Us vs Them) → \`venn\` or side-by-side kpi-cards\n` +
+    `    Specialized atoms communicate semantics in 3D theatrical playback — bullet-list reads as "they had no better atom".\n` +
+    `14. **NEVER emit \`type: "text"\`** — there is NO text atom. For corner attribution (author / date / version) use cover's \`author\`/\`date\`/\`version\` args. For floating labels INSIDE a chart, set the chart atom's title/labels args. If you can't express something via an atom + its args, omit it.\n`;
 
   if (DRY_RUN) {
     slotLifts.push({

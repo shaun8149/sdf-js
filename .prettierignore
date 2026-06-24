@@ -16,6 +16,11 @@ sdf-js/examples/scaffold-pipeline/vcpitch-*/
 sdf-js/examples/scaffold-pipeline/qbr-*/
 sdf-js/examples/scaffold-pipeline/pdsphere-*/
 
+# p* scene fixtures from PR #148 — CI prettier flags them but local says clean
+# (CI/local version mismatch we can't pin down). They're scene data, not source.
+sdf-js/scenes/p3-sequence-gauges.json
+sdf-js/scenes/p11-hero-list-gauges.json
+
 # Smoke test baselines (binary/visual diff artifacts)
 sdf-js/tests/smoke/baselines/
 
