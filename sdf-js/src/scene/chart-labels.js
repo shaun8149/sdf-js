@@ -121,7 +121,9 @@ export function sphereFillAnchors({
     // the label sits JUST IN FRONT of the sphere's front face — not behind it,
     // where the sphere would occlude it (the old −z anchor was never visually
     // tested; sphere-fill labels are new on the studio path).
-    return { x: xs[i] - mid, y: r * (f - 1) * 0.85, z: r + margin };
+    // `h` scales the glyph height with the sphere so a big gauge gets a big %
+    // and a small one a small % (placeLabels reads per-anchor `h`).
+    return { x: xs[i] - mid, y: r * (f - 1) * 0.85, z: r + margin, h: r * 0.42 };
   });
 }
 
@@ -205,7 +207,7 @@ export function placeLabels(
   return anchors.map((a, i) => ({
     id: `${idPrefix}${i}`,
     type: 'text-3d-pipe',
-    args: { text: String(labels[i] ?? ''), height, pipeRadius, align },
+    args: { text: String(labels[i] ?? ''), height: a.h ?? height, pipeRadius, align },
     transform: mirror
       ? { translate: [a.x, a.y, a.z], rotate: [0, Math.PI, 0] }
       : { translate: [a.x, a.y, a.z] },
@@ -239,7 +241,7 @@ export function expandChartLabels(sceneData) {
     const anchors = fn(args);
     if (!anchors || !anchors.length) return;
     const tr = (s.transform && s.transform.translate) || [0, 0, 0];
-    const off = anchors.map((a) => ({ x: a.x + tr[0], y: a.y + tr[1], z: a.z + tr[2] }));
+    const off = anchors.map((a) => ({ x: a.x + tr[0], y: a.y + tr[1], z: a.z + tr[2], h: a.h }));
     // only label the elements that actually have a label string
     const n = Math.min(off.length, labels.length);
     extra.push(

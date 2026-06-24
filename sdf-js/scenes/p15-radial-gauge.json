@@ -20,6 +20,11 @@
   "overlay": [
     { "text": "3D SPHERES — FILL LEVELS", "anchor": [0, 4.3, 0], "role": "title" },
 
+    { "role": "spoke", "from": [-1.21, 2.1, 0], "to": [-3.0, 3.0, 0] },
+    { "role": "spoke", "from": [1.21, 2.1, 0], "to": [3.0, 3.0, 0] },
+    { "role": "spoke", "from": [-1.28, 1.06, 0], "to": [-3.0, 0.55, 0] },
+    { "role": "spoke", "from": [1.28, 1.06, 0], "to": [3.0, 0.55, 0] },
+
     { "text": "DESCRIPTION 1", "anchor": [-3.2, 3.1, 0], "role": "head" },
     {
       "text": "This is a placeholder text.\nReplace with your own.",
