@@ -314,10 +314,10 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color, fg, iconName) {
     ctx.textBaseline = sublabel ? 'bottom' : 'middle';
     ctx.fillText(label, x + w / 2, sublabel ? y + h / 2 - 4 : y + h / 2);
   }
-  // Sublabel — Inter 400, smaller, with line spacing
+  // Sublabel — Inter 500, smaller, with line spacing
   if (sublabel) {
     ctx.fillStyle = 'rgba(255,255,255,0.78)';
-    ctx.font = `400 ${Math.min(13, h * 0.1)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.min(13, h * 0.1)}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
     ctx.fillText(sublabel, x + w / 2, y + h / 2 + 8);
   }

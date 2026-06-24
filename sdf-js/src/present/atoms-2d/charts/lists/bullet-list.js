@@ -86,19 +86,59 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       status === 'highlight' ? accent : status === 'done' ? darken(accent, 0.2) : [200, 200, 205];
     const isFilled = status !== 'todo';
 
-    // Bullet OR icon (Sprint 18: icon replaces bullet mark when it.icon is set)
+    // Bullet OR icon (Sprint 18: icon → small filled badge like PL style)
     ctx.save();
     if (it.icon) {
+      // Badge color by status: todo = lighter accent (60% opacity via lighter color),
+      // done = accent darkened 20%, highlight = full accent
+      const badgeColor =
+        status === 'todo' ? lighten(accent, 0.4) : status === 'done' ? darken(accent, 0.2) : accent;
+      const badgeR = Math.min(bulletR * 1.3, 14); // ~22-28px diameter
+      // Drop shadow
+      ctx.shadowColor = 'rgba(0,0,0,0.18)';
+      ctx.shadowBlur = 5;
+      ctx.shadowOffsetY = 2;
+      // Badge circle
+      const badgeGrad = ctx.createRadialGradient(
+        bulletX - badgeR * 0.3,
+        rowCY - badgeR * 0.3,
+        0,
+        bulletX,
+        rowCY,
+        badgeR,
+      );
+      badgeGrad.addColorStop(0, rgbCss(lighten(badgeColor, 0.22)));
+      badgeGrad.addColorStop(1, rgbCss(badgeColor));
+      ctx.fillStyle = badgeGrad;
+      ctx.beginPath();
+      ctx.arc(bulletX, rowCY, badgeR, 0, Math.PI * 2);
+      ctx.fill();
+      // Specular
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = 'rgba(255,255,255,0.32)';
+      ctx.beginPath();
+      ctx.ellipse(
+        bulletX - badgeR * 0.25,
+        rowCY - badgeR * 0.35,
+        badgeR * 0.55,
+        badgeR * 0.28,
+        -0.4,
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+      // Icon glyph (white) centered on badge
+      ctx.shadowColor = 'transparent';
       const resolved = resolveIcon(it.icon);
       const viewBox = resolved.source === 'brand' ? 24 : 256;
-      const iconSize = bulletR * 2.2;
-      const iconColor =
-        status === 'todo' ? [160, 160, 165] : status === 'done' ? darken(accent, 0.2) : accent;
+      const iconSize = badgeR * 1.1;
       try {
+        ctx.save();
         ctx.translate(bulletX - iconSize / 2, rowCY - iconSize / 2);
         ctx.scale(iconSize / viewBox, iconSize / viewBox);
-        ctx.fillStyle = rgbCss(iconColor);
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
         if (resolved.path) ctx.fill(resolved.path);
+        ctx.restore();
       } catch (_) {
         /* Path2D unavailable (Node) */
       }

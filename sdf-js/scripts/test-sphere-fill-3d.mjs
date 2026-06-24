@@ -147,7 +147,10 @@ console.log('\nTest group 6: per-sphere colours via colors[]');
   ok(kids[1]?._subjectMaterial?.kind === 9, 'sphere 1 (preset) kind forced to fill');
   ok(kids[1]?._subjectMaterial?.hue === 0.0, "sphere 1 preset 'fruit-red' hue = 0");
   // Sphere 2: no colour → no per-leaf material → falls back to subject material.
-  ok(kids[2]?._subjectMaterial === undefined, 'sphere 2 (no colour) falls back to subject material');
+  ok(
+    kids[2]?._subjectMaterial === undefined,
+    'sphere 2 (no colour) falls back to subject material',
+  );
   // Fill fractions still independent of colour.
   ok(kids[0]?._subjectPattern?.fill === 0.8, 'sphere 0 keeps its fill 0.8');
 }

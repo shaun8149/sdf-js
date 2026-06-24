@@ -53,11 +53,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   let plotTop = y + PAD;
   if (args.title) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.13)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.min(32, Math.round(h * 0.085))}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(args.title, x + PAD, y + PAD);
-    plotTop = y + h * 0.28;
+    plotTop = y + h * 0.22;
   }
 
   const plotW = w - PAD * 2;

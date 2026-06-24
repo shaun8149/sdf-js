@@ -14,6 +14,12 @@
 //   trend         — 'up' | 'down' | 'neutral' (arrow direction)
 //   trendValue    — optional delta (e.g. "+127%", "-12pt")
 //   icon          — optional atlas-icon name (e.g. 'chart-bar')
+//   style         — 'dark' (default) | 'light' | 'accent-border'
+//
+// Style variants:
+//   dark          — dark bg + white text + isometric edge (current default, hero metrics)
+//   light         — white card bg, dark text, keep accent drop shadow (dashboard tiles)
+//   accent-border — white card bg, dark text, thick left accent border (sidebar callout)
 //
 // Render strategies:
 //   drawPseudo3D — gradient bg + drop shadow + isometric edge + bold typo (this PR)
@@ -39,25 +45,44 @@ export const spec = {
     trend: { type: "'up'|'down'|'neutral'?", example: 'up' },
     trendValue: { type: 'string?', example: '+127%' },
     icon: { type: 'string? (atlas-icon name)', example: 'chart-bar' },
+    style: {
+      type: "'dark'|'light'|'accent-border'?",
+      default: "'dark'",
+      example: 'dark',
+    },
   },
 };
 
 /**
- * Pseudo-3D KPI card render. PresentationLoad / think-cell aesthetic:
- *   - Rounded rectangle with subtle linear gradient (top lighter, bottom darker)
- *   - Drop shadow (offset Y + soft blur)
- *   - Optional isometric edge accent on right side for depth
- *   - Big hero number (Inter 700, scales to card height)
- *   - Label below (Inter 500, smaller)
- *   - Sublabel below (Inter 400, faded)
- *   - Trend arrow + value in top-right corner (color-coded green/red/grey)
- *   - Icon in top-left (if specified) drawn from atlas-icon-library
+ * Pseudo-3D KPI card render. Routes to style-specific helper.
  *
  * @param {CanvasRenderingContext2D} ctx
  * @param {object} args — see spec.args
  * @param {object} opts — { x, y, w, h, palette }
  */
 export function drawPseudo3D(ctx, args, opts = {}) {
+  const style = args.style || 'dark';
+  switch (style) {
+    case 'dark':
+      return _drawDark(ctx, args, opts);
+    case 'light':
+      return _drawLight(ctx, args, opts);
+    case 'accent-border':
+      return _drawAccentBorder(ctx, args, opts);
+    default:
+      return _drawDark(ctx, args, opts);
+  }
+}
+
+// ============================================================================
+// Style helpers
+// ============================================================================
+
+/**
+ * Dark variant (original behavior) — dark bg + white text + isometric edge.
+ * Best for hero metrics on slide.
+ */
+function _drawDark(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
   const y = opts.y ?? 0;
   const w = opts.w ?? 280;
@@ -65,8 +90,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const palette = opts.palette || {};
   const fg = palette.silhouetteColor || [30, 27, 30];
   const bg = palette.bg || [247, 244, 224];
-  const _accent = palette.colors?.[0] || [60, 100, 200];
-  void _accent;
 
   // ---- Drop shadow (softer: 10px blur, alpha 0.12) ----
   ctx.save();
@@ -85,7 +108,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.restore(); // drop shadow off
 
   // ---- Isometric edge accent (right side) ----
-  // Tiny parallelogram on the right gives "block" 3D feel
   const edgeDepth = Math.max(4, w * 0.012);
   ctx.save();
   ctx.fillStyle = rgbaCss(darken(fg, 0.15), 0.9);
@@ -98,7 +120,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.fill();
   ctx.restore();
 
-  // ---- Trend pill (top-right) — softened shadow ----
+  // ---- Trend pill (top-right) ----
   if (args.trend && args.trendValue) {
     drawTrendPill(ctx, args.trend, args.trendValue, x + w - 20, y + 20, palette);
   }
@@ -108,13 +130,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(bg));
   }
 
-  // ---- Hero value (weight 900, auto-scale to fit width) ----
-  // Sprint 17 quality fix: long values like "User Persona" / "1-2 Months"
-  // were getting truncated mid-word. Now we measure + scale down to fit.
+  // ---- Hero value ----
   ctx.fillStyle = rgbCss(bg);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  const availW = w - 44; // 22px padding each side
+  const availW = w - 44;
   const valueText = String(args.value ?? '');
   let valueSize = Math.round(h * 0.34);
   const minValueSize = Math.round(h * 0.14);
@@ -126,7 +146,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const valueY = y + h * 0.56;
   ctx.fillText(valueText, x + 22, valueY);
 
-  // ---- Label (Inter 700 for stronger hierarchy, auto-scale + ellipsis fallback) ----
+  // ---- Label ----
   ctx.fillStyle = rgbaCss(bg, 0.85);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
@@ -138,13 +158,199 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
   ctx.fillText(fitText(ctx, labelText, availW), x + 22, valueY + Math.round(h * 0.17));
 
-  // ---- Sublabel (Inter 400, faded, proper breathing room) ----
+  // ---- Sublabel (Inter 500, faded, proper breathing room) ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(bg, 0.55);
-    ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
     ctx.fillText(
       fitText(ctx, String(args.sublabel), availW),
       x + 22,
+      valueY + Math.round(h * 0.29),
+    );
+  }
+}
+
+/**
+ * Light variant — white card bg, dark text, keep accent drop shadow.
+ * Best for 4-up dashboard grids.
+ */
+function _drawLight(ctx, args, opts = {}) {
+  const x = opts.x ?? 0;
+  const y = opts.y ?? 0;
+  const w = opts.w ?? 280;
+  const h = opts.h ?? 160;
+  const palette = opts.palette || {};
+  const fg = palette.silhouetteColor || [30, 27, 30];
+  const bg = palette.bg || [247, 244, 224];
+  const accent = palette.colors?.[0] || palette.accent || [60, 100, 200];
+  // Light card background — lighten the theme bg significantly
+  const cardBg = lighten(bg, 0.5);
+
+  // ---- Drop shadow ----
+  ctx.save();
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.12);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
+
+  const cardRadius = Math.min(w, h) * 0.06;
+  ctx.fillStyle = rgbCss(cardBg);
+  roundedRectPath(ctx, x, y, w, h, cardRadius);
+  ctx.fill();
+  ctx.restore();
+
+  // ---- Accent edge (right side, using palette accent color) ----
+  const edgeDepth = Math.max(4, w * 0.012);
+  ctx.save();
+  ctx.fillStyle = rgbaCss(accent, 0.7);
+  ctx.beginPath();
+  ctx.moveTo(x + w, y + cardRadius);
+  ctx.lineTo(x + w + edgeDepth, y + cardRadius + edgeDepth);
+  ctx.lineTo(x + w + edgeDepth, y + h);
+  ctx.lineTo(x + w, y + h - cardRadius);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // ---- Trend pill (top-right) ----
+  if (args.trend && args.trendValue) {
+    drawTrendPill(ctx, args.trend, args.trendValue, x + w - 20, y + 20, palette);
+  }
+
+  // ---- Icon (top-left) ----
+  if (args.icon) {
+    drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(accent));
+  }
+
+  // ---- Hero value (dark text) ----
+  ctx.fillStyle = rgbCss(fg);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  const availW = w - 44;
+  const valueText = String(args.value ?? '');
+  let valueSize = Math.round(h * 0.34);
+  const minValueSize = Math.round(h * 0.14);
+  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
+    valueSize -= 2;
+    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  }
+  const valueY = y + h * 0.56;
+  ctx.fillText(valueText, x + 22, valueY);
+
+  // ---- Label (dark text) ----
+  ctx.fillStyle = rgbaCss(fg, 0.75);
+  let labelSize = Math.round(h * 0.11);
+  const minLabelSize = Math.round(h * 0.07);
+  const labelText = String(args.label ?? '');
+  ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
+    labelSize -= 1;
+    ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  }
+  ctx.fillText(fitText(ctx, labelText, availW), x + 22, valueY + Math.round(h * 0.17));
+
+  // ---- Sublabel ----
+  if (args.sublabel) {
+    ctx.fillStyle = rgbaCss(fg, 0.45);
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      x + 22,
+      valueY + Math.round(h * 0.29),
+    );
+  }
+}
+
+/**
+ * Accent-border variant — white card bg, dark text, thick left accent border.
+ * Magazine-style sidebar callout. No isometric edge, minimal drop shadow.
+ */
+function _drawAccentBorder(ctx, args, opts = {}) {
+  const x = opts.x ?? 0;
+  const y = opts.y ?? 0;
+  const w = opts.w ?? 280;
+  const h = opts.h ?? 160;
+  const palette = opts.palette || {};
+  const fg = palette.silhouetteColor || [30, 27, 30];
+  const bg = palette.bg || [247, 244, 224];
+  const accent = palette.colors?.[0] || palette.accent || [60, 100, 200];
+  const cardBg = lighten(bg, 0.5);
+
+  const borderW = Math.max(8, Math.min(12, w * 0.035));
+  const cardRadius = Math.min(w, h) * 0.06;
+
+  // ---- Minimal drop shadow ----
+  ctx.save();
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.08);
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 2;
+  ctx.fillStyle = rgbCss(cardBg);
+  roundedRectPath(ctx, x, y, w, h, cardRadius);
+  ctx.fill();
+  ctx.restore();
+
+  // ---- Left accent border (thick, full height, accent color) ----
+  ctx.save();
+  ctx.fillStyle = rgbCss(accent);
+  ctx.beginPath();
+  // Rounded left edge: top-left + bottom-left corners rounded, right edge square
+  ctx.moveTo(x + cardRadius, y);
+  ctx.lineTo(x + borderW, y);
+  ctx.lineTo(x + borderW, y + h);
+  ctx.lineTo(x + cardRadius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - cardRadius);
+  ctx.lineTo(x, y + cardRadius);
+  ctx.quadraticCurveTo(x, y, x + cardRadius, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // ---- Trend pill (top-right) ----
+  if (args.trend && args.trendValue) {
+    drawTrendPill(ctx, args.trend, args.trendValue, x + w - 20, y + 20, palette);
+  }
+
+  // ---- Icon (top-left, after border) ----
+  const textLeft = x + borderW + 14;
+  if (args.icon) {
+    drawIconStub(ctx, args.icon, textLeft + 11, y + 26, 22, rgbCss(accent));
+  }
+
+  // ---- Hero value (dark text, offset past border) ----
+  ctx.fillStyle = rgbCss(fg);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  const availW = w - borderW - 28;
+  const valueText = String(args.value ?? '');
+  let valueSize = Math.round(h * 0.34);
+  const minValueSize = Math.round(h * 0.14);
+  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
+    valueSize -= 2;
+    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  }
+  const valueY = y + h * 0.56;
+  ctx.fillText(valueText, textLeft, valueY);
+
+  // ---- Label ----
+  ctx.fillStyle = rgbaCss(fg, 0.75);
+  let labelSize = Math.round(h * 0.11);
+  const minLabelSize = Math.round(h * 0.07);
+  const labelText = String(args.label ?? '');
+  ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
+    labelSize -= 1;
+    ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
+  }
+  ctx.fillText(fitText(ctx, labelText, availW), textLeft, valueY + Math.round(h * 0.17));
+
+  // ---- Sublabel ----
+  if (args.sublabel) {
+    ctx.fillStyle = rgbaCss(fg, 0.45);
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      textLeft,
       valueY + Math.round(h * 0.29),
     );
   }

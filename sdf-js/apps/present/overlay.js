@@ -63,7 +63,9 @@ export function makeOverlay(wrap, studio) {
       const el = document.createElement('div');
       el.textContent = o.text || '';
       const halo =
-        o.role === 'kpi' ? '' : 'text-shadow:0 1px 2px rgba(255,255,255,0.55),0 1px 6px rgba(255,255,255,0.35);';
+        o.role === 'kpi'
+          ? ''
+          : 'text-shadow:0 1px 2px rgba(255,255,255,0.55),0 1px 6px rgba(255,255,255,0.35);';
       // anchor maps to the block's reference point; center by default.
       const tx = o.align === 'left' ? '0' : o.align === 'right' ? '-100%' : '-50%';
       const textAlign = o.align || 'center';

@@ -39,6 +39,11 @@ export const spec = {
     title: { type: 'string?', example: 'Core Values' },
     colorMode: { type: "'auto'|'brand'|'theme'?", default: "'auto'", example: 'auto' },
     iconStyle: { type: "'circle'|'square'|'plain'?", default: "'circle'", example: 'circle' },
+    iconSize: {
+      type: "'small'|'medium'|'large'?",
+      default: "'medium'",
+      example: 'large',
+    },
   },
 };
 
@@ -54,6 +59,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const accent = palette.colors?.[0] || palette.accent || [60, 130, 200];
   const colorMode = args.colorMode || 'auto';
   const iconStyle = args.iconStyle || 'circle';
+  const iconSizeMode = args.iconSize || 'medium';
+  const iconSizeMultiplier = iconSizeMode === 'small' ? 0.7 : iconSizeMode === 'large' ? 1.4 : 1.0;
 
   const items = Array.isArray(args.items) ? args.items.slice(0, 16) : [];
   if (items.length === 0) return;
@@ -63,11 +70,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   let plotTop = y + PAD;
   if (args.title) {
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(h * 0.06)}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${Math.round(h * 0.075)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(args.title, x + PAD, y + PAD);
-    plotTop = y + PAD + Math.round(h * 0.06) + 12;
+    plotTop = y + PAD + Math.round(h * 0.075) + 12;
   }
 
   // ---- Column count ----
@@ -82,7 +89,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const rows = Math.ceil(N / cols);
   const colW = (w - PAD * 2) / cols;
   const rowH = (y + h - plotTop - PAD) / rows;
-  const iconR = Math.min(rowH * 0.25, colW * 0.18, 48);
+  const baseIconR = Math.min(rowH * 0.25, colW * 0.18, 48);
+  // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
+  const heroBoost = h >= 360 ? 1.3 : 1.0;
+  const iconR = baseIconR * iconSizeMultiplier * heroBoost;
 
   for (let i = 0; i < N; i++) {
     const it = items[i] || {};
@@ -136,7 +146,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       if (it.sublabel) {
         ctx.fillStyle = rgbaCss(fg, 0.55);
-        ctx.font = `400 ${Math.round(rowH * 0.075)}px Inter, system-ui, sans-serif`;
+        ctx.font = `500 ${Math.round(rowH * 0.075)}px Inter, system-ui, sans-serif`;
         ctx.fillText(
           fitText(ctx, String(it.sublabel), colW - 16),
           cellCx,
@@ -154,9 +164,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
 function drawCircleBadge(ctx, cx, cy, r, color) {
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.18)';
-  ctx.shadowBlur = 10;
-  ctx.shadowOffsetY = 3;
+  ctx.shadowColor = 'rgba(0,0,0,0.22)';
+  ctx.shadowBlur = 14;
+  ctx.shadowOffsetY = 4;
   const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, 0, cx, cy, r);
   grad.addColorStop(0, rgbCss(lighten(color, 0.22)));
   grad.addColorStop(1, rgbCss(color));
@@ -164,11 +174,11 @@ function drawCircleBadge(ctx, cx, cy, r, color) {
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
-  // Specular
+  // Specular highlight (brighter + slightly larger ellipse)
   ctx.shadowColor = 'transparent';
-  ctx.fillStyle = 'rgba(255,255,255,0.22)';
+  ctx.fillStyle = 'rgba(255,255,255,0.32)';
   ctx.beginPath();
-  ctx.ellipse(cx - r * 0.25, cy - r * 0.35, r * 0.5, r * 0.25, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(cx - r * 0.25, cy - r * 0.35, r * 0.55, r * 0.28, -0.4, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }

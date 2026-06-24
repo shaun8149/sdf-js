@@ -10,6 +10,13 @@
 //   - 'brand' forces brand color (Phosphor falls back to accent)
 //   - 'theme' forces palette.accent for all
 //
+// iconStyle variants:
+//   - 'circle' (default): pseudo-3D circular badge
+//   - 'square': rounded-square badge
+//   - 'plain': icon only, no badge background
+//   - 'card': each item is a white rounded-rect card with top accent bar,
+//             icon centered-top, label + sublabel below (PL services 4-up pattern)
+//
 // Per docs/superpowers/specs/2026-06-23-atlas-icons-and-text-minimization-sprint-18-design.md §4.1
 // =============================================================================
 
@@ -39,9 +46,14 @@ export const spec = {
       example: 'auto',
     },
     iconStyle: {
-      type: "'circle'|'square'|'plain'?",
+      type: "'circle'|'square'|'plain'|'card'?",
       default: "'circle'",
-      example: 'circle',
+      example: 'card',
+    },
+    iconSize: {
+      type: "'small'|'medium'|'large'?",
+      default: "'medium'",
+      example: 'large',
     },
   },
 };
@@ -58,6 +70,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const accent = palette.colors?.[0] || palette.accent || [60, 130, 200];
   const colorMode = args.colorMode || 'auto';
   const iconStyle = args.iconStyle || 'circle';
+  const iconSizeMode = args.iconSize || 'medium';
+  const iconSizeMultiplier = iconSizeMode === 'small' ? 0.7 : iconSizeMode === 'large' ? 1.4 : 1.0;
 
   const items = Array.isArray(args.items) ? args.items.slice(0, 8) : [];
   if (items.length === 0) return;
@@ -73,7 +87,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + PAD + Math.round(h * 0.085) + 6;
     if (args.subtitle) {
       ctx.fillStyle = rgbaCss(fg, 0.6);
-      ctx.font = `400 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+      ctx.font = `500 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
       ctx.fillText(args.subtitle, x + PAD, plotTop);
       plotTop += Math.round(h * 0.045) + 12;
     } else {
@@ -88,7 +102,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const rows = useTwoRows ? 2 : 1;
   const colW = (w - PAD * 2) / cols;
   const rowH = (y + h - plotTop - PAD) / rows;
-  const iconR = Math.min(rowH * 0.32, colW * 0.32, 64);
+  const baseIconR = Math.min(rowH * 0.32, colW * 0.32, 64);
+  // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
+  const heroBoost = h >= 360 ? 1.3 : 1.0;
+  const iconR = baseIconR * iconSizeMultiplier * heroBoost;
 
   for (let i = 0; i < N; i++) {
     const it = items[i] || {};
@@ -111,42 +128,79 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Optional per-item color override
     const badgeColor = Array.isArray(it.color) ? it.color : iconColor;
 
-    // ---- Badge (circle/square/plain) ----
-    const iconCy = cellTopY + iconR + 16;
-    if (iconStyle === 'circle') {
-      drawCircleBadge(ctx, cellCx, iconCy, iconR, badgeColor);
-    } else if (iconStyle === 'square') {
-      drawSquareBadge(ctx, cellCx, iconCy, iconR, badgeColor);
-    }
-    // plain: no badge
+    if (iconStyle === 'card') {
+      // ---- Card variant: white rounded-rect with top accent bar ----
+      const cardGap = Math.max(6, colW * 0.04);
+      const cardX = x + PAD + col * colW + cardGap / 2;
+      const cardY = cellTopY + 4;
+      const cardW = colW - cardGap;
+      const cardH = rowH - 8;
+      drawCardFrame(ctx, cardX, cardY, cardW, cardH, palette);
 
-    // ---- Icon path (white on circle/square; badge-color on plain) ----
-    drawIconCentered(
-      ctx,
-      resolved,
-      cellCx,
-      iconCy,
-      iconR * 0.85,
-      iconStyle === 'plain' ? badgeColor : [255, 255, 255],
-    );
+      // Icon: centered at top third of card (smaller than circle mode: 32-48px radius)
+      const cardIconR = Math.min(cardH * 0.2, cardW * 0.2, 28);
+      const cardIconCy = cardY + cardH * 0.35;
+      drawIconCentered(ctx, resolved, cellCx, cardIconCy, cardIconR * 1.6, badgeColor);
 
-    // ---- Label below ----
-    if (it.label) {
-      ctx.fillStyle = rgbCss(fg);
-      ctx.font = `700 ${Math.round(rowH * 0.13)}px Inter, system-ui, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      const labelY = iconCy + iconR + 14;
-      ctx.fillText(fitText(ctx, String(it.label), colW - 20), cellCx, labelY);
+      // Label: centered bold below icon
+      if (it.label) {
+        const labelFontSize = Math.min(Math.round(cardH * 0.13), Math.round(rowH * 0.13));
+        ctx.fillStyle = rgbCss(fg);
+        ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const labelY = cardIconCy + cardIconR + 10;
+        ctx.fillText(fitText(ctx, String(it.label), cardW - 16), cellCx, labelY);
 
-      if (it.sublabel) {
-        ctx.fillStyle = rgbaCss(fg, 0.55);
-        ctx.font = `400 ${Math.round(rowH * 0.085)}px Inter, system-ui, sans-serif`;
-        ctx.fillText(
-          fitText(ctx, String(it.sublabel), colW - 20),
-          cellCx,
-          labelY + Math.round(rowH * 0.13) + 4,
-        );
+        // Sublabel: below label
+        if (it.sublabel) {
+          ctx.fillStyle = rgbaCss(fg, 0.55);
+          ctx.font = `500 ${Math.min(Math.round(cardH * 0.09), Math.round(rowH * 0.085))}px Inter, system-ui, sans-serif`;
+          ctx.fillText(
+            fitText(ctx, String(it.sublabel), cardW - 16),
+            cellCx,
+            labelY + labelFontSize + 4,
+          );
+        }
+      }
+    } else {
+      // ---- Standard circle / square / plain modes ----
+      const iconCy = cellTopY + iconR + 16;
+      if (iconStyle === 'circle') {
+        drawCircleBadge(ctx, cellCx, iconCy, iconR, badgeColor);
+      } else if (iconStyle === 'square') {
+        drawSquareBadge(ctx, cellCx, iconCy, iconR, badgeColor);
+      }
+      // plain: no badge
+
+      // ---- Icon path (white on circle/square; badge-color on plain) ----
+      drawIconCentered(
+        ctx,
+        resolved,
+        cellCx,
+        iconCy,
+        iconR * 0.85,
+        iconStyle === 'plain' ? badgeColor : [255, 255, 255],
+      );
+
+      // ---- Label below ----
+      if (it.label) {
+        ctx.fillStyle = rgbCss(fg);
+        ctx.font = `700 ${Math.round(rowH * 0.13)}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const labelY = iconCy + iconR + 14;
+        ctx.fillText(fitText(ctx, String(it.label), colW - 20), cellCx, labelY);
+
+        if (it.sublabel) {
+          ctx.fillStyle = rgbaCss(fg, 0.55);
+          ctx.font = `500 ${Math.round(rowH * 0.085)}px Inter, system-ui, sans-serif`;
+          ctx.fillText(
+            fitText(ctx, String(it.sublabel), colW - 20),
+            cellCx,
+            labelY + Math.round(rowH * 0.13) + 4,
+          );
+        }
       }
     }
   }
@@ -156,11 +210,60 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 // Helpers
 // ============================================================================
 
-function drawCircleBadge(ctx, cx, cy, r, color) {
+/**
+ * Draw a white rounded-rect card with soft drop shadow + thin top accent bar.
+ * Used by iconStyle === 'card'.
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x  card left edge
+ * @param {number} y  card top edge
+ * @param {number} w  card width
+ * @param {number} h  card height
+ * @param {object} palette  theme palette (for accent color)
+ */
+function drawCardFrame(ctx, x, y, w, h, palette) {
+  const accent = palette.colors?.[0] || palette.accent || [60, 130, 200];
+  const cardRadius = Math.min(w, h) * 0.06;
+  const accentBarH = 3;
+
+  // White card body with drop shadow
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.18)';
+  ctx.shadowColor = 'rgba(0,0,0,0.10)';
   ctx.shadowBlur = 10;
   ctx.shadowOffsetY = 3;
+  ctx.fillStyle = 'rgba(255,255,255,0.96)';
+  roundedRectPath(ctx, x, y, w, h, cardRadius);
+  ctx.fill();
+  ctx.restore();
+
+  // Thin top accent bar (palette.accent, 3px, rounded top corners only)
+  ctx.save();
+  ctx.fillStyle = rgbCss(accent);
+  roundedRectPath(ctx, x, y, w, accentBarH, cardRadius);
+  ctx.fill();
+  ctx.restore();
+}
+
+function roundedRectPath(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.lineTo(x + w - rr, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
+  ctx.lineTo(x + w, y + h - rr);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+  ctx.lineTo(x + rr, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - rr);
+  ctx.lineTo(x, y + rr);
+  ctx.quadraticCurveTo(x, y, x + rr, y);
+  ctx.closePath();
+}
+
+function drawCircleBadge(ctx, cx, cy, r, color) {
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.22)';
+  ctx.shadowBlur = 14;
+  ctx.shadowOffsetY = 4;
   const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, 0, cx, cy, r);
   grad.addColorStop(0, rgbCss(lighten(color, 0.22)));
   grad.addColorStop(1, rgbCss(color));
@@ -168,11 +271,11 @@ function drawCircleBadge(ctx, cx, cy, r, color) {
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
-  // Specular
+  // Specular highlight (brighter + slightly larger ellipse)
   ctx.shadowColor = 'transparent';
-  ctx.fillStyle = 'rgba(255,255,255,0.22)';
+  ctx.fillStyle = 'rgba(255,255,255,0.32)';
   ctx.beginPath();
-  ctx.ellipse(cx - r * 0.25, cy - r * 0.35, r * 0.5, r * 0.25, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(cx - r * 0.25, cy - r * 0.35, r * 0.55, r * 0.28, -0.4, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }

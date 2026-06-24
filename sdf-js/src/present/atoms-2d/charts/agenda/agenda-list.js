@@ -209,7 +209,7 @@ function drawShowcase(
 
     if (args.subtitle) {
       ctx.fillStyle = rgbaCss(fg, 0.55);
-      ctx.font = `400 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
+      ctx.font = `500 ${Math.round(h * 0.045)}px Inter, system-ui, sans-serif`;
       ctx.fillText(String(args.subtitle), x + PAD, plotTop);
       plotTop += Math.round(h * 0.045) + 12;
     } else {

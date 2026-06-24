@@ -92,7 +92,11 @@ export function sphereFill3dSDF({
     if (colors && colors[i] != null) {
       const m = resolveMaterial(colors[i]);
       if (m) {
-        s._subjectMaterial = { ...m, kind: FILL_KIND, roughness: m.roughness < 0 ? 0.3 : m.roughness };
+        s._subjectMaterial = {
+          ...m,
+          kind: FILL_KIND,
+          roughness: m.roughness < 0 ? 0.3 : m.roughness,
+        };
       }
     }
     parts.push(s);
@@ -134,7 +138,11 @@ export const sphereFill3dSpec = {
       name: 'Multi-colour fill levels',
       args: {
         levels: [0.8, 0.4, 0.2],
-        colors: [{ hue: 0.58, sat: 0.82, value: 0.66 }, 'fruit-red', { hue: 0.3, sat: 0.72, value: 0.6 }],
+        colors: [
+          { hue: 0.58, sat: 0.82, value: 0.66 },
+          'fruit-red',
+          { hue: 0.3, sat: 0.72, value: 0.6 },
+        ],
       },
     },
     {
@@ -142,7 +150,11 @@ export const sphereFill3dSpec = {
       args: {
         levels: [0.8, 0.4, 0.2],
         radii: [1.0, 0.72, 0.55],
-        colors: [{ hue: 0.58, sat: 0.82, value: 0.66 }, { hue: 0.99, sat: 0.85, value: 0.5 }, { hue: 0.3, sat: 0.72, value: 0.6 }],
+        colors: [
+          { hue: 0.58, sat: 0.82, value: 0.66 },
+          { hue: 0.99, sat: 0.85, value: 0.5 },
+          { hue: 0.3, sat: 0.72, value: 0.6 },
+        ],
       },
     },
   ],

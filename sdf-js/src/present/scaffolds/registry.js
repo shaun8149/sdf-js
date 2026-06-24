@@ -82,6 +82,12 @@ export const SCAFFOLDS = [
         recommended_atoms: ['device-mockup-frame', 'device-mockup-row', 'bullet-list'],
       },
       {
+        name: 'section-divider',
+        title: 'Section Break',
+        purpose: 'Visual section break between Solution and Traction',
+        recommended_atoms: ['cover'],
+      },
+      {
         name: 'traction',
         title: 'Traction',
         purpose: 'Revenue / users / growth charts',
@@ -504,6 +510,12 @@ export const SCAFFOLDS = [
     keywords: ['vision', 'mission', 'values', 'principles', 'culture', 'manifesto'],
     slots: [
       { name: 'cover', title: 'Title', purpose: 'Brand statement', recommended_atoms: ['cover'] },
+      {
+        name: 'section-divider',
+        title: 'Section Break',
+        purpose: 'Visual section break between cover and vision',
+        recommended_atoms: ['cover'],
+      },
       {
         name: 'vision',
         title: 'Vision',

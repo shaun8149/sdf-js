@@ -19,6 +19,7 @@
 import * as deckModel from './deck-model.js';
 import { pickScaffold, distributeSources } from './scaffolds/picker.js';
 import { pickScaffoldLLM } from './scaffolds/picker-llm.js';
+import { mapSlidesToSlotsLLM } from './scaffolds/mapper-llm.js';
 import { getTheme } from './themes.js';
 import { renderAtom } from './atoms-2d/registry.js';
 import { exportDeckToPPTX } from './exporters/pptx.js';
@@ -51,6 +52,7 @@ export async function mountScaffoldView(target, deckId) {
     slides,
     stage: 'idle', // idle | picking | picked | lifting | done
     picker: { mode: 'auto' }, // 'auto' (LLM with v1 fallback) | 'v1'
+    mapper: { mode: 'auto' }, // 'auto' (LLM with heuristic fallback) | 'heuristic'
     pickerResult: null, // {scaffold, theme, score, signals, fallback, method}
     slotAssignments: null, // array of {slot, slotIdx, slideIdx, score, fallback?}
     slotLifts: null, // array of {slotIdx, status, sceneData?, costUSD?, error?}
@@ -182,45 +184,69 @@ export async function mountScaffoldView(target, deckId) {
     render();
   }
 
-  function onConfirmScaffold() {
-    // Stage 1: heuristic mapping
+  async function onConfirmScaffold() {
+    // Stage 1: map slides → slots (LLM or heuristic depending on state.mapper.mode)
     const scaffold = state.pickerResult.scaffold;
-    const consumed = new Set();
-    const assignments = scaffold.slots.map((slot, slotIdx) => {
-      let bestIdx = -1;
-      let bestScore = -1;
-      if (slotIdx === 0 && slot.name === 'cover') {
+
+    if (state.mapper.mode === 'auto') {
+      // LLM judge with heuristic fallback
+      const mapperResult = await mapSlidesToSlotsLLM(
+        { slides, scaffold },
+        {
+          apiKey: state.apiKey,
+          fallbackToHeuristic: true,
+          log: (...m) => console.log('[mapper-llm]', ...m),
+        },
+      );
+      // Convert mapper-llm shape → internal shape used by Stage 2
+      state.slotAssignments = mapperResult.assignments.map((a) => ({
+        slot: scaffold.slots[a.slotIdx],
+        slotIdx: a.slotIdx,
+        slideIdx: a.slideIdx,
+        score: a.confidence,
+        fallback: a.reason?.startsWith('heuristic:') && a.slideIdx >= 0 && a.confidence === 0,
+        empty: a.slideIdx === -1,
+        mapperMethod: mapperResult.method,
+        mapperReason: a.reason,
+        mapperConfidence: a.confidence,
+      }));
+    } else {
+      // Pure heuristic (state.mapper.mode === 'heuristic')
+      const consumed = new Set();
+      state.slotAssignments = scaffold.slots.map((slot, slotIdx) => {
+        let bestIdx = -1;
+        let bestScore = -1;
+        if (slotIdx === 0 && slot.name === 'cover') {
+          for (let i = 0; i < slides.length; i++) {
+            if (!consumed.has(i)) {
+              bestIdx = i;
+              bestScore = 0;
+              break;
+            }
+          }
+        } else {
+          for (let i = 0; i < slides.length; i++) {
+            if (consumed.has(i)) continue;
+            const score = scoreSlideForSlot(slides[i], slot);
+            if (score > bestScore) {
+              bestScore = score;
+              bestIdx = i;
+            }
+          }
+        }
+        if (bestIdx >= 0 && bestScore > 0) {
+          consumed.add(bestIdx);
+          return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
+        }
         for (let i = 0; i < slides.length; i++) {
           if (!consumed.has(i)) {
-            bestIdx = i;
-            bestScore = 0;
-            break;
+            consumed.add(i);
+            return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
           }
         }
-      } else {
-        for (let i = 0; i < slides.length; i++) {
-          if (consumed.has(i)) continue;
-          const score = scoreSlideForSlot(slides[i], slot);
-          if (score > bestScore) {
-            bestScore = score;
-            bestIdx = i;
-          }
-        }
-      }
-      if (bestIdx >= 0 && bestScore > 0) {
-        consumed.add(bestIdx);
-        return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
-      }
-      // Fallback
-      for (let i = 0; i < slides.length; i++) {
-        if (!consumed.has(i)) {
-          consumed.add(i);
-          return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
-        }
-      }
-      return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
-    });
-    state.slotAssignments = assignments;
+        return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
+      });
+    }
     render();
   }
 
@@ -362,13 +388,21 @@ export async function mountScaffoldView(target, deckId) {
       `   - Slot 0 deck cover → h=720 full, style: 'gradient'\n` +
       `   - Mid-deck title strip → h=120 TOP STRIP\n` +
       `   - Section divider slot → h=720 full + style: 'section'\n` +
+      `   - **Section divider slot detected (slot name = 'section-divider')**: emit a SINGLE cover atom at x=0/y=0/w=1280/h=720 with \`args.style: 'section'\` (deep accent + box-behind-title). Title should be ≤ 3 words (e.g. 'PRODUCT', 'TEAM', 'VISION').\n` +
       `9. **icon-row / icon-grid args**:\n` +
       `   - items: [{icon: '<phosphor-name | brand:slug | flag:code>', label: '1-2 words MAX', sublabel?: '3-5 words'}]\n` +
       `   - icon-row: 2-8 items horizontally (auto wraps to 2 rows when ≥7)\n` +
       `   - icon-grid: 4-16 items (cols auto-picks)\n` +
       `   - colorMode default 'auto' (brand icons keep brand color; Phosphor uses theme accent)\n` +
-      `10. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
-      `11. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
+      `   - **iconSize: 'small'|'medium'|'large'** (Sprint 18 Tier 1) — default 'medium'. Use 'large' for hero slots (vision/values with only 3-4 items at h≥360). 'small' only for dense 12+ item grids.\n` +
+      `   - iconStyle: 'circle' (default; icon in pseudo-3D badge) | 'card' (item is white card with icon + label + sublabel; PL services 4-up pattern, use for services/features slots) | 'square'|'plain'\n` +
+      `10. **kpi-card.style variants** (Sprint 18 Tier 1):\n` +
+      `    - \`style: 'dark'\` (default): dark bg + white text — single hero KPI (e.g. one big number per slot)\n` +
+      `    - \`style: 'light'\`: white bg + dark text + accent edge — dashboard grids of 3-6 KPIs (cleaner, less heavy)\n` +
+      `    - \`style: 'accent-border'\`: white bg + thick left accent border — single sidebar KPI (e.g. "30% retention" callout next to bullet content)\n` +
+      `    - Mix styles within a deck: hero KPI dark + dashboard KPIs light. Don't use all-dark for 6-card grid (overwhelming).\n` +
+      `11. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
+      `12. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
 
     const systemPrompt =
       `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +

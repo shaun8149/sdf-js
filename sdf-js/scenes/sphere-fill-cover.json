@@ -16,13 +16,28 @@
         ]
       },
       "transform": { "translate": [0, 1.1, 0] },
-      "material": { "hue": 0.58, "sat": 0.82, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+      "material": {
+        "hue": 0.58,
+        "sat": 0.82,
+        "value": 0.62,
+        "kind": "fill",
+        "roughness": 0.3,
+        "clearcoat": 0.5
+      }
     }
   ],
   "cameraSequence": {
     "loop": false,
     "shots": [
-      { "duration": 8, "pos": [0, 1.6, 8.5], "target": [0, 1.0, 0], "fov": 44, "aperture": 0, "focalDistance": 8.5, "ease": "smooth" }
+      {
+        "duration": 8,
+        "pos": [0, 1.6, 8.5],
+        "target": [0, 1.0, 0],
+        "fov": 44,
+        "aperture": 0,
+        "focalDistance": 8.5,
+        "ease": "smooth"
+      }
     ]
   },
   "defaults": { "stage": { "size": [16, 6, 11] } }
