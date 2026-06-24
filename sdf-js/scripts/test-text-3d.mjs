@@ -257,5 +257,44 @@ ok(cPipe.sdf !== null, 'text-3d-pipe scene compiles');
 ok(Number.isFinite(cPipe.sdf.f([0, 1.0, 0])), 'pipe compiled SDF probe finite at y=1.0');
 
 // -----------------------------------------------------------------------------
+console.log('\nTest group 7: all-unrenderable SceneData text skips cleanly');
+
+const sceneEmptyExtruded = {
+  v: 1,
+  defaults: stdDefaults,
+  subjects: [
+    {
+      type: 'text-3d-extruded',
+      id: 'lowercase-caption',
+      args: { text: 'abc', height: 0.4, depth: 0.1 },
+      transform: { translate: [0, 1, 0] },
+      region: 'caption',
+    },
+  ],
+};
+const cEmptyExt = compile(sceneEmptyExtruded, { sanity: false });
+ok(cEmptyExt.sdf === null, 'all-unrenderable extruded text compiles to empty scene');
+ok(cEmptyExt.subjects.length === 0, 'empty extruded text is not tracked as a null subject');
+ok(cEmptyExt.regionFn([0, 0, 0]) === 'background', 'regionFn handles empty extruded text');
+
+const sceneEmptyPipe = {
+  v: 1,
+  defaults: stdDefaults,
+  subjects: [
+    {
+      type: 'text-3d-pipe',
+      id: 'lowercase-pipe-caption',
+      args: { text: 'abc', height: 0.4, pipeRadius: 0.06 },
+      transform: { translate: [0, 1, 0] },
+      region: 'caption',
+    },
+  ],
+};
+const cEmptyPipe = compile(sceneEmptyPipe, { sanity: false });
+ok(cEmptyPipe.sdf === null, 'all-unrenderable pipe text compiles to empty scene');
+ok(cEmptyPipe.subjects.length === 0, 'empty pipe text is not tracked as a null subject');
+ok(cEmptyPipe.regionFn([0, 0, 0]) === 'background', 'regionFn handles empty pipe text');
+
+// -----------------------------------------------------------------------------
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
