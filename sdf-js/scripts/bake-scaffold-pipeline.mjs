@@ -378,8 +378,14 @@ for (const a of slotAssignments) {
     `   - icon-row: 2-8 items horizontally (auto wraps to 2 rows when ≥7)\n` +
     `   - icon-grid: 4-16 items (cols auto-picks)\n` +
     `   - colorMode default 'auto' (brand icons keep brand color; Phosphor uses theme accent)\n` +
-    `10. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
-    `11. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
+    `   - **iconSize: 'small'|'medium'|'large'** (Sprint 18 Tier 1) — default 'medium'. Use 'large' for hero slots (vision/values with only 3-4 items at h≥360). 'small' only for dense 12+ item grids.\n` +
+    `10. **kpi-card.style variants** (Sprint 18 Tier 1):\n` +
+    `    - \`style: 'dark'\` (default): dark bg + white text — single hero KPI (e.g. one big number per slot)\n` +
+    `    - \`style: 'light'\`: white bg + dark text + accent edge — dashboard grids of 3-6 KPIs (cleaner, less heavy)\n` +
+    `    - \`style: 'accent-border'\`: white bg + thick left accent border — single sidebar KPI (e.g. "30% retention" callout next to bullet content)\n` +
+    `    - Mix styles within a deck: hero KPI dark + dashboard KPIs light. Don't use all-dark for 6-card grid (overwhelming).\n` +
+    `11. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n` +
+    `12. **Undeclared args = bug**: don't add accentColor / iconColor / fontSize / anything not in the atom spec — atoms silently ignore unknown args, you're wasting tokens.\n`;
 
   if (DRY_RUN) {
     slotLifts.push({
