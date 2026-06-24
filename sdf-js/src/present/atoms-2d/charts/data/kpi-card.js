@@ -252,7 +252,7 @@ function _drawLight(ctx, args, opts = {}) {
   // ---- Sublabel ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.45);
-    ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
     ctx.fillText(
       fitText(ctx, String(args.sublabel), availW),
       x + 22,
@@ -347,7 +347,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   // ---- Sublabel ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.45);
-    ctx.font = `400 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
     ctx.fillText(
       fitText(ctx, String(args.sublabel), availW),
       textLeft,
