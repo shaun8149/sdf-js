@@ -122,6 +122,8 @@ const ATOM_LOADERS = {
   'icon-badge': () => import('./icons/icon-badge.js'),
   // Icons (Sprint 18) — N icons horizontally with labels (vision/values/contact)
   'icon-row': () => import('./icons/icon-row.js'),
+  // Icons (Sprint 18 T5) — M×N icon grid (services / values / features)
+  'icon-grid': () => import('./icons/icon-grid.js'),
 
   // Presentation (Phase 4) — deck cover / title page
   cover: () => import('./presentation/cover.js'),
