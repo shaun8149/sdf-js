@@ -12,6 +12,7 @@
 
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
+import { makeOverlay } from './overlay.js';
 
 const SCENES = '../../scenes'; // shared scene/deck JSON dir (also read by the playground later)
 
@@ -45,6 +46,10 @@ const getControls = () => ({
 
 const studio = createStudioRenderer({ canvas, getControls, onFps: () => {} });
 
+// Screen-text overlay (locked text policy: narrative/title/descriptive text →
+// DOM overlay anchored to 3D points; only geometry-bound data labels → SDF).
+const overlay = makeOverlay(wrap, studio);
+
 window.addEventListener('resize', () => {
   sizeCanvas();
   if (studio.requestRender) studio.requestRender(); // next frame reallocates the FBO + redraws
@@ -53,9 +58,14 @@ window.addEventListener('resize', () => {
 export const present = {
   studio,
   wrap,
+  overlay,
   /** Render a parsed SceneData (the inner v1 scene) into the studio. */
   show(sceneData) {
-    return applyStudioScene(studio, sceneData);
+    const r = applyStudioScene(studio, sceneData);
+    // Narrative/descriptive text rides on scene.overlay[] (projected DOM blocks),
+    // never in the SDF tree. Empty/absent → overlay clears.
+    overlay.set(sceneData && sceneData.overlay);
+    return r;
   },
   /** Fetch a scene/deck-segment file from scenes/ and render its sceneData. */
   async load(file) {

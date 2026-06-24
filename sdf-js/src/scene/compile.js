@@ -461,6 +461,8 @@ const PRIMITIVE_FACTORIES = {
       count: a.count ?? null,
       radius: a.radius ?? 0.6,
       spacing: a.spacing ?? a.gap ?? 0.3,
+      colors: a.colors ?? null,
+      radii: a.radii ?? null,
       cage: a.cage ?? true,
       cageThickness: a.cageThickness ?? 0.025,
       fillScale: a.fillScale ?? 0.92,
