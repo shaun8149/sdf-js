@@ -120,6 +120,8 @@ const ATOM_LOADERS = {
 
   // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
   'icon-badge': () => import('./icons/icon-badge.js'),
+  // Icons (Sprint 18) — N icons horizontally with labels (vision/values/contact)
+  'icon-row': () => import('./icons/icon-row.js'),
 
   // Presentation (Phase 4) — deck cover / title page
   cover: () => import('./presentation/cover.js'),
