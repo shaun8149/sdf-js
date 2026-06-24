@@ -1,4 +1,4 @@
-import { expandChartLabels, barAnchors } from '../src/scene/chart-labels.js';
+import { expandChartLabels, barAnchors, sphereFillAnchors } from '../src/scene/chart-labels.js';
 
 let pass = 0,
   fail = 0;
@@ -89,7 +89,13 @@ console.log('=== chart-labels (expandChartLabels connector) ===\n');
   );
   // middle sphere centred at x=0 (N=3 symmetric)
   ok(Math.abs(added[1].transform.translate[0]) < 1e-9, 'sphere-fill middle label at x=0');
-  ok(added[0].transform.translate[2] < 0, 'sphere-fill label on −z (camera-facing) front');
+  // +z = near side (camera at +z): label sits in FRONT of the sphere, not behind
+  // it (occluded). Mirrored via rotate 180°/Y so the pipe glyph reads correctly.
+  ok(added[0].transform.translate[2] > 0, 'sphere-fill label on +z near face (not occluded)');
+  ok(
+    Math.abs((added[0].transform.rotate || [0, 0, 0])[1] - Math.PI) < 1e-9,
+    'sphere-fill label mirrored (rotate 180°/Y) to face the +z camera',
+  );
 }
 
 // matrix-grid-3d: row-major flat array, row 0 on top
@@ -140,6 +146,33 @@ console.log('=== chart-labels (expandChartLabels connector) ===\n');
   };
   ok(expandChartLabels(notChart).subjects.length === 1, 'non-chart type with labels → no-op');
   ok(expandChartLabels({ v: 1, subjects: [] }).subjects.length === 0, 'empty scene → no-op');
+}
+
+// sphere-fill gauge: % auto-defaults from levels; radii-aware anchors
+{
+  // No args.labels → gauge auto-labels each sphere with its level as a %.
+  const scene = {
+    v: 1,
+    subjects: [{ id: 'g', type: 'sphere-fill-3d', args: { levels: [0.8, 0.4, 0.2] } }],
+  };
+  const labels = expandChartLabels(scene).subjects.filter((s) => s.type === 'text-3d-pipe');
+  ok(labels.length === 3, 'sphere-fill auto-labels 3 spheres from levels');
+  ok(labels[0].args.text === '80%', 'level 0.8 → "80%"');
+  ok(labels[2].args.text === '20%', 'level 0.2 → "20%"');
+
+  // Explicit args.labels:[] suppresses the auto-default.
+  const suppressed = {
+    v: 1,
+    subjects: [{ id: 'g', type: 'sphere-fill-3d', args: { levels: [0.5], labels: [] } }],
+  };
+  ok(expandChartLabels(suppressed).subjects.length === 1, 'args.labels:[] suppresses auto %');
+
+  // radii-aware anchors: surfaces stay `spacing` apart, row centred. radii
+  // [1.0,0.5] spacing 0.3 → centres at -0.9 / +0.9 (matches the atom layout).
+  const an = sphereFillAnchors({ levels: [0.5, 0.5], radii: [1.0, 0.5], spacing: 0.3 });
+  ok(Math.abs(an[0].x - -0.9) < 1e-6, 'radii anchor 0 at x=-0.9');
+  ok(Math.abs(an[1].x - 0.9) < 1e-6, 'radii anchor 1 at x=+0.9');
+  ok(Math.abs(an[0].z - 1.1) < 1e-6, 'radii anchor 0 z = +(1.0+0.1) (near side, not occluded)');
 }
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);

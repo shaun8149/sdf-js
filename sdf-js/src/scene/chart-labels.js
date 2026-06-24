@@ -86,21 +86,42 @@ export function pieAnchors(
 
 // sphere-fill-3d: row of spheres along +X (labels parallel to `levels`). anchor
 // = just in front of each sphere's front face (−z), centred at sphere height.
+// Mirrors the atom's own layout (sphere-fill-3d.js) including per-sphere radii[]:
+// surfaces stay `spacing` apart and the row stays centred, so labels land on the
+// spheres even when sizes differ. Uniform radii reproduce the old even row.
 export function sphereFillAnchors({
   levels = [],
   count,
   radius = 0.6,
   spacing = 0.3,
+  radii = null,
   margin = 0.1,
 } = {}) {
   const N = count != null ? Math.floor(count) : levels.length;
-  const stride = 2 * radius + spacing;
-  const offset = ((N - 1) / 2) * stride;
-  return Array.from({ length: N }, (_, i) => ({
-    x: i * stride - offset,
-    y: 0,
-    z: -(radius + margin),
-  }));
+  if (N <= 0) return [];
+  const radiusFor = (i) => (radii && radii[i] != null ? radii[i] : radius);
+  const xs = [];
+  let cx = 0;
+  for (let i = 0; i < N; i++) {
+    if (i > 0) cx += radiusFor(i - 1) + spacing + radiusFor(i);
+    xs.push(cx);
+  }
+  const mid = (xs[0] + xs[N - 1]) / 2;
+  const lvl = (i) => (i < levels.length && levels[i] != null ? levels[i] : (levels[levels.length - 1] ?? 0.5));
+  return Array.from({ length: N }, (_, i) => {
+    const r = radiusFor(i);
+    // Sit the % in the MIDDLE of the coloured liquid (not at the centre/waterline):
+    // on a sphere the liquid spans n.y∈[-1, 2f-1], so its mid is n.y=f-1 → world
+    // y = r*(f-1). White label on the coloured liquid stays legible on any
+    // background (a centre label half-lands on the bright glass top). Scaled 0.85
+    // to keep the glyph body inside the sphere for low fills.
+    const f = clampFrac(lvl(i));
+    // +z is the near side (the studio camera sits at +z looking toward −z), so
+    // the label sits JUST IN FRONT of the sphere's front face — not behind it,
+    // where the sphere would occlude it (the old −z anchor was never visually
+    // tested; sphere-fill labels are new on the studio path).
+    return { x: xs[i] - mid, y: r * (f - 1) * 0.85, z: r + margin };
+  });
 }
 
 // matrix-grid-3d: R×C card grid, ROW-MAJOR with row 0 on TOP (matches the atom:
@@ -152,7 +173,22 @@ const ANCHORS_FROM_ARGS = {
   'matrix-grid-3d': (a) => matrixAnchors(a),
 };
 
+// internal: type → (args) → default label strings, used when the subject did NOT
+// carry an explicit args.labels. For a fill gauge the % IS the datum, so a gauge
+// auto-labels each sphere from its level (the data label belongs to the geometry
+// → in-scene SDF, per the locked text policy). Pass args.labels (incl. []) to
+// override or suppress.
+const clampFrac = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
+const DEFAULT_LABELS = {
+  'sphere-fill-3d': (a) =>
+    (Array.isArray(a.levels) ? a.levels : []).map((l) => `${Math.round(clampFrac(l) * 100)}%`),
+};
+
 // turn anchors + label strings into camera-facing text-3d-pipe subjects.
+// mirror=true reflects each glyph in x (transform scale [-1,1,1]) so a label that
+// sits on the camera-NEAR (+z) face of an object reads correctly: the pipe glyph
+// is depth-symmetric, so seen from +z it would otherwise read mirrored. Labels
+// that float at −z (bar/line, above their geometry) don't need it.
 export function placeLabels(
   anchors,
   labels,
@@ -162,16 +198,23 @@ export function placeLabels(
     material = LABEL_MAT,
     idPrefix = 'lbl',
     align = 'center',
+    mirror = false,
   } = {},
 ) {
   return anchors.map((a, i) => ({
     id: `${idPrefix}${i}`,
     type: 'text-3d-pipe',
     args: { text: String(labels[i] ?? ''), height, pipeRadius, align },
-    transform: { translate: [a.x, a.y, a.z] },
+    transform: mirror
+      ? { translate: [a.x, a.y, a.z], rotate: [0, Math.PI, 0] }
+      : { translate: [a.x, a.y, a.z] },
     material,
   }));
 }
+
+// Label subjects that sit ON their geometry's near (+z) face need their glyphs
+// mirrored to read correctly (see placeLabels). sphere-fill % sits on the liquid.
+const MIRROR_LABELS = new Set(['sphere-fill-3d']);
 
 // Deterministic SceneData→SceneData: for every chart subject carrying
 // args.labels (parallel to args.values), append text-3d-pipe label subjects
@@ -183,7 +226,14 @@ export function expandChartLabels(sceneData) {
   sceneData.subjects.forEach((s, si) => {
     const fn = ANCHORS_FROM_ARGS[s && s.type];
     const args = s && s.args;
-    const labels = args && Array.isArray(args.labels) ? args.labels : null;
+    // Explicit args.labels wins (incl. [] = suppress); otherwise a per-type
+    // default may synthesise labels (e.g. gauge % from levels).
+    const labels =
+      args && Array.isArray(args.labels)
+        ? args.labels
+        : DEFAULT_LABELS[s && s.type]
+          ? DEFAULT_LABELS[s.type](args || {})
+          : null;
     if (!fn || !labels || !labels.length) return;
     const anchors = fn(args);
     if (!anchors || !anchors.length) return;
@@ -192,7 +242,10 @@ export function expandChartLabels(sceneData) {
     // only label the elements that actually have a label string
     const n = Math.min(off.length, labels.length);
     extra.push(
-      ...placeLabels(off.slice(0, n), labels.slice(0, n), { idPrefix: `lbl_${s.id ?? si}_` }),
+      ...placeLabels(off.slice(0, n), labels.slice(0, n), {
+        idPrefix: `lbl_${s.id ?? si}_`,
+        mirror: MIRROR_LABELS.has(s.type),
+      }),
     );
   });
   if (!extra.length) return sceneData;
