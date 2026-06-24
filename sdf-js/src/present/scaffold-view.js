@@ -411,7 +411,12 @@ export async function mountScaffoldView(target, deckId) {
       `    - process / workflow slots (How It Works / Pipeline) → \`flow-chart\` or \`progression\`\n` +
       `    - 2-set comparison slots (Before/After / Us vs Them) → \`venn\` or side-by-side kpi-cards\n` +
       `    Specialized atoms communicate semantics in 3D theatrical playback — bullet-list reads as "they had no better atom".\n` +
-      `14. **NEVER emit \`type: "text"\`** — there is NO text atom. For corner attribution (author / date / version) use cover's \`author\`/\`date\`/\`version\` args. For floating labels INSIDE a chart, set the chart atom's title/labels args. If you can't express something via an atom + its args, omit it.\n`;
+      `14. **NEVER emit \`type: "text"\`** — there is NO text atom. For corner attribution (author / date / version) use cover's \`author\`/\`date\`/\`version\` args. For floating labels INSIDE a chart, set the chart atom's title/labels args. If you can't express something via an atom + its args, omit it.\n` +
+      `15. **Image atoms (Sprint 18 Tier 3 C)** — use when content describes a visual subject AND a URL is present in the source:\n` +
+      `    - Hero slot with a single dominant photo + title/body/bullets → \`image-split\` (image one side, text other side; PL hero pattern)\n` +
+      `    - Full-bleed background photo with overlay caption → \`image\` with fit:'cover'\n` +
+      `    - For src URL: ONLY use URLs that appear in slide.body (look for "image:" or "https://images." or "https://picsum." prefixes). If no URL is in source, OMIT image atoms — DO NOT fabricate URLs that will 404.\n` +
+      `    - DO NOT use image atoms for purely numeric / list / process content — specialized atoms (kpi-card / fishbone / timeline / flow-chart) are better.\n`;
 
     const systemPrompt =
       `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +
