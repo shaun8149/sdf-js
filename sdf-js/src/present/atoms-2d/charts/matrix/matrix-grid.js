@@ -19,6 +19,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'matrix-grid',
@@ -105,7 +106,18 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const color = cell.color || colors[idx % colors.length];
       const cx = gridL + c * cellW;
       const cy = gridT + r * cellH;
-      drawCell(ctx, cx + 6, cy + 6, cellW - 12, cellH - 12, cell.label, cell.sublabel, color, fg);
+      drawCell(
+        ctx,
+        cx + 6,
+        cy + 6,
+        cellW - 12,
+        cellH - 12,
+        cell.label,
+        cell.sublabel,
+        color,
+        fg,
+        cell.icon,
+      );
     }
   }
 
@@ -248,7 +260,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
 }
 
-function drawCell(ctx, x, y, w, h, label, sublabel, color, fg) {
+function drawCell(ctx, x, y, w, h, label, sublabel, color, fg, iconName) {
   // Drop shadow — 10px blur, alpha 0.08, embedded feel
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.08);
@@ -276,6 +288,23 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color, fg) {
   ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.4);
   roundRect(ctx, x, y, w, 3, 8);
   ctx.fill();
+
+  // Sprint 18: small icon in top-left corner of cell
+  if (iconName) {
+    const resolved = resolveIcon(iconName);
+    const viewBox = resolved.source === 'brand' ? 24 : 256;
+    const iconSize = Math.min(h * 0.28, w * 0.28, 26);
+    ctx.save();
+    try {
+      ctx.translate(x + 7, y + 8);
+      ctx.scale(iconSize / viewBox, iconSize / viewBox);
+      ctx.fillStyle = 'rgba(255,255,255,0.88)';
+      if (resolved.path) ctx.fill(resolved.path);
+    } catch (_) {
+      /* Path2D unavailable (Node) */
+    }
+    ctx.restore();
+  }
 
   // Label — Inter 700 with generous inner breathing room
   if (label) {

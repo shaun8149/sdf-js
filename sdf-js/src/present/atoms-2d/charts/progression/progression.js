@@ -10,6 +10,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
   type: 'progression',
@@ -75,12 +76,31 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const cx0 = x + PAD + i * (chevW + CHEVRON_DEPTH * 0.3);
     drawChevron(ctx, cx0, cy - chevH / 2, chevW, chevH, isFirst, isLast, color);
 
-    // Label inside (centered)
-    ctx.fillStyle = status === 'todo' ? rgbaCss([60, 60, 60], 0.7) : 'rgba(255,255,255,0.97)';
-    ctx.font = `700 ${Math.min(15, chevH * 0.3)}px Inter, system-ui, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(step.label || `Step ${i + 1}`, cx0 + chevW / 2, cy + 1);
+    // Icon OR label inside chevron (Sprint 18: icon replaces text label when step.icon is set)
+    const chevCx = cx0 + chevW / 2;
+    if (step.icon) {
+      const resolved = resolveIcon(step.icon);
+      const viewBox = resolved.source === 'brand' ? 24 : 256;
+      const iconSize = Math.min(chevH * 0.55, 40);
+      const iconColor = status === 'todo' ? [120, 120, 125] : [255, 255, 255];
+      ctx.save();
+      try {
+        ctx.translate(chevCx - iconSize / 2, cy - iconSize / 2);
+        ctx.scale(iconSize / viewBox, iconSize / viewBox);
+        ctx.fillStyle = rgbCss(iconColor);
+        if (resolved.path) ctx.fill(resolved.path);
+      } catch (_) {
+        /* Path2D unavailable (Node) */
+      }
+      ctx.restore();
+    } else {
+      // Label inside (centered) — original behaviour
+      ctx.fillStyle = status === 'todo' ? rgbaCss([60, 60, 60], 0.7) : 'rgba(255,255,255,0.97)';
+      ctx.font = `700 ${Math.min(15, chevH * 0.3)}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(step.label || `Step ${i + 1}`, chevCx, cy + 1);
+    }
   }
 }
 
