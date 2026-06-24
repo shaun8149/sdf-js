@@ -17,12 +17,7 @@ import { FLAG_ICONS } from './flag-icons.js';
 import { CATEGORIES, CATEGORY_NAMES, getCategoryNames, getCategoryForIcon } from './categories.js';
 import { closestMatch } from './fuzzy.js';
 
-// Pre-compute a flat name list for fuzzy matching (across all 3 sources)
-const ALL_NAMES = [
-  ...Object.keys(BAKED_ICONS),
-  ...Object.keys(BRAND_ICONS).map((s) => `brand:${s}`),
-  ...Object.keys(FLAG_ICONS).map((c) => `flag:${c}`),
-];
+// Pre-compute a flat name list for fuzzy matching (across all 3 sources, plain/unprefixed)
 const PLAIN_NAMES = [
   ...Object.keys(BAKED_ICONS),
   ...Object.keys(BRAND_ICONS),
@@ -40,10 +35,15 @@ const PLAIN_NAMES = [
  */
 
 /**
- * Full resolver — returns IconResult object or null if nothing matches.
- * Use this for atoms that need source / color / svgInner metadata.
+ * Full resolver — returns an IconResult object or null if nothing matches.
  *
- * @param {string} name
+ * Prefer this over getIconPath2D when the atom needs any of:
+ *   - brand color (e.g. Slack purple, GitHub dark)
+ *   - flag SVG body (flags are multi-element SVGs, not single paths)
+ *   - source attribution ('phosphor' | 'brand' | 'flag' | 'fallback')
+ *   - the actual resolved name after fuzzy matching
+ *
+ * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
  * @returns {IconResult|null}
  */
 export function resolveIcon(name) {
@@ -79,11 +79,14 @@ export function resolveIcon(name) {
 }
 
 /**
- * Simplified resolver — returns a Path2D (or null in Node without canvas).
- * Returns null if the icon is unknown (even after fuzzy fallback).
- * Use this for quick path-only rendering where metadata isn't needed.
+ * Get a Path2D for an icon by name. Returns null for unknown names,
+ * brands (use resolveIcon for brand color), and flags (use resolveIcon
+ * for the SVG body — flags are multi-element SVGs not single paths).
  *
- * @param {string} name
+ * For full icon descriptor with source attribution, brand color, and
+ * fuzzy fallback info, use resolveIcon() instead.
+ *
+ * @param {string} name kebab-case icon name (Phosphor / brand: / flag:)
  * @returns {Path2D|null}
  */
 export function getIconPath2D(name) {
