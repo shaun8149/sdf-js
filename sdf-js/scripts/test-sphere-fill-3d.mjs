@@ -158,5 +158,31 @@ console.log('\nTest group 6: per-sphere colours via colors[]');
   ok(Math.abs(single?._subjectMaterial?.hue - 0.3) < 1e-6, 'single coloured sphere hue = 0.3');
 }
 
+// ---- Test group 7: per-sphere radius (radii[]) -------------------------------
+console.log('\nTest group 7: per-sphere radius via radii[]');
+{
+  // radii [1.0, 0.5], spacing 0.3 → centres at x = -0.9 and +0.9 (row centred).
+  // f(centre_i) = -radius_i (distance to own surface), proving per-sphere size.
+  const sdf = sphereFill3dSDF({ levels: [0.5, 0.5], radii: [1.0, 0.5], spacing: 0.3 });
+  ok(Math.abs(sdf.f([-0.9, 0, 0]) - -1.0) < 1e-6, 'sphere 0 radius 1.0 at x=-0.9');
+  ok(Math.abs(sdf.f([0.9, 0, 0]) - -0.5) < 1e-6, 'sphere 1 radius 0.5 at x=+0.9');
+}
+{
+  // radii null reproduces the old uniform row exactly (radius 0.6, N=2 →
+  // centres at -0.75 / +0.75; same as stride 1.5, offset 0.75).
+  const sdf = sphereFill3dSDF({ levels: [0.5, 0.5], radius: 0.6 });
+  ok(Math.abs(sdf.f([-0.75, 0, 0]) - -0.6) < 1e-6, 'uniform layout unchanged (sphere 0 at -0.75)');
+  ok(Math.abs(sdf.f([0.75, 0, 0]) - -0.6) < 1e-6, 'uniform layout unchanged (sphere 1 at +0.75)');
+}
+{
+  // Spheres past radii.length fall back to the uniform radius.
+  const sdf = sphereFill3dSDF({ levels: [0.5, 0.5, 0.5], radii: [1.0], radius: 0.4, spacing: 0.2 });
+  const kids = sdf.ast?.children ?? [];
+  ok(kids.length === 3, 'three spheres');
+  // Sphere 0 radius 1.0, spheres 1+2 radius 0.4. Centres: 0, then +1.0+0.2+0.4=1.6,
+  // then +0.4+0.2+0.4=1.0 → 2.6. mid=1.3. So centre 0 at x=-1.3.
+  ok(Math.abs(sdf.f([-1.3, 0, 0]) - -1.0) < 1e-6, 'sphere 0 uses radii[0]=1.0');
+}
+
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);

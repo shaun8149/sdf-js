@@ -1,0 +1,29 @@
+{
+  "v": 1,
+  "name": "kpi-hero: 3D Spheres Fill Levels cover (one subject)",
+  "subjects": [
+    {
+      "id": "gauges",
+      "type": "sphere-fill-3d",
+      "args": {
+        "levels": [0.8, 0.4, 0.2],
+        "radii": [1.0, 0.72, 0.55],
+        "spacing": 0.5,
+        "colors": [
+          { "hue": 0.58, "sat": 0.82, "value": 0.66 },
+          { "hue": 0.99, "sat": 0.85, "value": 0.5 },
+          { "hue": 0.3, "sat": 0.72, "value": 0.6 }
+        ]
+      },
+      "transform": { "translate": [0, 1.1, 0] },
+      "material": { "hue": 0.58, "sat": 0.82, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 8, "pos": [0, 1.6, 8.5], "target": [0, 1.0, 0], "fov": 44, "aperture": 0, "focalDistance": 8.5, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [16, 6, 11] } }
+}
