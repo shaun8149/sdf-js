@@ -5,7 +5,7 @@
 // Sprint 16 — End-to-end PDF → scaffolded deck.
 //
 // Stage 0: Pick scaffold (deterministic v1 from text content)
-// Stage 1: Map source slides → scaffold slots (heuristic by purpose-keyword match)
+// Stage 1: Map source slides → scaffold slots (heuristic or LLM judge)
 // Stage 2: For each slot, call lift LLM with slot context injected:
 //          - slot purpose
 //          - recommended atoms (positive constraint)
@@ -21,12 +21,14 @@
 //   --force               re-bake existing outputs
 //   --dry-run             skip Stage 2 LLM calls (just print scaffold+slot mapping)
 //   --key-file PATH       read API key from file instead of env
+//   --mapper llm|heuristic|auto  Stage 1 mapper mode (default: auto)
 // =============================================================================
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { basename } from 'node:path';
 import { pickScaffold, distributeSources } from '../src/present/scaffolds/picker.js';
 import { pickScaffoldLLM } from '../src/present/scaffolds/picker-llm.js';
+import { mapSlidesToSlotsLLM } from '../src/present/scaffolds/mapper-llm.js';
 import { getTheme } from '../src/present/themes.js';
 import { buildIconCatalogString } from '../src/icons/index.js';
 
@@ -45,6 +47,9 @@ const KEY_FILE = arg('--key-file', null);
 // Picker mode: 'llm' (v2 Claude-wrapped), 'v1' (deterministic keyword), 'auto'
 // (v2 with v1 fallback on error). Default: auto.
 const PICKER_MODE = arg('--picker', 'auto');
+// Mapper mode: 'llm' (LLM judge, throw on fail), 'heuristic' (keyword-only),
+// 'auto' (LLM with heuristic fallback on error). Default: auto.
+const MAPPER_MODE = arg('--mapper', 'auto');
 
 // --- API key ---
 let API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -131,13 +136,102 @@ console.log(
 // ---------------------------------------------------------------------------
 // Stage 1 — Map source slides → scaffold slots
 //
-// Heuristic: for each slot, score each unconsumed slide by purpose-keyword
-// overlap. Pick the best match. If no slide scores > 0, leave slot empty.
-// First slide is biased toward 'cover' slot.
+// 'llm'       — call mapper-llm, throw on fail (fallbackToHeuristic: false)
+// 'heuristic' — skip mapper-llm, use keyword-overlap scoring
+// 'auto'      — call mapper-llm with heuristic fallback on error (default)
 // ---------------------------------------------------------------------------
-console.log('── Stage 1: slot mapping ──');
 
-function scoreSlideForSlot(slide, slot) {
+async function runStage1() {
+  if (MAPPER_MODE === 'heuristic') {
+    console.log('── Stage 1: slot mapping (heuristic) ──');
+    return _heuristicMapping();
+  }
+  // 'llm' or 'auto'
+  console.log('── Stage 1: LLM mapping ──');
+  const mapperResult = await mapSlidesToSlotsLLM(
+    { slides, scaffold },
+    {
+      apiKey: API_KEY,
+      fallbackToHeuristic: MAPPER_MODE !== 'llm',
+      log: (...m) => console.log(' ', ...m),
+    },
+  );
+
+  if (mapperResult.method === 'llm') {
+    // Per-slot pretty print
+    for (const a of mapperResult.assignments) {
+      if (a.slideIdx === -1) {
+        console.log(
+          `    ${String(a.slotIdx).padStart(2)}. ${a.slotName.padEnd(20)} [EMPTY] (no slide fits)`,
+        );
+      } else {
+        const reasonSnip = (a.reason || '').slice(0, 50);
+        console.log(
+          `    ${String(a.slotIdx).padStart(2)}. ${a.slotName.padEnd(20)} ← slide ${String(a.slideIdx).padStart(2)} "${(slides[a.slideIdx]?.title || '').slice(0, 40)}" (conf ${a.confidence}, ${reasonSnip})`,
+        );
+      }
+    }
+    console.log(`  LLM mapper cost: $${mapperResult.cost.usdEstimate.toFixed(4)}`);
+  } else {
+    // Heuristic fallback path — same print as the old code
+    console.log(`  [heuristic fallback: ${mapperResult.fallbackReason}]`);
+    _printHeuristicAssignments(mapperResult.assignments);
+  }
+
+  // Convert mapper-llm assignments shape → internal shape used by Stage 2
+  return mapperResult.assignments.map((a) => ({
+    slot: scaffold.slots[a.slotIdx],
+    slotIdx: a.slotIdx,
+    slideIdx: a.slideIdx,
+    score: a.confidence,
+    fallback: a.reason?.startsWith('heuristic:') && a.slideIdx >= 0 && a.confidence === 0,
+    empty: a.slideIdx === -1,
+    mapperMethod: mapperResult.method,
+    mapperReason: a.reason,
+    mapperConfidence: a.confidence,
+  }));
+}
+
+function _heuristicMapping() {
+  const consumedSlides = new Set();
+  const assignments = scaffold.slots.map((slot, slotIdx) => {
+    let bestIdx = -1;
+    let bestScore = -1;
+    if (slotIdx === 0 && slot.name === 'cover') {
+      for (let i = 0; i < slides.length; i++) {
+        if (!consumedSlides.has(i)) {
+          bestIdx = i;
+          bestScore = 0;
+          break;
+        }
+      }
+    } else {
+      for (let i = 0; i < slides.length; i++) {
+        if (consumedSlides.has(i)) continue;
+        const s = _scoreSlide(slides[i], slot);
+        if (s > bestScore) {
+          bestScore = s;
+          bestIdx = i;
+        }
+      }
+    }
+    if (bestIdx >= 0 && bestScore > 0) {
+      consumedSlides.add(bestIdx);
+      return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
+    }
+    for (let i = 0; i < slides.length; i++) {
+      if (!consumedSlides.has(i)) {
+        consumedSlides.add(i);
+        return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
+      }
+    }
+    return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
+  });
+  _printHeuristicAssignments(assignments);
+  return assignments;
+}
+
+function _scoreSlide(slide, slot) {
   const slideText = (
     String(slide.title || '') +
     ' ' +
@@ -146,7 +240,7 @@ function scoreSlideForSlot(slide, slot) {
   const slotKeywords = (slot.purpose + ' ' + slot.title)
     .toLowerCase()
     .split(/\W+/)
-    .filter((w) => w.length >= 4); // skip short words
+    .filter((w) => w.length >= 4);
   let score = 0;
   for (const kw of slotKeywords) {
     if (slideText.includes(kw)) score += 1;
@@ -154,53 +248,24 @@ function scoreSlideForSlot(slide, slot) {
   return score;
 }
 
-const consumedSlides = new Set();
-const slotAssignments = scaffold.slots.map((slot, slotIdx) => {
-  let bestIdx = -1;
-  let bestScore = -1;
-
-  // Special-case slot 0 = cover → first unconsumed slide
-  if (slotIdx === 0 && slot.name === 'cover') {
-    for (let i = 0; i < slides.length; i++) {
-      if (!consumedSlides.has(i)) {
-        bestIdx = i;
-        bestScore = 0;
-        break;
-      }
-    }
-  } else {
-    for (let i = 0; i < slides.length; i++) {
-      if (consumedSlides.has(i)) continue;
-      const s = scoreSlideForSlot(slides[i], slot);
-      if (s > bestScore) {
-        bestScore = s;
-        bestIdx = i;
-      }
-    }
+function _printHeuristicAssignments(assignments) {
+  console.log('  slot → slide mapping:');
+  for (const a of assignments) {
+    const tag = a.empty
+      ? '[EMPTY]'
+      : a.fallback
+        ? '[FALLBACK]'
+        : `score ${a.score ?? a.confidence}`;
+    const slideTitle =
+      a.slideIdx >= 0 ? slides[a.slideIdx]?.title || a.sourceTitle || '(untitled)' : '—';
+    const slotName = a.slot ? a.slot.name : a.slotName;
+    console.log(
+      `    ${String(a.slotIdx).padStart(2)}. ${slotName.padEnd(20)} ← slide ${String(a.slideIdx).padStart(2)}: ${tag.padEnd(15)} ${slideTitle.slice(0, 60)}`,
+    );
   }
-
-  if (bestIdx >= 0 && bestScore > 0) {
-    consumedSlides.add(bestIdx);
-    return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
-  }
-  // Fallback: assign next unconsumed slide if any remain (so we don't skip)
-  for (let i = 0; i < slides.length; i++) {
-    if (!consumedSlides.has(i)) {
-      consumedSlides.add(i);
-      return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
-    }
-  }
-  return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
-});
-
-console.log('  slot → slide mapping:');
-for (const a of slotAssignments) {
-  const tag = a.empty ? '[EMPTY]' : a.fallback ? '[FALLBACK]' : `score ${a.score}`;
-  const slideTitle = a.slideIdx >= 0 ? slides[a.slideIdx].title || '(untitled)' : '—';
-  console.log(
-    `    ${a.slotIdx.toString().padStart(2)}. ${a.slot.name.padEnd(20)} ← slide ${a.slideIdx.toString().padStart(2)}: ${tag.padEnd(15)} ${slideTitle.slice(0, 60)}`,
-  );
 }
+
+const slotAssignments = await runStage1();
 
 // ---------------------------------------------------------------------------
 // Stage 2 — Lift each slot with scaffold context

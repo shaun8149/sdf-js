@@ -19,6 +19,7 @@
 import * as deckModel from './deck-model.js';
 import { pickScaffold, distributeSources } from './scaffolds/picker.js';
 import { pickScaffoldLLM } from './scaffolds/picker-llm.js';
+import { mapSlidesToSlotsLLM } from './scaffolds/mapper-llm.js';
 import { getTheme } from './themes.js';
 import { renderAtom } from './atoms-2d/registry.js';
 import { exportDeckToPPTX } from './exporters/pptx.js';
@@ -51,6 +52,7 @@ export async function mountScaffoldView(target, deckId) {
     slides,
     stage: 'idle', // idle | picking | picked | lifting | done
     picker: { mode: 'auto' }, // 'auto' (LLM with v1 fallback) | 'v1'
+    mapper: { mode: 'auto' }, // 'auto' (LLM with heuristic fallback) | 'heuristic'
     pickerResult: null, // {scaffold, theme, score, signals, fallback, method}
     slotAssignments: null, // array of {slot, slotIdx, slideIdx, score, fallback?}
     slotLifts: null, // array of {slotIdx, status, sceneData?, costUSD?, error?}
@@ -182,45 +184,69 @@ export async function mountScaffoldView(target, deckId) {
     render();
   }
 
-  function onConfirmScaffold() {
-    // Stage 1: heuristic mapping
+  async function onConfirmScaffold() {
+    // Stage 1: map slides → slots (LLM or heuristic depending on state.mapper.mode)
     const scaffold = state.pickerResult.scaffold;
-    const consumed = new Set();
-    const assignments = scaffold.slots.map((slot, slotIdx) => {
-      let bestIdx = -1;
-      let bestScore = -1;
-      if (slotIdx === 0 && slot.name === 'cover') {
+
+    if (state.mapper.mode === 'auto') {
+      // LLM judge with heuristic fallback
+      const mapperResult = await mapSlidesToSlotsLLM(
+        { slides, scaffold },
+        {
+          apiKey: state.apiKey,
+          fallbackToHeuristic: true,
+          log: (...m) => console.log('[mapper-llm]', ...m),
+        },
+      );
+      // Convert mapper-llm shape → internal shape used by Stage 2
+      state.slotAssignments = mapperResult.assignments.map((a) => ({
+        slot: scaffold.slots[a.slotIdx],
+        slotIdx: a.slotIdx,
+        slideIdx: a.slideIdx,
+        score: a.confidence,
+        fallback: a.reason?.startsWith('heuristic:') && a.slideIdx >= 0 && a.confidence === 0,
+        empty: a.slideIdx === -1,
+        mapperMethod: mapperResult.method,
+        mapperReason: a.reason,
+        mapperConfidence: a.confidence,
+      }));
+    } else {
+      // Pure heuristic (state.mapper.mode === 'heuristic')
+      const consumed = new Set();
+      state.slotAssignments = scaffold.slots.map((slot, slotIdx) => {
+        let bestIdx = -1;
+        let bestScore = -1;
+        if (slotIdx === 0 && slot.name === 'cover') {
+          for (let i = 0; i < slides.length; i++) {
+            if (!consumed.has(i)) {
+              bestIdx = i;
+              bestScore = 0;
+              break;
+            }
+          }
+        } else {
+          for (let i = 0; i < slides.length; i++) {
+            if (consumed.has(i)) continue;
+            const score = scoreSlideForSlot(slides[i], slot);
+            if (score > bestScore) {
+              bestScore = score;
+              bestIdx = i;
+            }
+          }
+        }
+        if (bestIdx >= 0 && bestScore > 0) {
+          consumed.add(bestIdx);
+          return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
+        }
         for (let i = 0; i < slides.length; i++) {
           if (!consumed.has(i)) {
-            bestIdx = i;
-            bestScore = 0;
-            break;
+            consumed.add(i);
+            return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
           }
         }
-      } else {
-        for (let i = 0; i < slides.length; i++) {
-          if (consumed.has(i)) continue;
-          const score = scoreSlideForSlot(slides[i], slot);
-          if (score > bestScore) {
-            bestScore = score;
-            bestIdx = i;
-          }
-        }
-      }
-      if (bestIdx >= 0 && bestScore > 0) {
-        consumed.add(bestIdx);
-        return { slot, slotIdx, slideIdx: bestIdx, score: bestScore };
-      }
-      // Fallback
-      for (let i = 0; i < slides.length; i++) {
-        if (!consumed.has(i)) {
-          consumed.add(i);
-          return { slot, slotIdx, slideIdx: i, score: 0, fallback: true };
-        }
-      }
-      return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
-    });
-    state.slotAssignments = assignments;
+        return { slot, slotIdx, slideIdx: -1, score: 0, empty: true };
+      });
+    }
     render();
   }
 
