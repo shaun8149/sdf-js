@@ -99,6 +99,10 @@ ok(typeof INTERSECT_GLSL === 'string' && INTERSECT_GLSL.length > 300, 'INTERSECT
 for (const fn of ['iSphere', 'iBox', 'iPlane', 'iTriangle', 'sphereDensity', 'invBilinear']) {
   ok(INTERSECT_GLSL.includes(fn), `INTERSECT_GLSL defines ${fn}`);
 }
+ok(
+  INTERSECT_GLSL.includes('iBoxSlab') && INTERSECT_GLSL.includes('abs(rd) < 1e-12'),
+  'GLSL iBox guards parallel slabs',
+);
 
 console.log(`\n=== Result: ${pass} passed, ${fail} failed ===`);
 process.exit(fail > 0 ? 1 : 0);
