@@ -14,8 +14,12 @@
 //   • progress dots (click to jump) + keyboard: → / Space next, ← prev,
 //     P pause/resume auto-advance, R restart segment.
 //
-// Text policy (locked): narrative/title text → overlay (this file). Only data
-// labels bound to geometry → in-scene SDF. Launch: ?deck=<deckId>.
+// Text policy (locked): narrative/title text → overlay; only data labels bound
+// to geometry → in-scene SDF. Two overlay layers: (1) the per-segment CAPTION
+// here (deck title + station titles, bottom-centre); (2) per-segment SLIDE text
+// via scene.overlay[] — projected DOM blocks anchored to 3D points — which
+// present.load()→present.show() sets automatically per segment (overlay.js).
+// Launch: ?deck=<deckId>.
 //
 // Atlas Present host version: drives the studio via window.present.load() (the
 // thin present.js host) — NOT the compositor playground. Reads decks/segments
