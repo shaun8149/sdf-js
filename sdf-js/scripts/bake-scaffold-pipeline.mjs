@@ -31,6 +31,7 @@ import { pickScaffoldLLM } from '../src/present/scaffolds/picker-llm.js';
 import { mapSlidesToSlotsLLM } from '../src/present/scaffolds/mapper-llm.js';
 import { getTheme } from '../src/present/themes.js';
 import { buildIconCatalogString } from '../src/icons/index.js';
+import { buildAtomCatalogString } from '../src/present/atoms-2d/catalog.js';
 
 // --- args ---
 const args = process.argv.slice(2);
@@ -78,6 +79,8 @@ const systemPrompt =
   `# CORE GOAL: Atlas decks are 3D theatrical presentations. TEXT MUST BE MINIMAL. ` +
   `Use icons + charts to replace verbose phrases. Audience reads a slide in ` +
   `≤3 seconds; long prose disappears in 3D space.\n\n` +
+  (await buildAtomCatalogString()) +
+  '\n\n' +
   buildIconCatalogString();
 
 console.log(
