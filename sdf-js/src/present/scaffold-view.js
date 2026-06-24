@@ -23,6 +23,7 @@ import { getTheme } from './themes.js';
 import { renderAtom } from './atoms-2d/registry.js';
 import { exportDeckToPPTX } from './exporters/pptx.js';
 import { exportDeckToPDF } from './exporters/pdf.js';
+import { buildIconCatalogString } from '../icons/index.js';
 
 const ANTHROPIC_KEY_STORAGE = 'atlas-anthropic-key';
 const MODEL = 'claude-sonnet-4-5-20250929';
@@ -281,6 +282,43 @@ export async function mountScaffoldView(target, deckId) {
       `  - accent: rgb(${theme.accent.join(', ')})\n` +
       `  - colors[]: ${theme.colors.map((c) => `rgb(${c.join(',')})`).join(' / ')}\n\n`;
 
+    const workedExamples =
+      `## WORKED EXAMPLES (study these patterns)\n\n` +
+      `### Example A — values slide:\n` +
+      `Source body: "We believe in Trust, Quality, Speed, Customer Focus"\n` +
+      `GOOD output:\n` +
+      '```json\n' +
+      `{ "subjects": [\n` +
+      `  { "type": "cover", "x": 0, "y": 0, "w": 1280, "h": 120,\n` +
+      `    "args": {"title": "Our Values"} },\n` +
+      `  { "type": "icon-row", "x": 40, "y": 160, "w": 1200, "h": 480,\n` +
+      `    "args": {\n` +
+      `      "items": [\n` +
+      `        {"icon": "shield", "label": "Trust"},\n` +
+      `        {"icon": "sparkle", "label": "Quality"},\n` +
+      `        {"icon": "lightning", "label": "Speed"},\n` +
+      `        {"icon": "heart", "label": "Customer Focus"}\n` +
+      `      ]\n` +
+      `    }\n` +
+      `  }\n` +
+      `]}\n` +
+      '```\n' +
+      `BAD: bullet-list with "We believe in Trust" etc.\n\n` +
+      `### Example B — KPI dashboard:\n` +
+      `Source body: "Q3 results: Revenue $3.4M (+27%), MAU 12,450, Churn 2.1%"\n` +
+      `GOOD: 3× \`kpi-card\` atoms with value=$3.4M / 12.4K / 2.1% — no prose.\n\n` +
+      `### Example C — time series:\n` +
+      `Source body: "ARR: Q1 $0, Q2 $120K, Q3 $740K, Q4F $2.4M"\n` +
+      `GOOD: { "type": "line", "args": {"values":[0,0.12,0.74,2.4],"labels":["Q1","Q2","Q3","Q4F"],"format":"currency","title":"ARR Growth"} }\n\n` +
+      `### Example D — feature list with inline icons (bullet-list with icons):\n` +
+      `Source body: "Mobile wallet / AI co-pilot / E2E encryption / Cross-chain"\n` +
+      `GOOD: { "type": "bullet-list", "args": {"items":[\n` +
+      `  {"icon": "device-mobile", "label": "Mobile-first wallet"},\n` +
+      `  {"icon": "brain", "label": "AI co-pilot"},\n` +
+      `  {"icon": "lock-key", "label": "End-to-end encryption"},\n` +
+      `  {"icon": "link", "label": "Cross-chain liquidity"}\n` +
+      `]} }\n\n`;
+
     const userMessage =
       slotContext +
       `## SOURCE MATERIAL\n\n` +
@@ -294,24 +332,45 @@ export async function mountScaffoldView(target, deckId) {
       '/' +
       assignment.slot.name +
       '",\n  "layout": "row|grid|hierarchy|stage|cover",\n  "subjects": [\n    { "type": "<atom>", "x": <px>, "y": <px>, "w": <px>, "h": <px>, "args": { ... } }\n  ]\n}\n```\n\n' +
-      `Rules (Sprint 17 polish — read CAREFULLY):\n` +
-      `0. **Canvas bounds**: Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
+      workedExamples +
+      `Rules (Sprint 18 — text minimization + icons):\n` +
+      `0. **CANVAS BOUNDS**: Every subject: x+w ≤ 1240, y+h ≤ 700.\n` +
       `1. **EVERY subject MUST have explicit x/y/w/h** in canvas pixels.\n` +
-      `2. **Atom selection**: pick ONLY from recommended_atoms menu (priority order). Fall back to cover+bullet-list ONLY if no recommended atom fits.\n` +
-      `3. **Density — fill the canvas, don't leave 60% empty**. Aim for 3-6 subjects per slot (not 1). If source has 3 description blocks → emit 3 bullet-list / kpi-card / icon-badge atoms. If only 1, pair it with a cover top-strip + supporting context.\n` +
-      `4. **Slot 0 (cover)** = single cover atom, h=720 full. style: 'gradient' (default) is fine; pass title + subtitle + optional author.\n` +
-      `5. **Cover atom when used mid-deck**:\n` +
-      `   - For an in-slide TITLE STRIP (e.g. "Section 2 — Products" header band): h=120 TOP STRIP (x=0, y=0, w=1280). Default 'gradient' style.\n` +
-      `   - For a SECTION DIVIDER slot (Vision / Mission / Values transition page where the entire slot is just a title hero): use h=720 full canvas + \`args.style: "section"\` (PL-style deep accent + box-behind-title).\n` +
-      `6. **Theme**: pass \`color\` args as theme accent or colors[]. Don't invent colors.\n` +
-      `7. **Body text preservation**: every body line should land in an atom's args. Acceptable shapes:\n` +
-      `   - \`bullet-list\` args.items = \`[{label: "body line 1"}, {label: "body line 2"}]\` (NOT [{text:...}] or plain strings; use \`label\` key explicitly)\n` +
-      `   - \`kpi-card\` args = \`{value: "HEADLINE TEXT", label: "Subtitle", sublabel: "Context"}\`\n` +
-      `   - \`icon-badge\` args = \`{name: "<phosphor-icon-name>", label: "Caption"}\`. Pick semantic icon: briefcase / chart-bar / users / star / shield / lightning / globe / mail / phone / calendar / target / trophy / brain / building. NEVER default to "star" — pick by meaning.\n` +
-      `8. **Empty bullets are a bug** — if items list is empty or only has \`{}\` objects, you've failed. Always populate items[].label with actual text from the source body.\n` +
-      `9. **Don't truncate** — for kpi-card.value, prefer 1-3 word headlines (e.g. "$3M", "User Persona", "1-2 Months", "Prototype Ready"). Long phrases go to .label or .sublabel.\n`;
+      `2. **Atom selection**: pick from recommended_atoms (priority order). Use forbidden_atoms as hard negative.\n` +
+      `3. **NUMBERS → CHART, never prose**:\n` +
+      `   - 3+ KPI values → multiple \`kpi-card\` or 1 \`dashboard-multi-kpi-composite\`\n` +
+      `   - Time series (4+ points) → \`line\` or \`bar\`\n` +
+      `   - Proportions/shares → \`pie\` or \`waterfall\`\n` +
+      `   - Funnel/pipeline → \`funnel\`\n` +
+      `   - Single percentage → \`sphere-fill\` or \`kpi-card\` or \`kpi-water-drop\`\n` +
+      `   - NEVER describe numbers in bullet-list when a chart fits\n` +
+      `4. **SHORT CONCEPTS → icon + 1-3 word label**, not phrase:\n` +
+      `   - "Values: Trust, Quality, Speed, Customer Focus" → \`icon-row\` with [{icon:'shield',label:'Trust'},{icon:'sparkle',label:'Quality'},...]\n` +
+      `   - Single-word bullets → \`icon-row\` (4-6 items) or \`icon-grid\` (6-12 items)\n` +
+      `   - NEVER \`bullet-list\` with all 1-2-word items — use icon-row/grid\n` +
+      `5. **bullet-list MUST have inline icons** unless content is truly paragraph-like:\n` +
+      `   - Every \`items[*]\` should have \`icon: '<name>'\` from the catalog above\n` +
+      `   - Empty bullets (no icon, no real label) = a bug\n` +
+      `6. **Per-atom soft text budget**: ≤ 8 words per label / value / title (exception: bullet-list items can be longer when paragraph-like).\n` +
+      `7. **Cover atom**:\n` +
+      `   - Slot 0 deck cover → h=720 full, style: 'gradient'\n` +
+      `   - Mid-deck title strip → h=120 TOP STRIP\n` +
+      `   - Section divider slot → h=720 full + style: 'section'\n` +
+      `8. **icon-row / icon-grid args**:\n` +
+      `   - items: [{icon: '<phosphor-name | brand:slug | flag:code>', label: '1-3 words', sublabel?: '3-5 words'}]\n` +
+      `   - icon-row: 2-8 items horizontally (auto wraps to 2 rows when ≥7)\n` +
+      `   - icon-grid: 4-16 items (cols auto-picks)\n` +
+      `   - colorMode default 'auto' (brand icons keep brand color; Phosphor uses theme accent)\n` +
+      `9. **Theme color**: pass theme accent or colors[] for non-brand icons. Don't invent colors.\n`;
 
-    const systemPrompt = `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON SceneData object inside a \`\`\`json fence with no prose. Atoms are 2D Canvas primitives — no 3D, no text-3d-pipe.`;
+    const systemPrompt =
+      `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +
+      `SceneData object inside a \`\`\`json fence with no prose. Atoms are 2D ` +
+      `Canvas primitives — no 3D, no text-3d-pipe.\n\n` +
+      `# CORE GOAL: Atlas decks are 3D theatrical presentations. TEXT MUST BE MINIMAL. ` +
+      `Use icons + charts to replace verbose phrases. Audience reads a slide in ` +
+      `≤3 seconds; long prose disappears in 3D space.\n\n` +
+      buildIconCatalogString();
 
     const t0 = Date.now();
     const res = await fetch('https://api.anthropic.com/v1/messages', {

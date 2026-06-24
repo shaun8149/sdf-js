@@ -205,3 +205,29 @@ export function getAllCategories() {
 export const getIconCategory = getCategoryIcons;
 
 export { CATEGORIES, CATEGORY_NAMES, getCategoryForIcon };
+
+/**
+ * Build a compact catalog string for LLM system-prompt injection.
+ * One line per category, format:
+ *   ## category-name (count): name1, name2, name3, ... nameN
+ *
+ * For Sprint 18 brand-* categories, brand icons also note their slug
+ * prefix so the LLM uses `brand:slack` form (matches resolver).
+ *
+ * @returns {string}
+ */
+export function buildIconCatalogString() {
+  const lines = ["## Atlas Icon Catalog — names usable in any atom's `icon` arg", ''];
+  for (const cat of CATEGORY_NAMES) {
+    const names = CATEGORIES[cat];
+    const prefix = cat.startsWith('brand-') ? 'brand:' : cat === 'flags' ? 'flag:' : '';
+    const namesStr = names.map((n) => prefix + n).join(', ');
+    lines.push(`### ${cat} (${names.length})`);
+    lines.push(namesStr);
+    lines.push('');
+  }
+  lines.push(
+    'Resolution order: prefix (brand: / flag:) > Phosphor > Simple Icons > flag-icons > fuzzy fallback > placeholder.',
+  );
+  return lines.join('\n');
+}
