@@ -50,7 +50,7 @@ const HUE_BY_TYPE = {
   // org / tree — cyan
   'org-chart': 0.54, 'tree-diagram': 0.54, 'sphere-tree': 0.54,
   // grid / blocks — steel blue
-  'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60,
+  'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60, 'icon-grid': 0.60,
   // misc
   'sphere-segmented': 0.50, 'kpi-card': 0.58, fishbone: 0.40, diamond: 0.58, gear: 0.58, arrow: 0.58, 'traffic-light': 0.58,
 };
@@ -564,6 +564,17 @@ export const TWIN_MAP = {
         args: { height: 2.6, baseRadius: 1.6, sidePeaks: 2, pathMarkers: a.markers ?? Math.max(3, stages.length || 4) },
         transform: { translate: [0, 0, 0] },
         overlay: rightCards(stages.map(itemLabel)),
+      };
+    },
+  },
+
+  // icon set — a wall of pictogram tiles
+  'icon-grid': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      return {
+        args: { rows: a.rows ?? 2, cols: a.cols ?? 4, glyphs: a.glyphs ?? null },
+        transform: { translate: [0, 1.9, 0] },
       };
     },
   },

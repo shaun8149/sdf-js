@@ -41,7 +41,7 @@ const DECKS = [
   {
     id: 'icons', name: 'Line Icons - Business', slides: [
       { title: 'Categories', type: 'radial-spoke', args: { title: 'Business Icons', values: [1, 1, 1, 1, 1, 1], labels: ['Finance', 'People', 'Growth', 'Tech', 'Strategy', 'Ops'] } },
-      { title: 'Icon Grid', type: 'cube-grid', args: { title: 'Icon Set', size: 3 } },
+      { title: 'Icon Grid', type: 'icon-grid', args: { title: 'Icon Set', rows: 2, cols: 4 } },
       { title: 'Concept Tiles', type: 'matrix-grid', args: { title: 'Concept Tiles', rows: 2, cols: 4 } },
       { title: 'Themes', type: 'circle-segmented', args: { title: 'Themes', segments: 6, labels: ['$', '%', '↑', '★', '✓', '◆'] } },
       { title: 'Toolkit', type: 'radial-spoke', args: { title: 'Toolkit', values: [1, 1, 1, 1], labels: ['Charts', 'Flows', 'Maps', 'KPIs'] } },

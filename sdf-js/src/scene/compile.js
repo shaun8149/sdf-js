@@ -129,6 +129,7 @@ import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
 import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
 import { mountain3dSDF } from './components/shapes/mountain-3d.js';
+import { iconGrid3dSDF } from './components/shapes/icon-grid-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
@@ -553,6 +554,15 @@ const PRIMITIVE_FACTORIES = {
       sideScale: a.sideScale ?? 0.6,
       pathMarkers: a.pathMarkers ?? 4,
       markerRadius: a.markerRadius ?? 0.13,
+    }),
+  'icon-grid-3d': (a) =>
+    iconGrid3dSDF({
+      rows: a.rows ?? 2,
+      cols: a.cols ?? 4,
+      tileSize: a.tileSize ?? 0.8,
+      gap: a.gap ?? 0.22,
+      tileDepth: a.tileDepth ?? 0.22,
+      glyphs: a.glyphs ?? null,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({
