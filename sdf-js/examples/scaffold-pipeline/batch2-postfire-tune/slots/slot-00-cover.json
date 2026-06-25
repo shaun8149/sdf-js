@@ -1,0 +1,49 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Change program name + sponsor + date",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Digital Transformation Roadmap 2026",
+  "sceneData": {
+    "name": "change-roadmap/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Digital Transformation Roadmap 2026",
+          "subtitle": "Organization-wide transformation program led by Executive Steering Committee",
+          "date": "Q1 2026",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3273,
+      "cache_creation_input_tokens": 11000,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 11000,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 151,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.053334000000000006,
+    "elapsedSec": 3.8,
+    "generatedAt": "2026-06-25T05:00:20.047Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
