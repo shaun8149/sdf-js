@@ -54,7 +54,7 @@ function drawTextSide(ctx, x, y, w, h, args, palette) {
 
   // Title
   ctx.fillStyle = 'rgba(20,20,30,0.92)';
-  ctx.font = `700 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
+  ctx.font = `700 ${titleSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(String(args.title || ''), x + PAD, cy);
