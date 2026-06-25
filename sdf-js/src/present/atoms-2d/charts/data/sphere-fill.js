@@ -229,7 +229,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   if (label) {
     const labelY = cy + radius + labelAreaH * 0.35;
     const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.42));
-    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = rgbCss(palette.silhouetteColor || [30, 27, 30]);
@@ -328,7 +328,7 @@ function draw2D(ctx, p) {
   if (label) {
     const labelY = cy + radius + labelAreaH * 0.35;
     const valueSize = Math.round(Math.min(radius * 0.42, labelAreaH * 0.42));
-    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = rgbCss(palette.silhouetteColor || [30, 27, 30]);
