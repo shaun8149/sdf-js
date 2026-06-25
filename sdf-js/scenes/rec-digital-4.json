@@ -6,7 +6,12 @@
       "id": "radial-spoke",
       "type": "radial-spoke-3d",
       "args": {
-        "spokes": 5
+        "spokes": 5,
+        "hubRadius": 0.34,
+        "spokeThickness": 0.09,
+        "nodeRadius": 0.17,
+        "maxLen": 1.35,
+        "minLen": 0.7
       },
       "transform": {
         "translate": [

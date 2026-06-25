@@ -334,7 +334,8 @@ export const TWIN_MAP = {
     lift(a) {
       const v = a.values || [];
       return {
-        args: { spokes: v.length || 6 },
+        // thicker hub/spokes/nodes read far better at presentation scale than atom defaults
+        args: { spokes: v.length || 6, hubRadius: 0.34, spokeThickness: 0.09, nodeRadius: 0.17, maxLen: 1.35, minLen: 0.7 },
         transform: { translate: [0, 1.7, 0] },
         overlay: rightCards((a.labels || []).map((l, i) => (v[i] != null ? `${l} ${fmt(v[i], a.format)}` : l))),
       };
@@ -422,8 +423,10 @@ export const TWIN_MAP = {
     lift(a) {
       const size = a.size ?? 3;
       return {
-        args: { arrangement: 'grid', count: size * size, cubeSize: 0.5, spacing: a.spacing ?? 0.2, material: 'solid', colors: a.colors || null },
-        transform: { translate: [0, 1.6, 0] },
+        // grid arranges flat in XZ (floor) — stand it up into XY so the full NxN faces
+        // the camera instead of being seen edge-on (only the front row visible).
+        args: { arrangement: 'grid', count: size * size, cubeSize: 0.5, spacing: a.spacing ?? 0.22, material: 'solid', colors: a.colors || null, arrangementParams: { cols: size } },
+        transform: { translate: [0, 1.9, 0], rotate: [1.5708, 0, 0] },
       };
     },
   },
