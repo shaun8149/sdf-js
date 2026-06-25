@@ -94,11 +94,10 @@
     "loop": false,
     "shots": [
       {
-        "duration": 0.01,
         "pos": [
-          1,
-          2.1,
-          9.799999999999999
+          -4.2,
+          2.1500000000000004,
+          7.9799999999999995
         ],
         "target": [
           0,
@@ -106,26 +105,27 @@
           0
         ],
         "fov": 50,
+        "focalDistance": 8.4,
+        "duration": 0.01,
         "aperture": 0,
-        "focalDistance": 8.2,
         "ease": "smooth"
       },
       {
-        "duration": 13,
         "pos": [
-          0,
+          1.512,
           1.8,
-          8.2
+          7.392
         ],
         "target": [
           0,
           1.6,
           0
         ],
-        "fov": 46,
+        "fov": 47,
+        "focalDistance": 8.4,
+        "duration": 14,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 8.2,
         "ease": "smooth"
       }
     ]
