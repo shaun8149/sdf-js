@@ -106,7 +106,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       ctx.save();
       ctx.fillStyle = 'rgba(255,255,255,0.97)';
-      ctx.font = `700 ${Math.round(circleR * 1.1)}px "Inter Display", Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${Math.round(circleR * 1.1)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(numLabel, numCX, rowCY);
@@ -123,7 +123,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       ctx.save();
       ctx.fillStyle = rgbCss(accent);
-      ctx.font = `700 ${Math.round(circleR * 1.1)}px "Inter Display", Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${Math.round(circleR * 1.1)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(numLabel, numCX, rowCY);
@@ -149,23 +149,35 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     ctx.save();
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+    const listLabelFs = fitFontSize(
+      ctx,
+      String(it.label),
+      maxTextW,
+      labelFontSize,
+      Math.max(10, Math.round(labelFontSize * 0.6)),
+      (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+    );
+    ctx.font = `700 ${listLabelFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillText(fitText(ctx, String(it.label), maxTextW), textX, labelY);
+    ctx.fillText(String(it.label), textX, labelY);
     ctx.restore();
 
     if (hasSub) {
       ctx.save();
       ctx.fillStyle = rgbaCss(fg, 0.55);
-      ctx.font = `500 ${subFontSize}px Inter, system-ui, sans-serif`;
+      const listSubFs = fitFontSize(
+        ctx,
+        String(it.sublabel),
+        maxTextW,
+        subFontSize,
+        Math.max(8, Math.round(subFontSize * 0.65)),
+        (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `500 ${listSubFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(
-        fitText(ctx, String(it.sublabel), maxTextW),
-        textX,
-        rowCY + labelFontSize * 0.55,
-      );
+      ctx.fillText(String(it.sublabel), textX, rowCY + labelFontSize * 0.55);
       ctx.restore();
     }
 
@@ -188,4 +200,15 @@ function fitText(ctx, text, maxW) {
   let s = text;
   while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
   return s + '…';
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }

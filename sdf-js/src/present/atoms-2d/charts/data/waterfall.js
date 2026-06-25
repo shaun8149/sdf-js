@@ -184,7 +184,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     // X label below
     ctx.fillStyle = rgbaCss(fg, 0.7);
-    ctx.font = `400 ${Math.round(h * 0.038)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(h * 0.038)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(p.label || '', cx, plotBottom + 6);

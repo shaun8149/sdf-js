@@ -137,21 +137,33 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     // ---- Label below ----
     if (it.label) {
+      const gridLabelFs = fitFontSize(
+        ctx,
+        String(it.label),
+        colW - 16,
+        Math.round(rowH * 0.11),
+        Math.max(9, Math.round(rowH * 0.07)),
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+      );
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `700 ${Math.round(rowH * 0.11)}px Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${gridLabelFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       const labelY = iconCy + iconR + 10;
-      ctx.fillText(fitText(ctx, String(it.label), colW - 16), cellCx, labelY);
+      ctx.fillText(String(it.label), cellCx, labelY);
 
       if (it.sublabel) {
-        ctx.fillStyle = rgbaCss(fg, 0.55);
-        ctx.font = `500 ${Math.round(rowH * 0.075)}px Inter, system-ui, sans-serif`;
-        ctx.fillText(
-          fitText(ctx, String(it.sublabel), colW - 16),
-          cellCx,
-          labelY + Math.round(rowH * 0.11) + 4,
+        const gridSubFs = fitFontSize(
+          ctx,
+          String(it.sublabel),
+          colW - 16,
+          Math.round(rowH * 0.075),
+          Math.max(8, Math.round(rowH * 0.05)),
+          (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
         );
+        ctx.fillStyle = rgbaCss(fg, 0.55);
+        ctx.font = `500 ${gridSubFs}px Inter, system-ui, sans-serif`;
+        ctx.fillText(String(it.sublabel), cellCx, labelY + gridLabelFs + 4);
       }
     }
   }
@@ -223,6 +235,17 @@ function drawIconCentered(ctx, resolved, cx, cy, size, color) {
   } catch (e) {
     // Path2D unavailable (Node test env) — silently skip icon glyph
   }
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }
 
 function fitText(ctx, text, maxW) {

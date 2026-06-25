@@ -144,23 +144,36 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       // Label: centered bold below icon
       if (it.label) {
-        const labelFontSize = Math.min(Math.round(cardH * 0.13), Math.round(rowH * 0.13));
+        const labelFontSizeTarget = Math.min(Math.round(cardH * 0.13), Math.round(rowH * 0.13));
+        const cardLabelFs = fitFontSize(
+          ctx,
+          String(it.label),
+          cardW - 16,
+          labelFontSizeTarget,
+          Math.max(9, Math.round(labelFontSizeTarget * 0.6)),
+          (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+        );
         ctx.fillStyle = rgbCss(fg);
-        ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+        ctx.font = `700 ${cardLabelFs}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         const labelY = cardIconCy + cardIconR + 10;
-        ctx.fillText(fitText(ctx, String(it.label), cardW - 16), cellCx, labelY);
+        ctx.fillText(String(it.label), cellCx, labelY);
 
         // Sublabel: below label
         if (it.sublabel) {
-          ctx.fillStyle = rgbaCss(fg, 0.55);
-          ctx.font = `500 ${Math.min(Math.round(cardH * 0.09), Math.round(rowH * 0.085))}px Inter, system-ui, sans-serif`;
-          ctx.fillText(
-            fitText(ctx, String(it.sublabel), cardW - 16),
-            cellCx,
-            labelY + labelFontSize + 4,
+          const cardSubTarget = Math.min(Math.round(cardH * 0.09), Math.round(rowH * 0.085));
+          const cardSubFs = fitFontSize(
+            ctx,
+            String(it.sublabel),
+            cardW - 16,
+            cardSubTarget,
+            Math.max(8, Math.round(cardSubTarget * 0.65)),
+            (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
           );
+          ctx.fillStyle = rgbaCss(fg, 0.55);
+          ctx.font = `500 ${cardSubFs}px Inter, system-ui, sans-serif`;
+          ctx.fillText(String(it.sublabel), cellCx, labelY + cardLabelFs + 4);
         }
       }
     } else {
@@ -185,21 +198,33 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       // ---- Label below ----
       if (it.label) {
+        const stdLabelFs = fitFontSize(
+          ctx,
+          String(it.label),
+          colW - 20,
+          Math.round(rowH * 0.13),
+          Math.max(9, Math.round(rowH * 0.08)),
+          (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+        );
         ctx.fillStyle = rgbCss(fg);
-        ctx.font = `700 ${Math.round(rowH * 0.13)}px Inter, system-ui, sans-serif`;
+        ctx.font = `700 ${stdLabelFs}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         const labelY = iconCy + iconR + 14;
-        ctx.fillText(fitText(ctx, String(it.label), colW - 20), cellCx, labelY);
+        ctx.fillText(String(it.label), cellCx, labelY);
 
         if (it.sublabel) {
-          ctx.fillStyle = rgbaCss(fg, 0.55);
-          ctx.font = `500 ${Math.round(rowH * 0.085)}px Inter, system-ui, sans-serif`;
-          ctx.fillText(
-            fitText(ctx, String(it.sublabel), colW - 20),
-            cellCx,
-            labelY + Math.round(rowH * 0.13) + 4,
+          const stdSubFs = fitFontSize(
+            ctx,
+            String(it.sublabel),
+            colW - 20,
+            Math.round(rowH * 0.085),
+            Math.max(8, Math.round(rowH * 0.055)),
+            (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
           );
+          ctx.fillStyle = rgbaCss(fg, 0.55);
+          ctx.font = `500 ${stdSubFs}px Inter, system-ui, sans-serif`;
+          ctx.fillText(String(it.sublabel), cellCx, labelY + stdLabelFs + 4);
         }
       }
     }
@@ -327,6 +352,17 @@ function drawIconCentered(ctx, resolved, cx, cy, size, color) {
   } catch (e) {
     // Path2D unavailable (Node test env) — silently skip icon glyph
   }
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }
 
 function fitText(ctx, text, maxW) {

@@ -93,7 +93,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const heroStatH = Math.round(h * 0.13);
   ctx.save();
   ctx.fillStyle = rgbCss(accent);
-  ctx.font = `900 ${heroStatH}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${heroStatH}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(`${highlighted}/${total}`, x + PAD, contentY);

@@ -132,7 +132,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const heroFontSize = Math.round(effectiveRowH * 0.52);
     ctx.save();
     ctx.fillStyle = rgbCss(accent);
-    ctx.font = `900 ${heroFontSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${heroFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(count), x + PAD + countColW - 8, rowMidY);

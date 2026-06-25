@@ -202,7 +202,7 @@ function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorC
 
   if (sublabel) {
     ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.font = `400 ${Math.min(12, nh * 0.16)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.min(12, nh * 0.16)}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
     ctx.fillText(String(sublabel), textX, textY + 4);
   }

@@ -239,7 +239,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.shadowBlur = 5;
     ctx.shadowOffsetY = 1;
     ctx.fillStyle = 'rgba(255,255,255,0.97)';
-    ctx.font = `900 ${textSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${textSize}px "Inter Display", Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(displayValue, cx, textY);
@@ -257,7 +257,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   if (sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.55);
-    ctx.font = `400 ${Math.round(labelSize * 0.78)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.round(labelSize * 0.78)}px Inter, system-ui, sans-serif`;
     ctx.fillText(sublabel, cx, labelY + labelSize + 4);
   }
 }

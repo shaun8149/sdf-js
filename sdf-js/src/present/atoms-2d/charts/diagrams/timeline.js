@@ -210,10 +210,10 @@ function drawEventCard(ctx, cx, cy, w, h, event, colorCtx) {
     ctx.textBaseline = 'middle';
     ctx.fillText(String(event.label), cx, ny + h * (event.sublabel ? 0.52 : 0.58));
   }
-  // Sublabel (bottom, faded Inter 400)
+  // Sublabel (bottom, faded Inter 500)
   if (event.sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.55);
-    ctx.font = `400 ${Math.min(10, h * 0.17)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.min(10, h * 0.17)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(String(event.sublabel), cx, ny + h - 6);

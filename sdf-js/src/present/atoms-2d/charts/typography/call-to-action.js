@@ -101,27 +101,43 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const cx = x + w / 2;
 
   // Heading
+  const maxHeadW = w - 48;
+  const ctaHeadFs = fitFontSize(
+    ctx,
+    heading,
+    maxHeadW,
+    headingFontSize,
+    Math.max(14, Math.round(headingFontSize * 0.55)),
+    (fs) => `900 ${fs}px "Inter Display", Inter, system-ui, sans-serif`,
+  );
   ctx.save();
   ctx.fillStyle = rgbCss(textColor);
-  ctx.font = `900 ${headingFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${ctaHeadFs}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  const maxHeadW = w - 48;
-  ctx.fillText(fitText(ctx, heading, maxHeadW), cx, curY);
+  ctx.fillText(heading, cx, curY);
   ctx.restore();
-  curY += headingFontSize;
+  curY += ctaHeadFs;
 
   // Subheading
   if (hasSub) {
     curY += mtSub;
+    const ctaSubFs = fitFontSize(
+      ctx,
+      subheading,
+      maxHeadW,
+      subFontSize,
+      Math.max(10, Math.round(subFontSize * 0.6)),
+      (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
+    );
     ctx.save();
     ctx.fillStyle = rgbaCss(subTextColor, 0.85);
-    ctx.font = `500 ${subFontSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${ctaSubFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(fitText(ctx, subheading, maxHeadW), cx, curY);
+    ctx.fillText(subheading, cx, curY);
     ctx.restore();
-    curY += subFontSize;
+    curY += ctaSubFs;
   }
 
   // Button
@@ -197,12 +213,20 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Contact line
   if (hasContact) {
     curY += mtContact;
+    const ctaContactFs = fitFontSize(
+      ctx,
+      contact,
+      maxHeadW,
+      contactFontSize,
+      Math.max(9, Math.round(contactFontSize * 0.65)),
+      (fs) => `500 ${fs}px "SF Mono", "Fira Code", monospace, Inter, system-ui, sans-serif`,
+    );
     ctx.save();
     ctx.fillStyle = rgbaCss(subTextColor, 0.65);
-    ctx.font = `500 ${contactFontSize}px "SF Mono", "Fira Code", monospace, Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${ctaContactFs}px "SF Mono", "Fira Code", monospace, Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(fitText(ctx, contact, maxHeadW), cx, curY);
+    ctx.fillText(contact, cx, curY);
     ctx.restore();
   }
 }
@@ -212,4 +236,15 @@ function fitText(ctx, text, maxW) {
   let s = text;
   while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
   return s + '…';
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }

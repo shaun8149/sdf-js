@@ -111,7 +111,7 @@ function drawHex(ctx, cx, cy, r, label, subLabel, color, fg, isCenter) {
     const gap = mainSize * 0.6;
     ctx.font = `700 ${mainSize}px Inter, system-ui, sans-serif`;
     ctx.fillText(truncate(label, r, ctx), cx, cy - gap * 0.5);
-    ctx.font = `400 ${subSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${subSize}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = 'rgba(255,255,255,0.82)';
     ctx.fillText(truncate(subLabel, r * 0.9, ctx), cx, cy + gap * 0.7);
   } else {

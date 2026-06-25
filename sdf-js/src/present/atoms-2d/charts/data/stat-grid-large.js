@@ -119,10 +119,18 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Label
     ctx.save();
     ctx.fillStyle = rgbaCss(fg, 0.6);
-    ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+    const lblFs = fitFontSize(
+      ctx,
+      s.label,
+      colW - 16,
+      labelFontSize,
+      Math.max(9, Math.round(labelFontSize * 0.6)),
+      (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+    );
+    ctx.font = `700 ${lblFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(fitText(ctx, s.label, colW - 16), cx, labelTop);
+    ctx.fillText(s.label, cx, labelTop);
     ctx.restore();
 
     // Trend chip
@@ -165,4 +173,15 @@ function fitText(ctx, text, maxW) {
   let s = text;
   while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
   return s + '…';
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }

@@ -108,7 +108,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Title
   if (args.title) {
     const titleFs = Math.round(h * 0.07);
-    ctx.font = `700 ${titleFs}px "Inter Display", Inter, system-ui`;
+    ctx.font = `700 ${titleFs}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = rgbCss(fg);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -171,7 +171,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     // Title
     const titleFs = Math.round(rowH * 0.13);
-    ctx.font = `700 ${titleFs}px "Inter Display", Inter, system-ui`;
+    ctx.font = `700 ${titleFs}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = rgbCss(fg);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';

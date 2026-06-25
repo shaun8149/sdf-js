@@ -81,7 +81,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const titleFontSize = Math.round(h * 0.1);
   ctx.save();
   ctx.fillStyle = rgbCss(titleColor);
-  ctx.font = `700 ${titleFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
+  ctx.font = `700 ${titleFontSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(title, x + PAD, ruleY + 16);
@@ -92,7 +92,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const subFontSize = Math.round(h * 0.045);
     ctx.save();
     ctx.fillStyle = rgbCss(subtitleColor);
-    ctx.font = `400 ${subFontSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${subFontSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(subtitle, x + PAD, ruleY + 16 + titleFontSize * 1.4);

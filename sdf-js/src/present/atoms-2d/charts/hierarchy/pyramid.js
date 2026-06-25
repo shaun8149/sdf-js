@@ -198,7 +198,7 @@ function drawLayer(ctx, cx, top, bottom, topW, botW, color, layer, info) {
     ctx.shadowColor = 'rgba(0,0,0,0.4)';
     ctx.shadowBlur = 2;
     ctx.fillStyle = 'rgba(255,255,255,0.80)';
-    ctx.font = `400 ${Math.min(11, layerH * 0.2)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${Math.min(11, layerH * 0.2)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(String(layer.sublabel), cx, cy + 4);
