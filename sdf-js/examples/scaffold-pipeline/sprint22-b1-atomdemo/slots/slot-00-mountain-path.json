@@ -1,0 +1,26 @@
+{
+  "slotIdx": 0,
+  "slotName": "mountain",
+  "slotTitle": "mountain-path",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "mountain-path",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "Q4 Climb to Series A",
+          "summit": "Series A · $15M",
+          "milestones": [
+            { "label": "$1M ARR", "sublabel": "Mar 2026" },
+            { "label": "10K users", "sublabel": "Jun 2026" },
+            { "label": "PMF validated", "sublabel": "Sep 2026" },
+            { "label": "Term sheet", "sublabel": "Dec 2026" }
+          ]
+        }
+      }
+    ]
+  }
+}

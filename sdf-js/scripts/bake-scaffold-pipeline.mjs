@@ -476,7 +476,12 @@ for (const a of slotAssignments) {
     `    - 2x2 strategic analysis (Strengths/Weaknesses/Opportunities/Threats or similar) → \`swot\` (NOT \`matrix-grid\`)\n` +
     `    - Porter-style primary+support activity chain → \`value-chain-diagram\` (NOT \`flow-chart\`)\n` +
     `    - N-tier feature comparison ("Free vs Pro vs Enterprise") → \`comparison-table\` (NOT side-by-side \`kpi-card\`s)\n` +
-    `    - Transformation S-curve (Kübler-Ross / journey phases) → \`change-curve-chart\` (NOT \`line\` chart with annotations)\n`;
+    `    - Transformation S-curve (Kübler-Ross / journey phases) → \`change-curve-chart\` (NOT \`line\` chart with annotations)\n` +
+    `17. **PL-recommendations atoms (Sprint 22 B1)** — when content matches PL signature patterns, prefer the specialized PL atom:\n` +
+    `    - Goal-progression with named milestones / "climb to X" / "path to Y" narrative → \`mountain-path\` (NOT \`progression\`)\n` +
+    `    - Kaplan/Norton balanced scorecard / 4-perspective strategy / Financial-Customer-Process-Learning grouping → \`strategy-map\` (NOT \`matrix-grid\`)\n` +
+    `    - Multi-axis capability/competency assessment ("AI maturity radar", "skill profile") with 3-9 axes → \`radar-chart\` (NOT \`radial-spoke\`)\n` +
+    `    - OKR slide (1 Objective + N Key Results with progress %) → \`okr-tree\` (NOT generic \`tree-diagram\`)\n`;
 
   if (DRY_RUN) {
     slotLifts.push({

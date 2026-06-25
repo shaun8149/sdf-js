@@ -1,0 +1,31 @@
+{
+  "slotIdx": 1,
+  "slotName": "strategy",
+  "slotTitle": "strategy-map",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "strategy-map",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "Strategic Objectives 2026",
+          "perspectives": [
+            {
+              "label": "Financial",
+              "items": ["Revenue growth 30%", "Margin expansion", "ARR $50M"]
+            },
+            { "label": "Customer", "items": ["NPS 50+", "Retention 95%", "Brand recognition"] },
+            {
+              "label": "Internal Process",
+              "items": ["Ops efficiency", "Quality SLA", "Time-to-market"]
+            },
+            { "label": "Learning & Growth", "items": ["Top talent", "Skills roadmap", "Culture"] }
+          ]
+        }
+      }
+    ]
+  }
+}
