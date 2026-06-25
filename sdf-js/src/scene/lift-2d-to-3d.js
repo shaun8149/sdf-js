@@ -27,6 +27,43 @@ const DEFAULT_MAT = {
   clearcoat: 0.45,
 };
 
+// Coordinated palette so a deck of mixed slide types isn't a wall of navy. Each atom
+// family maps to a hue chosen to fit its meaning (warm conversion funnels, gold
+// pyramids, green sequences, purple radials…), all at the same sat/value so they read
+// as one professional set. (Per-leaf coloring inside a chart needs atom-level colors[]
+// support — only sphere-fill/cube have it today — so this is whole-object hue.)
+const HUE_BY_TYPE = {
+  // data / network — blue
+  bar: 0.58, column: 0.58, line: 0.55, 'sphere-network': 0.58, 'relationship-graph': 0.58, scatter: 0.58, waterfall: 0.58,
+  // proportion / rings — teal
+  pie: 0.50, 'circle-segmented': 0.50, 'circle-loop': 0.50, venn: 0.50, 'circle-frame': 0.50,
+  // conversion — warm coral
+  funnel: 0.04,
+  // hierarchy of levels — gold
+  pyramid: 0.11,
+  // stacks — indigo
+  'layer-stack': 0.66, 'circle-stack': 0.66,
+  // sequence / flow — green
+  timeline: 0.40, gantt: 0.40, progression: 0.40, 'flow-chart': 0.40, 'agenda-list': 0.40, 'bullet-list': 0.40,
+  // radial / mind — purple
+  'radial-spoke': 0.74, mindmap: 0.74,
+  // org / tree — cyan
+  'org-chart': 0.54, 'tree-diagram': 0.54, 'sphere-tree': 0.54,
+  // grid / blocks — steel blue
+  'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60,
+  // misc
+  'sphere-segmented': 0.50, 'kpi-card': 0.58, fishbone: 0.40, diamond: 0.58, gear: 0.58, arrow: 0.58, 'traffic-light': 0.58,
+};
+
+function materialFor(type2d) {
+  const hue = HUE_BY_TYPE[type2d];
+  if (hue == null) return { ...DEFAULT_MAT };
+  // warm hues (reds/oranges/golds) turn muddy brown at the default value/sat — brighten
+  // and saturate them so they read as vivid coral/gold, matching the cool families' punch.
+  const warm = hue < 0.16 || hue > 0.95;
+  return { ...DEFAULT_MAT, hue, sat: warm ? 0.72 : DEFAULT_MAT.sat, value: warm ? 0.82 : DEFAULT_MAT.value };
+}
+
 // ── camera: gentle push-in (matches the hand-authored shape twins) ──
 export function pushInCamera(target = [0, 1.6, 0], dist = 8.2) {
   return {
@@ -484,7 +521,7 @@ export function liftSubject(subject) {
     type: twinTypeOf(type2d),
     args: r.args || {},
     transform: r.transform || { translate: [0, 1.5, 0] },
-    material: { ...DEFAULT_MAT },
+    material: materialFor(type2d),
   };
   return { subject3d, overlay: r.overlay || [] };
 }
