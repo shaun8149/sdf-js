@@ -50,7 +50,7 @@ function loadImage(url) {
     if (cached.complete && cached.naturalWidth > 0) return Promise.resolve(cached);
   }
   return new Promise((resolve) => {
-    const img = new Image();  
+    const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       _imgCache.set(url, img);
