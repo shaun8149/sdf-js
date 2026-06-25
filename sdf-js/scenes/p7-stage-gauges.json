@@ -5,8 +5,26 @@
     {
       "id": "gauges",
       "type": "sphere-fill-3d",
-      "args": { "levels": [0.8, 1.0, 0.5], "radii": [0.85, 1.05, 0.7], "spacing": 0.6 },
-      "transform": { "translate": [0, 1.1, 0] },
+      "args": {
+        "levels": [
+          0.8,
+          1,
+          0.5
+        ],
+        "radii": [
+          0.85,
+          1.05,
+          0.7
+        ],
+        "spacing": 0.6
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.1,
+          0
+        ]
+      },
       "material": {
         "hue": 0.57,
         "sat": 0.55,
@@ -18,30 +36,97 @@
     }
   ],
   "overlay": [
-    { "role": "value", "text": "80%", "anchor": [-2.425, 1.1, 0], "radius": 0.85 },
-    { "role": "value", "text": "100%", "anchor": [0.075, 1.1, 0], "radius": 1.05 },
-    { "role": "value", "text": "50%", "anchor": [2.425, 1.1, 0], "radius": 0.7 },
-
-    { "text": "3D SPHERES — FILL LEVELS", "anchor": [0, 4.15, 0], "role": "title" },
-
-    { "text": "DESCRIPTION 1", "anchor": [2.425, 3.2, 0], "role": "head" },
+    {
+      "role": "value",
+      "text": "80%",
+      "anchor": [
+        -2.425,
+        1.1,
+        0
+      ],
+      "radius": 0.85
+    },
+    {
+      "role": "value",
+      "text": "100%",
+      "anchor": [
+        0.075,
+        1.1,
+        0
+      ],
+      "radius": 1.05
+    },
+    {
+      "role": "value",
+      "text": "50%",
+      "anchor": [
+        2.425,
+        1.1,
+        0
+      ],
+      "radius": 0.7
+    },
+    {
+      "text": "3D SPHERES — FILL LEVELS",
+      "anchor": [
+        0,
+        4.15,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "DESCRIPTION 1",
+      "anchor": [
+        2.425,
+        3.2,
+        0
+      ],
+      "role": "head"
+    },
     {
       "text": "The text demonstrates how\nyour own text will look here.",
-      "anchor": [2.425, 2.5, 0],
+      "anchor": [
+        2.425,
+        2.5,
+        0
+      ],
       "role": "body"
     },
-
-    { "text": "DESCRIPTION 2", "anchor": [0.075, 3.55, 0], "role": "head" },
+    {
+      "text": "DESCRIPTION 2",
+      "anchor": [
+        0.075,
+        3.55,
+        0
+      ],
+      "role": "head"
+    },
     {
       "text": "The text demonstrates how\nyour own text will look here.",
-      "anchor": [0.075, 2.85, 0],
+      "anchor": [
+        0.075,
+        2.85,
+        0
+      ],
       "role": "body"
     },
-
-    { "text": "DESCRIPTION 3", "anchor": [-2.425, 3.35, 0], "role": "head" },
+    {
+      "text": "DESCRIPTION 3",
+      "anchor": [
+        -2.425,
+        3.35,
+        0
+      ],
+      "role": "head"
+    },
     {
       "text": "The text demonstrates how\nyour own text will look here.",
-      "anchor": [-2.425, 2.65, 0],
+      "anchor": [
+        -2.425,
+        2.65,
+        0
+      ],
       "role": "body"
     }
   ],
@@ -49,15 +134,49 @@
     "loop": false,
     "shots": [
       {
-        "duration": 10,
-        "pos": [0, 1.6, 8.5],
-        "target": [0, 1.0, 0],
-        "fov": 44,
+        "duration": 0.01,
+        "pos": [
+          0.7,
+          1.877,
+          10.296
+        ],
+        "target": [
+          0,
+          1,
+          0
+        ],
+        "fov": 48,
         "aperture": 0,
         "focalDistance": 8.5,
         "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          1.6,
+          8.5
+        ],
+        "target": [
+          0,
+          1,
+          0
+        ],
+        "fov": 44,
+        "aperture": 0,
+        "focalDistance": 8.5,
+        "ease": "smooth",
+        "transition": "blend"
       }
     ]
   },
-  "defaults": { "stage": { "size": [18, 7, 11] } }
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        7,
+        11
+      ]
+    }
+  }
 }

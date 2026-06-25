@@ -5,67 +5,314 @@
     {
       "id": "g1",
       "type": "sphere-fill-3d",
-      "args": { "levels": [0.2], "radius": 0.6 },
-      "transform": { "translate": [3.3, 2.55, 0] },
-      "material": { "hue": 0.57, "sat": 0.55, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+      "args": {
+        "levels": [
+          0.2
+        ],
+        "radius": 0.6
+      },
+      "transform": {
+        "translate": [
+          3.3,
+          2.55,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.62,
+        "kind": "fill",
+        "roughness": 0.3,
+        "clearcoat": 0.5
+      }
     },
     {
       "id": "g2",
       "type": "sphere-fill-3d",
-      "args": { "levels": [0.4], "radius": 0.6 },
-      "transform": { "translate": [3.3, 0.9, 0] },
-      "material": { "hue": 0.57, "sat": 0.55, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+      "args": {
+        "levels": [
+          0.4
+        ],
+        "radius": 0.6
+      },
+      "transform": {
+        "translate": [
+          3.3,
+          0.9,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.62,
+        "kind": "fill",
+        "roughness": 0.3,
+        "clearcoat": 0.5
+      }
     },
     {
       "id": "g3",
       "type": "sphere-fill-3d",
-      "args": { "levels": [0.9], "radius": 0.6 },
-      "transform": { "translate": [3.3, -0.75, 0] },
-      "material": { "hue": 0.57, "sat": 0.55, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+      "args": {
+        "levels": [
+          0.9
+        ],
+        "radius": 0.6
+      },
+      "transform": {
+        "translate": [
+          3.3,
+          -0.75,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.62,
+        "kind": "fill",
+        "roughness": 0.3,
+        "clearcoat": 0.5
+      }
     },
     {
       "id": "a1",
       "type": "arrow-3d",
-      "args": { "length": 0.8, "shaftWidth": 0.14, "headLength": 0.3, "headWidth": 0.4, "depth": 0.16 },
-      "transform": { "translate": [1.85, 2.55, 0], "rotate": [0, 3.14159, 0] },
-      "material": { "hue": 0.57, "sat": 0.35, "value": 0.78, "kind": "normal" }
+      "args": {
+        "length": 0.8,
+        "shaftWidth": 0.14,
+        "headLength": 0.3,
+        "headWidth": 0.4,
+        "depth": 0.16
+      },
+      "transform": {
+        "translate": [
+          1.85,
+          2.55,
+          0
+        ],
+        "rotate": [
+          0,
+          3.14159,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.35,
+        "value": 0.78,
+        "kind": "normal"
+      }
     },
     {
       "id": "a2",
       "type": "arrow-3d",
-      "args": { "length": 0.8, "shaftWidth": 0.14, "headLength": 0.3, "headWidth": 0.4, "depth": 0.16 },
-      "transform": { "translate": [1.85, 0.9, 0], "rotate": [0, 3.14159, 0] },
-      "material": { "hue": 0.57, "sat": 0.35, "value": 0.78, "kind": "normal" }
+      "args": {
+        "length": 0.8,
+        "shaftWidth": 0.14,
+        "headLength": 0.3,
+        "headWidth": 0.4,
+        "depth": 0.16
+      },
+      "transform": {
+        "translate": [
+          1.85,
+          0.9,
+          0
+        ],
+        "rotate": [
+          0,
+          3.14159,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.35,
+        "value": 0.78,
+        "kind": "normal"
+      }
     },
     {
       "id": "a3",
       "type": "arrow-3d",
-      "args": { "length": 0.8, "shaftWidth": 0.14, "headLength": 0.3, "headWidth": 0.4, "depth": 0.16 },
-      "transform": { "translate": [1.85, -0.75, 0], "rotate": [0, 3.14159, 0] },
-      "material": { "hue": 0.57, "sat": 0.35, "value": 0.78, "kind": "normal" }
+      "args": {
+        "length": 0.8,
+        "shaftWidth": 0.14,
+        "headLength": 0.3,
+        "headWidth": 0.4,
+        "depth": 0.16
+      },
+      "transform": {
+        "translate": [
+          1.85,
+          -0.75,
+          0
+        ],
+        "rotate": [
+          0,
+          3.14159,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.35,
+        "value": 0.78,
+        "kind": "normal"
+      }
     }
   ],
   "overlay": [
-    { "text": "3D SPHERES — FILL LEVELS", "anchor": [0, 4.0, 0], "role": "title" },
-
-    { "role": "value", "text": "20%", "anchor": [3.3, 2.55, 0], "radius": 0.6 },
-    { "role": "value", "text": "40%", "anchor": [3.3, 0.9, 0], "radius": 0.6 },
-    { "role": "value", "text": "90%", "anchor": [3.3, -0.75, 0], "radius": 0.6 },
-
-    { "text": "THIS IS A PLACEHOLDER TEXT", "anchor": [-1.6, 2.95, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own.", "anchor": [-1.6, 2.4, 0], "role": "body", "align": "left" },
-
-    { "text": "THIS IS A PLACEHOLDER TEXT", "anchor": [-1.6, 1.3, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own.", "anchor": [-1.6, 0.75, 0], "role": "body", "align": "left" },
-
-    { "text": "THIS IS A PLACEHOLDER TEXT", "anchor": [-1.6, -0.35, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own.", "anchor": [-1.6, -0.9, 0], "role": "body", "align": "left" }
+    {
+      "text": "3D SPHERES — FILL LEVELS",
+      "anchor": [
+        0,
+        4,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "role": "value",
+      "text": "20%",
+      "anchor": [
+        3.3,
+        2.55,
+        0
+      ],
+      "radius": 0.6
+    },
+    {
+      "role": "value",
+      "text": "40%",
+      "anchor": [
+        3.3,
+        0.9,
+        0
+      ],
+      "radius": 0.6
+    },
+    {
+      "role": "value",
+      "text": "90%",
+      "anchor": [
+        3.3,
+        -0.75,
+        0
+      ],
+      "radius": 0.6
+    },
+    {
+      "text": "THIS IS A PLACEHOLDER TEXT",
+      "anchor": [
+        -1.6,
+        2.95,
+        0
+      ],
+      "role": "head",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own.",
+      "anchor": [
+        -1.6,
+        2.4,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    },
+    {
+      "text": "THIS IS A PLACEHOLDER TEXT",
+      "anchor": [
+        -1.6,
+        1.3,
+        0
+      ],
+      "role": "head",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own.",
+      "anchor": [
+        -1.6,
+        0.75,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    },
+    {
+      "text": "THIS IS A PLACEHOLDER TEXT",
+      "anchor": [
+        -1.6,
+        -0.35,
+        0
+      ],
+      "role": "head",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own.",
+      "anchor": [
+        -1.6,
+        -0.9,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    }
   ],
   "cameraSequence": {
     "loop": false,
     "shots": [
-      { "duration": 10, "pos": [0, 0.9, 9.8], "target": [0, 0.9, 0], "fov": 52, "aperture": 0, "focalDistance": 9.8, "ease": "smooth" }
+      {
+        "duration": 0.01,
+        "pos": [
+          0.7,
+          1.05,
+          11.6
+        ],
+        "target": [
+          0,
+          0.9,
+          0
+        ],
+        "fov": 56,
+        "aperture": 0,
+        "focalDistance": 9.8,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          0.9,
+          9.8
+        ],
+        "target": [
+          0,
+          0.9,
+          0
+        ],
+        "fov": 52,
+        "aperture": 0,
+        "focalDistance": 9.8,
+        "ease": "smooth",
+        "transition": "blend"
+      }
     ]
   },
-  "defaults": { "stage": { "size": [20, 9, 10] } }
+  "defaults": {
+    "stage": {
+      "size": [
+        20,
+        9,
+        10
+      ]
+    }
+  }
 }
