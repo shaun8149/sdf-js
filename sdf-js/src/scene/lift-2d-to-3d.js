@@ -612,6 +612,89 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 22 B2 twins ──
+
+  'decision-tree-3-arm': {
+    to: 'tree-diagram-3d',
+    lift(a) {
+      const arms = a.arms || [];
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { levels: 2, branching: Math.max(1, arms.length) },
+        transform: { translate: [0, 2.0, 0] },
+        overlay: [
+          ...titleOverlay,
+          { text: a.question || '', anchor: [0, 3.2, 0], role: 'card', align: 'center' },
+          ...rightCards(arms.map((arm) => arm.label + (arm.sublabel ? ` · ${arm.sublabel}` : ''))),
+        ],
+      };
+    },
+  },
+
+  'maturity-model': {
+    to: 'pyramid-3d',
+    lift(a) {
+      const stages = a.stages || [];
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { levels: stages.length },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...rightCards(
+            stages.map((s, i) =>
+              (a.currentLevel === i + 1 ? '▶ ' : '') + (s.label || '') + (s.description ? ` · ${s.description}` : ''),
+            ),
+          ),
+          ...(a.label ? [{ text: String(a.label), anchor: [0, -0.2, 0], role: 'value', align: 'center' }] : []),
+        ],
+      };
+    },
+  },
+
+  'cost-benefit-matrix': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const items = a.items || [];
+      const ql = a.quadrantLabels || {};
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { rows: 2, cols: 2 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...(ql.tl ? [{ text: ql.tl, anchor: [-2.2, 2.8, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.tr ? [{ text: ql.tr, anchor: [2.2, 2.8, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.bl ? [{ text: ql.bl, anchor: [-2.2, 0.2, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.br ? [{ text: ql.br, anchor: [2.2, 0.2, 0], role: 'card', align: 'center' }] : []),
+          ...rightCards(items.map((it) => `${it.label || ''} (${it.cost || '?'} cost · ${it.benefit || '?'} benefit)`)),
+        ],
+      };
+    },
+  },
+
+  'journey-flow-curve': {
+    to: 'timeline-3d',
+    lift(a) {
+      const tps = a.touchpoints || [];
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { count: tps.length },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...rightCards(
+            tps.map((tp) => {
+              const emo = Number(tp.emotion) || 0;
+              const sign = emo > 0 ? '+' : '';
+              return tp.label + (tp.sublabel ? ` · ${tp.sublabel}` : '') + ` (emotion ${sign}${Math.round(emo * 100)}%)`;
+            }),
+          ),
+        ],
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
