@@ -151,7 +151,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(labelText, 0, sublabelText ? -1 : 0);
     if (sublabelText) {
       ctx.fillStyle = 'rgba(255,255,255,0.78)';
-      ctx.font = `400 ${subFontSize}px Inter, system-ui, sans-serif`;
+      ctx.font = `500 ${subFontSize}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.fillText(sublabelText, 0, 2);
     }
