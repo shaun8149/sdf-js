@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-strategy",
+  "name": "Strategy Toolbox",
+  "segments": [
+    {
+      "file": "rec-strategy-1.json",
+      "title": "Frameworks",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-strategy-2.json",
+      "title": "SWOT",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-strategy-3.json",
+      "title": "Growth Options",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-strategy-4.json",
+      "title": "Strategy Pyramid",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-strategy-5.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

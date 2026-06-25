@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-leadership",
+  "name": "Leadership Toolbox",
+  "segments": [
+    {
+      "file": "rec-leadership-1.json",
+      "title": "Styles",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-leadership-2.json",
+      "title": "Situational",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-leadership-3.json",
+      "title": "Development",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-leadership-4.json",
+      "title": "Maturity",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-leadership-5.json",
+      "title": "Team Network",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
