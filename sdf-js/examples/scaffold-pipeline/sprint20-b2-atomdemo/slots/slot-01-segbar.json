@@ -1,0 +1,27 @@
+{
+  "slotIdx": 1,
+  "slotName": "allocation",
+  "slotTitle": "segmented-bar",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "segmented-bar",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "FY2026 Budget Allocation",
+          "segments": [
+            { "label": "Engineering", "value": 42 },
+            { "label": "Sales", "value": 28 },
+            { "label": "Marketing", "value": 18 },
+            { "label": "G&A", "value": 12 }
+          ],
+          "format": "pct",
+          "showPct": true
+        }
+      }
+    ]
+  }
+}
