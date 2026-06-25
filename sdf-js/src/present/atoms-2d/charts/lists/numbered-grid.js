@@ -79,7 +79,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Title
   if (args.title) {
     const titleFs = Math.round(h * 0.07);
-    ctx.font = `700 ${titleFs}px "Inter Display", Inter, system-ui`;
+    ctx.font = `700 ${titleFs}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = rgbCss(fg);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -137,9 +137,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         textMaxW,
         labelTarget,
         10,
-        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
-      ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
+      ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
@@ -167,7 +167,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.beginPath();
       ctx.arc(circleCX, circleCY, circleR, 0, Math.PI * 2);
       ctx.fill();
-      ctx.font = `700 ${Math.round(circleR * 1.1)}px "Inter Display", Inter, system-ui`;
+      ctx.font = `700 ${Math.round(circleR * 1.1)}px Inter, system-ui, sans-serif`;
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -182,9 +182,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         textMaxW,
         labelTarget,
         10,
-        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
-      ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
+      ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
@@ -231,10 +231,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         textMaxW,
         labelTarget,
         10,
-        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
       const centerY = cardY + cardH / 2;
-      ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
+      ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
