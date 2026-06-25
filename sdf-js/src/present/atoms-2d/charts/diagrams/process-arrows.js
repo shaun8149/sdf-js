@@ -146,7 +146,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     // Label text — auto-shrink to fit chevron width
     const targetFontSize = Math.min(Math.round(arrowH * 0.2), Math.round(stepW * 0.16));
-    const subFontSize = Math.round(targetFontSize * 0.72);
     const hasSub = Boolean(steps[i].sublabel);
     const centerX = shapeX + shapeW / 2;
     const centerY = arrowY + arrowH / 2;
