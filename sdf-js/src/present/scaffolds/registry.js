@@ -1146,6 +1146,135 @@ export const SCAFFOLDS = [
     ],
     theme_affinity: ['consulting-charcoal', 'financial-navy-cerulean', 'editorial-navy'],
   },
+  {
+    id: 'investor-update',
+    label: 'Investor Update',
+    description: 'LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges',
+    audience: 'lp, seed investor, board',
+    keywords: [
+      'investor update',
+      'lp update',
+      'quarterly update',
+      'portfolio update',
+      'investor letter',
+    ],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Company name + update period + author',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'tldr',
+        title: 'TL;DR',
+        purpose: 'Headline summary — 3 key points this quarter',
+        recommended_atoms: ['stat-banner', 'kpi-card', 'quote-pull'],
+      },
+      {
+        name: 'metrics',
+        title: 'Key Metrics',
+        purpose: 'Current quarter KPIs — revenue, users, growth rates',
+        recommended_atoms: ['dashboard-multi-kpi-composite', 'stat-grid-large', 'line'],
+      },
+      {
+        name: 'wins',
+        title: 'Wins',
+        purpose: 'Top accomplishments this quarter',
+        recommended_atoms: ['bullet-list', 'icon-grid', 'quote-pull'],
+      },
+      {
+        name: 'challenges',
+        title: 'Challenges',
+        purpose: 'What did not go well and what we learned',
+        recommended_atoms: ['bullet-list', 'fishbone', 'swot'],
+      },
+      {
+        name: 'next-quarter',
+        title: 'Next Quarter',
+        purpose: 'Plan and priorities for the coming quarter',
+        recommended_atoms: ['bullet-list', 'timeline', 'progression'],
+      },
+      {
+        name: 'ask',
+        title: 'Ask',
+        purpose: 'What we need from LPs — intros, advice, resources',
+        recommended_atoms: ['bullet-list', 'icon-row', 'call-to-action'],
+      },
+      {
+        name: 'cap-table-burn',
+        title: 'Financials',
+        purpose: 'Burn rate, runway, cap table highlights',
+        recommended_atoms: ['kpi-card', 'dashboard-multi-kpi-composite', 'pie'],
+      },
+    ],
+    theme_affinity: ['financial-navy-cerulean', 'consulting-charcoal', 'editorial-navy'],
+  },
+  {
+    id: 'marketing-campaign',
+    label: 'Marketing Campaign',
+    description:
+      'Campaign deck for launching a marketing initiative — audience, message, channels, budget',
+    audience: 'marketing team, stakeholder, agency',
+    keywords: ['marketing', 'campaign', 'launch', 'brand', 'advertising', 'go-to-market', 'gtm'],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Campaign name + tagline + date',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'brief',
+        title: 'Campaign Brief',
+        purpose: 'Campaign concept and strategic objective',
+        recommended_atoms: ['quote-pull', 'bullet-list', 'stat-banner'],
+      },
+      {
+        name: 'audience',
+        title: 'Target Audience',
+        purpose: 'Persona definition — who we are reaching',
+        recommended_atoms: ['bullet-list', 'icon-grid', 'dashboard-multi-kpi-composite'],
+      },
+      {
+        name: 'message',
+        title: 'Core Message',
+        purpose: 'Campaign narrative and key messaging pillars',
+        recommended_atoms: ['quote-pull', 'bullet-list', 'icon-row'],
+      },
+      {
+        name: 'channels',
+        title: 'Channels',
+        purpose: 'Where we will show up — digital, social, OOH, events',
+        recommended_atoms: ['icon-grid', 'icon-row', 'comparison-table'],
+      },
+      {
+        name: 'timeline',
+        title: 'Campaign Timeline',
+        purpose: 'Launch waves and campaign phases',
+        recommended_atoms: ['timeline', 'progression', 'process-arrows'],
+      },
+      {
+        name: 'budget',
+        title: 'Budget',
+        purpose: 'Spend allocation by channel or initiative',
+        recommended_atoms: ['pie', 'bar', 'dashboard-multi-kpi-composite'],
+      },
+      {
+        name: 'metrics',
+        title: 'Success Metrics',
+        purpose: 'KPIs we will measure — impressions, conversions, CAC',
+        recommended_atoms: ['dashboard-multi-kpi-composite', 'kpi-card', 'stat-grid-large'],
+      },
+      {
+        name: 'cta',
+        title: 'Sign-off / Approval',
+        purpose: 'Final CTA — campaign approval or next steps',
+        recommended_atoms: ['call-to-action', 'bullet-list'],
+      },
+    ],
+    theme_affinity: ['pitch-cobalt-orange', 'organic-coral', 'pitch-charcoal-yellow'],
+  },
 ];
 
 /**

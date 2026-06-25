@@ -29,7 +29,7 @@ console.log('=== scaffolds registry smoke ===\n');
 
 console.log('--- registry shape ---');
 {
-  ok(SCAFFOLDS.length === 16, `16 scaffolds shipped (got ${SCAFFOLDS.length})`);
+  ok(SCAFFOLDS.length === 18, `18 scaffolds shipped (got ${SCAFFOLDS.length})`);
   const ids = new Set(SCAFFOLDS.map((s) => s.id));
   ok(ids.size === SCAFFOLDS.length, 'all scaffold ids unique');
 
@@ -57,10 +57,10 @@ console.log('\n--- helper functions ---');
 {
   ok(getScaffold('pitch-deck-vc') !== null, 'getScaffold resolves known id');
   ok(getScaffold('nonsense-deck') === null, 'getScaffold returns null for unknown');
-  ok(listScaffolds().length === 16, 'listScaffolds returns 16');
+  ok(listScaffolds().length === 18, 'listScaffolds returns 18');
   ok(totalSlots() > 50, `totalSlots > 50 (got ${totalSlots()})`);
   const stats = scaffoldStats();
-  ok(stats.scaffolds === 16, 'stats.scaffolds = 16');
+  ok(stats.scaffolds === 18, 'stats.scaffolds = 18');
   ok(stats.avgSlotsPerScaffold > 5, `stats.avgSlotsPerScaffold > 5 (${stats.avgSlotsPerScaffold})`);
   const themes = getThemeAffinity('pitch-deck-vc');
   ok(themes.length === 3, 'getThemeAffinity returns 3 themes for pitch-deck-vc');
@@ -83,7 +83,7 @@ console.log('\n--- picker: rank + pick ---');
     ],
   };
   const vcRanked = rankScaffolds(vcInput);
-  ok(vcRanked.length === 16, 'rankScaffolds returns all scaffolds');
+  ok(vcRanked.length === 18, 'rankScaffolds returns all scaffolds');
   ok(
     vcRanked[0].id === 'pitch-deck-vc',
     `VC input → pitch-deck-vc top (got ${vcRanked[0].id} score=${vcRanked[0].score})`,
