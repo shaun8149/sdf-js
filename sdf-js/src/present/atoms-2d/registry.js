@@ -132,6 +132,12 @@ const ATOM_LOADERS = {
   // Presentation (Phase 4) — deck cover / title page
   cover: () => import('./presentation/cover.js'),
 
+  // Sprint 19 Batch 1 — typography / diagrams / data atoms
+  'quote-pull': () => import('./charts/typography/quote-pull.js'),
+  swot: () => import('./charts/diagrams/swot.js'),
+  'value-chain-diagram': () => import('./charts/diagrams/value-chain-diagram.js'),
+  'change-curve-chart': () => import('./charts/data/change-curve-chart.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
