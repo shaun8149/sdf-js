@@ -1,0 +1,36 @@
+{
+  "v": 1,
+  "name": "sequence: 3D Arrows — Toolbox (twin)",
+  "subjects": [
+    {
+      "id": "ar1",
+      "type": "arrow-3d",
+      "args": { "length": 1.5, "shaftWidth": 0.3, "headLength": 0.55, "headWidth": 0.7, "depth": 0.28 },
+      "transform": { "translate": [-2.3, 1.5, 0] },
+      "material": { "hue": 0.3, "sat": 0.55, "value": 0.62, "kind": "normal", "roughness": 0.3, "clearcoat": 0.4 }
+    },
+    {
+      "id": "ar2",
+      "type": "arrow-3d",
+      "args": { "length": 1.5, "shaftWidth": 0.3, "headLength": 0.55, "headWidth": 0.7, "depth": 0.28 },
+      "transform": { "translate": [0, 1.5, 0] },
+      "material": { "hue": 0.57, "sat": 0.55, "value": 0.64, "kind": "normal", "roughness": 0.3, "clearcoat": 0.4 }
+    },
+    {
+      "id": "ar3",
+      "type": "arrow-3d",
+      "args": { "length": 1.5, "shaftWidth": 0.3, "headLength": 0.55, "headWidth": 0.7, "depth": 0.28 },
+      "transform": { "translate": [2.3, 1.5, 0] },
+      "material": { "hue": 0.04, "sat": 0.68, "value": 0.62, "kind": "normal", "roughness": 0.3, "clearcoat": 0.4 }
+    }
+  ],
+  "overlay": [{ "text": "3D ARROWS — TOOLBOX", "anchor": [0, 3.7, 0], "role": "title" }],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [0.9, 1.9, 9.4], "target": [0, 1.5, 0], "fov": 50, "aperture": 0, "focalDistance": 8.5, "ease": "smooth" },
+      { "duration": 13, "pos": [0, 1.6, 7.9], "target": [0, 1.5, 0], "fov": 46, "transition": "blend", "aperture": 0, "focalDistance": 7.9, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [18, 8, 10] } }
+}
