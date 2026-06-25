@@ -1,0 +1,27 @@
+{
+  "slotIdx": 0,
+  "slotName": "process",
+  "slotTitle": "process-arrows",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "process-arrows",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "Our Consulting Process",
+          "steps": [
+            { "label": "Discover", "sublabel": "Research & interviews" },
+            { "label": "Define", "sublabel": "Problem framing" },
+            { "label": "Design", "sublabel": "Solution architecture" },
+            { "label": "Develop", "sublabel": "Build & iterate" },
+            { "label": "Deploy", "sublabel": "Launch & sustain" }
+          ],
+          "color": "gradient"
+        }
+      }
+    ]
+  }
+}

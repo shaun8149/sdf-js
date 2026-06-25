@@ -1,0 +1,35 @@
+{
+  "slotIdx": 2,
+  "slotName": "priorities",
+  "slotTitle": "number-list",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "number-list",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "Strategic Priorities for Next Quarter",
+          "items": [
+            {
+              "label": "Expand enterprise sales motion",
+              "sublabel": "Target F500 accounts in financial services"
+            },
+            {
+              "label": "Ship self-serve onboarding",
+              "sublabel": "Reduce time-to-value from 2 weeks to 48 hours"
+            },
+            { "label": "Launch partner channel", "sublabel": "Sign 3 agency partners in EMEA" },
+            {
+              "label": "Improve retention D90",
+              "sublabel": "Identify churn signals and build intervention playbook"
+            }
+          ],
+          "numberStyle": "circle"
+        }
+      }
+    ]
+  }
+}
