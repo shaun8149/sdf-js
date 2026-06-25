@@ -144,6 +144,12 @@ const ATOM_LOADERS = {
   'stat-banner': () => import('./charts/data/stat-banner.js'),
   'comparison-table': () => import('./charts/diagrams/comparison-table.js'),
 
+  // Sprint 20 Batch 1 — diagrams / data / lists / typography
+  'process-arrows': () => import('./charts/diagrams/process-arrows.js'),
+  'stat-grid-large': () => import('./charts/data/stat-grid-large.js'),
+  'number-list': () => import('./charts/lists/number-list.js'),
+  'call-to-action': () => import('./charts/typography/call-to-action.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
