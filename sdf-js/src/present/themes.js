@@ -211,6 +211,50 @@ export const ATLAS_THEMES = [
     },
     featured: true,
   },
+
+  // ============================================================================
+  // PROFESSIONAL / AUTHORITY — business-grade dark palettes (Sprint 19 Batch 1)
+  // ============================================================================
+  {
+    id: 'consulting-charcoal',
+    label: 'Consulting Charcoal',
+    macroCluster: 'pitch',
+    bg: [26, 26, 34], // near-black charcoal
+    silhouetteColor: [220, 215, 200], // warm off-white text
+    accent: [156, 142, 110], // muted warm olive/gray
+    colors: [
+      [156, 142, 110],
+      [100, 95, 82],
+      [200, 193, 174],
+      [60, 60, 72],
+      [220, 215, 200],
+    ],
+    font: {
+      heading: '"Inter Display", Inter, system-ui, sans-serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
+  {
+    id: 'financial-navy-cerulean',
+    label: 'Financial Navy',
+    macroCluster: 'pitch',
+    bg: [26, 40, 66], // deep navy
+    silhouetteColor: [240, 248, 255], // near-white text
+    accent: [58, 138, 200], // bright cerulean
+    colors: [
+      [58, 138, 200],
+      [26, 40, 66],
+      [100, 150, 200],
+      [180, 210, 235],
+      [240, 248, 255],
+    ],
+    font: {
+      heading: '"Inter Display", Inter, system-ui, sans-serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
 ];
 
 /**

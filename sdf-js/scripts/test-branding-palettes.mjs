@@ -54,8 +54,11 @@ console.log('--- built-in 5 still present (backward compat by id lookup) ---');
 console.log('\n--- chromotome present (Sprint 9) ---');
 {
   ok(BRANDING_PALETTES.length >= 5 + 20, `total ≥ 25 palettes (got ${BRANDING_PALETTES.length})`);
-  // Sprint 15B: total = 9 atlas themes + 5 built-in + chromotome count
-  const expectedTotal = 9 + 5 + CHROMOTOME_BRANDING_PALETTES.length;
+  // Sprint 15B: total = atlas themes + 5 built-in + chromotome count
+  // Sprint 19: added consulting-charcoal + financial-navy-cerulean → 11 atlas themes
+  const { getAtlasThemes } = await import('../src/present/themes.js');
+  const atlasThemeCount = getAtlasThemes().length;
+  const expectedTotal = atlasThemeCount + 5 + CHROMOTOME_BRANDING_PALETTES.length;
   ok(
     BRANDING_PALETTES.length === expectedTotal,
     `total = 9 atlas + 5 built-in + chromotome (${expectedTotal})`,
