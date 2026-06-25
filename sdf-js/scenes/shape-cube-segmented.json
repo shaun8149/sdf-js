@@ -1,0 +1,29 @@
+{
+  "v": 1,
+  "name": "layers: 3D Cubes — Segmented (twin)",
+  "subjects": [
+    {
+      "id": "seg",
+      "type": "cube-segmented-3d",
+      "args": { "segments": 4, "size": 1.5, "gap": 0.12, "axis": "x" },
+      "transform": { "translate": [-0.4, 1.5, 0], "rotate": [0.1, 0.45, 0] },
+      "material": { "hue": 0.57, "sat": 0.55, "value": 0.64, "kind": "normal", "roughness": 0.3, "clearcoat": 0.45 }
+    }
+  ],
+  "overlay": [
+    { "text": "3D CUBES — SEGMENTED", "anchor": [0, 4.0, 0], "role": "title" },
+
+    { "text": "DESCRIPTION 1", "anchor": [3.0, 2.6, 0], "role": "card", "align": "left" },
+    { "text": "This is a placeholder text.", "anchor": [3.0, 2.1, 0], "role": "body", "align": "left" },
+    { "text": "DESCRIPTION 2", "anchor": [3.0, 0.9, 0], "role": "card", "align": "left" },
+    { "text": "This is a placeholder text.", "anchor": [3.0, 0.4, 0], "role": "body", "align": "left" }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.2, 2.0, 9.8], "target": [-0.4, 1.5, 0], "fov": 50, "aperture": 0, "focalDistance": 9, "ease": "smooth" },
+      { "duration": 13, "pos": [0.2, 1.7, 8.3], "target": [-0.4, 1.5, 0], "fov": 46, "transition": "blend", "aperture": 0, "focalDistance": 8.3, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [18, 9, 11] } }
+}
