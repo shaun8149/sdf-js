@@ -44,6 +44,18 @@ function fitText(ctx, text, maxW) {
   return t + '…';
 }
 
+// Auto-shrink font size until text fits in maxW (no truncation). Returns the
+// font-size that fits. Caller still must `ctx.font = ...` before measuring/drawing.
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
+}
+
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
   const y = opts.y ?? 0;
@@ -118,20 +130,34 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       const textX = cellX + cellPad + numFontSize * 0.65;
       const textMaxW = colW - cellPad - numFontSize * 0.65 - cardMargin;
-      const labelFs = Math.round(rowH * 0.14);
+      const labelTarget = Math.round(rowH * 0.14);
+      const labelFs = fitFontSize(
+        ctx,
+        item.label ?? '',
+        textMaxW,
+        labelTarget,
+        10,
+        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+      );
       ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
-      const labelText = fitText(ctx, item.label ?? '', textMaxW);
-      ctx.fillText(labelText, textX, cellY + cellPad + Math.round(rowH * 0.12));
+      ctx.fillText(item.label ?? '', textX, cellY + cellPad + Math.round(rowH * 0.12));
 
       if (item.sublabel) {
-        const subFs = Math.round(rowH * 0.1);
+        const subTarget = Math.round(rowH * 0.1);
+        const subFs = fitFontSize(
+          ctx,
+          item.sublabel,
+          textMaxW,
+          subTarget,
+          9,
+          (fs) => `500 ${fs}px Inter, system-ui`,
+        );
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
-        const subText = fitText(ctx, item.sublabel, textMaxW);
-        ctx.fillText(subText, textX, cellY + cellPad + Math.round(rowH * 0.12) + labelFs + 4);
+        ctx.fillText(item.sublabel, textX, cellY + cellPad + Math.round(rowH * 0.12) + labelFs + 4);
       }
     } else if (numberStyle === 'circle') {
       const circleR = Math.min(rowH * 0.2, colW * 0.14, 28);
@@ -148,19 +174,36 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillText(numLabel, circleCX, circleCY);
 
       const cx = cellX + colW / 2;
-      const labelFs = Math.round(rowH * 0.14);
+      const textMaxW = cardW - cellPad * 2;
+      const labelTarget = Math.round(rowH * 0.14);
+      const labelFs = fitFontSize(
+        ctx,
+        item.label ?? '',
+        textMaxW,
+        labelTarget,
+        10,
+        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+      );
       ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       const labelY = circleCY + circleR + 8;
-      ctx.fillText(fitText(ctx, item.label ?? '', cardW - cellPad * 2), cx, labelY);
+      ctx.fillText(item.label ?? '', cx, labelY);
 
       if (item.sublabel) {
-        const subFs = Math.round(rowH * 0.1);
+        const subTarget = Math.round(rowH * 0.1);
+        const subFs = fitFontSize(
+          ctx,
+          item.sublabel,
+          textMaxW,
+          subTarget,
+          9,
+          (fs) => `500 ${fs}px Inter, system-ui`,
+        );
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
-        ctx.fillText(fitText(ctx, item.sublabel, cardW - cellPad * 2), cx, labelY + labelFs + 4);
+        ctx.fillText(item.sublabel, cx, labelY + labelFs + 4);
       }
     } else if (numberStyle === 'corner') {
       // Badge top-right
@@ -180,24 +223,37 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       // Label centered vertically
       const cx = cardX + cardW / 2;
-      const labelFs = Math.round(rowH * 0.14);
+      const textMaxW = cardW - cellPad * 2;
+      const labelTarget = Math.round(rowH * 0.14);
+      const labelFs = fitFontSize(
+        ctx,
+        item.label ?? '',
+        textMaxW,
+        labelTarget,
+        10,
+        (fs) => `700 ${fs}px "Inter Display", Inter, system-ui`,
+      );
       const centerY = cardY + cardH / 2;
       ctx.font = `700 ${labelFs}px "Inter Display", Inter, system-ui`;
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(
-        fitText(ctx, item.label ?? '', cardW - cellPad * 2),
-        cx,
-        item.sublabel ? centerY - labelFs * 0.4 : centerY,
-      );
+      ctx.fillText(item.label ?? '', cx, item.sublabel ? centerY - labelFs * 0.4 : centerY);
 
       if (item.sublabel) {
-        const subFs = Math.round(rowH * 0.1);
+        const subTarget = Math.round(rowH * 0.1);
+        const subFs = fitFontSize(
+          ctx,
+          item.sublabel,
+          textMaxW,
+          subTarget,
+          9,
+          (fs) => `500 ${fs}px Inter, system-ui`,
+        );
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
         ctx.textBaseline = 'top';
-        ctx.fillText(fitText(ctx, item.sublabel, cardW - cellPad * 2), cx, centerY + labelFs * 0.2);
+        ctx.fillText(item.sublabel, cx, centerY + labelFs * 0.2);
       }
     }
   }
