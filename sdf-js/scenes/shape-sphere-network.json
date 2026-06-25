@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "name": "relation: 3D Spheres — Network (D1241 twin)",
+  "subjects": [
+    {
+      "id": "net",
+      "type": "sphere-network-3d",
+      "args": { "count": 9, "arrangement": "sphere", "radius": 1.7, "hubRadius": 0.55, "satelliteRadius": 0.32, "linkThickness": 0.05 },
+      "transform": { "translate": [0, 1.6, 0], "rotate": [0, 0.5, 0] },
+      "material": { "hue": 0.57, "sat": 0.5, "value": 0.64, "metal": 0.2, "kind": "normal", "roughness": 0.25, "clearcoat": 0.5 }
+    }
+  ],
+  "overlay": [
+    { "text": "3D SPHERES — NETWORK", "anchor": [0, 4.0, 0], "role": "title" },
+    { "text": "Central concept", "anchor": [0, 1.6, 1.9], "role": "head" }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.0, 2.0, 9.6], "target": [0, 1.6, 0], "fov": 50, "aperture": 0, "focalDistance": 8.5, "ease": "smooth" },
+      { "duration": 13, "pos": [0, 1.7, 8.0], "target": [0, 1.6, 0], "fov": 46, "transition": "blend", "aperture": 0, "focalDistance": 8.0, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [16, 9, 11] } }
+}
