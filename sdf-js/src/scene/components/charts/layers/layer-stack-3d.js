@@ -9,6 +9,7 @@
 
 import { box } from '../../../../sdf/d3.js';
 import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
 
 /**
  * @param {object} opts
@@ -27,6 +28,7 @@ export function layerStack3dSDF({
   layerH = 0.22,
   gap = 0.12,
   taper = 1.0,
+  colors = null,
 } = {}) {
   const N = Math.max(1, Math.floor(layers));
   const stride = layerH + gap;
@@ -36,7 +38,12 @@ export function layerStack3dSDF({
     const y = i * stride - totalH / 2 + layerH / 2;
     const w = layerW * Math.pow(taper, i);
     const d = layerD * Math.pow(taper, i);
-    parts.push(box([w, layerH, d]).translate([0, y, 0]));
+    const slab = box([w, layerH, d]).translate([0, y, 0]);
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) slab._subjectMaterial = m;
+    }
+    parts.push(slab);
   }
   return parts.length === 1 ? parts[0] : union(...parts);
 }

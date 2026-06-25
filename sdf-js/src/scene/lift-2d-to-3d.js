@@ -64,6 +64,18 @@ function materialFor(type2d) {
   return { ...DEFAULT_MAT, hue, sat: warm ? 0.72 : DEFAULT_MAT.sat, value: warm ? 0.82 : DEFAULT_MAT.value };
 }
 
+// per-leaf shade ramp of one hue (light→dark) — for atoms that accept colors[]
+// (funnel / layer-stack / circle-stack). Gives intra-chart depth without going garish.
+function shades(hue, n) {
+  const warm = hue < 0.16 || hue > 0.95;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = n > 1 ? i / (n - 1) : 0;
+    out.push({ hue, sat: (warm ? 0.7 : 0.58) + t * 0.08, value: (warm ? 0.88 : 0.76) - t * 0.3 });
+  }
+  return out;
+}
+
 // ── camera: gentle push-in (matches the hand-authored shape twins) ──
 export function pushInCamera(target = [0, 1.6, 0], dist = 8.2) {
   return {
@@ -88,6 +100,18 @@ export function pushInCamera(target = [0, 1.6, 0], dist = 8.2) {
         focalDistance: dist,
         ease: 'smooth',
       },
+    ],
+  };
+}
+
+// cover / establishing shot — wider & higher start, slow grand settle. Gives a deck's
+// first slide a cinematic reveal distinct from the per-slide push-in.
+export function coverCamera(target = [0, 1.6, 0]) {
+  return {
+    loop: false,
+    shots: [
+      { duration: 0.01, pos: [2.2, target[1] + 1.6, 12.0], target, fov: 55, aperture: 0, focalDistance: 11.5, ease: 'smooth' },
+      { duration: 17, pos: [0.2, target[1] + 0.35, 8.6], target, fov: 46, transition: 'blend', aperture: 0, focalDistance: 8.6, ease: 'smooth' },
     ],
   };
 }
@@ -177,13 +201,15 @@ export const TWIN_MAP = {
     to: 'funnel-3d',
     lift(a) {
       const st = Array.isArray(a.stages) ? a.stages : [];
+      const n = st.length || 4;
       return {
         args: {
-          stages: st.length || 4,
+          stages: n,
           topRadius: 1.15,
           bottomRadius: 0.28,
           stageHeight: 0.55,
           gap: 0.1,
+          colors: shades(HUE_BY_TYPE.funnel, n),
         },
         transform: { translate: [-0.3, 1.6, 0], rotate: [0.12, 0, 0] },
         overlay: rightCards(
@@ -314,6 +340,7 @@ export const TWIN_MAP = {
           layerH: 0.28,
           gap: 0.45,
           taper: a.taper ?? 1.0,
+          colors: shades(HUE_BY_TYPE['layer-stack'], n),
         },
         transform: { translate: [-0.3, 1.4, 0], rotate: [0.35, 0.5, 0] },
         overlay: rightCards(ly.map((l) => (typeof l === 'string' ? l : l.label))),
@@ -345,7 +372,19 @@ export const TWIN_MAP = {
   progression: itemsTwin('progression-3d', 'steps', 'steps', { transform: { translate: [-1.0, 0.6, 0] } }),
   pyramid: itemsTwin('pyramid-3d', 'layers', 'levels', { transform: { translate: [0, 0.6, 0] } }),
   'traffic-light': itemsTwin('traffic-light-3d', 'lights', 'lights', { transform: { translate: [0, 1.8, 0] } }),
-  'circle-stack': itemsTwin('circle-stack-3d', 'layers', 'count', { transform: { translate: [0, 1.4, 0] } }),
+  'circle-stack': {
+    to: 'circle-stack-3d',
+    lift(a) {
+      const ly = asArray(a.layers);
+      const n = ly.length || (typeof a.layers === 'number' ? a.layers : 0) || 4;
+      const labels = ly.map(itemLabel).filter(Boolean);
+      return {
+        args: { count: n, colors: shades(HUE_BY_TYPE['circle-stack'], n) },
+        transform: { translate: [0, 1.4, 0] },
+        overlay: rightCards(labels.length ? labels : a.labels || []),
+      };
+    },
+  },
   'flow-chart': itemsTwin('flow-chart-3d', 'steps', 'steps', { transform: { translate: [0, 1.6, 0] } }),
   'sphere-segmented': itemsTwin('sphere-segmented-3d', 'segments', 'segments', { transform: { translate: [0, 1.6, 0] } }),
   'cube-segmented': itemsTwin('cube-segmented-3d', 'segments', 'segments', { transform: { translate: [0, 1.5, 0] } }),
@@ -542,13 +581,18 @@ export function liftSceneData2dTo3d(scene2d) {
   if (title)
     overlay.unshift({ text: String(title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' });
 
+  // cover slide (deck opener): tagline subtitle under the title + an establishing camera
+  if (scene2d.cover && scene2d.subtitle) {
+    overlay.push({ text: String(scene2d.subtitle), anchor: [0, 3.35, 0], role: 'body', align: 'center' });
+  }
+
   const target = [0, 1.6, 0];
   return {
     v: 1,
     name: `(lifted) ${scene2d.name || scene2d.subjects?.[0]?.type || 'scene'}`,
     subjects,
     overlay,
-    cameraSequence: pushInCamera(target),
+    cameraSequence: scene2d.cover ? coverCamera(target) : pushInCamera(target),
     defaults: { stage: { size: [18, 9, 11] } },
   };
 }

@@ -74,6 +74,16 @@
       ],
       "role": "card",
       "align": "left"
+    },
+    {
+      "text": "The climb from base camp to summit",
+      "anchor": [
+        0,
+        3.35,
+        0
+      ],
+      "role": "body",
+      "align": "center"
     }
   ],
   "cameraSequence": {
@@ -82,26 +92,26 @@
       {
         "duration": 0.01,
         "pos": [
-          1,
-          2.1,
-          9.799999999999999
+          2.2,
+          3.2,
+          12
         ],
         "target": [
           0,
           1.6,
           0
         ],
-        "fov": 50,
+        "fov": 55,
         "aperture": 0,
-        "focalDistance": 8.2,
+        "focalDistance": 11.5,
         "ease": "smooth"
       },
       {
-        "duration": 13,
+        "duration": 17,
         "pos": [
-          0,
-          1.8,
-          8.2
+          0.2,
+          1.9500000000000002,
+          8.6
         ],
         "target": [
           0,
@@ -111,7 +121,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 8.2,
+        "focalDistance": 8.6,
         "ease": "smooth"
       }
     ]

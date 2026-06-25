@@ -11,7 +11,29 @@
         "layerD": 1.5,
         "layerH": 0.28,
         "gap": 0.45,
-        "taper": 1
+        "taper": 1,
+        "colors": [
+          {
+            "hue": 0.66,
+            "sat": 0.58,
+            "value": 0.76
+          },
+          {
+            "hue": 0.66,
+            "sat": 0.6066666666666666,
+            "value": 0.66
+          },
+          {
+            "hue": 0.66,
+            "sat": 0.6333333333333333,
+            "value": 0.56
+          },
+          {
+            "hue": 0.66,
+            "sat": 0.6599999999999999,
+            "value": 0.46
+          }
+        ]
       },
       "transform": {
         "translate": [
@@ -84,6 +106,16 @@
       ],
       "role": "card",
       "align": "left"
+    },
+    {
+      "text": "Reinventing the business for the digital age",
+      "anchor": [
+        0,
+        3.35,
+        0
+      ],
+      "role": "body",
+      "align": "center"
     }
   ],
   "cameraSequence": {
@@ -92,26 +124,26 @@
       {
         "duration": 0.01,
         "pos": [
-          1,
-          2.1,
-          9.799999999999999
+          2.2,
+          3.2,
+          12
         ],
         "target": [
           0,
           1.6,
           0
         ],
-        "fov": 50,
+        "fov": 55,
         "aperture": 0,
-        "focalDistance": 8.2,
+        "focalDistance": 11.5,
         "ease": "smooth"
       },
       {
-        "duration": 13,
+        "duration": 17,
         "pos": [
-          0,
-          1.8,
-          8.2
+          0.2,
+          1.9500000000000002,
+          8.6
         ],
         "target": [
           0,
@@ -121,7 +153,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 8.2,
+        "focalDistance": 8.6,
         "ease": "smooth"
       }
     ]
