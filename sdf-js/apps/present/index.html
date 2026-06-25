@@ -84,6 +84,13 @@
         if (!document.fullscreenElement) w.requestFullscreen?.();
         else document.exitFullscreen?.();
       });
+      // The ‹ › arrows navigate a DECK (wired in deck-player.js). In single-scene
+      // mode (?scene=) there is no next/prev slide, so they'd be dead — hide them
+      // to avoid the "buttons do nothing" confusion. Visible only when ?deck= is set.
+      if (!new URLSearchParams(location.search).get('deck')) {
+        document.getElementById('nav-prev').style.display = 'none';
+        document.getElementById('nav-next').style.display = 'none';
+      }
     </script>
   </body>
 </html>
