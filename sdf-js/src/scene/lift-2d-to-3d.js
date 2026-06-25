@@ -122,6 +122,37 @@ export function coverCamera(target = [0, 1.6, 0]) {
   };
 }
 
+// ── per-slide-type camera moves: a subtle motion that suits the shape, instead of one
+//    push-in for everything. All 2-shot blends that settle to a clean front framing. ──
+const two = (a, b) => ({ loop: false, shots: [{ ...a, duration: 0.01, aperture: 0, ease: 'smooth' }, { ...b, duration: 14, transition: 'blend', aperture: 0, ease: 'smooth' }] });
+
+// radial / network — swing around to the front (orbit-in)
+function orbitIn(t, d = 8.4) {
+  return two({ pos: [d * 0.78, t[1] + 0.7, d * 0.62], target: t, fov: 48, focalDistance: d }, { pos: [0, t[1] + 0.2, d], target: t, fov: 46, focalDistance: d });
+}
+// horizontal sequences (timeline/gantt/bars) — glide laterally while pushing in
+function lateralPan(t, d = 8.4) {
+  return two({ pos: [-d * 0.5, t[1] + 0.55, d * 0.95], target: t, fov: 50, focalDistance: d }, { pos: [d * 0.18, t[1] + 0.2, d * 0.88], target: t, fov: 47, focalDistance: d });
+}
+// tall shapes (funnel/pyramid/mountain/stacks) — crane up from a low hero angle
+function craneUp(t, d = 8.4) {
+  const tgt = [t[0], t[1] + 0.3, t[2]];
+  return two({ pos: [0.6, t[1] - 0.9, d + 1.4], target: tgt, fov: 52, focalDistance: d }, { pos: [0, t[1] + 0.6, d], target: tgt, fov: 46, focalDistance: d });
+}
+
+const CAMERA_BY_TYPE = {
+  'sphere-network': orbitIn, mindmap: orbitIn, 'radial-spoke': orbitIn, 'relationship-graph': orbitIn,
+  pie: orbitIn, venn: orbitIn, 'circle-segmented': orbitIn, 'circle-loop': orbitIn, 'sphere-segmented': orbitIn,
+  timeline: lateralPan, gantt: lateralPan, progression: lateralPan, 'flow-chart': lateralPan,
+  bar: lateralPan, column: lateralPan, line: lateralPan,
+  funnel: craneUp, pyramid: craneUp, mountain: craneUp, 'layer-stack': craneUp, 'circle-stack': craneUp,
+};
+
+function cameraFor(type2d, target) {
+  const fn = CAMERA_BY_TYPE[type2d];
+  return fn ? fn(target) : pushInCamera(target);
+}
+
 // ── value formatting (2D atoms carry format: 'number'|'percent'|'currency') ──
 export function fmt(v, format) {
   if (v == null || Number.isNaN(Number(v))) return String(v ?? '');
@@ -705,12 +736,13 @@ export function liftSceneData2dTo3d(scene2d) {
   }
 
   const target = [0, 1.6, 0];
+  const primaryType = scene2d.subjects?.[0]?.type;
   return {
     v: 1,
     name: `(lifted) ${scene2d.name || scene2d.subjects?.[0]?.type || 'scene'}`,
     subjects,
     overlay,
-    cameraSequence: scene2d.cover ? coverCamera(target) : pushInCamera(target),
+    cameraSequence: scene2d.cover ? coverCamera(target) : cameraFor(primaryType, target),
     defaults: { stage: { size: [18, 9, 11] } },
   };
 }
