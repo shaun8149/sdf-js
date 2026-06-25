@@ -97,17 +97,24 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.restore();
     }
 
-    // Giant value
+    // Giant value — auto-shrink to fit col width
+    const targetValueFontSize = Math.min(Math.round(availH * 0.52), Math.round(colW * 0.38));
+    let vFontSize = targetValueFontSize;
+    ctx.font = `900 ${vFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
+    while (vFontSize > 16 && ctx.measureText(s.value).width > colW * 0.85) {
+      vFontSize--;
+      ctx.font = `900 ${vFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
+    }
+
     ctx.save();
     ctx.fillStyle = rgbCss(accent);
-    ctx.font = `900 ${valueFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${vFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    const maxValW = colW - 16;
-    ctx.fillText(fitText(ctx, s.value, maxValW), cx, blockTop);
+    ctx.fillText(s.value, cx, blockTop);
     ctx.restore();
 
-    const labelTop = blockTop + valueFontSize + 6;
+    const labelTop = blockTop + vFontSize + 6;
 
     // Label
     ctx.save();
