@@ -148,24 +148,25 @@ console.log('=== chart-labels (expandChartLabels connector) ===\n');
   ok(expandChartLabels({ v: 1, subjects: [] }).subjects.length === 0, 'empty scene → no-op');
 }
 
-// sphere-fill gauge: % auto-defaults from levels; radii-aware anchors
+// sphere-fill gauge: SDF labels are OPT-IN (value % defaults to overlay now)
 {
-  // No args.labels → gauge auto-labels each sphere with its level as a %.
-  const scene = {
+  // No args.labels → NO SDF text (the % goes to the DOM overlay instead).
+  const noLabel = {
     v: 1,
     subjects: [{ id: 'g', type: 'sphere-fill-3d', args: { levels: [0.8, 0.4, 0.2] } }],
   };
-  const labels = expandChartLabels(scene).subjects.filter((s) => s.type === 'text-3d-pipe');
-  ok(labels.length === 3, 'sphere-fill auto-labels 3 spheres from levels');
-  ok(labels[0].args.text === '80%', 'level 0.8 → "80%"');
-  ok(labels[2].args.text === '20%', 'level 0.2 → "20%"');
+  ok(expandChartLabels(noLabel).subjects.length === 1, 'sphere-fill: no args.labels → no SDF text');
 
-  // Explicit args.labels:[] suppresses the auto-default.
-  const suppressed = {
+  // Explicit args.labels → still engraves SDF labels (opt-in embedded path).
+  const explicit = {
     v: 1,
-    subjects: [{ id: 'g', type: 'sphere-fill-3d', args: { levels: [0.5], labels: [] } }],
+    subjects: [
+      { id: 'g', type: 'sphere-fill-3d', args: { levels: [0.8, 0.2], labels: ['80%', '20%'] } },
+    ],
   };
-  ok(expandChartLabels(suppressed).subjects.length === 1, 'args.labels:[] suppresses auto %');
+  const labels = expandChartLabels(explicit).subjects.filter((s) => s.type === 'text-3d-pipe');
+  ok(labels.length === 2, 'sphere-fill: explicit args.labels → 2 SDF labels');
+  ok(labels[0].args.text === '80%', 'explicit label text preserved');
 
   // radii-aware anchors: surfaces stay `spacing` apart, row centred. radii
   // [1.0,0.5] spacing 0.3 → centres at -0.9 / +0.9 (matches the atom layout).

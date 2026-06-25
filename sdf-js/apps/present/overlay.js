@@ -37,6 +37,11 @@ const ROLE_CSS = {
   head: `font:700 13px/1.2 ${FONT};letter-spacing:0.12em;text-transform:uppercase;color:#d4deee;padding:7px 14px;`,
   body: `font:400 12.5px/1.5 ${FONT};color:#aeb9cd;max-width:210px;padding:8px 13px;`,
   kpi: `font:800 34px/1 ${FONT};color:#ffffff;padding:8px 18px;`,
+  // `value` is a chip-LESS data readout (gauge %, KPI number) drawn directly on
+  // its object — real font, bold, white, with a soft dark halo so it reads on
+  // both bright glass and coloured liquid. Font-size is set per-frame from the
+  // object's projected radius (see tick) when the block carries `radius`.
+  value: `font:800 30px/1 ${FONT};color:#ffffff;letter-spacing:-0.01em;text-shadow:0 1px 3px rgba(0,0,0,0.55),0 0 10px rgba(0,0,0,0.35);`,
 };
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -90,6 +95,7 @@ export function makeOverlay(wrap, studio) {
         continue;
       }
       if (!Array.isArray(o.anchor) || o.anchor.length < 3) continue;
+      const isValue = o.role === 'value';
       const el = document.createElement('div');
       el.textContent = o.text || '';
       // anchor maps to the block's reference point; center by default.
@@ -97,10 +103,18 @@ export function makeOverlay(wrap, studio) {
       const textAlign = o.align || 'center';
       el.style.cssText =
         `position:absolute;transform:translate(${tx},-50%);text-align:${textAlign};white-space:pre-line;` +
-        `opacity:0;transition:opacity 0.25s ease;will-change:left,top;${CHIP}` +
+        `opacity:0;transition:opacity 0.25s ease;will-change:left,top;` +
+        // a `value` readout has NO chip (it sits directly on its object); every
+        // other role gets the dark frosted chip.
+        (isValue ? '' : CHIP) +
         (ROLE_CSS[o.role] || ROLE_CSS.body);
       layer.appendChild(el);
-      blocks.push({ el, anchor: o.anchor });
+      blocks.push({
+        el,
+        anchor: o.anchor,
+        // a value block scales its font with the object's projected radius.
+        radius: isValue && typeof o.radius === 'number' ? o.radius : null,
+      });
     }
     if (!raf) tick();
   }
@@ -118,6 +132,16 @@ export function makeOverlay(wrap, studio) {
       }
       b.el.style.left = (p.x * W).toFixed(1) + 'px';
       b.el.style.top = (p.y * H).toFixed(1) + 'px';
+      // Value readouts scale with their object: project a point one world-radius
+      // above the anchor; the screen gap IS the object's projected radius in px,
+      // so the % shrinks/grows with the sphere AND with camera distance.
+      if (b.radius != null) {
+        const up = studio.project([b.anchor[0], b.anchor[1] + b.radius, b.anchor[2]]);
+        if (up && up.visible) {
+          const rpx = Math.abs(up.y - p.y) * H;
+          b.el.style.fontSize = Math.max(9, rpx * 0.6).toFixed(1) + 'px';
+        }
+      }
       b.el.style.opacity = '1';
     }
     for (const s of spokes) {

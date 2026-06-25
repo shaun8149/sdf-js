@@ -176,16 +176,14 @@ const ANCHORS_FROM_ARGS = {
   'matrix-grid-3d': (a) => matrixAnchors(a),
 };
 
-// internal: type → (args) → default label strings, used when the subject did NOT
-// carry an explicit args.labels. For a fill gauge the % IS the datum, so a gauge
-// auto-labels each sphere from its level (the data label belongs to the geometry
-// → in-scene SDF, per the locked text policy). Pass args.labels (incl. []) to
-// override or suppress.
 const clampFrac = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
-const DEFAULT_LABELS = {
-  'sphere-fill-3d': (a) =>
-    (Array.isArray(a.levels) ? a.levels : []).map((l) => `${Math.round(clampFrac(l) * 100)}%`),
-};
+
+// NOTE (2026-06-25, refined text policy): value readouts (gauge %, KPI numbers)
+// now default to the DOM overlay (real font, prettier) — see apps/present/
+// overlay.js `value` role. So chart atoms NO LONGER auto-synthesise SDF labels.
+// The SDF label path below stays opt-in: pass an explicit args.labels[] to engrave
+// labels IN the geometry (the case SDF is reserved for — text physically on the
+// object). A gauge with no args.labels emits no SDF text.
 
 // turn anchors + label strings into camera-facing text-3d-pipe subjects.
 // mirror=true reflects each glyph in x (transform scale [-1,1,1]) so a label that
@@ -229,14 +227,9 @@ export function expandChartLabels(sceneData) {
   sceneData.subjects.forEach((s, si) => {
     const fn = ANCHORS_FROM_ARGS[s && s.type];
     const args = s && s.args;
-    // Explicit args.labels wins (incl. [] = suppress); otherwise a per-type
-    // default may synthesise labels (e.g. gauge % from levels).
-    const labels =
-      args && Array.isArray(args.labels)
-        ? args.labels
-        : DEFAULT_LABELS[s && s.type]
-          ? DEFAULT_LABELS[s.type](args || {})
-          : null;
+    // SDF labels are now OPT-IN: only an explicit args.labels[] engraves text in
+    // the geometry. Value readouts (gauge %) default to the DOM overlay instead.
+    const labels = args && Array.isArray(args.labels) ? args.labels : null;
     if (!fn || !labels || !labels.length) return;
     const anchors = fn(args);
     if (!anchors || !anchors.length) return;

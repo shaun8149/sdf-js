@@ -9,6 +9,7 @@
         "levels": [0.8, 0.4, 0.2],
         "radii": [1.0, 0.72, 0.55],
         "spacing": 0.5,
+        "labels": [],
         "colors": [
           { "hue": 0.58, "sat": 0.82, "value": 0.66 },
           { "hue": 0.99, "sat": 0.85, "value": 0.5 },
@@ -25,6 +26,11 @@
         "clearcoat": 0.5
       }
     }
+  ],
+  "overlay": [
+    { "role": "value", "text": "80%", "anchor": [-1.995, 1.0, 0], "radius": 1.0 },
+    { "role": "value", "text": "40%", "anchor": [0.225, 1.0, 0], "radius": 0.72 },
+    { "role": "value", "text": "20%", "anchor": [1.995, 1.0, 0], "radius": 0.55 }
   ],
   "cameraSequence": {
     "loop": false,

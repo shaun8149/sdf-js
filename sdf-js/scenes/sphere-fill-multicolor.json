@@ -26,6 +26,11 @@
       }
     }
   ],
+  "overlay": [
+    { "role": "value", "text": "80%", "anchor": [-2.1, 1.0, 0], "radius": 0.8 },
+    { "role": "value", "text": "40%", "anchor": [0, 1.0, 0], "radius": 0.8 },
+    { "role": "value", "text": "20%", "anchor": [2.1, 1.0, 0], "radius": 0.8 }
+  ],
   "cameraSequence": {
     "loop": false,
     "shots": [
