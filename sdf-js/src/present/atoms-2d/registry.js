@@ -118,6 +118,10 @@ const ATOM_LOADERS = {
   'matrix-grid': () => import('./charts/matrix/matrix-grid.js'),
   'nine-field-matrix': () => import('./charts/matrix/nine-field-matrix.js'),
 
+  // Media (Sprint 18 Tier 3 C) — image rendering for PL-style hero / full-bleed slides
+  image: () => import('./media/image.js'),
+  'image-split': () => import('./media/image-split.js'),
+
   // Icons (Phase 4) — 24 atlas-icon names wrapped in pseudo-3D badge
   'icon-badge': () => import('./icons/icon-badge.js'),
   // Icons (Sprint 18) — N icons horizontally with labels (vision/values/contact)
