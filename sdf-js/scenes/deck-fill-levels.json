@@ -1,0 +1,14 @@
+{
+  "id": "deck-fill-levels",
+  "name": "3D Spheres — Fill Levels (PresentationLoad D0961 twin)",
+  "segments": [
+    { "file": "sphere-fill-cover.json", "title": "3D Spheres — Fill Levels", "kind": "slide", "durationSec": 6 },
+    { "file": "p3-sequence-gauges.json", "title": "A sequence of levels", "kind": "slide", "durationSec": 7 },
+    { "file": "p7-stage-gauges.json", "title": "On the stage", "kind": "slide", "durationSec": 7 },
+    { "file": "p9-grid-gauges.json", "title": "A full matrix", "kind": "slide", "durationSec": 7 },
+    { "file": "p11-hero-list-gauges.json", "title": "Hero + breakdown", "kind": "slide", "durationSec": 7 },
+    { "file": "p5-hero-textboxes.json", "title": "Framed hero + notes", "kind": "slide", "durationSec": 7 },
+    { "file": "p15-radial-gauge.json", "title": "Radial spokes", "kind": "slide", "durationSec": 7 },
+    { "file": "p17-list-rows.json", "title": "Row-by-row", "kind": "slide", "durationSec": 7 }
+  ]
+}
