@@ -148,7 +148,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     if (segW >= MIN_LABEL_W) {
       const inFontSize = Math.round(barH * 0.3);
       const pctStr =
-        format === 'value' ? String(s.value) : `${Math.round((s.value / total) * 100)}%`;
+        format === 'value'
+          ? String(s.value)
+          : total > 0
+            ? `${Math.round((s.value / total) * 100)}%`
+            : '0%';
       const displayStr = `${s.label} ${pctStr}`;
       ctx.save();
       ctx.fillStyle = 'rgba(255,255,255,0.95)';
@@ -182,7 +186,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const legendY = barY + barH + 18;
   const legendFontSize = Math.round(h * 0.042);
   const dotR = legendFontSize * 0.45;
-  const itemPad = 20;
   const itemW = (w - PAD * 2) / segs.length;
 
   for (let i = 0; i < segs.length; i++) {

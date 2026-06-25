@@ -77,12 +77,16 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // Iteratively shrink until 4 lines fit
   ctx.font = `500 ${quoteFontSize}px Inter, system-ui, sans-serif`;
-  let lines = wrapText(ctx, quoteText, maxQuoteW, maxLines);
+  // Measure with no line cap to detect how many lines are actually needed
+  let lines = wrapText(ctx, quoteText, maxQuoteW, 999);
+  // Shrink font if text needs more than maxLines lines
   while (quoteFontSize > 18 && lines.length > maxLines) {
     quoteFontSize--;
     ctx.font = `500 ${quoteFontSize}px Inter, system-ui, sans-serif`;
-    lines = wrapText(ctx, quoteText, maxQuoteW, maxLines);
+    lines = wrapText(ctx, quoteText, maxQuoteW, 999);
   }
+  // Now cap to maxLines for actual rendering
+  lines = wrapText(ctx, quoteText, maxQuoteW, maxLines);
 
   const lineH = quoteFontSize * 1.35;
   const totalTextH =
