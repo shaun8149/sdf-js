@@ -152,6 +152,7 @@ const ATOM_LOADERS = {
 
   // Sprint 20 Batch 2 — diagrams / data / typography
   'vertical-timeline': () => import('./charts/diagrams/vertical-timeline.js'),
+  'segmented-bar': () => import('./charts/data/segmented-bar.js'),
 
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
