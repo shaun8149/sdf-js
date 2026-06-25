@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-itstrategy",
+  "name": "IT Strategy",
+  "segments": [
+    {
+      "file": "rec-itstrategy-1.json",
+      "title": "IT Stack",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-itstrategy-2.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-itstrategy-3.json",
+      "title": "Capabilities",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-itstrategy-4.json",
+      "title": "Maturity",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-itstrategy-5.json",
+      "title": "Portfolio",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
