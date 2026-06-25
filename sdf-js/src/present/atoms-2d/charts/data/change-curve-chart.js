@@ -1,16 +1,6 @@
-// =============================================================================
 // atoms-2d/charts/data/change-curve-chart.js — Kübler-Ross Change Curve
-// -----------------------------------------------------------------------------
-// S-shaped (dip-then-rise) curve with annotated phase labels along the x-axis.
-// Used for change management, organizational transformation, adoption modeling.
-//
-// Args:
-//   title  — optional title
-//   xAxis  — optional x-axis label (e.g. "Time")
-//   yAxis  — optional y-axis label (e.g. "Morale / Competence")
-//   phases — array of { label, description? } — phase labels along the curve
-//            (REQUIRED, 3-8). Phases are distributed evenly along x.
-// =============================================================================
+// S-shaped (dip-then-rise) curve with phase annotation labels.
+// Args: title?, xAxis?, yAxis?, phases[] (req, 3-8 { label, description? })
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
 
@@ -38,9 +28,9 @@ export const spec = {
   },
 };
 
-const PAD = 16;
-const AXIS_LABEL_H = 36;
-const AXIS_LABEL_W = 40;
+const PAD = 16,
+  AXIS_LABEL_H = 36,
+  AXIS_LABEL_W = 40;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -94,12 +84,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.save();
   ctx.strokeStyle = rgbaCss(fg, 0.4);
   ctx.lineWidth = 1.5;
-  // Y-axis
   ctx.beginPath();
   ctx.moveTo(plotL, plotTop + PAD);
   ctx.lineTo(plotL, curveB);
   ctx.stroke();
-  // X-axis
   ctx.beginPath();
   ctx.moveTo(plotL, curveB);
   ctx.lineTo(plotR, curveB);
@@ -129,32 +117,22 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
   }
 
-  // Build the change curve using cubic bezier
-  // The curve: starts at mid (0.5), dips to ~0.1 at 35%, then rises to ~0.9 at end
-  // We use a smooth cubic path across N phase points
   const N = phases.length;
-
-  // Y value function: Kübler-Ross shape
-  // t in [0,1] → normalized y in [0,1] where 1 = top of chart
+  // Kübler-Ross Y: dips at t≈0.4, rises to end
   function phaseY(i) {
     const t = i / (N - 1);
-    // Polynomial that dips then rises
-    // Shape: starts ~0.55, dips to 0.1 at t=0.4, rises to 0.9 at t=1
     const a = -4.0 * (t - 0.4) * (t - 0.4) + 0.9;
     const b = 0.6 * t + 0.3;
-    // Blend: early phase follows dip, late follows rise
     const blend = Math.max(0, Math.min(1, (t - 0.3) / 0.5));
     return a * (1 - blend) + b * blend;
   }
 
-  // Map phase index to canvas coordinates
   function phaseCoord(i) {
     const px = plotL + (i / (N - 1)) * plotW;
     const py = plotTop + PAD + (1 - phaseY(i)) * curveH;
     return { px, py };
   }
 
-  // Smooth curve using Catmull-Rom → cubic bezier conversion
   const points = phases.map((_, i) => phaseCoord(i));
 
   // Draw filled area under curve
@@ -179,7 +157,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-
   ctx.beginPath();
   ctx.moveTo(points[0].px, points[0].py);
   drawSmoothCurve(ctx, points);

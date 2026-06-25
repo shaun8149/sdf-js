@@ -1,16 +1,6 @@
-// =============================================================================
 // atoms-2d/charts/diagrams/value-chain-diagram.js — Porter's Value Chain
-// -----------------------------------------------------------------------------
-// Horizontal "primary activities" row + support activities stacked above +
-// optional outcome bubble. Classic Porter value chain layout.
-//
-// Args:
-//   title   — optional title
-//   primary — array of strings, primary activities left→right (REQUIRED, 2-8)
-//   support — array of strings, support activities shown as horizontal stripes
-//             above the primary row (REQUIRED, 1-4)
-//   outcome — optional string for the outcome/margin box on the far right
-// =============================================================================
+// Primary activities row + support activity stripes + optional outcome box.
+// Args: title?, primary[] (req), support[] (req), outcome?
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
 
