@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-mountain",
+  "name": "Mountain Path – Graphics",
+  "segments": [
+    {
+      "file": "rec-mountain-1.json",
+      "title": "The Summit",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-mountain-2.json",
+      "title": "The Climb",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-mountain-3.json",
+      "title": "Milestones",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-mountain-4.json",
+      "title": "Elevation Tiers",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-mountain-5.json",
+      "title": "Goal Path",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
