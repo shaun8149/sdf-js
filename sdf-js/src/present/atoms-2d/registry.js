@@ -162,6 +162,12 @@ const ATOM_LOADERS = {
   'callout-banner': () => import('./charts/typography/callout-banner.js'),
   'numbered-grid': () => import('./charts/lists/numbered-grid.js'),
 
+  // Sprint 22 Batch 1 — PL-recommendations atoms (mountain-path / strategy-map / radar-chart / okr-tree)
+  'mountain-path': () => import('./charts/diagrams/mountain-path.js'),
+  'strategy-map': () => import('./charts/diagrams/strategy-map.js'),
+  'radar-chart': () => import('./charts/data/radar-chart.js'),
+  'okr-tree': () => import('./charts/diagrams/okr-tree.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)

@@ -146,5 +146,102 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(!baked, 'no text-* SDF subjects produced (all text → overlay)');
 }
 
+// ── Sprint 22 B1: mountain-path → progression-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'mountain-path',
+        args: {
+          title: 'Q4 Climb',
+          summit: 'Series A',
+          milestones: [
+            { label: '$1M ARR' },
+            { label: '10K users' },
+            { label: 'PMF' },
+            { label: 'Term sheet' },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'progression-3d', 'mountain-path → progression-3d');
+  ok(out.subjects[0].args.steps === 4, 'mountain-path: steps = milestones.length (4)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 4, 'mountain-path: 4 milestone cards in overlay');
+  const summitVal = out.overlay.find((o) => o.role === 'value');
+  ok(summitVal && summitVal.text === 'Series A', 'mountain-path: summit → value overlay');
+}
+
+// ── Sprint 22 B1: strategy-map → layer-stack-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'strategy-map',
+        args: {
+          perspectives: [
+            { label: 'Financial', items: ['Revenue'] },
+            { label: 'Customer', items: ['NPS'] },
+            { label: 'Process', items: ['Ops'] },
+            { label: 'Learning', items: ['Talent'] },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'layer-stack-3d', 'strategy-map → layer-stack-3d');
+  ok(out.subjects[0].args.layers === 4, 'strategy-map: layers = perspectives.length (4)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 4, 'strategy-map: 4 perspective cards in overlay');
+}
+
+// ── Sprint 22 B1: radar-chart → radial-spoke-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'radar-chart',
+        args: {
+          axes: ['Speed', 'Quality', 'Cost', 'Scalability', 'UX', 'Security'],
+          series: [{ label: 'Current', values: [0.7, 0.4, 0.6, 0.3, 0.8, 0.5] }],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'radial-spoke-3d', 'radar-chart → radial-spoke-3d');
+  ok(out.subjects[0].args.spokes === 6, 'radar-chart: spokes = axes.length (6)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 6, 'radar-chart: 6 axis+value cards in overlay');
+  ok(cards[0].text.includes('70%'), 'radar-chart: first overlay card has percent value');
+}
+
+// ── Sprint 22 B1: okr-tree → tree-diagram-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'okr-tree',
+        args: {
+          objective: 'Become market leader',
+          quarter: 'Q3 2026',
+          keyResults: [
+            { label: 'Cross $50M ARR', progress: 0.48, sublabel: '$24M / $50M' },
+            { label: 'NPS > 70', progress: 0.86 },
+            { label: '24/7 Support SLA', progress: 0.65 },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'tree-diagram-3d', 'okr-tree → tree-diagram-3d');
+  ok(out.subjects[0].args.levels === 2, 'okr-tree: levels = 2 (objective + KRs)');
+  ok(out.subjects[0].args.branching === 3, 'okr-tree: branching = keyResults.length (3)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 3, 'okr-tree: 3 KR cards in overlay');
+  ok(cards[0].text.includes('48%'), 'okr-tree: first card has progress %');
+  ok(cards[0].text.includes('$24M / $50M'), 'okr-tree: first card includes sublabel');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

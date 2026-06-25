@@ -1,0 +1,25 @@
+{
+  "slotIdx": 2,
+  "slotName": "radar",
+  "slotTitle": "radar-chart",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "radar-chart",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "AI Capability Assessment",
+          "axes": ["Speed", "Quality", "Cost", "Scalability", "UX", "Security"],
+          "series": [
+            { "label": "Current", "values": [0.7, 0.4, 0.6, 0.3, 0.8, 0.5] },
+            { "label": "Target Q4", "values": [0.9, 0.7, 0.8, 0.7, 0.9, 0.8] }
+          ],
+          "showGrid": true
+        }
+      }
+    ]
+  }
+}
