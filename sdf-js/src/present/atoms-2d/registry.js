@@ -138,6 +138,12 @@ const ATOM_LOADERS = {
   'value-chain-diagram': () => import('./charts/diagrams/value-chain-diagram.js'),
   'change-curve-chart': () => import('./charts/data/change-curve-chart.js'),
 
+  // Sprint 19 Batch 2 — diagrams / typography / data
+  'radial-wheel-segmented': () => import('./charts/diagrams/radial-wheel-segmented.js'),
+  'section-number-divider': () => import('./charts/typography/section-number-divider.js'),
+  'stat-banner': () => import('./charts/data/stat-banner.js'),
+  'comparison-table': () => import('./charts/diagrams/comparison-table.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
