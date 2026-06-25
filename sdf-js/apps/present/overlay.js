@@ -31,6 +31,10 @@ const FONT = '-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
 const CHIP =
   'background:rgba(9,12,20,0.52);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);' +
   'border:1px solid rgba(255,255,255,0.08);border-radius:9px;box-shadow:0 6px 20px rgba(0,0,0,0.28);';
+// Blue header chip — the PresentationLoad colour-bar header (`card` role).
+const CARD_CHIP =
+  'background:rgba(40,116,196,0.92);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);' +
+  'border:1px solid rgba(255,255,255,0.14);border-radius:7px;box-shadow:0 6px 20px rgba(0,0,0,0.28);';
 
 const ROLE_CSS = {
   title: `font:700 28px/1.2 ${FONT};letter-spacing:-0.01em;color:#f4f7fc;padding:10px 22px;`,
@@ -42,6 +46,9 @@ const ROLE_CSS = {
   // both bright glass and coloured liquid. Font-size is set per-frame from the
   // object's projected radius (see tick) when the block carries `radius`.
   value: `font:800 30px/1 ${FONT};color:#ffffff;letter-spacing:-0.01em;text-shadow:0 1px 3px rgba(0,0,0,0.55),0 0 10px rgba(0,0,0,0.35);`,
+  // `card` is a coloured header bar (blue chip) — the PresentationLoad section
+  // header that sits above a `body` block.
+  card: `font:700 12.5px/1.2 ${FONT};letter-spacing:0.1em;text-transform:uppercase;color:#ffffff;padding:8px 16px;`,
 };
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -104,9 +111,9 @@ export function makeOverlay(wrap, studio) {
       el.style.cssText =
         `position:absolute;transform:translate(${tx},-50%);text-align:${textAlign};white-space:pre-line;` +
         `opacity:0;transition:opacity 0.25s ease;will-change:left,top;` +
-        // a `value` readout has NO chip (it sits directly on its object); every
-        // other role gets the dark frosted chip.
-        (isValue ? '' : CHIP) +
+        // a `value` readout has NO chip (sits on its object); a `card` header gets
+        // the blue colour-bar chip; everything else gets the dark frosted chip.
+        (isValue ? '' : o.role === 'card' ? CARD_CHIP : CHIP) +
         (ROLE_CSS[o.role] || ROLE_CSS.body);
       layer.appendChild(el);
       blocks.push({

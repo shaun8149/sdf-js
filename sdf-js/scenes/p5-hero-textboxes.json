@@ -5,39 +5,213 @@
     {
       "id": "ring",
       "type": "circle-frame-3d",
-      "args": { "radius": 1.62, "frameWidth": 0.16, "backDepth": 0.05, "back": false },
-      "transform": { "translate": [2.7, 1.4, -0.15] },
-      "material": { "hue": 0.6, "sat": 0.04, "value": 0.82, "metal": 0.9, "kind": "normal", "roughness": 0.25, "clearcoat": 0.5 }
+      "args": {
+        "radius": 1.62,
+        "frameWidth": 0.16,
+        "backDepth": 0.05,
+        "back": false
+      },
+      "transform": {
+        "translate": [
+          2.7,
+          1.4,
+          -0.15
+        ]
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.04,
+        "value": 0.82,
+        "metal": 0.9,
+        "kind": "normal",
+        "roughness": 0.25,
+        "clearcoat": 0.5
+      }
     },
     {
       "id": "hero",
       "type": "sphere-fill-3d",
-      "args": { "levels": [1.0], "radius": 1.3 },
-      "transform": { "translate": [2.7, 1.4, 0] },
-      "material": { "hue": 0.57, "sat": 0.55, "value": 0.62, "kind": "fill", "roughness": 0.3, "clearcoat": 0.5 }
+      "args": {
+        "levels": [
+          1
+        ],
+        "radius": 1.3
+      },
+      "transform": {
+        "translate": [
+          2.7,
+          1.4,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.62,
+        "kind": "fill",
+        "roughness": 0.3,
+        "clearcoat": 0.5
+      }
     }
   ],
   "overlay": [
-    { "role": "value", "text": "100%", "anchor": [2.7, 1.4, 0], "radius": 1.3 },
-
-    { "role": "spoke", "from": [1.45, 1.95, 0], "to": [-0.7, 2.6, 0] },
-    { "role": "spoke", "from": [1.35, 1.4, 0], "to": [-0.7, 1.3, 0] },
-    { "role": "spoke", "from": [1.45, 0.85, 0], "to": [-0.7, 0.0, 0] },
-
-    { "text": "DESCRIPTION TEXT", "anchor": [-0.5, 2.65, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own text.", "anchor": [-0.5, 2.1, 0], "role": "body", "align": "left" },
-
-    { "text": "DESCRIPTION TEXT", "anchor": [-0.5, 1.35, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own text.", "anchor": [-0.5, 0.8, 0], "role": "body", "align": "left" },
-
-    { "text": "DESCRIPTION TEXT", "anchor": [-0.5, 0.05, 0], "role": "head", "align": "left" },
-    { "text": "This is a placeholder text.\nReplace with your own text.", "anchor": [-0.5, -0.5, 0], "role": "body", "align": "left" }
+    {
+      "role": "value",
+      "text": "100%",
+      "anchor": [
+        2.7,
+        1.4,
+        0
+      ],
+      "radius": 1.3
+    },
+    {
+      "role": "spoke",
+      "from": [
+        1.45,
+        1.95,
+        0
+      ],
+      "to": [
+        -0.7,
+        2.6,
+        0
+      ]
+    },
+    {
+      "role": "spoke",
+      "from": [
+        1.35,
+        1.4,
+        0
+      ],
+      "to": [
+        -0.7,
+        1.3,
+        0
+      ]
+    },
+    {
+      "role": "spoke",
+      "from": [
+        1.45,
+        0.85,
+        0
+      ],
+      "to": [
+        -0.7,
+        0,
+        0
+      ]
+    },
+    {
+      "text": "DESCRIPTION TEXT",
+      "anchor": [
+        -0.5,
+        2.65,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own text.",
+      "anchor": [
+        -0.5,
+        2.1,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    },
+    {
+      "text": "DESCRIPTION TEXT",
+      "anchor": [
+        -0.5,
+        1.35,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own text.",
+      "anchor": [
+        -0.5,
+        0.8,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    },
+    {
+      "text": "DESCRIPTION TEXT",
+      "anchor": [
+        -0.5,
+        0.05,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "This is a placeholder text.\nReplace with your own text.",
+      "anchor": [
+        -0.5,
+        -0.5,
+        0
+      ],
+      "role": "body",
+      "align": "left"
+    }
   ],
   "cameraSequence": {
     "loop": false,
     "shots": [
-      { "duration": 10, "pos": [0, 1.2, 9.5], "target": [0, 1.1, 0], "fov": 50, "aperture": 0, "focalDistance": 9.5, "ease": "smooth" }
+      {
+        "duration": 0.01,
+        "pos": [
+          0.7,
+          1.369,
+          11.3
+        ],
+        "target": [
+          0,
+          1.1,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0,
+        "focalDistance": 9.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          1.2,
+          9.5
+        ],
+        "target": [
+          0,
+          1.1,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 9.5,
+        "ease": "smooth",
+        "transition": "blend"
+      }
     ]
   },
-  "defaults": { "stage": { "size": [20, 8, 11] } }
+  "defaults": {
+    "stage": {
+      "size": [
+        20,
+        8,
+        11
+      ]
+    }
+  }
 }
