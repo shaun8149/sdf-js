@@ -169,7 +169,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
 
     if (hasSub) {
-      const subFont = Math.round(labelFontSize * 0.72);
+      let subFont = Math.round(labelFontSize * 0.72);
+      ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
+      while (subFont > 8 && ctx.measureText(String(steps[i].sublabel)).width > maxLabelW * 0.85) {
+        subFont--;
+        ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
+      }
       ctx.save();
       ctx.fillStyle = 'rgba(255,255,255,0.75)';
       ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
@@ -179,11 +184,4 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.restore();
     }
   }
-}
-
-function fitText(ctx, text, maxW) {
-  if (ctx.measureText(text).width <= maxW) return text;
-  let s = text;
-  while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
-  return s + '…';
 }
