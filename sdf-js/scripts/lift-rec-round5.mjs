@@ -31,7 +31,7 @@ const DECKS = [
   },
   {
     id: 'mountain', name: 'Mountain Path – Graphics', slides: [
-      { title: 'The Summit', type: 'pyramid', args: { title: 'Mountain Path', layers: [{ label: 'Summit' }, { label: 'Ridge' }, { label: 'Ascent' }, { label: 'Base Camp' }] } },
+      { title: 'The Summit', type: 'mountain', args: { title: 'Mountain Path', stages: [{ label: 'Summit' }, { label: 'Ridge' }, { label: 'Ascent' }, { label: 'Base Camp' }] } },
       { title: 'The Climb', type: 'progression', args: { title: 'The Climb', steps: [{ label: 'Base Camp' }, { label: 'Ascent' }, { label: 'Ridge' }, { label: 'Summit' }] } },
       { title: 'Milestones', type: 'timeline', args: { title: 'Journey Milestones', events: [{ label: 'Start' }, { label: 'Camp 1' }, { label: 'Camp 2' }, { label: 'Peak' }] } },
       { title: 'Elevation Tiers', type: 'circle-stack', args: { title: 'Elevation', layers: [{ label: 'Peak' }, { label: 'High' }, { label: 'Mid' }, { label: 'Foot' }] } },

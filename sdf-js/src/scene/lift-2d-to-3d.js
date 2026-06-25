@@ -55,7 +55,13 @@ const HUE_BY_TYPE = {
   'sphere-segmented': 0.50, 'kpi-card': 0.58, fishbone: 0.40, diamond: 0.58, gear: 0.58, arrow: 0.58, 'traffic-light': 0.58,
 };
 
+// full-material overrides for atoms whose look needs more than a hue swap
+const MATERIAL_OVERRIDE = {
+  mountain: { hue: 0.6, sat: 0.24, value: 0.62, roughness: 0.55, clearcoat: 0.15 }, // rock
+};
+
 function materialFor(type2d) {
+  if (MATERIAL_OVERRIDE[type2d]) return { ...DEFAULT_MAT, ...MATERIAL_OVERRIDE[type2d] };
   const hue = HUE_BY_TYPE[type2d];
   if (hue == null) return { ...DEFAULT_MAT };
   // warm hues (reds/oranges/golds) turn muddy brown at the default value/sat — brighten
@@ -545,6 +551,19 @@ export const TWIN_MAP = {
         args: { levels: [frac], radius: 1.1 },
         transform: { translate: [0, 1.4, 0] },
         overlay: [{ text: fmt(a.value, a.format ?? 'percent'), anchor: [0, 1.4, 1.2], role: 'value', radius: 0.6 }],
+      };
+    },
+  },
+
+  // summit / journey metaphor — a real mountain with an ascending trail
+  mountain: {
+    to: 'mountain-3d',
+    lift(a) {
+      const stages = a.stages || a.steps || a.layers || [];
+      return {
+        args: { height: 2.6, baseRadius: 1.6, sidePeaks: 2, pathMarkers: a.markers ?? Math.max(3, stages.length || 4) },
+        transform: { translate: [0, 0, 0] },
+        overlay: rightCards(stages.map(itemLabel)),
       };
     },
   },

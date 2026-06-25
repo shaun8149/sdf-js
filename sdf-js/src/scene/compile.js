@@ -128,6 +128,7 @@ import { cubeSegmented3dSDF } from './components/shapes/cube-segmented-3d.js';
 import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
 import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
+import { mountain3dSDF } from './components/shapes/mountain-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
@@ -542,6 +543,16 @@ const PRIMITIVE_FACTORIES = {
       diskHeight: a.diskHeight ?? a.thickness ?? 0.18,
       gap: a.gap ?? 0.06,
       colors: a.colors ?? null,
+    }),
+  'mountain-3d': (a) =>
+    mountain3dSDF({
+      height: a.height ?? 2.4,
+      baseRadius: a.baseRadius ?? 1.5,
+      sidePeaks: a.sidePeaks ?? 2,
+      spread: a.spread ?? 1.7,
+      sideScale: a.sideScale ?? 0.6,
+      pathMarkers: a.pathMarkers ?? 4,
+      markerRadius: a.markerRadius ?? 0.13,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({

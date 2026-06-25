@@ -3,47 +3,28 @@
   "name": "(lifted) mountain-The Summit",
   "subjects": [
     {
-      "id": "pyramid",
-      "type": "pyramid-3d",
+      "id": "mountain",
+      "type": "mountain-3d",
       "args": {
-        "levels": 4,
-        "colors": [
-          {
-            "hue": 0.11,
-            "sat": 0.7,
-            "value": 0.88
-          },
-          {
-            "hue": 0.11,
-            "sat": 0.7266666666666666,
-            "value": 0.78
-          },
-          {
-            "hue": 0.11,
-            "sat": 0.7533333333333333,
-            "value": 0.68
-          },
-          {
-            "hue": 0.11,
-            "sat": 0.7799999999999999,
-            "value": 0.5800000000000001
-          }
-        ]
+        "height": 2.6,
+        "baseRadius": 1.6,
+        "sidePeaks": 2,
+        "pathMarkers": 4
       },
       "transform": {
         "translate": [
           0,
-          0.6,
+          0,
           0
         ]
       },
       "material": {
-        "hue": 0.11,
-        "sat": 0.72,
-        "value": 0.82,
+        "hue": 0.6,
+        "sat": 0.24,
+        "value": 0.62,
         "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
+        "roughness": 0.55,
+        "clearcoat": 0.15
       }
     }
   ],
