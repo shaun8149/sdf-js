@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-stratmap",
+  "name": "Strategy Map",
+  "segments": [
+    {
+      "file": "rec-stratmap-1.json",
+      "title": "Perspectives",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-stratmap-2.json",
+      "title": "Causal Chain",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-stratmap-3.json",
+      "title": "Objective Links",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-stratmap-4.json",
+      "title": "Scorecard",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-stratmap-5.json",
+      "title": "Cascade",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

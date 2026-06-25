@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-bizcase",
+  "name": "Business Case",
+  "segments": [
+    {
+      "file": "rec-bizcase-1.json",
+      "title": "Structure",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizcase-2.json",
+      "title": "Options",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizcase-3.json",
+      "title": "Cost vs Benefit",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizcase-4.json",
+      "title": "Payback",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizcase-5.json",
+      "title": "Decision",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
