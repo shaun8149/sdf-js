@@ -1,0 +1,21 @@
+{
+  "slotIdx": 0,
+  "slotName": "intro",
+  "slotTitle": "section-number-divider",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "section-number-divider",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "number": "01",
+          "title": "Findings",
+          "subtitle": "What we learned from 32 customer interviews"
+        }
+      }
+    ]
+  }
+}

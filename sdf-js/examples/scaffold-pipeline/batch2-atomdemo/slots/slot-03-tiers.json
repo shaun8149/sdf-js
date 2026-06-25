@@ -1,0 +1,32 @@
+{
+  "slotIdx": 3,
+  "slotName": "tiers",
+  "slotTitle": "comparison-table",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "comparison-table",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "args": {
+          "title": "Tier Comparison",
+          "columns": [
+            { "label": "Free" },
+            { "label": "Pro", "highlight": true },
+            { "label": "Enterprise" }
+          ],
+          "features": [
+            { "label": "Process Automation", "values": [false, true, true] },
+            { "label": "Real-time Data", "values": [false, false, true] },
+            { "label": "Customer Self-Service", "values": [false, true, true] },
+            { "label": "AI Decision Support", "values": [false, false, true] },
+            { "label": "API Ecosystem", "values": [false, true, true] },
+            { "label": "Cloud-native Arch", "values": [false, true, true] }
+          ]
+        }
+      }
+    ]
+  }
+}

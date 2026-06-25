@@ -255,6 +255,26 @@ export const ATLAS_THEMES = [
     },
     featured: true,
   },
+  {
+    id: 'hr-slate-teal',
+    label: 'HR Slate Teal',
+    macroCluster: 'pitch',
+    bg: [13, 26, 40], // dark slate navy
+    silhouetteColor: [230, 242, 240], // near-white text
+    accent: [42, 184, 168], // bright teal
+    colors: [
+      [42, 184, 168],
+      [26, 100, 110],
+      [80, 210, 195],
+      [160, 220, 215],
+      [220, 140, 90],
+    ],
+    font: {
+      heading: '"Inter Display", Inter, system-ui, sans-serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
 ];
 
 /**

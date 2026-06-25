@@ -1,0 +1,22 @@
+{
+  "slotIdx": 1,
+  "slotName": "metric",
+  "slotTitle": "stat-banner",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "stat-banner",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 200,
+        "args": {
+          "value": "$24M",
+          "label": "ARR",
+          "trend": "↑117% YoY",
+          "trendDirection": "up"
+        }
+      }
+    ]
+  }
+}

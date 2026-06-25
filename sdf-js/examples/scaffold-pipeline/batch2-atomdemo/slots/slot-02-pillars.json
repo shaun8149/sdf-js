@@ -1,0 +1,27 @@
+{
+  "slotIdx": 2,
+  "slotName": "pillars",
+  "slotTitle": "radial-wheel-segmented",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "radial-wheel-segmented",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "args": {
+          "title": "Five Strategic Pillars",
+          "hub": "TRANSFORM 2026",
+          "segments": [
+            { "label": "Digitise Core", "sublabel": "Top 20 workflows" },
+            { "label": "Data First", "sublabel": "Single source" },
+            { "label": "Customer 360", "sublabel": "Real-time" },
+            { "label": "Talent Uplift", "sublabel": "800 reskilled" },
+            { "label": "Ecosystem", "sublabel": "12 fintech APIs" }
+          ]
+        }
+      }
+    ]
+  }
+}
