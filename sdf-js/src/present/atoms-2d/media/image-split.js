@@ -20,12 +20,14 @@ import { drawPseudo3D as drawImage } from './image.js';
 export const spec = {
   type: 'image-split',
   category: 'media',
-  description: 'Hero split: image on one side, text + bullets on the other. PL hero pattern.',
+  description:
+    'Hero split: image on one side, text + bullets on the other. PL hero pattern. src MUST be a data: URI or parser-emitted relative path from an embedded image in the source — never an internet URL or generated photo.',
   args: {
     src: {
-      type: 'string (URL)',
+      type: 'string (data: URI or parser-emitted relative path)',
       required: true,
-      example: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1280',
+      example:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWNgIBb8BwABKAEBwGDOlAAAAABJRU5ErkJggg==',
     },
     title: { type: 'string', required: true, example: 'Our Mission' },
     body: { type: 'string?', example: 'Make on-chain trading natural.' },

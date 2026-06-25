@@ -463,10 +463,10 @@ for (const a of slotAssignments) {
     `    - 2-set comparison slots (Before/After / Us vs Them) → \`venn\` or side-by-side kpi-cards\n` +
     `    Specialized atoms communicate semantics in 3D theatrical playback — bullet-list reads as "they had no better atom".\n` +
     `14. **NEVER emit \`type: "text"\`** — there is NO text atom. For corner attribution (author / date / version) use cover's \`author\`/\`date\`/\`version\` args. For floating labels INSIDE a chart, set the chart atom's title/labels args. If you can't express something via an atom + its args, omit it.\n` +
-    `15. **Image atoms (Sprint 18 Tier 3 C)** — use when content describes a visual subject AND a URL is present in the source:\n` +
-    `    - Hero slot with a single dominant photo + title/body/bullets → \`image-split\` (image one side, text other side; PL hero pattern)\n` +
-    `    - Full-bleed background photo with overlay caption → \`image\` with fit:'cover'\n` +
-    `    - For src URL: ONLY use URLs that appear in slide.body (look for "image:" or "https://images." or "https://picsum." prefixes). If no URL is in source, OMIT image atoms — DO NOT fabricate URLs that will 404.\n` +
+    `15. **Image atoms (Sprint 18 Tier 3 C)** — strictly bound to images that were ALREADY embedded in the user's source document. We do NOT call image-generation models, we do NOT search the internet for stock photos:\n` +
+    `    - Use ONLY when slide.body contains an explicit src for an image the user already had (look for "image:" lines pointing to data: URIs, OR relative paths the parser emitted from embedded images).\n` +
+    `    - If no such src exists in source, OMIT image atoms entirely. NEVER fabricate URLs. NEVER add picsum / unsplash / any internet host. NEVER write "image: https://..." that isn't in the source.\n` +
+    `    - When you DO have a valid src: hero slot with one dominant image + title/body/bullets → \`image-split\`; full-bleed photo with caption → \`image\` (fit:'cover').\n` +
     `    - DO NOT use image atoms for purely numeric / list / process content — specialized atoms (kpi-card / fishbone / timeline / flow-chart) are better.\n`;
 
   if (DRY_RUN) {

@@ -23,15 +23,16 @@ export const spec = {
   type: 'image',
   category: 'media',
   description:
-    'Image rendered from URL. Supports cover/contain fit modes + optional caption overlay.',
+    'Render an image already present in the source document. src MUST be a data: URI or relative path the parser emitted from embedded media. Do NOT use internet URLs or generated/stock images.',
   args: {
     src: {
-      type: 'string (URL)',
+      type: 'string (data: URI or parser-emitted relative path)',
       required: true,
-      example: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1280',
+      example:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWNgIBb8BwABKAEBwGDOlAAAAABJRU5ErkJggg==',
     },
     fit: { type: "'cover'|'contain'|'fill'?", default: "'cover'", example: 'cover' },
-    caption: { type: 'string?', example: 'Yosemite, 2025' },
+    caption: { type: 'string?', example: 'Slide 3 photo' },
     captionPosition: { type: "'bottom'|'top'?", default: "'bottom'", example: 'bottom' },
     borderRadius: { type: 'number?', default: 0, example: 12 },
   },
