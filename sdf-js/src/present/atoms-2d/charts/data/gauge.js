@@ -134,7 +134,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Big value text: Inter 900, large, centered in gauge bowl
   const valueText = format === 'percent' ? `${Math.round(value * 100)}%` : String(value.toFixed(2));
   ctx.fillStyle = rgbCss(fg);
-  ctx.font = `900 ${Math.round(h * 0.2)}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${Math.round(h * 0.2)}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(valueText, cx, cy + tube * 1.4);
