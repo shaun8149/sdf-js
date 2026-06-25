@@ -251,7 +251,7 @@ export const TWIN_MAP = {
         radius: 0.32,
       }));
       return {
-        args: { values: norm, barWidth, barDepth: 0.55, gap, maxHeight },
+        args: { values: norm, barWidth, barDepth: 0.55, gap, maxHeight, colors: shades(HUE_BY_TYPE.bar, norm.length) },
         transform: { translate: [0, ty, 0] },
         overlay,
       };
@@ -370,7 +370,19 @@ export const TWIN_MAP = {
   'agenda-list': itemsTwin('agenda-list-3d', 'items', 'items'),
   'bullet-list': itemsTwin('bullet-list-3d', 'items', 'items'),
   progression: itemsTwin('progression-3d', 'steps', 'steps', { transform: { translate: [-1.0, 0.6, 0] } }),
-  pyramid: itemsTwin('pyramid-3d', 'layers', 'levels', { transform: { translate: [0, 0.6, 0] } }),
+  pyramid: {
+    to: 'pyramid-3d',
+    lift(a) {
+      const arr = asArray(a.layers);
+      const n = arr.length || (typeof a.layers === 'number' ? a.layers : 0) || 3;
+      const labels = arr.map(itemLabel).filter(Boolean);
+      return {
+        args: { levels: n, colors: shades(HUE_BY_TYPE.pyramid, n) },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: rightCards(labels.length ? labels : a.labels || []),
+      };
+    },
+  },
   'traffic-light': itemsTwin('traffic-light-3d', 'lights', 'lights', { transform: { translate: [0, 1.8, 0] } }),
   'circle-stack': {
     to: 'circle-stack-3d',

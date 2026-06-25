@@ -6,7 +6,24 @@
       "id": "pyramid",
       "type": "pyramid-3d",
       "args": {
-        "levels": 3
+        "levels": 3,
+        "colors": [
+          {
+            "hue": 0.11,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
       },
       "transform": {
         "translate": [

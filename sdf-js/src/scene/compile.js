@@ -355,6 +355,7 @@ const PRIMITIVE_FACTORIES = {
       layerHeight: a.layerHeight ?? a.thickness ?? 0.3,
       gap: a.gap ?? 0.05,
       depth: a.depth ?? 0.6,
+      colors: a.colors ?? null,
     }),
   'bar-3d': (a) =>
     bar3dSDF({
@@ -364,6 +365,7 @@ const PRIMITIVE_FACTORIES = {
       barDepth: a.barDepth ?? a.depth ?? 0.4,
       gap: a.gap ?? 0.1,
       maxHeight: a.maxHeight ?? a.scale ?? 2.0,
+      colors: a.colors ?? null,
     }),
   'column-3d': (a) =>
     column3dSDF({
