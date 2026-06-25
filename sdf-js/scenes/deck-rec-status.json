@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-status",
+  "name": "Project Status Report",
+  "segments": [
+    {
+      "file": "rec-status-1.json",
+      "title": "Status Overview",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-status-2.json",
+      "title": "Milestones",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-status-3.json",
+      "title": "Workstreams",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-status-4.json",
+      "title": "KPIs",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-status-5.json",
+      "title": "Phase Plan",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
