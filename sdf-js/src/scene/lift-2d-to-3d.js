@@ -457,6 +457,82 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 22 B1: PL-recommendations atom twins ──
+  'mountain-path': {
+    to: 'progression-3d',
+    lift(a) {
+      const milestones = a.milestones || [];
+      return {
+        args: { steps: milestones.length || 4 },
+        transform: { translate: [-1.0, 0.6, 0] },
+        overlay: [
+          ...rightCards(milestones.map((m) => m.label || '')),
+          { text: a.summit || '', anchor: [3.0, 3.0, 0], role: 'value', radius: 0.4 },
+        ],
+      };
+    },
+  },
+
+  'strategy-map': {
+    to: 'layer-stack-3d',
+    lift(a) {
+      const persp = a.perspectives || [];
+      return {
+        args: {
+          layers: persp.length || 4,
+          layerW: 2.4,
+          layerD: 1.5,
+          layerH: 0.28,
+          gap: 0.45,
+          taper: 1.0,
+        },
+        transform: { translate: [-0.3, 1.4, 0], rotate: [0.35, 0.5, 0] },
+        overlay: rightCards(
+          persp.map((p) => {
+            const items = Array.isArray(p.items) ? p.items.join(' · ') : '';
+            return p.label ? (items ? `${p.label}: ${items}` : p.label) : items;
+          }),
+        ),
+      };
+    },
+  },
+
+  'radar-chart': {
+    to: 'radial-spoke-3d',
+    lift(a) {
+      const axes = a.axes || [];
+      const series = a.series || [];
+      const values = (series[0] && series[0].values) || [];
+      return {
+        args: { spokes: axes.length || 6 },
+        transform: { translate: [0, 1.7, 0] },
+        overlay: rightCards(
+          axes.map((label, i) =>
+            values[i] != null ? `${label} ${Math.round(Number(values[i]) * 100)}%` : label,
+          ),
+        ),
+      };
+    },
+  },
+
+  'okr-tree': {
+    to: 'tree-diagram-3d',
+    lift(a) {
+      const krs = a.keyResults || [];
+      return {
+        args: { levels: 2, branching: Math.max(1, krs.length) },
+        transform: { translate: [0, 2.8, 0] },
+        overlay: rightCards(
+          krs.map(
+            (kr) =>
+              `${kr.label || ''} ${Math.round((Number(kr.progress) || 0) * 100)}%` +
+              (kr.sublabel ? ` · ${kr.sublabel}` : ''),
+          ),
+        ),
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
