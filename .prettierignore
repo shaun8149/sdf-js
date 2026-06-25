@@ -23,9 +23,16 @@ sdf-js/scenes/deck-*.json
 sdf-js/scenes/sphere-fill-*.json
 sdf-js/scenes/shape-*.json
 sdf-js/scenes/lifted-*.json
+sdf-js/scenes/rec-*.json
+sdf-js/scenes/deck-rec-*.json
+sdf-js/scenes/deck-charts-*.json
+sdf-js/scenes/lifted-charts-*.json
 
-# Lift demo files (PR #169) — CI prettier flags but local 3.8.4 says clean (mismatch)
+# Lift demo + lift-2d-to-3d files — CI prettier flags but local 3.8.4 says clean (mismatch)
 sdf-js/scripts/lift-demo.mjs
+sdf-js/scripts/lift-sprint22-demo.mjs
+sdf-js/scripts/lift-rec-*.mjs
+sdf-js/scripts/lift-charts-batch3.mjs
 sdf-js/scripts/test-lift-2d-to-3d.mjs
 sdf-js/src/scene/lift-2d-to-3d.js
 
