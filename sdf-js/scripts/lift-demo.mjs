@@ -19,43 +19,61 @@ const SCENES = resolve(__dirname, '../scenes');
 const SAMPLES = [
   {
     name: 'sales-funnel',
-    subjects: [{
-      type: 'funnel',
-      args: {
-        title: 'Sales Funnel',
-        stages: [
-          { label: 'Awareness' }, { label: 'Interest' },
-          { label: 'Decision' }, { label: 'Action' },
-        ],
+    subjects: [
+      {
+        type: 'funnel',
+        args: {
+          title: 'Sales Funnel',
+          stages: [
+            { label: 'Awareness' },
+            { label: 'Interest' },
+            { label: 'Decision' },
+            { label: 'Action' },
+          ],
+        },
       },
-    }],
+    ],
   },
   {
     name: 'cloud-share',
-    subjects: [{
-      type: 'pie',
-      args: {
-        title: 'Cloud Market Share',
-        values: [35, 25, 22, 18], labels: ['AWS', 'Azure', 'GCP', 'Other'], format: 'percent',
+    subjects: [
+      {
+        type: 'pie',
+        args: {
+          title: 'Cloud Market Share',
+          values: [35, 25, 22, 18],
+          labels: ['AWS', 'Azure', 'GCP', 'Other'],
+          format: 'percent',
+        },
       },
-    }],
+    ],
   },
   {
     name: 'quarterly',
-    subjects: [{
-      type: 'bar',
-      args: { title: 'Quarterly Revenue', values: [40, 65, 85, 55, 90], format: 'percent' },
-    }],
+    subjects: [
+      {
+        type: 'bar',
+        args: { title: 'Quarterly Revenue', values: [40, 65, 85, 55, 90], format: 'percent' },
+      },
+    ],
   },
   {
     name: 'roadmap',
-    subjects: [{
-      type: 'timeline',
-      args: {
-        title: 'Product Roadmap',
-        events: [{ label: '2021' }, { label: '2022' }, { label: '2023' }, { label: '2024' }, { label: '2025' }],
+    subjects: [
+      {
+        type: 'timeline',
+        args: {
+          title: 'Product Roadmap',
+          events: [
+            { label: '2021' },
+            { label: '2022' },
+            { label: '2023' },
+            { label: '2024' },
+            { label: '2025' },
+          ],
+        },
       },
-    }],
+    ],
   },
 ];
 
@@ -63,6 +81,8 @@ for (const s of SAMPLES) {
   const lifted = liftSceneData2dTo3d(s);
   const path = resolve(SCENES, `lifted-${s.name}.json`);
   writeFileSync(path, `${JSON.stringify(lifted, null, 2)}\n`);
-  console.log(`  ✓ ${s.subjects[0].type} (2D) → ${lifted.subjects[0].type} (3D)  →  scenes/lifted-${s.name}.json`);
+  console.log(
+    `  ✓ ${s.subjects[0].type} (2D) → ${lifted.subjects[0].type} (3D)  →  scenes/lifted-${s.name}.json`,
+  );
 }
 console.log(`\n${SAMPLES.length} scenes lifted. View: ?scene=lifted-sales-funnel  (etc.)`);

@@ -22,6 +22,7 @@ sdf-js/scenes/p*.json
 sdf-js/scenes/deck-*.json
 sdf-js/scenes/sphere-fill-*.json
 sdf-js/scenes/shape-*.json
+sdf-js/scenes/lifted-*.json
 
 # Smoke test baselines (binary/visual diff artifacts)
 sdf-js/tests/smoke/baselines/
