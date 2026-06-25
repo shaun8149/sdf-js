@@ -167,7 +167,7 @@ function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg) {
   const valueStr = String(kpi.value ?? '');
   const valueSize = clamp(Math.round(h * 0.3), 14, 44);
   ctx.fillStyle = rgbCss(lighten(fg, 0.85));
-  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   const valueY = y + h * 0.58;
@@ -179,11 +179,11 @@ function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg) {
   ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
   ctx.fillText(String(kpi.label || ''), innerLeft, valueY + Math.round(h * 0.17));
 
-  // ---- Sublabel (Inter 400, faded) ----
+  // ---- Sublabel (Inter 500, faded) ----
   if (kpi.sublabel) {
     const subSize = clamp(Math.round(h * 0.088), 8, 12);
     ctx.fillStyle = rgbaCss(lighten(fg, 0.85), 0.55);
-    ctx.font = `400 ${subSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${subSize}px Inter, system-ui, sans-serif`;
     ctx.fillText(String(kpi.sublabel), innerLeft, valueY + Math.round(h * 0.29));
   }
 }
