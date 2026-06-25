@@ -1,0 +1,11 @@
+{
+  "id": "deck-charts-3d-2",
+  "name": "3D Charts & Diagrams — PresentationLoad (batch 2)",
+  "segments": [
+    { "file": "shape-funnel.json", "title": "Funnels — 3D", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-venn.json", "title": "Venn — 3D", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-timeline.json", "title": "Road Timeline — 3D", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-cubes-count.json", "title": "Cubes — Count", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-layers-perspective.json", "title": "Layers — Perspective", "kind": "slide", "durationSec": 7 }
+  ]
+}
