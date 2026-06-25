@@ -277,22 +277,34 @@ function drawShowcase(
     // Item label (bold, dark)
     if (it.label) {
       ctx.fillStyle = isHi ? rgbCss(accent) : rgbCss(fg);
-      ctx.font = `700 ${Math.round(labelSize)}px Inter, system-ui, sans-serif`;
-      ctx.textBaseline = 'top';
-      ctx.fillText(
-        fitText(ctx, String(it.label), labelMaxW),
-        labelX,
-        cellY + Math.round(numSize * 0.18),
+      const labelFs = fitFontSize(
+        ctx,
+        String(it.label),
+        labelMaxW,
+        Math.round(labelSize),
+        Math.max(10, Math.round(labelSize * 0.6)),
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
+      ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(it.label), labelX, cellY + Math.round(numSize * 0.18));
     }
 
     // Sublabel below label
     if (it.sublabel) {
       ctx.fillStyle = rgbaCss(fg, 0.55);
-      ctx.font = `400 ${Math.round(subSize)}px Inter, system-ui, sans-serif`;
+      const subLabelFs = fitFontSize(
+        ctx,
+        String(it.sublabel),
+        labelMaxW,
+        Math.round(subSize),
+        Math.max(8, Math.round(subSize * 0.65)),
+        (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `500 ${subLabelFs}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.fillText(
-        fitText(ctx, String(it.sublabel), labelMaxW),
+        String(it.sublabel),
         labelX,
         cellY + Math.round(numSize * 0.18) + Math.round(labelSize) + 4,
       );
@@ -305,6 +317,18 @@ function fitText(ctx, text, maxW) {
   let s = text;
   while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
   return s + '…';
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation). Returns the
+// font-size that fits. Caller still must `ctx.font = ...` before drawing.
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }
 
 function roundRect(ctx, x, y, w, h, r) {
