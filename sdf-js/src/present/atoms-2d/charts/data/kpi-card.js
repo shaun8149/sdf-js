@@ -138,10 +138,10 @@ function _drawDark(ctx, args, opts = {}) {
   const valueText = String(args.value ?? '');
   let valueSize = Math.round(h * 0.34);
   const minValueSize = Math.round(h * 0.14);
-  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
     valueSize -= 2;
-    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   }
   const valueY = y + h * 0.56;
   ctx.fillText(valueText, x + 22, valueY);
@@ -161,12 +161,16 @@ function _drawDark(ctx, args, opts = {}) {
   // ---- Sublabel (Inter 500, faded, proper breathing room) ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(bg, 0.55);
-    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
-    ctx.fillText(
-      fitText(ctx, String(args.sublabel), availW),
-      x + 22,
-      valueY + Math.round(h * 0.29),
+    const subFs = fitFontSize(
+      ctx,
+      String(args.sublabel),
+      availW,
+      Math.round(h * 0.085),
+      Math.max(8, Math.round(h * 0.055)),
+      (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
+    ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
+    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
   }
 }
 
@@ -229,10 +233,10 @@ function _drawLight(ctx, args, opts = {}) {
   const valueText = String(args.value ?? '');
   let valueSize = Math.round(h * 0.34);
   const minValueSize = Math.round(h * 0.14);
-  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
     valueSize -= 2;
-    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   }
   const valueY = y + h * 0.56;
   ctx.fillText(valueText, x + 22, valueY);
@@ -252,12 +256,16 @@ function _drawLight(ctx, args, opts = {}) {
   // ---- Sublabel ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.45);
-    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
-    ctx.fillText(
-      fitText(ctx, String(args.sublabel), availW),
-      x + 22,
-      valueY + Math.round(h * 0.29),
+    const subFs = fitFontSize(
+      ctx,
+      String(args.sublabel),
+      availW,
+      Math.round(h * 0.085),
+      Math.max(8, Math.round(h * 0.055)),
+      (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
+    ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
+    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
   }
 }
 
@@ -324,10 +332,10 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   const valueText = String(args.value ?? '');
   let valueSize = Math.round(h * 0.34);
   const minValueSize = Math.round(h * 0.14);
-  ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
     valueSize -= 2;
-    ctx.font = `900 ${valueSize}px Inter, system-ui, sans-serif`;
+    ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   }
   const valueY = y + h * 0.56;
   ctx.fillText(valueText, textLeft, valueY);
@@ -347,12 +355,16 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   // ---- Sublabel ----
   if (args.sublabel) {
     ctx.fillStyle = rgbaCss(fg, 0.45);
-    ctx.font = `500 ${Math.round(h * 0.085)}px Inter, system-ui, sans-serif`;
-    ctx.fillText(
-      fitText(ctx, String(args.sublabel), availW),
-      textLeft,
-      valueY + Math.round(h * 0.29),
+    const subFs = fitFontSize(
+      ctx,
+      String(args.sublabel),
+      availW,
+      Math.round(h * 0.085),
+      Math.max(8, Math.round(h * 0.055)),
+      (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
+    ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
+    ctx.fillText(String(args.sublabel), textLeft, valueY + Math.round(h * 0.29));
   }
 }
 
@@ -364,6 +376,17 @@ function fitText(ctx, text, maxW) {
     s = s.slice(0, -1);
   }
   return s + '…';
+}
+
+// Auto-shrink font size until text fits in maxW (no truncation).
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }
 
 // ============================================================================
