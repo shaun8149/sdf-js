@@ -169,7 +169,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Heading
   const headingFs = Math.round(cardH * 0.16);
   if (args.heading) {
-    ctx.font = `700 ${headingFs}px "Inter Display", Inter, system-ui`;
+    ctx.font = `700 ${headingFs}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = Array.isArray(headingColor) ? rgbCss(headingColor) : headingColor;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
