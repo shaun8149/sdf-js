@@ -673,6 +673,215 @@ export const SCAFFOLDS = [
     ],
     theme_affinity: ['pitch-cobalt-orange', 'pitch-black-neon', 'organic-teal'],
   },
+
+  // ============================================================================
+  // sales-pitch — externally-facing deal-closing sales pitch
+  // ============================================================================
+  {
+    id: 'sales-pitch',
+    label: 'Sales Pitch',
+    description: 'Externally-facing deal-closing pitch — context, product, proof, CTA',
+    audience: 'prospect, buyer, enterprise',
+    keywords: ['sales', 'pitch', 'deal', 'close', 'playbook', 'proposal', 'commercial'],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Company name + pitch tagline + presenter',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'hook',
+        title: 'Executive Hook',
+        purpose: 'One compelling statistic or pain point that opens the conversation',
+        recommended_atoms: ['cover', 'kpi-card'],
+      },
+      {
+        name: 'market-context',
+        title: 'Market Context',
+        purpose: 'Industry backdrop — size, trends, dynamics relevant to the buyer',
+        recommended_atoms: ['kpi-card', 'line', 'column', 'bar'],
+      },
+      {
+        name: 'product',
+        title: 'Product Overview',
+        purpose: 'What we offer — features and capabilities',
+        recommended_atoms: ['icon-row', 'icon-grid', 'bullet-list'],
+      },
+      {
+        name: 'value-prop',
+        title: 'Value Proposition',
+        purpose: 'Why us — differentiated benefits for this buyer',
+        recommended_atoms: ['icon-grid', 'bullet-list', 'kpi-card'],
+      },
+      {
+        name: 'proof',
+        title: 'Proof Points',
+        purpose: 'Customer results, case study metrics, references',
+        recommended_atoms: ['kpi-card', 'line', 'bar'],
+      },
+      {
+        name: 'pricing',
+        title: 'Pricing',
+        purpose: 'Tier structure, packages, or custom pricing note',
+        recommended_atoms: ['pyramid', 'bullet-list', 'kpi-card'],
+      },
+      {
+        name: 'objections',
+        title: 'Common Objections',
+        purpose: 'Anticipated buyer objections + rebuttals',
+        recommended_atoms: ['bullet-list', 'fishbone'],
+      },
+      {
+        name: 'cta',
+        title: 'Call to Action',
+        purpose: 'Next step — trial, pilot, POC, contract signature',
+        recommended_atoms: ['cover', 'icon-row', 'bullet-list'],
+      },
+    ],
+    theme_affinity: ['consulting-charcoal', 'financial-navy-cerulean', 'pitch-cobalt-orange'],
+  },
+
+  // ============================================================================
+  // consulting-recommendation — McKinsey-style situation → recommendation arc
+  // ============================================================================
+  {
+    id: 'consulting-recommendation',
+    label: 'Consulting Recommendation',
+    description: 'Situation → findings → recommendations arc (McKinsey pyramid principle)',
+    audience: 'exec, board, client',
+    keywords: [
+      'consulting',
+      'recommendation',
+      'mckinsey',
+      'situation',
+      'findings',
+      'framework',
+      'advisory',
+    ],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Engagement title + client + date',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'situation',
+        title: 'Situation',
+        purpose: 'Current state — what is happening and why it matters',
+        recommended_atoms: ['bullet-list', 'kpi-card', 'icon-grid'],
+      },
+      {
+        name: 'problem-def',
+        title: 'Problem Definition',
+        purpose: 'Root causes and contributing factors — what is broken',
+        recommended_atoms: ['bullet-list', 'fishbone'],
+      },
+      {
+        name: 'findings',
+        title: 'Findings',
+        purpose: 'Evidence and data — what the analysis reveals',
+        recommended_atoms: ['bullet-list', 'kpi-card', 'line', 'bar'],
+      },
+      {
+        name: 'framework',
+        title: 'Framework',
+        purpose: 'Analytical framework applied to structure the solution space',
+        recommended_atoms: ['pyramid', 'layer-stack', 'matrix-grid', 'value-chain-diagram'],
+      },
+      {
+        name: 'recommendations',
+        title: 'Recommendations',
+        purpose: 'Prioritized actions — what to do and why',
+        recommended_atoms: ['bullet-list', 'icon-grid', 'kpi-card'],
+      },
+      {
+        name: 'roadmap',
+        title: 'Implementation Roadmap',
+        purpose: 'Phased delivery plan with milestones and owners',
+        recommended_atoms: ['timeline', 'progression'],
+      },
+      {
+        name: 'next-steps',
+        title: 'Next Steps',
+        purpose: 'Immediate actions — who does what and when',
+        recommended_atoms: ['timeline', 'bullet-list', 'icon-row'],
+      },
+    ],
+    theme_affinity: ['consulting-charcoal', 'editorial-navy', 'editorial-burgundy'],
+  },
+
+  // ============================================================================
+  // analysis-report — define → collect → analyze → interpret → recommend
+  // ============================================================================
+  {
+    id: 'analysis-report',
+    label: 'Analysis Report',
+    description: 'Strategic analysis deck — SWOT, market, competitor, or thematic analysis',
+    audience: 'exec, manager, analyst, stakeholder',
+    keywords: [
+      'analysis',
+      'report',
+      'swot',
+      'market',
+      'competitor',
+      'research',
+      'findings',
+      'strategic analysis',
+    ],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Report title + scope + date',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'scope',
+        title: 'Scope & Methodology',
+        purpose: 'What was analyzed and how data was collected',
+        recommended_atoms: ['bullet-list', 'icon-row'],
+      },
+      {
+        name: 'definition',
+        title: 'Context & Definition',
+        purpose: 'Define the subject — what are we analyzing and why',
+        recommended_atoms: ['value-chain-diagram', 'pyramid', 'layer-stack'],
+      },
+      {
+        name: 'data-findings',
+        title: 'Data & Findings',
+        purpose: 'Quantitative evidence — charts, metrics, raw data',
+        recommended_atoms: ['line', 'column', 'bar', 'pie', 'kpi-card', 'scatter'],
+      },
+      {
+        name: 'framework-analysis',
+        title: 'Framework Analysis',
+        purpose: 'Apply a strategic framework (SWOT, Porter, BCG, Ansoff)',
+        recommended_atoms: ['swot', 'matrix-grid', 'nine-field-matrix', 'fishbone'],
+      },
+      {
+        name: 'interpretation',
+        title: 'Interpretation',
+        purpose: 'What the data means — synthesis and insight',
+        recommended_atoms: ['bullet-list', 'quote-pull', 'kpi-card'],
+      },
+      {
+        name: 'recommendations',
+        title: 'Recommendations',
+        purpose: 'Actionable next steps based on findings',
+        recommended_atoms: ['bullet-list', 'icon-grid'],
+      },
+      {
+        name: 'appendix',
+        title: 'Appendix',
+        purpose: 'Supporting data, raw tables, methodology details',
+        recommended_atoms: ['bullet-list', 'kpi-card', 'timeline'],
+      },
+    ],
+    theme_affinity: ['editorial-navy', 'consulting-charcoal', 'financial-navy-cerulean'],
+  },
 ];
 
 /**
