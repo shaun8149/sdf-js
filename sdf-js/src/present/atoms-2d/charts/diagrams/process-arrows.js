@@ -144,12 +144,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Label text
-    const labelFontSize = Math.min(Math.round(arrowH * 0.2), Math.round(stepW * 0.16));
-    const subFontSize = Math.round(labelFontSize * 0.72);
+    // Label text — auto-shrink to fit chevron width
+    const targetFontSize = Math.min(Math.round(arrowH * 0.2), Math.round(stepW * 0.16));
+    const subFontSize = Math.round(targetFontSize * 0.72);
     const hasSub = Boolean(steps[i].sublabel);
     const centerX = shapeX + shapeW / 2;
     const centerY = arrowY + arrowH / 2;
+    const maxLabelW = shapeW - notch * 2 - 8;
+
+    // Auto-shrink: find largest font where label fits without ellipsis
+    let labelFontSize = targetFontSize;
+    ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+    while (labelFontSize > 10 && ctx.measureText(String(steps[i].label)).width > maxLabelW * 0.85) {
+      labelFontSize--;
+      ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
+    }
     const labelY = hasSub ? centerY - labelFontSize * 0.6 : centerY;
 
     ctx.save();
@@ -157,21 +166,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const maxLabelW = shapeW - notch * 2 - 8;
-    ctx.fillText(fitText(ctx, String(steps[i].label), maxLabelW), centerX, labelY);
+    ctx.fillText(String(steps[i].label), centerX, labelY);
     ctx.restore();
 
     if (hasSub) {
+      const subFont = Math.round(labelFontSize * 0.72);
       ctx.save();
       ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.font = `500 ${subFontSize}px Inter, system-ui, sans-serif`;
+      ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(
-        fitText(ctx, String(steps[i].sublabel), maxLabelW),
-        centerX,
-        centerY + labelFontSize * 0.75,
-      );
+      ctx.fillText(String(steps[i].sublabel), centerX, centerY + labelFontSize * 0.75);
       ctx.restore();
     }
   }
