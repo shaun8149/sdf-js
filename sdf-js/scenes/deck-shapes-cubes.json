@@ -1,0 +1,11 @@
+{
+  "id": "deck-shapes-cubes",
+  "name": "3D Cubes — the PresentationLoad cube family",
+  "segments": [
+    { "file": "shape-cube-cluster.json", "title": "Cube Shapes", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-cube-flow.json", "title": "Flow Process", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-cube-steps.json", "title": "Flow Steps", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-cube-semicircle.json", "title": "Semi-Circle", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-cube-segmented.json", "title": "Segmented", "kind": "slide", "durationSec": 7 }
+  ]
+}
