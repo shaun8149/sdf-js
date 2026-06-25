@@ -57,6 +57,33 @@ const SAMPLES = [
       },
     }],
   },
+  {
+    name: 'maturity',
+    subjects: [{
+      type: 'pyramid',
+      args: { title: 'Maturity Model', layers: [{ label: 'Optimize' }, { label: 'Manage' }, { label: 'Define' }, { label: 'Initial' }] },
+    }],
+  },
+  {
+    name: 'org',
+    subjects: [{
+      type: 'org-chart',
+      args: {
+        title: 'Org Structure',
+        root: { label: 'CEO', children: [
+          { label: 'CTO', children: [{ label: 'Eng' }, { label: 'Data' }] },
+          { label: 'COO', children: [{ label: 'Ops' }, { label: 'Sales' }] },
+        ] },
+      },
+    }],
+  },
+  {
+    name: 'rootcause',
+    subjects: [{
+      type: 'fishbone',
+      args: { title: 'Root Cause', effect: 'Defect', branches: [{ label: 'People' }, { label: 'Process' }, { label: 'Machine' }, { label: 'Material' }] },
+    }],
+  },
 ];
 
 for (const s of SAMPLES) {

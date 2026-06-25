@@ -51,6 +51,59 @@ function rightCards(labels, opts = {}) {
   }));
 }
 
+// ── data-shape helpers ──
+// label off any item shape (string | {label|name|title|text|...})
+const itemLabel = (x) => (x == null ? '' : typeof x === 'string' ? x : (x.label ?? x.name ?? x.title ?? x.text ?? ''));
+// coerce a count-or-array arg to an array (number N → N empty slots)
+const asArray = (v) => (Array.isArray(v) ? v : (typeof v === 'number' && v > 0 ? Array.from({ length: v }, () => ({})) : []));
+
+// derive {levels, branching} from a nested {children:[...]} tree (org/tree/mindmap/sphere-tree)
+function treeShape(root) {
+  if (!root || typeof root !== 'object') return { levels: 3, branching: 2 };
+  let levels = 0, maxBranch = 1;
+  const walk = (n, d) => {
+    levels = Math.max(levels, d);
+    const ch = Array.isArray(n.children) ? n.children : [];
+    maxBranch = Math.max(maxBranch, ch.length);
+    ch.forEach((c) => walk(c, d + 1));
+  };
+  walk(root, 1);
+  return { levels: Math.max(2, levels), branching: Math.max(2, maxBranch) };
+}
+
+// builder: "array-of-items" atoms → { [countArg]: N } + legend cards.
+// key = the 2D data arg holding the array (items/steps/layers/segments/tasks/…).
+// countArg = the 3D geometry arg holding the count (items/steps/levels/segments/…).
+function itemsTwin(to, key, countArg, opts = {}) {
+  const { geom = {}, transform = { translate: [0, 1.5, 0] }, min = 3, role = 'card' } = opts;
+  return {
+    to,
+    lift(a) {
+      const arr = asArray(a[key]);
+      const n = arr.length || (typeof a[key] === 'number' ? a[key] : 0) || min;
+      let labels = arr.map(itemLabel).filter(Boolean);
+      if (!labels.length && Array.isArray(a.labels)) labels = a.labels; // count-style atoms carry labels separately
+      const overlay = role === 'card' ? rightCards(labels) : [];
+      return { args: { [countArg]: n, ...geom }, transform, overlay };
+    },
+  };
+}
+
+// builder: "single labelled icon" atoms (arrow/diamond/gear/cube/circle-frame) →
+// geometry default + the one label as a centered caption card.
+function iconTwin(to, opts = {}) {
+  const { geom = {}, transform = { translate: [0, 1.6, 0] } } = opts;
+  return {
+    to,
+    lift(a) {
+      const g = typeof geom === 'function' ? geom(a) : geom;
+      const label = itemLabel({ label: a.label });
+      const overlay = label ? [{ text: String(label), anchor: [0, 0.4, 0], role: 'card', align: 'center' }] : [];
+      return { args: g, transform, overlay };
+    },
+  };
+}
+
 // ── TWIN_MAP: only types that need an arg transform or non-default twin name ──
 // Each entry: { to: '<3d type>', lift(args2d) → { args, transform?, overlay? } }
 export const TWIN_MAP = {
@@ -117,8 +170,6 @@ export const TWIN_MAP = {
     },
   },
 
-  funnel_legacy: undefined, // placeholder slot — keeps diffs stable if reordered
-
   gauge: {
     to: 'sphere-fill-3d',
     lift(a) {
@@ -172,9 +223,163 @@ export const TWIN_MAP = {
       };
     },
   },
-};
 
-delete TWIN_MAP.funnel_legacy;
+  // ── array-of-items family: items[] → count arg + legend cards ──
+  'agenda-list': itemsTwin('agenda-list-3d', 'items', 'items'),
+  'bullet-list': itemsTwin('bullet-list-3d', 'items', 'items'),
+  progression: itemsTwin('progression-3d', 'steps', 'steps', { transform: { translate: [-1.0, 0.6, 0] } }),
+  pyramid: itemsTwin('pyramid-3d', 'layers', 'levels', { transform: { translate: [0, 0.6, 0] } }),
+  'traffic-light': itemsTwin('traffic-light-3d', 'lights', 'lights', { transform: { translate: [0, 1.8, 0] } }),
+  'circle-stack': itemsTwin('circle-stack-3d', 'layers', 'count', { transform: { translate: [0, 1.4, 0] } }),
+  'flow-chart': itemsTwin('flow-chart-3d', 'steps', 'steps', { transform: { translate: [0, 1.6, 0] } }),
+  'sphere-segmented': itemsTwin('sphere-segmented-3d', 'segments', 'segments', { transform: { translate: [0, 1.6, 0] } }),
+  'cube-segmented': itemsTwin('cube-segmented-3d', 'segments', 'segments', { transform: { translate: [0, 1.5, 0] } }),
+  gantt: itemsTwin('gantt-3d', 'tasks', 'tasks', { transform: { translate: [0, 1.6, 0] } }),
+  fishbone: itemsTwin('fishbone-3d', 'branches', 'ribs', { transform: { translate: [0, 1.6, 0] } }),
+  'circle-loop': itemsTwin('circle-loop-3d', 'segments', 'segments', { transform: { translate: [0, 1.6, 0], rotate: [1.5708, 0, 0] } }),
+
+  venn: {
+    to: 'venn-3d',
+    lift(a) {
+      const n = Array.isArray(a.sets) ? a.sets.length : (a.sets || 3);
+      return {
+        args: { sets: n, radius: 0.95, tube: 0.1, overlap: a.overlap ?? 0.5 },
+        transform: { translate: [0, 1.7, 0] },
+        overlay: rightCards(Array.isArray(a.sets) ? a.sets.map(itemLabel) : []),
+      };
+    },
+  },
+
+  // ── values family: raw values[] → count + value readouts ──
+  'radial-spoke': {
+    to: 'radial-spoke-3d',
+    lift(a) {
+      const v = a.values || [];
+      return {
+        args: { spokes: v.length || 6 },
+        transform: { translate: [0, 1.7, 0] },
+        overlay: rightCards((a.labels || []).map((l, i) => (v[i] != null ? `${l} ${fmt(v[i], a.format)}` : l))),
+      };
+    },
+  },
+  waterfall: {
+    to: 'waterfall-3d',
+    lift(a) {
+      const bars = Array.isArray(a.bars) ? a.bars : [];
+      return { args: { count: bars.length || 5 }, transform: { translate: [0, 0.3, 0] } };
+    },
+  },
+  scatter: {
+    to: 'scatter-3d',
+    lift(a) {
+      const pts = Array.isArray(a.points) ? a.points : [];
+      return { args: { count: pts.length || 24 }, transform: { translate: [0, 1.6, 0] } };
+    },
+  },
+
+  // ── tree family: {root:{children}} → levels + branching ──
+  mindmap: {
+    to: 'mindmap-3d',
+    lift(a) {
+      const ch = a.root && Array.isArray(a.root.children) ? a.root.children : [];
+      return {
+        args: { branches: ch.length || 5, leavesPerBranch: 2 },
+        transform: { translate: [0, 1.7, 0] },
+        overlay: rightCards(ch.map(itemLabel)),
+      };
+    },
+  },
+  'org-chart': {
+    to: 'org-chart-3d',
+    lift(a) {
+      const t = treeShape(a.root);
+      return { args: { levels: t.levels, branching: t.branching, nodeW: 0.62, nodeH: 0.36, levelHeight: 1.15, spread: 4.0 }, transform: { translate: [0, 3.0, 0] } };
+    },
+  },
+  'tree-diagram': {
+    to: 'tree-diagram-3d',
+    lift(a) {
+      const t = treeShape(a.root);
+      return { args: { levels: t.levels, branching: t.branching }, transform: { translate: [0, 2.8, 0] } };
+    },
+  },
+  'sphere-tree': {
+    to: 'sphere-tree-3d',
+    lift(a) {
+      const t = treeShape(a.root);
+      return { args: { levels: t.levels, branching: t.branching }, transform: { translate: [0, 2.6, 0] } };
+    },
+  },
+  'sphere-network': {
+    to: 'sphere-network-3d',
+    lift(a) {
+      const sats = Array.isArray(a.satellites) ? a.satellites : [];
+      return {
+        args: { count: sats.length || 6, arrangement: 'sphere' },
+        transform: { translate: [0, 1.8, 0] },
+        overlay: rightCards(sats.map(itemLabel)),
+      };
+    },
+  },
+  'relationship-graph': {
+    to: 'relationship-graph-3d',
+    lift(a) {
+      const nodes = Array.isArray(a.nodes) ? a.nodes : [];
+      // 3D edges arg wants an array of [from,to] index pairs, or null (auto). Pass
+      // through only when 2D already supplies pairs; otherwise let the atom auto-wire.
+      const pairs = Array.isArray(a.edges) && a.edges.every((e) => Array.isArray(e)) ? a.edges : null;
+      return { args: { count: nodes.length || 5, edges: pairs }, transform: { translate: [0, 1.7, 0] } };
+    },
+  },
+
+  // ── grid family ──
+  'matrix-grid': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      return { args: { rows: a.rows ?? 3, cols: a.cols ?? 3 }, transform: { translate: [0, 1.8, 0] } };
+    },
+  },
+  'cube-grid': {
+    to: 'cube-3d',
+    lift(a) {
+      const size = a.size ?? 3;
+      return {
+        args: { arrangement: 'grid', count: size * size, cubeSize: 0.5, spacing: a.spacing ?? 0.2, material: 'solid', colors: a.colors || null },
+        transform: { translate: [0, 1.6, 0] },
+      };
+    },
+  },
+
+  // ── single labelled icon family: geometry default + one centered caption ──
+  arrow: iconTwin('arrow-3d'),
+  diamond: iconTwin('diamond-3d'),
+  cube: iconTwin('cube-3d', { geom: { count: 1, arrangement: 'row', cubeSize: 1.0 } }),
+  gear: iconTwin('gear-3d', { geom: (a) => ({ teeth: a.teeth ?? 12 }), transform: { translate: [0, 1.6, 0], rotate: [1.5708, 0, 0] } }),
+  'circle-frame': iconTwin('circle-frame-3d', { transform: { translate: [0, 1.6, 0] } }),
+
+  // ── single value+label (KPI-ish) ──
+  'kpi-card': {
+    to: 'kpi-card-3d',
+    lift(a) {
+      return {
+        args: { value: a.value, label: a.label, trend: a.trend, trendValue: a.trendValue },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: a.value != null ? [{ text: fmt(a.value, a.format), anchor: [0, 1.9, 0.6], role: 'value', radius: 0.5 }] : [],
+      };
+    },
+  },
+  'sphere-fill': {
+    to: 'sphere-fill-3d',
+    lift(a) {
+      const frac = Math.max(0, Math.min(1, Number(a.value) > 1 ? Number(a.value) / 100 : (Number(a.value) || 0)));
+      return {
+        args: { levels: [frac], radius: 1.1 },
+        transform: { translate: [0, 1.4, 0] },
+        overlay: [{ text: fmt(a.value, a.format ?? 'percent'), anchor: [0, 1.4, 1.2], role: 'value', radius: 0.6 }],
+      };
+    },
+  },
+};
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
 export function twinTypeOf(type2d) {
