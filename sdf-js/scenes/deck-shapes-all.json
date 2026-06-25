@@ -1,0 +1,25 @@
+{
+  "id": "deck-shapes-all",
+  "name": "Atlas 3D Shapes — the full PresentationLoad Shapes set (17)",
+  "segments": [
+    { "file": "shape-sphere-plain.json", "title": "Spheres", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-sphere-chrome.json", "title": "Chrome Spheres", "kind": "slide", "durationSec": 6 },
+    { "file": "sphere-fill-cover.json", "title": "Spheres — Fill Levels", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-sphere-divisions.json", "title": "Spheres — Divisions", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-sphere-network.json", "title": "Spheres — Network", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-sphere-tree.json", "title": "Spheres — Tree", "kind": "slide", "durationSec": 6 },
+
+    { "file": "shape-cube-cluster.json", "title": "Cube Shapes", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-cube-flow.json", "title": "Cubes — Flow Process", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-cube-steps.json", "title": "Cubes — Flow Steps", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-cube-semicircle.json", "title": "Cubes — Semi-Circle", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-cube-segmented.json", "title": "Cubes — Segmented", "kind": "slide", "durationSec": 6 },
+
+    { "file": "shape-circle-segmented.json", "title": "Circles — Segmented", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-circle-shapes.json", "title": "Circle Shapes", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-arrow.json", "title": "Arrows — Toolbox", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-gear.json", "title": "Gearwheels", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-puzzle.json", "title": "Puzzle", "kind": "slide", "durationSec": 6 },
+    { "file": "shape-puzzle-toolbox.json", "title": "Puzzle — Toolbox", "kind": "slide", "durationSec": 6 }
+  ]
+}
