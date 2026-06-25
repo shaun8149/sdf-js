@@ -167,6 +167,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint19-atoms.mjs' },
   // Sprint 19 Batch 2 — new atoms (radial-wheel-segmented / section-number-divider / stat-banner / comparison-table)
   { category: 'present', file: 'sdf-js/scripts/test-sprint19-batch2-atoms.mjs' },
+  // Sprint 20 Batch 1 — new atoms (process-arrows / stat-grid-large / number-list / call-to-action)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch1-atoms.mjs' },
 ];
 
 // -----------------------------------------------------------------------------

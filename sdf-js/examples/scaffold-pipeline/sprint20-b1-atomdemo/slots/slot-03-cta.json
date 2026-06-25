@@ -1,0 +1,24 @@
+{
+  "slotIdx": 3,
+  "slotName": "cta",
+  "slotTitle": "call-to-action",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "call-to-action",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "heading": "Let's build something great.",
+          "subheading": "Reach out — we'd love to connect.",
+          "buttonText": "Schedule a Call",
+          "buttonStyle": "solid",
+          "contact": "hello@atlas.ai  ·  atlas.ai/demo",
+          "bg": "accent"
+        }
+      }
+    ]
+  }
+}

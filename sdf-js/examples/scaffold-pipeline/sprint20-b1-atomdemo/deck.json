@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint20-b1-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Atom Demo",
+    "description": "Direct render of 4 Sprint 20 Batch 1 atoms",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "consulting-charcoal",
+    "label": "Consulting Charcoal",
+    "macroCluster": "consulting",
+    "bg": [26, 26, 36],
+    "accent": [220, 175, 80],
+    "colors": [
+      [220, 175, 80],
+      [180, 140, 60],
+      [140, 100, 40],
+      [100, 65, 25],
+      [70, 45, 15]
+    ],
+    "silhouetteColor": [240, 235, 225]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "process",
+      "slotTitle": "process-arrows",
+      "slotPurpose": "sequential process chevron row demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["process-arrows"],
+      "liftFile": "slots/slot-00-process.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "metrics",
+      "slotTitle": "stat-grid-large",
+      "slotPurpose": "hero giant metric strip demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["stat-grid-large"],
+      "liftFile": "slots/slot-01-metrics.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "priorities",
+      "slotTitle": "number-list",
+      "slotPurpose": "large numbered list demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["number-list"],
+      "liftFile": "slots/slot-02-priorities.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "cta",
+      "slotTitle": "call-to-action",
+      "slotPurpose": "final CTA slide demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["call-to-action"],
+      "liftFile": "slots/slot-03-cta.json"
+    }
+  ]
+}
