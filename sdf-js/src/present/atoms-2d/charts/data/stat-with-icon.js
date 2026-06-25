@@ -140,7 +140,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   curY += valueFontSize + h * 0.03;
 
   // Label
-  ctx.font = `700 ${Math.round(labelFs)}px "Inter Display", Inter, system-ui`;
+  ctx.font = `700 ${Math.round(labelFs)}px Inter, system-ui, sans-serif`;
   ctx.fillStyle = rgbCss(fg);
   ctx.fillText(args.label ?? '', cx, curY);
   curY += labelFs + h * 0.015;
