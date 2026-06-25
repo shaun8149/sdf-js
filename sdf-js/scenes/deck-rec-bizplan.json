@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-bizplan",
+  "name": "Business Plan",
+  "segments": [
+    {
+      "file": "rec-bizplan-1.json",
+      "title": "Strategy Pyramid",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizplan-2.json",
+      "title": "Milestones",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizplan-3.json",
+      "title": "Revenue Plan",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizplan-4.json",
+      "title": "Market Mix",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-bizplan-5.json",
+      "title": "Sales Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

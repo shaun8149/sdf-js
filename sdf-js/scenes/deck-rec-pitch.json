@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-pitch",
+  "name": "Startup Pitch Deck",
+  "segments": [
+    {
+      "file": "rec-pitch-1.json",
+      "title": "Ecosystem",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pitch-2.json",
+      "title": "Problem → Solution",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pitch-3.json",
+      "title": "Market Size",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pitch-4.json",
+      "title": "Traction",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pitch-5.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
