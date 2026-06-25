@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-consulting",
+  "name": "Consulting Toolbox",
+  "segments": [
+    {
+      "file": "rec-consulting-1.json",
+      "title": "Toolbox",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-consulting-2.json",
+      "title": "2x2 Matrix",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-consulting-3.json",
+      "title": "Value Chain",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-consulting-4.json",
+      "title": "Pyramid Principle",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-consulting-5.json",
+      "title": "Engagement Plan",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
