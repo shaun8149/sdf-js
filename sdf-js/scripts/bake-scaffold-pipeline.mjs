@@ -481,7 +481,11 @@ for (const a of slotAssignments) {
     `    - Goal-progression with named milestones / "climb to X" / "path to Y" narrative → \`mountain-path\` (NOT \`progression\`)\n` +
     `    - Kaplan/Norton balanced scorecard / 4-perspective strategy / Financial-Customer-Process-Learning grouping → \`strategy-map\` (NOT \`matrix-grid\`)\n` +
     `    - Multi-axis capability/competency assessment ("AI maturity radar", "skill profile") with 3-9 axes → \`radar-chart\` (NOT \`radial-spoke\`)\n` +
-    `    - OKR slide (1 Objective + N Key Results with progress %) → \`okr-tree\` (NOT generic \`tree-diagram\`)\n`;
+    `    - OKR slide (1 Objective + N Key Results with progress %) → \`okr-tree\` (NOT generic \`tree-diagram\`)\n` +
+    `    - Decision/coaching framework (Yes/No/Maybe, GROW, fork-in-the-road) with 3-5 options → \`decision-tree-3-arm\` (NOT generic \`tree-diagram\`)\n` +
+    `    - Capability maturity ladder (CMMI, AI maturity, digital maturity) with 3-7 stages → \`maturity-model\` (NOT generic \`pyramid\`)\n` +
+    `    - Cost-benefit / impact-effort / value-complexity 2x2 plot → \`cost-benefit-matrix\` (NOT generic \`swot\` or \`matrix-grid\`)\n` +
+    `    - Customer journey / experience map with emotion curve → \`journey-flow-curve\` (NOT generic \`timeline\`)\n`;
 
   if (DRY_RUN) {
     slotLifts.push({
