@@ -1,0 +1,25 @@
+{
+  "slotIdx": 3,
+  "slotName": "okr",
+  "slotTitle": "okr-tree",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "okr-tree",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "objective": "Become the market leader in self-custodial trading",
+          "quarter": "Q3 2026",
+          "keyResults": [
+            { "label": "Cross $50M ARR", "progress": 0.48, "sublabel": "$24M / $50M" },
+            { "label": "NPS > 70", "progress": 0.86, "sublabel": "Current: 68" },
+            { "label": "24/7 Support SLA", "progress": 0.65, "sublabel": "4h avg vs 2h target" }
+          ]
+        }
+      }
+    ]
+  }
+}

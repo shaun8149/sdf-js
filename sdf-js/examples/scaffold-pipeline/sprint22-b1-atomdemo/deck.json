@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint22-b1-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Atom Demo",
+    "description": "Direct render of 4 Sprint 22 Batch 1 PL-recommendation atoms",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy Cerulean",
+    "macroCluster": "consulting",
+    "bg": [18, 24, 42],
+    "accent": [52, 152, 219],
+    "colors": [
+      [52, 152, 219],
+      [46, 204, 113],
+      [231, 76, 60],
+      [241, 196, 15],
+      [155, 89, 182]
+    ],
+    "silhouetteColor": [230, 235, 245]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "mountain",
+      "slotTitle": "mountain-path",
+      "slotPurpose": "goal climb milestone visualization demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["mountain-path"],
+      "liftFile": "slots/slot-00-mountain-path.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "strategy",
+      "slotTitle": "strategy-map",
+      "slotPurpose": "Kaplan-Norton 4-perspective scorecard demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["strategy-map"],
+      "liftFile": "slots/slot-01-strategy-map.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "radar",
+      "slotTitle": "radar-chart",
+      "slotPurpose": "multi-axis competency spider chart demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["radar-chart"],
+      "liftFile": "slots/slot-02-radar-chart.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "okr",
+      "slotTitle": "okr-tree",
+      "slotPurpose": "OKR objective + key results with progress bars demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["okr-tree"],
+      "liftFile": "slots/slot-03-okr-tree.json"
+    }
+  ]
+}

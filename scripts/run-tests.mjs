@@ -174,6 +174,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch2-atoms.mjs' },
   // Sprint 20 Batch 3 — new atoms (feature-card-grid / stat-with-icon / callout-banner / numbered-grid)
   { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch3-atoms.mjs' },
+  // Sprint 22 Batch 1 — new atoms (mountain-path / strategy-map / radar-chart / okr-tree)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch1-atoms.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
