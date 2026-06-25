@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-timelines",
+  "name": "Project Timelines 2026",
+  "segments": [
+    {
+      "file": "rec-timelines-1.json",
+      "title": "2026 Timeline",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-timelines-2.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-timelines-3.json",
+      "title": "Gantt",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-timelines-4.json",
+      "title": "Milestones",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-timelines-5.json",
+      "title": "Phases",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-flowchart",
+  "name": "Flow Chart Toolbox",
+  "segments": [
+    {
+      "file": "rec-flowchart-1.json",
+      "title": "Process Flow",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-flowchart-2.json",
+      "title": "Workflow",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-flowchart-3.json",
+      "title": "Decision Tree",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-flowchart-4.json",
+      "title": "Stages",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-flowchart-5.json",
+      "title": "Cycle",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
