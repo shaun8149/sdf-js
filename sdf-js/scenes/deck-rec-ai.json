@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-ai",
+  "name": "Artificial Intelligence",
+  "segments": [
+    {
+      "file": "rec-ai-1.json",
+      "title": "AI Landscape",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-ai-2.json",
+      "title": "ML Pipeline",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-ai-3.json",
+      "title": "Model Types",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-ai-4.json",
+      "title": "AI Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-ai-5.json",
+      "title": "Value Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-digital",
+  "name": "Digital Transformation",
+  "segments": [
+    {
+      "file": "rec-digital-1.json",
+      "title": "Transformation Stack",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-digital-2.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-digital-3.json",
+      "title": "Maturity Model",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-digital-4.json",
+      "title": "Pillars",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-digital-5.json",
+      "title": "Value Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
