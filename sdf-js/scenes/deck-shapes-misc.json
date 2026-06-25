@@ -1,0 +1,12 @@
+{
+  "id": "deck-shapes-misc",
+  "name": "3D Shapes — circles, puzzle, arrows, gears",
+  "segments": [
+    { "file": "shape-circle-segmented.json", "title": "Circles — Segmented", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-circle-shapes.json", "title": "Circle Shapes", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-arrow.json", "title": "Arrows — Toolbox", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-gear.json", "title": "Gearwheels", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-puzzle.json", "title": "Puzzle", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-puzzle-toolbox.json", "title": "Puzzle — Toolbox", "kind": "slide", "durationSec": 7 }
+  ]
+}
