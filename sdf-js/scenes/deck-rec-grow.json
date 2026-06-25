@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-grow",
+  "name": "GROW Coaching Model",
+  "segments": [
+    {
+      "file": "rec-grow-1.json",
+      "title": "GROW",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-grow-2.json",
+      "title": "Sequence",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-grow-3.json",
+      "title": "Coaching Cycle",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-grow-4.json",
+      "title": "Key Questions",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-grow-5.json",
+      "title": "Journey",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

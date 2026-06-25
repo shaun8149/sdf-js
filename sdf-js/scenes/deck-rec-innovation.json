@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-innovation",
+  "name": "Innovation Management Toolbox",
+  "segments": [
+    {
+      "file": "rec-innovation-1.json",
+      "title": "Toolbox",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-innovation-2.json",
+      "title": "Innovation Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-innovation-3.json",
+      "title": "Stage-Gate",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-innovation-4.json",
+      "title": "Portfolio",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-innovation-5.json",
+      "title": "Roadmap",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
