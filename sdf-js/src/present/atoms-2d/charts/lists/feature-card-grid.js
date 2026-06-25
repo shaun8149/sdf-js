@@ -1,0 +1,197 @@
+// =============================================================================
+// atoms-2d/charts/lists/feature-card-grid.js — Feature card grid
+// -----------------------------------------------------------------------------
+// Grid of feature cards. Each card = icon (top) + bold title (middle) + body (bottom).
+// Different from icon-grid (icon+label only, no body paragraph).
+//
+// Args:
+//   title?     — optional heading
+//   features   — array of { icon, title, body } (3-9) REQUIRED
+//   cols?      — number (auto: 3 for ≤6, else 4)
+//   bg?        — 'cards'|'plain' (default 'cards')
+// =============================================================================
+
+import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
+
+export const spec = {
+  type: 'feature-card-grid',
+  category: 'charts/lists',
+  description: 'Grid of feature cards — icon + bold title + body paragraph per card.',
+  args: {
+    title: { type: 'string?', example: 'Platform Features' },
+    features: {
+      type: 'array of { icon, title, body } (3-9)',
+      required: true,
+      example: [
+        {
+          icon: 'shield',
+          title: 'Security',
+          body: 'End-to-end encryption with zero-knowledge architecture',
+        },
+        { icon: 'lightning', title: 'Performance', body: 'Sub-100ms response times globally' },
+        { icon: 'globe', title: 'Global Reach', body: '150+ countries, 50+ languages supported' },
+      ],
+    },
+    cols: { type: 'number?', default: 'auto (3 for ≤6, else 4)', example: 3 },
+    bg: { type: "'cards'|'plain'?", default: "'cards'", example: 'cards' },
+  },
+};
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+function lighten([r, g, b], amount = 0.85) {
+  return [
+    Math.round(r + (255 - r) * amount),
+    Math.round(g + (255 - g) * amount),
+    Math.round(b + (255 - b) * amount),
+  ];
+}
+
+function wrapText(ctx, text, maxW, maxLines = 3) {
+  const words = String(text).split(' ');
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxW && line) {
+      lines.push(line);
+      line = word;
+      if (lines.length >= maxLines) break;
+    } else {
+      line = test;
+    }
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+  return lines;
+}
+
+function drawIconCentered(ctx, iconName, cx, cy, size, color) {
+  const resolved = resolveIcon(iconName);
+  if (!resolved || !resolved.path) return;
+  const viewBox = resolved.source === 'brand' ? 24 : 256;
+  const scale = size / viewBox;
+  try {
+    ctx.save();
+    ctx.fillStyle = rgbCss(color);
+    ctx.translate(cx - size / 2, cy - size / 2);
+    ctx.scale(scale, scale);
+    ctx.fill(resolved.path);
+    ctx.restore();
+  } catch (_) {
+    ctx.restore();
+    /* Path2D unavailable (Node) */
+  }
+}
+
+// ── render ────────────────────────────────────────────────────────────────────
+
+export function drawPseudo3D(ctx, args, opts = {}) {
+  const x = opts.x ?? 0;
+  const y = opts.y ?? 0;
+  const w = opts.w ?? 720;
+  const h = opts.h ?? 480;
+  const palette = opts.palette || {};
+  const features = Array.isArray(args.features) ? args.features : [];
+  const bg = args.bg ?? 'cards';
+  const accent = palette.accent ?? [30, 80, 180];
+  const fg = palette.silhouetteColor ?? [20, 28, 50];
+  const bgColor = palette.bg ?? [248, 246, 240];
+
+  // Background
+  ctx.fillStyle = rgbCss(bgColor);
+  ctx.fillRect(x, y, w, h);
+
+  const PAD = 24;
+  let plotTop = y + PAD;
+
+  // Title
+  if (args.title) {
+    const titleFs = Math.round(h * 0.07);
+    ctx.font = `700 ${titleFs}px "Inter Display", Inter, system-ui`;
+    ctx.fillStyle = rgbCss(fg);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(args.title, x + w / 2, plotTop);
+    plotTop += titleFs + PAD;
+  }
+
+  if (!features.length) return;
+
+  const cols = args.cols ?? (features.length <= 6 ? 3 : 4);
+  const rows = Math.ceil(features.length / cols);
+  const colW = (w - PAD * 2) / cols;
+  const availH = h - (plotTop - y) - PAD;
+  const rowH = availH / rows;
+
+  for (let i = 0; i < features.length; i++) {
+    const f = features[i];
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cellX = x + PAD + col * colW;
+    const cellY = plotTop + row * rowH;
+    const cardPad = 16;
+    const cardMargin = 8;
+    const cardX = cellX + cardMargin;
+    const cardY = cellY + cardMargin;
+    const cardW = colW - cardMargin * 2;
+    const cardH = rowH - cardMargin * 2;
+    const r = 8;
+
+    // Card background
+    if (bg !== 'plain') {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.10)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 3;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(cardX, cardY, cardW, cardH, r);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Icon
+    const iconR = Math.min(rowH * 0.15, colW * 0.12, 40);
+    const iconCX = cellX + colW / 2;
+    const iconCY = cardY + cardPad + iconR;
+
+    if (f.icon) {
+      // Accent circle badge
+      const badgeR = iconR + 6;
+      const badgeBg = lighten(accent, 0.88);
+      ctx.fillStyle = rgbCss(badgeBg);
+      ctx.beginPath();
+      ctx.arc(iconCX, iconCY, badgeR, 0, Math.PI * 2);
+      ctx.fill();
+      drawIconCentered(ctx, f.icon, iconCX, iconCY, iconR * 1.4, accent);
+    }
+
+    let curY = iconCY + iconR + 8;
+
+    // Title
+    const titleFs = Math.round(rowH * 0.13);
+    ctx.font = `700 ${titleFs}px "Inter Display", Inter, system-ui`;
+    ctx.fillStyle = rgbCss(fg);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    if (f.title) {
+      ctx.fillText(f.title, iconCX, curY);
+      curY += titleFs + 6;
+    }
+
+    // Body
+    const bodyFs = Math.round(rowH * 0.09);
+    ctx.font = `500 ${bodyFs}px Inter, system-ui`;
+    ctx.fillStyle = rgbaCss(fg, 0.55);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    if (f.body) {
+      const lines = wrapText(ctx, f.body, cardW - cardPad * 2, 3);
+      for (const line of lines) {
+        ctx.fillText(line, iconCX, curY);
+        curY += bodyFs + 2;
+      }
+    }
+  }
+}
