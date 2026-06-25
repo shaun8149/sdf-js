@@ -1,0 +1,133 @@
+{
+  "slotIdx": 1,
+  "slotName": "case-for-change",
+  "slotTitle": "Case for Change",
+  "slotPurpose": "Why change is necessary — data, context, burning platform",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Why Change Now: The Case for Transformation",
+  "sceneData": {
+    "name": "change-roadmap/case-for-change",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Case for Change",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 100,
+        "args": {
+          "value": "3% vs 12%",
+          "label": "Revenue Growth: Company vs Industry",
+          "trend": "67 → 44",
+          "trendDirection": "down",
+          "bg": [156, 142, 110]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 280,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "$4.2M",
+          "label": "Annual Inefficiency",
+          "sublabel": "Legacy systems cost",
+          "icon": "warning",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 280,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "44",
+          "label": "Customer NPS",
+          "sublabel": "Dropped from 67",
+          "trend": "down",
+          "trendValue": "-23 pts",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 280,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "End 2026",
+          "label": "Board Mandate",
+          "sublabel": "Digital acceleration deadline",
+          "icon": "flag-checkered",
+          "style": "light"
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 490,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "effect": "Transformation Imperative",
+          "branches": [
+            {
+              "label": "Market",
+              "causes": ["Competitor pressure", "Revenue stagnation"]
+            },
+            {
+              "label": "Operations",
+              "causes": ["Legacy inefficiency", "System debt"]
+            },
+            {
+              "label": "External",
+              "causes": ["Regulatory changes", "Board mandate"]
+            },
+            {
+              "label": "People",
+              "causes": ["Talent attrition", "NPS decline"]
+            }
+          ],
+          "title": "Key Change Drivers"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["stat-banner", "bullet-list", "kpi-card", "fishbone"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3358,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 778,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025044,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-06-25T05:00:30.740Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

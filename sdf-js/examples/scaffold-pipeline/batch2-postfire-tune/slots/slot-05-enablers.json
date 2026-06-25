@@ -1,0 +1,92 @@
+{
+  "slotIdx": 5,
+  "slotName": "enablers",
+  "slotTitle": "Enablers",
+  "slotPurpose": "People, process, and technology levers that enable change",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Five Core Strategic Pillars",
+  "sceneData": {
+    "name": "change-roadmap/enablers",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Enablers",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "radial-wheel-segmented",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "title": "Five Core Strategic Pillars",
+          "hub": "Transformation",
+          "segments": [
+            {
+              "label": "Digitise Core",
+              "description": "Automate top 20 workflows"
+            },
+            {
+              "label": "Data First",
+              "description": "Unified platform"
+            },
+            {
+              "label": "Customer 360",
+              "description": "Real-time personalisation"
+            },
+            {
+              "label": "Talent Uplift",
+              "description": "800 employees upskilled"
+            },
+            {
+              "label": "Ecosystem Play",
+              "description": "12 fintech partnerships"
+            }
+          ],
+          "segmentColors": [
+            [156, 142, 110],
+            [100, 95, 82],
+            [200, 193, 174],
+            [156, 142, 110],
+            [100, 95, 82]
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "value-chain-diagram",
+      "radial-wheel-segmented",
+      "icon-grid",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3405,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 419,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.019799999999999998,
+    "elapsedSec": 6,
+    "generatedAt": "2026-06-25T05:00:56.742Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
