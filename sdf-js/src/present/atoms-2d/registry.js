@@ -150,6 +150,9 @@ const ATOM_LOADERS = {
   'number-list': () => import('./charts/lists/number-list.js'),
   'call-to-action': () => import('./charts/typography/call-to-action.js'),
 
+  // Sprint 20 Batch 2 — diagrams / data / typography
+  'vertical-timeline': () => import('./charts/diagrams/vertical-timeline.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
