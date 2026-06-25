@@ -1,0 +1,24 @@
+{
+  "slotIdx": 1,
+  "slotName": "stat",
+  "slotTitle": "stat-with-icon",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "stat-with-icon",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "value": "$3.4M",
+          "label": "Annual Recurring Revenue",
+          "sublabel": "+22% vs last year",
+          "icon": "chart-bar",
+          "trend": "+22%",
+          "trendDirection": "up"
+        }
+      }
+    ]
+  }
+}

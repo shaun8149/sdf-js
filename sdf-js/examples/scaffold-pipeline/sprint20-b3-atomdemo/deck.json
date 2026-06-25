@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint20-b3-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Atom Demo",
+    "description": "Direct render of 4 Sprint 20 Batch 3 atoms",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy Cerulean",
+    "macroCluster": "financial",
+    "bg": [240, 244, 252],
+    "accent": [30, 80, 180],
+    "colors": [
+      [30, 80, 180],
+      [60, 140, 220],
+      [20, 160, 130],
+      [200, 100, 40],
+      [160, 60, 160]
+    ],
+    "silhouetteColor": [20, 28, 50]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "features",
+      "slotTitle": "feature-card-grid",
+      "slotPurpose": "icon + title + body feature cards in a grid demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["feature-card-grid"],
+      "liftFile": "slots/slot-00-feature-card-grid.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "stat",
+      "slotTitle": "stat-with-icon",
+      "slotPurpose": "vertical hero metric with large icon demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["stat-with-icon"],
+      "liftFile": "slots/slot-01-stat-with-icon.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "callout",
+      "slotTitle": "callout-banner",
+      "slotPurpose": "floating callout card with colored left border demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["callout-banner"],
+      "liftFile": "slots/slot-02-callout-banner.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "numbered",
+      "slotTitle": "numbered-grid",
+      "slotPurpose": "NxM grid of numbered cards demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["numbered-grid"],
+      "liftFile": "slots/slot-03-numbered-grid.json"
+    }
+  ]
+}

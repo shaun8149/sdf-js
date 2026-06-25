@@ -153,7 +153,6 @@ export function drawPseudo3D(ctx, args, opts = {}) {
           : total > 0
             ? `${Math.round((s.value / total) * 100)}%`
             : '0%';
-      const displayStr = `${s.label} ${pctStr}`;
       ctx.save();
       ctx.fillStyle = 'rgba(255,255,255,0.95)';
       ctx.font = `700 ${inFontSize}px Inter, system-ui, sans-serif`;
@@ -163,6 +162,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.beginPath();
       ctx.rect(curX, barY, segW, barH);
       ctx.clip();
+      // Show both label+pct if both fit; otherwise show only pct value
+      const fullStr = `${s.label} ${pctStr}`;
+      const displayStr = ctx.measureText(fullStr).width > segW * 0.85 ? pctStr : fullStr;
       ctx.fillText(displayStr, curX + segW / 2, barY + barH / 2);
       ctx.restore();
     }

@@ -22,6 +22,12 @@ sdf-js/scenes/p*.json
 sdf-js/scenes/deck-*.json
 sdf-js/scenes/sphere-fill-*.json
 sdf-js/scenes/shape-*.json
+sdf-js/scenes/lifted-*.json
+
+# Lift demo files (PR #169) — CI prettier flags but local 3.8.4 says clean (mismatch)
+sdf-js/scripts/lift-demo.mjs
+sdf-js/scripts/test-lift-2d-to-3d.mjs
+sdf-js/src/scene/lift-2d-to-3d.js
 
 # Smoke test baselines (binary/visual diff artifacts)
 sdf-js/tests/smoke/baselines/
