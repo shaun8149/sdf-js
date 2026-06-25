@@ -1,0 +1,27 @@
+{
+  "slotIdx": 3,
+  "slotName": "cycle",
+  "slotTitle": "circle-process-cycle",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "circle-process-cycle",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Our Agile Delivery Cycle",
+          "steps": [
+            { "label": "Plan", "sublabel": "Sprint planning" },
+            { "label": "Build", "sublabel": "2-week sprints" },
+            { "label": "Test", "sublabel": "QA & review" },
+            { "label": "Ship", "sublabel": "Deploy to prod" },
+            { "label": "Learn", "sublabel": "Retro & metrics" }
+          ],
+          "centerLabel": "CONTINUOUS DELIVERY"
+        }
+      }
+    ]
+  }
+}

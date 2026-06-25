@@ -1,0 +1,22 @@
+{
+  "slotIdx": 2,
+  "slotName": "banner",
+  "slotTitle": "pull-quote-banner",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "pull-quote-banner",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "quote": "We don't just build software — we build the infrastructure for how the next generation of companies will think.",
+          "author": "Sarah Chen",
+          "attribution": "CEO, Meridian Analytics",
+          "bg": "accent"
+        }
+      }
+    ]
+  }
+}
