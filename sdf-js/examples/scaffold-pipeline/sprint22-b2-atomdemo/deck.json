@@ -1,0 +1,22 @@
+{
+  "name": "Sprint 22 B2 — PL-Rec Atoms Demo",
+  "theme": "financial-navy-cerulean",
+  "slots": [
+    {
+      "name": "Decision Framework",
+      "file": "slots/slot-00-decision-tree-3-arm.json"
+    },
+    {
+      "name": "Maturity Model",
+      "file": "slots/slot-01-maturity-model.json"
+    },
+    {
+      "name": "Cost-Benefit Matrix",
+      "file": "slots/slot-02-cost-benefit-matrix.json"
+    },
+    {
+      "name": "Customer Journey",
+      "file": "slots/slot-03-journey-flow-curve.json"
+    }
+  ]
+}

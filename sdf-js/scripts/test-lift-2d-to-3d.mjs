@@ -243,5 +243,111 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(cards[0].text.includes('$24M / $50M'), 'okr-tree: first card includes sublabel');
 }
 
+// ── Sprint 22 B2: decision-tree-3-arm → tree-diagram-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'decision-tree-3-arm',
+        args: {
+          title: 'Which Growth Strategy?',
+          question: 'What is the best path forward?',
+          arms: [
+            { label: 'Expand Market', sublabel: 'New geographies' },
+            { label: 'Deepen Product', sublabel: 'More features' },
+            { label: 'Grow Team', sublabel: 'Scale headcount' },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'tree-diagram-3d', 'decision-tree-3-arm → tree-diagram-3d');
+  ok(out.subjects[0].args.levels === 2, 'decision-tree-3-arm: levels = 2');
+  ok(out.subjects[0].args.branching === 3, 'decision-tree-3-arm: branching = arms.length (3)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length >= 3, 'decision-tree-3-arm: at least 3 cards in overlay');
+  ok(cards.some((c) => c.text.includes('Expand Market')), 'decision-tree-3-arm: arm label in overlay');
+}
+
+// ── Sprint 22 B2: maturity-model → pyramid-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'maturity-model',
+        args: {
+          title: 'AI Maturity',
+          stages: [
+            { label: 'Initial', description: 'Ad hoc' },
+            { label: 'Managed', description: 'Tracked' },
+            { label: 'Defined', description: 'Standardized' },
+            { label: 'Quantitative', description: 'Data-driven' },
+            { label: 'Optimizing', description: 'Continuous' },
+          ],
+          currentLevel: 3,
+          label: 'Current: Level 3',
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'pyramid-3d', 'maturity-model → pyramid-3d');
+  ok(out.subjects[0].args.levels === 5, 'maturity-model: levels = stages.length (5)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 5, 'maturity-model: 5 stage cards in overlay');
+  ok(cards[2].text.includes('▶'), 'maturity-model: currentLevel stage has marker');
+}
+
+// ── Sprint 22 B2: cost-benefit-matrix → matrix-grid-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'cost-benefit-matrix',
+        args: {
+          title: 'Initiative Prioritization',
+          items: [
+            { label: 'AI Chatbot', cost: 'low', benefit: 'high' },
+            { label: 'ERP Upgrade', cost: 'high', benefit: 'high' },
+            { label: 'Email Campaign', cost: 'low', benefit: 'low' },
+          ],
+          quadrantLabels: { tl: 'Quick Wins', tr: 'Major Projects', bl: 'Fill-ins', br: 'Hard Sells' },
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'matrix-grid-3d', 'cost-benefit-matrix → matrix-grid-3d');
+  ok(out.subjects[0].args.rows === 2 && out.subjects[0].args.cols === 2, 'cost-benefit-matrix: 2x2 args');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text === 'Quick Wins'), 'cost-benefit-matrix: quadrant label in overlay');
+  ok(cards.some((c) => c.text.includes('AI Chatbot')), 'cost-benefit-matrix: item label in overlay');
+  ok(cards.some((c) => c.text.includes('low cost')), 'cost-benefit-matrix: item cost in overlay');
+}
+
+// ── Sprint 22 B2: journey-flow-curve → timeline-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'journey-flow-curve',
+        args: {
+          title: 'Customer Onboarding Journey',
+          touchpoints: [
+            { label: 'Discovery', sublabel: 'Sees ad', emotion: 0.3 },
+            { label: 'Sign-up', emotion: 0.6 },
+            { label: 'Onboarding', emotion: -0.2 },
+            { label: 'First Value', emotion: 0.9 },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'timeline-3d', 'journey-flow-curve → timeline-3d');
+  ok(out.subjects[0].args.count === 4, 'journey-flow-curve: count = touchpoints.length (4)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 4, 'journey-flow-curve: 4 touchpoint cards in overlay');
+  ok(cards[0].text.includes('+30%'), 'journey-flow-curve: positive emotion card has + sign');
+  ok(cards[2].text.includes('-20%'), 'journey-flow-curve: negative emotion card has - sign');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
