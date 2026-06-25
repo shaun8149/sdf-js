@@ -57,10 +57,42 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(out.overlay.filter((o) => o.role === 'value').length === 2, 'timeline event labels → 2 overlay values');
 }
 
-// ── generic fallback: unknown-to-map type still maps T → T-3d ──
+// ── items family: array → count arg + legend cards ──
 {
-  const { subject3d } = liftSubject({ type: 'diamond', args: { label: 'X' } });
-  ok(subject3d.type === 'diamond-3d', 'generic fallback: diamond → diamond-3d');
+  const out = liftSceneData2dTo3d({ subjects: [{ type: 'pyramid', args: { layers: [{ label: 'Top' }, { label: 'Mid' }, { label: 'Base' }] } }] });
+  ok(out.subjects[0].type === 'pyramid-3d' && out.subjects[0].args.levels === 3, 'pyramid layers[] → levels: 3 (2D key ≠ 3D key)');
+  ok(out.overlay.filter((o) => o.role === 'card').length === 3, 'pyramid labels → 3 cards');
+}
+{
+  const out = liftSceneData2dTo3d({ subjects: [{ type: 'agenda-list', args: { items: ['a', 'b'] } }] });
+  ok(out.subjects[0].args.items === 2, 'agenda-list items[] → items: 2');
+}
+
+// ── tree family: {root:{children}} → levels + branching ──
+{
+  const root = { label: 'r', children: [{ label: 'a', children: [{ label: 'a1' }] }, { label: 'b' }] };
+  const out = liftSceneData2dTo3d({ subjects: [{ type: 'org-chart', args: { root } }] });
+  ok(out.subjects[0].type === 'org-chart-3d', 'org-chart → org-chart-3d');
+  ok(out.subjects[0].args.levels === 3 && out.subjects[0].args.branching === 2, 'tree depth/fanout → levels:3, branching:2');
+}
+
+// ── venn: sets[] → sets count + cards ──
+{
+  const out = liftSceneData2dTo3d({ subjects: [{ type: 'venn', args: { sets: [{ label: 'A' }, { label: 'B' }, { label: 'C' }] } }] });
+  ok(out.subjects[0].type === 'venn-3d' && out.subjects[0].args.sets === 3, 'venn sets[] → sets: 3');
+}
+
+// ── icon family: single label → centered caption card (not SDF) ──
+{
+  const out = liftSceneData2dTo3d({ subjects: [{ type: 'arrow', args: { label: 'Growth' } }] });
+  const c = out.overlay.find((o) => o.role === 'card');
+  ok(out.subjects[0].type === 'arrow-3d' && c && c.text === 'Growth' && c.align === 'center', 'arrow label → centered caption card');
+}
+
+// ── generic fallback: a type with no override still maps T → T-3d ──
+{
+  const { subject3d } = liftSubject({ type: 'value-chain-diagram', args: {} });
+  ok(subject3d.type === 'value-chain-diagram-3d', 'generic fallback: unmapped type → type-3d');
 }
 
 // ── two-text-systems invariant: NO baked SDF text anywhere ──
