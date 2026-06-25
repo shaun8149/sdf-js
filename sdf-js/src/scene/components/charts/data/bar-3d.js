@@ -25,6 +25,9 @@
 // =============================================================================
 
 import { SDF3 } from '../../../../sdf/core.js';
+import { box } from '../../../../sdf/d3.js';
+import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
 
 export const MAX_BARS = 32;
 
@@ -102,8 +105,29 @@ export function bar3dSDF({
   barDepth = 0.4,
   gap = 0.1,
   maxHeight = 2.0,
+  colors = null,
 } = {}) {
   const { N, vals, paddedValues } = resolveBarParams(values, count);
+
+  // per-leaf colours: build the same bars as a union of coloured box leaves instead of
+  // the fused prim. Only when colors[] is given — the no-colours path is untouched.
+  if (Array.isArray(colors) && colors.length) {
+    const totalX = N * barWidth + (N - 1) * gap;
+    const xStart = -totalX / 2 + barWidth / 2;
+    const parts = [];
+    for (let i = 0; i < N; i++) {
+      const h = vals[i] * maxHeight;
+      if (h <= 0) continue;
+      const xc = xStart + i * (barWidth + gap);
+      const b = box([barWidth, h, barDepth]).translate([xc, h / 2, 0]);
+      if (colors[i] != null) {
+        const m = resolveMaterial(colors[i]);
+        if (m) b._subjectMaterial = m;
+      }
+      parts.push(b);
+    }
+    if (parts.length) return parts.length === 1 ? parts[0] : union(...parts);
+  }
 
   const inst = SDF3((p) => evalBarsSDF(p, N, vals, barWidth, barDepth, gap, maxHeight));
 

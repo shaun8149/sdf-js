@@ -212,6 +212,8 @@ export const PRIMITIVE_TYPES = new Set([
   'circle-frame-3d',
   'circle-stack-3d',
   'circle-segmented-3d',
+  'mountain-3d',
+  'icon-grid-3d',
   'circle-loop-3d',
   // Sprint 4 node-edge charts — sphere/box nodes + capsule edges (+ cone arrows).
   'relationship-graph-3d',
