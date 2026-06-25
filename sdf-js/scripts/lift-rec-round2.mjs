@@ -55,10 +55,23 @@ const DECKS = [
   },
 ];
 
+const TAGLINES = {
+  consulting: 'Frameworks that turn analysis into action',
+  cyber: 'Defending the enterprise, layer by layer',
+  bizplan: 'The roadmap from vision to value',
+  journey: 'Every step of the customer experience',
+  pitch: 'The story investors want to hear',
+};
+
 for (const deck of DECKS) {
   const segments = [];
   deck.slides.forEach((slide, i) => {
-    const scene = liftSceneData2dTo3d({ name: `${deck.id}-${slide.title}`, subjects: [{ type: slide.type, args: slide.args }] });
+    const scene = liftSceneData2dTo3d({
+      name: `${deck.id}-${slide.title}`,
+      cover: i === 0,
+      subtitle: i === 0 ? TAGLINES[deck.id] : undefined,
+      subjects: [{ type: slide.type, args: slide.args }],
+    });
     const file = `rec-${deck.id}-${i + 1}.json`;
     writeFileSync(resolve(SCENES, file), `${JSON.stringify(scene, null, 2)}\n`);
     segments.push({ file, title: slide.title, kind: 'slide', durationSec: 7 });

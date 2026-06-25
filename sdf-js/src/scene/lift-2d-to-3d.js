@@ -104,6 +104,18 @@ export function pushInCamera(target = [0, 1.6, 0], dist = 8.2) {
   };
 }
 
+// cover / establishing shot — wider & higher start, slow grand settle. Gives a deck's
+// first slide a cinematic reveal distinct from the per-slide push-in.
+export function coverCamera(target = [0, 1.6, 0]) {
+  return {
+    loop: false,
+    shots: [
+      { duration: 0.01, pos: [2.2, target[1] + 1.6, 12.0], target, fov: 55, aperture: 0, focalDistance: 11.5, ease: 'smooth' },
+      { duration: 17, pos: [0.2, target[1] + 0.35, 8.6], target, fov: 46, transition: 'blend', aperture: 0, focalDistance: 8.6, ease: 'smooth' },
+    ],
+  };
+}
+
 // ── value formatting (2D atoms carry format: 'number'|'percent'|'currency') ──
 export function fmt(v, format) {
   if (v == null || Number.isNaN(Number(v))) return String(v ?? '');
@@ -569,13 +581,18 @@ export function liftSceneData2dTo3d(scene2d) {
   if (title)
     overlay.unshift({ text: String(title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' });
 
+  // cover slide (deck opener): tagline subtitle under the title + an establishing camera
+  if (scene2d.cover && scene2d.subtitle) {
+    overlay.push({ text: String(scene2d.subtitle), anchor: [0, 3.35, 0], role: 'body', align: 'center' });
+  }
+
   const target = [0, 1.6, 0];
   return {
     v: 1,
     name: `(lifted) ${scene2d.name || scene2d.subjects?.[0]?.type || 'scene'}`,
     subjects,
     overlay,
-    cameraSequence: pushInCamera(target),
+    cameraSequence: scene2d.cover ? coverCamera(target) : pushInCamera(target),
     defaults: { stage: { size: [18, 9, 11] } },
   };
 }
