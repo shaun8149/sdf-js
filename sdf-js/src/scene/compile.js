@@ -539,6 +539,7 @@ const PRIMITIVE_FACTORIES = {
       taper: a.taper ?? 0.85,
       diskHeight: a.diskHeight ?? a.thickness ?? 0.18,
       gap: a.gap ?? 0.06,
+      colors: a.colors ?? null,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({
@@ -647,6 +648,7 @@ const PRIMITIVE_FACTORIES = {
       layerH: a.layerH ?? 0.22,
       gap: a.gap ?? 0.12,
       taper: a.taper ?? 1.0,
+      colors: a.colors ?? null,
     }),
   'bullet-list-3d': (a) =>
     bulletList3dSDF({
@@ -664,6 +666,7 @@ const PRIMITIVE_FACTORIES = {
       bottomRadius: a.bottomRadius ?? 0.22,
       stageHeight: a.stageHeight ?? 0.4,
       gap: a.gap ?? 0.06,
+      colors: a.colors ?? null,
     }),
   'venn-3d': (a) =>
     venn3dSDF({
@@ -722,6 +725,7 @@ const PRIMITIVE_FACTORIES = {
       spacing: a.spacing ?? 0.55,
       housingPad: a.housingPad ?? 0.12,
       depth: a.depth ?? 0.3,
+      colors: a.colors ?? null,
     }),
   'radial-spoke-3d': (a) =>
     radialSpoke3dSDF({

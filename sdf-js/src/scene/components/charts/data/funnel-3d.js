@@ -8,6 +8,7 @@
 
 import { capped_cone } from '../../../../sdf/d3.js';
 import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
 
 /**
  * @param {object} opts
@@ -24,6 +25,7 @@ export function funnel3dSDF({
   bottomRadius = 0.22,
   stageHeight = 0.4,
   gap = 0.06,
+  colors = null,
 } = {}) {
   const N = Math.max(1, Math.floor(stages));
   const totalH = N * stageHeight + (N - 1) * gap;
@@ -34,7 +36,12 @@ export function funnel3dSDF({
     const rB = radAt((i + 1) / N);
     const yTop = totalH / 2 - i * (stageHeight + gap);
     const yBot = yTop - stageHeight;
-    parts.push(capped_cone([0, yTop, 0], [0, yBot, 0], rT, rB));
+    const seg = capped_cone([0, yTop, 0], [0, yBot, 0], rT, rB);
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) seg._subjectMaterial = m;
+    }
+    parts.push(seg);
   }
   return parts.length === 1 ? parts[0] : union(...parts);
 }

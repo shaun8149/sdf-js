@@ -10,7 +10,34 @@
         "topRadius": 1.15,
         "bottomRadius": 0.28,
         "stageHeight": 0.55,
-        "gap": 0.1
+        "gap": 0.1,
+        "colors": [
+          {
+            "hue": 0.04,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.72,
+            "value": 0.805
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.76,
+            "value": 0.655
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
       },
       "transform": {
         "translate": [
