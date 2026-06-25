@@ -32,6 +32,11 @@
     }
   ],
   "overlay": [
+    { "role": "value", "text": "30%", "anchor": [-2.8, 1.5, 0], "radius": 1.35 },
+    { "role": "value", "text": "50%", "anchor": [2.8, 2.7, 0], "radius": 0.48 },
+    { "role": "value", "text": "30%", "anchor": [2.8, 1.5, 0], "radius": 0.48 },
+    { "role": "value", "text": "20%", "anchor": [2.8, 0.3, 0], "radius": 0.48 },
+
     { "text": "DESCRIPTION 1", "anchor": [-2.8, -0.4, 0], "role": "head" },
 
     { "text": "DESCRIPTION 2", "anchor": [0.7, 2.85, 0], "role": "head" },

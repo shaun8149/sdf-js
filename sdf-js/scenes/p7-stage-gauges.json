@@ -18,6 +18,10 @@
     }
   ],
   "overlay": [
+    { "role": "value", "text": "80%", "anchor": [-2.425, 1.1, 0], "radius": 0.85 },
+    { "role": "value", "text": "100%", "anchor": [0.075, 1.1, 0], "radius": 1.05 },
+    { "role": "value", "text": "50%", "anchor": [2.425, 1.1, 0], "radius": 0.7 },
+
     { "text": "3D SPHERES — FILL LEVELS", "anchor": [0, 4.15, 0], "role": "title" },
 
     { "text": "DESCRIPTION 1", "anchor": [2.425, 3.2, 0], "role": "head" },
