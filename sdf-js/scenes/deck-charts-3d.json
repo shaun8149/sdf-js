@@ -1,0 +1,11 @@
+{
+  "id": "deck-charts-3d",
+  "name": "3D Charts & Diagrams — PresentationLoad (batch 1)",
+  "segments": [
+    { "file": "shape-chart-bar.json", "title": "Data Driven — Bars", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-chart-pie.json", "title": "Data Driven — Donut", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-chart-line.json", "title": "Data Driven — Line", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-layers-parallel.json", "title": "Layers — Parallel", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-org-chart.json", "title": "Org Chart Toolbox", "kind": "slide", "durationSec": 7 }
+  ]
+}

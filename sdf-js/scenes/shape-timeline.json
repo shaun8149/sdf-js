@@ -1,0 +1,30 @@
+{
+  "v": 1,
+  "name": "sequence: 3D Timeline (twin)",
+  "subjects": [
+    {
+      "id": "tl",
+      "type": "timeline-3d",
+      "args": { "count": 5, "axisLength": 4.2, "axisRadius": 0.06, "markerRadius": 0.2, "stemHeight": 0.55 },
+      "transform": { "translate": [0, 1.4, 0] },
+      "material": { "hue": 0.57, "sat": 0.55, "value": 0.64, "kind": "normal", "roughness": 0.3, "clearcoat": 0.45 }
+    }
+  ],
+  "overlay": [
+    { "text": "ROAD TIMELINE — 3D", "anchor": [0, 3.8, 0], "role": "title" },
+
+    { "role": "value", "text": "2021", "anchor": [-2.1, 2.25, 0], "radius": 0.36 },
+    { "role": "value", "text": "2022", "anchor": [-1.05, 2.25, 0], "radius": 0.36 },
+    { "role": "value", "text": "2023", "anchor": [0, 2.25, 0], "radius": 0.36 },
+    { "role": "value", "text": "2024", "anchor": [1.05, 2.25, 0], "radius": 0.36 },
+    { "role": "value", "text": "2025", "anchor": [2.1, 2.25, 0], "radius": 0.36 }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.0, 1.9, 9.8], "target": [0, 1.4, 0], "fov": 52, "aperture": 0, "focalDistance": 9, "ease": "smooth" },
+      { "duration": 13, "pos": [0, 1.6, 8.3], "target": [0, 1.4, 0], "fov": 48, "transition": "blend", "aperture": 0, "focalDistance": 8.3, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [20, 8, 10] } }
+}
