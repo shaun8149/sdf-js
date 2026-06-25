@@ -1,0 +1,12 @@
+{
+  "id": "deck-shapes-spheres",
+  "name": "3D Spheres — the PresentationLoad sphere family",
+  "segments": [
+    { "file": "shape-sphere-plain.json", "title": "3D Spheres", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-sphere-chrome.json", "title": "Chrome Spheres", "kind": "slide", "durationSec": 7 },
+    { "file": "sphere-fill-cover.json", "title": "Fill Levels", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-sphere-divisions.json", "title": "Divisions", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-sphere-network.json", "title": "Network", "kind": "slide", "durationSec": 7 },
+    { "file": "shape-sphere-tree.json", "title": "Tree Structures", "kind": "slide", "durationSec": 7 }
+  ]
+}
