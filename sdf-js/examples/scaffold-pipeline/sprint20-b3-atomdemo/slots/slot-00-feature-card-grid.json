@@ -1,0 +1,53 @@
+{
+  "slotIdx": 0,
+  "slotName": "features",
+  "slotTitle": "feature-card-grid",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "feature-card-grid",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Platform Features",
+          "features": [
+            {
+              "icon": "shield",
+              "title": "Security",
+              "body": "End-to-end encryption with zero-knowledge architecture"
+            },
+            {
+              "icon": "lightning",
+              "title": "Performance",
+              "body": "Sub-100ms response times globally across 40+ regions"
+            },
+            {
+              "icon": "globe",
+              "title": "Global Reach",
+              "body": "150+ countries, 50+ languages supported out of the box"
+            },
+            {
+              "icon": "heart",
+              "title": "Support",
+              "body": "24/7 dedicated customer success team with 2hr SLA"
+            },
+            {
+              "icon": "chart-bar",
+              "title": "Analytics",
+              "body": "Real-time dashboards and automated reporting suites"
+            },
+            {
+              "icon": "lock",
+              "title": "Compliance",
+              "body": "SOC 2 Type II, GDPR, and HIPAA certified infrastructure"
+            }
+          ],
+          "cols": 3,
+          "bg": "cards"
+        }
+      }
+    ]
+  }
+}

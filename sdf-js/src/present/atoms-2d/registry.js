@@ -156,6 +156,12 @@ const ATOM_LOADERS = {
   'segmented-bar': () => import('./charts/data/segmented-bar.js'),
   'pull-quote-banner': () => import('./charts/typography/pull-quote-banner.js'),
 
+  // Sprint 20 Batch 3 — lists / data / typography
+  'feature-card-grid': () => import('./charts/lists/feature-card-grid.js'),
+  'stat-with-icon': () => import('./charts/data/stat-with-icon.js'),
+  'callout-banner': () => import('./charts/typography/callout-banner.js'),
+  'numbered-grid': () => import('./charts/lists/numbered-grid.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)

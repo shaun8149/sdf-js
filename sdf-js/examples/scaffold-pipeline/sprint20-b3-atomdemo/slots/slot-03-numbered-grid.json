@@ -1,0 +1,29 @@
+{
+  "slotIdx": 3,
+  "slotName": "numbered",
+  "slotTitle": "numbered-grid",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "numbered-grid",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "5-Year Growth Levers",
+          "items": [
+            { "label": "Product-led growth", "sublabel": "Freemium → paid conversion funnel" },
+            { "label": "Partner channel", "sublabel": "40+ certified resellers by Q4" },
+            { "label": "Content marketing", "sublabel": "SEO-first blog driving 30k visits/mo" },
+            { "label": "Enterprise sales", "sublabel": "Direct outbound to F500 accounts" },
+            { "label": "Marketplace listing", "sublabel": "AWS, Azure, GCP marketplaces" },
+            { "label": "Community flywheel", "sublabel": "Open-source core → paid SaaS" }
+          ],
+          "cols": 3,
+          "numberStyle": "huge"
+        }
+      }
+    ]
+  }
+}

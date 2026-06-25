@@ -1,0 +1,21 @@
+{
+  "slotIdx": 2,
+  "slotName": "callout",
+  "slotTitle": "callout-banner",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "callout-banner",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "type_": "insight",
+          "heading": "Key Insight",
+          "body": "Revenue grew 47% YoY driven by enterprise upsells and geographic expansion into APAC markets, outpacing initial projections by 12 percentage points."
+        }
+      }
+    ]
+  }
+}
