@@ -467,7 +467,16 @@ for (const a of slotAssignments) {
     `    - Use ONLY when slide.body contains an explicit src for an image the user already had (look for "image:" lines pointing to data: URIs, OR relative paths the parser emitted from embedded images).\n` +
     `    - If no such src exists in source, OMIT image atoms entirely. NEVER fabricate URLs. NEVER add picsum / unsplash / any internet host. NEVER write "image: https://..." that isn't in the source.\n` +
     `    - When you DO have a valid src: hero slot with one dominant image + title/body/bullets → \`image-split\`; full-bleed photo with caption → \`image\` (fit:'cover').\n` +
-    `    - DO NOT use image atoms for purely numeric / list / process content — specialized atoms (kpi-card / fishbone / timeline / flow-chart) are better.\n`;
+    `    - DO NOT use image atoms for purely numeric / list / process content — specialized atoms (kpi-card / fishbone / timeline / flow-chart) are better.\n` +
+    `16. **Prefer specialized Sprint 19 atoms when content matches their semantic** — these atoms communicate meaning in 3D theatrical playback better than generic alternatives:\n` +
+    `    - "N core values / strategic pillars / principles" with 3-8 items → \`radial-wheel-segmented\` (NOT \`icon-grid\`)\n` +
+    `    - Hero quote / testimonial / founder statement → \`quote-pull\` (NOT raw \`bullet-list\`)\n` +
+    `    - Headline single metric ("$24M ARR ↑117%") → \`stat-banner\` (NOT a kpi-card on full canvas)\n` +
+    `    - Section break ("01 Findings") between major slot groups → \`section-number-divider\` (NOT cover-only)\n` +
+    `    - 2x2 strategic analysis (Strengths/Weaknesses/Opportunities/Threats or similar) → \`swot\` (NOT \`matrix-grid\`)\n` +
+    `    - Porter-style primary+support activity chain → \`value-chain-diagram\` (NOT \`flow-chart\`)\n` +
+    `    - N-tier feature comparison ("Free vs Pro vs Enterprise") → \`comparison-table\` (NOT side-by-side \`kpi-card\`s)\n` +
+    `    - Transformation S-curve (Kübler-Ross / journey phases) → \`change-curve-chart\` (NOT \`line\` chart with annotations)\n`;
 
   if (DRY_RUN) {
     slotLifts.push({
