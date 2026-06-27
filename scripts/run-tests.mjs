@@ -176,6 +176,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch3-atoms.mjs' },
   // Sprint 22 Batch 1 — new atoms (mountain-path / strategy-map / radar-chart / okr-tree)
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch1-atoms.mjs' },
+  // Sprint 22 Batch 2 — new atoms (decision-tree-3-arm / maturity-model / cost-benefit-matrix / journey-flow-curve)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch2-atoms.mjs' },
 ];
 
 // -----------------------------------------------------------------------------

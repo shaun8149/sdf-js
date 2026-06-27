@@ -168,6 +168,12 @@ const ATOM_LOADERS = {
   'radar-chart': () => import('./charts/data/radar-chart.js'),
   'okr-tree': () => import('./charts/diagrams/okr-tree.js'),
 
+  // Sprint 22 Batch 2 — PL-recommendations atoms (decision-tree-3-arm / maturity-model / cost-benefit-matrix / journey-flow-curve)
+  'decision-tree-3-arm': () => import('./charts/diagrams/decision-tree-3-arm.js'),
+  'maturity-model': () => import('./charts/diagrams/maturity-model.js'),
+  'cost-benefit-matrix': () => import('./charts/diagrams/cost-benefit-matrix.js'),
+  'journey-flow-curve': () => import('./charts/diagrams/journey-flow-curve.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)

@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint22-b2-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Sprint 22 B2 Atom Demo",
+    "description": "Direct render of 4 PL-rec atoms (decision-tree-3-arm / maturity-model / cost-benefit-matrix / journey-flow-curve)",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [26, 40, 66],
+    "accent": [58, 138, 200],
+    "colors": [
+      [58, 138, 200],
+      [80, 160, 220],
+      [120, 180, 240],
+      [200, 90, 90],
+      [200, 150, 90]
+    ],
+    "silhouetteColor": [255, 255, 255]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "decision",
+      "slotTitle": "decision-tree-3-arm",
+      "slotPurpose": "GROW / N-arm decision framework demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["decision-tree-3-arm"],
+      "liftFile": "slots/slot-00-decision-tree-3-arm.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "maturity",
+      "slotTitle": "maturity-model",
+      "slotPurpose": "5-stage capability ladder demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["maturity-model"],
+      "liftFile": "slots/slot-01-maturity-model.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "costbenefit",
+      "slotTitle": "cost-benefit-matrix",
+      "slotPurpose": "2x2 cost-benefit plot demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["cost-benefit-matrix"],
+      "liftFile": "slots/slot-02-cost-benefit-matrix.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "journey",
+      "slotTitle": "journey-flow-curve",
+      "slotPurpose": "Customer Journey + emotion curve demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["journey-flow-curve"],
+      "liftFile": "slots/slot-03-journey-flow-curve.json"
+    }
+  ]
+}

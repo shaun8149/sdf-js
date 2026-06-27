@@ -1,0 +1,28 @@
+{
+  "slotIdx": 1,
+  "slotName": "maturity",
+  "slotTitle": "maturity-model",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "maturity-model",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 600,
+        "args": {
+          "title": "Digital Transformation Maturity Assessment",
+          "stages": [
+            { "label": "Ad Hoc", "description": "Siloed, manual processes" },
+            { "label": "Managed", "description": "Basic tracking & reporting" },
+            { "label": "Defined", "description": "Standardized workflows" },
+            { "label": "Integrated", "description": "Cross-functional data flow" },
+            { "label": "Optimizing", "description": "AI-driven continuous improvement" }
+          ],
+          "currentLevel": 3,
+          "label": "Current State: Level 3 — Defined"
+        }
+      }
+    ]
+  }
+}
