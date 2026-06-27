@@ -1,0 +1,51 @@
+{
+  "slotIdx": 2,
+  "slotName": "kanban",
+  "slotTitle": "kanban-board",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "kanban-board",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Sprint 22 — Engineering Board",
+          "columns": [
+            {
+              "label": "Backlog",
+              "cards": [
+                { "label": "Icon library v2" },
+                { "label": "PDF export fix" },
+                { "label": "Dark mode" }
+              ]
+            },
+            {
+              "label": "In Progress",
+              "accent": "warning",
+              "cards": [
+                { "label": "risk-heatmap atom", "sublabel": "Dev" },
+                { "label": "kanban-board atom", "sublabel": "Dev" },
+                { "label": "Twin map upgrade", "sublabel": "Dev" }
+              ]
+            },
+            {
+              "label": "Review",
+              "cards": [{ "label": "donut-with-center" }, { "label": "org-vs-org-matrix" }]
+            },
+            {
+              "label": "Done",
+              "accent": "success",
+              "cards": [
+                { "label": "B1 atoms", "sublabel": "merged" },
+                { "label": "B2 atoms", "sublabel": "merged" },
+                { "label": "mountain-3d", "sublabel": "PR #182" }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

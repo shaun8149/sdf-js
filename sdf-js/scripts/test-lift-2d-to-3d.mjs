@@ -146,7 +146,7 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(!baked, 'no text-* SDF subjects produced (all text → overlay)');
 }
 
-// ── Sprint 22 B1: mountain-path → progression-3d ──
+// ── Sprint 22 B1: mountain-path → mountain-3d (upgraded from progression-3d in B3) ──
 {
   const out = liftSceneData2dTo3d({
     subjects: [
@@ -165,8 +165,8 @@ ok(fmt(7, 'number') === '7', 'fmt number');
       },
     ],
   });
-  ok(out.subjects[0].type === 'progression-3d', 'mountain-path → progression-3d');
-  ok(out.subjects[0].args.steps === 4, 'mountain-path: steps = milestones.length (4)');
+  ok(out.subjects[0].type === 'mountain-3d', 'mountain-path → mountain-3d (upgraded from progression-3d)');
+  ok(out.subjects[0].args.pathMarkers === 4, 'mountain-path: pathMarkers = milestones.length (4)');
   const cards = out.overlay.filter((o) => o.role === 'card');
   ok(cards.length === 4, 'mountain-path: 4 milestone cards in overlay');
   const summitVal = out.overlay.find((o) => o.role === 'value');
@@ -347,6 +347,109 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(cards.length === 4, 'journey-flow-curve: 4 touchpoint cards in overlay');
   ok(cards[0].text.includes('+30%'), 'journey-flow-curve: positive emotion card has + sign');
   ok(cards[2].text.includes('-20%'), 'journey-flow-curve: negative emotion card has - sign');
+}
+
+// ── Sprint 22 B3: risk-heatmap → matrix-grid-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'risk-heatmap',
+        args: {
+          title: 'Security Risks',
+          risks: [
+            { label: 'Data breach', likelihood: 4, impact: 5 },
+            { label: 'Compliance fine', likelihood: 2, impact: 4 },
+            { label: 'Vendor delay', likelihood: 5, impact: 2 },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'matrix-grid-3d', 'risk-heatmap → matrix-grid-3d');
+  ok(out.subjects[0].args.rows === 5 && out.subjects[0].args.cols === 5, 'risk-heatmap: 5x5 args');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 3, 'risk-heatmap: 3 risk labels in overlay cards');
+  ok(cards[0].text === 'Data breach', 'risk-heatmap: first risk label in overlay');
+}
+
+// ── Sprint 22 B3: org-vs-org-matrix → matrix-grid-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'org-vs-org-matrix',
+        args: {
+          title: 'Magic Quadrant',
+          xAxis: 'Vision',
+          yAxis: 'Execution',
+          orgs: [
+            { name: 'Us', x: 0.8, y: 0.9, isUs: true },
+            { name: 'Rival A', x: 0.5, y: 0.5 },
+            { name: 'Rival B', x: 0.7, y: 0.3 },
+          ],
+          quadrantLabels: { tl: 'Visionaries', tr: 'Leaders', bl: 'Niche', br: 'Challengers' },
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'matrix-grid-3d', 'org-vs-org-matrix → matrix-grid-3d');
+  ok(out.subjects[0].args.rows === 2 && out.subjects[0].args.cols === 2, 'org-vs-org-matrix: 2x2 args');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text === 'Visionaries'), 'org-vs-org-matrix: quadrant label in overlay');
+  ok(cards.some((c) => c.text === 'Us'), 'org-vs-org-matrix: org name in overlay');
+}
+
+// ── Sprint 22 B3: kanban-board → flow-chart-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'kanban-board',
+        args: {
+          title: 'Sprint Board',
+          columns: [
+            { label: 'Backlog', cards: [{ label: 'Task A' }, { label: 'Task B' }] },
+            { label: 'In Progress', cards: [{ label: 'Task C' }] },
+            { label: 'Done', cards: [{ label: 'Task D' }] },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'flow-chart-3d', 'kanban-board → flow-chart-3d');
+  ok(out.subjects[0].args.steps === 3, 'kanban-board: steps = columns.length (3)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.length === 3, 'kanban-board: 3 column cards in overlay');
+  ok(cards[0].text.includes('Backlog'), 'kanban-board: column label in first card');
+}
+
+// ── Sprint 22 B3: donut-with-center → circle-segmented-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'donut-with-center',
+        args: {
+          title: 'Revenue',
+          centerValue: '$24M',
+          centerLabel: 'Total ARR',
+          segments: [
+            { label: 'Enterprise', value: 12 },
+            { label: 'Mid-market', value: 8 },
+            { label: 'SMB', value: 4 },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'circle-segmented-3d', 'donut-with-center → circle-segmented-3d');
+  ok(out.subjects[0].args.segments === 3, 'donut-with-center: segments = segments.length (3)');
+  const vals = out.overlay.filter((o) => o.role === 'value');
+  ok(vals.length === 1 && vals[0].text === '$24M', 'donut-with-center: centerValue → value overlay');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text === 'Total ARR'), 'donut-with-center: centerLabel → card overlay');
+  ok(cards.some((c) => c.text === 'Enterprise'), 'donut-with-center: segment labels in overlay');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
