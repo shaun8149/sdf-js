@@ -1,23 +1,17 @@
 {
   "v": 1,
-  "name": "(lifted) lifted-mountain-path",
+  "name": "(lifted) lifted-kanban",
   "subjects": [
     {
-      "id": "mountain-path",
-      "type": "mountain-3d",
+      "id": "kanban-board",
+      "type": "flow-chart-3d",
       "args": {
-        "pathMarkers": 4,
-        "height": 2.4,
-        "baseRadius": 1.5,
-        "sidePeaks": 2,
-        "spread": 1.7,
-        "sideScale": 0.6,
-        "markerRadius": 0.13
+        "steps": 4
       },
       "transform": {
         "translate": [
           0,
-          0,
+          1.6,
           0
         ]
       },
@@ -33,7 +27,7 @@
   ],
   "overlay": [
     {
-      "text": "PATH TO SERIES A",
+      "text": "SPRINT 22 ENGINEERING BOARD",
       "anchor": [
         0,
         3.9,
@@ -42,54 +36,24 @@
       "role": "title"
     },
     {
-      "text": "$500K ARR",
-      "anchor": [
-        3,
-        2.6,
-        0
-      ],
+      "text": "Backlog (2)",
       "role": "card",
       "align": "left"
     },
     {
-      "text": "1K customers",
-      "anchor": [
-        3,
-        1.8800000000000001,
-        0
-      ],
+      "text": "In Progress (1)",
       "role": "card",
       "align": "left"
     },
     {
-      "text": "PMF confirmed",
-      "anchor": [
-        3,
-        1.1600000000000001,
-        0
-      ],
+      "text": "Review (1)",
       "role": "card",
       "align": "left"
     },
     {
-      "text": "Term sheet",
-      "anchor": [
-        3,
-        0.43999999999999995,
-        0
-      ],
+      "text": "Done (1)",
       "role": "card",
       "align": "left"
-    },
-    {
-      "text": "Series A Close",
-      "anchor": [
-        0,
-        3,
-        0
-      ],
-      "role": "value",
-      "radius": 0.4
     }
   ],
   "cameraSequence": {

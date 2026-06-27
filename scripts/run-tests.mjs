@@ -178,6 +178,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch1-atoms.mjs' },
   // Sprint 22 Batch 2 — new atoms (decision-tree-3-arm / maturity-model / cost-benefit-matrix / journey-flow-curve)
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch2-atoms.mjs' },
+  // Sprint 22 Batch 3 — new atoms (risk-heatmap / org-vs-org-matrix / kanban-board / donut-with-center)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch3-atoms.mjs' },
 ];
 
 // -----------------------------------------------------------------------------

@@ -485,7 +485,11 @@ for (const a of slotAssignments) {
     `    - Decision/coaching framework (Yes/No/Maybe, GROW, fork-in-the-road) with 3-5 options → \`decision-tree-3-arm\` (NOT generic \`tree-diagram\`)\n` +
     `    - Capability maturity ladder (CMMI, AI maturity, digital maturity) with 3-7 stages → \`maturity-model\` (NOT generic \`pyramid\`)\n` +
     `    - Cost-benefit / impact-effort / value-complexity 2x2 plot → \`cost-benefit-matrix\` (NOT generic \`swot\` or \`matrix-grid\`)\n` +
-    `    - Customer journey / experience map with emotion curve → \`journey-flow-curve\` (NOT generic \`timeline\`)\n`;
+    `    - Customer journey / experience map with emotion curve → \`journey-flow-curve\` (NOT generic \`timeline\`)\n` +
+    `    - 5×5 risk grid (Cybersecurity / Risk Assessment) with likelihood × impact cells → \`risk-heatmap\` (NOT generic \`matrix-grid\`)\n` +
+    `    - Competitive positioning 2×2 (Magic Quadrant style) with org/company bubbles → \`org-vs-org-matrix\` (NOT generic \`matrix-grid\`)\n` +
+    `    - Project status board with column workflow (Backlog / In Progress / Done) → \`kanban-board\` (NOT generic \`flow-chart\`)\n` +
+    `    - Donut chart with prominent center metric / hero KPI value in the ring hole → \`donut-with-center\` (NOT generic \`pie\`)\n`;
 
   if (DRY_RUN) {
     slotLifts.push({

@@ -1,0 +1,35 @@
+{
+  "slotIdx": 1,
+  "slotName": "competitive",
+  "slotTitle": "org-vs-org-matrix",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "org-vs-org-matrix",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Competitive Positioning — Cloud Analytics",
+          "xAxis": "Completeness of Vision",
+          "yAxis": "Ability to Execute",
+          "orgs": [
+            { "name": "Atlas (us)", "x": 0.78, "y": 0.84, "isUs": true },
+            { "name": "Tableau", "x": 0.72, "y": 0.65 },
+            { "name": "Looker", "x": 0.6, "y": 0.58 },
+            { "name": "PowerBI", "x": 0.55, "y": 0.7 },
+            { "name": "Metabase", "x": 0.42, "y": 0.35 },
+            { "name": "Redash", "x": 0.28, "y": 0.22 }
+          ],
+          "quadrantLabels": {
+            "tl": "Visionaries",
+            "tr": "Leaders",
+            "bl": "Niche Players",
+            "br": "Challengers"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "slotIdx": 3,
+  "slotName": "donut",
+  "slotTitle": "donut-with-center",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "donut-with-center",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Annual Recurring Revenue — Q3 2026",
+          "centerValue": "$24M",
+          "centerLabel": "Total ARR",
+          "segments": [
+            { "label": "Enterprise", "value": 12 },
+            { "label": "Mid-market", "value": 8 },
+            { "label": "SMB", "value": 3 },
+            { "label": "Partner", "value": 1 }
+          ],
+          "showPct": true
+        }
+      }
+    ]
+  }
+}

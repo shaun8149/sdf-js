@@ -612,15 +612,23 @@ export const TWIN_MAP = {
 
   // ── Sprint 22 B1: PL-recommendations atom twins (from main #180) ──
   'mountain-path': {
-    to: 'progression-3d',
+    to: 'mountain-3d',
     lift(a) {
       const milestones = a.milestones || [];
       return {
-        args: { steps: milestones.length || 4 },
-        transform: { translate: [-1.0, 0.6, 0] },
+        args: {
+          pathMarkers: Math.max(2, milestones.length || 4),
+          height: 2.4,
+          baseRadius: 1.5,
+          sidePeaks: 2,
+          spread: 1.7,
+          sideScale: 0.6,
+          markerRadius: 0.13,
+        },
+        transform: { translate: [0, 0, 0] },
         overlay: [
           ...rightCards(milestones.map((m) => m.label || '')),
-          { text: a.summit || '', anchor: [3.0, 3.0, 0], role: 'value', radius: 0.4 },
+          ...(a.summit ? [{ text: String(a.summit), anchor: [0, 3.0, 0], role: 'value', radius: 0.4 }] : []),
         ],
       };
     },
@@ -764,6 +772,71 @@ export const TWIN_MAP = {
               return tp.label + (tp.sublabel ? ` · ${tp.sublabel}` : '') + ` (emotion ${sign}${Math.round(emo * 100)}%)`;
             }),
           ),
+        ],
+      };
+    },
+  },
+
+  // ── Sprint 22 B3 twins ──
+
+  'risk-heatmap': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const risks = a.risks || [];
+      return {
+        args: { rows: 5, cols: 5 },
+        transform: { translate: [0, 1.8, 0] },
+        overlay: [
+          ...risks.map((r) => ({ text: r.label || '', role: 'card', align: 'left' })),
+        ],
+      };
+    },
+  },
+
+  'org-vs-org-matrix': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const orgs = a.orgs || [];
+      const ql = a.quadrantLabels || {};
+      return {
+        args: { rows: 2, cols: 2 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(ql.tl ? [{ text: ql.tl, anchor: [-2.2, 2.8, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.tr ? [{ text: ql.tr, anchor: [2.2, 2.8, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.bl ? [{ text: ql.bl, anchor: [-2.2, 0.2, 0], role: 'card', align: 'center' }] : []),
+          ...(ql.br ? [{ text: ql.br, anchor: [2.2, 0.2, 0], role: 'card', align: 'center' }] : []),
+          ...orgs.map((o) => ({ text: o.name || '', role: 'card', align: 'center' })),
+        ],
+      };
+    },
+  },
+
+  'kanban-board': {
+    to: 'flow-chart-3d',
+    lift(a) {
+      const cols = a.columns || [];
+      return {
+        args: { steps: Math.max(1, cols.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...cols.map((c) => ({ text: c.label + (c.cards && c.cards.length ? ` (${c.cards.length})` : ''), role: 'card', align: 'left' })),
+        ],
+      };
+    },
+  },
+
+  'donut-with-center': {
+    to: 'circle-segmented-3d',
+    lift(a) {
+      const segs = a.segments || [];
+      return {
+        args: { segments: Math.max(2, segs.length), radius: 0.8, innerRatio: 0.55, thickness: 0.2, gapWidth: 0.12 },
+        transform: { translate: [0, 1.6, 0], rotate: [1.5708, 0, 0] },
+        overlay: [
+          { text: String(a.centerValue || ''), anchor: [0, 1.9, 0.6], role: 'value', radius: 0.5 },
+          ...(a.centerLabel ? [{ text: String(a.centerLabel), anchor: [0, 1.3, 0.6], role: 'card', align: 'center' }] : []),
+          ...rightCards(segs.map((s) => s.label || '')),
         ],
       };
     },
