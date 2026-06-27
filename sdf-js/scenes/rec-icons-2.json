@@ -3,28 +3,17 @@
   "name": "(lifted) icons-Icon Grid",
   "subjects": [
     {
-      "id": "cube-grid",
-      "type": "cube-3d",
+      "id": "icon-grid",
+      "type": "icon-grid-3d",
       "args": {
-        "arrangement": "grid",
-        "count": 9,
-        "cubeSize": 0.5,
-        "spacing": 0.22,
-        "material": "solid",
-        "colors": null,
-        "arrangementParams": {
-          "cols": 3
-        }
+        "rows": 2,
+        "cols": 4,
+        "glyphs": null
       },
       "transform": {
         "translate": [
           0,
           1.9,
-          0
-        ],
-        "rotate": [
-          1.5708,
-          0,
           0
         ]
       },

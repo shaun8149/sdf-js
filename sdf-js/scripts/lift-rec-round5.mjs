@@ -31,7 +31,7 @@ const DECKS = [
   },
   {
     id: 'mountain', name: 'Mountain Path – Graphics', slides: [
-      { title: 'The Summit', type: 'pyramid', args: { title: 'Mountain Path', layers: [{ label: 'Summit' }, { label: 'Ridge' }, { label: 'Ascent' }, { label: 'Base Camp' }] } },
+      { title: 'The Summit', type: 'mountain', args: { title: 'Mountain Path', stages: [{ label: 'Summit' }, { label: 'Ridge' }, { label: 'Ascent' }, { label: 'Base Camp' }] } },
       { title: 'The Climb', type: 'progression', args: { title: 'The Climb', steps: [{ label: 'Base Camp' }, { label: 'Ascent' }, { label: 'Ridge' }, { label: 'Summit' }] } },
       { title: 'Milestones', type: 'timeline', args: { title: 'Journey Milestones', events: [{ label: 'Start' }, { label: 'Camp 1' }, { label: 'Camp 2' }, { label: 'Peak' }] } },
       { title: 'Elevation Tiers', type: 'circle-stack', args: { title: 'Elevation', layers: [{ label: 'Peak' }, { label: 'High' }, { label: 'Mid' }, { label: 'Foot' }] } },
@@ -41,7 +41,7 @@ const DECKS = [
   {
     id: 'icons', name: 'Line Icons - Business', slides: [
       { title: 'Categories', type: 'radial-spoke', args: { title: 'Business Icons', values: [1, 1, 1, 1, 1, 1], labels: ['Finance', 'People', 'Growth', 'Tech', 'Strategy', 'Ops'] } },
-      { title: 'Icon Grid', type: 'cube-grid', args: { title: 'Icon Set', size: 3 } },
+      { title: 'Icon Grid', type: 'icon-grid', args: { title: 'Icon Set', rows: 2, cols: 4 } },
       { title: 'Concept Tiles', type: 'matrix-grid', args: { title: 'Concept Tiles', rows: 2, cols: 4 } },
       { title: 'Themes', type: 'circle-segmented', args: { title: 'Themes', segments: 6, labels: ['$', '%', '↑', '★', '✓', '◆'] } },
       { title: 'Toolkit', type: 'radial-spoke', args: { title: 'Toolkit', values: [1, 1, 1, 1], labels: ['Charts', 'Flows', 'Maps', 'KPIs'] } },

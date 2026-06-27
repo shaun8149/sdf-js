@@ -128,6 +128,8 @@ import { cubeSegmented3dSDF } from './components/shapes/cube-segmented-3d.js';
 import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
 import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
+import { mountain3dSDF } from './components/shapes/mountain-3d.js';
+import { iconGrid3dSDF } from './components/shapes/icon-grid-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
@@ -355,6 +357,7 @@ const PRIMITIVE_FACTORIES = {
       layerHeight: a.layerHeight ?? a.thickness ?? 0.3,
       gap: a.gap ?? 0.05,
       depth: a.depth ?? 0.6,
+      colors: a.colors ?? null,
     }),
   'bar-3d': (a) =>
     bar3dSDF({
@@ -364,6 +367,7 @@ const PRIMITIVE_FACTORIES = {
       barDepth: a.barDepth ?? a.depth ?? 0.4,
       gap: a.gap ?? 0.1,
       maxHeight: a.maxHeight ?? a.scale ?? 2.0,
+      colors: a.colors ?? null,
     }),
   'column-3d': (a) =>
     column3dSDF({
@@ -540,6 +544,25 @@ const PRIMITIVE_FACTORIES = {
       diskHeight: a.diskHeight ?? a.thickness ?? 0.18,
       gap: a.gap ?? 0.06,
       colors: a.colors ?? null,
+    }),
+  'mountain-3d': (a) =>
+    mountain3dSDF({
+      height: a.height ?? 2.4,
+      baseRadius: a.baseRadius ?? 1.5,
+      sidePeaks: a.sidePeaks ?? 2,
+      spread: a.spread ?? 1.7,
+      sideScale: a.sideScale ?? 0.6,
+      pathMarkers: a.pathMarkers ?? 4,
+      markerRadius: a.markerRadius ?? 0.13,
+    }),
+  'icon-grid-3d': (a) =>
+    iconGrid3dSDF({
+      rows: a.rows ?? 2,
+      cols: a.cols ?? 4,
+      tileSize: a.tileSize ?? 0.8,
+      gap: a.gap ?? 0.22,
+      tileDepth: a.tileDepth ?? 0.22,
+      glyphs: a.glyphs ?? null,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({

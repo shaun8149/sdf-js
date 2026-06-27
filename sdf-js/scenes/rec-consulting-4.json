@@ -6,7 +6,24 @@
       "id": "pyramid",
       "type": "pyramid-3d",
       "args": {
-        "levels": 3
+        "levels": 3,
+        "colors": [
+          {
+            "hue": 0.11,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
       },
       "transform": {
         "translate": [
@@ -70,38 +87,38 @@
     "loop": false,
     "shots": [
       {
-        "duration": 0.01,
         "pos": [
-          1,
-          2.1,
-          9.799999999999999
+          0.6,
+          0.7000000000000001,
+          9.8
         ],
         "target": [
           0,
-          1.6,
+          1.9000000000000001,
           0
         ],
-        "fov": 50,
+        "fov": 52,
+        "focalDistance": 8.4,
+        "duration": 0.01,
         "aperture": 0,
-        "focalDistance": 8.2,
         "ease": "smooth"
       },
       {
-        "duration": 13,
         "pos": [
           0,
-          1.8,
-          8.2
+          2.2,
+          8.4
         ],
         "target": [
           0,
-          1.6,
+          1.9000000000000001,
           0
         ],
         "fov": 46,
+        "focalDistance": 8.4,
+        "duration": 14,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 8.2,
         "ease": "smooth"
       }
     ]

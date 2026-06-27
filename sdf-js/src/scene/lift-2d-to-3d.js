@@ -50,12 +50,18 @@ const HUE_BY_TYPE = {
   // org / tree — cyan
   'org-chart': 0.54, 'tree-diagram': 0.54, 'sphere-tree': 0.54,
   // grid / blocks — steel blue
-  'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60,
+  'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60, 'icon-grid': 0.60,
   // misc
   'sphere-segmented': 0.50, 'kpi-card': 0.58, fishbone: 0.40, diamond: 0.58, gear: 0.58, arrow: 0.58, 'traffic-light': 0.58,
 };
 
+// full-material overrides for atoms whose look needs more than a hue swap
+const MATERIAL_OVERRIDE = {
+  mountain: { hue: 0.6, sat: 0.24, value: 0.62, roughness: 0.55, clearcoat: 0.15 }, // rock
+};
+
 function materialFor(type2d) {
+  if (MATERIAL_OVERRIDE[type2d]) return { ...DEFAULT_MAT, ...MATERIAL_OVERRIDE[type2d] };
   const hue = HUE_BY_TYPE[type2d];
   if (hue == null) return { ...DEFAULT_MAT };
   // warm hues (reds/oranges/golds) turn muddy brown at the default value/sat — brighten
@@ -114,6 +120,37 @@ export function coverCamera(target = [0, 1.6, 0]) {
       { duration: 17, pos: [0.2, target[1] + 0.35, 8.6], target, fov: 46, transition: 'blend', aperture: 0, focalDistance: 8.6, ease: 'smooth' },
     ],
   };
+}
+
+// ── per-slide-type camera moves: a subtle motion that suits the shape, instead of one
+//    push-in for everything. All 2-shot blends that settle to a clean front framing. ──
+const two = (a, b) => ({ loop: false, shots: [{ ...a, duration: 0.01, aperture: 0, ease: 'smooth' }, { ...b, duration: 14, transition: 'blend', aperture: 0, ease: 'smooth' }] });
+
+// radial / network — swing around to the front (orbit-in)
+function orbitIn(t, d = 8.4) {
+  return two({ pos: [d * 0.78, t[1] + 0.7, d * 0.62], target: t, fov: 48, focalDistance: d }, { pos: [0, t[1] + 0.2, d], target: t, fov: 46, focalDistance: d });
+}
+// horizontal sequences (timeline/gantt/bars) — glide laterally while pushing in
+function lateralPan(t, d = 8.4) {
+  return two({ pos: [-d * 0.5, t[1] + 0.55, d * 0.95], target: t, fov: 50, focalDistance: d }, { pos: [d * 0.18, t[1] + 0.2, d * 0.88], target: t, fov: 47, focalDistance: d });
+}
+// tall shapes (funnel/pyramid/mountain/stacks) — crane up from a low hero angle
+function craneUp(t, d = 8.4) {
+  const tgt = [t[0], t[1] + 0.3, t[2]];
+  return two({ pos: [0.6, t[1] - 0.9, d + 1.4], target: tgt, fov: 52, focalDistance: d }, { pos: [0, t[1] + 0.6, d], target: tgt, fov: 46, focalDistance: d });
+}
+
+const CAMERA_BY_TYPE = {
+  'sphere-network': orbitIn, mindmap: orbitIn, 'radial-spoke': orbitIn, 'relationship-graph': orbitIn,
+  pie: orbitIn, venn: orbitIn, 'circle-segmented': orbitIn, 'circle-loop': orbitIn, 'sphere-segmented': orbitIn,
+  timeline: lateralPan, gantt: lateralPan, progression: lateralPan, 'flow-chart': lateralPan,
+  bar: lateralPan, column: lateralPan, line: lateralPan,
+  funnel: craneUp, pyramid: craneUp, mountain: craneUp, 'layer-stack': craneUp, 'circle-stack': craneUp,
+};
+
+function cameraFor(type2d, target) {
+  const fn = CAMERA_BY_TYPE[type2d];
+  return fn ? fn(target) : pushInCamera(target);
 }
 
 // ── value formatting (2D atoms carry format: 'number'|'percent'|'currency') ──
@@ -251,7 +288,7 @@ export const TWIN_MAP = {
         radius: 0.32,
       }));
       return {
-        args: { values: norm, barWidth, barDepth: 0.55, gap, maxHeight },
+        args: { values: norm, barWidth, barDepth: 0.55, gap, maxHeight, colors: shades(HUE_BY_TYPE.bar, norm.length) },
         transform: { translate: [0, ty, 0] },
         overlay,
       };
@@ -370,7 +407,19 @@ export const TWIN_MAP = {
   'agenda-list': itemsTwin('agenda-list-3d', 'items', 'items'),
   'bullet-list': itemsTwin('bullet-list-3d', 'items', 'items'),
   progression: itemsTwin('progression-3d', 'steps', 'steps', { transform: { translate: [-1.0, 0.6, 0] } }),
-  pyramid: itemsTwin('pyramid-3d', 'layers', 'levels', { transform: { translate: [0, 0.6, 0] } }),
+  pyramid: {
+    to: 'pyramid-3d',
+    lift(a) {
+      const arr = asArray(a.layers);
+      const n = arr.length || (typeof a.layers === 'number' ? a.layers : 0) || 3;
+      const labels = arr.map(itemLabel).filter(Boolean);
+      return {
+        args: { levels: n, colors: shades(HUE_BY_TYPE.pyramid, n) },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: rightCards(labels.length ? labels : a.labels || []),
+      };
+    },
+  },
   'traffic-light': itemsTwin('traffic-light-3d', 'lights', 'lights', { transform: { translate: [0, 1.8, 0] } }),
   'circle-stack': {
     to: 'circle-stack-3d',
@@ -537,7 +586,31 @@ export const TWIN_MAP = {
     },
   },
 
-  // ── Sprint 22 B1: PL-recommendations atom twins ──
+  // summit / journey metaphor — a real mountain with an ascending trail
+  mountain: {
+    to: 'mountain-3d',
+    lift(a) {
+      const stages = a.stages || a.steps || a.layers || [];
+      return {
+        args: { height: 2.6, baseRadius: 1.6, sidePeaks: 2, pathMarkers: a.markers ?? Math.max(3, stages.length || 4) },
+        transform: { translate: [0, 0, 0] },
+        overlay: rightCards(stages.map(itemLabel)),
+      };
+    },
+  },
+
+  // icon set — a wall of pictogram tiles
+  'icon-grid': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      return {
+        args: { rows: a.rows ?? 2, cols: a.cols ?? 4, glyphs: a.glyphs ?? null },
+        transform: { translate: [0, 1.9, 0] },
+      };
+    },
+  },
+
+  // ── Sprint 22 B1: PL-recommendations atom twins (from main #180) ──
   'mountain-path': {
     to: 'progression-3d',
     lift(a) {
@@ -746,12 +819,13 @@ export function liftSceneData2dTo3d(scene2d) {
   }
 
   const target = [0, 1.6, 0];
+  const primaryType = scene2d.subjects?.[0]?.type;
   return {
     v: 1,
     name: `(lifted) ${scene2d.name || scene2d.subjects?.[0]?.type || 'scene'}`,
     subjects,
     overlay,
-    cameraSequence: scene2d.cover ? coverCamera(target) : pushInCamera(target),
+    cameraSequence: scene2d.cover ? coverCamera(target) : cameraFor(primaryType, target),
     defaults: { stage: { size: [18, 9, 11] } },
   };
 }
