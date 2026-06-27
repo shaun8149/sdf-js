@@ -174,6 +174,12 @@ const ATOM_LOADERS = {
   'cost-benefit-matrix': () => import('./charts/diagrams/cost-benefit-matrix.js'),
   'journey-flow-curve': () => import('./charts/diagrams/journey-flow-curve.js'),
 
+  // Sprint 22 Batch 3 — PL-recommendations atoms (risk-heatmap / org-vs-org-matrix / kanban-board / donut-with-center)
+  'risk-heatmap': () => import('./charts/diagrams/risk-heatmap.js'),
+  'org-vs-org-matrix': () => import('./charts/diagrams/org-vs-org-matrix.js'),
+  'kanban-board': () => import('./charts/diagrams/kanban-board.js'),
+  'donut-with-center': () => import('./charts/data/donut-with-center.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)
