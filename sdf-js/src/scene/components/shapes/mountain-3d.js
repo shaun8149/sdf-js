@@ -42,7 +42,8 @@ export function mountain3dSDF({
   const sh = height * sideScale;
   const sr = baseRadius * sideScale;
   if (S >= 1) parts.push(cone(sh, sr).translate([-spread, sh / 2, -0.5]));
-  if (S >= 2) parts.push(cone(sh * 0.9, sr * 0.95).translate([spread * 0.95, (sh * 0.9) / 2, -0.6]));
+  if (S >= 2)
+    parts.push(cone(sh * 0.9, sr * 0.95).translate([spread * 0.95, (sh * 0.9) / 2, -0.6]));
 
   // trail of markers zig-zagging up the front face (z+) of the main peak
   const M = Math.max(0, Math.floor(pathMarkers));
