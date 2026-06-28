@@ -1,0 +1,36 @@
+{
+  "slotIdx": 2,
+  "slotName": "testimonials",
+  "slotTitle": "testimonial-wall",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "testimonial-wall",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "What Our Customers Say",
+          "testimonials": [
+            {
+              "quote": "Cut our deployment time from 2 weeks to 2 hours. The team is now shipping daily.",
+              "name": "Sarah Chen",
+              "role": "VP Engineering, Acme Corp"
+            },
+            {
+              "quote": "The analytics dashboard is the first thing my team opens every single morning.",
+              "name": "Marcus Johnson",
+              "role": "CFO, BrightWave"
+            },
+            {
+              "quote": "Onboarding was the easiest we've ever experienced. Three days to first value.",
+              "name": "Priya Sharma",
+              "role": "COO, Meridian"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

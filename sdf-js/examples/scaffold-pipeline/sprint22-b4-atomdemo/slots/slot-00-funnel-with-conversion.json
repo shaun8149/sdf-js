@@ -1,0 +1,27 @@
+{
+  "slotIdx": 0,
+  "slotName": "funnel",
+  "slotTitle": "funnel-with-conversion",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "funnel-with-conversion",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "SaaS Conversion Funnel",
+          "stages": [
+            { "label": "Website Visitors", "value": 100000 },
+            { "label": "Free Signups", "value": 12000 },
+            { "label": "Trial Active", "value": 4200 },
+            { "label": "Paid Customers", "value": 760 }
+          ],
+          "showAbsolute": true,
+          "showConversion": true
+        }
+      }
+    ]
+  }
+}

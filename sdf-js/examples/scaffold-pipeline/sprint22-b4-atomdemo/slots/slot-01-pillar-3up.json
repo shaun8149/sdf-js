@@ -1,0 +1,37 @@
+{
+  "slotIdx": 1,
+  "slotName": "pillars",
+  "slotTitle": "pillar-3up",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "pillar-3up",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Our Three Pillars",
+          "pillars": [
+            {
+              "icon": "lightning",
+              "heading": "Speed",
+              "body": "Sub-100ms response across all queries, globally distributed edge infrastructure."
+            },
+            {
+              "icon": "shield-check",
+              "heading": "Security",
+              "body": "SOC 2 Type II certified. Zero-trust architecture with encryption at rest and in transit."
+            },
+            {
+              "icon": "globe",
+              "heading": "Scale",
+              "body": "100+ regions, auto-scaling infrastructure, zero operational burden for your team."
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  }
+}
