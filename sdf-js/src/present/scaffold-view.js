@@ -438,7 +438,11 @@ export async function mountScaffoldView(target, deckId) {
       `    - 5×5 risk grid (Cybersecurity / Risk Assessment) with likelihood × impact cells → \`risk-heatmap\` (NOT generic \`matrix-grid\`)\n` +
       `    - Competitive positioning 2×2 (Magic Quadrant style) with org/company bubbles → \`org-vs-org-matrix\` (NOT generic \`matrix-grid\`)\n` +
       `    - Project status board with column workflow (Backlog / In Progress / Done) → \`kanban-board\` (NOT generic \`flow-chart\`)\n` +
-      `    - Donut chart with prominent center metric / hero KPI value in the ring hole → \`donut-with-center\` (NOT generic \`pie\`)\n`;
+      `    - Donut chart with prominent center metric / hero KPI value in the ring hole → \`donut-with-center\` (NOT generic \`pie\`)\n` +
+      `    - Funnel with explicit conversion % chips between stages (SaaS 12% → 35% → 18%) → \`funnel-with-conversion\` (NOT generic \`funnel\`)\n` +
+      `    - 2-4 tall hero pillar cards side-by-side (Three Pillars / Three Principles / Our Values) → \`pillar-3up\` (NOT \`feature-card-grid\`)\n` +
+      `    - Row of 2-4 customer quote/testimonial cards (social proof, "What our customers say") → \`testimonial-wall\` (NOT \`bullet-list\`)\n` +
+      `    - Build vs Buy / Pros vs Cons / Left vs Right two-side comparison with visual scale → \`balance-scale\` (NOT \`swot\` or \`cost-benefit-matrix\`)\n`;
 
     const systemPrompt =
       `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +

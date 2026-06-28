@@ -180,6 +180,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch2-atoms.mjs' },
   // Sprint 22 Batch 3 — new atoms (risk-heatmap / org-vs-org-matrix / kanban-board / donut-with-center)
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch3-atoms.mjs' },
+  // Sprint 22 Batch 4 — new atoms (funnel-with-conversion / pillar-3up / testimonial-wall / balance-scale)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch4-atoms.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
