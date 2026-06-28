@@ -1,0 +1,34 @@
+{
+  "slotIdx": 3,
+  "slotName": "balance",
+  "slotTitle": "balance-scale",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "balance-scale",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Build vs Buy Analysis",
+          "leftLabel": "BUILD",
+          "rightLabel": "BUY",
+          "leftItems": [
+            "Full control over roadmap",
+            "IP retention",
+            "Custom fit to workflow",
+            "No vendor lock-in"
+          ],
+          "rightItems": [
+            "Faster time to market",
+            "Lower upfront cost",
+            "Vendor SLA & support",
+            "Proven at scale"
+          ],
+          "verdict": "Recommendation: Buy for v1, Build for v2"
+        }
+      }
+    ]
+  }
+}

@@ -180,6 +180,12 @@ const ATOM_LOADERS = {
   'kanban-board': () => import('./charts/diagrams/kanban-board.js'),
   'donut-with-center': () => import('./charts/data/donut-with-center.js'),
 
+  // Sprint 22 Batch 4 (2026-06-28) — PL-recommendations atoms (funnel-with-conversion / pillar-3up / testimonial-wall / balance-scale)
+  'funnel-with-conversion': () => import('./charts/data/funnel-with-conversion.js'),
+  'pillar-3up': () => import('./charts/lists/pillar-3up.js'),
+  'testimonial-wall': () => import('./charts/lists/testimonial-wall.js'),
+  'balance-scale': () => import('./charts/diagrams/balance-scale.js'),
+
   // Charts / diagrams (Phase 2)
   // Charts / hierarchy (Phase 2)
   // Shapes (Phase 3)

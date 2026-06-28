@@ -452,5 +452,102 @@ ok(fmt(7, 'number') === '7', 'fmt number');
   ok(cards.some((c) => c.text === 'Enterprise'), 'donut-with-center: segment labels in overlay');
 }
 
+// ── Sprint 22 B4: funnel-with-conversion → funnel-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'funnel-with-conversion',
+        args: {
+          title: 'SaaS Funnel',
+          stages: [
+            { label: 'Visitors', value: 100000 },
+            { label: 'Signups', value: 12000 },
+            { label: 'Trials', value: 4200 },
+            { label: 'Paid', value: 760 },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'funnel-3d', 'funnel-with-conversion → funnel-3d');
+  ok(out.subjects[0].args.stages === 4, 'funnel-with-conversion: stages = stages.length (4)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text.includes('Visitors')), 'funnel-with-conversion: stage labels in overlay');
+  ok(cards.some((c) => c.text.includes('Paid')), 'funnel-with-conversion: last stage label in overlay');
+}
+
+// ── Sprint 22 B4: pillar-3up → column-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'pillar-3up',
+        args: {
+          title: 'Our Three Pillars',
+          pillars: [
+            { icon: 'lightning', heading: 'Speed', body: 'Fast.' },
+            { icon: 'shield-check', heading: 'Security', body: 'Safe.' },
+            { icon: 'globe', heading: 'Scale', body: 'Big.' },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'column-3d', 'pillar-3up → column-3d');
+  ok(out.subjects[0].args.columns === 3, 'pillar-3up: columns = pillars.length (3)');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text === 'Speed'), 'pillar-3up: pillar heading in overlay');
+}
+
+// ── Sprint 22 B4: testimonial-wall → matrix-grid-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'testimonial-wall',
+        args: {
+          title: 'What Customers Say',
+          testimonials: [
+            { quote: 'Great product.', name: 'Alice', role: 'CEO, Corp A' },
+            { quote: 'Loved it.', name: 'Bob', role: 'CTO, Corp B' },
+            { quote: 'Best tool.', name: 'Carol', role: 'VP, Corp C' },
+          ],
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'matrix-grid-3d', 'testimonial-wall → matrix-grid-3d');
+  ok(out.subjects[0].args.rows === 1 && out.subjects[0].args.cols === 3, 'testimonial-wall: rows=1 cols=3');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text.includes('Alice')), 'testimonial-wall: name in overlay');
+}
+
+// ── Sprint 22 B4: balance-scale → venn-3d ──
+{
+  const out = liftSceneData2dTo3d({
+    subjects: [
+      {
+        type: 'balance-scale',
+        args: {
+          title: 'Build vs Buy',
+          leftLabel: 'BUILD',
+          rightLabel: 'BUY',
+          leftItems: ['Full control', 'IP retention'],
+          rightItems: ['Faster to market', 'Lower cost'],
+          verdict: 'Buy for v1',
+        },
+      },
+    ],
+  });
+  ok(out.subjects[0].type === 'venn-3d', 'balance-scale → venn-3d');
+  ok(out.subjects[0].args.sets === 2, 'balance-scale: sets = 2');
+  const cards = out.overlay.filter((o) => o.role === 'card');
+  ok(cards.some((c) => c.text === 'BUILD'), 'balance-scale: leftLabel in overlay');
+  ok(cards.some((c) => c.text === 'BUY'), 'balance-scale: rightLabel in overlay');
+  const vals = out.overlay.filter((o) => o.role === 'value');
+  ok(vals.some((v) => v.text === 'Buy for v1'), 'balance-scale: verdict → value overlay');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
