@@ -139,10 +139,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
     curY += Math.round(markSize * 0.55);
 
-    // Quote text
+    // Quote text — card bg is hardcoded white, use fixed dark text
+    // (do NOT use palette.silhouetteColor which is white in dark themes → invisible)
     const quoteFs = Math.min(Math.round(availH * 0.058), 14);
     ctx.font = `500 ${quoteFs}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle = rgbCss(fg);
+    ctx.fillStyle = 'rgba(20,24,34,0.88)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     if (t.quote) {
@@ -167,7 +168,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     if (t.role) {
       const roleFs = Math.min(Math.round(availH * 0.036), 11);
       ctx.font = `500 ${roleFs}px Inter, system-ui, sans-serif`;
-      ctx.fillStyle = rgbaCss(fg, 0.5);
+      ctx.fillStyle = 'rgba(40,46,60,0.55)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.fillText(t.role, colX + colW / 2, colY + availH - CARD_PAD);
