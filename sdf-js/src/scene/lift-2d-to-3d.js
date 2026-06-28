@@ -841,6 +841,97 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 22 B4 twins ──
+
+  'funnel-with-conversion': {
+    to: 'funnel-3d',
+    lift(a) {
+      const stages = a.stages || [];
+      const n = stages.length || 4;
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: {
+          stages: n,
+          topRadius: 1.15,
+          bottomRadius: 0.28,
+          stageHeight: 0.55,
+          gap: 0.1,
+          colors: shades(HUE_BY_TYPE.funnel, n),
+        },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...rightCards(
+            stages.map((s, i) => {
+              const label = s.label || '';
+              const conv = i > 0 && stages[i - 1]?.value != null && s.value != null
+                ? ` (${((Number(s.value) / Number(stages[i - 1].value)) * 100).toFixed(1)}%)`
+                : '';
+              return label + conv;
+            }),
+          ),
+        ],
+      };
+    },
+  },
+
+  'pillar-3up': {
+    to: 'column-3d',
+    lift(a) {
+      const pillars = a.pillars || [];
+      const n = pillars.length || 3;
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { columns: n, height: 1.8 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...rightCards(pillars.map((p) => p.heading || '')),
+        ],
+      };
+    },
+  },
+
+  'testimonial-wall': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const testimonials = a.testimonials || [];
+      const n = Math.max(2, testimonials.length);
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { rows: 1, cols: n },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...rightCards(
+            testimonials.map((t) => (t.name || '') + (t.role ? ` · ${t.role}` : '')),
+          ),
+        ],
+      };
+    },
+  },
+
+  'balance-scale': {
+    to: 'venn-3d',
+    lift(a) {
+      const leftItems = a.leftItems || [];
+      const rightItems = a.rightItems || [];
+      const titleOverlay = a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : [];
+      return {
+        args: { sets: 2, overlap: 0.12 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...titleOverlay,
+          ...(a.leftLabel ? [{ text: String(a.leftLabel), anchor: [-2.2, 2.6, 0], role: 'card', align: 'center' }] : []),
+          ...(a.rightLabel ? [{ text: String(a.rightLabel), anchor: [2.2, 2.6, 0], role: 'card', align: 'center' }] : []),
+          ...leftItems.slice(0, 4).map((item) => ({ text: String(item), role: 'card', align: 'left' })),
+          ...rightItems.slice(0, 4).map((item) => ({ text: String(item), role: 'card', align: 'right' })),
+          ...(a.verdict ? [{ text: String(a.verdict), anchor: [0, 0.4, 0], role: 'value', align: 'center' }] : []),
+        ],
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
