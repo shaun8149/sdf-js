@@ -19,10 +19,10 @@ const FACTORY = new Set(PRIMITIVE_FACTORY_TYPES);
 const CANVAS_W = 1280;
 const CANVAS_H = 720;
 // 3D "wall" the canvas maps onto
-const SPAN_X = 11.0; // world width  → X ∈ [-5.5, 5.5]
-const SPAN_Y = 5.6; // world height
+const SPAN_X = 10.4; // world width  → X ∈ [-5.2, 5.2]
+const SPAN_Y = 5.4; // world height
 const CENTER_Y = 2.5; // vertical centre of the content band
-const NATURAL = 3.0; // an atom's rough built diameter, for box-fit scaling
+const NATURAL = 2.3; // an atom's rough built diameter, for box-fit scaling
 
 export function hasTwin(type2d) {
   return FACTORY.has(twinTypeOf(type2d));
@@ -37,7 +37,7 @@ function placeBox(x, y, w, h) {
   const worldY = -(cy / CANVAS_H - 0.5) * SPAN_Y + CENTER_Y;
   const boxW = (w / CANVAS_W) * SPAN_X;
   const boxH = (h / CANVAS_H) * SPAN_Y;
-  const scale = Math.max(0.42, Math.min(1.5, Math.min(boxW, boxH) / NATURAL));
+  const scale = Math.max(0.55, Math.min(1.75, Math.min(boxW, boxH) / NATURAL));
   return { worldX, worldY, scale };
 }
 
@@ -84,7 +84,8 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
           T[1] + scale * (a[1] - base[1]),
           T[2] + scale * (a[2] - base[2]),
         ],
-        ...(typeof o.radius === 'number' ? { radius: o.radius * scale } : {}),
+        // keep value readouts legible even on small subjects (don't shrink below a floor)
+        ...(typeof o.radius === 'number' ? { radius: Math.max(o.role === 'value' ? 0.36 : 0.2, o.radius * scale) } : {}),
       });
     }
   });
@@ -95,8 +96,8 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
   const cam = {
     loop: false,
     shots: [
-      { duration: 0.01, pos: [1.6, CENTER_Y + 1.2, 15.5], target, fov: 50, aperture: 0, focalDistance: 14, ease: 'smooth' },
-      { duration: 14, pos: [0, CENTER_Y + 0.4, 13.0], target, fov: 47, transition: 'blend', aperture: 0, focalDistance: 13, ease: 'smooth' },
+      { duration: 0.01, pos: [1.4, CENTER_Y + 1.0, 14.0], target, fov: 48, aperture: 0, focalDistance: 12.5, ease: 'smooth' },
+      { duration: 14, pos: [0, CENTER_Y + 0.35, 11.8], target, fov: 46, transition: 'blend', aperture: 0, focalDistance: 11.8, ease: 'smooth' },
     ],
   };
 

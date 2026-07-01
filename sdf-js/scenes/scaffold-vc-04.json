@@ -3,6 +3,29 @@
   "name": "(scaffold) pitch-deck-vc/product",
   "subjects": [
     {
+      "id": "device-mockup-frame-0",
+      "type": "device-mockup-3d",
+      "args": {
+        "device": "laptop"
+      },
+      "transform": {
+        "translate": [
+          2.6,
+          2.5,
+          0
+        ],
+        "scale": 1.6956521739130437
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
       "id": "bullet-list-1",
       "type": "bullet-list-3d",
       "args": {
@@ -10,11 +33,11 @@
       },
       "transform": {
         "translate": [
-          -2.3203125,
+          -2.19375,
           2.5,
           0
         ],
-        "scale": 1.2444444444444442
+        "scale": 1.565217391304348
       },
       "material": {
         "hue": 0.4,
@@ -28,10 +51,20 @@
   ],
   "overlay": [
     {
+      "text": "Atlas Present Editor",
+      "anchor": [
+        2.6,
+        -2.7565217391304344,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
       "text": "Upload PDF, get a scaffolded 3D deck",
       "anchor": [
-        -0.7523125000000004,
-        3.868888888888889,
+        -0.22157608695652176,
+        4.221739130434782,
         0
       ],
       "role": "card",
@@ -40,8 +73,8 @@
     {
       "text": "Inline ⚡ paragraph trigger for any text",
       "anchor": [
-        -0.7523125000000004,
-        2.972888888888889,
+        -0.22157608695652176,
+        3.0947826086956525,
         0
       ],
       "role": "card",
@@ -50,8 +83,8 @@
     {
       "text": "Live-edit canvas with the LLM in the loop",
       "anchor": [
-        -0.7523125000000004,
-        2.076888888888889,
+        -0.22157608695652176,
+        1.967826086956522,
         0
       ],
       "role": "card",
@@ -60,8 +93,8 @@
     {
       "text": "Export to PPT/PDF/MP4 (forthcoming)",
       "anchor": [
-        -0.7523125000000004,
-        1.180888888888889,
+        -0.22157608695652176,
+        0.8408695652173912,
         0
       ],
       "role": "card",
@@ -83,36 +116,36 @@
       {
         "duration": 0.01,
         "pos": [
-          1.6,
-          3.7,
-          15.5
+          1.4,
+          3.5,
+          14
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 50,
+        "fov": 48,
         "aperture": 0,
-        "focalDistance": 14,
+        "focalDistance": 12.5,
         "ease": "smooth"
       },
       {
         "duration": 14,
         "pos": [
           0,
-          2.9,
-          13
+          2.85,
+          11.8
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 47,
+        "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 13,
+        "focalDistance": 11.8,
         "ease": "smooth"
       }
     ]

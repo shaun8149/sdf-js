@@ -17,7 +17,7 @@
           2.5,
           0
         ],
-        "scale": 1.5
+        "scale": 1.75
       },
       "material": {
         "hue": 0.57,
@@ -46,36 +46,36 @@
       {
         "duration": 0.01,
         "pos": [
-          1.6,
-          3.7,
-          15.5
+          1.4,
+          3.5,
+          14
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 50,
+        "fov": 48,
         "aperture": 0,
-        "focalDistance": 14,
+        "focalDistance": 12.5,
         "ease": "smooth"
       },
       {
         "duration": 14,
         "pos": [
           0,
-          2.9,
-          13
+          2.85,
+          11.8
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 47,
+        "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 13,
+        "focalDistance": 11.8,
         "ease": "smooth"
       }
     ]

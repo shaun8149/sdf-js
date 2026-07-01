@@ -3,6 +3,39 @@
   "name": "(scaffold) pitch-deck-vc/business-model",
   "subjects": [
     {
+      "id": "break-even-0",
+      "type": "line-3d",
+      "args": {
+        "values": [
+          0.15,
+          0.35,
+          0.55,
+          0.75,
+          0.95
+        ],
+        "pointSpacing": 0.7,
+        "pointRadius": 0.11,
+        "lineThickness": 0.06,
+        "maxHeight": 2
+      },
+      "transform": {
+        "translate": [
+          2.275,
+          2.35,
+          0
+        ],
+        "scale": 1.565217391304348
+      },
+      "material": {
+        "hue": 0.4,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
       "id": "kpi-card-1",
       "type": "kpi-card-3d",
       "args": {
@@ -11,11 +44,11 @@
       },
       "transform": {
         "translate": [
-          -2.6640625,
-          3.6666666666666665,
+          -2.5187500000000003,
+          3.625,
           0
         ],
-        "scale": 0.42
+        "scale": 0.55
       },
       "material": {
         "hue": 0.58,
@@ -34,11 +67,11 @@
       },
       "transform": {
         "translate": [
-          -2.6640625,
-          1.6444444444444444,
+          -2.5187500000000003,
+          1.6749999999999998,
           0
         ],
-        "scale": 0.7777777777777778
+        "scale": 0.9782608695652176
       },
       "material": {
         "hue": 0.4,
@@ -54,18 +87,18 @@
     {
       "text": "$3M",
       "anchor": [
-        -2.6640625,
-        3.7926666666666664,
-        0.252
+        -2.5187500000000003,
+        3.79,
+        0.33
       ],
       "role": "value",
-      "radius": 0.21
+      "radius": 0.36
     },
     {
       "text": "Pro: $30/user/month",
       "anchor": [
-        -1.6840625,
-        2.5,
+        -1.2861413043478263,
+        2.751086956521739,
         0
       ],
       "role": "card",
@@ -74,8 +107,8 @@
     {
       "text": "Team: $200/seat/month",
       "anchor": [
-        -1.6840625,
-        1.94,
+        -1.2861413043478263,
+        2.0467391304347826,
         0
       ],
       "role": "card",
@@ -84,8 +117,8 @@
     {
       "text": "Studio: $50K/year",
       "anchor": [
-        -1.6840625,
-        1.3800000000000001,
+        -1.2861413043478263,
+        1.342391304347826,
         0
       ],
       "role": "card",
@@ -107,36 +140,36 @@
       {
         "duration": 0.01,
         "pos": [
-          1.6,
-          3.7,
-          15.5
+          1.4,
+          3.5,
+          14
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 50,
+        "fov": 48,
         "aperture": 0,
-        "focalDistance": 14,
+        "focalDistance": 12.5,
         "ease": "smooth"
       },
       {
         "duration": 14,
         "pos": [
           0,
-          2.9,
-          13
+          2.85,
+          11.8
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 47,
+        "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 13,
+        "focalDistance": 11.8,
         "ease": "smooth"
       }
     ]

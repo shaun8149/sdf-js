@@ -130,6 +130,7 @@ import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
 import { mountain3dSDF } from './components/shapes/mountain-3d.js';
 import { iconGrid3dSDF } from './components/shapes/icon-grid-3d.js';
+import { deviceMockup3dSDF } from './components/shapes/device-mockup-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
@@ -563,6 +564,13 @@ const PRIMITIVE_FACTORIES = {
       gap: a.gap ?? 0.22,
       tileDepth: a.tileDepth ?? 0.22,
       glyphs: a.glyphs ?? null,
+    }),
+  'device-mockup-3d': (a) =>
+    deviceMockup3dSDF({
+      device: a.device ?? 'phone',
+      scale: a.scale ?? 1,
+      depth: a.depth ?? 0.16,
+      bezel: a.bezel ?? 0.1,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({
