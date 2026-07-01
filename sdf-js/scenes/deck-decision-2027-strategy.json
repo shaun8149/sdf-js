@@ -1,0 +1,42 @@
+{
+  "id": "deck-decision-2027-strategy",
+  "name": "Decision 2027 — Strategic Path",
+  "segments": [
+    {
+      "file": "hero-decision-0.json",
+      "title": "Goal",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-decision-1.json",
+      "title": "Framework",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-decision-2.json",
+      "title": "Tradeoffs",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-decision-3.json",
+      "title": "Decision",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-decision-4.json",
+      "title": "Maturity",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-decision-5.json",
+      "title": "OKR",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}
