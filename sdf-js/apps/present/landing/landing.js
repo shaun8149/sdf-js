@@ -20,7 +20,36 @@ import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postp
 import { ShaderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/OutputPass.js';
 
-const DECK = '../index.html?deck=deck-studio-keynote';
+// Sprint 23: default deck (main-screen click) + 3 hero decks (poster clicks).
+// Main-screen click still routes to deck-studio-keynote (backward compat). Each
+// poster plane on the right side wall carries userData.deckId; a click on one
+// mutates targetDeckHref so the enter() → fly-in → fade sequence lands on that
+// deck's ?deck= URL instead of the default.
+const DEFAULT_DECK_ID = 'deck-studio-keynote';
+const deckUrl = (id) => `../index.html?deck=${id}`;
+let targetDeckHref = deckUrl(DEFAULT_DECK_ID);
+
+const DECKS = [
+  {
+    id: 'deck-decision-2027-strategy',
+    title: 'DECISION',
+    subtitle: '2027 · Strategic Path',
+    accent: 0xf2b04a, // gold — mountain / summit
+  },
+  {
+    id: 'deck-cybersecurity-brief',
+    title: 'CYBER',
+    subtitle: 'Brief 2027',
+    accent: 0x7de3c9, // teal — vigilance
+  },
+  {
+    id: 'deck-customer-success-review',
+    title: 'CS REVIEW',
+    subtitle: 'Q3 2027',
+    accent: 0xd77ef2, // magenta — customer heart
+  },
+];
+
 const W = () => window.innerWidth;
 const H = () => window.innerHeight;
 
@@ -253,6 +282,97 @@ for (const [x, z, s] of [
   scene.add(crate);
 }
 
+// ---- Sprint 23: poster wall (right-side wall, 3 hero decks) ----------------
+// Movie-poster planes (2.4 × 1.5, 8:5). Positioned on the RIGHT wall spaced along
+// z, angled ~30° toward the camera (which hugs the left wall). Each carries a
+// canvas texture with title + subtitle + accent stripe and a userData.deckId
+// used by the raycast click handler below. Raycasting picks the poster; enter()
+// then flies to that poster and hands off to that deck's URL.
+const POSTER_W = 2.4;
+const POSTER_H = 1.5;
+const POSTER_WALL_X = ROOM_W / 2 - 0.06; // just inside the right wall
+const POSTER_ROTATE_Y = -Math.PI / 2 + 0.35; // face toward left-of-room (camera side)
+const POSTER_ZS = [BACK + 10, BACK + 16, BACK + 22]; // three stations along z
+const POSTER_Y = 2.3;
+
+const posterMeshes = [];
+function makePosterTexture({ title, subtitle, accent }) {
+  const w = 512,
+    h = 320;
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const g = c.getContext('2d');
+  // dark base + subtle vertical gradient so the poster reads at a glance
+  const bg = g.createLinearGradient(0, 0, 0, h);
+  bg.addColorStop(0, '#111721');
+  bg.addColorStop(1, '#04070c');
+  g.fillStyle = bg;
+  g.fillRect(0, 0, w, h);
+  // accent bar (top edge) + accent glyph strip along the left
+  const hex = `#${accent.toString(16).padStart(6, '0')}`;
+  g.fillStyle = hex;
+  g.fillRect(0, 0, w, 8);
+  g.fillRect(0, h - 8, w, 8);
+  g.fillRect(0, 0, 8, h);
+  // title (large, letter-spaced)
+  g.fillStyle = '#eaf2ff';
+  g.font = '700 62px -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif';
+  g.textAlign = 'left';
+  g.fillText(title, 44, 138);
+  // subtitle (smaller, muted)
+  g.fillStyle = 'rgba(180,200,230,0.7)';
+  g.font = '500 26px -apple-system, "SF Pro Text", sans-serif';
+  g.fillText(subtitle, 46, 184);
+  // corner "hero deck" tag
+  g.fillStyle = hex;
+  g.font = '600 16px -apple-system, sans-serif';
+  g.textAlign = 'right';
+  g.fillText('HERO DECK', w - 22, h - 24);
+  // "▸ CLICK TO ENTER" hint on the left
+  g.fillStyle = 'rgba(200,220,245,0.55)';
+  g.textAlign = 'left';
+  g.font = '500 15px -apple-system, sans-serif';
+  g.fillText('▸ CLICK TO ENTER', 46, h - 24);
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 4;
+  return tex;
+}
+
+DECKS.forEach((deck, i) => {
+  const z = POSTER_ZS[i];
+  const posterMat = new THREE.MeshStandardMaterial({
+    map: makePosterTexture(deck),
+    roughness: 0.55,
+    metalness: 0.15,
+    emissive: new THREE.Color(deck.accent),
+    emissiveIntensity: 0.06, // faint self-glow so posters read in the dim room
+  });
+  const poster = new THREE.Mesh(new THREE.PlaneGeometry(POSTER_W, POSTER_H), posterMat);
+  poster.position.set(POSTER_WALL_X, POSTER_Y, z);
+  poster.rotation.y = POSTER_ROTATE_Y;
+  poster.userData.deckId = deck.id;
+  poster.userData.accent = deck.accent;
+  scene.add(poster);
+  posterMeshes.push(poster);
+
+  // subtle frame around each poster (slightly larger, sits flush to wall)
+  const frame = new THREE.Mesh(
+    new THREE.PlaneGeometry(POSTER_W + 0.18, POSTER_H + 0.18),
+    mat(0x0a0d13, 0.6, 0.35),
+  );
+  frame.position.set(POSTER_WALL_X + 0.01, POSTER_Y, z);
+  frame.rotation.y = POSTER_ROTATE_Y;
+  scene.add(frame);
+
+  // one accent point light per poster — grazes the wall so the poster reads
+  const pl = new THREE.PointLight(deck.accent, 3.2, 6, 2.1);
+  pl.position.set(POSTER_WALL_X - 1.2, POSTER_Y + 1.0, z);
+  scene.add(pl);
+});
+// tag the main screen so the raycaster can route it to the default deck too
+screen.userData.deckId = DEFAULT_DECK_ID;
+
 scene.add(new THREE.AmbientLight(0x1c2935, 1.0));
 scene.add(new THREE.HemisphereLight(0x40597a, 0x080c12, 1.7)); // room (incl. side walls) dimly readable
 
@@ -323,10 +443,16 @@ function animate() {
       if (e > 4.6) fadeEl.classList.add('on');
       if (e > 5.5) {
         state = 'done';
-        window.location.href = DECK;
+        window.location.href = targetDeckHref; // routes to whichever poster/screen was clicked
       }
     }
     return;
+  }
+
+  // subtle poster idle: gentle emissive breathing so they feel alive across the room
+  for (const p of posterMeshes) {
+    p.material.emissiveIntensity =
+      0.055 + 0.035 * (0.5 + 0.5 * Math.sin(time * 0.6 + p.position.z));
   }
 
   // room / entering: oblique dolly toward the screen
@@ -355,13 +481,46 @@ function animate() {
 }
 animate();
 
-function enter() {
+// ---- raycaster: main screen or poster → intro fly-in → that deck's URL -----
+// Backward compat: clicks that miss all clickables (walls, floor, model, empty
+// space) still enter the DEFAULT deck (deck-studio-keynote) — matches the prior
+// "click anywhere to enter" UX. Poster clicks mutate targetDeckHref so the same
+// push-in intro lands on that hero deck instead of the studio keynote.
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const clickables = [screen, ...posterMeshes];
+
+function pickDeckId(event) {
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+  raycaster.setFromCamera(pointer, camera);
+  const hits = raycaster.intersectObjects(clickables, false);
+  return hits.length > 0 ? hits[0].object.userData.deckId || DEFAULT_DECK_ID : DEFAULT_DECK_ID;
+}
+
+function enter(deckId) {
   if (state !== 'room') return;
+  targetDeckHref = deckUrl(deckId || DEFAULT_DECK_ID);
   state = 'entering';
   document.body.classList.add('entering'); // hide the room UI during the 片头
 }
-canvas.addEventListener('click', enter);
-document.querySelectorAll('[data-enter]').forEach((el) => el.addEventListener('click', enter));
+
+canvas.addEventListener('click', (event) => enter(pickDeckId(event)));
+document
+  .querySelectorAll('[data-enter]')
+  .forEach((el) => el.addEventListener('click', () => enter(DEFAULT_DECK_ID)));
+
+// hover cursor: pointer when over a clickable poster or the main screen
+canvas.addEventListener('mousemove', (event) => {
+  if (state !== 'room') return;
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+  raycaster.setFromCamera(pointer, camera);
+  const hits = raycaster.intersectObjects(clickables, false);
+  document.body.style.cursor = hits.length > 0 ? 'pointer' : '';
+});
 
 window.addEventListener('resize', () => {
   camera.aspect = W() / H();
