@@ -36,8 +36,11 @@ sdf-js/scripts/lift-sprint22-demo.mjs
 sdf-js/scripts/lift-rec-*.mjs
 sdf-js/scripts/lift-hero-*.mjs
 sdf-js/scripts/lift-charts-batch3.mjs
+sdf-js/scripts/lift-scaffold-deck.mjs
 sdf-js/scripts/test-lift-2d-to-3d.mjs
+sdf-js/scripts/test-lift-scaffold.mjs
 sdf-js/src/scene/lift-2d-to-3d.js
+sdf-js/src/scene/lift-scaffold.js
 
 # Smoke test baselines (binary/visual diff artifacts)
 sdf-js/tests/smoke/baselines/
