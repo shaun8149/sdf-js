@@ -1,0 +1,178 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/market-size",
+  "subjects": [
+    {
+      "id": "pyramid-0",
+      "type": "pyramid-3d",
+      "args": {
+        "levels": 3,
+        "colors": [
+          {
+            "hue": 0.11,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          2.578125,
+          2.3444444444444446,
+          0
+        ],
+        "scale": 1.348148148148148
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.72,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-1",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "18M",
+        "label": "Knowledge Workers"
+      },
+      "transform": {
+        "translate": [
+          -2.578125,
+          3.2,
+          0
+        ],
+        "scale": 0.4666666666666666
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-2",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$4.8B",
+        "label": "Core Market"
+      },
+      "transform": {
+        "translate": [
+          -1.41796875,
+          1.5666666666666669,
+          0
+        ],
+        "scale": 0.42
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-3",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$48B",
+        "label": "TAM 2028"
+      },
+      "transform": {
+        "translate": [
+          -3.73828125,
+          1.5666666666666669,
+          0
+        ],
+        "scale": 0.42
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "MARKET SIZE",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.6,
+          3.7,
+          15.5
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 14,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.9,
+          13
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 47,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 13,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}
