@@ -54,6 +54,46 @@
   ],
   "overlay": [
     {
+      "text": "Presentation visuals are stuck in 2008",
+      "anchor": [
+        4.146125,
+        3.868888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "AI-PPT tools fixed the text — visuals still dead",
+      "anchor": [
+        4.146125,
+        2.972888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Designers spend 60% of their time on layout busywork",
+      "anchor": [
+        4.146125,
+        2.076888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "60%",
+      "anchor": [
+        -2.40625,
+        2.873333333333333,
+        0.43555555555555553
+      ],
+      "role": "value",
+      "radius": 0.36296296296296293
+    },
+    {
       "text": "PROBLEM",
       "anchor": [
         0,

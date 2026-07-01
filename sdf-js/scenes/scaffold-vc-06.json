@@ -52,6 +52,46 @@
   ],
   "overlay": [
     {
+      "text": "$3M",
+      "anchor": [
+        -2.6640625,
+        3.7926666666666664,
+        0.252
+      ],
+      "role": "value",
+      "radius": 0.21
+    },
+    {
+      "text": "Pro: $30/user/month",
+      "anchor": [
+        -1.6840625,
+        2.5,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Team: $200/seat/month",
+      "anchor": [
+        -1.6840625,
+        1.94,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Studio: $50K/year",
+      "anchor": [
+        -1.6840625,
+        1.3800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
       "text": "BUSINESS MODEL",
       "anchor": [
         0,

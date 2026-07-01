@@ -117,6 +117,66 @@
   ],
   "overlay": [
     {
+      "text": "AI-augmented productivity",
+      "anchor": [
+        4.276791666666666,
+        5.040740740740741,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "PPT/Keynote/Google Slides",
+      "anchor": [
+        4.276791666666666,
+        4.070074074074075,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Editorial illustration + infographic",
+      "anchor": [
+        4.276791666666666,
+        3.0994074074074076,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "18M",
+      "anchor": [
+        -2.578125,
+        3.34,
+        0.27999999999999997
+      ],
+      "role": "value",
+      "radius": 0.2333333333333333
+    },
+    {
+      "text": "$4.8B",
+      "anchor": [
+        -1.41796875,
+        1.6926666666666668,
+        0.252
+      ],
+      "role": "value",
+      "radius": 0.21
+    },
+    {
+      "text": "$48B",
+      "anchor": [
+        -3.73828125,
+        1.6926666666666668,
+        0.252
+      ],
+      "role": "value",
+      "radius": 0.21
+    },
+    {
       "text": "MARKET SIZE",
       "anchor": [
         0,

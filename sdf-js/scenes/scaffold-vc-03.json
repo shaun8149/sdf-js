@@ -28,6 +28,46 @@
   ],
   "overlay": [
     {
+      "text": "LLM writes structured intent",
+      "anchor": [
+        1.6986666666666665,
+        3.6925925925925926,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Atlas runtime renders illustration",
+      "anchor": [
+        1.6986666666666665,
+        2.721925925925926,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "4 renderer variants (silhouette/3D/lines/crayon)",
+      "anchor": [
+        1.6986666666666665,
+        1.7512592592592595,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Editable: tweak intent → regenerate visual",
+      "anchor": [
+        1.6986666666666665,
+        0.7805925925925925,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
       "text": "OUR SOLUTION",
       "anchor": [
         0,

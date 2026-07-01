@@ -58,14 +58,35 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
       skipped.push(s.type);
       return;
     }
-    const { subject3d } = liftSubject(s);
+    const { subject3d, overlay: ov } = liftSubject(s);
     subject3d.id = `${subject3d.id}-${i}`; // unique per slot (a slot can hold N of a type)
     const { worldX, worldY, scale } = placeBox(s.x ?? 0, s.y ?? 0, s.w ?? CANVAS_W, s.h ?? CANVAS_H);
-    // keep any rotate the twin set (e.g. circle-segmented faces camera); override the
-    // position with the 2D-layout mapping and fit-scale into the box.
+    // the twin laid out its geometry + overlays around this base translate; capture it
+    // before we override, so the overlays can be re-anchored by the same delta.
+    const base = (subject3d.transform && subject3d.transform.translate) || [0, 1.5, 0];
     const baseRotate = subject3d.transform && subject3d.transform.rotate;
     subject3d.transform = { translate: [worldX, worldY, 0], scale, ...(baseRotate ? { rotate: baseRotate } : {}) };
     subjects.push(subject3d);
+
+    // re-anchor the subject's overlays to its 3D box: newAnchor = T + scale·(a − base).
+    // drop the per-subject title (the slot carries one); shrink value fonts with scale.
+    // legend cards sit 3u to the side in single-subject layout — in a packed slide that
+    // flings them to the screen edge, so compress the horizontal offset to hug the box.
+    const T = [worldX, worldY, 0];
+    for (const o of ov) {
+      if (o.role === 'title') continue;
+      const a = o.anchor || [0, 0, 0];
+      const kx = o.role === 'card' ? 0.42 : 1.0; // horizontal compression for legend cards
+      overlay.push({
+        ...o,
+        anchor: [
+          T[0] + scale * (a[0] - base[0]) * kx,
+          T[1] + scale * (a[1] - base[1]),
+          T[2] + scale * (a[2] - base[2]),
+        ],
+        ...(typeof o.radius === 'number' ? { radius: o.radius * scale } : {}),
+      });
+    }
   });
 
   if (title) overlay.push({ text: String(title).toUpperCase(), anchor: [0, 4.9, 0], role: 'title' });

@@ -28,6 +28,46 @@
   ],
   "overlay": [
     {
+      "text": "Upload PDF, get a scaffolded 3D deck",
+      "anchor": [
+        -0.7523125000000004,
+        3.868888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Inline ⚡ paragraph trigger for any text",
+      "anchor": [
+        -0.7523125000000004,
+        2.972888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Live-edit canvas with the LLM in the loop",
+      "anchor": [
+        -0.7523125000000004,
+        2.076888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Export to PPT/PDF/MP4 (forthcoming)",
+      "anchor": [
+        -0.7523125000000004,
+        1.180888888888889,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
       "text": "PRODUCT DEMO",
       "anchor": [
         0,
