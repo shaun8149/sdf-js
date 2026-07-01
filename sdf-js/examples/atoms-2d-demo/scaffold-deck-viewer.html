@@ -215,6 +215,21 @@
 
       document.getElementById('reload-btn').addEventListener('click', loadDeck);
       document.getElementById('deck-picker').addEventListener('change', loadDeck);
+      // ?deck=<name> deep-link (e.g. ?deck=vc-pitch) + ?embed=1 to hide the app chrome —
+      // so the viewer can be iframed straight to a specific deck (before/after page).
+      const _q = new URLSearchParams(location.search);
+      const deckParam = _q.get('deck');
+      if (deckParam) {
+        const picker = document.getElementById('deck-picker');
+        const opt = [...picker.options].find((o) => o.value.includes(`/${deckParam}/`));
+        if (opt) picker.value = opt.value;
+      }
+      if (_q.get('embed')) {
+        const s = document.createElement('style');
+        s.textContent =
+          'h1,p,.controls,.deck-meta{display:none!important} body{padding:12px!important;background:#fff}';
+        document.head.appendChild(s);
+      }
       loadDeck();
     </script>
   </body>

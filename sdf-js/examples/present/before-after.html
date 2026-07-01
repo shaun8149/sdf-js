@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Atlas — Before / After (2D pseudo-3D → real 3D)</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; background: #0e0f12; color: #e8e8ea;
+        font-family: -apple-system, 'Inter', system-ui, sans-serif; overflow: hidden; }
+      .bar { height: 52px; display: flex; align-items: center; gap: 16px; padding: 0 20px;
+        border-bottom: 1px solid #23252b; background: #131419; }
+      .bar h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+      .bar .sub { font-size: 12px; color: #8a8d96; }
+      .bar .deck { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+        color: #b7bac4; background: #1c1e25; padding: 4px 10px; border-radius: 4px; }
+      .split { display: flex; height: calc(100% - 52px); }
+      .pane { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+      .pane + .pane { border-left: 1px solid #23252b; }
+      .label { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 16px;
+        font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+        background: #16171c; border-bottom: 1px solid #23252b; }
+      .label .tag { font-size: 10px; padding: 2px 7px; border-radius: 3px; }
+      .before .tag { background: #3a2a1a; color: #e8a35c; }
+      .after .tag { background: #14283c; color: #5ab0ff; }
+      .label .note { color: #7c7f88; font-weight: 400; text-transform: none; letter-spacing: 0; }
+      iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+      .after iframe { background: #0e0f12; }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <h1>Atlas — Before / After</h1>
+      <span class="sub">the same deck, straight from the 2D scaffold to real 3D — no re-authoring</span>
+      <span class="deck" id="deck-name">vc-pitch</span>
+    </div>
+    <div class="split">
+      <div class="pane before">
+        <div class="label">
+          <span class="tag">Before</span> 2D pseudo-3D <span class="note">— the scaffolded PowerPoint deck (flat)</span>
+        </div>
+        <iframe id="before" title="2D pseudo-3D deck"></iframe>
+      </div>
+      <div class="pane after">
+        <div class="label">
+          <span class="tag">After</span> Atlas 3D <span class="note">— lifted &amp; laid out in space, one-shot flythrough</span>
+        </div>
+        <iframe id="after" title="Atlas 3D deck"></iframe>
+      </div>
+    </div>
+    <script>
+      // ?deck=vc-pitch (2D viewer deck name) & ?deck3d=deck-scaffold-vc (present deck id).
+      const q = new URLSearchParams(location.search);
+      const deck = q.get('deck') || 'vc-pitch';
+      const deck3d = q.get('deck3d') || 'deck-scaffold-vc';
+      document.getElementById('deck-name').textContent = deck;
+      document.getElementById('before').src =
+        `/examples/atoms-2d-demo/scaffold-deck-viewer.html?embed=1&deck=${encodeURIComponent(deck)}`;
+      document.getElementById('after').src =
+        `/apps/present/?deck=${encodeURIComponent(deck3d)}`;
+    </script>
+  </body>
+</html>
