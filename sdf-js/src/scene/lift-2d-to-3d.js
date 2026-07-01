@@ -74,7 +74,7 @@ function materialFor(type2d) {
 
 // per-leaf shade ramp of one hue (light→dark) — for atoms that accept colors[]
 // (funnel / layer-stack / circle-stack). Gives intra-chart depth without going garish.
-function shades(hue, n) {
+export function shades(hue, n) {
   const warm = hue < 0.16 || hue > 0.95;
   const out = [];
   for (let i = 0; i < n; i++) {

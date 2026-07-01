@@ -11,10 +11,35 @@
 // them to each subject's 3D box is the next step. Types without a 3D twin are skipped
 // (logged), not faked.
 
-import { liftSubject, twinTypeOf, pushInCamera } from './lift-2d-to-3d.js';
+import { liftSubject, twinTypeOf, pushInCamera, shades } from './lift-2d-to-3d.js';
 import { PRIMITIVE_FACTORY_TYPES } from './compile.js';
 
 const FACTORY = new Set(PRIMITIVE_FACTORY_TYPES);
+
+// ── brand theming: map the source deck's theme.colors → 3D materials ──
+// RGB (0-255) → HSV (h,s,v ∈ 0..1) so it drops straight into a material.
+function rgbToHsv([r, g, b]) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) {
+    if (mx === r) h = ((g - b) / d) % 6;
+    else if (mx === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h /= 6;
+    if (h < 0) h += 1;
+  }
+  return { hue: h, sat: mx ? d / mx : 0, value: mx };
+}
+
+// vivid brand colours only (drop near-white / near-grey), tamed to read in 3D PBR.
+function themePalette(theme) {
+  const cols = (theme && Array.isArray(theme.colors) ? theme.colors : [])
+    .map(rgbToHsv)
+    .filter((c) => c.sat > 0.28 && c.value > 0.22)
+    .map((c) => ({ hue: c.hue, sat: Math.min(0.72, Math.max(0.5, c.sat)), value: Math.min(0.72, Math.max(0.5, c.value)) }));
+  return cols.length ? cols : null;
+}
 
 const CANVAS_W = 1280;
 const CANVAS_H = 720;
@@ -47,7 +72,7 @@ function placeBox(x, y, w, h) {
 /**
  * Lift one scaffold slot (sceneData) → a 3D studio scene.
  * @param {object} sceneData  { name, layout, subjects:[{type,x,y,w,h,args}] }
- * @param {object} [opts]     { title }
+ * @param {object} [opts]     { title, theme }  theme = deck.json theme (brand colours)
  * @returns {{scene: object, skipped: string[]}}
  */
 export function liftScaffoldSlot(sceneData, opts = {}) {
@@ -55,6 +80,7 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
   const overlay = [];
   const skipped = [];
   const title = opts.title || sceneData.title || sceneData.name || null;
+  const pal = themePalette(opts.theme); // brand palette, or null → keep family palette
 
   (sceneData.subjects || []).forEach((s, i) => {
     if (!hasTwin(s.type)) {
@@ -69,6 +95,14 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
     const base = (subject3d.transform && subject3d.transform.translate) || [0, 1.5, 0];
     const baseRotate = subject3d.transform && subject3d.transform.rotate;
     subject3d.transform = { translate: [worldX, worldY, 0], scale, ...(baseRotate ? { rotate: baseRotate } : {}) };
+
+    // brand theming: recolour the subject (and its per-leaf ramp) from the deck's
+    // theme palette, cycling by index so hero/secondary alternate on-brand.
+    if (pal) {
+      const tc = pal[i % pal.length];
+      subject3d.material = { ...subject3d.material, hue: tc.hue, sat: tc.sat, value: tc.value };
+      if (Array.isArray(subject3d.args.colors)) subject3d.args.colors = shades(tc.hue, subject3d.args.colors.length);
+    }
     subjects.push(subject3d);
 
     // re-anchor the subject's overlays to its 3D box: newAnchor = T + scale·(a − base).
