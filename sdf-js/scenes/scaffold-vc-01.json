@@ -144,26 +144,6 @@
       "radius": 0.4565217391304348
     },
     {
-      "text": "Outdated",
-      "anchor": [
-        -1.4625000000000001,
-        -0.44250000000000034,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
-      "text": "Time Drain",
-      "anchor": [
-        -2.7625,
-        -0.44250000000000034,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
       "text": "PROBLEM",
       "anchor": [
         0,

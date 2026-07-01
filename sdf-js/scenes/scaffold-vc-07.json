@@ -177,26 +177,6 @@
       "radius": 0.36
     },
     {
-      "text": "NYC HQ",
-      "anchor": [
-        -0.9750000000000001,
-        -0.7425000000000006,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
-      "text": "Remote",
-      "anchor": [
-        -2.275,
-        -0.7425000000000006,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
       "text": "TEAM",
       "anchor": [
         0,
