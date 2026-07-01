@@ -23,6 +23,9 @@ const SPAN_X = 10.4; // world width  → X ∈ [-5.2, 5.2]
 const SPAN_Y = 5.4; // world height
 const CENTER_Y = 2.5; // vertical centre of the content band
 const NATURAL = 2.3; // an atom's rough built diameter, for box-fit scaling
+// decorative accent types — kept as small geometry, but their labels are suppressed
+// (usually duplicate a neighbour's text and clutter dense slides).
+const ACCENT_TYPES = new Set(['icon-badge']);
 
 export function hasTwin(type2d) {
   return FACTORY.has(twinTypeOf(type2d));
@@ -72,6 +75,10 @@ export function liftScaffoldSlot(sceneData, opts = {}) {
     // drop the per-subject title (the slot carries one); shrink value fonts with scale.
     // legend cards sit 3u to the side in single-subject layout — in a packed slide that
     // flings them to the screen edge, so compress the horizontal offset to hug the box.
+    // decorative accents (icon badges) stay label-free — their text is usually a
+    // duplicate of a neighbouring element's and just clutters a dense slide. (KPI cards
+    // are ALSO small but carry real numbers, so gate on type, not scale.)
+    if (ACCENT_TYPES.has(s.type)) return;
     const T = [worldX, worldY, 0];
     for (const o of ov) {
       if (o.role === 'title') continue;

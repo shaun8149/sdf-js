@@ -168,46 +168,6 @@
       "align": "left"
     },
     {
-      "text": "Intent",
-      "anchor": [
-        3.7375000000000003,
-        2.1075,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
-      "text": "Runtime",
-      "anchor": [
-        1.4625000000000001,
-        2.1075,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
-      "text": "Renderers",
-      "anchor": [
-        -0.8125,
-        2.1075,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
-      "text": "Editable",
-      "anchor": [
-        -3.0875,
-        2.1075,
-        0
-      ],
-      "role": "card",
-      "align": "center"
-    },
-    {
       "text": "OUR SOLUTION",
       "anchor": [
         0,
