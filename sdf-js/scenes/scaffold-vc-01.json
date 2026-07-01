@@ -10,11 +10,11 @@
       },
       "transform": {
         "translate": [
-          2.578125,
+          2.4375,
           2.5,
           0
         ],
-        "scale": 1.2444444444444442
+        "scale": 1.565217391304348
       },
       "material": {
         "hue": 0.4,
@@ -36,14 +36,64 @@
       },
       "transform": {
         "translate": [
-          -2.40625,
-          2.6555555555555554,
+          -2.275,
+          2.65,
           0
         ],
-        "scale": 0.7259259259259259
+        "scale": 0.9130434782608696
       },
       "material": {
         "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-2",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -1.4625000000000001,
+          0.8499999999999999,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-3",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -2.7625,
+          0.8499999999999999,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.6,
         "sat": 0.55,
         "value": 0.64,
         "kind": "normal",
@@ -56,8 +106,8 @@
     {
       "text": "Presentation visuals are stuck in 2008",
       "anchor": [
-        4.146125,
-        3.868888888888889,
+        4.409673913043479,
+        4.221739130434782,
         0
       ],
       "role": "card",
@@ -66,8 +116,8 @@
     {
       "text": "AI-PPT tools fixed the text — visuals still dead",
       "anchor": [
-        4.146125,
-        2.972888888888889,
+        4.409673913043479,
+        3.0947826086956525,
         0
       ],
       "role": "card",
@@ -76,8 +126,8 @@
     {
       "text": "Designers spend 60% of their time on layout busywork",
       "anchor": [
-        4.146125,
-        2.076888888888889,
+        4.409673913043479,
+        1.967826086956522,
         0
       ],
       "role": "card",
@@ -86,12 +136,32 @@
     {
       "text": "60%",
       "anchor": [
-        -2.40625,
-        2.873333333333333,
-        0.43555555555555553
+        -2.275,
+        2.9239130434782608,
+        0.5478260869565218
       ],
       "role": "value",
-      "radius": 0.36296296296296293
+      "radius": 0.4565217391304348
+    },
+    {
+      "text": "Outdated",
+      "anchor": [
+        -1.4625000000000001,
+        -0.44250000000000034,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
+      "text": "Time Drain",
+      "anchor": [
+        -2.7625,
+        -0.44250000000000034,
+        0
+      ],
+      "role": "card",
+      "align": "center"
     },
     {
       "text": "PROBLEM",
@@ -109,36 +179,36 @@
       {
         "duration": 0.01,
         "pos": [
-          1.6,
-          3.7,
-          15.5
+          1.4,
+          3.5,
+          14
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 50,
+        "fov": 48,
         "aperture": 0,
-        "focalDistance": 14,
+        "focalDistance": 12.5,
         "ease": "smooth"
       },
       {
         "duration": 14,
         "pos": [
           0,
-          2.9,
-          13
+          2.85,
+          11.8
         ],
         "target": [
           0,
           2.5,
           0
         ],
-        "fov": 47,
+        "fov": 46,
         "transition": "blend",
         "aperture": 0,
-        "focalDistance": 13,
+        "focalDistance": 11.8,
         "ease": "smooth"
       }
     ]

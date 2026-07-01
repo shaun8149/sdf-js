@@ -51,6 +51,8 @@ const HUE_BY_TYPE = {
   'org-chart': 0.54, 'tree-diagram': 0.54, 'sphere-tree': 0.54,
   // grid / blocks — steel blue
   'matrix-grid': 0.60, cube: 0.60, 'cube-grid': 0.60, 'cube-segmented': 0.60, 'icon-grid': 0.60,
+  // scaffold coverage
+  'circle-image-hub-spoke': 0.58, 'break-even': 0.4, 'icon-badge': 0.6, 'device-mockup-frame': 0.6,
   // misc
   'sphere-segmented': 0.50, 'kpi-card': 0.58, fishbone: 0.40, diamond: 0.58, gear: 0.58, arrow: 0.58, 'traffic-light': 0.58,
 };
@@ -606,6 +608,49 @@ export const TWIN_MAP = {
       return {
         args: { rows: a.rows ?? 2, cols: a.cols ?? 4, glyphs: a.glyphs ?? null },
         transform: { translate: [0, 1.9, 0] },
+      };
+    },
+  },
+
+  // ── scaffold coverage: types that appear in real 2D decks ──
+  'circle-image-hub-spoke': {
+    to: 'sphere-network-3d',
+    lift(a) {
+      const sats = Array.isArray(a.satellites) ? a.satellites : [];
+      return {
+        args: { count: sats.length || 6, arrangement: 'sphere' },
+        transform: { translate: [0, 1.8, 0] },
+        overlay: rightCards(sats.map(itemLabel)),
+      };
+    },
+  },
+  'break-even': {
+    to: 'line-3d',
+    lift() {
+      // approximate a break-even chart as a rising revenue line
+      return {
+        args: { values: [0.15, 0.35, 0.55, 0.75, 0.95], pointSpacing: 0.7, pointRadius: 0.11, lineThickness: 0.06, maxHeight: 2.0 },
+        transform: { translate: [0, 0.25, 0] },
+      };
+    },
+  },
+  'icon-badge': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      return {
+        args: { rows: 1, cols: 1, tileSize: 1.0 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: a.label ? [{ text: String(a.label), anchor: [0, -0.75, 0], role: 'card', align: 'center' }] : [],
+      };
+    },
+  },
+  'device-mockup-frame': {
+    to: 'device-mockup-3d',
+    lift(a) {
+      return {
+        args: { device: a.device || 'phone' },
+        transform: { translate: [0, 1.7, 0] },
+        overlay: a.title ? [{ text: String(a.title), anchor: [0, -1.4, 0], role: 'card', align: 'center' }] : [],
       };
     },
   },
