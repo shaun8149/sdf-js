@@ -17,9 +17,9 @@
         "scale": 1.6956521739130437
       },
       "material": {
-        "hue": 0.4,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -42,9 +42,9 @@
         "scale": 0.55
       },
       "material": {
-        "hue": 0.6,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -67,9 +67,9 @@
         "scale": 0.55
       },
       "material": {
-        "hue": 0.6,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -92,9 +92,9 @@
         "scale": 0.55
       },
       "material": {
-        "hue": 0.6,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -117,9 +117,9 @@
         "scale": 0.55
       },
       "material": {
-        "hue": 0.6,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45

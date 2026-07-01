@@ -18,9 +18,9 @@
         "scale": 0.782608695652174
       },
       "material": {
-        "hue": 0.58,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -53,9 +53,9 @@
         ]
       },
       "material": {
-        "hue": 0.5,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45
@@ -76,9 +76,9 @@
         "scale": 0.9130434782608696
       },
       "material": {
-        "hue": 0.4,
-        "sat": 0.55,
-        "value": 0.64,
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
         "kind": "normal",
         "roughness": 0.3,
         "clearcoat": 0.45

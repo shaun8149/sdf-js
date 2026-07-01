@@ -21,7 +21,7 @@ for (const f of slotFiles) {
   const slot = JSON.parse(readFileSync(join(slotDir, f), 'utf8'));
   const sd = slot.sceneData;
   if (!sd || !Array.isArray(sd.subjects)) continue;
-  const { scene, skipped } = liftScaffoldSlot(sd, { title: slot.slotTitle });
+  const { scene, skipped } = liftScaffoldSlot(sd, { title: slot.slotTitle, theme: deck.theme });
   const outName = `scaffold-vc-${String(slot.slotIdx).padStart(2, '0')}.json`;
   writeFileSync(resolve(SCENES, outName), `${JSON.stringify(scene, null, 2)}\n`);
   segments.push({ file: outName, title: slot.slotTitle, kind: 'slide', durationSec: 7 });
