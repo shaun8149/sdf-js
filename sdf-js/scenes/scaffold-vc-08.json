@@ -1,0 +1,218 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/ask",
+  "subjects": [
+    {
+      "id": "kpi-card-0",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$15M",
+        "label": "Series A Raise"
+      },
+      "transform": {
+        "translate": [
+          2.578125,
+          3.5888888888888886,
+          0
+        ],
+        "scale": 0.6222222222222221
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "pie-1",
+      "type": "pie-3d",
+      "args": {
+        "values": [
+          60,
+          25,
+          15
+        ],
+        "innerRadius": 0.55,
+        "outerRadius": 1.3,
+        "thickness": 0.45
+      },
+      "transform": {
+        "translate": [
+          -2.578125,
+          3.5888888888888886,
+          0
+        ],
+        "scale": 0.6222222222222221,
+        "rotate": [
+          1.2,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "bullet-list-2",
+      "type": "bullet-list-3d",
+      "args": {
+        "items": 3
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.2555555555555558,
+          0
+        ],
+        "scale": 0.7259259259259259
+      },
+      "material": {
+        "hue": 0.4,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "$15M",
+      "anchor": [
+        2.578125,
+        3.775555555555555,
+        0.37333333333333324
+      ],
+      "role": "value",
+      "radius": 0.31111111111111106
+    },
+    {
+      "text": "Engineering 60%",
+      "anchor": [
+        -1.7941250000000002,
+        4.273333333333333,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Sales + Community 25%",
+      "anchor": [
+        -1.7941250000000002,
+        3.825333333333333,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Reserve 15%",
+      "anchor": [
+        -1.7941250000000002,
+        3.377333333333333,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Engineering (60%)",
+      "anchor": [
+        0.9146666666666665,
+        2.0540740740740744,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Sales + Community (25%)",
+      "anchor": [
+        0.9146666666666665,
+        1.5314074074074076,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Reserve (15%)",
+      "anchor": [
+        0.9146666666666665,
+        1.0087407407407412,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "THE ASK",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.6,
+          3.7,
+          15.5
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 14,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.9,
+          13
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 47,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 13,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}
