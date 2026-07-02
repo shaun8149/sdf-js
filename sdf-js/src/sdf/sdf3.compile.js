@@ -47,6 +47,12 @@ function emitTimeExpr(e) {
   if (e.form === 'cos')
     return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
   if (e.form === 'sum') return `(${e.terms.map(fltOrTime).join(' + ')})`;
+  // GLSL-style builtin call: fn is a GLSL built-in (smoothstep/clamp/step/…), so
+  // emit verbatim; args may be numbers or nested time-exprs. scale defaults to 1.
+  if (e.form === 'call') {
+    const inner = `${e.fn}(${e.args.map(fltOrTime).join(', ')})`;
+    return (e.scale ?? 1) === 1 ? `(${inner})` : `(${fltLit(e.scale)} * ${inner})`;
+  }
   // Sprint 4: uniform reference — emit raw GLSL string (caller must declare
   // the uniform externally). Used for subject motion offsets driven from JS
   // per frame (u_subjectOffset[slot].y for rocket lift-off etc).

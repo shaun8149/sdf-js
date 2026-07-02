@@ -65,6 +65,44 @@ export function sumT(...terms) {
   return { kind: TIME_KIND, form: 'sum', terms };
 }
 
+// ----------------------------------------------------------------------------
+// GLSL-style builtin calls: smoothstep / clamp / step / min / max / mix / abs /
+// floor / fract / sqrt / sign / pow / mod. These are the one-shot / shaping
+// functions that oscillation (sin/cos) can't express — e.g. a build-in reveal
+// `smoothstep(0, 2, t)` (0→1 over [0,2]s, then STAYS 1). All are GLSL built-ins,
+// so emit is `fn(args...)` verbatim; CPU eval mirrors GLSL semantics here.
+// ----------------------------------------------------------------------------
+
+export const CALL_FNS = {
+  smoothstep: (e0, e1, x) => {
+    const t = Math.min(Math.max((x - e0) / (e1 - e0 || 1e-9), 0), 1);
+    return t * t * (3 - 2 * t);
+  },
+  clamp: (x, lo, hi) => Math.min(Math.max(x, lo), hi),
+  step: (edge, x) => (x < edge ? 0 : 1),
+  min: (a, b) => Math.min(a, b),
+  max: (a, b) => Math.max(a, b),
+  mix: (a, b, t) => a + (b - a) * t,
+  abs: (x) => Math.abs(x),
+  floor: (x) => Math.floor(x),
+  fract: (x) => x - Math.floor(x),
+  sqrt: (x) => Math.sqrt(Math.max(0, x)),
+  sign: (x) => Math.sign(x),
+  pow: (x, y) => Math.pow(x, y),
+  mod: (x, y) => (y === 0 ? 0 : x - y * Math.floor(x / y)),
+};
+
+export const CALL_FN_NAMES = Object.keys(CALL_FNS);
+
+/**
+ * Builtin call: `scale * fn(...args)`. args may be numbers or time-exprs.
+ * @example callT('smoothstep', 0, 2, linearT(1))   // 0→1 reveal over 2 seconds
+ */
+export function callT(fn, ...args) {
+  if (!CALL_FNS[fn]) throw new Error(`callT: unknown function '${fn}'`);
+  return { kind: TIME_KIND, form: 'call', fn, args, scale: 1 };
+}
+
 /**
  * Sprint 4: uniform reference — emits raw GLSL ref. Used to plumb per-frame
  * JS-computed values (subject motion offset from CarInt) into the SDF without
@@ -86,6 +124,7 @@ export function mulT(expr, k) {
   if (expr.form === 'linear') return { ...expr, coef: expr.coef * k };
   if (expr.form === 'sin' || expr.form === 'cos') return { ...expr, amp: expr.amp * k };
   if (expr.form === 'sum') return { ...expr, terms: expr.terms.map((t) => mulT(t, k)) };
+  if (expr.form === 'call') return { ...expr, scale: (expr.scale ?? 1) * k };
   if (expr.form === 'uniform') {
     // Scale by k by wrapping in a sum with a scaled-ref string. We're in a
     // closed world (only transform.translate uses uniform form in v1), so
@@ -107,6 +146,8 @@ export function evalT(expr, t = 0) {
   if (expr.form === 'sin') return expr.amp * Math.sin(expr.freq * t + expr.phase);
   if (expr.form === 'cos') return expr.amp * Math.cos(expr.freq * t + expr.phase);
   if (expr.form === 'sum') return expr.terms.reduce((acc, term) => acc + evalT(term, t), 0);
+  if (expr.form === 'call')
+    return (expr.scale ?? 1) * CALL_FNS[expr.fn](...expr.args.map((a) => evalT(a, t)));
   if (expr.form === 'uniform') return 0; // GPU-only; CPU sees zero offset
   throw new Error(`evalT: unknown form '${expr.form}'`);
 }
