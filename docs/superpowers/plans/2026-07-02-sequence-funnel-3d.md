@@ -4,7 +4,7 @@
 
 **Goal:** Prove the "structure-aware spatialization" direction by building ONE structure — a sales funnel you fly *through* — from an Intermediate Representation (IR), and blind-testing it against the flat 2D funnel of the same data.
 
-**Architecture:** `IR → renderSequence(ir) → sceneData → studio (realtime WebGL)`. The renderer reads the IR **only** (never 2D x/y coordinates) so a `text → IR` front-end can plug in later with zero renderer changes. The "time dimension" (build-in / narrative) is delivered by the **camera fly-through** plus **page-level JS-timed label reveal** — NOT by `subject.animation`, because the engine's animation expression grammar supports only `sin/cos(t)` oscillation, not one-shot reveals (confirmed in `src/scene/expr.js`; grammar is `factor := '(' expr ')' | sin|cos '(' expr ')' | number | 't'`). Geometry build-ins are backlog (need an expr-grammar extension).
+**Architecture:** `IR → renderSequence(ir) → sceneData → studio (realtime WebGL)`. The renderer reads the IR **only** (never 2D x/y coordinates) so a `text → IR` front-end can plug in later with zero renderer changes. The "time dimension" (narrative) is delivered by three things together: the **camera fly-through**, **real per-stage build-in animation** (each funnel stage is its OWN subject that drops into place via a `transform.translate.y` channel whose expr is a `smoothstep(t0,t1,t)` reveal window, staggered by `order`), and **page-level JS-timed label reveal**. The geometry build-in is possible because **PR #193** added the shaping builtins (`smoothstep/clamp/step/…`) to the animation expr grammar. Build-ins animate via `transform.translate`, **not** `transform.scale` — the scale-animation path has a pre-existing "flt got undefined" bug for any time-expr (documented in #193; backlog).
 
 **Tech Stack:** Vanilla ES modules, WebGL2 studio renderer (`src/render/studio.js`), the existing SDF atom pipeline (`src/scene/compile.js`, `apply-studio-scene.js`), Canvas2D for the flat funnel (`src/present/atoms-2d/charts/data/funnel.js`). No new deps. Tests are plain `.mjs` files run by `scripts/run-tests.mjs`.
 
@@ -16,6 +16,7 @@
 - **Scope (YAGNI):** funnel sub-form of `sequence` only. No other structures, no `text → IR`, no deck assembly, no editor, no video export.
 - **Git:** work on a feature branch; commit per task; **never push `main`, never self-merge** — open a PR and stop (repo rule in `CLAUDE.md`).
 - **Tests:** every new module gets a `.mjs` test appended to the `TESTS` list in `scripts/run-tests.mjs`; `node scripts/run-tests.mjs` must stay green.
+- **Prerequisite:** **PR #193** (`feat/expr-anim-builtins`) must be merged first — it adds `smoothstep/clamp/step/…` to the animation expr grammar, which the per-stage build-in (Task 3) depends on.
 
 ---
 
@@ -24,7 +25,7 @@
 - `sdf-js/src/scene/ir.js` — **new.** IR schema constants + `validateIR(ir)`. One responsibility: define & validate the IR.
 - `sdf-js/src/scene/components/charts/data/funnel-3d.js` — **modify.** Add optional `radii` (per-boundary radii) so stage widths can come from magnitude.
 - `sdf-js/src/scene/compile.js` — **modify.** Forward `radii` in the `funnel-3d` wrapper.
-- `sdf-js/src/scene/render-sequence.js` — **new.** `renderSequence(ir) → sceneData` (3D funnel form + fly-through camera + reveal-tagged overlay) and `renderSequence2d(ir) → { type:'funnel', args }` (maps IR → 2D funnel atom args).
+- `sdf-js/src/scene/render-sequence.js` — **new.** `renderSequence(ir) → sceneData` (ONE per-stage subject each with a `transform.translate.y` build-in animation + fly-through camera + reveal-tagged overlay) and `renderSequence2d(ir) → { type:'funnel', args }` (maps IR → 2D funnel atom args).
 - `sdf-js/src/scene/scaffold-to-ir.js` — **new.** `funnelSlotToIR(sceneData) → ir` — proves a real scaffold slot can produce the same IR the renderer consumes.
 - `sdf-js/apps/present/figure.html` + `sdf-js/apps/present/figure.js` — **new.** Standalone live figure page: mounts studio, applies `renderSequence(ir)`, plays the camera, fades stage labels in by sequence time. `?ir=<name>` loads a fixture.
 - `sdf-js/apps/present/blind.html` — **new.** Blind-pick page: 2D funnel canvas and the 3D figure iframe, side by side, randomized left/right, unlabelled.
@@ -224,7 +225,7 @@ git commit -m "feat(funnel-3d): optional per-boundary radii (magnitude-driven wi
 **Interfaces:**
 - Consumes: `validateIR` (Task 1).
 - Produces:
-  - `renderSequence(ir) → sceneData` — a v1 scene with ONE `funnel-3d` subject (radii from `ir.magnitude`), a `cameraSequence` that descends *through* the funnel axis and ends framed on the emphasis stage, and `overlay[]` stage labels each tagged with a `revealAt` seconds value (consumed by the figure page, Task 6). Reads `ir` only.
+  - `renderSequence(ir) → sceneData` — a v1 scene with ONE `funnel-3d` subject PER stage (each a single-band frustum, radii from `ir.magnitude`), each carrying a `transform.translate.y` build-in animation (`smoothstep` reveal window, staggered by `order`); a `cameraSequence` that descends *through* the funnel axis to the emphasis stage; and `overlay[]` stage labels each tagged with a `revealAt` seconds value (consumed by the figure page, Task 6). Reads `ir` only.
   - `magnitudeToRadii(magnitude, maxR, tipR) → number[]` (length N+1) — area-proportional boundary radii + a tip.
 
 - [ ] **Step 1: Write the failing test**
@@ -247,26 +248,31 @@ ok(r[0] > r[1] && r[1] > r[2], 'radii narrow with magnitude');
 ok(Math.abs(r[4] - 0.12) < 1e-9, 'last boundary is the tip radius');
 
 const scene = renderSequence(ir);
-ok(scene.subjects.length === 1 && scene.subjects[0].type === 'funnel-3d', 'one funnel-3d subject');
-ok(scene.subjects[0].args.stages === 4, 'stages == nodes.length');
-ok(Array.isArray(scene.subjects[0].args.radii) && scene.subjects[0].args.radii.length === 5, 'radii passed to atom');
-ok(scene.cameraSequence && scene.cameraSequence.shots.length >= 2, 'has a multi-shot fly-through');
+// one funnel-3d subject PER stage (so each can build in independently)
+const stages = scene.subjects.filter((s) => s.type === 'funnel-3d');
+ok(stages.length === 4, 'one funnel-3d subject per stage (N=4)');
+ok(stages.every((s) => s.args.stages === 1 && s.args.radii.length === 2), 'each stage is a 1-band frustum (radii length 2)');
+ok(stages[0].args.radii[0] > stages[3].args.radii[0], 'top stage wider than bottom (radii from magnitude)');
 
-// fly-through: camera Y descends across shots (through the funnel axis)
+// build-in: each stage animates transform.translate.y with a staggered smoothstep reveal
+ok(stages.every((s) => Array.isArray(s.animation) && s.animation[0].channel === 'transform.translate.y'), 'each stage has a translate.y build-in channel');
+ok(stages.every((s) => /smoothstep\(/.test(s.animation[0].expr)), 'build-in uses smoothstep (one-shot reveal)');
+const starts = stages.map((s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]));
+ok(starts[0] < starts[3], 'reveal windows staggered by order (top reveals first)');
+
+ok(scene.cameraSequence && scene.cameraSequence.shots.length >= 2, 'has a multi-shot fly-through');
 const ys = scene.cameraSequence.shots.map((s) => s.pos[1]);
 ok(ys[0] > ys[ys.length - 1], 'camera descends (fly-through)');
 
 // labels → overlay, each with a revealAt; title present; NO baked SDF text
 const labels = scene.overlay.filter((o) => o.role === 'card' || o.role === 'value');
-ok(labels.length === 4 && labels.every((o) => typeof o.revealAt === 'number'), '4 stage labels, each reveal-tagged');
+ok(labels.length === 8 && labels.every((o) => typeof o.revealAt === 'number'), '4 cards + 4 values, each reveal-tagged');
 ok(scene.overlay.some((o) => o.role === 'title'), 'title in overlay');
 ok(scene.subjects.every((s) => !/text/.test(s.type)), 'no baked SDF text');
 
-// IR-decoupling: renderSequence must not read x/y — feeding an IR with x/y changes nothing
-const withXY = { ...ir, nodes: ir.nodes.map((n) => ({ label: n, x: 999, y: 999 })) };
-// nodes may be strings or {label}; renderSequence reads label/magnitude, never x/y
+// IR-decoupling: reads label/magnitude, never x/y — deterministic from the IR
 const s2 = renderSequence({ ...ir });
-ok(JSON.stringify(s2.subjects[0].args.radii) === JSON.stringify(scene.subjects[0].args.radii), 'deterministic from IR');
+ok(JSON.stringify(s2.subjects.map((s) => s.args.radii)) === JSON.stringify(scene.subjects.map((s) => s.args.radii)), 'deterministic from IR (no x/y read)');
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
@@ -282,9 +288,9 @@ Expected: FAIL — module not found.
 ```js
 // sdf-js/src/scene/render-sequence.js
 // Structure renderer #1: sequence → funnel. Reads the IR ONLY (never 2D x/y).
-// The "time dimension" is the camera fly-through + revealAt-tagged overlay labels
-// (the figure page fades them in by sequence time). No subject.animation (the engine's
-// expr grammar can't do one-shot reveals — see plan Context).
+// The "time dimension": camera fly-through + per-stage build-in (each stage is its OWN
+// subject that drops into place via a transform.translate.y smoothstep window, staggered
+// by order — needs the expr builtins from #193) + revealAt-tagged overlay labels.
 import { validateIR } from './ir.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
@@ -313,41 +319,53 @@ export function renderSequence(ir) {
   const stageHeight = 0.55, gap = 0.12;
   const radii = magnitudeToRadii(mag, 1.4, 0.12);
   const totalH = N * stageHeight + (N - 1) * gap;
-  const topY = 1.6 + totalH / 2; // funnel sits centred around y≈1.6
+  const topY = 1.6 + totalH / 2; // funnel centred around y≈1.6
+  const stageY = (i) => topY - stageHeight / 2 - i * (stageHeight + gap); // centre Y of stage i
+  const holdEach = 1.2; // seconds between successive stage reveals
+  const drop = 0.9;     // stage starts this far above its slot, then drops in
 
-  const subject = {
-    id: 'funnel',
-    type: 'funnel-3d',
-    args: { stages: N, radii, stageHeight, gap },
-    transform: { translate: [0, 1.6, 0] },
-    material: { ...DEFAULT_MAT },
-  };
+  // ONE subject per stage (a single-band frustum) so each builds in independently.
+  // build-in: translate.y from (yc + drop) → yc over [revealStart, revealEnd], then holds.
+  // The translate.y channel REPLACES the static y (applyTransform resolveVec3Field), so the
+  // expr must produce the FULL y. Reveal windows stagger by the node's position in `order`.
+  const subjects = [];
+  order.forEach((i, k) => {
+    const yc = stageY(i);
+    const revealStart = 0.2 + k * holdEach;
+    const revealEnd = revealStart + 0.7;
+    const yFull = (yc + drop).toFixed(3);
+    subjects.push({
+      id: `stage-${i}`,
+      type: 'funnel-3d',
+      args: { stages: 1, radii: [radii[i], radii[i + 1]], stageHeight, gap: 0 },
+      transform: { translate: [0, yc, 0] },
+      material: { ...DEFAULT_MAT, value: emphasis.has(i) ? 0.9 : 0.72 },
+      animation: [
+        { channel: 'transform.translate.y', expr: `${yFull} - ${drop} * smoothstep(${revealStart.toFixed(2)}, ${revealEnd.toFixed(2)}, t)` },
+      ],
+    });
+  });
 
-  // stage centre Y (top→bottom), for label anchors + camera targets
-  const stageY = (i) => topY - stageHeight / 2 - i * (stageHeight + gap);
-
-  // fly-through: start high above the mouth, descend through the axis to the emphasis stage.
-  const holdEach = 1.6; // seconds the camera lingers per stage
-  const shots = [];
-  shots.push({ duration: 0.01, pos: [0.6, topY + 2.4, 6.2], target: [0, topY, 0], fov: 52, aperture: 0, focalDistance: 6, ease: 'smooth' });
+  // fly-through: start above the mouth, descend through the axis to the emphasis stage.
+  const shots = [{ duration: 0.01, pos: [0.6, topY + 2.4, 6.2], target: [0, topY, 0], fov: 52, aperture: 0, focalDistance: 6, ease: 'smooth' }];
   for (let i = 0; i < N; i++) {
     const y = stageY(i);
     shots.push({ duration: holdEach, pos: [0, y + 0.9, Math.max(2.6, radii[i] * 3.2 + 2.2)], target: [0, y, 0], fov: 46, transition: 'blend', aperture: 0, focalDistance: 4, ease: 'smooth' });
   }
 
-  // labels → overlay, reveal-tagged by shot arrival (shot i+1 starts at 0.01 + i*holdEach)
+  // labels → overlay, reveal-tagged just after each stage settles.
   const overlay = [{ text: String(ir.title || nodes[0]).toUpperCase(), anchor: [0, topY + 1.4, 0], role: 'title' }];
-  for (const i of order) {
+  order.forEach((i, k) => {
     const y = stageY(i);
-    const revealAt = 0.01 + i * holdEach; // seconds
+    const revealAt = 0.2 + k * holdEach + 0.5; // just after this stage's build-in
     overlay.push({ text: nodes[i], anchor: [radii[i] + 0.5, y, 0], role: 'card', align: 'left', revealAt });
     overlay.push({ text: String(mag[i]), anchor: [0, y, radii[i] + 0.2], role: 'value', radius: emphasis.has(i) ? 0.5 : 0.36, revealAt });
-  }
+  });
 
   return {
     v: 1,
     name: `(sequence) ${ir.title || 'funnel'}`,
-    subjects: [subject],
+    subjects,
     overlay,
     cameraSequence: { loop: false, shots },
     defaults: { stage: { size: [16, 12, 11] } },
@@ -375,10 +393,10 @@ import { renderSequence } from './sdf-js/src/scene/render-sequence.js';
 import { compile } from './sdf-js/src/scene/index.js';
 import { expandStage } from './sdf-js/src/scene/stage.js';
 const ir={structure:'sequence',nodes:['Leads','Qualified','Proposal','Closed'],magnitude:[1000,400,150,40],emphasis:[3],title:'Sales Funnel'};
-const s=renderSequence(ir); compile(expandStage(s),{}); console.log('compiles OK', s.subjects[0].args.radii.map(r=>r.toFixed(2)).join(','));
+const s=renderSequence(ir); compile(expandStage(s),{}); console.log('compiles OK; stages:', s.subjects.length, '| stage0 radii:', s.subjects[0].args.radii.map(r=>r.toFixed(2)).join(','), '| anim:', s.subjects[0].animation[0].expr);
 "
 ```
-Expected: `compiles OK 1.40,0.89,0.55,0.28,0.12` (radii narrow to tip). If compile throws, fix the scene shape before committing.
+Expected: `compiles OK; stages: 4 | stage0 radii: 1.40,0.89 | anim: 2.??? - 0.9 * smoothstep(0.20, 0.90, t)`. The compile must NOT throw (it exercises the smoothstep emit path from #193). If it throws "unknown form 'call'", #193 is not merged into this branch — rebase onto it first.
 
 - [ ] **Step 6: Register test + commit**
 
@@ -488,10 +506,10 @@ import { readFileSync } from 'node:fs';
 import { validateIR } from './sdf-js/src/scene/ir.js';
 import { renderSequence } from './sdf-js/src/scene/render-sequence.js';
 const ir=JSON.parse(readFileSync('sdf-js/scenes/ir/funnel-sales.json','utf8'));
-console.log('valid:', validateIR(ir).ok, '| stages:', renderSequence(ir).subjects[0].args.stages);
+console.log('valid:', validateIR(ir).ok, '| stage subjects:', renderSequence(ir).subjects.length);
 "
 ```
-Expected: `valid: true | stages: 5`.
+Expected: `valid: true | stage subjects: 5`.
 
 - [ ] **Step 3: Commit**
 
@@ -561,6 +579,9 @@ const ir = await (await fetch(`../../scenes/ir/${name}.json`)).json();
 const scene = renderSequence(ir);
 applyStudioScene(studio, scene);
 if (studio.setSequence) studio.setSequence(scene.cameraSequence);
+// the per-stage build-in is a u_time-driven transform.translate.y — enable the u_time
+// animation loop so the stages actually drop in (else the scene renders one static frame).
+if (studio.setAnimated) studio.setAnimated(true);
 
 // our own reveal-timed overlay (labels fade in as the camera reaches each stage)
 const items = (scene.overlay || []).filter((o) => o.anchor && o.text);
@@ -593,7 +614,7 @@ requestAnimationFrame(tick);
 
 - Start dev server if not running (`python3 dev-server.py 8001` from repo root per project memory).
 - Navigate to `http://127.0.0.1:8001/apps/present/figure.html?ir=funnel-sales`, wait ~8s (the fly-through), screenshot.
-- Expected: a **converging funnel** (wide top → narrow tip), the camera visibly **descending through it**, stage labels (Leads/Qualified/…/Closed) + magnitudes **fading in top→bottom** as the camera passes, "SALES FUNNEL" title on top. No console errors.
+- Expected: a **converging funnel** (wide top → narrow tip), stages **dropping into place top→bottom** (the per-stage build-in), the camera **descending through** the funnel, stage labels + magnitudes **fading in** as each stage settles, "SALES FUNNEL" title on top. Take screenshots at ~1s / ~4s / ~8s to catch the build-in mid-progress. No console errors.
 - If the camera does not descend / funnel is inverted / labels mis-anchored, fix `renderSequence` shot params or anchor Y before committing.
 
 - [ ] **Step 4: Commit**
@@ -717,7 +738,7 @@ Stop. Report the PR URL + the blind-pick result to the user.
 - §4 IR v0 six fields → Task 1 schema (structure/nodes/magnitude/relations/emphasis/order). ✓
 - §5 form (magnitude-driven funnel) → Task 2 (radii) + Task 3 (`magnitudeToRadii`). ✓
 - §5 camera fly-through → Task 3 (descending shots; test asserts descent). ✓
-- §5 build-in → **revised** to camera reveal + timed overlay (Task 3 `revealAt`, Task 6 fade loop) because `subject.animation` can't do one-shot reveals (documented in Context). ✓
+- §5 build-in → **real per-stage `subject.animation`** (Task 3: each stage a subject with a `transform.translate.y` smoothstep reveal, staggered by `order`) + timed overlay (Task 6 fade loop). Enabled by the #193 expr builtins (prerequisite). Uses `translate`, not the (pre-existing-broken) `scale` channel. ✓
 - §5 overlay labels → Task 3 + Task 6. ✓
 - §6 2D counterpart → Task 3 `renderSequence2d` + Task 7 `drawPseudo3D`. ✓
 - §6 blind-pick, ≥70%, 5–8 people → Task 7 page + Task 8 procedure. ✓
@@ -733,6 +754,6 @@ Stop. Report the PR URL + the blind-pick result to the user.
 ## Verification (end-to-end)
 
 1. `node scripts/run-tests.mjs` → green (IR, funnel radii, render-sequence, scaffold-to-ir).
-2. `http://127.0.0.1:8001/apps/present/figure.html?ir=funnel-sales` → funnel renders, camera flies *through* top→tip, labels reveal in order. (Playwright screenshot.)
+2. `http://127.0.0.1:8001/apps/present/figure.html?ir=funnel-sales` → funnel renders, stages **drop in** top→bottom (build-in), camera flies *through*, labels reveal in order. (Playwright screenshots at ~1/4/8s.)
 3. `http://127.0.0.1:8001/apps/present/blind.html?ir=funnel-sales` → 2D and 3D side by side, randomized. (Playwright screenshot.)
 4. Run the blind pick with 5–8 people → GO/NO-GO on the direction.
