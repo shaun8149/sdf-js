@@ -1307,6 +1307,186 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 24 second sweep: 11 older recommended atoms the invariant test caught ──
+
+  'icon-row': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const items = a.items || [];
+      return {
+        args: { count: Math.max(2, items.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(items.map((it) => it.label || '')),
+        ],
+      };
+    },
+  },
+
+  'device-mockup-row': {
+    to: 'device-mockup-3d',
+    lift(a) {
+      const devices = a.devices || [];
+      return {
+        args: { kind: devices[0]?.kind || 'phone' },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(devices.map((d) => d.label || d.kind || '')),
+        ],
+      };
+    },
+  },
+
+  'dashboard-multi-kpi-composite': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const kpis = a.kpis || [];
+      const cols = Math.min(3, Math.max(2, kpis.length));
+      return {
+        args: { rows: Math.max(1, Math.ceil(kpis.length / cols)), cols },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...kpis.slice(0, 6).map((k) => ({
+            text: String(k.value ?? ''),
+            role: 'value',
+            ...(k.label ? { sublabel: String(k.label) } : {}),
+          })),
+        ],
+      };
+    },
+  },
+
+  'isotype-stat-comparison': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const stats = a.stats || [];
+      return {
+        args: { rows: 1, cols: Math.max(2, stats.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...stats.map((s) => ({
+            text: String(s.value ?? ''),
+            role: 'value',
+            ...(s.label ? { sublabel: String(s.label) } : {}),
+          })),
+        ],
+      };
+    },
+  },
+
+  'magazine-column-grid': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const categories = a.categories || [];
+      return {
+        args: { rows: 1, cols: Math.max(2, categories.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(categories.map((c) => c.label || c.title || '')),
+        ],
+      };
+    },
+  },
+
+  'isotype-people-grid': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const total = a.total || 10;
+      return {
+        args: { count: Math.min(12, Math.max(4, total)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...(a.highlighted != null && a.label
+            ? [{ text: `${a.highlighted}/${total} ${a.label}`, anchor: [3.0, 2.6, 0], role: 'value' }]
+            : []),
+        ],
+      };
+    },
+  },
+
+  histogram: {
+    to: 'bar-3d',
+    lift(a) {
+      const bins = a.bins || [];
+      return {
+        args: { values: bins.map((b) => b.value ?? b) },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+        ],
+      };
+    },
+  },
+
+  'nine-field-matrix': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const cells = a.cells || [];
+      return {
+        args: { rows: 3, cols: 3 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(cells.slice(0, 5).map((c) => c.label || '')),
+        ],
+      };
+    },
+  },
+
+  'kpi-water-drop': {
+    to: 'sphere-fill-3d',
+    lift(a) {
+      const v = typeof a.value === 'number' ? a.value : 0.5;
+      return {
+        args: { fill: Math.max(0, Math.min(1, v)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.displayValue || a.value != null
+            ? [{ text: String(a.displayValue ?? a.value), anchor: [0, 3.4, 0], role: 'value' }]
+            : []),
+          ...(a.label ? [{ text: String(a.label), anchor: [0, -0.4, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'isotype-prop-row': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const count = a.count || 5;
+      return {
+        args: { count: Math.min(10, Math.max(2, count)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards((a.labels || []).slice(0, 5)),
+        ],
+      };
+    },
+  },
+
+  'stacked-area': {
+    to: 'line-3d',
+    lift(a) {
+      const series = a.series || [];
+      const first = series[0]?.values || series[0]?.data || [];
+      return {
+        args: { values: first.length ? first : [1, 2, 3, 4] },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(series.map((s) => s.label || '')),
+        ],
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
