@@ -7,7 +7,9 @@ console.log('=== lift-scaffold (scaffold slot → 3D) ===\n');
 
 // twin availability reflects the real registry
 ok(hasTwin('bullet-list') && hasTwin('pie') && hasTwin('pyramid'), 'twinned types report hasTwin=true');
-ok(!hasTwin('comparison-table') && !hasTwin('quote-pull'), 'untwinned types report hasTwin=false');
+// Sprint 24 closed the X-gap: comparison-table + quote-pull now HAVE twins
+ok(hasTwin('comparison-table') && hasTwin('quote-pull'), 'Sprint 24 atoms report hasTwin=true');
+ok(!hasTwin('no-such-atom-xyz'), 'unknown types report hasTwin=false');
 
 // a multi-subject slot with two of the same type
 const sd = {
@@ -17,13 +19,13 @@ const sd = {
     { type: 'pyramid', x: 80, y: 120, w: 520, h: 520, args: { layers: [{ label: 'TAM' }, { label: 'SAM' }, { label: 'SOM' }] } },
     { type: 'kpi-card', x: 680, y: 180, w: 520, h: 180, args: { value: 12, label: 'B' } },
     { type: 'kpi-card', x: 680, y: 400, w: 250, h: 160, args: { value: 3, label: 'M' } },
-    { type: 'comparison-table', x: 950, y: 400, w: 120, h: 120, args: {} },
+    { type: 'no-such-atom-xyz', x: 950, y: 400, w: 120, h: 120, args: {} },
   ],
 };
 const { scene, skipped } = liftScaffoldSlot(sd, { title: 'Market Size' });
 
 ok(scene.subjects.length === 3, 'placed 3 twinned subjects (pyramid + 2 kpi)');
-ok(skipped.length === 1 && skipped[0] === 'comparison-table', 'skipped the 1 untwinned type');
+ok(skipped.length === 1 && skipped[0] === 'no-such-atom-xyz', 'skipped the 1 untwinned type');
 
 // unique ids even for same-type subjects (the dup-id bug that broke validation)
 const ids = scene.subjects.map((s) => s.id);

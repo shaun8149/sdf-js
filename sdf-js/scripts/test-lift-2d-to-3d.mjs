@@ -133,8 +133,28 @@ ok(fmt(7, 'number') === '7', 'fmt number');
 
 // ── generic fallback: a type with no override still maps T → T-3d ──
 {
-  const { subject3d } = liftSubject({ type: 'value-chain-diagram', args: {} });
-  ok(subject3d.type === 'value-chain-diagram-3d', 'generic fallback: unmapped type → type-3d');
+  const { subject3d } = liftSubject({ type: 'some-unmapped-widget', args: {} });
+  ok(subject3d.type === 'some-unmapped-widget-3d', 'generic fallback: unmapped type → type-3d');
+}
+
+// ── Sprint 24: previously dead-end atoms now have precise twins ──
+{
+  const cases = [
+    ['swot', 'matrix-grid-3d'],
+    ['value-chain-diagram', 'flow-chart-3d'],
+    ['stat-banner', 'kpi-card-3d'],
+    ['process-arrows', 'progression-3d'],
+    ['circle-process-cycle', 'circle-loop-3d'],
+    ['feature-card-grid', 'icon-grid-3d'],
+    ['quote-pull', 'cube-3d'],
+    ['number-list', 'agenda-list-3d'],
+    ['vertical-timeline', 'timeline-3d'],
+    ['comparison-table', 'matrix-grid-3d'],
+  ];
+  for (const [t2d, t3d] of cases) {
+    const { subject3d } = liftSubject({ type: t2d, args: {} });
+    ok(subject3d.type === t3d, `Sprint 24 twin: ${t2d} → ${t3d}`);
+  }
 }
 
 // ── two-text-systems invariant: NO baked SDF text anywhere ──
