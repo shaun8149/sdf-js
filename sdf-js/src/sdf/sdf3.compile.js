@@ -61,9 +61,29 @@ function emitTimeExpr(e) {
   throw new Error(`emitTimeExpr: unknown form '${e.form}'`);
 }
 
-// 统一 dispatch：number → literal；time-expr → GLSL expr
+// ---- data-as-uniforms (zero-recompile) --------------------------------------
+// When active (opts.uniformArgs), every number that would be baked into the
+// GLSL as a literal is instead allocated a slot in a packed `uniform vec4
+// u_sdfArgs[]` array — in strict WALK ORDER with NO value dedup, so the same
+// scene SHAPE always emits byte-identical GLSL regardless of the data. One
+// compiled program (and one Chrome disk-cache entry) serves every data
+// variation; changing the numbers is a gl.uniform4fv, not a shader compile.
+// Values ride out in result.sdfArgs (vec4-padded Float32Array). Time exprs +
+// _compileExtras stay literal (their text is data-independent). CPU-side
+// sdf.f() is untouched (JS closures carry the real values).
+let _uniformSlots = null; // number[] | null — active slot list
+const UNIFORM_ARGS_CAP = 1024; // floats (= 256 vec4); over budget → literal fallback
+
+function fltSlot(n) {
+  if (typeof n !== 'number' || !Number.isFinite(n)) return fltLit(n); // reuse validation/throw
+  const i = _uniformSlots.length;
+  _uniformSlots.push(n);
+  return `u_sdfArgs[${i >> 2}].${'xyzw'[i & 3]}`;
+}
+
+// 统一 dispatch：number → literal (或 uniform slot)；time-expr → GLSL expr
 function fltOrTime(x) {
-  if (typeof x === 'number') return fltLit(x);
+  if (typeof x === 'number') return _uniformSlots ? fltSlot(x) : fltLit(x);
   if (isTimeExpr(x)) return emitTimeExpr(x);
   throw new Error(`flt: expected number or time-expr, got ${typeof x} (${JSON.stringify(x)})`);
 }
@@ -185,15 +205,36 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
   try {
     let body,
       leafMaterials = null,
-      leafPatterns = null;
-    if (emitObjectIndex) {
-      const result = compileWithObjectIndex(sdf, sceneFnName);
-      body = result.body;
-      leafMaterials = result.leafMaterials;
-      leafPatterns = result.leafPatterns;
+      leafPatterns = null,
+      sdfArgs = null;
+    const emitBody = () => {
+      if (emitObjectIndex) {
+        const result = compileWithObjectIndex(sdf, sceneFnName);
+        leafMaterials = result.leafMaterials;
+        leafPatterns = result.leafPatterns;
+        return result.body;
+      }
+      return `float ${sceneFnName}(vec3 p) {\n  return ${walk(sdf, 'p')};\n}`;
+    };
+    if (opts.uniformArgs) {
+      _uniformSlots = [];
+      body = emitBody();
+      if (_uniformSlots.length > UNIFORM_ARGS_CAP) {
+        // over the uniform-component budget — fall back to baked literals
+        console.warn(
+          `[sdf3.compile] uniformArgs: ${_uniformSlots.length} slots exceeds cap ${UNIFORM_ARGS_CAP} — falling back to literal emission (scene recompiles on data change)`,
+        );
+        _uniformSlots = null;
+        body = emitBody();
+      } else {
+        const nVec4 = Math.max(1, Math.ceil(_uniformSlots.length / 4));
+        sdfArgs = new Float32Array(nVec4 * 4);
+        sdfArgs.set(_uniformSlots);
+        body = `uniform vec4 u_sdfArgs[${nVec4}];\n${body}`;
+        _uniformSlots = null;
+      }
     } else {
-      const expr = walk(sdf, 'p');
-      body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
+      body = emitBody();
     }
     // Noise + Voronoi libs prepended first — SDF library functions (and
     // future domain-warped primitives) can call into them. Renderer shading
@@ -217,11 +258,12 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
     const prelude = includeLibrary
       ? `${library}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
       : `${extrasCode}\n\n`;
-    return { glsl: prelude + body, error: null, leafMaterials, leafPatterns };
+    return { glsl: prelude + body, error: null, leafMaterials, leafPatterns, sdfArgs };
   } catch (e) {
-    return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null };
+    return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null, sdfArgs: null };
   } finally {
     _compileExtras = null;
+    _uniformSlots = null;
   }
 }
 

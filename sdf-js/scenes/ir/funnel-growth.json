@@ -1,0 +1,8 @@
+{
+  "structure": "sequence",
+  "nodes": ["Visitors", "Signups", "Trials", "Paid", "Renewed"],
+  "magnitude": [8000, 2100, 640, 180, 95],
+  "emphasis": [4],
+  "order": [0, 1, 2, 3, 4],
+  "title": "Growth Funnel"
+}
