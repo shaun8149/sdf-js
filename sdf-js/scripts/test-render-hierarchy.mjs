@@ -71,7 +71,9 @@ ok(
   const peakIdx = ys.indexOf(Math.max(...ys));
   ok(ys[0] < ys[peakIdx], 'opens low (hero at the root), rises to the crane');
   ok(Math.min(...ys.slice(peakIdx)) < ys[peakIdx] - 2, 'descends through the levels');
-  const superShot = shots.find((s) => s.transition === 'cut' && (s.shake || 0) >= 0.2);
+  const superShot = shots.find(
+    (s) => s.transition === 'cut' && (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) >= 0.2,
+  );
   ok(
     !!superShot && Array.isArray(superShot.exposure),
     'super punch-in (cut + shake + exposure pop)',

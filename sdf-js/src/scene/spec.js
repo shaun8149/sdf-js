@@ -1395,10 +1395,14 @@ function validateCameraSequence(seq, errors, warnings) {
     if (shot.transition != null && !SHOT_TRANSITIONS.has(shot.transition)) {
       errors.push(`${tag}.transition: must be one of ${[...SHOT_TRANSITIONS].join(' | ')}`);
     }
-    // Sprint 4: shake can be number (legacy) OR { amount, velocityScale, scaleWith }
+    // shake: number (legacy) OR [from, to] intra-shot ramp (impact-then-settle)
+    // OR { amount, velocityScale, scaleWith }
     if (shot.shake != null) {
       if (typeof shot.shake === 'number') {
         if (shot.shake < 0) errors.push(`${tag}.shake: must be a non-negative number`);
+      } else if (Array.isArray(shot.shake)) {
+        if (shot.shake.length !== 2 || shot.shake.some((x) => typeof x !== 'number' || x < 0))
+          errors.push(`${tag}.shake: array form must be [from, to] non-negative numbers`);
       } else if (typeof shot.shake === 'object') {
         if (typeof shot.shake.amount !== 'number' || shot.shake.amount < 0) {
           errors.push(`${tag}.shake.amount: required non-negative number`);

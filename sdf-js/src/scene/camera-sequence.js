@@ -65,12 +65,18 @@ function dofValue(v, eased, blendedFallback) {
 }
 
 /**
- * Hash-noise for camera shake. Tiny + deterministic.
- * Returns [-1, 1] for shake offset.
+ * Smooth handheld sway for camera shake. The old hash noise was WHITE noise —
+ * successive frames were uncorrelated, which reads as electric jitter / a
+ * broken camera. Real handheld energy is low-frequency: a sum of three
+ * incommensurate sines (mostly ~1.7rad/s sway, a touch of mid/high texture)
+ * gives a C∞-smooth, deterministic [-1,1] drift instead.
  */
-function shakeNoise(seed) {
-  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-  return (x - Math.floor(x)) * 2 - 1;
+function shakeSway(t, phase) {
+  return (
+    Math.sin(t * 1.7 + phase) * 0.55 +
+    Math.sin(t * 3.9 + phase * 2.1) * 0.3 +
+    Math.sin(t * 7.3 + phase * 4.2) * 0.15
+  );
 }
 
 /**
@@ -213,14 +219,24 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   out.aperture = dofValue(shot.aperture, blend, out.aperture);
   out.focalDistance = dofValue(shot.focalDistance, blend, out.focalDistance);
 
-  // Sprint 4: resolved shake (number OR {amount, velocityScale, scaleWith})
-  const shakeAmt = resolveShake(shot.shake, subjectOffsets);
+  // Shake: number (constant) OR [from, to] intra-shot ramp (the super's
+  // impact-then-settle) OR legacy {amount, ...}. An edge ENVELOPE fades shake
+  // in/out near shot boundaries so it never pops on when a calm shot blends
+  // into a shaky one — EXCEPT fade-in on 'cut' shots, where the instant hit IS
+  // the point (the impact frame).
+  const shakeAmt = Array.isArray(shot.shake)
+    ? lerp(Number(shot.shake[0]) || 0, Number(shot.shake[1]) || 0, clamp01(shotT))
+    : resolveShake(shot.shake, subjectOffsets);
   if (shakeAmt > 0) {
+    const edge = (x) => smoothstep(x / 0.15); // 15% of the shot to ramp, C¹-smooth
+    const fadeIn = shot.transition === 'cut' || idx === 0 ? 1 : edge(shotT);
+    const fadeOut = edge(1 - shotT);
+    const env = Math.min(fadeIn, fadeOut);
     const d = Math.max(1, distance(out.pos, out.target));
-    const k = (shakeAmt * 0.05) / d;
-    out.target[0] += shakeNoise(tSec * 9.7 + 1.0) * k;
-    out.target[1] += shakeNoise(tSec * 11.3 + 2.0) * k;
-    out.target[2] += shakeNoise(tSec * 13.1 + 3.0) * k;
+    const k = (shakeAmt * env * 0.05) / d;
+    out.target[0] += shakeSway(tSec, 1.0) * k;
+    out.target[1] += shakeSway(tSec, 2.6) * k;
+    out.target[2] += shakeSway(tSec, 4.9) * k;
   }
 
   return out;
