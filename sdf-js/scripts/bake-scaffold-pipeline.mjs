@@ -582,25 +582,40 @@ const deckManifest = {
     colors: theme.colors,
     font: theme.font,
   },
-  slots: slotAssignments.map((a) => {
-    const lift = slotLifts.find((l) => l.slotIdx === a.slotIdx) || {};
-    return {
+  // Sprint 24 iter2 (contract A, user-approved 2026-07-05): slots[] contains
+  // ONLY filled slots — the played deck has no holes. Unfillable slots are
+  // recorded in droppedSlots[] for transparency (eval fill_rate = delivered /
+  // (delivered + dropped), same meaning as before). slotIdx keeps the original
+  // scaffold position (sparse is fine; consumers iterate the array).
+  slots: slotAssignments
+    .filter((a) => !a.empty)
+    .map((a) => {
+      const lift = slotLifts.find((l) => l.slotIdx === a.slotIdx) || {};
+      return {
+        slotIdx: a.slotIdx,
+        slotName: a.slot.name,
+        slotTitle: a.slot.title,
+        slotPurpose: a.slot.purpose,
+        sourceSlideIdx: a.slideIdx,
+        sourceSlideTitle: a.slideIdx >= 0 ? slides[a.slideIdx].title || '' : null,
+        mappingScore: a.score,
+        mappingFallback: !!a.fallback,
+        mappingEmpty: false,
+        liftFile: lift.outFile ? lift.outFile.replace(`${OUT_DIR}/`, '') : null,
+        cached: !!lift.cached,
+        dryRun: !!lift.dryRun,
+        error: lift.error || null,
+        subjectTypes: lift.subjectTypes || [],
+      };
+    }),
+  droppedSlots: slotAssignments
+    .filter((a) => a.empty)
+    .map((a) => ({
       slotIdx: a.slotIdx,
       slotName: a.slot.name,
       slotTitle: a.slot.title,
-      slotPurpose: a.slot.purpose,
-      sourceSlideIdx: a.slideIdx,
-      sourceSlideTitle: a.slideIdx >= 0 ? slides[a.slideIdx].title || '' : null,
-      mappingScore: a.score,
-      mappingFallback: !!a.fallback,
-      mappingEmpty: !!a.empty,
-      liftFile: lift.outFile ? lift.outFile.replace(`${OUT_DIR}/`, '') : null,
-      cached: !!lift.cached,
-      dryRun: !!lift.dryRun,
-      error: lift.error || null,
-      subjectTypes: lift.subjectTypes || [],
-    };
-  }),
+      reason: 'no-source-content',
+    })),
   totals: {
     slotsBaked: slotLifts.filter((l) => l.sceneData || l.cached || l.dryRun).length,
     slotsEmpty: slotLifts.filter((l) => l.empty).length,

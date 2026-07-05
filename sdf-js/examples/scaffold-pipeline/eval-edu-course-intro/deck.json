@@ -7,9 +7,9 @@
     "description": "Workshop / onboarding / how-to-do-X",
     "pickScore": 9,
     "pickSignals": [
-      "This is a course syllabus with clear instructional structure: objectives, topics, grading, readings, and support — all hallmarks of a training/workshop format",
-      "The 8-slot training scaffold maps perfectly: cover → objectives (learning objectives) → context (prerequisites/format) → concept (weekly topics) → steps (grading breakdown) → example (reading list) → exercise (labs/project) → summary (office hours/support)",
-      "The deck is teaching students 'how to do X' (build distributed systems), with structured learning outcomes, weekly progression, and hands-on labs — exactly what the training scaffold is designed for"
+      "This is a course syllabus deck — a structured instructional document that teaches students how to succeed in a distributed systems course",
+      "Perfect semantic match: cover → objectives (learning objectives) → context (prerequisites, format) → concept (weekly topics) → steps (grading breakdown, reading list) → example (weekly topics detail) → exercise (labs, project) → summary (office hours, support)",
+      "The training scaffold's 8-slot structure maps cleanly to syllabus sections: intro, learning goals, context, content breakdown, assessment steps, resources, and support — all core elements present in the source"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -113,22 +113,6 @@
       ]
     },
     {
-      "slotIdx": 3,
-      "slotName": "concept",
-      "slotTitle": "Core Concept",
-      "slotPurpose": "The main idea visualized",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
-    },
-    {
       "slotIdx": 4,
       "slotName": "steps",
       "slotTitle": "Step by Step",
@@ -146,64 +130,42 @@
         "cover",
         "timeline"
       ]
+    }
+  ],
+  "droppedSlots": [
+    {
+      "slotIdx": 3,
+      "slotName": "concept",
+      "slotTitle": "Core Concept",
+      "reason": "no-source-content"
     },
     {
       "slotIdx": 5,
       "slotName": "example",
       "slotTitle": "Worked Example",
-      "slotPurpose": "Concrete walk-through",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
+      "reason": "no-source-content"
     },
     {
       "slotIdx": 6,
       "slotName": "exercise",
       "slotTitle": "Try It Yourself",
-      "slotPurpose": "Hands-on activity",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
+      "reason": "no-source-content"
     },
     {
       "slotIdx": 7,
       "slotName": "summary",
       "slotTitle": "Summary",
-      "slotPurpose": "Key takeaways",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
+      "reason": "no-source-content"
     }
   ],
   "totals": {
     "slotsBaked": 4,
     "slotsEmpty": 4,
     "slotsErrored": 0,
-    "totalCostUSD": 0.0851706
+    "totalCostUSD": 0.1302582
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:34:06.210Z",
+    "generatedAt": "2026-07-05T05:46:51.434Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }
