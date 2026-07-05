@@ -60,7 +60,10 @@ export const SAMPLES = [
 ];
 
 const PAD = 20;
-const ICON_MINI_MAX = 30;
+// Capped lower than the old 30 — at high counts (e.g. 100) the mini icons
+// squished down to unrecognizable slivers within the fixed miniIconAreaW.
+// Above the cap we show a "×N" ratio note instead of drawing more icons.
+const ICON_MINI_MAX = 20;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -99,11 +102,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Min/max row height guards
   const effectiveRowH = Math.max(40, Math.min(120, rowH));
 
-  // Layout: [count col] [single icon] [mini icons row] [label col]
+  // Layout: [count col] [single icon] [mini icons row] [gap] [label col]
   const countColW = Math.round(w * 0.18);
   const singleIconW = Math.round(w * 0.1);
   const labelColW = Math.round(w * 0.22);
-  const miniIconAreaW = w - PAD * 2 - countColW - singleIconW - labelColW;
+  const labelGap = 14; // breathing room so mini icons never touch the label text
+  const miniIconAreaW = w - PAD * 2 - countColW - singleIconW - labelColW - labelGap;
   const miniIconStartX = x + PAD + countColW + singleIconW;
 
   for (let i = 0; i < stats.length; i++) {
@@ -146,16 +150,27 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     drawPhosphorIcon(ctx, iconName, iconX, iconY, iconSize, accent);
 
     // --- Mini icon row ---
+    // Cap at ICON_MINI_MAX so icons never squish into unrecognizable
+    // slivers at high counts; when capped, show a "×N" ratio note (each
+    // icon represents N units) instead of an ambiguous ellipsis.
     const displayCount = Math.min(count, ICON_MINI_MAX);
-    const showEllipsis = count > ICON_MINI_MAX;
+    const isCapped = count > ICON_MINI_MAX;
+    const ratioText = isCapped ? `×${Math.max(2, Math.round(count / ICON_MINI_MAX))}` : '';
+    const ratioFontSize = Math.round(effectiveRowH * 0.22);
 
     if (displayCount > 0) {
+      ctx.save();
+      ctx.font = `700 ${ratioFontSize}px Inter, system-ui, sans-serif`;
+      const ratioW = ratioText ? ctx.measureText(ratioText).width + 8 : 0;
+      ctx.restore();
+
+      const usableW = miniIconAreaW - ratioW;
       const miniSize = Math.min(
         Math.round(effectiveRowH * 0.32),
-        Math.round((miniIconAreaW - (showEllipsis ? 20 : 0)) / displayCount),
+        Math.round(usableW / displayCount),
       );
       const miniSize2 = Math.max(8, Math.min(miniSize, 24));
-      const miniGap = Math.min(miniSize2 * 1.2, miniIconAreaW / displayCount);
+      const miniGap = Math.min(miniSize2 * 1.2, usableW / displayCount);
 
       for (let j = 0; j < displayCount; j++) {
         const mx = miniIconStartX + j * miniGap;
@@ -163,13 +178,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         drawPhosphorIcon(ctx, iconName, mx, my, miniSize2, accent, 0.7);
       }
 
-      if (showEllipsis) {
+      if (ratioText) {
         ctx.save();
-        ctx.fillStyle = rgbaCss(fg, 0.5);
-        ctx.font = `600 ${Math.round(effectiveRowH * 0.28)}px Inter, system-ui, sans-serif`;
+        ctx.fillStyle = rgbaCss(fg, 0.55);
+        ctx.font = `700 ${ratioFontSize}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText('…', miniIconStartX + displayCount * miniGap + 2, rowMidY);
+        ctx.fillText(ratioText, miniIconStartX + displayCount * miniGap + 4, rowMidY);
         ctx.restore();
       }
     }
@@ -184,8 +199,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(label, labelX, caption ? rowMidY - 1 : rowMidY);
 
     if (caption) {
-      ctx.fillStyle = rgbaCss(fg, 0.5);
-      ctx.font = `500 ${Math.round(effectiveRowH * 0.24)}px Inter, system-ui, sans-serif`;
+      ctx.fillStyle = rgbaCss(fg, 0.6);
+      ctx.font = `600 ${Math.round(effectiveRowH * 0.24)}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.fillText(caption, labelX, rowMidY + 2);
     }
