@@ -48,7 +48,14 @@ export const spec = {
       ],
     },
     title: { type: 'string?', example: "Maslow's Hierarchy" },
-    inverted: { type: 'boolean?', default: false, example: true },
+    // NOTE: example intentionally false (matches default). The all-atoms
+    // gallery builds its demo args straight from each arg's `example` field
+    // (see demoArgsFor in all-atoms-gallery.html), so an `example: true` here
+    // would silently force every gallery render into the inverted/funnel
+    // orientation and hide the canonical base-at-bottom layout this atom
+    // defaults to. Toggle to `true` locally if you want to eyeball the
+    // inverted variant instead.
+    inverted: { type: 'boolean?', default: false, example: false },
   },
 };
 
@@ -113,35 +120,38 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const pyramidH = y + h - plotTop - PAD;
   const pyramidW = w - PAD * 2;
   const cx = x + w / 2;
+  const rightEdge = x + w - PAD;
   const layerH = (pyramidH - LAYER_GAP * (n - 1)) / n;
 
-  // Width tapering: bottom layer = pyramidW * 1.0, top layer = pyramidW * 0.2
-  // (taper exponentially for more visual interest)
+  // Width tapering by BOUNDARY (not by pixel row): boundary k=0 is the outer
+  // base edge (widest), boundary k=n is the apex tip (narrowest). This is a
+  // property of layer identity (layers[0]=base=widest ... layers[n-1]=apex=
+  // narrowest) and is independent of `inverted` — inverted only changes where
+  // the base/apex land vertically on the canvas, not which layer is wide.
   const minWidthFrac = 0.18;
   const maxWidthFrac = 1.0;
-  const widthAtLayer = (i) => {
-    // i=0 is base (bottom), i=n-1 is apex (top), unless inverted
-    const tIdx = inverted ? i : n - 1 - i; // tIdx=0 is apex (narrow)
-    const t = n === 1 ? 0.5 : tIdx / (n - 1);
-    return pyramidW * (minWidthFrac + (1 - t) * (maxWidthFrac - minWidthFrac));
-  };
+  const boundaryWidth = (k) => pyramidW * (maxWidthFrac - (k / n) * (maxWidthFrac - minWidthFrac));
 
-  // Draw layers (bottom → top in pixel space; layer index 0 is base by spec
-  // → at bottom when not inverted, at top when inverted)
+  // Draw layers. layers[0] = BASE → bottom of canvas + widest (default) or
+  // top of canvas + widest (inverted, funnel-like). layers[n-1] = APEX →
+  // opposite end + narrowest.
   for (let i = 0; i < n; i++) {
     const pixelRowFromTop = inverted ? i : n - 1 - i;
     const top = plotTop + pixelRowFromTop * (layerH + LAYER_GAP);
     const bottom = top + layerH;
-    const topW = widthAtLayer(inverted ? i + 1 : i); // upper edge width
-    const botW = widthAtLayer(inverted ? i : i + 1); // lower edge width
+    // Within each trapezoid, the edge closer to the base is wider than the
+    // edge closer to the apex — this holds regardless of orientation because
+    // boundaryWidth(i) [base-side of layer i] > boundaryWidth(i+1) [apex-side].
+    const topW = boundaryWidth(inverted ? i : i + 1);
+    const botW = boundaryWidth(inverted ? i + 1 : i);
     const color = layerColors[i % layerColors.length];
 
-    drawLayer(ctx, cx, top, bottom, topW, botW, color, layers[i], { fg, bg, i, n });
+    drawLayer(ctx, cx, top, bottom, topW, botW, color, layers[i], { fg, bg, i, n, rightEdge });
   }
 }
 
 function drawLayer(ctx, cx, top, bottom, topW, botW, color, layer, info) {
-  const { fg, bg } = info;
+  const { fg, bg, rightEdge } = info;
 
   // Trapezoid path
   const trapezoid = () => {
@@ -178,31 +188,80 @@ function drawLayer(ctx, cx, top, bottom, topW, botW, color, layer, info) {
   ctx.fill();
   ctx.restore();
 
-  // Label (centered) — Inter 700 white with 2px dark shadow for legibility
+  // Label — Inter 700 white with 2px dark shadow, centered inside the
+  // trapezoid IF it fits; otherwise fall back to a dark label BESIDE the
+  // pyramid (right of the widest edge) with a connector tick, so tiny apex
+  // layers never render illegible white-on-sliver text.
   const layerH = bottom - top;
-  const labelSize = Math.min(15, layerH * 0.32);
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.5)';
-  ctx.shadowBlur = 2;
-  ctx.shadowOffsetY = 1;
-  ctx.fillStyle = 'rgba(255,255,255,1)';
-  ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = layer.sublabel ? 'bottom' : 'middle';
   const cy = (top + bottom) / 2;
-  ctx.fillText(String(layer.label || ''), cx, layer.sublabel ? cy : cy + 2);
-  ctx.restore();
+  const labelText = String(layer.label || '');
+  const insideFs = Math.min(15, layerH * 0.32);
+  const avgW = (topW + botW) / 2;
+  const innerMaxW = avgW - 16;
+  ctx.font = `700 ${insideFs}px Inter, system-ui, sans-serif`;
+  const fitsInside = labelText === '' || ctx.measureText(labelText).width <= innerMaxW;
 
-  if (layer.sublabel) {
+  if (fitsInside) {
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
     ctx.shadowBlur = 2;
-    ctx.fillStyle = 'rgba(255,255,255,0.80)';
-    ctx.font = `500 ${Math.min(11, layerH * 0.2)}px Inter, system-ui, sans-serif`;
+    ctx.shadowOffsetY = 1;
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+    ctx.font = `700 ${insideFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText(String(layer.sublabel), cx, cy + 4);
+    ctx.textBaseline = layer.sublabel ? 'bottom' : 'middle';
+    ctx.fillText(labelText, cx, layer.sublabel ? cy : cy + 2);
     ctx.restore();
+
+    if (layer.sublabel) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.shadowBlur = 2;
+      ctx.fillStyle = 'rgba(255,255,255,0.80)';
+      ctx.font = `500 ${Math.min(11, layerH * 0.2)}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(layer.sublabel), cx, cy + 4);
+      ctx.restore();
+    }
+  } else {
+    const edgeX = cx + Math.max(topW, botW) / 2;
+    const tickLen = 10;
+    const textX = edgeX + tickLen + 4;
+    const maxLabelW = Math.max(20, rightEdge - textX);
+    let fs = insideFs;
+    ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
+    while (fs > 9 && ctx.measureText(labelText).width > maxLabelW) {
+      fs--;
+      ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
+    }
+
+    ctx.save();
+    ctx.strokeStyle = rgbaCss(fg, 0.35);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(edgeX, cy);
+    ctx.lineTo(edgeX + tickLen, cy);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.fillStyle = rgbCss(fg);
+    ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = layer.sublabel ? 'bottom' : 'middle';
+    ctx.fillText(labelText, textX, layer.sublabel ? cy : cy + 1);
+    ctx.restore();
+
+    if (layer.sublabel) {
+      ctx.save();
+      ctx.fillStyle = rgbaCss(fg, 0.6);
+      ctx.font = `500 ${Math.max(9, fs - 3)}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(layer.sublabel), textX, cy + 3);
+      ctx.restore();
+    }
   }
 
   // Value (right side if present, slightly indented from edge)

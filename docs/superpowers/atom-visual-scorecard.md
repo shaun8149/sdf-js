@@ -7,17 +7,20 @@ args 渲染全部 101 atom (640×360, editorial-light palette), 9 chunk 截图,
 评分: ✅ 好 (PL 级) / 🟡 中 (可用但有硬伤) / 🔴 破 (视觉失败, 必修)。
 只列 🔴/🟡; 未列出的 ~70 atom 均 ✅。
 
-## 🔴 P0 — 视觉失败 (round 2 必修)
+## ✅ Fixed in round 2 (2026-07-05)
 
-| atom | 问题 |
+全部 7 个 P0 已修复, 每项均重渲 gallery + 多模态截图确认。详见各 commit message
+(branch `sprint-26-round2-p0-atoms`)。
+
+| atom | 修了什么 |
 |---|---|
-| `pyramid` | **语义倒置**: Maslow 例子 base 层 (Physiological) 渲染在顶部最宽, 塔尖朝下。惯例是 base 在底。且塔尖层 label 不可读 (白字压小三角)。⚠ 修渲染顺序是视觉契约变更 — 3D twin (pyramid-3d) 同步检查 |
-| `feature-card-grid` | 标题溢出卡片 ("Performance"/"Global Reach" 撞右边), body 文本截断到词中 ("with" / "50+") — 无 auto-shrink |
-| `gauge` | 指针方向/枢轴错 (指向右下 ~140°), 无数值显示 — 看起来根本没做完 |
-| `seven-s-model` | 六边形团簇过小挤在中心, 全部 label 截断 ("Sha…Val…" / "Str…" / "Sys…") 不可读 |
-| `numbered-grid` | huge 风格数字与 label 文字重叠 ("2Partner channel"), sublabel 被数字压住 |
-| `mindmap` | 节点 label 截断 ("ende." / "Compo…" / "Pipel."), 圆太小, 挤在中心 1/3 区域 |
-| `matrix-grid` + `nine-field-matrix` | bubbles arg 渲染在 cell label **之上**遮挡文字 ("Weaknesses" 被 "Stars" 泡遮住 / nine-field 左上 "Invest" 被遮) |
+| `pyramid` | 重写 `widthAtLayer` → `boundaryWidth(k)`(按 boundary 而非 pixel-row 计算宽度), layers[0]=base 现在正确渲染在底部最宽; `inverted` 只改上下位置不再影响哪层宽。塔尖 label 加"放不下就挪到金字塔外侧+连接线"的 fallback。顺带修了 spec `inverted.example: true` 意外把 gallery demo 强制渲成 funnel 朝向的 bug。确认 `pyramid-3d` twin 本来就是 base-bottom-widest, 2D 现在与之一致, 未改 3D。 |
+| `feature-card-grid` | 标题加 fitFontSize auto-shrink(min 12px), 不再溢出撞邻居卡片; body wrapText 升到 4 行 + 末行 ellipsis(整词丢弃优先, 单词内部才退化到字符级裁切), tokenizer 支持连字符断行("zero-knowledge"→"zero-"/"knowledge")。 |
+| `gauge` | 根因: arcRadius 贪心吃满剩余高度, 把数值文字/label 挤到 canvas 外(完全不可见)。改为先预留 bottomBlockH(数值字号+间距+可选 label)再算 arcRadius。指针角度数学本身没问题(0=左/0.5=顶/1=右, 向下开口的表盘), 之前"指针方向错"其实是表盘整体过大+数值裁切造成的观感。 |
+| `seven-s-model` | R 从 `min(w,h)*0.31` 改为按 FILL_FRAC(0.75)反推, 团簇现在占满~75%可用空间。label 从固定字号+ellipsis 换成 `fitLabelLines()`: 先降字号(9px 下限)→ 再 2-line 词换行 → 单词不可切分时用连字符 2-line 字符对半("Structure"→"Struc-"/"ture")。 |
+| `numbered-grid` | huge 数字列宽从 `numFontSize*0.65` 的猜测值改成 `ctx.measureText(numLabel)` 实测宽度 + 8px gap, label/sublabel 列从实测宽度之后起始, 不再压字。 |
+| `mindmap` | 固定半径常量(36/22/14)+ 保守 maxRadius 改成按 80% 可用半径动态计算; 分支/叶子节点缩成小圆点, label 移到圆外(沿节点相对根节点的角度径向偏移, 按左右自动切 textAlign), 字号 10px 下限自动收缩; 根节点保留内嵌 label 但改 auto-shrink 不再 ellipsis 截断。 |
+| `matrix-grid` + `nine-field-matrix` | 拆分 `drawCell` → `drawCellBg` + `drawCellLabel`, 渲染顺序改成: 背景 → 轴 → bubbles(半透明 fill α=0.32 + 实线描边)→ cell label(现在总在 bubble 之上)→ bubble 自己的 label 移到泡外(右下偏移, 避开 cell label 的水平中线), 深色小字。 |
 
 ## 🟡 P1 — 中等 (round 3 候选)
 
@@ -54,6 +57,6 @@ args 渲染全部 101 atom (640×360, editorial-light palette), 9 chunk 截图,
 
 ## 状态
 
-- [ ] Round 2: P0 × 7
+- [x] Round 2: P0 × 7 (2026-07-05, branch `sprint-26-round2-p0-atoms`)
 - [ ] Round 3: P1 × 12
 - [ ] Round 4: P2 清尾 + 复审全量

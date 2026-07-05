@@ -126,10 +126,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textBaseline = 'top';
       const numX = cellX + cellPad + numFontSize * 0.05;
       const numY = cellY + cellPad;
+      // Reserve the number column's ACTUAL measured width (was a fixed
+      // numFontSize*0.65 guess that didn't match glyph metrics — digits like
+      // "2"/"4" at 900 weight measure wider than that, so the label text
+      // started underneath the glyph instead of after it).
+      const numW = ctx.measureText(numLabel).width;
       ctx.fillText(numLabel, numX, numY);
 
-      const textX = cellX + cellPad + numFontSize * 0.65;
-      const textMaxW = colW - cellPad - numFontSize * 0.65 - cardMargin;
+      const textX = numX + numW + 8;
+      const textMaxW = cellX + colW - cardMargin - cellPad - textX;
       const labelTarget = Math.round(rowH * 0.14);
       const labelFs = fitFontSize(
         ctx,

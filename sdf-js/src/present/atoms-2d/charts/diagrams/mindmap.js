@@ -47,9 +47,6 @@ export const spec = {
 
 const PAD = 14;
 const TITLE_FRAC = 0.1;
-const ROOT_RADIUS = 36;
-const BRANCH_RADIUS = 22;
-const LEAF_RADIUS = 14;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -84,16 +81,27 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + h * TITLE_FRAC + PAD;
   }
 
-  // Layout: radial — root at center, children on first ring, etc.
+  // Layout: radial — root at center, children on first ring, etc. Sized to
+  // use ~80% of the available radius (previously a conservative constant
+  // margin left the whole cluster cramped into the center third of the
+  // canvas).
   const cx = x + w / 2;
   const cy = plotTop + (y + h - plotTop) / 2;
-  const maxRadius = Math.min(w, y + h - plotTop) / 2 - LEAF_RADIUS - 24;
+  const availRadius = Math.min(w, y + h - plotTop) / 2;
+  const maxRadius = availRadius * 0.8;
+
+  // Node radii scale with the plot size but stay small — labels now render
+  // OUTSIDE the circles (radially offset), so nodes are just position
+  // markers, not label containers.
+  const ROOT_RADIUS = clamp(maxRadius * 0.16, 26, 46);
+  const BRANCH_RADIUS = clamp(maxRadius * 0.075, 10, 18);
+  const LEAF_RADIUS = clamp(maxRadius * 0.05, 6, 12);
 
   const branches = Array.isArray(root.children) ? root.children : [];
 
   // First-ring positions
-  const branchRing = maxRadius * 0.45;
-  const leafRing = maxRadius * 0.85;
+  const branchRing = maxRadius * 0.42;
+  const leafRing = maxRadius * 0.86;
   const branchPositions = [];
   for (let i = 0; i < branches.length; i++) {
     const angle = (i / branches.length) * Math.PI * 2 - Math.PI / 2;
@@ -118,7 +126,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const lx = cx + Math.cos(leafAngle) * leafRing;
       const ly = cy + Math.sin(leafAngle) * leafRing;
       drawCurvedConnector(ctx, bp.x, bp.y, lx, ly, bp.color);
-      drawNode(ctx, lx, ly, LEAF_RADIUS, leaves[j].label || '', bp.color, fg, false);
+      drawNode(ctx, lx, ly, LEAF_RADIUS, bp.color);
+      drawLabelOutside(ctx, lx, ly, leafAngle, LEAF_RADIUS, leaves[j].label || '', fg, 600, 12);
     }
   }
 
@@ -129,18 +138,26 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // Branch nodes
   for (const bp of branchPositions) {
-    drawNode(ctx, bp.x, bp.y, BRANCH_RADIUS, bp.node.label || '', bp.color, fg, false);
+    drawNode(ctx, bp.x, bp.y, BRANCH_RADIUS, bp.color);
+    drawLabelOutside(ctx, bp.x, bp.y, bp.angle, BRANCH_RADIUS, bp.node.label || '', fg, 700, 14);
   }
 
-  // Root node (largest, accent, drawn last so it sits on top)
-  drawNode(ctx, cx, cy, ROOT_RADIUS, root.label || '', accent, fg, true);
+  // Root node (largest, accent, drawn last so it sits on top). Root keeps
+  // its label INSIDE (it's the biggest circle and the one true "container"
+  // of this diagram) but auto-shrinks instead of truncating.
+  drawNode(ctx, cx, cy, ROOT_RADIUS, accent);
+  drawRootLabel(ctx, cx, cy, ROOT_RADIUS, root.label || '');
 }
 
-function drawNode(ctx, cx, cy, radius, label, color, fg, isRoot) {
+function clamp(v, lo, hi) {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+function drawNode(ctx, cx, cy, radius, color) {
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
-  ctx.shadowBlur = isRoot ? 12 : 6;
-  ctx.shadowOffsetY = isRoot ? 4 : 2;
+  ctx.shadowBlur = radius > 24 ? 12 : 6;
+  ctx.shadowOffsetY = radius > 24 ? 4 : 2;
 
   // Radial gradient for pseudo-3D
   const grad = ctx.createRadialGradient(
@@ -159,18 +176,59 @@ function drawNode(ctx, cx, cy, radius, label, color, fg, isRoot) {
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
+}
 
-  // Label
+// Root label renders INSIDE the (largest) root circle, auto-shrunk to fit
+// rather than truncated with an ellipsis.
+function drawRootLabel(ctx, cx, cy, radius, label) {
+  const maxW = radius * 1.7;
+  let fontSize = 16;
+  const minFs = 10;
+  const text = String(label);
+  while (fontSize > minFs) {
+    ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+    if (ctx.measureText(text).width <= maxW) break;
+    fontSize--;
+  }
   ctx.fillStyle = 'rgba(255,255,255,1)';
-  const fontSize = Math.max(10, Math.min(15, radius * 0.55));
-  ctx.font = `${isRoot ? 700 : 600} ${fontSize}px Inter, system-ui, sans-serif`;
+  ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  // For long labels, slight wrap is not supported here; truncate visually
+  ctx.fillText(text, cx, cy + 1);
+}
+
+// Branch/leaf labels render OUTSIDE their (small) node circle, radially
+// offset along the same angle the node sits at relative to the root, with
+// text alignment flipped depending on which side of the diagram the node
+// falls on (so labels grow away from the cluster, never overlapping it).
+// Auto-shrinks down to a 10px floor instead of truncating.
+function drawLabelOutside(ctx, nx, ny, angle, nodeRadius, label, fg, weight, targetFs) {
+  const gap = 6;
+  const lx = nx + Math.cos(angle) * (nodeRadius + gap);
+  const ly = ny + Math.sin(angle) * (nodeRadius + gap);
+  const cosA = Math.cos(angle);
+
+  let align = 'center';
+  if (cosA > 0.25) align = 'left';
+  else if (cosA < -0.25) align = 'right';
+
+  const maxW = 130;
+  const minFs = 10;
   const text = String(label);
-  const maxChars = Math.max(6, Math.floor(radius / 5));
-  const display = text.length > maxChars ? text.slice(0, maxChars - 1) + '…' : text;
-  ctx.fillText(display, cx, cy + 1);
+  let fontSize = targetFs;
+  while (fontSize > minFs) {
+    ctx.font = `${weight} ${fontSize}px Inter, system-ui, sans-serif`;
+    if (ctx.measureText(text).width <= maxW) break;
+    fontSize--;
+  }
+
+  ctx.save();
+  ctx.fillStyle = rgbCss(fg);
+  ctx.font = `${weight} ${fontSize}px Inter, system-ui, sans-serif`;
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, lx, ly);
+  ctx.restore();
 }
 
 function drawCurvedConnector(ctx, x0, y0, x1, y1, color) {

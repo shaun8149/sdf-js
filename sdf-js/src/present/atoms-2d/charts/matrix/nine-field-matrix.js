@@ -101,7 +101,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const cellW = (gridR - gridL) / COLS;
   const cellH = (gridB - gridT) / ROWS;
 
-  // -- Draw cells --
+  // -- Draw cell backgrounds (+ icon) — labels drawn in a later pass so
+  // bubble overlays (drawn in between) never obscure them. --
+  const cellRects = [];
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const idx = r * COLS + c;
@@ -110,17 +112,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const color = bandColorMap[bandName];
       const cx = gridL + c * cellW;
       const cy = gridT + r * cellH;
-      drawCell(
-        ctx,
-        cx + 4,
-        cy + 4,
-        cellW - 8,
-        cellH - 8,
-        cell.label,
-        cell.sublabel,
-        color,
-        cell.icon,
-      );
+      const rx = cx + 4;
+      const ry = cy + 4;
+      const rw = cellW - 8;
+      const rh = cellH - 8;
+      cellRects.push({ rx, ry, rw, rh, cell });
+      drawCellBg(ctx, rx, ry, rw, rh, color, cell.icon);
     }
   }
 
@@ -206,14 +203,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
   }
 
-  // -- Bubbles overlay --
+  // -- Bubbles overlay — translucent fill (alpha <= 0.35) + solid ring, so
+  // cell labels (drawn AFTER, in the next pass) stay legible underneath. --
   if (Array.isArray(args.bubbles) && args.bubbles.length > 0) {
-    // Use a contrasting set for bubbles — white with border works over colored cells
-    const bubbleBaseColors = palette.colors || [
-      [255, 255, 255],
-      [240, 240, 255],
-      [255, 240, 220],
-    ];
+    const bubbleExternalLabels = [];
     for (let bi = 0; bi < args.bubbles.length; bi++) {
       const b = args.bubbles[bi];
       const bRow = clamp(Number(b.row) || 0, 0, ROWS - 1);
@@ -226,42 +219,57 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       const bandName = BAND[bRow * COLS + bCol];
       const bandColor = bandColorMap[bandName];
-      // Bubble: white fill with subtle ring in band color for contrast
-      ctx.save();
-      ctx.shadowColor = rgbaCss([0, 0, 0], 0.28);
-      ctx.shadowBlur = 8;
-      ctx.shadowOffsetY = 3;
 
-      const grad = ctx.createRadialGradient(
-        cellCx - bubbleR * 0.25,
-        cellCy - bubbleR * 0.25,
-        0,
-        cellCx,
-        cellCy,
-        bubbleR,
-      );
-      grad.addColorStop(0, rgbaCss([255, 255, 255], 0.97));
-      grad.addColorStop(1, rgbaCss(lighten(bandColor, 0.5), 0.9));
-      ctx.fillStyle = grad;
+      ctx.save();
+      ctx.shadowColor = rgbaCss([0, 0, 0], 0.2);
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 2;
+      ctx.fillStyle = rgbaCss([255, 255, 255], 0.32);
       ctx.beginPath();
       ctx.arc(cellCx, cellCy, bubbleR, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
 
       // Ring border in band color
-      ctx.strokeStyle = rgbaCss(bandColor, 0.8);
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(bandColor, 0.9);
       ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cellCx, cellCy, bubbleR, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
 
-      // Bubble label in dark text (legible over white bubble)
+      // Bubble's own label renders OUTSIDE the bubble (offset right and
+      // slightly down, to clear the cell label's horizontal centerline),
+      // dark text, in a pass after cell labels.
       if (b.label) {
-        ctx.fillStyle = rgbaCss(fg, 0.92);
-        const labelSize = Math.max(9, Math.round(bubbleR * 0.5));
-        ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(String(b.label), cellCx, cellCy);
+        bubbleExternalLabels.push({
+          x: cellCx + bubbleR + 6,
+          y: cellCy + bubbleR * 0.6,
+          text: String(b.label),
+        });
       }
+    }
+
+    // Cell labels ON TOP of the translucent bubbles.
+    for (const { rx, ry, rw, rh, cell } of cellRects) {
+      drawCellLabel(ctx, rx, ry, rw, rh, cell.label, cell.sublabel);
+    }
+
+    // Bubble external labels, drawn last so they sit above everything.
+    for (const bl of bubbleExternalLabels) {
+      ctx.save();
+      ctx.fillStyle = rgbaCss(fg, 0.85);
+      ctx.font = `600 11px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(bl.text, bl.x, bl.y);
+      ctx.restore();
+    }
+  } else {
+    // No bubbles — draw cell labels directly.
+    for (const { rx, ry, rw, rh, cell } of cellRects) {
+      drawCellLabel(ctx, rx, ry, rw, rh, cell.label, cell.sublabel);
     }
   }
 }
@@ -270,7 +278,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function drawCell(ctx, x, y, w, h, label, sublabel, color, iconName) {
+function drawCellBg(ctx, x, y, w, h, color, iconName) {
   ctx.save();
   ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
   ctx.shadowBlur = 8;
@@ -304,8 +312,11 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color, iconName) {
     }
     ctx.restore();
   }
+}
 
-  // Label
+// Label + sublabel, drawn in a separate pass from the cell background so
+// callers can interleave bubble overlays UNDER the text.
+function drawCellLabel(ctx, x, y, w, h, label, sublabel) {
   if (label) {
     ctx.fillStyle = 'rgba(255,255,255,0.97)';
     ctx.font = `700 ${Math.min(20, h * 0.2)}px Inter, system-ui, sans-serif`;
@@ -316,6 +327,7 @@ function drawCell(ctx, x, y, w, h, label, sublabel, color, iconName) {
   if (sublabel) {
     ctx.fillStyle = 'rgba(255,255,255,0.78)';
     ctx.font = `500 ${Math.min(12, h * 0.1)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(String(sublabel), x + w / 2, y + h / 2 + 6);
   }
