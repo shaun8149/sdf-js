@@ -116,14 +116,24 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     const cardCy = above ? axisY - cardOffsetY - cardH / 2 : axisY + cardOffsetY + cardH / 2;
 
-    // Connector line from marker to card (hairline, subtle)
+    // Clamp the card's horizontal center so it never renders outside
+    // [x+PAD, x+w-PAD] — the first/last cards used to center directly on
+    // their (edge-of-axis) dot and get clipped by the canvas edge
+    // ("eed Round" instead of "Seed Round"). They now shift inward instead.
+    const half = cardW / 2;
+    const minCx = x + PAD + half;
+    const maxCx = x + w - PAD - half;
+    const cardCx = Math.min(maxCx, Math.max(minCx, mx));
+
+    // Connector line from marker to card (hairline, subtle) — diagonal when
+    // the card has been shifted inward off the marker's x position.
     ctx.save();
     ctx.strokeStyle = rgbaCss(fg, 0.22);
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(mx, axisY + (above ? -MARKER_RADIUS : MARKER_RADIUS));
-    ctx.lineTo(mx, cardCy + (above ? cardH / 2 : -cardH / 2));
+    ctx.lineTo(cardCx, cardCy + (above ? cardH / 2 : -cardH / 2));
     ctx.stroke();
     ctx.restore();
 
@@ -157,7 +167,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.restore();
 
     // Event card
-    drawEventCard(ctx, mx, cardCy, cardW, cardH, events[i], { fg, bg, accent });
+    drawEventCard(ctx, cardCx, cardCy, cardW, cardH, events[i], { fg, bg, accent });
   }
 }
 
