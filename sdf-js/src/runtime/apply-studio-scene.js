@@ -41,6 +41,9 @@ export function sceneHasTimeContent(rawScene) {
     !!s &&
     (animType(s.type) ||
       animMat(s.material) ||
+      // subject.animation channels compile to u_time exprs (e.g. build-in reveals) —
+      // the scene must render on the animation loop or they hold their t=0 pose.
+      (Array.isArray(s.animation) && s.animation.length > 0) ||
       (Array.isArray(s.children) && s.children.some(visit)));
   return Array.isArray(rawScene.subjects) && rawScene.subjects.some(visit);
 }
