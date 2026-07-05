@@ -271,6 +271,49 @@ function _printHeuristicAssignments(assignments) {
 const slotAssignments = await runStage1();
 
 // ---------------------------------------------------------------------------
+// Stage 1.5 — ORPHAN RESCUE (Sprint 25 round 3)
+//
+// When the source has a slide that fits NO slot semantically (e.g. a "$24M
+// ARR" KPI highlight inside a change-roadmap-shaped deck), the mapper
+// correctly leaves it unmapped — and its facts silently vanish from the
+// deck. Prompt nudging can't fix this: the mapper's judgment is right, the
+// scaffold just has no home for it.
+//
+// Deterministic rescue: attach each orphaned content slide to the assigned
+// slot whose purpose scores highest (keyword heuristic), as extraSlides.
+// Stage 2 passes the extra content to the lift with instructions to carry
+// its data values. Every source slide's facts land SOMEWHERE, guaranteed.
+// ---------------------------------------------------------------------------
+{
+  const mappedIdx = new Set(slotAssignments.filter((a) => !a.empty).map((a) => a.slideIdx));
+  const orphans = slides
+    .map((s, i) => ({ slide: s, idx: i }))
+    .filter(({ idx }) => !mappedIdx.has(idx));
+  const filled = slotAssignments.filter((a) => !a.empty && a.slot.name !== 'cover');
+  if (orphans.length && filled.length) {
+    console.log('\n── Stage 1.5: orphan rescue ──');
+    for (const { slide, idx } of orphans) {
+      let best = null;
+      let bestScore = -1;
+      for (const a of filled) {
+        const s = _scoreSlide(slide, a.slot);
+        if (s > bestScore) {
+          bestScore = s;
+          best = a;
+        }
+      }
+      if (best) {
+        best.extraSlides = best.extraSlides || [];
+        best.extraSlides.push(idx);
+        console.log(
+          `  orphan slide ${idx} "${(slide.title || '').slice(0, 40)}" → merged into slot ${best.slotIdx} (${best.slot.name})`,
+        );
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Stage 2 — Lift each slot with scaffold context
 // ---------------------------------------------------------------------------
 async function callAnthropic(userMessage) {
@@ -392,13 +435,35 @@ for (const a of slotAssignments) {
     `  {"icon": "link", "label": "Cross-chain liquidity"}\n` +
     `]} }\n\n`;
 
+  // Stage 1.5 orphan rescue: extra source slides merged into this slot.
+  // Their data values MUST survive — that's the whole point of the rescue.
+  let extraMaterial = '';
+  if (Array.isArray(a.extraSlides) && a.extraSlides.length > 0) {
+    for (const exIdx of a.extraSlides) {
+      const ex = slides[exIdx];
+      if (!ex) continue;
+      const exBody = (ex.body || [])
+        .map((b) => (typeof b === 'string' ? b : b.text || ''))
+        .filter((t) => t && t.length > 0);
+      extraMaterial +=
+        `\n## ADDITIONAL SOURCE MATERIAL (slide ${exIdx} — merged into this slot; ` +
+        `it fits no other slot, so its DATA VALUES must appear in your output too)\n\n` +
+        `**Title**: ${ex.title || '(untitled)'}\n\n` +
+        `**Body**:\n` +
+        exBody.map((t) => `  - "${t}"`).join('\n') +
+        '\n';
+    }
+  }
+
   const userMessage =
     slotContext +
     `## SOURCE MATERIAL (slide ${a.slideIdx} from input deck)\n\n` +
     `**Title**: ${slide.title || '(untitled)'}\n\n` +
     `**Body**:\n` +
     bodyTexts.map((t) => `  - "${t}"`).join('\n') +
-    '\n\n' +
+    '\n' +
+    extraMaterial +
+    '\n' +
     `## OUTPUT\n\n` +
     `Canvas: **1280×720**. Emit SceneData JSON for ONE slot:\n\n` +
     '```json\n' +
