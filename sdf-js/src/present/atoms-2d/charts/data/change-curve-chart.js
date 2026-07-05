@@ -4,6 +4,21 @@
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
 
+// Last-resort ellipsis truncation so a phase label/description never bleeds
+// into a neighboring phase's slot. Assumes ctx.font is already set.
+function truncateToWidth(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let lo = 0;
+  let hi = text.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    const candidate = text.slice(0, mid) + '…';
+    if (ctx.measureText(candidate).width <= maxW) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo > 0 ? text.slice(0, lo) + '…' : '…';
+}
+
 export const spec = {
   type: 'change-curve-chart',
   category: 'charts/data',
@@ -197,26 +212,44 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // Phase labels in zone below curve
   const labelFontSize = Math.min(Math.round(phaseLabelH * 0.22), Math.round(plotW / N / 5.5), 12);
   const descFontSize = Math.max(8, Math.round(labelFontSize * 0.75));
+  // Available width per phase before it reaches the next phase's dot. A
+  // centered (middle) label reaches spacing/2 in EACH direction, so its
+  // total budget is `spacing`. First/last dots sit exactly at plotL/plotR
+  // and anchor their text to the inside edge instead of centering (so it
+  // doesn't overflow past the canvas) — but that's a ONE-directional reach,
+  // so to stay within the same spacing/2 budget its neighbor assumes on
+  // that side, its cap must be half of the centered budget, not the full
+  // width. Truncate (ellipsis) whatever doesn't fit either way.
+  const spacing = N > 1 ? plotW / (N - 1) : plotW;
+  const centerMaxW = Math.max(20, spacing - 8);
+  const edgeMaxW = Math.max(20, spacing / 2 - 8);
 
   for (let i = 0; i < N; i++) {
     const { px } = points[i];
     const labelY = curveB + 6;
+    const isEdge = i === 0 || i === N - 1;
+    const align = i === 0 ? 'left' : i === N - 1 ? 'right' : 'center';
+    const slotMaxW = isEdge ? edgeMaxW : centerMaxW;
 
     ctx.save();
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
-    ctx.textAlign = 'center';
+    ctx.textAlign = align;
     ctx.textBaseline = 'top';
-    ctx.fillText(String(phases[i].label || ''), px, labelY);
+    ctx.fillText(truncateToWidth(ctx, String(phases[i].label || ''), slotMaxW), px, labelY);
     ctx.restore();
 
     if (phases[i].description) {
       ctx.save();
       ctx.fillStyle = rgbaCss(fg, 0.55);
       ctx.font = `500 ${descFontSize}px Inter, system-ui, sans-serif`;
-      ctx.textAlign = 'center';
+      ctx.textAlign = align;
       ctx.textBaseline = 'top';
-      ctx.fillText(String(phases[i].description), px, labelY + labelFontSize * 1.3);
+      ctx.fillText(
+        truncateToWidth(ctx, String(phases[i].description), slotMaxW),
+        px,
+        labelY + labelFontSize * 1.3,
+      );
       ctx.restore();
     }
   }
