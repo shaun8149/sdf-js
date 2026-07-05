@@ -41,8 +41,9 @@ export const spec = {
 
 const PAD = 14;
 const AXIS_LABEL_GUTTER = 28;
-// Label is drawn inside the bubble when radius is at least this many pixels
-const INSIDE_LABEL_THRESHOLD = 20;
+// Slightly larger min bubble radius so small-size points don't shrink to
+// near-invisible dots (a sparse-looking chart with barely-there bubbles).
+const MIN_RADIUS = 14;
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -110,8 +111,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   for (const { p, i } of sorted) {
     const px = plotL + clamp(Number(p.x) || 0, 0, 1) * plotW;
     const py = plotB - clamp(Number(p.y) || 0, 0, 1) * plotH;
-    const radius = clamp(Number(p.size) || 0, 0, 1) * sizeScale;
-    if (radius < 1) continue;
+    const sizeNorm = clamp(Number(p.size) || 0, 0, 1);
+    if (sizeNorm <= 0) continue;
+    const radius = Math.max(MIN_RADIUS, sizeNorm * sizeScale);
 
     const color = p.color ? p.color : baseColors[i % baseColors.length];
 
@@ -121,18 +123,30 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.shadowBlur = radius * 0.6;
     ctx.shadowOffsetY = radius * 0.25;
 
-    // Pseudo-3D radial gradient: lighter toward top-left
+    // Semi-transparent fill with a solid stroke — labels now always render
+    // OUTSIDE the bubble (dark-on-light background), so the fill no longer
+    // needs to be dark/opaque enough to host white text; a lighter,
+    // see-through fill + a crisp solid outline reads better against any bg.
     const glowX = px - radius * 0.32;
     const glowY = py - radius * 0.32;
     const grad = ctx.createRadialGradient(glowX, glowY, 0, px, py, radius);
-    grad.addColorStop(0, rgbaCss(lighten(color, 0.45), 0.9));
-    grad.addColorStop(0.5, rgbaCss(color, 0.82));
-    grad.addColorStop(1, rgbaCss(darken(color, 0.2), 0.78));
+    grad.addColorStop(0, rgbaCss(lighten(color, 0.45), 0.55));
+    grad.addColorStop(0.5, rgbaCss(color, 0.42));
+    grad.addColorStop(1, rgbaCss(darken(color, 0.1), 0.38));
     ctx.fillStyle = grad;
 
     ctx.beginPath();
     ctx.arc(px, py, radius, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
+
+    // Solid stroke outline
+    ctx.save();
+    ctx.strokeStyle = rgbCss(color);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(px, py, radius, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.restore();
 
     // Subtle specular highlight — small white circle at top-left
@@ -150,39 +164,33 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fill();
     ctx.restore();
 
-    // Label rendering
+    // Label rendering — ALWAYS outside the bubble (dark text, right offset).
+    // Previously large bubbles centered a white label INSIDE the fill, but
+    // the fill is a mid-tone accent color, not dark, so white-on-accent
+    // often read as illegible "dark on dark" (esp. with darker palettes).
     if (p.label) {
       const label = String(p.label);
-      const fontSize = Math.round(Math.max(10, Math.min(radius * 0.55, h * 0.038)));
+      const fontSize = Math.round(Math.max(11, Math.min(radius * 0.4, h * 0.036)));
       ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
 
-      if (radius >= INSIDE_LABEL_THRESHOLD) {
-        // Label centered inside bubble
-        ctx.fillStyle = rgbaCss([255, 255, 255], 0.9);
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, px, py);
-      } else {
-        // Label outside with a short leader line
-        const offsetX = radius + 6;
-        const labelX = px + offsetX;
-        const labelY = py;
+      const offsetX = radius + 6;
+      const labelX = px + offsetX;
+      const labelY = py;
 
-        // Leader line
-        ctx.save();
-        ctx.strokeStyle = rgbaCss(fg, 0.35);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(px + radius, py);
-        ctx.lineTo(px + radius + 4, py);
-        ctx.stroke();
-        ctx.restore();
+      // Leader line
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(fg, 0.35);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px + radius, py);
+      ctx.lineTo(px + radius + 4, py);
+      ctx.stroke();
+      ctx.restore();
 
-        ctx.fillStyle = rgbaCss(fg, 0.8);
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, labelX, labelY);
-      }
+      ctx.fillStyle = rgbaCss(fg, 0.85);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, labelX, labelY);
     }
   }
 
