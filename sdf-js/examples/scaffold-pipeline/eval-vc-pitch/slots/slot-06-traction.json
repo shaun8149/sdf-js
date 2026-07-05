@@ -16,15 +16,16 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Traction"
+          "title": "Traction",
+          "style": "gradient"
         }
       },
       {
         "type": "line",
         "x": 80,
         "y": 180,
-        "w": 1120,
-        "h": 380,
+        "w": 700,
+        "h": 420,
         "args": {
           "values": [
             0,
@@ -39,51 +40,70 @@
             "Q4 2026F"
           ],
           "format": "currency",
-          "title": "ARR Growth ($M)",
-          "showPoints": true
+          "title": "ARR Growth Trajectory",
+          "showPoints": true,
+          "annotations": [
+            {
+              "index": 3,
+              "text": "Forecast"
+            }
+          ]
         }
       },
       {
         "type": "kpi-card",
-        "x": 80,
-        "y": 600,
-        "w": 350,
-        "h": 80,
+        "x": 840,
+        "y": 180,
+        "w": 360,
+        "h": 180,
         "args": {
-          "value": "47",
-          "label": "Design Teams",
-          "sublabel": "Q3 2026",
-          "style": "light",
-          "icon": "users"
+          "value": "$2.4M",
+          "label": "Q4 ARR Forecast",
+          "sublabel": "12× growth in 9 months",
+          "icon": "chart-line-up",
+          "trend": "up",
+          "trendValue": "+224%",
+          "style": "dark"
         }
       },
       {
         "type": "kpi-card",
-        "x": 465,
-        "y": 600,
-        "w": 350,
-        "h": 80,
-        "args": {
-          "value": "3",
-          "label": "Design Agencies",
-          "sublabel": "Q3 2026",
-          "style": "light",
-          "icon": "briefcase"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 850,
-        "y": 600,
-        "w": 350,
-        "h": 80,
+        "x": 840,
+        "y": 390,
+        "w": 170,
+        "h": 140,
         "args": {
           "value": "110%",
           "label": "Net Retention",
-          "sublabel": "Q4 2026 forecast",
-          "style": "light",
-          "trend": "up",
-          "icon": "chart-line-up"
+          "icon": "crown",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 1030,
+        "y": 390,
+        "w": 170,
+        "h": 140,
+        "args": {
+          "value": "47+",
+          "label": "Design Teams",
+          "sublabel": "3 agencies",
+          "icon": "users",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 80,
+        "y": 620,
+        "w": 1120,
+        "h": 60,
+        "args": {
+          "value": "$740K ARR",
+          "label": "Q3 2026 Actual",
+          "trend": "Strong early traction",
+          "trendDirection": "up"
         }
       }
     ]
@@ -106,18 +126,18 @@
     "tokenUsage": {
       "input_tokens": 4054,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 580,
+      "output_tokens": 730,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0247569,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-05T05:04:23.296Z",
+    "costUSD": 0.0270144,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-05T05:31:47.533Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

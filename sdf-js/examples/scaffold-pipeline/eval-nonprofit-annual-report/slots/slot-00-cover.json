@@ -2,11 +2,11 @@
   "slotIdx": 0,
   "slotName": "cover",
   "slotTitle": "Title",
-  "slotPurpose": "Company name + update period + author",
+  "slotPurpose": "Deck title + subtitle + author/date",
   "sourceSlideIdx": 0,
   "sourceSlideTitle": "Clearwater Trust — 2026 Annual Report",
   "sceneData": {
-    "name": "investor-update/cover",
+    "name": "generic-deck/cover",
     "layout": "cover",
     "subjects": [
       {
@@ -16,38 +16,37 @@
         "w": 1280,
         "h": 720,
         "args": {
-          "title": "Clearwater Trust",
-          "subtitle": "2026 Annual Report",
-          "author": "Clean water access for rural communities",
-          "date": "Fiscal Year 2026",
-          "version": "Prepared for donors and board",
+          "title": "Clearwater Trust — 2026 Annual Report",
+          "subtitle": "Clean water access for rural communities",
+          "author": "Fiscal Year 2026",
+          "date": "Prepared for donors and board",
           "style": "gradient"
         }
       }
     ]
   },
   "meta": {
-    "scaffold": "investor-update",
-    "theme": "financial-navy-cerulean",
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
     "recommendedAtoms": [
       "cover"
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3926,
+      "input_tokens": 3919,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 166,
+      "output_tokens": 161,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0181629,
-    "elapsedSec": 4.9,
-    "generatedAt": "2026-07-05T05:06:41.633Z",
+    "costUSD": 0.0180744,
+    "elapsedSec": 3.9,
+    "generatedAt": "2026-07-05T05:34:22.419Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

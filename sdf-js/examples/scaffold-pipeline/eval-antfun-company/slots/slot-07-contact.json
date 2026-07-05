@@ -46,46 +46,51 @@
             {
               "icon": "brand:discord",
               "label": "Discord",
-              "sublabel": "Direct founder access"
+              "sublabel": "Join community"
             },
             {
               "icon": "brand:x",
-              "label": "Spaces",
+              "label": "Twitter Spaces",
               "sublabel": "Every Friday"
             }
           ],
           "iconSize": "medium",
-          "colorMode": "auto"
+          "iconStyle": "circle"
         }
       },
       {
         "type": "kpi-card",
-        "x": 80,
+        "x": 40,
         "y": 400,
         "w": 280,
         "h": 240,
         "args": {
           "value": "12K",
           "label": "Community Members",
+          "sublabel": "Across all channels",
           "icon": "users",
           "style": "light"
         }
       },
       {
         "type": "bullet-list",
-        "x": 420,
+        "x": 360,
         "y": 400,
-        "w": 800,
+        "w": 880,
         "h": 240,
         "args": {
           "title": "Why Connect",
           "items": [
             {
               "icon": "rocket",
-              "label": "Weekly releases + feedback"
+              "label": "Weekly releases + active feedback loop"
             },
             {
-              "icon": "gift",
+              "icon": "chat-circle",
+              "label": "Direct founder access via Discord"
+            },
+            {
+              "icon": "flask",
               "label": "Beta access for power users"
             },
             {
@@ -94,11 +99,11 @@
             },
             {
               "icon": "code",
-              "label": "Open-source SDK"
+              "label": "Open-source SDK for developers"
             },
             {
               "icon": "chart-line",
-              "label": "Real-time on-chain analytics"
+              "label": "Real-time on-chain analytics dashboard"
             }
           ]
         }
@@ -118,18 +123,18 @@
     "tokenUsage": {
       "input_tokens": 4087,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 679,
+      "output_tokens": 724,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0263409,
-    "elapsedSec": 10,
-    "generatedAt": "2026-07-05T04:58:38.006Z",
+    "costUSD": 0.027023399999999996,
+    "elapsedSec": 11.1,
+    "generatedAt": "2026-07-05T05:26:24.311Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

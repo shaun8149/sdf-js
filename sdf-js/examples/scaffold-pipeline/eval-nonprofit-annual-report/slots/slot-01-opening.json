@@ -1,0 +1,85 @@
+{
+  "slotIdx": 1,
+  "slotName": "opening",
+  "slotTitle": "Opening",
+  "slotPurpose": "Context, overview, or agenda — whatever the deck opens with",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "generic-deck/opening",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Our Mission"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 420,
+        "args": {
+          "items": [
+            {
+              "icon": "drop",
+              "label": "Clean Water",
+              "sublabel": "Infrastructure for underserved rural regions"
+            },
+            {
+              "icon": "heart",
+              "label": "Human Right",
+              "sublabel": "Access to clean water for all"
+            },
+            {
+              "icon": "calendar",
+              "label": "15 Years",
+              "sublabel": "Founded 2011 — continuous operations"
+            },
+            {
+              "icon": "globe",
+              "label": "4 Countries",
+              "sublabel": "Kenya • Tanzania • Malawi • Mozambique"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "agenda-list",
+      "bullet-list",
+      "quote-pull",
+      "stat-banner"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3994,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 357,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0212394,
+    "elapsedSec": 6.6,
+    "generatedAt": "2026-07-05T05:34:29.072Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

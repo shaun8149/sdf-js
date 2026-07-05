@@ -2,19 +2,19 @@
   "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-nonprofit-annual-report",
   "deckName": "eval-nonprofit-annual-report",
   "structure": {
-    "slots_total": 8,
+    "slots_total": 7,
     "slots_baked": 7,
-    "slots_empty": 1,
+    "slots_empty": 0,
     "slots_errored": 0,
-    "fill_rate": 0.875,
+    "fill_rate": 1,
     "pick_method": "llm",
-    "scaffold_id": "investor-update",
-    "theme_id": "financial-navy-cerulean"
+    "scaffold_id": "generic-deck",
+    "theme_id": "editorial-navy"
   },
   "atomQuality": {
     "atom_instances": 11,
-    "atom_types_distinct": 5,
-    "variety_ratio": 0.45454545454545453,
+    "atom_types_distinct": 6,
+    "variety_ratio": 0.5454545454545454,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,19 +29,19 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 192.28571428571428,
-    "max_slot_chars": 227
+    "chars_per_slot": 250.71428571428572,
+    "max_slot_chars": 389
   },
   "score": {
-    "total": 94.4,
+    "total": 100,
     "breakdown": {
-      "structure": 21.9,
-      "variety": 12.5,
+      "structure": 25,
+      "variety": 15,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:08:33.633Z"
+  "generatedAt": "2026-07-05T05:36:18.175Z"
 }

@@ -22,14 +22,14 @@
       },
       {
         "type": "risk-heatmap",
-        "x": 40,
+        "x": 60,
         "y": 160,
-        "w": 1200,
-        "h": 520,
+        "w": 1160,
+        "h": 500,
         "args": {
-          "title": "Q3 Challenge Impact Assessment",
-          "xAxis": "Impact on Business",
-          "yAxis": "Likelihood of Recurrence",
+          "title": "Q3 Challenges by Impact & Likelihood",
+          "xAxis": "Likelihood",
+          "yAxis": "Impact",
           "xLabels": [
             "Low",
             "Medium",
@@ -38,35 +38,35 @@
             "Critical"
           ],
           "yLabels": [
-            "Rare",
-            "Unlikely",
-            "Possible",
-            "Likely",
-            "Almost Certain"
+            "Minor",
+            "Moderate",
+            "Significant",
+            "Major",
+            "Severe"
           ],
           "risks": [
             {
-              "label": "Bridge API Instability",
-              "x": 3,
-              "y": 3,
+              "label": "Bridge API instability",
+              "likelihood": 4,
+              "impact": 4,
               "description": "Third-party integration delayed"
             },
             {
-              "label": "Perp DEX Latency",
-              "x": 2,
-              "y": 4,
-              "description": "2s vs 800ms target"
+              "label": "Perp DEX latency",
+              "likelihood": 5,
+              "impact": 3,
+              "description": "2s vs 800ms goal"
             },
             {
-              "label": "Asia GTM Delay",
-              "x": 4,
-              "y": 2,
+              "label": "Asia GTM delay",
+              "likelihood": 3,
+              "impact": 4,
               "description": "Regulatory uncertainty"
             },
             {
-              "label": "Support SLA Miss",
-              "x": 3,
-              "y": 4,
+              "label": "Support SLA breach",
+              "likelihood": 5,
+              "impact": 3,
               "description": "8h avg vs 2h target"
             }
           ]
@@ -87,18 +87,18 @@
     "tokenUsage": {
       "input_tokens": 3978,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 460,
+      "output_tokens": 452,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0227289,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-05T04:59:37.611Z",
+    "costUSD": 0.022616400000000002,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-05T05:27:16.715Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -12,9 +12,9 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 9,
-    "atom_types_distinct": 6,
-    "variety_ratio": 0.6666666666666666,
+    "atom_instances": 10,
+    "atom_types_distinct": 7,
+    "variety_ratio": 0.7,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,8 +29,8 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 266.625,
-    "max_slot_chars": 484
+    "chars_per_slot": 264.75,
+    "max_slot_chars": 466
   },
   "score": {
     "total": 100,
@@ -43,5 +43,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:08:33.620Z"
+  "generatedAt": "2026-07-05T05:36:18.165Z"
 }

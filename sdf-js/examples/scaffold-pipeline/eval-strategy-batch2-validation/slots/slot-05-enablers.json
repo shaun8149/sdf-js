@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Five Core Strategic Pillars",
   "sceneData": {
     "name": "change-roadmap/enablers",
-    "layout": "grid",
+    "layout": "hierarchy",
     "subjects": [
       {
         "type": "cover",
@@ -17,7 +17,7 @@
         "h": 120,
         "args": {
           "title": "Enablers",
-          "style": "section"
+          "style": "gradient"
         }
       },
       {
@@ -27,28 +27,28 @@
         "w": 1120,
         "h": 520,
         "args": {
-          "title": "Five Core Strategic Pillars",
-          "hub": "Digital Transformation",
+          "title": "Five Strategic Pillars",
+          "hub": "Change Engine",
           "segments": [
             {
               "label": "Digitise Core",
-              "description": "Automate top 20 manual workflows"
+              "description": "Top 20 workflows"
             },
             {
               "label": "Data First",
-              "description": "Unified platform — single source of truth"
+              "description": "Unified platform"
             },
             {
               "label": "Customer 360",
-              "description": "Real-time personalisation engine"
+              "description": "Real-time engine"
             },
             {
               "label": "Talent Uplift",
-              "description": "Digital upskilling for 800 employees"
+              "description": "800 employees"
             },
             {
               "label": "Ecosystem Play",
-              "description": "API partnerships with 12 fintechs"
+              "description": "12 fintechs"
             }
           ],
           "segmentColors": [
@@ -95,18 +95,18 @@
     "tokenUsage": {
       "input_tokens": 4074,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 435,
+      "output_tokens": 412,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0226419,
-    "elapsedSec": 8.1,
-    "generatedAt": "2026-07-05T05:00:50.593Z",
+    "costUSD": 0.022304400000000002,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-05T05:28:25.826Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

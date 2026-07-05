@@ -31,17 +31,17 @@
             {
               "icon": "key",
               "label": "Self-Custodial",
-              "sublabel": "Browser-side key management"
+              "sublabel": "Browser-side keys + hardware wallet"
             },
             {
               "icon": "bridge",
               "label": "Multi-Chain",
-              "sublabel": "ETH + SOL + Base + ARB"
+              "sublabel": "Ethereum, Solana, Base, Arbitrum"
             },
             {
               "icon": "brain",
               "label": "OpenClaw AI",
-              "sublabel": "On-device privacy inference"
+              "sublabel": "On-device privacy + server power"
             },
             {
               "icon": "lock-key",
@@ -49,20 +49,20 @@
               "sublabel": "Signal protocol chat"
             },
             {
-              "icon": "arrows-split",
-              "label": "Smart Routing",
-              "sublabel": "DEX aggregator + MEV shield"
+              "icon": "arrows-merge",
+              "label": "DEX Routing",
+              "sublabel": "Aggregator with MEV protection"
             },
             {
-              "icon": "magnifying-glass",
+              "icon": "eye",
               "label": "Smart Money",
-              "sublabel": "50K wallet tracker real-time"
+              "sublabel": "50K wallets tracked real-time"
             }
           ],
           "cols": 3,
           "iconStyle": "card",
           "iconSize": "medium",
-          "colorMode": "brand"
+          "colorMode": "auto"
         }
       }
     ]
@@ -81,18 +81,18 @@
     "tokenUsage": {
       "input_tokens": 4035,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 456,
+      "output_tokens": 460,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022839899999999996,
+    "costUSD": 0.022907399999999998,
     "elapsedSec": 7.9,
-    "generatedAt": "2026-07-05T04:58:12.539Z",
+    "generatedAt": "2026-07-05T05:25:51.391Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

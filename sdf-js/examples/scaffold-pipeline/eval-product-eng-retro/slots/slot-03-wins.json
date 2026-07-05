@@ -30,14 +30,14 @@
           "items": [
             {
               "icon": "users-three",
-              "label": "Real-time collaboration engine",
-              "sublabel": "100% rollout Aug 3",
+              "label": "Real-time collaboration — 100% rollout",
+              "sublabel": "Launched Aug 3",
               "status": "done"
             },
             {
               "icon": "rocket-launch",
               "label": "New onboarding flow",
-              "sublabel": "12min → 4min time-to-value",
+              "sublabel": "12min → 4min time-to-first-value",
               "status": "done"
             },
             {
@@ -49,16 +49,17 @@
             {
               "icon": "shield-check",
               "label": "Admin audit log",
-              "sublabel": "SOC 2 shipped 2 weeks early",
+              "sublabel": "SOC 2 requirement, shipped 2 weeks early",
               "status": "done"
             },
             {
               "icon": "code",
               "label": "API v3 migration",
-              "sublabel": "92% customer adoption",
+              "sublabel": "92% customer adoption by quarter end",
               "status": "done"
             }
-          ]
+          ],
+          "title": "Q3 Shipped Features"
         }
       }
     ]
@@ -75,18 +76,18 @@
     "tokenUsage": {
       "input_tokens": 4014,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 432,
+      "output_tokens": 455,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0224169,
-    "elapsedSec": 8.2,
-    "generatedAt": "2026-07-05T05:08:17.746Z",
+    "costUSD": 0.022769400000000002,
+    "elapsedSec": 8.5,
+    "generatedAt": "2026-07-05T05:35:56.295Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

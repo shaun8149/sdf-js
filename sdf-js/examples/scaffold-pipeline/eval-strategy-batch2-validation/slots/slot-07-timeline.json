@@ -30,27 +30,27 @@
           "title": "Programme Timeline 2026",
           "events": [
             {
-              "date": "Jan 2026",
+              "date": "Jan",
               "label": "Programme Launch",
-              "sublabel": "Steering committee established"
+              "sublabel": "Steering committee formed"
             },
             {
-              "date": "Mar 2026",
-              "label": "Core Systems Design",
-              "sublabel": "Design phase complete"
+              "date": "Mar",
+              "label": "Design Complete",
+              "sublabel": "Core systems architecture"
             },
             {
-              "date": "Jun 2026",
+              "date": "Jun",
               "label": "Wave 1 Go-Live",
-              "sublabel": "Finance + HR systems"
+              "sublabel": "Finance + HR"
             },
             {
-              "date": "Sep 2026",
+              "date": "Sep",
               "label": "Wave 2 Go-Live",
-              "sublabel": "Operations + Customer systems"
+              "sublabel": "Operations + Customer"
             },
             {
-              "date": "Dec 2026",
+              "date": "Dec",
               "label": "Programme Completion",
               "sublabel": "Retrospective conducted"
             },
@@ -59,7 +59,8 @@
               "label": "Benefits Review",
               "sublabel": "Realisation assessment"
             }
-          ]
+          ],
+          "axisLabel": "2026 → 2027"
         }
       }
     ]
@@ -77,18 +78,18 @@
     "tokenUsage": {
       "input_tokens": 4012,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 432,
+      "output_tokens": 430,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022410899999999997,
-    "elapsedSec": 6.8,
-    "generatedAt": "2026-07-05T05:01:07.839Z",
+    "costUSD": 0.0223884,
+    "elapsedSec": 11,
+    "generatedAt": "2026-07-05T05:28:45.477Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

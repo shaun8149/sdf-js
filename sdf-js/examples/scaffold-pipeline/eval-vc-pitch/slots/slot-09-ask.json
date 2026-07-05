@@ -28,7 +28,7 @@
         "h": 200,
         "args": {
           "value": "$15M",
-          "label": "Series A Raise",
+          "label": "Series A",
           "sublabel": "18-month runway",
           "icon": "currency-dollar",
           "style": "dark"
@@ -42,8 +42,8 @@
         "h": 200,
         "args": {
           "value": "$10M",
-          "label": "Next Milestone",
-          "sublabel": "ARR target",
+          "label": "ARR Target",
+          "sublabel": "Next milestone",
           "icon": "target",
           "style": "dark"
         }
@@ -57,16 +57,16 @@
         "args": {
           "value": "200",
           "label": "Atom Library",
-          "sublabel": "2D + 3D atoms",
+          "sublabel": "2D + 3D primitives",
           "icon": "cube",
           "style": "dark"
         }
       },
       {
         "type": "pie",
-        "x": 40,
+        "x": 140,
         "y": 400,
-        "w": 1200,
+        "w": 480,
         "h": 280,
         "args": {
           "title": "Use of Funds",
@@ -81,8 +81,33 @@
             "Reserve"
           ],
           "format": "percent",
-          "donutRatio": 0.5,
-          "centerLabel": "$15M"
+          "donutRatio": 0.5
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 400,
+        "w": 560,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "icon": "code",
+              "label": "Scale atom library to 200",
+              "sublabel": "2D + 3D rendering primitives"
+            },
+            {
+              "icon": "users",
+              "label": "Agency partner program",
+              "sublabel": "Sales + community expansion"
+            },
+            {
+              "icon": "piggy-bank",
+              "label": "18-month runway reserve",
+              "sublabel": "Bridge to $10M ARR"
+            }
+          ]
         }
       }
     ]
@@ -100,18 +125,18 @@
     "tokenUsage": {
       "input_tokens": 3985,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 563,
+      "output_tokens": 739,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0242949,
-    "elapsedSec": 9,
-    "generatedAt": "2026-07-05T05:04:52.744Z",
+    "costUSD": 0.0269424,
+    "elapsedSec": 10.9,
+    "generatedAt": "2026-07-05T05:32:15.187Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

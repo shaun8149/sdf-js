@@ -1,0 +1,108 @@
+{
+  "slotIdx": 2,
+  "slotName": "metrics",
+  "slotTitle": "Key Metrics",
+  "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Portfolio Overview",
+  "sceneData": {
+    "name": "investor-update/metrics",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Metrics",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "kpis": [
+            {
+              "value": "$420M",
+              "label": "Total AUM",
+              "sublabel": "12 portfolio companies",
+              "trend": "neutral",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "$38M",
+              "label": "Combined ARR",
+              "sublabel": "Up 62% YoY",
+              "trend": "up",
+              "trendValue": "+62%",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "3",
+              "label": "Series B Track",
+              "sublabel": "Next 18 months",
+              "trend": "up",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "2",
+              "label": "Strategic Pivots",
+              "sublabel": "H1 2026 completed",
+              "trend": "neutral",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "dashboard-multi-kpi-composite",
+      "stat-grid-large",
+      "line"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4024,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 441,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0225894,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-05T05:30:28.165Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

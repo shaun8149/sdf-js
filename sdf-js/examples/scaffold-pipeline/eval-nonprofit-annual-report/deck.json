@@ -2,61 +2,56 @@
   "deckName": "eval-nonprofit-annual-report",
   "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/nonprofit-annual-report.json",
   "scaffold": {
-    "id": "investor-update",
-    "label": "Investor Update",
-    "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
-    "pickScore": 7,
+    "id": "generic-deck",
+    "label": "Generic Deck",
+    "description": "Flexible any-topic deck — opening, 4 content sections, a numbers section, and a closing. The fallback when no specialized scaffold fits.",
+    "pickScore": 8,
     "pickSignals": [
-      "Annual report structure with metrics, highlights, financial breakdown, and forward-looking goals matches investor-update cadence and sections (tldr → metrics → wins → challenges → next-quarter → financials)",
-      "Donor-facing periodic update for board and donors parallels LP/seed-investor audience; includes 'by the numbers', program highlights, financial transparency, and 2027 goals",
-      "While titled 'annual report', the semantic arc (accomplishments → metrics → spending breakdown → future goals → ask) aligns more with investor-update than financial-summary (which is income-statement focused) or analysis-report (which centers on strategic analysis frameworks)"
+      "This is a non-profit annual report with a classic structure: mission, metrics, highlights, financials, testimonials, future goals, and donor CTA. None of the specialized scaffolds (VC pitch, QBR, strategic plan, investor update) are designed for donor-facing charity reports.",
+      "The 7-slot generic-deck scaffold fits the 8-section structure well: cover → opening (mission) → section-1 (metrics) → section-2 (highlights) → section-3 (financials) → numbers (implied by financials/metrics) → closing (goals + CTA). One section may double up, but this is a strong semantic fit.",
+      "Confidence is 8 (not 10) because a hypothetical 'non-profit-annual-report' scaffold would be perfect, but it doesn't exist. Generic-deck is the best available option and will fill slots cleanly without forcing content into mismatched business/VC/consulting templates."
     ],
     "fallback": false,
     "pickerMethod": "llm"
   },
   "theme": {
-    "id": "financial-navy-cerulean",
-    "label": "Financial Navy",
-    "macroCluster": "pitch",
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
     "bg": [
-      26,
-      40,
-      66
+      248,
+      246,
+      240
     ],
     "accent": [
-      58,
-      138,
-      200
+      38,
+      70,
+      130
     ],
     "colors": [
       [
-        58,
-        138,
-        200
+        38,
+        70,
+        130
       ],
       [
-        26,
-        40,
-        66
+        110,
+        95,
+        75
       ],
       [
-        100,
-        150,
-        200
+        165,
+        130,
+        90
       ],
       [
-        180,
-        210,
-        235
-      ],
-      [
-        240,
-        248,
-        255
+        200,
+        195,
+        180
       ]
     ],
     "font": {
-      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "heading": "Georgia, \"Source Serif Pro\", serif",
       "body": "Inter, system-ui, sans-serif"
     }
   },
@@ -65,7 +60,7 @@
       "slotIdx": 0,
       "slotName": "cover",
       "slotTitle": "Title",
-      "slotPurpose": "Company name + update period + author",
+      "slotPurpose": "Deck title + subtitle + author/date",
       "sourceSlideIdx": 0,
       "sourceSlideTitle": "Clearwater Trust — 2026 Annual Report",
       "mappingScore": 10,
@@ -81,148 +76,132 @@
     },
     {
       "slotIdx": 1,
-      "slotName": "tldr",
-      "slotTitle": "TL;DR",
-      "slotPurpose": "Headline summary — 3 key points this quarter",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "2026 By the Numbers",
-      "mappingScore": 7,
+      "slotName": "opening",
+      "slotTitle": "Opening",
+      "slotPurpose": "Context, overview, or agenda — whatever the deck opens with",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Our Mission",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-01-tldr.json",
+      "liftFile": "slots/slot-01-opening.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "icon-row"
       ]
     },
     {
       "slotIdx": 2,
-      "slotName": "metrics",
-      "slotTitle": "Key Metrics",
-      "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "2026 By the Numbers",
+      "slotName": "section-1",
+      "slotTitle": "Section 1",
+      "slotPurpose": "First main content section — any topic",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Program Highlights",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-02-metrics.json",
+      "liftFile": "slots/slot-02-section-1.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite"
+        "bullet-list"
       ]
     },
     {
       "slotIdx": 3,
-      "slotName": "wins",
-      "slotTitle": "Wins",
-      "slotPurpose": "Top accomplishments this quarter",
-      "sourceSlideIdx": 3,
-      "sourceSlideTitle": "Program Highlights",
-      "mappingScore": 10,
+      "slotName": "section-2",
+      "slotTitle": "Section 2",
+      "slotPurpose": "Second main content section — any topic",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Donor & Community Voices",
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-03-wins.json",
+      "liftFile": "slots/slot-03-section-2.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-grid"
+        "testimonial-wall"
       ]
     },
     {
       "slotIdx": 4,
-      "slotName": "challenges",
-      "slotTitle": "Challenges",
-      "slotPurpose": "What did not go well and what we learned",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
-    },
-    {
-      "slotIdx": 5,
-      "slotName": "next-quarter",
-      "slotTitle": "Next Quarter",
-      "slotPurpose": "Plan and priorities for the coming quarter",
+      "slotName": "section-3",
+      "slotTitle": "Section 3",
+      "slotPurpose": "Third main content section — any topic",
       "sourceSlideIdx": 6,
       "sourceSlideTitle": "2027 Goals",
-      "mappingScore": 10,
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-05-next-quarter.json",
+      "liftFile": "slots/slot-04-section-3.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
         "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "numbers",
+      "slotTitle": "By the Numbers",
+      "slotPurpose": "Any quantitative content — stats, metrics, breakdowns, comparisons",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "2026 By the Numbers",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-numbers.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "gauge"
       ]
     },
     {
       "slotIdx": 6,
-      "slotName": "ask",
-      "slotTitle": "Ask",
-      "slotPurpose": "What we need from LPs — intros, advice, resources",
+      "slotName": "closing",
+      "slotTitle": "Closing",
+      "slotPurpose": "Summary, next steps, thanks, or call to action",
       "sourceSlideIdx": 7,
       "sourceSlideTitle": "Thank You & How to Help",
-      "mappingScore": 8,
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-06-ask.json",
+      "liftFile": "slots/slot-06-closing.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "bullet-list"
-      ]
-    },
-    {
-      "slotIdx": 7,
-      "slotName": "cap-table-burn",
-      "slotTitle": "Financials",
-      "slotPurpose": "Burn rate, runway, cap table highlights",
-      "sourceSlideIdx": 4,
-      "sourceSlideTitle": "Financial Breakdown",
-      "mappingScore": 9,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-07-cap-table-burn.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "pie",
-        "pie"
+        "call-to-action",
+        "icon-row"
       ]
     }
   ],
   "totals": {
     "slotsBaked": 7,
-    "slotsEmpty": 1,
+    "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.15408929999999998
+    "totalCostUSD": 0.15344280000000002
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:07:31.007Z",
+    "generatedAt": "2026-07-05T05:35:11.565Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

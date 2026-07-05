@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Next Steps",
   "sceneData": {
     "name": "qbr/next-steps",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -22,44 +22,45 @@
       },
       {
         "type": "kanban-board",
-        "x": 40,
+        "x": 80,
         "y": 160,
-        "w": 1200,
+        "w": 1120,
         "h": 520,
         "args": {
           "columns": [
             {
-              "name": "Oct 2026",
+              "label": "Engineering",
               "cards": [
                 {
-                  "title": "Perp DEX matching engine",
-                  "owner": "Engineering",
-                  "dueDate": "Oct 15"
+                  "label": "Ship Perp DEX engine",
+                  "sublabel": "Due: Oct 15"
                 }
               ]
             },
             {
-              "name": "Oct-Nov 2026",
+              "label": "Product",
               "cards": [
                 {
-                  "title": "Insurance API beta",
-                  "owner": "Product",
-                  "dueDate": "Oct 30"
-                },
-                {
-                  "title": "Asia compliance docs",
-                  "owner": "Legal",
-                  "dueDate": "Nov 10"
+                  "label": "Insurance API beta",
+                  "sublabel": "Due: Oct 30"
                 }
               ]
             },
             {
-              "name": "Nov 2026",
+              "label": "Legal",
               "cards": [
                 {
-                  "title": "B-round pitch deck v1",
-                  "owner": "CEO",
-                  "dueDate": "Nov 30"
+                  "label": "Asia compliance docs",
+                  "sublabel": "Due: Nov 10"
+                }
+              ]
+            },
+            {
+              "label": "CEO",
+              "cards": [
+                {
+                  "label": "B-round pitch deck v1",
+                  "sublabel": "Due: Nov 30"
                 }
               ]
             }
@@ -81,18 +82,18 @@
     "tokenUsage": {
       "input_tokens": 4015,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 415,
+      "output_tokens": 399,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0221649,
-    "elapsedSec": 7.1,
-    "generatedAt": "2026-07-05T04:59:51.909Z",
+    "costUSD": 0.0219324,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-05T05:27:30.166Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

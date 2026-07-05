@@ -23,84 +23,84 @@
       {
         "type": "pyramid",
         "x": 80,
-        "y": 180,
-        "w": 500,
+        "y": 160,
+        "w": 520,
         "h": 480,
         "args": {
+          "title": "TAM / SAM / SOM",
           "layers": [
             {
               "label": "TAM",
-              "sublabel": "AI Productivity",
-              "value": "$48B"
+              "sublabel": "AI productivity: $48B by 2028",
+              "value": 48
             },
             {
               "label": "SAM",
-              "sublabel": "Presentation Tools",
-              "value": "$4.8B"
+              "sublabel": "Presentation + infographic: $6.9B",
+              "value": 6.9
             },
             {
               "label": "SOM",
-              "sublabel": "Initial Wedge",
-              "value": "18M Users"
+              "sublabel": "18M knowledge workers",
+              "value": 1
             }
-          ],
-          "title": "Market Opportunity",
-          "inverted": false
+          ]
         }
       },
       {
         "type": "kpi-card",
-        "x": 660,
+        "x": 680,
         "y": 180,
-        "w": 540,
+        "w": 520,
         "h": 140,
         "args": {
           "value": "$48B",
-          "label": "TAM by 2028",
-          "sublabel": "AI-augmented productivity market",
+          "label": "AI Productivity Market",
+          "sublabel": "by 2028",
           "icon": "chart-line-up",
           "trend": "up",
+          "trendValue": "10× growth",
           "style": "dark"
         }
       },
       {
         "type": "kpi-card",
-        "x": 660,
+        "x": 680,
         "y": 340,
-        "w": 260,
+        "w": 250,
         "h": 140,
         "args": {
           "value": "$4.8B",
-          "label": "Presentation Market",
-          "sublabel": "Annual",
+          "label": "Presentation Software",
+          "sublabel": "annual market",
           "icon": "presentation-chart",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 940,
+        "x": 950,
         "y": 340,
-        "w": 260,
+        "w": 250,
         "h": 140,
         "args": {
           "value": "$2.1B",
-          "label": "Infographic Market",
-          "sublabel": "Annual",
-          "icon": "chart-pie",
+          "label": "Editorial Illustration",
+          "sublabel": "annual market",
+          "icon": "palette",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 660,
+        "x": 680,
         "y": 500,
-        "w": 540,
-        "h": 160,
+        "w": 520,
+        "h": 140,
         "args": {
           "value": "18M",
-          "label": "Target Users",
-          "sublabel": "Knowledge workers making decks weekly",
+          "label": "Knowledge Workers",
+          "sublabel": "making decks weekly",
           "icon": "users",
           "style": "accent-border"
         }
@@ -121,18 +121,18 @@
     "tokenUsage": {
       "input_tokens": 4007,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 751,
+      "output_tokens": 766,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0271809,
-    "elapsedSec": 11.2,
-    "generatedAt": "2026-07-05T05:04:00.754Z",
+    "costUSD": 0.0274134,
+    "elapsedSec": 11.4,
+    "generatedAt": "2026-07-05T05:31:22.405Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

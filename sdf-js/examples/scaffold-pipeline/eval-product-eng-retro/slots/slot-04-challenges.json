@@ -24,37 +24,85 @@
         "type": "bullet-list",
         "x": 80,
         "y": 180,
-        "w": 1120,
-        "h": 480,
+        "w": 560,
+        "h": 460,
         "args": {
           "title": "Tech Debt & Infrastructure",
           "items": [
             {
               "icon": "cube-segmented",
-              "label": "Monolith decomposition: 43% complete",
+              "label": "Monolith decomposition 43% complete",
               "sublabel": "6 of 14 services extracted"
             },
             {
               "icon": "shield-check",
-              "label": "Test coverage: 61% → 74%",
-              "sublabel": "Raised across core services"
+              "label": "Test coverage raised to 74%",
+              "sublabel": "From 61% across core services"
             },
             {
-              "icon": "timer",
-              "label": "Build time: 18min → 6min",
-              "sublabel": "Cache restructuring optimization"
+              "icon": "lightning",
+              "label": "Build time cut to 6 min",
+              "sublabel": "From 18 min via cache restructure"
             },
             {
               "icon": "code",
-              "label": "Node 16 → Node 22",
-              "sublabel": "Standardized across all services"
+              "label": "Node 22 standardization complete",
+              "sublabel": "Deprecated Node 16 across all services"
             },
             {
               "icon": "database",
-              "label": "Postgres sharding: 40% complete",
-              "sublabel": "2 of 5 shards live"
+              "label": "Postgres sharding 40% live",
+              "sublabel": "2 of 5 shards operational"
             }
           ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "43%",
+          "label": "Services Extracted",
+          "sublabel": "6 of 14 microservices",
+          "icon": "cube-segmented",
+          "trend": "+6 services",
+          "trendDirection": "up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 340,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "74%",
+          "label": "Test Coverage",
+          "sublabel": "Core services",
+          "icon": "shield-check",
+          "trend": "+13%",
+          "trendDirection": "up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 500,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "6 min",
+          "label": "Build Time",
+          "sublabel": "Cache restructuring impact",
+          "icon": "lightning",
+          "trend": "-67%",
+          "trendDirection": "down",
+          "style": "light"
         }
       }
     ]
@@ -72,18 +120,18 @@
     "tokenUsage": {
       "input_tokens": 4024,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 422,
+      "output_tokens": 803,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022296899999999998,
-    "elapsedSec": 8,
-    "generatedAt": "2026-07-05T05:08:25.749Z",
+    "costUSD": 0.0280194,
+    "elapsedSec": 12.4,
+    "generatedAt": "2026-07-05T05:36:08.746Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

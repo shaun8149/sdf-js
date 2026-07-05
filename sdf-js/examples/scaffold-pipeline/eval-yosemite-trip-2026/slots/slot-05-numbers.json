@@ -1,0 +1,121 @@
+{
+  "slotIdx": 5,
+  "slotName": "numbers",
+  "slotTitle": "By the Numbers",
+  "slotPurpose": "Any quantitative content — stats, metrics, breakdowns, comparisons",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Trip Stats",
+  "sceneData": {
+    "name": "generic-deck/numbers",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "By the Numbers",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "47",
+          "label": "Miles Hiked",
+          "icon": "map-trifold",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "11,200 ft",
+          "label": "Elevation Gain",
+          "icon": "mountains",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "1,432",
+          "label": "Photos Taken",
+          "icon": "camera",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 140,
+        "y": 430,
+        "w": 480,
+        "h": 240,
+        "args": {
+          "value": "Half Dome",
+          "label": "Best Day",
+          "sublabel": "No contest",
+          "icon": "star",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "↑",
+          "trendDirection": "up"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 660,
+        "y": 430,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "type_": "warning",
+          "heading": "Worst Moment",
+          "body": "Dropped phone at Glacier Point lookout",
+          "icon": "device-mobile-slash"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "stat-grid-large",
+      "dashboard-multi-kpi-composite",
+      "pie",
+      "bar",
+      "donut-with-center"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4001,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 640,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025505399999999998,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-05T05:33:19.816Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

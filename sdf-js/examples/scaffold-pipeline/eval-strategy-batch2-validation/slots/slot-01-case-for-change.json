@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Case for Change"
+          "title": "Case for Change",
+          "style": "section"
         }
       },
       {
@@ -24,18 +25,20 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 200,
+        "h": 260,
         "args": {
+          "title": "Performance Gap",
           "kpis": [
             {
               "value": "3%",
               "label": "Revenue Growth",
-              "sublabel": "vs 12% industry",
+              "sublabel": "vs industry 12%",
               "trend": "down",
+              "trendValue": "-9pp",
               "color": [
-                200,
-                90,
-                80
+                156,
+                142,
+                110
               ]
             },
             {
@@ -44,63 +47,65 @@
               "sublabel": "Legacy systems",
               "trend": "down",
               "color": [
-                200,
-                90,
-                80
+                100,
+                95,
+                82
               ]
             },
             {
               "value": "44",
               "label": "Customer NPS",
-              "sublabel": "Dropped from 67",
+              "sublabel": "Down from 67",
               "trend": "down",
-              "trendValue": "-23",
+              "trendValue": "-23 pts",
               "color": [
-                200,
-                90,
-                80
+                156,
+                142,
+                110
               ]
             }
-          ]
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 40,
-        "y": 390,
-        "w": 1200,
-        "h": 100,
-        "args": {
-          "value": "End of 2026",
-          "label": "Board-mandated digital acceleration deadline",
-          "bg": [
-            156,
-            142,
-            110
           ]
         }
       },
       {
         "type": "bullet-list",
         "x": 40,
-        "y": 520,
-        "w": 1200,
-        "h": 160,
+        "y": 460,
+        "w": 580,
+        "h": 220,
         "args": {
           "title": "Key Drivers",
           "items": [
             {
-              "icon": "trending-up",
-              "label": "Competitor pressure intensifying"
+              "icon": "shield-warning",
+              "label": "Competitor pressure escalating"
             },
             {
               "icon": "scales",
-              "label": "Regulatory changes requiring adaptation"
+              "label": "New regulatory requirements"
             },
             {
               "icon": "users",
-              "label": "Talent attrition accelerating"
+              "label": "Critical talent attrition"
             }
+          ]
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 660,
+        "y": 460,
+        "w": 580,
+        "h": 220,
+        "args": {
+          "value": "End of 2026",
+          "label": "Board Mandate",
+          "trend": "Digital acceleration required",
+          "trendDirection": "up",
+          "bg": [
+            156,
+            142,
+            110
           ]
         }
       }
@@ -119,18 +124,18 @@
     "tokenUsage": {
       "input_tokens": 4027,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 630,
+      "output_tokens": 669,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0254259,
-    "elapsedSec": 10.7,
-    "generatedAt": "2026-07-05T05:00:17.361Z",
+    "costUSD": 0.026018399999999997,
+    "elapsedSec": 10.6,
+    "generatedAt": "2026-07-05T05:27:55.413Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

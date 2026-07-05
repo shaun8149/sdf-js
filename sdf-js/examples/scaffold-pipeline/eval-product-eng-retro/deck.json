@@ -7,9 +7,9 @@
     "description": "Internal Q review — KPIs, wins, challenges, outlook",
     "pickScore": 9,
     "pickSignals": [
-      "The deck is explicitly a quarterly retrospective ('Q3 2026 Retro') presented to engineering org + leadership, which maps perfectly to the QBR scaffold's purpose of internal quarterly reviews for exec/manager audiences",
-      "Content structure mirrors QBR slots almost exactly: metrics (velocity, incidents), wins (shipped features, improvements), challenges (tech debt, incidents/postmortems), and outlook (Q4 OKRs)",
-      "The deck includes classic QBR elements: executive summary context, KPIs with targets and deltas, wins this quarter, identified challenges with root causes, and forward-looking objectives for next quarter"
+      "This is a quarterly retrospective covering KPIs (velocity metrics, incidents, deploy frequency), wins (shipped features, improved metrics), and challenges (incidents, tech debt progress), which maps perfectly to QBR structure",
+      "The audience is 'Eng org + leadership' — classic QBR stakeholder set; content follows the exec-summary → metrics → wins → challenges → outlook (Q4 OKRs) arc",
+      "Slide count (11 slides inferred from sections) fits well into QBR's 7-slot scaffold — some sections will naturally combine (e.g. velocity + incidents = KPIs; shipped features + tech debt = wins)"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -109,12 +109,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "bar",
-        "bullet-list"
+        "dashboard-multi-kpi-composite"
       ]
     },
     {
@@ -152,7 +147,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "bullet-list"
+        "bullet-list",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -195,10 +193,10 @@
     "slotsBaked": 6,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1383744
+    "totalCostUSD": 0.1378494
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:08:33.583Z",
+    "generatedAt": "2026-07-05T05:36:18.131Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

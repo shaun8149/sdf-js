@@ -1,0 +1,89 @@
+{
+  "slotIdx": 2,
+  "slotName": "section-1",
+  "slotTitle": "Section 1",
+  "slotPurpose": "First main content section — any topic",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Program Highlights",
+  "sceneData": {
+    "name": "generic-deck/section-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Program Highlights",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "icon": "wrench",
+              "label": "Rapid-response well repair program",
+              "sublabel": "Average repair time: 6 weeks → 9 days"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Girls' school hydration stations",
+              "sublabel": "Expanded to 40 new schools"
+            },
+            {
+              "icon": "solar-panel",
+              "label": "Solar-powered pump stations piloted",
+              "sublabel": "12 villages, 60% maintenance cost reduction"
+            },
+            {
+              "icon": "users",
+              "label": "Local technician training program",
+              "sublabel": "210 technicians for self-sufficient maintenance"
+            },
+            {
+              "icon": "handshake",
+              "label": "Regional government partnerships",
+              "sublabel": "3 governments on water-policy advocacy"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "kpi-card",
+      "timeline",
+      "pillar-3up"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4034,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 411,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0221694,
+    "elapsedSec": 8.5,
+    "generatedAt": "2026-07-05T05:34:37.616Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

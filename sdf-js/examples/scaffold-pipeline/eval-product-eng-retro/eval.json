@@ -12,13 +12,19 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 10,
-    "atom_types_distinct": 5,
+    "atom_instances": 8,
+    "atom_types_distinct": 4,
     "variety_ratio": 0.5,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 0,
-    "arg_violations_top_offenders": []
+    "arg_violations": 3,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 3
+      }
+    ]
   },
   "threeDReadiness": {
     "twin_coverage": 1,
@@ -29,19 +35,19 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 217,
-    "max_slot_chars": 303
+    "chars_per_slot": 229.33333333333334,
+    "max_slot_chars": 442
   },
   "score": {
-    "total": 93.9,
+    "total": 91.4,
     "breakdown": {
       "structure": 21.4,
-      "variety": 12.5,
+      "variety": 10,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:08:33.634Z"
+  "generatedAt": "2026-07-05T05:36:18.176Z"
 }

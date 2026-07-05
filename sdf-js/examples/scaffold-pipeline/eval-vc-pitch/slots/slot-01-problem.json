@@ -21,9 +21,9 @@
       },
       {
         "type": "quote-pull",
-        "x": 60,
-        "y": 160,
-        "w": 1160,
+        "x": 80,
+        "y": 180,
+        "w": 1120,
         "h": 200,
         "args": {
           "quote": "Presentation visuals are stuck in 2008",
@@ -31,45 +31,38 @@
         }
       },
       {
-        "type": "icon-row",
-        "x": 100,
-        "y": 400,
-        "w": 1080,
-        "h": 260,
+        "type": "icon-grid",
+        "x": 140,
+        "y": 420,
+        "w": 1000,
+        "h": 240,
         "args": {
           "items": [
             {
-              "icon": "palette",
-              "label": "PowerPoint Icons",
-              "sublabel": "Static clipart"
+              "icon": "image-broken",
+              "label": "Clipart",
+              "sublabel": "PowerPoint icons from 2008"
             },
             {
               "icon": "gif",
               "label": "Lottie GIFs",
-              "sublabel": "2D animations"
+              "sublabel": "Motion without meaning"
             },
             {
               "icon": "brain",
-              "label": "AI-PPT Tools",
-              "sublabel": "Fixed text only"
+              "label": "AI Text",
+              "sublabel": "Fixed words, dead visuals"
+            },
+            {
+              "icon": "clock",
+              "label": "60% Busywork",
+              "sublabel": "Designer time on layout"
             }
           ],
-          "iconSize": "large",
-          "colorMode": "theme"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 880,
-        "y": 160,
-        "w": 320,
-        "h": 200,
-        "args": {
-          "value": "60%",
-          "label": "Designer Time",
-          "sublabel": "Wasted on layout busywork",
-          "icon": "clock",
-          "style": "accent-border"
+          "cols": 4,
+          "iconStyle": "circle",
+          "iconSize": "medium",
+          "colorMode": "auto"
         }
       }
     ]
@@ -92,18 +85,18 @@
     "tokenUsage": {
       "input_tokens": 4035,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 496,
+      "output_tokens": 448,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0234399,
-    "elapsedSec": 8.8,
-    "generatedAt": "2026-07-05T05:03:49.512Z",
+    "costUSD": 0.0227274,
+    "elapsedSec": 7.8,
+    "generatedAt": "2026-07-05T05:31:11.044Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
