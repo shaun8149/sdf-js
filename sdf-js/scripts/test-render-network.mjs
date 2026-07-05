@@ -60,6 +60,10 @@ ok(
   // wiring order: all nodes land before the first edge starts
   const t0 = (s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]);
   ok(Math.max(...nodesS.map(t0)) < Math.min(...edgesS.map(t0)), 'edges wire AFTER nodes land');
+  ok(
+    nodesS.every((s) => /sin\(/.test(s.animation[0].expr)),
+    'nodes idle-breathe after landing',
+  );
 
   // fighting-game grammar
   const shots = scene.cameraSequence.shots;

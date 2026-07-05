@@ -72,7 +72,16 @@ export function coneTreeLayout(ir, opts = {}) {
 // Cool cyan→indigo by depth (matches the funnel family), emphasis in warm gold.
 const nodeMat = (lvl, maxLvl, emphasized) => {
   if (emphasized)
-    return { hue: 0.11, sat: 0.78, value: 0.95, kind: 'normal', roughness: 0.22, clearcoat: 0.6 };
+    return {
+      hue: 0.11,
+      sat: 0.78,
+      value: 0.95,
+      metal: 0,
+      glow: 0.22,
+      kind: 'normal',
+      roughness: 0.22,
+      clearcoat: 0.6,
+    };
   const k = maxLvl > 0 ? lvl / maxLvl : 0;
   return {
     hue: 0.55 + 0.09 * k,
@@ -205,6 +214,7 @@ export function renderHierarchy(ir, opts = {}) {
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.7,
     shake: [0.5, 0.06], // impact-then-settle
+    ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.45, 1.0],
     ease: 'out',
   });

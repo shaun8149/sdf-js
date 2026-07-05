@@ -17,15 +17,24 @@ import { renderIR } from './render-ir.js';
 import { getEnvironment } from './environments.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
-//   "<A> - <D> * smoothstep(<t0>, <t1>, t)"   (drop from above)
-//   "<A> + <D> * smoothstep(<t0>, <t1>, t)"   (erupt from below)
-// Shift: A += dy (the y-channel constant), t0/t1 += dt.
-const EXPR_RE = /^(-?[\d.]+) (\+|-) ([\d.]+) \* smoothstep\((-?[\d.]+), (-?[\d.]+), t\)$/;
+//   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
+//   "<A> + <D> * smoothstep(<t0>, <t1>, t)"            (erupt from below)
+//   … + optional " + <I> * sin(<F> * t + <P>)" idle tail (breathing)
+// Shift: A += dy (the y-channel constant), t0/t1 += dt; the idle tail is
+// time-invariant in amplitude but its PHASE must rewind by F*dt so the motion
+// is continuous across the station's shifted clock.
+const EXPR_RE =
+  /^(-?[\d.]+) (\+|-) ([\d.]+) \* smoothstep\((-?[\d.]+), (-?[\d.]+), t\)(?: \+ ([\d.]+) \* sin\(([\d.]+) \* t \+ (-?[\d.]+)\))?$/;
 export function shiftBuildInExpr(expr, dy, dt) {
   const m = String(expr).match(EXPR_RE);
   if (!m) throw new Error(`assemble-deck: unrecognized build-in expr shape: "${expr}"`);
-  const [, A, sign, D, t0, t1] = m;
-  return `${(Number(A) + dy).toFixed(3)} ${sign} ${D} * smoothstep(${(Number(t0) + dt).toFixed(2)}, ${(Number(t1) + dt).toFixed(2)}, t)`;
+  const [, A, sign, D, t0, t1, idleAmp, idleFreq, idlePhase] = m;
+  let out = `${(Number(A) + dy).toFixed(3)} ${sign} ${D} * smoothstep(${(Number(t0) + dt).toFixed(2)}, ${(Number(t1) + dt).toFixed(2)}, t)`;
+  if (idleAmp != null) {
+    const p = Number(idlePhase) - Number(idleFreq) * dt;
+    out += ` + ${idleAmp} * sin(${idleFreq} * t + ${p.toFixed(2)})`;
+  }
+  return out;
 }
 
 const addV = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];

@@ -24,7 +24,16 @@ export function magnitudeToRadii(magnitude, maxR = 1.4, tipR = 0.12) {
 // is proven legible there (sphere-fill gauge).
 const stageMat = (i, N, emphasized) => {
   if (emphasized)
-    return { hue: 0.11, sat: 0.78, value: 0.95, kind: 'normal', roughness: 0.22, clearcoat: 0.6 };
+    return {
+      hue: 0.11,
+      sat: 0.78,
+      value: 0.95,
+      metal: 0,
+      glow: 0.22,
+      kind: 'normal',
+      roughness: 0.22,
+      clearcoat: 0.6,
+    };
   const k = N > 1 ? i / (N - 1) : 0;
   return {
     hue: 0.55 + 0.09 * k, // cyan-blue → indigo
@@ -152,6 +161,7 @@ export function renderSequence(ir, opts = {}) {
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 2,
     shake: [0.5, 0.06], // impact-then-settle
+    ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.45, 1.0],
     ease: 'out',
   });

@@ -1419,6 +1419,15 @@ function validateCameraSequence(seq, errors, warnings) {
     if (shot.transition != null && !SHOT_TRANSITIONS.has(shot.transition)) {
       errors.push(`${tag}.transition: must be one of ${[...SHOT_TRANSITIONS].join(' | ')}`);
     }
+    // ambient: number OR [from, to] intra-shot ramp scaling sky-ambient - the
+    // super's "spotlight crash". 0..2 sensible range.
+    if (shot.ambient != null) {
+      const okNum = (x) => typeof x === 'number' && x >= 0 && x <= 2;
+      const valid =
+        okNum(shot.ambient) ||
+        (Array.isArray(shot.ambient) && shot.ambient.length === 2 && shot.ambient.every(okNum));
+      if (!valid) errors.push(`${tag}.ambient: must be a number 0..2 or [from, to] pair`);
+    }
     // shake: number (legacy) OR [from, to] intra-shot ramp (impact-then-settle)
     // OR { amount, velocityScale, scaleWith }
     if (shot.shake != null) {
