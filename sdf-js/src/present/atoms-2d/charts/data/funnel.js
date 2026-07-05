@@ -106,13 +106,28 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     return [maxW + (minW - maxW) * t0, maxW + (minW - maxW) * t1];
   };
 
+  // Compute geometry for every stage up front, then draw in TWO passes:
+  // all trapezoids first, then all labels/value columns/drop-rate chips on
+  // top. Previously each stage's trapezoid was drawn interleaved with the
+  // *previous* gap's drop-rate chip, so stage i+1's trapezoid (painted right
+  // after the i→i+1 chip) silently overdrew the bottom half of that chip —
+  // the tiny STAGE_GAP (6px) is smaller than the chip's own text height, so
+  // chips always bled into the neighboring trapezoid ("↓ 88%" half-hidden).
+  const geoms = [];
   for (let i = 0; i < n; i++) {
     const [wTop, wBot] = widthAt(i);
     const topEdgeY = topY + i * (stageH + STAGE_GAP);
     const botEdgeY = topEdgeY + stageH;
-    const color = makeStageColor(i);
-    drawStage(ctx, cx, topEdgeY, botEdgeY, wTop, wBot, color);
+    geoms.push({ wTop, wBot, topEdgeY, botEdgeY, color: makeStageColor(i) });
+  }
 
+  for (let i = 0; i < n; i++) {
+    const { wTop, wBot, topEdgeY, botEdgeY, color } = geoms[i];
+    drawStage(ctx, cx, topEdgeY, botEdgeY, wTop, wBot, color);
+  }
+
+  for (let i = 0; i < n; i++) {
+    const { topEdgeY, botEdgeY } = geoms[i];
     // Label + value + percentage inside stage
     const labelText = stages[i].label || '';
     const valueText = stages[i].value != null ? formatValue(stages[i].value, format) : '';
@@ -162,19 +177,39 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillText(valueText, cx + plotW / 2 + 12, stageCy);
     }
 
-    // Drop-rate annotation between stages: "↓ XX%" in Inter 500 italic, small
+    // Drop-rate annotation between stages: "↓ XX%" chip, drawn in this final
+    // pass (after ALL trapezoids) so it always sits on top, with a white
+    // chip bg + hairline border so it reads against any stage color.
     if (i < n - 1 && stages[i].value != null && stages[i + 1].value != null) {
       const dropPct = Math.round((1 - Number(stages[i + 1].value) / Number(stages[i].value)) * 100);
       if (!isNaN(dropPct)) {
         const gapY = botEdgeY + STAGE_GAP / 2;
-        ctx.fillStyle = rgbaCss(fg, 0.45);
-        ctx.font = `500 italic ${Math.min(10, stageH * 0.2)}px Inter, system-ui, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`↓ ${dropPct}%`, cx, gapY);
+        drawDropChip(ctx, cx, gapY, `↓ ${dropPct}%`, fg);
       }
     }
   }
+}
+
+function drawDropChip(ctx, cx, cy, text, fg) {
+  const fontSize = 10;
+  ctx.save();
+  ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+  const padX = 7;
+  const padY = 3;
+  const chipW = ctx.measureText(text).width + padX * 2;
+  const chipH = fontSize + padY * 2;
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.strokeStyle = rgbaCss(fg, 0.2);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(cx - chipW / 2, cy - chipH / 2, chipW, chipH, chipH / 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = rgbaCss(fg, 0.8);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, cx, cy + 0.5);
+  ctx.restore();
 }
 
 function drawStage(ctx, cx, topY, botY, wTop, wBot, color) {

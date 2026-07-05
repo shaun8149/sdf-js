@@ -88,11 +88,58 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
   const rows = Math.ceil(N / cols);
   const colW = (w - PAD * 2) / cols;
-  const rowH = (y + h - plotTop - PAD) / rows;
-  const baseIconR = Math.min(rowH * 0.25, colW * 0.18, 48);
-  // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
-  const heroBoost = h >= 360 ? 1.3 : 1.0;
-  const iconR = baseIconR * iconSizeMultiplier * heroBoost;
+
+  // Icon radius + label font targets are based on column width, NOT row
+  // height — the old rowH*0.25 icon radius created a circular dependency
+  // where a naive availH/rows division could shrink the row pitch below
+  // what the label text actually needed, so row-2 icons overlapped row-1
+  // labels (e.g. 4 items wrapping 3+1: "Security" hidden behind "Care").
+  const heroBoost = h >= 360 ? 1.3 : 1.0; // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
+  const baseIconR = Math.min(colW * 0.22, 48);
+  let iconR = baseIconR * iconSizeMultiplier * heroBoost;
+  let labelFsTarget = Math.max(11, Math.min(18, Math.round(colW * 0.085)));
+  const labelFsMin = 9;
+  let subFsTarget = Math.max(9, Math.min(14, Math.round(colW * 0.06)));
+  const subFsMin = 8;
+  const hasAnySublabel = items.some((it) => it && it.sublabel);
+
+  // Row pitch reserves the full measured label(+sublabel) block height below
+  // each icon, then takes whichever is larger: that reserved content height,
+  // or an even division of the available space (so rows still spread out
+  // nicely when there's plenty of room).
+  let iconTopGap = 12;
+  let iconLabelGap = 10;
+  let labelSubGap = 4;
+  let bottomPad = 10;
+  const contentHeightOf = () =>
+    iconTopGap +
+    iconR * 2 +
+    iconLabelGap +
+    labelFsTarget * 1.2 +
+    (hasAnySublabel ? labelSubGap + subFsTarget * 1.2 : 0) +
+    bottomPad;
+
+  const availH = y + h - plotTop - PAD;
+  let contentH = contentHeightOf();
+
+  // If reserving the full content height for every row would overflow the
+  // canvas (many rows / large icons), scale icon radius + fonts + gaps down
+  // uniformly so rows*contentH fits — reserving space is only useful if the
+  // grid still renders inside its bounds instead of clipping the last row.
+  if (rows * contentH > availH) {
+    const scale = Math.max(0.4, availH / (rows * contentH));
+    iconR *= scale;
+    labelFsTarget = Math.max(labelFsMin, Math.round(labelFsTarget * scale));
+    subFsTarget = Math.max(subFsMin, Math.round(subFsTarget * scale));
+    iconTopGap *= scale;
+    iconLabelGap *= scale;
+    labelSubGap *= scale;
+    bottomPad *= scale;
+    contentH = contentHeightOf();
+  }
+
+  const evenRowH = availH / rows;
+  const rowH = Math.max(evenRowH, contentH);
 
   for (let i = 0; i < N; i++) {
     const it = items[i] || {};
@@ -117,7 +164,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const badgeColor = Array.isArray(it.color) ? it.color : iconColor;
 
     // ---- Badge (circle/square/plain) ----
-    const iconCy = cellY + iconR + 12;
+    const iconCy = cellY + iconR + iconTopGap;
     if (iconStyle === 'circle') {
       drawCircleBadge(ctx, cellCx, iconCy, iconR, badgeColor);
     } else if (iconStyle === 'square') {
@@ -141,15 +188,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx,
         String(it.label),
         colW - 16,
-        Math.round(rowH * 0.11),
-        Math.max(9, Math.round(rowH * 0.07)),
+        labelFsTarget,
+        labelFsMin,
         (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
       ctx.fillStyle = rgbCss(fg);
       ctx.font = `700 ${gridLabelFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      const labelY = iconCy + iconR + 10;
+      const labelY = iconCy + iconR + iconLabelGap;
       ctx.fillText(String(it.label), cellCx, labelY);
 
       if (it.sublabel) {
@@ -157,13 +204,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
           ctx,
           String(it.sublabel),
           colW - 16,
-          Math.round(rowH * 0.075),
-          Math.max(8, Math.round(rowH * 0.05)),
+          subFsTarget,
+          subFsMin,
           (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
         );
         ctx.fillStyle = rgbaCss(fg, 0.55);
         ctx.font = `500 ${gridSubFs}px Inter, system-ui, sans-serif`;
-        ctx.fillText(String(it.sublabel), cellCx, labelY + gridLabelFs + 4);
+        ctx.fillText(String(it.sublabel), cellCx, labelY + gridLabelFs + labelSubGap);
       }
     }
   }

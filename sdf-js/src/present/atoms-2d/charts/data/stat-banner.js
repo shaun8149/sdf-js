@@ -76,19 +76,69 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const labelPad = PAD * 1.5;
   const labelX = x + PAD + valueW + labelPad;
 
-  // Label — smaller, middle
-  const labelFontSize = Math.round(bannerH * 0.2);
-  const labelAvailW = trend ? w * 0.45 : w - (labelX - x) - PAD;
+  // Trend chip metrics computed FIRST (chip size only depends on trend text,
+  // not on the label) so the label can reserve exactly the space that's left
+  // over — previously labelAvailW was a fixed w*0.45 guess that had no
+  // relation to the chip's actual width/position, so long labels ("Annual
+  // Recurring Revenue") ran straight under the chip.
+  const chipPad = 10;
+  const chipFontSize = Math.round(bannerH * 0.2);
+  const chipGap = PAD * 0.6;
+  let chipW = 0;
+  let chipH = 0;
+  if (trend) {
+    ctx.save();
+    ctx.font = `700 ${chipFontSize}px Inter, system-ui, sans-serif`;
+    chipW = ctx.measureText(trend).width + chipPad * 2.5;
+    chipH = chipFontSize * 1.8;
+    ctx.restore();
+  }
 
-  // word-wrap label to fit
-  ctx.save();
-  ctx.font = `500 ${labelFontSize}px Inter, system-ui, sans-serif`;
-  const labelLines = wrapText(ctx, label, labelAvailW, 2);
-  ctx.restore();
+  // Label — smaller, middle. Shrink font (down to labelMinFs) until it fits
+  // the space before the chip; if it STILL doesn't fit at min size, fall
+  // back to moving the chip to the top-right corner (above the label) so
+  // the label can reclaim the full row width.
+  const labelTarget = Math.round(bannerH * 0.2);
+  const labelMinFs = 11;
+  const inlineAvailW = trend ? x + w - PAD - chipW - chipGap - labelX : w - (labelX - x) - PAD;
+
+  let { fs: labelFontSize, lines: labelLines } = fitLabelSize(
+    ctx,
+    label,
+    inlineAvailW,
+    labelTarget,
+    labelMinFs,
+    2,
+  );
+
+  let chipMode = 'inline';
+  if (trend) {
+    ctx.save();
+    ctx.font = `500 ${labelFontSize}px Inter, system-ui, sans-serif`;
+    const stillOverlaps = labelLines.some((l) => ctx.measureText(l).width > inlineAvailW);
+    ctx.restore();
+    if (stillOverlaps) {
+      chipMode = 'top-right';
+      const fullAvailW = w - (labelX - x) - PAD;
+      ({ fs: labelFontSize, lines: labelLines } = fitLabelSize(
+        ctx,
+        label,
+        fullAvailW,
+        labelTarget,
+        labelMinFs,
+        2,
+      ));
+    }
+  }
 
   const lineH = labelFontSize * 1.3;
   const labelBlockH = labelLines.length * lineH;
-  const labelTop = cy - labelBlockH / 2;
+  const topPad = 6;
+  const chipYInline = cy - chipH / 2;
+  const labelTop =
+    chipMode === 'top-right'
+      ? Math.max(cy - labelBlockH / 2, bannerY + topPad + chipH + 6)
+      : cy - labelBlockH / 2;
 
   ctx.save();
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
@@ -100,21 +150,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   });
   ctx.restore();
 
-  // Trend chip — right-aligned
+  // Trend chip — right-aligned; inline (vertically centered) unless the
+  // label collided even at min font size, in which case it moves to the
+  // top-right corner, above the label line.
   if (trend) {
-    const chipPad = 10;
-    const chipFontSize = Math.round(bannerH * 0.2);
     const chipBg = dir === 'up' ? [50, 200, 130] : dir === 'down' ? [220, 80, 60] : [140, 155, 170];
     const chipText = trend;
-
-    ctx.save();
-    ctx.font = `700 ${chipFontSize}px Inter, system-ui, sans-serif`;
-    const chipW = ctx.measureText(chipText).width + chipPad * 2.5;
-    const chipH = chipFontSize * 1.8;
     const chipX = x + w - PAD - chipW;
-    const chipY = cy - chipH / 2;
+    const chipY = chipMode === 'top-right' ? bannerY + topPad : chipYInline;
     const chipR = chipH / 2;
 
+    ctx.save();
     // Rounded pill
     ctx.fillStyle = rgbCss(chipBg);
     ctx.beginPath();
@@ -130,9 +176,27 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.font = `700 ${chipFontSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(chipText, chipX + chipW / 2, cy);
+    ctx.fillText(chipText, chipX + chipW / 2, chipY + chipH / 2);
     ctx.restore();
   }
+}
+
+// Auto-shrink label font size (down to minFs) until wrapText produces lines
+// that all fit within maxW without dropping words. Returns { fs, lines }.
+function fitLabelSize(ctx, label, maxW, targetFs, minFs, maxLines) {
+  const totalWords = String(label).split(/\s+/).filter(Boolean).length;
+  let best = null;
+  for (let fs = targetFs; fs >= minFs; fs--) {
+    ctx.save();
+    ctx.font = `500 ${fs}px Inter, system-ui, sans-serif`;
+    const lines = wrapText(ctx, label, maxW, maxLines);
+    const allFit = lines.every((l) => ctx.measureText(l).width <= maxW);
+    const consumedWords = lines.join(' ').split(/\s+/).filter(Boolean).length;
+    ctx.restore();
+    best = { fs, lines };
+    if (allFit && consumedWords >= totalWords) return best;
+  }
+  return best;
 }
 
 function wrapText(ctx, text, maxW, maxLines) {

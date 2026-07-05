@@ -95,12 +95,18 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const bl = [gridX, midY, gridW / 2, gridH / 2];
   const br = [midX, midY, gridW / 2, gridH / 2];
 
-  // Top-right (leaders) slightly brighter tint
-  ctx.fillStyle = rgbaCss(accent, 0.1);
-  ctx.fillRect(...tr);
-  ctx.fillStyle = rgbaCss(fg, 0.04);
+  // Quadrant tints — distinct hues per quadrant (previously top-right got a
+  // faint accent tint and the other three were an identical neutral 0.04
+  // grey, so the "4 quadrants" read as barely-differentiated background
+  // noise). Kept subtle (0.06-0.1 alpha) but now each quadrant is visibly
+  // its own region.
+  ctx.fillStyle = rgbaCss([90, 140, 210], 0.07); // top-left — cool blue
   ctx.fillRect(...tl);
+  ctx.fillStyle = rgbaCss([70, 170, 120], 0.09); // top-right — green (leaders)
+  ctx.fillRect(...tr);
+  ctx.fillStyle = rgbaCss([150, 150, 160], 0.06); // bottom-left — neutral
   ctx.fillRect(...bl);
+  ctx.fillStyle = rgbaCss([210, 150, 70], 0.08); // bottom-right — amber
   ctx.fillRect(...br);
 
   // Grid border
@@ -184,10 +190,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     if (org.isUs) ctx.stroke();
     ctx.restore();
 
-    // Name label
+    // Name label — ALWAYS outside the bubble (offset right, or left when too
+    // close to the right edge), min 12px, and always dark text. The isUs
+    // bubble previously used white label text on the assumption it sat ON
+    // the (accent-filled) bubble, but the offset math already placed it
+    // OUTSIDE the bubble against the light quadrant tint — white-on-light
+    // was nearly invisible ("Acme (us)" unreadable).
     if (org.name) {
-      const labelSize = Math.min(12, Math.round(r * 0.7));
-      ctx.fillStyle = org.isUs ? rgbCss([255, 255, 255]) : rgbaCss(fg, 0.9);
+      const labelSize = Math.max(12, Math.round(r * 0.7));
+      ctx.fillStyle = rgbaCss(fg, 0.9);
       ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
       const onRight = ox < 0.75;
       ctx.textAlign = onRight ? 'left' : 'right';

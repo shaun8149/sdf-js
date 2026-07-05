@@ -191,21 +191,77 @@ function drawNode(ctx, nx, ny, nw, nh, idx, label, sublabel, isHighlight, colorC
   ctx.textBaseline = 'middle';
   ctx.fillText(String(idx), circleCx, circleCy + 1);
 
-  // Label — Inter 700 white, centered in remaining space, with generous inner padding
+  // Label — Inter 700 white, centered in remaining space, with generous inner
+  // padding. Auto-shrink to fit the node's width (min 9px); if even the min
+  // size doesn't fit, wrap to 2 lines instead of letting it run off/get
+  // clipped ("Onboard" / "Purchas" truncation).
   const textX = nx + circleR * 2 + NODE_PADDING;
-  const textY = ny + nh / 2;
+  const maxTextW = nx + nw - textX - NODE_PADDING * 0.5;
+  const targetFs = Math.min(15, nh * 0.22);
+  const minFs = 9;
+  const labelStr = String(label);
+  const labelFs = fitFontSize(
+    ctx,
+    labelStr,
+    maxTextW,
+    targetFs,
+    minFs,
+    (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+  );
+  ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
+  let labelLines = [labelStr];
+  if (ctx.measureText(labelStr).width > maxTextW) {
+    labelLines = wrapText(ctx, labelStr, maxTextW, 2);
+  }
+
+  const labelLineH = labelFs * 1.15;
+  const subFs = Math.min(12, nh * 0.16);
+  const blockH = labelLines.length * labelLineH + (sublabel ? subFs * 1.3 + 2 : 0);
+  const blockTop = ny + nh / 2 - blockH / 2;
+
   ctx.fillStyle = 'rgba(255,255,255,0.97)';
-  ctx.font = `700 ${Math.min(15, nh * 0.22)}px Inter, system-ui, sans-serif`;
+  ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
-  ctx.textBaseline = sublabel ? 'bottom' : 'middle';
-  ctx.fillText(String(label), textX, sublabel ? textY : textY + 1);
+  ctx.textBaseline = 'top';
+  labelLines.forEach((line, i) => {
+    ctx.fillText(line, textX, blockTop + i * labelLineH);
+  });
 
   if (sublabel) {
     ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.font = `500 ${Math.min(12, nh * 0.16)}px Inter, system-ui, sans-serif`;
-    ctx.textBaseline = 'top';
-    ctx.fillText(String(sublabel), textX, textY + 4);
+    ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
+    ctx.fillText(String(sublabel), textX, blockTop + labelLines.length * labelLineH + 2);
   }
+}
+
+// Auto-shrink font size until text fits in maxW. Returns the font-size that
+// fits (or minFs if nothing fits). Caller still must ctx.font = ... after.
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
+}
+
+function wrapText(ctx, text, maxW, maxLines) {
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let cur = '';
+  for (const word of words) {
+    const test = cur ? cur + ' ' + word : word;
+    if (ctx.measureText(test).width > maxW && cur) {
+      lines.push(cur);
+      if (lines.length >= maxLines) break;
+      cur = word;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur && lines.length < maxLines) lines.push(cur);
+  return lines;
 }
 
 function drawArrow(ctx, x0, y0, x1, y1, color) {

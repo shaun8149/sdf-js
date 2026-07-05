@@ -22,22 +22,25 @@ args 渲染全部 101 atom (640×360, editorial-light palette), 9 chunk 截图,
 | `mindmap` | 固定半径常量(36/22/14)+ 保守 maxRadius 改成按 80% 可用半径动态计算; 分支/叶子节点缩成小圆点, label 移到圆外(沿节点相对根节点的角度径向偏移, 按左右自动切 textAlign), 字号 10px 下限自动收缩; 根节点保留内嵌 label 但改 auto-shrink 不再 ellipsis 截断。 |
 | `matrix-grid` + `nine-field-matrix` | 拆分 `drawCell` → `drawCellBg` + `drawCellLabel`, 渲染顺序改成: 背景 → 轴 → bubbles(半透明 fill α=0.32 + 实线描边)→ cell label(现在总在 bubble 之上)→ bubble 自己的 label 移到泡外(右下偏移, 避开 cell label 的水平中线), 深色小字。 |
 
-## 🟡 P1 — 中等 (round 3 候选)
+## ✅ Fixed in round 3 (2026-07-05)
 
-| atom | 问题 |
+全部 12 个 P1 已修复, 每项均重渲 gallery + 多模态截图确认。详见各 commit message
+(branch `sprint-26-round3-p1-atoms`)。
+
+| atom | 修了什么 |
 |---|---|
-| `stat-banner` | trend chip 与 label 文本重叠 ("Annual Recurring Revenue" 被 "+117% YoY" 压住尾部) |
-| `flow-chart` | 节点 label 截断 ("Onboard" / "Purchas") — 需 auto-shrink |
-| `timeline` | 首卡片左边缘裁切 ("eed Round") |
-| `icon-grid` | 4 item 换行后第 1 行 label 被第 2 行圆遮住 ("Security" 藏在 "Care" 圆后) |
-| `funnel` | 级间 % chip 一半藏在梯形后 ("↓ 88%" 只露一半) |
-| `fishbone` | 左侧枝 label 出画布 ("nel mix" 被裁) |
-| `isotype-stat-comparison` | 图标行挤压变形, "FUll-time" 大小写渲染错误 |
-| `bullet-list` | 空心圆环 bullet 视觉未完成感; 行间距过大留白多 |
-| `bubble` | 气泡内 label 不可读 (深底深字), 图表稀疏 |
-| `infinity-loop-flow` | 节点/loop 挤在中心, 画布利用率 <30% |
-| `relationship-graph` | 3 节点偏下, 大片死区; "uses" 边标签过小 |
-| `org-vs-org-matrix` | org label 太小, "Acme (us)" 在气泡内难读, 右半象限灰底对比不足 |
+| `stat-banner` | chip 尺寸/位置先算, label 用 `fitLabelSize` 自动收缩(min 11px)让出 chip 空间; 收缩到底仍撞则把 chip 挪到右上角、label 独占整行。 |
+| `flow-chart` | 节点 label 加 `fitFontSize` 自动收缩(min 9px), 缩到底仍放不下则换行到 2 行, 不再截断("Onboard"/"Purchase" 现在完整显示)。 |
+| `timeline` | 卡片中心 x 夹在 `[x+PAD+half, x+w-PAD-half]` 内, 首/末卡片向内挤而不是居中裁切; connector 线随之变成斜线。 |
+| `icon-grid` | icon 半径/字号改为基于列宽(不再基于行高, 消除循环依赖); row pitch 取 `max(均分高度, 实测 label+sublabel 内容高度)`; 若整体仍溢出画布则统一按比例缩小 icon+字号+间距。 |
+| `funnel` | 几何先算好, 分两遍绘制(全部梯形→全部 label/chip), chip 加白底+描边, 消除"后画的梯形盖住前一个 gap 的 chip"问题。 |
+| `fishbone` | sub-cause label 右对齐锚点若会越过画布左边界, 改锚到更靠近脊柱的分支点; branch label 锚点同样夹在画布内。 |
+| `isotype-stat-comparison` | mini icon 上限 30→20, 超出显示"×N"比例注记替代省略号; icon 行与 label 之间预留间距; caption 加粗+提高不透明度提升可读性(代码审计未发现真实大小写 bug, "FUll-time" 是小字号误读)。 |
+| `bullet-list` | 无 `status` 的默认项渲染成实心 accent 圆点(不再默认走 hollow ring); hollow ring 保留给显式 `status:'todo'`; row pitch 收紧 ~15% 并整体居中。 |
+| `bubble` | label 一律移到气泡外(右侧偏移+深色字); 气泡改半透明填充+实线描边(不再需要装深色底托白字); 最小半径提到 14px。 |
+| `infinity-loop-flow` | 发现节点 t 值分布 bug: n=4(最常见 step 数)时全部落在 π/2 整数倍上, 导致两个节点重叠在中心("Plan" 被"Measure"完全遮住); 加半步偏移修复。同时半轴目标改为画布宽高的 ~70%, 节点/字号按画布尺寸缩放。 |
+| `relationship-graph` | 圆形布局按角度均分对小 N 不对称(3 节点=1 上 2 下), 改为算出真实 bbox 后居中+缩放到可用区域 ~85%; 边标签 10px→11px 并加白色描边光晕。 |
+| `org-vs-org-matrix` | 所有 org label 统一深色(之前 isUs 用白字, 但位置早已在气泡外, 白字对亮背景几乎不可见); 字号下限提到 12px; 4 个象限改成 4 种不同色相的淡色调(之前 3 个象限共用同一种灰, 只有右上象限略深)。 |
 
 ## 🟢 P2 — 小瑕疵 (顺手修)
 
@@ -58,5 +61,5 @@ args 渲染全部 101 atom (640×360, editorial-light palette), 9 chunk 截图,
 ## 状态
 
 - [x] Round 2: P0 × 7 (2026-07-05, branch `sprint-26-round2-p0-atoms`)
-- [ ] Round 3: P1 × 12
+- [x] Round 3: P1 × 12 (2026-07-05, branch `sprint-26-round3-p1-atoms`)
 - [ ] Round 4: P2 清尾 + 复审全量
