@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Which is more persuasive?</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #f4f2ee;
+        font-family: -apple-system, Inter, sans-serif;
+      }
+      .q {
+        text-align: center;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .split {
+        display: flex;
+        height: calc(100% - 100px);
+        gap: 16px;
+        padding: 0 16px 16px;
+      }
+      .pane {
+        flex: 1;
+        background: #fff;
+        border: 1px solid #ddd8cf;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pane iframe,
+      .pane canvas {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      .pick {
+        text-align: center;
+        padding-bottom: 16px;
+      }
+      .pick button {
+        font-size: 15px;
+        padding: 10px 22px;
+        margin: 0 10px;
+        border-radius: 6px;
+        border: 1px solid #333;
+        background: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="q">For a pitch, which is more persuasive? (pick the left or right panel)</div>
+    <div class="split">
+      <div class="pane" id="left"></div>
+      <div class="pane" id="right"></div>
+    </div>
+    <div class="pick">
+      <button data-side="left">◀ Left</button><button data-side="right">Right ▶</button>
+    </div>
+    <script type="module">
+      import { renderSequence2d } from '../../src/scene/render-sequence.js';
+      import { drawPseudo3D } from '../../src/present/atoms-2d/charts/data/funnel.js';
+
+      const name = new URLSearchParams(location.search).get('ir') || 'funnel-sales';
+      const ir = await (await fetch(`../../scenes/ir/${name}.json`)).json();
+
+      function make2d() {
+        const cv = document.createElement('canvas');
+        cv.width = 620;
+        cv.height = 620;
+        const ctx = cv.getContext('2d');
+        const { args } = renderSequence2d(ir);
+        drawPseudo3D(ctx, args, { x: 40, y: 40, w: 540, h: 540, palette: {} });
+        return cv;
+      }
+      function make3d() {
+        const f = document.createElement('iframe');
+        f.src = `./figure.html?ir=${encodeURIComponent(name)}`;
+        return f;
+      }
+      // randomize left/right, unlabelled
+      const threeLeft = Math.random() < 0.5;
+      document.getElementById('left').appendChild(threeLeft ? make3d() : make2d());
+      document.getElementById('right').appendChild(threeLeft ? make2d() : make3d());
+
+      const truth = { leftIs3d: threeLeft };
+      document.querySelectorAll('.pick button').forEach((b) =>
+        b.addEventListener('click', () => {
+          const picked3d = (b.dataset.side === 'left') === truth.leftIs3d;
+          console.log('PICK', b.dataset.side, '→', picked3d ? '3D' : '2D'); // tally offline
+          alert(`Recorded: you picked the ${picked3d ? '3D' : '2D'} version.`);
+        }),
+      );
+    </script>
+  </body>
+</html>
