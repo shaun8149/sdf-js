@@ -115,6 +115,40 @@ export function extractKeyNumbers(text) {
   return [...new Set(cleaned)];
 }
 
+// Leading words that make a capitalized 2+-word run a sentence fragment, not
+// a proper noun ("The Team", "Our Mission", "How It Works" …).
+const ENTITY_STOP_PREFIX =
+  /^(The|Our|A|An|This|That|These|Those|How|What|Why|When|Where|And|But|Or|If|We|You|It|They|New|Every|All|Each|More|Most|Key|Total|First|Next|Last)\s/;
+
+// Extract proper-noun candidates (people / orgs / products) from source
+// slides. BODY lines only: slide titles are headings by nature ("Financial
+// Breakdown", "Thank You") and pollute the entity set with title-case
+// fragments; real entities overwhelmingly live in body prose ("interviewed
+// Village Chief Amara Kessy", "per Gartner Magic Quadrant"). Extraction is
+// PER-LINE so runs never cross field boundaries. Deterministic — no NLP.
+export function extractKeyEntities(slides) {
+  const out = new Set();
+  const lines = [];
+  for (const s of slides) {
+    for (const b of s.body || []) {
+      lines.push(typeof b === 'string' ? b : b.text || '');
+    }
+  }
+  for (const line of lines) {
+    const runs = line.match(/\b[A-Z][a-z]+(?: [A-Z][a-z]+)+\b/g) || [];
+    for (let run of runs) {
+      // strip sentence-fragment prefixes repeatedly ("The New Sarah Chen" → "Sarah Chen")
+      let prev;
+      do {
+        prev = run;
+        run = run.replace(ENTITY_STOP_PREFIX, '');
+      } while (run !== prev && / /.test(run));
+      if (/ /.test(run)) out.add(run); // still 2+ words after stripping
+    }
+  }
+  return [...out];
+}
+
 export async function scoreDeckQuality(deckDir) {
   const dir = resolve(deckDir);
   const deckJsonPath = join(dir, 'deck.json');
@@ -278,11 +312,26 @@ export async function scoreDeckQuality(deckDir) {
       if (deckText.includes(n) || deckTextNorm.includes(n.replace(/,/g, ''))) found.push(n);
       else missing.push(n);
     }
+    // Entity recall (Sprint 26): people / orgs / products. Case-insensitive
+    // match (covers uppercase "SARAH CHEN" in section titles).
+    const srcEntities = extractKeyEntities(srcSlides);
+    const deckTextLower = deckText.toLowerCase();
+    const entFound = [];
+    const entMissing = [];
+    for (const e of srcEntities) {
+      if (deckTextLower.includes(e.toLowerCase())) entFound.push(e);
+      else entMissing.push(e);
+    }
+
     fidelity = {
       numbers_total: srcNumbers.length,
       numbers_found: found.length,
       number_recall: srcNumbers.length > 0 ? found.length / srcNumbers.length : 1,
       missing_numbers: missing.slice(0, 12),
+      entities_total: srcEntities.length,
+      entities_found: entFound.length,
+      entity_recall: srcEntities.length > 0 ? entFound.length / srcEntities.length : 1,
+      missing_entities: entMissing.slice(0, 12),
     };
   }
 
@@ -380,6 +429,9 @@ function printHumanTable(result) {
     console.log('\nCONTENT FIDELITY');
     console.log(
       `  numbers: ${f.numbers_found}/${f.numbers_total} preserved (recall ${(f.number_recall * 100).toFixed(0)}%)${f.missing_numbers.length ? '  missing: ' + f.missing_numbers.join(', ') : ''}`,
+    );
+    console.log(
+      `  entities: ${f.entities_found}/${f.entities_total} preserved (recall ${(f.entity_recall * 100).toFixed(0)}%)${f.missing_entities.length ? '  missing: ' + f.missing_entities.join(', ') : ''}`,
     );
   }
   console.log('\nTEXT BUDGET');

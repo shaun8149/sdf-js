@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-07-05T07:10:56.610Z",
+  "generatedAt": "2026-07-05T10:32:16.232Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
   "corpusMean": 97,
   "factsRecallMean": 0.958,
+  "entityRecallMean": 0.848,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -34,6 +35,10 @@
       "charsPerSlot": 179.28571428571428,
       "maxSlotChars": 285,
       "numberRecall": 0.9655172413793104,
+      "entityRecall": 0.5,
+      "missingEntities": [
+        "Product Award"
+      ],
       "missingNumbers": [
         "3.2"
       ]
@@ -66,6 +71,10 @@
       "charsPerSlot": 264.75,
       "maxSlotChars": 466,
       "numberRecall": 0.9,
+      "entityRecall": 0.8,
+      "missingEntities": [
+        "Gartner Magic Quadrant"
+      ],
       "missingNumbers": [
         "2025"
       ]
@@ -98,6 +107,8 @@
       "charsPerSlot": 142.85714285714286,
       "maxSlotChars": 180,
       "numberRecall": 1,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": []
     },
     {
@@ -128,6 +139,12 @@
       "charsPerSlot": 261.57142857142856,
       "maxSlotChars": 346,
       "numberRecall": 1,
+      "entityRecall": 0.7692307692307693,
+      "missingEntities": [
+        "In Search",
+        "Understandable Consensus Algorithm",
+        "Highly Available Key"
+      ],
       "missingNumbers": []
     },
     {
@@ -158,6 +175,8 @@
       "charsPerSlot": 314,
       "maxSlotChars": 489,
       "numberRecall": 0.9565217391304348,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": [
         "43"
       ]
@@ -190,6 +209,10 @@
       "charsPerSlot": 181.55555555555554,
       "maxSlotChars": 271,
       "numberRecall": 0.8888888888888888,
+      "entityRecall": 0.8,
+      "missingEntities": [
+        "Google Slides"
+      ],
       "missingNumbers": [
         "$0",
         "$120K",
@@ -224,6 +247,14 @@
       "charsPerSlot": 303.14285714285717,
       "maxSlotChars": 477,
       "numberRecall": 1,
+      "entityRecall": 0.7727272727272727,
+      "missingEntities": [
+        "Company Overview",
+        "Team Heritage",
+        "Potential User Groups",
+        "Custodial Strategy",
+        "Connect With Us"
+      ],
       "missingNumbers": []
     },
     {
@@ -260,6 +291,8 @@
       "charsPerSlot": 262.1666666666667,
       "maxSlotChars": 340,
       "numberRecall": 1,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": []
     },
     {
@@ -290,6 +323,10 @@
       "charsPerSlot": 242,
       "maxSlotChars": 541,
       "numberRecall": 0.9,
+      "entityRecall": 0.8333333333333334,
+      "missingEntities": [
+        "Village Chief Amara Kessy"
+      ],
       "missingNumbers": [
         "2025",
         "9%",
@@ -330,6 +367,8 @@
       "charsPerSlot": 229.33333333333334,
       "maxSlotChars": 442,
       "numberRecall": 0.9666666666666667,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": [
         "31"
       ]
