@@ -151,6 +151,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-assemble-deck.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-camera-shake.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-text-to-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-hitstop.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-scaffold-to-ir.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-atom-3d-coverage.mjs' },
 

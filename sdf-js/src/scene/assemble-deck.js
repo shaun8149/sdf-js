@@ -78,6 +78,7 @@ export function assembleDeck(deck, opts = {}) {
   const subjects = [];
   const overlay = [];
   const shots = [];
+  const hitstops = [];
   let clock = 0;
   let prevPayoff = null;
 
@@ -143,6 +144,10 @@ export function assembleDeck(deck, opts = {}) {
     st.cameraSequence.shots.forEach((sh) => {
       shots.push({ ...sh, pos: addV(sh.pos, origin), target: addV(sh.target, origin) });
     });
+    // Hitstops ride the deck timeline: shift each station's freezes by its start.
+    for (const h of st.cameraSequence.hitstops || []) {
+      hitstops.push({ at: h.at + clock, hold: h.hold });
+    }
     const stationDur = seqDuration(st.cameraSequence.shots);
     clock += stationDur;
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
@@ -206,7 +211,7 @@ export function assembleDeck(deck, opts = {}) {
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${env ? ' · alpine' : ''}`,
     subjects: env ? [...subjects, ...env.subjects] : subjects,
     overlay,
-    cameraSequence: { loop: false, shots },
+    cameraSequence: { loop: false, shots, hitstops },
     // One shared open world — no per-station stage room (walls would slice the
     // deck axis). Ground/sky come from the environment or the page defaults.
     defaults: env

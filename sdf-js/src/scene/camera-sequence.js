@@ -79,6 +79,31 @@ function shakeSway(t, phase) {
   );
 }
 
+// ---- Hitstop (fighting-game frame freeze) ------------------------------------
+// cameraSequence.hitstops = [{ at, hold }] — at each `at` (presentation-time
+// seconds), the WHOLE presentation clock freezes for `hold` wall-seconds, then
+// resumes: the impact frame holds, the world stops with it (camera, shake,
+// build-ins, sea — everything downstream of the warped clock). warpTime maps
+// raw wall seconds → presentation seconds; unwarpTime inverts it (seeking).
+// Stops must be sorted by `at` ascending and non-overlapping.
+export function warpTime(rawSec, stops) {
+  if (!Array.isArray(stops) || stops.length === 0) return rawSec;
+  let t = rawSec;
+  for (const s of stops) {
+    if (t <= s.at) break;
+    t -= Math.min(t - s.at, s.hold);
+  }
+  return t;
+}
+export function unwarpTime(tSec, stops) {
+  if (!Array.isArray(stops) || stops.length === 0) return tSec;
+  let raw = tSec;
+  for (const s of stops) {
+    if (tSec > s.at) raw += s.hold;
+  }
+  return raw;
+}
+
 /**
  * Compute total sequence duration. Returns 0 for empty sequences.
  * Cached on the seq object so repeat calls are O(1).

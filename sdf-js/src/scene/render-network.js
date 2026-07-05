@@ -228,6 +228,7 @@ export function renderNetwork(ir, opts = {}) {
     });
   }
   // 4 — the super: hard cut punch-in on the hub/emphasis node
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
     duration: 1.0,
     pos: [gp[0] + 0.5, Math.max(gp[1] - 0.1, 0.14), gp[2] + 1.5],
@@ -278,7 +279,7 @@ export function renderNetwork(ir, opts = {}) {
     name: `(network) ${ir.title || nodes[hub]}${env ? ' · alpine' : ''}`,
     subjects: env ? [...subjects, ...env.subjects] : subjects,
     overlay,
-    cameraSequence: { loop: false, shots },
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
     defaults: env ? env.defaults : { stage: { size: [16, 12, 12] } },
   };
 }

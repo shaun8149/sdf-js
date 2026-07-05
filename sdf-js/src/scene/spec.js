@@ -1301,6 +1301,30 @@ function validateCameraSequence(seq, errors, warnings) {
   if (seq.loop != null && typeof seq.loop !== 'boolean') {
     errors.push('cameraSequence.loop: must be a boolean if provided');
   }
+  // Hitstops: fighting-game frame freezes — presentation clock holds at `at`
+  // for `hold` wall-seconds. Must be sorted ascending, non-overlapping.
+  if (seq.hitstops != null) {
+    if (!Array.isArray(seq.hitstops)) {
+      errors.push('cameraSequence.hitstops: must be an array if provided');
+    } else {
+      let prevEnd = -Infinity;
+      seq.hitstops.forEach((h, i) => {
+        if (
+          !h ||
+          typeof h.at !== 'number' ||
+          h.at < 0 ||
+          typeof h.hold !== 'number' ||
+          h.hold <= 0
+        ) {
+          errors.push(`cameraSequence.hitstops[${i}]: requires {at >= 0, hold > 0}`);
+          return;
+        }
+        if (h.at < prevEnd)
+          errors.push(`cameraSequence.hitstops[${i}]: must be sorted and non-overlapping`);
+        prevEnd = h.at + h.hold;
+      });
+    }
+  }
   // Sprint 4: subjectMotion = per-subject CarInt physics (cross-phase integral).
   if (seq.subjectMotion != null) {
     if (!Array.isArray(seq.subjectMotion)) {
