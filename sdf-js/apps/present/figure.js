@@ -12,6 +12,7 @@ const env = params.get('env') || 'studio';
 const { show } = createFigure({ outdoor: env !== 'studio' });
 
 const deckName = params.get('deck');
+const layout = params.get('layout') || undefined; // line | radial | grid
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
-show(deckName ? assembleDeck(ir, { env }) : renderIR(ir, { env }));
+show(deckName ? assembleDeck(ir, { env, layout }) : renderIR(ir, { env }));
