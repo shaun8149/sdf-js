@@ -1487,6 +1487,39 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 24 eval-iter1: image atoms (emittable via lift prompt Rule 15, not
+  // via rec_atoms — the eval baseline caught them as the only untwinned types).
+  // The SDF pipeline can't texture-map the actual image; a framed device screen
+  // is the honest 3D metaphor, with caption/text routed to the overlay. ──
+
+  image: {
+    to: 'device-mockup-3d',
+    lift(a) {
+      return {
+        args: { kind: 'tablet' },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.caption ? [{ text: String(a.caption), anchor: [0, 3.6, 0], role: 'title' }] : []),
+        ],
+      };
+    },
+  },
+
+  'image-split': {
+    to: 'device-mockup-3d',
+    lift(a) {
+      return {
+        args: { kind: 'tablet' },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...(a.body ? [{ text: String(a.body), anchor: [3.0, 2.6, 0], role: 'card' }] : []),
+          ...rightCards((a.bullets || []).slice(0, 4), { top: 1.9 }),
+        ],
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)

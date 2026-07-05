@@ -42,8 +42,11 @@ export const spec = {
     value: { type: 'string|number', required: true, example: '$3.4M' },
     label: { type: 'string', required: true, example: 'Q3 Revenue' },
     sublabel: { type: 'string?', example: 'vs Q2 2024' },
-    trend: { type: "'up'|'down'|'neutral'?", example: 'up' },
-    trendValue: { type: 'string?', example: '+127%' },
+    trend: {
+      type: "'up'|'down'|'neutral'? (DIRECTION — the delta text goes in trendValue)",
+      example: 'up',
+    },
+    trendValue: { type: 'string? (delta text, e.g. "+127%")', example: '+127%' },
     icon: { type: 'string? (atlas-icon name)', example: 'chart-bar' },
     style: {
       type: "'dark'|'light'|'accent-border'?",
@@ -60,7 +63,20 @@ export const spec = {
  * @param {object} args — see spec.args
  * @param {object} opts — { x, y, w, h, palette }
  */
-export function drawPseudo3D(ctx, args, opts = {}) {
+// Tolerant-input normalization: sister atoms (stat-banner / stat-with-icon /
+// stat-grid-large) use `trendDirection` for the arrow direction, so LLMs
+// regularly emit that key here too (2/10 decks in the Sprint 24 eval baseline).
+// Accept it as an alias for `trend` rather than silently dropping the pill.
+function normalizeTrendArgs(args) {
+  if (args.trendDirection && !args.trend) {
+    const dir = args.trendDirection === 'flat' ? 'neutral' : args.trendDirection;
+    return { ...args, trend: dir };
+  }
+  return args;
+}
+
+export function drawPseudo3D(ctx, rawArgs, opts = {}) {
+  const args = normalizeTrendArgs(rawArgs);
   const style = args.style || 'dark';
   switch (style) {
     case 'dark':
