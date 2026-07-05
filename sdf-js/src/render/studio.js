@@ -2516,6 +2516,12 @@ export function createStudioRenderer({
 
     if (_debugFirstDraw) {
       _debugFirstDraw = false;
+      // Clocks start at the first VISIBLE frame. The first draw of a new program
+      // blocks on the (multi-second) shader compile; u_time and the sequence clock
+      // run on wall time, so without this reset a 6s cameraSequence + its build-in
+      // animations can be over before the audience sees frame one.
+      timeStart = performance.now();
+      if (activeSequence) sequenceStartTime = performance.now();
       const err = gl.getError();
       const errName =
         err === gl.NO_ERROR
