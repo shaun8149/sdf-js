@@ -114,11 +114,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const cx = x + w / 2;
   const cy = plotTop + plotH / 2;
 
-  // Semi-axes: keep nodes inside canvas with padding for node rect half-size
-  const halfNodeW = NODE_W / 2 + 6;
-  const halfNodeH = NODE_H / 2 + 6;
-  const a = Math.min(w / 2 - halfNodeW - PAD, (w / 2) * 0.42);
-  const b = Math.min(plotH / 2 - halfNodeH - PAD, (plotH / 2) * 0.72);
+  // Node pills scale with canvas size (previously a fixed 84x34 regardless
+  // of h — on a large canvas that read as tiny relative to everything else).
+  const nodeScale = Math.max(0.9, Math.min(2.2, h / 300));
+  const nodeW = NODE_W * nodeScale;
+  const nodeH = NODE_H * nodeScale;
+
+  // Semi-axes: target the loop spanning ~70% of canvas width/height
+  // (previously capped at 0.42/0.72 of the HALF-extent, i.e. the loop only
+  // used well under 30% of the canvas), clamped so nodes stay inside canvas.
+  const halfNodeW = nodeW / 2 + 6;
+  const halfNodeH = nodeH / 2 + 6;
+  const a = Math.min(w / 2 - halfNodeW - PAD, w * 0.35);
+  const b = Math.min(plotH / 2 - halfNodeH - PAD, plotH * 0.35);
 
   // ---- Draw infinity curve ----
   ctx.save();
@@ -138,9 +146,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.restore();
 
   // ---- Compute step node positions ----
-  // Distribute n nodes evenly, starting at t = π/2 so first node is at
-  // top of left lobe (visually intuitive start for left-to-right reading).
-  const startT = Math.PI / 2;
+  // Distribute n nodes evenly. The lemniscate passes through the center
+  // (self-intersection point) TWICE per full loop, at t = π/2 and t = 3π/2 —
+  // starting exactly at t = π/2 with a step of 2π/n means that whenever n
+  // divides 4 evenly (n=4 is the most common step count!), every sampled t
+  // lands exactly on a multiple of π/2, so TWO nodes get placed on top of
+  // each other at dead-center and one silently disappears behind the other.
+  // A half-step offset keeps every node's t off those exact crossing angles.
+  const startT = Math.PI / 2 + Math.PI / (2 * n);
   const positions = [];
   for (let i = 0; i < n; i++) {
     const t = startT + (i / n) * Math.PI * 2;
@@ -167,7 +180,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const ux = dx / len;
     const uy = dy / len;
     // Offset start so arrow doesn't overlap with node rects
-    const arrowTip = { x: next.px - ux * (NODE_W / 2 + 4), y: next.py - uy * (NODE_H / 2 + 2) };
+    const arrowTip = { x: next.px - ux * (nodeW / 2 + 4), y: next.py - uy * (nodeH / 2 + 2) };
     const arrowBase = { x: arrowTip.x - ux * 18, y: arrowTip.y - uy * 18 };
     drawArrow(ctx, arrowBase.x, arrowBase.y, arrowTip.x, arrowTip.y, accent);
   }
@@ -175,7 +188,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // ---- Draw step nodes on top of curve / arrows ----
   for (let i = 0; i < n; i++) {
     const { px, py } = positions[i];
-    drawNode(ctx, px, py, NODE_W, NODE_H, CORNER_R, steps[i], accent, fg);
+    drawNode(ctx, px, py, nodeW, nodeH, CORNER_R * nodeScale, steps[i], accent, fg);
   }
 }
 
@@ -203,8 +216,8 @@ function drawNode(ctx, cx, cy, nw, nh, r, step, accent, fg) {
   ctx.fill();
   ctx.restore();
 
-  // Label
-  const textSize = Math.min(13, nh * 0.34);
+  // Label — sized proportionally to the (now canvas-scaled) node height
+  const textSize = Math.min(22, nh * 0.34);
   ctx.fillStyle = 'rgba(255,255,255,0.97)';
   ctx.font = `700 ${textSize}px Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
