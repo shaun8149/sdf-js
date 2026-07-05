@@ -5,6 +5,7 @@
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
 import { renderIR } from '../../src/scene/render-ir.js';
+import { assembleDeck } from '../../src/scene/assemble-deck.js';
 
 const wrap = document.getElementById('wrap');
 const canvas = document.getElementById('c');
@@ -44,9 +45,12 @@ window.addEventListener('resize', () => {
 window.__figStudio = studio;
 window.__figReplay = () => studio.setSequence(scene.cameraSequence);
 
+// ?deck=<name> assembles a multi-IR deck (one continuous world, stations along
+// the deck axis); ?ir=<name> renders a single structure.
+const deckName = params.get('deck');
 const name = params.get('ir') || 'funnel-sales';
-const ir = await (await fetch(`../../scenes/ir/${name}.json`)).json();
-const scene = renderIR(ir, { env }); // dispatches on ir.structure
+const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
+const scene = deckName ? assembleDeck(ir, { env }) : renderIR(ir, { env });
 // applyStudioScene wires setSequence + setAnimated (subject.animation counts as
 // time content since the sceneHasTimeContent fix) — no manual overrides needed.
 applyStudioScene(studio, scene);
