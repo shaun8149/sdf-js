@@ -22,13 +22,21 @@ import {
   totalDuration as seqTotalDuration,
 } from '../scene/camera-sequence.js';
 
-const VS_SRC = `attribute vec2 a_pos;
+// GLSL ES 3.00 (studio is WebGL2-only). ES 3.00 is REQUIRED, not cosmetic:
+// shaders without #version are parsed as ES 1.00, whose Appendix A rules forbid
+// non-constant loop bounds — which the library's u_loopGuard unroll-defeat
+// (see sdf3.glsl.js) depends on. The #define shim below lets the shared GLSL
+// library (also compiled under ES 1.00 by the WebGL1 renderers) stay
+// version-agnostic: texture2D was removed in ES3, aliased back to texture().
+const VS_SRC = `#version 300 es
+in vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
 function buildFragmentShader(sceneGlsl) {
-  return `#ifdef GL_ES
+  return `#version 300 es
 precision highp float;
-#endif
+#define texture2D texture
+out vec4 fragColor;
 
 ${FILTER_GLSL}
 
@@ -1739,7 +1747,7 @@ void main() {
   // HDR + linear depth. ATLAS_MAX_DIST in postfx.js must match MAX_DIST here.
   // Sky pixels get alpha=1.0 (max depth) so DoF doesn't blur sky against itself.
   float depthNorm = hit ? clamp(t / MAX_DIST, 0.0, 1.0) : 1.0;
-  gl_FragColor = vec4(col, depthNorm);
+  fragColor = vec4(col, depthNorm);
 }`;
 }
 
