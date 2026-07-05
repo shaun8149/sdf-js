@@ -3196,7 +3196,9 @@ export function createStudioRenderer({
       const uvy = (focal * b) / c;
       const x = (uvx / aspect + 1) / 2; // uv.x ∈ [-aspect,aspect] → [0,1]
       const y = 1 - (uvy + 1) / 2; // uv.y ∈ [-1,1] (bottom-up) → top-left [0,1]
-      return { x, y, visible: x >= -0.15 && x <= 1.15 && y >= -0.15 && y <= 1.15 };
+      // depth = forward distance (world units) — overlay layers use it to fade
+      // far labels so wide/deck shots don't pile every station's text on screen.
+      return { x, y, depth: c, visible: x >= -0.15 && x <= 1.15 && y >= -0.15 && y <= 1.15 };
     },
     setSequenceTime(tSec) {
       if (!activeSequence) return;

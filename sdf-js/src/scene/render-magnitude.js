@@ -100,7 +100,7 @@ export function renderMagnitude(ir, opts = {}) {
       pos: [xOf(tallest) + 1.6, 0.5, 3.6],
       target: [xOf(tallest), tallH * 0.72, 0],
       fov: 54,
-      aperture: 0,
+      aperture: 0.55, // hero: shallow focus on the subject
       focalDistance: 4,
       ease: 'out',
     },
@@ -111,7 +111,7 @@ export function renderMagnitude(ir, opts = {}) {
       target: [0, tallH * 0.45, 0],
       fov: 48,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.3,
       focalDistance: rowSpan * 0.6 + 3,
       ease: 'inout',
     },
@@ -126,7 +126,7 @@ export function renderMagnitude(ir, opts = {}) {
       target: [x, Math.max(H * 0.55, 0.5), 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.25,
       focalDistance: 2.7,
       shake: 0.05,
       ease: 'smooth',
@@ -139,7 +139,7 @@ export function renderMagnitude(ir, opts = {}) {
     target: [gx, gH * 0.85, 0],
     fov: 44,
     transition: 'cut',
-    aperture: 0,
+    aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.8,
     shake: [0.5, 0.06], // impact-then-settle
     exposure: [1.45, 1.0],
@@ -153,7 +153,7 @@ export function renderMagnitude(ir, opts = {}) {
     target: [0, tallH * 0.4, 0],
     fov: 44,
     transition: 'blend',
-    aperture: 0,
+    aperture: 0.12, // deep focus: the whole story stays sharp
     focalDistance: payoffDist,
     ease: 'out',
   });

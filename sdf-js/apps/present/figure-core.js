@@ -86,7 +86,13 @@ export function createFigure({ outdoor = false } = {}) {
       }
       el.style.left = `${p.x * canvas.clientWidth}px`;
       el.style.top = `${p.y * canvas.clientHeight}px`;
-      el.style.opacity = o.revealAt == null || t >= o.revealAt ? 1 : 0;
+      // Distance falloff: labels stay crisp near the camera, fade with depth so
+      // wide/deck shots don't pile every station's text on screen. Titles keep
+      // a longer reach (they ARE the far signpost).
+      const reach = o.role === 'title' ? 60 : 22;
+      const depthFade =
+        p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
+      el.style.opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
     }
     requestAnimationFrame(tick);
   }

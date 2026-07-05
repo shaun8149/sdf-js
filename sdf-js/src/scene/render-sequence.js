@@ -106,7 +106,7 @@ export function renderSequence(ir, opts = {}) {
       pos: [2.3, 0.55, 5.2],
       target: [0, topY - 0.2, 0],
       fov: 54,
-      aperture: 0,
+      aperture: 0.55, // hero: shallow focus on the subject
       focalDistance: 5.5,
       ease: 'out',
     },
@@ -117,7 +117,7 @@ export function renderSequence(ir, opts = {}) {
       target: [0, topY - 0.3, 0],
       fov: 50,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.3,
       focalDistance: 5,
       ease: 'inout',
     },
@@ -133,7 +133,7 @@ export function renderSequence(ir, opts = {}) {
       target: [0, y, 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.25,
       focalDistance: dist,
       shake: 0.05,
       ease: 'smooth',
@@ -148,7 +148,7 @@ export function renderSequence(ir, opts = {}) {
     target: [0, goldY + 0.12, 0],
     fov: 40,
     transition: 'cut',
-    aperture: 0,
+    aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 2,
     shake: [0.5, 0.06], // impact-then-settle
     exposure: [1.45, 1.0],
@@ -163,7 +163,7 @@ export function renderSequence(ir, opts = {}) {
     target: [0, midY + 0.2, 0],
     fov: 44,
     transition: 'blend',
-    aperture: 0,
+    aperture: 0.12, // deep focus: the whole story stays sharp
     focalDistance: payoffDist,
     ease: 'out',
   });

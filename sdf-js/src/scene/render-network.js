@@ -193,7 +193,7 @@ export function renderNetwork(ir, opts = {}) {
       pos: [hubP[0] + cloudR * 0.5, Math.max(hubP[1] - 0.6, 0.4), hubP[2] + cloudR * 0.55],
       target: [hubP[0], hubP[1], hubP[2]],
       fov: 56,
-      aperture: 0,
+      aperture: 0.55, // hero: shallow focus on the hub
       focalDistance: cloudR * 0.7,
       ease: 'out',
     },
@@ -204,7 +204,7 @@ export function renderNetwork(ir, opts = {}) {
       target: [0, midY, 0],
       fov: 48,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.3,
       focalDistance: cloudR * 1.9,
       ease: 'inout',
     },
@@ -221,7 +221,7 @@ export function renderNetwork(ir, opts = {}) {
       target: [0, midY, 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.25,
       focalDistance: dist,
       shake: 0.05,
       ease: 'smooth',
@@ -234,7 +234,7 @@ export function renderNetwork(ir, opts = {}) {
     target: [gp[0], gp[1] + 0.06, gp[2]],
     fov: 40,
     transition: 'cut',
-    aperture: 0,
+    aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.6,
     shake: [0.5, 0.06], // impact-then-settle
     exposure: [1.45, 1.0],
@@ -248,7 +248,7 @@ export function renderNetwork(ir, opts = {}) {
     target: [0, midY, 0],
     fov: 44,
     transition: 'blend',
-    aperture: 0,
+    aperture: 0.12, // deep focus: the whole story stays sharp
     focalDistance: payoffDist,
     ease: 'out',
   });
