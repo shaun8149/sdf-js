@@ -2,19 +2,19 @@
   "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-nonprofit-annual-report",
   "deckName": "eval-nonprofit-annual-report",
   "structure": {
-    "slots_total": 8,
+    "slots_total": 10,
     "slots_baked": 7,
-    "slots_empty": 1,
+    "slots_empty": 3,
     "slots_errored": 0,
-    "fill_rate": 0.875,
+    "fill_rate": 0.7,
     "pick_method": "llm",
-    "scaffold_id": "analysis-report",
-    "theme_id": "editorial-navy"
+    "scaffold_id": "financial-summary",
+    "theme_id": "financial-navy-cerulean"
   },
   "atomQuality": {
-    "atom_instances": 12,
+    "atom_instances": 13,
     "atom_types_distinct": 8,
-    "variety_ratio": 0.6666666666666666,
+    "variety_ratio": 0.6153846153846154,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,30 +29,29 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 295.42857142857144,
-    "max_slot_chars": 483
+    "chars_per_slot": 242,
+    "max_slot_chars": 541
   },
   "fidelity": {
     "numbers_total": 30,
-    "numbers_found": 26,
-    "number_recall": 0.8666666666666667,
+    "numbers_found": 27,
+    "number_recall": 0.9,
     "missing_numbers": [
       "2025",
       "9%",
-      "2027",
-      "$25"
+      "2027"
     ]
   },
   "score": {
-    "total": 96.4,
+    "total": 92.5,
     "breakdown": {
-      "structure": 21.9,
+      "structure": 17.5,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
-      "text": 9.5
+      "text": 10
     }
   },
-  "generatedAt": "2026-07-05T06:29:32.592Z"
+  "generatedAt": "2026-07-05T07:10:56.608Z"
 }

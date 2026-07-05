@@ -25,10 +25,12 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 140,
+        "h": 100,
         "args": {
-          "value": "$420M AUM",
-          "label": "12 portfolio companies",
+          "value": "$420M",
+          "label": "Total AUM across 12 companies",
+          "trend": "+62% ARR",
+          "trendDirection": "up",
           "bg": [
             58,
             138,
@@ -39,15 +41,15 @@
       {
         "type": "kpi-card",
         "x": 40,
-        "y": 340,
+        "y": 290,
         "w": 380,
-        "h": 320,
+        "h": 160,
         "args": {
           "value": "$38M",
           "label": "Combined ARR",
           "sublabel": "Up 62% YoY",
-          "trend": "up",
-          "trendValue": "+62%",
+          "trend": "+62%",
+          "trendDirection": "up",
           "icon": "chart-line-up",
           "style": "light"
         }
@@ -55,9 +57,9 @@
       {
         "type": "kpi-card",
         "x": 450,
-        "y": 340,
+        "y": 290,
         "w": 380,
-        "h": 320,
+        "h": 160,
         "args": {
           "value": "3",
           "label": "Series B Track",
@@ -69,15 +71,28 @@
       {
         "type": "kpi-card",
         "x": 860,
-        "y": 340,
+        "y": 290,
         "w": 380,
-        "h": 320,
+        "h": 160,
         "args": {
           "value": "2",
           "label": "Strategic Pivots",
-          "sublabel": "H1 2026 completed",
+          "sublabel": "Completed H1 2026",
           "icon": "arrows-clockwise",
           "style": "light"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 40,
+        "y": 480,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "quote": "The best venture returns come not from picking winners, but from refusing to lose on the ones you have.",
+          "author": "Senior Partner",
+          "attribution": "Investment Review 2026 · 47 exits over 12 years",
+          "align": "center"
         }
       }
     ]
@@ -92,20 +107,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4009,
+      "input_tokens": 4379,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 559,
+      "output_tokens": 707,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0243144,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-05T06:03:21.400Z",
+    "costUSD": 0.0276444,
+    "elapsedSec": 11.3,
+    "generatedAt": "2026-07-05T07:08:54.815Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -31,56 +31,36 @@
           "columns": [
             {
               "name": "Fundraising",
-              "color": [
-                58,
-                138,
-                200
-              ],
               "cards": [
                 {
-                  "title": "Fund III Final Close",
-                  "subtitle": "Target $300M by Dec 2026",
-                  "priority": "high"
+                  "title": "Series B bridge prep",
+                  "subtitle": "ANTFUN + NovaTech"
                 },
                 {
-                  "title": "Series B Bridge Prep",
-                  "subtitle": "ANTFUN + NovaTech",
-                  "priority": "high"
+                  "title": "Fund III final close",
+                  "subtitle": "$300M target by Dec 2026"
                 }
               ]
             },
             {
-              "name": "Portfolio Growth",
-              "color": [
-                100,
-                150,
-                200
-              ],
+              "name": "Portfolio Operations",
               "cards": [
                 {
-                  "title": "AI Transformation Audit",
-                  "subtitle": "All 12 portfolio companies",
-                  "priority": "medium"
+                  "title": "AI transformation audit",
+                  "subtitle": "All 12 portfolio companies"
                 },
                 {
-                  "title": "Geographic Expansion Review",
-                  "subtitle": "Southeast Asia LP program",
-                  "priority": "medium"
+                  "title": "Exit roadmap",
+                  "subtitle": "Fund I · 3 candidates"
                 }
               ]
             },
             {
-              "name": "Exits",
-              "color": [
-                180,
-                210,
-                235
-              ],
+              "name": "Strategic Expansion",
               "cards": [
                 {
-                  "title": "Fund I Exit Roadmap",
-                  "subtitle": "3 candidates identified",
-                  "priority": "high"
+                  "title": "Geographic expansion review",
+                  "subtitle": "Southeast Asia LP program"
                 }
               ]
             }
@@ -100,20 +80,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4025,
+      "input_tokens": 4287,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 510,
+      "output_tokens": 424,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0236274,
-    "elapsedSec": 9.4,
-    "generatedAt": "2026-07-05T06:03:45.397Z",
+    "costUSD": 0.0231234,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-05T07:09:24.636Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

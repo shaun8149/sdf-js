@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Market Size"
+          "title": "Market Size",
+          "style": "gradient"
         }
       },
       {
@@ -26,6 +27,7 @@
         "w": 520,
         "h": 480,
         "args": {
+          "title": "TAM / SAM / SOM",
           "layers": [
             {
               "label": "AI Productivity",
@@ -33,17 +35,17 @@
               "value": 48
             },
             {
-              "label": "Presentation Market",
+              "label": "Presentation Software",
               "sublabel": "$4.8B annually",
               "value": 4.8
             },
             {
-              "label": "Illustration & Infographic",
+              "label": "Editorial + Infographic",
               "sublabel": "$2.1B",
               "value": 2.1
             }
           ],
-          "title": "TAM/SAM/SOM"
+          "inverted": false
         }
       },
       {
@@ -55,35 +57,26 @@
         "args": {
           "value": "18M",
           "label": "Knowledge Workers",
-          "sublabel": "Making decks weekly",
+          "sublabel": "Creating decks weekly",
           "icon": "users",
           "style": "dark"
         }
       },
       {
-        "type": "kpi-card",
+        "type": "stat-banner",
         "x": 680,
         "y": 440,
-        "w": 250,
+        "w": 520,
         "h": 220,
         "args": {
           "value": "$4.8B",
-          "label": "SAM",
-          "sublabel": "Presentation tools",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 950,
-        "y": 440,
-        "w": 250,
-        "h": 220,
-        "args": {
-          "value": "$2.1B",
-          "label": "Editorial",
-          "sublabel": "Illustration market",
-          "style": "light"
+          "label": "Annual Market Size",
+          "trend": "Presentation Software",
+          "bg": [
+            255,
+            120,
+            40
+          ]
         }
       }
     ]
@@ -100,20 +93,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4161,
+      "input_tokens": 4269,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 601,
+      "output_tokens": 524,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025400399999999997,
-    "elapsedSec": 8.8,
-    "generatedAt": "2026-07-05T06:23:44.166Z",
+    "costUSD": 0.024569399999999998,
+    "elapsedSec": 10.9,
+    "generatedAt": "2026-07-05T07:09:58.066Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

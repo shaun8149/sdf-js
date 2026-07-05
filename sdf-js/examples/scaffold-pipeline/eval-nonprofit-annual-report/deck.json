@@ -2,56 +2,61 @@
   "deckName": "eval-nonprofit-annual-report",
   "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/nonprofit-annual-report.json",
   "scaffold": {
-    "id": "analysis-report",
-    "label": "Analysis Report",
-    "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
-    "pickScore": 9,
+    "id": "financial-summary",
+    "label": "Financial Summary",
+    "description": "Formal financial summary report — income, balance, cashflow, ratios, outlook",
+    "pickScore": 8,
     "pickSignals": [
-      "The deck is a formal annual report presenting organizational performance data (wells built, people served, financials, program cost ratios) — a retrospective analysis document, not a forward-looking pitch or plan.",
-      "Structure maps cleanly to analysis-report scaffold: cover → mission/scope → numbers/data-findings → program highlights/framework-analysis → financial breakdown/interpretation → 2027 goals/recommendations → donor voices & thank-you/appendix. The 8-slot count matches the source's 8 sections perfectly.",
-      "Semantic intent is to present accountability data to stakeholders (donors, board) — classic analysis-report audience. Keywords like 'annual report,' 'financial breakdown,' 'by the numbers,' and 'prepared for donors and board' signal formal analysis/reporting over other formats like investor-update (which focuses on quarterly metrics & asks) or qbr (which is internal-facing exec review)."
+      "Document is explicitly titled 'Annual Report' with heavy financial disclosure: donations ($4.2M), program cost ratio (84%), revenue breakdown by source, and budget projections ($5.5M target for 2027)",
+      "Structure matches financial-summary slots well: mission statement → highlights/KPIs (donations, wells, volunteers) → financial breakdown (program/fundraising/admin split) → outlook (2027 goals with 31% funding increase)",
+      "Intended for donor/board accountability audience (mentions 'Prepared for donors and board', references audit availability), which aligns perfectly with financial-summary's exec/board/investor audience"
     ],
     "fallback": false,
     "pickerMethod": "llm"
   },
   "theme": {
-    "id": "editorial-navy",
-    "label": "Editorial · Navy",
-    "macroCluster": "editorial",
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
     "bg": [
-      248,
-      246,
-      240
+      26,
+      40,
+      66
     ],
     "accent": [
-      38,
-      70,
-      130
+      58,
+      138,
+      200
     ],
     "colors": [
       [
-        38,
-        70,
-        130
+        58,
+        138,
+        200
       ],
       [
-        110,
-        95,
-        75
+        26,
+        40,
+        66
       ],
       [
-        165,
-        130,
-        90
+        100,
+        150,
+        200
       ],
       [
-        200,
-        195,
-        180
+        180,
+        210,
+        235
+      ],
+      [
+        240,
+        248,
+        255
       ]
     ],
     "font": {
-      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
       "body": "Inter, system-ui, sans-serif"
     }
   },
@@ -60,7 +65,7 @@
       "slotIdx": 0,
       "slotName": "cover",
       "slotTitle": "Title",
-      "slotPurpose": "Report title + scope + date",
+      "slotPurpose": "Report title + period + presenter",
       "sourceSlideIdx": 0,
       "sourceSlideTitle": "Clearwater Trust — 2026 Annual Report",
       "mappingScore": 10,
@@ -75,59 +80,56 @@
       ]
     },
     {
-      "slotIdx": 2,
-      "slotName": "definition",
-      "slotTitle": "Context & Definition",
-      "slotPurpose": "Define the subject — what are we analyzing and why",
+      "slotIdx": 1,
+      "slotName": "exec-statement",
+      "slotTitle": "Executive Statement",
+      "slotPurpose": "CEO or CFO opening statement — key message for the period",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "Our Mission",
-      "mappingScore": 9,
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-02-definition.json",
+      "liftFile": "slots/slot-01-exec-statement.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "layer-stack",
-        "icon-grid"
+        "quote-pull",
+        "icon-row"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "highlights-kpi",
+      "slotTitle": "Financial Highlights",
+      "slotPurpose": "Top-line KPIs — revenue, EBITDA, net income, cash",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "2026 By the Numbers",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-highlights-kpi.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite",
+        "testimonial-wall"
       ]
     },
     {
       "slotIdx": 3,
-      "slotName": "data-findings",
-      "slotTitle": "Data & Findings",
-      "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "2026 By the Numbers",
-      "mappingScore": 10,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-03-data-findings.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "gauge"
-      ]
-    },
-    {
-      "slotIdx": 4,
-      "slotName": "framework-analysis",
-      "slotTitle": "Framework Analysis",
-      "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+      "slotName": "income",
+      "slotTitle": "Income Statement",
+      "slotPurpose": "Revenue breakdown and profitability waterfall",
       "sourceSlideIdx": 4,
       "sourceSlideTitle": "Financial Breakdown",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-04-framework-analysis.json",
+      "liftFile": "slots/slot-03-income.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -138,35 +140,58 @@
       ]
     },
     {
-      "slotIdx": 5,
-      "slotName": "interpretation",
-      "slotTitle": "Interpretation",
-      "slotPurpose": "What the data means — synthesis and insight",
+      "slotIdx": 7,
+      "slotName": "segments",
+      "slotTitle": "Segment Analysis",
+      "slotPurpose": "Revenue by business unit or geography",
       "sourceSlideIdx": 3,
       "sourceSlideTitle": "Program Highlights",
-      "mappingScore": 9,
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-05-interpretation.json",
+      "liftFile": "slots/slot-07-segments.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "balance-scale"
+        "icon-grid"
       ]
     },
     {
-      "slotIdx": 6,
-      "slotName": "recommendations",
-      "slotTitle": "Recommendations",
-      "slotPurpose": "Actionable next steps based on findings",
+      "slotIdx": 8,
+      "slotName": "outlook",
+      "slotTitle": "Outlook & Forecast",
+      "slotPurpose": "Forward guidance and scenario planning",
       "sourceSlideIdx": 6,
       "sourceSlideTitle": "2027 Goals",
-      "mappingScore": 10,
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-06-recommendations.json",
+      "liftFile": "slots/slot-08-outlook.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "slotPurpose": "Supporting tables and methodology notes",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Thank You & How to Help",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-09-appendix.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -174,43 +199,36 @@
         "cover",
         "bullet-list"
       ]
-    },
-    {
-      "slotIdx": 7,
-      "slotName": "appendix",
-      "slotTitle": "Appendix",
-      "slotPurpose": "Supporting data, raw tables, methodology details",
-      "sourceSlideIdx": 5,
-      "sourceSlideTitle": "Donor & Community Voices",
-      "mappingScore": 7,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-07-appendix.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "testimonial-wall"
-      ]
     }
   ],
   "droppedSlots": [
     {
-      "slotIdx": 1,
-      "slotName": "scope",
-      "slotTitle": "Scope & Methodology",
+      "slotIdx": 4,
+      "slotName": "balance-sheet",
+      "slotTitle": "Balance Sheet",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "cashflow",
+      "slotTitle": "Cash Flow",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ratios",
+      "slotTitle": "Key Ratios",
       "reason": "no-source-content"
     }
   ],
   "totals": {
     "slotsBaked": 7,
-    "slotsEmpty": 1,
+    "slotsEmpty": 3,
     "slotsErrored": 0,
-    "totalCostUSD": 0.16137479999999998
+    "totalCostUSD": 0.1645008
   },
   "meta": {
-    "generatedAt": "2026-07-05T06:28:26.192Z",
+    "generatedAt": "2026-07-05T07:08:25.378Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

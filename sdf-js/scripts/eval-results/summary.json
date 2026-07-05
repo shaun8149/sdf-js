@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-05T06:29:32.593Z",
+  "generatedAt": "2026-07-05T07:10:56.610Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
   "corpusMean": 97,
-  "factsRecallMean": 0.929,
+  "factsRecallMean": 0.958,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -36,47 +36,6 @@
       "numberRecall": 0.9655172413793104,
       "missingNumbers": [
         "3.2"
-      ]
-    },
-    {
-      "deckName": "eval-strategy-batch2-validation",
-      "score": 100,
-      "scoreBreakdown": {
-        "structure": 25,
-        "variety": 15,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 1,
-      "scaffoldId": "change-roadmap",
-      "themeId": "consulting-charcoal",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 12,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 2,
-      "argViolationsTopOffenders": [
-        {
-          "type": "kpi-card",
-          "key": "trendDirection",
-          "count": 2
-        }
-      ],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 8,
-      "liftAttempted": 8,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 265.5,
-      "maxSlotChars": 308,
-      "numberRecall": 0.8260869565217391,
-      "missingNumbers": [
-        "$24M",
-        "117%",
-        "43",
-        "128%"
       ]
     },
     {
@@ -172,6 +131,38 @@
       "missingNumbers": []
     },
     {
+      "deckName": "eval-strategy-batch2-validation",
+      "score": 98.9,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 8.9
+      },
+      "fillRate": 1,
+      "scaffoldId": "change-roadmap",
+      "themeId": "consulting-charcoal",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 11,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 8,
+      "liftAttempted": 8,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 314,
+      "maxSlotChars": 489,
+      "numberRecall": 0.9565217391304348,
+      "missingNumbers": [
+        "43"
+      ]
+    },
+    {
       "deckName": "eval-vc-pitch",
       "score": 97.5,
       "scoreBreakdown": {
@@ -196,48 +187,13 @@
       "liftSuccess": 9,
       "liftAttempted": 9,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 201.88888888888889,
-      "maxSlotChars": 291,
+      "charsPerSlot": 181.55555555555554,
+      "maxSlotChars": 271,
       "numberRecall": 0.8888888888888888,
       "missingNumbers": [
         "$0",
         "$120K",
         "$740K"
-      ]
-    },
-    {
-      "deckName": "eval-nonprofit-annual-report",
-      "score": 96.4,
-      "scoreBreakdown": {
-        "structure": 21.9,
-        "variety": 15,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 9.5
-      },
-      "fillRate": 0.875,
-      "scaffoldId": "analysis-report",
-      "themeId": "editorial-navy",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 8,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 7,
-      "liftAttempted": 7,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 295.42857142857144,
-      "maxSlotChars": 483,
-      "numberRecall": 0.8666666666666667,
-      "missingNumbers": [
-        "2025",
-        "9%",
-        "2027",
-        "$25"
       ]
     },
     {
@@ -269,6 +225,76 @@
       "maxSlotChars": 477,
       "numberRecall": 1,
       "missingNumbers": []
+    },
+    {
+      "deckName": "eval-swot-portfolio-2026",
+      "score": 93.8,
+      "scoreBreakdown": {
+        "structure": 18.8,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 0.75,
+      "scaffoldId": "investor-update",
+      "themeId": "financial-navy-cerulean",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 8,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 1,
+      "argViolationsTopOffenders": [
+        {
+          "type": "kpi-card",
+          "key": "trendDirection",
+          "count": 1
+        }
+      ],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 6,
+      "liftAttempted": 6,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 262.1666666666667,
+      "maxSlotChars": 340,
+      "numberRecall": 1,
+      "missingNumbers": []
+    },
+    {
+      "deckName": "eval-nonprofit-annual-report",
+      "score": 92.5,
+      "scoreBreakdown": {
+        "structure": 17.5,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 0.7,
+      "scaffoldId": "financial-summary",
+      "themeId": "financial-navy-cerulean",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 8,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 7,
+      "liftAttempted": 7,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 242,
+      "maxSlotChars": 541,
+      "numberRecall": 0.9,
+      "missingNumbers": [
+        "2025",
+        "9%",
+        "2027"
+      ]
     },
     {
       "deckName": "eval-product-eng-retro",
@@ -306,38 +332,6 @@
       "numberRecall": 0.9666666666666667,
       "missingNumbers": [
         "31"
-      ]
-    },
-    {
-      "deckName": "eval-swot-portfolio-2026",
-      "score": 88.1,
-      "scoreBreakdown": {
-        "structure": 15.6,
-        "variety": 12.5,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 0.625,
-      "scaffoldId": "investor-update",
-      "themeId": "financial-navy-cerulean",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 5,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 5,
-      "liftAttempted": 5,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 213.4,
-      "maxSlotChars": 339,
-      "numberRecall": 0.875,
-      "missingNumbers": [
-        "47"
       ]
     }
   ]

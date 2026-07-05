@@ -16,15 +16,16 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Risks & Mitigations"
+          "title": "Risks & Mitigations",
+          "style": "gradient"
         }
       },
       {
         "type": "risk-heatmap",
         "x": 40,
         "y": 160,
-        "w": 560,
-        "h": 480,
+        "w": 580,
+        "h": 500,
         "args": {
           "title": "Risk Assessment",
           "xAxis": "Likelihood",
@@ -45,50 +46,61 @@
           ],
           "risks": [
             {
-              "label": "Change fatigue",
+              "label": "Change Fatigue",
               "likelihood": 4,
               "impact": 4,
-              "severity": "high"
+              "color": [
+                220,
+                53,
+                69
+              ]
             },
             {
-              "label": "Data migration errors",
+              "label": "Data Migration Errors",
               "likelihood": 2,
               "impact": 3,
-              "severity": "medium"
+              "color": [
+                255,
+                193,
+                7
+              ]
             },
             {
-              "label": "Vendor delays",
+              "label": "Vendor Delays",
               "likelihood": 1,
               "impact": 2,
-              "severity": "low"
+              "color": [
+                156,
+                142,
+                110
+              ]
             }
           ]
         }
       },
       {
-        "type": "vertical-timeline",
-        "x": 640,
+        "type": "timeline",
+        "x": 660,
         "y": 160,
-        "w": 600,
-        "h": 480,
+        "w": 580,
+        "h": 500,
         "args": {
           "title": "Change Journey",
-          "axisLabel": "2024",
           "events": [
             {
               "date": "Q1",
               "label": "Mobilise",
-              "sublabel": "Governance, quick wins"
+              "sublabel": "Governance & quick wins"
             },
             {
               "date": "Q2-Q3",
               "label": "Transform",
-              "sublabel": "Core migration, process redesign"
+              "sublabel": "Core migration & redesign"
             },
             {
               "date": "Q4",
               "label": "Sustain",
-              "sublabel": "Embed new ways, measure outcomes"
+              "sublabel": "Embed & measure"
             }
           ]
         }
@@ -106,20 +118,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4182,
+      "input_tokens": 4290,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 579,
+      "output_tokens": 591,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0251334,
-    "elapsedSec": 9.1,
-    "generatedAt": "2026-07-05T06:23:02.698Z",
+    "costUSD": 0.025637399999999998,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-05T07:06:31.991Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

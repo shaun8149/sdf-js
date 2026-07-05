@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Traction",
   "sceneData": {
     "name": "pitch-deck-vc/traction",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Traction"
+          "title": "Traction",
+          "style": "gradient"
         }
       },
       {
@@ -24,7 +25,7 @@
         "x": 80,
         "y": 180,
         "w": 700,
-        "h": 420,
+        "h": 460,
         "args": {
           "values": [
             0,
@@ -39,12 +40,12 @@
             "Q4 2026F"
           ],
           "format": "currency",
-          "title": "ARR Growth (M)",
+          "title": "ARR Growth",
           "showPoints": true,
           "annotations": [
             {
               "index": 1,
-              "text": "10 teams"
+              "text": "10 design teams"
             },
             {
               "index": 2,
@@ -58,10 +59,10 @@
         "x": 840,
         "y": 180,
         "w": 360,
-        "h": 190,
+        "h": 220,
         "args": {
           "value": "$2.4M",
-          "label": "Q4 2026 ARR Forecast",
+          "label": "Q4 Forecast ARR",
           "icon": "chart-line-up",
           "style": "dark"
         }
@@ -69,15 +70,15 @@
       {
         "type": "kpi-card",
         "x": 840,
-        "y": 410,
+        "y": 420,
         "w": 360,
-        "h": 190,
+        "h": 220,
         "args": {
           "value": "110%",
           "label": "Net Retention",
           "trend": "up",
-          "trendValue": "Strong cohort retention",
-          "icon": "users",
+          "trendValue": "Strong expansion",
+          "icon": "arrow-fat-up",
           "style": "light"
         }
       }
@@ -99,20 +100,20 @@
       "venn"
     ],
     "tokenUsage": {
-      "input_tokens": 4208,
+      "input_tokens": 4316,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 532,
+      "output_tokens": 538,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024506399999999998,
-    "elapsedSec": 8.5,
-    "generatedAt": "2026-07-05T06:24:09.562Z",
+    "costUSD": 0.0249204,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-05T07:10:23.809Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

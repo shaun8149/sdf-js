@@ -38,6 +38,14 @@
     "chars_per_slot": 229.33333333333334,
     "max_slot_chars": 442
   },
+  "fidelity": {
+    "numbers_total": 30,
+    "numbers_found": 29,
+    "number_recall": 0.9666666666666667,
+    "missing_numbers": [
+      "31"
+    ]
+  },
   "score": {
     "total": 91.4,
     "breakdown": {
@@ -49,5 +57,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:36:18.176Z"
+  "generatedAt": "2026-07-05T07:10:56.609Z"
 }
