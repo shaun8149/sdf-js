@@ -24,7 +24,8 @@ export const spec = {
 };
 
 const PAD = 14;
-const LABEL_FRAC = 0.18;
+const CAPTION_FRAC = 0.2; // reserve for caption text + accent underline bar
+const HERO_SIZE_FRAC = 0.55; // shape target size as a fraction of canvas height
 
 export function drawPseudo3D(ctx, args, opts = {}) {
   const x = opts.x ?? 0;
@@ -36,22 +37,39 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const color = args.color || palette.colors?.[0] || [60, 100, 200];
   const label = args.label;
 
-  const labelH = label ? h * LABEL_FRAC : 0;
+  const captionH = label ? h * CAPTION_FRAC : 0;
   const shapeAreaW = w - PAD * 2;
-  const shapeAreaH = h - PAD * 2 - labelH;
+  const shapeAreaH = h - PAD * 2 - captionH;
   const cx = x + w / 2;
   const cy = y + PAD + shapeAreaH / 2;
-  const size = Math.min(shapeAreaW, shapeAreaH);
+  const size = Math.min(shapeAreaW, shapeAreaH, h * HERO_SIZE_FRAC);
 
   drawArrow(ctx, cx, cy, size, color, args.direction || 'right');
 
   if (label) {
-    ctx.fillStyle = rgbCss(fg);
-    ctx.font = `600 ${Math.min(18, labelH * 0.55)}px Inter, system-ui, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(String(label), cx, y + h - labelH / 2 - PAD / 2);
+    drawCaption(ctx, String(label), cx, y, h, captionH, shapeAreaW, fg, color);
   }
+}
+
+/**
+ * Hero caption: larger Inter 700 type + accent underline bar (shared look
+ * with diamond.js — both are single-shape "iconic" atoms).
+ */
+function drawCaption(ctx, text, cx, y, h, captionH, shapeAreaW, fg, accentColor) {
+  const captionSize = Math.max(14, Math.round(h * 0.07));
+  ctx.font = `700 ${captionSize}px Inter, system-ui, sans-serif`;
+  const textW = ctx.measureText(text).width;
+  const textY = y + h - captionH / 2 - captionSize * 0.25;
+
+  ctx.fillStyle = rgbCss(fg);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, cx, textY);
+
+  const underlineW = Math.min(textW + 24, shapeAreaW * 0.6);
+  const underlineY = textY + captionSize * 0.62;
+  ctx.fillStyle = rgbCss(accentColor);
+  ctx.fillRect(cx - underlineW / 2, underlineY, underlineW, 3);
 }
 
 function buildArrowPoints(stemW, stemH, headW, headH) {
