@@ -1,0 +1,82 @@
+{
+  "slotIdx": 2,
+  "slotName": "context",
+  "slotTitle": "Why This Matters",
+  "slotPurpose": "Stakes + motivation",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Course Overview",
+  "sceneData": {
+    "name": "training/context",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Why This Matters"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "network",
+              "label": "Build distributed systems across machines",
+              "sublabel": "Theory and practice of multi-machine architectures"
+            },
+            {
+              "icon": "puzzle-pieces",
+              "label": "Master consensus and replication",
+              "sublabel": "Partitioning, consistency models, fault tolerance"
+            },
+            {
+              "icon": "calendar-check",
+              "label": "Hands-on learning format",
+              "sublabel": "2 lectures/week + weekly lab + group project"
+            },
+            {
+              "icon": "code",
+              "label": "Prerequisites: CS 240 + Go/Rust",
+              "sublabel": "Operating Systems foundation required"
+            }
+          ],
+          "title": null
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "training",
+    "theme": "organic-teal",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card",
+      "isotype-people-grid"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3979,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 359,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0212169,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-05T05:06:06.972Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

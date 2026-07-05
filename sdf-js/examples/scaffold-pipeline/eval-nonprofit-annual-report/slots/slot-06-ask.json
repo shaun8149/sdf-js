@@ -1,0 +1,79 @@
+{
+  "slotIdx": 6,
+  "slotName": "ask",
+  "slotTitle": "Ask",
+  "slotPurpose": "What we need from LPs — intros, advice, resources",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Thank You & How to Help",
+  "sceneData": {
+    "name": "investor-update/ask",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Ask",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "How You Can Help",
+          "items": [
+            {
+              "icon": "hand-coins",
+              "label": "$25 = clean water for one person, full year"
+            },
+            {
+              "icon": "users",
+              "label": "Volunteer opportunities open in 4 country programs"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Corporate matching programs available"
+            },
+            {
+              "icon": "file-text",
+              "label": "Board & audit reports at clearwatertrust.org/reports"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row",
+      "call-to-action"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3991,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 317,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020622899999999996,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-05T05:07:24.997Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

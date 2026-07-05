@@ -1,0 +1,81 @@
+{
+  "slotIdx": 2,
+  "slotName": "current-state",
+  "slotTitle": "Current State",
+  "slotPurpose": "As-is situation — strengths, weaknesses, root causes",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Current State Assessment",
+  "sceneData": {
+    "name": "change-roadmap/current-state",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Current State",
+          "style": "section"
+        }
+      },
+      {
+        "type": "swot",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "strengths": [
+            "78% brand recognition",
+            "15-year avg customer relationships",
+            "Loyal customer base"
+          ],
+          "weaknesses": [
+            "7 siloed data systems",
+            "40% manual processes",
+            "Outdated CRM (2014)"
+          ],
+          "opportunities": [
+            "$2M AI automation savings",
+            "Cloud migration scalability",
+            "Open banking API integration"
+          ],
+          "threats": [
+            "3 new FinTech disruptors",
+            "22% tech talent turnover",
+            "Regulatory complexity"
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "maturity-model",
+      "bullet-list",
+      "kpi-card",
+      "swot"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4051,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 323,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0208929,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-07-05T05:00:23.538Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

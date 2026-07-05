@@ -1,0 +1,92 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "Top accomplishments this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Program Highlights",
+  "sceneData": {
+    "name": "investor-update/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "title": "Q4 Program Highlights",
+          "items": [
+            {
+              "icon": "wrench",
+              "label": "Rapid Response",
+              "sublabel": "6 weeks → 9 days repair time"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "School Hydration",
+              "sublabel": "40 new stations installed"
+            },
+            {
+              "icon": "solar-panel",
+              "label": "Solar Pumps",
+              "sublabel": "12 villages, 60% cost reduction"
+            },
+            {
+              "icon": "users",
+              "label": "Local Training",
+              "sublabel": "210 technicians certified"
+            },
+            {
+              "icon": "handshake",
+              "label": "Policy Advocacy",
+              "sublabel": "3 regional partnerships"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "quote-pull"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4019,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 429,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022386899999999998,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-05T05:07:10.435Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

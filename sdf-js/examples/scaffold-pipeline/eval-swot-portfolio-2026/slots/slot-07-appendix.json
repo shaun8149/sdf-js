@@ -1,0 +1,75 @@
+{
+  "slotIdx": 7,
+  "slotName": "appendix",
+  "slotTitle": "Appendix",
+  "slotPurpose": "Supporting data, raw tables, methodology details",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Value Chain Assessment",
+  "sceneData": {
+    "name": "analysis-report/appendix",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Appendix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "value-chain-diagram",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Value Chain Assessment",
+          "primary": [
+            "Deal sourcing",
+            "Due diligence",
+            "Term sheet",
+            "Post-investment",
+            "Exit"
+          ],
+          "support": [
+            "LP relations",
+            "Portfolio operations",
+            "Legal & compliance",
+            "Network & brand"
+          ],
+          "outcome": "Risk-adjusted returns above benchmark"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3980,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 275,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0199599,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-07-05T05:03:22.887Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

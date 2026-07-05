@@ -1,0 +1,108 @@
+{
+  "slotIdx": 1,
+  "slotName": "scope",
+  "slotTitle": "Scope & Methodology",
+  "slotPurpose": "What was analyzed and how data was collected",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Scope of Analysis",
+  "sceneData": {
+    "name": "analysis-report/scope",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Scope & Methodology",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 560,
+        "h": 480,
+        "args": {
+          "title": "Analysis Scope",
+          "items": [
+            {
+              "icon": "package",
+              "label": "6 product lines",
+              "sublabel": "NA + EMEA + APAC markets"
+            },
+            {
+              "icon": "calendar",
+              "label": "11 quarters analyzed",
+              "sublabel": "2024-Q1 through 2026-Q3"
+            },
+            {
+              "icon": "database",
+              "label": "3 data sources",
+              "sublabel": "Internal KPI + 32 interviews + Gartner"
+            }
+          ]
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "title": "Frameworks Applied",
+          "items": [
+            {
+              "icon": "matrix-grid",
+              "label": "SWOT Analysis"
+            },
+            {
+              "icon": "flow-arrow",
+              "label": "Porter Value Chain"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Change Curve"
+            },
+            {
+              "icon": "chart-scatter",
+              "label": "Gap Assessment"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "circle",
+          "iconSize": "medium"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3997,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 533,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023880900000000004,
+    "elapsedSec": 8.9,
+    "generatedAt": "2026-07-05T05:01:31.988Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

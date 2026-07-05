@@ -1,0 +1,138 @@
+{
+  "slotIdx": 2,
+  "slotName": "market-size",
+  "slotTitle": "Market Size",
+  "slotPurpose": "TAM/SAM/SOM with numbers",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Total Addressable Market",
+  "sceneData": {
+    "name": "pitch-deck-vc/market-size",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Market Size",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pyramid",
+        "x": 80,
+        "y": 180,
+        "w": 500,
+        "h": 480,
+        "args": {
+          "layers": [
+            {
+              "label": "TAM",
+              "sublabel": "AI Productivity",
+              "value": "$48B"
+            },
+            {
+              "label": "SAM",
+              "sublabel": "Presentation Tools",
+              "value": "$4.8B"
+            },
+            {
+              "label": "SOM",
+              "sublabel": "Initial Wedge",
+              "value": "18M Users"
+            }
+          ],
+          "title": "Market Opportunity",
+          "inverted": false
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 180,
+        "w": 540,
+        "h": 140,
+        "args": {
+          "value": "$48B",
+          "label": "TAM by 2028",
+          "sublabel": "AI-augmented productivity market",
+          "icon": "chart-line-up",
+          "trend": "up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 340,
+        "w": 260,
+        "h": 140,
+        "args": {
+          "value": "$4.8B",
+          "label": "Presentation Market",
+          "sublabel": "Annual",
+          "icon": "presentation-chart",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 940,
+        "y": 340,
+        "w": 260,
+        "h": 140,
+        "args": {
+          "value": "$2.1B",
+          "label": "Infographic Market",
+          "sublabel": "Annual",
+          "icon": "chart-pie",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 500,
+        "w": 540,
+        "h": 160,
+        "args": {
+          "value": "18M",
+          "label": "Target Users",
+          "sublabel": "Knowledge workers making decks weekly",
+          "icon": "users",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "org-vs-org-matrix",
+      "pyramid",
+      "kpi-card",
+      "sphere-fill",
+      "bar"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4007,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 751,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0271809,
+    "elapsedSec": 11.2,
+    "generatedAt": "2026-07-05T05:04:00.754Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

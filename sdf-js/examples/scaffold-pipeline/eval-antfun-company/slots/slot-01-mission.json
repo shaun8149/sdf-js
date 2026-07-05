@@ -1,0 +1,96 @@
+{
+  "slotIdx": 1,
+  "slotName": "mission",
+  "slotTitle": "Mission",
+  "slotPurpose": "Why we exist",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "company-overview/mission",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Mission",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "pillars": [
+            {
+              "icon": "lightning",
+              "heading": "Trading as Messaging",
+              "body": "Make on-chain trading as natural as messaging. Replace centralized exchanges with self-custodial UX.",
+              "accent": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "icon": "users",
+              "heading": "100M Users",
+              "body": "Lower the barrier to DeFi for the next 100 million users through mobile-first design and AI assistance.",
+              "accent": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "icon": "shield",
+              "heading": "Privacy by Default",
+              "body": "Zero-knowledge architecture with cross-chain liquidity aggregation. Self-custody without compromise.",
+              "accent": [
+                165,
+                130,
+                90
+              ]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "testimonial-wall",
+      "quote-pull",
+      "icon-row",
+      "icon-grid",
+      "bullet-list",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4118,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 389,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0220839,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-05T04:57:49.921Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

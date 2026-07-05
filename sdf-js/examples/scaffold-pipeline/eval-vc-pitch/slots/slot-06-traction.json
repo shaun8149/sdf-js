@@ -1,0 +1,123 @@
+{
+  "slotIdx": 6,
+  "slotName": "traction",
+  "slotTitle": "Traction",
+  "slotPurpose": "Revenue / users / growth charts",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Traction",
+  "sceneData": {
+    "name": "pitch-deck-vc/traction",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Traction"
+        }
+      },
+      {
+        "type": "line",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 380,
+        "args": {
+          "values": [
+            0,
+            0.12,
+            0.74,
+            2.4
+          ],
+          "labels": [
+            "Q1 2026",
+            "Q2 2026",
+            "Q3 2026",
+            "Q4 2026F"
+          ],
+          "format": "currency",
+          "title": "ARR Growth ($M)",
+          "showPoints": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 600,
+        "w": 350,
+        "h": 80,
+        "args": {
+          "value": "47",
+          "label": "Design Teams",
+          "sublabel": "Q3 2026",
+          "style": "light",
+          "icon": "users"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 465,
+        "y": 600,
+        "w": 350,
+        "h": 80,
+        "args": {
+          "value": "3",
+          "label": "Design Agencies",
+          "sublabel": "Q3 2026",
+          "style": "light",
+          "icon": "briefcase"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 850,
+        "y": 600,
+        "w": 350,
+        "h": 80,
+        "args": {
+          "value": "110%",
+          "label": "Net Retention",
+          "sublabel": "Q4 2026 forecast",
+          "style": "light",
+          "trend": "up",
+          "icon": "chart-line-up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "funnel-with-conversion",
+      "stat-banner",
+      "line",
+      "bar",
+      "kpi-card",
+      "dashboard-multi-kpi-composite"
+    ],
+    "forbiddenAtoms": [
+      "mindmap",
+      "venn"
+    ],
+    "tokenUsage": {
+      "input_tokens": 4054,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 580,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0247569,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T05:04:23.296Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

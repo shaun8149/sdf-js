@@ -1,0 +1,133 @@
+{
+  "slotIdx": 7,
+  "slotName": "business-model",
+  "slotTitle": "Business Model",
+  "slotPurpose": "How we make money — unit economics",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Business Model",
+  "sceneData": {
+    "name": "pitch-deck-vc/business-model",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Business Model",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "comparison-table",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 340,
+        "args": {
+          "title": "Pricing Tiers",
+          "columns": [
+            {
+              "label": "Pro",
+              "accent": true
+            },
+            {
+              "label": "Team",
+              "accent": true
+            },
+            {
+              "label": "Studio",
+              "accent": true
+            }
+          ],
+          "features": [
+            {
+              "label": "Price",
+              "values": [
+                "$30/user/mo",
+                "$200/seat/mo",
+                "$50K/year"
+              ]
+            },
+            {
+              "label": "Target",
+              "values": [
+                "Knowledge workers",
+                "Design teams (10+)",
+                "Agencies + Enterprise"
+              ]
+            },
+            {
+              "label": "Features",
+              "values": [
+                "Core platform",
+                "Team collaboration",
+                "Custom themes"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "break-even",
+        "x": 60,
+        "y": 530,
+        "w": 560,
+        "h": 150,
+        "args": {
+          "fixedCost": 1200000,
+          "variableCostPerUnit": 8,
+          "pricePerUnit": 30,
+          "maxUnits": 150000,
+          "title": "Break-Even Analysis",
+          "currency": "$"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 530,
+        "w": 560,
+        "h": 150,
+        "args": {
+          "value": "$3M ARR",
+          "label": "Break-Even Target",
+          "sublabel": "Projected Q3 2027",
+          "icon": "target",
+          "trend": "up",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "comparison-table",
+      "break-even",
+      "waterfall",
+      "kpi-card",
+      "pie"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4000,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 594,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024804899999999998,
+    "elapsedSec": 10.1,
+    "generatedAt": "2026-07-05T05:04:33.440Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "slotIdx": 3,
+  "slotName": "concept",
+  "slotTitle": "Core Concept",
+  "slotPurpose": "The main idea visualized",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Weekly Topics",
+  "sceneData": {
+    "name": "training/concept",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Core Concept",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "layer-stack",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 500,
+        "args": {
+          "title": "Distributed Systems Learning Path",
+          "layers": [
+            {
+              "label": "Foundations",
+              "sublabel": "Networking + RPC",
+              "color": [
+                60,
+                145,
+                145
+              ]
+            },
+            {
+              "label": "Data",
+              "sublabel": "Replication + Consistency",
+              "color": [
+                110,
+                175,
+                165
+              ]
+            },
+            {
+              "label": "Agreement",
+              "sublabel": "Consensus (Paxos/Raft)",
+              "color": [
+                60,
+                145,
+                145
+              ]
+            },
+            {
+              "label": "Scale",
+              "sublabel": "Partitioning + Sharding",
+              "color": [
+                110,
+                175,
+                165
+              ]
+            },
+            {
+              "label": "Resilience",
+              "sublabel": "Fault Tolerance",
+              "color": [
+                220,
+                200,
+                145
+              ]
+            },
+            {
+              "label": "Transactions",
+              "sublabel": "Distributed ACID",
+              "color": [
+                165,
+                145,
+                115
+              ]
+            },
+            {
+              "label": "Real-World",
+              "sublabel": "Spanner + DynamoDB + Kafka",
+              "color": [
+                60,
+                145,
+                145
+              ]
+            },
+            {
+              "label": "Synthesis",
+              "sublabel": "Final Projects",
+              "color": [
+                110,
+                175,
+                165
+              ]
+            }
+          ],
+          "direction": "bottom-up",
+          "taper": 0.85
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "training",
+    "theme": "organic-teal",
+    "recommendedAtoms": [
+      "decision-tree-3-arm",
+      "change-curve-chart",
+      "flow-chart",
+      "mindmap",
+      "venn",
+      "layer-stack"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4067,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 556,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0244359,
+    "elapsedSec": 9.2,
+    "generatedAt": "2026-07-05T05:06:16.139Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

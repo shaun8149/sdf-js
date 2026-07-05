@@ -1,0 +1,109 @@
+{
+  "slotIdx": 1,
+  "slotName": "problem",
+  "slotTitle": "Problem",
+  "slotPurpose": "Pain point — who hurts and how much",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "The Problem",
+  "sceneData": {
+    "name": "pitch-deck-vc/problem",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Problem"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 200,
+        "args": {
+          "quote": "Presentation visuals are stuck in 2008",
+          "align": "center"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 100,
+        "y": 400,
+        "w": 1080,
+        "h": 260,
+        "args": {
+          "items": [
+            {
+              "icon": "palette",
+              "label": "PowerPoint Icons",
+              "sublabel": "Static clipart"
+            },
+            {
+              "icon": "gif",
+              "label": "Lottie GIFs",
+              "sublabel": "2D animations"
+            },
+            {
+              "icon": "brain",
+              "label": "AI-PPT Tools",
+              "sublabel": "Fixed text only"
+            }
+          ],
+          "iconSize": "large",
+          "colorMode": "theme"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 160,
+        "w": 320,
+        "h": 200,
+        "args": {
+          "value": "60%",
+          "label": "Designer Time",
+          "sublabel": "Wasted on layout busywork",
+          "icon": "clock",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "quote-pull",
+      "bullet-list",
+      "icon-row",
+      "icon-grid",
+      "kpi-card",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [
+      "org-chart",
+      "gantt"
+    ],
+    "tokenUsage": {
+      "input_tokens": 4035,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 496,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0234399,
+    "elapsedSec": 8.8,
+    "generatedAt": "2026-07-05T05:03:49.512Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

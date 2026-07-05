@@ -1,0 +1,49 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-yosemite-trip-2026",
+  "deckName": "eval-yosemite-trip-2026",
+  "structure": {
+    "slots_total": 8,
+    "slots_baked": 4,
+    "slots_empty": 4,
+    "slots_errored": 0,
+    "fill_rate": 0.5,
+    "pick_method": "llm",
+    "scaffold_id": "analysis-report",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 8,
+    "atom_types_distinct": 6,
+    "variety_ratio": 0.75,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 0.9166666666666666,
+    "untwinned_types": [
+      "image"
+    ],
+    "lift_success": 4,
+    "lift_attempted": 4,
+    "lift_errors": [],
+    "lifted_subject_rate": 0.9166666666666666
+  },
+  "textBudget": {
+    "chars_per_slot": 127,
+    "max_slot_chars": 147
+  },
+  "score": {
+    "total": 85.8,
+    "breakdown": {
+      "structure": 12.5,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 18.3,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-05T05:08:33.631Z"
+}

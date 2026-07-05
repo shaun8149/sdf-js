@@ -1,0 +1,73 @@
+{
+  "slotIdx": 3,
+  "slotName": "solution",
+  "slotTitle": "Our Solution",
+  "slotPurpose": "Product overview + value prop",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Our Solution",
+  "sceneData": {
+    "name": "pitch-deck-vc/solution",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Our Solution"
+        }
+      },
+      {
+        "type": "flow-chart",
+        "x": 100,
+        "y": 180,
+        "w": 1080,
+        "h": 480,
+        "args": {
+          "steps": [
+            "LLM writes structured intent",
+            "Atlas runtime renders deterministically",
+            "Multiple renderers: silhouette / 3D / lines / crayon",
+            "Edit intent → regenerate visual"
+          ],
+          "sublabels": [
+            "Semantic data structure",
+            "Predictable output",
+            "Same content, infinite styles",
+            "Full editorial control"
+          ],
+          "orientation": "vertical",
+          "title": "The Atlas Pipeline"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "bullet-list",
+      "flow-chart",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3967,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 285,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020070900000000003,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-05T05:04:07.499Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

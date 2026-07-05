@@ -1,0 +1,215 @@
+{
+  "deckName": "eval-yosemite-trip-2026",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/yosemite-trip-2026.json",
+  "scaffold": {
+    "id": "analysis-report",
+    "label": "Analysis Report",
+    "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
+    "pickScore": 3,
+    "pickSignals": [
+      "The deck is a personal trip report with a retrospective structure: goals, specific locations/activities, stats summary, and next steps",
+      "Does not match any scaffold well — this is recreational content, not business/academic/fundraising",
+      "Analysis-report is the closest fit due to its 'scope → findings → interpretation → next steps' arc, which loosely maps to 'goal → activities → stats → what's next', but confidence is low because the semantic intent (trip documentation) differs fundamentally from strategic analysis"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [
+      248,
+      246,
+      240
+    ],
+    "accent": [
+      38,
+      70,
+      130
+    ],
+    "colors": [
+      [
+        38,
+        70,
+        130
+      ],
+      [
+        110,
+        95,
+        75
+      ],
+      [
+        165,
+        130,
+        90
+      ],
+      [
+        200,
+        195,
+        180
+      ]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Report title + scope + date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Yosemite Trip Report",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "image",
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "scope",
+      "slotTitle": "Scope & Methodology",
+      "slotPurpose": "What was analyzed and how data was collected",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Our Goal",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-scope.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "icon-row"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "definition",
+      "slotTitle": "Context & Definition",
+      "slotPurpose": "Define the subject — what are we analyzing and why",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "data-findings",
+      "slotTitle": "Data & Findings",
+      "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Trip Stats",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-data-findings.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "stat-banner",
+        "callout-banner"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "framework-analysis",
+      "slotTitle": "Framework Analysis",
+      "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "interpretation",
+      "slotTitle": "Interpretation",
+      "slotPurpose": "What the data means — synthesis and insight",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "recommendations",
+      "slotTitle": "Recommendations",
+      "slotPurpose": "Actionable next steps based on findings",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "What's Next",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-recommendations.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "slotPurpose": "Supporting data, raw tables, methodology details",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    }
+  ],
+  "totals": {
+    "slotsBaked": 4,
+    "slotsEmpty": 4,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.0883386
+  },
+  "meta": {
+    "generatedAt": "2026-07-05T05:05:34.741Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}
