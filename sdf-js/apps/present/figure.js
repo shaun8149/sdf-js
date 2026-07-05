@@ -14,6 +14,13 @@ function size() {
 }
 size();
 
+// ?env=alpine swaps the studio room for an open world (snow mountains + the
+// arch-bridge backdrop). Outdoor envs bring their own terrain — the studio's
+// flat ground plane + checker must be off or they slice through the landscape.
+const params = new URLSearchParams(location.search);
+const env = params.get('env') || 'studio';
+const outdoor = env !== 'studio';
+
 const studio = createStudioRenderer({
   canvas,
   getControls: () => ({
@@ -22,8 +29,8 @@ const studio = createStudioRenderer({
     lightDist: 30,
     fov: 1.5,
     shadowsOn: true,
-    groundOn: true,
-    checkerOn: true,
+    groundOn: !outdoor,
+    checkerOn: !outdoor,
   }),
   onFps: () => {},
 });
@@ -37,9 +44,9 @@ window.addEventListener('resize', () => {
 window.__figStudio = studio;
 window.__figReplay = () => studio.setSequence(scene.cameraSequence);
 
-const name = new URLSearchParams(location.search).get('ir') || 'funnel-sales';
+const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${name}.json`)).json();
-const scene = renderSequence(ir);
+const scene = renderSequence(ir, { env });
 // applyStudioScene wires setSequence + setAnimated (subject.animation counts as
 // time content since the sceneHasTimeContent fix) — no manual overrides needed.
 applyStudioScene(studio, scene);
