@@ -698,6 +698,7 @@ const PRIMITIVE_FACTORIES = {
       stageHeight: a.stageHeight ?? 0.4,
       gap: a.gap ?? 0.06,
       colors: a.colors ?? null,
+      radii: a.radii ?? null,
     }),
   'venn-3d': (a) =>
     venn3dSDF({

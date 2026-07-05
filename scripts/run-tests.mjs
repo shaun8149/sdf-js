@@ -136,6 +136,7 @@ const TESTS = [
   { category: 'diagram', file: 'sdf-js/scripts/test-scatter-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-gantt-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-gauge-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-funnel-3d-radii.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-chart-labels.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-lift-2d-to-3d.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-lift-scaffold.mjs' },
