@@ -22,10 +22,10 @@
       },
       {
         "type": "timeline",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
         "args": {
           "events": [
             {
@@ -56,16 +56,16 @@
             {
               "date": "Week 11-12",
               "label": "Transactions",
-              "sublabel": "Distributed ACID"
+              "sublabel": "Distributed"
             },
             {
               "date": "Week 13-14",
               "label": "Case Studies",
-              "sublabel": "Spanner, Dynamo, Kafka"
+              "sublabel": "Spanner, DynamoDB, Kafka"
             },
             {
               "date": "Week 15",
-              "label": "Final Project",
+              "label": "Final Projects",
               "sublabel": "Presentations"
             }
           ],
@@ -91,13 +91,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 511,
+      "output_tokens": 509,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0236544,
-    "elapsedSec": 8.1,
-    "generatedAt": "2026-07-05T05:34:06.208Z",
+    "costUSD": 0.0236244,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-05T05:46:51.430Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

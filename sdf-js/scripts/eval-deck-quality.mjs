@@ -113,8 +113,14 @@ export async function scoreDeckQuality(deckDir) {
   }
   const manifest = JSON.parse(readFileSync(deckJsonPath, 'utf8'));
 
-  const slotsTotal = manifest.slots.length;
-  const slotsEmpty = manifest.slots.filter((s) => s.mappingEmpty).length;
+  // Sprint 24 iter2 (contract A): empty slots are OMITTED from slots[] and
+  // recorded in droppedSlots[] instead — the played deck has no holes. The
+  // fill_rate metric keeps its original meaning (delivered / planned) so
+  // scores stay comparable across iterations: planned = slots + dropped.
+  const droppedSlots = Array.isArray(manifest.droppedSlots) ? manifest.droppedSlots : [];
+  const legacyEmpty = manifest.slots.filter((s) => s.mappingEmpty).length; // pre-iter2 decks
+  const slotsTotal = manifest.slots.length + droppedSlots.length;
+  const slotsEmpty = droppedSlots.length + legacyEmpty;
   const slotsErrored = manifest.slots.filter((s) => s.error).length;
   const bakedSlotEntries = manifest.slots.filter((s) => s.liftFile && !s.error && !s.mappingEmpty);
   const slotsBaked = bakedSlotEntries.length;

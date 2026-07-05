@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T05:36:18.176Z",
+  "generatedAt": "2026-07-05T05:47:05.055Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
@@ -288,8 +288,8 @@
       "liftSuccess": 4,
       "liftAttempted": 4,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 254.5,
-      "maxSlotChars": 326
+      "charsPerSlot": 254.25,
+      "maxSlotChars": 324
     }
   ]
 }

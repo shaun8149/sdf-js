@@ -16,15 +16,16 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Learning Objectives"
+          "title": "Learning Objectives",
+          "style": "gradient"
         }
       },
       {
         "type": "radial-wheel-segmented",
-        "x": 80,
+        "x": 140,
         "y": 160,
-        "w": 1120,
-        "h": 520,
+        "w": 1000,
+        "h": 500,
         "args": {
           "hub": "Distributed Systems Mastery",
           "segments": [
@@ -34,19 +35,19 @@
             },
             {
               "label": "Raft Consensus",
-              "sublabel": "Implement module from scratch"
+              "sublabel": "Implement from scratch"
             },
             {
-              "label": "Failure Diagnosis",
-              "sublabel": "Split-brain & network partitions"
+              "label": "Failure Modes",
+              "sublabel": "Diagnose split-brain & partitions"
             },
             {
               "label": "Sharded KV Store",
-              "sublabel": "Design under failure scenarios"
+              "sublabel": "Design under failure"
             },
             {
-              "label": "Paper Analysis",
-              "sublabel": "Read & critique 3 seminal papers"
+              "label": "Research Papers",
+              "sublabel": "Read & critique 3 seminal works"
             }
           ],
           "segmentColors": [
@@ -97,13 +98,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 414,
+      "output_tokens": 422,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0220764,
-    "elapsedSec": 7.6,
-    "generatedAt": "2026-07-05T05:33:50.399Z",
+    "costUSD": 0.022196399999999998,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-05T05:46:36.432Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

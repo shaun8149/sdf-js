@@ -171,6 +171,23 @@ ok(
   'collectTextChars skips enum keys, counts prose keys',
 );
 
+// ── Sprint 24 iter2 (contract A): droppedSlots[] count toward planned total ──
+// A deck that delivered 2 slots and dropped 2 has fill_rate 0.5 — same metric
+// meaning as the pre-iter2 mappingEmpty representation.
+deckManifest.droppedSlots = [
+  { slotIdx: 2, slotName: 'exercise', reason: 'no-source-content' },
+  { slotIdx: 3, slotName: 'summary', reason: 'no-source-content' },
+];
+writeFileSync(join(dir, 'deck.json'), JSON.stringify(deckManifest, null, 2));
+const result2 = await scoreDeckQuality(dir);
+ok(result2.structure.slots_total === 4, 'iter2: slots_total counts dropped (2+2=4)');
+ok(result2.structure.slots_baked === 2, 'iter2: slots_baked === 2');
+ok(
+  approxEqual(result2.structure.fill_rate, 0.5),
+  'iter2: fill_rate === 0.5 (2 delivered / 4 planned)',
+);
+ok(result2.structure.slots_empty === 2, 'iter2: slots_empty === droppedSlots.length');
+
 rmSync(dir, { recursive: true, force: true });
 
 console.log(`\n${pass} passed, ${fail} failed`);

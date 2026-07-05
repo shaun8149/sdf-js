@@ -29,8 +29,8 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 254.5,
-    "max_slot_chars": 326
+    "chars_per_slot": 254.25,
+    "max_slot_chars": 324
   },
   "score": {
     "total": 80,
@@ -43,5 +43,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:36:18.174Z"
+  "generatedAt": "2026-07-05T05:47:05.053Z"
 }

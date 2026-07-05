@@ -17,7 +17,7 @@
         "h": 120,
         "args": {
           "title": "Why This Matters",
-          "style": "gradient"
+          "style": "section"
         }
       },
       {
@@ -30,23 +30,23 @@
           "items": [
             {
               "icon": "network",
-              "label": "Build systems across many machines",
-              "sublabel": "Theory and practice of distributed computing"
+              "label": "Master distributed systems theory and practice",
+              "sublabel": "Build systems that scale across many machines"
             },
             {
-              "icon": "gear-six",
-              "label": "Master core distributed topics",
-              "sublabel": "Consensus, replication, partitioning, fault tolerance"
+              "icon": "shield-check",
+              "label": "Learn consensus and fault tolerance",
+              "sublabel": "Replication, partitioning, consistency models"
             },
             {
               "icon": "code",
-              "label": "Hands-on weekly labs",
-              "sublabel": "Apply concepts in Go or Rust"
+              "label": "Hands-on experience with Go or Rust",
+              "sublabel": "Weekly labs plus one group project"
             },
             {
-              "icon": "users-three",
-              "label": "Collaborative group project",
-              "sublabel": "Design and implement a real distributed system"
+              "icon": "graduation-cap",
+              "label": "Build on OS foundations",
+              "sublabel": "Prerequisite: CS 240 (Operating Systems)"
             }
           ],
           "title": null
@@ -71,13 +71,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 357,
+      "output_tokens": 365,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021194400000000002,
-    "elapsedSec": 7.7,
-    "generatedAt": "2026-07-05T05:33:58.105Z",
+    "costUSD": 0.0213144,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-05T05:46:43.437Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
