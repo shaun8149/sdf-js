@@ -61,9 +61,22 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     plotTop = y + h * 0.16;
   }
 
+  // Reserve room BELOW the dial for the big value readout (+ optional label)
+  // before sizing the arc — previously arcRadius greedily ate the full
+  // remaining height, pushing the value text (and the pivot itself) off the
+  // bottom of the canvas entirely ("no value shown", "pivot displaced").
+  const valueFs = Math.round(h * 0.2);
+  const labelFs = Math.round(h * 0.055);
+  const valueGap = h * 0.05;
+  const labelGap = h * 0.02;
+  const bottomBlockH =
+    valueGap + valueFs * 1.15 + (label ? labelGap + labelFs * 1.2 : 0) + PAD * 0.5;
+
   const cx = x + w / 2;
-  const arcRadius = Math.min((w - PAD * 2) / 2, h - plotTop - PAD * 2);
-  const cy = plotTop + arcRadius + PAD * 0.4;
+  const maxRadiusW = (w - PAD * 2) / 2;
+  const maxRadiusH = y + h - PAD - bottomBlockH - plotTop;
+  const arcRadius = Math.max(20, Math.min(maxRadiusW, maxRadiusH));
+  const cy = plotTop + arcRadius;
   // Arc thickness: 14–16% of radius
   const tube = arcRadius * 0.15;
 
@@ -131,21 +144,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(String(args.max), cx + arcRadius, cy + tube * 0.8);
   }
 
-  // Big value text: Inter 900, large, centered in gauge bowl
+  // Big value text: Inter 900, large, centered below the pivot in the
+  // reserved bottomBlockH budget (see above — always on-canvas).
   const valueText = format === 'percent' ? `${Math.round(value * 100)}%` : String(value.toFixed(2));
+  const valueY = cy + valueGap;
   ctx.fillStyle = rgbCss(fg);
-  ctx.font = `900 ${Math.round(h * 0.2)}px "Inter Display", Inter, system-ui, sans-serif`;
+  ctx.font = `900 ${valueFs}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText(valueText, cx, cy + tube * 1.4);
+  ctx.fillText(valueText, cx, valueY);
 
   // Sublabel: Inter 500, small, below value
   if (label) {
     ctx.fillStyle = rgbaCss(fg, 0.6);
-    ctx.font = `500 ${Math.round(h * 0.055)}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${labelFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(String(label), cx, cy + tube * 1.4 + h * 0.22);
+    ctx.fillText(String(label), cx, valueY + valueFs * 1.15 + labelGap);
   }
 }
 
