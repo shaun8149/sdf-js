@@ -5,10 +5,12 @@
 // downstream (studio, camera sequencing, overlay) is shared.
 import { renderSequence } from './render-sequence.js';
 import { renderHierarchy } from './render-hierarchy.js';
+import { renderNetwork } from './render-network.js';
 
 const RENDERERS = {
   sequence: renderSequence,
   hierarchy: renderHierarchy,
+  network: renderNetwork,
 };
 
 export function renderIR(ir, opts = {}) {

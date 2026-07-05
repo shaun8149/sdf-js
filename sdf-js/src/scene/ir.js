@@ -6,7 +6,9 @@
 //   sequence  — ordered stages (funnel): nodes + magnitude drive stage widths.
 //   hierarchy — parent→child tree (org chart / taxonomy): relations carry the
 //               edges as [parentIndex, childIndex] pairs; exactly one root.
-export const STRUCTURES = ['sequence', 'hierarchy'];
+//   network   — arbitrary graph (ecosystem / dependencies): relations are
+//               undirected edges; hubs emerge from degree, no root required.
+export const STRUCTURES = ['sequence', 'hierarchy', 'network'];
 
 export function validateIR(ir) {
   const errors = [];
@@ -52,6 +54,12 @@ export function validateIR(ir) {
       if (roots.length !== 1)
         errors.push(`hierarchy requires exactly one root (found ${roots.length})`);
     }
+  }
+  if (ir.structure === 'network') {
+    const rels = Array.isArray(ir.relations) ? ir.relations : [];
+    if (rels.length === 0) errors.push('network requires relations (edges)');
+    else if (rels.some((r) => Array.isArray(r) && r[0] === r[1]))
+      errors.push('network edges must not be self-loops');
   }
   return { ok: errors.length === 0, errors };
 }
