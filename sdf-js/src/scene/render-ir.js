@@ -6,11 +6,13 @@
 import { renderSequence } from './render-sequence.js';
 import { renderHierarchy } from './render-hierarchy.js';
 import { renderNetwork } from './render-network.js';
+import { renderMagnitude } from './render-magnitude.js';
 
 const RENDERERS = {
   sequence: renderSequence,
   hierarchy: renderHierarchy,
   network: renderNetwork,
+  magnitude: renderMagnitude,
 };
 
 export function renderIR(ir, opts = {}) {

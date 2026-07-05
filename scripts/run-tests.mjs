@@ -147,6 +147,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-render-sequence.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-render-hierarchy.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-render-network.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-magnitude.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-scaffold-to-ir.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-atom-3d-coverage.mjs' },
 

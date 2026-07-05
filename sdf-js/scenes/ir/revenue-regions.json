@@ -1,0 +1,7 @@
+{
+  "structure": "magnitude",
+  "nodes": ["EMEA", "APAC", "Americas", "LATAM", "ANZ"],
+  "magnitude": [340, 620, 890, 150, 95],
+  "emphasis": [2],
+  "title": "Revenue by Region"
+}

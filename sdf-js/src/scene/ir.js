@@ -8,7 +8,9 @@
 //               edges as [parentIndex, childIndex] pairs; exactly one root.
 //   network   — arbitrary graph (ecosystem / dependencies): relations are
 //               undirected edges; hubs emerge from degree, no root required.
-export const STRUCTURES = ['sequence', 'hierarchy', 'network'];
+//   magnitude — quantities compared as volumetric masses (monolith row):
+//               magnitude is REQUIRED; nodes are the category names.
+export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude'];
 
 export function validateIR(ir) {
   const errors = [];
@@ -54,6 +56,10 @@ export function validateIR(ir) {
       if (roots.length !== 1)
         errors.push(`hierarchy requires exactly one root (found ${roots.length})`);
     }
+  }
+  if (ir.structure === 'magnitude') {
+    if (!Array.isArray(ir.magnitude) || ir.magnitude.length === 0)
+      errors.push('magnitude structure requires a magnitude array');
   }
   if (ir.structure === 'network') {
     const rels = Array.isArray(ir.relations) ? ir.relations : [];
