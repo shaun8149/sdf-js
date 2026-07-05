@@ -114,6 +114,30 @@ export function assembleDeck(deck, opts = {}) {
     clock += stationDur;
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
     prevPayoff = { pos: addV(last.pos, origin), target: addV(last.target, origin) };
+
+    // Breadcrumb path to the next station: a chain of low flat markers across
+    // the gap, so the transit flies over a PATH instead of empty floor (the
+    // world reads as connected, and the eye is led to the next arena).
+    if (k < deck.slides.length - 1) {
+      const dots = 5;
+      for (let d = 1; d <= dots; d++) {
+        const x = origin[0] + (stride * d) / (dots + 1);
+        subjects.push({
+          id: `path-${k}-${d}`,
+          type: 'box',
+          args: { dims: [0.9, 0.06, 0.28] },
+          transform: { translate: [x, 0.03, 0] },
+          material: {
+            hue: 0.58,
+            sat: 0.25,
+            value: 0.75,
+            kind: 'normal',
+            roughness: 0.5,
+            clearcoat: 0.2,
+          },
+        });
+      }
+    }
   });
 
   return {

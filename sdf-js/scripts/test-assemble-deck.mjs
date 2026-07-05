@@ -38,11 +38,14 @@ const deck = JSON.parse(
   const scene = assembleDeck(deck);
   const stations = deck.slides.map((ir) => renderIR(ir));
 
-  // subjects: sum of stations, prefixed, spatially separated by stride
+  // subjects: sum of stations (prefixed) + breadcrumb path markers between them
   const expected = stations.reduce((s, st) => s + st.subjects.length, 0);
-  ok(scene.subjects.length === expected, `all station subjects present (${expected})`);
+  const stationSubjects = scene.subjects.filter((s) => /^s\d+-/.test(s.id));
+  const pathMarkers = scene.subjects.filter((s) => /^path-/.test(s.id));
+  ok(stationSubjects.length === expected, `all station subjects present (${expected})`);
+  ok(pathMarkers.length === (deck.slides.length - 1) * 5, 'breadcrumb path markers span each gap');
   ok(
-    scene.subjects.every((s) => /^s\d+-/.test(s.id)),
+    scene.subjects.every((s) => /^s\d+-/.test(s.id) || /^path-/.test(s.id)),
     'ids prefixed per station (no collisions)',
   );
   const xOf = (pfx) => {

@@ -161,7 +161,7 @@ export function renderHierarchy(ir, opts = {}) {
       pos: [2.1, Math.max(topY - 2.2, 0.5), 4.8],
       target: [0, topY, 0],
       fov: 52,
-      aperture: 0,
+      aperture: 0.55, // hero: shallow focus on the subject
       focalDistance: 5,
       ease: 'out',
     },
@@ -172,7 +172,7 @@ export function renderHierarchy(ir, opts = {}) {
       target: [0, topY - 0.4, 0],
       fov: 48,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.3,
       focalDistance: 4.4,
       ease: 'inout',
     },
@@ -188,7 +188,7 @@ export function renderHierarchy(ir, opts = {}) {
       target: [0, y, 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0,
+      aperture: 0.25,
       focalDistance: dist,
       shake: 0.05,
       ease: 'smooth',
@@ -201,7 +201,7 @@ export function renderHierarchy(ir, opts = {}) {
     target: [gp[0], gp[1] + 0.08, gp[2]],
     fov: 40,
     transition: 'cut',
-    aperture: 0,
+    aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.7,
     shake: [0.5, 0.06], // impact-then-settle
     exposure: [1.45, 1.0],
@@ -215,7 +215,7 @@ export function renderHierarchy(ir, opts = {}) {
     target: [0, midY, 0],
     fov: 44,
     transition: 'blend',
-    aperture: 0,
+    aperture: 0.12, // deep focus: the whole story stays sharp
     focalDistance: payoffDist,
     ease: 'out',
   });
