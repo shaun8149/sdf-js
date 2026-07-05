@@ -16,6 +16,11 @@ sdf-js/examples/scaffold-pipeline/vcpitch-*/
 sdf-js/examples/scaffold-pipeline/qbr-*/
 sdf-js/examples/scaffold-pipeline/pdsphere-*/
 
+# Sprint 24 P2 — eval harness corpus decks (LLM bake outputs, committed for
+# score reproducibility) + eval.json / summary.json (generated metrics)
+sdf-js/examples/scaffold-pipeline/eval-*/
+sdf-js/scripts/eval-results/
+
 # Scene JSON fixtures (PR #148/#150 and onwards) — CI prettier flags them
 # but local says clean (CI/local version mismatch). They're scene data, not source.
 sdf-js/scenes/p*.json
