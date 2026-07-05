@@ -48,22 +48,51 @@ function lighten([r, g, b], amount = 0.85) {
   ];
 }
 
-function wrapText(ctx, text, maxW, maxLines = 3) {
-  const words = String(text).split(' ');
-  const lines = [];
+// Word-wrap `text` to `maxW`, capped at `maxLines`. Tokenizes on whitespace
+// AND after hyphens (so "zero-knowledge" can break to "zero-" / "knowledge"
+// like a real typesetter, instead of only ever breaking on spaces). If the
+// full text needs more lines than that, the LAST visible line gets an
+// ellipsis appended — dropping whole trailing tokens first so we never cut a
+// word in half; only falls back to a char-level trim if a single token alone
+// is wider than maxW.
+function wrapText(ctx, text, maxW, maxLines = 4) {
+  const tokens = String(text).match(/\S+?-|\S+/g) || [];
+  const allLines = [];
   let line = '';
-  for (const word of words) {
-    const test = line ? line + ' ' + word : word;
-    if (ctx.measureText(test).width > maxW && line) {
-      lines.push(line);
-      line = word;
-      if (lines.length >= maxLines) break;
+  for (const tok of tokens) {
+    const needsSpace = line !== '' && !line.endsWith('-');
+    const test = needsSpace ? line + ' ' + tok : line + tok;
+    if (line && ctx.measureText(test).width > maxW) {
+      allLines.push(line);
+      line = tok;
     } else {
       line = test;
     }
   }
-  if (line && lines.length < maxLines) lines.push(line);
-  return lines;
+  if (line) allLines.push(line);
+
+  if (allLines.length <= maxLines) return allLines;
+
+  const truncated = allLines.slice(0, maxLines);
+  let last = truncated[maxLines - 1];
+  while (last.length > 0 && ctx.measureText(last + '…').width > maxW) {
+    const idx = last.lastIndexOf(' ');
+    last = idx > 0 ? last.slice(0, idx) : last.slice(0, -1);
+  }
+  truncated[maxLines - 1] = last + '…';
+  return truncated;
+}
+
+// Auto-shrink font size until `text` fits `maxW` (no truncation). Mirrors the
+// fitFontSize pattern in charts/lists/numbered-grid.js.
+function fitFontSize(ctx, text, maxW, targetFs, minFs, fontSpec) {
+  let fs = targetFs;
+  while (fs > minFs) {
+    ctx.font = fontSpec(fs);
+    if (ctx.measureText(text).width <= maxW) return fs;
+    fs--;
+  }
+  return minFs;
 }
 
 function drawIconCentered(ctx, iconName, cx, cy, size, color) {
@@ -168,26 +197,37 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
 
     let curY = iconCY + iconR + 8;
+    const textMaxW = cardW - cardPad * 2;
 
-    // Title
-    const titleFs = Math.round(rowH * 0.13);
-    ctx.font = `700 ${titleFs}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle = rgbCss(fg);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
+    // Title — auto-shrink so long titles ("Performance", "Global Reach")
+    // never overflow the card into its neighbor.
     if (f.title) {
+      const titleTarget = Math.round(rowH * 0.13);
+      const titleFs = fitFontSize(
+        ctx,
+        f.title,
+        textMaxW,
+        titleTarget,
+        12,
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `700 ${titleFs}px Inter, system-ui, sans-serif`;
+      ctx.fillStyle = rgbCss(fg);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
       ctx.fillText(f.title, iconCX, curY);
       curY += titleFs + 6;
     }
 
-    // Body
+    // Body — word-wrap up to 4 lines; ellipsis (never mid-word) on the last
+    // line if the text doesn't fit.
     const bodyFs = Math.round(rowH * 0.09);
     ctx.font = `500 ${bodyFs}px Inter, system-ui`;
     ctx.fillStyle = rgbaCss(fg, 0.55);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     if (f.body) {
-      const lines = wrapText(ctx, f.body, cardW - cardPad * 2, 3);
+      const lines = wrapText(ctx, f.body, textMaxW, 4);
       for (const line of lines) {
         ctx.fillText(line, iconCX, curY);
         curY += bodyFs + 2;
