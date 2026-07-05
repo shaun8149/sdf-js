@@ -40,10 +40,51 @@
         background: rgba(40, 116, 196, 0.92);
         font-weight: 700;
       }
+      /* Boot loader — visible until the first frame is drawn. Pure CSS-transform
+         animation so it keeps moving even if the main thread hiccups. */
+      #loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        background: #0e0f12;
+        transition: opacity 0.4s;
+        z-index: 10;
+      }
+      #loading.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loading .ring {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.14);
+        border-top-color: rgba(255, 255, 255, 0.85);
+        animation: spin 0.9s linear infinite;
+      }
+      #loading .msg {
+        font:
+          500 12px -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
   <body>
     <div id="wrap"><canvas id="c"></canvas></div>
+    <div id="loading"><div class="ring"></div><div class="msg">compiling scene</div></div>
     <script type="module" src="./figure.js"></script>
   </body>
 </html>

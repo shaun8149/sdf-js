@@ -1842,6 +1842,15 @@ export function createStudioRenderer({
   // 200-500ms on complex scenes — the BIG source of perceived page lag).
   const programCache = new Map();
   const PROGRAM_CACHE_MAX = 6;
+  // KHR_parallel_shader_compile: lets the driver compile+link on background
+  // threads. We link WITHOUT querying LINK_STATUS (that query forces a
+  // synchronous compile of the whole ~150KB+ shader — the multi-second
+  // main-thread block behind every cold-load black screen) and instead poll
+  // COMPLETION_STATUS_KHR on rAF, swapping the program in when it's ready.
+  const parallelExt = gl.getExtension('KHR_parallel_shader_compile');
+  // The one in-flight async compile. A newer upload abandons the older pending
+  // program (deleted, never swapped in).
+  let pendingProgram = null;
   // Per-leaf material + pattern LUTs — built at uploadSDF time from
   // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
   //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
@@ -2049,48 +2058,103 @@ export function createStudioRenderer({
   // before the 200-500ms compile blocks the main thread).
   // `result` carries leafMaterials + leafPatterns + glsl for LUT upload.
   function uploadCompiledFrag(fragSource, result) {
-    // Program cache: hit avoids the 200-500ms GLSL compile+link that
-    // dominates "switch from BOB GPU to FLY 3D" perceived latency.
+    // Program cache: hit avoids the GLSL compile+link that dominates scene-swap
+    // perceived latency.
     // 2026-05-24: cache entry now carries the FS too. WebGL deleteProgram does
     // NOT release attached shaders — without explicit detach + deleteShader on
     // eviction, every FS leaks (~1MB of GLSL bytecode each). Over many scene
     // swaps that's real GPU memory pressure.
-    let entry = programCache.get(fragSource);
-    let cacheHit = false;
-    if (entry) {
-      cacheHit = true;
-    } else {
-      let fs;
-      try {
-        fs = compileShader(fragSource, gl.FRAGMENT_SHADER);
-      } catch (e) {
-        console.error('Fragment shader source was:\n', fragSource);
-        throw new Error(`GLSL shader compile failed: ${e.message}`);
-      }
-      const prog = gl.createProgram();
-      gl.attachShader(prog, vs);
-      gl.attachShader(prog, fs);
-      gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
-      }
-      // LRU eviction — drop oldest cached program if at capacity. Crucial:
-      // detach + delete the FS attached to the old program; otherwise the FS
-      // outlives the program and leaks. The VS is shared across all programs
-      // so we do NOT delete it.
-      if (programCache.size >= PROGRAM_CACHE_MAX) {
-        const firstKey = programCache.keys().next().value;
-        const old = programCache.get(firstKey);
-        gl.detachShader(old.prog, vs);
-        gl.detachShader(old.prog, old.fs);
-        gl.deleteShader(old.fs);
-        gl.deleteProgram(old.prog);
-        programCache.delete(firstKey);
-      }
-      entry = { prog, fs };
-      programCache.set(fragSource, entry);
+    const cached = programCache.get(fragSource);
+    if (cached) {
+      pendingProgram = null; // a cache hit supersedes any in-flight compile
+      finishProgramSetup(cached, result);
+      console.log('[studio] program cache hit — skipped GLSL compile');
+      return result.glsl.length;
     }
 
+    // Compile + link WITHOUT querying status — status queries force the driver
+    // to finish compiling synchronously (the cold-load black-screen block).
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, fragSource);
+    gl.compileShader(fs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    const entry = { prog, fs };
+
+    if (parallelExt) {
+      // Async path: poll completion on rAF; swap the program in when ready.
+      // Until then the previous program (or nothing, on first load) keeps
+      // rendering and the main thread stays free (loading UIs can animate).
+      const mine = { entry, fragSource, result };
+      pendingProgram = mine;
+      const poll = () => {
+        if (pendingProgram !== mine) {
+          // superseded by a newer upload — abandon this program entirely
+          gl.detachShader(prog, vs);
+          gl.detachShader(prog, fs);
+          gl.deleteShader(fs);
+          gl.deleteProgram(prog);
+          return;
+        }
+        if (!gl.getProgramParameter(prog, parallelExt.COMPLETION_STATUS_KHR)) {
+          requestAnimationFrame(poll);
+          return;
+        }
+        pendingProgram = null;
+        try {
+          validateAndCache(entry, fragSource); // throws on real compile errors
+        } catch (e) {
+          console.error('[studio] async program compile failed:', e);
+          return;
+        }
+        finishProgramSetup(entry, result);
+        _debugFirstDraw = true; // first frame of THIS program resets the clocks
+        wake();
+      };
+      requestAnimationFrame(poll);
+      return result.glsl.length;
+    }
+
+    // Sync fallback (extension unavailable): old behavior, blocks on link check.
+    validateAndCache(entry, fragSource);
+    finishProgramSetup(entry, result);
+    return result.glsl.length;
+  }
+
+  // Check compile/link results (forces compile completion — cheap once
+  // COMPLETION_STATUS_KHR reported done, blocking on the sync path) and insert
+  // into the LRU cache.
+  function validateAndCache(entry, fragSource) {
+    const { prog, fs } = entry;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      const fsLog = gl.getShaderInfoLog(fs);
+      console.error('Fragment shader source was:\n', fragSource);
+      gl.detachShader(prog, vs);
+      gl.detachShader(prog, fs);
+      gl.deleteShader(fs);
+      gl.deleteProgram(prog);
+      throw new Error(`GLSL compile/link failed: ${fsLog || gl.getProgramInfoLog(prog)}`);
+    }
+    // LRU eviction — drop oldest cached program if at capacity. Crucial:
+    // detach + delete the FS attached to the old program; otherwise the FS
+    // outlives the program and leaks. The VS is shared across all programs
+    // so we do NOT delete it.
+    if (programCache.size >= PROGRAM_CACHE_MAX) {
+      const firstKey = programCache.keys().next().value;
+      const old = programCache.get(firstKey);
+      gl.detachShader(old.prog, vs);
+      gl.detachShader(old.prog, old.fs);
+      gl.deleteShader(old.fs);
+      gl.deleteProgram(old.prog);
+      programCache.delete(firstKey);
+    }
+    programCache.set(fragSource, entry);
+  }
+
+  // Activate a ready program: attribs, uniform locations, per-leaf LUT upload.
+  function finishProgramSetup(entry, result) {
     program = entry.prog;
 
     gl.useProgram(program);
@@ -2201,9 +2265,6 @@ export function createStudioRenderer({
     if (uniformsCache['u_leafPattern[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
     }
-
-    if (cacheHit) console.log('[studio] program cache hit — skipped GLSL compile');
-    return result.glsl.length;
   }
 
   let _debugFirstDraw = true;
@@ -3060,6 +3121,12 @@ export function createStudioRenderer({
     },
     getSequenceDuration() {
       return activeSequence ? seqTotalDuration(activeSequence) : 0;
+    },
+    // Has at least one frame of the current scene actually been drawn? False
+    // while the (async) shader compile is still pending — loading UIs poll this
+    // to know when to dismiss.
+    hasDrawn() {
+      return !!lastCam;
     },
     isSequenceActive() {
       return !!activeSequence && !userTookCam;

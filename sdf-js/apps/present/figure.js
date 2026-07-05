@@ -59,7 +59,13 @@ const els = items.map((o) => {
   document.body.appendChild(d);
   return d;
 });
+// Dismiss the boot loader on the first drawn frame (the async shader compile
+// keeps the main thread free, so the spinner animates while we wait).
+const loading = document.getElementById('loading');
 function tick() {
+  if (loading && !loading.classList.contains('done') && studio.hasDrawn && studio.hasDrawn()) {
+    loading.classList.add('done');
+  }
   const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;
   for (let i = 0; i < items.length; i++) {
     const o = items[i],
