@@ -1388,6 +1388,66 @@ export const SCAFFOLDS = [
   },
 
   // ============================================================================
+  // course-syllabus — Sprint 24 iter3: course INTRO decks (syllabus / first-day
+  // lecture) are a different genre from training LESSONS. The eval corpus's
+  // edu-course-intro kept landing on `training` at high confidence but only
+  // filled 4/8 slots (no concept/example/exercise content in a syllabus).
+  // ============================================================================
+  {
+    id: 'course-syllabus',
+    label: 'Course Syllabus',
+    description:
+      'Course introduction / syllabus deck — overview, objectives, schedule, grading, materials, logistics. First-day-of-class, NOT a lesson.',
+    audience: 'students, teacher, faculty',
+    keywords: ['course', 'syllabus', 'semester', 'grading', 'curriculum', 'class', 'lecture'],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Course Title',
+        purpose: 'Course code + name + term + instructor',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'overview',
+        title: 'Course Overview',
+        purpose: 'What the course is about — topics, scope, prerequisites',
+        recommended_atoms: ['bullet-list', 'icon-grid', 'pillar-3up'],
+      },
+      {
+        name: 'objectives',
+        title: 'Learning Objectives',
+        purpose: 'What students will be able to do by the end',
+        recommended_atoms: ['number-list', 'numbered-grid', 'bullet-list', 'okr-tree'],
+      },
+      {
+        name: 'schedule',
+        title: 'Schedule',
+        purpose: 'Weekly topics / course timeline',
+        recommended_atoms: ['vertical-timeline', 'timeline', 'agenda-list', 'kanban-board'],
+      },
+      {
+        name: 'grading',
+        title: 'Grading',
+        purpose: 'Assessment breakdown — components and percentages',
+        recommended_atoms: ['donut-with-center', 'pie', 'segmented-bar', 'comparison-table'],
+      },
+      {
+        name: 'materials',
+        title: 'Materials',
+        purpose: 'Required reading, textbooks, tools, resources',
+        recommended_atoms: ['bullet-list', 'number-list', 'feature-card-grid'],
+      },
+      {
+        name: 'logistics',
+        title: 'Logistics & Support',
+        purpose: 'Office hours, contact channels, policies, where to get help',
+        recommended_atoms: ['icon-row', 'icon-grid', 'bullet-list', 'call-to-action'],
+      },
+    ],
+    theme_affinity: ['editorial-navy', 'organic-teal', 'editorial-forest'],
+  },
+
+  // ============================================================================
   // generic-deck — Sprint 24 eval-iter1: the escape hatch for content that fits
   // NO specialized scaffold well. The eval baseline showed force-fits (e.g. a
   // recreational trip report shoved into analysis-report at picker confidence
