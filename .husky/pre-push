@@ -1,0 +1,26 @@
+# Block direct pushes to main (repo hard rule: every change goes through a PR;
+# merges happen via `gh pr merge`, which uses the GitHub API and never trips
+# this hook). Added after an incident where `gh pr merge --delete-branch` run
+# in this working copy silently switched the checkout to main mid-session and
+# a later `git push` landed a commit on main directly.
+#
+# Escape hatch for a genuine emergency: ALLOW_MAIN_PUSH=1 git push …
+
+if [ "$ALLOW_MAIN_PUSH" = "1" ]; then
+  exit 0
+fi
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] || [ "$remote_ref" = "refs/heads/master" ]; then
+    echo ""
+    echo "✋ BLOCKED: direct push to '$remote_ref'."
+    echo "   This repo's rule: feature branch → gh pr create → user merges."
+    echo "   (If you just ran 'gh pr merge' here, your checkout may have been"
+    echo "    switched to main — check 'git branch --show-current'.)"
+    echo "   Emergency override: ALLOW_MAIN_PUSH=1 git push …"
+    echo ""
+    exit 1
+  fi
+done
+
+exit 0
