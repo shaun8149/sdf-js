@@ -1,0 +1,109 @@
+{
+  "slotIdx": 1,
+  "slotName": "objectives",
+  "slotTitle": "Learning Objectives",
+  "slotPurpose": "What you will know after this",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Learning Objectives",
+  "sceneData": {
+    "name": "training/objectives",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Learning Objectives"
+        }
+      },
+      {
+        "type": "radial-wheel-segmented",
+        "x": 140,
+        "y": 160,
+        "w": 1000,
+        "h": 520,
+        "args": {
+          "hub": "Core Skills",
+          "segments": [
+            {
+              "label": "CAP Theorem",
+              "sublabel": "Tradeoffs in real systems"
+            },
+            {
+              "label": "Raft Consensus",
+              "sublabel": "Implementation from scratch"
+            },
+            {
+              "label": "Failure Modes",
+              "sublabel": "Split-brain & partitions"
+            },
+            {
+              "label": "Sharded KV Store",
+              "sublabel": "Design under failure"
+            },
+            {
+              "label": "Paper Critique",
+              "sublabel": "3 seminal papers"
+            }
+          ],
+          "segmentColors": [
+            [
+              60,
+              145,
+              145
+            ],
+            [
+              110,
+              175,
+              165
+            ],
+            [
+              220,
+              200,
+              145
+            ],
+            [
+              165,
+              145,
+              115
+            ],
+            [
+              60,
+              145,
+              145
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "training",
+    "theme": "organic-teal",
+    "recommendedAtoms": [
+      "radial-wheel-segmented",
+      "bullet-list",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3988,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 401,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0218739,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-05T05:05:59.566Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

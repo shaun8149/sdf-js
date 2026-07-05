@@ -1,0 +1,98 @@
+{
+  "slotIdx": 6,
+  "slotName": "next-steps",
+  "slotTitle": "Next Steps",
+  "slotPurpose": "Action items + owners + dates",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Next Steps",
+  "sceneData": {
+    "name": "qbr/next-steps",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Steps",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kanban-board",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "columns": [
+            {
+              "name": "Oct 2026",
+              "cards": [
+                {
+                  "title": "Perp DEX matching engine",
+                  "owner": "Engineering",
+                  "dueDate": "Oct 15"
+                }
+              ]
+            },
+            {
+              "name": "Oct-Nov 2026",
+              "cards": [
+                {
+                  "title": "Insurance API beta",
+                  "owner": "Product",
+                  "dueDate": "Oct 30"
+                },
+                {
+                  "title": "Asia compliance docs",
+                  "owner": "Legal",
+                  "dueDate": "Nov 10"
+                }
+              ]
+            },
+            {
+              "name": "Nov 2026",
+              "cards": [
+                {
+                  "title": "B-round pitch deck v1",
+                  "owner": "CEO",
+                  "dueDate": "Nov 30"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "kanban-board",
+      "bullet-list",
+      "timeline",
+      "gantt"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4015,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 415,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0221649,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-05T04:59:51.909Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

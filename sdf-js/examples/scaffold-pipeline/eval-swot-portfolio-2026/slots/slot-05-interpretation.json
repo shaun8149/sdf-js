@@ -1,0 +1,65 @@
+{
+  "slotIdx": 5,
+  "slotName": "interpretation",
+  "slotTitle": "Interpretation",
+  "slotPurpose": "What the data means — synthesis and insight",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Key Insight",
+  "sceneData": {
+    "name": "analysis-report/interpretation",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Interpretation",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 120,
+        "y": 180,
+        "w": 1040,
+        "h": 480,
+        "args": {
+          "quote": "The best venture returns come not from picking winners, but from refusing to lose on the ones you have.",
+          "author": "Senior Partner",
+          "attribution": "Investment Review 2026 • 47 exits over 12 years",
+          "align": "center"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "balance-scale",
+      "bullet-list",
+      "quote-pull",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3971,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 238,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0193779,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-07-05T05:03:08.742Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

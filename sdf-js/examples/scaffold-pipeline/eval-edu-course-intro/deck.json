@@ -1,0 +1,214 @@
+{
+  "deckName": "eval-edu-course-intro",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/edu-course-intro.json",
+  "scaffold": {
+    "id": "training",
+    "label": "Training",
+    "description": "Workshop / onboarding / how-to-do-X",
+    "pickScore": 9,
+    "pickSignals": [
+      "Deck is a course syllabus/overview with clear educational intent: learning objectives, weekly topics, grading, readings, and support resources",
+      "Structure maps perfectly to training scaffold: cover → objectives (learning objectives) → context (course overview) → concept (weekly topics) → steps (weekly breakdown) → example (reading list) → summary (grading + office hours)",
+      "Audience is students/learners; content is pedagogical — how to learn distributed systems, not pitch/business/report content"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "organic-teal",
+    "label": "Organic · Teal",
+    "macroCluster": "organic",
+    "bg": [
+      232,
+      244,
+      240
+    ],
+    "accent": [
+      60,
+      145,
+      145
+    ],
+    "colors": [
+      [
+        60,
+        145,
+        145
+      ],
+      [
+        110,
+        175,
+        165
+      ],
+      [
+        220,
+        200,
+        145
+      ],
+      [
+        165,
+        145,
+        115
+      ]
+    ],
+    "font": {
+      "heading": "\"Quicksand\", \"Nunito\", Inter, system-ui, sans-serif",
+      "body": "\"Nunito Sans\", Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Topic + facilitator + duration",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "CS 340: Distributed Systems",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "objectives",
+      "slotTitle": "Learning Objectives",
+      "slotPurpose": "What you will know after this",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Learning Objectives",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-objectives.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "radial-wheel-segmented"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "context",
+      "slotTitle": "Why This Matters",
+      "slotPurpose": "Stakes + motivation",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Course Overview",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-context.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "concept",
+      "slotTitle": "Core Concept",
+      "slotPurpose": "The main idea visualized",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Weekly Topics",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-concept.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "layer-stack"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "steps",
+      "slotTitle": "Step by Step",
+      "slotPurpose": "Sequential process",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "example",
+      "slotTitle": "Worked Example",
+      "slotPurpose": "Concrete walk-through",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "exercise",
+      "slotTitle": "Try It Yourself",
+      "slotPurpose": "Hands-on activity",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "summary",
+      "slotTitle": "Summary",
+      "slotPurpose": "Key takeaways",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Grading Breakdown",
+      "mappingScore": 5,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-summary.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "pie",
+        "bullet-list"
+      ]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 5,
+    "slotsEmpty": 3,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.1089405
+  },
+  "meta": {
+    "generatedAt": "2026-07-05T05:06:24.361Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

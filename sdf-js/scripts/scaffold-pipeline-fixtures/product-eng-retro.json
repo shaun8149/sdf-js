@@ -1,0 +1,70 @@
+[
+  {
+    "title": "Platform Engineering — Q3 2026 Retro",
+    "body": [
+      "Quarterly engineering retrospective",
+      "Presented to: Eng org + leadership",
+      "Prepared by: Platform Team"
+    ]
+  },
+  {
+    "title": "Velocity Metrics",
+    "body": [
+      "Story points shipped: 412 (target 380, +8%)",
+      "Deploy frequency: 34 deploys/week (up from 21/week in Q2)",
+      "Lead time for changes: 4.2 hours (down from 11 hours in Q2)",
+      "Change failure rate: 3.1% (target under 5%)",
+      "Mean time to recovery: 22 minutes (target under 30 min)"
+    ]
+  },
+  {
+    "title": "Incidents & Postmortems",
+    "body": [
+      "Total incidents this quarter: 6 (down from 11 in Q2)",
+      "Sev-1: 1 incident — payment webhook queue backup, Aug 14, 47 min downtime",
+      "Sev-2: 2 incidents — auth token expiry bug, database connection pool exhaustion",
+      "Root cause pattern: 4 of 6 incidents traced to insufficient load testing before release",
+      "Action taken: mandatory load-test gate added to release checklist starting Q4"
+    ]
+  },
+  {
+    "title": "Shipped Features",
+    "body": [
+      "Real-time collaboration engine — launched to 100% of users Aug 3",
+      "New onboarding flow — reduced time-to-first-value from 12 min to 4 min",
+      "Mobile offline mode — now supports 30-day offline sync",
+      "Admin audit log — SOC 2 compliance requirement, shipped 2 weeks early",
+      "API v3 — breaking change migration, 92% of customers migrated by quarter end"
+    ]
+  },
+  {
+    "title": "Tech Debt & Infrastructure",
+    "body": [
+      "Legacy monolith decomposition: 6 of 14 services extracted (43% complete)",
+      "Test coverage: raised from 61% to 74% across core services",
+      "Build time: cut from 18 minutes to 6 minutes via cache restructuring",
+      "Deprecated Node 16 across all services — now standardized on Node 22",
+      "Database migration to sharded Postgres: 2 of 5 shards live"
+    ]
+  },
+  {
+    "title": "Team Growth",
+    "body": [
+      "Headcount: grew from 24 to 31 engineers this quarter",
+      "New hires: 5 backend, 2 platform/SRE",
+      "Promotions: 3 engineers promoted to senior, 1 to staff",
+      "Engineering NPS (internal survey): 68, up from 54 last quarter",
+      "\"This is the first quarter where on-call actually felt sustainable.\" — anonymous eng survey response"
+    ]
+  },
+  {
+    "title": "Q4 OKRs",
+    "body": [
+      "Objective: Achieve 99.95% platform uptime — currently at 99.91%",
+      "Objective: Cut infrastructure cost per active user by 20%",
+      "Objective: Complete monolith decomposition to 80% (from 43%)",
+      "Objective: Ship real-time analytics dashboard for enterprise tier",
+      "Objective: Reduce median PR review time from 18 hours to under 6 hours"
+    ]
+  }
+]

@@ -14,6 +14,8 @@
     "test:generator": "node scripts/run-tests.mjs generator",
     "test:port-shader": "node scripts/run-tests.mjs port-shader",
     "test:regression": "echo 'Requires ANTHROPIC_API_KEY. Excluded from CI.' && node sdf-js/scripts/regression/lift-regression.mjs",
+    "eval": "node sdf-js/scripts/eval-corpus.mjs",
+    "eval:bake": "node sdf-js/scripts/eval-corpus.mjs --bake --key-file key.txt",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",

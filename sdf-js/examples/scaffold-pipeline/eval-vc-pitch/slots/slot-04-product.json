@@ -1,0 +1,95 @@
+{
+  "slotIdx": 4,
+  "slotName": "product",
+  "slotTitle": "Product Demo",
+  "slotPurpose": "Screenshot mockup or feature highlight",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Product Demo",
+  "sceneData": {
+    "name": "pitch-deck-vc/product",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Product Demo",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "device-mockup-frame",
+        "x": 80,
+        "y": 180,
+        "w": 500,
+        "h": 460,
+        "args": {
+          "device": "laptop",
+          "title": "Atlas Canvas",
+          "content": "PDF → 3D Deck",
+          "color": [
+            255,
+            120,
+            40
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 180,
+        "w": 560,
+        "h": 460,
+        "args": {
+          "items": [
+            {
+              "icon": "file-pdf",
+              "label": "Upload PDF, get scaffolded deck"
+            },
+            {
+              "icon": "lightning",
+              "label": "Inline paragraph trigger for text"
+            },
+            {
+              "icon": "pencil-line",
+              "label": "Live-edit canvas with LLM loop"
+            },
+            {
+              "icon": "export",
+              "label": "Export to PPT/PDF/MP4"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "device-mockup-frame",
+      "device-mockup-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3979,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 408,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0219519,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-05T05:04:14.965Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

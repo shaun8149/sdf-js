@@ -1,0 +1,229 @@
+{
+  "deckName": "eval-nonprofit-annual-report",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/nonprofit-annual-report.json",
+  "scaffold": {
+    "id": "investor-update",
+    "label": "Investor Update",
+    "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
+    "pickScore": 7,
+    "pickSignals": [
+      "Annual report structure with metrics, highlights, financial breakdown, and forward-looking goals matches investor-update cadence and sections (tldr → metrics → wins → challenges → next-quarter → financials)",
+      "Donor-facing periodic update for board and donors parallels LP/seed-investor audience; includes 'by the numbers', program highlights, financial transparency, and 2027 goals",
+      "While titled 'annual report', the semantic arc (accomplishments → metrics → spending breakdown → future goals → ask) aligns more with investor-update than financial-summary (which is income-statement focused) or analysis-report (which centers on strategic analysis frameworks)"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [
+      26,
+      40,
+      66
+    ],
+    "accent": [
+      58,
+      138,
+      200
+    ],
+    "colors": [
+      [
+        58,
+        138,
+        200
+      ],
+      [
+        26,
+        40,
+        66
+      ],
+      [
+        100,
+        150,
+        200
+      ],
+      [
+        180,
+        210,
+        235
+      ],
+      [
+        240,
+        248,
+        255
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + update period + author",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Clearwater Trust — 2026 Annual Report",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "tldr",
+      "slotTitle": "TL;DR",
+      "slotPurpose": "Headline summary — 3 key points this quarter",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "2026 By the Numbers",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-tldr.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "metrics",
+      "slotTitle": "Key Metrics",
+      "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "2026 By the Numbers",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-metrics.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "Top accomplishments this quarter",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Program Highlights",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-wins.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "icon-grid"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "slotPurpose": "What did not go well and what we learned",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "next-quarter",
+      "slotTitle": "Next Quarter",
+      "slotPurpose": "Plan and priorities for the coming quarter",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "2027 Goals",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-next-quarter.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ask",
+      "slotTitle": "Ask",
+      "slotPurpose": "What we need from LPs — intros, advice, resources",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Thank You & How to Help",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-ask.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "cap-table-burn",
+      "slotTitle": "Financials",
+      "slotPurpose": "Burn rate, runway, cap table highlights",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Financial Breakdown",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-cap-table-burn.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "pie",
+        "pie"
+      ]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 7,
+    "slotsEmpty": 1,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.15408929999999998
+  },
+  "meta": {
+    "generatedAt": "2026-07-05T05:07:31.007Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Wins",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 500,
+        "args": {
+          "items": [
+            {
+              "icon": "trophy",
+              "label": "Web3 Award",
+              "sublabel": "Self-custodial UX recognition"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "$25M Raise",
+              "sublabel": "Sequoia follow-on signed"
+            },
+            {
+              "icon": "users",
+              "label": "Elite Hires",
+              "sublabel": "4 Coinbase + 2 Anthropic engineers"
+            },
+            {
+              "icon": "newspaper",
+              "label": "Press Coverage",
+              "sublabel": "TechCrunch + Bloomberg (3 stories)"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "24K Community",
+              "sublabel": "Discord milestone reached"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "medium",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3989,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 424,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0222219,
+    "elapsedSec": 10.9,
+    "generatedAt": "2026-07-05T04:59:29.334Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "slotIdx": 7,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "Key takeaways",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Grading Breakdown",
+  "sceneData": {
+    "name": "training/summary",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 80,
+        "y": 180,
+        "w": 500,
+        "h": 480,
+        "args": {
+          "values": [
+            25,
+            20,
+            35,
+            15,
+            5
+          ],
+          "labels": [
+            "Labs",
+            "Midterm",
+            "Project",
+            "Final",
+            "Participation"
+          ],
+          "format": "percent",
+          "title": "Grading Breakdown",
+          "donutRatio": 0.5,
+          "centerLabel": "100%"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 180,
+        "w": 560,
+        "h": 480,
+        "args": {
+          "title": "Key Takeaways",
+          "items": [
+            {
+              "icon": "flask",
+              "label": "Weekly labs: 25%",
+              "sublabel": "Consistent practice matters"
+            },
+            {
+              "icon": "trophy",
+              "label": "Group project: 35%",
+              "sublabel": "Largest grade component"
+            },
+            {
+              "icon": "notebook",
+              "label": "Exams total: 35%",
+              "sublabel": "Midterm 20% + Final 15%"
+            },
+            {
+              "icon": "chats",
+              "label": "Participation: 5%",
+              "sublabel": "Engagement counts"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "training",
+    "theme": "organic-teal",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3957,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 494,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0231759,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-07-05T05:06:24.359Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

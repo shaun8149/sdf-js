@@ -1,0 +1,136 @@
+{
+  "slotIdx": 1,
+  "slotName": "case-for-change",
+  "slotTitle": "Case for Change",
+  "slotPurpose": "Why change is necessary — data, context, burning platform",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Why Change Now: The Case for Transformation",
+  "sceneData": {
+    "name": "change-roadmap/case-for-change",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Case for Change"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "kpis": [
+            {
+              "value": "3%",
+              "label": "Revenue Growth",
+              "sublabel": "vs 12% industry",
+              "trend": "down",
+              "color": [
+                200,
+                90,
+                80
+              ]
+            },
+            {
+              "value": "$4.2M",
+              "label": "Annual Inefficiency",
+              "sublabel": "Legacy systems",
+              "trend": "down",
+              "color": [
+                200,
+                90,
+                80
+              ]
+            },
+            {
+              "value": "44",
+              "label": "Customer NPS",
+              "sublabel": "Dropped from 67",
+              "trend": "down",
+              "trendValue": "-23",
+              "color": [
+                200,
+                90,
+                80
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 390,
+        "w": 1200,
+        "h": 100,
+        "args": {
+          "value": "End of 2026",
+          "label": "Board-mandated digital acceleration deadline",
+          "bg": [
+            156,
+            142,
+            110
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 520,
+        "w": 1200,
+        "h": 160,
+        "args": {
+          "title": "Key Drivers",
+          "items": [
+            {
+              "icon": "trending-up",
+              "label": "Competitor pressure intensifying"
+            },
+            {
+              "icon": "scales",
+              "label": "Regulatory changes requiring adaptation"
+            },
+            {
+              "icon": "users",
+              "label": "Talent attrition accelerating"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "stat-banner",
+      "bullet-list",
+      "kpi-card",
+      "fishbone"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4027,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 630,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0254259,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-05T05:00:17.361Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

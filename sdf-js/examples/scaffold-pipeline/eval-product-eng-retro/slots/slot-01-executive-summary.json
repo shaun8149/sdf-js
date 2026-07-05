@@ -1,0 +1,123 @@
+{
+  "slotIdx": 1,
+  "slotName": "executive-summary",
+  "slotTitle": "Executive Summary",
+  "slotPurpose": "3-5 highlights at-a-glance",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Velocity Metrics",
+  "sceneData": {
+    "name": "qbr/executive-summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Velocity Metrics",
+          "kpis": [
+            {
+              "value": "412",
+              "label": "Story Points",
+              "sublabel": "Target 380",
+              "trend": "up",
+              "trendValue": "+8%",
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "value": "34",
+              "label": "Deploys/Week",
+              "sublabel": "Up from 21",
+              "trend": "up",
+              "trendValue": "+62%",
+              "color": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "value": "4.2h",
+              "label": "Lead Time",
+              "sublabel": "Down from 11h",
+              "trend": "down",
+              "trendValue": "-62%",
+              "color": [
+                165,
+                130,
+                90
+              ]
+            },
+            {
+              "value": "3.1%",
+              "label": "Failure Rate",
+              "sublabel": "Target <5%",
+              "trend": "neutral",
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "value": "22min",
+              "label": "MTTR",
+              "sublabel": "Target <30min",
+              "trend": "neutral",
+              "color": [
+                110,
+                95,
+                75
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "stat-banner",
+      "quote-pull",
+      "dashboard-multi-kpi-composite",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4047,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 530,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023985899999999998,
+    "elapsedSec": 8.9,
+    "generatedAt": "2026-07-05T05:07:56.337Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "slotIdx": 6,
+  "slotName": "recommendations",
+  "slotTitle": "Recommendations",
+  "slotPurpose": "Actionable next steps based on findings",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
+  "sceneData": {
+    "name": "analysis-report/recommendations",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Recommendations",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 500,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket-launch",
+              "label": "Series B bridge for ANTFUN + NovaTech",
+              "sublabel": "Priority 1 — prepare funding runway"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Southeast Asia LP expansion review",
+              "sublabel": "Priority 2 — geographic diversification program"
+            },
+            {
+              "icon": "brain",
+              "label": "AI transformation audit across portfolio",
+              "sublabel": "Priority 3 — assess all 12 companies"
+            },
+            {
+              "icon": "arrow-square-out",
+              "label": "Fund I exit roadmap development",
+              "sublabel": "Priority 4 — evaluate 3 exit candidates"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Fund III final close — $300M target",
+              "sublabel": "Priority 5 — deadline December 2026"
+            }
+          ],
+          "title": "Q4 2026 Portfolio Priorities"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3999,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 439,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0224769,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-05T05:03:17.432Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

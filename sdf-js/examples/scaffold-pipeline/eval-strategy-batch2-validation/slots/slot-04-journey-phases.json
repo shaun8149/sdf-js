@@ -1,0 +1,160 @@
+{
+  "slotIdx": 4,
+  "slotName": "journey-phases",
+  "slotTitle": "Change Journey",
+  "slotPurpose": "Phase-by-phase transition path with milestones",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Change Journey & Risk Mitigation",
+  "sceneData": {
+    "name": "change-roadmap/journey-phases",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Change Journey",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "change-curve-chart",
+        "x": 40,
+        "y": 150,
+        "w": 760,
+        "h": 340,
+        "args": {
+          "title": "Transformation Phases",
+          "xAxis": "Timeline",
+          "yAxis": "Performance",
+          "phases": [
+            {
+              "label": "Q1: Mobilise",
+              "sublabel": "Governance & Quick Wins"
+            },
+            {
+              "label": "Q2-Q3: Transform",
+              "sublabel": "Core Migration & Redesign"
+            },
+            {
+              "label": "Q4: Sustain",
+              "sublabel": "Embed & Measure"
+            }
+          ]
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 520,
+        "w": 760,
+        "h": 160,
+        "args": {
+          "title": "Risk Profile",
+          "xAxis": "Impact",
+          "yAxis": "Likelihood",
+          "xLabels": [
+            "Low",
+            "Medium",
+            "High"
+          ],
+          "yLabels": [
+            "Low",
+            "Medium",
+            "High"
+          ],
+          "risks": [
+            {
+              "x": 2,
+              "y": 2,
+              "label": "Change Fatigue"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "label": "Data Migration"
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "label": "Vendor Delays"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 150,
+        "w": 400,
+        "h": 160,
+        "args": {
+          "value": "3",
+          "label": "Phases",
+          "sublabel": "Q1–Q4 Journey",
+          "icon": "arrow-fat-right",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 330,
+        "w": 400,
+        "h": 160,
+        "args": {
+          "value": "1",
+          "label": "High Risk",
+          "sublabel": "Change Fatigue",
+          "icon": "warning",
+          "trend": "monitored",
+          "trendDirection": "neutral",
+          "style": "accent-border"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 510,
+        "w": 400,
+        "h": 160,
+        "args": {
+          "value": "Q4",
+          "label": "Sustain",
+          "sublabel": "Embed & Measure",
+          "icon": "check-circle",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "change-curve-chart",
+      "progression",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4019,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 825,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0283269,
+    "elapsedSec": 11.6,
+    "generatedAt": "2026-07-05T05:00:42.500Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

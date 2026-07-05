@@ -1,0 +1,122 @@
+{
+  "slotIdx": 1,
+  "slotName": "executive-summary",
+  "slotTitle": "Executive Summary",
+  "slotPurpose": "3-5 highlights at-a-glance",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Executive Summary",
+  "sceneData": {
+    "name": "qbr/executive-summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 280,
+        "args": {
+          "kpis": [
+            {
+              "value": "$740K",
+              "label": "Q3 ARR",
+              "sublabel": "↑117% QoQ",
+              "trend": "up",
+              "trendValue": "+117%",
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "value": "12.5K",
+              "label": "Active Wallets",
+              "sublabel": "Daily users",
+              "trend": "up",
+              "color": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "value": "2",
+              "label": "Product Launches",
+              "sublabel": "Insurance + Perp DEX",
+              "trend": "neutral",
+              "color": [
+                165,
+                130,
+                90
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 470,
+        "w": 1120,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "shield-check",
+              "label": "Insurance policy launched week 8"
+            },
+            {
+              "icon": "rocket-launch",
+              "label": "Perp DEX prototype shipped Q3"
+            },
+            {
+              "icon": "warning-octagon",
+              "label": "3 strategic risks identified",
+              "sublabel": "See risks slide for details"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "stat-banner",
+      "quote-pull",
+      "dashboard-multi-kpi-composite",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4012,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 555,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024255899999999997,
+    "elapsedSec": 9.6,
+    "generatedAt": "2026-07-05T04:59:06.653Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

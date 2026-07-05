@@ -1,0 +1,120 @@
+{
+  "slotIdx": 2,
+  "slotName": "metrics",
+  "slotTitle": "Key Metrics",
+  "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "2026 By the Numbers",
+  "sceneData": {
+    "name": "investor-update/metrics",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Metrics",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "2026 By the Numbers",
+          "kpis": [
+            {
+              "value": "$4.2M",
+              "label": "Total Donations",
+              "sublabel": "+18% vs 2025",
+              "trend": "up",
+              "trendValue": "18%",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "1,340",
+              "label": "Active Volunteers",
+              "sublabel": "Across 4 countries",
+              "trend": "neutral",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "87",
+              "label": "Wells Constructed",
+              "sublabel": "New wells this year",
+              "trend": "neutral",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "210K",
+              "label": "People Served",
+              "sublabel": "New or improved access",
+              "trend": "neutral",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "84%",
+              "label": "Program Cost Ratio",
+              "sublabel": "Funds to programs",
+              "trend": "neutral",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "dashboard-multi-kpi-composite",
+      "stat-grid-large",
+      "line"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4027,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 514,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023685900000000003,
+    "elapsedSec": 11.5,
+    "generatedAt": "2026-07-05T05:07:03.038Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Q-name + reviewer + period",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Platform Engineering — Q3 2026 Retro",
+  "sceneData": {
+    "name": "qbr/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Platform Engineering — Q3 2026 Retro",
+          "subtitle": "Quarterly engineering retrospective",
+          "author": "Platform Team",
+          "date": "Eng org + leadership",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "cover"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3924,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 156,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0180069,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-05T05:07:47.474Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

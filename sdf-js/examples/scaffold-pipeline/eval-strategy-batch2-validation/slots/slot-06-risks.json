@@ -1,0 +1,140 @@
+{
+  "slotIdx": 6,
+  "slotName": "risks",
+  "slotTitle": "Risks & Mitigations",
+  "slotPurpose": "Top risks and mitigation strategies",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Change Journey & Risk Mitigation",
+  "sceneData": {
+    "name": "change-roadmap/risks",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Risks & Mitigations",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 160,
+        "w": 760,
+        "h": 500,
+        "args": {
+          "title": "Risk Assessment Matrix",
+          "xAxis": "Likelihood",
+          "yAxis": "Impact",
+          "xLabels": [
+            "Very Low",
+            "Low",
+            "Medium",
+            "High",
+            "Very High"
+          ],
+          "yLabels": [
+            "Very Low",
+            "Low",
+            "Medium",
+            "High",
+            "Very High"
+          ],
+          "risks": [
+            {
+              "label": "Change Fatigue",
+              "likelihood": 4,
+              "impact": 4,
+              "mitigation": "Phased approach, quick wins"
+            },
+            {
+              "label": "Data Migration Errors",
+              "likelihood": 2,
+              "impact": 3,
+              "mitigation": "Validation framework, rollback plan"
+            },
+            {
+              "label": "Vendor Delays",
+              "likelihood": 1,
+              "impact": 2,
+              "mitigation": "Contract SLAs, backup vendors"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 840,
+        "y": 160,
+        "w": 400,
+        "h": 500,
+        "args": {
+          "title": "Mitigation Strategies",
+          "items": [
+            {
+              "icon": "shield-check",
+              "label": "Governance framework established",
+              "status": "done"
+            },
+            {
+              "icon": "users",
+              "label": "Change champions in each team",
+              "status": "done"
+            },
+            {
+              "icon": "trophy",
+              "label": "Quick wins prioritized Q1",
+              "status": "highlight"
+            },
+            {
+              "icon": "database",
+              "label": "Data validation checkpoints",
+              "status": "todo"
+            },
+            {
+              "icon": "handshake",
+              "label": "Vendor SLA monitoring",
+              "status": "todo"
+            },
+            {
+              "icon": "gauge",
+              "label": "Weekly risk reviews",
+              "status": "todo"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "risk-heatmap",
+      "swot",
+      "fishbone",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4028,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 691,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026343899999999996,
+    "elapsedSec": 10.4,
+    "generatedAt": "2026-07-05T05:01:00.998Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
