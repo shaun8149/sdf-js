@@ -52,9 +52,22 @@ ok(
 const starts = stages.map((s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]));
 ok(starts[0] < starts[3], 'reveal windows staggered by order (top reveals first)');
 
-ok(scene.cameraSequence && scene.cameraSequence.shots.length >= 2, 'has a multi-shot fly-through');
-const ys = scene.cameraSequence.shots.map((s) => s.pos[1]);
-ok(ys[0] > ys[ys.length - 1], 'camera descends (fly-through)');
+ok(scene.cameraSequence && scene.cameraSequence.shots.length >= 4, 'has a multi-shot fly-through');
+// fighting-game grammar: low hero opening → crane peak → spiral descent →
+// hard-cut punch-in on the emphasis stage (shake + exposure pop) → wide payoff.
+const shots = scene.cameraSequence.shots;
+const ys = shots.map((s) => s.pos[1]);
+const peakIdx = ys.indexOf(Math.max(...ys));
+ok(ys[0] < ys[peakIdx], 'opens low (hero angle), rises to the crane peak');
+ok(Math.min(...ys.slice(peakIdx)) < ys[peakIdx] - 2, 'descends from the peak (fly-through)');
+const superShot = shots.find((s) => s.transition === 'cut' && (s.shake || 0) >= 0.2);
+ok(!!superShot, 'has a hard-cut punch-in with heavy shake (the super)');
+ok(Array.isArray(superShot?.exposure), 'super shot pops exposure (ramp)');
+ok(
+  shots.some((s) => Math.abs(s.pos[0]) > 0.8 && s.transition === 'blend'),
+  'descent orbits off-axis (spiral)',
+);
+ok((shots[shots.length - 1].focalDistance || 0) > 4, 'ends on a wide payoff frame');
 
 // labels → overlay, each with a revealAt; title present; NO baked SDF text
 const labels = scene.overlay.filter((o) => o.role === 'card' || o.role === 'value');
