@@ -22,21 +22,69 @@ import {
   totalDuration as seqTotalDuration,
 } from '../scene/camera-sequence.js';
 
-// GLSL ES 3.00 (studio is WebGL2-only). ES 3.00 is REQUIRED, not cosmetic:
-// shaders without #version are parsed as ES 1.00, whose Appendix A rules forbid
-// non-constant loop bounds — which the library's u_loopGuard unroll-defeat
-// (see sdf3.glsl.js) depends on. The #define shim below lets the shared GLSL
+// GLSL ES 3.00 (studio is WebGL2-only). Shaders without #version are parsed as
+// ES 1.00 with its Appendix A restrictions; ES3 lifts them and unlocks
+// studio-side language features. The #define shim below lets the shared GLSL
 // library (also compiled under ES 1.00 by the WebGL1 renderers) stay
 // version-agnostic: texture2D was removed in ES3, aliased back to texture().
 const VS_SRC = `#version 300 es
 in vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
-function buildFragmentShader(sceneGlsl) {
-  return `#version 300 es
+// ---- Material-branch feature gating -----------------------------------------
+// The fragment template carries a shading branch per material kind (sea /
+// mountain / building / …, ~35KB total plus the library functions only they
+// call). A funnel deck uses none of them — yet ANGLE still translated every
+// line on every page load (the ~13s floor left after data-as-uniforms). The
+// branches are wrapped in feature marker comments (#feature name … #endfeature,
+// each prefixed with //), shaped as a dangling `if (cond) { … } else` so ANY subset strips to valid
+// GLSL (the standard branch is the final bare block). applyFeatureGates keeps
+// only the branches whose material kinds the scene actually contains; the DCE
+// prune (glsl-prune.js) then drops their library dependencies too. Feature set
+// is as stable as the scene shape, so the zero-recompile invariant (#208) holds.
+const KIND_FEATURE = {
+  1: 'sea',
+  2: 'mountain',
+  3: 'emissive',
+  4: 'translucent',
+  5: 'snowy',
+  6: 'building',
+  7: 'eroded',
+  8: 'glass',
+  9: 'fill',
+};
+
+export function applyFeatureGates(glsl, features) {
+  return glsl.replace(
+    /^[ \t]*\/\/#feature (\w+)\r?\n([\s\S]*?)^[ \t]*\/\/#endfeature[ \t]*\r?\n/gm,
+    (_m, name, body) => (features == null || features.has(name) ? body : ''),
+  );
+}
+
+function featuresFromLeafMaterials(leafMaterials) {
+  const features = new Set();
+  for (const m of leafMaterials || []) {
+    const f = KIND_FEATURE[m?.kind];
+    if (f) features.add(f);
+  }
+  return features;
+}
+
+function buildFragmentShader(sceneGlsl, features) {
+  return applyFeatureGates(
+    `#version 300 es
 precision highp float;
 #define texture2D texture
 out vec4 fragColor;
+
+// Loop-unroll guard (studio-only, legal under ES3). NEVER set — GL defaults it
+// to 0.0, so "N + int(u_loopGuard)" == N at runtime. Its only job is to make
+// the hot loops' trip counts OPAQUE to the D3D shader compiler: fxc fully
+// unrolls constant-bound loops, and the main raymarch (MAX_STEPS iterations,
+// each inlining the ENTIRE scene SDF) unrolled is a combinatorial explosion —
+// measured ~10s of first-draw pipeline compile for a plain funnel scene. An
+// unprovable bound forces a real loop; compile collapses, runtime unchanged.
+uniform float u_loopGuard;
 
 ${FILTER_GLSL}
 
@@ -149,7 +197,7 @@ float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
   float res = 1.0;
   float t = mint;
   float ph = 1e10;
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 32 + int(u_loopGuard); i++) {
     if (t >= maxt) break;
     float h = mapWithGround(ro + rd * t).x;
     if (h < 0.00012) return 0.0;
@@ -166,7 +214,7 @@ float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
 float calcAO(vec3 p, vec3 n) {
   float occ = 0.0;
   float sca = 1.0;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 5 + int(u_loopGuard); i++) {
     float h = 0.012 + 0.14 * float(i) / 4.0;
     float d = mapWithGround(p + h * n).x;
     occ += (h - d) * sca;
@@ -310,14 +358,12 @@ void fetchLeafData(float idx, out vec4 mat, out vec4 tone, out vec4 pat) {
   tone = vec4(1.0,  0.0, 0.0, 0.0);   // default: full brightness
   pat  = vec4(0.0);                    // default: no pattern
   if (target < 0 || target >= MAX_MATERIAL) return;
-  for (int j = 0; j < MAX_MATERIAL; j++) {
-    if (j == target) {
-      mat  = u_leafMaterial[j];
-      tone = u_leafTone[j];
-      pat  = u_leafPattern[j];
-      return;
-    }
-  }
+  // ES 3.00: dynamic uniform indexing is legal — direct fetch. (The ES 1.00
+  // version walked a 256-iteration compare loop, which fxc fully unrolled at
+  // every call site.)
+  mat  = u_leafMaterial[target];
+  tone = u_leafTone[target];
+  pat  = u_leafPattern[target];
 }
 
 // Apply a Shane-style cellular pattern to base albedo. Pattern is a
@@ -389,7 +435,7 @@ vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat, float fw) {
 // Returns vec3(t, matId, hitIdx); matId=0 means miss.
 vec3 raymarchShort(vec3 ro, vec3 rd, float maxDist) {
   float t = 0.04;  // small bias to avoid self-intersection at ground
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 32 + int(u_loopGuard); i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
     if (dm.x < EPS * (1.0 + 0.4 * t)) {
@@ -655,7 +701,7 @@ vec4 applyVolumes(vec3 ro, vec3 rd, float tMax, vec3 sunDir) {
   vec3 acc = vec3(0.0);
   float transmit = 1.0;
   float t = dt * (0.5 + jitter * 0.5);
-  for (int i = 0; i < VOL_STEPS; i++) {
+  for (int i = 0; i < VOL_STEPS + int(u_loopGuard); i++) {
     if (t > tMax || transmit < 0.02) break;
     vec3 p = ro + rd * t;
     // Sprint 5: split emissive (flame, god-rays) vs absorptive (smoke, fog).
@@ -734,7 +780,8 @@ void main() {
   float matId = 0.0;
   float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
-  for (int i = 0; i < MAX_STEPS; i++) {
+  // + int(u_loopGuard) == +0: unroll defeat — see the u_loopGuard declaration.
+  for (int i = 0; i < MAX_STEPS + int(u_loopGuard); i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
     if (dm.x < EPS * (1.0 + 0.4 * t)) {
@@ -883,6 +930,7 @@ void main() {
       base = applyPattern(base, p, n, leafPat, patFW);
     }
 
+    //#feature sea
     if (isSea) {
       // ---- Sea-shading branch (afl_ext-inspired, MIT) -----------------------
       // Replaces the entire Lambert path for sea-surface hits. Reads the same
@@ -936,7 +984,10 @@ void main() {
       // top-down water visibly blue while preserving grazing-angle reflectivity.
       vec3 waterAlbedo = vec3(0.04, 0.15, 0.22);   // dark teal lake / coastal water
       col = mix(waterAlbedo, reflection, seaFres) * 1.6 + scattering;
-    } else if (isEmissive) {
+    } else
+    //#endfeature
+    //#feature emissive
+    if (isEmissive) {
       // Emissive: bypass lighting equation. Color = base * (1 + 4*glow). Used
       // by meteor-streak (warm-white tail, glow ~ 2.0 default). ACES later
       // rolls off the high values for cinematic punch.
@@ -944,7 +995,10 @@ void main() {
       // Atmospheric perspective still applies — distant meteors fade into sky
       float emFog = atmosphereDensity(p, t);
       col = mix(col, vec3(0.85, 0.87, 0.90), emFog * 0.4);
-    } else if (isTranslucent) {
+    } else
+    //#endfeature
+    //#feature translucent
+    if (isTranslucent) {
       // Translucent: standard Lambert + Henyey-Greenstein backlight. When sun
       // is behind the surface, rd aligns with sunDir → HG phase peaks → leaf
       // glows red-warm. Recipe from soft-servo/jake 'Tree in the wind' (no
@@ -966,7 +1020,10 @@ void main() {
                + backlight;
       float tFog = atmosphereDensity(p, t);
       col = mix(lit, vec3(0.85, 0.87, 0.90), tFog);
-    } else if (isGlass) {
+    } else
+    //#endfeature
+    //#feature glass
+    if (isGlass) {
       // ---- Glass material kind (real single-refraction) --------------------
       // The view ray refracts into the (thin, hollow) shell; a secondary march
       // SEES THROUGH to whatever is inside/behind (coloured liquid, or the
@@ -1002,7 +1059,10 @@ void main() {
       gcol += vec3(1.0) * pow(max(dot(n, Hg), 0.0), 140.0) * shadowK * 1.2; // sharp glint
       gcol += vec3(0.75, 0.85, 1.0) * pow(1.0 - ndv, 3.0) * 0.35;           // cool fresnel edge
       col = gcol;
-    } else if (isFill) {
+    } else
+    //#endfeature
+    //#feature fill
+    if (isFill) {
       // ---- Fill-gauge material kind (waterline two-tone) -------------------
       // A SOLID sphere read as a "fill level": coloured liquid below a waterline,
       // light glass above, crisp meniscus between. On a sphere the surface normal
@@ -1033,7 +1093,10 @@ void main() {
       float band = 1.0 - smoothstep(0.0, 0.045, abs(n.y - waterline));
       litF += vec3(0.92, 0.96, 1.0) * band * 0.22;
       col = litF;
-    } else if (isSnowy) {
+    } else
+    //#endfeature
+    //#feature snowy
+    if (isSnowy) {
       // ---- Snowy material kind (IQ Snow Bridge recipe-only port) -----------
       // Standard Lambert with the underlying base color, then blend snow on top
       // of upward-facing patches with noise coverage + cosine micro-normal
@@ -1075,7 +1138,10 @@ void main() {
 
       float snFog = atmosphereDensity(p, t);
       col = mix(lin, vec3(0.85, 0.87, 0.90), snFog * 0.7);
-    } else if (isMountain) {
+    } else
+    //#endfeature
+    //#feature mountain
+    if (isMountain) {
       // ---- Mountain-shading branch (Sprint A2: 4-layer altitude/normal blend) ----
       // Kolaczynski-style terrainColor: rock base → ground (low) → grass (mid +
       // gentle slopes) → snow (high + gentle slopes). Each layer modulated by
@@ -1285,7 +1351,10 @@ void main() {
       vec3 fogExt = exp2(-mountDist * 0.0012 * vec3(1.0, 1.5, 4.0));
       vec3 fogColor = vec3(0.85, 0.87, 0.90);
       col = col * fogExt + (1.0 - fogExt) * fogColor;
-    } else if (isEroded) {
+    } else
+    //#endfeature
+    //#feature eroded
+    if (isEroded) {
       // ---- Eroded-terrain material kind (Rune Skovbo Johansen recipe) -------
       // Multi-layer shading over the CPU-baked heightmap. Channels:
       //   .x = height [0,1]   .y = ridgeMap [0,1]   .z = treeAmount [0,1]
@@ -1370,7 +1439,10 @@ void main() {
       float eDist = length(p - ro);
       vec3 fogExt = exp2(-eDist * 0.020 * vec3(1.0, 1.2, 2.0));
       col = lin * fogExt + (1.0 - fogExt) * vec3(0.85, 0.87, 0.90);
-    } else if (isBuilding) {
+    } else
+    //#endfeature
+    //#feature building
+    if (isBuilding) {
       // ---- Building material kind (Otavio Good Skyline CC0 recipe) ----------
       // Sub-dispatch: street (y<0.05), car (0.05<y<0.13 in road region), or wall.
       // Procedural window grid: horizontal floor bands (Y) × vertical column
@@ -1490,7 +1562,9 @@ void main() {
       float bDist = length(p - ro);
       vec3 fogExt = exp2(-bDist * 0.012 * vec3(1.0, 1.3, 2.5));
       col = lin * fogExt + (1.0 - fogExt) * vec3(0.85, 0.87, 0.90);
-    } else {
+    } else
+    //#endfeature
+    {
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
       // metals + emissives keep smooth uniform surfaces; matte diffuse gets
       // ±10% albedo variance to break up plastic-looking uniformity. The
@@ -1748,7 +1822,33 @@ void main() {
   // Sky pixels get alpha=1.0 (max depth) so DoF doesn't blur sky against itself.
   float depthNorm = hit ? clamp(t / MAX_DIST, 0.0, 1.0) : 1.0;
   fragColor = vec4(col, depthNorm);
-}`;
+}`,
+    features,
+  );
+}
+
+// Shared studio compile: pass A (no library) gets the authoritative per-leaf
+// materials → feature set; pass B emits the real shader with the library
+// DCE-pruned against the GATED template. Both passes walk the same tree, so
+// the u_sdfArgs slot order is identical (deterministic).
+function compileStudioFrag(sdf) {
+  const probe = compileSDF3ToGLSL(sdf, {
+    sceneFnName: 'sceneSDF',
+    includeLibrary: false,
+    emitObjectIndex: true,
+    uniformArgs: true,
+  });
+  if (probe.error) throw new Error(`compileSDF3ToGLSL: ${probe.error}`);
+  const features = featuresFromLeafMaterials(probe.leafMaterials);
+  const result = compileSDF3ToGLSL(sdf, {
+    sceneFnName: 'sceneSDF',
+    includeLibrary: true,
+    emitObjectIndex: true,
+    uniformArgs: true,
+    prune: buildFragmentShader('', features),
+  });
+  if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
+  return { fragSource: buildFragmentShader(result.glsl, features), result };
 }
 
 // =============================================================================
@@ -2047,22 +2147,7 @@ export function createStudioRenderer({
   // comments as the conceptual upload step. The function body is kept for
   // future use (re-upload on SDF tree change) but is not currently called.
   function _uploadSDF(sdf) {
-    // emitObjectIndex: true → scene() updates `minIndex` global with the closest
-    // leaf's index. Fragment shader uses minIndex to pick per-subject color via
-    // an IQ cosine palette — fixes the "everything is grey" look.
-    const result = compileSDF3ToGLSL(sdf, {
-      sceneFnName: 'sceneSDF',
-      includeLibrary: true,
-      emitObjectIndex: true,
-      uniformArgs: true, // data -> u_sdfArgs uniforms: same scene shape never recompiles
-      // Dead-code eliminate the library against the studio's own fragment code
-      // (buildFragmentShader('') = the full template minus the scene) — unused
-      // primitives never reach the driver. See glsl-prune.js.
-      prune: buildFragmentShader(''),
-    });
-    if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
-
-    const fragSource = buildFragmentShader(result.glsl);
+    const { fragSource, result } = compileStudioFrag(sdf);
     return uploadCompiledFrag(fragSource, result);
   }
 
@@ -2698,17 +2783,11 @@ export function createStudioRenderer({
      */
     render(sdf) {
       // ---- Step 1: Generate GLSL (CPU only, fast ~5ms) ----
-      // Done sync so we can return bytes for the lift-info display.
-      const result = compileSDF3ToGLSL(sdf, {
-        sceneFnName: 'sceneSDF',
-        includeLibrary: true,
-        emitObjectIndex: true,
-        uniformArgs: true, // data -> u_sdfArgs uniforms (see _uploadSDF note)
-        // library DCE against the studio fragment template — see _uploadSDF note
-        prune: buildFragmentShader(''),
-      });
-      if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
-      const fragSource = buildFragmentShader(result.glsl);
+      // Done sync so we can return bytes for the lift-info display. Feature
+      // gating + data-as-uniforms + library DCE all happen inside
+      // compileStudioFrag — the emitted source depends on the scene SHAPE and
+      // feature set only, never on the data.
+      const { fragSource, result } = compileStudioFrag(sdf);
       const bytes = fragSource.length;
 
       // ---- Step 2: Clear canvas to BLACK IMMEDIATELY ----

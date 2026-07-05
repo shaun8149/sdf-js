@@ -24,16 +24,21 @@
 //   defaults.postFx.{exposure, vignette, bloom, lensFlare, tonemap} — 强度
 // =============================================================================
 
-const POSTFX_VS_SRC = `attribute vec2 a_pos;
+const POSTFX_VS_SRC = `#version 300 es
+in vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
 // -----------------------------------------------------------------------------
 // Bloom pre-pass: 17×17 高斯 at 低分辨率（MttGz4 Buffer B 同款）
 // 输出预滤后的 bloom 纹理供 composite pass mix。
 // -----------------------------------------------------------------------------
-const BLOOM_FS_SRC = `#ifdef GL_ES
+const BLOOM_FS_SRC = `#version 300 es
 precision highp float;
-#endif
+#define texture2D texture
+out vec4 fragColor;
+// Loop-unroll guard - never set (defaults 0.0); defeats fxc constant-bound
+// loop unrolling (same trick as the studio scene shader - see studio.js).
+uniform float u_pfGuard;
 
 uniform sampler2D u_scene;
 uniform vec2 u_bloomRes;
@@ -48,9 +53,9 @@ void main() {
   vec3 result = vec3(0.0);
   float total = 0.0;
   float fY = -float(KERNEL_SIZE);
-  for (int y = -KERNEL_SIZE; y <= KERNEL_SIZE; y++) {
+  for (int y = -KERNEL_SIZE; y <= KERNEL_SIZE + int(u_pfGuard); y++) {
     float fX = -float(KERNEL_SIZE);
-    for (int x = -KERNEL_SIZE; x <= KERNEL_SIZE; x++) {
+    for (int x = -KERNEL_SIZE; x <= KERNEL_SIZE + int(u_pfGuard); x++) {
       vec2 vOffset = vec2(fX, fY);
       vec2 vTapUV = (gl_FragCoord.xy + vOffset + 0.5) / u_bloomRes;
       // 边界外回 0 防 wrap artefact
@@ -79,15 +84,19 @@ void main() {
     }
     fY += 1.0;
   }
-  gl_FragColor = vec4(result / total, 1.0);
+  fragColor = vec4(result / total, 1.0);
 }`;
 
 // -----------------------------------------------------------------------------
 // Composite pass: 合成 + tonemap + post-FX
 // -----------------------------------------------------------------------------
-const COMPOSITE_FS_SRC = `#ifdef GL_ES
+const COMPOSITE_FS_SRC = `#version 300 es
 precision highp float;
-#endif
+#define texture2D texture
+out vec4 fragColor;
+// Loop-unroll guard - never set (defaults 0.0); defeats fxc constant-bound
+// loop unrolling (same trick as the studio scene shader - see studio.js).
+uniform float u_pfGuard;
 
 uniform sampler2D u_scene;       // HDR linear scene (RGB + depth in alpha)
 uniform sampler2D u_bloom;       // 预滤好的 bloom 纹理
@@ -223,7 +232,7 @@ vec3 dofMotionBlurSample(vec2 uv, float coc, vec2 motionVec) {
   float fIndex = 0.0;
   float f = 0.0;
   float invTaps = 1.0 / float(DOF_TAPS);
-  for (int i = 1; i <= DOF_TAPS; i++) {
+  for (int i = 1; i <= DOF_TAPS + int(u_pfGuard); i++) {
     // Motion-blur sweep position
     vec2 mvTap = mix(uv, uv + motionVec, f - 0.5);
 
@@ -258,7 +267,7 @@ vec2 heatHazeUV(vec2 uv) {
   if (dn >= 0.999) return uv;  // sky pixel: no haze (cheap exit)
   vec3 worldPos = reconstructWorldPos(uv, dn);
   float haze = 0.0;
-  for (int i = 0; i < MAX_HEAT_HAZE; i++) {
+  for (int i = 0; i < MAX_HEAT_HAZE + int(u_pfGuard); i++) {
     if (i >= u_heatHazeCount) break;
     vec4 hv = u_heatHaze[i];
     vec3 toFlame = worldPos - hv.xyz;
@@ -339,7 +348,7 @@ void main() {
   // Gamma
   col = pow(col, vec3(1.0 / u_gamma));
 
-  gl_FragColor = vec4(col, 1.0);
+  fragColor = vec4(col, 1.0);
 }`;
 
 // =============================================================================
