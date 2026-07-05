@@ -1277,7 +1277,7 @@ function validatePostFx(pfx, errors, warnings) {
 // 'cut' is the default transition between shots (hard cut); ease='blend' opts
 // into smoothly interpolating from the prev shot's end state.
 // =============================================================================
-const SHOT_EASES = new Set(['smooth', 'linear', 'in', 'out', 'inout']);
+const SHOT_EASES = new Set(['smooth', 'linear', 'in', 'out', 'inout', 'whip']);
 const SHOT_TRANSITIONS = new Set(['cut', 'blend']);
 
 // DoF fields (aperture / focalDistance) accept a number OR a [from, to] pair

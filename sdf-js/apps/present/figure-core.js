@@ -47,7 +47,10 @@ export function createFigure({ outdoor = false } = {}) {
   const loading = document.getElementById('loading');
 
   function show(scene) {
-    for (const el of els) el.remove();
+    for (const el of els) {
+      if (el._lead) el._lead.remove();
+      el.remove();
+    }
     // Reveal-timed overlay: labels fade in as the sequence clock passes each
     // item's revealAt (makeOverlay isn't reused — it has no reveal timing).
     items = (scene.overlay || []).filter((o) => o.anchor && o.text);
@@ -81,29 +84,72 @@ export function createFigure({ outdoor = false } = {}) {
       loading.classList.add('done');
     }
     const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;
+    // Pass 1: project + opacity/count-up; collect visible labels for layout.
+    const placedRects = []; // near labels claim space first
+    const visible = [];
     for (let i = 0; i < items.length; i++) {
       const o = items[i],
         el = els[i];
       const p = studio.project(o.anchor);
       if (!p || !p.visible) {
         el.style.opacity = 0;
+        if (el._lead) el._lead.style.opacity = 0;
         continue;
       }
-      el.style.left = `${p.x * canvas.clientWidth}px`;
-      el.style.top = `${p.y * canvas.clientHeight}px`;
       // Distance falloff: labels stay crisp near the camera, fade with depth so
       // wide/deck shots don't pile every station's text on screen. Titles keep
       // a longer reach (they ARE the far signpost).
       const reach = o.role === 'title' ? 60 : 22;
       const depthFade =
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
-      el.style.opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
+      const opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
+      el.style.opacity = opacity;
       if (o._countTarget != null && o.revealAt != null) {
         const k = Math.max(0, Math.min(1, (t - o.revealAt) / 0.8));
         const eased = 1 - (1 - k) * (1 - k); // ease-out: fast start, settle on the number
         const v = Math.round(o._countTarget * eased);
         const shown = k >= 1 ? o.text : v.toLocaleString('en-US');
         if (el.textContent !== shown) el.textContent = shown;
+      }
+      if (opacity > 0.02) visible.push({ o, el, p, depth: p.depth ?? 0 });
+      else if (el._lead) el._lead.style.opacity = 0;
+    }
+    // Pass 2: collision layout, near-first (near labels keep their spot; far
+    // ones step DOWN in 30px slots until clear). A displaced label gets a thin
+    // leader line back up to its anchor so it never floats ambiguously.
+    visible.sort((a, b) => a.depth - b.depth);
+    for (const v of visible) {
+      const x = v.p.x * canvas.clientWidth;
+      let y = v.p.y * canvas.clientHeight;
+      const w = v.el.offsetWidth || 60;
+      const h = v.el.offsetHeight || 26;
+      const collides = (yy) =>
+        placedRects.some(
+          (r) => Math.abs(x - r.x) * 2 < w + r.w + 6 && Math.abs(yy - r.y) * 2 < h + r.h + 4,
+        );
+      let shift = 0;
+      while (shift < 4 && collides(y)) {
+        y += 30;
+        shift++;
+      }
+      placedRects.push({ x, y, w, h });
+      v.el.style.left = `${x}px`;
+      v.el.style.top = `${y}px`;
+      if (shift > 0) {
+        if (!v.el._lead) {
+          const lead = document.createElement('div');
+          lead.style.cssText =
+            'position:fixed;width:1px;background:rgba(255,255,255,0.45);pointer-events:none;transform:translateX(-50%);';
+          document.body.appendChild(lead);
+          v.el._lead = lead;
+        }
+        const anchorY = v.p.y * canvas.clientHeight;
+        v.el._lead.style.left = `${x}px`;
+        v.el._lead.style.top = `${anchorY}px`;
+        v.el._lead.style.height = `${Math.max(0, y - anchorY - h / 2)}px`;
+        v.el._lead.style.opacity = v.el.style.opacity;
+      } else if (v.el._lead) {
+        v.el._lead.style.opacity = 0;
       }
     }
     requestAnimationFrame(tick);
