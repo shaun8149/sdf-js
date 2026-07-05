@@ -41,6 +41,24 @@ function fitFontSize(ctx, text, maxW, target, min, specFn) {
   return min;
 }
 
+// fitFontSize bottoms out at `min` and gives up — long text (e.g. "Learning
+// & Growth" in the rotated perspective label, where maxW is bounded by the
+// row height) can still overflow past that at the floor size. Truncate with
+// an ellipsis as a last resort so it never bleeds into a neighboring row/card.
+// Assumes ctx.font is already set to the size being used.
+function truncateToWidth(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let lo = 0;
+  let hi = text.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    const candidate = text.slice(0, mid) + '…';
+    if (ctx.measureText(candidate).width <= maxW) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo > 0 ? text.slice(0, lo) + '…' : '…';
+}
+
 function lighten(rgb, amt) {
   return [
     Math.min(255, rgb[0] + (255 - rgb[0]) * amt),
@@ -115,7 +133,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillStyle = rgbCss([255, 255, 255]);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(p.label ?? '', 0, 0);
+    const labelText = truncateToWidth(ctx, p.label ?? '', rowH - 8);
+    ctx.fillText(labelText, 0, 0);
     ctx.restore();
 
     // Item cards in the right area
@@ -156,7 +175,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.fillStyle = rgbCss(fg);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(itemText, cardX + cardW / 2, cardY + cardH / 2);
+        const displayItemText = truncateToWidth(ctx, itemText, cardW - 12);
+        ctx.fillText(displayItemText, cardX + cardW / 2, cardY + cardH / 2);
       }
     }
 
