@@ -27,6 +27,7 @@ const TESTS = [
   { category: 'smoke', file: 'sdf-js/test/smoke.mjs' },
   { category: 'smoke', file: 'sdf-js/test/smoke2d.mjs' },
   { category: 'smoke', file: 'sdf-js/test/scene-smoke.mjs' },
+  { category: 'smoke', file: 'sdf-js/scripts/test-glsl-prune.mjs' },
 
   // Geometry sanity checker (M5 prereq)
   { category: 'sanity', file: 'sdf-js/scripts/test-sanity.mjs' },

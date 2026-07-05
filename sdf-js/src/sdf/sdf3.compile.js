@@ -23,6 +23,7 @@ import { NOISE_GLSL } from './noise.glsl.js';
 import { VORONOI_GLSL } from './voronoi.glsl.js';
 import { SDF2, SDF3 } from './core.js';
 import { isTimeExpr, mulT } from './time.js';
+import { pruneGLSL } from './glsl-prune.js';
 
 // ---- format helpers --------------------------------------------------------
 
@@ -155,10 +156,20 @@ function _hashPoints(points) {
  *     side-effect 模式 emit；scene 函数变成多语句，跟 Autoscope 一样维护
  *     `objectIndex` / `minIndex` globals → BOB GPU 上色用。需要 caller 自己 prelude
  *     IMIN_GLSL 字符串（提供 globals + imin / ismoothUnion）。
+ *   @param {string} [opts.prune] 死代码消除（opt-in）：库里只保留从
+ *     (emitted body + extras + 这段调用方 GLSL) 可达的函数。调用方把自己的
+ *     fragment 模板传进来（e.g. studio 的 buildFragmentShader('')），场景没用到
+ *     的 primitive（terrain/city/bridge…）不再进 driver 编译 —— 冷编译从 30s+
+ *     降到秒级的关键。不传 = 整库照旧（其余 renderer 不受影响）。
  * @returns {{ glsl: string|null, error: string|null }}
  */
 export function compileSDF3ToGLSL(sdf, opts = {}) {
-  const { includeLibrary = true, sceneFnName = 'scene', emitObjectIndex = false } = opts;
+  const {
+    includeLibrary = true,
+    sceneFnName = 'scene',
+    emitObjectIndex = false,
+    prune = null,
+  } = opts;
 
   if (!(sdf instanceof SDF3)) {
     return { glsl: null, error: 'not an SDF3 instance' };
@@ -189,8 +200,22 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
     // code uses them for surface texture (fbm) and patterns (voronoi/brick/hex).
     // SDF2_GLSL provides 2D helpers used by revolve/extrude ops.
     const extrasCode = Array.from(_compileExtras.values()).join('\n\n');
+    let library = includeLibrary
+      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${SDF2_GLSL}`
+      : '';
+    if (includeLibrary && prune != null) {
+      // Dead-code eliminate the library against everything that can call into
+      // it: the emitted scene body, the compile extras, imin helpers, and the
+      // caller's own fragment code (opts.prune).
+      library = pruneGLSL(library, [
+        body,
+        extrasCode,
+        emitObjectIndex ? IMIN_GLSL : '',
+        String(prune),
+      ]);
+    }
     const prelude = includeLibrary
-      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${SDF2_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
+      ? `${library}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
       : `${extrasCode}\n\n`;
     return { glsl: prelude + body, error: null, leafMaterials, leafPatterns };
   } catch (e) {
