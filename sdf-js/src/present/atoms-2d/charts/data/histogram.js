@@ -66,6 +66,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   if (n === 0) return;
 
   // ---- Title ----
+  const hasMilestoneLabels =
+    Array.isArray(args.milestones) && args.milestones.some((m) => m && m.label);
+
   let chartTop = y + PAD_TOP;
   if (args.title) {
     const titleSize = Math.round(h * 0.07);
@@ -74,7 +77,18 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(String(args.title), x, y);
-    chartTop = y + h * TITLE_FRAC;
+    // Reserve room for the actual title glyph height (not just the fixed
+    // TITLE_FRAC band), so a tall title never bleeds into the plot area.
+    chartTop = y + Math.max(h * TITLE_FRAC, titleSize + PAD_TOP + 6);
+  }
+  // Milestone annotation labels (e.g. "Median") used to render ABOVE plotT,
+  // i.e. back up into the title band — reserve extra headroom for them here
+  // instead, then draw them BELOW plotT (inside the plot, near its top).
+  if (hasMilestoneLabels) {
+    // Slightly generous vs. the actual milestone label font (plotH * 0.07,
+    // computed later from a necessarily-smaller plotH) so it always clears.
+    const msLabelSize = Math.max(10, Math.round(h * 0.06));
+    chartTop += msLabelSize + 8;
   }
 
   // ---- Plot area ----
@@ -294,7 +308,10 @@ function drawBellCurve(
 }
 
 /**
- * Draw milestone dashed lines (value in data space) with top label.
+ * Draw milestone dashed lines (value in data space) with a label.
+ * Label renders just BELOW plotT (inside the plot, near its top) rather
+ * than above it — chartTop already reserves headroom for this so the
+ * label never collides with the title.
  */
 function drawMilestones(ctx, milestones, xMin, xSpan, plotL, plotT, plotB, plotW, plotH, fg) {
   const labelSize = Math.max(10, Math.round(plotH * 0.07));
@@ -323,8 +340,8 @@ function drawMilestones(ctx, milestones, xMin, xSpan, plotL, plotT, plotB, plotW
       ctx.fillStyle = rgbaCss(milestoneColor, 0.95);
       ctx.font = `600 ${labelSize}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText(String(ms.label), mx, plotT - 2);
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(ms.label), mx, plotT + 2);
       ctx.restore();
     }
   }
