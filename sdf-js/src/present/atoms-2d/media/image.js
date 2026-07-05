@@ -28,8 +28,13 @@ export const spec = {
     src: {
       type: 'string (data: URI or parser-emitted relative path)',
       required: true,
+      // Small inline SVG (gradient sky + mountain silhouette) — a stand-in
+      // for a parser-emitted embedded photo. Only the *example* here is a
+      // synthetic SVG so the gallery renders something real; production
+      // src values are always data: URIs or relative paths lifted verbatim
+      // from the source document (see spec description above).
       example:
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWNgIBb8BwABKAEBwGDOlAAAAABJRU5ErkJggg==',
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffb066'/><stop offset='1' stop-color='%23c65a4a'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><polygon fill='%23332244' points='0,360 120,180 220,260 340,160 460,250 560,140 640,220 640,360'/></svg>",
     },
     fit: { type: "'cover'|'contain'|'fill'?", default: "'cover'", example: 'cover' },
     caption: { type: 'string?', example: 'Slide 3 photo' },
@@ -186,8 +191,16 @@ export async function drawPseudo3D(ctx, args, opts = {}) {
 
   ctx.save();
 
+  // Always clip to the atom's own box — 'cover' fit intentionally
+  // over-scales the image to fill the box and can render outside [x,y,w,h]
+  // (e.g. inside image-split, this used to bleed into the text panel next
+  // door). borderRadius just picks rounded vs. rectangular clip.
   if (borderRadius > 0) {
     clipRoundRect(ctx, x, y, w, h, borderRadius);
+  } else {
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
   }
 
   // Node env: no Image constructor → draw placeholder
