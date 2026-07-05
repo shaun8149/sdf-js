@@ -156,18 +156,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.restore();
       }
 
-      // Label (inside node if large enough; else below)
+      // Label (inside node if large enough; else below) — min 11px, and
+      // on-sphere labels get a white halo so they read on any node color.
       if (node.label) {
         const insideOk = nr > 18;
         if (insideOk) {
-          ctx.fillStyle = 'white';
-          ctx.font = `700 ${Math.round(nr * 0.5)}px Inter, system-ui, sans-serif`;
+          const fontSize = Math.max(11, Math.round(nr * 0.5));
+          ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+          ctx.strokeText(String(node.label), nx, ny);
+          ctx.fillStyle = rgbCss(fg);
           ctx.fillText(String(node.label), nx, ny);
         } else {
           ctx.fillStyle = rgbCss(fg);
-          ctx.font = `600 ${Math.round(h * 0.034)}px Inter, system-ui, sans-serif`;
+          ctx.font = `600 ${Math.max(11, Math.round(h * 0.034))}px Inter, system-ui, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText(String(node.label), nx, ny + nr + 4);
