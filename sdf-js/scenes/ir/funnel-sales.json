@@ -1,0 +1,8 @@
+{
+  "structure": "sequence",
+  "nodes": ["Leads", "Qualified", "Proposal", "Negotiation", "Closed"],
+  "magnitude": [1200, 520, 240, 110, 45],
+  "emphasis": [4],
+  "order": [0, 1, 2, 3, 4],
+  "title": "Sales Funnel"
+}
