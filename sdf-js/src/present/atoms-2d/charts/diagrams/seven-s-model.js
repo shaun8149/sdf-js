@@ -94,41 +94,87 @@ function drawHex(ctx, cx, cy, r, label, subLabel, color, fg, isCenter) {
 
   ctx.restore();
 
-  // Label
+  // Label — auto-shrink to fit the hexagon width (min 9px); if it still
+  // doesn't fit at the minimum size, fall back to a 2-line wrap instead of
+  // truncating with an ellipsis (truncate() is now a last-resort-only path
+  // for a single unbreakable word).
   const labelColor = 'rgba(255,255,255,1)';
-  const fontSize = isCenter
-    ? Math.max(10, Math.min(14, r * 0.38))
-    : Math.max(9, Math.min(13, r * 0.38));
+  const targetFs = isCenter ? Math.min(16, r * 0.4) : Math.min(14, r * 0.4);
+  const minFs = 9;
+  const maxW = r * 1.5;
 
   ctx.fillStyle = labelColor;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   if (subLabel) {
-    // Two lines: label above, subLabel below
-    const mainSize = fontSize;
-    const subSize = Math.max(8, mainSize * 0.75);
-    const gap = mainSize * 0.6;
-    ctx.font = `700 ${mainSize}px Inter, system-ui, sans-serif`;
-    ctx.fillText(truncate(label, r, ctx), cx, cy - gap * 0.5);
-    ctx.font = `500 ${subSize}px Inter, system-ui, sans-serif`;
+    // Two lines: label above, subLabel below — each independently shrunk.
+    const main = fitLabelLines(ctx, label, maxW, targetFs, minFs, isCenter ? 700 : 600);
+    const sub = fitLabelLines(ctx, subLabel, r * 1.3, targetFs * 0.8, minFs - 1, 500);
+    const gap = main.fontSize * 0.65;
+    ctx.font = `${isCenter ? 700 : 600} ${main.fontSize}px Inter, system-ui, sans-serif`;
+    ctx.fillText(main.lines[0], cx, cy - gap * 0.5);
+    ctx.font = `500 ${sub.fontSize}px Inter, system-ui, sans-serif`;
     ctx.fillStyle = 'rgba(255,255,255,0.82)';
-    ctx.fillText(truncate(subLabel, r * 0.9, ctx), cx, cy + gap * 0.7);
+    ctx.fillText(sub.lines[0], cx, cy + gap * 0.7);
   } else {
-    ctx.font = `${isCenter ? 700 : 600} ${fontSize}px Inter, system-ui, sans-serif`;
-    // Wrap long labels across two lines if needed
-    const words = label.split(' ');
-    if (words.length > 1 && ctx.measureText(label).width > r * 1.5) {
-      const mid = Math.ceil(words.length / 2);
-      const line1 = words.slice(0, mid).join(' ');
-      const line2 = words.slice(mid).join(' ');
-      const lineH = fontSize * 1.15;
-      ctx.fillText(truncate(line1, r * 1.6, ctx), cx, cy - lineH * 0.5);
-      ctx.fillText(truncate(line2, r * 1.6, ctx), cx, cy + lineH * 0.5);
+    const fit = fitLabelLines(ctx, label, maxW, targetFs, minFs, isCenter ? 700 : 600);
+    ctx.font = `${isCenter ? 700 : 600} ${fit.fontSize}px Inter, system-ui, sans-serif`;
+    if (fit.lines.length === 2) {
+      const lineH = fit.fontSize * 1.15;
+      ctx.fillText(fit.lines[0], cx, cy - lineH * 0.5);
+      ctx.fillText(fit.lines[1], cx, cy + lineH * 0.5);
     } else {
-      ctx.fillText(truncate(label, r * 1.6, ctx), cx, cy + 1);
+      ctx.fillText(fit.lines[0], cx, cy + 1);
     }
   }
+}
+
+// Fit `text` inside `maxW`: try a single line shrinking font from targetFs
+// down to minFs; if it never fits, try a 2-line word-wrap (also shrinking
+// font); if even that can't fit at minFs, truncate the single unbreakable
+// remainder with an ellipsis as a last resort.
+function fitLabelLines(ctx, text, maxW, targetFs, minFs, weight) {
+  const t0 = Math.max(minFs, Math.round(targetFs));
+  for (let fs = t0; fs >= minFs; fs--) {
+    ctx.font = `${weight} ${fs}px Inter, system-ui, sans-serif`;
+    if (ctx.measureText(text).width <= maxW) return { lines: [text], fontSize: fs };
+  }
+
+  const words = String(text).split(' ');
+  if (words.length > 1) {
+    const mid = Math.ceil(words.length / 2);
+    const line1 = words.slice(0, mid).join(' ');
+    const line2 = words.slice(mid).join(' ');
+    for (let fs = t0; fs >= minFs; fs--) {
+      ctx.font = `${weight} ${fs}px Inter, system-ui, sans-serif`;
+      if (ctx.measureText(line1).width <= maxW && ctx.measureText(line2).width <= maxW) {
+        return { lines: [line1, line2], fontSize: fs };
+      }
+    }
+    ctx.font = `${weight} ${minFs}px Inter, system-ui, sans-serif`;
+    return { lines: [line1, line2], fontSize: minFs };
+  }
+
+  // Single unbreakable word (e.g. "Structure") — hyphenate a 2-line wrap
+  // rather than dropping straight to an ellipsis, so the full label reads.
+  if (words[0].length > 3) {
+    const word = words[0];
+    const mid = Math.ceil(word.length / 2);
+    const line1 = word.slice(0, mid) + '-';
+    const line2 = word.slice(mid);
+    for (let fs = t0; fs >= minFs; fs--) {
+      ctx.font = `${weight} ${fs}px Inter, system-ui, sans-serif`;
+      if (ctx.measureText(line1).width <= maxW && ctx.measureText(line2).width <= maxW) {
+        return { lines: [line1, line2], fontSize: fs };
+      }
+    }
+    ctx.font = `${weight} ${minFs}px Inter, system-ui, sans-serif`;
+    return { lines: [line1, line2], fontSize: minFs };
+  }
+
+  ctx.font = `${weight} ${minFs}px Inter, system-ui, sans-serif`;
+  return { lines: [truncate(text, maxW, ctx)], fontSize: minFs };
 }
 
 // ---------------------------------------------------------------------------
@@ -186,12 +232,18 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const plotH = y + h - plotTop;
   const cx = x + w / 2;
   const cy = plotTop + plotH / 2;
-  // Outer radius of the arrangement (center to satellite centers)
-  const R = Math.min(w, plotH) * 0.5 * 0.62;
+  // Outer radius of the arrangement (center to satellite centers). Sized so
+  // the full cluster (orbit + satellite hex) fills ~75% of the available
+  // space — previously R was ~0.31 * min(w,h), leaving the cluster
+  // occupying well under a third of the canvas.
+  const ORBIT_FRAC = 0.56; // orbitR / R
+  const SAT_HEX_FRAC = 0.16; // satHexR / R
+  const FILL_FRAC = 0.75; // fraction of min(w, plotH) the cluster diameter should fill
+  const R = (Math.min(w, plotH) * FILL_FRAC) / 2 / (ORBIT_FRAC + SAT_HEX_FRAC);
 
   const centerHexR = R * 0.19; // center hex radius
-  const satHexR = R * 0.16; // satellite hex radius
-  const orbitR = R * 0.56; // distance from center to satellite centers
+  const satHexR = R * SAT_HEX_FRAC; // satellite hex radius
+  const orbitR = R * ORBIT_FRAC; // distance from center to satellite centers
 
   // ---- Satellite positions (0° = top-right, 60° steps, pointy-top hex ring) ----
   // We use 30°, 90°, 150°, 210°, 270°, 330° so satellites sit at flat-edge midpoints
