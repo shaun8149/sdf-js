@@ -2054,6 +2054,7 @@ export function createStudioRenderer({
       sceneFnName: 'sceneSDF',
       includeLibrary: true,
       emitObjectIndex: true,
+      uniformArgs: true, // data -> u_sdfArgs uniforms: same scene shape never recompiles
       // Dead-code eliminate the library against the studio's own fragment code
       // (buildFragmentShader('') = the full template minus the scene) — unused
       // primitives never reach the driver. See glsl-prune.js.
@@ -2276,6 +2277,14 @@ export function createStudioRenderer({
     }
     if (uniformsCache['u_leafPattern[0]'] != null) {
       gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
+    }
+
+    // Data-as-uniforms: the scene's numeric args (positions, radii, dims…)
+    // live in u_sdfArgs, not in the GLSL — a program-cache hit + this upload
+    // IS the whole "scene change" for same-shaped scenes. Zero recompile.
+    if (result.sdfArgs && result.sdfArgs.length) {
+      const loc = gl.getUniformLocation(program, 'u_sdfArgs[0]');
+      if (loc != null) gl.uniform4fv(loc, result.sdfArgs);
     }
   }
 
@@ -2694,6 +2703,7 @@ export function createStudioRenderer({
         sceneFnName: 'sceneSDF',
         includeLibrary: true,
         emitObjectIndex: true,
+        uniformArgs: true, // data -> u_sdfArgs uniforms (see _uploadSDF note)
         // library DCE against the studio fragment template — see _uploadSDF note
         prune: buildFragmentShader(''),
       });
