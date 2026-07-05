@@ -1,0 +1,72 @@
+[
+  {
+    "title": "CS 340: Distributed Systems",
+    "body": [
+      "Fall 2026 · Department of Computer Science",
+      "Instructor: Prof. Elena Vasquez",
+      "Meets Tue/Thu 2:00-3:30pm, Room 220"
+    ]
+  },
+  {
+    "title": "Course Overview",
+    "body": [
+      "Study the theory and practice of building systems that run across many machines",
+      "Topics: consensus, replication, partitioning, consistency models, fault tolerance",
+      "Format: 2 lectures/week + weekly lab + 1 group project",
+      "Prerequisites: CS 240 (Operating Systems), comfort with Go or Rust"
+    ]
+  },
+  {
+    "title": "Learning Objectives",
+    "body": [
+      "Explain CAP theorem tradeoffs and apply them to real system designs",
+      "Implement a working Raft consensus module from scratch",
+      "Diagnose split-brain and network-partition failure modes",
+      "Design a sharded, replicated key-value store under failure",
+      "Read and critique 3 seminal distributed-systems papers"
+    ]
+  },
+  {
+    "title": "Weekly Topics",
+    "body": [
+      "Week 1-2: Networking fundamentals + RPC",
+      "Week 3-4: Replication and consistency models",
+      "Week 5-6: Consensus — Paxos and Raft",
+      "Week 7-8: Partitioning and sharding",
+      "Week 9-10: Fault tolerance and failure detection",
+      "Week 11-12: Distributed transactions",
+      "Week 13-14: Case studies — Spanner, DynamoDB, Kafka",
+      "Week 15: Final project presentations"
+    ]
+  },
+  {
+    "title": "Grading Breakdown",
+    "body": [
+      "Weekly labs: 25% of final grade",
+      "Midterm exam: 20% of final grade",
+      "Group project: 35% of final grade",
+      "Final exam: 15% of final grade",
+      "Participation: 5% of final grade"
+    ]
+  },
+  {
+    "title": "Required Reading List",
+    "body": [
+      "\"Designing Data-Intensive Applications\" — Martin Kleppmann (primary textbook)",
+      "\"In Search of an Understandable Consensus Algorithm\" — Ongaro & Ousterhout (Raft paper)",
+      "\"The Google File System\" — Ghemawat, Gobioff, Leung",
+      "\"Dynamo: Amazon's Highly Available Key-value Store\" — DeCandia et al.",
+      "Weekly paper summaries posted on course site before each Thursday lecture"
+    ]
+  },
+  {
+    "title": "Office Hours & Support",
+    "body": [
+      "Prof. Vasquez: Mon 10am-12pm and Wed 3-4pm, CS Building 412",
+      "TA Jordan Kim: Tue/Thu 4-5:30pm, CS Building lab 105",
+      "TA Priya Nair: Fri 1-3pm, CS Building lab 105",
+      "\"Office hours saved me during the Raft implementation — the TAs actually debug with you line by line.\" — student course evaluation, Spring 2026",
+      "Async help: course Discord, response target under 24 hours"
+    ]
+  }
+]
