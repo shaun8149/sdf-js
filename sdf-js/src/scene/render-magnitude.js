@@ -133,6 +133,7 @@ export function renderMagnitude(ir, opts = {}) {
     });
   });
   // 4 — the super: at the emphasis monolith's base, looking UP its height
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
     duration: 1.0,
     pos: [gx + 0.75, 0.35, 1.35],
@@ -190,7 +191,7 @@ export function renderMagnitude(ir, opts = {}) {
     name: `(magnitude) ${ir.title || nodes[tallest]}${env ? ' · alpine' : ''}`,
     subjects: env ? [...subjects, ...env.subjects] : subjects,
     overlay,
-    cameraSequence: { loop: false, shots },
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
     defaults: env ? env.defaults : { stage: { size: [Math.max(16, rowSpan + 6), 12, 12] } },
   };
 }

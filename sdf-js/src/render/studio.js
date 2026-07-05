@@ -20,6 +20,8 @@ import {
   evaluateCameraSequence,
   sequenceStateToCamState,
   totalDuration as seqTotalDuration,
+  warpTime,
+  unwarpTime,
 } from '../scene/camera-sequence.js';
 
 // GLSL ES 3.00 (studio is WebGL2-only). Shaders without #version are parsed as
@@ -2085,6 +2087,10 @@ export function createStudioRenderer({
   // When non-null, drives camState per frame from a timeline (overrides WASD
   // fly camera until user explicitly takes back via fly keys / mouse).
   let activeSequence = null;
+  let activeHitstops = null; // [{at, hold}] — fighting-game frame freezes (see camera-sequence.js)
+  // Both clocks (sequence camera + u_time world) run through the same warp, so
+  // a hitstop freezes EVERYTHING for its hold, then the world resumes as one.
+  const warpSec = (raw) => warpTime(raw, activeHitstops);
   // Snapshot of the camera basis the LAST frame rendered with — used by
   // project() so Layer-2 overlay labels land exactly where the 3D point is
   // drawn (no camera-convention duplication outside the renderer).
@@ -2395,7 +2401,7 @@ export function createStudioRenderer({
     let frameSubjectOffsets = {};
     let frameSceneState = {};
     if (activeSequence && !sequencePaused && !userTookCam) {
-      const tSec = (performance.now() - sequenceStartTime) / 1000;
+      const tSec = warpSec((performance.now() - sequenceStartTime) / 1000);
       const state = evaluateCameraSequence(activeSequence, tSec, { subjectBaseTargets });
       if (state) {
         const cs = sequenceStateToCamState(state);
@@ -2565,7 +2571,7 @@ export function createStudioRenderer({
     // u_time drives time-aware primitives (sdWaves animation). Without
     // this set, waves were static — sea looked frozen.
     if (uniformsCache.u_time != null) {
-      gl.uniform1f(uniformsCache.u_time, (performance.now() - timeStart) / 1000);
+      gl.uniform1f(uniformsCache.u_time, warpSec((performance.now() - timeStart) / 1000));
     }
     // Sprint 3: volume LUTs. Uploaded per draw because the count + params may
     // change when setVolumes() is called between scene loads. Volume effects
@@ -2616,7 +2622,7 @@ export function createStudioRenderer({
     // Per-frame postfx params start from activePostFx (scene defaults) and
     // get patched with sequence camera overrides (aperture / focalDistance)
     // when a cameraSequence is driving the camera.
-    const tSec = (performance.now() - timeStart) / 1000;
+    const tSec = warpSec((performance.now() - timeStart) / 1000);
     const framePostFx = { ...activePostFx };
     if (sequenceAperture != null) framePostFx.aperture = sequenceAperture;
     if (sequenceFocalDist != null) framePostFx.focalDistance = sequenceFocalDist;
@@ -2730,7 +2736,7 @@ export function createStudioRenderer({
     if (sceneAnimated) return true;
     if (activeSequence && !sequencePaused && !userTookCam) {
       if (activeSequence.loop) return true;
-      const tSec = (performance.now() - sequenceStartTime) / 1000;
+      const tSec = warpSec((performance.now() - sequenceStartTime) / 1000);
       if (tSec < seqTotalDuration(activeSequence)) return true;
     }
     return false;
@@ -3169,6 +3175,8 @@ export function createStudioRenderer({
      */
     setSequence(seq) {
       activeSequence = seq || null;
+      activeHitstops =
+        (seq && Array.isArray(seq.hitstops) && seq.hitstops.length && seq.hitstops) || null;
       sequenceStartTime = performance.now();
       sequencePaused = false;
       userTookCam = false;
@@ -3202,7 +3210,9 @@ export function createStudioRenderer({
     },
     setSequenceTime(tSec) {
       if (!activeSequence) return;
-      sequenceStartTime = performance.now() - tSec * 1000;
+      // tSec is PRESENTATION time — unwarp it so seeks land where the caller
+      // expects even across hitstop holds.
+      sequenceStartTime = performance.now() - unwarpTime(tSec, activeHitstops) * 1000;
       sequencePaused = false;
       userTookCam = false;
       wake();
@@ -3222,7 +3232,7 @@ export function createStudioRenderer({
     getSequenceTime() {
       if (!activeSequence) return 0;
       const now = sequencePaused ? sequencePausedAt : performance.now();
-      return (now - sequenceStartTime) / 1000;
+      return warpSec((now - sequenceStartTime) / 1000);
     },
     getSequenceDuration() {
       return activeSequence ? seqTotalDuration(activeSequence) : 0;

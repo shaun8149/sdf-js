@@ -142,6 +142,7 @@ export function renderSequence(ir, opts = {}) {
   // 4 — the super: hard cut, tight low-angle punch-in on the gold stage.
   // Camera stays above the floor (the emphasis stage can sit near y=0) while
   // still looking slightly UP at the stage for the hero read.
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
     duration: 1.0,
     pos: [0.55, Math.max(goldY - 0.15, 0.14), 1.9],
@@ -198,7 +199,7 @@ export function renderSequence(ir, opts = {}) {
     name: `(sequence) ${ir.title || 'funnel'}${env ? ' · alpine' : ''}`,
     subjects: env ? [...subjects, ...env.subjects] : subjects,
     overlay,
-    cameraSequence: { loop: false, shots },
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
     defaults: env ? env.defaults : { stage: { size: [16, 12, 11] } },
   };
 }
