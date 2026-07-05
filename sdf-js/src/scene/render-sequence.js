@@ -16,13 +16,23 @@ export function magnitudeToRadii(magnitude, maxR = 1.4, tipR = 0.12) {
   return r;
 }
 
-const DEFAULT_MAT = {
-  hue: 0.04,
-  sat: 0.72,
-  value: 0.82,
-  kind: 'normal',
-  roughness: 0.3,
-  clearcoat: 0.45,
+// Per-stage colour: a cool blue→deep-indigo ramp down the funnel (light mouth,
+// darker toward the tip — the descent reads in colour too), with the EMPHASIS
+// stage in warm gold so the outcome pops against the cool family. Warm coral on
+// every stage rendered muddy-brown under the studio's key light; the blue family
+// is proven legible there (sphere-fill gauge).
+const stageMat = (i, N, emphasized) => {
+  if (emphasized)
+    return { hue: 0.11, sat: 0.78, value: 0.95, kind: 'normal', roughness: 0.22, clearcoat: 0.6 };
+  const k = N > 1 ? i / (N - 1) : 0;
+  return {
+    hue: 0.55 + 0.09 * k, // cyan-blue → indigo
+    sat: 0.62 + 0.16 * k,
+    value: 0.85 - 0.3 * k, // light mouth → deep tip
+    kind: 'normal',
+    roughness: 0.3,
+    clearcoat: 0.45,
+  };
 };
 
 export function renderSequence(ir) {
@@ -59,7 +69,7 @@ export function renderSequence(ir) {
       type: 'funnel-3d',
       args: { stages: 1, radii: [radii[i], radii[i + 1]], stageHeight, gap: 0 },
       transform: { translate: [0, yc, 0] },
-      material: { ...DEFAULT_MAT, value: emphasis.has(i) ? 0.9 : 0.72 },
+      material: stageMat(i, N, emphasis.has(i)),
       animation: [
         {
           channel: 'transform.translate.y',
@@ -94,6 +104,20 @@ export function renderSequence(ir) {
       ease: 'smooth',
     });
   }
+  // Payoff ending: after arriving at the outcome, pull back and slightly up to
+  // frame the WHOLE funnel — the audience leaves seeing the full story at once
+  // (every stage revealed, the gold emphasis stage in context).
+  const midY = topY - totalH / 2;
+  shots.push({
+    duration: 2.2,
+    pos: [1.4, midY + 1.1, totalH * 1.7 + radii[0] * 2.6],
+    target: [0, midY + 0.2, 0],
+    fov: 44,
+    transition: 'blend',
+    aperture: 0,
+    focalDistance: totalH * 1.7 + radii[0] * 2.6,
+    ease: 'out',
+  });
 
   // labels → overlay, reveal-tagged just after each stage settles.
   const overlay = [
