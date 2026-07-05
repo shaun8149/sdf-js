@@ -66,7 +66,9 @@ ok(
   const ys = shots.map((s) => s.pos[1]);
   const peakIdx = ys.indexOf(Math.max(...ys));
   ok(peakIdx > 0 && peakIdx < shots.length - 1, 'crane peak mid-sequence (hero → crane → tour)');
-  const superShot = shots.find((s) => s.transition === 'cut' && (s.shake || 0) >= 0.2);
+  const superShot = shots.find(
+    (s) => s.transition === 'cut' && (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) >= 0.2,
+  );
   ok(
     !!superShot && Array.isArray(superShot.exposure),
     'super punch-in (cut + shake + exposure pop)',

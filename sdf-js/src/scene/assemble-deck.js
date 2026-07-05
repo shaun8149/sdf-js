@@ -72,7 +72,7 @@ export function assembleDeck(deck, opts = {}) {
         transition: 'blend',
         aperture: 0,
         focalDistance: stride * 0.8,
-        shake: 0.12,
+        shake: [0.14, 0.05], // sling settles as the next station arrives
         ease: 'inout',
       });
       clock += dur;

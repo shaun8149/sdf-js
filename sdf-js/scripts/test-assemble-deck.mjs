@@ -60,7 +60,9 @@ const deck = JSON.parse(
   const shotCount =
     stations.reduce((s, st) => s + st.cameraSequence.shots.length, 0) + (deck.slides.length - 1);
   ok(scene.cameraSequence.shots.length === shotCount, 'shot count = stations + transits');
-  const transits = scene.cameraSequence.shots.filter((s) => (s.shake || 0) > 0.1 && s.fov === 50);
+  const transits = scene.cameraSequence.shots.filter(
+    (s) => (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) > 0.1 && s.fov === 50,
+  );
   ok(transits.length === 2, 'two transit shots (stage transitions)');
 
   // time: station k's build-ins start after station k-1's camera time has elapsed

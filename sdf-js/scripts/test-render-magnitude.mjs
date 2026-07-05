@@ -48,7 +48,9 @@ ok(
   // tracking: consecutive mid shots move along x
   const xs = shots.slice(2, 2 + 5).map((s) => s.pos[0]);
   ok(new Set(xs.map((x) => x.toFixed(2))).size === 5, 'tracking shot dollies along the row');
-  const superShot = shots.find((s) => s.transition === 'cut' && (s.shake || 0) >= 0.2);
+  const superShot = shots.find(
+    (s) => s.transition === 'cut' && (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) >= 0.2,
+  );
   ok(
     !!superShot && Array.isArray(superShot.exposure),
     'super punch-in (cut + shake + exposure pop)',

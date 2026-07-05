@@ -223,7 +223,7 @@ export function renderNetwork(ir, opts = {}) {
       transition: 'blend',
       aperture: 0,
       focalDistance: dist,
-      shake: 0.07,
+      shake: 0.05,
       ease: 'smooth',
     });
   }
@@ -236,7 +236,7 @@ export function renderNetwork(ir, opts = {}) {
     transition: 'cut',
     aperture: 0,
     focalDistance: 1.6,
-    shake: 0.3,
+    shake: [0.5, 0.06], // impact-then-settle
     exposure: [1.45, 1.0],
     ease: 'out',
   });

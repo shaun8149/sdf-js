@@ -60,7 +60,9 @@ const ys = shots.map((s) => s.pos[1]);
 const peakIdx = ys.indexOf(Math.max(...ys));
 ok(ys[0] < ys[peakIdx], 'opens low (hero angle), rises to the crane peak');
 ok(Math.min(...ys.slice(peakIdx)) < ys[peakIdx] - 2, 'descends from the peak (fly-through)');
-const superShot = shots.find((s) => s.transition === 'cut' && (s.shake || 0) >= 0.2);
+const superShot = shots.find(
+  (s) => s.transition === 'cut' && (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) >= 0.2,
+);
 ok(!!superShot, 'has a hard-cut punch-in with heavy shake (the super)');
 ok(Array.isArray(superShot?.exposure), 'super shot pops exposure (ramp)');
 ok(
