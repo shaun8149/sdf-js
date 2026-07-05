@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas 2D — ALL Atoms Gallery (Sprint 26 visual-quality loop)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 16px; font-family: 'Inter', system-ui; background: #f2f0ec; color: #1e1b1e; }
+    h1 { margin: 0 0 2px; font-size: 18px; }
+    h1 + p { margin: 0 0 16px; color: #666; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .sample { background: #fff; border-radius: 6px; border: 1px solid #ddd; overflow: hidden; }
+    .sample h3 { margin: 0; padding: 6px 10px; font-size: 12px; font-weight: 700; background: #1e1b1e; color: #fff; font-family: 'IBM Plex Mono', monospace; }
+    .sample canvas { display: block; width: 100%; height: auto; }
+    .sample .err { padding: 20px; color: #a00; font-size: 12px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>ALL Atoms Gallery</h1>
+  <p>Every registered atom rendered with its spec example args. <code>?from=0&amp;to=12</code> slices for chunked screenshots. <code>?theme=dark</code> renders on editorial-navy-style dark palette.</p>
+  <div id="grid" class="grid"></div>
+
+  <script type="module">
+    import { listAtomTypes, getAtomSpec, renderAtom } from '/src/present/atoms-2d/registry.js';
+
+    const params = new URLSearchParams(location.search);
+    const FROM = parseInt(params.get('from') ?? '0', 10);
+    const TO = parseInt(params.get('to') ?? '999', 10);
+    const DARK = params.get('theme') === 'dark';
+
+    // Neutral demo palettes — light editorial + dark pitch
+    const PALETTE_LIGHT = {
+      bg: [248, 246, 240],
+      accent: [38, 70, 130],
+      colors: [[38, 70, 130], [165, 130, 90], [90, 140, 110], [190, 90, 80], [120, 110, 160]],
+      silhouetteColor: [30, 27, 30],
+    };
+    const PALETTE_DARK = {
+      bg: [22, 28, 40],
+      accent: [80, 150, 220],
+      colors: [[80, 150, 220], [220, 170, 90], [110, 200, 160], [220, 110, 100], [160, 140, 220]],
+      silhouetteColor: [240, 242, 246],
+    };
+    const palette = DARK ? PALETTE_DARK : PALETTE_LIGHT;
+
+    // Build demo args from the spec's per-arg `example` values.
+    function demoArgsFor(spec) {
+      const args = {};
+      for (const [key, def] of Object.entries(spec.args || {})) {
+        if (def && def.example !== undefined && def.example !== null) args[key] = def.example;
+      }
+      return args;
+    }
+
+    const grid = document.getElementById('grid');
+    const types = listAtomTypes().sort();
+    const slice = types.slice(FROM, TO);
+
+    for (const type of slice) {
+      const cell = document.createElement('div');
+      cell.className = 'sample';
+      const h = document.createElement('h3');
+      h.textContent = `${types.indexOf(type)}. ${type}`;
+      cell.appendChild(h);
+      const canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 360;
+      cell.appendChild(canvas);
+      grid.appendChild(cell);
+
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = `rgb(${palette.bg.join(',')})`;
+      ctx.fillRect(0, 0, 640, 360);
+
+      try {
+        const spec = await getAtomSpec(type);
+        const args = demoArgsFor(spec);
+        await renderAtom(ctx, type, args, 'pseudo3d', { x: 0, y: 0, w: 640, h: 360, palette });
+      } catch (e) {
+        const err = document.createElement('div');
+        err.className = 'err';
+        err.textContent = `RENDER ERROR: ${e.message}`;
+        cell.appendChild(err);
+        console.error(`[gallery] ${type}:`, e);
+      }
+    }
+    console.log(`[gallery] rendered ${slice.length} atoms (${FROM}..${Math.min(TO, types.length)})`);
+    window.__galleryDone = true;
+  </script>
+</body>
+</html>

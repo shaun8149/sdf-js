@@ -143,15 +143,19 @@ function padNum(str, n) {
 }
 
 console.log(
-  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}${padNum('facts%', 8)}`,
+  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}${padNum('facts%', 8)}${padNum('ents%', 7)}`,
 );
 
 for (const r of rows) {
   const fillStr = `${r.structure.slots_baked}/${r.structure.slots_total}`;
   const liftStr = `${r.threeDReadiness.lift_success}/${r.structure.slots_baked}`;
   const factsStr = r.fidelity ? Math.round(r.fidelity.number_recall * 100) + '%' : '—';
+  const entsStr =
+    r.fidelity && r.fidelity.entity_recall != null
+      ? Math.round(r.fidelity.entity_recall * 100) + '%'
+      : '—';
   console.log(
-    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}${padNum(factsStr, 8)}`,
+    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}${padNum(factsStr, 8)}${padNum(entsStr, 7)}`,
   );
 }
 
@@ -161,8 +165,13 @@ const fidelityMean =
   fidelityRows.length > 0
     ? fidelityRows.reduce((s, r) => s + r.fidelity.number_recall, 0) / fidelityRows.length
     : null;
+const entityRows = rows.filter((r) => r.fidelity && r.fidelity.entity_recall != null);
+const entityMean =
+  entityRows.length > 0
+    ? entityRows.reduce((s, r) => s + r.fidelity.entity_recall, 0) / entityRows.length
+    : null;
 console.log(
-  `\n${pad('CORPUS MEAN', 26)}${padNum(corpusMean.toFixed(1), 6)}${fidelityMean != null ? `   facts recall mean: ${(fidelityMean * 100).toFixed(1)}%` : ''}`,
+  `\n${pad('CORPUS MEAN', 26)}${padNum(corpusMean.toFixed(1), 6)}${fidelityMean != null ? `   facts recall mean: ${(fidelityMean * 100).toFixed(1)}%` : ''}${entityMean != null ? `   entity recall mean: ${(entityMean * 100).toFixed(1)}%` : ''}`,
 );
 if (skipped.length) console.log(`\nskipped (not baked): ${skipped.join(', ')}`);
 
@@ -177,6 +186,7 @@ const summary = {
   skipped,
   corpusMean: Math.round(corpusMean * 10) / 10,
   factsRecallMean: fidelityMean != null ? Math.round(fidelityMean * 1000) / 1000 : null,
+  entityRecallMean: entityMean != null ? Math.round(entityMean * 1000) / 1000 : null,
   decks: rows.map((r) => ({
     deckName: r.deckName,
     score: r.score.total,
@@ -198,6 +208,8 @@ const summary = {
     charsPerSlot: r.textBudget.chars_per_slot,
     maxSlotChars: r.textBudget.max_slot_chars,
     numberRecall: r.fidelity ? r.fidelity.number_recall : null,
+    entityRecall: r.fidelity && r.fidelity.entity_recall != null ? r.fidelity.entity_recall : null,
+    missingEntities: r.fidelity ? r.fidelity.missing_entities || [] : [],
     missingNumbers: r.fidelity ? r.fidelity.missing_numbers : [],
   })),
 };
