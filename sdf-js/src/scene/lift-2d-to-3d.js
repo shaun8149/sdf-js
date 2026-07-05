@@ -977,6 +977,516 @@ export const TWIN_MAP = {
       };
     },
   },
+
+  // ── Sprint 24: close the X-gap — twins for the 20 Sprint 19/20 dead-end atoms ──
+  // Each maps to the CLOSEST existing 3D atom so every atom the LLM pipeline can
+  // emit has a 3D exit. Invariant enforced by scripts/test-atom-3d-coverage.mjs.
+
+  'quote-pull': {
+    to: 'cube-3d',
+    lift(a) {
+      return {
+        args: { size: 1.6 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.quote ? [{ text: `“${a.quote}”`, anchor: [0, 3.4, 0], role: 'title' }] : []),
+          ...(a.author ? [{ text: String(a.author), anchor: [0, 0.4, 0], role: 'value' }] : []),
+          ...(a.attribution ? [{ text: String(a.attribution), anchor: [0, -0.2, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'pull-quote-banner': {
+    to: 'cube-3d',
+    lift(a) {
+      return {
+        args: { size: 1.6 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.quote ? [{ text: `“${a.quote}”`, anchor: [0, 3.4, 0], role: 'title' }] : []),
+          ...(a.author ? [{ text: String(a.author), anchor: [0, 0.4, 0], role: 'value' }] : []),
+          ...(a.attribution ? [{ text: String(a.attribution), anchor: [0, -0.2, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  swot: {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const quad = (label, items) => ({
+        text: label,
+        role: 'card',
+        ...(Array.isArray(items) && items.length ? { sublabel: items.slice(0, 4).join(' · ') } : {}),
+      });
+      return {
+        args: { rows: 2, cols: 2 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          quad('Strengths', a.strengths),
+          quad('Weaknesses', a.weaknesses),
+          quad('Opportunities', a.opportunities),
+          quad('Threats', a.threats),
+        ],
+      };
+    },
+  },
+
+  'value-chain-diagram': {
+    to: 'flow-chart-3d',
+    lift(a) {
+      const primary = a.primary || [];
+      return {
+        args: { steps: Math.max(2, primary.length) },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(primary.map((p) => p.label || '')),
+          ...(Array.isArray(a.support) && a.support.length
+            ? [{ text: a.support.join(' · '), anchor: [0, -0.4, 0], role: 'card' }]
+            : []),
+          ...(a.outcome ? [{ text: String(a.outcome), anchor: [3.0, 3.2, 0], role: 'value' }] : []),
+        ],
+      };
+    },
+  },
+
+  'change-curve-chart': {
+    to: 'timeline-3d',
+    lift(a) {
+      const phases = a.phases || [];
+      return {
+        args: { count: Math.max(2, phases.length) },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(phases.map((p) => p.label || '')),
+        ],
+      };
+    },
+  },
+
+  'radial-wheel-segmented': {
+    to: 'circle-segmented-3d',
+    lift(a) {
+      const segments = a.segments || [];
+      return {
+        args: { count: Math.max(2, segments.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...(a.hub ? [{ text: String(a.hub), anchor: [0, 1.6, 0], role: 'value' }] : []),
+          ...rightCards(segments.map((s) => s.label || '')),
+        ],
+      };
+    },
+  },
+
+  'section-number-divider': {
+    to: 'cube-3d',
+    lift(a) {
+      return {
+        args: { size: 1.8 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.number ? [{ text: String(a.number), anchor: [0, 3.2, 0], role: 'value' }] : []),
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 0.4, 0], role: 'title' }] : []),
+          ...(a.subtitle ? [{ text: String(a.subtitle), anchor: [0, -0.3, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'stat-banner': {
+    to: 'kpi-card-3d',
+    lift(a) {
+      return {
+        args: {},
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.value ? [{ text: String(a.value), anchor: [0, 2.6, 0], role: 'value' }] : []),
+          ...(a.label ? [{ text: String(a.label), anchor: [0, 0.6, 0], role: 'card' }] : []),
+          ...(a.trend ? [{ text: String(a.trend), anchor: [2.4, 2.6, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'stat-with-icon': {
+    to: 'kpi-card-3d',
+    lift(a) {
+      return {
+        args: {},
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.value ? [{ text: String(a.value), anchor: [0, 2.6, 0], role: 'value' }] : []),
+          ...(a.label ? [{ text: String(a.label), anchor: [0, 0.6, 0], role: 'card' }] : []),
+          ...(a.sublabel ? [{ text: String(a.sublabel), anchor: [0, 0.0, 0], role: 'card' }] : []),
+          ...(a.trend ? [{ text: String(a.trend), anchor: [2.4, 2.6, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'stat-grid-large': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const stats = a.stats || [];
+      return {
+        args: { rows: 1, cols: Math.max(2, stats.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...stats.map((s) => ({
+            text: String(s.value ?? ''),
+            role: 'value',
+            ...(s.label ? { sublabel: String(s.label) } : {}),
+          })),
+        ],
+      };
+    },
+  },
+
+  'comparison-table': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const columns = a.columns || [];
+      const features = a.features || [];
+      return {
+        args: {
+          rows: Math.min(4, Math.max(2, features.length)),
+          cols: Math.max(2, columns.length),
+        },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(columns.map((c) => c.label || '')),
+          ...features.slice(0, 5).map((f) => ({ text: String(f.label || ''), role: 'card' })),
+        ],
+      };
+    },
+  },
+
+  'process-arrows': {
+    to: 'progression-3d',
+    lift(a) {
+      const steps = a.steps || [];
+      return {
+        args: { steps: Math.max(2, steps.length) },
+        transform: { translate: [-1.0, 0.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(steps.map((s) => s.label || '')),
+        ],
+      };
+    },
+  },
+
+  'number-list': {
+    to: 'agenda-list-3d',
+    lift(a) {
+      const items = a.items || [];
+      return {
+        args: { count: Math.max(2, items.length) },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(items.map((it, i) => `${i + 1}. ${it.label || ''}`)),
+        ],
+      };
+    },
+  },
+
+  'numbered-grid': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const items = a.items || [];
+      const cols = a.cols || (items.length <= 6 ? 3 : 4);
+      return {
+        args: { rows: Math.max(1, Math.ceil(items.length / cols)), cols },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...items.slice(0, 8).map((it, i) => ({ text: `${i + 1}. ${it.label || ''}`, role: 'card' })),
+        ],
+      };
+    },
+  },
+
+  'call-to-action': {
+    to: 'cube-3d',
+    lift(a) {
+      return {
+        args: { size: 1.6 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.heading ? [{ text: String(a.heading).toUpperCase(), anchor: [0, 3.4, 0], role: 'title' }] : []),
+          ...(a.subheading ? [{ text: String(a.subheading), anchor: [0, 2.8, 0], role: 'card' }] : []),
+          ...(a.buttonText ? [{ text: String(a.buttonText), anchor: [0, 0.4, 0], role: 'value' }] : []),
+          ...(a.contact ? [{ text: String(a.contact), anchor: [0, -0.4, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'vertical-timeline': {
+    to: 'timeline-3d',
+    lift(a) {
+      const events = a.events || [];
+      return {
+        args: { count: Math.max(2, events.length) },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(events.map((e) => (e.date ? `${e.date} — ${e.label || ''}` : e.label || ''))),
+        ],
+      };
+    },
+  },
+
+  'circle-process-cycle': {
+    to: 'circle-loop-3d',
+    lift(a) {
+      const steps = a.steps || [];
+      return {
+        args: { count: Math.max(3, steps.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...(a.centerLabel ? [{ text: String(a.centerLabel), anchor: [0, 1.6, 0], role: 'value' }] : []),
+          ...rightCards(steps.map((s) => s.label || '')),
+        ],
+      };
+    },
+  },
+
+  'segmented-bar': {
+    to: 'circle-segmented-3d',
+    lift(a) {
+      const segments = a.segments || [];
+      return {
+        args: { count: Math.max(2, segments.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(
+            segments.map((s) => (s.value != null ? `${s.label || ''} ${s.value}` : s.label || '')),
+          ),
+        ],
+      };
+    },
+  },
+
+  'feature-card-grid': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const features = a.features || [];
+      return {
+        args: { count: Math.max(2, features.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(features.map((f) => f.title || '')),
+        ],
+      };
+    },
+  },
+
+  'callout-banner': {
+    to: 'cube-3d',
+    lift(a) {
+      return {
+        args: { size: 1.5 },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.heading ? [{ text: String(a.heading).toUpperCase(), anchor: [0, 3.4, 0], role: 'title' }] : []),
+          ...(a.body ? [{ text: String(a.body), anchor: [0, 0.4, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  // ── Sprint 24 second sweep: 11 older recommended atoms the invariant test caught ──
+
+  'icon-row': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const items = a.items || [];
+      return {
+        args: { count: Math.max(2, items.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(items.map((it) => it.label || '')),
+        ],
+      };
+    },
+  },
+
+  'device-mockup-row': {
+    to: 'device-mockup-3d',
+    lift(a) {
+      const devices = a.devices || [];
+      return {
+        args: { kind: devices[0]?.kind || 'phone' },
+        transform: { translate: [0, 1.5, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(devices.map((d) => d.label || d.kind || '')),
+        ],
+      };
+    },
+  },
+
+  'dashboard-multi-kpi-composite': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const kpis = a.kpis || [];
+      const cols = Math.min(3, Math.max(2, kpis.length));
+      return {
+        args: { rows: Math.max(1, Math.ceil(kpis.length / cols)), cols },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...kpis.slice(0, 6).map((k) => ({
+            text: String(k.value ?? ''),
+            role: 'value',
+            ...(k.label ? { sublabel: String(k.label) } : {}),
+          })),
+        ],
+      };
+    },
+  },
+
+  'isotype-stat-comparison': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const stats = a.stats || [];
+      return {
+        args: { rows: 1, cols: Math.max(2, stats.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...stats.map((s) => ({
+            text: String(s.value ?? ''),
+            role: 'value',
+            ...(s.label ? { sublabel: String(s.label) } : {}),
+          })),
+        ],
+      };
+    },
+  },
+
+  'magazine-column-grid': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const categories = a.categories || [];
+      return {
+        args: { rows: 1, cols: Math.max(2, categories.length) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(categories.map((c) => c.label || c.title || '')),
+        ],
+      };
+    },
+  },
+
+  'isotype-people-grid': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const total = a.total || 10;
+      return {
+        args: { count: Math.min(12, Math.max(4, total)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...(a.highlighted != null && a.label
+            ? [{ text: `${a.highlighted}/${total} ${a.label}`, anchor: [3.0, 2.6, 0], role: 'value' }]
+            : []),
+        ],
+      };
+    },
+  },
+
+  histogram: {
+    to: 'bar-3d',
+    lift(a) {
+      const bins = a.bins || [];
+      return {
+        args: { values: bins.map((b) => b.value ?? b) },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+        ],
+      };
+    },
+  },
+
+  'nine-field-matrix': {
+    to: 'matrix-grid-3d',
+    lift(a) {
+      const cells = a.cells || [];
+      return {
+        args: { rows: 3, cols: 3 },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(cells.slice(0, 5).map((c) => c.label || '')),
+        ],
+      };
+    },
+  },
+
+  'kpi-water-drop': {
+    to: 'sphere-fill-3d',
+    lift(a) {
+      const v = typeof a.value === 'number' ? a.value : 0.5;
+      return {
+        args: { fill: Math.max(0, Math.min(1, v)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.displayValue || a.value != null
+            ? [{ text: String(a.displayValue ?? a.value), anchor: [0, 3.4, 0], role: 'value' }]
+            : []),
+          ...(a.label ? [{ text: String(a.label), anchor: [0, -0.4, 0], role: 'card' }] : []),
+        ],
+      };
+    },
+  },
+
+  'isotype-prop-row': {
+    to: 'icon-grid-3d',
+    lift(a) {
+      const count = a.count || 5;
+      return {
+        args: { count: Math.min(10, Math.max(2, count)) },
+        transform: { translate: [0, 1.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards((a.labels || []).slice(0, 5)),
+        ],
+      };
+    },
+  },
+
+  'stacked-area': {
+    to: 'line-3d',
+    lift(a) {
+      const series = a.series || [];
+      const first = series[0]?.values || series[0]?.data || [];
+      return {
+        args: { values: first.length ? first : [1, 2, 3, 4] },
+        transform: { translate: [0, 0.6, 0] },
+        overlay: [
+          ...(a.title ? [{ text: String(a.title).toUpperCase(), anchor: [0, 3.9, 0], role: 'title' }] : []),
+          ...rightCards(series.map((s) => s.label || '')),
+        ],
+      };
+    },
+  },
 };
 
 // resolve the 3D twin type for a 2D atom type (override or `${type}-3d` rule)
