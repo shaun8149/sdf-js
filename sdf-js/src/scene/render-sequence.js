@@ -57,12 +57,18 @@ export function renderSequence(ir) {
   // ONE subject per stage (a single-band frustum) so each builds in independently.
   // build-in: translate.y from (yc + drop) → yc over [revealStart, revealEnd], then holds.
   // The translate.y channel REPLACES the static y (applyTransform resolveVec3Field), so the
-  // expr must produce the FULL y. Reveal windows stagger by the node's position in `order`.
+  // expr must produce the FULL y.
+  //
+  // Timing (fighting-game staging): the FORM assembles during the intro — a rapid
+  // top-to-bottom cascade (0.35s per stage ≈ stages fall almost together, which
+  // also keeps a falling stage from interpenetrating the settled one above) while
+  // the hero/crane shots play. The DATA then reveals during the spiral tour
+  // (labels per stage, below). Geometry spectacle first, narration second.
   const subjects = [];
   order.forEach((i, k) => {
     const yc = stageY(i);
-    const revealStart = 0.2 + k * holdEach;
-    const revealEnd = revealStart + 0.7;
+    const revealStart = 0.25 + k * 0.35;
+    const revealEnd = revealStart + 0.6;
     const yFull = (yc + drop).toFixed(3);
     subjects.push({
       id: `stage-${i}`,
@@ -79,37 +85,76 @@ export function renderSequence(ir) {
     });
   });
 
-  // fly-through: start above the mouth, descend through the axis to the emphasis stage.
+  // Fly-through — fighting-game camera language (GGST / SF6 supers): hold a calm
+  // reading plane most of the time, then BREAK it at the big moment. Beats:
+  //   1. hero low-angle opening (monumental — looking UP at the mouth)
+  //   2. crane up-and-over the rim
+  //   3. spiral descent — azimuth orbits as the camera drops stage to stage,
+  //      a touch of handheld shake for energy (the 3D-selling move)
+  //   4. the SUPER: hard CUT to a tight low-angle punch-in on the gold outcome
+  //      stage — heavy shake + an exposure pop that settles (SF6 punish-counter)
+  //   5. payoff pull-back — the whole story in one wide frame
+  const midY = topY - totalH / 2;
+  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : N - 1;
+  const goldY = stageY(emphasisIdx);
   const shots = [
+    // 1 — hero low angle, worm's-eye at the mouth
     {
-      duration: 0.01,
-      pos: [0.6, topY + 2.4, 6.2],
-      target: [0, topY, 0],
-      fov: 52,
+      duration: 0.9,
+      pos: [2.3, 0.55, 5.2],
+      target: [0, topY - 0.2, 0],
+      fov: 54,
       aperture: 0,
-      focalDistance: 6,
-      ease: 'smooth',
+      focalDistance: 5.5,
+      ease: 'out',
+    },
+    // 2 — crane up and over the rim
+    {
+      duration: 1.3,
+      pos: [0.9, topY + 2.5, 4.4],
+      target: [0, topY - 0.3, 0],
+      fov: 50,
+      transition: 'blend',
+      aperture: 0,
+      focalDistance: 5,
+      ease: 'inout',
     },
   ];
+  // 3 — spiral descent: orbit ~0.9 rad per stage while dropping
   for (let i = 0; i < N; i++) {
     const y = stageY(i);
+    const theta = 0.9 * (i + 1);
+    const dist = Math.max(2.6, radii[i] * 3.2 + 2.2);
     shots.push({
       duration: holdEach,
-      pos: [0, y + 0.9, Math.max(2.6, radii[i] * 3.2 + 2.2)],
+      pos: [Math.sin(theta) * dist, y + 0.85, Math.cos(theta) * dist],
       target: [0, y, 0],
       fov: 46,
       transition: 'blend',
       aperture: 0,
-      focalDistance: 4,
+      focalDistance: dist,
+      shake: 0.08,
       ease: 'smooth',
     });
   }
-  // Payoff ending: after arriving at the outcome, pull back and slightly up to
-  // frame the WHOLE funnel — the audience leaves seeing the full story at once
-  // (every stage revealed, the gold emphasis stage in context).
-  const midY = topY - totalH / 2;
+  // 4 — the super: hard cut, tight low-angle punch-in on the gold stage.
+  // Camera stays above the floor (the emphasis stage can sit near y=0) while
+  // still looking slightly UP at the stage for the hero read.
   shots.push({
-    duration: 2.2,
+    duration: 1.0,
+    pos: [0.55, Math.max(goldY - 0.15, 0.14), 1.9],
+    target: [0, goldY + 0.12, 0],
+    fov: 40,
+    transition: 'cut',
+    aperture: 0,
+    focalDistance: 2,
+    shake: 0.3,
+    exposure: [1.45, 1.0],
+    ease: 'out',
+  });
+  // 5 — payoff pull-back: the whole funnel, every stage revealed, gold in context
+  shots.push({
+    duration: 2.4,
     pos: [1.4, midY + 1.1, totalH * 1.7 + radii[0] * 2.6],
     target: [0, midY + 0.2, 0],
     fov: 44,
@@ -119,13 +164,15 @@ export function renderSequence(ir) {
     ease: 'out',
   });
 
-  // labels → overlay, reveal-tagged just after each stage settles.
+  // labels → overlay, reveal-tagged as the spiral tour reaches each stage
+  // (introLead = hero 0.9s + crane 1.3s before the descent begins).
+  const introLead = 2.2;
   const overlay = [
     { text: String(ir.title || nodes[0]).toUpperCase(), anchor: [0, topY + 1.4, 0], role: 'title' },
   ];
   order.forEach((i, k) => {
     const y = stageY(i);
-    const revealAt = 0.2 + k * holdEach + 0.5; // just after this stage's build-in
+    const revealAt = introLead + k * holdEach + 0.45; // as the tour reaches this stage
     overlay.push({
       text: nodes[i],
       anchor: [radii[i] + 0.5, y, 0],
