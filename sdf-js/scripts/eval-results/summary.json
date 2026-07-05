@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-07-05T06:03:45.574Z",
+  "generatedAt": "2026-07-05T06:29:32.593Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
-  "corpusMean": 97.3,
+  "corpusMean": 97,
+  "factsRecallMean": 0.929,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -31,7 +32,11 @@
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
       "charsPerSlot": 179.28571428571428,
-      "maxSlotChars": 285
+      "maxSlotChars": 285,
+      "numberRecall": 0.9655172413793104,
+      "missingNumbers": [
+        "3.2"
+      ]
     },
     {
       "deckName": "eval-strategy-batch2-validation",
@@ -48,18 +53,31 @@
       "scaffoldId": "change-roadmap",
       "themeId": "consulting-charcoal",
       "pickMethod": "llm",
-      "atomTypesDistinct": 11,
+      "atomTypesDistinct": 12,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
+      "argViolations": 2,
+      "argViolationsTopOffenders": [
+        {
+          "type": "kpi-card",
+          "key": "trendDirection",
+          "count": 2
+        }
+      ],
       "twinCoverage": 1,
       "untwinnedTypes": [],
       "liftSuccess": 8,
       "liftAttempted": 8,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 232.875,
-      "maxSlotChars": 309
+      "charsPerSlot": 265.5,
+      "maxSlotChars": 308,
+      "numberRecall": 0.8260869565217391,
+      "missingNumbers": [
+        "$24M",
+        "117%",
+        "43",
+        "128%"
+      ]
     },
     {
       "deckName": "eval-strategy-swot-portfolio",
@@ -87,7 +105,11 @@
       "liftAttempted": 8,
       "liftedSubjectRate": 1,
       "charsPerSlot": 264.75,
-      "maxSlotChars": 466
+      "maxSlotChars": 466,
+      "numberRecall": 0.9,
+      "missingNumbers": [
+        "2025"
+      ]
     },
     {
       "deckName": "eval-yosemite-trip-2026",
@@ -115,7 +137,9 @@
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
       "charsPerSlot": 142.85714285714286,
-      "maxSlotChars": 180
+      "maxSlotChars": 180,
+      "numberRecall": 1,
+      "missingNumbers": []
     },
     {
       "deckName": "eval-edu-course-intro",
@@ -132,34 +156,6 @@
       "scaffoldId": "course-syllabus",
       "themeId": "editorial-navy",
       "pickMethod": "llm",
-      "atomTypesDistinct": 8,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 7,
-      "liftAttempted": 7,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 258.42857142857144,
-      "maxSlotChars": 364
-    },
-    {
-      "deckName": "eval-nonprofit-annual-report",
-      "score": 100,
-      "scoreBreakdown": {
-        "structure": 25,
-        "variety": 15,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 1,
-      "scaffoldId": "generic-deck",
-      "themeId": "editorial-navy",
-      "pickMethod": "llm",
       "atomTypesDistinct": 6,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
@@ -170,8 +166,10 @@
       "liftSuccess": 7,
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 250.71428571428572,
-      "maxSlotChars": 389
+      "charsPerSlot": 261.57142857142856,
+      "maxSlotChars": 346,
+      "numberRecall": 1,
+      "missingNumbers": []
     },
     {
       "deckName": "eval-vc-pitch",
@@ -188,7 +186,7 @@
       "scaffoldId": "pitch-deck-vc",
       "themeId": "pitch-cobalt-orange",
       "pickMethod": "llm",
-      "atomTypesDistinct": 14,
+      "atomTypesDistinct": 13,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
@@ -198,8 +196,49 @@
       "liftSuccess": 9,
       "liftAttempted": 9,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 198.44444444444446,
-      "maxSlotChars": 285
+      "charsPerSlot": 201.88888888888889,
+      "maxSlotChars": 291,
+      "numberRecall": 0.8888888888888888,
+      "missingNumbers": [
+        "$0",
+        "$120K",
+        "$740K"
+      ]
+    },
+    {
+      "deckName": "eval-nonprofit-annual-report",
+      "score": 96.4,
+      "scoreBreakdown": {
+        "structure": 21.9,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 9.5
+      },
+      "fillRate": 0.875,
+      "scaffoldId": "analysis-report",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 8,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 7,
+      "liftAttempted": 7,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 295.42857142857144,
+      "maxSlotChars": 483,
+      "numberRecall": 0.8666666666666667,
+      "missingNumbers": [
+        "2025",
+        "9%",
+        "2027",
+        "$25"
+      ]
     },
     {
       "deckName": "eval-antfun-company",
@@ -227,7 +266,9 @@
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
       "charsPerSlot": 303.14285714285717,
-      "maxSlotChars": 477
+      "maxSlotChars": 477,
+      "numberRecall": 1,
+      "missingNumbers": []
     },
     {
       "deckName": "eval-product-eng-retro",
@@ -261,7 +302,11 @@
       "liftAttempted": 6,
       "liftedSubjectRate": 1,
       "charsPerSlot": 229.33333333333334,
-      "maxSlotChars": 442
+      "maxSlotChars": 442,
+      "numberRecall": 0.9666666666666667,
+      "missingNumbers": [
+        "31"
+      ]
     },
     {
       "deckName": "eval-swot-portfolio-2026",
@@ -289,7 +334,11 @@
       "liftAttempted": 5,
       "liftedSubjectRate": 1,
       "charsPerSlot": 213.4,
-      "maxSlotChars": 339
+      "maxSlotChars": 339,
+      "numberRecall": 0.875,
+      "missingNumbers": [
+        "47"
+      ]
     }
   ]
 }

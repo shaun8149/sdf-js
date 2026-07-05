@@ -7,9 +7,9 @@
     "description": "Change management deck — case for change, current→target state, journey, enablers",
     "pickScore": 9,
     "pickSignals": [
-      "Document explicitly titled 'Digital Transformation Roadmap' with 'Change Journey' and 'Case for Transformation' sections — perfect semantic match for change-roadmap scaffold",
-      "Contains all classic change management elements: case for change (why now), current state assessment (SWOT), target state (5 pillars), journey phases (timeline 2026), enablers (workstream leads), and risks (threats section)",
-      "8-slot scaffold aligns well with ~40 paragraph source — sufficient content density to fill cover → case-for-change → current-state → target-state → journey-phases → enablers → risks → timeline without empty slots"
+      "Content explicitly follows change management structure: case for change (Why Change Now), current state assessment (SWOT-style), target state (Five Pillars + tier comparison current→target→future), journey phases (Q1 2026 kickoff, timeline), and risks (Risk Mitigation section title)",
+      "Semantic intent is organizational transformation with clear current→target state arc, not a pitch/fundraise or training — matches change-roadmap's transformation narrative perfectly",
+      "Slot count (8) aligns well with source content: cover, case-for-change, current-state, target-state (5 pillars), journey-phases (timeline), enablers (talent/ecosystem), risks, timeline — all sections present in source"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -95,9 +95,11 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite",
-        "bullet-list",
-        "stat-banner"
+        "stat-banner",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "bullet-list"
       ]
     },
     {
@@ -126,7 +128,7 @@
       "slotPurpose": "To-be vision — what success looks like",
       "sourceSlideIdx": 6,
       "sourceSlideTitle": "Tier Comparison: Current vs Target vs Future State",
-      "mappingScore": 8,
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-target-state.json",
@@ -135,7 +137,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "radar-chart"
+        "comparison-table"
       ]
     },
     {
@@ -155,8 +157,8 @@
       "subjectTypes": [
         "cover",
         "change-curve-chart",
-        "progression",
-        "traffic-light"
+        "traffic-light",
+        "progression"
       ]
     },
     {
@@ -185,7 +187,7 @@
       "slotPurpose": "Top risks and mitigation strategies",
       "sourceSlideIdx": 7,
       "sourceSlideTitle": "Change Journey & Risk Mitigation",
-      "mappingScore": 7,
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-06-risks.json",
@@ -195,7 +197,7 @@
       "subjectTypes": [
         "cover",
         "risk-heatmap",
-        "timeline"
+        "vertical-timeline"
       ]
     },
     {
@@ -218,14 +220,15 @@
       ]
     }
   ],
+  "droppedSlots": [],
   "totals": {
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1802742
+    "totalCostUSD": 0.1868352
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:28:45.481Z",
+    "generatedAt": "2026-07-05T06:23:10.849Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

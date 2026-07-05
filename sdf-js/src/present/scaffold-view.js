@@ -442,7 +442,9 @@ export async function mountScaffoldView(target, deckId) {
       `    - Funnel with explicit conversion % chips between stages (SaaS 12% → 35% → 18%) → \`funnel-with-conversion\` (NOT generic \`funnel\`)\n` +
       `    - 2-4 tall hero pillar cards side-by-side (Three Pillars / Three Principles / Our Values) → \`pillar-3up\` (NOT \`feature-card-grid\`)\n` +
       `    - Row of 2-4 customer quote/testimonial cards (social proof, "What our customers say") → \`testimonial-wall\` (NOT \`bullet-list\`)\n` +
-      `    - Build vs Buy / Pros vs Cons / Left vs Right two-side comparison with visual scale → \`balance-scale\` (NOT \`swot\` or \`cost-benefit-matrix\`)\n`;
+      `    - Build vs Buy / Pros vs Cons / Left vs Right two-side comparison with visual scale → \`balance-scale\` (NOT \`swot\` or \`cost-benefit-matrix\`)\n` +
+      `18. **NUMBERS ARE THE PAYLOAD (Sprint 25)** — "TEXT MUST BE MINIMAL" means minimize WORDS, never data values. Every number in the source slide ($3.53M, 52%, 210,000, 87 wells) MUST appear in some atom's args — as a kpi value, pie/donut segment, bar value, stat, or label. If a slide carries TWO datasets (e.g. spending breakdown AND revenue sources), emit TWO chart atoms side by side — never silently drop the second dataset. Preserve values LITERALLY as written in the source ("$3.53M" stays "$3.53M", not "3.5M").\n` +
+      `    - **When a chart arg must be numeric** (pie/donut segments[].value, bar values[]): the number goes numeric for geometry, but the SOURCE-LITERAL form must ALSO appear in the label — e.g. \`{"label": "Program Services · $3.53M", "value": 3530000}\`, \`{"label": "Individual Donors 52%", "value": 52}\`. A legend showing "3530000" raw is a rendering failure.\n`;
 
     const systemPrompt =
       `You are the Atlas Present scaffold-mode lift LLM. Emit a single JSON ` +

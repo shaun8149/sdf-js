@@ -21,57 +21,71 @@
         }
       },
       {
-        "type": "radar-chart",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "type": "comparison-table",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 500,
         "args": {
-          "title": "12-Month Target Capabilities",
-          "axes": [
-            "Process Automation",
-            "Real-time Data",
-            "Self-Service",
-            "AI Decisions",
-            "API Ecosystem",
-            "Cloud-native"
-          ],
-          "series": [
+          "title": "12-Month Target vs Current State",
+          "columns": [
             {
-              "label": "Current",
-              "values": [
-                0.3,
-                0.2,
-                0.25,
-                0.1,
-                0.35,
-                0.4
-              ]
+              "name": "Dimension",
+              "width": 0.3
             },
             {
-              "label": "Target (12mo)",
-              "values": [
-                0.7,
-                0.75,
-                0.8,
-                0.6,
-                0.75,
-                0.85
-              ]
+              "name": "Current",
+              "width": 0.35
             },
             {
-              "label": "Future (3yr)",
-              "values": [
-                0.95,
-                0.95,
-                0.95,
-                0.9,
-                0.95,
-                1
-              ]
+              "name": "Target (12M)",
+              "width": 0.35
             }
           ],
-          "showGrid": true
+          "features": [
+            {
+              "name": "Process Automation",
+              "values": [
+                "Manual",
+                "✓ Automated"
+              ]
+            },
+            {
+              "name": "Real-time Data",
+              "values": [
+                "Batch/Delayed",
+                "✓ Real-time"
+              ]
+            },
+            {
+              "name": "Customer Self-Service",
+              "values": [
+                "Limited",
+                "✓ Full Portal"
+              ]
+            },
+            {
+              "name": "AI Decision Support",
+              "values": [
+                "None",
+                "✓ Implemented"
+              ]
+            },
+            {
+              "name": "API Ecosystem",
+              "values": [
+                "Siloed",
+                "✓ Unified"
+              ]
+            },
+            {
+              "name": "Cloud-native Arch",
+              "values": [
+                "Legacy/On-prem",
+                "✓ Cloud-native"
+              ]
+            }
+          ]
         }
       }
     ]
@@ -86,20 +100,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3982,
+      "input_tokens": 4136,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 408,
+      "output_tokens": 482,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0219684,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-05T05:28:09.460Z",
+    "costUSD": 0.0235404,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T06:22:33.695Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -28,11 +28,11 @@
         "h": 240,
         "args": {
           "value": "$4.2M",
-          "label": "Total Donations",
+          "label": "Donations Raised",
           "sublabel": "+18% vs 2025",
           "trend": "up",
-          "trendValue": "18%",
-          "icon": "currency-dollar",
+          "trendValue": "+18%",
+          "icon": "hand-coins",
           "style": "light"
         }
       },
@@ -43,10 +43,10 @@
         "w": 360,
         "h": 240,
         "args": {
-          "value": "210K",
+          "value": "210,000",
           "label": "People Served",
           "sublabel": "New or improved water access",
-          "icon": "users-four",
+          "icon": "users",
           "style": "light"
         }
       },
@@ -57,10 +57,10 @@
         "w": 360,
         "h": 240,
         "args": {
-          "value": "87",
-          "label": "Wells Constructed",
-          "sublabel": "This year",
-          "icon": "drop",
+          "value": "84%",
+          "label": "Program Cost Ratio",
+          "sublabel": "Funds to programs",
+          "icon": "chart-pie",
           "style": "light"
         }
       },
@@ -74,7 +74,7 @@
           "value": "1,340",
           "label": "Active Volunteers",
           "sublabel": "Across 4 countries",
-          "icon": "handshake",
+          "icon": "users-three",
           "style": "light"
         }
       },
@@ -82,14 +82,30 @@
         "type": "kpi-card",
         "x": 460,
         "y": 440,
-        "w": 780,
+        "w": 360,
         "h": 240,
         "args": {
-          "value": "84%",
-          "label": "Program Cost Ratio",
-          "sublabel": "Of funds go directly to programs",
-          "icon": "target",
-          "style": "accent-border"
+          "value": "87",
+          "label": "Wells Constructed",
+          "sublabel": "New wells this year",
+          "icon": "drop",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 880,
+        "y": 440,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "4 Countries",
+          "label": "Global Reach",
+          "bg": [
+            58,
+            138,
+            200
+          ]
         }
       }
     ]
@@ -104,20 +120,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4012,
+      "input_tokens": 4166,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 676,
+      "output_tokens": 767,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.026070899999999998,
-    "elapsedSec": 9.9,
-    "generatedAt": "2026-07-05T05:06:51.576Z",
+    "costUSD": 0.027905399999999997,
+    "elapsedSec": 14.9,
+    "generatedAt": "2026-07-05T06:20:12.340Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

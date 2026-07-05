@@ -113,6 +113,7 @@ export async function mapSlidesToSlotsLLM(input, opts = {}) {
     `- Return exactly ${slots.length} entries in assignments[], one per slot, in slot order\n` +
     `- Each entry MUST have slotIdx equal to its position (0, 1, 2, ...)\n` +
     `- A slide may fill up to TWO slots — but ONLY when its content genuinely covers both slot purposes (e.g. a "Wins & Challenges" slide feeding both the wins slot and the challenges slot; the per-slot lift extracts the relevant half for each). Never stretch a slide across two slots just to avoid -1.\n` +
+    `- COVERAGE FIRST: never double-map a slide while another content slide goes unmapped — every source slide's content should land somewhere before any slide is used twice. (An orphaned slide's facts are lost from the deck entirely.)\n` +
     `- slideIdx is 0..${slides.length - 1} or -1 for empty (no matching slide)\n` +
     `- Prefer assignment over -1 unless no slide fits (e.g. scaffold has ${slots.length} slots but only ${slides.length} source slides cover them)\n` +
     `- confidence 0-10: how well does this slide match this slot's purpose\n` +

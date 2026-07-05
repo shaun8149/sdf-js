@@ -21,91 +21,90 @@
         }
       },
       {
-        "type": "dashboard-multi-kpi-composite",
+        "type": "stat-banner",
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 260,
+        "h": 100,
         "args": {
-          "title": "Performance Gap",
-          "kpis": [
-            {
-              "value": "3%",
-              "label": "Revenue Growth",
-              "sublabel": "vs industry 12%",
-              "trend": "down",
-              "trendValue": "-9pp",
-              "color": [
-                156,
-                142,
-                110
-              ]
-            },
-            {
-              "value": "$4.2M",
-              "label": "Annual Inefficiency",
-              "sublabel": "Legacy systems",
-              "trend": "down",
-              "color": [
-                100,
-                95,
-                82
-              ]
-            },
-            {
-              "value": "44",
-              "label": "Customer NPS",
-              "sublabel": "Down from 67",
-              "trend": "down",
-              "trendValue": "-23 pts",
-              "color": [
-                156,
-                142,
-                110
-              ]
-            }
+          "value": "3% vs 12%",
+          "label": "Revenue Growth Stalled",
+          "trend": "Industry outpacing us by 4x",
+          "trendDirection": "down",
+          "bg": [
+            156,
+            142,
+            110
           ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 290,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "$4.2M",
+          "label": "Annual Inefficiency",
+          "sublabel": "Legacy systems cost",
+          "icon": "warning",
+          "trend": "Operational drag",
+          "trendDirection": "down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 290,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "67 → 44",
+          "label": "Customer NPS Drop",
+          "sublabel": "Satisfaction declining",
+          "icon": "thumbs-down",
+          "trend": "-34%",
+          "trendDirection": "down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 290,
+        "w": 380,
+        "h": 180,
+        "args": {
+          "value": "End of 2026",
+          "label": "Board Mandate",
+          "sublabel": "Digital acceleration deadline",
+          "icon": "calendar",
+          "style": "accent-border"
         }
       },
       {
         "type": "bullet-list",
         "x": 40,
-        "y": 460,
-        "w": 580,
-        "h": 220,
+        "y": 500,
+        "w": 1200,
+        "h": 180,
         "args": {
           "title": "Key Drivers",
           "items": [
             {
-              "icon": "shield-warning",
-              "label": "Competitor pressure escalating"
+              "icon": "chart-line-up",
+              "label": "Competitor pressure intensifying"
             },
             {
-              "icon": "scales",
-              "label": "New regulatory requirements"
+              "icon": "gavel",
+              "label": "Regulatory changes accelerating"
             },
             {
               "icon": "users",
-              "label": "Critical talent attrition"
+              "label": "Talent attrition rising"
             }
-          ]
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 660,
-        "y": 460,
-        "w": 580,
-        "h": 220,
-        "args": {
-          "value": "End of 2026",
-          "label": "Board Mandate",
-          "trend": "Digital acceleration required",
-          "trendDirection": "up",
-          "bg": [
-            156,
-            142,
-            110
           ]
         }
       }
@@ -122,20 +121,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4027,
+      "input_tokens": 4181,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 669,
+      "output_tokens": 769,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.026018399999999997,
-    "elapsedSec": 10.6,
-    "generatedAt": "2026-07-05T05:27:55.413Z",
+    "costUSD": 0.0279804,
+    "elapsedSec": 12,
+    "generatedAt": "2026-07-05T06:22:19.673Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
