@@ -1,0 +1,79 @@
+{
+  "slotIdx": 9,
+  "slotName": "appendix",
+  "slotTitle": "Appendix",
+  "slotPurpose": "Supporting tables and methodology notes",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Thank You & How to Help",
+  "sceneData": {
+    "name": "financial-summary/appendix",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Appendix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "How to Help & Resources",
+          "items": [
+            {
+              "icon": "drop",
+              "label": "$25 = clean water for one person yearly",
+              "status": "highlight"
+            },
+            {
+              "icon": "hand-heart",
+              "label": "Volunteer opportunities open in 4 countries"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Corporate matching programs available — contact partnerships team"
+            },
+            {
+              "icon": "file-text",
+              "label": "Board of Directors & full audit at clearwatertrust.org/reports"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4237,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0215934,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-05T07:08:25.377Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

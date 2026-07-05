@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Five Core Strategic Pillars",
   "sceneData": {
     "name": "change-roadmap/enablers",
-    "layout": "grid",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -27,16 +27,16 @@
         "w": 1120,
         "h": 520,
         "args": {
-          "title": "Five Core Strategic Pillars",
-          "hub": "Transformation",
+          "title": "Five Strategic Pillars",
+          "hub": "Transformation Core",
           "segments": [
             {
               "label": "Digitise Core",
-              "description": "Automate top 20 manual workflows"
+              "description": "Automate top 20 workflows"
             },
             {
               "label": "Data First",
-              "description": "Unified data platform — single source of truth"
+              "description": "Unified platform — single truth"
             },
             {
               "label": "Customer 360",
@@ -44,11 +44,11 @@
             },
             {
               "label": "Talent Uplift",
-              "description": "Digital upskilling for 800 employees"
+              "description": "Digital upskilling — 800 employees"
             },
             {
               "label": "Ecosystem Play",
-              "description": "API partnerships with 12 fintechs"
+              "description": "API partnerships — 12 fintechs"
             }
           ],
           "segmentColors": [
@@ -68,14 +68,14 @@
               174
             ],
             [
-              156,
-              142,
-              110
+              60,
+              60,
+              72
             ],
             [
-              100,
-              95,
-              82
+              220,
+              215,
+              200
             ]
           ]
         }
@@ -93,20 +93,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4228,
+      "input_tokens": 4336,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 435,
+      "output_tokens": 431,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0231114,
-    "elapsedSec": 7.9,
-    "generatedAt": "2026-07-05T06:22:53.598Z",
+    "costUSD": 0.023375399999999998,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T07:06:23.025Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

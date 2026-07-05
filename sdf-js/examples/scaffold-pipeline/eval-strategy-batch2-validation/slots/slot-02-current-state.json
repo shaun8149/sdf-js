@@ -27,23 +27,24 @@
         "w": 1200,
         "h": 520,
         "args": {
+          "title": "Current State Assessment",
           "strengths": [
-            "78% brand recognition",
-            "15-year avg customer relationship"
+            "Strong brand · 78% recognition",
+            "Loyal customers · 15-year avg relationship"
           ],
           "weaknesses": [
-            "7 separate data systems",
-            "40% manual processes",
-            "CRM from 2014"
+            "Siloed data · 7 separate systems",
+            "Manual processes · 40% of tasks",
+            "Outdated CRM · 2014"
           ],
           "opportunities": [
-            "$2M AI automation savings",
-            "Cloud migration scalability",
+            "AI automation · $2M potential savings",
+            "Cloud migration · scalability",
             "Open banking API"
           ],
           "threats": [
-            "3 new FinTech entrants",
-            "22% tech turnover",
+            "FinTech disruptors · 3 new entrants",
+            "Talent war · 22% tech turnover",
             "Regulatory complexity"
           ]
         }
@@ -61,20 +62,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4205,
+      "input_tokens": 4313,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 309,
+      "output_tokens": 352,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0211524,
-    "elapsedSec": 5.7,
-    "generatedAt": "2026-07-05T06:22:25.370Z",
+    "costUSD": 0.0221214,
+    "elapsedSec": 9.6,
+    "generatedAt": "2026-07-05T07:05:53.121Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

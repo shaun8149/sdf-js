@@ -31,8 +31,8 @@
           "strengths": [
             "Deep AI/ML expertise",
             "Strong co-investor network",
-            "University spin-out deal flow",
-            "3 unicorn exits (Fund I)"
+            "Proprietary university deal flow",
+            "3 unicorn exits in Fund I"
           ],
           "weaknesses": [
             "Bay Area concentration",
@@ -41,11 +41,11 @@
           ],
           "opportunities": [
             "AI regulatory tailwind",
-            "Secondary market liquidity",
+            "Secondary market for Fund I",
             "Emerging market expansion"
           ],
           "threats": [
-            "Growth valuation compression",
+            "Growth stage compression",
             "Mega-fund competition",
             "LP redemption pressure"
           ]
@@ -63,7 +63,7 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4047,
+      "input_tokens": 4309,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
@@ -74,9 +74,9 @@
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0210534,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-05T06:03:36.010Z",
+    "costUSD": 0.0218394,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-07-05T07:09:11.087Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -22,92 +22,54 @@
       },
       {
         "type": "circle-image-hub-spoke",
-        "x": 60,
-        "y": 160,
-        "w": 560,
+        "x": 80,
+        "y": 180,
+        "w": 520,
         "h": 480,
         "args": {
           "center": {
-            "label": "Leadership",
-            "color": [
-              255,
-              120,
-              40
-            ]
+            "label": "Leadership"
           },
           "satellites": [
             {
-              "label": "Sarah Chen\nCEO",
-              "color": [
-                255,
-                120,
-                40
-              ]
+              "label": "Sarah Chen · CEO"
             },
             {
-              "label": "Alex Wu\nCTO",
-              "color": [
-                20,
-                60,
-                180
-              ]
+              "label": "Alex Wu · CTO"
             },
             {
-              "label": "Diana Liu\nHead of Design",
-              "color": [
-                60,
-                65,
-                90
-              ]
-            }
-          ],
-          "title": "Core Team"
-        }
-      },
-      {
-        "type": "bullet-list",
-        "x": 660,
-        "y": 160,
-        "w": 560,
-        "h": 240,
-        "args": {
-          "title": "Experience",
-          "items": [
-            {
-              "icon": "briefcase",
-              "label": "ex-Figma design infrastructure lead"
-            },
-            {
-              "icon": "cpu",
-              "label": "ex-Anthropic research engineer"
-            },
-            {
-              "icon": "palette",
-              "label": "ex-Apple Keynote team"
+              "label": "Diana Liu · Design"
             }
           ]
         }
       },
       {
-        "type": "isotype-stat-comparison",
-        "x": 660,
-        "y": 420,
-        "w": 560,
-        "h": 220,
+        "type": "bullet-list",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 420,
         "args": {
-          "title": "Team Size",
-          "stats": [
+          "items": [
             {
-              "iconName": "code",
-              "count": 20,
-              "label": "Engineers",
-              "caption": "Building core platform"
+              "icon": "briefcase",
+              "label": "Ex-Figma design infra lead",
+              "sublabel": "Sarah Chen"
             },
             {
-              "iconName": "palette",
-              "count": 5,
-              "label": "Designers",
-              "caption": "Crafting experience"
+              "icon": "cpu",
+              "label": "Ex-Anthropic research engineer",
+              "sublabel": "Alex Wu"
+            },
+            {
+              "icon": "palette",
+              "label": "Ex-Apple Keynote team",
+              "sublabel": "Diana Liu"
+            },
+            {
+              "icon": "users",
+              "label": "20 engineers + 5 designers",
+              "sublabel": "NYC + remote"
             }
           ]
         }
@@ -125,20 +87,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4148,
+      "input_tokens": 4256,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 648,
+      "output_tokens": 477,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0260664,
-    "elapsedSec": 10.3,
-    "generatedAt": "2026-07-05T06:24:29.165Z",
+    "costUSD": 0.023825399999999997,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-05T07:10:42.819Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

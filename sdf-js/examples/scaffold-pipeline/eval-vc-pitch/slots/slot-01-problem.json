@@ -7,7 +7,7 @@
   "sourceSlideTitle": "The Problem",
   "sceneData": {
     "name": "pitch-deck-vc/problem",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,61 +16,43 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Problem"
-        }
-      },
-      {
-        "type": "quote-pull",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 200,
-        "args": {
-          "quote": "Presentation visuals are stuck in 2008",
-          "align": "center"
+          "title": "Problem",
+          "style": "gradient"
         }
       },
       {
         "type": "icon-grid",
-        "x": 140,
-        "y": 420,
-        "w": 1000,
-        "h": 240,
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
         "args": {
           "items": [
             {
-              "icon": "image-broken",
-              "label": "PowerPoint Clipart",
-              "sublabel": "Dead visual language"
+              "icon": "calendar-x",
+              "label": "Stuck in 2008",
+              "sublabel": "Presentation visuals feel ancient"
             },
             {
-              "icon": "gif",
-              "label": "Lottie GIFs",
-              "sublabel": "Animation band-aid"
+              "icon": "images",
+              "label": "Dead clipart",
+              "sublabel": "PowerPoint icons + Lottie GIFs"
             },
             {
               "icon": "brain",
-              "label": "AI-PPT Tools",
-              "sublabel": "Fixed text, visuals broken"
+              "label": "AI fixed text",
+              "sublabel": "But visuals still lifeless"
+            },
+            {
+              "icon": "clock",
+              "label": "60% busywork",
+              "sublabel": "Designers waste time on layout"
             }
           ],
-          "cols": 3,
+          "cols": 2,
           "iconSize": "large",
-          "colorMode": "theme"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 880,
-        "y": 160,
-        "w": 320,
-        "h": 220,
-        "args": {
-          "value": "60%",
-          "label": "Time on Layout",
-          "sublabel": "Designer busywork",
-          "icon": "clock",
-          "style": "accent-border"
+          "iconStyle": "card",
+          "colorMode": "brand"
         }
       }
     ]
@@ -91,20 +73,20 @@
       "gantt"
     ],
     "tokenUsage": {
-      "input_tokens": 4189,
+      "input_tokens": 4297,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 509,
+      "output_tokens": 381,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024104399999999998,
-    "elapsedSec": 8.6,
-    "generatedAt": "2026-07-05T06:23:35.374Z",
+    "costUSD": 0.022508399999999998,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-05T07:09:47.156Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

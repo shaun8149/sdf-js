@@ -22,9 +22,9 @@
       },
       {
         "type": "timeline",
-        "x": 60,
+        "x": 80,
         "y": 180,
-        "w": 1160,
+        "w": 1120,
         "h": 480,
         "args": {
           "title": "Programme Timeline 2026",
@@ -36,13 +36,13 @@
             },
             {
               "date": "Mar 2026",
-              "label": "Core Systems Design",
-              "sublabel": "Design complete"
+              "label": "Design Complete",
+              "sublabel": "Core systems architecture"
             },
             {
               "date": "Jun 2026",
               "label": "Wave 1 Go-Live",
-              "sublabel": "Finance + HR"
+              "sublabel": "Finance + HR modules"
             },
             {
               "date": "Sep 2026",
@@ -52,7 +52,7 @@
             {
               "date": "Dec 2026",
               "label": "Programme Completion",
-              "sublabel": "Retrospective"
+              "sublabel": "Full deployment + retrospective"
             },
             {
               "date": "Q1 2027",
@@ -75,20 +75,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4166,
+      "input_tokens": 4274,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 428,
+      "output_tokens": 431,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022820399999999998,
-    "elapsedSec": 8.1,
-    "generatedAt": "2026-07-05T06:23:10.846Z",
+    "costUSD": 0.0231894,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-05T07:06:39.148Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

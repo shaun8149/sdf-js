@@ -23,8 +23,8 @@
       {
         "type": "change-curve-chart",
         "x": 40,
-        "y": 150,
-        "w": 780,
+        "y": 160,
+        "w": 760,
         "h": 380,
         "args": {
           "title": "Transformation Curve",
@@ -33,42 +33,42 @@
           "phases": [
             {
               "label": "Q1: Mobilise",
-              "sublabel": "Governance & Quick Wins"
+              "sublabel": "Governance + Quick Wins"
             },
             {
               "label": "Q2-Q3: Transform",
-              "sublabel": "Core Migration & Redesign"
+              "sublabel": "Core Migration + Redesign"
             },
             {
               "label": "Q4: Sustain",
-              "sublabel": "Embed & Measure"
+              "sublabel": "Embed + Measure"
             }
           ]
         }
       },
       {
         "type": "traffic-light",
-        "x": 860,
-        "y": 150,
-        "w": 380,
+        "x": 840,
+        "y": 160,
+        "w": 400,
         "h": 380,
         "args": {
-          "title": "Risk Status",
+          "title": "Risk Register",
           "lights": [
             {
               "color": "red",
               "active": true,
-              "label": "Change Fatigue (HIGH)"
+              "label": "Change Fatigue"
             },
             {
               "color": "amber",
               "active": true,
-              "label": "Data Migration (MEDIUM)"
+              "label": "Data Migration"
             },
             {
               "color": "green",
               "active": true,
-              "label": "Vendor Delays (LOW)"
+              "label": "Vendor Delays"
             }
           ]
         }
@@ -82,15 +82,15 @@
         "args": {
           "steps": [
             {
-              "label": "Mobilise",
+              "label": "Q1 Mobilise",
               "status": "current"
             },
             {
-              "label": "Transform",
+              "label": "Q2-Q3 Transform",
               "status": "todo"
             },
             {
-              "label": "Sustain",
+              "label": "Q4 Sustain",
               "status": "todo"
             }
           ]
@@ -108,20 +108,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4173,
+      "input_tokens": 4281,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 548,
+      "output_tokens": 550,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0246414,
-    "elapsedSec": 12,
-    "generatedAt": "2026-07-05T06:22:45.694Z",
+    "costUSD": 0.0249954,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T07:06:14.751Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -1,0 +1,90 @@
+{
+  "slotIdx": 1,
+  "slotName": "exec-statement",
+  "slotTitle": "Executive Statement",
+  "slotPurpose": "CEO or CFO opening statement — key message for the period",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "financial-summary/exec-statement",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Statement",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 280,
+        "args": {
+          "quote": "Access to clean water is a human right, not a privilege",
+          "author": "Clearwater Trust",
+          "align": "center"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 140,
+        "y": 500,
+        "w": 1000,
+        "h": 160,
+        "args": {
+          "items": [
+            {
+              "icon": "drop",
+              "label": "Clean Water",
+              "sublabel": "Rural infrastructure"
+            },
+            {
+              "icon": "calendar",
+              "label": "Since 2011",
+              "sublabel": "15 years operations"
+            },
+            {
+              "icon": "globe",
+              "label": "4 Countries",
+              "sublabel": "Kenya · Tanzania · Malawi · Mozambique"
+            }
+          ],
+          "iconSize": "medium",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "quote-pull",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4249,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 409,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022784399999999996,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-05T07:07:36.105Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

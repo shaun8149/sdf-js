@@ -12,9 +12,9 @@
     "theme_id": "pitch-cobalt-orange"
   },
   "atomQuality": {
-    "atom_instances": 23,
+    "atom_instances": 19,
     "atom_types_distinct": 13,
-    "variety_ratio": 0.5652173913043478,
+    "variety_ratio": 0.6842105263157895,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,8 +29,8 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 201.88888888888889,
-    "max_slot_chars": 291
+    "chars_per_slot": 181.55555555555554,
+    "max_slot_chars": 271
   },
   "fidelity": {
     "numbers_total": 27,
@@ -53,5 +53,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T06:29:32.586Z"
+  "generatedAt": "2026-07-05T07:10:56.603Z"
 }

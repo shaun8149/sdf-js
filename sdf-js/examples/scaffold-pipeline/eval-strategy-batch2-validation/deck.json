@@ -7,9 +7,9 @@
     "description": "Change management deck — case for change, current→target state, journey, enablers",
     "pickScore": 9,
     "pickSignals": [
-      "Content explicitly follows change management structure: case for change (Why Change Now), current state assessment (SWOT-style), target state (Five Pillars + tier comparison current→target→future), journey phases (Q1 2026 kickoff, timeline), and risks (Risk Mitigation section title)",
-      "Semantic intent is organizational transformation with clear current→target state arc, not a pitch/fundraise or training — matches change-roadmap's transformation narrative perfectly",
-      "Slot count (8) aligns well with source content: cover, case-for-change, current-state, target-state (5 pillars), journey-phases (timeline), enablers (talent/ecosystem), risks, timeline — all sections present in source"
+      "Document explicitly follows change management structure: case for change (Why Change Now), current state assessment (SWOT-style), target state comparison (Current vs Target vs Future), journey phases (5 pillars), timeline, and risk mitigation",
+      "Core vocabulary matches perfectly: 'transformation,' 'change journey,' 'current state,' 'target state,' 'roadmap,' 'enablers' (pillars as enablers), 'risks,' 'timeline'",
+      "8-slide source maps cleanly to change-roadmap's 8 slots with minimal empty slots: cover → case-for-change (Why Change Now) → current-state (Assessment/SWOT) → target-state (Tier Comparison) → journey-phases (5 Pillars) → enablers (Digital Core + KPIs) → risks (Risk Mitigation) → timeline (Programme Timeline 2026)"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -99,7 +99,10 @@
         "kpi-card",
         "kpi-card",
         "kpi-card",
-        "bullet-list"
+        "kpi-card",
+        "bullet-list",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -137,7 +140,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "comparison-table"
+        "kpi-card",
+        "icon-grid",
+        "stat-banner",
+        "bullet-list"
       ]
     },
     {
@@ -197,7 +203,7 @@
       "subjectTypes": [
         "cover",
         "risk-heatmap",
-        "vertical-timeline"
+        "timeline"
       ]
     },
     {
@@ -225,10 +231,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1868352
+    "totalCostUSD": 0.2009742
   },
   "meta": {
-    "generatedAt": "2026-07-05T06:23:10.849Z",
+    "generatedAt": "2026-07-05T07:06:39.149Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

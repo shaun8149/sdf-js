@@ -23,12 +23,12 @@
         "type": "device-mockup-frame",
         "x": 80,
         "y": 180,
-        "w": 500,
-        "h": 460,
+        "w": 480,
+        "h": 480,
         "args": {
           "device": "laptop",
-          "title": "Atlas Studio",
-          "content": "PDF → 3D Deck",
+          "title": "Atlas Canvas",
+          "content": "Live 3D deck editor",
           "color": [
             255,
             120,
@@ -38,31 +38,31 @@
       },
       {
         "type": "bullet-list",
-        "x": 640,
+        "x": 620,
         "y": 180,
-        "w": 560,
-        "h": 460,
+        "w": 580,
+        "h": 480,
         "args": {
           "items": [
             {
               "icon": "file-pdf",
-              "label": "Upload PDF, get 3D deck",
+              "label": "Upload PDF → 3D deck",
               "status": "done"
             },
             {
               "icon": "lightning",
-              "label": "Inline paragraph trigger",
+              "label": "Inline trigger any text",
               "status": "done"
             },
             {
-              "icon": "gear",
+              "icon": "pencil-line",
               "label": "Live-edit with LLM loop",
               "status": "done"
             },
             {
               "icon": "export",
               "label": "Export PPT/PDF/MP4",
-              "status": "highlight"
+              "status": "todo"
             }
           ]
         }
@@ -79,20 +79,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4133,
+      "input_tokens": 4241,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 425,
+      "output_tokens": 427,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0226764,
-    "elapsedSec": 8.4,
-    "generatedAt": "2026-07-05T06:24:01.022Z",
+    "costUSD": 0.0230304,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-05T07:10:15.074Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

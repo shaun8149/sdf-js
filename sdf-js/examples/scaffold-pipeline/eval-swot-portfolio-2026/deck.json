@@ -7,9 +7,9 @@
     "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
     "pickScore": 8,
     "pickSignals": [
-      "Deck is explicitly addressed to 'Investment Committee' and dated 'September 2026' — quarterly cadence pattern typical of LP/investor updates",
-      "Content matches investor-update structure: portfolio metrics (AUM, ARR, holdings), wins (exits, pivots), challenges (bottlenecks, threats), next-quarter priorities (Series B prep, geographic expansion, Fund III close)",
-      "Includes financial metrics (12 holdings, $420M AUM, $38M ARR, 62% YoY growth), strategic analysis (SWOT, value chain), and forward-looking priorities — all standard investor update components"
+      "This is a periodic update to an Investment Committee (equivalent to LPs/board) covering portfolio metrics, wins (pivots, ARR growth), challenges (due diligence bottleneck, macro threats), and forward-looking Q4 priorities — matches investor-update's quarterly cadence structure",
+      "Contains core investor-update elements: TLDR-style overview (12 holdings, $420M AUM), metrics (ARR +62% YoY, 3 Series B candidates), wins (2 pivots, unicorn exits), challenges (geographic concentration, GP bottleneck, LP redemption pressure), next-quarter priorities (Series B prep, Fund III close)",
+      "The SWOT and value-chain analysis are supporting analytical elements, but the primary intent is a periodic stakeholder update on portfolio health and next steps — not a standalone strategic planning document"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -98,7 +98,8 @@
         "stat-banner",
         "kpi-card",
         "kpi-card",
-        "kpi-card"
+        "kpi-card",
+        "quote-pull"
       ]
     },
     {
@@ -117,7 +118,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite"
+        "dashboard-multi-kpi-composite",
+        "value-chain-diagram"
       ]
     },
     {
@@ -137,6 +139,25 @@
       "subjectTypes": [
         "cover",
         "swot"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "slotPurpose": "What did not go well and what we learned",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Change Management: Portfolio AI Transformation",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-challenges.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "change-curve-chart"
       ]
     },
     {
@@ -161,12 +182,6 @@
   ],
   "droppedSlots": [
     {
-      "slotIdx": 4,
-      "slotName": "challenges",
-      "slotTitle": "Challenges",
-      "reason": "no-source-content"
-    },
-    {
       "slotIdx": 6,
       "slotName": "ask",
       "slotTitle": "Ask",
@@ -180,13 +195,13 @@
     }
   ],
   "totals": {
-    "slotsBaked": 5,
-    "slotsEmpty": 3,
+    "slotsBaked": 6,
+    "slotsEmpty": 2,
     "slotsErrored": 0,
-    "totalCostUSD": 0.109101
+    "totalCostUSD": 0.13826039999999998
   },
   "meta": {
-    "generatedAt": "2026-07-05T06:03:45.397Z",
+    "generatedAt": "2026-07-05T07:09:24.637Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

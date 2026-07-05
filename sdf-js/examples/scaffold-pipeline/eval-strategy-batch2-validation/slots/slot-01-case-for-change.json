@@ -17,20 +17,20 @@
         "h": 120,
         "args": {
           "title": "Case for Change",
-          "style": "section"
+          "style": "gradient"
         }
       },
       {
         "type": "stat-banner",
         "x": 40,
-        "y": 160,
+        "y": 150,
         "w": 1200,
         "h": 100,
         "args": {
-          "value": "3% vs 12%",
-          "label": "Revenue Growth Stalled",
-          "trend": "Industry outpacing us by 4x",
-          "trendDirection": "down",
+          "value": "$24M ARR",
+          "label": "Annual Recurring Revenue",
+          "trend": "↑117% YoY",
+          "trendDirection": "up",
           "bg": [
             156,
             142,
@@ -41,71 +41,114 @@
       {
         "type": "kpi-card",
         "x": 40,
-        "y": 290,
-        "w": 380,
+        "y": 280,
+        "w": 280,
+        "h": 180,
+        "args": {
+          "value": "3%",
+          "label": "Revenue Growth",
+          "sublabel": "vs. industry 12%",
+          "trend": "down",
+          "trendValue": "-9pp gap",
+          "icon": "chart-line-down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 340,
+        "y": 280,
+        "w": 280,
         "h": 180,
         "args": {
           "value": "$4.2M",
           "label": "Annual Inefficiency",
           "sublabel": "Legacy systems cost",
-          "icon": "warning",
-          "trend": "Operational drag",
-          "trendDirection": "down",
+          "icon": "warning-octagon",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 450,
-        "y": 290,
-        "w": 380,
+        "x": 640,
+        "y": 280,
+        "w": 280,
         "h": 180,
         "args": {
-          "value": "67 → 44",
-          "label": "Customer NPS Drop",
-          "sublabel": "Satisfaction declining",
-          "icon": "thumbs-down",
-          "trend": "-34%",
-          "trendDirection": "down",
+          "value": "44",
+          "label": "Customer NPS",
+          "sublabel": "Dropped from 67",
+          "trend": "down",
+          "trendValue": "-23 pts",
+          "icon": "smiley-sad",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 860,
-        "y": 290,
-        "w": 380,
+        "x": 940,
+        "y": 280,
+        "w": 280,
         "h": 180,
         "args": {
-          "value": "End of 2026",
-          "label": "Board Mandate",
-          "sublabel": "Digital acceleration deadline",
-          "icon": "calendar",
-          "style": "accent-border"
+          "value": "128%",
+          "label": "Net Revenue Retention",
+          "sublabel": "Enterprise expansion",
+          "trend": "up",
+          "icon": "trend-up",
+          "style": "light"
         }
       },
       {
         "type": "bullet-list",
         "x": 40,
-        "y": 500,
-        "w": 1200,
-        "h": 180,
+        "y": 490,
+        "w": 580,
+        "h": 190,
         "args": {
-          "title": "Key Drivers",
+          "title": "Transformation Drivers",
           "items": [
             {
-              "icon": "chart-line-up",
+              "icon": "users-four",
               "label": "Competitor pressure intensifying"
             },
             {
-              "icon": "gavel",
-              "label": "Regulatory changes accelerating"
+              "icon": "scales",
+              "label": "New regulatory requirements"
             },
             {
-              "icon": "users",
-              "label": "Talent attrition rising"
+              "icon": "user-minus",
+              "label": "Critical talent attrition"
             }
           ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 490,
+        "w": 280,
+        "h": 190,
+        "args": {
+          "value": "11 mo",
+          "label": "CAC Payback",
+          "sublabel": "Customer acquisition efficiency",
+          "icon": "clock",
+          "style": "accent-border"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 940,
+        "y": 490,
+        "w": 280,
+        "h": 190,
+        "args": {
+          "value": "End 2026",
+          "label": "Board Mandate",
+          "sublabel": "Digital acceleration deadline",
+          "icon": "flag-checkered",
+          "style": "accent-border"
         }
       }
     ]
@@ -121,20 +164,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4181,
+      "input_tokens": 4419,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 769,
+      "output_tokens": 1097,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0279804,
-    "elapsedSec": 12,
-    "generatedAt": "2026-07-05T06:22:19.673Z",
+    "costUSD": 0.0336144,
+    "elapsedSec": 15.6,
+    "generatedAt": "2026-07-05T07:05:43.498Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -21,69 +21,102 @@
         }
       },
       {
-        "type": "comparison-table",
-        "x": 60,
+        "type": "kpi-card",
+        "x": 40,
         "y": 160,
-        "w": 1160,
-        "h": 500,
+        "w": 380,
+        "h": 220,
         "args": {
-          "title": "12-Month Target vs Current State",
-          "columns": [
+          "value": "40%",
+          "label": "Processing Time Reduction",
+          "sublabel": "Digital Core automation by Q3",
+          "icon": "lightning",
+          "trend": "down",
+          "trendValue": "Target Q3",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 460,
+        "y": 160,
+        "w": 780,
+        "h": 520,
+        "args": {
+          "title": "12-Month Transformation Dimensions",
+          "items": [
             {
-              "name": "Dimension",
-              "width": 0.3
+              "icon": "gear-six",
+              "label": "Process Automation",
+              "sublabel": "Core workflows digitized"
             },
             {
-              "name": "Current",
-              "width": 0.35
+              "icon": "pulse",
+              "label": "Real-time Data",
+              "sublabel": "Live operational visibility"
             },
             {
-              "name": "Target (12M)",
-              "width": 0.35
+              "icon": "user-focus",
+              "label": "Customer Self-Service",
+              "sublabel": "Autonomous experience channels"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Decision Support",
+              "sublabel": "Intelligent recommendations"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "API Ecosystem",
+              "sublabel": "Partner integration platform"
+            },
+            {
+              "icon": "cloud",
+              "label": "Cloud-native Architecture",
+              "sublabel": "Scalable infrastructure"
             }
           ],
-          "features": [
+          "cols": 2,
+          "iconStyle": "card",
+          "iconSize": "medium",
+          "colorMode": "auto"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 420,
+        "w": 380,
+        "h": 100,
+        "args": {
+          "value": "Digital Core",
+          "label": "Foundation Layer Complete",
+          "trend": "On Track",
+          "trendDirection": "up",
+          "bg": [
+            156,
+            142,
+            110
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 560,
+        "w": 380,
+        "h": 120,
+        "args": {
+          "items": [
             {
-              "name": "Process Automation",
-              "values": [
-                "Manual",
-                "✓ Automated"
-              ]
+              "icon": "check-circle",
+              "label": "Cost reduction via automation",
+              "status": "highlight"
             },
             {
-              "name": "Real-time Data",
-              "values": [
-                "Batch/Delayed",
-                "✓ Real-time"
-              ]
-            },
-            {
-              "name": "Customer Self-Service",
-              "values": [
-                "Limited",
-                "✓ Full Portal"
-              ]
-            },
-            {
-              "name": "AI Decision Support",
-              "values": [
-                "None",
-                "✓ Implemented"
-              ]
-            },
-            {
-              "name": "API Ecosystem",
-              "values": [
-                "Siloed",
-                "✓ Unified"
-              ]
-            },
-            {
-              "name": "Cloud-native Arch",
-              "values": [
-                "Legacy/On-prem",
-                "✓ Cloud-native"
-              ]
+              "icon": "rocket",
+              "label": "Faster processing cycles",
+              "status": "highlight"
             }
           ]
         }
@@ -100,20 +133,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4136,
+      "input_tokens": 4328,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 482,
+      "output_tokens": 825,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0235404,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-05T06:22:33.695Z",
+    "costUSD": 0.0292614,
+    "elapsedSec": 13.3,
+    "generatedAt": "2026-07-05T07:06:06.401Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

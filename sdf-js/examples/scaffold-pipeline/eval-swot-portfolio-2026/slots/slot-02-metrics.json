@@ -25,36 +25,57 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 520,
+        "h": 280,
         "args": {
-          "title": "Q3 2026 Portfolio Performance",
+          "title": "Portfolio Performance",
           "kpis": [
             {
               "value": "$420M",
               "label": "Total AUM",
-              "sublabel": "12 companies",
-              "trend": "neutral"
+              "sublabel": "12 companies"
             },
             {
               "value": "$38M",
               "label": "Combined ARR",
-              "sublabel": "Across portfolio",
               "trend": "up",
               "trendValue": "+62% YoY"
             },
             {
               "value": "3",
               "label": "Series B Track",
-              "sublabel": "Next 18 months",
-              "trend": "up"
+              "sublabel": "Next 18 months"
             },
             {
               "value": "2",
-              "label": "Pivots Complete",
+              "label": "Strategic Pivots",
               "sublabel": "H1 2026",
               "trend": "neutral"
             }
           ]
+        }
+      },
+      {
+        "type": "value-chain-diagram",
+        "x": 40,
+        "y": 460,
+        "w": 1200,
+        "h": 220,
+        "args": {
+          "title": "Investment Operations",
+          "primary": [
+            "Deal Sourcing",
+            "Due Diligence",
+            "Term Sheet",
+            "Post-Investment",
+            "Exit"
+          ],
+          "support": [
+            "LP Relations",
+            "Portfolio Ops",
+            "Legal & Compliance",
+            "Network & Brand"
+          ],
+          "outcome": "Risk-Adjusted Returns"
         }
       }
     ]
@@ -70,20 +91,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4024,
+      "input_tokens": 4412,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 396,
+      "output_tokens": 525,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0219144,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-05T06:03:28.711Z",
+    "costUSD": 0.025013399999999998,
+    "elapsedSec": 9.8,
+    "generatedAt": "2026-07-05T07:09:04.640Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
