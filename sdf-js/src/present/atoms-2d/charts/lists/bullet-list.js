@@ -73,18 +73,36 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
 
   const plotH = y + h - plotTop - PAD;
-  const rowH = plotH / N;
+  // Tighten row pitch ~15% vs. a naive full-height stretch (evenly dividing
+  // plotH across N rows made short lists look sparse/unfinished with
+  // excessive whitespace between bullets) — then center the tighter block
+  // vertically within the available plot area.
+  const rowH = (plotH / N) * 0.85;
+  const blockH = rowH * N;
+  const blockTop = plotTop + (plotH - blockH) / 2;
   const bulletR = Math.min(rowH * 0.18, 14);
   const bulletX = x + PAD + bulletR + 4;
   const textX = bulletX + bulletR + 16;
 
   for (let i = 0; i < N; i++) {
     const it = items[i] || {};
-    const rowCY = plotTop + rowH * (i + 0.5);
-    const status = it.status || 'todo';
+    const rowCY = blockTop + rowH * (i + 0.5);
+    // status is left undefined for a plain item (no explicit semantic) —
+    // that now renders as a small FILLED accent dot, not a hollow ring.
+    // The hollow ring is reserved for an EXPLICIT status:'todo' (a
+    // deliberate "not done yet" checklist marker) so a plain bullet list
+    // with no status args doesn't look like an unfinished checklist.
+    const status = it.status;
     const bulletColor =
-      status === 'highlight' ? accent : status === 'done' ? darken(accent, 0.2) : [200, 200, 205];
-    const isFilled = status !== 'todo';
+      status === 'highlight'
+        ? accent
+        : status === 'done'
+          ? darken(accent, 0.2)
+          : status === 'todo'
+            ? [200, 200, 205]
+            : accent;
+    const isRing = status === 'todo';
+    const isFilled = !isRing;
 
     // Bullet OR icon (Sprint 18: icon → small filled badge like PL style)
     ctx.save();
