@@ -24,7 +24,16 @@ const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || 
 
 const monoMat = (i, N, emphasized) => {
   if (emphasized)
-    return { hue: 0.11, sat: 0.78, value: 0.95, kind: 'normal', roughness: 0.22, clearcoat: 0.6 };
+    return {
+      hue: 0.11,
+      sat: 0.78,
+      value: 0.95,
+      metal: 0,
+      glow: 0.22,
+      kind: 'normal',
+      roughness: 0.22,
+      clearcoat: 0.6,
+    };
   const k = N > 1 ? i / (N - 1) : 0;
   return {
     hue: 0.55 + 0.09 * k,
@@ -73,10 +82,26 @@ export function renderMagnitude(ir, opts = {}) {
     const buried = H + 0.3; // start fully underground, then erupt
     const t0 = Math.max(0.2, riseStart(k));
     const t1 = t0 + 0.6;
+    // Plinth first: a static base slab each monolith erupts THROUGH — turns a
+    // floating box into a mounted monument (and grounds the eruption).
     subjects.push({
-      id: `mono-${i}`,
+      id: `plinth-${i}`,
       type: 'box',
-      args: { dims: [W, H, W] },
+      args: { dims: [W + 0.34, 0.12, W + 0.34] },
+      transform: { translate: [xOf(i), 0.06, 0] },
+      material: {
+        hue: 0.58,
+        sat: 0.1,
+        value: 0.55,
+        kind: 'normal',
+        roughness: 0.6,
+        clearcoat: 0.1,
+      },
+    });
+    const craft = {
+      id: `mono-${i}`,
+      type: 'rounded_box', // beveled edges — a hewn stone, not a raw prim
+      args: { dims: [W, H, W], cornerR: 0.045 },
       transform: { translate: [xOf(i), yFinal, 0] },
       material: monoMat(i, N, emphasis.has(i)),
       animation: [
@@ -85,7 +110,9 @@ export function renderMagnitude(ir, opts = {}) {
           expr: `${(yFinal - buried).toFixed(3)} + ${buried.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
         },
       ],
-    });
+    };
+    if (!emphasis.has(i)) craft.pattern = 'cracked'; // stone grain; the gold champion stays polished
+    subjects.push(craft);
   });
 
   // ---- camera: five beats, magnitude variation --------------------------------
@@ -143,6 +170,7 @@ export function renderMagnitude(ir, opts = {}) {
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.8,
     shake: [0.5, 0.06], // impact-then-settle
+    ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.45, 1.0],
     ease: 'out',
   });

@@ -2393,6 +2393,7 @@ export function createStudioRenderer({
     let sequenceFocalDist = null;
     // Sprint 8: per-shot exposure override + renderer override (Blueprint-as-shot).
     let sequenceExposure = null;
+    let sequenceAmbient = null; // shot-level sky-ambient override (the spotlight crash)
     let sequenceShotRenderer = null;
     // Sprint 4: per-frame subject motion offsets + scene-state. Both are
     // produced by the sequence evaluator and feed: (a) subject SDF translate
@@ -2414,6 +2415,7 @@ export function createStudioRenderer({
         sequenceAperture = cs.aperture;
         sequenceFocalDist = cs.focalDistance;
         if (typeof state.exposure === 'number') sequenceExposure = state.exposure;
+        if (typeof state.ambient === 'number') sequenceAmbient = state.ambient;
         if (state.shotRenderer) sequenceShotRenderer = state.shotRenderer;
         frameSubjectOffsets = state.subjectOffsets || {};
         frameSceneState = state.sceneState || {};
@@ -2602,7 +2604,11 @@ export function createStudioRenderer({
       gl.uniform1i(uniformsCache['u_numExtraLights'], numExtraLights);
     }
     if (uniformsCache['u_ambientScale'] != null) {
-      gl.uniform1f(uniformsCache['u_ambientScale'], ambientScale);
+      // Shot-level ambient (spotlight crash) scales the scene's baseline.
+      gl.uniform1f(
+        uniformsCache['u_ambientScale'],
+        sequenceAmbient != null ? ambientScale * sequenceAmbient : ambientScale,
+      );
     }
     if (numExtraLights > 0) {
       if (uniformsCache['u_extraLightPos[0]'] != null)

@@ -54,6 +54,11 @@ export function createFigure({ outdoor = false } = {}) {
     els = items.map((o) => {
       const d = document.createElement('div');
       d.className = 'lbl' + (o.role === 'value' ? ' value' : '');
+      // Numeric value chips COUNT UP over ~0.8s after their reveal — numbers
+      // that arrive read as data landing, not captions appearing.
+      if (o.role === 'value' && /^[\d,]+$/.test(o.text)) {
+        o._countTarget = Number(o.text.replace(/,/g, ''));
+      }
       d.textContent = o.text;
       if (o.role === 'title') {
         d.style.fontSize = '20px';
@@ -93,6 +98,13 @@ export function createFigure({ outdoor = false } = {}) {
       const depthFade =
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
       el.style.opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
+      if (o._countTarget != null && o.revealAt != null) {
+        const k = Math.max(0, Math.min(1, (t - o.revealAt) / 0.8));
+        const eased = 1 - (1 - k) * (1 - k); // ease-out: fast start, settle on the number
+        const v = Math.round(o._countTarget * eased);
+        const shown = k >= 1 ? o.text : v.toLocaleString('en-US');
+        if (el.textContent !== shown) el.textContent = shown;
+      }
     }
     requestAnimationFrame(tick);
   }

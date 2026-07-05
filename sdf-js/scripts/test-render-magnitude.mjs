@@ -25,6 +25,14 @@ ok(
   const scene = renderMagnitude(ir);
   const monos = scene.subjects.filter((s) => s.id.startsWith('mono-'));
   ok(monos.length === 5, 'one monolith per category');
+  ok(
+    monos.every((s) => s.type === 'rounded_box'),
+    'monoliths are beveled (hewn stone)',
+  );
+  ok(
+    scene.subjects.filter((s) => s.id.startsWith('plinth-')).length === 5,
+    'each monolith has a plinth',
+  );
   // honest encoding: height linear in magnitude, equal footprints
   const h = Object.fromEntries(monos.map((s) => [s.id, s.args.dims[1]]));
   ok(Math.abs(h['mono-2'] / h['mono-1'] - 890 / 620) < 0.01, 'heights linear in magnitude');
@@ -56,6 +64,10 @@ ok(
     'super punch-in (cut + shake + exposure pop)',
   );
   ok(superShot.target[1] > superShot.pos[1], 'super looks UP the emphasis monolith');
+  ok(
+    Array.isArray(superShot.ambient) && superShot.ambient[0] < 0.5,
+    'super crashes the ambient (spotlight moment)',
+  );
   ok((shots[shots.length - 1].focalDistance || 0) > 5, 'ends on a wide payoff frame');
 
   // labels: 5 name cards + 5 value chips, reveal-tagged

@@ -244,6 +244,16 @@ export function evaluateCameraSequence(seq, tSec, ctx) {
   out.aperture = dofValue(shot.aperture, blend, out.aperture);
   out.focalDistance = dofValue(shot.focalDistance, blend, out.focalDistance);
 
+  // Shot-level ambient: light participates in the narrative. number OR
+  // [from, to] intra-shot ramp scaling the scene's sky-ambient (u_ambientScale)
+  // — the super's [dip → 1.0] is the "spotlight crash" (surroundings collapse
+  // on the impact, then the room comes back). null → scene default untouched.
+  if (shot.ambient != null) {
+    out.ambient = Array.isArray(shot.ambient)
+      ? lerp(Number(shot.ambient[0]) || 0, Number(shot.ambient[1]) || 0, clamp01(shotT))
+      : Number(shot.ambient);
+  }
+
   // Shake: number (constant) OR [from, to] intra-shot ramp (the super's
   // impact-then-settle) OR legacy {amount, ...}. An edge ENVELOPE fades shake
   // in/out near shot boundaries so it never pops on when a calm shot blends

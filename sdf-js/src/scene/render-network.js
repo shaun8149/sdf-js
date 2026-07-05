@@ -96,7 +96,16 @@ export function constellationLayout(ir, opts = {}) {
 
 const nodeMatN = (deg, maxDeg, emphasized) => {
   if (emphasized)
-    return { hue: 0.11, sat: 0.78, value: 0.95, kind: 'normal', roughness: 0.22, clearcoat: 0.6 };
+    return {
+      hue: 0.11,
+      sat: 0.78,
+      value: 0.95,
+      metal: 0,
+      glow: 0.22,
+      kind: 'normal',
+      roughness: 0.22,
+      clearcoat: 0.6,
+    };
   const k = maxDeg > 0 ? deg / maxDeg : 0; // hubs lighter, leaves deeper
   return {
     hue: 0.64 - 0.09 * k,
@@ -112,6 +121,7 @@ const EDGE_MAT = {
   hue: 0.58,
   sat: 0.25,
   value: 0.8,
+  glow: 0.08, // faint circuit glow — the wiring reads as live
   kind: 'normal',
   roughness: 0.35,
   clearcoat: 0.3,
@@ -153,7 +163,7 @@ export function renderNetwork(ir, opts = {}) {
       animation: [
         {
           channel: 'transform.translate.y',
-          expr: `${(p[1] + drop).toFixed(3)} - ${drop} * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t)`,
+          expr: `${(p[1] + drop).toFixed(3)} - ${drop} * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t) + 0.018 * sin(1.3 * t + ${(i * 2.1).toFixed(2)})`, // + idle breathing: a living constellation, not statues
         },
       ],
     });
@@ -238,6 +248,7 @@ export function renderNetwork(ir, opts = {}) {
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.6,
     shake: [0.5, 0.06], // impact-then-settle
+    ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.45, 1.0],
     ease: 'out',
   });

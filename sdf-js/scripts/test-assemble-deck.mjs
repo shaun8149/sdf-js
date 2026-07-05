@@ -28,6 +28,16 @@ console.log('=== assemble-deck (N IRs → one continuous world) ===\n');
     threw = true;
   }
   ok(threw, 'unknown expr shape throws (fail loud)');
+  // idle-breathing tail: amplitude/freq preserved, PHASE rewinds by F*dt so the
+  // bob is continuous across the station's shifted clock
+  ok(
+    shiftBuildInExpr(
+      '2.500 - 1.1 * smoothstep(0.25, 0.75, t) + 0.018 * sin(1.3 * t + 4.20)',
+      0,
+      10,
+    ) === '2.500 - 1.1 * smoothstep(10.25, 10.75, t) + 0.018 * sin(1.3 * t + -8.80)',
+    'idle tail shifts phase (−F·dt), keeps amplitude/freq',
+  );
 }
 
 const deck = JSON.parse(
