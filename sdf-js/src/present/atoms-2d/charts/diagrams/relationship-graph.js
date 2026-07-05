@@ -183,11 +183,14 @@ function drawEdge(ctx, x0, y0, x1, y1, color, weight, label) {
     ctx.font = '600 11px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    // White halo (stroke) so the label reads over any edge/node it crosses
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-    ctx.lineJoin = 'round';
-    ctx.strokeText(String(label), mx, my - 6);
+    // White halo (stroke) so the label reads over any edge/node it crosses.
+    // Guarded: the Node test-env canvas stub doesn't implement strokeText.
+    if (typeof ctx.strokeText === 'function') {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+      ctx.lineJoin = 'round';
+      ctx.strokeText(String(label), mx, my - 6);
+    }
     ctx.fillStyle = rgbaCss(color, 0.85);
     ctx.fillText(String(label), mx, my - 6);
     ctx.restore();
