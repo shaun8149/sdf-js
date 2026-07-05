@@ -143,19 +143,27 @@ function padNum(str, n) {
 }
 
 console.log(
-  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}`,
+  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}${padNum('facts%', 8)}`,
 );
 
 for (const r of rows) {
   const fillStr = `${r.structure.slots_baked}/${r.structure.slots_total}`;
   const liftStr = `${r.threeDReadiness.lift_success}/${r.structure.slots_baked}`;
+  const factsStr = r.fidelity ? Math.round(r.fidelity.number_recall * 100) + '%' : '—';
   console.log(
-    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}`,
+    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}${padNum(factsStr, 8)}`,
   );
 }
 
 const corpusMean = rows.length > 0 ? rows.reduce((s, r) => s + r.score.total, 0) / rows.length : 0;
-console.log(`\n${pad('CORPUS MEAN', 26)}${padNum(corpusMean.toFixed(1), 6)}`);
+const fidelityRows = rows.filter((r) => r.fidelity);
+const fidelityMean =
+  fidelityRows.length > 0
+    ? fidelityRows.reduce((s, r) => s + r.fidelity.number_recall, 0) / fidelityRows.length
+    : null;
+console.log(
+  `\n${pad('CORPUS MEAN', 26)}${padNum(corpusMean.toFixed(1), 6)}${fidelityMean != null ? `   facts recall mean: ${(fidelityMean * 100).toFixed(1)}%` : ''}`,
+);
 if (skipped.length) console.log(`\nskipped (not baked): ${skipped.join(', ')}`);
 
 // -----------------------------------------------------------------------------
@@ -168,6 +176,7 @@ const summary = {
   scored: rows.length,
   skipped,
   corpusMean: Math.round(corpusMean * 10) / 10,
+  factsRecallMean: fidelityMean != null ? Math.round(fidelityMean * 1000) / 1000 : null,
   decks: rows.map((r) => ({
     deckName: r.deckName,
     score: r.score.total,
@@ -188,6 +197,8 @@ const summary = {
     liftedSubjectRate: r.threeDReadiness.lifted_subject_rate,
     charsPerSlot: r.textBudget.chars_per_slot,
     maxSlotChars: r.textBudget.max_slot_chars,
+    numberRecall: r.fidelity ? r.fidelity.number_recall : null,
+    missingNumbers: r.fidelity ? r.fidelity.missing_numbers : [],
   })),
 };
 writeFileSync(join(RESULTS_DIR, 'summary.json'), JSON.stringify(summary, null, 2));

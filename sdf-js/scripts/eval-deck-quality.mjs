@@ -105,6 +105,16 @@ function textBudgetScore(charsPerSlot) {
  * @param {string} deckDir — absolute or cwd-relative path to the deck dir
  * @returns {Promise<object>} the eval result (same shape written to eval.json)
  */
+// Extract "key numbers" from source prose: currency, counts, percentages.
+// Trailing punctuation stripped; bare 1-char digits skipped (years kept).
+export function extractKeyNumbers(text) {
+  const raw = text.match(/\$?[\d,]+\.?\d*[KMB%]?/g) || [];
+  const cleaned = raw
+    .map((n) => n.replace(/[,.]+$/, ''))
+    .filter((n) => n.length > 1 && /\d/.test(n));
+  return [...new Set(cleaned)];
+}
+
 export async function scoreDeckQuality(deckDir) {
   const dir = resolve(deckDir);
   const deckJsonPath = join(dir, 'deck.json');
@@ -237,6 +247,45 @@ export async function scoreDeckQuality(deckDir) {
   }
   const charsPerSlot = slotsBaked > 0 ? totalCharsAcrossSlots / slotsBaked : 0;
 
+  // ── CONTENT FIDELITY (Sprint 25) ──
+  // The presentation's payload is its FACTS. Extract key numbers from the
+  // source fixture (deck.json records sourceFile) and measure how many
+  // survive into the baked slot args. Literal-match on purpose: the lift
+  // prompt teaches value preservation, and strictness IS the signal.
+  // Reported separately from the composite so scores stay comparable
+  // across pre-fidelity iterations.
+  let fidelity = null;
+  const sourceFile = manifest.sourceFile
+    ? resolve(dir, '..', '..', '..', '..', manifest.sourceFile)
+    : null;
+  if (sourceFile && existsSync(sourceFile)) {
+    const srcSlides = JSON.parse(readFileSync(sourceFile, 'utf8'));
+    const srcText = srcSlides
+      .map(
+        (s) =>
+          `${s.title || ''} ${(s.body || []).map((b) => (typeof b === 'string' ? b : b.text || '')).join(' ')}`,
+      )
+      .join(' ');
+    const srcNumbers = extractKeyNumbers(srcText);
+    let deckText = '';
+    for (const { sceneData } of slotSceneDatas) {
+      deckText += JSON.stringify(sceneData.subjects || []);
+    }
+    const deckTextNorm = deckText.replace(/,/g, '');
+    const found = [];
+    const missing = [];
+    for (const n of srcNumbers) {
+      if (deckText.includes(n) || deckTextNorm.includes(n.replace(/,/g, ''))) found.push(n);
+      else missing.push(n);
+    }
+    fidelity = {
+      numbers_total: srcNumbers.length,
+      numbers_found: found.length,
+      number_recall: srcNumbers.length > 0 ? found.length / srcNumbers.length : 1,
+      missing_numbers: missing.slice(0, 12),
+    };
+  }
+
   // ── SCORE ──
   const structureScore = fillRate * 25;
   const varietyScore = Math.min(1, atomTypesDistinct / 6) * 15;
@@ -281,6 +330,7 @@ export async function scoreDeckQuality(deckDir) {
       chars_per_slot: charsPerSlot,
       max_slot_chars: maxSlotChars,
     },
+    fidelity,
     score: {
       total: Math.round(score * 10) / 10,
       breakdown: {
@@ -325,6 +375,13 @@ function printHumanTable(result) {
     `  lift_success: ${t.lift_success}/${t.lift_attempted}${t.lift_errors.length ? '  errors: ' + t.lift_errors.map((e) => `slot${e.slotIdx}(${e.error.slice(0, 40)})`).join('; ') : ''}`,
   );
   console.log(`  lifted_subject_rate: ${(t.lifted_subject_rate * 100).toFixed(0)}%`);
+  if (result.fidelity) {
+    const f = result.fidelity;
+    console.log('\nCONTENT FIDELITY');
+    console.log(
+      `  numbers: ${f.numbers_found}/${f.numbers_total} preserved (recall ${(f.number_recall * 100).toFixed(0)}%)${f.missing_numbers.length ? '  missing: ' + f.missing_numbers.join(', ') : ''}`,
+    );
+  }
   console.log('\nTEXT BUDGET');
   console.log(
     `  chars_per_slot: ${b.chars_per_slot.toFixed(0)}  max_slot_chars: ${b.max_slot_chars}`,
