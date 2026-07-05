@@ -47,6 +47,7 @@ function clamp01(t) {
 function applyEase(mode, t) {
   const c = clamp01(t);
   if (mode === 'linear') return c;
+  if (mode === 'whip') return c * c * c * (c * (c * 6 - 15) + 10); // smootherstep: gentle ends, FAST middle — the transit sling
   if (mode === 'in') return c * c;
   if (mode === 'out') return 1 - (1 - c) * (1 - c);
   return c * c * (3 - 2 * c); // 'smooth' | 'inout'

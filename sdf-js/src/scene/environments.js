@@ -86,6 +86,96 @@ function alpineEnvironment() {
   };
 }
 
+// 'canyon' — red-sandstone canyon at golden hour (the shipped terrain-canyon
+// recipe: Y-stretched displacement gives the vertical wall striations; the
+// mountain shader's HSV rock tint turns it sandstone). Low warm sun + flare.
+function canyonEnvironment() {
+  return {
+    subjects: [
+      {
+        id: 'env-canyon',
+        type: 'terrain-canyon',
+        args: {
+          maxHeight: 38,
+          scale: 0.014,
+          ridgePower: 2.2,
+          mountainness: 0.22,
+          displaceAmt: 5,
+          yStretch: 4,
+        },
+        transform: { translate: [0, -8, 0] },
+      },
+      {
+        id: 'env-sand-base',
+        type: 'box',
+        args: { dims: [400, 0.4, 400] },
+        transform: { translate: [0, -7.9, 0] },
+        material: {
+          hue: 0.07,
+          sat: 0.45,
+          value: 0.6,
+          metal: 0,
+          glow: 0,
+          kind: 'normal',
+          roughness: 0.7,
+        },
+      },
+    ],
+    defaults: {
+      camera: { yaw: 0, pitch: -0.1, distance: 10, focal: 1.2, targetX: 0, targetY: 2, targetZ: 0 },
+      light: { azimuth: 2.4, altitude: 0.16, distance: 80, intensity: 1.25 },
+      shadow: { enabled: true, mode: 'darken', strength: 0.45 },
+      postFx: {
+        exposure: 1.0,
+        vignetteStrength: 0.42,
+        bloomMix: 0.24,
+        bloomThreshold: 0.8,
+        lensFlareStrength: 0.18,
+        motionBlurStrength: 0.45,
+      },
+    },
+    payoffZoom: 1.35,
+  };
+}
+
 export function getEnvironment(name) {
-  return name === 'alpine' ? alpineEnvironment() : null;
+  if (name === 'alpine') return alpineEnvironment();
+  if (name === 'canyon') return canyonEnvironment();
+  return null;
+}
+
+// ---- Horizon silhouettes (the DEFAULT open world's skyline) -------------------
+// Decks without an env fly over an infinite empty plain — the transits expose
+// it. This is a CHEAP ring of hill silhouettes (ellipsoids only — no terrain
+// fbm, so no shader-compile cost) at distance; atmospheric fog hazes them into
+// a proper horizon. Deterministic layout from index math (no randomness).
+export function horizonSilhouettes(center = [0, 0], ringRadius = 140) {
+  const hills = [];
+  const N = 14;
+  for (let i = 0; i < N; i++) {
+    const th = (i * 2 * Math.PI) / N + 0.35 * Math.sin(i * 2.7);
+    const r = ringRadius * (0.9 + 0.18 * Math.sin(i * 1.9 + 1.2));
+    const w = 34 + 18 * Math.sin(i * 3.1 + 0.5) ** 2;
+    const h = 8 + 7 * Math.sin(i * 2.3 + 2.1) ** 2;
+    hills.push({
+      id: `horizon-${i}`,
+      type: 'ellipsoid',
+      args: { dims: [w, h, w * 0.7] },
+      // sink most of the body — only the CREST breaks the horizon line, so it
+      // reads as a distant ridge, not a dome parked on the plain
+      transform: {
+        translate: [center[0] + Math.sin(th) * r, -h * 0.55, center[1] + Math.cos(th) * r],
+      },
+      material: {
+        hue: 0.62,
+        sat: 0.3,
+        value: 0.3,
+        metal: 0,
+        glow: 0,
+        kind: 'normal',
+        roughness: 0.85,
+      },
+    });
+  }
+  return hills;
 }

@@ -14,7 +14,7 @@
 // the shift rewrites them with a STRICT parser that throws on any unknown
 // shape (fail loud, never silently mis-animate).
 import { renderIR } from './render-ir.js';
-import { getEnvironment } from './environments.js';
+import { getEnvironment, horizonSilhouettes } from './environments.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
 //   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
@@ -116,7 +116,7 @@ export function assembleDeck(deck, opts = {}) {
         aperture: 0,
         focalDistance: stride * 0.8,
         shake: [0.14, 0.05], // sling settles as the next station arrives
-        ease: 'inout',
+        ease: 'whip', // gentle launch, FAST mid-flight, gentle arrival
       });
       clock += dur;
     }
@@ -215,10 +215,20 @@ export function assembleDeck(deck, opts = {}) {
     });
   }
 
+  // World dressing: envs bring their own terrain; the DEFAULT open world gets a
+  // ring of cheap hill silhouettes around the deck's centroid, so transits fly
+  // toward a horizon instead of an empty plain.
+  const worldSubjects = env
+    ? env.subjects
+    : horizonSilhouettes([
+        origins.reduce((s, o) => s + o[0], 0) / origins.length,
+        origins.reduce((s, o) => s + o[2], 0) / origins.length,
+      ]);
+
   return {
     v: 1,
-    name: `(deck) ${deck.title || `${deck.slides.length} stations`}${env ? ' · alpine' : ''}`,
-    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
+    subjects: [...subjects, ...worldSubjects],
     overlay,
     cameraSequence: { loop: false, shots, hitstops },
     // One shared open world — no per-station stage room (walls would slice the
