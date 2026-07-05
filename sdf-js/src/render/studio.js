@@ -2046,6 +2046,10 @@ export function createStudioRenderer({
       sceneFnName: 'sceneSDF',
       includeLibrary: true,
       emitObjectIndex: true,
+      // Dead-code eliminate the library against the studio's own fragment code
+      // (buildFragmentShader('') = the full template minus the scene) — unused
+      // primitives never reach the driver. See glsl-prune.js.
+      prune: buildFragmentShader(''),
     });
     if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
 
@@ -2682,6 +2686,8 @@ export function createStudioRenderer({
         sceneFnName: 'sceneSDF',
         includeLibrary: true,
         emitObjectIndex: true,
+        // library DCE against the studio fragment template — see _uploadSDF note
+        prune: buildFragmentShader(''),
       });
       if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
       const fragSource = buildFragmentShader(result.glsl);
