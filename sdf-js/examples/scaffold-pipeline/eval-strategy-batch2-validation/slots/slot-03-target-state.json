@@ -27,36 +27,36 @@
         "w": 1120,
         "h": 480,
         "args": {
-          "title": "12-Month Capability Target",
+          "title": "12-Month Target Capabilities",
           "axes": [
             "Process Automation",
             "Real-time Data",
-            "Customer Self-Service",
-            "AI Decision Support",
+            "Self-Service",
+            "AI Decisions",
             "API Ecosystem",
-            "Cloud-native Architecture"
+            "Cloud-native"
           ],
           "series": [
             {
               "label": "Current",
               "values": [
                 0.3,
-                0.25,
-                0.4,
                 0.2,
+                0.25,
+                0.1,
                 0.35,
-                0.3
+                0.4
               ]
             },
             {
               "label": "Target (12mo)",
               "values": [
+                0.7,
                 0.75,
                 0.8,
-                0.85,
-                0.7,
-                0.8,
-                0.75
+                0.6,
+                0.75,
+                0.85
               ]
             },
             {
@@ -64,10 +64,10 @@
               "values": [
                 0.95,
                 0.95,
-                1,
+                0.95,
                 0.9,
                 0.95,
-                0.95
+                1
               ]
             }
           ],
@@ -88,18 +88,18 @@
     "tokenUsage": {
       "input_tokens": 3982,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 410,
+      "output_tokens": 408,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021990899999999997,
-    "elapsedSec": 7.4,
-    "generatedAt": "2026-07-05T05:00:30.894Z",
+    "costUSD": 0.0219684,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-05T05:28:09.460Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

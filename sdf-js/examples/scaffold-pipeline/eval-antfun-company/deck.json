@@ -7,9 +7,9 @@
     "description": "Intro deck for prospects, partners, or recruits",
     "pickScore": 9,
     "pickSignals": [
-      "Deck structure follows classic company intro pattern: mission → market → product → team → competitive position → contact",
-      "Explicitly labeled 'Company Overview' in slide 9, with audience-agnostic content suitable for prospects, partners, or recruits",
-      "Not a fundraising pitch (no ask/traction/business model slots), not a product launch (no demo/pricing/CTA), but a broad organizational introduction"
+      "The deck follows a classic company overview arc: mission → market → product → team → technology → contact, matching the 'company-overview' scaffold (mission → what-we-do → products → market → values → team → contact).",
+      "Source has ~14 slide-sections spanning mission, team heritage, product suite, differentiators, competitive advantages, and 'Get in Touch' — fits well into the 8-slot company-overview scaffold without leaving slots empty.",
+      "While it mentions investors (Sequoia, Paradigm) and has some pitch-like elements, the overall intent is to introduce ANTFUN to prospects, partners, or recruits — not to ask for a specific funding round. No 'ask' slide, no explicit traction metrics or business model breakdown typical of a VC pitch."
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -90,7 +90,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "pillar-3up"
+        "pillar-3up",
+        "icon-row",
+        "stat-banner",
+        "stat-banner"
       ]
     },
     {
@@ -121,7 +124,7 @@
       "slotPurpose": "Feature lineup",
       "sourceSlideIdx": 5,
       "sourceSlideTitle": "Technology Stack",
-      "mappingScore": 7,
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-products.json",
@@ -149,7 +152,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "pie",
+        "icon-grid",
         "bullet-list"
       ]
     },
@@ -185,7 +188,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "timeline"
+        "icon-grid"
       ]
     },
     {
@@ -214,10 +217,10 @@
     "slotsBaked": 7,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.20871164999999997
+    "totalCostUSD": 0.2191554
   },
   "meta": {
-    "generatedAt": "2026-07-05T04:58:38.007Z",
+    "generatedAt": "2026-07-05T05:26:24.313Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

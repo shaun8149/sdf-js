@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Course Overview",
   "sceneData": {
     "name": "training/context",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Why This Matters"
+          "title": "Why This Matters",
+          "style": "gradient"
         }
       },
       {
@@ -29,23 +30,23 @@
           "items": [
             {
               "icon": "network",
-              "label": "Build distributed systems across machines",
-              "sublabel": "Theory and practice of multi-machine architectures"
+              "label": "Build systems across many machines",
+              "sublabel": "Theory and practice of distributed computing"
             },
             {
-              "icon": "puzzle-pieces",
-              "label": "Master consensus and replication",
-              "sublabel": "Partitioning, consistency models, fault tolerance"
-            },
-            {
-              "icon": "calendar-check",
-              "label": "Hands-on learning format",
-              "sublabel": "2 lectures/week + weekly lab + group project"
+              "icon": "gear-six",
+              "label": "Master core distributed topics",
+              "sublabel": "Consensus, replication, partitioning, fault tolerance"
             },
             {
               "icon": "code",
-              "label": "Prerequisites: CS 240 + Go/Rust",
-              "sublabel": "Operating Systems foundation required"
+              "label": "Hands-on weekly labs",
+              "sublabel": "Apply concepts in Go or Rust"
+            },
+            {
+              "icon": "users-three",
+              "label": "Collaborative group project",
+              "sublabel": "Design and implement a real distributed system"
             }
           ],
           "title": null
@@ -65,18 +66,18 @@
     "tokenUsage": {
       "input_tokens": 3979,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 359,
+      "output_tokens": 357,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0212169,
-    "elapsedSec": 7.4,
-    "generatedAt": "2026-07-05T05:06:06.972Z",
+    "costUSD": 0.021194400000000002,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-05T05:33:58.105Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -3,18 +3,18 @@
   "deckName": "eval-edu-course-intro",
   "structure": {
     "slots_total": 8,
-    "slots_baked": 5,
-    "slots_empty": 3,
+    "slots_baked": 4,
+    "slots_empty": 4,
     "slots_errored": 0,
-    "fill_rate": 0.625,
+    "fill_rate": 0.5,
     "pick_method": "llm",
     "scaffold_id": "training",
     "theme_id": "organic-teal"
   },
   "atomQuality": {
-    "atom_instances": 5,
-    "atom_types_distinct": 4,
-    "variety_ratio": 0.8,
+    "atom_instances": 3,
+    "atom_types_distinct": 3,
+    "variety_ratio": 1,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -23,25 +23,25 @@
   "threeDReadiness": {
     "twin_coverage": 1,
     "untwinned_types": [],
-    "lift_success": 5,
-    "lift_attempted": 5,
+    "lift_success": 4,
+    "lift_attempted": 4,
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 231.4,
-    "max_slot_chars": 324
+    "chars_per_slot": 254.5,
+    "max_slot_chars": 326
   },
   "score": {
-    "total": 85.6,
+    "total": 80,
     "breakdown": {
-      "structure": 15.6,
-      "variety": 10,
+      "structure": 12.5,
+      "variety": 7.5,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:08:33.632Z"
+  "generatedAt": "2026-07-05T05:36:18.174Z"
 }

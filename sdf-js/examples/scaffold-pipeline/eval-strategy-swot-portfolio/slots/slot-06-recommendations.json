@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Recommendations",
   "sceneData": {
     "name": "analysis-report/recommendations",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -29,29 +29,29 @@
         "args": {
           "items": [
             {
-              "icon": "globe-hemisphere-west",
+              "icon": "buildings",
               "label": "Open Berlin office Q1 2027",
               "sublabel": "Double down on EMEA hiring"
             },
             {
               "icon": "currency-dollar",
-              "label": "3-tier pricing with usage add-ons",
-              "sublabel": "Restructure revenue model"
+              "label": "Restructure to 3-tier pricing model",
+              "sublabel": "Add usage-based options"
             },
             {
               "icon": "briefcase",
               "label": "Acquire 1-2 healthcare AI specialists",
-              "sublabel": "Expand vertical capabilities"
+              "sublabel": "Vertical market expansion"
             },
             {
               "icon": "headset",
-              "label": "SLA target: 2h response time",
-              "sublabel": "Invest in customer support infrastructure"
+              "label": "Target 2h SLA response time",
+              "sublabel": "Invest in customer support"
             },
             {
               "icon": "handshake",
-              "label": "Partner channel with 10 SIs",
-              "sublabel": "Launch systems integrator program"
+              "label": "Launch partner channel program",
+              "sublabel": "10 named systems integrators"
             }
           ]
         }
@@ -69,18 +69,18 @@
     "tokenUsage": {
       "input_tokens": 3988,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 407,
+      "output_tokens": 398,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0219639,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-05T05:02:09.412Z",
+    "costUSD": 0.0218364,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-05T05:29:48.898Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

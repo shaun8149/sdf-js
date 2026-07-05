@@ -1,0 +1,80 @@
+{
+  "slotIdx": 1,
+  "slotName": "opening",
+  "slotTitle": "Opening",
+  "slotPurpose": "Context, overview, or agenda — whatever the deck opens with",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Goal",
+  "sceneData": {
+    "name": "generic-deck/opening",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Opening"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 140,
+        "y": 160,
+        "w": 1000,
+        "h": 500,
+        "args": {
+          "title": "Our Goal",
+          "summit": "45 Miles Complete",
+          "milestones": [
+            {
+              "label": "High Country",
+              "sublabel": "3 days granite peaks"
+            },
+            {
+              "label": "Alpine Lakes",
+              "sublabel": "Crystal waters"
+            },
+            {
+              "label": "Big Waterfalls",
+              "sublabel": "Valley descent"
+            },
+            {
+              "label": "Valley Floor",
+              "sublabel": "2 days relaxed pace"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "agenda-list",
+      "bullet-list",
+      "quote-pull",
+      "stat-banner"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3969,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 303,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020354399999999998,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-05T05:32:41.717Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

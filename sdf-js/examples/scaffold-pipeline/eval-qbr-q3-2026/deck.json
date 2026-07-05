@@ -7,10 +7,10 @@
     "description": "Internal Q review — KPIs, wins, challenges, outlook",
     "pickScore": 10,
     "pickSignals": [
-      "Title explicitly states 'Q3 2026 Quarterly Business Review' — perfect match to QBR scaffold",
-      "Content structure mirrors QBR scaffold exactly: Executive Summary → KPIs → Wins → Challenges → Outlook → Next Steps",
-      "Audience is internal team/exec reviewing quarterly performance with metrics, achievements, obstacles, and forward-looking plans",
-      "All canonical QBR elements present: KPI dashboard, quarterly wins, challenges faced, next quarter outlook, action items with owners"
+      "Title explicitly states 'Q3 2026 Quarterly Business Review' — exact match for QBR scaffold",
+      "Content structure perfectly mirrors QBR slots: Executive Summary → KPIs → Wins → Challenges → Outlook → Next Steps",
+      "Slide count (7 slides in source) matches QBR scaffold slot count (7 slots) exactly — optimal fill rate",
+      "Audience is clearly internal exec/board/manager with metrics, strategic risks, and action items"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -92,7 +92,8 @@
       "subjectTypes": [
         "cover",
         "dashboard-multi-kpi-composite",
-        "bullet-list"
+        "bullet-list",
+        "kpi-card"
       ]
     },
     {
@@ -200,10 +201,10 @@
     "slotsBaked": 7,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.16008629999999996
+    "totalCostUSD": 0.15985380000000002
   },
   "meta": {
-    "generatedAt": "2026-07-05T04:59:51.910Z",
+    "generatedAt": "2026-07-05T05:27:30.167Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

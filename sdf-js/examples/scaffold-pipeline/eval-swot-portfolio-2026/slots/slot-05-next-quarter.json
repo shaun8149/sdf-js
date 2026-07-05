@@ -1,0 +1,104 @@
+{
+  "slotIdx": 5,
+  "slotName": "next-quarter",
+  "slotTitle": "Next Quarter",
+  "slotPurpose": "Plan and priorities for the coming quarter",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
+  "sceneData": {
+    "name": "investor-update/next-quarter",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Quarter",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kanban-board",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Q4 2026 Portfolio Priorities",
+          "columns": [
+            {
+              "name": "Fundraising",
+              "cards": [
+                {
+                  "title": "Series B bridge prep",
+                  "description": "ANTFUN + NovaTech",
+                  "priority": "high"
+                },
+                {
+                  "title": "Fund III final close",
+                  "description": "Target $300M by Dec 2026",
+                  "priority": "high"
+                }
+              ]
+            },
+            {
+              "name": "Portfolio Growth",
+              "cards": [
+                {
+                  "title": "SE Asia LP program",
+                  "description": "Geographic expansion review",
+                  "priority": "medium"
+                },
+                {
+                  "title": "AI transformation audit",
+                  "description": "All 12 portfolio companies",
+                  "priority": "medium"
+                }
+              ]
+            },
+            {
+              "name": "Exit Planning",
+              "cards": [
+                {
+                  "title": "Fund I exit roadmap",
+                  "description": "3 candidates identified",
+                  "priority": "medium"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kanban-board",
+      "bullet-list",
+      "timeline",
+      "progression"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4025,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 463,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0229224,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-05T05:30:44.185Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

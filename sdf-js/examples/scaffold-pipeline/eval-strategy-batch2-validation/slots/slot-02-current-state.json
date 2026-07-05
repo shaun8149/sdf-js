@@ -17,23 +17,24 @@
         "h": 120,
         "args": {
           "title": "Current State",
-          "style": "section"
+          "style": "gradient"
         }
       },
       {
         "type": "swot",
-        "x": 40,
-        "y": 160,
-        "w": 1200,
-        "h": 520,
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
         "args": {
+          "title": "Assessment",
           "strengths": [
             "78% brand recognition",
-            "15-year avg customer relationships",
+            "15-year avg customer relationship",
             "Loyal customer base"
           ],
           "weaknesses": [
-            "7 siloed data systems",
+            "7 separate siloed systems",
             "40% manual processes",
             "Outdated CRM (2014)"
           ],
@@ -64,18 +65,18 @@
     "tokenUsage": {
       "input_tokens": 4051,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 323,
+      "output_tokens": 331,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0208929,
-    "elapsedSec": 6.2,
-    "generatedAt": "2026-07-05T05:00:23.538Z",
+    "costUSD": 0.0210204,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-05T05:28:02.127Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

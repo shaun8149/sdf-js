@@ -1,0 +1,78 @@
+{
+  "slotIdx": 3,
+  "slotName": "section-2",
+  "slotTitle": "Section 2",
+  "slotPurpose": "Second main content section — any topic",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Donor & Community Voices",
+  "sceneData": {
+    "name": "generic-deck/section-2",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Donor & Community Voices"
+        }
+      },
+      {
+        "type": "testimonial-wall",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 500,
+        "args": {
+          "testimonials": [
+            {
+              "quote": "Seeing the well go live in Kilifi was the proudest moment of my giving career — clean water changed that village overnight.",
+              "name": "Margaret Ho",
+              "role": "Monthly donor since 2019"
+            },
+            {
+              "quote": "Clearwater didn't just build a well, they trained our own people to keep it running for the next 50 years.",
+              "name": "Village Chief Amara Kessy",
+              "role": "Tanzania"
+            },
+            {
+              "quote": "Their financial transparency is why our foundation renewed for a third consecutive year.",
+              "name": "Daniel Reyes",
+              "role": "Foundation Program Officer"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row",
+      "number-list",
+      "progression",
+      "quote-pull"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4035,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 350,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0212574,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T05:34:45.892Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

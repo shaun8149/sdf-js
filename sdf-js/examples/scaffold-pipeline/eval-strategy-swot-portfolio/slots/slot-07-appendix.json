@@ -27,14 +27,15 @@
         "w": 1120,
         "h": 480,
         "args": {
+          "title": "Supporting Materials & References",
           "items": [
             {
-              "icon": "table",
+              "icon": "matrix-grid",
               "label": "Full SWOT scoring matrix",
               "sublabel": "Available on request"
             },
             {
-              "icon": "user-sound",
+              "icon": "chats-circle",
               "label": "Customer interview transcripts",
               "sublabel": "Redacted for confidentiality"
             },
@@ -45,7 +46,7 @@
             },
             {
               "icon": "chart-line",
-              "label": "Change curve model",
+              "label": "Change curve model methodology",
               "sublabel": "Based on Bridges (2017) revision of Kübler-Ross framework"
             }
           ]
@@ -65,18 +66,18 @@
     "tokenUsage": {
       "input_tokens": 3970,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 354,
+      "output_tokens": 369,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0211149,
-    "elapsedSec": 6.2,
-    "generatedAt": "2026-07-05T05:02:15.626Z",
+    "costUSD": 0.021347400000000002,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-05T05:29:55.605Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

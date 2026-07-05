@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-05T05:08:33.634Z",
+  "generatedAt": "2026-07-05T05:36:18.176Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
-  "corpusMean": 95.1,
+  "corpusMean": 95.3,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -30,8 +30,36 @@
       "liftSuccess": 7,
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 203.42857142857142,
-      "maxSlotChars": 310
+      "charsPerSlot": 179.28571428571428,
+      "maxSlotChars": 285
+    },
+    {
+      "deckName": "eval-strategy-batch2-validation",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "change-roadmap",
+      "themeId": "consulting-charcoal",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 11,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 8,
+      "liftAttempted": 8,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 232.875,
+      "maxSlotChars": 309
     },
     {
       "deckName": "eval-strategy-swot-portfolio",
@@ -48,7 +76,7 @@
       "scaffoldId": "analysis-report",
       "themeId": "editorial-navy",
       "pickMethod": "llm",
-      "atomTypesDistinct": 6,
+      "atomTypesDistinct": 7,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
@@ -58,42 +86,64 @@
       "liftSuccess": 8,
       "liftAttempted": 8,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 266.625,
-      "maxSlotChars": 484
+      "charsPerSlot": 264.75,
+      "maxSlotChars": 466
     },
     {
-      "deckName": "eval-strategy-batch2-validation",
-      "score": 99.9,
+      "deckName": "eval-yosemite-trip-2026",
+      "score": 100,
       "scoreBreakdown": {
         "structure": 25,
         "variety": 15,
         "hallucination": 15,
         "twin": 20,
         "lift": 15,
-        "text": 9.9
+        "text": 10
       },
       "fillRate": 1,
-      "scaffoldId": "change-roadmap",
-      "themeId": "consulting-charcoal",
+      "scaffoldId": "generic-deck",
+      "themeId": "editorial-navy",
       "pickMethod": "llm",
-      "atomTypesDistinct": 10,
+      "atomTypesDistinct": 7,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
-      "argViolations": 1,
-      "argViolationsTopOffenders": [
-        {
-          "type": "kpi-card",
-          "key": "trendDirection",
-          "count": 1
-        }
-      ],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
       "twinCoverage": 1,
       "untwinnedTypes": [],
-      "liftSuccess": 8,
-      "liftAttempted": 8,
+      "liftSuccess": 7,
+      "liftAttempted": 7,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 284.625,
-      "maxSlotChars": 459
+      "charsPerSlot": 142.85714285714286,
+      "maxSlotChars": 180
+    },
+    {
+      "deckName": "eval-nonprofit-annual-report",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "generic-deck",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 6,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 7,
+      "liftAttempted": 7,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 250.71428571428572,
+      "maxSlotChars": 389
     },
     {
       "deckName": "eval-vc-pitch",
@@ -110,7 +160,7 @@
       "scaffoldId": "pitch-deck-vc",
       "themeId": "pitch-cobalt-orange",
       "pickMethod": "llm",
-      "atomTypesDistinct": 13,
+      "atomTypesDistinct": 14,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
@@ -120,25 +170,25 @@
       "liftSuccess": 9,
       "liftAttempted": 9,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 194.66666666666666,
-      "maxSlotChars": 272
+      "charsPerSlot": 198.44444444444446,
+      "maxSlotChars": 285
     },
     {
       "deckName": "eval-antfun-company",
-      "score": 96.9,
+      "score": 96.2,
       "scoreBreakdown": {
         "structure": 21.9,
         "variety": 15,
         "hallucination": 15,
         "twin": 20,
         "lift": 15,
-        "text": 10
+        "text": 9.3
       },
       "fillRate": 0.875,
       "scaffoldId": "company-overview",
       "themeId": "editorial-navy",
       "pickMethod": "llm",
-      "atomTypesDistinct": 8,
+      "atomTypesDistinct": 7,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
@@ -148,55 +198,55 @@
       "liftSuccess": 7,
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 259.42857142857144,
-      "maxSlotChars": 501
+      "charsPerSlot": 303.14285714285717,
+      "maxSlotChars": 477
     },
     {
-      "deckName": "eval-swot-portfolio-2026",
-      "score": 96.9,
+      "deckName": "eval-product-eng-retro",
+      "score": 91.4,
       "scoreBreakdown": {
-        "structure": 21.9,
-        "variety": 15,
+        "structure": 21.4,
+        "variety": 10,
         "hallucination": 15,
         "twin": 20,
         "lift": 15,
         "text": 10
       },
-      "fillRate": 0.875,
-      "scaffoldId": "analysis-report",
+      "fillRate": 0.8571428571428571,
+      "scaffoldId": "qbr",
       "themeId": "editorial-navy",
       "pickMethod": "llm",
-      "atomTypesDistinct": 7,
+      "atomTypesDistinct": 4,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
-      "argViolations": 1,
+      "argViolations": 3,
       "argViolationsTopOffenders": [
         {
           "type": "kpi-card",
           "key": "trendDirection",
-          "count": 1
+          "count": 3
         }
       ],
       "twinCoverage": 1,
       "untwinnedTypes": [],
-      "liftSuccess": 7,
-      "liftAttempted": 7,
+      "liftSuccess": 6,
+      "liftAttempted": 6,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 279,
-      "maxSlotChars": 502
+      "charsPerSlot": 229.33333333333334,
+      "maxSlotChars": 442
     },
     {
-      "deckName": "eval-nonprofit-annual-report",
-      "score": 94.4,
+      "deckName": "eval-swot-portfolio-2026",
+      "score": 88.1,
       "scoreBreakdown": {
-        "structure": 21.9,
+        "structure": 15.6,
         "variety": 12.5,
         "hallucination": 15,
         "twin": 20,
         "lift": 15,
         "text": 10
       },
-      "fillRate": 0.875,
+      "fillRate": 0.625,
       "scaffoldId": "investor-update",
       "themeId": "financial-navy-cerulean",
       "pickMethod": "llm",
@@ -207,97 +257,39 @@
       "argViolationsTopOffenders": [],
       "twinCoverage": 1,
       "untwinnedTypes": [],
-      "liftSuccess": 7,
-      "liftAttempted": 7,
+      "liftSuccess": 5,
+      "liftAttempted": 5,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 192.28571428571428,
-      "maxSlotChars": 227
+      "charsPerSlot": 222.4,
+      "maxSlotChars": 359
     },
     {
-      "deckName": "eval-product-eng-retro",
-      "score": 93.9,
-      "scoreBreakdown": {
-        "structure": 21.4,
-        "variety": 12.5,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 0.8571428571428571,
-      "scaffoldId": "qbr",
-      "themeId": "editorial-navy",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 5,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 6,
-      "liftAttempted": 6,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 217,
-      "maxSlotChars": 303
-    },
-    {
-      "deckName": "eval-yosemite-trip-2026",
-      "score": 85.8,
+      "deckName": "eval-edu-course-intro",
+      "score": 80,
       "scoreBreakdown": {
         "structure": 12.5,
-        "variety": 15,
+        "variety": 7.5,
         "hallucination": 15,
-        "twin": 18.3,
+        "twin": 20,
         "lift": 15,
         "text": 10
       },
       "fillRate": 0.5,
-      "scaffoldId": "analysis-report",
-      "themeId": "editorial-navy",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 6,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 0.9166666666666666,
-      "untwinnedTypes": [
-        "image"
-      ],
-      "liftSuccess": 4,
-      "liftAttempted": 4,
-      "liftedSubjectRate": 0.9166666666666666,
-      "charsPerSlot": 127,
-      "maxSlotChars": 147
-    },
-    {
-      "deckName": "eval-edu-course-intro",
-      "score": 85.6,
-      "scoreBreakdown": {
-        "structure": 15.6,
-        "variety": 10,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 0.625,
       "scaffoldId": "training",
       "themeId": "organic-teal",
       "pickMethod": "llm",
-      "atomTypesDistinct": 4,
+      "atomTypesDistinct": 3,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
       "argViolationsTopOffenders": [],
       "twinCoverage": 1,
       "untwinnedTypes": [],
-      "liftSuccess": 5,
-      "liftAttempted": 5,
+      "liftSuccess": 4,
+      "liftAttempted": 4,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 231.4,
-      "maxSlotChars": 324
+      "charsPerSlot": 254.5,
+      "maxSlotChars": 326
     }
   ]
 }

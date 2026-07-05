@@ -79,9 +79,13 @@ OUTPUT: respond with ONLY a JSON object:
   "themeHint": "<theme id from scaffold's theme_affinity[]>" (optional, omit if unsure)
 }
 
-Pick on SEMANTIC intent, not just keyword surface. If the deck doesn't fit any scaffold well, pick the closest and set confidence low (1-3).`;
+Pick on SEMANTIC intent, not just keyword surface.
 
-  const userMessage = `## Available scaffolds (10 total)
+TWO HARD RULES (Sprint 24 — empty slots are the #1 quality drag):
+1. **Escape hatch**: if the best specialized scaffold would score confidence ≤ 4, pick \`generic-deck\` instead (a flexible any-topic scaffold). A well-filled generic deck beats a force-fit specialized one — force-fits leave slots empty because the source has no matching content.
+2. **Slot-count fit**: prefer scaffolds whose slot count is close to the source slide count. A 7-slide source fills an 8-slot scaffold well; it leaves a 10-slot scaffold 30% empty.`;
+
+  const userMessage = `## Available scaffolds (${SCAFFOLDS.length} total)
 
 ${menu}
 

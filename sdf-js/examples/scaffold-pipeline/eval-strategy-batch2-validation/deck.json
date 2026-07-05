@@ -5,11 +5,11 @@
     "id": "change-roadmap",
     "label": "Change & Transformation Roadmap",
     "description": "Change management deck — case for change, current→target state, journey, enablers",
-    "pickScore": 10,
+    "pickScore": 9,
     "pickSignals": [
-      "Deck explicitly frames transformation with case-for-change → current state → target state → journey phases structure, which is the exact arc of change-roadmap scaffold",
-      "Contains all signature change management elements: 'Why Change Now', 'Current State Assessment', 'Target vs Future State', 'Change Journey & Risk Mitigation', 'Programme Timeline'",
-      "Audience is clearly exec/manager/change team; content focuses on organizational transformation with SWOT-style current state analysis, phased journey, enablers (5 pillars), and timeline — perfect semantic match"
+      "Document explicitly titled 'Digital Transformation Roadmap' with 'Change Journey' and 'Case for Transformation' sections — perfect semantic match for change-roadmap scaffold",
+      "Contains all classic change management elements: case for change (why now), current state assessment (SWOT), target state (5 pillars), journey phases (timeline 2026), enablers (workstream leads), and risks (threats section)",
+      "8-slot scaffold aligns well with ~40 paragraph source — sufficient content density to fill cover → case-for-change → current-state → target-state → journey-phases → enablers → risks → timeline without empty slots"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -96,8 +96,8 @@
       "subjectTypes": [
         "cover",
         "dashboard-multi-kpi-composite",
-        "stat-banner",
-        "bullet-list"
+        "bullet-list",
+        "stat-banner"
       ]
     },
     {
@@ -155,10 +155,8 @@
       "subjectTypes": [
         "cover",
         "change-curve-chart",
-        "risk-heatmap",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "progression",
+        "traffic-light"
       ]
     },
     {
@@ -168,7 +166,7 @@
       "slotPurpose": "People, process, and technology levers that enable change",
       "sourceSlideIdx": 3,
       "sourceSlideTitle": "Five Core Strategic Pillars",
-      "mappingScore": 7,
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-05-enablers.json",
@@ -187,7 +185,7 @@
       "slotPurpose": "Top risks and mitigation strategies",
       "sourceSlideIdx": 7,
       "sourceSlideTitle": "Change Journey & Risk Mitigation",
-      "mappingScore": 6,
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-06-risks.json",
@@ -197,7 +195,7 @@
       "subjectTypes": [
         "cover",
         "risk-heatmap",
-        "bullet-list"
+        "timeline"
       ]
     },
     {
@@ -224,10 +222,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1860192
+    "totalCostUSD": 0.1802742
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:01:07.840Z",
+    "generatedAt": "2026-07-05T05:28:45.481Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

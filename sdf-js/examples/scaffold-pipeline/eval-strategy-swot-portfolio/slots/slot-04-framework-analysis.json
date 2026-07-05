@@ -30,24 +30,24 @@
           "title": "SWOT Analysis",
           "strengths": [
             "92% retention (market-leading)",
-            "Top-tier engineering velocity",
+            "Top engineering velocity",
             "Proprietary ML pipeline",
             "Founder-led culture"
           ],
           "weaknesses": [
             "Thin EMEA presence",
             "Slow enterprise sales cycle",
-            "Support response time",
+            "Support response time lag",
             "Billing layer technical debt"
           ],
           "opportunities": [
             "EU AI Act regulatory tailwind",
             "Under-leveraged partner channel",
-            "Vertical expansion (healthcare, education)",
-            "Cheap acquisition targets post-2025"
+            "Healthcare & education verticals",
+            "Post-correction acquisition targets"
           ],
           "threats": [
-            "3 well-funded Series B entrants (2026)",
+            "3 well-funded Series B entrants",
             "Incumbent platform bundling",
             "AI lab talent retention pressure",
             "USD strength FX headwind"
@@ -71,18 +71,18 @@
     "tokenUsage": {
       "input_tokens": 4085,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 381,
+      "output_tokens": 372,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0218649,
-    "elapsedSec": 8.5,
-    "generatedAt": "2026-07-05T05:01:53.347Z",
+    "costUSD": 0.021737399999999997,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-05T05:29:33.920Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

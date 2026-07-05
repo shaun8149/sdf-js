@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Scope of Analysis",
   "sceneData": {
     "name": "analysis-report/scope",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -31,18 +31,18 @@
           "items": [
             {
               "icon": "package",
-              "label": "6 product lines",
+              "label": "6 product lines reviewed",
               "sublabel": "NA + EMEA + APAC markets"
             },
             {
               "icon": "calendar",
-              "label": "11 quarters analyzed",
+              "label": "11-quarter time window",
               "sublabel": "2024-Q1 through 2026-Q3"
             },
             {
               "icon": "database",
-              "label": "3 data sources",
-              "sublabel": "Internal KPI + 32 interviews + Gartner"
+              "label": "3 primary data sources",
+              "sublabel": "Internal KPIs + 32 interviews + Gartner MQ"
             }
           ]
         }
@@ -58,23 +58,22 @@
           "items": [
             {
               "icon": "matrix-grid",
-              "label": "SWOT Analysis"
+              "label": "SWOT",
+              "sublabel": "Strategic analysis"
             },
             {
               "icon": "flow-arrow",
-              "label": "Porter Value Chain"
+              "label": "Porter Chain",
+              "sublabel": "Value activities"
             },
             {
               "icon": "chart-line",
-              "label": "Change Curve"
-            },
-            {
-              "icon": "chart-scatter",
-              "label": "Gap Assessment"
+              "label": "Change Curve",
+              "sublabel": "Transition assessment"
             }
           ],
-          "cols": 2,
-          "iconStyle": "circle",
+          "cols": 3,
+          "iconStyle": "card",
           "iconSize": "medium"
         }
       }
@@ -91,18 +90,18 @@
     "tokenUsage": {
       "input_tokens": 3997,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 533,
+      "output_tokens": 543,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023880900000000004,
-    "elapsedSec": 8.9,
-    "generatedAt": "2026-07-05T05:01:31.988Z",
+    "costUSD": 0.024038399999999998,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-05T05:29:10.659Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

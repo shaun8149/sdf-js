@@ -22,37 +22,37 @@
       },
       {
         "type": "okr-tree",
-        "x": 80,
+        "x": 60,
         "y": 160,
-        "w": 1120,
+        "w": 1160,
         "h": 520,
         "args": {
-          "objective": "Q4 Engineering Excellence",
+          "objective": "Q4 Platform Excellence & Efficiency",
           "keyResults": [
             {
-              "label": "Platform uptime 99.95%",
-              "progress": 0.8,
-              "sublabel": "from 99.91%"
+              "label": "Platform uptime",
+              "sublabel": "99.91% → 99.95%",
+              "progress": 0.8
             },
             {
-              "label": "Cut infra cost/user 20%",
-              "progress": 0.3,
-              "sublabel": "cost optimization"
+              "label": "Infrastructure cost per user",
+              "sublabel": "Reduce 20%",
+              "progress": 0.15
             },
             {
-              "label": "Monolith decomposition 80%",
-              "progress": 0.54,
-              "sublabel": "from 43%"
+              "label": "Monolith decomposition",
+              "sublabel": "43% → 80%",
+              "progress": 0.54
             },
             {
               "label": "Real-time analytics dashboard",
-              "progress": 0.6,
-              "sublabel": "enterprise tier"
+              "sublabel": "Enterprise tier launch",
+              "progress": 0.25
             },
             {
-              "label": "PR review time under 6h",
-              "progress": 0.4,
-              "sublabel": "from 18h median"
+              "label": "PR review time",
+              "sublabel": "18h → <6h",
+              "progress": 0.35
             }
           ],
           "quarter": "Q4 2024"
@@ -74,18 +74,18 @@
     "tokenUsage": {
       "input_tokens": 4032,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 418,
+      "output_tokens": 410,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022260900000000004,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-05T05:08:33.582Z",
+    "costUSD": 0.0221484,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-05T05:36:18.130Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

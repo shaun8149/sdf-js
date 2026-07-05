@@ -5,11 +5,11 @@
     "id": "analysis-report",
     "label": "Analysis Report",
     "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
-    "pickScore": 10,
+    "pickScore": 9,
     "pickSignals": [
-      "Deck explicitly uses analysis frameworks (SWOT, Porter Value Chain) and presents structured findings across scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix",
-      "Title 'Strategic Portfolio Analysis 2026' and content structure (Scope → Framework Definition → SWOT → Voice of Customer → Recommendations → Appendix) perfectly match analysis-report slot sequence",
-      "Audience is exec/manager/analyst/stakeholder (Strategy Team preparing for leadership); content includes market analysis, competitor dynamics, and strategic recommendations based on systematic research methodology"
+      "Deck follows classic strategic analysis structure: scope → frameworks (SWOT, Porter) → findings → recommendations → appendix — perfect match for analysis-report scaffold",
+      "Contains explicit framework analysis (SWOT, Porter value chain), data findings (KPIs, interviews, Gartner), interpretation (strengths/weaknesses/opportunities/threats), and recommendations — all core slots in analysis-report",
+      "Source has 7-8 distinct sections matching the 8-slot analysis-report scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix), avoiding empty-slot problem"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -130,7 +130,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "testimonial-wall"
+        "testimonial-wall",
+        "stat-banner"
       ]
     },
     {
@@ -214,10 +215,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1712952
+    "totalCostUSD": 0.17203019999999997
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:02:15.627Z",
+    "generatedAt": "2026-07-05T05:29:55.610Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

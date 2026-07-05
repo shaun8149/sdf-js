@@ -32,9 +32,21 @@
             {
               "quote": "This platform changed how our team coordinates across timezones — we no longer lose context in handoffs.",
               "name": "Sarah Chen",
-              "role": "VP Engineering at Meridian Analytics"
+              "role": "VP Engineering, Meridian Analytics"
             }
           ]
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 320,
+        "y": 640,
+        "w": 640,
+        "h": 50,
+        "args": {
+          "value": "32",
+          "label": "Customer Interviews",
+          "trend": "Aug 2026"
         }
       }
     ]
@@ -55,18 +67,18 @@
     "tokenUsage": {
       "input_tokens": 3997,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 253,
+      "output_tokens": 339,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0196809,
-    "elapsedSec": 5.8,
-    "generatedAt": "2026-07-05T05:01:44.825Z",
+    "costUSD": 0.020978399999999998,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-07-05T05:29:26.224Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

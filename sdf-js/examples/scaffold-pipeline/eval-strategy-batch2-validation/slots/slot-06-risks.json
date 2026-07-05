@@ -16,94 +16,78 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Risks & Mitigations",
-          "style": "gradient"
+          "title": "Risks & Mitigations"
         }
       },
       {
         "type": "risk-heatmap",
         "x": 40,
         "y": 160,
-        "w": 760,
+        "w": 780,
         "h": 500,
         "args": {
-          "title": "Risk Assessment Matrix",
-          "xAxis": "Likelihood",
-          "yAxis": "Impact",
+          "title": "Top Change Risks",
+          "xAxis": "Impact",
+          "yAxis": "Likelihood",
           "xLabels": [
-            "Very Low",
             "Low",
-            "Medium",
+            "Med",
             "High",
-            "Very High"
+            "Very High",
+            "Critical"
           ],
           "yLabels": [
-            "Very Low",
-            "Low",
-            "Medium",
-            "High",
-            "Very High"
+            "Rare",
+            "Unlikely",
+            "Possible",
+            "Likely",
+            "Almost Certain"
           ],
           "risks": [
             {
-              "label": "Change Fatigue",
-              "likelihood": 4,
-              "impact": 4,
-              "mitigation": "Phased approach, quick wins"
+              "x": 4,
+              "y": 3,
+              "label": "Change fatigue",
+              "severity": "high"
             },
             {
-              "label": "Data Migration Errors",
-              "likelihood": 2,
-              "impact": 3,
-              "mitigation": "Validation framework, rollback plan"
+              "x": 2,
+              "y": 2,
+              "label": "Data migration errors",
+              "severity": "medium"
             },
             {
-              "label": "Vendor Delays",
-              "likelihood": 1,
-              "impact": 2,
-              "mitigation": "Contract SLAs, backup vendors"
+              "x": 1,
+              "y": 1,
+              "label": "Vendor delays",
+              "severity": "low"
             }
           ]
         }
       },
       {
-        "type": "bullet-list",
-        "x": 840,
+        "type": "timeline",
+        "x": 860,
         "y": 160,
-        "w": 400,
+        "w": 380,
         "h": 500,
         "args": {
-          "title": "Mitigation Strategies",
-          "items": [
+          "title": "Change Journey",
+          "events": [
             {
-              "icon": "shield-check",
-              "label": "Governance framework established",
-              "status": "done"
+              "date": "Q1",
+              "label": "Mobilise",
+              "sublabel": "Governance & quick wins"
             },
             {
-              "icon": "users",
-              "label": "Change champions in each team",
-              "status": "done"
+              "date": "Q2-Q3",
+              "label": "Transform",
+              "sublabel": "Core migration & redesign"
             },
             {
-              "icon": "trophy",
-              "label": "Quick wins prioritized Q1",
-              "status": "highlight"
-            },
-            {
-              "icon": "database",
-              "label": "Data validation checkpoints",
-              "status": "todo"
-            },
-            {
-              "icon": "handshake",
-              "label": "Vendor SLA monitoring",
-              "status": "todo"
-            },
-            {
-              "icon": "gauge",
-              "label": "Weekly risk reviews",
-              "status": "todo"
+              "date": "Q4",
+              "label": "Sustain",
+              "sublabel": "Embed & measure"
             }
           ]
         }
@@ -123,18 +107,18 @@
     "tokenUsage": {
       "input_tokens": 4028,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 691,
+      "output_tokens": 567,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.026343899999999996,
-    "elapsedSec": 10.4,
-    "generatedAt": "2026-07-05T05:01:00.998Z",
+    "costUSD": 0.024491399999999997,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-05T05:28:34.492Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

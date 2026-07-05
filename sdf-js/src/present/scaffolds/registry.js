@@ -1386,6 +1386,73 @@ export const SCAFFOLDS = [
     ],
     theme_affinity: ['pitch-cobalt-orange', 'organic-coral', 'pitch-charcoal-yellow'],
   },
+
+  // ============================================================================
+  // generic-deck — Sprint 24 eval-iter1: the escape hatch for content that fits
+  // NO specialized scaffold well. The eval baseline showed force-fits (e.g. a
+  // recreational trip report shoved into analysis-report at picker confidence
+  // 3/10) leave slots empty and drag fill-rate. Broad slot purposes; the picker
+  // is instructed to choose this when best-fit confidence would be ≤ 4.
+  // ============================================================================
+  {
+    id: 'generic-deck',
+    label: 'Generic Deck',
+    description:
+      'Flexible any-topic deck — opening, 4 content sections, a numbers section, and a closing. The fallback when no specialized scaffold fits.',
+    audience: 'any',
+    keywords: [],
+    slots: [
+      {
+        name: 'cover',
+        title: 'Title',
+        purpose: 'Deck title + subtitle + author/date',
+        recommended_atoms: ['cover'],
+      },
+      {
+        name: 'opening',
+        title: 'Opening',
+        purpose: 'Context, overview, or agenda — whatever the deck opens with',
+        recommended_atoms: ['agenda-list', 'bullet-list', 'quote-pull', 'stat-banner'],
+      },
+      {
+        name: 'section-1',
+        title: 'Section 1',
+        purpose: 'First main content section — any topic',
+        recommended_atoms: ['bullet-list', 'icon-grid', 'kpi-card', 'timeline', 'pillar-3up'],
+      },
+      {
+        name: 'section-2',
+        title: 'Section 2',
+        purpose: 'Second main content section — any topic',
+        recommended_atoms: ['bullet-list', 'icon-row', 'number-list', 'progression', 'quote-pull'],
+      },
+      {
+        name: 'section-3',
+        title: 'Section 3',
+        purpose: 'Third main content section — any topic',
+        recommended_atoms: ['bullet-list', 'feature-card-grid', 'vertical-timeline', 'icon-grid'],
+      },
+      {
+        name: 'numbers',
+        title: 'By the Numbers',
+        purpose: 'Any quantitative content — stats, metrics, breakdowns, comparisons',
+        recommended_atoms: [
+          'stat-grid-large',
+          'dashboard-multi-kpi-composite',
+          'pie',
+          'bar',
+          'donut-with-center',
+        ],
+      },
+      {
+        name: 'closing',
+        title: 'Closing',
+        purpose: 'Summary, next steps, thanks, or call to action',
+        recommended_atoms: ['call-to-action', 'bullet-list', 'timeline'],
+      },
+    ],
+    theme_affinity: ['editorial-navy', 'organic-teal', 'consulting-charcoal'],
+  },
 ];
 
 /**

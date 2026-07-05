@@ -21,25 +21,25 @@
       },
       {
         "type": "flow-chart",
-        "x": 100,
+        "x": 80,
         "y": 180,
-        "w": 1080,
-        "h": 480,
+        "w": 1120,
+        "h": 460,
         "args": {
           "steps": [
-            "LLM writes structured intent",
-            "Atlas runtime renders deterministically",
-            "Multiple renderers: silhouette / 3D / lines / crayon",
-            "Edit intent → regenerate visual"
+            "LLM writes intent",
+            "Atlas renders illustration",
+            "Apply renderer style",
+            "Edit & regenerate"
           ],
           "sublabels": [
-            "Semantic data structure",
-            "Predictable output",
-            "Same content, infinite styles",
-            "Full editorial control"
+            "Structured semantic description",
+            "Deterministic visualization",
+            "Silhouette / 3D / Lines / Crayon",
+            "Tweak intent, instant update"
           ],
-          "orientation": "vertical",
-          "title": "The Atlas Pipeline"
+          "orientation": "horizontal",
+          "title": "Content → Visual Pipeline"
         }
       }
     ]
@@ -56,18 +56,18 @@
     "tokenUsage": {
       "input_tokens": 3967,
       "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 12983,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 285,
+      "output_tokens": 281,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.020070900000000003,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-05T05:04:07.499Z",
+    "costUSD": 0.0200184,
+    "elapsedSec": 6,
+    "generatedAt": "2026-07-05T05:31:28.420Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
