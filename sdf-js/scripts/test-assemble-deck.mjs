@@ -59,10 +59,14 @@ const deck = JSON.parse(
     'stations spaced along the deck axis',
   );
 
-  // camera: all station shots + one transit between each pair
+  // camera: all station shots + one transit between each pair + the deck finale
   const shotCount =
-    stations.reduce((s, st) => s + st.cameraSequence.shots.length, 0) + (deck.slides.length - 1);
-  ok(scene.cameraSequence.shots.length === shotCount, 'shot count = stations + transits');
+    stations.reduce((s, st) => s + st.cameraSequence.shots.length, 0) +
+    (deck.slides.length - 1) +
+    1;
+  ok(scene.cameraSequence.shots.length === shotCount, 'shot count = stations + transits + finale');
+  const finale = scene.cameraSequence.shots[scene.cameraSequence.shots.length - 1];
+  ok(finale.pos[1] > 10 && (finale.focalDistance || 0) > 20, 'finale is high + wide (whole deck)');
   const transits = scene.cameraSequence.shots.filter(
     (s) => (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) > 0.1 && s.fov === 50,
   );
@@ -95,6 +99,42 @@ const deck = JSON.parse(
   // deterministic
   const again = assembleDeck(JSON.parse(JSON.stringify(deck)));
   ok(JSON.stringify(again) === JSON.stringify(scene), 'deterministic');
+}
+
+// ---- deck archetypes: radial ring + grid plaza ---------------------------------
+{
+  const radial = assembleDeck(JSON.parse(JSON.stringify(deck)), { layout: 'radial' });
+  const centers = ['s0-', 's1-', 's2-'].map((pfx) => {
+    const subs = radial.subjects.filter((s) => s.id.startsWith(pfx));
+    const cx = subs.reduce((a, s) => a + s.transform.translate[0], 0) / subs.length;
+    const cz = subs.reduce((a, s) => a + s.transform.translate[2], 0) / subs.length;
+    return [cx, cz];
+  });
+  const hubX = centers.reduce((a, c) => a + c[0], 0) / 3;
+  const hubZ = centers.reduce((a, c) => a + c[1], 0) / 3;
+  const radii = centers.map((c) => Math.hypot(c[0] - hubX, c[1] - hubZ));
+  ok(Math.max(...radii) - Math.min(...radii) < 2.5, 'radial: stations sit on a ring');
+  ok(
+    centers.some((c) => Math.abs(c[1] - hubZ) > 3),
+    'radial: ring uses the z axis',
+  );
+}
+{
+  const grid = assembleDeck(JSON.parse(JSON.stringify(deck)), { layout: 'grid' });
+  const zs = new Set(
+    grid.subjects
+      .filter((s) => /^s\d+-/.test(s.id))
+      .map((s) => Math.round(s.transform.translate[2] / 8)),
+  );
+  ok(zs.size >= 2, 'grid: stations occupy multiple rows');
+}
+{
+  // deck.layout field is honored; opts.layout overrides
+  const viaField = assembleDeck({ ...JSON.parse(JSON.stringify(deck)), layout: 'radial' });
+  ok(
+    viaField.subjects.some((s) => /^s\d+-/.test(s.id) && Math.abs(s.transform.translate[2]) > 5),
+    'deck.layout field honored',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

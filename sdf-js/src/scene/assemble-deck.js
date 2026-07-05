@@ -31,16 +31,49 @@ export function shiftBuildInExpr(expr, dy, dt) {
 const addV = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const seqDuration = (shots) => shots.reduce((s, sh) => s + (sh.duration || 0), 0);
 
+// ---- Deck archetypes ---------------------------------------------------------
+// The station LAYOUT is itself structure-aware (the deck-scale half of the
+// "geometric cores" thesis): a linear pitch is a corridor, an agenda-around-a-
+// theme is a ring, a portfolio is a plaza. Stations are never rotated — every
+// structure keeps facing +z so its own camera grammar stays valid; the layout
+// only chooses WHERE stations stand (and therefore how the transits sweep and
+// what the finale reveals).
+export const DECK_LAYOUTS = ['line', 'radial', 'grid'];
+
+function stationOrigins(n, stride, layout) {
+  if (layout === 'radial') {
+    // neighbor arc spacing ≈ stride; camera-side (+z) faces outward from the top
+    const R = Math.max(stride * 0.75, (stride * n) / (2 * Math.PI));
+    return Array.from({ length: n }, (_, k) => {
+      const th = (k * 2 * Math.PI) / n;
+      return [Math.sin(th) * R, 0, Math.cos(th) * R];
+    });
+  }
+  if (layout === 'grid') {
+    const cols = Math.ceil(Math.sqrt(n));
+    return Array.from({ length: n }, (_, k) => [
+      (k % cols) * stride,
+      0,
+      -Math.floor(k / cols) * stride, // rows recede — the city-of-data look
+    ]);
+  }
+  return Array.from({ length: n }, (_, k) => [k * stride, 0, 0]); // line
+}
+
 /**
  * assembleDeck(deck, opts) → SceneData
- * @param {object} deck  { title?, slides: IR[] }
- * @param {object} opts  { env?, stride?: station spacing (default 16) }
+ * @param {object} deck  { title?, layout?: 'line'|'radial'|'grid', slides: IR[] }
+ * @param {object} opts  { env?, stride? (default 16), layout? (overrides deck.layout) }
  */
 export function assembleDeck(deck, opts = {}) {
   if (!deck || !Array.isArray(deck.slides) || deck.slides.length === 0)
     throw new Error('assembleDeck: deck.slides must be a non-empty array of IRs');
   const env = getEnvironment(opts.env);
   const stride = opts.stride ?? 16;
+  const layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
+    ? (opts.layout ?? deck.layout)
+    : 'line';
+  const origins = stationOrigins(deck.slides.length, stride, layout);
 
   const subjects = [];
   const overlay = [];
@@ -51,7 +84,7 @@ export function assembleDeck(deck, opts = {}) {
   deck.slides.forEach((ir, k) => {
     // Render the station at the origin on its own clock, then transplant.
     const st = renderIR(ir); // no env here — the deck owns the world
-    const origin = [k * stride, 0, 0];
+    const origin = origins[k];
 
     // Transit shot: whip from the previous station's payoff toward this one's
     // hero position (fast lateral sling, a touch of shake — the stage change).
@@ -115,18 +148,26 @@ export function assembleDeck(deck, opts = {}) {
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
     prevPayoff = { pos: addV(last.pos, origin), target: addV(last.target, origin) };
 
-    // Breadcrumb path to the next station: a chain of low flat markers across
-    // the gap, so the transit flies over a PATH instead of empty floor (the
-    // world reads as connected, and the eye is led to the next arena).
+    // Breadcrumb path to the next station: a chain of low flat markers along
+    // the segment between the two origins (any layout), each oriented to face
+    // the walk direction — the transit flies over a PATH instead of empty
+    // floor, and the eye is led to the next arena.
     if (k < deck.slides.length - 1) {
+      const next = origins[k + 1];
+      const dx = next[0] - origin[0];
+      const dz = next[2] - origin[2];
+      const yaw = Math.atan2(dz, dx); // marker long axis along the segment
       const dots = 5;
       for (let d = 1; d <= dots; d++) {
-        const x = origin[0] + (stride * d) / (dots + 1);
+        const f = d / (dots + 1);
         subjects.push({
           id: `path-${k}-${d}`,
           type: 'box',
           args: { dims: [0.9, 0.06, 0.28] },
-          transform: { translate: [x, 0.03, 0] },
+          transform: {
+            translate: [origin[0] + dx * f, 0.03, origin[2] + dz * f],
+            rotate: [0, -yaw, 0],
+          },
           material: {
             hue: 0.58,
             sat: 0.25,
@@ -139,6 +180,26 @@ export function assembleDeck(deck, opts = {}) {
       }
     }
   });
+
+  // ---- Deck finale: one frame that holds the WHOLE presentation --------------
+  // After the last station's payoff, pull up and back until every station is in
+  // frame — the thesis money shot ("your entire deck is one world"). Framing
+  // scales with the layout's actual extent; deep focus so nothing blurs away.
+  {
+    const cx = origins.reduce((s, o) => s + o[0], 0) / origins.length;
+    const cz = origins.reduce((s, o) => s + o[2], 0) / origins.length;
+    const span = Math.max(1, ...origins.map((o) => Math.hypot(o[0] - cx, o[2] - cz))) * 2 + stride;
+    shots.push({
+      duration: 3.0,
+      pos: [cx + span * 0.25, span * 0.5 + 4.5, cz + span * 0.95],
+      target: [cx, 1.2, cz],
+      fov: 48,
+      transition: 'blend',
+      aperture: 0.08,
+      focalDistance: span * 1.05,
+      ease: 'out',
+    });
+  }
 
   return {
     v: 1,
