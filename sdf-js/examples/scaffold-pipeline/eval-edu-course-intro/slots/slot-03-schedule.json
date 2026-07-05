@@ -1,0 +1,97 @@
+{
+  "slotIdx": 3,
+  "slotName": "schedule",
+  "slotTitle": "Schedule",
+  "slotPurpose": "Weekly topics / course timeline",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Weekly Topics",
+  "sceneData": {
+    "name": "course-syllabus/schedule",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Schedule",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "vertical-timeline",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "title": "Weekly Topics",
+          "events": [
+            {
+              "date": "Week 1-2",
+              "label": "Networking fundamentals + RPC"
+            },
+            {
+              "date": "Week 3-4",
+              "label": "Replication and consistency models"
+            },
+            {
+              "date": "Week 5-6",
+              "label": "Consensus — Paxos and Raft"
+            },
+            {
+              "date": "Week 7-8",
+              "label": "Partitioning and sharding"
+            },
+            {
+              "date": "Week 9-10",
+              "label": "Fault tolerance and failure detection"
+            },
+            {
+              "date": "Week 11-12",
+              "label": "Distributed transactions"
+            },
+            {
+              "date": "Week 13-14",
+              "label": "Case studies — Spanner, DynamoDB, Kafka"
+            },
+            {
+              "date": "Week 15",
+              "label": "Final project presentations"
+            }
+          ],
+          "axisLabel": "Course Timeline"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "course-syllabus",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "vertical-timeline",
+      "timeline",
+      "agenda-list",
+      "kanban-board"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4050,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 455,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0228774,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-07-05T06:02:28.988Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -2,65 +2,65 @@
   "deckName": "eval-edu-course-intro",
   "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/edu-course-intro.json",
   "scaffold": {
-    "id": "training",
-    "label": "Training",
-    "description": "Workshop / onboarding / how-to-do-X",
-    "pickScore": 9,
+    "id": "course-syllabus",
+    "label": "Course Syllabus",
+    "description": "Course introduction / syllabus deck — overview, objectives, schedule, grading, materials, logistics. First-day-of-class, NOT a lesson.",
+    "pickScore": 10,
     "pickSignals": [
-      "This is a course syllabus deck — a structured instructional document that teaches students how to succeed in a distributed systems course",
-      "Perfect semantic match: cover → objectives (learning objectives) → context (prerequisites, format) → concept (weekly topics) → steps (grading breakdown, reading list) → example (weekly topics detail) → exercise (labs, project) → summary (office hours, support)",
-      "The training scaffold's 8-slot structure maps cleanly to syllabus sections: intro, learning goals, context, content breakdown, assessment steps, resources, and support — all core elements present in the source"
+      "Perfect structural match: cover, overview, objectives, topics (schedule), grading, reading (materials), office hours (logistics) — all 7 syllabus slots present",
+      "Clear first-day-of-class intent: introducing the course to students, not teaching a specific lesson",
+      "All canonical syllabus elements present: instructor info, meeting time/place, prerequisites, week-by-week schedule, assessment breakdown, required readings, support resources"
     ],
     "fallback": false,
     "pickerMethod": "llm"
   },
   "theme": {
-    "id": "organic-teal",
-    "label": "Organic · Teal",
-    "macroCluster": "organic",
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
     "bg": [
-      232,
-      244,
+      248,
+      246,
       240
     ],
     "accent": [
-      60,
-      145,
-      145
+      38,
+      70,
+      130
     ],
     "colors": [
       [
-        60,
-        145,
-        145
+        38,
+        70,
+        130
       ],
       [
         110,
-        175,
-        165
-      ],
-      [
-        220,
-        200,
-        145
+        95,
+        75
       ],
       [
         165,
-        145,
-        115
+        130,
+        90
+      ],
+      [
+        200,
+        195,
+        180
       ]
     ],
     "font": {
-      "heading": "\"Quicksand\", \"Nunito\", Inter, system-ui, sans-serif",
-      "body": "\"Nunito Sans\", Inter, system-ui, sans-serif"
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
     }
   },
   "slots": [
     {
       "slotIdx": 0,
       "slotName": "cover",
-      "slotTitle": "Title",
-      "slotPurpose": "Topic + facilitator + duration",
+      "slotTitle": "Course Title",
+      "slotPurpose": "Course code + name + term + instructor",
       "sourceSlideIdx": 0,
       "sourceSlideTitle": "CS 340: Distributed Systems",
       "mappingScore": 10,
@@ -76,34 +76,92 @@
     },
     {
       "slotIdx": 1,
-      "slotName": "objectives",
-      "slotTitle": "Learning Objectives",
-      "slotPurpose": "What you will know after this",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "Learning Objectives",
+      "slotName": "overview",
+      "slotTitle": "Course Overview",
+      "slotPurpose": "What the course is about — topics, scope, prerequisites",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Course Overview",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-01-objectives.json",
+      "liftFile": "slots/slot-01-overview.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "radial-wheel-segmented"
+        "icon-grid",
+        "bullet-list"
       ]
     },
     {
       "slotIdx": 2,
-      "slotName": "context",
-      "slotTitle": "Why This Matters",
-      "slotPurpose": "Stakes + motivation",
-      "sourceSlideIdx": 1,
-      "sourceSlideTitle": "Course Overview",
-      "mappingScore": 7,
+      "slotName": "objectives",
+      "slotTitle": "Learning Objectives",
+      "slotPurpose": "What students will be able to do by the end",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Learning Objectives",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-02-context.json",
+      "liftFile": "slots/slot-02-objectives.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "number-list"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "schedule",
+      "slotTitle": "Schedule",
+      "slotPurpose": "Weekly topics / course timeline",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Weekly Topics",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-schedule.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "vertical-timeline"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "grading",
+      "slotTitle": "Grading",
+      "slotPurpose": "Assessment breakdown — components and percentages",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Grading Breakdown",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-grading.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "donut-with-center"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "materials",
+      "slotTitle": "Materials",
+      "slotPurpose": "Required reading, textbooks, tools, resources",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Required Reading List",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-materials.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -113,59 +171,38 @@
       ]
     },
     {
-      "slotIdx": 4,
-      "slotName": "steps",
-      "slotTitle": "Step by Step",
-      "slotPurpose": "Sequential process",
-      "sourceSlideIdx": 3,
-      "sourceSlideTitle": "Weekly Topics",
-      "mappingScore": 6,
+      "slotIdx": 6,
+      "slotName": "logistics",
+      "slotTitle": "Logistics & Support",
+      "slotPurpose": "Office hours, contact channels, policies, where to get help",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Office Hours & Support",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-04-steps.json",
+      "liftFile": "slots/slot-06-logistics.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "timeline"
+        "icon-grid",
+        "icon-row",
+        "quote-pull",
+        "kpi-card",
+        "kpi-card"
       ]
     }
   ],
-  "droppedSlots": [
-    {
-      "slotIdx": 3,
-      "slotName": "concept",
-      "slotTitle": "Core Concept",
-      "reason": "no-source-content"
-    },
-    {
-      "slotIdx": 5,
-      "slotName": "example",
-      "slotTitle": "Worked Example",
-      "reason": "no-source-content"
-    },
-    {
-      "slotIdx": 6,
-      "slotName": "exercise",
-      "slotTitle": "Try It Yourself",
-      "reason": "no-source-content"
-    },
-    {
-      "slotIdx": 7,
-      "slotName": "summary",
-      "slotTitle": "Summary",
-      "reason": "no-source-content"
-    }
-  ],
+  "droppedSlots": [],
   "totals": {
-    "slotsBaked": 4,
-    "slotsEmpty": 4,
+    "slotsBaked": 7,
+    "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1302582
+    "totalCostUSD": 0.20413739999999997
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:46:51.434Z",
+    "generatedAt": "2026-07-05T06:02:57.985Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

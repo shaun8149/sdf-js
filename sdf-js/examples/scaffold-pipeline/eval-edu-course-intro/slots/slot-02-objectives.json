@@ -1,0 +1,85 @@
+{
+  "slotIdx": 2,
+  "slotName": "objectives",
+  "slotTitle": "Learning Objectives",
+  "slotPurpose": "What students will be able to do by the end",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Learning Objectives",
+  "sceneData": {
+    "name": "course-syllabus/objectives",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Learning Objectives",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "number-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Explain CAP theorem tradeoffs",
+              "sublabel": "Apply to real system designs"
+            },
+            {
+              "label": "Implement Raft consensus module",
+              "sublabel": "Working implementation from scratch"
+            },
+            {
+              "label": "Diagnose partition failure modes",
+              "sublabel": "Split-brain and network partitions"
+            },
+            {
+              "label": "Design sharded key-value store",
+              "sublabel": "Replicated architecture under failure"
+            },
+            {
+              "label": "Critique distributed systems papers",
+              "sublabel": "Read and analyze 3 seminal works"
+            }
+          ],
+          "numberStyle": "circle",
+          "numberColor": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "course-syllabus",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "number-list",
+      "numbered-grid",
+      "bullet-list",
+      "okr-tree"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4006,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 378,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021590399999999996,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-05T06:02:20.609Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

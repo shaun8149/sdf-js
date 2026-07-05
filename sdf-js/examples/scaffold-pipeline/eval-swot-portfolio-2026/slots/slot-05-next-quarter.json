@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
   "sceneData": {
     "name": "investor-update/next-quarter",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -31,41 +31,56 @@
           "columns": [
             {
               "name": "Fundraising",
+              "color": [
+                58,
+                138,
+                200
+              ],
               "cards": [
                 {
-                  "title": "Series B bridge prep",
-                  "description": "ANTFUN + NovaTech",
+                  "title": "Fund III Final Close",
+                  "subtitle": "Target $300M by Dec 2026",
                   "priority": "high"
                 },
                 {
-                  "title": "Fund III final close",
-                  "description": "Target $300M by Dec 2026",
+                  "title": "Series B Bridge Prep",
+                  "subtitle": "ANTFUN + NovaTech",
                   "priority": "high"
                 }
               ]
             },
             {
               "name": "Portfolio Growth",
+              "color": [
+                100,
+                150,
+                200
+              ],
               "cards": [
                 {
-                  "title": "SE Asia LP program",
-                  "description": "Geographic expansion review",
+                  "title": "AI Transformation Audit",
+                  "subtitle": "All 12 portfolio companies",
                   "priority": "medium"
                 },
                 {
-                  "title": "AI transformation audit",
-                  "description": "All 12 portfolio companies",
+                  "title": "Geographic Expansion Review",
+                  "subtitle": "Southeast Asia LP program",
                   "priority": "medium"
                 }
               ]
             },
             {
-              "name": "Exit Planning",
+              "name": "Exits",
+              "color": [
+                180,
+                210,
+                235
+              ],
               "cards": [
                 {
-                  "title": "Fund I exit roadmap",
-                  "description": "3 candidates identified",
-                  "priority": "medium"
+                  "title": "Fund I Exit Roadmap",
+                  "subtitle": "3 candidates identified",
+                  "priority": "high"
                 }
               ]
             }
@@ -92,13 +107,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 463,
+      "output_tokens": 510,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0229224,
-    "elapsedSec": 9.5,
-    "generatedAt": "2026-07-05T05:30:44.185Z",
+    "costUSD": 0.0236274,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-05T06:03:45.397Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
