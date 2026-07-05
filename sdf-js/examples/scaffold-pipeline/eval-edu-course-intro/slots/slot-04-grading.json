@@ -1,0 +1,111 @@
+{
+  "slotIdx": 4,
+  "slotName": "grading",
+  "slotTitle": "Grading",
+  "slotPurpose": "Assessment breakdown — components and percentages",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Grading Breakdown",
+  "sceneData": {
+    "name": "course-syllabus/grading",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Grading",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "donut-with-center",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "centerValue": "100%",
+          "centerLabel": "Final Grade",
+          "segments": [
+            {
+              "label": "Group Project",
+              "value": 35,
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "label": "Weekly Labs",
+              "value": 25,
+              "color": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "label": "Midterm Exam",
+              "value": 20,
+              "color": [
+                165,
+                130,
+                90
+              ]
+            },
+            {
+              "label": "Final Exam",
+              "value": 15,
+              "color": [
+                200,
+                195,
+                180
+              ]
+            },
+            {
+              "label": "Participation",
+              "value": 5,
+              "color": [
+                180,
+                175,
+                165
+              ]
+            }
+          ],
+          "showPct": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "course-syllabus",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "pie",
+      "segmented-bar",
+      "comparison-table"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3991,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 404,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021935399999999997,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-05T06:02:36.494Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

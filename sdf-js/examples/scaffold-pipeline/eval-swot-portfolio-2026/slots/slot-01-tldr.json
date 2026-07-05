@@ -21,25 +21,27 @@
         }
       },
       {
-        "type": "kpi-card",
+        "type": "stat-banner",
         "x": 40,
-        "y": 180,
-        "w": 360,
-        "h": 240,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
         "args": {
-          "value": "$420M",
-          "label": "Total AUM",
-          "sublabel": "12 portfolio companies",
-          "icon": "briefcase",
-          "style": "light"
+          "value": "$420M AUM",
+          "label": "12 portfolio companies",
+          "bg": [
+            58,
+            138,
+            200
+          ]
         }
       },
       {
         "type": "kpi-card",
-        "x": 460,
-        "y": 180,
-        "w": 360,
-        "h": 240,
+        "x": 40,
+        "y": 340,
+        "w": 380,
+        "h": 320,
         "args": {
           "value": "$38M",
           "label": "Combined ARR",
@@ -52,32 +54,30 @@
       },
       {
         "type": "kpi-card",
-        "x": 880,
-        "y": 180,
-        "w": 360,
-        "h": 240,
+        "x": 450,
+        "y": 340,
+        "w": 380,
+        "h": 320,
         "args": {
           "value": "3",
-          "label": "Series B Ready",
+          "label": "Series B Track",
           "sublabel": "Next 18 months",
           "icon": "rocket-launch",
           "style": "light"
         }
       },
       {
-        "type": "stat-banner",
-        "x": 40,
-        "y": 460,
-        "w": 1200,
-        "h": 200,
+        "type": "kpi-card",
+        "x": 860,
+        "y": 340,
+        "w": 380,
+        "h": 320,
         "args": {
-          "value": "AI-native infrastructure + vertical SaaS convergence",
-          "label": "Investment Thesis",
-          "bg": [
-            58,
-            138,
-            200
-          ]
+          "value": "2",
+          "label": "Strategic Pivots",
+          "sublabel": "H1 2026 completed",
+          "icon": "arrows-clockwise",
+          "style": "light"
         }
       }
     ]
@@ -99,13 +99,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 560,
+      "output_tokens": 559,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0243294,
-    "elapsedSec": 8.4,
-    "generatedAt": "2026-07-05T05:30:20.907Z",
+    "costUSD": 0.0243144,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-05T06:03:21.400Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

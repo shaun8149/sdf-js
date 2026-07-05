@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-05T05:47:05.055Z",
+  "generatedAt": "2026-07-05T06:03:45.574Z",
   "corpusSize": 10,
   "scored": 10,
   "skipped": [],
-  "corpusMean": 95.3,
+  "corpusMean": 97.3,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -116,6 +116,34 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 142.85714285714286,
       "maxSlotChars": 180
+    },
+    {
+      "deckName": "eval-edu-course-intro",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "course-syllabus",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 8,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 7,
+      "liftAttempted": 7,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 258.42857142857144,
+      "maxSlotChars": 364
     },
     {
       "deckName": "eval-nonprofit-annual-report",
@@ -260,36 +288,8 @@
       "liftSuccess": 5,
       "liftAttempted": 5,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 222.4,
-      "maxSlotChars": 359
-    },
-    {
-      "deckName": "eval-edu-course-intro",
-      "score": 80,
-      "scoreBreakdown": {
-        "structure": 12.5,
-        "variety": 7.5,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 0.5,
-      "scaffoldId": "training",
-      "themeId": "organic-teal",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 3,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 4,
-      "liftAttempted": 4,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 254.25,
-      "maxSlotChars": 324
+      "charsPerSlot": 213.4,
+      "maxSlotChars": 339
     }
   ]
 }
