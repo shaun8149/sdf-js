@@ -154,12 +154,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.stroke();
     ctx.restore();
 
-    // Branch label at rib end — Inter 700, slightly larger
+    // Branch label at rib end — Inter 700, slightly larger. Left-aligned so
+    // it grows rightward from the anchor; clamp the anchor itself so it
+    // never starts left of the canvas edge.
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${Math.round(h * 0.046)}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = up ? 'bottom' : 'top';
-    ctx.fillText(String(b.label || ''), ribEndX - 12, ribEndY + (up ? -8 : 8));
+    const labelAnchorX = Math.max(x + 4, ribEndX - 12);
+    ctx.fillText(String(b.label || ''), labelAnchorX, ribEndY + (up ? -8 : 8));
 
     // Sub-causes — short stems off the rib with better spacing
     const causes = Array.isArray(b.causes) ? b.causes.slice(0, 4) : [];
@@ -184,12 +187,24 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.stroke();
         ctx.restore();
 
-        // Sub-cause text — Inter 500, small, with gap from stem
+        // Sub-cause text — Inter 500, small, with gap from stem. Right-aligned
+        // ending at the stem tip (text grows LEFTWARD from there), which for
+        // left-most branches ran the text's left edge past the canvas edge
+        // ("Channel mix" → "nel mix", "Chan" clipped off-canvas). Clamp: if
+        // the natural right-aligned position would overflow left, right-align
+        // to the branch point (stemBaseX, closer to the spine) instead.
         ctx.fillStyle = rgbaCss(fg, 0.72);
         ctx.font = `500 ${Math.round(h * 0.032)}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
-        ctx.fillText(String(causes[j]), stemEndX - 6, stemEndY);
+        const causeText = String(causes[j]);
+        const causeTextW = ctx.measureText(causeText).width;
+        const canvasLeft = x + 4;
+        let causeAnchorX = stemEndX - 6;
+        if (causeAnchorX - causeTextW < canvasLeft) {
+          causeAnchorX = Math.max(causeAnchorX, stemBaseX - 6, canvasLeft + causeTextW);
+        }
+        ctx.fillText(causeText, causeAnchorX, stemEndY);
       }
     }
   }
