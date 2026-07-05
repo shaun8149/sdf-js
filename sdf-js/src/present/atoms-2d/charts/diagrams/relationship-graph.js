@@ -94,6 +94,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const cy = plotTop + (y + h - plotTop) / 2;
   const radius = Math.min(w, y + h - plotTop) / 2 - NODE_RADIUS - 24;
   const positions = {};
+  const hasExplicitCoords = nodes.some((n) => typeof n.x === 'number' && typeof n.y === 'number');
   for (let i = 0; i < nodes.length; i++) {
     const n = nodes[i];
     if (typeof n.x === 'number' && typeof n.y === 'number') {
@@ -105,6 +106,43 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         y: cy + Math.sin(angle) * radius,
         node: n,
       };
+    }
+  }
+
+  // Re-center + scale the auto (circular) layout to actually use ~70% of the
+  // canvas. A circle evenly spaced by angle doesn't fill its own bounding
+  // circle symmetrically for small/odd N — e.g. 3 nodes at angles -90/30/150
+  // puts ONE node up top and TWO down low, so the true bounding box of the
+  // node circles is bottom-heavy with a lot of dead space above. Normalizing
+  // against the actual bbox (not the nominal layout circle) fixes both the
+  // dead-space AND the "graph looks small" complaints in one pass. Skipped
+  // when any node has explicit x/y (that's an author-provided custom layout,
+  // not ours to rescale).
+  if (!hasExplicitCoords) {
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    for (const id in positions) {
+      const p = positions[id];
+      const r = p.node.size ? Math.max(12, Math.min(36, p.node.size * NODE_RADIUS)) : NODE_RADIUS;
+      minX = Math.min(minX, p.x - r);
+      maxX = Math.max(maxX, p.x + r);
+      minY = Math.min(minY, p.y - r);
+      maxY = Math.max(maxY, p.y + r);
+    }
+    const bboxW = maxX - minX || 1;
+    const bboxH = maxY - minY || 1;
+    const bboxCx = (minX + maxX) / 2;
+    const bboxCy = (minY + maxY) / 2;
+    const availW = w - PAD * 2;
+    const availH = y + h - plotTop - PAD * 2;
+    const FILL_FRAC = 0.85;
+    const scale = Math.min((availW * FILL_FRAC) / bboxW, (availH * FILL_FRAC) / bboxH);
+    for (const id in positions) {
+      const p = positions[id];
+      p.x = cx + (p.x - bboxCx) * scale;
+      p.y = cy + (p.y - bboxCy) * scale;
     }
   }
 
@@ -141,11 +179,18 @@ function drawEdge(ctx, x0, y0, x1, y1, color, weight, label) {
   if (label) {
     const mx = (x0 + x1) / 2;
     const my = (y0 + y1) / 2;
-    ctx.fillStyle = rgbaCss(color, 0.7);
-    ctx.font = '500 10px Inter, system-ui, sans-serif';
+    ctx.save();
+    ctx.font = '600 11px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    // White halo (stroke) so the label reads over any edge/node it crosses
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineJoin = 'round';
+    ctx.strokeText(String(label), mx, my - 6);
+    ctx.fillStyle = rgbaCss(color, 0.85);
     ctx.fillText(String(label), mx, my - 6);
+    ctx.restore();
   }
 }
 
