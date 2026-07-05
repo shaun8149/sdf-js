@@ -52,6 +52,7 @@ const stubCtx = {
   lineTo() {},
   quadraticCurveTo() {},
   closePath() {},
+  rect() {},
   clip() {},
   fillRect() {},
   fillText() {},

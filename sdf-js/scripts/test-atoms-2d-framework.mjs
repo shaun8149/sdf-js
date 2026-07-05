@@ -2035,6 +2035,7 @@ function stubCtx(recorded) {
     'quadraticCurveTo',
     'bezierCurveTo',
     'arc',
+    'rect',
     'stroke',
     'fill',
     'fillRect',
@@ -2047,6 +2048,7 @@ function stubCtx(recorded) {
   c.createLinearGradient = () => ({ addColorStop: noop });
   c.createRadialGradient = () => ({ addColorStop: noop });
   c.fillText = (t) => recorded.push(t);
+  c.strokeText = noop;
   for (const p of [
     'fillStyle',
     'strokeStyle',

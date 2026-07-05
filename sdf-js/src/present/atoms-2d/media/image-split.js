@@ -26,8 +26,10 @@ export const spec = {
     src: {
       type: 'string (data: URI or parser-emitted relative path)',
       required: true,
+      // See image.js spec — same synthetic SVG stand-in so the gallery
+      // example renders a real image instead of a blank 1x1 placeholder.
       example:
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWNgIBb8BwABKAEBwGDOlAAAAABJRU5ErkJggg==',
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffb066'/><stop offset='1' stop-color='%23c65a4a'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><polygon fill='%23332244' points='0,360 120,180 220,260 340,160 460,250 560,140 640,220 640,360'/></svg>",
     },
     title: { type: 'string', required: true, example: 'Our Mission' },
     body: { type: 'string?', example: 'Make on-chain trading natural.' },

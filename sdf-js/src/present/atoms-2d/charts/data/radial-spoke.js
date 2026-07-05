@@ -118,6 +118,27 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textBaseline = Math.sin(a) > 0.3 ? 'top' : Math.sin(a) < -0.3 ? 'bottom' : 'middle';
       ctx.fillText(String(labels[i]), lx, ly);
     }
+
+    // Per-spoke value — small dark text placed INLINE along the spoke, just
+    // short of the tip node, so it never collides with the outer category
+    // label (which sits beyond the tip). White halo keeps it legible over
+    // the colored spoke/node.
+    if (Number.isFinite(values[i])) {
+      const valR = Math.max(hubR + nodeR + 6, len - nodeR - 12);
+      const vx = cx + Math.cos(a) * valR;
+      const vy = cy + Math.sin(a) * valR;
+      const valueText = formatSpokeValue(values[i]);
+      ctx.save();
+      ctx.font = '700 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      ctx.strokeText(valueText, vx, vy);
+      ctx.fillStyle = rgbCss(fg);
+      ctx.fillText(valueText, vx, vy);
+      ctx.restore();
+    }
   }
 
   // Hub
@@ -137,6 +158,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
 function clamp(v, lo, hi) {
   return Math.max(lo, Math.min(hi, v));
+}
+
+// values[] are 0..1 normalized lengths — display as a percentage.
+function formatSpokeValue(v) {
+  return `${Math.round(v * 100)}%`;
 }
 
 function lighten(rgb, amt) {

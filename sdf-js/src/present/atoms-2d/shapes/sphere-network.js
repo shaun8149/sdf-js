@@ -93,13 +93,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const color = s.color || baseColors[(i + 1) % baseColors.length] || accent;
     drawNode(ctx, sx, sy, satR, color, null, fg, false);
 
-    // Label outside satellite (radial direction)
+    // Label outside satellite (radial direction) — min 11px for legibility.
     if (s.label) {
       const lr = orbitR + satR + 12;
       const lx = cx + Math.cos(a) * lr;
       const ly = cy + Math.sin(a) * lr;
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `600 ${Math.round(h * 0.04)}px Inter, system-ui, sans-serif`;
+      ctx.font = `600 ${Math.max(11, Math.round(h * 0.04))}px Inter, system-ui, sans-serif`;
       ctx.textAlign = Math.cos(a) > 0.3 ? 'left' : Math.cos(a) < -0.3 ? 'right' : 'center';
       ctx.textBaseline = Math.sin(a) > 0.3 ? 'top' : Math.sin(a) < -0.3 ? 'bottom' : 'middle';
       ctx.fillText(String(s.label), lx, ly);
@@ -150,10 +150,17 @@ function drawNode(ctx, cx, cy, r, color, label, fg, isHub) {
   ctx.restore();
 
   if (label && isHub) {
-    ctx.fillStyle = 'white';
-    ctx.font = `700 ${Math.round(r * 0.62)}px Inter, system-ui, sans-serif`;
+    // On-sphere label: dark fg text + white halo (strokeText under fill)
+    // reads reliably regardless of the sphere's own color/lightness —
+    // more robust than a fixed white fill, which vanished on light spheres.
+    const fontSize = Math.max(11, Math.round(r * 0.62));
+    ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+    ctx.strokeText(String(label), cx, cy);
+    ctx.fillStyle = rgbCss(fg);
     ctx.fillText(String(label), cx, cy);
   }
 }

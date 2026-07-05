@@ -92,7 +92,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(title, x + 20, y + 16);
     chartTop = y + h * DEFAULT_TITLE_FRAC;
   }
-  const chartHeight = y + h - chartTop;
+  // Reserve a small band at the very bottom for the targetLine label (if
+  // any) so it never has to compete with the title OR overlap the last
+  // bar's row — bars are laid out inside the shrunk chartHeight, and the
+  // reference line + its label live in the reserved band below them.
+  const hasTargetLabel = args.targetLine != null && Boolean(args.targetLine.label);
+  const targetLabelSize = Math.max(10, Math.round(h * 0.055));
+  const targetLabelReserve = hasTargetLabel ? targetLabelSize + 10 : 0;
+  const chartHeight = y + h - chartTop - targetLabelReserve;
 
   // ---- Compute label width (longest label) — Inter 600, 14-18px range ----
   const labelSize = Math.max(14, Math.min(18, Math.round((chartHeight / n) * 0.32)));
@@ -157,7 +164,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(formatted[i], barAreaLeft + barW + VALUE_GAP, cy + barHeight / 2);
   }
 
-  // ---- targetLine — horizontal dashed reference (optional) ----
+  // ---- targetLine — vertical dashed reference (optional) ----
   if (args.targetLine != null && max > 0) {
     const tValue = Number(args.targetLine.value);
     if (Number.isFinite(tValue)) {
@@ -165,9 +172,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const tFrac = tValue / max;
       const tX = barAreaLeft + barAreaW * tFrac;
 
-      // Vertical span: from chartTop to chartTop+chartHeight (full bar area height)
+      // Bars are laid out inside chartHeight, which already excludes the
+      // targetLabelReserve band at the bottom. The dashed line spans just
+      // the bar area; the label lives in the reserved band right below it,
+      // clear of both the title (above) and the last bar's row.
       const lineTop = chartTop;
-      const lineBottom = chartTop + chartHeight;
+      const chartBottom = chartTop + chartHeight;
 
       // Accent color: palette accent or a distinguishable red-orange
       const accentColor = palette.accentColor || [210, 80, 60];
@@ -179,18 +189,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(tX, lineTop);
-      ctx.lineTo(tX, lineBottom);
+      ctx.lineTo(tX, chartBottom);
       ctx.stroke();
       ctx.restore();
 
-      // Label above the line at the top, right-aligned to line
-      if (args.targetLine.label) {
-        const labelFontSize = Math.max(10, Math.round(chartHeight * 0.08));
+      // Label just below the line's bottom end, clear of the title and bars.
+      if (hasTargetLabel) {
         ctx.fillStyle = rgbaCss(accentColor, 0.9);
-        ctx.font = `600 ${labelFontSize}px Inter, system-ui, sans-serif`;
+        ctx.font = `600 ${targetLabelSize}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText(String(args.targetLine.label), tX, lineTop - 2);
+        ctx.textBaseline = 'top';
+        ctx.fillText(String(args.targetLine.label), tX, chartBottom + 4);
       }
     }
   }
