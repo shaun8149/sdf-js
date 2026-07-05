@@ -7,9 +7,9 @@
     "description": "Course introduction / syllabus deck — overview, objectives, schedule, grading, materials, logistics. First-day-of-class, NOT a lesson.",
     "pickScore": 10,
     "pickSignals": [
-      "Perfect structural match: cover, overview, objectives, topics (schedule), grading, reading (materials), office hours (logistics) — all 7 syllabus slots present",
-      "Clear first-day-of-class intent: introducing the course to students, not teaching a specific lesson",
-      "All canonical syllabus elements present: instructor info, meeting time/place, prerequisites, week-by-week schedule, assessment breakdown, required readings, support resources"
+      "Perfect structural match: cover, overview, objectives, schedule (weekly topics), grading, materials (required reading), logistics (office hours)",
+      "Classic first-day-of-class syllabus with all canonical elements: instructor info, meeting time/location, prerequisites, assessment breakdown, required texts, TA contact info",
+      "Source has exactly 7 logical sections matching the 7-slot scaffold — no forced stretching or gaps"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -90,6 +90,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
+        "bullet-list",
         "icon-grid",
         "bullet-list"
       ]
@@ -187,10 +188,7 @@
       "subjectTypes": [
         "cover",
         "icon-grid",
-        "icon-row",
-        "quote-pull",
-        "kpi-card",
-        "kpi-card"
+        "quote-pull"
       ]
     }
   ],
@@ -199,10 +197,10 @@
     "slotsBaked": 7,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.20413739999999997
+    "totalCostUSD": 0.1620168
   },
   "meta": {
-    "generatedAt": "2026-07-05T06:02:57.985Z",
+    "generatedAt": "2026-07-05T06:29:32.463Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

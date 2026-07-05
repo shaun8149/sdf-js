@@ -21,30 +21,32 @@
       },
       {
         "type": "comparison-table",
-        "x": 60,
+        "x": 80,
         "y": 160,
-        "w": 1160,
+        "w": 1120,
         "h": 340,
         "args": {
-          "title": "Pricing Tiers",
           "columns": [
             {
               "name": "Pro",
-              "subtitle": "$30/user/mo",
               "highlight": false
             },
             {
               "name": "Team",
-              "subtitle": "$200/seat/mo",
               "highlight": true
             },
             {
               "name": "Studio",
-              "subtitle": "$50K/year",
               "highlight": false
             }
           ],
           "features": [
+            {
+              "name": "Price",
+              "Pro": "$30/user/month",
+              "Team": "$200/seat/month",
+              "Studio": "$50K/year"
+            },
             {
               "name": "Target",
               "Pro": "Knowledge workers",
@@ -52,32 +54,26 @@
               "Studio": "Agencies + Enterprise"
             },
             {
-              "name": "Min Seats",
+              "name": "Min seats",
               "Pro": "1",
               "Team": "10+",
               "Studio": "Custom"
-            },
-            {
-              "name": "Custom Themes",
-              "Pro": false,
-              "Team": false,
-              "Studio": true
             }
           ]
         }
       },
       {
         "type": "break-even",
-        "x": 60,
+        "x": 80,
         "y": 530,
-        "w": 1160,
+        "w": 1120,
         "h": 150,
         "args": {
-          "fixedCost": 1200000,
-          "variableCostPerUnit": 8,
-          "pricePerUnit": 30,
-          "maxUnits": 150000,
-          "title": "Break-even: ~$3M ARR · Q3 2027",
+          "fixedCost": 1000000,
+          "variableCostPerUnit": 15,
+          "pricePerUnit": 50,
+          "maxUnits": 100000,
+          "title": "Break-even at ~$3M ARR · projected Q3 2027",
           "currency": "$"
         }
       }
@@ -95,20 +91,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4000,
+      "input_tokens": 4154,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 549,
+      "output_tokens": 515,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0241374,
-    "elapsedSec": 9.5,
-    "generatedAt": "2026-07-05T05:31:57.013Z",
+    "costUSD": 0.0240894,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-05T06:24:18.860Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -16,11 +16,10 @@
         "w": 1280,
         "h": 720,
         "args": {
-          "title": "Atlas",
+          "title": "Atlas Series A Pitch",
           "subtitle": "LLM-native illustration platform",
-          "author": "Series A fundraise",
-          "date": "2026-Q3",
-          "version": "$15M to scale supply + distribution",
+          "author": "Series A fundraise · 2026-Q3",
+          "date": "$15M to scale supply + distribution",
           "style": "gradient"
         }
       }
@@ -34,20 +33,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3934,
+      "input_tokens": 4088,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 166,
+      "output_tokens": 165,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0181944,
-    "elapsedSec": 4.2,
-    "generatedAt": "2026-07-05T05:31:03.189Z",
+    "costUSD": 0.018641400000000002,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-05T06:23:26.760Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

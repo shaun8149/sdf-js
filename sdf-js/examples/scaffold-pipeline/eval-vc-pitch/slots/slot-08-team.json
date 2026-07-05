@@ -16,55 +16,100 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Team"
+          "title": "Team",
+          "style": "gradient"
         }
       },
       {
         "type": "circle-image-hub-spoke",
-        "x": 80,
-        "y": 180,
+        "x": 60,
+        "y": 160,
         "w": 560,
-        "h": 460,
+        "h": 480,
         "args": {
           "center": {
-            "label": "Leadership"
+            "label": "Leadership",
+            "color": [
+              255,
+              120,
+              40
+            ]
           },
           "satellites": [
             {
-              "label": "Sarah Chen\nCEO, ex-Figma"
+              "label": "Sarah Chen\nCEO",
+              "color": [
+                255,
+                120,
+                40
+              ]
             },
             {
-              "label": "Alex Wu\nCTO, ex-Anthropic"
+              "label": "Alex Wu\nCTO",
+              "color": [
+                20,
+                60,
+                180
+              ]
             },
             {
-              "label": "Diana Liu\nDesign, ex-Apple"
+              "label": "Diana Liu\nHead of Design",
+              "color": [
+                60,
+                65,
+                90
+              ]
             }
           ],
           "title": "Core Team"
         }
       },
       {
-        "type": "isotype-stat-comparison",
-        "x": 700,
-        "y": 180,
-        "w": 500,
-        "h": 460,
+        "type": "bullet-list",
+        "x": 660,
+        "y": 160,
+        "w": 560,
+        "h": 240,
         "args": {
+          "title": "Experience",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "ex-Figma design infrastructure lead"
+            },
+            {
+              "icon": "cpu",
+              "label": "ex-Anthropic research engineer"
+            },
+            {
+              "icon": "palette",
+              "label": "ex-Apple Keynote team"
+            }
+          ]
+        }
+      },
+      {
+        "type": "isotype-stat-comparison",
+        "x": 660,
+        "y": 420,
+        "w": 560,
+        "h": 220,
+        "args": {
+          "title": "Team Size",
           "stats": [
             {
               "iconName": "code",
               "count": 20,
               "label": "Engineers",
-              "caption": "Building product"
+              "caption": "Building core platform"
             },
             {
               "iconName": "palette",
               "count": 5,
               "label": "Designers",
-              "caption": "Crafting UX"
+              "caption": "Crafting experience"
             }
-          ],
-          "title": "Team Scale"
+          ]
         }
       }
     ]
@@ -80,20 +125,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3994,
+      "input_tokens": 4148,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 439,
+      "output_tokens": 648,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0224694,
-    "elapsedSec": 7.2,
-    "generatedAt": "2026-07-05T05:32:04.261Z",
+    "costUSD": 0.0260664,
+    "elapsedSec": 10.3,
+    "generatedAt": "2026-07-05T06:24:29.165Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

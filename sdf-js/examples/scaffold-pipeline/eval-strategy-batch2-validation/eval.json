@@ -12,13 +12,19 @@
     "theme_id": "consulting-charcoal"
   },
   "atomQuality": {
-    "atom_instances": 12,
-    "atom_types_distinct": 11,
-    "variety_ratio": 0.9166666666666666,
+    "atom_instances": 14,
+    "atom_types_distinct": 12,
+    "variety_ratio": 0.8571428571428571,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 0,
-    "arg_violations_top_offenders": []
+    "arg_violations": 2,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 2
+      }
+    ]
   },
   "threeDReadiness": {
     "twin_coverage": 1,
@@ -29,8 +35,19 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 232.875,
-    "max_slot_chars": 309
+    "chars_per_slot": 265.5,
+    "max_slot_chars": 308
+  },
+  "fidelity": {
+    "numbers_total": 23,
+    "numbers_found": 19,
+    "number_recall": 0.8260869565217391,
+    "missing_numbers": [
+      "$24M",
+      "117%",
+      "43",
+      "128%"
+    ]
   },
   "score": {
     "total": 100,
@@ -43,5 +60,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T05:36:18.163Z"
+  "generatedAt": "2026-07-05T06:29:32.579Z"
 }

@@ -24,22 +24,22 @@
         "x": 80,
         "y": 180,
         "w": 1120,
-        "h": 460,
+        "h": 480,
         "args": {
           "steps": [
-            "LLM writes intent",
-            "Atlas renders illustration",
-            "Apply renderer style",
-            "Edit & regenerate"
+            "LLM writes structured intent",
+            "Atlas runtime renders illustration",
+            "Same content × multiple renderers",
+            "Editable: tweak intent, regenerate"
           ],
           "sublabels": [
-            "Structured semantic description",
-            "Deterministic visualization",
-            "Silhouette / 3D / Lines / Crayon",
-            "Tweak intent, instant update"
+            "Semantic markup, not pixel instructions",
+            "Deterministic visual output",
+            "Silhouette, 3D, lines, crayon styles",
+            "Content-driven iteration workflow"
           ],
           "orientation": "horizontal",
-          "title": "Content → Visual Pipeline"
+          "title": "How Atlas Works"
         }
       }
     ]
@@ -54,20 +54,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3967,
+      "input_tokens": 4121,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 281,
+      "output_tokens": 293,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0200184,
-    "elapsedSec": 6,
-    "generatedAt": "2026-07-05T05:31:28.420Z",
+    "costUSD": 0.0206604,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-07-05T06:23:52.580Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

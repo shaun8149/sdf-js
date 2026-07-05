@@ -16,8 +16,7 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Grading",
-          "style": "gradient"
+          "title": "Grading"
         }
       },
       {
@@ -31,7 +30,7 @@
           "centerLabel": "Final Grade",
           "segments": [
             {
-              "label": "Group Project",
+              "label": "Group Project · 35%",
               "value": 35,
               "color": [
                 38,
@@ -40,7 +39,7 @@
               ]
             },
             {
-              "label": "Weekly Labs",
+              "label": "Weekly Labs · 25%",
               "value": 25,
               "color": [
                 110,
@@ -49,7 +48,7 @@
               ]
             },
             {
-              "label": "Midterm Exam",
+              "label": "Midterm Exam · 20%",
               "value": 20,
               "color": [
                 165,
@@ -58,7 +57,7 @@
               ]
             },
             {
-              "label": "Final Exam",
+              "label": "Final Exam · 15%",
               "value": 15,
               "color": [
                 200,
@@ -67,12 +66,12 @@
               ]
             },
             {
-              "label": "Participation",
+              "label": "Participation · 5%",
               "value": 5,
               "color": [
-                180,
-                175,
-                165
+                150,
+                145,
+                130
               ]
             }
           ],
@@ -92,20 +91,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3991,
+      "input_tokens": 4253,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 404,
+      "output_tokens": 416,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021935399999999997,
-    "elapsedSec": 7.5,
-    "generatedAt": "2026-07-05T06:02:36.494Z",
+    "costUSD": 0.0229014,
+    "elapsedSec": 6.6,
+    "generatedAt": "2026-07-05T06:29:14.779Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

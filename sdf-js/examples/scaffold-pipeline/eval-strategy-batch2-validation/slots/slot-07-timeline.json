@@ -22,45 +22,44 @@
       },
       {
         "type": "timeline",
-        "x": 80,
+        "x": 60,
         "y": 180,
-        "w": 1120,
+        "w": 1160,
         "h": 480,
         "args": {
           "title": "Programme Timeline 2026",
           "events": [
             {
-              "date": "Jan",
+              "date": "Jan 2026",
               "label": "Programme Launch",
-              "sublabel": "Steering committee formed"
+              "sublabel": "Steering committee formation"
             },
             {
-              "date": "Mar",
-              "label": "Design Complete",
-              "sublabel": "Core systems architecture"
+              "date": "Mar 2026",
+              "label": "Core Systems Design",
+              "sublabel": "Design complete"
             },
             {
-              "date": "Jun",
+              "date": "Jun 2026",
               "label": "Wave 1 Go-Live",
               "sublabel": "Finance + HR"
             },
             {
-              "date": "Sep",
+              "date": "Sep 2026",
               "label": "Wave 2 Go-Live",
               "sublabel": "Operations + Customer"
             },
             {
-              "date": "Dec",
+              "date": "Dec 2026",
               "label": "Programme Completion",
-              "sublabel": "Retrospective conducted"
+              "sublabel": "Retrospective"
             },
             {
               "date": "Q1 2027",
               "label": "Benefits Review",
               "sublabel": "Realisation assessment"
             }
-          ],
-          "axisLabel": "2026 → 2027"
+          ]
         }
       }
     ]
@@ -76,20 +75,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4012,
+      "input_tokens": 4166,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 430,
+      "output_tokens": 428,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0223884,
-    "elapsedSec": 11,
-    "generatedAt": "2026-07-05T05:28:45.477Z",
+    "costUSD": 0.022820399999999998,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-05T06:23:10.846Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

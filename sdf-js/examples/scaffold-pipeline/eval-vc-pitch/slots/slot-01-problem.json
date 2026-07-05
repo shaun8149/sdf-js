@@ -40,29 +40,37 @@
           "items": [
             {
               "icon": "image-broken",
-              "label": "Clipart",
-              "sublabel": "PowerPoint icons from 2008"
+              "label": "PowerPoint Clipart",
+              "sublabel": "Dead visual language"
             },
             {
               "icon": "gif",
               "label": "Lottie GIFs",
-              "sublabel": "Motion without meaning"
+              "sublabel": "Animation band-aid"
             },
             {
               "icon": "brain",
-              "label": "AI Text",
-              "sublabel": "Fixed words, dead visuals"
-            },
-            {
-              "icon": "clock",
-              "label": "60% Busywork",
-              "sublabel": "Designer time on layout"
+              "label": "AI-PPT Tools",
+              "sublabel": "Fixed text, visuals broken"
             }
           ],
-          "cols": 4,
-          "iconStyle": "circle",
-          "iconSize": "medium",
-          "colorMode": "auto"
+          "cols": 3,
+          "iconSize": "large",
+          "colorMode": "theme"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 160,
+        "w": 320,
+        "h": 220,
+        "args": {
+          "value": "60%",
+          "label": "Time on Layout",
+          "sublabel": "Designer busywork",
+          "icon": "clock",
+          "style": "accent-border"
         }
       }
     ]
@@ -83,20 +91,20 @@
       "gantt"
     ],
     "tokenUsage": {
-      "input_tokens": 4035,
+      "input_tokens": 4189,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 448,
+      "output_tokens": 509,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0227274,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-05T05:31:11.044Z",
+    "costUSD": 0.024104399999999998,
+    "elapsedSec": 8.6,
+    "generatedAt": "2026-07-05T06:23:35.374Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

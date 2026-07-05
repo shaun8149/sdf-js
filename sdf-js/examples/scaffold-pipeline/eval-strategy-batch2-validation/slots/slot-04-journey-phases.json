@@ -25,47 +25,23 @@
         "x": 40,
         "y": 150,
         "w": 780,
-        "h": 340,
+        "h": 380,
         "args": {
           "title": "Transformation Curve",
           "xAxis": "Timeline",
-          "yAxis": "Adoption & Performance",
+          "yAxis": "Performance",
           "phases": [
             {
               "label": "Q1: Mobilise",
-              "sublabel": "Governance setup"
+              "sublabel": "Governance & Quick Wins"
             },
             {
               "label": "Q2-Q3: Transform",
-              "sublabel": "Core migration"
+              "sublabel": "Core Migration & Redesign"
             },
             {
               "label": "Q4: Sustain",
-              "sublabel": "Embed & measure"
-            }
-          ]
-        }
-      },
-      {
-        "type": "progression",
-        "x": 40,
-        "y": 510,
-        "w": 780,
-        "h": 160,
-        "args": {
-          "title": "Phase Milestones",
-          "steps": [
-            {
-              "label": "Mobilise",
-              "status": "done"
-            },
-            {
-              "label": "Transform",
-              "status": "current"
-            },
-            {
-              "label": "Sustain",
-              "status": "todo"
+              "sublabel": "Embed & Measure"
             }
           ]
         }
@@ -74,25 +50,48 @@
         "type": "traffic-light",
         "x": 860,
         "y": 150,
-        "w": 360,
-        "h": 520,
+        "w": 380,
+        "h": 380,
         "args": {
-          "title": "Risk Monitor",
+          "title": "Risk Status",
           "lights": [
             {
               "color": "red",
               "active": true,
-              "label": "Change fatigue"
+              "label": "Change Fatigue (HIGH)"
             },
             {
               "color": "amber",
               "active": true,
-              "label": "Data migration"
+              "label": "Data Migration (MEDIUM)"
             },
             {
               "color": "green",
               "active": true,
-              "label": "Vendor delays"
+              "label": "Vendor Delays (LOW)"
+            }
+          ]
+        }
+      },
+      {
+        "type": "progression",
+        "x": 40,
+        "y": 560,
+        "w": 1200,
+        "h": 120,
+        "args": {
+          "steps": [
+            {
+              "label": "Mobilise",
+              "status": "current"
+            },
+            {
+              "label": "Transform",
+              "status": "todo"
+            },
+            {
+              "label": "Sustain",
+              "status": "todo"
             }
           ]
         }
@@ -109,20 +108,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4019,
+      "input_tokens": 4173,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 542,
+      "output_tokens": 548,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024089399999999997,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-05T05:28:17.786Z",
+    "costUSD": 0.0246414,
+    "elapsedSec": 12,
+    "generatedAt": "2026-07-05T06:22:45.694Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

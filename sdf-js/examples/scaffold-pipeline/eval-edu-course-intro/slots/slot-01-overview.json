@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Course Overview",
   "sceneData": {
     "name": "course-syllabus/overview",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -21,43 +21,56 @@
         }
       },
       {
-        "type": "icon-grid",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "type": "bullet-list",
+        "x": 60,
+        "y": 160,
+        "w": 560,
+        "h": 500,
         "args": {
-          "title": "Distributed Systems",
+          "title": "What You'll Learn",
           "items": [
             {
               "icon": "network",
-              "label": "Consensus",
-              "sublabel": "Agreement across machines"
+              "label": "Distributed systems theory & practice"
             },
             {
               "icon": "circuitry",
-              "label": "Replication",
-              "sublabel": "Data duplication strategies"
+              "label": "Consensus algorithms & replication"
             },
             {
-              "icon": "cube-grid",
-              "label": "Partitioning",
-              "sublabel": "Data distribution patterns"
+              "icon": "chart-scatter",
+              "label": "Partitioning & consistency models"
             },
             {
               "icon": "shield-check",
-              "label": "Consistency",
-              "sublabel": "Model guarantees"
+              "label": "Fault tolerance strategies"
+            }
+          ]
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 660,
+        "y": 160,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "title": "Course Format",
+          "items": [
+            {
+              "icon": "presentation-chart",
+              "label": "2 Lectures",
+              "sublabel": "Per week"
             },
             {
-              "icon": "lifebuoy",
-              "label": "Fault Tolerance",
-              "sublabel": "System resilience"
+              "icon": "flask",
+              "label": "Weekly Lab",
+              "sublabel": "Hands-on practice"
             },
             {
-              "icon": "calendar",
-              "label": "Format",
-              "sublabel": "2 lectures + lab + project"
+              "icon": "users-three",
+              "label": "Group Project",
+              "sublabel": "1 semester-long"
             }
           ],
           "cols": 3,
@@ -67,15 +80,20 @@
       },
       {
         "type": "bullet-list",
-        "x": 80,
-        "y": 660,
-        "w": 1120,
-        "h": 40,
+        "x": 660,
+        "y": 440,
+        "w": 560,
+        "h": 220,
         "args": {
+          "title": "Prerequisites",
           "items": [
             {
-              "icon": "graduation-cap",
-              "label": "Prerequisites: CS 240 + Go/Rust"
+              "icon": "cpu",
+              "label": "CS 240 Operating Systems"
+            },
+            {
+              "icon": "code",
+              "label": "Proficiency in Go or Rust"
             }
           ]
         }
@@ -92,20 +110,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3991,
+      "input_tokens": 4253,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 541,
+      "output_tokens": 647,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0239904,
-    "elapsedSec": 8.9,
-    "generatedAt": "2026-07-05T06:02:13.540Z",
+    "costUSD": 0.026366399999999998,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-05T06:28:48.693Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

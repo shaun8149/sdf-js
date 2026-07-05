@@ -16,8 +16,7 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "The Ask",
-          "style": "gradient"
+          "title": "The Ask"
         }
       },
       {
@@ -30,7 +29,7 @@
           "value": "$15M",
           "label": "Series A",
           "sublabel": "18-month runway",
-          "icon": "currency-dollar",
+          "icon": "rocket-launch",
           "style": "dark"
         }
       },
@@ -42,8 +41,8 @@
         "h": 200,
         "args": {
           "value": "$10M",
-          "label": "ARR Target",
-          "sublabel": "Next milestone",
+          "label": "Next Milestone",
+          "sublabel": "ARR target",
           "icon": "target",
           "style": "dark"
         }
@@ -56,15 +55,15 @@
         "h": 200,
         "args": {
           "value": "200",
-          "label": "Atom Library",
-          "sublabel": "2D + 3D primitives",
+          "label": "Target Atoms",
+          "sublabel": "2D + 3D library",
           "icon": "cube",
           "style": "dark"
         }
       },
       {
         "type": "pie",
-        "x": 140,
+        "x": 120,
         "y": 400,
         "w": 480,
         "h": 280,
@@ -91,21 +90,22 @@
         "w": 560,
         "h": 280,
         "args": {
+          "title": "Allocation Details",
           "items": [
             {
               "icon": "code",
-              "label": "Scale atom library to 200",
-              "sublabel": "2D + 3D rendering primitives"
+              "label": "Engineering (60%)",
+              "sublabel": "Scale 2D+3D atom library to 200"
             },
             {
-              "icon": "users",
-              "label": "Agency partner program",
-              "sublabel": "Sales + community expansion"
+              "icon": "handshake",
+              "label": "Sales + Community (25%)",
+              "sublabel": "Agency partner program"
             },
             {
               "icon": "piggy-bank",
-              "label": "18-month runway reserve",
-              "sublabel": "Bridge to $10M ARR"
+              "label": "Reserve (15%)",
+              "sublabel": "18-month runway buffer"
             }
           ]
         }
@@ -123,20 +123,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3985,
+      "input_tokens": 4139,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 739,
+      "output_tokens": 743,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0269424,
-    "elapsedSec": 10.9,
-    "generatedAt": "2026-07-05T05:32:15.187Z",
+    "costUSD": 0.0274644,
+    "elapsedSec": 11.2,
+    "generatedAt": "2026-07-05T06:24:40.396Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

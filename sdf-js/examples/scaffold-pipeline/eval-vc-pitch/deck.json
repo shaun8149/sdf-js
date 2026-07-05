@@ -7,9 +7,9 @@
     "description": "Seed/Series A fundraise pitch (Sequoia / YC structure)",
     "pickScore": 10,
     "pickSignals": [
-      "Title explicitly states 'Series A Pitch' and body confirms '$15M to scale supply + distribution' — classic VC fundraise",
-      "Content maps perfectly to VC scaffold slots: problem (visuals stuck in 2008), market-size ($4.8B + $2.1B + $48B TAM), solution (LLM-native platform), product (demo features), traction ($0→$2.4M ARR trajectory), business-model (Pro/Team/Studio pricing), team (Sarah/Alex/Diana backgrounds), ask ($15M Series A)",
-      "9 slides in source body align with 10-slot VC scaffold (cover + 9 content sections) — near-perfect slot fill, no forced gaps"
+      "Deck explicitly titled 'Series A Pitch' with fundraise intent ($15M ask) and standard VC pitch structure",
+      "Contains all canonical VC pitch elements: problem, TAM, solution, product demo, traction (ARR metrics), business model (pricing tiers), team credentials, and explicit ask",
+      "Content maps 1:1 to pitch-deck-vc slots: problem (slide 2), market-size (slide 3), solution (slide 4), product (slide 5), traction (slide 6), business-model (slide 7), team (slide 8), ask (slide 9)"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -91,7 +91,8 @@
       "subjectTypes": [
         "cover",
         "quote-pull",
-        "icon-grid"
+        "icon-grid",
+        "kpi-card"
       ]
     },
     {
@@ -111,7 +112,6 @@
       "subjectTypes": [
         "cover",
         "pyramid",
-        "kpi-card",
         "kpi-card",
         "kpi-card",
         "kpi-card"
@@ -157,22 +157,6 @@
       ]
     },
     {
-      "slotIdx": 5,
-      "slotName": "section-divider",
-      "slotTitle": "Section Break",
-      "slotPurpose": "Visual section break between Solution and Traction",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
-    },
-    {
       "slotIdx": 6,
       "slotName": "traction",
       "slotTitle": "Traction",
@@ -190,9 +174,7 @@
         "cover",
         "line",
         "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "stat-banner"
+        "kpi-card"
       ]
     },
     {
@@ -232,6 +214,7 @@
       "subjectTypes": [
         "cover",
         "circle-image-hub-spoke",
+        "bullet-list",
         "isotype-stat-comparison"
       ]
     },
@@ -259,14 +242,22 @@
       ]
     }
   ],
+  "droppedSlots": [
+    {
+      "slotIdx": 5,
+      "slotName": "section-divider",
+      "slotTitle": "Section Break",
+      "reason": "no-source-content"
+    }
+  ],
   "totals": {
     "slotsBaked": 9,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.21134160000000002
+    "totalCostUSD": 0.21360959999999998
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:32:15.187Z",
+    "generatedAt": "2026-07-05T06:24:40.397Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }
