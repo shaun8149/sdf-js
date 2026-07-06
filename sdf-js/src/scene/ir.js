@@ -10,7 +10,12 @@
 //               undirected edges; hubs emerge from degree, no root required.
 //   magnitude — quantities compared as volumetric masses (monolith row):
 //               magnitude is REQUIRED; nodes are the category names.
-export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude'];
+//   matrix    — 2-axis classification (SWOT / risk likelihood×impact /
+//               cost-benefit): axes + cells are REQUIRED; magnitude optional
+//               (bubble size / severity weight). No 3D renderer yet — see
+//               docs/superpowers/ir-matrix-proposal.md; the 2D bridges
+//               (scaffold-to-ir, ir-to-2d) and text-to-ir already emit/consume it.
+export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude', 'matrix'];
 
 export function validateIR(ir) {
   const errors = [];
@@ -66,6 +71,45 @@ export function validateIR(ir) {
     if (rels.length === 0) errors.push('network requires relations (edges)');
     else if (rels.some((r) => Array.isArray(r) && r[0] === r[1]))
       errors.push('network edges must not be self-loops');
+  }
+  // matrix: axes = [xCategories, yCategories] (exactly 2 non-empty arrays of
+  // non-empty strings), cells = one [xIndex, yIndex] integer pair per node,
+  // indices in range of the matching axis. Non-matrix structures never look
+  // at axes/cells — permissive like the rest of the contract.
+  if (ir.structure === 'matrix') {
+    const axesOk =
+      Array.isArray(ir.axes) &&
+      ir.axes.length === 2 &&
+      ir.axes.every(
+        (axis) =>
+          Array.isArray(axis) &&
+          axis.length > 0 &&
+          axis.every((c) => typeof c === 'string' && c.length > 0),
+      );
+    if (!axesOk)
+      errors.push(
+        'matrix requires axes: [xCategories, yCategories], each a non-empty array of non-empty strings',
+      );
+    if (!Array.isArray(ir.cells) || ir.cells.length !== N) {
+      errors.push('matrix requires cells: one [xIndex, yIndex] pair per node');
+    } else if (axesOk) {
+      const [xCats, yCats] = ir.axes;
+      for (const c of ir.cells) {
+        if (
+          !Array.isArray(c) ||
+          c.length !== 2 ||
+          !Number.isInteger(c[0]) ||
+          !Number.isInteger(c[1])
+        ) {
+          errors.push('each cell must be an [xIndex, yIndex] integer pair');
+          break;
+        }
+        if (c[0] < 0 || c[0] >= xCats.length || c[1] < 0 || c[1] >= yCats.length) {
+          errors.push(`cell [${c[0]},${c[1]}] references an axis index out of range`);
+          break;
+        }
+      }
+    }
   }
   return { ok: errors.length === 0, errors };
 }
