@@ -1,0 +1,63 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "科技投资上行支撑：持续性不确定",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "title": "科技投资上行支撑：持续性不确定",
+          "leftLabel": "上行支撑",
+          "rightLabel": "不确定性",
+          "leftItems": ["科技相关投资强劲势头", "生产活动持续扩张"],
+          "rightItems": ["投资持续性存疑", "周期性波动风险"],
+          "leftAccent": "rgb(38, 70, 130)",
+          "rightAccent": "rgb(165, 130, 90)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4426,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022160399999999997,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-06T16:16:00.422Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

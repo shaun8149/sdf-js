@@ -1,0 +1,71 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "国际货币基金组织增长预期",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-grid-large",
+        "x": 140,
+        "y": 240,
+        "w": 1000,
+        "h": 340,
+        "args": {
+          "title": "国际货币基金组织增长预期",
+          "stats": [
+            {
+              "value": "3.3%",
+              "label": "2026年全球增长预期",
+              "trend": "",
+              "trendDirection": "flat"
+            },
+            {
+              "value": "3.2%",
+              "label": "2027年全球增长预期",
+              "trend": "",
+              "trendDirection": "flat"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4424,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 303,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0217194,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-06T16:14:48.356Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "概览",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "概览",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 560,
+        "h": 500,
+        "args": {
+          "items": [
+            {
+              "label": "全球增长预期：三大国际机构展望",
+              "sublabel": "经合组织预测全球GDP增速稳定在2.9%"
+            },
+            {
+              "label": "主要经济体与地区增长预测",
+              "sublabel": "欧元区2026年1.1% · 低收入国家5.4%"
+            },
+            {
+              "label": "货币政策趋势：降息空间与路径"
+            },
+            {
+              "label": "全球经济面临的主要风险",
+              "sublabel": "就业市场中等风险 · 金融估值低概率大影响"
+            },
+            {
+              "label": "前景展望"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 700,
+        "y": 160,
+        "w": 520,
+        "h": 500,
+        "args": {
+          "title": "关键数据",
+          "kpis": [
+            {
+              "value": "2.9%",
+              "label": "全球GDP增速",
+              "sublabel": "经合组织中期预测",
+              "trend": "neutral"
+            },
+            {
+              "value": "1.1%",
+              "label": "欧元区2026年",
+              "sublabel": "温和增长水平",
+              "trend": "neutral"
+            },
+            {
+              "value": "5.4%",
+              "label": "低收入国家",
+              "sublabel": "增速预测",
+              "trend": "up"
+            },
+            {
+              "value": "中等",
+              "label": "就业市场风险",
+              "sublabel": "中等概率·中等影响",
+              "color": [255, 193, 7]
+            },
+            {
+              "value": "低概率",
+              "label": "金融估值风险",
+              "sublabel": "大影响潜在风险",
+              "color": [244, 67, 54]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4842,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 751,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.029693400000000002,
+    "elapsedSec": 14.6,
+    "generatedAt": "2026-07-06T16:14:41.554Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

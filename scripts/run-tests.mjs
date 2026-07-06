@@ -205,6 +205,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch4-atoms.mjs' },
   // Sprint 24 P2 — eval harness scorer (structure / atom quality / 3D readiness / text budget)
   { category: 'present', file: 'sdf-js/scripts/test-eval-harness.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-expand-news.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
