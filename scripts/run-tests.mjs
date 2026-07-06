@@ -153,6 +153,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-text-to-ir.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-hitstop.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-scaffold-to-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-atoms-to-ir.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-atom-3d-coverage.mjs' },
 
   // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
