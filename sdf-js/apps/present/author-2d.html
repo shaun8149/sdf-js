@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Author 2D — text → deck (weak-display preview)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #0e0f12;
+        font-family: -apple-system, Inter, sans-serif;
+      }
+      #wrap {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 24px 20px 140px;
+      }
+      h1 {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin: 0 0 4px;
+      }
+      #sub {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin: 0 0 20px;
+      }
+      #slides {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 18px;
+      }
+      .slide-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .slide-card canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #fff;
+      }
+      .slide-card .cap {
+        padding: 8px 12px;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 11px;
+        font-weight: 600;
+      }
+      /* author bar — same one-input UX as author.html */
+      #bar {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        width: min(820px, calc(100vw - 40px));
+        display: flex;
+        gap: 8px;
+        z-index: 20;
+      }
+      #prompt {
+        flex: 1;
+        resize: none;
+        height: 52px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(20, 22, 28, 0.92);
+        color: #fff;
+        font: 500 14px -apple-system, Inter, sans-serif;
+        outline: none;
+      }
+      #prompt:focus {
+        border-color: rgba(90, 150, 250, 0.7);
+      }
+      #go {
+        padding: 0 22px;
+        border-radius: 10px;
+        border: 0;
+        background: #2d6fd6;
+        color: #fff;
+        font: 700 14px -apple-system, Inter, sans-serif;
+        cursor: pointer;
+      }
+      #go:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      #exportRow {
+        display: flex;
+        gap: 8px;
+      }
+      #exportRow button {
+        padding: 0 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font: 600 13px -apple-system, Inter, sans-serif;
+        cursor: pointer;
+      }
+      #exportRow button:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      #status {
+        position: fixed;
+        left: 50%;
+        bottom: 84px;
+        transform: translateX(-50%);
+        font: 500 12px -apple-system, Inter, sans-serif;
+        color: rgba(255, 255, 255, 0.6);
+        z-index: 20;
+        max-width: min(820px, calc(100vw - 40px));
+        text-align: center;
+      }
+      #status.err {
+        color: #ff9a8a;
+      }
+      #keyrow {
+        position: fixed;
+        right: 14px;
+        top: 12px;
+        z-index: 20;
+        display: flex;
+        gap: 6px;
+      }
+      #key {
+        width: 220px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(20, 22, 28, 0.9);
+        color: #ccc;
+        font: 400 11px monospace;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <h1>Atlas Author · 2D</h1>
+      <p id="sub">
+        Same one-input authoring as the 3D end — this page renders the deck as 2D pseudo-3D atoms
+        for weak-display machines, and exports to PPTX/PDF.
+      </p>
+      <div id="slides"></div>
+    </div>
+    <div id="keyrow"><input id="key" type="password" placeholder="Anthropic API key (BYOK, stays local)" /></div>
+    <div id="status">describe what you want to present — Atlas builds the deck</div>
+    <div id="bar">
+      <textarea id="prompt" placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"></textarea>
+      <button id="go">Generate</button>
+      <div id="exportRow">
+        <button id="export-pptx" disabled>⬇ PPTX</button>
+        <button id="export-pdf" disabled>⬇ PDF</button>
+      </div>
+    </div>
+    <script type="module" src="./author-2d.js"></script>
+  </body>
+</html>

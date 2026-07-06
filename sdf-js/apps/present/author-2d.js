@@ -1,0 +1,152 @@
+// author-2d.js — the "text → deck" page, 2D end. Same one-input UX as
+// author.html (3D end, which owns author.html/js — this is a SEPARATE page
+// per the two-ends architecture lock), but renders IR as Canvas2D pseudo-3D
+// atom slides instead of flying a 3D camera through a compiled world. This
+// is what unlocks weak-display preview + PPTX/PDF export for text-authored
+// decks: the exporters only know how to draw atoms-2d sceneData.
+//
+// ?demo=1 — skip the (BYOK) LLM call and render a fixed 3-slide IR deck.
+// Used for headless verification where a real Anthropic call can't run.
+import { textToIR } from '../../src/scene/text-to-ir.js';
+import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
+import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
+import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
+import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
+
+const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift + author.js (3D)
+
+const params = new URLSearchParams(location.search);
+const DEMO_MODE = params.get('demo') === '1';
+
+const DEMO_IR_DECK = {
+  title: 'Q3 Review (demo)',
+  slides: [
+    {
+      structure: 'magnitude',
+      nodes: ['Americas', 'EMEA', 'APAC'],
+      magnitude: [890, 420, 310],
+      emphasis: [0],
+      title: 'Revenue by Region',
+    },
+    {
+      structure: 'sequence',
+      nodes: ['Leads', 'Qualified', 'Proposal', 'Closed'],
+      magnitude: [1200, 400, 150, 45],
+      emphasis: [3],
+      title: 'Sales Funnel',
+    },
+    {
+      structure: 'hierarchy',
+      nodes: ['CEO', 'VP Engineering', 'VP Sales', 'Eng Team', 'Design Team'],
+      relations: [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [1, 4],
+      ],
+      title: 'New Org',
+    },
+  ],
+};
+
+const promptEl = document.getElementById('prompt');
+const goEl = document.getElementById('go');
+const statusEl = document.getElementById('status');
+const keyEl = document.getElementById('key');
+const slidesEl = document.getElementById('slides');
+const exportPptxEl = document.getElementById('export-pptx');
+const exportPdfEl = document.getElementById('export-pdf');
+
+keyEl.value = localStorage.getItem(STORAGE_KEY) || '';
+keyEl.addEventListener('change', () => localStorage.setItem(STORAGE_KEY, keyEl.value.trim()));
+
+if (DEMO_MODE) {
+  promptEl.value =
+    'our Q3: revenue by region with Americas leading at 890, the funnel from 1200 leads to 45 closed, and the new org under the CEO';
+}
+
+let currentDeck = null; // exporter-ready deck ({title, theme, scaffold, slots})
+
+const setStatus = (msg, err = false) => {
+  statusEl.textContent = msg;
+  statusEl.className = err ? 'err' : '';
+};
+
+async function renderDeck(deck) {
+  slidesEl.innerHTML = '';
+  for (const slot of deck.slots) {
+    const card = document.createElement('div');
+    card.className = 'slide-card';
+    const canvas = document.createElement('canvas');
+    canvas.width = 1280;
+    canvas.height = 720;
+    const cap = document.createElement('div');
+    cap.className = 'cap';
+    cap.textContent = slot.slotTitle || slot.slotName || '';
+    card.appendChild(canvas);
+    card.appendChild(cap);
+    slidesEl.appendChild(card);
+    await renderSceneDataToCanvas(canvas, slot.sceneData, { palette: deck.theme });
+  }
+}
+
+async function generate() {
+  const text = promptEl.value.trim();
+  const apiKey = keyEl.value.trim();
+  if (!DEMO_MODE) {
+    if (!text) return setStatus('write what you want to present first', true);
+    if (!apiKey)
+      return setStatus('paste your Anthropic API key (top right — it stays in your browser)', true);
+  }
+  goEl.disabled = true;
+  exportPptxEl.disabled = true;
+  exportPdfEl.disabled = true;
+  try {
+    let irDeck;
+    if (DEMO_MODE) {
+      setStatus('demo mode — skipping LLM, rendering fixed 3-slide deck');
+      irDeck = DEMO_IR_DECK;
+    } else {
+      setStatus('thinking… (text → structures)');
+      irDeck = await textToIR(text, apiKey);
+    }
+    setStatus(
+      `rendering ${irDeck.slides.length} slide${irDeck.slides.length > 1 ? 's' : ''}: ${irDeck.slides.map((s) => s.structure).join(' → ')}`,
+    );
+    currentDeck = irDeckTo2DDeck(irDeck);
+    await renderDeck(currentDeck);
+    setStatus(`done — ${currentDeck.slots.length} slide(s) rendered. Export below.`);
+    exportPptxEl.disabled = false;
+    exportPdfEl.disabled = false;
+  } catch (e) {
+    setStatus(e.message, true);
+  } finally {
+    goEl.disabled = false;
+  }
+}
+
+async function doExport(format) {
+  if (!currentDeck) return;
+  const btn = format === 'pptx' ? exportPptxEl : exportPdfEl;
+  btn.disabled = true;
+  try {
+    const fn = format === 'pptx' ? exportDeckToPPTX : exportDeckToPDF;
+    const result = await fn(currentDeck, {
+      onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
+    });
+    setStatus(`downloaded: ${result.filename}`);
+  } catch (e) {
+    setStatus(`export failed: ${e.message}`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+goEl.addEventListener('click', generate);
+promptEl.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') generate();
+});
+exportPptxEl.addEventListener('click', () => doExport('pptx'));
+exportPdfEl.addEventListener('click', () => doExport('pdf'));
+
+if (DEMO_MODE) generate();
