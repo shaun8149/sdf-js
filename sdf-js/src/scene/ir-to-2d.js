@@ -17,7 +17,9 @@
 //               else process-arrows (no magnitude / non-monotonic)
 //   hierarchy → org-chart (relations rebuilt into a {name, children} tree)
 //   network   → relationship-graph (relations → edges)
-//   magnitude → bar (nodes → labels, magnitude → values)
+//   magnitude → bar / pie / donut-with-center — chosen by chooseMagnitudeAtom
+//               (data shape: share-language + parts-of-whole → donut, small
+//               parts-of-whole → pie, else bar)
 //   matrix    → swot / cost-benefit-matrix / risk-heatmap / matrix-grid —
 //               chosen by chooseMatrixAtom (axes shape: SWOT-shaped 2×2 →
 //               swot, generic 2×2 → cost-benefit-matrix, ≥3×≥3 + magnitude →
@@ -105,7 +107,79 @@ function networkToSubject(ir) {
   };
 }
 
+// ---- magnitude: smart chart selection (bar / pie / donut-with-center) -------
+// "Share of a whole" reads better as pie/donut than bar; a big/lopsided or
+// unlabeled-as-share set of quantities reads better as bar. Heuristic, not
+// ML — cheap signals a human skimming the same node/title text would use.
+const SHARE_LANGUAGE = /share|mix|breakdown|allocation|split|占比|构成|份额/i;
+
+function isPartsOfWhole(magnitude) {
+  return (
+    Array.isArray(magnitude) &&
+    magnitude.length > 0 &&
+    magnitude.every((v) => typeof v === 'number' && Number.isFinite(v) && v > 0)
+  );
+}
+
+function hasShareLanguage(ir) {
+  const haystack = [ir.title, ...(ir.nodes || [])].filter(Boolean).join(' ');
+  return SHARE_LANGUAGE.test(haystack);
+}
+
+// No single slice dominates (>70% of the total) — a fairly-distributed set
+// reads as "composition" even without explicit share/mix/breakdown language.
+function noDominantSlice(magnitude) {
+  const total = magnitude.reduce((a, b) => a + b, 0);
+  if (total <= 0) return false;
+  return magnitude.every((v) => v / total <= 0.7);
+}
+
+/**
+ * chooseMagnitudeAtom(ir) → 'bar' | 'pie' | 'donut-with-center'
+ * Pure function of the IR's shape — no side effects, unit-testable in
+ * isolation from the subject-building below.
+ */
+export function chooseMagnitudeAtom(ir) {
+  const nodes = ir.nodes || [];
+  const magnitude = ir.magnitude;
+  const partsOfWhole = isPartsOfWhole(magnitude);
+  if (nodes.length <= 6 && partsOfWhole && (hasShareLanguage(ir) || noDominantSlice(magnitude))) {
+    return 'donut-with-center';
+  }
+  if (nodes.length <= 5 && partsOfWhole) return 'pie';
+  return 'bar';
+}
+
 function magnitudeToSubject(ir) {
+  const atomType = chooseMagnitudeAtom(ir);
+
+  if (atomType === 'pie') {
+    return {
+      type: 'pie',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        values: ir.magnitude,
+        labels: ir.nodes,
+        format: 'percent',
+      },
+    };
+  }
+
+  if (atomType === 'donut-with-center') {
+    const total = ir.magnitude.reduce((a, b) => a + b, 0);
+    return {
+      type: 'donut-with-center',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        centerValue: String(Math.round(total * 10) / 10),
+        centerLabel: ir.title || 'Total',
+        segments: ir.nodes.map((label, i) => ({ label, value: ir.magnitude[i] })),
+      },
+    };
+  }
+
   return {
     type: 'bar',
     ...SLIDE,
@@ -149,7 +223,8 @@ function isSwotShaped(axes) {
 
 /**
  * chooseMatrixAtom(ir) → 'swot' | 'cost-benefit-matrix' | 'risk-heatmap' | 'matrix-grid'
- * Pure function of ir.axes (+ ir.magnitude presence) — shape-driven.
+ * Pure function of ir.axes (+ ir.magnitude presence) — shape-driven, same
+ * spirit as chooseMagnitudeAtom.
  */
 export function chooseMatrixAtom(ir) {
   const axes = Array.isArray(ir.axes) ? ir.axes : [[], []];
