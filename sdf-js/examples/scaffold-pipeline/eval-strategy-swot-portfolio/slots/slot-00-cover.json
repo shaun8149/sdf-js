@@ -19,7 +19,7 @@
           "title": "Strategic Portfolio Analysis 2026",
           "subtitle": "Independent analyst review — Q3 2026",
           "author": "Strategy Team",
-          "date": "Q3 2026",
+          "version": "Framework: SWOT + Porter Value Chain",
           "style": "gradient"
         }
       }
@@ -33,20 +33,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3919,
-      "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 13008,
+      "input_tokens": 4382,
+      "cache_creation_input_tokens": 13008,
+      "cache_read_input_tokens": 0,
       "cache_creation": {
-        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 13008,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 154,
+      "output_tokens": 158,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0179694,
-    "elapsedSec": 4.1,
-    "generatedAt": "2026-07-05T05:29:00.937Z",
+    "costUSD": 0.06429599999999999,
+    "elapsedSec": 4,
+    "generatedAt": "2026-07-06T15:42:04.248Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

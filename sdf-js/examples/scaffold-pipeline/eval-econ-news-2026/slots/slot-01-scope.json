@@ -3,8 +3,8 @@
   "slotName": "scope",
   "slotTitle": "Scope & Methodology",
   "slotPurpose": "What was analyzed and how data was collected",
-  "sourceSlideIdx": 1,
-  "sourceSlideTitle": "Scope of Analysis",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "全球经济2026年中展望",
   "sceneData": {
     "name": "analysis-report/scope",
     "layout": "row",
@@ -16,42 +16,29 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Scope & Methodology"
+          "title": "范围与方法论"
         }
       },
       {
         "type": "bullet-list",
         "x": 80,
         "y": 180,
-        "w": 560,
-        "h": 480,
+        "w": 520,
+        "h": 460,
         "args": {
-          "title": "Analysis Scope",
+          "title": "分析范围",
           "items": [
             {
-              "icon": "package",
-              "label": "6 product lines",
-              "sublabel": "NA + EMEA + APAC markets"
+              "icon": "globe-hemisphere-west",
+              "label": "全球经济2026年中展望"
             },
             {
-              "icon": "calendar",
-              "label": "2024-Q1 through 2026-Q3",
-              "sublabel": "11 quarters analyzed"
+              "icon": "chart-line",
+              "label": "宏观经济趋势与预测"
             },
             {
-              "icon": "database",
-              "label": "Internal KPI dashboard",
-              "sublabel": "Primary quantitative source"
-            },
-            {
-              "icon": "users",
-              "label": "32 customer interviews",
-              "sublabel": "Qualitative insights"
-            },
-            {
-              "icon": "chart-bar",
-              "label": "Gartner Magic Quadrant 2025",
-              "sublabel": "Competitive benchmark"
+              "icon": "currency-dollar",
+              "label": "各主要经济体表现"
             }
           ]
         }
@@ -61,26 +48,34 @@
         "x": 680,
         "y": 180,
         "w": 520,
-        "h": 480,
+        "h": 460,
         "args": {
-          "title": "Frameworks Applied",
+          "title": "数据来源",
           "items": [
             {
-              "icon": "matrix-grid",
-              "label": "SWOT Analysis"
+              "icon": "bank",
+              "label": "国际货币基金组织",
+              "sublabel": "IMF"
             },
             {
-              "icon": "flow-arrow",
-              "label": "Porter Value Chain"
+              "icon": "buildings",
+              "label": "经合组织",
+              "sublabel": "OECD"
             },
             {
-              "icon": "chart-line",
-              "label": "Change Curve"
+              "icon": "globe",
+              "label": "世界银行",
+              "sublabel": "World Bank"
+            },
+            {
+              "icon": "newspaper",
+              "label": "财经媒体报道"
             }
           ],
-          "cols": 1,
+          "cols": 2,
           "iconStyle": "card",
-          "iconSize": "large"
+          "iconSize": "medium",
+          "colorMode": "auto"
         }
       }
     ]
@@ -94,20 +89,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4460,
+      "input_tokens": 4417,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 573,
+      "output_tokens": 537,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025877400000000002,
-    "elapsedSec": 8.7,
-    "generatedAt": "2026-07-06T15:42:12.958Z",
+    "costUSD": 0.0252084,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-06T15:45:00.709Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

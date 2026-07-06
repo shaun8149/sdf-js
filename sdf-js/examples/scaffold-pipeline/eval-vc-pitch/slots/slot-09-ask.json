@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "The Ask"
+          "title": "The Ask",
+          "style": "gradient"
         }
       },
       {
@@ -24,21 +25,49 @@
         "x": 40,
         "y": 160,
         "w": 380,
-        "h": 220,
+        "h": 200,
         "args": {
           "value": "$15M",
           "label": "Series A",
-          "sublabel": "18-month runway to $10M ARR",
+          "sublabel": "18-month runway",
           "icon": "currency-dollar",
           "style": "dark"
         }
       },
       {
-        "type": "pie",
-        "x": 460,
+        "type": "kpi-card",
+        "x": 450,
         "y": 160,
-        "w": 780,
-        "h": 520,
+        "w": 380,
+        "h": 200,
+        "args": {
+          "value": "$10M",
+          "label": "Next Milestone",
+          "sublabel": "ARR target",
+          "icon": "target",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 160,
+        "w": 380,
+        "h": 200,
+        "args": {
+          "value": "200",
+          "label": "Atom Library",
+          "sublabel": "2D + 3D atoms",
+          "icon": "cube",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 40,
+        "y": 400,
+        "w": 600,
+        "h": 280,
         "args": {
           "title": "Use of Funds",
           "values": [
@@ -47,35 +76,34 @@
             15
           ],
           "labels": [
-            "Engineering · 60%",
-            "Sales + Community · 25%",
-            "Reserve · 15%"
+            "Engineering",
+            "Sales + Community",
+            "Reserve"
           ],
           "format": "percent",
-          "donutRatio": 0.5,
-          "centerLabel": "$15M"
+          "donutRatio": 0.5
         }
       },
       {
         "type": "bullet-list",
-        "x": 40,
-        "y": 420,
-        "w": 380,
-        "h": 260,
+        "x": 680,
+        "y": 400,
+        "w": 560,
+        "h": 280,
         "args": {
+          "title": "Allocation Details",
           "items": [
             {
               "icon": "code",
-              "label": "Scale 2D+3D atom library",
-              "sublabel": "200 atoms"
+              "label": "Engineering · 2D+3D atom scaling"
             },
             {
               "icon": "users",
-              "label": "Agency partner program"
+              "label": "Sales · agency partner program"
             },
             {
-              "icon": "target",
-              "label": "Next milestone: $10M ARR"
+              "icon": "piggy-bank",
+              "label": "Reserve · 18-month runway"
             }
           ]
         }
@@ -93,20 +121,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4247,
+      "input_tokens": 4448,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 529,
+      "output_tokens": 713,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0245784,
-    "elapsedSec": 13.6,
-    "generatedAt": "2026-07-05T07:10:56.451Z",
+    "costUSD": 0.027941399999999998,
+    "elapsedSec": 10.2,
+    "generatedAt": "2026-07-06T15:44:33.124Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

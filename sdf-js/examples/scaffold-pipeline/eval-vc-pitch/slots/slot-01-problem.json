@@ -7,7 +7,7 @@
   "sourceSlideTitle": "The Problem",
   "sceneData": {
     "name": "pitch-deck-vc/problem",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -25,34 +25,48 @@
         "x": 80,
         "y": 180,
         "w": 1120,
-        "h": 480,
+        "h": 380,
         "args": {
           "items": [
             {
               "icon": "calendar-x",
               "label": "Stuck in 2008",
-              "sublabel": "Presentation visuals feel ancient"
+              "sublabel": "Presentation visuals outdated"
             },
             {
-              "icon": "images",
-              "label": "Dead clipart",
-              "sublabel": "PowerPoint icons + Lottie GIFs"
+              "icon": "image-broken",
+              "label": "PowerPoint Icons",
+              "sublabel": "Clipart + Lottie GIFs"
             },
             {
               "icon": "brain",
-              "label": "AI fixed text",
-              "sublabel": "But visuals still lifeless"
+              "label": "AI Fixed Text",
+              "sublabel": "Visuals still dead"
             },
             {
               "icon": "clock",
-              "label": "60% busywork",
-              "sublabel": "Designers waste time on layout"
+              "label": "60% Layout Time",
+              "sublabel": "Designers on busywork"
             }
           ],
-          "cols": 2,
+          "cols": 4,
           "iconSize": "large",
-          "iconStyle": "card",
-          "colorMode": "brand"
+          "iconStyle": "circle",
+          "colorMode": "auto"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 590,
+        "w": 320,
+        "h": 100,
+        "args": {
+          "value": "60%",
+          "label": "Time on Layout",
+          "sublabel": "Designer productivity loss",
+          "style": "accent-border",
+          "icon": "timer"
         }
       }
     ]
@@ -73,20 +87,20 @@
       "gantt"
     ],
     "tokenUsage": {
-      "input_tokens": 4297,
+      "input_tokens": 4498,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 381,
+      "output_tokens": 487,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022508399999999998,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-05T07:09:47.156Z",
+    "costUSD": 0.0247014,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-06T15:43:26.486Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

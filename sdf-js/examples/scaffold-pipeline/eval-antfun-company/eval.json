@@ -37,16 +37,10 @@
     "numbers_found": 10,
     "number_recall": 1,
     "missing_numbers": [],
-    "entities_total": 22,
+    "entities_total": 17,
     "entities_found": 17,
-    "entity_recall": 0.7727272727272727,
-    "missing_entities": [
-      "Company Overview",
-      "Team Heritage",
-      "Potential User Groups",
-      "Custodial Strategy",
-      "Connect With Us"
-    ]
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 96.2,
@@ -59,5 +53,5 @@
       "text": 9.3
     }
   },
-  "generatedAt": "2026-07-06T15:37:02.750Z"
+  "generatedAt": "2026-07-06T15:45:42.198Z"
 }

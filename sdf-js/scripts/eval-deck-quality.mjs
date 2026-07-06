@@ -195,6 +195,64 @@ function extractChineseOrgs(line) {
   return out;
 }
 
+// Generic business/heading vocabulary. A title-case run made ENTIRELY of
+// these is a section heading living in body prose ("Company Overview",
+// "Connect With Us", "Best Product Award"), not a proper noun — corpus audit
+// (Sprint 29) showed such runs were half of all "missing entities". One
+// non-generic word rescues the run: "Gartner Magic Quadrant" (Gartner),
+// "Google Slides" (Google), "Product Hunt" (Hunt) all survive.
+const GENERIC_ENTITY_WORDS = new Set([
+  'company',
+  'overview',
+  'team',
+  'heritage',
+  'potential',
+  'user',
+  'users',
+  'group',
+  'groups',
+  'strategy',
+  'custodial',
+  'connect',
+  'with',
+  'us',
+  'best',
+  'product',
+  'award',
+  'awards',
+  'search',
+  'summary',
+  'introduction',
+  'agenda',
+  'conclusion',
+  'roadmap',
+  'vision',
+  'mission',
+  'values',
+  'goals',
+  'objectives',
+  'results',
+  'findings',
+  'analysis',
+  'report',
+  'update',
+  'review',
+  'plan',
+  'steps',
+  'thank',
+  'you',
+  'questions',
+  'appendix',
+  'background',
+  'contact',
+  'about',
+  'welcome',
+]);
+
+function isGenericHeading(run) {
+  return run.split(' ').every((w) => GENERIC_ENTITY_WORDS.has(w.toLowerCase()));
+}
+
 export function extractKeyEntities(slides) {
   const out = new Set();
   const lines = [];
@@ -212,7 +270,7 @@ export function extractKeyEntities(slides) {
         prev = run;
         run = run.replace(ENTITY_STOP_PREFIX, '');
       } while (run !== prev && / /.test(run));
-      if (/ /.test(run)) out.add(run); // still 2+ words after stripping
+      if (/ /.test(run) && !isGenericHeading(run)) out.add(run); // 2+ words, not a heading
     }
     for (const org of extractChineseOrgs(line)) out.add(org);
   }

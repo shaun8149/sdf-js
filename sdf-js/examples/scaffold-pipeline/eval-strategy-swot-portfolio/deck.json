@@ -7,9 +7,9 @@
     "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
     "pickScore": 9,
     "pickSignals": [
-      "Deck follows classic strategic analysis structure: scope → frameworks (SWOT, Porter) → findings → recommendations → appendix — perfect match for analysis-report scaffold",
-      "Contains explicit framework analysis (SWOT, Porter value chain), data findings (KPIs, interviews, Gartner), interpretation (strengths/weaknesses/opportunities/threats), and recommendations — all core slots in analysis-report",
-      "Source has 7-8 distinct sections matching the 8-slot analysis-report scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix), avoiding empty-slot problem"
+      "Document follows classic strategic analysis arc: scope → framework definition → SWOT findings → interpretation (voice of customer, change forecast) → recommendations → appendix",
+      "Explicitly labels itself as 'Strategic Portfolio Analysis' and applies named frameworks (SWOT, Porter Value Chain, change curve) — perfect match for analysis-report's structure",
+      "8-slot scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix) aligns closely with the source's 8 sections; minimal risk of empty slots"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -111,7 +111,8 @@
       "subjectTypes": [
         "cover",
         "value-chain-diagram",
-        "bullet-list"
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -131,7 +132,7 @@
       "subjectTypes": [
         "cover",
         "testimonial-wall",
-        "stat-banner"
+        "callout-banner"
       ]
     },
     {
@@ -211,14 +212,15 @@
       ]
     }
   ],
+  "droppedSlots": [],
   "totals": {
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.17203019999999997
+    "totalCostUSD": 0.22986479999999998
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:29:55.610Z",
+    "generatedAt": "2026-07-06T15:43:01.782Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

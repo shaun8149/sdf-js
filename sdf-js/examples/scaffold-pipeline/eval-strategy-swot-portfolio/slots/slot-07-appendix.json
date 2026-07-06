@@ -27,27 +27,22 @@
         "w": 1120,
         "h": 480,
         "args": {
-          "title": "Supporting Materials & References",
           "items": [
             {
               "icon": "matrix-grid",
-              "label": "Full SWOT scoring matrix",
-              "sublabel": "Available on request"
+              "label": "Full SWOT scoring matrix available on request"
             },
             {
-              "icon": "chats-circle",
-              "label": "Customer interview transcripts",
-              "sublabel": "Redacted for confidentiality"
+              "icon": "file-text",
+              "label": "Customer interview transcripts redacted for confidentiality"
             },
             {
-              "icon": "chart-bar",
-              "label": "Porter value chain breakdown",
-              "sublabel": "Per product line in supplementary deck"
+              "icon": "presentation-chart",
+              "label": "Porter value chain breakdown per product line in supplementary deck"
             },
             {
               "icon": "chart-line",
-              "label": "Change curve model methodology",
-              "sublabel": "Based on Bridges (2017) revision of Kübler-Ross framework"
+              "label": "Change curve model based on Bridges (2017) revision of Kübler-Ross framework"
             }
           ]
         }
@@ -64,20 +59,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3970,
+      "input_tokens": 4433,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 369,
+      "output_tokens": 323,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021347400000000002,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-05T05:29:55.605Z",
+    "costUSD": 0.0220464,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-07-06T15:43:01.779Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

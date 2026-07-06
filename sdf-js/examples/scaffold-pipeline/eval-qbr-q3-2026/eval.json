@@ -40,12 +40,10 @@
       "3.2",
       "11"
     ],
-    "entities_total": 2,
+    "entities_total": 1,
     "entities_found": 1,
-    "entity_recall": 0.5,
-    "missing_entities": [
-      "Product Award"
-    ]
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 100,
@@ -58,5 +56,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:37:02.753Z"
+  "generatedAt": "2026-07-06T15:45:42.201Z"
 }

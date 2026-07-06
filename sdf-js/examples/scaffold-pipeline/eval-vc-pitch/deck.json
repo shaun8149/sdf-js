@@ -7,9 +7,9 @@
     "description": "Seed/Series A fundraise pitch (Sequoia / YC structure)",
     "pickScore": 10,
     "pickSignals": [
-      "Title explicitly states 'Series A Pitch' — exact match for VC fundraise scaffold",
-      "Content follows canonical VC pitch structure: problem → market → solution → product → traction → business model → team → ask",
-      "All 10 slots of pitch-deck-vc scaffold are directly addressable by source paragraphs (cover, problem, TAM, solution, demo, traction, pricing/model, team, ask amount)"
+      "Title explicitly states 'Series A Pitch' and body opens with '$15M to scale supply + distribution' — classic VC fundraise",
+      "Content maps perfectly to VC pitch structure: problem (slide 2), TAM (slide 3), solution (slide 4), product (slide 5), traction with ARR metrics (slide 6), business model with pricing tiers (slide 7), team with ex-FAANG credentials (slide 8), and the ask (slide 9)",
+      "Slide count (9 slides) matches scaffold slot count (10) within 1 slot — no empty-slot risk, and the deck uses canonical fundraise language throughout"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -90,7 +90,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-grid"
+        "icon-grid",
+        "kpi-card"
       ]
     },
     {
@@ -111,7 +112,9 @@
         "cover",
         "pyramid",
         "kpi-card",
-        "stat-banner"
+        "stat-banner",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -172,6 +175,7 @@
         "cover",
         "line",
         "kpi-card",
+        "kpi-card",
         "kpi-card"
       ]
     },
@@ -192,8 +196,8 @@
       "subjectTypes": [
         "cover",
         "comparison-table",
-        "kpi-card",
-        "waterfall"
+        "break-even",
+        "kpi-card"
       ]
     },
     {
@@ -213,7 +217,8 @@
       "subjectTypes": [
         "cover",
         "circle-image-hub-spoke",
-        "bullet-list"
+        "bullet-list",
+        "isotype-stat-comparison"
       ]
     },
     {
@@ -233,6 +238,8 @@
       "subjectTypes": [
         "cover",
         "kpi-card",
+        "kpi-card",
+        "kpi-card",
         "pie",
         "bullet-list"
       ]
@@ -250,10 +257,10 @@
     "slotsBaked": 9,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.21184560000000002
+    "totalCostUSD": 0.2273076
   },
   "meta": {
-    "generatedAt": "2026-07-05T07:10:56.452Z",
+    "generatedAt": "2026-07-06T15:44:33.129Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

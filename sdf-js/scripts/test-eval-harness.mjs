@@ -230,6 +230,25 @@ rmSync(dir, { recursive: true, force: true });
   ok(!ents.includes('英国央行与欧洲央行'), 'no greedy compound across 与');
   ok(ents.includes('世界银行'), 'lead function words stripped: 世界银行');
   ok(ents.includes('美联储'), 'known-org list: 美联储');
+
+  // Heading filter: all-generic title-case runs are section headings, not
+  // entities; one non-generic word rescues the run.
+  const ents2 = extractKeyEntities([
+    {
+      title: 'x',
+      body: [
+        'Company Overview and our Team Heritage',
+        'per Gartner Magic Quadrant, beats Google Slides',
+        'won Best Product Award on Product Hunt',
+      ],
+    },
+  ]);
+  ok(!ents2.includes('Company Overview'), 'generic heading filtered: Company Overview');
+  ok(!ents2.includes('Team Heritage'), 'generic heading filtered: Team Heritage');
+  ok(!ents2.includes('Best Product Award'), 'generic heading filtered: Best Product Award');
+  ok(ents2.includes('Gartner Magic Quadrant'), 'non-generic word rescues: Gartner Magic Quadrant');
+  ok(ents2.includes('Google Slides'), 'non-generic word rescues: Google Slides');
+  ok(ents2.includes('Product Hunt'), 'non-generic word rescues: Product Hunt');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
