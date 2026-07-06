@@ -1,0 +1,162 @@
+{
+  "slotIdx": 4,
+  "slotName": "framework-analysis",
+  "slotTitle": "Framework Analysis",
+  "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "主要风险评估",
+  "sceneData": {
+    "name": "analysis-report/framework-analysis",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Framework Analysis",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "主要风险评估",
+          "xAxis": "发生概率",
+          "yAxis": "冲击程度",
+          "xLabels": [
+            "低",
+            "中低",
+            "中",
+            "中高",
+            "高"
+          ],
+          "yLabels": [
+            "低",
+            "中低",
+            "中",
+            "中高",
+            "深"
+          ],
+          "risks": [
+            {
+              "label": "霍尔木兹海峡航运中断",
+              "likelihood": 5,
+              "impact": 5,
+              "color": [
+                180,
+                30,
+                30
+              ]
+            },
+            {
+              "label": "能源基础设施关闭",
+              "likelihood": 5,
+              "impact": 5,
+              "color": [
+                180,
+                30,
+                30
+              ]
+            },
+            {
+              "label": "能源价格激增",
+              "likelihood": 5,
+              "impact": 4,
+              "color": [
+                200,
+                80,
+                50
+              ]
+            },
+            {
+              "label": "通胀重新抬头",
+              "likelihood": 4,
+              "impact": 4,
+              "color": [
+                200,
+                80,
+                50
+              ]
+            },
+            {
+              "label": "货币政策收紧",
+              "likelihood": 4,
+              "impact": 4,
+              "color": [
+                200,
+                80,
+                50
+              ]
+            },
+            {
+              "label": "就业市场走弱",
+              "likelihood": 3,
+              "impact": 3,
+              "color": [
+                220,
+                180,
+                80
+              ]
+            },
+            {
+              "label": "科技投资持续性不确定",
+              "likelihood": 3,
+              "impact": 2,
+              "color": [
+                220,
+                180,
+                80
+              ]
+            },
+            {
+              "label": "金融市场估值回调",
+              "likelihood": 2,
+              "impact": 4,
+              "color": [
+                200,
+                80,
+                50
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "radar-chart",
+      "swot",
+      "value-chain-diagram",
+      "matrix-grid",
+      "nine-field-matrix",
+      "fishbone"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4515,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 683,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0276924,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-06T15:36:09.953Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

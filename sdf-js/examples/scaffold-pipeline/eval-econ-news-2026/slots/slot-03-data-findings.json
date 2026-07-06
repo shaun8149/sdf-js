@@ -1,0 +1,102 @@
+{
+  "slotIdx": 3,
+  "slotName": "data-findings",
+  "slotTitle": "Data & Findings",
+  "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "货币政策路径",
+  "sceneData": {
+    "name": "analysis-report/data-findings",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "数据与发现"
+        }
+      },
+      {
+        "type": "line",
+        "x": 60,
+        "y": 180,
+        "w": 1160,
+        "h": 460,
+        "args": {
+          "values": [
+            5.5,
+            5.25,
+            5,
+            4.75,
+            4.5,
+            4.25,
+            4,
+            3.75,
+            3.5,
+            3.25,
+            3
+          ],
+          "labels": [
+            "当前",
+            "1月",
+            "2月",
+            "3月",
+            "4月",
+            "观望",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "format": "percent",
+          "title": "美联储政策利率预期路径",
+          "showPoints": true,
+          "annotations": [
+            {
+              "index": 4,
+              "text": "4月前降息"
+            },
+            {
+              "index": 9,
+              "text": "进入观望期 3%-3.25%"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "stat-banner",
+      "line",
+      "column",
+      "bar",
+      "pie",
+      "kpi-card",
+      "scatter"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4414,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 363,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022589400000000003,
+    "elapsedSec": 6.6,
+    "generatedAt": "2026-07-06T15:36:00.299Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

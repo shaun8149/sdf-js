@@ -35,6 +35,7 @@ const CORPUS = [
   'edu-course-intro.json',
   'nonprofit-annual-report.json',
   'product-eng-retro.json',
+  'econ-news-2026.json', // Sprint 29: Chinese real-news fixture — CJK numbers/entities regression
 ];
 
 function stemOf(fixtureFile) {

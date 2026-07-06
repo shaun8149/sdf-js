@@ -115,6 +115,38 @@ export function extractKeyNumbers(text) {
   return [...new Set(cleaned)];
 }
 
+// Boundary-exact numeric tokens from serialized deck JSON. Comma counts as a
+// thousands separator only when followed by exactly 3 digits — inside JSON
+// arrays ("[5,1.1,5.4]") it is an element separator and must split tokens.
+// Each token is stored in literal, comma-stripped, and bare (no $/K/M/B/%)
+// forms. Rule 18 puts numbers into values arrays as bare payload (source
+// "1.1%" → deck 1.1), so a source number counts as preserved when its bare
+// form appears as an exact deck token — while exact matching stops "5%" from
+// free-riding on a substring of "2.5%" (a false positive under .includes).
+export function deckNumberTokens(deckText) {
+  const raw =
+    deckText.match(/\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?[KMB%]?|\$?\d+(?:\.\d+)?[KMB%]?/g) || [];
+  const set = new Set();
+  for (const t of raw) {
+    const noComma = t.replace(/,/g, '');
+    set.add(t);
+    set.add(noComma);
+    set.add(noComma.replace(/^\$/, '').replace(/[KMB%]$/, ''));
+  }
+  return set;
+}
+
+// Is the source number n preserved in the deck? Literal (or comma-stripped)
+// token match always counts; the bare form only stands in for a trailing
+// "%" — percent payloads are stored bare by design, but "$3.4M" matching a
+// bare "3.4" would be a coincidence, not preservation.
+export function numberPreserved(n, tokens) {
+  const noComma = n.replace(/,/g, '');
+  if (tokens.has(n) || tokens.has(noComma)) return true;
+  if (noComma.endsWith('%')) return tokens.has(noComma.slice(0, -1));
+  return false;
+}
+
 // Leading words that make a capitalized 2+-word run a sentence fragment, not
 // a proper noun ("The Team", "Our Mission", "How It Works" …).
 const ENTITY_STOP_PREFIX =
@@ -126,6 +158,43 @@ const ENTITY_STOP_PREFIX =
 // fragments; real entities overwhelmingly live in body prose ("interviewed
 // Village Chief Amara Kessy", "per Gartner Magic Quadrant"). Extraction is
 // PER-LINE so runs never cross field boundaries. Deterministic — no NLP.
+// Chinese org entities (Sprint 29): the Latin extractor is blind to CJK
+// (no capitalization), so Chinese sources scored entities 0/0. Same
+// philosophy — deterministic, no NLP:
+//   1. CJK runs ending in an institutional suffix (组织/银行/公司/…)
+//   2. Well-known financial institutions with no suffix (美联储/经合组织 is
+//      suffix-covered, 美联储 is not)
+// A leading function word glued onto the run ("的世界银行") is stripped
+// the same way ENTITY_STOP_PREFIX strips "The Team".
+const CJK_ORG_SUFFIX = /[一-鿿]{2,8}(?:组织|银行|央行|公司|集团|委员会|协会|研究院|基金会|交易所)/g;
+const CJK_KNOWN_ORGS = /美联储|欧洲央行|英国央行|世界银行|国际货币基金组织|经合组织/g;
+const CJK_STOP_LEAD = /^(?:的|了|在|与|和|及|等|从|被|向|对|把|据|按|该|各|以|由|为|将|其|是|个)+/;
+
+// Universal short forms a lift may use for well-known institutions — either
+// direction counts as the entity surviving into the deck.
+const ENTITY_ALIASES = {
+  国际货币基金组织: ['IMF'],
+  世界银行: ['World Bank'],
+  经合组织: ['OECD'],
+  美联储: ['Fed', 'Federal Reserve'],
+  欧洲央行: ['ECB', 'European Central Bank'],
+  英国央行: ['BoE', 'Bank of England'],
+};
+
+function extractChineseOrgs(line) {
+  const out = [];
+  // Split on connectors/punctuation first — 与/和/及 sit inside the CJK char
+  // range, so "英国央行与欧洲央行" would otherwise greedily match as ONE run.
+  for (const seg of line.split(/[与和及、，,;；。：:（）()\s]/)) {
+    for (const m of seg.match(CJK_ORG_SUFFIX) || []) {
+      const trimmed = m.replace(CJK_STOP_LEAD, '');
+      if (trimmed.length >= 3) out.push(trimmed);
+    }
+  }
+  for (const m of line.match(CJK_KNOWN_ORGS) || []) out.push(m);
+  return out;
+}
+
 export function extractKeyEntities(slides) {
   const out = new Set();
   const lines = [];
@@ -145,6 +214,7 @@ export function extractKeyEntities(slides) {
       } while (run !== prev && / /.test(run));
       if (/ /.test(run)) out.add(run); // still 2+ words after stripping
     }
+    for (const org of extractChineseOrgs(line)) out.add(org);
   }
   return [...out];
 }
@@ -305,21 +375,26 @@ export async function scoreDeckQuality(deckDir) {
     for (const { sceneData } of slotSceneDatas) {
       deckText += JSON.stringify(sceneData.subjects || []);
     }
-    const deckTextNorm = deckText.replace(/,/g, '');
+    const tokens = deckNumberTokens(deckText);
     const found = [];
     const missing = [];
     for (const n of srcNumbers) {
-      if (deckText.includes(n) || deckTextNorm.includes(n.replace(/,/g, ''))) found.push(n);
+      if (numberPreserved(n, tokens)) found.push(n);
       else missing.push(n);
     }
     // Entity recall (Sprint 26): people / orgs / products. Case-insensitive
-    // match (covers uppercase "SARAH CHEN" in section titles).
+    // match (covers uppercase "SARAH CHEN" in section titles). Cross-language
+    // aliases (Sprint 29): a lift may legitimately render 国际货币基金组织 as
+    // its universal short form "IMF" — count the entity as preserved either
+    // way. Language PRESERVATION (Chinese in → Chinese out) is enforced by
+    // the bake prompt, not scored here.
     const srcEntities = extractKeyEntities(srcSlides);
     const deckTextLower = deckText.toLowerCase();
     const entFound = [];
     const entMissing = [];
     for (const e of srcEntities) {
-      if (deckTextLower.includes(e.toLowerCase())) entFound.push(e);
+      const forms = [e.toLowerCase(), ...(ENTITY_ALIASES[e] || []).map((a) => a.toLowerCase())];
+      if (forms.some((f) => deckTextLower.includes(f))) entFound.push(e);
       else entMissing.push(e);
     }
 

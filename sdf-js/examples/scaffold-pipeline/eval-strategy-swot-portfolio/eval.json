@@ -38,6 +38,12 @@
     "number_recall": 0.9,
     "missing_numbers": [
       "2025"
+    ],
+    "entities_total": 5,
+    "entities_found": 4,
+    "entity_recall": 0.8,
+    "missing_entities": [
+      "Gartner Magic Quadrant"
     ]
   },
   "score": {
@@ -51,5 +57,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T07:10:56.599Z"
+  "generatedAt": "2026-07-06T15:37:02.760Z"
 }

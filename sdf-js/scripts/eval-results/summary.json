@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-05T10:32:16.232Z",
-  "corpusSize": 10,
-  "scored": 10,
+  "generatedAt": "2026-07-06T15:37:02.776Z",
+  "corpusSize": 11,
+  "scored": 11,
   "skipped": [],
-  "corpusMean": 97,
-  "factsRecallMean": 0.958,
-  "entityRecallMean": 0.848,
+  "corpusMean": 95.7,
+  "factsRecallMean": 0.944,
+  "entityRecallMean": 0.831,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -34,13 +34,14 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 179.28571428571428,
       "maxSlotChars": 285,
-      "numberRecall": 0.9655172413793104,
+      "numberRecall": 0.9310344827586207,
       "entityRecall": 0.5,
       "missingEntities": [
         "Product Award"
       ],
       "missingNumbers": [
-        "3.2"
+        "3.2",
+        "11"
       ]
     },
     {
@@ -106,10 +107,12 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 142.85714285714286,
       "maxSlotChars": 180,
-      "numberRecall": 1,
+      "numberRecall": 0.9807692307692307,
       "entityRecall": 1,
       "missingEntities": [],
-      "missingNumbers": []
+      "missingNumbers": [
+        "240,40"
+      ]
     },
     {
       "deckName": "eval-edu-course-intro",
@@ -174,10 +177,11 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 314,
       "maxSlotChars": 489,
-      "numberRecall": 0.9565217391304348,
+      "numberRecall": 0.9130434782608695,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
+        "01",
         "43"
       ]
     },
@@ -329,7 +333,7 @@
       ],
       "missingNumbers": [
         "2025",
-        "9%",
+        "7%",
         "2027"
       ]
     },
@@ -366,12 +370,50 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 229.33333333333334,
       "maxSlotChars": 442,
-      "numberRecall": 0.9666666666666667,
+      "numberRecall": 0.8666666666666667,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
-        "31"
+        "24",
+        "31",
+        "68",
+        "54"
       ]
+    },
+    {
+      "deckName": "eval-econ-news-2026",
+      "score": 82.5,
+      "scoreBreakdown": {
+        "structure": 12.5,
+        "variety": 10,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 0.5,
+      "scaffoldId": "analysis-report",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 4,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 4,
+      "liftAttempted": 4,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 78.75,
+      "maxSlotChars": 110,
+      "numberRecall": 1,
+      "entityRecall": 0.6666666666666666,
+      "missingEntities": [
+        "英国央行",
+        "欧洲央行"
+      ],
+      "missingNumbers": []
     }
   ]
 }
