@@ -1,0 +1,132 @@
+{
+  "slotIdx": 2,
+  "slotName": "definition",
+  "slotTitle": "Context & Definition",
+  "slotPurpose": "Define the subject — what are we analyzing and why",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "全球与区域增长预测",
+  "sceneData": {
+    "name": "analysis-report/definition",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Context & Definition",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "3.3%",
+          "label": "IMF 2026全球增长",
+          "sublabel": "国际货币基金组织",
+          "style": "light",
+          "icon": "globe"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 340,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "2.9%",
+          "label": "OECD中期预测",
+          "sublabel": "经合组织",
+          "style": "light",
+          "icon": "chart-line"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "2.5%",
+          "label": "世界银行预测",
+          "sublabel": "最保守估计",
+          "style": "light",
+          "icon": "bank",
+          "trend": "down",
+          "trendValue": "警告"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 940,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "3.2%",
+          "label": "IMF 2027全球增长",
+          "sublabel": "国际货币基金组织",
+          "style": "light",
+          "icon": "globe-stand"
+        }
+      },
+      {
+        "type": "bar",
+        "x": 40,
+        "y": 430,
+        "w": 1200,
+        "h": 250,
+        "args": {
+          "title": "2026年区域增长预测对比",
+          "values": [
+            5,
+            1.1,
+            5.4
+          ],
+          "labels": [
+            "中国",
+            "欧元区",
+            "低收入国家"
+          ],
+          "format": "percent",
+          "max": 6
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "maturity-model",
+      "value-chain-diagram",
+      "pyramid",
+      "layer-stack"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4585,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 725,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0285324,
+    "elapsedSec": 11.9,
+    "generatedAt": "2026-07-06T15:45:12.580Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

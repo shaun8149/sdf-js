@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Our Solution",
   "sceneData": {
     "name": "pitch-deck-vc/solution",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Our Solution"
+          "title": "Our Solution",
+          "style": "gradient"
         }
       },
       {
@@ -24,54 +25,49 @@
         "x": 80,
         "y": 180,
         "w": 1120,
-        "h": 200,
+        "h": 240,
         "args": {
           "steps": [
-            "LLM writes intent",
-            "Atlas renders",
-            "Choose renderer",
-            "Edit & regenerate"
+            "LLM writes structured intent",
+            "Atlas runtime renders",
+            "Deterministic illustration"
           ],
-          "sublabels": [
-            "Structured data",
-            "Deterministic output",
-            "silhouette|3D|lines|crayon",
-            "Tweak intent"
-          ],
-          "orientation": "horizontal"
+          "orientation": "horizontal",
+          "title": "Architecture Flow"
         }
       },
       {
         "type": "icon-row",
-        "x": 140,
-        "y": 420,
-        "w": 1000,
-        "h": 240,
+        "x": 80,
+        "y": 460,
+        "w": 1120,
+        "h": 200,
         "args": {
           "items": [
             {
-              "icon": "code-block",
-              "label": "Structured Intent",
-              "sublabel": "LLM writes data"
+              "icon": "shapes",
+              "label": "Silhouette",
+              "sublabel": "Same content"
             },
             {
               "icon": "cube",
-              "label": "Deterministic",
-              "sublabel": "Same input = same output"
+              "label": "3D",
+              "sublabel": "Multiple renderers"
+            },
+            {
+              "icon": "pencil-line",
+              "label": "Lines",
+              "sublabel": "Style variants"
             },
             {
               "icon": "palette",
-              "label": "Multi-Render",
-              "sublabel": "4+ visual styles"
-            },
-            {
-              "icon": "pencil",
-              "label": "Editable",
-              "sublabel": "Regenerate on tweak"
+              "label": "Crayon",
+              "sublabel": "Artistic modes"
             }
           ],
-          "iconSize": "large",
-          "iconStyle": "card"
+          "iconSize": "medium",
+          "iconStyle": "circle",
+          "colorMode": "auto"
         }
       }
     ]
@@ -86,20 +82,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4229,
+      "input_tokens": 4430,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 498,
+      "output_tokens": 458,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0240594,
-    "elapsedSec": 8.9,
-    "generatedAt": "2026-07-05T07:10:06.978Z",
+    "costUSD": 0.0240624,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-06T15:43:44.451Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

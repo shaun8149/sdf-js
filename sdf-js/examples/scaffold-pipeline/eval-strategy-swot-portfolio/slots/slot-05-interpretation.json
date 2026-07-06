@@ -16,50 +16,49 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Interpretation",
-          "style": "gradient"
+          "title": "Interpretation"
         }
       },
       {
         "type": "change-curve-chart",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
-          "title": "9-Month Transformation Journey",
+          "title": "Change Journey Forecast",
           "xAxis": "Timeline",
-          "yAxis": "Acceptance",
+          "yAxis": "Adoption",
           "phases": [
             {
               "label": "Shock",
-              "sublabel": "Leadership announcement",
-              "period": "Q1 2027"
+              "sublabel": "Leadership announcement · Q1 2027",
+              "x": 0.08
             },
             {
               "label": "Denial",
-              "sublabel": "Middle-mgmt pushback",
-              "period": "Q1-Q2"
+              "sublabel": "Middle-management push-back · Q1-Q2 2027",
+              "x": 0.25
             },
             {
               "label": "Frustration",
-              "sublabel": "Process friction",
-              "period": "Q2"
+              "sublabel": "Process friction · Q2 2027",
+              "x": 0.42
             },
             {
               "label": "Experimentation",
-              "sublabel": "Pilot teams adopt",
-              "period": "Q3"
+              "sublabel": "Pilot teams adopt · Q3 2027",
+              "x": 0.58
             },
             {
               "label": "Decision",
-              "sublabel": "Org-wide rollout",
-              "period": "Q4"
+              "sublabel": "Org-wide rollout · Q4 2027",
+              "x": 0.75
             },
             {
               "label": "Integration",
-              "sublabel": "New normal",
-              "period": "Q1 2028"
+              "sublabel": "New normal · Q1 2028",
+              "x": 0.92
             }
           ]
         }
@@ -77,20 +76,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4072,
+      "input_tokens": 4535,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 437,
+      "output_tokens": 457,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022673399999999996,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-05T05:29:41.678Z",
+    "costUSD": 0.0243624,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-06T15:42:47.774Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -36,7 +36,15 @@
     "numbers_total": 20,
     "numbers_found": 20,
     "number_recall": 1,
-    "missing_numbers": []
+    "missing_numbers": [],
+    "entities_total": 13,
+    "entities_found": 10,
+    "entity_recall": 0.7692307692307693,
+    "missing_entities": [
+      "In Search",
+      "Understandable Consensus Algorithm",
+      "Highly Available Key"
+    ]
   },
   "score": {
     "total": 100,
@@ -49,5 +57,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T07:10:56.607Z"
+  "generatedAt": "2026-07-06T15:45:42.221Z"
 }

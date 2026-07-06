@@ -42,7 +42,11 @@
     "numbers_total": 8,
     "numbers_found": 8,
     "number_recall": 1,
-    "missing_numbers": []
+    "missing_numbers": [],
+    "entities_total": 5,
+    "entities_found": 5,
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 93.8,
@@ -55,5 +59,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T07:10:56.600Z"
+  "generatedAt": "2026-07-06T15:45:42.211Z"
 }

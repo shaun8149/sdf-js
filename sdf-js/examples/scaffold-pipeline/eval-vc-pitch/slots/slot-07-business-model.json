@@ -21,30 +21,44 @@
       },
       {
         "type": "comparison-table",
-        "x": 40,
+        "x": 60,
         "y": 160,
-        "w": 760,
+        "w": 720,
         "h": 480,
         "args": {
           "title": "Pricing Tiers",
           "columns": [
             {
               "name": "Pro",
-              "accent": true
+              "accent": [
+                255,
+                120,
+                40
+              ]
             },
             {
-              "name": "Team"
+              "name": "Team",
+              "accent": [
+                20,
+                60,
+                180
+              ]
             },
             {
-              "name": "Studio"
+              "name": "Studio",
+              "accent": [
+                60,
+                65,
+                90
+              ]
             }
           ],
           "features": [
             {
               "label": "Price",
               "values": [
-                "$30/user/mo",
-                "$200/seat/mo",
+                "$30/user/month",
+                "$200/seat/month",
                 "$50K/year"
               ]
             },
@@ -52,69 +66,48 @@
               "label": "Target",
               "values": [
                 "Knowledge workers",
-                "Design teams",
-                "Agencies + Enterprise"
+                "Design teams (10+)",
+                "Agencies + enterprise"
               ]
             },
             {
-              "label": "Min seats",
+              "label": "Features",
               "values": [
-                "1",
-                "10+",
-                "Custom"
-              ]
-            },
-            {
-              "label": "Custom themes",
-              "values": [
-                false,
-                false,
-                true
+                "Core tools",
+                "Team collaboration",
+                "Custom themes"
               ]
             }
           ]
         }
       },
       {
-        "type": "kpi-card",
-        "x": 840,
+        "type": "break-even",
+        "x": 820,
         "y": 160,
         "w": 400,
-        "h": 220,
+        "h": 480,
         "args": {
-          "value": "$3M",
-          "label": "Break-Even ARR",
-          "sublabel": "Projected Q3 2027",
-          "icon": "chart-line-up",
-          "style": "light"
+          "title": "Break-Even Analysis",
+          "fixedCost": 1500000,
+          "variableCostPerUnit": 5,
+          "pricePerUnit": 30,
+          "maxUnits": 120000,
+          "currency": "$"
         }
       },
       {
-        "type": "waterfall",
-        "x": 840,
-        "y": 420,
+        "type": "kpi-card",
+        "x": 820,
+        "y": 200,
         "w": 400,
-        "h": 220,
+        "h": 160,
         "args": {
-          "title": "Unit Economics",
-          "bars": [
-            {
-              "label": "Pro",
-              "value": 30,
-              "kind": "positive"
-            },
-            {
-              "label": "Team",
-              "value": 200,
-              "kind": "positive"
-            },
-            {
-              "label": "Studio",
-              "value": 50000,
-              "kind": "end"
-            }
-          ],
-          "format": "currency"
+          "value": "$3M ARR",
+          "label": "Break-Even Target",
+          "sublabel": "Projected Q3 2027",
+          "icon": "target",
+          "style": "accent-border"
         }
       }
     ]
@@ -131,20 +124,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4262,
+      "input_tokens": 4463,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 584,
+      "output_tokens": 602,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0254484,
-    "elapsedSec": 10,
-    "generatedAt": "2026-07-05T07:10:33.797Z",
+    "costUSD": 0.0263214,
+    "elapsedSec": 11.3,
+    "generatedAt": "2026-07-06T15:44:12.000Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

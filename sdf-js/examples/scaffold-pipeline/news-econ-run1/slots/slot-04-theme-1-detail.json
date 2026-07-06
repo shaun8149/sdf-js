@@ -1,0 +1,61 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "中国2026年增长预测",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "中国2026年增长预测",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 340,
+        "y": 220,
+        "w": 600,
+        "h": 360,
+        "args": {
+          "value": "5%",
+          "label": "2026年实际GDP预计增长",
+          "icon": "chart-line-up",
+          "style": "dark",
+          "trend": "up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4411,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 237,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020690399999999998,
+    "elapsedSec": 6.6,
+    "generatedAt": "2026-07-06T16:15:00.968Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

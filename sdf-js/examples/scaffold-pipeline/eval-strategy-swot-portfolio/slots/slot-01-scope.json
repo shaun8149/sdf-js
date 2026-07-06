@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Scope of Analysis",
   "sceneData": {
     "name": "analysis-report/scope",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,8 +16,7 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Scope & Methodology",
-          "style": "gradient"
+          "title": "Scope & Methodology"
         }
       },
       {
@@ -31,18 +30,28 @@
           "items": [
             {
               "icon": "package",
-              "label": "6 product lines reviewed",
+              "label": "6 product lines",
               "sublabel": "NA + EMEA + APAC markets"
             },
             {
               "icon": "calendar",
-              "label": "11-quarter time window",
-              "sublabel": "2024-Q1 through 2026-Q3"
+              "label": "2024-Q1 through 2026-Q3",
+              "sublabel": "11 quarters analyzed"
             },
             {
               "icon": "database",
-              "label": "3 primary data sources",
-              "sublabel": "Internal KPIs + 32 interviews + Gartner MQ"
+              "label": "Internal KPI dashboard",
+              "sublabel": "Primary quantitative source"
+            },
+            {
+              "icon": "users",
+              "label": "32 customer interviews",
+              "sublabel": "Qualitative insights"
+            },
+            {
+              "icon": "chart-bar",
+              "label": "Gartner Magic Quadrant 2025",
+              "sublabel": "Competitive benchmark"
             }
           ]
         }
@@ -58,23 +67,20 @@
           "items": [
             {
               "icon": "matrix-grid",
-              "label": "SWOT",
-              "sublabel": "Strategic analysis"
+              "label": "SWOT Analysis"
             },
             {
               "icon": "flow-arrow",
-              "label": "Porter Chain",
-              "sublabel": "Value activities"
+              "label": "Porter Value Chain"
             },
             {
               "icon": "chart-line",
-              "label": "Change Curve",
-              "sublabel": "Transition assessment"
+              "label": "Change Curve"
             }
           ],
-          "cols": 3,
+          "cols": 1,
           "iconStyle": "card",
-          "iconSize": "medium"
+          "iconSize": "large"
         }
       }
     ]
@@ -88,20 +94,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3997,
+      "input_tokens": 4460,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 543,
+      "output_tokens": 573,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024038399999999998,
-    "elapsedSec": 9.7,
-    "generatedAt": "2026-07-05T05:29:10.659Z",
+    "costUSD": 0.025877400000000002,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-06T15:42:12.958Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

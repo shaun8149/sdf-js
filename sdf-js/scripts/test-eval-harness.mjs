@@ -190,5 +190,66 @@ ok(result2.structure.slots_empty === 2, 'iter2: slots_empty === droppedSlots.len
 
 rmSync(dir, { recursive: true, force: true });
 
+// ── Sprint 29: number token matching + Chinese entity extraction ──
+{
+  const { deckNumberTokens, numberPreserved, extractKeyEntities } =
+    await import('./eval-deck-quality.mjs');
+
+  // Payload numbers inside JSON arrays split correctly (comma = separator,
+  // not thousands) and stand in for their "%" source forms.
+  const tokens = deckNumberTokens('{"values":[5,1.1,5.4],"label":"IMF 3.3%","big":"12,450"}');
+  ok(numberPreserved('1.1%', tokens), 'payload 1.1 preserves source "1.1%"');
+  ok(numberPreserved('5.4%', tokens), 'payload 5.4 preserves source "5.4%"');
+  ok(numberPreserved('3.3%', tokens), 'literal "3.3%" still matches');
+  ok(numberPreserved('12,450', tokens), 'thousands-separator token matches');
+  ok(
+    !numberPreserved('5%', deckNumberTokens('{"v":"2.5%"}')),
+    'no substring free-ride: "5%" not preserved by "2.5%"',
+  );
+  ok(
+    !numberPreserved('$3.4M', deckNumberTokens('{"v":3.4}')),
+    'bare 3.4 does NOT stand in for "$3.4M"',
+  );
+
+  // Chinese org extraction: suffix runs, known list, connector splitting.
+  const ents = extractKeyEntities([
+    {
+      title: 'x',
+      body: [
+        '国际货币基金组织最新《世界经济展望》',
+        '美联储、英国央行与欧洲央行均有降息空间',
+        '该报告由世界银行发布',
+      ],
+    },
+  ]);
+  ok(ents.includes('国际货币基金组织'), 'CJK suffix run: 国际货币基金组织');
+  ok(
+    ents.includes('英国央行') && ents.includes('欧洲央行'),
+    'connector 与 splits two 央行 entities',
+  );
+  ok(!ents.includes('英国央行与欧洲央行'), 'no greedy compound across 与');
+  ok(ents.includes('世界银行'), 'lead function words stripped: 世界银行');
+  ok(ents.includes('美联储'), 'known-org list: 美联储');
+
+  // Heading filter: all-generic title-case runs are section headings, not
+  // entities; one non-generic word rescues the run.
+  const ents2 = extractKeyEntities([
+    {
+      title: 'x',
+      body: [
+        'Company Overview and our Team Heritage',
+        'per Gartner Magic Quadrant, beats Google Slides',
+        'won Best Product Award on Product Hunt',
+      ],
+    },
+  ]);
+  ok(!ents2.includes('Company Overview'), 'generic heading filtered: Company Overview');
+  ok(!ents2.includes('Team Heritage'), 'generic heading filtered: Team Heritage');
+  ok(!ents2.includes('Best Product Award'), 'generic heading filtered: Best Product Award');
+  ok(ents2.includes('Gartner Magic Quadrant'), 'non-generic word rescues: Gartner Magic Quadrant');
+  ok(ents2.includes('Google Slides'), 'non-generic word rescues: Google Slides');
+  ok(ents2.includes('Product Hunt'), 'non-generic word rescues: Product Hunt');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

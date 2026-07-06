@@ -34,11 +34,16 @@
   },
   "fidelity": {
     "numbers_total": 23,
-    "numbers_found": 22,
-    "number_recall": 0.9565217391304348,
+    "numbers_found": 21,
+    "number_recall": 0.9130434782608695,
     "missing_numbers": [
+      "01",
       "43"
-    ]
+    ],
+    "entities_total": 10,
+    "entities_found": 10,
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 98.9,
@@ -51,5 +56,5 @@
       "text": 8.9
     }
   },
-  "generatedAt": "2026-07-05T07:10:56.597Z"
+  "generatedAt": "2026-07-06T15:45:42.205Z"
 }

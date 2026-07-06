@@ -1,0 +1,92 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "主要央行货币政策环境",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "主要央行货币政策环境",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 200,
+        "args": {
+          "steps": [
+            {
+              "label": "通胀回落",
+              "sublabel": "多数主要经济体"
+            },
+            {
+              "label": "降息空间",
+              "sublabel": "美联储、英国央行、欧洲央行"
+            }
+          ],
+          "color": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 120,
+        "y": 450,
+        "w": 1040,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "flag:us",
+              "label": "美联储"
+            },
+            {
+              "icon": "flag:gb",
+              "label": "英国央行"
+            },
+            {
+              "icon": "flag:eu",
+              "label": "欧洲央行"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4434,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 441,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023819399999999998,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-06T16:15:09.976Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

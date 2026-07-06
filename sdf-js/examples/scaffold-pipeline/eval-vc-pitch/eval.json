@@ -12,13 +12,19 @@
     "theme_id": "pitch-cobalt-orange"
   },
   "atomQuality": {
-    "atom_instances": 19,
-    "atom_types_distinct": 13,
-    "variety_ratio": 0.6842105263157895,
+    "atom_instances": 26,
+    "atom_types_distinct": 14,
+    "variety_ratio": 0.5384615384615384,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 0,
-    "arg_violations_top_offenders": []
+    "arg_violations": 1,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 1
+      }
+    ]
   },
   "threeDReadiness": {
     "twin_coverage": 1,
@@ -29,18 +35,23 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 181.55555555555554,
-    "max_slot_chars": 271
+    "chars_per_slot": 196.22222222222223,
+    "max_slot_chars": 264
   },
   "fidelity": {
     "numbers_total": 27,
-    "numbers_found": 24,
-    "number_recall": 0.8888888888888888,
+    "numbers_found": 23,
+    "number_recall": 0.8518518518518519,
     "missing_numbers": [
       "$0",
       "$120K",
-      "$740K"
-    ]
+      "$740K",
+      "$2.4M"
+    ],
+    "entities_total": 5,
+    "entities_found": 5,
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 97.5,
@@ -53,5 +64,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-05T07:10:56.603Z"
+  "generatedAt": "2026-07-06T15:45:42.216Z"
 }

@@ -7,7 +7,7 @@
   "sourceSlideTitle": "The Team",
   "sceneData": {
     "name": "pitch-deck-vc/team",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -23,22 +23,42 @@
       {
         "type": "circle-image-hub-spoke",
         "x": 80,
-        "y": 180,
+        "y": 160,
         "w": 520,
         "h": 480,
         "args": {
           "center": {
-            "label": "Leadership"
+            "label": "Leadership",
+            "color": [
+              255,
+              120,
+              40
+            ]
           },
           "satellites": [
             {
-              "label": "Sarah Chen · CEO"
+              "label": "Sarah Chen · CEO",
+              "color": [
+                255,
+                120,
+                40
+              ]
             },
             {
-              "label": "Alex Wu · CTO"
+              "label": "Alex Wu · CTO",
+              "color": [
+                20,
+                60,
+                180
+              ]
             },
             {
-              "label": "Diana Liu · Design"
+              "label": "Diana Liu · Design",
+              "color": [
+                60,
+                65,
+                90
+              ]
             }
           ]
         }
@@ -46,30 +66,46 @@
       {
         "type": "bullet-list",
         "x": 680,
-        "y": 200,
+        "y": 180,
         "w": 520,
-        "h": 420,
+        "h": 280,
         "args": {
           "items": [
             {
               "icon": "briefcase",
-              "label": "Ex-Figma design infra lead",
-              "sublabel": "Sarah Chen"
+              "label": "Sarah Chen — CEO",
+              "sublabel": "ex-Figma design infra lead"
             },
             {
               "icon": "cpu",
-              "label": "Ex-Anthropic research engineer",
-              "sublabel": "Alex Wu"
+              "label": "Alex Wu — CTO",
+              "sublabel": "ex-Anthropic research engineer"
             },
             {
               "icon": "palette",
-              "label": "Ex-Apple Keynote team",
-              "sublabel": "Diana Liu"
+              "label": "Diana Liu — Head of Design",
+              "sublabel": "ex-Apple Keynote team"
+            }
+          ]
+        }
+      },
+      {
+        "type": "isotype-stat-comparison",
+        "x": 680,
+        "y": 500,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "stats": [
+            {
+              "iconName": "code",
+              "count": 20,
+              "label": "Engineers"
             },
             {
-              "icon": "users",
-              "label": "20 engineers + 5 designers",
-              "sublabel": "NYC + remote"
+              "iconName": "palette",
+              "count": 5,
+              "label": "Designers"
             }
           ]
         }
@@ -87,20 +123,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4256,
+      "input_tokens": 4457,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 477,
+      "output_tokens": 634,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023825399999999997,
-    "elapsedSec": 9,
-    "generatedAt": "2026-07-05T07:10:42.819Z",
+    "costUSD": 0.0267834,
+    "elapsedSec": 10.9,
+    "generatedAt": "2026-07-06T15:44:22.920Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

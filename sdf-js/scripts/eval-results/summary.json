@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-05T10:32:16.232Z",
-  "corpusSize": 10,
-  "scored": 10,
+  "generatedAt": "2026-07-06T15:45:42.225Z",
+  "corpusSize": 11,
+  "scored": 11,
   "skipped": [],
-  "corpusMean": 97,
-  "factsRecallMean": 0.958,
-  "entityRecallMean": 0.848,
+  "corpusMean": 96.7,
+  "factsRecallMean": 0.949,
+  "entityRecallMean": 0.964,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -34,49 +34,12 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 179.28571428571428,
       "maxSlotChars": 285,
-      "numberRecall": 0.9655172413793104,
-      "entityRecall": 0.5,
-      "missingEntities": [
-        "Product Award"
-      ],
+      "numberRecall": 0.9310344827586207,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": [
-        "3.2"
-      ]
-    },
-    {
-      "deckName": "eval-strategy-swot-portfolio",
-      "score": 100,
-      "scoreBreakdown": {
-        "structure": 25,
-        "variety": 15,
-        "hallucination": 15,
-        "twin": 20,
-        "lift": 15,
-        "text": 10
-      },
-      "fillRate": 1,
-      "scaffoldId": "analysis-report",
-      "themeId": "editorial-navy",
-      "pickMethod": "llm",
-      "atomTypesDistinct": 7,
-      "unknownAtomCount": 0,
-      "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
-      "twinCoverage": 1,
-      "untwinnedTypes": [],
-      "liftSuccess": 8,
-      "liftAttempted": 8,
-      "liftedSubjectRate": 1,
-      "charsPerSlot": 264.75,
-      "maxSlotChars": 466,
-      "numberRecall": 0.9,
-      "entityRecall": 0.8,
-      "missingEntities": [
-        "Gartner Magic Quadrant"
-      ],
-      "missingNumbers": [
-        "2025"
+        "3.2",
+        "11"
       ]
     },
     {
@@ -106,10 +69,12 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 142.85714285714286,
       "maxSlotChars": 180,
-      "numberRecall": 1,
+      "numberRecall": 0.9807692307692307,
       "entityRecall": 1,
       "missingEntities": [],
-      "missingNumbers": []
+      "missingNumbers": [
+        "240,40"
+      ]
     },
     {
       "deckName": "eval-edu-course-intro",
@@ -148,6 +113,38 @@
       "missingNumbers": []
     },
     {
+      "deckName": "eval-strategy-swot-portfolio",
+      "score": 99.8,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 9.8
+      },
+      "fillRate": 1,
+      "scaffoldId": "analysis-report",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 8,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 8,
+      "liftAttempted": 8,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 287.625,
+      "maxSlotChars": 525,
+      "numberRecall": 1,
+      "entityRecall": 1,
+      "missingEntities": [],
+      "missingNumbers": []
+    },
+    {
       "deckName": "eval-strategy-batch2-validation",
       "score": 98.9,
       "scoreBreakdown": {
@@ -174,10 +171,11 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 314,
       "maxSlotChars": 489,
-      "numberRecall": 0.9565217391304348,
+      "numberRecall": 0.9130434782608695,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
+        "01",
         "43"
       ]
     },
@@ -196,27 +194,32 @@
       "scaffoldId": "pitch-deck-vc",
       "themeId": "pitch-cobalt-orange",
       "pickMethod": "llm",
-      "atomTypesDistinct": 13,
+      "atomTypesDistinct": 14,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
-      "argViolations": 0,
-      "argViolationsTopOffenders": [],
+      "argViolations": 1,
+      "argViolationsTopOffenders": [
+        {
+          "type": "kpi-card",
+          "key": "trendDirection",
+          "count": 1
+        }
+      ],
       "twinCoverage": 1,
       "untwinnedTypes": [],
       "liftSuccess": 9,
       "liftAttempted": 9,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 181.55555555555554,
-      "maxSlotChars": 271,
-      "numberRecall": 0.8888888888888888,
-      "entityRecall": 0.8,
-      "missingEntities": [
-        "Google Slides"
-      ],
+      "charsPerSlot": 196.22222222222223,
+      "maxSlotChars": 264,
+      "numberRecall": 0.8518518518518519,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": [
         "$0",
         "$120K",
-        "$740K"
+        "$740K",
+        "$2.4M"
       ]
     },
     {
@@ -247,14 +250,8 @@
       "charsPerSlot": 303.14285714285717,
       "maxSlotChars": 477,
       "numberRecall": 1,
-      "entityRecall": 0.7727272727272727,
-      "missingEntities": [
-        "Company Overview",
-        "Team Heritage",
-        "Potential User Groups",
-        "Custodial Strategy",
-        "Connect With Us"
-      ],
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": []
     },
     {
@@ -296,6 +293,38 @@
       "missingNumbers": []
     },
     {
+      "deckName": "eval-econ-news-2026",
+      "score": 93.8,
+      "scoreBreakdown": {
+        "structure": 18.8,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 0.75,
+      "scaffoldId": "analysis-report",
+      "themeId": "editorial-navy",
+      "pickMethod": "llm",
+      "atomTypesDistinct": 6,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 6,
+      "liftAttempted": 6,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 104.5,
+      "maxSlotChars": 130,
+      "numberRecall": 1,
+      "entityRecall": 1,
+      "missingEntities": [],
+      "missingNumbers": []
+    },
+    {
       "deckName": "eval-nonprofit-annual-report",
       "score": 92.5,
       "scoreBreakdown": {
@@ -329,7 +358,7 @@
       ],
       "missingNumbers": [
         "2025",
-        "9%",
+        "7%",
         "2027"
       ]
     },
@@ -366,11 +395,14 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 229.33333333333334,
       "maxSlotChars": 442,
-      "numberRecall": 0.9666666666666667,
+      "numberRecall": 0.8666666666666667,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
-        "31"
+        "24",
+        "31",
+        "68",
+        "54"
       ]
     }
   ]

@@ -27,6 +27,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { basename } from 'node:path';
 import { pickScaffold, distributeSources } from '../src/present/scaffolds/picker.js';
+import { getScaffold, getThemeAffinity } from '../src/present/scaffolds/registry.js';
 import { pickScaffoldLLM } from '../src/present/scaffolds/picker-llm.js';
 import { mapSlidesToSlotsLLM } from '../src/present/scaffolds/mapper-llm.js';
 import { getTheme } from '../src/present/themes.js';
@@ -108,6 +109,20 @@ const deckCombinedBody = [...allTitles, ...bodyTextsAll];
 
 async function pickStage0() {
   const baseInput = { title: deckTitle, bodyTexts: deckCombinedBody };
+  // --scaffold <id>: skip the picker entirely (Sprint 30 — news-to-deck pins
+  // news-briefing so page count doesn't ride on picker variance).
+  const forcedId = arg('--scaffold', null);
+  if (forcedId) {
+    const forced = getScaffold(forcedId);
+    if (!forced) throw new Error(`--scaffold ${forcedId}: unknown scaffold id`);
+    return {
+      scaffold: forced,
+      theme: getThemeAffinity(forced)[0],
+      score: 1,
+      signals: [`forced via --scaffold ${forcedId}`],
+      method: 'forced',
+    };
+  }
   if (PICKER_MODE === 'v1') {
     const r = pickScaffold(baseInput);
     return { ...r, method: r.fallback ? 'fallback' : 'v1' };
@@ -309,6 +324,48 @@ const slotAssignments = await runStage1();
           `  orphan slide ${idx} "${(slide.title || '').slice(0, 40)}" → merged into slot ${best.slotIdx} (${best.slot.name})`,
         );
       }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Stage 1.6 — PAGE FLOOR (Sprint 30)
+//
+// --min-pages N: when the mapper concentrates several slides into one slot
+// (legitimate judgment) the delivered page count can fall below the target
+// band. Deterministic redistribution: promote extraSlides out of the most
+// loaded slot into empty slots until N pages are delivered or no donor
+// remains. Same philosophy as orphan rescue — a pipeline floor, not prompt
+// persuasion. No content is duplicated or invented: only slides that were
+// going to be crammed into a shared slot get their own page back.
+// ---------------------------------------------------------------------------
+{
+  const MIN_PAGES = Number(arg('--min-pages', 0));
+  if (MIN_PAGES > 0) {
+    const delivered = () => slotAssignments.filter((a) => !a.empty).length;
+    if (delivered() < MIN_PAGES) console.log('\n── Stage 1.6: page floor ──');
+    for (const empty of slotAssignments.filter((a) => a.empty)) {
+      if (delivered() >= MIN_PAGES) break;
+      let donor = null;
+      for (const a of slotAssignments) {
+        if (
+          !a.empty &&
+          Array.isArray(a.extraSlides) &&
+          a.extraSlides.length > 0 &&
+          (!donor || a.extraSlides.length > donor.extraSlides.length)
+        )
+          donor = a;
+      }
+      if (!donor) {
+        console.log(`  page floor: no donor slots left (delivered ${delivered()}/${MIN_PAGES})`);
+        break;
+      }
+      empty.empty = false;
+      empty.slideIdx = donor.extraSlides.pop();
+      empty.score = 'floor';
+      console.log(
+        `  page floor: slot ${empty.slotIdx} (${empty.slot.name}) ← slide ${empty.slideIdx} (from slot ${donor.slotIdx}'s extras)`,
+      );
     }
   }
 }
@@ -560,7 +617,9 @@ for (const a of slotAssignments) {
     `    - Row of 2-4 customer quote/testimonial cards (social proof, "What our customers say") → \`testimonial-wall\` (NOT \`bullet-list\`)\n` +
     `    - Build vs Buy / Pros vs Cons / Left vs Right two-side comparison with visual scale → \`balance-scale\` (NOT \`swot\` or \`cost-benefit-matrix\`)\n` +
     `18. **NUMBERS ARE THE PAYLOAD (Sprint 25)** — "TEXT MUST BE MINIMAL" means minimize WORDS, never data values. Every number in the source slide ($3.53M, 52%, 210,000, 87 wells) MUST appear in some atom's args — as a kpi value, pie/donut segment, bar value, stat, or label. If a slide carries TWO datasets (e.g. spending breakdown AND revenue sources), emit TWO chart atoms side by side — never silently drop the second dataset. Preserve values LITERALLY as written in the source ("$3.53M" stays "$3.53M", not "3.5M").\n` +
-    `    - **When a chart arg must be numeric** (pie/donut segments[].value, bar values[]): the number goes numeric for geometry, but the SOURCE-LITERAL form must ALSO appear in the label — e.g. \`{"label": "Program Services · $3.53M", "value": 3530000}\`, \`{"label": "Individual Donors 52%", "value": 52}\`. A legend showing "3530000" raw is a rendering failure.\n`;
+    `    - **When a chart arg must be numeric** (pie/donut segments[].value, bar values[]): the number goes numeric for geometry, but the SOURCE-LITERAL form must ALSO appear in the label — e.g. \`{"label": "Program Services · $3.53M", "value": 3530000}\`, \`{"label": "Individual Donors 52%", "value": 52}\`. A legend showing "3530000" raw is a rendering failure.\n` +
+    `19. **KEEP THE SOURCE LANGUAGE (Sprint 29)** — all titles, labels, and text args stay in the language of the source slide. Chinese source → Chinese deck (世界银行 stays 世界银行, never "World Bank"). Do NOT translate. Universal abbreviations that appear verbatim in the source (IMF, GDP, KPI) may stay as-is.\n` +
+    `20. **NAMED ENTITIES ARE PAYLOAD TOO (Sprint 29)** — Rule 18 for proper nouns: every named person, organization, product, or publication in the source slide (Gartner Magic Quadrant, Google Slides, 英国央行, Sarah Chen) MUST appear in some atom's text args. Names carry the slide's credibility — "per Gartner Magic Quadrant" reduced to "industry ranking" is a fidelity failure, exactly like dropping a number.\n`;
 
   if (DRY_RUN) {
     slotLifts.push({
