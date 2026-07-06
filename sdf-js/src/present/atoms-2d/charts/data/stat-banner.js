@@ -186,7 +186,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 function fitLabelSize(ctx, label, maxW, targetFs, minFs, maxLines) {
   const totalWords = String(label).split(/\s+/).filter(Boolean).length;
   let best = null;
-  for (let fs = targetFs; fs >= minFs; fs--) {
+  // A short banner (small h → targetFs < minFs) must still return a fit —
+  // clamp so the loop always runs at least once; found via a 14-page news
+  // deck whose PPTX export crashed on one h=100 stat-banner (Sprint 31).
+  for (let fs = Math.max(targetFs, minFs); fs >= minFs; fs--) {
     ctx.save();
     ctx.font = `500 ${fs}px Inter, system-ui, sans-serif`;
     const lines = wrapText(ctx, label, maxW, maxLines);

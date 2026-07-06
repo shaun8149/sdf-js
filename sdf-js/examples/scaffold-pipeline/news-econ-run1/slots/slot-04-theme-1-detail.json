@@ -4,7 +4,7 @@
   "slotTitle": "Theme 1 — Detail",
   "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
   "sourceSlideIdx": 5,
-  "sourceSlideTitle": "中国2026年增长预测",
+  "sourceSlideTitle": "中国经济增长预期",
   "sceneData": {
     "name": "news-briefing/theme-1-detail",
     "layout": "row",
@@ -16,22 +16,64 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "中国2026年增长预测",
+          "title": "中国经济增长预期",
           "style": "gradient"
         }
       },
       {
         "type": "kpi-card",
-        "x": 340,
-        "y": 220,
-        "w": 600,
-        "h": 360,
+        "x": 80,
+        "y": 180,
+        "w": 340,
+        "h": 420,
         "args": {
           "value": "5%",
-          "label": "2026年实际GDP预计增长",
+          "label": "2026年实际GDP增长",
+          "sublabel": "中国",
           "icon": "chart-line-up",
-          "style": "dark",
-          "trend": "up"
+          "trend": "up",
+          "trendDirection": "up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 480,
+        "y": 180,
+        "w": 340,
+        "h": 200,
+        "args": {
+          "value": "#2",
+          "label": "全球经济体排名",
+          "sublabel": "中国",
+          "icon": "globe-hemisphere-west",
+          "iconColor": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 880,
+        "y": 180,
+        "w": 320,
+        "h": 200,
+        "args": {
+          "name": "rocket-launch",
+          "label": "全球增长引擎",
+          "color": [38, 70, 130]
+        }
+      },
+      {
+        "type": "bar",
+        "x": 480,
+        "y": 420,
+        "w": 720,
+        "h": 180,
+        "args": {
+          "values": [5, 3.2],
+          "labels": ["中国增速", "全球平均"],
+          "format": "percent",
+          "title": "增速对比",
+          "showValues": true
         }
       }
     ]
@@ -42,20 +84,20 @@
     "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4411,
+      "input_tokens": 4464,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 237,
+      "output_tokens": 582,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.020690399999999998,
-    "elapsedSec": 6.6,
-    "generatedAt": "2026-07-06T16:15:00.968Z",
+    "costUSD": 0.026024399999999996,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-06T16:49:36.691Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

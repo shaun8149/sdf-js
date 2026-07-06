@@ -49,7 +49,7 @@
       "slotTitle": "Overview",
       "slotPurpose": "One line per major theme of the briefing",
       "sourceSlideIdx": 1,
-      "sourceSlideTitle": "概览",
+      "sourceSlideTitle": "报告概览",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -57,7 +57,7 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "agenda-list", "dashboard-multi-kpi-composite"]
+      "subjectTypes": ["cover", "agenda-list"]
     },
     {
       "slotIdx": 2,
@@ -65,7 +65,7 @@
       "slotTitle": "Key Figures",
       "slotPurpose": "The headline numbers at a glance",
       "sourceSlideIdx": 2,
-      "sourceSlideTitle": "国际货币基金组织增长预期",
+      "sourceSlideTitle": "IMF全球增长预测",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -81,7 +81,7 @@
       "slotTitle": "Theme 1 — Lead",
       "slotPurpose": "First major theme: the core facts and figures",
       "sourceSlideIdx": 2,
-      "sourceSlideTitle": "国际货币基金组织增长预期",
+      "sourceSlideTitle": "IMF全球增长预测",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -97,7 +97,7 @@
       "slotTitle": "Theme 1 — Detail",
       "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
       "sourceSlideIdx": 5,
-      "sourceSlideTitle": "中国2026年增长预测",
+      "sourceSlideTitle": "中国经济增长预期",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -105,7 +105,7 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "kpi-card"]
+      "subjectTypes": ["cover", "kpi-card", "stat-with-icon", "icon-badge", "bar"]
     },
     {
       "slotIdx": 5,
@@ -113,7 +113,7 @@
       "slotTitle": "Theme 2 — Lead",
       "slotPurpose": "Second major theme: the core facts",
       "sourceSlideIdx": 8,
-      "sourceSlideTitle": "主要央行货币政策环境",
+      "sourceSlideTitle": "主要央行货币政策转向",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -129,7 +129,7 @@
       "slotTitle": "Theme 2 — Detail",
       "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
       "sourceSlideIdx": 9,
-      "sourceSlideTitle": "美联储降息路径预期",
+      "sourceSlideTitle": "美联储降息路径预测",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -137,7 +137,7 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "timeline", "kpi-card", "kpi-card", "kpi-card"]
+      "subjectTypes": ["cover", "timeline", "bullet-list"]
     },
     {
       "slotIdx": 7,
@@ -145,7 +145,7 @@
       "slotTitle": "Theme 3 — Lead",
       "slotPurpose": "Third major theme: the core facts",
       "sourceSlideIdx": 10,
-      "sourceSlideTitle": "中东冲突能源影响：高概率、深冲击",
+      "sourceSlideTitle": "中东冲突能源冲击（高概率-深度影响）",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -160,9 +160,9 @@
       "slotName": "risk-matrix",
       "slotTitle": "Risk Matrix",
       "slotPurpose": "Risks / scenarios on probability × impact axes",
-      "sourceSlideIdx": 14,
-      "sourceSlideTitle": "风险矩阵总结",
-      "mappingScore": 10,
+      "sourceSlideIdx": 10,
+      "sourceSlideTitle": "中东冲突能源冲击（高概率-深度影响）",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-08-risk-matrix.json",
@@ -177,7 +177,7 @@
       "slotTitle": "Top Risk — Detail",
       "slotPurpose": "The single highest-probability / highest-impact item, expanded",
       "sourceSlideIdx": 10,
-      "sourceSlideTitle": "中东冲突能源影响：高概率、深冲击",
+      "sourceSlideTitle": "中东冲突能源冲击（高概率-深度影响）",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -185,7 +185,7 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "callout-banner", "icon-row"]
+      "subjectTypes": ["cover", "callout-banner", "kpi-card", "kpi-card", "kpi-card"]
     },
     {
       "slotIdx": 10,
@@ -193,7 +193,7 @@
       "slotTitle": "Secondary Risks",
       "slotPurpose": "Remaining risks / upside factors",
       "sourceSlideIdx": 11,
-      "sourceSlideTitle": "科技投资上行支撑：持续性不确定",
+      "sourceSlideTitle": "科技投资上行风险（不确定持续性）",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -209,7 +209,7 @@
       "slotTitle": "Key Quote",
       "slotPurpose": "A load-bearing quote or judgment from the article",
       "sourceSlideIdx": 4,
-      "sourceSlideTitle": "世界银行增长预期与警告",
+      "sourceSlideTitle": "世界银行增长预警",
       "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -224,24 +224,24 @@
       "slotName": "outlook",
       "slotTitle": "Outlook",
       "slotPurpose": "What to watch next — timeline or conditions",
-      "sourceSlideIdx": 9,
-      "sourceSlideTitle": "美联储降息路径预期",
-      "mappingScore": 7,
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "OECD中期经济展望",
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-12-outlook.json",
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "timeline"]
+      "subjectTypes": ["cover", "kpi-card", "bullet-list"]
     },
     {
       "slotIdx": 13,
       "slotName": "summary",
       "slotTitle": "Summary",
       "slotPurpose": "The whole briefing in 3-5 takeaways",
-      "sourceSlideIdx": 15,
-      "sourceSlideTitle": "展望总结",
+      "sourceSlideIdx": 14,
+      "sourceSlideTitle": "2026年展望总结",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -257,10 +257,10 @@
     "slotsBaked": 14,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.3312636
+    "totalCostUSD": 0.3825642
   },
   "meta": {
-    "generatedAt": "2026-07-06T16:16:23.399Z",
+    "generatedAt": "2026-07-06T16:50:56.089Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

@@ -4,7 +4,7 @@
   "slotTitle": "Overview",
   "slotPurpose": "One line per major theme of the briefing",
   "sourceSlideIdx": 1,
-  "sourceSlideTitle": "概览",
+  "sourceSlideTitle": "报告概览",
   "sceneData": {
     "name": "news-briefing/agenda",
     "layout": "row",
@@ -16,7 +16,7 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "概览",
+          "title": "报告概览",
           "style": "gradient"
         }
       },
@@ -24,72 +24,40 @@
         "type": "agenda-list",
         "x": 80,
         "y": 160,
-        "w": 560,
-        "h": 500,
+        "w": 1120,
+        "h": 520,
         "args": {
           "items": [
             {
-              "label": "全球增长预期：三大国际机构展望",
-              "sublabel": "经合组织预测全球GDP增速稳定在2.9%"
+              "label": "全球经济增长预测",
+              "sublabel": "三大国际机构的不同判断"
             },
             {
-              "label": "主要经济体与地区增长预测",
-              "sublabel": "欧元区2026年1.1% · 低收入国家5.4%"
+              "label": "货币政策展望",
+              "sublabel": "主要央行降息空间与节奏"
             },
             {
-              "label": "货币政策趋势：降息空间与路径"
+              "label": "风险评估",
+              "sublabel": "地缘冲突、科技投资、就业与金融市场四大维度"
             },
             {
-              "label": "全球经济面临的主要风险",
-              "sublabel": "就业市场中等风险 · 金融估值低概率大影响"
+              "label": "欧元区经济展望",
+              "sublabel": "增长预计维持在1.1%温和水平，结构性改革与外部需求不足制约增长潜力"
             },
             {
-              "label": "前景展望"
+              "label": "低收入国家增长前景",
+              "sublabel": "增速有望达到5.4%，但世界银行对人均收入增长前景表示担忧"
+            },
+            {
+              "label": "就业市场下行风险",
+              "sublabel": "中等概率-中等影响，需密切关注劳动力市场指标变化"
+            },
+            {
+              "label": "金融市场估值风险",
+              "sublabel": "低概率-高影响，尾部风险但需保持警惕"
             }
           ],
           "numbered": true
-        }
-      },
-      {
-        "type": "dashboard-multi-kpi-composite",
-        "x": 700,
-        "y": 160,
-        "w": 520,
-        "h": 500,
-        "args": {
-          "title": "关键数据",
-          "kpis": [
-            {
-              "value": "2.9%",
-              "label": "全球GDP增速",
-              "sublabel": "经合组织中期预测",
-              "trend": "neutral"
-            },
-            {
-              "value": "1.1%",
-              "label": "欧元区2026年",
-              "sublabel": "温和增长水平",
-              "trend": "neutral"
-            },
-            {
-              "value": "5.4%",
-              "label": "低收入国家",
-              "sublabel": "增速预测",
-              "trend": "up"
-            },
-            {
-              "value": "中等",
-              "label": "就业市场风险",
-              "sublabel": "中等概率·中等影响",
-              "color": [255, 193, 7]
-            },
-            {
-              "value": "低概率",
-              "label": "金融估值风险",
-              "sublabel": "大影响潜在风险",
-              "color": [244, 67, 54]
-            }
-          ]
         }
       }
     ]
@@ -100,20 +68,20 @@
     "recommendedAtoms": ["agenda-list", "number-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4842,
+      "input_tokens": 4944,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 751,
+      "output_tokens": 543,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.029693400000000002,
-    "elapsedSec": 14.6,
-    "generatedAt": "2026-07-06T16:14:41.554Z",
+    "costUSD": 0.026879399999999998,
+    "elapsedSec": 11.3,
+    "generatedAt": "2026-07-06T16:49:15.094Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
