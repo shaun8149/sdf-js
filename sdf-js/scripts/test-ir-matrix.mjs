@@ -254,6 +254,34 @@ console.log('=== ir-matrix (Sprint 28: matrix structure + smart 2D selection) ==
     chooseMagnitudeAtom(negativeIr) === 'bar',
     'non-positive magnitude (not parts-of-whole) → bar',
   );
+
+  // Real-news regression (Sprint 28 Part C): growth-rate forecasts across
+  // institutions are comparisons, not composition — a donut of them shows a
+  // meaningless summed center value.
+  const rateIrZh = {
+    structure: 'magnitude',
+    nodes: ['IMF预测', 'OECD预测', '世界银行预测', '中国', '欧元区', '低收入国家'],
+    magnitude: [3.3, 2.9, 2.5, 5, 1.1, 5.4],
+    title: '2026年全球GDP增长预测（%）',
+  };
+  ok(
+    chooseMagnitudeAtom(rateIrZh) === 'bar',
+    'Chinese growth-rate language (增长/预测) → bar, never donut',
+  );
+
+  const rateIrEn = {
+    structure: 'magnitude',
+    nodes: ['US', 'EU', 'China'],
+    magnitude: [2.1, 1.1, 5.0],
+    title: 'GDP growth forecast 2026',
+  };
+  ok(chooseMagnitudeAtom(rateIrEn) === 'bar', 'English rate language (growth/forecast) → bar');
+
+  // Rate guard must not break genuine composition slides.
+  ok(
+    chooseMagnitudeAtom(shareIr) === 'donut-with-center',
+    'rate guard leaves share-language slides untouched',
+  );
 }
 
 // ---- chooseMatrixAtom ----------------------------------------------------------

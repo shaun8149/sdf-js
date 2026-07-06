@@ -113,6 +113,17 @@ function networkToSubject(ir) {
 // ML — cheap signals a human skimming the same node/title text would use.
 const SHARE_LANGUAGE = /share|mix|breakdown|allocation|split|占比|构成|份额/i;
 
+// Growth rates / percentages compared across entities are NOT parts of a
+// whole — a donut of "IMF 3.3% / OECD 2.9% / World Bank 2.5%" sums to a
+// meaningless total. Rate language anywhere in the slide forces bar.
+const RATE_LANGUAGE =
+  /growth|rate|yoy|cagr|forecast|projection|增长|增速|同比|环比|预测|预期|利率/i;
+
+function hasRateLanguage(ir) {
+  const haystack = [ir.title, ...(ir.nodes || [])].filter(Boolean).join(' ');
+  return RATE_LANGUAGE.test(haystack);
+}
+
 function isPartsOfWhole(magnitude) {
   return (
     Array.isArray(magnitude) &&
@@ -142,7 +153,7 @@ function noDominantSlice(magnitude) {
 export function chooseMagnitudeAtom(ir) {
   const nodes = ir.nodes || [];
   const magnitude = ir.magnitude;
-  const partsOfWhole = isPartsOfWhole(magnitude);
+  const partsOfWhole = isPartsOfWhole(magnitude) && !hasRateLanguage(ir);
   if (nodes.length <= 6 && partsOfWhole && (hasShareLanguage(ir) || noDominantSlice(magnitude))) {
     return 'donut-with-center';
   }

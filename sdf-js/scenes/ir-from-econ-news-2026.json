@@ -1,0 +1,1407 @@
+{
+  "v": 1,
+  "name": "(deck) Analysis Report",
+  "subjects": [
+    {
+      "id": "s0-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          -1.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.148148148148148,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          -1.27,
+          1.574074074074074,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.55,
+        "sat": 0.62,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-1.874 + 3.448 * smoothstep(1.65, 2.25, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s0-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.6925925925925926,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.3462962962962963,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.646 + 0.993 * smoothstep(2.75, 3.35, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s0-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          1.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.4,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          1.27,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-2.000 + 3.700 * smoothstep(3.85, 4.45, t)"
+        }
+      ]
+    },
+    {
+      "id": "path-0-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          2.6666666666666665,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          5.333333333333333,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-3",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          8,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-4",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          10.666666666666666,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-5",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          13.333333333333334,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s1-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          14.73,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.4,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          14.73,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-2.000 + 3.700 * smoothstep(11.65, 12.25, t)"
+        }
+      ]
+    },
+    {
+      "id": "s1-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          16,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          2.987878787878788,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          16,
+          1.493939393939394,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-1.794 + 3.288 * smoothstep(12.75, 13.35, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          17.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          2.5757575757575757,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          17.27,
+          1.2878787878787878,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.64,
+        "sat": 0.76,
+        "value": 0.6,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-1.588 + 2.876 * smoothstep(13.85, 14.45, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "horizon-0",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          38.13727924718674,
+          13.215912874692448,
+          26.696095473030717
+        ]
+      },
+      "transform": {
+        "translate": [
+          8,
+          -7.268752081080847,
+          149.4873849663741
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-1",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          37.52483816920971,
+          14.338825549215796,
+          26.267386718446794
+        ]
+      },
+      "transform": {
+        "translate": [
+          79.56684028028803,
+          -7.886354052068689,
+          104.97304017873017
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-2",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          36.95026224801879,
+          9.147324207562857,
+          25.86518357361315
+        ]
+      },
+      "transform": {
+        "translate": [
+          67.75924111207317,
+          -5.031028314159571,
+          82.4573973625209
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-3",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          36.41752513919053,
+          9.18889152114572,
+          25.49226759743337
+        ]
+      },
+      "transform": {
+        "translate": [
+          147.64714305397118,
+          -5.053890336630147,
+          -16.13936109603344
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-4",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.93031114919384,
+          14.371069104286219,
+          25.15121780443569
+        ]
+      },
+      "transform": {
+        "translate": [
+          147.7457789393791,
+          -7.904088007357421,
+          16.69851650009929
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-5",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.49198975544141,
+          13.167113168752554,
+          24.844392828808985
+        ]
+      },
+      "transform": {
+        "translate": [
+          66.89384281368567,
+          -7.241912242813905,
+          -83.14840635485335
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-6",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.105592303637735,
+          8.254988986589172,
+          24.573914612546414
+        ]
+      },
+      "transform": {
+        "translate": [
+          81.0971923834581,
+          -4.540243942624045,
+          -103.66792263452328
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-7",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.77379104358041,
+          10.56075920141966,
+          24.341653730506284
+        ]
+      },
+      "transform": {
+        "translate": [
+          5.360722365339581,
+          -5.808417560780814,
+          -149.536065887123
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-8",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.49888064839919,
+          14.955687471333393,
+          24.14921645387943
+        ]
+      },
+      "transform": {
+        "translate": [
+          -52.44412567299632,
+          -8.225628109233368,
+          -91.80877229827446
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-9",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.282762345041725,
+          11.66411263416465,
+          23.997933641529205
+        ]
+      },
+      "transform": {
+        "translate": [
+          -59.26628918333596,
+          -6.415261948790558,
+          -90.59592022307277
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-10",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.12693076575705,
+          8.007501235419541,
+          23.888851536029936
+        ]
+      },
+      "transform": {
+        "translate": [
+          -141.6750233575849,
+          -4.404125679480748,
+          16.581296589816493
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-11",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.032463611508966,
+          12.119272489365873,
+          23.822724528056273
+        ]
+      },
+      "transform": {
+        "translate": [
+          -114.34736116270167,
+          -6.66559986915123,
+          -14.991066199015563
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-12",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.00001419880521,
+          14.853592815492972,
+          23.800009939163647
+        ]
+      },
+      "transform": {
+        "translate": [
+          -50.7805809230263,
+          -8.169476048521135,
+          84.79880368810014
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-13",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.02980694148735,
+          10.128499693496575,
+          23.820864859041144
+        ]
+      },
+      "transform": {
+        "translate": [
+          -76.47905988961341,
+          -5.570674831423117,
+          115.98928845605614
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "REGIONAL GROWTH PROJECTIONS 2026",
+      "anchor": [
+        0,
+        4.7,
+        0
+      ],
+      "role": "title",
+      "revealAt": 0
+    },
+    {
+      "text": "China",
+      "anchor": [
+        -1.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 2.45
+    },
+    {
+      "text": "5",
+      "anchor": [
+        -1.27,
+        3.4681481481481478,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 2.45
+    },
+    {
+      "text": "Eurozone",
+      "anchor": [
+        0,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 3.5500000000000003
+    },
+    {
+      "text": "1.1",
+      "anchor": [
+        0,
+        1.0125925925925927,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 3.5500000000000003
+    },
+    {
+      "text": "Low-Income Countries",
+      "anchor": [
+        1.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 4.65
+    },
+    {
+      "text": "5.4",
+      "anchor": [
+        1.27,
+        3.7199999999999998,
+        0
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 4.65
+    },
+    {
+      "text": "2026 GROWTH FORECASTS",
+      "anchor": [
+        16,
+        4.7,
+        0
+      ],
+      "role": "title",
+      "revealAt": 10
+    },
+    {
+      "text": "IMF",
+      "anchor": [
+        14.73,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 12.45
+    },
+    {
+      "text": "3.3",
+      "anchor": [
+        14.73,
+        3.7199999999999998,
+        0
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 12.45
+    },
+    {
+      "text": "OECD",
+      "anchor": [
+        16,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 13.55
+    },
+    {
+      "text": "2.9",
+      "anchor": [
+        16,
+        3.3078787878787876,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 13.55
+    },
+    {
+      "text": "World Bank",
+      "anchor": [
+        17.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 14.65
+    },
+    {
+      "text": "2.5",
+      "anchor": [
+        17.27,
+        2.8957575757575755,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 14.65
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.9,
+        "pos": [
+          2.87,
+          0.5,
+          3.6
+        ],
+        "target": [
+          1.27,
+          2.448,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          0.6,
+          5.6,
+          4.23
+        ],
+        "target": [
+          0,
+          1.53,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          -0.37,
+          1.1,
+          2.5
+        ],
+        "target": [
+          -1.27,
+          1.7314814814814814,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          0.9,
+          0.730925925925926,
+          2.5
+        ],
+        "target": [
+          0,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          2.17,
+          1.1,
+          2.5
+        ],
+        "target": [
+          1.27,
+          1.87,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          2.02,
+          0.35,
+          1.35
+        ],
+        "target": [
+          1.27,
+          2.8899999999999997,
+          0
+        ],
+        "fov": 44,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.8,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          1.2,
+          2.87,
+          5.971
+        ],
+        "target": [
+          0,
+          1.36,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          8.764999999999999,
+          4.470000000000001,
+          7.971
+        ],
+        "target": [
+          7.365,
+          2.448,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [
+          0.14,
+          0.05
+        ],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [
+          16.33,
+          0.5,
+          3.6
+        ],
+        "target": [
+          14.73,
+          2.448,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          16.6,
+          5.6,
+          4.23
+        ],
+        "target": [
+          16,
+          1.53,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          15.63,
+          1.1,
+          2.5
+        ],
+        "target": [
+          14.73,
+          1.87,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          16.9,
+          1.1,
+          2.5
+        ],
+        "target": [
+          16,
+          1.6433333333333333,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          18.17,
+          1.1,
+          2.5
+        ],
+        "target": [
+          17.27,
+          1.4166666666666667,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          15.48,
+          0.35,
+          1.35
+        ],
+        "target": [
+          14.73,
+          2.8899999999999997,
+          0
+        ],
+        "fov": 44,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.8,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          17.2,
+          2.87,
+          5.971
+        ],
+        "target": [
+          16,
+          1.36,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out"
+      },
+      {
+        "duration": 3,
+        "pos": [
+          16,
+          20.5,
+          30.4
+        ],
+        "target": [
+          8,
+          1.2,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.08,
+        "focalDistance": 33.6,
+        "ease": "out"
+      }
+    ],
+    "hitstops": [
+      {
+        "at": 5.42,
+        "hold": 0.14
+      },
+      {
+        "at": 15.42,
+        "hold": 0.14
+      }
+    ]
+  },
+  "defaults": {
+    "camera": {
+      "yaw": 0,
+      "pitch": -0.1,
+      "distance": 12,
+      "focal": 1.2,
+      "targetX": 0,
+      "targetY": 2,
+      "targetZ": 0
+    },
+    "light": {
+      "azimuth": 0.5,
+      "altitude": 0.7,
+      "distance": 40,
+      "intensity": 1.1
+    }
+  }
+}
