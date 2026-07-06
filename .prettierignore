@@ -28,6 +28,7 @@ sdf-js/scenes/deck-*.json
 sdf-js/scenes/sphere-fill-*.json
 sdf-js/scenes/shape-*.json
 sdf-js/scenes/lifted-*.json
+sdf-js/scenes/ir-from-*.json
 sdf-js/scenes/rec-*.json
 sdf-js/scenes/deck-rec-*.json
 sdf-js/scenes/deck-charts-*.json
