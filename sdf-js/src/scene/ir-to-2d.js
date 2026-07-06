@@ -17,7 +17,13 @@
 //               else process-arrows (no magnitude / non-monotonic)
 //   hierarchy → org-chart (relations rebuilt into a {name, children} tree)
 //   network   → relationship-graph (relations → edges)
-//   magnitude → bar (nodes → labels, magnitude → values)
+//   magnitude → bar / pie / donut-with-center — chosen by chooseMagnitudeAtom
+//               (data shape: share-language + parts-of-whole → donut, small
+//               parts-of-whole → pie, else bar)
+//   matrix    → swot / cost-benefit-matrix / risk-heatmap / matrix-grid —
+//               chosen by chooseMatrixAtom (axes shape: SWOT-shaped 2×2 →
+//               swot, generic 2×2 → cost-benefit-matrix, ≥3×≥3 + magnitude →
+//               risk-heatmap, else matrix-grid)
 //
 // Every input is run through validateIR first — this file never guesses at
 // a malformed IR's intent.
@@ -101,7 +107,90 @@ function networkToSubject(ir) {
   };
 }
 
+// ---- magnitude: smart chart selection (bar / pie / donut-with-center) -------
+// "Share of a whole" reads better as pie/donut than bar; a big/lopsided or
+// unlabeled-as-share set of quantities reads better as bar. Heuristic, not
+// ML — cheap signals a human skimming the same node/title text would use.
+const SHARE_LANGUAGE = /share|mix|breakdown|allocation|split|占比|构成|份额/i;
+
+// Growth rates / percentages compared across entities are NOT parts of a
+// whole — a donut of "IMF 3.3% / OECD 2.9% / World Bank 2.5%" sums to a
+// meaningless total. Rate language anywhere in the slide forces bar.
+const RATE_LANGUAGE =
+  /growth|rate|yoy|cagr|forecast|projection|增长|增速|同比|环比|预测|预期|利率/i;
+
+function hasRateLanguage(ir) {
+  const haystack = [ir.title, ...(ir.nodes || [])].filter(Boolean).join(' ');
+  return RATE_LANGUAGE.test(haystack);
+}
+
+function isPartsOfWhole(magnitude) {
+  return (
+    Array.isArray(magnitude) &&
+    magnitude.length > 0 &&
+    magnitude.every((v) => typeof v === 'number' && Number.isFinite(v) && v > 0)
+  );
+}
+
+function hasShareLanguage(ir) {
+  const haystack = [ir.title, ...(ir.nodes || [])].filter(Boolean).join(' ');
+  return SHARE_LANGUAGE.test(haystack);
+}
+
+// No single slice dominates (>70% of the total) — a fairly-distributed set
+// reads as "composition" even without explicit share/mix/breakdown language.
+function noDominantSlice(magnitude) {
+  const total = magnitude.reduce((a, b) => a + b, 0);
+  if (total <= 0) return false;
+  return magnitude.every((v) => v / total <= 0.7);
+}
+
+/**
+ * chooseMagnitudeAtom(ir) → 'bar' | 'pie' | 'donut-with-center'
+ * Pure function of the IR's shape — no side effects, unit-testable in
+ * isolation from the subject-building below.
+ */
+export function chooseMagnitudeAtom(ir) {
+  const nodes = ir.nodes || [];
+  const magnitude = ir.magnitude;
+  const partsOfWhole = isPartsOfWhole(magnitude) && !hasRateLanguage(ir);
+  if (nodes.length <= 6 && partsOfWhole && (hasShareLanguage(ir) || noDominantSlice(magnitude))) {
+    return 'donut-with-center';
+  }
+  if (nodes.length <= 5 && partsOfWhole) return 'pie';
+  return 'bar';
+}
+
 function magnitudeToSubject(ir) {
+  const atomType = chooseMagnitudeAtom(ir);
+
+  if (atomType === 'pie') {
+    return {
+      type: 'pie',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        values: ir.magnitude,
+        labels: ir.nodes,
+        format: 'percent',
+      },
+    };
+  }
+
+  if (atomType === 'donut-with-center') {
+    const total = ir.magnitude.reduce((a, b) => a + b, 0);
+    return {
+      type: 'donut-with-center',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        centerValue: String(Math.round(total * 10) / 10),
+        centerLabel: ir.title || 'Total',
+        segments: ir.nodes.map((label, i) => ({ label, value: ir.magnitude[i] })),
+      },
+    };
+  }
+
   return {
     type: 'bar',
     ...SLIDE,
@@ -113,11 +202,133 @@ function magnitudeToSubject(ir) {
   };
 }
 
+// ---- matrix: axes-shape → swot / cost-benefit-matrix / risk-heatmap / matrix-grid --
+
+function normCat(s) {
+  return String(s).trim().toLowerCase();
+}
+
+// "Low Cost"/"High Cost" → "Cost" (cost-benefit-matrix's own axes shape, and
+// org-vs-org-matrix's `Low ${xAxis}`/`High ${xAxis}` round-trips through the
+// same pattern) — falls back to a generic label when the pair doesn't share
+// a "Low X"/"High X" shape.
+function axisLabelFromCats(cats, fallback) {
+  const lo = /^low\s+(.*)$/i.exec(cats?.[0] || '');
+  const hi = /^high\s+(.*)$/i.exec(cats?.[1] || '');
+  if (lo && hi && lo[1].toLowerCase() === hi[1].toLowerCase()) return hi[1];
+  return fallback;
+}
+
+function isSwotShaped(axes) {
+  const [xCats, yCats] = axes;
+  if (xCats.length !== 2 || yCats.length !== 2) return false;
+  const x = xCats.map(normCat);
+  const y = yCats.map(normCat);
+  return (
+    x.includes('internal') &&
+    x.includes('external') &&
+    y.includes('helpful') &&
+    y.includes('harmful')
+  );
+}
+
+/**
+ * chooseMatrixAtom(ir) → 'swot' | 'cost-benefit-matrix' | 'risk-heatmap' | 'matrix-grid'
+ * Pure function of ir.axes (+ ir.magnitude presence) — shape-driven, same
+ * spirit as chooseMagnitudeAtom.
+ */
+export function chooseMatrixAtom(ir) {
+  const axes = Array.isArray(ir.axes) ? ir.axes : [[], []];
+  const [xCats, yCats] = axes;
+  if (isSwotShaped(axes)) return 'swot';
+  if (xCats.length === 2 && yCats.length === 2) return 'cost-benefit-matrix';
+  if (xCats.length >= 3 && yCats.length >= 3 && Array.isArray(ir.magnitude)) return 'risk-heatmap';
+  return 'matrix-grid';
+}
+
+function matrixToSubject(ir) {
+  const atomType = chooseMatrixAtom(ir);
+  const [xCats, yCats] = ir.axes;
+
+  if (atomType === 'swot') {
+    const x = xCats.map(normCat);
+    const y = yCats.map(normCat);
+    const internalIdx = x.indexOf('internal');
+    const helpfulIdx = y.indexOf('helpful');
+    const groups = { strengths: [], weaknesses: [], opportunities: [], threats: [] };
+    ir.nodes.forEach((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      const internal = xi === internalIdx;
+      const helpful = yi === helpfulIdx;
+      if (internal && helpful) groups.strengths.push(label);
+      else if (internal && !helpful) groups.weaknesses.push(label);
+      else if (!internal && helpful) groups.opportunities.push(label);
+      else groups.threats.push(label);
+    });
+    return {
+      type: 'swot',
+      ...SLIDE,
+      args: { title: ir.title || 'SWOT Analysis', ...groups },
+    };
+  }
+
+  if (atomType === 'cost-benefit-matrix') {
+    const items = ir.nodes.map((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      return { label, cost: xi === 1 ? 'high' : 'low', benefit: yi === 1 ? 'high' : 'low' };
+    });
+    return {
+      type: 'cost-benefit-matrix',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        xAxis: axisLabelFromCats(xCats, 'Cost'),
+        yAxis: axisLabelFromCats(yCats, 'Benefit'),
+        items,
+      },
+    };
+  }
+
+  if (atomType === 'risk-heatmap') {
+    const risks = ir.nodes.map((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      return { label, likelihood: xi + 1, impact: yi + 1 };
+    });
+    return {
+      type: 'risk-heatmap',
+      ...SLIDE,
+      args: { title: ir.title || '', xLabels: xCats, yLabels: yCats, risks },
+    };
+  }
+
+  // matrix-grid fallback — one cell per axis intersection; nodes sharing a
+  // cell join into that cell's label (matrix-grid has no per-node concept,
+  // only per-cell).
+  const rows = yCats.length;
+  const cols = xCats.length;
+  const cellLabels = Array.from({ length: rows * cols }, () => []);
+  ir.nodes.forEach((label, i) => {
+    const [xi, yi] = ir.cells[i];
+    const idx = yi * cols + xi;
+    if (cellLabels[idx]) cellLabels[idx].push(label);
+  });
+  const args = {
+    title: ir.title || '',
+    rows,
+    cols,
+    cells: cellLabels.map((labels) => ({ label: labels.join(', ') || '—' })),
+  };
+  if (cols === 2) args.xAxis = { low: xCats[0], high: xCats[1] };
+  if (rows === 2) args.yAxis = { low: yCats[0], high: yCats[1] };
+  return { type: 'matrix-grid', ...SLIDE, args };
+}
+
 const STRUCTURE_TO_SUBJECT = {
   sequence: sequenceToSubject,
   hierarchy: hierarchyToSubject,
   network: networkToSubject,
   magnitude: magnitudeToSubject,
+  matrix: matrixToSubject,
 };
 
 /**

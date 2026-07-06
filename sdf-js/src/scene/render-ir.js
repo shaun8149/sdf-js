@@ -15,6 +15,13 @@ const RENDERERS = {
   magnitude: renderMagnitude,
 };
 
+// The structures that HAVE a 3D renderer today — 'matrix' (Sprint 28) is a
+// valid IR structure the 2D bridges + text-to-ir emit/consume, but has no
+// entry here yet. scaffold-to-ir's deckToIR uses this list to keep matrix
+// IRs out of assembleDeck until a matrix structure renderer exists (see
+// docs/superpowers/ir-matrix-proposal.md).
+export const RENDERER_STRUCTURES = Object.keys(RENDERERS);
+
 export function renderIR(ir, opts = {}) {
   const r = RENDERERS[ir?.structure];
   if (!r)

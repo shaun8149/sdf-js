@@ -156,6 +156,8 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-atoms-to-ir.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-ir-to-2d.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-atom-3d-coverage.mjs' },
+  // Sprint 28: matrix IR structure + ir-to-2d smart chart selection
+  { category: 'scene', file: 'sdf-js/scripts/test-ir-matrix.mjs' },
 
   // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
   { category: 'diagram', file: 'sdf-js/scripts/test-fishbone-3d.mjs' },

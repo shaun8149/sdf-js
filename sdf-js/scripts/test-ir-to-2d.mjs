@@ -126,12 +126,16 @@ console.log('=== ir-to-2d (Sprint 27 bridge 2) ===\n');
   );
 }
 
-// ---- magnitude → bar ----------------------------------------------------------
+// ---- magnitude → bar (>6 categories — chooseMagnitudeAtom's bar fallback) ----
+// Sprint 28 made magnitude→2D shape-smart (bar/pie/donut-with-center via
+// chooseMagnitudeAtom — see test-ir-matrix.mjs for the full decision-matrix
+// coverage). 7 categories is above every pie/donut threshold, so this stays
+// the plain bar path this test originally exercised.
 {
   const ir = {
     structure: 'magnitude',
-    nodes: ['Americas', 'EMEA', 'APAC'],
-    magnitude: [890, 420, 310],
+    nodes: ['Americas', 'EMEA', 'APAC', 'LATAM', 'MEA', 'Nordics', 'ANZ'],
+    magnitude: [890, 420, 310, 180, 140, 90, 60],
     title: 'Revenue by Region',
   };
   const sd = irToSceneData(ir);
@@ -228,7 +232,12 @@ console.log('=== ir-to-2d (Sprint 27 bridge 2) ===\n');
     deck.slots.every((s, i) => s.slotIdx === i && s.sceneData?.subjects?.length === 1),
     'irDeckTo2DDeck slots carry slotIdx + sceneData',
   );
-  ok(deck.slots[0].sceneData.subjects[0].type === 'bar', 'irDeckTo2DDeck slot 0 = bar');
+  // 2 nodes, no dominant slice (890/1310 ≈ 68%) → chooseMagnitudeAtom picks
+  // donut-with-center (Sprint 28 smart selection), not the old flat 'bar'.
+  ok(
+    deck.slots[0].sceneData.subjects[0].type === 'donut-with-center',
+    'irDeckTo2DDeck slot 0 = donut-with-center (smart magnitude selection)',
+  );
   ok(
     deck.slots[1].sceneData.subjects[0].type === 'funnel-with-conversion',
     'irDeckTo2DDeck slot 1 = funnel-with-conversion',

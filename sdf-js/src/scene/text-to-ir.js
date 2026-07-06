@@ -19,13 +19,15 @@ Output ONLY JSON, no prose/fences: {"title": string, "slides": [IR, ...]}
 One slide per distinct point. 1-5 slides.
 
 IR = {"structure": S, "nodes": [names], "magnitude"?: [numbers, same length],
-      "relations"?: [[i,j],...], "emphasis"?: [index], "order"?: [indices], "title": string}
+      "relations"?: [[i,j],...], "emphasis"?: [index], "order"?: [indices], "title": string,
+      "axes"?: [[xCats],[yCats]], "cells"?: [[xi,yi],...]}
 
 Structures (pick per slide by the SHAPE of the point):
 - "sequence": ordered stages / conversion / pipeline. magnitude = per-stage size. emphasis = the outcome stage.
 - "hierarchy": tree (org / taxonomy / breakdown). relations = [parent,child] index pairs, exactly one root.
 - "network": web of relationships / ecosystem / dependencies. relations = undirected edges, no self-loops.
 - "magnitude": comparing quantities (revenue by X / market share). magnitude REQUIRED. emphasis = the winner or the point.
+- "matrix": 2-axis classification (SWOT / risk likelihood×impact / cost-benefit). axes REQUIRED [xCats,yCats]; cells REQUIRED, one [xi,yi] index pair per node.
 
 Rules: indices are integers into nodes. Numbers real if given, plausible if not.
 emphasis = what the narrative punches. Node names <= 3 words.
