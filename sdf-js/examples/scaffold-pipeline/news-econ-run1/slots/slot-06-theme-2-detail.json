@@ -4,7 +4,7 @@
   "slotTitle": "Theme 2 — Detail",
   "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
   "sourceSlideIdx": 9,
-  "sourceSlideTitle": "美联储降息路径预期",
+  "sourceSlideTitle": "美联储降息路径预测",
   "sceneData": {
     "name": "news-briefing/theme-2-detail",
     "layout": "row",
@@ -16,7 +16,7 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "美联储降息路径预期",
+          "title": "美联储降息路径预测",
           "style": "gradient"
         }
       },
@@ -29,66 +29,54 @@
         "args": {
           "events": [
             {
-              "date": "当前",
-              "label": "继续降息",
-              "sublabel": "4月前市场预期"
+              "date": "现在",
+              "label": "持续降息",
+              "sublabel": "市场预计美联储将在4月前继续降息"
             },
             {
               "date": "前提条件",
-              "label": "就业增长放缓",
-              "sublabel": "核心通胀涨幅温和"
+              "label": "就业与通胀",
+              "sublabel": "美国就业增长放缓且核心通胀涨幅温和"
             },
             {
               "date": "3%-3.25%",
               "label": "政策利率区间",
-              "sublabel": "降息目标区间"
+              "sublabel": "降至目标区间"
             },
             {
               "date": "之后",
-              "label": "较长观望期",
-              "sublabel": "维持利率区间"
+              "label": "观望期",
+              "sublabel": "进入较长时间的观望期"
             }
           ],
-          "axisLabel": "降息路径时间线"
+          "axisLabel": "降息路径"
         }
       },
       {
-        "type": "kpi-card",
+        "type": "bullet-list",
         "x": 80,
-        "y": 500,
-        "w": 340,
-        "h": 160,
+        "y": 490,
+        "w": 1120,
+        "h": 180,
         "args": {
-          "value": "4月前",
-          "label": "继续降息窗口",
-          "icon": "calendar",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 470,
-        "y": 500,
-        "w": 340,
-        "h": 160,
-        "args": {
-          "value": "3%-3.25%",
-          "label": "目标利率区间",
-          "icon": "gauge",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 860,
-        "y": 500,
-        "w": 340,
-        "h": 160,
-        "args": {
-          "value": "较长观望期",
-          "label": "达标后政策",
-          "icon": "clock",
-          "style": "light"
+          "title": "关键条件",
+          "items": [
+            {
+              "icon": "users",
+              "label": "就业增长放缓",
+              "status": "highlight"
+            },
+            {
+              "icon": "chart-line",
+              "label": "核心通胀涨幅温和",
+              "status": "highlight"
+            },
+            {
+              "icon": "gauge",
+              "label": "政策利率目标: 3%-3.25%区间",
+              "status": "highlight"
+            }
+          ]
         }
       }
     ]
@@ -106,13 +94,13 @@
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 680,
+      "output_tokens": 602,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0275454,
-    "elapsedSec": 12.2,
-    "generatedAt": "2026-07-06T16:15:22.206Z",
+    "costUSD": 0.0263754,
+    "elapsedSec": 13.1,
+    "generatedAt": "2026-07-06T16:49:59.144Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

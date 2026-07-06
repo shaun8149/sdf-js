@@ -140,6 +140,51 @@ console.log('\n--- drawPseudo3D smoke ---');
   );
 }
 
+// ----- stat-banner short-height regression (Sprint 31) -----
+// A 14-page news deck's PPTX export crashed on one h=100 stat-banner:
+// bannerH*0.2 < minFs made fitLabelSize's loop never run → returned null.
+{
+  let crashed = false;
+  try {
+    await renderAtom(
+      {
+        save() {},
+        restore() {},
+        beginPath() {},
+        closePath() {},
+        moveTo() {},
+        lineTo() {},
+        arc() {},
+        stroke() {},
+        fill() {},
+        fillRect() {},
+        fillText() {},
+        measureText: () => ({ width: 24 }),
+        createLinearGradient: () => ({ addColorStop() {} }),
+      },
+      'stat-banner',
+      { value: '5%', label: '能源价格激增与全球供应扰乱', trend: '+12%' },
+      'pseudo3d',
+      {
+        x: 0,
+        y: 0,
+        w: 1200,
+        h: 100,
+        palette: {
+          bg: [247, 244, 224],
+          silhouetteColor: [30, 27, 30],
+          accent: [38, 70, 130],
+          colors: [[38, 70, 130]],
+        },
+      },
+    );
+  } catch (e) {
+    crashed = true;
+    console.log('  crash:', e.message);
+  }
+  ok(!crashed, 'stat-banner survives short height (h=100, fitLabelSize floor)');
+}
+
 // ----- Unknown style throws -----
 console.log('\n--- error paths ---');
 {

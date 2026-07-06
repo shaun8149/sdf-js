@@ -35,9 +35,12 @@ Rules:
 2. Slide 0 is the cover: article headline as title, source/date context as body.
 3. Slide 1 is an agenda/overview: one body line per major theme.
 4. ONE fact-cluster per slide. Split aggressively: each institution's forecast,
-   each risk, each policy step, each region can be its own slide.
-5. EVERY number from the article appears in some slide body, in its source-literal
-   form ("3.3%" stays "3.3%"). Never round, never drop.
+   each risk, each policy step, each region can be its own slide — BUT every
+   content slide carries 2-4 body lines (the fact plus its surrounding context
+   from the article). Never emit a one-line slide.
+5. EVERY number from the article appears in EXACTLY ONE slide's body, in its
+   source-literal form ("3.3%" stays "3.3%"). Never round, never drop, never
+   repeat a figure on a second slide (the agenda names themes, not figures).
 6. EVERY named person/organization/publication appears in some slide body.
 7. KEEP THE SOURCE LANGUAGE. Chinese article → Chinese outline. Do not translate.
 8. When facts have probability/impact or two-axis language, give that cluster a

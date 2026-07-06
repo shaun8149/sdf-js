@@ -12,13 +12,24 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 21,
-    "atom_types_distinct": 14,
-    "variety_ratio": 0.6666666666666666,
+    "atom_instances": 24,
+    "atom_types_distinct": 17,
+    "variety_ratio": 0.7083333333333334,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 0,
-    "arg_violations_top_offenders": []
+    "arg_violations": 3,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 2
+      },
+      {
+        "type": "bar",
+        "key": "showValues",
+        "count": 1
+      }
+    ]
   },
   "threeDReadiness": {
     "twin_coverage": 1,
@@ -29,16 +40,16 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 87.78571428571429,
-    "max_slot_chars": 210
+    "chars_per_slot": 95,
+    "max_slot_chars": 202
   },
   "fidelity": {
     "numbers_total": 11,
     "numbers_found": 11,
     "number_recall": 1,
     "missing_numbers": [],
-    "entities_total": 7,
-    "entities_found": 7,
+    "entities_total": 9,
+    "entities_found": 9,
     "entity_recall": 1,
     "missing_entities": []
   },
@@ -53,5 +64,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T16:16:23.543Z"
+  "generatedAt": "2026-07-06T16:50:56.213Z"
 }
