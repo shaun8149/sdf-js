@@ -15,6 +15,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { validateIR } from './ir.js';
+import { RENDERER_STRUCTURES } from './render-ir.js';
 
 // ---- numeric parsing --------------------------------------------------------
 // Atom args are prose-formatted for human legibility ("$3.4M", "12,450",
@@ -39,6 +40,13 @@ function argmax(values) {
   let best = 0;
   for (let i = 1; i < values.length; i++) if (values[i] > values[best]) best = i;
   return best;
+}
+
+// clamp helper for cell-index derivation (matrix family).
+function clampInt(v, lo, hi) {
+  const n = Math.round(Number(v));
+  if (!Number.isFinite(n)) return lo;
+  return Math.max(lo, Math.min(hi, n));
 }
 
 // Validate + warn-and-drop-on-failure, so a mapping bug never emits garbage
@@ -474,8 +482,165 @@ function radarChartToIR(a) {
   );
 }
 
+// ---- matrix family (2-axis classification) -----------------------------------
+// Sprint 28: the 6 "2-dimensional classification" atoms that TODO'd in the
+// coverage doc waiting for the IR to grow a matrix structure (see ir.js).
+
+function swotToIR(a) {
+  const groups = [
+    { items: a?.strengths, cell: [0, 0] }, // Internal × Helpful
+    { items: a?.weaknesses, cell: [0, 1] }, // Internal × Harmful
+    { items: a?.opportunities, cell: [1, 0] }, // External × Helpful
+    { items: a?.threats, cell: [1, 1] }, // External × Harmful
+  ];
+  const nodes = [];
+  const cells = [];
+  for (const g of groups) {
+    for (const it of Array.isArray(g.items) ? g.items : []) {
+      nodes.push(typeof it === 'string' ? it : it?.label || '');
+      cells.push(g.cell);
+    }
+  }
+  if (!nodes.length) return null;
+  return finish(
+    {
+      structure: 'matrix',
+      nodes,
+      axes: [
+        ['Internal', 'External'],
+        ['Helpful', 'Harmful'],
+      ],
+      cells,
+      title: a.title || 'SWOT Analysis',
+    },
+    'swot',
+  );
+}
+
+function riskHeatmapToIR(a) {
+  const risks = Array.isArray(a?.risks) ? a.risks : [];
+  if (!risks.length) return null;
+  const DEFAULT_LABELS = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];
+  const xLabels = Array.isArray(a.xLabels) && a.xLabels.length ? a.xLabels : DEFAULT_LABELS;
+  const yLabels = Array.isArray(a.yLabels) && a.yLabels.length ? a.yLabels : DEFAULT_LABELS;
+  const nodes = risks.map((r) => r?.label || '');
+  const cells = risks.map((r) => [
+    clampInt(Number(r?.likelihood) - 1, 0, xLabels.length - 1),
+    clampInt(Number(r?.impact) - 1, 0, yLabels.length - 1),
+  ]);
+  const magnitude = risks.map((r) => (Number(r?.likelihood) || 0) * (Number(r?.impact) || 0));
+  return finish(
+    {
+      structure: 'matrix',
+      nodes,
+      axes: [xLabels, yLabels],
+      cells,
+      magnitude,
+      emphasis: [argmax(magnitude)],
+      title: a.title || 'Risk Assessment Matrix',
+    },
+    'risk-heatmap',
+  );
+}
+
+function costBenefitMatrixToIR(a) {
+  const items = Array.isArray(a?.items) ? a.items : [];
+  if (!items.length) return null;
+  const nodes = items.map((it) => it?.label || '');
+  const cells = items.map((it) => [it?.cost === 'high' ? 1 : 0, it?.benefit === 'high' ? 1 : 0]);
+  return finish(
+    {
+      structure: 'matrix',
+      nodes,
+      axes: [
+        ['Low Cost', 'High Cost'],
+        ['Low Benefit', 'High Benefit'],
+      ],
+      cells,
+      title: a.title || '',
+    },
+    'cost-benefit-matrix',
+  );
+}
+
+function orgVsOrgMatrixToIR(a) {
+  const orgs = Array.isArray(a?.orgs) ? a.orgs : [];
+  if (!orgs.length) return null;
+  const xAxis = a.xAxis || 'X Axis';
+  const yAxis = a.yAxis || 'Y Axis';
+  const nodes = orgs.map((o) => o?.name || '');
+  const cells = orgs.map((o) => [
+    (Number(o?.x) || 0) >= 0.5 ? 1 : 0,
+    (Number(o?.y) || 0) >= 0.5 ? 1 : 0,
+  ]);
+  const usIdx = orgs.findIndex((o) => o?.isUs);
+  const ir = {
+    structure: 'matrix',
+    nodes,
+    axes: [
+      [`Low ${xAxis}`, `High ${xAxis}`],
+      [`Low ${yAxis}`, `High ${yAxis}`],
+    ],
+    cells,
+    title: a.title || '',
+  };
+  if (usIdx >= 0) ir.emphasis = [usIdx];
+  const sizes = orgs.map((o) => (Number.isFinite(o?.size) ? o.size : null));
+  if (sizes.every((v) => v != null)) ir.magnitude = sizes;
+  return finish(ir, 'org-vs-org-matrix');
+}
+
+// matrix-grid: rows×cols cells in row-major order → generic ['Col N']/['Row
+// N'] axes, unless the atom carries a named 2-endpoint xAxis/yAxis (only
+// meaningful when that dimension is exactly 2 wide).
+function matrixGridToIR(a) {
+  const cellsArg = Array.isArray(a?.cells) ? a.cells : [];
+  if (!cellsArg.length) return null;
+  const rows = clampInt(a.rows || 2, 1, 4);
+  const cols = clampInt(a.cols || 2, 1, 4);
+  const xCats =
+    cols === 2 && a.xAxis && (a.xAxis.low || a.xAxis.high)
+      ? [a.xAxis.low || 'Low', a.xAxis.high || 'High']
+      : Array.from({ length: cols }, (_, i) => `Col ${i + 1}`);
+  const yCats =
+    rows === 2 && a.yAxis && (a.yAxis.low || a.yAxis.high)
+      ? [a.yAxis.low || 'Low', a.yAxis.high || 'High']
+      : Array.from({ length: rows }, (_, i) => `Row ${i + 1}`);
+  const nodes = [];
+  const cells = [];
+  for (let idx = 0; idx < cellsArg.length && idx < rows * cols; idx++) {
+    nodes.push(cellsArg[idx]?.label || '');
+    cells.push([idx % cols, Math.floor(idx / cols)]);
+  }
+  if (!nodes.length) return null;
+  return finish(
+    { structure: 'matrix', nodes, axes: [xCats, yCats], cells, title: a.title || '' },
+    'matrix-grid',
+  );
+}
+
+// nine-field-matrix: fixed 3x3 GE/McKinsey grid — axes are the model's own
+// Low/Medium/High business-strength × industry-attractiveness semantics.
+function nineFieldMatrixToIR(a) {
+  const cellsArg = Array.isArray(a?.cells) ? a.cells : [];
+  if (!cellsArg.length) return null;
+  const xCats = ['Low', 'Medium', 'High'];
+  const yCats = ['Low', 'Medium', 'High'];
+  const nodes = [];
+  const cells = [];
+  for (let idx = 0; idx < cellsArg.length && idx < 9; idx++) {
+    nodes.push(cellsArg[idx]?.label || '');
+    cells.push([idx % 3, Math.floor(idx / 3)]);
+  }
+  if (!nodes.length) return null;
+  return finish(
+    { structure: 'matrix', nodes, axes: [xCats, yCats], cells, title: a.title || '' },
+    'nine-field-matrix',
+  );
+}
+
 // ---- registry ----------------------------------------------------------------
-// type → (args) => IR|null. ~30 high-value atoms with real structural content;
+// type → (args) => IR|null. ~40 high-value atoms with real structural content;
 // everything else (cover / quote-pull / image / single-value stat cards /
 // pure shapes / icons…) has no entry and atomToIR returns null for it — by
 // design, not oversight. See docs/superpowers/atoms-to-ir-coverage.md.
@@ -521,6 +686,14 @@ const ATOM_IR_MAP = {
   histogram: histogramToIR,
   waterfall: waterfallToIR,
   'radar-chart': radarChartToIR,
+
+  // matrix (2-axis classification — see ir.js)
+  swot: swotToIR,
+  'risk-heatmap': riskHeatmapToIR,
+  'cost-benefit-matrix': costBenefitMatrixToIR,
+  'org-vs-org-matrix': orgVsOrgMatrixToIR,
+  'matrix-grid': matrixGridToIR,
+  'nine-field-matrix': nineFieldMatrixToIR,
 };
 
 /**
@@ -560,17 +733,29 @@ export function slotToIR(sceneData) {
 }
 
 /**
- * deckToIR(deckDir) → { title, slides: IR[] }
+ * deckToIR(deckDir, opts?) → { title, slides: IR[] }
  * Reads a baked scaffold deck directory (deck.json manifest + slots/*.json,
  * the shape bake-scaffold-pipeline.mjs produces and eval-deck-quality.mjs
  * reads) and returns an assembleDeck-ready deck. Skips slots that errored,
  * mapped empty, or have no structural subject.
+ *
+ * render-ir.js throws on a structure with no renderer — 'matrix' is a valid
+ * IR structure (both bridges + text-to-ir emit/consume it) but has no 3D
+ * renderer yet (docs/superpowers/ir-matrix-proposal.md). So by default this
+ * only RETURNS slides whose structure RENDERER_STRUCTURES supports; slides
+ * filtered out are logged, not silently dropped.
+ *
+ * @param {object} [opts]
+ * @param {string[]} [opts.structures] — allowlist override (e.g. include
+ *   'matrix' once the 3D renderer exists, or for tooling that only needs
+ *   the IR itself, not assembleDeck).
  */
-export function deckToIR(deckDir) {
+export function deckToIR(deckDir, opts = {}) {
   const dir = resolve(deckDir);
   const manifestPath = join(dir, 'deck.json');
   if (!existsSync(manifestPath)) throw new Error(`deckToIR: no deck.json in ${dir}`);
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const allowed = Array.isArray(opts.structures) ? opts.structures : RENDERER_STRUCTURES;
 
   const slides = [];
   for (const slot of manifest.slots || []) {
@@ -581,7 +766,14 @@ export function deckToIR(deckDir) {
     const sceneData = slotEntry.sceneData;
     if (!sceneData) continue;
     const ir = slotToIR(sceneData);
-    if (ir) slides.push(ir);
+    if (!ir) continue;
+    if (!allowed.includes(ir.structure)) {
+      console.log(
+        `deckToIR: filtered slot "${slot.liftFile}" — structure "${ir.structure}" has no 3D renderer yet (see docs/superpowers/ir-matrix-proposal.md)`,
+      );
+      continue;
+    }
+    slides.push(ir);
   }
 
   const title = manifest.scaffold?.label || manifest.deckName || 'Deck';

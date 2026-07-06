@@ -18,6 +18,10 @@
 //   hierarchy → org-chart (relations rebuilt into a {name, children} tree)
 //   network   → relationship-graph (relations → edges)
 //   magnitude → bar (nodes → labels, magnitude → values)
+//   matrix    → swot / cost-benefit-matrix / risk-heatmap / matrix-grid —
+//               chosen by chooseMatrixAtom (axes shape: SWOT-shaped 2×2 →
+//               swot, generic 2×2 → cost-benefit-matrix, ≥3×≥3 + magnitude →
+//               risk-heatmap, else matrix-grid)
 //
 // Every input is run through validateIR first — this file never guesses at
 // a malformed IR's intent.
@@ -113,11 +117,132 @@ function magnitudeToSubject(ir) {
   };
 }
 
+// ---- matrix: axes-shape → swot / cost-benefit-matrix / risk-heatmap / matrix-grid --
+
+function normCat(s) {
+  return String(s).trim().toLowerCase();
+}
+
+// "Low Cost"/"High Cost" → "Cost" (cost-benefit-matrix's own axes shape, and
+// org-vs-org-matrix's `Low ${xAxis}`/`High ${xAxis}` round-trips through the
+// same pattern) — falls back to a generic label when the pair doesn't share
+// a "Low X"/"High X" shape.
+function axisLabelFromCats(cats, fallback) {
+  const lo = /^low\s+(.*)$/i.exec(cats?.[0] || '');
+  const hi = /^high\s+(.*)$/i.exec(cats?.[1] || '');
+  if (lo && hi && lo[1].toLowerCase() === hi[1].toLowerCase()) return hi[1];
+  return fallback;
+}
+
+function isSwotShaped(axes) {
+  const [xCats, yCats] = axes;
+  if (xCats.length !== 2 || yCats.length !== 2) return false;
+  const x = xCats.map(normCat);
+  const y = yCats.map(normCat);
+  return (
+    x.includes('internal') &&
+    x.includes('external') &&
+    y.includes('helpful') &&
+    y.includes('harmful')
+  );
+}
+
+/**
+ * chooseMatrixAtom(ir) → 'swot' | 'cost-benefit-matrix' | 'risk-heatmap' | 'matrix-grid'
+ * Pure function of ir.axes (+ ir.magnitude presence) — shape-driven.
+ */
+export function chooseMatrixAtom(ir) {
+  const axes = Array.isArray(ir.axes) ? ir.axes : [[], []];
+  const [xCats, yCats] = axes;
+  if (isSwotShaped(axes)) return 'swot';
+  if (xCats.length === 2 && yCats.length === 2) return 'cost-benefit-matrix';
+  if (xCats.length >= 3 && yCats.length >= 3 && Array.isArray(ir.magnitude)) return 'risk-heatmap';
+  return 'matrix-grid';
+}
+
+function matrixToSubject(ir) {
+  const atomType = chooseMatrixAtom(ir);
+  const [xCats, yCats] = ir.axes;
+
+  if (atomType === 'swot') {
+    const x = xCats.map(normCat);
+    const y = yCats.map(normCat);
+    const internalIdx = x.indexOf('internal');
+    const helpfulIdx = y.indexOf('helpful');
+    const groups = { strengths: [], weaknesses: [], opportunities: [], threats: [] };
+    ir.nodes.forEach((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      const internal = xi === internalIdx;
+      const helpful = yi === helpfulIdx;
+      if (internal && helpful) groups.strengths.push(label);
+      else if (internal && !helpful) groups.weaknesses.push(label);
+      else if (!internal && helpful) groups.opportunities.push(label);
+      else groups.threats.push(label);
+    });
+    return {
+      type: 'swot',
+      ...SLIDE,
+      args: { title: ir.title || 'SWOT Analysis', ...groups },
+    };
+  }
+
+  if (atomType === 'cost-benefit-matrix') {
+    const items = ir.nodes.map((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      return { label, cost: xi === 1 ? 'high' : 'low', benefit: yi === 1 ? 'high' : 'low' };
+    });
+    return {
+      type: 'cost-benefit-matrix',
+      ...SLIDE,
+      args: {
+        title: ir.title || '',
+        xAxis: axisLabelFromCats(xCats, 'Cost'),
+        yAxis: axisLabelFromCats(yCats, 'Benefit'),
+        items,
+      },
+    };
+  }
+
+  if (atomType === 'risk-heatmap') {
+    const risks = ir.nodes.map((label, i) => {
+      const [xi, yi] = ir.cells[i];
+      return { label, likelihood: xi + 1, impact: yi + 1 };
+    });
+    return {
+      type: 'risk-heatmap',
+      ...SLIDE,
+      args: { title: ir.title || '', xLabels: xCats, yLabels: yCats, risks },
+    };
+  }
+
+  // matrix-grid fallback — one cell per axis intersection; nodes sharing a
+  // cell join into that cell's label (matrix-grid has no per-node concept,
+  // only per-cell).
+  const rows = yCats.length;
+  const cols = xCats.length;
+  const cellLabels = Array.from({ length: rows * cols }, () => []);
+  ir.nodes.forEach((label, i) => {
+    const [xi, yi] = ir.cells[i];
+    const idx = yi * cols + xi;
+    if (cellLabels[idx]) cellLabels[idx].push(label);
+  });
+  const args = {
+    title: ir.title || '',
+    rows,
+    cols,
+    cells: cellLabels.map((labels) => ({ label: labels.join(', ') || '—' })),
+  };
+  if (cols === 2) args.xAxis = { low: xCats[0], high: xCats[1] };
+  if (rows === 2) args.yAxis = { low: yCats[0], high: yCats[1] };
+  return { type: 'matrix-grid', ...SLIDE, args };
+}
+
 const STRUCTURE_TO_SUBJECT = {
   sequence: sequenceToSubject,
   hierarchy: hierarchyToSubject,
   network: networkToSubject,
   magnitude: magnitudeToSubject,
+  matrix: matrixToSubject,
 };
 
 /**
