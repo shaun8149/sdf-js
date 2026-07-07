@@ -118,17 +118,22 @@ function recCtx() {
       .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
       .filter(Boolean)
       .map((m) => parseFloat(m[1]));
-    ok(
-      alphas.length > 0 && Math.max(...alphas) <= 0.1,
-      `${family} subtle alpha ≤ 0.1 (legibility guard)`,
-    );
+    // sediment-layers' occlusion contract REQUIRES near-opaque fills — its
+    // legibility guard is color-blending toward bg, asserted in its own
+    // block below, not the alpha cap.
+    if (family !== 'sediment-layers') {
+      ok(
+        alphas.length > 0 && Math.max(...alphas) <= 0.1,
+        `${family} subtle alpha ≤ 0.1 (legibility guard)`,
+      );
+    }
     const paletteRgb = new Set(
       [palette.accent, ...palette.colors].map((c) => `${c[0]}, ${c[1]}, ${c[2]}`),
     );
     // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
     // Watercolor Dreams) — intermediate colors are theme-derived but not
     // exact stops, so the exact-match check doesn't apply to it.
-    if (family !== 'wash-flow' && family !== 'strata-lines') {
+    if (!['wash-flow', 'strata-lines', 'sediment-layers'].includes(family)) {
       const offPalette = rec.styles.filter((s) => {
         const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
         return m && !paletteRgb.has(m[1]);
@@ -382,6 +387,31 @@ function recCtx() {
   ok(
     JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
     'strata-lines deterministic per seed',
+  );
+}
+
+// ── Sprint 48: sediment-layers (Neural Sediments recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'sediment-layers', seed: 7 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills >= 5 && fills <= 8, `sediment-layers fills one polygon per layer (${fills})`);
+  // occlusion contract: fills use near-opaque alpha (painter-order occlusion)
+  const fillAlphas = rec.styles
+    .map((s) => /rgba\(\d+, \d+, \d+, (0\.9\d*)\)/.exec(String(s)))
+    .filter(Boolean);
+  ok(fillAlphas.length >= 5, 'layer washes near-opaque so front occludes back');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'sediment-layers', seed: 2 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'sediment-layers', seed: 2 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'sediment-layers deterministic per seed',
   );
 }
 
