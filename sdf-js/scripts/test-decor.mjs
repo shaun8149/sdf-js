@@ -1,0 +1,219 @@
+#!/usr/bin/env node
+// test-decor.mjs — Sprint 41: decoration layer mechanics (determinism,
+// theme affinity, legibility caps, render ordering).
+import {
+  DECOR_FAMILIES,
+  pickDecorFor,
+  drawDecor,
+  mintDecorHash,
+  seedFromHash,
+  decorFromHash,
+} from '../src/present/decor/registry.js';
+import { renderSceneDataToCanvas } from '../src/present/atoms-2d/renderer.js';
+
+let pass = 0,
+  fail = 0;
+const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console.log(`  ✗ ${n}`)));
+console.log('=== decor layer (Sprint 41: 2D 修饰能力, P5 语料 ↔ shader 语料对位) ===\n');
+
+const palette = {
+  bg: [248, 246, 240],
+  silhouetteColor: [22, 35, 70],
+  accent: [38, 70, 130],
+  colors: [
+    [38, 70, 130],
+    [165, 130, 90],
+  ],
+};
+
+// recording ctx that captures stroke/fill styles + path commands
+function recCtx() {
+  const rec = { ops: [], styles: [] };
+  const push =
+    (name) =>
+    (...a) =>
+      rec.ops.push([
+        name,
+        ...a.map((v) => (typeof v === 'number' ? Math.round(v * 100) / 100 : v)),
+      ]);
+  const ctx = {
+    save: push('save'),
+    restore: push('restore'),
+    beginPath: push('beginPath'),
+    closePath: push('closePath'),
+    moveTo: push('moveTo'),
+    lineTo: push('lineTo'),
+    arc: push('arc'),
+    stroke: push('stroke'),
+    fill: push('fill'),
+    fillRect: push('fillRect'),
+    fillText: push('fillText'),
+    quadraticCurveTo: push('quadraticCurveTo'),
+    bezierCurveTo: push('bezierCurveTo'),
+    arcTo: push('arcTo'),
+    ellipse: push('ellipse'),
+    rect: push('rect'),
+    roundRect: push('roundRect'),
+    clip: push('clip'),
+    setLineDash: push('setLineDash'),
+    translate: push('translate'),
+    rotate: push('rotate'),
+    scale: push('scale'),
+    transform: push('transform'),
+    setTransform: push('setTransform'),
+    strokeRect: push('strokeRect'),
+    clearRect: push('clearRect'),
+    drawImage: push('drawImage'),
+    strokeText: push('strokeText'),
+    measureText: () => ({ width: 40 }),
+    createLinearGradient: () => ({ addColorStop: () => {} }),
+    createRadialGradient: () => ({ addColorStop: () => {} }),
+    set strokeStyle(v) {
+      rec.styles.push(v);
+    },
+    set fillStyle(v) {
+      rec.styles.push(v);
+    },
+    lineWidth: 1,
+    lineCap: '',
+    font: '',
+    textAlign: '',
+    textBaseline: '',
+    shadowColor: '',
+    shadowBlur: 0,
+    shadowOffsetY: 0,
+    globalAlpha: 1,
+  };
+  return { ctx, rec };
+}
+
+// ── determinism ──
+{
+  const a = recCtx();
+  const b = recCtx();
+  const c = recCtx();
+  const opts = { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' };
+  drawDecor(a.ctx, { family: 'flow-streams', seed: 42 }, opts);
+  drawDecor(b.ctx, { family: 'flow-streams', seed: 42 }, opts);
+  drawDecor(c.ctx, { family: 'flow-streams', seed: 43 }, opts);
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'same seed → identical geometry');
+  ok(
+    JSON.stringify(a.rec.ops) !== JSON.stringify(c.rec.ops),
+    'different seed → different geometry',
+  );
+  ok(a.rec.ops.length > 50, `flow-streams actually draws (${a.rec.ops.length} ops)`);
+}
+
+// ── every family draws, palette-constrained, alpha-capped ──
+{
+  for (const family of Object.keys(DECOR_FAMILIES)) {
+    const { ctx, rec } = recCtx();
+    drawDecor(
+      ctx,
+      { family, seed: 7 },
+      { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+    );
+    ok(rec.ops.length > 20, `${family} draws (${rec.ops.length} ops)`);
+    const alphas = rec.styles
+      .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+      .filter(Boolean)
+      .map((m) => parseFloat(m[1]));
+    ok(
+      alphas.length > 0 && Math.max(...alphas) <= 0.1,
+      `${family} subtle alpha ≤ 0.1 (legibility guard)`,
+    );
+    const paletteRgb = new Set(
+      [palette.accent, ...palette.colors].map((c) => `${c[0]}, ${c[1]}, ${c[2]}`),
+    );
+    const offPalette = rec.styles.filter((s) => {
+      const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
+      return m && !paletteRgb.has(m[1]);
+    });
+    ok(offPalette.length === 0, `${family} uses only theme colors`);
+  }
+}
+
+// ── pickDecorFor: deterministic + affinity ──
+{
+  const t = { id: 'editorial-navy', macroCluster: 'editorial' };
+  const p1 = pickDecorFor(t, 5);
+  const p2 = pickDecorFor(t, 5);
+  ok(p1.family === p2.family, 'pick deterministic per (theme, seed)');
+  ok(['flow-streams', 'shard-mesh'].includes(p1.family), 'editorial affinity respected');
+  ok(
+    pickDecorFor({ id: 'weird' }, 1).family in DECOR_FAMILIES,
+    'unknown cluster falls back to a valid family',
+  );
+}
+
+// ── drawDecor safety ──
+{
+  const { ctx, rec } = recCtx();
+  ok(
+    drawDecor(ctx, { family: 'no-such-family', seed: 1 }, { palette, w: 100, h: 100 }) === false,
+    'unknown family is a silent no-op',
+  );
+  ok(rec.ops.length === 0, 'no-op really draws nothing');
+}
+
+// ── renderer ordering: content slide decor UNDER atoms; cover slide OVER ──
+{
+  const calls = [];
+  const canvas = {
+    width: 1280,
+    height: 720,
+    getContext: () => {
+      const { ctx } = recCtx();
+      ctx.fillRect = (...a) => calls.push(['fillRect', ...a]);
+      ctx.stroke = () => calls.push(['stroke']);
+      ctx.fillText = (t) => calls.push(['fillText', String(t)]);
+      ctx.fill = () => calls.push(['fill']);
+      return ctx;
+    },
+  };
+  await renderSceneDataToCanvas(
+    canvas,
+    {
+      subjects: [
+        { type: 'kpi-card', x: 40, y: 160, w: 300, h: 200, args: { value: '9', label: 'L' } },
+      ],
+    },
+    { palette, decor: { family: 'weave-dashes', seed: 3 } },
+  );
+  const firstText = calls.findIndex((c) => c[0] === 'fillText');
+  const firstStroke = calls.findIndex((c) => c[0] === 'stroke');
+  ok(
+    firstStroke > -1 && firstStroke < firstText,
+    'content slide: decor strokes land before atom text',
+  );
+}
+
+// ── mint-hash provenance (Sprint 41 core insight) ──
+{
+  const h1 = mintDecorHash();
+  const h2 = mintDecorHash();
+  ok(/^[0-9a-f]{16}$/.test(h1), 'minted hash is 16 hex chars (64-bit)');
+  ok(h1 !== h2, 'two mints differ (crypto-random)');
+  ok(seedFromHash(h1) === seedFromHash(h1), 'seedFromHash deterministic');
+  const t = { id: 'editorial-navy', macroCluster: 'editorial' };
+  const d1 = decorFromHash(t, 'abcdef0123456789');
+  const d2 = decorFromHash(t, 'abcdef0123456789');
+  ok(
+    d1.family === d2.family && d1.seed === d2.seed,
+    'same (theme, hash) → same decoration everywhere',
+  );
+  ok(d1.hash === 'abcdef0123456789', 'provenance hash carried on the decor object');
+  // the owner-reproducibility property: two different hashes → (almost
+  // surely) different geometry
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, decorFromHash(t, 'aaaaaaaaaaaaaaaa'), { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, decorFromHash(t, 'bbbbbbbbbbbbbbbb'), { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) !== JSON.stringify(b.rec.ops),
+    'different hash → different artifact',
+  );
+}
+
+console.log(`\n${pass} passed, ${fail} failed`);
+process.exit(fail ? 1 : 0);

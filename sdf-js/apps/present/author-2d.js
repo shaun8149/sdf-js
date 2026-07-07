@@ -12,6 +12,7 @@ import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
 import { newsToFullDeck, reliftSlot } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
 import { rethemeDeck } from '../../src/present/retheme.js';
+import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -74,6 +75,8 @@ themeEl.addEventListener('change', async () => {
   if (!currentDeck) return;
   try {
     rethemeDeck(currentDeck, themeEl.value);
+    if (currentDeck.decor?.hash)
+      currentDeck.decor = decorFromHash(currentDeck.theme, currentDeck.decor.hash);
     await renderDeck(currentDeck);
     setStatus(`theme → ${themeEl.value} (re-rendered, exports follow)`);
   } catch (e) {
@@ -101,6 +104,14 @@ const setStatus = (msg, err = false) => {
   statusEl.className = err ? 'err' : '';
 };
 
+// Decoration provenance (Sprint 41): the hash is MINTED per generation
+// (crypto-random, fxhash-style) — never derived from the content. ?hash=
+// re-opens an existing work; otherwise every Generate mints a new one.
+function currentMintHash() {
+  const urlHash = new URLSearchParams(location.search).get('hash');
+  return urlHash || mintDecorHash();
+}
+
 async function renderDeck(deck) {
   slidesEl.innerHTML = '';
   for (const slot of deck.slots) {
@@ -116,7 +127,12 @@ async function renderDeck(deck) {
     card.appendChild(cap);
     if (slot.liftParams) attachSlideControls(card, canvas, deck, slot);
     slidesEl.appendChild(card);
-    await renderSceneDataToCanvas(canvas, slot.sceneData, { palette: deck.theme });
+    await renderSceneDataToCanvas(canvas, slot.sceneData, {
+      palette: deck.theme,
+      decor: deck.decor
+        ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) }
+        : undefined,
+    });
   }
 }
 
@@ -165,7 +181,12 @@ function attachSlideControls(card, canvas, deck, slot) {
     rollBtn.disabled = editGo.disabled = true;
     try {
       const sceneData = await reliftSlot(currentDeck, slot.slotIdx, { apiKey, revision });
-      await renderSceneDataToCanvas(canvas, sceneData, { palette: deck.theme });
+      await renderSceneDataToCanvas(canvas, sceneData, {
+        palette: deck.theme,
+        decor: deck.decor
+          ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) }
+          : undefined,
+      });
       editRow.classList.remove('open');
       editInput.value = '';
       setStatus(
@@ -234,11 +255,14 @@ async function generate() {
       if (currentDeck.errors?.length) {
         console.warn('[full-deck] slot errors:', currentDeck.errors);
       }
+      currentDeck.decor = decorFromHash(currentDeck.theme, currentMintHash());
       await renderDeck(currentDeck);
       const errNote = currentDeck.errors?.length
         ? ` (${currentDeck.errors.length} slot(s) failed — see console)`
         : '';
-      setStatus(`done — ${currentDeck.slots.length} pages rendered${errNote}. Export below.`);
+      setStatus(
+        `done — ${currentDeck.slots.length} pages rendered${errNote}. 作品 #${currentDeck.decor.hash} (唯一, 持 hash 可复现). Export below.`,
+      );
       exportPptxEl.disabled = false;
       exportPdfEl.disabled = false;
       syncThemeSelect();
@@ -256,8 +280,15 @@ async function generate() {
       `rendering ${irDeck.slides.length} slide${irDeck.slides.length > 1 ? 's' : ''}: ${irDeck.slides.map((s) => s.structure).join(' → ')}`,
     );
     currentDeck = irDeckTo2DDeck(irDeck);
+    currentDeck.decor = decorFromHash(
+      currentDeck.theme,
+      DEMO_MODE ? 'demo-fixed-hash' : currentMintHash(),
+    );
+    window.__atlasDeck = currentDeck; // QA/debug handle
     await renderDeck(currentDeck);
-    setStatus(`done — ${currentDeck.slots.length} slide(s) rendered. Export below.`);
+    setStatus(
+      `done — ${currentDeck.slots.length} slide(s) rendered. 作品 #${currentDeck.decor.hash}. Export below.`,
+    );
     exportPptxEl.disabled = false;
     exportPdfEl.disabled = false;
     syncThemeSelect();

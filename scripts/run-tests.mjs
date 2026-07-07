@@ -210,6 +210,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-visual-audit.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-slide-reroll.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-retheme.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-decor.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
