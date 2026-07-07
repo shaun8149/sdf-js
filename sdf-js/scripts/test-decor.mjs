@@ -128,7 +128,7 @@ function recCtx() {
     // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
     // Watercolor Dreams) — intermediate colors are theme-derived but not
     // exact stops, so the exact-match check doesn't apply to it.
-    if (family !== 'wash-flow') {
+    if (family !== 'wash-flow' && family !== 'strata-lines') {
       const offPalette = rec.styles.filter((s) => {
         const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
         return m && !paletteRgb.has(m[1]);
@@ -363,6 +363,26 @@ function recCtx() {
   drawDecor(a.ctx, { family: 'wash-flow', seed: 8 }, { palette, w: 640, h: 360 });
   drawDecor(b.ctx, { family: 'wash-flow', seed: 8 }, { palette, w: 640, h: 360 });
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'wash-flow deterministic per seed');
+}
+
+// ── Sprint 47: strata-lines (Apparitions recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'strata-lines', seed: 14 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes === 34 * 2, `strata-lines draws main+shadow per row (${strokes})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'strata-lines', seed: 3 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'strata-lines', seed: 3 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'strata-lines deterministic per seed',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
