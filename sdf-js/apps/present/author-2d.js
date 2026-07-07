@@ -9,7 +9,7 @@
 // Used for headless verification where a real Anthropic call can't run.
 import { textToIR } from '../../src/scene/text-to-ir.js';
 import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
-import { newsToFullDeck } from '../../src/present/news/full-deck.js';
+import { newsToFullDeck, reliftSlot } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -87,9 +87,80 @@ async function renderDeck(deck) {
     cap.textContent = slot.slotTitle || slot.slotName || '';
     card.appendChild(canvas);
     card.appendChild(cap);
+    if (slot.liftParams) attachSlideControls(card, canvas, deck, slot);
     slidesEl.appendChild(card);
     await renderSceneDataToCanvas(canvas, slot.sceneData, { palette: deck.theme });
   }
+}
+
+// ── Sprint 38: per-slide ⚡ (Napkin-style) — 🎲 re-roll + ✏️ instruct ────────
+// Both re-lift THIS slot only (~6s, hits the prompt cache); the deck object
+// is mutated in place so PPTX/PDF exports automatically reflect edits.
+function attachSlideControls(card, canvas, deck, slot) {
+  const bar = document.createElement('div');
+  bar.className = 'slide-tools';
+
+  const rollBtn = document.createElement('button');
+  rollBtn.textContent = '🎲';
+  rollBtn.title = '重新生成这一页 (同素材, 新的排版/图表选择)';
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = '✏️';
+  editBtn.title = '用一句话修改这一页 (如: 换成柱状图 / 标题更简短)';
+
+  const editRow = document.createElement('div');
+  editRow.className = 'slide-edit-row';
+  const editInput = document.createElement('input');
+  editInput.placeholder = '想怎么改? 如: 换成柱状图 / 只保留三个要点';
+  const editGo = document.createElement('button');
+  editGo.textContent = '⚡';
+  editRow.appendChild(editInput);
+  editRow.appendChild(editGo);
+
+  const busy = document.createElement('div');
+  busy.className = 'slide-busy';
+  busy.textContent = 're-lifting…';
+
+  async function relift(revision) {
+    const apiKey = keyEl.value.trim();
+    if (!apiKey) return setStatus('paste your Anthropic API key first', true);
+    card.classList.add('busy');
+    rollBtn.disabled = editGo.disabled = true;
+    try {
+      const sceneData = await reliftSlot(currentDeck, slot.slotIdx, { apiKey, revision });
+      await renderSceneDataToCanvas(canvas, sceneData, { palette: deck.theme });
+      editRow.classList.remove('open');
+      editInput.value = '';
+      setStatus(
+        revision ? `slide "${slot.slotTitle}" revised.` : `slide "${slot.slotTitle}" re-rolled.`,
+      );
+    } catch (e) {
+      setStatus(`re-lift failed: ${e.message}`, true);
+    } finally {
+      card.classList.remove('busy');
+      rollBtn.disabled = editGo.disabled = false;
+    }
+  }
+
+  rollBtn.addEventListener('click', () => relift(null));
+  editBtn.addEventListener('click', () => {
+    editRow.classList.toggle('open');
+    if (editRow.classList.contains('open')) editInput.focus();
+  });
+  const submitEdit = () => {
+    const v = editInput.value.trim();
+    if (v) relift(v);
+  };
+  editGo.addEventListener('click', submitEdit);
+  editInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitEdit();
+  });
+
+  bar.appendChild(rollBtn);
+  bar.appendChild(editBtn);
+  card.appendChild(bar);
+  card.appendChild(editRow);
+  card.appendChild(busy);
 }
 
 async function generate() {
@@ -111,6 +182,7 @@ async function generate() {
         apiKey,
         onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
       });
+      window.__atlasDeck = currentDeck; // QA/debug handle
       if (currentDeck.errors?.length) {
         console.warn('[full-deck] slot errors:', currentDeck.errors);
       }

@@ -41,6 +41,7 @@ export function buildSlotUserMessage({
   slide,
   slides = [],
   extraSlides = [],
+  revision = null,
 }) {
   const bodyTexts = (slide.body || [])
     .map((b) => (typeof b === 'string' ? b : b.text || ''))
@@ -131,6 +132,15 @@ export function buildSlotUserMessage({
     bodyTexts.map((t) => `  - "${t}"`).join('\n') +
     '\n' +
     extraMaterial +
+    (revision
+      ? `\n## USER REVISION REQUEST (Sprint 38 — per-slide edit)\n\n` +
+        `The presenter reviewed this slide and asked: "${String(revision).replace(/"/g, "'")}"\n` +
+        `Apply this request while still obeying EVERY rule below — especially the\n` +
+        `fidelity rules (18-22): the revision changes PRESENTATION (atom choice,\n` +
+        `layout, emphasis, wording), never the underlying facts. If the request\n` +
+        `asks for data the source doesn't contain, satisfy the spirit of the\n` +
+        `request without inventing numbers or names.\n`
+      : '') +
     '\n' +
     `## OUTPUT\n\n` +
     `Canvas: **1280×720**. Emit SceneData JSON for ONE slot:\n\n` +
