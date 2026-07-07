@@ -249,28 +249,50 @@ export function parseSceneJson(text) {
 
 // One fetch to the Anthropic API with the lift system prompt cached.
 // Returns { sceneData, usage, costUSD, elapsed }.
-export async function liftSlotLLM(params, { apiKey, systemPrompt, model = LIFT_MODEL }) {
+export async function liftSlotLLM(
+  params,
+  { apiKey, systemPrompt, model = LIFT_MODEL, onThrottle },
+) {
   if (!apiKey) throw new Error('liftSlotLLM: apiKey required');
   const userMessage = buildSlotUserMessage(params);
   const t0 = Date.now();
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 16384,
-      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
+  // Retry with exponential backoff on 429/5xx/network (Sprint 34 — a lift
+  // that dies on one transient 429 kills a whole page of the deck).
+  let lastErr;
+  let data;
+  for (let attempt = 0; attempt < 3 && !data; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 2000 * 4 ** (attempt - 1)));
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 16384,
+          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+          messages: [{ role: 'user', content: userMessage }],
+        }),
+      });
+      if (!res.ok) {
+        const err = new Error(`Anthropic ${res.status}: ${(await res.text()).slice(0, 300)}`);
+        if (res.status !== 429 && res.status < 500) throw err;
+        if (res.status === 429 && onThrottle) onThrottle();
+        lastErr = err;
+        continue;
+      }
+      data = await res.json();
+    } catch (e) {
+      if (e.message?.startsWith('Anthropic 4') && !e.message.startsWith('Anthropic 429')) throw e;
+      lastErr = e; // network hiccup — loop
+    }
+  }
+  if (!data) throw lastErr;
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${(await res.text()).slice(0, 300)}`);
-  const data = await res.json();
   const usage = data.usage;
   const inCost = (usage.input_tokens * 3) / 1_000_000;
   const cacheCreateCost = ((usage.cache_creation_input_tokens || 0) * 3.75) / 1_000_000;
@@ -278,4 +300,60 @@ export async function liftSlotLLM(params, { apiKey, systemPrompt, model = LIFT_M
   const outCost = (usage.output_tokens * 15) / 1_000_000;
   const costUSD = inCost + cacheCreateCost + cacheReadCost + outCost;
   return { sceneData: parseSceneJson(data.content[0].text), usage, costUSD, elapsed };
+}
+
+/**
+ * liftSlotsPool — lift many slots concurrently without breaking the prompt
+ * cache or the user's rate limit (Sprint 34):
+ *
+ *   1. WARMUP: the first slot runs ALONE so its call writes the (large)
+ *      system prompt into Anthropic's prompt cache — 14 simultaneous first
+ *      calls would each pay full-price cache_creation.
+ *   2. BOUNDED POOL: remaining slots run under `concurrency` workers
+ *      (default 5 — safe for low-tier BYOK keys, still ~3-4× faster).
+ *   3. 429-ADAPTIVE: any throttled call pushes a shared cooldown; workers
+ *      wait it out before starting new slots (graceful degrade toward
+ *      serial instead of blowing up the page).
+ *
+ * @param {object[]} paramsList — buildSlotUserMessage params per slot
+ * @param {object} opts — { apiKey, systemPrompt, model?, concurrency=5,
+ *   onSlotDone(i, result)?, liftFn? (test injection) }
+ * @returns results[] aligned with paramsList; each { sceneData, usage,
+ *   costUSD, elapsed } or { error }
+ */
+export async function liftSlotsPool(paramsList, opts) {
+  const { concurrency = 5, onSlotDone = () => {}, liftFn = liftSlotLLM } = opts;
+  const results = new Array(paramsList.length);
+  if (paramsList.length === 0) return results;
+
+  const throttle = { until: 0 };
+  const run = async (i) => {
+    const waitMs = throttle.until - Date.now();
+    if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
+    try {
+      results[i] = await liftFn(paramsList[i], {
+        ...opts,
+        onThrottle: () => {
+          throttle.until = Date.now() + 15000;
+        },
+      });
+    } catch (e) {
+      results[i] = { error: e.message };
+    }
+    onSlotDone(i, results[i]);
+  };
+
+  await run(0); // warmup — writes the system-prompt cache
+  let next = 1;
+  const workers = Array.from(
+    { length: Math.max(1, Math.min(concurrency, paramsList.length - 1)) },
+    async () => {
+      while (next < paramsList.length) {
+        const i = next++;
+        await run(i);
+      }
+    },
+  );
+  await Promise.all(workers);
+  return results;
 }
