@@ -437,6 +437,74 @@ function drawBlockMosaic(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// wash-flow: shape-anchored flow advection ("watercolor"). RECIPE-ONLY port
+// after "Watercolor Dreams" (NumbersInMotion, Art Blocks Curated #59,
+// CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
+// artblocks-study/04-watercolor-dreams.md). Two idioms, rewritten:
+//   - nodes sampled on a SOURCE SHAPE (a band across the slide) are
+//     advected through a noise flow field, drawing a faint stroke each
+//     step — the wash is the accumulated smear of a shape that remembers
+//     its origin ("有出身的雾")
+//   - color sampled from a CONTINUOUS interpolation over the theme colors
+//     (recipe-adaptation of the cosine-palette idea) → seamless gradients
+function lerpColor3(c1, c2, t) {
+  return [
+    Math.round(c1[0] + (c2[0] - c1[0]) * t),
+    Math.round(c1[1] + (c2[1] - c1[1]) * t),
+    Math.round(c1[2] + (c2[2] - c1[2]) * t),
+  ];
+}
+function continuousPalette(colors, t) {
+  if (colors.length === 1) return colors[0];
+  const x = Math.min(0.9999, Math.max(0, t)) * (colors.length - 1);
+  const i = Math.floor(x);
+  return lerpColor3(colors[i], colors[i + 1], x - i);
+}
+
+function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 29 + 13);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  // source shape: a gently sloped band across the slide (seeded position)
+  const bandY = y + h * (0.25 + rand() * 0.5);
+  const slope = (rand() - 0.5) * h * 0.4;
+  const NODES = 90;
+  const STEPS = 26;
+  const STEP = 6;
+  ctx.save();
+  ctx.lineCap = 'round';
+  const nodes = [];
+  for (let i = 0; i < NODES; i++) {
+    const t = i / (NODES - 1);
+    nodes.push({
+      px: x + t * w,
+      py: bandY + slope * (t - 0.5) * 2 + (rand() - 0.5) * 8,
+      t,
+    });
+  }
+  const washAlpha = P.alpha * 0.55; // accumulation does the work
+  for (let s = 0; s < STEPS; s++) {
+    for (const n of nodes) {
+      const ang = noise(n.px * 0.003, n.py * 0.003) * Math.PI * 2 + Math.PI * 0.25;
+      const nx = n.px + Math.cos(ang) * STEP;
+      const ny = n.py + Math.sin(ang) * STEP;
+      if (nx >= x && nx <= x + w && ny >= y && ny <= y + h) {
+        const c = continuousPalette(colors, n.t);
+        ctx.strokeStyle = rgba(c, washAlpha);
+        ctx.lineWidth = P.lineWidth * (5 - (4 * s) / STEPS); // thick → thin as it dries
+        ctx.beginPath();
+        ctx.moveTo(n.px, n.py);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+      }
+      n.px = nx;
+      n.py = ny;
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -456,14 +524,15 @@ export const DECOR_FAMILIES = {
   'meadow-streaks': drawMeadowStreaks,
   'flow-ribbons': drawFlowRibbons,
   'block-mosaic': drawBlockMosaic,
+  'wash-flow': drawWashFlow,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
-  editorial: ['flow-ribbons', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
+  editorial: ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
   pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
-  organic: ['meadow-streaks', 'flow-ribbons', 'circle-pack'],
+  organic: ['wash-flow', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
   consulting: ['block-mosaic', 'weave-dashes', 'shard-mesh'],
   financial: ['shard-mesh', 'weave-dashes'],
   hr: ['circle-pack', 'meadow-streaks'],
