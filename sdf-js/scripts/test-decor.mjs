@@ -139,7 +139,10 @@ function recCtx() {
   const p1 = pickDecorFor(t, 5);
   const p2 = pickDecorFor(t, 5);
   ok(p1.family === p2.family, 'pick deterministic per (theme, seed)');
-  ok(['flow-streams', 'shard-mesh'].includes(p1.family), 'editorial affinity respected');
+  ok(
+    ['flow-ribbons', 'flow-streams', 'shard-mesh', 'meadow-streaks'].includes(p1.family),
+    'editorial affinity respected',
+  );
   ok(
     pickDecorFor({ id: 'weird' }, 1).family in DECOR_FAMILIES,
     'unknown cluster falls back to a valid family',
@@ -278,6 +281,34 @@ function recCtx() {
   ok(
     rec.ops.filter((o) => o[0] === 'ellipse').length < total,
     'noise gate actually thins the field (patches, not uniform)',
+  );
+}
+
+// ── Sprint 44: flow-ribbons (Fidenza recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'flow-ribbons', seed: 21 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 30, `flow-ribbons draws many visible segments (${strokes})`);
+  // segment behavior: number of beginPath (segments) exceeds ribbon start
+  // rows → curves are being SPLIT into multiple visible segments
+  const alphas = rec.styles
+    .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+    .filter(Boolean)
+    .map((m) => parseFloat(m[1]));
+  ok(Math.max(...alphas) <= 0.1, 'flow-ribbons subtle alpha capped');
+  // determinism (freeze discipline applies to this family from birth)
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'flow-ribbons', seed: 5 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'flow-ribbons', seed: 5 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'flow-ribbons deterministic per seed',
   );
 }
 

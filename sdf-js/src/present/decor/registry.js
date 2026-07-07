@@ -257,6 +257,123 @@ function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// flow-ribbons: collision-respecting flow-field ribbons. RECIPE-ONLY port
+// after Tyler Hobbs' "Fidenza" (Art Blocks Curated #78, CC BY-NC 4.0 — NC
+// blocks code reuse, so this is an independent implementation of the
+// published ideas; see docs/superpowers/artblocks-study/02-fidenza-hobbs.md).
+// The three load-bearing idioms, reimplemented from the recipe:
+//   - SEGMENT visibility: a ribbon blocked by another doesn't stop — it
+//     goes invisible and re-emerges past the blocker (weaving illusion)
+//   - sector-grid collision with curve-id exemption (self never collides)
+//   - look-ahead minimum-segment precheck (no stubby fragments)
+// plus a probability-weighted width spectrum (rare-thick, common-thin).
+function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 17 + 3);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const SECT = 12;
+  const grid = Array.from({ length: SECT }, () => Array.from({ length: SECT }, () => []));
+  const sectorsOf = (px, py, r) => {
+    const out = [];
+    const s0x = Math.max(0, Math.floor(((px - r - x) / w) * SECT));
+    const s1x = Math.min(SECT - 1, Math.floor(((px + r - x) / w) * SECT));
+    const s0y = Math.max(0, Math.floor(((py - r - y) / h) * SECT));
+    const s1y = Math.min(SECT - 1, Math.floor(((py + r - y) / h) * SECT));
+    for (let sy = s0y; sy <= s1y; sy++) for (let sx = s0x; sx <= s1x; sx++) out.push([sx, sy]);
+    return out;
+  };
+  const collides = (px, py, r, id) => {
+    for (const [sx, sy] of sectorsOf(px, py, r)) {
+      for (const [qx, qy, qr, qid] of grid[sy][sx]) {
+        if (qid !== id && Math.hypot(px - qx, py - qy) < r + qr + 2) return true;
+      }
+    }
+    return false;
+  };
+  const inBounds = (px, py) => px >= x && px <= x + w && py >= y && py <= y + h;
+
+  // gaussian-ish jitter via sum of uniforms
+  const jitter = (amp) => (rand() + rand() - 1) * amp;
+  // probability-weighted width spectrum: rare thick, common thin
+  const widthOf = () => {
+    const t = rand();
+    if (t < 0.08) return 10;
+    if (t < 0.3) return 6;
+    return 3;
+  };
+
+  // start points: rows + jitter, then shuffle
+  const starts = [];
+  for (let ry = y; ry <= y + h; ry += h / 9) {
+    for (let rx = x - w * 0.1; rx <= x + w * 1.1; rx += w / 26) {
+      starts.push([rx + jitter(w / 40), ry + jitter(h / 14)]);
+    }
+  }
+  for (let i = starts.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [starts[i], starts[j]] = [starts[j], starts[i]];
+  }
+
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const STEP = 7;
+  const LOOKAHEAD = 5;
+  for (let id = 0; id < starts.length; id++) {
+    const width = widthOf();
+    const color = colors[id % colors.length];
+    let [px, py] = starts[id];
+    let segment = [];
+    const flushSegment = () => {
+      if (segment.length >= 2) {
+        ctx.strokeStyle = rgba(color, P.alpha);
+        ctx.lineWidth = width * P.lineWidth;
+        ctx.beginPath();
+        ctx.moveTo(segment[0][0], segment[0][1]);
+        for (let k = 1; k < segment.length; k++) ctx.lineTo(segment[k][0], segment[k][1]);
+        ctx.stroke();
+      }
+      segment = [];
+    };
+    for (let step = 0; step < 42; step++) {
+      const ok = inBounds(px, py) && !collides(px, py, width, id);
+      if (ok) {
+        if (segment.length === 0) {
+          // look-ahead: only open a segment if the next few steps are clear
+          let lx = px;
+          let ly = py;
+          let clear = true;
+          for (let a = 0; a < LOOKAHEAD; a++) {
+            const ang = noise(lx * 0.0035, ly * 0.0035) * Math.PI * 4;
+            lx += Math.cos(ang) * STEP;
+            ly += Math.sin(ang) * STEP;
+            if (!inBounds(lx, ly) || collides(lx, ly, width, id)) {
+              clear = false;
+              break;
+            }
+          }
+          if (!clear) {
+            const ang = noise(px * 0.0035, py * 0.0035) * Math.PI * 4;
+            px += Math.cos(ang) * STEP;
+            py += Math.sin(ang) * STEP;
+            continue;
+          }
+        }
+        segment.push([px, py]);
+        for (const [sx, sy] of sectorsOf(px, py, width)) grid[sy][sx].push([px, py, width, id]);
+      } else {
+        flushSegment(); // blocked → close this visible segment, keep walking
+      }
+      const ang = noise(px * 0.0035, py * 0.0035) * Math.PI * 4;
+      px += Math.cos(ang) * STEP;
+      py += Math.sin(ang) * STEP;
+    }
+    flushSegment();
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -274,14 +391,15 @@ export const DECOR_FAMILIES = {
   'circle-pack': drawCirclePack,
   'shard-mesh': drawShardMesh,
   'meadow-streaks': drawMeadowStreaks,
+  'flow-ribbons': drawFlowRibbons,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
-  editorial: ['flow-streams', 'shard-mesh', 'meadow-streaks'],
-  pitch: ['weave-dashes', 'circle-pack'],
-  organic: ['meadow-streaks', 'flow-streams', 'circle-pack'],
+  editorial: ['flow-ribbons', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
+  pitch: ['weave-dashes', 'circle-pack', 'flow-ribbons'],
+  organic: ['meadow-streaks', 'flow-ribbons', 'circle-pack'],
   consulting: ['weave-dashes', 'shard-mesh'],
   financial: ['shard-mesh', 'weave-dashes'],
   hr: ['circle-pack', 'meadow-streaks'],
