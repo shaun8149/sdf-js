@@ -259,6 +259,15 @@ function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
 
 // --- registry ----------------------------------------------------------------
 
+// FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
+// "hash = artwork" holds because of fxrand AND immutable on-chain code.
+// Off-chain we adapt it as version pinning: DECOR_V is stamped into every
+// minted decoration, and a family implementation, once shipped under a
+// version, is FROZEN — never edit its pixels; behavioral changes ship as a
+// new versioned function and drawDecor dispatches on the artifact's own v.
+// Named lanes protect DECISIONS across versions; the freeze protects PIXELS.
+export const DECOR_V = 1;
+
 export const DECOR_FAMILIES = {
   'flow-streams': drawFlowStreams,
   'weave-dashes': drawWeaveDashes,
@@ -348,5 +357,6 @@ export function decorFromHash(theme, hash) {
     family: R.pick('family', candidates),
     seed: R.int('seed', 1, 0x7ffffffe),
     hash,
+    v: DECOR_V,
   };
 }
