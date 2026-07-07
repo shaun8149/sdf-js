@@ -77,7 +77,7 @@ function drawFlowStreams(ctx, { palette, seed, x, y, w, h, intensity }) {
   const noise = noise2D(seed);
   const rand = seededRand(seed * 7 + 1);
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
-  const lines = Math.round((w * h) / 18000);
+  const lines = Math.max(14, Math.round((w * h) / 18000));
   ctx.save();
   ctx.lineCap = 'round';
   for (let i = 0; i < lines; i++) {
@@ -558,6 +558,59 @@ function drawStrataLines(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// sediment-layers: stacked noise horizons with front-occludes-back filling
+// (geological cross-section / mountain silhouettes). RECIPE-ONLY port after
+// Eko33's "Neural Sediments" (Art Blocks Curated #418, CC BY-NC 4.0 —
+// independent lightweight reimplementation: painter-order + bg-blended
+// fills stand in for its polygon-boolean occlusion; see docs/superpowers/
+// artblocks-study/06-neural-sediments-eko33.md). The fill/line dual of
+// strata-lines.
+function drawSedimentLayers(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 53 + 29);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const bg = palette.bg || [248, 246, 240];
+  const LAYERS = 5 + Math.floor(rand() * 3);
+  const COLS = 40;
+  ctx.save();
+  // back → front; each layer's fill is the theme color heavily blended
+  // toward bg (opaque-ish wash) so front layers occlude back ones
+  for (let li = 0; li < LAYERS; li++) {
+    const t = li / (LAYERS - 1);
+    const baseY = y + h * (0.35 + 0.6 * t);
+    const amp = h * (0.1 + 0.12 * (1 - t));
+    const color = colors[li % colors.length];
+    // blend factor: subtle keeps fills faint; front layers slightly stronger
+    const mix = (P.alphaFill + t * P.alphaFill) * 1.6;
+    const fill = lerpColor3(bg, color, Math.min(0.55, mix * 2.2));
+    ctx.fillStyle = rgba(fill, 0.92); // near-opaque wash → occlusion
+    ctx.beginPath();
+    ctx.moveTo(x, y + h);
+    ctx.lineTo(x, baseY);
+    for (let ci = 0; ci <= COLS; ci++) {
+      const px = x + (ci / COLS) * w;
+      const dy = (noise(px * 0.0045, li * 3.7) - 0.5) * 2 * amp;
+      ctx.lineTo(px, baseY + dy);
+    }
+    ctx.lineTo(x + w, y + h);
+    ctx.closePath();
+    ctx.fill();
+    // hairline ridge on top of each layer
+    ctx.strokeStyle = rgba(color, P.alpha);
+    ctx.lineWidth = P.lineWidth;
+    ctx.beginPath();
+    for (let ci = 0; ci <= COLS; ci++) {
+      const px = x + (ci / COLS) * w;
+      const dy = (noise(px * 0.0045, li * 3.7) - 0.5) * 2 * amp;
+      if (ci === 0) ctx.moveTo(px, baseY + dy);
+      else ctx.lineTo(px, baseY + dy);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -579,6 +632,7 @@ export const DECOR_FAMILIES = {
   'block-mosaic': drawBlockMosaic,
   'wash-flow': drawWashFlow,
   'strata-lines': drawStrataLines,
+  'sediment-layers': drawSedimentLayers,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -586,9 +640,9 @@ export const DECOR_FAMILIES = {
 const CLUSTER_AFFINITY = {
   editorial: ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
   pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
-  organic: ['wash-flow', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
+  organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
   consulting: ['block-mosaic', 'strata-lines', 'weave-dashes', 'shard-mesh'],
-  financial: ['strata-lines', 'shard-mesh', 'weave-dashes'],
+  financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: ['circle-pack', 'meadow-streaks'],
 };
 
