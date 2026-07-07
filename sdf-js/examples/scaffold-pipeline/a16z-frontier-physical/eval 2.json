@@ -1,0 +1,60 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/a16z-frontier-physical",
+  "deckName": "a16z-frontier-physical",
+  "structure": {
+    "slots_total": 14,
+    "slots_baked": 10,
+    "slots_empty": 4,
+    "slots_errored": 0,
+    "fill_rate": 0.7142857142857143,
+    "pick_method": "forced",
+    "scaffold_id": "news-briefing",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 11,
+    "atom_types_distinct": 10,
+    "variety_ratio": 0.9090909090909091,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 10,
+    "lift_attempted": 10,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "textBudget": {
+    "chars_per_slot": 267.7,
+    "max_slot_chars": 543
+  },
+  "fidelity": {
+    "numbers_total": 2,
+    "numbers_found": 2,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "deck_numbers_total": 10,
+    "hallucinated_numbers": ["38", "70", "130", "110", "95", "75", "165", "90"],
+    "number_precision": 0.2,
+    "entities_total": 3,
+    "entities_found": 3,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 92.9,
+    "breakdown": {
+      "structure": 17.9,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-07T03:55:38.110Z"
+}

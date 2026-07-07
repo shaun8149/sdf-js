@@ -100,6 +100,23 @@ export function create2DAtomCanvas(width = 600, height = 360) {
 /**
  * Convert [r,g,b] to CSS rgb() string. Helper exported for atom files.
  */
+/**
+ * fitFontPx — shrink a font size until `text` fits `maxW` at the given CSS
+ * font template (Sprint 37 visual polish; shrink beats "…"-truncation per
+ * the typography lock). `template` receives the candidate px and returns
+ * the full ctx.font string. Floor 9px (registry clamps below that anyway).
+ */
+export function fitFontPx(ctx, text, maxW, startPx, template, minPx = 9) {
+  let fs = startPx;
+  ctx.save();
+  for (; fs > minPx; fs--) {
+    ctx.font = template(fs);
+    if (ctx.measureText(String(text)).width <= maxW) break;
+  }
+  ctx.restore();
+  return fs;
+}
+
 export function rgbCss(rgb) {
   if (!rgb) return 'rgb(0,0,0)';
   return `rgb(${rgb[0] | 0},${rgb[1] | 0},${rgb[2] | 0})`;

@@ -14,7 +14,7 @@
 // Uses Phosphor icons from src/icons/index.js (viewBox=256, fill paint).
 // =============================================================================
 
-import { rgbCss, rgbaCss } from '../../renderer.js';
+import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
 import { getIconPath2D } from '../../../../icons/index.js';
 
 export const spec = {
@@ -190,17 +190,34 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
 
     // --- Label + caption ---
+    // Shrink-to-fit within the label column (Sprint 37: long labels ran
+    // past the right edge — the column width was never enforced).
     const labelX = x + w - PAD - labelColW;
+    const labelMaxW = labelColW;
     ctx.save();
     ctx.textAlign = 'left';
     ctx.textBaseline = caption ? 'bottom' : 'middle';
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `700 ${Math.round(effectiveRowH * 0.32)}px Inter, system-ui, sans-serif`;
+    const labelFs = fitFontPx(
+      ctx,
+      label,
+      labelMaxW,
+      Math.round(effectiveRowH * 0.32),
+      (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+    );
+    ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
     ctx.fillText(label, labelX, caption ? rowMidY - 1 : rowMidY);
 
     if (caption) {
       ctx.fillStyle = rgbaCss(fg, 0.6);
-      ctx.font = `600 ${Math.round(effectiveRowH * 0.24)}px Inter, system-ui, sans-serif`;
+      const capFs = fitFontPx(
+        ctx,
+        caption,
+        labelMaxW,
+        Math.round(effectiveRowH * 0.24),
+        (fs) => `600 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `600 ${capFs}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.fillText(caption, labelX, rowMidY + 2);
     }

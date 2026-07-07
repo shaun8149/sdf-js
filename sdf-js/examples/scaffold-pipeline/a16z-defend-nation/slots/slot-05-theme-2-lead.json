@@ -3,11 +3,11 @@
   "slotName": "theme-2-lead",
   "slotTitle": "Theme 2 — Lead",
   "slotPurpose": "Second major theme: the core facts",
-  "sourceSlideIdx": 11,
-  "sourceSlideTitle": "Institutional Investor Categories",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Reframing Investment Strategy",
   "sceneData": {
     "name": "news-briefing/theme-2-lead",
-    "layout": "grid",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -21,39 +21,28 @@
         }
       },
       {
-        "type": "icon-grid",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "type": "process-arrows",
+        "x": 140,
+        "y": 220,
+        "w": 1000,
+        "h": 380,
         "args": {
-          "title": "Institutional Investor Categories",
-          "items": [
+          "title": "Reframing Investment Strategy",
+          "steps": [
             {
-              "icon": "bank",
-              "label": "Pension Funds",
-              "sublabel": "Key capital anchors"
+              "label": "ESG Framework",
+              "sublabel": "Environmental, Social, Governance"
             },
             {
-              "icon": "crown",
-              "label": "Sovereign Wealth",
-              "sublabel": "Strategic investment participation"
+              "label": "GCI Framework",
+              "sublabel": "Global Competition and Innovation"
             },
             {
-              "icon": "shield",
-              "label": "Insurance Companies",
-              "sublabel": "Critical investors"
-            },
-            {
-              "icon": "graduation-cap",
-              "label": "Endowments",
-              "sublabel": "Critical investors"
+              "label": "New Priorities",
+              "sublabel": "Competitive position & tech leadership"
             }
           ],
-          "cols": 2,
-          "iconStyle": "card",
-          "iconSize": "large",
-          "colorMode": "auto"
+          "color": "gradient"
         }
       }
     ]
@@ -64,20 +53,20 @@
     "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4427,
+      "input_tokens": 4919,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 379,
+      "output_tokens": 298,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022868399999999997,
-    "elapsedSec": 7.4,
-    "generatedAt": "2026-07-07T03:49:29.502Z",
+    "costUSD": 0.0231294,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-07-07T06:40:56.429Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

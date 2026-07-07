@@ -1,0 +1,87 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Company name + one-line tagline + author/date",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Atlas Series A Pitch",
+  "sceneData": {
+    "name": "pitch-deck-vc/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Atlas",
+          "subtitle": "LLM-native illustration platform",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 520,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Series A Raise",
+          "value": "$15M",
+          "style": "light",
+          "icon": "rocket-launch"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 520,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Target",
+          "value": "Q3 2026",
+          "style": "light",
+          "icon": "calendar-check"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 520,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Use of Funds",
+          "value": "Scale Supply",
+          "style": "light",
+          "icon": "chart-line-up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2399,
+      "cache_creation_input_tokens": 5921,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 5921,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 419,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.03568575,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-06-24T04:47:08.976Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

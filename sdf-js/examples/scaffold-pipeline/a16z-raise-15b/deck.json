@@ -49,24 +49,24 @@
       "slotTitle": "Overview",
       "slotPurpose": "One line per major theme of the briefing",
       "sourceSlideIdx": 1,
-      "sourceSlideTitle": "Overview: Capital Deployment and Strategic Vision",
-      "mappingScore": 9,
+      "sourceSlideTitle": "Agenda: Our Mission and Stakes",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-01-agenda.json",
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "stat-banner", "icon-row", "callout-banner"]
+      "subjectTypes": ["cover", "agenda-list", "kpi-card", "kpi-card", "stat-banner"]
     },
     {
       "slotIdx": 2,
       "slotName": "key-figures",
       "slotTitle": "Key Figures",
       "slotPurpose": "The headline numbers at a glance",
-      "sourceSlideIdx": 1,
-      "sourceSlideTitle": "Overview: Capital Deployment and Strategic Vision",
-      "mappingScore": 8,
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Scale of Capital Deployment",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-02-key-figures.json",
@@ -80,16 +80,16 @@
       "slotName": "theme-1-lead",
       "slotTitle": "Theme 1 — Lead",
       "slotPurpose": "First major theme: the core facts and figures",
-      "sourceSlideIdx": 6,
-      "sourceSlideTitle": "Growth Fund: Largest Single Allocation",
-      "mappingScore": 9,
+      "sourceSlideIdx": 10,
+      "sourceSlideTitle": "Core Technology Focus Areas",
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-theme-1-lead.json",
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "kpi-card", "kpi-card", "bullet-list", "bullet-list"]
+      "subjectTypes": ["cover", "kpi-card", "radial-wheel-segmented", "stat-banner", "icon-badge"]
     },
     {
       "slotIdx": 4,
@@ -97,7 +97,7 @@
       "slotTitle": "Theme 1 — Detail",
       "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
       "sourceSlideIdx": 3,
-      "sourceSlideTitle": "Apps Fund Allocation",
+      "sourceSlideTitle": "American Dynamism Fund",
       "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -105,15 +105,15 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "kpi-card", "segmented-bar"]
+      "subjectTypes": ["cover", "kpi-card", "icon-grid"]
     },
     {
       "slotIdx": 5,
       "slotName": "theme-2-lead",
       "slotTitle": "Theme 2 — Lead",
       "slotPurpose": "Second major theme: the core facts",
-      "sourceSlideIdx": 8,
-      "sourceSlideTitle": "Market Position: 18% of U.S. Venture Capital",
+      "sourceSlideIdx": 11,
+      "sourceSlideTitle": "Strategic Imperative: China Competition",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -121,31 +121,31 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "kpi-card", "bullet-list"]
+      "subjectTypes": ["cover", "icon-row"]
     },
     {
       "slotIdx": 6,
       "slotName": "theme-2-detail",
       "slotTitle": "Theme 2 — Detail",
       "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "American Dynamism Fund",
-      "mappingScore": 6,
+      "sourceSlideIdx": 13,
+      "sourceSlideTitle": "What's at Stake",
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-06-theme-2-detail.json",
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "kpi-card", "bullet-list"]
+      "subjectTypes": ["cover", "icon-row"]
     },
     {
       "slotIdx": 7,
       "slotName": "theme-3-lead",
       "slotTitle": "Theme 3 — Lead",
       "slotPurpose": "Third major theme: the core facts",
-      "sourceSlideIdx": 11,
-      "sourceSlideTitle": "Technology Leadership Imperative",
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "Mission: Opportunity for All",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -153,55 +153,7 @@
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "radial-wheel-segmented", "stat-banner"]
-    },
-    {
-      "slotIdx": 8,
-      "slotName": "risk-matrix",
-      "slotTitle": "Risk Matrix",
-      "slotPurpose": "Risks / scenarios on probability × impact axes",
-      "sourceSlideIdx": 12,
-      "sourceSlideTitle": "Strategic Competition with China",
-      "mappingScore": 8,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-08-risk-matrix.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": ["cover", "risk-heatmap"]
-    },
-    {
-      "slotIdx": 9,
-      "slotName": "risk-detail-1",
-      "slotTitle": "Top Risk — Detail",
-      "slotPurpose": "The single highest-probability / highest-impact item, expanded",
-      "sourceSlideIdx": 12,
-      "sourceSlideTitle": "Strategic Competition with China",
-      "mappingScore": 7,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-09-risk-detail-1.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": ["cover", "callout-banner", "bullet-list", "kpi-card"]
-    },
-    {
-      "slotIdx": 10,
-      "slotName": "risk-detail-2",
-      "slotTitle": "Secondary Risks",
-      "slotPurpose": "Remaining risks / upside factors",
-      "sourceSlideIdx": 7,
-      "sourceSlideTitle": "Other Strategies Portfolio",
-      "mappingScore": 5,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-10-risk-detail-2.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": ["cover", "kpi-card", "kpi-card", "kpi-card"]
+      "subjectTypes": ["cover", "pillar-3up"]
     },
     {
       "slotIdx": 11,
@@ -209,8 +161,8 @@
       "slotTitle": "Key Quote",
       "slotPurpose": "A load-bearing quote or judgment from the article",
       "sourceSlideIdx": 9,
-      "sourceSlideTitle": "Mission: Opportunity Regardless of Background",
-      "mappingScore": 10,
+      "sourceSlideTitle": "Historical Foundation",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-11-quote.json",
@@ -224,25 +176,25 @@
       "slotName": "outlook",
       "slotTitle": "Outlook",
       "slotPurpose": "What to watch next — timeline or conditions",
-      "sourceSlideIdx": 13,
-      "sourceSlideTitle": "Outlook: Technology as National Security",
-      "mappingScore": 10,
+      "sourceSlideIdx": 14,
+      "sourceSlideTitle": "Outlook: The Responsibility Ahead",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-12-outlook.json",
       "cached": false,
       "dryRun": false,
       "error": null,
-      "subjectTypes": ["cover", "mountain-path"]
+      "subjectTypes": ["cover", "mountain-path", "kpi-card", "kpi-card", "kpi-card"]
     },
     {
       "slotIdx": 13,
       "slotName": "summary",
       "slotTitle": "Summary",
       "slotPurpose": "The whole briefing in 3-5 takeaways",
-      "sourceSlideIdx": 10,
-      "sourceSlideTitle": "Historical Context: 250 Years of American Flourishing",
-      "mappingScore": 7,
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Agenda: Our Mission and Stakes",
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-13-summary.json",
@@ -252,15 +204,34 @@
       "subjectTypes": ["cover", "numbered-grid"]
     }
   ],
-  "droppedSlots": [],
+  "droppedSlots": [
+    {
+      "slotIdx": 8,
+      "slotName": "risk-matrix",
+      "slotTitle": "Risk Matrix",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "risk-detail-1",
+      "slotTitle": "Top Risk — Detail",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 10,
+      "slotName": "risk-detail-2",
+      "slotTitle": "Secondary Risks",
+      "reason": "no-source-content"
+    }
+  ],
   "totals": {
-    "slotsBaked": 14,
-    "slotsEmpty": 0,
+    "slotsBaked": 11,
+    "slotsEmpty": 3,
     "slotsErrored": 0,
-    "totalCostUSD": 0.32735159999999996
+    "totalCostUSD": 0.27231540000000004
   },
   "meta": {
-    "generatedAt": "2026-07-07T04:05:37.142Z",
+    "generatedAt": "2026-07-07T06:41:46.577Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

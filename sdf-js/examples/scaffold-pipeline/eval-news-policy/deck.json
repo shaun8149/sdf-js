@@ -77,7 +77,7 @@
       "slotTitle": "Overview",
       "slotPurpose": "One line per major theme of the briefing",
       "sourceSlideIdx": 1,
-      "sourceSlideTitle": "核心议题概览",
+      "sourceSlideTitle": "报告概览",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -89,7 +89,9 @@
         "cover",
         "agenda-list",
         "kpi-card",
-        "bullet-list"
+        "kpi-card",
+        "stat-banner",
+        "callout-banner"
       ]
     },
     {
@@ -98,7 +100,7 @@
       "slotTitle": "Key Figures",
       "slotPurpose": "The headline numbers at a glance",
       "sourceSlideIdx": 2,
-      "sourceSlideTitle": "下乡车型销量高速增长",
+      "sourceSlideTitle": "下乡车型销量快速增长",
       "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -108,9 +110,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "stat-grid-large"
       ]
     },
     {
@@ -118,8 +118,8 @@
       "slotName": "theme-1-lead",
       "slotTitle": "Theme 1 — Lead",
       "slotPurpose": "First major theme: the core facts and figures",
-      "sourceSlideIdx": 3,
-      "sourceSlideTitle": "县乡市场渗透率提升明显",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "下乡车型销量快速增长",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -129,7 +129,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "bar",
+        "kpi-card",
+        "kpi-card",
         "kpi-card"
       ]
     },
@@ -138,9 +139,9 @@
       "slotName": "theme-1-detail",
       "slotTitle": "Theme 1 — Detail",
       "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
-      "sourceSlideIdx": 9,
-      "sourceSlideTitle": "5万至10万元价格带主导市场",
-      "mappingScore": 8,
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "县乡市场渗透率提升但仍有差距",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-04-theme-1-detail.json",
@@ -149,8 +150,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "donut-with-center",
-        "bullet-list"
+        "bar"
       ]
     },
     {
@@ -159,8 +159,8 @@
       "slotTitle": "Theme 2 — Lead",
       "slotPurpose": "Second major theme: the core facts",
       "sourceSlideIdx": 4,
-      "sourceSlideTitle": "充电桩建设成最大短板",
-      "mappingScore": 9,
+      "sourceSlideTitle": "充电桩配套设施严重不足",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-05-theme-2-lead.json",
@@ -169,9 +169,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "dashboard-multi-kpi-composite"
       ]
     },
     {
@@ -180,7 +178,7 @@
       "slotTitle": "Theme 2 — Detail",
       "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
       "sourceSlideIdx": 5,
-      "sourceSlideTitle": "充电设施覆盖目标与时间表",
+      "sourceSlideTitle": "国家充电设施覆盖目标",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -199,7 +197,7 @@
       "slotTitle": "Theme 3 — Lead",
       "slotPurpose": "Third major theme: the core facts",
       "sourceSlideIdx": 7,
-      "sourceSlideTitle": "比亚迪、吉利、长安领跑下乡市场",
+      "sourceSlideTitle": "头部车企主导下乡市场",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -209,8 +207,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "bullet-list"
+        "stat-banner",
+        "icon-row"
       ]
     },
     {
@@ -220,7 +218,7 @@
       "slotPurpose": "Risks / scenarios on probability × impact axes",
       "sourceSlideIdx": 10,
       "sourceSlideTitle": "挑战一：农村电网改造滞后",
-      "mappingScore": 7,
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-08-risk-matrix.json",
@@ -237,9 +235,9 @@
       "slotName": "risk-detail-1",
       "slotTitle": "Top Risk — Detail",
       "slotPurpose": "The single highest-probability / highest-impact item, expanded",
-      "sourceSlideIdx": 12,
-      "sourceSlideTitle": "挑战三：补贴退坡风险",
-      "mappingScore": 8,
+      "sourceSlideIdx": 11,
+      "sourceSlideTitle": "挑战二：二手车残值体系缺失",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-09-risk-detail-1.json",
@@ -250,7 +248,7 @@
         "cover",
         "callout-banner",
         "kpi-card",
-        "gauge"
+        "kpi-card"
       ]
     },
     {
@@ -258,9 +256,9 @@
       "slotName": "risk-detail-2",
       "slotTitle": "Secondary Risks",
       "slotPurpose": "Remaining risks / upside factors",
-      "sourceSlideIdx": 11,
-      "sourceSlideTitle": "挑战二：二手车残值体系缺失",
-      "mappingScore": 7,
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "挑战三：补贴退坡影响预期",
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-10-risk-detail-2.json",
@@ -273,32 +271,13 @@
       ]
     },
     {
-      "slotIdx": 11,
-      "slotName": "quote",
-      "slotTitle": "Key Quote",
-      "slotPurpose": "A load-bearing quote or judgment from the article",
-      "sourceSlideIdx": 6,
-      "sourceSlideTitle": "充电基础设施财政支持力度",
-      "mappingScore": 6,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-11-quote.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "pull-quote-banner"
-      ]
-    },
-    {
       "slotIdx": 12,
       "slotName": "outlook",
       "slotTitle": "Outlook",
       "slotPurpose": "What to watch next — timeline or conditions",
-      "sourceSlideIdx": 13,
-      "sourceSlideTitle": "前景与展望",
-      "mappingScore": 9,
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "充电设施建设资金安排",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-12-outlook.json",
@@ -307,7 +286,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "mountain-path"
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "pie"
       ]
     },
     {
@@ -316,8 +298,8 @@
       "slotTitle": "Summary",
       "slotPurpose": "The whole briefing in 3-5 takeaways",
       "sourceSlideIdx": 13,
-      "sourceSlideTitle": "前景与展望",
-      "mappingScore": 8,
+      "sourceSlideTitle": "前景展望",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-13-summary.json",
@@ -330,15 +312,22 @@
       ]
     }
   ],
-  "droppedSlots": [],
+  "droppedSlots": [
+    {
+      "slotIdx": 11,
+      "slotName": "quote",
+      "slotTitle": "Key Quote",
+      "reason": "no-source-content"
+    }
+  ],
   "totals": {
-    "slotsBaked": 14,
-    "slotsEmpty": 0,
+    "slotsBaked": 13,
+    "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.3257196
+    "totalCostUSD": 0.3224862
   },
   "meta": {
-    "generatedAt": "2026-07-07T01:20:05.368Z",
+    "generatedAt": "2026-07-07T06:43:28.222Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

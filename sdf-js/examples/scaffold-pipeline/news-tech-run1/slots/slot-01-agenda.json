@@ -1,0 +1,86 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "核心议题概览",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "英伟达数据中心业务增长与市场松动",
+              "sublabel": "云厂商自研芯片冲击 · 微软OpenAI推进自研"
+            },
+            {
+              "label": "供应链瓶颈",
+              "sublabel": "先进封装 · HBM存储竞争（SK海力士52% · 三星35% · 美光13%）"
+            },
+            {
+              "label": "三大关键风险",
+              "sublabel": "推理成本下降改变芯片需求结构 · 中等概率中等影响"
+            }
+          ],
+          "numbered": true,
+          "style": "showcase"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "title": "HBM存储市占率",
+          "values": [52, 35, 13],
+          "labels": ["SK海力士", "三星", "美光"],
+          "format": "percent",
+          "donutRatio": 0.5
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5008,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 495,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0263514,
+    "elapsedSec": 11.1,
+    "generatedAt": "2026-07-07T05:02:01.015Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

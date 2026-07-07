@@ -4,7 +4,7 @@
   "slotTitle": "Theme 1 — Detail",
   "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
   "sourceSlideIdx": 4,
-  "sourceSlideTitle": "Capital Allocation in AI Startups",
+  "sourceSlideTitle": "GPT-3 Model Scale",
   "sceneData": {
     "name": "news-briefing/theme-1-detail",
     "layout": "row",
@@ -16,47 +16,50 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Capital Allocation Detail",
+          "title": "Model Scale",
           "style": "gradient"
         }
       },
       {
-        "type": "sphere-fill",
-        "x": 140,
-        "y": 200,
-        "w": 400,
-        "h": 400,
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 360,
+        "h": 240,
         "args": {
-          "value": 80,
-          "label": "Compute Spending",
-          "caption": "AI startups allocating over 80% to compute",
-          "color": [38, 70, 130],
-          "background": "light",
-          "style": "3d"
+          "value": "175B",
+          "label": "Parameters",
+          "sublabel": "GPT-3 model size",
+          "icon": "brain",
+          "style": "dark"
         }
       },
       {
-        "type": "bullet-list",
-        "x": 620,
-        "y": 200,
-        "w": 580,
-        "h": 400,
+        "type": "kpi-card",
+        "x": 460,
+        "y": 180,
+        "w": 360,
+        "h": 240,
         "args": {
-          "items": [
-            {
-              "icon": "cpu",
-              "label": "Compute-intensive generative AI development",
-              "status": "highlight"
-            },
-            {
-              "icon": "users",
-              "label": "Limited capital for talent acquisition"
-            },
-            {
-              "icon": "rocket",
-              "label": "Constrained product development resources"
-            }
-          ]
+          "value": ">1TB",
+          "label": "Memory Required",
+          "sublabel": "Training infrastructure",
+          "icon": "database",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 180,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "Benchmark",
+          "label": "Infrastructure Standard",
+          "sublabel": "Large language models",
+          "icon": "gauge",
+          "style": "dark"
         }
       }
     ]
@@ -67,20 +70,20 @@
     "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4671,
+      "input_tokens": 4925,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 401,
+      "output_tokens": 430,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023930399999999998,
-    "elapsedSec": 8.3,
-    "generatedAt": "2026-07-07T04:24:37.112Z",
+    "costUSD": 0.0251274,
+    "elapsedSec": 7.8,
+    "generatedAt": "2026-07-07T06:39:14.656Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

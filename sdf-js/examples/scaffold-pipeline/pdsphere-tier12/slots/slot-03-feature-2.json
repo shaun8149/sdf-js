@@ -1,0 +1,134 @@
+{
+  "slotIdx": 3,
+  "slotName": "feature-2",
+  "slotTitle": "Feature Highlight",
+  "slotPurpose": "Second feature with detail",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/feature-2",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Feature Highlight"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 200,
+        "h": 200,
+        "args": {
+          "label": "Description 1",
+          "value": "20%",
+          "style": "light",
+          "icon": "gauge"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 320,
+        "y": 180,
+        "w": 200,
+        "h": 200,
+        "args": {
+          "label": "Description 2",
+          "value": "40%",
+          "style": "light",
+          "icon": "gauge"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 560,
+        "y": 180,
+        "w": 200,
+        "h": 200,
+        "args": {
+          "label": "Description 3",
+          "value": "50%",
+          "style": "light",
+          "icon": "gauge"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 800,
+        "y": 180,
+        "w": 200,
+        "h": 200,
+        "args": {
+          "label": "Description 4",
+          "value": "100%",
+          "style": "light",
+          "icon": "gauge"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 1040,
+        "y": 180,
+        "w": 200,
+        "h": 200,
+        "args": {
+          "label": "Description 5",
+          "value": "80%",
+          "style": "light",
+          "icon": "gauge"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 420,
+        "w": 1120,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "chart-line-up",
+              "label": "Progressive fill levels track growth"
+            },
+            {
+              "icon": "gauge",
+              "label": "Real-time metric visualization spheres"
+            },
+            {
+              "icon": "arrow-fat-up",
+              "label": "Customizable thresholds and alerts"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["icon-row", "icon-grid", "device-mockup-frame", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2500,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 732,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020256299999999998,
+    "elapsedSec": 9,
+    "generatedAt": "2026-06-24T04:49:01.454Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Product name + reveal teaser",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "3D SPHERES",
+          "subtitle": "Fill Levels PowerPoint Template",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 120,
+        "y": 400,
+        "w": 280,
+        "h": 280,
+        "args": {
+          "value": 80,
+          "label": "High"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 500,
+        "y": 400,
+        "w": 280,
+        "h": 280,
+        "args": {
+          "value": 40,
+          "label": "Medium"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 880,
+        "y": 400,
+        "w": 280,
+        "h": 280,
+        "args": {
+          "value": 20,
+          "label": "Low"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2397,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 348,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0141873,
+    "elapsedSec": 4.7,
+    "generatedAt": "2026-06-24T04:48:43.831Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

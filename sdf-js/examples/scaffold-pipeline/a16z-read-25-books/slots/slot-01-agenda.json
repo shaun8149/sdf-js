@@ -4,7 +4,7 @@
   "slotTitle": "Overview",
   "slotPurpose": "One line per major theme of the briefing",
   "sourceSlideIdx": 1,
-  "sourceSlideTitle": "Overview: Building Expertise Through Strategic Reading",
+  "sourceSlideTitle": "Overview: A Curated Reading List for Competitive Edge",
   "sceneData": {
     "name": "news-briefing/agenda",
     "layout": "row",
@@ -17,30 +17,38 @@
         "h": 120,
         "args": {
           "title": "Overview",
-          "style": "gradient"
+          "style": "section"
         }
       },
       {
         "type": "agenda-list",
-        "x": 140,
+        "x": 80,
         "y": 180,
-        "w": 1000,
+        "w": 1120,
         "h": 480,
         "args": {
-          "title": "Building Expertise Through Strategic Reading",
+          "title": "Curated Reading List for Competitive Edge",
           "items": [
             {
-              "label": "Book recommendations from top tech leaders and founders"
+              "label": "14 founders and partners contributed recommendations"
             },
             {
-              "label": "Spanning business strategy, history, decision-making, and philosophy"
+              "label": "Books span business strategy, historical narratives, decision-making, philosophy"
             },
             {
-              "label": "A curated path to competitive knowledge"
+              "label": "The Effective Executive — Drucker on management effectiveness and time management"
+            },
+            {
+              "label": "Competing Against Luck — Christensen's jobs-to-be-done innovation framework"
+            },
+            {
+              "label": "Sam Walton: Made in America — Walmart founder on retail innovation"
+            },
+            {
+              "label": "Man's Search for Meaning — Frankl on purpose in extreme adversity"
             }
           ],
-          "numbered": true,
-          "style": "showcase"
+          "numbered": true
         }
       }
     ]
@@ -51,20 +59,20 @@
     "recommendedAtoms": ["agenda-list", "number-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4405,
+      "input_tokens": 5274,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 275,
+      "output_tokens": 365,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021242399999999998,
-    "elapsedSec": 5.6,
-    "generatedAt": "2026-07-07T04:06:12.852Z",
+    "costUSD": 0.0251994,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-07T06:42:33.801Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

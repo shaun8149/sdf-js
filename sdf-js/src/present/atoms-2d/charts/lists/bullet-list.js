@@ -12,7 +12,7 @@
 //   title — optional title (top-left)
 // =============================================================================
 
-import { rgbCss, rgbaCss } from '../../renderer.js';
+import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -238,7 +238,15 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Sublabel
     if (it.sublabel) {
       ctx.fillStyle = rgbaCss(fg, 0.55);
-      ctx.font = `500 ${Math.round(rowH * 0.22)}px Inter, system-ui, sans-serif`;
+      const subMaxW = x + w - textX - PAD;
+      const subFs = fitFontPx(
+        ctx,
+        it.sublabel,
+        subMaxW,
+        Math.round(rowH * 0.22),
+        (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(it.sublabel), textX, rowCY + rowH * 0.18);

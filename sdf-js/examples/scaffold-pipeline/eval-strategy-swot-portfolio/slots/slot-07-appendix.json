@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Appendix",
   "sceneData": {
     "name": "analysis-report/appendix",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -33,11 +33,11 @@
               "label": "Full SWOT scoring matrix available on request"
             },
             {
-              "icon": "file-text",
+              "icon": "chat-circle",
               "label": "Customer interview transcripts redacted for confidentiality"
             },
             {
-              "icon": "presentation-chart",
+              "icon": "chart-bar",
               "label": "Porter value chain breakdown per product line in supplementary deck"
             },
             {
@@ -59,7 +59,7 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4433,
+      "input_tokens": 4921,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
@@ -70,9 +70,9 @@
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0220464,
-    "elapsedSec": 6.2,
-    "generatedAt": "2026-07-06T15:43:01.779Z",
+    "costUSD": 0.0235104,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-07T06:44:05.414Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -1,0 +1,72 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "亚马逊芯片战略突破",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "亚马逊芯片战略突破",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "events": [
+            {
+              "date": "Trainium2",
+              "label": "获得Anthropic 40万颗订单",
+              "sublabel": "自研芯片市场验证"
+            },
+            {
+              "date": "市场地位",
+              "label": "重要客户验证里程碑"
+            },
+            {
+              "date": "竞争格局",
+              "label": "直接挑战英伟达GPU份额"
+            }
+          ],
+          "axisLabel": "战略进展"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4701,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 330,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022955399999999997,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T05:02:01.019Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

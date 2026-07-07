@@ -1,0 +1,166 @@
+{
+  "slotIdx": 5,
+  "slotName": "demo",
+  "slotTitle": "See It In Action",
+  "slotPurpose": "Visual demo / mockup",
+  "sourceSlideIdx": 17,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/demo",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "See It In Action"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 80,
+        "y": 180,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 10,
+          "label": "10%",
+          "color": "rgb(255, 120, 40)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 280,
+        "y": 180,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 20,
+          "label": "20%",
+          "color": "rgb(255, 120, 40)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 480,
+        "y": 180,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 30,
+          "label": "30%",
+          "color": "rgb(255, 120, 40)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 680,
+        "y": 180,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 40,
+          "label": "40%",
+          "color": "rgb(255, 120, 40)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 880,
+        "y": 180,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 50,
+          "label": "50%",
+          "color": "rgb(20, 60, 180)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 80,
+        "y": 400,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 60,
+          "label": "60%",
+          "color": "rgb(20, 60, 180)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 280,
+        "y": 400,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 70,
+          "label": "70%",
+          "color": "rgb(20, 60, 180)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 480,
+        "y": 400,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 80,
+          "label": "80%",
+          "color": "rgb(20, 60, 180)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 680,
+        "y": 400,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 90,
+          "label": "90%",
+          "color": "rgb(60, 65, 90)"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 880,
+        "y": 400,
+        "w": 180,
+        "h": 180,
+        "args": {
+          "value": 100,
+          "label": "100%",
+          "color": "rgb(60, 65, 90)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["device-mockup-row", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2452,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1007,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0242373,
+    "elapsedSec": 11.1,
+    "generatedAt": "2026-06-24T04:49:21.373Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

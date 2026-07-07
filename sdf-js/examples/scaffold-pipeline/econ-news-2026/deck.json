@@ -1,0 +1,157 @@
+{
+  "deckName": "econ-news-2026",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/econ-news-2026.json",
+  "scaffold": {
+    "id": "analysis-report",
+    "label": "Analysis Report",
+    "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
+    "pickScore": 8,
+    "pickSignals": [
+      "The deck provides a strategic analysis of the global economy for mid-2026, including growth forecasts, monetary policy paths, and risk assessments — matching the situation-data-findings-recommendations arc of an analysis report.",
+      "Content sources include IMF, OECD, and World Bank reports, with regional breakdowns (China, Eurozone, low-income countries) and thematic risk analysis (Middle East conflict, employment weakness, tech investment) — typical of a formal analytical report structure.",
+      "The deck has 7-8 distinct conceptual sections (title/cover, global growth, regional forecasts, monetary policy, risks) which maps well to the 8-slot analysis-report scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix)."
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Report title + scope + date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "全球经济2026年中展望",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "scope",
+      "slotTitle": "Scope & Methodology",
+      "slotPurpose": "What was analyzed and how data was collected",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "全球经济2026年中展望",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-scope.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-row", "bullet-list"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "definition",
+      "slotTitle": "Context & Definition",
+      "slotPurpose": "Define the subject — what are we analyzing and why",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "全球与区域增长预测",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-definition.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "kpi-card", "kpi-card", "kpi-card", "bar"]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "data-findings",
+      "slotTitle": "Data & Findings",
+      "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "全球与区域增长预测",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-data-findings.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "stat-banner", "bar", "column"]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "framework-analysis",
+      "slotTitle": "Framework Analysis",
+      "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "主要风险评估",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-framework-analysis.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "risk-heatmap"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "interpretation",
+      "slotTitle": "Interpretation",
+      "slotPurpose": "What the data means — synthesis and insight",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "货币政策路径",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-interpretation.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "balance-scale"]
+    }
+  ],
+  "droppedSlots": [
+    {
+      "slotIdx": 6,
+      "slotName": "recommendations",
+      "slotTitle": "Recommendations",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "reason": "no-source-content"
+    }
+  ],
+  "totals": {
+    "slotsBaked": 6,
+    "slotsEmpty": 2,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.18544200000000002
+  },
+  "meta": {
+    "generatedAt": "2026-07-06T12:38:34.143Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

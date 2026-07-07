@@ -4,10 +4,10 @@
   "slotTitle": "Theme 3 — Lead",
   "slotPurpose": "Third major theme: the core facts",
   "sourceSlideIdx": 7,
-  "sourceSlideTitle": "比亚迪、吉利、长安领跑下乡市场",
+  "sourceSlideTitle": "头部车企主导下乡市场",
   "sceneData": {
     "name": "news-briefing/theme-3-lead",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -16,48 +16,50 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "市场领跑者",
+          "title": "头部车企主导下乡市场",
           "style": "gradient"
         }
       },
       {
-        "type": "kpi-card",
-        "x": 80,
+        "type": "stat-banner",
+        "x": 40,
         "y": 200,
-        "w": 520,
-        "h": 360,
+        "w": 1200,
+        "h": 180,
         "args": {
           "value": "58%",
-          "label": "市场份额",
-          "sublabel": "比亚迪、吉利、长安合计",
-          "icon": "chart-pie",
-          "style": "dark"
+          "label": "三家头部企业市场份额",
+          "bg": [
+            38,
+            70,
+            130
+          ]
         }
       },
       {
-        "type": "bullet-list",
-        "x": 680,
-        "y": 200,
-        "w": 520,
-        "h": 360,
+        "type": "icon-row",
+        "x": 140,
+        "y": 440,
+        "w": 1000,
+        "h": 200,
         "args": {
           "items": [
             {
-              "icon": "trophy",
-              "label": "比亚迪、吉利、长安领跑",
-              "sublabel": "三家车企主导下乡市场"
+              "icon": "car",
+              "label": "比亚迪"
             },
             {
-              "icon": "buildings",
-              "label": "头部车企集中优势",
-              "sublabel": "县乡市场形成强势地位"
+              "icon": "car",
+              "label": "吉利"
             },
             {
-              "icon": "storefront",
-              "label": "品牌与渠道下沉",
-              "sublabel": "认知度与渠道能力关键"
+              "icon": "car",
+              "label": "长安"
             }
-          ]
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle",
+          "colorMode": "brand"
         }
       }
     ]
@@ -73,20 +75,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4481,
+      "input_tokens": 4932,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 460,
+      "output_tokens": 392,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0242454,
-    "elapsedSec": 8.1,
-    "generatedAt": "2026-07-07T01:19:21.457Z",
+    "costUSD": 0.0245784,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-07T06:43:28.220Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

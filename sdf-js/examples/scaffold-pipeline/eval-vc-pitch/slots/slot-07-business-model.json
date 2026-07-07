@@ -16,15 +16,16 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Business Model"
+          "title": "Business Model",
+          "style": "gradient"
         }
       },
       {
         "type": "comparison-table",
-        "x": 60,
+        "x": 40,
         "y": 160,
-        "w": 720,
-        "h": 480,
+        "w": 760,
+        "h": 420,
         "args": {
           "title": "Pricing Tiers",
           "columns": [
@@ -55,53 +56,53 @@
           ],
           "features": [
             {
-              "label": "Price",
-              "values": [
-                "$30/user/month",
-                "$200/seat/month",
-                "$50K/year"
-              ]
+              "name": "Price",
+              "Pro": "$30/user/mo",
+              "Team": "$200/seat/mo",
+              "Studio": "$50K/year"
             },
             {
-              "label": "Target",
-              "values": [
-                "Knowledge workers",
-                "Design teams (10+)",
-                "Agencies + enterprise"
-              ]
+              "name": "Target",
+              "Pro": "Knowledge workers",
+              "Team": "Design teams",
+              "Studio": "Agencies + Enterprise"
             },
             {
-              "label": "Features",
-              "values": [
-                "Core tools",
-                "Team collaboration",
-                "Custom themes"
-              ]
+              "name": "Min Seats",
+              "Pro": "1",
+              "Team": "10+",
+              "Studio": "Custom"
+            },
+            {
+              "name": "Features",
+              "Pro": "✓",
+              "Team": "✓",
+              "Studio": "Custom themes"
             }
           ]
         }
       },
       {
         "type": "break-even",
-        "x": 820,
+        "x": 840,
         "y": 160,
         "w": 400,
-        "h": 480,
+        "h": 420,
         "args": {
-          "title": "Break-Even Analysis",
           "fixedCost": 1500000,
-          "variableCostPerUnit": 5,
+          "variableCostPerUnit": 8,
           "pricePerUnit": 30,
-          "maxUnits": 120000,
+          "maxUnits": 150000,
+          "title": "Break-Even Analysis",
           "currency": "$"
         }
       },
       {
         "type": "kpi-card",
-        "x": 820,
-        "y": 200,
+        "x": 440,
+        "y": 610,
         "w": 400,
-        "h": 160,
+        "h": 90,
         "args": {
           "value": "$3M ARR",
           "label": "Break-Even Target",
@@ -124,20 +125,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4463,
+      "input_tokens": 4951,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 602,
+      "output_tokens": 699,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0263214,
-    "elapsedSec": 11.3,
-    "generatedAt": "2026-07-06T15:44:12.000Z",
+    "costUSD": 0.0292404,
+    "elapsedSec": 10.5,
+    "generatedAt": "2026-07-07T06:44:43.819Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

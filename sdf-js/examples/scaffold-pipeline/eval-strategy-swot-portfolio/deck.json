@@ -7,9 +7,10 @@
     "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
     "pickScore": 9,
     "pickSignals": [
-      "Document follows classic strategic analysis arc: scope → framework definition → SWOT findings → interpretation (voice of customer, change forecast) → recommendations → appendix",
-      "Explicitly labels itself as 'Strategic Portfolio Analysis' and applies named frameworks (SWOT, Porter Value Chain, change curve) — perfect match for analysis-report's structure",
-      "8-slot scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix) aligns closely with the source's 8 sections; minimal risk of empty slots"
+      "Deck follows classic strategic analysis structure: scope → frameworks (SWOT, Porter) → data findings → interpretation → recommendations → appendix",
+      "Explicitly labeled as 'Strategic Portfolio Analysis' with framework-driven methodology (SWOT + Porter Value Chain + change curve)",
+      "Target audience is exec/board/strategy team; tone and content match 'Analysis Report' scaffold perfectly",
+      "8-slot scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix) maps 1:1 to the source structure"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -91,7 +92,7 @@
       "subjectTypes": [
         "cover",
         "bullet-list",
-        "icon-grid"
+        "icon-row"
       ]
     },
     {
@@ -110,9 +111,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "value-chain-diagram",
-        "kpi-card",
-        "kpi-card"
+        "value-chain-diagram"
       ]
     },
     {
@@ -131,8 +130,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "testimonial-wall",
-        "callout-banner"
+        "testimonial-wall"
       ]
     },
     {
@@ -217,10 +215,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.22986479999999998
+    "totalCostUSD": 0.19269419999999998
   },
   "meta": {
-    "generatedAt": "2026-07-06T15:43:01.782Z",
+    "generatedAt": "2026-07-07T06:44:05.415Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

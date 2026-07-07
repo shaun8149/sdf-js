@@ -1,0 +1,83 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Portfolio SWOT Analysis",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Key Strengths",
+          "items": [
+            {
+              "icon": "brain",
+              "label": "AI/ML Expertise",
+              "sublabel": "Deep technical talent"
+            },
+            {
+              "icon": "handshake",
+              "label": "Co-Investor Network",
+              "sublabel": "Strategic partnerships"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "University Deal Flow",
+              "sublabel": "Proprietary spin-outs"
+            },
+            {
+              "icon": "trophy",
+              "label": "3 Unicorn Exits",
+              "sublabel": "Fund I track record"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3071,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10550,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 382,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.018108,
+    "elapsedSec": 5.9,
+    "generatedAt": "2026-06-25T03:54:37.640Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

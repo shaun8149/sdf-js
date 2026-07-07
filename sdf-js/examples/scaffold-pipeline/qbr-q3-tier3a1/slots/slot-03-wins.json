@@ -1,0 +1,112 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Wins",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "$25M",
+          "label": "Sequoia Follow-On",
+          "sublabel": "Series B secured",
+          "icon": "briefcase-metal",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "24K",
+          "label": "Discord Members",
+          "sublabel": "Community milestone",
+          "icon": "users",
+          "style": "light",
+          "trend": "up"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "6",
+          "label": "Elite Hires",
+          "sublabel": "Coinbase + Anthropic",
+          "icon": "graduation-cap",
+          "style": "light"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 440,
+        "w": 1200,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "trophy",
+              "label": "Product Award",
+              "sublabel": "Web3 UX Recognition"
+            },
+            {
+              "icon": "newspaper",
+              "label": "Press Coverage",
+              "sublabel": "TechCrunch + Bloomberg"
+            }
+          ],
+          "iconSize": "large",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2454,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 595,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0193944,
+    "elapsedSec": 8.5,
+    "generatedAt": "2026-06-24T04:58:37.577Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

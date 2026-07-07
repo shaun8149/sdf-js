@@ -1,0 +1,77 @@
+{
+  "slotIdx": 7,
+  "slotName": "theme-3-lead",
+  "slotTitle": "Theme 3 — Lead",
+  "slotPurpose": "Third major theme: the core facts",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "中东冲突引发的经济风险",
+  "sceneData": {
+    "name": "news-briefing/theme-3-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "中东冲突经济风险",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "gas-pump",
+              "label": "能源价格",
+              "sublabel": "大幅上涨"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "通胀",
+              "sublabel": "重新抬头"
+            },
+            {
+              "icon": "bank",
+              "label": "货币政策",
+              "sublabel": "收紧预期"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4435,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 347,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022412400000000002,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-07-06T16:17:47.959Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

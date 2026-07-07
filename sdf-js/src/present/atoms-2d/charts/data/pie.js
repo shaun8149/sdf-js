@@ -26,7 +26,7 @@
 // (market share donut/pie).
 // =============================================================================
 
-import { rgbCss, rgbaCss } from '../../renderer.js';
+import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
 
 export const spec = {
   type: 'pie',
@@ -222,6 +222,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
     ctx.textAlign = onRight ? 'left' : 'right';
     ctx.textBaseline = 'middle';
+    // Shrink so the leader-line label stays inside the atom box (Sprint 37)
+    const legendMaxW = onRight ? x + w - PAD - (labelX + 5) : labelX - 5 - (x + PAD);
+    const currentFsM = String(ctx.font).match(/(\d+(?:\.\d+)?)px/);
+    const legendFs = fitFontPx(
+      ctx,
+      labelText,
+      Math.max(30, legendMaxW),
+      currentFsM ? parseFloat(currentFsM[1]) : 13,
+      (fs) => `600 ${fs}px Inter, system-ui, sans-serif`,
+    );
+    ctx.font = `600 ${legendFs}px Inter, system-ui, sans-serif`;
     ctx.fillText(labelText, labelX + (onRight ? 5 : -5), labelY);
   }
 }

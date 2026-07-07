@@ -3,11 +3,11 @@
   "slotName": "theme-2-detail",
   "slotTitle": "Theme 2 — Detail",
   "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
-  "sourceSlideIdx": 2,
-  "sourceSlideTitle": "American Dynamism Fund",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "What's at Stake",
   "sceneData": {
     "name": "news-briefing/theme-2-detail",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -16,49 +16,41 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Theme 2 — Detail",
+          "title": "What's at Stake",
           "style": "gradient"
         }
       },
       {
-        "type": "kpi-card",
-        "x": 80,
+        "type": "icon-row",
+        "x": 40,
         "y": 180,
-        "w": 520,
-        "h": 440,
+        "w": 1200,
+        "h": 480,
         "args": {
-          "value": "$1.176B",
-          "label": "American Dynamism Fund",
-          "sublabel": "Allocated to strategy",
-          "icon": "rocket-launch",
-          "style": "dark"
-        }
-      },
-      {
-        "type": "bullet-list",
-        "x": 680,
-        "y": 180,
-        "w": 520,
-        "h": 440,
-        "args": {
-          "title": "Strategic Alignment",
           "items": [
             {
-              "icon": "briefcase",
-              "label": "National competitiveness portfolio",
-              "sublabel": "Part of broader strategy"
+              "icon": "cpu",
+              "label": "Technology Edge",
+              "sublabel": "Economic leadership foundation"
             },
             {
               "icon": "shield",
-              "label": "Defense priorities",
-              "sublabel": "Aligned with national security"
+              "label": "Military Superiority",
+              "sublabel": "Tied to advancement"
             },
             {
-              "icon": "buildings",
-              "label": "Critical infrastructure",
-              "sublabel": "Supporting essential systems"
+              "icon": "globe",
+              "label": "Geopolitical Influence",
+              "sublabel": "Flows from innovation"
+            },
+            {
+              "icon": "flag",
+              "label": "American Competitiveness",
+              "sublabel": "Stewardship responsibility"
             }
-          ]
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
         }
       }
     ]
@@ -69,20 +61,20 @@
     "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4434,
+      "input_tokens": 4936,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 418,
+      "output_tokens": 355,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0234744,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-07T04:04:46.401Z",
+    "costUSD": 0.0240354,
+    "elapsedSec": 12.1,
+    "generatedAt": "2026-07-07T06:41:46.575Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

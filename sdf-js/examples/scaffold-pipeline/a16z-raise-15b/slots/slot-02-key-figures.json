@@ -3,8 +3,8 @@
   "slotName": "key-figures",
   "slotTitle": "Key Figures",
   "slotPurpose": "The headline numbers at a glance",
-  "sourceSlideIdx": 1,
-  "sourceSlideTitle": "Overview: Capital Deployment and Strategic Vision",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Scale of Capital Deployment",
   "sceneData": {
     "name": "news-briefing/key-figures",
     "layout": "grid",
@@ -14,7 +14,7 @@
         "x": 0,
         "y": 0,
         "w": 1280,
-        "h": 100,
+        "h": 120,
         "args": {
           "title": "Key Figures",
           "style": "gradient"
@@ -22,26 +22,28 @@
       },
       {
         "type": "stat-grid-large",
-        "x": 80,
+        "x": 40,
         "y": 180,
-        "w": 1120,
-        "h": 440,
+        "w": 1200,
+        "h": 480,
         "args": {
           "stats": [
             {
               "value": "$15B+",
-              "label": "Capital Raised",
-              "trend": "Six major funds"
+              "label": "Total Capital Raised",
+              "trend": "Multiple funds",
+              "trendDirection": "up"
             },
             {
               "value": "18%",
-              "label": "U.S. VC Share",
-              "trend": "2025 allocation"
+              "label": "U.S. VC Market Share",
+              "trend": "2025 allocation",
+              "trendDirection": "up"
             },
             {
-              "value": "6",
-              "label": "Focus Areas",
-              "trend": "AI · Crypto · Biology · Health · Defense · Education"
+              "value": "Historic",
+              "label": "Raise Scale",
+              "trend": "Largest in history"
             }
           ]
         }
@@ -54,20 +56,20 @@
     "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4453,
+      "input_tokens": 4919,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 304,
+      "output_tokens": 318,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.021821399999999998,
-    "elapsedSec": 5.8,
-    "generatedAt": "2026-07-07T04:04:16.810Z",
+    "costUSD": 0.0234294,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-07T06:41:46.573Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

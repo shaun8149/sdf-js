@@ -3,8 +3,8 @@
   "slotName": "theme-1-detail",
   "slotTitle": "Theme 1 — Detail",
   "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
-  "sourceSlideIdx": 10,
-  "sourceSlideTitle": "Eight Critical Sectors Overview",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "China's Technology Surge",
   "sceneData": {
     "name": "news-briefing/theme-1-detail",
     "layout": "row",
@@ -16,61 +16,46 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Theme 1 — Detail",
+          "title": "China's Technology Surge",
           "style": "gradient"
         }
       },
       {
-        "type": "isotype-stat-comparison",
-        "x": 40,
-        "y": 160,
-        "w": 1200,
-        "h": 500,
+        "type": "kpi-card",
+        "x": 80,
+        "y": 200,
+        "w": 520,
+        "h": 360,
         "args": {
-          "title": "Eight Critical Sectors for GCI Investment",
-          "stats": [
-            {
-              "iconName": "cpu",
-              "count": 1,
-              "label": "Semiconductors",
-              "caption": "Core industrial capacity"
-            },
-            {
-              "iconName": "lightning",
-              "count": 1,
-              "label": "Energy",
-              "caption": "Critical infrastructure"
-            },
-            {
-              "iconName": "brain",
-              "count": 1,
-              "label": "AI",
-              "caption": "Technology leadership"
-            },
-            {
-              "iconName": "dna",
-              "count": 1,
-              "label": "Biotech",
-              "caption": "Life sciences capacity"
-            },
-            {
-              "iconName": "rocket",
-              "count": 1,
-              "label": "Space",
-              "caption": "Strategic frontier"
-            }
-          ]
+          "value": "57 of 64",
+          "label": "Critical Technologies Led by China",
+          "sublabel": "Near-complete reversal from early 2000s",
+          "icon": "cpu",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 360,
+        "args": {
+          "values": [57, 7],
+          "labels": ["China Lead", "Other"],
+          "title": "Critical Tech Leadership",
+          "format": "number"
         }
       },
       {
         "type": "stat-banner",
-        "x": 40,
-        "y": 660,
-        "w": 1200,
-        "h": 40,
+        "x": 80,
+        "y": 600,
+        "w": 1120,
+        "h": 80,
         "args": {
-          "value": "8",
-          "label": "Total critical sectors identified",
+          "value": "Direct competitive challenge to U.S. technological supremacy",
+          "label": "Strategic Impact",
           "bg": [38, 70, 130]
         }
       }
@@ -82,20 +67,20 @@
     "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4442,
+      "input_tokens": 4936,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 505,
+      "output_tokens": 433,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024803399999999996,
-    "elapsedSec": 8,
-    "generatedAt": "2026-07-07T03:49:22.117Z",
+    "costUSD": 0.0252054,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-07T06:40:56.428Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

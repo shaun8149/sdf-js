@@ -2,18 +2,18 @@
   {
     "title": "The AI Application Spending Report: Where Startup Dollars Really Go",
     "body": [
-      "Analysis of AI application spending patterns across Mercury's customer base",
-      "Data period: June-August 2025",
-      "Source: Mercury database of over 200,000 customers"
+      "Analysis of AI application spending patterns",
+      "Data source: Mercury's database of over 200,000 customers",
+      "Period: June-August 2025"
     ]
   },
   {
     "title": "Report Overview",
     "body": [
-      "Horizontal vs. vertical company distribution in AI spending",
-      "Creative tools dominate the spending landscape",
-      "Individual adoption patterns and consumer crossover trends",
-      "Vertical applications split between human augmentation and AI employees"
+      "Horizontal vs. vertical company spending distribution",
+      "Creative tools category dominance",
+      "Vertical application focus areas",
+      "Individual adoption patterns"
     ]
   },
   {
@@ -21,86 +21,75 @@
     "body": [
       "Horizontal companies make up 60% of the list",
       "Vertical companies represent 40% of the list",
-      "Analysis based on Mercury's database of over 200,000 customers during June-August 2025"
+      "Analysis covers Mercury's database of over 200,000 customers during June-August 2025"
     ]
   },
   {
-    "title": "Data Source and Scope",
-    "body": [
-      "The analysis examined spending across Mercury's database of over 200,000 customers",
-      "Analysis period: June-August 2025",
-      "Comprehensive view of startup spending patterns in AI applications"
-    ]
-  },
-  {
-    "title": "Creative Tools Lead the Categories",
+    "title": "Creative Tools: The Largest Category",
     "body": [
       "Creative tools represent the largest single category with ten companies on the list",
-      "This category dominates AI application spending among all segments analyzed"
-    ]
-  },
-  {
-    "title": "Top Creative Tool Companies",
-    "body": [
-      "Freepik ranks at #4 on the overall spending list",
-      "ElevenLabs ranks at #5 on the overall spending list",
-      "Both companies lead the creative tools category in startup spending"
+      "Freepik ranks at #4 position",
+      "ElevenLabs ranks at #5 position"
     ]
   },
   {
     "title": "Vertical Application Breakdown",
     "body": [
-      "Of the seventeen vertical application companies on the list",
-      "Total vertical companies represent a distinct subset of the AI spending landscape"
+      "Seventeen vertical application companies identified in total",
+      "Data from Mercury's database analysis of June-August 2025"
     ]
   },
   {
     "title": "Human Augmentation Focus",
     "body": [
-      "Twelve vertical application companies focus on supercharging humans",
-      "This represents the majority approach among vertical AI applications",
-      "These tools enhance human capabilities rather than replace them"
+      "Twelve vertical companies focus on supercharging humans",
+      "This represents the majority approach among vertical applications"
     ]
   },
   {
-    "title": "AI Employee Applications",
+    "title": "AI Employee Solutions",
     "body": [
-      "Five vertical application companies aim to serve as AI employees",
-      "This represents the automation-focused segment of vertical applications",
-      "These solutions are designed to function as autonomous workers"
+      "Five vertical companies aim to serve as AI employees",
+      "These companies target full task automation rather than human augmentation"
     ]
   },
   {
-    "title": "Individual Adoption Dominance",
+    "title": "Individual Adoption Rate",
     "body": [
       "Nearly 70% of companies can be adopted by individuals",
-      "Individual adoptability is a key characteristic of top-spending AI applications",
-      "Bottom-up adoption drives significant spending patterns"
+      "This indicates strong bottom-up adoption patterns in AI applications"
     ]
   },
   {
-    "title": "Consumer Market Crossover",
+    "title": "Consumer Top 100 Overlap",
     "body": [
       "12 companies also appeared on the Consumer Top 100 list",
-      "Significant overlap between B2B startup spending and consumer markets",
-      "Dual-market presence indicates broad appeal across user segments"
+      "This demonstrates crossover between business and consumer AI applications"
     ]
   },
   {
     "title": "Individual Product Origins",
     "body": [
-      "11 companies having started as individual products",
-      "Nearly all consumer-crossover companies originated with individual-focused offerings",
-      "Bottom-up adoption strategy proves successful for AI application companies"
+      "11 companies had started as individual products",
+      "These companies later expanded beyond their initial individual-focused offerings",
+      "This represents the majority of companies appearing on both lists"
     ]
   },
   {
-    "title": "Key Trends Summary",
+    "title": "Data Methodology",
     "body": [
-      "Horizontal solutions (60%) outpace vertical solutions (40%) in spending",
-      "Creative tools lead all categories with ten companies",
-      "Individual adoption (nearly 70%) drives the market",
-      "Human augmentation (12 companies) preferred over AI employees (5 companies) in vertical applications"
+      "Analysis examined spending across Mercury's database",
+      "Database contains over 200,000 customers",
+      "Time period covered: June-August 2025"
+    ]
+  },
+  {
+    "title": "Key Insights Summary",
+    "body": [
+      "Horizontal solutions dominate at 60% market presence",
+      "Creative tools lead category spending with ten companies",
+      "Individual adoption drives nearly 70% of AI application usage",
+      "Human augmentation outpaces full AI employee solutions 12 to 5"
     ]
   }
 ]

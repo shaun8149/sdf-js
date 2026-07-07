@@ -1,0 +1,138 @@
+{
+  "slotIdx": 1,
+  "slotName": "mission",
+  "slotTitle": "Mission",
+  "slotPurpose": "Why we exist",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "company-overview/mission",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Mission",
+          "bg": "rgb(248, 246, 240)",
+          "color": "rgb(22, 35, 70)"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 180,
+        "args": {
+          "items": [
+            {
+              "icon": "chat-circle",
+              "label": "Trading as messaging",
+              "sublabel": "Natural UX"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial",
+              "sublabel": "Replace CEX"
+            },
+            {
+              "icon": "users-four",
+              "label": "Next 100M users",
+              "sublabel": "Lower barriers"
+            }
+          ],
+          "colorMode": "accent",
+          "color": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 380,
+        "w": 540,
+        "h": 280,
+        "args": {
+          "title": "Team",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "Ex-Binance + Coinbase engineers"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "5 years crypto-native product"
+            },
+            {
+              "icon": "users-three",
+              "label": "Previously served 10M+ users"
+            },
+            {
+              "icon": "handshake",
+              "label": "Backed by Sequoia, Paradigm, Multicoin"
+            },
+            {
+              "icon": "globe",
+              "label": "NYC, Singapore, Lisbon"
+            }
+          ],
+          "color": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 380,
+        "w": 540,
+        "h": 280,
+        "args": {
+          "title": "Focus",
+          "items": [
+            {
+              "icon": "device-mobile",
+              "label": "Mobile-first embedded trading"
+            },
+            {
+              "icon": "brain",
+              "label": "AI co-pilot for portfolios"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Zero-knowledge privacy"
+            },
+            {
+              "icon": "arrows-merge",
+              "label": "Cross-chain liquidity aggregation"
+            }
+          ],
+          "color": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["icon-row", "icon-grid", "bullet-list", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 1770,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 792,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0189663,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-06-24T03:34:18.865Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "slotIdx": 7,
+  "slotName": "theme-3-lead",
+  "slotTitle": "Theme 3 — Lead",
+  "slotPurpose": "Third major theme: the core facts",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "价格带集中在经济区间",
+  "sceneData": {
+    "name": "news-briefing/theme-3-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "价格带集中在经济区间",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 180,
+        "args": {
+          "value": "63%",
+          "label": "5万至10万元车型占比",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 120,
+        "y": 440,
+        "w": 1040,
+        "h": 220,
+        "args": {
+          "items": [
+            {
+              "icon": "car-simple",
+              "label": "经济型车型主导下乡市场"
+            },
+            {
+              "icon": "currency-cny",
+              "label": "价格因素是农村消费者首要考量"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4443,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 364,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0226914,
+    "elapsedSec": 14.7,
+    "generatedAt": "2026-07-06T16:54:33.320Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

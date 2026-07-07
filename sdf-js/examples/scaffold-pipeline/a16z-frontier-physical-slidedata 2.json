@@ -1,0 +1,130 @@
+[
+  {
+    "title": "Frontier Systems for the Physical World",
+    "body": [
+      "Analysis by Oliver Hsu",
+      "Focus: AI systems operating in physical domains",
+      "Key technical primitives and three frontier application areas"
+    ]
+  },
+  {
+    "title": "Overview: Building Blocks and Applications",
+    "body": [
+      "Five technical primitives enabling physical AI",
+      "Three frontier areas: robotics, autonomous science, human-computer interfaces",
+      "Cross-domain reinforcement creating scaling flywheel"
+    ]
+  },
+  {
+    "title": "Technical Primitive 1: Learned Representations",
+    "body": [
+      "Learned representations of physical dynamics form the foundation",
+      "Enable AI systems to understand and predict physical world behavior",
+      "Critical for bridging digital intelligence and physical reality"
+    ]
+  },
+  {
+    "title": "Technical Primitive 2: Embodied Action Architectures",
+    "body": [
+      "Embodied action architectures translate understanding into physical movement",
+      "Allow AI systems to manipulate objects and navigate environments",
+      "Connect perception to physical execution"
+    ]
+  },
+  {
+    "title": "Technical Primitive 3: Simulation Infrastructure",
+    "body": [
+      "Simulation infrastructure enables virtual testing and training",
+      "Reduces need for expensive real-world experimentation",
+      "Accelerates development cycles for physical AI systems"
+    ]
+  },
+  {
+    "title": "Technical Primitive 4: Expanded Sensory Capabilities",
+    "body": [
+      "Expanded sensory capabilities extend AI perception beyond standard cameras",
+      "Include tactile sensors, depth perception, and multimodal sensing",
+      "Enable richer understanding of physical environments"
+    ]
+  },
+  {
+    "title": "Technical Primitive 5: Closed-Loop Agentic Systems",
+    "body": [
+      "Closed-loop agentic systems integrate perception, decision-making, and action",
+      "Enable continuous adaptation to changing physical conditions",
+      "Form the basis for autonomous operation in physical domains"
+    ]
+  },
+  {
+    "title": "Frontier Area: Robotics",
+    "body": [
+      "Robotics represents the first major application frontier",
+      "Combines all five technical primitives in embodied systems",
+      "Advances in VLAs, WAMs, and embodied models drive progress"
+    ]
+  },
+  {
+    "title": "Advanced Robotics Models: VLAs and WAMs",
+    "body": [
+      "VLAs (Vision-Language-Action models) integrate perception with manipulation",
+      "WAMs (World Action Models) predict physical consequences of actions",
+      "Native embodied models like Generalist's GEN-1 advance physics understanding"
+    ]
+  },
+  {
+    "title": "RL Post-Training: The RECAP Method",
+    "body": [
+      "RL post-training via RECAP enables sophisticated physical skills",
+      "Systems like pi-0.6 fold laundry across 50 garment types",
+      "Demonstrates adaptability to high-variability physical tasks"
+    ]
+  },
+  {
+    "title": "Frontier Area: Autonomous Science",
+    "body": [
+      "Autonomous science combines scientific reasoning with physical experimentation",
+      "Self-driving laboratories automate hypothesis testing",
+      "Companies like Periodic Labs and Medra lead development"
+    ]
+  },
+  {
+    "title": "Self-Driving Laboratories",
+    "body": [
+      "Self-driving laboratories from Periodic Labs and Medra automate research",
+      "Combine scientific reasoning models with physical testing capabilities",
+      "Accelerate discovery cycles in materials science and drug development"
+    ]
+  },
+  {
+    "title": "Frontier Area: Novel Human-Computer Interfaces",
+    "body": [
+      "Novel interfaces include BCIs (brain-computer interfaces) and wearables",
+      "Extend AI capabilities into direct human interaction",
+      "Create new modalities for human-AI collaboration"
+    ]
+  },
+  {
+    "title": "Brain-Computer Interfaces and Wearables",
+    "body": [
+      "BCIs enable direct neural communication with AI systems",
+      "Wearables provide continuous sensing and context-aware assistance",
+      "Both leverage physical AI primitives for responsive interaction"
+    ]
+  },
+  {
+    "title": "The Reinforcement Flywheel",
+    "body": [
+      "The three domains reinforce each other in development",
+      "Advances in robotics inform autonomous science and interface design",
+      "Creates a flywheel effect for scaling AI into the physical realm"
+    ]
+  },
+  {
+    "title": "Outlook: Scaling Physical AI",
+    "body": [
+      "Technical primitives now sufficiently mature for rapid advancement",
+      "Cross-domain learning accelerates progress across all frontier areas",
+      "Physical AI poised for transformation similar to language models' trajectory"
+    ]
+  }
+]

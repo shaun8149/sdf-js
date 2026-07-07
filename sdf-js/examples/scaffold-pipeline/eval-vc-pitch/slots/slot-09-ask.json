@@ -25,12 +25,12 @@
         "x": 40,
         "y": 160,
         "w": 380,
-        "h": 200,
+        "h": 220,
         "args": {
           "value": "$15M",
           "label": "Series A",
           "sublabel": "18-month runway",
-          "icon": "currency-dollar",
+          "icon": "rocket-launch",
           "style": "dark"
         }
       },
@@ -39,35 +39,21 @@
         "x": 450,
         "y": 160,
         "w": 380,
-        "h": 200,
+        "h": 220,
         "args": {
           "value": "$10M",
           "label": "Next Milestone",
-          "sublabel": "ARR target",
+          "sublabel": "ARR Target",
           "icon": "target",
           "style": "dark"
         }
       },
       {
-        "type": "kpi-card",
+        "type": "pie",
         "x": 860,
         "y": 160,
         "w": 380,
-        "h": 200,
-        "args": {
-          "value": "200",
-          "label": "Atom Library",
-          "sublabel": "2D + 3D atoms",
-          "icon": "cube",
-          "style": "dark"
-        }
-      },
-      {
-        "type": "pie",
-        "x": 40,
-        "y": 400,
-        "w": 600,
-        "h": 280,
+        "h": 220,
         "args": {
           "title": "Use of Funds",
           "values": [
@@ -81,29 +67,32 @@
             "Reserve"
           ],
           "format": "percent",
-          "donutRatio": 0.5
+          "donutRatio": 0.6
         }
       },
       {
         "type": "bullet-list",
-        "x": 680,
-        "y": 400,
-        "w": 560,
-        "h": 280,
+        "x": 40,
+        "y": 420,
+        "w": 1200,
+        "h": 260,
         "args": {
           "title": "Allocation Details",
           "items": [
             {
               "icon": "code",
-              "label": "Engineering · 2D+3D atom scaling"
+              "label": "Engineering · 2D+3D atom library",
+              "sublabel": "Scale to 200 atoms"
             },
             {
-              "icon": "users",
-              "label": "Sales · agency partner program"
+              "icon": "handshake",
+              "label": "Sales + Community · agency partners",
+              "sublabel": "Partner program expansion"
             },
             {
               "icon": "piggy-bank",
-              "label": "Reserve · 18-month runway"
+              "label": "Reserve · 18-month runway",
+              "sublabel": "Path to profitability"
             }
           ]
         }
@@ -121,20 +110,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4448,
+      "input_tokens": 4936,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 713,
+      "output_tokens": 648,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.027941399999999998,
-    "elapsedSec": 10.2,
-    "generatedAt": "2026-07-06T15:44:33.124Z",
+    "costUSD": 0.028430399999999998,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-07T06:44:43.819Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

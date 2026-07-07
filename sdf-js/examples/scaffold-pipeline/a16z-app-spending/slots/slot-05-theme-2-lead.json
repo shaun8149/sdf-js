@@ -3,11 +3,11 @@
   "slotName": "theme-2-lead",
   "slotTitle": "Theme 2 — Lead",
   "slotPurpose": "Second major theme: the core facts",
-  "sourceSlideIdx": 4,
-  "sourceSlideTitle": "Creative Tools Lead the Categories",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Creative Tools: The Largest Category",
   "sceneData": {
     "name": "news-briefing/theme-2-lead",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -23,28 +23,40 @@
       {
         "type": "stat-banner",
         "x": 40,
-        "y": 200,
+        "y": 160,
         "w": 1200,
-        "h": 180,
+        "h": 140,
         "args": {
-          "value": "10 Companies",
-          "label": "Creative Tools Category",
-          "trend": "Largest Single Segment",
-          "trendDirection": "up",
+          "value": "10 companies",
+          "label": "Creative Tools: Largest Category",
           "bg": [38, 70, 130]
         }
       },
       {
         "type": "kpi-card",
-        "x": 140,
-        "y": 440,
-        "w": 1000,
-        "h": 200,
+        "x": 40,
+        "y": 340,
+        "w": 580,
+        "h": 320,
         "args": {
-          "value": "#1",
-          "label": "AI Application Spending",
-          "sublabel": "Creative tools dominate spending across all analyzed segments",
-          "icon": "chart-bar",
+          "value": "#4",
+          "label": "Freepik",
+          "sublabel": "Position",
+          "icon": "palette",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 340,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "value": "#5",
+          "label": "ElevenLabs",
+          "sublabel": "Position",
+          "icon": "waveform",
           "style": "light"
         }
       }
@@ -56,20 +68,20 @@
     "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4417,
+      "input_tokens": 4922,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 349,
+      "output_tokens": 424,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0223884,
-    "elapsedSec": 10,
-    "generatedAt": "2026-07-07T03:40:42.082Z",
+    "costUSD": 0.0250284,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-07T06:39:59.255Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

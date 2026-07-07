@@ -1,0 +1,94 @@
+{
+  "slotIdx": 1,
+  "slotName": "executive-summary",
+  "slotTitle": "Executive Summary",
+  "slotPurpose": "3-5 highlights at-a-glance",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Trip Stats",
+  "sceneData": {
+    "name": "qbr/executive-summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 420,
+        "args": {
+          "kpis": [
+            {
+              "value": "47",
+              "label": "Miles Hiked",
+              "sublabel": "Total distance"
+            },
+            {
+              "value": "11,200",
+              "label": "Elevation Gain",
+              "sublabel": "Feet climbed"
+            },
+            {
+              "value": "1,432",
+              "label": "Photos Taken",
+              "sublabel": "Memories captured"
+            },
+            {
+              "value": "Half Dome",
+              "label": "Best Day",
+              "sublabel": "Unforgettable summit"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 620,
+        "w": 1120,
+        "h": 60,
+        "args": {
+          "items": [
+            {
+              "icon": "warning",
+              "label": "Phone dropped at Glacier Point",
+              "status": "highlight"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["dashboard-multi-kpi-composite", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3004,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10550,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 441,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.018792,
+    "elapsedSec": 6,
+    "generatedAt": "2026-06-25T03:06:04.501Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

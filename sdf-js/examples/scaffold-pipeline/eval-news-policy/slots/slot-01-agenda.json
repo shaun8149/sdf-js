@@ -4,7 +4,7 @@
   "slotTitle": "Overview",
   "slotPurpose": "One line per major theme of the briefing",
   "sourceSlideIdx": 1,
-  "sourceSlideTitle": "核心议题概览",
+  "sourceSlideTitle": "报告概览",
   "sceneData": {
     "name": "news-briefing/agenda",
     "layout": "row",
@@ -16,32 +16,29 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "核心议题概览",
+          "title": "Overview",
           "style": "gradient"
         }
       },
       {
         "type": "agenda-list",
-        "x": 80,
+        "x": 40,
         "y": 160,
-        "w": 560,
+        "w": 580,
         "h": 500,
         "args": {
           "items": [
             {
-              "label": "下乡车型销量增长与市场渗透现状"
+              "label": "下乡车型销量与市场表现"
             },
             {
-              "label": "充电桩等配套设施建设进展"
+              "label": "配套充电设施建设现状与规划"
             },
             {
-              "label": "主要车企与产品市场格局"
+              "label": "产业格局与车型价格分布"
             },
             {
-              "label": "农村电网、残值体系等关键挑战"
-            },
-            {
-              "label": "政策退坡对未来增速的影响"
+              "label": "面临的主要挑战与风险"
             }
           ],
           "numbered": true
@@ -49,39 +46,59 @@
       },
       {
         "type": "kpi-card",
-        "x": 680,
-        "y": 200,
-        "w": 520,
-        "h": 180,
+        "x": 660,
+        "y": 160,
+        "w": 280,
+        "h": 220,
         "args": {
           "value": ">15%",
-          "label": "五菱宏光MINI单车型贡献",
-          "sublabel": "微型电动车市场集中度",
+          "label": "微型电动车占比",
+          "sublabel": "五菱宏光MINI等单一车型贡献",
           "icon": "car-simple",
-          "style": "accent-border"
+          "style": "light"
         }
       },
       {
-        "type": "bullet-list",
-        "x": 680,
-        "y": 420,
-        "w": 520,
-        "h": 240,
+        "type": "kpi-card",
+        "x": 960,
+        "y": 160,
+        "w": 280,
+        "h": 220,
         "args": {
-          "items": [
-            {
-              "icon": "car-simple",
-              "label": "小型化产品契合农村需求"
-            },
-            {
-              "icon": "currency-dollar-simple",
-              "label": "低价化策略渗透下沉市场"
-            },
-            {
-              "icon": "chart-pie-slice",
-              "label": "细分市场集中度显著"
-            }
+          "value": "63%",
+          "label": "5-10万元车型占比",
+          "sublabel": "中低价位占据主流",
+          "icon": "currency-cny",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 660,
+        "y": 420,
+        "w": 580,
+        "h": 100,
+        "args": {
+          "value": "低价优势",
+          "label": "微型车在农村市场受欢迎",
+          "bg": [
+            38,
+            70,
+            130
           ]
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 660,
+        "y": 540,
+        "w": 580,
+        "h": 120,
+        "args": {
+          "type_": "insight",
+          "heading": "价格带特征",
+          "body": "5万至10万元价格带集中体现农村消费能力特征",
+          "icon": "chart-bar"
         }
       }
     ]
@@ -95,20 +112,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4588,
+      "input_tokens": 5118,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 623,
+      "output_tokens": 745,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.027011399999999998,
-    "elapsedSec": 10.3,
-    "generatedAt": "2026-07-07T01:18:32.120Z",
+    "costUSD": 0.030431399999999997,
+    "elapsedSec": 12.3,
+    "generatedAt": "2026-07-07T06:43:28.216Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

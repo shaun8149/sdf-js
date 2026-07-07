@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Our Solution",
   "sceneData": {
     "name": "pitch-deck-vc/solution",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -22,52 +22,19 @@
       },
       {
         "type": "flow-chart",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 240,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
           "steps": [
             "LLM writes structured intent",
-            "Atlas runtime renders",
-            "Deterministic illustration"
+            "Atlas runtime renders deterministically",
+            "Multi-renderer output (silhouette/3D/lines/crayon)",
+            "Edit intent → regenerate visual"
           ],
           "orientation": "horizontal",
-          "title": "Architecture Flow"
-        }
-      },
-      {
-        "type": "icon-row",
-        "x": 80,
-        "y": 460,
-        "w": 1120,
-        "h": 200,
-        "args": {
-          "items": [
-            {
-              "icon": "shapes",
-              "label": "Silhouette",
-              "sublabel": "Same content"
-            },
-            {
-              "icon": "cube",
-              "label": "3D",
-              "sublabel": "Multiple renderers"
-            },
-            {
-              "icon": "pencil-line",
-              "label": "Lines",
-              "sublabel": "Style variants"
-            },
-            {
-              "icon": "palette",
-              "label": "Crayon",
-              "sublabel": "Artistic modes"
-            }
-          ],
-          "iconSize": "medium",
-          "iconStyle": "circle",
-          "colorMode": "auto"
+          "title": "Content-to-Visual Pipeline"
         }
       }
     ]
@@ -82,20 +49,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4430,
+      "input_tokens": 4918,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 458,
+      "output_tokens": 253,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0240624,
-    "elapsedSec": 7.4,
-    "generatedAt": "2026-07-06T15:43:44.451Z",
+    "costUSD": 0.0224514,
+    "elapsedSec": 6,
+    "generatedAt": "2026-07-07T06:44:43.818Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

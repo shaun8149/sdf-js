@@ -1,0 +1,95 @@
+{
+  "slotIdx": 3,
+  "slotName": "products",
+  "slotTitle": "Products",
+  "slotPurpose": "Feature lineup",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Technology Stack",
+  "sceneData": {
+    "name": "company-overview/products",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Products"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "icon": "lock-key",
+              "label": "Self-Custodial",
+              "sublabel": "Browser keys + hardware wallet"
+            },
+            {
+              "icon": "bridge",
+              "label": "Multi-Chain",
+              "sublabel": "ETH · SOL · Base · Arbitrum"
+            },
+            {
+              "icon": "brain",
+              "label": "OpenClaw AI",
+              "sublabel": "On-device + server inference"
+            },
+            {
+              "icon": "lock-laminated",
+              "label": "E2E Encryption",
+              "sublabel": "Signal protocol chat"
+            },
+            {
+              "icon": "arrows-merge",
+              "label": "DEX Aggregator",
+              "sublabel": "MEV-protected routing"
+            },
+            {
+              "icon": "detective",
+              "label": "Smart Money",
+              "sublabel": "50K wallets tracked live"
+            }
+          ],
+          "iconStyle": "card",
+          "iconSize": "medium"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "device-mockup-row",
+      "magazine-column-grid",
+      "icon-row",
+      "icon-grid",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2500,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 431,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0157413,
+    "elapsedSec": 6,
+    "generatedAt": "2026-06-24T04:30:26.350Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

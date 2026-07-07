@@ -1,0 +1,195 @@
+{
+  "deckName": "pdsphere-tier12",
+  "sourceFile": "sdf-js/examples/pdf-demo/slidedata.json",
+  "scaffold": {
+    "id": "product-launch",
+    "label": "Product Launch",
+    "description": "Announce a new product, feature, or release",
+    "pickScore": 2,
+    "pickSignals": [
+      "The deck contains only template placeholder text ('3D SPHERES', '2D SPHERES', 'FILL LEVELS', 'POWERPOINT TEMPLATE') with no actual semantic content",
+      "No discernible intent, topic, or narrative structure can be extracted from the repetitive placeholder text",
+      "Product-launch chosen as default fallback because it's the most generic scaffold for visual/demo-heavy content, but this is essentially a guess"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "pitch-cobalt-orange",
+    "label": "Pitch · Cobalt Orange",
+    "macroCluster": "pitch",
+    "bg": [255, 255, 255],
+    "accent": [255, 120, 40],
+    "colors": [
+      [255, 120, 40],
+      [20, 60, 180],
+      [220, 220, 235],
+      [60, 65, 90]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Product name + reveal teaser",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "3D SPHERES",
+      "mappingScore": 3,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "sphere-fill", "sphere-fill", "sphere-fill"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "problem",
+      "slotTitle": "Why We Built It",
+      "slotPurpose": "The pain we are addressing",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "feature-1",
+      "slotTitle": "Feature Highlight",
+      "slotPurpose": "Lead feature with detail",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "3D SPHERES",
+      "mappingScore": 4,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-feature-1.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "sphere-fill", "sphere-fill", "sphere-fill", "bullet-list"]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "feature-2",
+      "slotTitle": "Feature Highlight",
+      "slotPurpose": "Second feature with detail",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "3D SPHERES",
+      "mappingScore": 4,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-feature-2.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "feature-3",
+      "slotTitle": "Feature Highlight",
+      "slotPurpose": "Third feature with detail",
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "2D SPHERES",
+      "mappingScore": 4,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-feature-3.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "sphere-fill", "bullet-list"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "demo",
+      "slotTitle": "See It In Action",
+      "slotPurpose": "Visual demo / mockup",
+      "sourceSlideIdx": 17,
+      "sourceSlideTitle": "3D SPHERES",
+      "mappingScore": 3,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-demo.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill",
+        "sphere-fill"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "pricing",
+      "slotTitle": "Pricing",
+      "slotPurpose": "Plans + pricing tiers",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "cta",
+      "slotTitle": "Get Started",
+      "slotPurpose": "CTA + next steps",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    }
+  ],
+  "totals": {
+    "slotsBaked": 5,
+    "slotsEmpty": 3,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.0928095
+  },
+  "meta": {
+    "generatedAt": "2026-06-24T04:49:21.375Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "slotIdx": 8,
+  "slotName": "risk-matrix",
+  "slotTitle": "Risk Matrix",
+  "slotPurpose": "Risks / scenarios on probability × impact axes",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "关键风险矩阵总结",
+  "sceneData": {
+    "name": "news-briefing/risk-matrix",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Risk Matrix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "title": "关键风险矩阵总结",
+          "xAxis": "概率",
+          "yAxis": "影响",
+          "xLabels": ["低", "中", "高"],
+          "yLabels": ["低", "中", "高"],
+          "risks": [
+            {
+              "x": 2,
+              "y": 1,
+              "label": "出口管制",
+              "severity": "high"
+            },
+            {
+              "x": 0,
+              "y": 2,
+              "label": "资本开支放缓",
+              "severity": "high"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "label": "推理成本下降",
+              "severity": "medium"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["risk-heatmap", "matrix-grid", "swot"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4663,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 382,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023621399999999997,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-07T05:02:01.020Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

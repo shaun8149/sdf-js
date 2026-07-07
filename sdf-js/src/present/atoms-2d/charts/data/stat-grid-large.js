@@ -130,18 +130,47 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.font = `700 ${lblFs}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(s.label, cx, labelTop);
+    if (ctx.measureText(s.label).width > colW - 16) {
+      // Even at the floor size the label is too wide — greedy-wrap into up
+      // to 3 centered lines instead of running into the neighbor column
+      // (Sprint 37). Every line is width-checked.
+      const words = String(s.label).split(' ');
+      const lines = [];
+      let cur = '';
+      for (const word of words) {
+        const test = cur ? `${cur} ${word}` : word;
+        if (ctx.measureText(test).width > colW - 16 && cur) {
+          lines.push(cur);
+          cur = word;
+        } else cur = test;
+      }
+      if (cur) lines.push(cur);
+      lines.slice(0, 3).forEach((line, li) => {
+        ctx.fillText(line, cx, labelTop + li * lblFs * 1.2);
+      });
+    } else {
+      ctx.fillText(s.label, cx, labelTop);
+    }
     ctx.restore();
 
-    // Trend chip
+    // Trend chip — shrink so the chip never exceeds its column (Sprint 37:
+    // lifts stuff whole lists into trend, "AI · Crypto · Biology · …")
     if (s.trend) {
       const chipTop = labelTop + labelFontSize + 4;
       const chipPad = 8;
       ctx.save();
-      ctx.font = `700 ${chipFontSize}px Inter, system-ui, sans-serif`;
+      const chipFs = fitFontSize(
+        ctx,
+        s.trend,
+        colW - 16 - chipPad * 2,
+        chipFontSize,
+        9,
+        (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `700 ${chipFs}px Inter, system-ui, sans-serif`;
       const chipTextW = ctx.measureText(s.trend).width;
       const chipW = chipTextW + chipPad * 2;
-      const chipH = chipFontSize * 1.6;
+      const chipH = chipFs * 1.6;
       const chipX = cx - chipW / 2;
       const chipR = chipH / 2;
       const dir = s.trendDirection || 'up';
@@ -159,7 +188,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fill();
 
       ctx.fillStyle = 'rgba(255,255,255,0.97)';
-      ctx.font = `700 ${chipFontSize}px Inter, system-ui, sans-serif`;
+      ctx.font = `700 ${chipFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(s.trend, cx, chipTop + chipH / 2);

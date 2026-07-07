@@ -1,0 +1,99 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "县域充电桩保有量严重不足",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "县域充电桩保有量严重不足",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 340,
+        "h": 200,
+        "args": {
+          "value": "98万台",
+          "label": "全国县域公共充电桩保有量",
+          "sublabel": "截至5月底",
+          "icon": "plugs-connected",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 470,
+        "y": 180,
+        "w": 340,
+        "h": 200,
+        "args": {
+          "value": "21%",
+          "label": "仅占全国总量",
+          "icon": "chart-pie-slice",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 180,
+        "w": 340,
+        "h": 200,
+        "args": {
+          "value": "不足350台",
+          "label": "平均每县",
+          "icon": "map-pin",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 80,
+        "y": 440,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "value": "配套设施是最大短板",
+          "label": "核心问题",
+          "bg": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4462,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 547,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0254934,
+    "elapsedSec": 11.1,
+    "generatedAt": "2026-07-06T16:26:25.107Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

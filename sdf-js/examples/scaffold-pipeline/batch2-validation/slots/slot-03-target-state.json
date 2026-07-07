@@ -1,0 +1,93 @@
+{
+  "slotIdx": 3,
+  "slotName": "target-state",
+  "slotTitle": "Target State",
+  "slotPurpose": "To-be vision — what success looks like",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Tier Comparison: Current vs Target vs Future State",
+  "sceneData": {
+    "name": "change-roadmap/target-state",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Target State",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "12-Month Target Capabilities",
+          "items": [
+            {
+              "icon": "robot",
+              "label": "Process Automation",
+              "sublabel": "Workflow engine deployed"
+            },
+            {
+              "icon": "lightning",
+              "label": "Real-time Data",
+              "sublabel": "Streaming analytics live"
+            },
+            {
+              "icon": "user-circle-gear",
+              "label": "Customer Self-Service",
+              "sublabel": "Portal with AI assistant"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Decision Support",
+              "sublabel": "ML models in production"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "API Ecosystem",
+              "sublabel": "Partner integrations active"
+            },
+            {
+              "icon": "cloud",
+              "label": "Cloud-native Architecture",
+              "sublabel": "Kubernetes clusters scaled"
+            }
+          ],
+          "cols": 3,
+          "iconSize": "large",
+          "iconStyle": "card",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["bullet-list", "icon-grid", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3013,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 457,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.019194,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-06-25T04:32:54.815Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

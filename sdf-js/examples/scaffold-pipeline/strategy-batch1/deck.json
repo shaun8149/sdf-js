@@ -1,0 +1,175 @@
+{
+  "deckName": "strategy-batch1",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/strategy-swot-portfolio.json",
+  "scaffold": {
+    "id": "analysis-report",
+    "label": "Analysis Report",
+    "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
+    "pickScore": 9,
+    "pickSignals": [
+      "Deck explicitly follows analysis-report structure: scope → framework definition → SWOT findings → voice of customer → interpretation → recommendations → appendix",
+      "Core content is strategic analysis using frameworks (SWOT, Porter Value Chain) applied to product portfolio across markets — classic analyst deliverable",
+      "Audience is internal stakeholders (strategy team to exec/board) reviewing findings and acting on recommendations, not external sales or fundraising"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Report title + scope + date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Strategic Portfolio Analysis 2026",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "scope",
+      "slotTitle": "Scope & Methodology",
+      "slotPurpose": "What was analyzed and how data was collected",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Scope of Analysis",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-scope.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-grid", "bullet-list"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "definition",
+      "slotTitle": "Context & Definition",
+      "slotPurpose": "Define the subject — what are we analyzing and why",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Framework Definition: Value Chain Analysis",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-definition.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "value-chain-diagram"]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "data-findings",
+      "slotTitle": "Data & Findings",
+      "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Voice of the Customer",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-data-findings.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "quote-pull", "kpi-card"]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "framework-analysis",
+      "slotTitle": "Framework Analysis",
+      "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "SWOT Analysis Results",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-framework-analysis.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "swot"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "interpretation",
+      "slotTitle": "Interpretation",
+      "slotPurpose": "What the data means — synthesis and insight",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Change Journey Forecast",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-interpretation.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "change-curve-chart"]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "recommendations",
+      "slotTitle": "Recommendations",
+      "slotPurpose": "Actionable next steps based on findings",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Recommendations",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-recommendations.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "bullet-list"]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "slotPurpose": "Supporting data, raw tables, methodology details",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Appendix",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-appendix.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "bullet-list"]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 8,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.1809555
+  },
+  "meta": {
+    "generatedAt": "2026-06-25T04:06:19.067Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

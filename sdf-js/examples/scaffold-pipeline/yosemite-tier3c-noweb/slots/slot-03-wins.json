@@ -1,0 +1,74 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Tuolumne Meadows",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "mountains",
+              "label": "Reached alpine meadow elevation",
+              "sublabel": "8,600 ft — Day 3 milestone"
+            },
+            {
+              "icon": "map-pin",
+              "label": "Cathedral Lake basecamp established",
+              "sublabel": "Prime location secured"
+            },
+            {
+              "icon": "moon-stars",
+              "label": "Crystal-clear Milky Way viewing",
+              "sublabel": "Exceptional stargazing conditions"
+            }
+          ],
+          "title": "Quarter Highlights"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2986,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10550,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 320,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.016923,
+    "elapsedSec": 5.8,
+    "generatedAt": "2026-06-25T03:06:10.299Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

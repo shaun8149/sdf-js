@@ -3,11 +3,11 @@
   "slotName": "theme-1-detail",
   "slotTitle": "Theme 1 — Detail",
   "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
-  "sourceSlideIdx": 9,
-  "sourceSlideTitle": "5万至10万元价格带主导市场",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "县乡市场渗透率提升但仍有差距",
   "sceneData": {
     "name": "news-briefing/theme-1-detail",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,65 +16,30 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "价格带分布",
+          "title": "主题1 — 详情",
           "style": "gradient"
         }
       },
       {
-        "type": "donut-with-center",
-        "x": 80,
-        "y": 180,
-        "w": 520,
-        "h": 480,
+        "type": "bar",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
-          "centerValue": "63%",
-          "centerLabel": "5万至10万元",
-          "segments": [
-            {
-              "label": "5万至10万元",
-              "value": 63,
-              "color": [
-                38,
-                70,
-                130
-              ]
-            },
-            {
-              "label": "其他价格带",
-              "value": 37,
-              "color": [
-                200,
-                195,
-                180
-              ]
-            }
+          "title": "县乡市场渗透率提升但仍有差距",
+          "labels": [
+            "县乡市场 (去年)",
+            "县乡市场 (今年)",
+            "一二线城市"
           ],
-          "showPct": true
-        }
-      },
-      {
-        "type": "bullet-list",
-        "x": 680,
-        "y": 180,
-        "w": 520,
-        "h": 480,
-        "args": {
-          "items": [
-            {
-              "icon": "currency-cny",
-              "label": "县乡消费者价格敏感",
-              "status": "highlight"
-            },
-            {
-              "icon": "car-simple",
-              "label": "经济型车型主要受益",
-              "sublabel": "下乡政策带动增长"
-            },
-            {
-              "icon": "chart-line-up",
-              "label": "中低价位市场主导地位"
-            }
-          ]
+          "values": [
+            17,
+            28,
+            54
+          ],
+          "format": "percent",
+          "max": 60
         }
       }
     ]
@@ -90,20 +55,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4458,
+      "input_tokens": 4958,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 496,
+      "output_tokens": 277,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0247164,
-    "elapsedSec": 8.6,
-    "generatedAt": "2026-07-07T01:18:54.147Z",
+    "costUSD": 0.022931399999999998,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-07-07T06:43:28.219Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

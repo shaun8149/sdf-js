@@ -7,7 +7,7 @@
   "sourceSlideTitle": "The Problem",
   "sceneData": {
     "name": "pitch-deck-vc/problem",
-    "layout": "grid",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -16,57 +16,62 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Problem",
-          "style": "gradient"
+          "title": "Problem"
         }
       },
       {
         "type": "icon-grid",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 380,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
           "items": [
             {
-              "icon": "calendar-x",
+              "icon": "calendar",
               "label": "Stuck in 2008",
-              "sublabel": "Presentation visuals outdated"
+              "sublabel": "Presentation visuals outdated",
+              "color": [
+                255,
+                120,
+                40
+              ]
             },
             {
               "icon": "image-broken",
-              "label": "PowerPoint Icons",
-              "sublabel": "Clipart + Lottie GIFs"
+              "label": "Dead Visuals",
+              "sublabel": "PowerPoint icons and clipart",
+              "color": [
+                20,
+                60,
+                180
+              ]
             },
             {
-              "icon": "brain",
+              "icon": "robot",
               "label": "AI Fixed Text",
-              "sublabel": "Visuals still dead"
+              "sublabel": "Visuals still lifeless",
+              "color": [
+                255,
+                120,
+                40
+              ]
             },
             {
               "icon": "clock",
-              "label": "60% Layout Time",
-              "sublabel": "Designers on busywork"
+              "label": "60% Wasted",
+              "sublabel": "Designers on layout busywork",
+              "color": [
+                20,
+                60,
+                180
+              ]
             }
           ],
-          "cols": 4,
+          "cols": 2,
+          "iconStyle": "card",
           "iconSize": "large",
-          "iconStyle": "circle",
           "colorMode": "auto"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 80,
-        "y": 590,
-        "w": 320,
-        "h": 100,
-        "args": {
-          "value": "60%",
-          "label": "Time on Layout",
-          "sublabel": "Designer productivity loss",
-          "style": "accent-border",
-          "icon": "timer"
         }
       }
     ]
@@ -87,20 +92,20 @@
       "gantt"
     ],
     "tokenUsage": {
-      "input_tokens": 4498,
+      "input_tokens": 4986,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 487,
+      "output_tokens": 426,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0247014,
-    "elapsedSec": 8,
-    "generatedAt": "2026-07-06T15:43:26.486Z",
+    "costUSD": 0.0252504,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-07T06:44:43.817Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

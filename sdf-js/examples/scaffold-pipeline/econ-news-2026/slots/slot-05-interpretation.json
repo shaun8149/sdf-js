@@ -1,0 +1,62 @@
+{
+  "slotIdx": 5,
+  "slotName": "interpretation",
+  "slotTitle": "Interpretation",
+  "slotPurpose": "What the data means — synthesis and insight",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "货币政策路径",
+  "sceneData": {
+    "name": "analysis-report/interpretation",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Interpretation",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Monetary Policy Outlook",
+          "leftLabel": "Rate Cut Drivers",
+          "rightLabel": "Pause Factors",
+          "leftItems": ["Inflation declining", "Employment slowing", "Core CPI moderate"],
+          "rightItems": ["3-3.25% target reached", "Extended observation", "Policy effectiveness"],
+          "verdict": "Fed expected to cut through April, then pause"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "bullet-list", "quote-pull", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4303,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 289,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021146400000000003,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-07-06T12:38:34.141Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

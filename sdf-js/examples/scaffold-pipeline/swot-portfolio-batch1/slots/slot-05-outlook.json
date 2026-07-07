@@ -1,0 +1,81 @@
+{
+  "slotIdx": 5,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "Forecast + next-Q targets",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
+  "sceneData": {
+    "name": "qbr/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "title": "Q4 2026 Portfolio Priorities",
+          "items": [
+            {
+              "label": "Series B bridge prep",
+              "sublabel": "ANTFUN + NovaTech fundraising"
+            },
+            {
+              "label": "Southeast Asia expansion",
+              "sublabel": "LP program review"
+            },
+            {
+              "label": "AI transformation audit",
+              "sublabel": "Across all 12 portfolio companies"
+            },
+            {
+              "label": "Exit roadmap",
+              "sublabel": "Fund I positions (3 candidates)"
+            },
+            {
+              "label": "Fund III final close",
+              "sublabel": "Target $300M by December 2026"
+            }
+          ],
+          "numbered": true,
+          "style": "showcase"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["line", "progression", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3037,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10550,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 371,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.017841,
+    "elapsedSec": 5.3,
+    "generatedAt": "2026-06-25T03:54:42.945Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

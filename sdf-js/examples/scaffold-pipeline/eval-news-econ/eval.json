@@ -29,43 +29,9 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 3,
-    "counts": {
-      "TINY_FONT": 2,
-      "OUT_OF_BOUNDS": 1
-    },
-    "slots_with_issues": [
-      {
-        "slotIdx": 4,
-        "slotName": "theme-1-detail",
-        "issues": [
-          {
-            "kind": "TINY_FONT",
-            "subject": 2,
-            "type": "stat-with-icon",
-            "detail": "\"增速排名\" at 8.0px"
-          },
-          {
-            "kind": "TINY_FONT",
-            "subject": 3,
-            "type": "stat-with-icon",
-            "detail": "\"贡献来源\" at 8.0px"
-          }
-        ]
-      },
-      {
-        "slotIdx": 11,
-        "slotName": "quote",
-        "issues": [
-          {
-            "kind": "OUT_OF_BOUNDS",
-            "subject": 1,
-            "type": "pull-quote-banner",
-            "detail": "\"新兴市场和发展中经济体将面临疫情以来最弱的人均收入增长\" at (-170,333)"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
   },
   "textBudget": {
     "chars_per_slot": 79,
@@ -100,5 +66,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.187Z"
+  "generatedAt": "2026-07-07T06:44:59.932Z"
 }

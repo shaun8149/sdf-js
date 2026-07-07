@@ -1,0 +1,102 @@
+{
+  "slotIdx": 3,
+  "slotName": "solution",
+  "slotTitle": "Our Solution",
+  "slotPurpose": "Product overview + value prop",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Our Solution",
+  "sceneData": {
+    "name": "pitch-deck-vc/solution",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Our Solution"
+        }
+      },
+      {
+        "type": "flow-chart",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "nodes": [
+            {
+              "id": "intent",
+              "label": "Structured Intent",
+              "icon": "code-block",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "runtime",
+              "label": "Atlas Runtime",
+              "icon": "gear-six",
+              "x": 1,
+              "y": 0
+            },
+            {
+              "id": "render",
+              "label": "Multi-Renderer",
+              "icon": "palette",
+              "x": 2,
+              "y": 0
+            },
+            {
+              "id": "output",
+              "label": "Visual Output",
+              "icon": "cube",
+              "x": 3,
+              "y": 0
+            }
+          ],
+          "edges": [
+            {
+              "from": "intent",
+              "to": "runtime",
+              "label": "LLM writes"
+            },
+            {
+              "from": "runtime",
+              "to": "render",
+              "label": "Deterministic"
+            },
+            {
+              "from": "render",
+              "to": "output",
+              "label": "Editable"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["bullet-list", "flow-chart", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2432,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 442,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0157023,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-06-24T04:47:26.837Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 17,
+  "sourceSlideTitle": "2026年全球经济展望总结",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 60,
+        "y": 180,
+        "w": 350,
+        "h": 220,
+        "args": {
+          "value": "2.5%-3.3%",
+          "label": "全球增长预期区间",
+          "sublabel": "各机构预测存在差异",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 465,
+        "y": 180,
+        "w": 350,
+        "h": 220,
+        "args": {
+          "value": "逐步放松",
+          "label": "货币政策展望",
+          "sublabel": "主要央行具备降息空间",
+          "icon": "arrow-fat-down",
+          "trend": "降息空间",
+          "trendDirection": "down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 870,
+        "y": 180,
+        "w": 350,
+        "h": 220,
+        "args": {
+          "value": "需密切关注",
+          "label": "主要风险点",
+          "sublabel": "地缘冲突与能源供应",
+          "icon": "warning",
+          "style": "accent-border"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 60,
+        "y": 450,
+        "w": 1160,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket",
+              "label": "科技投资",
+              "sublabel": "关注领域"
+            },
+            {
+              "icon": "chart-line",
+              "label": "金融市场",
+              "sublabel": "波动风险"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4481,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 664,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0273054,
+    "elapsedSec": 11.2,
+    "generatedAt": "2026-07-06T16:17:13.856Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

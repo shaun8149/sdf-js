@@ -1,0 +1,91 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "县乡市场渗透率快速提升",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "县乡市场渗透率快速提升",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "gauge",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "value": 0.28,
+          "label": "当前渗透率",
+          "format": "percent",
+          "title": "县乡市场渗透率",
+          "min": "0%",
+          "max": "100%"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 200,
+        "args": {
+          "value": "28%",
+          "label": "当前渗透率",
+          "sublabel": "2024",
+          "trend": "up",
+          "trendValue": "+11个百分点",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 420,
+        "w": 520,
+        "h": 200,
+        "args": {
+          "value": "17%",
+          "label": "去年同期渗透率",
+          "sublabel": "2023",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4435,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 481,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0244224,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-06T16:26:09.121Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "title": "The State of Generative Media 2026",
+    "body": ["Industry report on enterprise AI adoption", "Published 2026"]
+  },
+  {
+    "title": "Agenda",
+    "body": [
+      "Enterprise model deployment landscape",
+      "Market concentration in LLM providers",
+      "Infrastructure selection criteria",
+      "Model performance benchmarks",
+      "Release cycle dynamics"
+    ]
+  },
+  {
+    "title": "Enterprise Model Deployment Scale",
+    "body": [
+      "Enterprise production deployments use a median of 14 different models",
+      "Organizations maintain diverse model portfolios in production environments",
+      "Multi-model strategies are standard practice across enterprises"
+    ]
+  },
+  {
+    "title": "LLM Market Concentration",
+    "body": [
+      "OpenAI, Gemini, and Anthropic together command 89% of enterprise wallet share in LLMs",
+      "Three major providers dominate enterprise spending on language models",
+      "Market consolidation around leading AI vendors"
+    ]
+  },
+  {
+    "title": "Primary Selection Criterion: Cost",
+    "body": [
+      "In a survey with Artificial Analysis, 58% of organizations identified cost optimization as their primary criterion when selecting model infrastructure",
+      "Cost considerations outweigh other factors for majority of enterprises",
+      "Economic efficiency drives infrastructure decisions"
+    ]
+  },
+  {
+    "title": "Secondary Selection Factors",
+    "body": [
+      "42% of organizations prioritize criteria beyond cost optimization",
+      "Performance, reliability, and integration capabilities influence remaining decisions",
+      "Survey conducted in partnership with Artificial Analysis"
+    ]
+  },
+  {
+    "title": "Benchmark Leadership: Seedance 1.0",
+    "body": [
+      "Seedance 1.0 topped leaderboards in June 2025",
+      "New entrant achieved top performance rankings mid-year",
+      "Leaderboard positions reflect competitive model landscape"
+    ]
+  },
+  {
+    "title": "Model Release Frequency",
+    "body": [
+      "Model releases in 2025 came every 4-6 weeks",
+      "Rapid iteration cycle across the industry",
+      "High-frequency release schedule standard in 2025"
+    ]
+  },
+  {
+    "title": "Impact on Enterprise Teams",
+    "body": [
+      "Model releases in 2025 came every 4-6 weeks, keeping teams in constant evaluation mode",
+      "Continuous assessment burden on enterprise AI teams",
+      "Evaluation processes must adapt to rapid release cycles"
+    ]
+  },
+  {
+    "title": "Multi-Model Strategy Drivers",
+    "body": [
+      "Median deployment of 14 different models reflects specialized use cases",
+      "No single model optimizes for all enterprise requirements",
+      "Portfolio approach balances cost, performance, and capability needs"
+    ]
+  },
+  {
+    "title": "Market Dynamics: Provider Competition",
+    "body": [
+      "89% wallet share concentration among three providers indicates competitive barriers",
+      "OpenAI, Gemini, and Anthropic maintain dominant market positions",
+      "Remaining 11% distributed across alternative providers"
+    ]
+  },
+  {
+    "title": "Evaluation Cycle Challenges",
+    "body": [
+      "4-6 week release intervals create perpetual evaluation workload",
+      "Teams balance staying current with operational stability",
+      "Constant assessment mode impacts resource allocation"
+    ]
+  },
+  {
+    "title": "Summary and Outlook",
+    "body": [
+      "Enterprise AI characterized by multi-model deployments and cost-driven decisions",
+      "Market consolidation coexists with rapid innovation cycles",
+      "Organizations navigate trade-offs between evaluation burden and competitive advantage"
+    ]
+  }
+]

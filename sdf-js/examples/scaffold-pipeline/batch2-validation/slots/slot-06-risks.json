@@ -1,0 +1,128 @@
+{
+  "slotIdx": 6,
+  "slotName": "risks",
+  "slotTitle": "Risks & Mitigations",
+  "slotPurpose": "Top risks and mitigation strategies",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Change Journey & Risk Mitigation",
+  "sceneData": {
+    "name": "change-roadmap/risks",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Risks & Mitigations",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 40,
+        "y": 140,
+        "w": 1200,
+        "h": 240,
+        "args": {
+          "title": "Change Journey",
+          "events": [
+            {
+              "date": "Q1",
+              "label": "Mobilise",
+              "sublabel": "Governance, quick wins"
+            },
+            {
+              "date": "Q2-Q3",
+              "label": "Transform",
+              "sublabel": "Core migration, redesign"
+            },
+            {
+              "date": "Q4",
+              "label": "Sustain",
+              "sublabel": "Embed, measure outcomes"
+            }
+          ]
+        }
+      },
+      {
+        "type": "traffic-light",
+        "x": 80,
+        "y": 420,
+        "w": 320,
+        "h": 240,
+        "args": {
+          "title": "Risk Levels",
+          "lights": [
+            {
+              "color": "red",
+              "active": true,
+              "label": "Change fatigue"
+            },
+            {
+              "color": "amber",
+              "active": true,
+              "label": "Data migration"
+            },
+            {
+              "color": "green",
+              "active": true,
+              "label": "Vendor delays"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 460,
+        "y": 420,
+        "w": 760,
+        "h": 240,
+        "args": {
+          "title": "Mitigation Strategies",
+          "items": [
+            {
+              "icon": "users",
+              "label": "Communication plan, celebrate wins",
+              "status": "highlight"
+            },
+            {
+              "icon": "database",
+              "label": "Automated validation, pilot run",
+              "status": "done"
+            },
+            {
+              "icon": "handshake",
+              "label": "Multi-vendor contingency, SLAs",
+              "status": "todo"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["swot", "fishbone", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3048,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 663,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022389,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-06-25T04:33:18.381Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

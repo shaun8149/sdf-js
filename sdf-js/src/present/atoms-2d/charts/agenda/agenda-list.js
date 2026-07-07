@@ -13,7 +13,7 @@
 //   highlight — optional integer (1-indexed) — row to render in accent color
 // =============================================================================
 
-import { rgbCss, rgbaCss } from '../../renderer.js';
+import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -152,10 +152,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillText(String(i + 1), chipX, rowCY);
     }
 
-    // Label
+    // Label — shrink-to-fit the row width (Sprint 37)
+    const agendaMaxW = x + w - PAD - textX;
     if (it.label) {
       ctx.fillStyle = rgbCss(fg);
-      ctx.font = `${isHi ? '700' : '600'} ${Math.round(rowH * 0.32)}px Inter, system-ui, sans-serif`;
+      const weight = isHi ? '700' : '600';
+      const lfs = fitFontPx(
+        ctx,
+        it.label,
+        agendaMaxW,
+        Math.round(rowH * 0.32),
+        (fs) => `${weight} ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `${weight} ${lfs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       const labelY = it.sublabel ? rowCY - rowH * 0.12 : rowCY;
@@ -165,7 +174,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Sublabel
     if (it.sublabel) {
       ctx.fillStyle = rgbaCss(fg, 0.6);
-      ctx.font = `500 ${Math.round(rowH * 0.22)}px Inter, system-ui, sans-serif`;
+      const sfs = fitFontPx(
+        ctx,
+        it.sublabel,
+        agendaMaxW,
+        Math.round(rowH * 0.22),
+        (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
+      );
+      ctx.font = `500 ${sfs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(String(it.sublabel), textX, rowCY + rowH * 0.18);
@@ -272,7 +288,7 @@ function drawShowcase(
     const numW = numbered ? ctx.measureText(String(i + 1).padStart(2, '0')).width + 16 : 0;
     const iconExtraW = it.icon ? Math.min(numSize * 0.38, 32) + 8 : 0;
     const labelX = cellX + numW + iconExtraW;
-    const labelMaxW = colW - numW - iconExtraW - 12;
+    const labelMaxW = Math.min(colW - numW - iconExtraW - 12, cellX + colW - labelX - 12);
 
     // Item label (bold, dark)
     if (it.label) {
@@ -282,7 +298,7 @@ function drawShowcase(
         String(it.label),
         labelMaxW,
         Math.round(labelSize),
-        Math.max(10, Math.round(labelSize * 0.6)),
+        10,
         (fs) => `700 ${fs}px Inter, system-ui, sans-serif`,
       );
       ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
@@ -298,7 +314,7 @@ function drawShowcase(
         String(it.sublabel),
         labelMaxW,
         Math.round(subSize),
-        Math.max(8, Math.round(subSize * 0.65)),
+        9,
         (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
       );
       ctx.font = `500 ${subLabelFs}px Inter, system-ui, sans-serif`;
