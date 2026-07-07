@@ -35,30 +35,11 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 3,
+    "total": 1,
     "counts": {
-      "TINY_FONT": 2,
       "OUT_OF_BOUNDS": 1
     },
     "slots_with_issues": [
-      {
-        "slotIdx": 1,
-        "slotName": "tldr",
-        "issues": [
-          {
-            "kind": "TINY_FONT",
-            "subject": 1,
-            "type": "stat-banner",
-            "detail": "\"+62% ARR\" at 7.0px"
-          },
-          {
-            "kind": "TINY_FONT",
-            "subject": 5,
-            "type": "quote-pull",
-            "detail": "\"Investment Review 2026 · 47 ex\" at 6.0px"
-          }
-        ]
-      },
       {
         "slotIdx": 2,
         "slotName": "metrics",
@@ -104,5 +85,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.149Z"
+  "generatedAt": "2026-07-07T06:44:59.901Z"
 }

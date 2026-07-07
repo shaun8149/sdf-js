@@ -1,0 +1,58 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 16,
+  "sourceSlideTitle": "Fiduciary Duty, Not Charity",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Quote"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 140,
+        "y": 200,
+        "w": 1000,
+        "h": 400,
+        "args": {
+          "quote": "This investment strategy is financially rational fiduciary duty. Not charity or subsidy, but sound long-term risk management.",
+          "author": "Fiduciary Duty, Not Charity",
+          "align": "center"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["quote-pull", "pull-quote-banner"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4904,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 220,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0219144,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-07-07T06:40:56.430Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

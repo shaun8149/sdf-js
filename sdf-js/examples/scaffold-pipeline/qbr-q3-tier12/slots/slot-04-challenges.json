@@ -1,0 +1,75 @@
+{
+  "slotIdx": 4,
+  "slotName": "challenges",
+  "slotTitle": "Challenges",
+  "slotPurpose": "What did not go to plan",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Challenges",
+  "sceneData": {
+    "name": "qbr/challenges",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Challenges"
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "problem": "Q3 Execution Gaps",
+          "categories": [
+            {
+              "name": "Integration",
+              "causes": ["Bridge API instability", "Third-party delays"]
+            },
+            {
+              "name": "Performance",
+              "causes": ["Perp DEX latency 2s", "800ms target missed"]
+            },
+            {
+              "name": "Market",
+              "causes": ["Asia GTM slow", "Regulatory uncertainty"]
+            },
+            {
+              "name": "Operations",
+              "causes": ["Support 8h avg", "2h SLA breach"]
+            }
+          ],
+          "color": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "fishbone", "waterfall"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2432,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0140523,
+    "elapsedSec": 6,
+    "generatedAt": "2026-06-24T04:50:43.313Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

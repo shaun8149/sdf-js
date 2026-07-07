@@ -3,8 +3,8 @@
   "slotName": "theme-1-lead",
   "slotTitle": "Theme 1 — Lead",
   "slotPurpose": "First major theme: the core facts and figures",
-  "sourceSlideIdx": 3,
-  "sourceSlideTitle": "Compute as the Dominant Cost Factor",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Severe Compute Supply Shortage",
   "sceneData": {
     "name": "news-briefing/theme-1-lead",
     "layout": "stage",
@@ -21,53 +21,41 @@
         }
       },
       {
-        "type": "icon-row",
+        "type": "stat-banner",
         "x": 40,
-        "y": 160,
+        "y": 180,
         "w": 1200,
-        "h": 240,
+        "h": 140,
         "args": {
-          "title": "Compute as the Dominant Cost Factor",
-          "items": [
-            {
-              "icon": "chart-line-up",
-              "label": "Lowest Cost",
-              "sublabel": "Determining factor for AI companies"
-            },
-            {
-              "icon": "gauge",
-              "label": "Competitiveness",
-              "sublabel": "Pricing impacts viability directly"
-            },
-            {
-              "icon": "briefcase",
-              "label": "Strategic Decisions",
-              "sublabel": "Infrastructure costs now drive choices"
-            }
-          ],
-          "iconSize": "large",
-          "iconStyle": "circle"
+          "value": "10×",
+          "label": "Demand Exceeds Supply",
+          "trend": "Critical Shortage",
+          "trendDirection": "down",
+          "bg": [38, 70, 130]
         }
       },
       {
-        "type": "balance-scale",
+        "type": "bullet-list",
         "x": 40,
-        "y": 430,
+        "y": 360,
         "w": 1200,
-        "h": 250,
+        "h": 320,
         "args": {
-          "title": "Cost-Optimized Cloud Providers",
-          "leftLabel": "Major Cloud",
-          "rightLabel": "Specialized GPU",
-          "leftItems": ["Higher service overhead", "Premium pricing"],
-          "rightItems": [
-            "Coreweave — lower costs",
-            "Lambda Labs — GPU focus",
-            "Reduced spending for startups"
-          ],
-          "leftAccent": "rgb(110,95,75)",
-          "rightAccent": "rgb(38,70,130)",
-          "verdict": "Specialized providers offer significant cost advantages"
+          "title": "Severe Compute Supply Shortage",
+          "items": [
+            {
+              "icon": "circuitry",
+              "label": "Generative AI compute demand exceeds supply 10×"
+            },
+            {
+              "icon": "trophy",
+              "label": "Compute access now critical competitive factor"
+            },
+            {
+              "icon": "gauge",
+              "label": "Imbalance affects training and inference operations"
+            }
+          ]
         }
       }
     ]
@@ -78,20 +66,20 @@
     "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4773,
+      "input_tokens": 4928,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 545,
+      "output_tokens": 410,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0263964,
-    "elapsedSec": 10.5,
-    "generatedAt": "2026-07-07T04:24:28.784Z",
+    "costUSD": 0.024836399999999998,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-07T06:39:14.656Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

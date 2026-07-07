@@ -1,0 +1,79 @@
+{
+  "slotIdx": 7,
+  "slotName": "appendix",
+  "slotTitle": "Appendix",
+  "slotPurpose": "Supporting data, raw tables, methodology details",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Appendix",
+  "sceneData": {
+    "name": "analysis-report/appendix",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Appendix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "matrix-grid",
+              "label": "Full SWOT scoring matrix",
+              "sublabel": "Available on request"
+            },
+            {
+              "icon": "chat-circle",
+              "label": "Customer interview transcripts",
+              "sublabel": "Redacted for confidentiality"
+            },
+            {
+              "icon": "flow-chart",
+              "label": "Porter value chain breakdown",
+              "sublabel": "Per product line in supplementary deck"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Change curve model",
+              "sublabel": "Based on Bridges (2017) revision of Kübler-Ross"
+            }
+          ],
+          "title": "Reference Materials"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "timeline"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3001,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10770,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 364,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.017694,
+    "elapsedSec": 5.2,
+    "generatedAt": "2026-06-25T04:06:19.066Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

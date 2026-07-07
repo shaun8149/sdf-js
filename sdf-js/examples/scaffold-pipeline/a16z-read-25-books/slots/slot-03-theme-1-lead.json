@@ -4,7 +4,7 @@
   "slotTitle": "Theme 1 — Lead",
   "slotPurpose": "First major theme: the core facts and figures",
   "sourceSlideIdx": 3,
-  "sourceSlideTitle": "Business Strategy Foundations",
+  "sourceSlideTitle": "Business Strategy Titles",
   "sceneData": {
     "name": "news-briefing/theme-1-lead",
     "layout": "grid",
@@ -16,81 +16,38 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Theme 1 — Lead",
+          "title": "Business Strategy Titles",
           "style": "gradient"
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 40,
-        "y": 160,
-        "w": 1200,
-        "h": 100,
-        "args": {
-          "value": "14",
-          "label": "Contributors",
-          "trend": "Andreessen Horowitz founders and partners",
-          "bg": [38, 70, 130]
         }
       },
       {
         "type": "icon-grid",
         "x": 40,
-        "y": 300,
+        "y": 160,
         "w": 1200,
-        "h": 380,
+        "h": 500,
         "args": {
-          "title": "Business Strategy Foundations",
+          "title": "Key Business Books",
           "items": [
             {
               "icon": "storefront",
-              "label": "Sam Walton",
-              "sublabel": "Made in America · Retail building"
+              "label": "Made in America",
+              "sublabel": "Sam Walton · Retail insights"
             },
             {
-              "icon": "chart-line-up",
+              "icon": "trend-up",
               "label": "Good to Great",
-              "sublabel": "Exceptional vs good companies"
+              "sublabel": "Company transformation principles"
             },
             {
-              "icon": "users",
+              "icon": "user-focus",
               "label": "Who",
-              "sublabel": "Talent and hiring decisions"
-            },
-            {
-              "icon": "briefcase",
-              "label": "Flock Safety",
-              "sublabel": "Contributor"
-            },
-            {
-              "icon": "cpu",
-              "label": "Applied Intuition",
-              "sublabel": "Contributor"
-            },
-            {
-              "icon": "robot",
-              "label": "Decagon",
-              "sublabel": "Contributor"
-            },
-            {
-              "icon": "database",
-              "label": "Databricks",
-              "sublabel": "Contributor"
-            },
-            {
-              "icon": "chart-bar",
-              "label": "Kalshi",
-              "sublabel": "Contributor"
-            },
-            {
-              "icon": "stethoscope",
-              "label": "Abridge",
-              "sublabel": "Contributor"
+              "sublabel": "Talent selection strategies"
             }
           ],
           "cols": 3,
           "iconStyle": "card",
-          "iconSize": "medium"
+          "iconSize": "large"
         }
       }
     ]
@@ -101,20 +58,20 @@
     "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4531,
+      "input_tokens": 4915,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 659,
+      "output_tokens": 337,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0273804,
-    "elapsedSec": 10.6,
-    "generatedAt": "2026-07-07T04:06:31.410Z",
+    "costUSD": 0.0237024,
+    "elapsedSec": 6.5,
+    "generatedAt": "2026-07-07T06:42:33.802Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

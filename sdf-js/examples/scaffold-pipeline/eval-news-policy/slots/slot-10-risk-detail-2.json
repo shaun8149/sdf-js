@@ -3,8 +3,8 @@
   "slotName": "risk-detail-2",
   "slotTitle": "Secondary Risks",
   "slotPurpose": "Remaining risks / upside factors",
-  "sourceSlideIdx": 11,
-  "sourceSlideTitle": "挑战二：二手车残值体系缺失",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "挑战三：补贴退坡影响预期",
   "sceneData": {
     "name": "news-briefing/risk-detail-2",
     "layout": "row",
@@ -16,33 +16,32 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "次要风险",
+          "title": "Secondary Risks",
           "style": "gradient"
         }
       },
       {
         "type": "balance-scale",
-        "x": 140,
-        "y": 180,
-        "w": 1000,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 500,
         "args": {
-          "title": "挑战二：二手车残值体系缺失",
+          "title": "挑战三：补贴退坡影响预期",
           "leftLabel": "当前状态",
-          "rightLabel": "影响范围",
+          "rightLabel": "明年预期",
           "leftItems": [
-            "残值评估标准缺失",
-            "置换意愿持续低迷",
-            "消费者信心不足"
+            "购置补贴政策支持",
+            "高速增长态势"
           ],
           "rightItems": [
-            "中等概率事件",
-            "深远长期影响",
-            "农村市场普及受阻"
+            "补贴按期退坡",
+            "增速回落至30%以下",
+            "政策变动压力"
           ],
-          "leftAccent": "rgb(165,130,90)",
-          "rightAccent": "rgb(38,70,130)",
-          "verdict": "需要建立健全的二手车残值评估体系"
+          "leftAccent": "rgb(110, 95, 75)",
+          "rightAccent": "rgb(38, 70, 130)",
+          "verdict": "政策变动对市场增长构成压力"
         }
       }
     ]
@@ -57,20 +56,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4448,
+      "input_tokens": 4934,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 370,
+      "output_tokens": 357,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022796399999999998,
-    "elapsedSec": 7.6,
-    "generatedAt": "2026-07-07T01:19:45.024Z",
+    "costUSD": 0.0240594,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-07T06:43:28.221Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

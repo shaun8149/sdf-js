@@ -1,0 +1,156 @@
+{
+  "slotIdx": 2,
+  "slotName": "what-we-do",
+  "slotTitle": "What We Do",
+  "slotPurpose": "Products + service overview",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Product Suite",
+  "sceneData": {
+    "name": "company-overview/what-we-do",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "What We Do"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 140,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "items": [
+            {
+              "icon": "wallet",
+              "label": "Lightweight Wallet",
+              "sublabel": "Mobile-first self-custodial"
+            },
+            {
+              "icon": "chat-circle",
+              "label": "Chat Module",
+              "sublabel": "Embedded social & alpha"
+            },
+            {
+              "icon": "lightning",
+              "label": "Trading Acceleration",
+              "sublabel": "Aggregated DEX routing"
+            }
+          ],
+          "iconStyle": "card",
+          "iconSize": "medium"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 340,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "title": "Competitive Advantages",
+          "items": [
+            {
+              "icon": "lightning-slash",
+              "label": "Sub-second execution"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial without UX compromise"
+            },
+            {
+              "icon": "brain",
+              "label": "AI-native agents"
+            },
+            {
+              "icon": "users",
+              "label": "Network effects from social"
+            },
+            {
+              "icon": "plugs",
+              "label": "Open plugin ecosystem"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Trail of Bits audited"
+            }
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 660,
+        "y": 340,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "title": "Growth Metrics",
+          "kpis": [
+            {
+              "value": "$300K",
+              "label": "Daily Volume",
+              "sublabel": "After 4 weeks"
+            },
+            {
+              "value": "12K",
+              "label": "Monthly Wallets"
+            },
+            {
+              "value": "47%",
+              "label": "Weekly Growth",
+              "trend": "up"
+            },
+            {
+              "value": "92%",
+              "label": "Day-30 Retention",
+              "trend": "up"
+            },
+            {
+              "value": "8 min",
+              "label": "Avg Session",
+              "sublabel": "3× industry norm"
+            },
+            {
+              "value": "72",
+              "label": "NPS Score",
+              "sublabel": "Top quartile"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "flow-chart",
+      "magazine-column-grid",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2933,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 839,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0244914,
+    "elapsedSec": 12.7,
+    "generatedAt": "2026-06-24T05:08:57.501Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

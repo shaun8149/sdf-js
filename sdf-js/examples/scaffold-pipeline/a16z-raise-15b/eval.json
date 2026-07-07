@@ -3,18 +3,18 @@
   "deckName": "a16z-raise-15b",
   "structure": {
     "slots_total": 14,
-    "slots_baked": 14,
-    "slots_empty": 0,
+    "slots_baked": 11,
+    "slots_empty": 3,
     "slots_errored": 0,
-    "fill_rate": 1,
+    "fill_rate": 0.7857142857142857,
     "pick_method": "forced",
     "scaffold_id": "news-briefing",
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 26,
+    "atom_instances": 20,
     "atom_types_distinct": 12,
-    "variety_ratio": 0.46153846153846156,
+    "variety_ratio": 0.6,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -23,32 +23,81 @@
   "threeDReadiness": {
     "twin_coverage": 1,
     "untwinned_types": [],
-    "lift_success": 14,
-    "lift_attempted": 14,
+    "lift_success": 11,
+    "lift_attempted": 11,
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 2,
+    "counts": {
+      "OUT_OF_BOUNDS": 1,
+      "TEXT_OVERFLOW": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 5,
+        "slotName": "theme-2-lead",
+        "issues": [
+          {
+            "kind": "OUT_OF_BOUNDS",
+            "subject": 1,
+            "type": "icon-row",
+            "detail": "\"Competition intensifies across\" at (-36,539)"
+          }
+        ]
+      },
+      {
+        "slotIdx": 6,
+        "slotName": "theme-2-detail",
+        "issues": [
+          {
+            "kind": "TEXT_OVERFLOW",
+            "subject": 1,
+            "type": "icon-row",
+            "detail": "\"American Competitiveness\" ends at x=1316"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
-    "chars_per_slot": 246.92857142857142,
-    "max_slot_chars": 616
+    "chars_per_slot": 211.1818181818182,
+    "max_slot_chars": 386
   },
   "fidelity": {
-    "numbers_total": 11,
-    "numbers_found": 11,
+    "numbers_total": 9,
+    "numbers_found": 9,
     "number_recall": 1,
     "missing_numbers": [],
-    "deck_numbers_total": 13,
-    "hallucinated_numbers": ["3.3"],
-    "number_precision": 0.9230769230769231,
-    "entities_total": 4,
-    "entities_found": 4,
+    "deck_numbers_total": 21,
+    "hallucinated_numbers": [
+      "$9.75B",
+      "38",
+      "70",
+      "130",
+      "110",
+      "95",
+      "75",
+      "165",
+      "90",
+      "200",
+      "195",
+      "180"
+    ],
+    "deck_entities_total": 34,
+    "hallucinated_entities": ["Market Share", "Blind Opportunity"],
+    "entity_precision": 0.9411764705882353,
+    "number_precision": 0.42857142857142855,
+    "entities_total": 3,
+    "entities_found": 3,
     "entity_recall": 1,
     "missing_entities": []
   },
   "score": {
-    "total": 100,
+    "total": 94.6,
     "breakdown": {
-      "structure": 25,
+      "structure": 19.6,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
@@ -56,5 +105,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T04:05:37.256Z"
+  "generatedAt": "2026-07-07T06:41:46.694Z"
 }

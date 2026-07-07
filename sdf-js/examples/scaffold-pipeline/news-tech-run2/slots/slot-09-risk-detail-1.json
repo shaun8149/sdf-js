@@ -1,0 +1,90 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "风险一：出口管制影响",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "风险一：出口管制影响",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "出口管制反复调整使中国市场收入承压",
+          "body": "英伟达对华收入占比已从26%降至13%",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 120,
+        "y": 380,
+        "w": 480,
+        "h": 260,
+        "args": {
+          "value": "高",
+          "label": "发生概率",
+          "icon": "gauge",
+          "style": "light",
+          "trend": "up",
+          "trendDirection": "up"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 380,
+        "w": 480,
+        "h": 260,
+        "args": {
+          "value": "中等",
+          "label": "影响程度",
+          "icon": "chart-line-down",
+          "style": "light",
+          "trend": "26% → 13%",
+          "trendDirection": "down"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4455,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 483,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024512399999999997,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-06T16:22:32.647Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

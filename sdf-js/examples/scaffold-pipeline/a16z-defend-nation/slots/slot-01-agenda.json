@@ -16,39 +16,82 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Overview"
+          "title": "Overview",
+          "style": "section"
         }
       },
       {
         "type": "agenda-list",
-        "x": 80,
+        "x": 40,
         "y": 160,
-        "w": 1120,
+        "w": 560,
         "h": 520,
         "args": {
+          "title": "Strategic Framework",
           "items": [
             {
               "label": "U.S. technological leadership decline",
-              "sublabel": "Assessment of competitive position"
+              "sublabel": "Competitive landscape shift"
             },
             {
-              "label": "Global Competition and Innovation (GCI) framework",
-              "sublabel": "New investment approach"
+              "label": "ESG to Global Competition framework",
+              "sublabel": "New investment paradigm"
             },
             {
-              "label": "Eight critical sectors requiring capital",
-              "sublabel": "Semiconductors · Energy · Artificial Intelligence"
+              "label": "Eight critical investment sectors",
+              "sublabel": "Energy, AI, Space & others"
             },
             {
-              "label": "AI deployment and energy scaling priorities",
-              "sublabel": "Large institutional investors anchor capital"
-            },
-            {
-              "label": "Role of institutional investors",
-              "sublabel": "Strategic capital allocation for competitiveness"
+              "label": "Institutional investors in national security",
+              "sublabel": "Pension, sovereign, insurance, endowment"
             }
           ],
           "numbered": true
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 640,
+        "y": 160,
+        "w": 600,
+        "h": 520,
+        "args": {
+          "title": "Critical Sectors & Capital",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Energy",
+              "sublabel": "Manufacturing & AI infrastructure"
+            },
+            {
+              "icon": "brain",
+              "label": "AI",
+              "sublabel": "Deployment at scale"
+            },
+            {
+              "icon": "rocket",
+              "label": "Space",
+              "sublabel": "Communications & defense"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Pension Funds",
+              "sublabel": "Long-term capacity building"
+            },
+            {
+              "icon": "shield",
+              "label": "Sovereign Wealth",
+              "sublabel": "National infrastructure"
+            },
+            {
+              "icon": "building",
+              "label": "Insurance & Endowment",
+              "sublabel": "Long-duration projects"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "circle",
+          "iconSize": "medium"
         }
       }
     ]
@@ -59,20 +102,20 @@
     "recommendedAtoms": ["agenda-list", "number-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4863,
+      "input_tokens": 5354,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 342,
+      "output_tokens": 644,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023621399999999997,
-    "elapsedSec": 6.9,
-    "generatedAt": "2026-07-07T03:48:58.045Z",
+    "costUSD": 0.029624400000000002,
+    "elapsedSec": 10.5,
+    "generatedAt": "2026-07-07T06:40:56.427Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

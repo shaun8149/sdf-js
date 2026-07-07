@@ -1,0 +1,64 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "AI资本开支放缓风险",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "AI资本开支放缓风险",
+          "leftLabel": "风险概率",
+          "rightLabel": "影响深度",
+          "leftItems": ["概率低"],
+          "rightItems": ["直接冲击订单", "芯片需求大幅下降", "影响深远"],
+          "leftAccent": "rgb(110, 95, 75)",
+          "rightAccent": "rgb(38, 70, 130)",
+          "verdict": "低概率·高影响事件"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4659,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 330,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0228294,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-07T05:02:01.021Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

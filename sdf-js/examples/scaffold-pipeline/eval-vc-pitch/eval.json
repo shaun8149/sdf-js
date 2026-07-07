@@ -12,19 +12,13 @@
     "theme_id": "pitch-cobalt-orange"
   },
   "atomQuality": {
-    "atom_instances": 26,
-    "atom_types_distinct": 14,
-    "variety_ratio": 0.5384615384615384,
+    "atom_instances": 18,
+    "atom_types_distinct": 13,
+    "variety_ratio": 0.7222222222222222,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 1,
-    "arg_violations_top_offenders": [
-      {
-        "type": "kpi-card",
-        "key": "trendDirection",
-        "count": 1
-      }
-    ]
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
   },
   "threeDReadiness": {
     "twin_coverage": 1,
@@ -35,59 +29,36 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 3,
-    "counts": {
-      "TEXT_COLLISION": 2,
-      "SUBJECT_OVERLAP": 1
-    },
-    "slots_with_issues": [
-      {
-        "slotIdx": 7,
-        "slotName": "business-model",
-        "issues": [
-          {
-            "kind": "TEXT_COLLISION",
-            "detail": "\"$2.7M\" (subj 2) × \"Projected Q3 2027\" (subj 3)"
-          },
-          {
-            "kind": "TEXT_COLLISION",
-            "detail": "\"$3.6M\" (subj 2) × \"$3M ARR\" (subj 3)"
-          },
-          {
-            "kind": "SUBJECT_OVERLAP",
-            "detail": "break-even[2] × kpi-card[3] overlap 100%"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
   },
   "textBudget": {
-    "chars_per_slot": 196.22222222222223,
-    "max_slot_chars": 264
+    "chars_per_slot": 182.22222222222223,
+    "max_slot_chars": 283
   },
   "fidelity": {
     "numbers_total": 27,
-    "numbers_found": 25,
-    "number_recall": 0.9259259259259259,
+    "numbers_found": 24,
+    "number_recall": 0.8888888888888888,
     "missing_numbers": [
+      "$120K",
       "$740K",
       "$2.4M"
     ],
-    "deck_numbers_total": 34,
+    "deck_numbers_total": 33,
     "hallucinated_numbers": [
-      "0.12",
-      "0.74",
       "1500000",
-      "0.5"
+      "150000",
+      "0.6"
     ],
-    "deck_entities_total": 25,
+    "deck_entities_total": 23,
     "hallucinated_entities": [
-      "Architecture Flow",
       "Pricing Tiers",
       "Allocation Details"
     ],
-    "entity_precision": 0.88,
-    "number_precision": 0.8823529411764706,
+    "entity_precision": 0.9130434782608695,
+    "number_precision": 0.9090909090909091,
     "entities_total": 5,
     "entities_found": 5,
     "entity_recall": 1,
@@ -104,5 +75,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.163Z"
+  "generatedAt": "2026-07-07T06:44:59.913Z"
 }

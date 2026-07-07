@@ -1,0 +1,125 @@
+{
+  "slotIdx": 4,
+  "slotName": "market",
+  "slotTitle": "Market",
+  "slotPurpose": "Where we play",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Market Opportunity",
+  "sceneData": {
+    "name": "company-overview/market",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Market"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 260,
+        "args": {
+          "title": "User Groups",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Crypto Traders"
+            },
+            {
+              "icon": "rocket",
+              "label": "DeFi Power Users"
+            },
+            {
+              "icon": "user-focus",
+              "label": "Mainstream Users"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Smart Money"
+            }
+          ],
+          "iconSize": "medium",
+          "iconStyle": "circle"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 260,
+        "args": {
+          "title": "TAM Segments",
+          "values": [35, 25, 25, 15],
+          "labels": ["Crypto Traders", "DeFi Users", "Mainstream", "Smart Money"],
+          "colors": ["rgb(38,70,130)", "rgb(110,95,75)", "rgb(165,130,90)", "rgb(200,195,180)"]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 460,
+        "w": 1200,
+        "h": 220,
+        "args": {
+          "title": "Core Differentiators",
+          "items": [
+            {
+              "icon": "lightning-slash",
+              "label": "Sub-second DEX execution"
+            },
+            {
+              "icon": "brain",
+              "label": "AI strategy automation"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial speed"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Community alpha sharing"
+            },
+            {
+              "icon": "microphone",
+              "label": "Live trading audio"
+            },
+            {
+              "icon": "code-block",
+              "label": "Open developer API"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["pie", "bar", "sphere-fill", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2519,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 690,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0196833,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-06-24T04:30:35.075Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "slotIdx": 6,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Leadership and culture",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Strategic Position",
+  "sceneData": {
+    "name": "company-overview/team",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "events": [
+            {
+              "date": "Now",
+              "label": "Prototype Ready",
+              "sublabel": "Smart Money System"
+            },
+            {
+              "date": "1-2 Months",
+              "label": "Market Gap",
+              "sublabel": "Beyond For positioning"
+            },
+            {
+              "date": "4 Weeks",
+              "label": "Perp DEX Launch",
+              "sublabel": "$300K daily self-built"
+            },
+            {
+              "date": "OpenClaw",
+              "label": "AI Integration",
+              "sublabel": "Agent mentions & community"
+            }
+          ],
+          "title": "Strategic Roadmap"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "org-chart",
+      "circle-image-hub-spoke",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2801,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 335,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0165354,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-06-24T05:09:23.072Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

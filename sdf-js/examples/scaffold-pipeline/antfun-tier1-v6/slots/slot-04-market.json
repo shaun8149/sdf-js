@@ -1,0 +1,158 @@
+{
+  "slotIdx": 4,
+  "slotName": "market",
+  "slotTitle": "Market",
+  "slotPurpose": "Where we play",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Product Suite",
+  "sceneData": {
+    "name": "company-overview/market",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Market"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Daily Volume",
+          "value": "$300K",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 340,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Active Wallets",
+          "value": "12K",
+          "sublabel": "Monthly",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Growth Rate",
+          "value": "47%",
+          "sublabel": "Week-over-week",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 940,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "NPS Score",
+          "value": "72",
+          "sublabel": "Top quartile",
+          "style": "light"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 40,
+        "y": 410,
+        "w": 220,
+        "h": 260,
+        "args": {
+          "percentage": 92,
+          "label": "Day-30 Retention"
+        }
+      },
+      {
+        "type": "bar",
+        "x": 290,
+        "y": 410,
+        "w": 450,
+        "h": 260,
+        "args": {
+          "title": "Session Length",
+          "values": [8, 2.7],
+          "labels": ["Us", "Industry"],
+          "format": "minutes",
+          "orientation": "horizontal"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 770,
+        "y": 410,
+        "w": 450,
+        "h": 260,
+        "args": {
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Sub-Second Execution"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-Custodial"
+            },
+            {
+              "icon": "brain",
+              "label": "AI-Native"
+            },
+            {
+              "icon": "users-three",
+              "label": "Network Effects"
+            },
+            {
+              "icon": "plug",
+              "label": "Plugin Ecosystem"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Trail of Bits"
+            }
+          ],
+          "iconSize": "small"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["pie", "bar", "sphere-fill", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2529,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 887,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022668300000000002,
+    "elapsedSec": 10.9,
+    "generatedAt": "2026-06-24T04:01:56.066Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

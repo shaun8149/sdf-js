@@ -1,0 +1,93 @@
+{
+  "slotIdx": 1,
+  "slotName": "executive-summary",
+  "slotTitle": "Executive Summary",
+  "slotPurpose": "3-5 highlights at-a-glance",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Executive Summary",
+  "sceneData": {
+    "name": "qbr/executive-summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Summary"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "kpis": [
+            {
+              "value": "$740K",
+              "label": "Q3 ARR",
+              "sublabel": "+117% QoQ",
+              "trend": "up",
+              "trendValue": "+117%",
+              "color": [38, 70, 130]
+            },
+            {
+              "value": "12.5K",
+              "label": "Daily Active Wallets",
+              "sublabel": "Daily users",
+              "trend": "up",
+              "color": [110, 95, 75]
+            },
+            {
+              "value": "Week 8",
+              "label": "Insurance Launch",
+              "sublabel": "Policy live",
+              "trend": "neutral",
+              "color": [165, 130, 90]
+            },
+            {
+              "value": "Q3 End",
+              "label": "Perp DEX Shipped",
+              "sublabel": "Prototype complete",
+              "trend": "neutral",
+              "color": [38, 70, 130]
+            },
+            {
+              "value": "3",
+              "label": "Strategic Risks",
+              "sublabel": "See risks slide",
+              "trend": "down",
+              "color": [200, 195, 180]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["dashboard-multi-kpi-composite", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2447,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 493,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0178434,
+    "elapsedSec": 9,
+    "generatedAt": "2026-06-24T04:58:17.201Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

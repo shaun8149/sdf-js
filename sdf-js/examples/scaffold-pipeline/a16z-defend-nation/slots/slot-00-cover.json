@@ -17,8 +17,8 @@
         "h": 720,
         "args": {
           "title": "Investing Capital to Defend the Nation",
-          "subtitle": "David Ulevitch",
-          "author": "Focus: Capital investment in American industrial capacity as national security imperative",
+          "subtitle": "Capital investment in American industrial capacity as national security imperative",
+          "author": "David Ulevitch",
           "style": "gradient"
         }
       }
@@ -30,20 +30,20 @@
     "recommendedAtoms": ["cover"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4380,
+      "input_tokens": 4868,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 152,
+      "output_tokens": 150,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0193224,
-    "elapsedSec": 4.3,
-    "generatedAt": "2026-07-07T03:48:51.105Z",
+    "costUSD": 0.020756399999999998,
+    "elapsedSec": 4.2,
+    "generatedAt": "2026-07-07T06:40:56.425Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

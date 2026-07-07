@@ -3,10 +3,10 @@
   "deckName": "eval-news-policy",
   "structure": {
     "slots_total": 14,
-    "slots_baked": 14,
-    "slots_empty": 0,
+    "slots_baked": 13,
+    "slots_empty": 1,
     "slots_errored": 0,
-    "fill_rate": 1,
+    "fill_rate": 0.9285714285714286,
     "pick_method": "forced",
     "scaffold_id": "news-briefing",
     "theme_id": "editorial-navy"
@@ -17,77 +17,54 @@
     "variety_ratio": 0.5416666666666666,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
-    "arg_violations": 0,
-    "arg_violations_top_offenders": []
+    "arg_violations": 1,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 1
+      }
+    ]
   },
   "threeDReadiness": {
     "twin_coverage": 1,
     "untwinned_types": [],
-    "lift_success": 14,
-    "lift_attempted": 14,
+    "lift_success": 13,
+    "lift_attempted": 13,
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 2,
-    "counts": {
-      "SUBJECT_OVERLAP": 1,
-      "OUT_OF_BOUNDS": 1
-    },
-    "slots_with_issues": [
-      {
-        "slotIdx": 3,
-        "slotName": "theme-1-lead",
-        "issues": [
-          {
-            "kind": "SUBJECT_OVERLAP",
-            "detail": "bar[1] × kpi-card[2] overlap 100%"
-          }
-        ]
-      },
-      {
-        "slotIdx": 11,
-        "slotName": "quote",
-        "issues": [
-          {
-            "kind": "OUT_OF_BOUNDS",
-            "subject": 1,
-            "type": "pull-quote-banner",
-            "detail": "\"中央财政安排专项补贴120亿元，地方配套资金约200亿元，合\" at (-731,350)"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
   },
   "textBudget": {
-    "chars_per_slot": 74,
-    "max_slot_chars": 128
+    "chars_per_slot": 68.84615384615384,
+    "max_slot_chars": 149
   },
   "fidelity": {
-    "numbers_total": 18,
-    "numbers_found": 18,
+    "numbers_total": 19,
+    "numbers_found": 19,
     "number_recall": 1,
     "missing_numbers": [],
-    "deck_numbers_total": 23,
+    "deck_numbers_total": 19,
     "hallucinated_numbers": [
-      "100",
-      "11%",
-      "37",
-      "0.75"
+      "60"
     ],
     "deck_entities_total": 2,
     "hallucinated_entities": [],
     "entity_precision": 1,
-    "number_precision": 0.8260869565217391,
+    "number_precision": 0.9473684210526315,
     "entities_total": 0,
     "entities_found": 0,
     "entity_recall": 1,
     "missing_entities": []
   },
   "score": {
-    "total": 100,
+    "total": 98.2,
     "breakdown": {
-      "structure": 25,
+      "structure": 23.2,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
@@ -95,5 +72,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.190Z"
+  "generatedAt": "2026-07-07T06:44:59.934Z"
 }

@@ -1,0 +1,50 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Q-name + reviewer + period",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Yosemite Trip Report",
+  "sceneData": {
+    "name": "qbr/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "image-split",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "src": "https://picsum.photos/seed/yosemite/1280/720",
+          "title": "Yosemite Trip Report",
+          "bullets": ["5-day backcountry + valley itinerary", "September 2026", "Group of 4"],
+          "imageSide": "right",
+          "imageWidthPct": 0.55
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2926,
+      "cache_creation_input_tokens": 10508,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 10508,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 201,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.051198,
+    "elapsedSec": 5,
+    "generatedAt": "2026-06-24T05:36:34.449Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "deckName": "qbr-q3-tier12",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/qbr-q3-2026.json",
+  "scaffold": {
+    "id": "qbr",
+    "label": "Quarterly Business Review",
+    "description": "Internal Q review — KPIs, wins, challenges, outlook",
+    "pickScore": 10,
+    "pickSignals": [
+      "Title explicitly states 'Q3 2026 Quarterly Business Review' which is a perfect match for the QBR scaffold",
+      "Body structure follows exact QBR pattern: Executive Summary → KPI Dashboard → Wins → Challenges → Q4 Outlook → Next Steps",
+      "Content includes all typical QBR elements: KPIs (ARR, DAU, retention), wins (awards, funding), challenges (technical/operational issues), forward outlook (Q4 targets), and action items with owners and deadlines",
+      "Audience is clearly internal exec/board/manager review of quarterly performance with metrics, achievements, and strategic planning"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Q-name + reviewer + period",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Q3 2026 Quarterly Business Review",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-row"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "executive-summary",
+      "slotTitle": "Executive Summary",
+      "slotPurpose": "3-5 highlights at-a-glance",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Executive Summary",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-executive-summary.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "dashboard-multi-kpi-composite"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kpis",
+      "slotTitle": "KPI Dashboard",
+      "slotPurpose": "Critical metrics quarter-over-quarter",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "KPI Dashboard",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-kpis.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "What went well this quarter",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Wins",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-wins.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "kpi-card", "kpi-card", "kpi-card", "bullet-list"]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "slotPurpose": "What did not go to plan",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Challenges",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-challenges.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "fishbone"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "slotPurpose": "Forecast + next-Q targets",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Q4 Outlook",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-outlook.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "bullet-list", "progression"]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "next-steps",
+      "slotTitle": "Next Steps",
+      "slotPurpose": "Action items + owners + dates",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Next Steps",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-next-steps.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "timeline"]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 7,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.1155531
+  },
+  "meta": {
+    "generatedAt": "2026-06-24T04:50:55.976Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

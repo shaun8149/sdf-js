@@ -29,7 +29,7 @@
 // preset assets.
 // =============================================================================
 
-import { rgbCss, rgbaCss } from '../../renderer.js';
+import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
 
 export const spec = {
   type: 'bar',
@@ -84,7 +84,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // ---- Title (if present) — Inter 700 with proper padding ----
   let chartTop = y;
   if (title) {
-    const titleSize = Math.min(28, Math.round(h * 0.09));
+    const titleSize = fitFontPx(
+      ctx,
+      title,
+      w - 40,
+      Math.min(28, Math.round(h * 0.09)),
+      (fs) => `700 ${fs}px Inter, sans-serif`,
+    );
     ctx.fillStyle = rgbCss(fg);
     ctx.font = `700 ${titleSize}px Inter, sans-serif`;
     ctx.textAlign = 'left';

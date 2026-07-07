@@ -1,0 +1,136 @@
+{
+  "slotIdx": 9,
+  "slotName": "ask",
+  "slotTitle": "The Ask",
+  "slotPurpose": "Funding amount + use of funds + milestones",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "The Ask",
+  "sceneData": {
+    "name": "pitch-deck-vc/ask",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "The Ask"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 380,
+        "h": 200,
+        "args": {
+          "label": "Series A Raise",
+          "value": "$15M",
+          "icon": "currency-dollar",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 160,
+        "w": 380,
+        "h": 200,
+        "args": {
+          "label": "Target Milestone",
+          "value": "$10M ARR",
+          "icon": "target",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 160,
+        "w": 380,
+        "h": 200,
+        "args": {
+          "label": "Runway",
+          "value": "18 Months",
+          "icon": "calendar",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 40,
+        "y": 390,
+        "w": 560,
+        "h": 290,
+        "args": {
+          "title": "Use of Funds",
+          "segments": [
+            {
+              "label": "Engineering",
+              "value": 60,
+              "color": "rgb(255,120,40)"
+            },
+            {
+              "label": "Sales + Community",
+              "value": 25,
+              "color": "rgb(20,60,180)"
+            },
+            {
+              "label": "Reserve",
+              "value": 15,
+              "color": "rgb(220,220,235)"
+            }
+          ],
+          "format": "percent"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 390,
+        "w": 600,
+        "h": 290,
+        "args": {
+          "items": [
+            {
+              "icon": "code",
+              "label": "Scale 2D+3D atom library to 200"
+            },
+            {
+              "icon": "users-three",
+              "label": "Launch agency partner program"
+            },
+            {
+              "icon": "shield-check",
+              "label": "18-month operational runway"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["kpi-card", "pie", "progression", "timeline"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2450,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 740,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020226300000000003,
+    "elapsedSec": 9.2,
+    "generatedAt": "2026-06-24T04:48:05.935Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -248,6 +248,94 @@ export async function getAtomSpec(type) {
  *
  * Throws if type is unknown OR if the atom doesn't implement requested style.
  */
+// Registry-level typographic floor (Sprint 37): no atom may render text
+// below MIN_FONT_PX. The visual-audit sweep found 45 instances of 3-8.8px
+// text across ~12 atoms — every one a per-atom "fontSize = boxDim × factor"
+// formula with no floor. Enforcing the floor at the single render entry
+// beats chasing formulas atom by atom; text made wider by the clamp is the
+// TEXT_OVERFLOW axis's job to catch, and overflowing beats unreadable.
+export const MIN_FONT_PX = 9;
+
+function withFontFloor(ctx) {
+  // Delegating wrapper (methods bound to the REAL ctx); only `font`
+  // intercepts. Unknown methods/props fall through via the prototype chain
+  // being unused — the explicit lists below cover the 2D API our atoms use.
+  const wrapper = {};
+  for (const name of [
+    'save',
+    'restore',
+    'beginPath',
+    'closePath',
+    'moveTo',
+    'lineTo',
+    'quadraticCurveTo',
+    'bezierCurveTo',
+    'arc',
+    'arcTo',
+    'ellipse',
+    'rect',
+    'roundRect',
+    'clip',
+    'setLineDash',
+    'getLineDash',
+    'translate',
+    'rotate',
+    'scale',
+    'transform',
+    'setTransform',
+    'stroke',
+    'fill',
+    'fillRect',
+    'strokeRect',
+    'clearRect',
+    'drawImage',
+    'fillText',
+    'strokeText',
+    'measureText',
+    'createLinearGradient',
+    'createRadialGradient',
+    'createPattern',
+    'getImageData',
+    'putImageData',
+  ]) {
+    if (typeof ctx[name] === 'function') wrapper[name] = (...a) => ctx[name](...a);
+  }
+  for (const prop of [
+    'fillStyle',
+    'strokeStyle',
+    'lineWidth',
+    'lineCap',
+    'lineJoin',
+    'textAlign',
+    'textBaseline',
+    'shadowColor',
+    'shadowBlur',
+    'shadowOffsetX',
+    'shadowOffsetY',
+    'globalAlpha',
+    'globalCompositeOperation',
+    'lineDashOffset',
+    'canvas',
+  ]) {
+    Object.defineProperty(wrapper, prop, {
+      get: () => ctx[prop],
+      set: (v) => {
+        ctx[prop] = v;
+      },
+    });
+  }
+  Object.defineProperty(wrapper, 'font', {
+    get: () => ctx.font,
+    set: (v) => {
+      ctx.font = String(v).replace(
+        /(\d+(?:\.\d+)?)px/,
+        (m, n) => `${Math.max(MIN_FONT_PX, parseFloat(n))}px`,
+      );
+    },
+  });
+  return wrapper;
+}
+
 export async function renderAtom(ctx, type, args, style = 'pseudo3d', opts = {}) {
   const mod = await loadAtomModule(type);
   let drawFn;
@@ -267,5 +355,5 @@ export async function renderAtom(ctx, type, args, style = 'pseudo3d', opts = {})
   if (typeof drawFn !== 'function') {
     throw new Error(`atoms-2d: atom "${type}" does not implement style "${style}" yet`);
   }
-  return drawFn(ctx, args, opts);
+  return drawFn(withFontFloor(ctx), args, opts);
 }

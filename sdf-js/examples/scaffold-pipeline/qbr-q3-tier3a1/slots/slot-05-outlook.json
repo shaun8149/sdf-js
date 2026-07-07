@@ -1,0 +1,135 @@
+{
+  "slotIdx": 5,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "Forecast + next-Q targets",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Q4 Outlook",
+  "sceneData": {
+    "name": "qbr/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "line",
+        "x": 40,
+        "y": 140,
+        "w": 580,
+        "h": 280,
+        "args": {
+          "values": [0, 0.12, 0.74, 2.4],
+          "labels": ["Q1", "Q2", "Q3", "Q4F"],
+          "format": "currency",
+          "title": "ARR Target",
+          "showPoints": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 140,
+        "w": 580,
+        "h": 280,
+        "args": {
+          "value": "$2.4M",
+          "label": "Q4 ARR Target",
+          "sublabel": "3.2× Q3 Growth",
+          "trend": "up",
+          "trendValue": "220%",
+          "icon": "rocket-launch",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "progression",
+        "x": 40,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "steps": [
+            {
+              "label": "Perp DEX",
+              "status": "current"
+            },
+            {
+              "label": "10-Token Insurance",
+              "status": "todo"
+            },
+            {
+              "label": "Asia Regulatory",
+              "status": "todo"
+            },
+            {
+              "label": "Series B Talks",
+              "status": "todo"
+            }
+          ],
+          "title": "Q4 Milestones"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 660,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Sub-Second Match"
+            },
+            {
+              "icon": "shield-check",
+              "label": "10 Tokens"
+            },
+            {
+              "icon": "flag:sg",
+              "label": "Singapore"
+            },
+            {
+              "icon": "flag:hk",
+              "label": "Hong Kong"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "circle",
+          "iconSize": "medium"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["line", "progression", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2438,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 681,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0206364,
+    "elapsedSec": 14.4,
+    "generatedAt": "2026-06-24T04:58:59.276Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "slotIdx": 4,
+  "slotName": "feature-3",
+  "slotTitle": "Feature Highlight",
+  "slotPurpose": "Third feature with detail",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "2D SPHERES",
+  "sceneData": {
+    "name": "product-launch/feature-3",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Feature Highlight"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 60,
+        "y": 180,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Fill Capacity",
+          "value": "90%",
+          "icon": "gauge",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "sphere-fill",
+        "x": 60,
+        "y": 440,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "value": 90,
+          "label": "Fill Level"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 400,
+        "y": 180,
+        "w": 820,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "gauge",
+              "label": "Adaptive fill levels",
+              "sublabel": "Smart capacity management in real-time"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Performance tracking",
+              "sublabel": "Monitor system efficiency and optimize throughput"
+            },
+            {
+              "icon": "sliders-horizontal",
+              "label": "Custom thresholds",
+              "sublabel": "Configure alerts and automation triggers"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Safe operation",
+              "sublabel": "Prevent overflow with intelligent safeguards"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["icon-row", "icon-grid", "device-mockup-frame", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2552,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 505,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0170073,
+    "elapsedSec": 8.8,
+    "generatedAt": "2026-06-24T04:49:10.268Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

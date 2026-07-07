@@ -1,0 +1,89 @@
+{
+  "slotIdx": 7,
+  "slotName": "theme-3-lead",
+  "slotTitle": "Theme 3 — Lead",
+  "slotPurpose": "Third major theme: the core facts",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "台积电先进封装产能现状",
+  "sceneData": {
+    "name": "news-briefing/theme-3-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 3 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "CoWoS先进封装",
+          "label": "台积电最大瓶颈",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 360,
+        "w": 480,
+        "h": 280,
+        "args": {
+          "value": "66万片/月",
+          "label": "2026年产能",
+          "sublabel": "预计翻倍",
+          "icon": "factory",
+          "style": "light",
+          "trend": "up",
+          "trendValue": "翻倍"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 360,
+        "w": 480,
+        "h": 280,
+        "args": {
+          "value": "60%",
+          "label": "英伟达锁定产能",
+          "sublabel": "占总产能比例",
+          "icon": "cpu",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4689,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 472,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0250494,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-07-07T05:02:01.019Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -186,7 +186,11 @@ function _drawDark(ctx, args, opts = {}) {
       (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
     ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
-    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      x + 22,
+      valueY + Math.round(h * 0.29),
+    );
   }
 }
 
@@ -281,7 +285,11 @@ function _drawLight(ctx, args, opts = {}) {
       (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
     ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
-    ctx.fillText(String(args.sublabel), x + 22, valueY + Math.round(h * 0.29));
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      x + 22,
+      valueY + Math.round(h * 0.29),
+    );
   }
 }
 
@@ -380,7 +388,11 @@ function _drawAccentBorder(ctx, args, opts = {}) {
       (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
     );
     ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
-    ctx.fillText(String(args.sublabel), textLeft, valueY + Math.round(h * 0.29));
+    ctx.fillText(
+      fitText(ctx, String(args.sublabel), availW),
+      textLeft,
+      valueY + Math.round(h * 0.29),
+    );
   }
 }
 

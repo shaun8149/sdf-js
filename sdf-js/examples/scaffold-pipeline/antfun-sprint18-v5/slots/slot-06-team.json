@@ -1,0 +1,112 @@
+{
+  "slotIdx": 6,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Leadership and culture",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Get in Touch",
+  "sceneData": {
+    "name": "company-overview/team",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "circle-image-hub-spoke",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 500,
+        "args": {
+          "center": {
+            "icon": "users-three",
+            "label": "ANTFUN Core"
+          },
+          "spokes": [
+            {
+              "icon": "code",
+              "label": "Founders"
+            },
+            {
+              "icon": "rocket",
+              "label": "Shipping Weekly"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "12K Community"
+            },
+            {
+              "icon": "crown",
+              "label": "Beta Access"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 500,
+        "args": {
+          "items": [
+            {
+              "icon": "brand:discord",
+              "label": "Direct founder access"
+            },
+            {
+              "icon": "brand:telegram",
+              "label": "AI agent @antfun-bot"
+            },
+            {
+              "icon": "brand:x",
+              "label": "Twitter Spaces Fridays"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Revenue share contributors"
+            },
+            {
+              "icon": "brand:github",
+              "label": "Open-source SDK"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Real-time analytics dashboard"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["org-chart", "circle-image-hub-spoke", "icon-row", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2134,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 536,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.016218299999999998,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-06-24T03:42:42.569Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

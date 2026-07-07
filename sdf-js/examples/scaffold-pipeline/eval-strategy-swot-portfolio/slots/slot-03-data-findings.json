@@ -21,10 +21,10 @@
       },
       {
         "type": "testimonial-wall",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
           "title": "Voice of the Customer",
           "testimonials": [
@@ -34,18 +34,6 @@
               "role": "VP Engineering at Meridian Analytics"
             }
           ]
-        }
-      },
-      {
-        "type": "callout-banner",
-        "x": 320,
-        "y": 580,
-        "w": 640,
-        "h": 80,
-        "args": {
-          "type_": "note",
-          "body": "Quote sourced from 32-customer interview round, Aug 2026",
-          "icon": "users"
         }
       }
     ]
@@ -64,20 +52,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4460,
+      "input_tokens": 4948,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 342,
+      "output_tokens": 245,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0224124,
-    "elapsedSec": 6.9,
-    "generatedAt": "2026-07-06T15:42:27.171Z",
+    "costUSD": 0.0224214,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-07T06:44:05.413Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -1,0 +1,62 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "科技投资上行风险",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "科技投资上行风险",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 500,
+        "args": {
+          "leftLabel": "上行支撑",
+          "rightLabel": "不确定性",
+          "leftItems": ["科技相关投资强劲势头", "生产活动增长动力"],
+          "rightItems": ["持续性存疑", "政策环境变化风险"],
+          "leftAccent": "rgb(38, 70, 130)",
+          "rightAccent": "rgb(165, 130, 90)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4419,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 312,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0218394,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-06T16:18:17.671Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

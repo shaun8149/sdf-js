@@ -1,0 +1,104 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "能源供应中断风险",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "能源供应中断风险",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 180,
+        "args": {
+          "type_": "warning",
+          "heading": "霍尔木兹海峡航运中断",
+          "body": "部分能源基础设施关闭，导致能源价格激增",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 80,
+        "y": 400,
+        "w": 520,
+        "h": 240,
+        "args": {
+          "value": "全球供应",
+          "label": "能源及大宗商品",
+          "sublabel": "扰乱供应链",
+          "icon": "globe",
+          "iconColor": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 400,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "高",
+          "label": "发生概率",
+          "trend": "up",
+          "trendValue": "风险升级",
+          "icon": "gauge",
+          "style": "accent-border"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 960,
+        "y": 400,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "深",
+          "label": "冲击程度",
+          "trend": "up",
+          "trendValue": "影响广泛",
+          "icon": "lightning",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4470,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 607,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0264174,
+    "elapsedSec": 12.2,
+    "generatedAt": "2026-07-06T16:18:07.951Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

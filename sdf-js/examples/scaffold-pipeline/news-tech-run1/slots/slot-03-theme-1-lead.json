@@ -1,0 +1,89 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "英伟达数据中心业务表现",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "数据中心业务表现",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "$391亿",
+          "label": "数据中心营收",
+          "sublabel": "最新季度",
+          "icon": "database",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 180,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "93%",
+          "label": "同比增长",
+          "trend": "up",
+          "trendValue": "+93%",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 180,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "88%",
+          "label": "占总营收比重",
+          "icon": "chart-pie-slice",
+          "style": "dark"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4679,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 450,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0246894,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-07T05:02:01.017Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

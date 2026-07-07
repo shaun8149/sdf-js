@@ -1,0 +1,79 @@
+{
+  "slotIdx": 1,
+  "slotName": "problem",
+  "slotTitle": "Problem",
+  "slotPurpose": "Pain point — who hurts and how much",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "The Problem",
+  "sceneData": {
+    "name": "pitch-deck-vc/problem",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Problem"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "presentation",
+              "label": "2008 Visuals",
+              "sublabel": "Outdated design tools"
+            },
+            {
+              "icon": "image-broken",
+              "label": "Clipart Era",
+              "sublabel": "PowerPoint icons + GIFs"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Half-Fixed",
+              "sublabel": "Text improved, visuals dead"
+            },
+            {
+              "icon": "clock",
+              "label": "60% Wasted",
+              "sublabel": "Designer time on layout"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["bullet-list", "icon-row", "icon-grid", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": ["org-chart", "gantt"],
+    "tokenUsage": {
+      "input_tokens": 2491,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 351,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0145143,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-06-24T04:47:14.696Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

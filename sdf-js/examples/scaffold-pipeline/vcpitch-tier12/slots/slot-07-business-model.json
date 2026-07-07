@@ -1,0 +1,127 @@
+{
+  "slotIdx": 7,
+  "slotName": "business-model",
+  "slotTitle": "Business Model",
+  "slotPurpose": "How we make money — unit economics",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Business Model",
+  "sceneData": {
+    "name": "pitch-deck-vc/business-model",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Business Model"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 160,
+        "w": 800,
+        "h": 360,
+        "args": {
+          "items": [
+            {
+              "icon": "user",
+              "label": "Pro",
+              "sublabel": "$30/user/month · knowledge workers"
+            },
+            {
+              "icon": "users-three",
+              "label": "Team",
+              "sublabel": "$200/seat/month · design teams"
+            },
+            {
+              "icon": "buildings",
+              "label": "Studio",
+              "sublabel": "$50K/year · agencies + enterprise"
+            }
+          ],
+          "iconStyle": "card",
+          "iconSize": "large"
+        }
+      },
+      {
+        "type": "break-even",
+        "x": 880,
+        "y": 160,
+        "w": 360,
+        "h": 360,
+        "args": {
+          "target": 3,
+          "current": 0.74,
+          "milestone": "Q3 2027",
+          "unit": "M",
+          "label": "ARR"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 560,
+        "w": 360,
+        "h": 120,
+        "args": {
+          "label": "Break-Even Target",
+          "value": "$3M ARR",
+          "icon": "target",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 440,
+        "y": 560,
+        "w": 360,
+        "h": 120,
+        "args": {
+          "label": "Timeline",
+          "value": "Q3 2027",
+          "icon": "calendar-check",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 560,
+        "w": 360,
+        "h": 120,
+        "args": {
+          "label": "Revenue Streams",
+          "value": "3 Tiers",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["break-even", "waterfall", "kpi-card", "pie"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2456,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 708,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0197643,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-06-24T04:47:50.187Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

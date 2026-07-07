@@ -16,7 +16,8 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Scope & Methodology"
+          "title": "Scope & Methodology",
+          "style": "gradient"
         }
       },
       {
@@ -30,18 +31,18 @@
           "items": [
             {
               "icon": "package",
-              "label": "6 product lines",
+              "label": "6 product lines reviewed",
               "sublabel": "NA + EMEA + APAC markets"
             },
             {
               "icon": "calendar",
-              "label": "2024-Q1 through 2026-Q3",
-              "sublabel": "11 quarters analyzed"
+              "label": "11-quarter time window",
+              "sublabel": "2024-Q1 through 2026-Q3"
             },
             {
               "icon": "database",
               "label": "Internal KPI dashboard",
-              "sublabel": "Primary quantitative source"
+              "sublabel": "Primary data source"
             },
             {
               "icon": "users",
@@ -51,13 +52,13 @@
             {
               "icon": "chart-bar",
               "label": "Gartner Magic Quadrant 2025",
-              "sublabel": "Competitive benchmark"
+              "sublabel": "Competitive positioning"
             }
           ]
         }
       },
       {
-        "type": "icon-grid",
+        "type": "icon-row",
         "x": 680,
         "y": 180,
         "w": 520,
@@ -67,20 +68,22 @@
           "items": [
             {
               "icon": "matrix-grid",
-              "label": "SWOT Analysis"
+              "label": "SWOT",
+              "sublabel": "Strategic positioning"
             },
             {
-              "icon": "flow-arrow",
-              "label": "Porter Value Chain"
+              "icon": "network",
+              "label": "Porter Value Chain",
+              "sublabel": "Activity analysis"
             },
             {
               "icon": "chart-line",
-              "label": "Change Curve"
+              "label": "Change Curve",
+              "sublabel": "Adoption assessment"
             }
           ],
-          "cols": 1,
           "iconStyle": "card",
-          "iconSize": "large"
+          "iconSize": "medium"
         }
       }
     ]
@@ -94,20 +97,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4460,
+      "input_tokens": 4948,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 573,
+      "output_tokens": 602,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025877400000000002,
-    "elapsedSec": 8.7,
-    "generatedAt": "2026-07-06T15:42:12.958Z",
+    "costUSD": 0.0277764,
+    "elapsedSec": 10.2,
+    "generatedAt": "2026-07-07T06:44:05.413Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

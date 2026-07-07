@@ -4,9 +4,9 @@
   "slotTitle": "Overview",
   "slotPurpose": "One line per major theme of the briefing",
   "sourceSlideIdx": 1,
-  "sourceSlideTitle": "Overview: Capital Deployment and Strategic Vision",
+  "sourceSlideTitle": "Agenda: Our Mission and Stakes",
   "sceneData": {
-    "name": "news-briefing/overview",
+    "name": "news-briefing/agenda",
     "layout": "row",
     "subjects": [
       {
@@ -21,71 +21,67 @@
         }
       },
       {
-        "type": "stat-banner",
+        "type": "agenda-list",
         "x": 40,
         "y": 160,
-        "w": 1200,
-        "h": 100,
-        "args": {
-          "value": "$15B+",
-          "label": "Capital Raised Across Six Major Fund Categories",
-          "trend": "18% of U.S. VC",
-          "trendDirection": "up",
-          "bg": [38, 70, 130]
-        }
-      },
-      {
-        "type": "icon-row",
-        "x": 80,
-        "y": 300,
-        "w": 1120,
-        "h": 320,
+        "w": 580,
+        "h": 520,
         "args": {
           "items": [
             {
-              "icon": "brain",
-              "label": "AI",
-              "color": [38, 70, 130]
+              "label": "Record-breaking fundraise across six strategies"
             },
             {
-              "icon": "currency-btc",
-              "label": "Crypto",
-              "color": [110, 95, 75]
+              "label": "America's technological leadership imperative"
             },
             {
-              "icon": "dna",
-              "label": "Biology",
-              "color": [165, 130, 90]
+              "label": "Competition with China and U.S. dominance"
             },
             {
-              "icon": "heart",
-              "label": "Health",
-              "color": [38, 70, 130]
-            },
-            {
-              "icon": "shield",
-              "label": "Defense",
-              "color": [110, 95, 75]
-            },
-            {
-              "icon": "graduation-cap",
-              "label": "Education",
-              "color": [165, 130, 90]
+              "label": "Human flourishing through technological advancement"
             }
           ],
-          "iconSize": "large",
-          "iconStyle": "circle"
+          "numbered": true
         }
       },
       {
-        "type": "callout-banner",
-        "x": 80,
-        "y": 640,
-        "w": 1120,
-        "h": 50,
+        "type": "kpi-card",
+        "x": 660,
+        "y": 160,
+        "w": 280,
+        "h": 240,
         "args": {
-          "type_": "insight",
-          "body": "Strategic response to intensifying competition with China"
+          "value": "$6.75B",
+          "label": "Growth Fund",
+          "sublabel": "Largest single fund",
+          "icon": "rocket-launch",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 960,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "$3B",
+          "label": "Additional Strategies",
+          "sublabel": "Diversified emerging tech",
+          "icon": "chart-scatter",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 660,
+        "y": 420,
+        "w": 580,
+        "h": 100,
+        "args": {
+          "value": "$9.75B",
+          "label": "Total Capital Raised",
+          "bg": [38, 70, 130]
         }
       }
     ]
@@ -96,20 +92,20 @@
     "recommendedAtoms": ["agenda-list", "number-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4434,
+      "input_tokens": 5070,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 628,
+      "output_tokens": 576,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0266244,
+    "costUSD": 0.027752399999999997,
     "elapsedSec": 9.4,
-    "generatedAt": "2026-07-07T04:04:11.036Z",
+    "generatedAt": "2026-07-07T06:41:46.573Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

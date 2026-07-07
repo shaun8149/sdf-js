@@ -29,36 +29,9 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 2,
-    "counts": {
-      "TINY_FONT": 2
-    },
-    "slots_with_issues": [
-      {
-        "slotIdx": 1,
-        "slotName": "case-for-change",
-        "issues": [
-          {
-            "kind": "TINY_FONT",
-            "subject": 1,
-            "type": "stat-banner",
-            "detail": "\"↑117% YoY\" at 7.0px"
-          }
-        ]
-      },
-      {
-        "slotIdx": 3,
-        "slotName": "target-state",
-        "issues": [
-          {
-            "kind": "TINY_FONT",
-            "subject": 3,
-            "type": "stat-banner",
-            "detail": "\"On Track\" at 7.0px"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
   },
   "textBudget": {
     "chars_per_slot": 312.375,
@@ -108,5 +81,5 @@
       "text": 9
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.139Z"
+  "generatedAt": "2026-07-07T06:44:59.896Z"
 }

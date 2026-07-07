@@ -12,9 +12,9 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 20,
+    "atom_instances": 19,
     "atom_types_distinct": 8,
-    "variety_ratio": 0.4,
+    "variety_ratio": 0.42105263157894735,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -28,22 +28,38 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
+  },
   "textBudget": {
-    "chars_per_slot": 212.3,
-    "max_slot_chars": 377
+    "chars_per_slot": 191.4,
+    "max_slot_chars": 493
   },
   "fidelity": {
-    "numbers_total": 9,
+    "numbers_total": 8,
     "numbers_found": 8,
-    "number_recall": 0.8888888888888888,
-    "missing_numbers": ["2B"],
-    "deck_numbers_total": 15,
-    "hallucinated_numbers": ["38", "130", "165", "90", "200K", "17"],
-    "number_precision": 0.6,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "deck_numbers_total": 10,
+    "hallucinated_numbers": ["17"],
+    "deck_entities_total": 26,
+    "hallucinated_entities": [
+      "Cognitive Enhancement",
+      "Performance Boost",
+      "Health Monitoring",
+      "Evolution Path",
+      "Product Platform",
+      "Feature Expansion",
+      "Platform Maturity"
+    ],
+    "entity_precision": 0.7307692307692307,
+    "number_precision": 0.9,
     "entities_total": 1,
-    "entities_found": 1,
-    "entity_recall": 1,
-    "missing_entities": []
+    "entities_found": 0,
+    "entity_recall": 0,
+    "missing_entities": ["Consumer Top"]
   },
   "score": {
     "total": 92.9,
@@ -56,5 +72,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T03:41:09.061Z"
+  "generatedAt": "2026-07-07T06:39:59.374Z"
 }

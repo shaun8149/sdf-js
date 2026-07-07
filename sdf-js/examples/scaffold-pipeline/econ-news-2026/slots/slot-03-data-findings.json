@@ -1,0 +1,89 @@
+{
+  "slotIdx": 3,
+  "slotName": "data-findings",
+  "slotTitle": "Data & Findings",
+  "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "全球与区域增长预测",
+  "sceneData": {
+    "name": "analysis-report/data-findings",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 100,
+        "args": {
+          "title": "Data & Findings",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 130,
+        "w": 1200,
+        "h": 80,
+        "args": {
+          "value": "3.3%",
+          "label": "IMF Global Growth 2026",
+          "trend": "3.2% in 2027",
+          "trendDirection": "down"
+        }
+      },
+      {
+        "type": "bar",
+        "x": 40,
+        "y": 240,
+        "w": 580,
+        "h": 420,
+        "args": {
+          "title": "2026 Growth Forecasts",
+          "labels": ["IMF", "OECD", "World Bank"],
+          "values": [3.3, 2.9, 2.5],
+          "format": "percent",
+          "max": 4
+        }
+      },
+      {
+        "type": "column",
+        "x": 660,
+        "y": 240,
+        "w": 580,
+        "h": 420,
+        "args": {
+          "title": "Regional GDP Growth 2026",
+          "labels": ["China", "Low Income", "Eurozone"],
+          "values": [5, 5.4, 1.1],
+          "format": "percent",
+          "max": 6,
+          "showValues": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "line", "column", "bar", "pie", "kpi-card", "scatter"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4405,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 480,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024317399999999996,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-06T12:38:22.117Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

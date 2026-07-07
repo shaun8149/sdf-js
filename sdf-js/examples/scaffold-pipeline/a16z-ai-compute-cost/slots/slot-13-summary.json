@@ -3,8 +3,8 @@
   "slotName": "summary",
   "slotTitle": "Summary",
   "slotPurpose": "The whole briefing in 3-5 takeaways",
-  "sourceSlideIdx": 12,
-  "sourceSlideTitle": "Key Takeaways",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Lower-Cost GPU Vendors",
   "sceneData": {
     "name": "news-briefing/summary",
     "layout": "grid",
@@ -22,27 +22,27 @@
       },
       {
         "type": "numbered-grid",
-        "x": 80,
+        "x": 40,
         "y": 160,
-        "w": 1120,
-        "h": 500,
+        "w": 1200,
+        "h": 520,
         "args": {
           "items": [
             {
-              "label": "10× Compute Supply Shortage",
-              "sublabel": "Strategic challenges for AI companies"
+              "label": "GPUs drive AI workloads",
+              "sublabel": "Critical compute infrastructure for model training and inference"
             },
             {
-              "label": "4× Cost Difference",
-              "sublabel": "Vendor selection & infrastructure strategy"
+              "label": "Supply constrained through 2025",
+              "sublabel": "High demand and manufacturing limits create scarcity"
             },
             {
-              "label": "80%+ of Capital",
-              "sublabel": "Compute costs dominate startup budgets"
+              "label": "Cost advantages up to 4x",
+              "sublabel": "Specialized vendors like CoreWeave and Lambda Labs vs major clouds"
             },
             {
-              "label": "Cloud Optimal <$50M",
-              "sublabel": "Infrastructure remains best for most orgs"
+              "label": "Strategic procurement essential",
+              "sublabel": "Early planning and vendor diversification recommended"
             }
           ],
           "cols": 2,
@@ -58,20 +58,20 @@
     "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4675,
+      "input_tokens": 4922,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 346,
+      "output_tokens": 357,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0231174,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-07T04:25:19.001Z",
+    "costUSD": 0.0240234,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-07T06:39:14.658Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

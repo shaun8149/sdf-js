@@ -142,11 +142,31 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
 // Wrap text to maxLines. Returns array of line strings.
 function wrapText(ctx, text, maxW, maxLines) {
-  const words = String(text).split(/\s+/);
+  // CJK quotes have no spaces — space-splitting yields one giant "word"
+  // that never wraps (Sprint 37: Chinese quotes overflowed both edges).
+  // Segment: split on spaces, then character-split any segment that alone
+  // exceeds maxW.
+  const rawWords = String(text).split(/\s+/);
+  const words = [];
+  for (const word of rawWords) {
+    if (ctx.measureText(word).width <= maxW) {
+      words.push(word);
+      continue;
+    }
+    let chunk = '';
+    for (const ch of word) {
+      if (ctx.measureText(chunk + ch).width > maxW && chunk) {
+        words.push(chunk);
+        chunk = ch;
+      } else chunk += ch;
+    }
+    if (chunk) words.push(chunk);
+  }
   const lines = [];
   let cur = '';
   for (const word of words) {
-    const test = cur ? cur + ' ' + word : word;
+    const isCjkJoin = cur && /[\u4e00-\u9fff]$/.test(cur) && /^[\u4e00-\u9fff]/.test(word);
+    const test = cur ? cur + (isCjkJoin ? '' : ' ') + word : word;
     if (ctx.measureText(test).width > maxW && cur) {
       lines.push(cur);
       if (lines.length >= maxLines) return lines;

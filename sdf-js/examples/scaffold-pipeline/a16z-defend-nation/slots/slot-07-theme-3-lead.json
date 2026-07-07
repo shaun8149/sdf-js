@@ -3,8 +3,8 @@
   "slotName": "theme-3-lead",
   "slotTitle": "Theme 3 — Lead",
   "slotPurpose": "Third major theme: the core facts",
-  "sourceSlideIdx": 15,
-  "sourceSlideTitle": "Fiduciary Duty Reframed",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Institutional Investors as Anchors",
   "sceneData": {
     "name": "news-briefing/theme-3-lead",
     "layout": "stage",
@@ -16,50 +16,43 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Fiduciary Duty Reframed",
+          "title": "Theme 3 — Lead",
           "style": "gradient"
         }
       },
       {
-        "type": "pillar-3up",
-        "x": 80,
+        "type": "icon-row",
+        "x": 40,
         "y": 180,
-        "w": 1120,
-        "h": 480,
+        "w": 1200,
+        "h": 460,
         "args": {
-          "pillars": [
+          "title": "Institutional Investors as Anchors",
+          "items": [
             {
-              "icon": "chart-line-up",
-              "heading": "Strategic Investment",
-              "body": "Industrial investment is financially rational fiduciary duty",
-              "accent": [38, 70, 130]
+              "icon": "buildings",
+              "label": "Pension Funds",
+              "sublabel": "Scale for infrastructure"
             },
             {
-              "icon": "handshake",
-              "heading": "Sound Strategy",
-              "body": "National security alignment and financial returns are compatible",
-              "accent": [110, 95, 75]
+              "icon": "globe-stand",
+              "label": "Sovereign Wealth",
+              "sublabel": "Capital deployment vehicles"
             },
             {
               "icon": "shield-check",
-              "heading": "Dual Mandate",
-              "body": "Institutional investors can fulfill obligations while supporting competitiveness",
-              "accent": [165, 130, 90]
+              "label": "Insurance Companies",
+              "sublabel": "Long-term stability"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Endowments",
+              "sublabel": "Patient capital"
             }
           ],
-          "accentLine": true
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 80,
-        "y": 640,
-        "w": 1120,
-        "h": 60,
-        "args": {
-          "value": "Not charity",
-          "label": "Sound investment strategy",
-          "bg": [38, 70, 130]
+          "iconSize": "large",
+          "iconStyle": "card",
+          "colorMode": "brand"
         }
       }
     ]
@@ -70,20 +63,20 @@
     "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4449,
+      "input_tokens": 4927,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 465,
+      "output_tokens": 379,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0242244,
-    "elapsedSec": 9.1,
-    "generatedAt": "2026-07-07T03:49:47.494Z",
+    "costUSD": 0.0243684,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-07-07T06:40:56.429Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

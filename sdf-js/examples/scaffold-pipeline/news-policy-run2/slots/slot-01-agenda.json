@@ -1,0 +1,113 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "报告概览",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "报告概览",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "县乡市场销量增长与渗透率提升情况"
+            },
+            {
+              "label": "充电基础设施建设现状与规划目标"
+            },
+            {
+              "label": "主要车企市场格局与产品结构"
+            },
+            {
+              "label": "当前面临的三大核心挑战"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 160,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "320亿元",
+          "label": "充电设施建设总投入",
+          "sublabel": "中央财政120亿元 + 地方配套200亿元",
+          "icon": "lightning",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 320,
+        "w": 250,
+        "h": 150,
+        "args": {
+          "value": "15%",
+          "label": "微型电动车占比",
+          "sublabel": "五菱宏光MINI等单一车型贡献",
+          "icon": "car-simple",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 950,
+        "y": 320,
+        "w": 250,
+        "h": 150,
+        "args": {
+          "value": "63%",
+          "label": "中低价位车型占比",
+          "sublabel": "5万至10万元价格带",
+          "icon": "currency-cny",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4741,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 643,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0277704,
+    "elapsedSec": 16.8,
+    "generatedAt": "2026-07-06T16:25:49.876Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

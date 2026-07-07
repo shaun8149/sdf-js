@@ -37,3 +37,14 @@ eval scorer (VISUAL 块, report-only 不进 composite) + a16z 复验器 (visual 
 - OUT_OF_BOUNDS ×5
 
 方法论: 仪器先行 → 全量测量 → 修最大簇 → 复测。117→84 是第一轮, 清单已排序。
+
+## Sprint 37 打磨轮 (同日): 84 → 6
+
+| 修复 | 消减 |
+|---|---|
+| **registry 级字号地板** `MIN_FONT_PX=9` — renderAtom 单点包装 ctx 拦截 font setter, "任何 atom 不得画 <9px 文字"成为注册表契约 (12 个 atom 的无下限公式一次覆盖) | TINY_FONT 45→0 |
+| `fitFontPx` 共享 helper + isotype/bullet-list/agenda/kpi-card/bar/pie/stat-grid 逐位点缩字适配; stat-grid trend chip (LLM 塞整个清单进 trend 字段); pull-quote **wrapText 中文无空格永不折行** bug (字符级回退) | TEXT_OVERFLOW 46→3, OOB 6→3 |
+| **Rule 23 SUBJECTS NEVER OVERLAP** (共享 lift prompt, 排版算术自检) + 重 bake 8 个受影响 deck | SUBJECT_OVERLAP 9→0, TEXT_COLLISION 6→0 |
+
+累计 **117 → 6** (-95%)。残留 6 个为单例长尾 (flow-chart 节点布局 / icon-row 超长 sublabel floor 击穿 ×2 / value-chain 右缘 / bullet-list ×1 / agenda ×1), 审计持续看守。
+浏览器抽查: read-25-books (曾 100% 重叠重灾区) 全 10 页干净。
