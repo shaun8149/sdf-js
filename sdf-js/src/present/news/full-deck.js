@@ -11,7 +11,16 @@
 import { expandNews } from './expand-core.js';
 import { getScaffold, getThemeAffinity } from '../scaffolds/registry.js';
 import { mapSlidesToSlotsLLM, scoreSlideForSlot } from '../scaffolds/mapper-llm.js';
-import { buildLiftSystemPrompt, liftSlotsPool } from '../scaffolds/lift-slot-llm.js';
+import { buildLiftSystemPrompt, liftSlotsPool, liftSlotLLM } from '../scaffolds/lift-slot-llm.js';
+
+// The lift system prompt is deterministic (atom+icon catalogs) — build once
+// per browser session so per-slide re-rolls (Sprint 38) skip the rebuild and
+// hit the Anthropic prompt cache from the original generation.
+let systemPromptCache = null;
+async function getSystemPrompt() {
+  if (!systemPromptCache) systemPromptCache = await buildLiftSystemPrompt();
+  return systemPromptCache;
+}
 
 /**
  * newsToFullDeck(text, opts) → exporter-ready deck
@@ -82,7 +91,7 @@ export async function newsToFullDeck(
   }
 
   onProgress('building lift prompt…', 12);
-  const systemPrompt = await buildLiftSystemPrompt();
+  const systemPrompt = await getSystemPrompt();
 
   // Parallel lift (Sprint 34): warmup + bounded pool via liftSlotsPool —
   // 14 serial calls (~95s) become 1 warmup + 13 over 5 workers (~30-40s).
@@ -119,6 +128,18 @@ export async function newsToFullDeck(
         slotName: a.slot.name,
         slotTitle: a.slot.title,
         sceneData: r.sceneData,
+        // Kept for per-slide re-roll / revision (Sprint 38): re-lifting a
+        // slot is just liftSlotLLM with these params again.
+        liftParams: {
+          scaffold,
+          slot: a.slot,
+          slotIdx: a.slotIdx,
+          slideIdx: a.slideIdx,
+          theme,
+          slide: slides[a.slideIdx],
+          slides,
+          extraSlides: a.extraSlides || [],
+        },
       });
     } else {
       errors.push({ slot: a.slot.name, message: r?.error || 'unknown' });
@@ -133,4 +154,31 @@ export async function newsToFullDeck(
     slots,
     errors,
   };
+}
+
+/**
+ * reliftSlot — Sprint 38 per-slide ⚡: re-run ONE slot's lift, optionally
+ * with a presenter revision request ("换成柱状图"). Mutates deck.slots[i]
+ * in place (sceneData swap) and returns the new sceneData, so exports and
+ * re-renders pick it up with no further bookkeeping.
+ *
+ * @param {object} deck — a newsToFullDeck result
+ * @param {number} slotIdx — the slot's slotIdx (not array index)
+ * @param {object} opts — { apiKey, revision?, liftFn? (test injection) }
+ */
+export async function reliftSlot(
+  deck,
+  slotIdx,
+  { apiKey, revision = null, liftFn = liftSlotLLM } = {},
+) {
+  const slot = deck.slots.find((s) => s.slotIdx === slotIdx);
+  if (!slot) throw new Error(`reliftSlot: no slot with slotIdx ${slotIdx}`);
+  if (!slot.liftParams)
+    throw new Error(
+      'reliftSlot: slot has no liftParams (quick-mode decks cannot re-roll per slide)',
+    );
+  const systemPrompt = await getSystemPrompt();
+  const { sceneData } = await liftFn({ ...slot.liftParams, revision }, { apiKey, systemPrompt });
+  slot.sceneData = sceneData;
+  return sceneData;
 }
