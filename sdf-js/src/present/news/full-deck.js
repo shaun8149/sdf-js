@@ -31,7 +31,7 @@ async function getSystemPrompt() {
  */
 export async function newsToFullDeck(
   text,
-  { apiKey, minPages = 10, maxPages = 20, onProgress = () => {} } = {},
+  { apiKey, minPages = 10, maxPages = 20, onProgress = () => {}, lockedSlots = [] } = {},
 ) {
   if (!apiKey) throw new Error('newsToFullDeck: apiKey required');
 
@@ -95,7 +95,11 @@ export async function newsToFullDeck(
 
   // Parallel lift (Sprint 34): warmup + bounded pool via liftSlotsPool —
   // 14 serial calls (~95s) become 1 warmup + 13 over 5 workers (~30-40s).
-  const live = assignments.filter((a) => !a.empty);
+  // Locked slots (Sprint 40: user pinned these pages) are never re-lifted —
+  // their lift calls are skipped entirely and the pinned slot objects are
+  // merged back below.
+  const lockedIdx = new Set(lockedSlots.map((s) => s.slotIdx));
+  const live = assignments.filter((a) => !a.empty && !lockedIdx.has(a.slotIdx));
   let done = 0;
   const poolResults = await liftSlotsPool(
     live.map((a) => ({
@@ -151,9 +155,25 @@ export async function newsToFullDeck(
     title: slides[0]?.title || 'News Deck',
     theme,
     scaffold: { id: scaffold.id, label: scaffold.label },
-    slots,
+    slots: mergeLockedSlots(slots, lockedSlots),
     errors,
   };
+}
+
+/**
+ * mergeLockedSlots — splice pinned slot objects into a freshly generated
+ * slot list, in slotIdx order (Sprint 40). A locked slot ALWAYS survives:
+ * if the new run delivered a slide for the same slotIdx it is replaced by
+ * the pinned one; if the new run dropped that slotIdx the pinned slide is
+ * inserted anyway — the user chose to keep this page.
+ */
+export function mergeLockedSlots(newSlots, lockedSlots) {
+  if (!lockedSlots?.length) return newSlots;
+  const lockedIdx = new Set(lockedSlots.map((s) => s.slotIdx));
+  const merged = newSlots.filter((s) => !lockedIdx.has(s.slotIdx));
+  for (const locked of lockedSlots) merged.push({ ...locked, locked: true });
+  merged.sort((a, b) => a.slotIdx - b.slotIdx);
+  return merged;
 }
 
 /**
