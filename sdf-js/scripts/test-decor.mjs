@@ -215,5 +215,71 @@ function recCtx() {
   );
 }
 
+// ── Sprint 43: fxhash-style named lanes (version-stable) ──
+{
+  const { makeHashRand } = await import('../src/present/decor/rand.js');
+  const R1 = makeHashRand('abcdef0123456789');
+  const R2 = makeHashRand('abcdef0123456789');
+  ok(R1.rand('a') === R2.rand('a'), 'same hash + same lane → same value');
+  // KEY property vs raw fxrand: consuming lane 'a' more does NOT shift lane 'b'
+  const Rx = makeHashRand('cafebabe12345678');
+  const Ry = makeHashRand('cafebabe12345678');
+  Rx.rand('a');
+  Rx.rand('a');
+  Rx.rand('a'); // extra draws on lane a (a "new feature" in a future version)
+  ok(Rx.rand('b') === Ry.rand('b'), 'lanes independent: extra draws on lane a never shift lane b');
+  // within one lane, successive calls advance (fxrand semantics)
+  const Rz = makeHashRand('cafebabe12345678');
+  ok(Rz.rand('c') !== Rz.rand('c'), 'within a lane the stream advances');
+  const picks = new Set();
+  for (const h of [
+    '1111111111111111',
+    '2222222222222222',
+    '3333333333333333',
+    '4444444444444444',
+  ]) {
+    picks.add(makeHashRand(h).int('seed', 1, 1e9));
+  }
+  ok(picks.size === 4, 'different hashes give different lane values');
+  const w = makeHashRand('abcdef0123456789').weighted('w', [
+    ['x', 0],
+    ['y', 1],
+  ]);
+  ok(w === 'y', 'weighted respects zero weight');
+
+  // decorFromHash stability contract
+  const t = { id: 'organic-teal', macroCluster: 'organic' };
+  const d1 = decorFromHash(t, 'feedfacefeedface');
+  const d2 = decorFromHash(t, 'feedfacefeedface');
+  ok(
+    d1.family === d2.family && d1.seed === d2.seed,
+    'decorFromHash lane version stays deterministic',
+  );
+}
+
+// ── Sprint 43: meadow-streaks (Rizzolli CC BY port) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'meadow-streaks', seed: 11 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  ok(
+    rec.ops.filter((o) => o[0] === 'ellipse').length > 100,
+    'meadow-streaks draws a dense blade field',
+  );
+  const alphas = rec.styles
+    .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+    .filter(Boolean)
+    .map((m) => parseFloat(m[1]));
+  ok(Math.max(...alphas) <= 0.1, 'meadow-streaks subtle alpha capped');
+  const total = (640 / 14) * (360 / 18); // grid cells if ungated
+  ok(
+    rec.ops.filter((o) => o[0] === 'ellipse').length < total,
+    'noise gate actually thins the field (patches, not uniform)',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

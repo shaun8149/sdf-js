@@ -27,6 +27,8 @@
 //                  triangulation approximation, no delaunay dependency)
 // =============================================================================
 
+import { makeHashRand } from './rand.js';
+
 // --- deterministic primitives (value noise + rng, per idiom-registry style) --
 function seededRand(seed) {
   let s = seed | 0 || 1;
@@ -217,24 +219,72 @@ function drawShardMesh(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// meadow-streaks: anisotropic noise-rotated ellipse field (grass-blade
+// streaks). CODE PORT from "Fragments of an Infinite Field" (Monica
+// Rizzolli, Art Blocks Curated #159, licensed CC BY 4.0 — attribution
+// required and hereby given; see docs/superpowers/artblocks-study/
+// 01-fragments-rizzolli.md). Three of her idioms combined:
+//   - anisotropic ellipses (1×10 aspect) rotated by a noise field
+//   - noise-GATED density (a2 < chance → organic patches, not uniform grain)
+//   - noise-INDEXED palette (color chosen by the same spatial field →
+//     neighboring blades share color, coherent drifts instead of confetti)
+function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const noiseGate = noise2D(seed + 7919);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cellW = 14;
+  const cellH = 30;
+  const bladeW = 3;
+  ctx.save();
+  for (let gy = y; gy < y + h; gy += cellH * 0.6) {
+    for (let gx = x; gx < x + w; gx += cellW) {
+      const a = noise(gx * 0.004, gy * 0.004);
+      const gate = noiseGate(gx * 0.006, gy * 0.006);
+      if (gate > 0.46) continue; // noise-gated density → patches
+      const color = colors[Math.floor(a * colors.length) % colors.length];
+      ctx.save();
+      ctx.translate(gx, gy);
+      ctx.rotate((a - 0.5) * Math.PI * 1.6);
+      ctx.strokeStyle = rgba(color, P.alpha);
+      ctx.lineWidth = P.lineWidth;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, bladeW, cellH * (0.5 + a), 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
+
+// FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
+// "hash = artwork" holds because of fxrand AND immutable on-chain code.
+// Off-chain we adapt it as version pinning: DECOR_V is stamped into every
+// minted decoration, and a family implementation, once shipped under a
+// version, is FROZEN — never edit its pixels; behavioral changes ship as a
+// new versioned function and drawDecor dispatches on the artifact's own v.
+// Named lanes protect DECISIONS across versions; the freeze protects PIXELS.
+export const DECOR_V = 1;
 
 export const DECOR_FAMILIES = {
   'flow-streams': drawFlowStreams,
   'weave-dashes': drawWeaveDashes,
   'circle-pack': drawCirclePack,
   'shard-mesh': drawShardMesh,
+  'meadow-streaks': drawMeadowStreaks,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
-  editorial: ['flow-streams', 'shard-mesh'],
+  editorial: ['flow-streams', 'shard-mesh', 'meadow-streaks'],
   pitch: ['weave-dashes', 'circle-pack'],
-  organic: ['flow-streams', 'circle-pack'],
+  organic: ['meadow-streaks', 'flow-streams', 'circle-pack'],
   consulting: ['weave-dashes', 'shard-mesh'],
   financial: ['shard-mesh', 'weave-dashes'],
-  hr: ['circle-pack', 'flow-streams'],
+  hr: ['circle-pack', 'meadow-streaks'],
 };
 
 /**
@@ -293,8 +343,20 @@ export function seedFromHash(hash) {
  * decorFromHash(theme, hash) → { family, seed, hash } — the full provenance
  * bundle. Same (theme, hash) always yields the same decoration everywhere
  * (screen, PPTX, PDF, re-render).
+ *
+ * Sprint 43 (fxhash lesson, version-stable variant): decisions consume NAMED
+ * LANES from the hash (rand.js) — 'family' and 'seed' lanes are independent,
+ * and future features (density, variant, accent…) get their own lanes
+ * without disturbing existing decks' decoration.
  */
 export function decorFromHash(theme, hash) {
-  const seed = seedFromHash(hash);
-  return { ...pickDecorFor(theme, seed), hash };
+  const R = makeHashRand(hash);
+  const cluster = String(theme?.macroCluster || theme?.id || '').split('-')[0];
+  const candidates = CLUSTER_AFFINITY[cluster] || ['flow-streams', 'weave-dashes'];
+  return {
+    family: R.pick('family', candidates),
+    seed: R.int('seed', 1, 0x7ffffffe),
+    hash,
+    v: DECOR_V,
+  };
 }
