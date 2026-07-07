@@ -113,6 +113,19 @@
         font: 600 13px -apple-system, Inter, sans-serif;
         cursor: pointer;
       }
+      #exportRow select {
+        border-radius: 9px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(20, 22, 28, 0.9);
+        color: #fff;
+        font: 600 12px -apple-system, Inter, sans-serif;
+        padding: 0 6px;
+        cursor: pointer;
+      }
+      #exportRow select:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
       #exportRow button:disabled {
         opacity: 0.35;
         cursor: not-allowed;
@@ -245,6 +258,7 @@
       </select>
       <button id="go">Generate</button>
       <div id="exportRow">
+        <select id="theme" disabled title="换主题 (零成本, 即时重渲染)"></select>
         <button id="export-pptx" disabled>⬇ PPTX</button>
         <button id="export-pdf" disabled>⬇ PDF</button>
       </div>

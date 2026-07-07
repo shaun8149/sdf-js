@@ -11,6 +11,8 @@ import { textToIR } from '../../src/scene/text-to-ir.js';
 import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
 import { newsToFullDeck, reliftSlot } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
+import { rethemeDeck } from '../../src/present/retheme.js';
+import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
 
@@ -58,6 +60,31 @@ const slidesEl = document.getElementById('slides');
 const exportPptxEl = document.getElementById('export-pptx');
 const exportPdfEl = document.getElementById('export-pdf');
 const modeEl = document.getElementById('mode');
+const themeEl = document.getElementById('theme');
+
+// Theme switcher (Sprint 39): zero-LLM-cost — palette swap + deterministic
+// remap of theme colors the lift baked into args, then full re-render.
+for (const t of ATLAS_THEMES) {
+  const opt = document.createElement('option');
+  opt.value = t.id;
+  opt.textContent = t.label || t.id;
+  themeEl.appendChild(opt);
+}
+themeEl.addEventListener('change', async () => {
+  if (!currentDeck) return;
+  try {
+    rethemeDeck(currentDeck, themeEl.value);
+    await renderDeck(currentDeck);
+    setStatus(`theme → ${themeEl.value} (re-rendered, exports follow)`);
+  } catch (e) {
+    setStatus(`theme switch failed: ${e.message}`, true);
+  }
+});
+
+function syncThemeSelect() {
+  if (currentDeck?.theme?.id) themeEl.value = currentDeck.theme.id;
+  themeEl.disabled = !currentDeck;
+}
 
 keyEl.value = localStorage.getItem(STORAGE_KEY) || '';
 keyEl.addEventListener('change', () => localStorage.setItem(STORAGE_KEY, keyEl.value.trim()));
@@ -193,6 +220,7 @@ async function generate() {
       setStatus(`done — ${currentDeck.slots.length} pages rendered${errNote}. Export below.`);
       exportPptxEl.disabled = false;
       exportPdfEl.disabled = false;
+      syncThemeSelect();
       return;
     }
     let irDeck;
@@ -211,6 +239,7 @@ async function generate() {
     setStatus(`done — ${currentDeck.slots.length} slide(s) rendered. Export below.`);
     exportPptxEl.disabled = false;
     exportPdfEl.disabled = false;
+    syncThemeSelect();
   } catch (e) {
     setStatus(e.message, true);
   } finally {
