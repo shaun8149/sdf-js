@@ -34,6 +34,33 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 3,
+    "counts": {
+      "TEXT_COLLISION": 2,
+      "SUBJECT_OVERLAP": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 7,
+        "slotName": "business-model",
+        "issues": [
+          {
+            "kind": "TEXT_COLLISION",
+            "detail": "\"$2.7M\" (subj 2) × \"Projected Q3 2027\" (subj 3)"
+          },
+          {
+            "kind": "TEXT_COLLISION",
+            "detail": "\"$3.6M\" (subj 2) × \"$3M ARR\" (subj 3)"
+          },
+          {
+            "kind": "SUBJECT_OVERLAP",
+            "detail": "break-even[2] × kpi-card[3] overlap 100%"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
     "chars_per_slot": 196.22222222222223,
     "max_slot_chars": 264
@@ -77,5 +104,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T05:17:25.065Z"
+  "generatedAt": "2026-07-07T06:11:33.163Z"
 }

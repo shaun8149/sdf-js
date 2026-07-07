@@ -87,8 +87,30 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // ---- Title block — vertical center, left-aligned ----
   // Scale font relative to h but cap so short-strip (h≈100) stays readable.
-  const titleSize = Math.max(18, Math.min(Math.round(h * 0.14), 72));
-  const subtitleSize = Math.max(12, Math.min(Math.round(h * 0.065), 28));
+  // Then SHRINK-TO-FIT the width (Sprint 36 visual audit: long a16z-style
+  // titles at 72px ran ~400px past the right edge — cover had no width
+  // fitting at all). Floor 20px; at the floor a still-too-long title is the
+  // author's problem to shorten, not ours to clip.
+  let titleSize = Math.max(18, Math.min(Math.round(h * 0.14), 72));
+  {
+    const maxW = w - PAD * 2;
+    ctx.save();
+    for (; titleSize > 20; titleSize--) {
+      ctx.font = `900 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
+      if (ctx.measureText(String(title)).width <= maxW) break;
+    }
+    ctx.restore();
+  }
+  let subtitleSize = Math.max(12, Math.min(Math.round(h * 0.065), 28));
+  if (subtitle) {
+    const maxW = w - PAD * 2;
+    ctx.save();
+    for (; subtitleSize > 11; subtitleSize--) {
+      ctx.font = `500 ${subtitleSize}px Inter, system-ui, sans-serif`;
+      if (ctx.measureText(String(subtitle)).width <= maxW) break;
+    }
+    ctx.restore();
+  }
   const metaSize = Math.max(10, Math.min(Math.round(h * 0.038), 14));
 
   const titleX = x + PAD;

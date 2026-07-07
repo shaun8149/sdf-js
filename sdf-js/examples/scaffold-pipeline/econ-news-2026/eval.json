@@ -1,6 +1,6 @@
 {
-  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-econ-news-2026",
-  "deckName": "eval-econ-news-2026",
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/econ-news-2026",
+  "deckName": "econ-news-2026",
   "structure": {
     "slots_total": 8,
     "slots_baked": 6,
@@ -12,9 +12,9 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 14,
-    "atom_types_distinct": 6,
-    "variety_ratio": 0.42857142857142855,
+    "atom_instances": 12,
+    "atom_types_distinct": 8,
+    "variety_ratio": 0.6666666666666666,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -28,30 +28,19 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
-  "visual": {
-    "total": 0,
-    "counts": {},
-    "slots_with_issues": []
-  },
   "textBudget": {
-    "chars_per_slot": 99.16666666666667,
-    "max_slot_chars": 128
+    "chars_per_slot": 207.83333333333334,
+    "max_slot_chars": 367
   },
   "fidelity": {
     "numbers_total": 11,
     "numbers_found": 11,
     "number_recall": 1,
     "missing_numbers": [],
-    "deck_numbers_total": 10,
-    "hallucinated_numbers": [],
-    "deck_entities_total": 8,
-    "hallucinated_entities": [],
-    "entity_precision": 1,
-    "number_precision": 1,
     "entities_total": 6,
-    "entities_found": 6,
-    "entity_recall": 1,
-    "missing_entities": []
+    "entities_found": 4,
+    "entity_recall": 0.6666666666666666,
+    "missing_entities": ["英国央行", "欧洲央行"]
   },
   "score": {
     "total": 93.8,
@@ -64,5 +53,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:11:33.181Z"
+  "generatedAt": "2026-07-06T15:33:48.137Z"
 }

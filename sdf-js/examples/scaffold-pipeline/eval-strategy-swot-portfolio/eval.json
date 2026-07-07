@@ -28,6 +28,31 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 2,
+    "counts": {
+      "TINY_FONT": 1,
+      "SUBJECT_OVERLAP": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 3,
+        "slotName": "data-findings",
+        "issues": [
+          {
+            "kind": "TINY_FONT",
+            "subject": 2,
+            "type": "callout-banner",
+            "detail": "\"Quote sourced from 32-customer\" at 5.0px"
+          },
+          {
+            "kind": "SUBJECT_OVERLAP",
+            "detail": "testimonial-wall[1] × callout-banner[2] overlap 100%"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
     "chars_per_slot": 287.625,
     "max_slot_chars": 525
@@ -71,5 +96,5 @@
       "text": 9.8
     }
   },
-  "generatedAt": "2026-07-07T05:17:25.059Z"
+  "generatedAt": "2026-07-07T06:11:33.146Z"
 }

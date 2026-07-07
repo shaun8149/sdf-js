@@ -28,6 +28,37 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 2,
+    "counts": {
+      "SUBJECT_OVERLAP": 1,
+      "OUT_OF_BOUNDS": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 3,
+        "slotName": "theme-1-lead",
+        "issues": [
+          {
+            "kind": "SUBJECT_OVERLAP",
+            "detail": "bar[1] × kpi-card[2] overlap 100%"
+          }
+        ]
+      },
+      {
+        "slotIdx": 11,
+        "slotName": "quote",
+        "issues": [
+          {
+            "kind": "OUT_OF_BOUNDS",
+            "subject": 1,
+            "type": "pull-quote-banner",
+            "detail": "\"中央财政安排专项补贴120亿元，地方配套资金约200亿元，合\" at (-731,350)"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
     "chars_per_slot": 74,
     "max_slot_chars": 128
@@ -64,5 +95,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T05:17:25.087Z"
+  "generatedAt": "2026-07-07T06:11:33.190Z"
 }
