@@ -11,7 +11,7 @@
 import { expandNews } from './expand-core.js';
 import { getScaffold, getThemeAffinity } from '../scaffolds/registry.js';
 import { mapSlidesToSlotsLLM, scoreSlideForSlot } from '../scaffolds/mapper-llm.js';
-import { buildLiftSystemPrompt, liftSlotLLM } from '../scaffolds/lift-slot-llm.js';
+import { buildLiftSystemPrompt, liftSlotsPool } from '../scaffolds/lift-slot-llm.js';
 
 /**
  * newsToFullDeck(text, opts) → exporter-ready deck
@@ -84,34 +84,44 @@ export async function newsToFullDeck(
   onProgress('building lift prompt…', 12);
   const systemPrompt = await buildLiftSystemPrompt();
 
+  // Parallel lift (Sprint 34): warmup + bounded pool via liftSlotsPool —
+  // 14 serial calls (~95s) become 1 warmup + 13 over 5 workers (~30-40s).
   const live = assignments.filter((a) => !a.empty);
+  let done = 0;
+  const poolResults = await liftSlotsPool(
+    live.map((a) => ({
+      scaffold,
+      slot: a.slot,
+      slotIdx: a.slotIdx,
+      slideIdx: a.slideIdx,
+      theme,
+      slide: slides[a.slideIdx],
+      slides,
+      extraSlides: a.extraSlides || [],
+    })),
+    {
+      apiKey,
+      systemPrompt,
+      onSlotDone: () => {
+        done++;
+        onProgress(`lifted ${done}/${live.length} slots…`, 15 + (done / live.length) * 80);
+      },
+    },
+  );
   const slots = [];
   const errors = [];
   for (let i = 0; i < live.length; i++) {
     const a = live[i];
-    onProgress(`lifting ${i + 1}/${live.length} (${a.slot.name})…`, 15 + (i / live.length) * 80);
-    try {
-      const { sceneData } = await liftSlotLLM(
-        {
-          scaffold,
-          slot: a.slot,
-          slotIdx: a.slotIdx,
-          slideIdx: a.slideIdx,
-          theme,
-          slide: slides[a.slideIdx],
-          slides,
-          extraSlides: a.extraSlides || [],
-        },
-        { apiKey, systemPrompt },
-      );
+    const r = poolResults[i];
+    if (r && !r.error) {
       slots.push({
         slotIdx: a.slotIdx,
         slotName: a.slot.name,
         slotTitle: a.slot.title,
-        sceneData,
+        sceneData: r.sceneData,
       });
-    } catch (e) {
-      errors.push({ slot: a.slot.name, message: e.message });
+    } else {
+      errors.push({ slot: a.slot.name, message: r?.error || 'unknown' });
     }
   }
 

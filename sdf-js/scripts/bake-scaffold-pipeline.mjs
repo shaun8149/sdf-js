@@ -31,7 +31,8 @@ import { getScaffold, getThemeAffinity } from '../src/present/scaffolds/registry
 import {
   buildLiftSystemPrompt,
   buildSlotUserMessage,
-  parseSceneJson,
+  liftSlotsPool,
+  LIFT_MODEL,
 } from '../src/present/scaffolds/lift-slot-llm.js';
 import { pickScaffoldLLM } from '../src/present/scaffolds/picker-llm.js';
 import { mapSlidesToSlotsLLM } from '../src/present/scaffolds/mapper-llm.js';
@@ -69,7 +70,6 @@ if (!API_KEY && !DRY_RUN) {
   process.exit(2);
 }
 
-const MODEL = 'claude-sonnet-4-5-20250929';
 // Output lives inside sdf-js so dev-server can serve deck.json + lifts to the
 // browser viewer. (screens/ is outside sdf-js and not web-accessible.)
 const OUT_DIR = `${REPO}sdf-js/examples/scaffold-pipeline/${DECK_NAME}`;
@@ -372,28 +372,6 @@ const slotAssignments = await runStage1();
 // ---------------------------------------------------------------------------
 // Stage 2 — Lift each slot with scaffold context
 // ---------------------------------------------------------------------------
-async function callAnthropic(userMessage) {
-  const t0 = Date.now();
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 16384,
-      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
-  const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${(await res.text()).slice(0, 300)}`);
-  const data = await res.json();
-  return { text: data.content[0].text, usage: data.usage, elapsed };
-}
-
 console.log('\n── Stage 2: slot lift ──');
 
 if (DRY_RUN) {
@@ -403,34 +381,35 @@ if (DRY_RUN) {
 const slotLifts = [];
 let totalCost = 0;
 
+// Pre-pass: split assignments into empty / cached / dry-run / live jobs so
+// the live ones can run through the shared parallel pool (Sprint 34 —
+// warmup + bounded concurrency in lift-slot-llm.js, same engine as the
+// browser's full-deck mode; a 14-slot bake drops from ~95s to ~30-40s).
+const jobs = [];
 for (const a of slotAssignments) {
   if (a.empty) {
     slotLifts.push({ slotIdx: a.slotIdx, empty: true });
     console.log(`  slot ${a.slotIdx} (${a.slot.name}): EMPTY — no slide assigned`);
     continue;
   }
-
-  const slide = slides[a.slideIdx];
   const outFile = `${OUT_DIR}/slots/slot-${String(a.slotIdx).padStart(2, '0')}-${a.slot.name}.json`;
-
   if (!FORCE && existsSync(outFile) && !DRY_RUN) {
     console.log(`  ↳ skip slot ${a.slotIdx} (${a.slot.name}) — exists, use --force`);
     slotLifts.push({ slotIdx: a.slotIdx, cached: true, outFile });
     continue;
   }
-
-  const userMessage = buildSlotUserMessage({
+  const params = {
     scaffold,
     slot: a.slot,
     slotIdx: a.slotIdx,
     slideIdx: a.slideIdx,
     theme,
-    slide,
+    slide: slides[a.slideIdx],
     slides,
     extraSlides: a.extraSlides || [],
-  });
-
+  };
   if (DRY_RUN) {
+    const userMessage = buildSlotUserMessage(params);
     slotLifts.push({
       slotIdx: a.slotIdx,
       slotName: a.slot.name,
@@ -443,53 +422,66 @@ for (const a of slotAssignments) {
     );
     continue;
   }
+  jobs.push({ a, outFile, params });
+}
 
-  console.log(`  slot ${a.slotIdx} (${a.slot.name}): lifting from slide ${a.slideIdx}...`);
-  try {
-    const { text, usage, elapsed } = await callAnthropic(userMessage);
-    const sceneData = parseSceneJson(text);
-    const inCost = (usage.input_tokens * 3) / 1_000_000;
-    const cacheCreateCost = ((usage.cache_creation_input_tokens || 0) * 3.75) / 1_000_000;
-    const cacheReadCost = ((usage.cache_read_input_tokens || 0) * 0.3) / 1_000_000;
-    const outCost = (usage.output_tokens * 15) / 1_000_000;
-    const costUSD = inCost + cacheCreateCost + cacheReadCost + outCost;
-    totalCost += costUSD;
-
+if (jobs.length > 0) {
+  console.log(`  lifting ${jobs.length} slots (pool: 1 warmup + concurrency 5)...`);
+  const results = await liftSlotsPool(
+    jobs.map((j) => j.params),
+    {
+      apiKey: API_KEY,
+      systemPrompt,
+      onSlotDone: (i, r) => {
+        const { a } = jobs[i];
+        if (r && !r.error) {
+          const subjectTypes = (r.sceneData.subjects || []).map((x) => x.type);
+          console.log(
+            `    ✓ slot ${a.slotIdx} (${a.slot.name}) ${r.elapsed}s $${r.costUSD.toFixed(4)} subjects=[${subjectTypes.join(', ')}]`,
+          );
+        } else {
+          console.error(`    ✗ slot ${a.slotIdx} (${a.slot.name}) failed: ${r?.error}`);
+        }
+      },
+    },
+  );
+  for (let i = 0; i < jobs.length; i++) {
+    const { a, outFile } = jobs[i];
+    const r = results[i];
+    if (!r || r.error) {
+      slotLifts.push({ slotIdx: a.slotIdx, error: r?.error || 'unknown' });
+      continue;
+    }
+    totalCost += r.costUSD;
     const entry = {
       slotIdx: a.slotIdx,
       slotName: a.slot.name,
       slotTitle: a.slot.title,
       slotPurpose: a.slot.purpose,
       sourceSlideIdx: a.slideIdx,
-      sourceSlideTitle: slide.title || '',
-      sceneData,
+      sourceSlideTitle: slides[a.slideIdx]?.title || '',
+      sceneData: r.sceneData,
       meta: {
         scaffold: scaffold.id,
         theme: theme.id,
         recommendedAtoms: a.slot.recommended_atoms,
         forbiddenAtoms: a.slot.forbidden_atoms || [],
-        tokenUsage: usage,
-        costUSD,
-        elapsedSec: parseFloat(elapsed),
+        tokenUsage: r.usage,
+        costUSD: r.costUSD,
+        elapsedSec: parseFloat(r.elapsed),
         generatedAt: new Date().toISOString(),
-        model: MODEL,
+        model: LIFT_MODEL,
       },
     };
     writeFileSync(outFile, JSON.stringify(entry, null, 2));
-
-    const subjectTypes = (sceneData.subjects || []).map((s) => s.type);
-    console.log(`    ✓ ${elapsed}s $${costUSD.toFixed(4)} subjects=[${subjectTypes.join(', ')}]`);
     slotLifts.push({
       slotIdx: a.slotIdx,
       slotName: a.slot.name,
-      sceneData,
-      subjectTypes,
-      costUSD,
+      sceneData: r.sceneData,
+      subjectTypes: (r.sceneData.subjects || []).map((x) => x.type),
+      costUSD: r.costUSD,
       outFile,
     });
-  } catch (e) {
-    console.error(`    ✗ failed: ${e.message}`);
-    slotLifts.push({ slotIdx: a.slotIdx, error: e.message });
   }
 }
 
@@ -559,7 +551,7 @@ const deckManifest = {
   },
   meta: {
     generatedAt: new Date().toISOString(),
-    model: MODEL,
+    model: LIFT_MODEL,
     pipelineVersion: 'sprint-16-v1',
   },
 };
