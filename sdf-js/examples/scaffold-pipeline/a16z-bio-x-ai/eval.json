@@ -29,7 +29,7 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 244.72727272727272,
+    "chars_per_slot": 243.27272727272728,
     "max_slot_chars": 518
   },
   "fidelity": {
@@ -37,9 +37,12 @@
     "numbers_found": 0,
     "number_recall": 1,
     "missing_numbers": [],
-    "deck_numbers_total": 8,
-    "hallucinated_numbers": ["38", "70", "130", "110", "95", "75", "165", "90"],
-    "number_precision": 0,
+    "deck_numbers_total": 0,
+    "hallucinated_numbers": [],
+    "deck_entities_total": 22,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
+    "number_precision": 1,
     "entities_total": 4,
     "entities_found": 4,
     "entity_recall": 1,
@@ -56,5 +59,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T03:44:39.019Z"
+  "generatedAt": "2026-07-07T05:12:51.706Z"
 }

@@ -1,0 +1,81 @@
+{
+  "slotIdx": 8,
+  "slotName": "risk-matrix",
+  "slotTitle": "Risk Matrix",
+  "slotPurpose": "Risks / scenarios on probability × impact axes",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Application Layer: No Moats",
+  "sceneData": {
+    "name": "news-briefing/risk-matrix",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Risk Matrix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Application Layer Competitive Risks",
+          "xAxis": "Likelihood",
+          "yAxis": "Impact",
+          "xLabels": ["Very Low", "Low", "Medium", "High", "Very High"],
+          "yLabels": ["Very Low", "Low", "Medium", "High", "Very High"],
+          "risks": [
+            {
+              "label": "Similar models across ecosystem",
+              "likelihood": 4,
+              "impact": 3,
+              "description": "Apps use similar models"
+            },
+            {
+              "label": "No systemic moats",
+              "likelihood": 4,
+              "impact": 4,
+              "description": "No differentiation barriers"
+            },
+            {
+              "label": "Limited differentiation",
+              "likelihood": 4,
+              "impact": 4,
+              "description": "Competitive vulnerability"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["risk-heatmap", "matrix-grid", "swot"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4761,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 396,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0241254,
+    "elapsedSec": 16.8,
+    "generatedAt": "2026-07-07T05:16:21.936Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -4,10 +4,10 @@
   "slotTitle": "Theme 2 — Lead",
   "slotPurpose": "Second major theme: the core facts",
   "sourceSlideIdx": 4,
-  "sourceSlideTitle": "App Layer Economics: Inference Costs",
+  "sourceSlideTitle": "App Company Cost Structure: Inference",
   "sceneData": {
     "name": "news-briefing/theme-2-lead",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,39 +16,45 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "App Layer Economics",
+          "title": "Theme 2 — Lead",
           "style": "gradient"
         }
       },
       {
-        "type": "stat-banner",
+        "type": "kpi-card",
         "x": 80,
         "y": 200,
-        "w": 1120,
-        "h": 140,
+        "w": 320,
+        "h": 380,
         "args": {
           "value": "20-40%",
-          "label": "of revenue spent on inference",
-          "bg": [38, 70, 130]
+          "label": "Revenue to Inference",
+          "sublabel": "App company spending",
+          "icon": "chart-pie",
+          "style": "dark"
         }
       },
       {
-        "type": "bullet-list",
-        "x": 140,
-        "y": 400,
-        "w": 1000,
-        "h": 260,
+        "type": "icon-row",
+        "x": 480,
+        "y": 200,
+        "w": 720,
+        "h": 380,
         "args": {
           "items": [
             {
-              "icon": "arrow-clockwise",
-              "label": "Inference represents ongoing operational burden"
+              "icon": "arrows-clockwise",
+              "label": "Ongoing Burden",
+              "sublabel": "Operational cost cycle"
             },
             {
-              "icon": "currency-dollar",
-              "label": "High infrastructure costs pressure application margins"
+              "icon": "arrow-fat-down",
+              "label": "Margin Pressure",
+              "sublabel": "High inference spending"
             }
-          ]
+          ],
+          "iconStyle": "card",
+          "iconSize": "large"
         }
       }
     ]
@@ -59,20 +65,20 @@
     "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4650,
+      "input_tokens": 4775,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 340,
+      "output_tokens": 395,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0229524,
-    "elapsedSec": 6.4,
-    "generatedAt": "2026-07-07T04:22:43.715Z",
+    "costUSD": 0.024152399999999997,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-07T05:16:21.935Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

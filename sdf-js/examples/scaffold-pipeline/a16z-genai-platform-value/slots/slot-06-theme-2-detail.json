@@ -4,10 +4,10 @@
   "slotTitle": "Theme 2 — Detail",
   "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
   "sourceSlideIdx": 5,
-  "sourceSlideTitle": "Training Economics: Startup Capital Allocation",
+  "sourceSlideTitle": "Training-Focused Startup Cost Structure",
   "sceneData": {
     "name": "news-briefing/theme-2-detail",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -24,57 +24,29 @@
         "type": "funnel-with-conversion",
         "x": 80,
         "y": 180,
-        "w": 520,
+        "w": 1120,
         "h": 480,
         "args": {
-          "title": "Startup Capital Flow",
+          "title": "Training-Focused Startup Cost Structure",
           "stages": [
             {
-              "label": "Total Funding",
+              "label": "Total Capital",
               "value": 100,
-              "sublabel": "Raised"
+              "sublabel": "100%"
             },
             {
-              "label": "Cloud Infrastructure",
+              "label": "Cloud Providers",
               "value": 85,
-              "sublabel": "80-90% to providers"
+              "sublabel": "80-90%"
             },
             {
-              "label": "Training Compute",
+              "label": "Compute Training",
               "value": 85,
-              "sublabel": "Upfront investment"
+              "sublabel": "Intensive workloads"
             }
           ],
           "showAbsolute": false,
           "showConversion": true
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 680,
-        "y": 180,
-        "w": 520,
-        "h": 200,
-        "args": {
-          "value": "80-90%",
-          "label": "Capital to Cloud",
-          "sublabel": "Training-focused startups",
-          "icon": "cloud",
-          "style": "dark"
-        }
-      },
-      {
-        "type": "stat-with-icon",
-        "x": 680,
-        "y": 420,
-        "w": 520,
-        "h": 240,
-        "args": {
-          "value": "Majority",
-          "label": "Provider Capture",
-          "sublabel": "Cloud providers capture startup funding",
-          "icon": "building",
-          "iconColor": "rgb(38, 70, 130)"
         }
       }
     ]
@@ -85,20 +57,20 @@
     "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4665,
+      "input_tokens": 4795,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 551,
+      "output_tokens": 331,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.026162400000000002,
-    "elapsedSec": 9.2,
-    "generatedAt": "2026-07-07T04:22:52.885Z",
+    "costUSD": 0.0232524,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-07T05:16:21.935Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

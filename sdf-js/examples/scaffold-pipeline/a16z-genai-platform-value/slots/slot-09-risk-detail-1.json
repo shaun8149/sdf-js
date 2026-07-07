@@ -4,10 +4,10 @@
   "slotTitle": "Top Risk — Detail",
   "slotPurpose": "The single highest-probability / highest-impact item, expanded",
   "sourceSlideIdx": 9,
-  "sourceSlideTitle": "Model Layer: Commoditization Risk",
+  "sourceSlideTitle": "Model Layer: No Moats",
   "sceneData": {
     "name": "news-briefing/risk-detail-1",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -28,33 +28,30 @@
         "h": 140,
         "args": {
           "type_": "warning",
-          "heading": "Model Layer: Commoditization Risk",
-          "body": "Models train on comparable datasets with no systemic moats yet established",
+          "heading": "Model Layer: No Moats",
+          "body": "No systemic moats exist yet in model development",
           "icon": "warning-diamond"
         }
       },
       {
         "type": "bullet-list",
-        "x": 80,
+        "x": 120,
         "y": 360,
-        "w": 1120,
+        "w": 1040,
         "h": 300,
         "args": {
           "items": [
             {
-              "icon": "shield-slash",
-              "label": "No systemic moats exist yet",
-              "status": "highlight"
-            },
-            {
               "icon": "database",
-              "label": "Models train on comparable datasets",
-              "status": "highlight"
+              "label": "Models train on comparable datasets"
             },
             {
-              "icon": "arrow-fat-down",
-              "label": "Model layer faces commoditization pressure",
-              "status": "highlight"
+              "icon": "arrows-merge",
+              "label": "Data and training approaches remain undifferentiated"
+            },
+            {
+              "icon": "shield-slash",
+              "label": "No systemic competitive moats yet"
             }
           ]
         }
@@ -67,20 +64,20 @@
     "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4643,
+      "input_tokens": 4772,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 412,
+      "output_tokens": 384,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024011400000000002,
+    "costUSD": 0.0239784,
     "elapsedSec": 7.8,
-    "generatedAt": "2026-07-07T04:23:07.172Z",
+    "generatedAt": "2026-07-07T05:16:21.936Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

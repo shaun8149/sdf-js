@@ -39,6 +39,11 @@
     "missing_numbers": [],
     "deck_numbers_total": 10,
     "hallucinated_numbers": [],
+    "deck_entities_total": 27,
+    "hallucinated_entities": [
+      "Strategic Capabilities"
+    ],
+    "entity_precision": 0.9629629629629629,
     "number_precision": 1,
     "entities_total": 17,
     "entities_found": 17,
@@ -56,5 +61,5 @@
       "text": 9.3
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.747Z"
+  "generatedAt": "2026-07-07T05:17:25.045Z"
 }

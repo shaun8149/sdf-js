@@ -316,5 +316,46 @@ rmSync(dir, { recursive: true, force: true });
   ok(geoEnts.includes('New York City'), '"New" not stripped before geo names');
 }
 
+// ── Sprint 35: adversarial entity precision ──
+{
+  const { extractDeckEntities, entityGrounded } = await import('./eval-deck-quality.mjs');
+  const slots = [
+    {
+      sceneData: {
+        subjects: [
+          {
+            type: 'numbered-grid',
+            x: 0,
+            y: 0,
+            w: 1200,
+            h: 600,
+            args: {
+              items: [
+                { label: 'Nuclear Power Renaissance', sublabel: 'Tech giants restart reactors' },
+                { label: 'Core Themes', sublabel: 'x' },
+                { label: 'Gartner Magic Quadrant', sublabel: 'ranked leader' },
+                { label: 'Very High', sublabel: 'axis label' },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ];
+  const ents = extractDeckEntities(slots);
+  ok(ents.includes('Nuclear Power Renaissance'), 'deck entity extracted from args');
+  ok(!ents.includes('Core Themes'), 'generic heading vocabulary filtered');
+  ok(!ents.includes('Very High'), 'axis-label vocabulary filtered');
+
+  const src = 'the analysis covers gartner magic quadrant rankings and gpu cloud costs';
+  ok(entityGrounded('Gartner Magic Quadrant', src), 'source-named entity grounded');
+  ok(
+    !entityGrounded('Nuclear Power Renaissance', src),
+    'world-knowledge topic NOT grounded (invented)',
+  );
+  ok(entityGrounded('Cloud Costs Overview', src), 'phrase built from source words self-grounds');
+  ok(entityGrounded('IMF', '国际货币基金组织发布报告'), 'alias grounds cross-language');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
