@@ -157,7 +157,7 @@ function padNum(str, n) {
 }
 
 console.log(
-  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}${padNum('facts%', 8)}${padNum('ents%', 7)}`,
+  `\n${pad('deck', 26)}${padNum('score', 6)}  ${pad('fill', 6)}${padNum('types', 6)}${padNum('unk', 5)}${padNum('twin%', 7)}  ${pad('lift', 6)}${padNum('chars/slot', 11)}${padNum('facts%', 8)}${padNum('ents%', 7)}${padNum('prec%', 7)}`,
 );
 
 for (const r of rows) {
@@ -168,8 +168,12 @@ for (const r of rows) {
     r.fidelity && r.fidelity.entity_recall != null
       ? Math.round(r.fidelity.entity_recall * 100) + '%'
       : '—';
+  const precStr =
+    r.fidelity && r.fidelity.number_precision != null
+      ? Math.round(r.fidelity.number_precision * 100) + '%'
+      : '—';
   console.log(
-    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}${padNum(factsStr, 8)}${padNum(entsStr, 7)}`,
+    `${pad(r.deckName, 26)}${padNum(r.score.total, 6)}  ${pad(fillStr, 6)}${padNum(r.atomQuality.atom_types_distinct, 6)}${padNum(r.atomQuality.unknown_atom_count, 5)}${padNum(Math.round(r.threeDReadiness.twin_coverage * 100) + '%', 7)}  ${pad(liftStr, 6)}${padNum(Math.round(r.textBudget.chars_per_slot), 11)}${padNum(factsStr, 8)}${padNum(entsStr, 7)}${padNum(precStr, 7)}`,
   );
 }
 

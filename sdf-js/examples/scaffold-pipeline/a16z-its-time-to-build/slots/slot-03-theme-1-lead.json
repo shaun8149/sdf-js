@@ -1,0 +1,89 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Protective Equipment Shortage",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "Protective Equipment Shortage",
+          "label": "Coronavirus Pandemic Critical Issue",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 140,
+        "y": 360,
+        "w": 1000,
+        "h": 300,
+        "args": {
+          "items": [
+            {
+              "icon": "mask-happy",
+              "label": "Insufficient Masks",
+              "sublabel": "Critical shortage during pandemic"
+            },
+            {
+              "icon": "first-aid",
+              "label": "Insufficient Gowns",
+              "sublabel": "Medical equipment deficit"
+            },
+            {
+              "icon": "umbrella",
+              "label": "Rain Ponchos",
+              "sublabel": "NYC emergency request for protection"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "theme"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4423,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 440,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023771399999999998,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-07T04:00:23.582Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

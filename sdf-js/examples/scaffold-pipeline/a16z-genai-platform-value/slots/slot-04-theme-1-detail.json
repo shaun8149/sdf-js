@@ -1,0 +1,89 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Cloud Infrastructure: Big 3 Dominance",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Cloud Infrastructure Dominance",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "icon": "brand:amazonaws",
+              "label": "AWS",
+              "sublabel": "Big 3 cloud provider"
+            },
+            {
+              "icon": "brand:googlecloud",
+              "label": "GCP",
+              "sublabel": "Big 3 cloud provider"
+            },
+            {
+              "icon": "brand:microsoftazure",
+              "label": "Azure",
+              "sublabel": "Big 3 cloud provider"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 280,
+        "y": 520,
+        "w": 720,
+        "h": 140,
+        "args": {
+          "value": "$100B+",
+          "label": "Combined Annual Capex",
+          "sublabel": "Massive infrastructure investment",
+          "icon": "database",
+          "style": "dark"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4665,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 433,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0243924,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T04:22:37.355Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

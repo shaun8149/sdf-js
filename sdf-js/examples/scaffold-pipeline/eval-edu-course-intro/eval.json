@@ -29,20 +29,24 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 261.57142857142856,
-    "max_slot_chars": 346
+    "chars_per_slot": 259.2857142857143,
+    "max_slot_chars": 341
   },
   "fidelity": {
     "numbers_total": 20,
     "numbers_found": 20,
     "number_recall": 1,
     "missing_numbers": [],
+    "deck_numbers_total": 20,
+    "hallucinated_numbers": [
+      "100%"
+    ],
+    "number_precision": 0.95,
     "entities_total": 13,
-    "entities_found": 10,
-    "entity_recall": 0.7692307692307693,
+    "entities_found": 11,
+    "entity_recall": 0.8461538461538461,
     "missing_entities": [
       "In Search",
-      "Understandable Consensus Algorithm",
       "Highly Available Key"
     ]
   },
@@ -57,5 +61,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.221Z"
+  "generatedAt": "2026-07-07T04:29:09.772Z"
 }

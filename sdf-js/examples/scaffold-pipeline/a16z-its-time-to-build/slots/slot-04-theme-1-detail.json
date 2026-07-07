@@ -1,0 +1,75 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Not a Money Problem",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Not a Money Problem",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "value": "$2 Trillion",
+          "label": "Relief Package",
+          "sublabel": "Passed in two weeks",
+          "icon": "currency-dollar",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "value": "2 Weeks",
+          "label": "Rapid Mobilization",
+          "sublabel": "Financial capability when desired",
+          "icon": "rocket-launch",
+          "iconColor": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4429,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 350,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0224394,
+    "elapsedSec": 9.1,
+    "generatedAt": "2026-07-07T04:00:32.688Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

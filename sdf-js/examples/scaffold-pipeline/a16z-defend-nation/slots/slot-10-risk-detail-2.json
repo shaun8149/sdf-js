@@ -1,0 +1,72 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "America's Technology Leadership Erosion",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 500,
+        "args": {
+          "title": "America's Technology Leadership Erosion",
+          "leftLabel": "Early 2000s",
+          "rightLabel": "Present",
+          "leftItems": [
+            "Led in 60 of 64 critical technologies",
+            "Global technology dominance",
+            "Innovation leadership across sectors"
+          ],
+          "rightItems": [
+            "Leads in only 7 critical technologies",
+            "Dramatic decline over two decades",
+            "Lost competitive advantage"
+          ],
+          "leftAccent": "rgb(38, 70, 130)",
+          "rightAccent": "rgb(165, 130, 90)",
+          "verdict": "Significant erosion of U.S. technological dominance"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4437,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 349,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0224484,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-07T03:50:05.062Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

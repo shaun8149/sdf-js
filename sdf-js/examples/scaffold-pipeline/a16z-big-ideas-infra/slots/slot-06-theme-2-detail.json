@@ -1,0 +1,79 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "AI Automation Solution for Cybersecurity",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "AI Automation Solution for Cybersecurity",
+          "events": [
+            {
+              "date": "Problem",
+              "label": "3 million unfilled positions",
+              "sublabel": "Hiring crisis in cybersecurity"
+            },
+            {
+              "date": "Pain Point",
+              "label": "Repetitive log review tasks",
+              "sublabel": "Manual burden overwhelming teams"
+            },
+            {
+              "date": "Solution",
+              "label": "AI automation deployment",
+              "sublabel": "Eliminates repetitive workflows"
+            },
+            {
+              "date": "Outcome",
+              "label": "Gap resolution",
+              "sublabel": "Addresses staffing shortage"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4439,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 360,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022619399999999998,
+    "elapsedSec": 11.8,
+    "generatedAt": "2026-07-07T03:42:17.953Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

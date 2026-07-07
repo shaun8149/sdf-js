@@ -48,6 +48,20 @@
       "68",
       "54"
     ],
+    "deck_numbers_total": 34,
+    "hallucinated_numbers": [
+      "62%",
+      "2024",
+      "45%",
+      "67%",
+      "40%",
+      "0.8",
+      "0.15",
+      "0.54",
+      "0.25",
+      "0.35"
+    ],
+    "number_precision": 0.7058823529411765,
     "entities_total": 2,
     "entities_found": 2,
     "entity_recall": 1,
@@ -64,5 +78,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.224Z"
+  "generatedAt": "2026-07-07T04:29:09.775Z"
 }

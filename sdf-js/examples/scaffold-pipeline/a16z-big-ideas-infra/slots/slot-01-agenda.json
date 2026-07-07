@@ -1,0 +1,76 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "label": "Enterprise data challenges: unstructured multimodal data management"
+            },
+            {
+              "label": "Cybersecurity workforce crisis and AI automation solutions"
+            },
+            {
+              "label": "Agent-native infrastructure for recursive workloads"
+            },
+            {
+              "label": "Video generation evolution: from passive to interactive"
+            },
+            {
+              "label": "Healthcare's underserved segment: healthy MAUs"
+            },
+            {
+              "label": "Education transformation: AI-native universities"
+            }
+          ],
+          "numbered": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4523,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 312,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022151399999999998,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-07-07T03:41:41.995Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

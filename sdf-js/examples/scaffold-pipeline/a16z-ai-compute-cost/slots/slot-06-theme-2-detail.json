@@ -1,0 +1,96 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "GPT-3 Training Cost Range",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 200,
+        "args": {
+          "value": "$500K",
+          "label": "Minimum Training Cost",
+          "sublabel": "NVIDIA A100 GPUs",
+          "style": "dark",
+          "icon": "currency-dollar"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 200,
+        "args": {
+          "value": "$4.6M",
+          "label": "Maximum Training Cost",
+          "sublabel": "NVIDIA A100 GPUs",
+          "style": "dark",
+          "icon": "currency-dollar"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 420,
+        "w": 1120,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "chart-bar",
+              "label": "Wide range reflects infrastructure choices",
+              "sublabel": "Vendor pricing differences"
+            },
+            {
+              "icon": "arrow-clockwise",
+              "label": "Single training run figures only",
+              "sublabel": "Excludes experimentation and iteration"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4689,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 496,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0254094,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T04:24:50.985Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

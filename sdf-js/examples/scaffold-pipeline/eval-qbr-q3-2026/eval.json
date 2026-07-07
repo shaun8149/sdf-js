@@ -34,12 +34,22 @@
   },
   "fidelity": {
     "numbers_total": 29,
-    "numbers_found": 27,
-    "number_recall": 0.9310344827586207,
+    "numbers_found": 26,
+    "number_recall": 0.896551724137931,
     "missing_numbers": [
+      "800m",
       "3.2",
       "11"
     ],
+    "deck_numbers_total": 30,
+    "hallucinated_numbers": [
+      "0.75",
+      "0.6",
+      "0.4",
+      "0.2",
+      "2024"
+    ],
+    "number_precision": 0.8333333333333334,
     "entities_total": 1,
     "entities_found": 1,
     "entity_recall": 1,
@@ -56,5 +66,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.201Z"
+  "generatedAt": "2026-07-07T04:29:09.751Z"
 }

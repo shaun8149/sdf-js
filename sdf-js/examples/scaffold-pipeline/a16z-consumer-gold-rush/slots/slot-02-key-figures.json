@@ -1,0 +1,75 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "ChatGPT's 900M User Audience",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures"
+        }
+      },
+      {
+        "type": "stat-grid-large",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "stats": [
+            {
+              "value": "900M",
+              "label": "ChatGPT Users",
+              "trend": "Unprecedented Access",
+              "trendDirection": "up"
+            },
+            {
+              "value": "Direct",
+              "label": "Developer Access",
+              "trend": "Now Available",
+              "trendDirection": "up"
+            },
+            {
+              "value": "Immediate",
+              "label": "User Base Reach",
+              "trend": "Massive Scale",
+              "trendDirection": "up"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4427,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 313,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0218784,
+    "elapsedSec": 5.6,
+    "generatedAt": "2026-07-07T03:47:21.793Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

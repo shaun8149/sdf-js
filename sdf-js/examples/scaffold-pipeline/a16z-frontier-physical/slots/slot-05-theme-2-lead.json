@@ -1,0 +1,102 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Frontier Area: Robotics",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Frontier Area: Robotics",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "circle-image-hub-spoke",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "center": {
+            "label": "Robotics",
+            "color": [38, 70, 130]
+          },
+          "satellites": [
+            {
+              "label": "VLAs",
+              "color": [110, 95, 75]
+            },
+            {
+              "label": "WAMs",
+              "color": [165, 130, 90]
+            },
+            {
+              "label": "Embodied Models",
+              "color": [200, 195, 180]
+            }
+          ],
+          "title": "Technical Primitives"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket",
+              "label": "First major application frontier",
+              "status": "highlight"
+            },
+            {
+              "icon": "cube",
+              "label": "Combines all five technical primitives",
+              "sublabel": "In embodied systems"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Advances drive progress",
+              "sublabel": "VLAs, WAMs, embodied models"
+            }
+          ],
+          "title": "Key Insights"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4436,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 523,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0250554,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-07T03:55:07.904Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "Equipping the Warfighter",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Commercial Technology Partnerships",
+              "sublabel": "Leveraging commercial companies ensures best technologies for warfighters"
+            },
+            {
+              "label": "State-of-the-Art Capabilities",
+              "sublabel": "Commercial partnerships provide access to leading-edge systems"
+            },
+            {
+              "label": "Rapid Autonomous Systems Access",
+              "sublabel": "Warfighter effectiveness depends on rapid leading-edge technology deployment"
+            }
+          ],
+          "cols": 3,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4666,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 328,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0228204,
+    "elapsedSec": 6.5,
+    "generatedAt": "2026-07-07T04:21:41.224Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

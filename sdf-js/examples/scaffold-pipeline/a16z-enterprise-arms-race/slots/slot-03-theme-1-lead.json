@@ -1,0 +1,111 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "OpenAI Dominates Production Deployment",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "78%",
+          "label": "OpenAI Production",
+          "sublabel": "Enterprise CIOs",
+          "icon": "chart-pie",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 440,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "56%",
+          "label": "Wallet Share",
+          "sublabel": "Enterprise AI Spending",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "#1",
+          "label": "Market Leader",
+          "sublabel": "Enterprise Penetration",
+          "icon": "trophy",
+          "style": "light"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 440,
+        "w": 1200,
+        "h": 240,
+        "args": {
+          "title": "Category Leaders",
+          "items": [
+            {
+              "icon": "chats-circle",
+              "label": "Microsoft 365 Copilot",
+              "sublabel": "Enterprise chat leader via Office integration"
+            },
+            {
+              "icon": "code",
+              "label": "GitHub Copilot",
+              "sublabel": "Dominant coding AI on developer platform"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4644,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 603,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026879399999999998,
+    "elapsedSec": 9.8,
+    "generatedAt": "2026-07-07T03:52:50.830Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

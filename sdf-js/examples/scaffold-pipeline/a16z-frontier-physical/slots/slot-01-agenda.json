@@ -1,0 +1,83 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Overview: Building Blocks and Applications",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "label": "Five technical primitives enabling physical AI",
+              "sublabel": "Simulation infrastructure · Expanded sensory capabilities · RL post-training"
+            },
+            {
+              "label": "Three frontier areas",
+              "sublabel": "Robotics · Autonomous science · Human-computer interfaces"
+            },
+            {
+              "label": "Cross-domain reinforcement creating scaling flywheel"
+            },
+            {
+              "label": "RECAP method enables sophisticated physical skills",
+              "sublabel": "pi-0.6 folds laundry across 50 garment types"
+            },
+            {
+              "label": "Self-driving laboratories automate research",
+              "sublabel": "Periodic Labs and Medra combine reasoning models with physical testing"
+            },
+            {
+              "label": "Novel interfaces: BCIs and wearables",
+              "sublabel": "New modalities for human-AI collaboration"
+            }
+          ],
+          "numbered": true,
+          "style": "compact"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4917,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 422,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0249834,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-07T03:54:35.674Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

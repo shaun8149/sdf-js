@@ -1,0 +1,76 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "The Core Transformation",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 420,
+        "args": {
+          "items": [
+            {
+              "icon": "dna",
+              "label": "Biology Industrialization",
+              "sublabel": "AI-powered transformation"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Labor to Compute",
+              "sublabel": "Scalable service model"
+            },
+            {
+              "icon": "factory",
+              "label": "Industrial Revolution",
+              "sublabel": "Healthcare transformation"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4419,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 322,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0219894,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-07T03:43:39.651Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

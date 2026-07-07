@@ -1,0 +1,106 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Ali Ghodsi's Top Picks",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Detail"
+        }
+      },
+      {
+        "type": "isotype-stat-comparison",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Ali Ghodsi's Top Picks",
+          "stats": [
+            {
+              "iconName": "book-open",
+              "count": 6,
+              "label": "Books Recommended",
+              "caption": "Including The Effective Executive"
+            },
+            {
+              "iconName": "lightbulb",
+              "count": 2,
+              "label": "Core Themes",
+              "caption": "Execution & Innovation Strategy"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 200,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "title": "Featured Books",
+          "items": [
+            {
+              "icon": "book",
+              "label": "The Effective Executive",
+              "sublabel": "Execution framework"
+            },
+            {
+              "icon": "trophy",
+              "label": "Competing Against Luck",
+              "sublabel": "Innovation strategy"
+            }
+          ]
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "value": "6",
+          "label": "Books Recommended",
+          "sublabel": "Focus: Execution & Innovation",
+          "icon": "books",
+          "iconColor": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4440,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 558,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0255924,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-07T04:06:40.387Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

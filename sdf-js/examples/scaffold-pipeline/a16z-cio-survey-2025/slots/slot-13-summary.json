@@ -1,0 +1,78 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "2025 Enterprise Gen AI Outlook",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "2025 Enterprise Gen AI Outlook",
+          "items": [
+            {
+              "label": "Budget Growth",
+              "sublabel": "~75% increase signals aggressive expansion"
+            },
+            {
+              "label": "Production Priority",
+              "sublabel": "Shift from innovation (7%) to deployment"
+            },
+            {
+              "label": "Multi-Model Approach",
+              "sublabel": "Strategies and third-party apps dominate"
+            },
+            {
+              "label": "Market Competition",
+              "sublabel": "OpenAI leads vs Google, Anthropic, others"
+            }
+          ],
+          "cols": 2,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4448,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 359,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0226314,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-07T03:46:38.706Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

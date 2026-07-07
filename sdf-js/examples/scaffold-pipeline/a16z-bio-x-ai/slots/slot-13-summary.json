@@ -1,0 +1,74 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Full-Stack Platform Approach",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Key Takeaways",
+          "items": [
+            {
+              "label": "Full-Stack Platform Models",
+              "sublabel": "Bio GAFA companies adopting integrated approaches"
+            },
+            {
+              "label": "End-to-End Value Control",
+              "sublabel": "Platform models enable control across entire chain"
+            },
+            {
+              "label": "Discovery-to-Delivery Integration",
+              "sublabel": "Integration creates competitive advantage"
+            }
+          ],
+          "cols": 3,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4417,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 326,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022043399999999998,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T03:44:38.908Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

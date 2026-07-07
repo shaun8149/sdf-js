@@ -1,0 +1,116 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Key Trends Summary",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 60,
+        "y": 180,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "value": "60%",
+          "label": "Horizontal Solutions",
+          "sublabel": "vs 40% vertical",
+          "icon": "chart-bar-horizontal",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 380,
+        "y": 180,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "value": "10",
+          "label": "Creative Tools",
+          "sublabel": "Leading category",
+          "icon": "palette",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 700,
+        "y": 180,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "value": "~70%",
+          "label": "Individual Adoption",
+          "sublabel": "Market driver",
+          "icon": "user",
+          "style": "light"
+        }
+      },
+      {
+        "type": "comparison-table",
+        "x": 60,
+        "y": 440,
+        "w": 920,
+        "h": 220,
+        "args": {
+          "title": "Vertical Application Preference",
+          "columns": [
+            {
+              "label": "Human Augmentation",
+              "accent": [38, 70, 130]
+            },
+            {
+              "label": "AI Employees",
+              "accent": [165, 130, 90]
+            }
+          ],
+          "features": [
+            {
+              "label": "Companies",
+              "Human Augmentation": "12",
+              "AI Employees": "5"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4451,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 600,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026255399999999998,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-07T03:40:12.108Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda: Key Themes",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 580,
+        "h": 480,
+        "args": {
+          "title": "Key Themes",
+          "items": [
+            {
+              "label": "LLM Budget Growth and Allocation Shifts"
+            },
+            {
+              "label": "Multi-Model Adoption Trends"
+            },
+            {
+              "label": "Market Leadership and Emerging Players"
+            },
+            {
+              "label": "Production Deployment Patterns"
+            },
+            {
+              "label": "Third-Party Application Testing"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 720,
+        "y": 160,
+        "w": 480,
+        "h": 140,
+        "args": {
+          "value": "23%",
+          "label": "OpenAI o3 Production Adoption",
+          "sublabel": "Fast uptake indicates strong enterprise confidence",
+          "icon": "rocket-launch",
+          "style": "light"
+        }
+      },
+      {
+        "type": "bar",
+        "x": 720,
+        "y": 340,
+        "w": 480,
+        "h": 300,
+        "args": {
+          "title": "o3 vs DeepSeek Production Deployment",
+          "values": [23, 3],
+          "labels": ["OpenAI o3", "DeepSeek"],
+          "format": "percent",
+          "showValues": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4638,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 526,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025706399999999997,
+    "elapsedSec": 11,
+    "generatedAt": "2026-07-07T03:45:24.049Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

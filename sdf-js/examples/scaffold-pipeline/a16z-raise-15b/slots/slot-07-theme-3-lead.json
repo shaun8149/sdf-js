@@ -1,0 +1,94 @@
+{
+  "slotIdx": 7,
+  "slotName": "theme-3-lead",
+  "slotTitle": "Theme 3 — Lead",
+  "slotPurpose": "Third major theme: the core facts",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "Technology Leadership Imperative",
+  "sceneData": {
+    "name": "news-briefing/theme-3-lead",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Technology Leadership Imperative",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "radial-wheel-segmented",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "hub": "American Tech Leadership",
+          "segments": [
+            {
+              "label": "AI",
+              "sublabel": "Artificial intelligence systems"
+            },
+            {
+              "label": "Crypto",
+              "sublabel": "Blockchain and digital assets"
+            },
+            {
+              "label": "Biology",
+              "sublabel": "Biotechnology applications"
+            },
+            {
+              "label": "Health",
+              "sublabel": "Healthcare technology"
+            },
+            {
+              "label": "Defense",
+              "sublabel": "National security systems"
+            },
+            {
+              "label": "Education",
+              "sublabel": "EdTech platforms"
+            }
+          ]
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 640,
+        "w": 1200,
+        "h": 50,
+        "args": {
+          "value": "Existential Priority",
+          "label": "Technology dominance framed as national imperative"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4435,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 442,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0238374,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-07T04:04:53.638Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

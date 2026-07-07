@@ -33,20 +33,24 @@
     "max_slot_chars": 541
   },
   "fidelity": {
-    "numbers_total": 30,
+    "numbers_total": 31,
     "numbers_found": 27,
-    "number_recall": 0.9,
+    "number_recall": 0.8709677419354839,
     "missing_numbers": [
       "2025",
       "7%",
-      "2027"
+      "2027",
+      "5t"
     ],
+    "deck_numbers_total": 31,
+    "hallucinated_numbers": [
+      "0.5"
+    ],
+    "number_precision": 0.967741935483871,
     "entities_total": 6,
-    "entities_found": 5,
-    "entity_recall": 0.8333333333333334,
-    "missing_entities": [
-      "Village Chief Amara Kessy"
-    ]
+    "entities_found": 6,
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 92.5,
@@ -59,5 +63,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.222Z"
+  "generatedAt": "2026-07-07T04:29:09.774Z"
 }

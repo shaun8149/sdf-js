@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-07T01:20:05.709Z",
+  "generatedAt": "2026-07-07T04:29:09.785Z",
   "corpusSize": 13,
   "scored": 13,
   "skipped": [],
   "corpusMean": 97.2,
-  "factsRecallMean": 0.957,
-  "entityRecallMean": 0.957,
+  "factsRecallMean": 0.96,
+  "entityRecallMean": 0.988,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -34,10 +34,11 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 179.28571428571428,
       "maxSlotChars": 285,
-      "numberRecall": 0.9310344827586207,
+      "numberRecall": 0.896551724137931,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
+        "800m",
         "3.2",
         "11"
       ]
@@ -69,10 +70,11 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 142.85714285714286,
       "maxSlotChars": 180,
-      "numberRecall": 0.9807692307692307,
+      "numberRecall": 0.9622641509433962,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
+        "23b",
         "240,40"
       ]
     },
@@ -101,13 +103,12 @@
       "liftSuccess": 7,
       "liftAttempted": 7,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 261.57142857142856,
-      "maxSlotChars": 346,
+      "charsPerSlot": 259.2857142857143,
+      "maxSlotChars": 341,
       "numberRecall": 1,
-      "entityRecall": 0.7692307692307693,
+      "entityRecall": 0.8461538461538461,
       "missingEntities": [
         "In Search",
-        "Understandable Consensus Algorithm",
         "Highly Available Key"
       ],
       "missingNumbers": []
@@ -137,13 +138,11 @@
       "liftSuccess": 14,
       "liftAttempted": 14,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 82.28571428571429,
+      "charsPerSlot": 79,
       "maxSlotChars": 130,
       "numberRecall": 1,
-      "entityRecall": 0.8333333333333334,
-      "missingEntities": [
-        "但世界银行"
-      ],
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": []
     },
     {
@@ -171,7 +170,7 @@
       "liftSuccess": 14,
       "liftAttempted": 14,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 76.5,
+      "charsPerSlot": 74,
       "maxSlotChars": 128,
       "numberRecall": 1,
       "entityRecall": 1,
@@ -212,14 +211,14 @@
     },
     {
       "deckName": "eval-strategy-batch2-validation",
-      "score": 98.9,
+      "score": 99,
       "scoreBreakdown": {
         "structure": 25,
         "variety": 15,
         "hallucination": 15,
         "twin": 20,
         "lift": 15,
-        "text": 8.9
+        "text": 9
       },
       "fillRate": 1,
       "scaffoldId": "change-roadmap",
@@ -235,13 +234,12 @@
       "liftSuccess": 8,
       "liftAttempted": 8,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 314,
+      "charsPerSlot": 312.375,
       "maxSlotChars": 489,
-      "numberRecall": 0.9130434782608695,
+      "numberRecall": 0.9565217391304348,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
-        "01",
         "43"
       ]
     },
@@ -278,12 +276,10 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 196.22222222222223,
       "maxSlotChars": 264,
-      "numberRecall": 0.8518518518518519,
+      "numberRecall": 0.9259259259259259,
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": [
-        "$0",
-        "$120K",
         "$740K",
         "$2.4M"
       ]
@@ -383,8 +379,8 @@
       "liftSuccess": 6,
       "liftAttempted": 6,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 104.5,
-      "maxSlotChars": 130,
+      "charsPerSlot": 99.16666666666667,
+      "maxSlotChars": 128,
       "numberRecall": 1,
       "entityRecall": 1,
       "missingEntities": [],
@@ -417,15 +413,14 @@
       "liftedSubjectRate": 1,
       "charsPerSlot": 242,
       "maxSlotChars": 541,
-      "numberRecall": 0.9,
-      "entityRecall": 0.8333333333333334,
-      "missingEntities": [
-        "Village Chief Amara Kessy"
-      ],
+      "numberRecall": 0.8709677419354839,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": [
         "2025",
         "7%",
-        "2027"
+        "2027",
+        "5t"
       ]
     },
     {

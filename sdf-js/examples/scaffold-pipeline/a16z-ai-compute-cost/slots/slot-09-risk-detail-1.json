@@ -1,0 +1,95 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "GPT-3 Memory Requirements",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "GPT-3 Memory Requirements",
+          "body": "Training requires over one terabyte of memory",
+          "icon": "database"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 80,
+        "y": 360,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "value": ">1 TB",
+          "label": "Memory Footprint",
+          "sublabel": "Training requirement",
+          "icon": "hard-drive",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "Critical constraint",
+          "trendDirection": "down"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 360,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "icon": "network",
+              "label": "Distributed infrastructure required"
+            },
+            {
+              "icon": "gauge",
+              "label": "Memory key constraint beyond compute"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4428,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 480,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024386400000000003,
+    "elapsedSec": 8.8,
+    "generatedAt": "2026-07-07T03:38:53.925Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Value capture dynamics in generative AI"
+            },
+            {
+              "label": "Hardware infrastructure leadership"
+            },
+            {
+              "label": "Application layer economics"
+            },
+            {
+              "label": "Cloud infrastructure spending"
+            },
+            {
+              "label": "Competitive landscape and moats"
+            },
+            {
+              "label": "Market structure outlook"
+            }
+          ],
+          "numbered": true,
+          "style": "showcase"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4636,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 262,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0217404,
+    "elapsedSec": 5.9,
+    "generatedAt": "2026-07-07T04:22:14.464Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

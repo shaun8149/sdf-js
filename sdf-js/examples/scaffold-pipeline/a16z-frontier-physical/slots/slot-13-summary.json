@@ -1,0 +1,73 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 14,
+  "sourceSlideTitle": "The Reinforcement Flywheel",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Three Domains Reinforce Each Other",
+              "sublabel": "Robotics, autonomous science, and interface design create mutual advancement"
+            },
+            {
+              "label": "Robotics Informs Other Domains",
+              "sublabel": "Physical world advances drive autonomous science and interface design"
+            },
+            {
+              "label": "Flywheel Effect for Physical AI",
+              "sublabel": "Self-reinforcing cycle scales AI into the physical realm"
+            }
+          ],
+          "cols": 3,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4425,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 333,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0221724,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T03:55:37.991Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

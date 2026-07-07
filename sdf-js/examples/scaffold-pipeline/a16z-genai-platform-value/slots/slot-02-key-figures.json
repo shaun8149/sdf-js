@@ -1,0 +1,75 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Hardware Leadership: Nvidia's Position",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 140,
+        "y": 200,
+        "w": 400,
+        "h": 420,
+        "args": {
+          "value": "$3.8B",
+          "label": "Q3 FY2023 Data Center GPU Revenue",
+          "sublabel": "Nvidia leads hardware segment",
+          "icon": "cpu",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "Leader",
+          "trendDirection": "up"
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 640,
+        "y": 240,
+        "w": 500,
+        "h": 340,
+        "args": {
+          "name": "cpu",
+          "label": "GPUs: Fundamental compute layer for generative AI",
+          "color": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4655,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 359,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0232524,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T04:22:21.504Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

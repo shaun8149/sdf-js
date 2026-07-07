@@ -1,0 +1,78 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Key Trends Summary",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Key Trends",
+          "items": [
+            {
+              "label": "Horizontal solutions outpace vertical",
+              "sublabel": "60% vs 40% spending split"
+            },
+            {
+              "label": "Creative tools dominate",
+              "sublabel": "Ten companies lead all categories"
+            },
+            {
+              "label": "Individual adoption drives market",
+              "sublabel": "Nearly 70% of total adoption"
+            },
+            {
+              "label": "Human augmentation preferred",
+              "sublabel": "12 companies vs 5 AI employees in vertical applications"
+            }
+          ],
+          "cols": 2,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4447,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 357,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022598399999999998,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-07T03:41:08.982Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

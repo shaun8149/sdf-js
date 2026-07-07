@@ -1,0 +1,48 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Headline",
+  "slotPurpose": "Article headline + source and date context",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "You can just read 25 books",
+  "sceneData": {
+    "name": "news-briefing/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "You can just read 25 books",
+          "subtitle": "Andreessen Horowitz compiled book recommendations from 14 founders and partners",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4390,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 143,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0192174,
+    "elapsedSec": 4.3,
+    "generatedAt": "2026-07-07T04:06:07.269Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

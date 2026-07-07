@@ -1,0 +1,109 @@
+[
+  {
+    "title": "How 100 Enterprise CIOs Are Building and Buying Gen AI in 2025",
+    "body": [
+      "Survey of 100 Enterprise CIOs on Generative AI strategies",
+      "Focus on LLM budgets, model adoption, and implementation trends",
+      "2025 enterprise AI landscape analysis"
+    ]
+  },
+  {
+    "title": "Agenda: Key Themes",
+    "body": [
+      "LLM Budget Growth and Allocation Shifts",
+      "Multi-Model Adoption Trends",
+      "Market Leadership and Emerging Players",
+      "Production Deployment Patterns",
+      "Third-Party Application Testing"
+    ]
+  },
+  {
+    "title": "LLM Budget Growth Exceeds Expectations",
+    "body": [
+      "LLM budgets have grown ahead of enterprises' already-high expectations",
+      "Leaders expecting an average of ~75% growth over the next year",
+      "Budget expansion signals deepening enterprise commitment to Gen AI"
+    ]
+  },
+  {
+    "title": "Innovation Budget Allocation Drops Sharply",
+    "body": [
+      "Innovation budgets dropped from a quarter of LLM spending to just 7%",
+      "Shift indicates move from experimentation to production deployment",
+      "Enterprises prioritizing operational AI over exploratory projects"
+    ]
+  },
+  {
+    "title": "Multi-Model Strategy Becomes Standard",
+    "body": [
+      "37% of respondents now use 5 or more models",
+      "This represents an increase from 29% last year",
+      "Growing diversification of LLM portfolios across enterprises"
+    ]
+  },
+  {
+    "title": "OpenAI Maintains Market Leadership Position",
+    "body": [
+      "OpenAI maintains market leadership in enterprise deployments",
+      "Sustained dominance despite increasing competition",
+      "Continues to be primary LLM provider for enterprise use cases"
+    ]
+  },
+  {
+    "title": "Google and Anthropic Gain Ground",
+    "body": [
+      "Google made considerable strides in enterprise adoption",
+      "Anthropic made considerable strides in enterprise adoption",
+      "Traditional and emerging players expanding market share"
+    ]
+  },
+  {
+    "title": "OpenAI's o3 Model Sees Rapid Production Adoption",
+    "body": [
+      "23% of enterprises surveyed already use OpenAI's o3 model in production",
+      "Fast uptake indicates strong enterprise confidence in new model",
+      "o3 deployment rate reflects OpenAI's established enterprise relationships"
+    ]
+  },
+  {
+    "title": "DeepSeek Production Deployment Remains Limited",
+    "body": [
+      "Just 3% of enterprises use DeepSeek model in production",
+      "Significant gap compared to OpenAI's o3 model at 23%",
+      "Emerging Chinese model provider faces adoption barriers in surveyed enterprises"
+    ]
+  },
+  {
+    "title": "o3 vs DeepSeek: Production Deployment Gap",
+    "body": [
+      "OpenAI o3: 23% production adoption rate",
+      "DeepSeek: 3% production adoption rate",
+      "7.6x difference highlights market position disparities"
+    ]
+  },
+  {
+    "title": "Customer Support Emerges as Primary Use Case",
+    "body": [
+      "Over 90% of survey respondents are testing third-party apps for customer support use cases",
+      "Customer support represents the most widely explored Gen AI application",
+      "Near-universal experimentation indicates high strategic priority"
+    ]
+  },
+  {
+    "title": "Third-Party Application Testing at Scale",
+    "body": [
+      "Over 90% of respondents testing third-party apps",
+      "Customer support identified as primary testing focus",
+      "Enterprises favoring pre-built solutions over custom development"
+    ]
+  },
+  {
+    "title": "2025 Enterprise Gen AI Outlook",
+    "body": [
+      "~75% budget growth signals aggressive expansion plans",
+      "Shift from innovation (7%) to production deployment priorities",
+      "Multi-model strategies and third-party apps dominate implementation approach",
+      "OpenAI leads while Google, Anthropic, and others compete for enterprise share"
+    ]
+  }
+]

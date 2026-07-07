@@ -1,0 +1,58 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Mission: Opportunity Regardless of Background",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Quote"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 140,
+        "y": 200,
+        "w": 1000,
+        "h": 400,
+        "args": {
+          "quote": "Providing opportunity regardless of background — connecting venture investment to the broader American promise of social mobility and positioning capital deployment as continuation of a 250-year tradition",
+          "author": "Ben Horowitz",
+          "align": "center"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["quote-pull", "pull-quote-banner"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4417,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 221,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020468399999999998,
+    "elapsedSec": 5,
+    "generatedAt": "2026-07-07T04:05:24.120Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

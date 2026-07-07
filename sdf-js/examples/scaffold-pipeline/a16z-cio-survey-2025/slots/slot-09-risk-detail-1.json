@@ -1,0 +1,108 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "DeepSeek Production Deployment Remains Limited",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "DeepSeek Production Deployment Remains Limited",
+          "body": "Emerging Chinese model provider faces adoption barriers in surveyed enterprises",
+          "icon": "warning-octagon"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 360,
+        "w": 340,
+        "h": 280,
+        "args": {
+          "value": "3%",
+          "label": "DeepSeek",
+          "sublabel": "Enterprise production usage",
+          "icon": "chart-line-down",
+          "trend": "down",
+          "trendValue": "Low adoption",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 470,
+        "y": 360,
+        "w": 340,
+        "h": 280,
+        "args": {
+          "value": "23%",
+          "label": "OpenAI o3",
+          "sublabel": "Enterprise production usage",
+          "icon": "chart-line-up",
+          "trend": "up",
+          "trendValue": "Market leader",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 860,
+        "y": 360,
+        "w": 340,
+        "h": 280,
+        "args": {
+          "value": "7.7×",
+          "label": "Gap",
+          "sublabel": "OpenAI o3 vs DeepSeek adoption",
+          "icon": "arrows-split",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "Significant difference",
+          "trendDirection": "down"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4444,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 637,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026789399999999998,
+    "elapsedSec": 10.8,
+    "generatedAt": "2026-07-07T03:46:16.378Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

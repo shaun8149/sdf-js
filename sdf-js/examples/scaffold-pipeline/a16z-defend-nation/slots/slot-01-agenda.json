@@ -1,0 +1,78 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "label": "U.S. technological leadership decline",
+              "sublabel": "Assessment of competitive position"
+            },
+            {
+              "label": "Global Competition and Innovation (GCI) framework",
+              "sublabel": "New investment approach"
+            },
+            {
+              "label": "Eight critical sectors requiring capital",
+              "sublabel": "Semiconductors · Energy · Artificial Intelligence"
+            },
+            {
+              "label": "AI deployment and energy scaling priorities",
+              "sublabel": "Large institutional investors anchor capital"
+            },
+            {
+              "label": "Role of institutional investors",
+              "sublabel": "Strategic capital allocation for competitiveness"
+            }
+          ],
+          "numbered": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4863,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 342,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023621399999999997,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-07T03:48:58.045Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "From Empirical to Engineered",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "From Empirical to Engineered",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 140,
+        "y": 200,
+        "w": 1000,
+        "h": 420,
+        "args": {
+          "steps": [
+            {
+              "label": "Empirical Science",
+              "sublabel": "Trial-and-error biology"
+            },
+            {
+              "label": "AI Transition",
+              "sublabel": "Data-driven prediction"
+            },
+            {
+              "label": "Engineered Discipline",
+              "sublabel": "Designable systems"
+            }
+          ],
+          "color": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4429,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 288,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0215094,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-07T03:44:00.571Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

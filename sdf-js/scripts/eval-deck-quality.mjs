@@ -64,7 +64,26 @@ export const NON_TEXT_ARG_KEYS = new Set([
   'iconColor',
   'accentColor',
   'font',
+  // color-valued keys (Sprint 33: an rgb triple or [38,70,130] array is a
+  // style choice, not prose — and definitely not a factual number claim)
+  'color',
+  'colors',
+  'bg',
+  'leftAccent',
+  'silhouetteColor',
+  'fill',
+  'stroke',
+  'strokeColor',
+  'borderColor',
+  'barColor',
 ]);
+
+// A key is non-text if it's in the explicit list OR ends in Color/Accent
+// (numberColor, chipColor, rightAccent, pillars[].accent … — atoms grow
+// color knobs faster than any list can chase).
+export function isNonTextKey(k) {
+  return NON_TEXT_ARG_KEYS.has(k) || /(color|accent)$/i.test(k);
+}
 
 /**
  * Recursively sum the length of user-visible string leaves inside an atom's
@@ -74,7 +93,7 @@ export const NON_TEXT_ARG_KEYS = new Set([
 export function collectTextChars(node, keyName = null) {
   if (node == null) return 0;
   if (typeof node === 'string') {
-    if (keyName && NON_TEXT_ARG_KEYS.has(keyName)) return 0;
+    if (keyName && isNonTextKey(keyName)) return 0;
     return node.length;
   }
   if (Array.isArray(node)) {
@@ -83,7 +102,7 @@ export function collectTextChars(node, keyName = null) {
   if (typeof node === 'object') {
     let sum = 0;
     for (const [k, v] of Object.entries(node)) {
-      if (NON_TEXT_ARG_KEYS.has(k)) continue;
+      if (isNonTextKey(k)) continue;
       sum += collectTextChars(v, k);
     }
     return sum;
@@ -108,11 +127,34 @@ function textBudgetScore(charsPerSlot) {
 // Extract "key numbers" from source prose: currency, counts, percentages.
 // Trailing punctuation stripped; bare 1-char digits skipped (years kept).
 export function extractKeyNumbers(text) {
-  const raw = text.match(/\$?[\d,]+\.?\d*[KMB%]?/g) || [];
+  // Scale words fold into suffix form ("$3.8 billion" → "$3.8B") so a deck's
+  // "$3.8B" counts as preserving it (Sprint 33 — a16z essays write scales as
+  // words far more often than slide fixtures did).
+  const raw =
+    text.match(/\$?[\d,]+\.?\d*(?:\s*(?:trillion|billion|million|thousand))?[KMBT%]?/gi) || [];
   const cleaned = raw
-    .map((n) => n.replace(/[,.]+$/, ''))
+    .map((n) =>
+      n
+        .replace(/\s*trillion/i, 'T')
+        .replace(/\s*billion/i, 'B')
+        .replace(/\s*million/i, 'M')
+        .replace(/\s*thousand/i, 'K')
+        .replace(/[,.]+$/, ''),
+    )
     .filter((n) => n.length > 1 && /\d/.test(n));
   return [...new Set(cleaned)];
+}
+
+// Canonical numeric value of a token: "$3.8B"→3.8e9, "500,000"→500000,
+// "93%"→93, "46T"→4.6e13. null when the token isn't a plain number form.
+// Percent keeps its face value (payloads store 93, not 0.93).
+const NUMBER_SCALE = { K: 1e3, M: 1e6, B: 1e9, T: 1e12 };
+export function numericValueOf(token) {
+  const m = String(token).match(/^\$?([\d,]+\.?\d*)([KMBT])?%?$/i);
+  if (!m) return null;
+  const v = parseFloat(m[1].replace(/,/g, ''));
+  if (!Number.isFinite(v)) return null;
+  return m[2] ? v * NUMBER_SCALE[m[2].toUpperCase()] : v;
 }
 
 // Boundary-exact numeric tokens from serialized deck JSON. Comma counts as a
@@ -124,14 +166,21 @@ export function extractKeyNumbers(text) {
 // form appears as an exact deck token — while exact matching stops "5%" from
 // free-riding on a substring of "2.5%" (a false positive under .includes).
 export function deckNumberTokens(deckText) {
+  // Scale words fold to suffix form on the deck side too — a lift that
+  // writes "100 trillion tokens" in a label preserves the source's "100T".
+  const folded = deckText
+    .replace(/(\d)\s*trillion/gi, '$1T')
+    .replace(/(\d)\s*billion/gi, '$1B')
+    .replace(/(\d)\s*million/gi, '$1M')
+    .replace(/(\d)\s*thousand/gi, '$1K');
   const raw =
-    deckText.match(/\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?[KMB%]?|\$?\d+(?:\.\d+)?[KMB%]?/g) || [];
+    folded.match(/\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?[KMBT%]?|\$?\d+(?:\.\d+)?[KMBT%]?/g) || [];
   const set = new Set();
   for (const t of raw) {
     const noComma = t.replace(/,/g, '');
     set.add(t);
     set.add(noComma);
-    set.add(noComma.replace(/^\$/, '').replace(/[KMB%]$/, ''));
+    set.add(noComma.replace(/^\$/, '').replace(/[KMBT%]$/, ''));
   }
   return set;
 }
@@ -140,17 +189,105 @@ export function deckNumberTokens(deckText) {
 // token match always counts; the bare form only stands in for a trailing
 // "%" — percent payloads are stored bare by design, but "$3.4M" matching a
 // bare "3.4" would be a coincidence, not preservation.
-export function numberPreserved(n, tokens) {
+export function numberPreserved(n, tokens, tokenValues = null) {
   const noComma = n.replace(/,/g, '');
   if (tokens.has(n) || tokens.has(noComma)) return true;
-  if (noComma.endsWith('%')) return tokens.has(noComma.slice(0, -1));
+  if (noComma.endsWith('%') && tokens.has(noComma.slice(0, -1))) return true;
+  // Value equivalence (Sprint 33): "$500,000" is preserved by "$500K" or
+  // 500000 — scale spelling is presentation, the value is the claim.
+  if (tokenValues) {
+    const v = numericValueOf(n);
+    if (v != null && tokenValues.has(v)) return true;
+  }
+  return false;
+}
+
+// Canonical value set for a token collection (deck or source side).
+export function valueSetOf(tokens) {
+  const out = new Set();
+  for (const t of tokens) {
+    const v = numericValueOf(t);
+    if (v != null) out.add(v);
+  }
+  return out;
+}
+
+// ── ADVERSARIAL: number precision (Sprint 33) ─────────────────────────────
+// Recall asks "did source numbers survive?"; precision asks the adversarial
+// converse: "does the deck contain numbers the source never said?" — the LLM
+// inventing "$2.3B" on a slide is a worse fidelity failure than dropping a
+// figure, because the deck asserts it with chart-grade confidence.
+//
+// Deck numbers come from ARGS ONLY (never x/y/w/h geometry). Pure integers
+// 0-12 without a $/%/K/M/B suffix are exempt — list numbering, agenda
+// indices, and step counts are presentation artifacts, not claims.
+export function extractDeckPayloadNumbers(slotSceneDatas) {
+  // Walk args collecting string/number leaves, skipping style/enum keys the
+  // same way the text budget does (a theme color "rgb(38, 70, 130)" is not
+  // a factual claim). Any surviving rgb()/rgba() strings are stripped too.
+  const leaves = [];
+  function walk(node, keyName = null) {
+    if (node == null) return;
+    if (typeof node === 'string' || typeof node === 'number') {
+      if (!(keyName && isNonTextKey(keyName))) leaves.push(String(node));
+      return;
+    }
+    if (Array.isArray(node)) {
+      for (const el of node) walk(el, keyName);
+      return;
+    }
+    if (typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        if (isNonTextKey(k)) continue;
+        walk(v, k);
+      }
+    }
+  }
+  for (const { sceneData } of slotSceneDatas) {
+    for (const subject of sceneData.subjects || []) walk(subject.args || {});
+  }
+  const argsText = leaves
+    .join(' ')
+    .replace(/rgba?\([^)]*\)/g, ' ')
+    .replace(/(\d)\s*trillion/gi, '$1T')
+    .replace(/(\d)\s*billion/gi, '$1B')
+    .replace(/(\d)\s*million/gi, '$1M')
+    .replace(/(\d)\s*thousand/gi, '$1K');
+  const raw =
+    argsText.match(/\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?[KMBT%]?|\$?\d+(?:\.\d+)?[KMBT%]?/g) || [];
+  const out = new Set();
+  for (const t of raw) {
+    const bare = t
+      .replace(/,/g, '')
+      .replace(/^\$/, '')
+      .replace(/[KMBT%]$/, '');
+    if (t === bare && /^\d{1,2}$/.test(bare) && Number(bare) <= 12) continue;
+    out.add(t);
+  }
+  return [...out];
+}
+
+// A deck number is grounded if the source's token set contains it in any
+// form: literal, comma-stripped, bare (source "93%" grounds deck 93;
+// source "$4.5M" grounds deck "4.5M"), or by canonical VALUE — the lift
+// legitimately converts "$4.6 million" into 4600000 for chart geometry.
+export function numberGrounded(n, sourceTokens, sourceValues = null) {
+  const noComma = n.replace(/,/g, '');
+  const bare = noComma.replace(/^\$/, '').replace(/[KMBT%]$/, '');
+  if (sourceTokens.has(n) || sourceTokens.has(noComma) || sourceTokens.has(bare)) return true;
+  if (sourceValues) {
+    const v = numericValueOf(n);
+    if (v != null && sourceValues.has(v)) return true;
+  }
   return false;
 }
 
 // Leading words that make a capitalized 2+-word run a sentence fragment, not
-// a proper noun ("The Team", "Our Mission", "How It Works" …).
+// a proper noun ("The Team", "Our Mission", "How It Works" …). "New" strips
+// ("The New Sarah Chen") EXCEPT before a geo name — "New York City" must
+// survive intact (Sprint 33).
 const ENTITY_STOP_PREFIX =
-  /^(The|Our|A|An|This|That|These|Those|How|What|Why|When|Where|And|But|Or|If|We|You|It|They|New|Every|All|Each|More|Most|Key|Total|First|Next|Last)\s/;
+  /^(The|Our|A|An|This|That|These|Those|How|What|Why|When|Where|And|But|Or|If|We|You|It|They|New(?! (?:York|England|Jersey|Zealand|Hampshire|Mexico|Orleans|Delhi))|Every|All|Each|More|Most|Key|Total|First|Next|Last|Both)\s/;
 
 // Extract proper-noun candidates (people / orgs / products) from source
 // slides. BODY lines only: slide titles are headings by nature ("Financial
@@ -168,7 +305,8 @@ const ENTITY_STOP_PREFIX =
 // the same way ENTITY_STOP_PREFIX strips "The Team".
 const CJK_ORG_SUFFIX = /[一-鿿]{2,8}(?:组织|银行|央行|公司|集团|委员会|协会|研究院|基金会|交易所)/g;
 const CJK_KNOWN_ORGS = /美联储|欧洲央行|英国央行|世界银行|国际货币基金组织|经合组织/g;
-const CJK_STOP_LEAD = /^(?:的|了|在|与|和|及|等|从|被|向|对|把|据|按|该|各|以|由|为|将|其|是|个)+/;
+const CJK_STOP_LEAD =
+  /^(?:的|了|在|与|和|及|等|从|被|向|对|把|据|按|该|各|以|由|为|将|其|是|个|但|而|则|仍|如|像)+/;
 
 // Universal short forms a lift may use for well-known institutions — either
 // direction counts as the entity surviving into the deck.
@@ -434,10 +572,11 @@ export async function scoreDeckQuality(deckDir) {
       deckText += JSON.stringify(sceneData.subjects || []);
     }
     const tokens = deckNumberTokens(deckText);
+    const tokenValues = valueSetOf(tokens);
     const found = [];
     const missing = [];
     for (const n of srcNumbers) {
-      if (numberPreserved(n, tokens)) found.push(n);
+      if (numberPreserved(n, tokens, tokenValues)) found.push(n);
       else missing.push(n);
     }
     // Entity recall (Sprint 26): people / orgs / products. Case-insensitive
@@ -448,19 +587,48 @@ export async function scoreDeckQuality(deckDir) {
     // the bake prompt, not scored here.
     const srcEntities = extractKeyEntities(srcSlides);
     const deckTextLower = deckText.toLowerCase();
+    // Sentence-position words glue onto runs ("Leverages Microsoft", verbs
+    // can't be enumerated) — when the full phrase misses, retry with leading
+    // words dropped; a surviving non-generic word ≥4 chars counts.
+    const entityMatches = (e) => {
+      const forms = [e.toLowerCase(), ...(ENTITY_ALIASES[e] || []).map((a) => a.toLowerCase())];
+      if (forms.some((f) => deckTextLower.includes(f))) return true;
+      const words = e.split(' ');
+      for (let i = 1; i < words.length; i++) {
+        const tail = words.slice(i).join(' ').toLowerCase();
+        const isGenericTail =
+          words.slice(i).length === 1 &&
+          (words[i].length < 4 || GENERIC_ENTITY_WORDS.has(words[i].toLowerCase()));
+        if (!isGenericTail && deckTextLower.includes(tail)) return true;
+      }
+      return false;
+    };
     const entFound = [];
     const entMissing = [];
     for (const e of srcEntities) {
-      const forms = [e.toLowerCase(), ...(ENTITY_ALIASES[e] || []).map((a) => a.toLowerCase())];
-      if (forms.some((f) => deckTextLower.includes(f))) entFound.push(e);
+      if (entityMatches(e)) entFound.push(e);
       else entMissing.push(e);
     }
+
+    // Adversarial precision (Sprint 33): deck numbers with no grounding in
+    // the source = hallucinated claims. Source tokens use the same
+    // boundary-exact tokenizer as the deck side.
+    const sourceTokens = new Set([...deckNumberTokens(srcText), ...extractKeyNumbers(srcText)]);
+    const sourceValues = valueSetOf(sourceTokens);
+    const deckNumbers = extractDeckPayloadNumbers(slotSceneDatas);
+    const hallucinated = deckNumbers.filter((n) => !numberGrounded(n, sourceTokens, sourceValues));
 
     fidelity = {
       numbers_total: srcNumbers.length,
       numbers_found: found.length,
       number_recall: srcNumbers.length > 0 ? found.length / srcNumbers.length : 1,
       missing_numbers: missing.slice(0, 12),
+      deck_numbers_total: deckNumbers.length,
+      hallucinated_numbers: hallucinated.slice(0, 12),
+      number_precision:
+        deckNumbers.length > 0
+          ? (deckNumbers.length - hallucinated.length) / deckNumbers.length
+          : 1,
       entities_total: srcEntities.length,
       entities_found: entFound.length,
       entity_recall: srcEntities.length > 0 ? entFound.length / srcEntities.length : 1,
@@ -566,6 +734,11 @@ function printHumanTable(result) {
     console.log(
       `  entities: ${f.entities_found}/${f.entities_total} preserved (recall ${(f.entity_recall * 100).toFixed(0)}%)${f.missing_entities.length ? '  missing: ' + f.missing_entities.join(', ') : ''}`,
     );
+    if (f.number_precision != null) {
+      console.log(
+        `  precision: ${f.deck_numbers_total - f.hallucinated_numbers.length}/${f.deck_numbers_total} deck numbers grounded (${(f.number_precision * 100).toFixed(0)}%)${f.hallucinated_numbers.length ? '  HALLUCINATED: ' + f.hallucinated_numbers.join(', ') : ''}`,
+      );
+    }
   }
   console.log('\nTEXT BUDGET');
   console.log(

@@ -1,0 +1,72 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "Cloud vs. Data Center Decision Threshold",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Cloud vs. Data Center Decision Threshold",
+          "leftLabel": "Cloud Services",
+          "rightLabel": "Data Centers",
+          "leftItems": [
+            "Better economics below $50M",
+            "Per-unit premium acceptable",
+            "Lower capital requirements",
+            "Greater flexibility"
+          ],
+          "rightItems": [
+            "Viable above $50M annually",
+            "Capital costs amortized",
+            "Operational overhead justified",
+            "Long-term efficiency gains"
+          ],
+          "verdict": "$50M annual infrastructure spend = breakeven threshold"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4670,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 317,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022667399999999997,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-07T04:25:06.122Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Apple Mini-Apps Support",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Apple Mini-Apps Support",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 420,
+        "args": {
+          "items": [
+            {
+              "icon": "brand:apple",
+              "label": "Platform Support",
+              "sublabel": "Apple now backs mini-apps"
+            },
+            {
+              "icon": "code",
+              "label": "Developer Opportunity",
+              "sublabel": "New development paths for consumers"
+            },
+            {
+              "icon": "sparkle",
+              "label": "Ecosystem Boost",
+              "sublabel": "Major platform backing added"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4435,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 320,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0220074,
+    "elapsedSec": 6.6,
+    "generatedAt": "2026-07-07T03:47:34.373Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

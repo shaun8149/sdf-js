@@ -29,7 +29,7 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 82.28571428571429,
+    "chars_per_slot": 79,
     "max_slot_chars": 130
   },
   "fidelity": {
@@ -37,12 +37,15 @@
     "numbers_found": 11,
     "number_recall": 1,
     "missing_numbers": [],
-    "entities_total": 6,
+    "deck_numbers_total": 12,
+    "hallucinated_numbers": [
+      "2025"
+    ],
+    "number_precision": 0.9166666666666666,
+    "entities_total": 5,
     "entities_found": 5,
-    "entity_recall": 0.8333333333333334,
-    "missing_entities": [
-      "但世界银行"
-    ]
+    "entity_recall": 1,
+    "missing_entities": []
   },
   "score": {
     "total": 100,
@@ -55,5 +58,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T01:20:05.708Z"
+  "generatedAt": "2026-07-07T04:29:09.782Z"
 }

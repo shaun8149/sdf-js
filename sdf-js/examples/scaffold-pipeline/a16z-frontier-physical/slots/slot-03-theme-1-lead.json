@@ -1,0 +1,78 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Technical Primitive 1: Learned Representations",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Technical Primitive 1: Learned Representations",
+          "pillars": [
+            {
+              "icon": "brain",
+              "heading": "Foundation",
+              "body": "Learned representations of physical dynamics form the foundation",
+              "accent": [38, 70, 130]
+            },
+            {
+              "icon": "lightbulb",
+              "heading": "Understanding",
+              "body": "Enable AI systems to understand and predict physical world behavior",
+              "accent": [110, 95, 75]
+            },
+            {
+              "icon": "cube",
+              "heading": "Bridge",
+              "body": "Critical for bridging digital intelligence and physical reality",
+              "accent": [165, 130, 90]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4431,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 377,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0228504,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-07T03:54:51.337Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
