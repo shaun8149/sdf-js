@@ -505,6 +505,59 @@ function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// strata-lines: noise-displaced parallel line bundles (cloud bands / strata).
+// RECIPE-ONLY port after Aaron Penne's "Apparitions" (Art Blocks Curated
+// #28, CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
+// artblocks-study/05-apparitions-penne.md). Three idioms, rewritten:
+//   - a bundle of horizontal curves, each vertically displaced by a noise
+//     field (band vs wave personalities via sampling mode)
+//   - banded color: every N rows re-pick a color pair, lerp INSIDE the
+//     band, jump BETWEEN bands — the color anatomy of cloud layers
+//   - shadow stroke: a faint dark offset understroke → cheap depth
+function drawStrataLines(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 41 + 19);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const ROWSN = 34;
+  const COLS = 26;
+  const AMP = h * (0.06 + rand() * 0.08);
+  const FREQ = 0.004 + rand() * 0.004;
+  const BAND = 4 + Math.floor(rand() * 5);
+  let c1 = colors[Math.floor(rand() * colors.length)];
+  let c2 = colors[Math.floor(rand() * colors.length)];
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (let r = 0; r < ROWSN; r++) {
+    if (r % BAND === 0) {
+      c1 = colors[Math.floor(rand() * colors.length)];
+      c2 = colors[Math.floor(rand() * colors.length)];
+    }
+    const t = (r % BAND) / BAND;
+    const col = lerpColor3(c1, c2, t);
+    const ry = y + (r / (ROWSN - 1)) * h;
+    const pts = [];
+    for (let ci = 0; ci <= COLS; ci++) {
+      const px = x + (ci / COLS) * w;
+      const dy = (noise(px * FREQ, r * 0.09) - 0.5) * 2 * AMP;
+      pts.push([px, ry + dy]);
+    }
+    // shadow understroke (cheap depth), then the main stroke
+    for (const [style, width, off] of [
+      [rgba(palette.silhouetteColor || [20, 20, 20], P.alpha * 0.35), P.lineWidth, 2.5],
+      [rgba(col, P.alpha), P.lineWidth * 1.4, 0],
+    ]) {
+      ctx.strokeStyle = style;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1] + off);
+      for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1] + off);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -525,6 +578,7 @@ export const DECOR_FAMILIES = {
   'flow-ribbons': drawFlowRibbons,
   'block-mosaic': drawBlockMosaic,
   'wash-flow': drawWashFlow,
+  'strata-lines': drawStrataLines,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -533,8 +587,8 @@ const CLUSTER_AFFINITY = {
   editorial: ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
   pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
   organic: ['wash-flow', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
-  consulting: ['block-mosaic', 'weave-dashes', 'shard-mesh'],
-  financial: ['shard-mesh', 'weave-dashes'],
+  consulting: ['block-mosaic', 'strata-lines', 'weave-dashes', 'shard-mesh'],
+  financial: ['strata-lines', 'shard-mesh', 'weave-dashes'],
   hr: ['circle-pack', 'meadow-streaks'],
 };
 
