@@ -1,0 +1,72 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 14,
+  "sourceSlideTitle": "Outlook: The Bio x AI Future",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "The Bio × AI Future",
+          "summit": "Biology as Engineered Industrial Practice",
+          "milestones": [
+            {
+              "label": "AI-Driven Industrialization",
+              "sublabel": "Biology transforms into scalable compute discipline"
+            },
+            {
+              "label": "Platform Bio GAFA",
+              "sublabel": "Emerges across drug discovery, diagnostics, care delivery"
+            },
+            {
+              "label": "Empirical to Engineered",
+              "sublabel": "Biology evolves from science to industrial practice"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4427,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 318,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021953399999999998,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-07T03:44:31.011Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

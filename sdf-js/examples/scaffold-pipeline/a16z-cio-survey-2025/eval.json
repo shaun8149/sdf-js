@@ -1,0 +1,71 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/a16z-cio-survey-2025",
+  "deckName": "a16z-cio-survey-2025",
+  "structure": {
+    "slots_total": 14,
+    "slots_baked": 12,
+    "slots_empty": 2,
+    "slots_errored": 0,
+    "fill_rate": 0.8571428571428571,
+    "pick_method": "forced",
+    "scaffold_id": "news-briefing",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 22,
+    "atom_types_distinct": 14,
+    "variety_ratio": 0.6363636363636364,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 2,
+    "arg_violations_top_offenders": [
+      {
+        "type": "bar",
+        "key": "showValues",
+        "count": 1
+      },
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 1
+      }
+    ]
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 12,
+    "lift_attempted": 12,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "textBudget": {
+    "chars_per_slot": 207.5,
+    "max_slot_chars": 318
+  },
+  "fidelity": {
+    "numbers_total": 10,
+    "numbers_found": 9,
+    "number_recall": 0.9,
+    "missing_numbers": ["7.6"],
+    "deck_numbers_total": 13,
+    "hallucinated_numbers": ["25", "18", "7.7"],
+    "number_precision": 0.7692307692307693,
+    "entities_total": 8,
+    "entities_found": 8,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 96.4,
+    "breakdown": {
+      "structure": 21.4,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-07T03:46:38.831Z"
+}

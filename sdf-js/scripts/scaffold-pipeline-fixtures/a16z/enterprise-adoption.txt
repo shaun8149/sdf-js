@@ -1,0 +1,3 @@
+Where Enterprises are Actually Adopting AI
+
+29% of the Fortune 500 and ~19% of the Global 2000 are live, paying customers of a leading AI startup. The coding sector dominates AI enterprise adoption by nearly an order of magnitude, with companies like Cursor and Claude Code growing faster than most predictions. Harvey, a legal AI startup, achieved approximately $200 million in annualized recurring revenue within three years. Eve, specializing in plaintiff law, surpassed 450 customers and reached a $1 billion valuation. Coding, support, and search represent the lion's share of enterprise AI adoption by revenue. The speed accelerated dramatically following ChatGPT's November 2022 launch.

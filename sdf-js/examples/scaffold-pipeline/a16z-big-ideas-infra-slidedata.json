@@ -1,0 +1,100 @@
+[
+  {
+    "title": "Big Ideas 2026: Infrastructure and security",
+    "body": [
+      "Source: Big Ideas 2026 report",
+      "Focus: Infrastructure transformation and security evolution"
+    ]
+  },
+  {
+    "title": "Agenda",
+    "body": [
+      "Enterprise data challenges: unstructured multimodal data management",
+      "Cybersecurity workforce crisis and AI automation solutions",
+      "Agent-native infrastructure for recursive workloads",
+      "Video generation evolution: from passive to interactive",
+      "Healthcare's underserved segment: healthy MAUs",
+      "Education transformation: AI-native universities"
+    ]
+  },
+  {
+    "title": "Enterprise Data Challenge",
+    "body": [
+      "Enterprises are drowning in unstructured multimodal data",
+      "Data types include PDFs, screenshots, and videos",
+      "Continuous cleaning and structuring required"
+    ]
+  },
+  {
+    "title": "Cybersecurity Hiring Crisis: Historical Growth",
+    "body": [
+      "Unfilled cybersecurity positions were under 1 million in 2013",
+      "Unfilled positions grew to 3 million by 2021",
+      "Persistent hiring challenges face the cybersecurity sector"
+    ]
+  },
+  {
+    "title": "AI Automation Solution for Cybersecurity",
+    "body": [
+      "AI automation promises to resolve the hiring crisis",
+      "Solution eliminates repetitive log review tasks",
+      "Addresses the gap created by 3 million unfilled positions"
+    ]
+  },
+  {
+    "title": "Agent-Native Infrastructure Necessity",
+    "body": [
+      "Agent-native infrastructure becomes essential",
+      "Recursive, bursty workloads replace predictable human-speed traffic",
+      "New infrastructure requirements driven by agentic behavior patterns"
+    ]
+  },
+  {
+    "title": "Recursive Workload Scale",
+    "body": [
+      "A single agentic goal can trigger recursive fan-out",
+      "Fan-out generates 5,000 sub-tasks",
+      "Task generation occurs in milliseconds"
+    ]
+  },
+  {
+    "title": "Infrastructure Shift: From Human-Speed to Agent-Speed",
+    "body": [
+      "Traditional infrastructure designed for predictable human-speed traffic",
+      "Agent workloads are recursive and bursty",
+      "Millisecond-scale task generation requires new architectural approaches"
+    ]
+  },
+  {
+    "title": "Video Generation Evolution",
+    "body": [
+      "Video generation shifts from passive consumption model",
+      "Transformation toward interactive environments",
+      "User engagement paradigm fundamentally changes"
+    ]
+  },
+  {
+    "title": "Healthcare's Underserved Segment",
+    "body": [
+      "Healthy MAUs identified as underserved segment",
+      "MAUs are preventatively-oriented consumers",
+      "Healthcare opportunity in prevention rather than treatment"
+    ]
+  },
+  {
+    "title": "AI-Native University: Real-Time Adaptation",
+    "body": [
+      "The first AI-native university will emerge",
+      "Courses will adapt in real time",
+      "Advising and assessment will adapt in real time"
+    ]
+  },
+  {
+    "title": "Outlook: Convergence of Infrastructure and Intelligence",
+    "body": [
+      "Infrastructure must evolve to support agent-scale workloads",
+      "AI automation addresses critical workforce gaps in cybersecurity",
+      "Real-time adaptation becomes standard across education and healthcare"
+    ]
+  }
+]

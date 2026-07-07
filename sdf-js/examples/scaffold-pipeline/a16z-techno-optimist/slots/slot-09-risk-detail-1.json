@@ -1,0 +1,96 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Enemy: Stagnation",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 500,
+        "args": {
+          "effect": "Stagnation",
+          "branches": [
+            {
+              "label": "Economic",
+              "causes": ["Prevents human flourishing", "Civilizational decline"]
+            },
+            {
+              "label": "Technological",
+              "causes": ["Blocks innovation", "Halts development"]
+            }
+          ],
+          "title": "Enemy: Stagnation"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 220,
+        "args": {
+          "type_": "warning",
+          "heading": "The Precautionary Principle",
+          "body": "Excessive caution prevents deployment of beneficial technologies. Risk-aversion mindset prioritizes potential harms over potential benefits.",
+          "icon": "shield-slash"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 660,
+        "y": 420,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "value": "Barrier to Innovation",
+          "label": "Primary Concern",
+          "sublabel": "Active growth and development necessary to avoid decline",
+          "icon": "warning-octagon",
+          "iconColor": "rgb(38, 70, 130)",
+          "trendDirection": "down"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4536,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 545,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025685399999999997,
+    "elapsedSec": 9.8,
+    "generatedAt": "2026-07-07T04:13:55.150Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

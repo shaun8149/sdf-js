@@ -1,0 +1,88 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Revolutionary Impact Scale",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Quote"
+        }
+      },
+      {
+        "type": "pull-quote-banner",
+        "x": 0,
+        "y": 140,
+        "w": 1280,
+        "h": 300,
+        "args": {
+          "quote": "This is the next industrial revolution",
+          "author": "Vijay Pande",
+          "attribution": "Impact comparable to major historical economic transformations",
+          "bg": "accent"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 100,
+        "y": 480,
+        "w": 1080,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "dna",
+              "label": "Biology",
+              "sublabel": "Fundamental structural change"
+            },
+            {
+              "icon": "first-aid-kit",
+              "label": "Healthcare",
+              "sublabel": "AI-integrated diagnostics"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Scalability",
+              "sublabel": "Computational replaces labor-intensive testing"
+            }
+          ],
+          "iconSize": "medium",
+          "iconStyle": "circle",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["quote-pull", "pull-quote-banner"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4497,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 427,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0237984,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-07T03:44:22.685Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

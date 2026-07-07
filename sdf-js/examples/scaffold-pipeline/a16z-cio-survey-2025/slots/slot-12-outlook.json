@@ -1,0 +1,76 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "2025 Enterprise Gen AI Outlook",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "2025 Enterprise Gen AI Outlook",
+          "summit": "Production Deployment",
+          "milestones": [
+            {
+              "label": "~75% budget growth",
+              "sublabel": "Aggressive expansion plans"
+            },
+            {
+              "label": "Multi-model strategies",
+              "sublabel": "Third-party apps dominate"
+            },
+            {
+              "label": "Market competition",
+              "sublabel": "OpenAI leads vs Google, Anthropic"
+            },
+            {
+              "label": "Innovation → Production",
+              "sublabel": "7% to deployment priorities"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4440,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 331,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0221874,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-07-07T03:46:31.818Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

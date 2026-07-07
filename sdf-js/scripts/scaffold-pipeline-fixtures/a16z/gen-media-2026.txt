@@ -1,0 +1,3 @@
+The State of Generative Media 2026
+
+Enterprise production deployments use a median of 14 different models. OpenAI, Gemini, and Anthropic together command 89% of enterprise wallet share in LLMs. In a survey with Artificial Analysis, 58% of organizations identified cost optimization as their primary criterion when selecting model infrastructure. Seedance 1.0 topped leaderboards in June 2025. Model releases in 2025 came every 4-6 weeks, keeping teams in constant evaluation mode.

@@ -1,0 +1,109 @@
+[
+  {
+    "title": "Navigating the High Cost of AI Compute",
+    "body": [
+      "An analysis of compute costs and resource challenges facing generative AI companies",
+      "Source: Industry analysis on AI infrastructure economics"
+    ]
+  },
+  {
+    "title": "Agenda",
+    "body": [
+      "Supply-demand imbalance in AI compute",
+      "Capital allocation patterns for AI startups",
+      "GPT-3 training costs and infrastructure requirements",
+      "GPU instance pricing across cloud providers",
+      "Cloud versus on-premise infrastructure decision framework",
+      "Training data scale and web resource utilization"
+    ]
+  },
+  {
+    "title": "The Compute Supply Crisis",
+    "body": [
+      "Generative AI faces compute demand exceeding supply by approximately 10 times",
+      "This supply-demand gap has created a critical bottleneck for AI development",
+      "Access to compute resources has become a competitive differentiator in the industry"
+    ]
+  },
+  {
+    "title": "Compute as the Dominant Cost Factor",
+    "body": [
+      "Access to compute at the lowest total cost has become a determining factor for AI companies",
+      "Compute availability and pricing directly impacts company competitiveness and viability",
+      "Infrastructure costs now drive strategic decisions for AI-focused organizations"
+    ]
+  },
+  {
+    "title": "Capital Allocation in AI Startups",
+    "body": [
+      "Many AI startups spending over 80% of capital on compute",
+      "This extreme allocation reflects the compute-intensive nature of generative AI development",
+      "Limited capital remains for other operational needs including talent and product development"
+    ]
+  },
+  {
+    "title": "GPT-3 Model Scale",
+    "body": [
+      "GPT-3 has 175 billion parameters",
+      "The model requires over one terabyte of memory to operate",
+      "This scale represents the magnitude of resources needed for frontier AI models"
+    ]
+  },
+  {
+    "title": "GPT-3 Training Cost Range",
+    "body": [
+      "GPT-3 costs between $500,000 and $4.6 million per training run on NVIDIA A100 GPUs",
+      "The wide cost range reflects differences in infrastructure choices and vendor pricing",
+      "These figures represent single training runs, not including experimentation and iteration"
+    ]
+  },
+  {
+    "title": "A100 GPU Instance Pricing Variance",
+    "body": [
+      "A100 instance pricing ranges from roughly $0.25 to $1 per hour",
+      "Nearly 4x differences exist among vendors for equivalent compute resources",
+      "Vendor selection can dramatically impact total infrastructure expenditure"
+    ]
+  },
+  {
+    "title": "Premium Cloud Provider Pricing",
+    "body": [
+      "AWS, Azure, and Google Cloud charge premium rates for GPU instances",
+      "These major cloud providers offer comprehensive ecosystems but at higher price points",
+      "Premium pricing reflects integrated services, reliability guarantees, and enterprise support"
+    ]
+  },
+  {
+    "title": "Cost-Optimized Cloud Providers",
+    "body": [
+      "Coreweave and Lambda Labs offer lower costs compared to major cloud providers",
+      "These specialized providers focus on GPU compute with reduced service overhead",
+      "Choosing these vendors can significantly reduce infrastructure spending for startups"
+    ]
+  },
+  {
+    "title": "Cloud vs. Data Center Decision Threshold",
+    "body": [
+      "Startups should use cloud rather than build data centers unless infrastructure spending exceeds $50 million annually",
+      "Below this threshold, cloud services provide better economics despite per-unit premium",
+      "The $50 million breakpoint accounts for capital costs, operational overhead, and flexibility trade-offs"
+    ]
+  },
+  {
+    "title": "Training Data Scale",
+    "body": [
+      "Training datasets already use approximately 10% of all web pages via Common Crawl",
+      "This represents a substantial portion of publicly available internet content",
+      "Data availability is becoming a constraint alongside compute resources for model training"
+    ]
+  },
+  {
+    "title": "Key Takeaways",
+    "body": [
+      "10x compute supply shortage creates strategic challenges for AI companies",
+      "Vendor selection and infrastructure strategy can yield 4x cost differences",
+      "Compute costs dominate startup budgets at over 80% of capital for many companies",
+      "Cloud infrastructure remains optimal for most organizations below $50 million annual spend"
+    ]
+  }
+]

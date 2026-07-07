@@ -1,0 +1,81 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda: Enterprise AI Landscape 2025",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Enterprise AI Landscape 2025",
+          "items": [
+            {
+              "label": "Market leaders and adoption rates"
+            },
+            {
+              "label": "Anthropic's rapid growth trajectory"
+            },
+            {
+              "label": "Enterprise spending trends and projections"
+            },
+            {
+              "label": "Multi-model strategy prevalence"
+            },
+            {
+              "label": "Latest model version adoption patterns"
+            },
+            {
+              "label": "Category leaders in chat and coding"
+            },
+            {
+              "label": "Incumbent advantage in enterprise decisions"
+            }
+          ],
+          "numbered": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4440,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022202399999999997,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-07T03:52:34.174Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

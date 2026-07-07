@@ -251,5 +251,70 @@ rmSync(dir, { recursive: true, force: true });
   ok(ents2.includes('Product Hunt'), 'non-generic word rescues: Product Hunt');
 }
 
+// ── Sprint 33: adversarial number precision ──
+{
+  const { extractDeckPayloadNumbers, numberGrounded, deckNumberTokens } =
+    await import('./eval-deck-quality.mjs');
+  const slots = [
+    {
+      sceneData: {
+        subjects: [
+          {
+            type: 'bar',
+            x: 40,
+            y: 160,
+            w: 1200,
+            h: 480,
+            args: { title: 'Growth', values: [93, 2.5], labels: ['A 93%', 'B 2.5%'] },
+          },
+          {
+            type: 'kpi-card',
+            x: 40,
+            y: 20,
+            w: 300,
+            h: 100,
+            args: { value: '$4.5M', label: 'ARR' },
+          },
+          { type: 'number-list', x: 0, y: 0, w: 100, h: 100, args: { items: ['01', '02', '03'] } },
+        ],
+      },
+    },
+  ];
+  const nums = extractDeckPayloadNumbers(slots);
+  ok(!nums.includes('1200') && !nums.includes('480'), 'geometry x/y/w/h never counted');
+  ok(!nums.includes('01') && !nums.includes('03'), 'list numbering ≤12 exempt');
+  ok(nums.includes('$4.5M') && nums.includes('93%'), 'payload values counted');
+
+  const srcTokens = deckNumberTokens('growth was 93% and ARR reached $4.5M in 2025');
+  ok(numberGrounded('93', srcTokens), 'bare 93 grounded by source "93%"');
+  ok(numberGrounded('$4.5M', srcTokens), 'literal $4.5M grounded');
+  ok(numberGrounded('4.5M', srcTokens), 'suffix form 4.5M grounded by "$4.5M"');
+  ok(!numberGrounded('$2.3B', srcTokens), 'invented $2.3B NOT grounded (hallucination)');
+
+  // Sprint 33 value equivalence + scale-word folding
+  const { numericValueOf, valueSetOf, extractKeyNumbers } = await import('./eval-deck-quality.mjs');
+  ok(numericValueOf('$3.8B') === 3.8e9, 'numericValueOf $3.8B → 3.8e9');
+  ok(numericValueOf('500,000') === 500000, 'numericValueOf strips thousands commas');
+  ok(numericValueOf('93%') === 93, 'percent keeps face value');
+  const scaled = extractKeyNumbers(
+    'spent $3.8 billion on 46 trillion tokens and 500 thousand GPUs',
+  );
+  ok(
+    scaled.includes('$3.8B') && scaled.includes('46T') && scaled.includes('500K'),
+    'scale words fold to suffix form',
+  );
+  const srcVals = valueSetOf(deckNumberTokens('a $500K to $4.6 million range'));
+  ok(numberGrounded('$500,000', new Set(), srcVals), '$500,000 grounded by value of "$500K"');
+  ok(numberGrounded('4600000', new Set(), srcVals), 'bare 4600000 grounded by "$4.6 million"');
+  ok(!numberGrounded('1600000', new Set(), srcVals), 'interpolated 1600000 stays hallucinated');
+
+  // entity fixes: New York City survives; extraction over body lines
+  const { extractKeyEntities: extractEnts } = await import('./eval-deck-quality.mjs');
+  const geoEnts = extractEnts([
+    { title: 'x', body: ['the city of New York City requested rain ponchos'] },
+  ]);
+  ok(geoEnts.includes('New York City'), '"New" not stripped before geo names');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

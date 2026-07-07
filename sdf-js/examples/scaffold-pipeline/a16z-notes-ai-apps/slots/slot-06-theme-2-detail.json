@@ -1,0 +1,79 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Organizational Functions: Finance & HR",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Organizational Functions: Finance & HR",
+          "events": [
+            {
+              "date": "Phase 1",
+              "label": "Finance → Software-First",
+              "sublabel": "Operations transition to software-driven workflows"
+            },
+            {
+              "date": "Phase 2",
+              "label": "HR Development Capabilities",
+              "sublabel": "Departments empowered with development tools"
+            },
+            {
+              "date": "Phase 3",
+              "label": "Self-Service Solutions",
+              "sublabel": "Non-technical teams create own solutions"
+            },
+            {
+              "date": "Phase 4",
+              "label": "Engineering Independence",
+              "sublabel": "Traditional dependency removed"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4447,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 365,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0227184,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T04:02:49.586Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

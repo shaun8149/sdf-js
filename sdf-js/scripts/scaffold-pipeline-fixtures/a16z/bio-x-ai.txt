@@ -1,0 +1,3 @@
+The New Industrial Revolution: Bio x AI
+
+Vijay Pande argues that AI will industrialize biology and healthcare, transforming expensive, labor-intensive services into scalable compute. This represents the next industrial revolution, comparable to post-WWII innovation waves. The shift enables the emergence of Bio GAFA companies that could reshape drug discovery, diagnostics, and care delivery through full-stack approaches and platform models, moving biology from empirical science to engineered discipline.

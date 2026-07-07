@@ -1,0 +1,75 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Creative Tools Lead the Categories",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 200,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "value": "10 Companies",
+          "label": "Creative Tools Category",
+          "trend": "Largest Single Segment",
+          "trendDirection": "up",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 140,
+        "y": 440,
+        "w": 1000,
+        "h": 200,
+        "args": {
+          "value": "#1",
+          "label": "AI Application Spending",
+          "sublabel": "Creative tools dominate spending across all analyzed segments",
+          "icon": "chart-bar",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4417,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 349,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0223884,
+    "elapsedSec": 10,
+    "generatedAt": "2026-07-07T03:40:42.082Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,3 @@
+How 100 Enterprise CIOs Are Building and Buying Gen AI in 2025
+
+LLM budgets have grown ahead of enterprises' already-high expectations, with leaders expecting an average of ~75% growth over the next year. Innovation budgets dropped from a quarter of LLM spending to just 7%. 37% of respondents now use 5 or more models, up from 29% last year. OpenAI maintains market leadership while Google and Anthropic made considerable strides. 23% of enterprises surveyed already use OpenAI's o3 model in production compared to just 3% for DeepSeek. Over 90% of survey respondents are testing third-party apps for customer support use cases.

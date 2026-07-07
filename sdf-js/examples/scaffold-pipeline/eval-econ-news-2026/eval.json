@@ -29,14 +29,17 @@
     "lifted_subject_rate": 1
   },
   "textBudget": {
-    "chars_per_slot": 104.5,
-    "max_slot_chars": 130
+    "chars_per_slot": 99.16666666666667,
+    "max_slot_chars": 128
   },
   "fidelity": {
     "numbers_total": 11,
     "numbers_found": 11,
     "number_recall": 1,
     "missing_numbers": [],
+    "deck_numbers_total": 10,
+    "hallucinated_numbers": [],
+    "number_precision": 1,
     "entities_total": 6,
     "entities_found": 6,
     "entity_recall": 1,
@@ -53,5 +56,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.225Z"
+  "generatedAt": "2026-07-07T04:29:09.777Z"
 }

@@ -1,0 +1,84 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Market Position: 18% of U.S. Venture Capital",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Market Position",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 480,
+        "h": 400,
+        "args": {
+          "value": "18%",
+          "label": "U.S. Venture Capital Share",
+          "sublabel": "2025 allocation",
+          "icon": "chart-pie",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 180,
+        "w": 560,
+        "h": 400,
+        "args": {
+          "items": [
+            {
+              "icon": "trophy",
+              "label": "Unprecedented single-firm market share"
+            },
+            {
+              "icon": "buildings",
+              "label": "Capital concentration in platform firms"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Systemic American innovation ecosystem player"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4458,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 382,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0230064,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T04:04:39.713Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

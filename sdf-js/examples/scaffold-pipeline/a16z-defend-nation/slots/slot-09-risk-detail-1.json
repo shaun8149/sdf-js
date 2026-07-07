@@ -1,0 +1,92 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "China's Technology Ascendancy",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 160,
+        "args": {
+          "type_": "warning",
+          "heading": "China's Technology Ascendancy",
+          "body": "China now leads in 57 critical technologies — a near-complete reversal from the early 2000s position",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 380,
+        "w": 520,
+        "h": 260,
+        "args": {
+          "value": "57",
+          "label": "Critical Technologies",
+          "sublabel": "China now leads",
+          "icon": "cpu",
+          "style": "dark",
+          "trend": "up",
+          "trendValue": "Majority of domains"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 680,
+        "y": 380,
+        "w": 520,
+        "h": 260,
+        "args": {
+          "value": "Early 2000s → Now",
+          "label": "Position Reversal",
+          "sublabel": "Near-complete shift in global tech leadership",
+          "icon": "arrows-clockwise",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "Complete",
+          "trendDirection": "up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4433,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 510,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0248514,
+    "elapsedSec": 10.1,
+    "generatedAt": "2026-07-07T03:49:57.554Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

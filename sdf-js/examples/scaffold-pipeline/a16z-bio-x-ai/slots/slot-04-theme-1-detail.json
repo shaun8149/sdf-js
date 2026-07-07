@@ -1,0 +1,77 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Drug Discovery Transformation",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Drug Discovery Transformation",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "pillars": [
+            {
+              "icon": "brain",
+              "heading": "AI Reshaping",
+              "body": "AI will fundamentally reshape drug discovery processes",
+              "accent": [38, 70, 130]
+            },
+            {
+              "icon": "circuitry",
+              "heading": "Full-Stack Approaches",
+              "body": "Full-stack approaches will replace traditional methods",
+              "accent": [110, 95, 75]
+            },
+            {
+              "icon": "cube",
+              "heading": "Platform Models",
+              "body": "Platform models enable systematic drug development at scale",
+              "accent": [165, 130, 90]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4427,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 361,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022598399999999998,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-07T03:43:54.285Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

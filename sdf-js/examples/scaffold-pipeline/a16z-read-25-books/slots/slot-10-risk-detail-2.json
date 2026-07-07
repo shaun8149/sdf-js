@@ -1,0 +1,72 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Competing Against Luck",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Competing Against Luck",
+          "items": [
+            {
+              "icon": "book-open",
+              "label": "Featured in Ali Ghodsi's six-book list",
+              "status": "highlight"
+            },
+            {
+              "icon": "lightbulb",
+              "label": "Addresses innovation and customer needs"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Provides frameworks for competitive strategy"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4413,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 300,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0216414,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-07-07T04:07:11.163Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,116 @@
+[
+  {
+    "title": "Where Enterprises are Actually Adopting AI",
+    "body": [
+      "Analysis of enterprise AI adoption patterns across Fortune 500 and Global 2000 companies",
+      "Focus on leading AI startups and sector-specific penetration rates"
+    ]
+  },
+  {
+    "title": "Overview: Key Themes",
+    "body": [
+      "Enterprise penetration rates in Fortune 500 and Global 2000",
+      "Coding sector dominance in AI adoption",
+      "Legal AI startup success stories",
+      "Revenue concentration across use cases",
+      "Acceleration timeline post-ChatGPT launch"
+    ]
+  },
+  {
+    "title": "Fortune 500 AI Adoption Rate",
+    "body": [
+      "29% of the Fortune 500 are live, paying customers of a leading AI startup",
+      "This represents significant penetration among the largest U.S. companies",
+      "These are active deployments, not pilot programs or trials"
+    ]
+  },
+  {
+    "title": "Global 2000 AI Adoption Rate",
+    "body": [
+      "Approximately 19% of the Global 2000 are live, paying customers of a leading AI startup",
+      "Lower penetration rate compared to Fortune 500 reflects varied global readiness",
+      "Still represents hundreds of major enterprises actively using AI solutions"
+    ]
+  },
+  {
+    "title": "Coding Sector Dominance",
+    "body": [
+      "The coding sector dominates AI enterprise adoption by nearly an order of magnitude",
+      "This dominance surpasses all other enterprise AI use cases combined",
+      "Represents the clearest product-market fit in enterprise AI to date"
+    ]
+  },
+  {
+    "title": "Leading Coding AI Tools",
+    "body": [
+      "Companies like Cursor and Claude Code are growing faster than most predictions",
+      "These tools represent the fastest-growing segment of enterprise AI adoption",
+      "Growth rates exceed analyst expectations and market forecasts"
+    ]
+  },
+  {
+    "title": "Harvey: Legal AI Success Story",
+    "body": [
+      "Harvey, a legal AI startup, achieved approximately $200 million in annualized recurring revenue",
+      "This milestone was reached within three years of operation",
+      "Represents one of the fastest revenue ramps in legal technology history"
+    ]
+  },
+  {
+    "title": "Eve: Plaintiff Law AI Platform",
+    "body": [
+      "Eve, specializing in plaintiff law, surpassed 450 customers",
+      "The company reached a $1 billion valuation",
+      "Demonstrates strong demand for specialized legal AI beyond corporate law"
+    ]
+  },
+  {
+    "title": "Legal Sector AI Adoption",
+    "body": [
+      "Both Harvey and Eve demonstrate rapid enterprise adoption in legal services",
+      "Legal AI represents a significant category beyond the coding sector",
+      "Specialized legal applications show different adoption patterns than general-purpose tools"
+    ]
+  },
+  {
+    "title": "Revenue Distribution: Top Three Categories",
+    "body": [
+      "Coding, support, and search represent the lion's share of enterprise AI adoption by revenue",
+      "These three use cases dominate commercial success in enterprise AI",
+      "Other categories remain significantly smaller in revenue terms"
+    ]
+  },
+  {
+    "title": "Coding's Revenue Dominance",
+    "body": [
+      "Coding represents the largest revenue category in enterprise AI adoption",
+      "The sector's dominance is nearly an order of magnitude over other categories",
+      "Developer tools show the strongest willingness-to-pay among enterprise buyers"
+    ]
+  },
+  {
+    "title": "Support and Search Revenue",
+    "body": [
+      "Support and search, along with coding, represent the lion's share of enterprise AI revenue",
+      "These categories demonstrate clear ROI for enterprise buyers",
+      "Customer support and enterprise search show strong adoption alongside coding"
+    ]
+  },
+  {
+    "title": "ChatGPT's Launch as Catalyst",
+    "body": [
+      "The speed of enterprise AI adoption accelerated dramatically following ChatGPT's November 2022 launch",
+      "November 2022 represents an inflection point for enterprise awareness and deployment",
+      "Post-launch acceleration exceeded pre-ChatGPT adoption trajectories"
+    ]
+  },
+  {
+    "title": "Enterprise AI Adoption Outlook",
+    "body": [
+      "Nearly one-third of Fortune 500 companies now actively use leading AI tools",
+      "Coding sector shows order-of-magnitude leadership with continued rapid growth",
+      "Legal AI demonstrates billion-dollar outcomes in specialized verticals",
+      "Three core use cases drive majority of enterprise AI revenue today"
+    ]
+  }
+]

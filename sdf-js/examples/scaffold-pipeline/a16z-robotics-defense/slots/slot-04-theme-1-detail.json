@@ -1,0 +1,77 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Autonomy Stack Composition",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Autonomy Stack Composition",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 460,
+        "args": {
+          "pillars": [
+            {
+              "icon": "briefcase",
+              "heading": "Commercial Origins",
+              "body": "Tools and technologies primarily developed for commercial use cases",
+              "accent": [38, 70, 130]
+            },
+            {
+              "icon": "arrows-merge",
+              "heading": "Defense Adaptation",
+              "body": "Commercial technologies adapted for defense applications",
+              "accent": [110, 95, 75]
+            },
+            {
+              "icon": "cube",
+              "heading": "Technical Foundation",
+              "body": "Military autonomy increasingly originates in civilian markets",
+              "accent": [165, 130, 90]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4669,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 360,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0233094,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T04:21:01.764Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

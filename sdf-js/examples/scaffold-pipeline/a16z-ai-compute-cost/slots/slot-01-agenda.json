@@ -1,0 +1,81 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Supply-demand imbalance in AI compute"
+            },
+            {
+              "label": "Capital allocation patterns for AI startups"
+            },
+            {
+              "label": "GPT-3 training costs and infrastructure requirements"
+            },
+            {
+              "label": "GPU instance pricing across cloud providers"
+            },
+            {
+              "label": "Cloud versus on-premise infrastructure decision framework"
+            },
+            {
+              "label": "Training data scale and web resource utilization"
+            },
+            {
+              "label": "Premium cloud provider pricing",
+              "sublabel": "AWS, Azure, Google Cloud ecosystems"
+            }
+          ],
+          "numbered": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4762,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 345,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0233634,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T04:24:11.704Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

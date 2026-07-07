@@ -1,0 +1,83 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "Institutional Investor Categories",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Institutional Investor Categories",
+          "items": [
+            {
+              "icon": "bank",
+              "label": "Pension Funds",
+              "sublabel": "Key capital anchors"
+            },
+            {
+              "icon": "crown",
+              "label": "Sovereign Wealth",
+              "sublabel": "Strategic investment participation"
+            },
+            {
+              "icon": "shield",
+              "label": "Insurance Companies",
+              "sublabel": "Critical investors"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Endowments",
+              "sublabel": "Critical investors"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4427,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 379,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022868399999999997,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-07T03:49:29.502Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

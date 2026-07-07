@@ -1,0 +1,88 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "American Dynamism Fund",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "value": "$1.176B",
+          "label": "American Dynamism Fund",
+          "sublabel": "Allocated to strategy",
+          "icon": "rocket-launch",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 440,
+        "args": {
+          "title": "Strategic Alignment",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "National competitiveness portfolio",
+              "sublabel": "Part of broader strategy"
+            },
+            {
+              "icon": "shield",
+              "label": "Defense priorities",
+              "sublabel": "Aligned with national security"
+            },
+            {
+              "icon": "buildings",
+              "label": "Critical infrastructure",
+              "sublabel": "Supporting essential systems"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4434,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 418,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0234744,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-07T04:04:46.401Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

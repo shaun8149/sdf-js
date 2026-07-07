@@ -43,6 +43,9 @@
     "numbers_found": 8,
     "number_recall": 1,
     "missing_numbers": [],
+    "deck_numbers_total": 7,
+    "hallucinated_numbers": [],
+    "number_precision": 1,
     "entities_total": 5,
     "entities_found": 5,
     "entity_recall": 1,
@@ -59,5 +62,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T15:45:42.211Z"
+  "generatedAt": "2026-07-07T04:29:09.763Z"
 }

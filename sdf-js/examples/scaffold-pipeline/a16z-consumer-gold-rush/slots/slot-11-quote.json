@@ -1,0 +1,49 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Once-in-a-Decade Gold Rush",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "pull-quote-banner",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "quote": "This new distribution channel is set to kick off a once-in-a-decade gold rush",
+          "author": "Industry Analysis",
+          "attribution": "Expected to occur in 2026",
+          "bg": "accent"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["quote-pull", "pull-quote-banner"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4430,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 158,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0195624,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-07T03:48:05.187Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

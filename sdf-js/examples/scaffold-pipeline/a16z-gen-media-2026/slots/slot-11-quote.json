@@ -1,0 +1,59 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Model Release Frequency",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Quote",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 140,
+        "y": 220,
+        "w": 1000,
+        "h": 380,
+        "args": {
+          "quote": "Model releases in 2025 came every 4-6 weeks",
+          "author": "Industry Analysis",
+          "align": "center"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["quote-pull", "pull-quote-banner"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4634,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 211,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0209694,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-07T04:26:59.038Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

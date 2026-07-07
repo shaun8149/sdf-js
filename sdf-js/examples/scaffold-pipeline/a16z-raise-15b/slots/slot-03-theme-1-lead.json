@@ -1,0 +1,115 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Growth Fund: Largest Single Allocation",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$6.75B",
+          "label": "Growth Fund",
+          "sublabel": "45% of total capital raised",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 160,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$700M",
+          "label": "Bio + Health Fund",
+          "sublabel": "AI and tech advances",
+          "icon": "heartbeat",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 440,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "title": "Growth Fund Impact",
+          "items": [
+            {
+              "icon": "trophy",
+              "label": "Largest individual fund category"
+            },
+            {
+              "icon": "rocket-launch",
+              "label": "Scaling proven technology companies"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 440,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "title": "Bio + Health Mission",
+          "items": [
+            {
+              "icon": "brain",
+              "label": "Applying AI to biology sectors"
+            },
+            {
+              "icon": "flag",
+              "label": "American leadership in life sciences"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4533,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 601,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026516400000000002,
+    "elapsedSec": 9.1,
+    "generatedAt": "2026-07-07T04:04:25.911Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

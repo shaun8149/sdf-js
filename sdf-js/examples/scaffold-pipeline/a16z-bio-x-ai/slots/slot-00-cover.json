@@ -1,0 +1,49 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Headline",
+  "slotPurpose": "Article headline + source and date context",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "The New Industrial Revolution: Bio x AI",
+  "sceneData": {
+    "name": "news-briefing/headline",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "The New Industrial Revolution: Bio x AI",
+          "subtitle": "Analysis of AI's transformative impact on biology and healthcare",
+          "author": "By Vijay Pande",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4378,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 152,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0193164,
+    "elapsedSec": 4.3,
+    "generatedAt": "2026-07-07T03:43:21.199Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
