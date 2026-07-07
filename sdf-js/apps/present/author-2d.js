@@ -127,6 +127,16 @@ function attachSlideControls(card, canvas, deck, slot) {
   const bar = document.createElement('div');
   bar.className = 'slide-tools';
 
+  const lockBtn = document.createElement('button');
+  const syncLock = () => {
+    lockBtn.textContent = slot.locked ? '🔒' : '✋';
+    lockBtn.title = slot.locked
+      ? '已锁定 — 重新 Generate 时保留这一页 (点击解锁)'
+      : '锁定这一页 (重新 Generate 时保留, 不再重 lift)';
+    card.classList.toggle('locked', !!slot.locked);
+    rollBtn.disabled = editBtn.disabled = !!slot.locked;
+  };
+
   const rollBtn = document.createElement('button');
   rollBtn.textContent = '🎲';
   rollBtn.title = '重新生成这一页 (同素材, 新的排版/图表选择)';
@@ -169,6 +179,13 @@ function attachSlideControls(card, canvas, deck, slot) {
     }
   }
 
+  lockBtn.addEventListener('click', () => {
+    slot.locked = !slot.locked;
+    syncLock();
+    setStatus(
+      slot.locked ? `slide "${slot.slotTitle}" 已锁定` : `slide "${slot.slotTitle}" 已解锁`,
+    );
+  });
   rollBtn.addEventListener('click', () => relift(null));
   editBtn.addEventListener('click', () => {
     editRow.classList.toggle('open');
@@ -183,8 +200,10 @@ function attachSlideControls(card, canvas, deck, slot) {
     if (e.key === 'Enter') submitEdit();
   });
 
+  bar.appendChild(lockBtn);
   bar.appendChild(rollBtn);
   bar.appendChild(editBtn);
+  syncLock();
   card.appendChild(bar);
   card.appendChild(editRow);
   card.appendChild(busy);
@@ -205,8 +224,10 @@ async function generate() {
     if (!DEMO_MODE && modeEl.value === 'full') {
       // 整本模式 (Sprint 32): article → 10-20 page briefing via the SAME
       // pipeline modules the CLI bake uses (expand → map → per-slot lift).
+      const lockedSlots = (currentDeck?.slots || []).filter((s) => s.locked && s.liftParams);
       currentDeck = await newsToFullDeck(text, {
         apiKey,
+        lockedSlots,
         onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
       });
       window.__atlasDeck = currentDeck; // QA/debug handle

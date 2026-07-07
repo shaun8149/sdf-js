@@ -98,5 +98,35 @@ const baseParams = {
   ok(/no slot/.test(threw || ''), 'unknown slotIdx throws');
 }
 
+// ── Sprint 40: mergeLockedSlots ──
+{
+  const { mergeLockedSlots } = await import('../src/present/news/full-deck.js');
+  const fresh = [
+    { slotIdx: 0, slotName: 'cover', sceneData: { v: 'new0' } },
+    { slotIdx: 3, slotName: 'lead', sceneData: { v: 'new3' } },
+    { slotIdx: 5, slotName: 'risk', sceneData: { v: 'new5' } },
+  ];
+  const locked = [
+    { slotIdx: 3, slotName: 'lead', sceneData: { v: 'PINNED3' } },
+    { slotIdx: 9, slotName: 'quote', sceneData: { v: 'PINNED9' } },
+  ];
+  const merged = mergeLockedSlots(fresh, locked);
+  ok(
+    merged.find((s) => s.slotIdx === 3).sceneData.v === 'PINNED3',
+    'pinned slot replaces the fresh one',
+  );
+  ok(merged.find((s) => s.slotIdx === 3).locked === true, 'merged slot carries locked flag');
+  ok(
+    merged.find((s) => s.slotIdx === 9)?.sceneData.v === 'PINNED9',
+    'pinned slot survives even when new run dropped its slotIdx',
+  );
+  ok(
+    merged.find((s) => s.slotIdx === 5).sceneData.v === 'new5',
+    'unlocked slots come from the new run',
+  );
+  ok(merged.map((s) => s.slotIdx).join(',') === '0,3,5,9', 'merged list sorted by slotIdx');
+  ok(mergeLockedSlots(fresh, []) === fresh, 'no locks → passthrough');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
