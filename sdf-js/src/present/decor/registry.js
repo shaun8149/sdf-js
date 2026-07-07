@@ -267,7 +267,45 @@ function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
 //   - sector-grid collision with curve-id exemption (self never collides)
 //   - look-ahead minimum-segment precheck (no stubby fragments)
 // plus a probability-weighted width spectrum (rare-thick, common-thin).
-function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity }) {
+// Personality bundles (Sprint 49, the Golid lesson): parameters are picked
+// as COHERENT SETS, not independently — calm/balanced/wild per family.
+// FREEZE CONTRACT: 'balanced' is verbatim the pre-personality constants, and
+// an absent personality resolves to 'balanced', so every existing mint
+// renders pixel-identical.
+const RIBBON_PERSONALITIES = {
+  calm: {
+    rows: 7,
+    cols: 20,
+    steps: 34,
+    widths: [
+      [8, 0.05],
+      [5, 0.25],
+      [3, 0.7],
+    ],
+  },
+  balanced: {
+    rows: 9,
+    cols: 26,
+    steps: 42,
+    widths: [
+      [10, 0.08],
+      [6, 0.22],
+      [3, 0.7],
+    ],
+  },
+  wild: {
+    rows: 12,
+    cols: 34,
+    steps: 56,
+    widths: [
+      [14, 0.12],
+      [7, 0.3],
+      [2, 0.58],
+    ],
+  },
+};
+
+function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
   const P = INTENSITY[intensity] || INTENSITY.subtle;
   const noise = noise2D(seed);
   const rand = seededRand(seed * 17 + 3);
@@ -295,18 +333,22 @@ function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity }) {
 
   // gaussian-ish jitter via sum of uniforms
   const jitter = (amp) => (rand() + rand() - 1) * amp;
+  const B = RIBBON_PERSONALITIES[personality] || RIBBON_PERSONALITIES.balanced;
   // probability-weighted width spectrum: rare thick, common thin
   const widthOf = () => {
     const t = rand();
-    if (t < 0.08) return 10;
-    if (t < 0.3) return 6;
-    return 3;
+    let acc = 0;
+    for (const [width, p] of B.widths) {
+      acc += p;
+      if (t < acc) return width;
+    }
+    return B.widths[B.widths.length - 1][0];
   };
 
   // start points: rows + jitter, then shuffle
   const starts = [];
-  for (let ry = y; ry <= y + h; ry += h / 9) {
-    for (let rx = x - w * 0.1; rx <= x + w * 1.1; rx += w / 26) {
+  for (let ry = y; ry <= y + h; ry += h / B.rows) {
+    for (let rx = x - w * 0.1; rx <= x + w * 1.1; rx += w / B.cols) {
       starts.push([rx + jitter(w / 40), ry + jitter(h / 14)]);
     }
   }
@@ -336,7 +378,7 @@ function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity }) {
       }
       segment = [];
     };
-    for (let step = 0; step < 42; step++) {
+    for (let step = 0; step < B.steps; step++) {
       const ok = inBounds(px, py) && !collides(px, py, width, id);
       if (ok) {
         if (segment.length === 0) {
@@ -461,7 +503,13 @@ function continuousPalette(colors, t) {
   return lerpColor3(colors[i], colors[i + 1], x - i);
 }
 
-function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity }) {
+const WASH_PERSONALITIES = {
+  calm: { nodes: 70, steps: 20, step: 5 },
+  balanced: { nodes: 90, steps: 26, step: 6 },
+  wild: { nodes: 130, steps: 36, step: 7 },
+};
+
+function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
   const P = INTENSITY[intensity] || INTENSITY.subtle;
   const noise = noise2D(seed);
   const rand = seededRand(seed * 29 + 13);
@@ -469,9 +517,10 @@ function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity }) {
   // source shape: a gently sloped band across the slide (seeded position)
   const bandY = y + h * (0.25 + rand() * 0.5);
   const slope = (rand() - 0.5) * h * 0.4;
-  const NODES = 90;
-  const STEPS = 26;
-  const STEP = 6;
+  const B = WASH_PERSONALITIES[personality] || WASH_PERSONALITIES.balanced;
+  const NODES = B.nodes;
+  const STEPS = B.steps;
+  const STEP = B.step;
   ctx.save();
   ctx.lineCap = 'round';
   const nodes = [];
@@ -565,13 +614,20 @@ function drawStrataLines(ctx, { palette, seed, x, y, w, h, intensity }) {
 // fills stand in for its polygon-boolean occlusion; see docs/superpowers/
 // artblocks-study/06-neural-sediments-eko33.md). The fill/line dual of
 // strata-lines.
-function drawSedimentLayers(ctx, { palette, seed, x, y, w, h, intensity }) {
+const SEDIMENT_PERSONALITIES = {
+  calm: { minLayers: 4, layerSpan: 2 },
+  balanced: { minLayers: 5, layerSpan: 3 },
+  wild: { minLayers: 7, layerSpan: 3 },
+};
+
+function drawSedimentLayers(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
   const P = INTENSITY[intensity] || INTENSITY.subtle;
   const noise = noise2D(seed);
   const rand = seededRand(seed * 53 + 29);
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
   const bg = palette.bg || [248, 246, 240];
-  const LAYERS = 5 + Math.floor(rand() * 3);
+  const SB = SEDIMENT_PERSONALITIES[personality] || SEDIMENT_PERSONALITIES.balanced;
+  const LAYERS = SB.minLayers + Math.floor(rand() * SB.layerSpan);
   const COLS = 40;
   ctx.save();
   // back → front; each layer's fill is the theme color heavily blended
@@ -665,7 +721,16 @@ export function pickDecorFor(theme, seed = 1) {
 export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity = 'subtle' } = {}) {
   const fn = DECOR_FAMILIES[decor?.family];
   if (!fn || !palette || !w || !h) return false;
-  fn(ctx, { palette, seed: decor.seed ?? 1, x, y, w, h, intensity });
+  fn(ctx, {
+    palette,
+    seed: decor.seed ?? 1,
+    x,
+    y,
+    w,
+    h,
+    intensity,
+    personality: decor.personality,
+  });
   return true;
 }
 
@@ -715,6 +780,15 @@ export function decorFromHash(theme, hash) {
   return {
     family: R.pick('family', candidates),
     seed: R.int('seed', 1, 0x7ffffffe),
+    // Sprint 49 (Golid personality bundles + Watercolor rarity ladder):
+    // most mints are 'balanced', a weighted minority carry a distinct
+    // temperament. New lane — old mints (no personality field) resolve to
+    // 'balanced' in the families, keeping their pixels frozen.
+    personality: R.weighted('personality', [
+      ['calm', 2],
+      ['balanced', 5],
+      ['wild', 2],
+    ]),
     hash,
     v: DECOR_V,
   };

@@ -22,7 +22,7 @@
     <h1>Decor Gallery — 全家族 × 铸造 hash 变体</h1>
     <div id="root"></div>
     <script type="module">
-      import { DECOR_FAMILIES, drawDecor, mintDecorHash, seedFromHash } from '/src/present/decor/registry.js';
+      import { DECOR_FAMILIES, drawDecor, mintDecorHash, seedFromHash, decorFromHash } from '/src/present/decor/registry.js';
       import { getTheme } from '/src/present/themes.js';
 
       const params = new URLSearchParams(location.search);
@@ -41,6 +41,7 @@
         row.className = 'row';
         for (let i = 0; i < N; i++) {
           const hash = mintDecorHash();
+          const minted = decorFromHash(theme, hash);
           const fig = document.createElement('figure');
           const c = document.createElement('canvas');
           c.width = W;
@@ -48,11 +49,11 @@
           const ctx = c.getContext('2d');
           ctx.fillStyle = `rgb(${theme.bg.join(',')})`;
           ctx.fillRect(0, 0, W, H);
-          drawDecor(ctx, { family, seed: seedFromHash(hash) }, {
+          drawDecor(ctx, { family, seed: minted.seed, personality: minted.personality }, {
             palette: theme, x: 0, y: 0, w: W, h: H, intensity,
           });
           const cap = document.createElement('figcaption');
-          cap.textContent = `#${hash.slice(0, 8)}`;
+          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality}`;
           fig.appendChild(c);
           fig.appendChild(cap);
           row.appendChild(fig);
