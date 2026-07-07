@@ -1,0 +1,52 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Headline",
+  "slotPurpose": "Article headline + source and date context",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "全国新能源汽车下乡政策成效与挑战",
+  "sceneData": {
+    "name": "news-briefing/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "全国新能源汽车下乡政策成效与挑战",
+          "subtitle": "聚焦县乡市场新能源汽车推广现状",
+          "author": "财经报纸报道摘录",
+          "date": "数据截至今年前五个月",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "cover"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4416,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 191,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0200154,
+    "elapsedSec": 5.3,
+    "generatedAt": "2026-07-07T01:18:21.840Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

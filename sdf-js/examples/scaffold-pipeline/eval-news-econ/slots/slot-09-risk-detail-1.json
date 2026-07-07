@@ -1,0 +1,97 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "中东冲突能源价格冲击",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "中东冲突能源价格冲击",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "高概率 · 深冲击",
+          "body": "中东冲突已引发能源价格大幅上涨、通胀重新抬头以及货币政策收紧的预期",
+          "icon": "warning-diamond"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 360,
+        "w": 1120,
+        "h": 300,
+        "args": {
+          "items": [
+            {
+              "icon": "boat",
+              "label": "霍尔木兹海峡",
+              "sublabel": "航运中断"
+            },
+            {
+              "icon": "factory",
+              "label": "能源基础设施",
+              "sublabel": "部分关闭"
+            },
+            {
+              "icon": "trend-up",
+              "label": "能源价格",
+              "sublabel": "激增"
+            },
+            {
+              "icon": "arrows-split",
+              "label": "全球供应",
+              "sublabel": "大宗商品扰乱"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "callout-banner",
+      "stat-with-icon",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4519,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 518,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0252294,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-07T01:17:00.165Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

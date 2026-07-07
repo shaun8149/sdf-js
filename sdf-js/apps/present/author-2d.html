@@ -62,6 +62,16 @@
         gap: 8px;
         z-index: 20;
       }
+      #mode {
+        align-self: center;
+        padding: 8px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(20, 22, 28, 0.9);
+        color: #fff;
+        font: 600 12px -apple-system, Inter, sans-serif;
+        cursor: pointer;
+      }
       #prompt {
         flex: 1;
         resize: none;
@@ -154,6 +164,10 @@
     <div id="status">describe what you want to present — Atlas builds the deck</div>
     <div id="bar">
       <textarea id="prompt" placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"></textarea>
+      <select id="mode" title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 10-20 页简报 (~16 次调用, ~$0.5, ~90s)">
+        <option value="quick">快速 · 3-5 页</option>
+        <option value="full">整本 · 10-20 页</option>
+      </select>
       <button id="go">Generate</button>
       <div id="exportRow">
         <button id="export-pptx" disabled>⬇ PPTX</button>
