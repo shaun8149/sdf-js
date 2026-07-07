@@ -374,6 +374,69 @@ function drawFlowRibbons(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// block-mosaic: cellular-growth rectangle packing with neighbor-inherited
+// color groups. RECIPE-ONLY port after Kjetil Golid's "Archetype" (Art
+// Blocks Curated #23, CC BY-NC 4.0 — independent reimplementation of the
+// published ideas; see docs/superpowers/artblocks-study/03-archetype-golid.md).
+// Two idioms, rewritten from the recipe:
+//   - apparatus-style growth: blocks EXTEND horizontally/vertically or
+//     start fresh, probability-driven — packed-but-irregular panels grown
+//     from a state machine, not sliced from the canvas
+//   - group color mode: a new block inherits its neighbor's color with
+//     probability → contiguous color patches with crisp borders
+function drawBlockMosaic(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const rand = seededRand(seed * 23 + 11);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const COLS = 16;
+  const ROWS = 9;
+  const cw = w / COLS;
+  const chh = h / ROWS;
+  // cell ownership grid: growth state machine
+  const owner = Array.from({ length: ROWS }, () => new Array(COLS).fill(-1));
+  const blockColor = [];
+  let nextId = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (owner[r][c] !== -1) continue;
+      const left = c > 0 ? owner[r][c - 1] : -1;
+      const up = r > 0 ? owner[r - 1][c] : -1;
+      const t = rand();
+      if (left !== -1 && t < 0.42) {
+        owner[r][c] = left; // extend horizontally
+      } else if (up !== -1 && t < 0.72) {
+        owner[r][c] = up; // extend vertically
+      } else {
+        const id = nextId++;
+        owner[r][c] = id;
+        // group color mode: inherit a neighbor's color with probability
+        const inheritFrom = rand() < 0.55 ? (left !== -1 ? left : up) : -1;
+        blockColor[id] =
+          inheritFrom !== -1 ? blockColor[inheritFrom] : colors[Math.floor(rand() * colors.length)];
+      }
+    }
+  }
+  // draw per-cell (merged visually by shared color + hairline borders)
+  ctx.save();
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const id = owner[r][c];
+      const color = blockColor[id];
+      // sparse fill: only a fraction of blocks get filled, id-hashed so a
+      // whole block fills or not together
+      const fillGate = (id * 2654435761) % 100;
+      if (fillGate < 34) {
+        ctx.fillStyle = rgba(color, P.alphaFill);
+        ctx.fillRect(x + c * cw, y + r * chh, cw + 0.5, chh + 0.5);
+      }
+      ctx.strokeStyle = rgba(color, P.alpha * 0.9);
+      ctx.lineWidth = P.lineWidth * 0.8;
+      ctx.strokeRect(x + c * cw, y + r * chh, cw, chh);
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -392,15 +455,16 @@ export const DECOR_FAMILIES = {
   'shard-mesh': drawShardMesh,
   'meadow-streaks': drawMeadowStreaks,
   'flow-ribbons': drawFlowRibbons,
+  'block-mosaic': drawBlockMosaic,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
   editorial: ['flow-ribbons', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
-  pitch: ['weave-dashes', 'circle-pack', 'flow-ribbons'],
+  pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
   organic: ['meadow-streaks', 'flow-ribbons', 'circle-pack'],
-  consulting: ['weave-dashes', 'shard-mesh'],
+  consulting: ['block-mosaic', 'weave-dashes', 'shard-mesh'],
   financial: ['shard-mesh', 'weave-dashes'],
   hr: ['circle-pack', 'meadow-streaks'],
 };

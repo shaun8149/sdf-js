@@ -312,5 +312,29 @@ function recCtx() {
   );
 }
 
+// ── Sprint 45: block-mosaic (Archetype recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'block-mosaic', seed: 9 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  ok(
+    rec.ops.filter((o) => o[0] === 'strokeRect').length === 16 * 9,
+    'block-mosaic strokes every cell',
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(fills > 10 && fills < 16 * 9 * 0.6, `sparse fill gate working (${fills} of 144 cells filled)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'block-mosaic', seed: 4 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'block-mosaic', seed: 4 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'block-mosaic deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
