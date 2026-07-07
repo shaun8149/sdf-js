@@ -22,6 +22,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { isAtom2DType, getAtomSpec } from '../src/present/atoms-2d/registry.js';
 import { hasTwin, liftScaffoldSlot } from '../src/scene/lift-scaffold.js';
+import { auditDeckVisual } from './visual-audit.mjs';
 
 // Arg keys that are style/enum/identifier controls, not user-visible prose.
 // Excluded (at any nesting depth, by key name) from the TEXT BUDGET char count.
@@ -767,6 +768,12 @@ export async function scoreDeckQuality(deckDir) {
     };
   }
 
+  // ── VISUAL (Sprint 36 — adversarial render audit, report-only) ──
+  // Instrumented render of every subject: off-canvas ink, text overflow,
+  // unreadable fonts, cross-subject collisions, blank slots, overlapping
+  // subject boxes. Not in the composite yet — counts are the worklist.
+  const visual = await auditDeckVisual(slotSceneDatas, { palette: manifest.theme });
+
   // ── SCORE ──
   const structureScore = fillRate * 25;
   const varietyScore = Math.min(1, atomTypesDistinct / 6) * 15;
@@ -806,6 +813,15 @@ export async function scoreDeckQuality(deckDir) {
       lift_attempted: slotSceneDatas.length,
       lift_errors: liftErrors,
       lifted_subject_rate: liftedSubjectRate,
+    },
+    visual: {
+      total: visual.total,
+      counts: visual.counts,
+      slots_with_issues: visual.bySlot.map((b) => ({
+        slotIdx: b.slotIdx,
+        slotName: b.slotName,
+        issues: b.issues.slice(0, 6),
+      })),
     },
     textBudget: {
       chars_per_slot: charsPerSlot,
@@ -874,6 +890,19 @@ function printHumanTable(result) {
       console.log(
         `  ent-precision: ${f.deck_entities_total - f.hallucinated_entities.length}/${f.deck_entities_total} deck entities grounded (${(f.entity_precision * 100).toFixed(0)}%)${f.hallucinated_entities.length ? '  INVENTED: ' + f.hallucinated_entities.join(', ') : ''}`,
       );
+    }
+  }
+  if (result.visual) {
+    console.log('\nVISUAL AUDIT');
+    console.log(
+      `  issues: ${result.visual.total}${result.visual.total ? '  ' + JSON.stringify(result.visual.counts) : ''}`,
+    );
+    for (const b of result.visual.slots_with_issues.slice(0, 5)) {
+      for (const i of b.issues.slice(0, 3)) {
+        console.log(
+          `    slot ${b.slotIdx} (${b.slotName}): ${i.kind} ${i.type || ''} — ${i.detail}`,
+        );
+      }
     }
   }
   console.log('\nTEXT BUDGET');

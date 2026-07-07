@@ -39,8 +39,28 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 1,
+    "counts": {
+      "TINY_FONT": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 4,
+        "slotName": "theme-1-detail",
+        "issues": [
+          {
+            "kind": "TINY_FONT",
+            "subject": 2,
+            "type": "stat-with-icon",
+            "detail": "\"中国\" at 8.0px"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
-    "chars_per_slot": 95,
+    "chars_per_slot": 92.07142857142857,
     "max_slot_chars": 202
   },
   "fidelity": {
@@ -48,8 +68,14 @@
     "numbers_found": 11,
     "number_recall": 1,
     "missing_numbers": [],
-    "entities_total": 9,
-    "entities_found": 9,
+    "deck_numbers_total": 12,
+    "hallucinated_numbers": [],
+    "deck_entities_total": 8,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
+    "number_precision": 1,
+    "entities_total": 8,
+    "entities_found": 8,
     "entity_recall": 1,
     "missing_entities": []
   },
@@ -64,5 +90,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-06T16:50:56.213Z"
+  "generatedAt": "2026-07-07T06:09:09.961Z"
 }

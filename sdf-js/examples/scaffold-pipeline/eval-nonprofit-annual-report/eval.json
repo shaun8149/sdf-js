@@ -28,6 +28,51 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 4,
+    "counts": {
+      "TINY_FONT": 3,
+      "TEXT_OVERFLOW": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 2,
+        "slotName": "highlights-kpi",
+        "issues": [
+          {
+            "kind": "TINY_FONT",
+            "subject": 2,
+            "type": "testimonial-wall",
+            "detail": "\"Monthly donor since 2019\" at 6.0px"
+          },
+          {
+            "kind": "TINY_FONT",
+            "subject": 2,
+            "type": "testimonial-wall",
+            "detail": "\"Village Chief, Tanzania\" at 6.0px"
+          },
+          {
+            "kind": "TINY_FONT",
+            "subject": 2,
+            "type": "testimonial-wall",
+            "detail": "\"Foundation Program Officer\" at 6.0px"
+          }
+        ]
+      },
+      {
+        "slotIdx": 3,
+        "slotName": "income",
+        "issues": [
+          {
+            "kind": "TEXT_OVERFLOW",
+            "subject": 2,
+            "type": "pie",
+            "detail": "\"Individual Donors · 52%  52%\" ends at x=1379"
+          }
+        ]
+      }
+    ]
+  },
   "textBudget": {
     "chars_per_slot": 242,
     "max_slot_chars": 541
@@ -66,5 +111,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T05:17:25.072Z"
+  "generatedAt": "2026-07-07T06:11:33.175Z"
 }

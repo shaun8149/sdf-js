@@ -28,6 +28,11 @@
     "lift_errors": [],
     "lifted_subject_rate": 1
   },
+  "visual": {
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
+  },
   "textBudget": {
     "chars_per_slot": 259.2857142857143,
     "max_slot_chars": 341
@@ -64,5 +69,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T05:17:25.070Z"
+  "generatedAt": "2026-07-07T06:11:33.173Z"
 }

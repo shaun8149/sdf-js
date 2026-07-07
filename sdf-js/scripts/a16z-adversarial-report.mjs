@@ -117,6 +117,8 @@ for (const id of ids) {
     entPrecision: f.entity_precision != null ? Math.round(f.entity_precision * 100) : null,
     inventedEntities: f.hallucinated_entities || [],
     hallucinated: f.hallucinated_numbers || [],
+    visualIssues: ev.visual?.total ?? 0,
+    visualCounts: ev.visual?.counts || {},
     missingNumbers: f.missing_numbers || [],
     missingEntities: f.missing_entities || [],
     renderFailures,
@@ -136,14 +138,16 @@ rows.sort((a, b) => {
   return (a.facts ?? 100) - (b.facts ?? 100);
 });
 
-console.log('\ndeck                      pages band score facts% ents% prec% entP%  renderFail');
+console.log(
+  '\ndeck                      pages band score facts% ents% prec% entP% visual  renderFail',
+);
 for (const r of rows) {
   if (r.missing) {
     console.log(`${r.id.padEnd(26)} MISSING (bake failed?)`);
     continue;
   }
   console.log(
-    `${r.id.padEnd(26)}${String(r.pages).padStart(4)}  ${r.inBand ? ' ✓  ' : ' ✗  '}${String(r.score).padStart(5)}${String(r.facts ?? '—').padStart(6)}${String(r.ents ?? '—').padStart(6)}${String(r.precision ?? '—').padStart(6)}${String(r.entPrecision ?? '—').padStart(6)}  ${r.renderFailures.length || ''}`,
+    `${r.id.padEnd(26)}${String(r.pages).padStart(4)}  ${r.inBand ? ' ✓  ' : ' ✗  '}${String(r.score).padStart(5)}${String(r.facts ?? '—').padStart(6)}${String(r.ents ?? '—').padStart(6)}${String(r.precision ?? '—').padStart(6)}${String(r.entPrecision ?? '—').padStart(6)}${String(r.visualIssues || 0).padStart(7)}  ${r.renderFailures.length || ''}`,
   );
   if (r.hallucinated.length) console.log(`    HALLUC#: ${r.hallucinated.join(', ')}`);
   if (r.inventedEntities.length) console.log(`    INVENTED-ENT: ${r.inventedEntities.join(', ')}`);
