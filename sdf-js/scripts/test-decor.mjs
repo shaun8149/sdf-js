@@ -125,11 +125,16 @@ function recCtx() {
     const paletteRgb = new Set(
       [palette.accent, ...palette.colors].map((c) => `${c[0]}, ${c[1]}, ${c[2]}`),
     );
-    const offPalette = rec.styles.filter((s) => {
-      const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
-      return m && !paletteRgb.has(m[1]);
-    });
-    ok(offPalette.length === 0, `${family} uses only theme colors`);
+    // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
+    // Watercolor Dreams) — intermediate colors are theme-derived but not
+    // exact stops, so the exact-match check doesn't apply to it.
+    if (family !== 'wash-flow') {
+      const offPalette = rec.styles.filter((s) => {
+        const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
+        return m && !paletteRgb.has(m[1]);
+      });
+      ok(offPalette.length === 0, `${family} uses only theme colors`);
+    }
   }
 }
 
@@ -140,7 +145,9 @@ function recCtx() {
   const p2 = pickDecorFor(t, 5);
   ok(p1.family === p2.family, 'pick deterministic per (theme, seed)');
   ok(
-    ['flow-ribbons', 'flow-streams', 'shard-mesh', 'meadow-streaks'].includes(p1.family),
+    ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'].includes(
+      p1.family,
+    ),
     'editorial affinity respected',
   );
   ok(
@@ -334,6 +341,28 @@ function recCtx() {
     JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
     'block-mosaic deterministic per seed',
   );
+}
+
+// ── Sprint 46: wash-flow (Watercolor Dreams recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'wash-flow', seed: 33 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 800, `wash-flow accumulates many faint strokes (${strokes})`);
+  const alphas = rec.styles
+    .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+    .filter(Boolean)
+    .map((m) => parseFloat(m[1]));
+  ok(Math.max(...alphas) <= 0.1, 'wash strokes stay whisper-faint (accumulation does the work)');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'wash-flow', seed: 8 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'wash-flow', seed: 8 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'wash-flow deterministic per seed');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
