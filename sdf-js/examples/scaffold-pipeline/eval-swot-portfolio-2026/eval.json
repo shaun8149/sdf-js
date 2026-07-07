@@ -45,6 +45,9 @@
     "missing_numbers": [],
     "deck_numbers_total": 7,
     "hallucinated_numbers": [],
+    "deck_entities_total": 17,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
     "number_precision": 1,
     "entities_total": 5,
     "entities_found": 5,
@@ -62,5 +65,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.763Z"
+  "generatedAt": "2026-07-07T05:17:25.061Z"
 }

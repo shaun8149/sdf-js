@@ -42,6 +42,9 @@
     ],
     "deck_numbers_total": 8,
     "hallucinated_numbers": [],
+    "deck_entities_total": 22,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
     "number_precision": 1,
     "entities_total": 6,
     "entities_found": 6,
@@ -59,5 +62,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.769Z"
+  "generatedAt": "2026-07-07T05:17:25.067Z"
 }

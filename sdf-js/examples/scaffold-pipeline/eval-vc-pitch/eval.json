@@ -53,6 +53,13 @@
       "1500000",
       "0.5"
     ],
+    "deck_entities_total": 25,
+    "hallucinated_entities": [
+      "Architecture Flow",
+      "Pricing Tiers",
+      "Allocation Details"
+    ],
+    "entity_precision": 0.88,
     "number_precision": 0.8823529411764706,
     "entities_total": 5,
     "entities_found": 5,
@@ -70,5 +77,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.767Z"
+  "generatedAt": "2026-07-07T05:17:25.065Z"
 }

@@ -114,6 +114,8 @@ for (const id of ids) {
     facts: f.number_recall != null ? Math.round(f.number_recall * 100) : null,
     ents: f.entity_recall != null ? Math.round(f.entity_recall * 100) : null,
     precision: f.number_precision != null ? Math.round(f.number_precision * 100) : null,
+    entPrecision: f.entity_precision != null ? Math.round(f.entity_precision * 100) : null,
+    inventedEntities: f.hallucinated_entities || [],
     hallucinated: f.hallucinated_numbers || [],
     missingNumbers: f.missing_numbers || [],
     missingEntities: f.missing_entities || [],
@@ -129,19 +131,22 @@ rows.sort((a, b) => {
   if (a.inBand !== b.inBand) return a.inBand ? 1 : -1;
   if ((a.precision ?? 100) !== (b.precision ?? 100))
     return (a.precision ?? 100) - (b.precision ?? 100);
+  if ((a.entPrecision ?? 100) !== (b.entPrecision ?? 100))
+    return (a.entPrecision ?? 100) - (b.entPrecision ?? 100);
   return (a.facts ?? 100) - (b.facts ?? 100);
 });
 
-console.log('\ndeck                      pages band score facts% ents% prec%  renderFail');
+console.log('\ndeck                      pages band score facts% ents% prec% entP%  renderFail');
 for (const r of rows) {
   if (r.missing) {
     console.log(`${r.id.padEnd(26)} MISSING (bake failed?)`);
     continue;
   }
   console.log(
-    `${r.id.padEnd(26)}${String(r.pages).padStart(4)}  ${r.inBand ? ' ✓  ' : ' ✗  '}${String(r.score).padStart(5)}${String(r.facts ?? '—').padStart(6)}${String(r.ents ?? '—').padStart(6)}${String(r.precision ?? '—').padStart(6)}  ${r.renderFailures.length || ''}`,
+    `${r.id.padEnd(26)}${String(r.pages).padStart(4)}  ${r.inBand ? ' ✓  ' : ' ✗  '}${String(r.score).padStart(5)}${String(r.facts ?? '—').padStart(6)}${String(r.ents ?? '—').padStart(6)}${String(r.precision ?? '—').padStart(6)}${String(r.entPrecision ?? '—').padStart(6)}  ${r.renderFailures.length || ''}`,
   );
-  if (r.hallucinated.length) console.log(`    HALLUC: ${r.hallucinated.join(', ')}`);
+  if (r.hallucinated.length) console.log(`    HALLUC#: ${r.hallucinated.join(', ')}`);
+  if (r.inventedEntities.length) console.log(`    INVENTED-ENT: ${r.inventedEntities.join(', ')}`);
   if (r.missingNumbers.length) console.log(`    missing#: ${r.missingNumbers.join(', ')}`);
   for (const rf of r.renderFailures)
     console.log(`    RENDER ✗ ${rf.type} (${rf.slot}): ${rf.error}`);
@@ -157,6 +162,9 @@ const summary = {
   meanFacts: +mean(ok.filter((r) => r.facts != null).map((r) => r.facts)).toFixed(1),
   meanEnts: +mean(ok.filter((r) => r.ents != null).map((r) => r.ents)).toFixed(1),
   meanPrecision: +mean(ok.filter((r) => r.precision != null).map((r) => r.precision)).toFixed(1),
+  meanEntPrecision: +mean(
+    ok.filter((r) => r.entPrecision != null).map((r) => r.entPrecision),
+  ).toFixed(1),
   totalRenderFailures: ok.reduce((s, r) => s + r.renderFailures.length, 0),
 };
 console.log(`\nSUMMARY ${JSON.stringify(summary)}`);

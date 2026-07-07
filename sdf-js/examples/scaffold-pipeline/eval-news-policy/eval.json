@@ -44,6 +44,9 @@
       "37",
       "0.75"
     ],
+    "deck_entities_total": 2,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
     "number_precision": 0.8260869565217391,
     "entities_total": 0,
     "entities_found": 0,
@@ -61,5 +64,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.785Z"
+  "generatedAt": "2026-07-07T05:17:25.087Z"
 }

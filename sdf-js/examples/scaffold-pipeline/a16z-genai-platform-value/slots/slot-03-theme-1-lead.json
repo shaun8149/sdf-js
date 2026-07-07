@@ -3,8 +3,8 @@
   "slotName": "theme-1-lead",
   "slotTitle": "Theme 1 — Lead",
   "slotPurpose": "First major theme: the core facts and figures",
-  "sourceSlideIdx": 2,
-  "sourceSlideTitle": "Value Capture: Infrastructure Dominance",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Nvidia's Hardware Leadership",
   "sceneData": {
     "name": "news-briefing/theme-1-lead",
     "layout": "grid",
@@ -16,44 +16,48 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Theme 1 — Lead",
+          "title": "Hardware Leadership",
           "style": "gradient"
         }
       },
       {
-        "type": "icon-grid",
+        "type": "stat-banner",
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 500,
+        "h": 140,
         "args": {
-          "title": "Value Capture: Infrastructure Dominance",
+          "value": "$3.8B",
+          "label": "Q3 FY2023 Data Center GPU Revenue",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 340,
+        "w": 1200,
+        "h": 320,
+        "args": {
           "items": [
             {
-              "icon": "database",
-              "label": "Infrastructure Dominance",
-              "sublabel": "Vendors capture majority AI dollars"
+              "icon": "crown",
+              "label": "Generative AI",
+              "sublabel": "Market leader"
             },
             {
-              "icon": "rocket",
-              "label": "App Growth",
-              "sublabel": "Fast growth but retention struggles"
+              "icon": "cpu",
+              "label": "Data Center GPUs",
+              "sublabel": "Core AI infrastructure"
             },
             {
-              "icon": "percent",
-              "label": "50-60% Margins",
-              "sublabel": "App companies face margin pressure"
-            },
-            {
-              "icon": "currency-dollar",
-              "label": "Primary Value",
-              "sublabel": "Infrastructure extracts economic value"
+              "icon": "chart-line-up",
+              "label": "$3.8B Revenue",
+              "sublabel": "Q3 fiscal 2023"
             }
           ],
-          "cols": 2,
-          "iconStyle": "card",
           "iconSize": "large",
-          "colorMode": "brand"
+          "iconStyle": "circle"
         }
       }
     ]
@@ -64,20 +68,20 @@
     "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4665,
+      "input_tokens": 4787,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 392,
+      "output_tokens": 421,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0237774,
-    "elapsedSec": 7.9,
-    "generatedAt": "2026-07-07T04:22:29.453Z",
+    "costUSD": 0.0245784,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-07T05:16:21.934Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -267,6 +267,76 @@ export function extractDeckPayloadNumbers(slotSceneDatas) {
   return [...out];
 }
 
+// ── ADVERSARIAL: entity precision (Sprint 35) ─────────────────────────────
+// The converse of entity recall: does the deck name people/orgs/products
+// the source never mentioned? An invented "Sarah Chen, CTO" attribution on
+// a quote-pull is a WORSE failure than a dropped name — the deck fabricates
+// a witness.
+//
+// Deck labels are Title Case by style ("Market Gap", "Launch Window"), so
+// title-case alone is NOT a proper-noun signal here. The judgment is
+// conservative on purpose: a candidate counts as hallucinated ONLY when
+// NONE of its substantial words (≥4 chars, non-generic) appear anywhere in
+// the source text — style-cased phrases built from source words self-ground.
+export function extractDeckEntities(slotSceneDatas) {
+  const leaves = [];
+  function walk(node, keyName = null) {
+    if (node == null) return;
+    if (typeof node === 'string') {
+      if (!(keyName && isNonTextKey(keyName))) leaves.push(node);
+      return;
+    }
+    if (Array.isArray(node)) {
+      for (const el of node) walk(el, keyName);
+      return;
+    }
+    if (typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        if (isNonTextKey(k)) continue;
+        walk(v, k);
+      }
+    }
+  }
+  for (const { sceneData } of slotSceneDatas) {
+    for (const subject of sceneData.subjects || []) walk(subject.args || {});
+  }
+  const out = new Set();
+  for (const line of leaves) {
+    const runs = String(line).match(/\b[A-Z][a-z]+(?: [A-Z][a-z]+)+\b/g) || [];
+    for (let run of runs) {
+      let prev;
+      do {
+        prev = run;
+        run = run.replace(ENTITY_STOP_PREFIX, '');
+      } while (run !== prev && / /.test(run));
+      if (/ /.test(run) && !isGenericHeading(run)) out.add(run);
+    }
+    for (const org of extractChineseOrgs(String(line))) out.add(org);
+  }
+  return [...out];
+}
+
+// Grounded unless NONE of the candidate's substantial words appear in the
+// source (aliases count — deck "IMF" grounds against source 国际货币基金组织).
+export function entityGrounded(candidate, srcTextLower) {
+  const cand = candidate.toLowerCase();
+  if (srcTextLower.includes(cand)) return true;
+  for (const [zh, aliases] of Object.entries(ENTITY_ALIASES)) {
+    if (
+      aliases.some((a) => a.toLowerCase() === cand || cand.includes(a.toLowerCase())) &&
+      srcTextLower.includes(zh)
+    )
+      return true;
+  }
+  // CJK candidate: substring failed and no alias — hallucinated
+  if (/[一-鿿]/.test(candidate)) return false;
+  const words = candidate
+    .split(' ')
+    .filter((w) => w.length >= 4 && !GENERIC_ENTITY_WORDS.has(w.toLowerCase()));
+  if (words.length === 0) return true; // nothing substantial to judge
+  return words.some((w) => srcTextLower.includes(w.toLowerCase()));
+}
+
 // A deck number is grounded if the source's token set contains it in any
 // form: literal, comma-stripped, bare (source "93%" grounds deck 93;
 // source "$4.5M" grounds deck "4.5M"), or by canonical VALUE — the lift
@@ -385,6 +455,49 @@ const GENERIC_ENTITY_WORDS = new Set([
   'contact',
   'about',
   'welcome',
+  // Sprint 35: chart-axis and synthesized-heading vocabulary — deck labels
+  // are Title Case by style; phrases built ONLY from these are chrome.
+  'core',
+  'themes',
+  'theme',
+  'pain',
+  'point',
+  'points',
+  'implications',
+  'strategic',
+  'possible',
+  'causes',
+  'cause',
+  'very',
+  'low',
+  'high',
+  'medium',
+  'industry',
+  'leaders',
+  'leader',
+  'app',
+  'apps',
+  'insights',
+  'insight',
+  'challenges',
+  'challenge',
+  'opportunities',
+  'opportunity',
+  'trends',
+  'trend',
+  'drivers',
+  'driver',
+  'factors',
+  'factor',
+  'risks',
+  'risk',
+  'impact',
+  'likelihood',
+  'severity',
+  'outlook',
+  'momentum',
+  'takeaways',
+  'takeaway',
 ]);
 
 function isGenericHeading(run) {
@@ -618,6 +731,18 @@ export async function scoreDeckQuality(deckDir) {
     const deckNumbers = extractDeckPayloadNumbers(slotSceneDatas);
     const hallucinated = deckNumbers.filter((n) => !numberGrounded(n, sourceTokens, sourceValues));
 
+    // Adversarial entity precision (Sprint 35): named people/orgs in the
+    // deck that the source never mentioned. Scaffold chrome (slot titles
+    // like "Secondary Risks") is the deck's own skeleton, not a claim about
+    // the source — whitelist it into the grounding text.
+    const chromeText = [
+      manifest.scaffold?.label || '',
+      ...(manifest.slots || []).map((sl) => `${sl.slotTitle || ''} ${sl.slotName || ''}`),
+    ].join(' ');
+    const srcTextLower = (srcText + ' ' + chromeText).toLowerCase();
+    const deckEntities = extractDeckEntities(slotSceneDatas);
+    const hallucEntities = deckEntities.filter((e) => !entityGrounded(e, srcTextLower));
+
     fidelity = {
       numbers_total: srcNumbers.length,
       numbers_found: found.length,
@@ -625,6 +750,12 @@ export async function scoreDeckQuality(deckDir) {
       missing_numbers: missing.slice(0, 12),
       deck_numbers_total: deckNumbers.length,
       hallucinated_numbers: hallucinated.slice(0, 12),
+      deck_entities_total: deckEntities.length,
+      hallucinated_entities: hallucEntities.slice(0, 12),
+      entity_precision:
+        deckEntities.length > 0
+          ? (deckEntities.length - hallucEntities.length) / deckEntities.length
+          : 1,
       number_precision:
         deckNumbers.length > 0
           ? (deckNumbers.length - hallucinated.length) / deckNumbers.length
@@ -737,6 +868,11 @@ function printHumanTable(result) {
     if (f.number_precision != null) {
       console.log(
         `  precision: ${f.deck_numbers_total - f.hallucinated_numbers.length}/${f.deck_numbers_total} deck numbers grounded (${(f.number_precision * 100).toFixed(0)}%)${f.hallucinated_numbers.length ? '  HALLUCINATED: ' + f.hallucinated_numbers.join(', ') : ''}`,
+      );
+    }
+    if (f.entity_precision != null) {
+      console.log(
+        `  ent-precision: ${f.deck_entities_total - f.hallucinated_entities.length}/${f.deck_entities_total} deck entities grounded (${(f.entity_precision * 100).toFixed(0)}%)${f.hallucinated_entities.length ? '  INVENTED: ' + f.hallucinated_entities.join(', ') : ''}`,
       );
     }
   }

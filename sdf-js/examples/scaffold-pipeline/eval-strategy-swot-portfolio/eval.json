@@ -46,6 +46,14 @@
       "0.75",
       "0.92"
     ],
+    "deck_entities_total": 20,
+    "hallucinated_entities": [
+      "Inbound Logistics",
+      "Outbound Logistics",
+      "Technology Development",
+      "Enablement Functions"
+    ],
+    "entity_precision": 0.8,
     "number_precision": 0.5714285714285714,
     "entities_total": 4,
     "entities_found": 4,
@@ -63,5 +71,5 @@
       "text": 9.8
     }
   },
-  "generatedAt": "2026-07-07T04:29:09.761Z"
+  "generatedAt": "2026-07-07T05:17:25.059Z"
 }
