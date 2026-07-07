@@ -17,7 +17,7 @@
 // NOT this PPTX. PPTX is for human delivery; deck.json is for 3D translator.
 // =============================================================================
 
-import { renderAtom } from '../atoms-2d/registry.js';
+import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 
 // pptxgenjs loaded from esm.sh on first call (matches pdfjs CDN pattern in
 // src/parser/pdf.js — no build step / bundler required).
@@ -79,24 +79,17 @@ export async function exportDeckToPPTX(deck, opts = {}) {
     const canvas = document.createElement('canvas');
     canvas.width = 1280;
     canvas.height = 720;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = `rgb(${deck.theme.bg.join(',')})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (slot.sceneData?.subjects) {
-      for (const subj of slot.sceneData.subjects) {
-        try {
-          await renderAtom(ctx, subj.type, subj.args, 'pseudo3d', {
-            x: subj.x ?? 0,
-            y: subj.y ?? 0,
-            w: subj.w ?? 320,
-            h: subj.h ?? 240,
-            palette: deck.theme,
-          });
-        } catch (e) {
-          console.error(`[pptx] renderAtom ${subj.type} failed:`, e);
-        }
-      }
+    // Unified slide painter (Sprint 41): same renderer as the on-screen
+    // preview — decoration layer included, per-atom errors non-fatal.
+    try {
+      await renderSceneDataToCanvas(canvas, slot.sceneData || { subjects: [] }, {
+        palette: deck.theme,
+        decor: deck.decor
+          ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx }
+          : undefined,
+      });
+    } catch (e) {
+      console.error(`[pptx] slide render failed:`, e);
     }
 
     const pngDataURL = canvas.toDataURL('image/png');

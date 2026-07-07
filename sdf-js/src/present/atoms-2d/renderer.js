@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { renderAtom, isAtom2DType } from './registry.js';
+import { drawDecor } from '../decor/registry.js';
 
 const DEFAULT_PALETTE = {
   bg: [247, 244, 224],
@@ -48,6 +49,23 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   }
 
   const subjects = Array.isArray(sceneData?.subjects) ? sceneData.subjects : [];
+
+  // Decoration layer (Sprint 41): generative backdrop, theme-constrained +
+  // seeded. Content slides get it UNDER the atoms ('subtle'); pure-cover
+  // slides get it OVER the gradient ('bold' — the cover paints full-bleed
+  // and would bury an underlay).
+  const decor = opts.decor;
+  const isPureCover = subjects.length > 0 && subjects.every((s) => s?.type === 'cover');
+  if (decor && !isPureCover) {
+    drawDecor(ctx, decor, {
+      palette,
+      x: 0,
+      y: 0,
+      w: canvas.width,
+      h: canvas.height,
+      intensity: decor.intensity || 'subtle',
+    });
+  }
   let rendered = 0;
   let skipped = 0;
   const errors = [];
@@ -81,6 +99,18 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       ctx.restore(); // ensure no leaked transform state
       errors.push({ index: i, type: s.type, error: e.message });
     }
+  }
+
+  // Pure-cover slides: decoration goes on top of the gradient.
+  if (decor && isPureCover) {
+    drawDecor(ctx, decor, {
+      palette,
+      x: 0,
+      y: 0,
+      w: canvas.width,
+      h: canvas.height,
+      intensity: decor.intensity || 'bold',
+    });
   }
 
   return { rendered, skipped, errors };
