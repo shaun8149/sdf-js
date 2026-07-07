@@ -1,0 +1,86 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 15,
+  "sourceSlideTitle": "2026年展望总结",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Summary",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "2026年展望总结",
+          "items": [
+            {
+              "label": "全球经济温和增长",
+              "sublabel": "三大机构预测2.5%-3.3%区间"
+            },
+            {
+              "label": "区域分化显著",
+              "sublabel": "中国与低收入国家增速领先，欧元区相对疲弱"
+            },
+            {
+              "label": "货币政策转向宽松",
+              "sublabel": "降息路径取决于通胀与就业数据"
+            },
+            {
+              "label": "地缘政治与能源供应构成下行风险",
+              "sublabel": "科技投资提供上行可能"
+            }
+          ],
+          "cols": 2,
+          "numberStyle": "circle",
+          "numberColor": [
+            38,
+            70,
+            130
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "numbered-grid",
+      "bullet-list",
+      "stat-grid-large"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4511,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 413,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0236304,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-07T01:17:32.893Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

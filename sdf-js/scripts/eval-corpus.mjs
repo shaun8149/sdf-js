@@ -36,13 +36,19 @@ const CORPUS = [
   'nonprofit-annual-report.json',
   'product-eng-retro.json',
   'econ-news-2026.json', // Sprint 29: Chinese real-news fixture — CJK numbers/entities regression
+  // Sprint 32: article entries — raw text baked through the FULL news chain
+  // (expand → news-briefing → page floor) via news-to-deck.mjs, so the
+  // 10-20-page capability regresses with the corpus, not only in the
+  // stability harness.
+  { article: 'econ-news-excerpt.txt', id: 'news-econ' },
+  { article: 'policy-news-excerpt.txt', id: 'news-policy' },
 ];
 
-function stemOf(fixtureFile) {
-  return fixtureFile.replace(/\.json$/, '');
+function stemOf(fixture) {
+  return typeof fixture === 'string' ? fixture.replace(/\.json$/, '') : fixture.id;
 }
-function deckNameOf(fixtureFile) {
-  return `eval-${stemOf(fixtureFile)}`;
+function deckNameOf(fixture) {
+  return `eval-${stemOf(fixture)}`;
 }
 
 // --- args ---
@@ -76,28 +82,35 @@ if (DO_BAKE && !KEY_FILE) {
 // -----------------------------------------------------------------------------
 if (DO_BAKE) {
   console.log(`\n══ eval-corpus: baking ${corpus.length} deck(s) ══\n`);
-  for (const fixtureFile of corpus) {
-    const fixturePath = join(FIXTURES_DIR, fixtureFile);
-    const deckName = deckNameOf(fixtureFile);
+  for (const fixture of corpus) {
+    const deckName = deckNameOf(fixture);
     console.log(`── bake: ${deckName} ──`);
-    const result = spawnSync(
-      'node',
-      [
-        'sdf-js/scripts/bake-scaffold-pipeline.mjs',
-        '--slidedata',
-        fixturePath,
-        '--deck-name',
-        deckName,
-        '--picker',
-        'llm',
-        '--mapper',
-        'llm',
-        '--key-file',
-        KEY_FILE,
-        '--force',
-      ],
-      { cwd: REPO, stdio: 'inherit' },
-    );
+    const cmd =
+      typeof fixture === 'string'
+        ? [
+            'sdf-js/scripts/bake-scaffold-pipeline.mjs',
+            '--slidedata',
+            join(FIXTURES_DIR, fixture),
+            '--deck-name',
+            deckName,
+            '--picker',
+            'llm',
+            '--mapper',
+            'llm',
+            '--key-file',
+            KEY_FILE,
+            '--force',
+          ]
+        : [
+            'sdf-js/scripts/news-to-deck.mjs',
+            '--text',
+            join(FIXTURES_DIR, fixture.article),
+            '--deck-name',
+            deckName,
+            '--key-file',
+            KEY_FILE,
+          ];
+    const result = spawnSync('node', cmd, { cwd: REPO, stdio: 'inherit' });
     if (result.status !== 0) {
       console.error(`  ✗ bake failed for ${deckName} (exit ${result.status}) — continuing`);
     }
@@ -112,8 +125,8 @@ console.log(`\n══ eval-corpus: scoring ${corpus.length} deck(s) ══\n`);
 const rows = [];
 const skipped = [];
 
-for (const fixtureFile of corpus) {
-  const deckName = deckNameOf(fixtureFile);
+for (const fixture of corpus) {
+  const deckName = deckNameOf(fixture);
   const deckDir = join(DECKS_DIR, deckName);
   if (!existsSync(join(deckDir, 'deck.json'))) {
     console.warn(`  ⚠ skip ${deckName} — not baked yet (no deck.json in ${deckDir})`);

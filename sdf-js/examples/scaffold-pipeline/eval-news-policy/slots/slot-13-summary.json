@@ -1,0 +1,85 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "前景与展望",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "前景与展望",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "县乡市场成为增长新引擎",
+              "sublabel": "新能源汽车渗透下沉市场"
+            },
+            {
+              "label": "基础设施建设亟待加速",
+              "sublabel": "电网配套与残值体系"
+            },
+            {
+              "label": "政策延续性与市场化转型",
+              "sublabel": "平衡推进双重目标"
+            },
+            {
+              "label": "渗透率提升空间广阔",
+              "sublabel": "长期增长潜力仍在"
+            }
+          ],
+          "cols": 2,
+          "numberStyle": "circle",
+          "numberColor": [
+            38,
+            70,
+            130
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "numbered-grid",
+      "bullet-list",
+      "stat-grid-large"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4466,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 388,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0231204,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-07T01:20:05.368Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

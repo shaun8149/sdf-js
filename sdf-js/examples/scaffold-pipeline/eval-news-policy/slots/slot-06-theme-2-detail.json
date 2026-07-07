@@ -1,0 +1,75 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "充电设施覆盖目标与时间表",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "充电设施覆盖目标与时间表",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 460,
+        "args": {
+          "events": [
+            {
+              "date": "现在",
+              "label": "国家能源局要求",
+              "sublabel": "县县全覆盖、乡乡有站点"
+            },
+            {
+              "date": "2026年底",
+              "label": "实现全覆盖",
+              "sublabel": "涉及全国数千个县级行政区域"
+            }
+          ],
+          "title": "县域充电网络建设时间节点",
+          "axisLabel": "时间线"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "timeline",
+      "funnel-with-conversion",
+      "bullet-list",
+      "flow-chart"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4477,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 331,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0222984,
+    "elapsedSec": 11.6,
+    "generatedAt": "2026-07-07T01:19:13.351Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

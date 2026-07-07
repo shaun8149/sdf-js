@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-06T15:45:42.225Z",
-  "corpusSize": 11,
-  "scored": 11,
+  "generatedAt": "2026-07-07T01:20:05.709Z",
+  "corpusSize": 13,
+  "scored": 13,
   "skipped": [],
-  "corpusMean": 96.7,
-  "factsRecallMean": 0.949,
-  "entityRecallMean": 0.964,
+  "corpusMean": 97.2,
+  "factsRecallMean": 0.957,
+  "entityRecallMean": 0.957,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -110,6 +110,72 @@
         "Understandable Consensus Algorithm",
         "Highly Available Key"
       ],
+      "missingNumbers": []
+    },
+    {
+      "deckName": "eval-news-econ",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "news-briefing",
+      "themeId": "editorial-navy",
+      "pickMethod": "forced",
+      "atomTypesDistinct": 15,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 14,
+      "liftAttempted": 14,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 82.28571428571429,
+      "maxSlotChars": 130,
+      "numberRecall": 1,
+      "entityRecall": 0.8333333333333334,
+      "missingEntities": [
+        "但世界银行"
+      ],
+      "missingNumbers": []
+    },
+    {
+      "deckName": "eval-news-policy",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "news-briefing",
+      "themeId": "editorial-navy",
+      "pickMethod": "forced",
+      "atomTypesDistinct": 13,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 14,
+      "liftAttempted": 14,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 76.5,
+      "maxSlotChars": 128,
+      "numberRecall": 1,
+      "entityRecall": 1,
+      "missingEntities": [],
       "missingNumbers": []
     },
     {

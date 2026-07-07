@@ -1,0 +1,76 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "挑战二：二手车残值体系缺失",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "次要风险",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "title": "挑战二：二手车残值体系缺失",
+          "leftLabel": "当前状态",
+          "rightLabel": "影响范围",
+          "leftItems": [
+            "残值评估标准缺失",
+            "置换意愿持续低迷",
+            "消费者信心不足"
+          ],
+          "rightItems": [
+            "中等概率事件",
+            "深远长期影响",
+            "农村市场普及受阻"
+          ],
+          "leftAccent": "rgb(165,130,90)",
+          "rightAccent": "rgb(38,70,130)",
+          "verdict": "需要建立健全的二手车残值评估体系"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "balance-scale",
+      "icon-grid",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4448,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 370,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022796399999999998,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-07T01:19:45.024Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

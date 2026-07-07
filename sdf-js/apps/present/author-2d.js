@@ -9,6 +9,7 @@
 // Used for headless verification where a real Anthropic call can't run.
 import { textToIR } from '../../src/scene/text-to-ir.js';
 import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
+import { newsToFullDeck } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -56,6 +57,7 @@ const keyEl = document.getElementById('key');
 const slidesEl = document.getElementById('slides');
 const exportPptxEl = document.getElementById('export-pptx');
 const exportPdfEl = document.getElementById('export-pdf');
+const modeEl = document.getElementById('mode');
 
 keyEl.value = localStorage.getItem(STORAGE_KEY) || '';
 keyEl.addEventListener('change', () => localStorage.setItem(STORAGE_KEY, keyEl.value.trim()));
@@ -102,6 +104,25 @@ async function generate() {
   exportPptxEl.disabled = true;
   exportPdfEl.disabled = true;
   try {
+    if (!DEMO_MODE && modeEl.value === 'full') {
+      // 整本模式 (Sprint 32): article → 10-20 page briefing via the SAME
+      // pipeline modules the CLI bake uses (expand → map → per-slot lift).
+      currentDeck = await newsToFullDeck(text, {
+        apiKey,
+        onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
+      });
+      if (currentDeck.errors?.length) {
+        console.warn('[full-deck] slot errors:', currentDeck.errors);
+      }
+      await renderDeck(currentDeck);
+      const errNote = currentDeck.errors?.length
+        ? ` (${currentDeck.errors.length} slot(s) failed — see console)`
+        : '';
+      setStatus(`done — ${currentDeck.slots.length} pages rendered${errNote}. Export below.`);
+      exportPptxEl.disabled = false;
+      exportPdfEl.disabled = false;
+      return;
+    }
     let irDeck;
     if (DEMO_MODE) {
       setStatus('demo mode — skipping LLM, rendering fixed 3-slide deck');
