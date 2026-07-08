@@ -802,5 +802,27 @@ function recCtx() {
   );
 }
 
+// ── Sprint 57: river-courses (Ancient Courses recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'river-courses', seed: 44 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes >= 4, `river-courses draws history + banks (${strokes} strokes)`);
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos > 150, `river-courses carries a meandered polyline (${lineTos} vertices)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'river-courses', seed: 61 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'river-courses', seed: 61 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'river-courses deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
