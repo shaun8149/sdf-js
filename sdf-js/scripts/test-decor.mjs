@@ -456,5 +456,27 @@ function recCtx() {
   ok(seen.size >= 2, `personalities vary across hashes (${[...seen].join(',')})`);
 }
 
+// ── Sprint 50: ink-scribble (INK recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'ink-scribble', seed: 12 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes >= 16 && strokes <= 30, `ink-scribble double-pass per shape (${strokes} strokes)`);
+  const verts = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(verts > 4000, `dense vertices carry the ink texture (${verts})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'ink-scribble', seed: 5 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'ink-scribble', seed: 5 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'ink-scribble deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
