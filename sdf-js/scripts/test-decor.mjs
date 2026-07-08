@@ -134,7 +134,7 @@ function recCtx() {
     // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
     // Watercolor Dreams) — intermediate colors are theme-derived but not
     // exact stops, so the exact-match check doesn't apply to it.
-    if (!['wash-flow', 'strata-lines', 'sediment-layers'].includes(family)) {
+    if (!['wash-flow', 'strata-lines', 'sediment-layers', 'hex-lattice'].includes(family)) {
       const offPalette = rec.styles.filter((s) => {
         const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
         return m && !paletteRgb.has(m[1]);
@@ -524,6 +524,36 @@ function recCtx() {
     .filter(Boolean)
     .map((m) => parseFloat(m[1]));
   ok(Math.max(...nibAlphas) <= 0.22, 'nib-flourish thin-ribbon alpha within its own cap');
+}
+
+// ── Sprint 53: hex-lattice + OKLab (while-true recipe-only) ──
+{
+  const { lerpColorOklab } = await import('../src/present/decor/registry.js');
+  const mid = lerpColorOklab([255, 0, 0], [0, 0, 255], 0.5);
+  ok(Array.isArray(mid) && mid.every((v) => v >= 0 && v <= 255), 'oklab lerp returns valid rgb');
+  // endpoints round-trip
+  const e0 = lerpColorOklab([38, 70, 130], [200, 50, 50], 0);
+  ok(Math.abs(e0[0] - 38) <= 1 && Math.abs(e0[2] - 130) <= 1, 'oklab lerp t=0 returns first color');
+  // perceptual midpoint of red↔blue in OKLab is purple-ish, NOT the muddy
+  // rgb average (127,0,127 exactly) — assert it differs from raw rgb lerp
+  ok(
+    mid.join(',') !== '128,0,128' && mid.join(',') !== '127,0,127',
+    'oklab midpoint ≠ rgb midpoint (perceptual path)',
+  );
+
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'hex-lattice', seed: 44 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 60, `hex-lattice strokes many cells (${strokes})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'hex-lattice', seed: 9 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'hex-lattice', seed: 9 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'hex-lattice deterministic per seed');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
