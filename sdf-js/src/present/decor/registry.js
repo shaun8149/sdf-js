@@ -1156,6 +1156,66 @@ function drawCargoDashes(ctx, { palette, seed, x, y, w, h, intensity, personalit
   ctx.restore();
 }
 
+// folded-screens: layered screens of dense parallel lines, each screen broken
+// by a few vertical creases where direction and tone shift — the fold reads
+// as pseudo-3D facets. RECIPE-ONLY port after Thomas Lin Pedersen's "Screens"
+// (Art Blocks Curated #255, CC BY-NC 4.0 — independent reimplementation; see
+// docs/superpowers/artblocks-study/19-screens-pedersen.md). Idioms taken as
+// ideas: a screen = one dense line raster treated as a single object; creases
+// segment it into facets, each facet gets its own slope and brightness (the
+// fold illusion is per-facet shading, not perspective math); 2-3 translucent
+// screens layered → interference where they cross.
+const SCREEN_PERSONALITIES = {
+  calm: { screens: 2, lineGap: 7, creases: 1, slopeMax: 0.12, toneSpread: 0.35 },
+  balanced: { screens: 2, lineGap: 5.5, creases: 2, slopeMax: 0.2, toneSpread: 0.5 },
+  wild: { screens: 3, lineGap: 4.5, creases: 3, slopeMax: 0.32, toneSpread: 0.7 },
+};
+
+function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = SCREEN_PERSONALITIES[personality] || SCREEN_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 71 + 29);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  ctx.save();
+  ctx.lineCap = 'butt';
+  for (let sIdx = 0; sIdx < B.screens; sIdx++) {
+    const col = colors[sIdx % colors.length];
+    // creases split [0,1] into facets; each facet has slope + tone
+    const cuts = [0];
+    for (let i = 0; i < B.creases; i++) cuts.push(0.15 + rand() * 0.7);
+    cuts.sort((a, b) => a - b);
+    cuts.push(1);
+    const facets = [];
+    for (let i = 0; i + 1 < cuts.length; i++) {
+      facets.push({
+        x0: cuts[i],
+        x1: cuts[i + 1],
+        slope: (rand() * 2 - 1) * B.slopeMax,
+        tone: 1 - B.toneSpread * rand(),
+      });
+    }
+    const gap = B.lineGap * (0.9 + rand() * 0.4);
+    const phase = rand() * gap;
+    // each screen-line is a polyline: y offset accumulates per facet slope
+    for (let ly = y - h * 0.3 + phase; ly < y + h * 1.3; ly += gap) {
+      let py = ly;
+      for (const f of facets) {
+        const fx0 = x + f.x0 * w;
+        const fx1 = x + f.x1 * w;
+        const fy = py + (fx1 - fx0) * f.slope;
+        ctx.strokeStyle = rgba(col, P.alpha * f.tone);
+        ctx.lineWidth = P.lineWidth * 0.7;
+        ctx.beginPath();
+        ctx.moveTo(fx0, py);
+        ctx.lineTo(fx1, fy);
+        ctx.stroke();
+        py = fy;
+      }
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -1184,12 +1244,14 @@ export const DECOR_FAMILIES = {
   'hex-lattice': drawHexLattice,
   'drift-web': drawDriftWeb,
   'cargo-dashes': drawCargoDashes,
+  'folded-screens': drawFoldedScreens,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
   editorial: [
+    'folded-screens',
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',
@@ -1217,7 +1279,7 @@ const CLUSTER_AFFINITY = {
     'weave-dashes',
     'shard-mesh',
   ],
-  financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
+  financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
 

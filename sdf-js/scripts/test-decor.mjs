@@ -608,5 +608,33 @@ function recCtx() {
   );
 }
 
+// ── Sprint 54: folded-screens (Screens recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'folded-screens', seed: 12 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 150, `folded-screens rasters dense line screens (${strokes})`);
+  // facet tones vary: more than one distinct alpha among strokes
+  const alphas = new Set(
+    rec.styles
+      .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+      .filter(Boolean)
+      .map((m) => m[1]),
+  );
+  ok(alphas.size > 2, `folded-screens facets carry distinct tones (${alphas.size})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'folded-screens', seed: 77 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'folded-screens', seed: 77 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'folded-screens deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
