@@ -1218,6 +1218,78 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// torn-paper: layered patches of "paper" with noise-roughened deckle edges
+// and occasional sharp tear notches. RECIPE-ONLY port after Emily Xie's
+// "Memories of Qilin" (Art Blocks Curated #282, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/33-qilin-xie.md).
+// Idioms taken as ideas: collage patch = radial blob whose edge radius is
+// noise-modulated at two scales (slow undulation + fine deckle fuzz);
+// a rare sharp inward NOTCH sells the tear; colors picked by WEIGHT
+// (Xie's palettes attach a weight to every color, biasing without banning).
+const TORN_PERSONALITIES = {
+  calm: { patches: 3, notchChance: 0.15, rough: 0.05, fuzz: 0.02 },
+  balanced: { patches: 5, notchChance: 0.35, rough: 0.09, fuzz: 0.035 },
+  wild: { patches: 8, notchChance: 0.6, rough: 0.16, fuzz: 0.06 },
+};
+
+function drawTornPaper(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = TORN_PERSONALITIES[personality] || TORN_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 89 + 41);
+  const noise = noise2D(seed + 31);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  // weighted pick: accent carries triple weight (Xie's weighted palettes)
+  const weighted = colors.flatMap((c, i) => (i === 0 ? [c, c, c] : [c]));
+  ctx.save();
+  ctx.lineJoin = 'round';
+  for (let pi = 0; pi < B.patches; pi++) {
+    const col = weighted[Math.floor(rand() * weighted.length)];
+    const cx = x + (0.12 + rand() * 0.76) * w;
+    const cy = y + (0.12 + rand() * 0.76) * h;
+    const rBase = (0.12 + rand() * 0.22) * Math.min(w, h);
+    const squash = 0.55 + rand() * 0.7; // paper scraps are rarely round
+    const rot = rand() * Math.PI;
+    const K = 46;
+    const phase = rand() * 100;
+    const notchAt = rand() < B.notchChance ? Math.floor(rand() * K) : -1;
+    const pts = [];
+    for (let k = 0; k < K; k++) {
+      const a = (k / K) * Math.PI * 2;
+      // two-scale edge: slow undulation + fine deckle fuzz
+      let r =
+        rBase *
+        (1 +
+          (noise(phase + Math.cos(a) * 1.3, phase + Math.sin(a) * 1.3) - 0.5) * 2 * B.rough +
+          (noise(phase + Math.cos(a) * 6, phase + Math.sin(a) * 6) - 0.5) *
+            2 *
+            B.fuzz *
+            rBase *
+            0.08);
+      if (notchAt >= 0) {
+        const d = Math.min(Math.abs(k - notchAt), K - Math.abs(k - notchAt));
+        if (d < 3) r *= 0.55 + 0.15 * d; // the tear bites in sharply
+      }
+      const ex = Math.cos(a) * r;
+      const ey = Math.sin(a) * r * squash;
+      pts.push([
+        cx + ex * Math.cos(rot) - ey * Math.sin(rot),
+        cy + ex * Math.sin(rot) + ey * Math.cos(rot),
+      ]);
+    }
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let k = 1; k < K; k++) ctx.lineTo(pts[k][0], pts[k][1]);
+    ctx.closePath();
+    ctx.fillStyle = rgba(col, P.alphaFill * 1.3);
+    ctx.fill();
+    // deckle edge: the fibrous rim reads as a slightly stronger outline
+    ctx.strokeStyle = rgba(col, P.alpha * 1.1);
+    ctx.lineWidth = P.lineWidth * 0.8;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // street-grid: a sparse road network — lanes drawn as parallel double rails,
 // quarter-arc corners where a horizontal lane turns into a vertical one,
 // dashed center lines on the widest roads. RECIPE-ONLY port after James
@@ -1723,6 +1795,7 @@ export const DECOR_FAMILIES = {
   'paper-folds': drawPaperFolds,
   'growth-loops': drawGrowthLoops,
   'street-grid': drawStreetGrid,
+  'torn-paper': drawTornPaper,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so

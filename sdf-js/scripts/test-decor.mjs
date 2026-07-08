@@ -752,5 +752,26 @@ function recCtx() {
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'street-grid deterministic per seed');
 }
 
+// ── Sprint 56: torn-paper (Qilin recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'torn-paper', seed: 24 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills >= 3 && fills <= 9, `torn-paper layers a few patches (${fills})`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes === fills, 'torn-paper rims every patch with a deckle edge');
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos >= fills * 40, 'torn-paper edges carry the 46-point roughness');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'torn-paper', seed: 93 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'torn-paper', seed: 93 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'torn-paper deterministic per seed');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
