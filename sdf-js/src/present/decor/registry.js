@@ -719,6 +719,74 @@ function drawInkScribble(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// light-edges: box edges as glowing gradient lines. RECIPE-ONLY port (2D
+// canvas approximation) after Zach Lieberman's "Box Light Studies" (Art
+// Blocks Curated #499, CC BY-NC 4.0). The original's soft light lives in a
+// GPU jump-flood distance field — that recipe belongs to the 3D end's
+// shader corpus (see docs/superpowers/artblocks-study/
+// 08-box-light-studies-lieberman.md); here we take the COMPOSITION (edges
+// as light sources) and fake the glow with layered strokes:
+//   wide × faint → narrow × brighter, per edge, two colors interpolated
+//   along the segment.
+function drawLightEdges(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const rand = seededRand(seed * 67 + 41);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const BOXES = 4 + Math.floor(rand() * 3);
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (let b = 0; b < BOXES; b++) {
+    const cx = x + rand() * w;
+    const cy = y + rand() * h;
+    const size = Math.min(w, h) * (0.1 + rand() * 0.16);
+    const ang = rand() * Math.PI;
+    const depth = size * (0.4 + rand() * 0.4);
+    const dx = Math.cos(ang + Math.PI / 5) * depth;
+    const dy = Math.sin(ang + Math.PI / 5) * depth * 0.5;
+    // front face corners (rotated square)
+    const corners = [];
+    for (let k = 0; k < 4; k++) {
+      const a = ang + (k * Math.PI) / 2;
+      corners.push([cx + Math.cos(a) * size, cy + Math.sin(a) * size]);
+    }
+    const edges = [];
+    for (let k = 0; k < 4; k++) {
+      edges.push([corners[k], corners[(k + 1) % 4]]); // front face
+      edges.push([corners[k], [corners[k][0] + dx, corners[k][1] + dy]]); // depth edge
+      edges.push([
+        [corners[k][0] + dx, corners[k][1] + dy],
+        [corners[(k + 1) % 4][0] + dx, corners[(k + 1) % 4][1] + dy],
+      ]); // back face
+    }
+    const cA = colors[b % colors.length];
+    const cB = colors[(b + 1) % colors.length];
+    for (const [[x1, y1], [x2, y2]] of edges) {
+      // two-color edge: draw as two halves meeting at the midpoint
+      const mx = (x1 + x2) / 2;
+      const my = (y1 + y2) / 2;
+      for (const [color, sx, sy, ex, ey] of [
+        [cA, x1, y1, mx, my],
+        [cB, mx, my, x2, y2],
+      ]) {
+        // layered glow: wide-faint → narrow-brighter
+        for (const [width, alpha] of [
+          [P.lineWidth * 6, P.alpha * 0.25],
+          [P.lineWidth * 3, P.alpha * 0.5],
+          [P.lineWidth * 1.2, P.alpha],
+        ]) {
+          ctx.strokeStyle = rgba(color, alpha);
+          ctx.lineWidth = width;
+          ctx.beginPath();
+          ctx.moveTo(sx, sy);
+          ctx.lineTo(ex, ey);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -742,6 +810,7 @@ export const DECOR_FAMILIES = {
   'strata-lines': drawStrataLines,
   'sediment-layers': drawSedimentLayers,
   'ink-scribble': drawInkScribble,
+  'light-edges': drawLightEdges,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -755,9 +824,9 @@ const CLUSTER_AFFINITY = {
     'shard-mesh',
     'meadow-streaks',
   ],
-  pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
+  pitch: ['block-mosaic', 'light-edges', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
   organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
-  consulting: ['block-mosaic', 'strata-lines', 'weave-dashes', 'shard-mesh'],
+  consulting: ['block-mosaic', 'strata-lines', 'light-edges', 'weave-dashes', 'shard-mesh'],
   financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: ['ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
