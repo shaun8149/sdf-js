@@ -667,6 +667,58 @@ function drawSedimentLayers(ctx, { palette, seed, x, y, w, h, intensity, persona
   ctx.restore();
 }
 
+// ink-scribble: noise-Lissajous closed scribbles with multi-pass vertex
+// jitter (hand-drawn ink feel). RECIPE-ONLY port after Iskra Velitchkova's
+// "INK" (Art Blocks Curated #497, CC BY-NC-SA 4.0 — independent
+// reimplementation at deck-friendly density; see docs/superpowers/
+// artblocks-study/07-ink-velitchkova.md). Two idioms, rewritten:
+//   - a closed parametric loop whose radius is noise-modulated on two
+//     phases (sin/cos) — the hand-drawn degeneration of a circle
+//   - the ink "rough edge": the SAME curve drawn twice with independent
+//     per-vertex jitter — simulating a hand by simulating error statistics
+function drawInkScribble(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 61 + 37);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const COUNT = 8 + Math.floor(rand() * 7);
+  const STEP = 0.02; // ~314 vertices per pass — deck-budget density
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (let i = 0; i < COUNT; i++) {
+    // corner-weighted placement (keep slide centers clear)
+    const u = rand();
+    const v = rand();
+    const cx = x + (u < 0.5 ? u * u * 2 : 1 - (1 - u) * (1 - u) * 2) * w;
+    const cy = y + (v < 0.5 ? v * v * 2 : 1 - (1 - v) * (1 - v) * 2) * h;
+    const ampX = 20 + rand() * Math.min(w, h) * 0.11;
+    const ampY = 20 + rand() * Math.min(w, h) * 0.11;
+    const freq = 0.6 + rand() * 1.8;
+    const phase = rand() * 100;
+    const color = colors[i % colors.length];
+    ctx.strokeStyle = rgba(color, P.alpha);
+    ctx.lineWidth = P.lineWidth * 0.9;
+    for (let pass = 0; pass < 2; pass++) {
+      const jitterAmp = pass === 0 ? 1.5 : 4;
+      ctx.beginPath();
+      let first = true;
+      for (let e = 0; e <= Math.PI * 2 + 1e-9; e += STEP) {
+        const rx = noise(phase + Math.sin(e) * freq, phase) * ampX;
+        const ry = noise(phase, phase + Math.cos(e) * freq) * ampY;
+        const px = cx + rx * 2 - ampX + (rand() - 0.5) * jitterAmp;
+        const py = cy + ry * 2 - ampY + (rand() - 0.5) * jitterAmp;
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -689,17 +741,25 @@ export const DECOR_FAMILIES = {
   'wash-flow': drawWashFlow,
   'strata-lines': drawStrataLines,
   'sediment-layers': drawSedimentLayers,
+  'ink-scribble': drawInkScribble,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
-  editorial: ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'],
+  editorial: [
+    'flow-ribbons',
+    'wash-flow',
+    'ink-scribble',
+    'flow-streams',
+    'shard-mesh',
+    'meadow-streaks',
+  ],
   pitch: ['block-mosaic', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
   organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
   consulting: ['block-mosaic', 'strata-lines', 'weave-dashes', 'shard-mesh'],
   financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
-  hr: ['circle-pack', 'meadow-streaks'],
+  hr: ['ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
 
 /**
