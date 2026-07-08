@@ -1218,6 +1218,102 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// peg-wraps: a grid of pegs and one string wrapped around a subset of them
+// — tangent lines between pegs, arcs where the string bends around a peg.
+// RECIPE-ONLY port after Dmitri Cherniak's "Ringers" (Art Blocks Curated
+// #13, CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
+// artblocks-study/38-ringers-cherniak.md). Idioms taken as ideas: the
+// composition IS the wrap order (a permutation of pegs); alternating the
+// wrap side per visited peg weaves the string; pegs are drawn as plain
+// dots so the string carries all the drama.
+const PEG_PERSONALITIES = {
+  calm: { cols: 4, rows: 3, visits: 6, weave: false, pegR: 10 },
+  balanced: { cols: 5, rows: 4, visits: 9, weave: true, pegR: 9 },
+  wild: { cols: 7, rows: 5, visits: 14, weave: true, pegR: 7 },
+};
+
+function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = PEG_PERSONALITIES[personality] || PEG_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 67 + 19);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const stringCol = colors[Math.floor(rand() * colors.length)];
+  const pegCol = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  const mx = w * 0.12;
+  const my = h * 0.14;
+  const pegs = [];
+  for (let r = 0; r < B.rows; r++) {
+    for (let c = 0; c < B.cols; c++) {
+      pegs.push([
+        x + mx + (c / (B.cols - 1)) * (w - 2 * mx),
+        y + my + (r / (B.rows - 1)) * (h - 2 * my),
+      ]);
+    }
+  }
+  // wrap order: a random non-repeating walk over the peg grid
+  const order = [];
+  const used = new Set();
+  let cur = Math.floor(rand() * pegs.length);
+  for (let v = 0; v < Math.min(B.visits, pegs.length); v++) {
+    order.push(cur);
+    used.add(cur);
+    const candidates = pegs.map((_, i) => i).filter((i) => !used.has(i));
+    if (!candidates.length) break;
+    cur = candidates[Math.floor(rand() * candidates.length)];
+  }
+  const R = B.pegR;
+  ctx.save();
+  // pegs first: quiet dots
+  for (const [px, py] of pegs) {
+    ctx.fillStyle = rgba(pegCol, P.alphaFill * 1.4);
+    ctx.beginPath();
+    ctx.arc(px, py, R * 0.45, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the string: tangent segments + bending arcs, side alternates per peg
+  // when weaving. Same-radius circles → the outer tangent is the segment
+  // between centers offset perpendicular by ±R.
+  ctx.strokeStyle = rgba(stringCol, P.alpha * 1.3);
+  ctx.lineWidth = P.lineWidth * 1.1;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  let prevEnd = null;
+  for (let i = 0; i + 1 < order.length; i++) {
+    const [ax, ay] = pegs[order[i]];
+    const [bx, by] = pegs[order[i + 1]];
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len = Math.hypot(dx, dy) || 1;
+    const side = B.weave ? (i % 2 === 0 ? 1 : -1) : 1;
+    const nx = (-dy / len) * R * side;
+    const ny = (dx / len) * R * side;
+    const sx = ax + nx;
+    const sy = ay + ny;
+    const ex = bx + nx;
+    const ey = by + ny;
+    if (prevEnd === null) {
+      ctx.moveTo(sx, sy);
+    } else {
+      // bend around the current peg from the previous tangent point
+      const a0 = Math.atan2(prevEnd[1] - ay, prevEnd[0] - ax);
+      const a1 = Math.atan2(sy - ay, sx - ax);
+      ctx.arc(ax, ay, R, a0, a1, side < 0);
+    }
+    ctx.lineTo(ex, ey);
+    prevEnd = [ex, ey];
+  }
+  ctx.stroke();
+  // highlight the visited pegs: the string chose them
+  for (const idx of order) {
+    const [px, py] = pegs[idx];
+    ctx.fillStyle = rgba(stringCol, P.alpha * 1.2);
+    ctx.beginPath();
+    ctx.arc(px, py, R * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 // torn-paper: layered patches of "paper" with noise-roughened deckle edges
 // and occasional sharp tear notches. RECIPE-ONLY port after Emily Xie's
 // "Memories of Qilin" (Art Blocks Curated #282, CC BY-NC 4.0 — independent
@@ -1796,6 +1892,7 @@ export const DECOR_FAMILIES = {
   'growth-loops': drawGrowthLoops,
   'street-grid': drawStreetGrid,
   'torn-paper': drawTornPaper,
+  'peg-wraps': drawPegWraps,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1816,6 +1913,7 @@ const CLUSTER_AFFINITY = {
     'halftone-fade',
     'scan-tides',
     'street-grid',
+    'peg-wraps',
     'block-mosaic',
     'hex-lattice',
     'drift-web',
@@ -1834,6 +1932,7 @@ const CLUSTER_AFFINITY = {
   ],
   consulting: [
     'street-grid',
+    'peg-wraps',
     'block-mosaic',
     'hex-lattice',
     'strata-lines',

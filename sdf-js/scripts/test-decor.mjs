@@ -773,5 +773,34 @@ function recCtx() {
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'torn-paper deterministic per seed');
 }
 
+// ── Sprint 56: peg-wraps (Ringers recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'peg-wraps', seed: 37 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const pegDots = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(pegDots > 20, `peg-wraps draws the peg grid + bends + visit marks (${pegDots} arcs)`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes === 1, 'peg-wraps draws the string as ONE continuous path');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'peg-wraps', seed: 46 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'peg-wraps', seed: 46 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'peg-wraps deterministic per seed');
+  const c = recCtx();
+  drawDecor(
+    c.ctx,
+    { family: 'peg-wraps', seed: 46, personality: 'calm' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
+    'peg-wraps calm personality differs from balanced',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
