@@ -787,6 +787,69 @@ function drawLightEdges(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// nib-flourish: calligraphic flourish curves — stroke width modulated by
+// direction-vs-nib-angle and a travelling noise "breath", rendered as
+// filled ribbon polygons. RECIPE-ONLY port after the StyledPolyline nib
+// renderer in Golan Levin's "Cytographia" (Art Blocks Curated #487,
+// CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
+// artblocks-study/09-cytographia-levin.md). Calligraphy is not the shape
+// of the curve — it is the FUNCTION OF WIDTH.
+function drawNibFlourish(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 71 + 47);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const COUNT = 5 + Math.floor(rand() * 4);
+  const nibAngle = rand() * Math.PI; // one pen per artwork
+  ctx.save();
+  for (let i = 0; i < COUNT; i++) {
+    // corner/edge-weighted anchor
+    const u = rand();
+    const v = rand();
+    const cx = x + (u < 0.5 ? u * u * 2 : 1 - (1 - u) * (1 - u) * 2) * w;
+    const cy = y + (v < 0.5 ? v * v * 2 : 1 - (1 - v) * (1 - v) * 2) * h;
+    const len = 80 + rand() * Math.min(w, h) * 0.55;
+    const baseW = 5 + rand() * 8;
+    const phase = rand() * 100;
+    const color = colors[i % colors.length];
+    // trace the flourish path
+    const pts = [];
+    let px = cx;
+    let py = cy;
+    let ang = rand() * Math.PI * 2;
+    const steps = 26;
+    for (let sIdx = 0; sIdx <= steps; sIdx++) {
+      pts.push([px, py, ang]);
+      ang += (noise(phase + sIdx * 0.18, phase) - 0.5) * 1.1;
+      px += Math.cos(ang) * (len / steps);
+      py += Math.sin(ang) * (len / steps);
+    }
+    // width per point: nib factor × noise breath × taper at both ends
+    const left = [];
+    const right = [];
+    for (let k = 0; k < pts.length; k++) {
+      const [qx, qy, qa] = pts[k];
+      const t = k / (pts.length - 1);
+      const taper = Math.sin(Math.PI * t); // pointed ends
+      const nib = 0.25 + 0.75 * Math.abs(Math.sin(qa - nibAngle));
+      const breath = 0.6 + 0.4 * noise(phase + k * 0.3, phase + 50);
+      const half = (baseW * nib * breath * taper) / 2;
+      const nx = Math.cos(qa + Math.PI / 2);
+      const ny = Math.sin(qa + Math.PI / 2);
+      left.push([qx + nx * half, qy + ny * half]);
+      right.push([qx - nx * half, qy - ny * half]);
+    }
+    ctx.fillStyle = rgba(color, Math.min(0.22, P.alpha * 2.2));
+    ctx.beginPath();
+    ctx.moveTo(left[0][0], left[0][1]);
+    for (let k = 1; k < left.length; k++) ctx.lineTo(left[k][0], left[k][1]);
+    for (let k = right.length - 1; k >= 0; k--) ctx.lineTo(right[k][0], right[k][1]);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -811,6 +874,7 @@ export const DECOR_FAMILIES = {
   'sediment-layers': drawSedimentLayers,
   'ink-scribble': drawInkScribble,
   'light-edges': drawLightEdges,
+  'nib-flourish': drawNibFlourish,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -828,7 +892,7 @@ const CLUSTER_AFFINITY = {
   organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
   consulting: ['block-mosaic', 'strata-lines', 'light-edges', 'weave-dashes', 'shard-mesh'],
   financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
-  hr: ['ink-scribble', 'circle-pack', 'meadow-streaks'],
+  hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
 
 /**
