@@ -1537,7 +1537,8 @@ function drawPaperFolds(ctx, { palette, seed, x, y, w, h, intensity, personality
   for (const f of facets) {
     const tone = Math.min(1, (f.depth / Math.max(1, B.splits)) * B.toneSpread + rand() * 0.15);
     const col = lerpColorOklab(cA, cB, tone);
-    ctx.fillStyle = rgba(col, P.alphaFill * (0.6 + 0.5 * tone));
+    // gallery-instrument tune (Sprint 55): wider alpha spread so facets read
+    ctx.fillStyle = rgba(col, P.alphaFill * (0.5 + 1.4 * tone));
     ctx.beginPath();
     ctx.moveTo(f.poly[0][0], f.poly[0][1]);
     for (let i = 1; i < f.poly.length; i++) ctx.lineTo(f.poly[i][0], f.poly[i][1]);
@@ -1586,9 +1587,15 @@ function drawScanTides(ctx, { palette, seed, x, y, w, h, intensity, personality 
       const segW = Math.min(w - rx, period * (1 - (phase - Math.floor(phase))) + 1);
       const t0 = tri(phase);
       const t1 = tri((scan + rx + segW) / period);
+      // wave modulates ALPHA too — hue alone is invisible at wash levels.
+      // Segments break AT phase zeros, so the tri-wave peak sits mid-segment:
+      // without the middle stop the 0→0 gradient erases the wave entirely
+      // (gallery-instrument catch, Sprint 55)
+      const tm = tri((scan + rx + segW / 2) / period);
       const g = ctx.createLinearGradient(x + rx, 0, x + rx + segW, 0);
-      g.addColorStop(0, rgba(lerpColorOklab(cA, cB, t0), P.alphaFill));
-      g.addColorStop(1, rgba(lerpColorOklab(cA, cB, t1), P.alphaFill));
+      g.addColorStop(0, rgba(lerpColorOklab(cA, cB, t0), P.alphaFill * (0.35 + 1.3 * t0)));
+      g.addColorStop(0.5, rgba(lerpColorOklab(cA, cB, tm), P.alphaFill * (0.35 + 1.3 * tm)));
+      g.addColorStop(1, rgba(lerpColorOklab(cA, cB, t1), P.alphaFill * (0.35 + 1.3 * t1)));
       ctx.fillStyle = g;
       ctx.fillRect(x + rx, ry, segW, B.rowH);
       rx += segW;
