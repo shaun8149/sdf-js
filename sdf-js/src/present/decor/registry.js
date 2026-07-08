@@ -1349,7 +1349,7 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
     }
     ctx.stroke();
   };
-  ctx.strokeStyle = rgba(col, P.alpha * 1.5);
+  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
   ctx.lineWidth = P.lineWidth;
   bank(2.2);
   bank(-2.2);

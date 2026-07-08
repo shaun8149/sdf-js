@@ -151,9 +151,18 @@ function recCtx() {
   const p2 = pickDecorFor(t, 5);
   ok(p1.family === p2.family, 'pick deterministic per (theme, seed)');
   ok(
-    ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'].includes(
-      p1.family,
-    ),
+    [
+      'folded-screens',
+      'scan-tides',
+      'river-courses',
+      'flow-ribbons',
+      'wash-flow',
+      'ink-scribble',
+      'cargo-dashes',
+      'flow-streams',
+      'shard-mesh',
+      'meadow-streaks',
+    ].includes(p1.family),
     'editorial affinity respected',
   );
   ok(
