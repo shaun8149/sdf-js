@@ -556,5 +556,35 @@ function recCtx() {
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'hex-lattice deterministic per seed');
 }
 
+// ── Sprint 54: drift-web (Naïve recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'drift-web', seed: 17 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 20, `drift-web draws a web of connections (${strokes} strokes)`);
+  const rects = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(rects > 200, `drift-web deposits a dotted trail bed (${rects} dots)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'drift-web', seed: 88 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'drift-web', seed: 88 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'drift-web deterministic per seed');
+  // personalities are distinct parameter bundles
+  const c = recCtx();
+  drawDecor(
+    c.ctx,
+    { family: 'drift-web', seed: 88, personality: 'wild' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
+    'drift-web wild personality differs from balanced',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -949,6 +949,120 @@ function drawHexLattice(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// drift-web: noise-drifted particles leave faint trail dots, then a second
+// pass connects near neighbors inside a distance BAND. RECIPE-ONLY port after
+// Olga Fradina's "Naïve" (Art Blocks Curated #483, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/13-naive-fradina.md).
+// Idioms taken as ideas: asymmetric twin noise (nX from noise(x,y), nY from
+// the SWAPPED noise(y,x) — decorrelated axes from one field); a noise
+// OPERATOR zoo applied to the field (two-scale max, quantize); connection
+// rule with BOTH minDist and maxDist (the min bound is what keeps the web
+// airy instead of clumped); probabilistic per-node visibility.
+const WEB_PERSONALITIES = {
+  calm: {
+    area: 7000,
+    noiseScale: 0.004,
+    speed: 5,
+    steps: 24,
+    quantize: 0,
+    maxOfNoises: false,
+    minDist: 20,
+    maxDist: 62,
+    visible: 0.45,
+  },
+  balanced: {
+    area: 5200,
+    noiseScale: 0.006,
+    speed: 6,
+    steps: 30,
+    quantize: 0,
+    maxOfNoises: true,
+    minDist: 14,
+    maxDist: 74,
+    visible: 0.62,
+  },
+  wild: {
+    area: 4200,
+    noiseScale: 0.009,
+    speed: 8,
+    steps: 36,
+    quantize: 5,
+    maxOfNoises: true,
+    minDist: 10,
+    maxDist: 92,
+    visible: 0.85,
+  },
+};
+
+function drawDriftWeb(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = WEB_PERSONALITIES[personality] || WEB_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 31 + 7);
+  const nA = noise2D(seed);
+  const nB = noise2D(seed + 999);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const count = Math.max(24, Math.round((w * h) / B.area));
+  const pts = [];
+  for (let i = 0; i < count; i++) pts.push([x + rand() * w, y + rand() * h]);
+  const sc = B.noiseScale;
+  const field = (px, py) => {
+    let nx = nA(px * sc, py * sc);
+    let ny = nA(py * sc, px * sc); // swapped-coordinate twin (Naïve idiom)
+    if (B.maxOfNoises) {
+      nx = Math.max(nx, nB(px * sc * 3, py * sc * 3));
+      ny = Math.max(ny, nB(py * sc * 3, px * sc * 3));
+    }
+    if (B.quantize) {
+      nx = Math.round(nx * B.quantize) / B.quantize;
+      ny = Math.round(ny * B.quantize) / B.quantize;
+    }
+    return [(nx - 0.5) * 2, (ny - 0.5) * 2];
+  };
+  ctx.save();
+  ctx.lineCap = 'round';
+  // phase 1: drift, depositing a faint dotted trail (the paper-grain bed)
+  for (let s = 0; s < B.steps; s++) {
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const v = field(p[0], p[1]);
+      p[0] += v[0] * B.speed;
+      p[1] += v[1] * B.speed;
+      if (p[0] < x) p[0] += w;
+      if (p[0] > x + w) p[0] -= w;
+      if (p[1] < y) p[1] += h;
+      if (p[1] > y + h) p[1] -= h;
+      if (s % 2 === 0) {
+        ctx.fillStyle = rgba(colors[i % colors.length], P.alphaFill * 0.6);
+        ctx.fillRect(p[0], p[1], 1.2, 1.2);
+      }
+    }
+  }
+  // phase 2: distance-band web over the settled positions
+  ctx.lineWidth = P.lineWidth * 0.8;
+  for (let i = 0; i < pts.length; i++) {
+    if (rand() > B.visible) continue;
+    let linked = false;
+    for (let j = i + 1; j < pts.length; j++) {
+      const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+      if (d > B.minDist && d < B.maxDist) {
+        ctx.strokeStyle = rgba(colors[i % colors.length], P.alpha * 0.9);
+        ctx.beginPath();
+        ctx.moveTo(pts[i][0], pts[i][1]);
+        ctx.lineTo(pts[j][0], pts[j][1]);
+        ctx.stroke();
+        linked = true;
+      }
+    }
+    if (linked) {
+      ctx.fillStyle = rgba(colors[i % colors.length], P.alpha);
+      ctx.beginPath();
+      ctx.arc(pts[i][0], pts[i][1], 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -975,6 +1089,7 @@ export const DECOR_FAMILIES = {
   'light-edges': drawLightEdges,
   'nib-flourish': drawNibFlourish,
   'hex-lattice': drawHexLattice,
+  'drift-web': drawDriftWeb,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -991,6 +1106,7 @@ const CLUSTER_AFFINITY = {
   pitch: [
     'block-mosaic',
     'hex-lattice',
+    'drift-web',
     'light-edges',
     'weave-dashes',
     'circle-pack',
@@ -1002,6 +1118,7 @@ const CLUSTER_AFFINITY = {
     'hex-lattice',
     'strata-lines',
     'light-edges',
+    'drift-web',
     'weave-dashes',
     'shard-mesh',
   ],
