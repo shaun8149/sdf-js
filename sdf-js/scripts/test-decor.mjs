@@ -659,5 +659,98 @@ function recCtx() {
   );
 }
 
+// ── Sprint 55: scan-tides (Tide Predictor recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'scan-tides', seed: 19 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const rects = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(rects > 100, `scan-tides rasters scanline segments (${rects})`);
+  // gradient fills reach the ctx as objects through the fillStyle setter
+  const grads = rec.styles.filter((s) => typeof s === 'object').length;
+  ok(grads > 100, `scan-tides blends triangle waves via gradients (${grads})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'scan-tides', seed: 66 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'scan-tides', seed: 66 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'scan-tides deterministic per seed');
+  const c = recCtx();
+  drawDecor(
+    c.ctx,
+    { family: 'scan-tides', seed: 66, personality: 'wild' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
+    'scan-tides wild personality differs from balanced',
+  );
+}
+
+// ── Sprint 55: paper-folds (ORI recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'paper-folds', seed: 33 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills >= 4 && fills <= 12, `paper-folds yields few LARGE facets (${fills})`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes === fills, 'paper-folds strokes each crease once per facet');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'paper-folds', seed: 71 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'paper-folds', seed: 71 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'paper-folds deterministic per seed');
+}
+
+// ── Sprint 55: growth-loops (Spaghetti Bones recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'growth-loops', seed: 58 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes >= 3, `growth-loops draws rings + organism (${strokes} strokes)`);
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills === 1, 'growth-loops fills the final organism once');
+  // the organism grew: final loop has far more vertices than the seed circle
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos > 200, `growth-loops resamples as it grows (${lineTos} vertices)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'growth-loops', seed: 91 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'growth-loops', seed: 91 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'growth-loops deterministic per seed',
+  );
+}
+
+// ── Sprint 55: street-grid (BUSY/BUSIEST recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'street-grid', seed: 14 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 15, `street-grid draws rails, ties and corners (${strokes})`);
+  const arcs = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(arcs >= 1, `street-grid rounds some corners with quarter arcs (${arcs})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'street-grid', seed: 82 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'street-grid', seed: 82 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'street-grid deterministic per seed');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

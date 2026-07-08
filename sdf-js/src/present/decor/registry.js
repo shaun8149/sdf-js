@@ -1218,6 +1218,407 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// street-grid: a sparse road network — lanes drawn as parallel double rails,
+// quarter-arc corners where a horizontal lane turns into a vertical one,
+// dashed center lines on the widest roads. RECIPE-ONLY port after James
+// Merrill's "BUSY"/"BUSIEST" (Art Blocks Curated #504/#503, CC BY-NC 4.0 —
+// independent reimplementation; see docs/superpowers/artblocks-study/
+// 28-busy-busiest-merrill.md). Idioms taken as ideas: the artwork is the
+// NETWORK, traffic only reveals it (we keep the network, drop the agents);
+// road vocabulary as a typed catalog (straight/corner/intersection/railroad)
+// rather than free curves; corners are quarter arcs with a fixed radius so
+// every turn reads as engineered, not organic.
+const STREET_PERSONALITIES = {
+  calm: { hLanes: 3, vLanes: 3, cornerChance: 0.35, railChance: 0.2, gaugeMax: 7 },
+  balanced: { hLanes: 4, vLanes: 5, cornerChance: 0.5, railChance: 0.3, gaugeMax: 9 },
+  wild: { hLanes: 6, vLanes: 7, cornerChance: 0.7, railChance: 0.45, gaugeMax: 12 },
+};
+
+function drawStreetGrid(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = STREET_PERSONALITIES[personality] || STREET_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 37 + 23);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const lane = (frac, span) => (0.08 + 0.84 * frac) * span + (rand() - 0.5) * span * 0.06;
+  const hs = [];
+  const vs = [];
+  for (let i = 0; i < B.hLanes; i++)
+    hs.push({ pos: y + lane((i + 0.5) / B.hLanes, h), gauge: 3 + rand() * B.gaugeMax });
+  for (let i = 0; i < B.vLanes; i++)
+    vs.push({ pos: x + lane((i + 0.5) / B.vLanes, w), gauge: 3 + rand() * B.gaugeMax });
+  ctx.save();
+  ctx.lineCap = 'butt';
+  const rail = (x1, y1, x2, y2, gauge, col, isRail) => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = (-dy / len) * (gauge / 2);
+    const ny = (dx / len) * (gauge / 2);
+    ctx.strokeStyle = rgba(col, P.alpha);
+    ctx.lineWidth = P.lineWidth * 0.8;
+    ctx.setLineDash([]);
+    for (const s2 of [1, -1]) {
+      ctx.beginPath();
+      ctx.moveTo(x1 + nx * s2, y1 + ny * s2);
+      ctx.lineTo(x2 + nx * s2, y2 + ny * s2);
+      ctx.stroke();
+    }
+    if (isRail) {
+      // railroad ties across the gauge
+      ctx.lineWidth = P.lineWidth * 0.7;
+      const step = gauge * 2.2;
+      for (let t = step; t < len; t += step) {
+        const px = x1 + (dx / len) * t;
+        const py = y1 + (dy / len) * t;
+        ctx.beginPath();
+        ctx.moveTo(px + nx * 1.3, py + ny * 1.3);
+        ctx.lineTo(px - nx * 1.3, py - ny * 1.3);
+        ctx.stroke();
+      }
+    } else if (gauge > 7) {
+      // dashed center line on wide roads
+      ctx.setLineDash([6, 6]);
+      ctx.lineWidth = P.lineWidth * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  };
+  for (const hl of hs) {
+    const col = colors[Math.floor(rand() * colors.length)];
+    rail(x, hl.pos, x + w, hl.pos, hl.gauge, col, rand() < B.railChance);
+  }
+  for (const vl of vs) {
+    const col = colors[Math.floor(rand() * colors.length)];
+    rail(vl.pos, y, vl.pos, y + h, vl.gauge, col, rand() < B.railChance);
+  }
+  // quarter-arc corners at a random subset of crossings
+  ctx.setLineDash([]);
+  for (const hl of hs) {
+    for (const vl of vs) {
+      if (rand() > B.cornerChance) continue;
+      const r = 14 + rand() * 18;
+      const sx = rand() < 0.5 ? 1 : -1;
+      const sy = rand() < 0.5 ? 1 : -1;
+      const col = colors[Math.floor(rand() * colors.length)];
+      ctx.strokeStyle = rgba(col, P.alpha * 1.1);
+      ctx.lineWidth = P.lineWidth * 0.9;
+      const a0 = sx > 0 ? (sy > 0 ? Math.PI : Math.PI / 2) : sy > 0 ? -Math.PI / 2 : 0;
+      ctx.beginPath();
+      ctx.arc(vl.pos + sx * r, hl.pos + sy * r, r, a0, a0 + Math.PI / 2);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+// growth-loops: a closed loop grown by differential growth — points attract
+// their neighbors, repel everything nearby, and the path resamples as it
+// stretches; intermediate outlines are kept as faint growth rings.
+// RECIPE-ONLY port after Joshua Bagley's "Spaghetti Bones" (Art Blocks
+// Curated #456, CC BY-NC 4.0 — independent reimplementation; see docs/
+// superpowers/artblocks-study/26-spaghetti-bones-bagley.md). Idioms taken
+// as ideas: differential growth = cohesion + separation + resample (the
+// whole organism in three rules); a spatial grid stands in for the
+// original's quadtree; drawing the HISTORY (snapshots) not just the final
+// curve gives the coral/bone depth.
+const GROWTH_PERSONALITIES = {
+  calm: { iters: 90, maxPts: 260, repelR: 26, snapEvery: 30, drift: 0.2 },
+  balanced: { iters: 140, maxPts: 420, repelR: 22, snapEvery: 35, drift: 0.45 },
+  wild: { iters: 200, maxPts: 620, repelR: 17, snapEvery: 40, drift: 0.9 },
+};
+
+function drawGrowthLoops(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = GROWTH_PERSONALITIES[personality] || GROWTH_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 29 + 5);
+  const noise = noise2D(seed + 7);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const col = colors[Math.floor(rand() * colors.length)];
+  const cx = x + (0.3 + rand() * 0.4) * w;
+  const cy = y + (0.3 + rand() * 0.4) * h;
+  const r0 = Math.min(w, h) * 0.12;
+  let pts = [];
+  const N0 = 26;
+  for (let i = 0; i < N0; i++) {
+    const a = (i / N0) * Math.PI * 2;
+    pts.push([cx + Math.cos(a) * r0, cy + Math.sin(a) * r0]);
+  }
+  const segMax = 9;
+  const repelR = B.repelR;
+  const snapshots = [];
+  for (let it = 0; it < B.iters; it++) {
+    // resample: split any stretched segment
+    if (pts.length < B.maxPts) {
+      const next = [];
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i];
+        const b = pts[(i + 1) % pts.length];
+        next.push(a);
+        if (Math.hypot(b[0] - a[0], b[1] - a[1]) > segMax && next.length < B.maxPts) {
+          next.push([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]);
+        }
+      }
+      pts = next;
+    }
+    // spatial grid for separation
+    const cell = repelR;
+    const grid = new Map();
+    for (let i = 0; i < pts.length; i++) {
+      const key = `${Math.floor(pts[i][0] / cell)},${Math.floor(pts[i][1] / cell)}`;
+      if (!grid.has(key)) grid.set(key, []);
+      grid.get(key).push(i);
+    }
+    const moved = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const prev = pts[(i - 1 + pts.length) % pts.length];
+      const next2 = pts[(i + 1) % pts.length];
+      // cohesion toward neighbor midpoint
+      let fx = (prev[0] + next2[0]) / 2 - p[0];
+      let fy = (prev[1] + next2[1]) / 2 - p[1];
+      fx *= 0.12;
+      fy *= 0.12;
+      // separation from everything nearby (grid neighborhood)
+      const gx = Math.floor(p[0] / cell);
+      const gy = Math.floor(p[1] / cell);
+      for (let ox = -1; ox <= 1; ox++) {
+        for (let oy = -1; oy <= 1; oy++) {
+          const bucket = grid.get(`${gx + ox},${gy + oy}`);
+          if (!bucket) continue;
+          for (const j of bucket) {
+            if (j === i) continue;
+            const dx = p[0] - pts[j][0];
+            const dy = p[1] - pts[j][1];
+            const d = Math.hypot(dx, dy);
+            if (d > 0.001 && d < repelR) {
+              const push2 = ((repelR - d) / repelR) * 0.55;
+              fx += (dx / d) * push2;
+              fy += (dy / d) * push2;
+            }
+          }
+        }
+      }
+      // noise drift keeps the growth directional, not a plain blob
+      const a = noise(p[0] * 0.008, p[1] * 0.008) * Math.PI * 4;
+      fx += Math.cos(a) * B.drift;
+      fy += Math.sin(a) * B.drift;
+      moved.push([
+        Math.max(x + 4, Math.min(x + w - 4, p[0] + fx)),
+        Math.max(y + 4, Math.min(y + h - 4, p[1] + fy)),
+      ]);
+    }
+    pts = moved;
+    if (it % B.snapEvery === B.snapEvery - 1 && it < B.iters - 1) {
+      snapshots.push(pts.map((p) => [p[0], p[1]]));
+    }
+  }
+  ctx.save();
+  ctx.lineJoin = 'round';
+  const trace = (loop) => {
+    ctx.beginPath();
+    ctx.moveTo(loop[0][0], loop[0][1]);
+    for (let i = 1; i < loop.length; i++) ctx.lineTo(loop[i][0], loop[i][1]);
+    ctx.closePath();
+  };
+  // growth rings: the history, whisper-faint
+  for (let sIdx = 0; sIdx < snapshots.length; sIdx++) {
+    ctx.strokeStyle = rgba(col, P.alpha * (0.35 + (0.3 * sIdx) / snapshots.length));
+    ctx.lineWidth = P.lineWidth * 0.6;
+    trace(snapshots[sIdx]);
+    ctx.stroke();
+  }
+  // the organism itself
+  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
+  ctx.lineWidth = P.lineWidth;
+  trace(pts);
+  ctx.stroke();
+  ctx.fillStyle = rgba(col, P.alphaFill * 0.5);
+  ctx.fill();
+  ctx.restore();
+}
+
+// paper-folds: the region treated as a sheet of paper, recursively split
+// along fold chords into a few LARGE facets, each shaded by fold depth —
+// origami-flat collage. RECIPE-ONLY port after James Merrill's "ORI" (Art
+// Blocks Curated #379, CC BY-NC 4.0 — independent reimplementation; see
+// docs/superpowers/artblocks-study/22-ori-merrill.md). Idioms taken as
+// ideas: folding is line-vs-polygon SPLITTING (classify vertices by side,
+// insert the two edge intersections, emit both halves); depth-graded facet
+// shading sells the fold without any 3D; always split the LARGEST facet so
+// the composition stays balanced.
+const FOLD_PERSONALITIES = {
+  calm: { splits: 3, angleJitter: 0.25, toneSpread: 0.5 },
+  balanced: { splits: 5, angleJitter: 0.6, toneSpread: 0.65 },
+  wild: { splits: 8, angleJitter: 1.2, toneSpread: 0.85 },
+};
+
+// split a convex-ish polygon by the line through (px,py) at angle a —
+// returns [left, right] vertex lists (either may be empty)
+function splitPolyByLine(poly, px, py, ang) {
+  const nx = -Math.sin(ang);
+  const ny = Math.cos(ang);
+  const sideOf = ([qx, qy]) => (qx - px) * nx + (qy - py) * ny;
+  const left = [];
+  const right = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i];
+    const b = poly[(i + 1) % poly.length];
+    const sa = sideOf(a);
+    const sb = sideOf(b);
+    (sa >= 0 ? left : right).push(a);
+    if ((sa >= 0 && sb < 0) || (sa < 0 && sb >= 0)) {
+      const t = sa / (sa - sb);
+      const ix = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      left.push(ix);
+      right.push(ix);
+    }
+  }
+  return [left, right];
+}
+
+function polyArea(poly) {
+  let s = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const [x1, y1] = poly[i];
+    const [x2, y2] = poly[(i + 1) % poly.length];
+    s += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(s) / 2;
+}
+
+function drawPaperFolds(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = FOLD_PERSONALITIES[personality] || FOLD_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 43 + 13);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cA = colors[Math.floor(rand() * colors.length)];
+  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  let facets = [
+    {
+      poly: [
+        [x, y],
+        [x + w, y],
+        [x + w, y + h],
+        [x, y + h],
+      ],
+      depth: 0,
+    },
+  ];
+  for (let k = 0; k < B.splits; k++) {
+    // always fold the largest facet (ORI's balance rule)
+    let bi = 0;
+    let bArea = -1;
+    for (let i = 0; i < facets.length; i++) {
+      const ar = polyArea(facets[i].poly);
+      if (ar > bArea) {
+        bArea = ar;
+        bi = i;
+      }
+    }
+    const f = facets[bi];
+    const cx = f.poly.reduce((s2, p2) => s2 + p2[0], 0) / f.poly.length;
+    const cy = f.poly.reduce((s2, p2) => s2 + p2[1], 0) / f.poly.length;
+    const baseAng = rand() < 0.5 ? 0 : Math.PI / 2; // fold axes lean axis-aligned
+    const ang = baseAng + (rand() - 0.5) * 2 * B.angleJitter;
+    const [la, ra] = splitPolyByLine(
+      f.poly,
+      cx + (rand() - 0.5) * 30,
+      cy + (rand() - 0.5) * 30,
+      ang,
+    );
+    if (la.length < 3 || ra.length < 3) continue;
+    facets.splice(bi, 1, { poly: la, depth: f.depth + 1 }, { poly: ra, depth: f.depth });
+  }
+  ctx.save();
+  ctx.lineWidth = P.lineWidth * 0.8;
+  for (const f of facets) {
+    const tone = Math.min(1, (f.depth / Math.max(1, B.splits)) * B.toneSpread + rand() * 0.15);
+    const col = lerpColorOklab(cA, cB, tone);
+    // gallery-instrument tune (Sprint 55): wider alpha spread so facets read
+    ctx.fillStyle = rgba(col, P.alphaFill * (0.5 + 1.4 * tone));
+    ctx.beginPath();
+    ctx.moveTo(f.poly[0][0], f.poly[0][1]);
+    for (let i = 1; i < f.poly.length; i++) ctx.lineTo(f.poly[i][0], f.poly[i][1]);
+    ctx.closePath();
+    ctx.fill();
+    // fold-line edge: the crease highlight
+    ctx.strokeStyle = rgba(col, P.alpha);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// scan-tides: horizontal scanlines carrying palette-blended triangle waves
+// whose period drifts row to row — the beat/sync-slip look of analog video.
+// RECIPE-ONLY port after LoVid's "Tide Predictor" (Art Blocks Curated #376,
+// CC BY-NC-ND 4.0 — independent reimplementation, strictly no code reuse;
+// see docs/superpowers/artblocks-study/21-tide-predictor-lovid.md). Idioms
+// taken as ideas: the image is ONE 1D SCAN (index i wraps to rows — spatial
+// structure is an artifact of the wrap); each channel is a triangle wave
+// 255-|255-(i%p)·k| with its own period; periods RANDOM-WALK and re-sync
+// with a minted probability, so bands slip diagonally then lock again.
+// Palette adaptation: channels become two theme colors blended in OKLab.
+const TIDE_PERSONALITIES = {
+  calm: { rowH: 7, basePeriod: 220, drift: 0, resync: 0, second: 0.5 },
+  balanced: { rowH: 6, basePeriod: 150, drift: 2.5, resync: 0.04, second: 0.75 },
+  wild: { rowH: 5, basePeriod: 90, drift: 6, resync: 0.12, second: 1 },
+};
+
+function drawScanTides(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = TIDE_PERSONALITIES[personality] || TIDE_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 61 + 17);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cA = colors[Math.floor(rand() * colors.length)];
+  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  const periodReset = B.basePeriod * (0.8 + rand() * 0.5);
+  let period = periodReset;
+  let periodB = periodReset * (1.13 + rand() * 0.2); // detuned second channel
+  const tri = (t) => 1 - Math.abs(1 - 2 * (t - Math.floor(t))); // 0..1..0
+  ctx.save();
+  let scan = rand() * period; // 1D scan cursor, carried across rows
+  for (let ry = y; ry < y + h; ry += B.rowH) {
+    // channel A: one gradient segment per period across the row
+    for (let rx = 0; rx < w; ) {
+      const phase = (scan + rx) / period;
+      const segW = Math.min(w - rx, period * (1 - (phase - Math.floor(phase))) + 1);
+      const t0 = tri(phase);
+      const t1 = tri((scan + rx + segW) / period);
+      // wave modulates ALPHA too — hue alone is invisible at wash levels.
+      // Segments break AT phase zeros, so the tri-wave peak sits mid-segment:
+      // without the middle stop the 0→0 gradient erases the wave entirely
+      // (gallery-instrument catch, Sprint 55)
+      const tm = tri((scan + rx + segW / 2) / period);
+      const g = ctx.createLinearGradient(x + rx, 0, x + rx + segW, 0);
+      g.addColorStop(0, rgba(lerpColorOklab(cA, cB, t0), P.alphaFill * (0.35 + 1.3 * t0)));
+      g.addColorStop(0.5, rgba(lerpColorOklab(cA, cB, tm), P.alphaFill * (0.35 + 1.3 * tm)));
+      g.addColorStop(1, rgba(lerpColorOklab(cA, cB, t1), P.alphaFill * (0.35 + 1.3 * t1)));
+      ctx.fillStyle = g;
+      ctx.fillRect(x + rx, ry, segW, B.rowH);
+      rx += segW;
+    }
+    // channel B: sparse ticks where the detuned wave peaks (the beat trace)
+    if (B.second) {
+      const tB = tri((scan % periodB) / periodB);
+      if (tB > 0.82) {
+        ctx.fillStyle = rgba(cB, P.alpha * B.second);
+        ctx.fillRect(x, ry, w, 1);
+      }
+    }
+    scan += w; // the wrap: next row continues the same 1D scan
+    // period random-walk (sync slip) + minted re-sync (the lock)
+    if (B.drift) period = Math.max(40, period + (rand() - 0.5) * B.drift);
+    if (B.resync && rand() < B.resync) {
+      period = periodReset;
+      periodB = periodReset * 1.17;
+    }
+  }
+  ctx.restore();
+}
+
 // halftone-fade: a halftone dot screen sampling a soft brush field — dot
 // radius encodes field intensity, the print-raster look. RECIPE-ONLY port
 // after itsgalo's "RASTER" (Art Blocks Curated #341, CC BY-NC 4.0 —
@@ -1318,6 +1719,10 @@ export const DECOR_FAMILIES = {
   'cargo-dashes': drawCargoDashes,
   'folded-screens': drawFoldedScreens,
   'halftone-fade': drawHalftoneFade,
+  'scan-tides': drawScanTides,
+  'paper-folds': drawPaperFolds,
+  'growth-loops': drawGrowthLoops,
+  'street-grid': drawStreetGrid,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1325,6 +1730,7 @@ export const DECOR_FAMILIES = {
 const CLUSTER_AFFINITY = {
   editorial: [
     'folded-screens',
+    'scan-tides',
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',
@@ -1335,6 +1741,8 @@ const CLUSTER_AFFINITY = {
   ],
   pitch: [
     'halftone-fade',
+    'scan-tides',
+    'street-grid',
     'block-mosaic',
     'hex-lattice',
     'drift-web',
@@ -1352,6 +1760,7 @@ const CLUSTER_AFFINITY = {
     'circle-pack',
   ],
   consulting: [
+    'street-grid',
     'block-mosaic',
     'hex-lattice',
     'strata-lines',
@@ -1361,7 +1770,14 @@ const CLUSTER_AFFINITY = {
     'shard-mesh',
   ],
   financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
-  hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
+  hr: [
+    'nib-flourish',
+    'growth-loops',
+    'paper-folds',
+    'ink-scribble',
+    'circle-pack',
+    'meadow-streaks',
+  ],
 };
 
 /**
