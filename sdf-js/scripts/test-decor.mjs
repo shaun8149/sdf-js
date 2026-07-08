@@ -708,5 +708,30 @@ function recCtx() {
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'paper-folds deterministic per seed');
 }
 
+// ── Sprint 55: growth-loops (Spaghetti Bones recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'growth-loops', seed: 58 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes >= 3, `growth-loops draws rings + organism (${strokes} strokes)`);
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills === 1, 'growth-loops fills the final organism once');
+  // the organism grew: final loop has far more vertices than the seed circle
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos > 200, `growth-loops resamples as it grows (${lineTos} vertices)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'growth-loops', seed: 91 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'growth-loops', seed: 91 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'growth-loops deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

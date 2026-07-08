@@ -1218,6 +1218,132 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// growth-loops: a closed loop grown by differential growth — points attract
+// their neighbors, repel everything nearby, and the path resamples as it
+// stretches; intermediate outlines are kept as faint growth rings.
+// RECIPE-ONLY port after Joshua Bagley's "Spaghetti Bones" (Art Blocks
+// Curated #456, CC BY-NC 4.0 — independent reimplementation; see docs/
+// superpowers/artblocks-study/26-spaghetti-bones-bagley.md). Idioms taken
+// as ideas: differential growth = cohesion + separation + resample (the
+// whole organism in three rules); a spatial grid stands in for the
+// original's quadtree; drawing the HISTORY (snapshots) not just the final
+// curve gives the coral/bone depth.
+const GROWTH_PERSONALITIES = {
+  calm: { iters: 90, maxPts: 260, repelR: 26, snapEvery: 30, drift: 0.2 },
+  balanced: { iters: 140, maxPts: 420, repelR: 22, snapEvery: 35, drift: 0.45 },
+  wild: { iters: 200, maxPts: 620, repelR: 17, snapEvery: 40, drift: 0.9 },
+};
+
+function drawGrowthLoops(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = GROWTH_PERSONALITIES[personality] || GROWTH_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 29 + 5);
+  const noise = noise2D(seed + 7);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const col = colors[Math.floor(rand() * colors.length)];
+  const cx = x + (0.3 + rand() * 0.4) * w;
+  const cy = y + (0.3 + rand() * 0.4) * h;
+  const r0 = Math.min(w, h) * 0.12;
+  let pts = [];
+  const N0 = 26;
+  for (let i = 0; i < N0; i++) {
+    const a = (i / N0) * Math.PI * 2;
+    pts.push([cx + Math.cos(a) * r0, cy + Math.sin(a) * r0]);
+  }
+  const segMax = 9;
+  const repelR = B.repelR;
+  const snapshots = [];
+  for (let it = 0; it < B.iters; it++) {
+    // resample: split any stretched segment
+    if (pts.length < B.maxPts) {
+      const next = [];
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i];
+        const b = pts[(i + 1) % pts.length];
+        next.push(a);
+        if (Math.hypot(b[0] - a[0], b[1] - a[1]) > segMax && next.length < B.maxPts) {
+          next.push([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]);
+        }
+      }
+      pts = next;
+    }
+    // spatial grid for separation
+    const cell = repelR;
+    const grid = new Map();
+    for (let i = 0; i < pts.length; i++) {
+      const key = `${Math.floor(pts[i][0] / cell)},${Math.floor(pts[i][1] / cell)}`;
+      if (!grid.has(key)) grid.set(key, []);
+      grid.get(key).push(i);
+    }
+    const moved = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const prev = pts[(i - 1 + pts.length) % pts.length];
+      const next2 = pts[(i + 1) % pts.length];
+      // cohesion toward neighbor midpoint
+      let fx = (prev[0] + next2[0]) / 2 - p[0];
+      let fy = (prev[1] + next2[1]) / 2 - p[1];
+      fx *= 0.12;
+      fy *= 0.12;
+      // separation from everything nearby (grid neighborhood)
+      const gx = Math.floor(p[0] / cell);
+      const gy = Math.floor(p[1] / cell);
+      for (let ox = -1; ox <= 1; ox++) {
+        for (let oy = -1; oy <= 1; oy++) {
+          const bucket = grid.get(`${gx + ox},${gy + oy}`);
+          if (!bucket) continue;
+          for (const j of bucket) {
+            if (j === i) continue;
+            const dx = p[0] - pts[j][0];
+            const dy = p[1] - pts[j][1];
+            const d = Math.hypot(dx, dy);
+            if (d > 0.001 && d < repelR) {
+              const push2 = ((repelR - d) / repelR) * 0.55;
+              fx += (dx / d) * push2;
+              fy += (dy / d) * push2;
+            }
+          }
+        }
+      }
+      // noise drift keeps the growth directional, not a plain blob
+      const a = noise(p[0] * 0.008, p[1] * 0.008) * Math.PI * 4;
+      fx += Math.cos(a) * B.drift;
+      fy += Math.sin(a) * B.drift;
+      moved.push([
+        Math.max(x + 4, Math.min(x + w - 4, p[0] + fx)),
+        Math.max(y + 4, Math.min(y + h - 4, p[1] + fy)),
+      ]);
+    }
+    pts = moved;
+    if (it % B.snapEvery === B.snapEvery - 1 && it < B.iters - 1) {
+      snapshots.push(pts.map((p) => [p[0], p[1]]));
+    }
+  }
+  ctx.save();
+  ctx.lineJoin = 'round';
+  const trace = (loop) => {
+    ctx.beginPath();
+    ctx.moveTo(loop[0][0], loop[0][1]);
+    for (let i = 1; i < loop.length; i++) ctx.lineTo(loop[i][0], loop[i][1]);
+    ctx.closePath();
+  };
+  // growth rings: the history, whisper-faint
+  for (let sIdx = 0; sIdx < snapshots.length; sIdx++) {
+    ctx.strokeStyle = rgba(col, P.alpha * (0.35 + (0.3 * sIdx) / snapshots.length));
+    ctx.lineWidth = P.lineWidth * 0.6;
+    trace(snapshots[sIdx]);
+    ctx.stroke();
+  }
+  // the organism itself
+  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
+  ctx.lineWidth = P.lineWidth;
+  trace(pts);
+  ctx.stroke();
+  ctx.fillStyle = rgba(col, P.alphaFill * 0.5);
+  ctx.fill();
+  ctx.restore();
+}
+
 // paper-folds: the region treated as a sheet of paper, recursively split
 // along fold chords into a few LARGE facets, each shaded by fold depth —
 // origami-flat collage. RECIPE-ONLY port after James Merrill's "ORI" (Art
@@ -1492,6 +1618,7 @@ export const DECOR_FAMILIES = {
   'halftone-fade': drawHalftoneFade,
   'scan-tides': drawScanTides,
   'paper-folds': drawPaperFolds,
+  'growth-loops': drawGrowthLoops,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1537,7 +1664,14 @@ const CLUSTER_AFFINITY = {
     'shard-mesh',
   ],
   financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
-  hr: ['nib-flourish', 'paper-folds', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
+  hr: [
+    'nib-flourish',
+    'growth-loops',
+    'paper-folds',
+    'ink-scribble',
+    'circle-pack',
+    'meadow-streaks',
+  ],
 };
 
 /**
