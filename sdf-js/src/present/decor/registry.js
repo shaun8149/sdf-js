@@ -2146,6 +2146,327 @@ const RARE_TRAITS = {
     }
     ctx.stroke();
   },
+  // one golden comet-streamline with a bright head
+  'flow-streams': (ctx, R, { x, y, w, h }) => {
+    const noise = noise2D(R.int('comet-seed', 1, 1e9));
+    let px = x + R.range('comet-x', 0.1, 0.6) * w;
+    let py = y + R.range('comet-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.45);
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    let lx = px;
+    let ly = py;
+    for (let i = 0; i < 70; i++) {
+      const a = noise(px * 0.004, py * 0.004) * Math.PI * 4;
+      px += Math.cos(a) * 6;
+      py += Math.sin(a) * 6;
+      if (px < x || px > x + w || py < y || py > y + h) break;
+      ctx.lineTo(px, py);
+      lx = px;
+      ly = py;
+    }
+    ctx.stroke();
+    ctx.fillStyle = rgba(RARE_GOLD, 0.7);
+    ctx.beginPath();
+    ctx.arc(lx, ly, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  },
+  // one golden weft row running against the weave
+  'weave-dashes': (ctx, R, { x, y, w, h }) => {
+    const gy = y + R.range('weft-y', 0.15, 0.85) * h;
+    const noise = noise2D(R.int('weft-seed', 1, 1e9));
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.4;
+    ctx.lineCap = 'round';
+    for (let gx = x + 10; gx < x + w - 10; gx += 26) {
+      const a = noise(gx * 0.006, gy * 0.006) * 0.8 - 0.4;
+      ctx.beginPath();
+      ctx.moveTo(gx - Math.cos(a) * 9, gy - Math.sin(a) * 9);
+      ctx.lineTo(gx + Math.cos(a) * 9, gy + Math.sin(a) * 9);
+      ctx.stroke();
+    }
+  },
+  // one circle becomes a gold ring with a still center
+  'circle-pack': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('ring-x', 0.2, 0.8) * w;
+    const cy = y + R.range('ring-y', 0.2, 0.8) * h;
+    const r = Math.min(w, h) * R.range('ring-r', 0.05, 0.1);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = rgba(RARE_GOLD, 0.5);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  },
+  // one gilded shard
+  'shard-mesh': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('shard-x', 0.2, 0.8) * w;
+    const cy = y + R.range('shard-y', 0.2, 0.8) * h;
+    const r = Math.min(w, h) * 0.05;
+    ctx.fillStyle = rgba(RARE_GOLD, 0.35);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let k = 0; k < 3; k++) {
+      const a = R.range(`sa${k}`, 0, Math.PI * 2);
+      const rr = r * R.range(`sr${k}`, 0.7, 1.3);
+      const qx = cx + Math.cos(a) * rr;
+      const qy = cy + Math.sin(a) * rr;
+      if (k === 0) ctx.moveTo(qx, qy);
+      else ctx.lineTo(qx, qy);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  },
+  // a golden wheat-ear: five streaks fanning from one root
+  'meadow-streaks': (ctx, R, { x, y, w, h }) => {
+    const rx = x + R.range('ear-x', 0.2, 0.8) * w;
+    const ry = y + R.range('ear-y', 0.4, 0.85) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 5; k++) {
+      const a = -Math.PI / 2 + (k - 2) * 0.22 + R.range(`ea${k}`, -0.05, 0.05);
+      const len = h * R.range(`el${k}`, 0.08, 0.14);
+      ctx.beginPath();
+      ctx.moveTo(rx, ry);
+      ctx.quadraticCurveTo(
+        rx + Math.cos(a) * len * 0.5 + 4,
+        ry + Math.sin(a) * len * 0.5,
+        rx + Math.cos(a) * len,
+        ry + Math.sin(a) * len,
+      );
+      ctx.stroke();
+    }
+  },
+  // one cell gilded
+  'block-mosaic': (ctx, R, { x, y, w, h }) => {
+    const cell = 24;
+    const gx = x + Math.floor(R.range('cell-x', 0.1, 0.9) * (w / cell)) * cell;
+    const gy = y + Math.floor(R.range('cell-y', 0.1, 0.9) * (h / cell)) * cell;
+    ctx.fillStyle = rgba(RARE_GOLD, 0.35);
+    ctx.fillRect(gx + 1, gy + 1, cell - 2, cell - 2);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.6);
+    ctx.lineWidth = 1;
+    ctx.strokeRect(gx + 0.5, gy + 0.5, cell - 1, cell - 1);
+  },
+  // a golden halo wash — one thin crescent
+  'wash-flow': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('halo-x', 0.25, 0.75) * w;
+    const cy = y + R.range('halo-y', 0.25, 0.75) * h;
+    const r = Math.min(w, h) * R.range('halo-r', 0.08, 0.14);
+    const a0 = R.range('halo-a', 0, Math.PI * 2);
+    for (let k = 0; k < 4; k++) {
+      ctx.strokeStyle = rgba(RARE_GOLD, 0.28);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + k * 1.6, a0, a0 + Math.PI * 0.9);
+      ctx.stroke();
+    }
+  },
+  // a gold vein following the strata's own displacement language
+  'strata-lines': (ctx, R, { x, y, w, h }) => {
+    const noise = noise2D(R.int('vein-seed', 1, 1e9));
+    const y0 = y + R.range('vein-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    for (let k = 0; k <= 80; k++) {
+      const px = x + (k / 80) * w;
+      const py = y0 + (noise(px * 0.008, y0 * 0.01) - 0.5) * h * 0.1;
+      if (k === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  },
+  // one horizon line gilded
+  'sediment-layers': (ctx, R, { x, y, w, h }) => {
+    const noise = noise2D(R.int('gild-seed', 1, 1e9));
+    const y0 = y + R.range('gild-y', 0.25, 0.75) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (let k = 0; k <= 64; k++) {
+      const px = x + (k / 64) * w;
+      const py = y0 + (noise(px * 0.004, 3) - 0.5) * h * 0.16;
+      if (k === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  },
+  // a cinnabar seal-knot: one tight crimson scribble
+  'ink-scribble': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('seal-x', 0.2, 0.8) * w;
+    const cy = y + R.range('seal-y', 0.2, 0.8) * h;
+    const r = Math.min(w, h) * 0.03;
+    ctx.strokeStyle = rgba(RARE_CRIMSON, 0.55);
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    let a = R.range('seal-a', 0, Math.PI * 2);
+    ctx.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    for (let k = 0; k < 26; k++) {
+      a += R.range(`sk${k}`, 0.5, 1.4);
+      const rr = r * R.range(`sr${k}`, 0.5, 1.15);
+      ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+    }
+    ctx.stroke();
+  },
+  // one gold-edged frame among the drifting boxes
+  'light-edges': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('frame-x', 0.2, 0.8) * w;
+    const cy = y + R.range('frame-y', 0.2, 0.8) * h;
+    const sz = Math.min(w, h) * R.range('frame-s', 0.07, 0.12);
+    const rot = R.range('frame-a', 0, Math.PI / 2);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 1.3;
+    ctx.strokeRect(-sz / 2, -sz / 2, sz, sz);
+    ctx.restore();
+  },
+  // one golden nib stroke
+  'nib-flourish': (ctx, R, { x, y, w, h }) => {
+    const px0 = x + R.range('nib-x', 0.2, 0.7) * w;
+    const py0 = y + R.range('nib-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineCap = 'round';
+    let px = px0;
+    let py = py0;
+    let ang = R.range('nib-a', -0.6, 0.6);
+    for (let k = 0; k < 18; k++) {
+      ctx.lineWidth = 0.6 + 1.8 * Math.sin((Math.PI * k) / 18);
+      const nx = px + Math.cos(ang) * 5;
+      const ny = py + Math.sin(ang) * 5;
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+      ang += R.range(`na${k}`, -0.25, 0.25);
+      px = nx;
+      py = ny;
+    }
+  },
+  // one honeycomb cell filled with gold
+  'hex-lattice': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('hex-x', 0.2, 0.8) * w;
+    const cy = y + R.range('hex-y', 0.2, 0.8) * h;
+    const r = 13;
+    ctx.fillStyle = rgba(RARE_GOLD, 0.4);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.6);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let k = 0; k < 6; k++) {
+      const a = Math.PI / 6 + (k * Math.PI) / 3;
+      const qx = cx + Math.cos(a) * r;
+      const qy = cy + Math.sin(a) * r;
+      if (k === 0) ctx.moveTo(qx, qy);
+      else ctx.lineTo(qx, qy);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  },
+  // the spider's prize: a gold node with radiating links
+  'drift-web': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('node-x', 0.2, 0.8) * w;
+    const cy = y + R.range('node-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.45);
+    ctx.lineWidth = 1;
+    for (let k = 0; k < 5; k++) {
+      const a = R.range(`la${k}`, 0, Math.PI * 2);
+      const len = R.range(`ll${k}`, 20, 55);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+      ctx.stroke();
+    }
+    ctx.fillStyle = rgba(RARE_GOLD, 0.65);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+  },
+  // a crimson customs seal-band across one lane
+  'cargo-dashes': (ctx, R, { x, y, w, h }) => {
+    const gy = y + R.range('seal-y', 0.15, 0.85) * h;
+    ctx.strokeStyle = rgba(RARE_CRIMSON, 0.5);
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([10, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x + w * 0.06, gy);
+    ctx.lineTo(x + w * 0.94, gy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  },
+  // one crease caught in gold light
+  'folded-screens': (ctx, R, { x, y, w, h }) => {
+    const px = x + R.range('crease-x', 0.2, 0.8) * w;
+    const slope = R.range('crease-s', -0.15, 0.15);
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(px, y);
+    ctx.lineTo(px + slope * h, y + h);
+    ctx.stroke();
+  },
+  // a golden rosette in the dot screen
+  'halftone-fade': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('rose-x', 0.2, 0.8) * w;
+    const cy = y + R.range('rose-y', 0.2, 0.8) * h;
+    for (let ring = 0; ring < 3; ring++) {
+      const n = ring === 0 ? 1 : ring * 6;
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const d = ring * 9;
+        ctx.fillStyle = rgba(RARE_GOLD, 0.5 - ring * 0.12);
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 3 - ring * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  },
+  // one golden scanline with its beat ticks
+  'scan-tides': (ctx, R, { x, y, w, h }) => {
+    const gy = y + R.range('line-y', 0.15, 0.85) * h;
+    ctx.fillStyle = rgba(RARE_GOLD, 0.45);
+    ctx.fillRect(x, gy, w, 1.2);
+    const period = R.range('line-p', 60, 120);
+    for (let px = x + period / 2; px < x + w; px += period) {
+      ctx.fillRect(px, gy - 3, 1.2, 7);
+    }
+  },
+  // one fold-line gilded
+  'paper-folds': (ctx, R, { x, y, w, h }) => {
+    const ax = x + R.range('fold-x0', 0.05, 0.4) * w;
+    const ay = y + R.range('fold-y0', 0.05, 0.95) * h;
+    const bx = x + R.range('fold-x1', 0.6, 0.95) * w;
+    const by = y + R.range('fold-y1', 0.05, 0.95) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  },
+  // one intersection ringed gold — the roundabout
+  'street-grid': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('hub-x', 0.2, 0.8) * w;
+    const cy = y + R.range('hub-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 11, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.stroke();
+  },
   // a small gold-leaf scrap among the torn paper
   'torn-paper': (ctx, R, { x, y, w, h }) => {
     const cx = x + R.range('leaf-x', 0.2, 0.8) * w;
@@ -2172,7 +2493,103 @@ const RARE_TRAITS = {
 };
 
 export const RARE_TRAIT_FAMILIES = Object.keys(RARE_TRAITS);
+// v2 shipped with exactly these five eligible; v3 opens all 25. Eligibility
+// is decided at MINT time per the artifact's version (decisions must be
+// reproducible under the version they were minted with).
+const RARE_FIVE = ['flow-ribbons', 'peg-wraps', 'growth-loops', 'river-courses', 'torn-paper'];
 const RARE_CHANCE = 0.03;
+
+// --- v3 stages (Sprint 61) ----------------------------------------------------
+// janky plate (L48 CENTURY): deliberate imperfection as an engineered,
+// MINTED switch — the family layer prints through a slightly mis-set plate
+// (sub-degree rotation + a few px offset). Overlays stay straight: only the
+// plate is drunk, the pressroom is sober.
+function jankyTransform(ctx, decor, { x, y, w, h }) {
+  const R = makeHashRand(`${decor.hash ?? decor.seed}:janky`);
+  const cx = x + w / 2;
+  const cy = y + h / 2;
+  ctx.translate(cx, cy);
+  // ±1.4° + a few px: visibly hand-set, still respectable
+  ctx.rotate(R.range('rot', -0.025, 0.025));
+  ctx.translate(-cx + R.range('dx', -5, 5), -cy + R.range('dy', -5, 5));
+}
+
+// grain pass (L43 Entretiempos): the print-batch feel — a deterministic
+// speckle field whose STRENGTH is minted per artifact (some batches run
+// grainy, some clean). Dark and light specks alternate so grain reads on
+// any theme.
+function drawGrain(ctx, decor, { x, y, w, h, intensity }) {
+  const strength = decor.grain ?? 0;
+  if (!strength) return;
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const R = makeHashRand(`${decor.hash ?? decor.seed}:grain`);
+  // gallery-tuned (Sprint 61): 1px specks vanish below ~900 count — the
+  // batch feel needs density, the legibility guard stays in the alpha
+  const count = Math.round(((w * h) / 250) * strength);
+  for (let i = 0; i < count; i++) {
+    const px = x + R.rand(`x${i & 63}`) * w;
+    const py = y + R.rand(`y${i & 63}`) * h;
+    const dark = i % 3 !== 0;
+    ctx.fillStyle = dark
+      ? rgba([60, 52, 40], P.alphaFill * 0.8 * strength)
+      : rgba([255, 255, 255], P.alphaFill * strength);
+    ctx.fillRect(px, py, 1.2, 1.2);
+  }
+}
+
+// serial edition mark (L23 Pre-Process): the OTHER trait axis — the mint
+// SEQUENCE number, giving a collection its structure (hash names the
+// individual, the serial names its place in the run). Eight tiny ornament
+// stamps rotate with serial % 8.
+function drawSerialMark(ctx, decor, { palette, x, y, h }) {
+  const n = decor.serial;
+  if (n == null) return;
+  const col = palette.accent || [100, 100, 100];
+  const bx = x + 10;
+  const by = y + h - 8;
+  ctx.save();
+  ctx.font = '10px ui-monospace, Menlo, monospace';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = rgba(col, 0.35);
+  ctx.fillText(`N\u00ba ${n}`, bx + 10, by);
+  const kind = (n - 1) % 8;
+  ctx.strokeStyle = rgba(col, 0.4);
+  ctx.fillStyle = rgba(col, 0.4);
+  ctx.lineWidth = 1;
+  const cx = bx + 3;
+  const cy = by - 3.5;
+  ctx.beginPath();
+  if (kind === 0) ctx.arc(cx, cy, 2.2, 0, Math.PI * 2);
+  else if (kind === 1) ctx.arc(cx, cy, 2.6, 0, Math.PI * 2);
+  else if (kind === 2) ctx.rect(cx - 2.2, cy - 2.2, 4.4, 4.4);
+  else if (kind === 3) {
+    ctx.moveTo(cx, cy - 3);
+    ctx.lineTo(cx + 3, cy);
+    ctx.lineTo(cx, cy + 3);
+    ctx.lineTo(cx - 3, cy);
+    ctx.closePath();
+  } else if (kind === 4) {
+    ctx.moveTo(cx, cy - 3);
+    ctx.lineTo(cx + 2.8, cy + 2.4);
+    ctx.lineTo(cx - 2.8, cy + 2.4);
+    ctx.closePath();
+  } else if (kind === 5) {
+    ctx.moveTo(cx - 3, cy);
+    ctx.lineTo(cx + 3, cy);
+    ctx.moveTo(cx, cy - 3);
+    ctx.lineTo(cx, cy + 3);
+  } else if (kind === 6) {
+    ctx.moveTo(cx - 2.5, cy + 2.5);
+    ctx.lineTo(cx + 2.5, cy - 2.5);
+  } else {
+    ctx.moveTo(cx - 3, cy);
+    ctx.quadraticCurveTo(cx - 1.5, cy - 3, cx, cy);
+    ctx.quadraticCurveTo(cx + 1.5, cy + 3, cx + 3, cy);
+  }
+  if (kind === 0) ctx.fill();
+  else ctx.stroke();
+  ctx.restore();
+}
 
 const DECOR_EVENTS = [
   // New Year's Day: the deck wears a small gold-confetti corner burst
@@ -2235,8 +2652,11 @@ function drawEventFlourish(ctx, decor, ev, { palette, x, y, w, h }) {
 // new versioned function and drawDecor dispatches on the artifact's own v.
 // Named lanes protect DECISIONS across versions; the freeze protects PIXELS.
 // v1 (Sprints 41-57): the 25 frozen families, bare.
-// v2 (Sprint 59): + WCAG palette guard + calendar event flourish.
-export const DECOR_V = 2;
+// v2 (Sprints 59-60): + WCAG palette guard + event flourish + rare five.
+// v3 (Sprint 61): + rare eligibility for all 25 + janky plate + grain pass
+//                 + serial edition mark. v1/v2 pixels are CI-locked by
+//                 decor-freeze-v1.json / decor-freeze-v2.json.
+export const DECOR_V = 3;
 
 export const DECOR_FAMILIES = {
   'flow-streams': drawFlowStreams,
@@ -2353,6 +2773,11 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
   // freeze fixture; v2 adds the palette guard + event flourish around it.
   const v = decor.v ?? 1;
   const pal = v >= 2 ? guardPalette(palette) : palette;
+  const janky = v >= 3 && decor.janky;
+  if (janky) {
+    ctx.save();
+    jankyTransform(ctx, decor, { x, y, w, h });
+  }
   fn(ctx, {
     palette: pal,
     seed: decor.seed ?? 1,
@@ -2363,6 +2788,7 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
     intensity,
     personality: decor.personality,
   });
+  if (janky) ctx.restore(); // only the family plate is mis-set; overlays stay straight
   if (v >= 2) {
     if (decor.rare && RARE_TRAITS[decor.family]) {
       // rare signature element: lanes off the artifact hash, so every
@@ -2372,6 +2798,10 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
     }
     const ev = activeDecorEvent(decor.at);
     if (ev) drawEventFlourish(ctx, decor, ev, { palette: pal, x, y, w, h });
+  }
+  if (v >= 3) {
+    drawGrain(ctx, decor, { x, y, w, h, intensity });
+    drawSerialMark(ctx, decor, { palette: pal, x, y, h });
   }
   return true;
 }
@@ -2496,16 +2926,26 @@ export function seedFromHash(hash) {
  * and future features (density, variant, accent…) get their own lanes
  * without disturbing existing decks' decoration.
  */
-export function decorFromHash(theme, hash, { v } = {}) {
+export function decorFromHash(theme, hash, { v, serial } = {}) {
   const R = makeHashRand(hash);
   const cluster = String(theme?.macroCluster || theme?.id || '').split('-')[0];
   const candidates = CLUSTER_AFFINITY[cluster] || ['flow-streams', 'weave-dashes'];
   const family = R.pick('family', candidates);
+  const ver = v ?? DECOR_V;
+  // Sprint 60/61: the collectible gate — its own lane, artifact-level.
+  // Eligibility follows the MINT version: v2 opened five families, v3 all.
+  const rareEligible = ver >= 3 ? family in RARE_TRAITS : RARE_FIVE.includes(family);
   return {
     family,
-    // Sprint 60: the collectible gate — its own lane, artifact-level.
-    // Only families with a signature element can come up rare.
-    rare: family in RARE_TRAITS && R.chance('rare-trait', RARE_CHANCE),
+    rare: rareEligible && R.chance('rare-trait', RARE_CHANCE),
+    // v3 lanes (older pins simply never read them):
+    ...(ver >= 3
+      ? {
+          janky: R.chance('janky', 0.12),
+          grain: R.chance('grainy-batch', 0.3) ? R.range('grain', 0.4, 1) : 0,
+        }
+      : {}),
+    ...(serial != null ? { serial } : {}),
     seed: R.int('seed', 1, 0x7ffffffe),
     // Sprint 49 (Golid personality bundles + Watercolor rarity ladder):
     // most mints are 'balanced', a weighted minority carry a distinct
@@ -2519,6 +2959,6 @@ export function decorFromHash(theme, hash, { v } = {}) {
     hash,
     // new mints get the current engine version; re-opens pass the v the
     // artifact was minted under so its pixels never drift (freeze contract)
-    v: v ?? DECOR_V,
+    v: ver,
   };
 }

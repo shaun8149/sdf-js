@@ -14,7 +14,7 @@
       .bar .sub { font-size: 12px; color: #8a8d96; }
       .bar .deck { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
         color: #b7bac4; background: #1c1e25; padding: 4px 10px; border-radius: 4px; }
-      .split { display: flex; height: calc(100% - 52px); }
+      .split { display: flex; height: calc(100% - 52px - 94px); } /* bar + promo strip */
       .pane { flex: 1; display: flex; flex-direction: column; min-width: 0; }
       .pane + .pane { border-left: 1px solid #23252b; }
       .label { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 16px;
@@ -26,6 +26,34 @@
       .label .note { color: #7c7f88; font-weight: 400; text-transform: none; letter-spacing: 0; }
       iframe { flex: 1; width: 100%; border: 0; background: #fff; }
       .after iframe { background: #0e0f12; }
+      /* Sprint 61: decoration provenance promo strip */
+      #decor-promo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 18px;
+        background: #121319;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      #decor-promo .copy { flex: 1; min-width: 0; }
+      #decor-promo .copy b { color: #dfe3ea; font-size: 13px; display: block; }
+      #decor-promo .copy span { color: #7c7f88; font-size: 11.5px; }
+      #decor-promo canvas {
+        width: 128px;
+        height: 72px;
+        border-radius: 6px;
+        background: #fff;
+        flex: none;
+      }
+      #decor-promo a {
+        flex: none;
+        color: #5ab0ff;
+        font: 600 12px -apple-system, Inter, sans-serif;
+        text-decoration: none;
+        border: 1px solid rgba(90, 176, 255, 0.4);
+        border-radius: 8px;
+        padding: 7px 12px;
+      }
     </style>
   </head>
   <body>
@@ -48,6 +76,29 @@
         <iframe id="after" title="Atlas 3D deck"></iframe>
       </div>
     </div>
+    <div id="decor-promo">
+      <div class="copy">
+        <b>永不重复的外衣 — 每份 deck 铸造一个 hash, 修饰纹理全宇宙唯一</b>
+        <span>25 个纹理家族, 从 Art Blocks Curated 逐件研读而来 · 持 hash 永久复现, 仿制者永不可复现</span>
+      </div>
+      <canvas class="mint" width="640" height="360"></canvas>
+      <canvas class="mint" width="640" height="360"></canvas>
+      <canvas class="mint" width="640" height="360"></canvas>
+      <a href="/examples/atoms-2d-demo/decor-showcase.html">看全部 25 家族 ▸</a>
+    </div>
+    <script type="module">
+      // Sprint 61 promo strip: three live mints — refresh = three new works
+      import { decorFromHash, mintDecorHash, drawDecor } from '/src/present/decor/registry.js';
+      import { getTheme } from '/src/present/themes.js';
+      const theme = getTheme('editorial-navy');
+      for (const c of document.querySelectorAll('#decor-promo canvas.mint')) {
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = `rgb(${theme.bg.join(',')})`;
+        ctx.fillRect(0, 0, c.width, c.height);
+        const d = decorFromHash(theme, mintDecorHash());
+        drawDecor(ctx, d, { palette: theme, x: 0, y: 0, w: c.width, h: c.height, intensity: 'medium' });
+      }
+    </script>
     <script>
       // ?deck=vc-pitch (2D viewer deck name) & ?deck3d=deck-scaffold-vc (present deck id).
       const q = new URLSearchParams(location.search);

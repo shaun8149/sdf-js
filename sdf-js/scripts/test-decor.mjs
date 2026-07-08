@@ -854,8 +854,9 @@ function recCtx() {
 
   // 2. new mints carry v2; re-opens can pin v1
   const t = { id: 'editorial-navy', macroCluster: 'editorial' };
+  const { DECOR_V } = await import('../src/present/decor/registry.js');
   const m2 = decorFromHash(t, 'aabbccdd11223344');
-  ok(m2.v === 2, 'new mints stamped v2');
+  ok(m2.v === DECOR_V, `new mints stamped current version (v${DECOR_V})`);
   const m1 = decorFromHash(t, 'aabbccdd11223344', { v: 1 });
   ok(
     m1.v === 1 && m1.family === m2.family && m1.seed === m2.seed,
@@ -936,8 +937,8 @@ function recCtx() {
 {
   const { RARE_TRAIT_FAMILIES } = await import('../src/present/decor/registry.js');
   ok(
-    RARE_TRAIT_FAMILIES.length === 5,
-    `five flagship families carry signature elements (${RARE_TRAIT_FAMILIES.length})`,
+    RARE_TRAIT_FAMILIES.length === 25,
+    `all 25 families carry signature elements (${RARE_TRAIT_FAMILIES.length})`,
   );
   // gate statistics: ~3% of mints, artifact-level, deterministic per hash
   const t = { id: 'pitch-bold', macroCluster: 'pitch' };
@@ -1024,6 +1025,107 @@ function recCtx() {
   ok(
     ghosts.length === 0,
     `affinity references only real families (ghosts: ${ghosts.join(', ') || 'none'})`,
+  );
+}
+
+// ── Sprint 61: v2 freeze invariant + v3 (janky / grain / serial / eligibility) ──
+{
+  const { bakeFreezeMapV2 } = await import('./bake-decor-freeze.mjs');
+  const { readFileSync } = await import('node:fs');
+  const baked = JSON.parse(
+    new TextDecoder().decode(readFileSync(new URL('./decor-freeze-v2.json', import.meta.url))),
+  );
+  const now2 = bakeFreezeMapV2();
+  const drifted = Object.keys(baked).filter((k) => now2[k] !== baked[k]);
+  ok(
+    drifted.length === 0,
+    `v2 pixels frozen byte-for-byte (${drifted.length} drifted: ${drifted.slice(0, 3).join(', ')})`,
+  );
+
+  const t = { id: 'editorial-navy', macroCluster: 'editorial' };
+  // versioned rare eligibility: same hash+family, v2 pin vs v3
+  let flip = null;
+  for (let i = 0; i < 3000 && !flip; i++) {
+    const d3 = decorFromHash(t, `elig-${i}`);
+    const d2 = decorFromHash(t, `elig-${i}`, { v: 2 });
+    if (d3.rare && !d2.rare) flip = d3.family;
+  }
+  ok(!!flip, `a v3-only-eligible family mints rare under v3 but not v2 pin (${flip})`);
+
+  // v3 lanes exist on new mints, absent on v2 pins
+  const m3 = decorFromHash(t, 'lane-check');
+  const m2p = decorFromHash(t, 'lane-check', { v: 2 });
+  ok(
+    typeof m3.janky === 'boolean' && typeof m3.grain === 'number',
+    'v3 mints carry janky/grain lanes',
+  );
+  ok(!('janky' in m2p) && !('grain' in m2p), 'v2 pins carry no v3 lanes');
+
+  // janky wraps ONLY the family plate in a transform
+  const j1 = recCtx();
+  drawDecor(
+    j1.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'jk', v: 3, janky: true },
+    { palette, w: 640, h: 360 },
+  );
+  const j0 = recCtx();
+  drawDecor(
+    j0.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'jk', v: 3, janky: false },
+    { palette, w: 640, h: 360 },
+  );
+  const rotOps = j1.rec.ops.filter((o) => o[0] === 'rotate').length;
+  ok(rotOps === 1, `janky mis-sets the plate exactly once (${rotOps} rotates)`);
+  ok(
+    j0.rec.ops.filter((o) => o[0] === 'rotate').length === 0,
+    'non-janky mints draw dead straight',
+  );
+
+  // grain: minted strength adds speckle ops; zero-grain batches stay clean
+  const g1 = recCtx();
+  drawDecor(
+    g1.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'gr', v: 3, grain: 0.8 },
+    { palette, w: 640, h: 360 },
+  );
+  const g0 = recCtx();
+  drawDecor(
+    g0.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'gr', v: 3, grain: 0 },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    g1.rec.ops.filter((o) => o[0] === 'fillRect').length >
+      g0.rec.ops.filter((o) => o[0] === 'fillRect').length + 100,
+    'grain batch deposits its speckle field',
+  );
+
+  // serial edition mark: Nº text + one of eight stamps, only when provided
+  const s1 = recCtx();
+  drawDecor(
+    s1.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'sn', v: 3, serial: 12 },
+    { palette, w: 640, h: 360 },
+  );
+  const marks = s1.rec.ops.filter((o) => o[0] === 'fillText');
+  ok(marks.length === 1 && String(marks[0][1]).includes('12'), 'serial mark prints Nº 12');
+  const s0 = recCtx();
+  drawDecor(
+    s0.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'sn', v: 3 },
+    { palette, w: 640, h: 360 },
+  );
+  ok(s0.rec.ops.filter((o) => o[0] === 'fillText').length === 0, 'no serial → no mark');
+  // serial % 8 rotates the stamp: two serials differ beyond the text
+  const s2 = recCtx();
+  drawDecor(
+    s2.ctx,
+    { family: 'peg-wraps', seed: 3, hash: 'sn', v: 3, serial: 13 },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(s1.rec.ops) !== JSON.stringify(s2.rec.ops),
+    'serial stamp rotates with the run',
   );
 }
 

@@ -77,9 +77,36 @@ export function bakeFreezeMap() {
   return map;
 }
 
+// v2 digests (Sprint 61, baked BEFORE the v3 engine landed): guard palette +
+// rare five + event flourish. Key: family|hash-role.
+export function bakeFreezeMapV2() {
+  const map = {};
+  const RARE_FIVE = ['flow-ribbons', 'peg-wraps', 'growth-loops', 'river-courses', 'torn-paper'];
+  for (const family of Object.keys(DECOR_FAMILIES)) {
+    const base = { family, seed: 7, personality: 'balanced', hash: 'freezeV2', v: 2 };
+    const cases = [['plain', base]];
+    if (RARE_FIVE.includes(family)) cases.push(['rare', { ...base, rare: true }]);
+    cases.push(['event', { ...base, at: '2027-01-01' }]);
+    for (const [role, decor] of cases) {
+      const ctx = digestCtx();
+      drawDecor(ctx, decor, {
+        palette: FREEZE_PALETTE,
+        x: 0,
+        y: 0,
+        w: 640,
+        h: 360,
+        intensity: 'subtle',
+      });
+      map[`${family}|${role}`] = opsDigest(ctx.__rec.ops);
+    }
+  }
+  return map;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const map = bakeFreezeMap();
-  const out = join(here, 'decor-freeze-v1.json');
+  const which = process.argv[2] || 'v1';
+  const map = which === 'v2' ? bakeFreezeMapV2() : bakeFreezeMap();
+  const out = join(here, `decor-freeze-${which}.json`);
   writeFileSync(out, JSON.stringify(map, null, 1));
-  console.log(`baked ${Object.keys(map).length} v1 digests → ${out}`);
+  console.log(`baked ${Object.keys(map).length} ${which} digests → ${out}`);
 }
