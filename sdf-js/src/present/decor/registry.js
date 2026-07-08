@@ -949,6 +949,345 @@ function drawHexLattice(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// drift-web: noise-drifted particles leave faint trail dots, then a second
+// pass connects near neighbors inside a distance BAND. RECIPE-ONLY port after
+// Olga Fradina's "Naïve" (Art Blocks Curated #483, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/13-naive-fradina.md).
+// Idioms taken as ideas: asymmetric twin noise (nX from noise(x,y), nY from
+// the SWAPPED noise(y,x) — decorrelated axes from one field); a noise
+// OPERATOR zoo applied to the field (two-scale max, quantize); connection
+// rule with BOTH minDist and maxDist (the min bound is what keeps the web
+// airy instead of clumped); probabilistic per-node visibility.
+const WEB_PERSONALITIES = {
+  calm: {
+    area: 5800,
+    noiseScale: 0.004,
+    speed: 5,
+    steps: 24,
+    quantize: 0,
+    maxOfNoises: false,
+    minDist: 18,
+    maxDist: 68,
+    visible: 0.6,
+  },
+  balanced: {
+    area: 5200,
+    noiseScale: 0.006,
+    speed: 6,
+    steps: 30,
+    quantize: 0,
+    maxOfNoises: true,
+    minDist: 14,
+    maxDist: 74,
+    visible: 0.62,
+  },
+  wild: {
+    area: 4200,
+    noiseScale: 0.009,
+    speed: 8,
+    steps: 36,
+    quantize: 5,
+    maxOfNoises: true,
+    minDist: 10,
+    maxDist: 92,
+    visible: 0.85,
+  },
+};
+
+function drawDriftWeb(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = WEB_PERSONALITIES[personality] || WEB_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 31 + 7);
+  const nA = noise2D(seed);
+  const nB = noise2D(seed + 999);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const count = Math.max(24, Math.round((w * h) / B.area));
+  const pts = [];
+  for (let i = 0; i < count; i++) pts.push([x + rand() * w, y + rand() * h]);
+  const sc = B.noiseScale;
+  const field = (px, py) => {
+    let nx = nA(px * sc, py * sc);
+    let ny = nA(py * sc, px * sc); // swapped-coordinate twin (Naïve idiom)
+    if (B.maxOfNoises) {
+      nx = Math.max(nx, nB(px * sc * 3, py * sc * 3));
+      ny = Math.max(ny, nB(py * sc * 3, px * sc * 3));
+    }
+    if (B.quantize) {
+      nx = Math.round(nx * B.quantize) / B.quantize;
+      ny = Math.round(ny * B.quantize) / B.quantize;
+    }
+    return [(nx - 0.5) * 2, (ny - 0.5) * 2];
+  };
+  ctx.save();
+  ctx.lineCap = 'round';
+  // phase 1: drift, depositing a faint dotted trail (the paper-grain bed)
+  for (let s = 0; s < B.steps; s++) {
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const v = field(p[0], p[1]);
+      p[0] += v[0] * B.speed;
+      p[1] += v[1] * B.speed;
+      if (p[0] < x) p[0] += w;
+      if (p[0] > x + w) p[0] -= w;
+      if (p[1] < y) p[1] += h;
+      if (p[1] > y + h) p[1] -= h;
+      if (s % 2 === 0) {
+        ctx.fillStyle = rgba(colors[i % colors.length], P.alphaFill * 0.6);
+        ctx.fillRect(p[0], p[1], 1.2, 1.2);
+      }
+    }
+  }
+  // phase 2: distance-band web over the settled positions
+  ctx.lineWidth = P.lineWidth * 0.8;
+  for (let i = 0; i < pts.length; i++) {
+    if (rand() > B.visible) continue;
+    let linked = false;
+    for (let j = i + 1; j < pts.length; j++) {
+      const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+      if (d > B.minDist && d < B.maxDist) {
+        // gallery-instrument tune (Sprint 54): web lines carried too little
+        // contrast next to sibling whisper families — full P.alpha, wider band
+        ctx.strokeStyle = rgba(colors[i % colors.length], P.alpha * 1.15);
+        ctx.beginPath();
+        ctx.moveTo(pts[i][0], pts[i][1]);
+        ctx.lineTo(pts[j][0], pts[j][1]);
+        ctx.stroke();
+        linked = true;
+      }
+    }
+    if (linked) {
+      ctx.fillStyle = rgba(colors[i % colors.length], P.alpha * 1.3);
+      ctx.beginPath();
+      ctx.arc(pts[i][0], pts[i][1], 2.1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// cargo-dashes: stacked rectangular blocks, each textured by one painter from
+// a small dictionary of dashed-line fills. RECIPE-ONLY port after Kim
+// Asendorf's "Cargo" (Art Blocks Curated #426, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/17-cargo-asendorf.md).
+// Idioms taken as ideas: a PAINTER DICTIONARY (each entry fills a rect with
+// one dash discipline), power-of-two line spacing (yStep = 2^k keeps mixed
+// blocks rhythmically compatible), integer dash patterns [a, b] with a,b in
+// 1..8 (container-marking feel). The GPU motion pass of the original is not
+// ported — static composition only.
+const CARGO_PERSONALITIES = {
+  calm: { rows: 3, minBlocks: 2, maxBlocks: 3, painters: 2 },
+  balanced: { rows: 4, minBlocks: 2, maxBlocks: 4, painters: 3 },
+  wild: { rows: 5, minBlocks: 3, maxBlocks: 6, painters: 4 },
+};
+
+function drawCargoDashes(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = CARGO_PERSONALITIES[personality] || CARGO_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 53 + 11);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const painters = [
+    // horizontal dashed lines, power-of-two spacing
+    (bx, by, bw, bh, col) => {
+      const yStep = Math.pow(2, 1 + Math.floor(rand() * 3)) * 2;
+      const dash = [1 + Math.floor(rand() * 8), 1 + Math.floor(rand() * 8)];
+      ctx.setLineDash(dash);
+      for (let ly = by + yStep / 2; ly < by + bh; ly += yStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(bx, ly);
+        ctx.lineTo(bx + bw, ly);
+        ctx.stroke();
+      }
+    },
+    // vertical dashed lines
+    (bx, by, bw, bh, col) => {
+      const xStep = Math.pow(2, 1 + Math.floor(rand() * 3)) * 2;
+      const dash = [1 + Math.floor(rand() * 8), 1 + Math.floor(rand() * 8)];
+      ctx.setLineDash(dash);
+      for (let lx = bx + xStep / 2; lx < bx + bw; lx += xStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(lx, by);
+        ctx.lineTo(lx, by + bh);
+        ctx.stroke();
+      }
+    },
+    // sparse dotted rows (long gaps)
+    (bx, by, bw, bh, col) => {
+      const yStep = Math.pow(2, 2 + Math.floor(rand() * 2)) * 2;
+      const dot = 1 + Math.floor(rand() * 2);
+      ctx.setLineDash([dot, dot * (3 + Math.floor(rand() * 4))]);
+      for (let ly = by + yStep / 2; ly < by + bh; ly += yStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(bx, ly);
+        ctx.lineTo(bx + bw, ly);
+        ctx.stroke();
+      }
+    },
+    // faint solid fill + frame (container face)
+    (bx, by, bw, bh, col) => {
+      ctx.setLineDash([]);
+      ctx.fillStyle = rgba(col, P.alphaFill * 0.7);
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.strokeStyle = rgba(col, P.alpha);
+      ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
+    },
+  ].slice(0, B.painters);
+  ctx.save();
+  ctx.lineWidth = P.lineWidth * 0.9;
+  const rowH = h / B.rows;
+  for (let r = 0; r < B.rows; r++) {
+    const by = y + r * rowH;
+    const nBlocks = B.minBlocks + Math.floor(rand() * (B.maxBlocks - B.minBlocks + 1));
+    // random split of the row width into nBlocks with gaps
+    const cuts = [0];
+    for (let i = 1; i < nBlocks; i++) cuts.push(rand());
+    cuts.sort((a, b) => a - b);
+    cuts.push(1);
+    for (let i = 0; i < nBlocks; i++) {
+      const bx = x + cuts[i] * w + 4;
+      const bw = (cuts[i + 1] - cuts[i]) * w - 8;
+      if (bw < 12) continue;
+      const painter = painters[Math.floor(rand() * painters.length)];
+      const col = colors[Math.floor(rand() * colors.length)];
+      painter(bx, by + 5, bw, rowH - 10, col);
+    }
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// folded-screens: layered screens of dense parallel lines, each screen broken
+// by a few vertical creases where direction and tone shift — the fold reads
+// as pseudo-3D facets. RECIPE-ONLY port after Thomas Lin Pedersen's "Screens"
+// (Art Blocks Curated #255, CC BY-NC 4.0 — independent reimplementation; see
+// docs/superpowers/artblocks-study/19-screens-pedersen.md). Idioms taken as
+// ideas: a screen = one dense line raster treated as a single object; creases
+// segment it into facets, each facet gets its own slope and brightness (the
+// fold illusion is per-facet shading, not perspective math); 2-3 translucent
+// screens layered → interference where they cross.
+const SCREEN_PERSONALITIES = {
+  calm: { screens: 2, lineGap: 7, creases: 1, slopeMax: 0.12, toneSpread: 0.35 },
+  balanced: { screens: 2, lineGap: 5.5, creases: 2, slopeMax: 0.2, toneSpread: 0.5 },
+  wild: { screens: 3, lineGap: 4.5, creases: 3, slopeMax: 0.32, toneSpread: 0.7 },
+};
+
+function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = SCREEN_PERSONALITIES[personality] || SCREEN_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 71 + 29);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  ctx.save();
+  ctx.lineCap = 'butt';
+  for (let sIdx = 0; sIdx < B.screens; sIdx++) {
+    const col = colors[sIdx % colors.length];
+    // creases split [0,1] into facets; each facet has slope + tone
+    const cuts = [0];
+    for (let i = 0; i < B.creases; i++) cuts.push(0.15 + rand() * 0.7);
+    cuts.sort((a, b) => a - b);
+    cuts.push(1);
+    const facets = [];
+    for (let i = 0; i + 1 < cuts.length; i++) {
+      facets.push({
+        x0: cuts[i],
+        x1: cuts[i + 1],
+        slope: (rand() * 2 - 1) * B.slopeMax,
+        tone: 1 - B.toneSpread * rand(),
+      });
+    }
+    const gap = B.lineGap * (0.9 + rand() * 0.4);
+    const phase = rand() * gap;
+    // each screen-line is a polyline: y offset accumulates per facet slope
+    for (let ly = y - h * 0.3 + phase; ly < y + h * 1.3; ly += gap) {
+      let py = ly;
+      for (const f of facets) {
+        const fx0 = x + f.x0 * w;
+        const fx1 = x + f.x1 * w;
+        const fy = py + (fx1 - fx0) * f.slope;
+        ctx.strokeStyle = rgba(col, P.alpha * f.tone);
+        ctx.lineWidth = P.lineWidth * 0.7;
+        ctx.beginPath();
+        ctx.moveTo(fx0, py);
+        ctx.lineTo(fx1, fy);
+        ctx.stroke();
+        py = fy;
+      }
+    }
+  }
+  ctx.restore();
+}
+
+// halftone-fade: a halftone dot screen sampling a soft brush field — dot
+// radius encodes field intensity, the print-raster look. RECIPE-ONLY port
+// after itsgalo's "RASTER" (Art Blocks Curated #341, CC BY-NC 4.0 —
+// independent reimplementation; see docs/superpowers/artblocks-study/
+// 20-raster-itsgalo.md). Idioms taken as ideas: the image is a FIELD (soft
+// radial brush stamps accumulated into a buffer) and the STYLE is a sampling
+// screen over it (dot size = local field value) — separating the content
+// field from the raster screen is the whole architecture. The GPU feedback
+// pass of the original is not ported — static screen only.
+const HALFTONE_PERSONALITIES = {
+  calm: { cell: 15, blobs: 2, gamma: 1.5, jitter: 0 },
+  balanced: { cell: 12, blobs: 3, gamma: 1.15, jitter: 0.12 },
+  wild: { cell: 9, blobs: 5, gamma: 0.85, jitter: 0.3 },
+};
+
+function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = HALFTONE_PERSONALITIES[personality] || HALFTONE_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 97 + 3);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  // brush field: a few soft radial stamps (alpha falls off with squared
+  // linear distance from the center, like RASTER's drawBrush buffer)
+  const blobs = [];
+  for (let i = 0; i < B.blobs; i++) {
+    // gallery-instrument tune (Sprint 54): unconstrained centers let calm
+    // mints land mostly off-canvas (0.6% ink) — keep centers in the middle
+    // 70% and floor the radius so every mint carries a visible screen
+    blobs.push({
+      cx: x + (0.15 + rand() * 0.7) * w,
+      cy: y + (0.15 + rand() * 0.7) * h,
+      r: (0.32 + rand() * 0.42) * Math.min(w, h),
+      amp: 0.6 + rand() * 0.4,
+      col: colors[Math.floor(rand() * colors.length)],
+    });
+  }
+  const field = (px, py) => {
+    let v = 0;
+    let nearest = blobs[0];
+    let best = Infinity;
+    for (const bl of blobs) {
+      const d = Math.hypot(px - bl.cx, py - bl.cy);
+      const t = Math.max(0, 1 - d / bl.r);
+      v += bl.amp * t * t;
+      if (d < best) {
+        best = d;
+        nearest = bl;
+      }
+    }
+    return [Math.min(1, v), nearest.col];
+  };
+  ctx.save();
+  const cell = B.cell;
+  let row = 0;
+  for (let gy = y + cell / 2; gy < y + h; gy += cell, row++) {
+    const off = row % 2 === 0 ? 0 : cell / 2; // offset rows = print-rosette feel
+    for (let gx = x + cell / 2 + off; gx < x + w; gx += cell) {
+      const jx = B.jitter ? (rand() - 0.5) * cell * B.jitter : 0;
+      const jy = B.jitter ? (rand() - 0.5) * cell * B.jitter : 0;
+      const [v, col] = field(gx, gy);
+      const radius = cell * 0.46 * Math.pow(v, B.gamma);
+      if (radius < 0.4) continue;
+      ctx.fillStyle = rgba(col, P.alphaFill * 1.6);
+      ctx.beginPath();
+      ctx.arc(gx + jx, gy + jy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -975,37 +1314,53 @@ export const DECOR_FAMILIES = {
   'light-edges': drawLightEdges,
   'nib-flourish': drawNibFlourish,
   'hex-lattice': drawHexLattice,
+  'drift-web': drawDriftWeb,
+  'cargo-dashes': drawCargoDashes,
+  'folded-screens': drawFoldedScreens,
+  'halftone-fade': drawHalftoneFade,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 const CLUSTER_AFFINITY = {
   editorial: [
+    'folded-screens',
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',
+    'cargo-dashes',
     'flow-streams',
     'shard-mesh',
     'meadow-streaks',
   ],
   pitch: [
+    'halftone-fade',
     'block-mosaic',
     'hex-lattice',
+    'drift-web',
     'light-edges',
     'weave-dashes',
     'circle-pack',
     'flow-ribbons',
   ],
-  organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
+  organic: [
+    'wash-flow',
+    'halftone-fade',
+    'sediment-layers',
+    'meadow-streaks',
+    'flow-ribbons',
+    'circle-pack',
+  ],
   consulting: [
     'block-mosaic',
     'hex-lattice',
     'strata-lines',
     'light-edges',
+    'drift-web',
     'weave-dashes',
     'shard-mesh',
   ],
-  financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
+  financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
 

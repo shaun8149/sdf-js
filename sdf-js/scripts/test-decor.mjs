@@ -556,5 +556,108 @@ function recCtx() {
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'hex-lattice deterministic per seed');
 }
 
+// ── Sprint 54: drift-web (Naïve recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'drift-web', seed: 17 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 20, `drift-web draws a web of connections (${strokes} strokes)`);
+  const rects = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(rects > 200, `drift-web deposits a dotted trail bed (${rects} dots)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'drift-web', seed: 88 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'drift-web', seed: 88 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'drift-web deterministic per seed');
+  // personalities are distinct parameter bundles
+  const c = recCtx();
+  drawDecor(
+    c.ctx,
+    { family: 'drift-web', seed: 88, personality: 'wild' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
+    'drift-web wild personality differs from balanced',
+  );
+}
+
+// ── Sprint 54: cargo-dashes (Cargo recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'cargo-dashes', seed: 26 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const dashes = rec.ops.filter((o) => o[0] === 'setLineDash').length;
+  ok(dashes > 4, `cargo-dashes sets per-block dash patterns (${dashes})`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke' || o[0] === 'strokeRect').length;
+  ok(strokes > 30, `cargo-dashes strokes many textured lines (${strokes})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'cargo-dashes', seed: 64 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'cargo-dashes', seed: 64 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'cargo-dashes deterministic per seed',
+  );
+}
+
+// ── Sprint 54: folded-screens (Screens recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'folded-screens', seed: 12 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 150, `folded-screens rasters dense line screens (${strokes})`);
+  // facet tones vary: more than one distinct alpha among strokes
+  const alphas = new Set(
+    rec.styles
+      .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+      .filter(Boolean)
+      .map((m) => m[1]),
+  );
+  ok(alphas.size > 2, `folded-screens facets carry distinct tones (${alphas.size})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'folded-screens', seed: 77 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'folded-screens', seed: 77 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'folded-screens deterministic per seed',
+  );
+}
+
+// ── Sprint 54: halftone-fade (RASTER recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'halftone-fade', seed: 41 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const arcs = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(arcs > 80, `halftone-fade draws a dot screen (${arcs} dots)`);
+  // dot radii vary with the field (not a uniform grid of equal dots)
+  const radii = new Set(rec.ops.filter((o) => o[0] === 'arc').map((o) => o[3].toFixed(2)));
+  ok(radii.size > 10, `halftone-fade dot radius encodes field value (${radii.size} radii)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'halftone-fade', seed: 55 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'halftone-fade', seed: 55 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'halftone-fade deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
