@@ -960,15 +960,15 @@ function drawHexLattice(ctx, { palette, seed, x, y, w, h, intensity }) {
 // airy instead of clumped); probabilistic per-node visibility.
 const WEB_PERSONALITIES = {
   calm: {
-    area: 7000,
+    area: 5800,
     noiseScale: 0.004,
     speed: 5,
     steps: 24,
     quantize: 0,
     maxOfNoises: false,
-    minDist: 20,
-    maxDist: 62,
-    visible: 0.45,
+    minDist: 18,
+    maxDist: 68,
+    visible: 0.6,
   },
   balanced: {
     area: 5200,
@@ -1045,7 +1045,9 @@ function drawDriftWeb(ctx, { palette, seed, x, y, w, h, intensity, personality }
     for (let j = i + 1; j < pts.length; j++) {
       const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
       if (d > B.minDist && d < B.maxDist) {
-        ctx.strokeStyle = rgba(colors[i % colors.length], P.alpha * 0.9);
+        // gallery-instrument tune (Sprint 54): web lines carried too little
+        // contrast next to sibling whisper families — full P.alpha, wider band
+        ctx.strokeStyle = rgba(colors[i % colors.length], P.alpha * 1.15);
         ctx.beginPath();
         ctx.moveTo(pts[i][0], pts[i][1]);
         ctx.lineTo(pts[j][0], pts[j][1]);
@@ -1054,9 +1056,9 @@ function drawDriftWeb(ctx, { palette, seed, x, y, w, h, intensity, personality }
       }
     }
     if (linked) {
-      ctx.fillStyle = rgba(colors[i % colors.length], P.alpha);
+      ctx.fillStyle = rgba(colors[i % colors.length], P.alpha * 1.3);
       ctx.beginPath();
-      ctx.arc(pts[i][0], pts[i][1], 1.6, 0, Math.PI * 2);
+      ctx.arc(pts[i][0], pts[i][1], 2.1, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -1240,11 +1242,14 @@ function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personali
   // linear distance from the center, like RASTER's drawBrush buffer)
   const blobs = [];
   for (let i = 0; i < B.blobs; i++) {
+    // gallery-instrument tune (Sprint 54): unconstrained centers let calm
+    // mints land mostly off-canvas (0.6% ink) — keep centers in the middle
+    // 70% and floor the radius so every mint carries a visible screen
     blobs.push({
-      cx: x + rand() * w,
-      cy: y + rand() * h,
-      r: (0.25 + rand() * 0.45) * Math.min(w, h),
-      amp: 0.55 + rand() * 0.45,
+      cx: x + (0.15 + rand() * 0.7) * w,
+      cy: y + (0.15 + rand() * 0.7) * h,
+      r: (0.32 + rand() * 0.42) * Math.min(w, h),
+      amp: 0.6 + rand() * 0.4,
       col: colors[Math.floor(rand() * colors.length)],
     });
   }
