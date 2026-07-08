@@ -2249,6 +2249,87 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
   return true;
 }
 
+// --- credits (Sprint 59, showcase/attribution data) ---------------------------
+// Every family's lineage, structured. RECIPE-ONLY families are independent
+// reimplementations of ideas — zero code copied — with attribution offered
+// as goodwill beyond what the recipe-port pattern requires. meadow-streaks
+// descends from the corpus's single CC BY (code-portable) work.
+export const DECOR_CREDITS = {
+  'flow-streams': {
+    after: 'perlin-flow tradition',
+    by: 'Amin Moussa / Kjetil Golid recipes',
+    src: 'P5 idiom registry',
+  },
+  'weave-dashes': { after: 'weave', by: 'Kjetil Golid', src: 'p5ycho/weave (recipe)' },
+  'circle-pack': { after: 'shape packing essays', by: 'Gorilla Sun / Amin Moussa', src: 'recipe' },
+  'shard-mesh': {
+    after: 'delaunay–voronoi recipes',
+    by: 'Amin Moussa',
+    src: 'recipe (jittered-grid approx.)',
+  },
+  'meadow-streaks': {
+    after: 'Fragments of an Infinite Field',
+    by: 'Monica Rizzolli',
+    src: 'Art Blocks #159 · CC BY',
+  },
+  'flow-ribbons': { after: 'Fidenza', by: 'Tyler Hobbs', src: 'Art Blocks #78 · recipe-only' },
+  'block-mosaic': { after: 'Archetype', by: 'Kjetil Golid', src: 'Art Blocks #23 · recipe-only' },
+  'wash-flow': {
+    after: 'Watercolor Dreams',
+    by: 'NumbersInMotion',
+    src: 'Art Blocks #59 · recipe-only',
+  },
+  'strata-lines': { after: 'Apparitions', by: 'Aaron Penne', src: 'Art Blocks #28 · recipe-only' },
+  'sediment-layers': {
+    after: 'Neural Sediments',
+    by: 'Eko33',
+    src: 'Art Blocks #418 · recipe-only',
+  },
+  'ink-scribble': { after: 'INK', by: 'Iskra Velitchkova', src: 'Art Blocks #497 · recipe-only' },
+  'light-edges': {
+    after: 'Box Light Studies',
+    by: 'Zach Lieberman',
+    src: 'Art Blocks #499 · recipe-only',
+  },
+  'nib-flourish': { after: 'Cytographia', by: 'Golan Levin', src: 'Art Blocks #487 · recipe-only' },
+  'hex-lattice': { after: 'while true', by: 'Lars Wander', src: 'Art Blocks #498 · recipe-only' },
+  'drift-web': { after: 'Naïve', by: 'Olga Fradina', src: 'Art Blocks #483 · recipe-only' },
+  'cargo-dashes': { after: 'Cargo', by: 'Kim Asendorf', src: 'Art Blocks #426 · recipe-only' },
+  'folded-screens': {
+    after: 'Screens',
+    by: 'Thomas Lin Pedersen',
+    src: 'Art Blocks #255 · recipe-only',
+  },
+  'halftone-fade': { after: 'RASTER', by: 'itsgalo', src: 'Art Blocks #341 · recipe-only' },
+  'scan-tides': {
+    after: 'Tide Predictor',
+    by: 'LoVid',
+    src: 'Art Blocks #376 · recipe-only (ND, strict)',
+  },
+  'paper-folds': { after: 'ORI', by: 'James Merrill', src: 'Art Blocks #379 · recipe-only' },
+  'growth-loops': {
+    after: 'Spaghetti Bones',
+    by: 'Joshua Bagley',
+    src: 'Art Blocks #456 · recipe-only',
+  },
+  'street-grid': {
+    after: 'BUSY / BUSIEST',
+    by: 'James Merrill',
+    src: 'Art Blocks #504/#503 · recipe-only',
+  },
+  'torn-paper': {
+    after: 'Memories of Qilin',
+    by: 'Emily Xie',
+    src: 'Art Blocks #282 · recipe-only',
+  },
+  'peg-wraps': { after: 'Ringers', by: 'Dmitri Cherniak', src: 'Art Blocks #13 · recipe-only' },
+  'river-courses': {
+    after: 'Ancient Courses of Fictional Rivers',
+    by: 'Robert Hodgin',
+    src: 'Art Blocks #284 · recipe-only',
+  },
+};
+
 // --- mint-hash provenance (Sprint 41, user's core insight) -------------------
 // The decoration seed is NOT derived from the content. It is MINTED —
 // crypto-random at generation time, fxhash/ArtBlocks style. Consequences:
