@@ -850,6 +850,105 @@ function drawNibFlourish(ctx, { palette, seed, x, y, w, h, intensity }) {
   ctx.restore();
 }
 
+// --- OKLab color space (Sprint 53, the while-true lesson) --------------------
+// RGB-space lerp passes through muddy midtones; OKLab lerp is perceptually
+// uniform. Available to NEW families (frozen families keep their RGB lerp
+// per the freeze discipline). Conversion after Björn Ottosson's reference.
+function srgbToLinear(c) {
+  const x = c / 255;
+  return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+}
+function linearToSrgb(x) {
+  const v = x <= 0.0031308 ? x * 12.92 : 1.055 * Math.pow(x, 1 / 2.4) - 0.055;
+  return Math.round(Math.max(0, Math.min(1, v)) * 255);
+}
+function rgbToOklab([r, g, b]) {
+  const lr = srgbToLinear(r);
+  const lg = srgbToLinear(g);
+  const lb = srgbToLinear(b);
+  const l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb);
+  const m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb);
+  const s2 = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s2,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s2,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s2,
+  ];
+}
+function oklabToRgb([L, a, b]) {
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b;
+  const l = l_ * l_ * l_;
+  const m = m_ * m_ * m_;
+  const s2 = s_ * s_ * s_;
+  return [
+    linearToSrgb(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s2),
+    linearToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s2),
+    linearToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s2),
+  ];
+}
+export function lerpColorOklab(c1, c2, t) {
+  const a = rgbToOklab(c1);
+  const b = rgbToOklab(c2);
+  return oklabToRgb([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
+}
+
+// hex-lattice: hexagonal tiling with OKLab-graded sparse fills. RECIPE-ONLY
+// port after Lars Wander's "while true" (Art Blocks Curated #498,
+// CC BY-NC-SA 4.0 — independent reimplementation; see docs/superpowers/
+// artblocks-study/10-while-true-wander.md). Two idioms: cubic→cartesian
+// hex math (x' = √3(q + r/2), y' = 1.5r) and perceptually-uniform OKLab
+// gradients across the lattice.
+function drawHexLattice(ctx, { palette, seed, x, y, w, h, intensity }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const noise = noise2D(seed);
+  const rand = seededRand(seed * 83 + 59);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cA = colors[Math.floor(rand() * colors.length)];
+  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  const R = 16 + rand() * 10; // hex radius
+  const RT3 = Math.sqrt(3);
+  const gradAngle = rand() * Math.PI;
+  const cosG = Math.cos(gradAngle);
+  const sinG = Math.sin(gradAngle);
+  const diag = Math.hypot(w, h);
+  ctx.save();
+  ctx.lineWidth = P.lineWidth * 0.8;
+  const qMax = Math.ceil(w / (RT3 * R)) + 2;
+  const rMax = Math.ceil(h / (1.5 * R)) + 2;
+  for (let rr = -1; rr <= rMax; rr++) {
+    for (let q = -1; q <= qMax; q++) {
+      const cx = x + RT3 * R * (q + (rr % 2 === 0 ? 0 : 0.5));
+      const cy = y + 1.5 * R * rr;
+      const gate = noise(cx * 0.004, cy * 0.004);
+      if (gate > 0.52) continue; // sparse patches
+      // OKLab gradient along a seeded direction
+      const t = Math.max(
+        0,
+        Math.min(1, ((cx - x) * cosG + (cy - y) * sinG) / diag + 0.5 - 0.5 * (cosG + sinG) * 0.5),
+      );
+      const col = lerpColorOklab(cA, cB, t);
+      ctx.beginPath();
+      for (let k = 0; k < 6; k++) {
+        const a = Math.PI / 6 + (k * Math.PI) / 3;
+        const px = cx + Math.cos(a) * R * 0.92;
+        const py = cy + Math.sin(a) * R * 0.92;
+        if (k === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      if ((q + rr * 3) % 4 === 0) {
+        ctx.fillStyle = rgba(col, P.alphaFill);
+        ctx.fill();
+      }
+      ctx.strokeStyle = rgba(col, P.alpha);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -875,6 +974,7 @@ export const DECOR_FAMILIES = {
   'ink-scribble': drawInkScribble,
   'light-edges': drawLightEdges,
   'nib-flourish': drawNibFlourish,
+  'hex-lattice': drawHexLattice,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -888,9 +988,23 @@ const CLUSTER_AFFINITY = {
     'shard-mesh',
     'meadow-streaks',
   ],
-  pitch: ['block-mosaic', 'light-edges', 'weave-dashes', 'circle-pack', 'flow-ribbons'],
+  pitch: [
+    'block-mosaic',
+    'hex-lattice',
+    'light-edges',
+    'weave-dashes',
+    'circle-pack',
+    'flow-ribbons',
+  ],
   organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
-  consulting: ['block-mosaic', 'strata-lines', 'light-edges', 'weave-dashes', 'shard-mesh'],
+  consulting: [
+    'block-mosaic',
+    'hex-lattice',
+    'strata-lines',
+    'light-edges',
+    'weave-dashes',
+    'shard-mesh',
+  ],
   financial: ['strata-lines', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
