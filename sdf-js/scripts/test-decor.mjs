@@ -118,10 +118,11 @@ function recCtx() {
       .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
       .filter(Boolean)
       .map((m) => parseFloat(m[1]));
-    // sediment-layers' occlusion contract REQUIRES near-opaque fills — its
-    // legibility guard is color-blending toward bg, asserted in its own
-    // block below, not the alpha cap.
-    if (family !== 'sediment-layers') {
+    // sediment-layers' occlusion contract REQUIRES near-opaque fills (its
+    // guard is color-blending toward bg); nib-flourish fills THIN ribbons —
+    // visual weight = alpha × area, and its tiny area affords a higher
+    // alpha (own cap asserted in its block). Both exempt from the generic cap.
+    if (family !== 'sediment-layers' && family !== 'nib-flourish') {
       ok(
         alphas.length > 0 && Math.max(...alphas) <= 0.1,
         `${family} subtle alpha ≤ 0.1 (legibility guard)`,
@@ -495,6 +496,34 @@ function recCtx() {
   drawDecor(a.ctx, { family: 'light-edges', seed: 27 }, { palette, w: 640, h: 360 });
   drawDecor(b.ctx, { family: 'light-edges', seed: 27 }, { palette, w: 640, h: 360 });
   ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'light-edges deterministic per seed');
+}
+
+// ── Sprint 52: nib-flourish (Cytographia recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'nib-flourish', seed: 22 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills >= 5 && fills <= 8, `nib-flourish fills one ribbon per flourish (${fills})`);
+  // ribbon = 2×(steps+1) vertices per shape
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos >= fills * 50, 'ribbon polygons carry per-point width (many vertices)');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'nib-flourish', seed: 31 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'nib-flourish', seed: 31 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'nib-flourish deterministic per seed',
+  );
+  const nibAlphas = rec.styles
+    .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
+    .filter(Boolean)
+    .map((m) => parseFloat(m[1]));
+  ok(Math.max(...nibAlphas) <= 0.22, 'nib-flourish thin-ribbon alpha within its own cap');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
