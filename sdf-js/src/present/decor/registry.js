@@ -2006,6 +2006,109 @@ function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personali
   ctx.restore();
 }
 
+// --- v2 pipeline (Sprint 59) ------------------------------------------------
+// DECOR_V 2 adds two stages AROUND the (still frozen) family draws:
+//   pre:  WCAG luminance guard — palette colors too close to the theme bg
+//         get pushed apart in OKLab L until a perceptual floor is met
+//         (Frammenti lesson, study/36: accessibility math as free QA).
+//   post: event flourish — on calendar events a tiny hash-deterministic
+//         ornament joins the corner. The DATE only gates; every random
+//         decision comes from the mint hash's own lanes, so the owner can
+//         re-render any event look forever via the ?at= view param
+//         (clock-trait tier model, study/50: ambience < composition < event).
+// v1 artifacts bypass both stages — their pixels are covered byte-for-byte
+// by scripts/decor-freeze-v1.json + the freeze block in test-decor.mjs.
+
+function relLuminance([r, g, b]) {
+  const lin = (c) => {
+    const x = c / 255;
+    return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+function contrastRatio(a, b) {
+  const la = relLuminance(a);
+  const lb = relLuminance(b);
+  return la > lb ? (la + 0.05) / (lb + 0.05) : (lb + 0.05) / (la + 0.05);
+}
+
+// decor is a whisper layer — it needs perceptual EXISTENCE, not text-grade
+// contrast. 1.35 is the floor where 640×360 thumbnails stop reading blank.
+const DECOR_MIN_CONTRAST = 1.35;
+
+export function guardPalette(palette) {
+  const bg = palette?.bg || [248, 246, 240];
+  // light themes push colors darker, dark themes lighter — always AWAY
+  const dir = relLuminance(bg) > 0.5 ? -1 : 1;
+  const fix = (c) => {
+    if (!Array.isArray(c)) return c;
+    let col = c;
+    for (let i = 0; i < 12 && contrastRatio(col, bg) < DECOR_MIN_CONTRAST; i++) {
+      const lab = rgbToOklab(col);
+      lab[0] += dir * 0.035;
+      col = oklabToRgb(lab);
+    }
+    return col;
+  };
+  return {
+    ...palette,
+    accent: fix(palette.accent),
+    colors: (palette.colors || []).map(fix),
+  };
+}
+
+const DECOR_EVENTS = [
+  // New Year's Day: the deck wears a small gold-confetti corner burst
+  { id: 'new-year', match: (d) => d.getMonth() === 0 && d.getDate() === 1 },
+];
+
+function activeDecorEvent(at) {
+  const d = at != null ? new Date(at) : new Date();
+  if (Number.isNaN(d.getTime())) return null;
+  return DECOR_EVENTS.find((e) => e.match(d)) || null;
+}
+
+function drawEventFlourish(ctx, decor, ev, { palette, x, y, w, h }) {
+  const R = makeHashRand(`${decor.hash ?? decor.seed}:${ev.id}`);
+  const accent = palette.accent || [220, 170, 60];
+  const cx = x + w * (0.88 + R.range('corner-x', 0, 0.06));
+  const cy = y + h * (0.08 + R.range('corner-y', 0, 0.05));
+  const burst = R.int('count', 12, 18);
+  ctx.save();
+  for (let i = 0; i < burst; i++) {
+    const a = R.range(`a${i}`, 0, Math.PI * 2);
+    const dist = R.range(`d${i}`, 6, Math.min(w, h) * 0.07);
+    const px = cx + Math.cos(a) * dist;
+    const py = cy + Math.sin(a) * dist * 0.8;
+    const sz = R.range(`s${i}`, 1.5, 3.5);
+    ctx.fillStyle = rgba(accent, 0.3 + R.range(`al${i}`, 0, 0.15));
+    ctx.beginPath();
+    if (R.chance(`dot${i}`, 0.5)) {
+      ctx.arc(px, py, sz / 2, 0, Math.PI * 2);
+    } else {
+      ctx.rect(px - sz / 2, py - sz / 2, sz, sz * 0.6);
+    }
+    ctx.fill();
+  }
+  // three thin streamers falling from the burst
+  ctx.lineWidth = 1;
+  for (let k = 0; k < 3; k++) {
+    ctx.strokeStyle = rgba(accent, 0.25);
+    ctx.beginPath();
+    let px = cx + R.range(`kx${k}`, -20, 20);
+    let py = cy;
+    ctx.moveTo(px, py);
+    for (let s2 = 0; s2 < 5; s2++) {
+      px += R.range(`kxx${k}${s2}`, -6, 6);
+      py += R.range(`kyy${k}${s2}`, 6, 12);
+      ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -2015,7 +2118,9 @@ function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personali
 // version, is FROZEN — never edit its pixels; behavioral changes ship as a
 // new versioned function and drawDecor dispatches on the artifact's own v.
 // Named lanes protect DECISIONS across versions; the freeze protects PIXELS.
-export const DECOR_V = 1;
+// v1 (Sprints 41-57): the 25 frozen families, bare.
+// v2 (Sprint 59): + WCAG palette guard + calendar event flourish.
+export const DECOR_V = 2;
 
 export const DECOR_FAMILIES = {
   'flow-streams': drawFlowStreams,
@@ -2122,8 +2227,13 @@ export function pickDecorFor(theme, seed = 1) {
 export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity = 'subtle' } = {}) {
   const fn = DECOR_FAMILIES[decor?.family];
   if (!fn || !palette || !w || !h) return false;
+  // version dispatch (the freeze discipline, mechanized): the artifact's own
+  // v decides the pipeline. v1 = bare frozen family, byte-covered by the
+  // freeze fixture; v2 adds the palette guard + event flourish around it.
+  const v = decor.v ?? 1;
+  const pal = v >= 2 ? guardPalette(palette) : palette;
   fn(ctx, {
-    palette,
+    palette: pal,
     seed: decor.seed ?? 1,
     x,
     y,
@@ -2132,6 +2242,10 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
     intensity,
     personality: decor.personality,
   });
+  if (v >= 2) {
+    const ev = activeDecorEvent(decor.at);
+    if (ev) drawEventFlourish(ctx, decor, ev, { palette: pal, x, y, w, h });
+  }
   return true;
 }
 
@@ -2174,7 +2288,7 @@ export function seedFromHash(hash) {
  * and future features (density, variant, accent…) get their own lanes
  * without disturbing existing decks' decoration.
  */
-export function decorFromHash(theme, hash) {
+export function decorFromHash(theme, hash, { v } = {}) {
   const R = makeHashRand(hash);
   const cluster = String(theme?.macroCluster || theme?.id || '').split('-')[0];
   const candidates = CLUSTER_AFFINITY[cluster] || ['flow-streams', 'weave-dashes'];
@@ -2191,6 +2305,8 @@ export function decorFromHash(theme, hash) {
       ['wild', 2],
     ]),
     hash,
-    v: DECOR_V,
+    // new mints get the current engine version; re-opens pass the v the
+    // artifact was minted under so its pixels never drift (freeze contract)
+    v: v ?? DECOR_V,
   };
 }

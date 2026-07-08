@@ -833,5 +833,104 @@ function recCtx() {
   );
 }
 
+// ── Sprint 59: DECOR_V=2 — freeze invariant + guard + event layer ──
+{
+  // 1. THE FREEZE INVARIANT: every v1 artifact must reproduce the digests
+  // baked before the v2 engine existed. A mismatch here = frozen pixels
+  // drifted = provenance broken. Do NOT "fix" by re-baking.
+  const { bakeFreezeMap } = await import('./bake-decor-freeze.mjs');
+  const { readFileSync } = await import('node:fs');
+  const baked = JSON.parse(
+    new TextDecoder().decode(readFileSync(new URL('./decor-freeze-v1.json', import.meta.url))),
+  );
+  const now2 = bakeFreezeMap();
+  const missing = Object.keys(baked).filter((k) => !(k in now2));
+  const drifted = Object.keys(baked).filter((k) => k in now2 && now2[k] !== baked[k]);
+  ok(missing.length === 0, `freeze fixture keys all present (${missing.length} missing)`);
+  ok(
+    drifted.length === 0,
+    `v1 pixels frozen byte-for-byte (${drifted.length} drifted: ${drifted.slice(0, 3).join(', ')})`,
+  );
+
+  // 2. new mints carry v2; re-opens can pin v1
+  const t = { id: 'editorial-navy', macroCluster: 'editorial' };
+  const m2 = decorFromHash(t, 'aabbccdd11223344');
+  ok(m2.v === 2, 'new mints stamped v2');
+  const m1 = decorFromHash(t, 'aabbccdd11223344', { v: 1 });
+  ok(
+    m1.v === 1 && m1.family === m2.family && m1.seed === m2.seed,
+    'v override pins version, decisions unchanged',
+  );
+
+  // 3. WCAG guard: a bg-colored palette gets pushed to the contrast floor
+  const { guardPalette } = await import('../src/present/decor/registry.js');
+  const muddy = { accent: [244, 242, 236], colors: [[250, 248, 242]], bg: [248, 246, 240] };
+  const guarded = guardPalette(muddy);
+  ok(
+    JSON.stringify(guarded.accent) !== JSON.stringify(muddy.accent),
+    'guard moves a near-bg accent',
+  );
+  // and a healthy palette passes through untouched
+  const healthy = guardPalette(palette);
+  ok(
+    JSON.stringify(healthy.accent) === JSON.stringify(palette.accent),
+    'guard leaves healthy colors alone',
+  );
+
+  // 4. same hash, v1 vs v2 on a muddy theme → different ops (guard active)
+  const mud = { accent: [244, 242, 236], colors: [[250, 248, 242]], bg: [248, 246, 240] };
+  const a1 = recCtx();
+  drawDecor(a1.ctx, { family: 'peg-wraps', seed: 5, v: 1 }, { palette: mud, w: 640, h: 360 });
+  const a2 = recCtx();
+  drawDecor(a2.ctx, { family: 'peg-wraps', seed: 5, v: 2 }, { palette: mud, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a1.rec.styles) !== JSON.stringify(a2.rec.styles),
+    'v2 guard changes colors on a muddy theme, v1 untouched',
+  );
+
+  // 5. event flourish: New Year adds ops; ordinary day does not; the look
+  // is deterministic per hash and re-derivable via at
+  const plain = recCtx();
+  drawDecor(
+    plain.ctx,
+    { family: 'peg-wraps', seed: 5, hash: 'ffee', v: 2, at: '2027-03-14' },
+    { palette, w: 640, h: 360 },
+  );
+  const ny1 = recCtx();
+  drawDecor(
+    ny1.ctx,
+    { family: 'peg-wraps', seed: 5, hash: 'ffee', v: 2, at: '2027-01-01' },
+    { palette, w: 640, h: 360 },
+  );
+  const ny2 = recCtx();
+  drawDecor(
+    ny2.ctx,
+    { family: 'peg-wraps', seed: 5, hash: 'ffee', v: 2, at: '2027-01-01' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(ny1.rec.ops.length > plain.rec.ops.length, 'new-year flourish adds ornament ops');
+  ok(
+    JSON.stringify(ny1.rec.ops) === JSON.stringify(ny2.rec.ops),
+    'event look deterministic per hash (re-derivable forever via at)',
+  );
+  // v1 artifacts never get the event layer
+  const v1ny = recCtx();
+  drawDecor(
+    v1ny.ctx,
+    { family: 'peg-wraps', seed: 5, hash: 'ffee', v: 1, at: '2027-01-01' },
+    { palette, w: 640, h: 360 },
+  );
+  const v1plain = recCtx();
+  drawDecor(
+    v1plain.ctx,
+    { family: 'peg-wraps', seed: 5, hash: 'ffee', v: 1, at: '2027-03-14' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(v1ny.rec.ops) === JSON.stringify(v1plain.rec.ops),
+    'v1 artifacts ignore the calendar entirely',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

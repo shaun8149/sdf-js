@@ -76,7 +76,10 @@ themeEl.addEventListener('change', async () => {
   try {
     rethemeDeck(currentDeck, themeEl.value);
     if (currentDeck.decor?.hash)
-      currentDeck.decor = decorFromHash(currentDeck.theme, currentDeck.decor.hash);
+      currentDeck.decor = mintDecor(currentDeck.theme, {
+        hash: currentDeck.decor.hash,
+        v: currentDeck.decor.v,
+      });
     await renderDeck(currentDeck);
     syncProvenance();
     setStatus(`theme → ${themeEl.value} (re-rendered, exports follow)`);
@@ -111,10 +114,24 @@ const setStatus = (msg, err = false) => {
 // (Sprint 58: we now write the hash back into the address bar, and without
 // the consume-once rule that would pin every subsequent mint).
 let pendingUrlHash = new URLSearchParams(location.search).get('hash');
-function currentMintHash() {
+// ?v= pins the engine version the artifact was MINTED under (freeze
+// contract: a v1 work re-opened must NOT run through the v2 pipeline).
+// It is consumed together with ?hash — a later fresh Generate mints at
+// the current DECOR_V, not the pinned one. ?at= is the VIEW layer:
+// re-render any calendar-event look on demand, identity untouched.
+let pendingUrlV = parseInt(new URLSearchParams(location.search).get('v'), 10) || undefined;
+const viewAt = new URLSearchParams(location.search).get('at') || undefined;
+function currentMint() {
   const h = pendingUrlHash;
+  const v = pendingUrlV;
   pendingUrlHash = null;
-  return h || mintDecorHash();
+  pendingUrlV = undefined;
+  return h ? { hash: h, v } : { hash: mintDecorHash(), v: undefined };
+}
+function mintDecor(theme, { hash, v }) {
+  const d = decorFromHash(theme, hash, v ? { v } : {});
+  if (viewAt) d.at = viewAt;
+  return d;
 }
 
 // ── Sprint 58: decoration as a product surface ────────────────────────────
@@ -131,8 +148,8 @@ function slotDecor(deck, slot) {
   return { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) };
 }
 
-function reopenUrl(hash) {
-  return `${location.origin}${location.pathname}?hash=${hash}`;
+function reopenUrl(hash, v) {
+  return `${location.origin}${location.pathname}?hash=${hash}${v ? `&v=${v}` : ''}`;
 }
 
 function syncProvenance() {
@@ -146,11 +163,12 @@ function syncProvenance() {
   provEl.hidden = false;
   redressEl.disabled = false;
   decorVisEl.disabled = false;
-  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality}`;
+  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality} · v${d.v ?? 1}`;
   // the address bar IS the provenance link (safe: ?hash is consume-once);
   // preserve other params (?demo=1 etc.) — only the hash slot is ours
   const qs = new URLSearchParams(location.search);
   qs.set('hash', d.hash);
+  if (d.v) qs.set('v', String(d.v));
   history.replaceState(null, '', `?${qs.toString()}`);
 }
 
@@ -158,10 +176,10 @@ provEl.addEventListener('click', async () => {
   const d = currentDeck?.decor;
   if (!d?.hash) return;
   try {
-    await navigator.clipboard.writeText(reopenUrl(d.hash));
+    await navigator.clipboard.writeText(reopenUrl(d.hash, d.v));
     setStatus(`已复制复现链接 — 持有它可永久重开这件作品 (#${String(d.hash).slice(0, 8)})`);
   } catch {
-    setStatus(reopenUrl(d.hash)); // clipboard blocked: show it instead
+    setStatus(reopenUrl(d.hash, d.v)); // clipboard blocked: show it instead
   }
 });
 
@@ -169,7 +187,7 @@ redressEl.addEventListener('click', async () => {
   if (!currentDeck) return;
   redressEl.disabled = true;
   try {
-    currentDeck.decor = decorFromHash(currentDeck.theme, mintDecorHash());
+    currentDeck.decor = mintDecor(currentDeck.theme, { hash: mintDecorHash() });
     await renderDeck(currentDeck);
     syncProvenance();
     const d = currentDeck.decor;
@@ -326,7 +344,7 @@ async function generate() {
       if (currentDeck.errors?.length) {
         console.warn('[full-deck] slot errors:', currentDeck.errors);
       }
-      currentDeck.decor = decorFromHash(currentDeck.theme, currentMintHash());
+      currentDeck.decor = mintDecor(currentDeck.theme, currentMint());
       await renderDeck(currentDeck);
       const errNote = currentDeck.errors?.length
         ? ` (${currentDeck.errors.length} slot(s) failed — see console)`
@@ -354,9 +372,9 @@ async function generate() {
     currentDeck = irDeckTo2DDeck(irDeck);
     // demo default is a fixed hash (deterministic screenshots), but an
     // explicit ?hash= re-open wins even in demo — provenance is testable
-    currentDeck.decor = decorFromHash(
+    currentDeck.decor = mintDecor(
       currentDeck.theme,
-      DEMO_MODE && !pendingUrlHash ? 'demo-fixed-hash' : currentMintHash(),
+      DEMO_MODE && !pendingUrlHash ? { hash: 'demo-fixed-hash' } : currentMint(),
     );
     window.__atlasDeck = currentDeck; // QA/debug handle
     await renderDeck(currentDeck);

@@ -27,6 +27,8 @@
 
       const params = new URLSearchParams(location.search);
       const N = parseInt(params.get('n') || '6', 10);
+      // ?at=2027-01-01 previews calendar-event flourishes (v2 view layer)
+      const at = params.get('at') || undefined;
       const theme = getTheme(params.get('theme') || 'editorial-navy');
       const intensity = params.get('intensity') || 'medium';
       const W = 640;
@@ -49,11 +51,13 @@
           const ctx = c.getContext('2d');
           ctx.fillStyle = `rgb(${theme.bg.join(',')})`;
           ctx.fillRect(0, 0, W, H);
-          drawDecor(ctx, { family, seed: minted.seed, personality: minted.personality }, {
-            palette: theme, x: 0, y: 0, w: W, h: H, intensity,
-          });
+          drawDecor(
+            ctx,
+            { family, seed: minted.seed, personality: minted.personality, hash, v: minted.v, at },
+            { palette: theme, x: 0, y: 0, w: W, h: H, intensity },
+          );
           const cap = document.createElement('figcaption');
-          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality}`;
+          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality} · v${minted.v}`;
           fig.appendChild(c);
           fig.appendChild(cap);
           row.appendChild(fig);
