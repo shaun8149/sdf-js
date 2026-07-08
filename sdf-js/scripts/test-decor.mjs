@@ -659,5 +659,35 @@ function recCtx() {
   );
 }
 
+// ── Sprint 55: scan-tides (Tide Predictor recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'scan-tides', seed: 19 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const rects = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(rects > 100, `scan-tides rasters scanline segments (${rects})`);
+  // gradient fills reach the ctx as objects through the fillStyle setter
+  const grads = rec.styles.filter((s) => typeof s === 'object').length;
+  ok(grads > 100, `scan-tides blends triangle waves via gradients (${grads})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'scan-tides', seed: 66 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'scan-tides', seed: 66 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'scan-tides deterministic per seed');
+  const c = recCtx();
+  drawDecor(
+    c.ctx,
+    { family: 'scan-tides', seed: 66, personality: 'wild' },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
+    'scan-tides wild personality differs from balanced',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

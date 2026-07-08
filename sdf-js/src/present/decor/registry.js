@@ -1218,6 +1218,68 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// scan-tides: horizontal scanlines carrying palette-blended triangle waves
+// whose period drifts row to row — the beat/sync-slip look of analog video.
+// RECIPE-ONLY port after LoVid's "Tide Predictor" (Art Blocks Curated #376,
+// CC BY-NC-ND 4.0 — independent reimplementation, strictly no code reuse;
+// see docs/superpowers/artblocks-study/21-tide-predictor-lovid.md). Idioms
+// taken as ideas: the image is ONE 1D SCAN (index i wraps to rows — spatial
+// structure is an artifact of the wrap); each channel is a triangle wave
+// 255-|255-(i%p)·k| with its own period; periods RANDOM-WALK and re-sync
+// with a minted probability, so bands slip diagonally then lock again.
+// Palette adaptation: channels become two theme colors blended in OKLab.
+const TIDE_PERSONALITIES = {
+  calm: { rowH: 7, basePeriod: 220, drift: 0, resync: 0, second: 0.5 },
+  balanced: { rowH: 6, basePeriod: 150, drift: 2.5, resync: 0.04, second: 0.75 },
+  wild: { rowH: 5, basePeriod: 90, drift: 6, resync: 0.12, second: 1 },
+};
+
+function drawScanTides(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = TIDE_PERSONALITIES[personality] || TIDE_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 61 + 17);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cA = colors[Math.floor(rand() * colors.length)];
+  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  const periodReset = B.basePeriod * (0.8 + rand() * 0.5);
+  let period = periodReset;
+  let periodB = periodReset * (1.13 + rand() * 0.2); // detuned second channel
+  const tri = (t) => 1 - Math.abs(1 - 2 * (t - Math.floor(t))); // 0..1..0
+  ctx.save();
+  let scan = rand() * period; // 1D scan cursor, carried across rows
+  for (let ry = y; ry < y + h; ry += B.rowH) {
+    // channel A: one gradient segment per period across the row
+    for (let rx = 0; rx < w; ) {
+      const phase = (scan + rx) / period;
+      const segW = Math.min(w - rx, period * (1 - (phase - Math.floor(phase))) + 1);
+      const t0 = tri(phase);
+      const t1 = tri((scan + rx + segW) / period);
+      const g = ctx.createLinearGradient(x + rx, 0, x + rx + segW, 0);
+      g.addColorStop(0, rgba(lerpColorOklab(cA, cB, t0), P.alphaFill));
+      g.addColorStop(1, rgba(lerpColorOklab(cA, cB, t1), P.alphaFill));
+      ctx.fillStyle = g;
+      ctx.fillRect(x + rx, ry, segW, B.rowH);
+      rx += segW;
+    }
+    // channel B: sparse ticks where the detuned wave peaks (the beat trace)
+    if (B.second) {
+      const tB = tri((scan % periodB) / periodB);
+      if (tB > 0.82) {
+        ctx.fillStyle = rgba(cB, P.alpha * B.second);
+        ctx.fillRect(x, ry, w, 1);
+      }
+    }
+    scan += w; // the wrap: next row continues the same 1D scan
+    // period random-walk (sync slip) + minted re-sync (the lock)
+    if (B.drift) period = Math.max(40, period + (rand() - 0.5) * B.drift);
+    if (B.resync && rand() < B.resync) {
+      period = periodReset;
+      periodB = periodReset * 1.17;
+    }
+  }
+  ctx.restore();
+}
+
 // halftone-fade: a halftone dot screen sampling a soft brush field — dot
 // radius encodes field intensity, the print-raster look. RECIPE-ONLY port
 // after itsgalo's "RASTER" (Art Blocks Curated #341, CC BY-NC 4.0 —
@@ -1318,6 +1380,7 @@ export const DECOR_FAMILIES = {
   'cargo-dashes': drawCargoDashes,
   'folded-screens': drawFoldedScreens,
   'halftone-fade': drawHalftoneFade,
+  'scan-tides': drawScanTides,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1325,6 +1388,7 @@ export const DECOR_FAMILIES = {
 const CLUSTER_AFFINITY = {
   editorial: [
     'folded-screens',
+    'scan-tides',
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',
@@ -1335,6 +1399,7 @@ const CLUSTER_AFFINITY = {
   ],
   pitch: [
     'halftone-fade',
+    'scan-tides',
     'block-mosaic',
     'hex-lattice',
     'drift-web',
