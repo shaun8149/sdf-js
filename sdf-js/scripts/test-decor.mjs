@@ -478,5 +478,24 @@ function recCtx() {
   );
 }
 
+// ── Sprint 51: light-edges (Box Light Studies recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'light-edges', seed: 18 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  // per box: 12 edges × 2 halves × 3 glow layers = 72; 4-6 boxes
+  ok(strokes >= 4 * 72 && strokes <= 6 * 72, `light-edges layered glow strokes (${strokes})`);
+  ok(strokes % 3 === 0, 'three glow layers per half-edge');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'light-edges', seed: 27 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'light-edges', seed: 27 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'light-edges deterministic per seed');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
