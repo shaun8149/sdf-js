@@ -2058,6 +2058,122 @@ export function guardPalette(palette) {
   };
 }
 
+// --- rare traits (Sprint 60, v2 pipeline) -------------------------------------
+// ~3% of mints carry a SIGNATURE ELEMENT drawn over the (frozen) family in
+// its own visual language — the collectible hook (Fidenza rare-palette /
+// Watercolor rarity-ladder lesson). Two deliberate rule-breaks, both scoped
+// to rares only: they may use the two METALLIC constants below (off the
+// theme palette — preciousness needs a foreign material), and their alpha
+// runs hotter than the whisper cap (thread-thin area affords it, same
+// argument as nib-flourish). The rare gate lives on its own hash lane, so
+// it is an ARTIFACT-level property: a rare deck is rare on every slide.
+const RARE_GOLD = [212, 175, 55];
+const RARE_CRIMSON = [178, 34, 52];
+
+const RARE_TRAITS = {
+  // one long gilded streamline weaving through the ribbons
+  'flow-ribbons': (ctx, R, { x, y, w, h }) => {
+    const noise = noise2D(R.int('gild-seed', 1, 1e9));
+    let px = x + R.range('gild-x', 0.05, 0.2) * w;
+    let py = y + R.range('gild-y', 0.2, 0.8) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    for (let i = 0; i < 110; i++) {
+      const a = noise(px * 0.003, py * 0.003) * Math.PI * 4;
+      px += Math.cos(a) * 7;
+      py += Math.sin(a) * 7;
+      if (px < x || px > x + w || py < y || py > y + h) break;
+      ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  },
+  // the red string of fate: a crimson thread visiting three pegs
+  'peg-wraps': (ctx, R, { x, y, w, h }) => {
+    ctx.strokeStyle = rgba(RARE_CRIMSON, 0.55);
+    ctx.lineWidth = 1.3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    let px = x + R.range('red-x0', 0.1, 0.9) * w;
+    let py = y + R.range('red-y0', 0.1, 0.9) * h;
+    ctx.moveTo(px, py);
+    for (let k = 1; k <= 3; k++) {
+      const nx = x + R.range(`red-x${k}`, 0.1, 0.9) * w;
+      const ny = y + R.range(`red-y${k}`, 0.1, 0.9) * h;
+      // slack in the thread: a soft quadratic sag toward the floor
+      ctx.quadraticCurveTo((px + nx) / 2, Math.max(py, ny) + h * 0.06, nx, ny);
+      px = nx;
+      py = ny;
+    }
+    ctx.stroke();
+  },
+  // one growth ring gilded
+  'growth-loops': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('ring-x', 0.25, 0.75) * w;
+    const cy = y + R.range('ring-y', 0.25, 0.75) * h;
+    const r0 = Math.min(w, h) * R.range('ring-r', 0.08, 0.16);
+    const noise = noise2D(R.int('ring-seed', 1, 1e9));
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    const K = 60;
+    for (let k = 0; k <= K; k++) {
+      const a = (k / K) * Math.PI * 2;
+      const r = r0 * (1 + (noise(Math.cos(a) * 2 + 5, Math.sin(a) * 2 + 5) - 0.5) * 0.35);
+      const qx = cx + Math.cos(a) * r;
+      const qy = cy + Math.sin(a) * r;
+      if (k === 0) ctx.moveTo(qx, qy);
+      else ctx.lineTo(qx, qy);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  },
+  // a golden tributary meandering across one band of the region
+  'river-courses': (ctx, R, { x, y, w, h }) => {
+    const noise = noise2D(R.int('trib-seed', 1, 1e9));
+    const y0 = y + R.range('trib-y', 0.15, 0.85) * h;
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.5);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    let py = y0;
+    ctx.moveTo(x, py);
+    const step = w / 60;
+    for (let k = 1; k <= 60; k++) {
+      py += (noise(k * 0.15, y0 * 0.01) - 0.5) * h * 0.06;
+      ctx.lineTo(x + k * step, py);
+    }
+    ctx.stroke();
+  },
+  // a small gold-leaf scrap among the torn paper
+  'torn-paper': (ctx, R, { x, y, w, h }) => {
+    const cx = x + R.range('leaf-x', 0.2, 0.8) * w;
+    const cy = y + R.range('leaf-y', 0.2, 0.8) * h;
+    const rBase = Math.min(w, h) * R.range('leaf-r', 0.04, 0.07);
+    const noise = noise2D(R.int('leaf-seed', 1, 1e9));
+    ctx.fillStyle = rgba(RARE_GOLD, 0.4);
+    ctx.beginPath();
+    const K = 26;
+    for (let k = 0; k < K; k++) {
+      const a = (k / K) * Math.PI * 2;
+      const r = rBase * (1 + (noise(Math.cos(a) * 3 + 9, Math.sin(a) * 3 + 9) - 0.5) * 0.5);
+      const qx = cx + Math.cos(a) * r;
+      const qy = cy + Math.sin(a) * r * 0.75;
+      if (k === 0) ctx.moveTo(qx, qy);
+      else ctx.lineTo(qx, qy);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = rgba(RARE_GOLD, 0.55);
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  },
+};
+
+export const RARE_TRAIT_FAMILIES = Object.keys(RARE_TRAITS);
+const RARE_CHANCE = 0.03;
+
 const DECOR_EVENTS = [
   // New Year's Day: the deck wears a small gold-confetti corner burst
   { id: 'new-year', match: (d) => d.getMonth() === 0 && d.getDate() === 1 },
@@ -2152,7 +2268,7 @@ export const DECOR_FAMILIES = {
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
-const CLUSTER_AFFINITY = {
+export const CLUSTER_AFFINITY = {
   editorial: [
     'folded-screens',
     'scan-tides',
@@ -2180,6 +2296,10 @@ const CLUSTER_AFFINITY = {
   ],
   organic: [
     'wash-flow',
+    'river-courses',
+    'torn-paper',
+    'growth-loops',
+    'paper-folds',
     'halftone-fade',
     'sediment-layers',
     'meadow-streaks',
@@ -2200,6 +2320,7 @@ const CLUSTER_AFFINITY = {
   financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
   hr: [
     'nib-flourish',
+    'torn-paper',
     'growth-loops',
     'paper-folds',
     'ink-scribble',
@@ -2243,6 +2364,12 @@ export function drawDecor(ctx, decor, { palette, x = 0, y = 0, w, h, intensity =
     personality: decor.personality,
   });
   if (v >= 2) {
+    if (decor.rare && RARE_TRAITS[decor.family]) {
+      // rare signature element: lanes off the artifact hash, so every
+      // slide of a rare deck carries the same signature deterministically
+      const R = makeHashRand(`${decor.hash ?? decor.seed}:rare`);
+      RARE_TRAITS[decor.family](ctx, R, { x, y, w, h });
+    }
     const ev = activeDecorEvent(decor.at);
     if (ev) drawEventFlourish(ctx, decor, ev, { palette: pal, x, y, w, h });
   }
@@ -2373,8 +2500,12 @@ export function decorFromHash(theme, hash, { v } = {}) {
   const R = makeHashRand(hash);
   const cluster = String(theme?.macroCluster || theme?.id || '').split('-')[0];
   const candidates = CLUSTER_AFFINITY[cluster] || ['flow-streams', 'weave-dashes'];
+  const family = R.pick('family', candidates);
   return {
-    family: R.pick('family', candidates),
+    family,
+    // Sprint 60: the collectible gate — its own lane, artifact-level.
+    // Only families with a signature element can come up rare.
+    rare: family in RARE_TRAITS && R.chance('rare-trait', RARE_CHANCE),
     seed: R.int('seed', 1, 0x7ffffffe),
     // Sprint 49 (Golid personality bundles + Watercolor rarity ladder):
     // most mints are 'balanced', a weighted minority carry a distinct

@@ -932,5 +932,100 @@ function recCtx() {
   );
 }
 
+// ── Sprint 60: rare traits (collectible gate) ──
+{
+  const { RARE_TRAIT_FAMILIES } = await import('../src/present/decor/registry.js');
+  ok(
+    RARE_TRAIT_FAMILIES.length === 5,
+    `five flagship families carry signature elements (${RARE_TRAIT_FAMILIES.length})`,
+  );
+  // gate statistics: ~3% of mints, artifact-level, deterministic per hash
+  const t = { id: 'pitch-bold', macroCluster: 'pitch' };
+  let rares = 0;
+  let eligible = 0;
+  for (let i = 0; i < 600; i++) {
+    const d = decorFromHash(t, `stat-${i}`);
+    if (RARE_TRAIT_FAMILIES.includes(d.family)) {
+      eligible++;
+      if (d.rare) rares++;
+    } else {
+      ok2: if (d.rare) {
+        ok(false, 'non-flagship family minted rare');
+        break ok2;
+      }
+    }
+  }
+  ok(eligible > 50, `flagship families appear in mints (${eligible}/600)`);
+  ok(rares >= 1 && rares <= eligible * 0.12, `rare gate ~3% (${rares}/${eligible})`);
+  const again = decorFromHash(t, 'stat-7');
+  ok(again.rare === decorFromHash(t, 'stat-7').rare, 'rare gate deterministic per hash');
+
+  // rare adds signature ops over the same family/seed; deterministic
+  const base = recCtx();
+  drawDecor(
+    base.ctx,
+    { family: 'peg-wraps', seed: 9, hash: 'raretest', v: 2 },
+    { palette, w: 640, h: 360 },
+  );
+  const rare1 = recCtx();
+  drawDecor(
+    rare1.ctx,
+    { family: 'peg-wraps', seed: 9, hash: 'raretest', v: 2, rare: true },
+    { palette, w: 640, h: 360 },
+  );
+  const rare2 = recCtx();
+  drawDecor(
+    rare2.ctx,
+    { family: 'peg-wraps', seed: 9, hash: 'raretest', v: 2, rare: true },
+    { palette, w: 640, h: 360 },
+  );
+  ok(rare1.rec.ops.length > base.rec.ops.length, 'rare signature adds ops');
+  ok(
+    JSON.stringify(rare1.rec.ops) === JSON.stringify(rare2.rec.ops),
+    'rare signature deterministic per hash',
+  );
+  // the signature speaks metal: a non-palette gold/crimson appears
+  const metals = rare1.rec.styles.filter((st) =>
+    /rgba\(212, 175, 55|rgba\(178, 34, 52/.test(String(st)),
+  );
+  ok(metals.length > 0, 'rare signature uses a metallic constant');
+  // v1 artifacts ignore the rare flag entirely
+  const v1rare = recCtx();
+  drawDecor(
+    v1rare.ctx,
+    { family: 'peg-wraps', seed: 9, hash: 'raretest', v: 1, rare: true },
+    { palette, w: 640, h: 360 },
+  );
+  const v1base = recCtx();
+  drawDecor(
+    v1base.ctx,
+    { family: 'peg-wraps', seed: 9, hash: 'raretest', v: 1 },
+    { palette, w: 640, h: 360 },
+  );
+  ok(
+    JSON.stringify(v1rare.rec.ops) === JSON.stringify(v1base.rec.ops),
+    'v1 artifacts ignore the rare flag',
+  );
+}
+
+// ── Sprint 60: affinity coverage invariant ──
+// Sprint 56-57 silently DROPPED families from CLUSTER_AFFINITY (a prettier-
+// reformat made string replaces no-op) — torn-paper ended up reachable in
+// NO cluster. This invariant makes that class of bug impossible to ship.
+{
+  const { CLUSTER_AFFINITY, DECOR_FAMILIES } = await import('../src/present/decor/registry.js');
+  const reachable = new Set(Object.values(CLUSTER_AFFINITY).flat());
+  const orphans = Object.keys(DECOR_FAMILIES).filter((f) => !reachable.has(f));
+  ok(
+    orphans.length === 0,
+    `every family reachable in ≥1 cluster (orphans: ${orphans.join(', ') || 'none'})`,
+  );
+  const ghosts = [...reachable].filter((f) => !(f in DECOR_FAMILIES));
+  ok(
+    ghosts.length === 0,
+    `affinity references only real families (ghosts: ${ghosts.join(', ') || 'none'})`,
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -214,7 +214,7 @@
         const hash = mintDecorHash();
         const d = decorFromHash(deck.theme, hash);
         await renderSlide(mintCanvas, d);
-        mintId.textContent = `作品 #${hash} · ${d.family} · ${d.personality} · v${d.v}`;
+        mintId.textContent = `作品 #${hash} · ${d.family} · ${d.personality} · v${d.v}${d.rare ? ' · ✨稀有件 (~3%)' : ''}`;
       }
       document.getElementById('mint-btn').addEventListener('click', mintOne);
       mintOne();
@@ -236,7 +236,14 @@
           const minted = decorFromHash(theme, hash);
           drawDecor(
             ctx,
-            { family, seed: minted.seed, personality: minted.personality, hash, v: minted.v },
+            {
+              family,
+              seed: minted.seed,
+              personality: minted.personality,
+              hash,
+              v: minted.v,
+              rare: minted.rare && minted.family === family,
+            },
             { palette: theme, x: 0, y: 0, w: 320, h: 180, intensity: 'medium' },
           );
           row.appendChild(c);
