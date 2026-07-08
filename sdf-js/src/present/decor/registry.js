@@ -1218,6 +1218,102 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// street-grid: a sparse road network — lanes drawn as parallel double rails,
+// quarter-arc corners where a horizontal lane turns into a vertical one,
+// dashed center lines on the widest roads. RECIPE-ONLY port after James
+// Merrill's "BUSY"/"BUSIEST" (Art Blocks Curated #504/#503, CC BY-NC 4.0 —
+// independent reimplementation; see docs/superpowers/artblocks-study/
+// 28-busy-busiest-merrill.md). Idioms taken as ideas: the artwork is the
+// NETWORK, traffic only reveals it (we keep the network, drop the agents);
+// road vocabulary as a typed catalog (straight/corner/intersection/railroad)
+// rather than free curves; corners are quarter arcs with a fixed radius so
+// every turn reads as engineered, not organic.
+const STREET_PERSONALITIES = {
+  calm: { hLanes: 3, vLanes: 3, cornerChance: 0.35, railChance: 0.2, gaugeMax: 7 },
+  balanced: { hLanes: 4, vLanes: 5, cornerChance: 0.5, railChance: 0.3, gaugeMax: 9 },
+  wild: { hLanes: 6, vLanes: 7, cornerChance: 0.7, railChance: 0.45, gaugeMax: 12 },
+};
+
+function drawStreetGrid(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = STREET_PERSONALITIES[personality] || STREET_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 37 + 23);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const lane = (frac, span) => (0.08 + 0.84 * frac) * span + (rand() - 0.5) * span * 0.06;
+  const hs = [];
+  const vs = [];
+  for (let i = 0; i < B.hLanes; i++)
+    hs.push({ pos: y + lane((i + 0.5) / B.hLanes, h), gauge: 3 + rand() * B.gaugeMax });
+  for (let i = 0; i < B.vLanes; i++)
+    vs.push({ pos: x + lane((i + 0.5) / B.vLanes, w), gauge: 3 + rand() * B.gaugeMax });
+  ctx.save();
+  ctx.lineCap = 'butt';
+  const rail = (x1, y1, x2, y2, gauge, col, isRail) => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = (-dy / len) * (gauge / 2);
+    const ny = (dx / len) * (gauge / 2);
+    ctx.strokeStyle = rgba(col, P.alpha);
+    ctx.lineWidth = P.lineWidth * 0.8;
+    ctx.setLineDash([]);
+    for (const s2 of [1, -1]) {
+      ctx.beginPath();
+      ctx.moveTo(x1 + nx * s2, y1 + ny * s2);
+      ctx.lineTo(x2 + nx * s2, y2 + ny * s2);
+      ctx.stroke();
+    }
+    if (isRail) {
+      // railroad ties across the gauge
+      ctx.lineWidth = P.lineWidth * 0.7;
+      const step = gauge * 2.2;
+      for (let t = step; t < len; t += step) {
+        const px = x1 + (dx / len) * t;
+        const py = y1 + (dy / len) * t;
+        ctx.beginPath();
+        ctx.moveTo(px + nx * 1.3, py + ny * 1.3);
+        ctx.lineTo(px - nx * 1.3, py - ny * 1.3);
+        ctx.stroke();
+      }
+    } else if (gauge > 7) {
+      // dashed center line on wide roads
+      ctx.setLineDash([6, 6]);
+      ctx.lineWidth = P.lineWidth * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  };
+  for (const hl of hs) {
+    const col = colors[Math.floor(rand() * colors.length)];
+    rail(x, hl.pos, x + w, hl.pos, hl.gauge, col, rand() < B.railChance);
+  }
+  for (const vl of vs) {
+    const col = colors[Math.floor(rand() * colors.length)];
+    rail(vl.pos, y, vl.pos, y + h, vl.gauge, col, rand() < B.railChance);
+  }
+  // quarter-arc corners at a random subset of crossings
+  ctx.setLineDash([]);
+  for (const hl of hs) {
+    for (const vl of vs) {
+      if (rand() > B.cornerChance) continue;
+      const r = 14 + rand() * 18;
+      const sx = rand() < 0.5 ? 1 : -1;
+      const sy = rand() < 0.5 ? 1 : -1;
+      const col = colors[Math.floor(rand() * colors.length)];
+      ctx.strokeStyle = rgba(col, P.alpha * 1.1);
+      ctx.lineWidth = P.lineWidth * 0.9;
+      const a0 = sx > 0 ? (sy > 0 ? Math.PI : Math.PI / 2) : sy > 0 ? -Math.PI / 2 : 0;
+      ctx.beginPath();
+      ctx.arc(vl.pos + sx * r, hl.pos + sy * r, r, a0, a0 + Math.PI / 2);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
 // growth-loops: a closed loop grown by differential growth — points attract
 // their neighbors, repel everything nearby, and the path resamples as it
 // stretches; intermediate outlines are kept as faint growth rings.
@@ -1619,6 +1715,7 @@ export const DECOR_FAMILIES = {
   'scan-tides': drawScanTides,
   'paper-folds': drawPaperFolds,
   'growth-loops': drawGrowthLoops,
+  'street-grid': drawStreetGrid,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1638,6 +1735,7 @@ const CLUSTER_AFFINITY = {
   pitch: [
     'halftone-fade',
     'scan-tides',
+    'street-grid',
     'block-mosaic',
     'hex-lattice',
     'drift-web',
@@ -1655,6 +1753,7 @@ const CLUSTER_AFFINITY = {
     'circle-pack',
   ],
   consulting: [
+    'street-grid',
     'block-mosaic',
     'hex-lattice',
     'strata-lines',

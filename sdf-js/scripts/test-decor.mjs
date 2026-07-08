@@ -733,5 +733,24 @@ function recCtx() {
   );
 }
 
+// ── Sprint 55: street-grid (BUSY/BUSIEST recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'street-grid', seed: 14 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes > 15, `street-grid draws rails, ties and corners (${strokes})`);
+  const arcs = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(arcs >= 1, `street-grid rounds some corners with quarter arcs (${arcs})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'street-grid', seed: 82 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'street-grid', seed: 82 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'street-grid deterministic per seed');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
