@@ -163,7 +163,7 @@ function syncProvenance() {
   provEl.hidden = false;
   redressEl.disabled = false;
   decorVisEl.disabled = false;
-  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality} · v${d.v ?? 1}`;
+  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality} · v${d.v ?? 1}${d.rare ? ' · ✨稀有' : ''}`;
   // the address bar IS the provenance link (safe: ?hash is consume-once);
   // preserve other params (?demo=1 etc.) — only the hash slot is ours
   const qs = new URLSearchParams(location.search);
@@ -191,7 +191,9 @@ redressEl.addEventListener('click', async () => {
     await renderDeck(currentDeck);
     syncProvenance();
     const d = currentDeck.decor;
-    setStatus(`已换装 — 作品 #${String(d.hash).slice(0, 8)} (${d.family} · ${d.personality})`);
+    setStatus(
+      `已换装 — 作品 #${String(d.hash).slice(0, 8)} (${d.family} · ${d.personality}${d.rare ? ' · ✨稀有件!' : ''})`,
+    );
   } catch (e) {
     setStatus(`换装失败: ${e.message}`, true);
   } finally {

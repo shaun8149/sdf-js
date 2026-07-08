@@ -53,11 +53,19 @@
           ctx.fillRect(0, 0, W, H);
           drawDecor(
             ctx,
-            { family, seed: minted.seed, personality: minted.personality, hash, v: minted.v, at },
+            {
+              family,
+              seed: minted.seed,
+              personality: minted.personality,
+              hash,
+              v: minted.v,
+              rare: minted.rare && minted.family === family,
+              at,
+            },
             { palette: theme, x: 0, y: 0, w: W, h: H, intensity },
           );
           const cap = document.createElement('figcaption');
-          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality} · v${minted.v}`;
+          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality} · v${minted.v}${minted.rare && minted.family === family ? ' · ✨' : ''}`;
           fig.appendChild(c);
           fig.appendChild(cap);
           row.appendChild(fig);
