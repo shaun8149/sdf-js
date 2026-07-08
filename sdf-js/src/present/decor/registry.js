@@ -1218,6 +1218,155 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// river-courses: a meandering river migrating across the region — bends
+// amplify by local curvature, loops that pinch shut are CUT OFF as oxbow
+// lakes, and abandoned channels stay as a faint history. RECIPE-ONLY port
+// after Robert Hodgin's "Ancient Courses of Fictional Rivers" (Art Blocks
+// Curated #284, CC BY-NC 4.0 — independent reimplementation; see docs/
+// superpowers/artblocks-study/41-ancient-courses-hodgin.md). Idioms taken
+// as ideas: meandering = curvature-proportional normal migration + uniform
+// resampling; the oxbow cutoff (splice the loop when two distant-in-index
+// points touch) is what makes it a river, not a wiggle; drawing the CHANNEL
+// HISTORY (faded ancient courses) tells geological time.
+const RIVER_PERSONALITIES = {
+  calm: { iters: 90, migrate: 2.2, snapEvery: 30, cutoff: 14 },
+  balanced: { iters: 150, migrate: 3.0, snapEvery: 40, cutoff: 12 },
+  wild: { iters: 220, migrate: 3.8, snapEvery: 55, cutoff: 10 },
+};
+
+function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = RIVER_PERSONALITIES[personality] || RIVER_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 59 + 3);
+  const noise = noise2D(seed + 17);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const col = colors[Math.floor(rand() * colors.length)];
+  const oxCol = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  // the river crosses horizontally with a gentle seeded set
+  const y0 = y + (0.3 + rand() * 0.4) * h;
+  const amp0 = h * (0.05 + rand() * 0.1);
+  const phase = rand() * 10;
+  let pts = [];
+  const N0 = Math.max(24, Math.round(w / 14));
+  for (let i = 0; i < N0; i++) {
+    const t = i / (N0 - 1);
+    pts.push([x + t * w, y0 + Math.sin(phase + t * Math.PI * (2 + rand())) * amp0]);
+  }
+  const seg = 11;
+  const history = [];
+  const oxbows = [];
+  const MAX_PTS = 700; // meanders lengthen exponentially — hard budget
+  for (let it = 0; it < B.iters && pts.length < MAX_PTS; it++) {
+    // curvature migration on the LOW frequency: direction away from the
+    // ±L-window chord midpoint. (First attempt used the immediate-neighbor
+    // midpoint — that amplifies the highest frequency and yields sawtooth
+    // tangles, not meanders. Rivers bend at reach scale, not point scale.)
+    const L2 = 5;
+    const next = [pts[0]];
+    for (let i = 1; i + 1 < pts.length; i++) {
+      const [px, py] = pts[i];
+      const a2 = pts[Math.max(0, i - L2)];
+      const b2 = pts[Math.min(pts.length - 1, i + L2)];
+      let dx = px - (a2[0] + b2[0]) / 2;
+      let dy = py - (a2[1] + b2[1]) / 2;
+      const d = Math.hypot(dx, dy);
+      if (d > 0.01) {
+        dx /= d;
+        dy /= d;
+      } else {
+        // straight reach: nudge from the noise field so meanders can seed
+        const a = noise(px * 0.006, py * 0.006) * Math.PI * 2;
+        dx = Math.cos(a);
+        dy = Math.sin(a);
+      }
+      const k = Math.min(1, d / (seg * L2 * 0.4));
+      const margin = h * 0.06; // soft valley walls, not a 6px cliff
+      next.push([
+        px + dx * B.migrate * (0.15 + k),
+        Math.max(y + margin, Math.min(y + h - margin, py + dy * B.migrate * (0.15 + k))),
+      ]);
+    }
+    next.push(pts[pts.length - 1]);
+    pts = next;
+    // curvature diffusion: a light 3-point kernel keeps the channel smooth
+    for (let i = 1; i + 1 < pts.length; i++) {
+      pts[i] = [
+        0.25 * pts[i - 1][0] + 0.5 * pts[i][0] + 0.25 * pts[i + 1][0],
+        0.25 * pts[i - 1][1] + 0.5 * pts[i][1] + 0.25 * pts[i + 1][1],
+      ];
+    }
+    // uniform resample
+    const res = [pts[0]];
+    for (let i = 1; i < pts.length; i++) {
+      const last = res[res.length - 1];
+      const d = Math.hypot(pts[i][0] - last[0], pts[i][1] - last[1]);
+      if (d > seg * 1.5) res.push([(last[0] + pts[i][0]) / 2, (last[1] + pts[i][1]) / 2]);
+      if (d > seg * 0.5) res.push(pts[i]);
+    }
+    pts = res;
+    // oxbow cutoff: index-distant points that pinch together (windowed —
+    // a pinch is always a local loop, no need to scan the far bank)
+    for (let i = 0; i + 8 < pts.length; i++) {
+      const jMax = Math.min(pts.length, i + 90);
+      for (let j = i + 8; j < jMax; j++) {
+        const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+        if (d < B.cutoff) {
+          oxbows.push(pts.slice(i, j + 1));
+          pts = pts.slice(0, i + 1).concat(pts.slice(j));
+          i = pts.length; // one cutoff per iteration is plenty
+          break;
+        }
+      }
+    }
+    if (it % B.snapEvery === B.snapEvery - 1 && it < B.iters - 1) {
+      history.push(pts.map((p2) => [p2[0], p2[1]]));
+    }
+  }
+  ctx.save();
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  const trace = (line) => {
+    ctx.beginPath();
+    ctx.moveTo(line[0][0], line[0][1]);
+    for (let i = 1; i < line.length; i++) ctx.lineTo(line[i][0], line[i][1]);
+  };
+  // ancient courses: older = fainter (geological time)
+  for (let hIdx = 0; hIdx < history.length; hIdx++) {
+    ctx.strokeStyle = rgba(col, P.alpha * (0.25 + (0.35 * hIdx) / history.length));
+    ctx.lineWidth = P.lineWidth * 0.6;
+    trace(history[hIdx]);
+    ctx.stroke();
+  }
+  // oxbow lakes: the abandoned loops, in the second color
+  for (const ox of oxbows) {
+    ctx.strokeStyle = rgba(oxCol, P.alpha * 0.9);
+    ctx.lineWidth = P.lineWidth * 0.8;
+    trace(ox);
+    ctx.stroke();
+  }
+  // the living river: twin banks
+  const bank = (off) => {
+    ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) {
+      const prev = pts[Math.max(0, i - 1)];
+      const nxt = pts[Math.min(pts.length - 1, i + 1)];
+      const dx = nxt[0] - prev[0];
+      const dy = nxt[1] - prev[1];
+      const len = Math.hypot(dx, dy) || 1;
+      const px2 = pts[i][0] + (-dy / len) * off;
+      const py2 = pts[i][1] + (dx / len) * off;
+      if (i === 0) ctx.moveTo(px2, py2);
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+  };
+  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
+  ctx.lineWidth = P.lineWidth;
+  bank(2.2);
+  bank(-2.2);
+  ctx.restore();
+}
+
 // peg-wraps: a grid of pegs and one string wrapped around a subset of them
 // — tangent lines between pegs, arcs where the string bends around a peg.
 // RECIPE-ONLY port after Dmitri Cherniak's "Ringers" (Art Blocks Curated
@@ -1893,6 +2042,7 @@ export const DECOR_FAMILIES = {
   'street-grid': drawStreetGrid,
   'torn-paper': drawTornPaper,
   'peg-wraps': drawPegWraps,
+  'river-courses': drawRiverCourses,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1901,6 +2051,7 @@ const CLUSTER_AFFINITY = {
   editorial: [
     'folded-screens',
     'scan-tides',
+    'river-courses',
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',

@@ -151,9 +151,18 @@ function recCtx() {
   const p2 = pickDecorFor(t, 5);
   ok(p1.family === p2.family, 'pick deterministic per (theme, seed)');
   ok(
-    ['flow-ribbons', 'wash-flow', 'flow-streams', 'shard-mesh', 'meadow-streaks'].includes(
-      p1.family,
-    ),
+    [
+      'folded-screens',
+      'scan-tides',
+      'river-courses',
+      'flow-ribbons',
+      'wash-flow',
+      'ink-scribble',
+      'cargo-dashes',
+      'flow-streams',
+      'shard-mesh',
+      'meadow-streaks',
+    ].includes(p1.family),
     'editorial affinity respected',
   );
   ok(
@@ -799,6 +808,28 @@ function recCtx() {
   ok(
     JSON.stringify(c.rec.ops) !== JSON.stringify(a.rec.ops),
     'peg-wraps calm personality differs from balanced',
+  );
+}
+
+// ── Sprint 57: river-courses (Ancient Courses recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'river-courses', seed: 44 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes >= 4, `river-courses draws history + banks (${strokes} strokes)`);
+  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
+  ok(lineTos > 150, `river-courses carries a meandered polyline (${lineTos} vertices)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'river-courses', seed: 61 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'river-courses', seed: 61 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'river-courses deterministic per seed',
   );
 }
 
