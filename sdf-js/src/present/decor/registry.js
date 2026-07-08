@@ -1218,6 +1218,116 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// paper-folds: the region treated as a sheet of paper, recursively split
+// along fold chords into a few LARGE facets, each shaded by fold depth —
+// origami-flat collage. RECIPE-ONLY port after James Merrill's "ORI" (Art
+// Blocks Curated #379, CC BY-NC 4.0 — independent reimplementation; see
+// docs/superpowers/artblocks-study/22-ori-merrill.md). Idioms taken as
+// ideas: folding is line-vs-polygon SPLITTING (classify vertices by side,
+// insert the two edge intersections, emit both halves); depth-graded facet
+// shading sells the fold without any 3D; always split the LARGEST facet so
+// the composition stays balanced.
+const FOLD_PERSONALITIES = {
+  calm: { splits: 3, angleJitter: 0.25, toneSpread: 0.5 },
+  balanced: { splits: 5, angleJitter: 0.6, toneSpread: 0.65 },
+  wild: { splits: 8, angleJitter: 1.2, toneSpread: 0.85 },
+};
+
+// split a convex-ish polygon by the line through (px,py) at angle a —
+// returns [left, right] vertex lists (either may be empty)
+function splitPolyByLine(poly, px, py, ang) {
+  const nx = -Math.sin(ang);
+  const ny = Math.cos(ang);
+  const sideOf = ([qx, qy]) => (qx - px) * nx + (qy - py) * ny;
+  const left = [];
+  const right = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i];
+    const b = poly[(i + 1) % poly.length];
+    const sa = sideOf(a);
+    const sb = sideOf(b);
+    (sa >= 0 ? left : right).push(a);
+    if ((sa >= 0 && sb < 0) || (sa < 0 && sb >= 0)) {
+      const t = sa / (sa - sb);
+      const ix = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      left.push(ix);
+      right.push(ix);
+    }
+  }
+  return [left, right];
+}
+
+function polyArea(poly) {
+  let s = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const [x1, y1] = poly[i];
+    const [x2, y2] = poly[(i + 1) % poly.length];
+    s += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(s) / 2;
+}
+
+function drawPaperFolds(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = FOLD_PERSONALITIES[personality] || FOLD_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 43 + 13);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const cA = colors[Math.floor(rand() * colors.length)];
+  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  let facets = [
+    {
+      poly: [
+        [x, y],
+        [x + w, y],
+        [x + w, y + h],
+        [x, y + h],
+      ],
+      depth: 0,
+    },
+  ];
+  for (let k = 0; k < B.splits; k++) {
+    // always fold the largest facet (ORI's balance rule)
+    let bi = 0;
+    let bArea = -1;
+    for (let i = 0; i < facets.length; i++) {
+      const ar = polyArea(facets[i].poly);
+      if (ar > bArea) {
+        bArea = ar;
+        bi = i;
+      }
+    }
+    const f = facets[bi];
+    const cx = f.poly.reduce((s2, p2) => s2 + p2[0], 0) / f.poly.length;
+    const cy = f.poly.reduce((s2, p2) => s2 + p2[1], 0) / f.poly.length;
+    const baseAng = rand() < 0.5 ? 0 : Math.PI / 2; // fold axes lean axis-aligned
+    const ang = baseAng + (rand() - 0.5) * 2 * B.angleJitter;
+    const [la, ra] = splitPolyByLine(
+      f.poly,
+      cx + (rand() - 0.5) * 30,
+      cy + (rand() - 0.5) * 30,
+      ang,
+    );
+    if (la.length < 3 || ra.length < 3) continue;
+    facets.splice(bi, 1, { poly: la, depth: f.depth + 1 }, { poly: ra, depth: f.depth });
+  }
+  ctx.save();
+  ctx.lineWidth = P.lineWidth * 0.8;
+  for (const f of facets) {
+    const tone = Math.min(1, (f.depth / Math.max(1, B.splits)) * B.toneSpread + rand() * 0.15);
+    const col = lerpColorOklab(cA, cB, tone);
+    ctx.fillStyle = rgba(col, P.alphaFill * (0.6 + 0.5 * tone));
+    ctx.beginPath();
+    ctx.moveTo(f.poly[0][0], f.poly[0][1]);
+    for (let i = 1; i < f.poly.length; i++) ctx.lineTo(f.poly[i][0], f.poly[i][1]);
+    ctx.closePath();
+    ctx.fill();
+    // fold-line edge: the crease highlight
+    ctx.strokeStyle = rgba(col, P.alpha);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // scan-tides: horizontal scanlines carrying palette-blended triangle waves
 // whose period drifts row to row — the beat/sync-slip look of analog video.
 // RECIPE-ONLY port after LoVid's "Tide Predictor" (Art Blocks Curated #376,
@@ -1381,6 +1491,7 @@ export const DECOR_FAMILIES = {
   'folded-screens': drawFoldedScreens,
   'halftone-fade': drawHalftoneFade,
   'scan-tides': drawScanTides,
+  'paper-folds': drawPaperFolds,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1426,7 +1537,7 @@ const CLUSTER_AFFINITY = {
     'shard-mesh',
   ],
   financial: ['strata-lines', 'folded-screens', 'sediment-layers', 'shard-mesh', 'weave-dashes'],
-  hr: ['nib-flourish', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
+  hr: ['nib-flourish', 'paper-folds', 'ink-scribble', 'circle-pack', 'meadow-streaks'],
 };
 
 /**

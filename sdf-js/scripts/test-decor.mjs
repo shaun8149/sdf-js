@@ -689,5 +689,24 @@ function recCtx() {
   );
 }
 
+// ── Sprint 55: paper-folds (ORI recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'paper-folds', seed: 33 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(fills >= 4 && fills <= 12, `paper-folds yields few LARGE facets (${fills})`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(strokes === fills, 'paper-folds strokes each crease once per facet');
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'paper-folds', seed: 71 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'paper-folds', seed: 71 }, { palette, w: 640, h: 360 });
+  ok(JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops), 'paper-folds deterministic per seed');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
