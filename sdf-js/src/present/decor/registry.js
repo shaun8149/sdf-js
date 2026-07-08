@@ -1229,9 +1229,9 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
 // points touch) is what makes it a river, not a wiggle; drawing the CHANNEL
 // HISTORY (faded ancient courses) tells geological time.
 const RIVER_PERSONALITIES = {
-  calm: { iters: 60, migrate: 1.4, snapEvery: 20, cutoff: 14 },
-  balanced: { iters: 110, migrate: 2.0, snapEvery: 25, cutoff: 12 },
-  wild: { iters: 170, migrate: 2.8, snapEvery: 30, cutoff: 10 },
+  calm: { iters: 90, migrate: 2.2, snapEvery: 30, cutoff: 14 },
+  balanced: { iters: 150, migrate: 3.0, snapEvery: 40, cutoff: 12 },
+  wild: { iters: 220, migrate: 3.8, snapEvery: 55, cutoff: 10 },
 };
 
 function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
@@ -1257,15 +1257,18 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
   const oxbows = [];
   const MAX_PTS = 700; // meanders lengthen exponentially — hard budget
   for (let it = 0; it < B.iters && pts.length < MAX_PTS; it++) {
-    // curvature migration: each interior point flees the chord midpoint —
-    // bends grow, straights stay
+    // curvature migration on the LOW frequency: direction away from the
+    // ±L-window chord midpoint. (First attempt used the immediate-neighbor
+    // midpoint — that amplifies the highest frequency and yields sawtooth
+    // tangles, not meanders. Rivers bend at reach scale, not point scale.)
+    const L2 = 5;
     const next = [pts[0]];
     for (let i = 1; i + 1 < pts.length; i++) {
       const [px, py] = pts[i];
-      const mx = (pts[i - 1][0] + pts[i + 1][0]) / 2;
-      const my = (pts[i - 1][1] + pts[i + 1][1]) / 2;
-      let dx = px - mx;
-      let dy = py - my;
+      const a2 = pts[Math.max(0, i - L2)];
+      const b2 = pts[Math.min(pts.length - 1, i + L2)];
+      let dx = px - (a2[0] + b2[0]) / 2;
+      let dy = py - (a2[1] + b2[1]) / 2;
       const d = Math.hypot(dx, dy);
       if (d > 0.01) {
         dx /= d;
@@ -1276,14 +1279,22 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
         dx = Math.cos(a);
         dy = Math.sin(a);
       }
-      const k = Math.min(1, d / 6); // curvature-proportional
+      const k = Math.min(1, d / (seg * L2 * 0.4));
+      const margin = h * 0.06; // soft valley walls, not a 6px cliff
       next.push([
-        px + dx * B.migrate * (0.25 + k),
-        Math.max(y + 6, Math.min(y + h - 6, py + dy * B.migrate * (0.25 + k))),
+        px + dx * B.migrate * (0.15 + k),
+        Math.max(y + margin, Math.min(y + h - margin, py + dy * B.migrate * (0.15 + k))),
       ]);
     }
     next.push(pts[pts.length - 1]);
     pts = next;
+    // curvature diffusion: a light 3-point kernel keeps the channel smooth
+    for (let i = 1; i + 1 < pts.length; i++) {
+      pts[i] = [
+        0.25 * pts[i - 1][0] + 0.5 * pts[i][0] + 0.25 * pts[i + 1][0],
+        0.25 * pts[i - 1][1] + 0.5 * pts[i][1] + 0.25 * pts[i + 1][1],
+      ];
+    }
     // uniform resample
     const res = [pts[0]];
     for (let i = 1; i < pts.length; i++) {
