@@ -1,0 +1,258 @@
+<!doctype html>
+<!-- decor-showcase.html — Sprint 59 (方向 b): the decoration supply line as a
+     showcase. Three sections, all live client-side renders (no bake step):
+       1. 同内容 × N 铸造 — one slide, decor off vs four mints: the
+          provenance pitch, visualized.
+       2. 鉴宝 🎲 — mint a hash live, watch the same deck re-dress.
+       3. 家族谱系墙 — all 25 families × 3 variants, each with its lineage
+          credit (recipe-only ports, attribution as goodwill).
+     Usage: /examples/atoms-2d-demo/decor-showcase.html?theme=editorial-navy -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Decor Showcase — 永不重复的外衣</title>
+    <style>
+      body {
+        background: #0e0f12;
+        color: #dde;
+        font: 14px -apple-system, Inter, sans-serif;
+        margin: 0;
+        padding: 32px 24px 80px;
+      }
+      .wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 6px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 40px 0 4px;
+        color: #9ab;
+      }
+      .sub {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12.5px;
+        margin: 0 0 14px;
+        max-width: 760px;
+        line-height: 1.6;
+      }
+      .strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+      .strip figure,
+      .cards figure {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #fff;
+        border-radius: 8px;
+      }
+      figcaption {
+        font: 500 10.5px ui-monospace, Menlo, monospace;
+        color: #789;
+        margin-top: 4px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 14px;
+      }
+      .cards .fam {
+        font-weight: 700;
+        color: #cde;
+        font-size: 12px;
+        margin: 6px 0 2px;
+      }
+      .cards .credit {
+        color: rgba(255, 255, 255, 0.42);
+        font-size: 10.5px;
+        line-height: 1.5;
+      }
+      .cards .row3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+      }
+      #mint-wrap {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+      #mint-side {
+        padding-top: 8px;
+      }
+      #mint-btn {
+        font: 700 15px -apple-system, Inter, sans-serif;
+        padding: 12px 22px;
+        border: 0;
+        border-radius: 10px;
+        background: #2d6fd6;
+        color: #fff;
+        cursor: pointer;
+      }
+      #mint-id {
+        display: block;
+        margin: 14px 0 6px;
+        font: 600 13px ui-monospace, Menlo, monospace;
+        color: #cde;
+      }
+      #mint-note {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        line-height: 1.7;
+        max-width: 320px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>永不重复的外衣</h1>
+      <p class="sub">
+        Atlas 的每一份 deck 在生成时<b>铸造</b>一个 64 位随机 hash — 修饰纹理的每个决策都由它派生。
+        持有 hash 的作者可以永久复现这一件; 不知道 hash 的任何人, 用同样的文本和同样的工具, 也铸不出同一件。
+        这不是水印, 是生成艺术的 provenance。
+      </p>
+
+      <h2>同一页内容 · 五种存在</h2>
+      <p class="sub">最左是"裸"的一页; 右边四张是同一页内容的四次铸造 — 家族、纹理、性格全部由各自的 hash 决定。</p>
+      <div id="strip" class="strip"></div>
+
+      <h2>鉴宝 🎲</h2>
+      <p class="sub">现场铸一个 hash, 看同一页换一身衣服。</p>
+      <div id="mint-wrap">
+        <figure><canvas id="mint-canvas" width="1280" height="720"></canvas></figure>
+        <div id="mint-side">
+          <button id="mint-btn">🎲 铸造一件</button>
+          <span id="mint-id"></span>
+          <p id="mint-note">
+            这一件, 全宇宙只有持有这串 hash 的人能重开。截图可以复制像素, 复制不了"能再次生成它"这件事。
+          </p>
+        </div>
+      </div>
+
+      <h2>25 个纹理家族 · 谱系墙</h2>
+      <p class="sub">
+        从 Art Blocks Curated 108 项语料逐件研读而来 (docs/superpowers/artblocks-study/, 50 课)。
+        除 CC BY 的 Fragments 外全部为 recipe-only 独立重实现 — 学的是想法, 一行代码未取; 署名是敬意。
+      </p>
+      <div id="cards" class="cards"></div>
+    </div>
+
+    <script type="module">
+      import {
+        DECOR_FAMILIES,
+        DECOR_CREDITS,
+        drawDecor,
+        mintDecorHash,
+        decorFromHash,
+      } from '/src/present/decor/registry.js';
+      import { getTheme } from '/src/present/themes.js';
+      import { irDeckTo2DDeck } from '/src/scene/ir-to-2d.js';
+      import { renderSceneDataToCanvas } from '/src/present/atoms-2d/renderer.js';
+
+      const params = new URLSearchParams(location.search);
+      const theme = getTheme(params.get('theme') || 'editorial-navy');
+
+      // the one fixed slide everything wears — a magnitude chart (demo IR)
+      const IR = {
+        title: 'showcase',
+        slides: [
+          {
+            structure: 'magnitude',
+            nodes: ['Americas', 'EMEA', 'APAC'],
+            magnitude: [890, 420, 310],
+            emphasis: [0],
+            title: 'Revenue by Region',
+          },
+        ],
+      };
+      const deck = irDeckTo2DDeck(IR);
+      const slide = deck.slots[0];
+
+      async function renderSlide(canvas, decor) {
+        await renderSceneDataToCanvas(canvas, slide.sceneData, {
+          palette: deck.theme,
+          decor,
+        });
+      }
+
+      // ── 1. 同内容 × 铸造对比条 ──
+      const strip = document.getElementById('strip');
+      const fixedMints = ['', 'a3f2c8d1e5b74960', '5d81b2c4f7a30e96', 'c907e1a45f62d8b3', '1e6fd0a92c48b57e'];
+      for (const hash of fixedMints) {
+        const fig = document.createElement('figure');
+        const c = document.createElement('canvas');
+        c.width = 1280;
+        c.height = 720;
+        const cap = document.createElement('figcaption');
+        fig.appendChild(c);
+        fig.appendChild(cap);
+        strip.appendChild(fig);
+        if (!hash) {
+          cap.textContent = '裸 · 无修饰';
+          renderSlide(c, undefined);
+        } else {
+          const d = decorFromHash(deck.theme, hash);
+          cap.textContent = `#${hash.slice(0, 8)} · ${d.family}`;
+          renderSlide(c, d);
+        }
+      }
+
+      // ── 2. 鉴宝 🎲 ──
+      const mintCanvas = document.getElementById('mint-canvas');
+      const mintId = document.getElementById('mint-id');
+      async function mintOne() {
+        const hash = mintDecorHash();
+        const d = decorFromHash(deck.theme, hash);
+        await renderSlide(mintCanvas, d);
+        mintId.textContent = `作品 #${hash} · ${d.family} · ${d.personality} · v${d.v}`;
+      }
+      document.getElementById('mint-btn').addEventListener('click', mintOne);
+      mintOne();
+
+      // ── 3. 谱系墙 ──
+      const cards = document.getElementById('cards');
+      for (const family of Object.keys(DECOR_FAMILIES)) {
+        const card = document.createElement('figure');
+        const row = document.createElement('div');
+        row.className = 'row3';
+        for (let i = 0; i < 3; i++) {
+          const c = document.createElement('canvas');
+          c.width = 320;
+          c.height = 180;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = `rgb(${theme.bg.join(',')})`;
+          ctx.fillRect(0, 0, 320, 180);
+          const hash = mintDecorHash();
+          const minted = decorFromHash(theme, hash);
+          drawDecor(
+            ctx,
+            { family, seed: minted.seed, personality: minted.personality, hash, v: minted.v },
+            { palette: theme, x: 0, y: 0, w: 320, h: 180, intensity: 'medium' },
+          );
+          row.appendChild(c);
+        }
+        const name = document.createElement('div');
+        name.className = 'fam';
+        name.textContent = family;
+        const credit = document.createElement('div');
+        credit.className = 'credit';
+        const cr = DECOR_CREDITS[family];
+        credit.textContent = cr ? `after ${cr.after} — ${cr.by} · ${cr.src}` : '';
+        card.appendChild(row);
+        card.appendChild(name);
+        card.appendChild(credit);
+        cards.appendChild(card);
+      }
+    </script>
+  </body>
+</html>

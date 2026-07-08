@@ -76,8 +76,12 @@ themeEl.addEventListener('change', async () => {
   try {
     rethemeDeck(currentDeck, themeEl.value);
     if (currentDeck.decor?.hash)
-      currentDeck.decor = decorFromHash(currentDeck.theme, currentDeck.decor.hash);
+      currentDeck.decor = mintDecor(currentDeck.theme, {
+        hash: currentDeck.decor.hash,
+        v: currentDeck.decor.v,
+      });
     await renderDeck(currentDeck);
+    syncProvenance();
     setStatus(`theme → ${themeEl.value} (re-rendered, exports follow)`);
   } catch (e) {
     setStatus(`theme switch failed: ${e.message}`, true);
@@ -106,11 +110,100 @@ const setStatus = (msg, err = false) => {
 
 // Decoration provenance (Sprint 41): the hash is MINTED per generation
 // (crypto-random, fxhash-style) — never derived from the content. ?hash=
-// re-opens an existing work; otherwise every Generate mints a new one.
-function currentMintHash() {
-  const urlHash = new URLSearchParams(location.search).get('hash');
-  return urlHash || mintDecorHash();
+// re-opens an existing work — consumed ONCE, so later Generates mint fresh
+// (Sprint 58: we now write the hash back into the address bar, and without
+// the consume-once rule that would pin every subsequent mint).
+let pendingUrlHash = new URLSearchParams(location.search).get('hash');
+// ?v= pins the engine version the artifact was MINTED under (freeze
+// contract: a v1 work re-opened must NOT run through the v2 pipeline).
+// It is consumed together with ?hash — a later fresh Generate mints at
+// the current DECOR_V, not the pinned one. ?at= is the VIEW layer:
+// re-render any calendar-event look on demand, identity untouched.
+let pendingUrlV = parseInt(new URLSearchParams(location.search).get('v'), 10) || undefined;
+const viewAt = new URLSearchParams(location.search).get('at') || undefined;
+function currentMint() {
+  const h = pendingUrlHash;
+  const v = pendingUrlV;
+  pendingUrlHash = null;
+  pendingUrlV = undefined;
+  return h ? { hash: h, v } : { hash: mintDecorHash(), v: undefined };
 }
+function mintDecor(theme, { hash, v }) {
+  const d = decorFromHash(theme, hash, v ? { v } : {});
+  if (viewAt) d.at = viewAt;
+  return d;
+}
+
+// ── Sprint 58: decoration as a product surface ────────────────────────────
+// 换装 (re-dress) re-mints ONLY the decoration — content, theme and locks
+// untouched; the provenance chip makes "持 hash 可复现" a button instead of
+// a sentence; the decor toggle is a VIEW control (legibility escape hatch —
+// identity stays in the hash, per the URL-view-layer idiom from Gazers).
+const redressEl = document.getElementById('redress');
+const decorVisEl = document.getElementById('decorvis');
+const provEl = document.getElementById('prov');
+
+function slotDecor(deck, slot) {
+  if (!deck.decor || decorVisEl.value === 'off') return undefined;
+  return { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) };
+}
+
+function reopenUrl(hash, v) {
+  return `${location.origin}${location.pathname}?hash=${hash}${v ? `&v=${v}` : ''}`;
+}
+
+function syncProvenance() {
+  const d = currentDeck?.decor;
+  if (!d?.hash) {
+    provEl.hidden = true;
+    redressEl.disabled = true;
+    decorVisEl.disabled = true;
+    return;
+  }
+  provEl.hidden = false;
+  redressEl.disabled = false;
+  decorVisEl.disabled = false;
+  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality} · v${d.v ?? 1}`;
+  // the address bar IS the provenance link (safe: ?hash is consume-once);
+  // preserve other params (?demo=1 etc.) — only the hash slot is ours
+  const qs = new URLSearchParams(location.search);
+  qs.set('hash', d.hash);
+  if (d.v) qs.set('v', String(d.v));
+  history.replaceState(null, '', `?${qs.toString()}`);
+}
+
+provEl.addEventListener('click', async () => {
+  const d = currentDeck?.decor;
+  if (!d?.hash) return;
+  try {
+    await navigator.clipboard.writeText(reopenUrl(d.hash, d.v));
+    setStatus(`已复制复现链接 — 持有它可永久重开这件作品 (#${String(d.hash).slice(0, 8)})`);
+  } catch {
+    setStatus(reopenUrl(d.hash, d.v)); // clipboard blocked: show it instead
+  }
+});
+
+redressEl.addEventListener('click', async () => {
+  if (!currentDeck) return;
+  redressEl.disabled = true;
+  try {
+    currentDeck.decor = mintDecor(currentDeck.theme, { hash: mintDecorHash() });
+    await renderDeck(currentDeck);
+    syncProvenance();
+    const d = currentDeck.decor;
+    setStatus(`已换装 — 作品 #${String(d.hash).slice(0, 8)} (${d.family} · ${d.personality})`);
+  } catch (e) {
+    setStatus(`换装失败: ${e.message}`, true);
+  } finally {
+    redressEl.disabled = false;
+  }
+});
+
+decorVisEl.addEventListener('change', async () => {
+  if (!currentDeck) return;
+  await renderDeck(currentDeck);
+  setStatus(decorVisEl.value === 'off' ? '修饰已隐藏 (导出同样不含)' : '修饰已恢复');
+});
 
 async function renderDeck(deck) {
   slidesEl.innerHTML = '';
@@ -129,9 +222,7 @@ async function renderDeck(deck) {
     slidesEl.appendChild(card);
     await renderSceneDataToCanvas(canvas, slot.sceneData, {
       palette: deck.theme,
-      decor: deck.decor
-        ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) }
-        : undefined,
+      decor: slotDecor(deck, slot),
     });
   }
 }
@@ -183,9 +274,7 @@ function attachSlideControls(card, canvas, deck, slot) {
       const sceneData = await reliftSlot(currentDeck, slot.slotIdx, { apiKey, revision });
       await renderSceneDataToCanvas(canvas, sceneData, {
         palette: deck.theme,
-        decor: deck.decor
-          ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) }
-          : undefined,
+        decor: slotDecor(deck, slot),
       });
       editRow.classList.remove('open');
       editInput.value = '';
@@ -255,7 +344,7 @@ async function generate() {
       if (currentDeck.errors?.length) {
         console.warn('[full-deck] slot errors:', currentDeck.errors);
       }
-      currentDeck.decor = decorFromHash(currentDeck.theme, currentMintHash());
+      currentDeck.decor = mintDecor(currentDeck.theme, currentMint());
       await renderDeck(currentDeck);
       const errNote = currentDeck.errors?.length
         ? ` (${currentDeck.errors.length} slot(s) failed — see console)`
@@ -266,6 +355,7 @@ async function generate() {
       exportPptxEl.disabled = false;
       exportPdfEl.disabled = false;
       syncThemeSelect();
+      syncProvenance();
       return;
     }
     let irDeck;
@@ -280,9 +370,11 @@ async function generate() {
       `rendering ${irDeck.slides.length} slide${irDeck.slides.length > 1 ? 's' : ''}: ${irDeck.slides.map((s) => s.structure).join(' → ')}`,
     );
     currentDeck = irDeckTo2DDeck(irDeck);
-    currentDeck.decor = decorFromHash(
+    // demo default is a fixed hash (deterministic screenshots), but an
+    // explicit ?hash= re-open wins even in demo — provenance is testable
+    currentDeck.decor = mintDecor(
       currentDeck.theme,
-      DEMO_MODE ? 'demo-fixed-hash' : currentMintHash(),
+      DEMO_MODE && !pendingUrlHash ? { hash: 'demo-fixed-hash' } : currentMint(),
     );
     window.__atlasDeck = currentDeck; // QA/debug handle
     await renderDeck(currentDeck);
@@ -292,6 +384,7 @@ async function generate() {
     exportPptxEl.disabled = false;
     exportPdfEl.disabled = false;
     syncThemeSelect();
+    syncProvenance();
   } catch (e) {
     setStatus(e.message, true);
   } finally {
@@ -305,7 +398,10 @@ async function doExport(format) {
   btn.disabled = true;
   try {
     const fn = format === 'pptx' ? exportDeckToPPTX : exportDeckToPDF;
-    const result = await fn(currentDeck, {
+    // decor toggle applies to exports too — screen and file must match
+    const deckForExport =
+      decorVisEl.value === 'off' ? { ...currentDeck, decor: undefined } : currentDeck;
+    const result = await fn(deckForExport, {
       onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
     });
     setStatus(`downloaded: ${result.filename}`);

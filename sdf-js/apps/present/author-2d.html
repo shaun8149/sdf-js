@@ -144,6 +144,25 @@
       #status.err {
         color: #ff9a8a;
       }
+      /* provenance chip — the artwork's identity, click to copy its re-open link */
+      #prov {
+        position: fixed;
+        left: 50%;
+        bottom: 108px;
+        transform: translateX(-50%);
+        z-index: 20;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: rgba(20, 22, 28, 0.9);
+        color: rgba(255, 255, 255, 0.55);
+        font: 500 11px ui-monospace, Menlo, monospace;
+        cursor: pointer;
+      }
+      #prov:hover {
+        color: #fff;
+        border-color: rgba(90, 150, 250, 0.7);
+      }
       .slide-card {
         position: relative;
       }
@@ -256,6 +275,7 @@
       <div id="slides"></div>
     </div>
     <div id="keyrow"><input id="key" type="password" placeholder="Anthropic API key (BYOK, stays local)" /></div>
+    <button id="prov" hidden title="点击复制这件作品的复现链接 — 持链接永久复现同一修饰"></button>
     <div id="status">describe what you want to present — Atlas builds the deck</div>
     <div id="bar">
       <textarea id="prompt" placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"></textarea>
@@ -266,6 +286,11 @@
       <button id="go">Generate</button>
       <div id="exportRow">
         <select id="theme" disabled title="换主题 (零成本, 即时重渲染)"></select>
+        <button id="redress" disabled title="换装 — 重铸修饰纹理 (内容不动, 零成本)">🎨</button>
+        <select id="decorvis" disabled title="修饰纹理显示">
+          <option value="on">修饰 · 开</option>
+          <option value="off">修饰 · 关</option>
+        </select>
         <button id="export-pptx" disabled>⬇ PPTX</button>
         <button id="export-pdf" disabled>⬇ PDF</button>
       </div>
