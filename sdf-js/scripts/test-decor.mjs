@@ -415,5 +415,46 @@ function recCtx() {
   );
 }
 
+// ── Sprint 49: personality bundles (Golid lesson) ──
+{
+  // FREEZE regression: absent personality === 'balanced', pixel-identical —
+  // every pre-personality mint keeps its artwork.
+  for (const family of ['flow-ribbons', 'wash-flow', 'sediment-layers']) {
+    const a = recCtx();
+    const b = recCtx();
+    drawDecor(a.ctx, { family, seed: 6 }, { palette, w: 640, h: 360 });
+    drawDecor(b.ctx, { family, seed: 6, personality: 'balanced' }, { palette, w: 640, h: 360 });
+    ok(
+      JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+      `${family}: absent personality renders identical to 'balanced' (freeze)`,
+    );
+    const c = recCtx();
+    drawDecor(c.ctx, { family, seed: 6, personality: 'wild' }, { palette, w: 640, h: 360 });
+    ok(
+      JSON.stringify(a.rec.ops) !== JSON.stringify(c.rec.ops),
+      `${family}: 'wild' personality differs`,
+    );
+  }
+  // minted decor carries a deterministic personality from its own lane
+  const t = { id: 'organic-teal', macroCluster: 'organic' };
+  const d1 = decorFromHash(t, 'a1b2c3d4e5f60718');
+  const d2 = decorFromHash(t, 'a1b2c3d4e5f60718');
+  ok(d1.personality === d2.personality, 'personality deterministic per hash');
+  const seen = new Set();
+  for (const h of [
+    '1111111111111111',
+    '2222222222222222',
+    '3333333333333333',
+    '4444444444444444',
+    '5555555555555555',
+    '6666666666666666',
+    '7777777777777777',
+    '8888888888888888',
+  ]) {
+    seen.add(decorFromHash(t, h).personality);
+  }
+  ok(seen.size >= 2, `personalities vary across hashes (${[...seen].join(',')})`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
