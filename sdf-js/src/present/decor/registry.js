@@ -1216,6 +1216,73 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
   ctx.restore();
 }
 
+// halftone-fade: a halftone dot screen sampling a soft brush field — dot
+// radius encodes field intensity, the print-raster look. RECIPE-ONLY port
+// after itsgalo's "RASTER" (Art Blocks Curated #341, CC BY-NC 4.0 —
+// independent reimplementation; see docs/superpowers/artblocks-study/
+// 20-raster-itsgalo.md). Idioms taken as ideas: the image is a FIELD (soft
+// radial brush stamps accumulated into a buffer) and the STYLE is a sampling
+// screen over it (dot size = local field value) — separating the content
+// field from the raster screen is the whole architecture. The GPU feedback
+// pass of the original is not ported — static screen only.
+const HALFTONE_PERSONALITIES = {
+  calm: { cell: 15, blobs: 2, gamma: 1.5, jitter: 0 },
+  balanced: { cell: 12, blobs: 3, gamma: 1.15, jitter: 0.12 },
+  wild: { cell: 9, blobs: 5, gamma: 0.85, jitter: 0.3 },
+};
+
+function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = HALFTONE_PERSONALITIES[personality] || HALFTONE_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 97 + 3);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  // brush field: a few soft radial stamps (alpha falls off with squared
+  // linear distance from the center, like RASTER's drawBrush buffer)
+  const blobs = [];
+  for (let i = 0; i < B.blobs; i++) {
+    blobs.push({
+      cx: x + rand() * w,
+      cy: y + rand() * h,
+      r: (0.25 + rand() * 0.45) * Math.min(w, h),
+      amp: 0.55 + rand() * 0.45,
+      col: colors[Math.floor(rand() * colors.length)],
+    });
+  }
+  const field = (px, py) => {
+    let v = 0;
+    let nearest = blobs[0];
+    let best = Infinity;
+    for (const bl of blobs) {
+      const d = Math.hypot(px - bl.cx, py - bl.cy);
+      const t = Math.max(0, 1 - d / bl.r);
+      v += bl.amp * t * t;
+      if (d < best) {
+        best = d;
+        nearest = bl;
+      }
+    }
+    return [Math.min(1, v), nearest.col];
+  };
+  ctx.save();
+  const cell = B.cell;
+  let row = 0;
+  for (let gy = y + cell / 2; gy < y + h; gy += cell, row++) {
+    const off = row % 2 === 0 ? 0 : cell / 2; // offset rows = print-rosette feel
+    for (let gx = x + cell / 2 + off; gx < x + w; gx += cell) {
+      const jx = B.jitter ? (rand() - 0.5) * cell * B.jitter : 0;
+      const jy = B.jitter ? (rand() - 0.5) * cell * B.jitter : 0;
+      const [v, col] = field(gx, gy);
+      const radius = cell * 0.46 * Math.pow(v, B.gamma);
+      if (radius < 0.4) continue;
+      ctx.fillStyle = rgba(col, P.alphaFill * 1.6);
+      ctx.beginPath();
+      ctx.arc(gx + jx, gy + jy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -1245,6 +1312,7 @@ export const DECOR_FAMILIES = {
   'drift-web': drawDriftWeb,
   'cargo-dashes': drawCargoDashes,
   'folded-screens': drawFoldedScreens,
+  'halftone-fade': drawHalftoneFade,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1261,6 +1329,7 @@ const CLUSTER_AFFINITY = {
     'meadow-streaks',
   ],
   pitch: [
+    'halftone-fade',
     'block-mosaic',
     'hex-lattice',
     'drift-web',
@@ -1269,7 +1338,14 @@ const CLUSTER_AFFINITY = {
     'circle-pack',
     'flow-ribbons',
   ],
-  organic: ['wash-flow', 'sediment-layers', 'meadow-streaks', 'flow-ribbons', 'circle-pack'],
+  organic: [
+    'wash-flow',
+    'halftone-fade',
+    'sediment-layers',
+    'meadow-streaks',
+    'flow-ribbons',
+    'circle-pack',
+  ],
   consulting: [
     'block-mosaic',
     'hex-lattice',

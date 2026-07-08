@@ -636,5 +636,28 @@ function recCtx() {
   );
 }
 
+// ── Sprint 54: halftone-fade (RASTER recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'halftone-fade', seed: 41 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const arcs = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(arcs > 80, `halftone-fade draws a dot screen (${arcs} dots)`);
+  // dot radii vary with the field (not a uniform grid of equal dots)
+  const radii = new Set(rec.ops.filter((o) => o[0] === 'arc').map((o) => o[3].toFixed(2)));
+  ok(radii.size > 10, `halftone-fade dot radius encodes field value (${radii.size} radii)`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'halftone-fade', seed: 55 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'halftone-fade', seed: 55 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'halftone-fade deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
