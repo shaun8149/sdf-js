@@ -1063,6 +1063,99 @@ function drawDriftWeb(ctx, { palette, seed, x, y, w, h, intensity, personality }
   ctx.restore();
 }
 
+// cargo-dashes: stacked rectangular blocks, each textured by one painter from
+// a small dictionary of dashed-line fills. RECIPE-ONLY port after Kim
+// Asendorf's "Cargo" (Art Blocks Curated #426, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/17-cargo-asendorf.md).
+// Idioms taken as ideas: a PAINTER DICTIONARY (each entry fills a rect with
+// one dash discipline), power-of-two line spacing (yStep = 2^k keeps mixed
+// blocks rhythmically compatible), integer dash patterns [a, b] with a,b in
+// 1..8 (container-marking feel). The GPU motion pass of the original is not
+// ported — static composition only.
+const CARGO_PERSONALITIES = {
+  calm: { rows: 3, minBlocks: 2, maxBlocks: 3, painters: 2 },
+  balanced: { rows: 4, minBlocks: 2, maxBlocks: 4, painters: 3 },
+  wild: { rows: 5, minBlocks: 3, maxBlocks: 6, painters: 4 },
+};
+
+function drawCargoDashes(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = CARGO_PERSONALITIES[personality] || CARGO_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 53 + 11);
+  const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  const painters = [
+    // horizontal dashed lines, power-of-two spacing
+    (bx, by, bw, bh, col) => {
+      const yStep = Math.pow(2, 1 + Math.floor(rand() * 3)) * 2;
+      const dash = [1 + Math.floor(rand() * 8), 1 + Math.floor(rand() * 8)];
+      ctx.setLineDash(dash);
+      for (let ly = by + yStep / 2; ly < by + bh; ly += yStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(bx, ly);
+        ctx.lineTo(bx + bw, ly);
+        ctx.stroke();
+      }
+    },
+    // vertical dashed lines
+    (bx, by, bw, bh, col) => {
+      const xStep = Math.pow(2, 1 + Math.floor(rand() * 3)) * 2;
+      const dash = [1 + Math.floor(rand() * 8), 1 + Math.floor(rand() * 8)];
+      ctx.setLineDash(dash);
+      for (let lx = bx + xStep / 2; lx < bx + bw; lx += xStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(lx, by);
+        ctx.lineTo(lx, by + bh);
+        ctx.stroke();
+      }
+    },
+    // sparse dotted rows (long gaps)
+    (bx, by, bw, bh, col) => {
+      const yStep = Math.pow(2, 2 + Math.floor(rand() * 2)) * 2;
+      const dot = 1 + Math.floor(rand() * 2);
+      ctx.setLineDash([dot, dot * (3 + Math.floor(rand() * 4))]);
+      for (let ly = by + yStep / 2; ly < by + bh; ly += yStep) {
+        ctx.strokeStyle = rgba(col, P.alpha);
+        ctx.beginPath();
+        ctx.moveTo(bx, ly);
+        ctx.lineTo(bx + bw, ly);
+        ctx.stroke();
+      }
+    },
+    // faint solid fill + frame (container face)
+    (bx, by, bw, bh, col) => {
+      ctx.setLineDash([]);
+      ctx.fillStyle = rgba(col, P.alphaFill * 0.7);
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.strokeStyle = rgba(col, P.alpha);
+      ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
+    },
+  ].slice(0, B.painters);
+  ctx.save();
+  ctx.lineWidth = P.lineWidth * 0.9;
+  const rowH = h / B.rows;
+  for (let r = 0; r < B.rows; r++) {
+    const by = y + r * rowH;
+    const nBlocks = B.minBlocks + Math.floor(rand() * (B.maxBlocks - B.minBlocks + 1));
+    // random split of the row width into nBlocks with gaps
+    const cuts = [0];
+    for (let i = 1; i < nBlocks; i++) cuts.push(rand());
+    cuts.sort((a, b) => a - b);
+    cuts.push(1);
+    for (let i = 0; i < nBlocks; i++) {
+      const bx = x + cuts[i] * w + 4;
+      const bw = (cuts[i + 1] - cuts[i]) * w - 8;
+      if (bw < 12) continue;
+      const painter = painters[Math.floor(rand() * painters.length)];
+      const col = colors[Math.floor(rand() * colors.length)];
+      painter(bx, by + 5, bw, rowH - 10, col);
+    }
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
 // --- registry ----------------------------------------------------------------
 
 // FREEZE DISCIPLINE (Sprint 43, the complete fxhash lesson): fxhash's
@@ -1090,6 +1183,7 @@ export const DECOR_FAMILIES = {
   'nib-flourish': drawNibFlourish,
   'hex-lattice': drawHexLattice,
   'drift-web': drawDriftWeb,
+  'cargo-dashes': drawCargoDashes,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
@@ -1099,6 +1193,7 @@ const CLUSTER_AFFINITY = {
     'flow-ribbons',
     'wash-flow',
     'ink-scribble',
+    'cargo-dashes',
     'flow-streams',
     'shard-mesh',
     'meadow-streaks',

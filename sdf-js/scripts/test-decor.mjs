@@ -586,5 +586,27 @@ function recCtx() {
   );
 }
 
+// ── Sprint 54: cargo-dashes (Cargo recipe-only) ──
+{
+  const { ctx, rec } = recCtx();
+  drawDecor(
+    ctx,
+    { family: 'cargo-dashes', seed: 26 },
+    { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
+  );
+  const dashes = rec.ops.filter((o) => o[0] === 'setLineDash').length;
+  ok(dashes > 4, `cargo-dashes sets per-block dash patterns (${dashes})`);
+  const strokes = rec.ops.filter((o) => o[0] === 'stroke' || o[0] === 'strokeRect').length;
+  ok(strokes > 30, `cargo-dashes strokes many textured lines (${strokes})`);
+  const a = recCtx();
+  const b = recCtx();
+  drawDecor(a.ctx, { family: 'cargo-dashes', seed: 64 }, { palette, w: 640, h: 360 });
+  drawDecor(b.ctx, { family: 'cargo-dashes', seed: 64 }, { palette, w: 640, h: 360 });
+  ok(
+    JSON.stringify(a.rec.ops) === JSON.stringify(b.rec.ops),
+    'cargo-dashes deterministic per seed',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
