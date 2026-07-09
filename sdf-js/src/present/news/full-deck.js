@@ -193,12 +193,15 @@ export async function reliftSlot(
 ) {
   const slot = deck.slots.find((s) => s.slotIdx === slotIdx);
   if (!slot) throw new Error(`reliftSlot: no slot with slotIdx ${slotIdx}`);
+  if (slot.locked) throw new Error(`reliftSlot: slot ${slotIdx} is locked`);
   if (!slot.liftParams)
     throw new Error(
       'reliftSlot: slot has no liftParams (quick-mode decks cannot re-roll per slide)',
     );
   const systemPrompt = await getSystemPrompt();
+  if (slot.locked) throw new Error(`reliftSlot: slot ${slotIdx} is locked`);
   const { sceneData } = await liftFn({ ...slot.liftParams, revision }, { apiKey, systemPrompt });
+  if (slot.locked) throw new Error(`reliftSlot: slot ${slotIdx} is locked`);
   slot.sceneData = sceneData;
   return sceneData;
 }
