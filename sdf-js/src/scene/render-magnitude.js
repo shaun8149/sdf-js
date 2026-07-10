@@ -207,7 +207,10 @@ export function renderMagnitude(ir, opts = {}) {
       revealAt,
     });
     overlay.push({
-      text: String(mag[i]),
+      // ir.display[i]: the human formatting of the number ("$240.5M") — IR
+      // magnitude is a bare number for geometry, but the label must not lose
+      // the 2D end's formatting (Rule 18-24: numbers are payload).
+      text: (ir.display && ir.display[i]) || String(mag[i]),
       anchor: [x, H + 0.32, 0],
       role: 'value',
       radius: emphasis.has(i) ? 0.5 : 0.36,

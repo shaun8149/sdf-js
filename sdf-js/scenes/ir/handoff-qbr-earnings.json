@@ -1,0 +1,134 @@
+{
+  "title": "eval-qbr-earnings",
+  "slides": [
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Average Price",
+        "Remaining Authorization"
+      ],
+      "magnitude": [
+        147.07,
+        240500000
+      ],
+      "display": [
+        "$147.07",
+        "$240.5M"
+      ],
+      "emphasis": [
+        1
+      ],
+      "title": "Executive Statement"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Operating Income",
+        "Net Income",
+        "EPS"
+      ],
+      "magnitude": [
+        30600000,
+        16500000,
+        0.19
+      ],
+      "emphasis": [
+        0
+      ],
+      "title": "GAAP Performance"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Current Cash Position",
+        "Prior Year-End"
+      ],
+      "magnitude": [
+        1146800000,
+        1483200000
+      ],
+      "display": [
+        "$1,146.8M",
+        "$1,483.2M"
+      ],
+      "emphasis": [
+        1
+      ],
+      "title": "Balance Sheet"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "GAAP Operating Income",
+        "Non-GAAP Operating Income",
+        "Operating Cash Flow"
+      ],
+      "magnitude": [
+        129,
+        319,
+        372.5
+      ],
+      "emphasis": [
+        2
+      ],
+      "title": "FY 2026 Outlook (Midpoints)"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Non-GAAP Operating Income",
+        "Non-GAAP EPS"
+      ],
+      "magnitude": [
+        69,
+        49
+      ],
+      "display": [
+        "+69%",
+        "+49%"
+      ],
+      "emphasis": [
+        0
+      ],
+      "title": "Key Ratios"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Subscription & Support Revenue",
+        "Annual Recurring Revenue"
+      ],
+      "magnitude": [
+        244700000,
+        1147000000
+      ],
+      "display": [
+        "$244.7M",
+        "$1,147M"
+      ],
+      "emphasis": [
+        1
+      ],
+      "title": "Segment Analysis"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Revenue Growth",
+        "ARR Growth"
+      ],
+      "magnitude": [
+        27,
+        19
+      ],
+      "display": [
+        "27%",
+        "19%"
+      ],
+      "emphasis": [
+        0
+      ],
+      "title": "Outlook & Forecast"
+    }
+  ]
+}
