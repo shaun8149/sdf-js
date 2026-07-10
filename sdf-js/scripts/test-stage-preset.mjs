@@ -53,5 +53,42 @@ ok(viaOpts.subjects.some((s) => s.id === 'stage-platform'), 'renderIR(ir, {stage
 const noStage = renderIR(ir, {});
 ok(!noStage.subjects.some((s) => s.id === 'stage-platform'), 'renderIR without stage is unchanged');
 
+// platform fits the structure: a wide magnitude row gets a bigger disc than a funnel
+{
+  const wideIr = {
+    structure: 'magnitude',
+    nodes: ['ANZ', 'LATAM', 'Americas', 'APAC', 'EMEA'],
+    magnitude: [95, 150, 890, 620, 340],
+    title: 'Revenue',
+  };
+  const wide = renderIR(wideIr, { stage: true });
+  const pWide = wide.subjects.find((s) => s.id === 'stage-platform');
+  const pFunnel = viaOpts.subjects.find((s) => s.id === 'stage-platform');
+  ok(pWide.args.radius > pFunnel.args.radius, 'platform radius adapts to the structure spread');
+  // every non-stage subject sits within the disc (XZ)
+  const inside = wide.subjects
+    .filter((s) => s.id !== 'stage-platform' && !s.id.startsWith('__stage'))
+    .every((s) => {
+      const tr = (s.transform && s.transform.translate) || [0, 0, 0];
+      return Math.hypot(tr[0] - pWide.transform.translate[0], tr[2] - pWide.transform.translate[2]) <= pWide.args.radius;
+    });
+  ok(inside, 'all structure subjects sit on the platform');
+}
+
+// deck: assembleDeck({stage:true}) → per-station platforms + deck theatre defaults
+{
+  const { assembleDeck } = await import('../src/scene/assemble-deck.js');
+  const deck = { title: 't', slides: [ir, { structure: 'hierarchy', nodes: ['A', 'B', 'C'], relations: [[0, 1], [0, 2]], title: 'Org' }] };
+  const staged = assembleDeck(deck, { stage: true });
+  const platforms = staged.subjects.filter((s) => s.id.includes('stage-platform'));
+  ok(platforms.length === 2, 'deck: one platform per station');
+  ok(platforms[0].transform.translate[0] !== platforms[1].transform.translate[0], 'platforms sit at their stations');
+  ok(staged.defaults.glow && staged.defaults.glow.amount > 0, 'deck theatre: glow on');
+  ok(staged.defaults.postFx && staged.defaults.postFx.vignetteStrength > 0, 'deck theatre: vignette on');
+  const plain = assembleDeck(deck, {});
+  ok(!plain.subjects.some((s) => s.id.includes('stage-platform')), 'deck without stage unchanged (no platforms)');
+  ok(!plain.defaults.glow, 'deck without stage unchanged (no glow)');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

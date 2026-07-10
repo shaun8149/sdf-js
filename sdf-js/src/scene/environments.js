@@ -230,13 +230,29 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
     ];
   }
 
-  // (c) platform: flat dark disc under the structure (the "stage floor")
+  // (c) platform: flat dark disc under the structure (the "stage floor").
+  // Fit to the structure: different renderers spread differently (a funnel is a
+  // column; a tree or a bar row spans ±3 in X) — size/centre the disc from the
+  // subjects' XZ footprint so nothing hangs off the stage.
   if (!out.subjects.some((s) => s.id === 'stage-platform')) {
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const s of out.subjects) {
+      if (typeof s.id === 'string' && s.id.startsWith('__stage')) continue;
+      const tr = (s.transform && s.transform.translate) || [0, 0, 0];
+      minX = Math.min(minX, tr[0]); maxX = Math.max(maxX, tr[0]);
+      minZ = Math.min(minZ, tr[2]); maxZ = Math.max(maxZ, tr[2]);
+    }
+    const cx = Number.isFinite(minX) ? (minX + maxX) / 2 : center[0];
+    const cz = Number.isFinite(minZ) ? (minZ + maxZ) / 2 : center[2];
+    const spread = Number.isFinite(minX)
+      ? Math.max(Math.hypot(maxX - cx, maxZ - cz), Math.hypot(cx - minX, cz - minZ))
+      : 0;
+    const radius = Math.max(2.6, spread + 1.6);
     out.subjects.push({
       id: 'stage-platform',
       type: 'cylinder',
-      args: { radius: 2.6, height: 0.12 },
-      transform: { translate: [center[0], 0.06, center[2]] },
+      args: { radius, height: 0.12 },
+      transform: { translate: [cx, 0.06, cz] },
       material: { hue: 0.62, sat: 0.12, value: 0.22, kind: 'normal', roughness: 0.75, clearcoat: 0.1 },
     });
   }
