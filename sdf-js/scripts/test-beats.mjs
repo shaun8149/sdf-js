@@ -18,12 +18,16 @@ const seq = {
   ],
 };
 const beats = deriveBeats(seq);
-ok(beats.length === 4, '4 beats (super, station0, station1, finale)');
-ok(beats.map((b) => b.kind).join(',') === 'super,station,station,finale', 'kinds in timeline order');
-ok(Math.abs(beats[0].t - 1.5) < 1e-9, 'super boundary at end of its shot (1.0+0.5)');
-ok(Math.abs(beats[1].t - 3.0) < 1e-9, 'station0 boundary includes untagged lead-in');
-ok(Math.abs(beats[3].t - 9.2) < 1e-9, 'finale boundary = total duration');
-ok(beats[0].station === 0 && beats[2].station === 1, 'station attribution carried');
+ok(beats.length === 5, '5 beats (pre-super, super, station0, station1, finale)');
+ok(
+  beats.map((b) => b.kind).join(',') === 'pre-super,super,station,station,finale',
+  'kinds in timeline order (super yields a wind-up boundary before the punch)',
+);
+ok(Math.abs(beats[0].t - 1.0) < 1e-9, 'pre-super boundary right before the punch-in shot');
+ok(Math.abs(beats[1].t - 1.5) < 1e-9, 'super boundary at end of its shot (1.0+0.5)');
+ok(Math.abs(beats[2].t - 3.0) < 1e-9, 'station0 boundary includes untagged lead-in');
+ok(Math.abs(beats[4].t - 9.2) < 1e-9, 'finale boundary = total duration');
+ok(beats[0].station === 0 && beats[3].station === 1, 'station attribution carried');
 
 // untagged sequence → one beat spanning everything (fallback)
 const plain = deriveBeats({ shots: [{ duration: 2 }, { duration: 3 }] });

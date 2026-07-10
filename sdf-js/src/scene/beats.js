@@ -21,6 +21,16 @@ export function deriveBeats(cameraSequence) {
   const beats = [];
   let clock = 0;
   for (const sh of shots) {
+    // A super is the presenter's PUNCHLINE, and it cuts in BEFORE the station
+    // payoff on the visual timeline — while a speech puts the punchline after
+    // the narration. Resolve the order clash with TWO boundaries per super:
+    // 'pre-super' = the wind-up hold right before the punch-in (the presenter
+    // narrates over the settled shot), then the punch itself fires on the next
+    // press. This also makes pure beat-stepping feel right: arrive → hold →
+    // press → BAM.
+    if (sh.beat === 'super' && clock > 0) {
+      beats.push({ t: clock, station: sh.station ?? null, kind: 'pre-super' });
+    }
     clock += sh.duration || 0;
     if (sh.beat) {
       beats.push({ t: clock, station: sh.station ?? null, kind: sh.beat });

@@ -15,21 +15,28 @@ export function attachPresenter({ studio, scene, script = null }) {
   // span: {text, station, kind:'station'|'super'|'hold'}. A span targets the
   // matching beat (same station + kind); 'hold' spans target the previous
   // span's beat (talk, no camera move). Unmatched → nearest station beat.
-  let steps; // [{beatIdx, span?}]
+  let steps; // [{beatIdx, span?}] — beatIdx -1 = the opening hold
   if (script && script.length) {
     steps = [];
-    let lastBeatIdx = 0;
+    let lastBeatIdx = -1; // before the first press we sit on the opening hold
     for (const span of script) {
       let idx = -1;
       if (span.kind === 'hold') {
-        idx = lastBeatIdx;
+        idx = lastBeatIdx; // talk over a frozen stage
+      } else if (span.kind === 'station') {
+        // narration beat: play up to the wind-up hold BEFORE the station's
+        // punch-in (if it has one) — the punchline stays in the presenter's
+        // hand; stations without a super go straight to their payoff.
+        idx = beats.findIndex((b) => b.station === span.station && b.kind === 'pre-super');
+        if (idx < 0) idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
       } else {
+        // super span: fire the punch-in (its boundary is the punch's end)
         idx = beats.findIndex((b) => b.station === span.station && b.kind === span.kind);
         if (idx < 0) idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
-        if (idx < 0) {
-          console.warn('[presenter] span has no beat, holding:', span);
-          idx = lastBeatIdx;
-        }
+      }
+      if (idx < 0) {
+        console.warn('[presenter] span has no beat, holding:', span);
+        idx = lastBeatIdx;
       }
       if (idx < lastBeatIdx) idx = lastBeatIdx; // never step backwards mid-script
       steps.push({ beatIdx: idx, span });
@@ -105,6 +112,9 @@ export function attachPresenter({ studio, scene, script = null }) {
   }
 
   function onKey(e) {
+    // never fight a text field (the author page's prompt box)
+    const tag = e.target && e.target.tagName;
+    if (tag === 'TEXTAREA' || tag === 'INPUT') return;
     if (e.key === ' ' || e.key === 'ArrowRight') {
       e.preventDefault();
       go(cur + 1);
