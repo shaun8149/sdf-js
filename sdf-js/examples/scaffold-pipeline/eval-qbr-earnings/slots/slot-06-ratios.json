@@ -3,8 +3,8 @@
   "slotName": "ratios",
   "slotTitle": "Key Ratios",
   "slotPurpose": "Liquidity, profitability, leverage ratios",
-  "sourceSlideIdx": 12,
-  "sourceSlideTitle": "Profitability Improvement",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "Q3 Non-GAAP Profitability Performance",
   "sceneData": {
     "name": "financial-summary/ratios",
     "layout": "grid",
@@ -27,14 +27,14 @@
         "w": 1200,
         "h": 520,
         "args": {
-          "title": "Profitability Metrics",
+          "title": "Q3 Non-GAAP Profitability Performance",
           "kpis": [
             {
-              "value": "+69%",
-              "label": "Non-GAAP Operating Income",
-              "sublabel": "Year over year growth",
+              "value": "$77.8M",
+              "label": "Operating Income",
+              "sublabel": "vs $46.1M prior",
               "trend": "up",
-              "trendValue": "+69%",
+              "trendValue": "+69% (77.8 vs 46.1)",
               "color": [
                 58,
                 138,
@@ -42,11 +42,11 @@
               ]
             },
             {
-              "value": "+49%",
-              "label": "Non-GAAP EPS",
-              "sublabel": "Year over year growth",
+              "value": "$69.6M",
+              "label": "Net Income",
+              "sublabel": "vs $47.4M prior",
               "trend": "up",
-              "trendValue": "+49%",
+              "trendValue": "+47% (69.6 vs 47.4)",
               "color": [
                 100,
                 150,
@@ -54,10 +54,11 @@
               ]
             },
             {
-              "value": "Q3",
-              "label": "Sharp Improvement",
-              "sublabel": "Profitability gained momentum",
+              "value": "$0.82",
+              "label": "Diluted EPS",
+              "sublabel": "vs $0.55 prior",
               "trend": "up",
+              "trendValue": "+49% (0.82 vs 0.55)",
               "color": [
                 180,
                 210,
@@ -79,20 +80,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5114,
+      "input_tokens": 5191,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 412,
+      "output_tokens": 464,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0254244,
-    "elapsedSec": 7.4,
-    "generatedAt": "2026-07-10T04:17:35.360Z",
+    "costUSD": 0.0264354,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-07-10T07:28:22.396Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

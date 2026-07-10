@@ -1,0 +1,79 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "货币政策路径",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "货币政策路径",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "events": [
+            {
+              "date": "当前",
+              "label": "多数主要经济体通胀持续回落",
+              "sublabel": "美联储、英国央行与欧洲央行均有降息空间"
+            },
+            {
+              "date": "4月前",
+              "label": "美联储继续降息",
+              "sublabel": "前提：美国就业增长放缓且核心通胀涨幅温和"
+            },
+            {
+              "date": "3%-3.25%区间",
+              "label": "政策利率到达目标区间",
+              "sublabel": "预计进入较长时间观望期"
+            }
+          ],
+          "axisLabel": "降息路径"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "timeline",
+      "funnel-with-conversion",
+      "bullet-list",
+      "flow-chart"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5237,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 384,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0253734,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-10T07:25:17.868Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

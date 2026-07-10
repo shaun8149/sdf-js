@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Our Mission",
   "sceneData": {
     "name": "company-overview/mission",
-    "layout": "hierarchy",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -25,7 +25,7 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 220,
+        "h": 240,
         "args": {
           "pillars": [
             {
@@ -34,13 +34,13 @@
               "body": "Make on-chain trading as natural as messaging"
             },
             {
-              "icon": "lock-key",
+              "icon": "shield-check",
               "heading": "Self-Custodial",
               "body": "Replace centralized exchanges with self-custodial UX"
             },
             {
               "icon": "users",
-              "heading": "Next 100M",
+              "heading": "100M Users",
               "body": "Lower the barrier to DeFi for the next 100 million users"
             }
           ],
@@ -48,64 +48,70 @@
         }
       },
       {
-        "type": "icon-row",
+        "type": "icon-grid",
         "x": 40,
-        "y": 420,
-        "w": 1200,
-        "h": 140,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "title": "Team Heritage",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "Ex-Binance + Coinbase",
+              "sublabel": "Core engineering team"
+            },
+            {
+              "icon": "clock",
+              "label": "5 Years",
+              "sublabel": "Crypto-native product experience"
+            },
+            {
+              "icon": "users-three",
+              "label": "10M+ Users",
+              "sublabel": "Previously shipped wallets"
+            },
+            {
+              "icon": "trophy",
+              "label": "Sequoia, Paradigm",
+              "sublabel": "Backed by Multicoin"
+            },
+            {
+              "icon": "globe",
+              "label": "NYC, Singapore",
+              "sublabel": "Based in Lisbon"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "circle",
+          "iconSize": "small"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 440,
+        "w": 580,
+        "h": 240,
         "args": {
           "title": "Our Focus",
           "items": [
             {
               "icon": "device-mobile",
-              "label": "Mobile-First"
+              "label": "Mobile-first wallet with embedded trading"
             },
             {
               "icon": "brain",
-              "label": "AI Co-Pilot"
+              "label": "AI co-pilot for portfolio decisions"
             },
             {
-              "icon": "shield",
-              "label": "Privacy Default"
+              "icon": "lock-key",
+              "label": "Privacy by default, zero-knowledge architecture"
             },
             {
-              "icon": "flow-arrow",
-              "label": "Cross-Chain"
+              "icon": "arrows-merge",
+              "label": "Cross-chain liquidity aggregation"
             }
-          ],
-          "iconSize": "medium",
-          "iconStyle": "circle"
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 40,
-        "y": 600,
-        "w": 580,
-        "h": 80,
-        "args": {
-          "value": "10M+ Users",
-          "label": "Previously Shipped",
-          "bg": [
-            38,
-            70,
-            130
-          ]
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 660,
-        "y": 600,
-        "w": 580,
-        "h": 80,
-        "args": {
-          "value": "5 Years",
-          "label": "Crypto-Native Experience",
-          "bg": [
-            110,
-            95,
-            75
           ]
         }
       }
@@ -124,20 +130,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4118,
+      "input_tokens": 5298,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 706,
+      "output_tokens": 818,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0268464,
-    "elapsedSec": 10.8,
-    "generatedAt": "2026-07-05T05:25:29.555Z",
+    "costUSD": 0.032066399999999995,
+    "elapsedSec": 13.3,
+    "generatedAt": "2026-07-10T07:19:01.665Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

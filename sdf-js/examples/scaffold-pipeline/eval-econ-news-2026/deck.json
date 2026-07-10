@@ -2,14 +2,14 @@
   "deckName": "eval-econ-news-2026",
   "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/econ-news-2026.json",
   "scaffold": {
-    "id": "analysis-report",
-    "label": "Analysis Report",
-    "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
-    "pickScore": 8,
+    "id": "news-briefing",
+    "label": "News Briefing",
+    "description": "News / current-events briefing — headline, key figures, per-theme deep dives, risk outlook. Sized for a 10-20 page deck expanded from a short article (Sprint 30).",
+    "pickScore": 9,
     "pickSignals": [
-      "The deck is a strategic economic analysis for 2026 covering global growth forecasts, monetary policy paths, and risk assessments—core elements of an analytical report structure",
-      "Content follows analysis-report flow: scope (global economy outlook) → data findings (IMF/OECD/World Bank forecasts, regional breakdowns) → framework analysis (monetary policy paths, inflation trends) → risks (Middle East conflict, tech investment uncertainty, labor market weakness)",
-      "Source has ~12 substantive paragraphs that map well to analysis-report's 8 slots—adequate density without excessive empty slots; generic-deck would be too loose, financial-summary too narrow (lacks balance sheet/income statement detail)"
+      "Source is a mid-year economic outlook briefing compiled from IMF/OECD/World Bank reports and financial media — classic news briefing structure with headline forecasts, regional breakdowns, policy paths, and risk assessments",
+      "Content maps cleanly to news-briefing scaffold: key figures (growth forecasts, inflation, interest rates), multiple themes (regional growth, monetary policy, geopolitical risks), risk matrix (Middle East conflict, labor market, valuation risks), and outlook sections",
+      "Slot count is a strong fit: source has ~12 distinct content blocks (title + 11 substantive paragraphs), news-briefing has 14 slots — minimal empty-slot risk, and the scaffold's deep-dive structure (theme-lead + theme-detail pairs) aligns with the source's regional-then-policy-then-risk flow"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -59,8 +59,8 @@
     {
       "slotIdx": 0,
       "slotName": "cover",
-      "slotTitle": "Title",
-      "slotPurpose": "Report title + scope + date",
+      "slotTitle": "Headline",
+      "slotPurpose": "Article headline + source and date context",
       "sourceSlideIdx": 0,
       "sourceSlideTitle": "全球经济2026年中展望",
       "mappingScore": 10,
@@ -76,35 +76,34 @@
     },
     {
       "slotIdx": 1,
-      "slotName": "scope",
-      "slotTitle": "Scope & Methodology",
-      "slotPurpose": "What was analyzed and how data was collected",
-      "sourceSlideIdx": 0,
-      "sourceSlideTitle": "全球经济2026年中展望",
-      "mappingScore": 7,
+      "slotName": "agenda",
+      "slotTitle": "Overview",
+      "slotPurpose": "One line per major theme of the briefing",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "全球与区域增长预测",
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-01-scope.json",
+      "liftFile": "slots/slot-01-agenda.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "bullet-list",
-        "icon-grid"
+        "agenda-list"
       ]
     },
     {
       "slotIdx": 2,
-      "slotName": "definition",
-      "slotTitle": "Context & Definition",
-      "slotPurpose": "Define the subject — what are we analyzing and why",
+      "slotName": "key-figures",
+      "slotTitle": "Key Figures",
+      "slotPurpose": "The headline numbers at a glance",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "全球与区域增长预测",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-02-definition.json",
+      "liftFile": "slots/slot-02-key-figures.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -114,20 +113,22 @@
         "kpi-card",
         "kpi-card",
         "kpi-card",
-        "bar"
+        "kpi-card",
+        "kpi-card",
+        "stat-banner"
       ]
     },
     {
       "slotIdx": 3,
-      "slotName": "data-findings",
-      "slotTitle": "Data & Findings",
-      "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+      "slotName": "theme-1-lead",
+      "slotTitle": "Theme 1 — Lead",
+      "slotPurpose": "First major theme: the core facts and figures",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "全球与区域增长预测",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-03-data-findings.json",
+      "liftFile": "slots/slot-03-theme-1-lead.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -141,16 +142,57 @@
       ]
     },
     {
-      "slotIdx": 4,
-      "slotName": "framework-analysis",
-      "slotTitle": "Framework Analysis",
-      "slotPurpose": "Apply a strategic framework (SWOT, Porter, BCG, Ansoff)",
+      "slotIdx": 5,
+      "slotName": "theme-2-lead",
+      "slotTitle": "Theme 2 — Lead",
+      "slotPurpose": "Second major theme: the core facts",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "货币政策路径",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-theme-2-lead.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "process-arrows",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "theme-2-detail",
+      "slotTitle": "Theme 2 — Detail",
+      "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "货币政策路径",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-theme-2-detail.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "timeline"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "theme-3-lead",
+      "slotTitle": "Theme 3 — Lead",
+      "slotPurpose": "Third major theme: the core facts",
       "sourceSlideIdx": 3,
       "sourceSlideTitle": "主要风险评估",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-04-framework-analysis.json",
+      "liftFile": "slots/slot-07-theme-3-lead.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -160,47 +202,99 @@
       ]
     },
     {
-      "slotIdx": 5,
-      "slotName": "interpretation",
-      "slotTitle": "Interpretation",
-      "slotPurpose": "What the data means — synthesis and insight",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "货币政策路径",
+      "slotIdx": 8,
+      "slotName": "risk-matrix",
+      "slotTitle": "Risk Matrix",
+      "slotPurpose": "Risks / scenarios on probability × impact axes",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "主要风险评估",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-05-interpretation.json",
+      "liftFile": "slots/slot-08-risk-matrix.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "balance-scale"
+        "risk-heatmap"
+      ]
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "risk-detail-1",
+      "slotTitle": "Top Risk — Detail",
+      "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "主要风险评估",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-09-risk-detail-1.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "callout-banner",
+        "risk-heatmap",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 12,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "slotPurpose": "What to watch next — timeline or conditions",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "货币政策路径",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-12-outlook.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "timeline"
       ]
     }
   ],
   "droppedSlots": [
     {
-      "slotIdx": 6,
-      "slotName": "recommendations",
-      "slotTitle": "Recommendations",
+      "slotIdx": 4,
+      "slotName": "theme-1-detail",
+      "slotTitle": "Theme 1 — Detail",
       "reason": "no-source-content"
     },
     {
-      "slotIdx": 7,
-      "slotName": "appendix",
-      "slotTitle": "Appendix",
+      "slotIdx": 10,
+      "slotName": "risk-detail-2",
+      "slotTitle": "Secondary Risks",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 11,
+      "slotName": "quote",
+      "slotTitle": "Key Quote",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 13,
+      "slotName": "summary",
+      "slotTitle": "Summary",
       "reason": "no-source-content"
     }
   ],
   "totals": {
-    "slotsBaked": 6,
-    "slotsEmpty": 2,
+    "slotsBaked": 10,
+    "slotsEmpty": 4,
     "slotsErrored": 0,
-    "totalCostUSD": 0.15151740000000002
+    "totalCostUSD": 0.281253
   },
   "meta": {
-    "generatedAt": "2026-07-06T15:45:41.877Z",
+    "generatedAt": "2026-07-10T07:25:17.869Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

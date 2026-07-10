@@ -7,9 +7,9 @@
     "description": "Seed/Series A fundraise pitch (Sequoia / YC structure)",
     "pickScore": 10,
     "pickSignals": [
-      "Title explicitly states 'Series A Pitch' and body confirms '$15M to scale supply + distribution' — classic fundraise deck",
-      "Content maps perfectly to VC pitch scaffold: problem (slide 2), TAM (slide 3), solution (slide 4), product demo (slide 5), traction with ARR metrics (slide 6), business model with pricing tiers (slide 7), team with exec backgrounds (slide 8), and the ask (slide 9)",
-      "Slide count (9 visible sections) matches scaffold's 10 slots exactly; audience is investors; keywords 'Series A', 'fundraise', 'ARR', 'break-even' are canonical VC pitch language"
+      "Perfect structural match: title explicitly states 'Series A Pitch', content covers all 10 canonical VC pitch slots in order (problem, market, solution, product, traction, business model, team, ask)",
+      "Classic fundraise narrative: '$15M to scale supply + distribution', ARR progression, break-even projection, team credentials — all standard Series A investor diligence points",
+      "Slide count aligns: source has ~9-10 distinct sections matching the 10-slot scaffold (cover → problem → market-size → solution → product → traction → business-model → team → ask)"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -129,7 +129,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "flow-chart"
+        "flow-chart",
+        "icon-grid"
       ]
     },
     {
@@ -169,7 +170,8 @@
       "subjectTypes": [
         "cover",
         "line",
-        "dashboard-multi-kpi-composite"
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -210,8 +212,7 @@
       "subjectTypes": [
         "cover",
         "circle-image-hub-spoke",
-        "bullet-list",
-        "isotype-stat-comparison"
+        "bullet-list"
       ]
     },
     {
@@ -231,7 +232,6 @@
       "subjectTypes": [
         "cover",
         "kpi-card",
-        "kpi-card",
         "pie",
         "bullet-list"
       ]
@@ -249,10 +249,10 @@
     "slotsBaked": 9,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.23056859999999996
+    "totalCostUSD": 0.23688659999999997
   },
   "meta": {
-    "generatedAt": "2026-07-07T06:44:43.819Z",
+    "generatedAt": "2026-07-10T07:21:59.805Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

@@ -82,7 +82,7 @@
       "slotTitle": "Executive Statement",
       "slotPurpose": "CEO or CFO opening statement — key message for the period",
       "sourceSlideIdx": 2,
-      "sourceSlideTitle": "CEO Commentary: Business Momentum",
+      "sourceSlideTitle": "CEO Perspective: Business Momentum",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -104,8 +104,8 @@
       "slotName": "highlights-kpi",
       "slotTitle": "Financial Highlights",
       "slotPurpose": "Top-line KPIs — revenue, EBITDA, net income, cash",
-      "sourceSlideIdx": 5,
-      "sourceSlideTitle": "Key Growth Metrics",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Q3 Total Revenue Performance",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -115,11 +115,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "stat-banner",
         "dashboard-multi-kpi-composite",
-        "dashboard-multi-kpi-composite",
-        "dashboard-multi-kpi-composite",
-        "dashboard-multi-kpi-composite"
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -127,9 +126,9 @@
       "slotName": "income",
       "slotTitle": "Income Statement",
       "slotPurpose": "Revenue breakdown and profitability waterfall",
-      "sourceSlideIdx": 6,
-      "sourceSlideTitle": "Total Revenue Performance",
-      "mappingScore": 9,
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Q3 Subscription and Support Revenue",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-income.json",
@@ -141,7 +140,8 @@
         "kpi-card",
         "kpi-card",
         "kpi-card",
-        "stat-banner"
+        "kpi-card",
+        "bar"
       ]
     },
     {
@@ -149,8 +149,8 @@
       "slotName": "balance-sheet",
       "slotTitle": "Balance Sheet",
       "slotPurpose": "Assets vs liabilities snapshot",
-      "sourceSlideIdx": 13,
-      "sourceSlideTitle": "Cash Position and Investments",
+      "sourceSlideIdx": 11,
+      "sourceSlideTitle": "Liquidity and Cash Position",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -170,9 +170,9 @@
       "slotName": "cashflow",
       "slotTitle": "Cash Flow",
       "slotPurpose": "Operating / investing / financing cash flows",
-      "sourceSlideIdx": 18,
-      "sourceSlideTitle": "Full Fiscal Year 2026 Outlook: Profitability and Cash Flow",
-      "mappingScore": 7,
+      "sourceSlideIdx": 16,
+      "sourceSlideTitle": "Updated Full Year FY2026 Profitability and Cash Flow Outlook",
+      "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-05-cashflow.json",
@@ -184,7 +184,7 @@
         "kpi-card",
         "kpi-card",
         "kpi-card",
-        "bar"
+        "stat-banner"
       ]
     },
     {
@@ -192,9 +192,9 @@
       "slotName": "ratios",
       "slotTitle": "Key Ratios",
       "slotPurpose": "Liquidity, profitability, leverage ratios",
-      "sourceSlideIdx": 12,
-      "sourceSlideTitle": "Profitability Improvement",
-      "mappingScore": 8,
+      "sourceSlideIdx": 10,
+      "sourceSlideTitle": "Q3 Non-GAAP Profitability Performance",
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-06-ratios.json",
@@ -211,9 +211,9 @@
       "slotName": "segments",
       "slotTitle": "Segment Analysis",
       "slotPurpose": "Revenue by business unit or geography",
-      "sourceSlideIdx": 7,
-      "sourceSlideTitle": "Subscription and Support Revenue",
-      "mappingScore": 8,
+      "sourceSlideIdx": 8,
+      "sourceSlideTitle": "Annual Recurring Revenue (ARR) Growth",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-07-segments.json",
@@ -222,10 +222,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
+        "donut-with-center",
         "kpi-card",
         "kpi-card",
-        "stat-banner",
-        "icon-grid"
+        "bullet-list"
       ]
     },
     {
@@ -233,9 +233,9 @@
       "slotName": "outlook",
       "slotTitle": "Outlook & Forecast",
       "slotPurpose": "Forward guidance and scenario planning",
-      "sourceSlideIdx": 19,
-      "sourceSlideTitle": "Summary and Outlook",
-      "mappingScore": 10,
+      "sourceSlideIdx": 15,
+      "sourceSlideTitle": "Updated Full Year FY2026 Revenue Outlook",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-08-outlook.json",
@@ -244,8 +244,6 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
         "kpi-card",
         "kpi-card",
         "bullet-list"
@@ -258,7 +256,7 @@
       "slotPurpose": "Supporting tables and methodology notes",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "Presentation Overview",
-      "mappingScore": 7,
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-09-appendix.json",
@@ -277,10 +275,10 @@
     "slotsBaked": 10,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.3349866
+    "totalCostUSD": 0.283242
   },
   "meta": {
-    "generatedAt": "2026-07-10T04:17:35.361Z",
+    "generatedAt": "2026-07-10T07:28:22.398Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

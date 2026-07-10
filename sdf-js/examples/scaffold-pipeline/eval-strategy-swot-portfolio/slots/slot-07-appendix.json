@@ -29,22 +29,27 @@
         "args": {
           "items": [
             {
-              "icon": "matrix-grid",
-              "label": "Full SWOT scoring matrix available on request"
+              "icon": "table",
+              "label": "Full SWOT scoring matrix",
+              "sublabel": "Available on request"
             },
             {
-              "icon": "chat-circle",
-              "label": "Customer interview transcripts redacted for confidentiality"
+              "icon": "user-sound",
+              "label": "Customer interview transcripts",
+              "sublabel": "Redacted for confidentiality"
             },
             {
               "icon": "chart-bar",
-              "label": "Porter value chain breakdown per product line in supplementary deck"
+              "label": "Porter value chain breakdown",
+              "sublabel": "Per product line in supplementary deck"
             },
             {
-              "icon": "chart-line",
-              "label": "Change curve model based on Bridges (2017) revision of Kübler-Ross framework"
+              "icon": "book-open",
+              "label": "Change curve model reference",
+              "sublabel": "Based on Bridges (2017) revision of Kübler-Ross framework"
             }
-          ]
+          ],
+          "title": "Supporting Materials"
         }
       }
     ]
@@ -59,20 +64,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4921,
+      "input_tokens": 5150,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 323,
+      "output_tokens": 364,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0235104,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-07T06:44:05.414Z",
+    "costUSD": 0.0248124,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-10T07:20:44.447Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

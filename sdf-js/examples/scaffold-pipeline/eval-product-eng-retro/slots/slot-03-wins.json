@@ -22,44 +22,39 @@
       },
       {
         "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
+          "title": "Shipped Features",
           "items": [
             {
               "icon": "users-three",
-              "label": "Real-time collaboration — 100% rollout",
-              "sublabel": "Launched Aug 3",
-              "status": "done"
+              "label": "Real-time collaboration engine",
+              "sublabel": "Launched to 100% users Aug 3"
             },
             {
               "icon": "rocket-launch",
               "label": "New onboarding flow",
-              "sublabel": "12min → 4min time-to-first-value",
-              "status": "done"
+              "sublabel": "Reduced time-to-first-value from 12 min to 4 min"
             },
             {
               "icon": "device-mobile",
               "label": "Mobile offline mode",
-              "sublabel": "30-day sync capability",
-              "status": "done"
+              "sublabel": "Now supports 30-day offline sync"
             },
             {
               "icon": "shield-check",
               "label": "Admin audit log",
-              "sublabel": "SOC 2 requirement, shipped 2 weeks early",
-              "status": "done"
+              "sublabel": "SOC 2 compliance requirement, shipped 2 weeks early"
             },
             {
-              "icon": "code",
-              "label": "API v3 migration",
-              "sublabel": "92% customer adoption by quarter end",
-              "status": "done"
+              "icon": "plugs-connected",
+              "label": "API v3",
+              "sublabel": "Breaking change migration, 92% of customers migrated by quarter end"
             }
-          ],
-          "title": "Q3 Shipped Features"
+          ]
         }
       }
     ]
@@ -74,20 +69,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4014,
+      "input_tokens": 5194,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 455,
+      "output_tokens": 430,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022769400000000002,
-    "elapsedSec": 8.5,
-    "generatedAt": "2026-07-05T05:35:56.295Z",
+    "costUSD": 0.0259344,
+    "elapsedSec": 9.8,
+    "generatedAt": "2026-07-10T07:24:27.466Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

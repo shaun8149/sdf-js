@@ -12,9 +12,9 @@
     "theme_id": "consulting-charcoal"
   },
   "atomQuality": {
-    "atom_instances": 20,
-    "atom_types_distinct": 11,
-    "variety_ratio": 0.55,
+    "atom_instances": 15,
+    "atom_types_distinct": 13,
+    "variety_ratio": 0.8666666666666667,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,25 +29,37 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 0,
-    "counts": {},
-    "slots_with_issues": []
+    "total": 1,
+    "counts": {
+      "TEXT_OVERFLOW": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 4,
+        "slotName": "journey-phases",
+        "issues": [
+          {
+            "kind": "TEXT_OVERFLOW",
+            "subject": 2,
+            "type": "traffic-light",
+            "detail": "\"Data migration errors (MEDIUM)\" ends at x=1314"
+          }
+        ]
+      }
+    ]
   },
   "textBudget": {
-    "chars_per_slot": 312.375,
-    "max_slot_chars": 489
+    "chars_per_slot": 303.5,
+    "max_slot_chars": 424
   },
   "fidelity": {
     "numbers_total": 23,
-    "numbers_found": 22,
-    "number_recall": 0.9565217391304348,
-    "missing_numbers": [
-      "43"
-    ],
+    "numbers_found": 23,
+    "number_recall": 1,
+    "missing_numbers": [],
     "deck_numbers_total": 32,
     "derived_cited_count": 0,
     "hallucinated_numbers": [
-      "23",
       "156",
       "142",
       "110",
@@ -58,29 +70,32 @@
       "193",
       "174",
       "60",
-      "72"
+      "72",
+      "220"
     ],
-    "deck_entities_total": 40,
+    "deck_entities_total": 33,
     "hallucinated_entities": [
-      "Risk Register"
+      "Market Performance",
+      "Strategic Foundation",
+      "Risk Matrix"
     ],
-    "entity_precision": 0.975,
-    "number_precision": 0.5625,
+    "entity_precision": 0.9090909090909091,
+    "number_precision": 0.59375,
     "entities_total": 10,
     "entities_found": 10,
     "entity_recall": 1,
     "missing_entities": []
   },
   "score": {
-    "total": 99,
+    "total": 99.3,
     "breakdown": {
       "structure": 25,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
-      "text": 9
+      "text": 9.3
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.104Z"
+  "generatedAt": "2026-07-10T07:29:14.075Z"
 }

@@ -16,21 +16,22 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Traction"
+          "title": "Traction",
+          "style": "gradient"
         }
       },
       {
         "type": "line",
         "x": 40,
         "y": 160,
-        "w": 1200,
-        "h": 380,
+        "w": 760,
+        "h": 480,
         "args": {
           "values": [
             0,
-            120000,
-            740000,
-            2400000
+            0.12,
+            0.74,
+            2.4
           ],
           "labels": [
             "Q1 2026",
@@ -45,35 +46,33 @@
         }
       },
       {
-        "type": "dashboard-multi-kpi-composite",
-        "x": 40,
-        "y": 560,
-        "w": 1200,
-        "h": 120,
+        "type": "kpi-card",
+        "x": 820,
+        "y": 160,
+        "w": 420,
+        "h": 220,
         "args": {
-          "kpis": [
-            {
-              "value": "10",
-              "label": "Design Teams",
-              "sublabel": "Q2 2026"
-            },
-            {
-              "value": "47",
-              "label": "Teams",
-              "sublabel": "Q3 2026"
-            },
-            {
-              "value": "3",
-              "label": "Design Agencies",
-              "sublabel": "Q3 2026"
-            },
-            {
-              "value": "110%",
-              "label": "Net Retention",
-              "sublabel": "Q4 Forecast",
-              "trend": "up"
-            }
-          ]
+          "value": "$2.4M",
+          "label": "Q4 Forecast ARR",
+          "sublabel": "110 teams + agencies",
+          "trend": "up",
+          "trendValue": "+224% (2.4 vs 0.74)",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 820,
+        "y": 396,
+        "w": 420,
+        "h": 244,
+        "args": {
+          "value": "110%",
+          "label": "Net Retention",
+          "sublabel": "Q4 2026",
+          "icon": "users",
+          "style": "light"
         }
       }
     ]
@@ -94,20 +93,20 @@
       "venn"
     ],
     "tokenUsage": {
-      "input_tokens": 5005,
+      "input_tokens": 5234,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 482,
+      "output_tokens": 514,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0261474,
-    "elapsedSec": 7.9,
-    "generatedAt": "2026-07-07T06:44:43.818Z",
+    "costUSD": 0.027314400000000003,
+    "elapsedSec": 9.9,
+    "generatedAt": "2026-07-10T07:21:59.803Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

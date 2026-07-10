@@ -27,27 +27,19 @@
         "w": 560,
         "h": 520,
         "args": {
-          "title": "Methodology Notes",
+          "title": "Presentation Scope",
           "items": [
             {
-              "icon": "chart-line",
-              "label": "Revenue growth YoY comparison",
-              "sublabel": "Constant currency basis"
+              "icon": "chart-line-up",
+              "label": "Q3 FY2026 performance highlights"
             },
             {
-              "icon": "calculator",
-              "label": "Profitability metrics normalized",
-              "sublabel": "Excludes one-time items"
+              "icon": "currency-dollar",
+              "label": "Revenue growth across subscription services"
             },
             {
-              "icon": "calendar",
-              "label": "Fiscal 2026 projections",
-              "sublabel": "Based on current run rate"
-            },
-            {
-              "icon": "database",
-              "label": "Segment reporting aligned",
-              "sublabel": "Per GAAP standards"
+              "icon": "chart-bar",
+              "label": "ARR metrics and trajectory"
             }
           ]
         }
@@ -59,27 +51,19 @@
         "w": 560,
         "h": 520,
         "args": {
-          "title": "Key Assumptions",
+          "title": "Coverage Areas",
           "items": [
             {
-              "icon": "globe",
-              "label": "Macroeconomic conditions stable",
-              "sublabel": "No major disruptions"
+              "icon": "gauge",
+              "label": "GAAP and non-GAAP profitability"
             },
             {
-              "icon": "currency-dollar",
-              "label": "Currency fluctuation normalized",
-              "sublabel": "Within historical ranges"
+              "icon": "wallet",
+              "label": "Liquidity position and share repurchase"
             },
             {
-              "icon": "users",
-              "label": "Customer retention sustained",
-              "sublabel": "At current levels"
-            },
-            {
-              "icon": "chart-bar",
-              "label": "Market share trajectory",
-              "sublabel": "Continues current trend"
+              "icon": "compass",
+              "label": "Q4 FY2026 guidance and outlook"
             }
           ]
         }
@@ -95,20 +79,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5095,
+      "input_tokens": 5170,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 581,
+      "output_tokens": 453,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0279024,
-    "elapsedSec": 10.6,
-    "generatedAt": "2026-07-10T04:17:35.361Z",
+    "costUSD": 0.0262074,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-10T07:28:22.397Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

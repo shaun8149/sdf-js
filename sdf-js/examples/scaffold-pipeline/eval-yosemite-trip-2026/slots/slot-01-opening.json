@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Our Goal",
   "sceneData": {
     "name": "generic-deck/opening",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -16,34 +16,28 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Opening"
+          "title": "Our Goal"
         }
       },
       {
-        "type": "mountain-path",
-        "x": 140,
+        "type": "bullet-list",
+        "x": 40,
         "y": 160,
-        "w": 1000,
-        "h": 500,
+        "w": 1200,
+        "h": 480,
         "args": {
-          "title": "Our Goal",
-          "summit": "45 Miles Complete",
-          "milestones": [
+          "items": [
             {
-              "label": "High Country",
-              "sublabel": "3 days granite peaks"
+              "icon": "mountains",
+              "label": "3 days high country, 2 in valley"
             },
             {
-              "label": "Alpine Lakes",
-              "sublabel": "Crystal waters"
+              "icon": "drop",
+              "label": "Granite peaks, alpine lakes, big waterfalls"
             },
             {
-              "label": "Big Waterfalls",
-              "sublabel": "Valley descent"
-            },
-            {
-              "label": "Valley Floor",
-              "sublabel": "2 days relaxed pace"
+              "icon": "navigation-arrow",
+              "label": "~45 trail miles, relaxed pace"
             }
           ]
         }
@@ -61,20 +55,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 3969,
+      "input_tokens": 5149,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 303,
+      "output_tokens": 268,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.020354399999999998,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-05T05:32:41.717Z",
+    "costUSD": 0.0233694,
+    "elapsedSec": 5.7,
+    "generatedAt": "2026-07-10T07:22:36.203Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

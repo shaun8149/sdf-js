@@ -18,7 +18,7 @@
         "args": {
           "title": "全球经济2026年中展望",
           "subtitle": "摘录自国际机构与财经媒体报道",
-          "author": "覆盖全球增长预测、区域表现、货币政策与主要风险",
+          "author": "涵盖全球增长预测、货币政策及主要风险因素",
           "style": "gradient"
         }
       }
@@ -32,20 +32,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4404,
-      "cache_creation_input_tokens": 13008,
-      "cache_read_input_tokens": 0,
+      "input_tokens": 5118,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
-        "ephemeral_5m_input_tokens": 13008,
+        "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 177,
+      "output_tokens": 174,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.064647,
-    "elapsedSec": 5.1,
-    "generatedAt": "2026-07-07T01:15:51.595Z",
+    "costUSD": 0.0218664,
+    "elapsedSec": 4.6,
+    "generatedAt": "2026-07-10T07:26:22.512Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

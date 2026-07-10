@@ -3,8 +3,8 @@
   "slotName": "risk-detail-1",
   "slotTitle": "Top Risk — Detail",
   "slotPurpose": "The single highest-probability / highest-impact item, expanded",
-  "sourceSlideIdx": 11,
-  "sourceSlideTitle": "挑战二：二手车残值体系缺失",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "挑战三：补贴退坡风险",
   "sceneData": {
     "name": "news-briefing/risk-detail-1",
     "layout": "row",
@@ -16,48 +16,51 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "挑战详情"
+          "title": "Top Risk — Detail",
+          "style": "gradient"
         }
       },
       {
         "type": "callout-banner",
         "x": 80,
-        "y": 180,
+        "y": 200,
         "w": 1120,
-        "h": 160,
+        "h": 180,
         "args": {
           "type_": "warning",
-          "heading": "二手车残值体系缺失",
-          "body": "导致置换意愿低，制约农村消费者换车积极性",
-          "icon": "warning-diamond"
+          "heading": "挑战三：补贴退坡风险",
+          "body": "若购置补贴按期退坡，明年销量增速可能回落至30%以下。政策依赖度较高存在隐忧。",
+          "icon": "warning"
         }
       },
       {
         "type": "kpi-card",
         "x": 80,
-        "y": 380,
+        "y": 420,
         "w": 520,
-        "h": 260,
+        "h": 220,
         "args": {
-          "value": "中等",
-          "label": "发生概率",
-          "icon": "gauge",
-          "style": "light",
-          "trend": "neutral"
+          "value": "<30%",
+          "label": "明年销量增速预测",
+          "sublabel": "补贴退坡情境",
+          "trend": "down",
+          "icon": "chart-line-down",
+          "style": "light"
         }
       },
       {
-        "type": "kpi-card",
+        "type": "gauge",
         "x": 680,
-        "y": 380,
+        "y": 420,
         "w": 520,
-        "h": 260,
+        "h": 220,
         "args": {
-          "value": "深远",
-          "label": "影响程度",
-          "icon": "trend-up",
-          "style": "accent-border",
-          "trendDirection": "up"
+          "value": 0.75,
+          "label": "政策依赖度",
+          "format": "percent",
+          "title": "风险指标",
+          "min": "低",
+          "max": "高"
         }
       }
     ]
@@ -72,20 +75,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4936,
+      "input_tokens": 5162,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 446,
+      "output_tokens": 505,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025400399999999997,
-    "elapsedSec": 11.6,
-    "generatedAt": "2026-07-07T06:43:28.220Z",
+    "costUSD": 0.0269634,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-10T07:27:23.286Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

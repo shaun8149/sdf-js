@@ -23,57 +23,41 @@
       {
         "type": "risk-heatmap",
         "x": 40,
-        "y": 160,
+        "y": 150,
         "w": 580,
-        "h": 500,
+        "h": 520,
         "args": {
-          "title": "Risk Assessment",
-          "xAxis": "Likelihood",
-          "yAxis": "Impact",
+          "title": "Risk Matrix",
+          "xAxis": "Impact",
+          "yAxis": "Likelihood",
           "xLabels": [
-            "Very Low",
             "Low",
             "Medium",
-            "High",
-            "Very High"
+            "High"
           ],
           "yLabels": [
-            "Very Low",
             "Low",
             "Medium",
-            "High",
-            "Very High"
+            "High"
           ],
           "risks": [
             {
-              "label": "Change Fatigue",
-              "likelihood": 4,
-              "impact": 4,
-              "color": [
-                220,
-                53,
-                69
-              ]
-            },
-            {
-              "label": "Data Migration Errors",
+              "label": "Change fatigue",
               "likelihood": 2,
-              "impact": 3,
-              "color": [
-                255,
-                193,
-                7
-              ]
+              "impact": 2,
+              "severity": "high"
             },
             {
-              "label": "Vendor Delays",
+              "label": "Data migration errors",
               "likelihood": 1,
-              "impact": 2,
-              "color": [
-                156,
-                142,
-                110
-              ]
+              "impact": 1,
+              "severity": "medium"
+            },
+            {
+              "label": "Vendor delays",
+              "likelihood": 0,
+              "impact": 0,
+              "severity": "low"
             }
           ]
         }
@@ -81,26 +65,26 @@
       {
         "type": "timeline",
         "x": 660,
-        "y": 160,
+        "y": 150,
         "w": 580,
-        "h": 500,
+        "h": 520,
         "args": {
           "title": "Change Journey",
           "events": [
             {
               "date": "Q1",
               "label": "Mobilise",
-              "sublabel": "Governance & quick wins"
+              "sublabel": "Governance, quick wins"
             },
             {
               "date": "Q2-Q3",
               "label": "Transform",
-              "sublabel": "Core migration & redesign"
+              "sublabel": "Core system migration, process redesign"
             },
             {
               "date": "Q4",
               "label": "Sustain",
-              "sublabel": "Embed & measure"
+              "sublabel": "Embed new ways, measure outcomes"
             }
           ]
         }
@@ -118,20 +102,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4290,
+      "input_tokens": 5208,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 591,
+      "output_tokens": 559,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025637399999999998,
-    "elapsedSec": 9,
-    "generatedAt": "2026-07-05T07:06:31.991Z",
+    "costUSD": 0.0279114,
+    "elapsedSec": 8.6,
+    "generatedAt": "2026-07-10T07:20:11.437Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

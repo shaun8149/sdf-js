@@ -5,11 +5,11 @@
     "id": "investor-update",
     "label": "Investor Update",
     "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
-    "pickScore": 8,
+    "pickScore": 9,
     "pickSignals": [
-      "This is a periodic update to an Investment Committee (equivalent to LPs/board) covering portfolio metrics, wins (pivots, ARR growth), challenges (due diligence bottleneck, macro threats), and forward-looking Q4 priorities — matches investor-update's quarterly cadence structure",
-      "Contains core investor-update elements: TLDR-style overview (12 holdings, $420M AUM), metrics (ARR +62% YoY, 3 Series B candidates), wins (2 pivots, unicorn exits), challenges (geographic concentration, GP bottleneck, LP redemption pressure), next-quarter priorities (Series B prep, Fund III close)",
-      "The SWOT and value-chain analysis are supporting analytical elements, but the primary intent is a periodic stakeholder update on portfolio health and next steps — not a standalone strategic planning document"
+      "Content explicitly targets Investment Committee (an investor audience) with quarterly portfolio review cadence",
+      "Structure maps cleanly to investor-update slots: overview metrics (AUM, ARR, holdings), wins (pivots, Series B prep), challenges (bottlenecks, weaknesses), next-quarter priorities (Q4 2026 priorities list)",
+      "Deck covers portfolio-level metrics, SWOT analysis, strategic priorities, and forward-looking asks — all hallmarks of LP/board-facing investor updates rather than internal strategic planning"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -95,7 +95,6 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "stat-banner",
         "kpi-card",
         "kpi-card",
         "kpi-card",
@@ -109,7 +108,7 @@
       "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "Portfolio Overview",
-      "mappingScore": 9,
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-02-metrics.json",
@@ -119,7 +118,8 @@
       "subjectTypes": [
         "cover",
         "dashboard-multi-kpi-composite",
-        "value-chain-diagram"
+        "value-chain-diagram",
+        "change-curve-chart"
       ]
     },
     {
@@ -129,7 +129,7 @@
       "slotPurpose": "Top accomplishments this quarter",
       "sourceSlideIdx": 3,
       "sourceSlideTitle": "Portfolio SWOT Analysis",
-      "mappingScore": 7,
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-wins.json",
@@ -138,26 +138,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "swot"
-      ]
-    },
-    {
-      "slotIdx": 4,
-      "slotName": "challenges",
-      "slotTitle": "Challenges",
-      "slotPurpose": "What did not go well and what we learned",
-      "sourceSlideIdx": 5,
-      "sourceSlideTitle": "Change Management: Portfolio AI Transformation",
-      "mappingScore": 6,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-04-challenges.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "change-curve-chart"
+        "icon-grid",
+        "icon-grid"
       ]
     },
     {
@@ -182,6 +164,12 @@
   ],
   "droppedSlots": [
     {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "reason": "no-source-content"
+    },
+    {
       "slotIdx": 6,
       "slotName": "ask",
       "slotTitle": "Ask",
@@ -195,13 +183,13 @@
     }
   ],
   "totals": {
-    "slotsBaked": 6,
-    "slotsEmpty": 2,
+    "slotsBaked": 5,
+    "slotsEmpty": 3,
     "slotsErrored": 0,
-    "totalCostUSD": 0.13826039999999998
+    "totalCostUSD": 0.136566
   },
   "meta": {
-    "generatedAt": "2026-07-05T07:09:24.637Z",
+    "generatedAt": "2026-07-10T07:21:19.050Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

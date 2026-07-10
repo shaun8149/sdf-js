@@ -17,7 +17,7 @@
         "h": 120,
         "args": {
           "title": "Market",
-          "style": "gradient"
+          "style": "section"
         }
       },
       {
@@ -27,27 +27,27 @@
         "w": 580,
         "h": 500,
         "args": {
-          "title": "User Groups",
+          "title": "Target Users",
           "items": [
             {
               "icon": "lightning",
-              "label": "Crypto Traders",
+              "label": "Crypto-Native Traders",
               "sublabel": "Frustrated by slow wallets"
             },
             {
-              "icon": "gauge",
+              "icon": "chart-line",
               "label": "DeFi Power Users",
-              "sublabel": "Need unified UX"
+              "sublabel": "Seeking unified UX"
             },
             {
               "icon": "users",
               "label": "Mainstream Users",
-              "sublabel": "Want wallet + trading"
+              "sublabel": "Want wallet + trading combined"
             },
             {
-              "icon": "chart-line-up",
-              "label": "Smart Money",
-              "sublabel": "Follow on-chain alpha"
+              "icon": "brain",
+              "label": "Smart-Money Traders",
+              "sublabel": "Following on-chain alpha"
             }
           ],
           "cols": 2,
@@ -71,9 +71,9 @@
               "sublabel": "Aggregated DEXs"
             },
             {
-              "icon": "brain",
-              "label": "AI strategy automation",
-              "sublabel": "Intelligent agents"
+              "icon": "robot",
+              "label": "AI agents",
+              "sublabel": "Strategy automation"
             },
             {
               "icon": "lock-key",
@@ -81,19 +81,19 @@
               "sublabel": "No compromise"
             },
             {
-              "icon": "chat-circle",
-              "label": "Community alpha groups",
-              "sublabel": "Embedded chat"
+              "icon": "chats",
+              "label": "Embedded chat groups",
+              "sublabel": "Community alpha-sharing"
             },
             {
-              "icon": "microphone",
-              "label": "Live trading rooms",
-              "sublabel": "Built-in audio"
+              "icon": "speaker-high",
+              "label": "Built-in audio rooms",
+              "sublabel": "Live trading sessions"
             },
             {
               "icon": "code",
-              "label": "Open API ecosystem",
-              "sublabel": "Developer friendly"
+              "label": "Open API",
+              "sublabel": "Developer ecosystem"
             }
           ]
         }
@@ -111,20 +111,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4054,
+      "input_tokens": 5234,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 675,
+      "output_tokens": 680,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0261894,
-    "elapsedSec": 10.9,
-    "generatedAt": "2026-07-05T05:26:02.320Z",
+    "costUSD": 0.0298044,
+    "elapsedSec": 13.7,
+    "generatedAt": "2026-07-10T07:19:01.666Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -17,7 +17,7 @@
         "h": 120,
         "args": {
           "title": "Current State",
-          "style": "gradient"
+          "style": "section"
         }
       },
       {
@@ -29,22 +29,22 @@
         "args": {
           "title": "Current State Assessment",
           "strengths": [
-            "Strong brand · 78% recognition",
-            "Loyal customers · 15-year avg relationship"
+            "Strong brand (78% recognition)",
+            "Loyal customer base (15-year avg relationship)"
           ],
           "weaknesses": [
-            "Siloed data · 7 separate systems",
-            "Manual processes · 40% of tasks",
-            "Outdated CRM · 2014"
+            "Siloed data (7 separate systems)",
+            "Manual processes (40% of tasks)",
+            "Outdated CRM (2014)"
           ],
           "opportunities": [
-            "AI automation · $2M potential savings",
-            "Cloud migration · scalability",
+            "AI automation ($2M potential savings)",
+            "Cloud migration (scalability)",
             "Open banking API"
           ],
           "threats": [
-            "FinTech disruptors · 3 new entrants",
-            "Talent war · 22% tech turnover",
+            "FinTech disruptors (3 new entrants)",
+            "Talent war (22% tech turnover)",
             "Regulatory complexity"
           ]
         }
@@ -62,20 +62,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4313,
+      "input_tokens": 5231,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 352,
+      "output_tokens": 345,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0221214,
-    "elapsedSec": 9.6,
-    "generatedAt": "2026-07-05T07:05:53.121Z",
+    "costUSD": 0.024770399999999998,
+    "elapsedSec": 11.4,
+    "generatedAt": "2026-07-10T07:20:11.435Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

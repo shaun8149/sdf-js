@@ -7,14 +7,14 @@
   "sourceSlideTitle": "风险矩阵总览",
   "sceneData": {
     "name": "news-briefing/risk-matrix",
-    "layout": "grid",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
         "x": 0,
         "y": 0,
         "w": 1280,
-        "h": 120,
+        "h": 100,
         "args": {
           "title": "风险矩阵总览",
           "style": "gradient"
@@ -22,51 +22,47 @@
       },
       {
         "type": "risk-heatmap",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 140,
+        "w": 1200,
+        "h": 540,
         "args": {
           "xAxis": "概率",
           "yAxis": "影响",
           "xLabels": [
             "低",
             "中低",
-            "中等",
+            "中",
             "中高",
             "高"
           ],
           "yLabels": [
             "低",
             "中低",
-            "中等",
+            "中",
             "中高",
             "高"
           ],
           "risks": [
             {
-              "x": 4,
-              "y": 4,
-              "label": "中东冲突能源冲击",
-              "severity": "critical"
+              "label": "中东冲突能源风险",
+              "likelihood": "high",
+              "impact": "high"
             },
             {
-              "x": 3,
-              "y": 2,
-              "label": "科技投资势头",
-              "severity": "medium"
+              "label": "科技投资持续性",
+              "likelihood": "medium",
+              "impact": "medium"
             },
             {
-              "x": 2,
-              "y": 2,
               "label": "就业市场走弱",
-              "severity": "medium"
+              "likelihood": "medium",
+              "impact": "medium"
             },
             {
-              "x": 1,
-              "y": 4,
               "label": "金融估值回调",
-              "severity": "high"
+              "likelihood": "low",
+              "impact": "high"
             }
           ]
         }
@@ -83,20 +79,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4464,
+      "input_tokens": 5174,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 438,
+      "output_tokens": 404,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023864399999999997,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-07T01:16:52.126Z",
+    "costUSD": 0.025484399999999997,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-10T07:26:22.516Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

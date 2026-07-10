@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
   "sceneData": {
     "name": "investor-update/next-quarter",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -30,15 +30,21 @@
           "title": "Q4 2026 Portfolio Priorities",
           "columns": [
             {
-              "name": "Fundraising",
+              "name": "Series B Prep",
               "cards": [
                 {
-                  "title": "Series B bridge prep",
-                  "subtitle": "ANTFUN + NovaTech"
+                  "title": "ANTFUN bridge preparation"
                 },
                 {
-                  "title": "Fund III final close",
-                  "subtitle": "$300M target by Dec 2026"
+                  "title": "NovaTech bridge preparation"
+                }
+              ]
+            },
+            {
+              "name": "Geographic Expansion",
+              "cards": [
+                {
+                  "title": "Southeast Asia LP program review"
                 }
               ]
             },
@@ -46,21 +52,18 @@
               "name": "Portfolio Operations",
               "cards": [
                 {
-                  "title": "AI transformation audit",
-                  "subtitle": "All 12 portfolio companies"
+                  "title": "AI transformation audit — 12 companies"
                 },
                 {
-                  "title": "Exit roadmap",
-                  "subtitle": "Fund I · 3 candidates"
+                  "title": "Fund I exit roadmap — 3 candidates"
                 }
               ]
             },
             {
-              "name": "Strategic Expansion",
+              "name": "Fundraising",
               "cards": [
                 {
-                  "title": "Geographic expansion review",
-                  "subtitle": "Southeast Asia LP program"
+                  "title": "Fund III final close — $300M by Dec 2026"
                 }
               ]
             }
@@ -80,20 +83,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4287,
+      "input_tokens": 5205,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 424,
+      "output_tokens": 425,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0231234,
-    "elapsedSec": 7.6,
-    "generatedAt": "2026-07-05T07:09:24.636Z",
+    "costUSD": 0.0258924,
+    "elapsedSec": 10.3,
+    "generatedAt": "2026-07-10T07:21:19.049Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

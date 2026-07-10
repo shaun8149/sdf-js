@@ -25,7 +25,7 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 280,
+        "h": 240,
         "args": {
           "title": "Portfolio Performance",
           "kpis": [
@@ -47,9 +47,8 @@
             },
             {
               "value": "2",
-              "label": "Strategic Pivots",
-              "sublabel": "H1 2026",
-              "trend": "neutral"
+              "label": "Pivots Complete",
+              "sublabel": "H1 2026"
             }
           ]
         }
@@ -57,25 +56,81 @@
       {
         "type": "value-chain-diagram",
         "x": 40,
-        "y": 460,
-        "w": 1200,
-        "h": 220,
+        "y": 420,
+        "w": 580,
+        "h": 260,
         "args": {
-          "title": "Investment Operations",
+          "title": "Value Chain",
           "primary": [
-            "Deal Sourcing",
-            "Due Diligence",
-            "Term Sheet",
-            "Post-Investment",
-            "Exit"
+            {
+              "label": "Deal Sourcing"
+            },
+            {
+              "label": "Due Diligence"
+            },
+            {
+              "label": "Term Sheet"
+            },
+            {
+              "label": "Post-Investment"
+            },
+            {
+              "label": "Exit"
+            }
           ],
           "support": [
-            "LP Relations",
-            "Portfolio Ops",
-            "Legal & Compliance",
-            "Network & Brand"
+            {
+              "label": "LP Relations"
+            },
+            {
+              "label": "Portfolio Ops"
+            },
+            {
+              "label": "Legal"
+            },
+            {
+              "label": "Network"
+            }
           ],
-          "outcome": "Risk-Adjusted Returns"
+          "outcome": "Risk-adjusted returns above benchmark"
+        }
+      },
+      {
+        "type": "change-curve-chart",
+        "x": 660,
+        "y": 420,
+        "w": 580,
+        "h": 260,
+        "args": {
+          "title": "Portfolio AI Transformation",
+          "xAxis": "Phase",
+          "yAxis": "Capability",
+          "phases": [
+            {
+              "label": "Awareness",
+              "sublabel": "Sector impact learning"
+            },
+            {
+              "label": "Resistance",
+              "sublabel": "Incumbent pushback"
+            },
+            {
+              "label": "Exploration",
+              "sublabel": "AI pilots begin"
+            },
+            {
+              "label": "Adoption",
+              "sublabel": "First products live"
+            },
+            {
+              "label": "Integration",
+              "sublabel": "Core embedding"
+            },
+            {
+              "label": "Advantage",
+              "sublabel": "AI differentiation"
+            }
+          ]
         }
       }
     ]
@@ -91,20 +146,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4412,
+      "input_tokens": 5506,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 525,
+      "output_tokens": 745,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.025013399999999998,
-    "elapsedSec": 9.8,
-    "generatedAt": "2026-07-05T07:09:04.640Z",
+    "costUSD": 0.0315954,
+    "elapsedSec": 16.9,
+    "generatedAt": "2026-07-10T07:21:19.048Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

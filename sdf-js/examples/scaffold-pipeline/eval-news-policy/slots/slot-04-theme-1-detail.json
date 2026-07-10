@@ -3,8 +3,8 @@
   "slotName": "theme-1-detail",
   "slotTitle": "Theme 1 — Detail",
   "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
-  "sourceSlideIdx": 3,
-  "sourceSlideTitle": "县乡市场渗透率提升但仍有差距",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "主力车企市场集中度",
   "sceneData": {
     "name": "news-briefing/theme-1-detail",
     "layout": "row",
@@ -16,30 +16,59 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "主题1 — 详情",
+          "title": "主力车企市场集中度",
           "style": "gradient"
         }
       },
       {
-        "type": "bar",
-        "x": 40,
-        "y": 160,
-        "w": 1200,
-        "h": 520,
+        "type": "pie",
+        "x": 80,
+        "y": 180,
+        "w": 480,
+        "h": 480,
         "args": {
-          "title": "县乡市场渗透率提升但仍有差距",
-          "labels": [
-            "县乡市场 (去年)",
-            "县乡市场 (今年)",
-            "一二线城市"
-          ],
+          "title": "下乡车型销量占比",
           "values": [
-            17,
-            28,
-            54
+            58,
+            42
+          ],
+          "labels": [
+            "比亚迪+吉利+长安",
+            "其他车企"
           ],
           "format": "percent",
-          "max": 60
+          "donutRatio": 0.5,
+          "centerLabel": "58%"
+        }
+      },
+      {
+        "type": "isotype-stat-comparison",
+        "x": 640,
+        "y": 180,
+        "w": 560,
+        "h": 480,
+        "args": {
+          "title": "三大主导车企",
+          "stats": [
+            {
+              "iconName": "car",
+              "count": 1,
+              "label": "比亚迪",
+              "caption": "领军企业"
+            },
+            {
+              "iconName": "car",
+              "count": 1,
+              "label": "吉利",
+              "caption": "主力品牌"
+            },
+            {
+              "iconName": "car",
+              "count": 1,
+              "label": "长安",
+              "caption": "核心车企"
+            }
+          ]
         }
       }
     ]
@@ -55,20 +84,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4958,
+      "input_tokens": 5180,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 277,
+      "output_tokens": 479,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022931399999999998,
-    "elapsedSec": 5.7,
-    "generatedAt": "2026-07-07T06:43:28.219Z",
+    "costUSD": 0.0266274,
+    "elapsedSec": 13.4,
+    "generatedAt": "2026-07-10T07:27:23.284Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

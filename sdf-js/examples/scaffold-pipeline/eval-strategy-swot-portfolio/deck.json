@@ -7,10 +7,9 @@
     "description": "Strategic analysis deck — SWOT, market, competitor, or thematic analysis",
     "pickScore": 9,
     "pickSignals": [
-      "Deck follows classic strategic analysis structure: scope → frameworks (SWOT, Porter) → data findings → interpretation → recommendations → appendix",
-      "Explicitly labeled as 'Strategic Portfolio Analysis' with framework-driven methodology (SWOT + Porter Value Chain + change curve)",
-      "Target audience is exec/board/strategy team; tone and content match 'Analysis Report' scaffold perfectly",
-      "8-slot scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix) maps 1:1 to the source structure"
+      "The deck explicitly uses analytical frameworks (SWOT, Porter value chain) and follows a situation → findings → recommendations structure characteristic of strategic analysis reports",
+      "Content includes scope definition, framework application, data findings (SWOT results, customer voice), and concludes with actionable recommendations — all core slots in analysis-report scaffold",
+      "The 8-slot analysis-report scaffold (cover → scope → definition → data-findings → framework-analysis → interpretation → recommendations → appendix) maps cleanly to the deck's 8 sections with minimal waste"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -130,7 +129,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "testimonial-wall"
+        "quote-pull",
+        "callout-banner"
       ]
     },
     {
@@ -215,10 +215,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.19269419999999998
+    "totalCostUSD": 0.1994202
   },
   "meta": {
-    "generatedAt": "2026-07-07T06:44:05.415Z",
+    "generatedAt": "2026-07-10T07:20:44.447Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

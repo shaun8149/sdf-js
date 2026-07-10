@@ -7,10 +7,9 @@
     "description": "Internal Q review — KPIs, wins, challenges, outlook",
     "pickScore": 10,
     "pickSignals": [
-      "Title explicitly states 'Q3 2026 Quarterly Business Review' — exact match for QBR scaffold",
-      "Content structure perfectly mirrors QBR slots: Executive Summary → KPIs → Wins → Challenges → Outlook → Next Steps",
-      "Slide count (7 slides in source) matches QBR scaffold slot count (7 slots) exactly — optimal fill rate",
-      "Audience is clearly internal exec/board/manager with metrics, strategic risks, and action items"
+      "Title explicitly states 'Q3 2026 Quarterly Business Review' — perfect match for qbr scaffold",
+      "Content structure maps 1:1 to qbr slots: Executive Summary, KPI Dashboard, Wins, Challenges, Q4 Outlook, Next Steps",
+      "Slot count (7) matches source structure exactly — source has 7 clear sections, qbr has 7 slots, zero empty slots expected"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -91,9 +90,11 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite",
-        "bullet-list",
-        "kpi-card"
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "callout-banner"
       ]
     },
     {
@@ -155,7 +156,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "risk-heatmap"
+        "bullet-list"
       ]
     },
     {
@@ -197,14 +198,15 @@
       ]
     }
   ],
+  "droppedSlots": [],
   "totals": {
     "slotsBaked": 7,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.15985380000000002
+    "totalCostUSD": 0.18478379999999997
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:27:30.167Z",
+    "generatedAt": "2026-07-10T07:19:33.836Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

@@ -2,14 +2,14 @@
   "deckName": "eval-nonprofit-annual-report",
   "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/nonprofit-annual-report.json",
   "scaffold": {
-    "id": "financial-summary",
-    "label": "Financial Summary",
-    "description": "Formal financial summary report — income, balance, cashflow, ratios, outlook",
+    "id": "investor-update",
+    "label": "Investor Update",
+    "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
     "pickScore": 8,
     "pickSignals": [
-      "Document is explicitly titled 'Annual Report' with heavy financial disclosure: donations ($4.2M), program cost ratio (84%), revenue breakdown by source, and budget projections ($5.5M target for 2027)",
-      "Structure matches financial-summary slots well: mission statement → highlights/KPIs (donations, wells, volunteers) → financial breakdown (program/fundraising/admin split) → outlook (2027 goals with 31% funding increase)",
-      "Intended for donor/board accountability audience (mentions 'Prepared for donors and board', references audit availability), which aligns perfectly with financial-summary's exec/board/investor audience"
+      "The document is a formal periodic update (annual report) to key stakeholders (donors and board) covering metrics, wins, challenges, and forward-looking goals — the exact structure of an investor-update scaffold.",
+      "Core sections map cleanly: '2026 By the Numbers' → metrics, 'Program Highlights' → wins, 'Financial Breakdown' → metrics/transparency, '2027 Goals' → next-quarter, 'Thank You & How to Help' → ask. The 8-slot investor-update scaffold fits the ~8 major sections well.",
+      "While this is a nonprofit annual report rather than a startup investor letter, the semantic intent is identical: report performance to funders, build confidence, request continued support. The investor-update scaffold is purpose-built for this stakeholder-accountability arc."
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -65,7 +65,7 @@
       "slotIdx": 0,
       "slotName": "cover",
       "slotTitle": "Title",
-      "slotPurpose": "Report title + period + presenter",
+      "slotPurpose": "Company name + update period + author",
       "sourceSlideIdx": 0,
       "sourceSlideTitle": "Clearwater Trust — 2026 Annual Report",
       "mappingScore": 10,
@@ -81,75 +81,60 @@
     },
     {
       "slotIdx": 1,
-      "slotName": "exec-statement",
-      "slotTitle": "Executive Statement",
-      "slotPurpose": "CEO or CFO opening statement — key message for the period",
+      "slotName": "tldr",
+      "slotTitle": "TL;DR",
+      "slotPurpose": "Headline summary — 3 key points this quarter",
       "sourceSlideIdx": 1,
       "sourceSlideTitle": "Our Mission",
-      "mappingScore": 7,
+      "mappingScore": 3,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-01-exec-statement.json",
+      "liftFile": "slots/slot-01-tldr.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "quote-pull",
-        "icon-row"
+        "stat-banner",
+        "kpi-card",
+        "kpi-card",
+        "stat-banner"
       ]
     },
     {
       "slotIdx": 2,
-      "slotName": "highlights-kpi",
-      "slotTitle": "Financial Highlights",
-      "slotPurpose": "Top-line KPIs — revenue, EBITDA, net income, cash",
+      "slotName": "metrics",
+      "slotTitle": "Key Metrics",
+      "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
       "sourceSlideIdx": 2,
       "sourceSlideTitle": "2026 By the Numbers",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-02-highlights-kpi.json",
+      "liftFile": "slots/slot-02-metrics.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite",
-        "testimonial-wall"
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "donut-with-center"
       ]
     },
     {
       "slotIdx": 3,
-      "slotName": "income",
-      "slotTitle": "Income Statement",
-      "slotPurpose": "Revenue breakdown and profitability waterfall",
-      "sourceSlideIdx": 4,
-      "sourceSlideTitle": "Financial Breakdown",
-      "mappingScore": 8,
-      "mappingFallback": false,
-      "mappingEmpty": false,
-      "liftFile": "slots/slot-03-income.json",
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": [
-        "cover",
-        "pie",
-        "pie"
-      ]
-    },
-    {
-      "slotIdx": 7,
-      "slotName": "segments",
-      "slotTitle": "Segment Analysis",
-      "slotPurpose": "Revenue by business unit or geography",
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "Top accomplishments this quarter",
       "sourceSlideIdx": 3,
       "sourceSlideTitle": "Program Highlights",
-      "mappingScore": 6,
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-07-segments.json",
+      "liftFile": "slots/slot-03-wins.json",
       "cached": false,
       "dryRun": false,
       "error": null,
@@ -159,76 +144,83 @@
       ]
     },
     {
-      "slotIdx": 8,
-      "slotName": "outlook",
-      "slotTitle": "Outlook & Forecast",
-      "slotPurpose": "Forward guidance and scenario planning",
+      "slotIdx": 5,
+      "slotName": "next-quarter",
+      "slotTitle": "Next Quarter",
+      "slotPurpose": "Plan and priorities for the coming quarter",
       "sourceSlideIdx": 6,
       "sourceSlideTitle": "2027 Goals",
-      "mappingScore": 9,
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-08-outlook.json",
+      "liftFile": "slots/slot-05-next-quarter.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "bullet-list",
+        "testimonial-wall"
       ]
     },
     {
-      "slotIdx": 9,
-      "slotName": "appendix",
-      "slotTitle": "Appendix",
-      "slotPurpose": "Supporting tables and methodology notes",
+      "slotIdx": 6,
+      "slotName": "ask",
+      "slotTitle": "Ask",
+      "slotPurpose": "What we need from LPs — intros, advice, resources",
       "sourceSlideIdx": 7,
       "sourceSlideTitle": "Thank You & How to Help",
-      "mappingScore": 7,
+      "mappingScore": 6,
       "mappingFallback": false,
       "mappingEmpty": false,
-      "liftFile": "slots/slot-09-appendix.json",
+      "liftFile": "slots/slot-06-ask.json",
       "cached": false,
       "dryRun": false,
       "error": null,
       "subjectTypes": [
         "cover",
-        "bullet-list"
+        "kpi-card",
+        "icon-row",
+        "stat-banner"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "cap-table-burn",
+      "slotTitle": "Financials",
+      "slotPurpose": "Burn rate, runway, cap table highlights",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Financial Breakdown",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-cap-table-burn.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "pie",
+        "pie"
       ]
     }
   ],
   "droppedSlots": [
     {
       "slotIdx": 4,
-      "slotName": "balance-sheet",
-      "slotTitle": "Balance Sheet",
-      "reason": "no-source-content"
-    },
-    {
-      "slotIdx": 5,
-      "slotName": "cashflow",
-      "slotTitle": "Cash Flow",
-      "reason": "no-source-content"
-    },
-    {
-      "slotIdx": 6,
-      "slotName": "ratios",
-      "slotTitle": "Key Ratios",
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
       "reason": "no-source-content"
     }
   ],
   "totals": {
     "slotsBaked": 7,
-    "slotsEmpty": 3,
+    "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1645008
+    "totalCostUSD": 0.1871238
   },
   "meta": {
-    "generatedAt": "2026-07-05T07:08:25.378Z",
+    "generatedAt": "2026-07-10T07:23:50.668Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

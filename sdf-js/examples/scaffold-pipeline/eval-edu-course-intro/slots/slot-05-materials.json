@@ -22,12 +22,12 @@
       },
       {
         "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
-          "title": "Required Reading",
+          "title": "Required Reading List",
           "items": [
             {
               "icon": "book-open",
@@ -36,23 +36,23 @@
             },
             {
               "icon": "file-text",
-              "label": "Raft Consensus Algorithm",
-              "sublabel": "Ongaro & Ousterhout"
+              "label": "In Search of an Understandable Consensus Algorithm",
+              "sublabel": "Ongaro & Ousterhout (Raft paper)"
             },
             {
               "icon": "file-text",
-              "label": "Google File System",
+              "label": "The Google File System",
               "sublabel": "Ghemawat, Gobioff, Leung"
             },
             {
               "icon": "file-text",
-              "label": "Dynamo Key-Value Store",
+              "label": "Dynamo: Amazon's Highly Available Key-value Store",
               "sublabel": "DeCandia et al."
             },
             {
               "icon": "calendar-check",
-              "label": "Weekly Paper Summaries",
-              "sublabel": "Posted before Thursday lectures"
+              "label": "Weekly paper summaries",
+              "sublabel": "Posted on course site before Thursday lectures"
             }
           ]
         }
@@ -69,20 +69,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4291,
+      "input_tokens": 5209,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 414,
+      "output_tokens": 434,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0229854,
-    "elapsedSec": 7.3,
-    "generatedAt": "2026-07-05T06:29:22.098Z",
+    "costUSD": 0.026039399999999997,
+    "elapsedSec": 9.2,
+    "generatedAt": "2026-07-10T07:23:14.566Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

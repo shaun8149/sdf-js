@@ -44,7 +44,7 @@
         "h": 240,
         "args": {
           "value": "12,500",
-          "label": "Daily Active Users",
+          "label": "DAU",
           "sublabel": "Target 8,000",
           "trend": "up",
           "trendValue": "+56%",
@@ -60,11 +60,11 @@
         "h": 240,
         "args": {
           "value": "$4.2M",
-          "label": "Daily Volume",
+          "label": "Trading Volume Daily",
           "sublabel": "Target $3M",
           "trend": "up",
           "trendValue": "+40%",
-          "icon": "arrows-clockwise",
+          "icon": "chart-bar",
           "style": "light"
         }
       },
@@ -80,7 +80,7 @@
           "sublabel": "Target 85%",
           "trend": "up",
           "trendValue": "+7pt",
-          "icon": "hand-heart",
+          "icon": "heart",
           "style": "light"
         }
       },
@@ -96,7 +96,7 @@
           "sublabel": "Target 60",
           "trend": "up",
           "trendValue": "+12pt",
-          "icon": "star",
+          "icon": "thumbs-up",
           "style": "light"
         }
       },
@@ -108,10 +108,10 @@
         "h": 240,
         "args": {
           "value": "$180K/mo",
-          "label": "Burn Rate",
+          "label": "Burn",
           "sublabel": "Budget $250K",
           "trend": "down",
-          "trendValue": "Under $70K",
+          "trendValue": "Under by $70K",
           "icon": "currency-dollar",
           "style": "light"
         }
@@ -130,7 +130,7 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4054,
+      "input_tokens": 5234,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
@@ -141,9 +141,9 @@
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.029189399999999997,
-    "elapsedSec": 11.8,
-    "generatedAt": "2026-07-05T05:27:01.661Z",
+    "costUSD": 0.0327294,
+    "elapsedSec": 12.9,
+    "generatedAt": "2026-07-10T07:19:33.835Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

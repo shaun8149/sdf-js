@@ -3,8 +3,8 @@
   "slotName": "tldr",
   "slotTitle": "TL;DR",
   "slotPurpose": "Headline summary — 3 key points this quarter",
-  "sourceSlideIdx": 2,
-  "sourceSlideTitle": "2026 By the Numbers",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
   "sceneData": {
     "name": "investor-update/tldr",
     "layout": "grid",
@@ -21,90 +21,62 @@
         }
       },
       {
-        "type": "kpi-card",
+        "type": "stat-banner",
         "x": 40,
         "y": 160,
-        "w": 360,
-        "h": 240,
+        "w": 1200,
+        "h": 140,
         "args": {
-          "value": "$4.2M",
-          "label": "Donations Raised",
-          "sublabel": "+18% vs 2025",
-          "trend": "up",
-          "trendValue": "+18%",
-          "icon": "hand-coins",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 460,
-        "y": 160,
-        "w": 360,
-        "h": 240,
-        "args": {
-          "value": "210,000",
-          "label": "People Served",
-          "sublabel": "New or improved water access",
-          "icon": "users",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 880,
-        "y": 160,
-        "w": 360,
-        "h": 240,
-        "args": {
-          "value": "84%",
-          "label": "Program Cost Ratio",
-          "sublabel": "Funds to programs",
-          "icon": "chart-pie",
-          "style": "light"
+          "value": "15 Years",
+          "label": "Continuous Field Operations",
+          "bg": [
+            58,
+            138,
+            200
+          ]
         }
       },
       {
         "type": "kpi-card",
         "x": 40,
-        "y": 440,
-        "w": 360,
-        "h": 240,
+        "y": 316,
+        "w": 580,
+        "h": 180,
         "args": {
-          "value": "1,340",
-          "label": "Active Volunteers",
-          "sublabel": "Across 4 countries",
-          "icon": "users-three",
+          "value": "4",
+          "label": "Countries",
+          "sublabel": "Kenya · Tanzania · Malawi · Mozambique",
+          "icon": "globe-hemisphere-west",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 460,
-        "y": 440,
-        "w": 360,
-        "h": 240,
+        "x": 660,
+        "y": 316,
+        "w": 580,
+        "h": 180,
         "args": {
-          "value": "87",
-          "label": "Wells Constructed",
-          "sublabel": "New wells this year",
+          "value": "Clean Water",
+          "label": "Human Right",
+          "sublabel": "Not a privilege — our founding belief",
           "icon": "drop",
           "style": "light"
         }
       },
       {
         "type": "stat-banner",
-        "x": 880,
-        "y": 440,
-        "w": 360,
-        "h": 240,
+        "x": 40,
+        "y": 520,
+        "w": 1200,
+        "h": 140,
         "args": {
-          "value": "4 Countries",
-          "label": "Global Reach",
+          "value": "Clearwater Trust",
+          "label": "Building clean water infrastructure in underserved rural regions",
           "bg": [
-            58,
-            138,
-            200
+            26,
+            40,
+            66
           ]
         }
       }
@@ -120,20 +92,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4166,
+      "input_tokens": 5178,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 767,
+      "output_tokens": 529,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.027905399999999997,
-    "elapsedSec": 14.9,
-    "generatedAt": "2026-07-05T06:20:12.340Z",
+    "costUSD": 0.027371399999999997,
+    "elapsedSec": 9.9,
+    "generatedAt": "2026-07-10T07:23:50.664Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

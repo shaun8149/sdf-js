@@ -7,9 +7,9 @@
     "description": "Internal Q review — KPIs, wins, challenges, outlook",
     "pickScore": 9,
     "pickSignals": [
-      "This is a quarterly retrospective covering KPIs (velocity metrics, incidents, deploy frequency), wins (shipped features, improved metrics), and challenges (incidents, tech debt progress), which maps perfectly to QBR structure",
-      "The audience is 'Eng org + leadership' — classic QBR stakeholder set; content follows the exec-summary → metrics → wins → challenges → outlook (Q4 OKRs) arc",
-      "Slide count (11 slides inferred from sections) fits well into QBR's 7-slot scaffold — some sections will naturally combine (e.g. velocity + incidents = KPIs; shipped features + tech debt = wins)"
+      "This is a quarterly engineering retrospective with clear QBR structure: metrics dashboard (velocity, deploy frequency, MTTR), wins (shipped features, coverage improvements), challenges (incidents, tech debt), and forward-looking outlook (Q4 OKRs)",
+      "The content maps perfectly to the 7-slot QBR scaffold: cover → executive-summary (quarterly eng retro intro) → kpis (velocity metrics, DORA metrics) → wins (shipped features, infrastructure improvements) → challenges (incidents, tech debt status) → outlook (team growth, eng NPS) → next-steps (Q4 OKRs)",
+      "The audience is explicit ('Eng org + leadership') and the quarterly cadence + KPI-heavy structure are textbook QBR patterns. This is an internal review deck, not a pitch or sales document"
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -90,7 +90,11 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite"
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -98,8 +102,8 @@
       "slotName": "kpis",
       "slotTitle": "KPI Dashboard",
       "slotPurpose": "Critical metrics quarter-over-quarter",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "Incidents & Postmortems",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Velocity Metrics",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -109,7 +113,13 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "dashboard-multi-kpi-composite"
+        "dashboard-multi-kpi-composite",
+        "bar",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -136,9 +146,9 @@
       "slotName": "challenges",
       "slotTitle": "Challenges",
       "slotPurpose": "What did not go to plan",
-      "sourceSlideIdx": 4,
-      "sourceSlideTitle": "Tech Debt & Infrastructure",
-      "mappingScore": 7,
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Incidents & Postmortems",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-04-challenges.json",
@@ -147,10 +157,9 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "bullet-list",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card"
+        "risk-heatmap",
+        "fishbone",
+        "bullet-list"
       ]
     },
     {
@@ -171,32 +180,24 @@
         "cover",
         "okr-tree"
       ]
-    },
+    }
+  ],
+  "droppedSlots": [
     {
       "slotIdx": 6,
       "slotName": "next-steps",
       "slotTitle": "Next Steps",
-      "slotPurpose": "Action items + owners + dates",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
+      "reason": "no-source-content"
     }
   ],
   "totals": {
     "slotsBaked": 6,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.1378494
+    "totalCostUSD": 0.1743324
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:36:18.131Z",
+    "generatedAt": "2026-07-10T07:24:27.467Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

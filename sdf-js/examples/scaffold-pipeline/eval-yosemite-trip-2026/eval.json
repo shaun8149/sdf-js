@@ -12,8 +12,8 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 14,
-    "atom_types_distinct": 7,
+    "atom_instances": 12,
+    "atom_types_distinct": 6,
     "variety_ratio": 0.5,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
@@ -29,29 +29,56 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 0,
-    "counts": {},
-    "slots_with_issues": []
+    "total": 1,
+    "counts": {
+      "SUBJECT_OVERLAP": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 6,
+        "slotName": "closing",
+        "issues": [
+          {
+            "kind": "SUBJECT_OVERLAP",
+            "detail": "timeline[1] × bullet-list[2] overlap 100%"
+          }
+        ]
+      }
+    ]
   },
   "textBudget": {
-    "chars_per_slot": 142.85714285714286,
-    "max_slot_chars": 180
+    "chars_per_slot": 130.57142857142858,
+    "max_slot_chars": 170
   },
   "fidelity": {
     "numbers_total": 53,
-    "numbers_found": 51,
-    "number_recall": 0.9622641509433962,
+    "numbers_found": 41,
+    "number_recall": 0.7735849056603774,
     "missing_numbers": [
+      "654",
+      "44",
+      "23332244",
+      "120,180",
+      "220,260",
+      "340,160",
+      "460,250",
+      "560,140",
+      "640,220",
+      "0.6",
       "23b",
       "240,40"
     ],
-    "deck_numbers_total": 8,
+    "deck_numbers_total": 9,
     "derived_cited_count": 0,
-    "hallucinated_numbers": [],
-    "deck_entities_total": 22,
-    "hallucinated_entities": [],
-    "entity_precision": 1,
-    "number_precision": 1,
+    "hallucinated_numbers": [
+      "0.5"
+    ],
+    "deck_entities_total": 18,
+    "hallucinated_entities": [
+      "Action Plan"
+    ],
+    "entity_precision": 0.9444444444444444,
+    "number_precision": 0.8888888888888888,
     "entities_total": 6,
     "entities_found": 6,
     "entity_recall": 1,
@@ -68,5 +95,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.149Z"
+  "generatedAt": "2026-07-10T07:29:14.100Z"
 }

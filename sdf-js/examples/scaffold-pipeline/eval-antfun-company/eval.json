@@ -12,9 +12,9 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 14,
-    "atom_types_distinct": 7,
-    "variety_ratio": 0.5,
+    "atom_instances": 16,
+    "atom_types_distinct": 6,
+    "variety_ratio": 0.375,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -34,8 +34,8 @@
     "slots_with_issues": []
   },
   "textBudget": {
-    "chars_per_slot": 303.14285714285717,
-    "max_slot_chars": 477
+    "chars_per_slot": 356.57142857142856,
+    "max_slot_chars": 574
   },
   "fidelity": {
     "numbers_total": 10,
@@ -45,11 +45,11 @@
     "deck_numbers_total": 10,
     "derived_cited_count": 0,
     "hallucinated_numbers": [],
-    "deck_entities_total": 27,
+    "deck_entities_total": 28,
     "hallucinated_entities": [
-      "Strategic Capabilities"
+      "Target Users"
     ],
-    "entity_precision": 0.9629629629629629,
+    "entity_precision": 0.9642857142857143,
     "number_precision": 1,
     "entities_total": 17,
     "entities_found": 17,
@@ -57,15 +57,15 @@
     "missing_entities": []
   },
   "score": {
-    "total": 96.2,
+    "total": 94.5,
     "breakdown": {
       "structure": 21.9,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
-      "text": 9.3
+      "text": 7.6
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.091Z"
+  "generatedAt": "2026-07-10T07:29:14.063Z"
 }

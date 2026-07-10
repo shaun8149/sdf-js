@@ -4,7 +4,7 @@
   "slotTitle": "Key Figures",
   "slotPurpose": "The headline numbers at a glance",
   "sourceSlideIdx": 2,
-  "sourceSlideTitle": "下乡车型销量快速增长",
+  "sourceSlideTitle": "下乡车型销量实现高速增长",
   "sceneData": {
     "name": "news-briefing/key-figures",
     "layout": "grid",
@@ -30,17 +30,13 @@
           "stats": [
             {
               "value": "187万辆",
-              "label": "下乡车型销量",
+              "label": "前五月下乡车型销量",
               "trend": "+61%",
               "trendDirection": "up"
             },
             {
               "value": "34%",
-              "label": "占全国总销量"
-            },
-            {
-              "value": "前五个月",
-              "label": "统计周期"
+              "label": "占全国新能源汽车总销量"
             }
           ]
         }
@@ -57,20 +53,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4934,
+      "input_tokens": 5165,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 292,
+      "output_tokens": 273,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023084399999999998,
-    "elapsedSec": 6.1,
-    "generatedAt": "2026-07-07T06:43:28.217Z",
+    "costUSD": 0.023492399999999997,
+    "elapsedSec": 9.6,
+    "generatedAt": "2026-07-10T07:27:23.283Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

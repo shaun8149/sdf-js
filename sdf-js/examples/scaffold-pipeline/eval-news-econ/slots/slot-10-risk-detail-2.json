@@ -4,7 +4,7 @@
   "slotTitle": "Secondary Risks",
   "slotPurpose": "Remaining risks / upside factors",
   "sourceSlideIdx": 11,
-  "sourceSlideTitle": "科技投资上行支撑",
+  "sourceSlideTitle": "科技投资的上行支撑",
   "sceneData": {
     "name": "news-briefing/risk-detail-2",
     "layout": "row",
@@ -22,25 +22,24 @@
       },
       {
         "type": "balance-scale",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
         "args": {
-          "title": "科技投资上行支撑",
-          "leftLabel": "上行因素",
+          "title": "科技投资的上行支撑",
+          "leftLabel": "上行支撑",
           "rightLabel": "不确定性",
           "leftItems": [
-            "科技投资强劲势头",
-            "生产增长支撑",
-            "全球经济积极因素"
+            "科技相关投资强劲势头",
+            "生产活动持续增长"
           ],
           "rightItems": [
             "持续性存在不确定性",
-            "投资波动风险"
+            "需关注科技周期演变"
           ],
           "leftAccent": "rgb(38, 70, 130)",
-          "rightAccent": "rgb(110, 95, 75)"
+          "rightAccent": "rgb(165, 130, 90)"
         }
       }
     ]
@@ -55,20 +54,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4440,
+      "input_tokens": 5153,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 332,
+      "output_tokens": 328,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.022202399999999997,
-    "elapsedSec": 6.7,
-    "generatedAt": "2026-07-07T01:17:06.885Z",
+    "costUSD": 0.0242814,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-10T07:26:22.516Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

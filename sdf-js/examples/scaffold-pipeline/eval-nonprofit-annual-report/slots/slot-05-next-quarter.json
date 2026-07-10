@@ -22,10 +22,10 @@
       },
       {
         "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 520,
         "args": {
           "title": "2027 Goals",
           "items": [
@@ -36,23 +36,48 @@
             },
             {
               "icon": "globe-hemisphere-west",
-              "label": "Expand into 5th country",
-              "sublabel": "Uganda pilot program"
+              "label": "Expand into Uganda",
+              "sublabel": "5th country pilot program"
             },
             {
               "icon": "sun",
-              "label": "Solar-pump deployment to 50 villages",
-              "sublabel": ""
+              "label": "Solar pumps to 50 villages"
             },
             {
               "icon": "graduation-cap",
-              "label": "Train 350 local technicians",
-              "sublabel": "Expanded training program"
+              "label": "Train 350 local technicians"
             },
             {
               "icon": "currency-dollar",
-              "label": "Raise $5.5M in funding",
-              "sublabel": "31% increase to support expansion"
+              "label": "Raise $5.5M",
+              "sublabel": "31% funding increase"
+            }
+          ]
+        }
+      },
+      {
+        "type": "testimonial-wall",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "title": "Voices",
+          "testimonials": [
+            {
+              "quote": "Seeing the well go live in Kilifi was the proudest moment of my giving career — clean water changed that village overnight.",
+              "name": "Margaret Ho",
+              "role": "Monthly donor since 2019"
+            },
+            {
+              "quote": "Clearwater didn't just build a well, they trained our own people to keep it running for the next 50 years.",
+              "name": "Chief Amara Kessy",
+              "role": "Village Chief, Tanzania"
+            },
+            {
+              "quote": "Their financial transparency is why our foundation renewed for a third consecutive year.",
+              "name": "Daniel Reyes",
+              "role": "Foundation Program Officer"
             }
           ]
         }
@@ -70,20 +95,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4166,
+      "input_tokens": 5355,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 404,
+      "output_tokens": 627,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0224604,
-    "elapsedSec": 7.5,
-    "generatedAt": "2026-07-05T06:20:38.025Z",
+    "costUSD": 0.0293724,
+    "elapsedSec": 14.7,
+    "generatedAt": "2026-07-10T07:23:50.666Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
