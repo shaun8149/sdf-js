@@ -45,6 +45,7 @@
       "43"
     ],
     "deck_numbers_total": 32,
+    "derived_cited_count": 0,
     "hallucinated_numbers": [
       "23",
       "156",
@@ -81,5 +82,5 @@
       "text": 9
     }
   },
-  "generatedAt": "2026-07-07T06:44:59.896Z"
+  "generatedAt": "2026-07-10T04:23:29.795Z"
 }

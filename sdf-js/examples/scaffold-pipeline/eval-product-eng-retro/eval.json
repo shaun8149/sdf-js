@@ -54,6 +54,7 @@
       "54"
     ],
     "deck_numbers_total": 34,
+    "derived_cited_count": 0,
     "hallucinated_numbers": [
       "62%",
       "2024",
@@ -86,5 +87,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:44:59.925Z"
+  "generatedAt": "2026-07-10T04:23:29.833Z"
 }

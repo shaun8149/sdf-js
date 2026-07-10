@@ -64,6 +64,7 @@
     "number_recall": 1,
     "missing_numbers": [],
     "deck_numbers_total": 7,
+    "derived_cited_count": 0,
     "hallucinated_numbers": [],
     "deck_entities_total": 17,
     "hallucinated_entities": [],
@@ -85,5 +86,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:44:59.901Z"
+  "generatedAt": "2026-07-10T04:23:29.803Z"
 }
