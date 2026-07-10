@@ -757,3 +757,95 @@ Stop. Report the PR URL + the blind-pick result to the user.
 2. `http://127.0.0.1:8001/apps/present/figure.html?ir=funnel-sales` → funnel renders, stages **drop in** top→bottom (build-in), camera flies *through*, labels reveal in order. (Playwright screenshots at ~1/4/8s.)
 3. `http://127.0.0.1:8001/apps/present/blind.html?ir=funnel-sales` → 2D and 3D side by side, randomized. (Playwright screenshot.)
 4. Run the blind pick with 5–8 people → GO/NO-GO on the direction.
+
+---
+
+# Phase 2: Fighting-Game Stage — 轻量舞台 (added 2026-07-10)
+
+> **Status note:** Phase 1 (Tasks 1-8) shipped as PR #196 and grew beyond the plan —
+> all four structure renderers exist (`render-ir.js` dispatch), plus `assembleDeck`
+> (continuous world) and `environments.js` (studio/alpine). Phase 2 adds the
+> **fighting-game stage** framing: a dark receding backdrop + spotlight rig + platform
+> for the foreground structure, so the blind test measures a STAGED 3D figure vs 2D.
+> Recipes come from the ArtBlocks shader-core handoffs — see
+> `docs/superpowers/artblocks-study/3d-stage-idioms.md` (idiom ledger with hook-in
+> points). Phase 2 uses only the ✅ (config-only) and 🔩 (small-shader) tiers.
+
+## Phase 2 Global Constraints
+
+- Same repo rules as Phase 1 (branch → PR → stop; tests green; two-text-systems).
+- **Stage discipline (the fighting-game contract):** the backdrop must RECEDE —
+  dark + defocused + low-contrast; the structure sits lit on a platform; the camera
+  keeps the audience oriented (establishing shot first, then the emphasis push-in).
+- Shader edits (Tasks 10-11) are guarded behind uniforms defaulting OFF — zero
+  visual change for every existing scene unless the stage preset opts in.
+
+### Task 9: `stagePreset()` — config-only stage (lights + platform + DOF)
+
+**Files:**
+- Modify: `sdf-js/src/scene/environments.js` (add `stagePreset`)
+- Modify: `sdf-js/src/scene/render-ir.js` (apply preset when `opts.stage`)
+- Modify: `sdf-js/apps/present/figure.js` (`?stage=1` param)
+- Test: `sdf-js/scripts/test-stage-preset.mjs`
+
+**Interfaces:**
+- Produces: `stagePreset(scene, { center=[0,1.6,0] }) → scene` — returns the scene with
+  (a) `defaults.studioBg='dark'` + `defaults.interiorDark=0.22`,
+  (b) `defaults.lights = [key spotlight above-front of center (dir aimed at center), cool rim light behind]`,
+  (c) a `platform` subject: flat cylinder under the structure (`cylinder`-family atom, radius ~2.6, height 0.12, at y≈0), dark matte material,
+  (d) every `cameraSequence.shots[i]` gets `aperture: 0.06, focalDistance: |pos−target|` (backdrop defocus) unless the shot already sets aperture > 0.
+
+- [ ] Step 1: failing test — `stagePreset(renderIR(ir))` adds platform subject + 2 lights + interiorDark + every shot has aperture>0; a scene that already has aperture keeps it; original scene object not mutated (returns copy).
+- [ ] Step 2: implement in environments.js (pure function, no studio imports).
+- [ ] Step 3: `render-ir.js`: `if (opts.stage) scene = stagePreset(scene)` after the renderer returns. figure.js: `renderIR(ir, { env, stage: params.get('stage') === '1' })`.
+- [ ] Step 4: register test in run-tests; full suite green.
+- [ ] Step 5: Playwright — `figure.html?ir=funnel-sales&stage=1`: dark backdrop, spotlit funnel on a platform, backdrop soft. Screenshot vs `stage=0`.
+- [ ] Step 6: commit `feat(stage): stagePreset — spotlight rig + platform + DOF (config-only stage v0)`.
+
+### Task 10: SDF glow — march-loop accumulation (idiom L08)
+
+The Box Light lesson's "light = distance falloff" is nearly free in a raymarcher: the
+march loop already has `d` each step. Accumulate `glow += exp(-glowK * d) * stepScale`
+and add `glowColor * glow * u_glowAmt` to the final color. `u_glowAmt` defaults **0.0**
+(off — zero change for existing scenes); the stage preset sets a small value (~0.35).
+
+**Files:**
+- Modify: `sdf-js/src/render/studio.js` — locate the primary march loop (near the
+  volume-density accumulation, `smokeDensity`/`fogDensity` calls ~line 600-740) and the
+  uniform upload block; add `u_glowAmt`/`u_glowK` uniforms + accumulation + composite.
+- Modify: `sdf-js/src/scene/environments.js` — `stagePreset` sets `defaults.glow = { amount: 0.35, k: 6.0 }`; `apply-studio-scene.js` forwards it via `setPostFx` path (follow how `interiorDark` flows — same plumbing).
+- Test: compile-check (scene with glow compiles; GLSL contains `u_glowAmt`) + Playwright screenshot compare stage=1 (subtle silhouette glow) vs stage=0 (unchanged).
+
+- [ ] Steps: locate insertion points → add uniforms (default 0) → accumulate in march loop → plumb `defaults.glow` through setPostFx like interiorDark → verify OFF = pixel-identical on an existing scene (screenshot diff) → verify ON = visible rim/silhouette glow → commit.
+
+### Task 11: texture-flow backdrop (idiom L14)
+
+Give the dark cyclorama a slow flowing grain: in the cyclorama/background shading
+branch (the `studioBgDark` path), displace the shading coordinate by fbm before
+sampling the gradient: `p' = p + flowAmp * fbm(p * flowScale + u_time * flowSpeed)`,
+plus the hash-grain anti-banding line (`fract(sin(dot(uv,vec2(12.9898,78.233)))*43758.5453)/N`).
+Guarded by `u_flowAmt` default **0.0**; stage preset sets ~0.15. Keep it LOW-contrast —
+the backdrop must recede (stage discipline).
+
+**Files:**
+- Modify: `sdf-js/src/render/studio.js` (cyclorama branch — find via `studioBgDark`).
+- Modify: `sdf-js/src/scene/environments.js` (`stagePreset` sets `defaults.flow`).
+- Test: compile + Playwright at t≈0 vs t≈3s with stage=1 — backdrop visibly but subtly moves; stage=0 pixel-identical.
+
+- [ ] Steps: locate cyclorama branch → add guarded displacement + grain → plumb via stagePreset → screenshot verify (subtle motion; contrast stays low) → commit.
+
+### Task 12: staged blind test — go/no-go v2
+
+- [ ] `blind.html`: point the 3D iframe at `figure.html?ir=<name>&stage=1`.
+- [ ] Full suite green; Playwright screenshots (2D | staged-3D side by side).
+- [ ] Re-run the 5-8 person blind pick with the STAGED figure. Same criterion: 3D ≥70% → GO for staging all four structures; else strip the stage back and reassess which layer failed (structure vs stage).
+- [ ] Push branch + open PR; stop and report.
+
+## Phase 2 Self-Review
+
+- Fighting-game contract encoded as constraints (recede/orient/lit platform) ✓
+- Only ✅/🔩 idiom tiers used; 🏗 post-pass items (bloom/UV-warp/feedback) explicitly deferred ✓
+- Every shader edit uniform-guarded, default off, with a pixel-identical regression check ✓
+- Task 10/11 leave exact-line insertion to the implementer ON PURPOSE (studio.js is
+  ~3000 lines and moving; anchors given are the volume-accumulation block and the
+  `studioBgDark` branch) — the recipes and guards are fully specified.
