@@ -21,6 +21,40 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
   };
   size();
 
+  // ---- FPS HUD + adaptive resolution -----------------------------------------
+  // Live FPS readout (green ≥50 / amber ≥30 / red <30, ?fps=0 hides it) and a
+  // laptop-GPU safety net: sustained <24fps drops the render scale a notch
+  // (0.75× → 0.5× of canvas resolution), sustained >52fps climbs back. This is
+  // damage control, not the fix — heavy multi-station decks need the per-station
+  // shader work (see perf notes); the HUD exists so we SEE the problem.
+  const fpsHud = document.createElement('div');
+  fpsHud.style.cssText =
+    'position:fixed;top:10px;right:12px;z-index:40;font:700 12px ui-monospace,monospace;' +
+    'padding:3px 8px;border-radius:4px;background:rgba(14,15,18,0.72);pointer-events:none;';
+  if (new URLSearchParams(location.search).get('fps') !== '0') document.body.appendChild(fpsHud);
+  const SCALES = [1.0, 0.75, 0.5];
+  let scaleIdx = 0;
+  let lowStreak = 0;
+  let highStreak = 0;
+  const onFps = (fps) => {
+    fpsHud.textContent = `${fps.toFixed(0)} fps${scaleIdx ? ` · ${SCALES[scaleIdx]}×` : ''}`;
+    fpsHud.style.color = fps >= 50 ? '#7fd77f' : fps >= 30 ? '#e8c35c' : '#f26d6d';
+    if (fps < 24 && scaleIdx < SCALES.length - 1) {
+      if (++lowStreak >= 2) {
+        scaleIdx++;
+        lowStreak = 0;
+        if (studio.setRenderScale) studio.setRenderScale(SCALES[scaleIdx]);
+      }
+    } else lowStreak = 0;
+    if (fps > 52 && scaleIdx > 0) {
+      if (++highStreak >= 4) {
+        scaleIdx--;
+        highStreak = 0;
+        if (studio.setRenderScale) studio.setRenderScale(SCALES[scaleIdx]);
+      }
+    } else highStreak = 0;
+  };
+
   const studio = createStudioRenderer({
     canvas,
     getControls: () => ({
@@ -34,7 +68,7 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
       groundOn: !outdoor,
       checkerOn: !outdoor,
     }),
-    onFps: () => {},
+    onFps,
   });
   window.addEventListener('resize', () => {
     size();
