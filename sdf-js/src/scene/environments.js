@@ -205,6 +205,11 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
   // spotlight look comes from vignette + interiorDark + the rig below.
   out.defaults.studioBg = 'dark';
   if (out.defaults.interiorDark == null) out.defaults.interiorDark = 0.22;
+  // theatrical show mode: near-black room shell (stage.js WALL_DARK family) so the
+  // spotlight rig + glow read against darkness instead of a lit mid-grey room
+  if (out.defaults.stage && typeof out.defaults.stage === 'object' && out.defaults.stage.show == null) {
+    out.defaults.stage = { ...out.defaults.stage, show: true };
+  }
   out.defaults.postFx = {
     vignetteStrength: 0.62,
     exposure: 0.9,
