@@ -1,0 +1,64 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "Rare Artifact",
+  "theme": {
+    "id": "pitch-bold",
+    "bg": [16, 18, 24],
+    "accent": [90, 150, 250],
+    "colors": [[200, 60, 60]]
+  },
+  "decor": {
+    "family": "peg-wraps",
+    "seed": 987654321,
+    "personality": "wild",
+    "hash": "b902d873762fe5ad",
+    "v": 3,
+    "serial": 7,
+    "rare": true,
+    "janky": false,
+    "grain": 0.8
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "s0",
+      "slotTitle": "Cover",
+      "sceneData": {
+        "subjects": [
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 280,
+            "h": 200,
+            "args": {
+              "value": "$30.6M",
+              "label": "GAAP Operating Income"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "s1",
+      "slotTitle": "Body",
+      "sceneData": {
+        "subjects": [
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 280,
+            "h": 200,
+            "args": {
+              "value": "$30.6M",
+              "label": "GAAP Operating Income"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

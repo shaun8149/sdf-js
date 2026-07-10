@@ -1,0 +1,458 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-strategy-swot-portfolio",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "analysis-report",
+    "label": "Analysis Report"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "analysis-report/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Strategic Portfolio Analysis 2026",
+              "subtitle": "Independent analyst review — Q3 2026",
+              "author": "Strategy Team",
+              "date": "Framework: SWOT + Porter Value Chain",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "scope",
+      "slotTitle": "Scope & Methodology",
+      "sceneData": {
+        "name": "analysis-report/scope",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Scope & Methodology",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 560,
+            "h": 480,
+            "args": {
+              "title": "Analysis Scope",
+              "items": [
+                {
+                  "icon": "package",
+                  "label": "6 product lines reviewed",
+                  "sublabel": "NA + EMEA + APAC markets"
+                },
+                {
+                  "icon": "calendar",
+                  "label": "11-quarter time window",
+                  "sublabel": "2024-Q1 through 2026-Q3"
+                },
+                {
+                  "icon": "database",
+                  "label": "Internal KPI dashboard",
+                  "sublabel": "Primary data source"
+                },
+                {
+                  "icon": "users",
+                  "label": "32 customer interviews",
+                  "sublabel": "Qualitative insights"
+                },
+                {
+                  "icon": "chart-bar",
+                  "label": "Gartner Magic Quadrant 2025",
+                  "sublabel": "Competitive positioning"
+                }
+              ]
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 680,
+            "y": 180,
+            "w": 520,
+            "h": 480,
+            "args": {
+              "title": "Frameworks Applied",
+              "items": [
+                {
+                  "icon": "matrix-grid",
+                  "label": "SWOT",
+                  "sublabel": "Strategic positioning"
+                },
+                {
+                  "icon": "network",
+                  "label": "Porter Value Chain",
+                  "sublabel": "Activity analysis"
+                },
+                {
+                  "icon": "chart-line",
+                  "label": "Change Curve",
+                  "sublabel": "Adoption assessment"
+                }
+              ],
+              "iconStyle": "card",
+              "iconSize": "medium"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "definition",
+      "slotTitle": "Context & Definition",
+      "sceneData": {
+        "name": "analysis-report/definition",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Context & Definition",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "value-chain-diagram",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Porter Value Chain Framework",
+              "primary": [
+                "Inbound Logistics",
+                "Operations",
+                "Outbound Logistics",
+                "Marketing & Sales",
+                "Service"
+              ],
+              "support": [
+                "Firm Infrastructure",
+                "Human Resource Management",
+                "Technology Development",
+                "Procurement"
+              ],
+              "outcome": "Margin"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "data-findings",
+      "slotTitle": "Data & Findings",
+      "sceneData": {
+        "name": "analysis-report/data-findings",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Data & Findings"
+            }
+          },
+          {
+            "type": "testimonial-wall",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Voice of the Customer",
+              "testimonials": [
+                {
+                  "quote": "This platform changed how our team coordinates across timezones — we no longer lose context in handoffs.",
+                  "name": "Sarah Chen",
+                  "role": "VP Engineering at Meridian Analytics"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "framework-analysis",
+      "slotTitle": "Framework Analysis",
+      "sceneData": {
+        "name": "analysis-report/framework-analysis",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Framework Analysis",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "swot",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "SWOT Analysis Results",
+              "strengths": [
+                "Market-leading retention 92%",
+                "Top-tier engineering velocity",
+                "Proprietary ML pipeline",
+                "Founder-led culture"
+              ],
+              "weaknesses": [
+                "Thin EMEA presence",
+                "Slow enterprise sales cycle",
+                "Customer support response time",
+                "Technical debt in billing layer"
+              ],
+              "opportunities": [
+                "Regulatory tailwind in EU AI Act",
+                "Partner channel under-leveraged",
+                "Vertical expansion to healthcare and education",
+                "Acquisition targets cheap post-2025 correction"
+              ],
+              "threats": [
+                "New entrants well-funded (3 Series B in 2026)",
+                "Incumbent platforms bundling",
+                "Talent retention pressure from AI labs",
+                "FX headwind from USD strength"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "interpretation",
+      "slotTitle": "Interpretation",
+      "sceneData": {
+        "name": "analysis-report/interpretation",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Interpretation",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "change-curve-chart",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Change Journey Forecast",
+              "xAxis": "Timeline",
+              "yAxis": "Adoption",
+              "phases": [
+                {
+                  "label": "Shock",
+                  "sublabel": "Leadership announcement",
+                  "period": "Q1 2027"
+                },
+                {
+                  "label": "Denial",
+                  "sublabel": "Middle-management push-back",
+                  "period": "Q1-Q2 2027"
+                },
+                {
+                  "label": "Frustration",
+                  "sublabel": "Process friction",
+                  "period": "Q2 2027"
+                },
+                {
+                  "label": "Experimentation",
+                  "sublabel": "Pilot teams adopt",
+                  "period": "Q3 2027"
+                },
+                {
+                  "label": "Decision",
+                  "sublabel": "Org-wide rollout",
+                  "period": "Q4 2027"
+                },
+                {
+                  "label": "Integration",
+                  "sublabel": "New normal",
+                  "period": "Q1 2028"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "recommendations",
+      "slotTitle": "Recommendations",
+      "sceneData": {
+        "name": "analysis-report/recommendations",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Recommendations",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "building",
+                  "label": "Open Berlin office Q1 2027",
+                  "sublabel": "Double down on EMEA hiring"
+                },
+                {
+                  "icon": "currency-dollar",
+                  "label": "3-tier pricing with usage add-ons",
+                  "sublabel": "Restructure revenue model"
+                },
+                {
+                  "icon": "briefcase",
+                  "label": "Acquire 1-2 healthcare AI specialists",
+                  "sublabel": "Vertical market expansion"
+                },
+                {
+                  "icon": "headset",
+                  "label": "Target 2h SLA response time",
+                  "sublabel": "Invest in customer support"
+                },
+                {
+                  "icon": "handshake",
+                  "label": "Partner with 10 systems integrators",
+                  "sublabel": "Launch channel program"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "sceneData": {
+        "name": "analysis-report/appendix",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Appendix",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "matrix-grid",
+                  "label": "Full SWOT scoring matrix available on request"
+                },
+                {
+                  "icon": "chat-circle",
+                  "label": "Customer interview transcripts redacted for confidentiality"
+                },
+                {
+                  "icon": "chart-bar",
+                  "label": "Porter value chain breakdown per product line in supplementary deck"
+                },
+                {
+                  "icon": "chart-line",
+                  "label": "Change curve model based on Bridges (2017) revision of Kübler-Ross framework"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

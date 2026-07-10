@@ -1,0 +1,423 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-product-eng-retro",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "qbr",
+    "label": "Quarterly Business Review"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "qbr/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Platform Engineering — Q3 2026 Retro",
+              "subtitle": "Quarterly engineering retrospective",
+              "author": "Platform Team",
+              "date": "Eng org + leadership",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "executive-summary",
+      "slotTitle": "Executive Summary",
+      "sceneData": {
+        "name": "qbr/executive-summary",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Executive Summary",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Velocity Metrics",
+              "kpis": [
+                {
+                  "value": "412",
+                  "label": "Story Points",
+                  "sublabel": "Target 380",
+                  "trend": "up",
+                  "trendValue": "+8%",
+                  "color": [38, 70, 130]
+                },
+                {
+                  "value": "34",
+                  "label": "Deploys/Week",
+                  "sublabel": "Up from 21/week",
+                  "trend": "up",
+                  "trendValue": "+62%",
+                  "color": [110, 95, 75]
+                },
+                {
+                  "value": "4.2h",
+                  "label": "Lead Time",
+                  "sublabel": "Down from 11h",
+                  "trend": "down",
+                  "trendValue": "-62%",
+                  "color": [165, 130, 90]
+                },
+                {
+                  "value": "3.1%",
+                  "label": "Failure Rate",
+                  "sublabel": "Target <5%",
+                  "trend": "neutral",
+                  "color": [38, 70, 130]
+                },
+                {
+                  "value": "22min",
+                  "label": "MTTR",
+                  "sublabel": "Target <30min",
+                  "trend": "neutral",
+                  "color": [110, 95, 75]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kpis",
+      "slotTitle": "KPI Dashboard",
+      "sceneData": {
+        "name": "qbr/kpis",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "KPI Dashboard",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "title": "Incident Metrics Q3",
+              "kpis": [
+                {
+                  "value": "6",
+                  "label": "Total Incidents",
+                  "sublabel": "Q3 2024",
+                  "trend": "down",
+                  "trendValue": "-45%",
+                  "color": [38, 70, 130]
+                },
+                {
+                  "value": "1",
+                  "label": "Severity-1",
+                  "sublabel": "47 min downtime",
+                  "trend": "neutral",
+                  "color": [165, 130, 90]
+                },
+                {
+                  "value": "2",
+                  "label": "Severity-2",
+                  "sublabel": "Auth + DB pool",
+                  "trend": "neutral",
+                  "color": [110, 95, 75]
+                },
+                {
+                  "value": "67%",
+                  "label": "Load Test Gap",
+                  "sublabel": "4 of 6 incidents",
+                  "trend": "down",
+                  "color": [200, 195, 180]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "sceneData": {
+        "name": "qbr/wins",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Wins",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "users-three",
+                  "label": "Real-time collaboration — 100% rollout",
+                  "sublabel": "Launched Aug 3",
+                  "status": "done"
+                },
+                {
+                  "icon": "rocket-launch",
+                  "label": "New onboarding flow",
+                  "sublabel": "12min → 4min time-to-first-value",
+                  "status": "done"
+                },
+                {
+                  "icon": "device-mobile",
+                  "label": "Mobile offline mode",
+                  "sublabel": "30-day sync capability",
+                  "status": "done"
+                },
+                {
+                  "icon": "shield-check",
+                  "label": "Admin audit log",
+                  "sublabel": "SOC 2 requirement, shipped 2 weeks early",
+                  "status": "done"
+                },
+                {
+                  "icon": "code",
+                  "label": "API v3 migration",
+                  "sublabel": "92% customer adoption by quarter end",
+                  "status": "done"
+                }
+              ],
+              "title": "Q3 Shipped Features"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "sceneData": {
+        "name": "qbr/challenges",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Challenges",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 560,
+            "h": 460,
+            "args": {
+              "title": "Tech Debt & Infrastructure",
+              "items": [
+                {
+                  "icon": "cube-segmented",
+                  "label": "Monolith decomposition 43% complete",
+                  "sublabel": "6 of 14 services extracted"
+                },
+                {
+                  "icon": "shield-check",
+                  "label": "Test coverage raised to 74%",
+                  "sublabel": "From 61% across core services"
+                },
+                {
+                  "icon": "lightning",
+                  "label": "Build time cut to 6 min",
+                  "sublabel": "From 18 min via cache restructure"
+                },
+                {
+                  "icon": "code",
+                  "label": "Node 22 standardization complete",
+                  "sublabel": "Deprecated Node 16 across all services"
+                },
+                {
+                  "icon": "database",
+                  "label": "Postgres sharding 40% live",
+                  "sublabel": "2 of 5 shards operational"
+                }
+              ]
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 680,
+            "y": 180,
+            "w": 520,
+            "h": 140,
+            "args": {
+              "value": "43%",
+              "label": "Services Extracted",
+              "sublabel": "6 of 14 microservices",
+              "icon": "cube-segmented",
+              "trend": "+6 services",
+              "trendDirection": "up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 680,
+            "y": 340,
+            "w": 520,
+            "h": 140,
+            "args": {
+              "value": "74%",
+              "label": "Test Coverage",
+              "sublabel": "Core services",
+              "icon": "shield-check",
+              "trend": "+13%",
+              "trendDirection": "up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 680,
+            "y": 500,
+            "w": 520,
+            "h": 140,
+            "args": {
+              "value": "6 min",
+              "label": "Build Time",
+              "sublabel": "Cache restructuring impact",
+              "icon": "lightning",
+              "trend": "-67%",
+              "trendDirection": "down",
+              "style": "light"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "sceneData": {
+        "name": "qbr/outlook",
+        "layout": "hierarchy",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Outlook",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "okr-tree",
+            "x": 60,
+            "y": 160,
+            "w": 1160,
+            "h": 520,
+            "args": {
+              "objective": "Q4 Platform Excellence & Efficiency",
+              "keyResults": [
+                {
+                  "label": "Platform uptime",
+                  "sublabel": "99.91% → 99.95%",
+                  "progress": 0.8
+                },
+                {
+                  "label": "Infrastructure cost per user",
+                  "sublabel": "Reduce 20%",
+                  "progress": 0.15
+                },
+                {
+                  "label": "Monolith decomposition",
+                  "sublabel": "43% → 80%",
+                  "progress": 0.54
+                },
+                {
+                  "label": "Real-time analytics dashboard",
+                  "sublabel": "Enterprise tier launch",
+                  "progress": 0.25
+                },
+                {
+                  "label": "PR review time",
+                  "sublabel": "18h → <6h",
+                  "progress": 0.35
+                }
+              ],
+              "quarter": "Q4 2024"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

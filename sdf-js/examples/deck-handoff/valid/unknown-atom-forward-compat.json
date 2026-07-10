@@ -1,0 +1,23 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "Future",
+  "theme": "editorial-navy",
+  "slots": [
+    {
+      "slotIdx": 0,
+      "sceneData": {
+        "subjects": [
+          {
+            "type": "atom-from-the-future",
+            "x": 0,
+            "y": 0,
+            "w": 100,
+            "h": 100,
+            "args": {}
+          }
+        ]
+      }
+    }
+  ]
+}

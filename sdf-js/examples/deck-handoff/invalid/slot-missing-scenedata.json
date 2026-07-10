@@ -1,0 +1,10 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotTitle": "no payload"
+    }
+  ]
+}

@@ -1,0 +1,646 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-antfun-company",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "company-overview",
+    "label": "Company Overview"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "company-overview/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "ANTFUN",
+              "subtitle": "On-Chain Trading Super App",
+              "date": "2026-Q3",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "mission",
+      "slotTitle": "Mission",
+      "sceneData": {
+        "name": "company-overview/mission",
+        "layout": "hierarchy",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Mission",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "pillar-3up",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 220,
+            "args": {
+              "pillars": [
+                {
+                  "icon": "chat-circle",
+                  "heading": "Natural Trading",
+                  "body": "Make on-chain trading as natural as messaging"
+                },
+                {
+                  "icon": "lock-key",
+                  "heading": "Self-Custodial",
+                  "body": "Replace centralized exchanges with self-custodial UX"
+                },
+                {
+                  "icon": "users",
+                  "heading": "Next 100M",
+                  "body": "Lower the barrier to DeFi for the next 100 million users"
+                }
+              ],
+              "accentLine": true
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 40,
+            "y": 420,
+            "w": 1200,
+            "h": 140,
+            "args": {
+              "title": "Our Focus",
+              "items": [
+                {
+                  "icon": "device-mobile",
+                  "label": "Mobile-First"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI Co-Pilot"
+                },
+                {
+                  "icon": "shield",
+                  "label": "Privacy Default"
+                },
+                {
+                  "icon": "flow-arrow",
+                  "label": "Cross-Chain"
+                }
+              ],
+              "iconSize": "medium",
+              "iconStyle": "circle"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 600,
+            "w": 580,
+            "h": 80,
+            "args": {
+              "value": "10M+ Users",
+              "label": "Previously Shipped",
+              "bg": [38, 70, 130]
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 660,
+            "y": 600,
+            "w": 580,
+            "h": 80,
+            "args": {
+              "value": "5 Years",
+              "label": "Crypto-Native Experience",
+              "bg": [110, 95, 75]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "what-we-do",
+      "slotTitle": "What We Do",
+      "sceneData": {
+        "name": "company-overview/what-we-do",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "What We Do",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 40,
+            "y": 140,
+            "w": 1200,
+            "h": 200,
+            "args": {
+              "title": "Product Suite",
+              "items": [
+                {
+                  "icon": "wallet",
+                  "label": "Lightweight Wallet",
+                  "sublabel": "Mobile-first self-custodial"
+                },
+                {
+                  "icon": "chats-circle",
+                  "label": "Chat Module",
+                  "sublabel": "Social & alpha sharing"
+                },
+                {
+                  "icon": "lightning",
+                  "label": "Trading Acceleration",
+                  "sublabel": "Aggregated DEX routing"
+                }
+              ],
+              "iconStyle": "card",
+              "iconSize": "medium"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 360,
+            "w": 580,
+            "h": 320,
+            "args": {
+              "title": "Competitive Advantages",
+              "items": [
+                {
+                  "icon": "gauge",
+                  "label": "Sub-second execution speed"
+                },
+                {
+                  "icon": "lock-key",
+                  "label": "Self-custodial without UX compromises"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI-native agents"
+                },
+                {
+                  "icon": "network",
+                  "label": "Network effects from social"
+                },
+                {
+                  "icon": "plugs",
+                  "label": "Open ecosystem for plugins"
+                },
+                {
+                  "icon": "shield-check",
+                  "label": "Audited by Trail of Bits"
+                }
+              ]
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 660,
+            "y": 360,
+            "w": 580,
+            "h": 320,
+            "args": {
+              "title": "Growth Metrics",
+              "kpis": [
+                {
+                  "value": "$300K",
+                  "label": "Daily Volume",
+                  "sublabel": "After 4 weeks",
+                  "trend": "up"
+                },
+                {
+                  "value": "12K",
+                  "label": "Monthly Wallets",
+                  "trend": "up"
+                },
+                {
+                  "value": "47%",
+                  "label": "WoW Growth",
+                  "trend": "up"
+                },
+                {
+                  "value": "92%",
+                  "label": "Day-30 Retention",
+                  "trend": "up"
+                },
+                {
+                  "value": "8 min",
+                  "label": "Avg Session",
+                  "sublabel": "3× industry norm",
+                  "trend": "up"
+                },
+                {
+                  "value": "72",
+                  "label": "NPS Score",
+                  "sublabel": "Top quartile crypto",
+                  "trend": "up"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "products",
+      "slotTitle": "Products",
+      "sceneData": {
+        "name": "company-overview/products",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Products",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "key",
+                  "label": "Self-Custodial",
+                  "sublabel": "Browser-side keys + hardware wallet"
+                },
+                {
+                  "icon": "bridge",
+                  "label": "Multi-Chain",
+                  "sublabel": "Ethereum, Solana, Base, Arbitrum"
+                },
+                {
+                  "icon": "brain",
+                  "label": "OpenClaw AI",
+                  "sublabel": "On-device privacy + server power"
+                },
+                {
+                  "icon": "lock-key",
+                  "label": "E2E Encryption",
+                  "sublabel": "Signal protocol chat"
+                },
+                {
+                  "icon": "arrows-merge",
+                  "label": "DEX Routing",
+                  "sublabel": "Aggregator with MEV protection"
+                },
+                {
+                  "icon": "eye",
+                  "label": "Smart Money",
+                  "sublabel": "50K wallets tracked real-time"
+                }
+              ],
+              "cols": 3,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "auto"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "market",
+      "slotTitle": "Market",
+      "sceneData": {
+        "name": "company-overview/market",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Market",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 40,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "title": "User Groups",
+              "items": [
+                {
+                  "icon": "lightning",
+                  "label": "Crypto Traders",
+                  "sublabel": "Frustrated by slow wallets"
+                },
+                {
+                  "icon": "gauge",
+                  "label": "DeFi Power Users",
+                  "sublabel": "Need unified UX"
+                },
+                {
+                  "icon": "users",
+                  "label": "Mainstream Users",
+                  "sublabel": "Want wallet + trading"
+                },
+                {
+                  "icon": "chart-line-up",
+                  "label": "Smart Money",
+                  "sublabel": "Follow on-chain alpha"
+                }
+              ],
+              "cols": 2,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "brand"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 660,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "title": "Core Differentiators",
+              "items": [
+                {
+                  "icon": "lightning",
+                  "label": "Sub-second order execution",
+                  "sublabel": "Aggregated DEXs"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI strategy automation",
+                  "sublabel": "Intelligent agents"
+                },
+                {
+                  "icon": "lock-key",
+                  "label": "Self-custodial speed",
+                  "sublabel": "No compromise"
+                },
+                {
+                  "icon": "chat-circle",
+                  "label": "Community alpha groups",
+                  "sublabel": "Embedded chat"
+                },
+                {
+                  "icon": "microphone",
+                  "label": "Live trading rooms",
+                  "sublabel": "Built-in audio"
+                },
+                {
+                  "icon": "code",
+                  "label": "Open API ecosystem",
+                  "sublabel": "Developer friendly"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "team",
+      "slotTitle": "Team",
+      "sceneData": {
+        "name": "company-overview/team",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Team",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "title": "Strategic Capabilities",
+              "items": [
+                {
+                  "icon": "user-focus",
+                  "label": "User Persona",
+                  "sublabel": "Competitive positioning"
+                },
+                {
+                  "icon": "target",
+                  "label": "Market Gap",
+                  "sublabel": "Beyond For differentiation"
+                },
+                {
+                  "icon": "clock",
+                  "label": "1-2 Months",
+                  "sublabel": "Execution timeline"
+                },
+                {
+                  "icon": "brain",
+                  "label": "OpenClaw",
+                  "sublabel": "AI integration platform"
+                },
+                {
+                  "icon": "chats-circle",
+                  "label": "Agent Mentions",
+                  "sublabel": "Community features"
+                },
+                {
+                  "icon": "chart-line-up",
+                  "label": "4 Weeks",
+                  "sublabel": "Perp DEX launch"
+                },
+                {
+                  "icon": "currency-dollar",
+                  "label": "$300K Daily",
+                  "sublabel": "Self-built Perp DEX volume"
+                },
+                {
+                  "icon": "rocket-launch",
+                  "label": "Prototype Ready",
+                  "sublabel": "Smart money system"
+                }
+              ],
+              "cols": 4,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "auto"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "contact",
+      "slotTitle": "Get in Touch",
+      "sceneData": {
+        "name": "company-overview/contact",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Get in Touch",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 200,
+            "args": {
+              "items": [
+                {
+                  "icon": "envelope",
+                  "label": "Email",
+                  "sublabel": "team@antfun.io"
+                },
+                {
+                  "icon": "globe",
+                  "label": "Website",
+                  "sublabel": "antfun.io"
+                },
+                {
+                  "icon": "brand:telegram",
+                  "label": "Telegram",
+                  "sublabel": "@antfun-bot"
+                },
+                {
+                  "icon": "brand:discord",
+                  "label": "Discord",
+                  "sublabel": "Join community"
+                },
+                {
+                  "icon": "brand:x",
+                  "label": "Twitter Spaces",
+                  "sublabel": "Every Friday"
+                }
+              ],
+              "iconSize": "medium",
+              "iconStyle": "circle"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 400,
+            "w": 280,
+            "h": 240,
+            "args": {
+              "value": "12K",
+              "label": "Community Members",
+              "sublabel": "Across all channels",
+              "icon": "users",
+              "style": "light"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 360,
+            "y": 400,
+            "w": 880,
+            "h": 240,
+            "args": {
+              "title": "Why Connect",
+              "items": [
+                {
+                  "icon": "rocket",
+                  "label": "Weekly releases + active feedback loop"
+                },
+                {
+                  "icon": "chat-circle",
+                  "label": "Direct founder access via Discord"
+                },
+                {
+                  "icon": "flask",
+                  "label": "Beta access for power users"
+                },
+                {
+                  "icon": "hand-coins",
+                  "label": "Revenue share for contributors"
+                },
+                {
+                  "icon": "code",
+                  "label": "Open-source SDK for developers"
+                },
+                {
+                  "icon": "chart-line",
+                  "label": "Real-time on-chain analytics dashboard"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

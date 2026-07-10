@@ -1,0 +1,20 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "sceneData": {
+        "subjects": [
+          {
+            "type": "kpi-card",
+            "x": "left",
+            "y": 0,
+            "w": 10,
+            "h": 10
+          }
+        ]
+      }
+    }
+  ]
+}

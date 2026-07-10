@@ -1,0 +1,745 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-news-policy",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "news-briefing",
+    "label": "News Briefing"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Headline",
+      "sceneData": {
+        "name": "news-briefing/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "全国新能源汽车下乡政策成效与挑战",
+              "subtitle": "财经报纸报道",
+              "author": "工业和信息化部、国家能源局数据",
+              "date": "今年前五个月",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "agenda",
+      "slotTitle": "Overview",
+      "sceneData": {
+        "name": "news-briefing/agenda",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Overview",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "agenda-list",
+            "x": 40,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "items": [
+                {
+                  "label": "下乡车型销量与市场表现"
+                },
+                {
+                  "label": "配套充电设施建设现状与规划"
+                },
+                {
+                  "label": "产业格局与车型价格分布"
+                },
+                {
+                  "label": "面临的主要挑战与风险"
+                }
+              ],
+              "numbered": true
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 660,
+            "y": 160,
+            "w": 280,
+            "h": 220,
+            "args": {
+              "value": ">15%",
+              "label": "微型电动车占比",
+              "sublabel": "五菱宏光MINI等单一车型贡献",
+              "icon": "car-simple",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 960,
+            "y": 160,
+            "w": 280,
+            "h": 220,
+            "args": {
+              "value": "63%",
+              "label": "5-10万元车型占比",
+              "sublabel": "中低价位占据主流",
+              "icon": "currency-cny",
+              "style": "light"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 660,
+            "y": 420,
+            "w": 580,
+            "h": 100,
+            "args": {
+              "value": "低价优势",
+              "label": "微型车在农村市场受欢迎",
+              "bg": [38, 70, 130]
+            }
+          },
+          {
+            "type": "callout-banner",
+            "x": 660,
+            "y": 540,
+            "w": 580,
+            "h": 120,
+            "args": {
+              "type_": "insight",
+              "heading": "价格带特征",
+              "body": "5万至10万元价格带集中体现农村消费能力特征",
+              "icon": "chart-bar"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "key-figures",
+      "slotTitle": "Key Figures",
+      "sceneData": {
+        "name": "news-briefing/key-figures",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Key Figures",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "stat-grid-large",
+            "x": 40,
+            "y": 180,
+            "w": 1200,
+            "h": 480,
+            "args": {
+              "stats": [
+                {
+                  "value": "187万辆",
+                  "label": "下乡车型销量",
+                  "trend": "+61%",
+                  "trendDirection": "up"
+                },
+                {
+                  "value": "34%",
+                  "label": "占全国总销量"
+                },
+                {
+                  "value": "前五个月",
+                  "label": "统计周期"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "theme-1-lead",
+      "slotTitle": "Theme 1 — Lead",
+      "sceneData": {
+        "name": "news-briefing/theme-1-lead",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "下乡车型销量快速增长",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 80,
+            "y": 200,
+            "w": 340,
+            "h": 380,
+            "args": {
+              "value": "187万辆",
+              "label": "前五个月销量",
+              "sublabel": "新能源汽车下乡车型",
+              "icon": "car",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 470,
+            "y": 200,
+            "w": 340,
+            "h": 380,
+            "args": {
+              "value": "61%",
+              "label": "同比增长",
+              "trend": "up",
+              "trendValue": "+61%",
+              "icon": "chart-line-up",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 860,
+            "y": 200,
+            "w": 340,
+            "h": 380,
+            "args": {
+              "value": "34%",
+              "label": "全国总销量占比",
+              "sublabel": "新能源汽车市场份额",
+              "icon": "chart-pie",
+              "style": "dark"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "theme-1-detail",
+      "slotTitle": "Theme 1 — Detail",
+      "sceneData": {
+        "name": "news-briefing/theme-1-detail",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "主题1 — 详情",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bar",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "县乡市场渗透率提升但仍有差距",
+              "labels": ["县乡市场 (去年)", "县乡市场 (今年)", "一二线城市"],
+              "values": [17, 28, 54],
+              "format": "percent",
+              "max": 60
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "theme-2-lead",
+      "slotTitle": "Theme 2 — Lead",
+      "sceneData": {
+        "name": "news-briefing/theme-2-lead",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "充电桩配套设施严重不足",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "kpis": [
+                {
+                  "value": "98万台",
+                  "label": "县域公共充电桩",
+                  "sublabel": "截至5月底全国保有量",
+                  "color": [38, 70, 130]
+                },
+                {
+                  "value": "21%",
+                  "label": "占全国总量",
+                  "sublabel": "县域充电桩占比",
+                  "trend": "down",
+                  "color": [110, 95, 75]
+                },
+                {
+                  "value": "350台",
+                  "label": "平均每县",
+                  "sublabel": "充电桩数量不足",
+                  "trend": "down",
+                  "color": [165, 130, 90]
+                },
+                {
+                  "value": "配套设施",
+                  "label": "最大短板",
+                  "sublabel": "基础设施建设滞后",
+                  "color": [200, 195, 180]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "theme-2-detail",
+      "slotTitle": "Theme 2 — Detail",
+      "sceneData": {
+        "name": "news-briefing/theme-2-detail",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "国家充电设施覆盖目标",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "timeline",
+            "x": 140,
+            "y": 200,
+            "w": 1000,
+            "h": 420,
+            "args": {
+              "events": [
+                {
+                  "date": "现状",
+                  "label": "充电网络建设启动",
+                  "sublabel": "城市重点区域覆盖"
+                },
+                {
+                  "date": "2026年底",
+                  "label": "县县全覆盖",
+                  "sublabel": "所有县级行政区建成充电设施"
+                },
+                {
+                  "date": "2026年底",
+                  "label": "乡乡有站点",
+                  "sublabel": "乡级充电网络全面铺开"
+                }
+              ],
+              "title": "国家能源局覆盖时间表",
+              "axisLabel": "部署进度"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "theme-3-lead",
+      "slotTitle": "Theme 3 — Lead",
+      "sceneData": {
+        "name": "news-briefing/theme-3-lead",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "头部车企主导下乡市场",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 200,
+            "w": 1200,
+            "h": 180,
+            "args": {
+              "value": "58%",
+              "label": "三家头部企业市场份额",
+              "bg": [38, 70, 130]
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 140,
+            "y": 440,
+            "w": 1000,
+            "h": 200,
+            "args": {
+              "items": [
+                {
+                  "icon": "car",
+                  "label": "比亚迪"
+                },
+                {
+                  "icon": "car",
+                  "label": "吉利"
+                },
+                {
+                  "icon": "car",
+                  "label": "长安"
+                }
+              ],
+              "iconSize": "large",
+              "iconStyle": "circle",
+              "colorMode": "brand"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "risk-matrix",
+      "slotTitle": "Risk Matrix",
+      "sceneData": {
+        "name": "news-briefing/risk-matrix",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 100,
+            "args": {
+              "title": "Risk Matrix",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "risk-heatmap",
+            "x": 40,
+            "y": 140,
+            "w": 1200,
+            "h": 540,
+            "args": {
+              "title": "挑战一：农村电网改造滞后",
+              "xAxis": "影响程度",
+              "yAxis": "发生概率",
+              "xLabels": ["低", "中", "高"],
+              "yLabels": ["低", "中", "高"],
+              "risks": [
+                {
+                  "x": 1,
+                  "y": 2,
+                  "label": "变压器容量不足",
+                  "description": "部分乡镇变压器容量不足，夏季用电高峰期充电功率受限"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "risk-detail-1",
+      "slotTitle": "Top Risk — Detail",
+      "sceneData": {
+        "name": "news-briefing/risk-detail-1",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "挑战详情"
+            }
+          },
+          {
+            "type": "callout-banner",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 160,
+            "args": {
+              "type_": "warning",
+              "heading": "二手车残值体系缺失",
+              "body": "导致置换意愿低，制约农村消费者换车积极性",
+              "icon": "warning-diamond"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 80,
+            "y": 380,
+            "w": 520,
+            "h": 260,
+            "args": {
+              "value": "中等",
+              "label": "发生概率",
+              "icon": "gauge",
+              "style": "light",
+              "trend": "neutral"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 680,
+            "y": 380,
+            "w": 520,
+            "h": 260,
+            "args": {
+              "value": "深远",
+              "label": "影响程度",
+              "icon": "trend-up",
+              "style": "accent-border",
+              "trendDirection": "up"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 10,
+      "slotName": "risk-detail-2",
+      "slotTitle": "Secondary Risks",
+      "sceneData": {
+        "name": "news-briefing/risk-detail-2",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Secondary Risks",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "balance-scale",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 500,
+            "args": {
+              "title": "挑战三：补贴退坡影响预期",
+              "leftLabel": "当前状态",
+              "rightLabel": "明年预期",
+              "leftItems": ["购置补贴政策支持", "高速增长态势"],
+              "rightItems": ["补贴按期退坡", "增速回落至30%以下", "政策变动压力"],
+              "leftAccent": "rgb(110, 95, 75)",
+              "rightAccent": "rgb(38, 70, 130)",
+              "verdict": "政策变动对市场增长构成压力"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 12,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "sceneData": {
+        "name": "news-briefing/outlook",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Outlook",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 180,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "120亿元",
+              "label": "中央财政专项补贴",
+              "icon": "bank",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 460,
+            "y": 180,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "200亿元",
+              "label": "地方配套资金",
+              "icon": "buildings",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 880,
+            "y": 180,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "320亿元",
+              "label": "总投入规模",
+              "icon": "currency-cny",
+              "style": "dark",
+              "trend": "up"
+            }
+          },
+          {
+            "type": "pie",
+            "x": 140,
+            "y": 460,
+            "w": 1000,
+            "h": 220,
+            "args": {
+              "values": [120, 200],
+              "labels": ["中央财政 120亿元", "地方配套 200亿元"],
+              "title": "资金来源构成",
+              "format": "number"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 13,
+      "slotName": "summary",
+      "slotTitle": "Summary",
+      "sceneData": {
+        "name": "news-briefing/summary",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Summary",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "numbered-grid",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "items": [
+                {
+                  "label": "县乡市场渗透率显著提升",
+                  "sublabel": "下乡政策带动"
+                },
+                {
+                  "label": "基础设施建设加速",
+                  "sublabel": "中央地方投入超300亿元"
+                },
+                {
+                  "label": "三大挑战待解决",
+                  "sublabel": "电网容量、残值体系、补贴退坡"
+                },
+                {
+                  "label": "长期增长取决配套服务",
+                  "sublabel": "服务体系完善程度是关键"
+                }
+              ],
+              "cols": 2,
+              "numberStyle": "circle",
+              "numberColor": [38, 70, 130]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

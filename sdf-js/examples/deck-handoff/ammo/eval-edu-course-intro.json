@@ -1,0 +1,466 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-edu-course-intro",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "course-syllabus",
+    "label": "Course Syllabus"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Course Title",
+      "sceneData": {
+        "name": "course-syllabus/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "CS 340: Distributed Systems",
+              "subtitle": "Fall 2026 · Department of Computer Science",
+              "author": "Instructor: Prof. Elena Vasquez",
+              "date": "Meets Tue/Thu 2:00-3:30pm, Room 220",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "overview",
+      "slotTitle": "Course Overview",
+      "sceneData": {
+        "name": "course-syllabus/overview",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Course Overview",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 60,
+            "y": 160,
+            "w": 560,
+            "h": 500,
+            "args": {
+              "title": "What You'll Learn",
+              "items": [
+                {
+                  "icon": "network",
+                  "label": "Distributed systems theory & practice"
+                },
+                {
+                  "icon": "circuitry",
+                  "label": "Consensus algorithms & replication"
+                },
+                {
+                  "icon": "chart-scatter",
+                  "label": "Partitioning & consistency models"
+                },
+                {
+                  "icon": "shield-check",
+                  "label": "Fault tolerance strategies"
+                }
+              ]
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 660,
+            "y": 160,
+            "w": 560,
+            "h": 240,
+            "args": {
+              "title": "Course Format",
+              "items": [
+                {
+                  "icon": "presentation-chart",
+                  "label": "2 Lectures",
+                  "sublabel": "Per week"
+                },
+                {
+                  "icon": "flask",
+                  "label": "Weekly Lab",
+                  "sublabel": "Hands-on practice"
+                },
+                {
+                  "icon": "users-three",
+                  "label": "Group Project",
+                  "sublabel": "1 semester-long"
+                }
+              ],
+              "cols": 3,
+              "iconStyle": "card",
+              "iconSize": "medium"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 660,
+            "y": 440,
+            "w": 560,
+            "h": 220,
+            "args": {
+              "title": "Prerequisites",
+              "items": [
+                {
+                  "icon": "cpu",
+                  "label": "CS 240 Operating Systems"
+                },
+                {
+                  "icon": "code",
+                  "label": "Proficiency in Go or Rust"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "objectives",
+      "slotTitle": "Learning Objectives",
+      "sceneData": {
+        "name": "course-syllabus/objectives",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Learning Objectives",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "number-list",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "items": [
+                {
+                  "label": "Explain CAP theorem tradeoffs",
+                  "sublabel": "Apply to real system designs"
+                },
+                {
+                  "label": "Implement Raft consensus module",
+                  "sublabel": "Working implementation from scratch"
+                },
+                {
+                  "label": "Diagnose split-brain failure modes",
+                  "sublabel": "Network partition scenarios"
+                },
+                {
+                  "label": "Design sharded replicated store",
+                  "sublabel": "Under failure conditions"
+                },
+                {
+                  "label": "Critique distributed systems papers",
+                  "sublabel": "3 seminal research publications"
+                }
+              ],
+              "numberStyle": "circle",
+              "numberColor": "rgb(38, 70, 130)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "schedule",
+      "slotTitle": "Schedule",
+      "sceneData": {
+        "name": "course-syllabus/schedule",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Schedule",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "vertical-timeline",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "events": [
+                {
+                  "date": "Week 1-2",
+                  "label": "Networking fundamentals + RPC"
+                },
+                {
+                  "date": "Week 3-4",
+                  "label": "Replication and consistency models"
+                },
+                {
+                  "date": "Week 5-6",
+                  "label": "Consensus — Paxos and Raft"
+                },
+                {
+                  "date": "Week 7-8",
+                  "label": "Partitioning and sharding"
+                },
+                {
+                  "date": "Week 9-10",
+                  "label": "Fault tolerance and failure detection"
+                },
+                {
+                  "date": "Week 11-12",
+                  "label": "Distributed transactions"
+                },
+                {
+                  "date": "Week 13-14",
+                  "label": "Case studies — Spanner, DynamoDB, Kafka"
+                },
+                {
+                  "date": "Week 15",
+                  "label": "Final project presentations"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "grading",
+      "slotTitle": "Grading",
+      "sceneData": {
+        "name": "course-syllabus/grading",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Grading"
+            }
+          },
+          {
+            "type": "donut-with-center",
+            "x": 140,
+            "y": 180,
+            "w": 1000,
+            "h": 480,
+            "args": {
+              "centerValue": "100%",
+              "centerLabel": "Final Grade",
+              "segments": [
+                {
+                  "label": "Group Project · 35%",
+                  "value": 35,
+                  "color": [38, 70, 130]
+                },
+                {
+                  "label": "Weekly Labs · 25%",
+                  "value": 25,
+                  "color": [110, 95, 75]
+                },
+                {
+                  "label": "Midterm Exam · 20%",
+                  "value": 20,
+                  "color": [165, 130, 90]
+                },
+                {
+                  "label": "Final Exam · 15%",
+                  "value": 15,
+                  "color": [200, 195, 180]
+                },
+                {
+                  "label": "Participation · 5%",
+                  "value": 5,
+                  "color": [150, 145, 130]
+                }
+              ],
+              "showPct": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "materials",
+      "slotTitle": "Materials",
+      "sceneData": {
+        "name": "course-syllabus/materials",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Materials",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "title": "Required Reading",
+              "items": [
+                {
+                  "icon": "book-open",
+                  "label": "Designing Data-Intensive Applications",
+                  "sublabel": "Martin Kleppmann (primary textbook)"
+                },
+                {
+                  "icon": "file-text",
+                  "label": "Raft Consensus Algorithm",
+                  "sublabel": "Ongaro & Ousterhout"
+                },
+                {
+                  "icon": "file-text",
+                  "label": "Google File System",
+                  "sublabel": "Ghemawat, Gobioff, Leung"
+                },
+                {
+                  "icon": "file-text",
+                  "label": "Dynamo Key-Value Store",
+                  "sublabel": "DeCandia et al."
+                },
+                {
+                  "icon": "calendar-check",
+                  "label": "Weekly Paper Summaries",
+                  "sublabel": "Posted before Thursday lectures"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "logistics",
+      "slotTitle": "Logistics & Support",
+      "sceneData": {
+        "name": "course-syllabus/logistics",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Logistics & Support",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 360,
+            "args": {
+              "title": "Office Hours",
+              "items": [
+                {
+                  "icon": "user-circle",
+                  "label": "Prof. Vasquez",
+                  "sublabel": "Mon 10am-12pm, Wed 3-4pm · CS 412"
+                },
+                {
+                  "icon": "chalkboard-teacher",
+                  "label": "TA Jordan Kim",
+                  "sublabel": "Tue/Thu 4-5:30pm · CS Lab 105"
+                },
+                {
+                  "icon": "chalkboard-teacher",
+                  "label": "TA Priya Nair",
+                  "sublabel": "Fri 1-3pm · CS Lab 105"
+                },
+                {
+                  "icon": "brand:discord",
+                  "label": "Discord Channel",
+                  "sublabel": "Async help · <24hr response target"
+                }
+              ],
+              "cols": 2,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "auto"
+            }
+          },
+          {
+            "type": "quote-pull",
+            "x": 80,
+            "y": 540,
+            "w": 1120,
+            "h": 140,
+            "args": {
+              "quote": "Office hours saved me during the Raft implementation — the TAs actually debug with you line by line.",
+              "attribution": "Student course evaluation, Spring 2026",
+              "align": "center"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

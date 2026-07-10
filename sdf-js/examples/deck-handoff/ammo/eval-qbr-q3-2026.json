@@ -1,0 +1,507 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-qbr-q3-2026",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "qbr",
+    "label": "Quarterly Business Review"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "qbr/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Q3 2026 Quarterly Business Review",
+              "subtitle": "Operations + Product + GTM",
+              "author": "ANTFUN team review",
+              "date": "2026-09-30",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "executive-summary",
+      "slotTitle": "Executive Summary",
+      "sceneData": {
+        "name": "qbr/executive-summary",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Executive Summary",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 280,
+            "args": {
+              "kpis": [
+                {
+                  "value": "$740K",
+                  "label": "Q3 ARR",
+                  "trend": "up",
+                  "trendValue": "+117% QoQ",
+                  "color": [38, 70, 130]
+                },
+                {
+                  "value": "12.5K",
+                  "label": "Daily Active Wallets",
+                  "sublabel": "crossed threshold",
+                  "trend": "up",
+                  "color": [110, 95, 75]
+                },
+                {
+                  "value": "Week 8",
+                  "label": "Insurance Policy",
+                  "sublabel": "launched",
+                  "trend": "neutral",
+                  "color": [165, 130, 90]
+                }
+              ]
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 480,
+            "w": 580,
+            "h": 180,
+            "args": {
+              "items": [
+                {
+                  "icon": "rocket-launch",
+                  "label": "Perp DEX prototype shipped",
+                  "status": "done"
+                }
+              ]
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 660,
+            "y": 480,
+            "w": 580,
+            "h": 180,
+            "args": {
+              "value": "3",
+              "label": "Strategic Risks",
+              "sublabel": "See risks slide",
+              "icon": "warning",
+              "style": "accent-border"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kpis",
+      "slotTitle": "KPI Dashboard",
+      "sceneData": {
+        "name": "qbr/kpis",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "KPI Dashboard",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "$740K",
+              "label": "ARR",
+              "sublabel": "Target $600K",
+              "trend": "up",
+              "trendValue": "+23%",
+              "icon": "chart-line-up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 450,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "12,500",
+              "label": "Daily Active Users",
+              "sublabel": "Target 8,000",
+              "trend": "up",
+              "trendValue": "+56%",
+              "icon": "users",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 860,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "$4.2M",
+              "label": "Daily Volume",
+              "sublabel": "Target $3M",
+              "trend": "up",
+              "trendValue": "+40%",
+              "icon": "arrows-clockwise",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 430,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "92%",
+              "label": "Retention D30",
+              "sublabel": "Target 85%",
+              "trend": "up",
+              "trendValue": "+7pt",
+              "icon": "hand-heart",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 450,
+            "y": 430,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "72",
+              "label": "NPS",
+              "sublabel": "Target 60",
+              "trend": "up",
+              "trendValue": "+12pt",
+              "icon": "star",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 860,
+            "y": 430,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "$180K/mo",
+              "label": "Burn Rate",
+              "sublabel": "Budget $250K",
+              "trend": "down",
+              "trendValue": "Under $70K",
+              "icon": "currency-dollar",
+              "style": "light"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "sceneData": {
+        "name": "qbr/wins",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Wins",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "trophy",
+                  "label": "Web3 Award",
+                  "sublabel": "Self-custodial UX"
+                },
+                {
+                  "icon": "currency-dollar",
+                  "label": "$25M Signed",
+                  "sublabel": "Sequoia follow-on"
+                },
+                {
+                  "icon": "users",
+                  "label": "Elite Hires",
+                  "sublabel": "4 Coinbase + 2 Anthropic"
+                },
+                {
+                  "icon": "newspaper",
+                  "label": "Press Coverage",
+                  "sublabel": "TechCrunch + Bloomberg"
+                },
+                {
+                  "icon": "chats-circle",
+                  "label": "24K Members",
+                  "sublabel": "Discord community"
+                }
+              ],
+              "cols": 3,
+              "iconSize": "large",
+              "iconStyle": "card",
+              "colorMode": "brand"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "sceneData": {
+        "name": "qbr/challenges",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Challenges",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "risk-heatmap",
+            "x": 60,
+            "y": 160,
+            "w": 1160,
+            "h": 500,
+            "args": {
+              "title": "Q3 Challenges by Impact & Likelihood",
+              "xAxis": "Likelihood",
+              "yAxis": "Impact",
+              "xLabels": ["Low", "Medium", "High", "Very High", "Critical"],
+              "yLabels": ["Minor", "Moderate", "Significant", "Major", "Severe"],
+              "risks": [
+                {
+                  "label": "Bridge API instability",
+                  "likelihood": 4,
+                  "impact": 4,
+                  "description": "Third-party integration delayed"
+                },
+                {
+                  "label": "Perp DEX latency",
+                  "likelihood": 5,
+                  "impact": 3,
+                  "description": "2s vs 800ms goal"
+                },
+                {
+                  "label": "Asia GTM delay",
+                  "likelihood": 3,
+                  "impact": 4,
+                  "description": "Regulatory uncertainty"
+                },
+                {
+                  "label": "Support SLA breach",
+                  "likelihood": 5,
+                  "impact": 3,
+                  "description": "8h avg vs 2h target"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "sceneData": {
+        "name": "qbr/outlook",
+        "layout": "hierarchy",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Q4 Outlook",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "okr-tree",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "objective": "Scale to $2.4M ARR",
+              "keyResults": [
+                {
+                  "label": "Launch Perp DEX",
+                  "sublabel": "Sub-second matching engine",
+                  "progress": 0.75
+                },
+                {
+                  "label": "Insurance expansion",
+                  "sublabel": "10-token coverage",
+                  "progress": 0.6
+                },
+                {
+                  "label": "Asia regulatory clearance",
+                  "sublabel": "Singapore + Hong Kong",
+                  "progress": 0.4
+                },
+                {
+                  "label": "Series B exploration",
+                  "sublabel": "Investor conversations",
+                  "progress": 0.2
+                }
+              ],
+              "quarter": "Q4 2024"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "next-steps",
+      "slotTitle": "Next Steps",
+      "sceneData": {
+        "name": "qbr/next-steps",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Next Steps",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kanban-board",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "columns": [
+                {
+                  "label": "Engineering",
+                  "cards": [
+                    {
+                      "label": "Ship Perp DEX engine",
+                      "sublabel": "Due: Oct 15"
+                    }
+                  ]
+                },
+                {
+                  "label": "Product",
+                  "cards": [
+                    {
+                      "label": "Insurance API beta",
+                      "sublabel": "Due: Oct 30"
+                    }
+                  ]
+                },
+                {
+                  "label": "Legal",
+                  "cards": [
+                    {
+                      "label": "Asia compliance docs",
+                      "sublabel": "Due: Nov 10"
+                    }
+                  ]
+                },
+                {
+                  "label": "CEO",
+                  "cards": [
+                    {
+                      "label": "B-round pitch deck v1",
+                      "sublabel": "Due: Nov 30"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
