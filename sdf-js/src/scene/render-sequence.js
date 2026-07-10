@@ -158,6 +158,7 @@ export function renderSequence(ir, opts = {}) {
     target: [0, goldY + 0.12, 0],
     fov: 40,
     transition: 'cut',
+    beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 2,
     shake: [0.5, 0.06], // impact-then-settle

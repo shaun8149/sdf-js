@@ -167,6 +167,7 @@ export function renderMagnitude(ir, opts = {}) {
     target: [gx, gH * 0.85, 0],
     fov: 44,
     transition: 'cut',
+    beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.8,
     shake: [0.5, 0.06], // impact-then-settle

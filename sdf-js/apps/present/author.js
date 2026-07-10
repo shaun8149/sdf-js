@@ -4,6 +4,7 @@
 import { textToIR } from '../../src/scene/text-to-ir.js';
 import { assembleDeck } from '../../src/scene/assemble-deck.js';
 import { createFigure } from './figure-core.js';
+import { attachPresenter } from './presenter.js';
 
 const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift
 
@@ -12,7 +13,8 @@ const env = params.get('env') || 'studio';
 // Fighting-game stage ON by default for authored worlds (per-station platforms +
 // deck theatre layer) — it's the product face. ?stage=0 opts out.
 const stage = params.get('stage') !== '0';
-const { show } = createFigure({ outdoor: env !== 'studio', stage });
+const { studio, show } = createFigure({ outdoor: env !== 'studio', stage });
+let presenter = null; // active presenter runtime (disposed on regenerate)
 
 const promptEl = document.getElementById('prompt');
 const goEl = document.getElementById('go');
@@ -42,7 +44,17 @@ async function generate() {
       `building ${deck.slides.length} station${deck.slides.length > 1 ? 's' : ''}: ${deck.slides.map((s) => s.structure).join(' → ')}`,
     );
     loading.classList.remove('done'); // shader may recompile for a new shape
-    show(assembleDeck(deck, { env, stage }));
+    const scene = assembleDeck(deck, { env, stage });
+    show(scene);
+    // Full-speech input → the model returned script spans → presenter mode:
+    // the world starts HELD; space walks the speech, teleprompter shows the
+    // speaker's own words. Short-idea input (no script) keeps autoplay.
+    if (presenter) presenter.dispose();
+    presenter = null;
+    if (deck.script && deck.script.length) {
+      presenter = attachPresenter({ studio, scene, script: deck.script });
+      setStatus(`presenter mode: ${deck.script.length} spans — space to speak`);
+    }
   } catch (e) {
     setStatus(e.message, true);
   } finally {

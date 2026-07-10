@@ -245,6 +245,7 @@ export function renderNetwork(ir, opts = {}) {
     target: [gp[0], gp[1] + 0.06, gp[2]],
     fov: 40,
     transition: 'cut',
+    beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
     focalDistance: 1.6,
     shake: [0.5, 0.06], // impact-then-settle

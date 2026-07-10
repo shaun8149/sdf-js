@@ -129,6 +129,7 @@ export function renderMatrix(ir, opts = {}) {
     target: [cellX(exi), cellY(eyi), 0.2],
     fov: 44,
     transition: 'cut',
+    beat: 'super',
     aperture: [0.7, 0.35],
     focalDistance: 2.0,
     shake: [0.35, 0.05],
