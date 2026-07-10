@@ -1,0 +1,94 @@
+{
+ "slotIdx": 8,
+ "slotName": "outlook",
+ "slotTitle": "Outlook & Forecast",
+ "sourceSlideIdx": 15,
+ "sceneData": {
+  "name": "financial-summary/outlook",
+  "layout": "row",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Outlook & Forecast",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 380,
+    "h": 240,
+    "args": {
+     "value": "$963-969M",
+     "label": "Subscription & Support",
+     "sublabel": "FY2026 Forecast",
+     "icon": "chart-line-up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 450,
+    "y": 160,
+    "w": 380,
+    "h": 240,
+    "args": {
+     "value": "$1,460-1,470M",
+     "label": "Total Revenue",
+     "sublabel": "FY2026 Forecast",
+     "icon": "currency-dollar",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 860,
+    "y": 160,
+    "w": 380,
+    "h": 240,
+    "args": {
+     "value": "Raised",
+     "label": "Outlook Revision",
+     "sublabel": "Based on Q3 & Pipeline",
+     "icon": "arrow-fat-up",
+     "trend": "up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 430,
+    "w": 1200,
+    "h": 240,
+    "args": {
+     "title": "Outlook Drivers",
+     "items": [
+      {
+       "icon": "chart-bar",
+       "label": "Q3 performance exceeded expectations"
+      },
+      {
+       "icon": "eye",
+       "label": "Improved pipeline visibility for Q4"
+      },
+      {
+       "icon": "trend-up",
+       "label": "Subscription growth momentum sustained"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

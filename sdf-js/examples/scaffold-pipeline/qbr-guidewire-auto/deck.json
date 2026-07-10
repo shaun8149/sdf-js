@@ -1,0 +1,230 @@
+{
+ "deckName": "qbr-guidewire-auto",
+ "sourceFile": "sdf-js/examples/scaffold-pipeline/qbr-guidewire-auto-slidedata.json",
+ "scaffold": {
+  "id": "financial-summary",
+  "label": "Financial Summary"
+ },
+ "theme": "financial-navy-cerulean",
+ "slots": [
+  {
+   "slotIdx": 0,
+   "slotName": "cover",
+   "slotTitle": "Title",
+   "sourceSlideIdx": 0,
+   "liftFile": "slots/slot-00-cover.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover"
+   ]
+  },
+  {
+   "slotIdx": 1,
+   "slotName": "exec-statement",
+   "slotTitle": "Executive Statement",
+   "sourceSlideIdx": 2,
+   "liftFile": "slots/slot-01-exec-statement.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "quote-pull",
+    "bullet-list",
+    "kpi-card"
+   ]
+  },
+  {
+   "slotIdx": 2,
+   "slotName": "highlights-kpi",
+   "slotTitle": "Financial Highlights",
+   "sourceSlideIdx": 4,
+   "liftFile": "slots/slot-02-highlights-kpi.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "stat-banner",
+    "kpi-card",
+    "kpi-card",
+    "bullet-list"
+   ]
+  },
+  {
+   "slotIdx": 3,
+   "slotName": "income",
+   "slotTitle": "Income Statement",
+   "sourceSlideIdx": 9,
+   "liftFile": "slots/slot-03-income.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "bar",
+    "kpi-card",
+    "kpi-card",
+    "stat-banner"
+   ]
+  },
+  {
+   "slotIdx": 4,
+   "slotName": "balance-sheet",
+   "slotTitle": "Balance Sheet",
+   "sourceSlideIdx": 11,
+   "liftFile": "slots/slot-04-balance-sheet.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "bullet-list"
+   ]
+  },
+  {
+   "slotIdx": 5,
+   "slotName": "cashflow",
+   "slotTitle": "Cash Flow",
+   "sourceSlideIdx": 16,
+   "liftFile": "slots/slot-05-cashflow.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "stat-banner"
+   ]
+  },
+  {
+   "slotIdx": 6,
+   "slotName": "ratios",
+   "slotTitle": "Key Ratios",
+   "sourceSlideIdx": 10,
+   "liftFile": "slots/slot-06-ratios.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "dashboard-multi-kpi-composite"
+   ]
+  },
+  {
+   "slotIdx": 7,
+   "slotName": "segments",
+   "slotTitle": "Segment Analysis",
+   "sourceSlideIdx": 5,
+   "liftFile": "slots/slot-07-segments.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "donut-with-center",
+    "kpi-card",
+    "kpi-card"
+   ]
+  },
+  {
+   "slotIdx": 8,
+   "slotName": "outlook",
+   "slotTitle": "Outlook & Forecast",
+   "sourceSlideIdx": 15,
+   "liftFile": "slots/slot-08-outlook.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "bullet-list"
+   ]
+  },
+  {
+   "slotIdx": 9,
+   "slotName": "appendix",
+   "slotTitle": "Appendix",
+   "sourceSlideIdx": 1,
+   "liftFile": "slots/slot-09-appendix.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "bullet-list"
+   ]
+  }
+ ],
+ "droppedSlots": [],
+ "totals": {
+  "delivered": 10,
+  "errors": 0,
+  "seconds": 70.5
+ },
+ "meta": {
+  "path": "auto-scaffold (Sprint 63)",
+  "article": "sdf-js/scripts/fixtures/qbr-guidewire-q3fy26.txt",
+  "plan": {
+   "slots": [
+    {
+     "slotIdx": 0,
+     "slotName": "cover",
+     "slotTitle": "Title"
+    },
+    {
+     "slotIdx": 1,
+     "slotName": "exec-statement",
+     "slotTitle": "Executive Statement"
+    },
+    {
+     "slotIdx": 2,
+     "slotName": "highlights-kpi",
+     "slotTitle": "Financial Highlights"
+    },
+    {
+     "slotIdx": 3,
+     "slotName": "income",
+     "slotTitle": "Income Statement"
+    },
+    {
+     "slotIdx": 4,
+     "slotName": "balance-sheet",
+     "slotTitle": "Balance Sheet"
+    },
+    {
+     "slotIdx": 5,
+     "slotName": "cashflow",
+     "slotTitle": "Cash Flow"
+    },
+    {
+     "slotIdx": 6,
+     "slotName": "ratios",
+     "slotTitle": "Key Ratios"
+    },
+    {
+     "slotIdx": 7,
+     "slotName": "segments",
+     "slotTitle": "Segment Analysis"
+    },
+    {
+     "slotIdx": 8,
+     "slotName": "outlook",
+     "slotTitle": "Outlook & Forecast"
+    },
+    {
+     "slotIdx": 9,
+     "slotName": "appendix",
+     "slotTitle": "Appendix"
+    }
+   ],
+   "theme": "financial-navy-cerulean"
+  }
+ }
+}

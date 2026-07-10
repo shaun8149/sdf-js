@@ -1,0 +1,105 @@
+{
+ "slotIdx": 6,
+ "slotName": "ratios",
+ "slotTitle": "Key Ratios",
+ "sourceSlideIdx": 10,
+ "sceneData": {
+  "name": "financial-summary/ratios",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Key Ratios",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "dashboard-multi-kpi-composite",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 520,
+    "args": {
+     "title": "Non-GAAP Operating Performance",
+     "kpis": [
+      {
+       "value": "$77.8M",
+       "label": "Operating Income",
+       "sublabel": "Q3 FY2026",
+       "trend": "up",
+       "trendValue": "+69% YoY",
+       "color": [
+        58,
+        138,
+        200
+       ]
+      },
+      {
+       "value": "$46.1M",
+       "label": "Operating Income",
+       "sublabel": "Q3 FY2025",
+       "color": [
+        100,
+        150,
+        200
+       ]
+      },
+      {
+       "value": "$69.6M",
+       "label": "Net Income",
+       "sublabel": "Q3 FY2026",
+       "trend": "up",
+       "trendValue": "+47% YoY",
+       "color": [
+        58,
+        138,
+        200
+       ]
+      },
+      {
+       "value": "$47.4M",
+       "label": "Net Income",
+       "sublabel": "Q3 FY2025",
+       "color": [
+        100,
+        150,
+        200
+       ]
+      },
+      {
+       "value": "$0.82",
+       "label": "Diluted EPS",
+       "sublabel": "Q3 FY2026",
+       "trend": "up",
+       "trendValue": "+49% YoY",
+       "color": [
+        58,
+        138,
+        200
+       ]
+      },
+      {
+       "value": "$0.55",
+       "label": "Diluted EPS",
+       "sublabel": "Q3 FY2025",
+       "color": [
+        100,
+        150,
+        200
+       ]
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

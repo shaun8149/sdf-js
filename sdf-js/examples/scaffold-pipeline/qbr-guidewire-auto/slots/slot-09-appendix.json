@@ -1,0 +1,64 @@
+{
+ "slotIdx": 9,
+ "slotName": "appendix",
+ "slotTitle": "Appendix",
+ "sourceSlideIdx": 1,
+ "sceneData": {
+  "name": "financial-summary/appendix",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Appendix",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 80,
+    "y": 180,
+    "w": 1120,
+    "h": 480,
+    "args": {
+     "title": "Methodology Notes & References",
+     "items": [
+      {
+       "icon": "chart-line",
+       "label": "Revenue figures exclude one-time adjustments",
+       "sublabel": "Normalized for comparability across periods"
+      },
+      {
+       "icon": "building",
+       "label": "Segment performance uses internal allocation",
+       "sublabel": "Shared costs distributed by revenue contribution"
+      },
+      {
+       "icon": "chart-pie",
+       "label": "Profitability metrics on GAAP basis",
+       "sublabel": "See reconciliation tables in investor relations"
+      },
+      {
+       "icon": "currency-dollar",
+       "label": "Capital allocation includes buybacks and dividends",
+       "sublabel": "Cash generation reflects operating activities only"
+      },
+      {
+       "icon": "calendar",
+       "label": "FY2026 outlook assumes constant currency",
+       "sublabel": "Guidance updated quarterly based on conditions"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}
