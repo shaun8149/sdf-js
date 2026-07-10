@@ -109,6 +109,11 @@ uniform vec3  u_extraLightColor[MAX_EXTRA_LIGHTS];   // rgb * intensity (premult
 uniform float u_extraLightRadius[MAX_EXTRA_LIGHTS];  // penumbra softness, world units
 uniform vec3  u_extraLightDir[MAX_EXTRA_LIGHTS];     // spotlight aim; zero vec = omni point
 uniform float u_ambientScale;  // 1 = normal; ~0.18 for theatrical dark interior
+// SDF glow (idiom L08 "light = distance falloff"): accumulated along the march —
+// nearly free in a raymarcher since dm.x is in hand every step. 0 = off (default;
+// existing scenes byte-identical). Stage preset sets a small amount (~0.35).
+uniform float u_glowAmt;
+uniform float u_glowK;
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
@@ -782,10 +787,14 @@ void main() {
   float matId = 0.0;
   float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
+  float glowAcc = 0.0;  // SDF glow: near-miss accumulation (u_glowAmt gates it)
   // + int(u_loopGuard) == +0: unroll defeat — see the u_loopGuard declaration.
   for (int i = 0; i < MAX_STEPS + int(u_loopGuard); i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
+    // glow = inverse-square of the miss distance (IQ-style), so rays that graze
+    // the structure pick up a halo. Uniform branch — free when glow is off.
+    if (u_glowAmt > 0.0) glowAcc += 1.0 / (1.0 + u_glowK * dm.x * dm.x);
     if (dm.x < EPS * (1.0 + 0.4 * t)) {
       hit = true; matId = dm.y;
       hitIdx = minIndex;  // capture immediately — normal/shadow/AO calls below will overwrite
@@ -1808,6 +1817,14 @@ void main() {
     col *= 1.0 - (0.24 + u_studioBg * 0.30) * dot(vd, vd);
   }
 
+  // SDF glow composite: cool-white halo where rays grazed the structure. glowAcc
+  // is O(steps) so normalize by MAX_STEPS; tanh-style soft cap keeps it HDR-safe.
+  if (u_glowAmt > 0.0) {
+    float g = glowAcc / float(MAX_STEPS);
+    g = g / (1.0 + g);  // soft cap
+    col += vec3(0.62, 0.74, 1.0) * g * u_glowAmt * 3.0;
+  }
+
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
   // which propagates through bloom Gaussian + DoF taps and explodes as black
   // rectangles on canvas (~30-40 px each). Replace NaN per-channel with 0,
@@ -1987,6 +2004,8 @@ export function createStudioRenderer({
   const extraLightDirLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
   let numExtraLights = 0;
   let ambientScale = 1.0; // theatrical interiorDark drops sky-ambient near 0
+  let glowAmt = 0.0; // SDF glow (idiom L08) — set by setPostFx from scene.defaults.glow
+  let glowK = 6.0;
   // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
   // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
   // flame subset of the volume LUTs.
@@ -2297,6 +2316,8 @@ export function createStudioRenderer({
       'u_extraLightRadius[0]',
       'u_extraLightDir[0]',
       'u_ambientScale',
+      'u_glowAmt',
+      'u_glowK',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
@@ -2610,6 +2631,8 @@ export function createStudioRenderer({
         sequenceAmbient != null ? ambientScale * sequenceAmbient : ambientScale,
       );
     }
+    if (uniformsCache['u_glowAmt'] != null) gl.uniform1f(uniformsCache['u_glowAmt'], glowAmt);
+    if (uniformsCache['u_glowK'] != null) gl.uniform1f(uniformsCache['u_glowK'], glowK);
     if (numExtraLights > 0) {
       if (uniformsCache['u_extraLightPos[0]'] != null)
         gl.uniform3fv(uniformsCache['u_extraLightPos[0]'], extraLightPosLUT);
@@ -2984,6 +3007,10 @@ export function createStudioRenderer({
       const idark = scene && scene.defaults ? scene.defaults.interiorDark : null;
       ambientScale =
         idark == null || idark === false ? 1.0 : typeof idark === 'number' ? idark : 0.18;
+      // SDF glow: scene.defaults.glow = { amount, k } (absent → off, byte-identical)
+      const glowDef = scene && scene.defaults ? scene.defaults.glow : null;
+      glowAmt = glowDef && typeof glowDef.amount === 'number' ? glowDef.amount : 0.0;
+      glowK = glowDef && typeof glowDef.k === 'number' ? glowDef.k : 6.0;
       // Stage area lights: pack scene.defaults.lights → LUTs (color premultiplied
       // by intensity; 0-255 auto-normalized like volumes). A light with `dir`
       // becomes a spotlight cone. Absent/empty → 0 lights = no-op.

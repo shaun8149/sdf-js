@@ -179,3 +179,83 @@ export function horizonSilhouettes(center = [0, 0], ringRadius = 140) {
   }
   return hills;
 }
+
+// ---------------------------------------------------------------------------
+// stagePreset — the fighting-game stage, config-only tier (v0).
+// Backdrop recedes (dark cyclorama + dimmed sky), the structure stands lit on a
+// platform under a spotlight rig, and every shot gets DOF so the backdrop
+// defocuses. Pure function: returns a copy, never mutates the input scene.
+// Idiom ledger: docs/superpowers/artblocks-study/3d-stage-idioms.md (tier ✅).
+// ---------------------------------------------------------------------------
+
+export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
+  const out = {
+    ...scene,
+    subjects: [...(scene.subjects || [])],
+    defaults: { ...(scene.defaults || {}) },
+    cameraSequence: scene.cameraSequence
+      ? { ...scene.cameraSequence, shots: (scene.cameraSequence.shots || []).map((s) => ({ ...s })) }
+      : scene.cameraSequence,
+  };
+
+  // (a) backdrop recede: dark cyclorama + dim the sky ambient (theatre dark)
+  // + strong vignette / slight under-exposure (postfx pipeline) so the frame
+  // edges — the backdrop walls — fall off while the lit centre keeps its punch.
+  // The main directional light is controls-owned (not scene-settable), so the
+  // spotlight look comes from vignette + interiorDark + the rig below.
+  out.defaults.studioBg = 'dark';
+  if (out.defaults.interiorDark == null) out.defaults.interiorDark = 0.22;
+  // theatrical show mode: near-black room shell (stage.js WALL_DARK family) so the
+  // spotlight rig + glow read against darkness instead of a lit mid-grey room
+  if (out.defaults.stage && typeof out.defaults.stage === 'object' && out.defaults.stage.show == null) {
+    out.defaults.stage = { ...out.defaults.stage, show: true };
+  }
+  out.defaults.postFx = {
+    vignetteStrength: 0.62,
+    exposure: 0.9,
+    bloomMix: 0.24,
+    ...(out.defaults.postFx || {}),
+  };
+  // SDF glow (march-loop halo, idiom L08) — subtle silhouette light on the backdrop
+  if (out.defaults.glow == null) out.defaults.glow = { amount: 0.35, k: 6.0 };
+
+  // (b) spotlight rig: warm key spot above-front aimed at the structure + cool rim behind
+  if (!Array.isArray(out.defaults.lights) || out.defaults.lights.length === 0) {
+    const keyPos = [center[0] + 1.6, center[1] + 4.2, center[2] + 3.4];
+    const dir = [center[0] - keyPos[0], center[1] - keyPos[1], center[2] - keyPos[2]];
+    const dl = Math.hypot(dir[0], dir[1], dir[2]) || 1;
+    out.defaults.lights = [
+      { pos: keyPos, dir: dir.map((c) => c / dl), color: [1.0, 0.96, 0.88], intensity: 1.4 },
+      { pos: [center[0] - 2.6, center[1] + 1.4, center[2] - 3.2], color: [0.45, 0.62, 1.0], intensity: 0.7 },
+    ];
+  }
+
+  // (c) platform: flat dark disc under the structure (the "stage floor")
+  if (!out.subjects.some((s) => s.id === 'stage-platform')) {
+    out.subjects.push({
+      id: 'stage-platform',
+      type: 'cylinder',
+      args: { radius: 2.6, height: 0.12 },
+      transform: { translate: [center[0], 0.06, center[2]] },
+      material: { hue: 0.62, sat: 0.12, value: 0.22, kind: 'normal', roughness: 0.75, clearcoat: 0.1 },
+    });
+  }
+
+  // (d) DOF on every shot that doesn't set its own aperture
+  if (out.cameraSequence && Array.isArray(out.cameraSequence.shots)) {
+    for (const s of out.cameraSequence.shots) {
+      if (!(s.aperture > 0)) {
+        const t = s.target || center;
+        const p = s.pos || [0, 0, 8];
+        s.aperture = 0.06;
+        s.focalDistance = Math.hypot(p[0] - t[0], p[1] - t[1], p[2] - t[2]) || 8;
+      } else if (!(s.focalDistance > 0)) {
+        const t = s.target || center;
+        const p = s.pos || [0, 0, 8];
+        s.focalDistance = Math.hypot(p[0] - t[0], p[1] - t[1], p[2] - t[2]) || 8;
+      }
+    }
+  }
+
+  return out;
+}

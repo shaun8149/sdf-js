@@ -81,7 +81,10 @@
       }
       function make3d() {
         const f = document.createElement('iframe');
-        f.src = `./figure.html?ir=${encodeURIComponent(name)}`;
+        // stage=1: the fighting-game stage preset — the blind test measures the
+        // STAGED figure vs 2D (plan Phase 2 Task 12). ?stage=0 opts back out.
+        const st = new URLSearchParams(location.search).get('stage') || '1';
+        f.src = `./figure.html?ir=${encodeURIComponent(name)}&stage=${st}`;
         return f;
       }
       // randomize left/right, unlabelled

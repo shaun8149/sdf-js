@@ -5,11 +5,14 @@ import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
 
 /**
- * createFigure({ outdoor }) → { studio, show(sceneData) }.
+ * createFigure({ outdoor, stage }) → { studio, show(sceneData) }.
  * `show` may be called repeatedly (the author page regenerates in place) —
  * old overlay labels are removed and the new scene's sequence starts fresh.
+ * `stage`: fighting-game stage lighting — the main directional light drops low
+ * and rakes from the side, so the backdrop walls fall dark and the spotlight
+ * rig (scene defaults.lights from stagePreset) carries the subject.
  */
-export function createFigure({ outdoor = false } = {}) {
+export function createFigure({ outdoor = false, stage = false } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
   const size = () => {
@@ -21,8 +24,8 @@ export function createFigure({ outdoor = false } = {}) {
   const studio = createStudioRenderer({
     canvas,
     getControls: () => ({
-      lightAzim: 0.5,
-      lightAlt: 0.7,
+      lightAzim: stage ? 1.15 : 0.5,
+      lightAlt: stage ? 0.32 : 0.7,
       lightDist: 30,
       fov: 1.5,
       shadowsOn: true,
