@@ -23,11 +23,10 @@
       {
         "type": "icon-row",
         "x": 40,
-        "y": 140,
+        "y": 150,
         "w": 1200,
-        "h": 200,
+        "h": 160,
         "args": {
-          "title": "Product Suite",
           "items": [
             {
               "icon": "wallet",
@@ -37,7 +36,7 @@
             {
               "icon": "chats-circle",
               "label": "Chat Module",
-              "sublabel": "Social & alpha sharing"
+              "sublabel": "Social & alpha-sharing"
             },
             {
               "icon": "lightning",
@@ -52,15 +51,15 @@
       {
         "type": "bullet-list",
         "x": 40,
-        "y": 360,
+        "y": 330,
         "w": 580,
-        "h": 320,
+        "h": 340,
         "args": {
           "title": "Competitive Advantages",
           "items": [
             {
-              "icon": "gauge",
-              "label": "Sub-second execution speed"
+              "icon": "lightning",
+              "label": "Sub-second execution beats every wallet"
             },
             {
               "icon": "lock-key",
@@ -68,19 +67,19 @@
             },
             {
               "icon": "brain",
-              "label": "AI-native agents"
+              "label": "AI-native — agents not chatbots"
             },
             {
-              "icon": "network",
-              "label": "Network effects from social"
+              "icon": "users",
+              "label": "Network effects from embedded social"
             },
             {
-              "icon": "plugs",
-              "label": "Open ecosystem for plugins"
+              "icon": "plugs-connected",
+              "label": "Open ecosystem for plugin developers"
             },
             {
               "icon": "shield-check",
-              "label": "Audited by Trail of Bits"
+              "label": "Top-tier security audited by Trail of Bits"
             }
           ]
         }
@@ -88,44 +87,40 @@
       {
         "type": "dashboard-multi-kpi-composite",
         "x": 660,
-        "y": 360,
+        "y": 330,
         "w": 580,
-        "h": 320,
+        "h": 340,
         "args": {
           "title": "Growth Metrics",
           "kpis": [
             {
               "value": "$300K",
-              "label": "Daily Volume",
-              "sublabel": "After 4 weeks",
-              "trend": "up"
+              "label": "Daily trading volume",
+              "sublabel": "After 4 weeks"
             },
             {
               "value": "12K",
-              "label": "Monthly Wallets",
-              "trend": "up"
+              "label": "Monthly active wallets"
             },
             {
               "value": "47%",
-              "label": "WoW Growth",
+              "label": "Week-over-week growth",
               "trend": "up"
             },
             {
               "value": "92%",
-              "label": "Day-30 Retention",
-              "trend": "up"
+              "label": "User retention",
+              "sublabel": "At day 30"
             },
             {
               "value": "8 min",
-              "label": "Avg Session",
-              "sublabel": "3× industry norm",
-              "trend": "up"
+              "label": "Average session",
+              "sublabel": "3x industry norm"
             },
             {
               "value": "72",
-              "label": "NPS Score",
-              "sublabel": "Top quartile crypto",
-              "trend": "up"
+              "label": "NPS score",
+              "sublabel": "Top quartile crypto product"
             }
           ]
         }
@@ -143,20 +138,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4140,
+      "input_tokens": 5320,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 894,
+      "output_tokens": 871,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0297324,
-    "elapsedSec": 13.9,
-    "generatedAt": "2026-07-05T05:25:43.457Z",
+    "costUSD": 0.032927399999999996,
+    "elapsedSec": 15.4,
+    "generatedAt": "2026-07-10T07:19:01.665Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

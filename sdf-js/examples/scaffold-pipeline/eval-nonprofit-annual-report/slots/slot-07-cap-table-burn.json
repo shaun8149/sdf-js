@@ -21,57 +21,45 @@
         }
       },
       {
-        "type": "donut-with-center",
-        "x": 60,
+        "type": "pie",
+        "x": 40,
         "y": 160,
-        "w": 560,
-        "h": 500,
+        "w": 580,
+        "h": 520,
         "args": {
-          "title": "Total Spending",
-          "centerValue": "$4.20M",
-          "centerLabel": "Annual Budget",
-          "segments": [
-            {
-              "label": "Program Services",
-              "value": 3530000
-            },
-            {
-              "label": "Fundraising",
-              "value": 378000
-            },
-            {
-              "label": "Administrative",
-              "value": 294000
-            }
+          "title": "Spending Breakdown",
+          "values": [
+            3530000,
+            378000,
+            294000
           ],
-          "showPct": true
+          "labels": [
+            "Program Services · $3.53M",
+            "Fundraising · $378K",
+            "Administrative · $294K"
+          ],
+          "format": "currency"
         }
       },
       {
-        "type": "donut-with-center",
+        "type": "pie",
         "x": 660,
         "y": 160,
-        "w": 560,
-        "h": 500,
+        "w": 580,
+        "h": 520,
         "args": {
           "title": "Revenue Sources",
-          "centerValue": "100%",
-          "centerLabel": "Funding Mix",
-          "segments": [
-            {
-              "label": "Individual Donors",
-              "value": 52
-            },
-            {
-              "label": "Foundation Grants",
-              "value": 31
-            },
-            {
-              "label": "Corporate Partners",
-              "value": 17
-            }
+          "values": [
+            52,
+            31,
+            17
           ],
-          "showPct": true
+          "labels": [
+            "Individual Donors 52%",
+            "Foundation Grants 31%",
+            "Corporate Partners 17%"
+          ],
+          "format": "percent"
         }
       }
     ]
@@ -86,20 +74,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4152,
+      "input_tokens": 5178,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 427,
+      "output_tokens": 372,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0227634,
-    "elapsedSec": 6.5,
-    "generatedAt": "2026-07-05T06:20:51.574Z",
+    "costUSD": 0.0250164,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-10T07:23:50.667Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

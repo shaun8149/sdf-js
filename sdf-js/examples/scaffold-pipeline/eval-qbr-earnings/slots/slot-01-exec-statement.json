@@ -4,10 +4,10 @@
   "slotTitle": "Executive Statement",
   "slotPurpose": "CEO or CFO opening statement — key message for the period",
   "sourceSlideIdx": 2,
-  "sourceSlideTitle": "CEO Commentary: Business Momentum",
+  "sourceSlideTitle": "CEO Perspective: Business Momentum",
   "sceneData": {
     "name": "financial-summary/exec-statement",
-    "layout": "stage",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -27,8 +27,9 @@
         "w": 1200,
         "h": 280,
         "args": {
-          "quote": "Third-quarter results reinforce confidence in the strength and continuing momentum of the business. Results set the company up well for what should be a record fourth quarter.",
-          "author": "CEO",
+          "quote": "Third-quarter results reinforce our confidence in the strength and continuing momentum of our business, and set us up well for what should be a record fourth quarter",
+          "author": "Mike Rosenbaum",
+          "attribution": "Chief Executive Officer",
           "align": "left"
         }
       },
@@ -39,15 +40,19 @@
         "w": 580,
         "h": 220,
         "args": {
-          "title": "Strategic Position",
+          "title": "Business Momentum",
           "items": [
             {
-              "icon": "target",
-              "label": "Strategy resonating with insurers"
+              "icon": "rocket-launch",
+              "label": "Strategy resonating with insurers modernizing"
             },
             {
-              "icon": "gear-six",
-              "label": "Focus on modernizing core systems"
+              "icon": "cloud",
+              "label": "Critical functions migrating to cloud"
+            },
+            {
+              "icon": "brain",
+              "label": "AI adoption driving customer engagement"
             }
           ]
         }
@@ -62,7 +67,7 @@
           "value": "1,696,180",
           "label": "Shares Repurchased",
           "sublabel": "Q3 Activity",
-          "icon": "arrow-fat-down",
+          "icon": "arrow-square-in",
           "style": "light"
         }
       },
@@ -76,7 +81,7 @@
           "value": "$147.07",
           "label": "Average Price",
           "sublabel": "Per Share",
-          "icon": "currency-dollar",
+          "icon": "chart-line",
           "style": "light"
         }
       },
@@ -90,7 +95,7 @@
           "value": "$240.5M",
           "label": "Remaining Authorization",
           "sublabel": "Share Repurchase Program",
-          "icon": "wallet",
+          "icon": "currency-dollar",
           "style": "accent-border"
         }
       }
@@ -105,20 +110,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5215,
+      "input_tokens": 5294,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 689,
+      "output_tokens": 735,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0298824,
-    "elapsedSec": 11.5,
-    "generatedAt": "2026-07-10T04:17:35.358Z",
+    "costUSD": 0.0308094,
+    "elapsedSec": 11.6,
+    "generatedAt": "2026-07-10T07:28:22.395Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

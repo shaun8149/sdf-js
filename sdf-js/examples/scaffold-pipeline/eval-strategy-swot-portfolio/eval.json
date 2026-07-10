@@ -12,9 +12,9 @@
     "theme_id": "editorial-navy"
   },
   "atomQuality": {
-    "atom_instances": 8,
-    "atom_types_distinct": 6,
-    "variety_ratio": 0.75,
+    "atom_instances": 9,
+    "atom_types_distinct": 7,
+    "variety_ratio": 0.7777777777777778,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -34,8 +34,8 @@
     "slots_with_issues": []
   },
   "textBudget": {
-    "chars_per_slot": 273.75,
-    "max_slot_chars": 539
+    "chars_per_slot": 284.25,
+    "max_slot_chars": 499
   },
   "fidelity": {
     "numbers_total": 10,
@@ -45,13 +45,14 @@
     "deck_numbers_total": 8,
     "derived_cited_count": 0,
     "hallucinated_numbers": [],
-    "deck_entities_total": 16,
+    "deck_entities_total": 19,
     "hallucinated_entities": [
       "Inbound Logistics",
       "Outbound Logistics",
-      "Technology Development"
+      "Technology Development",
+      "Supporting Materials"
     ],
-    "entity_precision": 0.8125,
+    "entity_precision": 0.7894736842105263,
     "number_precision": 1,
     "entities_total": 4,
     "entities_found": 4,
@@ -59,15 +60,15 @@
     "missing_entities": []
   },
   "score": {
-    "total": 100,
+    "total": 99.9,
     "breakdown": {
       "structure": 25,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
       "lift": 15,
-      "text": 10
+      "text": 9.9
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.110Z"
+  "generatedAt": "2026-07-10T07:29:14.080Z"
 }

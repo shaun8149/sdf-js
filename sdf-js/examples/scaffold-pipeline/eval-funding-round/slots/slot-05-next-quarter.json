@@ -3,11 +3,11 @@
   "slotName": "next-quarter",
   "slotTitle": "Next Quarter",
   "slotPurpose": "Plan and priorities for the coming quarter",
-  "sourceSlideIdx": 6,
+  "sourceSlideIdx": 7,
   "sourceSlideTitle": "AI-Driven Commerce Tools Development",
   "sceneData": {
     "name": "investor-update/next-quarter",
-    "layout": "stage",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -21,45 +21,66 @@
         }
       },
       {
-        "type": "pillar-3up",
+        "type": "kanban-board",
         "x": 40,
         "y": 160,
         "w": 1200,
         "h": 520,
         "args": {
-          "pillars": [
+          "title": "Q1 Priorities",
+          "columns": [
             {
-              "icon": "brain",
-              "heading": "AI-Driven Commerce Tools",
-              "body": "Development of next-generation shopping and marketing capabilities",
-              "accent": [
-                58,
-                138,
-                200
+              "name": "AI Product Development",
+              "cards": [
+                {
+                  "title": "AI-driven commerce tools",
+                  "labels": [
+                    "Series B funded"
+                  ]
+                },
+                {
+                  "title": "Agentic shopping experiences",
+                  "labels": [
+                    "Personalized journeys"
+                  ]
+                },
+                {
+                  "title": "Post-purchase concierge service",
+                  "labels": [
+                    "Increase LTV"
+                  ]
+                }
               ]
             },
             {
-              "icon": "briefcase",
-              "heading": "Capital Deployment",
-              "body": "New capital funds AI commerce tool development and market expansion",
-              "accent": [
-                100,
-                150,
-                200
+              "name": "Platform Expansion",
+              "cards": [
+                {
+                  "title": "Three major AI initiatives",
+                  "labels": [
+                    "Strategic investment"
+                  ]
+                },
+                {
+                  "title": "International merchant network",
+                  "labels": [
+                    "Global positioning"
+                  ]
+                }
               ]
             },
             {
-              "icon": "handshake",
-              "heading": "Merchant Engagement",
-              "body": "Suite designed to enhance merchant-customer engagement and conversion",
-              "accent": [
-                180,
-                210,
-                235
+              "name": "Integration",
+              "cards": [
+                {
+                  "title": "ReturnBear acquisition synergies",
+                  "labels": [
+                    "Complement expansion"
+                  ]
+                }
               ]
             }
-          ],
-          "accentLine": true
+          ]
         }
       }
     ]
@@ -75,20 +96,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5145,
+      "input_tokens": 5434,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 364,
+      "output_tokens": 440,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0247974,
-    "elapsedSec": 8.9,
-    "generatedAt": "2026-07-10T06:53:23.426Z",
+    "costUSD": 0.0268044,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-10T07:29:13.906Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

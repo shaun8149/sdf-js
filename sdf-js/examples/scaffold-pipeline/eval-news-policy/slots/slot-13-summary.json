@@ -3,8 +3,8 @@
   "slotName": "summary",
   "slotTitle": "Summary",
   "slotPurpose": "The whole briefing in 3-5 takeaways",
-  "sourceSlideIdx": 13,
-  "sourceSlideTitle": "前景展望",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "主流价格带分布",
   "sceneData": {
     "name": "news-briefing/summary",
     "layout": "grid",
@@ -29,23 +29,19 @@
         "args": {
           "items": [
             {
-              "label": "县乡市场渗透率显著提升",
-              "sublabel": "下乡政策带动"
+              "label": "5万至10万元车型",
+              "sublabel": "占比达63%"
             },
             {
-              "label": "基础设施建设加速",
-              "sublabel": "中央地方投入超300亿元"
+              "label": "县乡市场主力",
+              "sublabel": "该价格区间为主力消费带"
             },
             {
-              "label": "三大挑战待解决",
-              "sublabel": "电网容量、残值体系、补贴退坡"
-            },
-            {
-              "label": "长期增长取决配套服务",
-              "sublabel": "服务体系完善程度是关键"
+              "label": "购买力特征",
+              "sublabel": "体现农村消费者购买力特征"
             }
           ],
-          "cols": 2,
+          "cols": 3,
           "numberStyle": "circle",
           "numberColor": [
             38,
@@ -66,20 +62,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4971,
+      "input_tokens": 5150,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 380,
+      "output_tokens": 323,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0245154,
-    "elapsedSec": 7.8,
-    "generatedAt": "2026-07-07T06:43:28.221Z",
+    "costUSD": 0.0241974,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-10T07:27:23.287Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

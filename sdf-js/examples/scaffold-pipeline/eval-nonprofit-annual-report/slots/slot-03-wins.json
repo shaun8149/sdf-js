@@ -22,15 +22,15 @@
       },
       {
         "type": "icon-grid",
-        "x": 80,
+        "x": 40,
         "y": 160,
-        "w": 1120,
-        "h": 500,
+        "w": 1200,
+        "h": 520,
         "args": {
           "items": [
             {
               "icon": "wrench",
-              "label": "Rapid Repair",
+              "label": "Rapid Well Repair",
               "sublabel": "6 weeks → 9 days"
             },
             {
@@ -41,17 +41,17 @@
             {
               "icon": "solar-panel",
               "label": "Solar Pumps",
-              "sublabel": "12 villages, -60% cost"
+              "sublabel": "12 villages, -60% maintenance cost"
             },
             {
-              "icon": "user-gear",
+              "icon": "graduation-cap",
               "label": "Technician Training",
-              "sublabel": "210 locals trained"
+              "sublabel": "210 local technicians"
             },
             {
               "icon": "handshake",
-              "label": "Policy Advocacy",
-              "sublabel": "3 regional governments"
+              "label": "Government Partnerships",
+              "sublabel": "3 regional water-policy partners"
             }
           ],
           "cols": 3,
@@ -72,20 +72,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4173,
+      "input_tokens": 5199,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 414,
+      "output_tokens": 420,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0226314,
-    "elapsedSec": 7.5,
-    "generatedAt": "2026-07-05T06:20:30.478Z",
+    "costUSD": 0.0257994,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-10T07:23:50.666Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

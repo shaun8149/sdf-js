@@ -10,22 +10,11 @@
     "layout": "cover",
     "subjects": [
       {
-        "type": "image",
+        "type": "cover",
         "x": 0,
         "y": 0,
         "w": 1280,
         "h": 720,
-        "args": {
-          "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffa654'/><stop offset='1' stop-color='%23c44a4a'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><polygon fill='%23332244' points='0,360 120,180 220,260 340,160 460,250 560,140 640,220 640,360'/><text x='320' y='340' fill='white' font-size='14' text-anchor='middle' opacity='0.6'>Yosemite valley sunrise (embedded photo placeholder)</text></svg>",
-          "fit": "cover"
-        }
-      },
-      {
-        "type": "cover",
-        "x": 0,
-        "y": 520,
-        "w": 1280,
-        "h": 200,
         "args": {
           "title": "Yosemite Trip Report",
           "subtitle": "5-day backcountry + valley itinerary",
@@ -44,20 +33,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4146,
+      "input_tokens": 5326,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 453,
+      "output_tokens": 159,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.023135399999999997,
-    "elapsedSec": 8.8,
-    "generatedAt": "2026-07-05T05:32:35.042Z",
+    "costUSD": 0.022265399999999998,
+    "elapsedSec": 4.2,
+    "generatedAt": "2026-07-10T07:22:36.201Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

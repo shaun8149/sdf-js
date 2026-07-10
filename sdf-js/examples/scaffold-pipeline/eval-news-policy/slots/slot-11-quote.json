@@ -3,8 +3,8 @@
   "slotName": "quote",
   "slotTitle": "Key Quote",
   "slotPurpose": "A load-bearing quote or judgment from the article",
-  "sourceSlideIdx": 6,
-  "sourceSlideTitle": "充电基础设施财政支持力度",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "微型电动车成为市场爆款",
   "sceneData": {
     "name": "news-briefing/quote",
     "layout": "stage",
@@ -14,7 +14,7 @@
         "x": 0,
         "y": 0,
         "w": 1280,
-        "h": 120,
+        "h": 100,
         "args": {
           "title": "Key Quote",
           "style": "gradient"
@@ -25,10 +25,10 @@
         "x": 80,
         "y": 180,
         "w": 1120,
-        "h": 480,
+        "h": 440,
         "args": {
-          "quote": "中央财政安排专项补贴120亿元，地方配套资金约200亿元，合计投入超过300亿元用于基础设施建设",
-          "author": "充电基础设施财政支持",
+          "quote": "五菱宏光MINI等微型电动车单一车型贡献超过15%",
+          "author": "市场数据",
           "bg": "accent"
         }
       }
@@ -43,20 +43,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4430,
+      "input_tokens": 5155,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 252,
+      "output_tokens": 225,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0209724,
+    "costUSD": 0.0227424,
     "elapsedSec": 5.3,
-    "generatedAt": "2026-07-07T01:19:50.334Z",
+    "generatedAt": "2026-07-10T07:27:23.286Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

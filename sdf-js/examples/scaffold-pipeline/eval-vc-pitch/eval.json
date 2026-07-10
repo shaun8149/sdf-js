@@ -13,8 +13,8 @@
   },
   "atomQuality": {
     "atom_instances": 18,
-    "atom_types_distinct": 13,
-    "variety_ratio": 0.7222222222222222,
+    "atom_types_distinct": 11,
+    "variety_ratio": 0.6111111111111112,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -35,35 +35,37 @@
   },
   "textBudget": {
     "chars_per_slot": 182.22222222222223,
-    "max_slot_chars": 283
+    "max_slot_chars": 238
   },
   "fidelity": {
     "numbers_total": 27,
-    "numbers_found": 24,
-    "number_recall": 0.8888888888888888,
+    "numbers_found": 25,
+    "number_recall": 0.9259259259259259,
     "missing_numbers": [
-      "$120K",
       "$740K",
-      "$2.4M"
+      "47"
     ],
-    "deck_numbers_total": 33,
+    "deck_numbers_total": 37,
     "derived_cited_count": 0,
     "hallucinated_numbers": [
-      "1500000",
-      "150000",
-      "0.6"
+      "0.12",
+      "0.74",
+      "224%",
+      "1200000",
+      "0.5"
     ],
-    "deck_entities_total": 23,
+    "deck_entities_total": 17,
     "hallucinated_entities": [
-      "Pricing Tiers",
-      "Allocation Details"
+      "Pricing Tiers"
     ],
-    "entity_precision": 0.9130434782608695,
-    "number_precision": 0.9090909090909091,
+    "entity_precision": 0.9411764705882353,
+    "number_precision": 0.8648648648648649,
     "entities_total": 5,
-    "entities_found": 5,
-    "entity_recall": 1,
-    "missing_entities": []
+    "entities_found": 4,
+    "entity_recall": 0.8,
+    "missing_entities": [
+      "Google Slides"
+    ]
   },
   "score": {
     "total": 97.5,
@@ -76,5 +78,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.144Z"
+  "generatedAt": "2026-07-10T07:29:14.096Z"
 }

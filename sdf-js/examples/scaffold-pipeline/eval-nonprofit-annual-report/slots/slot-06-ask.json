@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Thank You & How to Help",
   "sceneData": {
     "name": "investor-update/ask",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -16,37 +16,65 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Ask"
+          "title": "Ask",
+          "style": "gradient"
         }
       },
       {
-        "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 220,
+        "args": {
+          "value": "$25",
+          "label": "Clean Water Access",
+          "sublabel": "One person for one year",
+          "icon": "drop",
+          "style": "light"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 412,
+        "w": 1200,
+        "h": 268,
         "args": {
           "items": [
             {
-              "icon": "hand-coins",
-              "label": "$25 provides water for one year",
-              "sublabel": "Every donation creates lasting impact"
-            },
-            {
               "icon": "hand-heart",
-              "label": "Volunteer in 4 country programs",
-              "sublabel": "Hands-on opportunities available now"
+              "label": "Volunteer",
+              "sublabel": "4 country programs open"
             },
             {
-              "icon": "briefcase",
-              "label": "Corporate matching programs available",
-              "sublabel": "Contact partnerships team to activate"
+              "icon": "handshake",
+              "label": "Corporate Matching",
+              "sublabel": "Contact partnerships team"
             },
             {
               "icon": "file-text",
-              "label": "Board & audit reports online",
-              "sublabel": "clearwatertrust.org/reports"
+              "label": "Transparency",
+              "sublabel": "Board & audit at clearwatertrust.org/reports"
             }
+          ],
+          "iconSize": "medium",
+          "iconStyle": "card"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 640,
+        "y": 160,
+        "w": 600,
+        "h": 220,
+        "args": {
+          "value": "clearwatertrust.org/reports",
+          "label": "Full Financial Transparency",
+          "bg": [
+            58,
+            138,
+            200
           ]
         }
       }
@@ -62,20 +90,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4145,
+      "input_tokens": 5171,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 343,
+      "output_tokens": 519,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0214824,
-    "elapsedSec": 7,
-    "generatedAt": "2026-07-05T06:20:45.065Z",
+    "costUSD": 0.0272004,
+    "elapsedSec": 10.6,
+    "generatedAt": "2026-07-10T07:23:50.667Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

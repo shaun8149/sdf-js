@@ -4,10 +4,10 @@
   "slotTitle": "Theme 2 — Lead",
   "slotPurpose": "Second major theme: the core facts",
   "sourceSlideIdx": 4,
-  "sourceSlideTitle": "充电桩配套设施严重不足",
+  "sourceSlideTitle": "充电桩配套设施成为最大短板",
   "sceneData": {
     "name": "news-briefing/theme-2-lead",
-    "layout": "stage",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -16,60 +16,64 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "充电桩配套设施严重不足",
+          "title": "充电桩配套设施成为最大短板",
           "style": "gradient"
         }
       },
       {
-        "type": "dashboard-multi-kpi-composite",
+        "type": "kpi-card",
         "x": 40,
         "y": 160,
-        "w": 1200,
-        "h": 520,
+        "w": 360,
+        "h": 240,
         "args": {
-          "kpis": [
-            {
-              "value": "98万台",
-              "label": "县域公共充电桩",
-              "sublabel": "截至5月底全国保有量",
-              "color": [
-                38,
-                70,
-                130
-              ]
-            },
-            {
-              "value": "21%",
-              "label": "占全国总量",
-              "sublabel": "县域充电桩占比",
-              "trend": "down",
-              "color": [
-                110,
-                95,
-                75
-              ]
-            },
-            {
-              "value": "350台",
-              "label": "平均每县",
-              "sublabel": "充电桩数量不足",
-              "trend": "down",
-              "color": [
-                165,
-                130,
-                90
-              ]
-            },
-            {
-              "value": "配套设施",
-              "label": "最大短板",
-              "sublabel": "基础设施建设滞后",
-              "color": [
-                200,
-                195,
-                180
-              ]
-            }
+          "value": "98万台",
+          "label": "县域公共充电桩保有量",
+          "sublabel": "截至5月底",
+          "icon": "plug",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "21%",
+          "label": "占全国总量比例",
+          "sublabel": "县域充电桩份额",
+          "icon": "chart-pie-slice",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "<350台",
+          "label": "平均每县充电桩数量",
+          "icon": "map-pin",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 440,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "value": "配套设施",
+          "label": "当前最大短板",
+          "bg": [
+            38,
+            70,
+            130
           ]
         }
       }
@@ -86,20 +90,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4949,
+      "input_tokens": 5181,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 453,
+      "output_tokens": 560,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0255444,
-    "elapsedSec": 8.2,
-    "generatedAt": "2026-07-07T06:43:28.219Z",
+    "costUSD": 0.0278454,
+    "elapsedSec": 10.4,
+    "generatedAt": "2026-07-10T07:27:23.284Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

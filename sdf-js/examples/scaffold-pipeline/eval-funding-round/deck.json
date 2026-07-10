@@ -81,8 +81,8 @@
       "slotName": "tldr",
       "slotTitle": "TL;DR",
       "slotPurpose": "Headline summary — 3 key points this quarter",
-      "sourceSlideIdx": 13,
-      "sourceSlideTitle": "Strategic Outlook",
+      "sourceSlideIdx": 15,
+      "sourceSlideTitle": "Outlook",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -92,8 +92,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "quote-pull",
-        "quote-pull",
+        "stat-banner",
         "pillar-3up"
       ]
     },
@@ -102,8 +101,8 @@
       "slotName": "metrics",
       "slotTitle": "Key Metrics",
       "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
-      "sourceSlideIdx": 3,
-      "sourceSlideTitle": "Platform Adoption Scale",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Current Platform Adoption",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -114,7 +113,7 @@
       "subjectTypes": [
         "cover",
         "dashboard-multi-kpi-composite",
-        "icon-row"
+        "agenda-list"
       ]
     },
     {
@@ -123,8 +122,8 @@
       "slotTitle": "Wins",
       "slotPurpose": "Top accomplishments this quarter",
       "sourceSlideIdx": 2,
-      "sourceSlideTitle": "Series B Financing Overview",
-      "mappingScore": 10,
+      "sourceSlideTitle": "Series B Financing Round",
+      "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-wins.json",
@@ -133,7 +132,9 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-grid"
+        "stat-banner",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -141,8 +142,8 @@
       "slotName": "challenges",
       "slotTitle": "Challenges",
       "slotPurpose": "What did not go well and what we learned",
-      "sourceSlideIdx": 11,
-      "sourceSlideTitle": "ReturnBear Acquisition",
+      "sourceSlideIdx": 13,
+      "sourceSlideTitle": "International Returns Coverage Expansion",
       "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -160,9 +161,9 @@
       "slotName": "next-quarter",
       "slotTitle": "Next Quarter",
       "slotPurpose": "Plan and priorities for the coming quarter",
-      "sourceSlideIdx": 6,
+      "sourceSlideIdx": 7,
       "sourceSlideTitle": "AI-Driven Commerce Tools Development",
-      "mappingScore": 9,
+      "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-05-next-quarter.json",
@@ -171,7 +172,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "pillar-3up"
+        "kanban-board"
       ]
     },
     {
@@ -179,8 +180,8 @@
       "slotName": "ask",
       "slotTitle": "Ask",
       "slotPurpose": "What we need from LPs — intros, advice, resources",
-      "sourceSlideIdx": 10,
-      "sourceSlideTitle": "Returns Network Infrastructure",
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "ReturnBear Acquisition",
       "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -198,9 +199,9 @@
       "slotName": "cap-table-burn",
       "slotTitle": "Financials",
       "slotPurpose": "Burn rate, runway, cap table highlights",
-      "sourceSlideIdx": 9,
-      "sourceSlideTitle": "Post-Purchase Concierge Service",
-      "mappingScore": "floor",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Investor Composition",
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-07-cap-table-burn.json",
@@ -209,7 +210,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-grid"
+        "pie",
+        "quote-pull"
       ]
     }
   ],
@@ -218,10 +220,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.2487468
+    "totalCostUSD": 0.2043132
   },
   "meta": {
-    "generatedAt": "2026-07-10T06:53:23.428Z",
+    "generatedAt": "2026-07-10T07:29:13.908Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

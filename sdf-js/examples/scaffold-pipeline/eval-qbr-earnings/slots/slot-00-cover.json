@@ -18,7 +18,7 @@
         "args": {
           "title": "Guidewire Q3 FY2026 Financial Results",
           "subtitle": "Fiscal quarter ended April 30, 2026",
-          "author": "NYSE: GWRE",
+          "author": "Guidewire (NYSE: GWRE)",
           "style": "gradient"
         }
       }
@@ -32,20 +32,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5076,
-      "cache_creation_input_tokens": 13008,
-      "cache_read_input_tokens": 0,
+      "input_tokens": 5119,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
       "cache_creation": {
-        "ephemeral_5m_input_tokens": 13008,
+        "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 155,
+      "output_tokens": 160,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.06633299999999999,
-    "elapsedSec": 4.6,
-    "generatedAt": "2026-07-10T04:17:35.356Z",
+    "costUSD": 0.0216594,
+    "elapsedSec": 4.1,
+    "generatedAt": "2026-07-10T07:28:22.388Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

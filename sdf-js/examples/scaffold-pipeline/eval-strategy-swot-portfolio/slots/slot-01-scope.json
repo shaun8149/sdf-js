@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Scope of Analysis",
   "sceneData": {
     "name": "analysis-report/scope",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -22,10 +22,10 @@
       },
       {
         "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 560,
-        "h": 480,
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 500,
         "args": {
           "title": "Analysis Scope",
           "items": [
@@ -36,33 +36,33 @@
             },
             {
               "icon": "calendar",
-              "label": "11-quarter time window",
-              "sublabel": "2024-Q1 through 2026-Q3"
+              "label": "2024-Q1 through 2026-Q3",
+              "sublabel": "11 quarters analyzed"
             },
             {
               "icon": "database",
               "label": "Internal KPI dashboard",
-              "sublabel": "Primary data source"
+              "sublabel": "Primary metrics source"
             },
             {
-              "icon": "users",
+              "icon": "chats-circle",
               "label": "32 customer interviews",
               "sublabel": "Qualitative insights"
             },
             {
               "icon": "chart-bar",
               "label": "Gartner Magic Quadrant 2025",
-              "sublabel": "Competitive positioning"
+              "sublabel": "Competitive benchmarking"
             }
           ]
         }
       },
       {
         "type": "icon-row",
-        "x": 680,
-        "y": 180,
-        "w": 520,
-        "h": 480,
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 500,
         "args": {
           "title": "Frameworks Applied",
           "items": [
@@ -72,18 +72,18 @@
               "sublabel": "Strategic positioning"
             },
             {
-              "icon": "network",
-              "label": "Porter Value Chain",
-              "sublabel": "Activity analysis"
+              "icon": "flow-arrow",
+              "label": "Porter Chain",
+              "sublabel": "Value analysis"
             },
             {
               "icon": "chart-line",
               "label": "Change Curve",
-              "sublabel": "Adoption assessment"
+              "sublabel": "Transition assessment"
             }
           ],
           "iconStyle": "card",
-          "iconSize": "medium"
+          "iconSize": "large"
         }
       }
     ]
@@ -97,20 +97,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4948,
+      "input_tokens": 5177,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 602,
+      "output_tokens": 607,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0277764,
-    "elapsedSec": 10.2,
-    "generatedAt": "2026-07-07T06:44:05.413Z",
+    "costUSD": 0.0285384,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-10T07:20:44.444Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

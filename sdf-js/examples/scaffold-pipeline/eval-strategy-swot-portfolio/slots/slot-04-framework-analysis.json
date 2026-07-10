@@ -7,7 +7,7 @@
   "sourceSlideTitle": "SWOT Analysis Results",
   "sceneData": {
     "name": "analysis-report/framework-analysis",
-    "layout": "stage",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -38,19 +38,19 @@
             "Thin EMEA presence",
             "Slow enterprise sales cycle",
             "Customer support response time",
-            "Technical debt in billing layer"
+            "Technical debt in billing"
           ],
           "opportunities": [
-            "Regulatory tailwind in EU AI Act",
+            "Regulatory tailwind EU AI Act",
             "Partner channel under-leveraged",
-            "Vertical expansion to healthcare and education",
-            "Acquisition targets cheap post-2025 correction"
+            "Vertical expansion healthcare/education",
+            "Acquisition targets cheap post-2025"
           ],
           "threats": [
-            "New entrants well-funded (3 Series B in 2026)",
+            "New entrants well-funded (3 Series B 2026)",
             "Incumbent platforms bundling",
-            "Talent retention pressure from AI labs",
-            "FX headwind from USD strength"
+            "Talent retention pressure AI labs",
+            "FX headwind USD strength"
           ]
         }
       }
@@ -69,20 +69,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5036,
+      "input_tokens": 5265,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 393,
+      "output_tokens": 385,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0249054,
-    "elapsedSec": 9.7,
-    "generatedAt": "2026-07-07T06:44:05.414Z",
+    "costUSD": 0.0254724,
+    "elapsedSec": 9.9,
+    "generatedAt": "2026-07-10T07:20:44.446Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -3,11 +3,11 @@
   "slotName": "risk-detail-2",
   "slotTitle": "Secondary Risks",
   "slotPurpose": "Remaining risks / upside factors",
-  "sourceSlideIdx": 12,
-  "sourceSlideTitle": "挑战三：补贴退坡影响预期",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "挑战二：二手车残值体系缺失",
   "sceneData": {
     "name": "news-briefing/risk-detail-2",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -25,23 +25,24 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 500,
+        "h": 480,
         "args": {
-          "title": "挑战三：补贴退坡影响预期",
-          "leftLabel": "当前状态",
-          "rightLabel": "明年预期",
+          "title": "二手车残值体系缺失",
+          "leftLabel": "概率",
+          "rightLabel": "影响",
           "leftItems": [
-            "购置补贴政策支持",
-            "高速增长态势"
+            "中等概率",
+            "置换意愿低",
+            "市场信心不足"
           ],
           "rightItems": [
-            "补贴按期退坡",
-            "增速回落至30%以下",
-            "政策变动压力"
+            "深远影响",
+            "购车决策受阻",
+            "市场可持续性受损"
           ],
           "leftAccent": "rgb(110, 95, 75)",
           "rightAccent": "rgb(38, 70, 130)",
-          "verdict": "政策变动对市场增长构成压力"
+          "verdict": "需建立残值评估标准体系"
         }
       }
     ]
@@ -56,20 +57,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4934,
+      "input_tokens": 5161,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 357,
+      "output_tokens": 347,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0240594,
-    "elapsedSec": 7.5,
-    "generatedAt": "2026-07-07T06:43:28.221Z",
+    "costUSD": 0.024590400000000002,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-10T07:27:23.286Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

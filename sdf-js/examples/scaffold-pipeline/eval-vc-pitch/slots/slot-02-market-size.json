@@ -23,37 +23,36 @@
       {
         "type": "pyramid",
         "x": 80,
-        "y": 180,
-        "w": 500,
+        "y": 160,
+        "w": 520,
         "h": 480,
         "args": {
+          "title": "Total Addressable Market",
           "layers": [
             {
-              "label": "AI-Augmented Productivity",
+              "label": "AI Productivity",
               "sublabel": "$48B by 2028",
-              "value": 48000000000
+              "value": 48
             },
             {
-              "label": "PPT/Keynote/Slides",
+              "label": "Presentation Software",
               "sublabel": "$4.8B annually",
-              "value": 4800000000
+              "value": 4.8
             },
             {
               "label": "Editorial + Infographic",
               "sublabel": "$2.1B",
-              "value": 2100000000
+              "value": 2.1
             }
-          ],
-          "title": "Total Addressable Market",
-          "inverted": true
+          ]
         }
       },
       {
         "type": "kpi-card",
-        "x": 640,
-        "y": 180,
-        "w": 560,
-        "h": 480,
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 400,
         "args": {
           "value": "18M",
           "label": "Knowledge Workers",
@@ -76,20 +75,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4958,
+      "input_tokens": 5187,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 434,
+      "output_tokens": 412,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0252864,
-    "elapsedSec": 7.5,
-    "generatedAt": "2026-07-07T06:44:43.818Z",
+    "costUSD": 0.025643399999999997,
+    "elapsedSec": 10.2,
+    "generatedAt": "2026-07-10T07:21:59.802Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

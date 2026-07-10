@@ -3,11 +3,11 @@
   "slotName": "outlook",
   "slotTitle": "Outlook",
   "slotPurpose": "What to watch next — timeline or conditions",
-  "sourceSlideIdx": 9,
-  "sourceSlideTitle": "美联储降息路径预期",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "欧元区增长前景",
   "sceneData": {
     "name": "news-briefing/outlook",
-    "layout": "row",
+    "layout": "stage",
     "subjects": [
       {
         "type": "cover",
@@ -21,31 +21,52 @@
         }
       },
       {
-        "type": "timeline",
+        "type": "kpi-card",
         "x": 80,
-        "y": 180,
-        "w": 1120,
-        "h": 480,
+        "y": 200,
+        "w": 520,
+        "h": 280,
         "args": {
-          "title": "美联储降息路径预期",
-          "events": [
-            {
-              "date": "4月前",
-              "label": "继续降息",
-              "sublabel": "前提：就业增长放缓、核心通胀温和"
-            },
-            {
-              "date": "3%-3.25%",
-              "label": "进入观望期",
-              "sublabel": "政策利率区间"
-            },
-            {
-              "date": "后续",
-              "label": "节奏取决数据",
-              "sublabel": "劳动力市场与通胀指标"
-            }
-          ],
-          "axisLabel": "降息周期"
+          "value": "1.1%",
+          "label": "欧元区增长预测",
+          "sublabel": "维持温和水平",
+          "icon": "chart-line",
+          "style": "light",
+          "trend": "down",
+          "trendValue": "低于全球平均"
+        }
+      },
+      {
+        "type": "gauge",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "value": 0.22,
+          "label": "经济复苏动能",
+          "format": "percent",
+          "title": "欧洲复苏乏力",
+          "min": "弱",
+          "max": "强"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 80,
+        "y": 540,
+        "w": 1120,
+        "h": 100,
+        "args": {
+          "value": "明显低于全球平均水平",
+          "label": "欧元区增长前景评估",
+          "trend": "持续疲软",
+          "trendDirection": "down",
+          "bg": [
+            38,
+            70,
+            130
+          ]
         }
       }
     ]
@@ -60,20 +81,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4483,
+      "input_tokens": 5148,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 355,
+      "output_tokens": 502,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0226764,
-    "elapsedSec": 12.3,
-    "generatedAt": "2026-07-07T01:17:24.615Z",
+    "costUSD": 0.0268764,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-10T07:26:22.517Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -7,9 +7,9 @@
     "description": "Intro deck for prospects, partners, or recruits",
     "pickScore": 9,
     "pickSignals": [
-      "The deck follows a classic company overview arc: mission → market → product → team → technology → contact, matching the 'company-overview' scaffold (mission → what-we-do → products → market → values → team → contact).",
-      "Source has ~14 slide-sections spanning mission, team heritage, product suite, differentiators, competitive advantages, and 'Get in Touch' — fits well into the 8-slot company-overview scaffold without leaving slots empty.",
-      "While it mentions investors (Sequoia, Paradigm) and has some pitch-like elements, the overall intent is to introduce ANTFUN to prospects, partners, or recruits — not to ask for a specific funding round. No 'ask' slide, no explicit traction metrics or business model breakdown typical of a VC pitch."
+      "Deck structure is classic company-overview arc: mission → market → product → team → technology → contact. Matches company-overview's mission → what-we-do → products → market → values → team → contact (8 slots).",
+      "Source has ~8–9 distinct conceptual sections — perfect fit for the 8-slot company-overview scaffold. No forced stretch or empty slots.",
+      "Audience is clearly prospect/partner/recruit ('Get in Touch', team heritage, competitive advantages). Not a VC fundraise ask (no traction metrics, no cap table, no explicit 'ask' slide), not a product launch (no release date/pricing/CTA), not internal QBR. This is 'who we are and why you should care' — textbook company-overview."
     ],
     "fallback": false,
     "pickerMethod": "llm"
@@ -91,9 +91,8 @@
       "subjectTypes": [
         "cover",
         "pillar-3up",
-        "icon-row",
-        "stat-banner",
-        "stat-banner"
+        "icon-grid",
+        "bullet-list"
       ]
     },
     {
@@ -157,29 +156,13 @@
       ]
     },
     {
-      "slotIdx": 5,
-      "slotName": "values",
-      "slotTitle": "Values",
-      "slotPurpose": "Company values 3-6 items",
-      "sourceSlideIdx": -1,
-      "sourceSlideTitle": null,
-      "mappingScore": 0,
-      "mappingFallback": false,
-      "mappingEmpty": true,
-      "liftFile": null,
-      "cached": false,
-      "dryRun": false,
-      "error": null,
-      "subjectTypes": []
-    },
-    {
       "slotIdx": 6,
       "slotName": "team",
       "slotTitle": "Team",
       "slotPurpose": "Leadership and culture",
       "sourceSlideIdx": 4,
       "sourceSlideTitle": "Strategic Position",
-      "mappingScore": 6,
+      "mappingScore": 7,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-06-team.json",
@@ -188,7 +171,10 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-grid"
+        "bullet-list",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
       ]
     },
     {
@@ -213,14 +199,22 @@
       ]
     }
   ],
+  "droppedSlots": [
+    {
+      "slotIdx": 5,
+      "slotName": "values",
+      "slotTitle": "Values",
+      "reason": "no-source-content"
+    }
+  ],
   "totals": {
     "slotsBaked": 7,
     "slotsEmpty": 1,
     "slotsErrored": 0,
-    "totalCostUSD": 0.2191554
+    "totalCostUSD": 0.2473254
   },
   "meta": {
-    "generatedAt": "2026-07-05T05:26:24.313Z",
+    "generatedAt": "2026-07-10T07:19:01.667Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

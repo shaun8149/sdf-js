@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Learning Objectives",
   "sceneData": {
     "name": "course-syllabus/objectives",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -23,30 +23,30 @@
       {
         "type": "number-list",
         "x": 80,
-        "y": 160,
+        "y": 180,
         "w": 1120,
-        "h": 520,
+        "h": 480,
         "args": {
           "items": [
             {
               "label": "Explain CAP theorem tradeoffs",
-              "sublabel": "Apply to real system designs"
+              "sublabel": "Apply them to real system designs"
             },
             {
-              "label": "Implement Raft consensus module",
-              "sublabel": "Working implementation from scratch"
+              "label": "Implement working Raft consensus module",
+              "sublabel": "Build from scratch"
             },
             {
-              "label": "Diagnose split-brain failure modes",
-              "sublabel": "Network partition scenarios"
+              "label": "Diagnose split-brain and network-partition failures",
+              "sublabel": "Identify failure modes in distributed systems"
             },
             {
-              "label": "Design sharded replicated store",
-              "sublabel": "Under failure conditions"
+              "label": "Design sharded, replicated key-value store",
+              "sublabel": "Build under failure conditions"
             },
             {
-              "label": "Critique distributed systems papers",
-              "sublabel": "3 seminal research publications"
+              "label": "Read and critique 3 seminal papers",
+              "sublabel": "Distributed systems research"
             }
           ],
           "numberStyle": "circle",
@@ -66,20 +66,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4268,
+      "input_tokens": 5186,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 369,
+      "output_tokens": 384,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0222414,
-    "elapsedSec": 8.4,
-    "generatedAt": "2026-07-05T06:28:57.123Z",
+    "costUSD": 0.0252204,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-10T07:23:14.565Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

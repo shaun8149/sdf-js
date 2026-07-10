@@ -21,73 +21,79 @@
         }
       },
       {
-        "type": "dashboard-multi-kpi-composite",
+        "type": "kpi-card",
         "x": 40,
         "y": 160,
-        "w": 1200,
-        "h": 520,
+        "w": 280,
+        "h": 240,
         "args": {
-          "title": "Velocity Metrics",
-          "kpis": [
-            {
-              "value": "412",
-              "label": "Story Points",
-              "sublabel": "Target 380",
-              "trend": "up",
-              "trendValue": "+8%",
-              "color": [
-                38,
-                70,
-                130
-              ]
-            },
-            {
-              "value": "34",
-              "label": "Deploys/Week",
-              "sublabel": "Up from 21/week",
-              "trend": "up",
-              "trendValue": "+62%",
-              "color": [
-                110,
-                95,
-                75
-              ]
-            },
-            {
-              "value": "4.2h",
-              "label": "Lead Time",
-              "sublabel": "Down from 11h",
-              "trend": "down",
-              "trendValue": "-62%",
-              "color": [
-                165,
-                130,
-                90
-              ]
-            },
-            {
-              "value": "3.1%",
-              "label": "Failure Rate",
-              "sublabel": "Target <5%",
-              "trend": "neutral",
-              "color": [
-                38,
-                70,
-                130
-              ]
-            },
-            {
-              "value": "22min",
-              "label": "MTTR",
-              "sublabel": "Target <30min",
-              "trend": "neutral",
-              "color": [
-                110,
-                95,
-                75
-              ]
-            }
-          ]
+          "value": "412",
+          "label": "Story Points",
+          "sublabel": "Target 380",
+          "trend": "up",
+          "trendValue": "+8% (412 vs 380)",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 336,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "34",
+          "label": "Deploys/Week",
+          "sublabel": "Q2: 21/week",
+          "trend": "up",
+          "trendValue": "+62% (34 vs 21)",
+          "icon": "rocket-launch",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 632,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "4.2h",
+          "label": "Lead Time",
+          "sublabel": "Q2: 11 hours",
+          "trend": "down",
+          "trendValue": "-62% (4.2 vs 11)",
+          "icon": "clock",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 928,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "3.1%",
+          "label": "Failure Rate",
+          "sublabel": "Target <5%",
+          "icon": "shield-check",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 336,
+        "y": 416,
+        "w": 608,
+        "h": 240,
+        "args": {
+          "value": "22 min",
+          "label": "Mean Time to Recovery",
+          "sublabel": "Target <30 min",
+          "icon": "wrench",
+          "style": "accent-border"
         }
       }
     ]
@@ -104,20 +110,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4047,
+      "input_tokens": 5227,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 532,
+      "output_tokens": 738,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0240234,
-    "elapsedSec": 9.5,
-    "generatedAt": "2026-07-05T05:35:39.872Z",
+    "costUSD": 0.0306534,
+    "elapsedSec": 10.3,
+    "generatedAt": "2026-07-10T07:24:27.465Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

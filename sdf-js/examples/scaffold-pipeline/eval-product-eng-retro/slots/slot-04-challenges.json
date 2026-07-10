@@ -3,8 +3,8 @@
   "slotName": "challenges",
   "slotTitle": "Challenges",
   "slotPurpose": "What did not go to plan",
-  "sourceSlideIdx": 4,
-  "sourceSlideTitle": "Tech Debt & Infrastructure",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Incidents & Postmortems",
   "sceneData": {
     "name": "qbr/challenges",
     "layout": "grid",
@@ -21,88 +21,102 @@
         }
       },
       {
-        "type": "bullet-list",
-        "x": 80,
-        "y": 180,
-        "w": 560,
-        "h": 460,
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 520,
         "args": {
-          "title": "Tech Debt & Infrastructure",
-          "items": [
+          "title": "Incident Severity Distribution",
+          "xAxis": "Frequency",
+          "yAxis": "Impact",
+          "xLabels": [
+            "Rare",
+            "Occasional",
+            "Frequent"
+          ],
+          "yLabels": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ],
+          "risks": [
             {
-              "icon": "cube-segmented",
-              "label": "Monolith decomposition 43% complete",
-              "sublabel": "6 of 14 services extracted"
+              "x": 0,
+              "y": 3,
+              "label": "Payment webhook queue backup",
+              "severity": "high",
+              "description": "Aug 14, 47 min downtime"
             },
             {
-              "icon": "shield-check",
-              "label": "Test coverage raised to 74%",
-              "sublabel": "From 61% across core services"
+              "x": 1,
+              "y": 2,
+              "label": "Auth token expiry bug",
+              "severity": "medium"
             },
             {
-              "icon": "lightning",
-              "label": "Build time cut to 6 min",
-              "sublabel": "From 18 min via cache restructure"
-            },
-            {
-              "icon": "code",
-              "label": "Node 22 standardization complete",
-              "sublabel": "Deprecated Node 16 across all services"
-            },
-            {
-              "icon": "database",
-              "label": "Postgres sharding 40% live",
-              "sublabel": "2 of 5 shards operational"
+              "x": 1,
+              "y": 2,
+              "label": "DB connection pool exhaustion",
+              "severity": "medium"
             }
           ]
         }
       },
       {
-        "type": "kpi-card",
-        "x": 680,
-        "y": 180,
-        "w": 520,
-        "h": 140,
+        "type": "fishbone",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 340,
         "args": {
-          "value": "43%",
-          "label": "Services Extracted",
-          "sublabel": "6 of 14 microservices",
-          "icon": "cube-segmented",
-          "trend": "+6 services",
-          "trendDirection": "up",
-          "style": "light"
+          "effect": "6 incidents this quarter",
+          "branches": [
+            {
+              "label": "Testing Gap",
+              "causes": [
+                "Insufficient load testing",
+                "4 of 6 traced to pre-release"
+              ]
+            },
+            {
+              "label": "Infrastructure",
+              "causes": [
+                "Queue backup",
+                "Connection pool limits"
+              ]
+            },
+            {
+              "label": "Auth System",
+              "causes": [
+                "Token expiry bug"
+              ]
+            }
+          ]
         }
       },
       {
-        "type": "kpi-card",
-        "x": 680,
-        "y": 340,
-        "w": 520,
-        "h": 140,
+        "type": "bullet-list",
+        "x": 660,
+        "y": 516,
+        "w": 580,
+        "h": 164,
         "args": {
-          "value": "74%",
-          "label": "Test Coverage",
-          "sublabel": "Core services",
-          "icon": "shield-check",
-          "trend": "+13%",
-          "trendDirection": "up",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 680,
-        "y": 500,
-        "w": 520,
-        "h": 140,
-        "args": {
-          "value": "6 min",
-          "label": "Build Time",
-          "sublabel": "Cache restructuring impact",
-          "icon": "lightning",
-          "trend": "-67%",
-          "trendDirection": "down",
-          "style": "light"
+          "title": "Actions Taken",
+          "items": [
+            {
+              "icon": "check-circle",
+              "label": "Mandatory load-test gate added",
+              "sublabel": "Starting Q4 release checklist",
+              "status": "done"
+            },
+            {
+              "icon": "chart-line-down",
+              "label": "Incidents down -45% (11→6)",
+              "status": "highlight"
+            }
+          ]
         }
       }
     ]
@@ -118,20 +132,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4024,
+      "input_tokens": 5219,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 803,
+      "output_tokens": 756,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0280194,
-    "elapsedSec": 12.4,
-    "generatedAt": "2026-07-05T05:36:08.746Z",
+    "costUSD": 0.0308994,
+    "elapsedSec": 13.3,
+    "generatedAt": "2026-07-10T07:24:27.466Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

@@ -1,0 +1,118 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "货币政策路径",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "货币政策路径",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "steps": [
+            {
+              "label": "通胀回落",
+              "sublabel": "美联储、英国央行、欧洲央行降息空间"
+            },
+            {
+              "label": "4月前继续降息",
+              "sublabel": "就业增长放缓 + 核心通胀温和"
+            },
+            {
+              "label": "3%-3.25%区间",
+              "sublabel": "进入较长观望期"
+            }
+          ],
+          "color": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 420,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "3%-3.25%",
+          "label": "目标利率区间",
+          "sublabel": "政策观望期起点",
+          "icon": "gauge",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 420,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "4月前",
+          "label": "持续降息窗口",
+          "sublabel": "市场预期时间线",
+          "icon": "calendar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 420,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "3家央行",
+          "label": "降息空间",
+          "sublabel": "美联储 · 英国央行 · 欧洲央行",
+          "icon": "buildings",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "process-arrows",
+      "timeline",
+      "stat-banner",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5229,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 674,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0296994,
+    "elapsedSec": 12.1,
+    "generatedAt": "2026-07-10T07:25:17.868Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -2,19 +2,19 @@
   "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-nonprofit-annual-report",
   "deckName": "eval-nonprofit-annual-report",
   "structure": {
-    "slots_total": 10,
+    "slots_total": 8,
     "slots_baked": 7,
-    "slots_empty": 3,
+    "slots_empty": 1,
     "slots_errored": 0,
-    "fill_rate": 0.7,
+    "fill_rate": 0.875,
     "pick_method": "llm",
-    "scaffold_id": "financial-summary",
+    "scaffold_id": "investor-update",
     "theme_id": "financial-navy-cerulean"
   },
   "atomQuality": {
-    "atom_instances": 13,
+    "atom_instances": 17,
     "atom_types_distinct": 8,
-    "variety_ratio": 0.6153846153846154,
+    "variety_ratio": 0.47058823529411764,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,42 +29,57 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 0,
-    "counts": {},
-    "slots_with_issues": []
+    "total": 1,
+    "counts": {
+      "TEXT_OVERFLOW": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 6,
+        "slotName": "ask",
+        "issues": [
+          {
+            "kind": "TEXT_OVERFLOW",
+            "subject": 3,
+            "type": "stat-banner",
+            "detail": "\"Financial\" ends at x=1306"
+          }
+        ]
+      }
+    ]
   },
   "textBudget": {
-    "chars_per_slot": 242,
-    "max_slot_chars": 541
+    "chars_per_slot": 248.71428571428572,
+    "max_slot_chars": 557
   },
   "fidelity": {
     "numbers_total": 31,
     "numbers_found": 27,
     "number_recall": 0.8709677419354839,
     "missing_numbers": [
+      "2011",
       "2025",
       "7%",
-      "2027",
       "5t"
     ],
-    "deck_numbers_total": 31,
+    "deck_numbers_total": 32,
     "derived_cited_count": 0,
     "hallucinated_numbers": [
-      "0.5"
+      "16"
     ],
-    "deck_entities_total": 29,
+    "deck_entities_total": 27,
     "hallucinated_entities": [],
     "entity_precision": 1,
-    "number_precision": 0.967741935483871,
+    "number_precision": 0.96875,
     "entities_total": 6,
     "entities_found": 6,
     "entity_recall": 1,
     "missing_entities": []
   },
   "score": {
-    "total": 92.5,
+    "total": 96.9,
     "breakdown": {
-      "structure": 17.5,
+      "structure": 21.9,
       "variety": 15,
       "hallucination": 15,
       "twin": 20,
@@ -72,5 +87,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-10T06:54:02.156Z"
+  "generatedAt": "2026-07-10T07:29:14.107Z"
 }

@@ -7,7 +7,7 @@
   "sourceSlideTitle": "Course Overview",
   "sceneData": {
     "name": "course-syllabus/overview",
-    "layout": "grid",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -22,78 +22,28 @@
       },
       {
         "type": "bullet-list",
-        "x": 60,
+        "x": 40,
         "y": 160,
-        "w": 560,
-        "h": 500,
+        "w": 1200,
+        "h": 520,
         "args": {
-          "title": "What You'll Learn",
+          "title": "Distributed Systems",
           "items": [
             {
               "icon": "network",
-              "label": "Distributed systems theory & practice"
+              "label": "Theory and practice across many machines"
             },
             {
-              "icon": "circuitry",
-              "label": "Consensus algorithms & replication"
+              "icon": "cube",
+              "label": "Consensus, replication, partitioning, consistency, fault tolerance"
             },
             {
-              "icon": "chart-scatter",
-              "label": "Partitioning & consistency models"
+              "icon": "calendar",
+              "label": "2 lectures/week + weekly lab + group project"
             },
             {
-              "icon": "shield-check",
-              "label": "Fault tolerance strategies"
-            }
-          ]
-        }
-      },
-      {
-        "type": "icon-grid",
-        "x": 660,
-        "y": 160,
-        "w": 560,
-        "h": 240,
-        "args": {
-          "title": "Course Format",
-          "items": [
-            {
-              "icon": "presentation-chart",
-              "label": "2 Lectures",
-              "sublabel": "Per week"
-            },
-            {
-              "icon": "flask",
-              "label": "Weekly Lab",
-              "sublabel": "Hands-on practice"
-            },
-            {
-              "icon": "users-three",
-              "label": "Group Project",
-              "sublabel": "1 semester-long"
-            }
-          ],
-          "cols": 3,
-          "iconStyle": "card",
-          "iconSize": "medium"
-        }
-      },
-      {
-        "type": "bullet-list",
-        "x": 660,
-        "y": 440,
-        "w": 560,
-        "h": 220,
-        "args": {
-          "title": "Prerequisites",
-          "items": [
-            {
-              "icon": "cpu",
-              "label": "CS 240 Operating Systems"
-            },
-            {
-              "icon": "code",
-              "label": "Proficiency in Go or Rust"
+              "icon": "graduation-cap",
+              "label": "Prerequisites: CS 240 (Operating Systems), Go or Rust"
             }
           ]
         }
@@ -110,20 +60,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4253,
+      "input_tokens": 5171,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 647,
+      "output_tokens": 323,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.026366399999999998,
-    "elapsedSec": 9.5,
-    "generatedAt": "2026-07-05T06:28:48.693Z",
+    "costUSD": 0.0242604,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-10T07:23:14.564Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

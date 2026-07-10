@@ -3,8 +3,8 @@
   "slotName": "outlook",
   "slotTitle": "Outlook & Forecast",
   "slotPurpose": "Forward guidance and scenario planning",
-  "sourceSlideIdx": 19,
-  "sourceSlideTitle": "Summary and Outlook",
+  "sourceSlideIdx": 15,
+  "sourceSlideTitle": "Updated Full Year FY2026 Revenue Outlook",
   "sceneData": {
     "name": "financial-summary/outlook",
     "layout": "grid",
@@ -24,90 +24,46 @@
         "type": "kpi-card",
         "x": 40,
         "y": 160,
-        "w": 360,
-        "h": 180,
+        "w": 560,
+        "h": 240,
         "args": {
-          "value": "$963–969M",
+          "value": "$963-969M",
           "label": "Subscription & Support Revenue",
-          "sublabel": "FY2026 Expected",
+          "sublabel": "FY2026 Guidance",
           "icon": "chart-line-up",
           "style": "light"
         }
       },
       {
         "type": "kpi-card",
-        "x": 460,
+        "x": 680,
         "y": 160,
-        "w": 360,
-        "h": 180,
+        "w": 560,
+        "h": 240,
         "args": {
-          "value": "$1,460–1,470M",
+          "value": "$1,460-1,470M",
           "label": "Total Revenue",
-          "sublabel": "FY2026 Expected",
+          "sublabel": "FY2026 Guidance",
           "icon": "currency-dollar",
           "style": "light"
         }
       },
       {
-        "type": "kpi-card",
-        "x": 880,
-        "y": 160,
-        "w": 360,
-        "h": 180,
-        "args": {
-          "value": "27%",
-          "label": "Revenue Growth",
-          "sublabel": "Q3 Performance",
-          "trend": "up",
-          "trendValue": "+27%",
-          "icon": "trend-up",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 40,
-        "y": 360,
-        "w": 360,
-        "h": 180,
-        "args": {
-          "value": "19%",
-          "label": "ARR Growth",
-          "sublabel": "Q3 Performance",
-          "trend": "up",
-          "trendValue": "+19%",
-          "icon": "arrow-fat-up",
-          "style": "light"
-        }
-      },
-      {
         "type": "bullet-list",
-        "x": 460,
-        "y": 360,
-        "w": 780,
-        "h": 320,
+        "x": 40,
+        "y": 436,
+        "w": 1200,
+        "h": 240,
         "args": {
-          "title": "FY2026 Positioning",
+          "title": "Guidance Drivers",
           "items": [
             {
-              "icon": "chart-line-up",
-              "label": "Raised full-year guidance",
-              "sublabel": "Revenue, operating income, and cash flow"
+              "icon": "trend-up",
+              "label": "Q3 results exceeded expectations"
             },
             {
-              "icon": "trophy",
-              "label": "Record Q4 expected",
-              "sublabel": "Positioned for strongest quarter"
-            },
-            {
-              "icon": "cloud",
-              "label": "Cloud adoption momentum",
-              "sublabel": "Continued growth driver"
-            },
-            {
-              "icon": "brain",
-              "label": "AI adoption momentum",
-              "sublabel": "Strategic growth catalyst"
+              "icon": "eye",
+              "label": "Strong pipeline visibility"
             }
           ]
         }
@@ -124,20 +80,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5214,
+      "input_tokens": 5151,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 835,
+      "output_tokens": 478,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0320694,
-    "elapsedSec": 12.8,
-    "generatedAt": "2026-07-10T04:17:35.361Z",
+    "costUSD": 0.026525399999999998,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-10T07:28:22.397Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

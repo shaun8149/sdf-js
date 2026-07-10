@@ -16,89 +16,33 @@
         "w": 1280,
         "h": 120,
         "args": {
-          "title": "Overview",
+          "title": "报告概览",
           "style": "gradient"
         }
       },
       {
         "type": "agenda-list",
-        "x": 40,
-        "y": 160,
-        "w": 580,
-        "h": 500,
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
         "args": {
           "items": [
             {
-              "label": "下乡车型销量与市场表现"
+              "label": "下乡车型销量快速增长与市场渗透现状"
             },
             {
-              "label": "配套充电设施建设现状与规划"
+              "label": "充电基础设施建设短板与财政支持政策"
             },
             {
-              "label": "产业格局与车型价格分布"
+              "label": "市场格局：主力车企、热销车型与价格分布"
             },
             {
-              "label": "面临的主要挑战与风险"
+              "label": "面临的三大核心挑战与未来展望"
             }
           ],
-          "numbered": true
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 660,
-        "y": 160,
-        "w": 280,
-        "h": 220,
-        "args": {
-          "value": ">15%",
-          "label": "微型电动车占比",
-          "sublabel": "五菱宏光MINI等单一车型贡献",
-          "icon": "car-simple",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 960,
-        "y": 160,
-        "w": 280,
-        "h": 220,
-        "args": {
-          "value": "63%",
-          "label": "5-10万元车型占比",
-          "sublabel": "中低价位占据主流",
-          "icon": "currency-cny",
-          "style": "light"
-        }
-      },
-      {
-        "type": "stat-banner",
-        "x": 660,
-        "y": 420,
-        "w": 580,
-        "h": 100,
-        "args": {
-          "value": "低价优势",
-          "label": "微型车在农村市场受欢迎",
-          "bg": [
-            38,
-            70,
-            130
-          ]
-        }
-      },
-      {
-        "type": "callout-banner",
-        "x": 660,
-        "y": 540,
-        "w": 580,
-        "h": 120,
-        "args": {
-          "type_": "insight",
-          "heading": "价格带特征",
-          "body": "5万至10万元价格带集中体现农村消费能力特征",
-          "icon": "chart-bar"
+          "numbered": true,
+          "style": "showcase"
         }
       }
     ]
@@ -112,20 +56,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5118,
+      "input_tokens": 5166,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 745,
+      "output_tokens": 320,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.030431399999999997,
-    "elapsedSec": 12.3,
-    "generatedAt": "2026-07-07T06:43:28.216Z",
+    "costUSD": 0.024200399999999997,
+    "elapsedSec": 6.5,
+    "generatedAt": "2026-07-10T07:27:23.282Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

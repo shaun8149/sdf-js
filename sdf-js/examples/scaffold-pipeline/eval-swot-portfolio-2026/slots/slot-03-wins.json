@@ -21,34 +21,70 @@
         }
       },
       {
-        "type": "swot",
+        "type": "icon-grid",
         "x": 40,
         "y": 160,
-        "w": 1200,
-        "h": 520,
+        "w": 580,
+        "h": 500,
         "args": {
-          "title": "Portfolio SWOT Analysis",
-          "strengths": [
-            "Deep AI/ML expertise",
-            "Strong co-investor network",
-            "Proprietary university deal flow",
-            "3 unicorn exits in Fund I"
+          "title": "Strengths",
+          "items": [
+            {
+              "icon": "brain",
+              "label": "Deep AI/ML",
+              "sublabel": "expertise across team"
+            },
+            {
+              "icon": "handshake",
+              "label": "Strong Co-Investors",
+              "sublabel": "network"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "University Spin-Outs",
+              "sublabel": "proprietary deal flow"
+            },
+            {
+              "icon": "trophy",
+              "label": "3 Unicorn Exits",
+              "sublabel": "Fund I track record"
+            }
           ],
-          "weaknesses": [
-            "Bay Area concentration",
-            "Limited late-stage reserves",
-            "Single GP bottleneck"
+          "cols": 2,
+          "iconStyle": "circle",
+          "iconSize": "medium",
+          "colorMode": "brand"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 500,
+        "args": {
+          "title": "Opportunities",
+          "items": [
+            {
+              "icon": "shield-check",
+              "label": "AI Regulatory",
+              "sublabel": "enterprise deals opening"
+            },
+            {
+              "icon": "arrows-left-right",
+              "label": "Secondary Market",
+              "sublabel": "Fund I positions"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Emerging Markets",
+              "sublabel": "via LP network"
+            }
           ],
-          "opportunities": [
-            "AI regulatory tailwind",
-            "Secondary market for Fund I",
-            "Emerging market expansion"
-          ],
-          "threats": [
-            "Growth stage compression",
-            "Mega-fund competition",
-            "LP redemption pressure"
-          ]
+          "cols": 1,
+          "iconStyle": "circle",
+          "iconSize": "medium",
+          "colorMode": "brand"
         }
       }
     ]
@@ -63,20 +99,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 4309,
+      "input_tokens": 5227,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 334,
+      "output_tokens": 603,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0218394,
-    "elapsedSec": 6.4,
-    "generatedAt": "2026-07-05T07:09:11.087Z",
+    "costUSD": 0.0286284,
+    "elapsedSec": 11.4,
+    "generatedAt": "2026-07-10T07:21:19.049Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
