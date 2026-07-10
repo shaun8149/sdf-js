@@ -1,0 +1,80 @@
+{
+  "slotIdx": 5,
+  "slotName": "timeline",
+  "slotTitle": "Campaign Timeline",
+  "slotPurpose": "Launch waves and campaign phases",
+  "sourceSlideIdx": 14,
+  "sourceSlideTitle": "Outlook",
+  "sceneData": {
+    "name": "marketing-campaign/timeline",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Campaign Timeline",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "title": "Multi-Front Expansion",
+          "steps": [
+            {
+              "label": "AI Product",
+              "sublabel": "$81M capital"
+            },
+            {
+              "label": "International Growth",
+              "sublabel": "Key priority"
+            },
+            {
+              "label": "Network Infrastructure",
+              "sublabel": "Platform evolution"
+            },
+            {
+              "label": "Full Commerce Suite",
+              "sublabel": "Beyond post-purchase"
+            }
+          ],
+          "color": "accent"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "marketing-campaign",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "timeline",
+      "progression",
+      "process-arrows"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5081,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 304,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0237054,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-10T04:20:14.661Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

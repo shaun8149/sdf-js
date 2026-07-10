@@ -338,6 +338,121 @@ export function entityGrounded(candidate, srcTextLower) {
   return words.some((w) => srcTextLower.includes(w.toLowerCase()));
 }
 
+// ── derived-value citations (Sprint 65, Rule 24) ──────────────────────────
+// Sprint 64's live financial deck proved the lift does CORRECT arithmetic on
+// source numbers (+580% growth, 22.7% cash decline, 1.7M rounding) — literal
+// matching branded all of them hallucinations. Rule 24 now makes the lift
+// cite parents inline ("+580% (30.6 vs 4.5)"); this verifier recomputes the
+// arithmetic and, when it checks out AND the cited parents are themselves
+// grounded, the derived value counts as grounded-derived, not hallucinated.
+export function extractDeckTextLeaves(slotSceneDatas) {
+  const leaves = [];
+  function walk(node, keyName = null) {
+    if (node == null) return;
+    if (typeof node === 'string' || typeof node === 'number') {
+      if (!(keyName && isNonTextKey(keyName))) leaves.push(String(node));
+      return;
+    }
+    if (Array.isArray(node)) {
+      for (const el of node) walk(el, keyName);
+      return;
+    }
+    if (typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        if (isNonTextKey(k)) continue;
+        walk(v, k);
+      }
+    }
+  }
+  for (const { sceneData } of slotSceneDatas) {
+    for (const subject of sceneData.subjects || []) walk(subject.args || {});
+  }
+  return leaves;
+}
+
+const NUM_TOKEN = String.raw`\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?[KMBT%]?|\$?\d+(?:\.\d+)?[KMBT%]?`;
+
+export function verifiedDerivedTokens(leaves, sourceTokens, sourceValues) {
+  const verified = new Set();
+  const grounded = (tok) => numberGrounded(tok.replace(/,/g, ''), sourceTokens, sourceValues);
+  const val = (tok) => numericValueOf(tok);
+  // form A: X% (A vs B) / (A → B) / (from A to B) — growth, decline, ratio
+  const two = new RegExp(
+    `(${NUM_TOKEN})\\s*\\((?:from\\s*)?(${NUM_TOKEN})\\s*(?:vs\\.?|→|->|to|,)\\s*(${NUM_TOKEN})\\)`,
+    'g',
+  );
+  // form B: X (Y) — rounding / scale restatement
+  const one = new RegExp(`(${NUM_TOKEN})\\s*\\((${NUM_TOKEN})\\)`, 'g');
+  const close = (a, b, tol) => a != null && b != null && Math.abs(a - b) <= tol;
+  for (const leaf of leaves) {
+    const text = String(leaf);
+    for (const m of text.matchAll(two)) {
+      const [, xTok, aTok, bTok] = m;
+      if (!grounded(aTok) || !grounded(bTok)) continue;
+      const x = val(xTok);
+      const a = val(aTok);
+      const b = val(bTok);
+      if (x == null || a == null || b == null || a === 0 || b === 0) continue;
+      const isPct = /%$/.test(xTok);
+      if (isPct) {
+        const pct = Math.abs(x);
+        const tol = Math.max(1, pct * 0.025);
+        const candidates = [
+          (Math.abs(a - b) / Math.abs(a)) * 100, // change relative to FIRST cited
+          (Math.abs(a - b) / Math.abs(b)) * 100, // change relative to SECOND cited
+          (a / b) * 100, // share of
+          (b / a) * 100,
+        ];
+        if (candidates.some((c) => close(pct, c, tol))) verified.add(xTok);
+      } else {
+        // absolute difference / midpoint of the two parents ("-$336.4M
+        // (1,483.2 vs 1,146.8)", "midpoint 319 (314 vs 324)"). Parents and
+        // value may differ in unit suffix ($336.4M cites 1,483.2-in-$M), so
+        // compare on the BARE magnitudes as written.
+        const bareX = Math.abs(
+          Number(
+            xTok
+              .replace(/,/g, '')
+              .replace(/^\$/, '')
+              .replace(/[KMBT%]$/, ''),
+          ),
+        );
+        const bareA = Math.abs(
+          Number(
+            aTok
+              .replace(/,/g, '')
+              .replace(/^\$/, '')
+              .replace(/[KMBT%]$/, ''),
+          ),
+        );
+        const bareB = Math.abs(
+          Number(
+            bTok
+              .replace(/,/g, '')
+              .replace(/^\$/, '')
+              .replace(/[KMBT%]$/, ''),
+          ),
+        );
+        const tol = Math.max(0.11, bareX * 0.01);
+        const candidates = [Math.abs(bareA - bareB), (bareA + bareB) / 2];
+        if ([bareX].every(Number.isFinite) && candidates.some((c) => close(bareX, c, tol)))
+          verified.add(xTok);
+      }
+    }
+    for (const m of text.matchAll(one)) {
+      const [, xTok, yTok] = m;
+      if (/%$/.test(xTok)) continue; // percent needs two parents (form A)
+      if (!grounded(yTok)) continue;
+      const x = val(xTok);
+      const y = val(yTok);
+      // rounding: same value within 6% (1.7M cites 1,696,180)
+      if (x != null && y != null && y !== 0 && Math.abs(x - y) / Math.abs(y) <= 0.06)
+        verified.add(xTok);
+    }
+  }
+  return verified;
+}
+
 // A deck number is grounded if the source's token set contains it in any
 // form: literal, comma-stripped, bare (source "93%" grounds deck 93;
 // source "$4.5M" grounds deck "4.5M"), or by canonical VALUE — the lift
@@ -730,7 +845,15 @@ export async function scoreDeckQuality(deckDir) {
     const sourceTokens = new Set([...deckNumberTokens(srcText), ...extractKeyNumbers(srcText)]);
     const sourceValues = valueSetOf(sourceTokens);
     const deckNumbers = extractDeckPayloadNumbers(slotSceneDatas);
-    const hallucinated = deckNumbers.filter((n) => !numberGrounded(n, sourceTokens, sourceValues));
+    // Rule 24: derived values with verifiable inline citations are grounded
+    const derivedCited = verifiedDerivedTokens(
+      extractDeckTextLeaves(slotSceneDatas),
+      sourceTokens,
+      sourceValues,
+    );
+    const hallucinated = deckNumbers.filter(
+      (n) => !numberGrounded(n, sourceTokens, sourceValues) && !derivedCited.has(n),
+    );
 
     // Adversarial entity precision (Sprint 35): named people/orgs in the
     // deck that the source never mentioned. Scaffold chrome (slot titles
@@ -750,6 +873,7 @@ export async function scoreDeckQuality(deckDir) {
       number_recall: srcNumbers.length > 0 ? found.length / srcNumbers.length : 1,
       missing_numbers: missing.slice(0, 12),
       deck_numbers_total: deckNumbers.length,
+      derived_cited_count: [...derivedCited].filter((t) => deckNumbers.includes(t)).length,
       hallucinated_numbers: hallucinated.slice(0, 12),
       deck_entities_total: deckEntities.length,
       hallucinated_entities: hallucEntities.slice(0, 12),

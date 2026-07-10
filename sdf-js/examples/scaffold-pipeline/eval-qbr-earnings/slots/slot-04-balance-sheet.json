@@ -1,0 +1,94 @@
+{
+  "slotIdx": 4,
+  "slotName": "balance-sheet",
+  "slotTitle": "Balance Sheet",
+  "slotPurpose": "Assets vs liabilities snapshot",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "Cash Position and Investments",
+  "sceneData": {
+    "name": "financial-summary/balance-sheet",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Balance Sheet",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$1,146.8M",
+          "label": "Current Cash Position",
+          "sublabel": "Cash, equivalents, and investments",
+          "icon": "currency-dollar",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$1,483.2M",
+          "label": "Prior Year-End",
+          "sublabel": "Fiscal year 2025 close",
+          "icon": "calendar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 360,
+        "y": 440,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "-22.7%",
+          "label": "Quarter Change",
+          "sublabel": "Capital allocation activities",
+          "trend": "down",
+          "trendValue": "-$336.4M (1,483.2 vs 1,146.8)",
+          "icon": "arrow-down",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kpi-card",
+      "dashboard-multi-kpi-composite"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5107,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 488,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026543399999999998,
+    "elapsedSec": 12.7,
+    "generatedAt": "2026-07-10T04:17:35.360Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "slotIdx": 4,
+  "slotName": "challenges",
+  "slotTitle": "Challenges",
+  "slotPurpose": "What did not go well and what we learned",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "Returns Network Infrastructure",
+  "sceneData": {
+    "name": "investor-update/challenges",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Challenges",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "effect": "Returns Network Scaling",
+          "branches": [
+            {
+              "label": "Infrastructure",
+              "causes": [
+                "Local processing nodes",
+                "Inspection facilities",
+                "Refurbishment capacity"
+              ]
+            },
+            {
+              "label": "Operations",
+              "causes": [
+                "Inventory recovery time",
+                "Re-fulfillment logistics",
+                "Quality control standards"
+              ]
+            },
+            {
+              "label": "Network",
+              "causes": [
+                "Geographic coverage gaps",
+                "Partner integration",
+                "Customer access points"
+              ]
+            },
+            {
+              "label": "Efficiency",
+              "causes": [
+                "Process optimization",
+                "Turnaround speed",
+                "Cost per unit"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "fishbone",
+      "swot"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5104,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 373,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0248094,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

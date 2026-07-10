@@ -42,6 +42,11 @@ const CORPUS = [
   // stability harness.
   { article: 'econ-news-excerpt.txt', id: 'news-econ' },
   { article: 'policy-news-excerpt.txt', id: 'news-policy' },
+  // Sprint 65: non-news scaffolds as standing regression — a REAL earnings
+  // release and a REAL funding announcement through the auto-scaffold path
+  // (Sprint 63), exercising Rule 24 derived-value citations (Sprint 64/65).
+  { article: 'qbr-guidewire-q3fy26.txt', id: 'qbr-earnings', scaffold: 'auto' },
+  { article: 'funding-round-announce.txt', id: 'funding-round', scaffold: 'auto' },
 ];
 
 function stemOf(fixture) {
@@ -109,6 +114,7 @@ if (DO_BAKE) {
             deckName,
             '--key-file',
             KEY_FILE,
+            ...(fixture.scaffold ? ['--scaffold', fixture.scaffold] : []),
           ];
     const result = spawnSync('node', cmd, { cwd: REPO, stdio: 'inherit' });
     if (result.status !== 0) {

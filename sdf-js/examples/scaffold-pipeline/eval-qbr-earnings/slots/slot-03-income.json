@@ -1,0 +1,110 @@
+{
+  "slotIdx": 3,
+  "slotName": "income",
+  "slotTitle": "Income Statement",
+  "slotPurpose": "Revenue breakdown and profitability waterfall",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Total Revenue Performance",
+  "sceneData": {
+    "name": "financial-summary/income",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Income Statement",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "$372.5M",
+          "label": "Q3 Total Revenue",
+          "trend": "up",
+          "trendValue": "+27% YoY",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 440,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "$36-46M",
+          "label": "Q4 GAAP Operating Income",
+          "sublabel": "Guidance",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 160,
+        "w": 360,
+        "h": 240,
+        "args": {
+          "value": "$86-96M",
+          "label": "Q4 Non-GAAP Operating Income",
+          "sublabel": "Guidance",
+          "icon": "chart-bar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 440,
+        "w": 1160,
+        "h": 220,
+        "args": {
+          "value": "Record Q4 Projected",
+          "label": "CEO guidance supports record fourth quarter performance",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kpi-card",
+      "bar",
+      "column"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5202,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 561,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0279234,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-10T04:17:35.360Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

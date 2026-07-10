@@ -1,0 +1,121 @@
+{
+  "slotIdx": 1,
+  "slotName": "brief",
+  "slotTitle": "Campaign Brief",
+  "slotPurpose": "Campaign concept and strategic objective",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "CEO Strategic Vision",
+  "sceneData": {
+    "name": "marketing-campaign/brief",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Campaign Brief",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "quote": "Every merchant is fighting to own the relationship with their shoppers",
+          "author": "Sterling Snow",
+          "attribution": "Co-founder and CEO",
+          "align": "center"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 380,
+        "w": 580,
+        "h": 300,
+        "args": {
+          "title": "Strategic Objectives",
+          "items": [
+            {
+              "icon": "handshake",
+              "label": "Help merchants own customer relationships"
+            },
+            {
+              "icon": "rocket",
+              "label": "Accelerate mission with new funding"
+            },
+            {
+              "icon": "cube",
+              "label": "Build infrastructure brands need"
+            },
+            {
+              "icon": "robot",
+              "label": "Marketing agent for personalized campaigns"
+            },
+            {
+              "icon": "globe",
+              "label": "ReturnBear acquisition expands to 100+ countries"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 380,
+        "w": 580,
+        "h": 300,
+        "args": {
+          "title": "Investor Participation",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "Smash Capital led financing round",
+              "status": "highlight"
+            },
+            {
+              "icon": "handshake",
+              "label": "Pelion Venture Partners participated"
+            },
+            {
+              "icon": "handshake",
+              "label": "Cervin Ventures participated"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "marketing-campaign",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "quote-pull",
+      "bullet-list",
+      "stat-banner"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5366,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 609,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.029135400000000002,
+    "elapsedSec": 10.8,
+    "generatedAt": "2026-07-10T04:20:14.660Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

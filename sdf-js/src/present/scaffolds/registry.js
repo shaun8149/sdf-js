@@ -1253,6 +1253,18 @@ export const SCAFFOLDS = [
       'quarterly update',
       'portfolio update',
       'investor letter',
+      // Sprint 65: funding-announcement vocabulary — a real Series B press
+      // release ranked marketing-campaign (its "email campaigns" plans
+      // outweighed 'series'+'investor'); announcements are updates on
+      // financing + traction + plans, which is this scaffold's shape
+      'funding',
+      'financing',
+      'raised',
+      'valuation',
+      'series a',
+      'series b',
+      'series c',
+      'round',
     ],
     slots: [
       {
