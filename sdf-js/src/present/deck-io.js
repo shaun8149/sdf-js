@@ -12,8 +12,11 @@
 // same references — round-trip identical in structure, ~10× smaller on disk.
 // =============================================================================
 
-export const DECK_FORMAT = 'atlas-deck';
-export const DECK_FORMAT_VERSION = 1;
+import { validateDeck, DECK_FORMAT, DECK_FORMAT_VERSION } from './deck-spec.js';
+
+// re-exported so existing importers keep working; deck-spec.js is the
+// single source of truth for the contract (docs/atlas-deck-contract.md)
+export { DECK_FORMAT, DECK_FORMAT_VERSION };
 
 export function serializeDeck(deck) {
   if (!deck || !Array.isArray(deck.slots)) throw new Error('serializeDeck: not a deck');
@@ -49,10 +52,12 @@ export function serializeDeck(deck) {
 
 export function deserializeDeck(data) {
   if (typeof data === 'string') data = JSON.parse(data);
-  if (data?.format !== DECK_FORMAT) throw new Error('deserializeDeck: not an atlas-deck file');
-  if (data.version > DECK_FORMAT_VERSION)
+  // Sprint 66: the full contract validator gates every open — structural
+  // errors are rejected with the exact contract violation, not a late crash
+  const v = validateDeck(data);
+  if (!v.ok)
     throw new Error(
-      `deserializeDeck: file is version ${data.version}, this build reads ≤ ${DECK_FORMAT_VERSION}`,
+      `deserializeDeck: ${v.errors[0]}${v.errors.length > 1 ? ` (+${v.errors.length - 1} more)` : ''}`,
     );
   const shared = data.shared || null;
   return {

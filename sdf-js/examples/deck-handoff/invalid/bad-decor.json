@@ -1,0 +1,8 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "decor": {
+    "seed": "not-an-int"
+  },
+  "slots": []
+}

@@ -1,0 +1,26 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "中文简报 · 三季度",
+  "theme": "editorial-navy",
+  "slots": [
+    {
+      "slotTitle": "关键数字",
+      "sceneData": {
+        "atoms": [
+          {
+            "type": "stat-banner",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "value": "营收 12.4 亿",
+              "label": "同比 +40% (12.4 vs 8.9)"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,638 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-vc-pitch",
+  "theme": {
+    "id": "pitch-cobalt-orange",
+    "label": "Pitch · Cobalt Orange",
+    "macroCluster": "pitch",
+    "bg": [255, 255, 255],
+    "silhouetteColor": [20, 25, 50],
+    "accent": [255, 120, 40],
+    "colors": [
+      [255, 120, 40],
+      [20, 60, 180],
+      [220, 220, 235],
+      [60, 65, 90]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "pitch-deck-vc",
+    "label": "VC Pitch Deck"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "pitch-deck-vc/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Atlas",
+              "subtitle": "LLM-native illustration platform",
+              "author": "Series A fundraise · 2026-Q3",
+              "date": "$15M to scale supply + distribution",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "problem",
+      "slotTitle": "Problem",
+      "sceneData": {
+        "name": "pitch-deck-vc/problem",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Problem"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "items": [
+                {
+                  "icon": "calendar",
+                  "label": "Stuck in 2008",
+                  "sublabel": "Presentation visuals outdated",
+                  "color": [255, 120, 40]
+                },
+                {
+                  "icon": "image-broken",
+                  "label": "Dead Visuals",
+                  "sublabel": "PowerPoint icons and clipart",
+                  "color": [20, 60, 180]
+                },
+                {
+                  "icon": "robot",
+                  "label": "AI Fixed Text",
+                  "sublabel": "Visuals still lifeless",
+                  "color": [255, 120, 40]
+                },
+                {
+                  "icon": "clock",
+                  "label": "60% Wasted",
+                  "sublabel": "Designers on layout busywork",
+                  "color": [20, 60, 180]
+                }
+              ],
+              "cols": 2,
+              "iconStyle": "card",
+              "iconSize": "large",
+              "colorMode": "auto"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "market-size",
+      "slotTitle": "Market Size",
+      "sceneData": {
+        "name": "pitch-deck-vc/market-size",
+        "layout": "hierarchy",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Market Size",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "pyramid",
+            "x": 80,
+            "y": 180,
+            "w": 500,
+            "h": 480,
+            "args": {
+              "layers": [
+                {
+                  "label": "AI-Augmented Productivity",
+                  "sublabel": "$48B by 2028",
+                  "value": 48000000000
+                },
+                {
+                  "label": "PPT/Keynote/Slides",
+                  "sublabel": "$4.8B annually",
+                  "value": 4800000000
+                },
+                {
+                  "label": "Editorial + Infographic",
+                  "sublabel": "$2.1B",
+                  "value": 2100000000
+                }
+              ],
+              "title": "Total Addressable Market",
+              "inverted": true
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 640,
+            "y": 180,
+            "w": 560,
+            "h": 480,
+            "args": {
+              "value": "18M",
+              "label": "Knowledge Workers",
+              "sublabel": "Making decks weekly",
+              "icon": "users",
+              "style": "dark"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "solution",
+      "slotTitle": "Our Solution",
+      "sceneData": {
+        "name": "pitch-deck-vc/solution",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Our Solution",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "flow-chart",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "steps": [
+                "LLM writes structured intent",
+                "Atlas runtime renders deterministically",
+                "Multi-renderer output (silhouette/3D/lines/crayon)",
+                "Edit intent → regenerate visual"
+              ],
+              "orientation": "horizontal",
+              "title": "Content-to-Visual Pipeline"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "product",
+      "slotTitle": "Product Demo",
+      "sceneData": {
+        "name": "pitch-deck-vc/product",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Product Demo"
+            }
+          },
+          {
+            "type": "device-mockup-frame",
+            "x": 80,
+            "y": 160,
+            "w": 480,
+            "h": 500,
+            "args": {
+              "device": "laptop",
+              "title": "Atlas Canvas",
+              "content": "Live 3D editing environment"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 600,
+            "y": 160,
+            "w": 600,
+            "h": 500,
+            "args": {
+              "items": [
+                {
+                  "icon": "file-pdf",
+                  "label": "Upload PDF → scaffolded deck"
+                },
+                {
+                  "icon": "lightning",
+                  "label": "Inline paragraph trigger"
+                },
+                {
+                  "icon": "pencil-line",
+                  "label": "Live-edit with LLM loop"
+                },
+                {
+                  "icon": "export",
+                  "label": "Export PPT/PDF/MP4"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "traction",
+      "slotTitle": "Traction",
+      "sceneData": {
+        "name": "pitch-deck-vc/traction",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Traction"
+            }
+          },
+          {
+            "type": "line",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 380,
+            "args": {
+              "values": [0, 120000, 740000, 2400000],
+              "labels": ["Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026F"],
+              "format": "currency",
+              "title": "ARR Growth",
+              "showPoints": true,
+              "showValues": true
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 560,
+            "w": 1200,
+            "h": 120,
+            "args": {
+              "kpis": [
+                {
+                  "value": "10",
+                  "label": "Design Teams",
+                  "sublabel": "Q2 2026"
+                },
+                {
+                  "value": "47",
+                  "label": "Teams",
+                  "sublabel": "Q3 2026"
+                },
+                {
+                  "value": "3",
+                  "label": "Design Agencies",
+                  "sublabel": "Q3 2026"
+                },
+                {
+                  "value": "110%",
+                  "label": "Net Retention",
+                  "sublabel": "Q4 Forecast",
+                  "trend": "up"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "business-model",
+      "slotTitle": "Business Model",
+      "sceneData": {
+        "name": "pitch-deck-vc/business-model",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Business Model",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "comparison-table",
+            "x": 40,
+            "y": 160,
+            "w": 760,
+            "h": 420,
+            "args": {
+              "title": "Pricing Tiers",
+              "columns": [
+                {
+                  "name": "Pro",
+                  "accent": [255, 120, 40]
+                },
+                {
+                  "name": "Team",
+                  "accent": [20, 60, 180]
+                },
+                {
+                  "name": "Studio",
+                  "accent": [60, 65, 90]
+                }
+              ],
+              "features": [
+                {
+                  "name": "Price",
+                  "Pro": "$30/user/mo",
+                  "Team": "$200/seat/mo",
+                  "Studio": "$50K/year"
+                },
+                {
+                  "name": "Target",
+                  "Pro": "Knowledge workers",
+                  "Team": "Design teams",
+                  "Studio": "Agencies + Enterprise"
+                },
+                {
+                  "name": "Min Seats",
+                  "Pro": "1",
+                  "Team": "10+",
+                  "Studio": "Custom"
+                },
+                {
+                  "name": "Features",
+                  "Pro": "✓",
+                  "Team": "✓",
+                  "Studio": "Custom themes"
+                }
+              ]
+            }
+          },
+          {
+            "type": "break-even",
+            "x": 840,
+            "y": 160,
+            "w": 400,
+            "h": 420,
+            "args": {
+              "fixedCost": 1500000,
+              "variableCostPerUnit": 8,
+              "pricePerUnit": 30,
+              "maxUnits": 150000,
+              "title": "Break-Even Analysis",
+              "currency": "$"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 440,
+            "y": 610,
+            "w": 400,
+            "h": 90,
+            "args": {
+              "value": "$3M ARR",
+              "label": "Break-Even Target",
+              "sublabel": "Projected Q3 2027",
+              "icon": "target",
+              "style": "accent-border"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "team",
+      "slotTitle": "Team",
+      "sceneData": {
+        "name": "pitch-deck-vc/team",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Team",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "circle-image-hub-spoke",
+            "x": 80,
+            "y": 180,
+            "w": 520,
+            "h": 480,
+            "args": {
+              "center": {
+                "label": "Leadership",
+                "color": [255, 120, 40]
+              },
+              "satellites": [
+                {
+                  "label": "Sarah Chen · CEO",
+                  "color": [255, 120, 40]
+                },
+                {
+                  "label": "Alex Wu · CTO",
+                  "color": [20, 60, 180]
+                },
+                {
+                  "label": "Diana Liu · Head of Design",
+                  "color": [60, 65, 90]
+                }
+              ]
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 660,
+            "y": 180,
+            "w": 540,
+            "h": 240,
+            "args": {
+              "title": "Experience",
+              "items": [
+                {
+                  "icon": "briefcase",
+                  "label": "Ex-Figma design infra lead",
+                  "sublabel": "Sarah Chen"
+                },
+                {
+                  "icon": "brain",
+                  "label": "Ex-Anthropic research engineer",
+                  "sublabel": "Alex Wu"
+                },
+                {
+                  "icon": "palette",
+                  "label": "Ex-Apple Keynote team",
+                  "sublabel": "Diana Liu"
+                }
+              ]
+            }
+          },
+          {
+            "type": "isotype-stat-comparison",
+            "x": 660,
+            "y": 460,
+            "w": 540,
+            "h": 200,
+            "args": {
+              "title": "Team Size",
+              "stats": [
+                {
+                  "iconName": "code",
+                  "count": 20,
+                  "label": "Engineers"
+                },
+                {
+                  "iconName": "palette",
+                  "count": 5,
+                  "label": "Designers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "ask",
+      "slotTitle": "The Ask",
+      "sceneData": {
+        "name": "pitch-deck-vc/ask",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "The Ask",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 380,
+            "h": 220,
+            "args": {
+              "value": "$15M",
+              "label": "Series A",
+              "sublabel": "18-month runway",
+              "icon": "rocket-launch",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 450,
+            "y": 160,
+            "w": 380,
+            "h": 220,
+            "args": {
+              "value": "$10M",
+              "label": "Next Milestone",
+              "sublabel": "ARR Target",
+              "icon": "target",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "pie",
+            "x": 860,
+            "y": 160,
+            "w": 380,
+            "h": 220,
+            "args": {
+              "title": "Use of Funds",
+              "values": [60, 25, 15],
+              "labels": ["Engineering", "Sales + Community", "Reserve"],
+              "format": "percent",
+              "donutRatio": 0.6
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 420,
+            "w": 1200,
+            "h": 260,
+            "args": {
+              "title": "Allocation Details",
+              "items": [
+                {
+                  "icon": "code",
+                  "label": "Engineering · 2D+3D atom library",
+                  "sublabel": "Scale to 200 atoms"
+                },
+                {
+                  "icon": "handshake",
+                  "label": "Sales + Community · agency partners",
+                  "sublabel": "Partner program expansion"
+                },
+                {
+                  "icon": "piggy-bank",
+                  "label": "Reserve · 18-month runway",
+                  "sublabel": "Path to profitability"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
