@@ -63,8 +63,12 @@ const deck = {
     'decor artifact survives verbatim (hash/v/serial)',
   );
   ok(
-    JSON.stringify(back.slots[1].sceneData) === JSON.stringify(deck.slots[1].sceneData),
-    'sceneData survives verbatim',
+    JSON.stringify(back.slots[1].sceneData.atoms) === JSON.stringify(deck.slots[1].sceneData.atoms),
+    'sceneData atoms survive verbatim',
+  );
+  ok(
+    JSON.stringify(back.slots[1].sceneData.subjects) === JSON.stringify(deck.slots[1].sceneData.atoms),
+    'sceneData atoms alias opens as subjects',
   );
   ok(
     JSON.stringify(back.slots[0].liftParams.slides) === JSON.stringify(slides),
