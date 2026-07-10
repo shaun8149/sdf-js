@@ -17,6 +17,7 @@ import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
 import { serializeDeck, deserializeDeck } from '../../src/present/deck-io.js';
+import { listScaffolds } from '../../src/present/scaffolds/registry.js';
 
 const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift + author.js (3D)
 
@@ -90,6 +91,33 @@ themeEl.addEventListener('change', async () => {
     setStatus(`theme switch failed: ${e.message}`, true);
   }
 });
+
+// Sprint 63: scaffold choice for 整本 mode — 自动 (deterministic ranker)
+// or any of the 21 skeletons. Hidden in quick mode (quick has no scaffold).
+const scaffoldEl = document.getElementById('scaffold');
+{
+  const auto = document.createElement('option');
+  auto.value = 'auto';
+  auto.textContent = '骨架 · 自动';
+  scaffoldEl.appendChild(auto);
+  const news = document.createElement('option');
+  news.value = 'news-briefing';
+  news.textContent = 'News Briefing (默认)';
+  scaffoldEl.appendChild(news);
+  for (const sc of listScaffolds()) {
+    if (sc.id === 'news-briefing') continue;
+    const opt = document.createElement('option');
+    opt.value = sc.id;
+    opt.textContent = sc.label || sc.id;
+    scaffoldEl.appendChild(opt);
+  }
+  scaffoldEl.value = 'news-briefing';
+  const syncScaffoldVis = () => {
+    scaffoldEl.hidden = modeEl.value !== 'full';
+  };
+  modeEl.addEventListener('change', syncScaffoldVis);
+  syncScaffoldVis();
+}
 
 function syncThemeSelect() {
   if (currentDeck?.theme?.id) themeEl.value = currentDeck.theme.id;
@@ -465,6 +493,7 @@ async function generate() {
       currentDeck = await newsToFullDeck(text, {
         apiKey,
         lockedSlots,
+        scaffoldId: scaffoldEl.value,
         onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
         onPlan: (plan, meta) => {
           streamTheme = meta.theme;
@@ -511,7 +540,7 @@ async function generate() {
         : '';
       await adoptDeck(
         currentDeck,
-        `done — ${currentDeck.slots.length} pages${errNote}. 作品 #${currentDeck.decor.hash} (唯一, 持 hash 可复现). Export below.`,
+        `done — ${currentDeck.slots.length} pages · 骨架 ${currentDeck.scaffold?.label || ''}${errNote}. 作品 #${currentDeck.decor.hash} (唯一, 持 hash 可复现). Export below.`,
       );
       autosave();
       return;

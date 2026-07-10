@@ -62,7 +62,8 @@
         gap: 8px;
         z-index: 20;
       }
-      #mode {
+      #mode,
+      #scaffold {
         align-self: center;
         padding: 8px 6px;
         border-radius: 8px;
@@ -279,10 +280,11 @@
     <div id="status">describe what you want to present — Atlas builds the deck</div>
     <div id="bar">
       <textarea id="prompt" placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"></textarea>
-      <select id="mode" title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 10-20 页简报 (~16 次调用, ~$0.5, ~90s)">
+      <select id="mode" title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 整本简报 (~16 次调用, ~$0.5, ~90s)">
         <option value="quick">快速 · 3-5 页</option>
         <option value="full">整本 · 10-20 页</option>
       </select>
+      <select id="scaffold" hidden title="整本的骨架 — 自动会按文章内容在 21 种骨架里选"></select>
       <button id="go">Generate</button>
       <div id="exportRow">
         <select id="theme" disabled title="换主题 (零成本, 即时重渲染)"></select>
