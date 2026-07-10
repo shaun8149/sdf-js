@@ -1,0 +1,282 @@
+[
+  {
+    "id": "funnel-en-numbers",
+    "ok": true,
+    "ms": 3409,
+    "slides": [
+      {
+        "structure": "sequence",
+        "n": 3,
+        "mag": [
+          5000,
+          800,
+          120
+        ],
+        "emphasis": [
+          2
+        ],
+        "title": "From Traffic to Revenue"
+      }
+    ],
+    "structures": [
+      "sequence"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "magnitude-cn",
+    "ok": true,
+    "ms": 1855,
+    "slides": [
+      {
+        "structure": "magnitude",
+        "n": 4,
+        "mag": [
+          890,
+          620,
+          340,
+          150
+        ],
+        "emphasis": [
+          0
+        ],
+        "title": "2025年区域营收对比（万元）"
+      }
+    ],
+    "structures": [
+      "magnitude"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "hierarchy-en",
+    "ok": true,
+    "ms": 2232,
+    "slides": [
+      {
+        "structure": "hierarchy",
+        "n": 7,
+        "mag": null,
+        "emphasis": [
+          0
+        ],
+        "title": "New Org Chart"
+      }
+    ],
+    "structures": [
+      "hierarchy"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "network-en",
+    "ok": true,
+    "ms": 3472,
+    "slides": [
+      {
+        "structure": "network",
+        "n": 5,
+        "mag": null,
+        "emphasis": [
+          0
+        ],
+        "title": "Models at the Center of Everything"
+      }
+    ],
+    "structures": [
+      "network"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "sequence-cn-nonum",
+    "ok": true,
+    "ms": 2057,
+    "slides": [
+      {
+        "structure": "sequence",
+        "n": 6,
+        "mag": [
+          100,
+          85,
+          70,
+          50,
+          30,
+          10
+        ],
+        "emphasis": [
+          5
+        ],
+        "title": "产品发布六阶段"
+      }
+    ],
+    "structures": [
+      "sequence"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "ambiguous-services",
+    "ok": true,
+    "ms": 2117,
+    "slides": [
+      {
+        "structure": "network",
+        "n": 5,
+        "mag": null,
+        "emphasis": [
+          0
+        ],
+        "title": "Service Dependency Map"
+      }
+    ],
+    "structures": [
+      "network"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "matrix-swot",
+    "ok": true,
+    "ms": 2578,
+    "slides": [
+      {
+        "structure": "matrix",
+        "n": 6,
+        "mag": null,
+        "emphasis": [
+          4
+        ],
+        "title": "SWOT Analysis"
+      }
+    ],
+    "structures": [
+      "matrix"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "pitch-3-points",
+    "ok": true,
+    "ms": 3078,
+    "slides": [
+      {
+        "structure": "magnitude",
+        "n": 3,
+        "mag": [
+          890,
+          540,
+          310
+        ],
+        "emphasis": [
+          0
+        ],
+        "title": "Revenue by Region"
+      },
+      {
+        "structure": "sequence",
+        "n": 4,
+        "mag": [
+          1200,
+          400,
+          150,
+          45
+        ],
+        "emphasis": [
+          3
+        ],
+        "title": "Sales Funnel"
+      },
+      {
+        "structure": "hierarchy",
+        "n": 5,
+        "mag": null,
+        "emphasis": [
+          0
+        ],
+        "title": "New Org Structure"
+      }
+    ],
+    "structures": [
+      "magnitude",
+      "sequence",
+      "hierarchy"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "news-cn-messy",
+    "ok": true,
+    "ms": 3074,
+    "slides": [
+      {
+        "structure": "magnitude",
+        "n": 3,
+        "mag": [
+          18.2,
+          4.5,
+          1.8
+        ],
+        "emphasis": [
+          0
+        ],
+        "title": "Q3各地区交付量（万辆）"
+      },
+      {
+        "structure": "sequence",
+        "n": 4,
+        "mag": [
+          100,
+          80,
+          60,
+          40
+        ],
+        "emphasis": [
+          3
+        ],
+        "title": "全流程数字化推进路径"
+      }
+    ],
+    "structures": [
+      "magnitude",
+      "sequence"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  },
+  {
+    "id": "vague",
+    "ok": true,
+    "ms": 2359,
+    "slides": [
+      {
+        "structure": "magnitude",
+        "n": 5,
+        "mag": [
+          92,
+          88,
+          85,
+          74,
+          80
+        ],
+        "emphasis": [
+          0
+        ],
+        "title": "Our Winning Advantages"
+      }
+    ],
+    "structures": [
+      "magnitude"
+    ],
+    "structOk": true,
+    "assembleOk": true
+  }
+]
