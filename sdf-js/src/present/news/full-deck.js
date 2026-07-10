@@ -10,6 +10,7 @@
 // =============================================================================
 import { expandNews } from './expand-core.js';
 import { getScaffold, getThemeAffinity } from '../scaffolds/registry.js';
+import { rankScaffolds } from '../scaffolds/picker.js';
 import { mapSlidesToSlotsLLM, scoreSlideForSlot } from '../scaffolds/mapper-llm.js';
 import { buildLiftSystemPrompt, liftSlotsPool, liftSlotLLM } from '../scaffolds/lift-slot-llm.js';
 
@@ -29,6 +30,19 @@ async function getSystemPrompt() {
  * @param {string} text — the raw article (~500 chars)
  * @param {object} opts — { apiKey, minPages=10, maxPages=20, onProgress(msg, pct) }
  */
+/**
+ * chooseScaffoldForOutline — Sprint 63: pick the scaffold that fits an
+ * expanded outline, via the deterministic ranker (Sprint 15E picker; zero
+ * LLM cost, reproducible). Exported for tests and for showing the ranking.
+ */
+export function chooseScaffoldForOutline(slides) {
+  const ranked = rankScaffolds({
+    title: slides[0]?.title || '',
+    bodyTexts: slides.map((sl) => [sl.title, ...(sl.body || [])].join(' ')),
+  });
+  return { scaffold: getScaffold(ranked[0].id), ranked };
+}
+
 export async function newsToFullDeck(
   text,
   {
@@ -43,6 +57,10 @@ export async function newsToFullDeck(
     // returned deck — the UI can grow the deck live instead of blocking ~90s.
     onPlan = () => {},
     onSlotReady = () => {},
+    // Sprint 63: which skeleton the deck grows on. 'news-briefing' stays the
+    // default (the acceptance-tested path); 'auto' ranks all 21 scaffolds
+    // against the expanded outline deterministically; any explicit id wins.
+    scaffoldId = 'news-briefing',
   } = {},
 ) {
   if (!apiKey) throw new Error('newsToFullDeck: apiKey required');
@@ -50,7 +68,19 @@ export async function newsToFullDeck(
   onProgress('expanding article → outline…', 2);
   const slides = await expandNews(text, { apiKey, min: Math.max(12, minPages + 2), max: maxPages });
 
-  const scaffold = getScaffold('news-briefing');
+  let scaffold;
+  if (scaffoldId === 'auto') {
+    scaffold = chooseScaffoldForOutline(slides).scaffold;
+    onProgress(`scaffold (auto): ${scaffold.label}`, 6);
+  } else {
+    scaffold = getScaffold(scaffoldId);
+  }
+  // a 7-slot scaffold cannot deliver a 10-page floor — the scaffold IS the
+  // document's shape, so the floor bends to it, not the other way round
+  minPages = Math.min(minPages, scaffold.slots.length);
+  // locked slots only survive on the SAME skeleton: slotIdx from another
+  // scaffold points at a different room
+  lockedSlots = lockedSlots.filter((ls) => ls.liftParams?.scaffold?.id === scaffold.id);
   const theme = getThemeAffinity(scaffold)[0];
 
   onProgress(`mapping ${slides.length} outline slides → ${scaffold.slots.length} slots…`, 8);

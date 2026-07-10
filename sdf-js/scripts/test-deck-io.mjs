@@ -5,7 +5,7 @@ import {
   DECK_FORMAT,
   DECK_FORMAT_VERSION,
 } from '../src/present/deck-io.js';
-import { newsToFullDeck } from '../src/present/news/full-deck.js';
+import { newsToFullDeck, chooseScaffoldForOutline } from '../src/present/news/full-deck.js';
 
 let pass = 0;
 let fail = 0;
@@ -142,6 +142,38 @@ const deck = {
   const rt = deserializeDeck(JSON.stringify(serializeDeck(mini)));
   ok(rt.slots[0].sceneData.atoms[0].args.t === 'cover', 'streamed slot round-trips');
   ok(typeof newsToFullDeck === 'function', 'newsToFullDeck exports (streaming hooks live there)');
+}
+
+// ── Sprint 63: scaffold auto-choice (deterministic ranker over the outline) ──
+{
+  const qbrOutline = [
+    { title: 'Q3 Quarterly Business Review', body: ['quarter in review for the exec team'] },
+    { title: 'Revenue', body: ['revenue grew 40% QoQ to $12M ARR'] },
+    { title: 'KPIs', body: ['churn dropped to 2.1%, NRR 118%'] },
+    { title: 'OKR progress', body: ['7 of 9 objectives on track'] },
+    { title: 'Next quarter goals', body: ['expand EMEA, hire 12'] },
+  ];
+  const { scaffold, ranked } = chooseScaffoldForOutline(qbrOutline);
+  ok(scaffold && Array.isArray(scaffold.slots), 'auto choice returns a real scaffold');
+  ok(ranked.length >= 10 && ranked[0].score >= ranked[1].score, 'ranking is ordered');
+  ok(
+    ['qbr', 'okr-goal-setting', 'financial-summary', 'investor-update'].includes(scaffold.id),
+    `QBR-ish outline lands on a business skeleton (${scaffold.id})`,
+  );
+  const newsOutline = [
+    {
+      title: 'Breaking: major earthquake hits region',
+      body: ['news wire report, casualties unknown'],
+    },
+    { title: 'What happened', body: ['a 7.1 magnitude quake struck at dawn'] },
+  ];
+  const pick2 = chooseScaffoldForOutline(newsOutline).scaffold;
+  ok(
+    Array.isArray(pick2.slots) && pick2.slots.length > 0,
+    'news outline also resolves to a scaffold',
+  );
+  // determinism: same outline → same pick
+  ok(chooseScaffoldForOutline(qbrOutline).scaffold.id === scaffold.id, 'auto choice deterministic');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
