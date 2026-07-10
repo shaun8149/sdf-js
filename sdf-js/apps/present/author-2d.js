@@ -79,6 +79,7 @@ themeEl.addEventListener('change', async () => {
       currentDeck.decor = mintDecor(currentDeck.theme, {
         hash: currentDeck.decor.hash,
         v: currentDeck.decor.v,
+        serial: currentDeck.decor.serial,
       });
     await renderDeck(currentDeck);
     syncProvenance();
@@ -120,16 +121,33 @@ let pendingUrlHash = new URLSearchParams(location.search).get('hash');
 // the current DECOR_V, not the pinned one. ?at= is the VIEW layer:
 // re-render any calendar-event look on demand, identity untouched.
 let pendingUrlV = parseInt(new URLSearchParams(location.search).get('v'), 10) || undefined;
+let pendingUrlSerial = parseInt(new URLSearchParams(location.search).get('n'), 10) || undefined;
 const viewAt = new URLSearchParams(location.search).get('at') || undefined;
+// Sprint 61: the serial — a per-browser mint counter (the L23 Pre-Process
+// axis: hash names the individual, the serial names its place in YOUR run).
+// It rides the reopen URL as &n= so the edition mark reproduces too.
+const SERIAL_KEY = 'atlas-mint-serial';
+function nextSerial() {
+  const n = (parseInt(localStorage.getItem(SERIAL_KEY), 10) || 0) + 1;
+  localStorage.setItem(SERIAL_KEY, String(n));
+  return n;
+}
 function currentMint() {
   const h = pendingUrlHash;
   const v = pendingUrlV;
+  const n = pendingUrlSerial;
   pendingUrlHash = null;
   pendingUrlV = undefined;
-  return h ? { hash: h, v } : { hash: mintDecorHash(), v: undefined };
+  pendingUrlSerial = undefined;
+  return h
+    ? { hash: h, v, serial: n }
+    : { hash: mintDecorHash(), v: undefined, serial: nextSerial() };
 }
-function mintDecor(theme, { hash, v }) {
-  const d = decorFromHash(theme, hash, v ? { v } : {});
+function mintDecor(theme, { hash, v, serial }) {
+  const d = decorFromHash(theme, hash, {
+    ...(v ? { v } : {}),
+    ...(serial != null ? { serial } : {}),
+  });
   if (viewAt) d.at = viewAt;
   return d;
 }
@@ -148,8 +166,8 @@ function slotDecor(deck, slot) {
   return { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) };
 }
 
-function reopenUrl(hash, v) {
-  return `${location.origin}${location.pathname}?hash=${hash}${v ? `&v=${v}` : ''}`;
+function reopenUrl(hash, v, serial) {
+  return `${location.origin}${location.pathname}?hash=${hash}${v ? `&v=${v}` : ''}${serial != null ? `&n=${serial}` : ''}`;
 }
 
 function syncProvenance() {
@@ -163,12 +181,14 @@ function syncProvenance() {
   provEl.hidden = false;
   redressEl.disabled = false;
   decorVisEl.disabled = false;
-  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)} · ${d.family} · ${d.personality} · v${d.v ?? 1}${d.rare ? ' · ✨稀有' : ''}`;
+  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)}${d.serial != null ? ` · Nº ${d.serial}` : ''} · ${d.family} · ${d.personality} · v${d.v ?? 1}${d.rare ? ' · ✨稀有' : ''}`;
   // the address bar IS the provenance link (safe: ?hash is consume-once);
   // preserve other params (?demo=1 etc.) — only the hash slot is ours
   const qs = new URLSearchParams(location.search);
   qs.set('hash', d.hash);
   if (d.v) qs.set('v', String(d.v));
+  if (d.serial != null) qs.set('n', String(d.serial));
+  else qs.delete('n');
   history.replaceState(null, '', `?${qs.toString()}`);
 }
 
@@ -176,10 +196,10 @@ provEl.addEventListener('click', async () => {
   const d = currentDeck?.decor;
   if (!d?.hash) return;
   try {
-    await navigator.clipboard.writeText(reopenUrl(d.hash, d.v));
+    await navigator.clipboard.writeText(reopenUrl(d.hash, d.v, d.serial));
     setStatus(`已复制复现链接 — 持有它可永久重开这件作品 (#${String(d.hash).slice(0, 8)})`);
   } catch {
-    setStatus(reopenUrl(d.hash, d.v)); // clipboard blocked: show it instead
+    setStatus(reopenUrl(d.hash, d.v, d.serial)); // clipboard blocked: show it instead
   }
 });
 
@@ -187,7 +207,10 @@ redressEl.addEventListener('click', async () => {
   if (!currentDeck) return;
   redressEl.disabled = true;
   try {
-    currentDeck.decor = mintDecor(currentDeck.theme, { hash: mintDecorHash() });
+    currentDeck.decor = mintDecor(currentDeck.theme, {
+      hash: mintDecorHash(),
+      serial: nextSerial(),
+    });
     await renderDeck(currentDeck);
     syncProvenance();
     const d = currentDeck.decor;
