@@ -155,8 +155,14 @@ export function assembleDeck(deck, opts = {}) {
     }
 
     // Camera: shift shots in space + append (time shift is implicit — durations chain).
+    // Beat tags ride along; tagged shots get their station index for the presenter.
     st.cameraSequence.shots.forEach((sh) => {
-      shots.push({ ...sh, pos: addV(sh.pos, origin), target: addV(sh.target, origin) });
+      shots.push({
+        ...sh,
+        pos: addV(sh.pos, origin),
+        target: addV(sh.target, origin),
+        ...(sh.beat ? { station: k } : {}),
+      });
     });
     // Hitstops ride the deck timeline: shift each station's freezes by its start.
     for (const h of st.cameraSequence.hitstops || []) {
@@ -217,6 +223,7 @@ export function assembleDeck(deck, opts = {}) {
       aperture: 0.08,
       focalDistance: span * 1.05,
       ease: 'out',
+      beat: 'finale', // presenter mode: the money-shot hold
     });
   }
 

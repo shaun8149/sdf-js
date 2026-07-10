@@ -29,6 +29,12 @@ export function renderIR(ir, opts = {}) {
       `renderIR: no structure renderer for '${ir?.structure}' (have: ${Object.keys(RENDERERS).join(', ')})`,
     );
   const scene = r(ir, opts);
+  // Beat tag (presenter mode): every structure's LAST shot is its payoff — the
+  // 'station' hold boundary. One seam instead of five renderer edits; renderers
+  // tag their own 'super' shots (the transition:'cut' punch-ins).
+  const shots = scene.cameraSequence && scene.cameraSequence.shots;
+  if (shots && shots.length && !shots[shots.length - 1].beat)
+    shots[shots.length - 1].beat = 'station';
   // opts.stage → fighting-game stage preset (spotlight rig + platform + DOF);
   // applied here so every structure renderer gets it through one seam.
   return opts.stage ? stagePreset(scene) : scene;
