@@ -6,6 +6,7 @@
 import { renderIR } from '../../src/scene/render-ir.js';
 import { assembleDeck } from '../../src/scene/assemble-deck.js';
 import { createFigure } from './figure-core.js';
+import { attachPresenter } from './presenter.js';
 
 const params = new URLSearchParams(location.search);
 const env = params.get('env') || 'studio';
@@ -14,6 +15,9 @@ const { show } = createFigure({ outdoor: env !== 'studio', stage });
 
 const deckName = params.get('deck');
 const layout = params.get('layout') || undefined; // line | radial | grid
+const present = params.get('present') === '1'; // ?present=1 → space steps the beats
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
-show(deckName ? assembleDeck(ir, { env, layout, stage }) : renderIR(ir, { env, stage }));
+const scene = deckName ? assembleDeck(ir, { env, layout, stage }) : renderIR(ir, { env, stage });
+show(scene);
+if (present) attachPresenter({ studio: window.__figStudio, scene });
