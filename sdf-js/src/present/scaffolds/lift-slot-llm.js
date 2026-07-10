@@ -90,8 +90,8 @@ export function buildSlotUserMessage({
     '```\n' +
     `BAD: bullet-list with "We believe in Trust" etc.\n\n` +
     `### Example B — KPI dashboard:\n` +
-    `Source body: "Q3 results: Revenue $3.4M (+27%), MAU 12,450, Churn 2.1%"\n` +
-    `GOOD: 3× \`kpi-card\` atoms with value=$3.4M / 12.4K / 2.1% — no prose.\n\n` +
+    `Source body: "Q3 results: Revenue $3.4M (+27%), MAU 12,450, Churn 2.1% (was 2.8%)"\n` +
+    `GOOD: 3× \`kpi-card\` atoms with value=$3.4M / 12.4K / 2.1% — no prose. Any value YOU derive cites its parents inline (Rule 24): trend="-25% (2.8 vs 2.1)", never a bare derived number.\n\n` +
     `### Example C — time series:\n` +
     `Source body: "ARR: Q1 $0, Q2 $120K, Q3 $740K, Q4F $2.4M"\n` +
     `GOOD: { "type": "line", "args": {"values":[0,0.12,0.74,2.4],"labels":["Q1","Q2","Q3","Q4F"],"format":"currency","title":"ARR Growth"} }\n\n` +

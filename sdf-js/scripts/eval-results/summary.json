@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-10T04:23:29.854Z",
+  "generatedAt": "2026-07-10T06:54:02.181Z",
   "corpusSize": 15,
   "scored": 15,
   "skipped": [],
   "corpusMean": 97.4,
   "factsRecallMean": 0.959,
-  "entityRecallMean": 0.901,
+  "entityRecallMean": 0.912,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -192,7 +192,7 @@
       "scaffoldId": "investor-update",
       "themeId": "financial-navy-cerulean",
       "pickMethod": "forced",
-      "atomTypesDistinct": 10,
+      "atomTypesDistinct": 6,
       "unknownAtomCount": 0,
       "unknownAtomTypes": [],
       "argViolations": 0,
@@ -202,13 +202,12 @@
       "liftSuccess": 8,
       "liftAttempted": 8,
       "liftedSubjectRate": 1,
-      "charsPerSlot": 266.5,
-      "maxSlotChars": 468,
+      "charsPerSlot": 267,
+      "maxSlotChars": 545,
       "numberRecall": 1,
-      "entityRecall": 0.6666666666666666,
+      "entityRecall": 0.8333333333333334,
       "missingEntities": [
-        "Paul Szurek",
-        "Aaron Evett"
+        "Cervin Ventures"
       ],
       "missingNumbers": []
     },

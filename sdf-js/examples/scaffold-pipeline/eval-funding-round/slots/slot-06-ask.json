@@ -3,11 +3,11 @@
   "slotName": "ask",
   "slotTitle": "Ask",
   "slotPurpose": "What we need from LPs — intros, advice, resources",
-  "sourceSlideIdx": 9,
-  "sourceSlideTitle": "Post-Purchase Concierge Service",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "Returns Network Infrastructure",
   "sceneData": {
     "name": "investor-update/ask",
-    "layout": "stage",
+    "layout": "row",
     "subjects": [
       {
         "type": "cover",
@@ -21,32 +21,35 @@
         }
       },
       {
-        "type": "icon-row",
-        "x": 40,
-        "y": 180,
-        "w": 1200,
-        "h": 480,
+        "type": "bullet-list",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 440,
         "args": {
+          "title": "How You Can Help",
           "items": [
             {
               "icon": "handshake",
-              "label": "Strategic Intros",
-              "sublabel": "E-commerce brands seeking post-purchase solutions"
+              "label": "Intro to Aaron Evett",
+              "sublabel": "Chief Commerce Officer discussion"
+            },
+            {
+              "icon": "network",
+              "label": "Local return network expansion",
+              "sublabel": "Geographic coverage partners"
+            },
+            {
+              "icon": "warehouse",
+              "label": "Logistics infrastructure advice",
+              "sublabel": "Inspect, refurbish, re-fulfill operations"
             },
             {
               "icon": "users",
-              "label": "Hiring Support",
-              "sublabel": "Product and engineering talent referrals"
-            },
-            {
-              "icon": "lightbulb",
-              "label": "Retention Expertise",
-              "sublabel": "Advice on scaling customer lifetime value"
+              "label": "Strategic hiring connections",
+              "sublabel": "Operations and fulfillment talent"
             }
-          ],
-          "iconSize": "large",
-          "iconStyle": "circle",
-          "colorMode": "auto"
+          ]
         }
       }
     ]
@@ -61,20 +64,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5103,
+      "input_tokens": 5145,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 332,
+      "output_tokens": 350,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024191400000000002,
+    "costUSD": 0.024587400000000002,
     "elapsedSec": 7.1,
-    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "generatedAt": "2026-07-10T06:53:23.427Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

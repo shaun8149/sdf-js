@@ -17,9 +17,9 @@
         "h": 720,
         "args": {
           "title": "Redo Announces $81 Million Series B to Support Commerce Technology Expansion",
-          "subtitle": "Series B financing announcement · Commerce technology platform",
-          "author": "Draper, Utah",
-          "date": "June 23, 2026",
+          "subtitle": "Commerce technology platform secures major funding round",
+          "author": "Led by Smash Capital with existing investor participation",
+          "date": "Draper, Utah, June 23, 2026",
           "style": "gradient"
         }
       }
@@ -33,20 +33,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5074,
-      "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 13008,
+      "input_tokens": 5128,
+      "cache_creation_input_tokens": 13008,
+      "cache_read_input_tokens": 0,
       "cache_creation": {
-        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 13008,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 169,
+      "output_tokens": 180,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0216594,
-    "elapsedSec": 4.7,
-    "generatedAt": "2026-07-10T04:22:53.356Z",
+    "costUSD": 0.06686399999999999,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-07-10T06:53:23.419Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

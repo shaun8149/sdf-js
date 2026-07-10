@@ -3,11 +3,11 @@
   "slotName": "wins",
   "slotTitle": "Wins",
   "slotPurpose": "Top accomplishments this quarter",
-  "sourceSlideIdx": 11,
-  "sourceSlideTitle": "ReturnBear Acquisition",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Series B Financing Overview",
   "sceneData": {
     "name": "investor-update/wins",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -25,29 +25,34 @@
         "x": 40,
         "y": 160,
         "w": 1200,
-        "h": 500,
+        "h": 520,
         "args": {
           "items": [
             {
+              "icon": "currency-dollar",
+              "label": "$81M Raised",
+              "sublabel": "Series B funding secured"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "$1.25B Valuation",
+              "sublabel": "Post-money company valuation"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Smash Capital",
+              "sublabel": "Round led by top-tier firm"
+            },
+            {
               "icon": "handshake",
-              "label": "ReturnBear Acquisition",
-              "sublabel": "Announced strategic acquisition"
-            },
-            {
-              "icon": "globe-hemisphere-west",
-              "label": "100+ Countries",
-              "sublabel": "Returns servicing coverage extended"
-            },
-            {
-              "icon": "network",
-              "label": "International Infrastructure",
-              "sublabel": "Significantly expanded returns network"
+              "label": "Investor Confidence",
+              "sublabel": "Pelion & Cervin participated"
             }
           ],
-          "cols": 3,
+          "cols": 2,
           "iconStyle": "card",
           "iconSize": "large",
-          "colorMode": "auto"
+          "colorMode": "brand"
         }
       }
     ]
@@ -62,20 +67,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5093,
+      "input_tokens": 5156,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 333,
+      "output_tokens": 384,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.024176399999999997,
-    "elapsedSec": 9.5,
-    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "costUSD": 0.0251304,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-07-10T06:53:23.425Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

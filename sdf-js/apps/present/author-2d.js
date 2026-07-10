@@ -18,6 +18,7 @@ import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
 import { serializeDeck, deserializeDeck } from '../../src/present/deck-io.js';
 import { listScaffolds } from '../../src/present/scaffolds/registry.js';
+import { assessDeck } from '../../src/present/quality-lights.js';
 
 const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift + author.js (3D)
 
@@ -318,6 +319,41 @@ decorVisEl.addEventListener('change', async () => {
   setStatus(decorVisEl.value === 'off' ? '修饰已隐藏 (导出同样不含)' : '修饰已恢复');
 });
 
+// ── Sprint 67: quality lights — the offline eval's two zero-LLM axes run
+// right here after every render, so a page that overflows or asserts an
+// ungrounded number wears its light BEFORE export or 3D handoff.
+async function updateQualityLights() {
+  if (!currentDeck) return;
+  try {
+    const outline = currentDeck.slots.find((s) => s.liftParams)?.liftParams?.slides || [];
+    const { bySlot, counts } = await assessDeck(currentDeck, {
+      sourceTexts: [promptEl.value, ...outline],
+    });
+    [...slidesEl.children].forEach((card, i) => {
+      const slot = currentDeck.slots[i];
+      const a = bySlot.get(slot);
+      if (!a) return;
+      let b = card.querySelector('.qlight');
+      if (!b) {
+        b = document.createElement('button');
+        b.className = 'qlight';
+        card.appendChild(b);
+      }
+      b.textContent = a.level === 'ok' ? '🟢' : a.level === 'warn' ? '🟡' : '🔴';
+      b.title = a.summary;
+      b.onclick = () =>
+        setStatus(`「${slot.slotTitle || slot.slotName || `第${i + 1}页`}」 ${a.summary}`);
+    });
+    if (counts.bad > 0) {
+      console.warn(
+        `[quality-lights] ${counts.bad} slide(s) flagged 🔴 — hover the light for detail`,
+      );
+    }
+  } catch (e) {
+    console.warn('[quality-lights] assessment failed:', e);
+  }
+}
+
 async function renderDeck(deck) {
   slidesEl.innerHTML = '';
   for (const slot of deck.slots) {
@@ -338,6 +374,7 @@ async function renderDeck(deck) {
       decor: slotDecor(deck, slot),
     });
   }
+  updateQualityLights(); // async, non-blocking — lights pop in when ready
 }
 
 // ── Sprint 38: per-slide ⚡ (Napkin-style) — 🎲 re-roll + ✏️ instruct ────────
