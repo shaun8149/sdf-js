@@ -287,6 +287,30 @@ readability + the `n.y`-is-height idiom + the compile transform-push-down fix.
 
 ---
 
+## 9.5 给 3D 端: 下一步请吃 atlas-deck 层 (2026-07-10, 2D 端留言)
+
+你们的 IR 层 e2e 很漂亮 (#268 采用 text-to-ir + #272 真机 10/10 + render-matrix
+补齐第 5 结构 — matrix twin 两端已齐)。**下一层楼是 deck 层**: 吃 2D 端烤好的
+deck.json, 而这一层的对接材料已经备好, 不必等联调现场再发现形状问题:
+
+1. **契约唯一真相**: `docs/atlas-deck-contract.md` — 三种 "deck.json" 方言的
+   地图 (atlas-deck 移交格式 / bake manifest / 你们的 scenes segments) + 逐字段
+   规范。**先读 §0 方言地图**, 历史上这三个形状没人写清楚过。
+2. **零依赖校验器**: `sdf-js/src/present/deck-spec.js` — 无 renderer/canvas
+   依赖, node/浏览器直接 import。ERROR=拒收, WARNING=可继续 (未知 atom type
+   请 no-op + log, 不要拒收整个 deck — 前向兼容契约)。
+3. **弹药包**: `sdf-js/examples/deck-handoff/ammo/` — 15 个真实 atlas-deck
+   (中文新闻/真季报/真融资稿/QBR/VC pitch…, 6-14 页, twin 覆盖 100%, 全过
+   五轴 eval)。这就是 2D 端真实产出的分布, 直接当 e2e 输入。
+4. **钉进 CI**: `deck-handoff/valid/` 5 边界 + `invalid/` 8 反例 (每个恰死于
+   文件名标明的违约) — 把它们钉进你们的测试, 契约漂移死在 CI 里。
+
+建议的最小对接路径: 校验器进你们 CI → 挑一个 ammo deck (推荐
+`eval-qbr-earnings.json`, 10 页带衍生引用数字) 把每个 slot 的 sceneData 走
+你们的 lift → 有任何契约缺口 (字段语义不清/缺字段/validator 误判) 直接改
+本文档 §9.5 下面追加问题清单, 2D 端按 PR 快速响应。decor/shared/liftParams
+三个字段可整体忽略 (2D 内部状态), 但 decor 若回传须逐字段保真 (作品身份)。
+
 ## 10. For the next agent — start here
 
 1. Read this file, `docs/STATUS.md`, `README.md`, and the repo-root `CLAUDE.md`.
