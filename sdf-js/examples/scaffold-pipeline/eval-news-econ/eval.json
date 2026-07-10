@@ -43,6 +43,7 @@
     "number_recall": 1,
     "missing_numbers": [],
     "deck_numbers_total": 12,
+    "derived_cited_count": 0,
     "hallucinated_numbers": [
       "2025"
     ],
@@ -66,5 +67,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-07T06:44:59.932Z"
+  "generatedAt": "2026-07-10T04:23:29.842Z"
 }
