@@ -501,8 +501,13 @@ function makeStubCtx() {
     }),
   );
 
-  const filtered = deckToIR(dir);
-  ok(filtered.slides.length === 0, 'deckToIR filters matrix slides by default (no 3D renderer)');
+  // matrix gained a 3D renderer (render-matrix.js, the quadrant wall) — the
+  // RENDERER_STRUCTURES-driven filter now passes it through by default.
+  const byDefault = deckToIR(dir);
+  ok(
+    byDefault.slides.length === 1 && byDefault.slides[0].structure === 'matrix',
+    'deckToIR includes matrix by default (render-matrix landed)',
+  );
 
   const included = deckToIR(dir, { structures: ['matrix'] });
   ok(

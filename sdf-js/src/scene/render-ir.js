@@ -7,6 +7,7 @@ import { renderSequence } from './render-sequence.js';
 import { renderHierarchy } from './render-hierarchy.js';
 import { renderNetwork } from './render-network.js';
 import { renderMagnitude } from './render-magnitude.js';
+import { renderMatrix } from './render-matrix.js';
 import { stagePreset } from './environments.js';
 
 const RENDERERS = {
@@ -14,13 +15,11 @@ const RENDERERS = {
   hierarchy: renderHierarchy,
   network: renderNetwork,
   magnitude: renderMagnitude,
+  matrix: renderMatrix,
 };
 
-// The structures that HAVE a 3D renderer today — 'matrix' (Sprint 28) is a
-// valid IR structure the 2D bridges + text-to-ir emit/consume, but has no
-// entry here yet. scaffold-to-ir's deckToIR uses this list to keep matrix
-// IRs out of assembleDeck until a matrix structure renderer exists (see
-// docs/superpowers/ir-matrix-proposal.md).
+// Every IR structure has a 3D renderer now (matrix landed last — the quadrant
+// wall; see docs/superpowers/ir-matrix-proposal.md for the IR fields).
 export const RENDERER_STRUCTURES = Object.keys(RENDERERS);
 
 export function renderIR(ir, opts = {}) {
