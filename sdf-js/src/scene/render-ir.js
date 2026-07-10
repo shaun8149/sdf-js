@@ -7,6 +7,7 @@ import { renderSequence } from './render-sequence.js';
 import { renderHierarchy } from './render-hierarchy.js';
 import { renderNetwork } from './render-network.js';
 import { renderMagnitude } from './render-magnitude.js';
+import { stagePreset } from './environments.js';
 
 const RENDERERS = {
   sequence: renderSequence,
@@ -28,5 +29,8 @@ export function renderIR(ir, opts = {}) {
     throw new Error(
       `renderIR: no structure renderer for '${ir?.structure}' (have: ${Object.keys(RENDERERS).join(', ')})`,
     );
-  return r(ir, opts);
+  const scene = r(ir, opts);
+  // opts.stage → fighting-game stage preset (spotlight rig + platform + DOF);
+  // applied here so every structure renderer gets it through one seam.
+  return opts.stage ? stagePreset(scene) : scene;
 }
