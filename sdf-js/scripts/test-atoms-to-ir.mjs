@@ -235,16 +235,28 @@ ok(parseMagnitude('-8') === -8, 'parseMagnitude: negative string');
     args: {
       kpis: [
         { value: '$3.4M', label: 'Revenue' },
-        { value: '12,450', label: 'MAU' },
+        { value: '$1.2M', label: 'Gross Profit' },
       ],
     },
   });
   ok(
     ir &&
       ir.structure === 'magnitude' &&
-      JSON.stringify(ir.magnitude) === JSON.stringify([3400000, 12450]),
-    'dashboard-multi-kpi-composite → magnitude, values parsed',
+      JSON.stringify(ir.magnitude) === JSON.stringify([3400000, 1200000]),
+    'dashboard-multi-kpi-composite → magnitude, comparable values parsed',
   );
+}
+{
+  const ir = atomToIR({
+    type: 'dashboard-multi-kpi-composite',
+    args: {
+      kpis: [
+        { value: '$3.4M', label: 'Revenue' },
+        { value: '12,450', label: 'MAU' },
+      ],
+    },
+  });
+  ok(ir === null, 'dashboard-multi-kpi-composite skips mixed-unit values');
 }
 {
   const ir = atomToIR({
