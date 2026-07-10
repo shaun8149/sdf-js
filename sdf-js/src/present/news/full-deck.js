@@ -31,7 +31,19 @@ async function getSystemPrompt() {
  */
 export async function newsToFullDeck(
   text,
-  { apiKey, minPages = 10, maxPages = 20, onProgress = () => {}, lockedSlots = [] } = {},
+  {
+    apiKey,
+    minPages = 10,
+    maxPages = 20,
+    onProgress = () => {},
+    lockedSlots = [],
+    // Sprint 62 (progressive rendering): onPlan fires once the slot plan is
+    // fixed (before any lift) with lightweight descriptors; onSlotReady fires
+    // per slot AS IT LIFTS with the same slot object that will appear in the
+    // returned deck — the UI can grow the deck live instead of blocking ~90s.
+    onPlan = () => {},
+    onSlotReady = () => {},
+  } = {},
 ) {
   if (!apiKey) throw new Error('newsToFullDeck: apiKey required');
 
@@ -100,7 +112,30 @@ export async function newsToFullDeck(
   // merged back below.
   const lockedIdx = new Set(lockedSlots.map((s) => s.slotIdx));
   const live = assignments.filter((a) => !a.empty && !lockedIdx.has(a.slotIdx));
+  onPlan(
+    live.map((a) => ({ slotIdx: a.slotIdx, slotName: a.slot.name, slotTitle: a.slot.title })),
+    { theme, scaffoldId: scaffold.id },
+  );
+  const makeSlot = (a, r) => ({
+    slotIdx: a.slotIdx,
+    slotName: a.slot.name,
+    slotTitle: a.slot.title,
+    sceneData: r.sceneData,
+    // Kept for per-slide re-roll / revision (Sprint 38): re-lifting a
+    // slot is just liftSlotLLM with these params again.
+    liftParams: {
+      scaffold,
+      slot: a.slot,
+      slotIdx: a.slotIdx,
+      slideIdx: a.slideIdx,
+      theme,
+      slide: slides[a.slideIdx],
+      slides,
+      extraSlides: a.extraSlides || [],
+    },
+  });
   let done = 0;
+  const streamed = new Map(); // pool index → slot object (reused in final list)
   const poolResults = await liftSlotsPool(
     live.map((a) => ({
       scaffold,
@@ -115,9 +150,14 @@ export async function newsToFullDeck(
     {
       apiKey,
       systemPrompt,
-      onSlotDone: () => {
+      onSlotDone: (i, r) => {
         done++;
         onProgress(`lifted ${done}/${live.length} slots…`, 15 + (done / live.length) * 80);
+        if (r && !r.error) {
+          const slot = makeSlot(live[i], r);
+          streamed.set(i, slot);
+          onSlotReady(slot);
+        }
       },
     },
   );
@@ -127,24 +167,7 @@ export async function newsToFullDeck(
     const a = live[i];
     const r = poolResults[i];
     if (r && !r.error) {
-      slots.push({
-        slotIdx: a.slotIdx,
-        slotName: a.slot.name,
-        slotTitle: a.slot.title,
-        sceneData: r.sceneData,
-        // Kept for per-slide re-roll / revision (Sprint 38): re-lifting a
-        // slot is just liftSlotLLM with these params again.
-        liftParams: {
-          scaffold,
-          slot: a.slot,
-          slotIdx: a.slotIdx,
-          slideIdx: a.slideIdx,
-          theme,
-          slide: slides[a.slideIdx],
-          slides,
-          extraSlides: a.extraSlides || [],
-        },
-      });
+      slots.push(streamed.get(i) || makeSlot(a, r));
     } else {
       errors.push({ slot: a.slot.name, message: r?.error || 'unknown' });
     }

@@ -16,6 +16,7 @@ import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.j
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
+import { serializeDeck, deserializeDeck } from '../../src/present/deck-io.js';
 
 const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift + author.js (3D)
 
@@ -83,6 +84,7 @@ themeEl.addEventListener('change', async () => {
       });
     await renderDeck(currentDeck);
     syncProvenance();
+    autosave();
     setStatus(`theme → ${themeEl.value} (re-rendered, exports follow)`);
   } catch (e) {
     setStatus(`theme switch failed: ${e.message}`, true);
@@ -108,6 +110,63 @@ const setStatus = (msg, err = false) => {
   statusEl.textContent = msg;
   statusEl.className = err ? 'err' : '';
 };
+
+// ── Sprint 62: deck persistence — 💾 download / 📂 open / autosave ──────────
+// deck.json is the machine contract (two-ends lock): saving it is the 3D
+// handoff artifact made user-visible, not just a UI convenience.
+const saveEl = document.getElementById('save');
+const openEl = document.getElementById('open');
+const openFileEl = document.getElementById('openfile');
+const AUTOSAVE_KEY = 'atlas-last-deck';
+
+function autosave() {
+  if (!currentDeck) return;
+  try {
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(serializeDeck(currentDeck)));
+  } catch {
+    /* quota — deck survives in memory; 💾 still works */
+  }
+}
+
+async function adoptDeck(deck, note) {
+  currentDeck = deck;
+  window.__atlasDeck = currentDeck;
+  await renderDeck(currentDeck);
+  exportPptxEl.disabled = false;
+  exportPdfEl.disabled = false;
+  saveEl.disabled = false;
+  syncThemeSelect();
+  syncProvenance();
+  if (note) setStatus(note);
+}
+
+saveEl.addEventListener('click', () => {
+  if (!currentDeck) return;
+  const blob = new Blob([JSON.stringify(serializeDeck(currentDeck), null, 1)], {
+    type: 'application/json',
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const slug = (currentDeck.title || 'deck').replace(/[^\w\u4e00-\u9fff-]+/g, '-').slice(0, 40);
+  a.download = `atlas-${slug}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus(`已保存 ${a.download} — 这份 deck.json 也是交给 3D 端的机器契约`);
+});
+
+openEl.addEventListener('click', () => openFileEl.click());
+openFileEl.addEventListener('change', async () => {
+  const file = openFileEl.files?.[0];
+  openFileEl.value = '';
+  if (!file) return;
+  try {
+    const deck = deserializeDeck(await file.text());
+    await adoptDeck(deck, `已打开 ${file.name} — ${deck.slots.length} 页`);
+    autosave();
+  } catch (e) {
+    setStatus(`打开失败: ${e.message}`, true);
+  }
+});
 
 // Decoration provenance (Sprint 41): the hash is MINTED per generation
 // (crypto-random, fxhash-style) — never derived from the content. ?hash=
@@ -213,6 +272,7 @@ redressEl.addEventListener('click', async () => {
     });
     await renderDeck(currentDeck);
     syncProvenance();
+    autosave();
     const d = currentDeck.decor;
     setStatus(
       `已换装 — 作品 #${String(d.hash).slice(0, 8)} (${d.family} · ${d.personality}${d.rare ? ' · ✨稀有件!' : ''})`,
@@ -243,7 +303,7 @@ async function renderDeck(deck) {
     cap.textContent = slot.slotTitle || slot.slotName || '';
     card.appendChild(canvas);
     card.appendChild(cap);
-    if (slot.liftParams) attachSlideControls(card, canvas, deck, slot);
+    attachSlideControls(card, canvas, deck, slot);
     slidesEl.appendChild(card);
     await renderSceneDataToCanvas(canvas, slot.sceneData, {
       palette: deck.theme,
@@ -258,6 +318,35 @@ async function renderDeck(deck) {
 function attachSlideControls(card, canvas, deck, slot) {
   const bar = document.createElement('div');
   bar.className = 'slide-tools';
+
+  // ── deck-level tools (Sprint 62): every slide can be moved or removed —
+  // the deck is a document, not a printout. Exports follow the array.
+  const moveBtn = (dir) => {
+    const b = document.createElement('button');
+    b.textContent = dir < 0 ? '◀' : '▶';
+    b.title = dir < 0 ? '前移一页' : '后移一页';
+    b.addEventListener('click', async () => {
+      const i = deck.slots.indexOf(slot);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= deck.slots.length) return;
+      [deck.slots[i], deck.slots[j]] = [deck.slots[j], deck.slots[i]];
+      await renderDeck(deck);
+      autosave();
+      setStatus(`「${slot.slotTitle || '这一页'}」已${dir < 0 ? '前' : '后'}移`);
+    });
+    return b;
+  };
+  const delBtn = document.createElement('button');
+  delBtn.textContent = '🗑';
+  delBtn.title = '删除这一页 (导出即时生效)';
+  delBtn.addEventListener('click', async () => {
+    const i = deck.slots.indexOf(slot);
+    if (i < 0) return;
+    deck.slots.splice(i, 1);
+    await renderDeck(deck);
+    autosave();
+    setStatus(`已删除「${slot.slotTitle || '一页'}」— 剩 ${deck.slots.length} 页`);
+  });
 
   const lockBtn = document.createElement('button');
   const syncLock = () => {
@@ -303,6 +392,7 @@ function attachSlideControls(card, canvas, deck, slot) {
       });
       editRow.classList.remove('open');
       editInput.value = '';
+      autosave();
       setStatus(
         revision ? `slide "${slot.slotTitle}" revised.` : `slide "${slot.slotTitle}" re-rolled.`,
       );
@@ -335,10 +425,15 @@ function attachSlideControls(card, canvas, deck, slot) {
     if (e.key === 'Enter') submitEdit();
   });
 
-  bar.appendChild(lockBtn);
-  bar.appendChild(rollBtn);
-  bar.appendChild(editBtn);
-  syncLock();
+  bar.appendChild(moveBtn(-1));
+  bar.appendChild(moveBtn(1));
+  bar.appendChild(delBtn);
+  if (slot.liftParams) {
+    bar.appendChild(lockBtn);
+    bar.appendChild(rollBtn);
+    bar.appendChild(editBtn);
+    syncLock();
+  }
   card.appendChild(bar);
   card.appendChild(editRow);
   card.appendChild(busy);
@@ -359,28 +454,66 @@ async function generate() {
     if (!DEMO_MODE && modeEl.value === 'full') {
       // 整本模式 (Sprint 32): article → 10-20 page briefing via the SAME
       // pipeline modules the CLI bake uses (expand → map → per-slot lift).
+      // Sprint 62: slides STREAM IN as they lift — the 90s wait becomes a
+      // deck growing in front of you. The artifact is minted up front so
+      // streamed slides already wear their decoration.
       const lockedSlots = (currentDeck?.slots || []).filter((s) => s.locked && s.liftParams);
+      const mintInfo = currentMint();
+      let streamDecor = null;
+      let streamTheme = null;
+      const streamCards = new Map();
       currentDeck = await newsToFullDeck(text, {
         apiKey,
         lockedSlots,
         onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
+        onPlan: (plan, meta) => {
+          streamTheme = meta.theme;
+          streamDecor = mintDecor(meta.theme, mintInfo);
+          slidesEl.innerHTML = '';
+          for (const pl of plan) {
+            const card = document.createElement('div');
+            card.className = 'slide-card busy';
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            const cap = document.createElement('div');
+            cap.className = 'cap';
+            cap.textContent = pl.slotTitle || pl.slotName || '';
+            const busy = document.createElement('div');
+            busy.className = 'slide-busy';
+            busy.textContent = 'lifting…';
+            card.appendChild(canvas);
+            card.appendChild(cap);
+            card.appendChild(busy);
+            slidesEl.appendChild(card);
+            streamCards.set(pl.slotIdx, { card, canvas });
+          }
+        },
+        onSlotReady: async (slot) => {
+          const entry = streamCards.get(slot.slotIdx);
+          if (!entry) return;
+          try {
+            await renderSceneDataToCanvas(entry.canvas, slot.sceneData, {
+              palette: streamTheme,
+              decor: slotDecor({ decor: streamDecor }, slot),
+            });
+          } finally {
+            entry.card.classList.remove('busy');
+          }
+        },
       });
-      window.__atlasDeck = currentDeck; // QA/debug handle
       if (currentDeck.errors?.length) {
         console.warn('[full-deck] slot errors:', currentDeck.errors);
       }
-      currentDeck.decor = mintDecor(currentDeck.theme, currentMint());
-      await renderDeck(currentDeck);
+      currentDeck.decor = streamDecor ?? mintDecor(currentDeck.theme, mintInfo);
       const errNote = currentDeck.errors?.length
         ? ` (${currentDeck.errors.length} slot(s) failed — see console)`
         : '';
-      setStatus(
-        `done — ${currentDeck.slots.length} pages rendered${errNote}. 作品 #${currentDeck.decor.hash} (唯一, 持 hash 可复现). Export below.`,
+      await adoptDeck(
+        currentDeck,
+        `done — ${currentDeck.slots.length} pages${errNote}. 作品 #${currentDeck.decor.hash} (唯一, 持 hash 可复现). Export below.`,
       );
-      exportPptxEl.disabled = false;
-      exportPdfEl.disabled = false;
-      syncThemeSelect();
-      syncProvenance();
+      autosave();
       return;
     }
     let irDeck;
@@ -401,15 +534,11 @@ async function generate() {
       currentDeck.theme,
       DEMO_MODE && !pendingUrlHash ? { hash: 'demo-fixed-hash' } : currentMint(),
     );
-    window.__atlasDeck = currentDeck; // QA/debug handle
-    await renderDeck(currentDeck);
-    setStatus(
+    await adoptDeck(
+      currentDeck,
       `done — ${currentDeck.slots.length} slide(s) rendered. 作品 #${currentDeck.decor.hash}. Export below.`,
     );
-    exportPptxEl.disabled = false;
-    exportPdfEl.disabled = false;
-    syncThemeSelect();
-    syncProvenance();
+    autosave();
   } catch (e) {
     setStatus(e.message, true);
   } finally {
@@ -444,4 +573,19 @@ promptEl.addEventListener('keydown', (e) => {
 exportPptxEl.addEventListener('click', () => doExport('pptx'));
 exportPdfEl.addEventListener('click', () => doExport('pdf'));
 
-if (DEMO_MODE) generate();
+if (DEMO_MODE) {
+  generate();
+} else {
+  // Sprint 62: continuity — the last deck survives a refresh (no LLM cost).
+  const saved = localStorage.getItem(AUTOSAVE_KEY);
+  if (saved) {
+    try {
+      adoptDeck(
+        deserializeDeck(saved),
+        '已恢复上次的 deck (免费, 本地) — 直接编辑/导出, 或 Generate 生成新的',
+      ).catch(() => {});
+    } catch {
+      /* corrupt autosave — start fresh */
+    }
+  }
+}
