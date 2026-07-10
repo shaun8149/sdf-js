@@ -1,0 +1,89 @@
+{
+ "slotIdx": 5,
+ "slotName": "cashflow",
+ "slotTitle": "Cash Flow",
+ "sourceSlideIdx": 16,
+ "sceneData": {
+  "name": "financial-summary/cashflow",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Cash Flow",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 360,
+    "h": 240,
+    "args": {
+     "value": "$124–134M",
+     "label": "GAAP Operating Income",
+     "sublabel": "Full Year 2026",
+     "icon": "chart-line",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 460,
+    "y": 160,
+    "w": 360,
+    "h": 240,
+    "args": {
+     "value": "$314–324M",
+     "label": "Non-GAAP Operating Income",
+     "sublabel": "Full Year 2026",
+     "icon": "chart-line-up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 880,
+    "y": 160,
+    "w": 360,
+    "h": 240,
+    "args": {
+     "value": "$365–380M",
+     "label": "Operating Cash Flow",
+     "sublabel": "Full Year 2026",
+     "icon": "currency-dollar",
+     "style": "light",
+     "trend": "up",
+     "trendDirection": "up"
+    }
+   },
+   {
+    "type": "stat-banner",
+    "x": 40,
+    "y": 440,
+    "w": 1200,
+    "h": 220,
+    "args": {
+     "value": "Raised Outlook",
+     "label": "Improved profitability and cash generation trajectory",
+     "trend": "Strong Performance",
+     "trendDirection": "up",
+     "bg": [
+      58,
+      138,
+      200
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

@@ -57,20 +57,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const PAD = Math.round(w * 0.04);
   const cy = bannerY + bannerH / 2;
 
-  // Value — very large, left-aligned
-  const valueFontSize = Math.round(bannerH * 0.58);
+  // Value — very large, left-aligned, FITTED to the banner width (Sprint 64:
+  // a live financial deck put "Record Quarter" in a 392px sidebar banner and
+  // sailed past the canvas edge — the value never gets to leave the banner)
+  let valueFontSize = Math.round(bannerH * 0.58);
+  const valueFont = () => `900 ${valueFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.save();
+  ctx.font = valueFont();
+  let valueW = ctx.measureText(value).width;
+  while (valueW > w - PAD * 2 && valueFontSize > 14) {
+    valueFontSize -= 2;
+    ctx.font = valueFont();
+    valueW = ctx.measureText(value).width;
+  }
   ctx.fillStyle = 'rgba(255,255,255,0.97)';
-  ctx.font = `900 ${valueFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText(value, x + PAD, cy);
-  ctx.restore();
-
-  // Measure value width to position label after it
-  ctx.save();
-  ctx.font = `900 ${valueFontSize}px "Inter Display", Inter, system-ui, sans-serif`;
-  const valueW = ctx.measureText(value).width;
   ctx.restore();
 
   const labelPad = PAD * 1.5;

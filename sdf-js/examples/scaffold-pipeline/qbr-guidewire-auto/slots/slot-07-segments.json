@@ -1,0 +1,90 @@
+{
+ "slotIdx": 7,
+ "slotName": "segments",
+ "slotTitle": "Segment Analysis",
+ "sourceSlideIdx": 5,
+ "sceneData": {
+  "name": "financial-summary/segments",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Segment Analysis",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "donut-with-center",
+    "x": 40,
+    "y": 160,
+    "w": 560,
+    "h": 520,
+    "args": {
+     "title": "Subscription & Support Revenue",
+     "centerValue": "$244.7M",
+     "centerLabel": "+35% YoY",
+     "segments": [
+      {
+       "label": "Subscription & Support",
+       "value": 244.7,
+       "color": [
+        58,
+        138,
+        200
+       ]
+      },
+      {
+       "label": "Other Revenue",
+       "value": 0,
+       "color": [
+        180,
+        210,
+        235
+       ]
+      }
+     ],
+     "showPct": false
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 640,
+    "y": 160,
+    "w": 600,
+    "h": 240,
+    "args": {
+     "value": "$1,147M",
+     "label": "Annual Recurring Revenue",
+     "sublabel": "Q3 2025",
+     "trend": "up",
+     "trendValue": "+19%",
+     "icon": "chart-line-up",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 640,
+    "y": 440,
+    "w": 600,
+    "h": 240,
+    "args": {
+     "value": "$1,041M",
+     "label": "ARR Prior Fiscal Year",
+     "sublabel": "End of FY2025",
+     "icon": "chart-bar",
+     "style": "light"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

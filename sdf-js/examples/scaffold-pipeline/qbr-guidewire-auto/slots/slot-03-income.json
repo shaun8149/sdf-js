@@ -1,0 +1,140 @@
+{
+ "slotIdx": 3,
+ "slotName": "income",
+ "slotTitle": "Income Statement",
+ "sourceSlideIdx": 9,
+ "sceneData": {
+  "name": "financial-summary/income",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Income Statement",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 280,
+    "h": 200,
+    "args": {
+     "value": "$30.6M",
+     "label": "GAAP Operating Income",
+     "sublabel": "Q3 FY2026",
+     "trend": "up",
+     "trendValue": "+580%",
+     "icon": "chart-line-up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 344,
+    "y": 160,
+    "w": 280,
+    "h": 200,
+    "args": {
+     "value": "$16.5M",
+     "label": "GAAP Net Income",
+     "sublabel": "Q3 FY2026",
+     "trend": "down",
+     "trendValue": "-64%",
+     "icon": "currency-dollar",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 648,
+    "y": 160,
+    "w": 280,
+    "h": 200,
+    "args": {
+     "value": "$0.19",
+     "label": "GAAP Diluted EPS",
+     "sublabel": "Q3 FY2026",
+     "trend": "down",
+     "trendValue": "vs $0.54 prior year",
+     "icon": "coin",
+     "style": "light"
+    }
+   },
+   {
+    "type": "bar",
+    "x": 952,
+    "y": 160,
+    "w": 288,
+    "h": 200,
+    "args": {
+     "values": [
+      4.5,
+      30.6
+     ],
+     "labels": [
+      "Q3 FY2025",
+      "Q3 FY2026"
+     ],
+     "format": "currency",
+     "title": "Operating Income YoY"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 384,
+    "w": 380,
+    "h": 280,
+    "args": {
+     "value": "$36M – $46M",
+     "label": "Q4 GAAP Operating Income",
+     "sublabel": "Guidance Range",
+     "icon": "target",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 444,
+    "y": 384,
+    "w": 380,
+    "h": 280,
+    "args": {
+     "value": "$86M – $96M",
+     "label": "Q4 Non-GAAP Operating Income",
+     "sublabel": "Guidance Range",
+     "icon": "chart-bar",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "stat-banner",
+    "x": 848,
+    "y": 384,
+    "w": 392,
+    "h": 280,
+    "args": {
+     "value": "Record Quarter",
+     "label": "Q4 FY2026 Expected",
+     "trend": "Per CEO Statement",
+     "trendDirection": "up",
+     "bg": [
+      58,
+      138,
+      200
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

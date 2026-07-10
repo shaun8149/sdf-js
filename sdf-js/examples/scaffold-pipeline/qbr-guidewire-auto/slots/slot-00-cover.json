@@ -1,0 +1,29 @@
+{
+ "slotIdx": 0,
+ "slotName": "cover",
+ "slotTitle": "Title",
+ "sourceSlideIdx": 0,
+ "sceneData": {
+  "name": "financial-summary/cover",
+  "layout": "cover",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 720,
+    "args": {
+     "title": "Guidewire Announces Third Quarter Fiscal Year 2026 Financial Results",
+     "subtitle": "Financial results for fiscal quarter ended April 30, 2026",
+     "author": "Guidewire (NYSE: GWRE)",
+     "style": "gradient"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}
