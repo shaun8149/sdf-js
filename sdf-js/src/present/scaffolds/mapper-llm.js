@@ -163,11 +163,22 @@ export async function mapSlidesToSlotsLLM(input, opts = {}) {
       return _fallback(input, 'validation-length-mismatch');
     }
 
-    // Validate: slotIdx must match position
+    // Validate: slotIdx must match position and slideIdx must point at real
+    // source material. An out-of-range positive slideIdx would later pass the
+    // "not empty" check and crash the slot lift prompt on undefined slide.body.
     for (let i = 0; i < parsed.assignments.length; i++) {
-      if (parsed.assignments[i].slotIdx !== i) {
+      const assignment = parsed.assignments[i];
+      if (assignment.slotIdx !== i) {
         log(`[mapper-llm] slotIdx mismatch at position ${i} → fallback`);
         return _fallback(input, 'validation-slotIdx-mismatch');
+      }
+      if (
+        !Number.isInteger(assignment.slideIdx) ||
+        assignment.slideIdx < -1 ||
+        assignment.slideIdx >= slides.length
+      ) {
+        log(`[mapper-llm] slideIdx out of range at position ${i} → fallback`);
+        return _fallback(input, 'validation-slideIdx-out-of-range');
       }
     }
 

@@ -9,6 +9,7 @@
 //   - Parse error (non-JSON) → fallback
 //   - Validation error (length mismatch) → fallback
 //   - Validation error (slotIdx mismatch) → fallback
+//   - Validation error (slideIdx out of range) → fallback
 //   - No apiKey + fallbackToHeuristic: true → fallback (no throw)
 //   - No apiKey + fallbackToHeuristic: false → throws
 // =============================================================================
@@ -292,6 +293,45 @@ console.log('\n--- validation error: slotIdx mismatch → fallback ---');
   ok(
     r.fallbackReason === 'validation-slotIdx-mismatch',
     `fallbackReason correct (got ${r.fallbackReason})`,
+  );
+  restoreFetch();
+}
+
+// ---------------------------------------------------------------------------
+console.log('\n--- validation error: slideIdx out of range → fallback ---');
+{
+  // LLM returns a syntactically valid assignment to a non-existent source slide.
+  mockFetch({
+    content: [
+      {
+        text: JSON.stringify({
+          assignments: [
+            { slotIdx: 0, slideIdx: 0, confidence: 10, reason: 'cover' },
+            { slotIdx: 1, slideIdx: 99, confidence: 9, reason: 'bad slideIdx' },
+            { slotIdx: 2, slideIdx: 2, confidence: 8, reason: 'market' },
+            { slotIdx: 3, slideIdx: 3, confidence: 7, reason: 'product' },
+            { slotIdx: 4, slideIdx: 4, confidence: 6, reason: 'team' },
+          ],
+        }),
+      },
+    ],
+    usage: {},
+  });
+  const r = await mapSlidesToSlotsLLM(
+    { slides: SLIDES_5, scaffold: SCAFFOLD_5 },
+    { apiKey: 'sk-test', log: () => {} },
+  );
+  ok(
+    r.method === 'heuristic-fallback',
+    `method=heuristic-fallback on slideIdx out of range (got ${r.method})`,
+  );
+  ok(
+    r.fallbackReason === 'validation-slideIdx-out-of-range',
+    `fallbackReason correct (got ${r.fallbackReason})`,
+  );
+  ok(
+    r.assignments.every((a) => a.slideIdx < SLIDES_5.length),
+    'fallback assignments only reference existing slides',
   );
   restoreFetch();
 }
