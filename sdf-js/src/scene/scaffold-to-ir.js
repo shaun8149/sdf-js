@@ -714,12 +714,58 @@ export function atomToIR(subject) {
   }
 }
 
+// ---- slot-level KPI aggregation ----------------------------------------------
+// The single dominant shape in real 2D output (77/423 atoms in the handoff ammo)
+// is "a page of KPI cards" — no single card has structure, but the PAGE does:
+// N comparable quantities = a magnitude IR. Aggregate kpi-card siblings and
+// dashboard-multi-kpi-composite kpis[] — but only within one UNIT FAMILY
+// ($ / % / bare number, by value-string shape): comparing "$1,146.8M" against
+// "+69%" as bar heights would lie. Mixed-unit pages stay unaggregated
+// (contract gap logged for §9.5).
+const unitFamily = (v) => {
+  const s = String(v).trim();
+  if (s.includes('%')) return '%';
+  if (s.includes('$')) return '$';
+  return '#';
+};
+
+function kpiSlotToIR(subjects) {
+  const kpis = [];
+  for (const s of subjects) {
+    if (s.type === 'kpi-card' && s.args) kpis.push(s.args);
+    else if (s.type === 'dashboard-multi-kpi-composite' && Array.isArray(s.args?.kpis))
+      kpis.push(...s.args.kpis);
+  }
+  // largest unit family with ≥2 parseable values wins
+  const fams = {};
+  for (const k of kpis) {
+    const val = parseMagnitude(k.value);
+    if (val == null || !k.label) continue;
+    const fam = unitFamily(k.value);
+    (fams[fam] = fams[fam] || []).push({ label: String(k.label), val, display: String(k.value) });
+  }
+  const best = Object.values(fams).sort((a, b) => b.length - a.length)[0];
+  if (!best || best.length < 2) return null;
+  const magnitude = best.map((k) => k.val);
+  return {
+    structure: 'magnitude',
+    nodes: best.map((k) => k.label),
+    magnitude,
+    // display: keep the 2D end's human formatting ("$240.5M") for the value
+    // labels — bare parsed numbers as UI text would violate the numbers-are-
+    // payload rule the 2D end enforces upstream.
+    display: best.map((k) => k.display),
+    emphasis: [argmax(magnitude)],
+    title: '',
+  };
+}
+
 /**
  * slotToIR(sceneData) → IR | null
  * A slot carries several atom subjects (a cover + N content atoms); pick the
- * single richest structural one — most nodes wins, first wins ties. Returns
- * null when no subject in the slot has structural content (e.g. a cover-only
- * slot, or a slot of icon-grid/kpi-card atoms with no mapped structure).
+ * single richest structural one — most nodes wins, first wins ties. When no
+ * single atom has structure, fall back to slot-level KPI aggregation (a page
+ * of comparable KPI cards IS a magnitude). Returns null when neither applies.
  */
 export function slotToIR(sceneData) {
   const subjects = Array.isArray(sceneData?.subjects) ? sceneData.subjects : [];
@@ -729,6 +775,7 @@ export function slotToIR(sceneData) {
     if (!ir) continue;
     if (!best || ir.nodes.length > best.nodes.length) best = ir;
   }
+  if (!best) best = kpiSlotToIR(subjects);
   return best;
 }
 
@@ -797,4 +844,53 @@ export function funnelSlotToIR(sceneData) {
     order: stages.map((_, i) => i),
     title: f.args?.title || '',
   };
+}
+
+// ---------------------------------------------------------------------------
+// atlas-deck (the 2D→3D handoff contract, docs/atlas-deck-contract.md) → IR deck.
+// This is the "next floor" the 2D end staged for us (#274/#280): a single-file
+// deck with inline sceneData per slot. We validate against deck-spec (ERROR =
+// reject, WARNING = log + continue), normalize the subjects/atoms alias, then
+// reuse the same slotToIR the bake-manifest path uses.
+// ---------------------------------------------------------------------------
+import { validateDeck } from '../present/deck-spec.js';
+
+/**
+ * atlasDeckToIR(deckJson, opts?) → { title, slides: IR[], report }
+ * @param {object|string} deckJson  parsed atlas-deck or its JSON string
+ * @param {object} [opts.structures]  allowlist override (default: renderable)
+ * report: per-slot outcome [{slot, title, outcome: 'ir:<structure>'|'skipped:<why>'}]
+ */
+export function atlasDeckToIR(deckJson, opts = {}) {
+  const deck = typeof deckJson === 'string' ? JSON.parse(deckJson) : deckJson;
+  const { ok, errors, warnings } = validateDeck(deck);
+  if (!ok) throw new Error(`atlasDeckToIR: contract violation — ${errors.join(' | ')}`);
+  for (const w of warnings || []) console.log(`atlasDeckToIR: [warning] ${w}`);
+
+  const allowed = Array.isArray(opts.structures) ? opts.structures : RENDERER_STRUCTURES;
+  const slides = [];
+  const report = [];
+  (deck.slots || []).forEach((slot, i) => {
+    // contract §5: "subjects" or "atoms" (historical alias) are synonymous
+    const sceneData = slot.sceneData || {};
+    const subjects = Array.isArray(sceneData.subjects)
+      ? sceneData.subjects
+      : Array.isArray(sceneData.atoms)
+        ? sceneData.atoms
+        : [];
+    const ir = slotToIR({ ...sceneData, subjects });
+    const label = slot.slotTitle || slot.slotName || `slot ${i}`;
+    if (!ir) {
+      report.push({ slot: i, title: label, outcome: 'skipped:no-structural-atom' });
+      return;
+    }
+    if (!allowed.includes(ir.structure)) {
+      report.push({ slot: i, title: label, outcome: `skipped:no-renderer:${ir.structure}` });
+      return;
+    }
+    if (!ir.title) ir.title = label;
+    slides.push(ir);
+    report.push({ slot: i, title: label, outcome: `ir:${ir.structure}` });
+  });
+  return { title: deck.title || 'atlas-deck', slides, report };
 }
