@@ -4,10 +4,10 @@
   "slotTitle": "Key Metrics",
   "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
   "sourceSlideIdx": 3,
-  "sourceSlideTitle": "Platform Adoption Metrics",
+  "sourceSlideTitle": "Platform Adoption Scale",
   "sceneData": {
     "name": "investor-update/metrics",
-    "layout": "row",
+    "layout": "grid",
     "subjects": [
       {
         "type": "cover",
@@ -21,19 +21,19 @@
         }
       },
       {
-        "type": "donut-with-center",
-        "x": 80,
-        "y": 200,
-        "w": 500,
-        "h": 440,
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 280,
         "args": {
-          "title": "Platform Adoption",
-          "centerValue": "4,100",
-          "centerLabel": "Total Brands",
-          "segments": [
+          "title": "Platform Adoption Scale",
+          "kpis": [
             {
-              "label": "Single Product · 2,350",
-              "value": 2350,
+              "value": "4,100+",
+              "label": "Brands Using Platform",
+              "sublabel": "Total merchant base",
+              "trend": "up",
               "color": [
                 58,
                 138,
@@ -41,45 +41,62 @@
               ]
             },
             {
-              "label": "Multi-Product · 1,750",
-              "value": 1750,
+              "value": "1,750+",
+              "label": "Multi-Product Merchants",
+              "sublabel": "Cross-suite engagement",
+              "trend": "up",
               "color": [
                 100,
                 150,
                 200
               ]
+            },
+            {
+              "value": "43%",
+              "label": "Cross-Product Rate",
+              "sublabel": "1,750 ÷ 4,100",
+              "trend": "neutral",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 476,
+        "w": 1200,
+        "h": 204,
+        "args": {
+          "title": "Strategic Priorities",
+          "items": [
+            {
+              "icon": "currency-dollar",
+              "label": "Financing Milestone",
+              "sublabel": "Valuation achieved"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Development",
+              "sublabel": "Capital deployment"
+            },
+            {
+              "icon": "network",
+              "label": "Infrastructure Scale",
+              "sublabel": "Operations model"
+            },
+            {
+              "icon": "globe",
+              "label": "International Expansion",
+              "sublabel": "ReturnBear integration"
             }
           ],
-          "showPct": true
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 660,
-        "y": 200,
-        "w": 540,
-        "h": 200,
-        "args": {
-          "value": "1,750",
-          "label": "Multi-Product Merchants",
-          "sublabel": "Cross-platform engagement",
-          "icon": "briefcase",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 660,
-        "y": 440,
-        "w": 540,
-        "h": 200,
-        "args": {
-          "value": "43%",
-          "label": "Suite Adoption Rate",
-          "sublabel": "1,750 of 4,100 brands",
-          "icon": "chart-pie",
-          "trend": "up",
-          "style": "light"
+          "iconStyle": "card",
+          "iconSize": "medium"
         }
       }
     ]
@@ -95,20 +112,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5127,
+      "input_tokens": 5374,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 542,
+      "output_tokens": 628,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.027413399999999997,
-    "elapsedSec": 11.1,
-    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "costUSD": 0.029444400000000003,
+    "elapsedSec": 12.2,
+    "generatedAt": "2026-07-10T06:53:23.425Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

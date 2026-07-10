@@ -3,10 +3,10 @@
   "slotName": "cap-table-burn",
   "slotTitle": "Financials",
   "slotPurpose": "Burn rate, runway, cap table highlights",
-  "sourceSlideIdx": 2,
-  "sourceSlideTitle": "Series B Financing Details",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Post-Purchase Concierge Service",
   "sceneData": {
-    "name": "investor-update/cap-table-burn",
+    "name": "investor-update/financials",
     "layout": "grid",
     "subjects": [
       {
@@ -21,66 +21,34 @@
         }
       },
       {
-        "type": "kpi-card",
+        "type": "icon-grid",
         "x": 40,
-        "y": 180,
-        "w": 380,
-        "h": 220,
-        "args": {
-          "value": "$81M",
-          "label": "Series B Financing",
-          "icon": "currency-dollar",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 450,
-        "y": 180,
-        "w": 380,
-        "h": 220,
-        "args": {
-          "value": "$1.25B",
-          "label": "Valuation",
-          "icon": "chart-line-up",
-          "style": "light"
-        }
-      },
-      {
-        "type": "kpi-card",
-        "x": 860,
-        "y": 180,
-        "w": 380,
-        "h": 220,
-        "args": {
-          "value": "Smash Capital",
-          "label": "Lead Investor",
-          "icon": "handshake",
-          "style": "light"
-        }
-      },
-      {
-        "type": "bullet-list",
-        "x": 40,
-        "y": 440,
+        "y": 160,
         "w": 1200,
-        "h": 220,
+        "h": 520,
         "args": {
-          "title": "Investor Participation",
+          "title": "Post-Purchase Concierge Service",
           "items": [
             {
-              "icon": "users",
-              "label": "Smash Capital (lead investor)"
+              "icon": "handshake",
+              "label": "Concierge Service",
+              "sublabel": "Under development"
             },
             {
-              "icon": "briefcase",
-              "label": "Pelion Venture Partners (existing)"
+              "icon": "chart-line-up",
+              "label": "Customer Lifetime",
+              "sublabel": "Increase lifetime value"
             },
             {
-              "icon": "briefcase",
-              "label": "Cervin Ventures (existing)"
+              "icon": "heart",
+              "label": "Relationship Extension",
+              "sublabel": "Beyond transaction"
             }
-          ]
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "brand"
         }
       }
     ]
@@ -95,20 +63,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5116,
+      "input_tokens": 5143,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 575,
+      "output_tokens": 344,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0278754,
-    "elapsedSec": 9.1,
-    "generatedAt": "2026-07-10T04:22:53.358Z",
+    "costUSD": 0.024491399999999997,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-10T06:53:23.427Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }

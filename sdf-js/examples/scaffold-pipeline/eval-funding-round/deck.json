@@ -81,8 +81,8 @@
       "slotName": "tldr",
       "slotTitle": "TL;DR",
       "slotPurpose": "Headline summary — 3 key points this quarter",
-      "sourceSlideIdx": 1,
-      "sourceSlideTitle": "Agenda",
+      "sourceSlideIdx": 13,
+      "sourceSlideTitle": "Strategic Outlook",
       "mappingScore": 8,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -93,7 +93,7 @@
       "subjectTypes": [
         "cover",
         "quote-pull",
-        "stat-banner",
+        "quote-pull",
         "pillar-3up"
       ]
     },
@@ -103,7 +103,7 @@
       "slotTitle": "Key Metrics",
       "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
       "sourceSlideIdx": 3,
-      "sourceSlideTitle": "Platform Adoption Metrics",
+      "sourceSlideTitle": "Platform Adoption Scale",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -113,9 +113,8 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "donut-with-center",
-        "kpi-card",
-        "kpi-card"
+        "dashboard-multi-kpi-composite",
+        "icon-row"
       ]
     },
     {
@@ -123,9 +122,9 @@
       "slotName": "wins",
       "slotTitle": "Wins",
       "slotPurpose": "Top accomplishments this quarter",
-      "sourceSlideIdx": 11,
-      "sourceSlideTitle": "ReturnBear Acquisition",
-      "mappingScore": 8,
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Series B Financing Overview",
+      "mappingScore": 10,
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-03-wins.json",
@@ -142,8 +141,8 @@
       "slotName": "challenges",
       "slotTitle": "Challenges",
       "slotPurpose": "What did not go well and what we learned",
-      "sourceSlideIdx": 10,
-      "sourceSlideTitle": "Returns Network Infrastructure",
+      "sourceSlideIdx": 11,
+      "sourceSlideTitle": "ReturnBear Acquisition",
       "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -153,7 +152,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "fishbone"
+        "bullet-list"
       ]
     },
     {
@@ -161,8 +160,8 @@
       "slotName": "next-quarter",
       "slotTitle": "Next Quarter",
       "slotPurpose": "Plan and priorities for the coming quarter",
-      "sourceSlideIdx": 13,
-      "sourceSlideTitle": "Strategic Outlook",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "AI-Driven Commerce Tools Development",
       "mappingScore": 9,
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -172,7 +171,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kanban-board"
+        "pillar-3up"
       ]
     },
     {
@@ -180,8 +179,8 @@
       "slotName": "ask",
       "slotTitle": "Ask",
       "slotPurpose": "What we need from LPs — intros, advice, resources",
-      "sourceSlideIdx": 9,
-      "sourceSlideTitle": "Post-Purchase Concierge Service",
+      "sourceSlideIdx": 10,
+      "sourceSlideTitle": "Returns Network Infrastructure",
       "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
@@ -191,7 +190,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "icon-row"
+        "bullet-list"
       ]
     },
     {
@@ -199,9 +198,9 @@
       "slotName": "cap-table-burn",
       "slotTitle": "Financials",
       "slotPurpose": "Burn rate, runway, cap table highlights",
-      "sourceSlideIdx": 2,
-      "sourceSlideTitle": "Series B Financing Details",
-      "mappingScore": 10,
+      "sourceSlideIdx": 9,
+      "sourceSlideTitle": "Post-Purchase Concierge Service",
+      "mappingScore": "floor",
       "mappingFallback": false,
       "mappingEmpty": false,
       "liftFile": "slots/slot-07-cap-table-burn.json",
@@ -210,10 +209,7 @@
       "error": null,
       "subjectTypes": [
         "cover",
-        "kpi-card",
-        "kpi-card",
-        "kpi-card",
-        "bullet-list"
+        "icon-grid"
       ]
     }
   ],
@@ -222,10 +218,10 @@
     "slotsBaked": 8,
     "slotsEmpty": 0,
     "slotsErrored": 0,
-    "totalCostUSD": 0.2056512
+    "totalCostUSD": 0.2487468
   },
   "meta": {
-    "generatedAt": "2026-07-10T04:22:53.358Z",
+    "generatedAt": "2026-07-10T06:53:23.428Z",
     "model": "claude-sonnet-4-5-20250929",
     "pipelineVersion": "sprint-16-v1"
   }

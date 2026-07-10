@@ -12,9 +12,9 @@
     "theme_id": "financial-navy-cerulean"
   },
   "atomQuality": {
-    "atom_instances": 14,
-    "atom_types_distinct": 10,
-    "variety_ratio": 0.7142857142857143,
+    "atom_instances": 10,
+    "atom_types_distinct": 6,
+    "variety_ratio": 0.6,
     "unknown_atom_count": 0,
     "unknown_atom_types": [],
     "arg_violations": 0,
@@ -29,61 +29,37 @@
     "lifted_subject_rate": 1
   },
   "visual": {
-    "total": 2,
-    "counts": {
-      "OUT_OF_BOUNDS": 1,
-      "TEXT_OVERFLOW": 1
-    },
-    "slots_with_issues": [
-      {
-        "slotIdx": 6,
-        "slotName": "ask",
-        "issues": [
-          {
-            "kind": "OUT_OF_BOUNDS",
-            "subject": 1,
-            "type": "icon-row",
-            "detail": "\"E-commerce brands seeking post\" at (-85,510)"
-          },
-          {
-            "kind": "TEXT_OVERFLOW",
-            "subject": 1,
-            "type": "icon-row",
-            "detail": "\"Advice on scaling customer lif\" ends at x=1309"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
   },
   "textBudget": {
-    "chars_per_slot": 266.5,
-    "max_slot_chars": 468
+    "chars_per_slot": 267,
+    "max_slot_chars": 545
   },
   "fidelity": {
     "numbers_total": 7,
     "numbers_found": 7,
     "number_recall": 1,
     "missing_numbers": [],
-    "deck_numbers_total": 11,
+    "deck_numbers_total": 8,
     "derived_cited_count": 0,
     "hallucinated_numbers": [
-      "2,350",
-      "2350",
       "43%"
     ],
-    "deck_entities_total": 22,
+    "deck_entities_total": 30,
     "hallucinated_entities": [
-      "Single Product",
-      "Strategic Intros"
+      "Powered Personalization",
+      "Strategic Priorities",
+      "Can Help"
     ],
-    "entity_precision": 0.9090909090909091,
-    "number_precision": 0.7272727272727273,
+    "entity_precision": 0.9,
+    "number_precision": 0.875,
     "entities_total": 6,
-    "entities_found": 4,
-    "entity_recall": 0.6666666666666666,
+    "entities_found": 5,
+    "entity_recall": 0.8333333333333334,
     "missing_entities": [
-      "Paul Szurek",
-      "Aaron Evett"
+      "Cervin Ventures"
     ]
   },
   "score": {
@@ -97,5 +73,5 @@
       "text": 10
     }
   },
-  "generatedAt": "2026-07-10T04:23:29.853Z"
+  "generatedAt": "2026-07-10T06:54:02.181Z"
 }

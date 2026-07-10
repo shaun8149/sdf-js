@@ -3,8 +3,8 @@
   "slotName": "tldr",
   "slotTitle": "TL;DR",
   "slotPurpose": "Headline summary — 3 key points this quarter",
-  "sourceSlideIdx": 1,
-  "sourceSlideTitle": "Agenda",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "Strategic Outlook",
   "sceneData": {
     "name": "investor-update/tldr",
     "layout": "grid",
@@ -29,38 +29,35 @@
         "args": {
           "quote": "Every merchant is fighting to own the relationship with their shoppers",
           "author": "Sterling Snow",
-          "attribution": "Co-founder and CEO",
+          "attribution": "Co-founder & CEO, Redo",
           "align": "left"
         }
       },
       {
-        "type": "stat-banner",
+        "type": "quote-pull",
         "x": 660,
         "y": 160,
         "w": 580,
         "h": 240,
         "args": {
-          "value": "AI-Driven Personalization",
-          "label": "Agentic shopping + marketing agents",
-          "bg": [
-            58,
-            138,
-            200
-          ]
+          "quote": "Redo has expanded into a much larger opportunity beyond initial focus",
+          "author": "Paul Szurek",
+          "attribution": "Lead Investor, Smash Capital",
+          "align": "left"
         }
       },
       {
         "type": "pillar-3up",
         "x": 40,
-        "y": 440,
+        "y": 420,
         "w": 1200,
-        "h": 240,
+        "h": 260,
         "args": {
           "pillars": [
             {
               "icon": "rocket-launch",
-              "heading": "Platform Evolution",
-              "body": "Expanded from post-purchase trust into comprehensive shopper relationship infrastructure",
+              "heading": "Infrastructure Acceleration",
+              "body": "Combined funding and acquisition support merchant ownership of customer relationships",
               "accent": [
                 58,
                 138,
@@ -69,22 +66,22 @@
             },
             {
               "icon": "brain",
-              "heading": "AI Agents",
-              "body": "Personalized email, text campaigns, and tailored shopping experiences per individual",
+              "heading": "AI-Powered Personalization",
+              "body": "Agentic shopping experiences and marketing agents tailor journeys for individual shoppers",
               "accent": [
-                100,
-                150,
+                58,
+                138,
                 200
               ]
             },
             {
-              "icon": "currency-dollar",
-              "heading": "Funding Acceleration",
-              "body": "Strategic capital to build infrastructure brands need to own customer relationships",
+              "icon": "globe",
+              "heading": "Global Platform Expansion",
+              "body": "Comprehensive post-purchase and engagement solutions targeting global scale",
               "accent": [
-                180,
-                210,
-                235
+                58,
+                138,
+                200
               ]
             }
           ],
@@ -103,20 +100,20 @@
     ],
     "forbiddenAtoms": [],
     "tokenUsage": {
-      "input_tokens": 5498,
+      "input_tokens": 5536,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 13008,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 577,
+      "output_tokens": 595,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.0290514,
-    "elapsedSec": 11,
-    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "costUSD": 0.0294354,
+    "elapsedSec": 11.2,
+    "generatedAt": "2026-07-10T06:53:23.423Z",
     "model": "claude-sonnet-4-5-20250929"
   }
 }
