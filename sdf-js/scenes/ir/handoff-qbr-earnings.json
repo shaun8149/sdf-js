@@ -4,38 +4,46 @@
     {
       "structure": "magnitude",
       "nodes": [
-        "Average Price",
-        "Remaining Authorization"
+        "Ending ARR",
+        "Subscription & Support",
+        "Total Revenue"
       ],
       "magnitude": [
-        147.07,
-        240500000
+        1233000000,
+        262000000,
+        401000000
       ],
       "display": [
-        "$147.07",
-        "$240.5M"
-      ],
-      "emphasis": [
-        1
-      ],
-      "title": "Executive Statement"
-    },
-    {
-      "structure": "magnitude",
-      "nodes": [
-        "Operating Income",
-        "Net Income",
-        "EPS"
-      ],
-      "magnitude": [
-        30600000,
-        16500000,
-        0.19
+        "$1,229-$1,237M",
+        "$259-$265M",
+        "$396-$406M"
       ],
       "emphasis": [
         0
       ],
-      "title": "GAAP Performance"
+      "title": "Q4 FY26 Guidance"
+    },
+    {
+      "structure": "magnitude",
+      "nodes": [
+        "Q3 Total Revenue",
+        "Q4 GAAP Operating Income",
+        "Q4 Non-GAAP Operating Income"
+      ],
+      "magnitude": [
+        372500000,
+        41000000,
+        91000000
+      ],
+      "display": [
+        "$372.5M",
+        "$36-46M",
+        "$86-96M"
+      ],
+      "emphasis": [
+        0
+      ],
+      "title": "Income Statement"
     },
     {
       "structure": "magnitude",
@@ -114,19 +122,19 @@
     {
       "structure": "magnitude",
       "nodes": [
-        "Revenue Growth",
-        "ARR Growth"
+        "Subscription & Support Revenue",
+        "Total Revenue"
       ],
       "magnitude": [
-        27,
-        19
+        966000000,
+        1465000000
       ],
       "display": [
-        "27%",
-        "19%"
+        "$963–969M",
+        "$1,460–1,470M"
       ],
       "emphasis": [
-        0
+        1
       ],
       "title": "Outlook & Forecast"
     }

@@ -22,17 +22,53 @@ import { RENDERER_STRUCTURES } from './render-ir.js';
 // "92%") but IR magnitude must be real numbers. Leading-numeric parse with
 // K/M/B multiplier support; anything that doesn't look like a number → null
 // so the caller can skip the atom rather than emit a fake zero.
-export function parseMagnitude(v) {
-  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
-  if (typeof v !== 'string') return null;
-  const m = v.trim().match(/^([+-])?\$?([\d,]+(?:\.\d+)?)\s*([KMBkmb])?%?$/);
-  if (!m) return null;
-  const [, sign, numStr, suffix] = m;
+const MAG_TOKEN_RE = /^([+-])?\s*(\$)?\s*([\d,]+(?:\.\d+)?)\s*([KMBkmb])?\s*(%)?$/;
+const MAG_RANGE_RE =
+  /^([+-]?\s*\$?\s*[\d,]+(?:\.\d+)?\s*[KMBkmb]?%?)\s*[-\u2012\u2013\u2014]\s*([+-]?\s*\$?\s*[\d,]+(?:\.\d+)?\s*[KMBkmb]?%?)$/;
+
+function magnitudeFromMatch(m, fallbackSuffix = '') {
+  const [, sign, , numStr, suffix] = m;
   let num = parseFloat(numStr.replace(/,/g, ''));
   if (!Number.isFinite(num)) return null;
-  if (suffix) num *= { k: 1e3, m: 1e6, b: 1e9 }[suffix.toLowerCase()];
+  const scale = (suffix || fallbackSuffix || '').toLowerCase();
+  if (scale) num *= { k: 1e3, m: 1e6, b: 1e9 }[scale];
   if (sign === '-') num = -num;
   return num;
+}
+
+function parseMagnitudeParts(v) {
+  if (typeof v === 'number') {
+    return Number.isFinite(v)
+      ? { value: v, display: String(v), currency: false, percent: false }
+      : null;
+  }
+  if (typeof v !== 'string') return null;
+  const display = v.trim();
+  const range = display.match(MAG_RANGE_RE);
+  if (range) {
+    const a = range[1].trim().match(MAG_TOKEN_RE);
+    const b = range[2].trim().match(MAG_TOKEN_RE);
+    if (!a || !b) return null;
+    const fallbackSuffix = a[4] || b[4] || '';
+    const av = magnitudeFromMatch(a, fallbackSuffix);
+    const bv = magnitudeFromMatch(b, fallbackSuffix);
+    if (av == null || bv == null) return null;
+    return {
+      value: (av + bv) / 2,
+      display,
+      currency: !!(a[2] || b[2]),
+      percent: !!(a[5] || b[5]),
+    };
+  }
+  const m = display.match(MAG_TOKEN_RE);
+  if (!m) return null;
+  const value = magnitudeFromMatch(m);
+  if (value == null) return null;
+  return { value, display, currency: !!m[2], percent: !!m[5] };
+}
+
+export function parseMagnitude(v) {
+  return parseMagnitudeParts(v)?.value ?? null;
 }
 
 // argmax helper — index of the largest value (ties → first).
@@ -394,10 +430,18 @@ function valuesLabelsToIR(a, atomType) {
 function labeledValuesToIR(items, valueKey, atomType, title) {
   if (!items || !items.length) return null;
   const nodes = items.map((it) => it?.label || '');
-  const magnitude = items.map((it) => parseMagnitude(it?.[valueKey]));
-  if (magnitude.some((v) => v == null)) return null;
+  const parsed = items.map((it) => parseMagnitudeParts(it?.[valueKey]));
+  if (parsed.some((v) => v == null)) return null;
+  const magnitude = parsed.map((p) => p.value);
   return finish(
-    { structure: 'magnitude', nodes, magnitude, emphasis: [argmax(magnitude)], title: title || '' },
+    {
+      structure: 'magnitude',
+      nodes,
+      magnitude,
+      display: parsed.map((p) => p.display),
+      emphasis: [argmax(magnitude)],
+      title: title || '',
+    },
     atomType,
   );
 }
@@ -415,7 +459,9 @@ function statGridLargeToIR(a) {
 }
 
 function dashboardMultiKpiToIR(a) {
-  return labeledValuesToIR(a?.kpis, 'value', 'dashboard-multi-kpi-composite', a?.title);
+  return kpiItemsToIR(a?.kpis, 'dashboard-multi-kpi-composite', a?.title, {
+    requireAllComparable: true,
+  });
 }
 
 function isotypeStatComparisonToIR(a) {
@@ -722,12 +768,76 @@ export function atomToIR(subject) {
 // ($ / % / bare number, by value-string shape): comparing "$1,146.8M" against
 // "+69%" as bar heights would lie. Mixed-unit pages stay unaggregated
 // (contract gap logged for §9.5).
-const unitFamily = (v) => {
-  const s = String(v).trim();
-  if (s.includes('%')) return '%';
-  if (s.includes('$')) return '$';
+const unitFamily = (p) => {
+  if (p.percent) return '%';
+  if (p.currency) return '$';
   return '#';
 };
+
+const KPI_COMPARABLE_RATIO = 1000;
+
+function isComparableKpiGroup(items) {
+  const nonZero = items.map((k) => Math.abs(k.val)).filter((v) => v > 1e-9);
+  if (nonZero.length <= 1) return true;
+  return Math.max(...nonZero) / Math.min(...nonZero) <= KPI_COMPARABLE_RATIO;
+}
+
+function bestComparableKpiGroup(items) {
+  const sorted = items.slice().sort((a, b) => Math.abs(a.val) - Math.abs(b.val));
+  let best = [];
+  for (let i = 0; i < sorted.length; i++) {
+    for (let j = i; j < sorted.length; j++) {
+      const candidate = sorted.slice(i, j + 1);
+      if (candidate.length <= best.length) continue;
+      if (isComparableKpiGroup(candidate)) best = candidate;
+    }
+  }
+  return best.slice().sort((a, b) => a.index - b.index);
+}
+
+function kpiItemsToIR(items, atomType, title, opts = {}) {
+  if (!Array.isArray(items) || !items.length) return null;
+  const fams = {};
+  let parsedCount = 0;
+  items.forEach((k, index) => {
+    const parsed = parseMagnitudeParts(k?.value);
+    if (!parsed || !k?.label) return;
+    parsedCount++;
+    const fam = unitFamily(parsed);
+    (fams[fam] = fams[fam] || []).push({
+      label: String(k.label),
+      val: parsed.value,
+      display: parsed.display,
+      index,
+    });
+  });
+  if (opts.requireAllComparable && parsedCount !== items.length) return null;
+
+  // Largest comparable unit family wins. This keeps "$963-969M" together with
+  // "$1,460-1,470M", but refuses "$0.19 EPS" beside "$30.6M revenue".
+  let best = [];
+  for (const fam of Object.values(fams)) {
+    const candidate = bestComparableKpiGroup(fam);
+    if (candidate.length > best.length) best = candidate;
+  }
+  if (!best || best.length < 2) return null;
+  if (opts.requireAllComparable && best.length !== parsedCount) return null;
+  const magnitude = best.map((k) => k.val);
+  return finish(
+    {
+      structure: 'magnitude',
+      nodes: best.map((k) => k.label),
+      magnitude,
+      // display: keep the 2D end's human formatting ("$240.5M") for the value
+      // labels — bare parsed numbers as UI text would violate the numbers-are-
+      // payload rule the 2D end enforces upstream.
+      display: best.map((k) => k.display),
+      emphasis: [argmax(magnitude)],
+      title: title || '',
+    },
+    atomType,
+  );
+}
 
 function kpiSlotToIR(subjects) {
   const kpis = [];
@@ -736,28 +846,7 @@ function kpiSlotToIR(subjects) {
     else if (s.type === 'dashboard-multi-kpi-composite' && Array.isArray(s.args?.kpis))
       kpis.push(...s.args.kpis);
   }
-  // largest unit family with ≥2 parseable values wins
-  const fams = {};
-  for (const k of kpis) {
-    const val = parseMagnitude(k.value);
-    if (val == null || !k.label) continue;
-    const fam = unitFamily(k.value);
-    (fams[fam] = fams[fam] || []).push({ label: String(k.label), val, display: String(k.value) });
-  }
-  const best = Object.values(fams).sort((a, b) => b.length - a.length)[0];
-  if (!best || best.length < 2) return null;
-  const magnitude = best.map((k) => k.val);
-  return {
-    structure: 'magnitude',
-    nodes: best.map((k) => k.label),
-    magnitude,
-    // display: keep the 2D end's human formatting ("$240.5M") for the value
-    // labels — bare parsed numbers as UI text would violate the numbers-are-
-    // payload rule the 2D end enforces upstream.
-    display: best.map((k) => k.display),
-    emphasis: [argmax(magnitude)],
-    title: '',
-  };
+  return kpiItemsToIR(kpis, 'kpi-slot', '');
 }
 
 /**

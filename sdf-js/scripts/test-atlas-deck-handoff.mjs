@@ -4,7 +4,7 @@
 // end-to-end (atlas-deck → IR → staged deck → compile).
 import { readFileSync, readdirSync } from 'node:fs';
 import { validateDeck } from '../src/present/deck-spec.js';
-import { atlasDeckToIR } from '../src/scene/scaffold-to-ir.js';
+import { atlasDeckToIR, parseMagnitude } from '../src/scene/scaffold-to-ir.js';
 import { assembleDeck } from '../src/scene/assemble-deck.js';
 import { compile } from '../src/scene/index.js';
 
@@ -78,6 +78,44 @@ ok(totalSlides / totalSlots >= 0.4, `ammo slot coverage ≥40% (${((totalSlides 
     ] } }],
   };
   ok(atlasDeckToIR(mixed).slides.length === 0, 'mixed-unit KPI page not force-aggregated');
+
+  ok(parseMagnitude('$36-46M') === 41000000, 'KPI range midpoint parses with shared M suffix');
+  ok(parseMagnitude('$963–969M') === 966000000, 'KPI range midpoint parses with en dash');
+
+  const ranged = {
+    format: 'atlas-deck', version: 1, title: 'ranges',
+    slots: [{ slotTitle: 'Guidance', sceneData: { subjects: [
+      { type: 'kpi-card', args: { value: '$36-46M', label: 'Q4 GAAP Operating Income' } },
+      { type: 'kpi-card', args: { value: '$86-96M', label: 'Q4 Non-GAAP Operating Income' } },
+      { type: 'kpi-card', args: { value: '$372.5M', label: 'Revenue' } },
+    ] } }],
+  };
+  const rangedIr = atlasDeckToIR(ranged).slides[0];
+  ok(rangedIr?.magnitude[0] === 41000000, 'range KPI page emits midpoint magnitude');
+  ok(rangedIr?.display[0] === '$36-46M', 'range KPI page preserves human display value');
+
+  const mixedScale = {
+    format: 'atlas-deck', version: 1, title: 'mixed scale',
+    slots: [{ sceneData: { subjects: [
+      { type: 'kpi-card', args: { value: '$147.07', label: 'Average Price' } },
+      { type: 'kpi-card', args: { value: '$240.5M', label: 'Remaining Authorization' } },
+    ] } }],
+  };
+  ok(atlasDeckToIR(mixedScale).slides.length === 0, 'mixed-scale dollar KPIs are not force-aggregated');
+
+  const dashboard = {
+    format: 'atlas-deck', version: 1, title: 'dashboard',
+    slots: [{ slotTitle: 'Financial Highlights', sceneData: { subjects: [
+      { type: 'dashboard-multi-kpi-composite', args: { title: 'GAAP Performance', kpis: [
+        { value: '$30.6M', label: 'Operating Income' },
+        { value: '$16.5M', label: 'Net Income' },
+        { value: '$0.19', label: 'EPS' },
+      ] } },
+    ] } }],
+  };
+  const dashboardIr = atlasDeckToIR(dashboard).slides[0];
+  ok(dashboardIr?.nodes.length === 2 && !dashboardIr.nodes.includes('EPS'), 'dashboard KPI fallback drops incomparable EPS');
+  ok(dashboardIr?.display[0] === '$30.6M', 'dashboard KPI values preserve human display strings');
 
   // contract violation → reject with the validator's error
   let threw = null;
