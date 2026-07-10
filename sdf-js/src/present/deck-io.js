@@ -18,14 +18,46 @@ import { validateDeck, DECK_FORMAT, DECK_FORMAT_VERSION } from './deck-spec.js';
 // single source of truth for the contract (docs/atlas-deck-contract.md)
 export { DECK_FORMAT, DECK_FORMAT_VERSION };
 
+function sharedLiftParams(deck) {
+  return [...deck.slots, ...(deck.errors || [])].find((entry) => entry.liftParams)?.liftParams;
+}
+
+function stripSharedLiftParams(entry) {
+  return {
+    ...entry,
+    liftParams: entry.liftParams
+      ? {
+          ...entry.liftParams,
+          scaffold: undefined,
+          slides: undefined,
+          theme: undefined,
+        }
+      : undefined,
+  };
+}
+
+function rehydrateLiftParams(entry, shared) {
+  return {
+    ...entry,
+    liftParams: entry.liftParams
+      ? {
+          ...entry.liftParams,
+          scaffold: entry.liftParams.scaffold ?? shared?.scaffold,
+          slides: entry.liftParams.slides ?? shared?.slides,
+          theme: entry.liftParams.theme ?? shared?.theme,
+        }
+      : undefined,
+  };
+}
+
 export function serializeDeck(deck) {
   if (!deck || !Array.isArray(deck.slots)) throw new Error('serializeDeck: not a deck');
-  const first = deck.slots.find((s) => s.liftParams);
+  const first = sharedLiftParams(deck);
   const shared = first
     ? {
-        scaffold: first.liftParams.scaffold,
-        slides: first.liftParams.slides,
-        theme: first.liftParams.theme,
+        scaffold: first.scaffold,
+        slides: first.slides,
+        theme: first.theme,
       }
     : null;
   return {
@@ -36,17 +68,8 @@ export function serializeDeck(deck) {
     scaffold: deck.scaffold,
     decor: deck.decor,
     shared,
-    slots: deck.slots.map((s) => ({
-      ...s,
-      liftParams: s.liftParams
-        ? {
-            ...s.liftParams,
-            scaffold: undefined,
-            slides: undefined,
-            theme: undefined,
-          }
-        : undefined,
-    })),
+    slots: deck.slots.map(stripSharedLiftParams),
+    errors: (deck.errors || []).map(stripSharedLiftParams),
   };
 }
 
@@ -65,17 +88,7 @@ export function deserializeDeck(data) {
     theme: data.theme,
     scaffold: data.scaffold,
     decor: data.decor,
-    slots: (data.slots || []).map((s) => ({
-      ...s,
-      liftParams: s.liftParams
-        ? {
-            ...s.liftParams,
-            scaffold: shared?.scaffold,
-            slides: shared?.slides,
-            theme: shared?.theme,
-          }
-        : undefined,
-    })),
-    errors: [],
+    slots: (data.slots || []).map((s) => rehydrateLiftParams(s, shared)),
+    errors: (data.errors || []).map((e) => rehydrateLiftParams(e, shared)),
   };
 }

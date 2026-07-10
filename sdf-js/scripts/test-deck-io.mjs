@@ -85,6 +85,53 @@ const deck = {
   ok(back.slots[2].liftParams === undefined, 'quick-mode slot stays liftParams-less');
 }
 
+// ── retryable failed slots persist too ──
+{
+  const failedEntry = {
+    slot: 's3',
+    slotIdx: 3,
+    slotTitle: 'Slide 3',
+    message: 'transient 529',
+    liftParams: {
+      scaffold,
+      slot: { name: 's3', title: 'Slide 3' },
+      slotIdx: 3,
+      slideIdx: 1,
+      theme,
+      slide: slides[1],
+      slides,
+      extraSlides: [0],
+    },
+  };
+  const withError = { ...deck, errors: [failedEntry] };
+  const back = deserializeDeck(JSON.stringify(serializeDeck(withError)));
+  ok(back.errors.length === 1, 'retryable error entry survives save/open');
+  ok(back.errors[0].message === 'transient 529', 'error message survives');
+  ok(
+    back.errors[0].liftParams.scaffold.id === 'news-briefing',
+    'failed-slot scaffold rehydrates into liftParams',
+  );
+  ok(
+    back.errors[0].liftParams.slides === back.slots[0].liftParams.slides,
+    'failed-slot liftParams share the hoisted slides ref',
+  );
+
+  const allFailed = {
+    title: 'all failed',
+    theme,
+    scaffold: { id: scaffold.id, label: scaffold.label },
+    slots: [],
+    errors: [failedEntry],
+  };
+  const backAllFailed = deserializeDeck(JSON.stringify(serializeDeck(allFailed)));
+  ok(backAllFailed.slots.length === 0, 'all-failed deck keeps zero delivered slots');
+  ok(backAllFailed.errors.length === 1, 'all-failed deck keeps retryable failed slot');
+  ok(
+    backAllFailed.errors[0].liftParams.slides.length === slides.length,
+    'all-failed deck rehydrates failed-slot source slides',
+  );
+}
+
 // ── hoisting actually shrinks the file ──
 {
   const hoisted = JSON.stringify(serializeDeck(deck)).length;
