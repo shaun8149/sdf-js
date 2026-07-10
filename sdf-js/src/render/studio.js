@@ -2118,6 +2118,17 @@ export function createStudioRenderer({
   let sequencePaused = false;
   let sequencePausedAt = 0;
   let userTookCam = false; // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
+  // ONE presentation clock: when a sequence is active, subject animations (u_time)
+  // follow the SEQUENCE time — pausing freezes build-ins, seeking scrubs them
+  // (presenter mode's beat-hold depends on this). No sequence → wall-clock, exactly
+  // as before, so non-sequenced scenes (gallery, compositor) are untouched.
+  function presentationNowSec() {
+    if (activeSequence) {
+      const now = sequencePaused ? sequencePausedAt : performance.now();
+      return warpSec((now - sequenceStartTime) / 1000);
+    }
+    return warpSec((performance.now() - timeStart) / 1000);
+  }
   // Previous-frame camera state — fed to postfx motion blur reproject. Stored
   // in WORLD-SPACE basis (pos + fwd + right + up + fov) so the shader can
   // compute "where would this pixel have been on screen one frame ago?".
@@ -2591,10 +2602,11 @@ export function createStudioRenderer({
         runeWaterTint[2],
       );
     }
-    // u_time drives time-aware primitives (sdWaves animation). Without
-    // this set, waves were static — sea looked frozen.
+    // u_time drives time-aware primitives (sdWaves animation) AND subject
+    // build-in animations. Fed from the ONE presentation clock — sequence time
+    // when a sequence is active (pause/seek freeze/scrub), wall-clock otherwise.
     if (uniformsCache.u_time != null) {
-      gl.uniform1f(uniformsCache.u_time, warpSec((performance.now() - timeStart) / 1000));
+      gl.uniform1f(uniformsCache.u_time, presentationNowSec());
     }
     // Sprint 3: volume LUTs. Uploaded per draw because the count + params may
     // change when setVolumes() is called between scene loads. Volume effects
@@ -2651,7 +2663,7 @@ export function createStudioRenderer({
     // Per-frame postfx params start from activePostFx (scene defaults) and
     // get patched with sequence camera overrides (aperture / focalDistance)
     // when a cameraSequence is driving the camera.
-    const tSec = warpSec((performance.now() - timeStart) / 1000);
+    const tSec = presentationNowSec(); // one clock — postfx time-jitter freezes on pause too
     const framePostFx = { ...activePostFx };
     if (sequenceAperture != null) framePostFx.aperture = sequenceAperture;
     if (sequenceFocalDist != null) framePostFx.focalDistance = sequenceFocalDist;
@@ -3266,6 +3278,11 @@ export function createStudioRenderer({
       if (!activeSequence) return 0;
       const now = sequencePaused ? sequencePausedAt : performance.now();
       return warpSec((now - sequenceStartTime) / 1000);
+    },
+    // The value fed to u_time this frame (sequence time when a sequence drives,
+    // wall-clock otherwise). Presenter mode reads this to sync the teleprompter.
+    getPresentationTime() {
+      return presentationNowSec();
     },
     getSequenceDuration() {
       return activeSequence ? seqTotalDuration(activeSequence) : 0;
