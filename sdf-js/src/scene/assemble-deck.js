@@ -93,7 +93,12 @@ export function assembleDeck(deck, opts = {}) {
 
   deck.slides.forEach((ir, k) => {
     // Render the station at the origin on its own clock, then transplant.
-    const st = renderIR(ir); // no env here — the deck owns the world
+    // opts.stage: each station gets its own fitted platform disc (a subject, so
+    // it transplants with the station); the station's stage DEFAULTS (lights /
+    // postFx / room shell) are discarded here on purpose — the deck owns the
+    // world and applies ONE theatre layer below (walls would slice the deck
+    // axis, and MAX_EXTRA_LIGHTS=4 can't do per-station rigs).
+    const st = renderIR(ir, opts.stage ? { stage: true } : {});
     const origin = origins[k];
 
     // Transit shot: whip from the previous station's payoff toward this one's
@@ -225,6 +230,34 @@ export function assembleDeck(deck, opts = {}) {
         origins.reduce((s, o) => s + o[2], 0) / origins.length,
       ]);
 
+  const baseDefaults = env
+    ? env.defaults
+    : {
+        camera: {
+          yaw: 0,
+          pitch: -0.1,
+          distance: 12,
+          focal: 1.2,
+          targetX: 0,
+          targetY: 2,
+          targetZ: 0,
+        },
+        light: { azimuth: 0.5, altitude: 0.7, distance: 40, intensity: 1.1 },
+      };
+
+  // Deck theatre layer (opts.stage): the open-world version of the fighting-game
+  // stage — dark miss-sky, mildly dimmed ambient (transits must stay readable),
+  // silhouette glow on every station, vignette + a touch of bloom. No room shell,
+  // no per-station lights (see the station comment above).
+  const stageDefaults = opts.stage
+    ? {
+        studioBg: 'dark',
+        interiorDark: 0.4,
+        glow: { amount: 0.3, k: 6.0 },
+        postFx: { vignetteStrength: 0.58, exposure: 0.92, bloomMix: 0.24 },
+      }
+    : null;
+
   return {
     v: 1,
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
@@ -233,19 +266,6 @@ export function assembleDeck(deck, opts = {}) {
     cameraSequence: { loop: false, shots, hitstops },
     // One shared open world — no per-station stage room (walls would slice the
     // deck axis). Ground/sky come from the environment or the page defaults.
-    defaults: env
-      ? env.defaults
-      : {
-          camera: {
-            yaw: 0,
-            pitch: -0.1,
-            distance: 12,
-            focal: 1.2,
-            targetX: 0,
-            targetY: 2,
-            targetZ: 0,
-          },
-          light: { azimuth: 0.5, altitude: 0.7, distance: 40, intensity: 1.1 },
-        },
+    defaults: stageDefaults ? { ...baseDefaults, ...stageDefaults } : baseDefaults,
   };
 }
