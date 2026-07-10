@@ -43,6 +43,7 @@ console.log('=== assemble-deck (N IRs → one continuous world) ===\n');
 const deck = JSON.parse(
   readFileSync(new URL('../scenes/ir/deck-pitch.json', import.meta.url), 'utf8'),
 );
+const swot = JSON.parse(readFileSync(new URL('../scenes/ir/swot.json', import.meta.url), 'utf8'));
 
 {
   const scene = assembleDeck(deck);
@@ -133,6 +134,16 @@ const deck = JSON.parse(
   ok(
     centers.some((c) => Math.abs(c[1] - hubZ) > 3),
     'radial: ring uses the z axis',
+  );
+}
+{
+  const radialMatrix = assembleDeck({ title: 'matrix ring', slides: [swot, swot] }, { layout: 'radial' });
+  const item = radialMatrix.subjects.find((s) => s.id === 's1-item-0');
+  const m = item.animation[0].expr.match(/^(-?[\d.]+) - ([\d.]+) \* smoothstep/);
+  const landingZ = Number(m[1]) - Number(m[2]);
+  ok(
+    Math.abs(landingZ - item.transform.translate[2]) < 1e-9,
+    'radial matrix: z-channel build-in lands on the shifted station board',
   );
 }
 {

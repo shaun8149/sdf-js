@@ -20,16 +20,16 @@ import { getEnvironment, horizonSilhouettes } from './environments.js';
 //   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
 //   "<A> + <D> * smoothstep(<t0>, <t1>, t)"            (erupt from below)
 //   … + optional " + <I> * sin(<F> * t + <P>)" idle tail (breathing)
-// Shift: A += dy (the y-channel constant), t0/t1 += dt; the idle tail is
+// Shift: A += offset along the animated axis, t0/t1 += dt; the idle tail is
 // time-invariant in amplitude but its PHASE must rewind by F*dt so the motion
 // is continuous across the station's shifted clock.
 const EXPR_RE =
   /^(-?[\d.]+) (\+|-) ([\d.]+) \* smoothstep\((-?[\d.]+), (-?[\d.]+), t\)(?: \+ ([\d.]+) \* sin\(([\d.]+) \* t \+ (-?[\d.]+)\))?$/;
-export function shiftBuildInExpr(expr, dy, dt) {
+export function shiftBuildInExpr(expr, offset, dt) {
   const m = String(expr).match(EXPR_RE);
   if (!m) throw new Error(`assemble-deck: unrecognized build-in expr shape: "${expr}"`);
   const [, A, sign, D, t0, t1, idleAmp, idleFreq, idlePhase] = m;
-  let out = `${(Number(A) + dy).toFixed(3)} ${sign} ${D} * smoothstep(${(Number(t0) + dt).toFixed(2)}, ${(Number(t1) + dt).toFixed(2)}, t)`;
+  let out = `${(Number(A) + offset).toFixed(3)} ${sign} ${D} * smoothstep(${(Number(t0) + dt).toFixed(2)}, ${(Number(t1) + dt).toFixed(2)}, t)`;
   if (idleAmp != null) {
     const p = Number(idlePhase) - Number(idleFreq) * dt;
     out += ` + ${idleAmp} * sin(${idleFreq} * t + ${p.toFixed(2)})`;
@@ -126,18 +126,27 @@ export function assembleDeck(deck, opts = {}) {
       clock += dur;
     }
 
-    // Subjects: shift origin (static translate) + rewrite build-ins (y & time).
+    // Subjects: shift origin (static translate) + rewrite build-ins (animated
+    // axis & time). Animation channels replace that axis' static translate, so
+    // a z-channel slam must carry origin.z just like y-channel drops carry
+    // origin.y.
     for (const s of st.subjects) {
       const moved = JSON.parse(JSON.stringify(s));
       moved.id = `s${k}-${s.id}`;
       moved.transform = moved.transform || {};
       moved.transform.translate = addV(moved.transform.translate || [0, 0, 0], origin);
       if (Array.isArray(moved.animation)) {
+        const axisOffset = (channel) => {
+          if (channel === 'transform.translate.x') return origin[0];
+          if (channel === 'transform.translate.y') return origin[1];
+          if (channel === 'transform.translate.z') return origin[2];
+          return 0;
+        };
         moved.animation = moved.animation.map((a) => ({
           ...a,
           expr: shiftBuildInExpr(
             a.expr,
-            a.channel === 'transform.translate.y' ? origin[1] : 0,
+            axisOffset(a.channel),
             clock,
           ),
         }));
