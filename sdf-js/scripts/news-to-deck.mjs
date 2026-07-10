@@ -19,6 +19,8 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { expandNews } from './expand-news.mjs';
+import { chooseScaffoldForOutline } from '../src/present/news/full-deck.js';
+import { getScaffold } from '../src/present/scaffolds/registry.js';
 
 const REPO = new URL('../..', import.meta.url).pathname;
 const args = process.argv.slice(2);
@@ -31,6 +33,7 @@ const TEXT_PATH = arg('--text');
 const DECK_NAME = arg('--deck-name');
 const KEY_FILE = arg('--key-file', null);
 const MIN_PAGES = Number(arg('--min-pages', 10));
+const SCAFFOLD = arg('--scaffold', 'news-briefing'); // 'auto' → rank on outline (Sprint 65)
 const MAX_PAGES = Number(arg('--max-pages', 20));
 if (!TEXT_PATH || !DECK_NAME) {
   console.error('usage: news-to-deck.mjs --text article.txt --deck-name NAME [--key-file key.txt]');
@@ -62,6 +65,15 @@ console.log(
     .slice(0, 160)}…`,
 );
 
+let scaffoldId = SCAFFOLD;
+if (SCAFFOLD === 'auto') {
+  const { scaffold } = chooseScaffoldForOutline(slides);
+  scaffoldId = scaffold.id;
+  console.log(`  scaffold (auto): ${scaffold.label} [${scaffoldId}]`);
+}
+// the page floor bends to the skeleton (Sprint 63): a 7-slot QBR is 7 pages
+const EFF_MIN = Math.min(MIN_PAGES, getScaffold(scaffoldId).slots.length);
+
 const slidedataPath = `${REPO}sdf-js/examples/scaffold-pipeline/${DECK_NAME}-slidedata.json`;
 mkdirSync(`${REPO}sdf-js/examples/scaffold-pipeline`, { recursive: true });
 writeFileSync(slidedataPath, JSON.stringify(slides, null, 2));
@@ -74,11 +86,11 @@ const bakeArgs = [
   '--deck-name',
   DECK_NAME,
   '--scaffold',
-  'news-briefing',
+  scaffoldId,
   '--mapper',
   'llm',
   '--min-pages',
-  String(MIN_PAGES),
+  String(EFF_MIN),
   '--force',
 ];
 if (KEY_FILE) bakeArgs.push('--key-file', KEY_FILE);
@@ -96,8 +108,8 @@ const ev = spawnSync('node', [`${REPO}sdf-js/scripts/eval-deck-quality.mjs`, dec
 });
 if (ev.status !== 0) process.exit(ev.status || 1);
 
-const inBand = pages >= MIN_PAGES && pages <= MAX_PAGES;
+const inBand = pages >= EFF_MIN && pages <= MAX_PAGES;
 console.log(
-  `\n══ news-to-deck result ══\n  pages: ${pages}  (target ${MIN_PAGES}-${MAX_PAGES})  ${inBand ? '✓ IN BAND' : '✗ OUT OF BAND'}\n`,
+  `\n══ news-to-deck result ══\n  pages: ${pages}  (target ${EFF_MIN}-${MAX_PAGES}, scaffold ${scaffoldId})  ${inBand ? '✓ IN BAND' : '✗ OUT OF BAND'}\n`,
 );
 process.exit(inBand ? 0 : 1);

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-07T06:44:59.935Z",
-  "corpusSize": 13,
-  "scored": 13,
+  "generatedAt": "2026-07-10T04:23:29.854Z",
+  "corpusSize": 15,
+  "scored": 15,
   "skipped": [],
-  "corpusMean": 97.1,
-  "factsRecallMean": 0.957,
-  "entityRecallMean": 0.988,
+  "corpusMean": 97.4,
+  "factsRecallMean": 0.959,
+  "entityRecallMean": 0.901,
   "decks": [
     {
       "deckName": "eval-qbr-q3-2026",
@@ -176,6 +176,79 @@
       "entityRecall": 1,
       "missingEntities": [],
       "missingNumbers": []
+    },
+    {
+      "deckName": "eval-funding-round",
+      "score": 100,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 10
+      },
+      "fillRate": 1,
+      "scaffoldId": "investor-update",
+      "themeId": "financial-navy-cerulean",
+      "pickMethod": "forced",
+      "atomTypesDistinct": 10,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 8,
+      "liftAttempted": 8,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 266.5,
+      "maxSlotChars": 468,
+      "numberRecall": 1,
+      "entityRecall": 0.6666666666666666,
+      "missingEntities": [
+        "Paul Szurek",
+        "Aaron Evett"
+      ],
+      "missingNumbers": []
+    },
+    {
+      "deckName": "eval-qbr-earnings",
+      "score": 99.2,
+      "scoreBreakdown": {
+        "structure": 25,
+        "variety": 15,
+        "hallucination": 15,
+        "twin": 20,
+        "lift": 15,
+        "text": 9.2
+      },
+      "fillRate": 1,
+      "scaffoldId": "financial-summary",
+      "themeId": "financial-navy-cerulean",
+      "pickMethod": "forced",
+      "atomTypesDistinct": 7,
+      "unknownAtomCount": 0,
+      "unknownAtomTypes": [],
+      "argViolations": 0,
+      "argViolationsTopOffenders": [],
+      "twinCoverage": 1,
+      "untwinnedTypes": [],
+      "liftSuccess": 10,
+      "liftAttempted": 10,
+      "liftedSubjectRate": 1,
+      "charsPerSlot": 304.3,
+      "maxSlotChars": 469,
+      "numberRecall": 0.9433962264150944,
+      "entityRecall": 0,
+      "missingEntities": [
+        "Jeff Cooper"
+      ],
+      "missingNumbers": [
+        "$4.5M",
+        "$46.1M",
+        "$47.4M"
+      ]
     },
     {
       "deckName": "eval-strategy-batch2-validation",

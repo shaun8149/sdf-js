@@ -1,0 +1,287 @@
+{
+  "deckName": "eval-qbr-earnings",
+  "sourceFile": "sdf-js/examples/scaffold-pipeline/eval-qbr-earnings-slidedata.json",
+  "scaffold": {
+    "id": "financial-summary",
+    "label": "Financial Summary",
+    "description": "Formal financial summary report — income, balance, cashflow, ratios, outlook",
+    "pickScore": 1,
+    "pickSignals": [
+      "forced via --scaffold financial-summary"
+    ],
+    "pickerMethod": "forced"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [
+      26,
+      40,
+      66
+    ],
+    "accent": [
+      58,
+      138,
+      200
+    ],
+    "colors": [
+      [
+        58,
+        138,
+        200
+      ],
+      [
+        26,
+        40,
+        66
+      ],
+      [
+        100,
+        150,
+        200
+      ],
+      [
+        180,
+        210,
+        235
+      ],
+      [
+        240,
+        248,
+        255
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Report title + period + presenter",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Guidewire Announces Third Quarter Fiscal Year 2026 Financial Results",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "exec-statement",
+      "slotTitle": "Executive Statement",
+      "slotPurpose": "CEO or CFO opening statement — key message for the period",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "CEO Commentary: Business Momentum",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-exec-statement.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "quote-pull",
+        "bullet-list",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "highlights-kpi",
+      "slotTitle": "Financial Highlights",
+      "slotPurpose": "Top-line KPIs — revenue, EBITDA, net income, cash",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Key Growth Metrics",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-highlights-kpi.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "stat-banner",
+        "dashboard-multi-kpi-composite",
+        "dashboard-multi-kpi-composite",
+        "dashboard-multi-kpi-composite",
+        "dashboard-multi-kpi-composite"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "income",
+      "slotTitle": "Income Statement",
+      "slotPurpose": "Revenue breakdown and profitability waterfall",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Total Revenue Performance",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-income.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "stat-banner"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "balance-sheet",
+      "slotTitle": "Balance Sheet",
+      "slotPurpose": "Assets vs liabilities snapshot",
+      "sourceSlideIdx": 13,
+      "sourceSlideTitle": "Cash Position and Investments",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-balance-sheet.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "cashflow",
+      "slotTitle": "Cash Flow",
+      "slotPurpose": "Operating / investing / financing cash flows",
+      "sourceSlideIdx": 18,
+      "sourceSlideTitle": "Full Fiscal Year 2026 Outlook: Profitability and Cash Flow",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-cashflow.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "bar"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ratios",
+      "slotTitle": "Key Ratios",
+      "slotPurpose": "Liquidity, profitability, leverage ratios",
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "Profitability Improvement",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-ratios.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "segments",
+      "slotTitle": "Segment Analysis",
+      "slotPurpose": "Revenue by business unit or geography",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Subscription and Support Revenue",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-segments.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "stat-banner",
+        "icon-grid"
+      ]
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "outlook",
+      "slotTitle": "Outlook & Forecast",
+      "slotPurpose": "Forward guidance and scenario planning",
+      "sourceSlideIdx": 19,
+      "sourceSlideTitle": "Summary and Outlook",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-08-outlook.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "slotPurpose": "Supporting tables and methodology notes",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Presentation Overview",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-09-appendix.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list",
+        "bullet-list"
+      ]
+    }
+  ],
+  "droppedSlots": [],
+  "totals": {
+    "slotsBaked": 10,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.3349866
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T04:17:35.361Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

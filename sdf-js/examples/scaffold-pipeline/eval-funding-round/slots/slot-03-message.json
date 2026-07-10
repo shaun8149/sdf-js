@@ -1,0 +1,88 @@
+{
+  "slotIdx": 3,
+  "slotName": "message",
+  "slotTitle": "Core Message",
+  "slotPurpose": "Campaign narrative and key messaging pillars",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Lead Investor Perspective",
+  "sceneData": {
+    "name": "marketing-campaign/message",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Core Message",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 280,
+        "args": {
+          "quote": "Redo started by building trust with merchants through post purchase experiences and has expanded into a much larger opportunity",
+          "author": "Paul Szurek",
+          "attribution": "Smash Capital",
+          "align": "center"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 240,
+        "y": 500,
+        "w": 800,
+        "h": 160,
+        "args": {
+          "items": [
+            {
+              "icon": "arrow-clockwise",
+              "label": "Evolution",
+              "sublabel": "From initial offering"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Market Opportunity",
+              "sublabel": "Validated expansion"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "marketing-campaign",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "testimonial-wall",
+      "quote-pull",
+      "bullet-list",
+      "icon-row"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5110,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 389,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0250674,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-10T04:20:14.661Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "slotIdx": 6,
+  "slotName": "ratios",
+  "slotTitle": "Key Ratios",
+  "slotPurpose": "Liquidity, profitability, leverage ratios",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Profitability Improvement",
+  "sceneData": {
+    "name": "financial-summary/ratios",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Ratios",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Profitability Metrics",
+          "kpis": [
+            {
+              "value": "+69%",
+              "label": "Non-GAAP Operating Income",
+              "sublabel": "Year over year growth",
+              "trend": "up",
+              "trendValue": "+69%",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "+49%",
+              "label": "Non-GAAP EPS",
+              "sublabel": "Year over year growth",
+              "trend": "up",
+              "trendValue": "+49%",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "Q3",
+              "label": "Sharp Improvement",
+              "sublabel": "Profitability gained momentum",
+              "trend": "up",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "dashboard-multi-kpi-composite",
+      "radial-spoke",
+      "gauge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5114,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 412,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0254244,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-10T04:17:35.360Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

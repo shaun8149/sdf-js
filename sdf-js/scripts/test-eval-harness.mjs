@@ -7,7 +7,12 @@
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { scoreDeckQuality, collectTextChars, NON_TEXT_ARG_KEYS } from './eval-deck-quality.mjs';
+import {
+  scoreDeckQuality,
+  collectTextChars,
+  NON_TEXT_ARG_KEYS,
+  verifiedDerivedTokens,
+} from './eval-deck-quality.mjs';
 
 let pass = 0;
 let fail = 0;
@@ -355,6 +360,47 @@ rmSync(dir, { recursive: true, force: true });
   );
   ok(entityGrounded('Cloud Costs Overview', src), 'phrase built from source words self-grounds');
   ok(entityGrounded('IMF', '国际货币基金组织发布报告'), 'alias grounds cross-language');
+}
+
+// ── Sprint 65: Rule 24 derived-value citation verifier ──
+{
+  const src = new Set([
+    '30.6',
+    '4.5',
+    '1,483.2',
+    '1483.2',
+    '1,146.8',
+    '1146.8',
+    '1,696,180',
+    '1696180',
+    '372.5',
+  ]);
+  const v = verifiedDerivedTokens(
+    [
+      '+580% (30.6 vs 4.5)', //     correct growth, parents grounded → verified
+      '-64% (46.0 vs 16.5)', //     parents NOT in source → rejected
+      '22.7% (1,483.2 vs 1,146.8)', // correct decline → verified
+      '1.7M (1,696,180)', //        rounding citation → verified
+      '+999% (30.6 vs 4.5)', //     wrong arithmetic → rejected
+      '50% (372.5)', //             percent with single parent → rejected
+    ],
+    src,
+    null,
+  );
+  ok(v.has('580%'), 'correct growth citation verifies');
+  ok(v.has('22.7%'), 'correct decline citation verifies');
+  ok(v.has('1.7M'), 'rounding citation verifies');
+  ok(!v.has('64%'), 'ungrounded parents rejected');
+  ok(!v.has('999%'), 'wrong arithmetic rejected');
+  ok(!v.has('50%'), 'single-parent percent rejected');
+  const v2 = verifiedDerivedTokens(
+    ['-$336.4M (1,483.2 vs 1,146.8)', '319 (314 vs 324)', '$500M (1,483.2 vs 1,146.8)'],
+    new Set(['1,483.2', '1483.2', '1,146.8', '1146.8', '314', '324']),
+    null,
+  );
+  ok(v2.has('$336.4M'), 'absolute-difference citation verifies (unit-suffix tolerant)');
+  ok(v2.has('319'), 'midpoint citation verifies');
+  ok(!v2.has('$500M'), 'wrong absolute difference rejected');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

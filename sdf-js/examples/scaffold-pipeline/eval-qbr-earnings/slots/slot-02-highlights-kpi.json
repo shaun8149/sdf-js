@@ -1,0 +1,228 @@
+{
+  "slotIdx": 2,
+  "slotName": "highlights-kpi",
+  "slotTitle": "Financial Highlights",
+  "slotPurpose": "Top-line KPIs — revenue, EBITDA, net income, cash",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Key Growth Metrics",
+  "sceneData": {
+    "name": "financial-summary/highlights-kpi",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Financial Highlights",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 140,
+        "w": 1200,
+        "h": 100,
+        "args": {
+          "value": "ARR +19% · Revenue +27%",
+          "label": "Q3 Growth Metrics",
+          "bg": "accent"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 260,
+        "w": 590,
+        "h": 200,
+        "args": {
+          "title": "Revenue Components",
+          "kpis": [
+            {
+              "value": "$56.0M",
+              "label": "License Revenue",
+              "sublabel": "Q3",
+              "trend": "down",
+              "trendValue": "-2%",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "$71.8M",
+              "label": "Services Revenue",
+              "sublabel": "Q3",
+              "trend": "up",
+              "trendValue": "+32%",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 650,
+        "y": 260,
+        "w": 590,
+        "h": 200,
+        "args": {
+          "title": "GAAP Performance",
+          "kpis": [
+            {
+              "value": "$30.6M",
+              "label": "Operating Income",
+              "sublabel": "+580% (30.6 vs 4.5)",
+              "trend": "up",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "$16.5M",
+              "label": "Net Income",
+              "sublabel": "-64% (16.5 vs 46.0)",
+              "trend": "down",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "$0.19",
+              "label": "EPS",
+              "sublabel": "vs $0.54 prior year",
+              "trend": "down",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 480,
+        "w": 590,
+        "h": 200,
+        "args": {
+          "title": "Non-GAAP Performance",
+          "kpis": [
+            {
+              "value": "$77.8M",
+              "label": "Operating Income",
+              "sublabel": "+69% (77.8 vs 46.1)",
+              "trend": "up",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "$69.6M",
+              "label": "Net Income",
+              "sublabel": "+47% (69.6 vs 47.4)",
+              "trend": "up",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "$0.82",
+              "label": "EPS",
+              "sublabel": "vs $0.55 prior year",
+              "trend": "up",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 650,
+        "y": 480,
+        "w": 590,
+        "h": 200,
+        "args": {
+          "title": "Q4 FY26 Guidance",
+          "kpis": [
+            {
+              "value": "$1,229-$1,237M",
+              "label": "Ending ARR",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            },
+            {
+              "value": "$259-$265M",
+              "label": "Subscription & Support",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            },
+            {
+              "value": "$396-$406M",
+              "label": "Total Revenue",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "stat-banner",
+      "dashboard-multi-kpi-composite",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5718,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1221,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0393714,
+    "elapsedSec": 17.8,
+    "generatedAt": "2026-07-10T04:17:35.358Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

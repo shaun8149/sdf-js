@@ -1,0 +1,80 @@
+{
+  "slotIdx": 6,
+  "slotName": "ask",
+  "slotTitle": "Ask",
+  "slotPurpose": "What we need from LPs — intros, advice, resources",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Post-Purchase Concierge Service",
+  "sceneData": {
+    "name": "investor-update/ask",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Ask",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "handshake",
+              "label": "Strategic Intros",
+              "sublabel": "E-commerce brands seeking post-purchase solutions"
+            },
+            {
+              "icon": "users",
+              "label": "Hiring Support",
+              "sublabel": "Product and engineering talent referrals"
+            },
+            {
+              "icon": "lightbulb",
+              "label": "Retention Expertise",
+              "sublabel": "Advice on scaling customer lifetime value"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row",
+      "call-to-action"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5103,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024191400000000002,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-10T04:22:53.357Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

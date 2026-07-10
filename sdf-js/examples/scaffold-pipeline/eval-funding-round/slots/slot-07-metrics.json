@@ -1,0 +1,106 @@
+{
+  "slotIdx": 7,
+  "slotName": "metrics",
+  "slotTitle": "Success Metrics",
+  "slotPurpose": "KPIs we will measure — impressions, conversions, CAC",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "International Expansion Plans",
+  "sceneData": {
+    "name": "marketing-campaign/metrics",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Success Metrics",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Global Expansion",
+              "sublabel": "Merchant network worldwide"
+            },
+            {
+              "icon": "package",
+              "label": "Returns Infrastructure",
+              "sublabel": "ReturnBear acquisition"
+            },
+            {
+              "icon": "storefront",
+              "label": "Commerce Support",
+              "sublabel": "Worldwide platform"
+            }
+          ],
+          "iconStyle": "card",
+          "iconSize": "large"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 400,
+        "w": 1200,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "icon": "network",
+              "label": "International merchant network expansion",
+              "status": "highlight"
+            },
+            {
+              "icon": "arrow-clockwise",
+              "label": "Global returns infrastructure via ReturnBear",
+              "status": "highlight"
+            },
+            {
+              "icon": "globe",
+              "label": "Worldwide commerce platform positioning",
+              "status": "highlight"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "marketing-campaign",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "funnel-with-conversion",
+      "dashboard-multi-kpi-composite",
+      "kpi-card",
+      "stat-grid-large"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5106,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 484,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026480399999999998,
+    "elapsedSec": 8.5,
+    "generatedAt": "2026-07-10T04:20:14.661Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

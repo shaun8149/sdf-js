@@ -1,0 +1,114 @@
+{
+  "slotIdx": 9,
+  "slotName": "appendix",
+  "slotTitle": "Appendix",
+  "slotPurpose": "Supporting tables and methodology notes",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Presentation Overview",
+  "sceneData": {
+    "name": "financial-summary/appendix",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Appendix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "Methodology Notes",
+          "items": [
+            {
+              "icon": "chart-line",
+              "label": "Revenue growth YoY comparison",
+              "sublabel": "Constant currency basis"
+            },
+            {
+              "icon": "calculator",
+              "label": "Profitability metrics normalized",
+              "sublabel": "Excludes one-time items"
+            },
+            {
+              "icon": "calendar",
+              "label": "Fiscal 2026 projections",
+              "sublabel": "Based on current run rate"
+            },
+            {
+              "icon": "database",
+              "label": "Segment reporting aligned",
+              "sublabel": "Per GAAP standards"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "Key Assumptions",
+          "items": [
+            {
+              "icon": "globe",
+              "label": "Macroeconomic conditions stable",
+              "sublabel": "No major disruptions"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Currency fluctuation normalized",
+              "sublabel": "Within historical ranges"
+            },
+            {
+              "icon": "users",
+              "label": "Customer retention sustained",
+              "sublabel": "At current levels"
+            },
+            {
+              "icon": "chart-bar",
+              "label": "Market share trajectory",
+              "sublabel": "Continues current trend"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5095,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 581,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0279024,
+    "elapsedSec": 10.6,
+    "generatedAt": "2026-07-10T04:17:35.361Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
