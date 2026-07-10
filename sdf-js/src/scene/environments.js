@@ -211,6 +211,8 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
     bloomMix: 0.24,
     ...(out.defaults.postFx || {}),
   };
+  // SDF glow (march-loop halo, idiom L08) — subtle silhouette light on the backdrop
+  if (out.defaults.glow == null) out.defaults.glow = { amount: 0.35, k: 6.0 };
 
   // (b) spotlight rig: warm key spot above-front aimed at the structure + cool rim behind
   if (!Array.isArray(out.defaults.lights) || out.defaults.lights.length === 0) {
