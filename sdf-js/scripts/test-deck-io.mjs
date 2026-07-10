@@ -5,7 +5,11 @@ import {
   DECK_FORMAT,
   DECK_FORMAT_VERSION,
 } from '../src/present/deck-io.js';
-import { newsToFullDeck, chooseScaffoldForOutline } from '../src/present/news/full-deck.js';
+import {
+  newsToFullDeck,
+  chooseScaffoldForOutline,
+  retryFailedSlot,
+} from '../src/present/news/full-deck.js';
 
 let pass = 0;
 let fail = 0;
@@ -174,6 +178,62 @@ const deck = {
   );
   // determinism: same outline → same pick
   ok(chooseScaffoldForOutline(qbrOutline).scaffold.id === scaffold.id, 'auto choice deterministic');
+}
+
+// ── Sprint 68: retryFailedSlot — a failed slot is a retryable unit ──
+{
+  const lp = (i) => ({
+    scaffold,
+    slot: { name: `s${i}`, title: `Slide ${i}` },
+    slotIdx: i,
+    slideIdx: 0,
+    theme,
+    slide: slides[0],
+    slides,
+    extraSlides: [],
+  });
+  const deck2 = {
+    slots: [
+      { slotIdx: 0, slotName: 's0', sceneData: { subjects: [] } },
+      { slotIdx: 4, slotName: 's4', sceneData: { subjects: [] } },
+    ],
+    errors: [{ slot: 's2', slotIdx: 2, slotTitle: 'Slide 2', message: 'boom', liftParams: lp(2) }],
+  };
+  const okLift = async () => ({ sceneData: { subjects: [{ type: 'kpi-card', args: {} }] } });
+  const slot = await retryFailedSlot(deck2, deck2.errors[0], { apiKey: 'k', liftFn: okLift });
+  ok(
+    slot.slotIdx === 2 && deck2.slots[1] === slot,
+    'rescued slot splices at its skeleton position',
+  );
+  ok(deck2.errors.length === 0, 'error entry removed on success');
+
+  const deck3 = {
+    slots: [],
+    errors: [{ slot: 's1', slotIdx: 1, slotTitle: 'S1', message: 'old', liftParams: lp(1) }],
+  };
+  let threw = false;
+  try {
+    await retryFailedSlot(deck3, deck3.errors[0], {
+      apiKey: 'k',
+      liftFn: async () => {
+        throw new Error('still down');
+      },
+    });
+  } catch {
+    threw = true;
+  }
+  ok(
+    threw && deck3.errors.length === 1 && deck3.errors[0].message === 'still down',
+    'failed retry keeps the entry with the fresh message',
+  );
+
+  let threw2 = false;
+  try {
+    await retryFailedSlot(deck3, { slot: 'x' }, { apiKey: 'k', liftFn: okLift });
+  } catch {
+    threw2 = true;
+  }
+  ok(threw2, 'entry without liftParams rejected');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

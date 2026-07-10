@@ -199,7 +199,25 @@ export async function newsToFullDeck(
     if (r && !r.error) {
       slots.push(streamed.get(i) || makeSlot(a, r));
     } else {
-      errors.push({ slot: a.slot.name, message: r?.error || 'unknown' });
+      // Sprint 68: a failed slot is a RETRYABLE unit, not just a log line —
+      // carry the same liftParams a successful slot would have, so the UI
+      // can offer 🔁 without re-deriving anything
+      errors.push({
+        slot: a.slot.name,
+        slotIdx: a.slotIdx,
+        slotTitle: a.slot.title,
+        message: r?.error || 'unknown',
+        liftParams: {
+          scaffold,
+          slot: a.slot,
+          slotIdx: a.slotIdx,
+          slideIdx: a.slideIdx,
+          theme,
+          slide: slides[a.slideIdx],
+          slides,
+          extraSlides: a.extraSlides || [],
+        },
+      });
     }
   }
 
@@ -239,6 +257,39 @@ export function mergeLockedSlots(newSlots, lockedSlots) {
  * @param {number} slotIdx — the slot's slotIdx (not array index)
  * @param {object} opts — { apiKey, revision?, liftFn? (test injection) }
  */
+/**
+ * retryFailedSlot — Sprint 68: lift a failed slot again and splice it into
+ * the deck at its skeleton position. On success the error entry is removed
+ * and the new slot object is returned; on failure the error entry stays
+ * (with the fresh message) and the error is re-thrown for the UI.
+ */
+export async function retryFailedSlot(deck, errorEntry, { apiKey, liftFn = liftSlotLLM } = {}) {
+  if (!errorEntry?.liftParams)
+    throw new Error('retryFailedSlot: error entry carries no liftParams');
+  const systemPrompt = await getSystemPrompt();
+  let sceneData;
+  try {
+    ({ sceneData } = await liftFn(errorEntry.liftParams, { apiKey, systemPrompt }));
+  } catch (e) {
+    errorEntry.message = e.message;
+    throw e;
+  }
+  const slot = {
+    slotIdx: errorEntry.slotIdx,
+    slotName: errorEntry.slot,
+    slotTitle: errorEntry.slotTitle,
+    sceneData,
+    liftParams: errorEntry.liftParams,
+  };
+  // splice at skeleton position: before the first delivered slot with a
+  // larger slotIdx (deck order = user order elsewhere, but a rescued page
+  // returns to its own room)
+  const at = deck.slots.findIndex((s) => (s.slotIdx ?? Infinity) > (slot.slotIdx ?? -1));
+  deck.slots.splice(at === -1 ? deck.slots.length : at, 0, slot);
+  deck.errors = (deck.errors || []).filter((e) => e !== errorEntry);
+  return slot;
+}
+
 export async function reliftSlot(
   deck,
   slotIdx,

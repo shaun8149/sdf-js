@@ -9,7 +9,7 @@
 // Used for headless verification where a real Anthropic call can't run.
 import { textToIR } from '../../src/scene/text-to-ir.js';
 import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
-import { newsToFullDeck, reliftSlot } from '../../src/present/news/full-deck.js';
+import { newsToFullDeck, reliftSlot, retryFailedSlot } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
 import { rethemeDeck } from '../../src/present/retheme.js';
 import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.js';
@@ -329,6 +329,8 @@ async function updateQualityLights() {
     const { bySlot, counts } = await assessDeck(currentDeck, {
       sourceTexts: [promptEl.value, ...outline],
     });
+    // slot cards precede failed-slot cards in slidesEl, so index alignment
+    // with deck.slots holds for the first slots.length children
     [...slidesEl.children].forEach((card, i) => {
       const slot = currentDeck.slots[i];
       const a = bySlot.get(slot);
@@ -373,6 +375,40 @@ async function renderDeck(deck) {
       palette: deck.theme,
       decor: slotDecor(deck, slot),
     });
+  }
+  // Sprint 68: failed slots surface as retryable cards, not console lines —
+  // a dropped page you can SEE is a page you can rescue
+  for (const errEntry of deck.errors || []) {
+    if (!errEntry.liftParams) continue;
+    const card = document.createElement('div');
+    card.className = 'slide-card failed';
+    const body = document.createElement('div');
+    body.className = 'fail-body';
+    body.innerHTML = `<b>「${errEntry.slotTitle || errEntry.slot}」lift 失败</b><span>${String(
+      errEntry.message,
+    ).slice(0, 120)}</span>`;
+    const retryBtn = document.createElement('button');
+    retryBtn.className = 'retry';
+    retryBtn.textContent = '🔁 重试这一页';
+    retryBtn.addEventListener('click', async () => {
+      const apiKey = keyEl.value.trim();
+      if (!apiKey) return setStatus('paste your Anthropic API key first', true);
+      retryBtn.disabled = true;
+      retryBtn.textContent = 're-lifting…';
+      try {
+        await retryFailedSlot(deck, errEntry, { apiKey });
+        await renderDeck(deck);
+        autosave();
+        setStatus(`「${errEntry.slotTitle || errEntry.slot}」已救回 — ${deck.slots.length} 页`);
+      } catch (e) {
+        retryBtn.disabled = false;
+        retryBtn.textContent = '🔁 重试这一页';
+        setStatus(`重试失败: ${e.message}`, true);
+      }
+    });
+    card.appendChild(body);
+    card.appendChild(retryBtn);
+    slidesEl.appendChild(card);
   }
   updateQualityLights(); // async, non-blocking — lights pop in when ready
 }

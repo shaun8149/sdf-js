@@ -246,6 +246,43 @@
       .slide-card.busy .slide-busy {
         display: flex;
       }
+      /* Sprint 68: failed-slot rescue card */
+      .slide-card.failed {
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        outline: 2px dashed rgba(255, 120, 100, 0.5);
+        outline-offset: -2px;
+      }
+      .slide-card.failed .fail-body {
+        text-align: center;
+        color: #ff9a8a;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 16px;
+      }
+      .slide-card.failed .fail-body span {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 11px;
+      }
+      .slide-card.failed .retry {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        background: #2d6fd6;
+        color: #fff;
+        font: 600 13px -apple-system, Inter, sans-serif;
+        cursor: pointer;
+      }
+      .slide-card.failed .retry:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
       /* Sprint 67: per-slide quality light (visual audit + number grounding) */
       .qlight {
         position: absolute;
