@@ -44,13 +44,15 @@ export function serializeDeck(deck) {
     shared,
     slots: deck.slots.map((s) => ({
       ...s,
-      liftParams: s.liftParams && canHoist
-        ? {
-            ...s.liftParams,
-            scaffold: undefined,
-            slides: undefined,
-            theme: undefined,
-          }
+      liftParams: s.liftParams
+        ? canHoist
+          ? {
+              ...s.liftParams,
+              scaffold: undefined,
+              slides: undefined,
+              theme: undefined,
+            }
+          : s.liftParams
         : undefined,
     })),
   };
