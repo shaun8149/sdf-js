@@ -18,6 +18,18 @@ import { validateDeck, DECK_FORMAT, DECK_FORMAT_VERSION } from './deck-spec.js';
 // single source of truth for the contract (docs/atlas-deck-contract.md)
 export { DECK_FORMAT, DECK_FORMAT_VERSION };
 
+function normalizeSlotSceneData(slot) {
+  const sceneData = slot.sceneData;
+  if (!sceneData || Array.isArray(sceneData.subjects) || !Array.isArray(sceneData.atoms)) return slot;
+  return {
+    ...slot,
+    sceneData: {
+      ...sceneData,
+      subjects: sceneData.atoms,
+    },
+  };
+}
+
 export function serializeDeck(deck) {
   if (!deck || !Array.isArray(deck.slots)) throw new Error('serializeDeck: not a deck');
   const first = deck.slots.find((s) => s.liftParams);
@@ -65,17 +77,19 @@ export function deserializeDeck(data) {
     theme: data.theme,
     scaffold: data.scaffold,
     decor: data.decor,
-    slots: (data.slots || []).map((s) => ({
-      ...s,
-      liftParams: s.liftParams
-        ? {
-            ...s.liftParams,
-            scaffold: shared?.scaffold,
-            slides: shared?.slides,
-            theme: shared?.theme,
-          }
-        : undefined,
-    })),
+    slots: (data.slots || []).map((s) =>
+      normalizeSlotSceneData({
+        ...s,
+        liftParams: s.liftParams
+          ? {
+              ...s.liftParams,
+              scaffold: shared?.scaffold,
+              slides: shared?.slides,
+              theme: shared?.theme,
+            }
+          : undefined,
+      }),
+    ),
     errors: [],
   };
 }

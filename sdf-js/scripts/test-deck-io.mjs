@@ -140,7 +140,11 @@ const deck = {
     slots: [streamedSlot],
   };
   const rt = deserializeDeck(JSON.stringify(serializeDeck(mini)));
-  ok(rt.slots[0].sceneData.atoms[0].args.t === 'cover', 'streamed slot round-trips');
+  ok(rt.slots[0].sceneData.atoms[0].args.t === 'cover', 'streamed slot atoms survive');
+  ok(
+    rt.slots[0].sceneData.subjects[0].args.t === 'cover',
+    'atoms alias opens as subjects for render/export paths',
+  );
   ok(typeof newsToFullDeck === 'function', 'newsToFullDeck exports (streaming hooks live there)');
 }
 

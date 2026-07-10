@@ -78,6 +78,11 @@ for (const [f, re] of Object.entries(EXPECT)) {
   ok(v.ok, `serializeDeck output honors the contract (${v.errors.join('; ') || 'clean'})`);
   const back = deserializeDeck(JSON.stringify(ser));
   ok(back.slots.length === 1, 'deserializeDeck accepts its own output');
+  const aliasBack = deserializeDeck(readFileSync(join(HANDOFF, 'valid', 'cjk-atoms-alias.json'), 'utf8'));
+  ok(
+    aliasBack.slots[0].sceneData.subjects[0].type === 'stat-banner',
+    'deserializeDeck materializes the atoms alias for runtime consumers',
+  );
   let threw = null;
   try {
     deserializeDeck(JSON.stringify({ format: 'atlas-deck', version: 1, slots: [{ slotIdx: 0 }] }));
