@@ -33,10 +33,48 @@ Rules: indices are integers into nodes. Numbers real if given, plausible if not.
 emphasis = what the narrative punches. Node names <= 3 words.
 
 Example: "our funnel: 1200 leads to 45 closed, focus on the close"
-{"title":"Pipeline","slides":[{"structure":"sequence","nodes":["Leads","Qualified","Proposal","Closed"],"magnitude":[1200,400,150,45],"emphasis":[3],"title":"Sales Funnel"}]}`;
+{"title":"Pipeline","slides":[{"structure":"sequence","nodes":["Leads","Qualified","Proposal","Closed"],"magnitude":[1200,400,150,45],"emphasis":[3],"title":"Sales Funnel"}]}
 
-/** Strip fences/prose and parse the model's reply into a validated deck. */
-export function parseIRResponse(text) {
+If the input reads like a full speech script (not a short idea), ALSO return
+"script": the ENTIRE input sliced VERBATIM into spans, in order, nothing reworded
+or dropped: [{"text": exact slice, "station": slide index it accompanies,
+"kind": "station" (arriving at that slide) | "super" (the punchline moment) |
+"hold" (transition/aside — stay put)}]. Slices concatenated must reproduce the
+input exactly.`;
+
+// ---- script spans (teleprompter fuel) ---------------------------------------
+// The script is SACRED: the model may only SLICE the speaker's own words and
+// attribute each slice to a beat — never reword (same discipline as the 2D
+// end's anti-hallucination rules). Enforced by reassembly: spans joined
+// (whitespace-normalized) must equal the original input text.
+const SPAN_KINDS = ['station', 'super', 'hold'];
+const normWS = (s) => String(s).replace(/\s+/g, '');
+
+export function validateScript(deck, original) {
+  const errors = [];
+  const spans = deck && deck.script;
+  if (!Array.isArray(spans) || spans.length === 0)
+    return { ok: false, errors: ['script must be a non-empty array of spans'] };
+  const nSlides = Array.isArray(deck.slides) ? deck.slides.length : 0;
+  spans.forEach((sp, i) => {
+    if (!sp || typeof sp.text !== 'string' || !sp.text.trim())
+      errors.push(`span ${i}: text must be a non-empty string`);
+    if (!Number.isInteger(sp.station) || sp.station < 0 || sp.station >= nSlides)
+      errors.push(`span ${i}: station ${sp?.station} out of range [0, ${nSlides})`);
+    if (!SPAN_KINDS.includes(sp?.kind))
+      errors.push(`span ${i}: kind '${sp?.kind}' not in ${SPAN_KINDS.join('/')}`);
+  });
+  if (errors.length === 0 && normWS(spans.map((s) => s.text).join('')) !== normWS(original)) {
+    errors.push(
+      'script must be a verbatim slicing of the original text (只切不改) — reassembled spans differ from the input',
+    );
+  }
+  return { ok: errors.length === 0, errors };
+}
+
+/** Strip fences/prose and parse the model's reply into a validated deck.
+ *  Pass the ORIGINAL input text as the 2nd arg to enforce verbatim script slicing. */
+export function parseIRResponse(text, original = null) {
   let s = String(text).trim();
   const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (fence) s = fence[1].trim();
@@ -62,6 +100,12 @@ export function parseIRResponse(text) {
     if (ir && !STRUCTURES.includes(ir.structure))
       errors.push(`slide ${i}: unknown structure '${ir?.structure}'`);
   });
+  // script spans: validated only when the caller supplies the original text
+  // (verbatim-slicing check needs it). Absent script → old contract, untouched.
+  if (deck.script != null && original != null) {
+    const sv = validateScript(deck, original);
+    if (!sv.ok) errors.push(...sv.errors.map((e) => `script: ${e}`));
+  }
   if (errors.length) {
     const err = new Error(`text-to-ir: invalid IR — ${errors.join(' | ')}`);
     err.validationErrors = errors;
@@ -101,10 +145,11 @@ async function callModel(messages, apiKey) {
  */
 export async function textToIR(text, apiKey) {
   if (!apiKey) throw new Error('text-to-ir: Anthropic API key required (BYOK)');
-  const messages = [{ role: 'user', content: String(text) }];
+  const original = String(text);
+  const messages = [{ role: 'user', content: original }];
   const first = await callModel(messages, apiKey);
   try {
-    return parseIRResponse(first);
+    return parseIRResponse(first, original);
   } catch (e) {
     if (!e.validationErrors) throw e; // not-JSON etc. — retrying rarely helps
     messages.push({ role: 'assistant', content: first });
@@ -112,6 +157,6 @@ export async function textToIR(text, apiKey) {
       role: 'user',
       content: `Your JSON failed validation:\n${e.validationErrors.join('\n')}\nReturn the corrected JSON only.`,
     });
-    return parseIRResponse(await callModel(messages, apiKey));
+    return parseIRResponse(await callModel(messages, apiKey), original);
   }
 }
