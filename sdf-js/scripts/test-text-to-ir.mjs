@@ -76,6 +76,23 @@ ok(parseIRResponse('Here is your deck:\n' + GOOD).slides.length === 2, 'leading 
   }
 }
 
+// ---- staged loop (the author page default): platforms + theatre layer -----------
+{
+  const deck = parseIRResponse(GOOD);
+  const scene = assembleDeck(deck, { stage: true });
+  ok(
+    scene.subjects.filter((s) => s.id.includes('stage-platform')).length === deck.slides.length,
+    'staged: one fitted platform per station',
+  );
+  ok(scene.defaults.glow && scene.defaults.glow.amount > 0, 'staged: deck theatre glow on');
+  try {
+    compile(scene, {});
+    ok(true, 'text → IR → STAGED deck compiles (author-page default path)');
+  } catch (x) {
+    ok(false, `staged compile failed: ${x.message}`);
+  }
+}
+
 // ---- prompt hygiene (repo rule: prompts stay SHORT) ------------------------------
 ok(
   TEXT_TO_IR_SYSTEM.length < 2200,

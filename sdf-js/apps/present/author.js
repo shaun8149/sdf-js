@@ -9,7 +9,10 @@ const STORAGE_KEY = 'atlas-anthropic-key'; // shared with the compositor's lift
 
 const params = new URLSearchParams(location.search);
 const env = params.get('env') || 'studio';
-const { show } = createFigure({ outdoor: env !== 'studio' });
+// Fighting-game stage ON by default for authored worlds (per-station platforms +
+// deck theatre layer) — it's the product face. ?stage=0 opts out.
+const stage = params.get('stage') !== '0';
+const { show } = createFigure({ outdoor: env !== 'studio', stage });
 
 const promptEl = document.getElementById('prompt');
 const goEl = document.getElementById('go');
@@ -39,7 +42,7 @@ async function generate() {
       `building ${deck.slides.length} station${deck.slides.length > 1 ? 's' : ''}: ${deck.slides.map((s) => s.structure).join(' → ')}`,
     );
     loading.classList.remove('done'); // shader may recompile for a new shape
-    show(assembleDeck(deck, { env }));
+    show(assembleDeck(deck, { env, stage }));
   } catch (e) {
     setStatus(e.message, true);
   } finally {
