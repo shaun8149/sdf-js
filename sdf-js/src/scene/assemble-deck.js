@@ -90,6 +90,13 @@ export function assembleDeck(deck, opts = {}) {
   const hitstops = [];
   let clock = 0;
   let prevPayoff = null;
+  // Per-station shader switching (M3 perf): the ONE-shader deck world hits
+  // Apple GPUs' super-linear giant-shader cost (register pressure kills
+  // occupancy at compile time — runtime branch-skipping proved useless, see
+  // 2026-07-10 perf A/B). So we also emit a WINDOW TIMELINE: which stations
+  // the camera can actually see during each span. The runtime swaps in a
+  // small per-window shader as playback crosses each boundary.
+  const windows = [];
 
   deck.slides.forEach((ir, k) => {
     // Render the station at the origin on its own clock, then transplant.
@@ -123,6 +130,7 @@ export function assembleDeck(deck, opts = {}) {
         shake: [0.14, 0.05], // sling settles as the next station arrives
         ease: 'whip', // gentle launch, FAST mid-flight, gentle arrival
       });
+      windows.push({ kind: 'transit', stations: [k - 1, k], start: clock, end: clock + dur });
       clock += dur;
     }
 
@@ -169,6 +177,7 @@ export function assembleDeck(deck, opts = {}) {
       hitstops.push({ at: h.at + clock, hold: h.hold });
     }
     const stationDur = seqDuration(st.cameraSequence.shots);
+    windows.push({ kind: 'station', stations: [k], start: clock, end: clock + stationDur });
     clock += stationDur;
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
     prevPayoff = { pos: addV(last.pos, origin), target: addV(last.target, origin) };
@@ -225,6 +234,12 @@ export function assembleDeck(deck, opts = {}) {
       ease: 'out',
       beat: 'finale', // presenter mode: the money-shot hold
     });
+    windows.push({
+      kind: 'finale',
+      stations: deck.slides.map((_, i) => i),
+      start: clock,
+      end: clock + 3.0,
+    });
   }
 
   // World dressing: envs bring their own terrain; the DEFAULT open world gets a
@@ -271,8 +286,35 @@ export function assembleDeck(deck, opts = {}) {
     subjects: [...subjects, ...worldSubjects],
     overlay,
     cameraSequence: { loop: false, shots, hitstops },
+    deckWindows: windows,
     // One shared open world — no per-station stage room (walls would slice the
     // deck axis). Ground/sky come from the environment or the page defaults.
     defaults: stageDefaults ? { ...baseDefaults, ...stageDefaults } : baseDefaults,
   };
+}
+
+// ---- Window slicing (per-station shader switching) ---------------------------
+// Cut ONE window's SceneData out of the assembled deck. Only `subjects` is
+// filtered — camera timeline, overlay and defaults are shared by reference so
+// the presentation clock, teleprompter and postFx are byte-identical across
+// window swaps (the swap changes WHICH GEOMETRY EXISTS, never when/how it is
+// filmed). Relies on assembleDeck's own naming: station subjects are prefixed
+// `s${k}-`, breadcrumb paths `path-${k}-` (connecting k → k+1); anything else
+// is shared world dressing (horizon hills, env terrain) and stays in every
+// window so the backdrop never pops.
+export function sliceDeckWindow(scene, win) {
+  if (!win || win.kind === 'finale') return scene;
+  const wanted = new Set(win.stations);
+  const keep = (s) => {
+    const id = typeof s.id === 'string' ? s.id : '';
+    const st = /^s(\d+)-/.exec(id);
+    if (st) return wanted.has(Number(st[1]));
+    const path = /^path-(\d+)-/.exec(id);
+    if (path) {
+      const i = Number(path[1]);
+      return wanted.has(i) || wanted.has(i + 1);
+    }
+    return true;
+  };
+  return { ...scene, subjects: scene.subjects.filter(keep) };
 }
