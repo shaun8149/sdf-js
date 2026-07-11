@@ -30,6 +30,15 @@ const ROCK_MAT = {
   roughness: 0.48,
   clearcoat: 0.45,
 };
+const RED_MAT = {
+  hue: 0.995,
+  sat: 0.85,
+  value: 0.78,
+  glow: 0.12,
+  kind: 'normal',
+  roughness: 0.3,
+  clearcoat: 0.5,
+};
 const GOLD_MAT = {
   hue: 0.11,
   sat: 0.78,
@@ -73,37 +82,68 @@ export function renderHold(ir, opts = {}) {
   // the stage layer's bullet column owns the LEFT of the screen (+x renders
   // screen-left, so the rock sits at negative x... the studio's +x→screen-left
   // mirror strikes again; -x is screen-RIGHT).
-  const mx = N > 0 ? -2.6 : 0;
-  // MONUMENTAL scale (analytic engine: geometry is free, spend it on awe) —
-  // the title rock towers to ~5 world units; the opening shot looks UP at it.
-  // The 2001 proportions (1:4:9 → 0.6:2.4:5.4 on its side): a TALL slab, not
-  // a wall. Verticality is what reads as monument.
-  const subjects = [rock('mono-title', [mx, 2.7, -1.4], [2.4, 5.4, 0.6], ROCK_MAT)];
+  const mx = N > 0 ? 0 : 0;
+  const subjects = [];
 
-  // Bullet stones: one black stone per bullet, a rising diagonal past the title
-  // monolith — the COUNT of points is world-geometry even though the words are
-  // screen typography. Each drops in on its beat (transplant-safe smoothstep)
-  // and hangs with a slow idle bob (the "floating rocks" read).
-  bullets.forEach((_, k) => {
-    const x = mx - 1.7 - k * 0.85; // -x is screen-RIGHT: the stone line rises away from the monolith
-    const y = 1.3 + k * 0.45;
-    const z = 0.2 - k * 0.7;
-    const drop = 0.7;
-    const t0 = introLead + k * holdEach - 0.35;
-    const t1 = t0 + 0.55;
-    const phase = (k * 1.7) % 6.28;
-    subjects.push(
-      rock(`stone-${k}`, [x, y, z], [0.62, 0.42, 0.5], emphasis.has(k) ? GOLD_MAT : ROCK_MAT, {
-        rotate: [0, 0.22 * (k % 2 === 0 ? 1 : -1), 0],
+  if (N === 0) {
+    // COVER — the monolith forest (user art direction): the 2001 title slab
+    // up front, then rank after rank of TALLER black monoliths receding into
+    // the haze. Depth is the awe: each rank grows and darkens into distance.
+    subjects.push(rock('mono-title', [0, 2.7, -1.4], [2.4, 5.4, 0.6], ROCK_MAT));
+    for (let rank = 0; rank < 4; rank++) {
+      const z = -6 - rank * 6.5;
+      const h = 8 + rank * 3.5; // taller as they recede — the skyline climbs
+      for (const side of [-1, 1]) {
+        for (let j = 0; j < 2; j++) {
+          const x = side * (3.4 + j * 3.0 + rank * 1.1);
+          subjects.push(
+            rock(
+              `forest-${rank}-${side < 0 ? 'l' : 'r'}${j}`,
+              [x, h / 2, z - j * 2.2],
+              [1.6 + rank * 0.35, h + j * 1.6, 0.7],
+              ROCK_MAT,
+              { rotate: [0, side * (0.12 + 0.08 * j), 0] },
+            ),
+          );
+        }
+      }
+    }
+  } else {
+    // CONTENTS — the source deck's cover diagram, translated to 3D (user art
+    // direction): one great black dome half-buried at centre, six red orbs
+    // strung along a 180° arc facing the camera, one landing per beat. The
+    // six lines of text ride the subtitle column only — no floor captions.
+    subjects.push({
+      id: 'dome',
+      type: 'sphere',
+      args: { radius: 2.6 },
+      transform: { translate: [0, 0, -1.2] },
+      material: { ...ROCK_MAT, roughness: 0.4 },
+    });
+    const R = 4.1;
+    bullets.forEach((_, k) => {
+      const a = (Math.PI * (k + 0.5)) / N; // 180° sweep, screen left → right
+      const x = Math.cos(a) * R;
+      const z = -1.2 + Math.sin(a) * R * 0.85;
+      const y = 0.62;
+      const drop = 1.6;
+      const t0 = introLead + k * holdEach - 0.35;
+      const t1 = t0 + 0.55;
+      subjects.push({
+        id: `orb-${k}`,
+        type: 'sphere',
+        args: { radius: 0.42 },
+        transform: { translate: [x, y, z] },
+        material: emphasis.has(k) ? GOLD_MAT : RED_MAT,
         animation: [
           {
             channel: 'transform.translate.y',
-            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.05 * sin(0.6 * t + ${phase.toFixed(2)})`,
+            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
           },
         ],
-      }),
-    );
-  });
+      });
+    });
+  }
 
   // Distant floaters: the same black rock, scattered mid-air far behind and
   // beside the stage — the motif that makes the world read as one place. All
@@ -119,6 +159,7 @@ export function renderHold(ir, opts = {}) {
     [-5.8, 6.4, -16, 2.4, 1.2],
     [6.8, 2.0, -13, 1.1, 0.6],
   ];
+  if (N > 0) FLOATERS.length = 0; // contents page: the dome owns the stage
   FLOATERS.forEach(([x, y, z, w, h], i) => {
     subjects.push(
       rock(`floater-${i}`, [x, y, z], [w, h, w * 0.55], ROCK_MAT, {
@@ -135,38 +176,73 @@ export function renderHold(ir, opts = {}) {
 
   // ---- camera: three quiet beats ---------------------------------------------------
   const driftDur = Math.max(2.2, N * holdEach + 0.8);
-  const shots = [
-    // opening: ground-level, looking UP at the monolith — the 2001 shot
-    {
-      duration: introLead,
-      pos: [mx + 2.8, 1.0, 8.6],
-      target: [mx, 3.1, -1.4],
-      fov: 44,
-      aperture: 0.35,
-      focalDistance: 9.2,
-      ease: 'out',
-    },
-    {
-      duration: driftDur,
-      pos: [mx - 1.8, 2.3, 5.2],
-      target: [mx + (N > 0 ? 1.0 : 0), 1.9, 0],
-      fov: 46,
-      transition: 'blend',
-      aperture: 0.26,
-      focalDistance: 5.6,
-      ease: 'smooth',
-    },
-    {
-      duration: 2.0,
-      pos: [mx + 0.8, 2.8, 8.2 * (env ? env.payoffZoom : 1)],
-      target: [mx, 2.2, -1],
-      fov: 46,
-      transition: 'blend',
-      aperture: 0.12,
-      focalDistance: 8.6,
-      ease: 'out',
-    },
-  ];
+  const shots =
+    N === 0
+      ? [
+          // cover: ground-level, looking up the title slab with the forest
+          // skyline climbing behind it
+          {
+            duration: introLead,
+            pos: [2.8, 1.0, 8.6],
+            target: [0, 3.1, -1.4],
+            fov: 44,
+            aperture: 0.35,
+            focalDistance: 9.2,
+            ease: 'out',
+          },
+          {
+            duration: driftDur,
+            pos: [-2.4, 1.6, 7.2],
+            target: [0.4, 4.2, -8],
+            fov: 46,
+            transition: 'blend',
+            aperture: 0.26,
+            focalDistance: 9.5,
+            ease: 'smooth',
+          },
+          {
+            duration: 2.0,
+            pos: [0.8, 2.6, 9.6 * (env ? env.payoffZoom : 1)],
+            target: [0, 3.4, -6],
+            fov: 46,
+            transition: 'blend',
+            aperture: 0.12,
+            focalDistance: 11.0,
+            ease: 'out',
+          },
+        ]
+      : [
+          // contents: settle above the arc so the whole crescent reads
+          {
+            duration: introLead,
+            pos: [0.5, 2.2, 8.8],
+            target: [0, 0.7, 0.6],
+            fov: 46,
+            aperture: 0.3,
+            focalDistance: 8.6,
+            ease: 'out',
+          },
+          {
+            duration: driftDur,
+            pos: [-1.6, 3.4, 8.0],
+            target: [0.3, 0.5, 0.4],
+            fov: 46,
+            transition: 'blend',
+            aperture: 0.24,
+            focalDistance: 8.0,
+            ease: 'smooth',
+          },
+          {
+            duration: 2.0,
+            pos: [0.6, 4.4, 9.6 * (env ? env.payoffZoom : 1)],
+            target: [0, 0.4, -0.4],
+            fov: 44,
+            transition: 'blend',
+            aperture: 0.12,
+            focalDistance: 10.0,
+            ease: 'out',
+          },
+        ];
 
   // ---- overlay: narrative → the stage layer ------------------------------------------
   // title/screen roles are STAGE items — figure-core renders them as pure 2D
@@ -175,14 +251,15 @@ export function renderHold(ir, opts = {}) {
   const overlay = [
     {
       text: String(ir.title || bullets[0] || ''),
-      anchor: [mx, 3.6, -1.2],
+      anchor: [0, 3.6, -1.2],
       role: 'title',
     },
   ];
   bullets.forEach((b, k) => {
+    const a = (Math.PI * (k + 0.5)) / N;
     overlay.push({
       text: b,
-      anchor: [mx - 1.7 - k * 0.85, 1.3 + k * 0.45, 0.2 - k * 0.7],
+      anchor: [Math.cos(a) * 4.1, 0.62, -1.2 + Math.sin(a) * 4.1 * 0.85],
       role: 'screen',
       revealAt: introLead + k * holdEach + 0.25,
     });

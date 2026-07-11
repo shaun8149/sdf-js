@@ -54,11 +54,11 @@ const IR = {
 };
 {
   const s = renderHold(IR);
-  const stones = s.subjects.filter((x) => /^stone-\d+$/.test(x.id));
-  ok(stones.length === 6, 'one black stone per bullet (the COUNT is geometry)');
+  const orbs = s.subjects.filter((x) => /^orb-\d+$/.test(x.id));
+  ok(orbs.length === 6, 'one red orb per bullet on the 180° arc (the COUNT is geometry)');
   ok(
-    stones.every((x) => x.args.dims[2] >= 0.3),
-    'stones are real bodies with depth, not plaques',
+    s.subjects.some((x) => x.id === 'dome'),
+    'the great black dome anchors the contents page',
   );
   ok(
     s.overlay.filter((o) => o.role === 'screen').length === 6,
@@ -70,14 +70,14 @@ const IR = {
     'bullet reveals are staggered',
   );
   ok(
-    JSON.stringify(stones[5].material) !== JSON.stringify(stones[0].material),
-    'emphasized bullet stone is gold',
+    JSON.stringify(orbs[5].material) !== JSON.stringify(orbs[0].material),
+    'emphasized bullet orb is gold among the red',
   );
   // deck-transplant safety: every build-in expr (drop + idle bob tails on the
   // floaters) must parse under the STRICT shifter
   let allShift = true;
   const animated = s.subjects.filter((x) => x.animation);
-  ok(animated.length >= 10, 'stones drop in and floaters bob (animated bodies)');
+  ok(animated.length >= 6, 'orbs drop in on their beats (animated bodies)');
   for (const p of animated) {
     try {
       shiftBuildInExpr(p.animation[0].expr, 2.5, 10);

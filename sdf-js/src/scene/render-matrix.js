@@ -24,12 +24,178 @@ const itemMat = (emphasized) =>
     ? { hue: 0.11, sat: 0.78, value: 0.95, glow: 0.22, kind: 'normal', roughness: 0.22, clearcoat: 0.6 }
     : { hue: 0.57, sat: 0.55, value: 0.72, kind: 'normal', roughness: 0.3, clearcoat: 0.45 };
 
+// ---- evolution form ------------------------------------------------------------
+// A matrix whose X axis is a two-state TIME axis (past → present) reads better
+// as the source diagram it usually comes from: the PAST as grounded blocks,
+// the PRESENT as red orbs floating above, one rising trail per dimension.
+// Opt-in via ir.form === 'evolution' (needs exactly 2 x-categories).
+const EVO_RED = {
+  hue: 0.995,
+  sat: 0.85,
+  value: 0.78,
+  glow: 0.12,
+  kind: 'normal',
+  roughness: 0.3,
+  clearcoat: 0.5,
+};
+const EVO_ROCK = {
+  hue: 0.62,
+  sat: 0.25,
+  value: 0.14,
+  kind: 'normal',
+  roughness: 0.5,
+  clearcoat: 0.35,
+};
+
+function renderEvolutionForm(ir, env) {
+  const nodes = ir.nodes.map(label);
+  const [xCats, yCats] = ir.axes; // xCats = [past, present]
+  const D = yCats.length; // dimensions → columns
+  const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : []);
+  const colX = (yi) => -(yi - (D - 1) / 2) * 3.4; // +x renders screen-left → negate
+  const ORB_Y = 3.6;
+  const introLead = 1.6;
+  const holdEach = 1.1;
+
+  const subjects = [];
+  const overlay = [
+    { text: String(ir.title || 'Evolution').toUpperCase(), anchor: [0, ORB_Y + 1.6, 0], role: 'title' },
+  ];
+  // axis labels stay ANCHORED: they name the two strata
+  overlay.push({ text: String(xCats[0]), anchor: [(D / 2) * 3.4 + 1.2, 0.75, 0], role: 'card' });
+  overlay.push({ text: String(xCats[1]), anchor: [(D / 2) * 3.4 + 1.2, ORB_Y, 0], role: 'card' });
+
+  let k = 0;
+  const orbBeats = [];
+  ir.cells.forEach((c, i) => {
+    const [xi, yi] = c;
+    const x = colX(yi);
+    if (xi === 0) {
+      // the PAST: a grounded slab
+      subjects.push({
+        id: `past-${i}`,
+        type: 'rounded_box',
+        args: { dims: [2.3, 1.1, 1.3], cornerR: 0.08 },
+        transform: { translate: [x, 0.55, 0] },
+        material: EVO_ROCK,
+      });
+    } else {
+      // the PRESENT: a red orb rising OUT of the past — the beat is the ascent
+      const t0 = introLead + k * holdEach;
+      const t1 = t0 + 0.8;
+      orbBeats.push({ i, x, at: t1 });
+      subjects.push({
+        id: `now-${i}`,
+        type: 'sphere',
+        args: { radius: emphasis.has(i) ? 0.95 : 0.78 },
+        transform: { translate: [x, ORB_Y, 0] },
+        material: emphasis.has(i) ? { ...EVO_RED, glow: 0.24 } : EVO_RED,
+        animation: [
+          {
+            channel: 'transform.translate.y',
+            expr: `${(ORB_Y - (ORB_Y - 1.1)).toFixed(3)} + ${(ORB_Y - 1.1).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.06 * sin(0.5 * t + ${((k * 2.1) % 6.28).toFixed(2)})`,
+          },
+        ],
+      });
+      k++;
+    }
+    // dimension text rides the subtitle column, beat-synced with its ascent
+    overlay.push({
+      text: nodes[i],
+      anchor: [x, xi === 0 ? 0.55 : ORB_Y, 0.9],
+      role: 'screen',
+      revealAt: xi === 0 ? 0.4 + yi * 0.2 : introLead + (k - 1) * holdEach + 0.85,
+    });
+  });
+
+  // rising trail per column: three shrinking chips between block and orb
+  for (let yi = 0; yi < D; yi++) {
+    const x = colX(yi);
+    for (let j = 0; j < 3; j++) {
+      const y = 1.5 + j * 0.72;
+      subjects.push({
+        id: `trail-${yi}-${j}`,
+        type: 'box',
+        args: { dims: [0.34 - j * 0.08, 0.12, 0.26 - j * 0.05] },
+        transform: { translate: [x, y, 0], rotate: [0, 0.3 * j, 0] },
+        material: EVO_ROCK,
+      });
+    }
+  }
+
+  const riseDone = introLead + k * holdEach + 0.4;
+  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : ir.cells.findIndex((c) => c[0] === 1);
+  const [, eyi] = ir.cells[emphasisIdx] || [1, 0];
+  const ex = colX(eyi);
+  const span = D * 3.4;
+  const shots = [
+    // 1 — ground level among the past blocks
+    {
+      duration: introLead,
+      pos: [1.2, 0.8, 6.2],
+      target: [0, 0.9, 0],
+      fov: 48,
+      aperture: 0.3,
+      focalDistance: 6.2,
+      ease: 'out',
+    },
+    // 2 — tilt UP as the present ascends
+    {
+      duration: Math.max(2.0, k * holdEach),
+      pos: [-1.4, 1.6, 7.4],
+      target: [0.3, ORB_Y * 0.7, 0],
+      fov: 46,
+      transition: 'blend',
+      aperture: 0.25,
+      focalDistance: 7.6,
+      ease: 'smooth',
+    },
+    // 3 — the SUPER: punch-in on the emphasized present orb
+    {
+      duration: 1.0,
+      pos: [ex + 0.6, ORB_Y - 0.4, 2.1],
+      target: [ex, ORB_Y, 0],
+      fov: 42,
+      transition: 'cut',
+      beat: 'super',
+      aperture: [0.9, 0.45],
+      focalDistance: 2.2,
+      shake: [0.5, 0.06],
+      ambient: [0.15, 1.0],
+      exposure: [1.45, 1.0],
+      ease: 'out',
+    },
+    // 4 — payoff: both strata in one frame
+    {
+      duration: 2.2,
+      pos: [1.0, 2.6, (span * 0.8 + 4.5) * (env ? env.payoffZoom : 1)],
+      target: [0, 2.0, 0],
+      fov: 46,
+      transition: 'blend',
+      aperture: 0.12,
+      focalDistance: span * 0.8 + 4.5,
+      ease: 'out',
+    },
+  ];
+  const superAt = shots[0].duration + shots[1].duration;
+
+  return {
+    v: 1,
+    name: `(matrix·evolution) ${ir.title || 'Evolution'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env ? env.defaults : { stage: { size: [Math.max(16, span + 6), 12, 12] } },
+  };
+}
+
 export function renderMatrix(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderMatrix: invalid IR — ${v.errors.join('; ')}`);
   if (ir.structure !== 'matrix')
     throw new Error(`renderMatrix: expected structure 'matrix', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  if (ir.form === 'evolution' && ir.axes[0].length === 2) return renderEvolutionForm(ir, env);
 
   const nodes = ir.nodes.map(label);
   const N = nodes.length;
