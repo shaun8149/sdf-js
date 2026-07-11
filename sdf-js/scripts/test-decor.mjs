@@ -134,10 +134,17 @@ function recCtx() {
     // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
     // Watercolor Dreams) — intermediate colors are theme-derived but not
     // exact stops, so the exact-match check doesn't apply to it.
+    // paper-folds shades facets by OKLab lightness offsets (ORI recipe,
+    // Sprint 78) — theme-derived but not exact stops, like strata-lines.
     if (
-      !['wash-flow', 'strata-lines', 'sediment-layers', 'hex-lattice', 'banded-ribbons'].includes(
-        family,
-      )
+      ![
+        'wash-flow',
+        'strata-lines',
+        'sediment-layers',
+        'hex-lattice',
+        'banded-ribbons',
+        'paper-folds',
+      ].includes(family)
     ) {
       const offPalette = rec.styles.filter((s) => {
         const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
@@ -347,8 +354,13 @@ function recCtx() {
     { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
   );
   ok(
-    rec.ops.filter((o) => o[0] === 'strokeRect').length === 16 * 9,
-    'block-mosaic strokes every cell',
+    rec.ops.filter((o) => o[0] === 'strokeRect').length === 0,
+    'block-mosaic draws no cell lattice (Sprint 78: blocks, not cells)',
+  );
+  const boundaryStrokes = rec.ops.filter((o) => o[0] === 'stroke').length;
+  ok(
+    boundaryStrokes > 30 && boundaryStrokes < 16 * 9 * 2,
+    `block-mosaic outlines block boundaries only (${boundaryStrokes})`,
   );
   const fills = rec.ops.filter((o) => o[0] === 'fillRect').length;
   ok(fills > 10 && fills < 16 * 9 * 0.6, `sparse fill gate working (${fills} of 144 cells filled)`);
@@ -370,8 +382,12 @@ function recCtx() {
     { family: 'wash-flow', seed: 33 },
     { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
   );
-  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
-  ok(strokes > 800, `wash-flow accumulates many faint strokes (${strokes})`);
+  const quads = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(quads > 400, `wash-flow accumulates a continuous quad curtain (${quads})`);
+  ok(
+    rec.ops.filter((o) => o[0] === 'stroke').length === 0,
+    'wash-flow never draws loose segments (Sprint 78: curtain, not strokes)',
+  );
   const alphas = rec.styles
     .map((s) => /rgba\(\d+, \d+, \d+, ([\d.]+)\)/.exec(String(s)))
     .filter(Boolean)
@@ -711,9 +727,11 @@ function recCtx() {
     { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
   );
   const fills = rec.ops.filter((o) => o[0] === 'fill').length;
-  ok(fills >= 4 && fills <= 12, `paper-folds yields few LARGE facets (${fills})`);
+  ok(fills >= 6 && fills <= 80, `paper-folds creases the sheet into facets (${fills})`);
   const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
-  ok(strokes === fills, 'paper-folds strokes each crease once per facet');
+  ok(strokes >= fills, `paper-folds inks creases + directional textures (${strokes})`);
+  const clips = rec.ops.filter((o) => o[0] === 'clip').length;
+  ok(clips >= 1, 'paper-folds clips folded flaps to the sheet');
   const a = recCtx();
   const b = recCtx();
   drawDecor(a.ctx, { family: 'paper-folds', seed: 71 }, { palette, w: 640, h: 360 });
@@ -729,13 +747,14 @@ function recCtx() {
     { family: 'growth-loops', seed: 58 },
     { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
   );
-  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
-  ok(strokes >= 3, `growth-loops draws rings + organism (${strokes} strokes)`);
-  const fills = rec.ops.filter((o) => o[0] === 'fill').length;
-  ok(fills === 1, 'growth-loops fills the final organism once');
-  // the organism grew: final loop has far more vertices than the seed circle
-  const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
-  ok(lineTos > 200, `growth-loops resamples as it grows (${lineTos} vertices)`);
+  const stamps = rec.ops.filter((o) => o[0] === 'arc').length;
+  ok(stamps > 200, `growth-loops accumulates pointillist stamps (${stamps})`);
+  ok(
+    rec.ops.filter((o) => o[0] === 'stroke').length === 0,
+    'growth-loops never strokes an outline (Sprint 78: dots are the bone)',
+  );
+  const dotFills = rec.ops.filter((o) => o[0] === 'fill').length;
+  ok(dotFills === stamps, 'growth-loops fills every stamp');
   const a = recCtx();
   const b = recCtx();
   drawDecor(a.ctx, { family: 'growth-loops', seed: 91 }, { palette, w: 640, h: 360 });
@@ -774,11 +793,13 @@ function recCtx() {
     { palette, x: 0, y: 0, w: 640, h: 360, intensity: 'subtle' },
   );
   const fills = rec.ops.filter((o) => o[0] === 'fill').length;
-  ok(fills >= 3 && fills <= 9, `torn-paper layers a few patches (${fills})`);
-  const strokes = rec.ops.filter((o) => o[0] === 'stroke').length;
-  ok(strokes === fills, 'torn-paper rims every patch with a deckle edge');
+  ok(fills >= 5, `torn-paper layers patches +印花 (${fills} fills)`);
+  const clips = rec.ops.filter((o) => o[0] === 'clip').length;
+  ok(clips >= 3, `torn-paper clips a pattern inside every patch (${clips})`);
+  const specks = rec.ops.filter((o) => o[0] === 'fillRect').length;
+  ok(specks >= 3, `torn-paper scatters fiber specks (${specks})`);
   const lineTos = rec.ops.filter((o) => o[0] === 'lineTo').length;
-  ok(lineTos >= fills * 40, 'torn-paper edges carry the 46-point roughness');
+  ok(lineTos > 200, `torn-paper rims stay smooth 46-point rings (${lineTos})`);
   const a = recCtx();
   const b = recCtx();
   drawDecor(a.ctx, { family: 'torn-paper', seed: 93 }, { palette, w: 640, h: 360 });
