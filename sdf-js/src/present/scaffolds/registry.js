@@ -1651,6 +1651,58 @@ export const SCAFFOLDS = [
         purpose: 'Third major theme: the core facts',
         recommended_atoms: ['stat-banner', 'kpi-card', 'bar', 'bullet-list'],
       },
+      // Sprint 71: long-document extension (14 → 21 slots). A 15K-char
+      // design doc compressed to 12 pages lost half its numbers — the
+      // skeleton was the bottleneck, not the mapper. Extra theme rooms +
+      // three specialist rooms; short articles simply leave them empty
+      // (the page floor only fills to minPages).
+      {
+        name: 'theme-3-detail',
+        title: 'Theme 3 — Detail',
+        purpose: 'Third theme drill-down: rules, parameters, edge cases',
+        recommended_atoms: ['bullet-list', 'segmented-bar', 'flow-chart', 'stat-grid-large'],
+      },
+      {
+        name: 'theme-4-lead',
+        title: 'Theme 4 — Lead',
+        purpose: 'Fourth major theme: the core facts',
+        recommended_atoms: ['stat-banner', 'kpi-card', 'bar', 'bullet-list'],
+      },
+      {
+        name: 'theme-4-detail',
+        title: 'Theme 4 — Detail',
+        purpose: 'Fourth theme drill-down: distribution, split, allocation',
+        recommended_atoms: ['pie', 'segmented-bar', 'bar', 'bullet-list'],
+      },
+      {
+        name: 'theme-5-lead',
+        title: 'Theme 5 — Lead',
+        purpose: 'Fifth major theme: the core facts',
+        recommended_atoms: ['stat-banner', 'kpi-card', 'timeline', 'bullet-list'],
+      },
+      {
+        name: 'comparison',
+        title: 'Comparison',
+        purpose: 'This vs the alternatives — head-to-head on the axes that matter',
+        recommended_atoms: ['comparison-table', 'balance-scale', 'matrix-grid', 'swot'],
+      },
+      {
+        name: 'mechanism',
+        title: 'How It Works',
+        purpose: 'The core mechanism end-to-end: steps, loops, feedback',
+        recommended_atoms: [
+          'flow-chart',
+          'process-arrows',
+          'circle-process-cycle',
+          'funnel-with-conversion',
+        ],
+      },
+      {
+        name: 'data-appendix',
+        title: 'Data Appendix',
+        purpose: 'Secondary numbers that matter but did not fit the themes',
+        recommended_atoms: ['stat-grid-large', 'kpi-card', 'bar'],
+      },
       {
         name: 'risk-matrix',
         title: 'Risk Matrix',

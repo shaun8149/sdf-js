@@ -1,0 +1,91 @@
+{
+ "slotIdx": 8,
+ "slotName": "theme-3-detail",
+ "slotTitle": "Theme 3 — Detail",
+ "sourceSlideIdx": 8,
+ "sceneData": {
+  "name": "news-briefing/theme-3-detail",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "拼团发射与社区优先轮",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "拼团机制",
+     "items": [
+      {
+       "icon": "users-three",
+       "label": "群内一键发起代币",
+       "sublabel": "成员群内跟买 — 真实关系网络"
+      },
+      {
+       "icon": "chart-line",
+       "label": "PDD 拼团直译",
+       "sublabel": "一群人拼一条 bonding curve"
+      },
+      {
+       "icon": "shield-check",
+       "label": "社区优先轮",
+       "sublabel": "开盘前 N 分钟仅群成员可买"
+      },
+      {
+       "icon": "lock-key",
+       "label": "反狙击结构优势",
+       "sublabel": "机器人进不了群 — 私域解决狙击"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "参数设置",
+     "items": [
+      {
+       "icon": "coin",
+       "label": "固定供应 10 亿",
+       "sublabel": "对齐 pump 用户心智"
+      },
+      {
+       "icon": "currency-dollar",
+       "label": "创建费 $20",
+       "sublabel": "以 ANT 收取 — 挡脚本垃圾"
+      },
+      {
+       "icon": "user-check",
+       "label": "Dev 首买可选",
+       "sublabel": "pump 同款 — 比例公示"
+      },
+      {
+       "icon": "chart-pie",
+       "label": "曲线形状沿用 pump",
+       "sublabel": "79% 曲线售出 / 21% 留存迁移"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

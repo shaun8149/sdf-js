@@ -146,6 +146,13 @@ export function deckNumberTokens(deckText) {
     set.add(noComma);
     set.add(noComma.replace(/^\$/, '').replace(/[KMBT%]$/, ''));
   }
+  // CJK date alias (Sprint 71): "2025 年 3 月" ↔ deck-side "2025.3" — the
+  // lift legitimately compacts Chinese dates to dotted form; both spellings
+  // ground each other.
+  for (const m of deckText.matchAll(/(\d{4})\s*年\s*(\d{1,2})\s*月/g)) {
+    set.add(`${m[1]}.${Number(m[2])}`);
+    set.add(`${m[1]}.${String(m[2]).padStart(2, '0')}`);
+  }
   return set;
 }
 

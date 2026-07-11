@@ -1,0 +1,39 @@
+{
+ "slotIdx": 18,
+ "slotName": "quote",
+ "slotTitle": "Key Quote",
+ "sourceSlideIdx": 13,
+ "sceneData": {
+  "name": "news-briefing/quote",
+  "layout": "stage",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "Key Quote",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "pull-quote-banner",
+    "x": 0,
+    "y": 120,
+    "w": 1280,
+    "h": 580,
+    "args": {
+     "quote": "Dev 是全场信息优势最大的一方 — 建仓成本最低、卖出时机自己定。给 Dev 分成等于给信息优势者加杠杆,还制造刷量与连环发币动机",
+     "author": "ANTFUN 理念",
+     "bg": "accent"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

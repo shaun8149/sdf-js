@@ -17,6 +17,8 @@ import { newsToFullDeck } from '../src/present/news/full-deck.js';
 const REPO = resolve(new URL('../..', import.meta.url).pathname);
 const articlePath = process.argv[2];
 const deckName = process.argv[3] || 'auto-scaffold-validation';
+const minPages = Number(process.argv[4] || 10);
+const maxPages = Number(process.argv[5] || 20);
 if (!articlePath) {
   console.error('usage: validate-auto-scaffold.mjs <article.txt> <deckName>');
   process.exit(1);
@@ -36,6 +38,8 @@ let plan = null;
 const deck = await newsToFullDeck(article, {
   apiKey,
   scaffoldId: 'auto',
+  minPages,
+  maxPages,
   onProgress: (msg, pct) => console.log(`  ${String(Math.round(pct)).padStart(3)}%  ${msg}`),
   onPlan: (p, meta) => {
     plan = { slots: p, theme: meta.theme?.id };

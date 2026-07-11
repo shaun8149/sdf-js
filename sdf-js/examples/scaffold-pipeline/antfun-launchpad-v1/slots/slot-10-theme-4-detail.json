@@ -1,0 +1,117 @@
+{
+ "slotIdx": 10,
+ "slotName": "theme-4-detail",
+ "slotTitle": "Theme 4 — Detail",
+ "sourceSlideIdx": 12,
+ "sceneData": {
+  "name": "news-briefing/theme-4-detail",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "每百万美元内盘成交量分配",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "waterfall",
+    "x": 40,
+    "y": 130,
+    "w": 580,
+    "h": 540,
+    "args": {
+     "title": "运营基准(每$1M内盘)",
+     "bars": [
+      {
+       "label": "Meteora协议(净)",
+       "value": 1600,
+       "kind": "positive"
+      },
+      {
+       "label": "团队长归因",
+       "value": 3000,
+       "kind": "positive"
+      },
+      {
+       "label": "交易激励",
+       "value": 3600,
+       "kind": "positive"
+      },
+      {
+       "label": "空投",
+       "value": 1000,
+       "kind": "positive"
+      },
+      {
+       "label": "平台净收入",
+       "value": 9300,
+       "kind": "end"
+      }
+     ],
+     "format": "currency"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 130,
+    "w": 580,
+    "h": 540,
+    "args": {
+     "title": "费用结构说明",
+     "items": [
+      {
+       "icon": "percent",
+       "label": "Meteora协议净 0.16%",
+       "sublabel": "池内费1%×20% − referral回收0.04%"
+      },
+      {
+       "icon": "users",
+       "label": "团队长归因 0.30%",
+       "sublabel": "链下归因、周度Merkle领取"
+      },
+      {
+       "icon": "chart-line-up",
+       "label": "交易激励 0.36%",
+       "sublabel": "承接原Dev份额;交易/发射挖矿玩法"
+      },
+      {
+       "icon": "gift",
+       "label": "空投 0.10%",
+       "sublabel": "买入7日存活代币,周空投ANT质押者"
+      },
+      {
+       "icon": "arrow-down",
+       "label": "Meteora目标 $2,000→≤$1,000",
+       "sublabel": "私有config谈判后下调"
+      },
+      {
+       "icon": "lock",
+       "label": "平台锁定LP费用权 $8,000",
+       "sublabel": "LP费100%(Dev零分成)"
+      },
+      {
+       "icon": "fire",
+       "label": "净收入≥50%回购销毁ANT",
+       "sublabel": "≥$4,650统一池余额回购销毁"
+      },
+      {
+       "icon": "plus",
+       "label": "外盘费用持续叠加",
+       "sublabel": "同一统一池、同一销毁承诺,毕业锁仓未计入"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

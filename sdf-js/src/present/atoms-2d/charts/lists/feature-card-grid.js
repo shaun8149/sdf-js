@@ -56,7 +56,27 @@ function lighten([r, g, b], amount = 0.85) {
 // word in half; only falls back to a char-level trim if a single token alone
 // is wider than maxW.
 function wrapText(ctx, text, maxW, maxLines = 4) {
-  const tokens = String(text).match(/\S+?-|\S+/g) || [];
+  const rawTokens = String(text).match(/\S+?-|\S+/g) || [];
+  // CJK has no spaces — a whole sentence arrives as ONE token and would
+  // never wrap (the pull-quote lesson, Sprint 37). Any token wider than the
+  // column breaks at char level first.
+  const tokens = [];
+  for (const tok of rawTokens) {
+    if (ctx.measureText(tok).width <= maxW) {
+      tokens.push(tok);
+      continue;
+    }
+    let chunk = '';
+    for (const ch of tok) {
+      if (chunk && ctx.measureText(chunk + ch).width > maxW) {
+        tokens.push(chunk);
+        chunk = ch;
+      } else {
+        chunk += ch;
+      }
+    }
+    if (chunk) tokens.push(chunk);
+  }
   const allLines = [];
   let line = '';
   for (const tok of tokens) {

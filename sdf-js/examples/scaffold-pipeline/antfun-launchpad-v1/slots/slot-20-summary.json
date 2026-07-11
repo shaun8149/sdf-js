@@ -1,0 +1,66 @@
+{
+ "slotIdx": 20,
+ "slotName": "summary",
+ "slotTitle": "Summary",
+ "sourceSlideIdx": 16,
+ "sceneData": {
+  "name": "news-briefing/summary",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Summary",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "numbered-grid",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 520,
+    "args": {
+     "title": "ANT 飞轮:五重角色",
+     "items": [
+      {
+       "label": "计价资产",
+       "sublabel": "所有交易的介质"
+      },
+      {
+       "label": "分配资产",
+       "sublabel": "所有收益的介质"
+      },
+      {
+       "label": "销毁资产",
+       "sublabel": "通缩的燃料"
+      },
+      {
+       "label": "质押资产",
+       "sublabel": "费用折扣与新币空投的权益凭证"
+      },
+      {
+       "label": "锁仓资产",
+       "sublabel": "每一次毕业的永久流动性锚"
+      }
+     ],
+     "cols": 3,
+     "numberStyle": "circle",
+     "numberColor": [
+      38,
+      70,
+      130
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

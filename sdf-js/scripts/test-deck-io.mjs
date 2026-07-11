@@ -10,6 +10,7 @@ import {
   chooseScaffoldForOutline,
   retryFailedSlot,
   rescueEmptyMapping,
+  genericHoldSlot,
 } from '../src/present/news/full-deck.js';
 
 let pass = 0;
@@ -280,6 +281,51 @@ const deck = {
     { slotIdx: 1, slot: mkSlot2('body'), slideIdx: 1, empty: false },
   ];
   ok(rescueEmptyMapping(healthy, outlineSlides, 4) === false, 'healthy mapping untouched');
+}
+
+// ── Sprint 71: generic hold fallback — 强灌槽位脱掉专家戏服 ──
+{
+  const slot = {
+    name: 'comparison',
+    title: 'Comparison',
+    purpose: 'This vs the alternatives — head-to-head on the axes that matter',
+    recommended_atoms: ['comparison-table'],
+  };
+  const cjkSlide = { title: '毕业门槛设计', body: ['美元锚定, 65 SOL 初值'] };
+  const held = genericHoldSlot(slot, cjkSlide);
+  ok(held.generic === true && held.name === 'comparison', 'held slot keeps its skeleton position');
+  ok(held.title === '毕业门槛设计', "held slot wears the content's own title");
+  ok(!/alternatives/.test(held.purpose), 'specialist costume removed from purpose');
+
+  // rescue path applies the hold when fit score is 0 (CJK vs EN purposes)
+  const mkSlot3 = (name, purpose) => ({ name, title: name, purpose, recommended_atoms: [] });
+  const asn2 = [
+    { slotIdx: 0, slot: mkSlot3('cover', 'headline'), slideIdx: 0, empty: false },
+    { slotIdx: 1, slot: mkSlot3('comparison', 'versus alternatives head-to-head'), empty: true },
+  ];
+  const cjkSlides = [
+    { title: '封面', body: ['x'] },
+    { title: '机制设计', body: ['规则参数'] },
+  ];
+  rescueEmptyMapping(asn2, cjkSlides, 2);
+  ok(
+    asn2[1].empty === false && asn2[1].slot.generic === true,
+    'rescued CJK slide gets the generic hold, not the specialist costume',
+  );
+  // and a genuinely matching slide keeps the specialist slot
+  const asn3 = [
+    { slotIdx: 0, slot: mkSlot3('cover', 'headline'), slideIdx: 0, empty: false },
+    { slotIdx: 1, slot: mkSlot3('risks', 'risks scenarios probability impact'), empty: true },
+  ];
+  const enSlides = [
+    { title: 'Cover', body: ['x'] },
+    { title: 'Risks', body: ['probability and impact of scenarios'] },
+  ];
+  rescueEmptyMapping(asn3, enSlides, 2);
+  ok(
+    asn3[1].empty === false && !asn3[1].slot.generic,
+    'a genuinely fitting slide keeps the specialist slot',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

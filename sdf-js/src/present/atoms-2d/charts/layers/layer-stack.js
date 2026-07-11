@@ -122,22 +122,65 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.stroke();
     ctx.restore();
 
-    // Label inside layer center (Inter 700, white)
+    // Label inside layer center (Inter 700, white) — FITTED to the layer
+    // width (Sprint 71: a long CJK label on a narrow tapered layer spilled
+    // past the canvas edge; the label never gets to leave its layer)
     if (layer.label) {
+      let label = String(layer.label);
+      let fs = Math.round(layerH * 0.35);
+      ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
+      const maxLabelW = layerW - 16;
+      while (fs > 11 && ctx.measureText(label).width > maxLabelW) {
+        fs -= 1;
+        ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
+      }
+      while (label.length > 1 && ctx.measureText(label + '…').width > maxLabelW) {
+        label = label.slice(0, -1);
+      }
+      if (label !== String(layer.label)) label += '…';
       ctx.fillStyle = 'rgba(255,255,255,0.96)';
-      ctx.font = `700 ${Math.round(layerH * 0.35)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(String(layer.label), stackCX, layerCY);
+      ctx.fillText(label, stackCX, layerCY);
     }
 
-    // Sublabel to right of stack (Inter 500, softer)
+    // Sublabel to right of stack (Inter 500, softer) — CONFINED to the
+    // atom's own box (Sprint 71: unbounded sublabels overflowed the canvas
+    // and collided with the neighbouring subject's text), wrapping to two
+    // lines at char level (CJK has no spaces to break on)
     if (layer.sublabel) {
+      const maxSubW = x + w - PAD - labelX;
+      let fs = Math.round(layerH * 0.3);
+      ctx.font = `500 ${fs}px Inter, system-ui, sans-serif`;
+      const text = String(layer.sublabel);
+      while (fs > 11 && ctx.measureText(text).width > maxSubW * 2) {
+        fs -= 1;
+        ctx.font = `500 ${fs}px Inter, system-ui, sans-serif`;
+      }
+      const lines = [];
+      let chunk = '';
+      for (const ch of text) {
+        if (chunk && ctx.measureText(chunk + ch).width > maxSubW) {
+          lines.push(chunk);
+          chunk = ch;
+          if (lines.length === 2) break;
+        } else {
+          chunk += ch;
+        }
+      }
+      if (chunk && lines.length < 2) lines.push(chunk);
+      if (lines.length === 2 && chunk && lines[1] !== chunk) {
+        let last = lines[1];
+        while (last.length > 1 && ctx.measureText(last + '…').width > maxSubW)
+          last = last.slice(0, -1);
+        lines[1] = last + '…';
+      }
       ctx.fillStyle = rgbaCss(fg, 0.65);
-      ctx.font = `500 ${Math.round(layerH * 0.3)}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(String(layer.sublabel), labelX, layerCY);
+      const lineH = fs * 1.25;
+      const startY = layerCY - ((lines.length - 1) * lineH) / 2;
+      lines.forEach((ln, li) => ctx.fillText(ln, labelX, startY + li * lineH));
     }
   }
 }

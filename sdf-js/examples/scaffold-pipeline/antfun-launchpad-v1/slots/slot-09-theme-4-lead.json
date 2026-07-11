@@ -1,0 +1,137 @@
+{
+ "slotIdx": 9,
+ "slotName": "theme-4-lead",
+ "slotTitle": "Theme 4 — Lead",
+ "sourceSlideIdx": 10,
+ "sceneData": {
+  "name": "news-briefing/theme-4-lead",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "内盘参数",
+     "subtitle": "Dev 零分成与反狙击"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "0%",
+     "label": "Dev 分成",
+     "sublabel": "LP 费 100% 归 partner",
+     "icon": "hand-coins",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 344,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "0.36%",
+     "label": "激励池转入",
+     "sublabel": "原 Dev 份额全部转入",
+     "icon": "arrows-merge",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 648,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "30-99%",
+     "label": "开盘起始费",
+     "sublabel": "衰减至 1%",
+     "icon": "chart-line-down",
+     "style": "light",
+     "trend": "衰减",
+     "trendDirection": "down"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 952,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "20%",
+     "label": "推荐人回收",
+     "sublabel": "协议费占比 (0.04% 成交量)",
+     "icon": "users",
+     "style": "light"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 424,
+    "w": 580,
+    "h": 240,
+    "args": {
+     "title": "毕业机制",
+     "items": [
+      {
+       "icon": "arrow-square-out",
+       "label": "DAMM v2 毕业目的地"
+      },
+      {
+       "icon": "hand-coins",
+       "label": "零毕业税 — 平台承担建池成本"
+      },
+      {
+       "icon": "robot",
+       "label": "Meteora Keeper 自动执行"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 644,
+    "y": 424,
+    "w": 588,
+    "h": 240,
+    "args": {
+     "title": "外盘费率两段式",
+     "items": [
+      {
+       "icon": "gauge",
+       "label": "毕业期 1% — 防狙击高开衰减"
+      },
+      {
+       "icon": "chart-line-down",
+       "label": "市值突破 $1M 后降至 0.3%"
+      },
+      {
+       "icon": "network",
+       "label": "BSC 自建按市值自动切换"
+      },
+      {
+       "icon": "lock",
+       "label": "SOL 侧受 DAMM v2 限制维持 1%"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

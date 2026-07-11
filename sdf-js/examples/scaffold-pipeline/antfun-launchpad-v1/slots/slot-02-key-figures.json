@@ -1,0 +1,125 @@
+{
+ "slotIdx": 2,
+ "slotName": "key-figures",
+ "slotTitle": "Key Figures",
+ "sourceSlideIdx": 9,
+ "sceneData": {
+  "name": "news-briefing/key-figures",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Key Figures",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "65 SOL",
+     "label": "毕业门槛",
+     "sublabel": "美元锚定 ANT 等值",
+     "icon": "chart-line-up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 344,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "76%",
+     "label": "相对 pump",
+     "sublabel": "毕业名义市值",
+     "icon": "gauge",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 648,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "$4K",
+     "label": "起始名义市值",
+     "sublabel": "随代际换算",
+     "icon": "currency-dollar",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 952,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "1%",
+     "label": "内盘池内费",
+     "sublabel": "Meteora 抽成层",
+     "icon": "percent",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 424,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "0.85%",
+     "label": "ANTFUN 终端费",
+     "sublabel": "100% 归平台",
+     "icon": "wallet",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 344,
+    "y": 424,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "1.85%",
+     "label": "自有流量总成本",
+     "sublabel": "低于 pump 组合",
+     "icon": "arrow-down",
+     "style": "light"
+    }
+   },
+   {
+    "type": "stat-with-icon",
+    "x": 648,
+    "y": 424,
+    "w": 584,
+    "h": 240,
+    "args": {
+     "value": "ANT",
+     "label": "费用收取模式",
+     "sublabel": "全部以 ANT 收取，供后续分配与销毁",
+     "icon": "coins",
+     "iconColor": "rgb(38, 70, 130)"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

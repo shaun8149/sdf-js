@@ -1,0 +1,107 @@
+{
+ "slotIdx": 6,
+ "slotName": "theme-2-detail",
+ "slotTitle": "Theme 2 — Detail",
+ "sourceSlideIdx": 11,
+ "sceneData": {
+  "name": "news-briefing/theme-2-detail",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "外盘参数详情",
+     "style": "section"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 130,
+    "w": 580,
+    "h": 540,
+    "args": {
+     "title": "LP 锁定与费用",
+     "items": [
+      {
+       "icon": "lock",
+       "label": "LP 100% 永久锁定",
+       "sublabel": "partner 50% + creator 50%"
+      },
+      {
+       "icon": "coins",
+       "label": "费用领取权平台 100%",
+       "sublabel": "Dev 零分成"
+      },
+      {
+       "icon": "recycle",
+       "label": "团队长外盘归因池",
+       "sublabel": "净额 ≥50% 回购销毁"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 130,
+    "w": 580,
+    "h": 260,
+    "args": {
+     "title": "费率结构",
+     "items": [
+      {
+       "icon": "percent",
+       "label": "终端费 0.85%",
+       "sublabel": "与内盘一致 + ANT 质押折扣"
+      },
+      {
+       "icon": "handshake",
+       "label": "协议费默认 20%，谈判目标 ≤10%",
+       "sublabel": "Meteora config key 商务谈判"
+      },
+      {
+       "icon": "chart-line-up",
+       "label": "以 ANTFUN 交易量为筹码"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 410,
+    "w": 580,
+    "h": 260,
+    "args": {
+     "title": "1% 外盘费逻辑",
+     "items": [
+      {
+       "icon": "currency-dollar",
+       "label": "Dev 年金 0.4%",
+       "sublabel": "为 pump Dev 的 8 倍"
+      },
+      {
+       "icon": "arrows-horizontal",
+       "label": "0.3% 与竞品对齐",
+       "sublabel": "PumpSwap 0.30% / Pancake 0.25%"
+      },
+      {
+       "icon": "shield-check",
+       "label": "5bp 之差防平行池",
+       "sublabel": "防成熟期流量泄漏"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

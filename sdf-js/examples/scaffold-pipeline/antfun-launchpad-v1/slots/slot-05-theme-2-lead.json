@@ -1,0 +1,136 @@
+{
+ "slotIdx": 5,
+ "slotName": "theme-2-lead",
+ "slotTitle": "Theme 2 — Lead",
+ "sourceSlideIdx": 5,
+ "sceneData": {
+  "name": "news-briefing/theme-2-lead",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "零迁移费与 LP 永久锁定",
+     "subtitle": "D4"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "0",
+     "label": "迁移费",
+     "sublabel": "零毕业税",
+     "icon": "currency-dollar-simple",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 344,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "100%",
+     "label": "LP 永久锁定",
+     "sublabel": "超过 DBC 最低 10% 要求",
+     "icon": "lock-laminated",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 648,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "0%",
+     "label": "Dev 费用分成",
+     "sublabel": "费用领取权全归平台",
+     "icon": "prohibit",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 952,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "周度",
+     "label": "Merkle 树分配",
+     "sublabel": "团队长凭 proof 领取",
+     "icon": "tree-structure",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 424,
+    "w": 592,
+    "h": 256,
+    "args": {
+     "title": "核心机制",
+     "items": [
+      {
+       "icon": "building",
+       "label": "建池成本由平台承担",
+       "sublabel": "对标 PumpSwap"
+      },
+      {
+       "icon": "lock-key",
+       "label": "流动性不可撤出",
+       "sublabel": "仅费用领取权可分配"
+      },
+      {
+       "icon": "shield-check",
+       "label": "结构性根治毕业即 rug"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 648,
+    "y": 424,
+    "w": 584,
+    "h": 256,
+    "args": {
+     "title": "分配隐私",
+     "items": [
+      {
+       "icon": "git",
+       "label": "Dev 份额走 DBC/DAMM 协议原生配置",
+       "sublabel": "链上直领"
+      },
+      {
+       "icon": "vault",
+       "label": "团队长份额先流入程序控制分配金库",
+       "sublabel": "平台链下按邀请体系归因"
+      },
+      {
+       "icon": "eye-slash",
+       "label": "Merkle proof 仅暴露领取者自己的叶子",
+       "sublabel": "任何人无法还原整张图谱"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}
