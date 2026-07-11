@@ -1740,7 +1740,7 @@ export const SCAFFOLDS = [
         recommended_atoms: ['numbered-grid', 'bullet-list', 'stat-grid-large'],
       },
     ],
-    theme_affinity: ['editorial-navy', 'financial-navy-cerulean', 'consulting-charcoal'],
+    theme_affinity: ['editorial-spectrum', 'editorial-navy', 'financial-navy-cerulean'],
   },
 ];
 

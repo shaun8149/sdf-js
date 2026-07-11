@@ -31,9 +31,9 @@
        "label": "原有网络",
        "sublabel": "存量用户沿用现行邀请返佣层级",
        "color": [
-        38,
-        70,
-        130
+        186,
+        88,
+        58
        ]
       },
       {
@@ -100,5 +100,10 @@
  "meta": {
   "bakedBy": "validate-auto-scaffold",
   "model": "live"
- }
+ },
+ "sectionAccent": [
+  186,
+  88,
+  58
+ ]
 }

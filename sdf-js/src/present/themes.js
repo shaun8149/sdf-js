@@ -58,6 +58,32 @@ export const ATLAS_THEMES = [
     featured: true,
   },
   {
+    id: 'editorial-spectrum',
+    label: 'Editorial · Spectrum',
+    macroCluster: 'editorial',
+    // Sprint 72 (user feedback: 纯蓝白太单调): the classic multi-hue
+    // editorial-infographic set — ink navy anchor + terracotta / sage /
+    // gold / plum. Made for SECTION ACCENT programming (applySectionAccents):
+    // each chapter of a long deck holds one hue, the family resemblance
+    // comes from shared bg/ink/saturation discipline.
+    bg: [248, 246, 240],
+    silhouetteColor: [30, 34, 52],
+    accent: [38, 70, 130], // navy stays the anchor — covers/agenda/summary
+    colors: [
+      [38, 70, 130], // navy (anchor)
+      [186, 88, 58], // terracotta
+      [96, 132, 92], // sage
+      [196, 148, 62], // gold
+      [118, 84, 138], // plum
+      [70, 128, 148], // steel teal
+    ],
+    font: {
+      heading: 'Georgia, "Source Serif Pro", serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
+  {
     id: 'editorial-forest',
     label: 'Editorial · Forest',
     macroCluster: 'editorial',

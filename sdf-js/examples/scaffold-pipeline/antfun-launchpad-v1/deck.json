@@ -5,7 +5,7 @@
   "id": "news-briefing",
   "label": "News Briefing"
  },
- "theme": "editorial-navy",
+ "theme": "editorial-spectrum",
  "slots": [
   {
    "slotIdx": 0,
@@ -49,6 +49,11 @@
     "kpi-card",
     "kpi-card",
     "stat-with-icon"
+   ],
+   "sectionAccent": [
+    186,
+    88,
+    58
    ]
   },
   {
@@ -63,6 +68,11 @@
     "cover",
     "comparison-table",
     "feature-card-grid"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
    ]
   },
   {
@@ -77,6 +87,11 @@
     "cover",
     "bullet-list",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
    ]
   },
   {
@@ -95,6 +110,11 @@
     "kpi-card",
     "bullet-list",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
    ]
   },
   {
@@ -110,6 +130,11 @@
     "bullet-list",
     "bullet-list",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
    ]
   },
   {
@@ -124,6 +149,11 @@
     "cover",
     "icon-grid",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
    ]
   },
   {
@@ -138,6 +168,11 @@
     "cover",
     "bullet-list",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
    ]
   },
   {
@@ -156,6 +191,11 @@
     "kpi-card",
     "bullet-list",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
    ]
   },
   {
@@ -170,6 +210,11 @@
     "cover",
     "waterfall",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
    ]
   },
   {
@@ -184,6 +229,11 @@
     "cover",
     "layer-stack",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    186,
+    88,
+    58
    ]
   },
   {
@@ -197,6 +247,11 @@
    "subjectTypes": [
     "cover",
     "comparison-table"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
    ]
   },
   {
@@ -210,6 +265,11 @@
    "subjectTypes": [
     "cover",
     "circle-process-cycle"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
    ]
   },
   {
@@ -227,6 +287,11 @@
     "kpi-card",
     "bar",
     "bar"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
    ]
   },
   {
@@ -242,6 +307,11 @@
     "kpi-card",
     "stat-banner",
     "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
    ]
   },
   {
@@ -259,6 +329,11 @@
     "callout-banner",
     "kpi-card",
     "kpi-card"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
    ]
   },
   {
@@ -415,5 +490,16 @@
    ],
    "theme": "editorial-navy"
   }
+ },
+ "colorProgram": "sections",
+ "decor": {
+  "family": "river-courses",
+  "rare": false,
+  "janky": false,
+  "grain": 0,
+  "seed": 359318729,
+  "personality": "balanced",
+  "hash": "497bdd03fa27a6f7",
+  "v": 3
  }
 }

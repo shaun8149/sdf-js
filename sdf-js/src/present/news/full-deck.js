@@ -11,6 +11,7 @@
 import { expandNews } from './expand-core.js';
 import { getScaffold, getThemeAffinity } from '../scaffolds/registry.js';
 import { rankScaffolds } from '../scaffolds/picker.js';
+import { applySectionAccents } from '../retheme.js';
 import { mapSlidesToSlotsLLM, scoreSlideForSlot } from '../scaffolds/mapper-llm.js';
 import { buildLiftSystemPrompt, liftSlotsPool, liftSlotLLM } from '../scaffolds/lift-slot-llm.js';
 
@@ -295,13 +296,17 @@ export async function newsToFullDeck(
   }
 
   onProgress('done', 100);
-  return {
+  const deck = {
     title: slides[0]?.title || 'News Deck',
     theme,
     scaffold: { id: scaffold.id, label: scaffold.label },
     slots: mergeLockedSlots(slots, lockedSlots),
     errors,
   };
+  // Sprint 72: chapter color programming — on palettes rich enough, each
+  // section holds its own hue (zero LLM; anchors keep the theme accent)
+  applySectionAccents(deck);
+  return deck;
 }
 
 /**

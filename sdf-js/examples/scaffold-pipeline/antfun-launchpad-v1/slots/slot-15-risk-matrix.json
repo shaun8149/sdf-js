@@ -44,9 +44,9 @@
      "trend": "只升不降",
      "trendDirection": "up",
      "bg": [
-      38,
       70,
-      130
+      128,
+      148
      ]
     }
    },
@@ -76,5 +76,10 @@
  "meta": {
   "bakedBy": "validate-auto-scaffold",
   "model": "live"
- }
+ },
+ "sectionAccent": [
+  70,
+  128,
+  148
+ ]
 }

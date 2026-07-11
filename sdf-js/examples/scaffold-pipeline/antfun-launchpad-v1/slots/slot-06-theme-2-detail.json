@@ -103,5 +103,10 @@
  "meta": {
   "bakedBy": "validate-auto-scaffold",
   "model": "live"
- }
+ },
+ "sectionAccent": [
+  196,
+  148,
+  62
+ ]
 }

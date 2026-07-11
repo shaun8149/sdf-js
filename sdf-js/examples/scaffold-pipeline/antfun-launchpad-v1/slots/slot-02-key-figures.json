@@ -113,7 +113,7 @@
      "label": "费用收取模式",
      "sublabel": "全部以 ANT 收取，供后续分配与销毁",
      "icon": "coins",
-     "iconColor": "rgb(38, 70, 130)"
+     "iconColor": "rgb(186, 88, 58)"
     }
    }
   ]
@@ -121,5 +121,10 @@
  "meta": {
   "bakedBy": "validate-auto-scaffold",
   "model": "live"
- }
+ },
+ "sectionAccent": [
+  186,
+  88,
+  58
+ ]
 }
