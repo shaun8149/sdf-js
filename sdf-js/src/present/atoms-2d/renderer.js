@@ -63,6 +63,24 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // pure covers resolve to 'cover' on their own.
   const role = opts.decorRole || (isPureCover ? 'cover' : 'content');
   const UNDER_INTENSITY = { agenda: 'bold', section: 'bold', content: 'subtle' };
+  // Sprint 74 cover-canvas pipeline (user: 封面还是大部分蓝色, 美感不足):
+  // ink ground → ArtBlocks-grade painting → the cover atom re-enters as an
+  // 'overlay' (scrim + type only). The artwork gets the FULL palette on a
+  // near-black canvas — the hues finally pop — and the title sits above it.
+  const coverCanvas = !!(decor && isPureCover);
+  if (coverCanvas) {
+    const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
+    ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawDecor(ctx, decor, {
+      palette,
+      x: 0,
+      y: 0,
+      w: canvas.width,
+      h: canvas.height,
+      intensity: decor.intensity || 'artwork',
+    });
+  }
   if (decor && !isPureCover) {
     drawDecor(ctx, decor, {
       palette,
@@ -88,7 +106,7 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       skipped++;
       continue;
     }
-    const args = s.args || {};
+    const args = coverCanvas && s.type === 'cover' ? { ...s.args, style: 'overlay' } : s.args || {};
     const style = deckStyle || s.style || 'pseudo3d';
     const subjectOpts = {
       x: s.x ?? 0,
@@ -108,17 +126,8 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     }
   }
 
-  // Pure-cover slides: decoration goes on top of the gradient.
-  if (decor && isPureCover) {
-    drawDecor(ctx, decor, {
-      palette,
-      x: 0,
-      y: 0,
-      w: canvas.width,
-      h: canvas.height,
-      intensity: decor.intensity || 'hero',
-    });
-  }
+  // (cover decoration now painted BEFORE the cover atom — see the
+  // cover-canvas pipeline above; the atom re-enters as scrim + type)
 
   return { rendered, skipped, errors };
 }

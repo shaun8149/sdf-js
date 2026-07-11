@@ -71,6 +71,10 @@ const INTENSITY = {
   // becomes the ARTWORK. Covers / agenda / section openers only; big white
   // 900-weight titles stay legible over it, body text would not.
   hero: { alpha: 0.42, alphaFill: 0.3, lineWidth: 2.2 },
+  // Sprint 74 (user: 封面美感不足, 还是大部分蓝色): artwork — ArtBlocks-
+  // grade opacity for the COVER CANVAS pipeline only (ink ground + painting
+  // + overlay-style title with its own scrim; never over body text).
+  artwork: { alpha: 0.9, alphaFill: 0.8, lineWidth: 2.6 },
 };
 
 // --- families ---------------------------------------------------------------

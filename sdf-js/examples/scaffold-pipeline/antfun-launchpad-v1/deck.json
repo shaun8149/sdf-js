@@ -493,13 +493,13 @@
  },
  "colorProgram": "sections",
  "decor": {
-  "family": "river-courses",
+  "family": "flow-ribbons",
   "rare": false,
   "janky": false,
   "grain": 0,
-  "seed": 359318729,
+  "seed": 1668563515,
   "personality": "balanced",
-  "hash": "497bdd03fa27a6f7",
+  "hash": "f8e2a5b411c7c37c",
   "v": 3
  }
 }
