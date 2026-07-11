@@ -1968,7 +1968,11 @@ export function createStudioRenderer({
   // we've already compiled hits cache instead of recompiling (which can take
   // 200-500ms on complex scenes — the BIG source of perceived page lag).
   const programCache = new Map();
-  const PROGRAM_CACHE_MAX = 6;
+  // Deck window switching keeps 2N-1 programs alive for an N-station deck
+  // (N station windows + N-1 transit pairs + the finale full-world program).
+  // 24 covers a 12-station deck; each cached FS is ~1MB of driver bytecode,
+  // well worth not recompiling a 200-500ms shader mid-presentation.
+  const PROGRAM_CACHE_MAX = 24;
   // KHR_parallel_shader_compile: lets the driver compile+link on background
   // threads. We link WITHOUT querying LINK_STATUS (that query forces a
   // synchronous compile of the whole ~150KB+ shader — the multi-second
@@ -2255,6 +2259,32 @@ export function createStudioRenderer({
     validateAndCache(entry, fragSource);
     finishProgramSetup(entry, result);
     return result.glsl.length;
+  }
+
+  // Metal (via ANGLE) defers pipeline-state creation to a program's FIRST
+  // draw — for a big raymarcher that's a 1-2s main-thread stall, which would
+  // land exactly at a deck window boundary mid-presentation. Force it now
+  // with a 1-pixel scissored draw into the offscreen FBO (junk uniforms are
+  // fine — the pixel is overwritten by the next real frame) and gl.finish()
+  // so the driver actually builds the pipeline before we return.
+  function warmProgram(prog) {
+    gl.useProgram(prog);
+    const a = gl.getAttribLocation(prog, 'a_pos');
+    if (a >= 0) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+      gl.enableVertexAttribArray(a);
+      gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+    }
+    ensureSceneFbo();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, 1, 1);
+    gl.viewport(0, 0, 1, 1);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.finish();
+    if (program) gl.useProgram(program);
   }
 
   // Check compile/link results (forces compile completion — cheap once
@@ -2897,6 +2927,73 @@ export function createStudioRenderer({
         }
       });
       return { bytes };
+    },
+
+    /**
+     * Seamless SDF swap for deck window switching. Unlike render(): no canvas
+     * clear (the old program keeps drawing until the new one is ready), no
+     * presentation-clock reset (the camera sequence keeps playing through the
+     * swap), no deferred-rAF dance. A programCache hit switches on the next
+     * frame; a miss compiles async via KHR_parallel and swaps in when linked.
+     */
+    swapSDF(sdf) {
+      const { fragSource, result } = compileStudioFrag(sdf);
+      uploadCompiledFrag(fragSource, result);
+      wake();
+      return { bytes: fragSource.length };
+    },
+
+    /**
+     * Compile + link a program into the cache WITHOUT activating it. Deck
+     * playback warms every upcoming window's shader while station 0 plays so
+     * later swapSDF() calls are cache hits. Resolves true once cached, false
+     * on compile failure. Never touches the active program or the
+     * pendingProgram slot (an in-flight render() swap is unaffected).
+     */
+    precompile(sdf) {
+      let fragSource;
+      try {
+        ({ fragSource } = compileStudioFrag(sdf));
+      } catch (e) {
+        console.error('[studio] precompile: GLSL generation failed:', e);
+        return Promise.resolve(false);
+      }
+      if (programCache.has(fragSource)) return Promise.resolve(true);
+      const fs = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(fs, fragSource);
+      gl.compileShader(fs);
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      const entry = { prog, fs };
+      if (!parallelExt) {
+        try {
+          validateAndCache(entry, fragSource);
+          warmProgram(prog);
+          return Promise.resolve(true);
+        } catch (e) {
+          console.error('[studio] precompile failed:', e);
+          return Promise.resolve(false);
+        }
+      }
+      return new Promise((res) => {
+        const poll = () => {
+          if (!gl.getProgramParameter(prog, parallelExt.COMPLETION_STATUS_KHR)) {
+            requestAnimationFrame(poll);
+            return;
+          }
+          try {
+            validateAndCache(entry, fragSource);
+            warmProgram(prog);
+            res(true);
+          } catch (e) {
+            console.error('[studio] precompile failed:', e);
+            res(false);
+          }
+        };
+        requestAnimationFrame(poll);
+      });
     },
 
     /**

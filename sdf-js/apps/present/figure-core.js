@@ -3,6 +3,7 @@
 // author.js (text → IR → deck). One mount per page.
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
+import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
 
 /**
  * createFigure({ outdoor, stage }) → { studio, show(sceneData) }.
@@ -11,8 +12,10 @@ import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
  * `stage`: fighting-game stage lighting — the main directional light drops low
  * and rakes from the side, so the backdrop walls fall dark and the spotlight
  * rig (scene defaults.lights from stagePreset) carries the subject.
+ * `present`: a presenter owns the sequence clock (it opens HELD at t≈0) — the
+ * deck warm-up must not pause/restart the clock underneath it.
  */
-export function createFigure({ outdoor = false, stage = false } = {}) {
+export function createFigure({ outdoor = false, stage = false, present = false } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
   const size = () => {
@@ -36,9 +39,21 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
   let scaleIdx = 0;
   let lowStreak = 0;
   let highStreak = 0;
+  // Adaptive grace period: the first seconds after a scene load are dominated
+  // by driver shader compiles (deck decks warm up to 2N programs), which stall
+  // rAF and read as "1 fps" — NOT a render-cost signal. Downshifting on those
+  // samples parks the deck at 0.5× forever (the climb-back bar is high on
+  // purpose). Ignore the adjuster until the load storm has passed.
+  let adaptAfter = 0;
+  const ADAPT_GRACE_MS = 5000;
   const onFps = (fps) => {
     fpsHud.textContent = `${fps.toFixed(0)} fps${scaleIdx ? ` · ${SCALES[scaleIdx]}×` : ''}`;
     fpsHud.style.color = fps >= 50 ? '#7fd77f' : fps >= 30 ? '#e8c35c' : '#f26d6d';
+    if (performance.now() < adaptAfter) return;
+    // Sub-3fps reads are main-thread stalls (shader compile, GC), not render
+    // cost — lowering the resolution can't fix them, so they must not feed
+    // the downshift streak.
+    if (fps < 3) return;
     if (fps < 24 && scaleIdx < SCALES.length - 1) {
       if (++lowStreak >= 2) {
         scaleIdx++;
@@ -81,6 +96,8 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
 
   let items = [];
   let els = [];
+  let detachDeckWindows = null;
+  let deckWarming = false; // keep the boot loader up while window shaders warm
   const loading = document.getElementById('loading');
 
   function show(scene) {
@@ -109,15 +126,45 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
       return d;
     });
     window.__figReplay = () => studio.setSequence(scene.cameraSequence);
-    // applyStudioScene wires setSequence + setAnimated (subject.animation counts
-    // as time content) — no manual overrides needed.
-    applyStudioScene(studio, scene);
+    // Deck scenes carry a window timeline — play them through the per-station
+    // shader switcher (the giant full-world shader would run at single-digit
+    // fps on laptop GPUs; see deck-shader-windows.js). Single-structure scenes
+    // keep the one-shot path: applyStudioScene wires setSequence + setAnimated
+    // (subject.animation counts as time content) — no manual overrides needed.
+    // Re-show() (author regenerates in place) must detach the old watcher
+    // first or two rAF loops would fight over programs.
+    if (detachDeckWindows) {
+      detachDeckWindows();
+      detachDeckWindows = null;
+    }
+    adaptAfter = performance.now() + ADAPT_GRACE_MS;
+    lowStreak = 0;
+    highStreak = 0;
+    const dw = attachDeckWindows(studio, scene, { holdDuringWarmup: !present });
+    if (dw) {
+      detachDeckWindows = dw.detach;
+      deckWarming = true;
+      dw.warmed.then(() => {
+        deckWarming = false;
+        // The warm stalls also polluted the fps counter — restart the grace
+        // clock so the adaptive scaler judges real playback frames only.
+        adaptAfter = performance.now() + ADAPT_GRACE_MS;
+      });
+    } else {
+      applyStudioScene(studio, scene);
+    }
   }
 
   function tick() {
     // Dismiss the boot loader on the first drawn frame (the async shader
     // compile keeps the main thread free, so the spinner animates while we wait).
-    if (loading && !loading.classList.contains('done') && studio.hasDrawn && studio.hasDrawn()) {
+    if (
+      loading &&
+      !loading.classList.contains('done') &&
+      !deckWarming &&
+      studio.hasDrawn &&
+      studio.hasDrawn()
+    ) {
       loading.classList.add('done');
     }
     const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;

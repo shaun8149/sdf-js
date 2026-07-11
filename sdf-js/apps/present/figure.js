@@ -11,11 +11,11 @@ import { attachPresenter } from './presenter.js';
 const params = new URLSearchParams(location.search);
 const env = params.get('env') || 'studio';
 const stage = params.get('stage') === '1'; // ?stage=1 → fighting-game stage preset
-const { show } = createFigure({ outdoor: env !== 'studio', stage });
+const present = params.get('present') === '1'; // ?present=1 → space steps the beats
+const { show } = createFigure({ outdoor: env !== 'studio', stage, present });
 
 const deckName = params.get('deck');
 const layout = params.get('layout') || undefined; // line | radial | grid
-const present = params.get('present') === '1'; // ?present=1 → space steps the beats
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
 const scene = deckName ? assembleDeck(ir, { env, layout, stage }) : renderIR(ir, { env, stage });
