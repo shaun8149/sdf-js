@@ -72,10 +72,10 @@ ok(
 ok((shots[shots.length - 1].focalDistance || 0) > 4, 'ends on a wide payoff frame');
 
 // labels → overlay, each with a revealAt; title present; NO baked SDF text
-const labels = scene.overlay.filter((o) => o.role === 'card' || o.role === 'value');
+const labels = scene.overlay.filter((o) => o.role === 'screen' || o.role === 'value');
 ok(
   labels.length === 8 && labels.every((o) => typeof o.revealAt === 'number'),
-  '4 cards + 4 values, each reveal-tagged',
+  '4 subtitle names + 4 anchored values, each reveal-tagged',
 );
 ok(
   scene.overlay.some((o) => o.role === 'title'),

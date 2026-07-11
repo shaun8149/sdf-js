@@ -172,11 +172,13 @@ export function renderMatrix(ir, opts = {}) {
   order.forEach((i, k) => {
     const [xi, yi] = ir.cells[i];
     overlay.push({
+      // cell texts are SPOKEN — the subtitle column lights each entry as its
+      // cube slams onto the board. Axis labels above stay ANCHORED: they
+      // define the space and are unreadable anywhere else.
       text: nodes[i],
       anchor: [cellX(xi), cellY(yi) - 0.34, 0.2],
-      role: emphasis.has(i) ? 'value' : 'card',
+      role: 'screen',
       align: 'center',
-      ...(emphasis.has(i) ? { radius: 0.4 } : {}),
       revealAt: introLead + k * holdEach + 0.15,
     });
   });

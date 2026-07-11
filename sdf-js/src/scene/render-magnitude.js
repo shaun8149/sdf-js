@@ -201,9 +201,11 @@ export function renderMagnitude(ir, opts = {}) {
     const H = height(i);
     const revealAt = introLead + k * holdEach + 0.35;
     overlay.push({
+      // node names are SPOKEN text → the stage layer's subtitle column; the
+      // camera reaches monolith k as its name lights up (time binds them)
       text: nodes[i],
       anchor: [x, -0.02, W * 0.5 + 0.35],
-      role: 'card',
+      role: 'screen',
       revealAt,
     });
     overlay.push({

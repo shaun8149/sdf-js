@@ -44,7 +44,8 @@ ok(items.every((s) => /smoothstep\(/.test(s.animation[0].expr)), 'slam uses smoo
 // emphasis item gets the gold treatment + a value label; camera has cut super + payoff
 ok(items.find((s) => s.id === 'item-2').material.glow > 0, 'emphasis item glows (gold)');
 ok(scene.cameraSequence.shots.some((s) => s.transition === 'cut'), 'has the punch-in super');
-ok(scene.overlay.filter((o) => o.role === 'card').length >= 2 + 2 + 3, 'axis labels + item labels in overlay');
+ok(scene.overlay.filter((o) => o.role === 'card').length >= 2 + 2, 'axis labels stay ANCHORED (they define the space)');
+ok(scene.overlay.filter((o) => o.role === 'screen').length >= 3, 'cell texts ride the subtitle column');
 ok(scene.subjects.every((s) => !/text/.test(s.type)), 'no baked SDF text');
 
 // compiles; renderIR dispatch reaches it; staged deck with a matrix slide assembles

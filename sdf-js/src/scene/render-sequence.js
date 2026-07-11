@@ -190,9 +190,11 @@ export function renderSequence(ir, opts = {}) {
     const y = stageY(i);
     const revealAt = introLead + k * holdEach + 0.45; // as the tour reaches this stage
     overlay.push({
+      // stage names are SPOKEN text → the subtitle column, beat-synced with
+      // the descent; the funnel geometry carries the shape of the story
       text: nodes[i],
       anchor: [radii[i] + 0.5, y, 0],
-      role: 'card',
+      role: 'screen',
       align: 'left',
       revealAt,
     });

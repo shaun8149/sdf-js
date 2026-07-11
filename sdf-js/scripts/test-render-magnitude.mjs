@@ -74,11 +74,13 @@ ok(
   // above the champion were tried and REVERTED: a glyph label is one leaf but
   // a huge expression — register pressure tanked magnitude stations to 1-16fps
   // on M3. Bring back only with a cheap glyph representation.)
-  const cards = scene.overlay.filter((o) => o.role === 'card');
+  // node names are SPOKEN text → stage-layer 'screen' role (subtitle column);
+  // values stay anchored on the geometry they measure
+  const names = scene.overlay.filter((o) => o.role === 'screen');
   const values = scene.overlay.filter((o) => o.role === 'value');
-  ok(cards.length === 5 && values.length === 5, '5 cards + 5 values');
+  ok(names.length === 5 && values.length === 5, '5 subtitle names + 5 anchored values');
   ok(
-    [...cards, ...values].every((o) => typeof o.revealAt === 'number'),
+    [...names, ...values].every((o) => typeof o.revealAt === 'number'),
     'all reveal-tagged',
   );
 
