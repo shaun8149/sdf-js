@@ -493,13 +493,13 @@
  },
  "colorProgram": "sections",
  "decor": {
-  "family": "flow-ribbons",
+  "family": "banded-ribbons",
   "rare": false,
   "janky": false,
   "grain": 0,
-  "seed": 1668563515,
+  "seed": 633751093,
   "personality": "balanced",
-  "hash": "f8e2a5b411c7c37c",
+  "hash": "2673b55674db3308",
   "v": 3
  }
 }

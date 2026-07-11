@@ -134,7 +134,11 @@ function recCtx() {
     // wash-flow interpolates CONTINUOUSLY between theme colors (recipe from
     // Watercolor Dreams) — intermediate colors are theme-derived but not
     // exact stops, so the exact-match check doesn't apply to it.
-    if (!['wash-flow', 'strata-lines', 'sediment-layers', 'hex-lattice'].includes(family)) {
+    if (
+      !['wash-flow', 'strata-lines', 'sediment-layers', 'hex-lattice', 'banded-ribbons'].includes(
+        family,
+      )
+    ) {
       const offPalette = rec.styles.filter((s) => {
         const m = /rgba\((\d+, \d+, \d+),/.exec(String(s));
         return m && !paletteRgb.has(m[1]);
