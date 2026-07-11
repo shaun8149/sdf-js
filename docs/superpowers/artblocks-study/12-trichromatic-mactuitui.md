@@ -1,6 +1,8 @@
 # 第十二课: Trichro-matic — MacTuitui
 
-- **ArtBlocks #482** · 原生 WebGL · 48KB (JS 30KB + frag ~18KB) · CC BY-NC 4.0 → recipe-only
+- **ArtBlocks #482** · 原生 WebGL2 (`#version 300 es`) · 48KB (JS 30KB + frag ~18KB) · CC BY-NC 4.0 → recipe-only
+
+> 二读勘误 (2026-07-11): WebGL→WebGL2; 其余 claim 逐字实锤, 详见 audit/batch-F
 
 ## 分流判定: 第三形态偏 shader (CPU 构图 + shader 视觉核)
 

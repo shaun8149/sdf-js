@@ -7,16 +7,25 @@
 
 ```
 Random class     ★ 自带全套确定性数学栈: 双 sfc32 (hash 前后两半各喂一个)
-                 交替取数 + 1e6 次预热 + 自实现 Box-Muller Gaussian +
-                 自实现 Perlin (用自己 PRNG 填表) — 对平台随机零信任
+                 交替取数 + 1e6 次预热 + 自实现 Gaussian (Marsaglia polar,
+                 即 p5 randomGaussian 克隆) + 自实现 Perlin (用自己 PRNG
+                 填表) — 对平台随机零信任
 token 0 特判      mintNumber==0 → 固定 hash (artist proof 固定作品)
-cliff()          逐层生成悬崖多边形: 噪声折线 top + 高度 → 面片
+cliff()          逐层生成悬崖多边形: top 边是**向量随机游走**
+                 (truncatedGaussian 转向, 角度上限 120-140°, 可倒走出
+                 悬垂 overhang) + 高度 → 面片; Perlin 只用在渲染层
+                 (线的 alpha/摆动), 不是 noise(x) 折线
 polygonClipping  union/difference 做背面剔除 + 层间严格遮挡 (真多边形布尔)
-drawFrame1/2/3   分帧渲染 (4 帧一轮) — 重计算不卡浏览器
+drawFrame1/2/3   分帧渲染 (4 帧一轮) — 但三帧**各自 clear + 重画一版
+                 不同场景** (frame2 用 DIFFERENCE 复合, frame3 BLEND 叠
+                 grain+cracks 版): 分帧是多 pass 视觉复合, 不只是性能分摊
 grainGraphics    颗粒纹理后处理缓冲
 massExport       ★ 内嵌批量导出装置: 自动换 hash → 重渲染 → 存图 → 循环
                  (作者把 variation 测试仪器写进作品本体)
 ```
+
+> 二读勘误 (2026-07-11): 原文核实 (cliff top = 随机游走可悬垂;
+> 分帧 = 多 pass 复合), 详见 audit/batch-C
 
 ## 后期 vs 早期的代差 (第一手观察)
 

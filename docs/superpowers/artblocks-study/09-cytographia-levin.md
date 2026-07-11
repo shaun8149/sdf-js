@@ -15,7 +15,10 @@
 
 ```
 asemic 字形系统   看起来像文字但无语义的字形生成 (整本"古籍"的正文)
-细胞/blob 生成    converge 增长算法 + 相交检测 — 生物形态线描
+细胞/blob 生成    隐式场取等值线: marching-squares 追踪器走格 (四角位掩码),
+                 converge 是 cell 边上二分逼近等值点的收敛步 (不是增长
+                 算法 — blob 不是"长"出来的, 是等值线描出来的);
+                 checkIntersection 线段相交检测 — 生物形态线描
 版面系统          cell 布局 + 装饰边框 + 图注 — 完整书籍版面语法
 StyledPolyline ★  笔尖 vertex shader: 笔画宽度 =
                   基宽 × nib(笔画方向 vs nibAngle, nibStrength)
@@ -23,6 +26,9 @@ StyledPolyline ★  笔尖 vertex shader: 笔画宽度 =
                   — 书法的算法本体: 宽度是方向和行进的函数
 材质 shader 层    纸纹/柔光/水印 — 古籍质感全在后处理
 ```
+
+> 二读勘误 (2026-07-11): 原文核实 (blob = marching-squares 等值线追踪,
+> converge 是边二分收敛步, 非增长算法), 详见 audit/batch-E
 
 ## 三个可提取 idiom (2D 侧)
 

@@ -2,8 +2,12 @@
 
 ## Skulptuur — Piter Pasma
 
-- **ArtBlocks #173** · 原生 js · 6.4KB · NFT License → 纯研究
-- 判定: **shader-core, 元编程 SDF raymarch → 3D 端移交**
+- **ArtBlocks #173** · 原生 js (webgl2) · 6.4KB · NFT License → 纯研究
+- 判定: **shader-core, 元编程 SDF 渲染 → 3D 端移交** (实为**渐进式
+  路径追踪器**: 5-9 次弹射 + 逐帧 accumulation + ACES 近似 tonemap,
+  比 raymarch 高一档; 另有 1/150 金料稀有位)
+
+> 二读勘误 (2026-07-11): 原文核实, 详见 audit/batch-B
 
 与 Växt (L15) / Gumbo (L11) 同族第三例: JS 用 hash 决策拼装 GLSL
 距离场源码 (`dg` 字符串累加, `L(max(q,0))-` 即 box SDF, min/max/abs

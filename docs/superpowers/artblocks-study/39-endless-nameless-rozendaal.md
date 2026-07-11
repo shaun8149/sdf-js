@@ -1,7 +1,13 @@
 # 第三十九课: Endless Nameless — Rafaël Rozendaal
 
 - **ArtBlocks #120** · 原生 js · **3.0KB (全语料最小级)** · CC BY-NC-ND 4.0 → 严格 recipe-only
-- 视觉: 纯平色块分割, Mondrian 血统的网页极简主义
+- 视觉: 色块分割 (Mondrian 血统的分割: 每次取最大面积块二分, 0.8 偏
+  垂直切 + 切点抖动), 但每块填的是**滚动的双色线性 gradient** (奇数个
+  stops 交替色对两色, 相位循环推进) — 不是纯平色; "endless" 的流动感
+  正在此
+
+> 二读勘误 (2026-07-11): 原文核实 ("纯平色块"漏掉滚动双色 gradient
+> 渲染层本体), 详见 audit/batch-B
 
 ## 分流判定: 2D-core, 文档课 (block-mosaic 覆盖 + ND 从严)
 
