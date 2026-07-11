@@ -18,6 +18,7 @@ import {
   slotRoleOf,
 } from '../../src/present/retheme.js';
 import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.js';
+import { artMountOpts, loadArtMount, fetchMintManifest } from '../../src/present/art-mount.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -259,6 +260,71 @@ function slotDecor(deck, slot) {
   return { ...deck.decor, seed: (deck.decor.seed ?? 1) + (slot.slotIdx ?? 0) };
 }
 
+// ── Sprint 82: 真迹装裱 — authentic original mints as the deck's art layer.
+// The mount replaces the decor engine on art surfaces (cover full-bleed +
+// banner filmstrip); the decor toggle doubles as the mount's view switch.
+// Degrades to nothing when the local mint cache is absent (gitignored).
+const MINT_BASE = '../../examples/original-mints/cache/';
+const artMountEl = document.getElementById('artmount');
+let artMount = null;
+
+function slotRenderOpts(theme, deck, slot) {
+  const base = {
+    palette: slotPalette(theme, slot),
+    decor: slotDecor(deck, slot),
+    decorRole: slotRoleOf(slot),
+  };
+  if (artMount && decorVisEl.value !== 'off') {
+    Object.assign(base, artMountOpts(artMount, slot, slotRoleOf(slot)) || {});
+  }
+  return base;
+}
+
+(async () => {
+  const manifest = await fetchMintManifest(MINT_BASE);
+  const oks = (manifest || []).filter((m) => m.status === 'ok');
+  if (!oks.length) return; // no local cache — feature stays hidden
+  for (const m of oks) {
+    const o = document.createElement('option');
+    o.value = m.id;
+    o.textContent = `装裱 · ${m.name}${m.artist ? ' · ' + m.artist : ''}`;
+    o.title = `${m.license || ''} — 原版脚本非商用运行`;
+    artMountEl.appendChild(o);
+  }
+  artMountEl.hidden = false;
+  artMountEl.addEventListener('change', async () => {
+    const id = artMountEl.value;
+    try {
+      artMount = id
+        ? await loadArtMount(
+            oks.find((m) => m.id === id),
+            MINT_BASE,
+          )
+        : null;
+    } catch (e) {
+      artMount = null;
+      artMountEl.value = '';
+      return setStatus(`装裱加载失败: ${e.message}`, true);
+    }
+    const qs = new URLSearchParams(location.search);
+    if (id) qs.set('art', id);
+    else qs.delete('art');
+    history.replaceState(null, '', `?${qs.toString()}`);
+    if (currentDeck) await renderDeck(currentDeck);
+    syncProvenance();
+    setStatus(
+      artMount
+        ? `已装裱 — ${artMount.name} 真迹 (封面全幅 + 标题栏胶片条, 非商用)`
+        : '已卸下装裱 — 回到生成引擎',
+    );
+  });
+  const want = new URLSearchParams(location.search).get('art');
+  if (want && oks.some((m) => m.id === want)) {
+    artMountEl.value = want;
+    artMountEl.dispatchEvent(new Event('change'));
+  }
+})();
+
 function reopenUrl(hash, v, serial) {
   return `${location.origin}${location.pathname}?hash=${hash}${v ? `&v=${v}` : ''}${serial != null ? `&n=${serial}` : ''}`;
 }
@@ -274,7 +340,7 @@ function syncProvenance() {
   provEl.hidden = false;
   redressEl.disabled = false;
   decorVisEl.disabled = false;
-  provEl.textContent = `作品 #${String(d.hash).slice(0, 8)}${d.serial != null ? ` · Nº ${d.serial}` : ''} · ${d.family} · ${d.personality} · v${d.v ?? 1}${d.rare ? ' · ✨稀有' : ''}`;
+  provEl.textContent = `${artMount && decorVisEl.value !== 'off' ? `装裱 ${artMount.name} 真迹 · ` : ''}作品 #${String(d.hash).slice(0, 8)}${d.serial != null ? ` · Nº ${d.serial}` : ''} · ${d.family} · ${d.personality} · v${d.v ?? 1}${d.rare ? ' · ✨稀有' : ''}`;
   // the address bar IS the provenance link (safe: ?hash is consume-once);
   // preserve other params (?demo=1 etc.) — only the hash slot is ours
   const qs = new URLSearchParams(location.search);
@@ -376,11 +442,7 @@ async function renderDeck(deck) {
     card.appendChild(cap);
     attachSlideControls(card, canvas, deck, slot);
     slidesEl.appendChild(card);
-    await renderSceneDataToCanvas(canvas, slot.sceneData, {
-      palette: slotPalette(deck.theme, slot),
-      decor: slotDecor(deck, slot),
-      decorRole: slotRoleOf(slot),
-    });
+    await renderSceneDataToCanvas(canvas, slot.sceneData, slotRenderOpts(deck.theme, deck, slot));
   }
   // Sprint 68: failed slots surface as retryable cards, not console lines —
   // a dropped page you can SEE is a page you can rescue
@@ -493,11 +555,7 @@ function attachSlideControls(card, canvas, deck, slot) {
     rollBtn.disabled = editGo.disabled = true;
     try {
       const sceneData = await reliftSlot(currentDeck, slot.slotIdx, { apiKey, revision });
-      await renderSceneDataToCanvas(canvas, sceneData, {
-        palette: slotPalette(deck.theme, slot),
-        decor: slotDecor(deck, slot),
-        decorRole: slotRoleOf(slot),
-      });
+      await renderSceneDataToCanvas(canvas, sceneData, slotRenderOpts(deck.theme, deck, slot));
       editRow.classList.remove('open');
       editInput.value = '';
       autosave();
@@ -602,11 +660,11 @@ async function generate() {
           const entry = streamCards.get(slot.slotIdx);
           if (!entry) return;
           try {
-            await renderSceneDataToCanvas(entry.canvas, slot.sceneData, {
-              palette: slotPalette(streamTheme, slot),
-              decor: slotDecor({ decor: streamDecor }, slot),
-              decorRole: slotRoleOf(slot),
-            });
+            await renderSceneDataToCanvas(
+              entry.canvas,
+              slot.sceneData,
+              slotRenderOpts(streamTheme, { decor: streamDecor }, slot),
+            );
           } finally {
             entry.card.classList.remove('busy');
           }
@@ -670,6 +728,8 @@ async function doExport(format) {
       decorVisEl.value === 'off' ? { ...currentDeck, decor: undefined } : currentDeck;
     const result = await fn(deckForExport, {
       onProgress: (msg, pct) => setStatus(`${msg} (${Math.round(pct)}%)`),
+      // 真迹装裱跟随视图开关 — 屏幕与文件一致
+      ...(artMount && decorVisEl.value !== 'off' ? { artMount } : {}),
     });
     setStatus(`downloaded: ${result.filename}`);
   } catch (e) {
