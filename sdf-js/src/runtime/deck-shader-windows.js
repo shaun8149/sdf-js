@@ -17,7 +17,12 @@
 // fly camera we fall back to the FULL world (the finale window's shader):
 // slow but correct — a free camera can look anywhere.
 // =============================================================================
-import { applyStudioScene, expandAndCompile } from './apply-studio-scene.js';
+import {
+  applyStudioScene,
+  expandAndCompile,
+  pickRenderScale,
+  sceneHasTimeContent,
+} from './apply-studio-scene.js';
 import { sliceDeckWindow } from '../scene/assemble-deck.js';
 
 /** First window whose end is still ahead of t (clamped to the last window). */
@@ -47,18 +52,29 @@ export function attachDeckWindows(
   const windows = scene.deckWindows;
   if (!Array.isArray(windows) || windows.length < 2 || !studio.swapSDF) return null;
 
-  // Window index → ground-unioned SDF. Compiled lazily (CPU-side, ~ms each);
-  // the GPU program for each SDF lives in studio's programCache.
-  const sdfCache = new Map();
-  const sdfFor = (i) => {
-    if (!sdfCache.has(i)) sdfCache.set(i, expandAndCompile(sliceDeckWindow(scene, windows[i])).sdf);
-    return sdfCache.get(i);
+  // Window index → expanded scene + ground-unioned SDF. Compiled lazily
+  // (CPU-side, ~ms each); the GPU program for each SDF lives in studio's
+  // programCache. Keep the expanded scene too because renderScale / animated
+  // are per-window renderer state, not properties of the SDF object.
+  const windowCache = new Map();
+  const windowFor = (i) => {
+    if (!windowCache.has(i)) {
+      const { stagedScene, sdf } = expandAndCompile(sliceDeckWindow(scene, windows[i]));
+      windowCache.set(i, { stagedScene, sdf });
+    }
+    return windowCache.get(i);
+  };
+  const sdfFor = (i) => windowFor(i).sdf;
+  const syncWindowFeatures = (i) => {
+    const { stagedScene } = windowFor(i);
+    if (studio.setRenderScale) studio.setRenderScale(pickRenderScale(stagedScene));
+    if (studio.setAnimated) studio.setAnimated(sceneHasTimeContent(stagedScene));
   };
 
   // Initial load renders window 0's slice (NOT the giant full-world shader —
   // the whole point is that the full shader only ever runs during the finale).
   const first = applyStudioScene(studio, sliceDeckWindow(scene, windows[0]));
-  sdfCache.set(0, first.sdf);
+  windowCache.set(0, { stagedScene: first.stagedScene, sdf: first.sdf });
   let cur = 0;
   let stopped = false;
 
@@ -99,12 +115,14 @@ export function attachDeckWindows(
       await breathe();
     }
     for (let i = 1; i < windows.length && !stopped; i++) {
+      syncWindowFeatures(i);
       studio.swapSDF(sdfFor(i));
       await frames(3); // wake() renders settle frames — one real draw lands
       if (onProgress) onProgress(windows.length - 1 + i, total);
       await breathe();
     }
     if (stopped) return;
+    syncWindowFeatures(0);
     studio.swapSDF(sdfFor(0)); // back to the opening window
     await frames(3);
     if (holdDuringWarmup && studio.setSequenceTime) studio.setSequenceTime(0);
@@ -121,6 +139,7 @@ export function attachDeckWindows(
       : windowIndexAt(windows, studio.getPresentationTime ? studio.getPresentationTime() : 0);
     if (idx !== cur) {
       cur = idx;
+      syncWindowFeatures(idx);
       studio.swapSDF(sdfFor(idx));
       if (onSwap) onSwap(idx);
     }

@@ -3,8 +3,8 @@
 // contiguous window timeline, and sliceDeckWindow must cut each window down to
 // its own stations (plus shared world dressing) without touching the camera.
 import { assembleDeck, sliceDeckWindow } from '../src/scene/assemble-deck.js';
-import { windowIndexAt } from '../src/runtime/deck-shader-windows.js';
-import { expandAndCompile } from '../src/runtime/apply-studio-scene.js';
+import { attachDeckWindows, windowIndexAt } from '../src/runtime/deck-shader-windows.js';
+import { expandAndCompile, pickRenderScale } from '../src/runtime/apply-studio-scene.js';
 
 let pass = 0,
   fail = 0;
@@ -103,6 +103,68 @@ ok(windowIndexAt(wins, 0) === 0, 'windowIndexAt(0) → first window');
 ok(windowIndexAt(wins, wins[1].start + 0.01) === 1, 'windowIndexAt lands mid-transit');
 ok(windowIndexAt(wins, total + 99) === wins.length - 1, 'past the end → finale window');
 ok(windowIndexAt(wins, -1) === 0, 'negative time clamps to first window');
+
+// ---- runtime feature wiring ---------------------------------------------------
+// Regression: attachDeckWindows used to swap only the SDF. If window 0 was a
+// cheap 2x-SSAA slice and the finale was the full heavy scene, the finale kept
+// 2x internal resolution and could hit the GPU watchdog / black-screen path.
+{
+  const lightSubjects = Array.from({ length: 4 }, (_, i) => ({
+    id: `s0-box-${i}`,
+    type: 'box',
+    args: { dims: [0.4, 0.4, 0.4] },
+    transform: { translate: [i * 0.7, 0.2, 0] },
+  }));
+  const heavySubjects = Array.from({ length: 20 }, (_, i) => ({
+    id: `s1-box-${i}`,
+    type: 'box',
+    args: { dims: [0.4, 0.4, 0.4] },
+    transform: { translate: [i * 0.7, 0.2, 2] },
+  }));
+  const runtimeScene = {
+    v: 1,
+    name: 'window scale regression',
+    subjects: [...lightSubjects, ...heavySubjects],
+    cameraSequence: { loop: false, shots: [] },
+    defaults: {},
+    deckWindows: [
+      { kind: 'station', stations: [0], start: 0, end: 1, origin: [0, 0, 0] },
+      { kind: 'finale', stations: [0, 1], start: 1, end: 2 },
+    ],
+  };
+  ok(pickRenderScale(sliceDeckWindow(runtimeScene, runtimeScene.deckWindows[0])) === 2.0, 'fixture starts light');
+  ok(pickRenderScale(sliceDeckWindow(runtimeScene, runtimeScene.deckWindows[1])) === 1.0, 'fixture finale is heavy');
+
+  const oldRaf = globalThis.requestAnimationFrame;
+  globalThis.requestAnimationFrame = (cb) => setTimeout(() => cb(performance.now()), 0);
+  const scales = [];
+  const animated = [];
+  const studio = {
+    setPostFx() {},
+    setRuneHeightmap() {},
+    setVolumes() {},
+    setSequence() {},
+    setRenderScale: (s) => scales.push(s),
+    setAnimated: (v) => animated.push(!!v),
+    render: () => ({}),
+    precompile: () => Promise.resolve(true),
+    swapSDF: () => ({}),
+    isSequenceActive: () => true,
+    getPresentationTime: () => 0,
+  };
+  try {
+    const handle = attachDeckWindows(studio, runtimeScene, { holdDuringWarmup: false });
+    await handle.warmed;
+    handle.detach();
+  } finally {
+    if (oldRaf) globalThis.requestAnimationFrame = oldRaf;
+    else delete globalThis.requestAnimationFrame;
+  }
+  ok(scales[0] === 2.0, 'runtime applies opening window renderScale');
+  ok(scales.includes(1.0), 'runtime lowers renderScale before heavy finale swap');
+  ok(scales[scales.length - 1] === 2.0, 'warmup restores opening window renderScale');
+  ok(animated.length >= 3, 'runtime refreshes per-window animated state while warming');
+}
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
