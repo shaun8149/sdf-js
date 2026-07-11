@@ -110,18 +110,17 @@ export function createFigure({ outdoor = false, stage = false, present = false }
     items = (scene.overlay || []).filter((o) => o.anchor && o.text);
     els = items.map((o) => {
       const d = document.createElement('div');
-      d.className = 'lbl' + (o.role === 'value' ? ' value' : '');
+      d.className =
+        'lbl' +
+        (o.role === 'value' ? ' value' : '') +
+        (o.role === 'screen' ? ' screen' : '') +
+        (o.role === 'title' ? ' title' : '');
       // Numeric value chips COUNT UP over ~0.8s after their reveal — numbers
       // that arrive read as data landing, not captions appearing.
       if (o.role === 'value' && /^[\d,]+$/.test(o.text)) {
         o._countTarget = Number(o.text.replace(/,/g, ''));
       }
       d.textContent = o.text;
-      if (o.role === 'title') {
-        d.style.fontSize = '20px';
-        d.style.fontWeight = '900';
-        d.style.background = 'none';
-      }
       document.body.appendChild(d);
       return d;
     });
@@ -188,6 +187,22 @@ export function createFigure({ outdoor = false, stage = false, present = false }
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
       const opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
       el.style.opacity = opacity;
+      // Depth-scaled type: labels grow as the camera approaches their anchor,
+      // so text reads as living IN the world instead of a fixed-size HUD chip.
+      // 'screen' labels (jumbotron faces) get the largest base — the glowing
+      // 3D face behind them is their chip. Quantized + write-on-change so the
+      // per-frame style churn stays near zero.
+      if (p.depth != null) {
+        const base =
+          o.role === 'title' ? 30 : o.role === 'screen' ? 21 : o.role === 'value' ? 13 : 13;
+        const fs =
+          Math.round(Math.max(9, Math.min(base * (6.2 / Math.max(p.depth, 0.6)), base * 2.1)) * 2) /
+          2;
+        if (el._fs !== fs) {
+          el._fs = fs;
+          el.style.fontSize = `${fs}px`;
+        }
+      }
       if (o._countTarget != null && o.revealAt != null) {
         const k = Math.max(0, Math.min(1, (t - o.revealAt) / 0.8));
         const eased = 1 - (1 - k) * (1 - k); // ease-out: fast start, settle on the number
@@ -211,8 +226,12 @@ export function createFigure({ outdoor = false, stage = false, present = false }
         placedRects.some(
           (r) => Math.abs(x - r.x) * 2 < w + r.w + 6 && Math.abs(yy - r.y) * 2 < h + r.h + 4,
         );
+      // Jumbotron/title text is PINNED to its screen geometry — displacing it
+      // off the glowing face it belongs to is worse than any overlap. It still
+      // claims its rect so free-floating cards route around it.
+      const pinned = v.o.role === 'screen' || v.o.role === 'title';
       let shift = 0;
-      while (shift < 4 && collides(y)) {
+      while (!pinned && shift < 4 && collides(y)) {
         y += 30;
         shift++;
       }

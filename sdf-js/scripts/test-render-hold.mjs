@@ -29,7 +29,10 @@ ok(
 // ---- bare cover ------------------------------------------------------------------
 {
   const s = renderHold({ structure: 'hold', title: '最懂你的头条', nodes: [] });
-  ok(s.subjects.length >= 3, 'cover renders stele + plinth + band');
+  ok(
+    s.subjects.length === 2 && s.subjects.every((x) => x.id.startsWith('title-')),
+    'cover renders the master screen (volumetric shell + glowing face)',
+  );
   ok(s.overlay.length === 1 && s.overlay[0].role === 'title', 'cover overlay is the title only');
   ok(s.cameraSequence.shots.length === 3, 'three quiet beats');
   ok(
@@ -47,31 +50,36 @@ const IR = {
 };
 {
   const s = renderHold(IR);
-  const pips = s.subjects.filter((x) => x.id.startsWith('pip-'));
-  ok(pips.length === 6, 'one pip per bullet');
+  const shells = s.subjects.filter((x) => /^b\d+-shell$/.test(x.id));
+  const faces = s.subjects.filter((x) => /^b\d+-face$/.test(x.id));
+  ok(shells.length === 6 && faces.length === 6, 'one volumetric screen per bullet (shell+face)');
   ok(
-    s.overlay.filter((o) => o.role === 'card').length === 6,
-    'one overlay card per bullet (text stays in the DOM layer)',
+    shells.every((x) => x.args.dims[2] >= 0.15),
+    'screen shells have real thickness (3D bodies, not flat cards)',
   );
-  const reveals = s.overlay.filter((o) => o.role === 'card').map((o) => o.revealAt);
+  ok(
+    s.overlay.filter((o) => o.role === 'screen').length === 6,
+    'one jumbotron text per bullet (big depth-scaled DOM type)',
+  );
+  const reveals = s.overlay.filter((o) => o.role === 'screen').map((o) => o.revealAt);
   ok(
     reveals.every((t, i) => i === 0 || t > reveals[i - 1]),
     'bullet reveals are staggered',
   );
   ok(
-    JSON.stringify(pips[5].material) !== JSON.stringify(pips[0].material),
-    'emphasized bullet pip gets the gold material',
+    JSON.stringify(faces[5].material) !== JSON.stringify(faces[0].material),
+    'emphasized bullet screen gets the gold face',
   );
   // deck-transplant safety: every build-in expr must parse under the STRICT shifter
   let allShift = true;
-  for (const p of pips) {
+  for (const p of [...shells, ...faces]) {
     try {
       shiftBuildInExpr(p.animation[0].expr, 2.5, 10);
     } catch (e) {
       allShift = false;
     }
   }
-  ok(allShift, 'pip build-in exprs survive assembleDeck expr shifting');
+  ok(allShift, 'screen build-in exprs survive assembleDeck expr shifting');
 }
 
 // ---- renderIR seam -----------------------------------------------------------------

@@ -40,6 +40,24 @@
         background: rgba(40, 116, 196, 0.92);
         font-weight: 700;
       }
+      .lbl.title {
+        font-weight: 900;
+        background: none;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+      }
+      /* Jumbotron text: the glowing 3D screen face behind it IS the chip, so
+         no background — just big type with enough shadow to sit on the glow. */
+      .lbl.screen {
+        font-weight: 800;
+        background: none;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.8),
+          0 3px 16px rgba(0, 0, 0, 0.5);
+        max-width: 340px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.25;
+      }
       /* Boot loader — visible until the first frame is drawn. Pure CSS-transform
          animation so it keeps moving even if the main thread hiccups. */
       #loading {
