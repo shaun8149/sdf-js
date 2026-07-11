@@ -56,31 +56,42 @@ export function renderMatrix(ir, opts = {}) {
 
   const subjects = [];
 
-  // the board: one thin tile per cell (self-laid, so item positions match exactly)
+  // The backboard: one deep slab the whole grid mounts on — the wall reads as
+  // a MASS, not a floating plane (3D-first: every element carries thickness).
+  subjects.push({
+    id: 'backboard',
+    type: 'rounded_box',
+    args: { dims: [boardW + 0.5, boardH + 0.5, 0.28], cornerR: 0.08 },
+    transform: { translate: [0, cy, -0.34] },
+    material: { hue: 0.62, sat: 0.3, value: 0.22, kind: 'normal', roughness: 0.4, clearcoat: 0.3 },
+  });
+
+  // the board: one thick beveled block per cell, proud of the backboard
   for (let yi = 0; yi < Y; yi++)
     for (let xi = 0; xi < X; xi++)
       subjects.push({
         id: `cell-${xi}-${yi}`,
-        type: 'box',
-        args: { dims: [cellW, cellH, 0.1] },
+        type: 'rounded_box',
+        args: { dims: [cellW, cellH, 0.3], cornerR: 0.06 },
         transform: { translate: [cellX(xi), cellY(yi), 0] },
         material: { ...TILE_MAT },
       });
 
-  // items slam onto their cells one by one (drop along z from the camera side)
+  // items slam onto their cells one by one (drop along z from the camera side).
+  // Full cubes, not plaques — the slam lands a BODY on the board.
   const introLead = 1.6;
   const holdEach = 0.9;
-  const zFinal = 0.18; // proud of the board face
   const zStart = 2.4; // launched from the camera side
   order.forEach((i, k) => {
     const [xi, yi] = ir.cells[i];
-    const size = mag ? 0.22 + 0.3 * Math.sqrt((Number(mag[i]) || 0) / mMax) : 0.3;
+    const size = mag ? 0.24 + 0.32 * Math.sqrt((Number(mag[i]) || 0) / mMax) : 0.34;
+    const zFinal = 0.15 + size / 2 + 0.02; // clear the thick cell face
     const t0 = introLead + k * holdEach - 0.35;
     const t1 = t0 + 0.45;
     subjects.push({
       id: `item-${i}`,
       type: 'rounded_box',
-      args: { dims: [size, size, 0.14], cornerR: 0.03 },
+      args: { dims: [size, size, size], cornerR: 0.06 },
       transform: { translate: [cellX(xi), cellY(yi), zFinal] },
       material: itemMat(emphasis.has(i)),
       animation: [

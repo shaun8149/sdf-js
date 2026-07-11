@@ -1,43 +1,85 @@
 // sdf-js/src/scene/render-hold.js
-// Structure renderer #6: hold → TITLE CARD. Reads the IR ONLY (never 2D x/y).
+// Structure renderer #6: hold → FLOAT-SCREEN WALL. Reads the IR ONLY.
 //
 // A hold page has no chartable structure — a cover, a narration beat, a product
-// tour. In a deck it is the interlude between arenas: the world quiets down,
-// one monument holds the frame, and the SPEAKER carries the content. So the
-// geometry is deliberately minimal (a stele + one gold band + a pip per
-// bullet) and all narrative text rides the DOM overlay (two-text-systems rule:
-// only geometry-bound data labels ever go into the SDF).
+// tour. The 3D form for "just words" is the JUMBOTRON: big volumetric screens
+// floating in the arena (a beveled shell + an inset glowing face — real bodies
+// with thickness, never flat cards), one per bullet, staggered in depth so the
+// wall has parallax. The words themselves ride the DOM overlay, but sized to
+// the screen via the depth-scaled font pass in figure-core (two-text-systems
+// rule intact: geometry carries the SCREEN, the DOM carries the TEXT).
 //
 // Fighting-game grammar, hold variation — the INTERLUDE:
-//   1. slow push-in on the stele (the breath between rounds)
-//   2. lateral drift while bullet pips drop in one per beat
-//   3. payoff pull-back (auto-tagged 'station' by the renderIR seam)
+//   1. slow push-in on the master title screen
+//   2. drift along the screen wall while bullet screens swing in one per beat
+//   3. payoff pull-back framing the whole wall (auto-tagged 'station')
 // No super — hold pages never punch; they set up the next station's hit.
 import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
-const pipMat = (emphasized) =>
+const SHELL_MAT = {
+  hue: 0.62,
+  sat: 0.4,
+  value: 0.3,
+  kind: 'normal',
+  roughness: 0.24,
+  clearcoat: 0.6,
+};
+const faceMat = (emphasized) =>
   emphasized
     ? {
         hue: 0.11,
-        sat: 0.78,
+        sat: 0.72,
         value: 0.95,
-        metal: 0,
-        glow: 0.22,
+        glow: 0.3,
         kind: 'normal',
-        roughness: 0.22,
-        clearcoat: 0.6,
+        roughness: 0.3,
+        clearcoat: 0.4,
       }
     : {
         hue: 0.58,
-        sat: 0.55,
-        value: 0.8,
+        sat: 0.45,
+        value: 0.62,
+        glow: 0.18,
         kind: 'normal',
-        roughness: 0.3,
-        clearcoat: 0.45,
+        roughness: 0.32,
+        clearcoat: 0.4,
       };
+
+// One volumetric screen: beveled shell + glowing face inset just proud of the
+// front plane. Two subjects — thickness reads from every angle, and the lit
+// face gives the "screen" read without any texture machinery.
+function screen(id, [x, y, z], [w, h], yaw, emphasized, anim) {
+  const shell = {
+    id: `${id}-shell`,
+    type: 'rounded_box',
+    args: { dims: [w, h, 0.22], cornerR: 0.07 },
+    transform: { translate: [x, y, z], ...(yaw ? { rotate: [0, yaw, 0] } : {}) },
+    material: SHELL_MAT,
+  };
+  const face = {
+    id: `${id}-face`,
+    type: 'rounded_box',
+    args: { dims: [w - 0.22, h - 0.22, 0.05], cornerR: 0.05 },
+    // face sits proud of the shell front (+z toward the default camera)
+    transform: {
+      translate: [
+        x + (yaw ? -Math.sin(yaw) * 0.1 : 0),
+        y,
+        z + (yaw ? Math.cos(yaw) * 0.1 : 0.1),
+      ],
+      ...(yaw ? { rotate: [0, yaw, 0] } : {}),
+    },
+    material: faceMat(emphasized),
+  };
+  if (anim) {
+    shell.animation = [{ channel: 'transform.translate.y', expr: anim(y) }];
+    face.animation = [{ channel: 'transform.translate.y', expr: anim(y) }];
+  }
+  return [shell, face];
+}
 
 export function renderHold(ir, opts = {}) {
   const v = validateIR(ir);
@@ -49,130 +91,101 @@ export function renderHold(ir, opts = {}) {
   const bullets = (ir.nodes || []).map(label).filter(Boolean);
   const N = bullets.length;
   const emphasis = new Set(ir.emphasis || []);
-
-  // ---- geometry: stele + gold band + bullet pips -------------------------------
-  // The stele stands left-of-centre so the bullet column (camera right) shares
-  // the frame instead of hiding behind it. Static on purpose — the anchor of a
-  // narration beat must not fidget.
-  const steleX = N > 0 ? -1.3 : 0;
-  const subjects = [
-    {
-      id: 'plinth',
-      type: 'box',
-      args: { dims: [2.6, 0.14, 1.1] },
-      transform: { translate: [steleX, 0.07, 0] },
-      material: { hue: 0.58, sat: 0.1, value: 0.55, kind: 'normal', roughness: 0.6 },
-    },
-    {
-      id: 'stele',
-      type: 'rounded_box',
-      args: { dims: [2.1, 2.5, 0.16], cornerR: 0.05 },
-      transform: { translate: [steleX, 1.39, 0] },
-      material: {
-        hue: 0.62,
-        sat: 0.45,
-        value: 0.34,
-        kind: 'normal',
-        roughness: 0.26,
-        clearcoat: 0.55,
-      },
-    },
-    {
-      // gold band near the stele's crown — the 3D "title underline"
-      id: 'band',
-      type: 'box',
-      args: { dims: [2.1, 0.07, 0.18] },
-      transform: { translate: [steleX, 2.28, 0] },
-      material: {
-        hue: 0.11,
-        sat: 0.78,
-        value: 0.95,
-        glow: 0.25,
-        kind: 'normal',
-        roughness: 0.2,
-        clearcoat: 0.6,
-      },
-    },
-  ];
-
-  // Bullet pips: a floating column beside the stele, one dropping in per beat.
-  // Drop (not erupt) — items arriving from above read as points being SET DOWN
-  // on the argument, and the drop shape is assembleDeck-transplant safe.
-  // The column is centred at stele mid-height and compresses its step for long
-  // lists so the last pip never sinks into the platform (6 bullets at a fixed
-  // 0.56 step put pip-5 at floor level).
-  const pipX = 0.9;
-  const pipStep = N > 1 ? Math.min(0.56, 2.3 / (N - 1)) : 0;
-  const pipTopY = 1.5 + ((N - 1) * pipStep) / 2;
-  const introLead = 2.2; // the hero push-in
+  const introLead = 2.2;
   const holdEach = 1.0;
-  bullets.forEach((_, k) => {
-    const y = pipTopY - k * pipStep;
-    const drop = 0.5;
+
+  // Drop-in build: screens settle from above as their beat arrives. The shape
+  // is the assembleDeck-transplant-safe smoothstep drop.
+  const dropExpr = (k) => (yFinal) => {
+    const drop = 0.7;
     const t0 = introLead + k * holdEach - 0.35;
-    const t1 = t0 + 0.5;
-    subjects.push({
-      id: `pip-${k}`,
-      type: 'rounded_box',
-      args: { dims: [0.3, 0.3, 0.3], cornerR: 0.09 },
-      transform: { translate: [pipX, y, 0] },
-      material: pipMat(emphasis.has(k)),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
-        },
-      ],
-    });
+    const t1 = t0 + 0.55;
+    return `${(yFinal + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`;
+  };
+
+  // ---- geometry: the jumbotron wall ---------------------------------------------
+  // Master title screen high centre; bullet screens in two columns fanned
+  // around it, staggered in z so the wall reads as a hovering fleet, each
+  // yawed a few degrees toward the centre line.
+  const titleW = Math.max(4.2, 2.6 + (String(ir.title || '').length > 8 ? 1.8 : 0));
+  const subjects = [
+    ...screen('title', [0, N > 0 ? 3.35 : 1.9, N > 0 ? -0.8 : 0], [titleW, 1.3], 0, false, null),
+  ];
+  // One layout, two consumers: the screen geometry AND the overlay text anchors
+  // read the same positions, so they can never drift apart. Three-row walls
+  // tighten the row step and raise the base so the bottom row's screens clear
+  // the platform (screen half-height 0.46 + margin).
+  const rows = Math.ceil(N / 2);
+  const rowStep = rows > 2 ? 1.08 : 1.15;
+  const baseY = rows > 2 ? 2.85 : 2.35;
+  const bulletPos = bullets.map((_, k) => {
+    const col = k % 2 === 0 ? -1 : 1; // left, right, left, right…
+    const row = Math.floor(k / 2);
+    return {
+      col,
+      x: col * 2.05,
+      y: baseY - row * rowStep,
+      z: -0.3 + row * 0.55 + (col < 0 ? 0 : 0.25), // stagger depth → parallax
+    };
+  });
+  bulletPos.forEach((p, k) => {
+    const yaw = p.col * -0.16; // angled inward, facing the aisle
+    subjects.push(
+      ...screen(`b${k}`, [p.x, p.y, p.z], [3.0, 0.92], yaw, emphasis.has(k), dropExpr(k)),
+    );
   });
 
-  // ---- camera: three quiet beats ------------------------------------------------
+  // ---- camera: three quiet beats down the aisle -----------------------------------
   const driftDur = Math.max(2.2, N * holdEach + 0.8);
+  const wallTop = N > 0 ? 3.35 : 1.9;
   const shots = [
     {
       duration: introLead,
-      pos: [steleX + 0.9, 1.5, 5.6],
-      target: [steleX + (N > 0 ? 0.7 : 0), 1.5, 0],
-      fov: 46,
-      aperture: 0.4,
-      focalDistance: 5.2,
+      pos: [0, wallTop - 0.15, 6.2],
+      target: [0, wallTop - 0.35, 0],
+      fov: 42,
+      aperture: 0.35,
+      focalDistance: 6.0,
       ease: 'out',
     },
     {
       duration: driftDur,
-      pos: [steleX - 1.4, 1.8, 5.0],
-      target: [N > 0 ? (steleX + pipX) / 2 + 0.4 : steleX, 1.5, 0],
-      fov: 44,
+      pos: [-1.5, 2.0, 5.4],
+      target: [0.3, N > 0 ? 2.0 : 1.8, 0],
+      fov: 46,
       transition: 'blend',
-      aperture: 0.3,
-      focalDistance: 5.0,
+      aperture: 0.28,
+      focalDistance: 5.4,
       ease: 'smooth',
     },
     {
       duration: 2.0,
-      pos: [steleX + 0.6, 2.1, 6.8 * (env ? env.payoffZoom : 1)],
-      target: [steleX + (N > 0 ? 0.8 : 0), 1.4, 0],
+      pos: [0.6, 2.6, 7.6 * (env ? env.payoffZoom : 1)],
+      target: [0, N > 0 ? 2.2 : 1.8, 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0.14,
-      focalDistance: 6.8,
+      aperture: 0.12,
+      focalDistance: 7.6,
       ease: 'out',
     },
   ];
 
-  // ---- overlay: title on the stele, one card per bullet -------------------------
+  // ---- overlay: text mapped onto the screens --------------------------------------
+  // role 'screen' → figure-core renders it as big depth-scaled type with no
+  // chip background (the glowing face IS the background).
   const overlay = [
     {
       text: String(ir.title || bullets[0] || ''),
-      anchor: [steleX, 3.0, 0],
+      anchor: [0, N > 0 ? 3.35 : 1.9, N > 0 ? -0.7 : 0.15],
       role: 'title',
     },
   ];
   bullets.forEach((b, k) => {
+    const p = bulletPos[k];
     overlay.push({
       text: b,
-      anchor: [pipX + 0.35, pipTopY - k * pipStep, 0],
-      role: 'card',
+      anchor: [p.x, p.y, p.z + 0.16],
+      role: 'screen',
       revealAt: introLead + k * holdEach + 0.25,
     });
   });

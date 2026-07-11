@@ -70,7 +70,10 @@ ok(
   );
   ok((shots[shots.length - 1].focalDistance || 0) > 5, 'ends on a wide payoff frame');
 
-  // labels: 5 name cards + 5 value chips, reveal-tagged
+  // labels: 5 name cards + 5 value chips, reveal-tagged. (3D extruded digits
+  // above the champion were tried and REVERTED: a glyph label is one leaf but
+  // a huge expression — register pressure tanked magnitude stations to 1-16fps
+  // on M3. Bring back only with a cheap glyph representation.)
   const cards = scene.overlay.filter((o) => o.role === 'card');
   const values = scene.overlay.filter((o) => o.role === 'value');
   ok(cards.length === 5 && values.length === 5, '5 cards + 5 values');
