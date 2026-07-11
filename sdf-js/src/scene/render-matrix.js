@@ -103,6 +103,29 @@ export function renderMatrix(ir, opts = {}) {
     });
   });
 
+  // Floating flank rocks: the black-stone motif hovers beside the board —
+  // depth layers behind the flat wall, slow idle bob (transplant-safe tail).
+  [
+    [-(boardW / 2 + 2.4), cy + 0.8, -2.2, 1.5, 0.9],
+    [boardW / 2 + 2.7, cy - 0.4, -3.0, 1.9, 1.1],
+    [-(boardW / 2 + 4.2), cy + 2.2, -5.5, 2.6, 1.4],
+    [boardW / 2 + 4.8, cy + 1.6, -6.5, 2.2, 1.2],
+  ].forEach(([fx, fy, fz, fw, fh], fi) => {
+    subjects.push({
+      id: `flank-${fi}`,
+      type: 'box',
+      args: { dims: [fw, fh, fw * 0.5] },
+      transform: { translate: [fx, fy, fz], rotate: [0, 0.5 * fi - 0.9, 0] },
+      material: { hue: 0.62, sat: 0.25, value: 0.14, kind: 'normal', roughness: 0.5, clearcoat: 0.35 },
+      animation: [
+        {
+          channel: 'transform.translate.y',
+          expr: `${fy.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.06 + 0.02 * fi).toFixed(2)} * sin(${(0.3 + 0.07 * fi).toFixed(2)} * t + ${((fi * 2.2) % 6.28).toFixed(2)})`,
+        },
+      ],
+    });
+  });
+
   // ---- camera: briefing-board beats -------------------------------------------
   const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : order[order.length - 1];
   const [exi, eyi] = ir.cells[emphasisIdx];

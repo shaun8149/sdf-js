@@ -111,7 +111,7 @@ export function renderHierarchy(ir, opts = {}) {
   // Node size: magnitude-scaled sphere (root reads as the crown by position,
   // not just size). Edges: capsules parent→child, owned by the CHILD subject so
   // node + its up-link build in as one piece.
-  const nodeR = (i) => 0.22 + 0.2 * Math.sqrt((Number(mag[i]) || 1) / mMax);
+  const nodeR = (i) => 0.28 + 0.26 * Math.sqrt((Number(mag[i]) || 1) / mMax);
 
   // Per-level reveal: level l lands as the camera's level-l beat begins.
   const introLead = 2.1; // hero 0.9 + crane 1.2

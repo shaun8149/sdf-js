@@ -144,40 +144,44 @@ export function getEnvironment(name) {
   return null;
 }
 
-// ---- Horizon silhouettes (the DEFAULT open world's skyline) -------------------
+// ---- Horizon monoliths (the DEFAULT open world's skyline) ---------------------
 // Decks without an env fly over an infinite empty plain — the transits expose
-// it. This is a CHEAP ring of hill silhouettes (ellipsoids only — no terrain
-// fbm, so no shader-compile cost) at distance; atmospheric fog hazes them into
-// a proper horizon. Deterministic layout from index math (no randomness).
-export function horizonSilhouettes(center = [0, 0], ringRadius = 140) {
-  const hills = [];
+// it. The skyline is the deck's VISUAL MOTIF: a ring of towering black stone
+// monoliths (the 2001 read; user-locked black-rock motif), each yawed to catch
+// a rim of key light. Hills used to sit here but the atmospheric fog bleached
+// them white; black stone silhouettes OWN the haze instead. Deterministic
+// layout from index math (no randomness); ids keep the `horizon-` prefix so
+// sliceDeckWindow's nearest-K trim keeps working unchanged.
+export function horizonSilhouettes(center = [0, 0], ringRadius = 135) {
+  const rocks = [];
   const N = 14;
   for (let i = 0; i < N; i++) {
     const th = (i * 2 * Math.PI) / N + 0.35 * Math.sin(i * 2.7);
-    const r = ringRadius * (0.9 + 0.18 * Math.sin(i * 1.9 + 1.2));
-    const w = 34 + 18 * Math.sin(i * 3.1 + 0.5) ** 2;
-    const h = 8 + 7 * Math.sin(i * 2.3 + 2.1) ** 2;
-    hills.push({
+    const r = ringRadius * (0.82 + 0.3 * Math.sin(i * 1.9 + 1.2));
+    const w = 6 + 5 * Math.sin(i * 3.1 + 0.5) ** 2;
+    const h = 10 + 9 * Math.sin(i * 2.3 + 2.1) ** 2;
+    rocks.push({
       id: `horizon-${i}`,
-      type: 'ellipsoid',
-      args: { dims: [w, h, w * 0.7] },
-      // sink most of the body — only the CREST breaks the horizon line, so it
-      // reads as a distant ridge, not a dome parked on the plain
+      type: 'box',
+      args: { dims: [w, h, w * 0.45] },
+      // slightly sunk so every slab reads planted, not parked
       transform: {
-        translate: [center[0] + Math.sin(th) * r, -h * 0.55, center[1] + Math.cos(th) * r],
+        translate: [center[0] + Math.sin(th) * r, h * 0.42, center[1] + Math.cos(th) * r],
+        rotate: [0, 0.4 * Math.sin(i * 2.1), 0],
       },
       material: {
         hue: 0.62,
-        sat: 0.3,
-        value: 0.3,
+        sat: 0.25,
+        value: 0.14,
         metal: 0,
         glow: 0,
         kind: 'normal',
-        roughness: 0.85,
+        roughness: 0.5,
+        clearcoat: 0.35,
       },
     });
   }
-  return hills;
+  return rocks;
 }
 
 // ---------------------------------------------------------------------------
