@@ -55,8 +55,20 @@ console.log('=== analytic white-model renderer ===\n');
 
 // ---- scope rejection ----------------------------------------------------------
 {
-  const bad1 = compileAnalyticFrag([{ id: 'f', type: 'funnel-3d', args: {} }]);
-  ok(!bad1.ok && /funnel/.test(bad1.reason), 'funnel-3d rejected with reason');
+  const bad1 = compileAnalyticFrag([{ id: 'v', type: 'venn-3d', args: {} }]);
+  ok(!bad1.ok && /venn/.test(bad1.reason), 'unsupported type rejected with reason');
+  const fun = compileAnalyticFrag([
+    {
+      id: 'f',
+      type: 'funnel-3d',
+      args: { stages: 4, radii: [1.2, 0.9, 0.6, 0.4, 0.2], stageHeight: 0.5, gap: 0.06 },
+      transform: { translate: [0, 2, 0] },
+    },
+  ]);
+  ok(
+    fun.ok && (fun.fragSource.match(/iCappedCone\(q/g) || []).length === 4,
+    'funnel-3d emits one capped cone per slice',
+  );
   const bad2 = compileAnalyticFrag([
     { id: 'r', type: 'box', args: { dims: [1, 1, 1] }, transform: { rotate: [0.3, 0, 0] } },
   ]);

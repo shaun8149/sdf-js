@@ -26,7 +26,15 @@
 //     not GLSL-safe (smoothstep/sin/numbers only)
 // =============================================================================
 
-const SUPPORTED = new Set(['box', 'rounded_box', 'sphere', 'capsule', 'ellipsoid', 'cylinder']);
+const SUPPORTED = new Set([
+  'box',
+  'rounded_box',
+  'sphere',
+  'capsule',
+  'ellipsoid',
+  'cylinder',
+  'funnel-3d',
+]);
 const EXPR_SAFE = /^[\d\s+\-*/().,]|smoothstep|sin|t$/; // per-token check below
 
 const flt = (x) => {
@@ -174,6 +182,38 @@ float iCylinderY(vec3 ro, vec3 rd, float ra, float he, out vec3 n) {
   return -1.0;
 }
 
+// IQ capped cone (truncated cone with caps): returns vec4(t, normal)
+float dot2(vec3 v) { return dot(v, v); }
+vec4 iCappedCone(vec3 ro, vec3 rd, vec3 pa, vec3 pb, float ra, float rb) {
+  vec3 ba = pb - pa;
+  vec3 oa = ro - pa;
+  vec3 ob = ro - pb;
+  float m0 = dot(ba, ba);
+  float m1 = dot(oa, ba);
+  float m2 = dot(rd, ba);
+  float m3 = dot(rd, oa);
+  float m5 = dot(oa, oa);
+  float m9 = dot(ob, ba);
+  if (m1 < 0.0) {
+    if (dot2(oa * m2 - rd * m1) < (ra * ra * m2 * m2))
+      return vec4(-m1 / m2, -ba * inversesqrt(m0));
+  } else if (m9 > 0.0) {
+    float t = -m9 / m2;
+    if (dot2(ob + rd * t) < (rb * rb)) return vec4(t, ba * inversesqrt(m0));
+  }
+  float rr = ra - rb;
+  float hy = m0 + rr * rr;
+  float k2 = m0 * m0 - m2 * m2 * hy;
+  float k1 = m0 * m0 * m3 - m1 * m2 * hy + m0 * ra * (rr * m2 * 1.0);
+  float k0 = m0 * m0 * m5 - m1 * m1 * hy + m0 * ra * (rr * m1 * 2.0 - m0 * ra);
+  float h = k1 * k1 - k2 * k0;
+  if (h < 0.0) return vec4(-1.0);
+  float t = (-k1 - sqrt(h)) / k2;
+  float y = m1 + t * m2;
+  if (y < 0.0 || y > m0) return vec4(-1.0);
+  return vec4(t, normalize(m0 * (m0 * (oa + t * rd) + rr * ba * ra) - ba * hy * y));
+}
+
 // IQ analytic sphere occlusion (approximated form — cheap, NaN-safe)
 float sphOcc(vec3 pos, vec3 nor, vec4 sph) {
   vec3 di = sph.xyz - pos;
@@ -276,6 +316,29 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       proxyR = Math.max(r * 0.7, he);
       body += `    float tk = iCylinderY(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
       body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
+    } else if (s.type === 'funnel-3d') {
+      // Mirror funnel3dSDF's layout math: N stacked truncated cones. Each
+      // slice is one closed-form iCappedCone; they share the subject's
+      // (possibly animated) frame, material and hit id.
+      const stages = Math.max(1, Math.floor(a.stages ?? a.count ?? 4));
+      const rTop = a.topRadius ?? 0.95;
+      const rBot = a.bottomRadius ?? 0.22;
+      const stageH = a.stageHeight ?? 0.4;
+      const gap = a.gap ?? 0.06;
+      const radii = Array.isArray(a.radii) && a.radii.length >= stages + 1 ? a.radii : null;
+      const radAt = (f) => rTop + f * (rBot - rTop);
+      const totalH = stages * stageH + (stages - 1) * gap;
+      let maxR = 0;
+      for (let j = 0; j < stages; j++) {
+        const rT = radii ? radii[j] : radAt(j / stages);
+        const rB = radii ? radii[j + 1] : radAt((j + 1) / stages);
+        maxR = Math.max(maxR, rT, rB);
+        const yT = totalH / 2 - j * (stageH + gap);
+        const yB = yT - stageH;
+        body += `    { vec4 cc = iCappedCone(q, dq, vec3(0.0, ${flt(yT)}, 0.0), vec3(0.0, ${flt(yB)}, 0.0), ${flt(rT)}, ${flt(rB)});\n`;
+        body += `      if (cc.x > 0.0 && cc.x < tHit) { tHit = cc.x; n${k} = cc.yzw; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; } }\n`;
+      }
+      proxyR = Math.max(maxR * 0.75, totalH * 0.5);
     }
     body += '  }\n';
 
