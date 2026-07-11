@@ -30,14 +30,18 @@ ok(
 {
   const s = renderHold({ structure: 'hold', title: '最懂你的头条', nodes: [] });
   ok(
-    s.subjects.length === 2 && s.subjects.every((x) => x.id.startsWith('title-')),
-    'cover renders the master screen (volumetric shell + glowing face)',
+    s.subjects.some((x) => x.id === 'mono-title'),
+    'cover renders the black title monolith',
+  );
+  ok(
+    s.subjects.filter((x) => x.id.startsWith('floater-')).length >= 4,
+    'distant black rocks float behind the stage (the deck motif)',
   );
   ok(s.overlay.length === 1 && s.overlay[0].role === 'title', 'cover overlay is the title only');
   ok(s.cameraSequence.shots.length === 3, 'three quiet beats');
   ok(
-    s.subjects.every((x) => !x.animation),
-    'cover has no animations (nothing to reveal)',
+    s.subjects.filter((x) => x.id.startsWith('stone-')).length === 0,
+    'no bullet stones on a bare cover',
   );
 }
 
@@ -50,16 +54,15 @@ const IR = {
 };
 {
   const s = renderHold(IR);
-  const shells = s.subjects.filter((x) => /^b\d+-shell$/.test(x.id));
-  const faces = s.subjects.filter((x) => /^b\d+-face$/.test(x.id));
-  ok(shells.length === 6 && faces.length === 6, 'one volumetric screen per bullet (shell+face)');
+  const stones = s.subjects.filter((x) => /^stone-\d+$/.test(x.id));
+  ok(stones.length === 6, 'one black stone per bullet (the COUNT is geometry)');
   ok(
-    shells.every((x) => x.args.dims[2] >= 0.15),
-    'screen shells have real thickness (3D bodies, not flat cards)',
+    stones.every((x) => x.args.dims[2] >= 0.3),
+    'stones are real bodies with depth, not plaques',
   );
   ok(
     s.overlay.filter((o) => o.role === 'screen').length === 6,
-    'one jumbotron text per bullet (big depth-scaled DOM type)',
+    'one stage-layer bullet per point (screen-space typography)',
   );
   const reveals = s.overlay.filter((o) => o.role === 'screen').map((o) => o.revealAt);
   ok(
@@ -67,19 +70,22 @@ const IR = {
     'bullet reveals are staggered',
   );
   ok(
-    JSON.stringify(faces[5].material) !== JSON.stringify(faces[0].material),
-    'emphasized bullet screen gets the gold face',
+    JSON.stringify(stones[5].material) !== JSON.stringify(stones[0].material),
+    'emphasized bullet stone is gold',
   );
-  // deck-transplant safety: every build-in expr must parse under the STRICT shifter
+  // deck-transplant safety: every build-in expr (drop + idle bob tails on the
+  // floaters) must parse under the STRICT shifter
   let allShift = true;
-  for (const p of [...shells, ...faces]) {
+  const animated = s.subjects.filter((x) => x.animation);
+  ok(animated.length >= 10, 'stones drop in and floaters bob (animated bodies)');
+  for (const p of animated) {
     try {
       shiftBuildInExpr(p.animation[0].expr, 2.5, 10);
     } catch (e) {
       allShift = false;
     }
   }
-  ok(allShift, 'screen build-in exprs survive assembleDeck expr shifting');
+  ok(allShift, 'all build-in exprs survive assembleDeck expr shifting');
 }
 
 // ---- renderIR seam -----------------------------------------------------------------

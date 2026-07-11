@@ -1,85 +1,57 @@
 // sdf-js/src/scene/render-hold.js
-// Structure renderer #6: hold → FLOAT-SCREEN WALL. Reads the IR ONLY.
+// Structure renderer #6: hold → BLACK MONOLITH FIELD. Reads the IR ONLY.
 //
 // A hold page has no chartable structure — a cover, a narration beat, a product
-// tour. The 3D form for "just words" is the JUMBOTRON: big volumetric screens
-// floating in the arena (a beveled shell + an inset glowing face — real bodies
-// with thickness, never flat cards), one per bullet, staggered in depth so the
-// wall has parallax. The words themselves ride the DOM overlay, but sized to
-// the screen via the depth-scaled font pass in figure-core (two-text-systems
-// rule intact: geometry carries the SCREEN, the DOM carries the TEXT).
+// tour. Division of labour (user-locked 2026-07-11): the 3D world TELLS THE
+// STORY and never carries sentences — narrative text lives on the screen-space
+// stage layer (figure-core renders `title`/`screen` overlay roles as big 2D
+// typography). What the world contributes here is PRESENCE: a black rock
+// monolith as the title's backdrop, one smaller black stone per bullet (the
+// COUNT is geometry even when the words are not), and a loose field of the
+// same black rocks floating in the distance — the visual motif of the deck.
 //
 // Fighting-game grammar, hold variation — the INTERLUDE:
-//   1. slow push-in on the master title screen
-//   2. drift along the screen wall while bullet screens swing in one per beat
-//   3. payoff pull-back framing the whole wall (auto-tagged 'station')
+//   1. slow push-in on the title monolith (the breath between rounds)
+//   2. drift as the bullet stones drop in one per beat
+//   3. payoff pull-back (auto-tagged 'station' by the renderIR seam)
 // No super — hold pages never punch; they set up the next station's hit.
 import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
-const SHELL_MAT = {
+// Black rock: near-black, matte-leaning, cracked stone grain. The gold variant
+// marks the emphasized bullet's stone.
+const ROCK_MAT = {
   hue: 0.62,
-  sat: 0.4,
-  value: 0.3,
+  sat: 0.25,
+  value: 0.17,
   kind: 'normal',
-  roughness: 0.24,
+  roughness: 0.42,
+  clearcoat: 0.5,
+};
+const GOLD_MAT = {
+  hue: 0.11,
+  sat: 0.78,
+  value: 0.95,
+  glow: 0.22,
+  kind: 'normal',
+  roughness: 0.22,
   clearcoat: 0.6,
 };
-const faceMat = (emphasized) =>
-  emphasized
-    ? {
-        hue: 0.11,
-        sat: 0.72,
-        value: 0.95,
-        glow: 0.3,
-        kind: 'normal',
-        roughness: 0.3,
-        clearcoat: 0.4,
-      }
-    : {
-        hue: 0.58,
-        sat: 0.45,
-        value: 0.62,
-        glow: 0.18,
-        kind: 'normal',
-        roughness: 0.32,
-        clearcoat: 0.4,
-      };
 
-// One volumetric screen: beveled shell + glowing face inset just proud of the
-// front plane. Two subjects — thickness reads from every angle, and the lit
-// face gives the "screen" read without any texture machinery.
-function screen(id, [x, y, z], [w, h], yaw, emphasized, anim) {
-  const shell = {
-    id: `${id}-shell`,
+const rock = (id, [x, y, z], [w, h, d], material, extra = {}) => {
+  const s = {
+    id,
     type: 'rounded_box',
-    args: { dims: [w, h, 0.22], cornerR: 0.07 },
-    transform: { translate: [x, y, z], ...(yaw ? { rotate: [0, yaw, 0] } : {}) },
-    material: SHELL_MAT,
+    args: { dims: [w, h, d], cornerR: 0.06 },
+    transform: { translate: [x, y, z], ...(extra.rotate ? { rotate: extra.rotate } : {}) },
+    material,
   };
-  const face = {
-    id: `${id}-face`,
-    type: 'rounded_box',
-    args: { dims: [w - 0.22, h - 0.22, 0.05], cornerR: 0.05 },
-    // face sits proud of the shell front (+z toward the default camera)
-    transform: {
-      translate: [
-        x + (yaw ? -Math.sin(yaw) * 0.1 : 0),
-        y,
-        z + (yaw ? Math.cos(yaw) * 0.1 : 0.1),
-      ],
-      ...(yaw ? { rotate: [0, yaw, 0] } : {}),
-    },
-    material: faceMat(emphasized),
-  };
-  if (anim) {
-    shell.animation = [{ channel: 'transform.translate.y', expr: anim(y) }];
-    face.animation = [{ channel: 'transform.translate.y', expr: anim(y) }];
-  }
-  return [shell, face];
-}
+  if (material !== GOLD_MAT) s.pattern = 'cracked'; // stone grain; gold stays polished
+  if (extra.animation) s.animation = extra.animation;
+  return s;
+};
 
 export function renderHold(ir, opts = {}) {
   const v = validateIR(ir);
@@ -94,97 +66,112 @@ export function renderHold(ir, opts = {}) {
   const introLead = 2.2;
   const holdEach = 1.0;
 
-  // Drop-in build: screens settle from above as their beat arrives. The shape
-  // is the assembleDeck-transplant-safe smoothstep drop.
-  const dropExpr = (k) => (yFinal) => {
+  // ---- geometry ------------------------------------------------------------------
+  // Title monolith: the big black rock the title reads against. Offset right —
+  // the stage layer's bullet column owns the LEFT of the screen (+x renders
+  // screen-left, so the rock sits at negative x... the studio's +x→screen-left
+  // mirror strikes again; -x is screen-RIGHT).
+  const mx = N > 0 ? -2.3 : 0;
+  const subjects = [rock('mono-title', [mx, 2.1, -1.2], [4.4, 2.6, 0.6], ROCK_MAT)];
+
+  // Bullet stones: one black stone per bullet, a rising diagonal past the title
+  // monolith — the COUNT of points is world-geometry even though the words are
+  // screen typography. Each drops in on its beat (transplant-safe smoothstep)
+  // and hangs with a slow idle bob (the "floating rocks" read).
+  bullets.forEach((_, k) => {
+    const x = mx - 1.7 - k * 0.85; // -x is screen-RIGHT: the stone line rises away from the monolith
+    const y = 1.3 + k * 0.45;
+    const z = 0.2 - k * 0.7;
     const drop = 0.7;
     const t0 = introLead + k * holdEach - 0.35;
     const t1 = t0 + 0.55;
-    return `${(yFinal + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`;
-  };
-
-  // ---- geometry: the jumbotron wall ---------------------------------------------
-  // Master title screen high centre; bullet screens in two columns fanned
-  // around it, staggered in z so the wall reads as a hovering fleet, each
-  // yawed a few degrees toward the centre line.
-  const titleW = Math.max(4.2, 2.6 + (String(ir.title || '').length > 8 ? 1.8 : 0));
-  const subjects = [
-    ...screen('title', [0, N > 0 ? 3.35 : 1.9, N > 0 ? -0.8 : 0], [titleW, 1.3], 0, false, null),
-  ];
-  // One layout, two consumers: the screen geometry AND the overlay text anchors
-  // read the same positions, so they can never drift apart. Three-row walls
-  // tighten the row step and raise the base so the bottom row's screens clear
-  // the platform (screen half-height 0.46 + margin).
-  const rows = Math.ceil(N / 2);
-  const rowStep = rows > 2 ? 1.08 : 1.15;
-  const baseY = rows > 2 ? 2.85 : 2.35;
-  const bulletPos = bullets.map((_, k) => {
-    const col = k % 2 === 0 ? -1 : 1; // left, right, left, right…
-    const row = Math.floor(k / 2);
-    return {
-      col,
-      x: col * 2.05,
-      y: baseY - row * rowStep,
-      z: -0.3 + row * 0.55 + (col < 0 ? 0 : 0.25), // stagger depth → parallax
-    };
-  });
-  bulletPos.forEach((p, k) => {
-    const yaw = p.col * -0.16; // angled inward, facing the aisle
+    const phase = (k * 1.7) % 6.28;
     subjects.push(
-      ...screen(`b${k}`, [p.x, p.y, p.z], [3.0, 0.92], yaw, emphasis.has(k), dropExpr(k)),
+      rock(`stone-${k}`, [x, y, z], [0.62, 0.42, 0.5], emphasis.has(k) ? GOLD_MAT : ROCK_MAT, {
+        rotate: [0, 0.22 * (k % 2 === 0 ? 1 : -1), 0],
+        animation: [
+          {
+            channel: 'transform.translate.y',
+            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.05 * sin(0.6 * t + ${phase.toFixed(2)})`,
+          },
+        ],
+      }),
     );
   });
 
-  // ---- camera: three quiet beats down the aisle -----------------------------------
+  // Distant floaters: the same black rock, scattered mid-air far behind and
+  // beside the stage — the motif that makes the world read as one place. All
+  // share the slow bob; deterministic layout from index math (no randomness).
+  const FLOATERS = [
+    [-6.5, 3.4, -6, 1.6, 0.9],
+    [4.8, 2.6, -7.5, 1.2, 0.7],
+    [-3.2, 4.6, -9, 2.2, 1.1],
+    [7.2, 4.0, -5, 0.9, 0.55],
+    [1.5, 5.2, -11, 1.8, 0.95],
+  ];
+  FLOATERS.forEach(([x, y, z, w, h], i) => {
+    subjects.push(
+      rock(`floater-${i}`, [x, y, z], [w, h, w * 0.55], ROCK_MAT, {
+        rotate: [0, 0.5 * i - 1, 0],
+        animation: [
+          {
+            channel: 'transform.translate.y',
+            expr: `${y.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.07 + 0.02 * i).toFixed(2)} * sin(${(0.35 + 0.08 * i).toFixed(2)} * t + ${((i * 2.1) % 6.28).toFixed(2)})`,
+          },
+        ],
+      }),
+    );
+  });
+
+  // ---- camera: three quiet beats ---------------------------------------------------
   const driftDur = Math.max(2.2, N * holdEach + 0.8);
-  const wallTop = N > 0 ? 3.35 : 1.9;
   const shots = [
     {
       duration: introLead,
-      pos: [0, wallTop - 0.15, 6.2],
-      target: [0, wallTop - 0.35, 0],
-      fov: 42,
+      pos: [mx + 0.6, 2.0, 5.8],
+      target: [mx, 2.1, 0],
+      fov: 44,
       aperture: 0.35,
-      focalDistance: 6.0,
+      focalDistance: 6.4,
       ease: 'out',
     },
     {
       duration: driftDur,
-      pos: [-1.5, 2.0, 5.4],
-      target: [0.3, N > 0 ? 2.0 : 1.8, 0],
+      pos: [mx - 1.8, 2.3, 5.2],
+      target: [mx + (N > 0 ? 1.0 : 0), 1.9, 0],
       fov: 46,
       transition: 'blend',
-      aperture: 0.28,
-      focalDistance: 5.4,
+      aperture: 0.26,
+      focalDistance: 5.6,
       ease: 'smooth',
     },
     {
       duration: 2.0,
-      pos: [0.6, 2.6, 7.6 * (env ? env.payoffZoom : 1)],
-      target: [0, N > 0 ? 2.2 : 1.8, 0],
+      pos: [mx + 0.8, 2.8, 8.2 * (env ? env.payoffZoom : 1)],
+      target: [mx, 2.2, -1],
       fov: 46,
       transition: 'blend',
       aperture: 0.12,
-      focalDistance: 7.6,
+      focalDistance: 8.6,
       ease: 'out',
     },
   ];
 
-  // ---- overlay: text mapped onto the screens --------------------------------------
-  // role 'screen' → figure-core renders it as big depth-scaled type with no
-  // chip background (the glowing face IS the background).
+  // ---- overlay: narrative → the stage layer ------------------------------------------
+  // title/screen roles are STAGE items — figure-core renders them as pure 2D
+  // typography (huge title, bullet column). anchor is kept only as a fallback
+  // for hosts without the stage layer.
   const overlay = [
     {
       text: String(ir.title || bullets[0] || ''),
-      anchor: [0, N > 0 ? 3.35 : 1.9, N > 0 ? -0.7 : 0.15],
+      anchor: [mx, 3.6, -1.2],
       role: 'title',
     },
   ];
   bullets.forEach((b, k) => {
-    const p = bulletPos[k];
     overlay.push({
       text: b,
-      anchor: [p.x, p.y, p.z + 0.16],
+      anchor: [mx - 1.7 - k * 0.85, 1.3 + k * 0.45, 0.2 - k * 0.7],
       role: 'screen',
       revealAt: introLead + k * holdEach + 0.25,
     });
@@ -196,6 +183,6 @@ export function renderHold(ir, opts = {}) {
     subjects: env ? [...subjects, ...env.subjects] : subjects,
     overlay,
     cameraSequence: { loop: false, shots },
-    defaults: env ? env.defaults : { stage: { size: [14, 10, 10] } },
+    defaults: env ? env.defaults : { stage: { size: [16, 12, 12] } },
   };
 }
