@@ -214,20 +214,30 @@ vec4 iCappedCone(vec3 ro, vec3 rd, vec3 pa, vec3 pb, float ra, float rb) {
   return vec4(t, normalize(m0 * (m0 * (oa + t * rd) + rr * ba * ra) - ba * hy * y));
 }
 
-// IQ analytic sphere occlusion (approximated form — cheap, NaN-safe)
+// IQ analytic sphere occlusion — the one-line form (dot·w²/l³): half the
+// ALU of the horizon-split version, plenty for a proxy-sphere sum.
 float sphOcc(vec3 pos, vec3 nor, vec4 sph) {
-  vec3 di = sph.xyz - pos;
-  float l = max(length(di), sph.w * 0.25);
-  float nl = dot(nor, di / l);
-  float h = l / sph.w;
-  float h2 = h * h;
-  float res = max(0.0, nl) / h2;
-  float k2 = 1.0 - h2 * nl * nl;
-  if (k2 > 0.001 && h > 1.0) {
-    res = (nl * h + 1.0) / h2;
-    res = 0.33 * res * res;
-  }
-  return clamp(res, 0.0, 1.0);
+  vec3 r = sph.xyz - pos;
+  float l = max(length(r), sph.w * 0.5);
+  return clamp(dot(nor, r / l) * (sph.w * sph.w) / (l * l), 0.0, 1.0);
+}
+
+// IQ analytic sphere soft shadow (cheap form): occlusion of a DIRECTIONAL
+// light by a sphere, no marching. Multiplied over the proxy spheres this
+// gives the sun a real, directional shadow — the thing an occlusion-only
+// white model lacks (shadows stretch away from the key; AO just hugs feet).
+float sphSoftShadow(vec3 ro, vec3 rd, vec4 sph, float k) {
+  vec3 oc = ro - sph.xyz;
+  float b = dot(oc, rd);
+  float c = dot(oc, oc) - sph.w * sph.w;
+  float h = b * b - c;
+  // physically-plausible form: the cheap h*k/b variant tears into grain where
+  // the light ray grazes the proxy (b→0); this one is continuous everywhere
+  float d = sqrt(max(0.0, sph.w * sph.w - h)) - sph.w;
+  float t = -b - sqrt(max(h, 0.0));
+  // t floor: where the shading point sits ON the proxy surface (plinths under
+  // their monolith's proxy) d/t goes 0/0 and speckles — clamp keeps it smooth
+  return (t < 0.001) ? 1.0 : smoothstep(0.0, 1.0, 2.5 * k * d / max(t, 0.25));
 }
 `;
 
@@ -346,7 +356,7 @@ export function compileAnalyticFrag(subjects, opts = {}) {
     // Skip tiny/huge proxies: breadcrumbs don't shade, horizon hills would
     // darken the whole stage.
     if (proxyR > 0.15 && proxyR < 8.0) {
-      occBody += `  { float ty${k} = ${ty}; float tz${k} = ${tz}; if (hitId != ${flt(k)}) occ += sphOcc(pos, nor, vec4(${flt(T[0])}, ty${k}, tz${k}, ${flt(proxyR)})); }\n`;
+      occBody += `  { float ty${k} = ${ty}; float tz${k} = ${tz}; if (hitId != ${flt(k)}) { vec4 sp = vec4(${flt(T[0])}, ty${k}, tz${k}, ${flt(proxyR)}); occ += sphOcc(pos, nor, sp); sha *= sphSoftShadow(pos, sunDir, sp, 5.0); } }\n`;
     }
   }
 
@@ -411,15 +421,18 @@ ${body}
   vec3 nor = nHit;
   float diff = max(dot(nor, sunDir), 0.0);
 
-  // analytic occlusion sum over proxy spheres — soft contact shadows on the
-  // floor AND crevice grounding on the bodies, zero marching (the IQ demo)
+  // analytic occlusion + directional soft shadow over the proxy spheres —
+  // contact grounding AND a sun shadow that stretches away from the key,
+  // both zero-march (the IQ sphere-shadow demo)
   float occ = 0.0;
+  float sha = 1.0;
 ${occBody}
   // 0.82 cap: stacked proxies (hub clusters) otherwise saturate to pitch
   // black — a contact shadow should ground, not punch a hole in the floor
   float ao = clamp(1.0 - occ * 0.82, 0.08, 1.0);
+  sha = clamp(sha, 0.0, 1.0);
 
-  vec3 lin = alb * (0.38 + 0.72 * diff) * vec3(1.06, 1.01, 0.94);
+  vec3 lin = alb * (0.38 + 0.72 * diff * sha) * vec3(1.06, 1.01, 0.94);
   lin += alb * (0.6 + 0.4 * nor.y) * ao * (0.4 + 0.25 * u_ambientScale);
   lin *= mix(1.0, ao, 0.75);
   col = lin * exp(-0.03 * tHit);
