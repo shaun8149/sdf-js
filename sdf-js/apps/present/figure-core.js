@@ -12,8 +12,10 @@ import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
  * `stage`: fighting-game stage lighting — the main directional light drops low
  * and rakes from the side, so the backdrop walls fall dark and the spotlight
  * rig (scene defaults.lights from stagePreset) carries the subject.
+ * `present`: a presenter owns the sequence clock (it opens HELD at t≈0) — the
+ * deck warm-up must not pause/restart the clock underneath it.
  */
-export function createFigure({ outdoor = false, stage = false } = {}) {
+export function createFigure({ outdoor = false, stage = false, present = false } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
   const size = () => {
@@ -91,6 +93,7 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
   let items = [];
   let els = [];
   let detachDeckWindows = null;
+  let deckWarming = false; // keep the boot loader up while window shaders warm
   const loading = document.getElementById('loading');
 
   function show(scene) {
@@ -133,14 +136,31 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
     adaptAfter = performance.now() + ADAPT_GRACE_MS;
     lowStreak = 0;
     highStreak = 0;
-    detachDeckWindows = attachDeckWindows(studio, scene);
-    if (!detachDeckWindows) applyStudioScene(studio, scene);
+    const dw = attachDeckWindows(studio, scene, { holdDuringWarmup: !present });
+    if (dw) {
+      detachDeckWindows = dw.detach;
+      deckWarming = true;
+      dw.warmed.then(() => {
+        deckWarming = false;
+        // The warm stalls also polluted the fps counter — restart the grace
+        // clock so the adaptive scaler judges real playback frames only.
+        adaptAfter = performance.now() + ADAPT_GRACE_MS;
+      });
+    } else {
+      applyStudioScene(studio, scene);
+    }
   }
 
   function tick() {
     // Dismiss the boot loader on the first drawn frame (the async shader
     // compile keeps the main thread free, so the spinner animates while we wait).
-    if (loading && !loading.classList.contains('done') && studio.hasDrawn && studio.hasDrawn()) {
+    if (
+      loading &&
+      !loading.classList.contains('done') &&
+      !deckWarming &&
+      studio.hasDrawn &&
+      studio.hasDrawn()
+    ) {
       loading.classList.add('done');
     }
     const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;

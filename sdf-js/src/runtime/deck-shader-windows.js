@@ -26,7 +26,15 @@ export function windowIndexAt(windows, t) {
   return windows.length - 1;
 }
 
-export function attachDeckWindows(studio, scene) {
+/**
+ * @param opts.holdDuringWarmup  pause the opening frame until every window's
+ *   program is compiled AND pipeline-warmed, then restart from t=0. The warm
+ *   draws stall the main thread for seconds total — behind a static held
+ *   frame that's invisible; mid-playback it would freeze the show. Pass
+ *   false when something else already owns the clock (presenter mode opens
+ *   HELD at t≈0, which hides the same stalls for free).
+ */
+export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {}) {
   const windows = scene.deckWindows;
   if (!Array.isArray(windows) || windows.length < 2 || !studio.swapSDF) return null;
 
@@ -45,11 +53,12 @@ export function attachDeckWindows(studio, scene) {
   let cur = 0;
   let stopped = false;
 
-  // Warm the remaining windows in playback order while station 0 plays.
-  // Sequential await keeps at most one driver compile queued behind the
-  // KHR_parallel pipeline; the finale (the expensive full-world program)
-  // is naturally last.
-  (async () => {
+  if (holdDuringWarmup && studio.setSequencePaused) studio.setSequencePaused(true);
+
+  // Warm the remaining windows in playback order. Sequential await keeps at
+  // most one driver compile queued behind the KHR_parallel pipeline; the
+  // finale (the expensive full-world program) is naturally last.
+  const warmed = (async () => {
     for (let i = 1; i < windows.length && !stopped; i++) {
       try {
         await studio.precompile(sdfFor(i));
@@ -57,6 +66,7 @@ export function attachDeckWindows(studio, scene) {
         console.warn('[deck-windows] precompile failed for window', i, e);
       }
     }
+    if (!stopped && holdDuringWarmup && studio.setSequenceTime) studio.setSequenceTime(0);
   })();
 
   const tick = () => {
@@ -73,7 +83,10 @@ export function attachDeckWindows(studio, scene) {
   };
   requestAnimationFrame(tick);
 
-  return () => {
-    stopped = true;
+  return {
+    detach: () => {
+      stopped = true;
+    },
+    warmed,
   };
 }

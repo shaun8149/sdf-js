@@ -2261,6 +2261,32 @@ export function createStudioRenderer({
     return result.glsl.length;
   }
 
+  // Metal (via ANGLE) defers pipeline-state creation to a program's FIRST
+  // draw — for a big raymarcher that's a 1-2s main-thread stall, which would
+  // land exactly at a deck window boundary mid-presentation. Force it now
+  // with a 1-pixel scissored draw into the offscreen FBO (junk uniforms are
+  // fine — the pixel is overwritten by the next real frame) and gl.finish()
+  // so the driver actually builds the pipeline before we return.
+  function warmProgram(prog) {
+    gl.useProgram(prog);
+    const a = gl.getAttribLocation(prog, 'a_pos');
+    if (a >= 0) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+      gl.enableVertexAttribArray(a);
+      gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+    }
+    ensureSceneFbo();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, 1, 1);
+    gl.viewport(0, 0, 1, 1);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.finish();
+    if (program) gl.useProgram(program);
+  }
+
   // Check compile/link results (forces compile completion — cheap once
   // COMPLETION_STATUS_KHR reported done, blocking on the sync path) and insert
   // into the LRU cache.
@@ -2944,6 +2970,7 @@ export function createStudioRenderer({
       if (!parallelExt) {
         try {
           validateAndCache(entry, fragSource);
+          warmProgram(prog);
           return Promise.resolve(true);
         } catch (e) {
           console.error('[studio] precompile failed:', e);
@@ -2958,6 +2985,7 @@ export function createStudioRenderer({
           }
           try {
             validateAndCache(entry, fragSource);
+            warmProgram(prog);
             res(true);
           } catch (e) {
             console.error('[studio] precompile failed:', e);
