@@ -48,7 +48,9 @@ const rock = (id, [x, y, z], [w, h, d], material, extra = {}) => {
     transform: { translate: [x, y, z], ...(extra.rotate ? { rotate: extra.rotate } : {}) },
     material,
   };
-  if (material !== GOLD_MAT) s.pattern = 'cracked'; // stone grain; gold stays polished
+  // NOTE: no 'cracked' pattern — on near-black rock the grain is invisible
+  // but applyPattern still burns per-pixel ALU on every leaf. Texture comes
+  // from roughness/clearcoat under the rig instead.
   if (extra.animation) s.animation = extra.animation;
   return s;
 };
@@ -107,7 +109,6 @@ export function renderHold(ir, opts = {}) {
     [4.8, 2.6, -7.5, 1.2, 0.7],
     [-3.2, 4.6, -9, 2.2, 1.1],
     [7.2, 4.0, -5, 0.9, 0.55],
-    [1.5, 5.2, -11, 1.8, 0.95],
   ];
   FLOATERS.forEach(([x, y, z, w, h], i) => {
     subjects.push(
