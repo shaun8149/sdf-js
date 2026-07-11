@@ -70,7 +70,10 @@
         border: 1px solid rgba(255, 255, 255, 0.18);
         background: rgba(20, 22, 28, 0.9);
         color: #fff;
-        font: 600 12px -apple-system, Inter, sans-serif;
+        font:
+          600 12px -apple-system,
+          Inter,
+          sans-serif;
         cursor: pointer;
       }
       #prompt {
@@ -82,7 +85,10 @@
         border: 1px solid rgba(255, 255, 255, 0.16);
         background: rgba(20, 22, 28, 0.92);
         color: #fff;
-        font: 500 14px -apple-system, Inter, sans-serif;
+        font:
+          500 14px -apple-system,
+          Inter,
+          sans-serif;
         outline: none;
       }
       #prompt:focus {
@@ -94,7 +100,10 @@
         border: 0;
         background: #2d6fd6;
         color: #fff;
-        font: 700 14px -apple-system, Inter, sans-serif;
+        font:
+          700 14px -apple-system,
+          Inter,
+          sans-serif;
         cursor: pointer;
       }
       #go:disabled {
@@ -111,7 +120,10 @@
         border: 1px solid rgba(255, 255, 255, 0.18);
         background: rgba(255, 255, 255, 0.06);
         color: #fff;
-        font: 600 13px -apple-system, Inter, sans-serif;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
         cursor: pointer;
       }
       #exportRow select {
@@ -119,7 +131,10 @@
         border: 1px solid rgba(255, 255, 255, 0.18);
         background: rgba(20, 22, 28, 0.9);
         color: #fff;
-        font: 600 12px -apple-system, Inter, sans-serif;
+        font:
+          600 12px -apple-system,
+          Inter,
+          sans-serif;
         padding: 0 6px;
         cursor: pointer;
       }
@@ -136,7 +151,10 @@
         left: 50%;
         bottom: 84px;
         transform: translateX(-50%);
-        font: 500 12px -apple-system, Inter, sans-serif;
+        font:
+          500 12px -apple-system,
+          Inter,
+          sans-serif;
         color: rgba(255, 255, 255, 0.6);
         z-index: 20;
         max-width: min(820px, calc(100vw - 40px));
@@ -157,7 +175,10 @@
         padding: 4px 12px;
         background: rgba(20, 22, 28, 0.9);
         color: rgba(255, 255, 255, 0.55);
-        font: 500 11px ui-monospace, Menlo, monospace;
+        font:
+          500 11px ui-monospace,
+          Menlo,
+          monospace;
         cursor: pointer;
       }
       #prov:hover {
@@ -219,7 +240,10 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         background: rgba(20, 22, 28, 0.92);
         color: #fff;
-        font: 500 13px -apple-system, Inter, sans-serif;
+        font:
+          500 13px -apple-system,
+          Inter,
+          sans-serif;
         outline: none;
       }
       .slide-edit-row button {
@@ -237,7 +261,10 @@
         inset: 0;
         background: rgba(10, 12, 16, 0.55);
         color: #fff;
-        font: 600 14px -apple-system, Inter, sans-serif;
+        font:
+          600 14px -apple-system,
+          Inter,
+          sans-serif;
         align-items: center;
         justify-content: center;
         z-index: 4;
@@ -276,7 +303,10 @@
         padding: 8px 14px;
         background: #2d6fd6;
         color: #fff;
-        font: 600 13px -apple-system, Inter, sans-serif;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
         cursor: pointer;
       }
       .slide-card.failed .retry:disabled {
@@ -325,12 +355,20 @@
       </p>
       <div id="slides"></div>
     </div>
-    <div id="keyrow"><input id="key" type="password" placeholder="Anthropic API key (BYOK, stays local)" /></div>
+    <div id="keyrow">
+      <input id="key" type="password" placeholder="Anthropic API key (BYOK, stays local)" />
+    </div>
     <button id="prov" hidden title="点击复制这件作品的复现链接 — 持链接永久复现同一修饰"></button>
     <div id="status">describe what you want to present — Atlas builds the deck</div>
     <div id="bar">
-      <textarea id="prompt" placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"></textarea>
-      <select id="mode" title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 整本简报 (~16 次调用, ~$0.5, ~90s)">
+      <textarea
+        id="prompt"
+        placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"
+      ></textarea>
+      <select
+        id="mode"
+        title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 整本简报 (~16 次调用, ~$0.5, ~90s)"
+      >
         <option value="quick">快速 · 3-5 页</option>
         <option value="full">整本 · 10-20 页</option>
       </select>
@@ -338,10 +376,19 @@
       <button id="go">Generate</button>
       <div id="exportRow">
         <select id="theme" disabled title="换主题 (零成本, 即时重渲染)"></select>
-        <button id="save" disabled title="保存 deck.json — 机器契约文件, 可重新打开/交给 3D 端">💾</button>
+        <button id="save" disabled title="保存 deck.json — 机器契约文件, 可重新打开/交给 3D 端">
+          💾
+        </button>
         <button id="open" title="打开 deck.json">📂</button>
         <input id="openfile" type="file" accept=".json,application/json" hidden />
         <button id="redress" disabled title="换装 — 重铸修饰纹理 (内容不动, 零成本)">🎨</button>
+        <select
+          id="artmount"
+          hidden
+          title="真迹装裱 — 用原版生成艺术 mint 替换修饰引擎 (封面全幅 + 标题栏胶片条, 非商用)"
+        >
+          <option value="">装裱 · 生成引擎</option>
+        </select>
         <select id="decorvis" disabled title="修饰纹理显示">
           <option value="on">修饰 · 开</option>
           <option value="off">修饰 · 关</option>

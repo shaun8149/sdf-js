@@ -10,10 +10,13 @@
 > 含 ND/SA/NFT License 个例)。仅限**非商用**演示; 任何商用前须逐项目
 > 重新核对 license。ND 项目注意: 裁切/平铺可能构成改编, 使用完整原图。
 >
-> 铸造管线: 每项目独立 iframe 会话 (防动画泄漏), 双尺寸 —
-> `<Lxx>-small.*` (高 240, banner 平铺用 — 小画布让整幅构图进标题栏) /
-> `<Lxx>-large.*` (长边 1280/1400, 封面全幅用)。svg 型走 XMLSerializer
-> 栅格化 fallback。
+> 铸造管线 (两代): ① browse iframe 会话 (无 WebGL, 适合 2D/setup 同步型);
+> ② **playwright + 系统 Chrome (WebGL 1+2 全通, 主力)** — 判稳捕获 +
+> 元素级截图 (绕开 preserveDrawingBuffer)。产物命名: `<Lxx>-large.*`
+> (长边 1280/1400, 封面全幅) / `<Lxx>-small-0..2.png` (高 240 三变体,
+> banner 胶片条 — 小画布让整幅构图进标题栏) / 旧代 `<Lxx>-small.*` 作
+> fallback。已知个案: 少数多层纹理/重型作品两代运行器都空白 (manifest
+> 标 blocked:runtime)。
 >
 > `cache/` 整目录 gitignore (产物不入库, 本地重铸即得)。
 

@@ -11,6 +11,7 @@
 
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 import { slotPalette, slotRoleOf } from '../retheme.js';
+import { artMountOpts } from '../art-mount.js';
 
 const JSPDF_CDN = 'https://esm.sh/jspdf@2.5.2';
 let jsPDF = null;
@@ -73,6 +74,8 @@ export async function exportDeckToPDF(deck, opts = {}) {
         decor: deck.decor
           ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx }
           : undefined,
+        // Sprint 82: 真迹装裱 — screen and file must show the same mount
+        ...(artMountOpts(opts.artMount, slot, slotRoleOf(slot)) || {}),
       });
     } catch (e) {
       console.error(`[pdf] slide render failed:`, e);
