@@ -80,7 +80,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const rowH = (plotH / N) * 0.85;
   const blockH = rowH * N;
   const blockTop = plotTop + (plotH - blockH) / 2;
-  const bulletR = Math.min(rowH * 0.18, 14);
+  const bulletR = Math.min(rowH * 0.22, 18); // Sprint 74: 图标偏小 (user 目检)
   const bulletX = x + PAD + bulletR + 4;
   const textX = bulletX + bulletR + 16;
 
@@ -111,7 +111,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       // done = accent darkened 20%, highlight = full accent
       const badgeColor =
         status === 'todo' ? lighten(accent, 0.4) : status === 'done' ? darken(accent, 0.2) : accent;
-      const badgeR = Math.min(bulletR * 1.3, 14); // ~22-28px diameter
+      const badgeR = Math.min(bulletR * 1.3, 19); // Sprint 74: ~28-38px diameter
       // Drop shadow
       ctx.shadowColor = 'rgba(0,0,0,0.18)';
       ctx.shadowBlur = 5;
@@ -205,7 +205,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const labelColor = status === 'todo' ? rgbaCss(fg, 0.55) : rgbCss(fg);
       const labelWeight = status === 'highlight' ? '700' : '600';
       const labelFontSize = Math.min(
-        Math.round(rowH * 0.34),
+        Math.round(rowH * 0.3), // Sprint 74: 字体偏大
         // Cap font: long text in narrow containers shouldn't dominate row height
         Math.round((x + w - textX - PAD) / Math.max(8, String(it.label).length * 0.45)),
       );

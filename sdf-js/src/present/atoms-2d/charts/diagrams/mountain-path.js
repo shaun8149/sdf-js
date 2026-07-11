@@ -83,75 +83,107 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   const plotH = y + h - plotTop - PAD;
   const cx = x + w / 2;
-  const peakY = plotTop + plotH * 0.08;
+  const peakY = plotTop + plotH * 0.1;
   const baseY = plotTop + plotH * 0.95;
-  const baseLeft = x + w * 0.08;
-  const baseRight = x + w * 0.92;
+  const baseLeft = x + w * 0.06;
+  const baseRight = x + w * 0.94;
+  const hues = (palette.colors || []).filter(Array.isArray);
 
-  // Mountain silhouette
-  const gradient = ctx.createLinearGradient(cx, peakY, cx, baseY);
-  gradient.addColorStop(0, rgbCss(lighten(accent, 0.1)));
-  gradient.addColorStop(1, rgbCss(lighten(accent, 0.45)));
-  ctx.fillStyle = gradient;
+  // ── Sprint 74 redesign (user: 三角形不够美观) ──
+  // Depth from layered ridges; the peak is a CURVED profile, not a triangle;
+  // the trail is a smooth switchback; the summit carries a pennant.
+
+  // Back ridges — two soft distant silhouettes in faint hue tints
+  const ridge = (px, py, spread, tint) => {
+    ctx.fillStyle = rgbaCss(tint, 0.16);
+    ctx.beginPath();
+    ctx.moveTo(px - spread, baseY);
+    ctx.quadraticCurveTo(px - spread * 0.35, py + (baseY - py) * 0.25, px, py);
+    ctx.quadraticCurveTo(px + spread * 0.4, py + (baseY - py) * 0.35, px + spread, baseY);
+    ctx.closePath();
+    ctx.fill();
+  };
+  ridge(cx - w * 0.26, peakY + plotH * 0.3, w * 0.34, hues[1] || accent);
+  ridge(cx + w * 0.3, peakY + plotH * 0.22, w * 0.38, hues[2] || accent);
+
+  // Main peak — curved concave flanks (a mountain, not a triangle)
+  const grad = ctx.createLinearGradient(cx, peakY, cx, baseY);
+  grad.addColorStop(0, rgbCss(lighten(accent, 0.05)));
+  grad.addColorStop(0.55, rgbCss(lighten(accent, 0.3)));
+  grad.addColorStop(1, rgbCss(lighten(accent, 0.55)));
+  ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.moveTo(baseLeft, baseY);
-  ctx.lineTo(cx - w * 0.12, peakY + plotH * 0.28);
-  ctx.lineTo(cx, peakY);
-  ctx.lineTo(cx + w * 0.12, peakY + plotH * 0.25);
-  ctx.lineTo(baseRight, baseY);
+  ctx.quadraticCurveTo(cx - w * 0.16, peakY + plotH * 0.42, cx - w * 0.025, peakY + plotH * 0.02);
+  ctx.quadraticCurveTo(cx, peakY - plotH * 0.015, cx + w * 0.03, peakY + plotH * 0.03);
+  ctx.quadraticCurveTo(cx + w * 0.18, peakY + plotH * 0.48, baseRight, baseY);
   ctx.closePath();
   ctx.fill();
 
-  // Mountain border
-  ctx.strokeStyle = rgbaCss(accent, 0.5);
+  // Face ridge-line — a subtle lit edge falling from the summit
+  ctx.strokeStyle = rgbaCss([255, 255, 255], 0.35);
   ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(cx, peakY);
+  ctx.quadraticCurveTo(cx - w * 0.03, peakY + plotH * 0.35, cx - w * 0.09, baseY);
   ctx.stroke();
 
-  // Build switchback waypoints from base to summit
+  // Switchback waypoints
   const N = milestones.length;
   const waypoints = [];
   for (let i = 0; i < N; i++) {
-    const t = (i + 0.5) / N; // 0..1 from base to peak
-    const wy = baseY - t * (baseY - peakY);
-    const xOffset = (i % 2 === 0 ? 1 : -1) * w * 0.16 * (1 - t * 0.6);
+    const t = (i + 0.5) / N;
+    const wy = baseY - t * (baseY - peakY) * 0.92;
+    const xOffset = (i % 2 === 0 ? 1 : -1) * w * 0.15 * (1 - t * 0.55);
     waypoints.push({ wx: cx + xOffset, wy });
   }
 
-  // Path line
-  ctx.beginPath();
-  ctx.moveTo(cx, baseY);
-  if (waypoints.length) {
+  // Trail — one smooth curve through the switchbacks, soft glow underneath
+  const trail = () => {
+    ctx.beginPath();
+    ctx.moveTo(cx - w * 0.02, baseY);
+    let prev = { wx: cx - w * 0.02, wy: baseY };
     for (const wp of waypoints) {
-      ctx.lineTo(wp.wx, wp.wy);
+      ctx.quadraticCurveTo(prev.wx, (prev.wy + wp.wy) / 2, wp.wx, wp.wy);
+      prev = wp;
     }
-    ctx.lineTo(cx, peakY + 4);
-  }
-  ctx.strokeStyle = rgbCss([255, 255, 255]);
-  ctx.lineWidth = 2.5;
-  ctx.setLineDash([6, 4]);
+    ctx.quadraticCurveTo(prev.wx, (prev.wy + peakY) / 2 + 6, cx, peakY + 6);
+  };
+  ctx.save();
+  ctx.strokeStyle = rgbaCss([255, 255, 255], 0.25);
+  ctx.lineWidth = 5;
   ctx.lineCap = 'round';
+  trail();
+  ctx.stroke();
+  ctx.strokeStyle = rgbCss([255, 255, 255]);
+  ctx.lineWidth = 2.2;
+  ctx.setLineDash([7, 5]);
+  trail();
   ctx.stroke();
   ctx.setLineDash([]);
+  ctx.restore();
 
-  // Milestone markers + labels
+  // Milestone markers — hue-rotated dots with white ring + halo, labels as before
   for (let i = 0; i < waypoints.length; i++) {
     const { wx, wy } = waypoints[i];
     const m = milestones[i];
     if (!m) continue;
     const onRight = i % 2 === 0;
+    const hue = hues.length > 1 ? hues[(i + 1) % hues.length] : accent;
 
-    // Circle marker
     ctx.save();
+    ctx.shadowColor = rgbaCss([0, 0, 0], 0.22);
+    ctx.shadowBlur = 6;
     ctx.fillStyle = rgbCss([255, 255, 255]);
-    ctx.strokeStyle = rgbCss(accent);
-    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(wx, wy, 8, 0, Math.PI * 2);
+    ctx.arc(wx, wy, 9, 0, Math.PI * 2);
     ctx.fill();
-    ctx.stroke();
     ctx.restore();
+    ctx.fillStyle = rgbCss(hue);
+    ctx.beginPath();
+    ctx.arc(wx, wy, 5.5, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Label
     const labelMaxW = w * 0.22;
     const labelFs = fitFontSize(
       ctx,
@@ -165,7 +197,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillStyle = rgbCss(fg);
     ctx.textAlign = onRight ? 'left' : 'right';
     ctx.textBaseline = 'middle';
-    const labelX = onRight ? wx + 12 : wx - 12;
+    const labelX = onRight ? wx + 14 : wx - 14;
     ctx.fillText(m.label ?? '', labelX, wy - (m.sublabel ? labelFs * 0.5 : 0));
 
     if (m.sublabel) {
@@ -176,14 +208,21 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
   }
 
-  // Summit marker
-  const summitR = 12;
+  // Summit pennant — pole + flag, the climb has a destination
   ctx.save();
-  ctx.fillStyle = rgbCss(accent);
-  ctx.shadowColor = rgbaCss([0, 0, 0], 0.3);
-  ctx.shadowBlur = 8;
+  ctx.strokeStyle = rgbCss(fg);
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(cx, peakY, summitR, 0, Math.PI * 2);
+  ctx.moveTo(cx, peakY + 4);
+  ctx.lineTo(cx, peakY - plotH * 0.09);
+  ctx.stroke();
+  const flagH = plotH * 0.05;
+  ctx.fillStyle = rgbCss(hues[1] || accent);
+  ctx.beginPath();
+  ctx.moveTo(cx, peakY - plotH * 0.09);
+  ctx.lineTo(cx + w * 0.05, peakY - plotH * 0.09 + flagH / 2);
+  ctx.lineTo(cx, peakY - plotH * 0.09 + flagH);
+  ctx.closePath();
   ctx.fill();
   ctx.restore();
 
@@ -200,5 +239,5 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ctx.fillStyle = rgbCss(fg);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
-  ctx.fillText(summit, cx, peakY - summitR - 4);
+  ctx.fillText(summit, cx, peakY - plotH * 0.09 - 6);
 }

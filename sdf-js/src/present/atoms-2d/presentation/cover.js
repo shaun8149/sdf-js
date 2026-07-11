@@ -65,8 +65,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const version = args.version;
   const style = args.style || 'gradient';
 
-  // ---- Backdrop: gradient (default) or section (deep accent + accent box behind title) ----
-  if (style === 'section') {
+  // ---- Backdrop: gradient (default) / section / overlay ----
+  // 'overlay' (Sprint 74): NO backdrop — the renderer has already painted an
+  // ink canvas + artwork-grade decoration underneath; this pass draws only a
+  // legibility scrim behind the title block + the type itself.
+  if (style === 'overlay') {
+    const scrim = ctx.createLinearGradient(x, y, x, y + h);
+    scrim.addColorStop(0, 'rgba(8, 10, 16, 0.06)');
+    scrim.addColorStop(0.42, 'rgba(8, 10, 16, 0.5)');
+    scrim.addColorStop(0.75, 'rgba(8, 10, 16, 0.5)');
+    scrim.addColorStop(1, 'rgba(8, 10, 16, 0.14)');
+    ctx.fillStyle = scrim;
+    ctx.fillRect(x, y, w, h);
+  } else if (style === 'section') {
     // Deep solid backdrop + decorative title-box behind text (PL D3180/031 pattern)
     ctx.fillStyle = rgbCss(darken(accent, 0.32));
     ctx.fillRect(x, y, w, h);

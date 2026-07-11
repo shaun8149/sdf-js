@@ -143,7 +143,7 @@ function _drawDark(ctx, args, opts = {}) {
 
   // ---- Icon (top-left) ----
   if (args.icon) {
-    drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(bg));
+    drawIconStub(ctx, args.icon, x + 26, y + 30, 32, rgbCss(bg));
   }
 
   // ---- Hero value ----
@@ -152,7 +152,7 @@ function _drawDark(ctx, args, opts = {}) {
   ctx.textBaseline = 'alphabetic';
   const availW = w - 44;
   const valueText = String(args.value ?? '');
-  let valueSize = Math.round(h * 0.34);
+  let valueSize = Math.round(h * 0.29); // Sprint 74: 字体偏大, 图标偏小 (user 目检)
   const minValueSize = Math.round(h * 0.14);
   ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
@@ -242,7 +242,7 @@ function _drawLight(ctx, args, opts = {}) {
 
   // ---- Icon (top-left) ----
   if (args.icon) {
-    drawIconStub(ctx, args.icon, x + 22, y + 26, 22, rgbCss(accent));
+    drawIconStub(ctx, args.icon, x + 26, y + 30, 32, rgbCss(accent));
   }
 
   // ---- Hero value (dark text) ----
@@ -251,7 +251,7 @@ function _drawLight(ctx, args, opts = {}) {
   ctx.textBaseline = 'alphabetic';
   const availW = w - 44;
   const valueText = String(args.value ?? '');
-  let valueSize = Math.round(h * 0.34);
+  let valueSize = Math.round(h * 0.29); // Sprint 74: 字体偏大, 图标偏小 (user 目检)
   const minValueSize = Math.round(h * 0.14);
   ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {
@@ -345,7 +345,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   // ---- Icon (top-left, after border) ----
   const textLeft = x + borderW + 14;
   if (args.icon) {
-    drawIconStub(ctx, args.icon, textLeft + 11, y + 26, 22, rgbCss(accent));
+    drawIconStub(ctx, args.icon, textLeft + 15, y + 30, 32, rgbCss(accent));
   }
 
   // ---- Hero value (dark text, offset past border) ----
@@ -354,7 +354,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   ctx.textBaseline = 'alphabetic';
   const availW = w - borderW - 28;
   const valueText = String(args.value ?? '');
-  let valueSize = Math.round(h * 0.34);
+  let valueSize = Math.round(h * 0.29); // Sprint 74: 字体偏大, 图标偏小 (user 目检)
   const minValueSize = Math.round(h * 0.14);
   ctx.font = `900 ${valueSize}px "Inter Display", Inter, system-ui, sans-serif`;
   while (ctx.measureText(valueText).width > availW && valueSize > minValueSize) {

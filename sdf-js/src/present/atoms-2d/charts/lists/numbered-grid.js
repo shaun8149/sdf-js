@@ -95,11 +95,20 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const availH = h - (plotTop - y) - PAD;
   const rowH = availH / rows;
 
+  // Sprint 74 redesign (user: 末页不够美观, 颜色也不好): cards rotate
+  // through the theme hues — tinted wash + hue top-bar + hue number chip —
+  // and an incomplete last row centres itself instead of leaving a hole.
+  const hues = (palette.colors || []).filter(Array.isArray);
+  const hueOf = (i) => (hues.length > 1 ? hues[i % hues.length] : numColor);
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const col = i % cols;
     const row = Math.floor(i / cols);
-    const cellX = x + PAD + col * colW;
+    const inLastRow = row === rows - 1;
+    const lastRowCount = items.length - (rows - 1) * cols;
+    const rowShift = inLastRow && lastRowCount < cols ? ((cols - lastRowCount) * colW) / 2 : 0;
+    const cellX = x + PAD + col * colW + rowShift;
     const cellY = plotTop + row * rowH;
     const cellPad = 12;
     const cardMargin = 6;
@@ -108,20 +117,28 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const cardW = colW - cardMargin * 2;
     const cardH = rowH - cardMargin * 2;
     const numLabel = String(i + 1);
+    const hue = hueOf(i);
 
-    // Card background
-    ctx.fillStyle = rgbaCss(fg, 0.04);
+    // Card: soft hue-tinted wash + hairline + hue top-bar
+    ctx.fillStyle = rgbaCss(hue, 0.07);
     ctx.beginPath();
-    ctx.roundRect(cardX, cardY, cardW, cardH, 6);
+    ctx.roundRect(cardX, cardY, cardW, cardH, 8);
     ctx.fill();
-    ctx.strokeStyle = rgbaCss(fg, 0.08);
+    ctx.strokeStyle = rgbaCss(hue, 0.22);
     ctx.lineWidth = 1;
     ctx.stroke();
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(cardX, cardY, cardW, cardH, 8);
+    ctx.clip();
+    ctx.fillStyle = rgbaCss(hue, 0.85);
+    ctx.fillRect(cardX, cardY, cardW, 4);
+    ctx.restore();
 
     if (numberStyle === 'huge') {
       const numFontSize = Math.min(Math.round(rowH * 0.45), 72);
       ctx.font = `900 ${numFontSize}px "Inter Display", Inter, system-ui`;
-      ctx.fillStyle = rgbCss(numColor);
+      ctx.fillStyle = rgbaCss(hue, 0.9);
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       const numX = cellX + cellPad + numFontSize * 0.05;
@@ -168,7 +185,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const circleR = Math.min(rowH * 0.2, colW * 0.14, 28);
       const circleCX = cellX + cellPad + circleR;
       const circleCY = cellY + cellPad + circleR;
-      ctx.fillStyle = rgbCss(numColor);
+      ctx.fillStyle = rgbCss(hue);
       ctx.beginPath();
       ctx.arc(circleCX, circleCY, circleR, 0, Math.PI * 2);
       ctx.fill();
