@@ -3,6 +3,7 @@
 // author.js (text → IR → deck). One mount per page.
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
+import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
 
 /**
  * createFigure({ outdoor, stage }) → { studio, show(sceneData) }.
@@ -81,6 +82,7 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
 
   let items = [];
   let els = [];
+  let detachDeckWindows = null;
   const loading = document.getElementById('loading');
 
   function show(scene) {
@@ -109,9 +111,19 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
       return d;
     });
     window.__figReplay = () => studio.setSequence(scene.cameraSequence);
-    // applyStudioScene wires setSequence + setAnimated (subject.animation counts
-    // as time content) — no manual overrides needed.
-    applyStudioScene(studio, scene);
+    // Deck scenes carry a window timeline — play them through the per-station
+    // shader switcher (the giant full-world shader would run at single-digit
+    // fps on laptop GPUs; see deck-shader-windows.js). Single-structure scenes
+    // keep the one-shot path: applyStudioScene wires setSequence + setAnimated
+    // (subject.animation counts as time content) — no manual overrides needed.
+    // Re-show() (author regenerates in place) must detach the old watcher
+    // first or two rAF loops would fight over programs.
+    if (detachDeckWindows) {
+      detachDeckWindows();
+      detachDeckWindows = null;
+    }
+    detachDeckWindows = attachDeckWindows(studio, scene);
+    if (!detachDeckWindows) applyStudioScene(studio, scene);
   }
 
   function tick() {
