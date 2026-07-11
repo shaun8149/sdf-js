@@ -95,15 +95,19 @@ export function renderHold(ir, opts = {}) {
     },
   ];
 
-  // Bullet pips: a floating column at camera-right, one dropping in per beat.
+  // Bullet pips: a floating column beside the stele, one dropping in per beat.
   // Drop (not erupt) — items arriving from above read as points being SET DOWN
   // on the argument, and the drop shape is assembleDeck-transplant safe.
+  // The column is centred at stele mid-height and compresses its step for long
+  // lists so the last pip never sinks into the platform (6 bullets at a fixed
+  // 0.56 step put pip-5 at floor level).
   const pipX = 0.9;
-  const pipTopY = 1.1 + N * 0.28;
+  const pipStep = N > 1 ? Math.min(0.56, 2.3 / (N - 1)) : 0;
+  const pipTopY = 1.5 + ((N - 1) * pipStep) / 2;
   const introLead = 2.2; // the hero push-in
   const holdEach = 1.0;
   bullets.forEach((_, k) => {
-    const y = pipTopY - k * 0.56;
+    const y = pipTopY - k * pipStep;
     const drop = 0.5;
     const t0 = introLead + k * holdEach - 0.35;
     const t1 = t0 + 0.5;
@@ -167,7 +171,7 @@ export function renderHold(ir, opts = {}) {
   bullets.forEach((b, k) => {
     overlay.push({
       text: b,
-      anchor: [pipX + 0.35, pipTopY - k * 0.56, 0],
+      anchor: [pipX + 0.35, pipTopY - k * pipStep, 0],
       role: 'card',
       revealAt: introLead + k * holdEach + 0.25,
     });
