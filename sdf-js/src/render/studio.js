@@ -846,10 +846,13 @@ void main() {
     float bnc  = clamp(0.5 - 0.5 * n.y, 0.0, 1.0);                 // bounce light from ground
 
     float shadowK = 1.0;
+    //#feature rich
     if (u_shadowsOn > 0.5) {
       float lightDist = length(u_lightPos - p);
       shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 8.0); // softer penumbra
     }
+    //#endfeature
+
 
     // Base albedo + material params:
     //   - object hits (matId=2): material LUT keyed by hit leaf index. If the
@@ -938,12 +941,15 @@ void main() {
     // Pattern uses surface normal for orientation-aware 2D projection (so
     // brick courses are horizontal regardless of which way the wall faces).
     // leafPat was already fetched above in the combined fetchLeafData call.
+    //#feature rich
     if (matId > 1.5 && !isSea && !isMountain && leafPat.x > 0.5) {
       // W12 pattern-AA: footprint at the hit (distance + grazing via dot(n,rd))
       // → ray-differential anti-aliasing inside applyPattern.
       float patFW = filterWidth(t, u_resolution.y, dot(n, rd), 1.5);
       base = applyPattern(base, p, n, leafPat, patFW);
     }
+    //#endfeature
+
 
     //#feature sea
     if (isSea) {
@@ -1580,6 +1586,7 @@ void main() {
     } else
     //#endfeature
     {
+      //#feature rich
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
       // metals + emissives keep smooth uniform surfaces; matte diffuse gets
       // ±10% albedo variance to break up plastic-looking uniformity. The
@@ -1772,6 +1779,23 @@ void main() {
       // in atom showcases.)
       col = lin;
       col += base * glowK * 1.4;
+      //#endfeature
+      //#feature stone
+      // STONE mode — the IQ white-marble minimal shader (user-locked: solve
+      // performance first, beauty later; the 3D world's job is spatial
+      // visualization of intent, not material fidelity). One warm key,
+      // hemispheric sky fill, AO for grounding, exponential distance fade.
+      // No shadow march, no reflection retrace, no GGX/rim/kicker, no extra
+      // lights, no fbm, no patterns — the entire rich block above compiles
+      // OUT, so the win is both per-pixel ALU and register pressure.
+      // Albedo is kept (black-rock motif / gold emphasis still read) — the
+      // cost lives in the lighting path, not the palette.
+      vec3 lin = base * (0.38 + 0.72 * diff) * vec3(1.06, 1.01, 0.94);
+      lin += base * (0.6 + 0.4 * n.y) * ao * 0.55;
+      lin *= mix(1.0, ao, 0.55);
+      col = lin * exp(-0.03 * t);
+      col += base * glowK * 1.4;
+      //#endfeature
     }
   }
 
@@ -1860,7 +1884,7 @@ void main() {
 // materials → feature set; pass B emits the real shader with the library
 // DCE-pruned against the GATED template. Both passes walk the same tree, so
 // the u_sdfArgs slot order is identical (deterministic).
-function compileStudioFrag(sdf) {
+function compileStudioFrag(sdf, renderMode = 'rich') {
   const probe = compileSDF3ToGLSL(sdf, {
     sceneFnName: 'sceneSDF',
     includeLibrary: false,
@@ -1869,6 +1893,11 @@ function compileStudioFrag(sdf) {
   });
   if (probe.error) throw new Error(`compileSDF3ToGLSL: ${probe.error}`);
   const features = featuresFromLeafMaterials(probe.leafMaterials);
+  // 'rich' or 'stone': mutually exclusive compile-time shading paths. Stone
+  // (the presentation product default) compiles the whole PBR block out —
+  // less ALU per pixel AND less register pressure (the M3 giant-shader
+  // lesson: uniform branches don't give registers back).
+  features.add(renderMode === 'stone' ? 'stone' : 'rich');
   const result = compileSDF3ToGLSL(sdf, {
     sceneFnName: 'sceneSDF',
     includeLibrary: true,
@@ -1952,6 +1981,7 @@ export function createStudioRenderer({
   const defaultCam = { position: [...camState.position], yaw: 0, pitch: -0.25 };
 
   let program = null;
+  let renderMode = 'rich'; // setRenderMode('stone') — presentation product default
   let uniformsCache = {};
   let rafId = null;
   let contextLost = false; // set by webglcontextlost handler — pauses the loop
@@ -2874,7 +2904,7 @@ export function createStudioRenderer({
       // gating + data-as-uniforms + library DCE all happen inside
       // compileStudioFrag — the emitted source depends on the scene SHAPE and
       // feature set only, never on the data.
-      const { fragSource, result } = compileStudioFrag(sdf);
+      const { fragSource, result } = compileStudioFrag(sdf, renderMode);
       const bytes = fragSource.length;
 
       // ---- Step 2: Clear canvas to BLACK IMMEDIATELY ----
@@ -2940,6 +2970,15 @@ export function createStudioRenderer({
     },
 
     /**
+     * 'stone' | 'rich' shading for every SUBSEQUENT compile (program cache
+     * keys on the generated source, so both modes can coexist in cache).
+     * Call before render()/precompile(); does not retroactively swap.
+     */
+    setRenderMode(mode) {
+      renderMode = mode === 'stone' ? 'stone' : 'rich';
+    },
+
+    /**
      * Seamless SDF swap for deck window switching. Unlike render(): no canvas
      * clear (the old program keeps drawing until the new one is ready), no
      * presentation-clock reset (the camera sequence keeps playing through the
@@ -2947,7 +2986,7 @@ export function createStudioRenderer({
      * frame; a miss compiles async via KHR_parallel and swaps in when linked.
      */
     swapSDF(sdf) {
-      const { fragSource, result } = compileStudioFrag(sdf);
+      const { fragSource, result } = compileStudioFrag(sdf, renderMode);
       uploadCompiledFrag(fragSource, result);
       wake();
       return { bytes: fragSource.length };
@@ -2963,7 +3002,7 @@ export function createStudioRenderer({
     precompile(sdf) {
       let fragSource;
       try {
-        ({ fragSource } = compileStudioFrag(sdf));
+        ({ fragSource } = compileStudioFrag(sdf, renderMode));
       } catch (e) {
         console.error('[studio] precompile: GLSL generation failed:', e);
         return Promise.resolve(false);

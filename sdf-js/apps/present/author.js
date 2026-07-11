@@ -13,7 +13,7 @@ const env = params.get('env') || 'studio';
 // Fighting-game stage ON by default for authored worlds (per-station platforms +
 // deck theatre layer) — it's the product face. ?stage=0 opts out.
 const stage = params.get('stage') !== '0';
-const { studio, show } = createFigure({ outdoor: env !== 'studio', stage });
+const { studio, show } = createFigure({ outdoor: env !== 'studio', stage, renderMode: new URLSearchParams(location.search).get('mode') === 'rich' ? 'rich' : 'stone' });
 let presenter = null; // active presenter runtime (disposed on regenerate)
 
 const promptEl = document.getElementById('prompt');
