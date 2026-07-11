@@ -8,13 +8,19 @@
 
 ```
 semente()    hash → 32 个 0-9 决策位 (每 2 个 hex 字符 mod 10)
-variaveis()  决策位 → 参数: 网格 93-107×20-39 / 噪声系数 / 四季选择 /
+variaveis()  决策位 → 参数: linha 93-107 / col 20-39 (二者是**格子尺寸
+             除数**, 实际画布网格 ≈ linha 列 × 10·col 行, 因纵向
+             translate 除以 fy=10) / 噪声系数 / 四季选择 /
              每季 2 套手调 5 色板 (叶色 corFolhas × 花色 corFlor)
 folhas(chance)  草叶场: 密集网格逐格 → 噪声驱动旋转 + 各向异性椭圆 (fx=1, fy=10)
 flor()       花对象: petalaPlot/petalaOut/corona/stamen 四层构造
 chuva()/neve()  天气叠加: 夏雨 (斜线束) / 冬雪 (白点)
-play()       按季节决定花朵绘制顺序; 草叶场画两遍 (花前浓/花后疏) 制造纵深
+play()       花朵绘制; 仅秋季 85% 概率多画一层 petalaOut (春夏冬顺序相同);
+             草叶场画两遍 (花前浓/花后疏) 制造纵深
 ```
+
+> 二读勘误 (2026-07-11): 原文核实 (网格行数 / 季节仅影响秋季一层),
+> 详见 audit/batch-A
 
 ## 六个可提取 idiom (按对 decor 层的价值排序)
 

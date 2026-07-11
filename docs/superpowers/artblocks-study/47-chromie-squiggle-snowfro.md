@@ -15,8 +15,14 @@
 2. **谱系意义**: #0 定下的三件事成为全平台惯例 — hash 即作品身份
    / 槽位即 trait / 链上代码即真身。我们的 mint-hash + named-lane
    + DECOR_V 是同一血统的第三代 (槽位→lane 的演进见 rand.js 头注)。
-3. 技术上只是 HSB 步进 + 正弦 y 偏移 + spread trait — **简单到
-   极致但身份系统完备**, 证明 provenance 价值在机制不在复杂度。
+3. 技术上只是 HSB 步进 + **hash 字节控制点的 Catmull-Rom 样条**
+   (y = curvePoint 穿过 decPairs 字节映射的控制点 — 不是正弦:
+   波形本身就是 hash 的可视化, 字节直接当振幅) + spread trait —
+   **简单到极致但身份系统完备**, 证明 provenance 价值在机制不在
+   复杂度。样条读法比"正弦"更强地支撑本课自己的 provenance 论点:
+   你看到的每个起伏都是 hash 的一个字节。
+
+   > 二读勘误 (2026-07-11): 原文核实, 详见 audit/batch-A
 
 ## 一句话学到的
 
