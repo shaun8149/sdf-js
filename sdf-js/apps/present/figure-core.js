@@ -96,6 +96,8 @@ export function createFigure({ outdoor = false, stage = false, present = false }
 
   let items = [];
   let els = [];
+  let stageItems = []; // narrative layer: titles + bullets, screen-space
+  let stageEls = [];
   let detachDeckWindows = null;
   let deckWarming = false; // keep the boot loader up while window shaders warm
   const loading = document.getElementById('loading');
@@ -105,21 +107,46 @@ export function createFigure({ outdoor = false, stage = false, present = false }
       if (el._lead) el._lead.remove();
       el.remove();
     }
-    // Reveal-timed overlay: labels fade in as the sequence clock passes each
-    // item's revealAt (makeOverlay isn't reused — it has no reveal timing).
-    items = (scene.overlay || []).filter((o) => o.anchor && o.text);
+    for (const el of stageEls) el.remove();
+    stageEls = [];
+    // Two text layers, HARD split (user-locked 2026-07-11):
+    //   • narrative (title / screen bullets) → the STAGE LAYER: pure screen-
+    //     space typography on its own canvas — big, composed, never projected.
+    //     The 3D world tells the story; it does not carry sentences.
+    //   • data labels (value / card) → the ANCHOR LAYER: projected onto the
+    //     geometry they measure, depth-scaled. Numbers live with their shapes.
+    const all = (scene.overlay || []).filter((o) => o.text);
+    items = all.filter((o) => o.anchor && (o.role === 'value' || o.role === 'card'));
     els = items.map((o) => {
       const d = document.createElement('div');
-      d.className =
-        'lbl' +
-        (o.role === 'value' ? ' value' : '') +
-        (o.role === 'screen' ? ' screen' : '') +
-        (o.role === 'title' ? ' title' : '');
+      d.className = 'lbl' + (o.role === 'value' ? ' value' : '');
       // Numeric value chips COUNT UP over ~0.8s after their reveal — numbers
       // that arrive read as data landing, not captions appearing.
       if (o.role === 'value' && /^[\d,]+$/.test(o.text)) {
         o._countTarget = Number(o.text.replace(/,/g, ''));
       }
+      d.textContent = o.text;
+      document.body.appendChild(d);
+      return d;
+    });
+    stageItems = all
+      .filter((o) => o.role === 'title' || o.role === 'screen')
+      .map((o) => ({ ...o, revealAt: o.revealAt ?? 0 }))
+      .sort((a, b) => a.revealAt - b.revealAt);
+    // Chapters: each title OWNS the stage until the next title (in a deck,
+    // titles arrive at their station's start — assembleDeck shifts revealAt).
+    // Bullets show inside their chapter only, so a station's list clears the
+    // stage when the camera slings away.
+    {
+      let ch = -1;
+      for (const o of stageItems) {
+        if (o.role === 'title') ch++;
+        o._ch = ch;
+      }
+    }
+    stageEls = stageItems.map((o) => {
+      const d = document.createElement('div');
+      d.className = o.role === 'title' ? 'stage-title' : 'stage-bullet';
       d.textContent = o.text;
       document.body.appendChild(d);
       return d;
@@ -175,6 +202,24 @@ export function createFigure({ outdoor = false, stage = false, present = false }
       loading.classList.add('done');
     }
     const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;
+    // Stage layer (screen-space narrative): show the current chapter's title
+    // big and composed, and slide its bullets in as their beats pass. Pure 2D
+    // typography — never projected, never fighting the 3D frame.
+    {
+      let curCh = -1;
+      for (const o of stageItems)
+        if (o.role === 'title' && o.revealAt <= t + 0.02 && o._ch > curCh) curCh = o._ch;
+      let slot = 0;
+      for (let i = 0; i < stageItems.length; i++) {
+        const o = stageItems[i];
+        const on = o._ch === curCh && o.revealAt <= t + 0.02;
+        if (o.role === 'screen' && on) {
+          stageEls[i].style.top = `calc(26vh + ${slot} * 9.5vh)`;
+          slot++;
+        }
+        stageEls[i].classList.toggle('on', on);
+      }
+    }
     // Pass 1: project + opacity/count-up; collect visible labels for layout.
     const placedRects = []; // near labels claim space first
     const visible = [];
@@ -195,14 +240,11 @@ export function createFigure({ outdoor = false, stage = false, present = false }
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
       const opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
       el.style.opacity = opacity;
-      // Depth-scaled type: labels grow as the camera approaches their anchor,
-      // so text reads as living IN the world instead of a fixed-size HUD chip.
-      // 'screen' labels (jumbotron faces) get the largest base — the glowing
-      // 3D face behind them is their chip. Quantized + write-on-change so the
-      // per-frame style churn stays near zero.
+      // Depth-scaled type: data labels grow as the camera approaches the
+      // geometry they measure — numbers live WITH their shapes. Quantized +
+      // write-on-change so the per-frame style churn stays near zero.
       if (p.depth != null) {
-        const base =
-          o.role === 'title' ? 30 : o.role === 'screen' ? 21 : o.role === 'value' ? 13 : 13;
+        const base = 13;
         const fs =
           Math.round(Math.max(9, Math.min(base * (6.2 / Math.max(p.depth, 0.6)), base * 2.1)) * 2) /
           2;
@@ -234,12 +276,8 @@ export function createFigure({ outdoor = false, stage = false, present = false }
         placedRects.some(
           (r) => Math.abs(x - r.x) * 2 < w + r.w + 6 && Math.abs(yy - r.y) * 2 < h + r.h + 4,
         );
-      // Jumbotron/title text is PINNED to its screen geometry — displacing it
-      // off the glowing face it belongs to is worse than any overlap. It still
-      // claims its rect so free-floating cards route around it.
-      const pinned = v.o.role === 'screen' || v.o.role === 'title';
       let shift = 0;
-      while (!pinned && shift < 4 && collides(y)) {
+      while (shift < 4 && collides(y)) {
         y += 30;
         shift++;
       }
