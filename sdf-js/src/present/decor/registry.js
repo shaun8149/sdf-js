@@ -2050,16 +2050,31 @@ function drawBandedRibbons(ctx, { palette, seed, x, y, w, h, intensity, personal
   const B = BANDED_PERSONALITIES[personality] || BANDED_PERSONALITIES.balanced;
   const rand = seededRand(seed * 101 + 47);
   const noise = noise2D(seed + 13);
-  const bg = palette.bg || [248, 246, 240];
-  const hues = [palette.accent, ...(palette.colors || [])].filter(Boolean);
-  // the Fidenza pool discipline: pale tints + a near-bg neutral CARRY the
-  // field; saturated theme hues punctuate. Weighted, not uniform.
-  const pool = [];
-  for (const c of hues) {
-    pool.push([c, 1]); // saturated voice
-    pool.push([lerpColorOklab(c, bg, 0.55), 1.6]); // pale tint chorus
-  }
-  pool.push([lerpColorOklab(hues[0] || [120, 120, 120], bg, 0.82), 2.2]); // newsprint-ish neutral
+  // Sprint 76 (user: 颜色去学习一下): the LUXE pool itself — Fidenza's
+  // dominant palette studied from source (HSB → RGB conversion of the
+  // published color table; weights are the published facts, colors are
+  // facts, no code copied). Newsprint / pale-green / browns CARRY (~56%),
+  // reds / yellows / blues punctuate. This family deliberately speaks
+  // Fidenza's voice rather than the deck theme's (documented palette
+  // exemption, same class as the rare-trait metallics).
+  const pool = [
+    [[219, 79, 84], 0.05], // dRed
+    [[209, 42, 47], 0.03], // red
+    [[224, 215, 197], 0.12], // newsprint
+    [[230, 125, 50], 0.02], // orange
+    [[252, 210, 101], 0.06], // pale yellow
+    [[252, 188, 25], 0.06], // yellow
+    [[247, 177, 161], 0.03], // pink
+    [[41, 166, 145], 0.04], // green
+    [[184, 217, 206], 0.18], // pale pale green
+    [[18, 26, 51], 0.02], // dd blue
+    [[31, 51, 89], 0.05], // d blue
+    [[49, 95, 140], 0.05], // blue
+    [[124, 169, 191], 0.03], // pale blue
+    [[84, 62, 46], 0.17], // brown
+    [[59, 43, 32], 0.09], // d brown
+    [[33, 24, 18], 0.03], // dd brown
+  ];
   const poolTotal = pool.reduce((t, [, wgt]) => t + wgt, 0);
   const pickColor = () => {
     let t = rand() * poolTotal;
@@ -2140,17 +2155,8 @@ function drawBandedRibbons(ctx, { palette, seed, x, y, w, h, intensity, personal
       ctx.closePath();
       ctx.fill();
     }
-    // rounded end caps in the end bands' colors
-    const cap = (i, other) => {
-      const ang = Math.atan2(other[1] - spine[i][1], other[0] - spine[i][0]);
-      ctx.fillStyle = rgba(pickColor(), alpha);
-      ctx.beginPath();
-      ctx.arc(spine[i][0], spine[i][1], half, ang + Math.PI / 2, ang - Math.PI / 2);
-      ctx.closePath();
-      ctx.fill();
-    };
-    cap(0, spine[1]);
-    cap(spine.length - 1, spine[spine.length - 2]);
+    // ends stay FLAT — Fidenza's fat() simply closes the offset edges
+    // (Sprint 76: the semicircle caps of the first cut were an invention)
     // hairline outline holds the ribbon together (Fidenza stroke mode)
     ctx.strokeStyle = rgba(palette.silhouetteColor || [30, 30, 34], Math.min(0.5, P.alpha * 1.4));
     ctx.lineWidth = 1;
