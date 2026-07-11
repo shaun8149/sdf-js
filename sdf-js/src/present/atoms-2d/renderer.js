@@ -72,28 +72,49 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // engine's place on art surfaces: cover-fit full-bleed on covers,
   // cover-fit crop inside title banners. The decor engine never runs when
   // decorArt is present.
+  // Sprint 81: opts.decorArtStrip — an ARRAY of SMALL-canvas mints for the
+  // title banner (user: 标题上的作品小画布更好 — a small canvas lets the
+  // whole composition sit inside the band instead of a zoomed crop). The
+  // strip tiles fit-height across the band like a gallery filmstrip.
   const decorArt = opts.decorArt || null;
-  const coverCanvas = !!((decor || decorArt) && isPureCover);
+  const decorArtStrip =
+    Array.isArray(opts.decorArtStrip) && opts.decorArtStrip.length ? opts.decorArtStrip : null;
+  const coverArt = decorArt || (decorArtStrip && decorArtStrip[0]) || null;
+  const coverCanvas = !!((decor || coverArt) && isPureCover);
   // Sprint 80 (user: 目录页把图案做到标题栏, 不要放正文): agenda / section
   // pages run the cover-canvas pipeline INSIDE their title banner (the
   // banner is a 'cover' atom with its own bounds) — ink ground → artwork →
   // overlay type, clipped to the band. The BODY stays clean: no under-decor.
   const bannerCanvas = !!(
-    (decor || decorArt) &&
+    (decor || coverArt) &&
     !isPureCover &&
     (role === 'agenda' || role === 'section')
   );
-  const drawArtCover = (dx, dy, dw, dh) => {
-    const iw = decorArt.width || decorArt.videoWidth || 1;
-    const ih = decorArt.height || decorArt.videoHeight || 1;
+  const drawArtCover = (img, dx, dy, dw, dh) => {
+    const iw = img.width || img.videoWidth || 1;
+    const ih = img.height || img.videoHeight || 1;
     const sc = Math.max(dw / iw, dh / ih);
     const sw = dw / sc;
     const sh = dh / sc;
-    ctx.drawImage(decorArt, (iw - sw) / 2, (ih - sh) / 2, sw, sh, dx, dy, dw, dh);
+    ctx.drawImage(img, (iw - sw) / 2, (ih - sh) / 2, sw, sh, dx, dy, dw, dh);
+  };
+  // gallery filmstrip: whole small mints at band height, butt-joined
+  const drawArtStrip = (dx, dy, dw, dh) => {
+    let cx2 = dx;
+    let k = 0;
+    while (cx2 < dx + dw) {
+      const img = decorArtStrip[k % decorArtStrip.length];
+      const iw = img.width || 1;
+      const ih = img.height || 1;
+      const tileW = Math.max(8, (dh * iw) / ih);
+      ctx.drawImage(img, cx2, dy, tileW, dh);
+      cx2 += tileW;
+      k++;
+    }
   };
   if (coverCanvas) {
-    if (decorArt) {
-      drawArtCover(0, 0, canvas.width, canvas.height);
+    if (coverArt) {
+      drawArtCover(coverArt, 0, 0, canvas.width, canvas.height);
     } else {
       const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
       ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
@@ -108,7 +129,7 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       });
     }
   }
-  if (decor && !decorArt && !isPureCover && !bannerCanvas) {
+  if (decor && !coverArt && !isPureCover && !bannerCanvas) {
     drawDecor(ctx, decor, {
       palette,
       x: 0,
@@ -144,8 +165,10 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       ctx.beginPath();
       ctx.rect(bx, by, bw, bh);
       ctx.clip();
-      if (decorArt) {
-        drawArtCover(bx, by, bw, bh);
+      if (decorArtStrip) {
+        drawArtStrip(bx, by, bw, bh);
+      } else if (decorArt) {
+        drawArtCover(decorArt, bx, by, bw, bh);
       } else {
         const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
         ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
