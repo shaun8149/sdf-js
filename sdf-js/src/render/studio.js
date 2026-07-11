@@ -15,6 +15,7 @@ import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
 // W12 pattern-AA: band-limited filtering library (checkersFiltered, filterWidth).
 import { FILTER_GLSL } from '../sdf/filter.js';
 import { attachFlyControls } from '../input/fly-controls.js';
+import { compileAnalyticFrag } from './analytic.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
 import {
   evaluateCameraSequence,
@@ -1885,6 +1886,20 @@ void main() {
 // DCE-pruned against the GATED template. Both passes walk the same tree, so
 // the u_sdfArgs slot order is identical (deterministic).
 function compileStudioFrag(sdf, renderMode = 'rich') {
+  // 'analytic': ray/primitive closed-form intersection, zero marching — the
+  // presentation product's perf mode. Falls back to the stone raymarcher when
+  // the scene uses primitives without closed-form hits (funnel-3d etc.).
+  if (renderMode === 'analytic') {
+    const a = sdf && sdf._subjects ? compileAnalyticFrag(sdf._subjects) : { ok: false, reason: 'no subjects sidecar' };
+    if (a.ok) {
+      return {
+        fragSource: a.fragSource,
+        result: { glsl: a.fragSource, leafMaterials: [], leafPatterns: [], sdfArgs: null },
+      };
+    }
+    console.warn('[studio] analytic renderer fallback → stone raymarch:', a.reason);
+    renderMode = 'stone';
+  }
   const probe = compileSDF3ToGLSL(sdf, {
     sceneFnName: 'sceneSDF',
     includeLibrary: false,
@@ -2975,7 +2990,7 @@ export function createStudioRenderer({
      * Call before render()/precompile(); does not retroactively swap.
      */
     setRenderMode(mode) {
-      renderMode = mode === 'stone' ? 'stone' : 'rich';
+      renderMode = mode === 'stone' || mode === 'analytic' ? mode : 'rich';
     },
 
     /**
