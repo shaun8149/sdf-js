@@ -15,13 +15,21 @@
 //               (bubble size / severity weight). No 3D renderer yet — see
 //               docs/superpowers/ir-matrix-proposal.md; the 2D bridges
 //               (scaffold-to-ir, ir-to-2d) and text-to-ir already emit/consume it.
-export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude', 'matrix'];
+//   hold      — a page with NO chartable structure (cover, narration, product
+//               tour): title + optional bullet nodes. Renders as a title-card
+//               interlude station (stele + bullet pips; text rides the DOM
+//               overlay per the two-text-systems rule). nodes MAY be empty —
+//               a cover is legitimately just a title.
+export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude', 'matrix', 'hold'];
 
 export function validateIR(ir) {
   const errors = [];
   if (!ir || typeof ir !== 'object') return { ok: false, errors: ['ir must be an object'] };
   if (!STRUCTURES.includes(ir.structure)) errors.push(`unknown structure "${ir.structure}"`);
-  if (!Array.isArray(ir.nodes) || ir.nodes.length === 0)
+  if (ir.structure === 'hold') {
+    // hold: nodes are optional bullets — an empty array (a bare cover) is valid.
+    if (!Array.isArray(ir.nodes)) errors.push('nodes must be an array');
+  } else if (!Array.isArray(ir.nodes) || ir.nodes.length === 0)
     errors.push('nodes must be a non-empty array');
   const N = Array.isArray(ir.nodes) ? ir.nodes.length : 0;
   if (ir.magnitude != null) {

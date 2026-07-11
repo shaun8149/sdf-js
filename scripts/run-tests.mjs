@@ -151,6 +151,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-script-spans.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-atlas-deck-handoff.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-deck-windows.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-hold.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-render-hierarchy.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-render-network.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-render-magnitude.mjs' },
