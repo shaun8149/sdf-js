@@ -19,7 +19,7 @@ export function createFigure({
   outdoor = false,
   stage = false,
   present = false,
-  renderMode = 'stone', // presentation product default: perf first, beauty later
+  renderMode = 'analytic', // zero-march white model; 'stone'/'rich' = raymarch tiers
 } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');

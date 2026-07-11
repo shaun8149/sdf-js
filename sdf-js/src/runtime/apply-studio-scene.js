@@ -84,6 +84,10 @@ export function expandAndCompile(sceneData, { rng = null, tokenHash } = {}) {
     compiled.groundSdf && compiled.sdf
       ? sdfUnion(compiled.sdf, compiled.groundSdf)
       : compiled.sdf || compiled.groundSdf;
+  // Sidecar for the analytic white-model renderer: it needs the primitive
+  // list (types/args/transforms), which the SDF tree has already erased.
+  // Riding on the sdf object keeps every call-site signature unchanged.
+  if (sdf) sdf._subjects = labeledScene.subjects;
   return { stagedScene, compiled, sdf };
 }
 
