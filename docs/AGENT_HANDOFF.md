@@ -113,6 +113,38 @@ update **both** when adding shot fields.
 - Earlier engine state (idioms, ports, generators, terrain family, etc.) — see `docs/STATUS.md` and the
   memory-index in §9.
 
+### 3.5 (2026-07-11 追加) 2D 端: 真迹供给线时代 — Sprint 74-81 digest
+
+7 月上旬 2D 端 (Atlas Present) 经历一次供给线级转向, 按时间序:
+
+1. **三级页面体系** (S73-74): 封面/目录/子标题 = 生成艺术 ARTWORK 页,
+   内页 = subtle 元素。封面走 cover-canvas 管线 (ink 底→artwork 强度绘制→
+   overlay scrim+字)。
+2. **全语料二读审计** (S77, #298): ArtBlocks 公开 GraphQL 能直接拉链上原始
+   脚本 — 50 课全部与原文逐 claim 对照。10 课 HIGH 事实错误, 12 家族
+   voice miss。两条方法论铁律: **机制 claim 必须在原文找到对应行** (一读
+   主要失误 = 把观感反推成机制); **体量感靠填充/累积不靠描线**。证据:
+   `docs/superpowers/artblocks-study/76-corpus-second-reading-audit.md` + audit/。
+3. **DECOR_V=4 二修 wave** (S78, #301): 10 家族按原作重绘。冻结纪律走
+   **版本事件** (零外部铸造窗口 bump 版本 + 固件重烘限改动家族 + 其余
+   键值级零漂移核对)。笔记勘误 35 课 (#300)。
+4. **真迹转向** (S80-81, #304/#309) — user 裁定: *"PPT 非商用只证明逻辑,
+   生成艺术是混沌系统, 一点改动就是美丑之别 — 原样跑原版, 不要瞎改动"*。
+   链上脚本逐字在浏览器 iframe 运行 (原代码不进 repo; 产物在
+   `sdf-js/examples/original-mints/cache/`, gitignore, manifest 记
+   license/hash/status)。renderer 双入口: `decorArt` (封面全幅) +
+   `decorArtStrip` (**小画布 mint 平铺画廊胶片条** — user: 小画布让整幅
+   构图进标题栏)。**decor 引擎 25 家族降级为 subtle 层 + 无真迹 fallback**。
+   cover.js overlay = 标题锚定径向渐晕 + 明度感知 (亮画→纸雾+墨字)。
+5. **铸造病因五连** (复用价值高): ① iframe load 事件先于脚本注入 (补
+   dispatch) ② 脚本顶层引用 p5 (引擎先载) ③ HTML 型脚本走 srcdoc
+   ④ 原生 js 期望预置 canvas ⑤ p5 FES 吞 WebGL 异常 (手动调 setup() 抓
+   真错)。browse headless **无 WebGL** — GL 作品需 Chrome 新 headless
+   (`--headless=new` 自带 ANGLE Metal) 或带 GL 的运行器。
+6. **产品语境**: ANTFUN 20 页真机 deck 是全程验证载体 (news-to-deck →
+   五版生成艺术 PDF → 真迹版)。License 核查由 user 亲自负责 (ND 裁切=
+   改编风险已写 original-mints/README)。
+
 ---
 
 ## 4. The sphere-fill gauge (most recent work — full context)
