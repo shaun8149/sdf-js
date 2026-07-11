@@ -130,7 +130,14 @@ export function assembleDeck(deck, opts = {}) {
         shake: [0.14, 0.05], // sling settles as the next station arrives
         ease: 'whip', // gentle launch, FAST mid-flight, gentle arrival
       });
-      windows.push({ kind: 'transit', stations: [k - 1, k], start: clock, end: clock + dur });
+      const prev = origins[k - 1];
+      windows.push({
+        kind: 'transit',
+        stations: [k - 1, k],
+        start: clock,
+        end: clock + dur,
+        origin: [(prev[0] + origin[0]) / 2, 0, (prev[2] + origin[2]) / 2],
+      });
       clock += dur;
     }
 
@@ -177,7 +184,13 @@ export function assembleDeck(deck, opts = {}) {
       hitstops.push({ at: h.at + clock, hold: h.hold });
     }
     const stationDur = seqDuration(st.cameraSequence.shots);
-    windows.push({ kind: 'station', stations: [k], start: clock, end: clock + stationDur });
+    windows.push({
+      kind: 'station',
+      stations: [k],
+      start: clock,
+      end: clock + stationDur,
+      origin: [...origin],
+    });
     clock += stationDur;
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
     prevPayoff = { pos: addV(last.pos, origin), target: addV(last.target, origin) };
@@ -302,6 +315,14 @@ export function assembleDeck(deck, opts = {}) {
 // `s${k}-`, breadcrumb paths `path-${k}-` (connecting k → k+1); anything else
 // is shared world dressing (horizon hills, env terrain) and stays in every
 // window so the backdrop never pops.
+// Shader cost is SUPER-linear in leaf count on Apple GPUs, so even the cheap
+// horizon-hill silhouettes (14 leaves ringing the deck centroid) dominate a
+// 5-subject station window. Keep only the nearest few per window — they are
+// distant near-black bumps, so the far-side ones dropping out of a window is
+// invisible while the statement count halves. Env terrains (alpine etc.) are
+// NOT trimmed: their pieces are large and continuous, and cutting one leaves
+// a hole in the world.
+const HILLS_PER_WINDOW = 6;
 export function sliceDeckWindow(scene, win) {
   if (!win || win.kind === 'finale') return scene;
   const wanted = new Set(win.stations);
@@ -316,5 +337,19 @@ export function sliceDeckWindow(scene, win) {
     }
     return true;
   };
-  return { ...scene, subjects: scene.subjects.filter(keep) };
+  let subjects = scene.subjects.filter(keep);
+  if (Array.isArray(win.origin)) {
+    const hills = subjects.filter((s) => typeof s.id === 'string' && s.id.startsWith('horizon-'));
+    if (hills.length > HILLS_PER_WINDOW) {
+      const distSq = (s) => {
+        const t = (s.transform && s.transform.translate) || [0, 0, 0];
+        return (t[0] - win.origin[0]) ** 2 + (t[2] - win.origin[2]) ** 2;
+      };
+      const near = new Set(
+        [...hills].sort((a, b) => distSq(a) - distSq(b)).slice(0, HILLS_PER_WINDOW),
+      );
+      subjects = subjects.filter((s) => !s.id || !s.id.startsWith('horizon-') || near.has(s));
+    }
+  }
+  return { ...scene, subjects };
 }

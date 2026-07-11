@@ -62,6 +62,31 @@ const stationIds = (s, k) => s.subjects.filter((x) => x.id && x.id.startsWith(`s
 }
 ok(sliceOf(5).subjects.length === scene.subjects.length, 'finale slice is the full world');
 
+// ---- horizon-hill trimming (super-linear shader cost: every leaf counts) ------
+{
+  const hills = (s) =>
+    s.subjects.filter((x) => typeof x.id === 'string' && x.id.startsWith('horizon-'));
+  const fullHills = hills(scene).length;
+  ok(fullHills > 6, `full deck rings ${fullHills} hills (needs trimming to matter)`);
+  ok(hills(sliceOf(0)).length === 6, 'station window keeps only the 6 nearest hills');
+  ok(hills(sliceOf(1)).length === 6, 'transit window keeps only the 6 nearest hills');
+  ok(
+    Array.isArray(wins[0].origin) && wins[0].origin.length === 3,
+    'station window carries its origin (nearest-hill anchor)',
+  );
+  // nearest means nearest: every kept hill is at most as far as every dropped one
+  const d2 = (x, o) => {
+    const t = (x.transform && x.transform.translate) || [0, 0, 0];
+    return (t[0] - o[0]) ** 2 + (t[2] - o[2]) ** 2;
+  };
+  const keptIds = new Set(hills(sliceOf(0)).map((x) => x.id));
+  const kept = hills(scene).filter((x) => keptIds.has(x.id));
+  const dropped = hills(scene).filter((x) => !keptIds.has(x.id));
+  const maxKept = Math.max(...kept.map((x) => d2(x, wins[0].origin)));
+  const minDropped = Math.min(...dropped.map((x) => d2(x, wins[0].origin)));
+  ok(maxKept <= minDropped + 1e-9, 'kept hills are the nearest ones to the window origin');
+}
+
 // ---- every slice must actually compile to an SDF ------------------------------
 for (let i = 0; i < wins.length; i++) {
   let sdf = null;

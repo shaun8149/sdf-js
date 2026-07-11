@@ -37,9 +37,17 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
   let scaleIdx = 0;
   let lowStreak = 0;
   let highStreak = 0;
+  // Adaptive grace period: the first seconds after a scene load are dominated
+  // by driver shader compiles (deck decks warm up to 2N programs), which stall
+  // rAF and read as "1 fps" — NOT a render-cost signal. Downshifting on those
+  // samples parks the deck at 0.5× forever (the climb-back bar is high on
+  // purpose). Ignore the adjuster until the load storm has passed.
+  let adaptAfter = 0;
+  const ADAPT_GRACE_MS = 5000;
   const onFps = (fps) => {
     fpsHud.textContent = `${fps.toFixed(0)} fps${scaleIdx ? ` · ${SCALES[scaleIdx]}×` : ''}`;
     fpsHud.style.color = fps >= 50 ? '#7fd77f' : fps >= 30 ? '#e8c35c' : '#f26d6d';
+    if (performance.now() < adaptAfter) return;
     if (fps < 24 && scaleIdx < SCALES.length - 1) {
       if (++lowStreak >= 2) {
         scaleIdx++;
@@ -122,6 +130,9 @@ export function createFigure({ outdoor = false, stage = false } = {}) {
       detachDeckWindows();
       detachDeckWindows = null;
     }
+    adaptAfter = performance.now() + ADAPT_GRACE_MS;
+    lowStreak = 0;
+    highStreak = 0;
     detachDeckWindows = attachDeckWindows(studio, scene);
     if (!detachDeckWindows) applyStudioScene(studio, scene);
   }
