@@ -11,7 +11,12 @@ import { textToIR } from '../../src/scene/text-to-ir.js';
 import { irDeckTo2DDeck } from '../../src/scene/ir-to-2d.js';
 import { newsToFullDeck, reliftSlot, retryFailedSlot } from '../../src/present/news/full-deck.js';
 import { renderSceneDataToCanvas } from '../../src/present/atoms-2d/renderer.js';
-import { rethemeDeck } from '../../src/present/retheme.js';
+import {
+  rethemeDeck,
+  applySectionAccents,
+  slotPalette,
+  slotRoleOf,
+} from '../../src/present/retheme.js';
 import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
@@ -372,8 +377,9 @@ async function renderDeck(deck) {
     attachSlideControls(card, canvas, deck, slot);
     slidesEl.appendChild(card);
     await renderSceneDataToCanvas(canvas, slot.sceneData, {
-      palette: deck.theme,
+      palette: slotPalette(deck.theme, slot),
       decor: slotDecor(deck, slot),
+      decorRole: slotRoleOf(slot),
     });
   }
   // Sprint 68: failed slots surface as retryable cards, not console lines —
@@ -488,8 +494,9 @@ function attachSlideControls(card, canvas, deck, slot) {
     try {
       const sceneData = await reliftSlot(currentDeck, slot.slotIdx, { apiKey, revision });
       await renderSceneDataToCanvas(canvas, sceneData, {
-        palette: deck.theme,
+        palette: slotPalette(deck.theme, slot),
         decor: slotDecor(deck, slot),
+        decorRole: slotRoleOf(slot),
       });
       editRow.classList.remove('open');
       editInput.value = '';
@@ -596,8 +603,9 @@ async function generate() {
           if (!entry) return;
           try {
             await renderSceneDataToCanvas(entry.canvas, slot.sceneData, {
-              palette: streamTheme,
+              palette: slotPalette(streamTheme, slot),
               decor: slotDecor({ decor: streamDecor }, slot),
+              decorRole: slotRoleOf(slot),
             });
           } finally {
             entry.card.classList.remove('busy');
@@ -630,6 +638,9 @@ async function generate() {
       `rendering ${irDeck.slides.length} slide${irDeck.slides.length > 1 ? 's' : ''}: ${irDeck.slides.map((s) => s.structure).join(' → ')}`,
     );
     currentDeck = irDeckTo2DDeck(irDeck);
+    // Sprint 73: quick decks get section colors too — every content page
+    // holds its own hue (slot names are unique → one section per page)
+    applySectionAccents(currentDeck);
     // demo default is a fixed hash (deterministic screenshots), but an
     // explicit ?hash= re-open wins even in demo — provenance is testable
     currentDeck.decor = mintDecor(

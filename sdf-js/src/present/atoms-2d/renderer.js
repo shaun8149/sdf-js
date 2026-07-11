@@ -56,6 +56,13 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // and would bury an underlay).
   const decor = opts.decor;
   const isPureCover = subjects.length > 0 && subjects.every((s) => s?.type === 'cover');
+  // Sprint 73 (三级页面体系): the deck breathes in three registers —
+  //   cover/agenda/section openers = generative ARTWORK pages (hero/bold),
+  //   content pages = generative ELEMENTS (subtle underlay, unchanged).
+  // Callers pass opts.decorRole ('cover'|'agenda'|'section'|'content');
+  // pure covers resolve to 'cover' on their own.
+  const role = opts.decorRole || (isPureCover ? 'cover' : 'content');
+  const UNDER_INTENSITY = { agenda: 'bold', section: 'bold', content: 'subtle' };
   if (decor && !isPureCover) {
     drawDecor(ctx, decor, {
       palette,
@@ -63,7 +70,7 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       y: 0,
       w: canvas.width,
       h: canvas.height,
-      intensity: decor.intensity || 'subtle',
+      intensity: decor.intensity || UNDER_INTENSITY[role] || 'subtle',
     });
   }
   let rendered = 0;
@@ -109,7 +116,7 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       y: 0,
       w: canvas.width,
       h: canvas.height,
-      intensity: decor.intensity || 'bold',
+      intensity: decor.intensity || 'hero',
     });
   }
 
