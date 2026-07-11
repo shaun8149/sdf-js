@@ -2014,6 +2014,156 @@ function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personali
   ctx.restore();
 }
 
+// banded-ribbons: FAT flow-field ribbons whose bodies are divided into
+// short color BANDS — each band an independent weighted palette draw.
+// RECIPE-ONLY port after Tyler Hobbs' "Fidenza" (Art Blocks Curated #78,
+// CC BY-NC 4.0 — independent reimplementation; second-generation study
+// after flow-ribbons/L2, this time taking the RENDERING idioms the first
+// port skipped; see docs/superpowers/artblocks-study/02+75). Idioms taken
+// as ideas: a ribbon is a SPINE walked through the field, then FATTENED
+// into top/bottom offset edges and closed (never a stroked polyline);
+// thickness comes from a few DISCRETE levels under a weighted choice —
+// mixed scales, never a continuum; the body is cut into short arc-length
+// segments, EACH segment re-drawing its color from a weighted pool where
+// pale/neutral tints dominate and saturated hues punctuate; ribbons stop
+// at collisions (mutual respect makes the composition read as woven).
+const BANDED_PERSONALITIES = {
+  calm: { attempts: 90, levels: [4, 9, 18], weights: [0.3, 0.5, 0.2], seg: [24, 48, 96], step: 7 },
+  balanced: {
+    attempts: 150,
+    levels: [4, 9, 18, 36, 68],
+    weights: [0.12, 0.25, 0.3, 0.25, 0.08],
+    seg: [10, 20, 40, 80],
+    step: 6,
+  },
+  wild: {
+    attempts: 210,
+    levels: [9, 18, 36, 68, 110],
+    weights: [0.1, 0.2, 0.3, 0.3, 0.1],
+    seg: [8, 16, 32],
+    step: 6,
+  },
+};
+
+function drawBandedRibbons(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
+  const P = INTENSITY[intensity] || INTENSITY.subtle;
+  const B = BANDED_PERSONALITIES[personality] || BANDED_PERSONALITIES.balanced;
+  const rand = seededRand(seed * 101 + 47);
+  const noise = noise2D(seed + 13);
+  const bg = palette.bg || [248, 246, 240];
+  const hues = [palette.accent, ...(palette.colors || [])].filter(Boolean);
+  // the Fidenza pool discipline: pale tints + a near-bg neutral CARRY the
+  // field; saturated theme hues punctuate. Weighted, not uniform.
+  const pool = [];
+  for (const c of hues) {
+    pool.push([c, 1]); // saturated voice
+    pool.push([lerpColorOklab(c, bg, 0.55), 1.6]); // pale tint chorus
+  }
+  pool.push([lerpColorOklab(hues[0] || [120, 120, 120], bg, 0.82), 2.2]); // newsprint-ish neutral
+  const poolTotal = pool.reduce((t, [, wgt]) => t + wgt, 0);
+  const pickColor = () => {
+    let t = rand() * poolTotal;
+    for (const [c, wgt] of pool) {
+      t -= wgt;
+      if (t <= 0) return c;
+    }
+    return pool[0][0];
+  };
+  const pickLevel = () => {
+    let t = rand();
+    for (let i = 0; i < B.levels.length; i++) {
+      t -= B.weights[i];
+      if (t <= 0) return B.levels[i];
+    }
+    return B.levels[0];
+  };
+
+  // coarse occupancy grid — collision keeps ribbons from crossing
+  const CELL = 14;
+  const occupied = new Set();
+  const cellsFor = (px, py, r) => {
+    const out = [];
+    for (let gx = Math.floor((px - r) / CELL); gx <= Math.floor((px + r) / CELL); gx++)
+      for (let gy = Math.floor((py - r) / CELL); gy <= Math.floor((py + r) / CELL); gy++)
+        out.push(gx + ':' + gy);
+    return out;
+  };
+  const collides = (px, py, r) => cellsFor(px, py, r).some((k) => occupied.has(k));
+
+  const baseAngle = rand() * Math.PI * 2;
+  ctx.save();
+  ctx.lineJoin = 'round';
+  for (let a = 0; a < B.attempts; a++) {
+    const thick = pickLevel();
+    const half = thick / 2;
+    let px = x + rand() * w;
+    let py = y + rand() * h;
+    const spine = [];
+    // walk the field; low curvature (Fidenza fields bend gently)
+    for (let sIdx = 0; sIdx < 200; sIdx++) {
+      if (px < x - half || px > x + w + half || py < y - half || py > y + h + half) break;
+      if (collides(px, py, half * 0.8)) break;
+      spine.push([px, py]);
+      const ang = baseAngle + (noise(px * 0.0022, py * 0.0022) - 0.5) * 2.6;
+      px += Math.cos(ang) * B.step;
+      py += Math.sin(ang) * B.step;
+    }
+    // minimum-length gate: a ribbon shorter than ~2× its width reads as a blob
+    if (spine.length * B.step < thick * 2.2 || spine.length < 4) continue;
+    for (const [sx, sy] of spine) for (const k of cellsFor(sx, sy, half)) occupied.add(k);
+
+    // fatten: per-point normals → top/bottom edges
+    const top = [];
+    const bot = [];
+    for (let i = 0; i < spine.length; i++) {
+      const p0 = spine[Math.max(0, i - 1)];
+      const p1 = spine[Math.min(spine.length - 1, i + 1)];
+      const dx = p1[0] - p0[0];
+      const dy = p1[1] - p0[1];
+      const len = Math.hypot(dx, dy) || 1;
+      top.push([spine[i][0] - (dy / len) * half, spine[i][1] + (dx / len) * half]);
+      bot.push([spine[i][0] + (dy / len) * half, spine[i][1] - (dx / len) * half]);
+    }
+
+    // color BANDS along the arc — the signature. Each band re-draws its
+    // color; band length is a weighted pick per ribbon.
+    const segLen = B.seg[Math.floor(rand() * B.seg.length)];
+    const ptsPerSeg = Math.max(1, Math.round(segLen / B.step));
+    const alpha = Math.min(0.96, P.alphaFill * 1.9); // subtle stays whisper, artwork goes opaque
+    for (let i0 = 0; i0 < spine.length - 1; i0 += ptsPerSeg) {
+      const i1 = Math.min(spine.length - 1, i0 + ptsPerSeg);
+      ctx.fillStyle = rgba(pickColor(), alpha);
+      ctx.beginPath();
+      ctx.moveTo(top[i0][0], top[i0][1]);
+      for (let i = i0 + 1; i <= i1; i++) ctx.lineTo(top[i][0], top[i][1]);
+      for (let i = i1; i >= i0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+      ctx.closePath();
+      ctx.fill();
+    }
+    // rounded end caps in the end bands' colors
+    const cap = (i, other) => {
+      const ang = Math.atan2(other[1] - spine[i][1], other[0] - spine[i][0]);
+      ctx.fillStyle = rgba(pickColor(), alpha);
+      ctx.beginPath();
+      ctx.arc(spine[i][0], spine[i][1], half, ang + Math.PI / 2, ang - Math.PI / 2);
+      ctx.closePath();
+      ctx.fill();
+    };
+    cap(0, spine[1]);
+    cap(spine.length - 1, spine[spine.length - 2]);
+    // hairline outline holds the ribbon together (Fidenza stroke mode)
+    ctx.strokeStyle = rgba(palette.silhouetteColor || [30, 30, 34], Math.min(0.5, P.alpha * 1.4));
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(top[0][0], top[0][1]);
+    for (let i = 1; i < top.length; i++) ctx.lineTo(top[i][0], top[i][1]);
+    for (let i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+    ctx.closePath();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // --- v2 pipeline (Sprint 59) ------------------------------------------------
 // DECOR_V 2 adds two stages AROUND the (still frozen) family draws:
 //   pre:  WCAG luminance guard — palette colors too close to the theme bg
@@ -2692,12 +2842,14 @@ export const DECOR_FAMILIES = {
   'torn-paper': drawTornPaper,
   'peg-wraps': drawPegWraps,
   'river-courses': drawRiverCourses,
+  'banded-ribbons': drawBandedRibbons,
 };
 
 // theme macroCluster → family affinity (seeded pick between two candidates so
 // different decks in the same theme still vary)
 export const CLUSTER_AFFINITY = {
   editorial: [
+    'banded-ribbons',
     'folded-screens',
     'scan-tides',
     'river-courses',
@@ -2710,6 +2862,7 @@ export const CLUSTER_AFFINITY = {
     'meadow-streaks',
   ],
   pitch: [
+    'banded-ribbons',
     'halftone-fade',
     'scan-tides',
     'street-grid',
@@ -2838,6 +2991,11 @@ export const DECOR_CREDITS = {
     src: 'Art Blocks #159 · CC BY',
   },
   'flow-ribbons': { after: 'Fidenza', by: 'Tyler Hobbs', src: 'Art Blocks #78 · recipe-only' },
+  'banded-ribbons': {
+    after: 'Fidenza (二代研读: fat ribbon + 分段色块)',
+    by: 'Tyler Hobbs',
+    src: 'Art Blocks #78 · recipe-only',
+  },
   'block-mosaic': { after: 'Archetype', by: 'Kjetil Golid', src: 'Art Blocks #23 · recipe-only' },
   'wash-flow': {
     after: 'Watercolor Dreams',
