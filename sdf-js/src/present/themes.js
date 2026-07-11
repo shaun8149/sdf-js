@@ -181,6 +181,56 @@ export const ATLAS_THEMES = [
   // ORGANIC / NATURE — rounded sans + soft gradients + nature palette
   // ============================================================================
   {
+    id: 'pitch-spectrum',
+    label: 'Pitch · Spectrum',
+    macroCluster: 'pitch',
+    // Sprint 73: multi-hue on ink — vivid editorial energy for pitch decks.
+    // Palette: chromotome kov_06 (the repo's established palette corpus),
+    // the Fidenza-on-dark register: vermilion anchor + azure / ochre /
+    // green / blush over deep ink. Built for section-accent programming.
+    bg: [14, 22, 30],
+    silhouetteColor: [238, 236, 228],
+    accent: [241, 70, 22], // vermilion anchor
+    colors: [
+      [241, 70, 22], // vermilion (anchor)
+      [43, 154, 233], // azure
+      [168, 124, 42], // gold ochre
+      [1, 119, 86], // deep green (lifted from kov_06 green toward teal for dark-bg contrast)
+      [236, 191, 175], // blush
+      [189, 201, 177], // sage grey
+    ],
+    font: {
+      heading: '"Inter Display", Inter, system-ui, sans-serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
+  {
+    id: 'organic-spectrum',
+    label: 'Organic · Spectrum',
+    macroCluster: 'organic',
+    // Sprint 73: the Fidenza warm-naturals register — sand canvas,
+    // vermilion / amber / deep green / sage (chromotome kov_05 + hilda
+    // family, the repo's palette corpus). Flow-ribbons on this palette IS
+    // the Fidenza feel our L2 recipe port was born from.
+    bg: [246, 240, 228],
+    silhouetteColor: [56, 44, 36],
+    accent: [200, 66, 34], // vermilion, earthed
+    colors: [
+      [200, 66, 34], // vermilion (anchor)
+      [222, 146, 50], // amber
+      [0, 113, 88], // deep green
+      [134, 150, 121], // sage
+      [140, 75, 71], // clay
+      [86, 118, 140], // river blue
+    ],
+    font: {
+      heading: 'Georgia, "Source Serif Pro", serif',
+      body: 'Inter, system-ui, sans-serif',
+    },
+    featured: true,
+  },
+  {
     id: 'organic-teal',
     label: 'Organic · Teal',
     macroCluster: 'organic',

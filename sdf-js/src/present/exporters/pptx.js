@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
+import { slotPalette, slotRoleOf } from '../retheme.js';
 
 // pptxgenjs loaded from esm.sh on first call (matches pdfjs CDN pattern in
 // src/parser/pdf.js — no build step / bundler required).
@@ -83,7 +84,8 @@ export async function exportDeckToPPTX(deck, opts = {}) {
     // preview — decoration layer included, per-atom errors non-fatal.
     try {
       await renderSceneDataToCanvas(canvas, slot.sceneData || { subjects: [] }, {
-        palette: deck.theme,
+        palette: slotPalette(deck.theme, slot),
+        decorRole: slotRoleOf(slot),
         decor: deck.decor
           ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx }
           : undefined,

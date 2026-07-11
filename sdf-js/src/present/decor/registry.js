@@ -67,6 +67,10 @@ const INTENSITY = {
   subtle: { alpha: 0.07, alphaFill: 0.05, lineWidth: 1 },
   medium: { alpha: 0.14, alphaFill: 0.1, lineWidth: 1.2 },
   bold: { alpha: 0.26, alphaFill: 0.18, lineWidth: 1.6 },
+  // Sprint 73 (三级页面体系): hero — the family stops being a wash and
+  // becomes the ARTWORK. Covers / agenda / section openers only; big white
+  // 900-weight titles stay legible over it, body text would not.
+  hero: { alpha: 0.42, alphaFill: 0.3, lineWidth: 2.2 },
 };
 
 // --- families ---------------------------------------------------------------

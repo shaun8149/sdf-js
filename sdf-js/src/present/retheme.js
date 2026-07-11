@@ -150,6 +150,19 @@ export function applySectionAccents(deck, { minHues = 3 } = {}) {
  * sectionAccent must also render under a palette variant, or only the
  * lift-baked colors would shift.
  */
+/**
+ * slotRoleOf(slot) — Sprint 73: which register a page plays in the
+ * three-tier system (cover / agenda / section opener / content). Derived
+ * from slot names (news-briefing convention); unknown names are content.
+ */
+export function slotRoleOf(slot) {
+  const name = String(slot?.slotName || '');
+  if (name === 'cover') return 'cover';
+  if (name === 'agenda') return 'agenda';
+  if (/-lead$/.test(name)) return 'section';
+  return 'content';
+}
+
 export function slotPalette(theme, slot) {
   if (!slot?.sectionAccent) return theme;
   const hue = [...slot.sectionAccent];
