@@ -338,6 +338,10 @@ export function sliceDeckWindow(scene, win) {
     if (st) return wanted.has(Number(st[1]));
     const path = /^path-(\d+)-/.exec(id);
     if (path) {
+      // Breadcrumbs earn their keep during TRANSIT flyovers; inside a station
+      // they're floor dots at the frame edge costing a full SDF eval per
+      // march step each. Station windows drop them all.
+      if (win.kind === 'station') return false;
       const i = Number(path[1]);
       return wanted.has(i) || wanted.has(i + 1);
     }

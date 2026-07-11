@@ -68,8 +68,12 @@ ok(
   // fighting-game grammar
   const shots = scene.cameraSequence.shots;
   const ys = shots.map((s) => s.pos[1]);
-  const peakIdx = ys.indexOf(Math.max(...ys));
-  ok(peakIdx > 0 && peakIdx < shots.length - 1, 'crane peak mid-sequence (hero → crane → tour)');
+  // hero opens LOW inside the cloud; the crane lifts high; the tour + payoff
+  // stay high (rays exit the cloud into the floor fast — the sparse-scene
+  // march-cost fix). So: crane above hero, and nothing after drops back to
+  // hero level except the super punch-in.
+  ok(ys[1] > ys[0] + 0.5, 'crane lifts well above the in-cloud hero');
+  ok(ys[2] > ys[0], 'tour stays high (grounded rays, not eye-level fly-through)');
   const superShot = shots.find(
     (s) => s.transition === 'cut' && (Array.isArray(s.shake) ? s.shake[0] : s.shake || 0) >= 0.2,
   );

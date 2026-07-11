@@ -112,8 +112,11 @@ const nodeMatN = (deg, maxDeg, emphasized) => {
     sat: 0.78 - 0.16 * k,
     value: 0.55 + 0.3 * k,
     kind: 'normal',
-    roughness: 0.3,
-    clearcoat: 0.45,
+    // rough enough that grazing pixels fall under the reflection-skip
+    // threshold — a constellation in deep space reflects nothing anyway,
+    // and every sphere silhouette pixel was paying the retrace
+    roughness: 0.55,
+    clearcoat: 0.2,
   };
 };
 
@@ -123,8 +126,8 @@ const EDGE_MAT = {
   value: 0.8,
   glow: 0.08, // faint circuit glow — the wiring reads as live
   kind: 'normal',
-  roughness: 0.35,
-  clearcoat: 0.3,
+  roughness: 0.6, // thin pipes: silhouette-heavy, reflection-invisible
+  clearcoat: 0.15,
 };
 
 export function renderNetwork(ir, opts = {}) {
@@ -224,11 +227,15 @@ export function renderNetwork(ir, opts = {}) {
   const orbitDur = Math.max(1.2, (wireDone - 2.3) / orbitBeats);
   for (let k = 0; k < orbitBeats; k++) {
     const theta = 1.5 + k * 1.4;
-    const dist = cloudR * 1.9;
+    const dist = cloudR * 1.6;
     shots.push({
       duration: orbitDur,
-      pos: [Math.sin(theta) * dist, midY + 0.9 - k * 0.25, Math.cos(theta) * dist],
-      target: [0, midY, 0],
+      // HIGH orbit (~35° down): eye-level orbits point every ray THROUGH the
+      // whole cloud — each near-miss of a sphere collapses the march step and
+      // the frame drowns in iterations. Looking down, rays exit the cloud
+      // into the floor after a short traversal. Same tour, half the steps.
+      pos: [Math.sin(theta) * dist, midY + cloudR * 1.15 - k * 0.15, Math.cos(theta) * dist],
+      target: [0, midY - 0.3, 0],
       fov: 46,
       transition: 'blend',
       aperture: 0.25,
@@ -257,6 +264,9 @@ export function renderNetwork(ir, opts = {}) {
   const payoffDist = (cloudR * 2.6 + 1.5) * (env ? env.payoffZoom : 1);
   shots.push({
     duration: 2.4,
+    // payoff stays EYE-LEVEL: from above, the floor fills the frame and every
+    // floor pixel pays the wet-floor reflection retrace — measured 7fps vs
+    // 24fps. Sky pixels are cheap; floor pixels are not.
     pos: [1.4, midY + 1.2 + (env ? 0.5 : 0), payoffDist],
     target: [0, midY, 0],
     fov: 44,
