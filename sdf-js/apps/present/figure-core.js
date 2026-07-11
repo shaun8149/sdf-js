@@ -139,7 +139,15 @@ export function createFigure({ outdoor = false, stage = false, present = false }
     adaptAfter = performance.now() + ADAPT_GRACE_MS;
     lowStreak = 0;
     highStreak = 0;
-    const dw = attachDeckWindows(studio, scene, { holdDuringWarmup: !present });
+    const dw = attachDeckWindows(studio, scene, {
+      holdDuringWarmup: !present,
+      // boundary swaps can stall the driver briefly — those samples are not a
+      // render-cost signal, so the adaptive scaler sits out a grace window
+      onSwap: () => {
+        adaptAfter = Math.max(adaptAfter, performance.now() + 2500);
+        lowStreak = 0;
+      },
+    });
     if (dw) {
       detachDeckWindows = dw.detach;
       deckWarming = true;

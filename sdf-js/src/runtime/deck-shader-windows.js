@@ -33,8 +33,13 @@ export function windowIndexAt(windows, t) {
  *   frame that's invisible; mid-playback it would freeze the show. Pass
  *   false when something else already owns the clock (presenter mode opens
  *   HELD at t≈0, which hides the same stalls for free).
+ * @param opts.onSwap  called at every boundary program swap. The host's
+ *   adaptive-resolution loop uses this to grant a grace window: the driver
+ *   still stalls briefly on some first draws (deferred specialization we
+ *   can't force), and those stall samples must not read as "render is slow,
+ *   downshift" — they'd park a fast deck at 0.5× for nothing.
  */
-export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {}) {
+export function attachDeckWindows(studio, scene, { holdDuringWarmup = true, onSwap = null } = {}) {
   const windows = scene.deckWindows;
   if (!Array.isArray(windows) || windows.length < 2 || !studio.swapSDF) return null;
 
@@ -101,6 +106,7 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {
     if (idx !== cur) {
       cur = idx;
       studio.swapSDF(sdfFor(idx));
+      if (onSwap) onSwap(idx);
     }
     requestAnimationFrame(tick);
   };
