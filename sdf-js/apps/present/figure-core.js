@@ -166,6 +166,7 @@ export function createFigure({ outdoor = false, stage = false, present = false }
     adaptAfter = performance.now() + ADAPT_GRACE_MS;
     lowStreak = 0;
     highStreak = 0;
+    const loadingMsg = loading && loading.querySelector('.msg');
     const dw = attachDeckWindows(studio, scene, {
       holdDuringWarmup: !present,
       // boundary swaps can stall the driver briefly — those samples are not a
@@ -173,6 +174,11 @@ export function createFigure({ outdoor = false, stage = false, present = false }
       onSwap: () => {
         adaptAfter = Math.max(adaptAfter, performance.now() + 2500);
         lowStreak = 0;
+      },
+      // A 10-station deck warms ~20s behind the boot overlay. Without visible
+      // progress that reads as a hang — the counter is what makes it a load.
+      onProgress: (done, total) => {
+        if (loadingMsg) loadingMsg.textContent = `warming shaders ${done}/${total}`;
       },
     });
     if (dw) {
@@ -210,15 +216,27 @@ export function createFigure({ outdoor = false, stage = false, present = false }
       for (const o of stageItems)
         if (o.role === 'title' && o.revealAt <= t + 0.02 && o._ch > curCh) curCh = o._ch;
       let slot = 0;
+      let lastOn = -1;
       for (let i = 0; i < stageItems.length; i++) {
         const o = stageItems[i];
-        const on = o._ch === curCh && o.revealAt <= t + 0.02;
+        // hideAt (set by assembleDeck = the station's end) clears the outgoing
+        // station's words during the transit flight; the chapter test keeps
+        // seeks honest in both directions.
+        const on =
+          o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
         if (o.role === 'screen' && on) {
           stageEls[i].style.top = `calc(26vh + ${slot} * 9.5vh)`;
           slot++;
+          lastOn = i;
         }
         stageEls[i].classList.toggle('on', on);
       }
+      // The camera and the words move as ONE: the beat the camera is visiting
+      // reads at full strength, spoken-already lines fall back. (`cur` is the
+      // latest revealed subtitle — reveal times are beat-synced by design.)
+      for (let i = 0; i < stageItems.length; i++)
+        if (stageItems[i].role === 'screen')
+          stageEls[i].classList.toggle('cur', i === lastOn);
     }
     // Pass 1: project + opacity/count-up; collect visible labels for layout.
     const placedRects = []; // near labels claim space first

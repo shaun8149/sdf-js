@@ -90,8 +90,12 @@
         z-index: 30;
       }
       .stage-bullet.on {
-        opacity: 1;
+        opacity: 0.52;
         transform: translateX(0);
+      }
+      /* the beat the camera is visiting reads at full strength */
+      .stage-bullet.on.cur {
+        opacity: 1;
       }
       /* author bar — the one input that turns words into a world */
       #bar {

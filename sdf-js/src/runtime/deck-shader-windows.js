@@ -39,7 +39,11 @@ export function windowIndexAt(windows, t) {
  *   can't force), and those stall samples must not read as "render is slow,
  *   downshift" — they'd park a fast deck at 0.5× for nothing.
  */
-export function attachDeckWindows(studio, scene, { holdDuringWarmup = true, onSwap = null } = {}) {
+export function attachDeckWindows(
+  studio,
+  scene,
+  { holdDuringWarmup = true, onSwap = null, onProgress = null } = {},
+) {
   const windows = scene.deckWindows;
   if (!Array.isArray(windows) || windows.length < 2 || !studio.swapSDF) return null;
 
@@ -65,6 +69,13 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true, onSw
       const step = (k) => (k <= 0 ? r() : requestAnimationFrame(() => step(k - 1)));
       step(n);
     });
+  // A REAL idle gap between warm steps. Each warm draw can block the main
+  // thread for 0.5-2s inside the driver (pipeline specialization happens
+  // synchronously at draw submit — no JS API can defer it); back-to-back
+  // blocks starve input handling and Chrome flags the page unresponsive.
+  // A macrotask pause between them lets queued events drain, so the page
+  // stays interactive even though the total warm time is the same.
+  const breathe = () => new Promise((r) => setTimeout(r, 60));
 
   // Warm the remaining windows in playback order — TWO passes, both hidden
   // behind the boot overlay (figure-core keeps it up until `warmed` resolves):
@@ -77,16 +88,21 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true, onSw
   //      BOUNDARY paid a 0.7-2s first-draw stall mid-presentation.
   const warmed = (async () => {
     const t0 = performance.now();
+    const total = (windows.length - 1) * 2;
     for (let i = 1; i < windows.length && !stopped; i++) {
       try {
         await studio.precompile(sdfFor(i));
       } catch (e) {
         console.warn('[deck-windows] precompile failed for window', i, e);
       }
+      if (onProgress) onProgress(i, total);
+      await breathe();
     }
     for (let i = 1; i < windows.length && !stopped; i++) {
       studio.swapSDF(sdfFor(i));
       await frames(3); // wake() renders settle frames — one real draw lands
+      if (onProgress) onProgress(windows.length - 1 + i, total);
+      await breathe();
     }
     if (stopped) return;
     studio.swapSDF(sdfFor(0)); // back to the opening window

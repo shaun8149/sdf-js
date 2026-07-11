@@ -160,12 +160,18 @@ export function assembleDeck(deck, opts = {}) {
       subjects.push(moved);
     }
 
-    // Overlay: shift anchors + reveal times; station titles reveal with their slide.
+    // Overlay: shift anchors + reveal times; station titles reveal with their
+    // slide. Narrative roles (stage-layer subtitles) also get hideAt = the
+    // station's end: during the transit sling the frame is IN FLIGHT and the
+    // outgoing station's words must clear the screen — the next title landing
+    // WITH its arena is what makes the cut read intentional.
+    const stationEnd = clock + seqDuration(st.cameraSequence.shots);
     for (const o of st.overlay || []) {
       overlay.push({
         ...o,
         anchor: addV(o.anchor, origin),
         revealAt: (o.revealAt ?? 0) + clock,
+        ...(o.role === 'title' || o.role === 'screen' ? { hideAt: stationEnd } : {}),
       });
     }
 
