@@ -2027,7 +2027,7 @@ export function createStudioRenderer({
   // (N station windows + N-1 transit pairs + the finale full-world program).
   // 24 covers a 12-station deck; each cached FS is ~1MB of driver bytecode,
   // well worth not recompiling a 200-500ms shader mid-presentation.
-  const PROGRAM_CACHE_MAX = 24;
+  const PROGRAM_CACHE_MAX = 48; // 2N windows for a deck: 13 stations = 26 programs — leave headroom
   // KHR_parallel_shader_compile: lets the driver compile+link on background
   // threads. We link WITHOUT querying LINK_STATUS (that query forces a
   // synchronous compile of the whole ~150KB+ shader — the multi-second
@@ -2250,7 +2250,7 @@ export function createStudioRenderer({
   // count) but defer GPU shader upload to next rAF (so cleared canvas paints
   // before the 200-500ms compile blocks the main thread).
   // `result` carries leafMaterials + leafPatterns + glsl for LUT upload.
-  function uploadCompiledFrag(fragSource, result) {
+  function uploadCompiledFrag(fragSource, result, { resetClocks = true } = {}) {
     // Program cache: hit avoids the GLSL compile+link that dominates scene-swap
     // perceived latency.
     // 2026-05-24: cache entry now carries the FS too. WebGL deleteProgram does
@@ -2280,7 +2280,7 @@ export function createStudioRenderer({
       // Async path: poll completion on rAF; swap the program in when ready.
       // Until then the previous program (or nothing, on first load) keeps
       // rendering and the main thread stays free (loading UIs can animate).
-      const mine = { entry, fragSource, result };
+      const mine = { entry, fragSource, result, resetClocks };
       pendingProgram = mine;
       const poll = () => {
         if (pendingProgram !== mine) {
@@ -2303,7 +2303,10 @@ export function createStudioRenderer({
           return;
         }
         finishProgramSetup(entry, result);
-        _debugFirstDraw = true; // first frame of THIS program resets the clocks
+        // Clock reset is a SCENE-LOAD semantic. A mid-play window swap that
+        // missed the cache must NOT restart the presentation (it used to
+        // zero the sequence mid-station whenever the LRU thrashed).
+        if (mine.resetClocks) _debugFirstDraw = true;
         wake();
       };
       requestAnimationFrame(poll);
@@ -2820,7 +2823,21 @@ export function createStudioRenderer({
       // run on wall time, so without this reset a 6s cameraSequence + its build-in
       // animations can be over before the audience sees frame one.
       timeStart = performance.now();
-      if (activeSequence) sequenceStartTime = performance.now();
+      // Sequence clock starts at the first visible frame — but if a presenter
+      // already HELD the clock (pause before this frame ever drew), re-anchor
+      // the frozen interval instead of stamping start=now: otherwise the held
+      // time becomes pausedAt−now ≈ −(compile seconds) and every subsequent
+      // playTo() first crawls through negative time (the "space bar plays
+      // from nowhere" bug on big decks whose first frame lands late).
+      if (activeSequence) {
+        if (sequencePaused) {
+          const heldRaw = (sequencePausedAt - sequenceStartTime) / 1000;
+          sequenceStartTime = performance.now() - heldRaw * 1000;
+          sequencePausedAt = performance.now();
+        } else {
+          sequenceStartTime = performance.now();
+        }
+      }
       const err = gl.getError();
       const errName =
         err === gl.NO_ERROR
@@ -3002,7 +3019,7 @@ export function createStudioRenderer({
      */
     swapSDF(sdf) {
       const { fragSource, result } = compileStudioFrag(sdf, renderMode);
-      uploadCompiledFrag(fragSource, result);
+      uploadCompiledFrag(fragSource, result, { resetClocks: false });
       wake();
       return { bytes: fragSource.length };
     },
