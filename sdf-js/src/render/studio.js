@@ -172,7 +172,11 @@ uniform vec4  u_volumeSizeDensity[MAX_VOLUMES];
 uniform vec4  u_volumeColor[MAX_VOLUMES];
 uniform int   u_volumeCount;
 
-#define MAX_STEPS    200
+// 144 (was 200): steps 150+ only ever fire on GRAZING rays — silhouette
+// pixels whose step collapsed against a surface they'll never hit. Cutting
+// the tail costs a whisper of silhouette AA and buys back whole frames on
+// sparse scenes (constellations) where every ray grazes several spheres.
+#define MAX_STEPS    144
 #define MAX_DIST     200.0  // matches BOB GPU; was 40, too small for fleet/scatter scenes
 #define EPS          0.0008
 #define GROUND_Y     -1.0
@@ -1696,9 +1700,15 @@ void main() {
         float reflW = fres * (0.35 + 0.55 * metalK) * (1.0 - 0.7 * rough);
         // Skip the secondary march when the reflection would barely show
         // (matte / near-normal incidence) — keeps cost on the pixels that read.
-        if (reflW > 0.02) {
+        // 0.06: matte-material GRAZING pixels (every sphere/pipe silhouette)
+        // used to squeak past 0.02 and burn a 32-step retrace for a reflection
+        // dimmed to invisibility by the roughness taper. Polished/metal
+        // surfaces (reflW ≥ 0.2) are untouched.
+        if (reflW > 0.06) {
           vec3 envRefl;
-          vec3 rs = raymarchShort(p + n * 0.02, R, 14.0);
+          // maxDist 8 (was 14): reflections read from NEARBY geometry; the
+          // tail of the retrace only ever marched empty air on sparse scenes.
+          vec3 rs = raymarchShort(p + n * 0.02, R, 8.0);
           if (rs.y > 0.5) {
             envRefl = shadeReflection(p + R * rs.x, R, rs.y, rs.z, sunDir);
           } else {
@@ -1742,7 +1752,7 @@ void main() {
       // (12 units, 32 steps) — visual sweetener, not main signal.
       if (u_reflectOn > 0.5 && matId < 1.5) {
         vec3 rrd = reflect(rd, n);
-        vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 12.0);
+        vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 7.0); // wet floor: near geometry only
         vec3 refl;
         if (hit2.y > 0.5) {
           vec3 p2 = p + n * 0.01 + rrd * hit2.x;
