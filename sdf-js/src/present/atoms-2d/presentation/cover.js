@@ -69,13 +69,41 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // 'overlay' (Sprint 74): NO backdrop — the renderer has already painted an
   // ink canvas + artwork-grade decoration underneath; this pass draws only a
   // legibility scrim behind the title block + the type itself.
+  let overlayInk = false; // light artwork → paper scrim + ink type
   if (style === 'overlay') {
-    const scrim = ctx.createLinearGradient(x, y, x, y + h);
-    scrim.addColorStop(0, 'rgba(8, 10, 16, 0.06)');
-    scrim.addColorStop(0.42, 'rgba(8, 10, 16, 0.5)');
-    scrim.addColorStop(0.75, 'rgba(8, 10, 16, 0.5)');
-    scrim.addColorStop(1, 'rgba(8, 10, 16, 0.14)');
-    ctx.fillStyle = scrim;
+    // Sprint 80: luminance-aware overlay. Sample the painting underneath —
+    // a dark ink scrim on a light piece (e.g. a cream-ground Ringers mint)
+    // greys the whole artwork; light pieces get a paper fog + ink type.
+    try {
+      const sx = Math.round(x + w * 0.04);
+      const sy = Math.round(y + h * 0.28);
+      const px = ctx.getImageData(
+        sx,
+        sy,
+        Math.max(1, Math.round(w * 0.55)),
+        Math.max(1, Math.round(h * 0.5)),
+      );
+      let sum = 0;
+      let n = 0;
+      for (let i = 0; i < px.data.length; i += 4 * 101) {
+        sum += 0.2126 * px.data[i] + 0.7152 * px.data[i + 1] + 0.0722 * px.data[i + 2];
+        n++;
+      }
+      overlayInk = n > 0 && sum / n / 255 > 0.55;
+    } catch {
+      overlayInk = false; // tainted/foreign canvas → keep the dark scrim
+    }
+    // Sprint 80: the scrim is LOCAL — a radial vignette anchored on the
+    // title block. A full-surface wash greys the artwork (cream Ringers
+    // grounds turned to fog); the painting owns the rest of the frame.
+    const scx = x + w * 0.24;
+    const scy = y + h * 0.5;
+    const scr = ctx.createRadialGradient(scx, scy, 0, scx, scy, w * 0.52);
+    const base = overlayInk ? '246, 243, 236' : '8, 10, 16';
+    scr.addColorStop(0, `rgba(${base}, ${overlayInk ? 0.66 : 0.56})`);
+    scr.addColorStop(0.55, `rgba(${base}, ${overlayInk ? 0.38 : 0.3})`);
+    scr.addColorStop(1, `rgba(${base}, 0)`);
+    ctx.fillStyle = scr;
     ctx.fillRect(x, y, w, h);
   } else if (style === 'section') {
     // Deep solid backdrop + decorative title-box behind text (PL D3180/031 pattern)
@@ -150,7 +178,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       .join(',')},0.85)`;
     ctx.fillRect(boxX, boxY, boxW, boxH);
   }
-  ctx.fillStyle = 'rgba(255,255,255,0.97)';
+  ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.95)' : 'rgba(255,255,255,0.97)';
   ctx.font = `900 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
@@ -158,7 +186,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // Subtitle
   if (subtitle) {
-    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.72)' : 'rgba(255,255,255,0.75)';
     ctx.font = `500 ${subtitleSize}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
     ctx.fillText(String(subtitle), titleX, blockTop + titleSize + 8);
@@ -170,7 +198,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   if (date) metaParts.push(date);
   if (version) metaParts.push(version);
   if (metaParts.length > 0 && h > 80) {
-    ctx.fillStyle = 'rgba(255,255,255,0.60)';
+    ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.55)' : 'rgba(255,255,255,0.60)';
     ctx.font = `500 ${metaSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
