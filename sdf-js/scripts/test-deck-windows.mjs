@@ -125,8 +125,14 @@ ok(windowIndexAt(wins, -1) === 0, 'negative time clamps to first window');
     v: 1,
     name: 'window scale regression',
     subjects: [...lightSubjects, ...heavySubjects],
-    cameraSequence: { loop: false, shots: [] },
-    defaults: {},
+    cameraSequence: {
+      loop: false,
+      shots: [{ duration: 2, pos: [0, 3, 8], target: [0, 0.5, 0], fov: 45 }],
+    },
+    defaults: {
+      camera: { yaw: 0, pitch: -0.1, distance: 8, focal: 1, targetX: 0, targetY: 0, targetZ: 0 },
+      light: { azimuth: 0.5, altitude: 0.7, distance: 20, intensity: 1 },
+    },
     deckWindows: [
       { kind: 'station', stations: [0], start: 0, end: 1, origin: [0, 0, 0] },
       { kind: 'finale', stations: [0, 1], start: 1, end: 2 },
