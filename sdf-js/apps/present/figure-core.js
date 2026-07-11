@@ -50,6 +50,10 @@ export function createFigure({ outdoor = false, stage = false, present = false }
     fpsHud.textContent = `${fps.toFixed(0)} fps${scaleIdx ? ` · ${SCALES[scaleIdx]}×` : ''}`;
     fpsHud.style.color = fps >= 50 ? '#7fd77f' : fps >= 30 ? '#e8c35c' : '#f26d6d';
     if (performance.now() < adaptAfter) return;
+    // Sub-3fps reads are main-thread stalls (shader compile, GC), not render
+    // cost — lowering the resolution can't fix them, so they must not feed
+    // the downshift streak.
+    if (fps < 3) return;
     if (fps < 24 && scaleIdx < SCALES.length - 1) {
       if (++lowStreak >= 2) {
         scaleIdx++;

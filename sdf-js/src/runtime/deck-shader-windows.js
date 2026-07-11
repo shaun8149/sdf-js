@@ -55,10 +55,23 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {
 
   if (holdDuringWarmup && studio.setSequencePaused) studio.setSequencePaused(true);
 
-  // Warm the remaining windows in playback order. Sequential await keeps at
-  // most one driver compile queued behind the KHR_parallel pipeline; the
-  // finale (the expensive full-world program) is naturally last.
+  const frames = (n) =>
+    new Promise((r) => {
+      const step = (k) => (k <= 0 ? r() : requestAnimationFrame(() => step(k - 1)));
+      step(n);
+    });
+
+  // Warm the remaining windows in playback order — TWO passes, both hidden
+  // behind the boot overlay (figure-core keeps it up until `warmed` resolves):
+  //   1. precompile(): GLSL compile + link into the program cache. This is
+  //      what KHR_parallel covers — but Metal still defers the expensive
+  //      pipeline specialization past link AND past a token 1px draw.
+  //   2. a real full-viewport draw per window via swapSDF (the clock is held,
+  //      the overlay masks the geometry flicker), which is the only thing
+  //      that verifiably builds the real pipeline. Without it, each window
+  //      BOUNDARY paid a 0.7-2s first-draw stall mid-presentation.
   const warmed = (async () => {
+    const t0 = performance.now();
     for (let i = 1; i < windows.length && !stopped; i++) {
       try {
         await studio.precompile(sdfFor(i));
@@ -66,7 +79,17 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {
         console.warn('[deck-windows] precompile failed for window', i, e);
       }
     }
-    if (!stopped && holdDuringWarmup && studio.setSequenceTime) studio.setSequenceTime(0);
+    for (let i = 1; i < windows.length && !stopped; i++) {
+      studio.swapSDF(sdfFor(i));
+      await frames(3); // wake() renders settle frames — one real draw lands
+    }
+    if (stopped) return;
+    studio.swapSDF(sdfFor(0)); // back to the opening window
+    await frames(3);
+    if (holdDuringWarmup && studio.setSequenceTime) studio.setSequenceTime(0);
+    console.log(
+      `[deck-windows] ${windows.length} window shaders warmed in ${(performance.now() - t0).toFixed(0)}ms`,
+    );
   })();
 
   const tick = () => {
@@ -81,7 +104,11 @@ export function attachDeckWindows(studio, scene, { holdDuringWarmup = true } = {
     }
     requestAnimationFrame(tick);
   };
-  requestAnimationFrame(tick);
+  // The boundary watcher starts only after warm-up — it must not fight the
+  // warm cycle's program swaps (the clock is parked near 0 the whole time).
+  warmed.then(() => {
+    if (!stopped) requestAnimationFrame(tick);
+  });
 
   return {
     detach: () => {
