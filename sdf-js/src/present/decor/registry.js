@@ -61,6 +61,79 @@ function noise2D(seed) {
 
 const rgba = ([r, g, b], a) => `rgba(${r}, ${g}, ${b}, ${a})`;
 
+// --- fill/accumulate idioms (Sprint 78) --------------------------------------
+// The corpus second-reading audit (docs/superpowers/artblocks-study/
+// 76-corpus-second-reading-audit.md) found the same systemic habit in six
+// families: the originals build VISUAL MASS with fills and accumulated
+// stamps, our ports defaulted to thin stroked polylines. These two idioms
+// are the engine-level correction — families opt in one by one.
+
+// fattenSpine: spine polyline → closed outline (per-point normal offsets,
+// top edge out and bottom edge back; ends stay flat). halfAt(i) may vary
+// along the spine — constant for ribbons, noise-modulated for rivers.
+function fattenSpine(spine, halfAt) {
+  const top = [];
+  const bot = [];
+  for (let i = 0; i < spine.length; i++) {
+    const p0 = spine[Math.max(0, i - 1)];
+    const p1 = spine[Math.min(spine.length - 1, i + 1)];
+    const dx = p1[0] - p0[0];
+    const dy = p1[1] - p0[1];
+    const len = Math.hypot(dx, dy) || 1;
+    const half = halfAt(i);
+    top.push([spine[i][0] - (dy / len) * half, spine[i][1] + (dx / len) * half]);
+    bot.push([spine[i][0] + (dy / len) * half, spine[i][1] - (dx / len) * half]);
+  }
+  return top.concat(bot.reverse());
+}
+
+function tracePoly(ctx, pts, close = true) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  if (close) ctx.closePath();
+}
+
+// stampAlong: pointillist accumulation — dots stamped at a fixed arc-length
+// step along a path (vertex spacing must not thin the texture), with a
+// per-dot size function and a random skip, so repeated passes build bone/
+// coral mass the way the originals do (never a stroked outline).
+function stampAlong(ctx, pts, { sizeAt, colorAt, alpha, skip = 0, rand, step = 3, closed = true }) {
+  let k = 0;
+  const segs = closed ? pts.length : pts.length - 1;
+  for (let i = 0; i < segs; i++) {
+    const a = pts[i];
+    const b = pts[(i + 1) % pts.length];
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    for (let d = 0; d < len; d += step, k++) {
+      if (skip > 0 && rand() < skip) continue;
+      const t = d / (len || 1);
+      ctx.fillStyle = rgba(colorAt(i), alpha);
+      ctx.beginPath();
+      ctx.arc(
+        a[0] + (b[0] - a[0]) * t,
+        a[1] + (b[1] - a[1]) * t,
+        Math.max(0.4, sizeAt(k)),
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+    }
+  }
+}
+
+// reflectPoint: mirror (qx,qy) across the line through (px,py) at angle ang.
+function reflectPoint([qx, qy], px, py, ang) {
+  const c = Math.cos(ang);
+  const s = Math.sin(ang);
+  const dx = qx - px;
+  const dy = qy - py;
+  const d = dx * c + dy * s;
+  return [px + 2 * d * c - dx, py + 2 * d * s - dy];
+}
+
+const luminanceOf = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
 // intensity presets — the legibility guard. Content backdrops stay whisper-
 // quiet; 'bold' is reserved for cover/divider slides over their gradient.
 const INTENSITY = {
@@ -236,6 +309,9 @@ function drawShardMesh(ctx, { palette, seed, x, y, w, h, intensity }) {
 //   - noise-GATED density (a2 < chance → organic patches, not uniform grain)
 //   - noise-INDEXED palette (color chosen by the same spatial field →
 //     neighboring blades share color, coherent drifts instead of confetti)
+//   - SOLID blades: leaf-colored FILL + contrast stroke (Sprint 78, corpus
+//     second-reading: the original's texture is a dense field of solid
+//     leaves; hollow outlines were our thinning habit, not her idiom)
 function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
   const P = INTENSITY[intensity] || INTENSITY.subtle;
   const noise = noise2D(seed);
@@ -250,14 +326,18 @@ function drawMeadowStreaks(ctx, { palette, seed, x, y, w, h, intensity }) {
       const a = noise(gx * 0.004, gy * 0.004);
       const gate = noiseGate(gx * 0.006, gy * 0.006);
       if (gate > 0.46) continue; // noise-gated density → patches
-      const color = colors[Math.floor(a * colors.length) % colors.length];
+      const ci = Math.floor(a * colors.length) % colors.length;
+      const color = colors[ci];
+      const contrast = colors[(ci + Math.max(1, Math.floor(colors.length / 2))) % colors.length];
       ctx.save();
       ctx.translate(gx, gy);
       ctx.rotate((a - 0.5) * Math.PI * 1.6);
-      ctx.strokeStyle = rgba(color, P.alpha);
-      ctx.lineWidth = P.lineWidth;
       ctx.beginPath();
       ctx.ellipse(0, 0, bladeW, cellH * (0.5 + a), 0, 0, Math.PI * 2);
+      ctx.fillStyle = rgba(color, P.alphaFill * 1.6);
+      ctx.fill();
+      ctx.strokeStyle = rgba(contrast, P.alpha * 0.9);
+      ctx.lineWidth = P.lineWidth * 0.8;
       ctx.stroke();
       ctx.restore();
     }
@@ -466,22 +546,41 @@ function drawBlockMosaic(ctx, { palette, seed, x, y, w, h, intensity }) {
       }
     }
   }
-  // draw per-cell (merged visually by shared color + hairline borders)
+  // draw: fills per cell (blocks merge visually), but outlines ONLY on
+  // block boundaries — Sprint 78, corpus second-reading: the original draws
+  // each grown block as ONE rectangle with no interior lattice; per-cell
+  // strokeRect was flattening the packing into a uniform grid.
   ctx.save();
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const id = owner[r][c];
-      const color = blockColor[id];
       // sparse fill: only a fraction of blocks get filled, id-hashed so a
       // whole block fills or not together
       const fillGate = (id * 2654435761) % 100;
       if (fillGate < 34) {
-        ctx.fillStyle = rgba(color, P.alphaFill);
+        ctx.fillStyle = rgba(blockColor[id], P.alphaFill);
         ctx.fillRect(x + c * cw, y + r * chh, cw + 0.5, chh + 0.5);
       }
-      ctx.strokeStyle = rgba(color, P.alpha * 0.9);
-      ctx.lineWidth = P.lineWidth * 0.8;
-      ctx.strokeRect(x + c * cw, y + r * chh, cw, chh);
+    }
+  }
+  ctx.lineWidth = P.lineWidth * 0.8;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const id = owner[r][c];
+      ctx.strokeStyle = rgba(blockColor[id], P.alpha * 0.9);
+      // edge between me and a DIFFERENT block → boundary segment
+      if (c + 1 < COLS && owner[r][c + 1] !== id) {
+        ctx.beginPath();
+        ctx.moveTo(x + (c + 1) * cw, y + r * chh);
+        ctx.lineTo(x + (c + 1) * cw, y + (r + 1) * chh);
+        ctx.stroke();
+      }
+      if (r + 1 < ROWS && owner[r + 1][c] !== id) {
+        ctx.beginPath();
+        ctx.moveTo(x + c * cw, y + (r + 1) * chh);
+        ctx.lineTo(x + (c + 1) * cw, y + (r + 1) * chh);
+        ctx.stroke();
+      }
     }
   }
   ctx.restore();
@@ -492,9 +591,13 @@ function drawBlockMosaic(ctx, { palette, seed, x, y, w, h, intensity }) {
 // CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
 // artblocks-study/04-watercolor-dreams.md). Two idioms, rewritten:
 //   - nodes sampled on a SOURCE SHAPE (a band across the slide) are
-//     advected through a noise flow field, drawing a faint stroke each
-//     step — the wash is the accumulated smear of a shape that remembers
-//     its origin ("有出身的雾")
+//     advected through a noise flow field — the wash is the accumulated
+//     smear of a shape that remembers its origin ("有出身的雾")
+//   - the smear is a CONTINUOUS CURTAIN: adjacent nodes are joined into
+//     filled quads each step (the original weaves prev/curr node rows into
+//     a triangle strip), with alpha fading by age — never loose segments
+//     (Sprint 78, corpus second-reading: the segment-per-step look and the
+//     thick→thin pen taper of the first cut were our inventions)
 //   - color sampled from a CONTINUOUS interpolation over the theme colors
 //     (recipe-adaptation of the cosine-palette idea) → seamless gradients
 function lerpColor3(c1, c2, t) {
@@ -540,23 +643,30 @@ function drawWashFlow(ctx, { palette, seed, x, y, w, h, intensity, personality }
       t,
     });
   }
-  const washAlpha = P.alpha * 0.55; // accumulation does the work
+  const washAlpha = P.alpha * 0.5; // accumulation does the work
+  const inBounds = (px, py) => px >= x && px <= x + w && py >= y && py <= y + h;
   for (let s = 0; s < STEPS; s++) {
+    const prev = nodes.map((n) => [n.px, n.py]);
     for (const n of nodes) {
-      const ang = noise(n.px * 0.003, n.py * 0.003) * Math.PI * 2 + Math.PI * 0.25;
-      const nx = n.px + Math.cos(ang) * STEP;
-      const ny = n.py + Math.sin(ang) * STEP;
-      if (nx >= x && nx <= x + w && ny >= y && ny <= y + h) {
-        const c = continuousPalette(colors, n.t);
-        ctx.strokeStyle = rgba(c, washAlpha);
-        ctx.lineWidth = P.lineWidth * (5 - (4 * s) / STEPS); // thick → thin as it dries
-        ctx.beginPath();
-        ctx.moveTo(n.px, n.py);
-        ctx.lineTo(nx, ny);
-        ctx.stroke();
-      }
-      n.px = nx;
-      n.py = ny;
+      const ang = noise(n.px * 0.003, n.py * 0.003) * Math.PI * 2;
+      n.px += Math.cos(ang) * STEP;
+      n.py += Math.sin(ang) * STEP;
+    }
+    // continuous curtain: quad between adjacent nodes' prev/curr positions,
+    // alpha fades with age (the strip "dries" as it drifts)
+    const age = washAlpha * (1 - (0.75 * s) / STEPS);
+    for (let i = 0; i + 1 < nodes.length; i++) {
+      const a2 = nodes[i];
+      const b2 = nodes[i + 1];
+      if (!inBounds(a2.px, a2.py) || !inBounds(b2.px, b2.py)) continue;
+      ctx.fillStyle = rgba(continuousPalette(colors, (a2.t + b2.t) / 2), age);
+      ctx.beginPath();
+      ctx.moveTo(prev[i][0], prev[i][1]);
+      ctx.lineTo(prev[i + 1][0], prev[i + 1][1]);
+      ctx.lineTo(b2.px, b2.py);
+      ctx.lineTo(a2.px, a2.py);
+      ctx.closePath();
+      ctx.fill();
     }
   }
   ctx.restore();
@@ -1172,9 +1282,11 @@ function drawCargoDashes(ctx, { palette, seed, x, y, w, h, intensity, personalit
 // (Art Blocks Curated #255, CC BY-NC 4.0 — independent reimplementation; see
 // docs/superpowers/artblocks-study/19-screens-pedersen.md). Idioms taken as
 // ideas: a screen = one dense line raster treated as a single object; creases
-// segment it into facets, each facet gets its own slope and brightness (the
-// fold illusion is per-facet shading, not perspective math); 2-3 translucent
-// screens layered → interference where they cross.
+// segment it into facets, each facet gets its own slope; facet brightness
+// runs as a CONTINUOUS ramp along the fold chain with small jitter (Sprint
+// 78, corpus second-reading: the original shades screens along a coherent
+// light gradient — fully random per-facet tones broke the fold illusion);
+// 2-3 translucent screens layered → overprint depth where they cross.
 const SCREEN_PERSONALITIES = {
   calm: { screens: 2, lineGap: 7, creases: 1, slopeMax: 0.12, toneSpread: 0.35 },
   balanced: { screens: 2, lineGap: 5.5, creases: 2, slopeMax: 0.2, toneSpread: 0.5 },
@@ -1196,12 +1308,16 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
     cuts.sort((a, b) => a - b);
     cuts.push(1);
     const facets = [];
+    const nFacets = cuts.length - 1;
+    const ascending = rand() < 0.5; // which end of the chain faces the light
     for (let i = 0; i + 1 < cuts.length; i++) {
+      const along = nFacets > 1 ? i / (nFacets - 1) : 0;
+      const ramp = ascending ? along : 1 - along;
       facets.push({
         x0: cuts[i],
         x1: cuts[i + 1],
         slope: (rand() * 2 - 1) * B.slopeMax,
-        tone: 1 - B.toneSpread * rand(),
+        tone: 1 - B.toneSpread * (0.15 + 0.7 * ramp + 0.15 * rand()),
       });
     }
     const gap = B.lineGap * (0.9 + rand() * 0.4);
@@ -1235,7 +1351,12 @@ function drawFoldedScreens(ctx, { palette, seed, x, y, w, h, intensity, personal
 // as ideas: meandering = curvature-proportional normal migration + uniform
 // resampling; the oxbow cutoff (splice the loop when two distant-in-index
 // points touch) is what makes it a river, not a wiggle; drawing the CHANNEL
-// HISTORY (faded ancient courses) tells geological time.
+// HISTORY (faded ancient courses) tells geological time — and the history
+// ROTATES COLORS (Sprint 78, corpus second-reading: the original cycles
+// its ancient channels through a 5-color rotation, multi-hued geology, not
+// a single-color fade); the LIVING river is a noise-modulated variable-
+// width FILLED band with a sun-offset shadow pass (twin hairline banks
+// were our thinning habit — the water reads as water because it has body).
 const RIVER_PERSONALITIES = {
   calm: { iters: 90, migrate: 2.2, snapEvery: 30, cutoff: 14 },
   balanced: { iters: 150, migrate: 3.0, snapEvery: 40, cutoff: 12 },
@@ -1288,10 +1409,17 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
         dy = Math.sin(a);
       }
       const k = Math.min(1, d / (seg * L2 * 0.4));
-      const margin = h * 0.06; // soft valley walls, not a 6px cliff
+      const margin = h * 0.1; // soft valley walls, not a 6px cliff
+      let ny = py + dy * B.migrate * (0.15 + k);
+      // valley-wall repulsion: proximity-weighted centering — free meanders
+      // mid-region, but a river pinned to the clamp wall gets pushed back
+      // into the floodplain (kills the dead-straight "swag curtain" runs)
+      const distWall = Math.min(ny - y, y + h - ny);
+      const prox = Math.max(0, 1 - distWall / (h * 0.28));
+      ny += (y + h / 2 - ny) * 0.06 * prox * prox;
       next.push([
         px + dx * B.migrate * (0.15 + k),
-        Math.max(y + margin, Math.min(y + h - margin, py + dy * B.migrate * (0.15 + k))),
+        Math.max(y + margin, Math.min(y + h - margin, ny)),
       ]);
     }
     next.push(pts[pts.length - 1]);
@@ -1338,40 +1466,39 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
     ctx.moveTo(line[0][0], line[0][1]);
     for (let i = 1; i < line.length; i++) ctx.lineTo(line[i][0], line[i][1]);
   };
-  // ancient courses: older = fainter (geological time)
+  // ancient courses: color ROTATION × age fade (multi-hued geological time)
+  // — history stays a whisper so the living river carries the composition
   for (let hIdx = 0; hIdx < history.length; hIdx++) {
-    ctx.strokeStyle = rgba(col, P.alpha * (0.25 + (0.35 * hIdx) / history.length));
-    ctx.lineWidth = P.lineWidth * 0.6;
+    ctx.strokeStyle = rgba(
+      colors[hIdx % colors.length],
+      P.alpha * (0.14 + (0.2 * hIdx) / history.length),
+    );
+    ctx.lineWidth = P.lineWidth * 0.45;
     trace(history[hIdx]);
     ctx.stroke();
   }
-  // oxbow lakes: the abandoned loops, in the second color
-  for (const ox of oxbows) {
-    ctx.strokeStyle = rgba(oxCol, P.alpha * 0.9);
-    ctx.lineWidth = P.lineWidth * 0.8;
-    trace(ox);
+  // oxbow lakes: the abandoned loops keep rotating through the palette
+  for (let k = 0; k < oxbows.length; k++) {
+    ctx.strokeStyle = rgba(colors[(k + 1) % colors.length] || oxCol, P.alpha * 0.55);
+    ctx.lineWidth = P.lineWidth * 0.6;
+    trace(oxbows[k]);
     ctx.stroke();
   }
-  // the living river: twin banks
-  const bank = (off) => {
-    ctx.beginPath();
-    for (let i = 0; i < pts.length; i++) {
-      const prev = pts[Math.max(0, i - 1)];
-      const nxt = pts[Math.min(pts.length - 1, i + 1)];
-      const dx = nxt[0] - prev[0];
-      const dy = nxt[1] - prev[1];
-      const len = Math.hypot(dx, dy) || 1;
-      const px2 = pts[i][0] + (-dy / len) * off;
-      const py2 = pts[i][1] + (dx / len) * off;
-      if (i === 0) ctx.moveTo(px2, py2);
-      else ctx.lineTo(px2, py2);
-    }
-    ctx.stroke();
-  };
-  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
-  ctx.lineWidth = P.lineWidth;
-  bank(2.2);
-  bank(-2.2);
+  // the living river: a noise-modulated variable-width FILLED band
+  const RW = 3.2 + P.lineWidth * 2.2;
+  const halfAt = (i) => (0.15 + 0.75 * noise(pts[i][0] * 0.01, pts[i][1] * 0.01)) * RW;
+  const band = fattenSpine(pts, halfAt);
+  // sun-offset shadow pass first (depth without a second color)
+  const sunA = Math.PI * 0.75;
+  ctx.save();
+  ctx.translate(Math.cos(sunA) * 2, Math.sin(sunA) * 2);
+  tracePoly(ctx, band);
+  ctx.fillStyle = rgba(col, P.alphaFill * 0.9);
+  ctx.fill();
+  ctx.restore();
+  tracePoly(ctx, band);
+  ctx.fillStyle = rgba(col, Math.min(0.98, P.alphaFill * 1.9));
+  ctx.fill();
   ctx.restore();
 }
 
@@ -1379,14 +1506,22 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
 // — tangent lines between pegs, arcs where the string bends around a peg.
 // RECIPE-ONLY port after Dmitri Cherniak's "Ringers" (Art Blocks Curated
 // #13, CC BY-NC 4.0 — independent reimplementation; see docs/superpowers/
-// artblocks-study/38-ringers-cherniak.md). Idioms taken as ideas: the
-// composition IS the wrap order (a permutation of pegs); alternating the
-// wrap side per visited peg weaves the string; pegs are drawn as plain
-// dots so the string carries all the drama.
+// artblocks-study/38-ringers-cherniak.md, corrected by the corpus second
+// reading, audit/batch-D). Idioms taken as ideas, second-generation:
+//   - the wrap is a SHUFFLED SUBSET of pegs sorted by angle around their
+//     centroid — a tidy band circling the peg cloud, not a random scribble
+//   - the string always CLOSES into a ring (the project is named Ringers),
+//     and the closed ring is occasionally FILLED
+//   - ONE random peg is highlighted in a lone color — the signature lone
+//     accent; every other peg stays a quiet dot
+//   - the rope is FAT (the string is the protagonist, pegs are furniture)
+// (First cut invented per-peg alternating sides and highlighted every
+// visited peg — both removed: the original's side choices come from the
+// wrap polygon's own concavity, and its color accent is a single peg.)
 const PEG_PERSONALITIES = {
-  calm: { cols: 4, rows: 3, visits: 6, weave: false, pegR: 10 },
-  balanced: { cols: 5, rows: 4, visits: 9, weave: true, pegR: 9 },
-  wild: { cols: 7, rows: 5, visits: 14, weave: true, pegR: 7 },
+  calm: { cols: 4, rows: 3, visits: 6, pegR: 10, fillChance: 0.35 },
+  balanced: { cols: 5, rows: 4, visits: 9, pegR: 9, fillChance: 0.45 },
+  wild: { cols: 7, rows: 5, visits: 14, pegR: 7, fillChance: 0.55 },
 };
 
 function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
@@ -1396,6 +1531,7 @@ function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
   const stringCol = colors[Math.floor(rand() * colors.length)];
   const pegCol = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  const hlCol = colors[(Math.floor(rand() * colors.length) + 2) % colors.length];
   const mx = w * 0.12;
   const my = h * 0.14;
   const pegs = [];
@@ -1407,17 +1543,21 @@ function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }
       ]);
     }
   }
-  // wrap order: a random non-repeating walk over the peg grid
-  const order = [];
-  const used = new Set();
-  let cur = Math.floor(rand() * pegs.length);
-  for (let v = 0; v < Math.min(B.visits, pegs.length); v++) {
-    order.push(cur);
-    used.add(cur);
-    const candidates = pegs.map((_, i) => i).filter((i) => !used.has(i));
-    if (!candidates.length) break;
-    cur = candidates[Math.floor(rand() * candidates.length)];
+  // wrap set: shuffle all pegs, take a subset, sort by angle around the
+  // subset's centroid — the composition space is subset × parameters
+  const idx = pegs.map((_, i) => i);
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
   }
+  const order = idx.slice(0, Math.min(B.visits, pegs.length));
+  const cx = order.reduce((s2, i) => s2 + pegs[i][0], 0) / order.length;
+  const cy = order.reduce((s2, i) => s2 + pegs[i][1], 0) / order.length;
+  order.sort((a2, b2) => {
+    const pa = pegs[a2];
+    const pb = pegs[b2];
+    return Math.atan2(pa[1] - cy, pa[0] - cx) - Math.atan2(pb[1] - cy, pb[0] - cx);
+  });
   const R = B.pegR;
   ctx.save();
   // pegs first: quiet dots
@@ -1427,63 +1567,116 @@ function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }
     ctx.arc(px, py, R * 0.45, 0, Math.PI * 2);
     ctx.fill();
   }
-  // the string: tangent segments + bending arcs, side alternates per peg
-  // when weaving. Same-radius circles → the outer tangent is the segment
-  // between centers offset perpendicular by ±R.
-  ctx.strokeStyle = rgba(stringCol, P.alpha * 1.3);
-  ctx.lineWidth = P.lineWidth * 1.1;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  let prevEnd = null;
-  for (let i = 0; i + 1 < order.length; i++) {
+  // the string: a CLOSED loop of outer tangents + bending arcs around the
+  // angle-sorted wrap set. Same-radius circles → the outer tangent is the
+  // center-to-center segment offset perpendicular by R (outward side).
+  const K = order.length;
+  const tangents = [];
+  for (let i = 0; i < K; i++) {
     const [ax, ay] = pegs[order[i]];
-    const [bx, by] = pegs[order[i + 1]];
+    const [bx, by] = pegs[order[(i + 1) % K]];
     const dx = bx - ax;
     const dy = by - ay;
     const len = Math.hypot(dx, dy) || 1;
-    const side = B.weave ? (i % 2 === 0 ? 1 : -1) : 1;
-    const nx = (-dy / len) * R * side;
-    const ny = (dx / len) * R * side;
-    const sx = ax + nx;
-    const sy = ay + ny;
-    const ex = bx + nx;
-    const ey = by + ny;
-    if (prevEnd === null) {
-      ctx.moveTo(sx, sy);
-    } else {
-      // bend around the current peg from the previous tangent point
-      const a0 = Math.atan2(prevEnd[1] - ay, prevEnd[0] - ax);
-      const a1 = Math.atan2(sy - ay, sx - ax);
-      ctx.arc(ax, ay, R, a0, a1, side < 0);
-    }
-    ctx.lineTo(ex, ey);
-    prevEnd = [ex, ey];
+    // ascending atan2 order + this normal = offsets face away from centroid
+    const nx = (-dy / len) * R;
+    const ny = (dx / len) * R;
+    tangents.push({ sx: ax + nx, sy: ay + ny, ex: bx + nx, ey: by + ny });
   }
-  ctx.stroke();
-  // highlight the visited pegs: the string chose them
-  for (const idx of order) {
-    const [px, py] = pegs[idx];
-    ctx.fillStyle = rgba(stringCol, P.alpha * 1.2);
-    ctx.beginPath();
-    ctx.arc(px, py, R * 0.3, 0, Math.PI * 2);
+  ctx.beginPath();
+  ctx.moveTo(tangents[0].sx, tangents[0].sy);
+  for (let i = 0; i < K; i++) {
+    const t = tangents[i];
+    ctx.lineTo(t.ex, t.ey);
+    // bend around the NEXT peg: arc from this tangent's end to the next
+    // tangent's start (both lie on that peg's circle)
+    const nextT = tangents[(i + 1) % K];
+    const [ax, ay] = pegs[order[(i + 1) % K]];
+    const a0 = Math.atan2(t.ey - ay, t.ex - ax);
+    const a1 = Math.atan2(nextT.sy - ay, nextT.sx - ax);
+    ctx.arc(ax, ay, R, a0, a1, false);
+  }
+  ctx.closePath();
+  // occasionally the ring is filled — the closed band is the artwork
+  if (rand() < B.fillChance) {
+    ctx.fillStyle = rgba(stringCol, P.alphaFill * 0.9);
     ctx.fill();
   }
+  ctx.strokeStyle = rgba(stringCol, P.alpha * 1.3);
+  ctx.lineWidth = P.lineWidth * 2.4; // fat rope: the string is the protagonist
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  // ONE highlighted peg — the lone accent
+  const [hx, hy] = pegs[order[Math.floor(rand() * K)]];
+  ctx.fillStyle = rgba(hlCol, Math.min(0.98, P.alphaFill * 1.9));
+  ctx.beginPath();
+  ctx.arc(hx, hy, R * 0.62, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
-// torn-paper: layered patches of "paper" with noise-roughened deckle edges
-// and occasional sharp tear notches. RECIPE-ONLY port after Emily Xie's
-// "Memories of Qilin" (Art Blocks Curated #282, CC BY-NC 4.0 — independent
-// reimplementation; see docs/superpowers/artblocks-study/33-qilin-xie.md).
-// Idioms taken as ideas: collage patch = radial blob whose edge radius is
-// noise-modulated at two scales (slow undulation + fine deckle fuzz);
-// a rare sharp inward NOTCH sells the tear; colors picked by WEIGHT
-// (Xie's palettes attach a weight to every color, biasing without banning).
+// torn-paper: layered patches of PATTERNED paper — soft-edged collage
+// pieces carrying their own印花, a unified dark hairline, and a spray of
+// fiber specks. RECIPE-ONLY port after Emily Xie's "Memories of Qilin"
+// (Art Blocks Curated #282, CC BY-NC 4.0 — independent reimplementation;
+// see docs/superpowers/artblocks-study/33-qilin-xie.md, corrected by the
+// corpus second reading, audit/batch-E). Idioms taken as ideas,
+// second-generation:
+//   - a patch is a SOFT BODY: a relaxed ring displaced by ONE smooth noise
+//     field, kept deliberately smooth — the original actively REJECTS
+//     jagged edges (its edge test retries until the rim relaxes)
+//   - the paper reads as paper because it is PATTERNED: each patch carries
+//     its own印花 (dots / waves / hatch / rings) clipped inside the rim
+//   - one unified DARK hairline outlines every patch (a collage is inked
+//     by the same pen), and fiber SPECKS scatter near the rims
+//   - colors picked by WEIGHT (accent biased, nothing banned)
+// (First cut invented a two-scale deckle-fuzz edge with sharp tear notches
+// — removed: the original has no tear mechanism at all.)
 const TORN_PERSONALITIES = {
-  calm: { patches: 3, notchChance: 0.15, rough: 0.05, fuzz: 0.02 },
-  balanced: { patches: 5, notchChance: 0.35, rough: 0.09, fuzz: 0.035 },
-  wild: { patches: 8, notchChance: 0.6, rough: 0.16, fuzz: 0.06 },
+  calm: { patches: 3, warp: 0.07, specks: 8 },
+  balanced: { patches: 5, warp: 0.12, specks: 16 },
+  wild: { patches: 8, warp: 0.18, specks: 30 },
 };
+
+const PAPER_PATTERNS = ['dots', 'waves', 'hatch', 'rings'];
+
+function drawPaperPattern(ctx, kind, col, alpha, cx, cy, r, lineWidth) {
+  ctx.strokeStyle = rgba(col, alpha);
+  ctx.fillStyle = rgba(col, alpha);
+  ctx.lineWidth = lineWidth;
+  if (kind === 'dots') {
+    const gap = Math.max(8, r * 0.28);
+    for (let py = cy - r; py <= cy + r; py += gap)
+      for (let px = cx - r; px <= cx + r; px += gap) {
+        ctx.beginPath();
+        ctx.arc(px, py, lineWidth * 1.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+  } else if (kind === 'waves') {
+    const gap = Math.max(9, r * 0.3);
+    for (let py = cy - r; py <= cy + r; py += gap) {
+      ctx.beginPath();
+      for (let px = cx - r; px <= cx + r; px += 4)
+        ctx.lineTo(px, py + Math.sin((px - cx) * 0.09) * gap * 0.22);
+      ctx.stroke();
+    }
+  } else if (kind === 'hatch') {
+    const gap = Math.max(7, r * 0.24);
+    for (let d = -2 * r; d <= 2 * r; d += gap) {
+      ctx.beginPath();
+      ctx.moveTo(cx + d - r, cy - r);
+      ctx.lineTo(cx + d + r, cy + r);
+      ctx.stroke();
+    }
+  } else {
+    for (let rr = r * 0.18; rr <= r; rr += Math.max(7, r * 0.22)) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+}
 
 function drawTornPaper(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
   const P = INTENSITY[intensity] || INTENSITY.subtle;
@@ -1493,6 +1686,8 @@ function drawTornPaper(ctx, { palette, seed, x, y, w, h, intensity, personality 
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
   // weighted pick: accent carries triple weight (Xie's weighted palettes)
   const weighted = colors.flatMap((c, i) => (i === 0 ? [c, c, c] : [c]));
+  // the collage's single inking pen: darkest theme color
+  const inkCol = colors.reduce((d2, c) => (luminanceOf(c) < luminanceOf(d2) ? c : d2), colors[0]);
   ctx.save();
   ctx.lineJoin = 'round';
   for (let pi = 0; pi < B.patches; pi++) {
@@ -1503,42 +1698,55 @@ function drawTornPaper(ctx, { palette, seed, x, y, w, h, intensity, personality 
     const squash = 0.55 + rand() * 0.7; // paper scraps are rarely round
     const rot = rand() * Math.PI;
     const K = 46;
-    const phase = rand() * 100;
-    const notchAt = rand() < B.notchChance ? Math.floor(rand() * K) : -1;
     const pts = [];
     for (let k = 0; k < K; k++) {
       const a = (k / K) * Math.PI * 2;
-      // two-scale edge: slow undulation + fine deckle fuzz
-      let r =
-        rBase *
-        (1 +
-          (noise(phase + Math.cos(a) * 1.3, phase + Math.sin(a) * 1.3) - 0.5) * 2 * B.rough +
-          (noise(phase + Math.cos(a) * 6, phase + Math.sin(a) * 6) - 0.5) *
-            2 *
-            B.fuzz *
-            rBase *
-            0.08);
-      if (notchAt >= 0) {
-        const d = Math.min(Math.abs(k - notchAt), K - Math.abs(k - notchAt));
-        if (d < 3) r *= 0.55 + 0.15 * d; // the tear bites in sharply
-      }
-      const ex = Math.cos(a) * r;
-      const ey = Math.sin(a) * r * squash;
-      pts.push([
-        cx + ex * Math.cos(rot) - ey * Math.sin(rot),
-        cy + ex * Math.sin(rot) + ey * Math.cos(rot),
-      ]);
+      let ex = Math.cos(a) * rBase;
+      let ey = Math.sin(a) * rBase * squash;
+      let px = cx + ex * Math.cos(rot) - ey * Math.sin(rot);
+      let py = cy + ex * Math.sin(rot) + ey * Math.cos(rot);
+      // soft-body warp: ONE smooth field pushes each rim point a little
+      const fa = noise(px * 0.006, py * 0.006) * Math.PI * 2;
+      px += Math.cos(fa) * rBase * B.warp;
+      py += Math.sin(fa) * rBase * B.warp;
+      pts.push([px, py]);
     }
-    ctx.beginPath();
-    ctx.moveTo(pts[0][0], pts[0][1]);
-    for (let k = 1; k < K; k++) ctx.lineTo(pts[k][0], pts[k][1]);
-    ctx.closePath();
+    // relaxation pass — the anti-jagged discipline, as smoothing not retry
+    for (let pass = 0; pass < 2; pass++)
+      for (let k = 0; k < K; k++) {
+        const a2 = pts[(k - 1 + K) % K];
+        const b2 = pts[(k + 1) % K];
+        pts[k] = [
+          0.25 * a2[0] + 0.5 * pts[k][0] + 0.25 * b2[0],
+          0.25 * a2[1] + 0.5 * pts[k][1] + 0.25 * b2[1],
+        ];
+      }
+    tracePoly(ctx, pts);
     ctx.fillStyle = rgba(col, P.alphaFill * 1.3);
     ctx.fill();
-    // deckle edge: the fibrous rim reads as a slightly stronger outline
-    ctx.strokeStyle = rgba(col, P.alpha * 1.1);
+    //印花: the pattern is what makes it read as PAPER
+    const patCol = colors[(colors.indexOf(col) + 1 + Math.floor(rand() * 2)) % colors.length];
+    const patKind = PAPER_PATTERNS[Math.floor(rand() * PAPER_PATTERNS.length)];
+    ctx.save();
+    tracePoly(ctx, pts);
+    ctx.clip();
+    drawPaperPattern(ctx, patKind, patCol, P.alpha * 1.05, cx, cy, rBase * 1.15, P.lineWidth * 0.7);
+    ctx.restore();
+    // the unified dark hairline — one pen inks the whole collage
+    tracePoly(ctx, pts);
+    ctx.strokeStyle = rgba(inkCol, P.alpha * 1.15);
     ctx.lineWidth = P.lineWidth * 0.8;
     ctx.stroke();
+    // fiber specks near the rim
+    const nSpecks = Math.round(B.specks / B.patches) + 1;
+    for (let s2 = 0; s2 < nSpecks; s2++) {
+      const k = Math.floor(rand() * K);
+      const [rx, ry] = pts[k];
+      const sx = rx + (rand() - 0.5) * rBase * 0.3;
+      const sy = ry + (rand() - 0.5) * rBase * 0.3;
+      ctx.fillStyle = rgba(rand() < 0.5 ? col : patCol, P.alpha * 0.9);
+      ctx.fillRect(sx, sy, 1 + rand() * 2, 1 + rand() * 2);
+    }
   }
   ctx.restore();
 }
@@ -1648,7 +1856,10 @@ function drawStreetGrid(ctx, { palette, seed, x, y, w, h, intensity, personality
 // as ideas: differential growth = cohesion + separation + resample (the
 // whole organism in three rules); a spatial grid stands in for the
 // original's quadtree; drawing the HISTORY (snapshots) not just the final
-// curve gives the coral/bone depth.
+// curve gives the coral/bone depth; the rendering is POINTILLIST (Sprint
+// 78, corpus second-reading: the original never strokes an outline — it
+// stamps dots along the curve with random skips and multi-color arcs, and
+// the accumulated dots ARE the bone texture; thin outlines were our habit).
 const GROWTH_PERSONALITIES = {
   calm: { iters: 90, maxPts: 260, repelR: 26, snapEvery: 30, drift: 0.2 },
   balanced: { iters: 140, maxPts: 420, repelR: 22, snapEvery: 35, drift: 0.45 },
@@ -1661,7 +1872,6 @@ function drawGrowthLoops(ctx, { palette, seed, x, y, w, h, intensity, personalit
   const rand = seededRand(seed * 29 + 5);
   const noise = noise2D(seed + 7);
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
-  const col = colors[Math.floor(rand() * colors.length)];
   const cx = x + (0.3 + rand() * 0.4) * w;
   const cy = y + (0.3 + rand() * 0.4) * h;
   const r0 = Math.min(w, h) * 0.12;
@@ -1741,43 +1951,51 @@ function drawGrowthLoops(ctx, { palette, seed, x, y, w, h, intensity, personalit
     }
   }
   ctx.save();
-  ctx.lineJoin = 'round';
-  const trace = (loop) => {
-    ctx.beginPath();
-    ctx.moveTo(loop[0][0], loop[0][1]);
-    for (let i = 1; i < loop.length; i++) ctx.lineTo(loop[i][0], loop[i][1]);
-    ctx.closePath();
-  };
-  // growth rings: the history, whisper-faint
+  // pointillist accumulation: dots along each ring, multi-color by arc
+  // chunk (the original maps segment length into a shuffled palette; we
+  // chunk the loop into arcs and rotate the theme colors per chunk)
+  const CHUNK = 24;
+  const colorAt = (shift) => (i) => colors[(Math.floor(i / CHUNK) + shift) % colors.length];
   for (let sIdx = 0; sIdx < snapshots.length; sIdx++) {
-    ctx.strokeStyle = rgba(col, P.alpha * (0.35 + (0.3 * sIdx) / snapshots.length));
-    ctx.lineWidth = P.lineWidth * 0.6;
-    trace(snapshots[sIdx]);
-    ctx.stroke();
+    stampAlong(ctx, snapshots[sIdx], {
+      sizeAt: (i) => P.lineWidth * (0.5 + 0.6 * noise(i * 0.13, sIdx)),
+      colorAt: colorAt(sIdx),
+      alpha: P.alpha * (0.4 + (0.35 * sIdx) / snapshots.length),
+      skip: 0.3,
+      rand,
+    });
   }
-  // the organism itself
-  ctx.strokeStyle = rgba(col, P.alpha * 1.4);
-  ctx.lineWidth = P.lineWidth;
-  trace(pts);
-  ctx.stroke();
-  ctx.fillStyle = rgba(col, P.alphaFill * 0.5);
-  ctx.fill();
+  // the organism itself: densest, biggest stamps
+  stampAlong(ctx, pts, {
+    sizeAt: (i) => P.lineWidth * (0.9 + 0.9 * noise(i * 0.13, 99)),
+    colorAt: colorAt(snapshots.length),
+    alpha: Math.min(0.98, P.alpha * 1.4),
+    skip: 0.12,
+    rand,
+  });
   ctx.restore();
 }
 
-// paper-folds: the region treated as a sheet of paper, recursively split
-// along fold chords into a few LARGE facets, each shaded by fold depth —
-// origami-flat collage. RECIPE-ONLY port after James Merrill's "ORI" (Art
-// Blocks Curated #379, CC BY-NC 4.0 — independent reimplementation; see
-// docs/superpowers/artblocks-study/22-ori-merrill.md). Idioms taken as
-// ideas: folding is line-vs-polygon SPLITTING (classify vertices by side,
-// insert the two edge intersections, emit both halves); depth-graded facet
-// shading sells the fold without any 3D; always split the LARGEST facet so
-// the composition stays balanced.
+// paper-folds: the region treated as a sheet of paper, creased by a batch
+// of fold lines into an origami-flat collage. RECIPE-ONLY port after James
+// Merrill's "ORI" (Art Blocks Curated #379, CC BY-NC 4.0 — independent
+// reimplementation; see docs/superpowers/artblocks-study/22-ori-merrill.md,
+// corrected by the corpus second reading, audit/batch-F). Idioms taken as
+// ideas, second-generation:
+//   - fold lines are PRE-GENERATED as a batch (parallel families + free
+//     chords), then each line is applied to EVERY facet it crosses — no
+//     greedy largest-facet selection (that was our invention)
+//   - a FOLD is cut + MIRROR: sometimes the flap on one side of the line
+//     is reflected across it — the overlap/displacement is what makes it
+//     read as folded paper, not just subdivided glass
+//   - fold axes are FREE-ANGLE; the axis-aligned habit belongs to the fill
+//     TEXTURE direction (thin parallel lines near 0/90° ± jitter)
+//   - facet shading is a random palette color + random lightness offset
+//     (no fold-depth gradient — that was our invention too)
 const FOLD_PERSONALITIES = {
-  calm: { splits: 3, angleJitter: 0.25, toneSpread: 0.5 },
-  balanced: { splits: 5, angleJitter: 0.6, toneSpread: 0.65 },
-  wild: { splits: 8, angleJitter: 1.2, toneSpread: 0.85 },
+  calm: { lines: 3, foldChance: 0.25, textureChance: 0.35, toneJitter: 0.1 },
+  balanced: { lines: 5, foldChance: 0.35, textureChance: 0.45, toneJitter: 0.14 },
+  wild: { lines: 8, foldChance: 0.45, textureChance: 0.5, toneJitter: 0.2 },
 };
 
 // split a convex-ish polygon by the line through (px,py) at angle a —
@@ -1819,8 +2037,19 @@ function drawPaperFolds(ctx, { palette, seed, x, y, w, h, intensity, personality
   const B = FOLD_PERSONALITIES[personality] || FOLD_PERSONALITIES.balanced;
   const rand = seededRand(seed * 43 + 13);
   const colors = [palette.accent, ...(palette.colors || [])].filter(Boolean);
-  const cA = colors[Math.floor(rand() * colors.length)];
-  const cB = colors[(Math.floor(rand() * colors.length) + 1) % colors.length];
+  // pre-generate the fold-line batch: a parallel family or free chords
+  const lines = [];
+  while (lines.length < B.lines) {
+    if (rand() < 0.5 && B.lines - lines.length >= 2) {
+      // parallel family: one free angle, 2-3 offset siblings
+      const ang = rand() * Math.PI;
+      const n2 = 2 + Math.floor(rand() * 2);
+      for (let i = 0; i < n2 && lines.length < B.lines; i++)
+        lines.push({ px: x + rand() * w, py: y + rand() * h, ang });
+    } else {
+      lines.push({ px: x + rand() * w, py: y + rand() * h, ang: rand() * Math.PI });
+    }
+  }
   let facets = [
     {
       poly: [
@@ -1829,49 +2058,75 @@ function drawPaperFolds(ctx, { palette, seed, x, y, w, h, intensity, personality
         [x + w, y + h],
         [x, y + h],
       ],
-      depth: 0,
     },
   ];
-  for (let k = 0; k < B.splits; k++) {
-    // always fold the largest facet (ORI's balance rule)
-    let bi = 0;
-    let bArea = -1;
-    for (let i = 0; i < facets.length; i++) {
-      const ar = polyArea(facets[i].poly);
-      if (ar > bArea) {
-        bArea = ar;
-        bi = i;
-      }
+  // each line creases EVERY facet it crosses; sometimes a flap folds over —
+  // always the SMALLER side (fold a corner in; folding the larger side
+  // repeatedly stacks the whole sheet into a corner and empties the region)
+  for (const L of lines) {
+    const folded = rand() < B.foldChance;
+    const split = facets.map((f) => splitPolyByLine(f.poly, L.px, L.py, L.ang));
+    let areaL = 0;
+    let areaR = 0;
+    for (const [la, ra] of split) {
+      areaL += la.length >= 3 ? polyArea(la) : 0;
+      areaR += ra.length >= 3 ? polyArea(ra) : 0;
     }
-    const f = facets[bi];
-    const cx = f.poly.reduce((s2, p2) => s2 + p2[0], 0) / f.poly.length;
-    const cy = f.poly.reduce((s2, p2) => s2 + p2[1], 0) / f.poly.length;
-    const baseAng = rand() < 0.5 ? 0 : Math.PI / 2; // fold axes lean axis-aligned
-    const ang = baseAng + (rand() - 0.5) * 2 * B.angleJitter;
-    const [la, ra] = splitPolyByLine(
-      f.poly,
-      cx + (rand() - 0.5) * 30,
-      cy + (rand() - 0.5) * 30,
-      ang,
-    );
-    if (la.length < 3 || ra.length < 3) continue;
-    facets.splice(bi, 1, { poly: la, depth: f.depth + 1 }, { poly: ra, depth: f.depth });
+    const flapIsLeft = areaL <= areaR;
+    const next = [];
+    for (let i = 0; i < facets.length; i++) {
+      const [la, ra] = split[i];
+      if (la.length < 3 || ra.length < 3) {
+        next.push(facets[i]);
+        continue;
+      }
+      const keep = flapIsLeft ? ra : la;
+      const flap = flapIsLeft ? la : ra;
+      next.push({ poly: keep });
+      next.push({ poly: folded ? flap.map((q) => reflectPoint(q, L.px, L.py, L.ang)) : flap });
+    }
+    facets = next;
   }
   ctx.save();
+  // folded flaps can exit the sheet — the sheet's edge clips them
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
   ctx.lineWidth = P.lineWidth * 0.8;
   for (const f of facets) {
-    const tone = Math.min(1, (f.depth / Math.max(1, B.splits)) * B.toneSpread + rand() * 0.15);
-    const col = lerpColorOklab(cA, cB, tone);
-    // gallery-instrument tune (Sprint 55): wider alpha spread so facets read
-    ctx.fillStyle = rgba(col, P.alphaFill * (0.5 + 1.4 * tone));
-    ctx.beginPath();
-    ctx.moveTo(f.poly[0][0], f.poly[0][1]);
-    for (let i = 1; i < f.poly.length; i++) ctx.lineTo(f.poly[i][0], f.poly[i][1]);
-    ctx.closePath();
+    if (polyArea(f.poly) < 60) continue; // slivers read as noise
+    const base = colors[Math.floor(rand() * colors.length)];
+    // random lightness offset via a nudge toward white/black in OKLab
+    const dir = rand() < 0.5 ? [250, 250, 248] : [16, 16, 20];
+    const col = lerpColorOklab(base, dir, rand() * B.toneJitter);
+    ctx.fillStyle = rgba(col, P.alphaFill * (0.7 + rand() * 1.0));
+    tracePoly(ctx, f.poly);
     ctx.fill();
     // fold-line edge: the crease highlight
     ctx.strokeStyle = rgba(col, P.alpha);
     ctx.stroke();
+    // directional fill texture — the TRUE home of the axis-aligned habit
+    if (rand() < B.textureChance) {
+      const d9 = (rand() < 0.5 ? 0 : Math.PI / 2) + (rand() - 0.5) * 0.2;
+      const cx = f.poly.reduce((s2, p2) => s2 + p2[0], 0) / f.poly.length;
+      const cy = f.poly.reduce((s2, p2) => s2 + p2[1], 0) / f.poly.length;
+      const span = Math.sqrt(polyArea(f.poly)) * 1.2;
+      ctx.save();
+      tracePoly(ctx, f.poly);
+      ctx.clip();
+      ctx.strokeStyle = rgba(col, P.alpha * 0.75);
+      ctx.lineWidth = P.lineWidth * 0.6;
+      const step2 = 6 + rand() * 5;
+      const c2 = Math.cos(d9);
+      const s3 = Math.sin(d9);
+      for (let d = -span; d <= span; d += step2) {
+        ctx.beginPath();
+        ctx.moveTo(cx - s3 * d - c2 * span, cy + c2 * d - s3 * span);
+        ctx.lineTo(cx - s3 * d + c2 * span, cy + c2 * d + s3 * span);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
   }
   ctx.restore();
 }
@@ -1945,14 +2200,14 @@ function drawScanTides(ctx, { palette, seed, x, y, w, h, intensity, personality 
 }
 
 // halftone-fade: a halftone dot screen sampling a soft brush field — dot
-// radius encodes field intensity, the print-raster look. RECIPE-ONLY port
-// after itsgalo's "RASTER" (Art Blocks Curated #341, CC BY-NC 4.0 —
-// independent reimplementation; see docs/superpowers/artblocks-study/
-// 20-raster-itsgalo.md). Idioms taken as ideas: the image is a FIELD (soft
-// radial brush stamps accumulated into a buffer) and the STYLE is a sampling
-// screen over it (dot size = local field value) — separating the content
-// field from the raster screen is the whole architecture. The GPU feedback
-// pass of the original is not ported — static screen only.
+// radius encodes field intensity, the print-raster look. INSPIRED BY
+// itsgalo's "RASTER" (Art Blocks Curated #341; see docs/superpowers/
+// artblocks-study/20-raster-itsgalo.md). Attribution scope (corpus second
+// reading, audit/batch-B): the field-vs-screen SEPARATION and the soft
+// brush field are RASTER's architecture; the variable-diameter dot screen
+// is NOT — the original styles via per-channel 3-level dither + pixel
+// blocking. Our dot screen is the traditional print halftone applied on
+// top of RASTER's field idea. The GPU feedback pass is not ported.
 const HALFTONE_PERSONALITIES = {
   calm: { cell: 15, blobs: 2, gamma: 1.5, jitter: 0 },
   balanced: { cell: 12, blobs: 3, gamma: 1.15, jitter: 0.12 },
@@ -2023,24 +2278,25 @@ function drawHalftoneFade(ctx, { palette, seed, x, y, w, h, intensity, personali
 // as ideas: a ribbon is a SPINE walked through the field, then FATTENED
 // into top/bottom offset edges and closed (never a stroked polyline);
 // thickness comes from a few DISCRETE levels under a weighted choice —
-// mixed scales, never a continuum; the body is cut into short arc-length
-// segments, EACH segment re-drawing its color from a weighted pool where
-// pale/neutral tints dominate and saturated hues punctuate; ribbons stop
-// at collisions (mutual respect makes the composition read as woven).
+// mixed scales, never a continuum; the BODY keeps ONE base color and only
+// the two ENDS carry short color segments — a weighted count per end (a
+// fifth of ribbons carry none) over weighted segment lengths, each segment
+// re-drawing its color from the pool (Sprint 78, third reading: full-body
+// segmentation was our overreach — the original's texture is mostly-solid
+// ribbons with busy tips, pale/neutral carrying and saturated punctuating);
+// ribbons stop at collisions (the composition reads as mutual respect).
 const BANDED_PERSONALITIES = {
-  calm: { attempts: 90, levels: [4, 9, 18], weights: [0.3, 0.5, 0.2], seg: [24, 48, 96], step: 7 },
+  calm: { attempts: 90, levels: [4, 9, 18], weights: [0.3, 0.5, 0.2], step: 7 },
   balanced: {
     attempts: 150,
     levels: [4, 9, 18, 36, 68],
     weights: [0.12, 0.25, 0.3, 0.25, 0.08],
-    seg: [10, 20, 40, 80],
     step: 6,
   },
   wild: {
     attempts: 210,
     levels: [9, 18, 36, 68, 110],
     weights: [0.1, 0.2, 0.3, 0.3, 0.1],
-    seg: [8, 16, 32],
     step: 6,
   },
 };
@@ -2140,25 +2396,66 @@ function drawBandedRibbons(ctx, { palette, seed, x, y, w, h, intensity, personal
       bot.push([spine[i][0] + (dy / len) * half, spine[i][1] - (dx / len) * half]);
     }
 
-    // color BANDS along the arc — the signature. Each band re-draws its
-    // color; band length is a weighted pick per ribbon.
-    const segLen = B.seg[Math.floor(rand() * B.seg.length)];
-    const ptsPerSeg = Math.max(1, Math.round(segLen / B.step));
     const alpha = Math.min(0.96, P.alphaFill * 1.9); // subtle stays whisper, artwork goes opaque
-    for (let i0 = 0; i0 < spine.length - 1; i0 += ptsPerSeg) {
-      const i1 = Math.min(spine.length - 1, i0 + ptsPerSeg);
-      ctx.fillStyle = rgba(pickColor(), alpha);
+    const bandFill = (i0, i1, color) => {
+      ctx.fillStyle = rgba(color, alpha);
       ctx.beginPath();
       ctx.moveTo(top[i0][0], top[i0][1]);
       for (let i = i0 + 1; i <= i1; i++) ctx.lineTo(top[i][0], top[i][1]);
       for (let i = i1; i >= i0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
       ctx.closePath();
       ctx.fill();
+    };
+    // the BODY keeps one base color…
+    const baseCol = pickColor();
+    bandFill(0, spine.length - 1, baseCol);
+    // …and only the ENDS carry short color segments (third reading):
+    // weighted count per end (0 is common), weighted lengths × a per-ribbon
+    // length multiplier, each segment an independent pool draw.
+    const pickWeighted = (table) => {
+      let t = rand();
+      for (const [v, wgt] of table) {
+        t -= wgt;
+        if (t <= 0) return v;
+      }
+      return table[table.length - 1][0];
+    };
+    const SEG_COUNT = [
+      [0, 0.2],
+      [1, 0.1],
+      [2, 0.15],
+      [4, 0.4],
+      [8, 0.12],
+      [16, 0.03],
+    ];
+    const SEG_LEN = [
+      [4, 0.15],
+      [8, 0.4],
+      [16, 0.3],
+      [32, 0.15],
+    ];
+    const lenMult = 0.5 + rand() * 2; // per-ribbon segment-length variety
+    for (const fromStart of [true, false]) {
+      const nSegs = Math.min(pickWeighted(SEG_COUNT), Math.floor(spine.length / 4));
+      let cursor = fromStart ? 0 : spine.length - 1;
+      for (let s2 = 0; s2 < nSegs; s2++) {
+        const segPts = Math.max(1, Math.round((pickWeighted(SEG_LEN) * lenMult) / B.step));
+        const nextCursor = fromStart
+          ? Math.min(Math.floor(spine.length / 2), cursor + segPts)
+          : Math.max(Math.ceil(spine.length / 2), cursor - segPts);
+        if (nextCursor === cursor) break;
+        bandFill(Math.min(cursor, nextCursor), Math.max(cursor, nextCursor), pickColor());
+        cursor = nextCursor;
+      }
     }
     // ends stay FLAT — Fidenza's fat() simply closes the offset edges
     // (Sprint 76: the semicircle caps of the first cut were an invention)
-    // hairline outline holds the ribbon together (Fidenza stroke mode)
-    ctx.strokeStyle = rgba(palette.silhouetteColor || [30, 30, 34], Math.min(0.5, P.alpha * 1.4));
+    // outline: self-color by default; the dark ink frame is a RARE mode in
+    // the original (third reading), not an always-on habit
+    const darkFrame = rand() < 0.04;
+    ctx.strokeStyle = darkFrame
+      ? rgba(palette.silhouetteColor || [30, 30, 34], Math.min(0.5, P.alpha * 1.4))
+      : rgba(baseCol, Math.min(0.5, P.alpha * 1.2));
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(top[0][0], top[0][1]);
@@ -2820,7 +3117,16 @@ function drawEventFlourish(ctx, decor, ev, { palette, x, y, w, h }) {
 // v3 (Sprint 61): + rare eligibility for all 25 + janky plate + grain pass
 //                 + serial edition mark. v1/v2 pixels are CI-locked by
 //                 decor-freeze-v1.json / decor-freeze-v2.json.
-export const DECOR_V = 3;
+// v4 (Sprint 78): the corpus-second-reading correction wave — 10 families
+//                 redrawn against their on-chain originals (fill/accumulate
+//                 idioms, closed Ringers loop, patterned Qilin patches,
+//                 ORI batch-fold, ends-only Fidenza segments…). A VERSION
+//                 EVENT, not a freeze break: the freeze fixtures were
+//                 re-baked for exactly these 10 families (value-level zero
+//                 drift verified on all others) while external mints were
+//                 still zero. See docs/superpowers/artblocks-study/
+//                 76-corpus-second-reading-audit.md.
+export const DECOR_V = 4;
 
 export const DECOR_FAMILIES = {
   'flow-streams': drawFlowStreams,
@@ -3029,7 +3335,11 @@ export const DECOR_CREDITS = {
     by: 'Thomas Lin Pedersen',
     src: 'Art Blocks #255 · recipe-only',
   },
-  'halftone-fade': { after: 'RASTER', by: 'itsgalo', src: 'Art Blocks #341 · recipe-only' },
+  'halftone-fade': {
+    after: 'RASTER (field idea; the dot screen is traditional print halftone)',
+    by: 'itsgalo',
+    src: 'Art Blocks #341 · recipe-only',
+  },
   'scan-tides': {
     after: 'Tide Predictor',
     by: 'LoVid',
