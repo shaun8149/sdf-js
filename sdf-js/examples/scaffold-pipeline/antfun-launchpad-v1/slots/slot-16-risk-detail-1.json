@@ -1,0 +1,123 @@
+{
+ "slotIdx": 16,
+ "slotName": "risk-detail-1",
+ "slotTitle": "ANT 需求五重来源:交易介质与费用沉淀",
+ "sourceSlideIdx": 17,
+ "sceneData": {
+  "name": "news-briefing/ant-demand-sources",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "ANT 需求五重来源",
+     "subtitle": "交易介质与费用沉淀"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 130,
+    "w": 580,
+    "h": 540,
+    "args": {
+     "title": "核心需求引擎",
+     "items": [
+      {
+       "icon": "arrows-left-right",
+       "label": "需求一:交易介质(中性)",
+       "sublabel": "内盘以 ANT 计价路由,净压力≈零"
+      },
+      {
+       "icon": "coins",
+       "label": "需求二:费用沉淀",
+       "sublabel": "全部费用以 ANT 收取,分成激励落袋"
+      },
+      {
+       "icon": "fire",
+       "label": "需求三:回购销毁",
+       "sublabel": "平台净收入 ≥50% 销毁,折合成交量 ≥0.465%"
+      },
+      {
+       "icon": "stack",
+       "label": "需求四:质押折扣空投",
+       "sublabel": "质押获终端费折扣与空投"
+      },
+      {
+       "icon": "chart-line-up",
+       "label": "需求五:存活代币指数",
+       "sublabel": "持续买入7日存活代币,空投质押者"
+      }
+     ]
+    }
+   },
+   {
+    "type": "callout-banner",
+    "x": 660,
+    "y": 130,
+    "w": 580,
+    "h": 180,
+    "args": {
+     "type_": "insight",
+     "heading": "受益者天然成为持有者",
+     "body": "真正的结构性引擎是需求二至五",
+     "icon": "lightbulb"
+    }
+   },
+   {
+    "type": "callout-banner",
+    "x": 660,
+    "y": 326,
+    "w": 580,
+    "h": 180,
+    "args": {
+     "type_": "note",
+     "heading": "与 Virtuals 同构",
+     "body": "持有并质押 ANT = 一篮子经筛选的存活代币指数;与 Virtuals 的 Unicorn 发射机制同构",
+     "icon": "rocket-launch"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 660,
+    "y": 522,
+    "w": 280,
+    "h": 148,
+    "args": {
+     "value": "≥50%",
+     "label": "回购销毁比例",
+     "sublabel": "平台净收入",
+     "icon": "fire",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 960,
+    "y": 522,
+    "w": 280,
+    "h": 148,
+    "args": {
+     "value": "≥0.465%",
+     "label": "等效销毁率",
+     "sublabel": "折合内盘成交量",
+     "icon": "percent",
+     "style": "light"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  70,
+  128,
+  148
+ ]
+}

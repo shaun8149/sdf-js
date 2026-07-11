@@ -1,0 +1,31 @@
+{
+ "slotIdx": 0,
+ "slotName": "cover",
+ "slotTitle": "Headline",
+ "sourceSlideIdx": 0,
+ "sceneData": {
+  "name": "news-briefing/cover",
+  "layout": "cover",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 720,
+    "args": {
+     "title": "ANTFUN 代币发射台 V1",
+     "subtitle": "以 ANT 为内盘计价资产的双链代币发射台",
+     "author": "V1 定稿（评审决议已并入）",
+     "date": "2026-06",
+     "version": "机密",
+     "style": "gradient"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

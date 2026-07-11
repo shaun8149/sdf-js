@@ -1,0 +1,109 @@
+{
+ "slotIdx": 11,
+ "slotName": "theme-5-lead",
+ "slotTitle": "Theme 5 — Lead",
+ "sourceSlideIdx": 14,
+ "sceneData": {
+  "name": "news-briefing/theme-5-lead",
+  "layout": "hierarchy",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "团队长归因:双网络结构",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "layer-stack",
+    "x": 40,
+    "y": 160,
+    "w": 560,
+    "h": 520,
+    "args": {
+     "title": "网络拓扑",
+     "layers": [
+      {
+       "label": "原有网络",
+       "sublabel": "存量用户沿用现行邀请返佣层级",
+       "color": [
+        186,
+        88,
+        58
+       ]
+      },
+      {
+       "label": "新增多层次可配置网络",
+       "sublabel": "新社区/新团队长自建网络,层级数/分成比例/封顶规则可配置",
+       "color": [
+        110,
+        95,
+        75
+       ]
+      },
+      {
+       "label": "路由规则",
+       "sublabel": "用户绑定时刻唯一决定网络归属",
+       "color": [
+        165,
+        130,
+        90
+       ]
+      }
+     ],
+     "direction": "top-down"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 640,
+    "y": 160,
+    "w": 600,
+    "h": 520,
+    "args": {
+     "title": "系统机制",
+     "items": [
+      {
+       "icon": "vault",
+       "label": "资金路径:团队长池位于程序控制分配金库",
+       "sublabel": "内盘partner份额中的团队长池部分,非公司钱包"
+      },
+      {
+       "icon": "tree-structure",
+       "label": "单一网络归属",
+       "sublabel": "同一用户同一时间仅归属一张网络,杜绝双重计酬"
+      },
+      {
+       "icon": "receipt",
+       "label": "清算:每周Merkle树根哈希上链",
+       "sublabel": "团队长在App内一键携proof领取ANT,个体可验证份额,图谱整体不可还原"
+      },
+      {
+       "icon": "shield-warning",
+       "label": "反作弊:自交易/关联地址簇不计入归因",
+       "sublabel": "设备指纹+资金溯源,单用户对单团队长日计量设上限"
+      },
+      {
+       "icon": "eye",
+       "label": "异常量触发人工复核",
+       "sublabel": "裁量规则文档化并对团队长公示"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  186,
+  88,
+  58
+ ]
+}

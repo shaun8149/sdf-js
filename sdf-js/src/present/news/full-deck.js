@@ -11,6 +11,7 @@
 import { expandNews } from './expand-core.js';
 import { getScaffold, getThemeAffinity } from '../scaffolds/registry.js';
 import { rankScaffolds } from '../scaffolds/picker.js';
+import { applySectionAccents } from '../retheme.js';
 import { mapSlidesToSlotsLLM, scoreSlideForSlot } from '../scaffolds/mapper-llm.js';
 import { buildLiftSystemPrompt, liftSlotsPool, liftSlotLLM } from '../scaffolds/lift-slot-llm.js';
 
@@ -59,6 +60,28 @@ export function chooseScaffoldForOutline(slides) {
  * unmapped slides into empty non-cover slots until minPages is reachable.
  * Mutates assignments in place; pure logic, exported for tests.
  */
+/**
+ * genericHoldSlot — Sprint 71 (the "hold fallback"): when a slide is FORCED
+ * into a slot it doesn't fit (page floor promotion / collapse rescue with a
+ * fit score of 0), the slot keeps its skeleton POSITION but sheds its
+ * specialist costume — otherwise the lift prompt tells the model "this is
+ * the Comparison room" about content that isn't a comparison, and the model
+ * obliges with an invented one. The held slot presents the content's OWN
+ * title and a shape-neutral brief.
+ */
+export function genericHoldSlot(slot, slide) {
+  return {
+    ...slot,
+    title: slide?.title || slot.title,
+    purpose:
+      'Present this material faithfully — pick atoms that fit ITS shape ' +
+      '(numbers → kpi/chart, steps → flow/timeline, lists → bullets). ' +
+      'This slot carries no other agenda.',
+    recommended_atoms: ['kpi-card', 'stat-banner', 'bullet-list', 'bar', 'flow-chart', 'timeline'],
+    generic: true,
+  };
+}
+
 export function rescueEmptyMapping(assignments, slides, minPages) {
   const filledNonCover = assignments.filter((a) => !a.empty && a.slot.name !== 'cover');
   if (filledNonCover.length > 0) return false; // mapper did its job
@@ -80,6 +103,9 @@ export function rescueEmptyMapping(assignments, slides, minPages) {
     if (best === -1) break;
     a.empty = false;
     a.slideIdx = best;
+    // fit score 0 = the specialist purpose never matched (always true for
+    // CJK content vs English slot purposes) — hold the position, drop the costume
+    if (bestScore <= 0) a.slot = genericHoldSlot(a.slot, slides[best]);
     taken.add(best);
     delivered++;
   }
@@ -175,6 +201,9 @@ export async function newsToFullDeck(
     if (!donor) break;
     empty.empty = false;
     empty.slideIdx = donor.extraSlides.pop();
+    // promoted blind (donor overflow, not mapper judgment) — same hold rule
+    if (scoreSlideForSlot(slides[empty.slideIdx], empty.slot) <= 0)
+      empty.slot = genericHoldSlot(empty.slot, slides[empty.slideIdx]);
   }
 
   onProgress('building lift prompt…', 12);
@@ -267,13 +296,17 @@ export async function newsToFullDeck(
   }
 
   onProgress('done', 100);
-  return {
+  const deck = {
     title: slides[0]?.title || 'News Deck',
     theme,
     scaffold: { id: scaffold.id, label: scaffold.label },
     slots: mergeLockedSlots(slots, lockedSlots),
     errors,
   };
+  // Sprint 72: chapter color programming — on palettes rich enough, each
+  // section holds its own hue (zero LLM; anchors keep the theme accent)
+  applySectionAccents(deck);
+  return deck;
 }
 
 /**

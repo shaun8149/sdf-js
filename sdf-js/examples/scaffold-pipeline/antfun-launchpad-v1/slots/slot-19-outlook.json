@@ -1,0 +1,60 @@
+{
+ "slotIdx": 19,
+ "slotName": "outlook",
+ "slotTitle": "Outlook",
+ "sourceSlideIdx": 21,
+ "sceneData": {
+  "name": "news-briefing/outlook",
+  "layout": "stage",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "Outlook",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "mountain-path",
+    "x": 40,
+    "y": 140,
+    "w": 1200,
+    "h": 540,
+    "args": {
+     "title": "ANT 飞轮:合流与缓释",
+     "summit": "可持续飞轮",
+     "milestones": [
+      {
+       "label": "份额接入销毁",
+       "sublabel": "交易量转化每日可见 burn 曲线"
+      },
+      {
+       "label": "空投质押导流",
+       "sublabel": "领取条件直接拉动质押率"
+      },
+      {
+       "label": "配置代际控制",
+       "sublabel": "毕业门槛漂移 + 平台 ANT 平滑释放"
+      },
+      {
+       "label": "USDT 计价预留",
+       "sublabel": "极端行情临时通道(V1 默认关闭)"
+      },
+      {
+       "label": "慢变量驱动",
+       "sublabel": "费用·销毁·锁仓,非价格预期"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

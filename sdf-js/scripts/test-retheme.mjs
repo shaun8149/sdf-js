@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // test-retheme.mjs — Sprint 39: zero-cost theme switching mechanics.
-import { rethemeDeck } from '../src/present/retheme.js';
+import { rethemeDeck, applySectionAccents, slotPalette } from '../src/present/retheme.js';
 import { getTheme } from '../src/present/themes.js';
 
 let pass = 0,
@@ -84,6 +84,60 @@ function makeDeck() {
   }
   ok(/unknown theme/.test(threw || ''), 'unknown theme id throws');
   ok(deck.theme.id === 'editorial-navy', 'failed switch leaves deck untouched');
+}
+
+// ── Sprint 72: section accent programming ──
+{
+  const mk = (name) => ({
+    slotIdx: 0,
+    slotName: name,
+    sceneData: { subjects: [{ type: 'kpi-card', args: { iconColor: 'rgb(38, 70, 130)' } }] },
+  });
+  const deck = {
+    theme: 'editorial-spectrum',
+    slots: [
+      mk('cover'),
+      mk('theme-1-lead'),
+      mk('theme-1-detail'),
+      mk('theme-2-lead'),
+      mk('summary'),
+    ],
+  };
+  ok(applySectionAccents(deck) === true, 'section accents applied on a rich palette');
+  ok(!deck.slots[0].sectionAccent && !deck.slots[4].sectionAccent, 'cover/summary hold the anchor');
+  ok(!!deck.slots[1].sectionAccent, 'content sections get hues');
+  ok(
+    JSON.stringify(deck.slots[1].sectionAccent) === JSON.stringify(deck.slots[2].sectionAccent),
+    'lead+detail of one theme share one hue',
+  );
+  ok(
+    JSON.stringify(deck.slots[1].sectionAccent) !== JSON.stringify(deck.slots[3].sectionAccent),
+    'different themes hold different hues',
+  );
+  const icon = deck.slots[1].sceneData.subjects[0].args.iconColor;
+  const [r2, g2, b2] = deck.slots[1].sectionAccent;
+  ok(icon === `rgb(${r2}, ${g2}, ${b2})`, 'baked anchor colors remapped to the section hue');
+  const pal = slotPalette(
+    {
+      id: 't',
+      accent: [38, 70, 130],
+      colors: [
+        [38, 70, 130],
+        [9, 9, 9],
+      ],
+    },
+    deck.slots[1],
+  );
+  ok(
+    JSON.stringify(pal.accent) === JSON.stringify(deck.slots[1].sectionAccent) &&
+      JSON.stringify(pal.colors[0]) === JSON.stringify(deck.slots[1].sectionAccent),
+    'slotPalette overrides accent and colors[0]',
+  );
+  const deckNarrow = {
+    theme: { id: 'x', accent: [1, 1, 1], colors: [[1, 1, 1]] },
+    slots: [mk('theme-1-lead')],
+  };
+  ok(applySectionAccents(deckNarrow) === false, 'palette too narrow → untouched');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

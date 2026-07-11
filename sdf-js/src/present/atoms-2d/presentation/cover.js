@@ -71,10 +71,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillStyle = rgbCss(darken(accent, 0.32));
     ctx.fillRect(x, y, w, h);
   } else {
-    // Default: subtle diagonal gradient — accent → lighten(accent, 0.20)
+    // Default: subtle diagonal gradient — accent → lighten(accent, 0.20).
+    // Sprint 72 (section accents brought LIGHT hues like gold): white title
+    // text needs the band to carry it — light accents deepen the gradient
+    // instead of switching text to ink, so the hue stays recognizable and
+    // the type stays consistent across sections. WCAG luminance gate; dark
+    // accents (every pre-spectrum theme) hit the old branch byte-for-byte.
+    const lum = (0.2126 * accent[0] + 0.7152 * accent[1] + 0.0722 * accent[2]) / 255;
+    const isLight = lum > 0.42;
     const bgGrad = ctx.createLinearGradient(x, y, x + w, y + h);
-    bgGrad.addColorStop(0, rgbCss(darken(accent, 0.05)));
-    bgGrad.addColorStop(1, rgbCss(lighten(accent, 0.2)));
+    bgGrad.addColorStop(0, rgbCss(darken(accent, isLight ? 0.34 : 0.05)));
+    bgGrad.addColorStop(1, rgbCss(isLight ? darken(accent, 0.1) : lighten(accent, 0.2)));
     ctx.fillStyle = bgGrad;
     ctx.fillRect(x, y, w, h);
   }

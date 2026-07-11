@@ -1,0 +1,122 @@
+{
+ "slotIdx": 14,
+ "slotName": "data-appendix",
+ "slotTitle": "Data Appendix",
+ "sourceSlideIdx": 20,
+ "sceneData": {
+  "name": "news-briefing/data-appendix",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 100,
+    "args": {
+     "title": "Data Appendix",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 140,
+    "w": 360,
+    "h": 160,
+    "args": {
+     "value": "$1M",
+     "label": "内盘日交易量",
+     "sublabel": "日费用 $18,500 · 日销毁 ≥$4,650",
+     "trendValue": "年化销毁 ≥$1.7M",
+     "trend": "up",
+     "icon": "chart-line",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 460,
+    "y": 140,
+    "w": 360,
+    "h": 160,
+    "args": {
+     "value": "$5M",
+     "label": "内盘日交易量",
+     "sublabel": "日费用 $92,500 · 日销毁 ≥$23,250",
+     "trendValue": "年化销毁 ≥$8.5M",
+     "trend": "up",
+     "icon": "chart-bar",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 880,
+    "y": 140,
+    "w": 360,
+    "h": 160,
+    "args": {
+     "value": "$10M",
+     "label": "内盘日交易量",
+     "sublabel": "日费用 $185,000 · 日销毁 ≥$46,500",
+     "trendValue": "年化销毁 ≥$17.0M",
+     "trend": "up",
+     "icon": "chart-pie",
+     "style": "light"
+    }
+   },
+   {
+    "type": "bar",
+    "x": 40,
+    "y": 340,
+    "w": 580,
+    "h": 320,
+    "args": {
+     "values": [
+      18500,
+      92500,
+      185000
+     ],
+     "labels": [
+      "$1M 日交易量",
+      "$5M 日交易量",
+      "$10M 日交易量"
+     ],
+     "format": "currency",
+     "title": "日费用对比"
+    }
+   },
+   {
+    "type": "bar",
+    "x": 660,
+    "y": 340,
+    "w": 580,
+    "h": 320,
+    "args": {
+     "values": [
+      1700000,
+      8500000,
+      17000000
+     ],
+     "labels": [
+      "$1M 日交易量",
+      "$5M 日交易量",
+      "$10M 日交易量"
+     ],
+     "format": "currency",
+     "title": "年化销毁对比"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  118,
+  84,
+  138
+ ]
+}

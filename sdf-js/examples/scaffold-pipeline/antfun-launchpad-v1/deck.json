@@ -1,0 +1,505 @@
+{
+ "deckName": "antfun-launchpad-v1",
+ "sourceFile": "sdf-js/examples/scaffold-pipeline/antfun-launchpad-v1-slidedata.json",
+ "scaffold": {
+  "id": "news-briefing",
+  "label": "News Briefing"
+ },
+ "theme": "editorial-spectrum",
+ "slots": [
+  {
+   "slotIdx": 0,
+   "slotName": "cover",
+   "slotTitle": "Headline",
+   "sourceSlideIdx": 0,
+   "liftFile": "slots/slot-00-cover.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover"
+   ]
+  },
+  {
+   "slotIdx": 1,
+   "slotName": "agenda",
+   "slotTitle": "Overview",
+   "sourceSlideIdx": 1,
+   "liftFile": "slots/slot-01-agenda.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "agenda-list"
+   ]
+  },
+  {
+   "slotIdx": 2,
+   "slotName": "key-figures",
+   "slotTitle": "Key Figures",
+   "sourceSlideIdx": 9,
+   "liftFile": "slots/slot-02-key-figures.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "stat-with-icon"
+   ],
+   "sectionAccent": [
+    186,
+    88,
+    58
+   ]
+  },
+  {
+   "slotIdx": 3,
+   "slotName": "theme-1-lead",
+   "slotTitle": "Theme 1 — Lead",
+   "sourceSlideIdx": 3,
+   "liftFile": "slots/slot-03-theme-1-lead.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "comparison-table",
+    "feature-card-grid"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
+   ]
+  },
+  {
+   "slotIdx": 4,
+   "slotName": "theme-1-detail",
+   "slotTitle": "Theme 1 — Detail",
+   "sourceSlideIdx": 4,
+   "liftFile": "slots/slot-04-theme-1-detail.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "bullet-list",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
+   ]
+  },
+  {
+   "slotIdx": 5,
+   "slotName": "theme-2-lead",
+   "slotTitle": "Theme 2 — Lead",
+   "sourceSlideIdx": 5,
+   "liftFile": "slots/slot-05-theme-2-lead.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "bullet-list",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
+   ]
+  },
+  {
+   "slotIdx": 6,
+   "slotName": "theme-2-detail",
+   "slotTitle": "Theme 2 — Detail",
+   "sourceSlideIdx": 11,
+   "liftFile": "slots/slot-06-theme-2-detail.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "bullet-list",
+    "bullet-list",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
+   ]
+  },
+  {
+   "slotIdx": 7,
+   "slotName": "theme-3-lead",
+   "slotTitle": "Theme 3 — Lead",
+   "sourceSlideIdx": 6,
+   "liftFile": "slots/slot-07-theme-3-lead.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "icon-grid",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
+   ]
+  },
+  {
+   "slotIdx": 8,
+   "slotName": "theme-3-detail",
+   "slotTitle": "Theme 3 — Detail",
+   "sourceSlideIdx": 8,
+   "liftFile": "slots/slot-08-theme-3-detail.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "bullet-list",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
+   ]
+  },
+  {
+   "slotIdx": 9,
+   "slotName": "theme-4-lead",
+   "slotTitle": "Theme 4 — Lead",
+   "sourceSlideIdx": 10,
+   "liftFile": "slots/slot-09-theme-4-lead.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "bullet-list",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
+   ]
+  },
+  {
+   "slotIdx": 10,
+   "slotName": "theme-4-detail",
+   "slotTitle": "Theme 4 — Detail",
+   "sourceSlideIdx": 12,
+   "liftFile": "slots/slot-10-theme-4-detail.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "waterfall",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
+   ]
+  },
+  {
+   "slotIdx": 11,
+   "slotName": "theme-5-lead",
+   "slotTitle": "Theme 5 — Lead",
+   "sourceSlideIdx": 14,
+   "liftFile": "slots/slot-11-theme-5-lead.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "layer-stack",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    186,
+    88,
+    58
+   ]
+  },
+  {
+   "slotIdx": 12,
+   "slotName": "comparison",
+   "slotTitle": "Comparison",
+   "sourceSlideIdx": 2,
+   "liftFile": "slots/slot-12-comparison.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "comparison-table"
+   ],
+   "sectionAccent": [
+    96,
+    132,
+    92
+   ]
+  },
+  {
+   "slotIdx": 13,
+   "slotName": "mechanism",
+   "slotTitle": "How It Works",
+   "sourceSlideIdx": 19,
+   "liftFile": "slots/slot-13-mechanism.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "circle-process-cycle"
+   ],
+   "sectionAccent": [
+    196,
+    148,
+    62
+   ]
+  },
+  {
+   "slotIdx": 14,
+   "slotName": "data-appendix",
+   "slotTitle": "Data Appendix",
+   "sourceSlideIdx": 20,
+   "liftFile": "slots/slot-14-data-appendix.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "kpi-card",
+    "kpi-card",
+    "bar",
+    "bar"
+   ],
+   "sectionAccent": [
+    118,
+    84,
+    138
+   ]
+  },
+  {
+   "slotIdx": 15,
+   "slotName": "risk-matrix",
+   "slotTitle": "ANT 需求五重来源:毕业锁仓",
+   "sourceSlideIdx": 18,
+   "liftFile": "slots/slot-15-risk-matrix.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "kpi-card",
+    "stat-banner",
+    "bullet-list"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
+   ]
+  },
+  {
+   "slotIdx": 16,
+   "slotName": "risk-detail-1",
+   "slotTitle": "ANT 需求五重来源:交易介质与费用沉淀",
+   "sourceSlideIdx": 17,
+   "liftFile": "slots/slot-16-risk-detail-1.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "bullet-list",
+    "callout-banner",
+    "callout-banner",
+    "kpi-card",
+    "kpi-card"
+   ],
+   "sectionAccent": [
+    70,
+    128,
+    148
+   ]
+  },
+  {
+   "slotIdx": 18,
+   "slotName": "quote",
+   "slotTitle": "Key Quote",
+   "sourceSlideIdx": 13,
+   "liftFile": "slots/slot-18-quote.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "pull-quote-banner"
+   ]
+  },
+  {
+   "slotIdx": 19,
+   "slotName": "outlook",
+   "slotTitle": "Outlook",
+   "sourceSlideIdx": 21,
+   "liftFile": "slots/slot-19-outlook.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "mountain-path"
+   ]
+  },
+  {
+   "slotIdx": 20,
+   "slotName": "summary",
+   "slotTitle": "Summary",
+   "sourceSlideIdx": 16,
+   "liftFile": "slots/slot-20-summary.json",
+   "error": null,
+   "mappingEmpty": false,
+   "subjectTypes": [
+    "cover",
+    "numbered-grid"
+   ]
+  }
+ ],
+ "droppedSlots": [],
+ "totals": {
+  "delivered": 20,
+  "errors": 0,
+  "seconds": 304.1
+ },
+ "meta": {
+  "path": "auto-scaffold (Sprint 63)",
+  "article": "/private/tmp/claude-501/-Users-hexiaoyang-Documents-sdf-main/b6e4d832-e3af-49e5-8965-7a004e4bf589/scratchpad/antfun-launchpad-v1.txt",
+  "plan": {
+   "slots": [
+    {
+     "slotIdx": 0,
+     "slotName": "cover",
+     "slotTitle": "Headline"
+    },
+    {
+     "slotIdx": 1,
+     "slotName": "agenda",
+     "slotTitle": "Overview"
+    },
+    {
+     "slotIdx": 2,
+     "slotName": "key-figures",
+     "slotTitle": "Key Figures"
+    },
+    {
+     "slotIdx": 3,
+     "slotName": "theme-1-lead",
+     "slotTitle": "Theme 1 — Lead"
+    },
+    {
+     "slotIdx": 4,
+     "slotName": "theme-1-detail",
+     "slotTitle": "Theme 1 — Detail"
+    },
+    {
+     "slotIdx": 5,
+     "slotName": "theme-2-lead",
+     "slotTitle": "Theme 2 — Lead"
+    },
+    {
+     "slotIdx": 6,
+     "slotName": "theme-2-detail",
+     "slotTitle": "Theme 2 — Detail"
+    },
+    {
+     "slotIdx": 7,
+     "slotName": "theme-3-lead",
+     "slotTitle": "Theme 3 — Lead"
+    },
+    {
+     "slotIdx": 8,
+     "slotName": "theme-3-detail",
+     "slotTitle": "Theme 3 — Detail"
+    },
+    {
+     "slotIdx": 9,
+     "slotName": "theme-4-lead",
+     "slotTitle": "Theme 4 — Lead"
+    },
+    {
+     "slotIdx": 10,
+     "slotName": "theme-4-detail",
+     "slotTitle": "Theme 4 — Detail"
+    },
+    {
+     "slotIdx": 11,
+     "slotName": "theme-5-lead",
+     "slotTitle": "Theme 5 — Lead"
+    },
+    {
+     "slotIdx": 12,
+     "slotName": "comparison",
+     "slotTitle": "Comparison"
+    },
+    {
+     "slotIdx": 13,
+     "slotName": "mechanism",
+     "slotTitle": "How It Works"
+    },
+    {
+     "slotIdx": 14,
+     "slotName": "data-appendix",
+     "slotTitle": "Data Appendix"
+    },
+    {
+     "slotIdx": 15,
+     "slotName": "risk-matrix",
+     "slotTitle": "ANT 需求五重来源:毕业锁仓"
+    },
+    {
+     "slotIdx": 16,
+     "slotName": "risk-detail-1",
+     "slotTitle": "ANT 需求五重来源:交易介质与费用沉淀"
+    },
+    {
+     "slotIdx": 18,
+     "slotName": "quote",
+     "slotTitle": "Key Quote"
+    },
+    {
+     "slotIdx": 19,
+     "slotName": "outlook",
+     "slotTitle": "Outlook"
+    },
+    {
+     "slotIdx": 20,
+     "slotName": "summary",
+     "slotTitle": "Summary"
+    }
+   ],
+   "theme": "editorial-navy"
+  }
+ },
+ "colorProgram": "sections",
+ "decor": {
+  "family": "river-courses",
+  "rare": false,
+  "janky": false,
+  "grain": 0,
+  "seed": 359318729,
+  "personality": "balanced",
+  "hash": "497bdd03fa27a6f7",
+  "v": 3
+ }
+}

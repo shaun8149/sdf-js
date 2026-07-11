@@ -1,0 +1,64 @@
+{
+ "slotIdx": 1,
+ "slotName": "agenda",
+ "slotTitle": "Overview",
+ "sourceSlideIdx": 1,
+ "sceneData": {
+  "name": "news-briefing/agenda",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Overview",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "agenda-list",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 520,
+    "args": {
+     "title": "核心主题",
+     "items": [
+      {
+       "label": "ANT需求飞轮与三大目标",
+       "sublabel": "内盘ANT计价、Creator Fee社群分享、费用内部化"
+      },
+      {
+       "label": "自动关注与语音房推送",
+       "sublabel": "持有者自动关注Agent与Dev、语音房开播推送、大额交易播报"
+      },
+      {
+       "label": "代币群完整社会史",
+       "sublabel": "全历史保存、新买家尽调、游客默认可读"
+      },
+      {
+       "label": "团队长网络与产品化",
+       "sublabel": "发射台作为第四种货品、自建分润网络、配套看板与勋章"
+      },
+      {
+       "label": "ANT质押折扣模型",
+       "sublabel": "质押1万/10万/100万ANT,终端费0.85%→0.50%→0.20%→0"
+      },
+      {
+       "label": "价值堵漏与倒挂修正",
+       "sublabel": "Dev与团队长ANT落袋后质押降费、忠诚度越高越便宜"
+      }
+     ],
+     "numbered": true
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

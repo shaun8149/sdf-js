@@ -12,6 +12,8 @@ import {
   collectTextChars,
   NON_TEXT_ARG_KEYS,
   verifiedDerivedTokens,
+  deckNumberTokens,
+  numberGrounded,
 } from './eval-deck-quality.mjs';
 
 let pass = 0;
@@ -401,6 +403,14 @@ rmSync(dir, { recursive: true, force: true });
   ok(v2.has('$336.4M'), 'absolute-difference citation verifies (unit-suffix tolerant)');
   ok(v2.has('319'), 'midpoint citation verifies');
   ok(!v2.has('$500M'), 'wrong absolute difference rejected');
+}
+
+// ── Sprint 71: CJK date alias — "2025 年 3 月" grounds deck-side "2025.3" ──
+{
+  const src = deckNumberTokens('发射台战争始于 2025 年 3 月, 高峰在 2026 年 11 月。');
+  ok(numberGrounded('2025.3', src), 'YYYY.M form grounds against 年月 source');
+  ok(numberGrounded('2026.11', src), 'two-digit month grounds too');
+  ok(!numberGrounded('2025.7', src), 'a month the source never wrote stays ungrounded');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
