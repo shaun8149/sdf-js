@@ -1511,7 +1511,8 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
 //   - the wrap is a SHUFFLED SUBSET of pegs sorted by angle around their
 //     centroid — a tidy band circling the peg cloud, not a random scribble
 //   - the string always CLOSES into a ring (the project is named Ringers),
-//     and the closed ring is occasionally FILLED
+//     and the wrapped shape is ALWAYS FILLED — the filled polygon-with-
+//     bulges IS the artwork, the rope is its outline (Sprint 80, user)
 //   - ONE random peg is highlighted in a lone color — the signature lone
 //     accent; every other peg stays a quiet dot
 //   - the rope is FAT (the string is the protagonist, pegs are furniture)
@@ -1519,9 +1520,9 @@ function drawRiverCourses(ctx, { palette, seed, x, y, w, h, intensity, personali
 // visited peg — both removed: the original's side choices come from the
 // wrap polygon's own concavity, and its color accent is a single peg.)
 const PEG_PERSONALITIES = {
-  calm: { cols: 4, rows: 3, visits: 6, pegR: 10, fillChance: 0.35 },
-  balanced: { cols: 5, rows: 4, visits: 9, pegR: 9, fillChance: 0.45 },
-  wild: { cols: 7, rows: 5, visits: 14, pegR: 7, fillChance: 0.55 },
+  calm: { cols: 4, rows: 3, visits: 6, pegR: 10 },
+  balanced: { cols: 5, rows: 4, visits: 9, pegR: 9 },
+  wild: { cols: 7, rows: 5, visits: 14, pegR: 7 },
 };
 
 function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }) {
@@ -1560,13 +1561,6 @@ function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }
   });
   const R = B.pegR;
   ctx.save();
-  // pegs first: quiet dots
-  for (const [px, py] of pegs) {
-    ctx.fillStyle = rgba(pegCol, P.alphaFill * 1.4);
-    ctx.beginPath();
-    ctx.arc(px, py, R * 0.45, 0, Math.PI * 2);
-    ctx.fill();
-  }
   // the string: a CLOSED loop of outer tangents + bending arcs around the
   // angle-sorted wrap set. Same-radius circles → the outer tangent is the
   // center-to-center segment offset perpendicular by R (outward side).
@@ -1597,16 +1591,25 @@ function drawPegWraps(ctx, { palette, seed, x, y, w, h, intensity, personality }
     ctx.arc(ax, ay, R, a0, a1, false);
   }
   ctx.closePath();
-  // occasionally the ring is filled — the closed band is the artwork
-  if (rand() < B.fillChance) {
-    ctx.fillStyle = rgba(stringCol, P.alphaFill * 0.9);
-    ctx.fill();
-  }
+  // the wrapped shape is ALWAYS filled — Sprint 80, user correction:
+  // "关键在于每一个 peg 的线段连起来之后进行填充, 只连线是不够好看的".
+  // The fill takes a SECOND color so the rope outline still reads.
+  const fillCol =
+    colors.length > 1 ? colors[(colors.indexOf(stringCol) + 1) % colors.length] : stringCol;
+  ctx.fillStyle = rgba(fillCol, Math.min(0.95, P.alphaFill * 1.7));
+  ctx.fill();
   ctx.strokeStyle = rgba(stringCol, P.alpha * 1.3);
   ctx.lineWidth = P.lineWidth * 2.4; // fat rope: the string is the protagonist
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.stroke();
+  // pegs ON TOP of the wrap (Ringers order: the shape sits behind the pegs)
+  for (const [px, py] of pegs) {
+    ctx.fillStyle = rgba(pegCol, P.alphaFill * 1.4);
+    ctx.beginPath();
+    ctx.arc(px, py, R * 0.45, 0, Math.PI * 2);
+    ctx.fill();
+  }
   // ONE highlighted peg — the lone accent
   const [hx, hy] = pegs[order[Math.floor(rand() * K)]];
   ctx.fillStyle = rgba(hlCol, Math.min(0.98, P.alphaFill * 1.9));

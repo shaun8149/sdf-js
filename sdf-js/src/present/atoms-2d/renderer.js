@@ -67,21 +67,48 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // ink ground → ArtBlocks-grade painting → the cover atom re-enters as an
   // 'overlay' (scrim + type only). The artwork gets the FULL palette on a
   // near-black canvas — the hues finally pop — and the title sits above it.
-  const coverCanvas = !!(decor && isPureCover);
+  // Sprint 80: opts.decorArt — an EXTERNAL artwork (CanvasImageSource, e.g.
+  // an authentic generative piece rendered elsewhere) takes the decor
+  // engine's place on art surfaces: cover-fit full-bleed on covers,
+  // cover-fit crop inside title banners. The decor engine never runs when
+  // decorArt is present.
+  const decorArt = opts.decorArt || null;
+  const coverCanvas = !!((decor || decorArt) && isPureCover);
+  // Sprint 80 (user: 目录页把图案做到标题栏, 不要放正文): agenda / section
+  // pages run the cover-canvas pipeline INSIDE their title banner (the
+  // banner is a 'cover' atom with its own bounds) — ink ground → artwork →
+  // overlay type, clipped to the band. The BODY stays clean: no under-decor.
+  const bannerCanvas = !!(
+    (decor || decorArt) &&
+    !isPureCover &&
+    (role === 'agenda' || role === 'section')
+  );
+  const drawArtCover = (dx, dy, dw, dh) => {
+    const iw = decorArt.width || decorArt.videoWidth || 1;
+    const ih = decorArt.height || decorArt.videoHeight || 1;
+    const sc = Math.max(dw / iw, dh / ih);
+    const sw = dw / sc;
+    const sh = dh / sc;
+    ctx.drawImage(decorArt, (iw - sw) / 2, (ih - sh) / 2, sw, sh, dx, dy, dw, dh);
+  };
   if (coverCanvas) {
-    const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
-    ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawDecor(ctx, decor, {
-      palette,
-      x: 0,
-      y: 0,
-      w: canvas.width,
-      h: canvas.height,
-      intensity: decor.intensity || 'artwork',
-    });
+    if (decorArt) {
+      drawArtCover(0, 0, canvas.width, canvas.height);
+    } else {
+      const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
+      ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawDecor(ctx, decor, {
+        palette,
+        x: 0,
+        y: 0,
+        w: canvas.width,
+        h: canvas.height,
+        intensity: decor.intensity || 'artwork',
+      });
+    }
   }
-  if (decor && !isPureCover) {
+  if (decor && !decorArt && !isPureCover && !bannerCanvas) {
     drawDecor(ctx, decor, {
       palette,
       x: 0,
@@ -106,7 +133,38 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       skipped++;
       continue;
     }
-    const args = coverCanvas && s.type === 'cover' ? { ...s.args, style: 'overlay' } : s.args || {};
+    const isBannerAtom = bannerCanvas && s.type === 'cover';
+    if (isBannerAtom) {
+      // mini cover-canvas clipped to the banner band
+      const bx = s.x ?? 0;
+      const by = s.y ?? 0;
+      const bw = s.w ?? canvas.width;
+      const bh = s.h ?? canvas.height;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(bx, by, bw, bh);
+      ctx.clip();
+      if (decorArt) {
+        drawArtCover(bx, by, bw, bh);
+      } else {
+        const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
+        ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+        ctx.fillRect(bx, by, bw, bh);
+        drawDecor(ctx, decor, {
+          palette,
+          x: bx,
+          y: by,
+          w: bw,
+          h: bh,
+          intensity: decor.intensity || 'artwork',
+        });
+      }
+      ctx.restore();
+    }
+    const args =
+      (coverCanvas && s.type === 'cover') || isBannerAtom
+        ? { ...s.args, style: 'overlay' }
+        : s.args || {};
     const style = deckStyle || s.style || 'pseudo3d';
     const subjectOpts = {
       x: s.x ?? 0,
