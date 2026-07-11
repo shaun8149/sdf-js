@@ -15,7 +15,12 @@ import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
  * `present`: a presenter owns the sequence clock (it opens HELD at t≈0) — the
  * deck warm-up must not pause/restart the clock underneath it.
  */
-export function createFigure({ outdoor = false, stage = false, present = false } = {}) {
+export function createFigure({
+  outdoor = false,
+  stage = false,
+  present = false,
+  renderMode = 'stone', // presentation product default: perf first, beauty later
+} = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
   const size = () => {
@@ -85,6 +90,7 @@ export function createFigure({ outdoor = false, stage = false, present = false }
     }),
     onFps,
   });
+  if (studio.setRenderMode) studio.setRenderMode(renderMode);
   window.addEventListener('resize', () => {
     size();
     if (studio.requestRender) studio.requestRender();

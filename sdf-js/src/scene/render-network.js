@@ -264,11 +264,12 @@ export function renderNetwork(ir, opts = {}) {
   const payoffDist = (cloudR * 2.6 + 1.5) * (env ? env.payoffZoom : 1);
   shots.push({
     duration: 2.4,
-    // payoff stays EYE-LEVEL: from above, the floor fills the frame and every
-    // floor pixel pays the wet-floor reflection retrace — measured 7fps vs
-    // 24fps. Sky pixels are cheap; floor pixels are not.
-    pos: [1.4, midY + 1.2 + (env ? 0.5 : 0), payoffDist],
-    target: [0, midY, 0],
+    // payoff at a MID crane angle (~25° down): eye-level rays run the length
+    // of the whole cloud (11fps even in stone mode); steep overhead fills the
+    // frame with floor (which in RICH mode pays the wet-floor retrace). The
+    // middle angle grounds most rays quickly without floor-filling the frame.
+    pos: [1.4, midY + payoffDist * 0.42 + (env ? 0.5 : 0), payoffDist * 0.92],
+    target: [0, midY - 0.1, 0],
     fov: 44,
     transition: 'blend',
     aperture: 0.12, // deep focus: the whole story stays sharp

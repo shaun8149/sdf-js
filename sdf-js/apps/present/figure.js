@@ -12,7 +12,8 @@ const params = new URLSearchParams(location.search);
 const env = params.get('env') || 'studio';
 const stage = params.get('stage') === '1'; // ?stage=1 → fighting-game stage preset
 const present = params.get('present') === '1'; // ?present=1 → space steps the beats
-const { show } = createFigure({ outdoor: env !== 'studio', stage, present });
+const renderMode = params.get('mode') === 'rich' ? 'rich' : 'stone'; // stone = perf-first default
+const { show } = createFigure({ outdoor: env !== 'studio', stage, present, renderMode });
 
 const deckName = params.get('deck');
 const layout = params.get('layout') || undefined; // line | radial | grid

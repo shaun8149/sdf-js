@@ -67,19 +67,33 @@ const braces = (s) => (s.match(/\{/g) || []).length - (s.match(/\}/g) || []).len
     ].every((f) => feats.includes(f)),
     'all 9 material-kind branches are marked',
   );
-  // each marked block must be the dangling-else form: starts with `if (` and
-  // its body ends with `} else` so any subset re-chains into valid GLSL
-  const blocks = [...src.matchAll(/\/\/#feature \w+\r?\n([\s\S]*?)\/\/#endfeature/g)].map(
-    (m) => m[1],
-  );
+  // MATERIAL-KIND blocks must be the dangling-else form: starts with `if (`
+  // and ends with `} else` so any subset re-chains into valid GLSL. The
+  // structural rich/stone gates (compile-time shading paths) are exempt —
+  // they are self-contained statement runs, checked separately below.
+  const KIND_SET = new Set([
+    'sea', 'emissive', 'translucent', 'glass', 'mountain', 'snowy', 'building',
+    'eroded', 'fill',
+  ]);
+  const marked = [...src.matchAll(/\/\/#feature (\w+)\r?\n([\s\S]*?)\/\/#endfeature/g)];
+  const kindBlocks = marked.filter((m) => KIND_SET.has(m[1])).map((m) => m[2]);
   ok(
-    blocks.every(
-      (b) =>
-        /^\s*if \(is\w+\) \{/.test(b) &&
-        /\} else\s*$/.test(b.trimEnd() + '\n' ? b.replace(/\s+$/, '') : b),
-    ),
-    'every block is `if (…) { … } else` (dangling-else form)',
+    kindBlocks.length >= 9 &&
+      kindBlocks.every(
+        (b) => /^\s*if \(is\w+\) \{/.test(b) && /\} else\s*$/.test(b.replace(/\s+$/, '')),
+      ),
+    'every material-kind block is `if (…) { … } else` (dangling-else form)',
   );
+  // rich/stone are mutually exclusive shading paths: EITHER selection must
+  // leave the shader with balanced braces (subset compiles structurally).
+  const names = marked.map((m) => m[1]);
+  ok(names.includes('rich') && names.includes('stone'), 'rich + stone gates present');
+  const balance = (glsl) => [...glsl].reduce((n, c) => n + (c === '{') - (c === '}'), 0);
+  const richOnly = applyFeatureGates(src, new Set([...KIND_SET, 'rich']));
+  const stoneOnly = applyFeatureGates(src, new Set([...KIND_SET, 'stone']));
+  ok(balance(richOnly) === balance(stoneOnly), 'rich and stone selections brace-balance equally');
+  ok(!stoneOnly.includes('softShadow(p + n * 0.002, toLight'), 'stone drops the main shadow march');
+  ok(stoneOnly.includes('STONE mode'), 'stone shading path survives gating');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
