@@ -146,7 +146,7 @@ export function renderNetwork(ir, opts = {}) {
   const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : hub;
   const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : [hub]);
 
-  const nodeR = (i) => 0.16 + 0.18 * Math.sqrt((Number(mag[i]) || 1) / mMax);
+  const nodeR = (i) => 0.24 + 0.26 * Math.sqrt((Number(mag[i]) || 1) / mMax);
 
   // Assembly: nodes cascade in a quick wave, then edges land in waves — the
   // network wires itself while the camera orbits.
@@ -180,7 +180,7 @@ export function renderNetwork(ir, opts = {}) {
       args: {
         a: [0, 0, 0],
         b: [pos[b][0] - pa[0], pos[b][1] - pa[1], pos[b][2] - pa[2]],
-        radius: 0.035,
+        radius: 0.06,
       },
       transform: { translate: pa },
       material: EDGE_MAT,
@@ -192,6 +192,38 @@ export function renderNetwork(ir, opts = {}) {
       ],
     });
   });
+
+  // Stardust: a shell of tiny dark chips floating around the constellation —
+  // the "big graph in a bigger universe" read. Deterministic golden-angle
+  // layout; proxies are too small for the occlusion set, so they cost one
+  // analytic intersect each and nothing else.
+  {
+    const GA2 = Math.PI * (3 - Math.sqrt(5));
+    for (let d = 0; d < 22; d++) {
+      const t = (d + 0.5) / 22;
+      const y = 1 - 2 * t;
+      const rXZ = Math.sqrt(Math.max(0, 1 - y * y));
+      const a = GA2 * d * 7.3;
+      const shell = 4.2 + 1.8 * Math.sin(d * 2.9);
+      const sz = 0.09 + 0.06 * Math.sin(d * 1.7) ** 2;
+      subjects.push({
+        id: `dust-${d}`,
+        type: 'box',
+        args: { dims: [sz * 2.2, sz, sz] },
+        transform: {
+          translate: [Math.cos(a) * rXZ * shell, 2.2 + y * shell * 0.55, Math.sin(a) * rXZ * shell],
+          rotate: [0, (d * 0.9) % 3.1, 0],
+        },
+        material: { hue: 0.62, sat: 0.2, value: 0.3, kind: 'normal', roughness: 0.5 },
+        animation: [
+          {
+            channel: 'transform.translate.y',
+            expr: `${(2.2 + y * shell * 0.55).toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.05 + 0.02 * (d % 3)).toFixed(2)} * sin(${(0.3 + 0.05 * (d % 5)).toFixed(2)} * t + ${((d * 1.3) % 6.28).toFixed(2)})`,
+          },
+        ],
+      });
+    }
+  }
 
   // ---- camera: five beats, network variation ---------------------------------
   const hubP = pos[hub];

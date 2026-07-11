@@ -9,7 +9,7 @@ import { getEnvironment } from './environments.js';
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
 // area-proportional boundary radii (sqrt of magnitude), plus a tip. Length N+1.
-export function magnitudeToRadii(magnitude, maxR = 1.4, tipR = 0.12) {
+export function magnitudeToRadii(magnitude, maxR = 1.8, tipR = 0.14) {
   const m = (magnitude || []).map((x) => Math.max(0, Number(x) || 0));
   const mMax = Math.max(...m, 1);
   const r = m.map((x) => Math.max(tipR, maxR * Math.sqrt(x / mMax)));
@@ -56,7 +56,7 @@ export function renderSequence(ir, opts = {}) {
   const order = ir.order && ir.order.length === N ? ir.order : nodes.map((_, i) => i);
   const emphasis = new Set(ir.emphasis || [N - 1]);
 
-  const stageHeight = 0.55,
+  const stageHeight = 0.68,
     gap = 0.12;
   const radii = magnitudeToRadii(mag, 1.4, 0.12);
   const totalH = N * stageHeight + (N - 1) * gap;

@@ -66,7 +66,7 @@ export function renderMagnitude(ir, opts = {}) {
   const W = 0.72; // monolith footprint
   const gapX = 0.55;
   const stride = W + gapX;
-  const H_MAX = 3.4;
+  const H_MAX = 4.8; // monumental: the champion TOWERS (analytic engine pays for it)
   const height = (i) => Math.max(0.12, (Number(mag[i]) / mMax) * H_MAX);
   const xOf = (i) => (i - (N - 1) / 2) * stride;
 
@@ -114,6 +114,33 @@ export function renderMagnitude(ir, opts = {}) {
     if (!emphasis.has(i)) craft.pattern = 'cracked'; // stone grain; the gold champion stays polished
     subjects.push(craft);
   });
+
+  // Flanking stone rows: two receding lines of black slabs behind the row —
+  // perspective guides converging on the data, and their long directional
+  // shadows dress the floor for free (analytic soft shadows).
+  const rowSpanG = (N - 1) * stride + W;
+  for (let g = 0; g < 3; g++) {
+    const gh = 2.2 + g * 1.3;
+    for (const side of [-1, 1]) {
+      subjects.push({
+        id: `guard-${side < 0 ? 'l' : 'r'}-${g}`,
+        type: 'box',
+        args: { dims: [0.9, gh, 0.5] },
+        transform: {
+          translate: [side * (rowSpanG / 2 + 2.6 + g * 1.4), gh / 2, -2.4 - g * 2.2],
+          rotate: [0, side * 0.3, 0],
+        },
+        material: {
+          hue: 0.62,
+          sat: 0.25,
+          value: 0.14,
+          kind: 'normal',
+          roughness: 0.5,
+          clearcoat: 0.35,
+        },
+      });
+    }
+  }
 
   // ---- camera: five beats, magnitude variation --------------------------------
   const rowSpan = (N - 1) * stride + W;
@@ -163,8 +190,8 @@ export function renderMagnitude(ir, opts = {}) {
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
     duration: 1.0,
-    pos: [gx + 0.75, 0.35, 1.35],
-    target: [gx, gH * 0.85, 0],
+    pos: [gx + 0.75, 0.22, 1.3],
+    target: [gx, gH * 0.9, 0],
     fov: 44,
     transition: 'cut',
     beat: 'super',
