@@ -48,7 +48,19 @@ export const SCAFFOLDS = [
     label: 'VC Pitch Deck',
     description: 'Seed/Series A fundraise pitch (Sequoia / YC structure)',
     audience: 'vc, angel, partners',
-    keywords: ['pitch', 'fundraise', 'series', 'seed', 'investor', 'vc', 'ask', 'tam'],
+    keywords: [
+      'pitch',
+      'fundraise',
+      'series',
+      'seed',
+      'investor',
+      'vc',
+      'ask',
+      'tam',
+      '融资',
+      '路演',
+      '估值',
+    ],
     slots: [
       {
         name: 'cover',
@@ -224,7 +236,7 @@ export const SCAFFOLDS = [
     label: 'Product Launch',
     description: 'Announce a new product, feature, or release',
     audience: 'customer, press, internal',
-    keywords: ['launch', 'release', 'announcement', 'new', 'introducing'],
+    keywords: ['launch', 'release', 'announcement', 'new', 'introducing', '发布', '上线'],
     slots: [
       {
         name: 'cover',
@@ -293,7 +305,19 @@ export const SCAFFOLDS = [
     label: 'Quarterly Business Review',
     description: 'Internal Q review — KPIs, wins, challenges, outlook',
     audience: 'exec, board, manager, customer-success',
-    keywords: ['qbr', 'quarterly', 'review', 'q1', 'q2', 'q3', 'q4', 'business review'],
+    keywords: [
+      'qbr',
+      'quarterly',
+      'review',
+      'q1',
+      'q2',
+      'q3',
+      'q4',
+      'business review',
+      '季度',
+      '复盘',
+      '业务回顾',
+    ],
     slots: [
       {
         name: 'cover',
@@ -498,7 +522,19 @@ export const SCAFFOLDS = [
     label: 'Business Plan',
     description: 'Formal multi-section plan for bank / advisor / partner',
     audience: 'bank, advisor, partner, internal',
-    keywords: ['business plan', 'plan', 'strategy', 'roadmap', 'go-to-market'],
+    keywords: [
+      'business plan',
+      'plan',
+      'strategy',
+      'roadmap',
+      'go-to-market',
+      '商业计划',
+      '经济模型',
+      '设计文档',
+      '白皮书',
+      '产品设计',
+      '商业模式',
+    ],
     slots: [
       {
         name: 'cover',
@@ -575,7 +611,17 @@ export const SCAFFOLDS = [
     label: 'Vision & Mission',
     description: 'Company vision, mission, values, principles',
     audience: 'employee, prospect, partner',
-    keywords: ['vision', 'mission', 'values', 'principles', 'culture', 'manifesto'],
+    keywords: [
+      'vision',
+      'mission',
+      'values',
+      'principles',
+      'culture',
+      'manifesto',
+      '愿景',
+      '使命',
+      '价值观',
+    ],
     slots: [
       { name: 'cover', title: 'Title', purpose: 'Brand statement', recommended_atoms: ['cover'] },
       {
@@ -640,7 +686,18 @@ export const SCAFFOLDS = [
     label: 'Strategic Plan',
     description: 'Annual planning — SWOT + goals + initiatives + metrics',
     audience: 'exec, board, manager',
-    keywords: ['strategic', 'strategy', 'annual', 'planning', 'swot', 'goals', 'initiatives'],
+    keywords: [
+      'strategic',
+      'strategy',
+      'annual',
+      'planning',
+      'swot',
+      'goals',
+      'initiatives',
+      '战略',
+      '规划',
+      '路线图',
+    ],
     slots: [
       {
         name: 'cover',

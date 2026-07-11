@@ -40,7 +40,50 @@ export function chooseScaffoldForOutline(slides) {
     title: slides[0]?.title || '',
     bodyTexts: slides.map((sl) => [sl.title, ...(sl.body || [])].join(' ')),
   });
+  // Sprint 70 (ANTFUN doc lesson): a score this low is NOISE, not a signal —
+  // one stray keyword once picked 'HR & People Update' for a token-launchpad
+  // design doc and the mis-matched skeleton collapsed the deck to 1 page.
+  // Under the floor we fall back to news-briefing: the 14-slot general
+  // skeleton proven on arbitrary long text.
+  const MIN_SIGNAL = 6;
+  if (!ranked.length || ranked[0].score < MIN_SIGNAL) {
+    return { scaffold: getScaffold('news-briefing'), ranked, weakSignal: true };
+  }
   return { scaffold: getScaffold(ranked[0].id), ranked };
+}
+
+/**
+ * rescueEmptyMapping — Sprint 70: when the LLM mapper maps (almost) nothing
+ * beyond the cover — the mis-matched-skeleton failure mode — the deck must
+ * NEVER collapse to one page. Deterministically assign the best-scoring
+ * unmapped slides into empty non-cover slots until minPages is reachable.
+ * Mutates assignments in place; pure logic, exported for tests.
+ */
+export function rescueEmptyMapping(assignments, slides, minPages) {
+  const filledNonCover = assignments.filter((a) => !a.empty && a.slot.name !== 'cover');
+  if (filledNonCover.length > 0) return false; // mapper did its job
+  const taken = new Set(assignments.filter((a) => !a.empty).map((a) => a.slideIdx));
+  const empties = assignments.filter((a) => a.empty && a.slot.name !== 'cover');
+  let delivered = assignments.filter((a) => !a.empty).length;
+  for (const a of empties) {
+    if (delivered >= minPages) break;
+    let best = -1;
+    let bestScore = -Infinity;
+    for (let i = 0; i < slides.length; i++) {
+      if (taken.has(i)) continue;
+      const sc = scoreSlideForSlot(slides[i], a.slot);
+      if (sc > bestScore) {
+        bestScore = sc;
+        best = i;
+      }
+    }
+    if (best === -1) break;
+    a.empty = false;
+    a.slideIdx = best;
+    taken.add(best);
+    delivered++;
+  }
+  return true;
 }
 
 export async function newsToFullDeck(
@@ -93,6 +136,8 @@ export async function newsToFullDeck(
     slot: scaffold.slots[a.slotIdx],
     empty: !(typeof a.slideIdx === 'number' && a.slideIdx >= 0),
   }));
+
+  rescueEmptyMapping(assignments, slides, minPages);
 
   // Orphan rescue (Sprint 25): every unmapped outline slide's facts land in
   // the best-scoring filled slot as extra material.

@@ -9,6 +9,7 @@ import {
   newsToFullDeck,
   chooseScaffoldForOutline,
   retryFailedSlot,
+  rescueEmptyMapping,
 } from '../src/present/news/full-deck.js';
 
 let pass = 0;
@@ -234,6 +235,51 @@ const deck = {
     threw2 = true;
   }
   ok(threw2, 'entry without liftParams rejected');
+}
+
+// ── Sprint 70: CJK ranker + weak-signal fallback + collapse rescue ──
+{
+  // CJK keywords: a Chinese QBR outline lands qbr with a strong signal
+  const cjkQbr = [
+    { title: '三季度业务复盘', body: ['季度营收与增长回顾'] },
+    { title: '下季度规划', body: ['战略目标'] },
+  ];
+  const p1 = chooseScaffoldForOutline(cjkQbr);
+  ok(!p1.weakSignal && p1.scaffold.id === 'qbr', `CJK 季度复盘 → qbr (${p1.scaffold.id})`);
+
+  // weak signal → news-briefing fallback (the ANTFUN lesson)
+  const nonsense = [{ title: '完全不知所云的内容', body: ['既无关键词也无结构信号的一段话'] }];
+  const p2 = chooseScaffoldForOutline(nonsense);
+  ok(
+    p2.weakSignal === true && p2.scaffold.id === 'news-briefing',
+    `weak signal falls back to news-briefing (${p2.scaffold.id})`,
+  );
+
+  // collapse rescue: only cover mapped → fill empties by heuristic score
+  const mkSlot2 = (name) => ({ name, title: name, purpose: name, recommendedAtoms: [] });
+  const asn = [
+    { slotIdx: 0, slot: mkSlot2('cover'), slideIdx: 0, empty: false },
+    { slotIdx: 1, slot: mkSlot2('overview'), empty: true },
+    { slotIdx: 2, slot: mkSlot2('details'), empty: true },
+    { slotIdx: 3, slot: mkSlot2('summary'), empty: true },
+  ];
+  const outlineSlides = [
+    { title: 'Cover', body: ['t'] },
+    { title: 'A', body: ['overview of the system'] },
+    { title: 'B', body: ['details of the design'] },
+    { title: 'C', body: ['summary and outlook'] },
+  ];
+  const did = rescueEmptyMapping(asn, outlineSlides, 4);
+  ok(did === true, 'collapse detected and rescued');
+  ok(
+    asn.filter((a) => !a.empty).length === 4,
+    `deck no longer collapses to cover (${asn.filter((a) => !a.empty).length} filled)`,
+  );
+  const healthy = [
+    { slotIdx: 0, slot: mkSlot2('cover'), slideIdx: 0, empty: false },
+    { slotIdx: 1, slot: mkSlot2('body'), slideIdx: 1, empty: false },
+  ];
+  ok(rescueEmptyMapping(healthy, outlineSlides, 4) === false, 'healthy mapping untouched');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
