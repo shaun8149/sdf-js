@@ -231,7 +231,7 @@ export function createFigure({
         const on =
           o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
         if (o.role === 'screen' && on) {
-          stageEls[i].style.top = `calc(26vh + ${slot} * 9.5vh)`;
+          stageEls[i].style.top = `calc(21vh + ${slot} * 9.5vh)`;
           slot++;
           lastOn = i;
         }
