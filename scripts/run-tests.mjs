@@ -219,6 +219,8 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-slide-reroll.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-retheme.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-decor.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-align.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-art-mount.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-deck-io.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-deck-contract.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-quality-lights.mjs' },

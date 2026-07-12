@@ -35,6 +35,33 @@ function clusterMedians(values, tol) {
   return out;
 }
 
+const SIGNIFICANT_OVERLAP = 0.25;
+
+function boxOf(s) {
+  return { x: s.x, y: s.y, w: s.w, h: s.h };
+}
+
+function overlapRatio(a, b) {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  if (w <= 0 || h <= 0) return 0;
+  const smaller = Math.min(a.w * a.h, b.w * b.h);
+  return smaller > 0 ? (w * h) / smaller : 0;
+}
+
+function createsNewSignificantOverlap(subjects, next, movable) {
+  for (let a = 0; a < movable.length; a++) {
+    for (let b = a + 1; b < movable.length; b++) {
+      const i = movable[a];
+      const j = movable[b];
+      const before = overlapRatio(boxOf(subjects[i]), boxOf(subjects[j]));
+      const after = overlapRatio(boxOf(next[i]), boxOf(next[j]));
+      if (before <= SIGNIFICANT_OVERLAP && after > SIGNIFICANT_OVERLAP) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * alignSceneData(sceneData, {grid, tol}) → a NEW sceneData with cleaned
  * subject geometry. Pure; the input is never mutated.
@@ -86,5 +113,8 @@ export function alignSceneData(sceneData, { grid = 8, tol = 14 } = {}) {
       h: Math.max(16, snap(bottoms[k]) - y),
     };
   }
+  // Edge cleanup is a view polish pass; never let it manufacture a layout
+  // overlap that the raw deck geometry (and quality gate) did not have.
+  if (createsNewSignificantOverlap(subjects, next, movable)) return sceneData;
   return { ...sceneData, subjects: next };
 }

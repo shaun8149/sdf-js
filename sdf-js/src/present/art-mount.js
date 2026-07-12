@@ -16,12 +16,16 @@
 
 /**
  * artMountOpts(mount, slot, baseRole) → partial renderSceneDataToCanvas opts.
- * Content pages are promoted to 'section' so EVERY page carries the banner
- * filmstrip (the mount is the deck's visual identity, not a per-page whim);
- * the strip rotates by slotIdx so no two banners start on the same mint.
+ * Content pages with a cover/banner surface are promoted to 'section' so
+ * every paintable art page carries the banner filmstrip (the mount is the
+ * deck's visual identity, not a per-page whim); the strip rotates by slotIdx
+ * so no two banners start on the same mint.
  */
 export function artMountOpts(mount, slot, baseRole) {
   if (!mount || !mount.cover) return null;
+  const subjects = Array.isArray(slot?.sceneData?.subjects) ? slot.sceneData.subjects : [];
+  const hasArtSurface = subjects.some((s) => s?.type === 'cover');
+  if (!hasArtSurface) return null;
   const role = baseRole === 'cover' || baseRole === 'agenda' ? baseRole : 'section';
   const out = { decorRole: role, decorArt: mount.cover };
   if (Array.isArray(mount.strip) && mount.strip.length) {

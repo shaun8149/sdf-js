@@ -65,5 +65,18 @@ function ok(cond, msg) {
   ok(scene.subjects[0].x === 41, 'input sceneData is never mutated');
 }
 
+// 5. cleanup never manufactures a new significant subject overlap
+{
+  const scene = {
+    subjects: [
+      { type: 'stat-badge', x: 40, y: 160, w: 16, h: 120 },
+      { type: 'kpi-card', x: 54, y: 160, w: 300, h: 120 },
+    ],
+  };
+  const out = alignSceneData(scene);
+  ok(out === scene, 'new >25% overlap rejects the paint-time alignment pass');
+  ok(out.subjects[0].x === 40 && out.subjects[1].x === 54, 'raw side-by-side geometry is preserved');
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed) process.exit(1);
