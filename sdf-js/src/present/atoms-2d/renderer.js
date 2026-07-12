@@ -149,7 +149,11 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       });
     }
   }
-  if (decor && !coverArt && !isPureCover && !bannerCanvas) {
+  // Sprint 84: mounted pages can ask for the subtle body underlay TOO
+  // (opts.decorUnder) — banner art + body elements in the mount's palette,
+  // instead of clean-but-voiceless content pages.
+  const wantUnder = bannerCanvas ? opts.decorUnder === true : !coverArt && !bannerCanvas;
+  if (decor && !isPureCover && wantUnder) {
     drawDecor(ctx, decor, {
       palette,
       x: 0,

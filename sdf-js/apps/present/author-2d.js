@@ -18,7 +18,12 @@ import {
   slotRoleOf,
 } from '../../src/present/retheme.js';
 import { decorFromHash, mintDecorHash } from '../../src/present/decor/registry.js';
-import { artMountOpts, loadArtMount, fetchMintManifest } from '../../src/present/art-mount.js';
+import {
+  artMountOpts,
+  loadArtMount,
+  fetchMintManifest,
+  mountPaletteOverride,
+} from '../../src/present/art-mount.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -276,6 +281,9 @@ function slotRenderOpts(theme, deck, slot) {
   };
   if (artMount && decorVisEl.value !== 'off') {
     Object.assign(base, artMountOpts(artMount, slot, slotRoleOf(slot)) || {});
+    // Sprint 84: the deck speaks the artwork's colors — accents/numbers
+    // across every atom come from the mount's extracted palette
+    base.palette = mountPaletteOverride(base.palette, artMount);
   }
   return base;
 }

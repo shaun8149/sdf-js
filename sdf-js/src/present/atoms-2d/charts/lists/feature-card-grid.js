@@ -239,15 +239,23 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       curY += titleFs + 6;
     }
 
-    // Body — word-wrap up to 4 lines; ellipsis (never mid-word) on the last
-    // line if the text doesn't fit.
-    const bodyFs = Math.round(rowH * 0.09);
+    // Body — word-wrap capped by the space actually LEFT in the card
+    // (Sprint 84, user: 右侧字体过大超出范围 — a 4-line budget ignored the
+    // card bottom and let dense CJK bodies spill past the rounded rect).
+    let bodyFs = Math.round(rowH * 0.09);
+    const cardBottom = cardY + cardH - cardPad;
+    let fitLines = Math.floor((cardBottom - curY) / (bodyFs + 2));
+    if (fitLines < 2 && bodyFs > 10) {
+      bodyFs = Math.max(10, Math.round(bodyFs * 0.82)); // one shrink step buys a line
+      fitLines = Math.floor((cardBottom - curY) / (bodyFs + 2));
+    }
+    const maxLines = Math.max(1, Math.min(4, fitLines));
     ctx.font = `500 ${bodyFs}px Inter, system-ui`;
     ctx.fillStyle = rgbaCss(fg, 0.55);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    if (f.body) {
-      const lines = wrapText(ctx, f.body, textMaxW, 4);
+    if (f.body && maxLines > 0) {
+      const lines = wrapText(ctx, f.body, textMaxW, maxLines);
       for (const line of lines) {
         ctx.fillText(line, iconCX, curY);
         curY += bodyFs + 2;

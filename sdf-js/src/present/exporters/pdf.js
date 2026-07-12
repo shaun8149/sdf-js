@@ -11,7 +11,7 @@
 
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 import { slotPalette, slotRoleOf } from '../retheme.js';
-import { artMountOpts } from '../art-mount.js';
+import { artMountOpts, mountPaletteOverride } from '../art-mount.js';
 
 const JSPDF_CDN = 'https://esm.sh/jspdf@2.5.2';
 let jsPDF = null;
@@ -69,7 +69,9 @@ export async function exportDeckToPDF(deck, opts = {}) {
     // preview — decoration layer included, per-atom errors non-fatal.
     try {
       await renderSceneDataToCanvas(canvas, slot.sceneData || { subjects: [] }, {
-        palette: slotPalette(deck.theme, slot),
+        palette: opts.artMount
+          ? mountPaletteOverride(slotPalette(deck.theme, slot), opts.artMount)
+          : slotPalette(deck.theme, slot),
         decorRole: slotRoleOf(slot),
         decor: deck.decor
           ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx }

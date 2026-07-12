@@ -81,8 +81,19 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const colW = (w - colLabelW) / cols.length;
   const headerH = Math.round(tableH * 0.14);
   const rowH = (tableH - headerH) / rows.length;
-  const fontSize = Math.max(9, Math.min(13, Math.round(rowH * 0.38)));
-  const headerFontSize = Math.max(9, Math.min(13, Math.round(headerH * 0.35)));
+  // Sprint 84 (user: 表格字太小看不清): the 13px cap starved tall rows —
+  // let type grow with the row up to 19px; per-cell shrink guards width.
+  const fontSize = Math.max(12, Math.min(19, Math.round(rowH * 0.38)));
+  const headerFontSize = Math.max(12, Math.min(19, Math.round(headerH * 0.4)));
+  const fitWidth = (text, maxW, weight, fs) => {
+    let f = fs;
+    ctx.font = `${weight} ${f}px Inter, system-ui, sans-serif`;
+    while (f > 10 && ctx.measureText(text).width > maxW) {
+      f--;
+      ctx.font = `${weight} ${f}px Inter, system-ui, sans-serif`;
+    }
+    return f;
+  };
 
   // Column headers
   for (let c = 0; c < cols.length; c++) {
@@ -98,7 +109,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Header text
     ctx.save();
     ctx.fillStyle = col.highlight ? 'rgba(255,255,255,0.97)' : rgbCss(fg);
-    ctx.font = `700 ${headerFontSize}px Inter, system-ui, sans-serif`;
+    fitWidth(String(col.label || ''), colW - 12, '700', headerFontSize);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(col.label || ''), cx2 + colW / 2, tableY + headerH / 2);
@@ -120,7 +131,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Feature label
     ctx.save();
     ctx.fillStyle = rgbCss(fg);
-    ctx.font = `500 ${fontSize}px Inter, system-ui, sans-serif`;
+    fitWidth(String(row.label || ''), colLabelW - PAD * 1.5, '500', fontSize);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(row.label || ''), x + PAD, rowY + rowH / 2);
@@ -146,7 +157,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         // Text value
         ctx.save();
         ctx.fillStyle = isHighlight ? rgbCss(accent) : rgbCss(fg);
-        ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+        fitWidth(String(val), colW - 10, '600', fontSize);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(String(val), cellCX, cellCY);
