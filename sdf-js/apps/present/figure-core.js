@@ -131,6 +131,9 @@ export function createFigure({
       if (o.role === 'value' && /^[\d,]+$/.test(o.text)) {
         o._countTarget = Number(o.text.replace(/,/g, ''));
       }
+      // section color program: the value chip fills with its station's
+      // chapter color (falls back to the stylesheet blue)
+      if (o.role === 'value' && o.accentColor) d.style.background = o.accentColor;
       d.textContent = o.text;
       document.body.appendChild(d);
       return d;
@@ -241,8 +244,14 @@ export function createFigure({
       // reads at full strength, spoken-already lines fall back. (`cur` is the
       // latest revealed subtitle — reveal times are beat-synced by design.)
       for (let i = 0; i < stageItems.length; i++)
-        if (stageItems[i].role === 'screen')
-          stageEls[i].classList.toggle('cur', i === lastOn);
+        if (stageItems[i].role === 'screen') {
+          const isCur = i === lastOn;
+          stageEls[i].classList.toggle('cur', isCur);
+          // the CURRENT line reads in the station's chapter color — the
+          // subtitle column and the geometry share one palette
+          stageEls[i].style.color =
+            isCur && stageItems[i].accentColor ? stageItems[i].accentColor : '';
+        }
     }
     // Pass 1: project + opacity/count-up; collect visible labels for layout.
     const placedRects = []; // near labels claim space first

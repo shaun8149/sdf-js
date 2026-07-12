@@ -22,7 +22,10 @@ import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
-const monoMat = (i, N, emphasized) => {
+// Section color programming: the station's chapter accent drives the family
+// hue (deck-level color program, shared palette with the 2D end); gold stays
+// the deck-wide CHAMPION mark. No accent → the classic blue family.
+const monoMat = (i, N, emphasized, accent) => {
   if (emphasized)
     return {
       hue: 0.11,
@@ -35,6 +38,15 @@ const monoMat = (i, N, emphasized) => {
       clearcoat: 0.6,
     };
   const k = N > 1 ? i / (N - 1) : 0;
+  if (accent)
+    return {
+      hue: accent.h,
+      sat: Math.min(1, accent.s * (0.8 + 0.25 * k)),
+      value: Math.max(0.28, accent.v * (1.0 - 0.3 * k)),
+      kind: 'normal',
+      roughness: 0.3,
+      clearcoat: 0.45,
+    };
   return {
     hue: 0.55 + 0.09 * k,
     sat: 0.62 + 0.14 * k,
@@ -103,7 +115,7 @@ export function renderMagnitude(ir, opts = {}) {
       type: 'rounded_box', // beveled edges — a hewn stone, not a raw prim
       args: { dims: [W, H, W], cornerR: 0.045 },
       transform: { translate: [xOf(i), yFinal, 0] },
-      material: monoMat(i, N, emphasis.has(i)),
+      material: monoMat(i, N, emphasis.has(i), opts.accent),
       animation: [
         {
           channel: 'transform.translate.y',

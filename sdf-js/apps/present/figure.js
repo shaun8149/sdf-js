@@ -5,6 +5,7 @@
 // (shared with the author page).
 import { renderIR } from '../../src/scene/render-ir.js';
 import { assembleDeck } from '../../src/scene/assemble-deck.js';
+import { getTheme } from '../../src/present/themes.js';
 import { createFigure } from './figure-core.js';
 import { attachPresenter } from './presenter.js';
 
@@ -21,7 +22,15 @@ const deckName = params.get('deck');
 const layout = params.get('layout') || undefined; // line | radial | grid
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
-const scene = deckName ? assembleDeck(ir, { env, layout, stage }) : renderIR(ir, { env, stage });
+// Section color program: the SAME palette the 2D end ships (pitch-spectrum,
+// chromotome kov_06 — ink ground + vermilion anchor). One content, two
+// mediums, one visual system. ?palette=<theme-id> to swap, ?palette=0 off.
+const paletteId = params.get('palette');
+const theme = paletteId === '0' ? null : getTheme(paletteId || 'pitch-spectrum');
+const palette = theme ? { anchor: theme.accent, colors: theme.colors } : null;
+const scene = deckName
+  ? assembleDeck(ir, { env, layout, stage, palette })
+  : renderIR(ir, { env, stage });
 show(scene);
 // script spans may ride in the deck fixture (teleprompter); presenter uses them
 if (present) attachPresenter({ studio: window.__figStudio, scene, script: ir.script || null });
