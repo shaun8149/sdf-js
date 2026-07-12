@@ -21,9 +21,24 @@ const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || 
 const TILE_MAT = { hue: 0.6, sat: 0.1, value: 0.3, kind: 'normal', roughness: 0.7, clearcoat: 0.1 };
 const itemMat = (emphasized, accent) =>
   emphasized
-    ? { hue: 0.11, sat: 0.78, value: 0.95, glow: 0.22, kind: 'normal', roughness: 0.22, clearcoat: 0.6 }
+    ? {
+        hue: 0.11,
+        sat: 0.78,
+        value: 0.95,
+        glow: 0.22,
+        kind: 'normal',
+        roughness: 0.22,
+        clearcoat: 0.6,
+      }
     : accent
-      ? { hue: accent.h, sat: accent.s, value: Math.max(0.32, accent.v * 0.85), kind: 'normal', roughness: 0.3, clearcoat: 0.45 }
+      ? {
+          hue: accent.h,
+          sat: accent.s,
+          value: Math.max(0.32, accent.v * 0.85),
+          kind: 'normal',
+          roughness: 0.3,
+          clearcoat: 0.45,
+        }
       : { hue: 0.57, sat: 0.55, value: 0.72, kind: 'normal', roughness: 0.3, clearcoat: 0.45 };
 
 // ---- evolution form ------------------------------------------------------------
@@ -61,11 +76,27 @@ function renderEvolutionForm(ir, env) {
 
   const subjects = [];
   const overlay = [
-    { text: String(ir.title || 'Evolution').toUpperCase(), anchor: [0, ORB_Y + 1.6, 0], role: 'title' },
+    {
+      text: String(ir.title || 'Evolution').toUpperCase(),
+      anchor: [0, ORB_Y + 1.6, 0],
+      role: 'title',
+    },
   ];
   // axis labels stay ANCHORED: they name the two strata
   overlay.push({ text: String(xCats[0]), anchor: [(D / 2) * 3.4 + 1.2, 0.75, 0], role: 'card' });
   overlay.push({ text: String(xCats[1]), anchor: [(D / 2) * 3.4 + 1.2, ORB_Y, 0], role: 'card' });
+  // 2D-fidelity: the DIMENSION names (yCats — the source page's column
+  // headers, e.g. 产生和消费方式/流动方式/终端) are payload, not chrome; the
+  // original page names WHAT changed, not just how. One footer card per
+  // column, revealed with the establishing beat.
+  yCats.forEach((yc, yi) => {
+    overlay.push({
+      text: String(yc),
+      anchor: [colX(yi), 0.06, 1.5],
+      role: 'card',
+      revealAt: 0.3 + yi * 0.15,
+    });
+  });
 
   let k = 0;
   const orbBeats = [];
@@ -126,7 +157,8 @@ function renderEvolutionForm(ir, env) {
   }
 
   const riseDone = introLead + k * holdEach + 0.4;
-  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : ir.cells.findIndex((c) => c[0] === 1);
+  const emphasisIdx =
+    ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : ir.cells.findIndex((c) => c[0] === 1);
   const [, eyi] = ir.cells[emphasisIdx] || [1, 0];
   const ex = colX(eyi);
   const span = D * 3.4;
@@ -284,7 +316,14 @@ export function renderMatrix(ir, opts = {}) {
       type: 'box',
       args: { dims: [fw, fh, fw * 0.5] },
       transform: { translate: [fx, fy, fz], rotate: [0, 0.5 * fi - 0.9, 0] },
-      material: { hue: 0.62, sat: 0.25, value: 0.14, kind: 'normal', roughness: 0.5, clearcoat: 0.35 },
+      material: {
+        hue: 0.62,
+        sat: 0.25,
+        value: 0.14,
+        kind: 'normal',
+        roughness: 0.5,
+        clearcoat: 0.35,
+      },
       animation: [
         {
           channel: 'transform.translate.y',
@@ -352,13 +391,27 @@ export function renderMatrix(ir, opts = {}) {
 
   // ---- overlay: title, axis labels, item labels --------------------------------
   const overlay = [
-    { text: String(ir.title || 'Matrix').toUpperCase(), anchor: [0, cy + boardH / 2 + 0.8, 0], role: 'title' },
+    {
+      text: String(ir.title || 'Matrix').toUpperCase(),
+      anchor: [0, cy + boardH / 2 + 0.8, 0],
+      role: 'title',
+    },
   ];
   xCats.forEach((c, xi) =>
-    overlay.push({ text: String(c), anchor: [cellX(xi), cy + boardH / 2 + 0.32, 0], role: 'card', align: 'center' }),
+    overlay.push({
+      text: String(c),
+      anchor: [cellX(xi), cy + boardH / 2 + 0.32, 0],
+      role: 'card',
+      align: 'center',
+    }),
   );
   yCats.forEach((c, yi) =>
-    overlay.push({ text: String(c), anchor: [-boardW / 2 - 0.55, cellY(yi), 0], role: 'card', align: 'right' }),
+    overlay.push({
+      text: String(c),
+      anchor: [-boardW / 2 - 0.55, cellY(yi), 0],
+      role: 'card',
+      align: 'right',
+    }),
   );
   order.forEach((i, k) => {
     const [xi, yi] = ir.cells[i];
