@@ -23,6 +23,7 @@ import {
   loadArtMount,
   fetchMintManifest,
   mountPaletteOverride,
+  mountUnderlayDecor,
 } from '../../src/present/art-mount.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
@@ -284,6 +285,8 @@ function slotRenderOpts(theme, deck, slot) {
     // Sprint 84: the deck speaks the artwork's colors — accents/numbers
     // across every atom come from the mount's extracted palette
     base.palette = mountPaletteOverride(base.palette, artMount);
+    // Sprint 85: 内页纹样 — 异源默认, 同源可选 (user: Naïve×drift-web 和谐)
+    base.decor = mountUnderlayDecor(base.decor, artMount, window.__underlayMode || 'hetero');
   }
   return base;
 }
