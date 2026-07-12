@@ -16,7 +16,7 @@ import { assembleDeck } from '../src/scene/assemble-deck.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const GOLDEN_DIR = resolve(__dirname, '../fixtures/golden');
 const DECK = JSON.parse(readFileSync(resolve(__dirname, '../scenes/ir/bytedance-bp.json'), 'utf8'));
-const LAYOUTS = ['line', 'radial', 'grid'];
+const LAYOUTS = ['line', 'radial', 'grid', 'courtyard'];
 const UPDATE = process.argv.includes('--update');
 
 let pass = 0,
