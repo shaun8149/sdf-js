@@ -770,6 +770,7 @@ function kpiSlotToIR(subjects) {
 // atom arg fields — narration goes to the DOM subtitle layer, so we only lift
 // label-length strings, never paragraphs.
 const HOLD_TEXT_FIELDS = ['subtitle', 'tagline', 'quote', 'caption'];
+const HOLD_MAX_BULLETS = 6; // render-hold handles 6 (投资亮点 is the reference page)
 export function holdSlotToIR(sceneData, label = '') {
   const subjects = Array.isArray(sceneData?.subjects)
     ? sceneData.subjects
@@ -782,14 +783,42 @@ export function holdSlotToIR(sceneData, label = '') {
   const push = (v) => {
     if (typeof v !== 'string') return;
     const t = v.trim();
-    if (t && t.length <= 90 && t !== title && !nodes.includes(t) && nodes.length < 4) nodes.push(t);
+    if (t && t.length <= 90 && t !== title && !nodes.includes(t) && nodes.length < HOLD_MAX_BULLETS)
+      nodes.push(t);
   };
+  const pair = (val, lab) =>
+    val != null && lab
+      ? `${String(val).trim()} · ${String(lab).trim()}`
+      : val != null
+        ? String(val)
+        : lab;
+  // PASS 1 — VALUE PAYLOADS first (2D-fidelity: numbers are payload, the Rule
+  // 18-24 covenant — a $81M on the source page must never vanish): kpi-card /
+  // stat-banner value+label pairs, donut centre readouts, fishbone effect,
+  // kanban board title. These claim bullet slots before any prose does.
+  for (const s of subjects) {
+    const a = (s && s.args) || {};
+    if (s.type === 'kpi-card' || s.type === 'stat-banner') push(pair(a.value, a.label));
+    // multi-KPI dashboards that failed magnitude aggregation (mixed units)
+    // still carry their numbers — each one is payload
+    if (s.type === 'dashboard-multi-kpi-composite' && Array.isArray(a.kpis))
+      for (const kpi of a.kpis) push(pair(kpi && kpi.value, kpi && kpi.label));
+    if (a.centerValue != null) push(pair(a.centerValue, a.centerLabel));
+    if (typeof a.effect === 'string') push(a.effect);
+    if (typeof a.title === 'string' && s.type !== 'cover') push(a.title);
+  }
+  // PASS 2 — short prose: quotes/subtitles, item labels, pillar headings,
+  // kanban column names. Paragraph-length text stays in the DOM subtitle
+  // layer's territory and is never lifted (two-text-systems rule).
   for (const s of subjects) {
     const a = (s && s.args) || {};
     for (const f of HOLD_TEXT_FIELDS) push(a[f]);
     if (Array.isArray(a.items))
       for (const it of a.items)
         push(typeof it === 'string' ? it : it && (it.label ?? it.title ?? it.text));
+    if (Array.isArray(a.pillars)) for (const p of a.pillars) push(p && p.heading);
+    if (Array.isArray(a.columns)) for (const c of a.columns) push(c && c.name);
+    if (Array.isArray(a.branches)) for (const b of a.branches) push(b && b.label);
   }
   return { structure: 'hold', title, nodes };
 }
