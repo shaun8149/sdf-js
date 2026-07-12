@@ -127,6 +127,16 @@
         display: flex;
         gap: 8px;
       }
+      .swatches {
+        display: flex;
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 7px;
+      }
+      .swatches span {
+        flex: 1;
+      }
       .strip-row img {
         height: 74px;
         max-width: none;
@@ -183,6 +193,14 @@
             <div class="meta">
               <div class="name">${m.id} · ${m.name}</div>
               <div class="artist">${m.artist || ''}</div>
+              ${
+                m.palette
+                  ? `<div class="swatches">${m.palette.colors
+                      .slice(0, 6)
+                      .map((c) => `<span style="background:rgb(${c.join(',')})"></span>`)
+                      .join('')}</div>`
+                  : ''
+              }
               <div class="badges">
                 <span class="badge ${badgeClass(m.license)}">${m.license || '?'}</span>
                 <span class="badge">${m.type || ''}</span>

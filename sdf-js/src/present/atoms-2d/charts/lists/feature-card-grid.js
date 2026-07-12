@@ -144,7 +144,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const features = Array.isArray(args.features) ? args.features : [];
   const bg = args.bg ?? 'cards';
   const accent = palette.accent ?? [30, 80, 180];
-  const fg = palette.silhouetteColor ?? [20, 28, 50];
+  const themeFg = palette.silhouetteColor ?? [20, 28, 50];
+  // Sprint 87: cards are WHITE — text ink must be dark regardless of theme
+  // (dark themes carry a light fg that ghosts on paper; the kpi lesson)
+  const fgLum = (0.2126 * themeFg[0] + 0.7152 * themeFg[1] + 0.0722 * themeFg[2]) / 255;
+  const fg = args.bg === 'plain' ? themeFg : fgLum > 0.55 ? [42, 44, 50] : themeFg;
   const bgColor = palette.bg ?? [248, 246, 240];
 
   // Background
@@ -201,7 +205,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
 
     // Icon
-    const iconR = Math.min(rowH * 0.15, colW * 0.12, 40);
+    // Sprint 87 (user: 图标做大): anchor, not footnote
+    const iconR = Math.min(rowH * 0.19, colW * 0.15, 52);
     const iconCX = cellX + colW / 2;
     const iconCY = cardY + cardPad + iconR;
 

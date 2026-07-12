@@ -102,7 +102,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const rows = useTwoRows ? 2 : 1;
   const colW = (w - PAD * 2) / cols;
   const rowH = (y + h - plotTop - PAD) / rows;
-  const baseIconR = Math.min(rowH * 0.32, colW * 0.32, 64);
+  const baseIconR = Math.min(rowH * 0.38, colW * 0.36, 76); // Sprint 87 图标做大
   // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
   const heroBoost = h >= 360 ? 1.3 : 1.0;
   const iconR = baseIconR * iconSizeMultiplier * heroBoost;

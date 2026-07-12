@@ -142,7 +142,9 @@ export async function loadArtMount(entry, base) {
     artist: entry.artist,
     cover,
     strip,
-    palette: extractMountPalette(cover),
+    // Sprint 87: prebaked palette from the manifest wins (bake once, render
+    // anywhere — the gallery shows the same swatches the deck will wear)
+    palette: entry.palette || extractMountPalette(cover),
   };
 }
 
@@ -224,6 +226,46 @@ export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
   const homo = MOUNT_FAMILY_OF[mount.id];
   const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id);
   return { ...baseDecor, family };
+}
+
+// ── Sprint 87: 装裱推荐 — score mounts against the deck theme ───────────────
+function hueOf([r, g, b]) {
+  const mx = Math.max(r, g, b);
+  const mn = Math.min(r, g, b);
+  if (mx === mn) return 0;
+  let h;
+  if (mx === r) h = ((g - b) / (mx - mn)) % 6;
+  else if (mx === g) h = (b - r) / (mx - mn) + 2;
+  else h = (r - g) / (mx - mn) + 4;
+  return (h * 60 + 360) % 360;
+}
+
+/**
+ * rankMounts(entries, themeAccent) → entries sorted best-first with _score.
+ * Scoring, all heuristics: hue RELATIONSHIP to the theme accent (analogous /
+ * complementary / triadic read as designed, arbitrary angles as noise),
+ * accent saturation (vivid accents carry the numerals), palette richness,
+ * curation tier. Needs prebaked entry.palette (bake step) — unbaked entries
+ * sink to the bottom rather than erroring.
+ */
+export function rankMounts(entries, themeAccent) {
+  const themeHue = hueOf(themeAccent || [60, 100, 200]);
+  const scored = entries.map((m) => {
+    if (m.status !== 'ok' || !m.palette?.accent) return { ...m, _score: -1 };
+    const [r, g, b] = m.palette.accent;
+    const sat = (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+    const dh = Math.abs(((hueOf(m.palette.accent) - themeHue + 540) % 360) - 180); // 0..180
+    const rel = Math.min(
+      Math.abs(180 - dh), // analogous (dh≈180 means same hue after the fold above)
+      Math.abs(dh), // complementary
+      Math.abs(60 - dh), // triadic-ish
+    );
+    const harmony = Math.exp(-(rel * rel) / (2 * 28 * 28)); // σ 28°
+    const richness = Math.min(1, (m.palette.colors?.length || 0) / 5);
+    const tier = m.curation === 'curated' ? 1 : m.curation === 'playground' ? 0.6 : 0.4;
+    return { ...m, _score: harmony * 2 + sat * 1.4 + richness * 0.6 + tier * 0.5 };
+  });
+  return scored.sort((a2, b2) => b2._score - a2._score);
 }
 
 /** fetchMintManifest(base) → manifest array, or null when the cache is absent. */
