@@ -189,15 +189,13 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       ctx.beginPath();
       ctx.rect(bx, by, bw, bh);
       ctx.clip();
-      if (decorArt && role === 'agenda') {
-        // Sprint 85 (user: 目录页抬头小画布换完整画布) — the agenda banner
-        // shows the LARGE piece as a full-bleed band crop; sparse smalls
-        // stay on section/content banners
+      if (decorArt) {
+        // Sprint 86 (user: 内页标题也用大画布) — EVERY banner shows the
+        // LARGE piece as a full-bleed band crop; the sparse-smalls mode
+        // remains only as a fallback when no large exists
         drawArtCover(decorArt, bx, by, bw, bh);
       } else if (decorArtStrip) {
         drawArtStrip(bx, by, bw, bh);
-      } else if (decorArt) {
-        drawArtCover(decorArt, bx, by, bw, bh);
       } else {
         const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
         ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
