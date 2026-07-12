@@ -17,6 +17,7 @@
 
 import { renderAtom, isAtom2DType } from './registry.js';
 import { drawDecor } from '../decor/registry.js';
+import { alignSceneData } from '../align.js';
 
 const DEFAULT_PALETTE = {
   bg: [247, 244, 224],
@@ -48,7 +49,11 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
-  const subjects = Array.isArray(sceneData?.subjects) ? sceneData.subjects : [];
+  // Sprint 83: layout hygiene — near-miss edges cluster + snap to an 8px
+  // lattice at paint time (deck.json keeps raw lift geometry). opts.align
+  // === false opts out (visual-audit replays raw coordinates).
+  const aligned = opts.align === false ? sceneData : alignSceneData(sceneData);
+  const subjects = Array.isArray(aligned?.subjects) ? aligned.subjects : [];
 
   // Decoration layer (Sprint 41): generative backdrop, theme-constrained +
   // seeded. Content slides get it UNDER the atoms ('subtle'); pure-cover
@@ -74,8 +79,11 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // decorArt is present.
   // Sprint 81: opts.decorArtStrip — an ARRAY of SMALL-canvas mints for the
   // title banner (user: 标题上的作品小画布更好 — a small canvas lets the
-  // whole composition sit inside the band instead of a zoomed crop). The
-  // strip tiles fit-height across the band like a gallery filmstrip.
+  // whole composition sit inside the band instead of a zoomed crop).
+  // Sprint 83 (user: 小画布不要排满, 目录页标题上放 1-2 个就好): the strip
+  // is SPARSE by default — an ink ground with 1-2 framed pieces on the
+  // right, breathing room instead of a wall-to-wall filmstrip. Callers can
+  // widen via opts.decorArtStripMax.
   const decorArt = opts.decorArt || null;
   const decorArtStrip =
     Array.isArray(opts.decorArtStrip) && opts.decorArtStrip.length ? opts.decorArtStrip : null;
@@ -98,18 +106,30 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     const sh = dh / sc;
     ctx.drawImage(img, (iw - sw) / 2, (ih - sh) / 2, sw, sh, dx, dy, dw, dh);
   };
-  // gallery filmstrip: whole small mints at band height, butt-joined
+  // sparse gallery: ink ground + 1-2 whole small mints, right-aligned and
+  // framed with breathing room — the label owns the left, art owns the right
   const drawArtStrip = (dx, dy, dw, dh) => {
-    let cx2 = dx;
-    let k = 0;
-    while (cx2 < dx + dw) {
-      const img = decorArtStrip[k % decorArtStrip.length];
+    const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
+    ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+    ctx.fillRect(dx, dy, dw, dh);
+    const pad = Math.max(8, dh * 0.12);
+    const tileH = dh - pad * 2;
+    const maxN = Math.max(1, opts.decorArtStripMax ?? 2);
+    let right = dx + dw - pad * 1.5;
+    for (let k = 0; k < Math.min(maxN, decorArtStrip.length); k++) {
+      const img = decorArtStrip[k];
       const iw = img.width || 1;
       const ih = img.height || 1;
-      const tileW = Math.max(8, (dh * iw) / ih);
-      ctx.drawImage(img, cx2, dy, tileW, dh);
-      cx2 += tileW;
-      k++;
+      const tileW = (tileH * iw) / ih;
+      const left = right - tileW;
+      if (left < dx + dw * 0.42) break; // the label zone stays clear
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+      ctx.shadowBlur = Math.max(6, dh * 0.08);
+      ctx.shadowOffsetY = 2;
+      ctx.drawImage(img, left, dy + pad, tileW, tileH);
+      ctx.restore();
+      right = left - pad * 1.5;
     }
   };
   if (coverCanvas) {
