@@ -211,7 +211,11 @@ function _drawLight(ctx, args, opts = {}) {
   // Sprint 85: on DARK themes lighten(bg) yields grey slabs that fight the
   // accent numerals — light variants pin to paper instead
   const bgLum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;
-  const cardBg = bgLum > 0.45 ? lighten(bg, 0.5) : [248, 246, 240];
+  const onPaper = bgLum <= 0.45; // dark theme → card pinned to paper
+  const cardBg = onPaper ? [248, 246, 240] : lighten(bg, 0.5);
+  // Sprint 86: paper card needs paper INK — the theme's light fg vanished
+  // on white (user screenshot: 毕业门槛 ghost text)
+  const cardInk = onPaper ? [42, 44, 50] : fg;
 
   // ---- Drop shadow ----
   ctx.save();
@@ -266,7 +270,7 @@ function _drawLight(ctx, args, opts = {}) {
   ctx.fillText(valueText, x + 22, valueY);
 
   // ---- Label (dark text) ----
-  ctx.fillStyle = rgbaCss(fg, 0.75);
+  ctx.fillStyle = rgbaCss(cardInk, 0.8);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
   const labelText = String(args.label ?? '');
@@ -313,7 +317,11 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   // Sprint 85: on DARK themes lighten(bg) yields grey slabs that fight the
   // accent numerals — light variants pin to paper instead
   const bgLum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;
-  const cardBg = bgLum > 0.45 ? lighten(bg, 0.5) : [248, 246, 240];
+  const onPaper = bgLum <= 0.45; // dark theme → card pinned to paper
+  const cardBg = onPaper ? [248, 246, 240] : lighten(bg, 0.5);
+  // Sprint 86: paper card needs paper INK — the theme's light fg vanished
+  // on white (user screenshot: 毕业门槛 ghost text)
+  const cardInk = onPaper ? [42, 44, 50] : fg;
 
   const borderW = Math.max(8, Math.min(12, w * 0.035));
   const cardRadius = Math.min(w, h) * 0.06;
@@ -372,7 +380,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   ctx.fillText(valueText, textLeft, valueY);
 
   // ---- Label ----
-  ctx.fillStyle = rgbaCss(fg, 0.75);
+  ctx.fillStyle = rgbaCss(cardInk, 0.8);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
   const labelText = String(args.label ?? '');
