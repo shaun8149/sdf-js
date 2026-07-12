@@ -22,7 +22,7 @@ export function magnitudeToRadii(magnitude, maxR = 1.8, tipR = 0.14) {
 // stage in warm gold so the outcome pops against the cool family. Warm coral on
 // every stage rendered muddy-brown under the studio's key light; the blue family
 // is proven legible there (sphere-fill gauge).
-const stageMat = (i, N, emphasized) => {
+const stageMat = (i, N, emphasized, accent) => {
   if (emphasized)
     return {
       hue: 0.11,
@@ -35,6 +35,15 @@ const stageMat = (i, N, emphasized) => {
       clearcoat: 0.6,
     };
   const k = N > 1 ? i / (N - 1) : 0;
+  if (accent)
+    return {
+      hue: accent.h,
+      sat: Math.min(1, accent.s * (0.8 + 0.25 * k)),
+      value: Math.max(0.26, accent.v * (1.0 - 0.35 * k)),
+      kind: 'normal',
+      roughness: 0.3,
+      clearcoat: 0.45,
+    };
   return {
     hue: 0.55 + 0.09 * k, // cyan-blue → indigo
     sat: 0.62 + 0.16 * k,
@@ -86,7 +95,7 @@ export function renderSequence(ir, opts = {}) {
       type: 'funnel-3d',
       args: { stages: 1, radii: [radii[i], radii[i + 1]], stageHeight, gap: 0 },
       transform: { translate: [0, yc, 0] },
-      material: stageMat(i, N, emphasis.has(i)),
+      material: stageMat(i, N, emphasis.has(i), opts.accent),
       animation: [
         {
           channel: 'transform.translate.y',

@@ -94,7 +94,7 @@ export function constellationLayout(ir, opts = {}) {
   return { pos, degree, hub };
 }
 
-const nodeMatN = (deg, maxDeg, emphasized) => {
+const nodeMatN = (deg, maxDeg, emphasized, accent) => {
   if (emphasized)
     return {
       hue: 0.11,
@@ -107,6 +107,15 @@ const nodeMatN = (deg, maxDeg, emphasized) => {
       clearcoat: 0.6,
     };
   const k = maxDeg > 0 ? deg / maxDeg : 0; // hubs lighter, leaves deeper
+  if (accent)
+    return {
+      hue: accent.h,
+      sat: Math.min(1, accent.s * (0.95 - 0.2 * k)),
+      value: Math.max(0.3, accent.v * (0.72 + 0.28 * k)),
+      kind: 'normal',
+      roughness: 0.55,
+      clearcoat: 0.2,
+    };
   return {
     hue: 0.64 - 0.09 * k,
     sat: 0.78 - 0.16 * k,
@@ -162,7 +171,7 @@ export function renderNetwork(ir, opts = {}) {
       type: 'sphere',
       args: { radius: nodeR(i) },
       transform: { translate: p },
-      material: nodeMatN(degree[i], maxDeg, emphasis.has(i)),
+      material: nodeMatN(degree[i], maxDeg, emphasis.has(i), opts.accent),
       animation: [
         {
           channel: 'transform.translate.y',

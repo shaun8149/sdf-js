@@ -3,6 +3,7 @@
 // world, and the camera flies it. The full thesis loop in one input box.
 import { textToIR } from '../../src/scene/text-to-ir.js';
 import { assembleDeck } from '../../src/scene/assemble-deck.js';
+import { getTheme } from '../../src/present/themes.js';
 import { createFigure } from './figure-core.js';
 import { attachPresenter } from './presenter.js';
 
@@ -13,6 +14,8 @@ const env = params.get('env') || 'studio';
 // Fighting-game stage ON by default for authored worlds (per-station platforms +
 // deck theatre layer) — it's the product face. ?stage=0 opts out.
 const stage = params.get('stage') !== '0';
+const __atlasTheme = getTheme('pitch-spectrum');
+const __atlasPalette = __atlasTheme ? { anchor: __atlasTheme.accent, colors: __atlasTheme.colors } : null;
 const { studio, show } = createFigure({ outdoor: env !== 'studio', stage, renderMode: ['rich', 'stone'].includes(new URLSearchParams(location.search).get('mode')) ? new URLSearchParams(location.search).get('mode') : 'analytic' });
 let presenter = null; // active presenter runtime (disposed on regenerate)
 
@@ -44,7 +47,7 @@ async function generate() {
       `building ${deck.slides.length} station${deck.slides.length > 1 ? 's' : ''}: ${deck.slides.map((s) => s.structure).join(' → ')}`,
     );
     loading.classList.remove('done'); // shader may recompile for a new shape
-    const scene = assembleDeck(deck, { env, stage });
+    const scene = assembleDeck(deck, { env, stage, palette: __atlasPalette });
     show(scene);
     // Full-speech input → the model returned script spans → presenter mode:
     // the world starts HELD; space walks the speech, teleprompter shows the

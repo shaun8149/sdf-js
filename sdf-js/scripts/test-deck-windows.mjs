@@ -67,9 +67,23 @@ ok(sliceOf(5).subjects.length === scene.subjects.length, 'finale slice is the fu
   const hills = (s) =>
     s.subjects.filter((x) => typeof x.id === 'string' && x.id.startsWith('horizon-'));
   const fullHills = hills(scene).length;
-  ok(fullHills > 6, `full deck rings ${fullHills} hills (needs trimming to matter)`);
-  ok(hills(sliceOf(0)).length === 6, 'station window keeps only the 6 nearest hills');
-  ok(hills(sliceOf(1)).length === 6, 'transit window keeps only the 6 nearest hills');
+  ok(fullHills > 7, `full deck rings ${fullHills} monoliths (needs trimming to matter)`);
+  // ambience tiers: data stations trim the skyline hard (focus on the data),
+  // transits keep a mid budget (no tier field → content default)
+  ok(hills(sliceOf(0)).length === 3, 'content station window trims to 3 skyline monoliths');
+  ok(hills(sliceOf(1)).length === 3, 'transit window trims to 3 skyline monoliths');
+  {
+    const heroScene = assembleDeck(
+      { title: 'h', slides: [{ structure: 'hold', title: 'c', nodes: [] }, ir('x')] },
+      { stage: true },
+    );
+    const hw = heroScene.deckWindows.find((w) => w.kind === 'station' && w.tier === 'hero');
+    ok(!!hw, 'hold stations are tier hero');
+    ok(
+      hills(sliceDeckWindow(heroScene, hw)).length === 7,
+      'hero windows keep the full skyline (7 monoliths)',
+    );
+  }
   ok(
     Array.isArray(wins[0].origin) && wins[0].origin.length === 3,
     'station window carries its origin (nearest-hill anchor)',
@@ -80,6 +94,7 @@ ok(sliceOf(5).subjects.length === scene.subjects.length, 'finale slice is the fu
     return (t[0] - o[0]) ** 2 + (t[2] - o[2]) ** 2;
   };
   const keptIds = new Set(hills(sliceOf(0)).map((x) => x.id));
+  // nearest-K invariant checked against the CONTENT budget below
   const kept = hills(scene).filter((x) => keptIds.has(x.id));
   const dropped = hills(scene).filter((x) => !keptIds.has(x.id));
   const maxKept = Math.max(...kept.map((x) => d2(x, wins[0].origin)));
@@ -96,6 +111,37 @@ for (let i = 0; i < wins.length; i++) {
     /* fall through */
   }
   ok(!!sdf, `window ${i} (${wins[i].kind}) slice compiles to an SDF`);
+}
+
+// ---- section color program -----------------------------------------------------
+{
+  const palette = {
+    anchor: [241, 70, 22],
+    colors: [[241, 70, 22], [43, 154, 233], [168, 124, 42], [1, 119, 86]],
+  };
+  const deck2 = {
+    title: 'c',
+    slides: [
+      { structure: 'hold', title: 'cover', nodes: [] },
+      ir('a'),
+      ir('b'),
+      { structure: 'hold', title: 'mid', nodes: ['x'] },
+      ir('c'),
+    ],
+  };
+  const sc = assembleDeck(deck2, { stage: true, palette });
+  const chips = sc.overlay.filter((o) => o.role === 'value' && o.accentColor);
+  ok(chips.length > 0, 'value chips carry the station accent color');
+  const stationHues = new Set();
+  for (const sub of sc.subjects) {
+    const m = /^s(\d+)-mono-1$/.exec(sub.id || '');
+    if (m) stationHues.add(`${m[1]}:${sub.material.hue.toFixed(3)}`);
+  }
+  const hues = [...stationHues].map((x) => x.split(':')[1]);
+  ok(new Set(hues).size >= 2, `content stations rotate hues (${[...stationHues].join(' ')})`);
+  const noPal = assembleDeck(deck2, { stage: true });
+  const blue = noPal.subjects.find((x) => /^s1-mono-1$/.test(x.id));
+  ok(Math.abs(blue.material.hue - 0.595) < 0.02, 'no palette → classic blue family (back-compat)');
 }
 
 // ---- windowIndexAt ------------------------------------------------------------

@@ -19,10 +19,12 @@ import { getEnvironment } from './environments.js';
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
 const TILE_MAT = { hue: 0.6, sat: 0.1, value: 0.3, kind: 'normal', roughness: 0.7, clearcoat: 0.1 };
-const itemMat = (emphasized) =>
+const itemMat = (emphasized, accent) =>
   emphasized
     ? { hue: 0.11, sat: 0.78, value: 0.95, glow: 0.22, kind: 'normal', roughness: 0.22, clearcoat: 0.6 }
-    : { hue: 0.57, sat: 0.55, value: 0.72, kind: 'normal', roughness: 0.3, clearcoat: 0.45 };
+    : accent
+      ? { hue: accent.h, sat: accent.s, value: Math.max(0.32, accent.v * 0.85), kind: 'normal', roughness: 0.3, clearcoat: 0.45 }
+      : { hue: 0.57, sat: 0.55, value: 0.72, kind: 'normal', roughness: 0.3, clearcoat: 0.45 };
 
 // ---- evolution form ------------------------------------------------------------
 // A matrix whose X axis is a two-state TIME axis (past → present) reads better
@@ -259,7 +261,7 @@ export function renderMatrix(ir, opts = {}) {
       type: 'rounded_box',
       args: { dims: [size, size, size], cornerR: 0.06 },
       transform: { translate: [cellX(xi), cellY(yi), zFinal] },
-      material: itemMat(emphasis.has(i)),
+      material: itemMat(emphasis.has(i), opts.accent),
       animation: [
         {
           channel: 'transform.translate.z',

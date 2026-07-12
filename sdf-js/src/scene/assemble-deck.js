@@ -38,6 +38,45 @@ export function shiftBuildInExpr(expr, dy, dt) {
 }
 
 const addV = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+
+// rgb [0-255] triple → {h,s,v} in 0..1 (scene materials speak HSV)
+export function rgbToHsv([r, g, b]) {
+  const rn = r / 255,
+    gn = g / 255,
+    bn = b / 255;
+  const max = Math.max(rn, gn, bn),
+    min = Math.min(rn, gn, bn);
+  const d = max - min;
+  let h = 0;
+  if (d > 0) {
+    if (max === rn) h = ((gn - bn) / d + 6) % 6;
+    else if (max === gn) h = (bn - rn) / d + 2;
+    else h = (rn - gn) / d + 4;
+    h /= 6;
+  }
+  return { h, s: max === 0 ? 0 : d / max, v: max };
+}
+
+// Section color programming (the 2D end's applySectionAccents, spatialized):
+// a long deck in one accent reads monotone. hold pages (cover / contents /
+// interludes) keep the ANCHOR hue; every content station takes the next hue
+// from the palette. Deterministic rotation, no LLM.
+function assignAccents(slides, palette) {
+  if (!palette || !Array.isArray(palette.colors) || !palette.colors.length) return slides.map(() => null);
+  const anchor = rgbToHsv(palette.anchor || palette.colors[0]);
+  const GOLD_H = 0.11; // the deck-wide champion mark — accents must not impersonate it
+  const pool = palette.colors
+    .filter((c) => !palette.anchor || c.join(',') !== palette.anchor.join(','))
+    .map(rgbToHsv)
+    .filter((a) => Math.min(Math.abs(a.h - GOLD_H), 1 - Math.abs(a.h - GOLD_H)) > 0.06);
+  let next = 0;
+  return slides.map((ir) => {
+    if (ir.structure === 'hold') return anchor;
+    const a = pool.length ? pool[next % pool.length] : anchor;
+    next++;
+    return a;
+  });
+}
 const seqDuration = (shots) => shots.reduce((s, sh) => s + (sh.duration || 0), 0);
 
 // ---- Deck archetypes ---------------------------------------------------------
@@ -78,6 +117,7 @@ export function assembleDeck(deck, opts = {}) {
   if (!deck || !Array.isArray(deck.slides) || deck.slides.length === 0)
     throw new Error('assembleDeck: deck.slides must be a non-empty array of IRs');
   const env = getEnvironment(opts.env);
+  const accents = assignAccents(deck.slides, opts.palette);
   const stride = opts.stride ?? 16;
   const layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
     ? (opts.layout ?? deck.layout)
@@ -105,7 +145,10 @@ export function assembleDeck(deck, opts = {}) {
     // postFx / room shell) are discarded here on purpose — the deck owns the
     // world and applies ONE theatre layer below (walls would slice the deck
     // axis, and MAX_EXTRA_LIGHTS=4 can't do per-station rigs).
-    const st = renderIR(ir, opts.stage ? { stage: true } : {});
+    const st = renderIR(ir, {
+      ...(opts.stage ? { stage: true } : {}),
+      ...(accents[k] ? { accent: accents[k] } : {}),
+    });
     const origin = origins[k];
 
     // Transit shot: whip from the previous station's payoff toward this one's
@@ -166,12 +209,21 @@ export function assembleDeck(deck, opts = {}) {
     // outgoing station's words must clear the screen — the next title landing
     // WITH its arena is what makes the cut read intentional.
     const stationEnd = clock + seqDuration(st.cameraSequence.shots);
+    const accCss = accents[k]
+      ? (() => {
+          const { h, s: sat, v } = accents[k];
+          return `hsl(${(h * 360).toFixed(0)} ${(sat * 100).toFixed(0)}% ${(v * 58).toFixed(0)}%)`;
+        })()
+      : null;
     for (const o of st.overlay || []) {
       overlay.push({
         ...o,
         anchor: addV(o.anchor, origin),
         revealAt: (o.revealAt ?? 0) + clock,
         ...(o.role === 'title' || o.role === 'screen' ? { hideAt: stationEnd } : {}),
+        // the DOM layer paints in the station's chapter color too: the value
+        // chip's fill and the CURRENT subtitle line pick it up
+        ...(accCss ? { accentColor: accCss } : {}),
       });
     }
 
@@ -196,6 +248,9 @@ export function assembleDeck(deck, opts = {}) {
       start: clock,
       end: clock + stationDur,
       origin: [...origin],
+      // ambience tier (2D's page-tier system, spatialized): hold pages are
+      // HERO — full skyline; data stations trim ambience to keep focus
+      tier: ir.structure === 'hold' ? 'hero' : 'content',
     });
     clock += stationDur;
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
@@ -328,7 +383,8 @@ export function assembleDeck(deck, opts = {}) {
 // invisible while the statement count halves. Env terrains (alpine etc.) are
 // NOT trimmed: their pieces are large and continuous, and cutting one leaves
 // a hole in the world.
-const HILLS_PER_WINDOW = 6;
+const HILLS_HERO = 7;
+const HILLS_CONTENT = 3;
 export function sliceDeckWindow(scene, win) {
   if (!win || win.kind === 'finale') return scene;
   const wanted = new Set(win.stations);
@@ -349,15 +405,14 @@ export function sliceDeckWindow(scene, win) {
   };
   let subjects = scene.subjects.filter(keep);
   if (Array.isArray(win.origin)) {
+    const hillBudget = win.tier === 'hero' ? HILLS_HERO : HILLS_CONTENT;
     const hills = subjects.filter((s) => typeof s.id === 'string' && s.id.startsWith('horizon-'));
-    if (hills.length > HILLS_PER_WINDOW) {
+    if (hills.length > hillBudget) {
       const distSq = (s) => {
         const t = (s.transform && s.transform.translate) || [0, 0, 0];
         return (t[0] - win.origin[0]) ** 2 + (t[2] - win.origin[2]) ** 2;
       };
-      const near = new Set(
-        [...hills].sort((a, b) => distSq(a) - distSq(b)).slice(0, HILLS_PER_WINDOW),
-      );
+      const near = new Set([...hills].sort((a, b) => distSq(a) - distSq(b)).slice(0, hillBudget));
       subjects = subjects.filter((s) => !s.id || !s.id.startsWith('horizon-') || near.has(s));
     }
   }
