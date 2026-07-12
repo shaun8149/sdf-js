@@ -24,7 +24,6 @@ import {
   fetchMintManifest,
   mountPaletteOverride,
   mountUnderlayDecor,
-  rankMounts,
 } from '../../src/present/art-mount.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
@@ -296,24 +295,13 @@ function slotRenderOpts(theme, deck, slot) {
   const manifest = await fetchMintManifest(MINT_BASE);
   const oks = (manifest || []).filter((m) => m.status === 'ok');
   if (!oks.length) return; // no local cache — feature stays hidden
-  // Sprint 87: 推荐排序 — dropdown best-first for the CURRENT theme, ⭐ top-3
-  const themeAccentOf = () =>
-    (ATLAS_THEMES.find((t) => t.id === themeEl.value) || ATLAS_THEMES[0])?.accent;
-  const rebuildMountOptions = () => {
-    const keep = artMountEl.value;
-    while (artMountEl.options.length > 1) artMountEl.remove(1);
-    const ranked = rankMounts(oks, themeAccentOf());
-    ranked.forEach((m, i) => {
-      const o = document.createElement('option');
-      o.value = m.id;
-      o.textContent = `${i < 3 ? '⭐ ' : ''}装裱 · ${m.name}${m.artist ? ' · ' + m.artist : ''}`;
-      o.title = `${m.license || ''} — 原版脚本非商用运行 · 匹配分 ${m._score.toFixed(2)}`;
-      artMountEl.appendChild(o);
-    });
-    artMountEl.value = keep;
-  };
-  rebuildMountOptions();
-  themeEl.addEventListener('change', rebuildMountOptions);
+  for (const m of oks) {
+    const o = document.createElement('option');
+    o.value = m.id;
+    o.textContent = `装裱 · ${m.name}${m.artist ? ' · ' + m.artist : ''}`;
+    o.title = `${m.license || ''} — 原版脚本非商用运行`;
+    artMountEl.appendChild(o);
+  }
   artMountEl.hidden = false;
   artMountEl.addEventListener('change', async () => {
     const id = artMountEl.value;
