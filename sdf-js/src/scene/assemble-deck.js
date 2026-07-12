@@ -138,7 +138,7 @@ function courtyardPlan(slides, zones, stride) {
 // sliceDeckWindow keeps these in EVERY window and never distance-culls them
 // (the far side is exactly what foreshadowing needs); the horizon-slab quota
 // shrinks in exchange (dressing budget conservation, see sliceDeckWindow).
-function zoneMassing(zones, origins, ringR, center) {
+function zoneMassing(zones, origins, ringR, center, centerIdx) {
   const out = [];
   const mat = {
     hue: 0.62,
@@ -149,6 +149,29 @@ function zoneMassing(zones, origins, ringR, center) {
     kind: 'normal',
     roughness: 0.85,
   };
+  // WORLD-HEART PROXY (blind-test round 1 fix): the cover forest lives in
+  // station 0's windows only, so during every chapter the courtyard centre
+  // simply DID NOT EXIST, then popped in at each threshold — the single
+  // biggest continuity break vs radial ("世界的延续感"). A few always-on
+  // silhouette blocks (massing- prefix = kept in every window) stand in for
+  // the forest at distance; when the real forest is present they sit inside
+  // its dark mass and disappear into it.
+  if (centerIdx != null) {
+    const heart = [
+      { t: [center[0], 3.2, center[1] - 6], d: [2.2, 6.4, 2.2] },
+      { t: [center[0] - 2.6, 2.4, center[1] - 11], d: [1.8, 4.8, 1.8] },
+      { t: [center[0] + 2.8, 2.9, center[1] - 15], d: [1.9, 5.8, 1.9] },
+    ];
+    heart.forEach((h, i) =>
+      out.push({
+        id: `massing-center-${i}`,
+        type: 'box',
+        args: { dims: h.d },
+        transform: { translate: h.t },
+        material: mat,
+      }),
+    );
+  }
   const bandR = ringR + 34;
   zones.forEach((members, z) => {
     const pts = members.map((i) => origins[i]).filter(Boolean);
@@ -270,31 +293,42 @@ export function assembleDeck(deck, opts = {}) {
       // an ambient promise). Sees the whole ring → an honest full-world
       // window ('finale' kind: sliceDeckWindow returns the unsliced scene).
       if (plan && plan.zoneOf[k] !== plan.zoneOf[k - 1]) {
-        const dur = 0.9;
+        // Blind-test round 1 rewrite: the threshold is now a LONGER SLING in
+        // radial's own camera language (what won the continuity read), not a
+        // detour to a map view — the camera keeps travelling, the gaze drifts
+        // toward the courtyard heart mid-flight and flows on to the new
+        // chapter. Window is a plain transit (2 stations + always-on massing
+        // + world-heart proxy), NOT full-world: the geometry pop at full-
+        // world boundaries was the continuity break itself.
+        const dur = 1.1;
         const [cx, cz] = plan.center;
         const risePos = [
-          prevPayoff.pos[0] * 0.85 + cx * 0.15,
-          Math.max(prevPayoff.pos[1], 4.5) + 3.5,
-          prevPayoff.pos[2] * 0.85 + cz * 0.15,
+          (prevPayoff.pos[0] + heroPos[0]) / 2 + (cx - (prevPayoff.pos[0] + heroPos[0]) / 2) * 0.2,
+          Math.max(prevPayoff.pos[1], heroPos[1]) + 3.4,
+          (prevPayoff.pos[2] + heroPos[2]) / 2 + (cz - (prevPayoff.pos[2] + heroPos[2]) / 2) * 0.2,
         ];
+        const riseTarget = [cx * 0.6 + heroTarget[0] * 0.4, 1.2, cz * 0.6 + heroTarget[2] * 0.4];
         shots.push({
           duration: dur,
           pos: risePos,
-          target: [cx, 1.2, cz],
-          fov: 55,
+          target: riseTarget,
+          fov: 52,
           transition: 'blend',
           aperture: 0.1, // deep focus — the vista beat reads the WORLD, not a subject
           focalDistance: plan.ringR,
+          shake: [0.1, 0.05], // the sling keeps its physicality across the seam
           ease: 'inout',
         });
+        const prevO = origins[k - 1];
         windows.push({
-          kind: 'finale',
-          stations: deck.slides.map((_, i) => i),
+          kind: 'transit',
+          stations: [k - 1, k],
           start: clock,
           end: clock + dur,
+          origin: [(prevO[0] + origin[0]) / 2, 0, (prevO[2] + origin[2]) / 2],
         });
         clock += dur;
-        prevPayoff = { pos: risePos, target: [cx, 1.2, cz] };
+        prevPayoff = { pos: risePos, target: riseTarget };
       }
       const dur = 1.2;
       shots.push({
@@ -388,6 +422,12 @@ export function assembleDeck(deck, opts = {}) {
     const stationDur = seqDuration(st.cameraSequence.shots);
     windows.push({
       kind: 'station',
+      // NOTE: the cover window stays single-station on purpose — carrying the
+      // whole world here was tried and cost 48s to FIRST FRAME (the giant
+      // shader becomes the boot shader). The world-heart proxy + chapter
+      // massing already ride every window, so the world's silhouette is
+      // present from frame one at leaf-budget cost; only ring station
+      // CONTENT appears at the overlook (a reveal that beat can own).
       stations: [k],
       start: clock,
       end: clock + stationDur,
@@ -507,7 +547,9 @@ export function assembleDeck(deck, opts = {}) {
       ]);
   // Courtyard: chapter massing joins the world (background swapped from pure
   // scenery to MEANING — user decision 2026-07-12: slabs yield their quota).
-  const massingSubjects = plan ? zoneMassing(plan.zones, origins, plan.ringR, plan.center) : [];
+  const massingSubjects = plan
+    ? zoneMassing(plan.zones, origins, plan.ringR, plan.center, plan.centerIdx)
+    : [];
 
   const baseDefaults = env
     ? env.defaults
