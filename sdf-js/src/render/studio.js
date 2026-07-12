@@ -1890,7 +1890,10 @@ function compileStudioFrag(sdf, renderMode = 'rich') {
   // presentation product's perf mode. Falls back to the stone raymarcher when
   // the scene uses primitives without closed-form hits (funnel-3d etc.).
   if (renderMode === 'analytic') {
-    const a = sdf && sdf._subjects ? compileAnalyticFrag(sdf._subjects) : { ok: false, reason: 'no subjects sidecar' };
+    const a =
+      sdf && sdf._subjects
+        ? compileAnalyticFrag(sdf._subjects)
+        : { ok: false, reason: 'no subjects sidecar' };
     if (a.ok) {
       return {
         fragSource: a.fragSource,
@@ -2174,6 +2177,22 @@ export function createStudioRenderer({
   // drawn (no camera-convention duplication outside the renderer).
   let lastCam = null;
   let sequenceStartTime = 0; // performance.now() origin for sequence playback
+  // Flow camera (W6 total-continuity, cameraSequence.flow): a steadicam
+  // operator between the evaluator and the lens. Shot-boundary velocity kinks
+  // (ease curves land at zero then the next shot launches) read as "一段一段"
+  // instead of one breathing take; a short exponential lag on pos/target
+  // erases the kinks without touching shot semantics, timings or hitstops.
+  // State resets on setSequence and on any non-monotonic/large time step
+  // (seeks, pins, loops) so scrubbing stays exact.
+  const FLOW_TAU = 0.12; // seconds to ~63% catch-up — light hand, no drift feel
+  let flowPos = null;
+  let flowTarget = null;
+  let flowLastT = -1;
+  const flowReset = () => {
+    flowPos = null;
+    flowTarget = null;
+    flowLastT = -1;
+  };
   let sequencePaused = false;
   let sequencePausedAt = 0;
   let userTookCam = false; // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
@@ -2525,6 +2544,25 @@ export function createStudioRenderer({
       const tSec = warpSec((performance.now() - sequenceStartTime) / 1000);
       const state = evaluateCameraSequence(activeSequence, tSec, { subjectBaseTargets });
       if (state) {
+        // Flow smoothing BEFORE the pos/target → yaw/pitch conversion (angles
+        // wrap; positions don't). Snap on seeks/backward steps to keep pins
+        // and scrubbing exact.
+        if (activeSequence.flow && Array.isArray(state.pos) && Array.isArray(state.target)) {
+          const dt = tSec - flowLastT;
+          if (flowPos == null || dt <= 0 || dt > 0.5) {
+            flowPos = [...state.pos];
+            flowTarget = [...state.target];
+          } else {
+            const k = 1 - Math.exp(-dt / FLOW_TAU);
+            for (let i = 0; i < 3; i++) {
+              flowPos[i] += (state.pos[i] - flowPos[i]) * k;
+              flowTarget[i] += (state.target[i] - flowTarget[i]) * k;
+            }
+          }
+          flowLastT = tSec;
+          state.pos = [...flowPos];
+          state.target = [...flowTarget];
+        }
         const cs = sequenceStateToCamState(state);
         camState.position[0] = cs.position[0];
         camState.position[1] = cs.position[1];
@@ -3403,6 +3441,7 @@ export function createStudioRenderer({
       sequenceStartTime = performance.now();
       sequencePaused = false;
       userTookCam = false;
+      flowReset(); // steadicam state must not bleed across sequences
       prevCamValid = false; // motion blur skip on cut-over frame
       wake(); // a sequence drives the camera → revive the loop
     },
@@ -3436,6 +3475,7 @@ export function createStudioRenderer({
       // tSec is PRESENTATION time — unwarp it so seeks land where the caller
       // expects even across hitstop holds.
       sequenceStartTime = performance.now() - unwarpTime(tSec, activeHitstops) * 1000;
+      flowReset(); // seeks/pins must land exactly — no lag from the old spot
       sequencePaused = false;
       userTookCam = false;
       wake();

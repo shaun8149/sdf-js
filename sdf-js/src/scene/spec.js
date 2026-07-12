@@ -1301,6 +1301,12 @@ function validateCameraSequence(seq, errors, warnings) {
   if (seq.loop != null && typeof seq.loop !== 'boolean') {
     errors.push('cameraSequence.loop: must be a boolean if provided');
   }
+  // flow: steadicam smoothing (W6 total-continuity) — the runtime filters the
+  // evaluated pos/target through a short exponential lag so shot boundaries
+  // are velocity-continuous (no stop-start kinks). Deck playback sets it.
+  if (seq.flow != null && typeof seq.flow !== 'boolean') {
+    errors.push('cameraSequence.flow: must be a boolean if provided');
+  }
   // Hitstops: fighting-game frame freezes — presentation clock holds at `at`
   // for `hold` wall-seconds. Must be sorted ascending, non-overlapping.
   if (seq.hitstops != null) {
