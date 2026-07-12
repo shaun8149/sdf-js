@@ -88,7 +88,94 @@ const seqDuration = (shots) => shots.reduce((s, sh) => s + (sh.duration || 0), 0
 // structure keeps facing +z so its own camera grammar stays valid; the layout
 // only chooses WHERE stations stand (and therefore how the transits sweep and
 // what the finale reveals).
-export const DECK_LAYOUTS = ['line', 'radial', 'grid'];
+export const DECK_LAYOUTS = ['line', 'radial', 'grid', 'courtyard'];
+
+// ---- Courtyard (Phase 1 main archetype, spec 2026-07-12) -----------------------
+// Chapters (zones) become ARC CLUSTERS on the ring: intra-zone neighbors sit
+// one stride apart, zone boundaries get a wider threshold gap — the chapter
+// structure is readable in the plan itself. If the deck opens on a hold page
+// (a cover), that station moves to the RING CENTER: the Wave-0 spike showed
+// the cover's monolith forest already marches toward the centre, so instead
+// of fighting it (the swallowed-monument finding) the cover IS the
+// centerpiece — the world's entrance, ringed by its chapters.
+// Zones are a planSpace-INTERNAL concept (debate 决策②): truth source is the
+// deck's hand-annotated `zones` (IR-level, Phase 1) — never inferred here.
+function courtyardPlan(slides, zones, stride) {
+  const centerIdx = slides[0] && slides[0].structure === 'hold' ? 0 : null;
+  const ringMembers = [];
+  const zoneOf = new Array(slides.length).fill(0);
+  zones.forEach((members, z) =>
+    members.forEach((i) => {
+      zoneOf[i] = z;
+      if (i !== centerIdx) ringMembers.push(i);
+    }),
+  );
+  // collapse guard (debate 落地 #9): a courtyard of 1-station chapters is a
+  // plain ring wearing a costume — the detector must refuse, not fake it
+  if (ringMembers.length / zones.length < 2) return null;
+  const thresholdGap = stride * 0.9; // the chapter seam, readable in plan
+  const C = ringMembers.length * stride + zones.length * thresholdGap;
+  const R = Math.max(stride * 0.75, C / (2 * Math.PI));
+  const origins = new Array(slides.length);
+  if (centerIdx != null) origins[centerIdx] = [0, 0, 0];
+  let arc = thresholdGap / 2; // start past half a seam so zone 0 is centered on +z
+  let prevZone = ringMembers.length ? zoneOf[ringMembers[0]] : 0;
+  for (const i of ringMembers) {
+    if (zoneOf[i] !== prevZone) {
+      arc += thresholdGap;
+      prevZone = zoneOf[i];
+    }
+    const th = arc / R;
+    origins[i] = [Math.sin(th) * R, 0, Math.cos(th) * R];
+    arc += stride;
+  }
+  return { origins, center: [0, 0], ringR: R, zoneOf, centerIdx };
+}
+
+// Zone massing (spec §4): 1 hull + 1 tower per chapter at a FIXED band outside
+// the ring (Wave-0 spike: a multiplicative push collapses on wide-arc zones
+// and lands inside the crane near-field). Independent `massing-` prefix —
+// sliceDeckWindow keeps these in EVERY window and never distance-culls them
+// (the far side is exactly what foreshadowing needs); the horizon-slab quota
+// shrinks in exchange (dressing budget conservation, see sliceDeckWindow).
+function zoneMassing(zones, origins, ringR, center) {
+  const out = [];
+  const mat = {
+    hue: 0.62,
+    sat: 0.28,
+    value: 0.32,
+    metal: 0,
+    glow: 0,
+    kind: 'normal',
+    roughness: 0.85,
+  };
+  const bandR = ringR + 34;
+  zones.forEach((members, z) => {
+    const pts = members.map((i) => origins[i]).filter(Boolean);
+    // accumulator is an [x, z] PAIR — origins are [x, y, z] triples
+    const c = pts.reduce((a, p) => [a[0] + p[0], a[1] + p[2]], [0, 0]).map((v) => v / pts.length);
+    const len = Math.hypot(c[0] - center[0], c[1] - center[1]) || 1;
+    const bx = center[0] + ((c[0] - center[0]) / len) * bandR;
+    const bz = center[1] + ((c[1] - center[1]) / len) * bandR;
+    const W = 7 + members.length * 1.4; // chapter weight → skyline width
+    const H = 4.2 + members.length * 1.1;
+    out.push({
+      id: `massing-z${z}-hull`,
+      type: 'ellipsoid',
+      args: { dims: [W, H, W * 0.55] },
+      transform: { translate: [bx, -H * 0.45, bz] }, // crest only — a ridge, not a dome
+      material: mat,
+    });
+    out.push({
+      id: `massing-z${z}-tower`,
+      type: 'box',
+      args: { dims: [W * 0.22, H * 1.6, W * 0.22] },
+      transform: { translate: [bx + W * 0.28, H * 0.4, bz - W * 0.1] },
+      material: mat,
+    });
+  });
+  return out;
+}
 
 function stationOrigins(n, stride, layout) {
   if (layout === 'radial') {
@@ -125,10 +212,24 @@ export function assembleDeck(deck, opts = {}) {
   // existing consumers unchanged).
   const decor = makeDeckDecor(opts.decorSeed);
   const stride = opts.stride ?? 16;
-  const layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
+  let layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
     ? (opts.layout ?? deck.layout)
     : 'line';
-  const origins = stationOrigins(deck.slides.length, stride, layout);
+  let plan = null;
+  if (layout === 'courtyard') {
+    const zones = opts.zones ?? deck.zones;
+    plan = Array.isArray(zones) && zones.length ? courtyardPlan(deck.slides, zones, stride) : null;
+    if (plan) plan.zones = zones;
+    else {
+      // no zone annotation, or 1-station chapters: refusing is the CORRECT
+      // behavior (debate 落地 #9) — degrade to the shipped ring, loudly.
+      console.warn(
+        'assembleDeck: courtyard needs zone annotation with ≥2 stations per chapter on average — falling back to radial',
+      );
+      layout = 'radial';
+    }
+  }
+  const origins = plan ? plan.origins : stationOrigins(deck.slides.length, stride, layout);
 
   const subjects = [];
   const overlay = [];
@@ -163,6 +264,38 @@ export function assembleDeck(deck, opts = {}) {
     const heroPos = addV(hero.pos, origin);
     const heroTarget = addV(hero.target, origin);
     if (k > 0) {
+      // THRESHOLD (courtyard only): at a chapter seam, rise and look back
+      // across the courtyard before the whip — the one beat whose JOB is the
+      // vista (debate: vista is material CONSUMED BY designated shots, never
+      // an ambient promise). Sees the whole ring → an honest full-world
+      // window ('finale' kind: sliceDeckWindow returns the unsliced scene).
+      if (plan && plan.zoneOf[k] !== plan.zoneOf[k - 1]) {
+        const dur = 0.9;
+        const [cx, cz] = plan.center;
+        const risePos = [
+          prevPayoff.pos[0] * 0.85 + cx * 0.15,
+          Math.max(prevPayoff.pos[1], 4.5) + 3.5,
+          prevPayoff.pos[2] * 0.85 + cz * 0.15,
+        ];
+        shots.push({
+          duration: dur,
+          pos: risePos,
+          target: [cx, 1.2, cz],
+          fov: 55,
+          transition: 'blend',
+          aperture: 0.1, // deep focus — the vista beat reads the WORLD, not a subject
+          focalDistance: plan.ringR,
+          ease: 'inout',
+        });
+        windows.push({
+          kind: 'finale',
+          stations: deck.slides.map((_, i) => i),
+          start: clock,
+          end: clock + dur,
+        });
+        clock += dur;
+        prevPayoff = { pos: risePos, target: [cx, 1.2, cz] };
+      }
       const dur = 1.2;
       shots.push({
         duration: dur,
@@ -267,6 +400,39 @@ export function assembleDeck(deck, opts = {}) {
     const last = st.cameraSequence.shots[st.cameraSequence.shots.length - 1];
     prevPayoff = { pos: addV(last.pos, origin), target: addV(last.target, origin) };
 
+    // OVERLOOK (courtyard only): right after the cover station at the centre,
+    // one high beat framing the whole courtyard — the 2D TOC page's 3D twin
+    // ("here is everything we will visit"). Full-world window, like finale.
+    if (plan && k === plan.centerIdx) {
+      const dur = 2.2;
+      const [cx, cz] = plan.center;
+      // near-top-down: the overlook reads as the deck's MAP ("here is
+      // everything we will visit") — 3/4 views kept letting the centre forest
+      // dominate; the plan itself (arcs + seams) is the subject
+      const pos = [cx, plan.ringR * 2.2 + 6, cz + plan.ringR * 0.9];
+      shots.push({
+        duration: dur,
+        pos,
+        target: [cx, 0, cz],
+        fov: 58, // wide: the WHOLE ring in frame, not a crop of it
+        transition: 'blend',
+        aperture: 0.08,
+        focalDistance: plan.ringR * 2.2,
+        ambient: 1.6, // the map beat lifts over the stage dimming…
+        exposure: 1.35, // …and gets an exposure step so the arcs stay readable
+        ease: 'inout',
+        beat: 'overlook',
+      });
+      windows.push({
+        kind: 'finale',
+        stations: deck.slides.map((_, i) => i),
+        start: clock,
+        end: clock + dur,
+      });
+      clock += dur;
+      prevPayoff = { pos, target: [cx, 0.8, cz] };
+    }
+
     // Breadcrumb path to the next station: a chain of low flat markers along
     // the segment between the two origins (any layout), each oriented to face
     // the walk direction — the transit flies over a PATH instead of empty
@@ -339,6 +505,9 @@ export function assembleDeck(deck, opts = {}) {
         origins.reduce((s, o) => s + o[0], 0) / origins.length,
         origins.reduce((s, o) => s + o[2], 0) / origins.length,
       ]);
+  // Courtyard: chapter massing joins the world (background swapped from pure
+  // scenery to MEANING — user decision 2026-07-12: slabs yield their quota).
+  const massingSubjects = plan ? zoneMassing(plan.zones, origins, plan.ringR, plan.center) : [];
 
   const baseDefaults = env
     ? env.defaults
@@ -371,7 +540,7 @@ export function assembleDeck(deck, opts = {}) {
   return {
     v: 1,
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
-    subjects: [...subjects, ...worldSubjects],
+    subjects: [...subjects, ...massingSubjects, ...worldSubjects],
     overlay,
     cameraSequence: { loop: false, shots, hitstops },
     deckWindows: windows,
@@ -419,7 +588,18 @@ export function sliceDeckWindow(scene, win) {
   };
   let subjects = scene.subjects.filter(keep);
   if (Array.isArray(win.origin)) {
-    const hillBudget = win.tier === 'hero' ? HILLS_HERO : HILLS_CONTENT;
+    // Dressing budget CONSERVATION (spec §4): chapter massing (`massing-`
+    // prefix) is kept in every window and is NEVER distance-culled — the far
+    // side is exactly what foreshadowing needs, and the nearest-first trim
+    // below would throw it away first. The horizon-slab quota shrinks in
+    // exchange, so the per-window dressing total stays in the same band.
+    const massingCount = subjects.filter(
+      (s) => typeof s.id === 'string' && s.id.startsWith('massing-'),
+    ).length;
+    const hillBudget = Math.max(
+      0,
+      (win.tier === 'hero' ? HILLS_HERO : HILLS_CONTENT) - massingCount,
+    );
     const hills = subjects.filter((s) => typeof s.id === 'string' && s.id.startsWith('horizon-'));
     if (hills.length > hillBudget) {
       const distSq = (s) => {
