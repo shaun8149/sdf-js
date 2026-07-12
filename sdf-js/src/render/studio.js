@@ -2187,10 +2187,12 @@ export function createStudioRenderer({
   const FLOW_TAU = 0.12; // seconds to ~63% catch-up — light hand, no drift feel
   let flowPos = null;
   let flowTarget = null;
+  let flowLens = null; // [fov, aperture, focalDistance] — the OPTICS kink too
   let flowLastT = -1;
   const flowReset = () => {
     flowPos = null;
     flowTarget = null;
+    flowLens = null;
     flowLastT = -1;
   };
   let sequencePaused = false;
@@ -2549,19 +2551,32 @@ export function createStudioRenderer({
         // and scrubbing exact.
         if (activeSequence.flow && Array.isArray(state.pos) && Array.isArray(state.target)) {
           const dt = tSec - flowLastT;
+          const lensRaw = [
+            typeof state.fov === 'number' ? state.fov : 45,
+            typeof state.aperture === 'number' ? state.aperture : 0,
+            typeof state.focalDistance === 'number' ? state.focalDistance : 8,
+          ];
           if (flowPos == null || dt <= 0 || dt > 0.5) {
             flowPos = [...state.pos];
             flowTarget = [...state.target];
+            flowLens = lensRaw;
           } else {
             const k = 1 - Math.exp(-dt / FLOW_TAU);
             for (let i = 0; i < 3; i++) {
               flowPos[i] += (state.pos[i] - flowPos[i]) * k;
               flowTarget[i] += (state.target[i] - flowTarget[i]) * k;
+              // the lens breathes with the same hand: fov zooms and focus
+              // pulls are velocity-continuous too, or the "one take" breaks
+              // optically at every boundary even when the path is smooth
+              flowLens[i] += (lensRaw[i] - flowLens[i]) * k;
             }
           }
           flowLastT = tSec;
           state.pos = [...flowPos];
           state.target = [...flowTarget];
+          if (typeof state.fov === 'number') state.fov = flowLens[0];
+          if (typeof state.aperture === 'number') state.aperture = flowLens[1];
+          if (typeof state.focalDistance === 'number') state.focalDistance = flowLens[2];
         }
         const cs = sequenceStateToCamState(state);
         camState.position[0] = cs.position[0];
