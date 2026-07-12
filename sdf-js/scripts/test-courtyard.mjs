@@ -48,11 +48,19 @@ const stations = new Map(
 
 // ---- camera: the vista lives in DESIGNATED beats --------------------------------
 {
+  // Blind-test round 1: thresholds became TRANSIT windows (full-world
+  // boundaries popped geometry — the continuity break radial won on).
   const fullWins = scene.deckWindows.filter((w) => w.kind === 'finale');
-  // overlook (after cover) + 3 chapter thresholds + the deck finale = 5
+  ok(fullWins.length === 2, `only overlook + finale stay full-world (${fullWins.length})`);
+  const transits = scene.deckWindows.filter((w) => w.kind === 'transit');
   ok(
-    fullWins.length === 5,
-    `overlook + 3 thresholds + finale = 5 full-world windows (${fullWins.length})`,
+    transits.length === DECK.slides.length - 1 + DECK.zones.length - 1,
+    `12 slings + 3 threshold slings, all plain transit windows (${transits.length})`,
+  );
+  const cover = scene.deckWindows.find((w) => w.kind === 'station' && w.stations[0] === 0);
+  ok(
+    cover.stations.length === 1,
+    'cover window stays single-station (48s-to-first-frame regression guard)',
   );
   const overlook = scene.cameraSequence.shots.find((sh) => sh.beat === 'overlook');
   ok(!!overlook, 'overlook beat exists (the TOC page 3D twin)');
@@ -73,7 +81,12 @@ const stations = new Map(
 // ---- massing: budget conservation + never distance-culled -----------------------
 {
   const massing = scene.subjects.filter((s) => s.id.startsWith('massing-'));
-  ok(massing.length === DECK.zones.length * 2, `1 hull + 1 tower per chapter (${massing.length})`);
+  ok(
+    massing.length === DECK.zones.length * 2 + 3,
+    `1 hull + 1 tower per chapter + 3 world-heart proxies (${massing.length})`,
+  );
+  const heart = massing.filter((s) => s.id.startsWith('massing-center-'));
+  ok(heart.length === 3, 'world-heart proxy present (centre never vanishes between windows)');
   // NaN in a translate bakes 'NaN' into GLSL and kills the whole program at
   // compile — caught live once (centroid accumulator read [2] of an [x,z] pair)
   ok(
@@ -82,11 +95,13 @@ const stations = new Map(
   );
   const ringR2 = Math.hypot(stations.get(2)[0], stations.get(2)[2]);
   ok(
-    massing.every((s) => {
-      const t = s.transform.translate;
-      return Math.abs(Math.hypot(t[0], t[2]) - (ringR2 + 34)) < ringR2 * 0.35;
-    }),
-    'massing sits in the fixed band outside the ring',
+    massing
+      .filter((s) => !s.id.startsWith('massing-center-'))
+      .every((s) => {
+        const t = s.transform.translate;
+        return Math.abs(Math.hypot(t[0], t[2]) - (ringR2 + 34)) < ringR2 * 0.35;
+      }),
+    'chapter massing sits in the fixed band outside the ring',
   );
   const stWin = scene.deckWindows.find((w) => w.kind === 'station' && w.stations[0] === 3);
   const sliced = sliceDeckWindow(scene, stWin);
