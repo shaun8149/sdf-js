@@ -1,0 +1,3853 @@
+{
+  "v": 1,
+  "name": "(spike W0.4b) landscape terraces MINI · 5 stations",
+  "subjects": [
+    {
+      "id": "s0-mono-title",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.4, 5.4, 0.6],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [0, 2.7, -1.4]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-0-l0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.6, 8, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-3.4, 4, -6],
+        "rotate": [0, -0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-0-l1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.6, 9.6, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-6.4, 4, -8.2],
+        "rotate": [0, -0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-0-r0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.6, 8, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [3.4, 4, -6],
+        "rotate": [0, 0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-0-r1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.6, 9.6, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [6.4, 4, -8.2],
+        "rotate": [0, 0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-1-l0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.9500000000000002, 11.5, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-4.5, 5.75, -12.5],
+        "rotate": [0, -0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-1-l1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.9500000000000002, 13.1, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-7.5, 5.75, -14.7],
+        "rotate": [0, -0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-1-r0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.9500000000000002, 11.5, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [4.5, 5.75, -12.5],
+        "rotate": [0, 0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-1-r1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.9500000000000002, 13.1, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [7.5, 5.75, -14.7],
+        "rotate": [0, 0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-2-l0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.3, 15, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-5.6, 7.5, -19],
+        "rotate": [0, -0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-2-l1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.3, 16.6, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-8.600000000000001, 7.5, -21.2],
+        "rotate": [0, -0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-2-r0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.3, 15, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [5.6, 7.5, -19],
+        "rotate": [0, 0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-2-r1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.3, 16.6, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [8.600000000000001, 7.5, -21.2],
+        "rotate": [0, 0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-3-l0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.65, 18.5, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-6.7, 9.25, -25.5],
+        "rotate": [0, -0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-3-l1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.65, 20.1, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-9.700000000000001, 9.25, -27.7],
+        "rotate": [0, -0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-3-r0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.65, 18.5, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [6.7, 9.25, -25.5],
+        "rotate": [0, 0.12, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-forest-3-r1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.65, 20.1, 0.7],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [9.700000000000001, 9.25, -27.7],
+        "rotate": [0, 0.2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "s0-floater-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.6, 0.9, 0.8800000000000001],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-6.5, 3.4, -6],
+        "rotate": [0, -1, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "3.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.07 * sin(0.35 * t + 0.00)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.2, 0.7, 0.66],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [4.8, 2.6, -7.5],
+        "rotate": [0, -0.5, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.09 * sin(0.43 * t + 2.10)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.2, 1.1, 1.2100000000000002],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-3.2, 4.6, -9],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.11 * sin(0.51 * t + 4.20)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-3",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.9, 0.55, 0.49500000000000005],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [7.2, 4, -5],
+        "rotate": [0, 0.5, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.13 * sin(0.59 * t + 0.02)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-4",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.6, 1.4, 1.4300000000000002],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-9.5, 5.8, -12],
+        "rotate": [0, 1, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "5.800 - 0.000 * smoothstep(0.00, 1.00, t) + 0.15 * sin(0.67 * t + 2.12)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-5",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.9, 1, 1.045],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [10.5, 5.2, -10],
+        "rotate": [0, 1.5, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "5.200 - 0.000 * smoothstep(0.00, 1.00, t) + 0.17 * sin(0.75 * t + 4.22)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-6",
+      "type": "rounded_box",
+      "args": {
+        "dims": [3.1, 1.6, 1.7050000000000003],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [2.2, 7, -14],
+        "rotate": [0, 2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.19 * sin(0.83 * t + 0.04)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-7",
+      "type": "rounded_box",
+      "args": {
+        "dims": [2.4, 1.2, 1.32],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [-5.8, 6.4, -16],
+        "rotate": [0, 2.5, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "6.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.21 * sin(0.91 * t + 2.14)"
+        }
+      ]
+    },
+    {
+      "id": "s0-floater-8",
+      "type": "rounded_box",
+      "args": {
+        "dims": [1.1, 0.6, 0.6050000000000001],
+        "cornerR": 0.06
+      },
+      "transform": {
+        "translate": [6.8, 2, -13],
+        "rotate": [0, 3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.1,
+        "kind": "normal",
+        "roughness": 0.48,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.23 * sin(0.99 * t + 4.24)"
+        }
+      ]
+    },
+    {
+      "id": "s0-stage-platform",
+      "type": "cylinder",
+      "args": {
+        "radius": 18.181088625298404,
+        "height": 0.12
+      },
+      "transform": {
+        "translate": [0.39999999999999947, 0.06, -14.549999999999999]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.12,
+        "value": 0.22,
+        "kind": "normal",
+        "roughness": 0.75,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "path-0-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [2.6666666666666665, 0.5633333333333334, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [5.333333333333333, 1.0966666666666667, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-3",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [8, 1.6300000000000001, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-4",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [10.666666666666666, 2.163333333333333, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-5",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [13.333333333333334, 2.6966666666666668, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s1-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [12.825, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 0.28929421094369545, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [12.825, 3.344647105471848, 0]
+      },
+      "material": {
+        "hue": 0.55,
+        "sat": 0.62,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.755 + 0.589 * smoothstep(9.25, 9.85, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [14.095, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 0.5652656621728787, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [14.095, 3.4826328310864394, 0]
+      },
+      "material": {
+        "hue": 0.5680000000000001,
+        "sat": 0.648,
+        "value": 0.7759999999999999,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.617 + 0.865 * smoothstep(10.35, 10.95, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [15.365, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 1.0886597938144331, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [15.365, 3.7443298969072165, 0]
+      },
+      "material": {
+        "hue": 0.5860000000000001,
+        "sat": 0.676,
+        "value": 0.732,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.356 + 1.389 * smoothstep(11.45, 12.05, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-3",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [16.635, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-3",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 1.9203806502775576, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [16.635, 4.160190325138779, 0]
+      },
+      "material": {
+        "hue": 0.6040000000000001,
+        "sat": 0.704,
+        "value": 0.688,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "1.940 + 2.220 * smoothstep(12.55, 13.15, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-4",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [17.905, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-4",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 3.100396510705789, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [17.905, 4.7501982553528945, 0]
+      },
+      "material": {
+        "hue": 0.622,
+        "sat": 0.732,
+        "value": 0.6439999999999999,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "1.350 + 3.400 * smoothstep(13.65, 14.25, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s1-plinth-5",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [19.175, 3.2600000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s1-mono-5",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 4.8, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [19.175, 5.6, 0]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "0.500 + 5.100 * smoothstep(14.75, 15.35, t)"
+        }
+      ]
+    },
+    {
+      "id": "s1-guard-l-0",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 2.2, 0.5]
+      },
+      "transform": {
+        "translate": [9.865, 4.300000000000001, -2.4],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-guard-r-0",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 2.2, 0.5]
+      },
+      "transform": {
+        "translate": [22.134999999999998, 4.300000000000001, -2.4],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-guard-l-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 3.5, 0.5]
+      },
+      "transform": {
+        "translate": [8.465, 4.95, -4.6],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-guard-r-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 3.5, 0.5]
+      },
+      "transform": {
+        "translate": [23.535, 4.95, -4.6],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-guard-l-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 4.800000000000001, 0.5]
+      },
+      "transform": {
+        "translate": [7.065000000000001, 5.6000000000000005, -6.800000000000001],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-guard-r-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 4.800000000000001, 0.5]
+      },
+      "transform": {
+        "translate": [24.935, 5.6000000000000005, -6.800000000000001],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s1-stage-platform",
+      "type": "cylinder",
+      "args": {
+        "radius": 11.160032688228634,
+        "height": 0.12
+      },
+      "transform": {
+        "translate": [16, 3.2600000000000002, -3.4000000000000004]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.12,
+        "value": 0.22,
+        "kind": "normal",
+        "roughness": 0.75,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "path-1-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [18.666666666666668, 3.763333333333333, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [21.333333333333332, 4.296666666666668, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-3",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [24, 4.830000000000001, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-4",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [26.666666666666664, 5.363333333333334, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-5",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [29.333333333333336, 5.896666666666667, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s2-net-node-0",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [32, 9.920411150353944, 0]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.020 - 1.1 * smoothstep(21.15, 21.65, t) + 0.018 * sin(1.3 * t + -27.17)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-1",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [30.45370033299743, 12.380307652106461, 1.7087082733851329]
+      },
+      "material": {
+        "hue": 0.62875,
+        "sat": 0.76,
+        "value": 0.5875,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "13.480 - 1.1 * smoothstep(21.27, 21.77, t) + 0.018 * sin(1.3 * t + -25.07)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-2",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [32.29161726142453, 11.650904506397122, -2.8851961924565597]
+      },
+      "material": {
+        "hue": 0.62875,
+        "sat": 0.76,
+        "value": 0.5875,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "12.751 - 1.1 * smoothstep(21.39, 21.89, t) + 0.018 * sin(1.3 * t + -22.97)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-3",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [34.31650182833244, 10.769756724548792, 2.3695024225210286]
+      },
+      "material": {
+        "hue": 0.62875,
+        "sat": 0.76,
+        "value": 0.5875,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.870 - 1.1 * smoothstep(21.51, 22.01, t) + 0.018 * sin(1.3 * t + -20.87)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-4",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [28.66711706881019, 10.02135787194449, -0.5703621471936202]
+      },
+      "material": {
+        "hue": 0.62875,
+        "sat": 0.76,
+        "value": 0.5875,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.121 - 1.1 * smoothstep(21.63, 22.13, t) + 0.018 * sin(1.3 * t + -18.77)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-5",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [35.0462853596452, 9.352777121659823, -1.444450357470997]
+      },
+      "material": {
+        "hue": 0.62875,
+        "sat": 0.76,
+        "value": 0.5875,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.453 - 1.1 * smoothstep(21.75, 22.25, t) + 0.018 * sin(1.3 * t + -16.67)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-6",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [31.363358503483195, 8.219620731911172, 2.6097801231999034]
+      },
+      "material": {
+        "hue": 0.6175,
+        "sat": 0.74,
+        "value": 0.625,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.320 - 1.1 * smoothstep(21.87, 22.37, t) + 0.018 * sin(1.3 * t + -14.57)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-7",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [31.19989911320728, 7.609575150078612, -1.9885364620992363]
+      },
+      "material": {
+        "hue": 0.6175,
+        "sat": 0.74,
+        "value": 0.625,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.710 - 1.1 * smoothstep(21.99, 22.49, t) + 0.018 * sin(1.3 * t + -12.47)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-node-8",
+      "type": "sphere",
+      "args": {
+        "radius": 0.5
+      },
+      "transform": {
+        "translate": [32.124597636454034, 7, 0.41466543722063837]
+      },
+      "material": {
+        "hue": 0.60625,
+        "sat": 0.72,
+        "value": 0.6625000000000001,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.2
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.100 - 1.1 * smoothstep(22.11, 22.61, t) + 0.018 * sin(1.3 * t + -10.37)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-0",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [1.5462996670025704, -2.459896501752518, -1.7087082733851329],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [30.45370033299743, 12.380307652106461, 1.7087082733851329]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "13.480 - 1.1 * smoothstep(22.43, 22.88, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-1",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-0.2916172614245259, -1.7304933560431786, 2.8851961924565597],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [32.29161726142453, 11.650904506397122, -2.8851961924565597]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "12.751 - 1.1 * smoothstep(22.57, 23.02, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-2",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-2.316501828332444, -0.8493455741948472, -2.3695024225210286],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [34.31650182833244, 10.769756724548792, 2.3695024225210286]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.870 - 1.1 * smoothstep(22.71, 23.16, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-3",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [3.3328829311898103, -0.1009467215905464, 0.5703621471936202],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [28.66711706881019, 10.02135787194449, -0.5703621471936202]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.121 - 1.1 * smoothstep(22.85, 23.30, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-4",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-3.0462853596452057, 0.5676340286941195, 1.444450357470997],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [35.0462853596452, 9.352777121659823, -1.444450357470997]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.453 - 1.1 * smoothstep(22.99, 23.44, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-5",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-0.6366414965168061, -1.7007904184427713, 2.6097801231999034],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [32, 9.920411150353944, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.020 - 1.1 * smoothstep(23.13, 23.58, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-6",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-0.8001008867927215, -2.310836000275332, -1.9885364620992363],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [32, 9.920411150353944, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.020 - 1.1 * smoothstep(23.27, 23.72, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-7",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [0.7612391329708433, -1.2196207319111718, -2.195114685979265],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [31.363358503483195, 8.219620731911172, 2.6097801231999034]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.320 - 1.1 * smoothstep(23.41, 23.86, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-8",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [0.9246985232467587, -0.6095751500786113, 2.4032018993198747],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [31.19989911320728, 7.609575150078612, -1.9885364620992363]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.710 - 1.1 * smoothstep(23.55, 24.00, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-net-edge-9",
+      "type": "capsule",
+      "args": {
+        "a": [0, 0, 0],
+        "b": [-0.12459763645403722, 2.920411150353943, -0.41466543722063837],
+        "radius": 0.06
+      },
+      "transform": {
+        "translate": [32.124597636454034, 7, 0.41466543722063837]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.15
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.100 - 1.1 * smoothstep(23.69, 24.14, t)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-0",
+      "type": "box",
+      "args": {
+        "dims": [0.198, 0.09, 0.09]
+      },
+      "transform": {
+        "translate": [33.251874627366746, 10.805000000000001, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.805 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.30 * t + -6.27)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-1",
+      "type": "box",
+      "args": {
+        "dims": [0.32780868071024444, 0.14900394577738382, 0.14900394577738382]
+      },
+      "transform": {
+        "translate": [32.557092148492025, 10.799558176477955, -2.2669323891550555],
+        "rotate": [0, 0.9, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.800 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.35 * t + -6.01)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-2",
+      "type": "box",
+      "args": {
+        "dims": [0.20661976563691156, 0.09391807528950524, 0.09391807528950524]
+      },
+      "transform": {
+        "translate": [30.108115937361013, 10.029579332748476, -0.989614658959953],
+        "rotate": [0, 1.8, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.030 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.40 * t + -5.76)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-3",
+      "type": "box",
+      "args": {
+        "dims": [0.3111415330337952, 0.141427969560816, 0.141427969560816]
+      },
+      "transform": {
+        "translate": [29.38985964677685, 10.622504230305474, 2.958537169853774],
+        "rotate": [0, 2.7, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.623 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.45 * t + -5.50)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-4",
+      "type": "box",
+      "args": {
+        "dims": [0.2302275364980922, 0.10464888022640553, 0.10464888022640553]
+      },
+      "transform": {
+        "translate": [33.25099030296351, 9.483645271943306, 1.8017308536587748],
+        "rotate": [0, 0.5, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.484 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.50 * t + -5.25)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-5",
+      "type": "box",
+      "args": {
+        "dims": [0.2821607803114054, 0.1282549001415479, 0.1282549001415479]
+      },
+      "transform": {
+        "translate": [36.75734157303818, 10.21777305248472, -1.822992316403063],
+        "rotate": [0, 1.4, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "10.218 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.30 * t + -6.05)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-6",
+      "type": "box",
+      "args": {
+        "dims": [0.26265684434010894, 0.1193894747000495, 0.1193894747000495]
+      },
+      "transform": {
+        "translate": [31.725538759439477, 9.142972950909394, -2.1848703015536812],
+        "rotate": [0, 2.3000000000000003, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.143 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.35 * t + -5.79)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-7",
+      "type": "box",
+      "args": {
+        "dims": [0.2484363406172655, 0.11292560937148431, 0.11292560937148431]
+      },
+      "transform": {
+        "translate": [26.362314705852384, 9.647721417838312, -0.6569637863396396],
+        "rotate": [0, 0.09999999999999964, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.648 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.40 * t + -5.54)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-8",
+      "type": "box",
+      "args": {
+        "dims": [0.295436991182191, 0.13428954144645044, 0.13428954144645044]
+      },
+      "transform": {
+        "translate": [31.143590488814368, 8.91457776908123, 2.2962604484326103],
+        "rotate": [0, 1, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.915 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.45 * t + -5.28)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-9",
+      "type": "box",
+      "args": {
+        "dims": [0.21877720687257704, 0.09944418494208046, 0.09944418494208046]
+      },
+      "transform": {
+        "translate": [36.65225163462019, 9.02614995509964, 3.1688055851540176],
+        "rotate": [0, 1.8999999999999995, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.026 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.50 * t + -5.03)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-10",
+      "type": "box",
+      "args": {
+        "dims": [0.3200056381357839, 0.14545710824353814, 0.14545710824353814]
+      },
+      "transform": {
+        "translate": [34.2335226351827, 8.675136475210417, -2.006364302126396],
+        "rotate": [0, 2.8, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.675 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.30 * t + -5.83)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-11",
+      "type": "box",
+      "args": {
+        "dims": [0.2009304936795526, 0.09133204258161481, 0.09133204258161481]
+      },
+      "transform": {
+        "translate": [29.627579720310372, 8.474057518564027, -4.438197954760972],
+        "rotate": [0, 0.6000000000000001, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.474 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.35 * t + -5.57)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-12",
+      "type": "box",
+      "args": {
+        "dims": [0.32994533129919096, 0.14997515059054134, 0.14997515059054134]
+      },
+      "transform": {
+        "translate": [28.383368375097472, 8.31741506572376, 0.9232036344772824],
+        "rotate": [0, 1.5000000000000004, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.317 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.40 * t + -5.32)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-13",
+      "type": "box",
+      "args": {
+        "dims": [0.19955785210222415, 0.09070811459192006, 0.09070811459192006]
+      },
+      "transform": {
+        "translate": [32.036647923605095, 8.074800164718715, 4.091483547131837],
+        "rotate": [0, 2.400000000000001, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.075 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.45 * t + -5.06)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-14",
+      "type": "box",
+      "args": {
+        "dims": [0.32265977292782494, 0.14666353314901132, 0.14666353314901132]
+      },
+      "transform": {
+        "translate": [36.270930563835755, 7.7899081353990995, 1.0090925115755864],
+        "rotate": [0, 0.1999999999999993, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.790 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.50 * t + -4.81)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-15",
+      "type": "box",
+      "args": {
+        "dims": [0.21501782301029038, 0.09773537409558652, 0.09773537409558652]
+      },
+      "transform": {
+        "translate": [33.39883204644998, 7.842845283973451, -2.7335382705725464],
+        "rotate": [0, 1.0999999999999996, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.843 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.30 * t + -5.61)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-16",
+      "type": "box",
+      "args": {
+        "dims": [0.3000519874366923, 0.1363872670166783, 0.1363872670166783]
+      },
+      "transform": {
+        "translate": [28.470728519999355, 7.11715949377181, -3.057888513618657],
+        "rotate": [0, 2, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.117 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.35 * t + -5.35)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-17",
+      "type": "box",
+      "args": {
+        "dims": [0.2432721844043266, 0.11057826563833026, 0.11057826563833026]
+      },
+      "transform": {
+        "translate": [30.208947584656457, 7.716059270978093, 1.2675014631709414],
+        "rotate": [0, 2.9000000000000004, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.716 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.40 * t + -5.10)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-18",
+      "type": "box",
+      "args": {
+        "dims": [0.26802724187134264, 0.12183056448697391, 0.12183056448697391]
+      },
+      "transform": {
+        "translate": [33.57563917106201, 6.394158865587819, 4.004131549320719],
+        "rotate": [0, 0.6999999999999988, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "6.394 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.45 * t + -4.84)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-19",
+      "type": "box",
+      "args": {
+        "dims": [0.2769407552710847, 0.12588216148685666, 0.12588216148685666]
+      },
+      "transform": {
+        "translate": [33.51816511579864, 7.574301952635952, -0.20453893292798464],
+        "rotate": [0, 1.600000000000001, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.574 - 0.000 * smoothstep(20.90, 21.90, t) + 0.07 * sin(0.50 * t + -4.59)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-20",
+      "type": "box",
+      "args": {
+        "dims": [0.23495056051526134, 0.10679570932511878, 0.10679570932511878]
+      },
+      "transform": {
+        "translate": [32.32248616067346, 5.756093885887722, -3.000946679549864],
+        "rotate": [0, 2.4999999999999996, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "5.756 - 0.000 * smoothstep(20.90, 21.90, t) + 0.09 * sin(0.30 * t + -5.39)"
+        }
+      ]
+    },
+    {
+      "id": "s2-dust-21",
+      "type": "box",
+      "args": {
+        "dims": [0.3072291359074981, 0.13964960723068096, 0.13964960723068096]
+      },
+      "transform": {
+        "translate": [31.295010863543265, 7.279070215106387, -0.2557625023629266],
+        "rotate": [0, 0.3000000000000016, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.2,
+        "value": 0.3,
+        "kind": "normal",
+        "roughness": 0.5
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "7.279 - 0.000 * smoothstep(20.90, 21.90, t) + 0.05 * sin(0.35 * t + -5.13)"
+        }
+      ]
+    },
+    {
+      "id": "s2-stage-platform",
+      "type": "cylinder",
+      "args": {
+        "radius": 8.323318564764856,
+        "height": 0.12
+      },
+      "transform": {
+        "translate": [31.559828139445283, 6.46, -0.17335720381456765]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.12,
+        "value": 0.22,
+        "kind": "normal",
+        "roughness": 0.75,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "path-2-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [34.666666666666664, 6.963333333333334, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [37.333333333333336, 7.496666666666668, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-3",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [40, 8.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-4",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [42.666666666666664, 8.563333333333334, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-5",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [45.333333333333336, 9.096666666666668, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s3-node-0",
+      "type": "union",
+      "children": [
+        {
+          "id": "node-ball-0",
+          "type": "sphere",
+          "args": {
+            "radius": 0.54
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        }
+      ],
+      "transform": {
+        "translate": [48, 12.750000000000002, 0]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "13.750 - 1 * smoothstep(32.95, 33.50, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-node-1",
+      "type": "union",
+      "children": [
+        {
+          "id": "node-ball-1",
+          "type": "sphere",
+          "args": {
+            "radius": 0.54
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        },
+        {
+          "id": "node-link-1",
+          "type": "capsule",
+          "args": {
+            "a": [0, 0, 0],
+            "b": [-1.1634144591899854e-16, 1.15, 1.9],
+            "radius": 0.045
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        }
+      ],
+      "transform": {
+        "translate": [48, 11.600000000000001, -1.9]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.7,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "12.600 - 1 * smoothstep(34.45, 35.00, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-node-2",
+      "type": "union",
+      "children": [
+        {
+          "id": "node-ball-2",
+          "type": "sphere",
+          "args": {
+            "radius": 0.54
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        },
+        {
+          "id": "node-link-2",
+          "type": "capsule",
+          "args": {
+            "a": [0, 0, 0],
+            "b": [-1.6454482671904336, 1.15, -0.9499999999999996],
+            "radius": 0.045
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        }
+      ],
+      "transform": {
+        "translate": [49.64544826719043, 11.600000000000001, 0.9499999999999996]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.7,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "12.600 - 1 * smoothstep(34.45, 35.00, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-node-3",
+      "type": "union",
+      "children": [
+        {
+          "id": "node-ball-3",
+          "type": "sphere",
+          "args": {
+            "radius": 0.54
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        },
+        {
+          "id": "node-link-3",
+          "type": "capsule",
+          "args": {
+            "a": [0, 0, 0],
+            "b": [1.6454482671904331, 1.15, -0.9500000000000006],
+            "radius": 0.045
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        }
+      ],
+      "transform": {
+        "translate": [46.35455173280957, 11.600000000000001, 0.9500000000000006]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.7,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "12.600 - 1 * smoothstep(34.45, 35.00, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-node-4",
+      "type": "union",
+      "children": [
+        {
+          "id": "node-ball-4",
+          "type": "sphere",
+          "args": {
+            "radius": 0.54
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        },
+        {
+          "id": "node-link-4",
+          "type": "capsule",
+          "args": {
+            "a": [0, 0, 0],
+            "b": [0.5025563907100643, 1.15, -0.6917095301905799],
+            "radius": 0.045
+          },
+          "transform": {
+            "translate": [0, 0, 0]
+          }
+        }
+      ],
+      "transform": {
+        "translate": [49.14289187648037, 10.450000000000001, 1.6417095301905795]
+      },
+      "material": {
+        "hue": 0.64,
+        "sat": 0.78,
+        "value": 0.57,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "11.450 - 1 * smoothstep(35.95, 36.50, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-stage-platform",
+      "type": "cylinder",
+      "args": {
+        "radius": 4.017318059143375,
+        "height": 0.12
+      },
+      "transform": {
+        "translate": [48, 9.660000000000002, -0.1291452349047102]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.12,
+        "value": 0.22,
+        "kind": "normal",
+        "roughness": 0.75,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "path-3-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [50.666666666666664, 9.63, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [53.333333333333336, 9.63, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-3",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [56, 9.63, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-4",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [58.666666666666664, 9.63, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-5",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 0.06, 0.28]
+      },
+      "transform": {
+        "translate": [61.333333333333336, 9.63, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s4-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [62.73, 9.660000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 0.48, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [62.73, 9.840000000000002, 0]
+      },
+      "material": {
+        "hue": 0.55,
+        "sat": 0.62,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "9.060 + 0.780 * smoothstep(44.25, 44.85, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s4-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [64, 9.660000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 2.4, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [64, 10.8, 0]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "8.100 + 2.700 * smoothstep(45.35, 45.95, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s4-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [1.06, 0.12, 1.06]
+      },
+      "transform": {
+        "translate": [65.27, 9.660000000000002, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [0.72, 4.8, 0.72],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [65.27, 12.000000000000002, 0]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "6.900 + 5.100 * smoothstep(46.45, 47.05, t)"
+        }
+      ]
+    },
+    {
+      "id": "s4-guard-l-0",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 2.2, 0.5]
+      },
+      "transform": {
+        "translate": [59.769999999999996, 10.700000000000001, -2.4],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-guard-r-0",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 2.2, 0.5]
+      },
+      "transform": {
+        "translate": [68.23, 10.700000000000001, -2.4],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-guard-l-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 3.5, 0.5]
+      },
+      "transform": {
+        "translate": [58.37, 11.350000000000001, -4.6],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-guard-r-1",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 3.5, 0.5]
+      },
+      "transform": {
+        "translate": [69.63, 11.350000000000001, -4.6],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-guard-l-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 4.800000000000001, 0.5]
+      },
+      "transform": {
+        "translate": [56.97, 12.000000000000002, -6.800000000000001],
+        "rotate": [0, -0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-guard-r-2",
+      "type": "box",
+      "args": {
+        "dims": [0.9, 4.800000000000001, 0.5]
+      },
+      "transform": {
+        "translate": [71.03, 12.000000000000002, -6.800000000000001],
+        "rotate": [0, 0.3, 0]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.25,
+        "value": 0.14,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.35
+      }
+    },
+    {
+      "id": "s4-stage-platform",
+      "type": "cylinder",
+      "args": {
+        "radius": 9.40902682797287,
+        "height": 0.12
+      },
+      "transform": {
+        "translate": [64, 9.660000000000002, -3.4000000000000004]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.12,
+        "value": 0.22,
+        "kind": "normal",
+        "roughness": 0.75,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "env-terrain",
+      "type": "terrain-elevated",
+      "args": {
+        "maxHeight": 35,
+        "scale": 0.035,
+        "ridgePower": 2,
+        "mountainness": 0.3
+      },
+      "transform": {
+        "translate": [0, -8, 0]
+      }
+    },
+    {
+      "id": "env-snow-base",
+      "type": "box",
+      "args": {
+        "dims": [400, 0.4, 400]
+      },
+      "transform": {
+        "translate": [0, -7.9, 0]
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.04,
+        "value": 0.94,
+        "metal": 0,
+        "glow": 0,
+        "kind": "snowy"
+      }
+    },
+    {
+      "id": "env-bridge",
+      "type": "arch-bridge",
+      "args": {
+        "bridgeLen": 30,
+        "bridgeWidth": 4,
+        "archH": 6,
+        "railH": 1.5,
+        "cornerOff": 10
+      },
+      "transform": {
+        "translate": [0, -1.2, -16],
+        "rotate": [0, 1.5708, 0]
+      },
+      "material": {
+        "hue": 0.07,
+        "sat": 0.3,
+        "value": 0.62,
+        "metal": 0,
+        "glow": 0,
+        "kind": "snowy"
+      }
+    },
+    {
+      "id": "env-pine-L",
+      "type": "tree-pine",
+      "args": {
+        "trunkHeight": 4.4,
+        "trunkRadius": 0.18,
+        "foliageRadius": 1.3
+      },
+      "transform": {
+        "translate": [-9, -1.5, -4]
+      },
+      "material": {
+        "hue": 0.3,
+        "sat": 0.55,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "snowy"
+      }
+    },
+    {
+      "id": "env-pine-R",
+      "type": "tree-pine",
+      "args": {
+        "trunkHeight": 3.8,
+        "trunkRadius": 0.16,
+        "foliageRadius": 1.1
+      },
+      "transform": {
+        "translate": [8, -1.5, -7]
+      },
+      "material": {
+        "hue": 0.3,
+        "sat": 0.55,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "snowy"
+      }
+    },
+    {
+      "id": "env-pine-far",
+      "type": "tree-pine",
+      "args": {
+        "trunkHeight": 5,
+        "trunkRadius": 0.2,
+        "foliageRadius": 1.6
+      },
+      "transform": {
+        "translate": [-14, -1.5, -12]
+      },
+      "material": {
+        "hue": 0.3,
+        "sat": 0.55,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "snowy"
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "最懂你的头条",
+      "anchor": [0, 3.6, -1.2],
+      "role": "title",
+      "revealAt": 0,
+      "hideAt": 6.4
+    },
+    {
+      "text": "市场之二：移动互联网广告（亿元）",
+      "anchor": [16, 9.3, 0],
+      "role": "title",
+      "revealAt": 7.6000000000000005,
+      "hideAt": 19.7
+    },
+    {
+      "text": "2010",
+      "anchor": [12.825, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 10.05,
+      "hideAt": 19.7
+    },
+    {
+      "text": "15.2",
+      "anchor": [12.825, 3.809294210943696, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 10.05
+    },
+    {
+      "text": "2011",
+      "anchor": [14.095, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 11.15,
+      "hideAt": 19.7
+    },
+    {
+      "text": "29.7",
+      "anchor": [14.095, 4.085265662172879, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 11.15
+    },
+    {
+      "text": "2012e",
+      "anchor": [15.365, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 12.25,
+      "hideAt": 19.7
+    },
+    {
+      "text": "57.2",
+      "anchor": [15.365, 4.608659793814433, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 12.25
+    },
+    {
+      "text": "2013e",
+      "anchor": [16.635, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 13.350000000000001,
+      "hideAt": 19.7
+    },
+    {
+      "text": "100.9",
+      "anchor": [16.635, 5.440380650277557, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 13.350000000000001
+    },
+    {
+      "text": "2014e",
+      "anchor": [17.905, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 14.45,
+      "hideAt": 19.7
+    },
+    {
+      "text": "162.9",
+      "anchor": [17.905, 6.620396510705789, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 14.45
+    },
+    {
+      "text": "2015e",
+      "anchor": [19.175, 3.18, 0.71],
+      "role": "screen",
+      "revealAt": 15.55,
+      "hideAt": 19.7
+    },
+    {
+      "text": "252.2",
+      "anchor": [19.175, 8.32, 0],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 15.55
+    },
+    {
+      "text": "独创的个性化资讯发现引擎",
+      "anchor": [32, 13.580307652106463, 0],
+      "role": "title",
+      "revealAt": 20.9,
+      "hideAt": 30.2
+    },
+    {
+      "text": "个性化发现引擎",
+      "anchor": [32.8, 9.920411150353944, 0],
+      "role": "card",
+      "align": "left",
+      "revealAt": 21.75
+    },
+    {
+      "text": "新闻门户",
+      "anchor": [31.25370033299743, 12.380307652106461, 1.7087082733851329],
+      "role": "card",
+      "align": "left",
+      "revealAt": 21.869999999999997
+    },
+    {
+      "text": "微博",
+      "anchor": [33.091617261424524, 11.650904506397122, -2.8851961924565597],
+      "role": "card",
+      "align": "left",
+      "revealAt": 21.99
+    },
+    {
+      "text": "博客",
+      "anchor": [35.116501828332446, 10.769756724548792, 2.3695024225210286],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.11
+    },
+    {
+      "text": "视频",
+      "anchor": [29.46711706881019, 10.02135787194449, -0.5703621471936202],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.229999999999997
+    },
+    {
+      "text": "垂直信息",
+      "anchor": [35.84628535964521, 9.352777121659823, -1.444450357470997],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.349999999999998
+    },
+    {
+      "text": "头条App",
+      "anchor": [32.163358503483195, 8.219620731911172, 2.6097801231999034],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.47
+    },
+    {
+      "text": "Web版",
+      "anchor": [31.999899113207277, 7.609575150078612, -1.9885364620992363],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.59
+    },
+    {
+      "text": "用户",
+      "anchor": [32.92459763645404, 7, 0.41466543722063837],
+      "role": "card",
+      "align": "left",
+      "revealAt": 22.709999999999997
+    },
+    {
+      "text": "拥有丰富创业经验的团队",
+      "anchor": [48, 14.05, 0],
+      "role": "title",
+      "revealAt": 31.4,
+      "hideAt": 41.4
+    },
+    {
+      "text": "张一鸣 创始人/CEO",
+      "anchor": [48.86, 12.750000000000002, 0],
+      "role": "card",
+      "align": "left",
+      "revealAt": 33.85
+    },
+    {
+      "text": "黄河 产品",
+      "anchor": [48.86, 11.600000000000001, -1.9],
+      "role": "card",
+      "align": "left",
+      "revealAt": 35.35
+    },
+    {
+      "text": "梁汝波 研发",
+      "anchor": [50.50544826719043, 11.600000000000001, 0.9499999999999996],
+      "role": "card",
+      "align": "left",
+      "revealAt": 35.35
+    },
+    {
+      "text": "屠锋锋 商务拓展",
+      "anchor": [47.21455173280957, 11.600000000000001, 0.9500000000000006],
+      "role": "card",
+      "align": "left",
+      "revealAt": 35.35
+    },
+    {
+      "text": "微软/腾讯/百度系工程师团队",
+      "anchor": [50.00289187648037, 10.450000000000001, 1.6417095301905795],
+      "role": "card",
+      "align": "left",
+      "revealAt": 36.849999999999994
+    },
+    {
+      "text": "移动 DAU 目标（万）",
+      "anchor": [64, 15.700000000000001, 0],
+      "role": "title",
+      "revealAt": 42.6,
+      "hideAt": 51.400000000000006
+    },
+    {
+      "text": "2012",
+      "anchor": [62.73, 9.580000000000002, 0.71],
+      "role": "screen",
+      "revealAt": 45.050000000000004,
+      "hideAt": 51.400000000000006
+    },
+    {
+      "text": "150",
+      "anchor": [62.73, 10.400000000000002, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 45.050000000000004
+    },
+    {
+      "text": "2013e",
+      "anchor": [64, 9.580000000000002, 0.71],
+      "role": "screen",
+      "revealAt": 46.15,
+      "hideAt": 51.400000000000006
+    },
+    {
+      "text": "750",
+      "anchor": [64, 12.32, 0],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 46.15
+    },
+    {
+      "text": "2014e",
+      "anchor": [65.27, 9.580000000000002, 0.71],
+      "role": "screen",
+      "revealAt": 47.25,
+      "hideAt": 51.400000000000006
+    },
+    {
+      "text": "1500",
+      "anchor": [65.27, 14.720000000000002, 0],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 47.25
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 2.2,
+        "pos": [2.8, 1, 8.6],
+        "target": [0, 3.1, -1.4],
+        "fov": 44,
+        "aperture": 0.35,
+        "focalDistance": 9.2,
+        "ease": "out"
+      },
+      {
+        "duration": 2.2,
+        "pos": [-2.4, 1.6, 7.2],
+        "target": [0.4, 4.2, -8],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.26,
+        "focalDistance": 9.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 2,
+        "pos": [0.8, 2.6, 9.6],
+        "target": [0, 3.4, -6],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 11,
+        "ease": "out",
+        "beat": "station",
+        "station": 0
+      },
+      {
+        "duration": 1.2,
+        "pos": [10.7875, 5.800000000000001, 11.6],
+        "target": [9.5875, 5.056, 0],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [0.14, 0.05],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [20.775, 3.7, 3.6],
+        "target": [19.175, 6.656000000000001, 0],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [16.6, 10.2, 6.135],
+        "target": [16, 5.36, 0],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 7.241999999999999,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [13.725, 3.709111816019033, 2.5],
+        "target": [12.825, 3.7, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [14.995000000000001, 3.8608961141950835, 2.5],
+        "target": [14.095, 3.7, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [16.265, 4.148762886597939, 2.5],
+        "target": [15.365, 3.7987628865979386, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [17.535, 4.300000000000001, 2.5],
+        "target": [16.635, 4.256209357652657, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [18.805, 4.300000000000001, 2.5],
+        "target": [17.905, 4.905218080888185, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [20.075, 4.300000000000001, 2.5],
+        "target": [19.175, 5.84, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [19.925, 3.4200000000000004, 1.3],
+        "target": [19.175, 7.5200000000000005, 0],
+        "fov": 44,
+        "transition": "cut",
+        "beat": "super",
+        "aperture": 0.06,
+        "focalDistance": 4.366062299143246,
+        "shake": [0.5, 0.06],
+        "ambient": [0.15, 1],
+        "exposure": [1.45, 1],
+        "ease": "out",
+        "station": 1
+      },
+      {
+        "duration": 2.4,
+        "pos": [17.2, 6.84, 9.209499999999998],
+        "target": [16, 5.12, 0],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 9.209499999999998,
+        "ease": "out",
+        "beat": "station",
+        "station": 1
+      },
+      {
+        "duration": 1.2,
+        "pos": [25.59533357365479, 10.040000000000001, 11.209499999999998],
+        "target": [24, 8.320411150353944, 0],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [0.14, 0.05],
+        "ease": "whip"
+      },
+      {
+        "duration": 1,
+        "pos": [33.99066714730958, 9.320411150353944, 2.189733862040542],
+        "target": [32, 9.920411150353944, 0],
+        "fov": 56,
+        "aperture": 0.55,
+        "focalDistance": 2.7869340062334165,
+        "ease": "out"
+      },
+      {
+        "duration": 1.3,
+        "pos": [33, 14.435902365654158, 6.768268300852584],
+        "target": [32, 9.658301212111159, 0],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 7.564535159776416,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.2,
+        "pos": [38.354177598203854, 14.236835650923199, 0.45060551504802837],
+        "target": [32, 9.358301212111158, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.370134871390667,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [33.524050494982816, 14.086835650923199, -6.185134466480905],
+        "target": [32, 9.358301212111158, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.370134871390667,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [26.163899418332, 13.9368356509232, -2.5531447824911604],
+        "target": [32, 9.358301212111158, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.370134871390667,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [32.5, 9.820411150353944, 1.5],
+        "target": [32, 9.980411150353945, 0],
+        "fov": 40,
+        "transition": "cut",
+        "beat": "super",
+        "aperture": 0.06,
+        "focalDistance": 1.5892136420255145,
+        "shake": [0.5, 0.06],
+        "ambient": [0.15, 1],
+        "exposure": [1.45, 1],
+        "ease": "out",
+        "station": 2
+      },
+      {
+        "duration": 2.4,
+        "pos": [33.4, 14.635918261835288, 10.903351632729047],
+        "target": [32, 9.558301212111157, 0],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 11.851469166009833,
+        "ease": "out",
+        "beat": "station",
+        "station": 2
+      },
+      {
+        "duration": 1.2,
+        "pos": [41.75, 17.83591826183529, 12.903351632729047],
+        "target": [40, 11.15, 0],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [0.14, 0.05],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [50.1, 10.55, 4.8],
+        "target": [48, 12.750000000000002, 0],
+        "fov": 52,
+        "aperture": 0.55,
+        "focalDistance": 5,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [48.8, 15.150000000000002, 3.8],
+        "target": [48, 12.350000000000001, 0],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.4,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.5,
+        "pos": [50.85186355219659, 13.650000000000002, 1.4515075885618476],
+        "target": [48, 12.750000000000002, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 3.2,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.5,
+        "pos": [51.47653453642424, 12.500000000000002, -2.5305548041979873],
+        "target": [48, 11.600000000000001, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 4.300000000000001,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.5,
+        "pos": [47.14817325162646, 11.350000000000001, -5.332390757507871],
+        "target": [48, 10.450000000000001, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 5.4,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [48.5, 12.650000000000002, 1.6],
+        "target": [48, 12.830000000000002, 0],
+        "fov": 40,
+        "transition": "cut",
+        "beat": "super",
+        "aperture": 0.06,
+        "focalDistance": 1.685941873256608,
+        "shake": [0.5, 0.06],
+        "ambient": [0.15, 1],
+        "exposure": [1.45, 1],
+        "ease": "out",
+        "station": 3
+      },
+      {
+        "duration": 2.4,
+        "pos": [49.6, 13.000000000000002, 11.16],
+        "target": [48, 11.600000000000001, 0],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 11.16,
+        "ease": "out",
+        "beat": "station",
+        "station": 3
+      },
+      {
+        "duration": 1.2,
+        "pos": [58.235, 14.600000000000001, 13.16],
+        "target": [56.635, 13.056000000000001, 0],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [0.14, 0.05],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [66.87, 10.100000000000001, 3.6],
+        "target": [65.27, 13.056000000000001, 0],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [64.6, 16.6, 4.23],
+        "target": [64, 11.760000000000002, 0],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [63.63, 10.214000000000002, 2.5],
+        "target": [62.73, 10.100000000000001, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [64.9, 10.700000000000001, 2.5],
+        "target": [64, 10.920000000000002, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [66.17, 10.700000000000001, 2.5],
+        "target": [65.27, 12.240000000000002, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [66.02, 9.820000000000002, 1.3],
+        "target": [65.27, 13.920000000000002, 0],
+        "fov": 44,
+        "transition": "cut",
+        "beat": "super",
+        "aperture": 0.06,
+        "focalDistance": 4.366062299143246,
+        "shake": [0.5, 0.06],
+        "ambient": [0.15, 1],
+        "exposure": [1.45, 1],
+        "ease": "out",
+        "station": 4
+      },
+      {
+        "duration": 2.4,
+        "pos": [65.2, 13.240000000000002, 5.971],
+        "target": [64, 11.520000000000001, 0],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out",
+        "beat": "station",
+        "station": 4
+      },
+      {
+        "duration": 3,
+        "pos": [52, 49.3, 76],
+        "target": [32, 6.000000000000001, 0],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.08,
+        "focalDistance": 84,
+        "ease": "out",
+        "beat": "finale"
+      }
+    ],
+    "hitstops": [
+      {
+        "at": 16.32,
+        "hold": 0.14
+      },
+      {
+        "at": 26.82,
+        "hold": 0.14
+      },
+      {
+        "at": 38.019999999999996,
+        "hold": 0.14
+      },
+      {
+        "at": 48.02,
+        "hold": 0.14
+      }
+    ]
+  },
+  "deckWindows": [
+    {
+      "kind": "station",
+      "stations": [0],
+      "start": 0,
+      "end": 6.4,
+      "origin": [0, 0, 0],
+      "tier": "hero"
+    },
+    {
+      "kind": "transit",
+      "stations": [0, 1],
+      "start": 6.4,
+      "end": 7.6000000000000005,
+      "origin": [8, 0, 0]
+    },
+    {
+      "kind": "station",
+      "stations": [1],
+      "start": 7.6000000000000005,
+      "end": 19.7,
+      "origin": [16, 0, 0],
+      "tier": "content"
+    },
+    {
+      "kind": "transit",
+      "stations": [1, 2],
+      "start": 19.7,
+      "end": 20.9,
+      "origin": [24, 0, 0]
+    },
+    {
+      "kind": "station",
+      "stations": [2],
+      "start": 20.9,
+      "end": 30.2,
+      "origin": [32, 0, 0],
+      "tier": "content"
+    },
+    {
+      "kind": "transit",
+      "stations": [2, 3],
+      "start": 30.2,
+      "end": 31.4,
+      "origin": [40, 0, 0]
+    },
+    {
+      "kind": "station",
+      "stations": [3],
+      "start": 31.4,
+      "end": 41.4,
+      "origin": [48, 0, 0],
+      "tier": "content"
+    },
+    {
+      "kind": "transit",
+      "stations": [3, 4],
+      "start": 41.4,
+      "end": 42.6,
+      "origin": [56, 0, 0]
+    },
+    {
+      "kind": "station",
+      "stations": [4],
+      "start": 42.6,
+      "end": 51.400000000000006,
+      "origin": [64, 0, 0],
+      "tier": "content"
+    },
+    {
+      "kind": "finale",
+      "stations": [0, 1, 2, 3, 4],
+      "start": 51.400000000000006,
+      "end": 54.400000000000006
+    }
+  ],
+  "defaults": {
+    "camera": {
+      "yaw": 0,
+      "pitch": -0.1,
+      "distance": 10,
+      "focal": 1.2,
+      "targetX": 0,
+      "targetY": 2,
+      "targetZ": 0
+    },
+    "light": {
+      "azimuth": -0.6,
+      "altitude": 0.3,
+      "distance": 60,
+      "intensity": 1.15
+    },
+    "shadow": {
+      "enabled": true,
+      "mode": "darken",
+      "strength": 0.42
+    },
+    "postFx": {
+      "vignetteStrength": 0.58,
+      "exposure": 0.92,
+      "bloomMix": 0.24
+    },
+    "studioBg": "dark",
+    "interiorDark": 0.4,
+    "glow": {
+      "amount": 0.3,
+      "k": 6
+    }
+  }
+}
