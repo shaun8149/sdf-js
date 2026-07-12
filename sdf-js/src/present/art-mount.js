@@ -146,6 +146,86 @@ export async function loadArtMount(entry, base) {
   };
 }
 
+// ── Sprint 85: 内页纹样 — 异源为默认 (user A/B 裁定: 同源异源都好于无, 保留异源) ──
+// Each mount gets a DETERMINISTIC underlay family that is deliberately NOT
+// the family ported from the same artwork — the wall art and the wallpaper
+// speak the same palette but different forms. Stable per mount id.
+const MOUNT_FAMILY_OF = {
+  L01: 'meadow-streaks',
+  L02: 'banded-ribbons',
+  L03: 'block-mosaic',
+  L04: 'wash-flow',
+  L05: 'strata-lines',
+  L06: 'sediment-layers',
+  L07: 'ink-scribble',
+  L08: 'light-edges',
+  L10: 'hex-lattice',
+  L13: 'drift-web',
+  L17: 'cargo-dashes',
+  L19: 'folded-screens',
+  L21: 'scan-tides',
+  L22: 'paper-folds',
+  L26: 'growth-loops',
+  L28: 'street-grid',
+  L33: 'torn-paper',
+  L38: 'peg-wraps',
+  L41: 'river-courses',
+};
+const UNDERLAY_FAMILIES = [
+  'flow-streams',
+  'weave-dashes',
+  'circle-pack',
+  'shard-mesh',
+  'meadow-streaks',
+  'flow-ribbons',
+  'banded-ribbons',
+  'block-mosaic',
+  'wash-flow',
+  'strata-lines',
+  'sediment-layers',
+  'ink-scribble',
+  'light-edges',
+  'nib-flourish',
+  'hex-lattice',
+  'drift-web',
+  'cargo-dashes',
+  'folded-screens',
+  'halftone-fade',
+  'scan-tides',
+  'paper-folds',
+  'growth-loops',
+  'street-grid',
+  'torn-paper',
+  'peg-wraps',
+  'river-courses',
+];
+
+function fnv1a(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) h = ((h ^ str.charCodeAt(i)) * 16777619) | 0;
+  return h >>> 0;
+}
+
+/** underlayFamilyFor(mountId) → a stable decor family ≠ the mount's own port. */
+export function underlayFamilyFor(mountId) {
+  const own = MOUNT_FAMILY_OF[mountId];
+  const pool = UNDERLAY_FAMILIES.filter((f) => f !== own);
+  return pool[fnv1a('underlay:' + mountId) % pool.length];
+}
+
+/**
+ * mountUnderlayDecor(baseDecor, mount, mode) → decor re-familied for this
+ * mount. mode 'hetero' (default — user A/B ruling) picks a stable family
+ * DIFFERENT from the mount's own port; 'homo' uses the same-artwork family
+ * where one exists (user: Naïve×drift-web 做到了颜色和设计的和谐).
+ */
+export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
+  if (!baseDecor || !mount?.id) return baseDecor;
+  const homo = MOUNT_FAMILY_OF[mount.id];
+  const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id);
+  return { ...baseDecor, family };
+}
+
 /** fetchMintManifest(base) → manifest array, or null when the cache is absent. */
 export async function fetchMintManifest(base) {
   try {

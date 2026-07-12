@@ -19,7 +19,7 @@
 
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 import { slotPalette, slotRoleOf } from '../retheme.js';
-import { artMountOpts, mountPaletteOverride } from '../art-mount.js';
+import { artMountOpts, mountPaletteOverride, mountUnderlayDecor } from '../art-mount.js';
 
 // pptxgenjs loaded from esm.sh on first call (matches pdfjs CDN pattern in
 // src/parser/pdf.js — no build step / bundler required).
@@ -90,7 +90,10 @@ export async function exportDeckToPPTX(deck, opts = {}) {
           : slotPalette(deck.theme, slot),
         decorRole: slotRoleOf(slot),
         decor: deck.decor
-          ? { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx }
+          ? (opts.artMount ? mountUnderlayDecor : (d) => d)(
+              { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx },
+              opts.artMount,
+            )
           : undefined,
         // Sprint 82: 真迹装裱 — screen and file must show the same mount
         ...(artMountOpts(opts.artMount, slot, slotRoleOf(slot)) || {}),

@@ -208,7 +208,10 @@ function _drawLight(ctx, args, opts = {}) {
   const bg = palette.bg || [247, 244, 224];
   const accent = palette.colors?.[0] || palette.accent || [60, 100, 200];
   // Light card background — lighten the theme bg significantly
-  const cardBg = lighten(bg, 0.5);
+  // Sprint 85: on DARK themes lighten(bg) yields grey slabs that fight the
+  // accent numerals — light variants pin to paper instead
+  const bgLum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;
+  const cardBg = bgLum > 0.45 ? lighten(bg, 0.5) : [248, 246, 240];
 
   // ---- Drop shadow ----
   ctx.save();
@@ -307,7 +310,10 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   const fg = palette.silhouetteColor || [30, 27, 30];
   const bg = palette.bg || [247, 244, 224];
   const accent = palette.colors?.[0] || palette.accent || [60, 100, 200];
-  const cardBg = lighten(bg, 0.5);
+  // Sprint 85: on DARK themes lighten(bg) yields grey slabs that fight the
+  // accent numerals — light variants pin to paper instead
+  const bgLum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;
+  const cardBg = bgLum > 0.45 ? lighten(bg, 0.5) : [248, 246, 240];
 
   const borderW = Math.max(8, Math.min(12, w * 0.035));
   const cardRadius = Math.min(w, h) * 0.06;

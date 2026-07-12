@@ -189,7 +189,12 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       ctx.beginPath();
       ctx.rect(bx, by, bw, bh);
       ctx.clip();
-      if (decorArtStrip) {
+      if (decorArt && role === 'agenda') {
+        // Sprint 85 (user: 目录页抬头小画布换完整画布) — the agenda banner
+        // shows the LARGE piece as a full-bleed band crop; sparse smalls
+        // stay on section/content banners
+        drawArtCover(decorArt, bx, by, bw, bh);
+      } else if (decorArtStrip) {
         drawArtStrip(bx, by, bw, bh);
       } else if (decorArt) {
         drawArtCover(decorArt, bx, by, bw, bh);
