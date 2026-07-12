@@ -631,11 +631,14 @@ export function sliceDeckWindow(scene, win) {
     if (st) return wanted.has(Number(st[1]));
     const path = /^path-(\d+)-/.exec(id);
     if (path) {
-      // Breadcrumbs earn their keep during TRANSIT flyovers; inside a station
-      // they're floor dots at the frame edge costing a full SDF eval per
-      // march step each. Station windows drop them all.
-      if (win.kind === 'station') return false;
       const i = Number(path[1]);
+      // Breadcrumbs earn their keep during TRANSIT flyovers. Station windows
+      // keep only the OUTGOING segment (path-k, leading to the next arena):
+      // when the transit starts, its path is ALREADY there — the world never
+      // pops in ahead of the lens (total-continuity lock). The incoming
+      // segment (path-(k-1)) still drops, but that pop happens BEHIND the
+      // camera at arrival, where nobody is looking. +5 leaves per station.
+      if (win.kind === 'station') return wanted.has(i);
       return wanted.has(i) || wanted.has(i + 1);
     }
     return true;
