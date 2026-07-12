@@ -208,44 +208,14 @@ function fnv1a(str) {
   return h >>> 0;
 }
 
-// families by ARTIST — Sprint 88 (user: 异源纹样尽量选同一作者, 同频的
-// 形语言; 装裱2 批的惊艳度对照实验结论)。key = manifest artist 名。
-const ARTIST_FAMILIES = {
-  'Monica Rizzolli': ['meadow-streaks'],
-  'Tyler Hobbs': ['banded-ribbons', 'flow-ribbons'],
-  'Kjetil Golid': ['block-mosaic', 'weave-dashes'],
-  NumbersInMotion: ['wash-flow'],
-  'Aaron Penne': ['strata-lines'],
-  Eko33: ['sediment-layers'],
-  'Iskra Velitchkova': ['ink-scribble'],
-  'Zach Lieberman': ['light-edges'],
-  'Golan Levin': ['nib-flourish'],
-  'Lars Wander': ['hex-lattice'],
-  'Olga Fradina': ['drift-web'],
-  'Kim Asendorf': ['cargo-dashes'],
-  'Thomas Lin Pedersen': ['folded-screens'],
-  itsgalo: ['halftone-fade'],
-  LoVid: ['scan-tides'],
-  'James Merrill': ['paper-folds', 'street-grid'],
-  'Joshua Bagley': ['growth-loops'],
-  'Emily Xie': ['torn-paper'],
-  'Dmitri Cherniak': ['peg-wraps'],
-  'Robert Hodgin': ['river-courses'],
-};
-
 /**
- * underlayFamilyFor(mountId, artist) → a stable decor family for the body.
- * Preference order (Sprint 88): ① a family ported from the SAME ARTIST's
- * OTHER work (同作者异作品 — the artist's formal language stays coherent)
- * ② deterministic pick from the full pool. The mount's own port is always
- * excluded (异源 = different work, 保持).
+ * underlayFamilyFor(mountId) → a stable decor family ≠ the mount's own
+ * port. Pure derived pick (S89: user ruled — 随机就很好, 同作者优先与
+ * 推荐逻辑均未产生可感知增益, 回退保持系统简单; 曾试过的两版见 git
+ * history #326/#321)。
  */
-export function underlayFamilyFor(mountId, artist) {
+export function underlayFamilyFor(mountId) {
   const own = MOUNT_FAMILY_OF[mountId];
-  const sameArtist = (ARTIST_FAMILIES[artist] || []).filter((f) => f !== own);
-  if (sameArtist.length) {
-    return sameArtist[fnv1a('underlay:' + mountId) % sameArtist.length];
-  }
   const pool = UNDERLAY_FAMILIES.filter((f) => f !== own);
   return pool[fnv1a('underlay:' + mountId) % pool.length];
 }
@@ -259,48 +229,8 @@ export function underlayFamilyFor(mountId, artist) {
 export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
   if (!baseDecor || !mount?.id) return baseDecor;
   const homo = MOUNT_FAMILY_OF[mount.id];
-  const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id, mount.artist);
+  const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id);
   return { ...baseDecor, family };
-}
-
-// ── Sprint 87: 装裱推荐 — score mounts against the deck theme ───────────────
-function hueOf([r, g, b]) {
-  const mx = Math.max(r, g, b);
-  const mn = Math.min(r, g, b);
-  if (mx === mn) return 0;
-  let h;
-  if (mx === r) h = ((g - b) / (mx - mn)) % 6;
-  else if (mx === g) h = (b - r) / (mx - mn) + 2;
-  else h = (r - g) / (mx - mn) + 4;
-  return (h * 60 + 360) % 360;
-}
-
-/**
- * rankMounts(entries, themeAccent) → entries sorted best-first with _score.
- * Scoring, all heuristics: hue RELATIONSHIP to the theme accent (analogous /
- * complementary / triadic read as designed, arbitrary angles as noise),
- * accent saturation (vivid accents carry the numerals), palette richness,
- * curation tier. Needs prebaked entry.palette (bake step) — unbaked entries
- * sink to the bottom rather than erroring.
- */
-export function rankMounts(entries, themeAccent) {
-  const themeHue = hueOf(themeAccent || [60, 100, 200]);
-  const scored = entries.map((m) => {
-    if (m.status !== 'ok' || !m.palette?.accent) return { ...m, _score: -1 };
-    const [r, g, b] = m.palette.accent;
-    const sat = (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
-    const dh = Math.abs(((hueOf(m.palette.accent) - themeHue + 540) % 360) - 180); // 0..180
-    const rel = Math.min(
-      Math.abs(180 - dh), // analogous (dh≈180 means same hue after the fold above)
-      Math.abs(dh), // complementary
-      Math.abs(60 - dh), // triadic-ish
-    );
-    const harmony = Math.exp(-(rel * rel) / (2 * 28 * 28)); // σ 28°
-    const richness = Math.min(1, (m.palette.colors?.length || 0) / 5);
-    const tier = m.curation === 'curated' ? 1 : m.curation === 'playground' ? 0.6 : 0.4;
-    return { ...m, _score: harmony * 2 + sat * 1.4 + richness * 0.6 + tier * 0.5 };
-  });
-  return scored.sort((a2, b2) => b2._score - a2._score);
 }
 
 /** fetchMintManifest(base) → manifest array, or null when the cache is absent. */
