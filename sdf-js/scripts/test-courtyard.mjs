@@ -147,6 +147,15 @@ const stations = new Map(
   );
 }
 
+// ---- total continuity (2026-07-12 directive): deck playback never cuts ----------
+{
+  for (const layout of ['radial', 'courtyard']) {
+    const s = assembleDeck(DECK, { layout });
+    const cuts = s.cameraSequence.shots.filter((sh, i) => i > 0 && sh.transition !== 'blend');
+    ok(cuts.length === 0, `${layout}: zero cut transitions in deck playback (${cuts.length})`);
+  }
+}
+
 // ---- determinism + validity ------------------------------------------------------
 {
   const again = assembleDeck(DECK, { layout: 'courtyard' });

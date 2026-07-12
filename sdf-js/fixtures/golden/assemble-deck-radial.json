@@ -7197,7 +7197,8 @@
         "fov": 44,
         "aperture": 0.35,
         "focalDistance": 9.2,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 2.2,
@@ -7239,7 +7240,8 @@
         "fov": 46,
         "aperture": 0.3,
         "focalDistance": 8.6,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 6.8,
@@ -7281,7 +7283,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -7364,7 +7367,7 @@
         "pos": [31.169245671105404, 0.22, 20.105344987209882],
         "target": [30.419245671105404, 4.32, 18.80534498720988],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,
@@ -7404,7 +7407,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -7487,7 +7491,7 @@
         "pos": [36.787861067690216, 0.22, 5.290273765196559],
         "target": [36.037861067690216, 4.32, 3.9902737651965587],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,
@@ -7527,7 +7531,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -7610,7 +7615,7 @@
         "pos": [28.527991034075757, 0.22, -10.43892108841144],
         "target": [27.777991034075757, 4.32, -11.738921088411441],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,
@@ -7650,7 +7655,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -7733,7 +7739,7 @@
         "pos": [19.527163778534103, 0.22, -23.47887058999947],
         "target": [18.777163778534103, 4.32, -24.77887058999947],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,
@@ -7773,7 +7779,8 @@
         "fov": 48,
         "aperture": 0.3,
         "focalDistance": 6.2,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 3.3000000000000003,
@@ -7790,7 +7797,7 @@
         "pos": [11.922360353582558, 3.2, -30.042279457180825],
         "target": [11.322360353582557, 3.6, -32.14227945718083],
         "fov": 42,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 2.2,
@@ -7830,7 +7837,8 @@
         "fov": 56,
         "aperture": 0.55,
         "focalDistance": 2.7869340062334165,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.3,
@@ -7880,7 +7888,7 @@
         "pos": [-7.422360353582548, 3.420411150353943, -30.642279457180827],
         "target": [-7.922360353582548, 3.5804111503539433, -32.14227945718083],
         "fov": 40,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.6,
@@ -7920,7 +7928,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 5.5,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.3,
@@ -7981,7 +7990,7 @@
         "pos": [-21.402163778534096, 1.85, -22.878870589999476],
         "target": [-21.952163778534096, 2.12, -24.778870589999475],
         "fov": 40,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 2,
@@ -8021,7 +8030,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -8115,7 +8125,7 @@
         "pos": [-26.392991034075756, 0.22, -10.438921088411456],
         "target": [-27.142991034075756, 3.215049504950495, -11.738921088411457],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,
@@ -8155,7 +8165,8 @@
         "fov": 52,
         "aperture": 0.55,
         "focalDistance": 5,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -8205,7 +8216,7 @@
         "pos": [-32.36286106769022, 3.05, 5.5902737651965655],
         "target": [-32.86286106769022, 3.23, 3.990273765196565],
         "fov": 40,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.7,
@@ -8245,7 +8256,8 @@
         "fov": 48,
         "aperture": 0.12,
         "focalDistance": 5.296,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 0.9,
@@ -8292,7 +8304,7 @@
         "pos": [-27.654245671105425, 1.9999999999999998, 20.905344987209848],
         "target": [-28.154245671105425, 1.7999999999999998, 19.005344987209845],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.7, 0.35],
         "focalDistance": 2,
@@ -8331,7 +8343,8 @@
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
-        "ease": "out"
+        "ease": "out",
+        "transition": "blend"
       },
       {
         "duration": 1.2,
@@ -8381,7 +8394,7 @@
         "pos": [-13.364301920023097, 0.22, 30.612338301628192],
         "target": [-14.114301920023097, 4.32, 29.31233830162819],
         "fov": 44,
-        "transition": "cut",
+        "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
         "focalDistance": 1.8,

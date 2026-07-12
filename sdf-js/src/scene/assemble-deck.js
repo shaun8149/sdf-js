@@ -402,11 +402,20 @@ export function assembleDeck(deck, opts = {}) {
 
     // Camera: shift shots in space + append (time shift is implicit — durations chain).
     // Beat tags ride along; tagged shots get their station index for the presenter.
+    // TOTAL CONTINUITY (2026-07-12 user directive: camera continuity is the
+    // FIRST element of world-feel — no discontinuity may exist in deck
+    // playback): every station shot becomes a blend. The evaluator's default
+    // transition is 'cut', so an unmarked hero shot was a hard jump at every
+    // station entry, and the SUPER's hard cut was a jump mid-station. The
+    // super keeps its punch through ease 'out' (fast rush + settle), shake,
+    // exposure and hitstop — impact stays, teleporting goes. Solo figure
+    // pages (?ir=) keep the fighting-game cuts untouched.
     st.cameraSequence.shots.forEach((sh) => {
       shots.push({
         ...sh,
         pos: addV(sh.pos, origin),
         target: addV(sh.target, origin),
+        transition: 'blend',
         ...(sh.beat ? { station: k } : {}),
       });
     });
