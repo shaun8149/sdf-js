@@ -41,19 +41,25 @@ for (const layout of LAYOUTS) {
     ok(false, `${layout}: golden file missing — run with --update once`);
     continue;
   }
-  const want = readFileSync(file, 'utf8').replace(/\n$/, '');
-  if (got === want) {
+  // Compare CONTENT, not formatting: the pre-commit prettier hook re-indents
+  // fixture JSONs, so a raw string compare fails at char 1 on indentation
+  // alone. Normalizing through parse→stringify keeps the check exact on every
+  // value while ignoring whitespace style.
+  const norm = (s) => JSON.stringify(JSON.parse(s));
+  const want = norm(readFileSync(file, 'utf8'));
+  if (norm(got) === want) {
     ok(
       true,
       `${layout}: output matches golden (${scene.subjects.length} subjects, ${scene.cameraSequence.shots.length} shots, ${scene.deckWindows.length} windows)`,
     );
   } else {
+    const gotN = norm(got);
     let i = 0;
-    while (i < Math.min(got.length, want.length) && got[i] === want[i]) i++;
+    while (i < Math.min(gotN.length, want.length) && gotN[i] === want[i]) i++;
     const ctx = (s) => s.slice(Math.max(0, i - 80), i + 80).replace(/\n/g, '⏎');
-    ok(false, `${layout}: output diverges from golden at char ${i}`);
+    ok(false, `${layout}: output diverges from golden at char ${i} (normalized)`);
     console.log(`    golden: …${ctx(want)}…`);
-    console.log(`    got:    …${ctx(got)}…`);
+    console.log(`    got:    …${ctx(gotN)}…`);
     console.log(
       '    (intentional change? regenerate with --update and justify the diff in the PR)',
     );

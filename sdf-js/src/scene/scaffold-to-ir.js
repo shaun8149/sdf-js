@@ -760,6 +760,40 @@ function kpiSlotToIR(subjects) {
   };
 }
 
+// ---- hold fallback (§9.5-3: no-structure pages must not vanish) ----------------
+// Before this, a slot with no structural atom (pure cover / narration / icon
+// boards) was SKIPPED — 48% slot→station attrition across the ammo pack, and
+// the reason chapter (zone) grouping can't deploy on real corpus: a chapter
+// whose pages all vanish is an empty zone. A hold station keeps 3D page count
+// aligned with 2D. Title comes from the cover atom (the 2D end's own headline)
+// over the nav label; bullets are a few SHORT text lines fished from common
+// atom arg fields — narration goes to the DOM subtitle layer, so we only lift
+// label-length strings, never paragraphs.
+const HOLD_TEXT_FIELDS = ['subtitle', 'tagline', 'quote', 'caption'];
+export function holdSlotToIR(sceneData, label = '') {
+  const subjects = Array.isArray(sceneData?.subjects)
+    ? sceneData.subjects
+    : Array.isArray(sceneData?.atoms)
+      ? sceneData.atoms
+      : [];
+  const cover = subjects.find((s) => s && s.type === 'cover');
+  const title = String(cover?.args?.title || label || '').trim();
+  const nodes = [];
+  const push = (v) => {
+    if (typeof v !== 'string') return;
+    const t = v.trim();
+    if (t && t.length <= 90 && t !== title && !nodes.includes(t) && nodes.length < 4) nodes.push(t);
+  };
+  for (const s of subjects) {
+    const a = (s && s.args) || {};
+    for (const f of HOLD_TEXT_FIELDS) push(a[f]);
+    if (Array.isArray(a.items))
+      for (const it of a.items)
+        push(typeof it === 'string' ? it : it && (it.label ?? it.title ?? it.text));
+  }
+  return { structure: 'hold', title, nodes };
+}
+
 /**
  * slotToIR(sceneData) → IR | null
  * A slot carries several atom subjects (a cover + N content atoms); pick the
@@ -878,8 +912,15 @@ export function atlasDeckToIR(deckJson, opts = {}) {
       : Array.isArray(sceneData.atoms)
         ? sceneData.atoms
         : [];
-    const ir = slotToIR({ ...sceneData, subjects });
+    let ir = slotToIR({ ...sceneData, subjects });
     const label = slot.slotTitle || slot.slotName || `slot ${i}`;
+    let holdFallback = false;
+    if (!ir && allowed.includes('hold')) {
+      // §9.5-3: page-count parity — a no-structure page becomes a hold station
+      // instead of vanishing from the 3D deck.
+      ir = holdSlotToIR({ ...sceneData, subjects }, label);
+      holdFallback = true;
+    }
     if (!ir) {
       report.push({ slot: i, title: label, outcome: 'skipped:no-structural-atom' });
       return;
@@ -890,7 +931,11 @@ export function atlasDeckToIR(deckJson, opts = {}) {
     }
     if (!ir.title) ir.title = label;
     slides.push(ir);
-    report.push({ slot: i, title: label, outcome: `ir:${ir.structure}` });
+    report.push({
+      slot: i,
+      title: label,
+      outcome: holdFallback ? 'ir:hold(fallback)' : `ir:${ir.structure}`,
+    });
   });
   return { title: deck.title || 'atlas-deck', slides, report };
 }
