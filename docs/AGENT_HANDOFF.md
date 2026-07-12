@@ -145,6 +145,26 @@ update **both** when adding shot fields.
    五版生成艺术 PDF → 真迹版)。License 核查由 user 亲自负责 (ND 裁切=
    改编风险已写 original-mints/README)。
 
+### 3.6 (2026-07-12 追加) 3D 端方向决策: 空间组织框架 — "为镜头组织空间"
+
+User 判定 3D 端"翻页式组织空间是不对的", 提出组织空间/排布 atoms/类 ArtBlocks
+修饰三点需求。工作 agent 的三层框架提案经 user 要求跑了 **4+1 轮对抗讨论**
+(9 subagent, 攻击/裁决双方直接核查代码, 16 攻击 16 partial, 合议改判 3 处),
+合议全文: `docs/superpowers/notes/2026-07-12-spatialplan-debate-synthesis.md`。
+**任何 SpatialPlan/courtyard/zone 工作从合议出发, 不要回退到被打穿的原提案。**
+
+要点: ① 框架奠基 = **为镜头组织空间**(观众无行动权, 空间感由镜头中介;
+验收标准 = "哪一拍镜头消费它"); vista 降级为 crane/transit/threshold/finale
+消费的素材。② 决策"替换 assemble-deck"被打穿 → 改单管线内加 layout 分支,
+id 前缀/输出形态字节级保全, 三 layout golden snapshot 先行, transplant 机器不碰;
+SpatialPlan IR 等 rule-of-two。③ zone = planSpace 内部概念, 真相源 = 2D 章节
+语义(3D 不推断), 契约请求延后至"盲测+真契约 deck"双证据; **hold 站发射
+(§9.5-3) 是契约部署硬前置**(48% slot→station 衰减实测)。④ Phase 1 =
+spike-gated courtyard, landscape 平行对照(user 拍板四条: landscape 也做
+spike / 石板→massing 接受 / hold 进 Phase 1 / 盲测双臂等价装饰)。
+Spec/plan: `docs/superpowers/specs/2026-07-12-spatialplan-phase1-spec.md` +
+`docs/superpowers/plans/2026-07-12-spatialplan-phase1-plan.md`(Wave 0 gate 周)。
+
 ---
 
 ## 4. The sphere-fill gauge (most recent work — full context)
