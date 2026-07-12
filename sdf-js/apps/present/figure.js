@@ -13,9 +13,7 @@ const params = new URLSearchParams(location.search);
 const env = params.get('env') || 'studio';
 const stage = params.get('stage') === '1'; // ?stage=1 → fighting-game stage preset
 const present = params.get('present') === '1'; // ?present=1 → space steps the beats
-const renderMode = ['rich', 'stone'].includes(params.get('mode'))
-  ? params.get('mode')
-  : 'analytic'; // analytic = zero-march default; ?mode=stone|rich opts out
+const renderMode = ['rich', 'stone'].includes(params.get('mode')) ? params.get('mode') : 'analytic'; // analytic = zero-march default; ?mode=stone|rich opts out
 const { show } = createFigure({ outdoor: env !== 'studio', stage, present, renderMode });
 
 const deckName = params.get('deck');
@@ -28,8 +26,11 @@ const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json(
 const paletteId = params.get('palette');
 const theme = paletteId === '0' ? null : getTheme(paletteId || 'pitch-spectrum');
 const palette = theme ? { anchor: theme.accent, colors: theme.colors } : null;
+// ?seed=<hash> — Layer C deck decor (seeded art identity, same lanes as the
+// 2D decor engine). Absent → undecorated (unchanged default for now).
+const decorSeed = params.get('seed') || undefined;
 const scene = deckName
-  ? assembleDeck(ir, { env, layout, stage, palette })
+  ? assembleDeck(ir, { env, layout, stage, palette, decorSeed })
   : renderIR(ir, { env, stage });
 show(scene);
 // script spans may ride in the deck fixture (teleprompter); presenter uses them
