@@ -15,6 +15,7 @@
 // shape (fail loud, never silently mis-animate).
 import { renderIR } from './render-ir.js';
 import { getEnvironment, horizonSilhouettes } from './environments.js';
+import { makeDeckDecor } from './deck-decor.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
 //   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
@@ -62,7 +63,8 @@ export function rgbToHsv([r, g, b]) {
 // interludes) keep the ANCHOR hue; every content station takes the next hue
 // from the palette. Deterministic rotation, no LLM.
 function assignAccents(slides, palette) {
-  if (!palette || !Array.isArray(palette.colors) || !palette.colors.length) return slides.map(() => null);
+  if (!palette || !Array.isArray(palette.colors) || !palette.colors.length)
+    return slides.map(() => null);
   const anchor = rgbToHsv(palette.anchor || palette.colors[0]);
   const GOLD_H = 0.11; // the deck-wide champion mark — accents must not impersonate it
   const pool = palette.colors
@@ -118,6 +120,10 @@ export function assembleDeck(deck, opts = {}) {
     throw new Error('assembleDeck: deck.slides must be a non-empty array of IRs');
   const env = getEnvironment(opts.env);
   const accents = assignAccents(deck.slides, opts.palette);
+  // Layer C v1 (Wave 2): opts.decorSeed is the deck's art identity — one hash,
+  // one voice across every station and transit. Absent → no decor (goldens and
+  // existing consumers unchanged).
+  const decor = makeDeckDecor(opts.decorSeed);
   const stride = opts.stride ?? 16;
   const layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
     ? (opts.layout ?? deck.layout)
@@ -241,6 +247,11 @@ export function assembleDeck(deck, opts = {}) {
     for (const h of st.cameraSequence.hitstops || []) {
       hitstops.push({ at: h.at + clock, hold: h.hold });
     }
+    // Layer C: stelae ring in the station's annulus (outside the fitted
+    // platform, inside the transit corridor). The `s${k}-decor-` prefix means
+    // sliceDeckWindow scopes these to this station's windows automatically.
+    if (decor) subjects.push(...decor.station(k, origin));
+
     const stationDur = seqDuration(st.cameraSequence.shots);
     windows.push({
       kind: 'station',
@@ -286,6 +297,9 @@ export function assembleDeck(deck, opts = {}) {
           },
         });
       }
+      // Layer C: inlay flanking the breadcrumbs (path-${k}-decor- prefix →
+      // lives only in this transit's windows, dropped inside stations).
+      if (decor) subjects.push(...decor.segment(k, origin, next));
     }
   });
 
