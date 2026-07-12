@@ -208,9 +208,44 @@ function fnv1a(str) {
   return h >>> 0;
 }
 
-/** underlayFamilyFor(mountId) → a stable decor family ≠ the mount's own port. */
-export function underlayFamilyFor(mountId) {
+// families by ARTIST — Sprint 88 (user: 异源纹样尽量选同一作者, 同频的
+// 形语言; 装裱2 批的惊艳度对照实验结论)。key = manifest artist 名。
+const ARTIST_FAMILIES = {
+  'Monica Rizzolli': ['meadow-streaks'],
+  'Tyler Hobbs': ['banded-ribbons', 'flow-ribbons'],
+  'Kjetil Golid': ['block-mosaic', 'weave-dashes'],
+  NumbersInMotion: ['wash-flow'],
+  'Aaron Penne': ['strata-lines'],
+  Eko33: ['sediment-layers'],
+  'Iskra Velitchkova': ['ink-scribble'],
+  'Zach Lieberman': ['light-edges'],
+  'Golan Levin': ['nib-flourish'],
+  'Lars Wander': ['hex-lattice'],
+  'Olga Fradina': ['drift-web'],
+  'Kim Asendorf': ['cargo-dashes'],
+  'Thomas Lin Pedersen': ['folded-screens'],
+  itsgalo: ['halftone-fade'],
+  LoVid: ['scan-tides'],
+  'James Merrill': ['paper-folds', 'street-grid'],
+  'Joshua Bagley': ['growth-loops'],
+  'Emily Xie': ['torn-paper'],
+  'Dmitri Cherniak': ['peg-wraps'],
+  'Robert Hodgin': ['river-courses'],
+};
+
+/**
+ * underlayFamilyFor(mountId, artist) → a stable decor family for the body.
+ * Preference order (Sprint 88): ① a family ported from the SAME ARTIST's
+ * OTHER work (同作者异作品 — the artist's formal language stays coherent)
+ * ② deterministic pick from the full pool. The mount's own port is always
+ * excluded (异源 = different work, 保持).
+ */
+export function underlayFamilyFor(mountId, artist) {
   const own = MOUNT_FAMILY_OF[mountId];
+  const sameArtist = (ARTIST_FAMILIES[artist] || []).filter((f) => f !== own);
+  if (sameArtist.length) {
+    return sameArtist[fnv1a('underlay:' + mountId) % sameArtist.length];
+  }
   const pool = UNDERLAY_FAMILIES.filter((f) => f !== own);
   return pool[fnv1a('underlay:' + mountId) % pool.length];
 }
@@ -224,7 +259,7 @@ export function underlayFamilyFor(mountId) {
 export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
   if (!baseDecor || !mount?.id) return baseDecor;
   const homo = MOUNT_FAMILY_OF[mount.id];
-  const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id);
+  const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id, mount.artist);
   return { ...baseDecor, family };
 }
 
