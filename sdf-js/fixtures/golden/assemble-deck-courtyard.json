@@ -8724,7 +8724,8 @@
         "at": 150.42,
         "hold": 0.14
       }
-    ]
+    ],
+    "flow": true
   },
   "deckWindows": [
     {

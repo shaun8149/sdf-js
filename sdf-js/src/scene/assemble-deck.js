@@ -594,7 +594,9 @@ export function assembleDeck(deck, opts = {}) {
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
     subjects: [...subjects, ...massingSubjects, ...worldSubjects],
     overlay,
-    cameraSequence: { loop: false, shots, hitstops },
+    // flow: steadicam smoothing (total-continuity lock) — deck playback is one
+    // breathing take; the runtime erases shot-boundary velocity kinks.
+    cameraSequence: { loop: false, shots, hitstops, flow: true },
     deckWindows: windows,
     // One shared open world — no per-station stage room (walls would slice the
     // deck axis). Ground/sky come from the environment or the page defaults.
