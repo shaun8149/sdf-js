@@ -19,6 +19,7 @@
 //   5. payoff pull-back — the whole skyline in one frame
 import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
+import { MODULE, SCALE, centeredRow, rowSpan as rowSpanOf } from './layout-tokens.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
@@ -75,12 +76,13 @@ export function renderMagnitude(ir, opts = {}) {
   const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : [tallest]);
 
   // Row layout: equal footprints, height = linear encoding (honest comparison).
-  const W = 0.72; // monolith footprint
-  const gapX = 0.55;
-  const stride = W + gapX;
-  const H_MAX = 4.8; // monumental: the champion TOWERS (analytic engine pays for it)
+  // Dimensions come from the shared layout tokens (Layer B): the module system
+  // owns footprint/gap/plinth; this renderer owns only the ENCODING (height ∝
+  // magnitude) and the monumental register choice.
+  const W = MODULE.unit; // monolith footprint
+  const H_MAX = SCALE.monumental; // the champion TOWERS (analytic engine pays for it)
   const height = (i) => Math.max(0.12, (Number(mag[i]) / mMax) * H_MAX);
-  const xOf = (i) => (i - (N - 1) / 2) * stride;
+  const xOf = (i) => centeredRow(i, N);
 
   // Tracking-beat timing: monolith i erupts as the camera's beat i begins.
   const introLead = 2.1; // hero 0.9 + crane 1.2
@@ -99,8 +101,8 @@ export function renderMagnitude(ir, opts = {}) {
     subjects.push({
       id: `plinth-${i}`,
       type: 'box',
-      args: { dims: [W + 0.34, 0.12, W + 0.34] },
-      transform: { translate: [xOf(i), 0.06, 0] },
+      args: { dims: [W + MODULE.plinthPad, MODULE.plinthH, W + MODULE.plinthPad] },
+      transform: { translate: [xOf(i), MODULE.plinthH / 2, 0] },
       material: {
         hue: 0.58,
         sat: 0.1,
@@ -130,7 +132,7 @@ export function renderMagnitude(ir, opts = {}) {
   // Flanking stone rows: two receding lines of black slabs behind the row —
   // perspective guides converging on the data, and their long directional
   // shadows dress the floor for free (analytic soft shadows).
-  const rowSpanG = (N - 1) * stride + W;
+  const rowSpanG = rowSpanOf(N);
   for (let g = 0; g < 3; g++) {
     const gh = 2.2 + g * 1.3;
     for (const side of [-1, 1]) {
@@ -155,7 +157,7 @@ export function renderMagnitude(ir, opts = {}) {
   }
 
   // ---- camera: five beats, magnitude variation --------------------------------
-  const rowSpan = (N - 1) * stride + W;
+  const rowSpan = rowSpanOf(N);
   const tallH = height(tallest);
   const gx = xOf(emphasisIdx);
   const gH = height(emphasisIdx);
@@ -188,7 +190,9 @@ export function renderMagnitude(ir, opts = {}) {
     const H = height(i);
     shots.push({
       duration: holdEach,
-      pos: [x + 0.9, Math.min(1.1, H * 0.55 + 0.35), 2.5],
+      // camera rides the INTIMATE register during the walk-among-giants — the
+      // scale contrast against SCALE.monumental is the "对比" operator itself
+      pos: [x + 0.9, Math.min(SCALE.intimate, H * 0.55 + 0.35), 2.5],
       target: [x, Math.max(H * 0.55, 0.5), 0],
       fov: 46,
       transition: 'blend',
