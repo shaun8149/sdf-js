@@ -27,8 +27,11 @@ const paletteId = params.get('palette');
 const theme = paletteId === '0' ? null : getTheme(paletteId || 'pitch-spectrum');
 const palette = theme ? { anchor: theme.accent, colors: theme.colors } : null;
 // ?seed=<hash> — Layer C deck decor (seeded art identity, same lanes as the
-// 2D decor engine). Absent → undecorated (unchanged default for now).
-const decorSeed = params.get('seed') || undefined;
+// 2D decor engine). DEFAULT ON for decks since W6: the deck's own name is its
+// art identity (same deck → same world, forever — the 2D mint-hash covenant).
+// ?seed=0 turns decor off; any other value overrides the identity.
+const seedParam = params.get('seed');
+const decorSeed = seedParam === '0' ? undefined : seedParam || deckName || undefined;
 const scene = deckName
   ? assembleDeck(ir, { env, layout, stage, palette, decorSeed })
   : renderIR(ir, { env, stage });
