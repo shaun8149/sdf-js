@@ -16,6 +16,7 @@
 import { renderIR } from './render-ir.js';
 import { getEnvironment, horizonSilhouettes } from './environments.js';
 import { makeDeckDecor } from './deck-decor.js';
+import { TEMPO } from './tempo-tokens.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
 //   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
@@ -300,7 +301,7 @@ export function assembleDeck(deck, opts = {}) {
         // chapter. Window is a plain transit (2 stations + always-on massing
         // + world-heart proxy), NOT full-world: the geometry pop at full-
         // world boundaries was the continuity break itself.
-        const dur = 1.1;
+        const dur = TEMPO.threshold;
         const [cx, cz] = plan.center;
         const risePos = [
           (prevPayoff.pos[0] + heroPos[0]) / 2 + (cx - (prevPayoff.pos[0] + heroPos[0]) / 2) * 0.2,
@@ -330,7 +331,7 @@ export function assembleDeck(deck, opts = {}) {
         clock += dur;
         prevPayoff = { pos: risePos, target: riseTarget };
       }
-      const dur = 1.2;
+      const dur = TEMPO.transit;
       shots.push({
         duration: dur,
         pos: [
@@ -444,7 +445,7 @@ export function assembleDeck(deck, opts = {}) {
     // one high beat framing the whole courtyard — the 2D TOC page's 3D twin
     // ("here is everything we will visit"). Full-world window, like finale.
     if (plan && k === plan.centerIdx) {
-      const dur = 2.2;
+      const dur = TEMPO.overlook;
       const [cx, cz] = plan.center;
       // near-top-down: the overlook reads as the deck's MAP ("here is
       // everything we will visit") — 3/4 views kept letting the centre forest
@@ -518,7 +519,7 @@ export function assembleDeck(deck, opts = {}) {
     const cz = origins.reduce((s, o) => s + o[2], 0) / origins.length;
     const span = Math.max(1, ...origins.map((o) => Math.hypot(o[0] - cx, o[2] - cz))) * 2 + stride;
     shots.push({
-      duration: 3.0,
+      duration: TEMPO.finale,
       pos: [cx + span * 0.25, span * 0.5 + 4.5, cz + span * 0.95],
       target: [cx, 1.2, cz],
       fov: 48,
@@ -532,7 +533,7 @@ export function assembleDeck(deck, opts = {}) {
       kind: 'finale',
       stations: deck.slides.map((_, i) => i),
       start: clock,
-      end: clock + 3.0,
+      end: clock + TEMPO.finale,
     });
   }
 

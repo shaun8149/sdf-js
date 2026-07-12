@@ -20,6 +20,7 @@
 import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 import { MODULE, SCALE, centeredRow, rowSpan as rowSpanOf } from './layout-tokens.js';
+import { TEMPO, introLead as introLeadOf } from './tempo-tokens.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
@@ -85,8 +86,9 @@ export function renderMagnitude(ir, opts = {}) {
   const xOf = (i) => centeredRow(i, N);
 
   // Tracking-beat timing: monolith i erupts as the camera's beat i begins.
-  const introLead = 2.1; // hero 0.9 + crane 1.2
-  const holdEach = 1.1;
+  // Durations come from the shared tempo tokens (Layer B temporal half).
+  const introLead = introLeadOf(); // hero + crane
+  const holdEach = TEMPO.beatHold;
   const riseStart = (k) => introLead + k * holdEach - 0.45;
 
   const subjects = [];
@@ -164,7 +166,7 @@ export function renderMagnitude(ir, opts = {}) {
   const shots = [
     // 1 — hero low angle at the tallest (the champion)
     {
-      duration: 0.9,
+      duration: TEMPO.hero,
       pos: [xOf(tallest) + 1.6, 0.5, 3.6],
       target: [xOf(tallest), tallH * 0.72, 0],
       fov: 54,
@@ -174,7 +176,7 @@ export function renderMagnitude(ir, opts = {}) {
     },
     // 2 — crane over the lineup
     {
-      duration: 1.2,
+      duration: TEMPO.crane,
       pos: [0.6, tallH + 2.2, rowSpan * 0.5 + 2.6],
       target: [0, tallH * 0.45, 0],
       fov: 48,
@@ -205,7 +207,7 @@ export function renderMagnitude(ir, opts = {}) {
   // 4 — the super: at the emphasis monolith's base, looking UP its height
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
-    duration: 1.0,
+    duration: TEMPO.superHold,
     pos: [gx + 0.75, 0.22, 1.3],
     target: [gx, gH * 0.9, 0],
     fov: 44,
@@ -221,7 +223,7 @@ export function renderMagnitude(ir, opts = {}) {
   // 5 — payoff pull-back: the whole skyline
   const payoffDist = (rowSpan * 0.85 + 3.2) * (env ? env.payoffZoom : 1);
   shots.push({
-    duration: 2.4,
+    duration: TEMPO.payoff,
     pos: [1.2, tallH * 0.55 + 1.0 + (env ? 0.5 : 0), payoffDist],
     target: [0, tallH * 0.4, 0],
     fov: 44,
