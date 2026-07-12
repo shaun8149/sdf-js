@@ -69,7 +69,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const h = opts.h ?? 480;
   const palette = opts.palette || {};
   const accent = palette.accent ?? [30, 80, 180];
-  const fg = palette.silhouetteColor ?? [20, 28, 50];
+  const themeFg = palette.silhouetteColor ?? [20, 28, 50];
+  const fgLum = (0.2126 * themeFg[0] + 0.7152 * themeFg[1] + 0.0722 * themeFg[2]) / 255;
+  const fg = fgLum > 0.55 ? [42, 44, 50] : themeFg; // Sprint 87: 白卡钉深墨
+
   const bgColor = palette.bg ?? [248, 246, 240];
   const iconColor = Array.isArray(args.iconColor) ? args.iconColor : accent;
 
@@ -82,7 +85,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const hasTrend = !!args.trend;
   const hasSublabel = !!args.sublabel;
 
-  const iconSize = h * 0.18;
+  const iconSize = h * 0.24; // Sprint 87 (user: 图标做大)
   const iconBadgeR = iconSize / 2 + 8;
 
   // Auto-shrink value font

@@ -143,7 +143,14 @@ function _drawDark(ctx, args, opts = {}) {
 
   // ---- Icon (top-left) ----
   if (args.icon) {
-    drawIconStub(ctx, args.icon, x + 26, y + 30, 32, rgbCss(bg));
+    drawIconStub(
+      ctx,
+      args.icon,
+      x + 26,
+      y + 26,
+      Math.max(36, Math.min(56, Math.round(h * 0.24))),
+      rgbCss(bg),
+    );
   }
 
   // ---- Hero value ----
@@ -249,7 +256,14 @@ function _drawLight(ctx, args, opts = {}) {
 
   // ---- Icon (top-left) ----
   if (args.icon) {
-    drawIconStub(ctx, args.icon, x + 26, y + 30, 32, rgbCss(accent));
+    drawIconStub(
+      ctx,
+      args.icon,
+      x + 26,
+      y + 26,
+      Math.max(36, Math.min(56, Math.round(h * 0.24))),
+      rgbCss(accent),
+    );
   }
 
   // ---- Hero value — Sprint 84: numbers wear the accent (user: 数字应使用
@@ -360,7 +374,14 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   // ---- Icon (top-left, after border) ----
   const textLeft = x + borderW + 14;
   if (args.icon) {
-    drawIconStub(ctx, args.icon, textLeft + 15, y + 30, 32, rgbCss(accent));
+    drawIconStub(
+      ctx,
+      args.icon,
+      textLeft + 15,
+      y + 26,
+      Math.max(36, Math.min(56, Math.round(h * 0.24))),
+      rgbCss(accent),
+    );
   }
 
   // ---- Hero value — accent numerals (Sprint 84), offset past border ----

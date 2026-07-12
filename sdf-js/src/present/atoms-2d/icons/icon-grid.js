@@ -95,7 +95,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // what the label text actually needed, so row-2 icons overlapped row-1
   // labels (e.g. 4 items wrapping 3+1: "Security" hidden behind "Care").
   const heroBoost = h >= 360 ? 1.3 : 1.0; // Auto-boost on large hero slots (h ≥ 360 = BIG slot)
-  const baseIconR = Math.min(colW * 0.22, 48);
+  const baseIconR = Math.min(colW * 0.27, 58); // Sprint 87 图标做大
   let iconR = baseIconR * iconSizeMultiplier * heroBoost;
   let labelFsTarget = Math.max(11, Math.min(18, Math.round(colW * 0.085)));
   const labelFsMin = 9;
