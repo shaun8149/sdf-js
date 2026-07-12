@@ -6,10 +6,13 @@
 // 5. warning semantics: empty deck / unknown atom / duplicate slotIdx warn, not err
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { validateDeck } from '../src/present/deck-spec.js';
 import { serializeDeck, deserializeDeck } from '../src/present/deck-io.js';
 
-const REPO = new URL('../..', import.meta.url).pathname;
+// fileURLToPath, NOT URL.pathname: on Windows .pathname is '/C:/…', and
+// join()-ing that yields 'C:\C:\…' (ENOENT everywhere outside POSIX).
+const REPO = fileURLToPath(new URL('../..', import.meta.url));
 const HANDOFF = join(REPO, 'sdf-js/examples/deck-handoff');
 
 let pass = 0;

@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Spike Viewer</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0e0f12;
+        overflow: hidden;
+      }
+      #wrap {
+        position: fixed;
+        inset: 0;
+      }
+      #c {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .lbl {
+        position: fixed;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 5px;
+        background: rgba(30, 32, 40, 0.82);
+        opacity: 0;
+        transition: opacity 0.5s;
+        white-space: nowrap;
+      }
+      .lbl.value {
+        background: rgba(40, 116, 196, 0.92);
+        font-weight: 700;
+      }
+      #loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        background: #0e0f12;
+        transition: opacity 0.4s;
+        z-index: 10;
+      }
+      #loading.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loading .ring {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.14);
+        border-top-color: rgba(255, 255, 255, 0.85);
+        animation: spin 0.9s linear infinite;
+      }
+      #loading .msg {
+        font:
+          500 12px -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap"><canvas id="c"></canvas></div>
+    <div id="loading"><div class="ring"></div><div class="msg">compiling spike scene</div></div>
+    <script type="module" src="./spike.js"></script>
+  </body>
+</html>
