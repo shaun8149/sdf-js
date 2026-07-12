@@ -245,8 +245,9 @@ function _drawLight(ctx, args, opts = {}) {
     drawIconStub(ctx, args.icon, x + 26, y + 30, 32, rgbCss(accent));
   }
 
-  // ---- Hero value (dark text) ----
-  ctx.fillStyle = rgbCss(fg);
+  // ---- Hero value — Sprint 84: numbers wear the accent (user: 数字应使用
+  // 彩色, 从生成艺术提取主色调; ink numerals read grey-dirty next to labels)
+  ctx.fillStyle = rgbCss(accent);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   const availW = w - 44;
@@ -275,7 +276,7 @@ function _drawLight(ctx, args, opts = {}) {
 
   // ---- Sublabel ----
   if (args.sublabel) {
-    ctx.fillStyle = rgbaCss(fg, 0.45);
+    ctx.fillStyle = rgbaCss(accent, 0.7);
     const subFs = fitFontSize(
       ctx,
       String(args.sublabel),
@@ -348,8 +349,8 @@ function _drawAccentBorder(ctx, args, opts = {}) {
     drawIconStub(ctx, args.icon, textLeft + 15, y + 30, 32, rgbCss(accent));
   }
 
-  // ---- Hero value (dark text, offset past border) ----
-  ctx.fillStyle = rgbCss(fg);
+  // ---- Hero value — accent numerals (Sprint 84), offset past border ----
+  ctx.fillStyle = rgbCss(accent);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   const availW = w - borderW - 28;
@@ -378,7 +379,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
 
   // ---- Sublabel ----
   if (args.sublabel) {
-    ctx.fillStyle = rgbaCss(fg, 0.45);
+    ctx.fillStyle = rgbaCss(accent, 0.7);
     const subFs = fitFontSize(
       ctx,
       String(args.sublabel),

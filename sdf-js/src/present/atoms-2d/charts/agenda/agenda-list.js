@@ -253,7 +253,9 @@ function drawShowcase(
 
     // Big number (PL signature)
     if (numbered) {
-      ctx.fillStyle = isHi ? rgbCss(accent) : rgbaCss(fg, 0.18);
+      // Sprint 84 (user: 数字灰色对比奇怪显脏, 统一用彩色): the showcase
+      // numerals speak the accent — full for the highlight, airy for rest
+      ctx.fillStyle = isHi ? rgbCss(accent) : rgbaCss(accent, 0.45);
       ctx.font = `900 ${Math.round(numSize)}px "Inter Display", Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
