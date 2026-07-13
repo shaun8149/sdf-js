@@ -28,6 +28,12 @@ import { pickDistinct, ensureContrast } from './atoms-2d/color.js';
  */
 export function artMountOpts(mount, slot, baseRole) {
   if (!mount || !mount.cover) return null;
+  // Sprint 97 (批量产品化): 转场页 (insertTransitions 合成) = 封面式纯
+  // cover — 全幅变体真迹, 无横带无 underlay。此前只有临场脚本知道这条
+  // 规则; 收进中枢后 author-2d / pdf / pptx 自动同律。
+  if (slot?._transition) {
+    return { decorRole: 'cover', decorArt: transitionArt(mount, slot) };
+  }
   const role = baseRole === 'cover' || baseRole === 'agenda' ? baseRole : 'section';
   const out = { decorRole: role, decorArt: mount.cover };
   if (role === 'section') out.decorUnder = true;
@@ -35,6 +41,25 @@ export function artMountOpts(mount, slot, baseRole) {
     const k = (slot.slotIdx ?? 0) % mount.strip.length;
     out.decorArtStrip = mount.strip.slice(k).concat(mount.strip.slice(0, k));
   }
+  return out;
+}
+
+/**
+ * mountProvenance(entry) — deck.json 契约的 artMount 溯源块 (Sprint 97)。
+ * manifest entry → 可序列化的最小出处: 3D 端 (吃 deck.json) 由此知道装裱
+ * 的存在 — id 可回查 cache, palette 预烘焙可直接 re-voice, license 随行。
+ * 图像本体不进契约 (deck.json 是机器契约不是资产包)。
+ */
+export function mountProvenance(entry) {
+  if (!entry?.id) return undefined;
+  const out = {
+    id: entry.id,
+    name: entry.name,
+    artist: entry.artist,
+    license: entry.license,
+  };
+  if (entry.hash) out.hash = entry.hash;
+  if (entry.palette) out.palette = entry.palette;
   return out;
 }
 

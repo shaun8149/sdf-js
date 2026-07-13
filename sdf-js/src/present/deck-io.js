@@ -35,6 +35,8 @@ export function serializeDeck(deck) {
     theme: deck.theme,
     scaffold: deck.scaffold,
     decor: deck.decor,
+    // Sprint 97: 装裱溯源随契约走 — 3D 端由此知道装裱的存在
+    artMount: deck.artMount,
     shared,
     slots: deck.slots.map((s) => ({
       ...s,
@@ -65,6 +67,7 @@ export function deserializeDeck(data) {
     theme: data.theme,
     scaffold: data.scaffold,
     decor: data.decor,
+    artMount: data.artMount,
     slots: (data.slots || []).map((s) => ({
       ...s,
       liftParams: s.liftParams

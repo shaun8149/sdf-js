@@ -24,6 +24,7 @@ import {
   fetchMintManifest,
   mountPaletteOverride,
   mountUnderlayDecor,
+  mountProvenance,
 } from '../../src/present/art-mount.js';
 import { layoutForSlot } from '../../src/present/atoms-2d/layout.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
@@ -76,6 +77,7 @@ const keyEl = document.getElementById('key');
 const slidesEl = document.getElementById('slides');
 const exportPptxEl = document.getElementById('export-pptx');
 const exportPdfEl = document.getElementById('export-pdf');
+const batchPdfEl = document.getElementById('batch-pdf');
 const modeEl = document.getElementById('mode');
 const themeEl = document.getElementById('theme');
 
@@ -176,6 +178,7 @@ async function adoptDeck(deck, note) {
   await renderDeck(currentDeck);
   exportPptxEl.disabled = false;
   exportPdfEl.disabled = false;
+  batchPdfEl.disabled = false;
   saveEl.disabled = false;
   syncThemeSelect();
   syncProvenance();
@@ -205,6 +208,11 @@ openFileEl.addEventListener('change', async () => {
     const deck = deserializeDeck(await file.text());
     await adoptDeck(deck, `已打开 ${file.name} — ${deck.slots.length} 页`);
     autosave();
+    // Sprint 97: 契约带 artMount 溯源且本地 cache 有此真迹 → 自动复装
+    if (deck.artMount?.id && artMountEl.querySelector(`option[value="${deck.artMount.id}"]`)) {
+      artMountEl.value = deck.artMount.id;
+      artMountEl.dispatchEvent(new Event('change'));
+    }
   } catch (e) {
     setStatus(`打开失败: ${e.message}`, true);
   }
@@ -308,17 +316,19 @@ function slotRenderOpts(theme, deck, slot) {
   artMountEl.hidden = false;
   artMountEl.addEventListener('change', async () => {
     const id = artMountEl.value;
+    const entry = id ? oks.find((m) => m.id === id) : null;
     try {
-      artMount = id
-        ? await loadArtMount(
-            oks.find((m) => m.id === id),
-            MINT_BASE,
-          )
-        : null;
+      artMount = entry ? await loadArtMount(entry, MINT_BASE) : null;
     } catch (e) {
       artMount = null;
       artMountEl.value = '';
       return setStatus(`装裱加载失败: ${e.message}`, true);
+    }
+    // Sprint 97: 装裱溯源进 deck.json 契约 — 3D 端由此知道装裱的存在;
+    // 重新打开时按 id 自动复装 (下方 open 路径)
+    if (currentDeck) {
+      currentDeck.artMount = artMount ? mountProvenance(entry) : undefined;
+      autosave();
     }
     const qs = new URLSearchParams(location.search);
     if (id) qs.set('art', id);
@@ -337,6 +347,66 @@ function slotRenderOpts(theme, deck, slot) {
     artMountEl.value = want;
     artMountEl.dispatchEvent(new Event('change'));
   }
+
+  // ── Sprint 97: 批量出 deck (选池 → 装裱 → PDF×N) ──────────────────────
+  // 此前每批 20 份都是临场脚本; 现在是一个按钮。规则沿用批量生产的裁定:
+  // 随机选 (user: 原来随机挺好), 排除已用 (localStorage), 池耗尽自动重置。
+  const BATCH_USED_KEY = 'atlas-batch-used-mounts';
+  batchPdfEl.hidden = false;
+  batchPdfEl.addEventListener('click', async () => {
+    if (!currentDeck) return;
+    const n = parseInt(window.prompt('批量出多少份? (每份一个随机装裱真迹)', '10'), 10);
+    if (!Number.isInteger(n) || n < 1) return;
+    let used;
+    try {
+      used = new Set(JSON.parse(localStorage.getItem(BATCH_USED_KEY) || '[]'));
+    } catch {
+      used = new Set();
+    }
+    let pool = oks.filter((m) => !used.has(m.id));
+    if (pool.length < n) {
+      used.clear(); // 池耗尽 — 重置轮换
+      pool = oks.slice();
+    }
+    // 随机取 n 件 (Fisher-Yates 前缀)
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const picks = pool.slice(0, Math.min(n, pool.length));
+    batchPdfEl.disabled = true;
+    exportPdfEl.disabled = true;
+    let done = 0;
+    try {
+      for (const entry of picks) {
+        setStatus(`批量 ${done + 1}/${picks.length} — 装裱 ${entry.name}…`);
+        const m = await loadArtMount(entry, MINT_BASE);
+        const deckForExport = {
+          ...currentDeck,
+          artMount: mountProvenance(entry),
+          ...(decorVisEl.value === 'off' ? { decor: undefined } : {}),
+        };
+        const slug = (currentDeck.title || 'deck')
+          .replace(/[^\w\u4e00-\u9fff-]+/g, '-')
+          .slice(0, 30);
+        await exportDeckToPDF(deckForExport, {
+          artMount: m,
+          filename: `atlas-${slug}-${entry.id}.pdf`,
+          onProgress: (msg, pct) =>
+            setStatus(`批量 ${done + 1}/${picks.length} · ${entry.name} — ${Math.round(pct)}%`),
+        });
+        used.add(entry.id);
+        localStorage.setItem(BATCH_USED_KEY, JSON.stringify([...used]));
+        done++;
+      }
+      setStatus(`批量完成 — ${done} 份 PDF 已下载 (池余 ${oks.length - used.size} 件未用)`);
+    } catch (e) {
+      setStatus(`批量中断于第 ${done + 1} 份: ${e.message}`, true);
+    } finally {
+      batchPdfEl.disabled = !currentDeck;
+      exportPdfEl.disabled = !currentDeck;
+    }
+  });
 })();
 
 function reopenUrl(hash, v, serial) {
