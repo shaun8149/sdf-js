@@ -19,7 +19,12 @@
 
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 import { slotPalette, slotRoleOf } from '../retheme.js';
-import { artMountOpts, mountPaletteOverride, mountUnderlayDecor } from '../art-mount.js';
+import {
+  artMountOpts,
+  mountPaletteOverride,
+  mountUnderlayDecor,
+  insertTransitions,
+} from '../art-mount.js';
 import { layoutForSlot } from '../atoms-2d/layout.js';
 
 // pptxgenjs loaded from esm.sh on first call (matches pdfjs CDN pattern in
@@ -73,9 +78,12 @@ export async function exportDeckToPPTX(deck, opts = {}) {
   const SLIDE_W_IN = 13.333;
   const SLIDE_H_IN = 7.5;
 
-  const total = deck.slots.length;
+  // Sprint 97 (批量产品化): 装裱导出自动合成转场页 — 此前只有临场脚本
+  // 会插, in-app 导出与批量脚本从此同一产物
+  const slots = opts.artMount ? insertTransitions(deck.slots, opts.artMount) : deck.slots;
+  const total = slots.length;
   for (let i = 0; i < total; i++) {
-    const slot = deck.slots[i];
+    const slot = slots[i];
     onProgress(`Rendering slot ${i + 1}/${total} (${slot.slotName})`, 5 + (i / total) * 90);
 
     // Render slot to offscreen canvas → PNG dataURL

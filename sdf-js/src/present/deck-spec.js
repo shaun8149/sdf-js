@@ -90,6 +90,26 @@ export function validateDeck(data, { knownAtomTypes = null } = {}) {
     }
   }
 
+  // ── artMount (optional provenance — Sprint 97 批量产品化): the deck was
+  // dressed in an authentic generative artwork. 3D consumers can re-voice
+  // from the prebaked palette / re-load the piece by id; images themselves
+  // never enter the contract. ──
+  const am = data.artMount;
+  if (am != null) {
+    if (!isObj(am)) err('artMount must be an object when present');
+    else {
+      if (!isStr(am.id)) err('artMount.id must be a string');
+      if (am.name != null && !isStr(am.name)) err('artMount.name must be a string when present');
+      if (am.license != null && !isStr(am.license))
+        err('artMount.license must be a string when present');
+      if (am.palette != null) {
+        if (!isObj(am.palette)) err('artMount.palette must be an object when present');
+        else if (am.palette.accent != null && !isRgb(am.palette.accent))
+          err('artMount.palette.accent must be [r,g,b] 0-255');
+      }
+    }
+  }
+
   // ── shared block (hoisted liftParams state; see deck-io.js) ──
   if (data.shared != null && !isObj(data.shared)) err('shared must be an object when present');
 

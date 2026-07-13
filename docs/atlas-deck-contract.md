@@ -52,6 +52,20 @@ atlas-deck。
 `src/present/decor/registry.js` 头注 (hash 定决策 / v 定代码 / 序号定
 收藏位置)。
 
+## 3.5 artMount (真迹装裱溯源, Sprint 97)
+
+```jsonc
+{ "id": "0xa7d8d9-41", "name": "Fidenza", "artist": "Tyler Hobbs",
+  "license": "nc", "hash": "0x…",
+  "palette": { "accent": [10,120,200], "colors": [[10,120,200], …] } }
+```
+
+可选。deck 出图时穿了哪件真迹装裱 (ArtBlocks 原版脚本铸造, 非商用)。
+**图像本体不进契约** — deck.json 是机器契约不是资产包; `id` 可回查
+`examples/original-mints/cache/` 复载图像, `palette` 预烘焙供 3D 端直接
+re-voice (无像素也能穿上作品的颜色)。`license` 随行是纪律: 消费端出图前
+自行核验。2D 端重新打开契约时按 `id` 自动复装 (author-2d open 路径)。
+
 ## 4. shared
 
 `deck-io.js` 序列化时把每个 slot 重复携带的 `liftParams.scaffold/slides/
