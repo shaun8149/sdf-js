@@ -31,6 +31,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { pangu } from '../../cjk-text.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -173,7 +174,7 @@ function _drawDark(ctx, args, opts = {}) {
   ctx.fillStyle = rgbaCss(bg, 0.85);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
-  const labelText = String(args.label ?? '');
+  const labelText = pangu(args.label ?? ''); // Sprint 94: 盘古之白
   ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
   while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
     labelSize -= 1;
@@ -287,7 +288,7 @@ function _drawLight(ctx, args, opts = {}) {
   ctx.fillStyle = rgbaCss(cardInk, 0.8);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
-  const labelText = String(args.label ?? '');
+  const labelText = pangu(args.label ?? ''); // Sprint 94: 盘古之白
   ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
   while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
     labelSize -= 1;
@@ -404,7 +405,7 @@ function _drawAccentBorder(ctx, args, opts = {}) {
   ctx.fillStyle = rgbaCss(cardInk, 0.8);
   let labelSize = Math.round(h * 0.11);
   const minLabelSize = Math.round(h * 0.07);
-  const labelText = String(args.label ?? '');
+  const labelText = pangu(args.label ?? ''); // Sprint 94: 盘古之白
   ctx.font = `700 ${labelSize}px Inter, system-ui, sans-serif`;
   while (ctx.measureText(labelText).width > availW && labelSize > minLabelSize) {
     labelSize -= 1;
