@@ -11,6 +11,7 @@
 // 物种形状学是 DATA;② finalizeAssets 批处理钩子 —— 林分级决策(盛行风倾斜)
 // 不属于任何单株,只能在"看到整片林"时做(Infinigen finalize_* 的用途)。
 import { makeHashRand } from '../present/decor/rand.js';
+import { drawMaterial } from './material-slots.js';
 
 const logUniform = (R, lane, a, b) => Math.exp(R.range(lane, Math.log(a), Math.log(b)));
 
@@ -23,8 +24,11 @@ export const PINE_GENOME = {
   crownRadiusK: [0.18, 0.26], // 冠底半径 / 树高(taper 律的斜率)
   tiers: [3, 5], // 锥层数(taper 律的离散化;越多越平滑越贵)
   trunkRadiusK: [0.02, 0.035], // 干半径 / 树高(skinning Max radius 0.2 @ ht~25)
-  foliage: { hue: [0.3, 0.42], sat: [0.35, 0.55], value: [0.2, 0.34] },
-  trunk: { hue: [0.06, 0.09], sat: [0.3, 0.45], value: [0.22, 0.3] },
+  // 研读第五课:genome 只指语义槽,不再内嵌颜色分布 —— 材质候选/权重住
+  // material-slots 中央注册表(GenericTreeFactory 的 trunk_surface 注入 +
+  // material_assignments 槽,两个机制合流)
+  foliageSlot: 'foliage',
+  trunkSlot: 'bark',
   windMax: 0.06, // 林分盛行风的最大倾角(finalize 用,弧度)
   surfaceAmp: 0.05, // 冠面 sinfold 位移幅度 × 冠底半径(L02 预算内)
 };
@@ -45,24 +49,9 @@ export function makeConiferFactory(factorySeed, genome = PINE_GENOME) {
   const crownK = pick2('ck', genome.crownRadiusK);
   const tiers = Math.round(pick2('tiers', genome.tiers));
   const trunkK = pick2('tk', genome.trunkRadiusK);
-  const foliage = {
-    hue: pick2('fh', genome.foliage.hue),
-    sat: pick2('fs', genome.foliage.sat),
-    value: pick2('fv', genome.foliage.value),
-    metal: 0,
-    glow: 0,
-    kind: 'normal',
-    roughness: 0.85,
-  };
-  const trunkMat = {
-    hue: pick2('th', genome.trunk.hue),
-    sat: pick2('ts', genome.trunk.sat),
-    value: pick2('tv', genome.trunk.value),
-    metal: 0,
-    glow: 0,
-    kind: 'normal',
-    roughness: 0.9,
-  };
+  // 同一工厂抽两个槽,lane 前缀区分(物种内:冠一族、干一族,永远配套)
+  const foliage = drawMaterial(genome.foliageSlot ?? 'foliage', S, { lane: 'mat:foliage' });
+  const trunkMat = drawMaterial(genome.trunkSlot ?? 'bark', S, { lane: 'mat:bark' });
   // 林分盛行风(物种级——finalize 把它压到整片林上;单株不知道风向)
   const windAz = S.range('wind-az', 0, Math.PI * 2);
   const windLean = S.range('wind-lean', 0.3, 1) * genome.windMax;
