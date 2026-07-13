@@ -189,7 +189,7 @@
           card.className = 'card' + (ok ? '' : ' blocked');
           const thumbFile = ok ? `${m.id}-small-0.png` : null;
           card.innerHTML = `
-            ${ok ? `<img class="thumb" loading="lazy" src="${BASE}${thumbFile}" onerror="this.src='${BASE}${m.files?.small || m.files?.large || ''}'">` : '<div class="thumb" style="display:grid;place-items:center;color:#5a5b66">WebGL 待补</div>'}
+            ${ok ? `<img class="thumb" loading="lazy" src="${BASE}${thumbFile}" onerror="this.src='${BASE}${m.files?.small || m.files?.large || ''}'">` : `<div class="thumb" style="display:grid;place-items:center;color:#5a5b66">${String(m.status).startsWith('culled') ? '已裁汰 (封面级)' : 'WebGL 待补'}</div>`}
             <div class="meta">
               <div class="name">${m.id} · ${m.name}</div>
               <div class="artist">${m.artist || ''}</div>
