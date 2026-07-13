@@ -246,6 +246,7 @@ import {
   engrave,
   groove,
   tongue,
+  mirrorAxis,
 } from '../sdf/dn.js';
 import { evalT } from '../sdf/time.js';
 import {
@@ -325,7 +326,14 @@ const PRIMITIVE_FACTORIES = {
   box: (a) => box(a.dims ?? a.size ?? 1, a.center),
   rounded_box: (a) => rounded_box(a.dims ?? a.size ?? 0.6, a.cornerR ?? a.radius ?? 0.05),
   torus: (a) => torus(a.majorR ?? a.radius ?? 0.4, a.minorR ?? a.thickness ?? 0.1),
-  capsule: (a) => capsule(a.a, a.b, a.radius ?? a.r ?? 0.1),
+  // {a,b} 端点形态优先；{radius,height} = 竖直、端点跨度 height、局部原点居中
+  // （height 形态此前被静默丢弃：a.a/a.b undefined → GPU 编译 vec3(undefined) 崩）
+  capsule: (a) => {
+    const r = a.radius ?? a.r ?? 0.1;
+    if (a.a || a.b) return capsule(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], r);
+    const h = a.height ?? 1;
+    return capsule([0, -h / 2, 0], [0, h / 2, 0], r);
+  },
   cylinder: (a) => cylinder(a.radius ?? 0.3, a.height ?? 1.0),
   capped_cylinder: (a) => capped_cylinder(a.a, a.b, a.radius ?? 0.1),
   cone: (a) => cone(a.height ?? 0.5, a.baseRadius ?? a.radius ?? 0.3),
@@ -1714,16 +1722,20 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
   return { sdf, region };
 }
 
-// Mirror is not a chain op in sdf-js currently. v0: CPU-only wrapper.
-// TODO: M0 Day 4-5 — extend src/sdf/dn.js with `mirror()` chain op + GLSL emit.
+// 3D path goes through dn.js mirrorAxis (ast-carrying → GPU emits mirX3/Y3/Z3);
+// the old raw-lambda wrapper had no .ast and killed GPU compiles the moment a
+// mirror DomainGroup reached the raymarch tiers (Wave C lowering did exactly that).
+// 2D stays a CPU lambda — the 2D pipeline never GPU-compiles domain ops.
 function applyMirror(sourceSdf, axis) {
   const idx = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
   if (sourceSdf instanceof SDF3 || (sourceSdf && sourceSdf.f && sourceSdf.f.length === 1)) {
-    return new SDF3((p) => {
-      const q = [...p];
-      q[idx] = Math.abs(q[idx]);
-      return sourceSdf.f(q);
-    });
+    return sourceSdf instanceof SDF3
+      ? mirrorAxis(sourceSdf, idx)
+      : new SDF3((p) => {
+          const q = [...p];
+          q[idx] = Math.abs(q[idx]);
+          return sourceSdf.f(q);
+        });
   }
   return new SDF2((p) => {
     const q = [p[0], p[1]];

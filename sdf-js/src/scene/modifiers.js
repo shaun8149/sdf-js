@@ -120,13 +120,99 @@ export function shiftModifier(m, [dx, , dz]) {
   return m; // array: offset is relative
 }
 
+// ---- Wave C: domain-rep lowering -----------------------------------------------
+// For the stone/rich raymarch tiers, a qualifying modifier lowers to an
+// EXISTING DomainGroup (rep-with-count / mirror) instead of expanding: N
+// instances = ONE leaf in the shader — the super-linear leaf-cost fix.
+// The analytic tier never lowers (rep/mirror are outside its SUPPORTED set
+// and would drop the whole frame to stone); scatter never lowers (irregular
+// placements can't domain-repeat). Lowering is a pure OPTIMIZATION: the
+// semantics are defined by expansion, and the tests pin CPU-SDF distance
+// equality between the two forms.
+function tryLowerSubject(s) {
+  if (!Array.isArray(s.modifiers) || s.modifiers.length !== 1) return null;
+  const m = s.modifiers[0];
+  const base = (s.transform && s.transform.translate) || [0, 0, 0];
+  const rot = (s.transform && s.transform.rotate) || [0, 0, 0];
+  if (rot[0] || rot[2]) return null; // yaw-only frames
+  const inner = { ...s };
+  delete inner.modifiers;
+  delete inner.collection; // routing rides on the wrapper
+  delete inner.material; // per-leaf tagging happens on the wrapper
+  delete inner.animation; // wrapper owns motion (same semantics as expansion)
+  delete inner.pattern;
+
+  if (m.type === 'array') {
+    if (m.count % 2 === 0) return null; // rep tiles are 2c+1 → odd runs only
+    const [ox, oy, oz] = m.offset;
+    if (oy !== 0) return null; // XZ runs only
+    const L = Math.hypot(ox, oz);
+    if (L < 1e-9) return null;
+    const runYaw = Math.atan2(-oz, ox); // local +x → world run direction
+    // EXACTNESS GUARD: domain rep evaluates the nearest tile only. A child
+    // whose yaw differs from the run direction is not reflection-symmetric
+    // about tile boundaries — near-boundary distances overestimate (the
+    // classic no-neighbor-check rep artifact). Aligned children (the runway
+    // case, and any yaw offset that is a multiple of π for 180°-symmetric
+    // prims) are EXACT; everything else falls back to expansion. Never trade
+    // field correctness for a leaf.
+    const rel = ((rot[1] - runYaw) % Math.PI) + (rot[1] - runYaw < 0 ? Math.PI : 0);
+    const aligned = Math.min(rel % Math.PI, Math.PI - (rel % Math.PI)) < 1e-6;
+    if (!aligned) return null;
+    const c = (m.count - 1) / 2;
+    inner.id = `${s.id}-tile`;
+    inner.transform = { translate: [0, 0, 0], rotate: [0, rot[1] - runYaw, 0] };
+    return {
+      id: s.id,
+      type: 'rep',
+      args: { period: [L, 0, 0], count: [c, 0, 0] },
+      source: inner,
+      transform: {
+        translate: [base[0] + ox * c, base[1], base[2] + oz * c],
+        rotate: [0, runYaw, 0],
+      },
+      ...(s.material ? { material: s.material } : {}),
+      ...(s.pattern ? { pattern: s.pattern } : {}),
+      ...(s.collection ? { collection: s.collection } : {}),
+      ...(s.animation ? { animation: s.animation } : {}),
+    };
+  }
+
+  if (m.type === 'mirror') {
+    const [ox, oz] = m.origin || [0, 0];
+    const local = [base[0] - ox, base[1], base[2] - oz];
+    // the child must live strictly in the positive half of the fold — the
+    // abs() fold shows the +axis side on both halves
+    const coord = m.axis === 'x' ? local[0] : local[2];
+    if (coord <= 1e-6) return null;
+    inner.id = `${s.id}-half`;
+    inner.transform = { translate: local, rotate: [0, rot[1], 0] };
+    return {
+      id: s.id,
+      type: 'mirror',
+      args: { axis: m.axis },
+      source: inner,
+      transform: { translate: [ox, 0, oz] },
+      ...(s.material ? { material: s.material } : {}),
+      ...(s.pattern ? { pattern: s.pattern } : {}),
+      ...(s.collection ? { collection: s.collection } : {}),
+      ...(s.animation ? { animation: s.animation } : {}),
+    };
+  }
+
+  return null; // radial (no producer yet) / scatter (never — irregular)
+}
+
 /**
- * expandModifiers(scene) → scene
+ * expandModifiers(scene, opts?) → scene
  * Unroll every modifier stack into plain instances. Instance ids are
  * `{id}#{i}` (identity only — routing rides the copied collection tag). A
  * scene without modifiers passes through untouched (referential no-op).
+ * opts.lower — Wave C: qualifying single-modifier stacks lower to
+ * DomainGroups (one shader leaf) instead of expanding. Raymarch tiers only,
+ * never analytic.
  */
-export function expandModifiers(scene) {
+export function expandModifiers(scene, { lower = false } = {}) {
   if (!scene || !Array.isArray(scene.subjects)) return scene;
   if (!scene.subjects.some((s) => s && Array.isArray(s.modifiers) && s.modifiers.length))
     return scene;
@@ -135,6 +221,13 @@ export function expandModifiers(scene) {
     if (!s || !Array.isArray(s.modifiers) || !s.modifiers.length) {
       subjects.push(s);
       continue;
+    }
+    if (lower) {
+      const lowered = tryLowerSubject(s);
+      if (lowered) {
+        subjects.push(lowered);
+        continue;
+      }
     }
     const base = (s.transform && s.transform.translate) || [0, 0, 0];
     const rot = (s.transform && s.transform.rotate) || [0, 0, 0];

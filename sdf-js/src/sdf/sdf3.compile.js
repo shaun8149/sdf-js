@@ -908,6 +908,15 @@ const OPS = {
     return walk(children[0], `repL3(${p}, ${vec3(period)}, ${vec3(count)})`);
   },
 
+  // ---- Axis mirror (|axis| fold) ------------------------------------------
+  // dn.js mirrorAxis 的 GPU 面：scalars[0] = axisIdx (0=x, 1=y, 2=z)。scene 层
+  // 'mirror' 域操作经 compile.js applyMirror 走到这里(Wave C lowering 产物)。
+  mirrorAxis: (sdf, p) => {
+    const axis = sdf.ast.scalars[0] ?? 0;
+    const fn = axis === 1 ? 'mirY3' : axis === 2 ? 'mirZ3' : 'mirX3';
+    return walk(sdf.ast.children[0], `${fn}(${p})`);
+  },
+
   // ---- 2D → 3D pseudo-primitive ops --------------------------------------
   // Wired 2026-05-23. Both take a single SDF2 child. revolve sweeps it around
   // the Y-axis (profile is in 2D XY plane; 2D-x maps to radial r = length(p.xz);

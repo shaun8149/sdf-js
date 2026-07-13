@@ -192,8 +192,13 @@ export function createFigure({
     lowStreak = 0;
     highStreak = 0;
     const loadingMsg = loading && loading.querySelector('.msg');
+    // Wave C: raymarch tiers lower qualifying modifiers to domain-rep (one
+    // leaf per pattern); the analytic tier keeps expansion (rep/mirror are
+    // outside its SUPPORTED set — lowering would drop whole frames to stone).
+    const compileOpts = { lowerRepeats: renderMode !== 'analytic' };
     const dw = attachDeckWindows(studio, scene, {
       holdDuringWarmup: !present,
+      compileOpts,
       // boundary swaps can stall the driver briefly — those samples are not a
       // render-cost signal, so the adaptive scaler sits out a grace window
       onSwap: () => {
@@ -216,7 +221,7 @@ export function createFigure({
         adaptAfter = performance.now() + ADAPT_GRACE_MS;
       });
     } else {
-      applyStudioScene(studio, scene);
+      applyStudioScene(studio, scene, compileOpts);
     }
   }
 

@@ -294,6 +294,18 @@ export const erode = defineOpN('erode', (a, r) => (p) => a.f(p) + r);
 export const shell = defineOpN('shell', (a, thickness) => (p) => Math.abs(a.f(p)) - thickness / 2);
 
 /**
+ * 轴镜像(|axis| fold):两侧都显示 child 的 +axis 半边。child 必须活在
+ * 正半轴,否则两边都看不到它。Wave C 补齐:scene 层 'mirror' 域操作此前
+ * 只有 CPU lambda(无 .ast),GPU 编译直接炸 — 这个 op 让它上 GPU。
+ * @param axisIdx 0=x, 1=y, 2=z
+ */
+export const mirrorAxis = defineOpN('mirrorAxis', (a, axisIdx) => (p) => {
+  const q = [...p];
+  q[axisIdx] = Math.abs(q[axisIdx]);
+  return a.f(q);
+});
+
+/**
  * 域重复（domain repetition / pMod）：把每个轴 fold 到 [-P/2, +P/2] 后再 evaluate a。
  * 效果是空间的"平铺"—— 一个 circle 通过 rep 立刻变成网格化的圆点阵。
  *
