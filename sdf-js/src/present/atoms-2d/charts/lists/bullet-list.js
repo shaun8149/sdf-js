@@ -13,6 +13,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
+import { wrapCJK, pangu } from '../../cjk-text.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -215,20 +216,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textBaseline = 'middle';
       const maxW = x + w - textX - PAD;
       const lineH = labelFontSize * 1.2;
-      const words = String(it.label).split(' ');
-      const lines = [];
-      let cur = '';
-      for (const word of words) {
-        const test = cur ? `${cur} ${word}` : word;
-        if (ctx.measureText(test).width > maxW && cur) {
-          lines.push(cur);
-          cur = word;
-        } else cur = test;
-      }
-      if (cur) lines.push(cur);
-      // Vertical center: cap lines so they fit in rowH
+      // Sprint 94: split(' ') 对无空格的 CJK 长句永不折行 → wrapCJK (禁则断行)
       const maxLines = Math.max(1, Math.floor((rowH - 8) / lineH));
-      const usedLines = lines.slice(0, maxLines);
+      const usedLines = wrapCJK(ctx, it.label, maxW, maxLines);
       const startY = rowCY - ((usedLines.length - 1) * lineH) / 2 - (it.sublabel ? rowH * 0.1 : 0);
       usedLines.forEach((line, li) => {
         ctx.fillText(line, textX, startY + li * lineH);
@@ -241,7 +231,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const subMaxW = x + w - textX - PAD;
       const subFs = fitFontPx(
         ctx,
-        it.sublabel,
+        pangu(it.sublabel),
         subMaxW,
         Math.round(rowH * 0.22),
         (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
@@ -249,7 +239,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.font = `500 ${subFs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(String(it.sublabel), textX, rowCY + rowH * 0.18);
+      ctx.fillText(pangu(it.sublabel), textX, rowCY + rowH * 0.18);
     }
   }
 }

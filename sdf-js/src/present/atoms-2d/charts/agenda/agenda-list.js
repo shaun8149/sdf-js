@@ -14,6 +14,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss, fitFontPx } from '../../renderer.js';
+import { pangu } from '../../cjk-text.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -159,7 +160,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const weight = isHi ? '700' : '600';
       const lfs = fitFontPx(
         ctx,
-        it.label,
+        pangu(it.label),
         agendaMaxW,
         Math.round(rowH * 0.32),
         (fs) => `${weight} ${fs}px Inter, system-ui, sans-serif`,
@@ -168,7 +169,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       const labelY = it.sublabel ? rowCY - rowH * 0.12 : rowCY;
-      ctx.fillText(String(it.label), textX, labelY);
+      ctx.fillText(pangu(it.label), textX, labelY);
     }
 
     // Sublabel
@@ -176,7 +177,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillStyle = rgbaCss(fg, 0.6);
       const sfs = fitFontPx(
         ctx,
-        it.sublabel,
+        pangu(it.sublabel),
         agendaMaxW,
         Math.round(rowH * 0.22),
         (fs) => `500 ${fs}px Inter, system-ui, sans-serif`,
@@ -184,7 +185,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.font = `500 ${sfs}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(String(it.sublabel), textX, rowCY + rowH * 0.18);
+      ctx.fillText(pangu(it.sublabel), textX, rowCY + rowH * 0.18);
     }
 
     // Faint separator (except after last)
@@ -297,7 +298,7 @@ function drawShowcase(
       ctx.fillStyle = isHi ? rgbCss(accent) : rgbCss(fg);
       const labelFs = fitFontSize(
         ctx,
-        String(it.label),
+        pangu(it.label),
         labelMaxW,
         Math.round(labelSize),
         10,
@@ -305,7 +306,7 @@ function drawShowcase(
       );
       ctx.font = `700 ${labelFs}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
-      ctx.fillText(String(it.label), labelX, cellY + Math.round(numSize * 0.18));
+      ctx.fillText(pangu(it.label), labelX, cellY + Math.round(numSize * 0.18));
     }
 
     // Sublabel below label
@@ -313,7 +314,7 @@ function drawShowcase(
       ctx.fillStyle = rgbaCss(fg, 0.55);
       const subLabelFs = fitFontSize(
         ctx,
-        String(it.sublabel),
+        pangu(it.sublabel),
         labelMaxW,
         Math.round(subSize),
         9,
@@ -322,7 +323,7 @@ function drawShowcase(
       ctx.font = `500 ${subLabelFs}px Inter, system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.fillText(
-        String(it.sublabel),
+        pangu(it.sublabel),
         labelX,
         cellY + Math.round(numSize * 0.18) + Math.round(labelSize) + 4,
       );

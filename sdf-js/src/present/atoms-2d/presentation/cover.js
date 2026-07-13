@@ -25,6 +25,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../renderer.js';
+import { pangu } from '../cjk-text.js';
 
 export const spec = {
   type: 'cover',
@@ -58,8 +59,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   ];
   const accent = colors[0];
 
-  const title = args.title || '';
-  const subtitle = args.subtitle;
+  // Sprint 94: 盘古之白 — 中西文边界补细空 (「质押1万ANT」→「质押 1 万 ANT」)
+  const title = args.title ? pangu(args.title) : '';
+  const subtitle = args.subtitle ? pangu(args.subtitle) : args.subtitle;
   const author = args.author;
   const date = args.date;
   const version = args.version;

@@ -12,6 +12,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { pangu } from '../../cjk-text.js';
 
 export const spec = {
   type: 'numbered-grid',
@@ -158,7 +159,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const labelTarget = Math.round(rowH * 0.14);
       const labelFs = fitFontSize(
         ctx,
-        item.label ?? '',
+        pangu(item.label ?? ''),
         textMaxW,
         labelTarget,
         10,
@@ -168,13 +169,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
-      ctx.fillText(item.label ?? '', textX, cellY + cellPad + Math.round(rowH * 0.12));
+      ctx.fillText(pangu(item.label ?? ''), textX, cellY + cellPad + Math.round(rowH * 0.12));
 
       if (item.sublabel) {
         const subTarget = Math.round(rowH * 0.1);
         const subFs = fitFontSize(
           ctx,
-          item.sublabel,
+          pangu(item.sublabel),
           textMaxW,
           subTarget,
           9,
@@ -182,7 +183,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         );
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
-        ctx.fillText(item.sublabel, textX, cellY + cellPad + Math.round(rowH * 0.12) + labelFs + 4);
+        ctx.fillText(
+          pangu(item.sublabel),
+          textX,
+          cellY + cellPad + Math.round(rowH * 0.12) + labelFs + 4,
+        );
       }
     } else if (numberStyle === 'circle') {
       const circleR = Math.min(rowH * 0.2, colW * 0.14, 28);
@@ -203,7 +208,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const labelTarget = Math.round(rowH * 0.14);
       const labelFs = fitFontSize(
         ctx,
-        item.label ?? '',
+        pangu(item.label ?? ''),
         textMaxW,
         labelTarget,
         10,
@@ -214,13 +219,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       const labelY = circleCY + circleR + 8;
-      ctx.fillText(item.label ?? '', cx, labelY);
+      ctx.fillText(pangu(item.label ?? ''), cx, labelY);
 
       if (item.sublabel) {
         const subTarget = Math.round(rowH * 0.1);
         const subFs = fitFontSize(
           ctx,
-          item.sublabel,
+          pangu(item.sublabel),
           textMaxW,
           subTarget,
           9,
@@ -228,7 +233,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         );
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
-        ctx.fillText(item.sublabel, cx, labelY + labelFs + 4);
+        ctx.fillText(pangu(item.sublabel), cx, labelY + labelFs + 4);
       }
     } else if (numberStyle === 'corner') {
       // Badge top-right
@@ -252,7 +257,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const labelTarget = Math.round(rowH * 0.14);
       const labelFs = fitFontSize(
         ctx,
-        item.label ?? '',
+        pangu(item.label ?? ''),
         textMaxW,
         labelTarget,
         10,
@@ -263,13 +268,13 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(item.label ?? '', cx, item.sublabel ? centerY - labelFs * 0.4 : centerY);
+      ctx.fillText(pangu(item.label ?? ''), cx, item.sublabel ? centerY - labelFs * 0.4 : centerY);
 
       if (item.sublabel) {
         const subTarget = Math.round(rowH * 0.1);
         const subFs = fitFontSize(
           ctx,
-          item.sublabel,
+          pangu(item.sublabel),
           textMaxW,
           subTarget,
           9,
@@ -278,7 +283,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.font = `500 ${subFs}px Inter, system-ui`;
         ctx.fillStyle = rgbaCss(fg, 0.5);
         ctx.textBaseline = 'top';
-        ctx.fillText(item.sublabel, cx, centerY + labelFs * 0.2);
+        ctx.fillText(pangu(item.sublabel), cx, centerY + labelFs * 0.2);
       }
     }
   }

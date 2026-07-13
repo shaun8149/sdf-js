@@ -13,6 +13,7 @@
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
 import { resolveIcon } from '../../../../icons/index.js';
+import { wrapCJK, pangu } from '../../cjk-text.js';
 
 export const spec = {
   type: 'feature-card-grid',
@@ -48,60 +49,8 @@ function lighten([r, g, b], amount = 0.85) {
   ];
 }
 
-// Word-wrap `text` to `maxW`, capped at `maxLines`. Tokenizes on whitespace
-// AND after hyphens (so "zero-knowledge" can break to "zero-" / "knowledge"
-// like a real typesetter, instead of only ever breaking on spaces). If the
-// full text needs more lines than that, the LAST visible line gets an
-// ellipsis appended — dropping whole trailing tokens first so we never cut a
-// word in half; only falls back to a char-level trim if a single token alone
-// is wider than maxW.
-function wrapText(ctx, text, maxW, maxLines = 4) {
-  const rawTokens = String(text).match(/\S+?-|\S+/g) || [];
-  // CJK has no spaces — a whole sentence arrives as ONE token and would
-  // never wrap (the pull-quote lesson, Sprint 37). Any token wider than the
-  // column breaks at char level first.
-  const tokens = [];
-  for (const tok of rawTokens) {
-    if (ctx.measureText(tok).width <= maxW) {
-      tokens.push(tok);
-      continue;
-    }
-    let chunk = '';
-    for (const ch of tok) {
-      if (chunk && ctx.measureText(chunk + ch).width > maxW) {
-        tokens.push(chunk);
-        chunk = ch;
-      } else {
-        chunk += ch;
-      }
-    }
-    if (chunk) tokens.push(chunk);
-  }
-  const allLines = [];
-  let line = '';
-  for (const tok of tokens) {
-    const needsSpace = line !== '' && !line.endsWith('-');
-    const test = needsSpace ? line + ' ' + tok : line + tok;
-    if (line && ctx.measureText(test).width > maxW) {
-      allLines.push(line);
-      line = tok;
-    } else {
-      line = test;
-    }
-  }
-  if (line) allLines.push(line);
-
-  if (allLines.length <= maxLines) return allLines;
-
-  const truncated = allLines.slice(0, maxLines);
-  let last = truncated[maxLines - 1];
-  while (last.length > 0 && ctx.measureText(last + '…').width > maxW) {
-    const idx = last.lastIndexOf(' ');
-    last = idx > 0 ? last.slice(0, idx) : last.slice(0, -1);
-  }
-  truncated[maxLines - 1] = last + '…';
-  return truncated;
-}
+// Sprint 94: 断行统一走 cjk-text.js wrapCJK — 禁则处理 (行首不见「，。」) +
+// latin 词完整 + 盘古之白, 替换掉此处的本地 wrapText (CJK 逐字硬切无禁则)。
 
 // Auto-shrink font size until `text` fits `maxW` (no truncation). Mirrors the
 // fitFontSize pattern in charts/lists/numbered-grid.js.
@@ -227,10 +176,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Title — auto-shrink so long titles ("Performance", "Global Reach")
     // never overflow the card into its neighbor.
     if (f.title) {
+      const cardTitle = pangu(f.title);
       const titleTarget = Math.round(rowH * 0.13);
       const titleFs = fitFontSize(
         ctx,
-        f.title,
+        cardTitle,
         textMaxW,
         titleTarget,
         12,
@@ -240,7 +190,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       ctx.fillStyle = rgbCss(fg);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText(f.title, iconCX, curY);
+      ctx.fillText(cardTitle, iconCX, curY);
       curY += titleFs + 6;
     }
 
@@ -260,7 +210,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     if (f.body && maxLines > 0) {
-      const lines = wrapText(ctx, f.body, textMaxW, maxLines);
+      const lines = wrapCJK(ctx, f.body, textMaxW, maxLines);
       for (const line of lines) {
         ctx.fillText(line, iconCX, curY);
         curY += bodyFs + 2;
