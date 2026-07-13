@@ -53,7 +53,7 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // lattice at paint time (deck.json keeps raw lift geometry). opts.align
   // === false opts out (visual-audit replays raw coordinates).
   const aligned = opts.align === false ? sceneData : alignSceneData(sceneData);
-  const subjects = Array.isArray(aligned?.subjects) ? aligned.subjects : [];
+  let subjects = Array.isArray(aligned?.subjects) ? aligned.subjects : [];
 
   // Decoration layer (Sprint 41): generative backdrop, theme-constrained +
   // seeded. Content slides get it UNDER the atoms ('subtle'); pure-cover
@@ -163,6 +163,27 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       intensity: decor.intensity || UNDER_INTENSITY[role] || 'subtle',
     });
   }
+  // Sprint 90 (user: 目录页 Overview 小字与"核心主题"冲突 — 标题上提):
+  // on agenda banner pages the body heading (agenda-list args.title) is
+  // HOISTED into the banner as its title, the English slot label retires,
+  // and agenda item sublabels (小字) are dropped — the numbered titles
+  // carry the page. opts.bannerTitle overrides everything when provided.
+  let bannerTitle = opts.bannerTitle || null;
+  let bannerSubtitle = opts.bannerSubtitle || null;
+  if (bannerCanvas && role === 'agenda') {
+    subjects = subjects.slice(); // never mutate the caller's array
+    for (let i = 0; i < subjects.length; i++) {
+      const s2 = subjects[i];
+      if (s2 && s2.type === 'agenda-list' && s2.args) {
+        if (!bannerTitle && s2.args.title) bannerTitle = s2.args.title;
+        const items = Array.isArray(s2.args.items)
+          ? s2.args.items.map((it) => ({ ...it, sublabel: undefined }))
+          : s2.args.items;
+        subjects[i] = { ...s2, args: { ...s2.args, title: undefined, items } };
+      }
+    }
+  }
+
   let rendered = 0;
   let skipped = 0;
   const errors = [];
@@ -213,7 +234,12 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     }
     const args =
       (coverCanvas && s.type === 'cover') || isBannerAtom
-        ? { ...s.args, style: 'overlay' }
+        ? {
+            ...s.args,
+            style: 'overlay',
+            ...(isBannerAtom && bannerTitle ? { title: bannerTitle } : {}),
+            ...(isBannerAtom && bannerSubtitle ? { subtitle: bannerSubtitle } : {}),
+          }
         : s.args || {};
     const style = deckStyle || s.style || 'pseudo3d';
     const subjectOpts = {

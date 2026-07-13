@@ -14,8 +14,9 @@
     "w": 1280,
     "h": 120,
     "args": {
-     "title": "How It Works",
-     "style": "gradient"
+     "title": "一笔交易的 ANT 之旅",
+     "style": "gradient",
+     "subtitle": "完整经济闭环"
     }
    },
    {

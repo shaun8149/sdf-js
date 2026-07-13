@@ -35,7 +35,7 @@
   {
    "slotIdx": 2,
    "slotName": "key-figures",
-   "slotTitle": "Key Figures",
+   "slotTitle": "ANT 收费模式",
    "sourceSlideIdx": 9,
    "liftFile": "slots/slot-02-key-figures.json",
    "error": null,
@@ -239,7 +239,7 @@
   {
    "slotIdx": 12,
    "slotName": "comparison",
-   "slotTitle": "Comparison",
+   "slotTitle": "pump.fun 机制基准",
    "sourceSlideIdx": 2,
    "liftFile": "slots/slot-12-comparison.json",
    "error": null,
@@ -257,7 +257,7 @@
   {
    "slotIdx": 13,
    "slotName": "mechanism",
-   "slotTitle": "How It Works",
+   "slotTitle": "一笔交易的 ANT 之旅",
    "sourceSlideIdx": 19,
    "liftFile": "slots/slot-13-mechanism.json",
    "error": null,
@@ -275,7 +275,7 @@
   {
    "slotIdx": 14,
    "slotName": "data-appendix",
-   "slotTitle": "Data Appendix",
+   "slotTitle": "数据附录",
    "sourceSlideIdx": 20,
    "liftFile": "slots/slot-14-data-appendix.json",
    "error": null,
@@ -339,7 +339,7 @@
   {
    "slotIdx": 18,
    "slotName": "quote",
-   "slotTitle": "Key Quote",
+   "slotTitle": "ANTFUN 理念",
    "sourceSlideIdx": 13,
    "liftFile": "slots/slot-18-quote.json",
    "error": null,
@@ -352,7 +352,7 @@
   {
    "slotIdx": 19,
    "slotName": "outlook",
-   "slotTitle": "Outlook",
+   "slotTitle": "ANT 飞轮:合流与缓释",
    "sourceSlideIdx": 21,
    "liftFile": "slots/slot-19-outlook.json",
    "error": null,
@@ -365,7 +365,7 @@
   {
    "slotIdx": 20,
    "slotName": "summary",
-   "slotTitle": "Summary",
+   "slotTitle": "总结:ANT 五重角色",
    "sourceSlideIdx": 16,
    "liftFile": "slots/slot-20-summary.json",
    "error": null,
