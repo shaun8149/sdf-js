@@ -44,11 +44,25 @@ const D = {
     f.voice.material.hue !== g.voice.material.hue,
     'different factory seed → different species voice',
   );
-  const kOf = (s) => s.args.k / Math.min(...s.children.map(() => 1)); // k 由物种 fuseK 驱动
+  // L02: asset = displace(ridge) → blob union(单层——D3D pipeline 编译预算)
+  const blobOf = (a) => a.source;
   ok(
-    typeof kOf === 'function' &&
-      f.createAsset(0).children.length === f.createAsset(5).children.length,
+    blobOf(f.createAsset(0)).children.length === blobOf(f.createAsset(5)).children.length,
     'blob count is a species decision (constant across instances)',
+  );
+  const a0 = f.createAsset(0);
+  ok(
+    a0.type === 'displace' && a0.args.kind === 'sinfold',
+    'asset wears the sinfold joint displacement (L02)',
+  );
+  const minDim = Math.min(...blobOf(a0).children.flatMap((c) => c.args.dims ?? [1]));
+  ok(
+    a0.args.amp < minDim * 0.2,
+    'displacement amplitude stays far below the rock size (Lipschitz headroom)',
+  );
+  ok(
+    JSON.stringify(f.createAsset(0).args.offset) !== JSON.stringify(f.createAsset(5).args.offset),
+    'noise offsets are per-instance (no repeated surface pattern)',
   );
 }
 

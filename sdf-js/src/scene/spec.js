@@ -423,6 +423,10 @@ export const DOMAIN_OPS = new Set([
   // axis; `displace` additively perturbs distance by another SDF. Neither
   // changes the child-count semantics (`elongate` is 1-arg op, `displace` is
   // pairwise like `xor`).
+  // 2026-07-13(Infinigen 研读第二课)`displace` 首次真正实现:source = 宿主,
+  // args = 噪声场描述 {kind:'vfbm'|'ridge', freq, amp, offset}。vfbm =
+  // geo_extension 径向鼓胀的近似;ridge = boulder.py VORONOI DISPLACE 节理的
+  // 零循环平替(27-cell F1 落 D3D 循环展开悬崖)。
   'elongate',
   'displace',
 ]);
@@ -1202,6 +1206,18 @@ function validateDomainArgs(type, args, path, errors, _warnings) {
           `${path}: modPolar args.repetitions must be a number >= 2 (got ${args.repetitions})`,
         );
       }
+    }
+  } else if (type === 'displace') {
+    if (args.kind != null && !['vfbm', 'ridge', 'sinfold'].includes(args.kind)) {
+      errors.push(
+        `${path}: displace args.kind must be 'vfbm' | 'ridge' | 'sinfold' (default 'vfbm')`,
+      );
+    }
+    if (args.freq != null && (typeof args.freq !== 'number' || args.freq <= 0)) {
+      errors.push(`${path}: displace args.freq must be a positive number`);
+    }
+    if (args.amp != null && typeof args.amp !== 'number') {
+      errors.push(`${path}: displace args.amp must be a number`);
     }
   } else if (type === 'mirrorOctant') {
     if (args.plane != null && !['xz', 'xy', 'yz'].includes(args.plane)) {

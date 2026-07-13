@@ -1291,6 +1291,49 @@ vec3 mirX3(vec3 p) { return vec3(abs(p.x), p.y, p.z); }
 vec3 mirY3(vec3 p) { return vec3(p.x, abs(p.y), p.z); }
 vec3 mirZ3(vec3 p) { return vec3(p.x, p.y, abs(p.z)); }
 
+// ---- noise-field 位移场（Infinigen 研读第二课）------------------------------
+// d3.js noiseField 的 GPU 面：kind<0.5 = 3-octave 值噪声 fbm（径向鼓胀近似）,
+// kind>0.5 = 3D cellular F1（岩石节理）。hash 公式与 CPU 端同一条 sin-fract。
+float nfHash(vec3 c) { return fract(sin(dot(c, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float nfValue(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(nfHash(i), nfHash(i + vec3(1.0, 0.0, 0.0)), u.x),
+        mix(nfHash(i + vec3(0.0, 1.0, 0.0)), nfHash(i + vec3(1.0, 1.0, 0.0)), u.x), u.y),
+    mix(mix(nfHash(i + vec3(0.0, 0.0, 1.0)), nfHash(i + vec3(1.0, 0.0, 1.0)), u.x),
+        mix(nfHash(i + vec3(0.0, 1.0, 1.0)), nfHash(i + vec3(1.0, 1.0, 1.0)), u.x), u.y),
+    u.z);
+}
+// 3 octave 手动展开 —— scene SDF 会被内联进 march 循环,任何常量上界的 for
+// 都会被 D3D fxc 完全展开(见 studio.js u_loopGuard 的判例),这里必须零循环。
+float nfVfbm(vec3 p) {
+  float s = 0.5 * nfValue(p);
+  p = p * 2.03 + vec3(11.5, 27.1, 5.7);
+  s += 0.25 * nfValue(p);
+  p = p * 2.03 + vec3(11.5, 27.1, 5.7);
+  s += 0.125 * nfValue(p);
+  return s / 0.875;
+}
+// ridged crease（节理）：零循环、单 octave —— 最初的 27-cell Voronoi F1 和
+// 双 octave 版都把 D3D pipeline 编译推到分钟级（fxc 对巨型 scene 函数的
+// 优化开销 ∝ ALU 体量）；每次 displace 调用点都会把这里整段内联进 march。
+float nfRidge(vec3 p) {
+  return abs(2.0 * nfValue(p) - 1.0);
+}
+// sinfold:IQ 经典 sin 位移的 ridged 变体 —— 每次求值 3 个 sin(值噪声要 8 角
+// hash)。studio 完整 shader 在 D3D 上把 sceneSDF 内联进十几个调用点,fxc 成本
+// ∝ 场 ALU × 调用点,sinfold 是 decor 批量使用时唯一编译得动的档。
+float nfSinfold(vec3 p) { return abs(sin(p.x) * sin(p.y * 1.13) * sin(p.z * 0.87)); }
+float noiseField3(vec3 p, float kind, float freq, float amp) {
+  vec3 q = p * freq;
+  float v = kind > 1.5 ? nfSinfold(q) - 0.5
+          : kind > 0.5 ? nfRidge(q) - 0.5
+          : (nfVfbm(q) - 0.5) * 2.0;
+  return amp * v;
+}
+
 // ---- hg_sdf-style polar repetition + octant mirror -----------------------
 // pModPolar (hg_sdf): fold the two coords perpendicular to an axis into a
 // single pie sector of angle 2π/n. Source SDF evaluated in folded space
