@@ -339,7 +339,14 @@ export function assembleDeck(deck, opts = {}) {
           Math.max(prevPayoff.pos[1], heroPos[1]) + 1.6,
           Math.max(prevPayoff.pos[2], heroPos[2]) + 2.0,
         ],
-        target: [(prevPayoff.target[0] + heroTarget[0]) / 2, heroTarget[1], heroTarget[2]],
+        // R1 critique: an arithmetic-midpoint target frames the VOID between
+        // stations at mid-whip. Weight the gaze 70/30 toward where we're
+        // GOING — the next arena grows from the frame's third, never the edge.
+        target: [
+          prevPayoff.target[0] * 0.3 + heroTarget[0] * 0.7,
+          heroTarget[1],
+          prevPayoff.target[2] * 0.3 + heroTarget[2] * 0.7,
+        ],
         fov: 50,
         transition: 'blend',
         aperture: 0,
@@ -392,9 +399,15 @@ export function assembleDeck(deck, opts = {}) {
     for (const o of st.overlay || []) {
       overlay.push({
         ...o,
-        anchor: addV(o.anchor, origin),
+        ...(o.anchor ? { anchor: addV(o.anchor, origin) } : {}),
         revealAt: (o.revealAt ?? 0) + clock,
-        ...(o.role === 'title' || o.role === 'screen' ? { hideAt: stationEnd } : {}),
+        // renderer-set hideAt is station-local → shift; narrative roles
+        // without one clear at the station's end (transit flies clean)
+        ...(o.hideAt != null
+          ? { hideAt: o.hideAt + clock }
+          : o.role === 'title' || o.role === 'screen' || o.role === 'insight'
+            ? { hideAt: stationEnd }
+            : {}),
         // the DOM layer paints in the station's chapter color too: the value
         // chip's fill and the CURRENT subtitle line pick it up
         ...(accCss ? { accentColor: accCss } : {}),
@@ -498,7 +511,10 @@ export function assembleDeck(deck, opts = {}) {
         subjects.push({
           id: `path-${k}-${d}`,
           type: 'box',
-          args: { dims: [0.9, 0.06, 0.28] },
+          // R1 critique: 0.9×0.06 chips were invisible in the transit frame —
+          // the flight had no guide line. Long low glowing strips read as a
+          // runway; the ground between stations stops being a black gap.
+          args: { dims: [1.7, 0.05, 0.32] },
           transform: {
             translate: [origin[0] + dx * f, 0.03, origin[2] + dz * f],
             rotate: [0, -yaw, 0],
@@ -506,7 +522,8 @@ export function assembleDeck(deck, opts = {}) {
           material: {
             hue: 0.58,
             sat: 0.25,
-            value: 0.75,
+            value: 0.7,
+            glow: 0.12,
             kind: 'normal',
             roughness: 0.5,
             clearcoat: 0.2,

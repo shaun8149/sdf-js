@@ -579,7 +579,7 @@
       "id": "path-0-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [2.6666666666666665, 0.03, 0],
@@ -588,7 +588,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -598,7 +599,7 @@
       "id": "path-0-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [5.333333333333333, 0.03, 0],
@@ -607,7 +608,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -617,7 +619,7 @@
       "id": "path-0-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [8, 0.03, 0],
@@ -626,7 +628,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -636,7 +639,7 @@
       "id": "path-0-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [10.666666666666666, 0.03, 0],
@@ -645,7 +648,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -655,7 +659,7 @@
       "id": "path-0-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [13.333333333333334, 0.03, 0],
@@ -664,7 +668,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -842,7 +847,7 @@
       "id": "path-1-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [18.666666666666668, 0.03, 0],
@@ -851,7 +856,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -861,7 +867,7 @@
       "id": "path-1-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [21.333333333333332, 0.03, 0],
@@ -870,7 +876,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -880,7 +887,7 @@
       "id": "path-1-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [24, 0.03, 0],
@@ -889,7 +896,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -899,7 +907,7 @@
       "id": "path-1-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [26.666666666666664, 0.03, 0],
@@ -908,7 +916,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -918,7 +927,7 @@
       "id": "path-1-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [29.333333333333336, 0.03, 0],
@@ -927,7 +936,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1186,7 +1196,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -1316,7 +1326,7 @@
       "id": "path-2-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [34.666666666666664, 0.03, 0],
@@ -1325,7 +1335,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1335,7 +1346,7 @@
       "id": "path-2-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [37.333333333333336, 0.03, 0],
@@ -1344,7 +1355,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1354,7 +1366,7 @@
       "id": "path-2-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [40, 0.03, 0],
@@ -1363,7 +1375,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1373,7 +1386,7 @@
       "id": "path-2-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [42.666666666666664, 0.03, 0],
@@ -1382,7 +1395,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1392,7 +1406,7 @@
       "id": "path-2-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [45.333333333333336, 0.03, 0],
@@ -1401,7 +1415,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1660,7 +1675,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -1790,7 +1805,7 @@
       "id": "path-3-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [50.666666666666664, 0.03, 0],
@@ -1799,7 +1814,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1809,7 +1825,7 @@
       "id": "path-3-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [53.333333333333336, 0.03, 0],
@@ -1818,7 +1834,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1828,7 +1845,7 @@
       "id": "path-3-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [56, 0.03, 0],
@@ -1837,7 +1854,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1847,7 +1865,7 @@
       "id": "path-3-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [58.666666666666664, 0.03, 0],
@@ -1856,7 +1874,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1866,7 +1885,7 @@
       "id": "path-3-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [61.333333333333336, 0.03, 0],
@@ -1875,7 +1894,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1914,7 +1934,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -2264,7 +2284,7 @@
       "id": "path-4-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [66.66666666666667, 0.03, 0],
@@ -2273,7 +2293,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2283,7 +2304,7 @@
       "id": "path-4-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [69.33333333333333, 0.03, 0],
@@ -2292,7 +2313,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2302,7 +2324,7 @@
       "id": "path-4-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [72, 0.03, 0],
@@ -2311,7 +2333,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2321,7 +2344,7 @@
       "id": "path-4-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [74.66666666666667, 0.03, 0],
@@ -2330,7 +2353,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2340,7 +2364,7 @@
       "id": "path-4-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [77.33333333333333, 0.03, 0],
@@ -2349,7 +2373,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2388,7 +2413,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -2738,7 +2763,7 @@
       "id": "path-5-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [82.66666666666667, 0.03, 0],
@@ -2747,7 +2772,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2757,7 +2783,7 @@
       "id": "path-5-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [85.33333333333333, 0.03, 0],
@@ -2766,7 +2792,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2776,7 +2803,7 @@
       "id": "path-5-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [88, 0.03, 0],
@@ -2785,7 +2812,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2795,7 +2823,7 @@
       "id": "path-5-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [90.66666666666667, 0.03, 0],
@@ -2804,7 +2832,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2814,7 +2843,7 @@
       "id": "path-5-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [93.33333333333333, 0.03, 0],
@@ -2823,7 +2852,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3136,7 +3166,7 @@
       "id": "path-6-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [98.66666666666667, 0.03, 0],
@@ -3145,7 +3175,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3155,7 +3186,7 @@
       "id": "path-6-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [101.33333333333333, 0.03, 0],
@@ -3164,7 +3195,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3174,7 +3206,7 @@
       "id": "path-6-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [104, 0.03, 0],
@@ -3183,7 +3215,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3193,7 +3226,7 @@
       "id": "path-6-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [106.66666666666667, 0.03, 0],
@@ -3202,7 +3235,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3212,7 +3246,7 @@
       "id": "path-6-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [109.33333333333333, 0.03, 0],
@@ -3221,7 +3255,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3451,7 +3486,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [1.5462996670025704, -2.459896501752518, -1.7087082733851329],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [110.45370033299743, 5.980307652106461, 1.7087082733851329]
@@ -3459,7 +3494,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3478,7 +3513,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.2916172614245259, -1.7304933560431786, 2.8851961924565597],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112.29161726142452, 5.250904506397122, -2.8851961924565597]
@@ -3486,7 +3521,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3505,7 +3540,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-2.316501828332444, -0.8493455741948472, -2.3695024225210286],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [114.31650182833245, 4.3697567245487905, 2.3695024225210286]
@@ -3513,7 +3548,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3532,7 +3567,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [3.3328829311898103, -0.1009467215905464, 0.5703621471936202],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [108.66711706881019, 3.6213578719444897, -0.5703621471936202]
@@ -3540,7 +3575,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3559,7 +3594,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-3.0462853596452057, 0.5676340286941195, 1.444450357470997],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [115.04628535964521, 2.9527771216598238, -1.444450357470997]
@@ -3567,7 +3602,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3586,7 +3621,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.6366414965168061, -1.7007904184427713, 2.6097801231999034],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112, 3.5204111503539433, 0]
@@ -3594,7 +3629,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3613,7 +3648,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.8001008867927215, -2.310836000275332, -1.9885364620992363],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112, 3.5204111503539433, 0]
@@ -3621,7 +3656,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3640,7 +3675,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [0.7612391329708433, -1.2196207319111718, -2.195114685979265],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [111.3633585034832, 1.819620731911172, 2.6097801231999034]
@@ -3648,7 +3683,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3667,7 +3702,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [0.9246985232467587, -0.6095751500786113, 2.4032018993198747],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [111.19989911320728, 1.2095751500786114, -1.9885364620992363]
@@ -3675,7 +3710,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3694,7 +3729,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.12459763645403722, 2.920411150353943, -0.41466543722063837],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112.12459763645404, 0.6000000000000001, 0.41466543722063837]
@@ -3702,7 +3737,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3728,7 +3763,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3752,7 +3787,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3776,7 +3811,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3800,7 +3835,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3824,7 +3859,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3848,7 +3883,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3872,7 +3907,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3896,7 +3931,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3920,7 +3955,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3944,7 +3979,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3968,7 +4003,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3992,7 +4027,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4016,7 +4051,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4040,7 +4075,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4064,7 +4099,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4088,7 +4123,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4112,7 +4147,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4136,7 +4171,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4160,7 +4195,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4184,7 +4219,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4208,7 +4243,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4232,7 +4267,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4247,7 +4282,7 @@
       "id": "path-7-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [114.66666666666667, 0.03, 0],
@@ -4256,7 +4291,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4266,7 +4302,7 @@
       "id": "path-7-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [117.33333333333333, 0.03, 0],
@@ -4275,7 +4311,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4285,7 +4322,7 @@
       "id": "path-7-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [120, 0.03, 0],
@@ -4294,7 +4331,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4304,7 +4342,7 @@
       "id": "path-7-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [122.66666666666667, 0.03, 0],
@@ -4313,7 +4351,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4323,7 +4362,7 @@
       "id": "path-7-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [125.33333333333333, 0.03, 0],
@@ -4332,7 +4371,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4452,7 +4492,7 @@
       "id": "path-8-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [130.66666666666666, 0.03, 0],
@@ -4461,7 +4501,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4471,7 +4512,7 @@
       "id": "path-8-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [133.33333333333334, 0.03, 0],
@@ -4480,7 +4521,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4490,7 +4532,7 @@
       "id": "path-8-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [136, 0.03, 0],
@@ -4499,7 +4541,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4509,7 +4552,7 @@
       "id": "path-8-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [138.66666666666666, 0.03, 0],
@@ -4518,7 +4561,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4528,7 +4572,7 @@
       "id": "path-8-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [141.33333333333334, 0.03, 0],
@@ -4537,7 +4581,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4840,7 +4885,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -4970,7 +5015,7 @@
       "id": "path-9-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [146.66666666666666, 0.03, 0],
@@ -4979,7 +5024,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4989,7 +5035,7 @@
       "id": "path-9-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [149.33333333333334, 0.03, 0],
@@ -4998,7 +5044,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5008,7 +5055,7 @@
       "id": "path-9-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [152, 0.03, 0],
@@ -5017,7 +5064,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5027,7 +5075,7 @@
       "id": "path-9-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [154.66666666666666, 0.03, 0],
@@ -5036,7 +5084,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5046,7 +5095,7 @@
       "id": "path-9-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [157.33333333333334, 0.03, 0],
@@ -5055,7 +5104,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5280,7 +5330,7 @@
       "id": "path-10-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [162.66666666666666, 0.03, 0],
@@ -5289,7 +5339,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5299,7 +5350,7 @@
       "id": "path-10-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [165.33333333333334, 0.03, 0],
@@ -5308,7 +5359,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5318,7 +5370,7 @@
       "id": "path-10-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [168, 0.03, 0],
@@ -5327,7 +5379,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5337,7 +5390,7 @@
       "id": "path-10-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [170.66666666666666, 0.03, 0],
@@ -5346,7 +5399,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5356,7 +5410,7 @@
       "id": "path-10-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [173.33333333333334, 0.03, 0],
@@ -5365,7 +5419,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5671,7 +5726,7 @@
       "id": "path-11-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [178.66666666666666, 0.03, 0],
@@ -5680,7 +5735,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5690,7 +5746,7 @@
       "id": "path-11-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [181.33333333333334, 0.03, 0],
@@ -5699,7 +5755,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5709,7 +5766,7 @@
       "id": "path-11-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [184, 0.03, 0],
@@ -5718,7 +5775,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5728,7 +5786,7 @@
       "id": "path-11-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [186.66666666666666, 0.03, 0],
@@ -5737,7 +5795,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5747,7 +5806,7 @@
       "id": "path-11-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
         "translate": [189.33333333333334, 0.03, 0],
@@ -5756,7 +5815,8 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.7,
+        "glow": 0.12,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5883,7 +5943,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -6320,42 +6380,42 @@
       "hideAt": 18.6
     },
     {
-      "text": "即将爆发的个性化数字媒体市场",
+      "text": "① 即将爆发的个性化数字媒体市场 —— 移动广告 5 年 16.6 倍",
       "anchor": [19.96029588778518, 0.62, -0.2980156278177152],
       "role": "screen",
       "revealAt": 10.05,
       "hideAt": 18.6
     },
     {
-      "text": "独创的个性化资讯发现引擎",
+      "text": "② 独创的个性化资讯发现引擎 —— 5 类信源 × 用户回路(核心)",
       "anchor": [18.899137802864846, 0.62, 1.2642671324351176],
       "role": "screen",
       "revealAt": 11.05,
       "hideAt": 18.6
     },
     {
-      "text": "领先于世界同类产品的功能和技术",
+      "text": "③ 领先于世界的功能和技术 —— 200 万 DAU 仅 30 台服务器",
       "anchor": [17.061158084920336, 0.62, 2.166251504617403],
       "role": "screen",
       "revealAt": 12.05,
       "hideAt": 18.6
     },
     {
-      "text": "行业领先的用户粘度和自然增长",
+      "text": "④ 行业领先的粘度和自然增长 —— 次周留存 60.6%,零推广费",
       "anchor": [14.938841915079665, 0.62, 2.166251504617403],
       "role": "screen",
       "revealAt": 13.05,
       "hideAt": 18.6
     },
     {
-      "text": "完善的多产品布局,覆盖移动和PC",
+      "text": "⑤ 完善的多产品布局 —— App + Web 双端,覆盖移动和 PC",
       "anchor": [13.100862197135156, 0.62, 1.264267132435118],
       "role": "screen",
       "revealAt": 14.05,
       "hideAt": 18.6
     },
     {
-      "text": "具有丰富创业经验和技术功底的团队",
+      "text": "⑥ 丰富创业经验和技术功底的团队 —— 连续创业者 + 大厂工程师",
       "anchor": [12.039704112214821, 0.62, -0.2980156278177143],
       "role": "screen",
       "revealAt": 15.05,
@@ -6366,6 +6426,13 @@
       "anchor": [32, 6.1, 0],
       "role": "title",
       "revealAt": 19.8,
+      "hideAt": 31.9
+    },
+    {
+      "text": "5 年 2.4 倍",
+      "sub": "3.6 → 8.7 · 年均复合增长约 19% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 29.9,
       "hideAt": 31.9
     },
     {
@@ -6460,6 +6527,13 @@
       "hideAt": 45.2
     },
     {
+      "text": "5 年 16.6 倍",
+      "sub": "15.2 → 252.2 · 年均复合增长约 75% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 43.2,
+      "hideAt": 45.2
+    },
+    {
       "text": "2010",
       "anchor": [44.825, -0.02, 0.71],
       "role": "screen",
@@ -6551,6 +6625,13 @@
       "hideAt": 58.50000000000001
     },
     {
+      "text": "电子阅读居首:25.1%",
+      "sub": "高于第二位 手机游戏(23.4%)",
+      "role": "insight",
+      "revealAt": 56.50000000000001,
+      "hideAt": 58.50000000000001
+    },
+    {
       "text": "电子阅读",
       "anchor": [60.825, -0.02, 0.71],
       "role": "screen",
@@ -6639,6 +6720,13 @@
       "anchor": [80, 6.1, 0],
       "role": "title",
       "revealAt": 59.70000000000001,
+      "hideAt": 71.80000000000001
+    },
+    {
+      "text": "泛阅读居首:77.2%",
+      "sub": "高于第二位 即时通讯(71%)",
+      "role": "insight",
+      "revealAt": 69.80000000000001,
       "hideAt": 71.80000000000001
     },
     {
@@ -6949,6 +7037,13 @@
       "hideAt": 117.60000000000004
     },
     {
+      "text": "1周后居首:60.6%",
+      "sub": "高于第二位 2周后(59.5%)",
+      "role": "insight",
+      "revealAt": 115.60000000000004,
+      "hideAt": 117.60000000000004
+    },
+    {
       "text": "1周后",
       "anchor": [140.19, -0.02, 0.71],
       "role": "screen",
@@ -7163,6 +7258,20 @@
       "hideAt": 148.30000000000004
     },
     {
+      "text": "2 年 10.0 倍",
+      "sub": "150 → 1500 · 年均复合增长约 216% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 146.30000000000004,
+      "hideAt": 148.30000000000004
+    },
+    {
+      "text": "本轮融资 US$ 12.5M",
+      "sub": "用途:算法团队扩建 · App 推广 —— 换取 2014 年移动 DAU 1500 万(10×)",
+      "role": "insight",
+      "revealAt": 145.15000000000003,
+      "hideAt": 146.30000000000004
+    },
+    {
       "text": "2012",
       "anchor": [190.73, -0.02, 0.71],
       "role": "screen",
@@ -7243,7 +7352,7 @@
       {
         "duration": 1.2,
         "pos": [8.65, 4.2, 11.6],
-        "target": [8, 0.7, 0.6],
+        "target": [11.2, 0.7, -1.38],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7286,7 +7395,7 @@
       {
         "duration": 1.2,
         "pos": [26.6875, 6, 11.6],
-        "target": [25.5875, 3.456, 0],
+        "target": [29.422499999999996, 3.456, -0.12],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7321,69 +7430,69 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [30.995, 1.1, 2.5],
-        "target": [30.095, 1.3655172413793104, 0],
-        "fov": 46,
+        "target": [30.095, 1.8620689655172415, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.6608247047473044,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [32.265, 1.1, 2.5],
-        "target": [31.365, 1.7600000000000002, 0],
-        "fov": 46,
+        "target": [31.365, 2.4000000000000004, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.7037011669191546,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [33.535, 1.1, 2.5],
-        "target": [32.635, 2.0937931034482764, 0],
-        "fov": 46,
+        "target": [32.635, 2.855172413793104, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.7758834867453874,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [34.805, 1.1, 2.5],
-        "target": [33.905, 2.366896551724138, 0],
-        "fov": 46,
+        "target": [33.905, 3.2275862068965515, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8576430256956127,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [36.075, 1.1, 2.5],
-        "target": [35.175, 2.64, 0],
-        "fov": 46,
+        "target": [35.175, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [35.925, 0.22, 1.3],
-        "target": [35.175, 4.32, 0],
+        "pos": [36.349199999999996, 0.22, 1.3],
+        "target": [35.599199999999996, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7391,14 +7500,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 2
       },
       {
         "duration": 2.4,
-        "pos": [33.2, 3.64, 9.209499999999998],
-        "target": [32, 1.92, 0],
+        "pos": [34.0484, 4.44, 9.209499999999998],
+        "target": [32.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7409,8 +7518,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [42.9875, 5.24, 11.209499999999998],
-        "target": [41.5875, 3.456, 0],
+        "pos": [43.411699999999996, 6.040000000000001, 11.209499999999998],
+        "target": [45.67702, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7445,7 +7554,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7456,7 +7565,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7467,7 +7576,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7478,36 +7587,36 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [50.805, 1.1, 2.5],
-        "target": [49.905, 1.7052180808881843, 0],
-        "fov": 46,
+        "target": [49.905, 2.325297383029342, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.694935707790223,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [52.075, 1.1, 2.5],
-        "target": [51.175, 2.64, 0],
-        "fov": 46,
+        "target": [51.175, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [51.925, 0.22, 1.3],
-        "target": [51.175, 4.32, 0],
+        "pos": [52.349199999999996, 0.22, 1.3],
+        "target": [51.599199999999996, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7515,14 +7624,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 3
       },
       {
         "duration": 2.4,
-        "pos": [49.2, 3.64, 9.209499999999998],
-        "target": [48, 1.92, 0],
+        "pos": [50.0484, 4.44, 9.209499999999998],
+        "target": [48.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7533,8 +7642,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [55.8125, 5.24, 11.209499999999998],
-        "target": [54.4125, 3.456, 0],
+        "pos": [56.2367, 6.040000000000001, 11.209499999999998],
+        "target": [57.23202, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7565,44 +7674,44 @@
       {
         "duration": 1.1,
         "pos": [61.725, 1.1, 2.5],
-        "target": [60.825, 2.64, 0],
-        "fov": 46,
+        "target": [60.825, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [62.995, 1.1, 2.5],
-        "target": [62.095, 2.4611952191235056, 0],
-        "fov": 46,
+        "target": [62.095, 3.3561752988047804, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.890292884063373,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [64.265, 1.1, 2.5],
-        "target": [63.365, 1.5566533864541834, 0],
-        "fov": 46,
+        "target": [63.365, 2.1227091633466135, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.675689232338037,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [65.535, 1.1, 2.5],
-        "target": [64.635, 1.3673306772908367, 0],
-        "fov": 46,
+        "target": [64.635, 1.8645418326693228, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.6609128089573666,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7613,7 +7722,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7624,14 +7733,14 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [61.575, 0.22, 1.3],
-        "target": [60.825, 4.32, 0],
+        "pos": [61.9992, 0.22, 1.3],
+        "target": [61.2492, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7639,14 +7748,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 4
       },
       {
         "duration": 2.4,
-        "pos": [65.2, 3.64, 9.209499999999998],
-        "target": [64, 1.92, 0],
+        "pos": [66.0484, 4.44, 9.209499999999998],
+        "target": [64.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7657,8 +7766,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [71.8125, 5.24, 11.209499999999998],
-        "target": [70.4125, 3.456, 0],
+        "pos": [72.2367, 6.040000000000001, 11.209499999999998],
+        "target": [73.23201999999999, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7689,44 +7798,44 @@
       {
         "duration": 1.1,
         "pos": [77.725, 1.1, 2.5],
-        "target": [76.825, 2.64, 0],
-        "fov": 46,
+        "target": [76.825, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [78.995, 1.1, 2.5],
-        "target": [78.095, 2.427979274611399, 0],
-        "fov": 46,
+        "target": [78.095, 3.310880829015544, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8785432371401076,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [80.265, 1.1, 2.5],
-        "target": [79.365, 1.6517098445595852, 0],
-        "fov": 46,
+        "target": [79.365, 2.2523316062176164, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.6872376038393604,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [81.535, 1.1, 2.5],
-        "target": [80.635, 1.3849740932642487, 0],
-        "fov": 46,
+        "target": [80.635, 1.8886010362694297, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.6618231391709997,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7737,7 +7846,7 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -7748,14 +7857,14 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [77.575, 0.22, 1.3],
-        "target": [76.825, 4.32, 0],
+        "pos": [77.9992, 0.22, 1.3],
+        "target": [77.2492, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7763,14 +7872,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 5
       },
       {
         "duration": 2.4,
-        "pos": [81.2, 3.64, 9.209499999999998],
-        "target": [80, 1.92, 0],
+        "pos": [82.0484, 4.44, 9.209499999999998],
+        "target": [80.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7781,8 +7890,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [89.2, 5.24, 11.209499999999998],
-        "target": [88, 0.9, 0],
+        "pos": [89.6242, 6.040000000000001, 11.209499999999998],
+        "target": [91.45451999999999, 0.9, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7840,7 +7949,7 @@
       {
         "duration": 1.2,
         "pos": [105.49533357365479, 4.520411150353944, 14.66],
-        "target": [104, 3.5204111503539433, 0],
+        "target": [107.19999999999999, 3.5204111503539433, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7931,7 +8040,7 @@
       {
         "duration": 1.2,
         "pos": [121.85000000000001, 9.835918261835287, 12.903351632729047],
-        "target": [120, 2.94, 0],
+        "target": [123.19999999999999, 2.94, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8033,7 +8142,7 @@
       {
         "duration": 1.2,
         "pos": [135.595, 4.300000000000001, 10.876],
-        "target": [134.095, 3.456, 0],
+        "target": [136.533, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8064,84 +8173,84 @@
       {
         "duration": 1.1,
         "pos": [141.09, 1.1, 2.5],
-        "target": [140.19, 2.64, 0],
-        "fov": 46,
+        "target": [140.19, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [142.36, 1.1, 2.5],
-        "target": [141.46, 2.592079207920792, 0],
-        "fov": 46,
+        "target": [141.46, 3.5346534653465342, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.9391547299213387,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [143.63, 1.1, 2.5],
-        "target": [142.73, 2.4613861386138614, 0],
-        "fov": 46,
+        "target": [142.73, 3.356435643564356, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8903611927790385,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [144.9, 1.1, 2.5],
-        "target": [144, 2.3568316831683167, 0],
-        "fov": 46,
+        "target": [144, 3.213861386138613, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8542881918697063,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [146.17, 1.1, 2.5],
-        "target": [145.27, 2.2261386138613863, 0],
-        "fov": 46,
+        "target": [145.27, 3.0356435643564357, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8130653969917194,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [147.44, 1.1, 2.5],
-        "target": [146.54, 2.0693069306930694, 0],
-        "fov": 46,
+        "target": [146.54, 2.8217821782178216, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.7695224998134327,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [148.71, 1.1, 2.5],
-        "target": [147.81, 1.9647524752475247, 0],
-        "fov": 46,
+        "target": [147.81, 2.679207920792079, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.7442277961990733,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [148.56, 0.22, 1.3],
-        "target": [147.81, 3.215049504950495, 0],
+        "pos": [149.0604, 0.22, 1.3],
+        "target": [148.3104, 3.036435643564356, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -8149,14 +8258,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 9
       },
       {
         "duration": 2.4,
-        "pos": [145.2, 3.64, 10.289],
-        "target": [144, 1.92, 0],
+        "pos": [146.2008, 4.44, 10.289],
+        "target": [145.0008, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -8167,8 +8276,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [153.64999999999998, 5.24, 12.289],
-        "target": [152, 3.15, 0],
+        "pos": [154.1504, 6.040000000000001, 12.289],
+        "target": [155.50024, 3.15, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8259,7 +8368,7 @@
       {
         "duration": 1.2,
         "pos": [169.1168, 5, 13.16],
-        "target": [168, 2.51, 0],
+        "target": [171.2, 2.51, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8346,7 +8455,7 @@
       {
         "duration": 1.2,
         "pos": [185.435, 4.51, 7.896],
-        "target": [184.635, 3.456, 0],
+        "target": [188.089, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8381,36 +8490,36 @@
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [192.9, 1.1, 2.5],
-        "target": [192, 1.32, 0],
-        "fov": 46,
+        "target": [192, 1.7999999999999998, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.658947160061666,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [194.17, 1.1, 2.5],
-        "target": [193.27, 2.64, 0],
-        "fov": 46,
+        "target": [193.27, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [194.02, 0.22, 1.3],
-        "target": [193.27, 4.32, 0],
+        "pos": [194.2156, 0.22, 1.3],
+        "target": [193.4656, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -8418,14 +8527,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 12
       },
       {
         "duration": 2.4,
-        "pos": [193.2, 3.64, 5.971],
-        "target": [192, 1.92, 0],
+        "pos": [193.5912, 4.44, 5.971],
+        "target": [192.3912, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,

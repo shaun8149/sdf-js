@@ -44,7 +44,8 @@ const IR = { structure: 'magnitude', title: 'T', nodes: ['a', 'b', 'c'], magnitu
   const track = s.cameraSequence.shots[2]; // first tracking beat
   ok(near(track.duration, orig + 0.4), 'changing TEMPO.beatHold re-derives the walk rhythm');
   // reveals ride the same clock — the label must still land on its beat
-  const firstReveal = s.overlay.find((o) => o.revealAt != null);
+  // (role filter: the R1 insight panel reveals at payoff, not on the walk)
+  const firstReveal = s.overlay.find((o) => o.role === 'screen' && o.revealAt != null);
   ok(
     near(firstReveal.revealAt, TEMPO.hero + TEMPO.crane + 0.35),
     'reveal times re-derive from the same tokens (labels stay on beat)',

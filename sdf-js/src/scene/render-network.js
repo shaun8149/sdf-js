@@ -132,7 +132,7 @@ const nodeMatN = (deg, maxDeg, emphasized, accent) => {
 const EDGE_MAT = {
   hue: 0.58,
   sat: 0.25,
-  value: 0.8,
+  value: 0.55, // R1: wiring must never outshine the stars
   glow: 0.08, // faint circuit glow — the wiring reads as live
   kind: 'normal',
   roughness: 0.6, // thin pipes: silhouette-heavy, reflection-invisible
@@ -189,7 +189,7 @@ export function renderNetwork(ir, opts = {}) {
       args: {
         a: [0, 0, 0],
         b: [pos[b][0] - pa[0], pos[b][1] - pa[1], pos[b][2] - pa[2]],
-        radius: 0.06,
+        radius: 0.045, // R1: thinner — the stars own the frame
       },
       transform: { translate: pa },
       material: EDGE_MAT,
@@ -223,7 +223,7 @@ export function renderNetwork(ir, opts = {}) {
           translate: [Math.cos(a) * rXZ * shell, 2.2 + y * shell * 0.55, Math.sin(a) * rXZ * shell],
           rotate: [0, (d * 0.9) % 3.1, 0],
         },
-        material: { hue: 0.62, sat: 0.2, value: 0.3, kind: 'normal', roughness: 0.5 },
+        material: { hue: 0.62, sat: 0.2, value: 0.18, kind: 'normal', roughness: 0.5 }, // R1: near-black dust, not floating bricks
         animation: [
           {
             channel: 'transform.translate.y',
