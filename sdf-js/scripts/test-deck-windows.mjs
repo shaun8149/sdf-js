@@ -42,7 +42,7 @@ ok(wins[5].stations.join(',') === '0,1,2', 'finale window carries all stations')
 
 // ---- slicing ------------------------------------------------------------------
 const sliceOf = (i) => sliceDeckWindow(scene, wins[i]);
-const stationIds = (s, k) => s.subjects.filter((x) => x.id && x.id.startsWith(`s${k}-`)).length;
+const stationIds = (s, k) => s.subjects.filter((x) => x.collection === `station-${k}`).length;
 {
   const s1 = sliceOf(2); // station window of slide 1
   ok(stationIds(s1, 1) > 0, 'station slice keeps its own subjects');
@@ -56,7 +56,7 @@ const stationIds = (s, k) => s.subjects.filter((x) => x.id && x.id.startsWith(`s
   ok(stationIds(tr, 0) > 0 && stationIds(tr, 1) > 0, 'transit slice keeps both endpoint stations');
   ok(stationIds(tr, 2) === 0, 'transit slice drops the far station');
   ok(
-    tr.subjects.some((x) => x.id && x.id.startsWith('path-0-')),
+    tr.subjects.some((x) => x.collection === 'path-0'),
     'transit slice keeps the breadcrumb path it flies over',
   );
 }
@@ -64,8 +64,7 @@ ok(sliceOf(5).subjects.length === scene.subjects.length, 'finale slice is the fu
 
 // ---- horizon-hill trimming (super-linear shader cost: every leaf counts) ------
 {
-  const hills = (s) =>
-    s.subjects.filter((x) => typeof x.id === 'string' && x.id.startsWith('horizon-'));
+  const hills = (s) => s.subjects.filter((x) => x.collection === 'horizon');
   const fullHills = hills(scene).length;
   ok(fullHills > 7, `full deck rings ${fullHills} monoliths (needs trimming to matter)`);
   // ambience tiers: data stations trim the skyline hard (focus on the data),
@@ -142,7 +141,8 @@ for (let i = 0; i < wins.length; i++) {
   ok(chips.length > 0, 'value chips carry the station accent color');
   const stationHues = new Set();
   for (const sub of sc.subjects) {
-    const m = /^s(\d+)-mono-1$/.exec(sub.id || '');
+    if (!/-mono-1$/.test(sub.id || '')) continue; // id = identity...
+    const m = /^station-(\d+)$/.exec(sub.collection || ''); // ...collection = whose
     if (m) stationHues.add(`${m[1]}:${matOf(sc, sub).hue.toFixed(3)}`);
   }
   const hues = [...stationHues].map((x) => x.split(':')[1]);

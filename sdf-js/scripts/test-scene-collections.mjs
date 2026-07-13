@@ -17,7 +17,7 @@ let pass = 0,
 const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console.log(`  ✗ ${n}`)));
 console.log('=== scene collections + material registry (Wave A) ===\n');
 
-// ---- semantic equivalence: collections vs legacy regex --------------------------
+// ---- collections are the ONLY routing channel (Wave A2: legacy regex gone) ------
 for (const layout of ['radial', 'courtyard']) {
   const scene = assembleDeck(DECK, { layout });
   ok(!!scene.collections && !!scene.materials, `${layout}: collections + materials emitted`);
@@ -27,27 +27,29 @@ for (const layout of ['radial', 'courtyard']) {
     ),
     `${layout}: every subject carries a registered collection`,
   );
-  // strip collections/tags → the slicer falls back to the legacy regex path
-  const legacy = {
+  // a scene without a collections registry has no routing data — sliceDeckWindow
+  // passes it through whole rather than guessing from id strings (Wave A2
+  // contract: ids are pure identity, never routing)
+  const bare = { ...scene, collections: undefined };
+  const win = scene.deckWindows.find((w) => w.kind === 'station');
+  ok(
+    sliceDeckWindow(bare, win).subjects.length === scene.subjects.length,
+    `${layout}: no registry → whole world passes through (ids never route)`,
+  );
+  // routing really flows from the TAG, not the id: retag one station subject
+  // to a far station and it must leave its home window
+  const sliced = sliceDeckWindow(scene, win).subjects.map((s) => s.id);
+  const victim = scene.subjects.find((s) => s.collection === `station-${win.stations[0]}`);
+  const lastStation = `station-${DECK.slides.length - 1}`;
+  const retagged = {
     ...scene,
-    collections: undefined,
-    subjects: scene.subjects.map((s) => ({ ...s, collection: undefined })),
+    subjects: scene.subjects.map((s) => (s === victim ? { ...s, collection: lastStation } : s)),
   };
-  let identical = true;
-  for (const win of scene.deckWindows) {
-    const a = sliceDeckWindow(scene, win)
-      .subjects.map((s) => s.id)
-      .join('|');
-    const b = sliceDeckWindow(legacy, win)
-      .subjects.map((s) => s.id)
-      .join('|');
-    if (a !== b) {
-      identical = false;
-      console.log(`    ✗ window ${win.kind}[${win.stations}] diverges`);
-      break;
-    }
-  }
-  ok(identical, `${layout}: collection slicing ≡ legacy regex slicing (every window)`);
+  const slicedRetag = sliceDeckWindow(retagged, win).subjects.map((s) => s.id);
+  ok(
+    sliced.includes(victim.id) && !slicedRetag.includes(victim.id),
+    `${layout}: retagging a subject moves it between windows (tag routes, id doesn't)`,
+  );
 }
 
 // ---- material registry round-trip ------------------------------------------------

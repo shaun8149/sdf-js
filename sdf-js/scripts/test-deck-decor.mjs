@@ -69,9 +69,9 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   const origins = new Map(
     scene.deckWindows.filter((w) => w.kind === 'station').map((w) => [w.stations[0], w.origin]),
   );
-  const stelae = decor.filter((s) => /^s\d+-decor-stela-/.test(s.id));
+  const stelae = decor.filter((s) => /-decor-stela-/.test(s.id));
   const inBand = stelae.every((s) => {
-    const k = Number(/^s(\d+)-/.exec(s.id)[1]);
+    const k = Number(/^station-(\d+)$/.exec(s.collection)[1]);
     const o = origins.get(k);
     const t = s.transform.translate;
     const r = Math.hypot(t[0] - o[0], t[2] - o[2]);
@@ -87,7 +87,7 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   const sliced = sliceDeckWindow(scene, stWin);
   const decorIn = sliced.subjects.filter((x) => /-decor-/.test(x.id));
   ok(
-    decorIn.every((x) => x.id.startsWith('s3-decor-') || x.id.startsWith('path-3-decor-')),
+    decorIn.every((x) => x.collection === 'station-3' || x.collection === 'path-3'),
     'station window carries only its own decor + the OUTGOING inlay (continuity: the world ahead never pops in)',
   );
   ok(
@@ -96,14 +96,18 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   );
   const trWin = scene.deckWindows.find((w) => w.kind === 'transit');
   const trSliced = sliceDeckWindow(scene, trWin);
-  const trDecor = trSliced.subjects.filter((x) => /^path-\d+-decor-/.test(x.id));
+  const trDecor = trSliced.subjects.filter(
+    (x) => /-decor-/.test(x.id) && (x.collection || '').startsWith('path-'),
+  );
   ok(
     trDecor.length > 0 && trDecor.length <= SEGMENT_DECOR_MAX,
     `transit window carries its inlay, ≤ cap (${trDecor.length}/${SEGMENT_DECOR_MAX})`,
   );
-  const trStelae = trSliced.subjects.filter((x) => /^s\d+-decor-/.test(x.id));
+  const trStelae = trSliced.subjects.filter(
+    (x) => /-decor-stela-/.test(x.id) && (x.collection || '').startsWith('station-'),
+  );
   ok(
-    trStelae.every((x) => /^s(0|1)-/.test(x.id)),
+    trStelae.every((x) => x.collection === 'station-0' || x.collection === 'station-1'),
     'transit window stelae limited to its two endpoint stations',
   );
 }

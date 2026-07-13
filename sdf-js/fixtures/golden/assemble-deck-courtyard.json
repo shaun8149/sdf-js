@@ -849,6 +849,7 @@
     },
     {
       "id": "path-0-runway",
+      "collection": "path-0",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -864,8 +865,7 @@
         "translate": [0.8950805849013479, 0.03, 4.884296673803914],
         "rotate": [0, -1.3895505967801007, 0]
       },
-      "material": "mat-1",
-      "collection": "path-0"
+      "material": "mat-1"
     },
     {
       "id": "s1-dome",
@@ -1067,6 +1067,7 @@
     },
     {
       "id": "path-1-runway",
+      "collection": "path-1",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1082,8 +1083,7 @@
         "translate": [10.294569658420123, 0.03, 37.09259931181325],
         "rotate": [0, 0.5638756044904756, 0]
       },
-      "material": "mat-1",
-      "collection": "path-1"
+      "material": "mat-1"
     },
     {
       "id": "s2-plinth-0",
@@ -1338,6 +1338,7 @@
     },
     {
       "id": "path-2-runway",
+      "collection": "path-2",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1353,8 +1354,7 @@
         "translate": [33.047333187820946, 0.03, 21.408683636555395],
         "rotate": [0, 1.1478896234270402, 0]
       },
-      "material": "mat-1",
-      "collection": "path-2"
+      "material": "mat-1"
     },
     {
       "id": "s3-plinth-0",
@@ -1609,6 +1609,7 @@
     },
     {
       "id": "path-3-runway",
+      "collection": "path-3",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1624,8 +1625,7 @@
         "translate": [38.79435634712679, 0.03, 6.7420977068794805],
         "rotate": [0, 1.5506579123488082, 0]
       },
-      "material": "mat-1",
-      "collection": "path-3"
+      "material": "mat-1"
     },
     {
       "id": "s4-plinth-0",
@@ -1880,6 +1880,7 @@
     },
     {
       "id": "path-4-runway",
+      "collection": "path-4",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1895,8 +1896,7 @@
         "translate": [38.33268755084281, 0.03, -9.003501041618552],
         "rotate": [0, 1.9534262012705768, 0]
       },
-      "material": "mat-1",
-      "collection": "path-4"
+      "material": "mat-1"
     },
     {
       "id": "s5-plinth-0",
@@ -2151,6 +2151,7 @@
     },
     {
       "id": "path-5-runway",
+      "collection": "path-5",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -2166,8 +2167,7 @@
         "translate": [31.73621278681703, 0.03, -23.30816946537924],
         "rotate": [0, 2.3561944901923444, 0]
       },
-      "material": "mat-1",
-      "collection": "path-5"
+      "material": "mat-1"
     },
     {
       "id": "s6-past-0",
@@ -2381,6 +2381,7 @@
     },
     {
       "id": "path-6-runway",
+      "collection": "path-6",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -2396,8 +2397,7 @@
         "translate": [18.270478046262486, 0.03, -33.88257251331183],
         "rotate": [0, 2.940208509128909, 0]
       },
-      "material": "mat-1",
-      "collection": "path-6"
+      "material": "mat-1"
     },
     {
       "id": "s7-net-node-0",
@@ -3181,6 +3181,7 @@
     },
     {
       "id": "path-7-runway",
+      "collection": "path-7",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3196,8 +3197,7 @@
         "translate": [-9.003501041618552, 0.03, -38.33268755084281],
         "rotate": [0, -2.758962779114113, 0]
       },
-      "material": "mat-1",
-      "collection": "path-7"
+      "material": "mat-1"
     },
     {
       "id": "s8-stage-0",
@@ -3285,6 +3285,7 @@
     },
     {
       "id": "path-8-runway",
+      "collection": "path-8",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3300,8 +3301,7 @@
         "translate": [-23.30816946537925, 0.03, -31.736212786817028],
         "rotate": [0, -2.356194490192345, 0]
       },
-      "material": "mat-1",
-      "collection": "path-8"
+      "material": "mat-1"
     },
     {
       "id": "s9-plinth-0",
@@ -3588,6 +3588,7 @@
     },
     {
       "id": "path-9-runway",
+      "collection": "path-9",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3603,8 +3604,7 @@
         "translate": [-33.88257251331182, 0.03, -18.270478046262486],
         "rotate": [0, -1.772180471255781, 0]
       },
-      "material": "mat-1",
-      "collection": "path-9"
+      "material": "mat-1"
     },
     {
       "id": "s10-node-0",
@@ -3791,6 +3791,7 @@
     },
     {
       "id": "path-10-runway",
+      "collection": "path-10",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3806,8 +3807,7 @@
         "translate": [-38.33268755084281, 0.03, 9.003501041618552],
         "rotate": [0, -1.1881664523192166, 0]
       },
-      "material": "mat-1",
-      "collection": "path-10"
+      "material": "mat-1"
     },
     {
       "id": "s11-backboard",
@@ -4028,6 +4028,7 @@
     },
     {
       "id": "path-11-runway",
+      "collection": "path-11",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -4043,8 +4044,7 @@
         "translate": [-31.736212786817017, 0.03, 23.308169465379265],
         "rotate": [0, -0.7853981633974475, 0]
       },
-      "material": "mat-1",
-      "collection": "path-11"
+      "material": "mat-1"
     },
     {
       "id": "s12-plinth-0",

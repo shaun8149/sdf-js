@@ -50,8 +50,9 @@ const deck = JSON.parse(
 
   // subjects: sum of stations (prefixed) + breadcrumb path markers between them
   const expected = stations.reduce((s, st) => s + st.subjects.length, 0);
-  const stationSubjects = scene.subjects.filter((s) => /^s\d+-/.test(s.id));
-  const pathMarkers = scene.subjects.filter((s) => /^path-/.test(s.id));
+  const col = (s) => s.collection || '';
+  const stationSubjects = scene.subjects.filter((s) => col(s).startsWith('station-'));
+  const pathMarkers = scene.subjects.filter((s) => col(s).startsWith('path-'));
   ok(stationSubjects.length === expected, `all station subjects present (${expected})`);
   // Wave B: each gap is ONE runway subject carrying an array modifier (the
   // seven strips are expansion-time instances, not authored subjects)
@@ -63,25 +64,20 @@ const deck = JSON.parse(
     'breadcrumb runway = 1 subject × array(7) per gap (Wave B)',
   );
   ok(
-    scene.subjects.filter((s) => s.id.startsWith('horizon-')).length === 14,
+    scene.subjects.filter((s) => col(s) === 'horizon').length === 14,
     'default world gets the horizon silhouette ring',
   );
   ok(
-    scene.subjects.every(
-      (s) => /^s\d+-/.test(s.id) || /^path-/.test(s.id) || /^horizon-/.test(s.id),
-    ),
-    'ids prefixed per station (no collisions)',
+    scene.subjects.every((s) => col(s) && scene.collections[col(s)]),
+    'every subject carries a registered collection (Wave A2: routing is data)',
   );
-  const xOf = (pfx) => {
+  const xOf = (k) => {
     const xs = scene.subjects
-      .filter((s) => s.id.startsWith(pfx))
+      .filter((s) => col(s) === `station-${k}`)
       .map((s) => s.transform.translate[0]);
     return xs.reduce((a, b) => a + b, 0) / xs.length;
   };
-  ok(
-    xOf('s1-') - xOf('s0-') > 10 && xOf('s2-') - xOf('s1-') > 10,
-    'stations spaced along the deck axis',
-  );
+  ok(xOf(1) - xOf(0) > 10 && xOf(2) - xOf(1) > 10, 'stations spaced along the deck axis');
 
   // camera: all station shots + one transit between each pair + the deck finale
   const shotCount =
@@ -147,7 +143,7 @@ const deck = JSON.parse(
   const grid = assembleDeck(JSON.parse(JSON.stringify(deck)), { layout: 'grid' });
   const zs = new Set(
     grid.subjects
-      .filter((s) => /^s\d+-/.test(s.id))
+      .filter((s) => (s.collection || '').startsWith('station-'))
       .map((s) => Math.round(s.transform.translate[2] / 8)),
   );
   ok(zs.size >= 2, 'grid: stations occupy multiple rows');
@@ -156,7 +152,9 @@ const deck = JSON.parse(
   // deck.layout field is honored; opts.layout overrides
   const viaField = assembleDeck({ ...JSON.parse(JSON.stringify(deck)), layout: 'radial' });
   ok(
-    viaField.subjects.some((s) => /^s\d+-/.test(s.id) && Math.abs(s.transform.translate[2]) > 5),
+    viaField.subjects.some(
+      (s) => (s.collection || '').startsWith('station-') && Math.abs(s.transform.translate[2]) > 5,
+    ),
     'deck.layout field honored',
   );
 }
