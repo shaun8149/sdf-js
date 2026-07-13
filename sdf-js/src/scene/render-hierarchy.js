@@ -204,17 +204,21 @@ export function renderHierarchy(ir, opts = {}) {
       ease: 'smooth',
     });
   }
-  // 4 — the super: hard cut punch-in on the emphasis node
+  // 4 — the super: punch-in on the emphasis node. R5: the old 1.6-unit punch
+  // landed INSIDE the crown — the root smeared across the frame top and the
+  // camera stared at empty floor. Back off with the node's own radius so the
+  // subject (sphere + its card below) composes as a subject.
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
+  const superDist = 2.6 + nodeR(emphasisIdx) * 2.2;
   shots.push({
     duration: 1.0,
-    pos: [gp[0] + 0.5, Math.max(gp[1] - 0.1, 0.14), gp[2] + 1.6],
-    target: [gp[0], gp[1] + 0.08, gp[2]],
-    fov: 40,
+    pos: [gp[0] + 0.7, Math.max(gp[1] - 0.35, 0.14), gp[2] + superDist],
+    target: [gp[0], gp[1] - 0.1, gp[2]],
+    fov: 42,
     transition: 'cut',
     beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
-    focalDistance: 1.7,
+    focalDistance: superDist,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.2, 1.0],
