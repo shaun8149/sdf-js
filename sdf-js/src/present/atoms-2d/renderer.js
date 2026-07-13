@@ -18,6 +18,7 @@
 import { renderAtom, isAtom2DType } from './registry.js';
 import { drawDecor } from '../decor/registry.js';
 import { alignSceneData } from '../align.js';
+import { applySplitLayout, applyStatementLayout } from './layout.js';
 
 const DEFAULT_PALETTE = {
   bg: [247, 244, 224],
@@ -89,15 +90,31 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     Array.isArray(opts.decorArtStrip) && opts.decorArtStrip.length ? opts.decorArtStrip : null;
   const coverArt = decorArt || (decorArtStrip && decorArtStrip[0]) || null;
   const coverCanvas = !!((decor || coverArt) && isPureCover);
+  // Sprint 95 (版式语法): opts.layout 选择页面骨架 — 'banner' (默认,
+  // 现状) / 'split' (左竖 rail 真迹 + 右正文列) / 'statement' (全幅真迹 +
+  // 居中装裱卡)。两个新版式都需要 art 面 (decor 或 coverArt), 否则静默回
+  // 落 banner — deck.json 几何不动, 重映射只在 paint 时发生。
+  const hasArtSurface = !!(decor || coverArt);
+  const splitCanvas = opts.layout === 'split' && hasArtSurface && !isPureCover;
+  const statementCanvas = opts.layout === 'statement' && hasArtSurface && !isPureCover;
   // Sprint 80 (user: 目录页把图案做到标题栏, 不要放正文): agenda / section
   // pages run the cover-canvas pipeline INSIDE their title banner (the
   // banner is a 'cover' atom with its own bounds) — ink ground → artwork →
   // overlay type, clipped to the band. The BODY stays clean: no under-decor.
-  const bannerCanvas = !!(
-    (decor || coverArt) &&
-    !isPureCover &&
-    (role === 'agenda' || role === 'section')
-  );
+  const bannerCanvas =
+    !splitCanvas &&
+    !statementCanvas &&
+    !!((decor || coverArt) && !isPureCover && (role === 'agenda' || role === 'section'));
+  let statementKicker = '';
+  let statementCard = null;
+  if (splitCanvas) {
+    subjects = applySplitLayout({ ...aligned, subjects }, canvas.width, canvas.height).subjects;
+  } else if (statementCanvas) {
+    const st = applyStatementLayout({ ...aligned, subjects }, canvas.width, canvas.height);
+    subjects = st.sceneData.subjects;
+    statementKicker = st.kicker;
+    statementCard = st.card;
+  }
   const drawArtCover = (img, dx, dy, dw, dh) => {
     const iw = img.width || img.videoWidth || 1;
     const ih = img.height || img.videoHeight || 1;
@@ -149,10 +166,16 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       });
     }
   }
+  // Sprint 95: statement 全幅真迹之下 underlay 无意义, 恒跳过; split 与
+  // banner 同律 — art 面已在 rail, 正文默认干净, decorUnder 显式请求才画。
   // Sprint 84: mounted pages can ask for the subtle body underlay TOO
   // (opts.decorUnder) — banner art + body elements in the mount's palette,
   // instead of clean-but-voiceless content pages.
-  const wantUnder = bannerCanvas ? opts.decorUnder === true : !coverArt && !bannerCanvas;
+  const wantUnder = statementCanvas
+    ? false
+    : bannerCanvas || splitCanvas
+      ? opts.decorUnder === true
+      : !coverArt && !bannerCanvas;
   if (decor && !isPureCover && wantUnder) {
     drawDecor(ctx, decor, {
       palette,
@@ -170,7 +193,8 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // carry the page. opts.bannerTitle overrides everything when provided.
   let bannerTitle = opts.bannerTitle || null;
   let bannerSubtitle = opts.bannerSubtitle || null;
-  if (bannerCanvas) {
+  // Sprint 95: split 的 rail 标题与 banner 同享 hoist/查重/小字剥除文法
+  if (bannerCanvas || splitCanvas) {
     subjects = subjects.slice(); // never mutate the caller's array
     const coverSub = subjects.find((c2) => c2 && c2.type === 'cover');
     const refTitle = String(opts.bannerTitle || coverSub?.args?.title || '').replace(/\s/g, '');
@@ -210,6 +234,46 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
     }
   }
 
+  // Sprint 95 statement: 作品即页面 — 全幅真迹 + 居中装裱卡 (paper 底 +
+  // 投影 + accent 短划 + kicker 小字 = 美术馆标牌), 正文 atom 已被
+  // applyStatementLayout 收进卡内。
+  if (statementCanvas) {
+    if (coverArt) {
+      drawArtCover(coverArt, 0, 0, canvas.width, canvas.height);
+    } else {
+      const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
+      ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawDecor(ctx, decor, {
+        palette,
+        x: 0,
+        y: 0,
+        w: canvas.width,
+        h: canvas.height,
+        intensity: decor.intensity || 'artwork',
+      });
+    }
+    const c = statementCard;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 8;
+    ctx.fillStyle = rgbCss(palette.bg);
+    ctx.fillRect(c.x, c.y, c.w, c.h);
+    ctx.restore();
+    if (statementKicker) {
+      const ink = palette.silhouetteColor || [30, 27, 30];
+      ctx.fillStyle = rgbCss(palette.accent || (palette.colors && palette.colors[0]) || ink);
+      ctx.fillRect(c.x + c.w / 2 - 24, c.y + 30, 48, 3);
+      ctx.fillStyle = rgbaCss(ink, 0.75);
+      ctx.font = '700 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(statementKicker, c.x + c.w / 2, c.y + 44);
+      ctx.textAlign = 'left';
+    }
+  }
+
   let rendered = 0;
   let skipped = 0;
   const errors = [];
@@ -225,8 +289,10 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       skipped++;
       continue;
     }
-    const isBannerAtom = bannerCanvas && s.type === 'cover';
+    const isBannerAtom = (bannerCanvas || splitCanvas) && s.type === 'cover';
     if (isBannerAtom) {
+      // split: cover 主体即左 rail (applySplitLayout 已置 0,0,railW,H) —
+      // 竖幅 cover-fit 裁绘, 大画布优先, 无变体时退 strip 首件 / decor 引擎
       // mini cover-canvas clipped to the banner band
       const bx = s.x ?? 0;
       const by = s.y ?? 0;
@@ -242,7 +308,9 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
         // remains only as a fallback when no large exists
         drawArtCover(decorArt, bx, by, bw, bh);
       } else if (decorArtStrip) {
-        drawArtStrip(bx, by, bw, bh);
+        // 竖 rail 不适合横向胶片条 — 取首件小画布 cover-fit 竖裁
+        if (splitCanvas) drawArtCover(decorArtStrip[0], bx, by, bw, bh);
+        else drawArtStrip(bx, by, bw, bh);
       } else {
         const ink = (palette.silhouetteColor || [30, 27, 30]).map((c) => Math.round(c * 0.3));
         ctx.fillStyle = `rgb(${ink[0]}, ${ink[1]}, ${ink[2]})`;

@@ -25,6 +25,7 @@ import {
   mountPaletteOverride,
   mountUnderlayDecor,
 } from '../../src/present/art-mount.js';
+import { layoutForSlot } from '../../src/present/atoms-2d/layout.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
 import { exportDeckToPPTX } from '../../src/present/exporters/pptx.js';
 import { exportDeckToPDF } from '../../src/present/exporters/pdf.js';
@@ -279,6 +280,8 @@ function slotRenderOpts(theme, deck, slot) {
     palette: slotPalette(theme, slot),
     decor: slotDecor(deck, slot),
     decorRole: slotRoleOf(slot),
+    // Sprint 95: 版式语法 — 按内容形状调度 banner/split/statement
+    layout: layoutForSlot(slot, slot.sceneData),
   };
   if (artMount && decorVisEl.value !== 'off') {
     Object.assign(base, artMountOpts(artMount, slot, slotRoleOf(slot)) || {});

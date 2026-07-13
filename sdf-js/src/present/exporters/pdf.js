@@ -12,6 +12,7 @@
 import { renderSceneDataToCanvas } from '../atoms-2d/renderer.js';
 import { slotPalette, slotRoleOf } from '../retheme.js';
 import { artMountOpts, mountPaletteOverride, mountUnderlayDecor } from '../art-mount.js';
+import { layoutForSlot } from '../atoms-2d/layout.js';
 
 const JSPDF_CDN = 'https://esm.sh/jspdf@2.5.2';
 let jsPDF = null;
@@ -73,6 +74,7 @@ export async function exportDeckToPDF(deck, opts = {}) {
           ? mountPaletteOverride(slotPalette(deck.theme, slot), opts.artMount)
           : slotPalette(deck.theme, slot),
         decorRole: slotRoleOf(slot),
+        layout: layoutForSlot(slot, slot.sceneData),
         decor: deck.decor
           ? (opts.artMount ? mountUnderlayDecor : (d) => d)(
               { ...deck.decor, seed: (deck.decor.seed ?? 1) + slot.slotIdx },
