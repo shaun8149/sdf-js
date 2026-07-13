@@ -59,10 +59,14 @@ export function attachDeckWindows(
 
   // Window index → ground-unioned SDF. Compiled lazily (CPU-side, ~ms each);
   // the GPU program for each SDF lives in studio's programCache.
+  // Raymarch tiers take the LITE finale (heroes as proxies too — the hero-real
+  // finale sits on a D3D/ANGLE compile cliff, ~104s measured); analytic keeps
+  // heroes real for the money shot's composition.
+  const sliceOpts = { finaleLite: !!compileOpts.lowerRepeats };
   const sdfCache = new Map();
   const sdfFor = (i) => {
     if (!sdfCache.has(i)) {
-      const slice = sliceDeckWindow(scene, windows[i]);
+      const slice = sliceDeckWindow(scene, windows[i], sliceOpts);
       if (compileOpts.lowerRepeats && i > 0) {
         const n = expandModifiers(slice, { lower: true }).subjects.length;
         if (n > RAYMARCH_WINDOW_CAP) {

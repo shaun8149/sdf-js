@@ -60,7 +60,35 @@ const stationIds = (s, k) => s.subjects.filter((x) => x.collection === `station-
     'transit slice keeps the breadcrumb path it flies over',
   );
 }
-ok(sliceOf(5).subjects.length === scene.subjects.length, 'finale slice is the full world');
+{
+  // finale-LOD: the money shot keeps the ANCHOR station real (the camera
+  // rises from it — nothing swaps in front of the lens) and stands proxies
+  // in for every other station; runways + dressing stay, proxies never leak
+  // into normal windows.
+  const fin = sliceOf(5);
+  ok(fin.subjects.length < scene.subjects.length, 'finale slice is lighter than the full world');
+  ok(wins[5].anchor === 2, 'finale anchor = last station');
+  ok(stationIds(fin, 2) > 0, 'finale keeps the anchor station real');
+  ok(stationIds(fin, 0) === 0 && stationIds(fin, 1) === 0, 'far-station content leaves the finale');
+  const proxies = fin.subjects.filter((x) => (x.collection || '').startsWith('proxy-'));
+  ok(
+    proxies
+      .map((x) => x.collection)
+      .sort()
+      .join(',') === 'proxy-0,proxy-1',
+    'every non-anchor station stands as a silhouette proxy',
+  );
+  ok(
+    fin.subjects.some((x) => x.collection === 'path-0'),
+    'runways stay in the finale (the world lines)',
+  );
+  ok(
+    [0, 1, 2, 3, 4].every(
+      (i) => !sliceOf(i).subjects.some((x) => (x.collection || '').startsWith('proxy-')),
+    ),
+    'proxies never appear in normal windows',
+  );
+}
 
 // ---- horizon-hill trimming (super-linear shader cost: every leaf counts) ------
 {
