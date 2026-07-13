@@ -80,7 +80,7 @@ const stations = new Map(
 
 // ---- massing: budget conservation + never distance-culled -----------------------
 {
-  const massing = scene.subjects.filter((s) => s.id.startsWith('massing-'));
+  const massing = scene.subjects.filter((s) => s.collection === 'massing');
   ok(
     massing.length === DECK.zones.length * 2 + 3,
     `1 hull + 1 tower per chapter + 3 world-heart proxies (${massing.length})`,
@@ -105,9 +105,9 @@ const stations = new Map(
   );
   const stWin = scene.deckWindows.find((w) => w.kind === 'station' && w.stations[0] === 3);
   const sliced = sliceDeckWindow(scene, stWin);
-  const keptMassing = sliced.subjects.filter((s) => s.id.startsWith('massing-'));
+  const keptMassing = sliced.subjects.filter((s) => s.collection === 'massing');
   ok(keptMassing.length === massing.length, 'station window keeps ALL massing (never culled)');
-  const hills = sliced.subjects.filter((s) => s.id.startsWith('horizon-'));
+  const hills = sliced.subjects.filter((s) => s.collection === 'horizon');
   ok(hills.length === 0, `slab quota yields to massing (slabs=${hills.length}, conservation)`);
   ok(
     massing

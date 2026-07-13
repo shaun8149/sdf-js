@@ -840,6 +840,7 @@
     },
     {
       "id": "path-0-runway",
+      "collection": "path-0",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -855,8 +856,7 @@
         "translate": [2, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-0"
+      "material": "mat-1"
     },
     {
       "id": "s1-dome",
@@ -1058,6 +1058,7 @@
     },
     {
       "id": "path-1-runway",
+      "collection": "path-1",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1073,8 +1074,7 @@
         "translate": [18, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-1"
+      "material": "mat-1"
     },
     {
       "id": "s2-plinth-0",
@@ -1329,6 +1329,7 @@
     },
     {
       "id": "path-2-runway",
+      "collection": "path-2",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1344,8 +1345,7 @@
         "translate": [34, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-2"
+      "material": "mat-1"
     },
     {
       "id": "s3-plinth-0",
@@ -1600,6 +1600,7 @@
     },
     {
       "id": "path-3-runway",
+      "collection": "path-3",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1615,8 +1616,7 @@
         "translate": [50, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-3"
+      "material": "mat-1"
     },
     {
       "id": "s4-plinth-0",
@@ -1871,6 +1871,7 @@
     },
     {
       "id": "path-4-runway",
+      "collection": "path-4",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -1886,8 +1887,7 @@
         "translate": [66, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-4"
+      "material": "mat-1"
     },
     {
       "id": "s5-plinth-0",
@@ -2142,6 +2142,7 @@
     },
     {
       "id": "path-5-runway",
+      "collection": "path-5",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -2157,8 +2158,7 @@
         "translate": [82, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-5"
+      "material": "mat-1"
     },
     {
       "id": "s6-past-0",
@@ -2372,6 +2372,7 @@
     },
     {
       "id": "path-6-runway",
+      "collection": "path-6",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -2387,8 +2388,7 @@
         "translate": [98, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-6"
+      "material": "mat-1"
     },
     {
       "id": "s7-net-node-0",
@@ -3172,6 +3172,7 @@
     },
     {
       "id": "path-7-runway",
+      "collection": "path-7",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3187,8 +3188,7 @@
         "translate": [114, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-7"
+      "material": "mat-1"
     },
     {
       "id": "s8-stage-0",
@@ -3276,6 +3276,7 @@
     },
     {
       "id": "path-8-runway",
+      "collection": "path-8",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3291,8 +3292,7 @@
         "translate": [130, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-8"
+      "material": "mat-1"
     },
     {
       "id": "s9-plinth-0",
@@ -3579,6 +3579,7 @@
     },
     {
       "id": "path-9-runway",
+      "collection": "path-9",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3594,8 +3595,7 @@
         "translate": [146, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-9"
+      "material": "mat-1"
     },
     {
       "id": "s10-node-0",
@@ -3782,6 +3782,7 @@
     },
     {
       "id": "path-10-runway",
+      "collection": "path-10",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -3797,8 +3798,7 @@
         "translate": [162, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-10"
+      "material": "mat-1"
     },
     {
       "id": "s11-backboard",
@@ -4019,6 +4019,7 @@
     },
     {
       "id": "path-11-runway",
+      "collection": "path-11",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
@@ -4034,8 +4035,7 @@
         "translate": [178, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-1",
-      "collection": "path-11"
+      "material": "mat-1"
     },
     {
       "id": "s12-plinth-0",
