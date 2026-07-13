@@ -153,9 +153,9 @@ export function renderMagnitude(ir, opts = {}) {
         args: { dims: [0.9, gh, 0.5] },
         transform: {
           translate: [
-            side * (rowSpanG / 2 + (fg ? 3.4 : 2.6 + g * 1.4)),
+            side * (rowSpanG / 2 + (fg ? 4.6 : 2.6 + g * 1.4)), // R3: 3.4/z1.7 smeared bokeh blobs onto the columns at payoff
             gh / 2,
-            fg ? 1.7 : -2.4 - g * 2.2,
+            fg ? 1.2 : -2.4 - g * 2.2,
           ],
           rotate: [0, side * 0.3, 0],
         },
@@ -294,16 +294,19 @@ export function renderMagnitude(ir, opts = {}) {
       hideAt: insight ? payoffStart + 0.4 : undefined,
     });
   }
+  // R3: SHORT axis labels (years, category codes ≤6 chars) bind to the WORLD
+  // at the plinth's front edge — a 2D bar chart's year sits under its bar, and
+  // the subtitle-column mapping made readers count rows. Sentences still go to
+  // the subtitle column.
+  const shortAxis = nodes.every((n) => String(n).trim().length <= 6);
   order.forEach((i, k) => {
     const x = xOf(i);
     const H = height(i);
     const revealAt = introLead + k * holdEach + 0.35;
     overlay.push({
-      // node names are SPOKEN text → the stage layer's subtitle column; the
-      // camera reaches monolith k as its name lights up (time binds them)
       text: nodes[i],
-      anchor: [x, -0.02, W * 0.5 + 0.35],
-      role: 'screen',
+      anchor: [x, -0.02, W * 0.5 + (shortAxis ? 0.6 : 0.35)],
+      role: shortAxis ? 'card' : 'screen',
       revealAt,
     });
     overlay.push({

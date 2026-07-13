@@ -386,6 +386,7 @@ export function assembleDeck(deck, opts = {}) {
             text: String(ch.title),
             sub: ch.note ? String(ch.note) : undefined,
             role: 'insight',
+            panel: 'center', // R3: the chapter card owns the mid-frame void, not the destination's corner
             revealAt: clock + 0.15,
             hideAt: clock + dur,
           });
@@ -433,9 +434,9 @@ export function assembleDeck(deck, opts = {}) {
         // without one clear at the station's end (transit flies clean)
         ...(o.hideAt != null
           ? { hideAt: o.hideAt + clock }
-          : o.role === 'title' || o.role === 'screen' || o.role === 'insight'
-            ? { hideAt: stationEnd }
-            : {}),
+          : o.role === 'card' || o.role === 'value'
+            ? { hideAt: stationEnd + 0.4 } // R3: cards/values lingered into the transit flight
+            : { hideAt: stationEnd }),
         // the DOM layer paints in the station's chapter color too: the value
         // chip's fill and the CURRENT subtitle line pick it up
         ...(accCss ? { accentColor: accCss } : {}),
@@ -533,7 +534,7 @@ export function assembleDeck(deck, opts = {}) {
       const dx = next[0] - origin[0];
       const dz = next[2] - origin[2];
       const yaw = Math.atan2(dz, dx); // marker long axis along the segment
-      const dots = 5;
+      const dots = 7; // R3: five chips read as debris; seven make a line
       for (let d = 1; d <= dots; d++) {
         const f = d / (dots + 1);
         subjects.push({
@@ -550,8 +551,8 @@ export function assembleDeck(deck, opts = {}) {
           material: {
             hue: 0.58,
             sat: 0.25,
-            value: 0.7,
-            glow: 0.12,
+            value: 0.85,
+            glow: 0.45, // R3: 0.12 was invisible in the dark field — the runway must READ
             kind: 'normal',
             roughness: 0.5,
             clearcoat: 0.2,
@@ -580,9 +581,24 @@ export function assembleDeck(deck, opts = {}) {
       transition: 'blend',
       aperture: 0.08,
       focalDistance: span * 1.05,
+      // R3 ("停电现场" critique): the thesis frame inherited the stage's
+      // combat dimming and read as a blackout — it gets the overlook's lift
+      ambient: 1.7,
+      exposure: 1.35,
       ease: 'out',
       beat: 'finale', // presenter mode: the money-shot hold
     });
+    // closing card: the deck's last spoken line is its THESIS — it must be
+    // seen, not just heard (deck.finale = { text, sub }, optional metadata)
+    if (deck.finale && deck.finale.text) {
+      overlay.push({
+        text: String(deck.finale.text),
+        sub: deck.finale.sub ? String(deck.finale.sub) : undefined,
+        role: 'insight',
+        panel: 'center',
+        revealAt: clock + 0.5,
+      });
+    }
     windows.push({
       kind: 'finale',
       stations: deck.slides.map((_, i) => i),

@@ -87,7 +87,7 @@
           opacity 0.45s,
           transform 0.45s;
         pointer-events: none;
-        max-width: 44vw;
+        max-width: 36vw;
         z-index: 30;
       }
       .stage-bullet.on {
@@ -137,6 +137,21 @@
           sans-serif;
         color: rgba(255, 255, 255, 0.72);
         letter-spacing: 0.02em;
+      }
+      /* chapter / finale cards: centered in the mid-frame void */
+      .stage-insight.center {
+        right: auto;
+        left: 50%;
+        bottom: 32vh;
+        text-align: center;
+        border-right: none;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.55);
+        padding-right: 0;
+        padding-bottom: 14px;
+        transform: translate(-50%, 10px);
+      }
+      .stage-insight.center.on {
+        transform: translate(-50%, 0);
       }
       /* Boot loader — visible until the first frame is drawn. Pure CSS-transform
          animation so it keeps moving even if the main thread hiccups. */

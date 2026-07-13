@@ -9,6 +9,23 @@
 // end's Rule 24 (derived values cite their parents) applies: the sub line
 // always shows the source numbers the derivation came from.
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
+
+/**
+ * calloutOverlay(ir, superAt, hideAt?) → overlay item | null
+ * ir.callout carries page-critical text the structure can't encode (the
+ * funding ask, the moat line, the server count). Every structure renderer
+ * surfaces it on its SUPER beat through this one helper.
+ */
+export function calloutOverlay(ir, superAt, hideAt) {
+  if (!ir.callout || !ir.callout.text) return null;
+  return {
+    text: String(ir.callout.text),
+    sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+    role: 'insight',
+    revealAt: superAt + 0.25,
+    ...(hideAt != null ? { hideAt } : {}),
+  };
+}
 const disp = (ir, i) => (ir.display && ir.display[i]) || String(ir.magnitude[i]);
 const yearOf = (s) => {
   const m = /^(\d{4})e?$/.exec(String(s).trim());

@@ -20,6 +20,7 @@
 //   4. the SUPER — hard cut punch-in on the hub + shake + exposure pop
 //   5. payoff pull-back — the settled constellation in one frame
 import { validateIR } from './ir.js';
+import { calloutOverlay } from './insights.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
@@ -101,7 +102,7 @@ const nodeMatN = (deg, maxDeg, emphasized, accent) => {
       sat: 0.78,
       value: 0.95,
       metal: 0,
-      glow: 0.22,
+      glow: 0.1,
       kind: 'normal',
       roughness: 0.22,
       clearcoat: 0.6,
@@ -298,7 +299,7 @@ export function renderNetwork(ir, opts = {}) {
     focalDistance: 1.6,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
-    exposure: [1.45, 1.0],
+    exposure: [1.2, 1.0],
     ease: 'out',
   });
   // 5 — payoff pull-back
@@ -331,12 +332,14 @@ export function renderNetwork(ir, opts = {}) {
     const p = pos[i];
     overlay.push({
       text: nodes[i],
-      anchor: [p[0] + nodeR(i) + 0.3, p[1], p[2]],
+      // below the sphere, matching the hierarchy fix — never on the highlight
+      anchor: [p[0], p[1] - nodeR(i) - 0.26, p[2]],
       role: 'card',
-      align: 'left',
       revealAt: nodeT0(i) + 0.6,
     });
   }
+  const co = calloutOverlay(ir, superAt);
+  if (co) overlay.push(co);
 
   return {
     v: 1,

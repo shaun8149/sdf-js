@@ -43,7 +43,7 @@ const GOLD_MAT = {
   hue: 0.11,
   sat: 0.78,
   value: 0.95,
-  glow: 0.22,
+  glow: 0.1,
   kind: 'normal',
   roughness: 0.22,
   clearcoat: 0.6,
@@ -131,7 +131,7 @@ export function renderHold(ir, opts = {}) {
     bullets.forEach((_, k) => {
       const a = PAD + ((Math.PI - 2 * PAD) * (k + 0.5)) / N; // padded sweep, screen left → right
       const x = Math.cos(a) * R;
-      const z = -1.2 + Math.sin(a) * R * 0.85;
+      const z = -1.2 + Math.sin(a) * R * 0.3; // R3: 0.85 depth blew end orbs into frame-clipping balloons
       const drop = 1.6;
       const t0 = introLead + k * holdEach - 0.35;
       const t1 = t0 + 0.55;
@@ -155,7 +155,7 @@ export function renderHold(ir, opts = {}) {
         type: 'capsule',
         args: { radius: 0.05, height: ORB_Y - 0.6 },
         transform: { translate: [x, (ORB_Y - 0.3) / 2 + 0.15, z] },
-        material: { hue: 0.995, sat: 0.4, value: 0.55, glow: 0.25, kind: 'normal', roughness: 0.4 },
+        material: { hue: 0.995, sat: 0.15, value: 0.8, glow: 0.5, kind: 'normal', roughness: 0.4 }, // R3: light, not a pink plastic stick
       });
     });
   }

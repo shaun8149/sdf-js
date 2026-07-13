@@ -21,6 +21,7 @@
 // with the tour — hierarchy IS the narration, so geometry and narration land
 // together, level by level.
 import { validateIR } from './ir.js';
+import { calloutOverlay } from './insights.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
@@ -77,7 +78,7 @@ const nodeMat = (lvl, maxLvl, emphasized) => {
       sat: 0.78,
       value: 0.95,
       metal: 0,
-      glow: 0.22,
+      glow: 0.04, // R3: root glow + bloom blew into a featureless sun
       kind: 'normal',
       roughness: 0.22,
       clearcoat: 0.6,
@@ -216,11 +217,13 @@ export function renderHierarchy(ir, opts = {}) {
     focalDistance: 1.7,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
-    exposure: [1.45, 1.0],
+    exposure: [1.2, 1.0],
     ease: 'out',
   });
   // 5 — payoff pull-back: the whole tree
-  const payoffDist = (treeSpan + maxLevel * 1.6 + 3.4) * (env ? env.payoffZoom : 1);
+  const payoffDist =
+    (treeSpan + maxLevel * 1.6 + 4.5) /* R3: 3.4 cropped the leaf tier */ *
+    (env ? env.payoffZoom : 1);
   shots.push({
     duration: 2.4,
     pos: [1.6, midY + 1.4 + (env ? 0.5 : 0), payoffDist],
@@ -244,12 +247,15 @@ export function renderHierarchy(ir, opts = {}) {
     const p = pos[i];
     overlay.push({
       text: nodes[i],
-      anchor: [p[0] + nodeR(i) + 0.32, p[1], p[2]],
+      // R3: BELOW the node, never beside it — the side anchor projected the
+      // card straight onto the sphere's specular highlight
+      anchor: [p[0], p[1] - nodeR(i) - 0.28, p[2]],
       role: 'card',
-      align: 'left',
       revealAt: introLead + level[i] * holdEach + 0.35,
     });
   }
+  const co = calloutOverlay(ir, superAt);
+  if (co) overlay.push(co);
 
   return {
     v: 1,

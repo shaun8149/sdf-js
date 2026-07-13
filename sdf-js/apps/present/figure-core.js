@@ -171,6 +171,8 @@ export function createFigure({
         d.appendChild(sub);
       }
       if (o.role === 'insight' && o.accentColor) d.style.borderColor = o.accentColor;
+      // chapter/finale cards own the mid-frame void instead of the corner
+      if (o.role === 'insight' && o.panel === 'center') d.classList.add('center');
       document.body.appendChild(d);
       return d;
     });
@@ -284,7 +286,10 @@ export function createFigure({
       const reach = o.role === 'title' ? 60 : 22;
       const depthFade =
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
-      const opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
+      // hideAt honored on the anchor layer too (R3: outgoing station's cards
+      // and value chips must clear the screen during the transit flight)
+      const shown = (o.revealAt == null || t >= o.revealAt) && (o.hideAt == null || t < o.hideAt);
+      const opacity = (shown ? 1 : 0) * depthFade;
       el.style.opacity = opacity;
       // Depth-scaled type: data labels grow as the camera approaches the
       // geometry they measure — numbers live WITH their shapes. Quantized +

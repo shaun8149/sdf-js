@@ -4,6 +4,7 @@
 // subject that drops into place via a transform.translate.y smoothstep window, staggered
 // by order — needs the expr builtins from #193) + revealAt-tagged overlay labels.
 import { validateIR } from './ir.js';
+import { calloutOverlay } from './insights.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
@@ -29,7 +30,7 @@ const stageMat = (i, N, emphasized, accent) => {
       sat: 0.78,
       value: 0.95,
       metal: 0,
-      glow: 0.22,
+      glow: 0.1,
       kind: 'normal',
       roughness: 0.22,
       clearcoat: 0.6,
@@ -172,7 +173,7 @@ export function renderSequence(ir, opts = {}) {
     focalDistance: 2,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
-    exposure: [1.45, 1.0],
+    exposure: [1.2, 1.0],
     ease: 'out',
   });
   // 5 — payoff pull-back: the whole funnel, every stage revealed, gold in context.
@@ -207,14 +208,20 @@ export function renderSequence(ir, opts = {}) {
       align: 'left',
       revealAt,
     });
-    overlay.push({
-      text: String(mag[i]),
-      anchor: [0, y, radii[i] + 0.2],
-      role: 'value',
-      radius: emphasis.has(i) ? 0.5 : 0.36,
-      revealAt,
-    });
+    // value chips ONLY for real source numbers (R3 integrity critique: a
+    // funnel shaped by invented magnitudes must not print them as data)
+    if (Array.isArray(ir.magnitude)) {
+      overlay.push({
+        text: String(mag[i]),
+        anchor: [0, y, radii[i] + 0.2],
+        role: 'value',
+        radius: emphasis.has(i) ? 0.5 : 0.36,
+        revealAt,
+      });
+    }
   });
+  const co = calloutOverlay(ir, superAt);
+  if (co) overlay.push(co);
 
   return {
     v: 1,

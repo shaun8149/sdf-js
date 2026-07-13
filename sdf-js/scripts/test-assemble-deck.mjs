@@ -53,7 +53,10 @@ const deck = JSON.parse(
   const stationSubjects = scene.subjects.filter((s) => /^s\d+-/.test(s.id));
   const pathMarkers = scene.subjects.filter((s) => /^path-/.test(s.id));
   ok(stationSubjects.length === expected, `all station subjects present (${expected})`);
-  ok(pathMarkers.length === (deck.slides.length - 1) * 5, 'breadcrumb path markers span each gap');
+  ok(
+    pathMarkers.length === (deck.slides.length - 1) * 7,
+    'breadcrumb path markers span each gap (7 per segment since R4)',
+  );
   ok(
     scene.subjects.filter((s) => s.id.startsWith('horizon-')).length === 14,
     'default world gets the horizon silhouette ring',
