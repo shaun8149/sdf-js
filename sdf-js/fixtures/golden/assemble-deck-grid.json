@@ -839,91 +839,20 @@
       "collection": "station-0"
     },
     {
-      "id": "path-0-1",
+      "id": "path-0-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [2, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [4, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [8, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [10, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [14, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -1128,91 +1057,20 @@
       "collection": "station-1"
     },
     {
-      "id": "path-1-1",
+      "id": "path-1-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [18, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [20, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [22, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [26, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [28, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -1410,24 +1268,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-0",
+      "id": "s2-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [23.865000000000002, 1.1, 1.2],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32, 0]
+        }
+      ],
       "transform": {
         "translate": [40.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
@@ -1436,24 +1288,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-1",
+      "id": "s2-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [24.465, 1.75, -4.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32, 0]
+        }
+      ],
       "transform": {
         "translate": [39.535, 1.75, -4.6],
         "rotate": [0, 0.3, 0]
@@ -1462,24 +1308,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-2",
+      "id": "s2-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [23.064999999999998, 2.4000000000000004, -6.800000000000001],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32, 0]
+        }
+      ],
       "transform": {
         "translate": [40.935, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, 0.3, 0]
@@ -1488,91 +1328,20 @@
       "collection": "station-2"
     },
     {
-      "id": "path-2-1",
+      "id": "path-2-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [34, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [38, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [40, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [42, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [44, 0.03, 0],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [46, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -1770,24 +1539,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-0",
+      "id": "s3-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [39.865, 1.1, 1.2],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [48, 0]
+        }
+      ],
       "transform": {
         "translate": [56.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
@@ -1796,24 +1559,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-1",
+      "id": "s3-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [40.465, 1.75, -4.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [48, 0]
+        }
+      ],
       "transform": {
         "translate": [55.535, 1.75, -4.6],
         "rotate": [0, 0.3, 0]
@@ -1822,24 +1579,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-2",
+      "id": "s3-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [39.065, 2.4000000000000004, -6.800000000000001],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [48, 0]
+        }
+      ],
       "transform": {
         "translate": [56.935, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, 0.3, 0]
@@ -1848,91 +1599,20 @@
       "collection": "station-3"
     },
     {
-      "id": "path-3-1",
+      "id": "path-3-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-6, 0, -2]
+        }
+      ],
       "transform": {
         "translate": [42, 0.03, -2],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, -4],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, -6],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, -8],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [18, 0.03, -10],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, -12],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, -14],
         "rotate": [0, 2.819842099193151, 0]
       },
       "material": "mat-1",
@@ -2130,24 +1810,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-0",
+      "id": "s4-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [-8.135, 1.1, -14.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -16]
+        }
+      ],
       "transform": {
         "translate": [8.135, 1.1, -14.8],
         "rotate": [0, 0.3, 0]
@@ -2156,24 +1830,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-1",
+      "id": "s4-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [-7.535, 1.75, -20.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -16]
+        }
+      ],
       "transform": {
         "translate": [7.535, 1.75, -20.6],
         "rotate": [0, 0.3, 0]
@@ -2182,24 +1850,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-2",
+      "id": "s4-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [-8.935, 2.4000000000000004, -22.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -16]
+        }
+      ],
       "transform": {
         "translate": [8.935, 2.4000000000000004, -22.8],
         "rotate": [0, 0.3, 0]
@@ -2208,91 +1870,20 @@
       "collection": "station-4"
     },
     {
-      "id": "path-4-1",
+      "id": "path-4-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [2, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [4, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [8, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [10, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [14, 0.03, -16],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -2490,24 +2081,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-0",
+      "id": "s5-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [7.865, 1.1, -14.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -16]
+        }
+      ],
       "transform": {
         "translate": [24.134999999999998, 1.1, -14.8],
         "rotate": [0, 0.3, 0]
@@ -2516,24 +2101,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-1",
+      "id": "s5-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [8.465, 1.75, -20.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -16]
+        }
+      ],
       "transform": {
         "translate": [23.535, 1.75, -20.6],
         "rotate": [0, 0.3, 0]
@@ -2542,24 +2121,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-2",
+      "id": "s5-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [7.0649999999999995, 2.4000000000000004, -22.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -16]
+        }
+      ],
       "transform": {
         "translate": [24.935000000000002, 2.4000000000000004, -22.8],
         "rotate": [0, 0.3, 0]
@@ -2568,91 +2141,20 @@
       "collection": "station-5"
     },
     {
-      "id": "path-5-1",
+      "id": "path-5-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [18, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [20, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [22, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [26, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [28, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, -16],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -2869,91 +2371,20 @@
       "collection": "station-6"
     },
     {
-      "id": "path-6-1",
+      "id": "path-6-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [34, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [38, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [40, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [42, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [44, 0.03, -16],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [46, 0.03, -16],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -3740,91 +3171,20 @@
       "collection": "station-7"
     },
     {
-      "id": "path-7-1",
+      "id": "path-7-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-6, 0, -2]
+        }
+      ],
       "transform": {
         "translate": [42, 0.03, -18],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, -20],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, -22],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, -24],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [18, 0.03, -26],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, -28],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, -30],
         "rotate": [0, 2.819842099193151, 0]
       },
       "material": "mat-1",
@@ -3915,91 +3275,20 @@
       "collection": "station-8"
     },
     {
-      "id": "path-8-1",
+      "id": "path-8-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [2, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [4, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [8, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [10, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [14, 0.03, -32],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -4229,24 +3518,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-0",
+      "id": "s9-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [7.23, 1.1, -30.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -32]
+        }
+      ],
       "transform": {
         "translate": [24.77, 1.1, -30.8],
         "rotate": [0, 0.3, 0]
@@ -4255,24 +3538,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-1",
+      "id": "s9-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [7.83, 1.75, -36.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -32]
+        }
+      ],
       "transform": {
         "translate": [24.17, 1.75, -36.6],
         "rotate": [0, 0.3, 0]
@@ -4281,24 +3558,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-2",
+      "id": "s9-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [6.43, 2.4000000000000004, -38.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [16, -32]
+        }
+      ],
       "transform": {
         "translate": [25.57, 2.4000000000000004, -38.8],
         "rotate": [0, 0.3, 0]
@@ -4307,91 +3578,20 @@
       "collection": "station-9"
     },
     {
-      "id": "path-9-1",
+      "id": "path-9-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [18, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [20, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [22, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [26, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [28, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, -32],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -4581,91 +3781,20 @@
       "collection": "station-10"
     },
     {
-      "id": "path-10-1",
+      "id": "path-10-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [2, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [34, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [38, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [40, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [42, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [44, 0.03, -32],
-        "rotate": [0, 0, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [46, 0.03, -32],
         "rotate": [0, 0, 0]
       },
       "material": "mat-1",
@@ -4889,91 +4018,20 @@
       "collection": "station-11"
     },
     {
-      "id": "path-11-1",
+      "id": "path-11-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-6, 0, -2]
+        }
+      ],
       "transform": {
         "translate": [42, 0.03, -34],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [36, 0.03, -36],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30, 0.03, -38],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24, 0.03, -40],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [18, 0.03, -42],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [12, 0.03, -44],
-        "rotate": [0, 2.819842099193151, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [6, 0.03, -46],
         "rotate": [0, 2.819842099193151, 0]
       },
       "material": "mat-1",
@@ -5075,24 +4133,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-0",
+      "id": "s12-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [-6.2299999999999995, 1.1, -46.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -48]
+        }
+      ],
       "transform": {
         "translate": [6.2299999999999995, 1.1, -46.8],
         "rotate": [0, 0.3, 0]
@@ -5101,24 +4153,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-1",
+      "id": "s12-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [-5.63, 1.75, -52.6],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -48]
+        }
+      ],
       "transform": {
         "translate": [5.63, 1.75, -52.6],
         "rotate": [0, 0.3, 0]
@@ -5127,24 +4173,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-2",
+      "id": "s12-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [-7.03, 2.4000000000000004, -54.8],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [0, -48]
+        }
+      ],
       "transform": {
         "translate": [7.03, 2.4000000000000004, -54.8],
         "rotate": [0, 0.3, 0]

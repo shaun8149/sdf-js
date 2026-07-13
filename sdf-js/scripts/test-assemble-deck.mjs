@@ -53,9 +53,14 @@ const deck = JSON.parse(
   const stationSubjects = scene.subjects.filter((s) => /^s\d+-/.test(s.id));
   const pathMarkers = scene.subjects.filter((s) => /^path-/.test(s.id));
   ok(stationSubjects.length === expected, `all station subjects present (${expected})`);
+  // Wave B: each gap is ONE runway subject carrying an array modifier (the
+  // seven strips are expansion-time instances, not authored subjects)
   ok(
-    pathMarkers.length === (deck.slides.length - 1) * 7,
-    'breadcrumb path markers span each gap (7 per segment since R4)',
+    pathMarkers.length === deck.slides.length - 1 &&
+      pathMarkers.every(
+        (s) => s.modifiers && s.modifiers[0].type === 'array' && s.modifiers[0].count === 7,
+      ),
+    'breadcrumb runway = 1 subject × array(7) per gap (Wave B)',
   );
   ok(
     scene.subjects.filter((s) => s.id.startsWith('horizon-')).length === 14,
