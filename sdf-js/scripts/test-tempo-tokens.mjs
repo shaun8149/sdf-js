@@ -44,7 +44,11 @@ const IR = { structure: 'magnitude', title: 'T', nodes: ['a', 'b', 'c'], magnitu
   const track = s.cameraSequence.shots[2]; // first tracking beat
   ok(near(track.duration, orig + 0.4), 'changing TEMPO.beatHold re-derives the walk rhythm');
   // reveals ride the same clock — the label must still land on its beat
-  const firstReveal = s.overlay.find((o) => o.revealAt != null);
+  // (role filter: insight reveals at payoff; short axis labels are world-
+  // anchored cards since R4, longer node names ride the subtitle column)
+  const firstReveal = s.overlay.find(
+    (o) => (o.role === 'screen' || o.role === 'card') && o.revealAt != null,
+  );
   ok(
     near(firstReveal.revealAt, TEMPO.hero + TEMPO.crane + 0.35),
     'reveal times re-derive from the same tokens (labels stay on beat)',

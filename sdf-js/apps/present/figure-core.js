@@ -139,7 +139,7 @@ export function createFigure({
       return d;
     });
     stageItems = all
-      .filter((o) => o.role === 'title' || o.role === 'screen')
+      .filter((o) => o.role === 'title' || o.role === 'screen' || o.role === 'insight')
       .map((o) => ({ ...o, revealAt: o.revealAt ?? 0 }))
       .sort((a, b) => a.revealAt - b.revealAt);
     // Chapters: each title OWNS the stage until the next title (in a deck,
@@ -155,8 +155,24 @@ export function createFigure({
     }
     stageEls = stageItems.map((o) => {
       const d = document.createElement('div');
-      d.className = o.role === 'title' ? 'stage-title' : 'stage-bullet';
+      d.className =
+        o.role === 'title'
+          ? 'stage-title'
+          : o.role === 'insight'
+            ? 'stage-insight'
+            : 'stage-bullet';
       d.textContent = o.text;
+      // insight panels carry a cited derivation line under the takeaway
+      // (Rule 24: derived values name their parents)
+      if (o.role === 'insight' && o.sub) {
+        const sub = document.createElement('div');
+        sub.className = 'sub';
+        sub.textContent = o.sub;
+        d.appendChild(sub);
+      }
+      if (o.role === 'insight' && o.accentColor) d.style.borderColor = o.accentColor;
+      // chapter/finale cards own the mid-frame void instead of the corner
+      if (o.role === 'insight' && o.panel === 'center') d.classList.add('center');
       document.body.appendChild(d);
       return d;
     });
@@ -231,8 +247,7 @@ export function createFigure({
         // hideAt (set by assembleDeck = the station's end) clears the outgoing
         // station's words during the transit flight; the chapter test keeps
         // seeks honest in both directions.
-        const on =
-          o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
+        const on = o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
         if (o.role === 'screen' && on) {
           stageEls[i].style.top = `calc(21vh + ${slot} * 9.5vh)`;
           slot++;
@@ -271,7 +286,10 @@ export function createFigure({
       const reach = o.role === 'title' ? 60 : 22;
       const depthFade =
         p.depth == null ? 1 : Math.max(0, Math.min(1, (reach - p.depth) / (reach * 0.45)));
-      const opacity = (o.revealAt == null || t >= o.revealAt ? 1 : 0) * depthFade;
+      // hideAt honored on the anchor layer too (R3: outgoing station's cards
+      // and value chips must clear the screen during the transit flight)
+      const shown = (o.revealAt == null || t >= o.revealAt) && (o.hideAt == null || t < o.hideAt);
+      const opacity = (shown ? 1 : 0) * depthFade;
       el.style.opacity = opacity;
       // Depth-scaled type: data labels grow as the camera approaches the
       // geometry they measure — numbers live WITH their shapes. Quantized +

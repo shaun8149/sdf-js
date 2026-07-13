@@ -579,16 +579,17 @@
       "id": "path-0-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [2.6666666666666665, 0.03, 0],
+        "translate": [2, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -598,16 +599,17 @@
       "id": "path-0-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [5.333333333333333, 0.03, 0],
+        "translate": [4, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -617,16 +619,17 @@
       "id": "path-0-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [8, 0.03, 0],
+        "translate": [6, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -636,16 +639,17 @@
       "id": "path-0-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [10.666666666666666, 0.03, 0],
+        "translate": [8, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -655,16 +659,57 @@
       "id": "path-0-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [13.333333333333334, 0.03, 0],
+        "translate": [10, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [12, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [14, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -695,7 +740,7 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [19.96029588778518, 0.62, -0.2980156278177152]
+        "translate": [19.487901743725214, 2.2, -0.5534640548657206]
       },
       "material": {
         "hue": 0.995,
@@ -709,9 +754,28 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(9.45, 10.00, t) + 0.04 * sin(0.6 * t + -4.56)"
+          "expr": "3.800 - 1.600 * smoothstep(9.45, 10.00, t) + 0.04 * sin(0.6 * t + -4.56)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-0",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [19.487901743725214, 1.1, -0.5534640548657206]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "s1-orb-1",
@@ -720,13 +784,13 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [18.899137802864846, 0.62, 1.2642671324351176]
+        "translate": [18.350094450939565, 2.2, -0.19211357462773826]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -734,9 +798,28 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(10.45, 11.00, t) + 0.04 * sin(0.6 * t + -2.86)"
+          "expr": "3.800 - 1.600 * smoothstep(10.45, 11.00, t) + 0.04 * sin(0.6 * t + -2.86)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-1",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [18.350094450939565, 1.1, -0.19211357462773826]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "s1-orb-2",
@@ -745,7 +828,7 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [17.061158084920336, 0.62, 2.166251504617403]
+        "translate": [16.828466888570354, 2.2, 0.0046276749721592125]
       },
       "material": {
         "hue": 0.995,
@@ -759,9 +842,28 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(11.45, 12.00, t) + 0.04 * sin(0.6 * t + -1.16)"
+          "expr": "3.800 - 1.600 * smoothstep(11.45, 12.00, t) + 0.04 * sin(0.6 * t + -1.16)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-2",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [16.828466888570354, 1.1, 0.0046276749721592125]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "s1-orb-3",
@@ -770,7 +872,7 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [14.938841915079665, 0.62, 2.166251504617403]
+        "translate": [15.171533111429648, 2.2, 0.0046276749721592125]
       },
       "material": {
         "hue": 0.995,
@@ -784,9 +886,28 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(12.45, 13.00, t) + 0.04 * sin(0.6 * t + 0.54)"
+          "expr": "3.800 - 1.600 * smoothstep(12.45, 13.00, t) + 0.04 * sin(0.6 * t + 0.54)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-3",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [15.171533111429648, 1.1, 0.0046276749721592125]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "s1-orb-4",
@@ -795,7 +916,7 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [13.100862197135156, 0.62, 1.264267132435118]
+        "translate": [13.649905549060437, 2.2, -0.19211357462773782]
       },
       "material": {
         "hue": 0.995,
@@ -809,9 +930,28 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(13.45, 14.00, t) + 0.04 * sin(0.6 * t + -4.04)"
+          "expr": "3.800 - 1.600 * smoothstep(13.45, 14.00, t) + 0.04 * sin(0.6 * t + -4.04)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-4",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [13.649905549060437, 1.1, -0.19211357462773782]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "s1-orb-5",
@@ -820,7 +960,7 @@
         "radius": 0.42
       },
       "transform": {
-        "translate": [12.039704112214821, 0.62, -0.2980156278177143]
+        "translate": [12.512098256274788, 2.2, -0.5534640548657205]
       },
       "material": {
         "hue": 0.995,
@@ -834,24 +974,44 @@
       "animation": [
         {
           "channel": "transform.translate.y",
-          "expr": "2.220 - 1.600 * smoothstep(14.45, 15.00, t) + 0.04 * sin(0.6 * t + -2.34)"
+          "expr": "3.800 - 1.600 * smoothstep(14.45, 15.00, t) + 0.04 * sin(0.6 * t + -2.34)"
         }
       ]
+    },
+    {
+      "id": "s1-orb-stem-5",
+      "type": "capsule",
+      "args": {
+        "radius": 0.05,
+        "height": 1.6
+      },
+      "transform": {
+        "translate": [12.512098256274788, 1.1, -0.5534640548657205]
+      },
+      "material": {
+        "hue": 0.995,
+        "sat": 0.15,
+        "value": 0.8,
+        "glow": 0.5,
+        "kind": "normal",
+        "roughness": 0.4
+      }
     },
     {
       "id": "path-1-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [18.666666666666668, 0.03, 0],
+        "translate": [18, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -861,16 +1021,17 @@
       "id": "path-1-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [21.333333333333332, 0.03, 0],
+        "translate": [20, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -880,16 +1041,17 @@
       "id": "path-1-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [24, 0.03, 0],
+        "translate": [22, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -899,16 +1061,17 @@
       "id": "path-1-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [26.666666666666664, 0.03, 0],
+        "translate": [24, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -918,16 +1081,57 @@
       "id": "path-1-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [29.333333333333336, 0.03, 0],
+        "translate": [26, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [28, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [30, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -940,7 +1144,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [28.825, 0.06, 0]
+        "translate": [35.175, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -959,7 +1163,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [28.825, 0.9931034482758622, 0]
+        "translate": [35.175, 0.9931034482758622, 0]
       },
       "material": {
         "hue": 0.55,
@@ -984,7 +1188,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [30.095, 0.06, 0]
+        "translate": [33.905, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1003,7 +1207,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [30.095, 1.2413793103448276, 0]
+        "translate": [33.905, 1.2413793103448276, 0]
       },
       "material": {
         "hue": 0.5680000000000001,
@@ -1028,7 +1232,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [31.365, 0.06, 0]
+        "translate": [32.635, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1047,7 +1251,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [31.365, 1.6, 0]
+        "translate": [32.635, 1.6, 0]
       },
       "material": {
         "hue": 0.5860000000000001,
@@ -1072,7 +1276,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [32.635, 0.06, 0]
+        "translate": [31.365, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1091,7 +1295,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [32.635, 1.9034482758620692, 0]
+        "translate": [31.365, 1.9034482758620692, 0]
       },
       "material": {
         "hue": 0.6040000000000001,
@@ -1116,7 +1320,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [33.905, 0.06, 0]
+        "translate": [30.095, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1135,7 +1339,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [33.905, 2.1517241379310343, 0]
+        "translate": [30.095, 2.1517241379310343, 0]
       },
       "material": {
         "hue": 0.622,
@@ -1160,7 +1364,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [35.175, 0.06, 0]
+        "translate": [28.825, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1179,14 +1383,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [35.175, 2.4, 0]
+        "translate": [28.825, 2.4, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -1205,7 +1409,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [25.865000000000002, 1.1, -2.4],
+        "translate": [23.865000000000002, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -1224,7 +1428,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [38.135, 1.1, -2.4],
+        "translate": [40.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -1281,7 +1485,7 @@
         "dims": [0.9, 4.800000000000001, 0.5]
       },
       "transform": {
-        "translate": [23.065, 2.4000000000000004, -6.800000000000001],
+        "translate": [23.064999999999998, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -1316,16 +1520,17 @@
       "id": "path-2-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [34.666666666666664, 0.03, 0],
+        "translate": [34, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1335,16 +1540,17 @@
       "id": "path-2-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [37.333333333333336, 0.03, 0],
+        "translate": [36, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1354,16 +1560,17 @@
       "id": "path-2-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [40, 0.03, 0],
+        "translate": [38, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1373,16 +1580,17 @@
       "id": "path-2-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [42.666666666666664, 0.03, 0],
+        "translate": [40, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1392,16 +1600,57 @@
       "id": "path-2-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [45.333333333333336, 0.03, 0],
+        "translate": [42, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [44, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [46, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1414,7 +1663,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [44.825, 0.06, 0]
+        "translate": [51.175, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1433,7 +1682,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [44.825, 0.14464710547184773, 0]
+        "translate": [51.175, 0.14464710547184773, 0]
       },
       "material": {
         "hue": 0.55,
@@ -1458,7 +1707,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [46.095, 0.06, 0]
+        "translate": [49.905, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1477,7 +1726,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [46.095, 0.28263283108643933, 0]
+        "translate": [49.905, 0.28263283108643933, 0]
       },
       "material": {
         "hue": 0.5680000000000001,
@@ -1502,7 +1751,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [47.365, 0.06, 0]
+        "translate": [48.635, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1521,7 +1770,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [47.365, 0.5443298969072166, 0]
+        "translate": [48.635, 0.5443298969072166, 0]
       },
       "material": {
         "hue": 0.5860000000000001,
@@ -1546,7 +1795,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [48.635, 0.06, 0]
+        "translate": [47.365, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1565,7 +1814,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [48.635, 0.9601903251387788, 0]
+        "translate": [47.365, 0.9601903251387788, 0]
       },
       "material": {
         "hue": 0.6040000000000001,
@@ -1590,7 +1839,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [49.905, 0.06, 0]
+        "translate": [46.095, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1609,7 +1858,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [49.905, 1.5501982553528946, 0]
+        "translate": [46.095, 1.5501982553528946, 0]
       },
       "material": {
         "hue": 0.622,
@@ -1634,7 +1883,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [51.175, 0.06, 0]
+        "translate": [44.825, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1653,14 +1902,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [51.175, 2.4, 0]
+        "translate": [44.825, 2.4, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -1679,7 +1928,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [41.865, 1.1, -2.4],
+        "translate": [39.865, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -1698,7 +1947,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [54.135, 1.1, -2.4],
+        "translate": [56.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -1790,16 +2039,17 @@
       "id": "path-3-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [50.666666666666664, 0.03, 0],
+        "translate": [50, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1809,16 +2059,17 @@
       "id": "path-3-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [53.333333333333336, 0.03, 0],
+        "translate": [52, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1828,16 +2079,17 @@
       "id": "path-3-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [56, 0.03, 0],
+        "translate": [54, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1847,16 +2099,17 @@
       "id": "path-3-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [58.666666666666664, 0.03, 0],
+        "translate": [56, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1866,16 +2119,57 @@
       "id": "path-3-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [61.333333333333336, 0.03, 0],
+        "translate": [58, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [60, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [62, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -1888,7 +2182,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [60.825, 0.06, 0]
+        "translate": [67.175, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1907,14 +2201,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [60.825, 2.4, 0]
+        "translate": [67.175, 2.4, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -1933,7 +2227,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [62.095, 0.06, 0]
+        "translate": [65.905, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1952,7 +2246,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [62.095, 2.2374501992031868, 0]
+        "translate": [65.905, 2.2374501992031868, 0]
       },
       "material": {
         "hue": 0.5680000000000001,
@@ -1977,7 +2271,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [63.365, 0.06, 0]
+        "translate": [64.635, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -1996,7 +2290,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [63.365, 1.4151394422310757, 0]
+        "translate": [64.635, 1.4151394422310757, 0]
       },
       "material": {
         "hue": 0.5860000000000001,
@@ -2021,7 +2315,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [64.635, 0.06, 0]
+        "translate": [63.365, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2040,7 +2334,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [64.635, 1.2430278884462151, 0]
+        "translate": [63.365, 1.2430278884462151, 0]
       },
       "material": {
         "hue": 0.6040000000000001,
@@ -2065,7 +2359,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [65.905, 0.06, 0]
+        "translate": [62.095, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2084,7 +2378,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [65.905, 0.7362549800796813, 0]
+        "translate": [62.095, 0.7362549800796813, 0]
       },
       "material": {
         "hue": 0.622,
@@ -2109,7 +2403,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [67.175, 0.06, 0]
+        "translate": [60.825, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2128,7 +2422,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [67.175, 0.6501992031872509, 0]
+        "translate": [60.825, 0.6501992031872509, 0]
       },
       "material": {
         "hue": 0.64,
@@ -2153,7 +2447,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [57.865, 1.1, -2.4],
+        "translate": [55.865, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -2172,7 +2466,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [70.135, 1.1, -2.4],
+        "translate": [72.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -2264,16 +2558,17 @@
       "id": "path-4-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [66.66666666666667, 0.03, 0],
+        "translate": [66, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2283,16 +2578,17 @@
       "id": "path-4-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [69.33333333333333, 0.03, 0],
+        "translate": [68, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2302,16 +2598,17 @@
       "id": "path-4-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [72, 0.03, 0],
+        "translate": [70, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2321,16 +2618,17 @@
       "id": "path-4-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [74.66666666666667, 0.03, 0],
+        "translate": [72, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2340,16 +2638,57 @@
       "id": "path-4-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [77.33333333333333, 0.03, 0],
+        "translate": [74, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-4-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [76, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-4-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [78, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2362,7 +2701,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [76.825, 0.06, 0]
+        "translate": [83.175, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2381,14 +2720,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [76.825, 2.4, 0]
+        "translate": [83.175, 2.4, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -2407,7 +2746,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [78.095, 0.06, 0]
+        "translate": [81.905, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2426,7 +2765,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [78.095, 2.2072538860103625, 0]
+        "translate": [81.905, 2.2072538860103625, 0]
       },
       "material": {
         "hue": 0.5680000000000001,
@@ -2451,7 +2790,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [79.365, 0.06, 0]
+        "translate": [80.635, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2470,7 +2809,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [79.365, 1.5015544041450775, 0]
+        "translate": [80.635, 1.5015544041450775, 0]
       },
       "material": {
         "hue": 0.5860000000000001,
@@ -2495,7 +2834,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [80.635, 0.06, 0]
+        "translate": [79.365, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2514,7 +2853,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [80.635, 1.2590673575129532, 0]
+        "translate": [79.365, 1.2590673575129532, 0]
       },
       "material": {
         "hue": 0.6040000000000001,
@@ -2539,7 +2878,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [81.905, 0.06, 0]
+        "translate": [78.095, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2558,7 +2897,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [81.905, 1.0290155440414508, 0]
+        "translate": [78.095, 1.0290155440414508, 0]
       },
       "material": {
         "hue": 0.622,
@@ -2583,7 +2922,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [83.175, 0.06, 0]
+        "translate": [76.825, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -2602,7 +2941,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [83.175, 0.9699481865284973, 0]
+        "translate": [76.825, 0.9699481865284973, 0]
       },
       "material": {
         "hue": 0.64,
@@ -2627,7 +2966,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [73.865, 1.1, -2.4],
+        "translate": [71.865, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -2646,7 +2985,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [86.135, 1.1, -2.4],
+        "translate": [88.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -2738,16 +3077,17 @@
       "id": "path-5-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [82.66666666666667, 0.03, 0],
+        "translate": [82, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2757,16 +3097,17 @@
       "id": "path-5-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [85.33333333333333, 0.03, 0],
+        "translate": [84, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2776,16 +3117,17 @@
       "id": "path-5-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [88, 0.03, 0],
+        "translate": [86, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2795,16 +3137,17 @@
       "id": "path-5-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [90.66666666666667, 0.03, 0],
+        "translate": [88, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -2814,16 +3157,57 @@
       "id": "path-5-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [93.33333333333333, 0.03, 0],
+        "translate": [90, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-5-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [92, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-5-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [94, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3136,16 +3520,17 @@
       "id": "path-6-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [98.66666666666667, 0.03, 0],
+        "translate": [98, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3155,16 +3540,17 @@
       "id": "path-6-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [101.33333333333333, 0.03, 0],
+        "translate": [100, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3174,16 +3560,17 @@
       "id": "path-6-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [104, 0.03, 0],
+        "translate": [102, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3193,16 +3580,17 @@
       "id": "path-6-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [106.66666666666667, 0.03, 0],
+        "translate": [104, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3212,16 +3600,57 @@
       "id": "path-6-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [109.33333333333333, 0.03, 0],
+        "translate": [106, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-6-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [108, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-6-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [110, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -3241,7 +3670,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -3451,7 +3880,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [1.5462996670025704, -2.459896501752518, -1.7087082733851329],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [110.45370033299743, 5.980307652106461, 1.7087082733851329]
@@ -3459,7 +3888,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3478,7 +3907,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.2916172614245259, -1.7304933560431786, 2.8851961924565597],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112.29161726142452, 5.250904506397122, -2.8851961924565597]
@@ -3486,7 +3915,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3505,7 +3934,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-2.316501828332444, -0.8493455741948472, -2.3695024225210286],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [114.31650182833245, 4.3697567245487905, 2.3695024225210286]
@@ -3513,7 +3942,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3532,7 +3961,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [3.3328829311898103, -0.1009467215905464, 0.5703621471936202],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [108.66711706881019, 3.6213578719444897, -0.5703621471936202]
@@ -3540,7 +3969,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3559,7 +3988,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-3.0462853596452057, 0.5676340286941195, 1.444450357470997],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [115.04628535964521, 2.9527771216598238, -1.444450357470997]
@@ -3567,7 +3996,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3586,7 +4015,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.6366414965168061, -1.7007904184427713, 2.6097801231999034],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112, 3.5204111503539433, 0]
@@ -3594,7 +4023,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3613,7 +4042,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.8001008867927215, -2.310836000275332, -1.9885364620992363],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112, 3.5204111503539433, 0]
@@ -3621,7 +4050,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3640,7 +4069,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [0.7612391329708433, -1.2196207319111718, -2.195114685979265],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [111.3633585034832, 1.819620731911172, 2.6097801231999034]
@@ -3648,7 +4077,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3667,7 +4096,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [0.9246985232467587, -0.6095751500786113, 2.4032018993198747],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [111.19989911320728, 1.2095751500786114, -1.9885364620992363]
@@ -3675,7 +4104,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3694,7 +4123,7 @@
       "args": {
         "a": [0, 0, 0],
         "b": [-0.12459763645403722, 2.920411150353943, -0.41466543722063837],
-        "radius": 0.06
+        "radius": 0.045
       },
       "transform": {
         "translate": [112.12459763645404, 0.6000000000000001, 0.41466543722063837]
@@ -3702,7 +4131,7 @@
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.8,
+        "value": 0.55,
         "glow": 0.08,
         "kind": "normal",
         "roughness": 0.6,
@@ -3728,7 +4157,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3752,7 +4181,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3776,7 +4205,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3800,7 +4229,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3824,7 +4253,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3848,7 +4277,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3872,7 +4301,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3896,7 +4325,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3920,7 +4349,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3944,7 +4373,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3968,7 +4397,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -3992,7 +4421,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4016,7 +4445,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4040,7 +4469,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4064,7 +4493,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4088,7 +4517,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4112,7 +4541,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4136,7 +4565,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4160,7 +4589,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4184,7 +4613,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4208,7 +4637,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4232,7 +4661,7 @@
       "material": {
         "hue": 0.62,
         "sat": 0.2,
-        "value": 0.3,
+        "value": 0.18,
         "kind": "normal",
         "roughness": 0.5
       },
@@ -4247,16 +4676,17 @@
       "id": "path-7-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [114.66666666666667, 0.03, 0],
+        "translate": [114, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4266,16 +4696,17 @@
       "id": "path-7-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [117.33333333333333, 0.03, 0],
+        "translate": [116, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4285,16 +4716,17 @@
       "id": "path-7-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [120, 0.03, 0],
+        "translate": [118, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4304,16 +4736,17 @@
       "id": "path-7-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [122.66666666666667, 0.03, 0],
+        "translate": [120, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4323,16 +4756,57 @@
       "id": "path-7-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [125.33333333333333, 0.03, 0],
+        "translate": [122, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-7-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [124, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-7-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [126, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4343,7 +4817,7 @@
       "type": "funnel-3d",
       "args": {
         "stages": 1,
-        "radii": [1.4, 1.2364465212858984],
+        "radii": [1.4, 1.4],
         "stageHeight": 0.68,
         "gap": 0
       },
@@ -4370,7 +4844,7 @@
       "type": "funnel-3d",
       "args": {
         "stages": 1,
-        "radii": [1.2364465212858984, 1.0476640682967036],
+        "radii": [1.4, 1.4],
         "stageHeight": 0.68,
         "gap": 0
       },
@@ -4382,7 +4856,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -4399,7 +4873,7 @@
       "type": "funnel-3d",
       "args": {
         "stages": 1,
-        "radii": [1.0476640682967036, 0.9073036977771003],
+        "radii": [1.4, 1.4],
         "stageHeight": 0.68,
         "gap": 0
       },
@@ -4426,7 +4900,7 @@
       "type": "funnel-3d",
       "args": {
         "stages": 1,
-        "radii": [0.9073036977771003, 0.12],
+        "radii": [1.4, 0.12],
         "stageHeight": 0.68,
         "gap": 0
       },
@@ -4452,16 +4926,17 @@
       "id": "path-8-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [130.66666666666666, 0.03, 0],
+        "translate": [130, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4471,16 +4946,17 @@
       "id": "path-8-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [133.33333333333334, 0.03, 0],
+        "translate": [132, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4490,16 +4966,17 @@
       "id": "path-8-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [136, 0.03, 0],
+        "translate": [134, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4509,16 +4986,17 @@
       "id": "path-8-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [138.66666666666666, 0.03, 0],
+        "translate": [136, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4528,16 +5006,57 @@
       "id": "path-8-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [141.33333333333334, 0.03, 0],
+        "translate": [138, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-8-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [140, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-8-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [142, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4550,7 +5069,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [140.19, 0.06, 0]
+        "translate": [147.81, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4569,7 +5088,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [140.19, 2.4, 0]
+        "translate": [147.81, 2.4, 0]
       },
       "material": {
         "hue": 0.55,
@@ -4594,7 +5113,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [141.46, 0.06, 0]
+        "translate": [146.54, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4613,7 +5132,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [141.46, 2.3564356435643563, 0]
+        "translate": [146.54, 2.3564356435643563, 0]
       },
       "material": {
         "hue": 0.5650000000000001,
@@ -4638,7 +5157,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [142.73, 0.06, 0]
+        "translate": [145.27, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4657,7 +5176,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [142.73, 2.2376237623762374, 0]
+        "translate": [145.27, 2.2376237623762374, 0]
       },
       "material": {
         "hue": 0.5800000000000001,
@@ -4726,7 +5245,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [145.27, 0.06, 0]
+        "translate": [142.73, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4745,7 +5264,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [145.27, 2.023762376237624, 0]
+        "translate": [142.73, 2.023762376237624, 0]
       },
       "material": {
         "hue": 0.6100000000000001,
@@ -4770,7 +5289,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [146.54, 0.06, 0]
+        "translate": [141.46, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4789,7 +5308,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [146.54, 1.881188118811881, 0]
+        "translate": [141.46, 1.881188118811881, 0]
       },
       "material": {
         "hue": 0.625,
@@ -4814,7 +5333,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [147.81, 0.06, 0]
+        "translate": [140.19, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -4833,14 +5352,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [147.81, 1.786138613861386, 0]
+        "translate": [140.19, 1.786138613861386, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -4859,7 +5378,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [137.23, 1.1, -2.4],
+        "translate": [135.23, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -4878,7 +5397,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [150.77, 1.1, -2.4],
+        "translate": [152.77, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -4970,16 +5489,17 @@
       "id": "path-9-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [146.66666666666666, 0.03, 0],
+        "translate": [146, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -4989,16 +5509,17 @@
       "id": "path-9-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [149.33333333333334, 0.03, 0],
+        "translate": [148, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5008,16 +5529,17 @@
       "id": "path-9-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [152, 0.03, 0],
+        "translate": [150, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5027,16 +5549,17 @@
       "id": "path-9-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [154.66666666666666, 0.03, 0],
+        "translate": [152, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5046,16 +5569,57 @@
       "id": "path-9-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [157.33333333333334, 0.03, 0],
+        "translate": [154, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-9-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [156, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-9-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [158, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5084,7 +5648,7 @@
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.04,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -5280,16 +5844,17 @@
       "id": "path-10-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [162.66666666666666, 0.03, 0],
+        "translate": [162, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5299,16 +5864,17 @@
       "id": "path-10-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [165.33333333333334, 0.03, 0],
+        "translate": [164, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5318,16 +5884,17 @@
       "id": "path-10-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [168, 0.03, 0],
+        "translate": [166, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5337,16 +5904,17 @@
       "id": "path-10-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [170.66666666666666, 0.03, 0],
+        "translate": [168, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5356,16 +5924,57 @@
       "id": "path-10-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [173.33333333333334, 0.03, 0],
+        "translate": [170, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-10-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [172, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-10-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [174, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5555,7 +6164,7 @@
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -5671,16 +6280,17 @@
       "id": "path-11-1",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [178.66666666666666, 0.03, 0],
+        "translate": [178, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5690,16 +6300,17 @@
       "id": "path-11-2",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [181.33333333333334, 0.03, 0],
+        "translate": [180, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5709,16 +6320,17 @@
       "id": "path-11-3",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [184, 0.03, 0],
+        "translate": [182, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5728,16 +6340,17 @@
       "id": "path-11-4",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [186.66666666666666, 0.03, 0],
+        "translate": [184, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5747,16 +6360,57 @@
       "id": "path-11-5",
       "type": "box",
       "args": {
-        "dims": [0.9, 0.06, 0.28]
+        "dims": [1.7, 0.05, 0.32]
       },
       "transform": {
-        "translate": [189.33333333333334, 0.03, 0],
+        "translate": [186, 0.03, 0],
         "rotate": [0, 0, 0]
       },
       "material": {
         "hue": 0.58,
         "sat": 0.25,
-        "value": 0.75,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-11-6",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [188, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-11-7",
+      "type": "box",
+      "args": {
+        "dims": [1.7, 0.05, 0.32]
+      },
+      "transform": {
+        "translate": [190, 0.03, 0],
+        "rotate": [0, 0, 0]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.85,
+        "glow": 0.45,
         "kind": "normal",
         "roughness": 0.5,
         "clearcoat": 0.2
@@ -5769,7 +6423,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [190.73, 0.06, 0]
+        "translate": [193.27, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -5788,7 +6442,7 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [190.73, 0.24, 0]
+        "translate": [193.27, 0.24, 0]
       },
       "material": {
         "hue": 0.55,
@@ -5857,7 +6511,7 @@
         "dims": [1.06, 0.12, 1.06]
       },
       "transform": {
-        "translate": [193.27, 0.06, 0]
+        "translate": [190.73, 0.06, 0]
       },
       "material": {
         "hue": 0.58,
@@ -5876,14 +6530,14 @@
         "cornerR": 0.045
       },
       "transform": {
-        "translate": [193.27, 2.4, 0]
+        "translate": [190.73, 2.4, 0]
       },
       "material": {
         "hue": 0.11,
         "sat": 0.78,
         "value": 0.95,
         "metal": 0,
-        "glow": 0.22,
+        "glow": 0.1,
         "kind": "normal",
         "roughness": 0.22,
         "clearcoat": 0.6
@@ -5902,7 +6556,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [187.77, 1.1, -2.4],
+        "translate": [185.77, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
       "material": {
@@ -5921,7 +6575,7 @@
         "dims": [0.9, 2.2, 0.5]
       },
       "transform": {
-        "translate": [196.23, 1.1, -2.4],
+        "translate": [198.23, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
       "material": {
@@ -6320,46 +6974,54 @@
       "hideAt": 18.6
     },
     {
-      "text": "即将爆发的个性化数字媒体市场",
+      "text": "① 即将爆发的个性化数字媒体市场 —— 移动广告 5 年 16.6 倍",
       "anchor": [19.96029588778518, 0.62, -0.2980156278177152],
       "role": "screen",
       "revealAt": 10.05,
       "hideAt": 18.6
     },
     {
-      "text": "独创的个性化资讯发现引擎",
+      "text": "② 独创的个性化资讯发现引擎 —— 5 类信源 × 用户回路(核心)",
       "anchor": [18.899137802864846, 0.62, 1.2642671324351176],
       "role": "screen",
       "revealAt": 11.05,
       "hideAt": 18.6
     },
     {
-      "text": "领先于世界同类产品的功能和技术",
+      "text": "③ 领先于世界的功能和技术 —— 200 万 DAU 仅 30 台服务器",
       "anchor": [17.061158084920336, 0.62, 2.166251504617403],
       "role": "screen",
       "revealAt": 12.05,
       "hideAt": 18.6
     },
     {
-      "text": "行业领先的用户粘度和自然增长",
+      "text": "④ 行业领先的粘度和自然增长 —— 次周留存 60.6%,零推广费",
       "anchor": [14.938841915079665, 0.62, 2.166251504617403],
       "role": "screen",
       "revealAt": 13.05,
       "hideAt": 18.6
     },
     {
-      "text": "完善的多产品布局,覆盖移动和PC",
+      "text": "⑤ 完善的多产品布局 —— App + Web 双端,覆盖移动和 PC",
       "anchor": [13.100862197135156, 0.62, 1.264267132435118],
       "role": "screen",
       "revealAt": 14.05,
       "hideAt": 18.6
     },
     {
-      "text": "具有丰富创业经验和技术功底的团队",
+      "text": "⑥ 丰富创业经验和技术功底的团队 —— 连续创业者 + 大厂工程师",
       "anchor": [12.039704112214821, 0.62, -0.2980156278177143],
       "role": "screen",
       "revealAt": 15.05,
       "hideAt": 18.6
+    },
+    {
+      "text": "第一章 · 市场",
+      "sub": "人、钱、时间——三条线都指向泛阅读",
+      "role": "insight",
+      "panel": "center",
+      "revealAt": 18.75,
+      "hideAt": 19.8
     },
     {
       "text": "市场之一：中国手机网民规模（亿人）",
@@ -6369,88 +7031,101 @@
       "hideAt": 31.9
     },
     {
-      "text": "2010",
-      "anchor": [28.825, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 22.25,
+      "text": "5 年 2.4 倍",
+      "sub": "3.6 → 8.7 · 年均复合增长约 19% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 29.9,
       "hideAt": 31.9
+    },
+    {
+      "text": "2010",
+      "anchor": [35.175, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 22.25,
+      "hideAt": 32.3
     },
     {
       "text": "3.6",
-      "anchor": [28.825, 2.3062068965517244, 0],
+      "anchor": [35.175, 2.3062068965517244, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 22.25
+      "revealAt": 22.25,
+      "hideAt": 32.3
     },
     {
       "text": "2011",
-      "anchor": [30.095, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [33.905, -0.02, 0.96],
+      "role": "card",
       "revealAt": 23.35,
-      "hideAt": 31.9
+      "hideAt": 32.3
     },
     {
       "text": "4.5",
-      "anchor": [30.095, 2.802758620689655, 0],
+      "anchor": [33.905, 2.802758620689655, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 23.35
+      "revealAt": 23.35,
+      "hideAt": 32.3
     },
     {
       "text": "2012e",
-      "anchor": [31.365, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [32.635, -0.02, 0.96],
+      "role": "card",
       "revealAt": 24.450000000000003,
-      "hideAt": 31.9
+      "hideAt": 32.3
     },
     {
       "text": "5.8",
-      "anchor": [31.365, 3.52, 0],
+      "anchor": [32.635, 3.52, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 24.450000000000003
+      "revealAt": 24.450000000000003,
+      "hideAt": 32.3
     },
     {
       "text": "2013e",
-      "anchor": [32.635, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [31.365, -0.02, 0.96],
+      "role": "card",
       "revealAt": 25.55,
-      "hideAt": 31.9
+      "hideAt": 32.3
     },
     {
       "text": "6.9",
-      "anchor": [32.635, 4.126896551724139, 0],
+      "anchor": [31.365, 4.126896551724139, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 25.55
+      "revealAt": 25.55,
+      "hideAt": 32.3
     },
     {
       "text": "2014e",
-      "anchor": [33.905, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [30.095, -0.02, 0.96],
+      "role": "card",
       "revealAt": 26.65,
-      "hideAt": 31.9
+      "hideAt": 32.3
     },
     {
       "text": "7.8",
-      "anchor": [33.905, 4.623448275862069, 0],
+      "anchor": [30.095, 4.623448275862069, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 26.65
+      "revealAt": 26.65,
+      "hideAt": 32.3
     },
     {
       "text": "2015e",
-      "anchor": [35.175, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [28.825, -0.02, 0.96],
+      "role": "card",
       "revealAt": 27.75,
-      "hideAt": 31.9
+      "hideAt": 32.3
     },
     {
       "text": "8.7",
-      "anchor": [35.175, 5.12, 0],
+      "anchor": [28.825, 5.12, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 27.75
+      "revealAt": 27.75,
+      "hideAt": 32.3
     },
     {
       "text": "市场之二：移动互联网广告（亿元）",
@@ -6460,88 +7135,101 @@
       "hideAt": 45.2
     },
     {
-      "text": "2010",
-      "anchor": [44.825, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 35.550000000000004,
+      "text": "5 年 16.6 倍",
+      "sub": "15.2 → 252.2 · 年均复合增长约 75% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 43.2,
       "hideAt": 45.2
+    },
+    {
+      "text": "2010",
+      "anchor": [51.175, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 35.550000000000004,
+      "hideAt": 45.6
     },
     {
       "text": "15.2",
-      "anchor": [44.825, 0.6092942109436954, 0],
+      "anchor": [51.175, 0.6092942109436954, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 35.550000000000004
+      "revealAt": 35.550000000000004,
+      "hideAt": 45.6
     },
     {
       "text": "2011",
-      "anchor": [46.095, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [49.905, -0.02, 0.96],
+      "role": "card",
       "revealAt": 36.65,
-      "hideAt": 45.2
+      "hideAt": 45.6
     },
     {
       "text": "29.7",
-      "anchor": [46.095, 0.8852656621728787, 0],
+      "anchor": [49.905, 0.8852656621728787, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 36.65
+      "revealAt": 36.65,
+      "hideAt": 45.6
     },
     {
       "text": "2012e",
-      "anchor": [47.365, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [48.635, -0.02, 0.96],
+      "role": "card",
       "revealAt": 37.75,
-      "hideAt": 45.2
+      "hideAt": 45.6
     },
     {
       "text": "57.2",
-      "anchor": [47.365, 1.4086597938144332, 0],
+      "anchor": [48.635, 1.4086597938144332, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 37.75
+      "revealAt": 37.75,
+      "hideAt": 45.6
     },
     {
       "text": "2013e",
-      "anchor": [48.635, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [47.365, -0.02, 0.96],
+      "role": "card",
       "revealAt": 38.85,
-      "hideAt": 45.2
+      "hideAt": 45.6
     },
     {
       "text": "100.9",
-      "anchor": [48.635, 2.2403806502775576, 0],
+      "anchor": [47.365, 2.2403806502775576, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 38.85
+      "revealAt": 38.85,
+      "hideAt": 45.6
     },
     {
       "text": "2014e",
-      "anchor": [49.905, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [46.095, -0.02, 0.96],
+      "role": "card",
       "revealAt": 39.95,
-      "hideAt": 45.2
+      "hideAt": 45.6
     },
     {
       "text": "162.9",
-      "anchor": [49.905, 3.420396510705789, 0],
+      "anchor": [46.095, 3.420396510705789, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 39.95
+      "revealAt": 39.95,
+      "hideAt": 45.6
     },
     {
       "text": "2015e",
-      "anchor": [51.175, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [44.825, -0.02, 0.96],
+      "role": "card",
       "revealAt": 41.05,
-      "hideAt": 45.2
+      "hideAt": 45.6
     },
     {
       "text": "252.2",
-      "anchor": [51.175, 5.12, 0],
+      "anchor": [44.825, 5.12, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 41.05
+      "revealAt": 41.05,
+      "hideAt": 45.6
     },
     {
       "text": "市场之三：移动广告投放媒介（%）",
@@ -6551,88 +7239,101 @@
       "hideAt": 58.50000000000001
     },
     {
-      "text": "电子阅读",
-      "anchor": [60.825, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 48.85000000000001,
+      "text": "电子阅读居首:25.1%",
+      "sub": "高于第二位 手机游戏(23.4%)",
+      "role": "insight",
+      "revealAt": 56.50000000000001,
       "hideAt": 58.50000000000001
+    },
+    {
+      "text": "电子阅读",
+      "anchor": [67.175, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 48.85000000000001,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "25.1",
-      "anchor": [60.825, 5.12, 0],
+      "anchor": [67.175, 5.12, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 48.85000000000001
+      "revealAt": 48.85000000000001,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "手机游戏",
-      "anchor": [62.095, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [65.905, -0.02, 0.96],
+      "role": "card",
       "revealAt": 49.95,
-      "hideAt": 58.50000000000001
+      "hideAt": 58.900000000000006
     },
     {
       "text": "23.4",
-      "anchor": [62.095, 4.794900398406374, 0],
+      "anchor": [65.905, 4.794900398406374, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 49.95
+      "revealAt": 49.95,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "在线影音",
-      "anchor": [63.365, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [64.635, -0.02, 0.96],
+      "role": "card",
       "revealAt": 51.050000000000004,
-      "hideAt": 58.50000000000001
+      "hideAt": 58.900000000000006
     },
     {
       "text": "14.8",
-      "anchor": [63.365, 3.150278884462151, 0],
+      "anchor": [64.635, 3.150278884462151, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 51.050000000000004
+      "revealAt": 51.050000000000004,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "生活助手",
-      "anchor": [64.635, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [63.365, -0.02, 0.96],
+      "role": "card",
       "revealAt": 52.150000000000006,
-      "hideAt": 58.50000000000001
+      "hideAt": 58.900000000000006
     },
     {
       "text": "13",
-      "anchor": [64.635, 2.80605577689243, 0],
+      "anchor": [63.365, 2.80605577689243, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 52.150000000000006
+      "revealAt": 52.150000000000006,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "休闲娱乐",
-      "anchor": [65.905, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [62.095, -0.02, 0.96],
+      "role": "card",
       "revealAt": 53.25000000000001,
-      "hideAt": 58.50000000000001
+      "hideAt": 58.900000000000006
     },
     {
       "text": "7.7",
-      "anchor": [65.905, 1.7925099601593626, 0],
+      "anchor": [62.095, 1.7925099601593626, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 53.25000000000001
+      "revealAt": 53.25000000000001,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "资讯新闻",
-      "anchor": [67.175, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [60.825, -0.02, 0.96],
+      "role": "card",
       "revealAt": 54.35000000000001,
-      "hideAt": 58.50000000000001
+      "hideAt": 58.900000000000006
     },
     {
       "text": "6.8",
-      "anchor": [67.175, 1.6203984063745018, 0],
+      "anchor": [60.825, 1.6203984063745018, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 54.35000000000001
+      "revealAt": 54.35000000000001,
+      "hideAt": 58.900000000000006
     },
     {
       "text": "市场之四：泛阅读是最主要的用户行为（%）",
@@ -6642,88 +7343,101 @@
       "hideAt": 71.80000000000001
     },
     {
-      "text": "泛阅读",
-      "anchor": [76.825, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 62.15000000000001,
+      "text": "泛阅读居首:77.2%",
+      "sub": "高于第二位 即时通讯(71%)",
+      "role": "insight",
+      "revealAt": 69.80000000000001,
       "hideAt": 71.80000000000001
+    },
+    {
+      "text": "泛阅读",
+      "anchor": [83.175, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 62.15000000000001,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "77.2",
-      "anchor": [76.825, 5.12, 0],
+      "anchor": [83.175, 5.12, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 62.15000000000001
+      "revealAt": 62.15000000000001,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "即时通讯",
-      "anchor": [78.095, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [81.905, -0.02, 0.96],
+      "role": "card",
       "revealAt": 63.25000000000001,
-      "hideAt": 71.80000000000001
+      "hideAt": 72.20000000000002
     },
     {
       "text": "71",
-      "anchor": [78.095, 4.734507772020725, 0],
+      "anchor": [81.905, 4.734507772020725, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 63.25000000000001
+      "revealAt": 63.25000000000001,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "社交网络",
-      "anchor": [79.365, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [80.635, -0.02, 0.96],
+      "role": "card",
       "revealAt": 64.35000000000001,
-      "hideAt": 71.80000000000001
+      "hideAt": 72.20000000000002
     },
     {
       "text": "48.3",
-      "anchor": [79.365, 3.3231088082901548, 0],
+      "anchor": [80.635, 3.3231088082901548, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 64.35000000000001
+      "revealAt": 64.35000000000001,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "视频",
-      "anchor": [80.635, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [79.365, -0.02, 0.96],
+      "role": "card",
       "revealAt": 65.45000000000002,
-      "hideAt": 71.80000000000001
+      "hideAt": 72.20000000000002
     },
     {
       "text": "40.5",
-      "anchor": [80.635, 2.838134715025906, 0],
+      "anchor": [79.365, 2.838134715025906, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 65.45000000000002
+      "revealAt": 65.45000000000002,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "游戏",
-      "anchor": [81.905, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [78.095, -0.02, 0.96],
+      "role": "card",
       "revealAt": 66.55000000000001,
-      "hideAt": 71.80000000000001
+      "hideAt": 72.20000000000002
     },
     {
       "text": "33.1",
-      "anchor": [81.905, 2.3780310880829014, 0],
+      "anchor": [78.095, 2.3780310880829014, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 66.55000000000001
+      "revealAt": 66.55000000000001,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "工具",
-      "anchor": [83.175, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [76.825, -0.02, 0.96],
+      "role": "card",
       "revealAt": 67.65,
-      "hideAt": 71.80000000000001
+      "hideAt": 72.20000000000002
     },
     {
       "text": "31.2",
-      "anchor": [83.175, 2.2598963730569945, 0],
+      "anchor": [76.825, 2.2598963730569945, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 67.65
+      "revealAt": 67.65,
+      "hideAt": 72.20000000000002
     },
     {
       "text": "泛阅读市场正经历变革",
@@ -6736,31 +7450,36 @@
       "text": "过去",
       "anchor": [102.3, 0.75, 0],
       "role": "card",
-      "revealAt": 73.00000000000001
+      "revealAt": 73.00000000000001,
+      "hideAt": 81.50000000000003
     },
     {
       "text": "现在",
       "anchor": [102.3, 3.6, 0],
       "role": "card",
-      "revealAt": 73.00000000000001
+      "revealAt": 73.00000000000001,
+      "hideAt": 81.50000000000003
     },
     {
       "text": "产生和消费方式",
       "anchor": [99.4, 0.06, 1.5],
       "role": "card",
-      "revealAt": 73.30000000000001
+      "revealAt": 73.30000000000001,
+      "hideAt": 81.50000000000003
     },
     {
       "text": "流动方式",
       "anchor": [96, 0.06, 1.5],
       "role": "card",
-      "revealAt": 73.45000000000002
+      "revealAt": 73.45000000000002,
+      "hideAt": 81.50000000000003
     },
     {
       "text": "终端",
       "anchor": [92.6, 0.06, 1.5],
       "role": "card",
-      "revealAt": 73.60000000000001
+      "revealAt": 73.60000000000001,
+      "hideAt": 81.50000000000003
     },
     {
       "text": "编辑挑选·连续阅读",
@@ -6805,6 +7524,14 @@
       "hideAt": 81.10000000000002
     },
     {
+      "text": "第二章 · 引擎与产品",
+      "sub": "那么,谁能重新组织信息的分发?",
+      "role": "insight",
+      "panel": "center",
+      "revealAt": 81.25000000000003,
+      "hideAt": 82.30000000000003
+    },
+    {
       "text": "独创的个性化资讯发现引擎",
       "anchor": [112, 7.180307652106461, 0],
       "role": "title",
@@ -6813,66 +7540,73 @@
     },
     {
       "text": "个性化发现引擎",
-      "anchor": [112.8, 3.5204111503539433, 0],
+      "anchor": [112, 2.760411150353943, 0],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.15000000000002
+      "revealAt": 83.15000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "新闻门户",
-      "anchor": [111.25370033299743, 5.980307652106461, 1.7087082733851329],
+      "anchor": [110.45370033299743, 5.220307652106461, 1.7087082733851329],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.27000000000002
+      "revealAt": 83.27000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "微博",
-      "anchor": [113.09161726142453, 5.250904506397122, -2.8851961924565597],
+      "anchor": [112.29161726142452, 4.490904506397122, -2.8851961924565597],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.39000000000003
+      "revealAt": 83.39000000000003,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "博客",
-      "anchor": [115.11650182833245, 4.3697567245487905, 2.3695024225210286],
+      "anchor": [114.31650182833245, 3.6097567245487907, 2.3695024225210286],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.51000000000002
+      "revealAt": 83.51000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "视频",
-      "anchor": [109.46711706881018, 3.6213578719444897, -0.5703621471936202],
+      "anchor": [108.66711706881019, 2.86135787194449, -0.5703621471936202],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.63000000000002
+      "revealAt": 83.63000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "垂直信息",
-      "anchor": [115.84628535964521, 2.9527771216598238, -1.444450357470997],
+      "anchor": [115.04628535964521, 2.192777121659824, -1.444450357470997],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.75000000000003
+      "revealAt": 83.75000000000003,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "头条App",
-      "anchor": [112.1633585034832, 1.819620731911172, 2.6097801231999034],
+      "anchor": [111.3633585034832, 1.059620731911172, 2.6097801231999034],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.87000000000002
+      "revealAt": 83.87000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "Web版",
-      "anchor": [111.99989911320728, 1.2095751500786114, -1.9885364620992363],
+      "anchor": [111.19989911320728, 0.4495751500786114, -1.9885364620992363],
       "role": "card",
-      "align": "left",
-      "revealAt": 83.99000000000002
+      "revealAt": 83.99000000000002,
+      "hideAt": 92.00000000000003
     },
     {
       "text": "用户",
-      "anchor": [112.92459763645404, 0.6000000000000001, 0.41466543722063837],
+      "anchor": [112.12459763645404, -0.15999999999999992, 0.41466543722063837],
       "role": "card",
-      "align": "left",
-      "revealAt": 84.11000000000003
+      "revealAt": 84.11000000000003,
+      "hideAt": 92.00000000000003
+    },
+    {
+      "text": "用得越多,越懂你",
+      "sub": "每一次点击、评论、转发都流回引擎 —— 护城河随使用量自动加深",
+      "role": "insight",
+      "revealAt": 88.45000000000003,
+      "hideAt": 91.60000000000002
     },
     {
       "text": "产品体验：从打开到留下",
@@ -6890,56 +7624,35 @@
       "hideAt": 103.20000000000003
     },
     {
-      "text": "100",
-      "anchor": [128, 2.8000000000000003, 1.5999999999999999],
-      "role": "value",
-      "radius": 0.36,
-      "revealAt": 95.45000000000003
-    },
-    {
       "text": "最懂你",
-      "anchor": [129.7364465212859, 2, 0],
+      "anchor": [129.9, 2, 0],
       "role": "screen",
       "align": "left",
       "revealAt": 96.65000000000002,
       "hideAt": 103.20000000000003
     },
     {
-      "text": "78",
-      "anchor": [128, 2, 1.4364465212858983],
-      "role": "value",
-      "radius": 0.5,
-      "revealAt": 96.65000000000002
-    },
-    {
       "text": "高质量评论",
-      "anchor": [129.5476640682967, 1.2000000000000002, 0],
+      "anchor": [129.9, 1.2000000000000002, 0],
       "role": "screen",
       "align": "left",
       "revealAt": 97.85000000000002,
       "hideAt": 103.20000000000003
     },
     {
-      "text": "56",
-      "anchor": [128, 1.2000000000000002, 1.2476640682967035],
-      "role": "value",
-      "radius": 0.36,
-      "revealAt": 97.85000000000002
-    },
-    {
       "text": "兴趣社区",
-      "anchor": [129.4073036977771, 0.3999999999999999, 0],
+      "anchor": [129.9, 0.3999999999999999, 0],
       "role": "screen",
       "align": "left",
       "revealAt": 99.05000000000003,
       "hideAt": 103.20000000000003
     },
     {
-      "text": "42",
-      "anchor": [128, 0.3999999999999999, 1.1073036977771002],
-      "role": "value",
-      "radius": 0.36,
-      "revealAt": 99.05000000000003
+      "text": "产品的名字,藏在这一层",
+      "sub": "上万维度的兴趣特征 —— 最懂你的头条",
+      "role": "insight",
+      "revealAt": 100.05000000000003,
+      "hideAt": 103.20000000000003
     },
     {
       "text": "IPHONE 用户周留存率（%）",
@@ -6949,102 +7662,124 @@
       "hideAt": 117.60000000000004
     },
     {
-      "text": "1周后",
-      "anchor": [140.19, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 106.85000000000004,
+      "text": "1周后居首:60.6%",
+      "sub": "高于第二位 2周后(59.5%)",
+      "role": "insight",
+      "revealAt": 115.60000000000004,
       "hideAt": 117.60000000000004
+    },
+    {
+      "text": "1周后",
+      "anchor": [147.81, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 106.85000000000004,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "60.6",
-      "anchor": [140.19, 5.12, 0],
+      "anchor": [147.81, 5.12, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 106.85000000000004
+      "revealAt": 106.85000000000004,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "2周后",
-      "anchor": [141.46, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [146.54, -0.02, 0.96],
+      "role": "card",
       "revealAt": 107.95000000000003,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "59.5",
-      "anchor": [141.46, 5.032871287128713, 0],
+      "anchor": [146.54, 5.032871287128713, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 107.95000000000003
+      "revealAt": 107.95000000000003,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "3周后",
-      "anchor": [142.73, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [145.27, -0.02, 0.96],
+      "role": "card",
       "revealAt": 109.05000000000004,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "56.5",
-      "anchor": [142.73, 4.795247524752475, 0],
+      "anchor": [145.27, 4.795247524752475, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 109.05000000000004
+      "revealAt": 109.05000000000004,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "4周后",
-      "anchor": [144, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [144, -0.02, 0.96],
+      "role": "card",
       "revealAt": 110.15000000000003,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "54.1",
       "anchor": [144, 4.605148514851485, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 110.15000000000003
+      "revealAt": 110.15000000000003,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "5周后",
-      "anchor": [145.27, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [142.73, -0.02, 0.96],
+      "role": "card",
       "revealAt": 111.25000000000003,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "51.1",
-      "anchor": [145.27, 4.367524752475248, 0],
+      "anchor": [142.73, 4.367524752475248, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 111.25000000000003
+      "revealAt": 111.25000000000003,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "6周后",
-      "anchor": [146.54, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [141.46, -0.02, 0.96],
+      "role": "card",
       "revealAt": 112.35000000000004,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "47.5",
-      "anchor": [146.54, 4.0823762376237624, 0],
+      "anchor": [141.46, 4.0823762376237624, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 112.35000000000004
+      "revealAt": 112.35000000000004,
+      "hideAt": 118.00000000000004
     },
     {
       "text": "7周后",
-      "anchor": [147.81, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [140.19, -0.02, 0.96],
+      "role": "card",
       "revealAt": 113.45000000000003,
-      "hideAt": 117.60000000000004
+      "hideAt": 118.00000000000004
     },
     {
       "text": "45.1",
-      "anchor": [147.81, 3.8922772277227717, 0],
+      "anchor": [140.19, 3.8922772277227717, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 113.45000000000003
+      "revealAt": 113.45000000000003,
+      "hideAt": 118.00000000000004
+    },
+    {
+      "text": "第三章 · 团队与计划",
+      "sub": "把引擎做成新一代的信息基础设施",
+      "role": "insight",
+      "panel": "center",
+      "revealAt": 117.75000000000004,
+      "hideAt": 118.80000000000004
     },
     {
       "text": "拥有丰富创业经验的团队",
@@ -7055,38 +7790,45 @@
     },
     {
       "text": "张一鸣 创始人/CEO",
-      "anchor": [160.86, 3.15, 0],
+      "anchor": [160, 2.33, 0],
       "role": "card",
-      "align": "left",
-      "revealAt": 121.25000000000004
+      "revealAt": 121.25000000000004,
+      "hideAt": 129.20000000000005
     },
     {
       "text": "黄河 产品",
-      "anchor": [160.86, 2, -1.9],
+      "anchor": [160, 1.18, -1.9],
       "role": "card",
-      "align": "left",
-      "revealAt": 122.75000000000004
+      "revealAt": 122.75000000000004,
+      "hideAt": 129.20000000000005
     },
     {
       "text": "梁汝波 研发",
-      "anchor": [162.50544826719045, 2, 0.9499999999999996],
+      "anchor": [161.64544826719043, 1.18, 0.9499999999999996],
       "role": "card",
-      "align": "left",
-      "revealAt": 122.75000000000004
+      "revealAt": 122.75000000000004,
+      "hideAt": 129.20000000000005
     },
     {
       "text": "屠锋锋 商务拓展",
-      "anchor": [159.21455173280955, 2, 0.9500000000000006],
+      "anchor": [158.35455173280957, 1.18, 0.9500000000000006],
       "role": "card",
-      "align": "left",
-      "revealAt": 122.75000000000004
+      "revealAt": 122.75000000000004,
+      "hideAt": 129.20000000000005
     },
     {
       "text": "微软/腾讯/百度系工程师团队",
-      "anchor": [162.00289187648036, 0.8500000000000001, 1.6417095301905795],
+      "anchor": [161.14289187648038, 0.030000000000000027, 1.6417095301905795],
       "role": "card",
-      "align": "left",
-      "revealAt": 124.25000000000004
+      "revealAt": 124.25000000000004,
+      "hideAt": 129.20000000000005
+    },
+    {
+      "text": "200 万 DAU · 仅 30 台服务器",
+      "sub": "微软/腾讯/百度系工程师团队 —— 工程能力的直接证明",
+      "role": "insight",
+      "revealAt": 125.65000000000003,
+      "hideAt": 128.80000000000004
     },
     {
       "text": "2013 业务发展计划",
@@ -7100,28 +7842,32 @@
       "anchor": [176.91, 4.19, 0],
       "role": "card",
       "align": "center",
-      "revealAt": 130.00000000000003
+      "revealAt": 130.00000000000003,
+      "hideAt": 138.70000000000005
     },
     {
       "text": "增长与变现",
       "anchor": [175.09, 4.19, 0],
       "role": "card",
       "align": "center",
-      "revealAt": 130.00000000000003
+      "revealAt": 130.00000000000003,
+      "hideAt": 138.70000000000005
     },
     {
       "text": "深化",
       "anchor": [173.69, 3.2199999999999998, 0],
       "role": "card",
       "align": "right",
-      "revealAt": 130.00000000000003
+      "revealAt": 130.00000000000003,
+      "hideAt": 138.70000000000005
     },
     {
       "text": "拓展",
       "anchor": [173.69, 1.7999999999999998, 0],
       "role": "card",
       "align": "right",
-      "revealAt": 130.00000000000003
+      "revealAt": 130.00000000000003,
+      "hideAt": 138.70000000000005
     },
     {
       "text": "扩充信息类型和来源",
@@ -7163,46 +7909,70 @@
       "hideAt": 148.30000000000004
     },
     {
-      "text": "2012",
-      "anchor": [190.73, -0.02, 0.71],
-      "role": "screen",
-      "revealAt": 141.95000000000002,
+      "text": "2 年 10.0 倍",
+      "sub": "150 → 1500 · 年均复合增长约 216% · 注:“e” 为预估值",
+      "role": "insight",
+      "revealAt": 146.30000000000004,
       "hideAt": 148.30000000000004
+    },
+    {
+      "text": "本轮融资 US$ 12.5M",
+      "sub": "用途:算法团队扩建 · App 推广 —— 换取 2014 年移动 DAU 1500 万(10×)",
+      "role": "insight",
+      "revealAt": 145.15000000000003,
+      "hideAt": 146.30000000000004
+    },
+    {
+      "text": "2012",
+      "anchor": [193.27, -0.02, 0.96],
+      "role": "card",
+      "revealAt": 141.95000000000002,
+      "hideAt": 148.70000000000005
     },
     {
       "text": "150",
-      "anchor": [190.73, 0.8, 0],
+      "anchor": [193.27, 0.8, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 141.95000000000002
+      "revealAt": 141.95000000000002,
+      "hideAt": 148.70000000000005
     },
     {
       "text": "2013e",
-      "anchor": [192, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [192, -0.02, 0.96],
+      "role": "card",
       "revealAt": 143.05000000000004,
-      "hideAt": 148.30000000000004
+      "hideAt": 148.70000000000005
     },
     {
       "text": "750",
       "anchor": [192, 2.7199999999999998, 0],
       "role": "value",
       "radius": 0.36,
-      "revealAt": 143.05000000000004
+      "revealAt": 143.05000000000004,
+      "hideAt": 148.70000000000005
     },
     {
       "text": "2014e",
-      "anchor": [193.27, -0.02, 0.71],
-      "role": "screen",
+      "anchor": [190.73, -0.02, 0.96],
+      "role": "card",
       "revealAt": 144.15000000000003,
-      "hideAt": 148.30000000000004
+      "hideAt": 148.70000000000005
     },
     {
       "text": "1500",
-      "anchor": [193.27, 5.12, 0],
+      "anchor": [190.73, 5.12, 0],
       "role": "value",
       "radius": 0.5,
-      "revealAt": 144.15000000000003
+      "revealAt": 144.15000000000003,
+      "hideAt": 148.70000000000005
+    },
+    {
+      "text": "新一代的信息基础设施",
+      "sub": "这次迁移,与搜索引擎的出现同等重要 —— 最懂你的头条 · 谢谢",
+      "role": "insight",
+      "panel": "center",
+      "revealAt": 148.80000000000004
     }
   ],
   "cameraSequence": {
@@ -7243,7 +8013,7 @@
       {
         "duration": 1.2,
         "pos": [8.65, 4.2, 11.6],
-        "target": [8, 0.7, 0.6],
+        "target": [11.2, 1.3, -1.38],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7253,8 +8023,8 @@
       },
       {
         "duration": 2.2,
-        "pos": [16.5, 2.2, 8.8],
-        "target": [16, 0.7, 0.6],
+        "pos": [16.5, 2, 8.8],
+        "target": [16, 1.3, 0.6],
         "fov": 46,
         "aperture": 0.3,
         "focalDistance": 8.6,
@@ -7263,8 +8033,8 @@
       },
       {
         "duration": 6.8,
-        "pos": [14.4, 3.4, 8],
-        "target": [16.3, 0.5, 0.4],
+        "pos": [14.4, 2.5, 7.6],
+        "target": [16.3, 1.5, 0.4],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.24,
@@ -7273,8 +8043,8 @@
       },
       {
         "duration": 2,
-        "pos": [16.6, 4.4, 9.6],
-        "target": [16, 0.4, -0.4],
+        "pos": [16.6, 3.6, 9.6],
+        "target": [16, 1.1, -0.4],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7285,8 +8055,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [26.6875, 6, 11.6],
-        "target": [25.5875, 3.456, 0],
+        "pos": [23.512500000000003, 5.2, 11.6],
+        "target": [24.9775, 3.456, -0.12],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7296,8 +8066,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [36.775, 0.5, 3.6],
-        "target": [35.175, 3.456, 0],
+        "pos": [30.425, 0.5, 3.6],
+        "target": [28.825, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -7316,74 +8086,74 @@
       },
       {
         "duration": 1.1,
-        "pos": [29.725, 1.1, 2.5],
-        "target": [28.825, 1.0924137931034485, 0],
+        "pos": [36.075, 1.1, 2.5],
+        "target": [35.175, 1.0924137931034485, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [30.995, 1.1, 2.5],
-        "target": [30.095, 1.3655172413793104, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [32.265, 1.1, 2.5],
-        "target": [31.365, 1.7600000000000002, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [33.535, 1.1, 2.5],
-        "target": [32.635, 2.0937931034482764, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [34.805, 1.1, 2.5],
-        "target": [33.905, 2.366896551724138, 0],
-        "fov": 46,
+        "target": [33.905, 1.8620689655172415, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.6608247047473044,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [36.075, 1.1, 2.5],
-        "target": [35.175, 2.64, 0],
-        "fov": 46,
+        "pos": [33.535, 1.1, 2.5],
+        "target": [32.635, 2.4000000000000004, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.7037011669191546,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [32.265, 1.1, 2.5],
+        "target": [31.365, 2.855172413793104, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.7758834867453874,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [30.995, 1.1, 2.5],
+        "target": [30.095, 3.2275862068965515, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.8576430256956127,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [29.725, 1.1, 2.5],
+        "target": [28.825, 3.5999999999999996, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [35.925, 0.22, 1.3],
-        "target": [35.175, 4.32, 0],
+        "pos": [29.999200000000002, 0.22, 1.3],
+        "target": [29.249200000000002, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7391,14 +8161,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 2
       },
       {
         "duration": 2.4,
-        "pos": [33.2, 3.64, 9.209499999999998],
-        "target": [32, 1.92, 0],
+        "pos": [34.0484, 4.44, 9.209499999999998],
+        "target": [32.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7409,8 +8179,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [42.9875, 5.24, 11.209499999999998],
-        "target": [41.5875, 3.456, 0],
+        "pos": [40.2367, 6.040000000000001, 11.209499999999998],
+        "target": [41.23202, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7420,8 +8190,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [52.775, 0.5, 3.6],
-        "target": [51.175, 3.456, 0],
+        "pos": [46.425, 0.5, 3.6],
+        "target": [44.825, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -7440,74 +8210,74 @@
       },
       {
         "duration": 1.1,
-        "pos": [45.725, 0.5091118160190324, 2.5],
-        "target": [44.825, 0.5, 0],
+        "pos": [52.075, 0.5091118160190324, 2.5],
+        "target": [51.175, 0.5, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [46.995, 0.6608961141950833, 2.5],
-        "target": [46.095, 0.5, 0],
+        "pos": [50.805, 0.6608961141950833, 2.5],
+        "target": [49.905, 0.5, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [48.265, 0.9487628865979383, 2.5],
-        "target": [47.365, 0.5987628865979383, 0],
+        "pos": [49.535, 0.9487628865979383, 2.5],
+        "target": [48.635, 0.5987628865979383, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [49.535, 1.1, 2.5],
-        "target": [48.635, 1.0562093576526568, 0],
+        "pos": [48.265, 1.1, 2.5],
+        "target": [47.365, 1.0562093576526568, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [50.805, 1.1, 2.5],
-        "target": [49.905, 1.7052180808881843, 0],
-        "fov": 46,
+        "pos": [46.995, 1.1, 2.5],
+        "target": [46.095, 2.325297383029342, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.694935707790223,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [52.075, 1.1, 2.5],
-        "target": [51.175, 2.64, 0],
-        "fov": 46,
+        "pos": [45.725, 1.1, 2.5],
+        "target": [44.825, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [51.925, 0.22, 1.3],
-        "target": [51.175, 4.32, 0],
+        "pos": [45.9992, 0.22, 1.3],
+        "target": [45.2492, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7515,14 +8285,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 3
       },
       {
         "duration": 2.4,
-        "pos": [49.2, 3.64, 9.209499999999998],
-        "target": [48, 1.92, 0],
+        "pos": [50.0484, 4.44, 9.209499999999998],
+        "target": [48.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7533,8 +8303,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [55.8125, 5.24, 11.209499999999998],
-        "target": [54.4125, 3.456, 0],
+        "pos": [59.4117, 6.040000000000001, 11.209499999999998],
+        "target": [61.67701999999999, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7544,8 +8314,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [62.425, 0.5, 3.6],
-        "target": [60.825, 3.456, 0],
+        "pos": [68.775, 0.5, 3.6],
+        "target": [67.175, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -7564,74 +8334,74 @@
       },
       {
         "duration": 1.1,
-        "pos": [61.725, 1.1, 2.5],
-        "target": [60.825, 2.64, 0],
-        "fov": 46,
+        "pos": [68.075, 1.1, 2.5],
+        "target": [67.175, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [62.995, 1.1, 2.5],
-        "target": [62.095, 2.4611952191235056, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [64.265, 1.1, 2.5],
-        "target": [63.365, 1.5566533864541834, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [65.535, 1.1, 2.5],
-        "target": [64.635, 1.3673306772908367, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [66.805, 1.1, 2.5],
-        "target": [65.905, 0.8098804780876494, 0],
-        "fov": 46,
+        "target": [65.905, 3.3561752988047804, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.890292884063373,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [68.075, 1.065219123505976, 2.5],
-        "target": [67.175, 0.715219123505976, 0],
+        "pos": [65.535, 1.1, 2.5],
+        "target": [64.635, 2.1227091633466135, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.675689232338037,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [64.265, 1.1, 2.5],
+        "target": [63.365, 1.8645418326693228, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.6609128089573666,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [62.995, 1.1, 2.5],
+        "target": [62.095, 0.8098804780876494, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [61.725, 1.065219123505976, 2.5],
+        "target": [60.825, 0.715219123505976, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [61.575, 0.22, 1.3],
-        "target": [60.825, 4.32, 0],
+        "pos": [68.3492, 0.22, 1.3],
+        "target": [67.5992, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7639,14 +8409,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 4
       },
       {
         "duration": 2.4,
-        "pos": [65.2, 3.64, 9.209499999999998],
-        "target": [64, 1.92, 0],
+        "pos": [66.0484, 4.44, 9.209499999999998],
+        "target": [64.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7657,8 +8427,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [71.8125, 5.24, 11.209499999999998],
-        "target": [70.4125, 3.456, 0],
+        "pos": [75.4117, 6.040000000000001, 11.209499999999998],
+        "target": [77.67702, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7668,8 +8438,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [78.425, 0.5, 3.6],
-        "target": [76.825, 3.456, 0],
+        "pos": [84.775, 0.5, 3.6],
+        "target": [83.175, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -7688,74 +8458,74 @@
       },
       {
         "duration": 1.1,
-        "pos": [77.725, 1.1, 2.5],
-        "target": [76.825, 2.64, 0],
-        "fov": 46,
+        "pos": [84.075, 1.1, 2.5],
+        "target": [83.175, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [78.995, 1.1, 2.5],
-        "target": [78.095, 2.427979274611399, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [80.265, 1.1, 2.5],
-        "target": [79.365, 1.6517098445595852, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [81.535, 1.1, 2.5],
-        "target": [80.635, 1.3849740932642487, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [82.805, 1.1, 2.5],
-        "target": [81.905, 1.131917098445596, 0],
-        "fov": 46,
+        "target": [81.905, 3.310880829015544, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8785432371401076,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [84.075, 1.1, 2.5],
-        "target": [83.175, 1.066943005181347, 0],
+        "pos": [81.535, 1.1, 2.5],
+        "target": [80.635, 2.2523316062176164, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.6872376038393604,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [80.265, 1.1, 2.5],
+        "target": [79.365, 1.8886010362694297, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.6618231391709997,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [78.995, 1.1, 2.5],
+        "target": [78.095, 1.131917098445596, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [77.725, 1.1, 2.5],
+        "target": [76.825, 1.066943005181347, 0],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [77.575, 0.22, 1.3],
-        "target": [76.825, 4.32, 0],
+        "pos": [84.3492, 0.22, 1.3],
+        "target": [83.5992, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -7763,14 +8533,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 5
       },
       {
         "duration": 2.4,
-        "pos": [81.2, 3.64, 9.209499999999998],
-        "target": [80, 1.92, 0],
+        "pos": [82.0484, 4.44, 9.209499999999998],
+        "target": [80.8484, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -7781,8 +8551,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [89.2, 5.24, 11.209499999999998],
-        "target": [88, 0.9, 0],
+        "pos": [89.6242, 6.040000000000001, 11.209499999999998],
+        "target": [91.45451999999999, 0.9, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7821,7 +8591,7 @@
         "focalDistance": 2.2,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 6
       },
@@ -7840,7 +8610,7 @@
       {
         "duration": 1.2,
         "pos": [105.49533357365479, 4.520411150353944, 14.66],
-        "target": [104, 3.5204111503539433, 0],
+        "target": [107.19999999999999, 3.5204111503539433, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7912,7 +8682,7 @@
         "focalDistance": 1.6,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 7
       },
@@ -7931,7 +8701,7 @@
       {
         "duration": 1.2,
         "pos": [121.85000000000001, 9.835918261835287, 12.903351632729047],
-        "target": [120, 2.94, 0],
+        "target": [123.19999999999999, 2.94, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -7972,34 +8742,34 @@
       },
       {
         "duration": 1.2,
-        "pos": [133.99561843740997, 2.85, -1.3987989750836296],
+        "pos": [134.50530217426635, 2.85, -1.5177099925498219],
         "target": [128, 2, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 6.1566288681148755,
+        "focalDistance": 6.68,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.2,
-        "pos": [130.373037477423, 2.0500000000000003, -5.019883187123326],
+        "pos": [130.854897599962, 2.0500000000000003, -6.039201908673968],
         "target": [128, 1.2000000000000002, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 5.552525018549452,
+        "focalDistance": 6.68,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.2,
-        "pos": [125.7416536342125, 1.25, -4.57649164282379],
+        "pos": [125.04396343879039, 1.25, -5.990346221112102],
         "target": [128, 0.3999999999999999, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 5.1033718328867215,
+        "focalDistance": 6.68,
         "shake": 0.05,
         "ease": "smooth"
       },
@@ -8014,7 +8784,7 @@
         "focalDistance": 2,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 8
       },
@@ -8032,8 +8802,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [135.595, 4.300000000000001, 10.876],
-        "target": [134.095, 3.456, 0],
+        "pos": [139.405, 4.300000000000001, 10.876],
+        "target": [141.867, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8043,8 +8813,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [141.79, 0.5, 3.6],
-        "target": [140.19, 3.456, 0],
+        "pos": [149.41, 0.5, 3.6],
+        "target": [147.81, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -8063,85 +8833,85 @@
       },
       {
         "duration": 1.1,
-        "pos": [141.09, 1.1, 2.5],
-        "target": [140.19, 2.64, 0],
-        "fov": 46,
+        "pos": [148.71, 1.1, 2.5],
+        "target": [147.81, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [142.36, 1.1, 2.5],
-        "target": [141.46, 2.592079207920792, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [143.63, 1.1, 2.5],
-        "target": [142.73, 2.4613861386138614, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [144.9, 1.1, 2.5],
-        "target": [144, 2.3568316831683167, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
-        "shake": 0.05,
-        "ease": "smooth"
-      },
-      {
-        "duration": 1.1,
-        "pos": [146.17, 1.1, 2.5],
-        "target": [145.27, 2.2261386138613863, 0],
-        "fov": 46,
-        "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [147.44, 1.1, 2.5],
-        "target": [146.54, 2.0693069306930694, 0],
-        "fov": 46,
+        "target": [146.54, 3.5346534653465342, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.9391547299213387,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [148.71, 1.1, 2.5],
-        "target": [147.81, 1.9647524752475247, 0],
-        "fov": 46,
+        "pos": [146.17, 1.1, 2.5],
+        "target": [145.27, 3.356435643564356, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.8903611927790385,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [144.9, 1.1, 2.5],
+        "target": [144, 3.213861386138613, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.8542881918697063,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [143.63, 1.1, 2.5],
+        "target": [142.73, 3.0356435643564357, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.8130653969917194,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [142.36, 1.1, 2.5],
+        "target": [141.46, 2.8217821782178216, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.7695224998134327,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [141.09, 1.1, 2.5],
+        "target": [140.19, 2.679207920792079, 0],
+        "fov": 52,
+        "transition": "blend",
+        "aperture": 0.16,
+        "focalDistance": 2.7442277961990733,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [148.56, 0.22, 1.3],
-        "target": [147.81, 3.215049504950495, 0],
+        "pos": [141.4404, 0.22, 1.3],
+        "target": [140.6904, 3.036435643564356, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -8149,14 +8919,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 9
       },
       {
         "duration": 2.4,
-        "pos": [145.2, 3.64, 10.289],
-        "target": [144, 1.92, 0],
+        "pos": [146.2008, 4.44, 10.289],
+        "target": [145.0008, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -8167,8 +8937,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [153.64999999999998, 5.24, 12.289],
-        "target": [152, 3.15, 0],
+        "pos": [154.1504, 6.040000000000001, 12.289],
+        "target": [155.50024, 3.15, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8231,35 +9001,35 @@
       },
       {
         "duration": 1,
-        "pos": [160.5, 3.05, 1.6],
-        "target": [160, 3.23, 0],
-        "fov": 40,
+        "pos": [160.7, 2.8, 3.7880000000000003],
+        "target": [160, 3.05, 0],
+        "fov": 42,
         "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
-        "focalDistance": 1.7,
+        "focalDistance": 3.7880000000000003,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 10
       },
       {
         "duration": 2.4,
-        "pos": [161.6, 3.4, 11.16],
+        "pos": [161.6, 3.4, 12.26],
         "target": [160, 2, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
-        "focalDistance": 11.16,
+        "focalDistance": 12.26,
         "ease": "out",
         "beat": "station",
         "station": 10
       },
       {
         "duration": 1.2,
-        "pos": [169.1168, 5, 13.16],
-        "target": [168, 2.51, 0],
+        "pos": [169.1168, 5, 14.26],
+        "target": [171.2, 2.51, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8345,8 +9115,8 @@
       },
       {
         "duration": 1.2,
-        "pos": [185.435, 4.51, 7.896],
-        "target": [184.635, 3.456, 0],
+        "pos": [184.16500000000002, 4.51, 7.896],
+        "target": [186.31099999999998, 3.456, 0],
         "fov": 50,
         "transition": "blend",
         "aperture": 0,
@@ -8356,8 +9126,8 @@
       },
       {
         "duration": 0.9,
-        "pos": [194.87, 0.5, 3.6],
-        "target": [193.27, 3.456, 0],
+        "pos": [192.33, 0.5, 3.6],
+        "target": [190.73, 3.456, 0],
         "fov": 54,
         "aperture": 0.55,
         "focalDistance": 4,
@@ -8376,41 +9146,41 @@
       },
       {
         "duration": 1.1,
-        "pos": [191.63, 0.614, 2.5],
-        "target": [190.73, 0.5, 0],
+        "pos": [194.17, 0.614, 2.5],
+        "target": [193.27, 0.5, 0],
         "fov": 46,
         "transition": "blend",
         "aperture": 0.25,
-        "focalDistance": 2.7,
+        "focalDistance": 2.6570660511172846,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
         "pos": [192.9, 1.1, 2.5],
-        "target": [192, 1.32, 0],
-        "fov": 46,
+        "target": [192, 1.7999999999999998, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.658947160061666,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1.1,
-        "pos": [194.17, 1.1, 2.5],
-        "target": [193.27, 2.64, 0],
-        "fov": 46,
+        "pos": [191.63, 1.1, 2.5],
+        "target": [190.73, 3.5999999999999996, 0],
+        "fov": 52,
         "transition": "blend",
-        "aperture": 0.25,
-        "focalDistance": 2.7,
+        "aperture": 0.16,
+        "focalDistance": 2.958039891549808,
         "shake": 0.05,
         "ease": "smooth"
       },
       {
         "duration": 1,
-        "pos": [194.02, 0.22, 1.3],
-        "target": [193.27, 4.32, 0],
+        "pos": [191.6756, 0.22, 1.3],
+        "target": [190.9256, 4.08, 0],
         "fov": 44,
         "transition": "blend",
         "beat": "super",
@@ -8418,14 +9188,14 @@
         "focalDistance": 1.8,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
-        "exposure": [1.45, 1],
+        "exposure": [1.2, 1],
         "ease": "out",
         "station": 12
       },
       {
         "duration": 2.4,
-        "pos": [193.2, 3.64, 5.971],
-        "target": [192, 1.92, 0],
+        "pos": [193.5912, 4.44, 5.971],
+        "target": [192.3912, 1.8239999999999998, 0],
         "fov": 44,
         "transition": "blend",
         "aperture": 0.12,
@@ -8442,6 +9212,8 @@
         "transition": "blend",
         "aperture": 0.08,
         "focalDistance": 218.4,
+        "ambient": 1.7,
+        "exposure": 1.35,
         "ease": "out",
         "beat": "finale"
       }

@@ -87,7 +87,7 @@
           opacity 0.45s,
           transform 0.45s;
         pointer-events: none;
-        max-width: 44vw;
+        max-width: 36vw;
         z-index: 30;
       }
       .stage-bullet.on {
@@ -97,6 +97,61 @@
       /* the beat the camera is visiting reads at full strength */
       .stage-bullet.on.cur {
         opacity: 1;
+      }
+      /* Insight panel — the derived takeaway (R1: the chart finishes the
+         derivation for the reader). Bottom-right, opposite the title/bullet
+         column; big claim + small cited derivation line. */
+      .stage-insight {
+        position: fixed;
+        right: 6vw;
+        bottom: 13vh;
+        text-align: right;
+        font:
+          900 clamp(30px, 5vh, 60px) / 1.15 -apple-system,
+          Inter,
+          sans-serif;
+        color: #fff;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.9),
+          0 6px 30px rgba(0, 0, 0, 0.65);
+        border-right: 4px solid rgba(255, 255, 255, 0.55);
+        padding-right: 18px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+        pointer-events: none;
+        max-width: 44vw;
+        z-index: 30;
+      }
+      .stage-insight.on {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .stage-insight .sub {
+        margin-top: 8px;
+        font:
+          600 clamp(13px, 1.8vh, 17px) / 1.4 -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.72);
+        letter-spacing: 0.02em;
+      }
+      /* chapter / finale cards: centered in the mid-frame void */
+      .stage-insight.center {
+        right: auto;
+        left: 50%;
+        bottom: 32vh;
+        text-align: center;
+        border-right: none;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.55);
+        padding-right: 0;
+        padding-bottom: 14px;
+        transform: translate(-50%, 10px);
+      }
+      .stage-insight.center.on {
+        transform: translate(-50%, 0);
       }
       /* Boot loader — visible until the first frame is drawn. Pure CSS-transform
          animation so it keeps moving even if the main thread hiccups. */

@@ -25,7 +25,7 @@ const itemMat = (emphasized, accent) =>
         hue: 0.11,
         sat: 0.78,
         value: 0.95,
-        glow: 0.22,
+        glow: 0.1,
         kind: 'normal',
         roughness: 0.22,
         clearcoat: 0.6,
@@ -196,7 +196,7 @@ function renderEvolutionForm(ir, env) {
       focalDistance: 2.2,
       shake: [0.5, 0.06],
       ambient: [0.15, 1.0],
-      exposure: [1.45, 1.0],
+      exposure: [1.2, 1.0],
       ease: 'out',
     },
     // 4 — payoff: both strata in one frame

@@ -21,6 +21,7 @@ import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 import { MODULE, SCALE, centeredRow, rowSpan as rowSpanOf } from './layout-tokens.js';
 import { TEMPO, introLead as introLeadOf } from './tempo-tokens.js';
+import { deriveMagnitudeInsight } from './insights.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
@@ -34,7 +35,7 @@ const monoMat = (i, N, emphasized, accent) => {
       sat: 0.78,
       value: 0.95,
       metal: 0,
-      glow: 0.22,
+      glow: 0.1, // R1 critique: glow 0.22 × super exposure clipped gold to cream
       kind: 'normal',
       roughness: 0.22,
       clearcoat: 0.6,
@@ -83,7 +84,10 @@ export function renderMagnitude(ir, opts = {}) {
   const W = MODULE.unit; // monolith footprint
   const H_MAX = SCALE.monumental; // the champion TOWERS (analytic engine pays for it)
   const height = (i) => Math.max(0.12, (Number(mag[i]) / mMax) * H_MAX);
-  const xOf = (i) => centeredRow(i, N);
+  // R2 (2D-similarity): studio +x renders screen-LEFT, so a straight
+  // centeredRow(i) plays the years right-to-left — the mirror of the source
+  // page. Flip the index: node 0 lands screen-left, reading order matches 2D.
+  const xOf = (i) => centeredRow(N - 1 - i, N);
 
   // Tracking-beat timing: monolith i erupts as the camera's beat i begins.
   // Durations come from the shared tempo tokens (Layer B temporal half).
@@ -138,12 +142,21 @@ export function renderMagnitude(ir, opts = {}) {
   for (let g = 0; g < 3; g++) {
     const gh = 2.2 + g * 1.3;
     for (const side of [-1, 1]) {
+      // R2 (第三层深度): the nearest guard pair moves CAMERA-SIDE (z +1.7,
+      // between lens and subject) — during the tracking walk it sweeps the
+      // frame edge out of focus, buying parallax and physical presence; the
+      // deeper pairs stay behind as the perspective guides.
+      const fg = g === 0;
       subjects.push({
         id: `guard-${side < 0 ? 'l' : 'r'}-${g}`,
         type: 'box',
         args: { dims: [0.9, gh, 0.5] },
         transform: {
-          translate: [side * (rowSpanG / 2 + 2.6 + g * 1.4), gh / 2, -2.4 - g * 2.2],
+          translate: [
+            side * (rowSpanG / 2 + (fg ? 4.6 : 2.6 + g * 1.4)), // R3: 3.4/z1.7 smeared bokeh blobs onto the columns at payoff
+            gh / 2,
+            fg ? 1.2 : -2.4 - g * 2.2,
+          ],
           rotate: [0, side * 0.3, 0],
         },
         material: {
@@ -190,16 +203,24 @@ export function renderMagnitude(ir, opts = {}) {
   order.forEach((i) => {
     const x = xOf(i);
     const H = height(i);
+    // R1 critique: the beat SELLS height but tall columns lost their tops and
+    // value chips off-frame, with the crown out of focus. Keep the low intimate
+    // camera (the compression IS the register contrast), but tilt UP at giants
+    // (target rides to H*0.75), widen the lens, and focus on the column's
+    // actual midpoint so the whole subject sits inside the depth of field.
+    const tall = H > SCALE.intimate * 2;
+    const posY = Math.min(SCALE.intimate, H * 0.55 + 0.35);
+    const targetY = tall ? H * 0.75 : Math.max(H * 0.55, 0.5);
     shots.push({
       duration: holdEach,
       // camera rides the INTIMATE register during the walk-among-giants — the
       // scale contrast against SCALE.monumental is the "对比" operator itself
-      pos: [x + 0.9, Math.min(SCALE.intimate, H * 0.55 + 0.35), 2.5],
-      target: [x, Math.max(H * 0.55, 0.5), 0],
-      fov: 46,
+      pos: [x + 0.9, posY, 2.5],
+      target: [x, targetY, 0],
+      fov: tall ? 52 : 46,
       transition: 'blend',
-      aperture: 0.25,
-      focalDistance: 2.7,
+      aperture: tall ? 0.16 : 0.25,
+      focalDistance: Math.hypot(0.9, 2.5, Math.max(0, H / 2 - posY)),
       shake: 0.05,
       ease: 'smooth',
     });
@@ -208,8 +229,11 @@ export function renderMagnitude(ir, opts = {}) {
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
   shots.push({
     duration: TEMPO.superHold,
-    pos: [gx + 0.75, 0.22, 1.3],
-    target: [gx, gH * 0.9, 0],
+    // R1 critique: title safe-area — the DOM title owns the top-left, so the
+    // framing yields right and slightly down; the champion no longer wears
+    // the headline across its face
+    pos: [gx + 0.75 + rowSpan * 0.06, 0.22, 1.3],
+    target: [gx + rowSpan * 0.06, gH * 0.85, 0],
     fov: 44,
     transition: 'cut',
     beat: 'super',
@@ -217,15 +241,17 @@ export function renderMagnitude(ir, opts = {}) {
     focalDistance: 1.8,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
-    exposure: [1.45, 1.0],
+    exposure: [1.2, 1.0], // R1: 1.45 clipped the gold champion to cream — the DARK world sells the hit, not a blown subject
     ease: 'out',
   });
   // 5 — payoff pull-back: the whole skyline
   const payoffDist = (rowSpan * 0.85 + 3.2) * (env ? env.payoffZoom : 1);
   shots.push({
     duration: TEMPO.payoff,
-    pos: [1.2, tallH * 0.55 + 1.0 + (env ? 0.5 : 0), payoffDist],
-    target: [0, tallH * 0.4, 0],
+    // title safe-area: shift the whole skyline right of the DOM headline and
+    // keep the champion's crown off the frame's top edge
+    pos: [1.2 + rowSpan * 0.12, tallH * 0.55 + 1.8 + (env ? 0.5 : 0), payoffDist],
+    target: [rowSpan * 0.12, tallH * 0.38, 0],
     fov: 44,
     transition: 'blend',
     aperture: 0.12, // deep focus: the whole story stays sharp
@@ -241,16 +267,46 @@ export function renderMagnitude(ir, opts = {}) {
       role: 'title',
     },
   ];
+  // R1 — the floating INSIGHT layer ("数据在场,结论缺席" critique): the chart
+  // finishes the derivation for the reader. Rules-first arithmetic on the
+  // magnitude array (multiple / CAGR / share lead / retention), cited sources
+  // in the sub line, revealed on the payoff beat when the whole row is in
+  // frame for the first time.
+  const payoffStart = superAt + TEMPO.superHold;
+  const insight = deriveMagnitudeInsight(ir);
+  if (insight) {
+    overlay.push({
+      text: insight.text,
+      sub: insight.sub + (insight.note ? ` · ${insight.note}` : ''),
+      role: 'insight',
+      revealAt: payoffStart + 0.4,
+    });
+  }
+  // ir.callout — page-critical text the structure can't encode (e.g. the
+  // funding ASK next to the DAU target). Shown on the SUPER beat, yields to
+  // the insight at payoff.
+  if (ir.callout && ir.callout.text) {
+    overlay.push({
+      text: String(ir.callout.text),
+      sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+      role: 'insight',
+      revealAt: superAt + 0.25,
+      hideAt: insight ? payoffStart + 0.4 : undefined,
+    });
+  }
+  // R3: SHORT axis labels (years, category codes ≤6 chars) bind to the WORLD
+  // at the plinth's front edge — a 2D bar chart's year sits under its bar, and
+  // the subtitle-column mapping made readers count rows. Sentences still go to
+  // the subtitle column.
+  const shortAxis = nodes.every((n) => String(n).trim().length <= 6);
   order.forEach((i, k) => {
     const x = xOf(i);
     const H = height(i);
     const revealAt = introLead + k * holdEach + 0.35;
     overlay.push({
-      // node names are SPOKEN text → the stage layer's subtitle column; the
-      // camera reaches monolith k as its name lights up (time binds them)
       text: nodes[i],
-      anchor: [x, -0.02, W * 0.5 + 0.35],
-      role: 'screen',
+      anchor: [x, -0.02, W * 0.5 + (shortAxis ? 0.6 : 0.35)],
+      role: shortAxis ? 'card' : 'screen',
       revealAt,
     });
     overlay.push({

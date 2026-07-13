@@ -21,6 +21,7 @@
 // with the tour — hierarchy IS the narration, so geometry and narration land
 // together, level by level.
 import { validateIR } from './ir.js';
+import { calloutOverlay } from './insights.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
@@ -77,7 +78,7 @@ const nodeMat = (lvl, maxLvl, emphasized) => {
       sat: 0.78,
       value: 0.95,
       metal: 0,
-      glow: 0.22,
+      glow: 0.04, // R3: root glow + bloom blew into a featureless sun
       kind: 'normal',
       roughness: 0.22,
       clearcoat: 0.6,
@@ -203,24 +204,30 @@ export function renderHierarchy(ir, opts = {}) {
       ease: 'smooth',
     });
   }
-  // 4 — the super: hard cut punch-in on the emphasis node
+  // 4 — the super: punch-in on the emphasis node. R5: the old 1.6-unit punch
+  // landed INSIDE the crown — the root smeared across the frame top and the
+  // camera stared at empty floor. Back off with the node's own radius so the
+  // subject (sphere + its card below) composes as a subject.
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
+  const superDist = 2.6 + nodeR(emphasisIdx) * 2.2;
   shots.push({
     duration: 1.0,
-    pos: [gp[0] + 0.5, Math.max(gp[1] - 0.1, 0.14), gp[2] + 1.6],
-    target: [gp[0], gp[1] + 0.08, gp[2]],
-    fov: 40,
+    pos: [gp[0] + 0.7, Math.max(gp[1] - 0.35, 0.14), gp[2] + superDist],
+    target: [gp[0], gp[1] - 0.1, gp[2]],
+    fov: 42,
     transition: 'cut',
     beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
-    focalDistance: 1.7,
+    focalDistance: superDist,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
-    exposure: [1.45, 1.0],
+    exposure: [1.2, 1.0],
     ease: 'out',
   });
   // 5 — payoff pull-back: the whole tree
-  const payoffDist = (treeSpan + maxLevel * 1.6 + 3.4) * (env ? env.payoffZoom : 1);
+  const payoffDist =
+    (treeSpan + maxLevel * 1.6 + 4.5) /* R3: 3.4 cropped the leaf tier */ *
+    (env ? env.payoffZoom : 1);
   shots.push({
     duration: 2.4,
     pos: [1.6, midY + 1.4 + (env ? 0.5 : 0), payoffDist],
@@ -244,12 +251,15 @@ export function renderHierarchy(ir, opts = {}) {
     const p = pos[i];
     overlay.push({
       text: nodes[i],
-      anchor: [p[0] + nodeR(i) + 0.32, p[1], p[2]],
+      // R3: BELOW the node, never beside it — the side anchor projected the
+      // card straight onto the sphere's specular highlight
+      anchor: [p[0], p[1] - nodeR(i) - 0.28, p[2]],
       role: 'card',
-      align: 'left',
       revealAt: introLead + level[i] * holdEach + 0.35,
     });
   }
+  const co = calloutOverlay(ir, superAt);
+  if (co) overlay.push(co);
 
   return {
     v: 1,

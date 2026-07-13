@@ -261,6 +261,17 @@ export function assembleDeck(deck, opts = {}) {
   const hitstops = [];
   let clock = 0;
   let prevPayoff = null;
+  // Chapter narration (R2, layout-agnostic): when the deck carries zones +
+  // chapters metadata, a zone-crossing transit gets a floating chapter card —
+  // the transit was the one wordless span in the whole deck, and the chapter
+  // conclusion/tease is exactly transit-sized text.
+  const zoneOfIdx = Array.isArray(deck.zones)
+    ? (() => {
+        const z = new Array(deck.slides.length).fill(null);
+        deck.zones.forEach((ms, zi) => ms.forEach((i) => (z[i] = zi)));
+        return z;
+      })()
+    : null;
   // Per-station shader switching (M3 perf): the ONE-shader deck world hits
   // Apple GPUs' super-linear giant-shader cost (register pressure kills
   // occupancy at compile time — runtime branch-skipping proved useless, see
@@ -339,7 +350,14 @@ export function assembleDeck(deck, opts = {}) {
           Math.max(prevPayoff.pos[1], heroPos[1]) + 1.6,
           Math.max(prevPayoff.pos[2], heroPos[2]) + 2.0,
         ],
-        target: [(prevPayoff.target[0] + heroTarget[0]) / 2, heroTarget[1], heroTarget[2]],
+        // R1 critique: an arithmetic-midpoint target frames the VOID between
+        // stations at mid-whip. Weight the gaze 70/30 toward where we're
+        // GOING — the next arena grows from the frame's third, never the edge.
+        target: [
+          prevPayoff.target[0] * 0.3 + heroTarget[0] * 0.7,
+          heroTarget[1],
+          prevPayoff.target[2] * 0.3 + heroTarget[2] * 0.7,
+        ],
         fov: 50,
         transition: 'blend',
         aperture: 0,
@@ -355,6 +373,24 @@ export function assembleDeck(deck, opts = {}) {
         end: clock + dur,
         origin: [(prev[0] + origin[0]) / 2, 0, (prev[2] + origin[2]) / 2],
       });
+      // chapter card on zone-crossing transits (needs deck.zones + chapters)
+      if (
+        zoneOfIdx &&
+        Array.isArray(deck.chapters) &&
+        zoneOfIdx[k] != null &&
+        zoneOfIdx[k] !== zoneOfIdx[k - 1]
+      ) {
+        const ch = deck.chapters[zoneOfIdx[k]];
+        if (ch && ch.title)
+          overlay.push({
+            text: String(ch.title),
+            sub: ch.note ? String(ch.note) : undefined,
+            role: 'insight',
+            panel: 'center', // R3: the chapter card owns the mid-frame void, not the destination's corner
+            revealAt: clock + 0.15,
+            hideAt: clock + dur,
+          });
+      }
       clock += dur;
     }
 
@@ -392,9 +428,15 @@ export function assembleDeck(deck, opts = {}) {
     for (const o of st.overlay || []) {
       overlay.push({
         ...o,
-        anchor: addV(o.anchor, origin),
+        ...(o.anchor ? { anchor: addV(o.anchor, origin) } : {}),
         revealAt: (o.revealAt ?? 0) + clock,
-        ...(o.role === 'title' || o.role === 'screen' ? { hideAt: stationEnd } : {}),
+        // renderer-set hideAt is station-local → shift; narrative roles
+        // without one clear at the station's end (transit flies clean)
+        ...(o.hideAt != null
+          ? { hideAt: o.hideAt + clock }
+          : o.role === 'card' || o.role === 'value'
+            ? { hideAt: stationEnd + 0.4 } // R3: cards/values lingered into the transit flight
+            : { hideAt: stationEnd }),
         // the DOM layer paints in the station's chapter color too: the value
         // chip's fill and the CURRENT subtitle line pick it up
         ...(accCss ? { accentColor: accCss } : {}),
@@ -492,13 +534,16 @@ export function assembleDeck(deck, opts = {}) {
       const dx = next[0] - origin[0];
       const dz = next[2] - origin[2];
       const yaw = Math.atan2(dz, dx); // marker long axis along the segment
-      const dots = 5;
+      const dots = 7; // R3: five chips read as debris; seven make a line
       for (let d = 1; d <= dots; d++) {
         const f = d / (dots + 1);
         subjects.push({
           id: `path-${k}-${d}`,
           type: 'box',
-          args: { dims: [0.9, 0.06, 0.28] },
+          // R1 critique: 0.9×0.06 chips were invisible in the transit frame —
+          // the flight had no guide line. Long low glowing strips read as a
+          // runway; the ground between stations stops being a black gap.
+          args: { dims: [1.7, 0.05, 0.32] },
           transform: {
             translate: [origin[0] + dx * f, 0.03, origin[2] + dz * f],
             rotate: [0, -yaw, 0],
@@ -506,7 +551,8 @@ export function assembleDeck(deck, opts = {}) {
           material: {
             hue: 0.58,
             sat: 0.25,
-            value: 0.75,
+            value: 0.85,
+            glow: 0.45, // R3: 0.12 was invisible in the dark field — the runway must READ
             kind: 'normal',
             roughness: 0.5,
             clearcoat: 0.2,
@@ -535,9 +581,24 @@ export function assembleDeck(deck, opts = {}) {
       transition: 'blend',
       aperture: 0.08,
       focalDistance: span * 1.05,
+      // R3 ("停电现场" critique): the thesis frame inherited the stage's
+      // combat dimming and read as a blackout — it gets the overlook's lift
+      ambient: 1.7,
+      exposure: 1.35,
       ease: 'out',
       beat: 'finale', // presenter mode: the money-shot hold
     });
+    // closing card: the deck's last spoken line is its THESIS — it must be
+    // seen, not just heard (deck.finale = { text, sub }, optional metadata)
+    if (deck.finale && deck.finale.text) {
+      overlay.push({
+        text: String(deck.finale.text),
+        sub: deck.finale.sub ? String(deck.finale.sub) : undefined,
+        role: 'insight',
+        panel: 'center',
+        revealAt: clock + 0.5,
+      });
+    }
     windows.push({
       kind: 'finale',
       stations: deck.slides.map((_, i) => i),
@@ -584,7 +645,7 @@ export function assembleDeck(deck, opts = {}) {
     ? {
         studioBg: 'dark',
         interiorDark: 0.4,
-        glow: { amount: 0.3, k: 6.0 },
+        glow: { amount: 0.3, k: 3.5 }, // R2: k=6 died on large-radius motifs (the dome)
         postFx: { vignetteStrength: 0.58, exposure: 0.92, bloomMix: 0.24 },
       }
     : null;

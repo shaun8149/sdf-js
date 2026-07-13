@@ -43,7 +43,7 @@ const GOLD_MAT = {
   hue: 0.11,
   sat: 0.78,
   value: 0.95,
-  glow: 0.22,
+  glow: 0.1,
   kind: 'normal',
   roughness: 0.22,
   clearcoat: 0.6,
@@ -121,11 +121,17 @@ export function renderHold(ir, opts = {}) {
       material: { ...ROCK_MAT, roughness: 0.4 },
     });
     const R = 4.1;
+    // R2 critique ("米奇耳朵"): orbs at y 0.62 projected tangent to the dome's
+    // crown — two shapes counting as one blob. Lift them to a clean SATELLITE
+    // RING (y 2.2) with edge padding so the perspective never overlaps the end
+    // orbs, and give each a glowing stem: "the core radiates six points" now
+    // reads in geometry, not just in subtitles.
+    const ORB_Y = 2.2;
+    const PAD = 0.35; // rad — end-orb breathing room against perspective overlap
     bullets.forEach((_, k) => {
-      const a = (Math.PI * (k + 0.5)) / N; // 180° sweep, screen left → right
+      const a = PAD + ((Math.PI - 2 * PAD) * (k + 0.5)) / N; // padded sweep, screen left → right
       const x = Math.cos(a) * R;
-      const z = -1.2 + Math.sin(a) * R * 0.85;
-      const y = 0.62;
+      const z = -1.2 + Math.sin(a) * R * 0.3; // R3: 0.85 depth blew end orbs into frame-clipping balloons
       const drop = 1.6;
       const t0 = introLead + k * holdEach - 0.35;
       const t1 = t0 + 0.55;
@@ -133,14 +139,23 @@ export function renderHold(ir, opts = {}) {
         id: `orb-${k}`,
         type: 'sphere',
         args: { radius: 0.42 },
-        transform: { translate: [x, y, z] },
+        transform: { translate: [x, ORB_Y, z] },
         material: emphasis.has(k) ? GOLD_MAT : RED_MAT,
         animation: [
           {
             channel: 'transform.translate.y',
-            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
+            expr: `${(ORB_Y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
           },
         ],
+      });
+      // the stem: a faint vertical light column under each landing point
+      // (yaw-free capsule — stays inside the analytic renderer's support set)
+      subjects.push({
+        id: `orb-stem-${k}`,
+        type: 'capsule',
+        args: { radius: 0.05, height: ORB_Y - 0.6 },
+        transform: { translate: [x, (ORB_Y - 0.3) / 2 + 0.15, z] },
+        material: { hue: 0.995, sat: 0.15, value: 0.8, glow: 0.5, kind: 'normal', roughness: 0.4 }, // R3: light, not a pink plastic stick
       });
     });
   }
@@ -212,11 +227,13 @@ export function renderHold(ir, opts = {}) {
           },
         ]
       : [
-          // contents: settle above the arc so the whole crescent reads
+          // contents: settle level with the satellite ring — target rides at
+          // ring height so the horizon sits on the lower third (R2: the old
+          // high-drift framing wasted the bottom 45% on empty platform)
           {
             duration: introLead,
-            pos: [0.5, 2.2, 8.8],
-            target: [0, 0.7, 0.6],
+            pos: [0.5, 2.0, 8.8],
+            target: [0, 1.3, 0.6],
             fov: 46,
             aperture: 0.3,
             focalDistance: 8.6,
@@ -224,8 +241,8 @@ export function renderHold(ir, opts = {}) {
           },
           {
             duration: driftDur,
-            pos: [-1.6, 3.4, 8.0],
-            target: [0.3, 0.5, 0.4],
+            pos: [-1.6, 2.5, 7.6],
+            target: [0.3, 1.5, 0.4],
             fov: 46,
             transition: 'blend',
             aperture: 0.24,
@@ -234,8 +251,8 @@ export function renderHold(ir, opts = {}) {
           },
           {
             duration: 2.0,
-            pos: [0.6, 4.4, 9.6 * (env ? env.payoffZoom : 1)],
-            target: [0, 0.4, -0.4],
+            pos: [0.6, 3.6, 9.6 * (env ? env.payoffZoom : 1)],
+            target: [0, 1.1, -0.4],
             fov: 44,
             transition: 'blend',
             aperture: 0.12,
