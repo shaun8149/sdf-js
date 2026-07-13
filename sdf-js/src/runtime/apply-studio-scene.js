@@ -27,6 +27,7 @@ import { expandVariants } from '../scene/generator-s.js';
 import { expandChartLabels } from '../scene/chart-labels.js';
 import { expandStage } from '../scene/stage.js';
 import { resolveMaterialRefs } from '../scene/spec.js';
+import { expandModifiers } from '../scene/modifiers.js';
 import { union as sdfUnion } from '../sdf/dn.js';
 
 // Does the scene change pixels on its own (no input)? Drives studio's idle-stop:
@@ -79,7 +80,7 @@ export function pickRenderScale(rawScene) {
 export function expandAndCompile(sceneData, { rng = null, tokenHash } = {}) {
   // Wave A: inflate scene.materials string references first — everything
   // downstream (stage, labels, compile) keeps seeing inline material objects.
-  const resolvedScene = resolveMaterialRefs(sceneData);
+  const resolvedScene = expandModifiers(resolveMaterialRefs(sceneData));
   const variantScene = rng ? expandVariants(resolvedScene, rng) : resolvedScene;
   const stagedScene = expandStage(variantScene);
   const labeledScene = expandChartLabels(stagedScene);

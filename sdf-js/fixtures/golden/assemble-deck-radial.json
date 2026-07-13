@@ -839,91 +839,20 @@
       "collection": "station-0"
     },
     {
-      "id": "path-0-1",
+      "id": "path-0-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [1.9230377400028875, 0, -0.4739862326857551]
+        }
+      ],
       "transform": {
         "translate": [1.9230377400028875, 0.03, 32.630241930428475],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [3.846075480005775, 0.03, 32.15625569774272],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [5.769113220008663, 0.03, 31.68226946505696],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [7.69215096001155, 0.03, 31.20828323237121],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [9.615188700014437, 0.03, 30.734296999685455],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [11.538226440017326, 0.03, 30.260310766999698],
-        "rotate": [0, 0.24166097335306091, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-0"
-    },
-    {
-      "id": "path-0-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [13.461264180020212, 0.03, 29.78632453431394],
         "rotate": [0, 0.24166097335306091, 0]
       },
       "material": "mat-1",
@@ -1128,91 +1057,20 @@
       "collection": "station-1"
     },
     {
-      "id": "path-1-1",
+      "id": "path-1-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [1.482492968885288, 0, -1.3133741643022883]
+        }
+      ],
       "transform": {
         "translate": [16.866794888908387, 0.03, 27.9989641373259],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [18.349287857793676, 0.03, 26.68558997302361],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [19.831780826678965, 0.03, 25.37221580872132],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [21.31427379556425, 0.03, 24.058841644419033],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [22.79676676444954, 0.03, 22.745467480116744],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24.279259733334825, 0.03, 21.43209331581446],
-        "rotate": [0, 0.724982920059183, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-1"
-    },
-    {
-      "id": "path-1-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [25.761752702220114, 0.03, 20.11871915151217],
         "rotate": [0, 0.724982920059183, 0]
       },
       "material": "mat-1",
@@ -1410,24 +1268,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-0",
+      "id": "s2-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [19.109245671105406, 1.1, 20.00534498720988],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [27.244245671105404, 18.80534498720988]
+        }
+      ],
       "transform": {
         "translate": [35.3792456711054, 1.1, 20.00534498720988],
         "rotate": [0, 0.3, 0]
@@ -1436,24 +1288,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-1",
+      "id": "s2-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [19.709245671105403, 1.75, 14.205344987209882],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [27.244245671105404, 18.80534498720988]
+        }
+      ],
       "transform": {
         "translate": [34.7792456711054, 1.75, 14.205344987209882],
         "rotate": [0, 0.3, 0]
@@ -1462,24 +1308,18 @@
       "collection": "station-2"
     },
     {
-      "id": "s2-guard-l-2",
+      "id": "s2-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [18.3092456711054, 2.4000000000000004, 12.005344987209881],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-2"
-    },
-    {
-      "id": "s2-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [27.244245671105404, 18.80534498720988]
+        }
+      ],
       "transform": {
         "translate": [36.179245671105406, 2.4000000000000004, 12.005344987209881],
         "rotate": [0, 0.3, 0]
@@ -1488,91 +1328,20 @@
       "collection": "station-2"
     },
     {
-      "id": "path-2-1",
+      "id": "path-2-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [0.7023269245731019, 0, -1.8518839027516654]
+        }
+      ],
       "transform": {
         "translate": [27.946572595678504, 0.03, 16.953461084458215],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [28.648899520251607, 0.03, 15.101577181706551],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [29.35122644482471, 0.03, 13.249693278954886],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30.05355336939781, 0.03, 11.39780937620322],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [30.75588029397091, 0.03, 9.545925473451554],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [31.458207218544015, 0.03, 7.6940415706998895],
-        "rotate": [0, 1.208304866765305, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-2"
-    },
-    {
-      "id": "path-2-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [32.16053414311712, 0.03, 5.842157667948225],
         "rotate": [0, 1.208304866765305, 0]
       },
       "material": "mat-1",
@@ -1770,24 +1539,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-0",
+      "id": "s3-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [24.72786106769022, 1.1, 5.190273765196559],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32.86286106769022, 3.9902737651965587]
+        }
+      ],
       "transform": {
         "translate": [40.997861067690216, 1.1, 5.190273765196559],
         "rotate": [0, 0.3, 0]
@@ -1796,24 +1559,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-1",
+      "id": "s3-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [25.32786106769022, 1.75, -0.6097262348034409],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32.86286106769022, 3.9902737651965587]
+        }
+      ],
       "transform": {
         "translate": [40.397861067690215, 1.75, -0.6097262348034409],
         "rotate": [0, 0.3, 0]
@@ -1822,24 +1579,18 @@
       "collection": "station-3"
     },
     {
-      "id": "s3-guard-l-2",
+      "id": "s3-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [23.927861067690216, 2.4000000000000004, -2.809726234803442],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-3"
-    },
-    {
-      "id": "s3-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [32.86286106769022, 3.9902737651965587]
+        }
+      ],
       "transform": {
         "translate": [41.79786106769022, 2.4000000000000004, -2.809726234803442],
         "rotate": [0, 0.3, 0]
@@ -1848,91 +1599,20 @@
       "collection": "station-3"
     },
     {
-      "id": "path-3-1",
+      "id": "path-3-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-0.23873375420180754, 0, -1.966149356701]
+        }
+      ],
       "transform": {
         "translate": [32.62412731348841, 0.03, 2.0241244084955587],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [32.385393559286605, 0.03, 0.05797505179455875],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [32.146659805084795, 0.03, -1.9081743049064412],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [31.90792605088299, 0.03, -3.8743236616074412],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [31.66919229668118, 0.03, -5.84047301830844],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [31.43045854247937, 0.03, -7.806622375009441],
-        "rotate": [0, 1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-3"
-    },
-    {
-      "id": "path-3-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [31.191724788277565, 0.03, -9.772771731710442],
         "rotate": [0, 1.6916268134714274, 0]
       },
       "material": "mat-1",
@@ -2130,24 +1810,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-0",
+      "id": "s4-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [22.81799103407576, 1.1, -10.538921088411442],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [30.952991034075758, -11.738921088411441]
+        }
+      ],
       "transform": {
         "translate": [39.087991034075756, 1.1, -10.538921088411442],
         "rotate": [0, 0.3, 0]
@@ -2156,24 +1830,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-1",
+      "id": "s4-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [23.417991034075758, 1.75, -16.33892108841144],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [30.952991034075758, -11.738921088411441]
+        }
+      ],
       "transform": {
         "translate": [38.48799103407576, 1.75, -16.33892108841144],
         "rotate": [0, 0.3, 0]
@@ -2182,24 +1850,18 @@
       "collection": "station-4"
     },
     {
-      "id": "s4-guard-l-2",
+      "id": "s4-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [22.017991034075756, 2.4000000000000004, -18.538921088411442],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-4"
-    },
-    {
-      "id": "s4-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [30.952991034075758, -11.738921088411441]
+        }
+      ],
       "transform": {
         "translate": [39.88799103407576, 2.4000000000000004, -18.538921088411442],
         "rotate": [0, 0.3, 0]
@@ -2208,91 +1870,20 @@
       "collection": "station-4"
     },
     {
-      "id": "path-4-1",
+      "id": "path-4-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-1.1251034069427068, 0, -1.6299936876985037]
+        }
+      ],
       "transform": {
         "translate": [29.82788762713305, 0.03, -13.368914776109944],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [28.702784220190345, 0.03, -14.998908463808448],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [27.57768081324764, 0.03, -16.628902151506953],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [26.452577406304933, 0.03, -18.258895839205458],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [25.327473999362226, 0.03, -19.88888952690396],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [24.202370592419516, 0.03, -21.518883214602464],
-        "rotate": [0, 2.174948760177549, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-4"
-    },
-    {
-      "id": "path-4-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [23.07726718547681, 0.03, -23.14887690230097],
         "rotate": [0, 2.174948760177549, 0]
       },
       "material": "mat-1",
@@ -2490,24 +2081,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-0",
+      "id": "s5-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [13.817163778534104, 1.1, -23.57887058999947],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [21.952163778534103, -24.77887058999947]
+        }
+      ],
       "transform": {
         "translate": [30.087163778534105, 1.1, -23.57887058999947],
         "rotate": [0, 0.3, 0]
@@ -2516,24 +2101,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-1",
+      "id": "s5-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [14.417163778534103, 1.75, -29.378870589999472],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [21.952163778534103, -24.77887058999947]
+        }
+      ],
       "transform": {
         "translate": [29.487163778534104, 1.75, -29.378870589999472],
         "rotate": [0, 0.3, 0]
@@ -2542,24 +2121,18 @@
       "collection": "station-5"
     },
     {
-      "id": "s5-guard-l-2",
+      "id": "s5-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [13.017163778534103, 2.4000000000000004, -31.57887058999947],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-5"
-    },
-    {
-      "id": "s5-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [21.952163778534103, -24.77887058999947]
+        }
+      ],
       "transform": {
         "translate": [30.887163778534102, 2.4000000000000004, -31.57887058999947],
         "rotate": [0, 0.3, 0]
@@ -2568,91 +2141,20 @@
       "collection": "station-5"
     },
     {
-      "id": "path-5-1",
+      "id": "path-5-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-1.7537254281189432, 0, -0.9204261083976695]
+        }
+      ],
       "transform": {
         "translate": [20.19843835041516, 0.03, -25.69929669839714],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [18.44471292229622, 0.03, -26.61972280679481],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [16.690987494177275, 0.03, -27.54014891519248],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [14.93726206605833, 0.03, -28.46057502359015],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [13.183536637939387, 0.03, -29.38100113198782],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [11.429811209820445, 0.03, -30.301427240385486],
-        "rotate": [0, 2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-5"
-    },
-    {
-      "id": "path-5-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [9.676085781701502, 0.03, -31.221853348783156],
         "rotate": [0, 2.6582707068836715, 0]
       },
       "material": "mat-1",
@@ -2869,91 +2371,20 @@
       "collection": "station-6"
     },
     {
-      "id": "path-6-1",
+      "id": "path-6-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-1.9805900883956382, 0, 0]
+        }
+      ],
       "transform": {
         "translate": [5.9417702651869195, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [3.961180176791281, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [1.980590088395643, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [4.440892098500626e-15, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-1.9805900883956342, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-3.961180176791271, 0.03, -32.14227945718083],
-        "rotate": [0, -3.141592653589793, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-6"
-    },
-    {
-      "id": "path-6-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-5.94177026518691, 0.03, -32.14227945718083],
         "rotate": [0, -3.141592653589793, 0]
       },
       "material": "mat-1",
@@ -3740,91 +3171,20 @@
       "collection": "station-7"
     },
     {
-      "id": "path-7-1",
+      "id": "path-7-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-1.7537254281189436, 0, 0.920426108397669]
+        }
+      ],
       "transform": {
         "translate": [-9.676085781701492, 0.03, -31.221853348783156],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-11.429811209820436, 0.03, -30.30142724038549],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-13.18353663793938, 0.03, -29.38100113198782],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-14.937262066058324, 0.03, -28.460575023590152],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-16.690987494177268, 0.03, -27.540148915192482],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-18.44471292229621, 0.03, -26.61972280679481],
-        "rotate": [0, -2.6582707068836715, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-7"
-    },
-    {
-      "id": "path-7-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-20.198438350415152, 0.03, -25.69929669839714],
         "rotate": [0, -2.6582707068836715, 0]
       },
       "material": "mat-1",
@@ -3915,91 +3275,20 @@
       "collection": "station-8"
     },
     {
-      "id": "path-8-1",
+      "id": "path-8-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-1.1251034069427073, 0, 1.6299936876985022]
+        }
+      ],
       "transform": {
         "translate": [-23.077267185476803, 0.03, -23.148876902300973],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-24.202370592419513, 0.03, -21.51888321460247],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-25.32747399936222, 0.03, -19.888889526903966],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-26.452577406304925, 0.03, -18.258895839205465],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-27.577680813247632, 0.03, -16.628902151506963],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-28.70278422019034, 0.03, -14.998908463808462],
-        "rotate": [0, -2.1749487601775495, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-8"
-    },
-    {
-      "id": "path-8-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-29.827887627133048, 0.03, -13.368914776109959],
         "rotate": [0, -2.1749487601775495, 0]
       },
       "material": "mat-1",
@@ -4229,24 +3518,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-0",
+      "id": "s9-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [-39.722991034075754, 1.1, -10.538921088411458],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-30.952991034075755, -11.738921088411457]
+        }
+      ],
       "transform": {
         "translate": [-22.182991034075755, 1.1, -10.538921088411458],
         "rotate": [0, 0.3, 0]
@@ -4255,24 +3538,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-1",
+      "id": "s9-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [-39.12299103407575, 1.75, -16.338921088411457],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-30.952991034075755, -11.738921088411457]
+        }
+      ],
       "transform": {
         "translate": [-22.782991034075756, 1.75, -16.338921088411457],
         "rotate": [0, 0.3, 0]
@@ -4281,24 +3558,18 @@
       "collection": "station-9"
     },
     {
-      "id": "s9-guard-l-2",
+      "id": "s9-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [-40.52299103407576, 2.4000000000000004, -18.538921088411456],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-9"
-    },
-    {
-      "id": "s9-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-30.952991034075755, -11.738921088411457]
+        }
+      ],
       "transform": {
         "translate": [-21.382991034075754, 2.4000000000000004, -18.538921088411456],
         "rotate": [0, 0.3, 0]
@@ -4307,91 +3578,20 @@
       "collection": "station-9"
     },
     {
-      "id": "path-9-1",
+      "id": "path-9-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [-0.23873375420180798, 0, 1.9661493567010027]
+        }
+      ],
       "transform": {
         "translate": [-31.19172478827756, 0.03, -9.772771731710455],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-31.43045854247937, 0.03, -7.806622375009452],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-31.669192296681178, 0.03, -5.840473018308449],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-31.907926050882985, 0.03, -3.8743236616074466],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-32.146659805084795, 0.03, -1.908174304906444],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-32.385393559286605, 0.03, 0.05797505179455875],
-        "rotate": [0, -1.6916268134714274, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-9"
-    },
-    {
-      "id": "path-9-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-32.62412731348841, 0.03, 2.0241244084955614],
         "rotate": [0, -1.6916268134714274, 0]
       },
       "material": "mat-1",
@@ -4581,91 +3781,20 @@
       "collection": "station-10"
     },
     {
-      "id": "path-10-1",
+      "id": "path-10-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [0.7023269245730992, 0, 1.85188390275166]
+        }
+      ],
       "transform": {
         "translate": [-32.16053414311712, 0.03, 5.842157667948225],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-31.45820721854402, 0.03, 7.694041570699885],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-30.75588029397092, 0.03, 9.545925473451545],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-30.05355336939782, 0.03, 11.397809376203206],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-29.35122644482472, 0.03, 13.249693278954865],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-28.648899520251625, 0.03, 15.101577181706524],
-        "rotate": [0, -1.2083048667653054, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-10"
-    },
-    {
-      "id": "path-10-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-27.946572595678525, 0.03, 16.953461084458187],
         "rotate": [0, -1.2083048667653054, 0]
       },
       "material": "mat-1",
@@ -4889,91 +4018,20 @@
       "collection": "station-11"
     },
     {
-      "id": "path-11-1",
+      "id": "path-11-runway",
       "type": "box",
       "args": {
         "dims": [1.7, 0.05, 0.32]
       },
+      "modifiers": [
+        {
+          "type": "array",
+          "count": 7,
+          "offset": [1.482492968885291, 0, 1.3133741643022931]
+        }
+      ],
       "transform": {
         "translate": [-25.761752702220132, 0.03, 20.11871915151214],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-2",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-24.279259733334843, 0.03, 21.432093315814434],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-3",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-22.79676676444955, 0.03, 22.745467480116726],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-4",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-21.31427379556426, 0.03, 24.05884164441902],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-5",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-19.83178082667897, 0.03, 25.37221580872131],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-6",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-18.349287857793676, 0.03, 26.685589973023603],
-        "rotate": [0, -0.7249829200591837, 0]
-      },
-      "material": "mat-1",
-      "collection": "path-11"
-    },
-    {
-      "id": "path-11-7",
-      "type": "box",
-      "args": {
-        "dims": [1.7, 0.05, 0.32]
-      },
-      "transform": {
-        "translate": [-16.866794888908387, 0.03, 27.9989641373259],
         "rotate": [0, -0.7249829200591837, 0]
       },
       "material": "mat-1",
@@ -5075,24 +4133,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-0",
+      "id": "s12-guard-0",
       "type": "box",
       "args": {
         "dims": [0.9, 2.2, 0.5]
       },
-      "transform": {
-        "translate": [-21.614301920023095, 1.1, 30.51233830162819],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-0",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 2.2, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-15.384301920023097, 29.31233830162819]
+        }
+      ],
       "transform": {
         "translate": [-9.154301920023098, 1.1, 30.51233830162819],
         "rotate": [0, 0.3, 0]
@@ -5101,24 +4153,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-1",
+      "id": "s12-guard-1",
       "type": "box",
       "args": {
         "dims": [0.9, 3.5, 0.5]
       },
-      "transform": {
-        "translate": [-21.014301920023097, 1.75, 24.712338301628193],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-1",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 3.5, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-15.384301920023097, 29.31233830162819]
+        }
+      ],
       "transform": {
         "translate": [-9.754301920023096, 1.75, 24.712338301628193],
         "rotate": [0, 0.3, 0]
@@ -5127,24 +4173,18 @@
       "collection": "station-12"
     },
     {
-      "id": "s12-guard-l-2",
+      "id": "s12-guard-2",
       "type": "box",
       "args": {
         "dims": [0.9, 4.800000000000001, 0.5]
       },
-      "transform": {
-        "translate": [-22.414301920023096, 2.4000000000000004, 22.51233830162819],
-        "rotate": [0, -0.3, 0]
-      },
-      "material": "mat-13",
-      "collection": "station-12"
-    },
-    {
-      "id": "s12-guard-r-2",
-      "type": "box",
-      "args": {
-        "dims": [0.9, 4.800000000000001, 0.5]
-      },
+      "modifiers": [
+        {
+          "type": "mirror",
+          "axis": "x",
+          "origin": [-15.384301920023097, 29.31233830162819]
+        }
+      ],
       "transform": {
         "translate": [-8.354301920023097, 2.4000000000000004, 22.51233830162819],
         "rotate": [0, 0.3, 0]

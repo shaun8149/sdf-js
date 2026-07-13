@@ -16,6 +16,7 @@
 import { renderIR } from './render-ir.js';
 import { getEnvironment, horizonSilhouettes } from './environments.js';
 import { makeDeckDecor } from './deck-decor.js';
+import { shiftModifier } from './modifiers.js';
 import { TEMPO } from './tempo-tokens.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
@@ -410,6 +411,12 @@ export function assembleDeck(deck, opts = {}) {
           ),
         }));
       }
+      // Wave B: modifier spatial anchors (mirror planes, radial centers,
+      // scatter regions) ride the transplant like build-in exprs do — this
+      // module owns placement, patterns stay renderer-local.
+      if (Array.isArray(moved.modifiers)) {
+        moved.modifiers = moved.modifiers.map((m) => shiftModifier(m, origin));
+      }
       subjects.push(moved);
     }
 
@@ -535,30 +542,31 @@ export function assembleDeck(deck, opts = {}) {
       const dz = next[2] - origin[2];
       const yaw = Math.atan2(dz, dx); // marker long axis along the segment
       const dots = 7; // R3: five chips read as debris; seven make a line
-      for (let d = 1; d <= dots; d++) {
-        const f = d / (dots + 1);
-        subjects.push({
-          id: `path-${k}-${d}`,
-          type: 'box',
-          // R1 critique: 0.9×0.06 chips were invisible in the transit frame —
-          // the flight had no guide line. Long low glowing strips read as a
-          // runway; the ground between stations stops being a black gap.
-          args: { dims: [1.7, 0.05, 0.32] },
-          transform: {
-            translate: [origin[0] + dx * f, 0.03, origin[2] + dz * f],
-            rotate: [0, -yaw, 0],
-          },
-          material: {
-            hue: 0.58,
-            sat: 0.25,
-            value: 0.85,
-            glow: 0.45, // R3: 0.12 was invisible in the dark field — the runway must READ
-            kind: 'normal',
-            roughness: 0.5,
-            clearcoat: 0.2,
-          },
-        });
-      }
+      const step = [dx / (dots + 1), 0, dz / (dots + 1)];
+      // Wave B: ONE runway subject with an array modifier — the seven strips
+      // used to be hand-unrolled; the placement pattern is now data.
+      subjects.push({
+        id: `path-${k}-runway`,
+        type: 'box',
+        // R1 critique: 0.9×0.06 chips were invisible in the transit frame —
+        // the flight had no guide line. Long low glowing strips read as a
+        // runway; the ground between stations stops being a black gap.
+        args: { dims: [1.7, 0.05, 0.32] },
+        modifiers: [{ type: 'array', count: dots, offset: step }],
+        transform: {
+          translate: [origin[0] + step[0], 0.03, origin[2] + step[2]],
+          rotate: [0, -yaw, 0],
+        },
+        material: {
+          hue: 0.58,
+          sat: 0.25,
+          value: 0.85,
+          glow: 0.45, // R3: 0.12 was invisible in the dark field — the runway must READ
+          kind: 'normal',
+          roughness: 0.5,
+          clearcoat: 0.2,
+        },
+      });
       // Layer C: inlay flanking the breadcrumbs (path-${k}-decor- prefix →
       // lives only in this transit's windows, dropped inside stations).
       if (decor) subjects.push(...decor.segment(k, origin, next));

@@ -884,6 +884,64 @@ function validateSubject(subj, path, errors, warnings, ctx = null) {
     }
   }
 
+  // Placement modifiers (Blender-borrow Wave B). Unknown type = ERROR — a
+  // typo'd modifier silently dropping N instances would be a "looks right"
+  // wrong. Validator/expander sync law: expandModifiers consumes exactly this.
+  if (subj.modifiers != null) {
+    if (!Array.isArray(subj.modifiers)) {
+      errors.push(`${path}.modifiers: must be an array`);
+    } else {
+      subj.modifiers.forEach((m, mi) => {
+        const mp = `${path}.modifiers[${mi}]`;
+        if (!m || typeof m !== 'object') {
+          errors.push(`${mp}: must be an object`);
+          return;
+        }
+        if (!['array', 'radial', 'mirror', 'scatter'].includes(m.type)) {
+          errors.push(`${mp}.type: unknown "${m.type}"`);
+          return;
+        }
+        const needCount = (lo) => {
+          if (!Number.isInteger(m.count) || m.count < lo || m.count > 64)
+            errors.push(`${mp}.count: integer ${lo}..64 required`);
+        };
+        if (m.type === 'array') {
+          needCount(2);
+          if (!Array.isArray(m.offset) || m.offset.length !== 3) {
+            errors.push(`${mp}.offset: [x,y,z] required`);
+          } else if (
+            m.offset[1] !== 0 &&
+            Array.isArray(subj.animation) &&
+            subj.animation.some((a) => a && a.channel === 'transform.translate.y')
+          ) {
+            warnings.push(
+              `${mp}: y-offset array + translate.y animation — instances share ONE y motion (v1 limit)`,
+            );
+          }
+        }
+        if (m.type === 'radial') {
+          needCount(2);
+          if (typeof m.radius !== 'number' || m.radius <= 0)
+            errors.push(`${mp}.radius: positive number required`);
+        }
+        if (m.type === 'mirror' && m.axis !== 'x' && m.axis !== 'z')
+          errors.push(`${mp}.axis: 'x' or 'z' required`);
+        if (m.type === 'scatter') {
+          needCount(1);
+          if (m.seed == null) errors.push(`${mp}.seed: required (determinism covenant)`);
+          const r = m.region;
+          const annOk =
+            r && r.kind === 'annulus' && typeof r.rMin === 'number' && typeof r.rMax === 'number';
+          const boxOk = r && r.kind === 'box' && Array.isArray(r.min) && Array.isArray(r.max);
+          if (!annOk && !boxOk)
+            errors.push(
+              `${mp}.region: {kind:'annulus', rMin, rMax} or {kind:'box', min, max} required`,
+            );
+        }
+      });
+    }
+  }
+
   if (typeof subj.type !== 'string') {
     errors.push(`${path}: missing or non-string "type"`);
     return;
