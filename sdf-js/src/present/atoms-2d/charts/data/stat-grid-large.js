@@ -11,6 +11,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 
 export const spec = {
   type: 'stat-grid-large',
@@ -175,7 +176,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
       const chipR = chipH / 2;
       const dir = s.trendDirection || 'up';
       const chipBg =
-        dir === 'up' ? [50, 200, 130] : dir === 'down' ? [220, 80, 60] : [140, 155, 170];
+        dir === 'up'
+          ? semanticColor(palette, 'positive')
+          : dir === 'down'
+            ? semanticColor(palette, 'negative')
+            : semanticColor(palette, 'neutral');
 
       ctx.fillStyle = rgbCss(chipBg);
       ctx.beginPath();

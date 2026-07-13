@@ -14,6 +14,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
 export const spec = {
@@ -161,7 +162,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     if (!hasSublabel) curY += h * 0.02;
     const dir = args.trendDirection ?? 'up';
     const chipColor =
-      dir === 'up' ? [40, 160, 100] : dir === 'down' ? [200, 80, 80] : [140, 155, 170];
+      dir === 'up'
+        ? semanticColor(palette, 'positive')
+        : dir === 'down'
+          ? semanticColor(palette, 'negative')
+          : semanticColor(palette, 'neutral');
     const chipText = args.trend;
     const chipFontSize = Math.round(chipH * 0.6);
     ctx.font = `700 ${chipFontSize}px Inter, system-ui`;

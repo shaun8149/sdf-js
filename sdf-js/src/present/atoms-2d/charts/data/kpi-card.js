@@ -31,6 +31,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 import { pangu } from '../../cjk-text.js';
 import { resolveIcon } from '../../../../icons/index.js';
 
@@ -485,13 +486,13 @@ function drawTrendPill(ctx, trend, value, rightX, topY, palette) {
   let pillColor;
   let arrowChar;
   if (trend === 'up') {
-    pillColor = [40, 160, 100];
+    pillColor = semanticColor(palette, 'positive');
     arrowChar = '↑';
   } else if (trend === 'down') {
-    pillColor = [200, 80, 80];
+    pillColor = semanticColor(palette, 'negative');
     arrowChar = '↓';
   } else {
-    pillColor = [150, 150, 150];
+    pillColor = semanticColor(palette, 'neutral');
     arrowChar = '→';
   }
 

@@ -14,6 +14,8 @@
 // author-2d, the exporters and any future surface stay in lockstep.
 // =============================================================================
 
+import { pickDistinct, ensureContrast } from './atoms-2d/color.js';
+
 /**
  * artMountOpts(mount, slot, baseRole) → partial renderSceneDataToCanvas opts.
  * Content pages are promoted to 'section' so EVERY page carries the banner
@@ -75,12 +77,12 @@ export function extractMountPalette(img, { maxColors = 6 } = {}) {
         score: e.n * (1 + e.sat / e.n / 128),
       }))
       .sort((a, b) => b.score - a.score);
-    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-    const picked = [];
-    for (const cnd of cands) {
-      if (picked.every((p) => dist(p, cnd.rgb) > 60)) picked.push(cnd.rgb);
-      if (picked.length >= maxColors) break;
-    }
+    // Sprint 96 (提色 v2): 去重从 RGB 欧氏距离换 OKLab ΔE — 感知均匀,
+    // 图表相邻 series 色保证可区分 (RGB 距离在暗区/绿区严重失真)
+    const picked = pickDistinct(
+      cands.map((c2) => c2.rgb),
+      maxColors,
+    );
     if (!picked.length) return null;
     const satOf = ([r, g, b]) => Math.max(r, g, b) - Math.min(r, g, b);
     // accent: most saturated pick with enough presence (top half of ranking)
@@ -96,10 +98,20 @@ export function extractMountPalette(img, { maxColors = 6 } = {}) {
  * mountPaletteOverride(basePalette, mount) → the deck palette re-voiced in
  * the artwork's colors. Accent AND colors[] are replaced (atoms read either);
  * ink/bg/silhouette stay with the theme so text contrast is untouched.
+ * Sprint 96 (色彩语义化):
+ *   - palette.semantic (涨跌红绿/警示/中性) 随 basePalette 原样透传, 艺术
+ *     色永不覆盖 — 语义色是「含义」不是「装饰」。
+ *   - accent 过 ensureContrast: 提出的主色对纸底明度差不足时压暗/提亮,
+ *     数字与标题永远可读 (「给角色找对比度达标的槽位」)。
  */
 export function mountPaletteOverride(basePalette, mount) {
   if (!mount?.palette?.accent) return basePalette;
-  return { ...basePalette, accent: mount.palette.accent, colors: mount.palette.colors };
+  const bg = basePalette?.bg || [248, 246, 240];
+  const accent = ensureContrast(mount.palette.accent, bg);
+  const colors = Array.isArray(mount.palette.colors)
+    ? [accent, ...mount.palette.colors.slice(1)]
+    : mount.palette.colors;
+  return { ...basePalette, accent, colors };
 }
 
 const loadImage = (url) =>

@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 
 export const spec = {
   type: 'comparison-table',
@@ -149,10 +150,16 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
       if (val === true || val === 'true' || val === 1) {
         // Green check mark
-        drawCheck(ctx, cellCX, cellCY, fontSize * 1.1, isHighlight ? accent : [50, 160, 80]);
+        drawCheck(
+          ctx,
+          cellCX,
+          cellCY,
+          fontSize * 1.1,
+          isHighlight ? accent : semanticColor(palette, 'positive'),
+        );
       } else if (val === false || val === 'false' || val === 0) {
         // Gray cross
-        drawCross(ctx, cellCX, cellCY, fontSize * 0.9, [170, 175, 180]);
+        drawCross(ctx, cellCX, cellCY, fontSize * 0.9, semanticColor(palette, 'neutral'));
       } else if (val != null) {
         // Text value
         ctx.save();
