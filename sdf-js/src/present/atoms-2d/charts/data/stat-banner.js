@@ -12,6 +12,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 
 export const spec = {
   type: 'stat-banner',
@@ -157,7 +158,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // label collided even at min font size, in which case it moves to the
   // top-right corner, above the label line.
   if (trend) {
-    const chipBg = dir === 'up' ? [50, 200, 130] : dir === 'down' ? [220, 80, 60] : [140, 155, 170];
+    const chipBg =
+      dir === 'up'
+        ? semanticColor(palette, 'positive')
+        : dir === 'down'
+          ? semanticColor(palette, 'negative')
+          : semanticColor(palette, 'neutral');
     const chipText = trend;
     const chipX = x + w - PAD - chipW;
     const chipY = chipMode === 'top-right' ? bannerY + topPad : chipYInline;

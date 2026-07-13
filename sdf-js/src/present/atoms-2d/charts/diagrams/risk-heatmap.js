@@ -7,6 +7,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 
 export const spec = {
   type: 'risk-heatmap',
@@ -37,13 +38,13 @@ const AXIS_LABEL_W = 32;
 const AXIS_LABEL_H = 28;
 
 // severity = likelihood × impact (1-25), color by zone
-function cellColor(col, row) {
+function cellColor(col, row, palette) {
   // col = likelihood (0-4 = very low to very high), row = impact (0-4 = very low to very high)
   const severity = (col + 1) * (row + 1); // 1..25
-  if (severity >= 20) return [210, 60, 50]; // critical — red
-  if (severity >= 13) return [230, 140, 40]; // high — orange
-  if (severity >= 6) return [220, 200, 50]; // medium — yellow
-  return [80, 170, 90]; // low — green
+  if (severity >= 20) return semanticColor(palette, 'negative'); // critical
+  if (severity >= 13) return semanticColor(palette, 'warning'); // high
+  if (severity >= 6) return [220, 200, 50]; // medium — yellow (warning 与 positive 之间的过渡档)
+  return semanticColor(palette, 'positive'); // low
 }
 
 export function drawPseudo3D(ctx, args, opts = {}) {
@@ -97,7 +98,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     for (let rowI = 0; rowI < 5; rowI++) {
       // rowI=0 is top in canvas coords, but impact increases bottom→top
       const impactLevel = 4 - rowI; // 4=very high impact at top
-      const color = cellColor(col, impactLevel);
+      const color = cellColor(col, impactLevel, palette);
       const cx = gridX + col * cellW;
       const cy = gridY + rowI * cellH;
 

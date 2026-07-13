@@ -23,6 +23,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { semanticColor } from '../../color.js';
 
 export const spec = {
   type: 'dashboard-multi-kpi-composite',
@@ -98,7 +99,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     const ty = plotTop + row * (tileH + TILE_GAP);
     const kpi = kpis[i];
     const color = kpi.color || groupColors[i % groupColors.length];
-    drawKpiTile(ctx, tx, ty, tileW, tileH, kpi, color, fg, bg);
+    drawKpiTile(ctx, tx, ty, tileW, tileH, kpi, color, fg, bg, palette);
   }
 }
 
@@ -121,7 +122,7 @@ function computeLayout(N) {
 // ---------------------------------------------------------------------------
 // Draw one KPI mini-card tile
 // ---------------------------------------------------------------------------
-function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg) {
+function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg, palette) {
   const radius = Math.min(w, h) * TILE_RADIUS_FRAC;
 
   // ---- Card background with drop shadow ----
@@ -159,7 +160,7 @@ function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg) {
   const hasTrend = kpi.trend && kpi.trendValue;
   let pillBottom = y + 10;
   if (hasTrend) {
-    pillBottom = drawTrendPill(ctx, kpi.trend, kpi.trendValue, x + w - 10, y + 10);
+    pillBottom = drawTrendPill(ctx, kpi.trend, kpi.trendValue, x + w - 10, y + 10, palette);
   }
 
   // ---- Hero value ----
@@ -191,7 +192,7 @@ function drawKpiTile(ctx, x, y, w, h, kpi, accentColor, fg, bg) {
 // ---------------------------------------------------------------------------
 // Trend pill helper
 // ---------------------------------------------------------------------------
-function drawTrendPill(ctx, trend, value, rightX, topY) {
+function drawTrendPill(ctx, trend, value, rightX, topY, palette) {
   const text = String(value);
   ctx.font = '700 11px Inter, system-ui, sans-serif';
   const textW = ctx.measureText(text).width;
@@ -202,13 +203,13 @@ function drawTrendPill(ctx, trend, value, rightX, topY) {
   let pillColor;
   let arrowChar;
   if (trend === 'up') {
-    pillColor = [40, 160, 100];
+    pillColor = semanticColor(palette, 'positive');
     arrowChar = '↑';
   } else if (trend === 'down') {
-    pillColor = [200, 80, 80];
+    pillColor = semanticColor(palette, 'negative');
     arrowChar = '↓';
   } else {
-    pillColor = [150, 150, 150];
+    pillColor = semanticColor(palette, 'neutral');
     arrowChar = '→';
   }
 
