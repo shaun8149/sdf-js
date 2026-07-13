@@ -6,7 +6,7 @@
 //
 // 形态即档位:Infinigen 用相机距离折算 face_size 做 LOD;Atlas 的"距离"是渲染档 —
 //   createPlaceholder(i) → analytic 档安全的单 rounded_box(剪影真,零 march)
-//   createAsset(i)       → raymarch 档的 smoothUnion 椭球 blob(凸包的 SDF 近似)
+//   createAsset(i)       → raymarch 档的块融合 blob(凸包的 SDF 近似)
 // 两形态共享同一实例 lane(Infinigen spawn_placeholder/spawn_asset 用同一个
 // int_hash((factory_seed, i)) 的对应物)—— 同 footprint 同 yaw,剪影永远一致。
 // 已知偏差:analytic 契约只支持 yaw 旋转,placeholder 不带 ±7.5° 倾斜(asset 带)。
@@ -37,10 +37,10 @@ export function makeBoulderFactory(factorySeed) {
     roughness: S.range('rough', 0.7, 0.95),
   };
   const blobN = 4 + Math.floor(S.range('blobs', 0, 3)); // 32 点凸包的 SDF 近似:4-6 块
-  // 岩性(物种级):angular = 随机旋转 rounded_box 块 + chamfer 接缝——凸包的棱面感,
-  // boulder.py sharp remesh 的 SDF 对应物;weathered = 椭球 + smooth——风化圆石,少数派。
+  // 岩性(物种级):angular = 小姿态差 rounded_box 块互切(精确 min-union)——凸包棱面感,
+  // boulder.py sharp remesh 的 SDF 对应物;weathered = 椭球 + smoothUnion——风化圆石,少数派。
   const lithology = S.range('lithology', 0, 1) < 0.7 ? 'angular' : 'weathered';
-  const fuseK = S.range('fuse', 0.12, 0.28); // 融合半径(物种级"包紧"程度)
+  const fuseK = S.range('fuse', 0.12, 0.28); // weathered 的融合半径(物种级"包紧"程度)
 
   // ---- 实例级(int_hash((factory_seed, i)) 的对应物;双形态共享)---------------
   function instance(i, { at = [0, 0, 0], scale = 1 } = {}) {
