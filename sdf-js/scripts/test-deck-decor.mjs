@@ -56,7 +56,9 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   const scene = assembleDeck(DECK, { layout: 'radial', decorSeed: 'hash-A' });
   const decor = scene.subjects.filter((x) => /-decor-/.test(x.id));
   ok(
-    decor.every((s) => s.material.value <= DECOR_VALUE_CAP && s.material.glow === 0),
+    decor
+      .map((s) => (typeof s.material === 'string' ? scene.materials[s.material] : s.material))
+      .every((m) => m.value <= DECOR_VALUE_CAP && m.glow === 0),
     `all decor under brightness cap ${DECOR_VALUE_CAP}, zero glow`,
   );
   ok(

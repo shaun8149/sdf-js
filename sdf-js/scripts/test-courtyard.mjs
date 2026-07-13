@@ -110,7 +110,9 @@ const stations = new Map(
   const hills = sliced.subjects.filter((s) => s.id.startsWith('horizon-'));
   ok(hills.length === 0, `slab quota yields to massing (slabs=${hills.length}, conservation)`);
   ok(
-    massing.every((s) => s.material.value <= 0.35 && s.material.glow === 0),
+    massing
+      .map((s) => (typeof s.material === 'string' ? scene.materials[s.material] : s.material))
+      .every((m) => m.value <= 0.35 && m.glow === 0),
     'massing stays silhouette-dark (subtle discipline)',
   );
 }

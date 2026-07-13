@@ -1,6 +1,425 @@
 {
   "v": 1,
   "name": "(deck) 最懂你的头条 — 2013 管理层陈述",
+  "collections": {
+    "station-0": {
+      "kind": "station",
+      "station": 0
+    },
+    "path-0": {
+      "kind": "transit-path",
+      "from": 0
+    },
+    "station-1": {
+      "kind": "station",
+      "station": 1
+    },
+    "path-1": {
+      "kind": "transit-path",
+      "from": 1
+    },
+    "station-2": {
+      "kind": "station",
+      "station": 2
+    },
+    "path-2": {
+      "kind": "transit-path",
+      "from": 2
+    },
+    "station-3": {
+      "kind": "station",
+      "station": 3
+    },
+    "path-3": {
+      "kind": "transit-path",
+      "from": 3
+    },
+    "station-4": {
+      "kind": "station",
+      "station": 4
+    },
+    "path-4": {
+      "kind": "transit-path",
+      "from": 4
+    },
+    "station-5": {
+      "kind": "station",
+      "station": 5
+    },
+    "path-5": {
+      "kind": "transit-path",
+      "from": 5
+    },
+    "station-6": {
+      "kind": "station",
+      "station": 6
+    },
+    "path-6": {
+      "kind": "transit-path",
+      "from": 6
+    },
+    "station-7": {
+      "kind": "station",
+      "station": 7
+    },
+    "path-7": {
+      "kind": "transit-path",
+      "from": 7
+    },
+    "station-8": {
+      "kind": "station",
+      "station": 8
+    },
+    "path-8": {
+      "kind": "transit-path",
+      "from": 8
+    },
+    "station-9": {
+      "kind": "station",
+      "station": 9
+    },
+    "path-9": {
+      "kind": "transit-path",
+      "from": 9
+    },
+    "station-10": {
+      "kind": "station",
+      "station": 10
+    },
+    "path-10": {
+      "kind": "transit-path",
+      "from": 10
+    },
+    "station-11": {
+      "kind": "station",
+      "station": 11
+    },
+    "path-11": {
+      "kind": "transit-path",
+      "from": 11
+    },
+    "station-12": {
+      "kind": "station",
+      "station": 12
+    },
+    "massing": {
+      "kind": "dressing",
+      "cull": "never"
+    },
+    "horizon": {
+      "kind": "dressing",
+      "cull": "nearest",
+      "budget": {
+        "hero": 7,
+        "content": 3
+      },
+      "yieldTo": "massing"
+    },
+    "env": {
+      "kind": "dressing",
+      "cull": "never"
+    }
+  },
+  "materials": {
+    "mat-0": {
+      "hue": 0.62,
+      "sat": 0.25,
+      "value": 0.1,
+      "kind": "normal",
+      "roughness": 0.48,
+      "clearcoat": 0.45
+    },
+    "mat-1": {
+      "hue": 0.58,
+      "sat": 0.25,
+      "value": 0.85,
+      "glow": 0.45,
+      "kind": "normal",
+      "roughness": 0.5,
+      "clearcoat": 0.2
+    },
+    "mat-2": {
+      "hue": 0.62,
+      "sat": 0.25,
+      "value": 0.1,
+      "kind": "normal",
+      "roughness": 0.4,
+      "clearcoat": 0.45
+    },
+    "mat-3": {
+      "hue": 0.995,
+      "sat": 0.85,
+      "value": 0.78,
+      "glow": 0.12,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.5
+    },
+    "mat-4": {
+      "hue": 0.995,
+      "sat": 0.15,
+      "value": 0.8,
+      "glow": 0.5,
+      "kind": "normal",
+      "roughness": 0.4
+    },
+    "mat-5": {
+      "hue": 0.11,
+      "sat": 0.78,
+      "value": 0.95,
+      "glow": 0.1,
+      "kind": "normal",
+      "roughness": 0.22,
+      "clearcoat": 0.6
+    },
+    "mat-6": {
+      "hue": 0.58,
+      "sat": 0.1,
+      "value": 0.55,
+      "kind": "normal",
+      "roughness": 0.6,
+      "clearcoat": 0.1
+    },
+    "mat-7": {
+      "hue": 0.55,
+      "sat": 0.62,
+      "value": 0.82,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-8": {
+      "hue": 0.5680000000000001,
+      "sat": 0.648,
+      "value": 0.7759999999999999,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-9": {
+      "hue": 0.5860000000000001,
+      "sat": 0.676,
+      "value": 0.732,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-10": {
+      "hue": 0.6040000000000001,
+      "sat": 0.704,
+      "value": 0.688,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-11": {
+      "hue": 0.622,
+      "sat": 0.732,
+      "value": 0.6439999999999999,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-12": {
+      "hue": 0.11,
+      "sat": 0.78,
+      "value": 0.95,
+      "metal": 0,
+      "glow": 0.1,
+      "kind": "normal",
+      "roughness": 0.22,
+      "clearcoat": 0.6
+    },
+    "mat-13": {
+      "hue": 0.62,
+      "sat": 0.25,
+      "value": 0.14,
+      "kind": "normal",
+      "roughness": 0.5,
+      "clearcoat": 0.35
+    },
+    "mat-14": {
+      "hue": 0.64,
+      "sat": 0.76,
+      "value": 0.6,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-15": {
+      "hue": 0.995,
+      "sat": 0.85,
+      "value": 0.78,
+      "glow": 0.24,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.5
+    },
+    "mat-16": {
+      "hue": 0.62875,
+      "sat": 0.76,
+      "value": 0.5875,
+      "kind": "normal",
+      "roughness": 0.55,
+      "clearcoat": 0.2
+    },
+    "mat-17": {
+      "hue": 0.6175,
+      "sat": 0.74,
+      "value": 0.625,
+      "kind": "normal",
+      "roughness": 0.55,
+      "clearcoat": 0.2
+    },
+    "mat-18": {
+      "hue": 0.60625,
+      "sat": 0.72,
+      "value": 0.6625000000000001,
+      "kind": "normal",
+      "roughness": 0.55,
+      "clearcoat": 0.2
+    },
+    "mat-19": {
+      "hue": 0.58,
+      "sat": 0.25,
+      "value": 0.55,
+      "glow": 0.08,
+      "kind": "normal",
+      "roughness": 0.6,
+      "clearcoat": 0.15
+    },
+    "mat-20": {
+      "hue": 0.62,
+      "sat": 0.2,
+      "value": 0.18,
+      "kind": "normal",
+      "roughness": 0.5
+    },
+    "mat-21": {
+      "hue": 0.55,
+      "sat": 0.62,
+      "value": 0.85,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-22": {
+      "hue": 0.6100000000000001,
+      "sat": 0.7266666666666667,
+      "value": 0.65,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-23": {
+      "hue": 0.64,
+      "sat": 0.78,
+      "value": 0.55,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-24": {
+      "hue": 0.5650000000000001,
+      "sat": 0.6433333333333333,
+      "value": 0.7833333333333333,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-25": {
+      "hue": 0.5800000000000001,
+      "sat": 0.6666666666666666,
+      "value": 0.7466666666666666,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-26": {
+      "hue": 0.5950000000000001,
+      "sat": 0.69,
+      "value": 0.71,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-27": {
+      "hue": 0.6100000000000001,
+      "sat": 0.7133333333333334,
+      "value": 0.6733333333333333,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-28": {
+      "hue": 0.625,
+      "sat": 0.7366666666666667,
+      "value": 0.6366666666666666,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-29": {
+      "hue": 0.11,
+      "sat": 0.78,
+      "value": 0.95,
+      "metal": 0,
+      "glow": 0.04,
+      "kind": "normal",
+      "roughness": 0.22,
+      "clearcoat": 0.6
+    },
+    "mat-30": {
+      "hue": 0.5950000000000001,
+      "sat": 0.7,
+      "value": 0.71,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-31": {
+      "hue": 0.64,
+      "sat": 0.78,
+      "value": 0.57,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-32": {
+      "hue": 0.62,
+      "sat": 0.3,
+      "value": 0.22,
+      "kind": "normal",
+      "roughness": 0.4,
+      "clearcoat": 0.3
+    },
+    "mat-33": {
+      "hue": 0.6,
+      "sat": 0.1,
+      "value": 0.3,
+      "kind": "normal",
+      "roughness": 0.7,
+      "clearcoat": 0.1
+    },
+    "mat-34": {
+      "hue": 0.57,
+      "sat": 0.55,
+      "value": 0.72,
+      "kind": "normal",
+      "roughness": 0.3,
+      "clearcoat": 0.45
+    },
+    "mat-35": {
+      "hue": 0.62,
+      "sat": 0.25,
+      "value": 0.14,
+      "metal": 0,
+      "glow": 0,
+      "kind": "normal",
+      "roughness": 0.5,
+      "clearcoat": 0.35
+    }
+  },
   "subjects": [
     {
       "id": "s0-mono-title",
@@ -12,14 +431,8 @@
       "transform": {
         "translate": [0, 2.7, -1.4]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-0-l0",
@@ -32,14 +445,8 @@
         "translate": [-3.4, 4, -6],
         "rotate": [0, -0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-0-l1",
@@ -52,14 +459,8 @@
         "translate": [-6.4, 4, -8.2],
         "rotate": [0, -0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-0-r0",
@@ -72,14 +473,8 @@
         "translate": [3.4, 4, -6],
         "rotate": [0, 0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-0-r1",
@@ -92,14 +487,8 @@
         "translate": [6.4, 4, -8.2],
         "rotate": [0, 0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-1-l0",
@@ -112,14 +501,8 @@
         "translate": [-4.5, 5.75, -12.5],
         "rotate": [0, -0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-1-l1",
@@ -132,14 +515,8 @@
         "translate": [-7.5, 5.75, -14.7],
         "rotate": [0, -0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-1-r0",
@@ -152,14 +529,8 @@
         "translate": [4.5, 5.75, -12.5],
         "rotate": [0, 0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-1-r1",
@@ -172,14 +543,8 @@
         "translate": [7.5, 5.75, -14.7],
         "rotate": [0, 0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-2-l0",
@@ -192,14 +557,8 @@
         "translate": [-5.6, 7.5, -19],
         "rotate": [0, -0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-2-l1",
@@ -212,14 +571,8 @@
         "translate": [-8.600000000000001, 7.5, -21.2],
         "rotate": [0, -0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-2-r0",
@@ -232,14 +585,8 @@
         "translate": [5.6, 7.5, -19],
         "rotate": [0, 0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-2-r1",
@@ -252,14 +599,8 @@
         "translate": [8.600000000000001, 7.5, -21.2],
         "rotate": [0, 0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-3-l0",
@@ -272,14 +613,8 @@
         "translate": [-6.7, 9.25, -25.5],
         "rotate": [0, -0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-3-l1",
@@ -292,14 +627,8 @@
         "translate": [-9.700000000000001, 9.25, -27.7],
         "rotate": [0, -0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-3-r0",
@@ -312,14 +641,8 @@
         "translate": [6.7, 9.25, -25.5],
         "rotate": [0, 0.12, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-forest-3-r1",
@@ -332,14 +655,8 @@
         "translate": [9.700000000000001, 9.25, -27.7],
         "rotate": [0, 0.2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      }
+      "material": "mat-0",
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-0",
@@ -352,20 +669,14 @@
         "translate": [-6.5, 3.4, -6],
         "rotate": [0, -1, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.07 * sin(0.35 * t + 0.00)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-1",
@@ -378,20 +689,14 @@
         "translate": [4.8, 2.6, -7.5],
         "rotate": [0, -0.5, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.09 * sin(0.43 * t + 2.10)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-2",
@@ -404,20 +709,14 @@
         "translate": [-3.2, 4.6, -9],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.11 * sin(0.51 * t + 4.20)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-3",
@@ -430,20 +729,14 @@
         "translate": [7.2, 4, -5],
         "rotate": [0, 0.5, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.13 * sin(0.59 * t + 0.02)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-4",
@@ -456,20 +749,14 @@
         "translate": [-9.5, 5.8, -12],
         "rotate": [0, 1, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "5.800 - 0.000 * smoothstep(0.00, 1.00, t) + 0.15 * sin(0.67 * t + 2.12)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-5",
@@ -482,20 +769,14 @@
         "translate": [10.5, 5.2, -10],
         "rotate": [0, 1.5, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "5.200 - 0.000 * smoothstep(0.00, 1.00, t) + 0.17 * sin(0.75 * t + 4.22)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-6",
@@ -508,20 +789,14 @@
         "translate": [2.2, 7, -14],
         "rotate": [0, 2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "7.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.19 * sin(0.83 * t + 0.04)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-7",
@@ -534,20 +809,14 @@
         "translate": [-5.8, 6.4, -16],
         "rotate": [0, 2.5, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "6.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.21 * sin(0.91 * t + 2.14)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "s0-floater-8",
@@ -560,20 +829,14 @@
         "translate": [6.8, 2, -13],
         "rotate": [0, 3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.48,
-        "clearcoat": 0.45
-      },
+      "material": "mat-0",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.23 * sin(0.99 * t + 4.24)"
         }
-      ]
+      ],
+      "collection": "station-0"
     },
     {
       "id": "path-0-1",
@@ -585,15 +848,8 @@
         "translate": [2, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-2",
@@ -605,15 +861,8 @@
         "translate": [4, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-3",
@@ -625,15 +874,8 @@
         "translate": [6, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-4",
@@ -645,15 +887,8 @@
         "translate": [8, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-5",
@@ -665,15 +900,8 @@
         "translate": [10, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-6",
@@ -685,15 +913,8 @@
         "translate": [12, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "path-0-7",
@@ -705,15 +926,8 @@
         "translate": [14, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-0"
     },
     {
       "id": "s1-dome",
@@ -724,14 +938,8 @@
       "transform": {
         "translate": [16, 0, -1.2]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.1,
-        "kind": "normal",
-        "roughness": 0.4,
-        "clearcoat": 0.45
-      }
+      "material": "mat-2",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-0",
@@ -742,21 +950,14 @@
       "transform": {
         "translate": [19.487901743725214, 2.2, -0.5534640548657206]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(9.45, 10.00, t) + 0.04 * sin(0.6 * t + -4.56)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-0",
@@ -768,14 +969,8 @@
       "transform": {
         "translate": [19.487901743725214, 1.1, -0.5534640548657206]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-1",
@@ -786,21 +981,14 @@
       "transform": {
         "translate": [18.350094450939565, 2.2, -0.19211357462773826]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-5",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(10.45, 11.00, t) + 0.04 * sin(0.6 * t + -2.86)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-1",
@@ -812,14 +1000,8 @@
       "transform": {
         "translate": [18.350094450939565, 1.1, -0.19211357462773826]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-2",
@@ -830,21 +1012,14 @@
       "transform": {
         "translate": [16.828466888570354, 2.2, 0.0046276749721592125]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(11.45, 12.00, t) + 0.04 * sin(0.6 * t + -1.16)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-2",
@@ -856,14 +1031,8 @@
       "transform": {
         "translate": [16.828466888570354, 1.1, 0.0046276749721592125]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-3",
@@ -874,21 +1043,14 @@
       "transform": {
         "translate": [15.171533111429648, 2.2, 0.0046276749721592125]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(12.45, 13.00, t) + 0.04 * sin(0.6 * t + 0.54)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-3",
@@ -900,14 +1062,8 @@
       "transform": {
         "translate": [15.171533111429648, 1.1, 0.0046276749721592125]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-4",
@@ -918,21 +1074,14 @@
       "transform": {
         "translate": [13.649905549060437, 2.2, -0.19211357462773782]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(13.45, 14.00, t) + 0.04 * sin(0.6 * t + -4.04)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-4",
@@ -944,14 +1093,8 @@
       "transform": {
         "translate": [13.649905549060437, 1.1, -0.19211357462773782]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-5",
@@ -962,21 +1105,14 @@
       "transform": {
         "translate": [12.512098256274788, 2.2, -0.5534640548657205]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.800 - 1.600 * smoothstep(14.45, 15.00, t) + 0.04 * sin(0.6 * t + -2.34)"
         }
-      ]
+      ],
+      "collection": "station-1"
     },
     {
       "id": "s1-orb-stem-5",
@@ -988,14 +1124,8 @@
       "transform": {
         "translate": [12.512098256274788, 1.1, -0.5534640548657205]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.15,
-        "value": 0.8,
-        "glow": 0.5,
-        "kind": "normal",
-        "roughness": 0.4
-      }
+      "material": "mat-4",
+      "collection": "station-1"
     },
     {
       "id": "path-1-1",
@@ -1007,15 +1137,8 @@
         "translate": [18, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-2",
@@ -1027,15 +1150,8 @@
         "translate": [20, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-3",
@@ -1047,15 +1163,8 @@
         "translate": [22, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-4",
@@ -1067,15 +1176,8 @@
         "translate": [24, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-5",
@@ -1087,15 +1189,8 @@
         "translate": [26, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-6",
@@ -1107,15 +1202,8 @@
         "translate": [28, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "path-1-7",
@@ -1127,15 +1215,8 @@
         "translate": [30, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-1"
     },
     {
       "id": "s2-plinth-0",
@@ -1146,14 +1227,8 @@
       "transform": {
         "translate": [35.175, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-0",
@@ -1165,21 +1240,15 @@
       "transform": {
         "translate": [35.175, 0.9931034482758622, 0]
       },
-      "material": {
-        "hue": 0.55,
-        "sat": 0.62,
-        "value": 0.82,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-7",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.293 + 2.286 * smoothstep(21.45, 22.05, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-2"
     },
     {
       "id": "s2-plinth-1",
@@ -1190,14 +1259,8 @@
       "transform": {
         "translate": [33.905, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-1",
@@ -1209,21 +1272,15 @@
       "transform": {
         "translate": [33.905, 1.2413793103448276, 0]
       },
-      "material": {
-        "hue": 0.5680000000000001,
-        "sat": 0.648,
-        "value": 0.7759999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-8",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.541 + 2.783 * smoothstep(22.55, 23.15, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-2"
     },
     {
       "id": "s2-plinth-2",
@@ -1234,14 +1291,8 @@
       "transform": {
         "translate": [32.635, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-2",
@@ -1253,21 +1304,15 @@
       "transform": {
         "translate": [32.635, 1.6, 0]
       },
-      "material": {
-        "hue": 0.5860000000000001,
-        "sat": 0.676,
-        "value": 0.732,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-9",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.900 + 3.500 * smoothstep(23.65, 24.25, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-2"
     },
     {
       "id": "s2-plinth-3",
@@ -1278,14 +1323,8 @@
       "transform": {
         "translate": [31.365, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-3",
@@ -1297,21 +1336,15 @@
       "transform": {
         "translate": [31.365, 1.9034482758620692, 0]
       },
-      "material": {
-        "hue": 0.6040000000000001,
-        "sat": 0.704,
-        "value": 0.688,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-10",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.203 + 4.107 * smoothstep(24.75, 25.35, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-2"
     },
     {
       "id": "s2-plinth-4",
@@ -1322,14 +1355,8 @@
       "transform": {
         "translate": [30.095, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-4",
@@ -1341,21 +1368,15 @@
       "transform": {
         "translate": [30.095, 2.1517241379310343, 0]
       },
-      "material": {
-        "hue": 0.622,
-        "sat": 0.732,
-        "value": 0.6439999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-11",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.452 + 4.603 * smoothstep(25.85, 26.45, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-2"
     },
     {
       "id": "s2-plinth-5",
@@ -1366,14 +1387,8 @@
       "transform": {
         "translate": [28.825, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-2"
     },
     {
       "id": "s2-mono-5",
@@ -1385,22 +1400,14 @@
       "transform": {
         "translate": [28.825, 2.4, 0]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(26.95, 27.55, t)"
         }
-      ]
+      ],
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-l-0",
@@ -1412,14 +1419,8 @@
         "translate": [23.865000000000002, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-r-0",
@@ -1431,14 +1432,8 @@
         "translate": [40.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-l-1",
@@ -1450,14 +1445,8 @@
         "translate": [24.465, 1.75, -4.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-r-1",
@@ -1469,14 +1458,8 @@
         "translate": [39.535, 1.75, -4.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-l-2",
@@ -1488,14 +1471,8 @@
         "translate": [23.064999999999998, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "s2-guard-r-2",
@@ -1507,14 +1484,8 @@
         "translate": [40.935, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-2"
     },
     {
       "id": "path-2-1",
@@ -1526,15 +1497,8 @@
         "translate": [34, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-2",
@@ -1546,15 +1510,8 @@
         "translate": [36, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-3",
@@ -1566,15 +1523,8 @@
         "translate": [38, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-4",
@@ -1586,15 +1536,8 @@
         "translate": [40, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-5",
@@ -1606,15 +1549,8 @@
         "translate": [42, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-6",
@@ -1626,15 +1562,8 @@
         "translate": [44, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "path-2-7",
@@ -1646,15 +1575,8 @@
         "translate": [46, 0.03, 0],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-2"
     },
     {
       "id": "s3-plinth-0",
@@ -1665,14 +1587,8 @@
       "transform": {
         "translate": [51.175, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-0",
@@ -1684,21 +1600,15 @@
       "transform": {
         "translate": [51.175, 0.14464710547184773, 0]
       },
-      "material": {
-        "hue": 0.55,
-        "sat": 0.62,
-        "value": 0.82,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-7",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.445 + 0.589 * smoothstep(34.75, 35.35, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-3"
     },
     {
       "id": "s3-plinth-1",
@@ -1709,14 +1619,8 @@
       "transform": {
         "translate": [49.905, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-1",
@@ -1728,21 +1632,15 @@
       "transform": {
         "translate": [49.905, 0.28263283108643933, 0]
       },
-      "material": {
-        "hue": 0.5680000000000001,
-        "sat": 0.648,
-        "value": 0.7759999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-8",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.583 + 0.865 * smoothstep(35.85, 36.45, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-3"
     },
     {
       "id": "s3-plinth-2",
@@ -1753,14 +1651,8 @@
       "transform": {
         "translate": [48.635, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-2",
@@ -1772,21 +1664,15 @@
       "transform": {
         "translate": [48.635, 0.5443298969072166, 0]
       },
-      "material": {
-        "hue": 0.5860000000000001,
-        "sat": 0.676,
-        "value": 0.732,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-9",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.844 + 1.389 * smoothstep(36.95, 37.55, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-3"
     },
     {
       "id": "s3-plinth-3",
@@ -1797,14 +1683,8 @@
       "transform": {
         "translate": [47.365, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-3",
@@ -1816,21 +1696,15 @@
       "transform": {
         "translate": [47.365, 0.9601903251387788, 0]
       },
-      "material": {
-        "hue": 0.6040000000000001,
-        "sat": 0.704,
-        "value": 0.688,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-10",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.260 + 2.220 * smoothstep(38.05, 38.65, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-3"
     },
     {
       "id": "s3-plinth-4",
@@ -1841,14 +1715,8 @@
       "transform": {
         "translate": [46.095, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-4",
@@ -1860,21 +1728,15 @@
       "transform": {
         "translate": [46.095, 1.5501982553528946, 0]
       },
-      "material": {
-        "hue": 0.622,
-        "sat": 0.732,
-        "value": 0.6439999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-11",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.850 + 3.400 * smoothstep(39.15, 39.75, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-3"
     },
     {
       "id": "s3-plinth-5",
@@ -1885,14 +1747,8 @@
       "transform": {
         "translate": [44.825, 0.06, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-3"
     },
     {
       "id": "s3-mono-5",
@@ -1904,22 +1760,14 @@
       "transform": {
         "translate": [44.825, 2.4, 0]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(40.25, 40.85, t)"
         }
-      ]
+      ],
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-l-0",
@@ -1931,14 +1779,8 @@
         "translate": [39.865, 1.1, 1.2],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-r-0",
@@ -1950,14 +1792,8 @@
         "translate": [56.135, 1.1, 1.2],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-l-1",
@@ -1969,14 +1805,8 @@
         "translate": [40.465, 1.75, -4.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-r-1",
@@ -1988,14 +1818,8 @@
         "translate": [55.535, 1.75, -4.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-l-2",
@@ -2007,14 +1831,8 @@
         "translate": [39.065, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "s3-guard-r-2",
@@ -2026,14 +1844,8 @@
         "translate": [56.935, 2.4000000000000004, -6.800000000000001],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-3"
     },
     {
       "id": "path-3-1",
@@ -2045,15 +1857,8 @@
         "translate": [42, 0.03, -2],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-2",
@@ -2065,15 +1870,8 @@
         "translate": [36, 0.03, -4],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-3",
@@ -2085,15 +1883,8 @@
         "translate": [30, 0.03, -6],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-4",
@@ -2105,15 +1896,8 @@
         "translate": [24, 0.03, -8],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-5",
@@ -2125,15 +1909,8 @@
         "translate": [18, 0.03, -10],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-6",
@@ -2145,15 +1922,8 @@
         "translate": [12, 0.03, -12],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "path-3-7",
@@ -2165,15 +1935,8 @@
         "translate": [6, 0.03, -14],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-3"
     },
     {
       "id": "s4-plinth-0",
@@ -2184,14 +1947,8 @@
       "transform": {
         "translate": [3.175, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-0",
@@ -2203,22 +1960,14 @@
       "transform": {
         "translate": [3.175, 2.4, -16]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(48.05, 48.65, t)"
         }
-      ]
+      ],
+      "collection": "station-4"
     },
     {
       "id": "s4-plinth-1",
@@ -2229,14 +1978,8 @@
       "transform": {
         "translate": [1.905, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-1",
@@ -2248,21 +1991,15 @@
       "transform": {
         "translate": [1.905, 2.2374501992031868, -16]
       },
-      "material": {
-        "hue": 0.5680000000000001,
-        "sat": 0.648,
-        "value": 0.7759999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-8",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.537 + 4.775 * smoothstep(49.15, 49.75, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-4"
     },
     {
       "id": "s4-plinth-2",
@@ -2273,14 +2010,8 @@
       "transform": {
         "translate": [0.635, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-2",
@@ -2292,21 +2023,15 @@
       "transform": {
         "translate": [0.635, 1.4151394422310757, -16]
       },
-      "material": {
-        "hue": 0.5860000000000001,
-        "sat": 0.676,
-        "value": 0.732,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-9",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.715 + 3.130 * smoothstep(50.25, 50.85, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-4"
     },
     {
       "id": "s4-plinth-3",
@@ -2317,14 +2042,8 @@
       "transform": {
         "translate": [-0.635, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-3",
@@ -2336,21 +2055,15 @@
       "transform": {
         "translate": [-0.635, 1.2430278884462151, -16]
       },
-      "material": {
-        "hue": 0.6040000000000001,
-        "sat": 0.704,
-        "value": 0.688,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-10",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.543 + 2.786 * smoothstep(51.35, 51.95, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-4"
     },
     {
       "id": "s4-plinth-4",
@@ -2361,14 +2074,8 @@
       "transform": {
         "translate": [-1.905, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-4",
@@ -2380,21 +2087,15 @@
       "transform": {
         "translate": [-1.905, 0.7362549800796813, -16]
       },
-      "material": {
-        "hue": 0.622,
-        "sat": 0.732,
-        "value": 0.6439999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-11",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.036 + 1.773 * smoothstep(52.45, 53.05, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-4"
     },
     {
       "id": "s4-plinth-5",
@@ -2405,14 +2106,8 @@
       "transform": {
         "translate": [-3.175, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-4"
     },
     {
       "id": "s4-mono-5",
@@ -2424,21 +2119,15 @@
       "transform": {
         "translate": [-3.175, 0.6501992031872509, -16]
       },
-      "material": {
-        "hue": 0.64,
-        "sat": 0.76,
-        "value": 0.6,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-14",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.950 + 1.600 * smoothstep(53.55, 54.15, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-l-0",
@@ -2450,14 +2139,8 @@
         "translate": [-8.135, 1.1, -14.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-r-0",
@@ -2469,14 +2152,8 @@
         "translate": [8.135, 1.1, -14.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-l-1",
@@ -2488,14 +2165,8 @@
         "translate": [-7.535, 1.75, -20.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-r-1",
@@ -2507,14 +2178,8 @@
         "translate": [7.535, 1.75, -20.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-l-2",
@@ -2526,14 +2191,8 @@
         "translate": [-8.935, 2.4000000000000004, -22.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "s4-guard-r-2",
@@ -2545,14 +2204,8 @@
         "translate": [8.935, 2.4000000000000004, -22.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-4"
     },
     {
       "id": "path-4-1",
@@ -2564,15 +2217,8 @@
         "translate": [2, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-2",
@@ -2584,15 +2230,8 @@
         "translate": [4, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-3",
@@ -2604,15 +2243,8 @@
         "translate": [6, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-4",
@@ -2624,15 +2256,8 @@
         "translate": [8, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-5",
@@ -2644,15 +2269,8 @@
         "translate": [10, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-6",
@@ -2664,15 +2282,8 @@
         "translate": [12, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "path-4-7",
@@ -2684,15 +2295,8 @@
         "translate": [14, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-4"
     },
     {
       "id": "s5-plinth-0",
@@ -2703,14 +2307,8 @@
       "transform": {
         "translate": [19.175, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-0",
@@ -2722,22 +2320,14 @@
       "transform": {
         "translate": [19.175, 2.4, -16]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(61.35, 61.95, t)"
         }
-      ]
+      ],
+      "collection": "station-5"
     },
     {
       "id": "s5-plinth-1",
@@ -2748,14 +2338,8 @@
       "transform": {
         "translate": [17.905, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-1",
@@ -2767,21 +2351,15 @@
       "transform": {
         "translate": [17.905, 2.2072538860103625, -16]
       },
-      "material": {
-        "hue": 0.5680000000000001,
-        "sat": 0.648,
-        "value": 0.7759999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-8",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.507 + 4.715 * smoothstep(62.45, 63.05, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-5"
     },
     {
       "id": "s5-plinth-2",
@@ -2792,14 +2370,8 @@
       "transform": {
         "translate": [16.635, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-2",
@@ -2811,21 +2383,15 @@
       "transform": {
         "translate": [16.635, 1.5015544041450775, -16]
       },
-      "material": {
-        "hue": 0.5860000000000001,
-        "sat": 0.676,
-        "value": 0.732,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-9",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.802 + 3.303 * smoothstep(63.55, 64.15, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-5"
     },
     {
       "id": "s5-plinth-3",
@@ -2836,14 +2402,8 @@
       "transform": {
         "translate": [15.365, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-3",
@@ -2855,21 +2415,15 @@
       "transform": {
         "translate": [15.365, 1.2590673575129532, -16]
       },
-      "material": {
-        "hue": 0.6040000000000001,
-        "sat": 0.704,
-        "value": 0.688,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-10",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.559 + 2.818 * smoothstep(64.65, 65.25, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-5"
     },
     {
       "id": "s5-plinth-4",
@@ -2880,14 +2434,8 @@
       "transform": {
         "translate": [14.095, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-4",
@@ -2899,21 +2447,15 @@
       "transform": {
         "translate": [14.095, 1.0290155440414508, -16]
       },
-      "material": {
-        "hue": 0.622,
-        "sat": 0.732,
-        "value": 0.6439999999999999,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-11",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.329 + 2.358 * smoothstep(65.75, 66.35, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-5"
     },
     {
       "id": "s5-plinth-5",
@@ -2924,14 +2466,8 @@
       "transform": {
         "translate": [12.825, 0.06, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-5"
     },
     {
       "id": "s5-mono-5",
@@ -2943,21 +2479,15 @@
       "transform": {
         "translate": [12.825, 0.9699481865284973, -16]
       },
-      "material": {
-        "hue": 0.64,
-        "sat": 0.76,
-        "value": 0.6,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-14",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.270 + 2.240 * smoothstep(66.85, 67.45, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-l-0",
@@ -2969,14 +2499,8 @@
         "translate": [7.865, 1.1, -14.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-r-0",
@@ -2988,14 +2512,8 @@
         "translate": [24.134999999999998, 1.1, -14.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-l-1",
@@ -3007,14 +2525,8 @@
         "translate": [8.465, 1.75, -20.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-r-1",
@@ -3026,14 +2538,8 @@
         "translate": [23.535, 1.75, -20.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-l-2",
@@ -3045,14 +2551,8 @@
         "translate": [7.0649999999999995, 2.4000000000000004, -22.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "s5-guard-r-2",
@@ -3064,14 +2564,8 @@
         "translate": [24.935000000000002, 2.4000000000000004, -22.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-5"
     },
     {
       "id": "path-5-1",
@@ -3083,15 +2577,8 @@
         "translate": [18, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-2",
@@ -3103,15 +2590,8 @@
         "translate": [20, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-3",
@@ -3123,15 +2603,8 @@
         "translate": [22, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-4",
@@ -3143,15 +2616,8 @@
         "translate": [24, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-5",
@@ -3163,15 +2629,8 @@
         "translate": [26, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-6",
@@ -3183,15 +2642,8 @@
         "translate": [28, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "path-5-7",
@@ -3203,15 +2655,8 @@
         "translate": [30, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-5"
     },
     {
       "id": "s6-past-0",
@@ -3223,14 +2668,8 @@
       "transform": {
         "translate": [35.4, 0.55, -16]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-past-1",
@@ -3242,14 +2681,8 @@
       "transform": {
         "translate": [32, 0.55, -16]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-past-2",
@@ -3261,14 +2694,8 @@
       "transform": {
         "translate": [28.6, 0.55, -16]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-now-3",
@@ -3279,21 +2706,14 @@
       "transform": {
         "translate": [35.4, 3.6, -16]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.24,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-15",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.100 + 2.500 * smoothstep(74.60, 75.40, t) + 0.06 * sin(0.5 * t + -36.50)"
         }
-      ]
+      ],
+      "collection": "station-6"
     },
     {
       "id": "s6-now-4",
@@ -3304,21 +2724,14 @@
       "transform": {
         "translate": [32, 3.6, -16]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.100 + 2.500 * smoothstep(75.70, 76.50, t) + 0.06 * sin(0.5 * t + -34.40)"
         }
-      ]
+      ],
+      "collection": "station-6"
     },
     {
       "id": "s6-now-5",
@@ -3329,21 +2742,14 @@
       "transform": {
         "translate": [28.6, 3.6, -16]
       },
-      "material": {
-        "hue": 0.995,
-        "sat": 0.85,
-        "value": 0.78,
-        "glow": 0.12,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.5
-      },
+      "material": "mat-3",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.100 + 2.500 * smoothstep(76.80, 77.60, t) + 0.06 * sin(0.5 * t + -32.30)"
         }
-      ]
+      ],
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-0-0",
@@ -3355,14 +2761,8 @@
         "translate": [35.4, 1.5, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-0-1",
@@ -3374,14 +2774,8 @@
         "translate": [35.4, 2.2199999999999998, -16],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-0-2",
@@ -3393,14 +2787,8 @@
         "translate": [35.4, 2.94, -16],
         "rotate": [0, 0.6, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-1-0",
@@ -3412,14 +2800,8 @@
         "translate": [32, 1.5, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-1-1",
@@ -3431,14 +2813,8 @@
         "translate": [32, 2.2199999999999998, -16],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-1-2",
@@ -3450,14 +2826,8 @@
         "translate": [32, 2.94, -16],
         "rotate": [0, 0.6, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-2-0",
@@ -3469,14 +2839,8 @@
         "translate": [28.6, 1.5, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-2-1",
@@ -3488,14 +2852,8 @@
         "translate": [28.6, 2.2199999999999998, -16],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "s6-trail-2-2",
@@ -3507,14 +2865,8 @@
         "translate": [28.6, 2.94, -16],
         "rotate": [0, 0.6, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-6"
     },
     {
       "id": "path-6-1",
@@ -3526,15 +2878,8 @@
         "translate": [34, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-2",
@@ -3546,15 +2891,8 @@
         "translate": [36, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-3",
@@ -3566,15 +2904,8 @@
         "translate": [38, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-4",
@@ -3586,15 +2917,8 @@
         "translate": [40, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-5",
@@ -3606,15 +2930,8 @@
         "translate": [42, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-6",
@@ -3626,15 +2943,8 @@
         "translate": [44, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "path-6-7",
@@ -3646,15 +2956,8 @@
         "translate": [46, 0.03, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-6"
     },
     {
       "id": "s7-net-node-0",
@@ -3665,22 +2968,14 @@
       "transform": {
         "translate": [48, 3.5204111503539433, -16]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.620 - 1.1 * smoothstep(82.55, 83.05, t) + 0.018 * sin(1.3 * t + -106.99)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-1",
@@ -3691,20 +2986,14 @@
       "transform": {
         "translate": [46.45370033299743, 5.980307652106461, -14.291291726614867]
       },
-      "material": {
-        "hue": 0.62875,
-        "sat": 0.76,
-        "value": 0.5875,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-16",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "7.080 - 1.1 * smoothstep(82.67, 83.17, t) + 0.018 * sin(1.3 * t + -104.89)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-2",
@@ -3715,20 +3004,14 @@
       "transform": {
         "translate": [48.29161726142453, 5.250904506397122, -18.88519619245656]
       },
-      "material": {
-        "hue": 0.62875,
-        "sat": 0.76,
-        "value": 0.5875,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-16",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "6.351 - 1.1 * smoothstep(82.79, 83.29, t) + 0.018 * sin(1.3 * t + -102.79)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-3",
@@ -3739,20 +3022,14 @@
       "transform": {
         "translate": [50.31650182833244, 4.3697567245487905, -13.630497577478971]
       },
-      "material": {
-        "hue": 0.62875,
-        "sat": 0.76,
-        "value": 0.5875,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-16",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "5.470 - 1.1 * smoothstep(82.91, 83.41, t) + 0.018 * sin(1.3 * t + -100.69)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-4",
@@ -3763,20 +3040,14 @@
       "transform": {
         "translate": [44.66711706881019, 3.6213578719444897, -16.57036214719362]
       },
-      "material": {
-        "hue": 0.62875,
-        "sat": 0.76,
-        "value": 0.5875,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-16",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.721 - 1.1 * smoothstep(83.03, 83.53, t) + 0.018 * sin(1.3 * t + -98.59)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-5",
@@ -3787,20 +3058,14 @@
       "transform": {
         "translate": [51.0462853596452, 2.9527771216598238, -17.444450357471]
       },
-      "material": {
-        "hue": 0.62875,
-        "sat": 0.76,
-        "value": 0.5875,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-16",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.053 - 1.1 * smoothstep(83.15, 83.65, t) + 0.018 * sin(1.3 * t + -96.49)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-6",
@@ -3811,20 +3076,14 @@
       "transform": {
         "translate": [47.36335850348319, 1.819620731911172, -13.390219876800096]
       },
-      "material": {
-        "hue": 0.6175,
-        "sat": 0.74,
-        "value": 0.625,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-17",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.920 - 1.1 * smoothstep(83.27, 83.77, t) + 0.018 * sin(1.3 * t + -94.39)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-7",
@@ -3835,20 +3094,14 @@
       "transform": {
         "translate": [47.19989911320728, 1.2095751500786114, -17.988536462099237]
       },
-      "material": {
-        "hue": 0.6175,
-        "sat": 0.74,
-        "value": 0.625,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-17",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.310 - 1.1 * smoothstep(83.39, 83.89, t) + 0.018 * sin(1.3 * t + -92.29)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-node-8",
@@ -3859,20 +3112,14 @@
       "transform": {
         "translate": [48.124597636454034, 0.6000000000000001, -15.585334562779362]
       },
-      "material": {
-        "hue": 0.60625,
-        "sat": 0.72,
-        "value": 0.6625000000000001,
-        "kind": "normal",
-        "roughness": 0.55,
-        "clearcoat": 0.2
-      },
+      "material": "mat-18",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.700 - 1.1 * smoothstep(83.51, 84.01, t) + 0.018 * sin(1.3 * t + -90.19)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-0",
@@ -3885,21 +3132,14 @@
       "transform": {
         "translate": [46.45370033299743, 5.980307652106461, -14.291291726614867]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "7.080 - 1.1 * smoothstep(83.83, 84.28, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-1",
@@ -3912,21 +3152,14 @@
       "transform": {
         "translate": [48.29161726142453, 5.250904506397122, -18.88519619245656]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "6.351 - 1.1 * smoothstep(83.97, 84.42, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-2",
@@ -3939,21 +3172,14 @@
       "transform": {
         "translate": [50.31650182833244, 4.3697567245487905, -13.630497577478971]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "5.470 - 1.1 * smoothstep(84.11, 84.56, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-3",
@@ -3966,21 +3192,14 @@
       "transform": {
         "translate": [44.66711706881019, 3.6213578719444897, -16.57036214719362]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.721 - 1.1 * smoothstep(84.25, 84.70, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-4",
@@ -3993,21 +3212,14 @@
       "transform": {
         "translate": [51.0462853596452, 2.9527771216598238, -17.444450357471]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.053 - 1.1 * smoothstep(84.39, 84.84, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-5",
@@ -4020,21 +3232,14 @@
       "transform": {
         "translate": [48, 3.5204111503539433, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.620 - 1.1 * smoothstep(84.53, 84.98, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-6",
@@ -4047,21 +3252,14 @@
       "transform": {
         "translate": [48, 3.5204111503539433, -16]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.620 - 1.1 * smoothstep(84.67, 85.12, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-7",
@@ -4074,21 +3272,14 @@
       "transform": {
         "translate": [47.36335850348319, 1.819620731911172, -13.390219876800096]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.920 - 1.1 * smoothstep(84.81, 85.26, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-8",
@@ -4101,21 +3292,14 @@
       "transform": {
         "translate": [47.19989911320728, 1.2095751500786114, -17.988536462099237]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.310 - 1.1 * smoothstep(84.95, 85.40, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-net-edge-9",
@@ -4128,21 +3312,14 @@
       "transform": {
         "translate": [48.124597636454034, 0.6000000000000001, -15.585334562779362]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.55,
-        "glow": 0.08,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.15
-      },
+      "material": "mat-19",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.700 - 1.1 * smoothstep(85.09, 85.54, t)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-0",
@@ -4154,19 +3331,14 @@
         "translate": [49.251874627366746, 4.405000000000001, -16],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.405 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.30 * t + -24.69)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-1",
@@ -4178,19 +3350,14 @@
         "translate": [48.557092148492025, 4.399558176477956, -18.266932389155055],
         "rotate": [0, 0.9, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.400 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.35 * t + -27.51)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-2",
@@ -4202,19 +3369,14 @@
         "translate": [46.10811593736101, 3.629579332748476, -16.989614658959955],
         "rotate": [0, 1.8, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.630 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.40 * t + -30.32)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-3",
@@ -4226,19 +3388,14 @@
         "translate": [45.38985964677685, 4.222504230305474, -13.041462830146227],
         "rotate": [0, 2.7, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.223 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.45 * t + -33.14)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-4",
@@ -4250,19 +3407,14 @@
         "translate": [49.25099030296351, 3.0836452719433054, -14.198269146341225],
         "rotate": [0, 0.5, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.084 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.50 * t + -35.95)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-5",
@@ -4274,19 +3426,14 @@
         "translate": [52.75734157303818, 3.8177730524847187, -17.822992316403063],
         "rotate": [0, 1.4, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.818 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.30 * t + -24.47)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-6",
@@ -4298,19 +3445,14 @@
         "translate": [47.72553875943947, 2.742972950909394, -18.18487030155368],
         "rotate": [0, 2.3000000000000003, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.743 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.35 * t + -27.29)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-7",
@@ -4322,19 +3464,14 @@
         "translate": [42.362314705852384, 3.247721417838311, -16.656963786339638],
         "rotate": [0, 0.09999999999999964, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.248 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.40 * t + -30.10)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-8",
@@ -4346,19 +3483,14 @@
         "translate": [47.14359048881437, 2.514577769081229, -13.70373955156739],
         "rotate": [0, 1, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.515 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.45 * t + -32.92)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-9",
@@ -4370,19 +3502,14 @@
         "translate": [52.65225163462019, 2.626149955099641, -12.831194414845982],
         "rotate": [0, 1.8999999999999995, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.626 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.50 * t + -35.73)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-10",
@@ -4394,19 +3521,14 @@
         "translate": [50.2335226351827, 2.2751364752104166, -18.006364302126396],
         "rotate": [0, 2.8, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.275 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.30 * t + -24.25)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-11",
@@ -4418,19 +3540,14 @@
         "translate": [45.62757972031037, 2.074057518564027, -20.438197954760973],
         "rotate": [0, 0.6000000000000001, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.074 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.35 * t + -27.07)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-12",
@@ -4442,19 +3559,14 @@
         "translate": [44.38336837509747, 1.9174150657237594, -15.076796365522718],
         "rotate": [0, 1.5000000000000004, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.917 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.40 * t + -29.88)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-13",
@@ -4466,19 +3578,14 @@
         "translate": [48.036647923605095, 1.6748001647187152, -11.908516452868163],
         "rotate": [0, 2.400000000000001, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.675 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.45 * t + -32.70)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-14",
@@ -4490,19 +3597,14 @@
         "translate": [52.270930563835755, 1.3899081353990992, -14.990907488424414],
         "rotate": [0, 0.1999999999999993, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.390 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.50 * t + -35.51)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-15",
@@ -4514,19 +3616,14 @@
         "translate": [49.39883204644998, 1.44284528397345, -18.733538270572545],
         "rotate": [0, 1.0999999999999996, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.443 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.30 * t + -24.03)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-16",
@@ -4538,19 +3635,14 @@
         "translate": [44.470728519999355, 0.7171594937718098, -19.057888513618657],
         "rotate": [0, 2, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "0.717 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.35 * t + -26.85)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-17",
@@ -4562,19 +3654,14 @@
         "translate": [46.20894758465646, 1.3160592709780925, -14.732498536829059],
         "rotate": [0, 2.9000000000000004, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.316 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.40 * t + -29.66)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-18",
@@ -4586,19 +3673,14 @@
         "translate": [49.57563917106201, -0.005841134412181592, -11.995868450679282],
         "rotate": [0, 0.6999999999999988, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.006 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.45 * t + -32.48)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-19",
@@ -4610,19 +3692,14 @@
         "translate": [49.51816511579864, 1.1743019526359513, -16.204538932927985],
         "rotate": [0, 1.600000000000001, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.174 - 0.000 * smoothstep(82.30, 83.30, t) + 0.07 * sin(0.50 * t + -35.29)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-20",
@@ -4634,19 +3711,14 @@
         "translate": [48.32248616067346, -0.6439061141122786, -19.000946679549862],
         "rotate": [0, 2.4999999999999996, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.644 - 0.000 * smoothstep(82.30, 83.30, t) + 0.09 * sin(0.30 * t + -23.81)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "s7-dust-21",
@@ -4658,19 +3730,14 @@
         "translate": [47.29501086354327, 0.879070215106386, -16.255762502362927],
         "rotate": [0, 0.3000000000000016, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.2,
-        "value": 0.18,
-        "kind": "normal",
-        "roughness": 0.5
-      },
+      "material": "mat-20",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "0.879 - 0.000 * smoothstep(82.30, 83.30, t) + 0.05 * sin(0.35 * t + -26.63)"
         }
-      ]
+      ],
+      "collection": "station-7"
     },
     {
       "id": "path-7-1",
@@ -4682,15 +3749,8 @@
         "translate": [42, 0.03, -18],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-2",
@@ -4702,15 +3762,8 @@
         "translate": [36, 0.03, -20],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-3",
@@ -4722,15 +3775,8 @@
         "translate": [30, 0.03, -22],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-4",
@@ -4742,15 +3788,8 @@
         "translate": [24, 0.03, -24],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-5",
@@ -4762,15 +3801,8 @@
         "translate": [18, 0.03, -26],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-6",
@@ -4782,15 +3814,8 @@
         "translate": [12, 0.03, -28],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "path-7-7",
@@ -4802,15 +3827,8 @@
         "translate": [6, 0.03, -30],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-7"
     },
     {
       "id": "s8-stage-0",
@@ -4824,20 +3842,14 @@
       "transform": {
         "translate": [0, 2.8000000000000003, -32]
       },
-      "material": {
-        "hue": 0.55,
-        "sat": 0.62,
-        "value": 0.85,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-21",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.700 - 0.9 * smoothstep(93.05, 93.65, t)"
         }
-      ]
+      ],
+      "collection": "station-8"
     },
     {
       "id": "s8-stage-1",
@@ -4851,22 +3863,14 @@
       "transform": {
         "translate": [0, 2, -32]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.900 - 0.9 * smoothstep(93.40, 94.00, t)"
         }
-      ]
+      ],
+      "collection": "station-8"
     },
     {
       "id": "s8-stage-2",
@@ -4880,20 +3884,14 @@
       "transform": {
         "translate": [0, 1.2000000000000002, -32]
       },
-      "material": {
-        "hue": 0.6100000000000001,
-        "sat": 0.7266666666666667,
-        "value": 0.65,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-22",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.100 - 0.9 * smoothstep(93.75, 94.35, t)"
         }
-      ]
+      ],
+      "collection": "station-8"
     },
     {
       "id": "s8-stage-3",
@@ -4907,20 +3905,14 @@
       "transform": {
         "translate": [0, 0.3999999999999999, -32]
       },
-      "material": {
-        "hue": 0.64,
-        "sat": 0.78,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-23",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.300 - 0.9 * smoothstep(94.10, 94.70, t)"
         }
-      ]
+      ],
+      "collection": "station-8"
     },
     {
       "id": "path-8-1",
@@ -4932,15 +3924,8 @@
         "translate": [2, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-2",
@@ -4952,15 +3937,8 @@
         "translate": [4, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-3",
@@ -4972,15 +3950,8 @@
         "translate": [6, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-4",
@@ -4992,15 +3963,8 @@
         "translate": [8, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-5",
@@ -5012,15 +3976,8 @@
         "translate": [10, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-6",
@@ -5032,15 +3989,8 @@
         "translate": [12, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "path-8-7",
@@ -5052,15 +4002,8 @@
         "translate": [14, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-8"
     },
     {
       "id": "s9-plinth-0",
@@ -5071,14 +4014,8 @@
       "transform": {
         "translate": [19.81, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-0",
@@ -5090,21 +4027,15 @@
       "transform": {
         "translate": [19.81, 2.4, -32]
       },
-      "material": {
-        "hue": 0.55,
-        "sat": 0.62,
-        "value": 0.82,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-7",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(106.05, 106.65, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-1",
@@ -5115,14 +4046,8 @@
       "transform": {
         "translate": [18.54, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-1",
@@ -5134,21 +4059,15 @@
       "transform": {
         "translate": [18.54, 2.3564356435643563, -32]
       },
-      "material": {
-        "hue": 0.5650000000000001,
-        "sat": 0.6433333333333333,
-        "value": 0.7833333333333333,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-24",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.656 + 5.013 * smoothstep(107.15, 107.75, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-2",
@@ -5159,14 +4078,8 @@
       "transform": {
         "translate": [17.27, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-2",
@@ -5178,21 +4091,15 @@
       "transform": {
         "translate": [17.27, 2.2376237623762374, -32]
       },
-      "material": {
-        "hue": 0.5800000000000001,
-        "sat": 0.6666666666666666,
-        "value": 0.7466666666666666,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-25",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.538 + 4.775 * smoothstep(108.25, 108.85, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-3",
@@ -5203,14 +4110,8 @@
       "transform": {
         "translate": [16, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-3",
@@ -5222,21 +4123,15 @@
       "transform": {
         "translate": [16, 2.1425742574257423, -32]
       },
-      "material": {
-        "hue": 0.5950000000000001,
-        "sat": 0.69,
-        "value": 0.71,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-26",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.443 + 4.585 * smoothstep(109.35, 109.95, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-4",
@@ -5247,14 +4142,8 @@
       "transform": {
         "translate": [14.73, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-4",
@@ -5266,21 +4155,15 @@
       "transform": {
         "translate": [14.73, 2.023762376237624, -32]
       },
-      "material": {
-        "hue": 0.6100000000000001,
-        "sat": 0.7133333333333334,
-        "value": 0.6733333333333333,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-27",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.324 + 4.348 * smoothstep(110.45, 111.05, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-5",
@@ -5291,14 +4174,8 @@
       "transform": {
         "translate": [13.46, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-5",
@@ -5310,21 +4187,15 @@
       "transform": {
         "translate": [13.46, 1.881188118811881, -32]
       },
-      "material": {
-        "hue": 0.625,
-        "sat": 0.7366666666666667,
-        "value": 0.6366666666666666,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-28",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.181 + 4.062 * smoothstep(111.55, 112.15, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-9"
     },
     {
       "id": "s9-plinth-6",
@@ -5335,14 +4206,8 @@
       "transform": {
         "translate": [12.19, 0.06, -32]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-9"
     },
     {
       "id": "s9-mono-6",
@@ -5354,22 +4219,14 @@
       "transform": {
         "translate": [12.19, 1.786138613861386, -32]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.086 + 3.872 * smoothstep(112.65, 113.25, t)"
         }
-      ]
+      ],
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-l-0",
@@ -5381,14 +4238,8 @@
         "translate": [7.23, 1.1, -30.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-r-0",
@@ -5400,14 +4251,8 @@
         "translate": [24.77, 1.1, -30.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-l-1",
@@ -5419,14 +4264,8 @@
         "translate": [7.83, 1.75, -36.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-r-1",
@@ -5438,14 +4277,8 @@
         "translate": [24.17, 1.75, -36.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-l-2",
@@ -5457,14 +4290,8 @@
         "translate": [6.43, 2.4000000000000004, -38.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "s9-guard-r-2",
@@ -5476,14 +4303,8 @@
         "translate": [25.57, 2.4000000000000004, -38.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-9"
     },
     {
       "id": "path-9-1",
@@ -5495,15 +4316,8 @@
         "translate": [18, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-2",
@@ -5515,15 +4329,8 @@
         "translate": [20, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-3",
@@ -5535,15 +4342,8 @@
         "translate": [22, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-4",
@@ -5555,15 +4355,8 @@
         "translate": [24, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-5",
@@ -5575,15 +4368,8 @@
         "translate": [26, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-6",
@@ -5595,15 +4381,8 @@
         "translate": [28, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "path-9-7",
@@ -5615,15 +4394,8 @@
         "translate": [30, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-9"
     },
     {
       "id": "s10-node-0",
@@ -5643,22 +4415,14 @@
       "transform": {
         "translate": [32, 3.15, -32]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.04,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-29",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.150 - 1 * smoothstep(120.35, 120.90, t)"
         }
-      ]
+      ],
+      "collection": "station-10"
     },
     {
       "id": "s10-node-1",
@@ -5690,20 +4454,14 @@
       "transform": {
         "translate": [32, 2, -33.9]
       },
-      "material": {
-        "hue": 0.5950000000000001,
-        "sat": 0.7,
-        "value": 0.71,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-30",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.000 - 1 * smoothstep(121.85, 122.40, t)"
         }
-      ]
+      ],
+      "collection": "station-10"
     },
     {
       "id": "s10-node-2",
@@ -5735,20 +4493,14 @@
       "transform": {
         "translate": [33.64544826719043, 2, -31.05]
       },
-      "material": {
-        "hue": 0.5950000000000001,
-        "sat": 0.7,
-        "value": 0.71,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-30",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.000 - 1 * smoothstep(121.85, 122.40, t)"
         }
-      ]
+      ],
+      "collection": "station-10"
     },
     {
       "id": "s10-node-3",
@@ -5780,20 +4532,14 @@
       "transform": {
         "translate": [30.35455173280957, 2, -31.05]
       },
-      "material": {
-        "hue": 0.5950000000000001,
-        "sat": 0.7,
-        "value": 0.71,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-30",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.000 - 1 * smoothstep(121.85, 122.40, t)"
         }
-      ]
+      ],
+      "collection": "station-10"
     },
     {
       "id": "s10-node-4",
@@ -5825,20 +4571,14 @@
       "transform": {
         "translate": [33.14289187648037, 0.8500000000000001, -30.358290469809422]
       },
-      "material": {
-        "hue": 0.64,
-        "sat": 0.78,
-        "value": 0.57,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-31",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "1.850 - 1 * smoothstep(123.35, 123.90, t)"
         }
-      ]
+      ],
+      "collection": "station-10"
     },
     {
       "id": "path-10-1",
@@ -5850,15 +4590,8 @@
         "translate": [34, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-2",
@@ -5870,15 +4603,8 @@
         "translate": [36, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-3",
@@ -5890,15 +4616,8 @@
         "translate": [38, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-4",
@@ -5910,15 +4629,8 @@
         "translate": [40, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-5",
@@ -5930,15 +4642,8 @@
         "translate": [42, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-6",
@@ -5950,15 +4655,8 @@
         "translate": [44, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "path-10-7",
@@ -5970,15 +4668,8 @@
         "translate": [46, 0.03, -32],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-10"
     },
     {
       "id": "s11-backboard",
@@ -5990,14 +4681,8 @@
       "transform": {
         "translate": [48, 2.51, -32.34]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.3,
-        "value": 0.22,
-        "kind": "normal",
-        "roughness": 0.4,
-        "clearcoat": 0.3
-      }
+      "material": "mat-32",
+      "collection": "station-11"
     },
     {
       "id": "s11-cell-0-0",
@@ -6009,14 +4694,8 @@
       "transform": {
         "translate": [48.91, 3.2199999999999998, -32]
       },
-      "material": {
-        "hue": 0.6,
-        "sat": 0.1,
-        "value": 0.3,
-        "kind": "normal",
-        "roughness": 0.7,
-        "clearcoat": 0.1
-      }
+      "material": "mat-33",
+      "collection": "station-11"
     },
     {
       "id": "s11-cell-1-0",
@@ -6028,14 +4707,8 @@
       "transform": {
         "translate": [47.09, 3.2199999999999998, -32]
       },
-      "material": {
-        "hue": 0.6,
-        "sat": 0.1,
-        "value": 0.3,
-        "kind": "normal",
-        "roughness": 0.7,
-        "clearcoat": 0.1
-      }
+      "material": "mat-33",
+      "collection": "station-11"
     },
     {
       "id": "s11-cell-0-1",
@@ -6047,14 +4720,8 @@
       "transform": {
         "translate": [48.91, 1.7999999999999998, -32]
       },
-      "material": {
-        "hue": 0.6,
-        "sat": 0.1,
-        "value": 0.3,
-        "kind": "normal",
-        "roughness": 0.7,
-        "clearcoat": 0.1
-      }
+      "material": "mat-33",
+      "collection": "station-11"
     },
     {
       "id": "s11-cell-1-1",
@@ -6066,14 +4733,8 @@
       "transform": {
         "translate": [47.09, 1.7999999999999998, -32]
       },
-      "material": {
-        "hue": 0.6,
-        "sat": 0.1,
-        "value": 0.3,
-        "kind": "normal",
-        "roughness": 0.7,
-        "clearcoat": 0.1
-      }
+      "material": "mat-33",
+      "collection": "station-11"
     },
     {
       "id": "s11-item-0",
@@ -6085,20 +4746,14 @@
       "transform": {
         "translate": [48.91, 3.2199999999999998, -31.66]
       },
-      "material": {
-        "hue": 0.57,
-        "sat": 0.55,
-        "value": 0.72,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-34",
       "animation": [
         {
           "channel": "transform.translate.z",
           "expr": "2.400 - 2.060 * smoothstep(131.25, 131.70, t)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-item-1",
@@ -6110,20 +4765,14 @@
       "transform": {
         "translate": [48.91, 1.7999999999999998, -31.66]
       },
-      "material": {
-        "hue": 0.57,
-        "sat": 0.55,
-        "value": 0.72,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-34",
       "animation": [
         {
           "channel": "transform.translate.z",
           "expr": "2.400 - 2.060 * smoothstep(132.15, 132.60, t)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-item-2",
@@ -6135,20 +4784,14 @@
       "transform": {
         "translate": [47.09, 3.2199999999999998, -31.66]
       },
-      "material": {
-        "hue": 0.57,
-        "sat": 0.55,
-        "value": 0.72,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-34",
       "animation": [
         {
           "channel": "transform.translate.z",
           "expr": "2.400 - 2.060 * smoothstep(133.05, 133.50, t)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-item-3",
@@ -6160,21 +4803,14 @@
       "transform": {
         "translate": [47.09, 1.7999999999999998, -31.66]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-5",
       "animation": [
         {
           "channel": "transform.translate.z",
           "expr": "2.400 - 2.060 * smoothstep(133.95, 134.40, t)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-flank-0",
@@ -6186,20 +4822,14 @@
         "translate": [43.84, 3.3099999999999996, -34.2],
         "rotate": [0, -0.9, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      },
+      "material": "mat-13",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "3.310 - 0.000 * smoothstep(130.00, 131.00, t) + 0.06 * sin(0.30 * t + -39.00)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-flank-1",
@@ -6211,20 +4841,14 @@
         "translate": [52.46, 2.11, -35],
         "rotate": [0, -0.4, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      },
+      "material": "mat-13",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "2.110 - 0.000 * smoothstep(130.00, 131.00, t) + 0.08 * sin(0.37 * t + -45.90)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-flank-2",
@@ -6236,20 +4860,14 @@
         "translate": [42.04, 4.71, -37.5],
         "rotate": [0, 0.09999999999999998, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      },
+      "material": "mat-13",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.710 - 0.000 * smoothstep(130.00, 131.00, t) + 0.10 * sin(0.44 * t + -52.80)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "s11-flank-3",
@@ -6261,20 +4879,14 @@
         "translate": [54.56, 4.109999999999999, -38.5],
         "rotate": [0, 0.6, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      },
+      "material": "mat-13",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "4.110 - 0.000 * smoothstep(130.00, 131.00, t) + 0.12 * sin(0.51 * t + -65.98)"
         }
-      ]
+      ],
+      "collection": "station-11"
     },
     {
       "id": "path-11-1",
@@ -6286,15 +4898,8 @@
         "translate": [42, 0.03, -34],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-2",
@@ -6306,15 +4911,8 @@
         "translate": [36, 0.03, -36],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-3",
@@ -6326,15 +4924,8 @@
         "translate": [30, 0.03, -38],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-4",
@@ -6346,15 +4937,8 @@
         "translate": [24, 0.03, -40],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-5",
@@ -6366,15 +4950,8 @@
         "translate": [18, 0.03, -42],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-6",
@@ -6386,15 +4963,8 @@
         "translate": [12, 0.03, -44],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "path-11-7",
@@ -6406,15 +4976,8 @@
         "translate": [6, 0.03, -46],
         "rotate": [0, 2.819842099193151, 0]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.25,
-        "value": 0.85,
-        "glow": 0.45,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.2
-      }
+      "material": "mat-1",
+      "collection": "path-11"
     },
     {
       "id": "s12-plinth-0",
@@ -6425,14 +4988,8 @@
       "transform": {
         "translate": [1.27, 0.06, -48]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-12"
     },
     {
       "id": "s12-mono-0",
@@ -6444,21 +5001,15 @@
       "transform": {
         "translate": [1.27, 0.24, -48]
       },
-      "material": {
-        "hue": 0.55,
-        "sat": 0.62,
-        "value": 0.82,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-7",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-0.540 + 0.780 * smoothstep(141.15, 141.75, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-12"
     },
     {
       "id": "s12-plinth-1",
@@ -6469,14 +5020,8 @@
       "transform": {
         "translate": [0, 0.06, -48]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-12"
     },
     {
       "id": "s12-mono-1",
@@ -6488,21 +5033,15 @@
       "transform": {
         "translate": [0, 1.2, -48]
       },
-      "material": {
-        "hue": 0.5950000000000001,
-        "sat": 0.69,
-        "value": 0.71,
-        "kind": "normal",
-        "roughness": 0.3,
-        "clearcoat": 0.45
-      },
+      "material": "mat-26",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-1.500 + 2.700 * smoothstep(142.25, 142.85, t)"
         }
       ],
-      "pattern": "cracked"
+      "pattern": "cracked",
+      "collection": "station-12"
     },
     {
       "id": "s12-plinth-2",
@@ -6513,14 +5052,8 @@
       "transform": {
         "translate": [-1.27, 0.06, -48]
       },
-      "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.55,
-        "kind": "normal",
-        "roughness": 0.6,
-        "clearcoat": 0.1
-      }
+      "material": "mat-6",
+      "collection": "station-12"
     },
     {
       "id": "s12-mono-2",
@@ -6532,22 +5065,14 @@
       "transform": {
         "translate": [-1.27, 2.4, -48]
       },
-      "material": {
-        "hue": 0.11,
-        "sat": 0.78,
-        "value": 0.95,
-        "metal": 0,
-        "glow": 0.1,
-        "kind": "normal",
-        "roughness": 0.22,
-        "clearcoat": 0.6
-      },
+      "material": "mat-12",
       "animation": [
         {
           "channel": "transform.translate.y",
           "expr": "-2.700 + 5.100 * smoothstep(143.35, 143.95, t)"
         }
-      ]
+      ],
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-l-0",
@@ -6559,14 +5084,8 @@
         "translate": [-6.2299999999999995, 1.1, -46.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-r-0",
@@ -6578,14 +5097,8 @@
         "translate": [6.2299999999999995, 1.1, -46.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-l-1",
@@ -6597,14 +5110,8 @@
         "translate": [-5.63, 1.75, -52.6],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-r-1",
@@ -6616,14 +5123,8 @@
         "translate": [5.63, 1.75, -52.6],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-l-2",
@@ -6635,14 +5136,8 @@
         "translate": [-7.03, 2.4000000000000004, -54.8],
         "rotate": [0, -0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "s12-guard-r-2",
@@ -6654,14 +5149,8 @@
         "translate": [7.03, 2.4000000000000004, -54.8],
         "rotate": [0, 0.3, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-13",
+      "collection": "station-12"
     },
     {
       "id": "horizon-0",
@@ -6673,16 +5162,8 @@
         "translate": [22.153846153846153, 7.016592952333921, 129.98604452013421],
         "rotate": [0, 0, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-1",
@@ -6694,16 +5175,8 @@
         "translate": [85.46046706914235, 7.62296579657653, 74.39555058828262],
         "rotate": [0, 0.34528374665954953, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-2",
@@ -6715,16 +5188,8 @@
         "translate": [64.32508054170378, 4.819555072083943, 39.72745735696862],
         "rotate": [0, -0.3486303089654353, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-3",
@@ -6736,16 +5201,8 @@
         "translate": [155.39376626395293, 4.842001421418689, -33.860401166753746],
         "rotate": [0, 0.006725560193740241, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-4",
@@ -6757,16 +5214,8 @@
         "translate": [155.59371759652714, 7.640377316314558, -2.516528086496381],
         "rotate": [0, 0.3418395632353122, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-5",
@@ -6778,16 +5227,8 @@
         "translate": [63.74443991943304, 6.990241111126378, -77.18060697097252],
         "rotate": [0, -0.35187830398866804, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-6",
@@ -6799,16 +5240,8 @@
         "translate": [86.73068803428151, 4.3376940527581525, -110.04572698856313],
         "rotate": [0, 0.01344921888845539, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-7",
@@ -6820,16 +5253,8 @@
         "translate": [19.53214682017555, 5.582809968766616, -167.001653812622],
         "rotate": [0, 0.33829873245717335, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-8",
@@ -6841,16 +5266,8 @@
         "translate": [-24.508283111604, 7.956071234520032, -89.3367931365888],
         "rotate": [0, -0.35502681343260184, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-9",
@@ -6862,16 +5279,8 @@
         "translate": [-31.227730323988688, 6.178620822448911, -90.35718043439542],
         "rotate": [0, 0.020169075122725907, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-10",
@@ -6883,16 +5292,8 @@
         "translate": [-127.15348055095802, 4.204050667126552, -1.9209760377709948],
         "rotate": [0, 0.33466225541442246, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-11",
@@ -6904,16 +5305,8 @@
         "translate": [-83.35728783635753, 6.424407144257572, -31.389683207356995],
         "rotate": [0, -0.35807494712787274, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-12",
@@ -6925,16 +5318,8 @@
         "translate": [-20.017140918251492, 7.900940120366205, 42.375717617013834],
         "rotate": [0, 0.02688322901019139, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     },
     {
       "id": "horizon-13",
@@ -6946,16 +5331,8 @@
         "translate": [-59.57036602380531, 5.34938983448815, 93.74535911170264],
         "rotate": [0, 0.3309311602381515, 0]
       },
-      "material": {
-        "hue": 0.62,
-        "sat": 0.25,
-        "value": 0.14,
-        "metal": 0,
-        "glow": 0,
-        "kind": "normal",
-        "roughness": 0.5,
-        "clearcoat": 0.35
-      }
+      "material": "mat-35",
+      "collection": "horizon"
     }
   ],
   "overlay": [

@@ -797,22 +797,91 @@ export function validate(data) {
     data.subjects.forEach((s, i) => collectIds(s, `subjects[${i}]`));
   }
 
+  // Scene-level material registry (Blender-borrow Wave A: datablock reuse).
+  // Entries are validated like inline materials; subjects reference by name.
+  if (data.materials != null) {
+    if (typeof data.materials !== 'object' || Array.isArray(data.materials)) {
+      errors.push('materials: must be an object map { name: material }');
+    } else {
+      for (const [name, m] of Object.entries(data.materials)) {
+        if (m == null || typeof m !== 'object' || Array.isArray(m)) {
+          errors.push(`materials["${name}"]: must be a material object`);
+          continue;
+        }
+        for (const k of ['hue', 'sat', 'value', 'metal', 'glow']) {
+          if (m[k] != null && typeof m[k] !== 'number')
+            errors.push(`materials["${name}"].${k}: must be a number if present`);
+        }
+      }
+    }
+  }
+
+  // Scene-level collections registry (Wave A: slicing semantics as DATA — the
+  // id-prefix regex contracts retire once consumers read this instead).
+  if (data.collections != null) {
+    if (typeof data.collections !== 'object' || Array.isArray(data.collections)) {
+      errors.push('collections: must be an object map { name: meta }');
+    } else {
+      for (const [name, c] of Object.entries(data.collections)) {
+        if (c == null || typeof c !== 'object') {
+          errors.push(`collections["${name}"]: must be an object`);
+          continue;
+        }
+        if (c.kind != null && !['station', 'transit-path', 'dressing', 'decor'].includes(c.kind))
+          errors.push(`collections["${name}"].kind: unknown "${c.kind}"`);
+        if (c.cull != null && !['never', 'nearest'].includes(c.cull))
+          errors.push(`collections["${name}"].cull: must be 'never' or 'nearest'`);
+      }
+    }
+  }
+
   // Subject-level validation
   if (Array.isArray(data.subjects)) {
-    data.subjects.forEach((s, i) => validateSubject(s, `subjects[${i}]`, errors, warnings));
+    const ctx = { materials: data.materials || null, collections: data.collections || null };
+    data.subjects.forEach((s, i) => validateSubject(s, `subjects[${i}]`, errors, warnings, ctx));
   }
 
   return { ok: errors.length === 0, errors, warnings };
+}
+
+/**
+ * resolveMaterialRefs(scene) → scene
+ * Replace subject.material strings that name a scene.materials entry with the
+ * registry object (shallow scene copy; registry wins over MATERIAL_PRESETS).
+ * Runs before compile; scenes without a registry pass through untouched.
+ */
+export function resolveMaterialRefs(scene) {
+  if (!scene || !scene.materials) return scene;
+  const reg = scene.materials;
+  let changed = false;
+  const subjects = (scene.subjects || []).map((s) => {
+    if (s && typeof s.material === 'string' && reg[s.material]) {
+      changed = true;
+      return { ...s, material: { ...reg[s.material] } };
+    }
+    return s;
+  });
+  return changed ? { ...scene, subjects } : scene;
 }
 
 // =============================================================================
 // Subject validation (recursive)
 // =============================================================================
 
-function validateSubject(subj, path, errors, warnings) {
+function validateSubject(subj, path, errors, warnings, ctx = null) {
   if (subj == null || typeof subj !== 'object' || Array.isArray(subj)) {
     errors.push(`${path}: must be an object`);
     return;
+  }
+  // collection tag: with a registry present, a dangling reference is an ERROR
+  // (collections carry slicing/routing semantics — a typo would silently
+  // change what geometry exists in a window)
+  if (subj.collection != null) {
+    if (typeof subj.collection !== 'string') {
+      errors.push(`${path}.collection: must be a string`);
+    } else if (ctx && ctx.collections && !ctx.collections[subj.collection]) {
+      errors.push(`${path}.collection: "${subj.collection}" not in scene.collections`);
+    }
   }
 
   if (typeof subj.type !== 'string') {
@@ -854,7 +923,7 @@ function validateSubject(subj, path, errors, warnings) {
       warnings.push(`${path}: BooleanGroup "${subj.type}" with single child will be unwrapped`);
     } else {
       subj.children.forEach((c, i) =>
-        validateSubject(c, `${path}/children[${i}]`, errors, warnings),
+        validateSubject(c, `${path}/children[${i}]`, errors, warnings, ctx),
       );
     }
     // hg_sdf variants need args.r; missing is recoverable (default applied)
@@ -912,7 +981,7 @@ function validateSubject(subj, path, errors, warnings) {
     if (subj.source == null || typeof subj.source !== 'object') {
       errors.push(`${path}: DomainGroup "${subj.type}" requires a "source" Subject`);
     } else {
-      validateSubject(subj.source, `${path}/source`, errors, warnings);
+      validateSubject(subj.source, `${path}/source`, errors, warnings, ctx);
     }
     validateDomainArgs(subj.type, subj.args, `${path}.args`, errors, warnings);
   }
@@ -925,7 +994,7 @@ function validateSubject(subj, path, errors, warnings) {
     if (subj.source == null) {
       errors.push(`${path}: "${subj.type}" requires a "source" 2D primitive`);
     } else {
-      validateSubject(subj.source, `${path}/source`, errors, warnings);
+      validateSubject(subj.source, `${path}/source`, errors, warnings, ctx);
     }
   }
 
@@ -965,10 +1034,21 @@ function validateSubject(subj, path, errors, warnings) {
   // preset packs can ship preset names that older builds don't know yet.
   if (subj.material != null) {
     if (typeof subj.material === 'string') {
-      if (!MATERIAL_PRESETS[subj.material]) {
-        warnings.push(
-          `${path}.material: unknown preset "${subj.material}" — will fall back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`,
-        );
+      const inRegistry = !!(ctx && ctx.materials && ctx.materials[subj.material]);
+      if (!inRegistry && !MATERIAL_PRESETS[subj.material]) {
+        // With a scene registry present, a dangling name is an ERROR — the
+        // material is visual identity, silent palette fallback would produce
+        // a "looks right"-wrong. Without a registry, keep the forward-compat
+        // preset warning behavior.
+        if (ctx && ctx.materials) {
+          errors.push(
+            `${path}.material: "${subj.material}" not in scene.materials and not a preset`,
+          );
+        } else {
+          warnings.push(
+            `${path}.material: unknown preset "${subj.material}" — will fall back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`,
+          );
+        }
       }
     } else if (typeof subj.material === 'object' && !Array.isArray(subj.material)) {
       const m = subj.material;
