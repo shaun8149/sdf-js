@@ -166,6 +166,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-scene-collections.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-modifiers.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-domain-lowering.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-boulder-factory.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/audit-2d-fidelity.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-camera-shake.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-text-to-ir.mjs' },
