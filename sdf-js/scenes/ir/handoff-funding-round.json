@@ -9,7 +9,13 @@
     {
       "structure": "hold",
       "title": "TL;DR",
-      "nodes": ["Every merchant is fighting to own the relationship with their shoppers"]
+      "nodes": [
+        "AI-Driven Personalization · Agentic shopping + marketing agents",
+        "Every merchant is fighting to own the relationship with their shoppers",
+        "Platform Evolution",
+        "AI Agents",
+        "Funding Acceleration"
+      ]
     },
     {
       "structure": "magnitude",
@@ -26,7 +32,7 @@
     {
       "structure": "hold",
       "title": "Challenges",
-      "nodes": []
+      "nodes": ["Returns Network Scaling", "Infrastructure", "Operations", "Network", "Efficiency"]
     },
     {
       "structure": "sequence",

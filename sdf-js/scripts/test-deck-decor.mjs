@@ -85,8 +85,8 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   const sliced = sliceDeckWindow(scene, stWin);
   const decorIn = sliced.subjects.filter((x) => /-decor-/.test(x.id));
   ok(
-    decorIn.every((x) => x.id.startsWith('s3-decor-')),
-    'station window carries ONLY its own station decor',
+    decorIn.every((x) => x.id.startsWith('s3-decor-') || x.id.startsWith('path-3-decor-')),
+    'station window carries only its own decor + the OUTGOING inlay (continuity: the world ahead never pops in)',
   );
   ok(
     decorIn.length <= STATION_DECOR_MAX,

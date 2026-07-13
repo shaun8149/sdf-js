@@ -16,6 +16,7 @@
 import { renderIR } from './render-ir.js';
 import { getEnvironment, horizonSilhouettes } from './environments.js';
 import { makeDeckDecor } from './deck-decor.js';
+import { TEMPO } from './tempo-tokens.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
 //   "<A> - <D> * smoothstep(<t0>, <t1>, t)"            (drop from above)
@@ -300,7 +301,7 @@ export function assembleDeck(deck, opts = {}) {
         // chapter. Window is a plain transit (2 stations + always-on massing
         // + world-heart proxy), NOT full-world: the geometry pop at full-
         // world boundaries was the continuity break itself.
-        const dur = 1.1;
+        const dur = TEMPO.threshold;
         const [cx, cz] = plan.center;
         const risePos = [
           (prevPayoff.pos[0] + heroPos[0]) / 2 + (cx - (prevPayoff.pos[0] + heroPos[0]) / 2) * 0.2,
@@ -330,7 +331,7 @@ export function assembleDeck(deck, opts = {}) {
         clock += dur;
         prevPayoff = { pos: risePos, target: riseTarget };
       }
-      const dur = 1.2;
+      const dur = TEMPO.transit;
       shots.push({
         duration: dur,
         pos: [
@@ -402,11 +403,20 @@ export function assembleDeck(deck, opts = {}) {
 
     // Camera: shift shots in space + append (time shift is implicit — durations chain).
     // Beat tags ride along; tagged shots get their station index for the presenter.
+    // TOTAL CONTINUITY (2026-07-12 user directive: camera continuity is the
+    // FIRST element of world-feel — no discontinuity may exist in deck
+    // playback): every station shot becomes a blend. The evaluator's default
+    // transition is 'cut', so an unmarked hero shot was a hard jump at every
+    // station entry, and the SUPER's hard cut was a jump mid-station. The
+    // super keeps its punch through ease 'out' (fast rush + settle), shake,
+    // exposure and hitstop — impact stays, teleporting goes. Solo figure
+    // pages (?ir=) keep the fighting-game cuts untouched.
     st.cameraSequence.shots.forEach((sh) => {
       shots.push({
         ...sh,
         pos: addV(sh.pos, origin),
         target: addV(sh.target, origin),
+        transition: 'blend',
         ...(sh.beat ? { station: k } : {}),
       });
     });
@@ -444,7 +454,7 @@ export function assembleDeck(deck, opts = {}) {
     // one high beat framing the whole courtyard — the 2D TOC page's 3D twin
     // ("here is everything we will visit"). Full-world window, like finale.
     if (plan && k === plan.centerIdx) {
-      const dur = 2.2;
+      const dur = TEMPO.overlook;
       const [cx, cz] = plan.center;
       // near-top-down: the overlook reads as the deck's MAP ("here is
       // everything we will visit") — 3/4 views kept letting the centre forest
@@ -518,7 +528,7 @@ export function assembleDeck(deck, opts = {}) {
     const cz = origins.reduce((s, o) => s + o[2], 0) / origins.length;
     const span = Math.max(1, ...origins.map((o) => Math.hypot(o[0] - cx, o[2] - cz))) * 2 + stride;
     shots.push({
-      duration: 3.0,
+      duration: TEMPO.finale,
       pos: [cx + span * 0.25, span * 0.5 + 4.5, cz + span * 0.95],
       target: [cx, 1.2, cz],
       fov: 48,
@@ -532,7 +542,7 @@ export function assembleDeck(deck, opts = {}) {
       kind: 'finale',
       stations: deck.slides.map((_, i) => i),
       start: clock,
-      end: clock + 3.0,
+      end: clock + TEMPO.finale,
     });
   }
 
@@ -584,7 +594,9 @@ export function assembleDeck(deck, opts = {}) {
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
     subjects: [...subjects, ...massingSubjects, ...worldSubjects],
     overlay,
-    cameraSequence: { loop: false, shots, hitstops },
+    // flow: steadicam smoothing (total-continuity lock) — deck playback is one
+    // breathing take; the runtime erases shot-boundary velocity kinks.
+    cameraSequence: { loop: false, shots, hitstops, flow: true },
     deckWindows: windows,
     // One shared open world — no per-station stage room (walls would slice the
     // deck axis). Ground/sky come from the environment or the page defaults.
@@ -619,11 +631,14 @@ export function sliceDeckWindow(scene, win) {
     if (st) return wanted.has(Number(st[1]));
     const path = /^path-(\d+)-/.exec(id);
     if (path) {
-      // Breadcrumbs earn their keep during TRANSIT flyovers; inside a station
-      // they're floor dots at the frame edge costing a full SDF eval per
-      // march step each. Station windows drop them all.
-      if (win.kind === 'station') return false;
       const i = Number(path[1]);
+      // Breadcrumbs earn their keep during TRANSIT flyovers. Station windows
+      // keep only the OUTGOING segment (path-k, leading to the next arena):
+      // when the transit starts, its path is ALREADY there — the world never
+      // pops in ahead of the lens (total-continuity lock). The incoming
+      // segment (path-(k-1)) still drops, but that pop happens BEHIND the
+      // camera at arrival, where nobody is looking. +5 leaves per station.
+      if (win.kind === 'station') return wanted.has(i);
       return wanted.has(i) || wanted.has(i + 1);
     }
     return true;
