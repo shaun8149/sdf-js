@@ -26,6 +26,7 @@ import { compile as compileSceneData } from '../scene/index.js';
 import { expandVariants } from '../scene/generator-s.js';
 import { expandChartLabels } from '../scene/chart-labels.js';
 import { expandStage } from '../scene/stage.js';
+import { resolveMaterialRefs } from '../scene/spec.js';
 import { union as sdfUnion } from '../sdf/dn.js';
 
 // Does the scene change pixels on its own (no input)? Drives studio's idle-stop:
@@ -76,7 +77,10 @@ export function pickRenderScale(rawScene) {
  *          cameraSequence the wiring reads); sdf is ground-unioned + ready.
  */
 export function expandAndCompile(sceneData, { rng = null, tokenHash } = {}) {
-  const variantScene = rng ? expandVariants(sceneData, rng) : sceneData;
+  // Wave A: inflate scene.materials string references first — everything
+  // downstream (stage, labels, compile) keeps seeing inline material objects.
+  const resolvedScene = resolveMaterialRefs(sceneData);
+  const variantScene = rng ? expandVariants(resolvedScene, rng) : resolvedScene;
   const stagedScene = expandStage(variantScene);
   const labeledScene = expandChartLabels(stagedScene);
   const compiled = compileSceneData(labeledScene, { tokenHash });

@@ -650,10 +650,63 @@ export function assembleDeck(deck, opts = {}) {
       }
     : null;
 
+  // ---- Wave A (Blender borrow): collections + material registry ---------------
+  // Collections make the slicing semantics DATA: every subject carries a
+  // collection tag, the registry says how each collection behaves in a window
+  // (kind / cull policy / dressing budget). The id prefixes stay as pure
+  // identity; sliceDeckWindow prefers collections and keeps the regex path
+  // only as a fallback for pre-Wave-A scenes.
+  const allSubjects = [...subjects, ...massingSubjects, ...worldSubjects];
+  const collections = {};
+  deck.slides.forEach((_, k) => {
+    collections[`station-${k}`] = { kind: 'station', station: k };
+    if (k < deck.slides.length - 1) collections[`path-${k}`] = { kind: 'transit-path', from: k };
+  });
+  collections.massing = { kind: 'dressing', cull: 'never' };
+  collections.horizon = {
+    kind: 'dressing',
+    cull: 'nearest',
+    budget: { hero: HILLS_HERO, content: HILLS_CONTENT },
+    yieldTo: 'massing', // dressing budget conservation (spec §4)
+  };
+  collections.env = { kind: 'dressing', cull: 'never' };
+  for (const s of allSubjects) {
+    if (s.collection) continue; // renderer-assigned wins (none today)
+    const st = /^s(\d+)-/.exec(s.id || '');
+    const path = /^path-(\d+)-/.exec(s.id || '');
+    s.collection = st
+      ? `station-${st[1]}`
+      : path
+        ? `path-${path[1]}`
+        : (s.id || '').startsWith('massing-')
+          ? 'massing'
+          : (s.id || '').startsWith('horizon-')
+            ? 'horizon'
+            : 'env';
+  }
+  // Material registry: auto-dedup the inline materials (36 kinds × ~300 uses on
+  // the reference deck). Names are deterministic by first appearance; subjects
+  // hold string refs, resolveMaterialRefs() inflates them before compile.
+  const materials = {};
+  const matName = new Map();
+  for (const s of allSubjects) {
+    if (!s.material || typeof s.material !== 'object') continue;
+    const key = JSON.stringify(s.material);
+    let name = matName.get(key);
+    if (!name) {
+      name = `mat-${matName.size}`;
+      matName.set(key, name);
+      materials[name] = s.material;
+    }
+    s.material = name;
+  }
+
   return {
     v: 1,
     name: `(deck) ${deck.title || `${deck.slides.length} stations`}${opts.env ? ` · ${opts.env}` : ''}`,
-    subjects: [...subjects, ...massingSubjects, ...worldSubjects],
+    collections,
+    materials,
+    subjects: allSubjects,
     overlay,
     // flow: steadicam smoothing (total-continuity lock) — deck playback is one
     // breathing take; the runtime erases shot-boundary velocity kinks.
@@ -686,46 +739,71 @@ const HILLS_CONTENT = 3;
 export function sliceDeckWindow(scene, win) {
   if (!win || win.kind === 'finale') return scene;
   const wanted = new Set(win.stations);
-  const keep = (s) => {
+  const cols = scene.collections || null;
+
+  // Wave A: collection-driven slicing — the routing rules live in DATA
+  // (scene.collections), ids are pure identity. The regex path below stays as
+  // a fallback for pre-Wave-A scenes and is deleted once no producer emits
+  // collection-less decks.
+  const keepByCollection = (s) => {
+    const c = cols[s.collection];
+    if (!c) return true; // untagged → shared dressing
+    if (c.kind === 'station') return wanted.has(c.station);
+    if (c.kind === 'transit-path') {
+      // Station windows keep only the OUTGOING segment (the world never pops
+      // in ahead of the lens — total-continuity lock); transit windows carry
+      // both segments they touch.
+      if (win.kind === 'station') return wanted.has(c.from);
+      return wanted.has(c.from) || wanted.has(c.from + 1);
+    }
+    return true; // dressing/decor: kept (nearest-cull handled below)
+  };
+  const keepLegacy = (s) => {
     const id = typeof s.id === 'string' ? s.id : '';
     const st = /^s(\d+)-/.exec(id);
     if (st) return wanted.has(Number(st[1]));
     const path = /^path-(\d+)-/.exec(id);
     if (path) {
       const i = Number(path[1]);
-      // Breadcrumbs earn their keep during TRANSIT flyovers. Station windows
-      // keep only the OUTGOING segment (path-k, leading to the next arena):
-      // when the transit starts, its path is ALREADY there — the world never
-      // pops in ahead of the lens (total-continuity lock). The incoming
-      // segment (path-(k-1)) still drops, but that pop happens BEHIND the
-      // camera at arrival, where nobody is looking. +5 leaves per station.
       if (win.kind === 'station') return wanted.has(i);
       return wanted.has(i) || wanted.has(i + 1);
     }
     return true;
   };
-  let subjects = scene.subjects.filter(keep);
+  let subjects = scene.subjects.filter(cols ? keepByCollection : keepLegacy);
+
   if (Array.isArray(win.origin)) {
-    // Dressing budget CONSERVATION (spec §4): chapter massing (`massing-`
-    // prefix) is kept in every window and is NEVER distance-culled — the far
-    // side is exactly what foreshadowing needs, and the nearest-first trim
-    // below would throw it away first. The horizon-slab quota shrinks in
-    // exchange, so the per-window dressing total stays in the same band.
-    const massingCount = subjects.filter(
-      (s) => typeof s.id === 'string' && s.id.startsWith('massing-'),
-    ).length;
-    const hillBudget = Math.max(
-      0,
-      (win.tier === 'hero' ? HILLS_HERO : HILLS_CONTENT) - massingCount,
-    );
-    const hills = subjects.filter((s) => typeof s.id === 'string' && s.id.startsWith('horizon-'));
-    if (hills.length > hillBudget) {
+    // Dressing budget CONSERVATION (spec §4): 'never'-culled dressing (chapter
+    // massing) stays in every window — the far side is exactly what
+    // foreshadowing needs; the nearest-culled collection's quota shrinks in
+    // exchange (yieldTo), so the per-window dressing total stays in one band.
+    const tierKey = win.tier === 'hero' ? 'hero' : 'content';
+    const cullNearest = (memberOf, budget) => {
+      const members = subjects.filter(memberOf);
+      if (members.length <= budget) return;
       const distSq = (s) => {
         const t = (s.transform && s.transform.translate) || [0, 0, 0];
         return (t[0] - win.origin[0]) ** 2 + (t[2] - win.origin[2]) ** 2;
       };
-      const near = new Set([...hills].sort((a, b) => distSq(a) - distSq(b)).slice(0, hillBudget));
-      subjects = subjects.filter((s) => !s.id || !s.id.startsWith('horizon-') || near.has(s));
+      const near = new Set(members.sort((a, b) => distSq(a) - distSq(b)).slice(0, budget));
+      subjects = subjects.filter((s) => !memberOf(s) || near.has(s));
+    };
+    if (cols) {
+      for (const [name, c] of Object.entries(cols)) {
+        if (c.kind !== 'dressing' || c.cull !== 'nearest') continue;
+        const yieldCount = c.yieldTo
+          ? subjects.filter((s) => s.collection === c.yieldTo).length
+          : 0;
+        const base =
+          (c.budget && c.budget[tierKey]) ?? (tierKey === 'hero' ? HILLS_HERO : HILLS_CONTENT);
+        cullNearest((s) => s.collection === name, Math.max(0, base - yieldCount));
+      }
+    } else {
+      const massingCount = subjects.filter(
+        (s) => typeof s.id === 'string' && s.id.startsWith('massing-'),
+      ).length;
+      const budget = Math.max(0, (tierKey === 'hero' ? HILLS_HERO : HILLS_CONTENT) - massingCount);
+      cullNearest((s) => typeof s.id === 'string' && s.id.startsWith('horizon-'), budget);
     }
   }
   return { ...scene, subjects };

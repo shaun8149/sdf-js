@@ -117,7 +117,12 @@ for (let i = 0; i < wins.length; i++) {
 {
   const palette = {
     anchor: [241, 70, 22],
-    colors: [[241, 70, 22], [43, 154, 233], [168, 124, 42], [1, 119, 86]],
+    colors: [
+      [241, 70, 22],
+      [43, 154, 233],
+      [168, 124, 42],
+      [1, 119, 86],
+    ],
   };
   const deck2 = {
     title: 'c',
@@ -130,18 +135,24 @@ for (let i = 0; i < wins.length; i++) {
     ],
   };
   const sc = assembleDeck(deck2, { stage: true, palette });
+  // Wave A: assembled decks carry material REFS — deref via the registry
+  const matOf = (scene, s) =>
+    typeof s.material === 'string' ? scene.materials[s.material] : s.material;
   const chips = sc.overlay.filter((o) => o.role === 'value' && o.accentColor);
   ok(chips.length > 0, 'value chips carry the station accent color');
   const stationHues = new Set();
   for (const sub of sc.subjects) {
     const m = /^s(\d+)-mono-1$/.exec(sub.id || '');
-    if (m) stationHues.add(`${m[1]}:${sub.material.hue.toFixed(3)}`);
+    if (m) stationHues.add(`${m[1]}:${matOf(sc, sub).hue.toFixed(3)}`);
   }
   const hues = [...stationHues].map((x) => x.split(':')[1]);
   ok(new Set(hues).size >= 2, `content stations rotate hues (${[...stationHues].join(' ')})`);
   const noPal = assembleDeck(deck2, { stage: true });
   const blue = noPal.subjects.find((x) => /^s1-mono-1$/.test(x.id));
-  ok(Math.abs(blue.material.hue - 0.595) < 0.02, 'no palette → classic blue family (back-compat)');
+  ok(
+    Math.abs(matOf(noPal, blue).hue - 0.595) < 0.02,
+    'no palette → classic blue family (back-compat)',
+  );
 }
 
 // ---- windowIndexAt ------------------------------------------------------------
