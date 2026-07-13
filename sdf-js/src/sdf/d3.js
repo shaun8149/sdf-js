@@ -130,6 +130,78 @@ export const capped_cylinder = (a, b, radius = 0.1) => {
 
 // ellipsoid：椭球，半轴 [rx, ry, rz]。
 // 注意：非各向同性缩放的 SDF 不是精确距离（IQ 近似公式）。
+// ---- noise-field(Infinigen 研读第二课)---------------------------------------
+// 不是形状,是"位移场":f(p) 返回微扰值,喂给 displace(host, field) 做表面细节。
+// kind 'vfbm' = 3 octave 值噪声(geo_extension 径向鼓胀的 SDF 近似,低频不对称);
+// kind 'voronoi' = 3D cellular F1(boulder.py 双层 VORONOI DISPLACE 的对应物,节理)。
+// hash 用与 GLSL 同一条 sin-fract 公式 —— 统计特性一致,逐位不保证(文档级契约,
+// 同 Phacelle 地形:噪声细节允许 CPU/GPU 有亚像素差异)。
+// 调用方负责 amp 足够小(位移破坏 Lipschitz-1;GPU 发射器注释同款警告)。
+const nfHash = (x, y, z) => {
+  const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453;
+  return s - Math.floor(s);
+};
+const nfValue = (px, py, pz) => {
+  const ix = Math.floor(px),
+    iy = Math.floor(py),
+    iz = Math.floor(pz);
+  const fx = px - ix,
+    fy = py - iy,
+    fz = pz - iz;
+  const u = fx * fx * (3 - 2 * fx),
+    v2 = fy * fy * (3 - 2 * fy),
+    w = fz * fz * (3 - 2 * fz);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const c = (dx, dy, dz) => nfHash(ix + dx, iy + dy, iz + dz);
+  return lerp(
+    lerp(lerp(c(0, 0, 0), c(1, 0, 0), u), lerp(c(0, 1, 0), c(1, 1, 0), u), v2),
+    lerp(lerp(c(0, 0, 1), c(1, 0, 1), u), lerp(c(0, 1, 1), c(1, 1, 1), u), v2),
+    w,
+  );
+};
+const nfVfbm = (px, py, pz) => {
+  let a = 0.5,
+    s = 0;
+  for (let o = 0; o < 3; o++) {
+    s += a * nfValue(px, py, pz);
+    px = px * 2.03 + 11.5;
+    py = py * 2.03 + 27.1;
+    pz = pz * 2.03 + 5.7;
+    a *= 0.5;
+  }
+  return s / 0.875; // 归一回 ~[0,1]
+};
+// ridged crease:abs(2v-1),v 的等值面变成"折痕"= 岩石节理读感。单 octave、
+// 零循环 —— 最初实现是 3D cellular F1(Infinigen 原方 Voronoi),27-cell 三重
+// 循环 + 后来的双 octave 都把 D3D pipeline 编译推到分钟级(GLSL 端注释详述)。
+const nfRidge = (px, py, pz) => Math.abs(2 * nfValue(px, py, pz) - 1);
+// sinfold:IQ 经典 sin 位移的 ridged 变体,每次求值只有 3 个 sin(值噪声要
+// 8 角 hash ≈ 8 个 sin + 插值)。studio 档的完整 shader 在 D3D 上把 sceneSDF
+// 内联进十几个调用点,fxc 成本 ∝ 场的 ALU × 调用点 —— 这是 decor 能负担的档。
+const nfSinfold = (px, py, pz) =>
+  Math.abs(Math.sin(px) * Math.sin(py * 1.13) * Math.sin(pz * 0.87));
+
+export const noiseField = (kind = 'vfbm', freq = 1, amp = 0.05, offset = [0, 0, 0]) => {
+  const f0 = numLit(freq),
+    a0 = numLit(amp);
+  const o0 = vecLit(offset);
+  const kindIdx = kind === 'sinfold' ? 2 : kind === 'ridge' ? 1 : 0;
+  const inst = SDF3((p) => {
+    const qx = (p[0] + o0[0]) * f0,
+      qy = (p[1] + o0[1]) * f0,
+      qz = (p[2] + o0[2]) * f0;
+    const v2 =
+      kindIdx === 2
+        ? nfSinfold(qx, qy, qz) - 0.5
+        : kindIdx === 1
+          ? nfRidge(qx, qy, qz) - 0.5
+          : (nfVfbm(qx, qy, qz) - 0.5) * 2;
+    return a0 * v2;
+  });
+  inst.ast = { kind: 'prim', name: 'noise-field', args: [kindIdx, freq, amp, offset] };
+  return inst;
+};
+
 export const ellipsoid = (radii = [0.4, 0.3, 0.4]) => {
   const [rx, ry, rz] = vecLit(radii);
   const inst = SDF3((p) => {

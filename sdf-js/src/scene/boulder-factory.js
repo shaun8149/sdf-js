@@ -41,6 +41,12 @@ export function makeBoulderFactory(factorySeed) {
   // boulder.py sharp remesh 的 SDF 对应物;weathered = 椭球 + smoothUnion——风化圆石,少数派。
   const lithology = S.range('lithology', 0, 1) < 0.7 ? 'angular' : 'weathered';
   const fuseK = S.range('fuse', 0.12, 0.28); // weathered 的融合半径(物种级"包紧"程度)
+  // 表面(物种级,研读第二课):单层 sinfold 节理位移(boulder.py 双层 VORONOI
+  // DISPLACE 的对应物,收缩到一层 + 最便宜的场——D3D fxc 成本 ∝ displaced
+  // subject 数,每 studio 场景 ≤4-6 个,预算取证见 lesson-02 课文)。
+  // 幅度相对石头尺寸,保 Lipschitz 冗余。
+  const voroScaleK = logUniform(S, 'voro-scale', 0.25, 0.5); // 节理尺度 × meanHalf
+  const voroAmpK = S.range('voro-amp', 0.03, 0.06); // × minHalf
 
   // ---- 实例级(int_hash((factory_seed, i)) 的对应物;双形态共享)---------------
   function instance(i, { at = [0, 0, 0], scale = 1 } = {}) {
@@ -121,18 +127,35 @@ export function makeBoulderFactory(factorySeed) {
     // angular 用精确 min-union:棱面感来自块的互切,接缝是硬折痕(岩石本该如此);
     // chamfer/round 家族不是精确距离场,sphere-tracing 过冲出黑斑(视觉验证抓到)。
     // weathered 用 smoothUnion(k 小,融合处保持温和)。
-    return {
-      id: `boulder-${factorySeed}-${i}`,
+    const blob = {
+      id: `boulder-${factorySeed}-${i}-blob`,
       type: angular ? 'union' : 'smoothUnion',
       ...(angular ? {} : { args: { k: fuseK * Math.min(...half) } }),
       children,
+    };
+    // 表面位移(局部坐标——位移场随石头一起转):单层 sinfold 节理。
+    // 原方是双层(vfbm 鼓胀 + 节理);D3D 取证:fxc 成本主导项是 displaced
+    // subject 数(8 个=分钟级黑屏,与场 ALU 无关),鼓胀层砍、场用最便宜档。
+    // 每实例独立 offset lane,同一物种的噪声图不相互复读。
+    const minHalf = Math.min(...half);
+    const meanHalf = (half[0] + half[1] + half[2]) / 3;
+    return {
+      id: `boulder-${factorySeed}-${i}`,
+      type: 'displace',
+      source: blob,
+      args: {
+        kind: 'sinfold',
+        freq: 1 / (voroScaleK * meanHalf),
+        amp: voroAmpK * minHalf,
+        offset: [R.range('vox', 0, 100), R.range('voy', 0, 100), R.range('voz', 0, 100)],
+      },
       transform: { translate: pos, rotate: [tilt, yaw, 0] },
       material: { ...material },
     };
   }
 
   return {
-    voice: { isSlab, material, blobN, fuseK, lithology },
+    voice: { isSlab, material, blobN, fuseK, lithology, voroScaleK, voroAmpK },
     createPlaceholder,
     createAsset,
   };

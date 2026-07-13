@@ -454,6 +454,11 @@ const PRIMS = {
 
   capsule: ([a, b, r], p) => `sdCapsule(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r)})`,
 
+  // noise-field 位移场（研读第二课）：不是形状,是喂给 displace 的微扰。
+  // args: [kindFlag(0=vfbm,1=voronoi), freq, amp, offset]
+  'noise-field': ([kind, freq, amp, offset], p) =>
+    `noiseField3(${p} + ${vec3(asArr3(offset ?? 0))}, ${flt(kind)}, ${flt(freq)}, ${flt(amp)})`,
+
   torus: ([majorR, minorR], p) => `sdTorus(${p}, ${vec2([majorR, minorR])})`,
 
   // d3.cylinder(radius, height) → IQ sdCylinder(p, vec2(radius, height/2))

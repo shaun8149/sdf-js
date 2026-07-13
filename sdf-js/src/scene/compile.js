@@ -86,6 +86,7 @@ import {
   vesicaSegment,
   cylinderInf,
   coneInf,
+  noiseField,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
 import { linkSDF } from './components/community/iq-link.js';
@@ -247,6 +248,7 @@ import {
   groove,
   tongue,
   mirrorAxis,
+  displace,
 } from '../sdf/dn.js';
 import { evalT } from '../sdf/time.js';
 import {
@@ -1694,6 +1696,14 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
     sdf = modPolar(source.sdf, { axis: args.axis, repetitions: args.repetitions });
   } else if (subj.type === 'mirrorOctant') {
     sdf = mirrorOctant(source.sdf, { plane: args.plane, dist: args.dist });
+  } else if (subj.type === 'displace') {
+    // Infinigen 研读第二课:表面噪声位移。schema 里躺了两个月的 DOMAIN op 首次
+    // 落地 —— source = 宿主,args 描述噪声场(kind/freq/amp/offset)。amp 必须
+    // 远小于宿主尺寸:位移破坏 Lipschitz-1,raymarcher 靠步长冗余吸收。
+    sdf = displace(
+      source.sdf,
+      noiseField(args.kind ?? 'vfbm', args.freq ?? 1, args.amp ?? 0.05, args.offset ?? [0, 0, 0]),
+    );
   } else {
     throw new Error(`compile: unknown domain op "${subj.type}"`);
   }
