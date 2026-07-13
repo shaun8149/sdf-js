@@ -96,7 +96,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Sprint 80: the scrim is LOCAL — a radial vignette anchored on the
     // title block. A full-surface wash greys the artwork (cream Ringers
     // grounds turned to fog); the painting owns the rest of the frame.
-    const scx = x + w * 0.24;
+    const scx = x + w * (h > 200 ? 0.5 : 0.24); // centered covers → centered vignette
     const scy = y + h * 0.5;
     const scr = ctx.createRadialGradient(scx, scy, 0, scx, scy, w * 0.52);
     const base = overlayInk ? '246, 243, 236' : '8, 10, 16';
@@ -137,7 +137,12 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   // titles at 72px ran ~400px past the right edge — cover had no width
   // fitting at all). Floor 20px; at the floor a still-too-long title is the
   // author's problem to shorten, not ours to clip.
-  let titleSize = Math.max(18, Math.min(Math.round(h * 0.14), 72));
+  // Sprint 90 (user: 目录页标题字太小): banner BANDS (h ≤ 200) size type
+  // to the band — a 120px band carries ~40px titles, not 18px whispers.
+  const isBand = h <= 200;
+  let titleSize = isBand
+    ? Math.max(26, Math.min(Math.round(h * 0.34), 46))
+    : Math.max(18, Math.min(Math.round(h * 0.14), 72));
   {
     const maxW = w - PAD * 2;
     ctx.save();
@@ -159,7 +164,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
   const metaSize = Math.max(10, Math.min(Math.round(h * 0.038), 14));
 
-  const titleX = x + PAD;
+  // Sprint 90 (user: 大标题居中): full covers center the title block;
+  // bands stay left-aligned next to the label position.
+  const centered = !isBand && (style === 'overlay' || style === 'gradient');
+  const titleX = centered ? x + w / 2 : x + PAD;
 
   // Vertical layout: start from center, nudge up slightly
   const blockH = titleSize + (subtitle ? subtitleSize + 8 : 0);
@@ -180,7 +188,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   }
   ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.95)' : 'rgba(255,255,255,0.97)';
   ctx.font = `900 ${titleSize}px "Inter Display", Inter, system-ui, sans-serif`;
-  ctx.textAlign = 'left';
+  ctx.textAlign = centered ? 'center' : 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(String(title), titleX, blockTop);
 
@@ -191,6 +199,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.textBaseline = 'top';
     ctx.fillText(String(subtitle), titleX, blockTop + titleSize + 8);
   }
+  ctx.textAlign = 'left';
 
   // ---- Metadata strip — bottom-right ----
   const metaParts = [];

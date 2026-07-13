@@ -14,8 +14,9 @@
     "w": 1280,
     "h": 100,
     "args": {
-     "title": "Data Appendix",
-     "style": "gradient"
+     "title": "数据附录",
+     "style": "gradient",
+     "subtitle": "费用与销毁基准"
     }
    },
    {

@@ -121,6 +121,18 @@ export async function loadArtMount(entry, base) {
     throw new Error(`art-mount: ${entry?.id || '?'} has no usable large mint`);
   }
   const cover = await loadImage(base + entry.files.large);
+  // Sprint 90 (user: 转场页用另一个 hash 的另一张图): large VARIANTS —
+  // extra mints of the same artwork under different hashes, cached as
+  // <id>-large-t<k>.png. Absent variants are fine; transitions fall back
+  // to the cover itself.
+  const variants = [];
+  for (let k = 0; k < 8; k++) {
+    try {
+      variants.push(await loadImage(`${base}${entry.id}-large-t${k}.png`));
+    } catch {
+      break; // contiguous t0..tn convention
+    }
+  }
   const strip = [];
   for (let k = 0; k < 3; k++) {
     try {
@@ -142,6 +154,7 @@ export async function loadArtMount(entry, base) {
     artist: entry.artist,
     cover,
     strip,
+    variants,
     // Sprint 87: prebaked palette from the manifest wins (bake once, render
     // anywhere — the gallery shows the same swatches the deck will wear)
     palette: entry.palette || extractMountPalette(cover),
@@ -231,6 +244,70 @@ export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
   const homo = MOUNT_FAMILY_OF[mount.id];
   const family = mode === 'homo' && homo ? homo : underlayFamilyFor(mount.id);
   return { ...baseDecor, family };
+}
+
+/**
+ * insertTransitions(slots, mount) — Sprint 90 (user: 6 个子目录就有 6 个
+ * 转场页, 封面式排版突出生成艺术, 另一个 hash 另一张图)。
+ * A transition page is synthesized BEFORE each section-boundary slot
+ * (slotName ending in "-lead", plus the risk/summary boundary when the
+ * agenda promises more sections than leads). It is a pure-cover slot:
+ * full-bleed artwork (a different mint VARIANT per transition) + the
+ * section title, centered like the deck cover. Returns a NEW slot list;
+ * synthetic slots carry _transition: {index} so renderers can pick art.
+ */
+export function insertTransitions(slots, mount) {
+  if (!mount) return slots;
+  const agenda = slots.find((s) => s.slotName === 'agenda');
+  const labels = [];
+  if (agenda?.sceneData?.subjects) {
+    for (const sub of agenda.sceneData.subjects) {
+      if (sub?.type === 'agenda-list' && Array.isArray(sub.args?.items)) {
+        for (const it of sub.args.items) if (it?.label) labels.push(String(it.label));
+      }
+    }
+  }
+  const isBoundary = (s, i) =>
+    /-lead$/.test(s.slotName || '') || ((s.slotName || '') === 'risk-matrix' && labels.length > 5);
+  const out = [];
+  let t = 0;
+  for (let i = 0; i < slots.length; i++) {
+    const s = slots[i];
+    if (isBoundary(s, i) && t < Math.max(labels.length, 6)) {
+      const title = labels[t] || s.slotTitle || '';
+      out.push({
+        slotIdx: s.slotIdx - 0.5,
+        slotName: `transition-${t + 1}`,
+        slotTitle: title,
+        _transition: { index: t },
+        sceneData: {
+          subjects: [
+            {
+              type: 'cover',
+              x: 0,
+              y: 0,
+              w: 1280,
+              h: 720,
+              args: {
+                title,
+                subtitle: `${String(t + 1).padStart(2, '0')} / ${Math.max(labels.length, 6)}`,
+              },
+            },
+          ],
+        },
+      });
+      t++;
+    }
+    out.push(s);
+  }
+  return out;
+}
+
+/** transitionArt(mount, slot) → the variant image for a synthetic slot. */
+export function transitionArt(mount, slot) {
+  if (!slot?._transition || !mount) return null;
+  const pool = mount.variants?.length ? mount.variants : [mount.cover];
+  return pool[slot._transition.index % pool.length];
 }
 
 /** fetchMintManifest(base) → manifest array, or null when the cache is absent. */
