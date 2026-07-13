@@ -16,7 +16,7 @@
 import { renderIR } from './render-ir.js';
 import { getEnvironment, horizonSilhouettes } from './environments.js';
 import { makeDeckDecor } from './deck-decor.js';
-import { shiftModifier } from './modifiers.js';
+import { expandModifiers, shiftModifier } from './modifiers.js';
 import { TEMPO } from './tempo-tokens.js';
 
 // Every structure renderer emits build-ins of exactly this shape:
@@ -152,7 +152,7 @@ function halfExtents(s) {
   return [0.8, 0.8, 0.8]; // exotic prims: a nudge, the AABB is dominated by placement
 }
 
-function accumulateBounds(b, s) {
+function accumulateUnmodifiedBounds(b, s) {
   const t = (s.transform && s.transform.translate) || [0, 0, 0];
   const h = halfExtents(s);
   b.minX = Math.min(b.minX, t[0] - h[0]);
@@ -160,6 +160,13 @@ function accumulateBounds(b, s) {
   b.maxY = Math.max(b.maxY, t[1] + h[1]);
   b.minZ = Math.min(b.minZ, t[2] - h[2]);
   b.maxZ = Math.max(b.maxZ, t[2] + h[2]);
+}
+
+function accumulateBounds(b, s) {
+  // Finale proxies must cover the geometry after placement modifiers unroll;
+  // otherwise mirrored/array stations shrink or shift in the money shot.
+  const expanded = expandModifiers({ subjects: [s] }).subjects || [s];
+  expanded.forEach((x) => accumulateUnmodifiedBounds(b, x));
 }
 
 function stationProxy(k, b) {

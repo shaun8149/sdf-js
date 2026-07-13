@@ -5,6 +5,7 @@
 import { assembleDeck, sliceDeckWindow } from '../src/scene/assemble-deck.js';
 import { windowIndexAt } from '../src/runtime/deck-shader-windows.js';
 import { expandAndCompile } from '../src/runtime/apply-studio-scene.js';
+import { expandModifiers } from '../src/scene/modifiers.js';
 
 let pass = 0,
   fail = 0;
@@ -43,6 +44,22 @@ ok(wins[5].stations.join(',') === '0,1,2', 'finale window carries all stations')
 // ---- slicing ------------------------------------------------------------------
 const sliceOf = (i) => sliceDeckWindow(scene, wins[i]);
 const stationIds = (s, k) => s.subjects.filter((x) => x.collection === `station-${k}`).length;
+const halfX = (s) => {
+  const a = s.args || {};
+  if (Array.isArray(a.dims)) return a.dims[0] / 2;
+  if (a.radius != null) return a.radius;
+  return 0.8;
+};
+const xBoundsOf = (subjects) => {
+  const b = { min: Infinity, max: -Infinity };
+  for (const s of subjects) {
+    const t = (s.transform && s.transform.translate) || [0, 0, 0];
+    const h = halfX(s);
+    b.min = Math.min(b.min, t[0] - h);
+    b.max = Math.max(b.max, t[0] + h);
+  }
+  return b;
+};
 {
   const s1 = sliceOf(2); // station window of slide 1
   ok(stationIds(s1, 1) > 0, 'station slice keeps its own subjects');
@@ -82,6 +99,18 @@ const stationIds = (s, k) => s.subjects.filter((x) => x.collection === `station-
     fin.subjects.some((x) => x.collection === 'path-0'),
     'runways stay in the finale (the world lines)',
   );
+  {
+    const proxy0 = proxies.find((x) => x.collection === 'proxy-0');
+    const real0 = expandModifiers({
+      subjects: scene.subjects.filter((x) => x.collection === 'station-0'),
+    }).subjects;
+    const pb = xBoundsOf([proxy0]);
+    const rb = xBoundsOf(real0);
+    ok(
+      pb.min <= rb.min + 1e-9 && pb.max >= rb.max - 1e-9,
+      'finale proxy bounds include modifier-expanded station geometry',
+    );
+  }
   ok(
     [0, 1, 2, 3, 4].every(
       (i) => !sliceOf(i).subjects.some((x) => (x.collection || '').startsWith('proxy-')),
