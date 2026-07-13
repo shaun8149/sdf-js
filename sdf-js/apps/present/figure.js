@@ -35,8 +35,10 @@ const palette = theme ? { anchor: theme.accent, colors: theme.colors } : null;
 // ?seed=0 turns decor off; any other value overrides the identity.
 const seedParam = params.get('seed');
 const decorSeed = seedParam === '0' ? undefined : seedParam || deckName || undefined;
+// ?horizon=boulders — Infinigen 研读第三课的混林天际线(OPT-IN;默认黑石板)
+const horizon = params.get('horizon') === 'boulders' ? 'boulders' : undefined;
 const scene = deckName
-  ? assembleDeck(ir, { env, layout, stage, palette, decorSeed })
+  ? assembleDeck(ir, { env, layout, stage, palette, decorSeed, horizon })
   : renderIR(ir, { env, stage });
 show(scene);
 // script spans may ride in the deck fixture (teleprompter); presenter uses them

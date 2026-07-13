@@ -14,7 +14,7 @@
 // the shift rewrites them with a STRICT parser that throws on any unknown
 // shape (fail loud, never silently mis-animate).
 import { renderIR } from './render-ir.js';
-import { getEnvironment, horizonSilhouettes } from './environments.js';
+import { getEnvironment, horizonSilhouettes, boulderHorizon } from './environments.js';
 import { makeDeckDecor } from './deck-decor.js';
 import { shiftModifier } from './modifiers.js';
 import { TEMPO } from './tempo-tokens.js';
@@ -701,12 +701,19 @@ export function assembleDeck(deck, opts = {}) {
   // World dressing: envs bring their own terrain; the DEFAULT open world gets a
   // ring of cheap hill silhouettes around the deck's centroid, so transits fly
   // toward a horizon instead of an empty plain.
+  // opts.horizon = 'boulders' (OPT-IN, Infinigen 研读第三课): the skyline ring
+  // becomes a weighted 3-species boulder mixed forest (placeholder form —
+  // analytic-safe, same leaf budget and cull semantics as the slabs). Default
+  // stays the black-slab monoliths; goldens untouched.
+  const skylineCenter = [
+    origins.reduce((s, o) => s + o[0], 0) / origins.length,
+    origins.reduce((s, o) => s + o[2], 0) / origins.length,
+  ];
   const worldSubjects = env
     ? env.subjects
-    : horizonSilhouettes([
-        origins.reduce((s, o) => s + o[0], 0) / origins.length,
-        origins.reduce((s, o) => s + o[2], 0) / origins.length,
-      ]);
+    : opts.horizon === 'boulders'
+      ? boulderHorizon(skylineCenter, 135, opts.decorSeed || deck.title || 'skyline')
+      : horizonSilhouettes(skylineCenter);
   // Courtyard: chapter massing joins the world (background swapped from pure
   // scenery to MEANING — user decision 2026-07-12: slabs yield their quota).
   const massingSubjects = plan

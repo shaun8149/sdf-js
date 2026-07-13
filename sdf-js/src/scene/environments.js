@@ -11,6 +11,9 @@
 //   defaults   — full scene defaults (camera fallback + light + shadow + postFx)
 //   payoffZoom — multiplier for the ending pull-back distance (reveal the world)
 
+import { makeBoulderFactory } from './boulder-factory.js';
+import { makeAssetCollection } from './asset-collection.js';
+
 const SNOWY_STONE = { hue: 0.07, sat: 0.3, value: 0.62, metal: 0, glow: 0, kind: 'snowy' };
 const SNOWY_PINE = { hue: 0.3, sat: 0.55, value: 0.3, metal: 0, glow: 0, kind: 'snowy' };
 
@@ -152,6 +155,40 @@ export function getEnvironment(name) {
 // them white; black stone silhouettes OWN the haze instead. Deterministic
 // layout from index math (no randomness); ids keep the `horizon-` prefix so
 // sliceDeckWindow's nearest-K trim keeps working unchanged.
+// ---- Boulder horizon(Infinigen 研读第三课,OPT-IN)---------------------------
+// make_asset_collection 混林版天际线:3 个 boulder 物种按权重混合,placeholder
+// 形态(analytic 档安全,单 rounded_box/个 —— leaf 预算与 slabs 相同)。默认
+// 天际线仍是 horizonSilhouettes;assembleDeck opts.horizon='boulders' 换用。
+// 剪影纪律:物种材质压到 slabs 同档的暗度(天际线是背景,黑石 motif 不让位)。
+export function boulderHorizon(center = [0, 0], ringRadius = 135, seed = 'skyline') {
+  const species = [
+    makeBoulderFactory(`${seed}-a`),
+    makeBoulderFactory(`${seed}-b`),
+    makeBoulderFactory(`${seed}-c`),
+  ];
+  const mix = makeAssetCollection(species, {
+    weights: [0.6, 0.25, 0.15],
+    seed,
+    form: 'placeholder',
+  });
+  const rocks = [];
+  const N = 14;
+  for (let i = 0; i < N; i++) {
+    // 与 slabs 同一套环位数学(index math,零随机)—— 预算 cull 语义不变
+    const th = (i * 2 * Math.PI) / N + 0.35 * Math.sin(i * 2.7);
+    const r = ringRadius * (0.82 + 0.3 * Math.sin(i * 1.9 + 1.2));
+    const scale = 5.5 + 4 * Math.sin(i * 3.1 + 0.5) ** 2; // slabs 的 w/h 量级
+    const ph = mix.spawn(i, {
+      at: [center[0] + Math.sin(th) * r, 0, center[1] + Math.cos(th) * r],
+      scale,
+    });
+    ph.id = `horizon-${i}`; // 天际线身份(ids 是纯 identity,路由走 collection)
+    ph.material = { ...ph.material, value: 0.14, sat: Math.min(ph.material.sat, 0.25) };
+    rocks.push(ph);
+  }
+  return rocks;
+}
+
 export function horizonSilhouettes(center = [0, 0], ringRadius = 135) {
   const rocks = [];
   const N = 14;
@@ -198,7 +235,10 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
     subjects: [...(scene.subjects || [])],
     defaults: { ...(scene.defaults || {}) },
     cameraSequence: scene.cameraSequence
-      ? { ...scene.cameraSequence, shots: (scene.cameraSequence.shots || []).map((s) => ({ ...s })) }
+      ? {
+          ...scene.cameraSequence,
+          shots: (scene.cameraSequence.shots || []).map((s) => ({ ...s })),
+        }
       : scene.cameraSequence,
   };
 
@@ -211,7 +251,11 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
   if (out.defaults.interiorDark == null) out.defaults.interiorDark = 0.22;
   // theatrical show mode: near-black room shell (stage.js WALL_DARK family) so the
   // spotlight rig + glow read against darkness instead of a lit mid-grey room
-  if (out.defaults.stage && typeof out.defaults.stage === 'object' && out.defaults.stage.show == null) {
+  if (
+    out.defaults.stage &&
+    typeof out.defaults.stage === 'object' &&
+    out.defaults.stage.show == null
+  ) {
     out.defaults.stage = { ...out.defaults.stage, show: true };
   }
   out.defaults.postFx = {
@@ -230,7 +274,11 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
     const dl = Math.hypot(dir[0], dir[1], dir[2]) || 1;
     out.defaults.lights = [
       { pos: keyPos, dir: dir.map((c) => c / dl), color: [1.0, 0.96, 0.88], intensity: 1.4 },
-      { pos: [center[0] - 2.6, center[1] + 1.4, center[2] - 3.2], color: [0.45, 0.62, 1.0], intensity: 0.7 },
+      {
+        pos: [center[0] - 2.6, center[1] + 1.4, center[2] - 3.2],
+        color: [0.45, 0.62, 1.0],
+        intensity: 0.7,
+      },
     ];
   }
 
@@ -239,12 +287,17 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
   // column; a tree or a bar row spans ±3 in X) — size/centre the disc from the
   // subjects' XZ footprint so nothing hangs off the stage.
   if (!out.subjects.some((s) => s.id === 'stage-platform')) {
-    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    let minX = Infinity,
+      maxX = -Infinity,
+      minZ = Infinity,
+      maxZ = -Infinity;
     for (const s of out.subjects) {
       if (typeof s.id === 'string' && s.id.startsWith('__stage')) continue;
       const tr = (s.transform && s.transform.translate) || [0, 0, 0];
-      minX = Math.min(minX, tr[0]); maxX = Math.max(maxX, tr[0]);
-      minZ = Math.min(minZ, tr[2]); maxZ = Math.max(maxZ, tr[2]);
+      minX = Math.min(minX, tr[0]);
+      maxX = Math.max(maxX, tr[0]);
+      minZ = Math.min(minZ, tr[2]);
+      maxZ = Math.max(maxZ, tr[2]);
     }
     const cx = Number.isFinite(minX) ? (minX + maxX) / 2 : center[0];
     const cz = Number.isFinite(minZ) ? (minZ + maxZ) / 2 : center[2];
@@ -257,7 +310,14 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
       type: 'cylinder',
       args: { radius, height: 0.12 },
       transform: { translate: [cx, 0.06, cz] },
-      material: { hue: 0.62, sat: 0.12, value: 0.22, kind: 'normal', roughness: 0.75, clearcoat: 0.1 },
+      material: {
+        hue: 0.62,
+        sat: 0.12,
+        value: 0.22,
+        kind: 'normal',
+        roughness: 0.75,
+        clearcoat: 0.1,
+      },
     });
   }
 
