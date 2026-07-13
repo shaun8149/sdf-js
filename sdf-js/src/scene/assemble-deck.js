@@ -261,6 +261,17 @@ export function assembleDeck(deck, opts = {}) {
   const hitstops = [];
   let clock = 0;
   let prevPayoff = null;
+  // Chapter narration (R2, layout-agnostic): when the deck carries zones +
+  // chapters metadata, a zone-crossing transit gets a floating chapter card —
+  // the transit was the one wordless span in the whole deck, and the chapter
+  // conclusion/tease is exactly transit-sized text.
+  const zoneOfIdx = Array.isArray(deck.zones)
+    ? (() => {
+        const z = new Array(deck.slides.length).fill(null);
+        deck.zones.forEach((ms, zi) => ms.forEach((i) => (z[i] = zi)));
+        return z;
+      })()
+    : null;
   // Per-station shader switching (M3 perf): the ONE-shader deck world hits
   // Apple GPUs' super-linear giant-shader cost (register pressure kills
   // occupancy at compile time — runtime branch-skipping proved useless, see
@@ -362,6 +373,23 @@ export function assembleDeck(deck, opts = {}) {
         end: clock + dur,
         origin: [(prev[0] + origin[0]) / 2, 0, (prev[2] + origin[2]) / 2],
       });
+      // chapter card on zone-crossing transits (needs deck.zones + chapters)
+      if (
+        zoneOfIdx &&
+        Array.isArray(deck.chapters) &&
+        zoneOfIdx[k] != null &&
+        zoneOfIdx[k] !== zoneOfIdx[k - 1]
+      ) {
+        const ch = deck.chapters[zoneOfIdx[k]];
+        if (ch && ch.title)
+          overlay.push({
+            text: String(ch.title),
+            sub: ch.note ? String(ch.note) : undefined,
+            role: 'insight',
+            revealAt: clock + 0.15,
+            hideAt: clock + dur,
+          });
+      }
       clock += dur;
     }
 
@@ -601,7 +629,7 @@ export function assembleDeck(deck, opts = {}) {
     ? {
         studioBg: 'dark',
         interiorDark: 0.4,
-        glow: { amount: 0.3, k: 6.0 },
+        glow: { amount: 0.3, k: 3.5 }, // R2: k=6 died on large-radius motifs (the dome)
         postFx: { vignetteStrength: 0.58, exposure: 0.92, bloomMix: 0.24 },
       }
     : null;

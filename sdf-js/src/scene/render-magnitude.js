@@ -84,7 +84,10 @@ export function renderMagnitude(ir, opts = {}) {
   const W = MODULE.unit; // monolith footprint
   const H_MAX = SCALE.monumental; // the champion TOWERS (analytic engine pays for it)
   const height = (i) => Math.max(0.12, (Number(mag[i]) / mMax) * H_MAX);
-  const xOf = (i) => centeredRow(i, N);
+  // R2 (2D-similarity): studio +x renders screen-LEFT, so a straight
+  // centeredRow(i) plays the years right-to-left — the mirror of the source
+  // page. Flip the index: node 0 lands screen-left, reading order matches 2D.
+  const xOf = (i) => centeredRow(N - 1 - i, N);
 
   // Tracking-beat timing: monolith i erupts as the camera's beat i begins.
   // Durations come from the shared tempo tokens (Layer B temporal half).
@@ -139,12 +142,21 @@ export function renderMagnitude(ir, opts = {}) {
   for (let g = 0; g < 3; g++) {
     const gh = 2.2 + g * 1.3;
     for (const side of [-1, 1]) {
+      // R2 (第三层深度): the nearest guard pair moves CAMERA-SIDE (z +1.7,
+      // between lens and subject) — during the tracking walk it sweeps the
+      // frame edge out of focus, buying parallax and physical presence; the
+      // deeper pairs stay behind as the perspective guides.
+      const fg = g === 0;
       subjects.push({
         id: `guard-${side < 0 ? 'l' : 'r'}-${g}`,
         type: 'box',
         args: { dims: [0.9, gh, 0.5] },
         transform: {
-          translate: [side * (rowSpanG / 2 + 2.6 + g * 1.4), gh / 2, -2.4 - g * 2.2],
+          translate: [
+            side * (rowSpanG / 2 + (fg ? 3.4 : 2.6 + g * 1.4)),
+            gh / 2,
+            fg ? 1.7 : -2.4 - g * 2.2,
+          ],
           rotate: [0, side * 0.3, 0],
         },
         material: {
