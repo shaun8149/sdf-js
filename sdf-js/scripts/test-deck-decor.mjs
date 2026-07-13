@@ -71,7 +71,7 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   );
   const stelae = decor.filter((s) => /-decor-stela-/.test(s.id));
   const inBand = stelae.every((s) => {
-    const k = Number(/^station-(\d+)$/.exec(s.collection)[1]);
+    const k = Number(/^station-(\d+)-decor$/.exec(s.collection)[1]);
     const o = origins.get(k);
     const t = s.transform.translate;
     const r = Math.hypot(t[0] - o[0], t[2] - o[2]);
@@ -87,7 +87,7 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
   const sliced = sliceDeckWindow(scene, stWin);
   const decorIn = sliced.subjects.filter((x) => /-decor-/.test(x.id));
   ok(
-    decorIn.every((x) => x.collection === 'station-3' || x.collection === 'path-3'),
+    decorIn.every((x) => x.collection === 'station-3-decor' || x.collection === 'path-3-decor'),
     'station window carries only its own decor + the OUTGOING inlay (continuity: the world ahead never pops in)',
   );
   ok(
@@ -107,7 +107,7 @@ const ANALYTIC_TYPES = new Set(['box', 'sphere', 'capsule', 'ellipsoid', 'cylind
     (x) => /-decor-stela-/.test(x.id) && (x.collection || '').startsWith('station-'),
   );
   ok(
-    trStelae.every((x) => x.collection === 'station-0' || x.collection === 'station-1'),
+    trStelae.every((x) => x.collection === 'station-0-decor' || x.collection === 'station-1-decor'),
     'transit window stelae limited to its two endpoint stations',
   );
 }

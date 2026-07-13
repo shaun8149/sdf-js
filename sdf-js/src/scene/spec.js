@@ -827,7 +827,12 @@ export function validate(data) {
           errors.push(`collections["${name}"]: must be an object`);
           continue;
         }
-        if (c.kind != null && !['station', 'transit-path', 'dressing', 'decor'].includes(c.kind))
+        // 'proxy' = finale-LOD silhouette stand-ins (in no normal window;
+        // finale/overlook swap far-station content for them)
+        if (
+          c.kind != null &&
+          !['station', 'transit-path', 'dressing', 'decor', 'proxy'].includes(c.kind)
+        )
           errors.push(`collections["${name}"].kind: unknown "${c.kind}"`);
         if (c.cull != null && !['never', 'nearest'].includes(c.cull))
           errors.push(`collections["${name}"].cull: must be 'never' or 'nearest'`);

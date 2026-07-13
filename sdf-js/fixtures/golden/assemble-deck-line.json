@@ -4,103 +4,319 @@
   "collections": {
     "station-0": {
       "kind": "station",
-      "station": 0
+      "station": 0,
+      "tier": "hero"
+    },
+    "station-0-decor": {
+      "kind": "station",
+      "station": 0,
+      "tier": "hero",
+      "finaleDrop": true
+    },
+    "proxy-0": {
+      "kind": "proxy",
+      "station": 0,
+      "tier": "hero"
     },
     "path-0": {
       "kind": "transit-path",
       "from": 0
     },
+    "path-0-decor": {
+      "kind": "transit-path",
+      "from": 0,
+      "finaleDrop": true
+    },
     "station-1": {
       "kind": "station",
-      "station": 1
+      "station": 1,
+      "tier": "hero"
+    },
+    "station-1-decor": {
+      "kind": "station",
+      "station": 1,
+      "tier": "hero",
+      "finaleDrop": true
+    },
+    "proxy-1": {
+      "kind": "proxy",
+      "station": 1,
+      "tier": "hero"
     },
     "path-1": {
       "kind": "transit-path",
       "from": 1
     },
+    "path-1-decor": {
+      "kind": "transit-path",
+      "from": 1,
+      "finaleDrop": true
+    },
     "station-2": {
       "kind": "station",
-      "station": 2
+      "station": 2,
+      "tier": "content"
+    },
+    "station-2-decor": {
+      "kind": "station",
+      "station": 2,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-2": {
+      "kind": "proxy",
+      "station": 2,
+      "tier": "content"
     },
     "path-2": {
       "kind": "transit-path",
       "from": 2
     },
+    "path-2-decor": {
+      "kind": "transit-path",
+      "from": 2,
+      "finaleDrop": true
+    },
     "station-3": {
       "kind": "station",
-      "station": 3
+      "station": 3,
+      "tier": "content"
+    },
+    "station-3-decor": {
+      "kind": "station",
+      "station": 3,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-3": {
+      "kind": "proxy",
+      "station": 3,
+      "tier": "content"
     },
     "path-3": {
       "kind": "transit-path",
       "from": 3
     },
+    "path-3-decor": {
+      "kind": "transit-path",
+      "from": 3,
+      "finaleDrop": true
+    },
     "station-4": {
       "kind": "station",
-      "station": 4
+      "station": 4,
+      "tier": "content"
+    },
+    "station-4-decor": {
+      "kind": "station",
+      "station": 4,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-4": {
+      "kind": "proxy",
+      "station": 4,
+      "tier": "content"
     },
     "path-4": {
       "kind": "transit-path",
       "from": 4
     },
+    "path-4-decor": {
+      "kind": "transit-path",
+      "from": 4,
+      "finaleDrop": true
+    },
     "station-5": {
       "kind": "station",
-      "station": 5
+      "station": 5,
+      "tier": "content"
+    },
+    "station-5-decor": {
+      "kind": "station",
+      "station": 5,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-5": {
+      "kind": "proxy",
+      "station": 5,
+      "tier": "content"
     },
     "path-5": {
       "kind": "transit-path",
       "from": 5
     },
+    "path-5-decor": {
+      "kind": "transit-path",
+      "from": 5,
+      "finaleDrop": true
+    },
     "station-6": {
       "kind": "station",
-      "station": 6
+      "station": 6,
+      "tier": "content"
+    },
+    "station-6-decor": {
+      "kind": "station",
+      "station": 6,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-6": {
+      "kind": "proxy",
+      "station": 6,
+      "tier": "content"
     },
     "path-6": {
       "kind": "transit-path",
       "from": 6
     },
+    "path-6-decor": {
+      "kind": "transit-path",
+      "from": 6,
+      "finaleDrop": true
+    },
     "station-7": {
       "kind": "station",
-      "station": 7
+      "station": 7,
+      "tier": "content"
+    },
+    "station-7-decor": {
+      "kind": "station",
+      "station": 7,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-7": {
+      "kind": "proxy",
+      "station": 7,
+      "tier": "content"
     },
     "path-7": {
       "kind": "transit-path",
       "from": 7
     },
+    "path-7-decor": {
+      "kind": "transit-path",
+      "from": 7,
+      "finaleDrop": true
+    },
     "station-8": {
       "kind": "station",
-      "station": 8
+      "station": 8,
+      "tier": "content"
+    },
+    "station-8-decor": {
+      "kind": "station",
+      "station": 8,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-8": {
+      "kind": "proxy",
+      "station": 8,
+      "tier": "content"
     },
     "path-8": {
       "kind": "transit-path",
       "from": 8
     },
+    "path-8-decor": {
+      "kind": "transit-path",
+      "from": 8,
+      "finaleDrop": true
+    },
     "station-9": {
       "kind": "station",
-      "station": 9
+      "station": 9,
+      "tier": "content"
+    },
+    "station-9-decor": {
+      "kind": "station",
+      "station": 9,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-9": {
+      "kind": "proxy",
+      "station": 9,
+      "tier": "content"
     },
     "path-9": {
       "kind": "transit-path",
       "from": 9
     },
+    "path-9-decor": {
+      "kind": "transit-path",
+      "from": 9,
+      "finaleDrop": true
+    },
     "station-10": {
       "kind": "station",
-      "station": 10
+      "station": 10,
+      "tier": "content"
+    },
+    "station-10-decor": {
+      "kind": "station",
+      "station": 10,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-10": {
+      "kind": "proxy",
+      "station": 10,
+      "tier": "content"
     },
     "path-10": {
       "kind": "transit-path",
       "from": 10
     },
+    "path-10-decor": {
+      "kind": "transit-path",
+      "from": 10,
+      "finaleDrop": true
+    },
     "station-11": {
       "kind": "station",
-      "station": 11
+      "station": 11,
+      "tier": "content"
+    },
+    "station-11-decor": {
+      "kind": "station",
+      "station": 11,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-11": {
+      "kind": "proxy",
+      "station": 11,
+      "tier": "content"
     },
     "path-11": {
       "kind": "transit-path",
       "from": 11
     },
+    "path-11-decor": {
+      "kind": "transit-path",
+      "from": 11,
+      "finaleDrop": true
+    },
     "station-12": {
       "kind": "station",
-      "station": 12
+      "station": 12,
+      "tier": "content"
+    },
+    "station-12-decor": {
+      "kind": "station",
+      "station": 12,
+      "tier": "content",
+      "finaleDrop": true
+    },
+    "proxy-12": {
+      "kind": "proxy",
+      "station": 12,
+      "tier": "content"
     },
     "massing": {
       "kind": "dressing",
@@ -410,6 +626,15 @@
       "clearcoat": 0.45
     },
     "mat-35": {
+      "hue": 0.62,
+      "sat": 0.22,
+      "value": 0.2,
+      "metal": 0,
+      "glow": 0,
+      "kind": "normal",
+      "roughness": 0.6
+    },
+    "mat-36": {
       "hue": 0.62,
       "sat": 0.25,
       "value": 0.14,
@@ -4193,6 +4418,162 @@
       "collection": "station-12"
     },
     {
+      "id": "proxy-0",
+      "collection": "proxy-0",
+      "type": "box",
+      "args": {
+        "dims": [22.475, 19.3, 26.95]
+      },
+      "transform": {
+        "translate": [0.21249999999999947, 9.65, -14.575000000000001]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-1",
+      "collection": "proxy-1",
+      "type": "box",
+      "args": {
+        "dims": [7.815803487450427, 2.62, 5.2]
+      },
+      "transform": {
+        "translate": [16, 1.31, -1.1999999999999997]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-2",
+      "collection": "proxy-2",
+      "type": "box",
+      "args": {
+        "dims": [13.090000000000007, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [34.84, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-3",
+      "collection": "proxy-3",
+      "type": "box",
+      "args": {
+        "dims": [13.090000000000003, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [50.84, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-4",
+      "collection": "proxy-4",
+      "type": "box",
+      "args": {
+        "dims": [13.090000000000003, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [66.84, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-5",
+      "collection": "proxy-5",
+      "type": "box",
+      "args": {
+        "dims": [13.090000000000003, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [82.84, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-6",
+      "collection": "proxy-6",
+      "type": "box",
+      "args": {
+        "dims": [9.100000000000023, 4.55, 2]
+      },
+      "transform": {
+        "translate": [96, 2.275, 0]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-7",
+      "collection": "proxy-7",
+      "type": "box",
+      "args": {
+        "dims": [10.66032542765015, 6.480307652106461, 8.620701580479576]
+      },
+      "transform": {
+        "translate": [111.56825924936882, 3.2401538260532305, -0.17351318581199138]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-8",
+      "collection": "proxy-8",
+      "type": "box",
+      "args": {
+        "dims": [2, 3.6000000000000005, 2]
+      },
+      "transform": {
+        "translate": [128, 1.8000000000000003, 0]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-9",
+      "collection": "proxy-9",
+      "type": "box",
+      "args": {
+        "dims": [14.359999999999985, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [146.83999999999997, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-10",
+      "collection": "proxy-10",
+      "type": "box",
+      "args": {
+        "dims": [4.890896534380886, 3.95, 5.14170953019058]
+      },
+      "transform": {
+        "translate": [160, 1.975, -0.1291452349047102]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-11",
+      "collection": "proxy-11",
+      "type": "box",
+      "args": {
+        "dims": [14.920000000000016, 5.41, 7.56]
+      },
+      "transform": {
+        "translate": [176.2, 2.705, -3.27]
+      },
+      "material": "mat-35"
+    },
+    {
+      "id": "proxy-12",
+      "collection": "proxy-12",
+      "type": "box",
+      "args": {
+        "dims": [9.280000000000001, 4.800000000000001, 8.5]
+      },
+      "transform": {
+        "translate": [194.83999999999997, 2.4000000000000004, -2.8000000000000003]
+      },
+      "material": "mat-35"
+    },
+    {
       "id": "horizon-0",
       "type": "box",
       "args": {
@@ -4202,7 +4583,7 @@
         "translate": [96, 7.016592952333921, 148.44758298167267],
         "rotate": [0, 0, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4215,7 +4596,7 @@
         "translate": [159.3066209152962, 7.62296579657653, 92.85708904982108],
         "rotate": [0, 0.34528374665954953, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4228,7 +4609,7 @@
         "translate": [138.17123438785762, 4.819555072083943, 58.18899581850708],
         "rotate": [0, -0.3486303089654353, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4241,7 +4622,7 @@
         "translate": [229.23992011010677, 4.842001421418689, -15.398862705215285],
         "rotate": [0, 0.006725560193740241, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4254,7 +4635,7 @@
         "translate": [229.43987144268098, 7.640377316314558, 15.945010375042079],
         "rotate": [0, 0.3418395632353122, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4267,7 +4648,7 @@
         "translate": [137.5905937655869, 6.990241111126378, -58.71906850943405],
         "rotate": [0, -0.35187830398866804, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4280,7 +4661,7 @@
         "translate": [160.57684188043538, 4.3376940527581525, -91.58418852702466],
         "rotate": [0, 0.01344921888845539, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4293,7 +4674,7 @@
         "translate": [93.3783006663294, 5.582809968766616, -148.54011535108356],
         "rotate": [0, 0.33829873245717335, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4306,7 +4687,7 @@
         "translate": [49.337870734549846, 7.956071234520032, -70.87525467505033],
         "rotate": [0, -0.35502681343260184, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4319,7 +4700,7 @@
         "translate": [42.61842352216516, 6.178620822448911, -71.89564197285696],
         "rotate": [0, 0.020169075122725907, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4332,7 +4713,7 @@
         "translate": [-53.30732670480418, 4.204050667126552, 16.540562423767465],
         "rotate": [0, 0.33466225541442246, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4345,7 +4726,7 @@
         "translate": [-9.511133990203675, 6.424407144257572, -12.928144745818537],
         "rotate": [0, -0.35807494712787274, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4358,7 +4739,7 @@
         "translate": [53.829012927902355, 7.900940120366205, 60.837256078552294],
         "rotate": [0, 0.02688322901019139, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     },
     {
@@ -4371,7 +4752,7 @@
         "translate": [14.275787822348533, 5.34938983448815, 112.20689757324111],
         "rotate": [0, 0.3309311602381515, 0]
       },
-      "material": "mat-35",
+      "material": "mat-36",
       "collection": "horizon"
     }
   ],
@@ -6871,6 +7252,7 @@
     {
       "kind": "finale",
       "stations": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "anchor": 12,
       "start": 148.30000000000004,
       "end": 151.30000000000004
     }

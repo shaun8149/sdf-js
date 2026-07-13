@@ -134,6 +134,58 @@ function courtyardPlan(slides, zones, stride) {
   return { origins, center: [0, 0], ringR: R, zoneOf, centerIdx };
 }
 
+// ---- Finale-LOD proxies (Infinigen placeholder pattern) -----------------------
+// One grounded silhouette box per station, fit to the world-space bounds of its
+// CONTENT subjects. Stands in for far-station geometry in finale/overlook
+// windows, where the pull-back distance makes data detail sub-pixel but the
+// station's mass must keep holding the composition.
+function newBounds() {
+  return { minX: Infinity, maxX: -Infinity, maxY: 0, minZ: Infinity, maxZ: -Infinity };
+}
+
+// Rough per-type half-extents — silhouette fidelity, not collision precision.
+function halfExtents(s) {
+  const a = s.args || {};
+  if (Array.isArray(a.dims)) return [a.dims[0] / 2, a.dims[1] / 2, a.dims[2] / 2];
+  if (a.radius != null && a.height != null) return [a.radius, a.height / 2 + a.radius, a.radius]; // cylinder/capsule-ish
+  if (a.radius != null) return [a.radius, a.radius, a.radius];
+  return [0.8, 0.8, 0.8]; // exotic prims: a nudge, the AABB is dominated by placement
+}
+
+function accumulateBounds(b, s) {
+  const t = (s.transform && s.transform.translate) || [0, 0, 0];
+  const h = halfExtents(s);
+  b.minX = Math.min(b.minX, t[0] - h[0]);
+  b.maxX = Math.max(b.maxX, t[0] + h[0]);
+  b.maxY = Math.max(b.maxY, t[1] + h[1]);
+  b.minZ = Math.min(b.minZ, t[2] - h[2]);
+  b.maxZ = Math.max(b.maxZ, t[2] + h[2]);
+}
+
+function stationProxy(k, b) {
+  if (!b || !Number.isFinite(b.minX)) return null;
+  const w = Math.max(2, b.maxX - b.minX);
+  const d = Math.max(2, b.maxZ - b.minZ);
+  const h = Math.max(1.5, b.maxY);
+  return {
+    id: `proxy-${k}`,
+    collection: `proxy-${k}`,
+    type: 'box',
+    args: { dims: [w, h, d] },
+    transform: { translate: [(b.minX + b.maxX) / 2, h / 2, (b.minZ + b.maxZ) / 2] },
+    // massing-family silhouette discipline: dark, matte, zero glow
+    material: {
+      hue: 0.62,
+      sat: 0.22,
+      value: 0.2,
+      metal: 0,
+      glow: 0,
+      kind: 'normal',
+      roughness: 0.6,
+    },
+  };
+}
+
 // Zone massing (spec §4): 1 hull + 1 tower per chapter at a FIXED band outside
 // the ring (Wave-0 spike: a multiplicative push collapses on wide-arc zones
 // and lands inside the crane near-field). Independent `massing-` prefix —
@@ -280,6 +332,13 @@ export function assembleDeck(deck, opts = {}) {
   // the camera can actually see during each span. The runtime swaps in a
   // small per-window shader as playback crosses each boundary.
   const windows = [];
+  // Finale-LOD (Infinigen placeholder pattern): per-station world-space bounds
+  // accumulated during transplant → one grounded silhouette box per station.
+  // The finale/overlook windows swap far-station CONTENT for these proxies
+  // (at pull-back distance the data detail is sub-pixel; the full-world
+  // shader cost was ~85s of a 112s analytic warmup). Content subjects only —
+  // decor stelae ring at r≈8-12 and would balloon the silhouette.
+  const stationBounds = [];
 
   deck.slides.forEach((ir, k) => {
     // Render the station at the origin on its own clock, then transplant.
@@ -421,6 +480,7 @@ export function assembleDeck(deck, opts = {}) {
         moved.modifiers = moved.modifiers.map((m) => shiftModifier(m, origin));
       }
       subjects.push(moved);
+      accumulateBounds((stationBounds[k] = stationBounds[k] || newBounds()), moved);
     }
 
     // Overlay: shift anchors + reveal times; station titles reveal with their
@@ -479,8 +539,12 @@ export function assembleDeck(deck, opts = {}) {
     // Layer C: stelae ring in the station's annulus (outside the fitted
     // platform, inside the transit corridor). The `s${k}-decor-` prefix means
     // sliceDeckWindow scopes these to this station's windows automatically.
+    // own collection: routes with the station but drops at finale distance
+    // (stelae are sub-pixel from the money shot; they'd eat the leaf budget)
     if (decor)
-      subjects.push(...decor.station(k, origin).map((d) => ({ ...d, collection: `station-${k}` })));
+      subjects.push(
+        ...decor.station(k, origin).map((d) => ({ ...d, collection: `station-${k}-decor` })),
+      );
 
     const stationDur = seqDuration(st.cameraSequence.shots);
     windows.push({
@@ -529,6 +593,11 @@ export function assembleDeck(deck, opts = {}) {
       windows.push({
         kind: 'finale',
         stations: deck.slides.map((_, i) => i),
+        // finale-LOD anchor: the station the camera rises FROM keeps its real
+        // content (no swap in front of the lens); every other station shows
+        // its silhouette proxy — the overlook is a map beat, massing-level
+        // information is exactly what it communicates.
+        anchor: plan.centerIdx,
         start: clock,
         end: clock + dur,
       });
@@ -574,9 +643,11 @@ export function assembleDeck(deck, opts = {}) {
       });
       // Layer C: inlay flanking the breadcrumbs (path-${k}-decor- prefix →
       // lives only in this transit's windows, dropped inside stations).
+      // own collection: same window routing as the runway, but droppable at
+      // finale distance (inlay plates are sub-pixel from the money shot)
       if (decor)
         subjects.push(
-          ...decor.segment(k, origin, next).map((d) => ({ ...d, collection: `path-${k}` })),
+          ...decor.segment(k, origin, next).map((d) => ({ ...d, collection: `path-${k}-decor` })),
         );
     }
   });
@@ -618,6 +689,10 @@ export function assembleDeck(deck, opts = {}) {
     windows.push({
       kind: 'finale',
       stations: deck.slides.map((_, i) => i),
+      // finale-LOD anchor: the pull-back rises from the LAST station — it
+      // stays real (nothing swaps in front of the lens); the rest of the ring
+      // shows silhouette proxies, sub-pixel-different at this distance.
+      anchor: deck.slides.length - 1,
       start: clock,
       end: clock + TEMPO.finale,
     });
@@ -673,13 +748,25 @@ export function assembleDeck(deck, opts = {}) {
   // (kind / cull policy / dressing budget). The id prefixes are pure identity.
   const allSubjects = [
     ...subjects,
+    ...stationBounds.map((b, k) => stationProxy(k, b)).filter(Boolean),
     ...massingSubjects.map((s) => ({ ...s, collection: 'massing' })),
     ...worldSubjects.map((s) => ({ ...s, collection: env ? 'env' : 'horizon' })),
   ];
   const collections = {};
-  deck.slides.forEach((_, k) => {
-    collections[`station-${k}`] = { kind: 'station', station: k };
-    if (k < deck.slides.length - 1) collections[`path-${k}`] = { kind: 'transit-path', from: k };
+  deck.slides.forEach((ir, k) => {
+    // tier rides the registry: hold stations are HERO (narrative anchors) and
+    // keep their real geometry even in the finale — an AABB proxy turns the
+    // cover's monolith + satellite ring into a frame-dominating warehouse box
+    const tier = ir.structure === 'hold' ? 'hero' : 'content';
+    collections[`station-${k}`] = { kind: 'station', station: k, tier };
+    collections[`station-${k}-decor`] = { kind: 'station', station: k, tier, finaleDrop: true };
+    // finale-LOD: the proxy collection exists in NO normal window and stands
+    // in for far-station content in finale/overlook windows only
+    collections[`proxy-${k}`] = { kind: 'proxy', station: k, tier };
+    if (k < deck.slides.length - 1) {
+      collections[`path-${k}`] = { kind: 'transit-path', from: k };
+      collections[`path-${k}-decor`] = { kind: 'transit-path', from: k, finaleDrop: true };
+    }
   });
   collections.massing = { kind: 'dressing', cull: 'never' };
   collections.horizon = {
@@ -748,10 +835,38 @@ export function assembleDeck(deck, opts = {}) {
 // a hole in the world.
 const HILLS_HERO = 7;
 const HILLS_CONTENT = 3;
-export function sliceDeckWindow(scene, win) {
-  if (!win || win.kind === 'finale') return scene;
+export function sliceDeckWindow(scene, win, opts = {}) {
+  if (!win) return scene;
   const cols = scene.collections;
   if (!cols) return scene; // no routing data → nothing to slice (whole world)
+
+  // Finale-LOD: the full-world money shot swaps far-station CONTENT for the
+  // per-station silhouette proxies. The ANCHOR station (the one the camera
+  // rises from) keeps its real geometry — nothing may swap in front of the
+  // lens (total-continuity lock); at pull-back distance every other station's
+  // proxy is visually equivalent while the shader drops from ~390 leaves to
+  // well under the raymarch window cap. Runways stay (they draw the world's
+  // connective lines); transit inlay decor is sub-pixel and drops.
+  // opts.finaleLite (raymarch tiers): hero stations ALSO stand as proxies —
+  // their exotic prims + the leaf count push the D3D/ANGLE compiler off a
+  // cliff (~104s for the 87-leaf hero-real finale vs seconds at ~50 leaves).
+  // The analytic tier keeps heroes real: closed-form intersectors don't pay
+  // that cliff, and hero silhouettes are the money shot's composition.
+  if (win.kind === 'finale') {
+    if (win.anchor == null) return scene; // pre-LOD producer → whole world
+    // real geometry: the anchor (camera rises from it) + hero stations
+    // (narrative anchors whose silhouette IS their identity)
+    const real = (c) => c.station === win.anchor || (!opts.finaleLite && c.tier === 'hero');
+    const keep = (s) => {
+      const c = cols[s.collection];
+      if (!c) return true;
+      if (c.finaleDrop) return false; // decor: sub-pixel at pull-back distance
+      if (c.kind === 'proxy') return !real(c);
+      if (c.kind === 'station') return real(c);
+      return true; // dressing + runways
+    };
+    return { ...scene, subjects: scene.subjects.filter(keep) };
+  }
   const wanted = new Set(win.stations);
 
   // Wave A2: collection-driven slicing ONLY — the routing rules live in DATA
@@ -760,6 +875,7 @@ export function sliceDeckWindow(scene, win) {
   const keepByCollection = (s) => {
     const c = cols[s.collection];
     if (!c) return true; // untagged → shared dressing
+    if (c.kind === 'proxy') return false; // finale/overlook stand-ins only
     if (c.kind === 'station') return wanted.has(c.station);
     if (c.kind === 'transit-path') {
       // Station windows keep only the OUTGOING segment (the world never pops
