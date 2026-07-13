@@ -96,7 +96,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // Sprint 80: the scrim is LOCAL — a radial vignette anchored on the
     // title block. A full-surface wash greys the artwork (cream Ringers
     // grounds turned to fog); the painting owns the rest of the frame.
-    const scx = x + w * (h > 200 ? 0.5 : 0.24); // centered covers → centered vignette
+    const scx = x + w * 0.5; // titles center → vignette centers with them
     const scy = y + h * 0.5;
     const scr = ctx.createRadialGradient(scx, scy, 0, scx, scy, w * 0.52);
     const base = overlayInk ? '246, 243, 236' : '8, 10, 16';
@@ -152,7 +152,9 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
     ctx.restore();
   }
-  let subtitleSize = Math.max(12, Math.min(Math.round(h * 0.065), 28));
+  let subtitleSize = isBand
+    ? Math.max(15, Math.min(Math.round(h * 0.14), 18))
+    : Math.max(12, Math.min(Math.round(h * 0.065), 28));
   if (subtitle) {
     const maxW = w - PAD * 2;
     ctx.save();
@@ -166,12 +168,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // Sprint 90 (user: 大标题居中): full covers center the title block;
   // bands stay left-aligned next to the label position.
-  const centered = !isBand && (style === 'overlay' || style === 'gradient');
+  // Sprint 91 (user: 目录页与后续标题页标题都居中): bands center too
+  const centered = style === 'overlay' || style === 'gradient';
   const titleX = centered ? x + w / 2 : x + PAD;
 
   // Vertical layout: start from center, nudge up slightly
   const blockH = titleSize + (subtitle ? subtitleSize + 8 : 0);
-  const blockTop = y + (h - blockH) / 2 - (h > 160 ? 10 : 0);
+  // bands: slight optical raise so the subtitle never kisses the band edge
+  const blockTop = y + (h - blockH) / 2 - (h > 160 ? 10 : isBand ? 5 : 0);
 
   // Title — for section style, draw accent box behind title (PL signature)
   if (style === 'section') {
@@ -194,8 +198,8 @@ export function drawPseudo3D(ctx, args, opts = {}) {
 
   // Subtitle
   if (subtitle) {
-    ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.72)' : 'rgba(255,255,255,0.75)';
-    ctx.font = `500 ${subtitleSize}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = overlayInk ? 'rgba(24, 26, 32, 0.8)' : 'rgba(255,255,255,0.85)';
+    ctx.font = `600 ${subtitleSize}px Inter, system-ui, sans-serif`;
     ctx.textBaseline = 'top';
     ctx.fillText(String(subtitle), titleX, blockTop + titleSize + 8);
   }

@@ -288,10 +288,7 @@ export function insertTransitions(slots, mount) {
               y: 0,
               w: 1280,
               h: 720,
-              args: {
-                title,
-                subtitle: `${String(t + 1).padStart(2, '0')} / ${Math.max(labels.length, 6)}`,
-              },
+              args: { title }, // Sprint 91: 页码字样删除 (user)
             },
           ],
         },

@@ -170,16 +170,42 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   // carry the page. opts.bannerTitle overrides everything when provided.
   let bannerTitle = opts.bannerTitle || null;
   let bannerSubtitle = opts.bannerSubtitle || null;
-  if (bannerCanvas && role === 'agenda') {
+  if (bannerCanvas) {
     subjects = subjects.slice(); // never mutate the caller's array
+    const coverSub = subjects.find((c2) => c2 && c2.type === 'cover');
+    const refTitle = String(opts.bannerTitle || coverSub?.args?.title || '').replace(/\s/g, '');
     for (let i = 0; i < subjects.length; i++) {
       const s2 = subjects[i];
-      if (s2 && s2.type === 'agenda-list' && s2.args) {
+      if (!s2 || !s2.args) continue;
+      if (role === 'agenda' && s2.type === 'agenda-list') {
         if (!bannerTitle && s2.args.title) bannerTitle = s2.args.title;
         const items = Array.isArray(s2.args.items)
           ? s2.args.items.map((it) => ({ ...it, sublabel: undefined }))
           : s2.args.items;
         subjects[i] = { ...s2, args: { ...s2.args, title: undefined, items } };
+      } else if (
+        s2.type !== 'cover' &&
+        typeof s2.args.title === 'string' &&
+        refTitle &&
+        s2.args.title.replace(/\s/g, '').startsWith(refTitle)
+      ) {
+        // Sprint 91 round-1: body atom repeating the banner title drops its own
+        subjects[i] = { ...s2, args: { ...s2.args, title: undefined } };
+      } else if (
+        (s2.type === 'bullet-list' || s2.type === 'number-list') &&
+        Array.isArray(s2.args.items)
+      ) {
+        // Sprint 91 (user: 小字统一删除) — headline-driven art pages drop
+        // the grey caption layer under bullets
+        subjects[i] = {
+          ...s2,
+          args: {
+            ...s2.args,
+            items: s2.args.items.map((it) =>
+              it && typeof it === 'object' ? { ...it, sublabel: undefined } : it,
+            ),
+          },
+        };
       }
     }
   }
