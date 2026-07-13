@@ -17,7 +17,10 @@ const renderMode = ['rich', 'stone'].includes(params.get('mode')) ? params.get('
 const { show } = createFigure({ outdoor: env !== 'studio', stage, present, renderMode });
 
 const deckName = params.get('deck');
-const layout = params.get('layout') || undefined; // line | radial | grid | courtyard
+// line | radial | grid | courtyard — RADIAL is the deck default (2026-07-13
+// user verdict: courtyard's far-side geometry interferes with data labels;
+// radial expresses a complete world since the total-continuity waves).
+const layout = params.get('layout') || 'radial';
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
 // Section color program: the SAME palette the 2D end ships (pitch-spectrum,
