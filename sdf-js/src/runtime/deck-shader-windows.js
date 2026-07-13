@@ -19,6 +19,16 @@
 // =============================================================================
 import { applyStudioScene, expandAndCompile } from './apply-studio-scene.js';
 import { sliceDeckWindow } from '../scene/assemble-deck.js';
+import { expandModifiers } from '../scene/modifiers.js';
+
+// Raymarch tiers only: a window whose slice still exceeds the sanity hard cap
+// after Wave-C lowering (the full-world finale: ~229 leaves → ~3100 uniform
+// slots → literal emission → multi-minute driver compile that hangs warmup)
+// reuses the PREVIOUS window's shader instead of compiling its own. This was
+// the de-facto behavior before (those windows crashed precompile and fell
+// through) — now it's deliberate, logged, and doesn't depend on a crash.
+// The analytic tier renders full-world windows fine and never takes this path.
+const RAYMARCH_WINDOW_CAP = 100;
 
 /** First window whose end is still ahead of t (clamped to the last window). */
 export function windowIndexAt(windows, t) {
@@ -42,7 +52,7 @@ export function windowIndexAt(windows, t) {
 export function attachDeckWindows(
   studio,
   scene,
-  { holdDuringWarmup = true, onSwap = null, onProgress = null } = {},
+  { holdDuringWarmup = true, onSwap = null, onProgress = null, compileOpts = {} } = {},
 ) {
   const windows = scene.deckWindows;
   if (!Array.isArray(windows) || windows.length < 2 || !studio.swapSDF) return null;
@@ -51,13 +61,26 @@ export function attachDeckWindows(
   // the GPU program for each SDF lives in studio's programCache.
   const sdfCache = new Map();
   const sdfFor = (i) => {
-    if (!sdfCache.has(i)) sdfCache.set(i, expandAndCompile(sliceDeckWindow(scene, windows[i])).sdf);
+    if (!sdfCache.has(i)) {
+      const slice = sliceDeckWindow(scene, windows[i]);
+      if (compileOpts.lowerRepeats && i > 0) {
+        const n = expandModifiers(slice, { lower: true }).subjects.length;
+        if (n > RAYMARCH_WINDOW_CAP) {
+          console.warn(
+            `[deck-windows] window ${i} (${windows[i].kind}): ${n} subjects after lowering > raymarch cap ${RAYMARCH_WINDOW_CAP} — reusing window ${i - 1}'s shader`,
+          );
+          sdfCache.set(i, sdfFor(i - 1));
+          return sdfCache.get(i);
+        }
+      }
+      sdfCache.set(i, expandAndCompile(slice, compileOpts).sdf);
+    }
     return sdfCache.get(i);
   };
 
   // Initial load renders window 0's slice (NOT the giant full-world shader —
   // the whole point is that the full shader only ever runs during the finale).
-  const first = applyStudioScene(studio, sliceDeckWindow(scene, windows[0]));
+  const first = applyStudioScene(studio, sliceDeckWindow(scene, windows[0]), compileOpts);
   sdfCache.set(0, first.sdf);
   let cur = 0;
   let stopped = false;

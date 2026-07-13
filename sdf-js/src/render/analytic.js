@@ -308,12 +308,15 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
     } else if (s.type === 'ellipsoid') {
       const d = a.dims || [1, 1, 1];
-      proxyR = (d[0] + d[1] + d[2]) / 3 * 0.8;
+      proxyR = ((d[0] + d[1] + d[2]) / 3) * 0.8;
       body += `    float tk = iEllipsoid(q, dq, vec3(${flt(d[0])}, ${flt(d[1])}, ${flt(d[2])}));\n`;
       body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = nEllipsoid(q + dq * tk, vec3(${flt(d[0])}, ${flt(d[1])}, ${flt(d[2])})); alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
     } else if (s.type === 'capsule') {
-      const pa = a.a || [0, 0, 0];
-      const pb = a.b || [0, 1, 0];
+      // {a,b} 端点形态优先；{radius,height} = 竖直、端点跨度 height、局部原点
+      // 居中 —— 跟 scene/compile.js 的 capsule 约定一致（此前 height 被静默丢弃）
+      const h = a.height;
+      const pa = a.a || (h != null ? [0, -h / 2, 0] : [0, 0, 0]);
+      const pb = a.b || (h != null ? [0, h / 2, 0] : [0, 1, 0]);
       const r = a.radius ?? 0.1;
       proxyR = r + Math.hypot(pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]) * 0.25;
       const paS = `vec3(${flt(pa[0])}, ${flt(pa[1])}, ${flt(pa[2])})`;

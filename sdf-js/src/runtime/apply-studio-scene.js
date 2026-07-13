@@ -77,10 +77,10 @@ export function pickRenderScale(rawScene) {
  *          scene to keep as the renderer's rawScene (carries lights/volumes/
  *          cameraSequence the wiring reads); sdf is ground-unioned + ready.
  */
-export function expandAndCompile(sceneData, { rng = null, tokenHash } = {}) {
+export function expandAndCompile(sceneData, { rng = null, tokenHash, lowerRepeats = false } = {}) {
   // Wave A: inflate scene.materials string references first — everything
   // downstream (stage, labels, compile) keeps seeing inline material objects.
-  const resolvedScene = expandModifiers(resolveMaterialRefs(sceneData));
+  const resolvedScene = expandModifiers(resolveMaterialRefs(sceneData), { lower: lowerRepeats });
   const variantScene = rng ? expandVariants(resolvedScene, rng) : resolvedScene;
   const stagedScene = expandStage(variantScene);
   const labeledScene = expandChartLabels(stagedScene);

@@ -1285,6 +1285,12 @@ vec3 repL3(vec3 p, vec3 period, vec3 count) {
   return p - q * id;
 }
 
+// ---- Axis mirror (|axis| fold) --------------------------------------------
+// 单轴 abs 折叠：两侧都显示 child 的 +axis 半边（dn.js mirrorAxis 的 GPU 面）
+vec3 mirX3(vec3 p) { return vec3(abs(p.x), p.y, p.z); }
+vec3 mirY3(vec3 p) { return vec3(p.x, abs(p.y), p.z); }
+vec3 mirZ3(vec3 p) { return vec3(p.x, p.y, abs(p.z)); }
+
 // ---- hg_sdf-style polar repetition + octant mirror -----------------------
 // pModPolar (hg_sdf): fold the two coords perpendicular to an axis into a
 // single pie sector of angle 2π/n. Source SDF evaluated in folded space
