@@ -44,5 +44,30 @@ export function makeAssetCollection(
     return form === 'asset' ? f.createAsset(i, spawnOpts) : f.createPlaceholder(i, spawnOpts);
   };
 
-  return { pick, spawn };
+  /**
+   * spawnAll(n, optsFor) — 整片混林 + 按物种批处理(factory.py L200-209 的
+   * 完整对应物):逐实例抽种生成后,把每个物种自己的实例交回它的
+   * finalizeAssets(林分级决策:盛行风/藤蔓/共享色调——单株表达不了的)。
+   * @param optsFor  (i) => spawnOpts(位置/缩放由调用方的排布逻辑给)
+   */
+  const spawnAll = (n, optsFor = () => undefined) => {
+    const byFactory = factories.map(() => []);
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const k = pick(i);
+      const s =
+        form === 'asset'
+          ? factories[k].createAsset(i, optsFor(i))
+          : factories[k].createPlaceholder(i, optsFor(i));
+      byFactory[k].push(s);
+      out.push(s);
+    }
+    factories.forEach((f, k) => {
+      if (typeof f.finalizeAssets === 'function' && byFactory[k].length)
+        f.finalizeAssets(byFactory[k]);
+    });
+    return out;
+  };
+
+  return { pick, spawn, spawnAll };
 }
