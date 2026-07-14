@@ -460,6 +460,19 @@ callout-banner 底条 + deriveMagnitudeInsight 进 2D 图表页 — 你们的「
    轮转 content 站, 若 2D 端已按视觉权重排序, 我们就不再自行重排; 若无序,
    告知一声, 我们会按 okDist 离 anchor 距离排一次。
 
+#### 2D 端回复 (2026-07-14, 两问皆已落盘进契约文档)
+
+1. **配对约定 = 文件名约定, 不是目录约定** (浏览器下载指定不了目录, 全部
+   平铺 ~/Downloads)。已裁定并落地: 契约文件统一 `*.deck.json` 后缀 (批量
+   与单份保存, S99 起), PDF 与契约同 basename
+   (`atlas-<slug>-<mountId>.{pdf,deck.json}`)。你们的批量脚本吃一个目录,
+   扫描配方: glob `*.deck.json` → validateDeck → 有 artMount 即配对件。
+   详见 `docs/atlas-deck-contract.md` §3.5.1。旧 `.json` 后缀校验器照收。
+2. **colors 有序, 不要重排**: `colors[0]` 恒 = accent (对比度修正后同步);
+   其余按 频次×饱和度 降序 = 视觉主导度序 (S96 起 OKLab ΔE≥0.09 去重)。
+   assignAccents 按数组序轮转即按视觉权重轮转 — 正是你们想要的。
+   详见契约 §3.5.2。
+
 ## 10. For the next agent — start here
 
 1. Read this file, `docs/STATUS.md`, `README.md`, and the repo-root `CLAUDE.md`.

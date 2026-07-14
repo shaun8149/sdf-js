@@ -193,7 +193,7 @@ saveEl.addEventListener('click', () => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   const slug = (currentDeck.title || 'deck').replace(/[^\w\u4e00-\u9fff-]+/g, '-').slice(0, 40);
-  a.download = `atlas-${slug}.json`;
+  a.download = `atlas-${slug}.deck.json`;
   a.click();
   URL.revokeObjectURL(a.href);
   setStatus(`已保存 ${a.download} — 这份 deck.json 也是交给 3D 端的机器契约`);
@@ -404,7 +404,8 @@ function slotRenderOpts(theme, deck, slot) {
           });
           const a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
-          a.download = `atlas-${slug}-${entry.id}.json`;
+          // §9.6 Q1: 配对发现约定 — *.deck.json 后缀, 与 PDF 同 basename
+          a.download = `atlas-${slug}-${entry.id}.deck.json`;
           a.click();
           URL.revokeObjectURL(a.href);
         }
