@@ -6,6 +6,7 @@
 import { renderIR } from '../../src/scene/render-ir.js';
 import { assembleDeck } from '../../src/scene/assemble-deck.js';
 import { getTheme } from '../../src/present/themes.js';
+import { resolveDeckPalette } from '../../src/scene/mount-palette.js';
 import { createFigure } from './figure-core.js';
 import { attachPresenter } from './presenter.js';
 
@@ -23,12 +24,15 @@ const deckName = params.get('deck');
 const layout = params.get('layout') || 'radial';
 const name = params.get('ir') || 'funnel-sales';
 const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
-// Section color program: the SAME palette the 2D end ships (pitch-spectrum,
-// chromotome kov_06 — ink ground + vermilion anchor). One content, two
-// mediums, one visual system. ?palette=<theme-id> to swap, ?palette=0 off.
-const paletteId = params.get('palette');
-const theme = paletteId === '0' ? null : getTheme(paletteId || 'pitch-spectrum');
-const palette = theme ? { anchor: theme.accent, colors: theme.colors } : null;
+// Section color program: the SAME palette the 2D end ships. §9.6 配合点 #1:
+// deck 契约携带 artMount(真迹装裱,§3.5)时优先穿它的预烘焙 palette ——
+// 同一份 deck.json,纸上 PDF 和 3D 飞行穿同一件真迹的颜色。URL 参数保留为
+// 显式覆盖:?palette=<theme-id> 换主题,?palette=0 关。
+const { palette, attribution } = resolveDeckPalette({
+  artMount: ir.artMount || null,
+  paletteParam: params.get('palette'),
+  themeOf: (id) => (id ? getTheme(id) : getTheme('pitch-spectrum')),
+});
 // ?seed=<hash> — Layer C deck decor (seeded art identity, same lanes as the
 // 2D decor engine). DEFAULT ON for decks since W6: the deck's own name is its
 // art identity (same deck → same world, forever — the 2D mint-hash covenant).
@@ -41,5 +45,14 @@ const scene = deckName
   ? assembleDeck(ir, { env, layout, stage, palette, decorSeed, horizon })
   : renderIR(ir, { env, stage });
 show(scene);
+// §9.6 配合点 #1 加分项:真迹溯源角标(装裱是非商用铸造,license 随行是纪律)。
+// 常驻小元素,不进 stage 时间线 —— 溯源不该随章节隐现。
+if (attribution && (attribution.name || attribution.artist)) {
+  const d = document.createElement('div');
+  d.className = 'stage-attribution';
+  d.textContent = [attribution.name, attribution.artist].filter(Boolean).join(' — ');
+  if (attribution.license) d.textContent += ` (${attribution.license})`;
+  document.body.appendChild(d);
+}
 // script spans may ride in the deck fixture (teleprompter); presenter uses them
 if (present) attachPresenter({ studio: window.__figStudio, scene, script: ir.script || null });

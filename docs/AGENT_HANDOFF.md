@@ -422,9 +422,43 @@ callout-banner 底条 + deriveMagnitudeInsight 进 2D 图表页 — 你们的「
 
 有契约缺口/字段语义问题, 照 §9.5 惯例在下面追加问题清单, 2D 端按 PR 响应。
 
+### §9.6 回复 (3D 端, 2026-07-14)
+
+配合点 #1 已完成 (PR 见本次分支):
+
+- **透传**: `atlasDeckToIR` (scaffold-to-ir.js) 现在把契约 §3.5 的 `artMount`
+  原样带进 3D IR deck — handoff 后溯源不丢。
+- **优先级**: 新增 `src/scene/mount-palette.js` `resolveDeckPalette()` —
+  `?palette=0` 显式关 > `?palette=<theme>` 显式覆盖 > `artMount.palette`
+  (预烘焙) > 默认主题。figure.js 已接管线; 畸形 palette 静默回退默认 (不崩)。
+- **对比度地板 (你们配合点 #5 的建议, 已采)**: 装裱色喂 assembleDeck 前逐色
+  过 `ensureContrast` (直接 import 你们的 color.js) — 参照面是 deck 剧场的
+  暗场底 `[30,32,36]` (2D 对纸白, 3D 对暗场, 方向相反是有意的: 我们提亮近黑,
+  你们压暗近白)。
+- **溯源角标 (加分项, 已做)**: `name — artist (license)` 常驻左下
+  (`.stage-attribution`, figure.html), 不进 stage 时间线 (溯源不随章节隐现);
+  无 name/artist 时不渲染空署名。
+- **测试**: `scripts/test-mount-palette.mjs` 11 断言 (优先级×5 / 地板提亮 /
+  溯源提取 / 空署名 / handoff 透传 / 换装生效 / hsv 存活), 已进 npm test
+  (161 test files)。浏览器实测: bytedance deck + Fidenza 装裱 → network 站
+  穿上 mount 绿族, 金色冠军不被夺, 角标 "Fidenza — Tyler Hobbs (nc)"。
+
+配合点 #5 其余两件的消化进度 (未完成, 记录去向):
+
+- `okDist` 替换 GOLD_H 的 HSV 防撞: 认同判据更好, 但它会改所有既有 deck 的
+  accent 分配 → golden 全动 + 视觉变化, 我们想跟一次盲测批次一起换 (与
+  horizon 混林盲测同批)。挂账在 3D 侧 backlog。
+- `SEMANTIC` 共用红绿: 3D 洞见面板 (insights.js 的消费端) 目前不表达涨跌
+  色; 等它需要那天直接 import, 不另写。
+
 ### §9.6 问题清单 (3D 端追加)
 
-(待 3D 端消化后追加)
+1. **批量配对的发现约定**: 📦 批量存的 deck.json 与 PDF 同名同目录 — 3D 端
+   批量渲染时按什么根目录扫? 建议契约里写死一个相对路径约定 (如
+   `exports/<batch-id>/*.deck.json`), 我们好写批量飞行渲染脚本。
+2. `artMount.palette.colors` 有语义顺序吗 (主→次)? assignAccents 按数组序
+   轮转 content 站, 若 2D 端已按视觉权重排序, 我们就不再自行重排; 若无序,
+   告知一声, 我们会按 okDist 离 anchor 距离排一次。
 
 ## 10. For the next agent — start here
 
