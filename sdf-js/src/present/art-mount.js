@@ -132,7 +132,10 @@ export function extractMountPalette(img, { maxColors = 6 } = {}) {
 export function mountPaletteOverride(basePalette, mount) {
   if (!mount?.palette?.accent) return basePalette;
   const bg = basePalette?.bg || [248, 246, 240];
-  const accent = ensureContrast(mount.palette.accent, bg);
+  // Round 2 (灰度装裱对抗, 2026-07-14): accent 承载标题级数字, 对比地板
+  // 提到 ΔL 0.34 — 灰阶 mount 的浅灰 accent 压到可读深度; 彩色 mount
+  // 的中深色 accent 天然 ≥0.34, 不受影响
+  const accent = ensureContrast(mount.palette.accent, bg, 0.34);
   const colors = Array.isArray(mount.palette.colors)
     ? [accent, ...mount.palette.colors.slice(1)]
     : mount.palette.colors;

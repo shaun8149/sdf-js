@@ -191,5 +191,57 @@ const basePalette = {
   );
 }
 
+// ── 7. 黑洞页回归 (2026-07-14 事故: theme 对象 → getTheme null → 黑底黑字) ──
+{
+  const { getTheme } = await import('../src/present/themes.js');
+  const t = getTheme('editorial-spectrum');
+  ok(!!t, 'getTheme(id) 正常路径');
+  ok(getTheme(t) === t, 'getTheme(已解析对象) 原样返回');
+  ok(getTheme({ id: 'editorial-spectrum' }).id === 'editorial-spectrum', 'getTheme({id}) 回查');
+  // renderer partial palette 防御纵深: 缺 bg/silhouette 不再涂成 rgb(0,0,0)
+  const rec = { fills: [] };
+  const ctx = new Proxy(
+    {},
+    {
+      get(tg, k) {
+        if (k in tg) return tg[k];
+        if (k === 'measureText') return (x) => ({ width: String(x).length * 8 });
+        if (k === 'getImageData') return () => ({ data: new Uint8ClampedArray(400) });
+        if (k === 'createLinearGradient' || k === 'createRadialGradient')
+          return () => ({ addColorStop: () => {} });
+        if (k === 'fillRect') return () => rec.fills.push(String(ctx.fillStyle));
+        return () => {};
+      },
+      set(tg, k, v) {
+        tg[k] = v;
+        return true;
+      },
+    },
+  );
+  const canvas = { width: 100, height: 100, getContext: () => ctx };
+  await renderSceneDataToCanvas(canvas, { subjects: [] }, { palette: { accent: [1, 2, 3] } });
+  ok(rec.fills.length > 0 && rec.fills[0] !== 'rgb(0,0,0)', 'partial palette 底色回落纸面, 非黑洞');
+}
+
+// ── 8. 灰度装裱 accent 地板 (对抗 round 2) ──
+{
+  const grey = {
+    palette: {
+      accent: [199, 199, 199],
+      colors: [
+        [199, 199, 199],
+        [119, 119, 119],
+      ],
+    },
+  };
+  const base = { bg: [246, 244, 238], silhouetteColor: [30, 30, 34] };
+  const out = mountPaletteOverride(base, grey);
+  ok(
+    Math.abs(rgbToOklab(out.accent)[0] - rgbToOklab(base.bg)[0]) >= 0.33,
+    '浅灰 accent 压到 ΔL≥0.34 (标题级数字可读)',
+    `accent=${out.accent}`,
+  );
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed) process.exit(1);

@@ -366,6 +366,12 @@ export function getAtlasThemes() {
  * @returns {ThemePreset | null}
  */
 export function getTheme(id) {
+  // deck.json 契约里 theme 可以是对象 (§2) — 已解析的主题原样返回,
+  // 或按其 id 回查; 只认字符串会让调用方拿到 null → 黑洞页 (2026-07-14)
+  if (id && typeof id === 'object') {
+    if (Array.isArray(id.bg) || Array.isArray(id.accent)) return id;
+    return ATLAS_THEMES.find((t) => t.id === id.id) || null;
+  }
   return ATLAS_THEMES.find((t) => t.id === id) || null;
 }
 
