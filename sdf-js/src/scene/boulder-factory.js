@@ -14,6 +14,7 @@
 // 纯数据工厂:输出 SceneData subject,复用现有 prim,零新 GLSL。
 import { makeHashRand } from '../present/decor/rand.js';
 import { drawMaterial } from './material-slots.js';
+import { weatherMaterial, WEAR_PROB } from './weathering.js';
 
 // 乘性量一律 log_uniform(Infinigen 全库习语)
 const logUniform = (R, lane, a, b) => Math.exp(R.range(lane, Math.log(a), Math.log(b)));
@@ -28,15 +29,21 @@ export function makeBoulderFactory(factorySeed) {
 
   // ---- 物种级(FixedSeed(factory_seed) 的对应物)-----------------------------
   const isSlab = S.range('morph', 0, 1) >= 0.8; // boulder 0.8 / slab 0.2(boulder.py L55)
+  // 研读第八课:年龄轴(wear_tear_prob 的对应物——约半数物种带磨损)。
+  // 几何面不需要探测器:SDF 的曲率是一等参数,age 直接转 cornerR / fuse k
+  // 的旋钮(Infinigen 要用 Bevel-vs-法线在 shader 里侦探边缘才能磨它)。
+  const age = S.range('wear', 0, 1) < WEAR_PROB ? S.range('age', 0.25, 1) : 0;
   // 研读第五课:材质从"工厂内写死的分布"升级为语义槽抽取(BoulderFactory L58
   // `weighted_sample(material_assignments.rock)()` 的对应物)—— 工厂只说
   // "我是 rock",候选与权重住在 material-slots 的中央注册表。
-  const material = drawMaterial('rock', S);
+  const material = weatherMaterial(drawMaterial('rock', S), age);
   const blobN = 4 + Math.floor(S.range('blobs', 0, 3)); // 32 点凸包的 SDF 近似:4-6 块
   // 岩性(物种级):angular = 小姿态差 rounded_box 块互切(精确 min-union)——凸包棱面感,
   // boulder.py sharp remesh 的 SDF 对应物;weathered = 椭球 + smoothUnion——风化圆石,少数派。
   const lithology = S.range('lithology', 0, 1) < 0.7 ? 'angular' : 'weathered';
-  const fuseK = S.range('fuse', 0.12, 0.28); // weathered 的融合半径(物种级"包紧"程度)
+  // age 的几何面:磨圆半径随年龄涨(风化 = 曲率半径增长,物理模型本身)
+  const fuseK = S.range('fuse', 0.12, 0.28) + age * 0.15; // weathered 融合半径
+  const cornerAgeK = age * 0.2; // angular 块的 cornerR 增量(× minDim)
   // 表面(物种级,研读第二课):单层 sinfold 节理位移(boulder.py 双层 VORONOI
   // DISPLACE 的对应物,收缩到一层 + 最便宜的场——D3D fxc 成本 ∝ displaced
   // subject 数,每 studio 场景 ≤4-6 个,预算取证见 lesson-02 课文)。
@@ -101,7 +108,10 @@ export function makeBoulderFactory(factorySeed) {
               // 小角度姿态差的圆角块:互切的棱面 = 凸包的面
               id: `boulder-${factorySeed}-${i}-b${b}`,
               type: 'rounded_box',
-              args: { dims, cornerR: Math.min(...dims) * R.range(`b${b}cr`, 0.04, 0.12) },
+              args: {
+                dims,
+                cornerR: Math.min(...dims) * (R.range(`b${b}cr`, 0.04, 0.12) + cornerAgeK),
+              },
               transform: {
                 translate: [cx, cy, cz],
                 rotate: [
@@ -151,7 +161,7 @@ export function makeBoulderFactory(factorySeed) {
   }
 
   return {
-    voice: { isSlab, material, blobN, fuseK, lithology, voroScaleK, voroAmpK },
+    voice: { isSlab, material, blobN, fuseK, lithology, voroScaleK, voroAmpK, age },
     createPlaceholder,
     createAsset,
   };
