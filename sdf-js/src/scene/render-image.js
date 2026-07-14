@@ -18,12 +18,11 @@ import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
-// 4:3 source pages (the 2013 deck is 1600×1200); bezel adds ~0.5 around.
-// Sized to the theater rail (~13): as big as fits under the frame's top edge —
-// the page must be READABLE, it is the act's entire content.
+// Screen sized to the theater rail (~13): as big as fits under the frame's
+// top edge — the page must be READABLE, it is the act's entire content.
+// ir.aspect picks the panel shape: '4:3' (2013 deck, 1600×1200 pages) is the
+// default; '16:9' (2015 deck, 1600×900) widens the panel instead of letterboxing.
 const W = 9.2;
-const H = 6.9;
-const CY = 4.35; // screen centre height — bottom edge clears the floor by ~0.9
 
 export function renderImage(ir, opts = {}) {
   const v = validateIR(ir);
@@ -31,6 +30,10 @@ export function renderImage(ir, opts = {}) {
   if (ir.structure !== 'image')
     throw new Error(`renderImage: expected structure 'image', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  // literal dims (not W*ratio arithmetic): float ulps in computed values would
+  // churn the 2013 goldens byte-for-byte without changing a single pixel
+  const H = ir.aspect === '16:9' ? 5.175 : 6.9;
+  const CY = ir.aspect === '16:9' ? 3.4875 : 4.35; // bottom edge ~0.9 above floor
 
   const subjects = [
     // the screen body: one white slab, slightly proud of the image plane so
@@ -67,7 +70,7 @@ export function renderImage(ir, opts = {}) {
     {
       role: 'plate',
       image: String(ir.image || ''),
-      anchor: [0, CY, 0.0],
+      anchor: [0, CY, -0.06], // ON the slab's front face — off-axis views stay parallax-free
       w: W,
       h: H,
       revealAt: -1.0,
@@ -81,36 +84,40 @@ export function renderImage(ir, opts = {}) {
       overlay.push({ text: b, anchor: [0, 1.2, 2], role: 'screen', revealAt: 1.4 + k * 1.0 });
     });
 
-  // three quiet frontal beats — the page deserves a still reading, not a tour
+  // three quiet frontal beats — the page deserves a still reading, not a tour.
+  // Distances follow the panel HEIGHT (a 16:9 panel is shorter → come closer);
+  // width is never the binding constraint at these fovs.
   const dwell = Math.max(3.2, 1.4 + (ir.nodes || []).length * 1.0);
+  // literal distances per aspect (float-arithmetic here would churn goldens)
+  const [d1, d2, d3] = H > 6 ? [12.6, 11.6, 12.8] : [10.6, 9.6, 10.8];
   const shots = [
     {
       duration: 1.6,
-      pos: [0.5, CY - 0.3, 12.6],
+      pos: [0.5, CY - 0.3, d1],
       target: [0, CY - 0.1, 0],
       fov: 46,
       aperture: 0.22,
-      focalDistance: 12.6,
+      focalDistance: d1,
       ease: 'out',
     },
     {
       duration: dwell,
-      pos: [-0.7, CY - 0.2, 11.6],
+      pos: [-0.7, CY - 0.2, d2],
       target: [0.1, CY, 0],
       fov: 46,
       transition: 'blend',
       aperture: 0.18,
-      focalDistance: 11.6,
+      focalDistance: d2,
       ease: 'smooth',
     },
     {
       duration: 2.0,
-      pos: [0.3, CY, 12.8 * (env ? env.payoffZoom : 1)],
+      pos: [0.3, CY, d3 * (env ? env.payoffZoom : 1)],
       target: [0, CY - 0.1, 0],
       fov: 45,
       transition: 'blend',
       aperture: 0.12,
-      focalDistance: 12.8,
+      focalDistance: d3,
       ease: 'out',
     },
   ];
