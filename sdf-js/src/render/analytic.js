@@ -21,7 +21,7 @@
 // Scope guards (unsupported → caller falls back to the stone raymarcher):
 //   • types outside box/rounded_box/sphere/capsule/ellipsoid/cylinder
 //     (unions flatten; funnel-3d etc. reject)
-//   • rotations other than yaw
+//   • rotations other than single-axis yaw (Y) or roll (Z)
 //   • animation channels other than transform.translate.x/y/z, or exprs that
 //     are not GLSL-safe (smoothstep/sin/numbers only)
 // =============================================================================
@@ -33,6 +33,7 @@ const SUPPORTED = new Set([
   'capsule',
   'ellipsoid',
   'cylinder',
+  'cut-sphere',
   'funnel-3d',
 ]);
 const EXPR_SAFE = /^[\d\s+\-*/().,]|smoothstep|sin|t$/; // per-token check below
@@ -183,6 +184,33 @@ float iCylinderY(vec3 ro, vec3 rd, float ra, float he, out vec3 n) {
   return -1.0;
 }
 
+// cut sphere (y >= h kept — the d3.js cutSphere solid): dome surface + the
+// flat disc face. Roll the SUBJECT (rotate [0,0,±π/2]) to stand it upright.
+float iCutSphereY(vec3 ro, vec3 rd, float r, float h, out vec3 n) {
+  float best = -1.0;
+  float b = dot(ro, rd);
+  float c = dot(ro, ro) - r * r;
+  float disc = b * b - c;
+  if (disc > 0.0) {
+    float t = -b - sqrt(disc);
+    if (t > 0.0 && ro.y + t * rd.y >= h) {
+      best = t;
+      n = normalize(ro + rd * t);
+    }
+  }
+  if (abs(rd.y) > 1e-6) {
+    float tp = (h - ro.y) / rd.y;
+    if (tp > 0.0 && (best < 0.0 || tp < best)) {
+      vec3 p = ro + rd * tp;
+      if (p.x * p.x + p.z * p.z <= r * r - h * h) {
+        best = tp;
+        n = vec3(0.0, -1.0, 0.0);
+      }
+    }
+  }
+  return best;
+}
+
 // IQ capped cone (truncated cone with caps): returns vec4(t, normal)
 float dot2(vec3 v) { return dot(v, v); }
 vec4 iCappedCone(vec3 ro, vec3 rd, vec3 pa, vec3 pb, float ra, float rb) {
@@ -259,8 +287,12 @@ export function compileAnalyticFrag(subjects, opts = {}) {
   for (const s of subs) {
     if (!SUPPORTED.has(s.type)) return { ok: false, reason: `type ${s.type} (${s.id})` };
     const rot = s.transform && s.transform.rotate;
-    if (rot && (rot[0] || rot[2])) return { ok: false, reason: `non-yaw rotate (${s.id})` };
+    // yaw (Y) and roll (Z) are both single-axis closed-form rotations; pitch
+    // and COMBINED yaw+roll stay out of scope (reject loudly → raymarch).
+    if (rot && (rot[0] || (rot[1] && rot[2])))
+      return { ok: false, reason: `unsupported rotate (${s.id})` };
     const yaw = rot ? Number(rot[1]) || 0 : 0;
+    const roll = rot ? Number(rot[2]) || 0 : 0;
     const T = (s.transform && s.transform.translate) || [0, 0, 0];
     const a = s.args || {};
     const m = s.material || {};
@@ -294,6 +326,14 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       localRo = `rotY(${localRo}, ${c}, ${flt(-Math.sin(yaw))})`;
       localRd = `rotY(rd, ${c}, ${flt(-Math.sin(yaw))})`;
       nBack = `rotY(n${k}, ${c}, ${sn})`;
+    } else if (roll !== 0) {
+      // roll (Z): same closed form — this is how a y-cut hemisphere stands up
+      // as the page-2 vertical half-disc (rotate [0,0,±π/2])
+      const c = flt(Math.cos(roll));
+      const sn = flt(Math.sin(roll));
+      localRo = `rotZ(${localRo}, ${c}, ${flt(-Math.sin(roll))})`;
+      localRd = `rotZ(rd, ${c}, ${flt(-Math.sin(roll))})`;
+      nBack = `rotZ(n${k}, ${c}, ${sn})`;
     }
 
     // proxy sphere for the occlusion sum (also drives the floor contact shadow)
@@ -332,6 +372,12 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       const he = (a.height ?? 1) / 2;
       proxyR = Math.max(r * 0.7, he);
       body += `    float tk = iCylinderY(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
+      body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
+    } else if (s.type === 'cut-sphere') {
+      const r = a.radius ?? a.r ?? 0.5;
+      const ch = a.h ?? a.height ?? 0.0;
+      proxyR = r * 0.8;
+      body += `    float tk = iCutSphereY(q, dq, ${flt(r)}, ${flt(ch)}, n${k});\n`;
       body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
     } else if (s.type === 'funnel-3d') {
       // Mirror funnel3dSDF's layout math: N stacked truncated cones. Each
@@ -386,6 +432,7 @@ uniform float u_ambientScale;
 #define MAX_DIST 200.0
 
 vec3 rotY(vec3 p, float c, float s) { return vec3(c * p.x - s * p.z, p.y, s * p.x + c * p.z); }
+vec3 rotZ(vec3 p, float c, float s) { return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z); }
 
 ${GLSL_LIB}
 

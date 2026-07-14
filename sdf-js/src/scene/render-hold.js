@@ -109,27 +109,37 @@ export function renderHold(ir, opts = {}) {
       }
     }
   } else {
-    // CONTENTS — the source page's diagram KEPT VERTICAL (user 2026-07-14):
-    // the original semicircle STANDS UPRIGHT and the six numbered balls ring
-    // it in the picture plane. The half-buried dome IS that vertical
-    // semicircle seen from the front; the orbs arc over it in the XY plane —
-    // a rainbow around the silhouette — and the camera looks straight in from
-    // outside the screen, never down onto a floor ring (the old satellite
-    // ring read top-down, exactly the angle the source page never has).
+    // CONTENTS — the source page-2 diagram, FLOATING AND UPRIGHT (user art
+    // direction 2026-07-14: "一个半球悬空不是很帅吗?你把半球立起来"): a
+    // hemisphere hangs in mid-air with its FLAT FACE toward screen-left —
+    // from outside the screen it reads as the page's vertical half-disc —
+    // and the six numbered balls ride its curved rim top → bottom, exactly
+    // the original's ①…⑥ ladder. (cut-sphere is y-cut; roll +90° stands it
+    // up — the analytic tier learned roll + cut-sphere for this shot.)
+    const HR = 2.4; // hemisphere radius
+    const HCY = 3.7; // float height of the hemisphere's centre
     subjects.push({
       id: 'dome',
-      type: 'sphere',
-      args: { radius: 2.6 },
-      transform: { translate: [0, 0, -1.2] },
+      type: 'cut-sphere',
+      args: { radius: HR, h: 0 },
+      transform: { translate: [0.6, HCY, -1.2], rotate: [0, 0, Math.PI / 2] },
       material: { ...ROCK_MAT, roughness: 0.4 },
+      animation: [
+        {
+          // the float: a slow breath — 悬空 must read as suspension, not parking
+          channel: 'transform.translate.y',
+          expr: `${HCY.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + 0.07 * sin(0.35 * t + 1.10)`,
+        },
+      ],
     });
-    const R = 3.35; // arc radius: dome silhouette (2.6) + orb + breathing room
-    const PAD = 0.32; // rad — keeps the end orbs clear of the ground line
+    // balls on the curved rim, top → bottom down the screen-right side
+    const R = HR + 0.75;
+    const E0 = 1.28; // rad above horizontal for ball ①  (~73°)
     bullets.forEach((_, k) => {
-      const a = PAD + ((Math.PI - 2 * PAD) * (k + 0.5)) / N; // ① screen-left … ⑥ screen-right
-      const x = Math.cos(a) * R; // +x renders screen-LEFT
-      const y = Math.sin(a) * R; // the arc climbs over the dome's crown
-      const drop = 1.4;
+      const e = E0 - (k * (2 * E0)) / Math.max(1, N - 1); // ① top … ⑥ bottom
+      const x = 0.6 - Math.cos(e) * R; // -x renders screen-RIGHT (the curved side)
+      const y = HCY + Math.sin(e) * R;
+      const drop = 1.3;
       const t0 = introLead + k * holdEach - 0.35;
       const t1 = t0 + 0.55;
       subjects.push({
@@ -215,14 +225,13 @@ export function renderHold(ir, opts = {}) {
           },
         ]
       : [
-          // contents: EYE-LEVEL, straight in from outside the screen (user
-          // 2026-07-14) — the vertical arc must read as the source page's
-          // upright semicircle, so the camera never climbs above it. Lateral
-          // drift only; target pinned at the composition's heart.
+          // contents: EYE-LEVEL with the FLOATING half-disc, straight in from
+          // outside the screen — the page-2 composition hangs mid-air, so the
+          // camera meets it at its heart (~y 3.4). Lateral drift only.
           {
             duration: introLead,
-            pos: [0.4, 2.3, 10.4],
-            target: [0, 2.1, -1.2],
+            pos: [0.1, 3.5, 10.4],
+            target: [-0.5, 3.5, -1.2],
             fov: 46,
             aperture: 0.28,
             focalDistance: 11.2,
@@ -230,8 +239,8 @@ export function renderHold(ir, opts = {}) {
           },
           {
             duration: driftDur,
-            pos: [-1.3, 2.4, 9.6],
-            target: [0.2, 2.2, -1.2],
+            pos: [-1.5, 3.7, 9.6],
+            target: [-0.3, 3.6, -1.2],
             fov: 46,
             transition: 'blend',
             aperture: 0.22,
@@ -240,8 +249,8 @@ export function renderHold(ir, opts = {}) {
           },
           {
             duration: 2.0,
-            pos: [0.4, 2.5, 11.0 * (env ? env.payoffZoom : 1)],
-            target: [0, 2.2, -1.2],
+            pos: [-0.3, 3.7, 11.0 * (env ? env.payoffZoom : 1)],
+            target: [-0.5, 3.6, -1.2],
             fov: 45,
             transition: 'blend',
             aperture: 0.12,
@@ -257,15 +266,16 @@ export function renderHold(ir, opts = {}) {
   const overlay = [
     {
       text: String(ir.title || bullets[0] || ''),
-      anchor: [0, 4.6, -1.2],
+      anchor: [0, 7.1, -1.2],
       role: 'title',
     },
   ];
   const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   bullets.forEach((b, k) => {
-    const a = 0.32 + ((Math.PI - 0.64) * (k + 0.5)) / N; // same arc as the orbs
-    const x = Math.cos(a) * 3.35;
-    const y = Math.sin(a) * 3.35;
+    // same rim math as the orbs (top → bottom down the curved right side)
+    const e = 1.28 - (k * 2.56) / Math.max(1, N - 1);
+    const x = 0.6 - Math.cos(e) * 3.15;
+    const y = 3.7 + Math.sin(e) * 3.15;
     overlay.push({
       text: b,
       anchor: [x, y, -1.2],
@@ -276,7 +286,7 @@ export function renderHold(ir, opts = {}) {
     // layer: a label bound to geometry), landing right after the drop
     overlay.push({
       text: CIRCLED[k] || String(k + 1),
-      anchor: [x, y + 0.72, -1.2],
+      anchor: [x, y + 0.66, -1.2],
       role: 'value',
       revealAt: introLead + k * holdEach + 0.3,
     });
