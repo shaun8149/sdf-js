@@ -13,6 +13,7 @@
 //
 // 纯数据工厂:输出 SceneData subject,复用现有 prim,零新 GLSL。
 import { makeHashRand } from '../present/decor/rand.js';
+import { drawMaterial } from './material-slots.js';
 
 // 乘性量一律 log_uniform(Infinigen 全库习语)
 const logUniform = (R, lane, a, b) => Math.exp(R.range(lane, Math.log(a), Math.log(b)));
@@ -27,15 +28,10 @@ export function makeBoulderFactory(factorySeed) {
 
   // ---- 物种级(FixedSeed(factory_seed) 的对应物)-----------------------------
   const isSlab = S.range('morph', 0, 1) >= 0.8; // boulder 0.8 / slab 0.2(boulder.py L55)
-  const material = {
-    hue: S.range('hue', 0.55, 0.68), // 冷灰-蓝灰带,与 horizon/massing 同族
-    sat: S.range('sat', 0.06, 0.22),
-    value: S.range('value', 0.18, 0.34),
-    metal: 0,
-    glow: 0,
-    kind: 'normal',
-    roughness: S.range('rough', 0.7, 0.95),
-  };
+  // 研读第五课:材质从"工厂内写死的分布"升级为语义槽抽取(BoulderFactory L58
+  // `weighted_sample(material_assignments.rock)()` 的对应物)—— 工厂只说
+  // "我是 rock",候选与权重住在 material-slots 的中央注册表。
+  const material = drawMaterial('rock', S);
   const blobN = 4 + Math.floor(S.range('blobs', 0, 3)); // 32 点凸包的 SDF 近似:4-6 块
   // 岩性(物种级):angular = 小姿态差 rounded_box 块互切(精确 min-union)——凸包棱面感,
   // boulder.py sharp remesh 的 SDF 对应物;weathered = 椭球 + smoothUnion——风化圆石,少数派。
