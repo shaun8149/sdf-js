@@ -966,5 +966,12 @@ export function atlasDeckToIR(deckJson, opts = {}) {
       outcome: holdFallback ? 'ir:hold(fallback)' : `ir:${ir.structure}`,
     });
   });
-  return { title: deck.title || 'atlas-deck', slides, report };
+  return {
+    title: deck.title || 'atlas-deck',
+    slides,
+    report,
+    // §9.6 配合点 #1:契约 §3.5 的真迹装裱溯源随行到 3D IR deck —— palette
+    // 预烘焙(无像素也能穿上作品的颜色),name/artist/license 供溯源角标。
+    ...(deck.artMount ? { artMount: deck.artMount } : {}),
+  };
 }
