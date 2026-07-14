@@ -41,7 +41,10 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('atoms-2d/renderer: canvas has no 2D context');
 
-  const palette = opts.palette || DEFAULT_PALETTE;
+  // 防御纵深 (2026-07-14 黑洞页事故): 上游 theme 解析失败时 palette 可能
+  // 缺 bg/silhouetteColor — rgbCss(undefined) 会静默涂成 rgb(0,0,0), 整页
+  // 黑底 + 暗字隐形。partial palette 一律用默认补齐, 缺字段不再是黑洞。
+  const palette = { ...DEFAULT_PALETTE, ...(opts.palette || {}) };
   const deckStyle = opts.style;
 
   // Fill background
