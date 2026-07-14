@@ -395,6 +395,19 @@ function slotRenderOpts(theme, deck, slot) {
           onProgress: (msg, pct) =>
             setStatus(`批量 ${done + 1}/${picks.length} · ${entry.name} — ${Math.round(pct)}%`),
         });
+        // Sprint 98 (配合点 #4): 每份 PDF 旁存同名 deck.json — 契约带
+        // artMount 溯源, 3D 端可直接批量渲染配对飞行 (同一件真迹,
+        // 纸上与空间)
+        {
+          const blob = new Blob([JSON.stringify(serializeDeck(deckForExport), null, 1)], {
+            type: 'application/json',
+          });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `atlas-${slug}-${entry.id}.json`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }
         used.add(entry.id);
         localStorage.setItem(BATCH_USED_KEY, JSON.stringify([...used]));
         done++;
