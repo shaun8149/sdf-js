@@ -100,6 +100,29 @@ export function createFigure({
   // pinning setSequenceTime in a loop freezes a moment for capture.
   window.__figStudio = studio;
 
+  // ---- replay affordance (auto-play only) ------------------------------------
+  // When the fly-through has played out, every window's shader is still warm in
+  // the program cache — replay is a CLOCK reset (setSequenceTime(0)), not a
+  // page reload: zero recompiles, zero re-warming. The deck-window watcher sees
+  // t back inside window 0 and swaps its cached program like any boundary.
+  // Presenter mode owns its own clock (Home restarts) — no button there.
+  let replayable = false; // set per show(): finite, non-looping sequence only
+  let replayShown = false;
+  const replayBtn = document.createElement('button');
+  replayBtn.id = 'replay-btn';
+  replayBtn.textContent = '↻  Replay';
+  replayBtn.style.cssText =
+    'position:fixed;left:50%;bottom:12%;transform:translateX(-50%);z-index:60;' +
+    'font:600 15px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;' +
+    'color:#f3f6fb;background:rgba(16,20,30,0.72);border:1px solid rgba(255,255,255,0.22);' +
+    'padding:12px 26px;border-radius:999px;cursor:pointer;letter-spacing:0.04em;' +
+    'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);' +
+    'opacity:0;pointer-events:none;transition:opacity 0.45s ease;';
+  replayBtn.addEventListener('click', () => {
+    if (studio.setSequenceTime) studio.setSequenceTime(0);
+  });
+  if (!present) document.body.appendChild(replayBtn);
+
   let items = [];
   let els = [];
   let stageItems = []; // narrative layer: titles + bullets, screen-space
@@ -177,6 +200,10 @@ export function createFigure({
       return d;
     });
     window.__figReplay = () => studio.setSequence(scene.cameraSequence);
+    replayable = !!(scene.cameraSequence && !scene.cameraSequence.loop);
+    replayShown = false;
+    replayBtn.style.opacity = '0';
+    replayBtn.style.pointerEvents = 'none';
     // Deck scenes carry a window timeline — play them through the per-station
     // shader switcher (the giant full-world shader would run at single-digit
     // fps on laptop GPUs; see deck-shader-windows.js). Single-structure scenes
@@ -238,6 +265,17 @@ export function createFigure({
       loading.classList.add('done');
     }
     const t = studio.getSequenceTime ? studio.getSequenceTime() : 1e9;
+    // Replay button rises once the show has played past its end (and never
+    // during the warm-up hold, whose clock is parked at ~0 anyway).
+    if (!present && replayable) {
+      const dur = studio.getSequenceDuration ? studio.getSequenceDuration() : 0;
+      const done = dur > 0 && t >= dur - 0.02 && !deckWarming;
+      if (done !== replayShown) {
+        replayShown = done;
+        replayBtn.style.opacity = done ? '1' : '0';
+        replayBtn.style.pointerEvents = done ? 'auto' : 'none';
+      }
+    }
     // Stage layer (screen-space narrative): show the current chapter's title
     // big and composed, and slide its bullets in as their beats pass. Pure 2D
     // typography — never projected, never fighting the 3D frame.
