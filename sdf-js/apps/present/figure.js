@@ -22,9 +22,10 @@ const deckName = params.get('deck');
 // (2026-07-13 user verdict: courtyard's far-side geometry interferes with data
 // labels; radial expresses a complete world since the total-continuity waves).
 const layout = params.get('layout') || 'radial';
-// theater 一字排开跨 ±90:默认 30 距离的原点灯罩不住,换高位远灯(均匀照明)
+// theater 一字排开跨 ±176:默认 30 距离的原点灯罩不住,换高位远灯(均匀照明;
+// dist 260/alt 1.15 让 finale 的全景连前景地面一起留在光照里)
 const lightRig =
-  deckName && layout === 'theater' ? { lightAzim: 0.9, lightAlt: 1.05, lightDist: 160 } : null;
+  deckName && layout === 'theater' ? { lightAzim: 0.9, lightAlt: 1.15, lightDist: 260 } : null;
 const tone = params.get('tone');
 const { show } = createFigure({
   outdoor: env !== 'studio',

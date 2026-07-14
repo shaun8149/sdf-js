@@ -682,18 +682,26 @@ export function assembleDeck(deck, opts = {}) {
     const cx = origins.reduce((s, o) => s + o[0], 0) / origins.length;
     const cz = origins.reduce((s, o) => s + o[2], 0) / origins.length;
     const span = Math.max(1, ...origins.map((o) => Math.hypot(o[0] - cx, o[2] - cz))) * 2 + stride;
+    // MAX_DIST (200) is a hard windshield: geometry beyond it does not render.
+    // A 23-act line spans ±176 — the old span-proportional pull-back parked
+    // the camera ~400 out and the money shot framed EMPTY SKY (PDF-fidelity
+    // round A). Cap the pull-back inside the render horizon: near the line's
+    // heart, the middle acts sharp, the far acts dissolving toward the haze —
+    // the world reads BIGGER than the frame, which is the thesis anyway.
+    const pull = Math.min(span * 0.95, 120);
     shots.push({
       duration: TEMPO.finale,
-      pos: [cx + span * 0.25, span * 0.5 + 4.5, cz + span * 0.95],
+      pos: [cx + pull * 0.25, Math.min(span * 0.5, pull * 0.48) + 4.5, cz + pull],
       target: [cx, 1.2, cz],
       fov: 48,
       transition: 'blend',
       aperture: 0.08,
-      focalDistance: span * 1.05,
-      // R3 ("停电现场" critique): the thesis frame inherited the stage's
-      // combat dimming and read as a blackout — it gets the overlook's lift
-      ambient: 1.7,
-      exposure: 1.35,
+      focalDistance: pull * 1.05,
+      // The old 1.7/1.35 lift compensated the fade-to-black distance term;
+      // with true aerial perspective (fade to SKY) that lift overexposes the
+      // money shot into fog — a gentle touch keeps the row readable.
+      ambient: 1.15,
+      exposure: 1.08,
       ease: 'out',
       beat: 'finale', // presenter mode: the money-shot hold
     });
