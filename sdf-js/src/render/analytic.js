@@ -22,8 +22,8 @@
 //   • types outside box/rounded_box/sphere/capsule/ellipsoid/cylinder
 //     (unions flatten; funnel-3d etc. reject)
 //   • rotations other than yaw
-//   • animation channels other than transform.translate.y/z whose exprs are
-//     not GLSL-safe (smoothstep/sin/numbers only)
+//   • animation channels other than transform.translate.x/y/z, or exprs that
+//     are not GLSL-safe (smoothstep/sin/numbers only)
 // =============================================================================
 
 const SUPPORTED = new Set([
@@ -84,7 +84,8 @@ function flatten(subjects) {
           },
           material: c.material || s.material,
           animation: s.animation, // parent build-in moves the assembly
-          _childOffY: ct[1], // parent-channel anim replaces parent Y; child offset rides on top
+          _childOffX: ct[0], // parent-channel anim replaces the parent's coord;
+          _childOffY: ct[1], // the child offset rides on top
           _childOffZ: ct[2],
         });
       }
@@ -267,12 +268,15 @@ export function compileAnalyticFrag(subjects, opts = {}) {
     const glow = m.glow ?? 0;
 
     // animated translate channels → GLSL exprs (else baked constants)
+    let tx = flt(T[0]);
     let ty = flt(T[1]);
     let tz = flt(T[2]);
     for (const an of s.animation || []) {
       const g = exprToGLSL(an.expr);
       if (!g) return { ok: false, reason: `animation expr (${s.id})` };
-      if (an.channel === 'transform.translate.y')
+      if (an.channel === 'transform.translate.x')
+        tx = s._childOffX != null ? `(${g}) + ${flt(s._childOffX)}` : `(${g})`;
+      else if (an.channel === 'transform.translate.y')
         ty = s._childOffY != null ? `(${g}) + ${flt(s._childOffY)}` : `(${g})`;
       else if (an.channel === 'transform.translate.z')
         tz = s._childOffZ != null ? `(${g}) + ${flt(s._childOffZ)}` : `(${g})`;
@@ -280,7 +284,7 @@ export function compileAnalyticFrag(subjects, opts = {}) {
     }
 
     const k = idx++;
-    let localRo = `ro - vec3(${flt(T[0])}, ty${k}, tz${k})`;
+    let localRo = `ro - vec3(tx${k}, ty${k}, tz${k})`;
     let localRd = 'rd';
     let nBack = `n${k}`;
     if (yaw !== 0) {
@@ -295,7 +299,7 @@ export function compileAnalyticFrag(subjects, opts = {}) {
     // proxy sphere for the occlusion sum (also drives the floor contact shadow)
     let proxyR;
     let hitStmt;
-    body += `  {\n    float ty${k} = ${ty};\n    float tz${k} = ${tz};\n`;
+    body += `  {\n    float tx${k} = ${tx};\n    float ty${k} = ${ty};\n    float tz${k} = ${tz};\n`;
     body += `    vec3 q = ${localRo};\n    vec3 dq = ${localRd};\n    vec3 n${k} = vec3(0.0);\n`;
     if (s.type === 'sphere') {
       proxyR = a.radius ?? 0.5;
@@ -359,7 +363,7 @@ export function compileAnalyticFrag(subjects, opts = {}) {
     // Skip tiny/huge proxies: breadcrumbs don't shade, horizon hills would
     // darken the whole stage.
     if (proxyR > 0.15 && proxyR < 8.0) {
-      occBody += `  { float ty${k} = ${ty}; float tz${k} = ${tz}; if (hitId != ${flt(k)}) { vec4 sp = vec4(${flt(T[0])}, ty${k}, tz${k}, ${flt(proxyR)}); occ += sphOcc(pos, nor, sp); sha *= sphSoftShadow(pos, sunDir, sp, 5.0); } }\n`;
+      occBody += `  { float tx${k} = ${tx}; float ty${k} = ${ty}; float tz${k} = ${tz}; if (hitId != ${flt(k)}) { vec4 sp = vec4(tx${k}, ty${k}, tz${k}, ${flt(proxyR)}); occ += sphOcc(pos, nor, sp); sha *= sphSoftShadow(pos, sunDir, sp, 5.0); } }\n`;
     }
   }
 
