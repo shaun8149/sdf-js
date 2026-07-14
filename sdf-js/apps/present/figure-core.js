@@ -5,6 +5,56 @@ import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
 import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
 
+// ---- 浮屏 (floating-screen) homography --------------------------------------
+// A plate is a DOM <img> laid out at PLATE_PX_W×PLATE_PX_H and warped by a
+// CSS matrix3d so its four corners land exactly on the projected corners of
+// the in-world screen. Classic 2D projective transform via adjugates.
+const PLATE_PX_W = 800;
+const PLATE_PX_H = 600; // 4:3 — the 2013 source pages are 1600×1200
+function adj3(m) {
+  return [
+    m[4] * m[8] - m[5] * m[7],
+    m[2] * m[7] - m[1] * m[8],
+    m[1] * m[5] - m[2] * m[4],
+    m[5] * m[6] - m[3] * m[8],
+    m[0] * m[8] - m[2] * m[6],
+    m[2] * m[3] - m[0] * m[5],
+    m[3] * m[7] - m[4] * m[6],
+    m[1] * m[6] - m[0] * m[7],
+    m[0] * m[4] - m[1] * m[3],
+  ];
+}
+function mul33(a, b) {
+  const c = new Array(9);
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++) {
+      let s = 0;
+      for (let k = 0; k < 3; k++) s += a[3 * i + k] * b[3 * k + j];
+      c[3 * i + j] = s;
+    }
+  return c;
+}
+function mul3v(m, v) {
+  return [
+    m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+    m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+    m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+  ];
+}
+function basisToPoints(x1, y1, x2, y2, x3, y3, x4, y4) {
+  const m = [x1, x2, x3, y1, y2, y3, 1, 1, 1];
+  const v = mul3v(adj3(m), [x4, y4, 1]);
+  return mul33(m, [v[0], 0, 0, 0, v[1], 0, 0, 0, v[2]]);
+}
+/** matrix3d mapping the (0,0)-(w,h) box onto 4 screen-px corners (tl,tr,bl,br). */
+function plateMatrix3d(w, h, tl, tr, bl, br) {
+  const s = basisToPoints(0, 0, w, 0, 0, h, w, h);
+  const d = basisToPoints(tl[0], tl[1], tr[0], tr[1], bl[0], bl[1], br[0], br[1]);
+  const t = mul33(d, adj3(s));
+  for (let i = 0; i < 9; i++) t[i] /= t[8];
+  return `matrix3d(${t[0]},${t[3]},0,${t[6]},${t[1]},${t[4]},0,${t[7]},0,0,1,0,${t[2]},${t[5]},0,${t[8]})`;
+}
+
 /**
  * createFigure({ outdoor, stage }) → { studio, show(sceneData) }.
  * `show` may be called repeatedly (the author page regenerates in place) —
@@ -130,6 +180,8 @@ export function createFigure({
   let els = [];
   let stageItems = []; // narrative layer: titles + bullets, screen-space
   let stageEls = [];
+  let plateItems = []; // 浮屏: page images perspective-mapped onto in-world screens
+  let plateEls = [];
   let detachDeckWindows = null;
   let deckWarming = false; // keep the boot loader up while window shaders warm
   const loading = document.getElementById('loading');
@@ -141,12 +193,38 @@ export function createFigure({
     }
     for (const el of stageEls) el.remove();
     stageEls = [];
+    for (const el of plateEls) el.remove();
+    plateEls = [];
     // Two text layers, HARD split (user-locked 2026-07-11):
     //   • narrative (title / screen bullets) → the STAGE LAYER: pure screen-
     //     space typography on its own canvas — big, composed, never projected.
     //     The 3D world tells the story; it does not carry sentences.
     //   • data labels (value / card) → the ANCHOR LAYER: projected onto the
     //     geometry they measure, depth-scaled. Numbers live with their shapes.
+    // 浮屏 plates: the ACTUAL source-page pixels, mounted on the in-world
+    // screen by perspective-mapping a DOM <img> to the screen face's four
+    // projected corners each frame — native-resolution crisp, zero shader
+    // cost, and it moves with the world through every dolly.
+    plateItems = (scene.overlay || []).filter((o) => o.role === 'plate' && o.image);
+    plateEls = plateItems.map((o) => {
+      const img = document.createElement('img');
+      img.src = `../../scenes/${o.image}`;
+      img.decoding = 'async';
+      Object.assign(img.style, {
+        position: 'fixed',
+        left: '0',
+        top: '0',
+        width: `${PLATE_PX_W}px`,
+        height: `${PLATE_PX_H}px`,
+        transformOrigin: '0 0',
+        pointerEvents: 'none',
+        zIndex: '6', // under every text layer — words outrank pixels
+        opacity: '0',
+        background: '#fff',
+      });
+      document.body.appendChild(img);
+      return img;
+    });
     const all = (scene.overlay || []).filter((o) => o.text);
     items = all.filter((o) => o.anchor && (o.role === 'value' || o.role === 'card'));
     els = items.map((o) => {
@@ -313,6 +391,44 @@ export function createFigure({
           stageEls[i].style.color =
             isCur && stageItems[i].accentColor ? stageItems[i].accentColor : '';
         }
+    }
+    // 浮屏 plates: warp each page image onto its screen's projected corners.
+    for (let i = 0; i < plateItems.length; i++) {
+      const o = plateItems[i];
+      const el = plateEls[i];
+      const shown = (o.revealAt == null || t >= o.revealAt) && (o.hideAt == null || t < o.hideAt);
+      if (!shown) {
+        el.style.opacity = '0';
+        continue;
+      }
+      const [ax, ay, az] = o.anchor;
+      const hw = o.w / 2;
+      const hh = o.h / 2;
+      // +x renders screen-LEFT → the screen-space top-left corner is world +x
+      const tl = studio.project([ax + hw, ay + hh, az]);
+      const tr = studio.project([ax - hw, ay + hh, az]);
+      const bl = studio.project([ax + hw, ay - hh, az]);
+      const br = studio.project([ax - hw, ay - hh, az]);
+      // any corner behind the lens → drop the plate (project returns no depth
+      // there and its x/y are garbage); off-FRAME corners are fine, CSS clips
+      if (tl.depth == null || tr.depth == null || bl.depth == null || br.depth == null) {
+        el.style.opacity = '0';
+        continue;
+      }
+      const cw = canvas.clientWidth;
+      const chh = canvas.clientHeight;
+      el.style.transform = plateMatrix3d(
+        PLATE_PX_W,
+        PLATE_PX_H,
+        [tl.x * cw, tl.y * chh],
+        [tr.x * cw, tr.y * chh],
+        [bl.x * cw, bl.y * chh],
+        [br.x * cw, br.y * chh],
+      );
+      let k = o.revealAt != null ? Math.max(0, Math.min(1, (t - o.revealAt) / 0.5)) : 1;
+      // fade out into the transit instead of popping off mid-frame
+      if (o.hideAt != null) k *= Math.max(0, Math.min(1, (o.hideAt - t) / 0.4));
+      el.style.opacity = String(k);
     }
     // Pass 1: project + opacity/count-up; collect visible labels for layout.
     const placedRects = []; // near labels claim space first

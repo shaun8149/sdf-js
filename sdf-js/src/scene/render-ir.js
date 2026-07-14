@@ -9,6 +9,7 @@ import { renderNetwork } from './render-network.js';
 import { renderMagnitude } from './render-magnitude.js';
 import { renderMatrix } from './render-matrix.js';
 import { renderHold } from './render-hold.js';
+import { renderImage } from './render-image.js';
 import { stagePreset } from './environments.js';
 
 const RENDERERS = {
@@ -18,6 +19,7 @@ const RENDERERS = {
   magnitude: renderMagnitude,
   matrix: renderMatrix,
   hold: renderHold,
+  image: renderImage,
 };
 
 // Every IR structure has a 3D renderer now (matrix landed last — the quadrant

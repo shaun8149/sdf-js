@@ -20,7 +20,15 @@
 //               interlude station (stele + bullet pips; text rides the DOM
 //               overlay per the two-text-systems rule). nodes MAY be empty —
 //               a cover is legitimately just a title.
-export const STRUCTURES = ['sequence', 'hierarchy', 'network', 'magnitude', 'matrix', 'hold'];
+export const STRUCTURES = [
+  'sequence',
+  'hierarchy',
+  'network',
+  'magnitude',
+  'matrix',
+  'hold',
+  'image',
+];
 
 export function validateIR(ir) {
   const errors = [];
@@ -29,6 +37,10 @@ export function validateIR(ir) {
   if (ir.structure === 'hold') {
     // hold: nodes are optional bullets — an empty array (a bare cover) is valid.
     if (!Array.isArray(ir.nodes)) errors.push('nodes must be an array');
+  } else if (ir.structure === 'image') {
+    // image (浮屏): the page IS the content — nodes are optional captions.
+    if (typeof ir.image !== 'string' || !ir.image) errors.push('image requires an image path');
+    if (ir.nodes != null && !Array.isArray(ir.nodes)) errors.push('nodes must be an array');
   } else if (!Array.isArray(ir.nodes) || ir.nodes.length === 0)
     errors.push('nodes must be a non-empty array');
   const N = Array.isArray(ir.nodes) ? ir.nodes.length : 0;

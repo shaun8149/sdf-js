@@ -67,50 +67,52 @@ const EVO_ROCK = {
 function renderEvolutionForm(ir, env) {
   const nodes = ir.nodes.map(label);
   const [xCats, yCats] = ir.axes; // xCats = [past, present]
-  const D = yCats.length; // dimensions → rows
+  const D = yCats.length; // dimensions → columns (source page order, L→R)
   const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : []);
-  // HORIZONTAL time axis (user 2026-07-14): the source page reads PAST →
-  // arrow → PRESENT left to right; the old vertical rise never made that
-  // arrow legible. Past tablets stack on screen-left, present orbs on
-  // screen-right, ONE unmistakable arrow crosses the gap — and each orb
-  // LAUNCHES from its past tablet and flies the arrow's direction, so the
-  // transformation is the motion itself, not an implied trail.
-  const GX = 3.9; // +x renders screen-LEFT → past at +GX, present at -GX
-  const rowY = (yi) => 3.35 - yi * 1.35; // row 0 on top (source page order)
+  // VERTICAL time axis (fidelity round vs source p4, 2026-07-14): the original
+  // reads PAST (bottom row of tablets) rising to PRESENT (top row of circles),
+  // with ONE BIG UPWARD ARROW on the left edge naming the direction. Each orb
+  // RISES from its past tablet to its present seat — the transformation is
+  // the motion itself, and the arrow says so explicitly.
+  const colX = (yi) => -(yi - (D - 1) / 2) * 3.6; // +x renders screen-left → negate
+  const PAST_Y = 0.95;
+  const NOW_Y = 4.3;
   const introLead = 1.6;
   const holdEach = 1.1;
-  const flyStart = introLead + 1.3; // past shown → arrow sweeps → orbs fly
+  const riseStart = introLead + 1.3; // past shown → arrow rises → orbs ascend
 
   const subjects = [];
   const overlay = [
     {
       text: String(ir.title || 'Evolution').toUpperCase(),
-      anchor: [0, rowY(0) + 2.0, 0],
+      anchor: [0, NOW_Y + 2.0, 0],
       role: 'title',
     },
   ];
-  // strata labels crown their own columns
+  // the ARROW column sits at the far screen-left edge, exactly like the page
+  const AX = colX(0) + 3.3; // +x renders screen-left → one lane left of column 0
+  // strata labels ride the arrow: 过去 at its foot, 现在 at its tip
   overlay.push({
     text: String(xCats[0]),
-    anchor: [GX, rowY(0) + 1.15, 0],
+    anchor: [AX, PAST_Y, 0],
     role: 'card',
-    align: 'center',
+    align: 'right',
   });
   overlay.push({
     text: String(xCats[1]),
-    anchor: [-GX, rowY(0) + 1.15, 0],
+    anchor: [AX, NOW_Y, 0],
     role: 'card',
-    align: 'center',
+    align: 'right',
   });
-  // 2D-fidelity: the DIMENSION names (yCats — the source page's row headers,
-  // e.g. 产生和消费方式/流动方式/终端) are payload, not chrome. One card per
-  // row at the far screen-left edge, revealed with the establishing beat.
+  // 2D-fidelity: the DIMENSION names (yCats — the source page's column
+  // footers, e.g. 产生和消费方式/流动方式/终端) are payload, not chrome. One
+  // footer card per column, revealed with the establishing beat.
   yCats.forEach((yc, yi) => {
     overlay.push({
       text: String(yc),
-      anchor: [GX + 2.4, rowY(yi), 0],
+      anchor: [colX(yi), 0.08, 1.6],
       role: 'card',
-      align: 'right',
+      align: 'center',
       revealAt: 0.3 + yi * 0.15,
     });
   });
@@ -118,42 +120,42 @@ function renderEvolutionForm(ir, env) {
   let k = 0;
   ir.cells.forEach((c, i) => {
     const [xi, yi] = c;
-    const y = rowY(yi);
+    const x = colX(yi);
     if (xi === 0) {
-      // the PAST: an upright tablet on the left
+      // the PAST: a grounded tablet at the column's foot
       subjects.push({
         id: `past-${i}`,
         type: 'rounded_box',
-        args: { dims: [2.5, 1.12, 0.42], cornerR: 0.08 },
-        transform: { translate: [GX, y, 0] },
+        args: { dims: [2.6, 1.1, 0.5], cornerR: 0.08 },
+        transform: { translate: [x, PAST_Y, 0] },
         material: EVO_ROCK,
       });
       overlay.push({
         text: nodes[i],
-        anchor: [GX, y - 0.78, 0.4],
+        anchor: [x, PAST_Y - 0.75, 0.5],
         role: 'screen',
         revealAt: 0.4 + yi * 0.2,
       });
     } else {
-      // the PRESENT: a red orb that FLIES past → present along the arrow
-      const t0 = flyStart + k * holdEach;
-      const t1 = t0 + 0.7;
+      // the PRESENT: a red orb that RISES out of its past tablet
+      const t0 = riseStart + k * holdEach;
+      const t1 = t0 + 0.75;
       subjects.push({
         id: `now-${i}`,
         type: 'sphere',
-        args: { radius: emphasis.has(i) ? 0.8 : 0.66 },
-        transform: { translate: [-GX, y, 0] },
+        args: { radius: emphasis.has(i) ? 0.85 : 0.7 },
+        transform: { translate: [x, NOW_Y, 0] },
         material: emphasis.has(i) ? { ...EVO_RED, glow: 0.24 } : EVO_RED,
         animation: [
           {
-            channel: 'transform.translate.x',
-            expr: `${GX.toFixed(3)} - ${(2 * GX).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
+            channel: 'transform.translate.y',
+            expr: `${PAST_Y.toFixed(3)} + ${(NOW_Y - PAST_Y).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.05 * sin(0.5 * t + ${((k * 2.1) % 6.28).toFixed(2)})`,
           },
         ],
       });
       overlay.push({
         text: nodes[i],
-        anchor: [-GX, y - 0.9, 0.4],
+        anchor: [x, NOW_Y + 1.0, 0.4],
         role: 'screen',
         revealAt: t1 + 0.1,
       });
@@ -161,91 +163,91 @@ function renderEvolutionForm(ir, env) {
     }
   });
 
-  // THE ARROW — one bold shaft + a stepped head pointing screen-right (past →
-  // present), at the rows' mid-height. The analytic tier has no z-rotation,
-  // so the head is a stepped wedge: slabs shrinking toward the tip read as an
-  // arrowhead from the frontal/theater camera. It sweeps in left→right before
-  // the first orb flies — the direction is announced, then flown.
-  const AY = rowY((D - 1) / 2);
+  // THE BIG UPWARD ARROW — far screen-left, foot at the past stratum, tip at
+  // the present stratum (the source page's red rising arrow). Vertical shaft
+  // + a stepped head narrowing upward (analytic tier: no z-rotation, so the
+  // wedge is stacked slabs). It RISES into place before the first orb flies.
   const arrowMat = { ...EVO_RED, glow: 0.16 };
-  const sweep = (fx, t0, t1) => [
-    {
-      channel: 'transform.translate.x',
-      expr: `${(fx + 2.2).toFixed(3)} - 2.200 * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
-    },
-  ];
   const arrT0 = introLead + 0.2;
   const arrT1 = arrT0 + 0.7;
+  const rise = (fy) => [
+    {
+      channel: 'transform.translate.y',
+      expr: `${(fy - 2.0).toFixed(3)} + 2.000 * smoothstep(${arrT0.toFixed(2)}, ${arrT1.toFixed(2)}, t)`,
+    },
+  ];
+  const shaftH = NOW_Y - PAST_Y - 0.9;
+  const shaftY = PAST_Y + shaftH / 2;
   subjects.push({
     id: 'arrow-shaft',
     type: 'rounded_box',
-    args: { dims: [2.6, 0.3, 0.26], cornerR: 0.06 },
-    transform: { translate: [0.5, AY, 0] },
+    args: { dims: [0.34, shaftH, 0.3], cornerR: 0.06 },
+    transform: { translate: [AX, shaftY, 0] },
     material: arrowMat,
-    animation: sweep(0.5, arrT0, arrT1),
+    animation: rise(shaftY),
   });
   for (let j = 0; j < 4; j++) {
-    const hx = -0.95 - j * 0.2;
+    const hy = PAST_Y + shaftH + 0.1 + j * 0.22;
     subjects.push({
       id: `arrow-head-${j}`,
       type: 'box',
-      args: { dims: [0.2, 1.0 - j * 0.24, 0.26] },
-      transform: { translate: [hx, AY, 0] },
+      args: { dims: [1.15 - j * 0.27, 0.22, 0.3] },
+      transform: { translate: [AX, hy, 0] },
       material: arrowMat,
-      animation: sweep(hx, arrT0, arrT1),
+      animation: rise(hy),
     });
   }
 
   const emphasisIdx =
     ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : ir.cells.findIndex((c) => c[0] === 1);
   const [, eyi] = ir.cells[emphasisIdx] || [1, 0];
-  const span = 2 * GX + 3;
+  const span = D * 3.6 + 3;
   const shots = [
-    // 1 — establishing on the PAST column (the story starts on the left)
+    // 1 — establishing on the PAST stratum (the story starts at the ground)
     {
       duration: introLead,
-      pos: [1.8, 2.4, 8.8],
-      target: [1.8, 2.1, 0],
+      pos: [0.8, 1.5, 9.2],
+      target: [0.4, 1.5, 0],
       fov: 47,
       aperture: 0.26,
-      focalDistance: 9.0,
+      focalDistance: 9.4,
       ease: 'out',
     },
-    // 2 — the crossing: drift right with the arrow + the flying orbs
+    // 2 — the ascent: tilt up with the arrow + the rising orbs
     {
       duration: Math.max(2.2, 1.3 + k * holdEach),
-      pos: [-1.0, 2.4, 9.4],
-      target: [-0.8, 2.1, 0],
+      pos: [-0.8, 2.6, 9.8],
+      target: [0, 3.0, 0],
       fov: 46,
       transition: 'blend',
       aperture: 0.22,
-      focalDistance: 9.6,
+      focalDistance: 10.0,
       ease: 'smooth',
     },
     // 3 — the SUPER: punch-in on the emphasized present orb
     {
       duration: 1.0,
-      pos: [-GX + 0.7, rowY(eyi) + 0.15, 2.4],
-      target: [-GX, rowY(eyi), 0],
+      pos: [colX(eyi) + 0.7, NOW_Y + 0.1, 2.6],
+      target: [colX(eyi), NOW_Y, 0],
       fov: 42,
       transition: 'cut',
       beat: 'super',
       aperture: [0.9, 0.45],
-      focalDistance: 2.4,
+      focalDistance: 2.6,
       shake: [0.5, 0.06],
       ambient: [0.15, 1.0],
       exposure: [1.2, 1.0],
       ease: 'out',
     },
-    // 4 — payoff: past, arrow and present in one frame
+    // 4 — payoff: both strata + the arrow in one frame
     {
       duration: 2.2,
-      pos: [0, 2.6, (span * 0.75 + 4.5) * (env ? env.payoffZoom : 1)],
-      target: [0, 2.05, 0],
+      pos: [0, 2.8, (span * 0.72 + 4.5) * (env ? env.payoffZoom : 1)],
+      target: [0, 2.5, 0],
       fov: 46,
       transition: 'blend',
       aperture: 0.12,
-      focalDistance: span * 0.75 + 4.5,
+      focalDistance: span * 0.72 + 4.5,
       ease: 'out',
     },
   ];

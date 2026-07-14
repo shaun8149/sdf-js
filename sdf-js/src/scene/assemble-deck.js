@@ -525,9 +525,10 @@ export function assembleDeck(deck, opts = {}) {
         // without one clear at the station's end (transit flies clean)
         ...(o.hideAt != null
           ? { hideAt: o.hideAt + clock }
-          : o.role === 'card' || o.role === 'value'
-            ? { hideAt: stationEnd + 0.4 } // R3: cards/values lingered into the transit flight
-            : { hideAt: stationEnd }),
+          : o.role === 'card' || o.role === 'value' || o.role === 'plate'
+            ? { hideAt: stationEnd + 0.4 } // R3: cards/values lingered into the transit flight;
+            : // plates fade OUT over it (a hard pop mid-frame breaks the take)
+              { hideAt: stationEnd }),
         // the DOM layer paints in the station's chapter color too: the value
         // chip's fill and the CURRENT subtitle line pick it up
         ...(accCss ? { accentColor: accCss } : {}),
@@ -844,8 +845,14 @@ export function assembleDeck(deck, opts = {}) {
       if (!b || !Number.isFinite(b.minX)) return { d: 10, ty: 1.6 };
       const halfW = Math.max(b.maxX - b.minX, b.maxZ - b.minZ) / 2;
       const topY = Math.max(1.6, b.maxY);
-      const d = Math.max(7, (topY * 1.3) / halfTan, (halfW * 1.2) / (halfTan * 1.7));
-      return { d, ty: Math.min(topY * 0.45, 3.2) };
+      const ty = Math.min(topY * 0.45, 3.2);
+      // Distance from the VIEW's needs, not from raw height: the camera aims
+      // at ty, so only the span ABOVE the target must fit in the upper half
+      // of the frame (old topY*1.3 form double-counted the below-target half
+      // — the 浮屏 stations' 7-unit screens pushed the whole rail to ~24 and
+      // every act read tiny; PDF-fidelity round 1).
+      const d = Math.max(7, (topY - ty + 0.8) / halfTan, (halfW * 1.2) / (halfTan * 1.7));
+      return { d, ty };
     });
     // 轨道距离取中位数并箝制:极端站(cover 的舞台背板等)不该决定整条轨 ——
     // 背板被裁是对的,它本来就是背景;数据主体的可读性优先
