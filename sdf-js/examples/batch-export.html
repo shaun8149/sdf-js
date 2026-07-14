@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- batch-export.html — headless 批量出 deck 的 harness 页 (Sprint 100).
+     scripts/batch-decks.mjs 用 playwright 驱动本页; 本页只做一件事: 把
+     window.__atlasBatchExport 暴露给 node 侧, 内部走与 in-app 下载完全
+     相同的 buildDeckPdf 产品管线 (含 page-lint 出厂检) — 同源, 零漂移。 -->
+<meta charset="utf-8" />
+<title>Atlas batch export harness</title>
+<body style="margin: 0; font: 12px monospace">
+  <pre id="log">batch-export harness ready</pre>
+  <script type="module">
+    import { buildDeckPdf } from '/src/present/exporters/pdf.js';
+    import { loadArtMount, fetchMintManifest } from '/src/present/art-mount.js';
+
+    const log = (m) => (document.getElementById('log').textContent += '\n' + m);
+    const MINT_BASE = '/examples/original-mints/cache/';
+    let manifest = null;
+
+    async function loadDeck(deckDir) {
+      const man = await fetch(`${deckDir}/deck.json`).then((r) => r.json());
+      const slots = [];
+      for (const s of man.slots.filter((x) => x.liftFile)) {
+        const j = await fetch(`${deckDir}/${s.liftFile}`).then((r) => r.json());
+        slots.push({
+          slotIdx: s.slotIdx,
+          slotName: s.slotName,
+          slotTitle: s.slotTitle,
+          sceneData: j.sceneData ?? j,
+        });
+      }
+      return { manifest: man, slots };
+    }
+
+    /**
+     * cfg: { deckDir, mountId, title }
+     * → { ok, pdfB64?, pageCount?, lint, mountName? , error? }
+     */
+    window.__atlasBatchExport = async (cfg) => {
+      try {
+        if (!manifest) manifest = await fetchMintManifest(MINT_BASE);
+        const entry = manifest.find((m) => m.id === cfg.mountId);
+        if (!entry) return { ok: false, error: `mount ${cfg.mountId} not in manifest` };
+        const mount = await loadArtMount(entry, MINT_BASE);
+        const { manifest: deckMan, slots } = await loadDeck(cfg.deckDir);
+        const deck = {
+          title: cfg.title || deckMan.title || 'Atlas Deck',
+          theme: deckMan.theme || 'editorial-spectrum',
+          scaffold: deckMan.scaffold || { id: 'atlas-deck', label: 'Atlas Deck' },
+          decor: deckMan.decor,
+          slots,
+        };
+        const { pdf, pageCount, lint } = await buildDeckPdf(deck, {
+          artMount: mount,
+          lint: true,
+          onProgress: (m) => log(`${cfg.mountId} — ${m}`),
+        });
+        if (!lint.ok) return { ok: false, error: 'page-lint', lint };
+        return {
+          ok: true,
+          pdfB64: pdf.output('datauristring').split(',')[1],
+          pageCount,
+          lint,
+          mountName: entry.name,
+        };
+      } catch (e) {
+        return { ok: false, error: String((e && e.stack) || e).slice(0, 500) };
+      }
+    };
+    window.__harnessReady = true;
+  </script>
+</body>
