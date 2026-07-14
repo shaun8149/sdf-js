@@ -147,11 +147,52 @@ console.log('=== ir-to-2d (Sprint 27 bridge 2) ===\n');
 
 // ---- full-slide layout on every subject --------------------------------------
 {
+  // Sprint 98: magnitude 页自动携带洞见底条 — 主体让出 112+16, 底条落底
   const ir = { structure: 'magnitude', nodes: ['X', 'Y'], magnitude: [1, 2] };
-  const subj = irToSceneData(ir).subjects[0];
+  const sd = irToSceneData(ir);
+  const subj = sd.subjects[0];
   ok(
-    subj.x === 40 && subj.y === 20 && subj.w === 1200 && subj.h === 680,
-    'subject occupies the full-slide layout box',
+    subj.x === 40 && subj.y === 20 && subj.w === 1200 && subj.h === 552,
+    'magnitude subject yields the bottom strip (680→552)',
+  );
+  const strip = sd.subjects[1];
+  ok(
+    strip?.type === 'callout-banner' && strip.y === 588 && strip.h === 112,
+    'derived-insight strip is a callout-banner pinned to the slide bottom',
+  );
+  ok(
+    typeof strip?.args?.body === 'string' && strip.args.body.length > 0,
+    'insight strip carries a derivation body (Rule 24 citations)',
+  );
+  // 非 magnitude 且无 callout — 不长底条 (现状不变)
+  const seqSd = irToSceneData({
+    structure: 'sequence',
+    nodes: ['访问', '注册'],
+    relations: [[0, 1]],
+  });
+  ok(seqSd.subjects.length === 1, 'non-magnitude without callout keeps single subject');
+  // ir.callout 优先于推导洞见 (页面关键事实 > 评论)
+  const coSd = irToSceneData({
+    structure: 'magnitude',
+    nodes: ['X', 'Y'],
+    magnitude: [1, 2],
+    callout: { text: '本轮融资 US$ 12.5M', sub: '估值 US$ 80M pre-money' },
+  });
+  const coStrip = coSd.subjects[1];
+  ok(
+    coStrip?.args?.heading === '本轮融资 US$ 12.5M' && coStrip.args.body.includes('80M'),
+    'ir.callout wins over derived insight (page-critical fact first)',
+  );
+  // callout 无 sub — text 落 body (callout-banner body 必填)
+  const bare = irToSceneData({
+    structure: 'sequence',
+    nodes: ['A', 'B'],
+    relations: [[0, 1]],
+    callout: { text: '关键事实' },
+  });
+  ok(
+    bare.subjects.length === 2 && bare.subjects[1].args.body === '关键事实',
+    'callout without sub lands text in required body arg',
   );
 }
 
@@ -229,7 +270,7 @@ console.log('=== ir-to-2d (Sprint 27 bridge 2) ===\n');
   ok(deck.scaffold?.id === 'ir-deck', 'irDeckTo2DDeck sets scaffold.id = ir-deck');
   ok(deck.slots.length === 2, 'irDeckTo2DDeck emits one slot per slide');
   ok(
-    deck.slots.every((s, i) => s.slotIdx === i && s.sceneData?.subjects?.length === 1),
+    deck.slots.every((s, i) => s.slotIdx === i && (s.sceneData?.subjects?.length ?? 0) >= 1),
     'irDeckTo2DDeck slots carry slotIdx + sceneData',
   );
   // 2 nodes, no dominant slice (890/1310 ≈ 68%) → chooseMagnitudeAtom picks

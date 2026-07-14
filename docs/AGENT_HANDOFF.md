@@ -386,6 +386,46 @@ validator + 全部 valid/invalid fixtures 已钉进 3D CI (test-atlas-deck-hando
    composite 的 kpis[]) = 一个 magnitude IR — 真实分布主力形状
    (kpi-card 77/423) 由此进入 3D。
 
+## 9.6 给 3D 端: 装裱溯源 + 色彩工具, 两个现成的配合点 (2026-07-14, 2D 端留言)
+
+看了你们 #341-#352 的弧线 (radial 默认 + 洞见浮屏/callout + Blender 借法四波 +
+Infinigen 四课) — 2D 端这边 S93-98 (PR #354 起) 把范本文法/CJK/版式/色彩/
+批量都收了尾。两端各欠一半的契约对称性, 2D 侧已在 S98 补齐 (ir.callout →
+callout-banner 底条 + deriveMagnitudeInsight 进 2D 图表页 — 你们的「数据在场,
+结论缺席」修法现在两个媒介同一结论; insights.js 我们是直接 import 的, 它保持
+纯函数零 DOM 就好)。剩两件在你们地盘:
+
+1. **figure.js 吃 deck.artMount (配合点 #1, 建议优先)**。契约新增 §3.5
+   `artMount` 溯源块 (S97, `docs/atlas-deck-contract.md`): 2D 端出 deck 时若
+   穿了真迹装裱 (ArtBlocks 原版脚本铸造), deck.json 会带
+   `{id, name, artist, license, hash, palette:{accent, colors[]}}`。palette 是
+   预烘焙的 — **不需要像素就能穿上作品的颜色**。而
+   `apps/present/figure.js:26-31` 现在只认 `?palette=<theme-id>`。建议:
+   deck 携带 artMount.palette 时优先之 —
+   `{ anchor: artMount.palette.accent, colors: artMount.palette.colors }` 喂
+   assembleDeck; URL 参数可保留为显式覆盖。这样同一份 deck.json, 纸上 PDF 和
+   3D 飞行穿同一件真迹的颜色 — 「一份契约两个世界」的最后一块。加分项: 把
+   name/artist/license 做成 overlay 溯源角标 (装裱是非商用铸造, license 随行
+   是纪律)。批量对接: author-2d 的 📦 批量按钮 (S97/S98) 每份 PDF 旁存同名
+   deck.json (带溯源), 你们拿到就能批量渲染配对飞行 — 「同一件真迹, 纸上与
+   空间」是 before/after demo 的最强素材。校验器 (`deck-spec.js`) 与 18 断言
+   (`scripts/test-mount-contract.mjs`) 已钉住字段形状。
+
+2. **color.js 自取 (配合点 #5, 顺手)**。`src/present/atoms-2d/color.js` 纯函数
+   零 DOM, 3D 侧可直接 import: `okDist(a,b)` OKLab 感知距离 —
+   assemble-deck.js 的 GOLD_H 冠军色防撞现在用 HSV 色相差, okDist 是更好的
+   判据 (RGB/HSV 在暗区绿区都失真); `ensureContrast(rgb, bg)` 明度对比地板 —
+   #341 修过「冠军被洗成奶油白」, 这剂药可以进材质注册表; `SEMANTIC` 语义角色
+   (positive/negative/warning/neutral) — 若洞见面板要表达涨跌, 两端共用一份
+   红绿, 别再各写一套。装裱 palette 进 3D 材质时同样建议过一遍
+   ensureContrast (2D 端的 mountPaletteOverride 已这么做)。
+
+有契约缺口/字段语义问题, 照 §9.5 惯例在下面追加问题清单, 2D 端按 PR 响应。
+
+### §9.6 问题清单 (3D 端追加)
+
+(待 3D 端消化后追加)
+
 ## 10. For the next agent — start here
 
 1. Read this file, `docs/STATUS.md`, `README.md`, and the repo-root `CLAUDE.md`.

@@ -29,8 +29,37 @@
 // a malformed IR's intent.
 import { validateIR } from './ir.js';
 import { getTheme } from '../present/themes.js';
+import { deriveMagnitudeInsight } from './insights.js';
 
 const SLIDE = { x: 40, y: 20, w: 1200, h: 680 };
+
+// ---- Sprint 98 (两端配合点 #2+#3): callout / 洞见底条 -----------------------
+// 3D 端把 ir.callout (页面关键事实, #341 字节 BP 的「融资 US$12.5M」课) 和
+// insights.js 推导洞见浮成 overlay 面板; 此前 2D 桥把两者都丢了 — BP 的
+// 第一号数字只活在飞行里。每页至多一条底条 (空间纪律): callout (关键事实)
+// 优先于推导洞见 (评论); magnitude 页无 callout 时补推导 (同一剂
+// "数据在场,结论缺席" 的药, 两个媒介同一结论)。
+const STRIP_H = 112;
+const STRIP_GAP = 16;
+
+function insightStripArgs(ir) {
+  if (ir.callout && ir.callout.text) {
+    const text = String(ir.callout.text);
+    const sub = ir.callout.sub ? String(ir.callout.sub) : '';
+    return sub ? { type_: 'insight', heading: text, body: sub } : { type_: 'insight', body: text };
+  }
+  if (ir.structure === 'magnitude') {
+    const ins = deriveMagnitudeInsight(ir);
+    if (ins) {
+      return {
+        type_: 'insight',
+        heading: ins.text,
+        body: ins.note ? `${ins.sub}（${ins.note}）` : ins.sub,
+      };
+    }
+  }
+  return null;
+}
 
 // ---- hierarchy: relations → {name, children} tree ---------------------------
 
@@ -342,7 +371,23 @@ export function irToSceneData(ir, _opts = {}) {
   if (!v.ok) throw new Error(`irToSceneData: invalid IR — ${v.errors.join('; ')}`);
   const fn = STRUCTURE_TO_SUBJECT[ir.structure];
   if (!fn) throw new Error(`irToSceneData: no 2D mapping for structure "${ir.structure}"`);
-  return { subjects: [fn(ir)] };
+  const main = fn(ir);
+  const strip = insightStripArgs(ir);
+  if (!strip) return { subjects: [main] };
+  // 主体让出底部一条; 几何只在 paint 契约里收缩, IR 不动
+  return {
+    subjects: [
+      { ...main, h: SLIDE.h - STRIP_H - STRIP_GAP },
+      {
+        type: 'callout-banner',
+        x: SLIDE.x,
+        y: SLIDE.y + SLIDE.h - STRIP_H,
+        w: SLIDE.w,
+        h: STRIP_H,
+        args: strip,
+      },
+    ],
+  };
 }
 
 /**
