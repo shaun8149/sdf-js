@@ -53,6 +53,25 @@ console.log('=== analytic white-model renderer ===\n');
   ok(r.fragSource.includes('smoothstep(0.20, 0.80, u_time)'), 't → u_time baked');
 }
 
+// ---- x-channel flight (evolution past→present) ----------------------------------
+// 2026-07-14 regression: x was a baked constant — the evolution orbs' horizontal
+// flight dropped WHOLE WINDOWS to the stone raymarcher (slow warm, heavy frame).
+{
+  const r = compileAnalyticFrag([
+    {
+      id: 'fly',
+      type: 'sphere',
+      args: { radius: 0.6 },
+      transform: { translate: [-3.9, 2, 0] },
+      animation: [
+        { channel: 'transform.translate.x', expr: '3.900 - 7.800 * smoothstep(4.20, 4.90, t)' },
+      ],
+    },
+  ]);
+  ok(r.ok, 'x-channel build-in accepted (no raymarch fallback)');
+  ok(r.fragSource.includes('float tx0 = (3.900'), 'x rides a per-frame GLSL expr');
+}
+
 // ---- scope rejection ----------------------------------------------------------
 {
   const bad1 = compileAnalyticFrag([{ id: 'v', type: 'venn-3d', args: {} }]);
@@ -106,7 +125,9 @@ console.log('=== analytic white-model renderer ===\n');
 
 // ---- real-deck coverage -----------------------------------------------------------
 {
-  const deck = JSON.parse(readFileSync(new URL('../scenes/ir/bytedance-bp.json', import.meta.url), 'utf8'));
+  const deck = JSON.parse(
+    readFileSync(new URL('../scenes/ir/bytedance-bp.json', import.meta.url), 'utf8'),
+  );
   const scene = assembleDeck(deck, { env: 'studio', stage: true });
   let okCount = 0;
   let fallback = [];
@@ -120,6 +141,10 @@ console.log('=== analytic white-model renderer ===\n');
     okCount >= scene.deckWindows.length - 4,
     `bytedance-bp: ${okCount}/${scene.deckWindows.length} windows analytic (fallback: ${fallback.join('; ') || 'none'})`,
   );
+  // The -4 slack above is for exotic PRIMS only — an animation CHANNEL must
+  // never cost a window its analytic tier (that's how the x-flight regression
+  // slipped through green tests while the browser fell to stone).
+  ok(!fallback.some((f) => /channel/.test(f)), 'no window falls back over an animation channel');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
