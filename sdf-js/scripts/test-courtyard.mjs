@@ -41,7 +41,8 @@ const stations = new Map(
     return Math.min(d, 2 * Math.PI - d);
   };
   ok(
-    gap(2, 3) < gap(6, 7) && gap(3, 4) < gap(9, 10),
+    // 2026-07-14 引擎站移除后 zones = [0,1][2..6][7,8][9,10,11] → 边界 6|7 与 8|9
+    gap(2, 3) < gap(6, 7) && gap(3, 4) < gap(8, 9),
     'zone-boundary seams wider than intra-zone rhythm',
   );
 }

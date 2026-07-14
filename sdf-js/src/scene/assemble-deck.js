@@ -271,6 +271,14 @@ function stationOrigins(n, stride, layout) {
       -Math.floor(k / cols) * stride, // rows recede — the city-of-data look
     ]);
   }
+  if (layout === 'theater') {
+    // Theater rides the line but CENTERED on the world origin: the studio's
+    // key light and room shading anchor there (lightFromSpherical around 0),
+    // so an 0..N*stride line walks its far acts out of the lit zone — by
+    // station 6 the floor fell to raw dark checker. ±half-span keeps every
+    // act inside the light's reach (plus figure.js raises the rig for decks).
+    return Array.from({ length: n }, (_, k) => [(k - (n - 1) / 2) * stride, 0, 0]);
+  }
   return Array.from({ length: n }, (_, k) => [k * stride, 0, 0]); // line
 }
 
@@ -466,11 +474,22 @@ export function assembleDeck(deck, opts = {}) {
       moved.transform = moved.transform || {};
       moved.transform.translate = addV(moved.transform.translate || [0, 0, 0], origin);
       if (Array.isArray(moved.animation)) {
+        // Every translate CHANNEL shifts by ITS origin component — an expr
+        // writes an ABSOLUTE coordinate, so a station-local x/z flight (the
+        // evolution past→present orbs, the matrix z-slams) must be rebased
+        // exactly like the static translate above. (Pre-2026-07-14 only y
+        // shifted — a latent bug hidden by line-layout stations all sitting
+        // at z=0 and x-flights not existing yet.)
+        const CHANNEL_AXIS = {
+          'transform.translate.x': 0,
+          'transform.translate.y': 1,
+          'transform.translate.z': 2,
+        };
         moved.animation = moved.animation.map((a) => ({
           ...a,
           expr: shiftBuildInExpr(
             a.expr,
-            a.channel === 'transform.translate.y' ? origin[1] : 0,
+            CHANNEL_AXIS[a.channel] != null ? origin[CHANNEL_AXIS[a.channel]] : 0,
             clock,
           ),
         }));

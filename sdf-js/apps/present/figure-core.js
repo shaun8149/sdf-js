@@ -20,6 +20,9 @@ export function createFigure({
   stage = false,
   present = false,
   renderMode = 'analytic', // zero-march white model; 'stone'/'rich' = raymarch tiers
+  lightRig = null, // {lightAzim, lightAlt, lightDist} override — long decks (theater
+  // line spans ±90) need the key HIGH and FAR or the end acts leave the lit zone
+  cleanFloor = false, // drop the studio checker (white-tone worlds want a bare floor)
 } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
@@ -78,15 +81,15 @@ export function createFigure({
   const studio = createStudioRenderer({
     canvas,
     getControls: () => ({
-      lightAzim: stage ? 1.15 : 0.5,
-      lightAlt: stage ? 0.32 : 0.7,
-      lightDist: 30,
+      lightAzim: lightRig?.lightAzim ?? (stage ? 1.15 : 0.5),
+      lightAlt: lightRig?.lightAlt ?? (stage ? 0.32 : 0.7),
+      lightDist: lightRig?.lightDist ?? 30,
       fov: 1.5,
       shadowsOn: true,
       // Outdoor envs bring their own terrain — the studio's flat ground plane
       // + checker must be off or they slice through the landscape.
       groundOn: !outdoor,
-      checkerOn: !outdoor,
+      checkerOn: !outdoor && !cleanFloor,
     }),
     onFps,
   });

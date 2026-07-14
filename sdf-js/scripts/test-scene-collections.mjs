@@ -57,7 +57,8 @@ for (const layout of ['radial', 'courtyard']) {
   const scene = assembleDeck(DECK, { layout: 'radial' });
   const refs = scene.subjects.filter((s) => typeof s.material === 'string');
   ok(
-    refs.length > 200,
+    // 2026-07-14: 引擎 network 站按 user 指示移出 deck → 全 deck ~189 subjects
+    refs.length > 150,
     `materials dedup'd to refs (${refs.length} refs, ${Object.keys(scene.materials).length} entries)`,
   );
   ok(

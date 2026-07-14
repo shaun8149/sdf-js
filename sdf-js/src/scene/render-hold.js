@@ -109,10 +109,13 @@ export function renderHold(ir, opts = {}) {
       }
     }
   } else {
-    // CONTENTS — the source deck's cover diagram, translated to 3D (user art
-    // direction): one great black dome half-buried at centre, six red orbs
-    // strung along a 180° arc facing the camera, one landing per beat. The
-    // six lines of text ride the subtitle column only — no floor captions.
+    // CONTENTS — the source page's diagram KEPT VERTICAL (user 2026-07-14):
+    // the original semicircle STANDS UPRIGHT and the six numbered balls ring
+    // it in the picture plane. The half-buried dome IS that vertical
+    // semicircle seen from the front; the orbs arc over it in the XY plane —
+    // a rainbow around the silhouette — and the camera looks straight in from
+    // outside the screen, never down onto a floor ring (the old satellite
+    // ring read top-down, exactly the angle the source page never has).
     subjects.push({
       id: 'dome',
       type: 'sphere',
@@ -120,42 +123,27 @@ export function renderHold(ir, opts = {}) {
       transform: { translate: [0, 0, -1.2] },
       material: { ...ROCK_MAT, roughness: 0.4 },
     });
-    const R = 4.1;
-    // R2 critique ("米奇耳朵"): orbs at y 0.62 projected tangent to the dome's
-    // crown — two shapes counting as one blob. Lift them to a clean SATELLITE
-    // RING (y 2.2) with edge padding so the perspective never overlaps the end
-    // orbs, and give each a glowing stem: "the core radiates six points" now
-    // reads in geometry, not just in subtitles.
-    const ORB_Y = 2.2;
-    const PAD = 0.35; // rad — end-orb breathing room against perspective overlap
+    const R = 3.35; // arc radius: dome silhouette (2.6) + orb + breathing room
+    const PAD = 0.32; // rad — keeps the end orbs clear of the ground line
     bullets.forEach((_, k) => {
-      const a = PAD + ((Math.PI - 2 * PAD) * (k + 0.5)) / N; // padded sweep, screen left → right
-      const x = Math.cos(a) * R;
-      const z = -1.2 + Math.sin(a) * R * 0.3; // R3: 0.85 depth blew end orbs into frame-clipping balloons
-      const drop = 1.6;
+      const a = PAD + ((Math.PI - 2 * PAD) * (k + 0.5)) / N; // ① screen-left … ⑥ screen-right
+      const x = Math.cos(a) * R; // +x renders screen-LEFT
+      const y = Math.sin(a) * R; // the arc climbs over the dome's crown
+      const drop = 1.4;
       const t0 = introLead + k * holdEach - 0.35;
       const t1 = t0 + 0.55;
       subjects.push({
         id: `orb-${k}`,
         type: 'sphere',
         args: { radius: 0.42 },
-        transform: { translate: [x, ORB_Y, z] },
+        transform: { translate: [x, y, -1.2] },
         material: emphasis.has(k) ? GOLD_MAT : RED_MAT,
         animation: [
           {
             channel: 'transform.translate.y',
-            expr: `${(ORB_Y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
+            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
           },
         ],
-      });
-      // the stem: a faint vertical light column under each landing point
-      // (yaw-free capsule — stays inside the analytic renderer's support set)
-      subjects.push({
-        id: `orb-stem-${k}`,
-        type: 'capsule',
-        args: { radius: 0.05, height: ORB_Y - 0.6 },
-        transform: { translate: [x, (ORB_Y - 0.3) / 2 + 0.15, z] },
-        material: { hue: 0.995, sat: 0.15, value: 0.8, glow: 0.5, kind: 'normal', roughness: 0.4 }, // R3: light, not a pink plastic stick
       });
     });
   }
@@ -227,36 +215,37 @@ export function renderHold(ir, opts = {}) {
           },
         ]
       : [
-          // contents: settle level with the satellite ring — target rides at
-          // ring height so the horizon sits on the lower third (R2: the old
-          // high-drift framing wasted the bottom 45% on empty platform)
+          // contents: EYE-LEVEL, straight in from outside the screen (user
+          // 2026-07-14) — the vertical arc must read as the source page's
+          // upright semicircle, so the camera never climbs above it. Lateral
+          // drift only; target pinned at the composition's heart.
           {
             duration: introLead,
-            pos: [0.5, 2.0, 8.8],
-            target: [0, 1.3, 0.6],
+            pos: [0.4, 2.3, 10.4],
+            target: [0, 2.1, -1.2],
             fov: 46,
-            aperture: 0.3,
-            focalDistance: 8.6,
+            aperture: 0.28,
+            focalDistance: 11.2,
             ease: 'out',
           },
           {
             duration: driftDur,
-            pos: [-1.6, 2.5, 7.6],
-            target: [0.3, 1.5, 0.4],
+            pos: [-1.3, 2.4, 9.6],
+            target: [0.2, 2.2, -1.2],
             fov: 46,
             transition: 'blend',
-            aperture: 0.24,
-            focalDistance: 8.0,
+            aperture: 0.22,
+            focalDistance: 10.6,
             ease: 'smooth',
           },
           {
             duration: 2.0,
-            pos: [0.6, 3.6, 9.6 * (env ? env.payoffZoom : 1)],
-            target: [0, 1.1, -0.4],
-            fov: 44,
+            pos: [0.4, 2.5, 11.0 * (env ? env.payoffZoom : 1)],
+            target: [0, 2.2, -1.2],
+            fov: 45,
             transition: 'blend',
             aperture: 0.12,
-            focalDistance: 10.0,
+            focalDistance: 12.0,
             ease: 'out',
           },
         ];
@@ -268,17 +257,28 @@ export function renderHold(ir, opts = {}) {
   const overlay = [
     {
       text: String(ir.title || bullets[0] || ''),
-      anchor: [0, 3.6, -1.2],
+      anchor: [0, 4.6, -1.2],
       role: 'title',
     },
   ];
+  const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   bullets.forEach((b, k) => {
-    const a = (Math.PI * (k + 0.5)) / N;
+    const a = 0.32 + ((Math.PI - 0.64) * (k + 0.5)) / N; // same arc as the orbs
+    const x = Math.cos(a) * 3.35;
+    const y = Math.sin(a) * 3.35;
     overlay.push({
       text: b,
-      anchor: [Math.cos(a) * 4.1, 0.62, -1.2 + Math.sin(a) * 4.1 * 0.85],
+      anchor: [x, y, -1.2],
       role: 'screen',
       revealAt: introLead + k * holdEach + 0.25,
+    });
+    // the source page numbers its balls — the digit rides ITS orb (anchor
+    // layer: a label bound to geometry), landing right after the drop
+    overlay.push({
+      text: CIRCLED[k] || String(k + 1),
+      anchor: [x, y + 0.72, -1.2],
+      role: 'value',
+      revealAt: introLead + k * holdEach + 0.3,
     });
   });
 
