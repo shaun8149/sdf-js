@@ -172,6 +172,7 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-material-slots.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-density-scatter.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-terrain-anchor.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-weathering.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/audit-2d-fidelity.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-camera-shake.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-text-to-ir.mjs' },
