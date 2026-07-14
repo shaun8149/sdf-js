@@ -57,6 +57,16 @@
 
 ---
 
+## 1.5 视觉管线两条铁律 (2026-07-14 黑洞页事故后立)
+
+1. **fallback 永不落向极端色**: 视觉代码里"缺数据给默认值继续跑"必须落向
+   可读状态 (纸面/墨色), 永不落向黑/白极端 — `rgbCss(undefined)` 曾静默涂出
+   rgb(0,0,0) 黑洞页。renderer 入口已做 partial-palette 补齐 (防御纵深)。
+2. **批量出 deck 只有一条管线**: `sdf-js/scripts/batch-decks.mjs` (playwright
+   驱动 examples/batch-export.html → 真实 buildDeckPdf 产品代码 + page-lint
+   出厂检)。不要再写临场脚本复刻导出循环 — 抽查脚本与批量脚本不同源时,
+   抽查就是安慰剂 (事故正是这么漏的)。
+
 ## 2. Architecture (the technical spine)
 
 **3-layer (LOCKED 2026-06-19/22):**
