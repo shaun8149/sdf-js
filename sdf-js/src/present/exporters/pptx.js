@@ -24,6 +24,8 @@ import {
   mountPaletteOverride,
   mountUnderlayDecor,
   insertTransitions,
+  agendaLabelsOf,
+  themeSlotBannerTitle,
 } from '../art-mount.js';
 import { layoutForSlot } from '../atoms-2d/layout.js';
 
@@ -82,6 +84,7 @@ export async function exportDeckToPPTX(deck, opts = {}) {
   // 会插, in-app 导出与批量脚本从此同一产物
   const slots = opts.artMount ? insertTransitions(deck.slots, opts.artMount) : deck.slots;
   const total = slots.length;
+  const agendaLabels = agendaLabelsOf(deck.slots);
   for (let i = 0; i < total; i++) {
     const slot = slots[i];
     onProgress(`Rendering slot ${i + 1}/${total} (${slot.slotName})`, 5 + (i / total) * 90);
@@ -107,6 +110,9 @@ export async function exportDeckToPPTX(deck, opts = {}) {
           : undefined,
         // Sprint 82: 真迹装裱 — screen and file must show the same mount
         ...(artMountOpts(opts.artMount, slot, slotRoleOf(slot)) || {}),
+        ...(themeSlotBannerTitle(slot, agendaLabels)
+          ? { bannerTitle: themeSlotBannerTitle(slot, agendaLabels) }
+          : {}),
       });
     } catch (e) {
       console.error(`[pptx] slide render failed:`, e);

@@ -80,6 +80,10 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     ctx.fillText(args.title, x + PAD, plotTop);
     plotTop += titleFs + PAD * 0.5;
   }
+  // 对抗 R1 (2026-07-14): summit 标签画在 peakY - 0.09*plotH - 6, 落点在
+  // plotTop 之上 — 与标题行相撞 (Partnership Path Forward × 峰顶标签)。
+  // summit 非空时预留一条独立行带, 山体整体下移。
+  if (summit) plotTop += Math.round(h * 0.052) + 10;
 
   const plotH = y + h - plotTop - PAD;
   const cx = x + w / 2;

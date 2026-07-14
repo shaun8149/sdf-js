@@ -21,6 +21,8 @@ import {
   mountPaletteOverride,
   mountUnderlayDecor,
   insertTransitions,
+  agendaLabelsOf,
+  themeSlotBannerTitle,
 } from '../art-mount.js';
 import { layoutForSlot } from '../atoms-2d/layout.js';
 import { lintPage, pageKindOf } from '../page-lint.js';
@@ -77,6 +79,8 @@ export async function buildDeckPdf(deck, opts = {}) {
   // 会插, in-app 导出与批量脚本从此同一产物
   const slots = opts.artMount ? insertTransitions(deck.slots, opts.artMount) : deck.slots;
   const total = slots.length;
+  // 对抗 R4: theme-N-lead/detail 的占位符页题 → agenda 第 N 条 (与转场页同源)
+  const agendaLabels = agendaLabelsOf(deck.slots);
   const lintPages = [];
   for (let i = 0; i < total; i++) {
     const slot = slots[i];
@@ -103,6 +107,9 @@ export async function buildDeckPdf(deck, opts = {}) {
           : undefined,
         // Sprint 82: 真迹装裱 — screen and file must show the same mount
         ...(artMountOpts(opts.artMount, slot, slotRoleOf(slot)) || {}),
+        ...(themeSlotBannerTitle(slot, agendaLabels)
+          ? { bannerTitle: themeSlotBannerTitle(slot, agendaLabels) }
+          : {}),
       });
     } catch (e) {
       console.error(`[pdf] slide render failed:`, e);

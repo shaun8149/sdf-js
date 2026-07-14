@@ -25,6 +25,8 @@ import {
   mountPaletteOverride,
   mountUnderlayDecor,
   mountProvenance,
+  agendaLabelsOf,
+  themeSlotBannerTitle,
 } from '../../src/present/art-mount.js';
 import { layoutForSlot } from '../../src/present/atoms-2d/layout.js';
 import { ATLAS_THEMES } from '../../src/present/themes.js';
@@ -291,6 +293,9 @@ function slotRenderOpts(theme, deck, slot) {
     // Sprint 95: 版式语法 — 按内容形状调度 banner/split/statement
     layout: layoutForSlot(slot, slot.sceneData),
   };
+  // 对抗 R4: theme 页占位符页题 → agenda 第 N 条 (与导出器同律)
+  const tbt = themeSlotBannerTitle(slot, agendaLabelsOf(deck.slots || []));
+  if (tbt) base.bannerTitle = tbt;
   if (artMount && decorVisEl.value !== 'off') {
     Object.assign(base, artMountOpts(artMount, slot, slotRoleOf(slot)) || {});
     // Sprint 84: the deck speaks the artwork's colors — accents/numbers

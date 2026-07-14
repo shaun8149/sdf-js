@@ -160,8 +160,14 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
     const labelY = hasSub ? centerY - labelFontSize * 0.6 : centerY;
 
+    // 对抗 R3 (2026-07-14): 淡彩 mount 的浅 tint 箭头上白字半隐形 —
+    // 按箭头底色亮度切墨 (亮箭头用深墨, 深箭头用白)
+    const fillLum = (0.2126 * fillColor[0] + 0.7152 * fillColor[1] + 0.0722 * fillColor[2]) / 255;
+    const stepInk = fillLum > 0.62 ? 'rgba(30,32,38,0.92)' : 'rgba(255,255,255,0.97)';
+    const stepSubInk = fillLum > 0.62 ? 'rgba(30,32,38,0.66)' : 'rgba(255,255,255,0.75)';
+
     ctx.save();
-    ctx.fillStyle = 'rgba(255,255,255,0.97)';
+    ctx.fillStyle = stepInk;
     ctx.font = `700 ${labelFontSize}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -176,7 +182,7 @@ export function drawPseudo3D(ctx, args, opts = {}) {
         ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
       }
       ctx.save();
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.fillStyle = stepSubInk;
       ctx.font = `500 ${subFont}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';

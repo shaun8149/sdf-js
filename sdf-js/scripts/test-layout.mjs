@@ -37,7 +37,21 @@ function ok(cond, msg, extra = '') {
       { type: 'bullet-list', args: { items: [] } },
     ],
   };
-  ok(layoutForSlot({ slotName: 'theme-1-lead' }, leadScene) === 'split', '-lead 轻页 → split');
+  ok(
+    layoutForSlot({ slotName: 'theme-1-lead' }, leadScene) === 'split',
+    '-lead 单 atom 页 → split',
+  );
+  const twoAtomLead = {
+    subjects: [
+      { type: 'cover', args: {} },
+      { type: 'icon-grid', args: {} },
+      { type: 'bullet-list', args: {} },
+    ],
+  };
+  ok(
+    layoutForSlot({ slotName: 'theme-9-lead' }, twoAtomLead) === 'banner',
+    '-lead 双 atom 页留 banner (R3: 右列会压碎多列 atom)',
+  );
   const denseLead = {
     subjects: [
       { type: 'cover', args: {} },

@@ -33,12 +33,9 @@ export function layoutForSlot(slot, sceneData) {
   const body = subs.filter((s) => s.type !== 'cover');
   if (body.length === 1 && QUOTE_TYPES.has(body[0].type)) return 'statement';
   const name = String(slot?.slotName || '');
-  if (
-    /-lead$/.test(name) &&
-    body.length >= 1 &&
-    body.length <= 2 &&
-    subs.some((s) => s.type === 'cover')
-  ) {
+  // 对抗 R3 (2026-07-14): 双 atom 正文进 62% 右列会把多列 atom 压碎
+  // (icon 卡标签截断成 3 字) — split 收紧到单 atom 正文
+  if (/-lead$/.test(name) && body.length === 1 && subs.some((s) => s.type === 'cover')) {
     return 'split';
   }
   return 'banner';

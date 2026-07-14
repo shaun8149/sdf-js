@@ -122,5 +122,33 @@ const baseDeck = () => ({
   ok(normal.decorRole === 'section' && normal.decorUnder === true, '普通内页规则不受影响');
 }
 
+// ── 5. theme 页题: 占位符 → agenda 条目, 真标题不被覆盖 (对抗 R4/R5) ──
+{
+  const { agendaLabelsOf, themeSlotBannerTitle } = await import('../src/present/art-mount.js');
+  const slots = [
+    {
+      slotName: 'agenda',
+      sceneData: {
+        subjects: [
+          { type: 'agenda-list', args: { items: [{ label: '主题一' }, { label: '主题二' }] } },
+        ],
+      },
+    },
+  ];
+  const labels = agendaLabelsOf(slots);
+  ok(labels.join() === '主题一,主题二', 'agendaLabelsOf 提取目录条目');
+  const ph = {
+    slotName: 'theme-2-lead',
+    sceneData: { subjects: [{ type: 'cover', args: { title: 'Theme 2 — Lead' } }] },
+  };
+  ok(themeSlotBannerTitle(ph, labels) === '主题二', '占位符页题 → agenda 第 N 条');
+  const real = {
+    slotName: 'theme-2-lead',
+    sceneData: { subjects: [{ type: 'cover', args: { title: '团队长归因:双网络结构' } }] },
+  };
+  ok(themeSlotBannerTitle(real, labels) === null, '真页题不被覆盖 (R5 回归教训)');
+  ok(themeSlotBannerTitle({ slotName: 'summary' }, labels) === null, '非 theme 槽位不介入');
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed) process.exit(1);

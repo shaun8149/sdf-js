@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { rgbCss, rgbaCss } from '../../renderer.js';
+import { wrapCJK } from '../../cjk-text.js';
 
 export const spec = {
   type: 'layer-stack',
@@ -126,22 +127,33 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     // width (Sprint 71: a long CJK label on a narrow tapered layer spilled
     // past the canvas edge; the label never gets to leave its layer)
     if (layer.label) {
-      let label = String(layer.label);
       let fs = Math.round(layerH * 0.35);
       ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
       const maxLabelW = layerW - 16;
-      while (fs > 11 && ctx.measureText(label).width > maxLabelW) {
+      while (fs > 11 && ctx.measureText(String(layer.label)).width > maxLabelW) {
         fs -= 1;
         ctx.font = `700 ${fs}px Inter, system-ui, sans-serif`;
       }
-      while (label.length > 1 && ctx.measureText(label + '…').width > maxLabelW) {
-        label = label.slice(0, -1);
+      // 对抗 R4 (2026-07-14): 长 CJK 标签「新增多层次可配置网…」被省略号
+      // 腰斩 — 层块够高时折两行 (禁则断行), 实在放不下才回省略号
+      let lines = [String(layer.label)];
+      if (ctx.measureText(String(layer.label)).width > maxLabelW) {
+        if (layerH >= fs * 2.4) {
+          lines = wrapCJK(ctx, layer.label, maxLabelW, 2);
+        } else {
+          let label = String(layer.label);
+          while (label.length > 1 && ctx.measureText(label + '…').width > maxLabelW) {
+            label = label.slice(0, -1);
+          }
+          lines = [label + '…'];
+        }
       }
-      if (label !== String(layer.label)) label += '…';
       ctx.fillStyle = 'rgba(255,255,255,0.96)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(label, stackCX, layerCY);
+      const lh = fs * 1.15;
+      const y0 = layerCY - ((lines.length - 1) * lh) / 2;
+      lines.forEach((ln, li) => ctx.fillText(ln, stackCX, y0 + li * lh));
     }
 
     // Sublabel to right of stack (Inter 500, softer) — CONFINED to the

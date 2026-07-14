@@ -186,7 +186,11 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
       y: 0,
       w: canvas.width,
       h: canvas.height,
-      intensity: decor.intensity || UNDER_INTENSITY[role] || 'subtle',
+      // 对抗 R2 (2026-07-14): 装裱提升的内页 (decorUnder 显式请求) 用
+      // subtle — bold 底纹压在小字 atoms 上是"脏"的主源; 艺术声音保留,
+      // 密度让位给可读性
+      intensity:
+        decor.intensity || (opts.decorUnder ? 'subtle' : UNDER_INTENSITY[role] || 'subtle'),
     });
   }
   // Sprint 90 (user: 目录页 Overview 小字与"核心主题"冲突 — 标题上提):
@@ -200,6 +204,22 @@ export async function renderSceneDataToCanvas(canvas, sceneData, opts = {}) {
   if (bannerCanvas || splitCanvas) {
     subjects = subjects.slice(); // never mutate the caller's array
     const coverSub = subjects.find((c2) => c2 && c2.type === 'cover');
+    // 对抗 R1 (2026-07-14): 管线烤出的槽位名占位符 ("Theme 2 — Lead" /
+    // "Slide 3") 不配上横带 — 正文第一个有题 atom 的标题才是页题。
+    // hoist 后该 atom 剥掉自己的标题 (与 agenda hoist 同律)。
+    const PLACEHOLDER_RE = /^(theme\s*\d+\s*[—–-]+\s*(lead|detail)|slide\s*\d+)$/i;
+    if (!bannerTitle && PLACEHOLDER_RE.test(String(coverSub?.args?.title || '').trim())) {
+      const idx = subjects.findIndex(
+        (s2) => s2 && s2.type !== 'cover' && typeof s2.args?.title === 'string' && s2.args.title,
+      );
+      if (idx >= 0) {
+        bannerTitle = subjects[idx].args.title;
+        subjects[idx] = {
+          ...subjects[idx],
+          args: { ...subjects[idx].args, title: undefined },
+        };
+      }
+    }
     const refTitle = String(opts.bannerTitle || coverSub?.args?.title || '').replace(/\s/g, '');
     for (let i = 0; i < subjects.length; i++) {
       const s2 = subjects[i];
