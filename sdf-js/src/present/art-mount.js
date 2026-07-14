@@ -296,9 +296,9 @@ export function mountUnderlayDecor(baseDecor, mount, mode = 'hetero') {
  * section title, centered like the deck cover. Returns a NEW slot list;
  * synthetic slots carry _transition: {index} so renderers can pick art.
  */
-export function insertTransitions(slots, mount) {
-  if (!mount) return slots;
-  const agenda = slots.find((s) => s.slotName === 'agenda');
+/** agendaLabelsOf(slots) — deck 目录条目 (转场页与 theme 页题的共同来源)。 */
+export function agendaLabelsOf(slots) {
+  const agenda = (slots || []).find((s) => s.slotName === 'agenda');
   const labels = [];
   if (agenda?.sceneData?.subjects) {
     for (const sub of agenda.sceneData.subjects) {
@@ -307,6 +307,28 @@ export function insertTransitions(slots, mount) {
       }
     }
   }
+  return labels;
+}
+
+/**
+ * themeSlotBannerTitle(slot, agendaLabels) → string | null — 对抗 R4:
+ * 管线烤出的 "Theme N — Lead/Detail" 占位符不配上横带; theme 页的真页题
+ * 是 agenda 第 N 条 (与转场页同源同律)。非 theme 槽位返回 null。
+ */
+export function themeSlotBannerTitle(slot, agendaLabels) {
+  const m = /^theme-(\d+)-(lead|detail)$/.exec(String(slot?.slotName || ''));
+  if (!m) return null;
+  // 只救占位符 — 手工修好的真页题 (ANTFUN 范本) 不许被 agenda 覆盖
+  const cover = (slot?.sceneData?.subjects || []).find((s2) => s2?.type === 'cover');
+  const cur = String(cover?.args?.title || '').trim();
+  const isPlaceholder = !cur || /^(theme\s*\d+\s*[—–-]+\s*(lead|detail)|slide\s*\d+)$/i.test(cur);
+  if (!isPlaceholder) return null;
+  return agendaLabels[Number(m[1]) - 1] || null;
+}
+
+export function insertTransitions(slots, mount) {
+  if (!mount) return slots;
+  const labels = agendaLabelsOf(slots);
   const isBoundary = (s, i) =>
     /-lead$/.test(s.slotName || '') || ((s.slotName || '') === 'risk-matrix' && labels.length > 5);
   const out = [];

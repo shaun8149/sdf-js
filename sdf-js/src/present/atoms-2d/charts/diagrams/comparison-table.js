@@ -52,8 +52,11 @@ export function drawPseudo3D(ctx, args, opts = {}) {
   const bg = palette.bg || [248, 246, 240];
   const accent = palette.accent || palette.colors?.[0] || [60, 140, 200];
 
-  const cols = Array.isArray(args.columns) ? args.columns.slice(0, 5) : [];
-  const rows = Array.isArray(args.features) ? args.features.slice(0, 12) : [];
+  // 对抗 R2 (2026-07-14): lift LLM 常烤出 name 而非 label — 字段名沉默
+  // 失配曾让整张矩阵表头/行标签全空 (validator 不报未知键)。宽容读法。
+  const alias = (o) => (o && typeof o === 'object' ? { ...o, label: o.label ?? o.name } : o);
+  const cols = Array.isArray(args.columns) ? args.columns.slice(0, 5).map(alias) : [];
+  const rows = Array.isArray(args.features) ? args.features.slice(0, 12).map(alias) : [];
   const title = args.title ? String(args.title) : '';
 
   if (cols.length === 0 || rows.length === 0) return;

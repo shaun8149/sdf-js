@@ -172,14 +172,17 @@ export function drawPseudo3D(ctx, args, opts = {}) {
     }
     // plain: no badge
 
-    // ---- Icon path (white on circle/square; badge-color on plain) ----
+    // ---- Icon path (white on circle/square; badge-color otherwise) ----
+    // 对抗 R5 (2026-07-14): lift LLM 烤出未知 iconStyle ('card') — badge
+    // 不画但图标仍走白色分支 → 纸面上白图标隐形。只有真画了 badge 才用白。
+    const hasBadge = iconStyle === 'circle' || iconStyle === 'square';
     drawIconCentered(
       ctx,
       resolved,
       cellCx,
       iconCy,
       iconR * 0.85,
-      iconStyle === 'plain' ? badgeColor : [255, 255, 255],
+      hasBadge ? [255, 255, 255] : badgeColor,
     );
 
     // ---- Label below ----
