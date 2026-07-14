@@ -1,6 +1,18 @@
 // lift-scaffold.js — end-to-end bridge: a REAL 2D scaffold slot (multi-subject, with
 // x/y/w/h layout on a 1280×720 canvas) → a 3D studio scene.
 //
+// ⚠️ LEGACY PATH (M1.5 era, 2026-06) — NOT the production deck pipeline.
+// placeBox() maps the 2D canvas onto a flat wall and never sees structure;
+// that is by design HERE, and solved THERE: the production 3D deck path is
+//   deck.json → atlasDeckToIR (scaffold-to-ir.js) → assembleDeck
+//   (assemble-deck.js, structure-aware station layout + smoothstep build-ins)
+//   → render-{magnitude,hierarchy,network,sequence,matrix}.js → figure.html.
+// Remaining consumers of THIS module: scripts/test-lift-scaffold.mjs,
+// scripts/eval-deck-quality.mjs, scripts/lift-scaffold-deck.mjs (eval
+// instruments). Do not extend this path for deck features; extend the
+// station pipeline instead. (2026-07-14, 防误读标注 — 一位外部评审把本
+// 文件当成了 3D 主线并据此开了整套处方。)
+//
 // The twin map (lift-2d-to-3d.js) lifts ONE subject and assumes it owns the slide. A
 // scaffold slot has 2–5 subjects arranged in 2D. This module adds the missing piece:
 // map each subject's 2D box → a 3D position + scale, so the elements lay out in 3D

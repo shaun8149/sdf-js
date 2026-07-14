@@ -93,6 +93,21 @@ aperture,focalDistance,ease,transition,shake,exposure}; ease `smooth|linear|in|o
 `[from,to]` DoF arrays. The validator (spec.js) and evaluator (camera-sequence.js) must stay in sync —
 update **both** when adding shot fields.
 
+**⚠️ 2D→3D 路径地图 (2026-07-14 加, 防误读疫苗):** 仓库里有 TWO 条 2D→3D 路径, 别认错主线 —
+- **现役 deck 主线**: `deck.json → atlasDeckToIR (scaffold-to-ir.js) → assembleDeck
+  (assemble-deck.js, 结构感知站布局 + smoothstep build-in 入场 + beats 相机) →
+  render-{magnitude,hierarchy,network,sequence,matrix}.js → figure.html`。结构决定形态在这条线上
+  是**已实现事实**: ir.structure 路由渲染器, 站布局 structure-aware, build-in 是 smoothstep 缓动
+  + 逐元素错峰 (assemble-deck.js 头注有 expr 契约正则)。256-leaf/帧率约束由 窗口切片
+  (sliceDeckWindow) + collections 按站激活 + Finale-LOD 代理 + Wave C rep-lowering 解决。
+- **遗留 lift 路径 (M1.5)**: `lift-scaffold.js` (placeBox 把 1280×720 糊上 10.4×5.4 的墙,
+  不看结构) — 只剩 eval 仪器在消费 (eval-deck-quality / test-lift-scaffold / lift-scaffold-deck)。
+  **不要在这条路径上加 deck 功能**; 文件头有 LEGACY 标注。
+  一位外部模型评审 (2026-07-14) 通读仓库后把这条遗留路径当成了 3D 主线, 由此推导出
+  「结构被丢弃/缺 stage-by-archetype 模块/smoothstep 被拒绝」三个结论 — 全部只对遗留路径成立。
+  它开的处方与已 ship 的 station 管线逐条重合, 反向确认了方向。教训: **先读本文档再下架构结论**,
+  对外部评审也一样。
+
 ---
 
 ## 3. Current state (what's shipped / live)
