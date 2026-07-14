@@ -1,8 +1,16 @@
 {
   "structure": "matrix",
   "nodes": ["Strong team", "High burn", "AI wave", "Incumbents"],
-  "axes": [["Internal", "External"], ["Helpful", "Harmful"]],
-  "cells": [[0, 0], [0, 1], [1, 0], [1, 1]],
+  "axes": [
+    ["Internal", "External"],
+    ["Helpful", "Harmful"]
+  ],
+  "cells": [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+  ],
   "emphasis": [2],
   "title": "SWOT"
 }

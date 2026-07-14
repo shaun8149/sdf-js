@@ -72,8 +72,15 @@ const braces = (s) => (s.match(/\{/g) || []).length - (s.match(/\}/g) || []).len
   // structural rich/stone gates (compile-time shading paths) are exempt —
   // they are self-contained statement runs, checked separately below.
   const KIND_SET = new Set([
-    'sea', 'emissive', 'translucent', 'glass', 'mountain', 'snowy', 'building',
-    'eroded', 'fill',
+    'sea',
+    'emissive',
+    'translucent',
+    'glass',
+    'mountain',
+    'snowy',
+    'building',
+    'eroded',
+    'fill',
   ]);
   const marked = [...src.matchAll(/\/\/#feature (\w+)\r?\n([\s\S]*?)\/\/#endfeature/g)];
   const kindBlocks = marked.filter((m) => KIND_SET.has(m[1])).map((m) => m[2]);

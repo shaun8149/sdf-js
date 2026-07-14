@@ -15,7 +15,10 @@ const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console
 console.log('=== render-hold (title-card interlude) ===\n');
 
 // ---- IR validation --------------------------------------------------------------
-ok(validateIR({ structure: 'hold', title: '封面', nodes: [] }).ok, 'bare cover (empty nodes) is valid');
+ok(
+  validateIR({ structure: 'hold', title: '封面', nodes: [] }).ok,
+  'bare cover (empty nodes) is valid',
+);
 ok(
   validateIR({ structure: 'hold', title: 't', nodes: ['a', 'b'] }).ok,
   'hold with bullets is valid',

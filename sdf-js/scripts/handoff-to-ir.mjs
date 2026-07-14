@@ -15,8 +15,13 @@ for (const n of names) {
   const raw = readFileSync(resolve(AMMO, `${n}.json`), 'utf8');
   const { title, slides, report } = atlasDeckToIR(raw);
   const short = n.replace(/^eval-/, '');
-  writeFileSync(resolve(SCENES, `handoff-${short}.json`), `${JSON.stringify({ title, slides }, null, 2)}\n`);
+  writeFileSync(
+    resolve(SCENES, `handoff-${short}.json`),
+    `${JSON.stringify({ title, slides }, null, 2)}\n`,
+  );
   const kept = report.filter((r) => r.outcome.startsWith('ir:')).length;
   console.log(`  ✓ ${n}: ${kept}/${report.length} slots → scenes/ir/handoff-${short}.json`);
-  report.filter((r) => !r.outcome.startsWith('ir:')).forEach((r) => console.log(`      · slot ${r.slot} ${r.outcome} (${r.title})`));
+  report
+    .filter((r) => !r.outcome.startsWith('ir:'))
+    .forEach((r) => console.log(`      · slot ${r.slot} ${r.outcome} (${r.title})`));
 }
