@@ -66,6 +66,25 @@ atlas-deck。
 re-voice (无像素也能穿上作品的颜色)。`license` 随行是纪律: 消费端出图前
 自行核验。2D 端重新打开契约时按 `id` 自动复装 (author-2d open 路径)。
 
+### 3.5.1 批量配对发现约定 (§9.6 Q1 裁定)
+
+浏览器下载落不进指定目录 (全部平铺 ~/Downloads), 所以配对约定是**文件名
+约定, 不是目录约定**:
+
+- 契约文件后缀 `*.deck.json` (批量与单份保存统一); PDF 与契约同
+  basename: `atlas-<slug>-<mountId>.pdf` ↔ `atlas-<slug>-<mountId>.deck.json`
+- 批量飞行渲染脚本的输入 = 一个目录 (user 自行把一批落盘进文件夹),
+  扫描配方: glob `*.deck.json` → `validateDeck` 过 → 有 `artMount` 即为
+  配对件; 同 basename 的 `.pdf` 是纸上孪生
+- 旧 `.json` 后缀文件校验器照收 (后缀只是发现约定, 不是契约字段)
+
+### 3.5.2 palette.colors 语义顺序 (§9.6 Q2 裁定)
+
+**有序, 消费端不要重排**: `colors[0]` 恒等于 `accent` (对比度修正后同步,
+见 mountPaletteOverride); 其余按 频次×饱和度 分值降序 = 视觉主导度序
+(提色见 extractMountPalette, S96 起 OKLab ΔE≥0.09 去重保证两两可区分)。
+assignAccents 按数组序轮转即是按视觉权重轮转。
+
 ## 4. shared
 
 `deck-io.js` 序列化时把每个 slot 重复携带的 `liftParams.scaffold/slides/
