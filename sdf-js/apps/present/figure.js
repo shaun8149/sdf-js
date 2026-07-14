@@ -41,8 +41,10 @@ const seedParam = params.get('seed');
 const decorSeed = seedParam === '0' ? undefined : seedParam || deckName || undefined;
 // ?horizon=boulders — Infinigen 研读第三课的混林天际线(OPT-IN;默认黑石板)
 const horizon = params.get('horizon') === 'boulders' ? 'boulders' : undefined;
+// ?dressing=nature — Layer C 装饰换 nature 语汇(聚簇石群+背风林分;OPT-IN)
+const dressing = params.get('dressing') === 'nature' ? 'nature' : undefined;
 const scene = deckName
-  ? assembleDeck(ir, { env, layout, stage, palette, decorSeed, horizon })
+  ? assembleDeck(ir, { env, layout, stage, palette, decorSeed, horizon, dressing })
   : renderIR(ir, { env, stage });
 show(scene);
 // §9.6 配合点 #1 加分项:真迹溯源角标(装裱是非商用铸造,license 随行是纪律)。

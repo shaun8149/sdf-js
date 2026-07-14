@@ -287,7 +287,9 @@ export function assembleDeck(deck, opts = {}) {
   // Layer C v1 (Wave 2): opts.decorSeed is the deck's art identity — one hash,
   // one voice across every station and transit. Absent → no decor (goldens and
   // existing consumers unchanged).
-  const decor = makeDeckDecor(opts.decorSeed);
+  // opts.dressing='nature'(OPT-IN):Layer C 装饰换资产工厂语汇(聚簇石群+
+  // 背风林分,Infinigen 八课的 deck 消费端);默认 stelae 不动,golden 不动。
+  const decor = makeDeckDecor(opts.decorSeed, { style: opts.dressing || 'stelae' });
   const stride = opts.stride ?? 16;
   let layout = DECK_LAYOUTS.includes(opts.layout ?? deck.layout)
     ? (opts.layout ?? deck.layout)
