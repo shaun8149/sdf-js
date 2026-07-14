@@ -462,12 +462,12 @@ ${body}
     }
   }
 
+  vec3 sky = (u_studioBg > 0.5)
+    ? mix(vec3(0.085, 0.10, 0.13), vec3(0.014, 0.018, 0.028), clamp(rd.y, 0.0, 1.0))
+    : mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
   vec3 col;
   if (tHit >= MAX_DIST - 0.001) {
-    col = (u_studioBg > 0.5)
-      ? mix(vec3(0.085, 0.10, 0.13), vec3(0.014, 0.018, 0.028), clamp(rd.y, 0.0, 1.0))
-      : mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
-    fragColor = vec4(col, 1.0);
+    fragColor = vec4(sky, 1.0);
     return;
   }
 
@@ -489,7 +489,11 @@ ${occBody}
   vec3 lin = alb * (0.38 + 0.72 * diff * sha) * vec3(1.06, 1.01, 0.94);
   lin += alb * (0.6 + 0.4 * nor.y) * ao * (0.4 + 0.25 * u_ambientScale);
   lin *= mix(1.0, ao, 0.75);
-  col = lin * exp(-0.03 * tHit);
+  // AERIAL PERSPECTIVE: distance fades toward the SKY, never toward black.
+  // The old multiplicative exp(-0.03t) crushed everything past ~80 units to
+  // pitch black — the "unthemed black towers" in the white world and the
+  // blacked-out long-line finale were BOTH this one line, not lighting.
+  col = mix(lin, sky, 1.0 - exp(-0.006 * tHit));
   col += alb * glowK * 1.4;
 
   if (col.r != col.r) col.r = 0.0;

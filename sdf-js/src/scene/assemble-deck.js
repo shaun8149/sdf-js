@@ -682,18 +682,26 @@ export function assembleDeck(deck, opts = {}) {
     const cx = origins.reduce((s, o) => s + o[0], 0) / origins.length;
     const cz = origins.reduce((s, o) => s + o[2], 0) / origins.length;
     const span = Math.max(1, ...origins.map((o) => Math.hypot(o[0] - cx, o[2] - cz))) * 2 + stride;
+    // MAX_DIST (200) is a hard windshield: geometry beyond it does not render.
+    // A 23-act line spans ±176 — the old span-proportional pull-back parked
+    // the camera ~400 out and the money shot framed EMPTY SKY (PDF-fidelity
+    // round A). Cap the pull-back inside the render horizon: near the line's
+    // heart, the middle acts sharp, the far acts dissolving toward the haze —
+    // the world reads BIGGER than the frame, which is the thesis anyway.
+    const pull = Math.min(span * 0.95, 120);
     shots.push({
       duration: TEMPO.finale,
-      pos: [cx + span * 0.25, span * 0.5 + 4.5, cz + span * 0.95],
+      pos: [cx + pull * 0.25, Math.min(span * 0.5, pull * 0.48) + 4.5, cz + pull],
       target: [cx, 1.2, cz],
       fov: 48,
       transition: 'blend',
       aperture: 0.08,
-      focalDistance: span * 1.05,
-      // R3 ("停电现场" critique): the thesis frame inherited the stage's
-      // combat dimming and read as a blackout — it gets the overlook's lift
-      ambient: 1.7,
-      exposure: 1.35,
+      focalDistance: pull * 1.05,
+      // The old 1.7/1.35 lift compensated the fade-to-black distance term;
+      // with true aerial perspective (fade to SKY) that lift overexposes the
+      // money shot into fog — a gentle touch keeps the row readable.
+      ambient: 1.15,
+      exposure: 1.08,
       ease: 'out',
       beat: 'finale', // presenter mode: the money-shot hold
     });
@@ -829,76 +837,12 @@ export function assembleDeck(deck, opts = {}) {
     s.material = name;
   }
 
-  // ---- theater 镜头轨道(2026-07-14 user 方向:像看话剧)------------------------
-  // 相机钉在一条水平轨道上:全程同高(railY)同距(railDist),幕间只有 x 平移
-  // (blend = 整个 shot 时长的插值 → transit 即全程推轨),幕内静止持机。
-  // 只替换 shots/hitstops —— 时间线(窗口/reveal/字幕/章节卡)原封不动:每个
-  // shot 的时长 = 对应窗口的跨度。冲击装置(急推/shake/hitstop/曝光爆点)全部
-  // 不用:观众的思考连续性优先于震撼(radial 保留原语法,两种语气并存)。
-  if (layout === 'theater') {
-    const FOV = 42;
-    const halfTan = Math.tan((FOV * Math.PI) / 360);
-    // 每站的取景需求(竖装下最高点、横装下最宽处),轨道取全 deck 最大值 ——
-    // 一条轨走到底,小场景取景略松,换来绝对的平移连续性
-    const frame = origins.map((_, k) => {
-      const b = stationBounds[k];
-      if (!b || !Number.isFinite(b.minX)) return { d: 10, ty: 1.6 };
-      const halfW = Math.max(b.maxX - b.minX, b.maxZ - b.minZ) / 2;
-      const topY = Math.max(1.6, b.maxY);
-      const ty = Math.min(topY * 0.45, 3.2);
-      // Distance from the VIEW's needs, not from raw height: the camera aims
-      // at ty, so only the span ABOVE the target must fit in the upper half
-      // of the frame (old topY*1.3 form double-counted the below-target half
-      // — the 浮屏 stations' 7-unit screens pushed the whole rail to ~24 and
-      // every act read tiny; PDF-fidelity round 1).
-      const d = Math.max(7, (topY - ty + 0.8) / halfTan, (halfW * 1.2) / (halfTan * 1.7));
-      return { d, ty };
-    });
-    // 轨道距离取中位数并箝制:极端站(cover 的舞台背板等)不该决定整条轨 ——
-    // 背板被裁是对的,它本来就是背景;数据主体的可读性优先
-    const ds = frame.map((f) => f.d).sort((a, b) => a - b);
-    const railDist = Math.min(26, Math.max(10, ds[Math.floor(ds.length / 2)]));
-    const tys = frame.map((f) => f.ty).sort((a, b) => a - b);
-    const railY = tys[Math.floor(tys.length / 2)] + railDist * 0.08; // 轻微俯视
-    const railShots = [];
-    for (const w of windows) {
-      const dur = w.end - w.start;
-      if (w.kind === 'station' || w.kind === 'transit') {
-        // station:持本站机位(与前一 transit 同 pose → 静止);
-        // transit:去往站的机位(与前一 pose 差一段 x → 全程水平推轨)
-        const k = w.kind === 'station' ? w.stations[0] : w.stations[1];
-        const o = origins[k];
-        railShots.push({
-          duration: dur,
-          pos: [o[0], railY, o[2] + railDist],
-          target: [o[0], frame[k].ty, o[2]],
-          fov: FOV,
-          transition: 'blend',
-          ease: 'inout',
-          ...(w.kind === 'station' ? { beat: 'station', station: k } : {}),
-        });
-      } else {
-        // finale:沿轨道法线纯直退,拉到整排入画 —— 谢幕,不炫技
-        const cx = origins.reduce((s, o) => s + o[0], 0) / origins.length;
-        const span = (origins[origins.length - 1][0] - origins[0][0]) / 2 + stride;
-        const d = Math.max(railDist * 1.5, (span * 1.1) / (halfTan * 1.7));
-        railShots.push({
-          duration: dur,
-          pos: [cx, railY + d * 0.1, d],
-          target: [cx, railY * 0.5, 0],
-          fov: FOV,
-          transition: 'blend',
-          ease: 'out',
-          ambient: 1.7,
-          exposure: 1.35,
-          beat: 'finale',
-        });
-      }
-    }
-    shots.length = 0;
-    shots.push(...railShots);
-    hitstops.length = 0;
-  }
+  // ---- theater(2026-07-14 v2)---------------------------------------------------
+  // 话剧模式 = 居中一字排开(stationOrigins)+ 标准格斗镜头管线:素材扎实后
+  // user 把幕内镜头请了回来 —— establishing/tracking/super punch-in(blend +
+  // rush/shake/exposure/hitstop)/payoff 全套,幕间的 whip 甩镜在 line 布局下
+  // 天然以水平移动为主。此前的静止单轨(#366)整段退役:它是素材不扎实时期
+  // 的保守语法。
 
   return {
     v: 1,

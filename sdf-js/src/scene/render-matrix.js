@@ -224,16 +224,18 @@ function renderEvolutionForm(ir, env) {
       focalDistance: 10.0,
       ease: 'smooth',
     },
-    // 3 — the SUPER: punch-in on the emphasized present orb
+    // 3 — the SUPER: punch-in on the emphasized present orb (round B: pulled
+    // back a step so the orb reads WITH its neighbours, not as an abstract
+    // red planet filling the frame)
     {
       duration: 1.0,
-      pos: [colX(eyi) + 0.7, NOW_Y + 0.1, 2.6],
-      target: [colX(eyi), NOW_Y, 0],
-      fov: 42,
+      pos: [colX(eyi) + 0.9, NOW_Y + 0.15, 3.4],
+      target: [colX(eyi) - 0.3, NOW_Y - 0.1, 0],
+      fov: 43,
       transition: 'cut',
       beat: 'super',
       aperture: [0.9, 0.45],
-      focalDistance: 2.6,
+      focalDistance: 3.4,
       shake: [0.5, 0.06],
       ambient: [0.15, 1.0],
       exposure: [1.2, 1.0],
