@@ -34,6 +34,7 @@ const SUPPORTED = new Set([
   'ellipsoid',
   'cylinder',
   'cut-sphere',
+  'pie-chart',
   'funnel-3d',
 ]);
 const EXPR_SAFE = /^[\d\s+\-*/().,]|smoothstep|sin|t$/; // per-token check below
@@ -179,6 +180,30 @@ float iCylinderY(vec3 ro, vec3 rd, float ra, float he, out vec3 n) {
   t = ((rd.y < 0.0 ? he : -he) - ro.y) / rd.y; // cap disc
   if (t > 0.0 && length(vec2(ro.x + t * rd.x, ro.z + t * rd.z)) < ra) {
     n = vec3(0.0, -sign(rd.y), 0.0);
+    return t;
+  }
+  return -1.0;
+}
+
+// capped Z cylinder centred at origin: a disc FACING THE CAMERA (thickness
+// along Z, face in XY). This is the pie/proportion coin — angle-based slice
+// coloring reads the XY-plane atan2 of the hit point.
+float iCylinderZ(vec3 ro, vec3 rd, float ra, float he, out vec3 n) {
+  float k2 = 1.0 - rd.z * rd.z;
+  float k1 = dot(ro, rd) - ro.z * rd.z;
+  float k0 = dot(ro, ro) - ro.z * ro.z - ra * ra;
+  float h = k1 * k1 - k2 * k0;
+  if (h < 0.0) return -1.0;
+  h = sqrt(h);
+  float t = (-k1 - h) / k2;
+  float z = ro.z + t * rd.z;
+  if (t > 0.0 && abs(z) < he) {
+    n = normalize(vec3(ro.x + t * rd.x, ro.y + t * rd.y, 0.0) / ra);
+    return t;
+  }
+  t = ((rd.z < 0.0 ? he : -he) - ro.z) / rd.z; // near/far cap disc
+  if (t > 0.0 && length(vec2(ro.x + t * rd.x, ro.y + t * rd.y)) < ra) {
+    n = vec3(0.0, 0.0, -sign(rd.z));
     return t;
   }
   return -1.0;
@@ -373,6 +398,39 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       proxyR = Math.max(r * 0.7, he);
       body += `    float tk = iCylinderY(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
       body += `    if (tk > 0.0 && tk < tHit) { tHit = tk; nHit = ${nBack}; alb = vec3(${flt(cr)}, ${flt(cg)}, ${flt(cb)}); glowK = ${flt(glow)}; hitId = ${flt(k)}; }\n`;
+    } else if (s.type === 'pie-chart') {
+      // pie / donut coin facing the camera: geometry = Z-cylinder (closed
+      // form), COLOR = which angular slice the hit point falls in. The slice
+      // palette is baked per-subject, so a pie is ONE analytic subject with
+      // real colored wedges — no raymarch, no per-slice geometry. Reusable:
+      // render-proportion emits these; any deck gets analytic pies for free.
+      const r = a.radius ?? 1.0;
+      const he = (a.thickness ?? 0.3) / 2;
+      const start = a.startAngle ?? Math.PI / 2;
+      const slices =
+        Array.isArray(a.slices) && a.slices.length ? a.slices : [{ end: 1, rgb: [cr, cg, cb] }];
+      const last = slices[slices.length - 1];
+      proxyR = r * 0.8;
+      body += `    float tk = iCylinderZ(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
+      body += `    if (tk > 0.0 && tk < tHit) {\n`;
+      body += `      vec3 hp = q + dq * tk;\n`;
+      // clockwise from startAngle (pie convention): frac = (start - θ)/2π mod 1
+      body += `      float frac = (${flt(start)} - atan(hp.y, hp.x)) * ${flt(1 / (2 * Math.PI))};\n`;
+      body += `      frac = frac - floor(frac);\n`;
+      body += `      vec3 pc = vec3(${flt(last.rgb[0])}, ${flt(last.rgb[1])}, ${flt(last.rgb[2])});\n`;
+      for (let si = 0; si < slices.length - 1; si++) {
+        const sl = slices[si];
+        const kw = si === 0 ? 'if' : 'else if';
+        body += `      ${kw} (frac < ${flt(sl.end)}) pc = vec3(${flt(sl.rgb[0])}, ${flt(sl.rgb[1])}, ${flt(sl.rgb[2])});\n`;
+      }
+      // thin dark radial dividers at each slice boundary (pie読みやすさ)
+      body += `      float fw = ${flt(0.006)};\n`;
+      for (let si = 0; si < slices.length; si++) {
+        const b = slices[si].end;
+        body += `      if (abs(frac - ${flt(b % 1)}) < fw || abs(frac - ${flt((b % 1) + 1)}) < fw) pc *= 0.55;\n`;
+      }
+      body += `      tHit = tk; nHit = ${nBack}; alb = pc; glowK = ${flt(glow)}; hitId = ${flt(k)};\n`;
+      body += `    }\n`;
     } else if (s.type === 'cut-sphere') {
       const r = a.radius ?? a.r ?? 0.5;
       const ch = a.h ?? a.height ?? 0.0;
