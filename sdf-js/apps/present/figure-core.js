@@ -173,8 +173,51 @@ export function createFigure({
     'opacity:0;pointer-events:none;transition:opacity 0.45s ease;';
   replayBtn.addEventListener('click', () => {
     if (studio.setSequenceTime) studio.setSequenceTime(0);
+    setPaused(false); // replay always resumes — a paused replay reads as "broken"
   });
   if (!present) document.body.appendChild(replayBtn);
+
+  // ---- pause / resume (auto-play only) ---------------------------------------
+  // Space or P freezes the fly-through in place (the one-clock engine freezes
+  // build-ins + postfx with it, exactly like presenter mode's beat-hold). A
+  // corner glyph confirms the state — pressing a key with no visible response
+  // reads as "the key doesn't work" (user report 2026-07-15). Presenter mode
+  // owns its own clock, so it never gets this handler.
+  let paused = false;
+  const pauseGlyph = document.createElement('div');
+  pauseGlyph.id = 'pause-glyph';
+  pauseGlyph.textContent = '❙❙';
+  pauseGlyph.style.cssText =
+    'position:fixed;left:22px;bottom:20px;z-index:60;' +
+    'font:600 20px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;' +
+    'color:#f3f6fb;background:rgba(16,20,30,0.6);border:1px solid rgba(255,255,255,0.2);' +
+    'width:38px;height:38px;border-radius:50%;display:flex;align-items:center;' +
+    'justify-content:center;letter-spacing:1px;pointer-events:none;' +
+    'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);' +
+    'opacity:0;transition:opacity 0.25s ease;';
+  if (!present) document.body.appendChild(pauseGlyph);
+  function setPaused(p) {
+    if (p === paused || !studio.setSequencePaused) return;
+    paused = p;
+    studio.setSequencePaused(p);
+    pauseGlyph.style.opacity = p ? '1' : '0';
+    if (!p && studio.requestRender) studio.requestRender(); // revive the loop on resume
+  }
+  if (!present) {
+    window.addEventListener(
+      'keydown',
+      (e) => {
+        // never fight a text field (prompt / api-key box)
+        const t = e.target;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+        if (e.key === ' ' || e.key === 'p' || e.key === 'P') {
+          e.preventDefault(); // Space would otherwise scroll the page
+          setPaused(!paused);
+        }
+      },
+      true, // capture: win over any bubble-phase consumer (fly controls etc.)
+    );
+  }
 
   let items = [];
   let els = [];
