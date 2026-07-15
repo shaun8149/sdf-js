@@ -176,6 +176,10 @@ export const PRIMITIVE_TYPES = new Set([
   'line-3d',
   // Atlas chart atom (2026-06-18) — pie/donut chart, angular SDF + extrusion.
   'pie-3d',
+  // Analytic pie CHART coin (2026-07-15) — camera-facing disc, angle-coloured
+  // slices done in the analytic renderer (render-proportion emits it). Distinct
+  // from pie-3d (raymarch SDF) and the 'pie' wedge primitive.
+  'pie-chart',
   // Atlas chart atom (2026-06-18) — KPI dashboard card (rounded box + semantic metadata).
   'kpi-card-3d',
   // Atlas icon set (2026-06-18) — 10-icon business pack (dispatched by name).

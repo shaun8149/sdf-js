@@ -60,12 +60,195 @@ const monoMat = (i, N, emphasized, accent) => {
   };
 };
 
+// ---- horizontal ranked bars (orientation:'horizontal') ------------------------
+// Categories stacked top→bottom; each bar is a box growing screen-right, length
+// ∝ value. Bars slide in from the right (translate.x build-in) staggered by
+// rank; the camera walks down the ranking. Category names bind at each bar's
+// left end (the ranking axis), value chips at the right end. Analytic-safe.
+function renderHorizontalBars(ir, opts, env) {
+  const nodes = ir.nodes.map(label);
+  const N = nodes.length;
+  const mag = ir.magnitude;
+  const mMax = Math.max(...mag.map((x) => Number(x) || 0), 1e-9);
+  const order = ir.order && ir.order.length === N ? ir.order : nodes.map((_, i) => i);
+  let longest = 0;
+  for (let i = 1; i < N; i++) if (mag[i] > mag[longest]) longest = i;
+  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : longest;
+  const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : [longest]);
+
+  const L_MAX = 8.5; // longest bar
+  const BAR_H = 0.72;
+  const DEPTH = 0.72;
+  const PITCH = 1.18;
+  const lenOf = (i) => Math.max(0.2, (Number(mag[i]) / mMax) * L_MAX);
+  const top = ((N - 1) / 2) * PITCH;
+  const yOf = (k) => top - k * PITCH; // rank k (0 = top)
+
+  const introLead = introLeadOf();
+  const holdEach = TEMPO.beatHold;
+
+  const subjects = [];
+  order.forEach((i, k) => {
+    const L = lenOf(i);
+    const y = yOf(k);
+    const xc = -L / 2; // grows screen-right (-x)
+    const t0 = Math.max(0.2, introLead + k * holdEach - 0.45);
+    const t1 = t0 + 0.55;
+    // rail the bar rides in on (a thin baseline groove at x=0)
+    subjects.push({
+      id: `hbar-${i}`,
+      type: 'rounded_box',
+      args: { dims: [L, BAR_H, DEPTH], cornerR: 0.05 },
+      transform: { translate: [xc, y, 0] },
+      material: monoMat(k, N, emphasis.has(i), opts.accent),
+      animation: [
+        {
+          // slide in from screen-right (off its final centre by the bar length)
+          channel: 'transform.translate.x',
+          expr: `${(xc - L - 1.5).toFixed(3)} + ${(L + 1.5).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
+        },
+      ],
+    });
+  });
+  // a baseline spine at x=0 (where every bar starts) + a back wall of guards
+  subjects.push({
+    id: 'baseline',
+    type: 'box',
+    args: { dims: [0.08, N * PITCH + 0.4, 0.3] },
+    transform: { translate: [0.06, 0, -0.1] },
+    material: { hue: 0.6, sat: 0.08, value: 0.5, kind: 'normal', roughness: 0.6 },
+  });
+
+  const rowH = N * PITCH;
+  const D = Math.max(11, L_MAX * 1.05 + 3.5);
+  const shots = [
+    // establishing: the whole ranking, slightly high
+    {
+      duration: introLead,
+      pos: [-L_MAX * 0.35, top + 1.2, D],
+      target: [-L_MAX * 0.4, 0, 0],
+      fov: 48,
+      aperture: 0.14,
+      focalDistance: D,
+      ease: 'out',
+    },
+  ];
+  // walk down the ranking, one bar per beat
+  order.forEach((i, k) => {
+    const L = lenOf(i);
+    shots.push({
+      duration: holdEach,
+      pos: [-L * 0.5 + 0.5, yOf(k) + 0.5, D * 0.62],
+      target: [-L * 0.5, yOf(k), 0],
+      fov: 44,
+      transition: 'blend',
+      aperture: 0.2,
+      focalDistance: D * 0.62,
+      shake: 0.04,
+      ease: 'smooth',
+    });
+  });
+  // super: punch on the emphasis (longest) bar's tip
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0);
+  const eL = lenOf(emphasisIdx);
+  const eRank = order.indexOf(emphasisIdx);
+  shots.push({
+    duration: TEMPO.superHold,
+    pos: [-eL + 0.6, yOf(eRank) + 0.3, 2.6],
+    target: [-eL * 0.72, yOf(eRank), 0],
+    fov: 44,
+    transition: 'cut',
+    beat: 'super',
+    aperture: [0.8, 0.4],
+    focalDistance: 2.8,
+    shake: [0.4, 0.06],
+    ambient: [0.2, 1.0],
+    exposure: [1.15, 1.0],
+    ease: 'out',
+  });
+  // payoff: the whole ranking in frame
+  const payoffDist = (D + 1.5) * (env ? env.payoffZoom : 1);
+  shots.push({
+    duration: TEMPO.payoff,
+    pos: [-L_MAX * 0.4, top + 1.6, payoffDist],
+    target: [-L_MAX * 0.42, 0, 0],
+    fov: 47,
+    transition: 'blend',
+    aperture: 0.12,
+    focalDistance: payoffDist,
+    ease: 'out',
+  });
+
+  const overlay = [
+    {
+      text: String(ir.title || nodes[longest]).toUpperCase(),
+      anchor: [0, top + 1.5, 0],
+      role: 'title',
+    },
+  ];
+  const shortAxis = nodes.every((n) => String(n).trim().length <= 10);
+  order.forEach((i, k) => {
+    const L = lenOf(i);
+    const y = yOf(k);
+    const revealAt = introLead + k * holdEach + 0.35;
+    // category name at the bar's LEFT start (the ranking axis, screen-left)
+    overlay.push({
+      text: nodes[i],
+      anchor: [0.3, y, DEPTH * 0.5 + 0.15],
+      role: shortAxis ? 'card' : 'screen',
+      align: 'left',
+      revealAt,
+    });
+    // value chip at the bar's right tip
+    overlay.push({
+      text: (ir.display && ir.display[i]) || String(mag[i]),
+      anchor: [-L - 0.3, y, 0],
+      role: 'value',
+      radius: emphasis.has(i) ? 0.46 : 0.34,
+      revealAt,
+    });
+  });
+  const insight = deriveMagnitudeInsight(ir);
+  const payoffStart = superAt + TEMPO.superHold;
+  if (insight)
+    overlay.push({
+      text: insight.text,
+      sub: insight.sub + (insight.note ? ` · ${insight.note}` : ''),
+      role: 'insight',
+      revealAt: payoffStart + 0.4,
+    });
+  if (ir.callout && ir.callout.text)
+    overlay.push({
+      text: String(ir.callout.text),
+      sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+      role: 'insight',
+      revealAt: superAt + 0.25,
+      hideAt: insight ? payoffStart + 0.4 : undefined,
+    });
+
+  return {
+    v: 1,
+    name: `(magnitude·horizontal) ${ir.title || nodes[longest]}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env
+      ? env.defaults
+      : { stage: { size: [Math.max(16, L_MAX + 8), Math.max(12, rowH + 4), 12] } },
+  };
+}
+
 export function renderMagnitude(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderMagnitude: invalid IR — ${v.errors.join('; ')}`);
   if (ir.structure !== 'magnitude')
     throw new Error(`renderMagnitude: expected structure 'magnitude', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  // orientation:'horizontal' → ranked HORIZONTAL bars (categories top→bottom,
+  // length ∝ value growing screen-right). The 2D source's horizontal bar chart
+  // (rankings, long category names) reads natively this way; the vertical
+  // monolith row is the default. Analytic-safe (boxes) — same fast tier.
+  if (ir.orientation === 'horizontal') return renderHorizontalBars(ir, opts, env);
 
   const nodes = ir.nodes.map(label);
   const N = nodes.length;

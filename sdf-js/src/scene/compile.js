@@ -337,6 +337,11 @@ const PRIMITIVE_FACTORIES = {
     return capsule([0, -h / 2, 0], [0, h / 2, 0], r);
   },
   cylinder: (a) => cylinder(a.radius ?? 0.3, a.height ?? 1.0),
+  // pie-chart coin: analytic renderer colors its angular slices (analytic.js).
+  // ('pie' is already taken by the wedge primitive above.) The raymarch
+  // fallback just needs the geometry — a thin disc; slice color is analytic
+  // only, so this fallback is a plain flat disc (deck runs analytic).
+  'pie-chart': (a) => cylinder(a.radius ?? 1.0, a.thickness ?? 0.3),
   capped_cylinder: (a) => capped_cylinder(a.a, a.b, a.radius ?? 0.1),
   cone: (a) => cone(a.height ?? 0.5, a.baseRadius ?? a.radius ?? 0.3),
   capped_cone: (a) => capped_cone(a.a, a.b, a.r1 ?? a.ra ?? 0.3, a.r2 ?? a.rb ?? 0.1),

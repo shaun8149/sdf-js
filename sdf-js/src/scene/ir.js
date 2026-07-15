@@ -28,6 +28,8 @@ export const STRUCTURES = [
   'matrix',
   'hold',
   'image',
+  'proportion',
+  'roadmap',
 ];
 
 export function validateIR(ir) {
@@ -41,6 +43,16 @@ export function validateIR(ir) {
     // image (浮屏): the page IS the content — nodes are optional captions.
     if (typeof ir.image !== 'string' || !ir.image) errors.push('image requires an image path');
     if (ir.nodes != null && !Array.isArray(ir.nodes)) errors.push('nodes must be an array');
+  } else if (ir.structure === 'proportion') {
+    // proportion (pie row): groups[] each carry a values[] — nodes unused.
+    if (!Array.isArray(ir.groups) || ir.groups.length === 0)
+      errors.push('proportion requires a non-empty groups array');
+    else if (!ir.groups.every((g) => g && Array.isArray(g.values) && g.values.length))
+      errors.push('each proportion group needs a non-empty values array');
+  } else if (ir.structure === 'roadmap') {
+    // roadmap (climbing timeline): milestones[] each carry a label — nodes unused.
+    if (!Array.isArray(ir.milestones) || ir.milestones.length === 0)
+      errors.push('roadmap requires a non-empty milestones array');
   } else if (!Array.isArray(ir.nodes) || ir.nodes.length === 0)
     errors.push('nodes must be a non-empty array');
   const N = Array.isArray(ir.nodes) ? ir.nodes.length : 0;
