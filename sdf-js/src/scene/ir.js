@@ -29,6 +29,7 @@ export const STRUCTURES = [
   'hold',
   'image',
   'proportion',
+  'roadmap',
 ];
 
 export function validateIR(ir) {
@@ -48,6 +49,10 @@ export function validateIR(ir) {
       errors.push('proportion requires a non-empty groups array');
     else if (!ir.groups.every((g) => g && Array.isArray(g.values) && g.values.length))
       errors.push('each proportion group needs a non-empty values array');
+  } else if (ir.structure === 'roadmap') {
+    // roadmap (climbing timeline): milestones[] each carry a label — nodes unused.
+    if (!Array.isArray(ir.milestones) || ir.milestones.length === 0)
+      errors.push('roadmap requires a non-empty milestones array');
   } else if (!Array.isArray(ir.nodes) || ir.nodes.length === 0)
     errors.push('nodes must be a non-empty array');
   const N = Array.isArray(ir.nodes) ? ir.nodes.length : 0;

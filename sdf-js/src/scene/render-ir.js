@@ -11,6 +11,7 @@ import { renderMatrix } from './render-matrix.js';
 import { renderHold } from './render-hold.js';
 import { renderImage } from './render-image.js';
 import { renderProportion } from './render-proportion.js';
+import { renderRoadmap } from './render-roadmap.js';
 import { stagePreset } from './environments.js';
 
 const RENDERERS = {
@@ -22,6 +23,7 @@ const RENDERERS = {
   hold: renderHold,
   image: renderImage,
   proportion: renderProportion,
+  roadmap: renderRoadmap,
 };
 
 // Every IR structure has a 3D renderer now (matrix landed last — the quadrant
